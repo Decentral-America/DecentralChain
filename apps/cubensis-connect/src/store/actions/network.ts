@@ -11,21 +11,21 @@ export function setNetwork(network: NetworkName): PopupThunkAction<Promise<void>
 
 export const setCustomNode = (payload: { network: NetworkName; node: string | null }) => {
   return {
-    type: ACTION.CHANGE_NODE,
     payload,
+    type: ACTION.CHANGE_NODE,
   };
 };
 
 export const setCustomCode = (payload: { network: NetworkName; code: string | null }) => {
   return {
-    type: ACTION.CHANGE_NETWORK_CODE,
     payload,
+    type: ACTION.CHANGE_NETWORK_CODE,
   };
 };
 
 export const setCustomMatcher = (payload: { network: NetworkName; matcher: string | null }) => {
   return {
-    type: ACTION.CHANGE_MATCHER,
     payload,
+    type: ACTION.CHANGE_MATCHER,
   };
 };

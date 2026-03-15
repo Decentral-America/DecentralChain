@@ -51,8 +51,8 @@ export async function generateNewWalletItems(networkCode: string) {
     const address = createAddress(publicKey, networkCode.charCodeAt(0));
 
     list.push({
-      seed,
       address: base58Encode(address),
+      seed,
       type: 'seed',
     });
   }
@@ -70,7 +70,7 @@ class NewWalletComponent extends Component<Props, State> {
 
     const selected =
       generatedWalletItems.find((item) => account && item.address === account.address) ||
-      generatedWalletItems[0];
+      generatedWalletItems[0]!;
 
     this._onSelect(selected);
 
@@ -123,8 +123,8 @@ class NewWalletComponent extends Component<Props, State> {
     this.props.newAccountSelect({
       name: '',
       ...account,
-      type: 'seed',
       hasBackup: false,
+      type: 'seed',
     });
   }
 }

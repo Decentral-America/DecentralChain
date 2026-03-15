@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { TxDetailTabs } from 'messages/_common/detailTabs';

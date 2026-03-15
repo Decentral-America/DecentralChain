@@ -4,17 +4,18 @@
  * Shows account selection if multiple accounts exist
  * Matches Angular's signInForm.js exactly
  */
-import { useState, useEffect, useRef, FormEvent } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
+import { Card, CardBody } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
 import { Stack } from '@/components/atoms/Stack';
-import { Card, CardBody } from '@/components/atoms/Card';
+import { NoAccountModal } from '@/components/modals/NoAccountModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 import { AccountSelectScreen } from './AccountSelectScreen';
-import { NoAccountModal } from '@/components/modals/NoAccountModal';
 
 const FormContainer = styled.div`
   width: 100%;
@@ -56,7 +57,7 @@ const Divider = styled.div`
   align-items: center;
   gap: ${(p) => p.theme.spacing.md};
   margin: ${(p) => p.theme.spacing.md} 0;
-  
+
   &::before,
   &::after {
     content: '';
@@ -64,7 +65,7 @@ const Divider = styled.div`
     height: 1px;
     background: ${(p) => p.theme.colors.border};
   }
-  
+
   span {
     font-size: ${(p) => p.theme.fontSizes.xs};
     color: ${(p) => p.theme.colors.text};
@@ -74,7 +75,7 @@ const Divider = styled.div`
   }
 `;
 
-const LedgerButton = styled(Button)`
+const LedgerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +83,7 @@ const LedgerButton = styled(Button)`
   background: transparent;
   border: 2px solid ${(p) => p.theme.colors.primary};
   color: ${(p) => p.theme.colors.primary};
-  
+
   &:hover:not(:disabled) {
     background: ${(p) => p.theme.colors.primary};
     color: white;
@@ -93,8 +94,15 @@ export const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
   const [accounts, setAccounts] = useState<
-    Array<{ hash: string; name?: string; address: string; lastLogin?: number }>
+    Array<{
+      hash: string;
+      name?: string | undefined;
+      address: string;
+      lastLogin?: number | undefined;
+    }>
   >([]);
   const [showAccountSelect, setShowAccountSelect] = useState(false);
   const [showNoAccountModal, setShowNoAccountModal] = useState(false);
@@ -102,10 +110,11 @@ export const LoginForm = () => {
   const { login, getActiveState, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const navigationTarget = useRef<string>('/desktop/wallet');
-  
+
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported = 
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+  const isLedgerSupported =
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   // Effect-based navigation: only navigate after user state has propagated
@@ -120,7 +129,7 @@ export const LoginForm = () => {
   useEffect(() => {
     const multiAccountData = localStorage.getItem('multiAccountData');
     if (!multiAccountData) {
-      console.log('[LoginForm] No accounts found, showing wallet options modal');
+      logger.debug('[LoginForm] No accounts found, showing wallet options modal');
       setShowNoAccountModal(true);
     }
   }, []);
@@ -128,6 +137,14 @@ export const LoginForm = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Brute-force protection: exponential backoff after 3 failed attempts
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remainingSec = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      setError(`Too many failed attempts. Please wait ${remainingSec} seconds.`);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -141,7 +158,7 @@ export const LoginForm = () => {
       }
 
       // Decrypt vault with password (matches Angular signInForm.onSubmit)
-      await multiAccount.signIn(multiAccountData, password, 5000, multiAccountHash);
+      await multiAccount.signIn(multiAccountData, password, 600000, multiAccountHash);
 
       // Get account list with decrypted data
       const users = JSON.parse(multiAccountUsers);
@@ -153,7 +170,9 @@ export const LoginForm = () => {
 
       if (accountList.length === 1) {
         // Auto-login with single account
-        await login(accountList[0].hash, password);
+        const firstAccount = accountList[0];
+        if (!firstAccount) throw new Error('No accounts found in vault');
+        await login(firstAccount.hash, password);
 
         // Navigate via effect once user state propagates
         navigationTarget.current = getActiveState('wallet');
@@ -165,8 +184,19 @@ export const LoginForm = () => {
         setIsLoading(false);
       }
     } catch (err) {
-      console.error('[LoginForm] Login error:', err);
-      setError('Incorrect password. Please try again.');
+      logger.error('[LoginForm] Login error:', err);
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+
+      // Exponential backoff: 0, 0, 0, 5s, 15s, 30s, 60s, 120s...
+      if (newAttempts >= 3) {
+        const lockoutMs = Math.min(5000 * 2 ** (newAttempts - 3), 300000);
+        setLockoutUntil(Date.now() + lockoutMs);
+        const lockoutSec = Math.ceil(lockoutMs / 1000);
+        setError(`Incorrect password. Account locked for ${lockoutSec} seconds.`);
+      } else {
+        setError('Incorrect password. Please try again.');
+      }
       setPassword('');
       setIsLoading(false);
     }
@@ -180,7 +210,7 @@ export const LoginForm = () => {
       navigationTarget.current = getActiveState('wallet');
       setPendingNavigation(true);
     } catch (error) {
-      console.error('[LoginForm] Account select failed:', error);
+      logger.error('[LoginForm] Account select failed:', error);
       setError('Failed to login. Please try again.');
       setShowAccountSelect(false);
     }
@@ -230,7 +260,7 @@ export const LoginForm = () => {
                   <Divider>
                     <span>or</span>
                   </Divider>
-                  
+
                   <LedgerButton
                     type="button"
                     onClick={() => navigate('/import/ledger')}
@@ -244,16 +274,23 @@ export const LoginForm = () => {
 
               <HelpText>
                 Don&apos;t have a wallet?{' '}
-                <a
-                  href="#"
-                  style={{ color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}
-                  onClick={(e) => {
-                    e.preventDefault();
+                <button
+                  type="button"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    font: 'inherit',
+                    padding: 0,
+                    textDecoration: 'underline',
+                  }}
+                  onClick={() => {
                     setShowNoAccountModal(true);
                   }}
                 >
                   Create or import one
-                </a>
+                </button>
               </HelpText>
             </Stack>
           </form>

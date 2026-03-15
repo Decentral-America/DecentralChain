@@ -1,1 +1,1 @@
-export { MoneyInfo as default } from './MoneyInfo.view';
+export {MoneyInfo as default} from './MoneyInfo.view';

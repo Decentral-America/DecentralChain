@@ -13,9 +13,11 @@ export const ListItem: React.FunctionComponent<IParams> = ({
   permissionsText,
 }) => (
   <div
-    className={clsx(className, styles.permissionItem, {
-      [styles.approved]: permissions.includes('approved'),
-    })}
+    className={clsx(
+      className,
+      styles.permissionItem,
+      permissions.includes('approved') && styles.approved,
+    )}
   >
     <div>{originName}</div>
     <div className={styles.statusColor}>{permissionsText}</div>

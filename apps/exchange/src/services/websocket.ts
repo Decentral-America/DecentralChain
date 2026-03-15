@@ -2,7 +2,8 @@
  * WebSocket Client Infrastructure
  * Real-time data updates for blockchain and DEX events
  */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * WebSocket Connection State
@@ -80,11 +81,11 @@ class WebSocketClient {
 
   constructor(config: WebSocketConfig) {
     this.config = {
-      url: config.url,
-      reconnectInterval: config.reconnectInterval ?? 5000,
-      maxReconnectAttempts: config.maxReconnectAttempts ?? 10,
-      heartbeatInterval: config.heartbeatInterval ?? 30000,
       debug: config.debug ?? false,
+      heartbeatInterval: config.heartbeatInterval ?? 30000,
+      maxReconnectAttempts: config.maxReconnectAttempts ?? 10,
+      reconnectInterval: config.reconnectInterval ?? 5000,
+      url: config.url,
     };
   }
 
@@ -131,9 +132,9 @@ class WebSocketClient {
     }
 
     const message: WebSocketMessage<T> = {
-      type,
       data,
       timestamp: Date.now(),
+      type,
     };
 
     this.ws.send(JSON.stringify(message));
@@ -159,17 +160,18 @@ class WebSocketClient {
    * Register message handler for specific channel
    */
   onMessage<T>(channel: string, handler: (data: T) => void): () => void {
-    if (!this.messageHandlers.has(channel)) {
+    const handlers = this.messageHandlers.get(channel);
+    if (!handlers) {
       this.messageHandlers.set(channel, new Set());
     }
 
-    const handlers = this.messageHandlers.get(channel)!;
-    handlers.add(handler as (data: unknown) => void);
+    const handlerSet = this.messageHandlers.get(channel) as Set<(data: unknown) => void>;
+    handlerSet.add(handler as (data: unknown) => void);
 
     // Return unsubscribe function
     return () => {
-      handlers.delete(handler as (data: unknown) => void);
-      if (handlers.size === 0) {
+      handlerSet.delete(handler as (data: unknown) => void);
+      if (handlerSet.size === 0) {
         this.messageHandlers.delete(channel);
       }
     };
@@ -231,8 +233,8 @@ class WebSocketClient {
       // Error 1006: Connection refused/failed - likely server doesn't support WebSocket
       // Stop retrying after 2 attempts to avoid console spam
       if (event.code === 1006 && this.reconnectAttempts >= 2) {
-        console.log(
-          '[WebSocket] Server does not support WebSocket connections. Real-time updates disabled, using HTTP polling instead.'
+        logger.debug(
+          '[WebSocket] Server does not support WebSocket connections. Real-time updates disabled, using HTTP polling instead.',
         );
         return;
       }
@@ -258,13 +260,17 @@ class WebSocketClient {
     // Notify all handlers for this message type
     const handlers = this.messageHandlers.get(message.type);
     if (handlers) {
-      handlers.forEach((handler) => handler(message.data));
+      handlers.forEach((handler) => {
+        handler(message.data);
+      });
     }
 
     // Also notify wildcard handlers
     const wildcardHandlers = this.messageHandlers.get('*');
     if (wildcardHandlers) {
-      wildcardHandlers.forEach((handler) => handler(message));
+      wildcardHandlers.forEach((handler) => {
+        handler(message);
+      });
     }
   }
 
@@ -279,7 +285,7 @@ class WebSocketClient {
 
     this.reconnectAttempts++;
     // Exponential backoff: delay = baseInterval * 2^attempts
-    const delay = this.config.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
+    const delay = this.config.reconnectInterval * 2 ** (this.reconnectAttempts - 1);
 
     this.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
 
@@ -320,7 +326,9 @@ class WebSocketClient {
     if (this.currentState === state) return;
 
     this.currentState = state;
-    this.stateListeners.forEach((listener) => listener(state));
+    this.stateListeners.forEach((listener) => {
+      listener(state);
+    });
   }
 
   /**
@@ -328,7 +336,7 @@ class WebSocketClient {
    */
   private log(...args: unknown[]): void {
     if (this.config.debug) {
-      console.log('[WebSocket]', ...args);
+      logger.debug('[WebSocket]', ...args);
     }
   }
 }
@@ -358,8 +366,7 @@ export const useWebSocket = (config: WebSocketConfig) => {
       unsubscribe();
       clientRef.current?.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config.url]); // Only reconnect if URL changes
+  }, [config.url, config]); // Only reconnect if URL changes
 
   const send = useCallback(<T>(type: MessageType, data: T) => {
     clientRef.current?.send(type, data);
@@ -378,12 +385,12 @@ export const useWebSocket = (config: WebSocketConfig) => {
   }, []);
 
   return {
-    state,
     isConnected,
+    onMessage,
     send,
+    state,
     subscribe,
     unsubscribe,
-    onMessage,
   };
 };
 
@@ -400,7 +407,7 @@ export const useWebSocketChannel = <T>(
   config: WebSocketConfig,
   channel: string,
   handler: (data: T) => void,
-  enabled = true
+  enabled = true,
 ) => {
   const { subscribe, unsubscribe, onMessage, isConnected } = useWebSocket(config);
 

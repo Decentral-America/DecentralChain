@@ -4,17 +4,18 @@
  * Desktop-only feature - requires Electron's Node.js integration
  */
 
-import { useState, useEffect, FormEvent } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLedgerContext } from '@/contexts/LedgerContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { useConfig } from '@/contexts/ConfigContext';
-import LedgerConnectModal from '@/components/modals/LedgerConnectModal';
-import LedgerErrorModal from '@/components/modals/LedgerErrorModal';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import type { LedgerUser } from '@/hooks/useLedger';
+import LedgerConnectModal from '@/components/modals/LedgerConnectModal';
+import LedgerErrorModal from '@/components/modals/LedgerErrorModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
+import { useLedgerContext } from '@/contexts/LedgerContext';
+import { type LedgerUser } from '@/hooks/useLedger';
+import { logger } from '@/lib/logger';
 
 const USERS_PER_PAGE = 5;
 
@@ -22,8 +23,7 @@ export const ImportLedger = () => {
   const navigate = useNavigate();
   const { login, getActiveState, addLedgerAccount } = useAuth();
   const { networkByte } = useConfig();
-  const { isConnected, isLoading, error, connect, getUserList, isInitialized } =
-    useLedgerContext();
+  const { isConnected, isLoading, error, connect, getUserList, isInitialized } = useLedgerContext();
 
   const [offset, setOffset] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState<string>('0');
@@ -43,10 +43,10 @@ export const ImportLedger = () => {
         const users = await getUserList(0, USERS_PER_PAGE);
         setVisibleUsers(users);
         if (users.length > 0) {
-          setSelectedUserId(users[0].id);
+          setSelectedUserId(users[0]?.id ?? '');
         }
         setShowConnectModal(false);
-      } catch (err) {
+      } catch {
         setShowConnectModal(false);
         setShowErrorModal(true);
       }
@@ -67,9 +67,9 @@ export const ImportLedger = () => {
         setVisibleUsers(userList);
 
         if (useDefaultAddress && userList.length > 0) {
-          setSelectedUserId(userList[0].id);
+          setSelectedUserId(userList[0]?.id ?? '');
         }
-      } catch (err) {
+      } catch {
         setShowErrorModal(true);
       }
     };
@@ -97,7 +97,7 @@ export const ImportLedger = () => {
 
   const handleIdChange = async (value: string) => {
     const id = parseInt(value, 10);
-    if (isNaN(id) || id < 0) return;
+    if (Number.isNaN(id) || id < 0) return;
 
     setSelectedUserId(value);
 
@@ -125,9 +125,9 @@ export const ImportLedger = () => {
       // Prepare Ledger data for account creation
       const ledgerData = {
         address: selectedUser.address,
-        publicKey: selectedUser.publicKey,
-        path: selectedUser.path,
         id: selectedUser.id,
+        path: selectedUser.path,
+        publicKey: selectedUser.publicKey,
       };
 
       // Add Ledger account to multiAccount vault
@@ -143,7 +143,7 @@ export const ImportLedger = () => {
       const targetRoute = getActiveState('wallet');
       navigate(targetRoute);
     } catch (err) {
-      console.error('Ledger import error:', err);
+      logger.error('Ledger import error:', err);
       setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
@@ -158,7 +158,7 @@ export const ImportLedger = () => {
       const users = await getUserList(offset, USERS_PER_PAGE);
       setVisibleUsers(users);
       setShowConnectModal(false);
-    } catch (err) {
+    } catch {
       setShowConnectModal(false);
       setShowErrorModal(true);
     }
@@ -181,91 +181,89 @@ export const ImportLedger = () => {
       <Title>Import from Ledger</Title>
       <Subtitle>Choose an address from your Ledger device</Subtitle>
 
-          <AddressCarousel>
-            <NavButton onClick={handlePageLeft} disabled={offset === 0 || isLoading} type="button">
-              ←
-            </NavButton>
+      <AddressCarousel>
+        <NavButton onClick={handlePageLeft} disabled={offset === 0 || isLoading} type="button">
+          ←
+        </NavButton>
 
-            <AddressList>
-              {visibleUsers.map((user, index) => (
-                <AddressCard
-                  key={user.id}
-                  $selected={user.id === selectedUserId}
-                  $disabled={useDefaultAddress && index !== 0}
-                  onClick={() => handleSelectUser(user.id)}
-                >
-                  <Avatar $address={user.address} />
-                  <AddressText>{user.address}</AddressText>
-                  <AddressId>ID: {user.id}</AddressId>
-                </AddressCard>
-              ))}
-            </AddressList>
+        <AddressList>
+          {visibleUsers.map((user, index) => (
+            <AddressCard
+              key={user.id}
+              $selected={user.id === selectedUserId}
+              $disabled={useDefaultAddress && index !== 0}
+              onClick={() => handleSelectUser(user.id)}
+            >
+              <Avatar $address={user.address} />
+              <AddressText>{user.address}</AddressText>
+              <AddressId>ID: {user.id}</AddressId>
+            </AddressCard>
+          ))}
+        </AddressList>
 
-            <NavButton onClick={handlePageRight} disabled={isLoading} type="button">
-              →
-            </NavButton>
-          </AddressCarousel>
+        <NavButton onClick={handlePageRight} disabled={isLoading} type="button">
+          →
+        </NavButton>
+      </AddressCarousel>
 
-          <Form onSubmit={handleSubmit}>
-            <Stack gap="16px">
-              <FormGroup>
-                <Label htmlFor="addressId">Address ID</Label>
-                <Input
-                  id="addressId"
-                  type="number"
-                  value={useDefaultAddress ? '0' : selectedUserId}
-                  onChange={(e) => handleIdChange(e.target.value)}
-                  disabled={useDefaultAddress || isLoading}
-                  min="0"
-                />
-              </FormGroup>
+      <Form onSubmit={handleSubmit}>
+        <Stack gap="16px">
+          <FormGroup>
+            <Label htmlFor="addressId">Address ID</Label>
+            <Input
+              id="addressId"
+              type="number"
+              value={useDefaultAddress ? '0' : selectedUserId}
+              onChange={(e) => handleIdChange(e.target.value)}
+              disabled={useDefaultAddress || isLoading}
+              min="0"
+            />
+          </FormGroup>
 
-              <CheckboxGroup>
-                <Checkbox
-                  type="checkbox"
-                  checked={useDefaultAddress}
-                  onChange={(e) => {
-                    setUseDefaultAddress(e.target.checked);
-                    if (e.target.checked) {
-                      setSelectedUserId('0');
-                      setOffset(0);
-                    }
-                  }}
-                  id="default-address"
-                />
-                <CheckboxLabel htmlFor="default-address">
-                  Use default address (ID 0)
-                </CheckboxLabel>
-              </CheckboxGroup>
+          <CheckboxGroup>
+            <Checkbox
+              type="checkbox"
+              checked={useDefaultAddress}
+              onChange={(e) => {
+                setUseDefaultAddress(e.target.checked);
+                if (e.target.checked) {
+                  setSelectedUserId('0');
+                  setOffset(0);
+                }
+              }}
+              id="default-address"
+            />
+            <CheckboxLabel htmlFor="default-address">Use default address (ID 0)</CheckboxLabel>
+          </CheckboxGroup>
 
-              <FormGroup>
-                <Label htmlFor="accountName">Account Name</Label>
-                <Input
-                  id="accountName"
-                  type="text"
-                  value={customName}
-                  onChange={(e) => setCustomName(e.target.value)}
-                  placeholder="My Ledger Account"
-                  maxLength={24}
-                  required
-                  disabled={isSubmitting}
-                />
-              </FormGroup>
+          <FormGroup>
+            <Label htmlFor="accountName">Account Name</Label>
+            <Input
+              id="accountName"
+              type="text"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="My Ledger Account"
+              maxLength={24}
+              required
+              disabled={isSubmitting}
+            />
+          </FormGroup>
 
-              <Button
-                type="submit"
-                disabled={isLoading || !customName.trim() || isSubmitting}
-                isLoading={isSubmitting}
-                fullWidth
-              >
-                {isSubmitting ? 'Importing...' : 'Import Account'}
-              </Button>
-            </Stack>
-          </Form>
-        </FormContainer>
-      );
-    };
-    
+          <Button
+            type="submit"
+            disabled={isLoading || !customName.trim() || isSubmitting}
+            isLoading={isSubmitting}
+            fullWidth
+          >
+            {isSubmitting ? 'Importing...' : 'Import Account'}
+          </Button>
+        </Stack>
+      </Form>
+    </FormContainer>
+  );
+};
+
 const FormContainer = styled.div`
   width: 100%;
 `;
@@ -283,7 +281,8 @@ const Subtitle = styled.p`
   opacity: 0.7;
   margin: 0 0 ${(p) => p.theme.spacing.xl} 0;
   line-height: 1.6;
-`;const AddressCarousel = styled.div`
+`;
+const AddressCarousel = styled.div`
   display: flex;
   align-items: center;
   gap: ${(p) => p.theme.spacing.md};
@@ -335,8 +334,7 @@ const AddressList = styled.div`
 const AddressCard = styled.div<{ $selected: boolean; $disabled: boolean }>`
   min-width: 140px;
   padding: ${(p) => p.theme.spacing.md};
-  border: 2px solid
-    ${(p) => (p.$selected ? p.theme.colors.primary : p.theme.colors.border)};
+  border: 2px solid ${(p) => (p.$selected ? p.theme.colors.primary : p.theme.colors.border)};
   border-radius: ${(p) => p.theme.radii.md};
   text-align: center;
   cursor: ${(p) => (p.$disabled ? 'not-allowed' : 'pointer')};

@@ -4,9 +4,10 @@
  * Shows a sticky top bar with back button (left) and an action link (right).
  * Only renders on mobile (<md). Desktop uses the standard 2-column layout.
  */
-import React from 'react';
-import { Box, IconButton, Button, useMediaQuery, useTheme } from '@mui/material';
+
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { Box, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface MobileAuthShellProps {
@@ -49,28 +50,28 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
   return (
     <Box
       sx={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1300, // above everything
         bgcolor: '#FFFFFF',
         display: 'flex',
         flexDirection: 'column',
+        inset: 0,
         overflow: 'hidden',
+        position: 'fixed',
+        zIndex: 1300, // above everything
       }}
     >
       {/* ── Sticky Top Bar ── */}
       <Box
         sx={{
-          display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 1,
-          py: 0.5,
+          bgcolor: '#FFFFFF',
           borderBottom: '1px solid',
           borderColor: 'divider',
-          bgcolor: '#FFFFFF',
+          display: 'flex',
           flexShrink: 0,
+          justifyContent: 'space-between',
           minHeight: 52,
+          px: 1,
+          py: 0.5,
         }}
       >
         {/* Back button */}
@@ -93,7 +94,7 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
         />
 
         {/* Action link(s) */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', flexShrink: 0, gap: 0.5 }}>
           {secondaryActionLabel && secondaryActionRoute && (
             <>
               <Button
@@ -101,23 +102,23 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
                 size="small"
                 onClick={() => navigate(secondaryActionRoute)}
                 sx={{
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
                   color: 'text.secondary',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
                   minWidth: 'auto',
                   px: 0.5,
+                  textTransform: 'none',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {secondaryActionLabel}
               </Button>
               <Box
                 sx={{
-                  width: '1px',
-                  height: 16,
                   bgcolor: 'divider',
                   flexShrink: 0,
+                  height: 16,
+                  width: '1px',
                 }}
               />
             </>
@@ -127,13 +128,13 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
             size="small"
             onClick={() => navigate(actionRoute)}
             sx={{
-              fontWeight: 700,
-              fontSize: '0.8rem',
               color: 'primary.main',
-              textTransform: 'none',
-              whiteSpace: 'nowrap',
+              fontSize: '0.8rem',
+              fontWeight: 700,
               minWidth: 'auto',
               px: secondaryActionLabel ? 0.5 : 1,
+              textTransform: 'none',
+              whiteSpace: 'nowrap',
             }}
           >
             {actionLabel}
@@ -146,9 +147,9 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
         sx={{
           flex: 1,
           overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
           px: 2,
           py: 2,
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {children}

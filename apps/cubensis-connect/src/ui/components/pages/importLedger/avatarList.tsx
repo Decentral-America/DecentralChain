@@ -23,9 +23,7 @@ export function LedgerAvatarList({ selectedId, size, users, onSelect }: Props) {
         <button
           type="button"
           key={item.address}
-          className={clsx(styles.item, {
-            [styles.itemSelected]: selectedId === item.id,
-          })}
+          className={clsx(styles.item, selectedId === item.id && styles.itemSelected)}
           onClick={() => {
             onSelect(item.id);
           }}

@@ -5,9 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from './Modal';
 import { Button } from '@/components/atoms/Button';
 import { HStack } from '@/components/atoms/Stack';
+import { Modal } from './Modal';
 
 export interface ConfirmDialogProps {
   /**
@@ -39,19 +39,19 @@ export interface ConfirmDialogProps {
    * Confirmation button text
    * @default 'Confirm'
    */
-  confirmText?: string;
+  confirmText?: string | undefined;
 
   /**
    * Cancel button text
    * @default 'Cancel'
    */
-  cancelText?: string;
+  cancelText?: string | undefined;
 
   /**
    * Whether the action is destructive (shows red confirm button)
    * @default false
    */
-  destructive?: boolean;
+  destructive?: boolean | undefined;
 
   /**
    * Whether to show a loading state during confirmation
@@ -102,7 +102,7 @@ const DialogMessage = styled.p`
   line-height: 1.5;
 `;
 
-const DialogActions = styled(HStack)`
+const DialogActions = styled(HStack as React.ComponentType)`
   justify-content: flex-end;
   margin-top: ${(p) => p.theme.spacing.md};
 `;
@@ -179,11 +179,13 @@ export function useConfirmDialog() {
     destructive?: boolean;
     confirmText?: string;
     cancelText?: string;
+    resolvePromise?: () => void;
+    rejectPromise?: () => void;
   }>({
-    open: false,
-    title: '',
     message: '',
     onConfirm: () => {},
+    open: false,
+    title: '',
   });
 
   const confirm = React.useCallback(
@@ -196,32 +198,31 @@ export function useConfirmDialog() {
       cancelText?: string;
     }) => {
       return new Promise<boolean>((resolve) => {
+        const originalOnConfirm = options.onConfirm;
+
         setState({
           open: true,
           ...options,
+          rejectPromise: () => {
+            resolve(false);
+          },
+          resolvePromise: () => {
+            originalOnConfirm();
+            resolve(true);
+          },
         });
-
-        // Store resolve function
-        const originalOnConfirm = options.onConfirm;
-        (options as any).resolvePromise = () => {
-          originalOnConfirm();
-          resolve(true);
-        };
-        (options as any).rejectPromise = () => {
-          resolve(false);
-        };
       });
     },
-    []
+    [],
   );
 
   const close = React.useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));
-    (state as any).rejectPromise?.();
+    state.rejectPromise?.();
   }, [state]);
 
   const handleConfirm = React.useCallback(() => {
-    (state as any).resolvePromise?.();
+    state.resolvePromise?.();
     state.onConfirm();
     setState((prev) => ({ ...prev, open: false }));
   }, [state]);
@@ -239,11 +240,11 @@ export function useConfirmDialog() {
         cancelText={state.cancelText}
       />
     ),
-    [state, close, handleConfirm]
+    [state, close, handleConfirm],
   );
 
   return {
-    confirm,
     ConfirmDialog: ConfirmDialogComponent,
+    confirm,
   };
 }

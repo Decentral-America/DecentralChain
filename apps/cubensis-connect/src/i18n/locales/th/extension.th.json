@@ -6,13 +6,13 @@
     "cancel": "ยกเลิก",
     "copied": "คัดลอกแล้ว!",
     "copyToClipboard": "คลิกเพื่อคัดลอกไปยังคลิปบอร์ด",
+    "email": "อีเมล",
+    "emailNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้บัญชี DecentralChain Exchange จึงไม่มี backup phrase หรือ private key ให้คัดลอก",
     "encodedSeed": "Encoded seed",
     "enter": "Enter",
-    "email": "อีเมล",
     "password": "รหัสผ่าน",
     "passwordError": "รหัสผ่านผิดพลาด",
     "privateKeyNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้ private key จึงไม่มี backup phrase ให้คัดลอก",
-    "emailNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้บัญชี DecentralChain Exchange จึงไม่มี backup phrase หรือ private key ให้คัดลอก",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "ดูใน Explorer"
@@ -21,10 +21,10 @@
   "address": {
     "add": "ที่อยู่ใหม่",
     "addButton": "เพิ่มใหม่",
-    "addTooltip": "พิ่มที่อยู่ในรายชื่อติดต่อของคุณ",
     "added": "เพิ่มที่อยู่แล้ว",
     "addressAlreadyExist": "มีที่อยู่ อยู่แล้ว",
     "addressInvalidError": "ค่าที่อยู่ไม่ถูกต้อง",
+    "addTooltip": "พิ่มที่อยู่ในรายชื่อติดต่อของคุณ",
     "cancel": "ยกเลิก",
     "copied": "คัดลอกแล้ว!",
     "copyToClipboard": "คลิกเพื่อคัดลอกไปยังคลิปบอร์ด",
@@ -50,25 +50,25 @@
     "balanceLabel": "คงเหลือ"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "ชื่อ",
-    "ticker": "Ticker",
-    "precision": "จุดทศนิยม",
-    "quantity": "จำนวนเหรียญทั้งสิ้น",
-    "type": "Type",
-    "reissuable": "สามารถออกเพิ่มได้",
-    "notReissuable": "ไม่สามารถออกเพิ่มได้",
-    "scripted": "สคริปต์",
-    "notScripted": "ไม่ใช่สคริปต์",
-    "minSponsoredFee": "ค่าธรรมเนียมสินทรัพย์ที่ได้รับการสนับสนุน",
-    "sender": "ผู้ออกเหรียญ",
-    "timestamp": "วันที่ออกเหรียญ",
     "closeBtn": "ปิด",
-    "infoTooltip": "ข้อมูลสินทรัพย์",
     "favAddTooltip": "เพิ่มในรายการโปรด",
     "favRemoveTooltip": "ลบออกจากรายการโปรด",
+    "id": "ID",
+    "infoTooltip": "ข้อมูลสินทรัพย์",
+    "minSponsoredFee": "ค่าธรรมเนียมสินทรัพย์ที่ได้รับการสนับสนุน",
+    "name": "ชื่อ",
+    "notReissuable": "ไม่สามารถออกเพิ่มได้",
+    "notScripted": "ไม่ใช่สคริปต์",
+    "precision": "จุดทศนิยม",
+    "quantity": "จำนวนเหรียญทั้งสิ้น",
+    "reissuable": "สามารถออกเพิ่มได้",
+    "scripted": "สคริปต์",
     "sendAssetTooltip": "ส่ง",
+    "sender": "ผู้ออกเหรียญ",
     "swapAssetTooltip": "swap",
+    "ticker": "Ticker",
+    "timestamp": "วันที่ออกเหรียญ",
+    "type": "Type",
     "viewDetailsInExplorer": "ดูรายละเอียดใน Explorer"
   },
   "assetSelectModal": {
@@ -111,14 +111,14 @@
     "saveBackup": "บันทึก backup phrase"
   },
   "bottom": {
-    "network": {
-      "edit": "แก้ไข",
-      "disabled": "คุณไม่สามารถเปลี่ยนการตั้งค่าเครือข่ายในระหว่างการดำเนินการนี้"
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "คุณไม่สามารถเปลี่ยนการตั้งค่าเครือข่ายในระหว่างการดำเนินการนี้",
+      "edit": "แก้ไข"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "ชื่อบัญชีปัจจุบัน",
@@ -167,10 +167,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "ส่งออกบัญชี",
-    "importAccounts": "นำเข้าบัญชี",
     "exportAddressBook": "ส่งออกสมุดที่อยู่",
-    "importAddressBook": "นำเข้าสมุดที่อยู่",
-    "exportAll": "lส่งออกทั้งหมด"
+    "exportAll": "lส่งออกทั้งหมด",
+    "importAccounts": "นำเข้าบัญชี",
+    "importAddressBook": "นำเข้าสมุดที่อยู่"
   },
   "exportKeystore": {
     "cancelBtn": "ยกเลิก",
@@ -195,13 +195,13 @@
   "forgotPassword": {
     "attention": "โปรดทราบ!",
     "attentionMessage": "ในการรีเซ็ตรหัสผ่าน คุณต้องลบบัญชีทั้งหมดออกจาก Cubensis Connect, ตั้งรหัสผ่านใหม่, นำเข้าแต่ละบัญชีของคุณอีกครั้งจาก Seed phrase",
-    "warningMessage": "หากคุณไม่ได้บันทึก Seed phrase หรือ Private key, คุณจะไม่สามารถกู้คืนการเข้าถึงบัญชีของคุณได้",
     "continueMessage": "พิมพ์สิ่งนี้ลงในช่องด้านล่าง เพื่อดำเนินการต่อ",
     "phrase": "ลบบัญชีทั้งหมด",
     "phraseError": "กลุ่มคำที่ป้อนไม่ถูกต้อง",
     "placeholder": "พิมพ์ที่นี่...",
+    "resetCancel": "ยกเลิก",
     "resetConfirm": "ลบทั้งหมด",
-    "resetCancel": "ยกเลิก"
+    "warningMessage": "หากคุณไม่ได้บันทึก Seed phrase หรือ Private key, คุณจะไม่สามารถกู้คืนการเข้าถึงบัญชีของคุณได้"
   },
   "historyCard": {
     "burn": "เผาสินทรัพย์ทิ้ง",
@@ -241,25 +241,25 @@
     "transferSelf": "การโอนด้วยตนเอง"
   },
   "historyFilters": {
-    "all": "ทั้งหมด",
-    "incoming": "ขาเข้าเท่านั้น",
-    "outgoing": "ขาออกเท่านั้น",
-    "issue": "สร้าง",
-    "transfer": "โอน",
-    "reissue": "สร้างเพิ่ม",
-    "burn": "เผาทิ้ง",
-    "exchange": "แลกเปลี่ยน",
-    "lease": "Lease",
-    "cancelLease": "ยกเลิกการ Lease",
     "alias": "ชื่อเล่นกระเป๋า",
-    "massTransfer": "การโอนไปยังหลายกระเป๋าพร้อมกัน",
+    "all": "ทั้งหมด",
+    "burn": "เผาทิ้ง",
+    "cancelLease": "ยกเลิกการ Lease",
     "data": "ข้อมูล",
+    "exchange": "แลกเปลี่ยน",
+    "incoming": "ขาเข้าเท่านั้น",
+    "invokeScript": "เรียกใช้สคริปต์",
+    "issue": "สร้าง",
+    "lease": "Lease",
+    "massTransfer": "การโอนไปยังหลายกระเป๋าพร้อมกัน",
+    "outgoing": "ขาออกเท่านั้น",
+    "reissue": "สร้างเพิ่ม",
+    "setAssetScript": "ตั้งค่าสคริปต์ของสินทรัพย์",
     "setScript": "ตั้งค่าสคริปต์",
     "sponsorship": "การสปอนเซอร์",
-    "setAssetScript": "ตั้งค่าสคริปต์ของสินทรัพย์",
-    "invokeScript": "เรียกใช้สคริปต์",
-    "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์",
-    "type": "ประเภทธุรกรรม"
+    "transfer": "โอน",
+    "type": "ประเภทธุรกรรม",
+    "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์"
   },
   "import": {
     "addAccount": "เพิ่มบัญชี",
@@ -281,25 +281,25 @@
     "viaSeed": "Seed Phrase หรือ Private Key"
   },
   "importEmail": {
-    "importEmailTitle": "นำเข้าบัญชีอีเมล",
-    "importEmailDesc": "เชื่อมต่อบัญชีอีเมลที่สร้างขึ้นบน DecentralChain Exchange",
-    "passwordLabel": "รหัสผ่าน",
-    "passwordRequired": "ใส่รหัสผ่าน",
-    "loginRequired": "ยืนยันบัญชีอีเมล",
+    "alreadyExists": "มีบัญชีนี้อยู่แล้ว",
+    "continue": "ดำเนินการต่อ",
+    "credentialsError": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+    "dontHaveAccount": "ยังไม่มีบัญชี?",
     "emailLabel": "อีเมล",
     "emailRequired": "ป้อนอีเมลที่ถูกต้อง",
-    "credentialsError": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-    "continue": "ดำเนินการต่อ",
     "forgotPassword": "ลืมรหัสผ่าน?",
-    "dontHaveAccount": "ยังไม่มีบัญชี?",
-    "signUp": "สมัครบัญชี",
-    "verifyAccountTitle": "ตรวจสอบบัญชีของคุณ",
-    "verifyAccountDesc": "โปรดป้อนรหัสการตรวจสอบ 6 หลักที่ได้รับจาก {{destination}}",
+    "importEmailDesc": "เชื่อมต่อบัญชีอีเมลที่สร้างขึ้นบน DecentralChain Exchange",
+    "importEmailTitle": "นำเข้าบัญชีอีเมล",
     "incorrectCode": "รหัสผิด กรุณาลองอีกครั้ง",
-    "userDoesNotExist": "ไม่มีผู้ใช้",
     "incorrectUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
     "incorrectUsernameOrPasswordLimit": "คุณใช้ชื่อผู้ใช้หรือรหัสผ่านที่ไม่ถูกต้อง หากคุณมีปัญหาใดๆ โปรดติดต่อฝ่ายดูแล https://support.decentralchain.io/",
-    "alreadyExists": "มีบัญชีนี้อยู่แล้ว"
+    "loginRequired": "ยืนยันบัญชีอีเมล",
+    "passwordLabel": "รหัสผ่าน",
+    "passwordRequired": "ใส่รหัสผ่าน",
+    "signUp": "สมัครบัญชี",
+    "userDoesNotExist": "ไม่มีผู้ใช้",
+    "verifyAccountDesc": "โปรดป้อนรหัสการตรวจสอบ 6 หลักที่ได้รับจาก {{destination}}",
+    "verifyAccountTitle": "ตรวจสอบบัญชีของคุณ"
   },
   "importKeystore": {
     "addressBookLabel": "ไฟล์สมุดที่อยู่",
@@ -329,11 +329,11 @@
     "connectInstructions": "เชื่อมต่อ Ledger และ DCC app",
     "continueButton": "ดำเนินการต่อ",
     "couldNotGetUsersError": "ไม่สามารถรับผู้ใช้จาก ledger โปรดตรวจสอบให้แน่ใจว่า ledger เชื่อมต่อ, ปลดล็อคและ DCC app เปิดอยู่, จากนั้นคลิก <retryButton>ลองอีกครั้ง</retryButton>",
-    "userIdInputNumbersError": "อนุญาตเฉพาะตัวเลขเท่านั้น",
-    "userIdInputMaxValueError": "รหัสบัญชีต้องไม่มากกว่า {{ maxUserId }}",
     "selectAccountInstructions": "เลือกที่อยู่ของคุณ",
     "title": "นำเข้า Ledger",
-    "tryAgainButton": "ลองอีกครั้ง"
+    "tryAgainButton": "ลองอีกครั้ง",
+    "userIdInputMaxValueError": "รหัสบัญชีต้องไม่มากกว่า {{ maxUserId }}",
+    "userIdInputNumbersError": "อนุญาตเฉพาะตัวเลขเท่านั้น"
   },
   "importSeed": {
     "accountExistsError": "บัญชีที่เป็น '{{name}}' อยู่แล้ว",
@@ -360,14 +360,14 @@
     "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps การใช้ Cubensis Connect คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   },
   "langsSettings": { "confirm": "ยืนยัน", "title": "เปลี่ยนภาษา" },
-  "ledgerErrors": {
-    "unknown": "ไม่สามารถเชื่อมต่อกับ ledger กรุณาลองอีกครั้ง",
-    "usedBySomeOtherApp": "ดูเหมือนว่า ledger ถูกใช้โดยแอปพลิเคชันอื่นแล้ว กรุณาปิดแอปพลิเคชันทั้งหมดที่อาจใช้ ledger แล้วลองอีกครั้ง"
-  },
   "ledgerConnectModal": {
     "instructions": "เชื่อมต่อ ledger และ DCC app",
     "title": "กำลังเชื่อมต่อ ...",
     "tryAgainButton": "ลองอีกครั้ง"
+  },
+  "ledgerErrors": {
+    "unknown": "ไม่สามารถเชื่อมต่อกับ ledger กรุณาลองอีกครั้ง",
+    "usedBySomeOtherApp": "ดูเหมือนว่า ledger ถูกใช้โดยแอปพลิเคชันอื่นแล้ว กรุณาปิดแอปพลิเคชันทั้งหมดที่อาจใช้ ledger แล้วลองอีกครั้ง"
   },
   "login": {
     "enter": "Enter",
@@ -445,10 +445,18 @@
     "viewInExplorer": "ดูรายละเอียดใน Explorer",
     "viewOnMarketplace": "ดูในตลาดกลาง"
   },
+  "notifications": {
+    "allowSending": "อนุญาตให้ส่งข้อความ",
+    "closeBtn": "ปิด ",
+    "messages": "ข้อความ",
+    "nextBtn": "ถัดไป",
+    "time": "เวลา",
+    "toListBtn": "การแจ้งเตือน"
+  },
   "otherAccounts": {
     "addAccount": "เพิ่มบัญชี",
-    "noAccountsNote": "คุณไม่มีบัญชีอื่นๆ ในเครือข่ายปัจจุบัน",
     "noAccountsFound": "ไม่พบบัญชีอื่นสำหรับตัวกรองที่ระบุ",
+    "noAccountsNote": "คุณไม่มีบัญชีอื่นๆ ในเครือข่ายปัจจุบัน",
     "title": "บัญชีอื่นๆ"
   },
   "permission": {
@@ -474,13 +482,13 @@
     "approvedOrigin": "ได้รับการอนุมัติแล้ว",
     "automaticOrigin": "การลงนามอัตโนมัติ",
     "empty": "ไม่มีอะไรที่นี่ ...",
-    "rejectedOrigin": "ถูกปฏิเสธ",
-    "title": "การควบคุมการอนุญาต",
     "notify": {
       "allowed": "อนุญาตแล้ว!",
       "deleted": "ลบแล้ว!",
       "disallowed": "ไม่อนุญาต!"
-    }
+    },
+    "rejectedOrigin": "ถูกปฏิเสธ",
+    "title": "การควบคุมการอนุญาต"
   },
   "qrCode": { "download": "ดาวน์โหลดรหัส QR" },
   "send": {
@@ -513,11 +521,11 @@
     "settingsGeneral": "ทั่วไป",
     "suspiciousAssetsProtection": "การป้องกันสินทรัพย์ที่น่าสงสัย",
     "suspiciousAssetsTooltip": "ไม่แสดงยอดคงเหลือและการทำธุรกรรมที่เกี่ยวข้องกับสินทรัพย์ที่น่าสงสัย",
-    "time_10m": "10 นาที",
     "time_1h": "1 ชั่วโมง",
+    "time_5m": "5 นาที",
+    "time_10m": "10 นาที",
     "time_20m": "20 นาที",
     "time_40m": "40 นาที",
-    "time_5m": "5 นาที",
     "time_idle": "หมดเวลาเบราว์เซอร์",
     "tooltipContent": "ป้องกันการคุกคามจาก Clicker Trojans "
   },
@@ -546,6 +554,7 @@
     "customDataFailed": "ข้อมูลของคุณถูกปฏิเสธ!",
     "customDataName": "ลงนามข้อมูลที่กำหนดเอง",
     "customDataSent": "ข้อมูลของคุณได้รับการยืนยันแล้ว!",
+    "dccAuthConfirmed": "ลงนามใน DCC Auth Request!",
     "matcherConfirmed": "ลงนามในคำร้องขอไปยัง Matcher!",
     "matcherRejected": "คำร้องขอไม่ได้รับการลงนาม",
     "matcherSend": "ลงนามในคำร้องขอไปยัง Matcher!",
@@ -560,8 +569,7 @@
     "transactionFailed": "การทำธุรกรรมของคุณถูกปฏิเสธ!",
     "transactionSend": "คุณได้ทำการส่งแล้ว",
     "understand": "ฉันเข้าใจ",
-    "viewTransaction": "ดูการทำธุรกรรม",
-    "dccAuthConfirmed": "ลงนามใน DCC Auth Request!"
+    "viewTransaction": "ดูการทำธุรกรรม"
   },
   "swap": {
     "amountToSendError": "ไม่สามารถ swap ได้เนื่องจากสถานะ Swopfi Dapp โปรดลองอีกครั้งหรือเพิ่ม slippage tolerance เล็กน้อยหากเป็นไปได้",
@@ -582,8 +590,8 @@
     "priceLabel": "ราคา",
     "primaryLabel": "Primary",
     "profitLabel": "กำไร",
-    "slippageToleranceModalTitle": "Slippage Tolerance",
     "slippageToleranceModalDescription": "การ swap จะถูกยกเลิกหากราคาเปลี่ยนแปลงไปในทางไม่ดีเกินกว่าเปอร์เซ็นต์นี้",
+    "slippageToleranceModalTitle": "Slippage Tolerance",
     "statusFailed": "การ swap ล้มเหลว",
     "statusInProgress": "รอการ swap เสร็จสมบูรณ์ ...",
     "statusSucceeded": "การ Swap สำเร็จ",
@@ -611,20 +619,26 @@
     "dataHash": "แฮชข้อมูล",
     "dataTransaction": "รายการใน blockchain",
     "dataTransactionName": "ข้อมูล",
+    "dccAuthTimeStamp": "เวลาที่เกิดธุรกรรม",
     "decimalPoints": "จุดทศนิยม",
     "description": "คำอธิบาย",
     "details": "รายละเอียด",
     "dex": "DEX",
     "expires": "หมดอายุ",
     "fee": "ค่าธรรมเนียม",
+    "hash": "แฮช",
     "hideTransactions": "ซ่อนธุรกรรม",
+    "issueNFT": "สร้าง NFT",
+    "issueSmartNFT": "สร้าง Smart NFT",
+    "issueSmartToken": "สร้าง Smart Token",
+    "issueToken": "สร้างโทเค็น",
     "issueType": "ประเภท",
     "json": "JSON",
     "lease": "Lease",
     "leaseCancel": "ยกเลิกการ Lease",
     "massTransfer": "การโอนไปยังหลายกระเป๋าพร้อมกัน",
-    "matcherTimeStamp": "บันทึกเวลาของ Matcher",
     "matcherPublicKey": "Public Key ของ Matcher",
+    "matcherTimeStamp": "บันทึกเวลาของ Matcher",
     "name": "ชื่อ",
     "noReissuable": "ไม่สามารถสร้างเพิ่มได้",
     "orderBuy": "ซื้อ",
@@ -645,6 +659,7 @@
     "recipient": "ผู้รับ",
     "recipients": "ผู้รับ",
     "reissuable": "สามารถสร้างเพิ่มได้",
+    "reissue": "สร้างเพิ่ม",
     "script": "สคริปต์",
     "scriptInvocation": "การเรียกใช้สคริปต์",
     "scriptInvocationFunction": "ฟังก์ชั่น",
@@ -655,30 +670,15 @@
     "setSponsored": "ตั้งค่าสปอนเซอร์",
     "showAll": "แสดงทั้งหมด",
     "showTransactions": "แสดงธุรกรรม",
-    "signRequestMatcher": "ลงนามในคำร้องขอไปยัง Matcher",
     "signRequestDccAuth": "ลงนามใน DCC auth request",
-    "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์",
-    "issueToken": "สร้างโทเค็น",
-    "issueSmartToken": "สร้าง Smart Token",
-    "issueNFT": "สร้าง NFT",
-    "issueSmartNFT": "สร้าง Smart NFT",
-    "reissue": "สร้างเพิ่ม",
+    "signRequestMatcher": "ลงนามในคำร้องขอไปยัง Matcher",
     "transfer": "โอน",
     "txid": "TXID",
-    "hash": "แฮช",
     "txTime": "เวลา TX",
     "unknown": "ไม่ทราบ",
-    "dccAuthTimeStamp": "เวลาที่เกิดธุรกรรม"
+    "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์"
   },
   "ui": { "logoTitle": "เก็บ  DCC key ของคุณให้ปลอดภัยทางออนไลน์" },
-  "notifications": {
-    "allowSending": "อนุญาตให้ส่งข้อความ",
-    "toListBtn": "การแจ้งเตือน",
-    "nextBtn": "ถัดไป",
-    "closeBtn": "ปิด ",
-    "time": "เวลา",
-    "messages": "ข้อความ"
-  },
   "wallet": { "lease": "Leased" },
   "welcome": {
     "getStarted": "เริ่ม",

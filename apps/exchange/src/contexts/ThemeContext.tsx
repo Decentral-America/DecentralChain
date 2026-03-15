@@ -3,10 +3,11 @@
  * Manages light/dark theme switching and persistence
  * Replaces Angular Themes service
  */
-import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
+
+import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
-import { lightTheme, darkTheme } from '@/styles/themes';
+import { darkTheme, lightTheme } from '@/styles/themes';
 import { createAppTheme } from '@/theme/mui-theme';
 
 export type ThemeMode = 'light' | 'dark';
@@ -59,9 +60,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const muiTheme = useMemo(() => createAppTheme(theme), [theme]);
 
   const value: ThemeContextType = {
+    setTheme,
     theme,
     toggleTheme,
-    setTheme,
   };
 
   return (
@@ -79,7 +80,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
  * Access theme state and methods
  * @throws {Error} if used outside ThemeProvider
  */
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {

@@ -1,8 +1,12 @@
-import { nodeApi } from '../shared/api/NodeApi';
-import { ConfigurableService } from './ConfigurableService';
+import {nodeApi} from '../shared/api/NodeApi';
+import {ConfigurableService} from './ConfigurableService';
 
 export class ApiClientService extends ConfigurableService {
-  getApi() {
-    return nodeApi(this.configuration().apiBaseUrl, this.configuration().useCustomRequestConfig);
-  }
+    constructor(configurationService, networkId) {
+        super(configurationService, networkId);
+    }
+
+    getApi() {
+        return nodeApi(this.configuration().apiBaseUrl, this.configuration().useCustomRequestConfig);
+    }
 }

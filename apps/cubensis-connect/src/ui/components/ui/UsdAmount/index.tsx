@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { usePopupSelector } from 'popup/store/react';
 import { useMemo } from 'react';
 

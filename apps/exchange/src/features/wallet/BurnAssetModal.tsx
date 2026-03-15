@@ -3,12 +3,14 @@
  * Modal for permanently burning (destroying) user-issued tokens
  * Matches Angular modalManager.showBurnModal functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
-import styled from 'styled-components';
-import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+
 import * as ds from 'data-service';
+import { useState } from 'react';
+import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface BurnAssetModalProps {
   isOpen: boolean;
@@ -32,7 +34,7 @@ export function BurnAssetModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const maxAmount = availableBalance / Math.pow(10, decimals);
+  const maxAmount = availableBalance / 10 ** decimals;
 
   const handleBurn = async () => {
     if (!user || !amount || parseFloat(amount) <= 0) return;
@@ -41,17 +43,17 @@ export function BurnAssetModal({
     setError(null);
 
     try {
-      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * Math.pow(10, decimals));
+      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * 10 ** decimals);
 
       // Create burn transaction
       const tx = {
+        assetId,
+        fee: 100000, // 0.001 DCC
+        quantity: quantityInMinimalUnits,
+        senderPublicKey: user.publicKey,
+        timestamp: Date.now(),
         type: 6, // Burn transaction type
         version: 2,
-        assetId,
-        quantity: quantityInMinimalUnits,
-        fee: 100000, // 0.001 DCC
-        timestamp: Date.now(),
-        senderPublicKey: user.publicKey,
       };
 
       // Sign and broadcast transaction
@@ -61,11 +63,11 @@ export function BurnAssetModal({
       onClose();
       setAmount('');
     } catch (err) {
-      console.error('[BurnAssetModal] Burn failed:', err);
+      logger.error('[BurnAssetModal] Burn failed:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to burn tokens. Please check your balance and try again.'
+          : 'Failed to burn tokens. Please check your balance and try again.',
       );
     } finally {
       setIsProcessing(false);

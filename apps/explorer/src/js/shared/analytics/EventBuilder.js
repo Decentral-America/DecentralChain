@@ -1,106 +1,107 @@
 class EventBuilder {
-  constructor(categoryBuilder, eventName, properties) {
-    this.categoryName = categoryBuilder.categoryName;
-    this.eventName = `${this.categoryName} ${eventName}`;
-    this.properties = properties;
-  }
+    constructor(categoryBuilder, eventName, properties) {
+        this.categoryName = categoryBuilder.categoryName;
+        this.eventName = `${this.categoryName} ${eventName}`;
+        this.properties = properties;
+    }
 
-  build() {
-    return {
-      eventName: this.eventName,
-      categoryName: this.categoryName,
-      properties: this.properties,
-    };
-  }
+    build() {
+        return {
+            eventName: this.eventName,
+            categoryName: this.categoryName,
+            properties: this.properties
+        };
+    }
 }
 
 class ShowEventBuilder extends EventBuilder {
-  constructor(categoryBuilder) {
-    super(categoryBuilder, 'Show');
-  }
+    constructor(categoryBuilder) {
+        super(categoryBuilder, 'Show');
+    }
 }
 
 class AbstractCategoryBuilder {
-  constructor(name) {
-    this.categoryName = name;
-  }
+    constructor(name) {
+        this.categoryName = name;
+    }
 
-  events() {
-    throw new TypeError('Calling abstract class method');
-  }
+    events() {
+        throw new TypeError('Calling abstract class method');
+    };
 }
 
 class SimpleCategoryBuilder extends AbstractCategoryBuilder {
-  events() {
-    return {
-      show: () => new ShowEventBuilder(this),
-    };
-  }
+    constructor(name) {
+        super(name);
+    }
+
+    events() {
+        return {
+            show: () => new ShowEventBuilder(this)
+        };
+    }
 }
 
 class SettingsCategoryBuilder extends AbstractCategoryBuilder {
-  constructor() {
-    super('Settings');
-  }
+    constructor() {
+        super('Settings');
+    }
 
-  events() {
-    return {
-      show: () => new ShowEventBuilder(this),
-      networkSelected: (networkId) =>
-        new EventBuilder(this, 'Network Selected', {
-          Network: networkId,
-        }),
-      customSettingsApplied: (nodeUrl) =>
-        new EventBuilder(this, 'Custom Network Applied', {
-          'Node URL': nodeUrl,
-        }),
-    };
-  }
+    events() {
+        return {
+            show: () => new ShowEventBuilder(this),
+            networkSelected: networkId => new EventBuilder(this, 'Network Selected', {
+                Network: networkId
+            }),
+            customSettingsApplied: nodeUrl => new EventBuilder(this, 'Custom Network Applied', {
+                ['Node URL']: nodeUrl
+            })
+        }
+    }
 }
 
 class SearchCategoryBuilder extends AbstractCategoryBuilder {
-  constructor() {
-    super('Search');
-  }
+    constructor() {
+        super('Search');
+    }
 
-  events() {
-    return {
-      results: (searchResult) =>
-        new EventBuilder(this, 'Results', {
-          'Result Type': searchResult,
-        }),
-    };
-  }
+    events() {
+        return {
+            results: (searchResult) => new EventBuilder(this, 'Results', {
+                ['Result Type']: searchResult
+            })
+        }
+    }
 }
 
 class AnalyticsEventBuilder {
-  main() {
-    return new SimpleCategoryBuilder('Main');
-  }
+    main() {
+        return new SimpleCategoryBuilder('Main');
+    }
 
-  blocks() {
-    return new SimpleCategoryBuilder('Blocks');
-  }
+    blocks() {
+        return new SimpleCategoryBuilder('Blocks');
+    }
 
-  peers() {
-    return new SimpleCategoryBuilder('Peers');
-  }
+    peers() {
+        return new SimpleCategoryBuilder('Peers');
+    }
 
-  nodes() {
-    return new SimpleCategoryBuilder('Nodes');
-  }
+    nodes() {
+        return new SimpleCategoryBuilder('Nodes');
+    }
 
-  settings() {
-    return new SettingsCategoryBuilder();
-  }
+    settings() {
+        return new SettingsCategoryBuilder();
+    }
 
-  search() {
-    return new SearchCategoryBuilder();
-  }
+    search() {
+        return new SearchCategoryBuilder();
+    }
 
-  faucet() {
-    return new FaucetCategoryBuilder();
-  }
+    faucet() {
+        return new FaucetCategoryBuilder();
+    }
 }
 
 export default AnalyticsEventBuilder;

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Style Manager Utility
  * Dynamic CSS theme and style management for React applications
@@ -124,7 +125,7 @@ class StyleManagerClass {
     // Store theme preference
     localStorage.setItem('theme', theme);
 
-    console.log(`Theme applied: ${theme}`);
+    logger.debug(`Theme applied: ${theme}`);
   }
 
   /**
@@ -157,7 +158,7 @@ class StyleManagerClass {
    */
   registerTheme(config: ThemeConfig): void {
     this.themes.set(config.name, config);
-    console.log(`Theme registered: ${config.name}`);
+    logger.debug(`Theme registered: ${config.name}`);
   }
 
   /**
@@ -166,7 +167,7 @@ class StyleManagerClass {
    */
   unregisterTheme(name: string): void {
     this.themes.delete(name);
-    console.log(`Theme unregistered: ${name}`);
+    logger.debug(`Theme unregistered: ${name}`);
   }
 
   /**
@@ -198,13 +199,13 @@ class StyleManagerClass {
 
     // Store entry
     this.styles.set(styleId, {
-      id: styleId,
-      element: style,
       content: css,
+      element: style,
+      id: styleId,
       timestamp: Date.now(),
     });
 
-    console.log(`CSS injected: ${styleId}`);
+    logger.debug(`CSS injected: ${styleId}`);
     return styleId;
   }
 
@@ -218,7 +219,7 @@ class StyleManagerClass {
     if (entry) {
       document.head.removeChild(entry.element);
       this.styles.delete(id);
-      console.log(`CSS removed: ${id}`);
+      logger.debug(`CSS removed: ${id}`);
       return true;
     }
     return false;
@@ -235,7 +236,7 @@ class StyleManagerClass {
     if (entry) {
       entry.element.textContent = css;
       entry.content = css;
-      console.log(`CSS updated: ${id}`);
+      logger.debug(`CSS updated: ${id}`);
       return true;
     }
     return false;
@@ -364,7 +365,7 @@ class StyleManagerClass {
       document.head.removeChild(entry.element);
     });
     this.styles.clear();
-    console.log('All styles cleared');
+    logger.debug('All styles cleared');
   }
 
   /**
@@ -439,16 +440,16 @@ class StyleManagerClass {
     let customPropsCount = 0;
     for (let i = 0; i < computedStyles.length; i++) {
       const propName = computedStyles[i];
-      if (propName.startsWith('--')) {
+      if (propName?.startsWith('--')) {
         customPropsCount++;
       }
     }
 
     return {
-      totalStyles: this.styles.size,
-      totalThemes: this.themes.size,
       currentTheme: this.currentTheme,
       customProperties: customPropsCount,
+      totalStyles: this.styles.size,
+      totalThemes: this.themes.size,
     };
   }
 
@@ -458,7 +459,7 @@ class StyleManagerClass {
   destroy(): void {
     this.clearAllStyles();
     this.themes.clear();
-    console.log('StyleManager destroyed');
+    logger.debug('StyleManager destroyed');
   }
 }
 

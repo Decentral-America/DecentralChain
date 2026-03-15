@@ -1,17 +1,17 @@
 /**
  * PasswordProtection Component
  * Encrypts seed phrase with user password for secure local storage
- * Uses AES-256 encryption via crypto-js
+ * Uses AES-256-GCM encryption via Web Crypto API (PBKDF2 600K iterations)
  */
 import { useState } from 'react';
 import styled from 'styled-components';
-import CryptoJS from 'crypto-js';
-import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-import { Stack } from '@/components/atoms/Stack';
 import { Card } from '@/components/atoms/Card';
-import { Icon } from '@/components/atoms/Icon';
-import { CommonIcons } from '@/components/atoms/Icon';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { decryptString, encryptString } from '@/lib/crypto';
+import { logger } from '@/lib/logger';
 
 interface PasswordProtectionProps {
   seedPhrase: string;
@@ -177,19 +177,19 @@ export const PasswordProtection = ({
 
   // Password requirements
   const requirements = {
-    length: password.length >= 8,
-    uppercase: /[A-Z]/.test(password),
+    length: password.length >= 12,
     lowercase: /[a-z]/.test(password),
     number: /[0-9]/.test(password),
     special: /[^a-zA-Z0-9]/.test(password),
+    uppercase: /[A-Z]/.test(password),
   };
 
   const handleEncrypt = async () => {
     setError('');
 
     // Validation
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+    if (password.length < 12) {
+      setError('Password must be at least 12 characters long');
       return;
     }
 
@@ -206,11 +206,11 @@ export const PasswordProtection = ({
     setIsLoading(true);
 
     try {
-      // Encrypt seed phrase with AES-256
-      const encrypted = CryptoJS.AES.encrypt(seedPhrase, password).toString();
+      // Encrypt seed phrase with AES-256-GCM (Web Crypto API)
+      const encrypted = await encryptString(seedPhrase, password);
 
       // Verify encryption by attempting to decrypt
-      const decrypted = CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8);
+      const decrypted = await decryptString(encrypted, password);
 
       if (decrypted !== seedPhrase) {
         throw new Error('Encryption verification failed');
@@ -218,7 +218,7 @@ export const PasswordProtection = ({
 
       onEncrypted(encrypted, password);
     } catch (err) {
-      console.error('Encryption error:', err);
+      logger.error('Encryption error:', err);
       setError('Failed to encrypt seed phrase. Please try again.');
     } finally {
       setIsLoading(false);

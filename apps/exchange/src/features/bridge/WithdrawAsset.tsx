@@ -3,27 +3,29 @@
  * Modal dialog for withdrawing wrapped assets from DecentralChain to external blockchain
  * Includes address validation, amount input with min/max checks, and transaction preview
  */
-import { useState, useEffect } from 'react';
+
+import { BigNumber } from '@decentralchain/bignumber';
+import { InfoOutlined, WarningAmberOutlined } from '@mui/icons-material';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Typography,
   Alert,
-  TextField,
+  Box,
+  Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   InputAdornment,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { InfoOutlined, WarningAmberOutlined } from '@mui/icons-material';
-import { BigNumber } from '@waves/bignumber';
-import { useGateway } from '@/hooks/useGateway';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useGateway } from '@/hooks/useGateway';
+import { logger } from '@/lib/logger';
+import { type WithdrawDetails } from '@/services/gateway/types';
 import { AddressInput } from './AddressInput';
-import type { WithdrawDetails } from '@/services/gateway/types';
 
 interface WithdrawAssetProps {
   /** Asset to withdraw */
@@ -55,18 +57,32 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
 }) => {
   const { user } = useAuth();
   const { getWithdrawDetails, loading, error, clearError } = useGateway();
-  
+
   // Form state
   const [targetAddress, setTargetAddress] = useState('');
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [amount, setAmount] = useState('');
   const [amountError, setAmountError] = useState('');
-  
+
   // Withdrawal details from gateway
   const [withdrawDetails, setWithdrawDetails] = useState<WithdrawDetails | null>(null);
-  
+
   // Submission state
   const [submitting, setSubmitting] = useState(false);
+
+  /**
+   * Fetch withdrawal details from gateway
+   */
+  const loadWithdrawDetails = useCallback(async () => {
+    if (!user?.address) return;
+
+    try {
+      const details = await getWithdrawDetails(asset.id, targetAddress);
+      setWithdrawDetails(details);
+    } catch (err) {
+      logger.error('Failed to load withdraw details:', err);
+    }
+  }, [user?.address, getWithdrawDetails, asset.id, targetAddress]);
 
   /**
    * Load withdraw details when address is valid
@@ -77,7 +93,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
     } else {
       setWithdrawDetails(null);
     }
-  }, [open, targetAddress, isAddressValid]);
+  }, [open, targetAddress, isAddressValid, loadWithdrawDetails]);
 
   /**
    * Reset state when modal closes
@@ -92,21 +108,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
       setSubmitting(false);
       clearError();
     }
-  }, [open]);
-
-  /**
-   * Fetch withdrawal details from gateway
-   */
-  const loadWithdrawDetails = async () => {
-    if (!user?.address) return;
-
-    try {
-      const details = await getWithdrawDetails(asset.id, targetAddress);
-      setWithdrawDetails(details);
-    } catch (err) {
-      console.error('Failed to load withdraw details:', err);
-    }
-  };
+  }, [open, clearError]);
 
   /**
    * Validate amount input
@@ -126,28 +128,24 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
     }
 
     // Convert to token units (without decimals)
-    const amountInTokens = amountBN.mul(Math.pow(10, asset.decimals));
+    const amountInTokens = amountBN.mul(10 ** asset.decimals);
 
     // Check minimum
     if (amountInTokens.lt(withdrawDetails.minimumAmount)) {
-      const minDisplay = withdrawDetails.minimumAmount
-        .div(Math.pow(10, asset.decimals))
-        .toFixed();
+      const minDisplay = withdrawDetails.minimumAmount.div(10 ** asset.decimals).toFixed();
       setAmountError(`Minimum: ${minDisplay} ${asset.ticker}`);
       return false;
     }
 
     // Check maximum
     if (amountInTokens.gt(withdrawDetails.maximumAmount)) {
-      const maxDisplay = withdrawDetails.maximumAmount
-        .div(Math.pow(10, asset.decimals))
-        .toFixed();
+      const maxDisplay = withdrawDetails.maximumAmount.div(10 ** asset.decimals).toFixed();
       setAmountError(`Maximum: ${maxDisplay} ${asset.ticker}`);
       return false;
     }
 
     // Check balance
-    const balanceInTokens = balance.mul(Math.pow(10, asset.decimals));
+    const balanceInTokens = balance.mul(10 ** asset.decimals);
     if (amountInTokens.gt(balanceInTokens)) {
       setAmountError('Insufficient balance');
       return false;
@@ -187,7 +185,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
       return;
     }
 
-    const amountBN = new BigNumber(amount).mul(Math.pow(10, asset.decimals));
+    const amountBN = new BigNumber(amount).mul(10 ** asset.decimals);
 
     setSubmitting(true);
     try {
@@ -195,7 +193,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
       await onWithdraw(amountBN, targetAddress, withdrawDetails.attachment);
       onClose();
     } catch (err) {
-      console.error('Withdrawal failed:', err);
+      logger.error('Withdrawal failed:', err);
     } finally {
       setSubmitting(false);
     }
@@ -205,12 +203,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
    * Check if form is valid
    */
   const isFormValid =
-    isAddressValid &&
-    amount &&
-    !amountError &&
-    withdrawDetails &&
-    !submitting &&
-    !loading;
+    isAddressValid && amount && !amountError && withdrawDetails && !submitting && !loading;
 
   return (
     <Dialog
@@ -257,10 +250,10 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
           {loading && (
             <Box
               sx={{
-                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                display: 'flex',
                 gap: 2,
+                justifyContent: 'center',
                 py: 2,
               }}
             >
@@ -283,9 +276,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                   value={amount}
                   onChange={handleAmountChange}
                   error={!!amountError}
-                  helperText={
-                    amountError || `Available: ${balance.toFixed()} ${asset.ticker}`
-                  }
+                  helperText={amountError || `Available: ${balance.toFixed()} ${asset.ticker}`}
                   disabled={submitting}
                   inputProps={{
                     min: 0,
@@ -322,9 +313,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                       Minimum:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {withdrawDetails.minimumAmount
-                        .div(Math.pow(10, asset.decimals))
-                        .toFixed()}{' '}
+                      {withdrawDetails.minimumAmount.div(10 ** asset.decimals).toFixed()}{' '}
                       {asset.ticker}
                     </Typography>
                   </Box>
@@ -334,9 +323,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                       Maximum:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {withdrawDetails.maximumAmount
-                        .div(Math.pow(10, asset.decimals))
-                        .toFixed()}{' '}
+                      {withdrawDetails.maximumAmount.div(10 ** asset.decimals).toFixed()}{' '}
                       {asset.ticker}
                     </Typography>
                   </Box>
@@ -346,9 +333,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                       Gateway Fee:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {withdrawDetails.gatewayFee
-                        .div(Math.pow(10, asset.decimals))
-                        .toFixed()}{' '}
+                      {withdrawDetails.gatewayFee.div(10 ** asset.decimals).toFixed()}{' '}
                       {asset.ticker}
                     </Typography>
                   </Box>
@@ -358,9 +343,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
               {/* Confirmation Alert */}
               {isAddressValid && targetAddress && (
                 <Alert severity="info" icon={<InfoOutlined />}>
-                  <Typography variant="body2">
-                    Your {asset.ticker} will be sent to:
-                  </Typography>
+                  <Typography variant="body2">Your {asset.ticker} will be sent to:</Typography>
                   <Typography
                     variant="body2"
                     sx={{

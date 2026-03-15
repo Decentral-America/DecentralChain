@@ -3,9 +3,10 @@
  * User profile images with fallback initials
  * Migrated to Material-UI Avatar
  */
-import React from 'react';
-import MuiAvatar, { AvatarProps as MuiAvatarProps } from '@mui/material/Avatar';
+
+import MuiAvatar, { type AvatarProps as MuiAvatarProps } from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 export interface AvatarProps extends Omit<MuiAvatarProps, 'variant'> {
   src?: string;
@@ -16,19 +17,19 @@ export interface AvatarProps extends Omit<MuiAvatarProps, 'variant'> {
 }
 
 const sizeMap = {
-  xs: 24,
-  sm: 32,
-  md: 48,
   lg: 64,
+  md: 48,
+  sm: 32,
   xl: 96,
+  xs: 24,
 };
 
 const fontSizeMap = {
-  xs: 10,
-  sm: 12,
-  md: 18,
   lg: 24,
+  md: 18,
+  sm: 12,
   xl: 36,
+  xs: 10,
 };
 
 const StyledAvatar = styled(MuiAvatar, {
@@ -38,13 +39,13 @@ const StyledAvatar = styled(MuiAvatar, {
   const fontSize = fontSizeMap[size as keyof typeof fontSizeMap] || fontSizeMap.md;
 
   return {
-    width: avatarSize,
-    height: avatarSize,
-    fontSize,
-    borderRadius: shape === 'square' ? theme.shape.borderRadius : '50%',
     backgroundColor: theme.palette.primary.main,
+    borderRadius: shape === 'square' ? theme.shape.borderRadius : '50%',
     color: 'white',
+    fontSize,
     fontWeight: theme.typography.fontWeightMedium,
+    height: avatarSize,
+    width: avatarSize,
   };
 });
 /**
@@ -54,9 +55,9 @@ const getInitials = (name?: string): string => {
   if (!name) return '';
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) {
-    return parts[0].substring(0, 2).toUpperCase();
+    return parts[0]?.substring(0, 2).toUpperCase() ?? '';
   }
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return ((parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '')).toUpperCase();
 };
 
 export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
@@ -68,7 +69,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         {!src && (children || initials)}
       </StyledAvatar>
     );
-  }
+  },
 );
 
 Avatar.displayName = 'Avatar';

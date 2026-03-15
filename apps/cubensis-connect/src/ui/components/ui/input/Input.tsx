@@ -60,11 +60,13 @@ export function Input({
 
   return (
     <div
-      className={clsx(styles.wrapper, wrapperClassName, {
-        [styles.error]: error,
-        [styles.checkbox]: type === 'checkbox',
-        [styles.password]: view === 'password',
-      })}
+      className={clsx(
+        styles.wrapper,
+        wrapperClassName,
+        !!error && styles.error,
+        type === 'checkbox' && styles.checkbox,
+        view === 'password' && styles.password,
+      )}
     >
       {multiLine ? (
         <textarea

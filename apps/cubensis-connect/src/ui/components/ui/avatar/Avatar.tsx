@@ -26,7 +26,7 @@ export class Avatar extends Component<Props, State> {
     const { address, size = SIZE } = nextProps;
 
     if (prevState.address !== address) {
-      avatar.config({ rows: 8, cells: 8 });
+      avatar.config({ cells: 8, rows: 8 });
       const src = address ? avatar.create(address, { size: size * 3 }) : '';
       return { address, src };
     }
@@ -39,8 +39,8 @@ export class Avatar extends Component<Props, State> {
     const { src } = this.state;
 
     const style = {
-      width: size,
       height: size,
+      width: size,
     };
 
     return (

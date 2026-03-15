@@ -51,28 +51,19 @@ for (const dir of srcDirs) {
 srcAliases.constants = resolve(__dirname, 'src/constants.ts');
 
 export default defineConfig({
-  root: __dirname,
-  resolve: {
-    alias: {
-      ...srcAliases,
-      // Node.js polyfills for browser
-      stream: 'stream-browserify',
-      util: 'util',
+  css: {
+    modules: {
+      generateScopedName: '[local]@[name]#[hash:base64:5]',
+      localsConvention: 'dashesOnly',
     },
   },
   define: {
-    'process.env.NODE_DEBUG': JSON.stringify(undefined),
     __AMPLITUDE_API_KEY__: JSON.stringify(process.env.AMPLITUDE_API_KEY ?? ''),
     __MIXPANEL_TOKEN__: JSON.stringify(process.env.MIXPANEL_TOKEN ?? ''),
     __SENTRY_DSN__: JSON.stringify(process.env.SENTRY_DSN ?? ''),
     __SENTRY_ENVIRONMENT__: JSON.stringify(process.env.SENTRY_ENVIRONMENT ?? ''),
     __SENTRY_RELEASE__: JSON.stringify(process.env.SENTRY_RELEASE ?? ''),
-  },
-  css: {
-    modules: {
-      localsConvention: 'dashesOnly',
-      generateScopedName: '[local]@[name]#[hash:base64:5]',
-    },
+    'process.env.NODE_DEBUG': JSON.stringify(undefined),
   },
   plugins: [
     bufferPolyfill(),
@@ -82,15 +73,24 @@ export default defineConfig({
           [
             'prismjs',
             {
+              css: true,
               languages: ['json'],
               theme: 'solarizedlight',
-              css: true,
             },
           ],
         ],
       },
     }),
   ],
+  resolve: {
+    alias: {
+      ...srcAliases,
+      // Node.js polyfills for browser
+      stream: 'stream-browserify',
+      util: 'util',
+    },
+  },
+  root: __dirname,
 });
 
 /**

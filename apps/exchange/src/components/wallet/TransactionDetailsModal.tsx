@@ -3,14 +3,15 @@
  * Displays comprehensive transaction information in a formatted, readable view
  * Supports all 17 transaction types with type-specific field display
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 import { Modal } from '@/components/modals/Modal';
 import {
-  Transaction,
+  type Transaction,
   TransactionType,
+  type TransferTransaction,
   transactionService,
-  waveletsToWaves,
+  waveletsToCoins,
 } from '@/services/transactionService';
 
 /**
@@ -81,11 +82,11 @@ const StatusBadge = styled.span<{ status: string }>`
   background-color: ${({ status, theme }) => {
     switch (status) {
       case 'confirmed':
-        return theme.colors.success + '20';
+        return `${theme.colors.success}20`;
       case 'unconfirmed':
-        return theme.colors.warning + '20';
+        return `${theme.colors.warning}20`;
       case 'failed':
-        return theme.colors.error + '20';
+        return `${theme.colors.error}20`;
       default:
         return theme.colors.border;
     }
@@ -154,7 +155,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
   const formattedDate = new Date(transaction.timestamp).toLocaleString();
 
   // Convert fee from wavelets to DCC
-  const feeInDCC = waveletsToWaves(transaction.fee);
+  const feeInDCC = waveletsToCoins(transaction.fee);
 
   return (
     <Modal open={open} onClose={onClose} title="Transaction Details" size="medium">
@@ -232,22 +233,22 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
             <SectionTitle>Transfer Details</SectionTitle>
             <DetailRow>
               <Label>Recipient</Label>
-              <Value>{(transaction as any).recipient}</Value>
+              <Value>{(transaction as TransferTransaction).recipient}</Value>
             </DetailRow>
             <DetailRow>
               <Label>Amount</Label>
-              <Value>{waveletsToWaves((transaction as any).amount)} DCC</Value>
+              <Value>{waveletsToCoins((transaction as TransferTransaction).amount)} DCC</Value>
             </DetailRow>
-            {(transaction as any).assetId && (
+            {(transaction as TransferTransaction).assetId && (
               <DetailRow>
                 <Label>Asset ID</Label>
-                <Value>{(transaction as any).assetId}</Value>
+                <Value>{(transaction as TransferTransaction).assetId}</Value>
               </DetailRow>
             )}
-            {(transaction as any).attachment && (
+            {(transaction as TransferTransaction).attachment && (
               <DetailRow>
                 <Label>Attachment</Label>
-                <Value>{(transaction as any).attachment}</Value>
+                <Value>{(transaction as TransferTransaction).attachment}</Value>
               </DetailRow>
             )}
           </Section>
@@ -258,7 +259,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
           <SectionTitle>Proofs ({transaction.proofs.length})</SectionTitle>
           <ProofsList>
             {transaction.proofs.map((proof, index) => (
-              <ProofItem key={index}>
+              <ProofItem key={proof}>
                 {index + 1}. {proof}
               </ProofItem>
             ))}

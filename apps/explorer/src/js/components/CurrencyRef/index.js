@@ -1,1 +1,1 @@
-export { CurrencyRef as default } from './CurrencyRef.view';
+export {CurrencyRef as default} from './CurrencyRef.view';

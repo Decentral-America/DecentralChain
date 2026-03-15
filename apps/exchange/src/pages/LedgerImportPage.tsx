@@ -2,44 +2,47 @@
  * LedgerImportPage Component
  * Step-by-step hardware wallet connection flow with Material-UI
  */
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { LedgerAdapter } from '@decentralchain/signature-adapter';
-import { useAuth } from '../contexts/AuthContext';
 import {
+  AccountCircle as AccountCircleIcon,
+  ArrowBack as ArrowBackIcon,
+  CheckCircle as CheckCircleIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  ContentCopy as CopyIcon,
+  Smartphone as SmartphoneIcon,
+  Usb as UsbIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+import {
+  Alert,
+  Avatar,
   Box,
-  Typography,
-  Paper,
   Button,
-  Stepper,
-  Step as MuiStep,
-  StepLabel,
+  Card,
+  CardContent,
+  CircularProgress,
+  IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  LinearProgress,
-  Alert,
-  IconButton,
-  CircularProgress,
-  Tooltip,
+  Step as MuiStep,
+  Paper,
+  StepLabel,
+  Stepper,
   TextField,
-  Card,
-  CardContent,
-  Avatar,
+  Tooltip,
+  Typography,
 } from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
-import {
-  Usb as UsbIcon,
-  Smartphone as SmartphoneIcon,
-  CheckCircle as CheckCircleIcon,
-  AccountCircle as AccountCircleIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  ContentCopy as CopyIcon,
-  Warning as WarningIcon,
-  ArrowBack as ArrowBackIcon,
-} from '@mui/icons-material';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logger } from '@/lib/logger';
+import { useAuth } from '../contexts/AuthContext';
 
 const USERS_COUNT = 5;
 const CONFIRMATION_TIMEOUT = 60000; // 60 seconds
@@ -78,19 +81,19 @@ const shimmer = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  padding: theme.spacing(4),
-  display: 'flex',
   alignItems: 'center',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  display: 'flex',
   justifyContent: 'center',
+  minHeight: '100vh',
+  padding: theme.spacing(4),
 }));
 
 const ContentCard = styled(Paper)(({ theme }) => ({
-  maxWidth: 800,
-  width: '100%',
-  padding: theme.spacing(4),
   borderRadius: theme.spacing(2),
+  maxWidth: 800,
+  padding: theme.spacing(4),
+  width: '100%',
 }));
 
 const PulsingIcon = styled(Box)({
@@ -98,9 +101,9 @@ const PulsingIcon = styled(Box)({
 });
 
 const ShimmerIcon = styled(Box)({
+  animation: `${shimmer} 2s infinite`,
   background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
   backgroundSize: '1000px 100%',
-  animation: `${shimmer} 2s infinite`,
   borderRadius: '50%',
 });
 
@@ -120,24 +123,7 @@ export const LedgerImportPage: React.FC = () => {
   const adapter = LedgerAdapter;
   const steps = ['Connect Device', 'Open App', 'Select Account', 'Confirm'];
 
-  // Auto-progress from Connect to Open App
-  useEffect(() => {
-    if (activeStep === Step.CONNECT_DEVICE) {
-      connectDevice();
-    }
-  }, [activeStep]);
-
-  // Timeout warning for confirmation step
-  useEffect(() => {
-    if (activeStep === Step.CONFIRM && confirmationStartTime) {
-      const timer = setTimeout(() => {
-        setTimeoutWarning(true);
-      }, CONFIRMATION_TIMEOUT);
-      return () => clearTimeout(timer);
-    }
-  }, [activeStep, confirmationStartTime]);
-
-  const connectDevice = async () => {
+  const connectDevice = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -155,7 +141,24 @@ export const LedgerImportPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Auto-progress from Connect to Open App
+  useEffect(() => {
+    if (activeStep === Step.CONNECT_DEVICE) {
+      connectDevice();
+    }
+  }, [activeStep, connectDevice]);
+
+  // Timeout warning for confirmation step
+  useEffect(() => {
+    if (activeStep === Step.CONFIRM && confirmationStartTime) {
+      const timer = setTimeout(() => {
+        setTimeoutWarning(true);
+      }, CONFIRMATION_TIMEOUT);
+      return () => clearTimeout(timer);
+    }
+  }, [activeStep, confirmationStartTime]);
 
   const loadAccounts = async () => {
     setLoading(true);
@@ -167,20 +170,24 @@ export const LedgerImportPage: React.FC = () => {
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Connection timeout - please check your device')),
-            25000
-          )
+            25000,
+          ),
         ),
       ]);
 
       const newUsers: Record<number, LedgerUser> = {};
-      (userList || []).forEach((user: LedgerUser) => {
+      const userArray = (userList || []) as LedgerUser[];
+      for (const user of userArray) {
         newUsers[user.id] = user;
-      });
+      }
       setUsers(newUsers);
 
-      if (userList && userList.length > 0) {
-        setSelectedUser(userList[0]);
-        setAccountName(`Ledger ${userList[0].id}`);
+      if (userArray.length > 0) {
+        const firstUser = userArray[0];
+        if (firstUser) {
+          setSelectedUser(firstUser);
+          setAccountName(`Ledger ${firstUser.id}`);
+        }
         setActiveStep(Step.SELECT_ACCOUNT);
       }
     } catch (err) {
@@ -230,7 +237,7 @@ export const LedgerImportPage: React.FC = () => {
       // await addAccount(ledgerSignature, accountName);
 
       throw new Error(
-        'Ledger hardware wallet support is coming soon. Please use seed phrase or password authentication for now.'
+        'Ledger hardware wallet support is coming soon. Please use seed phrase or password authentication for now.',
       );
 
       // navigate('/desktop/wallet');
@@ -267,7 +274,7 @@ export const LedgerImportPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(address);
     } catch (err) {
-      console.error('Failed to copy address:', err);
+      logger.error('Failed to copy address:', err);
     }
   };
 
@@ -307,12 +314,12 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.CONNECT_DEVICE && (
           <Box textAlign="center" py={4}>
             <PulsingIcon mb={3}>
-              <UsbIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <UsbIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </PulsingIcon>
             <Typography variant="h6" gutterBottom>
               Connect Your Ledger Device
             </Typography>
-            <List sx={{ maxWidth: 400, mx: 'auto', mb: 3 }}>
+            <List sx={{ maxWidth: 400, mb: 3, mx: 'auto' }}>
               <ListItem>
                 <ListItemIcon>
                   <CheckCircleIcon color="primary" />
@@ -347,15 +354,15 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.OPEN_APP && (
           <Box textAlign="center" py={4}>
             <ShimmerIcon mb={3}>
-              <SmartphoneIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <SmartphoneIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </ShimmerIcon>
             <Typography variant="h6" gutterBottom>
-              Open the Waves App
+              Open the DCC App
             </Typography>
             <Typography variant="body2" color="text.secondary" mb={3}>
-              On your Ledger device, navigate to and open the Waves application
+              On your Ledger device, navigate to and open the DCC application
             </Typography>
-            <List sx={{ maxWidth: 400, mx: 'auto', mb: 3 }}>
+            <List sx={{ maxWidth: 400, mb: 3, mx: 'auto' }}>
               <ListItem>
                 <ListItemIcon>
                   <CheckCircleIcon color="success" />
@@ -406,29 +413,29 @@ export const LedgerImportPage: React.FC = () => {
                     key={user.id}
                     onClick={() => handleAccountSelect(user)}
                     sx={{
-                      width: 140,
-                      cursor: 'pointer',
+                      '&:hover': {
+                        boxShadow: 3,
+                        transform: 'translateY(-4px)',
+                      },
                       border: selectedUser?.id === user.id ? 2 : 1,
                       borderColor: selectedUser?.id === user.id ? 'primary.main' : 'divider',
+                      cursor: 'pointer',
                       transition: 'all 0.3s',
-                      '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: 3,
-                      },
+                      width: 140,
                     }}
                   >
-                    <CardContent sx={{ textAlign: 'center', p: 2 }}>
+                    <CardContent sx={{ p: 2, textAlign: 'center' }}>
                       <Avatar
                         sx={{
-                          width: 60,
-                          height: 60,
-                          mx: 'auto',
-                          mb: 1,
-                          bgcolor: selectedUser?.id === user.id ? 'primary.main' : 'grey.300',
                           background:
                             selectedUser?.id === user.id
                               ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                               : undefined,
+                          bgcolor: selectedUser?.id === user.id ? 'primary.main' : 'grey.300',
+                          height: 60,
+                          mb: 1,
+                          mx: 'auto',
+                          width: 60,
                         }}
                       >
                         <AccountCircleIcon fontSize="large" />
@@ -457,7 +464,7 @@ export const LedgerImportPage: React.FC = () => {
                 top="50%"
                 left={-20}
                 right={-20}
-                sx={{ transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                sx={{ pointerEvents: 'none', transform: 'translateY(-50%)' }}
               >
                 <IconButton
                   onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))}
@@ -532,7 +539,7 @@ export const LedgerImportPage: React.FC = () => {
         {activeStep === Step.CONFIRM && (
           <Box textAlign="center" py={4}>
             <Box mb={3}>
-              <AccountCircleIcon sx={{ fontSize: 80, color: 'primary.main' }} />
+              <AccountCircleIcon sx={{ color: 'primary.main', fontSize: 80 }} />
             </Box>
             <Typography variant="h6" gutterBottom>
               Confirm on Your Ledger
@@ -542,7 +549,7 @@ export const LedgerImportPage: React.FC = () => {
             </Typography>
 
             {selectedUser && (
-              <Paper variant="outlined" sx={{ p: 3, mb: 3, maxWidth: 500, mx: 'auto' }}>
+              <Paper variant="outlined" sx={{ maxWidth: 500, mb: 3, mx: 'auto', p: 3 }}>
                 <Typography variant="subtitle2" gutterBottom>
                   Account: {accountName}
                 </Typography>
@@ -557,7 +564,7 @@ export const LedgerImportPage: React.FC = () => {
             )}
 
             {timeoutWarning && (
-              <Alert severity="warning" sx={{ mb: 2, maxWidth: 500, mx: 'auto' }}>
+              <Alert severity="warning" sx={{ maxWidth: 500, mb: 2, mx: 'auto' }}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <WarningIcon />
                   <Typography variant="body2">

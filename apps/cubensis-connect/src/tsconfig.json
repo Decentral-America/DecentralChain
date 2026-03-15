@@ -1,9 +1,9 @@
 {
-  "extends": "../tsconfig.base",
-  "include": [".", "../types"],
   "compilerOptions": {
-    "types": ["vite/client"],
     "lib": ["esnext", "dom"],
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "types": ["vite/client"]
+  },
+  "extends": "../tsconfig.base",
+  "include": [".", "../types"]
 }

@@ -5,9 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useDexStore } from '@/stores/dexStore';
 import { useTradeHistory } from '@/api/services/matcherService';
 import { Spinner } from '@/components/atoms/Spinner';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Trade history container
@@ -188,18 +188,18 @@ export const TradeHistory: React.FC = () => {
     selectedPair?.amountAsset || '',
     selectedPair?.priceAsset || '',
     50,
-    { enabled: !!selectedPair, refetchInterval: 10000 } // Poll every 10 seconds like Angular
+    { enabled: !!selectedPair, refetchInterval: 10000 }, // Poll every 10 seconds like Angular
   );
 
   // Transform API data to component format
   const trades: Trade[] = React.useMemo(() => {
     if (!tradesData) return [];
     return tradesData.map((trade) => ({
-      id: trade.id,
-      type: trade.type,
-      price: trade.price.toString(),
       amount: trade.amount.toString(),
+      id: trade.id,
+      price: trade.price.toString(),
       timestamp: trade.timestamp,
+      type: trade.type,
     }));
   }, [tradesData]);
 
@@ -208,7 +208,7 @@ export const TradeHistory: React.FC = () => {
    */
   const formatNumber = (value: string | number, decimals: number = 8): string => {
     const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(num)) return '0.00000000';
+    if (Number.isNaN(num)) return '0.00000000';
     return num.toFixed(decimals);
   };
 

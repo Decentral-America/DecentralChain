@@ -3,10 +3,12 @@
  * Monitors wallet balances with automatic polling and real-time updates
  * Provides balance data for the current account with configurable refresh intervals
  */
+
+import { type UseQueryResult } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { UseQueryResult } from '@tanstack/react-query';
+import { logger } from '@/lib/logger';
+import { type AddressBalance, useAddressBalance } from '../api/services/addressService';
 import { useAuth } from '../contexts/AuthContext';
-import { useAddressBalance, AddressBalance } from '../api/services/addressService';
 
 /**
  * Balance Watcher Configuration Options
@@ -43,7 +45,7 @@ export interface BalanceWatcherOptions {
  */
 export interface BalanceWatcherReturn {
   /**
-   * Current balance data including WAVES and all assets
+   * Current balance data including DCC and all assets
    */
   balances: AddressBalance | undefined;
 
@@ -112,7 +114,7 @@ export interface BalanceWatcherReturn {
  * const { balances, isLoading, forceRefresh, getBalanceByAsset } = useBalanceWatcher({
  *   interval: 1000, // Poll every 1 second (default)
  *   onBalanceChange: (newBalance, oldBalance) => {
- *     console.log('Balance updated!', newBalance);
+ *     logger.debug('Balance updated!', newBalance);
  *   }
  * });
  *
@@ -120,7 +122,7 @@ export interface BalanceWatcherReturn {
  *
  * return (
  *   <div>
- *     <p>WAVES Balance: {balances?.balance}</p>
+ *     <p>DCC Balance: {balances?.balance}</p>
  *     <button onClick={forceRefresh}>Refresh</button>
  *   </div>
  * );
@@ -153,7 +155,7 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
     refetch,
   } = useAddressBalance(address || '', {
     enabled: !!address && isPollingEnabled,
-    refetchInterval: isPollingEnabled ? interval : undefined,
+    ...(isPollingEnabled && { refetchInterval: interval }),
   }) as UseQueryResult<AddressBalance, Error>;
 
   /**
@@ -178,7 +180,7 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
    */
   const forceRefresh = useCallback(() => {
     if (!address) {
-      console.warn('useBalanceWatcher: No address available for refresh');
+      logger.warn('useBalanceWatcher: No address available for refresh');
       return;
     }
     refetch();
@@ -207,7 +209,7 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
       if (!balances?.assets) return 0;
       return balances.assets[assetId] ?? 0;
     },
-    [balances]
+    [balances],
   );
 
   /**
@@ -227,26 +229,26 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
    */
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && balances) {
-      console.log('[useBalanceWatcher] Balance updated:', {
+      logger.debug('[useBalanceWatcher] Balance updated:', {
         address,
-        balance: balances.balance,
         assetsCount: Object.keys(balances.assets || {}).length,
+        balance: balances.balance,
       });
     }
   }, [balances, address]);
 
   return {
-    balances,
-    isLoading,
-    error: error as Error | null,
-    isFetching,
-    forceRefresh,
-    startPolling,
-    stopPolling,
-    isPolling: isPollingEnabled,
     address,
+    balances,
+    error: error as Error | null,
+    forceRefresh,
     getBalanceByAsset,
     getFullBalanceList,
+    isFetching,
+    isLoading,
+    isPolling: isPollingEnabled,
+    startPolling,
+    stopPolling,
   };
 };
 
@@ -267,9 +269,9 @@ export const useAssetBalance = (assetId: string | null, options: BalanceWatcherO
 };
 
 /**
- * Hook variant for watching WAVES balance only
+ * Hook variant for watching DCC balance only
  */
-export const useWavesBalance = (options: BalanceWatcherOptions = {}) => {
+export const useDCCBalance = (options: BalanceWatcherOptions = {}) => {
   const { balances, ...rest } = useBalanceWatcher(options);
 
   return {

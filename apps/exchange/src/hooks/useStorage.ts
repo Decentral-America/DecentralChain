@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Custom hook for managing localStorage with React state synchronization
@@ -6,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
  */
 export const useStorage = <T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] => {
   // Initialize state from localStorage or use initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -14,7 +15,7 @@ export const useStorage = <T>(
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error);
+      logger.error(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -37,13 +38,13 @@ export const useStorage = <T>(
             oldValue: JSON.stringify(storedValue),
             storageArea: window.localStorage,
             url: window.location.href,
-          })
+          }),
         );
       } catch (error) {
-        console.error(`Error setting localStorage key "${key}":`, error);
+        logger.error(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue]
+    [key, storedValue],
   );
 
   // Remove item from localStorage
@@ -60,10 +61,10 @@ export const useStorage = <T>(
           oldValue: JSON.stringify(storedValue),
           storageArea: window.localStorage,
           url: window.location.href,
-        })
+        }),
       );
     } catch (error) {
-      console.error(`Error removing localStorage key "${key}":`, error);
+      logger.error(`Error removing localStorage key "${key}":`, error);
     }
   }, [key, initialValue, storedValue]);
 
@@ -74,7 +75,7 @@ export const useStorage = <T>(
         try {
           setStoredValue(JSON.parse(e.newValue));
         } catch (error) {
-          console.error(`Error parsing storage event for key "${key}":`, error);
+          logger.error(`Error parsing storage event for key "${key}":`, error);
         }
       } else if (e.key === key && e.newValue === null) {
         setStoredValue(initialValue);

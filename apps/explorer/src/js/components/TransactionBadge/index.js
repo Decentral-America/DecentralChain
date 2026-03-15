@@ -1,1 +1,1 @@
-export { TransactionBadge as default } from './TransactionBadge.view';
+export {TransactionBadge as default} from './TransactionBadge.view';

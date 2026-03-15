@@ -3,10 +3,22 @@
  * Historical balance chart with timeframe selection (hour, day, week, month)
  * Uses Victory Charts (React 19 compatible)
  */
-import { useState, useMemo } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { VictoryChart, VictoryLine, VictoryAxis, VictoryTheme } from 'victory';
+import {
+  VictoryAxis as VictoryAxisBase,
+  VictoryChart as VictoryChartBase,
+  VictoryLine as VictoryLineBase,
+  VictoryTheme,
+} from 'victory';
+
+// React 19 type compatibility casts
+const VictoryChart = VictoryChartBase as unknown as React.ComponentType<Record<string, unknown>>;
+const VictoryLine = VictoryLineBase as unknown as React.ComponentType<Record<string, unknown>>;
+const VictoryAxis = VictoryAxisBase as unknown as React.ComponentType<Record<string, unknown>>;
+
 import { Spinner } from '@/components/atoms/Spinner';
 
 type ChartMode = 'hour' | 'day' | 'week' | 'month';
@@ -28,8 +40,8 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
   // Note: Currently mocking data since blockchain API may not have this endpoint
   // TODO: Implement real historical balance fetching from data-service
   const { data, isLoading } = useQuery({
-    queryKey: ['balance-chart', chartMode, totalBalance],
     queryFn: () => fetchHistoricalBalance(totalBalance, chartMode),
+    queryKey: ['balance-chart', chartMode, totalBalance],
     refetchInterval: 15000, // Refetch every 15 seconds
     staleTime: 10000, // Data considered fresh for 10 seconds
   });
@@ -39,8 +51,8 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
     if (!data) return [];
     // Create stable array reference with stable object references
     return data.map((item: ChartDataPoint) => ({
-      timestamp: item.timestamp,
       balance: item.balance,
+      timestamp: item.timestamp,
     }));
   }, [data]);
 
@@ -53,7 +65,7 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
         return date.toLocaleTimeString('en-US', { hour: '2-digit' });
       case 'week':
       case 'month':
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     }
   };
 
@@ -92,22 +104,22 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
           <VictoryChart
             theme={VictoryTheme.material}
             height={300}
-            padding={{ top: 20, bottom: 50, left: 60, right: 20 }}
+            padding={{ bottom: 50, left: 60, right: 20, top: 20 }}
           >
             <VictoryAxis
-              tickFormat={(t) => formatXAxis(t)}
+              tickFormat={(t: number) => formatXAxis(t)}
               style={{
-                tickLabels: { fontSize: 12, fill: '#666' },
                 axis: { stroke: '#E0E0E0' },
+                tickLabels: { fill: '#666', fontSize: 12 },
               }}
             />
             <VictoryAxis
               dependentAxis
-              tickFormat={(t) => formatYAxis(t)}
+              tickFormat={(t: number) => formatYAxis(t)}
               style={{
-                tickLabels: { fontSize: 12, fill: '#666' },
                 axis: { stroke: '#E0E0E0' },
                 grid: { stroke: '#E0E0E0', strokeDasharray: '3,3' },
+                tickLabels: { fill: '#666', fontSize: 12 },
               }}
             />
             <VictoryLine
@@ -132,7 +144,7 @@ export function BalanceChart({ totalBalance }: BalanceChartProps) {
  */
 async function fetchHistoricalBalance(
   currentBalance: number,
-  mode: ChartMode
+  mode: ChartMode,
 ): Promise<ChartDataPoint[]> {
   // Calculate time intervals based on mode
   const now = Date.now();
@@ -170,9 +182,9 @@ async function fetchHistoricalBalance(
     const dateLabel = new Date(timestamp).toISOString();
 
     data.push({
-      timestamp,
       balance,
       dateLabel,
+      timestamp,
     });
   }
 

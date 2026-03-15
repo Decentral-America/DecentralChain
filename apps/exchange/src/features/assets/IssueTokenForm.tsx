@@ -3,17 +3,19 @@
  * Form for creating new tokens on the DecentralChain blockchain
  * Handles validation, transaction signing, and broadcasting
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, tokenIssuanceSchema, TokenIssuanceFormData } from '@/lib/forms';
-import { FormInput } from '@/components/forms/FormInput';
+import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
-import { Checkbox } from '@/components/atoms/Checkbox';
 import { Card } from '@/components/atoms/Card';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { FormInput } from '@/components/forms/FormInput';
 import { AlertModal } from '@/components/modals/AlertModal';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type TokenIssuanceFormData, tokenIssuanceSchema, useZodForm } from '@/lib/forms';
+import { logger } from '@/lib/logger';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 /**
  * Component Props
@@ -26,7 +28,7 @@ export interface IssueTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card)`
+const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -111,7 +113,7 @@ const FeeText = styled.p`
  * @example
  * ```tsx
  * <IssueTokenForm
- *   onSuccess={(tx) => console.log('Token issued:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Token issued:', tx.id)}
  *   onCancel={() => navigate('/wallet')}
  * />
  * ```
@@ -126,12 +128,12 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
 
   const form = useZodForm<TokenIssuanceFormData>(tokenIssuanceSchema, {
     defaultValues: {
-      name: '',
-      description: '',
-      quantity: 0,
       decimals: 8,
-      reissuable: true,
+      description: '',
       fee: undefined,
+      name: '',
+      quantity: 0,
+      reissuable: true,
     },
   });
 
@@ -141,16 +143,16 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       setErrorMessage('');
 
       // Convert quantity to wavelets (smallest units)
-      const quantityInWavelets = data.quantity * Math.pow(10, data.decimals);
+      const quantityInWavelets = data.quantity * 10 ** data.decimals;
 
       // Prepare transaction parameters
       const issueParams = {
-        name: data.name,
-        description: data.description,
-        quantity: quantityInWavelets,
         decimals: data.decimals,
-        reissuable: data.reissuable,
+        description: data.description,
         fee: data.fee || 100000000, // Default 1 DCC fee
+        name: data.name,
+        quantity: quantityInWavelets,
+        reissuable: data.reissuable,
       };
 
       // Sign transaction
@@ -166,7 +168,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       // Wait for confirmation
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Success
@@ -180,7 +182,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       // Reset form on success
       form.reset();
     } catch (error) {
-      console.error('Token issuance failed:', error);
+      logger.error('Token issuance failed:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
       setErrorModalOpen(true);
     } finally {

@@ -46,7 +46,7 @@ export function VerifyCodeComponent({
           setIsIncorrectCode(true);
         })
         .then(() => {
-          refs[0].current?.focus();
+          refs[0]?.current?.focus();
           setValues(refs.map(() => ''));
         });
     } else {
@@ -72,7 +72,7 @@ export function VerifyCodeComponent({
       });
 
       const nextIndex = Math.min(index + filledValues.length, codeLength - 1);
-      const el = refs[nextIndex]?.current || refs[index].current;
+      const el = refs[nextIndex]?.current || refs[index]?.current;
       el?.focus();
 
       setValues(newValues);

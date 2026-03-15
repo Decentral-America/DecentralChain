@@ -14,8 +14,8 @@ export interface SelectOption {
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  error?: string;
-  helperText?: string;
+  error?: string | undefined;
+  helperText?: string | undefined;
   fullWidth?: boolean;
   selectSize?: 'small' | 'medium' | 'large';
   options: SelectOption[];
@@ -61,17 +61,17 @@ const ChevronIcon = styled.div`
  * Size styles
  */
 const sizeStyles = {
-  small: css`
-    padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
-    font-size: ${(p) => p.theme.fontSizes.sm};
+  large: css`
+    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.lg};
+    font-size: ${(p) => p.theme.fontSizes.lg};
   `,
   medium: css`
     padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
     font-size: ${(p) => p.theme.fontSizes.md};
   `,
-  large: css`
-    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.lg};
-    font-size: ${(p) => p.theme.fontSizes.lg};
+  small: css`
+    padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
+    font-size: ${(p) => p.theme.fontSizes.sm};
   `,
 };
 
@@ -158,7 +158,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       id,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = React.useId();
     const selectId = id || `select-${generatedId}`;
@@ -177,7 +177,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
             }
             required={placeholder ? true : undefined}
-            {...props}
+            {...(props as Record<string, unknown>)}
           >
             {placeholder && (
               <option value="" disabled selected>
@@ -200,7 +200,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {!error && helperText && <HelperText id={`${selectId}-helper`}>{helperText}</HelperText>}
       </SelectWrapper>
     );
-  }
+  },
 );
 
 Select.displayName = 'Select';

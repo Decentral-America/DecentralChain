@@ -3,12 +3,14 @@
  * Permanently delete account with confirmation
  * Matches Angular DeleteAccountModalCtrl functionality
  */
-import React, { useState } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -72,7 +74,7 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-const DangerButton = styled(Button)`
+const DangerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   background-color: #d32f2f !important;
 
   &:hover:not(:disabled) {
@@ -116,7 +118,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
       await logout();
       navigate('/welcome');
     } catch (error) {
-      console.error('Delete account failed:', error);
+      logger.error('Delete account failed:', error);
       // Show error notification
     } finally {
       setIsDeleting(false);
@@ -158,11 +160,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
           <Button variant="text" onClick={onClose} disabled={isDeleting}>
             Cancel
           </Button>
-          <DangerButton
-            variant="danger"
-            onClick={handleDelete}
-            disabled={!confirmed || isDeleting}
-          >
+          <DangerButton variant="danger" onClick={handleDelete} disabled={!confirmed || isDeleting}>
             {isDeleting ? 'Deleting...' : 'Delete Account'}
           </DangerButton>
         </ButtonGroup>

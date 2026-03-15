@@ -24,5 +24,5 @@ export const AssetName: React.FC<AssetNameProps> = ({ assetId, fallback = 'DCC' 
     return <>{assetId?.slice(0, 8)}...</>;
   }
 
-  return <>{assetDetails?.name || assetId?.slice(0, 8) + '...' || '???'}</>;
+  return <>{assetDetails?.name || `${assetId?.slice(0, 8)}...` || '???'}</>;
 };

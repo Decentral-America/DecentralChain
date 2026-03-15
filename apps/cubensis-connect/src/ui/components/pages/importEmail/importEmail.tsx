@@ -30,13 +30,13 @@ export function ImportEmail() {
     (userData: IdentityUser & { name: string }) => {
       dispatch(
         newAccountSelect({
-          type: 'wx',
-          name: userData.name,
           address: userData.address,
-          publicKey: userData.publicKey,
-          uuid: userData.uuid,
-          username: userData.username,
           hasBackup: true,
+          name: userData.name,
+          publicKey: userData.publicKey,
+          type: 'wx',
+          username: userData.username,
+          uuid: userData.uuid,
         }),
       );
 

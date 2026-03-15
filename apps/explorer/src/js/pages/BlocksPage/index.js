@@ -1,1 +1,1 @@
-export { RoutedBlocksPage as default } from './BlocksPage.container';
+export {BlocksPage as default} from './BlocksPage.container';

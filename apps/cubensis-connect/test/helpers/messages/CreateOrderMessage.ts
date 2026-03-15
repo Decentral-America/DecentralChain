@@ -1,29 +1,28 @@
 export const CreateOrderMessage = {
-  get root() {
-    return $("[class*='transaction@']");
-  },
-
-  get orderTitle() {
-    return this.root.findByTestId$('createOrderTitle');
+  get createOrderFee() {
+    return this.root.findByTestId$('createOrderFee');
   },
 
   get orderAmount() {
     return this.root.findByTestId$('createOrderTitleAmount');
   },
 
-  get orderPriceTitle() {
-    return this.root.findByTestId$('createOrderTitlePrice');
+  get orderMatcherPublicKey() {
+    return this.root.findByTestId$('createOrderMatcherPublicKey');
   },
 
   get orderPrice() {
     return this.root.findByTestId$('createOrderPrice');
   },
 
-  get orderMatcherPublicKey() {
-    return this.root.findByTestId$('createOrderMatcherPublicKey');
+  get orderPriceTitle() {
+    return this.root.findByTestId$('createOrderTitlePrice');
   },
 
-  get createOrderFee() {
-    return this.root.findByTestId$('createOrderFee');
+  get orderTitle() {
+    return this.root.findByTestId$('createOrderTitle');
+  },
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

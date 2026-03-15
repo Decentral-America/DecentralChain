@@ -3,12 +3,14 @@
  * Modal for depositing crypto assets via gateway services
  * Matches Angular modalManager.showDepositAsset functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
+
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
+import { logger } from '@/lib/logger';
 import gatewayService from '@/services/gateways/GatewayService';
 
 interface DepositAssetModalProps {
@@ -34,8 +36,13 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
     // Fetch deposit address from gateway service
     gatewayService
       .getDepositDetails(
-        { id: assetId, name: assetName || assetId, displayName: assetName || assetId, precision: 8 },
-        user.address
+        {
+          displayName: assetName || assetId,
+          id: assetId,
+          name: assetName || assetId,
+          precision: 8,
+        },
+        user.address,
       )
       .then((details) => {
         if (details) {
@@ -45,7 +52,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
         }
       })
       .catch((err) => {
-        console.error('[DepositModal] Failed to fetch deposit address:', err);
+        logger.error('[DepositModal] Failed to fetch deposit address:', err);
         setError('Failed to load deposit information. Please try again.');
       })
       .finally(() => {
@@ -97,7 +104,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
           <InfoSection>
             <InfoItem>
               <InfoLabel>Network:</InfoLabel>
-              <InfoValue>Waves Blockchain</InfoValue>
+              <InfoValue>DecentralChain</InfoValue>
             </InfoItem>
             <InfoItem>
               <InfoLabel>Processing Time:</InfoLabel>
@@ -162,7 +169,7 @@ const Warning = styled.div`
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid ${(p) => (p.theme.colors as Record<string, string>).warningBorder || '#ffc107'};
+  border: 1px solid ${(p) => (p.theme.colors as { warningBorder?: string; [key: string]: string | undefined }).warningBorder || '#ffc107'};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 

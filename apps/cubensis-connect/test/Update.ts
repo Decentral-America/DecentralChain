@@ -36,14 +36,14 @@ describe('Update extension', () => {
     const activeAccountName = await HomeScreen.activeAccountName.getText();
     await HomeScreen.otherAccountsButton.click();
     const accounts = await OtherAccountsScreen.accounts;
-    const otherAccountNames = await Promise.all(accounts.map((it) => it.name.getText()));
+    const otherAccountNames = await Promise.all(accounts.map((it: any) => it.name.getText()));
     await TopMenu.backButton.click();
     return [activeAccountName, ...otherAccountNames];
   }
 
   it('accounts persist on update', async () => {
     await browser.openKeeperExtensionPage();
-    await rm('dist', { recursive: true, force: true });
+    await rm('dist', { force: true, recursive: true });
     await rename('dist.new', 'dist');
 
     await ExtensionPage.devModeToggle.click();

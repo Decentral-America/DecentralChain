@@ -3,13 +3,14 @@
  * Dropdown/search component for selecting trading pairs on the DEX
  * Updates Zustand DEX store when pair changes
  */
-import React, { useState, useMemo, useEffect } from 'react';
+
+import { useQueries } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useState } from 'react';
+import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import styled from 'styled-components';
-import { useDexStore, TradingPair } from '@/stores/dexStore';
-import { FiSearch, FiChevronDown } from 'react-icons/fi';
 import { NetworkConfig } from '@/config';
-import { useQuery } from '@tanstack/react-query';
 import { fetchAssetDetails } from '@/services/assetService';
+import { type TradingPair, useDexStore } from '@/stores/dexStore';
 
 /**
  * Cache for asset names to avoid repeated API calls
@@ -31,11 +32,11 @@ const getAssetDisplayName = (assetId: string): string => {
 
   // Check cache
   if (assetNameCache.has(assetId)) {
-    return assetNameCache.get(assetId)!;
+    return assetNameCache.get(assetId) ?? `${assetId.substring(0, 6)}...`;
   }
 
   // Return shortened ID as placeholder while loading
-  return assetId.substring(0, 6) + '...';
+  return `${assetId.substring(0, 6)}...`;
 };
 
 /**
@@ -47,8 +48,8 @@ const loadTradingPairs = (): TradingPair[] => {
 
   return rawPairs.map(([amountAsset, priceAsset]) => ({
     amountAsset,
-    priceAsset,
     amountAssetName: getAssetDisplayName(amountAsset),
+    priceAsset,
     priceAssetName: getAssetDisplayName(priceAsset),
   }));
 };
@@ -67,17 +68,16 @@ const useAssetNameFetcher = (assetIds: string[]) => {
     });
   }, [assetIds]);
 
-  // Fetch all unknown assets
-  const queries = unknownAssetIds.map((assetId) =>
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useQuery({
-      queryKey: ['asset-details', assetId],
-      queryFn: () => fetchAssetDetails(assetId),
+  // Fetch all unknown assets using useQueries (avoids calling hooks in a loop)
+  const queries = useQueries({
+    queries: unknownAssetIds.map((assetId) => ({
       enabled: !!assetId,
-      staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 60 * 60 * 1000, // 1 hour
-    })
-  );
+      queryFn: () => fetchAssetDetails(assetId),
+      queryKey: ['asset-details', assetId] as const,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    })),
+  });
 
   // Update cache when asset details are loaded
   useEffect(() => {
@@ -107,11 +107,19 @@ const AVAILABLE_PAIRS: TradingPair[] = loadTradingPairs();
 const getDefaultPair = (): TradingPair => {
   // Try to find DCC/CRC pair as preferred default
   const dccCrcPair = AVAILABLE_PAIRS.find(
-    (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC'
+    (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
   );
 
   // Fall back to first pair if DCC/CRC not found
-  return dccCrcPair || AVAILABLE_PAIRS[0];
+  return (
+    dccCrcPair ||
+    AVAILABLE_PAIRS[0] || {
+      amountAsset: '',
+      amountAssetName: 'DCC',
+      priceAsset: '',
+      priceAssetName: 'CRC',
+    }
+  );
 };
 
 const DEFAULT_PAIR = getDefaultPair();
@@ -183,7 +191,9 @@ const Separator = styled.span`
 /**
  * Chevron icon
  */
-const ChevronIcon = styled(FiChevronDown)<{ $isOpen: boolean }>`
+const ChevronIcon = styled(FiChevronDown as React.ComponentType<Record<string, unknown>>)<{
+  $isOpen: boolean;
+}>`
   color: ${(p) => p.theme.colors.text};
   opacity: 0.7;
   transition: transform 0.2s;
@@ -250,7 +260,7 @@ const SearchInputWrapper = styled.div`
 /**
  * Search icon
  */
-const SearchIcon = styled(FiSearch)`
+const SearchIcon = styled(FiSearch as React.ComponentType<Record<string, unknown>>)`
   position: absolute;
   left: ${(p) => p.theme.spacing.sm};
   color: ${(p) => p.theme.colors.text};
@@ -294,7 +304,7 @@ const PairList = styled.div`
  */
 const PairItem = styled.button<{ $isSelected: boolean }>`
   width: 100%;
-  background: ${(p) => (p.$isSelected ? p.theme.colors.primary + '10' : 'transparent')};
+  background: ${(p) => (p.$isSelected ? `${p.theme.colors.primary}10` : 'transparent')};
   border: none;
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
   display: flex;
@@ -366,7 +376,7 @@ export const TradingPairSelector: React.FC = () => {
       if (selectedPair) {
         const updatedSelectedPair = updatedPairs.find(
           (p) =>
-            p.amountAsset === selectedPair.amountAsset && p.priceAsset === selectedPair.priceAsset
+            p.amountAsset === selectedPair.amountAsset && p.priceAsset === selectedPair.priceAsset,
         );
         if (
           updatedSelectedPair &&
@@ -377,8 +387,7 @@ export const TradingPairSelector: React.FC = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingAssets]);
+  }, [isLoadingAssets, selectedPair, setSelectedPair]);
 
   /**
    * Set default pair on mount if none selected
@@ -387,8 +396,7 @@ export const TradingPairSelector: React.FC = () => {
     if (!selectedPair) {
       setSelectedPair(DEFAULT_PAIR);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedPair, setSelectedPair]);
 
   /**
    * Filter pairs based on search query
@@ -486,9 +494,9 @@ export const TradingPairSelector: React.FC = () => {
         {/* Pair List */}
         {filteredPairs.length > 0 ? (
           <PairList>
-            {filteredPairs.map((pair, index) => (
+            {filteredPairs.map((pair) => (
               <PairItem
-                key={`${pair.amountAsset}-${pair.priceAsset}-${index}`}
+                key={`${pair.amountAsset}-${pair.priceAsset}`}
                 $isSelected={isPairSelected(pair)}
                 onClick={() => handleSelectPair(pair)}
                 role="option"

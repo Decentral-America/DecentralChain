@@ -68,14 +68,14 @@ export const useExplorerLinks = (): ExplorerLinks => {
   }, []);
 
   return {
-    getTransactionLink,
     getAddressLink,
-    getBlockLink,
     getAssetLink,
-    openTransaction,
-    openAddress,
-    openBlock,
-    openAsset,
+    getBlockLink,
+    getTransactionLink,
     isConfigured,
+    openAddress,
+    openAsset,
+    openBlock,
+    openTransaction,
   };
 };

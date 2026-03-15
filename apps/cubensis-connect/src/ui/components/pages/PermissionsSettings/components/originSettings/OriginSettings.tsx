@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { PureComponent } from 'react';
 import { type WithTranslation, withTranslation } from 'react-i18next';
@@ -9,26 +9,26 @@ import * as styles from './settings.module.styl';
 const CONFIG = {
   list: [
     {
-      id: '0m',
       i18nKey: 'permissionSettings.modal.timeOff',
+      id: '0m',
       text: "Don't automatically sign",
       value: null,
     },
     {
-      id: '15m',
       i18nKey: 'permissionSettings.modal.time15m',
+      id: '15m',
       text: 'For 15 minutes',
       value: 15 * 60 * 1000,
     },
     {
-      id: '30m',
       i18nKey: 'permissionSettings.modal.time30m',
+      id: '30m',
       text: 'For 30 minutes',
       value: 30 * 60 * 1000,
     },
     {
-      id: '60m',
       i18nKey: 'permissionSettings.modal.time60m',
+      id: '60m',
       text: 'For 1 hour',
       value: 60 * 60 * 1000,
     },
@@ -37,18 +37,18 @@ const CONFIG = {
 
 class OriginSettingsComponent extends PureComponent<IProps, IState> {
   state: IState = {
-    interval: null,
-    totalAmount: null,
-    selected: null,
     canSave: false,
-    edited: false,
-    notifications: null,
     canShowNotifications: null,
+    edited: false,
+    interval: null,
+    notifications: null,
+    selected: null,
+    totalAmount: null,
   };
 
   static _getAutoSign(autoSign: TAutoAuth): TAutoAuth {
     if (!autoSign || typeof autoSign === 'string') {
-      return { type: 'allowAutoSign', totalAmount: null, interval: null };
+      return { interval: null, totalAmount: null, type: 'allowAutoSign' };
     }
 
     return autoSign;
@@ -75,23 +75,23 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
 
     return {
       ...state,
-      interval,
-      totalAmount,
-      selected: selected ?? null,
-      notifications,
       canShowNotifications,
+      interval,
+      notifications,
+      selected: selected ?? null,
+      totalAmount,
     };
   }
 
   onClose = () => {
     this.setState({
-      interval: null,
-      totalAmount: null,
-      selected: null,
       canSave: false,
-      edited: false,
-      notifications: null,
       canShowNotifications: null,
+      edited: false,
+      interval: null,
+      notifications: null,
+      selected: null,
+      totalAmount: null,
     });
 
     this.props.onClose();
@@ -105,7 +105,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
   selectTimeHandler = (time: number | string) => {
     const found = CONFIG.list.find(({ id }) => id === time);
     if (!found) return;
-    this.setState({ interval: found.value, edited: true, selected: time });
+    this.setState({ edited: true, interval: found.value, selected: time });
     this.calculateCanSave(found.value, this.state.totalAmount, this.state.canShowNotifications);
   };
 
@@ -138,9 +138,9 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     this.setState({ canSave });
 
     this.props.onChangePerms({
-      type: 'allowAutoSign',
-      totalAmount: newTotalAmount,
       interval: newInterval,
+      totalAmount: newTotalAmount,
+      type: 'allowAutoSign',
     });
   }
 
@@ -170,7 +170,7 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
 
     const newValue = parsedValue.join('.');
 
-    this.setState({ totalAmount: parsedValue.join('.'), edited: true });
+    this.setState({ edited: true, totalAmount: parsedValue.join('.') });
     this.calculateCanSave(this.state.interval, newValue, this.state.canShowNotifications);
   };
 
@@ -181,8 +181,8 @@ class OriginSettingsComponent extends PureComponent<IProps, IState> {
     const timeList = CONFIG.list.map((item) => {
       return {
         id: item.id,
-        value: item.value,
         text: t(item.i18nKey, { key: item.id }),
+        value: item.value,
       };
     });
 

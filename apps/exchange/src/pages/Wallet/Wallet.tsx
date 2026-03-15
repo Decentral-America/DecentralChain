@@ -2,16 +2,16 @@
  * Wallet Page
  * Modern crypto dashboard with Material-UI theme matching landing page
  */
-import { Outlet } from 'react-router-dom';
+
 import { Box, Fade } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import { styled } from '@mui/material/styles';
-import { useState, useEffect } from 'react';
+import { styled, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { landingTheme } from '@/theme/landingTheme';
 
 const WalletContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
   background: theme.palette.background.default,
+  minHeight: '100vh',
   padding: theme.spacing(3),
 
   [theme.breakpoints.down('sm')]: {

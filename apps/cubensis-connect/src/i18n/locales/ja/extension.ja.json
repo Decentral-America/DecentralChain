@@ -6,13 +6,13 @@
     "cancel": "キャンセル",
     "copied": "コピーしました。",
     "copyToClipboard": "クリックしてクリップボードにコピーします。",
+    "email": "メール",
+    "emailNoBackupPhrase": "このアカウントはDecentralChain Exchangeアカウントを使用してインポートされたため、バックアップフレーズや秘密鍵をコピーする必要はありません。",
     "encodedSeed": "暗号化されたシードフレーズ",
     "enter": "確定",
-    "email": "メール",
     "password": "パスワード",
     "passwordError": "パスワードが正しくありません。",
     "privateKeyNoBackupPhrase": "このアカウントは秘密鍵を使用してインポートされたため、バックアップフレーズはありません。",
-    "emailNoBackupPhrase": "このアカウントはDecentralChain Exchangeアカウントを使用してインポートされたため、バックアップフレーズや秘密鍵をコピーする必要はありません。",
     "privKey": "秘密鍵",
     "pubKey": "公開鍵",
     "viewInExplorer": "エクスプローラーで確認"
@@ -21,10 +21,10 @@
   "address": {
     "add": "新しいアドレス",
     "addButton": "新規追加",
-    "addTooltip": "アドレス帳にアドレスを追加する",
     "added": "アドレスが追加されました",
     "addressAlreadyExist": "アドレスが既に存在します",
     "addressInvalidError": "アドレスの値が無効です",
+    "addTooltip": "アドレス帳にアドレスを追加する",
     "cancel": "キャンセル",
     "copied": "コピーしました。",
     "copyToClipboard": "クリックしてクリップボードにコピーします。",
@@ -50,25 +50,25 @@
     "balanceLabel": "残高"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "名称",
-    "ticker": "シンボル",
-    "precision": "小数部",
-    "quantity": "総発行数量",
-    "type": "タイプ",
-    "reissuable": "再発行可",
-    "notReissuable": "再発行不可",
-    "scripted": "スクリプト",
-    "notScripted": "非スクリプト",
-    "minSponsoredFee": "スポンサーアセット手数料",
-    "sender": "発行者",
-    "timestamp": "発行日",
     "closeBtn": "クローズ",
-    "infoTooltip": "アセット情報",
     "favAddTooltip": "お気に入りに追加",
     "favRemoveTooltip": "お気に入りから削除",
+    "id": "ID",
+    "infoTooltip": "アセット情報",
+    "minSponsoredFee": "スポンサーアセット手数料",
+    "name": "名称",
+    "notReissuable": "再発行不可",
+    "notScripted": "非スクリプト",
+    "precision": "小数部",
+    "quantity": "総発行数量",
+    "reissuable": "再発行可",
+    "scripted": "スクリプト",
     "sendAssetTooltip": "送金",
+    "sender": "発行者",
     "swapAssetTooltip": "スワップ",
+    "ticker": "シンボル",
+    "timestamp": "発行日",
+    "type": "タイプ",
     "viewDetailsInExplorer": "エクスプローラーで確認"
   },
   "assetSelectModal": {
@@ -111,14 +111,14 @@
     "saveBackup": "バックアップフレーズを保存"
   },
   "bottom": {
-    "network": {
-      "edit": "編集",
-      "disabled": "この操作中にネットワーク設定を変更できません。"
-    },
     "custom": "カスタム",
     "mainnet": "メインネット",
-    "testnet": "テストネット",
-    "stagenet": "ステージネット"
+    "network": {
+      "disabled": "この操作中にネットワーク設定を変更できません。",
+      "edit": "編集"
+    },
+    "stagenet": "ステージネット",
+    "testnet": "テストネット"
   },
   "changeName": {
     "currentName": "現在のアカウント名",
@@ -167,10 +167,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "アカウントをエクスポート",
-    "importAccounts": "アカウントをインポート",
     "exportAddressBook": "アドレス帳をエクスポート",
-    "importAddressBook": "アドレス帳をインポート",
-    "exportAll": "全てエクスポート"
+    "exportAll": "全てエクスポート",
+    "importAccounts": "アカウントをインポート",
+    "importAddressBook": "アドレス帳をインポート"
   },
   "exportKeystore": {
     "cancelBtn": "キャンセル",
@@ -195,13 +195,13 @@
   "forgotPassword": {
     "attention": "注意",
     "attentionMessage": "パスワードをリセットするには、Cubensis Connect からすべてのアカウントを削除して新パスワードを設定し、シードフレーズから各アカウントを再度インポートする必要があります。",
-    "warningMessage": "シードフレーズまたは秘密鍵を保存していない場合、アカウントへのアクセスを回復することはできません。",
     "continueMessage": "続けて、下のフィールドに次のように入力します。",
     "phrase": "DELETE ALL ACCOUNTS",
     "phraseError": "入力したフレーズが間違っています。",
     "placeholder": "ここに入力してください。",
+    "resetCancel": "キャンセル",
     "resetConfirm": "すべて削除",
-    "resetCancel": "キャンセル"
+    "warningMessage": "シードフレーズまたは秘密鍵を保存していない場合、アカウントへのアクセスを回復することはできません。"
   },
   "historyCard": {
     "burn": "アセットをバーンする",
@@ -241,25 +241,25 @@
     "transferSelf": "自己転送"
   },
   "historyFilters": {
-    "all": "全て",
-    "incoming": "入金のみ",
-    "outgoing": "出金のみ",
-    "issue": "発行",
-    "transfer": "転送",
-    "reissue": "再発行",
-    "burn": "バーン",
-    "exchange": "取引",
-    "lease": "リース",
-    "cancelLease": "リースをキャンセル",
     "alias": "別名",
-    "massTransfer": "一斉転送",
+    "all": "全て",
+    "burn": "バーン",
+    "cancelLease": "リースをキャンセル",
     "data": "データ",
+    "exchange": "取引",
+    "incoming": "入金のみ",
+    "invokeScript": "スクリプトを実行",
+    "issue": "発行",
+    "lease": "リース",
+    "massTransfer": "一斉転送",
+    "outgoing": "出金のみ",
+    "reissue": "再発行",
+    "setAssetScript": "アセットスクリプトを設定",
     "setScript": "スクリプトを設定",
     "sponsorship": "スポンサーシップ",
-    "setAssetScript": "アセットスクリプトを設定",
-    "invokeScript": "スクリプトを実行",
-    "updateAssetInfo": "アセット情報を更新",
-    "type": "トランザクションタイプ"
+    "transfer": "転送",
+    "type": "トランザクションタイプ",
+    "updateAssetInfo": "アセット情報を更新"
   },
   "import": {
     "addAccount": "アカウントを追加",
@@ -281,25 +281,25 @@
     "viaSeed": "シードフレーズまたは秘密鍵"
   },
   "importEmail": {
-    "importEmailTitle": "メールアカウントをインポート",
-    "importEmailDesc": "DecentralChain Exchangeで作成したメールアカウントを接続します。",
-    "passwordLabel": "パスワード",
-    "passwordRequired": "パスワードを入力",
-    "loginRequired": "メールアカウントを確認",
+    "alreadyExists": "アカウントは既に存在しています。",
+    "continue": "続ける",
+    "credentialsError": "ユーザー名またはパスワードが間違っています。",
+    "dontHaveAccount": "アカウントを持っていませんか？",
     "emailLabel": "メール",
     "emailRequired": "正しいメールを入力してください。",
-    "credentialsError": "ユーザー名またはパスワードが間違っています。",
-    "continue": "続ける",
     "forgotPassword": "パスワードを忘れましたか？",
-    "dontHaveAccount": "アカウントを持っていませんか？",
-    "signUp": "登録",
-    "verifyAccountTitle": "アカウントを検証",
-    "verifyAccountDesc": "{{destination}}で受信した6桁の認証コードを入力してください。",
+    "importEmailDesc": "DecentralChain Exchangeで作成したメールアカウントを接続します。",
+    "importEmailTitle": "メールアカウントをインポート",
     "incorrectCode": "認証コードが間違っています。再入力してください。",
-    "userDoesNotExist": "ユーザーが存在しません。",
     "incorrectUsernameOrPassword": "ユーザー名またはパスワードが間違っています。",
     "incorrectUsernameOrPasswordLimit": "ユーザ名またはパスワードを間違えた回数が上限を超えました。サポートまでご連絡ください。https://support.decentralchain.io/",
-    "alreadyExists": "アカウントは既に存在しています。"
+    "loginRequired": "メールアカウントを確認",
+    "passwordLabel": "パスワード",
+    "passwordRequired": "パスワードを入力",
+    "signUp": "登録",
+    "userDoesNotExist": "ユーザーが存在しません。",
+    "verifyAccountDesc": "{{destination}}で受信した6桁の認証コードを入力してください。",
+    "verifyAccountTitle": "アカウントを検証"
   },
   "importKeystore": {
     "addressBookLabel": "アドレス帳ファイル",
@@ -329,11 +329,11 @@
     "connectInstructions": "Ledgerデバイスを接続し、DCCアプリを開く",
     "continueButton": "続ける",
     "couldNotGetUsersError": "Ledgerからユーザーを取得できませんでした。Ledgerを接続してロックを解除し、DCCアプリが開いていることを確認してから<retryButton>リトライ</retryButton>をクリックしてください。",
-    "userIdInputNumbersError": "数字のみ利用できます",
-    "userIdInputMaxValueError": "アカウントIDは{{ maxUserId }}より大きくできません",
     "selectAccountInstructions": "アドレスを選択",
     "title": "Ledgerをインポート",
-    "tryAgainButton": "再試行"
+    "tryAgainButton": "再試行",
+    "userIdInputMaxValueError": "アカウントIDは{{ maxUserId }}より大きくできません",
+    "userIdInputNumbersError": "数字のみ利用できます"
   },
   "importSeed": {
     "accountExistsError": "アカウントは既に'{{ name }}'となっています。",
@@ -360,14 +360,14 @@
     "keepUp": "Cubensis ConnectはDecentralChainに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   },
   "langsSettings": { "confirm": "確認", "title": "言語切替" },
-  "ledgerErrors": {
-    "unknown": "Ledgerに接続できませんでした。再度お試しください。",
-    "usedBySomeOtherApp": "Ledgerはすでに他のアプリケーションで使用されているようです。Ledgerを使用する可能性のあるアプリケーションをすべて終了してから、再度試してください。"
-  },
   "ledgerConnectModal": {
     "instructions": "Ledgerデバイスを接続し、DCCアプリを開く",
     "title": "接続中",
     "tryAgainButton": "再試行"
+  },
+  "ledgerErrors": {
+    "unknown": "Ledgerに接続できませんでした。再度お試しください。",
+    "usedBySomeOtherApp": "Ledgerはすでに他のアプリケーションで使用されているようです。Ledgerを使用する可能性のあるアプリケーションをすべて終了してから、再度試してください。"
   },
   "login": {
     "enter": "確定",
@@ -445,10 +445,18 @@
     "viewInExplorer": "エクスプローラーで詳細確認",
     "viewOnMarketplace": "マーケットプレイスで確認"
   },
+  "notifications": {
+    "allowSending": "メッセージの送信を許可",
+    "closeBtn": "クローズ",
+    "messages": "メッセージ",
+    "nextBtn": "次へ",
+    "time": "時間",
+    "toListBtn": "通知"
+  },
   "otherAccounts": {
     "addAccount": "アカウント追加",
-    "noAccountsNote": "現在のネットワークに他のアカウントはありません。",
     "noAccountsFound": "指定されたフィルターに合致するアカウントは見つかりませんでした。",
+    "noAccountsNote": "現在のネットワークに他のアカウントはありません。",
     "title": "他のアカウント"
   },
   "permission": {
@@ -474,13 +482,13 @@
     "approvedOrigin": "承認済み",
     "automaticOrigin": "自動署名",
     "empty": "ここにはありません。",
-    "rejectedOrigin": "却下",
-    "title": "アクセス権管理",
     "notify": {
       "allowed": "許可されました。",
       "deleted": "削除されました。",
       "disallowed": "禁止されました。"
-    }
+    },
+    "rejectedOrigin": "却下",
+    "title": "アクセス権管理"
   },
   "qrCode": { "download": "QRコードをダウンロード" },
   "send": {
@@ -513,11 +521,11 @@
     "settingsGeneral": "一般",
     "suspiciousAssetsProtection": "不審アセット対策",
     "suspiciousAssetsTooltip": "不審なアセットの残高やトランザクションを表示しない",
-    "time_10m": "10分",
     "time_1h": "1時間",
+    "time_5m": "5分",
+    "time_10m": "10分",
     "time_20m": "20分",
     "time_40m": "40分",
-    "time_5m": "5分",
     "time_idle": "ブラウザータイムアウト",
     "tooltipContent": "トロイの木馬の脆弱性から保護します。"
   },
@@ -546,6 +554,7 @@
     "customDataFailed": "データは却下されました。",
     "customDataName": "カスタムデータに署名",
     "customDataSent": "データが確認されました。",
+    "dccAuthConfirmed": "DCC認証リクエストに署名する。",
     "matcherConfirmed": "マッチャーへのリクエストに署名してください。",
     "matcherRejected": "リクエストは署名されませんでした。",
     "matcherSend": "マッチャーへのリクエストに署名してください。",
@@ -560,8 +569,7 @@
     "transactionFailed": "トランザクションが拒否されました。",
     "transactionSend": "送信しました。",
     "understand": "理解しました。",
-    "viewTransaction": "トランザクション確認",
-    "dccAuthConfirmed": "DCC認証リクエストに署名する。"
+    "viewTransaction": "トランザクション確認"
   },
   "swap": {
     "amountToSendError": "Swop.Fi dAppの状態によりスワップできませんでした。再試行するか、可能であればスリッページの許容範囲を少し広げてください。",
@@ -582,8 +590,8 @@
     "priceLabel": "価格",
     "primaryLabel": "プライマリー",
     "profitLabel": "利益",
-    "slippageToleranceModalTitle": "スリッページ許容量",
     "slippageToleranceModalDescription": "価格がスリッページ許容量以上に不利に変化した場合、スワップはキャンセルされます",
+    "slippageToleranceModalTitle": "スリッページ許容量",
     "statusFailed": "スワップが失敗しました。",
     "statusInProgress": "スワップ完了を待っています。",
     "statusSucceeded": "スワップが成功しました。",
@@ -611,20 +619,26 @@
     "dataHash": "データハッシュ",
     "dataTransaction": "ブロックチェーンでのエントリー",
     "dataTransactionName": "データ",
+    "dccAuthTimeStamp": "タイムスタンプ",
     "decimalPoints": "小数点",
     "description": "概要",
     "details": "詳細",
     "dex": "DEX",
     "expires": "有効期限",
     "fee": "手数料",
+    "hash": "ハッシュ",
     "hideTransactions": "トランザクションを非表示",
+    "issueNFT": "NFTを発行",
+    "issueSmartNFT": "スマートNFTを発行",
+    "issueSmartToken": "スマートトークンを発行",
+    "issueToken": "トークンを発行",
     "issueType": "タイプ",
     "json": "JSON",
     "lease": "リース",
     "leaseCancel": "リースをキャンセル",
     "massTransfer": "一斉転送",
-    "matcherTimeStamp": "マッチャータイムスタンプ",
     "matcherPublicKey": "マッチャー公開鍵",
+    "matcherTimeStamp": "マッチャータイムスタンプ",
     "name": "名前",
     "noReissuable": "再発行不可",
     "orderBuy": "購入",
@@ -645,6 +659,7 @@
     "recipient": "受取人",
     "recipients": "受取人",
     "reissuable": "再発行可能",
+    "reissue": "再発行",
     "script": "スクリプト",
     "scriptInvocation": "スクリプト実行",
     "scriptInvocationFunction": "関数",
@@ -655,30 +670,15 @@
     "setSponsored": "スポンサーシップを設定",
     "showAll": "全て表示",
     "showTransactions": "トランザクションを表示",
-    "signRequestMatcher": "マッチャーへのリクエストに署名する",
     "signRequestDccAuth": "DCC認証リクエストに署名",
-    "updateAssetInfo": "アセット情報を更新",
-    "issueToken": "トークンを発行",
-    "issueSmartToken": "スマートトークンを発行",
-    "issueNFT": "NFTを発行",
-    "issueSmartNFT": "スマートNFTを発行",
-    "reissue": "再発行",
+    "signRequestMatcher": "マッチャーへのリクエストに署名する",
     "transfer": "転送",
     "txid": "TXID",
-    "hash": "ハッシュ",
     "txTime": "TX時間",
     "unknown": "不明",
-    "dccAuthTimeStamp": "タイムスタンプ"
+    "updateAssetInfo": "アセット情報を更新"
   },
   "ui": { "logoTitle": "DCCキーをオンラインで安全に管理" },
-  "notifications": {
-    "allowSending": "メッセージの送信を許可",
-    "toListBtn": "通知",
-    "nextBtn": "次へ",
-    "closeBtn": "クローズ",
-    "time": "時間",
-    "messages": "メッセージ"
-  },
   "wallet": { "lease": "リース中" },
   "welcome": {
     "getStarted": "開始",

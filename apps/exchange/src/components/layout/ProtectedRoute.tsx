@@ -3,9 +3,10 @@
  * Wrapper for routes that require authentication
  * Redirects to welcome page if user is not authenticated
  */
+
+import { Box, CircularProgress } from '@mui/material';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts';
-import { Box, CircularProgress } from '@mui/material';
 
 interface ProtectedRouteProps {
   redirectTo?: string;
@@ -24,12 +25,7 @@ export const ProtectedRoute = ({ redirectTo = '/', children }: ProtectedRoutePro
   // Wait for session restoration before deciding — prevents flash redirect
   if (!sessionRestored) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress />
       </Box>
     );
@@ -41,5 +37,5 @@ export const ProtectedRoute = ({ redirectTo = '/', children }: ProtectedRoutePro
   }
 
   // Render children if provided, otherwise render Outlet for nested routes
-  return children ? <>{children}</> : <Outlet />;
+  return children ? children : <Outlet />;
 };

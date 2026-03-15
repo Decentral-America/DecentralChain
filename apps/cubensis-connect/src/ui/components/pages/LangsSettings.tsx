@@ -17,9 +17,7 @@ interface LangProps {
 
 const Lang = ({ id, name, setSelected, selected }: LangProps) => {
   const langStyle = (styles as Record<string, string>)[id];
-  const className = clsx(langStyle, styles.lang, {
-    [styles.selected]: selected,
-  });
+  const className = clsx(langStyle, styles.lang, selected && styles.selected);
   const iconClass = clsx(styles.flagIcon, {
     'selected-lang': selected,
     [`flag-${id}-icon`]: !selected,

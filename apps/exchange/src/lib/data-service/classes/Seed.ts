@@ -1,10 +1,21 @@
 import { Adapter } from '@decentralchain/signature-adapter';
-import { Seed as WavesSeed, randomSeed, address as buildAddress, keyPair as buildKeyPair, encryptSeed, decryptSeed } from '@waves/ts-lib-crypto';
+import {
+  address as buildAddress,
+  keyPair as buildKeyPair,
+  decryptSeed,
+  encryptSeed,
+  randomSeed,
+} from '@decentralchain/ts-lib-crypto';
 
 // Use DCC network code (87 = 'W')
-// In Angular app, this was: window.WavesApp.network.code.charCodeAt(0)
+// In Angular app, this was: window.DCCApp.network.code.charCodeAt(0)
 // For React app, we use the DCC mainnet default
-const networkCode = (typeof window !== 'undefined' && (window as any).WavesApp?.network?.code?.charCodeAt(0)) || 63;
+const networkCode =
+  (typeof window !== 'undefined' &&
+    (
+      window as Window & { DCCApp?: { network?: { code?: string } } }
+    ).DCCApp?.network?.code?.charCodeAt(0)) ||
+  63;
 
 Adapter.initOptions({ networkCode });
 
@@ -22,18 +33,18 @@ export class Seed {
 
   /**
    * Constructor - creates Seed from existing phrase
-   * Matches Angular: new ds.Seed(phrase, window.WavesApp.network.code)
+   * Matches Angular: new ds.Seed(phrase, window.DCCApp.network.code)
    * @param phrase - Seed phrase (15 words)
    * @param chainId - Network byte (default: 87 for DCC mainnet)
    */
   constructor(phrase: string, chainId?: number) {
     const networkByte = chainId || networkCode;
-    
+
     this.phrase = phrase;
     const keyPairResult = buildKeyPair(phrase);
     this.keyPair = {
+      privateKey: keyPairResult.privateKey,
       publicKey: keyPairResult.publicKey,
-      privateKey: keyPairResult.privateKey
     };
     this.address = buildAddress(this.keyPair.publicKey, networkByte);
   }
@@ -51,7 +62,7 @@ export class Seed {
 
   /**
    * Restore seed from existing phrase
-   * Matches Angular: new ds.Seed(this.seed, window.WavesApp.network.code)
+   * Matches Angular: new ds.Seed(this.seed, window.DCCApp.network.code)
    * @param phrase - Existing seed phrase (15 words)
    * @param chainId - Network byte (default: 87 for DCC mainnet)
    * @returns Seed instance restored from phrase
@@ -77,8 +88,11 @@ export class Seed {
    * @param encryptionRounds - Number of encryption rounds (default: 5000)
    * @returns Decrypted seed phrase
    */
-  static decrypt(encryptedPhrase: string, password: string, encryptionRounds: number = 5000): string {
+  static decrypt(
+    encryptedPhrase: string,
+    password: string,
+    encryptionRounds: number = 5000,
+  ): string {
     return decryptSeed(encryptedPhrase, password, encryptionRounds);
   }
 }
-

@@ -5,6 +5,7 @@
  */
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
+import { logger } from '@/lib/logger';
 
 /**
  * Translation function parameters
@@ -27,7 +28,7 @@ export const useTranslation = () => {
    * @returns Translated string
    */
   const translate = (key: string, params?: TranslationParams): string => {
-    return t(key, params);
+    return params ? t(key, params) : t(key);
   };
 
   /**
@@ -40,7 +41,7 @@ export const useTranslation = () => {
       await i18n.changeLanguage(lang);
       localStorage.setItem('language', lang);
     } catch (error) {
-      console.error('Failed to change language:', error);
+      logger.error('Failed to change language:', error);
     }
   };
 
@@ -79,19 +80,19 @@ export const useTranslation = () => {
   };
 
   return {
-    // Translation function
-    t: translate,
+    availableLanguages,
+    changeLanguage,
 
     // Language management
     currentLanguage,
     currentLanguageName,
-    changeLanguage,
-    availableLanguages,
-    isLanguageSupported,
     getLanguageByCode,
 
     // Raw i18n instance (for advanced usage)
     i18n,
+    isLanguageSupported,
+    // Translation function
+    t: translate,
   };
 };
 

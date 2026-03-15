@@ -1,4 +1,4 @@
-import { useEffect, RefObject, useCallback } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 
 /**
  * Options for customizing click-outside behavior
@@ -58,7 +58,7 @@ export interface UseClickOutsideOptions {
 export function useClickOutside<T extends HTMLElement>(
   ref: RefObject<T | null>,
   handler: (event: MouseEvent | TouchEvent) => void,
-  options: UseClickOutsideOptions = {}
+  options: UseClickOutsideOptions = {},
 ): void {
   const {
     enabled = true,
@@ -86,7 +86,7 @@ export function useClickOutside<T extends HTMLElement>(
 
       // Check if click is inside any excluded refs
       for (const excludeRef of excludeRefs) {
-        if (excludeRef.current && excludeRef.current.contains(target)) {
+        if (excludeRef.current?.contains(target)) {
           return;
         }
       }
@@ -126,7 +126,7 @@ export function useClickOutside<T extends HTMLElement>(
 export function useModalClickOutside<T extends HTMLElement>(
   ref: RefObject<T | null>,
   onClose: () => void,
-  options: Omit<UseClickOutsideOptions, 'enabled'> & { enabled?: boolean } = {}
+  options: Omit<UseClickOutsideOptions, 'enabled'> & { enabled?: boolean } = {},
 ): void {
   const { enabled = true, ...restOptions } = options;
 
@@ -173,7 +173,7 @@ export function useDropdownClickOutside<T extends HTMLElement, U extends HTMLEle
   dropdownRef: RefObject<T | null>,
   triggerRef: RefObject<U | null>,
   onClose: () => void,
-  options: Omit<UseClickOutsideOptions, 'excludeRefs'> = {}
+  options: Omit<UseClickOutsideOptions, 'excludeRefs'> = {},
 ): void {
   useClickOutside(dropdownRef, onClose, {
     ...options,

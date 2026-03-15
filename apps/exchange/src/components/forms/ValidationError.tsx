@@ -38,7 +38,7 @@ export interface ValidationErrorProps {
   /**
    * Custom className for styling
    */
-  className?: string;
+  className?: string | undefined;
 
   /**
    * Custom test ID for testing
@@ -136,7 +136,7 @@ export const ValidationError = React.forwardRef<HTMLDivElement, ValidationErrorP
       className,
       testId = 'validation-error',
     },
-    ref
+    ref,
   ) => {
     // Determine which errors to display
     const errorMessages = React.useMemo(() => {
@@ -174,13 +174,13 @@ export const ValidationError = React.forwardRef<HTMLDivElement, ValidationErrorP
           <ErrorText>Please fix the following errors:</ErrorText>
         </ErrorMessage>
         <ErrorList>
-          {errorMessages.map((msg, index) => (
-            <ErrorListItem key={index}>{msg}</ErrorListItem>
+          {errorMessages.map((msg) => (
+            <ErrorListItem key={msg}>{msg}</ErrorListItem>
           ))}
         </ErrorList>
       </ErrorWrapper>
     );
-  }
+  },
 );
 
 ValidationError.displayName = 'ValidationError';
@@ -188,11 +188,11 @@ ValidationError.displayName = 'ValidationError';
 /**
  * Hook to collect all form errors for display
  */
-export function useFormErrors(errors: Record<string, any>): string[] {
+export function useFormErrors(errors: Record<string, unknown>): string[] {
   return React.useMemo(() => {
     const messages: string[] = [];
 
-    const collectErrors = (obj: any, prefix = ''): void => {
+    const collectErrors = (obj: Record<string, unknown>, prefix = ''): void => {
       if (!obj) return;
 
       Object.keys(obj).forEach((key) => {
@@ -205,7 +205,7 @@ export function useFormErrors(errors: Record<string, any>): string[] {
             messages.push(`${fieldName}: ${value.message}`);
           } else {
             // Recurse for nested errors
-            collectErrors(value, prefix ? `${prefix}.${key}` : key);
+            collectErrors(value as Record<string, unknown>, prefix ? `${prefix}.${key}` : key);
           }
         }
       });
@@ -220,7 +220,7 @@ export function useFormErrors(errors: Record<string, any>): string[] {
  * Component to display all form errors at the top of a form
  */
 export interface FormErrorSummaryProps {
-  errors: Record<string, any>;
+  errors: Record<string, unknown>;
   showIcon?: boolean;
   animate?: boolean;
   className?: string;

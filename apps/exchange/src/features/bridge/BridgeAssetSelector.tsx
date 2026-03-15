@@ -3,9 +3,10 @@
  * Displays available gateway assets with deposit/withdraw action buttons
  * Filters assets to only show those with gateway support
  */
-import { Grid, Card, CardContent, Typography, Button, Box, Avatar, Stack } from '@mui/material';
+
+import { BigNumber } from '@decentralchain/bignumber';
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { BigNumber } from '@waves/bignumber';
+import { Avatar, Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
 import { useConfig } from '@/contexts/ConfigContext';
 
 interface GatewayAsset {
@@ -13,7 +14,7 @@ interface GatewayAsset {
   name: string;
   ticker: string;
   decimals: number;
-  icon?: string;
+  icon?: string | undefined;
   balance: BigNumber;
   hasDeposit: boolean;
   hasWithdraw: boolean;
@@ -37,29 +38,49 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   onDeposit,
   onWithdraw,
 }) => {
-  const { wavesGateway, assets } = useConfig();
+  const { gateway, assets } = useConfig();
 
   // Build list of gateway assets with their details
-  const gatewayAssets: GatewayAsset[] = Object.keys(wavesGateway || {}).map((assetId) => {
-    const assetInfo: any = (assets as any)[assetId] || {};
+  const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
+    const assetInfo: {
+      displayName?: string;
+      name?: string;
+      ticker?: string;
+      precision?: number;
+      icon?: string;
+      [key: string]: unknown;
+    } =
+      (
+        assets as unknown as Record<
+          string,
+          {
+            displayName?: string;
+            name?: string;
+            ticker?: string;
+            precision?: number;
+            icon?: string;
+            [key: string]: unknown;
+          }
+        >
+      )[assetId] || {};
     const balance = balances[assetId] || new BigNumber(0);
 
     return {
       assetId,
-      name: assetInfo.displayName || assetInfo.name || 'Unknown Asset',
-      ticker: assetInfo.ticker || assetId.substring(0, 8),
-      decimals: assetInfo.precision || 8,
-      icon: assetInfo.icon,
       balance,
+      decimals: Number(assetInfo.precision || 8),
       hasDeposit: true, // All gateway assets support deposit
       hasWithdraw: true, // All gateway assets support withdraw
+      icon: assetInfo.icon,
+      name: String(assetInfo.displayName || assetInfo.name || 'Unknown Asset'),
+      ticker: String(assetInfo.ticker || assetId.substring(0, 8)),
     };
   });
 
   // Handle case where no gateway assets are configured
   if (gatewayAssets.length === 0) {
     return (
-      <Box sx={{ textAlign: 'center', py: 8 }}>
+      <Box sx={{ py: 8, textAlign: 'center' }}>
         <Typography variant="h6" color="text.secondary" gutterBottom>
           No Gateway Assets Available
         </Typography>
@@ -73,29 +94,36 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   return (
     <Grid container spacing={3}>
       {gatewayAssets.map((asset) => (
-        <Grid item xs={12} sm={6} md={4} key={asset.assetId}>
+        <Grid
+          key={asset.assetId}
+          size={{
+            md: 4,
+            sm: 6,
+            xs: 12,
+          }}
+        >
           <Card
             sx={{
-              height: '100%',
+              '&:hover': {
+                boxShadow: 4,
+                transform: 'translateY(-4px)',
+              },
               display: 'flex',
               flexDirection: 'column',
+              height: '100%',
               transition: 'transform 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: 4,
-              },
             }}
           >
             <CardContent sx={{ flexGrow: 1 }}>
               {/* Asset Header */}
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ alignItems: 'center', display: 'flex', mb: 2 }}>
                 <Avatar
                   src={asset.icon}
                   sx={{
+                    bgcolor: 'primary.main',
+                    height: 48,
                     mr: 2,
                     width: 48,
-                    height: 48,
-                    bgcolor: 'primary.main',
                   }}
                 >
                   {asset.ticker[0]}
@@ -114,9 +142,9 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
               <Box
                 sx={{
                   bgcolor: 'background.default',
-                  p: 1.5,
                   borderRadius: 1,
                   mb: 2,
+                  p: 1.5,
                 }}
               >
                 <Typography variant="caption" color="text.secondary" display="block">
@@ -137,12 +165,12 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                     startIcon={<ArrowDownward />}
                     onClick={() => onDeposit(asset)}
                     sx={{
+                      '&:hover': {
+                        bgcolor: 'success.light',
+                        borderColor: 'success.dark',
+                      },
                       borderColor: 'success.main',
                       color: 'success.main',
-                      '&:hover': {
-                        borderColor: 'success.dark',
-                        bgcolor: 'success.light',
-                      },
                     }}
                   >
                     Deposit
@@ -157,16 +185,16 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                     onClick={() => onWithdraw(asset)}
                     disabled={asset.balance.lte(0)}
                     sx={{
-                      borderColor: 'warning.main',
-                      color: 'warning.main',
-                      '&:hover': {
-                        borderColor: 'warning.dark',
-                        bgcolor: 'warning.light',
-                      },
                       '&:disabled': {
                         borderColor: 'grey.300',
                         color: 'grey.400',
                       },
+                      '&:hover': {
+                        bgcolor: 'warning.light',
+                        borderColor: 'warning.dark',
+                      },
+                      borderColor: 'warning.main',
+                      color: 'warning.main',
                     }}
                   >
                     Withdraw
@@ -179,7 +207,7 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                 <Typography
                   variant="caption"
                   color="text.secondary"
-                  sx={{ mt: 1, display: 'block', textAlign: 'center' }}
+                  sx={{ display: 'block', mt: 1, textAlign: 'center' }}
                 >
                   Deposit {asset.ticker} to enable withdrawals
                 </Typography>

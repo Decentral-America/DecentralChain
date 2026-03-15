@@ -26,7 +26,7 @@ function Arrow({ direction }: ArrowProps) {
     <svg
       aria-hidden="true"
       className={clsx(styles.avatarListArrowSvg, {
-        [styles.avatarListArrowSvgLeft]: direction === 'left',
+        [styles.avatarListArrowSvgLeft as string]: direction === 'left',
       })}
       width="14"
       height="14"
@@ -209,7 +209,7 @@ export function ImportLedger() {
                   <LedgerAvatarList
                     selectedId={selectedUserId}
                     size={38}
-                    users={ledgerUsersPages[page]}
+                    users={ledgerUsersPages[page]!}
                     onSelect={(id) => {
                       setSelectAccountError(null);
                       setSelectedUserId(id);
@@ -279,6 +279,8 @@ export function ImportLedger() {
               disabled={!selectedUser}
               view="submit"
               onClick={() => {
+                if (!selectedUser) return;
+
                 if (accounts.some((acc) => acc.address === selectedUser.address)) {
                   setSelectAccountError(t('importLedger.accountExistsError'));
                   return;
@@ -286,12 +288,12 @@ export function ImportLedger() {
 
                 dispatch(
                   newAccountSelect({
-                    type: 'ledger',
                     address: selectedUser.address,
-                    id: selectedUser.id,
-                    publicKey: selectedUser.publicKey,
-                    name: '',
                     hasBackup: true,
+                    id: selectedUser.id,
+                    name: '',
+                    publicKey: selectedUser.publicKey,
+                    type: 'ledger',
                   }),
                 );
 

@@ -29,7 +29,7 @@ const Row = ({
   historyLink: string;
 }>) => {
   const { t } = useTranslation();
-  const historyOrGroup = historyWithGroups[index];
+  const historyOrGroup = historyWithGroups[index]!;
 
   return (
     <div style={style}>
@@ -184,12 +184,12 @@ export function TabTxHistory() {
             if (
               tx.timestamp &&
               (!prevItems[index - 1] ||
-                new Date(prevItems[index - 1].timestamp).toDateString() !== d.toDateString())
+                new Date(prevItems[index - 1]!.timestamp).toDateString() !== d.toDateString())
             ) {
               const [Y, M, D] = [d.getFullYear(), d.getMonth(), d.getDate()];
               const options: Intl.DateTimeFormatOptions = {
-                month: 'short',
                 day: '2-digit',
+                month: 'short',
               };
               let note = '';
 
@@ -323,16 +323,16 @@ export function TabTxHistory() {
                   rowComponent={Row}
                   rowCount={historyWithGroups.length}
                   rowHeight={(index) =>
-                    'groupName' in historyWithGroups[index]
+                    'groupName' in historyWithGroups[index]!
                       ? FULL_GROUP_HEIGHT
                       : CARD_FULL_HEIGHT *
                         (1 + Number(index === historyWithGroups.length - 1 && hasMore))
                   }
                   rowProps={{
-                    historyWithGroups,
-                    hasMore,
                     hasFilters: term || type || onlyIn || onlyOut,
+                    hasMore,
                     historyLink: getTxHistoryLink(networkCode ?? '', address ?? ''),
+                    historyWithGroups,
                   }}
                   style={{ height, width }}
                 />

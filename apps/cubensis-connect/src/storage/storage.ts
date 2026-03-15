@@ -109,8 +109,8 @@ export class ExtensionStorage {
     this.#sessionState = sessionState;
 
     this.#state = {
-      migrationVersion: CURRENT_MIGRATION_VERSION,
       backup: this.#localState.backup,
+      migrationVersion: CURRENT_MIGRATION_VERSION,
     };
   }
 
@@ -233,11 +233,11 @@ export async function createExtensionStorage() {
 
     if (version < CURRENT_MIGRATION_VERSION) {
       for (let i = version; i < CURRENT_MIGRATION_VERSION; i++) {
-        await MIGRATIONS[i].migrate();
+        await MIGRATIONS[i]!.migrate();
       }
     } else if (version > CURRENT_MIGRATION_VERSION) {
       for (let i = version; i > CURRENT_MIGRATION_VERSION; i--) {
-        await MIGRATIONS[i - 1].rollback();
+        await MIGRATIONS[i - 1]!.rollback();
       }
     }
 

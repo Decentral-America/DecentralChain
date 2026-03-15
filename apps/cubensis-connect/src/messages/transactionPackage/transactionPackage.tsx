@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { type AssetsRecord } from 'assets/types';
@@ -225,7 +225,7 @@ export function TransactionPackageScreen({
               input: {
                 account,
                 broadcast: false,
-                data: input.data[index],
+                data: input.data[index]!,
                 type: 'transaction',
               },
               status,

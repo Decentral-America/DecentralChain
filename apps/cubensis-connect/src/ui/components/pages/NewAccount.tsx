@@ -19,14 +19,14 @@ type Props = WithTranslation & ReturnType<typeof mapStateToProps>;
 
 class NewAccountComponent extends PureComponent<Props> {
   state = {
-    firstValue: '',
-    secondValue: '',
-    firstError: null,
-    secondError: null,
     buttonDisabled: true,
-    passwordError: false,
-    termsAccepted: false,
     conditionsAccepted: false,
+    firstError: null,
+    firstValue: '',
+    passwordError: false,
+    secondError: null,
+    secondValue: '',
+    termsAccepted: false,
   };
 
   static _isDisabledButton(
@@ -232,7 +232,7 @@ class NewAccountComponent extends PureComponent<Props> {
       conditionsAccepted,
     );
 
-    this.setState({ passwordError, firstError, secondError, buttonDisabled });
+    this.setState({ buttonDisabled, firstError, passwordError, secondError });
   }
 }
 

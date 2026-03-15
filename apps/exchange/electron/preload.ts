@@ -13,23 +13,60 @@ import { contextBridge, ipcRenderer } from 'electron';
  */
 const electronAPI = {
   /**
+   * Invoke main process function (with response)
+   */
+  invoke: async (channel: string, ...args: unknown[]) => {
+    // Whitelist channels
+    const validChannels = [
+      'app:get-version',
+      'app:get-path',
+      'app:check-for-updates',
+      'app:install-update',
+    ];
+
+    if (validChannels.includes(channel)) {
+      return await ipcRenderer.invoke(channel, ...args);
+    } else {
+      console.warn('Invalid IPC channel:', channel);
+      throw new Error(`Invalid IPC channel: ${channel}`);
+    }
+  },
+
+  /**
+   * Receive message from main process
+   */
+  on: (channel: string, callback: (...args: unknown[]) => void) => {
+    // Whitelist channels
+    const validChannels = [
+      'app:update-available',
+      'app:update-downloaded',
+      'app:update-progress',
+      'app:update-error',
+    ];
+
+    if (validChannels.includes(channel)) {
+      const subscription = (_event: Electron.IpcRendererEvent, ...args: unknown[]) =>
+        callback(...args);
+      ipcRenderer.on(channel, subscription);
+
+      // Return unsubscribe function
+      return () => {
+        ipcRenderer.removeListener(channel, subscription);
+      };
+    } else {
+      console.warn('Invalid IPC channel:', channel);
+      return () => {};
+    }
+  },
+  /**
    * Get platform information
    */
   platform: process.platform,
 
   /**
-   * Get Node.js version
-   */
-  versions: {
-    node: process.versions.node,
-    chrome: process.versions.chrome,
-    electron: process.versions.electron,
-  },
-
-  /**
    * Send message to main process
    */
-  send: (channel: string, ...args: any[]) => {
+  send: (channel: string, ...args: unknown[]) => {
     // Whitelist channels
     const validChannels = [
       'app:quit',
@@ -47,49 +84,12 @@ const electronAPI = {
   },
 
   /**
-   * Receive message from main process
+   * Get Node.js version
    */
-  on: (channel: string, callback: (...args: any[]) => void) => {
-    // Whitelist channels
-    const validChannels = [
-      'app:update-available',
-      'app:update-downloaded',
-      'app:update-progress',
-      'app:update-error',
-    ];
-
-    if (validChannels.includes(channel)) {
-      const subscription = (_event: Electron.IpcRendererEvent, ...args: any[]) => callback(...args);
-      ipcRenderer.on(channel, subscription);
-
-      // Return unsubscribe function
-      return () => {
-        ipcRenderer.removeListener(channel, subscription);
-      };
-    } else {
-      console.warn('Invalid IPC channel:', channel);
-      return () => {};
-    }
-  },
-
-  /**
-   * Invoke main process function (with response)
-   */
-  invoke: async (channel: string, ...args: any[]) => {
-    // Whitelist channels
-    const validChannels = [
-      'app:get-version',
-      'app:get-path',
-      'app:check-for-updates',
-      'app:install-update',
-    ];
-
-    if (validChannels.includes(channel)) {
-      return await ipcRenderer.invoke(channel, ...args);
-    } else {
-      console.warn('Invalid IPC channel:', channel);
-      throw new Error(`Invalid IPC channel: ${channel}`);
-    }
+  versions: {
+    chrome: process.versions.chrome,
+    electron: process.versions.electron,
+    node: process.versions.node,
   },
 };
 

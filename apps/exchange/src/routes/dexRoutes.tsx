@@ -2,7 +2,7 @@
  * DEX Module Routes
  * Defines routes for decentralized exchange trading interface
  */
-import { RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router-dom';
 import { Dex } from '@/pages/Dex';
 
 /**
@@ -12,11 +12,9 @@ import { Dex } from '@/pages/Dex';
  * - /desktop/dex/history : Order history and trade history
  *
  * Trading pairs are specified as amountAsset/priceAsset URL parameters
- * Example: /desktop/dex/pair/WAVES/USDT
+ * Example: /desktop/dex/pair/DCC/USDT
  */
 export const dexRoutes: RouteObject = {
-  path: 'dex',
-  element: <Dex />,
   children: [
     // Child routes will be activated when DEX feature components are created (Phase 5):
     // {
@@ -32,4 +30,6 @@ export const dexRoutes: RouteObject = {
     //   element: <OrderHistory />,
     // },
   ],
+  element: <Dex />,
+  path: 'dex',
 };

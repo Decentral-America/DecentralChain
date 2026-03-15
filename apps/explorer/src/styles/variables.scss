@@ -1,5 +1,3 @@
-@use "sass:map";
-
 $colors: (
     darkCard: #191919,
     basic50: #292929,
@@ -18,8 +16,7 @@ $colors: (
     info400: #8dabc4,
     mixUnicorn: #ab7df6,
     iceBlue: #c1c8e4,
-    paleBlue: #dee3ea,
-    deepViolet: #800080
+    paleBlue: #dee3ea
 );
 
 $layout: (
@@ -38,25 +35,25 @@ $layout: (
 );
 
 $current_menu_item: (
-    left: -#{map.get($layout, padding-left)},
+    left: -#{map-get($layout, padding-left)},
     width: 2px,
     lg: (
-
+        left: -#{map-deep-get($layout, 'lg', 'padding-left')},
     ),
     md: (
-
+        left: -#{map-deep-get($layout, 'md', 'padding-left')},
     )
 );
 
 $scroll_button_size: 28px;
 $scroll_button_hover_size: 38px;
 $scroll_button: (
-    right: map.get($layout, 'padding-right') - calc($scroll_button_size / 2),
+    right: map_get($layout, 'padding-right') - $scroll_button_size / 2,
     lg: (
-
+        right: map-deep-get($layout, 'lg', 'padding-right') - $scroll_button_size / 2
     ),
     md: (
-
+        right: map-deep-get($layout, 'md', 'padding-right') - $scroll_button_size / 2
     )
 );
 
@@ -147,7 +144,7 @@ $address_tr_list_columns: (
         )
     ),
     price: (
-        width: 190px,
+        width: 160px,
         md: (
             width: 130px
         )

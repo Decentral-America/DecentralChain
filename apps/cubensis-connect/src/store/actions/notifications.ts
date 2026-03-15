@@ -17,28 +17,28 @@ export function deleteNotifications(
 
 export function setShowNotification(options: { origin: string; canUse: boolean | null }) {
   return {
-    type: ACTION.NOTIFICATIONS.SET_PERMS,
     payload: options,
+    type: ACTION.NOTIFICATIONS.SET_PERMS,
   };
 }
 
 export function setActiveNotification(notify: NotificationsStoreItem[] | undefined) {
   return {
-    type: ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION,
     payload: notify,
+    type: ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION,
   };
 }
 
 export function setActiveMessage(msg: Message | undefined) {
   return {
-    type: ACTION.MESSAGES.SET_ACTIVE_MESSAGE,
     payload: msg,
+    type: ACTION.MESSAGES.SET_ACTIVE_MESSAGE,
   };
 }
 
 export function updateActiveState() {
   return {
-    type: ACTION.MESSAGES.UPDATE_ACTIVE,
     payload: null,
+    type: ACTION.MESSAGES.UPDATE_ACTIVE,
   };
 }

@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { isAddressString, isAlias } from 'messages/utils';
 import { createNft } from 'nfts/nfts';
@@ -109,15 +109,15 @@ export function Send() {
         setIsSubmitting(true);
 
         Background.signAndPublishTransaction({
-          type: 4,
           data: {
             amount: {
               assetId: asset?.id ?? null,
               tokens: amountValue,
             },
-            recipient: recipientValue,
             attachment: attachmentValue,
+            recipient: recipientValue,
           },
+          type: 4,
         }).catch((err) => {
           if (err instanceof Error && /user denied/i.test(err.message)) {
             return;

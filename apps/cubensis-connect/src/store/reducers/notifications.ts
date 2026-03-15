@@ -37,8 +37,8 @@ export function activePopup(
         if (notify) {
           return {
             notify:
-              action.payload.notifications.find(([item]) => item.origin === notify[0].origin) ??
-              action.payload.notifications[0],
+              action.payload.notifications.find(([item]) => item!.origin === notify[0]!.origin) ??
+              action.payload.notifications[0]!,
           };
         }
       }

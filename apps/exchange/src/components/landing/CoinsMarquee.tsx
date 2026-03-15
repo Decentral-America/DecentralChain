@@ -1,8 +1,16 @@
-import { Box, Container, Card, CardContent, Typography, Stack } from '@mui/material';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { SvgIcon, SvgIconProps } from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Stack,
+  SvgIcon,
+  type SvgIconProps,
+  Typography,
+} from '@mui/material';
 
 // Ethereum icon component
 const EthereumIcon = (props: SvgIconProps) => (
@@ -35,7 +43,7 @@ const MiniChart = ({ data, positive }: { data: number[]; positive: boolean }) =>
     .join(' ');
 
   return (
-    <svg width={width} height={height} style={{ display: 'block' }}>
+    <svg width={width} height={height} style={{ display: 'block' }} aria-hidden="true">
       <polyline
         points={points}
         fill="none"
@@ -50,154 +58,154 @@ const MiniChart = ({ data, positive }: { data: number[]; positive: boolean }) =>
 
 const coins = [
   {
-    ticker: 'BTC',
-    name: 'Bitcoin',
+    change: '+2.45%',
+    chartData: [38, 42, 40, 45, 43, 47, 44, 48, 46, 50, 48, 52],
     color: '#F7931A',
     icon: CurrencyBitcoinIcon,
-    price: '$43,527.82',
-    change: '+2.45%',
+    name: 'Bitcoin',
     positive: true,
-    chartData: [38, 42, 40, 45, 43, 47, 44, 48, 46, 50, 48, 52],
+    price: '$43,527.82',
+    ticker: 'BTC',
   },
   {
-    ticker: 'ETH',
-    name: 'Ethereum',
+    change: '+1.28%',
+    chartData: [32, 35, 33, 38, 36, 40, 38, 42, 40, 44, 42, 45],
     color: '#627EEA',
     icon: EthereumIcon,
-    price: '$2,284.56',
-    change: '+1.28%',
+    name: 'Ethereum',
     positive: true,
-    chartData: [32, 35, 33, 38, 36, 40, 38, 42, 40, 44, 42, 45],
+    price: '$2,284.56',
+    ticker: 'ETH',
   },
   {
-    ticker: 'USDT',
-    name: 'Tether',
+    change: '-0.02%',
+    chartData: [50, 49, 50, 49, 50, 49, 50, 49, 50, 49, 50, 49],
     color: '#26A17B',
     icon: CryptoIcon,
-    price: '$1.00',
-    change: '-0.02%',
+    name: 'Tether',
     positive: false,
-    chartData: [50, 49, 50, 49, 50, 49, 50, 49, 50, 49, 50, 49],
+    price: '$1.00',
+    ticker: 'USDT',
   },
   {
-    ticker: 'BNB',
-    name: 'Binance',
+    change: '+3.12%',
+    chartData: [30, 32, 34, 33, 36, 38, 37, 40, 42, 41, 44, 46],
     color: '#F3BA2F',
     icon: CryptoIcon,
-    price: '$312.89',
-    change: '+3.12%',
+    name: 'Binance',
     positive: true,
-    chartData: [30, 32, 34, 33, 36, 38, 37, 40, 42, 41, 44, 46],
+    price: '$312.89',
+    ticker: 'BNB',
   },
   {
-    ticker: 'SOL',
-    name: 'Solana',
+    change: '+5.67%',
+    chartData: [25, 28, 30, 32, 35, 38, 40, 42, 45, 48, 50, 52],
     color: '#9945FF',
     icon: CryptoIcon,
-    price: '$98.32',
-    change: '+5.67%',
+    name: 'Solana',
     positive: true,
-    chartData: [25, 28, 30, 32, 35, 38, 40, 42, 45, 48, 50, 52],
+    price: '$98.32',
+    ticker: 'SOL',
   },
   {
-    ticker: 'ADA',
-    name: 'Cardano',
+    change: '+0.89%',
+    chartData: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
     color: '#0033AD',
     icon: CryptoIcon,
-    price: '$0.58',
-    change: '+0.89%',
+    name: 'Cardano',
     positive: true,
-    chartData: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+    price: '$0.58',
+    ticker: 'ADA',
   },
   {
-    ticker: 'DOT',
-    name: 'Polkadot',
+    change: '-1.23%',
+    chartData: [48, 46, 44, 45, 43, 41, 42, 40, 38, 39, 37, 35],
     color: '#E6007A',
     icon: CryptoIcon,
-    price: '$7.23',
-    change: '-1.23%',
+    name: 'Polkadot',
     positive: false,
-    chartData: [48, 46, 44, 45, 43, 41, 42, 40, 38, 39, 37, 35],
+    price: '$7.23',
+    ticker: 'DOT',
   },
   {
-    ticker: 'AVAX',
-    name: 'Avalanche',
+    change: '+2.34%',
+    chartData: [28, 30, 32, 35, 33, 37, 39, 41, 40, 43, 45, 48],
     color: '#E84142',
     icon: CryptoIcon,
-    price: '$36.54',
-    change: '+2.34%',
+    name: 'Avalanche',
     positive: true,
-    chartData: [28, 30, 32, 35, 33, 37, 39, 41, 40, 43, 45, 48],
+    price: '$36.54',
+    ticker: 'AVAX',
   },
   {
-    ticker: 'MATIC',
-    name: 'Polygon',
+    change: '+4.56%',
+    chartData: [22, 25, 27, 30, 32, 35, 38, 40, 42, 45, 47, 50],
     color: '#8247E5',
     icon: CryptoIcon,
-    price: '$0.92',
-    change: '+4.56%',
+    name: 'Polygon',
     positive: true,
-    chartData: [22, 25, 27, 30, 32, 35, 38, 40, 42, 45, 47, 50],
+    price: '$0.92',
+    ticker: 'MATIC',
   },
   {
-    ticker: 'LINK',
-    name: 'Chainlink',
+    change: '+1.92%',
+    chartData: [30, 32, 31, 34, 36, 38, 37, 40, 42, 44, 43, 46],
     color: '#2A5ADA',
     icon: CryptoIcon,
-    price: '$14.78',
-    change: '+1.92%',
+    name: 'Chainlink',
     positive: true,
-    chartData: [30, 32, 31, 34, 36, 38, 37, 40, 42, 44, 43, 46],
+    price: '$14.78',
+    ticker: 'LINK',
   },
   {
-    ticker: 'UNI',
-    name: 'Uniswap',
+    change: '-0.78%',
+    chartData: [45, 44, 42, 43, 41, 39, 40, 38, 37, 36, 35, 34],
     color: '#FF007A',
     icon: CryptoIcon,
-    price: '$6.45',
-    change: '-0.78%',
+    name: 'Uniswap',
     positive: false,
-    chartData: [45, 44, 42, 43, 41, 39, 40, 38, 37, 36, 35, 34],
+    price: '$6.45',
+    ticker: 'UNI',
   },
   {
-    ticker: 'XRP',
-    name: 'Ripple',
+    change: '+3.45%',
+    chartData: [25, 28, 27, 30, 33, 35, 37, 39, 41, 43, 45, 48],
     color: '#23292F',
     icon: CryptoIcon,
-    price: '$0.54',
-    change: '+3.45%',
+    name: 'Ripple',
     positive: true,
-    chartData: [25, 28, 27, 30, 33, 35, 37, 39, 41, 43, 45, 48],
+    price: '$0.54',
+    ticker: 'XRP',
   },
   {
-    ticker: 'ATOM',
-    name: 'Cosmos',
+    change: '+2.11%',
+    chartData: [27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49],
     color: '#2E3148',
     icon: CryptoIcon,
-    price: '$9.87',
-    change: '+2.11%',
+    name: 'Cosmos',
     positive: true,
-    chartData: [27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49],
+    price: '$9.87',
+    ticker: 'ATOM',
   },
   {
-    ticker: 'LTC',
-    name: 'Litecoin',
+    change: '+1.56%',
+    chartData: [33, 35, 37, 36, 39, 41, 40, 43, 45, 44, 47, 49],
     color: '#345D9D',
     icon: CryptoIcon,
-    price: '$72.34',
-    change: '+1.56%',
+    name: 'Litecoin',
     positive: true,
-    chartData: [33, 35, 37, 36, 39, 41, 40, 43, 45, 44, 47, 49],
+    price: '$72.34',
+    ticker: 'LTC',
   },
   {
-    ticker: 'ALGO',
-    name: 'Algorand',
+    change: '-2.34%',
+    chartData: [50, 48, 47, 45, 44, 42, 41, 39, 38, 36, 35, 33],
     color: '#000000',
     icon: CryptoIcon,
-    price: '$0.18',
-    change: '-2.34%',
+    name: 'Algorand',
     positive: false,
-    chartData: [50, 48, 47, 45, 44, 42, 41, 39, 38, 36, 35, 33],
+    price: '$0.18',
+    ticker: 'ALGO',
   },
 ];
 
@@ -210,39 +218,39 @@ export default function CoinsMarquee() {
       component="section"
       sx={{
         bgcolor: 'background.default',
-        py: { xs: 4, md: 6 },
-        mt: { xs: -4, md: -6 },
-        position: 'relative',
-        zIndex: 2,
+        mt: { md: -6, xs: -4 },
         overflow: 'hidden',
+        position: 'relative',
+        py: { md: 6, xs: 4 },
+        zIndex: 2,
       }}
     >
       <Container maxWidth="lg" sx={{ position: 'relative' }}>
         {/* Left blur gradient */}
         <Box
           sx={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: { xs: 40, md: 80 },
             background: 'linear-gradient(to right, #fafafa 0%, transparent 100%)',
-            zIndex: 10,
+            bottom: 0,
+            left: 0,
             pointerEvents: 'none',
+            position: 'absolute',
+            top: 0,
+            width: { md: 80, xs: 40 },
+            zIndex: 10,
           }}
         />
 
         {/* Right blur gradient */}
         <Box
           sx={{
+            background: 'linear-gradient(to left, #fafafa 0%, transparent 100%)',
+            bottom: 0,
+            pointerEvents: 'none',
             position: 'absolute',
             right: 0,
             top: 0,
-            bottom: 0,
-            width: { xs: 40, md: 80 },
-            background: 'linear-gradient(to left, #fafafa 0%, transparent 100%)',
+            width: { md: 80, xs: 40 },
             zIndex: 10,
-            pointerEvents: 'none',
           }}
         />
 
@@ -257,10 +265,6 @@ export default function CoinsMarquee() {
             direction="row"
             spacing={2}
             sx={{
-              animation: 'scroll 40s linear infinite',
-              '&:hover': {
-                animationPlayState: 'paused',
-              },
               '@keyframes scroll': {
                 '0%': {
                   transform: 'translateX(0)',
@@ -269,6 +273,10 @@ export default function CoinsMarquee() {
                   transform: 'translateX(-50%)',
                 },
               },
+              '&:hover': {
+                animationPlayState: 'paused',
+              },
+              animation: 'scroll 40s linear infinite',
             }}
           >
             {/* First set of cards */}
@@ -278,18 +286,18 @@ export default function CoinsMarquee() {
                 <Card
                   key={`${coin.ticker}-1`}
                   sx={{
-                    minWidth: { xs: 160, sm: 180, md: 200 },
-                    flexShrink: 0,
+                    '&:hover': {
+                      borderColor: coin.color,
+                      boxShadow: `0 8px 24px ${coin.color}20`,
+                      transform: 'translateY(-4px)',
+                    },
                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
                     border: '1px solid #E5E7EB',
                     borderRadius: 2.5,
-                    transition: 'all 0.3s ease',
                     cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: `0 8px 24px ${coin.color}20`,
-                      borderColor: coin.color,
-                    },
+                    flexShrink: 0,
+                    minWidth: { md: 200, sm: 180, xs: 160 },
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <CardContent sx={{ p: 2 }}>
@@ -298,16 +306,16 @@ export default function CoinsMarquee() {
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <Box
                           sx={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: '50%',
-                            bgcolor: `${coin.color}15`,
-                            display: 'flex',
                             alignItems: 'center',
+                            bgcolor: `${coin.color}15`,
+                            borderRadius: '50%',
+                            display: 'flex',
+                            height: 36,
                             justifyContent: 'center',
+                            width: 36,
                           }}
                         >
-                          <IconComponent sx={{ fontSize: 20, color: coin.color }} />
+                          <IconComponent sx={{ color: coin.color, fontSize: 20 }} />
                         </Box>
                         <Box>
                           <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
@@ -335,9 +343,9 @@ export default function CoinsMarquee() {
                         </Typography>
                         <Stack direction="row" alignItems="center" spacing={0.5}>
                           {coin.positive ? (
-                            <TrendingUpIcon sx={{ fontSize: 14, color: '#10B981' }} />
+                            <TrendingUpIcon sx={{ color: '#10B981', fontSize: 14 }} />
                           ) : (
-                            <TrendingDownIcon sx={{ fontSize: 14, color: '#EF4444' }} />
+                            <TrendingDownIcon sx={{ color: '#EF4444', fontSize: 14 }} />
                           )}
                           <Typography
                             variant="caption"
@@ -361,18 +369,18 @@ export default function CoinsMarquee() {
                 <Card
                   key={`${coin.ticker}-2`}
                   sx={{
-                    minWidth: { xs: 160, sm: 180, md: 200 },
-                    flexShrink: 0,
+                    '&:hover': {
+                      borderColor: coin.color,
+                      boxShadow: `0 8px 24px ${coin.color}20`,
+                      transform: 'translateY(-4px)',
+                    },
                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
                     border: '1px solid #E5E7EB',
                     borderRadius: 2.5,
-                    transition: 'all 0.3s ease',
                     cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: `0 8px 24px ${coin.color}20`,
-                      borderColor: coin.color,
-                    },
+                    flexShrink: 0,
+                    minWidth: { md: 200, sm: 180, xs: 160 },
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <CardContent sx={{ p: 2 }}>
@@ -381,16 +389,16 @@ export default function CoinsMarquee() {
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <Box
                           sx={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: '50%',
-                            bgcolor: `${coin.color}15`,
-                            display: 'flex',
                             alignItems: 'center',
+                            bgcolor: `${coin.color}15`,
+                            borderRadius: '50%',
+                            display: 'flex',
+                            height: 36,
                             justifyContent: 'center',
+                            width: 36,
                           }}
                         >
-                          <IconComponent sx={{ fontSize: 20, color: coin.color }} />
+                          <IconComponent sx={{ color: coin.color, fontSize: 20 }} />
                         </Box>
                         <Box>
                           <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
@@ -418,9 +426,9 @@ export default function CoinsMarquee() {
                         </Typography>
                         <Stack direction="row" alignItems="center" spacing={0.5}>
                           {coin.positive ? (
-                            <TrendingUpIcon sx={{ fontSize: 14, color: '#10B981' }} />
+                            <TrendingUpIcon sx={{ color: '#10B981', fontSize: 14 }} />
                           ) : (
-                            <TrendingDownIcon sx={{ fontSize: 14, color: '#EF4444' }} />
+                            <TrendingDownIcon sx={{ color: '#EF4444', fontSize: 14 }} />
                           )}
                           <Typography
                             variant="caption"

@@ -16,23 +16,23 @@ export class NetworkController {
     this.store = new ObservableStore(
       extensionStorage.getInitState({
         currentNetwork: NetworkName.Mainnet,
-        customNodes: {
+        customCodes: {
+          custom: null,
           mainnet: null,
           stagenet: null,
           testnet: null,
-          custom: null,
         },
         customMatchers: {
-          mainnet: null,
-          testnet: null,
-          stagenet: null,
           custom: null,
+          mainnet: null,
+          stagenet: null,
+          testnet: null,
         },
-        customCodes: {
-          mainnet: null,
-          testnet: null,
-          stagenet: null,
+        customNodes: {
           custom: null,
+          mainnet: null,
+          stagenet: null,
+          testnet: null,
         },
       }),
     );
@@ -46,10 +46,10 @@ export class NetworkController {
     setTag('network', network);
 
     addBreadcrumb({
-      type: 'user',
       category: 'network-change',
       level: 'info',
       message: `Change network to ${network}`,
+      type: 'user',
     });
 
     this.store.updateState({ currentNetwork: network });
@@ -140,12 +140,12 @@ export class NetworkController {
     const response = await fetch(
       new URL(`matcher/orderbook/${params.amountAsset}/${params.priceAsset}/cancel`, matcherUrl),
       {
-        method: 'POST',
+        body: JSONbn.stringify(cancelOrder),
         headers: {
           accept: 'application/json; large-significand-format=string',
           'content-type': 'application/json; charset=utf-8',
         },
-        body: JSONbn.stringify(cancelOrder),
+        method: 'POST',
       },
     );
 
@@ -175,12 +175,12 @@ export class NetworkController {
     }
 
     const response = await fetch(new URL('matcher/orderbook', matcherUrl), {
-      method: 'POST',
+      body: stringifyOrder(order),
       headers: {
         accept: 'application/json; large-significand-format=string',
         'content-type': 'application/json; charset=utf-8',
       },
-      body: stringifyOrder(order),
+      method: 'POST',
     });
 
     if (!response.ok) {
@@ -203,12 +203,12 @@ export class NetworkController {
 
   async broadcastTransaction(tx: MessageTx) {
     const response = await fetch(new URL('transactions/broadcast', this.getNode()), {
-      method: 'POST',
+      body: stringifyTransaction(tx),
       headers: {
         accept: 'application/json; large-significand-format=string',
         'content-type': 'application/json; charset=utf-8',
       },
-      body: stringifyTransaction(tx),
+      method: 'POST',
     });
 
     if (!response.ok) {

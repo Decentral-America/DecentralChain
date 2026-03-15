@@ -2,7 +2,8 @@
  * useClipboard Hook
  * Provides copy-to-clipboard functionality with feedback
  */
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 interface UseClipboardReturn {
   isCopied: boolean;
@@ -33,7 +34,7 @@ export const useClipboard = (timeout: number = 2000): UseClipboardReturn => {
 
           return true;
         } catch (error) {
-          console.warn('Failed to copy to clipboard:', error);
+          logger.warn('Failed to copy to clipboard:', error);
           setIsCopied(false);
           return false;
         }
@@ -60,15 +61,15 @@ export const useClipboard = (timeout: number = 2000): UseClipboardReturn => {
           }, timeout);
           return true;
         } else {
-          console.warn('Fallback copy failed');
+          logger.warn('Fallback copy failed');
           return false;
         }
       } catch (error) {
-        console.warn('Fallback copy error:', error);
+        logger.warn('Fallback copy error:', error);
         return false;
       }
     },
-    [timeout]
+    [timeout],
   );
 
   const reset = useCallback(() => {
@@ -76,8 +77,8 @@ export const useClipboard = (timeout: number = 2000): UseClipboardReturn => {
   }, []);
 
   return {
-    isCopied,
     copyToClipboard,
+    isCopied,
     reset,
   };
 };

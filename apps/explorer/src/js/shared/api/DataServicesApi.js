@@ -1,9 +1,11 @@
-export const dataServicesApi = (baseUrl) => {
-  const get = (url) => fetch(baseUrl + url).then((res) => res.json());
+import axios from 'axios';
 
-  return {
-    aliases: {
-      address: (alias) => get(`/aliases/${encodeURI(alias)}`),
-    },
-  };
+export const dataServicesApi = (baseUrl) => {
+    const get = (url, config) => axios.get(baseUrl + url, config);
+
+    return {
+        aliases: {
+            address: (alias) => get('/aliases/' + encodeURI(alias))
+        }
+    };
 };

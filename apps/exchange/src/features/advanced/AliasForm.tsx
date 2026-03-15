@@ -3,21 +3,24 @@
  * Register human-readable aliases for blockchain addresses
  * Aliases are permanent and must be unique on the network
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import type React from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import { z } from 'zod';
-import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
+import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
-import { useAuth } from '@/contexts/AuthContext';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card)`
+const FormCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 600px;
   margin: 0 auto;
@@ -133,7 +136,7 @@ type AliasFormData = z.infer<typeof aliasSchema>;
 export const AliasForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<any>(null);
+  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
 
   const {
     register,
@@ -141,8 +144,8 @@ export const AliasForm: React.FC = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<AliasFormData>({
-    resolver: zodResolver(aliasSchema),
     mode: 'onChange',
+    resolver: zodResolver(aliasSchema),
   });
 
   const aliasValue = watch('alias', '');
@@ -164,7 +167,7 @@ export const AliasForm: React.FC = () => {
       setTransactionParams(params);
       setShowConfirmation(true);
     } catch (error) {
-      console.error('Error preparing alias transaction:', error);
+      logger.error('Error preparing alias transaction:', error);
       alert('Failed to prepare alias transaction');
     }
   };
@@ -184,8 +187,8 @@ export const AliasForm: React.FC = () => {
         </FormDescription>
 
         <WarningBox>
-          <strong>⚠️ Important:</strong> Aliases are permanent and cannot be changed or deleted
-          after registration. Make sure you choose a name you're happy with!
+          <strong>⚠️ Important:</strong> Aliases are permanent and cannot be changed or deleted after
+          registration. Make sure you choose a name you&apos;re happy with!
         </WarningBox>
 
         <form onSubmit={handleSubmit(onSubmit)}>

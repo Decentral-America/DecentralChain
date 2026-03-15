@@ -29,7 +29,7 @@ const Row = ({
   renderMore?: () => React.ReactNode;
 }>) => {
   const leftIndex = 2 * index;
-  const leftNft = rows[leftIndex];
+  const leftNft = rows[leftIndex]!;
   const leftCount = (leftNft?.creator && counts[leftNft.creator]) || 0;
 
   const rightIndex = leftIndex + 1;
@@ -90,11 +90,11 @@ export function NftList({
               rowCount={len}
               rowHeight={NFT_ROW_FULL_HEIGHT}
               rowProps={{
-                rows: nfts,
                 counts: counters,
-                mode,
                 len,
+                mode,
                 onClick,
+                rows: nfts,
                 ...(renderMore != null && { renderMore }),
               }}
               style={{ height, width }}

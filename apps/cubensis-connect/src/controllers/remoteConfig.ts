@@ -48,17 +48,17 @@ export class RemoteConfigController extends EventEmitter {
 
     this.store = new ObservableStore(
       extensionStorage.getInitState({
-        whitelist: DEFAULT_MAIN_CONFIG.whitelist,
+        assetsConfig: DEFAULT_MAIN_CONFIG.assets,
         config: {
+          idle: DEFAULT_MAIN_CONFIG.idle,
           messages_config: DEFAULT_MAIN_CONFIG.messages_config,
           pack_config: DEFAULT_MAIN_CONFIG.pack_config,
-          idle: DEFAULT_MAIN_CONFIG.idle,
         },
-        assetsConfig: DEFAULT_MAIN_CONFIG.assets,
-        ignoreErrorsConfig: DEFAULT_MAIN_CONFIG.ignoreErrors,
         identityConfig: DEFAULT_IDENTITY_CONFIG,
+        ignoreErrorsConfig: DEFAULT_MAIN_CONFIG.ignoreErrors,
         nftConfig: DEFAULT_MAIN_CONFIG.nfts,
         status: STATUS.PENDING,
+        whitelist: DEFAULT_MAIN_CONFIG.whitelist,
       }),
     );
 

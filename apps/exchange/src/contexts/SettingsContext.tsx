@@ -6,16 +6,11 @@
  * with localStorage persistence and change notifications.
  */
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  ReactNode,
-} from 'react';
-import { useAuth } from './AuthContext';
+import * as ds from 'data-service';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 import { NetworkConfig } from '../config/networkConfig';
+import { useAuth } from './AuthContext';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -41,7 +36,7 @@ interface CommonSettings {
   dontShowSpam: boolean;
   tradeWithScriptAssets: boolean;
   baseAssetId: string;
-  events: Record<string, any>;
+  events: Record<string, unknown>;
 
   // Network configuration
   network: {
@@ -57,7 +52,7 @@ interface CommonSettings {
     tokensNameListUrl: string;
     blockHeight: string;
   };
-  oracleWaves: string;
+  oracleDCC: string;
   scamListUrl: string;
   tokensNameListUrl: string;
 }
@@ -143,40 +138,45 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
  */
 const getDefaultCommonSettings = (): CommonSettings => {
   // Get assets configuration
-  const assets = (NetworkConfig.get('assets') as Record<string, string>) || {};
+  const assets =
+    (NetworkConfig.get('assets') as {
+      DCC?: string;
+      CRC?: string;
+      [key: string]: string | undefined;
+    }) || {};
   const dccAssetId = assets.DCC || 'DCC';
 
   return {
-    lng: 'en',
-    theme: 'default',
     advancedMode: false,
-    lastOpenVersion: '',
-    whatsNewList: [],
-    logoutAfterMin: 5,
-    termsAccepted: true,
-    needReadNewTerms: false,
-    closedNotification: [],
-    withScam: false,
-    dontShowSpam: true,
-    tradeWithScriptAssets: false,
     baseAssetId: dccAssetId,
+    closedNotification: [],
+    dontShowSpam: true,
     events: {},
+    lastOpenVersion: '',
+    lng: 'en',
+    logoutAfterMin: 5,
+    needReadNewTerms: false,
     network: {
-      code: (NetworkConfig.get('code') as string) || '?',
-      server: NetworkConfig.node,
-      matcher: NetworkConfig.matcher,
       api: NetworkConfig.api,
-      coinomat: (NetworkConfig.get('coinomat') as string) || '',
-      nodeList: (NetworkConfig.get('nodeList') as string) || '',
-      dataServicesVersions: (NetworkConfig.get('featuresConfigUrl') as string) || '',
-      support: (NetworkConfig.get('support') as string) || '',
-      scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
-      tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
       blockHeight: '', // This would be fetched dynamically
+      code: (NetworkConfig.get('code') as string) || '?',
+      coinomat: (NetworkConfig.get('coinomat') as string) || '',
+      dataServicesVersions: (NetworkConfig.get('featuresConfigUrl') as string) || '',
+      matcher: NetworkConfig.matcher,
+      nodeList: (NetworkConfig.get('nodeList') as string) || '',
+      scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
+      server: NetworkConfig.node,
+      support: (NetworkConfig.get('support') as string) || '',
+      tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
     },
-    oracleWaves: NetworkConfig.oracleWaves,
+    oracleDCC: NetworkConfig.oracleDCC,
     scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
+    termsAccepted: true,
+    theme: 'default',
     tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
+    tradeWithScriptAssets: false,
+    whatsNewList: [],
+    withScam: false,
   };
 };
 
@@ -185,55 +185,60 @@ const getDefaultCommonSettings = (): CommonSettings => {
  * Matches Angular defaults
  */
 const getDefaultUserSettings = (): UserSettings => {
-  const assets = (NetworkConfig.get('assets') as Record<string, string>) || {};
+  const assets =
+    (NetworkConfig.get('assets') as {
+      DCC?: string;
+      CRC?: string;
+      [key: string]: string | undefined;
+    }) || {};
   const dccAssetId = assets.DCC || 'DCC';
   const crcAssetId = assets.CRC || 'CRC';
 
   return {
+    dex: {
+      assetIdPair: {
+        amount: dccAssetId,
+        price: crcAssetId,
+      },
+      chartCropRate: 1.5,
+      createOrder: {
+        expirationName: '30day',
+      },
+      layout: {
+        orderbook: { collapsed: false },
+        tradevolume: { collapsed: true },
+        watchlist: { collapsed: false },
+      },
+      watchlist: {
+        activeTab: 'all',
+        favourite: [[crcAssetId]],
+        showOnlyFavorite: false,
+      },
+    },
     encryptionRounds: 5000,
     hasBackup: true,
     lastInterval: '30', // Default chart interval
+    orderLimit: 0.05,
+    pinnedAssetIdList: [dccAssetId, crcAssetId],
     send: {
       defaultTab: 'singleSend',
     },
-    orderLimit: 0.05,
-    pinnedAssetIdList: [dccAssetId, crcAssetId],
     wallet: {
       activeState: 'assets',
       assets: {
-        chartMode: 'month',
         activeChartAssetId: dccAssetId,
         chartAssetIdList: [crcAssetId],
-      },
-      transactions: {
-        filter: 'all',
+        chartMode: 'month',
       },
       leasing: {
         filter: 'all',
       },
       portfolio: {
-        spam: [],
         filter: 'active',
+        spam: [],
       },
-    },
-    dex: {
-      chartCropRate: 1.5,
-      assetIdPair: {
-        amount: dccAssetId,
-        price: crcAssetId,
-      },
-      createOrder: {
-        expirationName: '30day',
-      },
-      watchlist: {
-        showOnlyFavorite: false,
-        favourite: [[crcAssetId]],
-        activeTab: 'all',
-      },
-      layout: {
-        watchlist: { collapsed: false },
-        orderbook: { collapsed: false },
-        tradevolume: { collapsed: true },
+      transactions: {
+        filter: 'all',
       },
     },
   };
@@ -246,11 +251,60 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
 
   /**
-   * Load settings from localStorage on mount and when user changes
+   * Apply side effects for setting changes
+   * Matches Angular's side effects (theme changes, data-service config updates, etc.)
    */
-  useEffect(() => {
-    loadSettings();
-  }, [user]);
+  const applySideEffects = useCallback(async (key: string, value: unknown) => {
+    try {
+      switch (key) {
+        case 'theme':
+          // Apply theme change to document
+          document.documentElement.setAttribute('data-theme', String(value || 'default'));
+          break;
+
+        case 'network':
+        case 'oracleDCC':
+        case 'scamListUrl':
+        case 'tokensNameListUrl': {
+          // Update data-service config
+
+          const setConfig = ds.config.setConfig as
+            | ((config: Record<string, unknown>) => void)
+            | undefined;
+          if (setConfig) {
+            if (key === 'network' && value) {
+              const network = value as { server: string; matcher: string };
+              setConfig({
+                servers: {
+                  matcherAddress: network.matcher,
+                  nodeAddress: network.server,
+                },
+              });
+            } else {
+              setConfig({ [key]: value });
+            }
+          }
+          break;
+        }
+
+        case 'dontShowSpam':
+          // Spam filter toggle - handled by components
+          logger.debug('[Settings] Spam filter toggled:', value);
+          break;
+
+        case 'lng':
+          // Language change - would trigger i18n update
+          logger.debug('[Settings] Language changed:', value);
+          break;
+
+        default:
+          // No side effects for other settings
+          break;
+      }
+    } catch (error) {
+      logger.error('[Settings] Side effect failed for', key, error);
+    }
+  }, []);
 
   /**
    * Load settings from localStorage
@@ -283,7 +337,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           setUserSettings(defaults);
           localStorage.setItem(
             `${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`,
-            JSON.stringify(defaults)
+            JSON.stringify(defaults),
           );
         }
       } else {
@@ -294,7 +348,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       const theme = storedCommon ? JSON.parse(storedCommon).theme : 'default';
       document.documentElement.setAttribute('data-theme', theme || 'default');
     } catch (error) {
-      console.error('[Settings] Load failed:', error);
+      logger.error('[Settings] Load failed:', error);
       // Use defaults on error
       setCommonSettings(getDefaultCommonSettings());
       setUserSettings(user ? getDefaultUserSettings() : null);
@@ -304,6 +358,13 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   /**
+   * Load settings from localStorage on mount and when user changes
+   */
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  /**
    * Get common setting value
    * Matches Angular DefaultSettings.get() for common settings
    */
@@ -311,7 +372,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     <K extends keyof CommonSettings>(key: K): CommonSettings[K] => {
       return commonSettings[key];
     },
-    [commonSettings]
+    [commonSettings],
   );
 
   /**
@@ -327,7 +388,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       // Trigger side effects
       applySideEffects(key as string, value);
     },
-    [commonSettings]
+    [commonSettings, applySideEffects],
   );
 
   /**
@@ -338,7 +399,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     <K extends keyof UserSettings>(key: K): UserSettings[K] | undefined => {
       return userSettings?.[key];
     },
-    [userSettings]
+    [userSettings],
   );
 
   /**
@@ -348,7 +409,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const setUserSetting = useCallback(
     <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
       if (!user || !userSettings) {
-        console.warn('[Settings] Cannot set user setting: No user logged in');
+        logger.warn('[Settings] Cannot set user setting: No user logged in');
         return;
       }
 
@@ -356,59 +417,8 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       setUserSettings(updated);
       localStorage.setItem(`${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`, JSON.stringify(updated));
     },
-    [user, userSettings]
+    [user, userSettings],
   );
-
-  /**
-   * Apply side effects for setting changes
-   * Matches Angular's side effects (theme changes, data-service config updates, etc.)
-   */
-  const applySideEffects = async (key: string, value: any) => {
-    try {
-      switch (key) {
-        case 'theme':
-          // Apply theme change to document
-          document.documentElement.setAttribute('data-theme', value || 'default');
-          break;
-
-        case 'network':
-        case 'oracleWaves':
-        case 'scamListUrl':
-        case 'tokensNameListUrl':
-          // Update data-service config
-          const ds = await import('data-service');
-          if (ds.config.setConfig) {
-            const updates: any = {};
-            if (key === 'network' && value) {
-              updates.servers = {
-                nodeAddress: value.server,
-                matcherAddress: value.matcher,
-              };
-            } else {
-              updates[key] = value;
-            }
-            ds.config.setConfig(updates);
-          }
-          break;
-
-        case 'dontShowSpam':
-          // Spam filter toggle - handled by components
-          console.log('[Settings] Spam filter toggled:', value);
-          break;
-
-        case 'lng':
-          // Language change - would trigger i18n update
-          console.log('[Settings] Language changed:', value);
-          break;
-
-        default:
-          // No side effects for other settings
-          break;
-      }
-    } catch (error) {
-      console.error('[Settings] Side effect failed for', key, error);
-    }
-  };
 
   /**
    * Reset all settings to defaults
@@ -426,28 +436,28 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         setUserSettings(defaultUser);
         localStorage.setItem(
           `${STORAGE_KEYS.USER_SETTINGS}_${user.hash}`,
-          JSON.stringify(defaultUser)
+          JSON.stringify(defaultUser),
         );
       }
 
       // Re-apply theme
       document.documentElement.setAttribute('data-theme', defaultCommon.theme);
 
-      console.log('[Settings] Reset to defaults');
+      logger.debug('[Settings] Reset to defaults');
     } catch (error) {
-      console.error('[Settings] Reset to defaults failed:', error);
+      logger.error('[Settings] Reset to defaults failed:', error);
     }
   }, [user]);
 
   const value: SettingsContextType = {
     commonSettings,
     getCommonSetting,
-    setCommonSetting,
-    userSettings,
     getUserSetting,
-    setUserSetting,
-    resetToDefaults,
     isLoading,
+    resetToDefaults,
+    setCommonSetting,
+    setUserSetting,
+    userSettings,
   };
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

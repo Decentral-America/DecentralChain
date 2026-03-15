@@ -1,13 +1,14 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Standard video resolutions for media stream
  */
 export const RESOLUTIONS = {
-  FULL_HD: { width: 1920, height: 1080 },
-  HD: { width: 1280, height: 720 },
-  VGA: { width: 640, height: 480 },
-  QVGA: { width: 320, height: 240 },
+  FULL_HD: { height: 1080, width: 1920 },
+  HD: { height: 720, width: 1280 },
+  QVGA: { height: 240, width: 320 },
+  VGA: { height: 480, width: 640 },
 } as const;
 
 /**
@@ -163,7 +164,7 @@ const buildConstraints = (
   devices: MediaDeviceInfo[],
   resolution: Resolution,
   preferBackCamera: boolean,
-  audio?: boolean | MediaTrackConstraints
+  audio?: boolean | MediaTrackConstraints,
 ): MediaStreamConstraints => {
   const constraints: MediaStreamConstraints = {
     audio: audio || false,
@@ -172,8 +173,8 @@ const buildConstraints = (
 
   if (resolution) {
     constraints.video = {
-      width: { exact: resolution.width },
       height: { exact: resolution.height },
+      width: { exact: resolution.width },
     };
 
     // Check if browser supports facingMode
@@ -202,7 +203,7 @@ const buildConstraints = (
 const getUserMediaWithFallback = async (
   devices: MediaDeviceInfo[],
   preferBackCamera: boolean,
-  audio?: boolean | MediaTrackConstraints
+  audio?: boolean | MediaTrackConstraints,
 ): Promise<MediaStream> => {
   const resolutions = [RESOLUTIONS.FULL_HD, RESOLUTIONS.HD, RESOLUTIONS.VGA, RESOLUTIONS.QVGA];
 
@@ -214,7 +215,7 @@ const getUserMediaWithFallback = async (
       return await navigator.mediaDevices.getUserMedia(constraints);
     } catch {
       // Try rotated resolution (width <-> height)
-      const rotated = { width: res.height, height: res.width };
+      const rotated = { height: res.width, width: res.height };
       const rotatedConstraints = buildConstraints(devices, rotated, preferBackCamera, audio);
       return await navigator.mediaDevices.getUserMedia(rotatedConstraints);
     }
@@ -316,7 +317,9 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
 
       if (!isMountedRef.current) {
         // Component unmounted during async operation
-        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream.getTracks().forEach((track) => {
+          track.stop();
+        });
         return null;
       }
 
@@ -329,9 +332,9 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       if (debug) {
         const videoTrack = mediaStream.getVideoTracks()[0];
         const audioTrack = mediaStream.getAudioTracks()[0];
-        console.log('[MediaStream] Stream started:', {
-          video: videoTrack ? videoTrack.getSettings() : 'none',
+        logger.debug('[MediaStream] Stream started:', {
           audio: audioTrack ? audioTrack.label : 'none',
+          video: videoTrack ? videoTrack.getSettings() : 'none',
         });
       }
 
@@ -344,7 +347,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       onError?.(error);
 
       if (debug) {
-        console.error('[MediaStream] Failed to start stream:', error);
+        logger.error('[MediaStream] Failed to start stream:', error);
       }
 
       return null;
@@ -356,7 +359,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       streamRef.current.getTracks().forEach((track) => {
         track.stop();
         if (debug) {
-          console.log(`[MediaStream] Stopped track: ${track.kind} - ${track.label}`);
+          logger.debug(`[MediaStream] Stopped track: ${track.kind} - ${track.label}`);
         }
       });
 
@@ -366,7 +369,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
       onStreamStop?.();
 
       if (debug) {
-        console.log('[MediaStream] Stream stopped');
+        logger.debug('[MediaStream] Stream stopped');
       }
     }
   }, [debug, onStreamStop]);
@@ -389,8 +392,8 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
           audio,
           video: {
             deviceId: { exact: deviceId },
-            width: { ideal: resolution.width },
             height: { ideal: resolution.height },
+            width: { ideal: resolution.width },
           },
         });
 
@@ -400,7 +403,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
         onStreamStart?.(mediaStream);
 
         if (debug) {
-          console.log(`[MediaStream] Switched to camera: ${deviceId}`);
+          logger.debug(`[MediaStream] Switched to camera: ${deviceId}`);
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
@@ -408,17 +411,17 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
         onError?.(error);
 
         if (debug) {
-          console.error('[MediaStream] Failed to switch camera:', error);
+          logger.error('[MediaStream] Failed to switch camera:', error);
         }
       }
     },
-    [audio, resolution, debug, stopStream, onStreamStart, onError]
+    [audio, resolution, debug, stopStream, onStreamStart, onError],
   );
 
   const takeSnapshot = useCallback((): string | null => {
     if (!streamRef.current) {
       if (debug) {
-        console.warn('[MediaStream] No active stream to snapshot');
+        logger.warn('[MediaStream] No active stream to snapshot');
       }
       return null;
     }
@@ -447,9 +450,9 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
     const dataUrl = canvas.toDataURL('image/png');
 
     if (debug) {
-      console.log('[MediaStream] Snapshot taken:', {
-        width: canvas.width,
+      logger.debug('[MediaStream] Snapshot taken:', {
         height: canvas.height,
+        width: canvas.width,
       });
     }
 
@@ -478,16 +481,16 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
   }, [stopStream]);
 
   return {
-    stream,
     error,
+    getDevices,
     isActive,
     isLoading,
     startStream,
     stopStream,
-    toggleStream,
-    getDevices,
+    stream,
     switchCamera,
     takeSnapshot,
+    toggleStream,
   };
 };
 
@@ -538,8 +541,8 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       }
 
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
         audio,
+        video: true,
       });
 
       streamRef.current = mediaStream;
@@ -548,7 +551,7 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       setError(null);
 
       if (debug) {
-        console.log('[ScreenCapture] Capture started');
+        logger.debug('[ScreenCapture] Capture started');
       }
 
       return mediaStream;
@@ -558,7 +561,7 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       setIsActive(false);
 
       if (debug) {
-        console.error('[ScreenCapture] Failed to start capture:', error);
+        logger.error('[ScreenCapture] Failed to start capture:', error);
       }
 
       return null;
@@ -567,13 +570,15 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
 
   const stopCapture = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
       streamRef.current = null;
       setStream(null);
       setIsActive(false);
 
       if (debug) {
-        console.log('[ScreenCapture] Capture stopped');
+        logger.debug('[ScreenCapture] Capture stopped');
       }
     }
   }, [debug]);
@@ -583,11 +588,11 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
   }, [stopCapture]);
 
   return {
-    stream,
     error,
     isActive,
     startCapture,
     stopCapture,
+    stream,
   };
 };
 

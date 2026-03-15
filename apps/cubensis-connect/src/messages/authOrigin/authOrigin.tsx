@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { MessageFinal } from 'messages/_common/final';
 import { MessageHeader } from 'messages/_common/header';
@@ -156,9 +156,9 @@ export function AuthOriginScreen({
               setSelectedResolutionSelected(newValue);
 
               setState({
-                totalAmount: newValue ? totalAmount : '',
                 interval: INTERVAL_VALUES[newValue],
                 showNotify,
+                totalAmount: newValue ? totalAmount : '',
               });
             }}
           />
@@ -184,9 +184,9 @@ export function AuthOriginScreen({
                 }
 
                 setState({
-                  totalAmount: interval ? parsedValue.join('.') : '',
                   interval,
                   showNotify,
+                  totalAmount: interval ? parsedValue.join('.') : '',
                 });
               }}
             />
@@ -201,9 +201,9 @@ export function AuthOriginScreen({
               type="checkbox"
               onChange={(event) => {
                 setState({
-                  totalAmount: interval ? totalAmount : '',
                   interval,
                   showNotify: event.target.checked,
+                  totalAmount: interval ? totalAmount : '',
                 });
               }}
             />
@@ -304,9 +304,9 @@ export function AuthOriginFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.authConfirmed'),
         approve: t('sign.authConfirmed'),
         reject: t('sign.authRejected'),
+        send: t('sign.authConfirmed'),
       }}
     />
   );

@@ -1,1 +1,1 @@
-export { RoutedPeersPage as default } from './PeersPage.container';
+export {PeersPage as default} from './PeersPage.container';

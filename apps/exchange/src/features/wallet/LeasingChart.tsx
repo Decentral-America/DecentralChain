@@ -4,7 +4,11 @@
  * Uses Victory Charts (React 19 compatible)
  */
 import { useMemo } from 'react';
-import { VictoryPie, VictoryContainer } from 'victory';
+import { VictoryContainer, VictoryPie as VictoryPieBase } from 'victory';
+
+// React 19 type compatibility cast
+const VictoryPie = VictoryPieBase as unknown as React.ComponentType<Record<string, unknown>>;
+
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 
 interface LeasingChartProps {
@@ -27,19 +31,19 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
   const chartData = useMemo(
     () => [
       {
+        color: theme.palette.primary.main,
         name: 'Available',
         value: availableDcc,
-        color: theme.palette.primary.main,
       },
       {
+        color: theme.palette.warning.light,
         name: 'Leased Out',
         value: leasedOutDcc,
-        color: theme.palette.warning.light,
       },
       {
+        color: theme.palette.info.light,
         name: 'Leased In',
         value: leasedInDcc,
-        color: theme.palette.info.light,
       },
     ],
     [
@@ -49,7 +53,7 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
       theme.palette.info.light,
       theme.palette.primary.main,
       theme.palette.warning.light,
-    ]
+    ],
   );
 
   // Total balance = available + leased out (matches Angular)
@@ -66,7 +70,7 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
       <Typography variant="subtitle1" fontWeight={600}>
         DCC Distribution
       </Typography>
-      <Box sx={{ position: 'relative', width: '100%', maxWidth: 360, mx: 'auto' }}>
+      <Box sx={{ maxWidth: 360, mx: 'auto', position: 'relative', width: '100%' }}>
         <VictoryPie
           data={displayData}
           x="name"
@@ -74,40 +78,42 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
           colorScale={displayData.map((segment) => segment.color)}
           innerRadius={hasBalance ? 80 : 90}
           labelRadius={120}
-          labels={({ datum }) =>
-            hasBalance && datum.value > 0 ? `${Math.round((datum.value / totalDcc) * 100)}%` : ''
+          labels={({ datum }: { datum: { value?: number; [key: string]: unknown } }) =>
+            hasBalance && (datum.value as number) > 0
+              ? `${Math.round(((datum.value as number) / totalDcc) * 100)}%`
+              : ''
           }
           style={{
             labels: {
+              fill: theme.palette.text.secondary,
               fontFamily: theme.typography.fontFamily,
               fontSize: 14,
-              fill: theme.palette.text.secondary,
             },
           }}
-          padding={{ top: 20, bottom: 20, left: 20, right: 20 }}
+          padding={{ bottom: 20, left: 20, right: 20, top: 20 }}
           containerComponent={<VictoryContainer responsive />}
         />
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
             left: '50%',
-            transform: 'translate(-50%, -60%)',
-            textAlign: 'center',
             pointerEvents: 'none',
+            position: 'absolute',
+            textAlign: 'center',
+            top: '50%',
+            transform: 'translate(-50%, -60%)',
           }}
         >
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ textTransform: 'uppercase', letterSpacing: 1 }}
+            sx={{ letterSpacing: 1, textTransform: 'uppercase' }}
           >
             Total Balance
           </Typography>
           <Typography variant="h4" fontWeight={700}>
             {totalDcc.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
               maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
             })}
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -116,7 +122,7 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
         </Box>
       </Box>
       <Stack
-        direction={{ xs: 'column', sm: 'row' }}
+        direction={{ sm: 'row', xs: 'column' }}
         spacing={3}
         justifyContent="center"
         alignItems="center"
@@ -125,10 +131,10 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
           <Stack direction="row" spacing={1} alignItems="center" key={segment.name}>
             <Box
               sx={{
-                width: 14,
-                height: 14,
-                borderRadius: 1,
                 bgcolor: segment.color,
+                borderRadius: 1,
+                height: 14,
+                width: 14,
               }}
             />
             <Typography variant="caption" color="text.secondary">

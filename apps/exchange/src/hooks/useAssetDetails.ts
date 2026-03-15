@@ -2,12 +2,12 @@
  * useAssetDetails Hook
  * Fetches and caches asset information using React Query
  */
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { type QueryClient, useQueries, useQuery } from '@tanstack/react-query';
 import {
+  type AssetDetails,
   fetchAssetDetails,
-  AssetDetails,
-  getAssetDisplayName,
   formatAssetAmount,
+  getAssetDisplayName,
   shortenAssetId,
 } from '@/services/assetService';
 
@@ -97,7 +97,7 @@ export interface UseAssetDetailsResult {
  */
 export const useAssetDetails = (
   assetId: string | null | undefined,
-  options: UseAssetDetailsOptions = {}
+  options: UseAssetDetailsOptions = {},
 ): UseAssetDetailsResult => {
   const {
     enabled = true,
@@ -107,13 +107,13 @@ export const useAssetDetails = (
 
   // Query asset details
   const query = useQuery({
-    queryKey: ['asset-details', assetId],
-    queryFn: () => fetchAssetDetails(assetId),
     enabled: enabled && !!assetId, // Only fetch if assetId is provided
-    staleTime,
     gcTime: cacheTime, // v5 uses gcTime instead of cacheTime
+    queryFn: () => fetchAssetDetails(assetId),
+    queryKey: ['asset-details', assetId],
     retry: 2, // Retry failed requests twice
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    staleTime,
   });
 
   // Null assetId means DCC
@@ -133,11 +133,11 @@ export const useAssetDetails = (
 
   return {
     data: query.data as AssetDetails | null | undefined,
-    isLoading: query.isLoading,
-    error: query.error,
-    isSuccess: query.isSuccess,
     displayName,
+    error: query.error,
     formatAmount,
+    isLoading: query.isLoading,
+    isSuccess: query.isSuccess,
     shortAssetId,
   };
 };
@@ -160,13 +160,13 @@ export const useAssetDetails = (
  */
 export const prefetchAssetDetails = async (
   queryClient: QueryClient,
-  assetId: string | null | undefined
+  assetId: string | null | undefined,
 ): Promise<void> => {
   if (!assetId) return;
 
   await queryClient.prefetchQuery({
-    queryKey: ['asset-details', assetId],
     queryFn: () => fetchAssetDetails(assetId),
+    queryKey: ['asset-details', assetId],
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -190,21 +190,44 @@ export const prefetchAssetDetails = async (
  * ```
  */
 export const useMultipleAssets = (
-  assetIds: (string | null | undefined)[]
+  assetIds: (string | null | undefined)[],
 ): Map<string, UseAssetDetailsResult> => {
   // Filter unique non-null asset IDs
   const uniqueAssetIds = Array.from(new Set(assetIds.filter((id): id is string => !!id)));
 
-  // Create a map of asset results
-  const assetMap = new Map<string, UseAssetDetailsResult>();
+  // Fetch each asset using useQueries (avoids calling hooks in a loop)
+  const queries = useQueries({
+    queries: uniqueAssetIds.map((assetId) => ({
+      enabled: !!assetId,
+      gcTime: 60 * 60 * 1000,
+      queryFn: () => fetchAssetDetails(assetId),
+      queryKey: ['asset-details', assetId] as const,
+      retry: 2,
+      retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
 
-  // Fetch each asset
-  uniqueAssetIds.forEach((assetId) => {
-    // This is intentionally calling the hook in a loop
-    // React Query handles deduplication internally
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const result = useAssetDetails(assetId);
-    assetMap.set(assetId, result);
+  // Build result map
+  const assetMap = new Map<string, UseAssetDetailsResult>();
+  uniqueAssetIds.forEach((assetId, index) => {
+    const query = queries[index];
+    const assetDetails = query?.data as AssetDetails | null | undefined;
+    const displayName = getAssetDisplayName(assetDetails ?? null);
+    const formatAmount = (amount: number): string => {
+      const decimals = assetDetails?.decimals ?? 8;
+      return formatAssetAmount(amount, decimals);
+    };
+    const shortAssetId = shortenAssetId(assetId);
+    assetMap.set(assetId, {
+      data: assetDetails,
+      displayName,
+      error: query?.error ?? null,
+      formatAmount,
+      isLoading: query?.isLoading ?? false,
+      isSuccess: query?.isSuccess ?? false,
+      shortAssetId,
+    });
   });
 
   return assetMap;

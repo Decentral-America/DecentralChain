@@ -37,7 +37,7 @@ export interface UseAutoFocusOptions {
 }
 
 export function useAutoFocus<T extends HTMLElement>(
-  options: UseAutoFocusOptions = {}
+  options: UseAutoFocusOptions = {},
 ): React.RefObject<T | null> {
   const {
     enabled = true,

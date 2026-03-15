@@ -27,7 +27,6 @@ import { RootWrapper } from './ui/components/RootWrapper';
 import Background, { type BackgroundUiApi } from './ui/services/Background';
 
 initSentry({
-  source: 'popup',
   shouldIgnoreError: async (message) => {
     const [shouldIgnoreGlobal, shouldIgnoreContext] = await Promise.all([
       Background.shouldIgnoreError('beforeSend', message),
@@ -36,6 +35,7 @@ initSentry({
 
     return shouldIgnoreGlobal || shouldIgnoreContext;
   },
+  source: 'popup',
 });
 
 const store = createPopupStore();

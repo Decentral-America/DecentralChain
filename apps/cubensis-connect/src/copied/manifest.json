@@ -1,25 +1,29 @@
 {
-  "manifest_version": null,
-  "name": "Cubensis Connect",
-  "short_name": "Cubensis",
-  "description": "Cubensis Connect is your entry point to the DecentralChain blockchain and DCC-powered web services",
-  "version": null,
-  "author": "soporte@decentralchain.io",
   "applications": {
     "gecko": {
       "id": "soporte@decentralchain.io"
     }
   },
+  "author": "soporte@decentralchain.io",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "windows": "Alt+Shift+K",
-        "mac": "Alt+Shift+K",
         "chromeos": "Alt+Shift+K",
-        "linux": "Alt+Shift+K"
+        "linux": "Alt+Shift+K",
+        "mac": "Alt+Shift+K",
+        "windows": "Alt+Shift+K"
       }
     }
   },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": ["contentscript.js"],
+      "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_end"
+    }
+  ],
+  "description": "Cubensis Connect is your entry point to the DecentralChain blockchain and DCC-powered web services",
   "icons": {
     "16": "icons/icon_16.png",
     "24": "icons/icon_24.png",
@@ -32,13 +36,9 @@
     "256": "icons/icon_256.png",
     "512": "icons/icon_512.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["contentscript.js"],
-      "run_at": "document_end",
-      "all_frames": true
-    }
-  ],
-  "permissions": ["alarms", "clipboardWrite", "idle", "storage", "unlimitedStorage", "tabs"]
+  "manifest_version": null,
+  "name": "Cubensis Connect",
+  "permissions": ["alarms", "clipboardWrite", "idle", "storage", "unlimitedStorage", "tabs"],
+  "short_name": "Cubensis",
+  "version": null
 }

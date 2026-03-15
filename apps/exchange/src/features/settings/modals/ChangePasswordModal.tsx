@@ -3,12 +3,12 @@
  * Change encryption password for multi-account data
  * Matches Angular PasswordModalCtrl functionality
  */
-import React, { useState } from 'react';
-import { Modal } from '@/components/organisms/Modal';
-import { Button } from '@/components/atoms/Button';
-// useAuth available if needed for password change
-// import { useAuth } from '@/contexts/AuthContext';
+import type React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/organisms/Modal';
+import { multiAccount } from '@/services/multiAccount';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -107,8 +107,13 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError('New password must be at least 8 characters');
+    if (newPassword.length < 12) {
+      setError('New password must be at least 12 characters');
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      setError('New password must be different from current password');
       return;
     }
 
@@ -123,14 +128,18 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
         throw new Error('Multi-account data not found');
       }
 
-      // TODO: Implement actual password change using multiAccount service
-      // This would use: multiAccount.changePassword(data, oldPassword, newPassword, rounds, hash)
-      // For now, we'll simulate success
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Re-encrypt all account data with the new password
+      const result = await multiAccount.changePassword(
+        multiAccountData,
+        oldPassword,
+        newPassword,
+        600000, // OWASP 2024 PBKDF2-SHA256 recommendation
+        multiAccountHash,
+      );
 
-      // In real implementation, save new data:
-      // localStorage.setItem('multiAccountData', result.multiAccountData);
-      // localStorage.setItem('multiAccountHash', result.multiAccountHash);
+      // Save re-encrypted data to storage
+      localStorage.setItem('multiAccountData', result.multiAccountData);
+      localStorage.setItem('multiAccountHash', result.multiAccountHash);
 
       setSuccess(true);
       setOldPassword('');
@@ -141,8 +150,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch (err: any) {
-      setError(err.message || 'Incorrect old password or change failed');
+    } catch {
+      setError('Incorrect password or unable to change password');
     } finally {
       setIsLoading(false);
     }

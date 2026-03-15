@@ -42,13 +42,13 @@ function Suggest({
     <div className={`${styles.suggest} ${className}`}>
       {accounts.length !== 0 && (
         <>
-          <p className={styles.title} style={{ paddingRight, paddingLeft }}>
+          <p className={styles.title} style={{ paddingLeft, paddingRight }}>
             {t('address.wallets')}
           </p>
           {accounts.map((account) => (
             <div
               className={styles.item}
-              style={{ paddingRight, paddingLeft }}
+              style={{ paddingLeft, paddingRight }}
               key={account.address}
               role="option"
               tabIndex={0}
@@ -70,13 +70,13 @@ function Suggest({
       )}
       {addresses.length !== 0 && (
         <>
-          <p className={styles.title} style={{ paddingRight, paddingLeft }}>
+          <p className={styles.title} style={{ paddingLeft, paddingRight }}>
             {t('address.title')}
           </p>
           {addresses.map(([address, name]) => (
             <div
               className={styles.item}
-              style={{ paddingRight, paddingLeft }}
+              style={{ paddingLeft, paddingRight }}
               key={address}
               role="option"
               tabIndex={0}

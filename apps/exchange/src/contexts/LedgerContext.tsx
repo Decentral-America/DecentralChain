@@ -3,10 +3,10 @@
  * Provides global Ledger device state management across the application
  */
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, type ReactNode, useContext } from 'react';
 import { useLedger } from '@/hooks/useLedger';
 
-interface LedgerContextValue extends ReturnType<typeof useLedger> {}
+type LedgerContextValue = ReturnType<typeof useLedger>;
 
 const LedgerContext = createContext<LedgerContextValue | undefined>(undefined);
 

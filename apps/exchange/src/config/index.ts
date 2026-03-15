@@ -4,6 +4,7 @@
  * Now derives all network values from mainnet.json via NetworkConfig service
  */
 
+import { logger } from '@/lib/logger';
 import NetworkConfig from './networkConfig';
 
 export interface Config {
@@ -18,7 +19,7 @@ export interface Config {
   network: string;
   networkByte: number;
   apiUrl: string;
-  wsUrl?: string;
+  wsUrl?: string | undefined;
   nodeUrl: string;
   matcherUrl: string;
   explorerUrl: string;
@@ -32,7 +33,7 @@ export interface Config {
 
   // Feature flags
   sentryEnabled: boolean;
-  sentryDsn?: string;
+  sentryDsn?: string | undefined;
 }
 
 /**
@@ -44,31 +45,31 @@ const getConfig = (): Config => {
   const env = import.meta.env.VITE_APP_ENV || 'development';
 
   return {
+    apiUrl: import.meta.env.VITE_API_URL || NetworkConfig.api,
+    dataServiceUrl: import.meta.env.VITE_DATA_SERVICE_URL || NetworkConfig.api,
+    enableDebug: import.meta.env.VITE_DEBUG === 'true',
+    enableMocks: import.meta.env.VITE_ENABLE_MOCKS === 'true',
+    explorerUrl: import.meta.env.VITE_EXPLORER_URL || NetworkConfig.explorer,
     // Environment flags
     isDevelopment: import.meta.env.DEV,
     isProduction: import.meta.env.PROD,
     isStaging: env === 'staging',
-    enableMocks: import.meta.env.VITE_ENABLE_MOCKS === 'true',
-    enableDebug: import.meta.env.VITE_DEBUG === 'true',
+    matcherUrl: import.meta.env.VITE_MATCHER_URL || NetworkConfig.matcher,
 
     // Network configuration - defaults from NetworkConfig (mainnet.json)
     network: import.meta.env.VITE_NETWORK || 'mainnet',
     networkByte: NetworkConfig.networkByte,
-    apiUrl: import.meta.env.VITE_API_URL || NetworkConfig.api,
     nodeUrl: import.meta.env.VITE_NODE_URL || NetworkConfig.node,
-    matcherUrl: import.meta.env.VITE_MATCHER_URL || NetworkConfig.matcher,
-    explorerUrl: import.meta.env.VITE_EXPLORER_URL || NetworkConfig.explorer,
-    dataServiceUrl: import.meta.env.VITE_DATA_SERVICE_URL || NetworkConfig.api,
+    originUrl: NetworkConfig.origin,
+    privacyUrl: NetworkConfig.privacyPolicy,
+    sentryDsn: import.meta.env.VITE_SENTRY_DSN,
+
+    // Feature flags
+    sentryEnabled: import.meta.env.VITE_SENTRY_ENABLED === 'true',
 
     // Application URLs - from mainnet.json via NetworkConfig
     supportUrl: NetworkConfig.support,
     termsUrl: NetworkConfig.termsAndConditions,
-    privacyUrl: NetworkConfig.privacyPolicy,
-    originUrl: NetworkConfig.origin,
-
-    // Feature flags
-    sentryEnabled: import.meta.env.VITE_SENTRY_ENABLED === 'true',
-    sentryDsn: import.meta.env.VITE_SENTRY_DSN,
   };
 };
 
@@ -99,6 +100,6 @@ export { NetworkConfig };
  */
 export const devLog = (...args: unknown[]): void => {
   if (config.enableDebug || config.isDevelopment) {
-    console.log('[DEV]', ...args);
+    logger.debug('[DEV]', ...args);
   }
 };

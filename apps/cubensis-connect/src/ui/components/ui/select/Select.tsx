@@ -16,9 +16,9 @@ type ListPlacement = 'top' | 'bottom';
 type Theme = 'compact' | 'solid' | 'underlined';
 
 const themeClassNames: Record<Theme, string> = {
-  compact: styles.themeCompact,
-  solid: styles.themeSolid,
-  underlined: styles.themeUnderlined,
+  compact: styles.themeCompact ?? '',
+  solid: styles.themeSolid ?? '',
+  underlined: styles.themeUnderlined ?? '',
 };
 
 interface Props<T> {
@@ -88,9 +88,7 @@ export function Select<T>({
 
   return (
     <div
-      className={clsx(className, styles.root, themeClassNames[theme], {
-        [styles.rootFill]: fill,
-      })}
+      className={clsx(className, styles.root, themeClassNames[theme], fill && styles.rootFill)}
       ref={getRef}
     >
       {description ? <div className="left input-title basic500 tag1">{description}</div> : null}
@@ -103,8 +101,8 @@ export function Select<T>({
         }}
         {...otherProps}
       >
-        {selectedItem.icon}
-        <div className={styles.triggerText}>{selectedItem.text}</div>
+        {selectedItem?.icon}
+        <div className={styles.triggerText}>{selectedItem?.text}</div>
       </button>
 
       {isOpen && (

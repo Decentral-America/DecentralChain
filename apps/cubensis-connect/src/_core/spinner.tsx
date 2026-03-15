@@ -9,6 +9,7 @@ const CENTER = CANVAS_SIZE / 2;
 const STROKE_WIDTH = 2;
 const RADIUS = CANVAS_SIZE / 2 - STROKE_WIDTH / 2;
 const PATH_LENGTH = 2 * Math.PI * RADIUS;
+type SpinnerStyle = React.CSSProperties & { '--path-length': string };
 
 export function Spinner({ size }: Props) {
   return (
@@ -25,9 +26,7 @@ export function Spinner({ size }: Props) {
         cy={CENTER}
         r={RADIUS}
         strokeWidth={STROKE_WIDTH}
-        style={{
-          ['--path-length' as any]: `${PATH_LENGTH}px`,
-        }}
+        style={{ '--path-length': `${PATH_LENGTH}px` } as SpinnerStyle}
       />
     </svg>
   );

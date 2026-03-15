@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { logger } from '@/lib/logger';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/atoms/Card';
 import { Input } from '../components/atoms/Input';
@@ -21,7 +23,7 @@ interface LegacyUser {
 
 interface MigratedUser {
   address: string;
-  name?: string;
+  name?: string | undefined;
   userType: string;
 }
 
@@ -102,7 +104,9 @@ const AccountList = styled.div`
   gap: 16px;
 `;
 
-const AccountCard = styled(Card)<{ clickable?: boolean }>`
+const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>)<{
+  clickable?: boolean;
+}>`
   display: flex;
   align-items: center;
   padding: 20px;
@@ -225,18 +229,18 @@ const LoadingContainer = styled.div`
 const mockLockedUsers: LegacyUser[] = [
   {
     address: '3P8JYPHrnXSfsWP1LVXySdzU1P83FE1ssDa',
-    name: 'Main Wallet',
-    userType: 'seed',
-    publicKey: '5AzfA9UfpWVYiwFwvdr77k6LWupSTGLb14b24oVdEpMM',
     encryptedSeed: 'encrypted_seed_data',
+    name: 'Main Wallet',
+    publicKey: '5AzfA9UfpWVYiwFwvdr77k6LWupSTGLb14b24oVdEpMM',
     settings: { encryptionRounds: 5000 },
+    userType: 'seed',
   },
   {
     address: '3PAWHmDyqzVWW4fYjzRiYgWiMVqxHdGqixy',
-    name: 'Trading Account',
-    userType: 'seed',
-    publicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
     encryptedSeed: 'encrypted_seed_data',
+    name: 'Trading Account',
+    publicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+    userType: 'seed',
   },
 ];
 
@@ -263,22 +267,25 @@ export const MigratePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMigrating, setIsMigrating] = useState(false);
 
-  // Load users on mount
-  useEffect(() => {
-    loadUsers();
+  const hashAddress = useCallback((address: string): string => {
+    // Simple hash for demonstration - in real implementation, use proper hashing
+    return btoa(address).substring(0, 16);
   }, []);
 
-  // Auto-migrate user if ID is provided
-  useEffect(() => {
-    if (migrationId && lockedUsers.length > 0) {
-      const userToMigrate = lockedUsers.find((user) => hashAddress(user.address) === migrationId);
-      if (userToMigrate) {
-        handleStartMigrate(userToMigrate);
-      }
-    }
-  }, [migrationId, lockedUsers]);
+  const handleStartMigrate = useCallback((user: LegacyUser) => {
+    setCurrentUser(user);
+    setPassword('');
+    setPasswordError('');
+    setActiveStep(MigrationStep.UnlockAccount);
+  }, []);
 
-  const loadUsers = async () => {
+  const migrateUserWithoutPassword = useCallback(async (_user: LegacyUser): Promise<void> => {
+    // Simulate migration without password for Ledger/Keeper users
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    // In real implementation, this would save to new storage format
+  }, []);
+
+  const loadUsers = useCallback(async () => {
     setIsLoading(true);
     try {
       // In real implementation, this would fetch from storage
@@ -287,10 +294,10 @@ export const MigratePage: React.FC = () => {
 
       // Separate users that don't need password (Ledger, Keeper)
       const usersNeedingPassword = mockLockedUsers.filter(
-        (user) => user.userType === 'seed' || user.userType === 'privateKey'
+        (user) => user.userType === 'seed' || user.userType === 'privateKey',
       );
       const usersWithoutPassword = mockLockedUsers.filter(
-        (user) => user.userType !== 'seed' && user.userType !== 'privateKey'
+        (user) => user.userType !== 'seed' && user.userType !== 'privateKey',
       );
 
       // Auto-migrate users that don't need passwords
@@ -303,32 +310,29 @@ export const MigratePage: React.FC = () => {
 
       // If no locked users, skip to wallet
       if (usersNeedingPassword.length === 0) {
-        handleFinish();
+        navigate('/wallet');
       }
     } catch (error) {
-      console.error('Failed to load users:', error);
+      logger.error('Failed to load users:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [navigate, migrateUserWithoutPassword]);
 
-  const hashAddress = (address: string): string => {
-    // Simple hash for demonstration - in real implementation, use proper hashing
-    return btoa(address).substring(0, 16);
-  };
+  // Load users on mount
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
-  const migrateUserWithoutPassword = async (user: LegacyUser): Promise<void> => {
-    // Simulate migration without password for Ledger/Keeper users
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    // In real implementation, this would save to new storage format
-  };
-
-  const handleStartMigrate = (user: LegacyUser) => {
-    setCurrentUser(user);
-    setPassword('');
-    setPasswordError('');
-    setActiveStep(MigrationStep.UnlockAccount);
-  };
+  // Auto-migrate user if ID is provided
+  useEffect(() => {
+    if (migrationId && lockedUsers.length > 0) {
+      const userToMigrate = lockedUsers.find((user) => hashAddress(user.address) === migrationId);
+      if (userToMigrate) {
+        handleStartMigrate(userToMigrate);
+      }
+    }
+  }, [migrationId, lockedUsers, handleStartMigrate, hashAddress]);
 
   const handleGoBack = () => {
     if (migrationId) {
@@ -345,16 +349,15 @@ export const MigratePage: React.FC = () => {
     setPasswordError('');
   };
 
-  const validateCredentials = (user: LegacyUser, password: string): boolean => {
+  const validateCredentials = (_user: LegacyUser, password: string): boolean => {
     // In real implementation, this would decrypt and verify the seed/privateKey
-    // For now, accept any non-empty password
-    if (!password) {
+    // using @decentralchain/transactions libs.crypto functions
+    if (!password || typeof password !== 'string') {
       return false;
     }
 
-    // Simulate decryption and validation
-    // This would use @decentralchain/waves-transactions libs.crypto functions
-    return password.length >= 3; // Mock validation
+    // Enforce minimum password length consistent with vault requirements
+    return password.length >= 8;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -403,7 +406,7 @@ export const MigratePage: React.FC = () => {
       setCurrentUser(null);
       setActiveStep(MigrationStep.AccountList);
     } catch (error) {
-      console.error('Migration failed:', error);
+      logger.error('Migration failed:', error);
       setPasswordError('Migration failed. Please try again.');
       setPassword('');
     } finally {
@@ -444,9 +447,9 @@ export const MigratePage: React.FC = () => {
             <Section>
               <SectionTitle>Pending Migration</SectionTitle>
               <AccountList>
-                {lockedUsers.map((user, index) => (
+                {lockedUsers.map((user) => (
                   <AccountCard
-                    key={index}
+                    key={user.address}
                     clickable
                     onClick={() => handleStartMigrate(user)}
                     elevation="sm"
@@ -469,8 +472,8 @@ export const MigratePage: React.FC = () => {
             <Section>
               <SectionTitle>Unlocked Accounts</SectionTitle>
               <AccountList>
-                {unlockedUsers.map((user, index) => (
-                  <AccountCard key={index} elevation="sm">
+                {unlockedUsers.map((user) => (
+                  <AccountCard key={user.address} elevation="sm">
                     <AvatarContainer>
                       {user.name ? user.name.charAt(0).toUpperCase() : user.address.charAt(0)}
                     </AvatarContainer>
@@ -495,7 +498,7 @@ export const MigratePage: React.FC = () => {
           </Button>
 
           <Footer>
-            <FooterText>Don't have an account?</FooterText>
+            <FooterText>Don&apos;t have an account?</FooterText>
             <FooterLink onClick={() => navigate('/auth/signup')}>Create New Account</FooterLink>
           </Footer>
         </>
@@ -506,7 +509,22 @@ export const MigratePage: React.FC = () => {
           <Header>
             <Title>Unlock Account</Title>
             <Description>
-              Enter your password to migrate this account. <a onClick={handleGoBack}>Go back</a>
+              Enter your password to migrate this account.{' '}
+              <button
+                type="button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  font: 'inherit',
+                  padding: 0,
+                  textDecoration: 'underline',
+                }}
+                onClick={handleGoBack}
+              >
+                Go back
+              </button>
             </Description>
           </Header>
 

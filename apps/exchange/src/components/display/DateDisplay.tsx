@@ -1,8 +1,9 @@
+import { format, formatDistance, formatRelative, isValid, type Locale, parseISO } from 'date-fns';
+import { de, enUS, es, fr, hi, it, ja, ko, nl, pl, pt, ru, tr, zhCN } from 'date-fns/locale';
 import React, { useMemo } from 'react';
-import { format, formatDistance, formatRelative, isValid, parseISO, type Locale } from 'date-fns';
-import { enUS, es, fr, de, it, ja, ko, nl, pl, pt, ru, tr, zhCN, hi } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { logger } from '@/lib/logger';
 
 /**
  * DateDisplay Component
@@ -72,11 +73,13 @@ const DateWithTooltip = styled.span`
 
 // Locale map for date-fns
 const localeMap: Record<string, Locale> = {
+  de: de,
   en: enUS,
   'en-US': enUS,
   es: es,
   fr: fr,
-  de: de,
+  hi: hi,
+  'hi-IN': hi,
   it: it,
   ja: ja,
   ko: ko,
@@ -90,8 +93,6 @@ const localeMap: Record<string, Locale> = {
   tr: tr,
   zh: zhCN,
   'zh-CN': zhCN,
-  hi: hi,
-  'hi-IN': hi,
 };
 
 // Interfaces
@@ -193,22 +194,20 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
         case 'relative':
           return formatDistance(dateObj, new Date(), {
             addSuffix: true,
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
 
         case 'calendar':
           return formatRelative(dateObj, new Date(), {
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
-
-        case 'absolute':
         default:
           return format(dateObj, formatStr, {
-            locale: dateLocale,
+            ...(dateLocale && { locale: dateLocale }),
           });
       }
     } catch (error) {
-      console.error('Error formatting date:', error);
+      logger.error('Error formatting date:', error);
       return dateObj.toLocaleString();
     }
   }, [dateObj, mode, formatStr, dateLocale]);
@@ -219,7 +218,7 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
 
     try {
       return format(dateObj, tooltipFormat, {
-        locale: dateLocale,
+        ...(dateLocale && { locale: dateLocale }),
       });
     } catch {
       return dateObj.toLocaleString();

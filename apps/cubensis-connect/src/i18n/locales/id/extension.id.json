@@ -8,13 +8,13 @@
     "cancel": "Batalkan",
     "copied": "Disalin!",
     "copyToClipboard": "Klik untuk salin ke clipboard",
+    "email": "Email",
+    "emailNoBackupPhrase": "Akun ini diimpor menggunakan decentralchain.io, jadi tidak ada Backup phrase untuk disalin",
     "encodedSeed": "Encoded seed",
     "enter": "Masuk",
-    "email": "Email",
     "password": "Password",
     "passwordError": "Salah sandi",
     "privateKeyNoBackupPhrase": "Akun ini diimpor menggunakan private key, jadi tidak ada Backup phrase untuk disalin",
-    "emailNoBackupPhrase": "Akun ini diimpor menggunakan decentralchain.io, jadi tidak ada Backup phrase untuk disalin",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "Lihat di explorer"
@@ -25,10 +25,10 @@
   "address": {
     "add": "Alamat baru",
     "addButton": "Tambah baru",
-    "addTooltip": "Tambahkan alamat ke kontak Anda",
     "added": "Alamat ditambahkan",
     "addressAlreadyExist": "Alamat sudah ada",
     "addressInvalidError": "Nilai alamat tidak valid",
+    "addTooltip": "Tambahkan alamat ke kontak Anda",
     "cancel": "Batal",
     "copied": "Disalin!",
     "copyToClipboard": "Klik untuk salin ke clipboard",
@@ -54,25 +54,25 @@
     "balanceLabel": "Saldo"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "Nama",
-    "ticker": "Ticker",
-    "precision": "Poin Decimal",
-    "quantity": "Jumlah",
-    "type": "Jenis",
-    "reissuable": "Dapat diterbitkan kembali",
-    "notReissuable": "Tidak dapat diterbitkan kembali",
-    "scripted": "Tertulis",
-    "notScripted": "Tidak ditulis",
-    "minSponsoredFee": "Biaya Aset Bersponsor",
-    "sender": "Penerbit",
-    "timestamp": "Tanggal rilis",
     "closeBtn": "Tutup",
-    "infoTooltip": "Asset Info",
     "favAddTooltip": "Tambahkan favorit",
     "favRemoveTooltip": "Hapus favorit",
+    "id": "ID",
+    "infoTooltip": "Asset Info",
+    "minSponsoredFee": "Biaya Aset Bersponsor",
+    "name": "Nama",
+    "notReissuable": "Tidak dapat diterbitkan kembali",
+    "notScripted": "Tidak ditulis",
+    "precision": "Poin Decimal",
+    "quantity": "Jumlah",
+    "reissuable": "Dapat diterbitkan kembali",
+    "scripted": "Tertulis",
     "sendAssetTooltip": "Kirim",
+    "sender": "Penerbit",
     "swapAssetTooltip": "Swap",
+    "ticker": "Ticker",
+    "timestamp": "Tanggal rilis",
+    "type": "Jenis",
     "viewDetailsInExplorer": "Lihat di explorer"
   },
   "assetSelectModal": {
@@ -115,14 +115,14 @@
     "saveBackup": "Simpan backup phrase"
   },
   "bottom": {
-    "network": {
-      "edit": "Edit",
-      "disabled": "Anda tidak dapat mengubah pengaturan jaringan selama operasi ini"
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "Anda tidak dapat mengubah pengaturan jaringan selama operasi ini",
+      "edit": "Edit"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "Nama akun saat ini",
@@ -165,19 +165,19 @@
   },
   "errorPage": {
     "export": "Ekspor akun dan buku alamat",
-    "sembunyikan": "Sembunyikan",
     "reset": "Setel ulang ekstensi",
     "resetButton": "Setel ulang dompet",
     "resetDescription": "Setelah tindakan ini kami menghapus semua informasi sekunder (misalnya token favorit). Anda juga harus Masuk sekali lagi .",
     "resetTitle": "Perhatian",
+    "sembunyikan": "Sembunyikan",
     "title": "Ada yang tidak beres"
   },
   "exportAndImport": {
     "exportAccounts": "Ekspor akun",
-    "importAccounts": "Impor akun",
     "exportAddressBook": "Ekspor buku alamat",
-    "importAddressBook": "Impor buku alamat",
-    "exportAll": "Ekspor semua"
+    "exportAll": "Ekspor semua",
+    "importAccounts": "Impor akun",
+    "importAddressBook": "Impor buku alamat"
   },
   "exportKeystore": {
     "cancelBtn": "Batalkan",
@@ -202,13 +202,13 @@
   "forgotPassword": {
     "attention": "Perhatian!",
     "attentionMessage": "Untuk mengatur ulang kata sandi, Anda perlu menghapus semua akun dari Cubensis Connect, mengatur kata sandi baru, mengimpor setiap akun Anda lagi dari frase Seed.",
-    "warningMessage": "Jika Anda belum menyimpan frase Seed atau kunci Pribadi, maka Anda tidak akan dapat memulihkan akses ke akun Anda.",
     "continueMessage": "Untuk melanjutkan, ketik ini ke dalam bidang di bawah ini",
     "phrase": "HAPUS SEMUA AKUN",
     "phraseError": "Frasa yang dimasukkan salah",
     "placeholder": "Silakan masuk di sini.",
+    "resetCancel": "Batalkan",
     "resetConfirm": "Hapus semua",
-    "resetCancel": "Batalkan"
+    "warningMessage": "Jika Anda belum menyimpan frase Seed atau kunci Pribadi, maka Anda tidak akan dapat memulihkan akses ke akun Anda."
   },
   "historyCard": {
     "burn": "Burn Asset",
@@ -248,25 +248,25 @@
     "transferSelf": "Transfer sendiri"
   },
   "historyFilters": {
-    "all": "Semua",
-    "incoming": "Hanya Masuk",
-    "outgoing": "Hanya Keluar",
-    "issue": "Issue",
-    "transfer": "Transfer",
-    "reissue": "Reissue",
-    "burn": "Burn",
-    "exchange": "Exchange",
-    "lease": "Lease",
-    "cancelLease": "Batalkan Lease",
     "alias": "Alias",
-    "massTransfer": "Mass Transfer",
+    "all": "Semua",
+    "burn": "Burn",
+    "cancelLease": "Batalkan Lease",
     "data": "Data",
+    "exchange": "Exchange",
+    "incoming": "Hanya Masuk",
+    "invokeScript": "Panggil Skrip",
+    "issue": "Issue",
+    "lease": "Lease",
+    "massTransfer": "Mass Transfer",
+    "outgoing": "Hanya Keluar",
+    "reissue": "Reissue",
+    "setAssetScript": "Atur Asset Script",
     "setScript": "Atur Script",
     "sponsorship": "Sponsorship",
-    "setAssetScript": "Atur Asset Script",
-    "invokeScript": "Panggil Skrip",
-    "updateAssetInfo": "Update Asset Info",
-    "type": "Tipe transaksi"
+    "transfer": "Transfer",
+    "type": "Tipe transaksi",
+    "updateAssetInfo": "Update Asset Info"
   },
   "import": {
     "addAccount": "Menambahkan akun",
@@ -288,25 +288,25 @@
     "viaSeed": "Seed Phrase atau Private Key"
   },
   "importEmail": {
-    "importEmailTitle": "Import Email akun",
-    "importEmailDesc": "Hubungkan akun email yang dibuat di DecentralChain Exchange",
-    "passwordLabel": "Password",
-    "passwordRequired": "Maukkan password",
-    "loginRequired": "Konfirmasi email akun",
+    "alreadyExists": "Akun sudah ada",
+    "continue": "Lnajutkan",
+    "credentialsError": "Username atau kata sandi salah",
+    "dontHaveAccount": "Tidak punya akun?",
     "emailLabel": "Email",
     "emailRequired": "Masukkan email yang benar",
-    "credentialsError": "Username atau kata sandi salah",
-    "continue": "Lnajutkan",
     "forgotPassword": "Lupa password?",
-    "dontHaveAccount": "Tidak punya akun?",
-    "signUp": "Daftar",
-    "verifyAccountTitle": "Verifikasi akun anda",
-    "verifyAccountDesc": "Harap masukkan kode verifikasi 6 digit yang diterima oleh {{destination}}",
+    "importEmailDesc": "Hubungkan akun email yang dibuat di DecentralChain Exchange",
+    "importEmailTitle": "Import Email akun",
     "incorrectCode": "Salah kode. Tolong, coba lagi",
-    "userDoesNotExist": "Pengguna tidak ada.",
     "incorrectUsernameOrPassword": "Nama pengguna atau kata sandi salah.",
     "incorrectUsernameOrPasswordLimit": "beberapa kali anda telah membuat kesalahan dalam nama pengguna atau kata sandi Anda adalah https://support.decentralchain.io/",
-    "alreadyExists": "Akun sudah ada"
+    "loginRequired": "Konfirmasi email akun",
+    "passwordLabel": "Password",
+    "passwordRequired": "Maukkan password",
+    "signUp": "Daftar",
+    "userDoesNotExist": "Pengguna tidak ada.",
+    "verifyAccountDesc": "Harap masukkan kode verifikasi 6 digit yang diterima oleh {{destination}}",
+    "verifyAccountTitle": "Verifikasi akun anda"
   },
   "importKeystore": {
     "addressBookLabel": "File Buku Alamat",
@@ -336,11 +336,11 @@
     "connectInstructions": "Hubungkan perangkat Ledger dan buka aplikasi DCC",
     "continueButton": "Lanjutkan",
     "couldNotGetUsersError": "Tidak bisa mendapatkan lebih banyak pengguna dari buku besar. Harap pastikan bahwa buku besar terhubung, tidak terkunci dan aplikasi DCC terbuka, lalu klik <retryButton>Coba lagi</retryButton>",
-    "userIdInputNumbersError": "Hanya angka diperbolehkan",
-    "userIdInputMaxValueError": "ID Akun tidak boleh lebih dari {{ maxUserId }}",
     "selectAccountInstructions": "Pilih address Anda",
     "title": "Import Ledger",
-    "tryAgainButton": "Coba lagi"
+    "tryAgainButton": "Coba lagi",
+    "userIdInputMaxValueError": "ID Akun tidak boleh lebih dari {{ maxUserId }}",
+    "userIdInputNumbersError": "Hanya angka diperbolehkan"
   },
   "importSeed": {
     "accountExistsError": "Akun sudah dikenal sebagai '{{ name }}'",
@@ -370,14 +370,14 @@
     "confirm": "OK",
     "title": "Ubah Bahasa"
   },
-  "ledgerErrors": {
-    "unknown": "Tidak dapat terhubung ke ledger. Silakan coba lagi",
-    "usedBySomeOtherApp": "Sepertinya ledger sudah digunakan oleh aplikasi lain. Tutup semua aplikasi yang mungkin menggunakan ledger dan coba lagi."
-  },
   "ledgerConnectModal": {
     "instructions": "Hubungkan perangkat Ledger dan buka aplikasi DCC",
     "title": "Menghubungkan...",
     "tryAgainButton": "Coba lagi"
+  },
+  "ledgerErrors": {
+    "unknown": "Tidak dapat terhubung ke ledger. Silakan coba lagi",
+    "usedBySomeOtherApp": "Sepertinya ledger sudah digunakan oleh aplikasi lain. Tutup semua aplikasi yang mungkin menggunakan ledger dan coba lagi."
   },
   "login": {
     "enter": "Masuk",
@@ -455,10 +455,18 @@
     "viewInExplorer": "Lihat detail di Explorer",
     "viewOnMarketplace": "Lihat di marketplace"
   },
+  "notifications": {
+    "allowSending": "Izinkan pengiriman pesan",
+    "closeBtn": "Tutup",
+    "messages": "Pesan",
+    "nextBtn": "Selanjutnya",
+    "time": "Waktu",
+    "toListBtn": "Notifikasi"
+  },
   "otherAccounts": {
     "addAccount": "Taambahkan akun",
-    "noAccountsNote": "Anda tidak memiliki akun lain di jaringan saat ini",
     "noAccountsFound": "Tidak ada akun lain yang ditemukan untuk filter yang ditentukan",
+    "noAccountsNote": "Anda tidak memiliki akun lain di jaringan saat ini",
     "title": "Akun lain"
   },
   "permission": {
@@ -484,13 +492,13 @@
     "approvedOrigin": "Disetujui",
     "automaticOrigin": "Signing otomatis",
     "empty": "Tidak ada disini…",
-    "rejectedOrigin": "Ditolak",
-    "title": "Kontrol izin",
     "notify": {
       "allowed": "Diizinkan!",
       "deleted": "Dihapus!",
       "disallowed": "Tidak diizinkan!"
-    }
+    },
+    "rejectedOrigin": "Ditolak",
+    "title": "Kontrol izin"
   },
   "qrCode": {
     "download": "Download QR code"
@@ -525,11 +533,11 @@
     "settingsGeneral": "Umum",
     "suspiciousAssetsProtection": "Perlindungan aset yang mencurigakan",
     "suspiciousAssetsTooltip": "Jangan tampilkan saldo dan transaksi terkait aset mencurigakan",
-    "time_10m": "10 min",
     "time_1h": "1 jam",
+    "time_5m": "5 min",
+    "time_10m": "10 min",
     "time_20m": "20 min",
     "time_40m": "40 min",
-    "time_5m": "5 min",
     "time_idle": "Batas waktu browser habis",
     "tooltipContent": "Lindungi diri Anda dari ancaman Clicker Trojans"
   },
@@ -558,6 +566,7 @@
     "customDataFailed": "Data Anda ditolak!",
     "customDataName": "Tanda Tangani Data Kustom",
     "customDataSent": "Data Anda terkonfirmasi!",
+    "dccAuthConfirmed": "Sign permintaan autentik DCC!",
     "matcherConfirmed": "Tanda tangani permintaan ke matcher!",
     "matcherRejected": "Permintaan belum ditandatangani.",
     "matcherSend": "Tanda tangani permintaan ke matcher!",
@@ -572,8 +581,7 @@
     "transactionFailed": "Transaksi Anda ditolak!",
     "transactionSend": "Kamu telah mengirim",
     "understand": "OK",
-    "viewTransaction": "Lihat transaksi",
-    "dccAuthConfirmed": "Sign permintaan autentik DCC!"
+    "viewTransaction": "Lihat transaksi"
   },
   "swap": {
     "amountToSendError": "Tidak dapat melakukan swap karena status dApp SwapFi. Silakan coba lagi atau sedikit tingkatkan toleransi selip jika memungkinkan",
@@ -594,8 +602,8 @@
     "priceLabel": "Price",
     "primaryLabel": "Primer",
     "profitLabel": "Profit",
-    "slippageToleranceModalTitle": "Slippage Tolerance",
     "slippageToleranceModalDescription": "Swap akan dibatalkan jika harga berubah lebih dari persentase ini",
+    "slippageToleranceModalTitle": "Slippage Tolerance",
     "statusFailed": "Gagal",
     "statusInProgress": "Menunggu penyelesaian pertukaran...",
     "statusSucceeded": "Berhasil!",
@@ -623,20 +631,26 @@
     "dataHash": "Data Hash",
     "dataTransaction": "Masuk di blockchain",
     "dataTransactionName": "Data",
+    "dccAuthTimeStamp": "Time Stamp",
     "decimalPoints": "Poin Desimal",
     "description": "Deskripsi",
     "details": "Detail",
     "dex": "DEX",
     "expires": "Expire",
     "fee": "Fee",
+    "hash": "Hash",
     "hideTransactions": "Sembunyikan",
+    "issueNFT": "Issue NFT",
+    "issueSmartNFT": "Issue Smart NFT",
+    "issueSmartToken": "Issue Smart Token",
+    "issueToken": "Issue Token",
     "issueType": "Tipe",
     "json": "JSON",
     "lease": "Lease",
     "leaseCancel": "Batalkan lease",
     "massTransfer": "Mass Transfer",
-    "matcherTimeStamp": "Stempel Waktu Pencocokan",
     "matcherPublicKey": "Kunci Publik Pencocokan",
+    "matcherTimeStamp": "Stempel Waktu Pencocokan",
     "name": "Nama",
     "noReissuable": "Tidak dapat diterbitkan kembali",
     "orderBuy": "Beli",
@@ -659,6 +673,7 @@
     "recipient": "Penerima",
     "recipients": "Penerima",
     "reissuable": "Reissuable",
+    "reissue": "Reissue",
     "script": "Skrip",
     "scriptInvocation": "Permintaan skrip",
     "scriptInvocationFunction": "Fungsi",
@@ -669,31 +684,16 @@
     "setSponsored": "Set Sponsorship",
     "showAll": "Semua",
     "showTransactions": "Transaksi",
-    "signRequestMatcher": "Sign permintaan ke Matcher",
     "signRequestDccAuth": "Sign permintaan DCC auth",
-    "updateAssetInfo": "Update aset Info",
-    "issueToken": "Issue Token",
-    "issueSmartToken": "Issue Smart Token",
-    "issueNFT": "Issue NFT",
-    "issueSmartNFT": "Issue Smart NFT",
-    "reissue": "Reissue",
+    "signRequestMatcher": "Sign permintaan ke Matcher",
     "transfer": "Transfer",
     "txid": "TXID",
-    "hash": "Hash",
     "txTime": "Waktu TX",
     "unknown": "Tidak diketahui",
-    "dccAuthTimeStamp": "Time Stamp"
+    "updateAssetInfo": "Update aset Info"
   },
   "ui": {
     "logoTitle": "Jaga agar kunci DCC Anda tetap aman saat online"
-  },
-  "notifications": {
-    "allowSending": "Izinkan pengiriman pesan",
-    "toListBtn": "Notifikasi",
-    "nextBtn": "Selanjutnya",
-    "closeBtn": "Tutup",
-    "time": "Waktu",
-    "messages": "Pesan"
   },
   "wallet": {
     "lease": "Disewakan"

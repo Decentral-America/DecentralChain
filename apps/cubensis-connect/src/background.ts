@@ -73,7 +73,6 @@ import { getTxVersions } from './wallets/getTxVersions';
 const bgPromise = setupBackgroundService();
 
 initSentry({
-  source: 'background',
   shouldIgnoreError: async (message) => {
     const bg = await bgPromise;
 
@@ -82,6 +81,7 @@ initSentry({
       bg.remoteConfigController.shouldIgnoreError('beforeSendBackground', message)
     );
   },
+  source: 'background',
 });
 
 const storageChangesSource = pipe(fromWebExtensionEvent(Browser.storage.onChanged), share);
@@ -241,8 +241,8 @@ class BackgroundService extends EventEmitter {
     // Preferences. Contains accounts, available accounts, selected language etc.
     this.preferencesController = new PreferencesController({
       extensionStorage: this.extensionStorage,
-      initLangCode,
       getNetwork: this.networkController.getNetwork.bind(this.networkController),
+      initLangCode,
     });
 
     // On network change
@@ -259,19 +259,22 @@ class BackgroundService extends EventEmitter {
 
     this.identityController = new IdentityController({
       extensionStorage: this.extensionStorage,
+      getIdentityConfig: this.remoteConfigController.getIdentityConfig.bind(
+        this.remoteConfigController,
+      ),
       getNetwork: this.networkController.getNetwork.bind(this.networkController),
       getSelectedAccount: this.preferencesController.getSelectedAccount.bind(
         this.preferencesController,
-      ),
-      getIdentityConfig: this.remoteConfigController.getIdentityConfig.bind(
-        this.remoteConfigController,
       ),
     });
 
     // Wallet. Wallet creation, app locking, signing method
     this.walletController = new WalletController({
-      extensionStorage: this.extensionStorage,
       assetInfo: (...args) => this.assetInfoController.assetInfo(...args),
+      extensionStorage: this.extensionStorage,
+      identity: {
+        signBytes: this.identityController.signBytes.bind(this.identityController),
+      },
       ledger: {
         signOrder: (data) =>
           this.ledgerSign('order', {
@@ -295,15 +298,12 @@ class BackgroundService extends EventEmitter {
           }),
       },
       trash: this.trash,
-      identity: {
-        signBytes: this.identityController.signBytes.bind(this.identityController),
-      },
     });
 
     this.vaultController = new VaultController({
       extensionStorage: this.extensionStorage,
-      wallet: this.walletController,
       identity: this.identityController,
+      wallet: this.walletController,
     });
 
     this.vaultController.store.subscribe((state) => {
@@ -352,15 +352,15 @@ class BackgroundService extends EventEmitter {
 
     // Balance. Polls balances for accounts
     this.currentAccountController = new CurrentAccountController({
+      assetInfoController: this.assetInfoController,
       extensionStorage: this.extensionStorage,
+      getAccounts: this.preferencesController.getAccounts.bind(this.preferencesController),
       getNetwork: this.networkController.getNetwork.bind(this.networkController),
       getNode: this.networkController.getNode.bind(this.networkController),
-      getAccounts: this.preferencesController.getAccounts.bind(this.preferencesController),
       getSelectedAccount: this.preferencesController.getSelectedAccount.bind(
         this.preferencesController,
       ),
       isLocked: this.vaultController.isLocked.bind(this.vaultController),
-      assetInfoController: this.assetInfoController,
       nftInfoController: this.nftInfoController,
     });
 
@@ -372,22 +372,22 @@ class BackgroundService extends EventEmitter {
     // Delegates different signing to walletController, broadcast and getMatcherPublicKey to networkController,
     // assetInfo for assetInfoController
     this.messageController = new MessageController({
-      extensionStorage: this.extensionStorage,
-      networkController: this.networkController,
       assetInfoController: this.assetInfoController,
-      setPermission: this.permissionsController.setPermission.bind(this.permissionsController),
+      extensionStorage: this.extensionStorage,
       getAccountBalance: this.currentAccountController.getAccountBalance.bind(
         this.currentAccountController,
       ),
+      networkController: this.networkController,
       remoteConfigController: this.remoteConfigController,
+      setPermission: this.permissionsController.setPermission.bind(this.permissionsController),
       walletController: this.walletController,
     });
 
     // Notifications
     this.notificationsController = new NotificationsController({
+      canShowNotification: (...args) => this.permissionsController.canUseNotification(...args),
       extensionStorage: this.extensionStorage,
       getMessagesConfig: () => this.remoteConfigController.getMessagesConfig(),
-      canShowNotification: (...args) => this.permissionsController.canUseNotification(...args),
       setNotificationPermissions: (origin, canUse, time) =>
         this.permissionsController.setNotificationPermissions(origin, canUse, time),
     });
@@ -408,64 +408,16 @@ class BackgroundService extends EventEmitter {
   getApi() {
     // RPC API object. Only async functions allowed
     return {
-      // state
-      getState: async <K extends keyof StorageLocalState>(params?: K[]) =>
-        this.extensionStorage.getState(params),
-      updateIdle: async () => this.idleController.update(),
-      setIdleOptions: async ({ type }: { type: IdleOptions['type'] }) => {
-        const config = this.remoteConfigController.getIdleConfig();
-        if (!Object.keys(config).includes(type)) {
-          throw ERRORS.UNKNOWN_IDLE();
-        }
-        this.idleController.setOptions({ type, interval: config[type] });
-      },
-
-      // preferences
-      setCurrentLocale: async (key: string) => this.preferencesController.setCurrentLocale(key),
-      selectAccount: async (address: string, network: NetworkName) =>
-        this.preferencesController.selectAccount(address, network),
-      editWalletName: async (address: string, name: string, network: NetworkName) =>
-        this.preferencesController.addLabel(address, name, network),
-
-      // ui state
-      setUiState: async (state: UiState) => this.uiStateController.setUiState(state),
-
       // wallets
       addWallet: this.walletController.addWallet.bind(this.walletController),
-      batchAddWallets: this.walletController.batchAddWallets.bind(this.walletController),
 
-      removeWallet: this.walletController.removeWallet.bind(this.walletController),
-
-      lock: async () => this.vaultController.lock(),
-      unlock: this.vaultController.unlock.bind(this.vaultController),
-
-      initVault: async (password: string) => {
-        await this.vaultController.init(password);
-        this.statisticsController.track({ eventType: 'initVault' });
+      // origin settings
+      allowOrigin: async (origin: string) => {
+        this.statisticsController.track({ eventType: 'allowOrigin', origin });
+        this.messageController.rejectByOrigin(origin);
+        this.permissionsController.deletePermission(origin, PERMISSIONS.REJECTED);
+        this.permissionsController.setPermission(origin, PERMISSIONS.APPROVED);
       },
-
-      deleteVault: async () => {
-        this.messageController.clearMessages();
-        await this.vaultController.clear();
-      },
-
-      newPassword: this.vaultController.update.bind(this.vaultController),
-
-      assertPasswordIsValid: this.walletController.assertPasswordIsValid.bind(
-        this.walletController,
-      ),
-
-      getAccountSeed: this.walletController.getAccountSeed.bind(this.walletController),
-
-      getAccountEncodedSeed: this.walletController.getAccountEncodedSeed.bind(
-        this.walletController,
-      ),
-
-      getAccountPrivateKey: this.walletController.getAccountPrivateKey.bind(this.walletController),
-
-      // messages
-      getMessageById: async (id: string) => this.messageController.getMessageById(id),
-      clearMessages: async () => this.messageController.clearMessages(),
       approve: async (messageId: string) => {
         const message = await this.messageController.approve(messageId);
 
@@ -476,29 +428,29 @@ class BackgroundService extends EventEmitter {
                 ...msg,
                 broadcast: false,
                 data,
-                result: msg.result?.[index],
-                type: 'transaction',
                 input: {
                   account: msg.account,
                   broadcast: false,
-                  data: msg.input.data[index],
+                  data: msg.input.data[index]!,
                   type: 'transaction',
                 },
+                result: msg.result?.[index],
+                type: 'transaction',
               });
             });
           } else if ('data' in msg && 'type' in msg.data) {
             this.statisticsController.track({
-              eventType: 'approve',
-              origin: msg.origin,
-              msgType: msg.type,
-              type: msg.data.type,
               dApp: msg.data.type === TRANSACTION_TYPE.INVOKE_SCRIPT ? msg.data.dApp : undefined,
+              eventType: 'approve',
+              msgType: msg.type,
+              origin: msg.origin,
+              type: msg.data.type,
             });
           } else {
             this.statisticsController.track({
               eventType: 'approve',
-              origin: msg.origin,
               msgType: msg.type,
+              origin: msg.origin,
             });
           }
         };
@@ -506,63 +458,35 @@ class BackgroundService extends EventEmitter {
         trackMessageEvent(message);
         return message.result;
       },
-      reject: async (messageId: string, forever?: boolean) =>
-        this.messageController.reject(messageId, forever),
-      updateTransactionFee: this.messageController.updateTransactionFee.bind(
-        this.messageController,
-      ),
-      // notifications
-      deleteNotifications: async (ids: string[]) =>
-        this.notificationsController.deleteNotifications(ids),
 
-      // network
-      setNetwork: async (network: NetworkName) => this.networkController.setNetwork(network),
-      setCustomNode: async (url: string | null, network: NetworkName) =>
-        this.networkController.setCustomNode(url, network),
-      setCustomCode: async (code: string | null, network: NetworkName) => {
-        await this.walletController.updateNetworkCode(network, code);
-        this.networkController.setCustomCode(code, network);
-        this.currentAccountController.restartPolling();
-      },
-      setCustomMatcher: async (url: string | null, network: NetworkName) =>
-        this.networkController.setCustomMatcher(url, network),
+      assertPasswordIsValid: this.walletController.assertPasswordIsValid.bind(
+        this.walletController,
+      ),
 
       // asset information
       assetInfo: this.assetInfoController.assetInfo.bind(this.assetInfoController),
-      updateAssets: this.assetInfoController.updateAssets.bind(this.assetInfoController),
-      updateUsdPricesByAssetIds: this.assetInfoController.updateUsdPricesByAssetIds.bind(
-        this.assetInfoController,
-      ),
-      toggleAssetFavorite: this.assetInfoController.toggleAssetFavorite.bind(
-        this.assetInfoController,
-      ),
-      // addresses
-      setAddress: async (address: string, name: string) =>
-        this.addressBookController.setAddress(address, name),
-      setAddresses: async (addresses: Record<string, string>) =>
-        this.addressBookController.setAddresses(addresses),
-      removeAddress: async (address: string) => this.addressBookController.removeAddress(address),
-      // window control
-      closeNotificationWindow: async () => {
-        this.emit('Close notification');
-      },
-      resizeNotificationWindow: async (width: number, height: number) =>
-        this.emit('Resize notification', width, height),
-
-      showTab: async (url: string, name: string) => {
-        this.emit('Show tab', url, name);
-      },
+      batchAddWallets: this.walletController.batchAddWallets.bind(this.walletController),
+      broadcastTransaction: (tx: MessageTx) => this.networkController.broadcastTransaction(tx),
+      clearMessages: async () => this.messageController.clearMessages(),
 
       closeCurrentTab: async () => {
         this.emit('Close current tab');
       },
+      // window control
+      closeNotificationWindow: async () => {
+        this.emit('Close notification');
+      },
+      // notifications
+      deleteNotifications: async (ids: string[]) =>
+        this.notificationsController.deleteNotifications(ids),
 
-      // origin settings
-      allowOrigin: async (origin: string) => {
-        this.statisticsController.track({ eventType: 'allowOrigin', origin });
-        this.messageController.rejectByOrigin(origin);
-        this.permissionsController.deletePermission(origin, PERMISSIONS.REJECTED);
-        this.permissionsController.setPermission(origin, PERMISSIONS.APPROVED);
+      deleteOrigin: async (origin: string) => {
+        this.permissionsController.deletePermissions(origin);
+      },
+
+      deleteVault: async () => {
+        this.messageController.clearMessages();
+        await this.vaultController.clear();
       },
 
       disableOrigin: async (origin: string) => {
@@ -570,10 +494,63 @@ class BackgroundService extends EventEmitter {
         this.permissionsController.deletePermission(origin, PERMISSIONS.APPROVED);
         this.permissionsController.setPermission(origin, PERMISSIONS.REJECTED);
       },
+      editWalletName: async (address: string, name: string, network: NetworkName) =>
+        this.preferencesController.addLabel(address, name, network),
 
-      deleteOrigin: async (origin: string) => {
-        this.permissionsController.deletePermissions(origin);
+      getAccountEncodedSeed: this.walletController.getAccountEncodedSeed.bind(
+        this.walletController,
+      ),
+
+      getAccountPrivateKey: this.walletController.getAccountPrivateKey.bind(this.walletController),
+
+      getAccountSeed: this.walletController.getAccountSeed.bind(this.walletController),
+      getExtraFee: (address: string, network: NetworkName) =>
+        getExtraFee(address, this.networkController.getNode(network)),
+
+      // messages
+      getMessageById: async (id: string) => this.messageController.getMessageById(id),
+      // state
+      getState: async <K extends keyof StorageLocalState>(params?: K[]) =>
+        this.extensionStorage.getState(params),
+      identityClear: async () => this.identityController.clearSession(),
+      identityConfirmSignIn: async (code: string) => this.identityController.confirmSignIn(code),
+      identityRestore: this.identityController.restoreSession.bind(this.identityController),
+
+      identitySignIn: async (username: string, password: string) =>
+        this.identityController.signIn(username, password),
+      identityUpdate: this.identityController.updateSession.bind(this.identityController),
+      identityUser: async () => this.identityController.getIdentityUser(),
+
+      initVault: async (password: string) => {
+        await this.vaultController.init(password);
+        this.statisticsController.track({ eventType: 'initVault' });
       },
+
+      ledgerSignResponse: async (
+        requestId: string,
+        err: string | null,
+        signature: string | undefined,
+      ) => {
+        this.emit(`ledger:signResponse:${requestId}`, err ? new Error(err) : null, signature);
+      },
+
+      lock: async () => this.vaultController.lock(),
+
+      newPassword: this.vaultController.update.bind(this.vaultController),
+      reject: async (messageId: string, forever?: boolean) =>
+        this.messageController.reject(messageId, forever),
+      removeAddress: async (address: string) => this.addressBookController.removeAddress(address),
+
+      removeWallet: this.walletController.removeWallet.bind(this.walletController),
+      resizeNotificationWindow: async (width: number, height: number) =>
+        this.emit('Resize notification', width, height),
+      selectAccount: async (address: string, network: NetworkName) =>
+        this.preferencesController.selectAccount(address, network),
+      // addresses
+      setAddress: async (address: string, name: string) =>
+        this.addressBookController.setAddress(address, name),
+      setAddresses: async (addresses: Record<string, string>) =>
+        this.addressBookController.setAddresses(addresses),
       // extended permission autoSign
       setAutoSign: async ({
         origin,
@@ -584,6 +561,28 @@ class BackgroundService extends EventEmitter {
       }) => {
         this.permissionsController.setAutoApprove(origin, params);
       },
+
+      // preferences
+      setCurrentLocale: async (key: string) => this.preferencesController.setCurrentLocale(key),
+      setCustomCode: async (code: string | null, network: NetworkName) => {
+        await this.walletController.updateNetworkCode(network, code);
+        this.networkController.setCustomCode(code, network);
+        this.currentAccountController.restartPolling();
+      },
+      setCustomMatcher: async (url: string | null, network: NetworkName) =>
+        this.networkController.setCustomMatcher(url, network),
+      setCustomNode: async (url: string | null, network: NetworkName) =>
+        this.networkController.setCustomNode(url, network),
+      setIdleOptions: async ({ type }: { type: IdleOptions['type'] }) => {
+        const config = this.remoteConfigController.getIdleConfig();
+        if (!Object.keys(config).includes(type)) {
+          throw ERRORS.UNKNOWN_IDLE();
+        }
+        this.idleController.setOptions({ interval: config[type], type });
+      },
+
+      // network
+      setNetwork: async (network: NetworkName) => this.networkController.setNetwork(network),
       setNotificationPermissions: async ({
         origin,
         canUse,
@@ -593,13 +592,16 @@ class BackgroundService extends EventEmitter {
       }) => {
         this.permissionsController.setNotificationPermissions(origin, canUse, 0);
       },
-      track: async (event: AnalyticsEvent) => this.statisticsController.track(event),
-      updateCurrentAccountBalance: this.currentAccountController.updateCurrentAccountBalance.bind(
-        this.currentAccountController,
-      ),
-      updateOtherAccountsBalances: this.currentAccountController.updateOtherAccountsBalances.bind(
-        this.currentAccountController,
-      ),
+
+      // ui state
+      setUiState: async (state: UiState) => this.uiStateController.setUiState(state),
+
+      shouldIgnoreError: async (context: IgnoreErrorsContext, message: string) =>
+        this.remoteConfigController.shouldIgnoreError(context, message),
+
+      showTab: async (url: string, name: string) => {
+        this.emit('Show tab', url, name);
+      },
       signAndPublishTransaction: async (data: MessageInputOfType<'transaction'>['data']) => {
         const { selectedAccount } = this.extensionStorage.getState('selectedAccount');
         invariant(selectedAccount);
@@ -620,28 +622,25 @@ class BackgroundService extends EventEmitter {
 
         return base58Encode(signature);
       },
-      broadcastTransaction: (tx: MessageTx) => this.networkController.broadcastTransaction(tx),
-      getExtraFee: (address: string, network: NetworkName) =>
-        getExtraFee(address, this.networkController.getNode(network)),
-
-      shouldIgnoreError: async (context: IgnoreErrorsContext, message: string) =>
-        this.remoteConfigController.shouldIgnoreError(context, message),
-
-      identitySignIn: async (username: string, password: string) =>
-        this.identityController.signIn(username, password),
-      identityConfirmSignIn: async (code: string) => this.identityController.confirmSignIn(code),
-      identityUser: async () => this.identityController.getIdentityUser(),
-      identityRestore: this.identityController.restoreSession.bind(this.identityController),
-      identityUpdate: this.identityController.updateSession.bind(this.identityController),
-      identityClear: async () => this.identityController.clearSession(),
-
-      ledgerSignResponse: async (
-        requestId: string,
-        err: string | null,
-        signature: string | undefined,
-      ) => {
-        this.emit(`ledger:signResponse:${requestId}`, err ? new Error(err) : null, signature);
-      },
+      toggleAssetFavorite: this.assetInfoController.toggleAssetFavorite.bind(
+        this.assetInfoController,
+      ),
+      track: async (event: AnalyticsEvent) => this.statisticsController.track(event),
+      unlock: this.vaultController.unlock.bind(this.vaultController),
+      updateAssets: this.assetInfoController.updateAssets.bind(this.assetInfoController),
+      updateCurrentAccountBalance: this.currentAccountController.updateCurrentAccountBalance.bind(
+        this.currentAccountController,
+      ),
+      updateIdle: async () => this.idleController.update(),
+      updateOtherAccountsBalances: this.currentAccountController.updateOtherAccountsBalances.bind(
+        this.currentAccountController,
+      ),
+      updateTransactionFee: this.messageController.updateTransactionFee.bind(
+        this.messageController,
+      ),
+      updateUsdPricesByAssetIds: this.assetInfoController.updateUsdPricesByAssetIds.bind(
+        this.assetInfoController,
+      ),
     };
   }
 
@@ -761,19 +760,140 @@ class BackgroundService extends EventEmitter {
     })();
 
     return {
-      signOrder: async (
-        data: MessageInputOfType<'order'>['data'],
-        options?: MessageInputOfType<'order'>['options'],
+      auth: async (
+        data: MessageInputOfType<'auth'>['data'],
+        options?: MessageInputOfType<'auth'>['options'],
       ) => {
         const { selectedAccount } = await this.validatePermission(origin, connectionId);
 
         const message = await this.messageController.newMessage({
           ...commonMessageInput,
           account: selectedAccount,
-          broadcast: false,
           data,
           options,
-          type: 'order',
+          type: 'auth',
+        });
+
+        showNotification();
+
+        return this.messageController.getMessageResult(message.id);
+      },
+      dccAuth: async (
+        { publicKey, timestamp = Date.now() }: { publicKey?: string; timestamp?: number } = {},
+        options?: MessageInputOfType<'dccAuth'>['options'],
+      ) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          data: { publicKey, timestamp },
+          options,
+          type: 'dccAuth',
+        });
+
+        showNotification();
+
+        return this.messageController.getMessageResult(message.id);
+      },
+
+      decryptMessage: async (message: string, publicKey: string, prefix: string) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        if (!message || typeof message !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'message is invalid');
+        }
+
+        if (!publicKey || typeof publicKey !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
+        }
+
+        const wallet = this.walletController.getWallet(
+          selectedAccount.address,
+          selectedAccount.network,
+        );
+
+        return wallet.decryptMessage(message, publicKey, prefix);
+      },
+
+      encryptMessage: async (message: string, publicKey: string, prefix: string) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        if (!message || typeof message !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'message is invalid');
+        }
+
+        if (!publicKey || typeof publicKey !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
+        }
+
+        const wallet = this.walletController.getWallet(
+          selectedAccount.address,
+          selectedAccount.network,
+        );
+
+        return wallet.encryptMessage(message, publicKey, prefix);
+      },
+
+      getKEK: async (publicKey: string, prefix: string) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        if (!prefix || typeof prefix !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'prefix is invalid');
+        }
+
+        if (!publicKey || typeof publicKey !== 'string') {
+          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
+        }
+
+        const wallet = this.walletController.getWallet(
+          selectedAccount.address,
+          selectedAccount.network,
+        );
+
+        const sharedKey = await wallet.createSharedKey(publicKey, prefix);
+
+        return base58Encode(sharedKey);
+      },
+      notification: async (data?: { message?: string; title?: string }) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const notificationId = this.notificationsController.newNotification({
+          address: selectedAccount.address,
+          message: data?.message,
+          origin,
+          timestamp: Date.now(),
+          title: data?.title,
+          type: 'simple',
+        });
+
+        this.emit('Show notification');
+
+        return notificationId;
+      },
+
+      publicState: () => this.getPublicState(origin, connectionId),
+
+      resourceIsApproved: async () => {
+        return this.permissionsController.hasPermission(origin, PERMISSIONS.APPROVED);
+      },
+
+      resourceIsBlocked: async () => {
+        return this.permissionsController.hasPermission(origin, PERMISSIONS.REJECTED);
+      },
+      signAndPublishCancelOrder: async (
+        data: MessageInputOfType<'cancelOrder'>['data'],
+        options: MessageInputOfType<'cancelOrder'>['options'],
+      ) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          broadcast: true,
+          data,
+          options,
+          type: 'cancelOrder',
         });
 
         showNotification();
@@ -799,6 +919,29 @@ class BackgroundService extends EventEmitter {
 
         return this.messageController.getMessageResult(message.id);
       },
+      signAndPublishTransaction: async (
+        data: MessageInputOfType<'transaction'>['data'],
+        options?: MessageInputOfType<'transaction'>['options'],
+      ) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          broadcast: true,
+          data,
+          options,
+          type: 'transaction',
+        });
+
+        if (canAutoSign(message)) {
+          this.messageController.approve(message.id);
+        } else {
+          showNotification();
+        }
+
+        return this.messageController.getMessageResult(message.id);
+      },
       signCancelOrder: async (
         data: MessageInputOfType<'cancelOrder'>['data'],
         options?: MessageInputOfType<'cancelOrder'>['options'],
@@ -818,19 +961,55 @@ class BackgroundService extends EventEmitter {
 
         return this.messageController.getMessageResult(message.id);
       },
-      signAndPublishCancelOrder: async (
-        data: MessageInputOfType<'cancelOrder'>['data'],
-        options: MessageInputOfType<'cancelOrder'>['options'],
+      signCustomData: async (
+        data: MessageInputOfType<'customData'>['data'],
+        options?: MessageInputOfType<'customData'>['options'],
       ) => {
         const { selectedAccount } = await this.validatePermission(origin, connectionId);
 
         const message = await this.messageController.newMessage({
           ...commonMessageInput,
           account: selectedAccount,
-          broadcast: true,
           data,
           options,
-          type: 'cancelOrder',
+          type: 'customData',
+        });
+
+        showNotification();
+
+        return this.messageController.getMessageResult(message.id);
+      },
+      signOrder: async (
+        data: MessageInputOfType<'order'>['data'],
+        options?: MessageInputOfType<'order'>['options'],
+      ) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          broadcast: false,
+          data,
+          options,
+          type: 'order',
+        });
+
+        showNotification();
+
+        return this.messageController.getMessageResult(message.id);
+      },
+      signRequest: async (
+        data: MessageInputOfType<'request'>['data'],
+        options?: MessageInputOfType<'request'>['options'],
+      ) => {
+        const { selectedAccount } = await this.validatePermission(origin, connectionId);
+
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          data,
+          options,
+          type: 'request',
         });
 
         showNotification();
@@ -884,192 +1063,6 @@ class BackgroundService extends EventEmitter {
 
         return this.messageController.getMessageResult(message.id);
       },
-      signAndPublishTransaction: async (
-        data: MessageInputOfType<'transaction'>['data'],
-        options?: MessageInputOfType<'transaction'>['options'],
-      ) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const message = await this.messageController.newMessage({
-          ...commonMessageInput,
-          account: selectedAccount,
-          broadcast: true,
-          data,
-          options,
-          type: 'transaction',
-        });
-
-        if (canAutoSign(message)) {
-          this.messageController.approve(message.id);
-        } else {
-          showNotification();
-        }
-
-        return this.messageController.getMessageResult(message.id);
-      },
-      auth: async (
-        data: MessageInputOfType<'auth'>['data'],
-        options?: MessageInputOfType<'auth'>['options'],
-      ) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const message = await this.messageController.newMessage({
-          ...commonMessageInput,
-          account: selectedAccount,
-          data,
-          options,
-          type: 'auth',
-        });
-
-        showNotification();
-
-        return this.messageController.getMessageResult(message.id);
-      },
-      dccAuth: async (
-        { publicKey, timestamp = Date.now() }: { publicKey?: string; timestamp?: number } = {},
-        options?: MessageInputOfType<'dccAuth'>['options'],
-      ) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const message = await this.messageController.newMessage({
-          ...commonMessageInput,
-          account: selectedAccount,
-          data: { publicKey, timestamp },
-          options,
-          type: 'dccAuth',
-        });
-
-        showNotification();
-
-        return this.messageController.getMessageResult(message.id);
-      },
-      signRequest: async (
-        data: MessageInputOfType<'request'>['data'],
-        options?: MessageInputOfType<'request'>['options'],
-      ) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const message = await this.messageController.newMessage({
-          ...commonMessageInput,
-          account: selectedAccount,
-          data,
-          options,
-          type: 'request',
-        });
-
-        showNotification();
-
-        return this.messageController.getMessageResult(message.id);
-      },
-      signCustomData: async (
-        data: MessageInputOfType<'customData'>['data'],
-        options?: MessageInputOfType<'customData'>['options'],
-      ) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const message = await this.messageController.newMessage({
-          ...commonMessageInput,
-          account: selectedAccount,
-          data,
-          options,
-          type: 'customData',
-        });
-
-        showNotification();
-
-        return this.messageController.getMessageResult(message.id);
-      },
-      verifyCustomData: (data: MessageCustomDataSigned) =>
-        verifySignature(
-          base58Decode(data.publicKey),
-          makeCustomDataBytes(data),
-          base58Decode(data.signature),
-        ),
-      notification: async (data?: { message?: string; title?: string }) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        const notificationId = this.notificationsController.newNotification({
-          address: selectedAccount.address,
-          message: data?.message,
-          origin,
-          timestamp: Date.now(),
-          title: data?.title,
-          type: 'simple',
-        });
-
-        this.emit('Show notification');
-
-        return notificationId;
-      },
-
-      publicState: () => this.getPublicState(origin, connectionId),
-
-      resourceIsApproved: async () => {
-        return this.permissionsController.hasPermission(origin, PERMISSIONS.APPROVED);
-      },
-
-      resourceIsBlocked: async () => {
-        return this.permissionsController.hasPermission(origin, PERMISSIONS.REJECTED);
-      },
-
-      getKEK: async (publicKey: string, prefix: string) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        if (!prefix || typeof prefix !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'prefix is invalid');
-        }
-
-        if (!publicKey || typeof publicKey !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
-        }
-
-        const wallet = this.walletController.getWallet(
-          selectedAccount.address,
-          selectedAccount.network,
-        );
-
-        const sharedKey = await wallet.createSharedKey(publicKey, prefix);
-
-        return base58Encode(sharedKey);
-      },
-
-      encryptMessage: async (message: string, publicKey: string, prefix: string) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        if (!message || typeof message !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'message is invalid');
-        }
-
-        if (!publicKey || typeof publicKey !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
-        }
-
-        const wallet = this.walletController.getWallet(
-          selectedAccount.address,
-          selectedAccount.network,
-        );
-
-        return wallet.encryptMessage(message, publicKey, prefix);
-      },
-
-      decryptMessage: async (message: string, publicKey: string, prefix: string) => {
-        const { selectedAccount } = await this.validatePermission(origin, connectionId);
-
-        if (!message || typeof message !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'message is invalid');
-        }
-
-        if (!publicKey || typeof publicKey !== 'string') {
-          throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
-        }
-
-        const wallet = this.walletController.getWallet(
-          selectedAccount.address,
-          selectedAccount.network,
-        );
-
-        return wallet.decryptMessage(message, publicKey, prefix);
-      },
       subscribeToPublicState: async () => {
         pipe(
           publicStateUpdates,
@@ -1078,6 +1071,12 @@ class BackgroundService extends EventEmitter {
           }),
         );
       },
+      verifyCustomData: (data: MessageCustomDataSigned) =>
+        verifySignature(
+          base58Decode(data.publicKey),
+          makeCustomDataBytes(data),
+          base58Decode(data.signature),
+        ),
     };
   }
 
@@ -1178,7 +1177,7 @@ class BackgroundService extends EventEmitter {
     return new Promise<string>((resolve, reject) => {
       const requestId = nanoid();
 
-      this.emit('ledger:signRequest', { id: requestId, type, data });
+      this.emit('ledger:signRequest', { data, id: requestId, type });
 
       this.once(`ledger:signResponse:${requestId}`, (err: unknown, signature: string) => {
         if (err) {

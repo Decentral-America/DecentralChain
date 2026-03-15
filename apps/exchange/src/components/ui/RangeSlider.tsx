@@ -3,17 +3,18 @@
  * Numeric range selection with visual feedback (min/max)
  * Migrated to Material-UI
  */
-import React from 'react';
-import { Slider as MuiSlider, Box, Typography } from '@mui/material';
+
+import { Box, Slider as MuiSlider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 const SliderContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'disabled',
 })<{ disabled?: boolean }>(({ theme, disabled }) => ({
-  width: '100%',
-  padding: theme.spacing(2.5, 0),
-  opacity: disabled ? 0.5 : 1,
   cursor: disabled ? 'not-allowed' : 'default',
+  opacity: disabled ? 0.5 : 1,
+  padding: theme.spacing(2.5, 0),
+  width: '100%',
 }));
 
 const LabelContainer = styled(Box)(({ theme }) => ({
@@ -23,23 +24,23 @@ const LabelContainer = styled(Box)(({ theme }) => ({
 }));
 
 const Label = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.primary,
   fontSize: '14px',
   fontWeight: 500,
-  color: theme.palette.text.primary,
 }));
 
 const ValueDisplay = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
   fontSize: '14px',
   fontWeight: 600,
-  color: theme.palette.primary.main,
 }));
 
 const MinMaxContainer = styled(Box)(({ theme }) => ({
+  color: theme.palette.text.secondary,
   display: 'flex',
+  fontSize: '12px',
   justifyContent: 'space-between',
   marginTop: theme.spacing(0.5),
-  fontSize: '12px',
-  color: theme.palette.text.secondary,
 }));
 
 export interface RangeSliderMark {
@@ -196,14 +197,14 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         marks={marks}
         aria-label={ariaLabel || label || 'Range slider'}
         sx={{
-          '& .MuiSlider-thumb': {
-            width: 20,
-            height: 20,
-          },
-          '& .MuiSlider-track': {
+          '& .MuiSlider-rail': {
             height: 6,
           },
-          '& .MuiSlider-rail': {
+          '& .MuiSlider-thumb': {
+            height: 20,
+            width: 20,
+          },
+          '& .MuiSlider-track': {
             height: 6,
           },
         }}

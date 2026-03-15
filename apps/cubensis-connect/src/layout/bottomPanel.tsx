@@ -123,16 +123,17 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                       <button
                         type="button"
                         key={network}
-                        className={clsx(styles.dropdownItem, {
-                          [styles.dropdownItem_selected]: isSelected,
-                        })}
+                        className={clsx(
+                          styles.dropdownItem,
+                          isSelected && styles.dropdownItem_selected,
+                        )}
                         onClick={
                           isSelected
                             ? undefined
                             : () => {
                                 setIsDropdownShown(false);
 
-                                const newNet = networkHash[network];
+                                const newNet = networkHash[network]!;
 
                                 if (newNet.nodeBaseUrl) {
                                   setNewNetwork(network);

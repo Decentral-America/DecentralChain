@@ -27,9 +27,9 @@ export class IdleController {
     Browser.idle.setDetectionInterval(IDLE_INTERVAL);
     this.options = {
       // @ts-expect-error
-      type: 'idle',
-      // @ts-expect-error
       interval: 15 * 60 * 1000,
+      // @ts-expect-error
+      type: 'idle',
       ...preferencesController.store.getState().idleOptions,
     };
     this.preferencesController = preferencesController;

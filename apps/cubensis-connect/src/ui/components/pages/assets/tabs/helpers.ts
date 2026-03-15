@@ -83,83 +83,83 @@ export function sortAndFilterNfts<T extends Nft>(
 export const buildTxTypeOptions = (t: TFunction<'translation', undefined>) => [
   {
     id: 0,
-    value: 0,
     text: t('historyFilters.all'),
+    value: 0,
   },
   {
     id: TRANSACTION_TYPE.ISSUE,
-    value: TRANSACTION_TYPE.ISSUE,
     text: t('historyFilters.issue'),
+    value: TRANSACTION_TYPE.ISSUE,
   },
   {
     id: TRANSACTION_TYPE.TRANSFER,
-    value: TRANSACTION_TYPE.TRANSFER,
     text: t('historyFilters.transfer'),
+    value: TRANSACTION_TYPE.TRANSFER,
   },
   {
     id: TRANSACTION_TYPE.REISSUE,
-    value: TRANSACTION_TYPE.REISSUE,
     text: t('historyFilters.reissue'),
+    value: TRANSACTION_TYPE.REISSUE,
   },
   {
     id: TRANSACTION_TYPE.BURN,
-    value: TRANSACTION_TYPE.BURN,
     text: t('historyFilters.burn'),
+    value: TRANSACTION_TYPE.BURN,
   },
   {
     id: TRANSACTION_TYPE.EXCHANGE,
-    value: TRANSACTION_TYPE.EXCHANGE,
     text: t('historyFilters.exchange'),
+    value: TRANSACTION_TYPE.EXCHANGE,
   },
   {
     id: TRANSACTION_TYPE.LEASE,
-    value: TRANSACTION_TYPE.LEASE,
     text: t('historyFilters.lease'),
+    value: TRANSACTION_TYPE.LEASE,
   },
   {
     id: TRANSACTION_TYPE.CANCEL_LEASE,
-    value: TRANSACTION_TYPE.CANCEL_LEASE,
     text: t('historyFilters.cancelLease'),
+    value: TRANSACTION_TYPE.CANCEL_LEASE,
   },
   {
     id: TRANSACTION_TYPE.ALIAS,
-    value: TRANSACTION_TYPE.ALIAS,
     text: t('historyFilters.alias'),
+    value: TRANSACTION_TYPE.ALIAS,
   },
   {
     id: TRANSACTION_TYPE.MASS_TRANSFER,
-    value: TRANSACTION_TYPE.MASS_TRANSFER,
     text: t('historyFilters.massTransfer'),
+    value: TRANSACTION_TYPE.MASS_TRANSFER,
   },
   {
     id: TRANSACTION_TYPE.DATA,
-    value: TRANSACTION_TYPE.DATA,
     text: t('historyFilters.data'),
+    value: TRANSACTION_TYPE.DATA,
   },
   {
     id: TRANSACTION_TYPE.SET_SCRIPT,
-    value: TRANSACTION_TYPE.SET_SCRIPT,
     text: t('historyFilters.setScript'),
+    value: TRANSACTION_TYPE.SET_SCRIPT,
   },
   {
     id: TRANSACTION_TYPE.SPONSORSHIP,
-    value: TRANSACTION_TYPE.SPONSORSHIP,
     text: t('historyFilters.sponsorship'),
+    value: TRANSACTION_TYPE.SPONSORSHIP,
   },
   {
     id: TRANSACTION_TYPE.SET_ASSET_SCRIPT,
-    value: TRANSACTION_TYPE.SET_ASSET_SCRIPT,
     text: t('historyFilters.setAssetScript'),
+    value: TRANSACTION_TYPE.SET_ASSET_SCRIPT,
   },
   {
     id: TRANSACTION_TYPE.INVOKE_SCRIPT,
-    value: TRANSACTION_TYPE.INVOKE_SCRIPT,
     text: t('historyFilters.invokeScript'),
+    value: TRANSACTION_TYPE.INVOKE_SCRIPT,
   },
   {
     id: TRANSACTION_TYPE.UPDATE_ASSET_INFO,
-    value: TRANSACTION_TYPE.UPDATE_ASSET_INFO,
     text: t('historyFilters.updateAssetInfo'),
+    value: TRANSACTION_TYPE.UPDATE_ASSET_INFO,
   },
 ];
 

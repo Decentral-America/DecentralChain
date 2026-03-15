@@ -2,9 +2,10 @@
  * React Hook Form Configuration with Zod Validation
  * Type-safe form handling and validation utilities
  */
-import { useForm, UseFormProps, FieldValues } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z, ZodSchema } from 'zod';
+import { type FieldValues, type Resolver, type UseFormProps, useForm } from 'react-hook-form';
+import { type ZodSchema, z } from 'zod';
 
 /**
  * Custom hook for forms with Zod validation
@@ -28,12 +29,12 @@ import { z, ZodSchema } from 'zod';
  */
 export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
   schema: ZodSchema,
-  options?: Omit<UseFormProps<TFieldValues>, 'resolver'>
+  options?: Omit<UseFormProps<TFieldValues>, 'resolver'>,
 ) {
   return useForm<TFieldValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(schema as any) as any,
     mode: 'onChange', // Validate on change for better UX
+    // biome-ignore lint/suspicious/noExplicitAny: zodResolver generics require any for cross-version compat
+    resolver: zodResolver(schema as any) as unknown as Resolver<TFieldValues>,
     reValidateMode: 'onChange', // Revalidate on every change
     ...options,
   });
@@ -45,7 +46,7 @@ export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
  */
 
 /**
- * Waves Address Validation
+ * DCC Address Validation
  * Validates DecentralChain addresses (35 characters, starts with 3P)
  */
 export const addressSchema = z
@@ -94,7 +95,7 @@ export const attachmentSchema = z
  */
 export const passwordSchema = z
   .string()
-  .min(8, 'Password must be at least 8 characters')
+  .min(12, 'Password must be at least 12 characters')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(/[0-9]/, 'Password must contain at least one number')
@@ -111,14 +112,14 @@ export const seedPhraseSchema = z
       const words = val.trim().split(/\s+/);
       return words.length === 15;
     },
-    { message: 'Seed phrase must contain exactly 15 words' }
+    { message: 'Seed phrase must contain exactly 15 words' },
   )
   .refine(
     (val) => {
       const words = val.trim().split(/\s+/);
       return words.every((word) => word.length > 0);
     },
-    { message: 'Seed phrase cannot contain empty words' }
+    { message: 'Seed phrase cannot contain empty words' },
   );
 
 /**
@@ -133,6 +134,10 @@ export const seedPhraseSchema = z
  * For Transfer (Type 4) transactions
  */
 export const sendAssetSchema = z.object({
+  amount: amountSchema,
+  assetId: z.string().optional().nullable(), // null = DCC
+  attachment: attachmentSchema,
+  fee: optionalAmountSchema,
   recipient: z
     .string()
     .min(4, 'Recipient must be at least 4 characters')
@@ -150,12 +155,8 @@ export const sendAssetSchema = z.object({
           }
         }
       },
-      { message: 'Invalid recipient address or alias' }
+      { message: 'Invalid recipient address or alias' },
     ),
-  amount: amountSchema,
-  assetId: z.string().optional().nullable(), // null = DCC
-  attachment: attachmentSchema,
-  fee: optionalAmountSchema,
 });
 
 export type SendAssetFormData = z.infer<typeof sendAssetSchema>;
@@ -165,9 +166,13 @@ export type SendAssetFormData = z.infer<typeof sendAssetSchema>;
  * For Mass Transfer (Type 11) transactions
  */
 export const massTransferSchema = z.object({
+  assetId: z.string().optional().nullable(),
+  attachment: attachmentSchema,
+  fee: optionalAmountSchema,
   recipients: z
     .array(
       z.object({
+        amount: amountSchema,
         recipient: z
           .string()
           .min(4)
@@ -185,16 +190,12 @@ export const massTransferSchema = z.object({
                 }
               }
             },
-            { message: 'Invalid address or alias' }
+            { message: 'Invalid address or alias' },
           ),
-        amount: amountSchema,
-      })
+      }),
     )
     .min(1, 'At least one recipient required')
     .max(100, 'Maximum 100 recipients allowed'),
-  assetId: z.string().optional().nullable(),
-  attachment: attachmentSchema,
-  fee: optionalAmountSchema,
 });
 
 export type MassTransferFormData = z.infer<typeof massTransferSchema>;
@@ -204,9 +205,9 @@ export type MassTransferFormData = z.infer<typeof massTransferSchema>;
  * For Lease (Type 8) transactions
  */
 export const leaseSchema = z.object({
-  recipient: addressSchema,
   amount: amountSchema,
   fee: optionalAmountSchema,
+  recipient: addressSchema,
 });
 
 export type LeaseFormData = z.infer<typeof leaseSchema>;
@@ -216,19 +217,19 @@ export type LeaseFormData = z.infer<typeof leaseSchema>;
  * For Issue (Type 3) transactions
  */
 export const tokenIssuanceSchema = z.object({
-  name: z
-    .string()
-    .min(4, 'Name must be at least 4 characters')
-    .max(16, 'Name cannot exceed 16 characters'),
-  description: z.string().max(1000, 'Description cannot exceed 1000 characters'),
-  quantity: amountSchema,
   decimals: z
     .number()
     .int()
     .min(0, 'Decimals must be 0 or greater')
     .max(8, 'Decimals cannot exceed 8'),
-  reissuable: z.boolean(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters'),
   fee: optionalAmountSchema,
+  name: z
+    .string()
+    .min(4, 'Name must be at least 4 characters')
+    .max(16, 'Name cannot exceed 16 characters'),
+  quantity: amountSchema,
+  reissuable: z.boolean(),
 });
 
 export type TokenIssuanceFormData = z.infer<typeof tokenIssuanceSchema>;
@@ -239,9 +240,9 @@ export type TokenIssuanceFormData = z.infer<typeof tokenIssuanceSchema>;
  */
 export const assetReissueSchema = z.object({
   assetId: z.string().min(1, 'Asset ID is required'),
+  fee: optionalAmountSchema,
   quantity: amountSchema,
   reissuable: z.boolean(),
-  fee: optionalAmountSchema,
 });
 
 export type AssetReissueFormData = z.infer<typeof assetReissueSchema>;
@@ -252,8 +253,8 @@ export type AssetReissueFormData = z.infer<typeof assetReissueSchema>;
  */
 export const assetBurnSchema = z.object({
   assetId: z.string().min(1, 'Asset ID is required'),
-  quantity: amountSchema,
   fee: optionalAmountSchema,
+  quantity: amountSchema,
 });
 
 export type AssetBurnFormData = z.infer<typeof assetBurnSchema>;
@@ -280,7 +281,7 @@ export const dataTransactionSchema = z.object({
         key: z.string().min(1, 'Key cannot be empty').max(100, 'Key cannot exceed 100 characters'),
         type: z.enum(['string', 'integer', 'boolean', 'binary']),
         value: z.union([z.string(), z.number(), z.boolean()]),
-      })
+      }),
     )
     .min(1, 'At least one data entry required'),
   fee: optionalAmountSchema,
@@ -293,13 +294,13 @@ export type DataTransactionFormData = z.infer<typeof dataTransactionSchema>;
  * For placing buy/sell orders on DEX
  */
 export const dexOrderSchema = z.object({
-  amountAsset: z.string().min(1, 'Amount asset is required'),
-  priceAsset: z.string().min(1, 'Price asset is required'),
-  orderType: z.enum(['buy', 'sell']),
   amount: amountSchema,
-  price: amountSchema,
-  matcherFee: optionalAmountSchema,
+  amountAsset: z.string().min(1, 'Amount asset is required'),
   expiration: z.number().int().positive().optional(), // Timestamp in ms
+  matcherFee: optionalAmountSchema,
+  orderType: z.enum(['buy', 'sell']),
+  price: amountSchema,
+  priceAsset: z.string().min(1, 'Price asset is required'),
 });
 
 export type DexOrderFormData = z.infer<typeof dexOrderSchema>;
@@ -315,8 +316,8 @@ export type DexOrderFormData = z.infer<typeof dexOrderSchema>;
  * Login Form Schema
  */
 export const loginSchema = z.object({
-  seedPhrase: seedPhraseSchema,
   saveAccount: z.boolean().optional(),
+  seedPhrase: seedPhraseSchema,
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
@@ -327,8 +328,8 @@ export type LoginFormData = z.infer<typeof loginSchema>;
  */
 export const passwordConfirmationSchema = z
   .object({
-    password: passwordSchema,
     confirmPassword: z.string(),
+    password: passwordSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -362,7 +363,7 @@ export function getFormError(fieldErrors: unknown): string | undefined {
  */
 export function formatFormData<T extends Record<string, unknown>>(data: T): T {
   return Object.fromEntries(
-    Object.entries(data).filter(([, value]) => value !== undefined && value !== null)
+    Object.entries(data).filter(([, value]) => value !== undefined && value !== null),
   ) as T;
 }
 

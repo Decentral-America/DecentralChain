@@ -1,6 +1,6 @@
 export const ImportKeystoreFileScreen = {
-  get root() {
-    return $("[class*='root@chooseFile']");
+  get continueButton() {
+    return this.root.findByTestId$('submitButton');
   },
 
   get fileInput() {
@@ -10,8 +10,7 @@ export const ImportKeystoreFileScreen = {
   get passwordInput() {
     return this.root.findByTestId$('passwordInput');
   },
-
-  get continueButton() {
-    return this.root.findByTestId$('submitButton');
+  get root() {
+    return $("[class*='root@chooseFile']");
   },
 };

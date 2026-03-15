@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, type Middleware, type Reducer } from 'redux';
 import { createLogger } from 'redux-logger';
 import { type ThunkDispatch, thunk } from 'redux-thunk';
 
@@ -8,23 +8,30 @@ import { reducer } from './reducer';
 import { type AccountsState } from './types';
 
 export function createAccountsStore() {
+  const typedReducer = reducer as unknown as Reducer<AccountsState, AppAction>;
+  const typedMiddleware = Object.values(middleware) as Middleware<
+    Record<never, unknown>,
+    AccountsState,
+    ThunkDispatch<AccountsState, undefined, AppAction>
+  >[];
+
   const store = createStore<
     AccountsState,
     AppAction,
     { dispatch: ThunkDispatch<AccountsState, undefined, AppAction> },
     Record<never, unknown>
   >(
-    reducer as any,
+    typedReducer,
     applyMiddleware(
       thunk,
-      ...(Object.values(middleware) as any[]),
+      ...typedMiddleware,
       ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
     ),
   );
 
   if (import.meta.hot) {
     import.meta.hot.accept('./reducer', () => {
-      store.replaceReducer(reducer as any);
+      store.replaceReducer(typedReducer);
     });
   }
 

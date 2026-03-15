@@ -3,45 +3,50 @@
  * Hidden admin interface for managing trading pairs
  * Only accessible via direct URL: /dccadmin
  */
-import { useState, useEffect } from 'react';
-import { AdminTradingPair } from '@/hooks/useAdminTradingPairs';
+
 import {
+  Add as AddIcon,
+  Cancel as CancelIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  Save as SaveIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from '@mui/icons-material';
+import {
+  Alert,
   Box,
-  Container,
-  Paper,
-  Typography,
   Button,
-  IconButton,
+  Chip,
+  Container,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  TextField,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  IconButton,
+  Paper,
+  Snackbar,
+  Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
-  Stack,
-  Alert,
-  Snackbar,
+  TextField,
   Tooltip,
-  Switch,
-  FormControlLabel,
+  Typography,
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-  Save as SaveIcon,
-  Cancel as CancelIcon,
-} from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { type AdminTradingPair } from '@/hooks/useAdminTradingPairs';
+import { logger } from '@/lib/logger';
 
-interface TradingPair extends AdminTradingPair {}
+/** ID of trading pair pending delete confirmation, or null */
+type DeleteConfirmState = string | null;
+
+type TradingPair = AdminTradingPair;
 
 interface PairFormData {
   amountAssetId: string;
@@ -67,19 +72,20 @@ export const DexPairAdmin = () => {
     open: boolean;
     message: string;
     severity: 'success' | 'error' | 'info';
-  }>({ open: false, message: '', severity: 'success' });
+  }>({ message: '', open: false, severity: 'success' });
+  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>(null);
 
   const [formData, setFormData] = useState<PairFormData>({
+    amountAssetDecimals: 8,
     amountAssetId: '',
     amountAssetName: '',
     amountAssetTicker: '',
-    amountAssetDecimals: 8,
+    enabled: true,
+    featured: false,
+    priceAssetDecimals: 8,
     priceAssetId: '',
     priceAssetName: '',
     priceAssetTicker: '',
-    priceAssetDecimals: 8,
-    enabled: true,
-    featured: false,
     sortOrder: 0,
   });
 
@@ -90,29 +96,29 @@ export const DexPairAdmin = () => {
       try {
         setPairs(JSON.parse(stored));
       } catch (error) {
-        console.error('Failed to load trading pairs:', error);
+        logger.error('Failed to load trading pairs:', error);
       }
     } else {
       // Initialize with default DCC/USDT pair
       const defaultPairs: TradingPair[] = [
         {
-          id: 'dcc-usdt',
           amountAsset: {
+            decimals: 8,
             id: 'DCC',
             name: 'DecentralChain',
             ticker: 'DCC',
-            decimals: 8,
           },
+          createdAt: new Date().toISOString(),
+          enabled: true,
+          featured: true,
+          id: 'dcc-usdt',
           priceAsset: {
+            decimals: 6,
             id: 'USDT',
             name: 'Tether USD',
             ticker: 'USDT',
-            decimals: 6,
           },
-          enabled: true,
-          featured: true,
           sortOrder: 1,
-          createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
       ];
@@ -131,31 +137,31 @@ export const DexPairAdmin = () => {
     if (pair) {
       setEditingPair(pair);
       setFormData({
+        amountAssetDecimals: pair.amountAsset.decimals,
         amountAssetId: pair.amountAsset.id,
         amountAssetName: pair.amountAsset.name,
         amountAssetTicker: pair.amountAsset.ticker,
-        amountAssetDecimals: pair.amountAsset.decimals,
+        enabled: pair.enabled,
+        featured: pair.featured,
+        priceAssetDecimals: pair.priceAsset.decimals,
         priceAssetId: pair.priceAsset.id,
         priceAssetName: pair.priceAsset.name,
         priceAssetTicker: pair.priceAsset.ticker,
-        priceAssetDecimals: pair.priceAsset.decimals,
-        enabled: pair.enabled,
-        featured: pair.featured,
         sortOrder: pair.sortOrder,
       });
     } else {
       setEditingPair(null);
       setFormData({
+        amountAssetDecimals: 8,
         amountAssetId: '',
         amountAssetName: '',
         amountAssetTicker: '',
-        amountAssetDecimals: 8,
+        enabled: true,
+        featured: false,
+        priceAssetDecimals: 8,
         priceAssetId: '',
         priceAssetName: '',
         priceAssetTicker: '',
-        priceAssetDecimals: 8,
-        enabled: true,
-        featured: false,
         sortOrder: pairs.length,
       });
     }
@@ -171,8 +177,8 @@ export const DexPairAdmin = () => {
     // Validation
     if (!formData.amountAssetId || !formData.amountAssetTicker) {
       setSnackbar({
-        open: true,
         message: 'Amount asset ID and ticker are required',
+        open: true,
         severity: 'error',
       });
       return;
@@ -180,8 +186,8 @@ export const DexPairAdmin = () => {
 
     if (!formData.priceAssetId || !formData.priceAssetTicker) {
       setSnackbar({
-        open: true,
         message: 'Price asset ID and ticker are required',
+        open: true,
         severity: 'error',
       });
       return;
@@ -196,56 +202,56 @@ export const DexPairAdmin = () => {
           ? {
               ...pair,
               amountAsset: {
+                decimals: formData.amountAssetDecimals,
                 id: formData.amountAssetId,
                 name: formData.amountAssetName || formData.amountAssetTicker,
                 ticker: formData.amountAssetTicker,
-                decimals: formData.amountAssetDecimals,
-              },
-              priceAsset: {
-                id: formData.priceAssetId,
-                name: formData.priceAssetName || formData.priceAssetTicker,
-                ticker: formData.priceAssetTicker,
-                decimals: formData.priceAssetDecimals,
               },
               enabled: formData.enabled,
               featured: formData.featured,
+              priceAsset: {
+                decimals: formData.priceAssetDecimals,
+                id: formData.priceAssetId,
+                name: formData.priceAssetName || formData.priceAssetTicker,
+                ticker: formData.priceAssetTicker,
+              },
               sortOrder: formData.sortOrder,
               updatedAt: now,
             }
-          : pair
+          : pair,
       );
       savePairs(updatedPairs);
       setSnackbar({
-        open: true,
         message: 'Trading pair updated successfully',
+        open: true,
         severity: 'success',
       });
     } else {
       // Create new pair
       const newPair: TradingPair = {
-        id: `${formData.amountAssetTicker.toLowerCase()}-${formData.priceAssetTicker.toLowerCase()}`,
         amountAsset: {
+          decimals: formData.amountAssetDecimals,
           id: formData.amountAssetId,
           name: formData.amountAssetName || formData.amountAssetTicker,
           ticker: formData.amountAssetTicker,
-          decimals: formData.amountAssetDecimals,
         },
+        createdAt: now,
+        enabled: formData.enabled,
+        featured: formData.featured,
+        id: `${formData.amountAssetTicker.toLowerCase()}-${formData.priceAssetTicker.toLowerCase()}`,
         priceAsset: {
+          decimals: formData.priceAssetDecimals,
           id: formData.priceAssetId,
           name: formData.priceAssetName || formData.priceAssetTicker,
           ticker: formData.priceAssetTicker,
-          decimals: formData.priceAssetDecimals,
         },
-        enabled: formData.enabled,
-        featured: formData.featured,
         sortOrder: formData.sortOrder,
-        createdAt: now,
         updatedAt: now,
       };
       savePairs([...pairs, newPair]);
       setSnackbar({
-        open: true,
         message: 'Trading pair created successfully',
+        open: true,
         severity: 'success',
       });
     }
@@ -254,22 +260,27 @@ export const DexPairAdmin = () => {
   };
 
   const handleDeletePair = (pairId: string) => {
-    if (window.confirm('Are you sure you want to delete this trading pair?')) {
-      const updatedPairs = pairs.filter((pair) => pair.id !== pairId);
+    setDeleteConfirm(pairId);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteConfirm) {
+      const updatedPairs = pairs.filter((pair) => pair.id !== deleteConfirm);
       savePairs(updatedPairs);
       setSnackbar({
-        open: true,
         message: 'Trading pair deleted successfully',
+        open: true,
         severity: 'success',
       });
     }
+    setDeleteConfirm(null);
   };
 
   const handleToggleEnabled = (pairId: string) => {
     const updatedPairs = pairs.map((pair) =>
       pair.id === pairId
         ? { ...pair, enabled: !pair.enabled, updatedAt: new Date().toISOString() }
-        : pair
+        : pair,
     );
     savePairs(updatedPairs);
   };
@@ -278,7 +289,7 @@ export const DexPairAdmin = () => {
     const updatedPairs = pairs.map((pair) =>
       pair.id === pairId
         ? { ...pair, featured: !pair.featured, updatedAt: new Date().toISOString() }
-        : pair
+        : pair,
     );
     savePairs(updatedPairs);
   };
@@ -331,7 +342,7 @@ export const DexPairAdmin = () => {
                 <TableRow>
                   <TableCell colSpan={8} align="center">
                     <Typography variant="body2" color="text.secondary" py={4}>
-                      No trading pairs configured. Click "Add Pair" to create one.
+                      No trading pairs configured. Click &quot;Add Pair&quot; to create one.
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -345,9 +356,7 @@ export const DexPairAdmin = () => {
                           <Typography variant="body1" fontWeight={600}>
                             {pair.amountAsset.ticker}/{pair.priceAsset.ticker}
                           </Typography>
-                          {pair.featured && (
-                            <Chip label="Featured" size="small" color="primary" />
-                          )}
+                          {pair.featured && <Chip label="Featured" size="small" color="primary" />}
                         </Stack>
                       </TableCell>
                       <TableCell>
@@ -430,9 +439,7 @@ export const DexPairAdmin = () => {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {editingPair ? 'Edit Trading Pair' : 'Add New Trading Pair'}
-        </DialogTitle>
+        <DialogTitle>{editingPair ? 'Edit Trading Pair' : 'Add New Trading Pair'}</DialogTitle>
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 2 }}>
             {/* Amount Asset Section */}
@@ -445,9 +452,7 @@ export const DexPairAdmin = () => {
                   label="Asset ID *"
                   fullWidth
                   value={formData.amountAssetId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, amountAssetId: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, amountAssetId: e.target.value })}
                   placeholder="e.g., DCC or full asset ID"
                 />
                 <Stack direction="row" spacing={2}>
@@ -464,9 +469,7 @@ export const DexPairAdmin = () => {
                     label="Name"
                     fullWidth
                     value={formData.amountAssetName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, amountAssetName: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, amountAssetName: e.target.value })}
                     placeholder="e.g., DecentralChain"
                   />
                   <TextField
@@ -477,10 +480,10 @@ export const DexPairAdmin = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        amountAssetDecimals: parseInt(e.target.value) || 8,
+                        amountAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
-                    inputProps={{ min: 0, max: 18 }}
+                    inputProps={{ max: 18, min: 0 }}
                   />
                 </Stack>
               </Stack>
@@ -496,9 +499,7 @@ export const DexPairAdmin = () => {
                   label="Asset ID *"
                   fullWidth
                   value={formData.priceAssetId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priceAssetId: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, priceAssetId: e.target.value })}
                   placeholder="e.g., USDT or full asset ID"
                 />
                 <Stack direction="row" spacing={2}>
@@ -506,18 +507,14 @@ export const DexPairAdmin = () => {
                     label="Ticker *"
                     fullWidth
                     value={formData.priceAssetTicker}
-                    onChange={(e) =>
-                      setFormData({ ...formData, priceAssetTicker: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, priceAssetTicker: e.target.value })}
                     placeholder="e.g., USDT"
                   />
                   <TextField
                     label="Name"
                     fullWidth
                     value={formData.priceAssetName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, priceAssetName: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, priceAssetName: e.target.value })}
                     placeholder="e.g., Tether USD"
                   />
                   <TextField
@@ -528,10 +525,10 @@ export const DexPairAdmin = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        priceAssetDecimals: parseInt(e.target.value) || 8,
+                        priceAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
-                    inputProps={{ min: 0, max: 18 }}
+                    inputProps={{ max: 18, min: 0 }}
                   />
                 </Stack>
               </Stack>
@@ -549,7 +546,7 @@ export const DexPairAdmin = () => {
                   fullWidth
                   value={formData.sortOrder}
                   onChange={(e) =>
-                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    setFormData({ ...formData, sortOrder: parseInt(e.target.value, 10) || 0 })
                   }
                   helperText="Lower numbers appear first"
                 />
@@ -558,9 +555,7 @@ export const DexPairAdmin = () => {
                     control={
                       <Switch
                         checked={formData.enabled}
-                        onChange={(e) =>
-                          setFormData({ ...formData, enabled: e.target.checked })
-                        }
+                        onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
                       />
                     }
                     label="Enabled"
@@ -569,9 +564,7 @@ export const DexPairAdmin = () => {
                     control={
                       <Switch
                         checked={formData.featured}
-                        onChange={(e) =>
-                          setFormData({ ...formData, featured: e.target.checked })
-                        }
+                        onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                       />
                     }
                     label="Featured"
@@ -581,15 +574,11 @@ export const DexPairAdmin = () => {
             </Box>
           </Stack>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3 }}>
+        <DialogActions sx={{ pb: 3, px: 3 }}>
           <Button startIcon={<CancelIcon />} onClick={handleCloseDialog}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            onClick={handleSavePair}
-          >
+          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSavePair}>
             {editingPair ? 'Update' : 'Create'}
           </Button>
         </DialogActions>
@@ -600,7 +589,7 @@ export const DexPairAdmin = () => {
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
@@ -610,6 +599,19 @@ export const DexPairAdmin = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <Dialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)}>
+        <DialogTitle>Delete Trading Pair</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this trading pair?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirm(null)}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

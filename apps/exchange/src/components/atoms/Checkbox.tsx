@@ -4,11 +4,12 @@
  * Replaces Angular w-checkbox directive
  * Migrated to Material-UI
  */
-import React from 'react';
-import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@mui/material/Checkbox';
+
+import MuiCheckbox, { type CheckboxProps as MuiCheckboxProps } from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 
 export interface CheckboxProps extends Omit<MuiCheckboxProps, 'type'> {
   label?: string;
@@ -39,8 +40,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         indeterminate={indeterminate}
         disabled={disabled}
         inputProps={{
-          'aria-invalid': !!error,
           'aria-describedby': error ? `${checkboxId}-error` : undefined,
+          'aria-invalid': !!error,
         }}
         {...props}
       />
@@ -60,7 +61,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         )}
       </CheckboxContainer>
     );
-  }
+  },
 );
 
 Checkbox.displayName = 'Checkbox';

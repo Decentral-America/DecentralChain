@@ -29,8 +29,8 @@ class ListComponent extends PureComponent<IProps> {
           <ListItem
             key={name}
             originName={name}
-            permissions={origins[name]}
-            permissionsText={this.getPermissionsText(t, origins[name])}
+            permissions={origins[name]!}
+            permissionsText={this.getPermissionsText(t, origins[name]!)}
             showSettings={showSettings}
             toggleApprove={toggleApprove}
           />

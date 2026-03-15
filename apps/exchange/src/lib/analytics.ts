@@ -34,6 +34,7 @@
  */
 
 import ReactGA from 'react-ga4';
+import { logger } from '@/lib/logger';
 
 /**
  * Analytics configuration
@@ -97,13 +98,13 @@ let config: AnalyticsConfig = {};
  */
 export const initAnalytics = (options: AnalyticsConfig = {}): void => {
   if (isInitialized) {
-    console.warn('[Analytics] Already initialized');
+    logger.warn('[Analytics] Already initialized');
     return;
   }
 
   config = {
-    gaId: import.meta.env.VITE_GA_MEASUREMENT_ID,
-    amplitudeKey: import.meta.env.VITE_AMPLITUDE_KEY,
+    ...(import.meta.env.VITE_GA_MEASUREMENT_ID && { gaId: import.meta.env.VITE_GA_MEASUREMENT_ID }),
+    ...(import.meta.env.VITE_AMPLITUDE_KEY && { amplitudeKey: import.meta.env.VITE_AMPLITUDE_KEY }),
     debug: import.meta.env.DEV === true,
     enableInDev: false,
     ...options,
@@ -111,7 +112,7 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
 
   // Don't track in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
-    console.log('[Analytics] Disabled in development mode');
+    logger.debug('[Analytics] Disabled in development mode');
     return;
   }
 
@@ -125,10 +126,10 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
       });
 
       if (config.debug) {
-        console.log('[Analytics] Google Analytics initialized:', config.gaId);
+        logger.debug('[Analytics] Google Analytics initialized:', config.gaId);
       }
     } catch (error) {
-      console.error('[Analytics] Failed to initialize Google Analytics:', error);
+      logger.error('[Analytics] Failed to initialize Google Analytics:', error);
     }
   }
 
@@ -137,17 +138,17 @@ export const initAnalytics = (options: AnalyticsConfig = {}): void => {
     try {
       if (window.amplitudeInit) {
         window.amplitudeInit(config.amplitudeKey, {
-          includeUtm: true,
           includeReferrer: true,
+          includeUtm: true,
           saveEvents: true,
         });
 
         if (config.debug) {
-          console.log('[Analytics] Amplitude initialized:', config.amplitudeKey);
+          logger.debug('[Analytics] Amplitude initialized:', config.amplitudeKey);
         }
       }
     } catch (error) {
-      console.error('[Analytics] Failed to initialize Amplitude:', error);
+      logger.error('[Analytics] Failed to initialize Amplitude:', error);
     }
   }
 
@@ -199,10 +200,10 @@ export const trackPageView = (path: string, title?: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] Page view tracked:', { path, title });
+      logger.debug('[Analytics] Page view tracked:', { path, title });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track page view:', error);
+    logger.error('[Analytics] Failed to track page view:', error);
   }
 };
 
@@ -236,7 +237,7 @@ export const trackEvent = (
   action: string,
   label?: string,
   value?: number,
-  params?: EventParams
+  params?: EventParams,
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     return;
@@ -245,18 +246,18 @@ export const trackEvent = (
   try {
     // Google Analytics
     ReactGA.event({
-      category,
       action,
-      label,
-      value,
+      category,
+      ...(label != null && { label }),
+      ...(value != null && { value }),
       ...params,
     });
 
     // Amplitude
     if (typeof window !== 'undefined' && window.amplitudePushEvent) {
       window.amplitudePushEvent(`${category}_${action}`, {
-        category,
         action,
+        category,
         label,
         value,
         ...params,
@@ -264,10 +265,10 @@ export const trackEvent = (
     }
 
     if (config.debug) {
-      console.log('[Analytics] Event tracked:', { category, action, label, value, params });
+      logger.debug('[Analytics] Event tracked:', { action, category, label, params, value });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track event:', error);
+    logger.error('[Analytics] Failed to track event:', error);
   }
 };
 
@@ -303,10 +304,10 @@ export const setUserId = (userId: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User ID set:', userId);
+      logger.debug('[Analytics] User ID set:', userId);
     }
   } catch (error) {
-    console.error('[Analytics] Failed to set user ID:', error);
+    logger.error('[Analytics] Failed to set user ID:', error);
   }
 };
 
@@ -339,10 +340,10 @@ export const setUserProperties = (properties: UserProperties): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User properties set:', properties);
+      logger.debug('[Analytics] User properties set:', properties);
     }
   } catch (error) {
-    console.error('[Analytics] Failed to set user properties:', error);
+    logger.error('[Analytics] Failed to set user properties:', error);
   }
 };
 
@@ -367,11 +368,11 @@ export const trackTransaction = (
   transactionId: string,
   value: number,
   currency: string,
-  params?: EventParams
+  params?: EventParams,
 ): void => {
   trackEvent('Transaction', 'complete', currency, value, {
-    transaction_id: transactionId,
     currency,
+    transaction_id: transactionId,
     ...params,
   });
 };
@@ -400,7 +401,7 @@ export const trackPurchase = (
   transactionId: string,
   value: number,
   currency: string,
-  items: EcommerceItem[]
+  items: EcommerceItem[],
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     return;
@@ -408,17 +409,17 @@ export const trackPurchase = (
 
   try {
     ReactGA.event('purchase', {
-      transaction_id: transactionId,
-      value,
       currency,
       items,
+      transaction_id: transactionId,
+      value,
     });
 
     if (config.debug) {
-      console.log('[Analytics] Purchase tracked:', { transactionId, value, currency, items });
+      logger.debug('[Analytics] Purchase tracked:', { currency, items, transactionId, value });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track purchase:', error);
+    logger.error('[Analytics] Failed to track purchase:', error);
   }
 };
 
@@ -445,7 +446,7 @@ export const trackTiming = (
   category: string,
   variable: string,
   value: number,
-  label?: string
+  label?: string,
 ): void => {
   trackEvent('Timing', category, label, value, {
     timing_category: category,
@@ -480,10 +481,10 @@ export const trackException = (description: string, fatal: boolean = false): voi
     });
 
     if (config.debug) {
-      console.log('[Analytics] Exception tracked:', { description, fatal });
+      logger.debug('[Analytics] Exception tracked:', { description, fatal });
     }
   } catch (error) {
-    console.error('[Analytics] Failed to track exception:', error);
+    logger.error('[Analytics] Failed to track exception:', error);
   }
 };
 
@@ -516,10 +517,10 @@ export const clearUser = (): void => {
     }
 
     if (config.debug) {
-      console.log('[Analytics] User data cleared');
+      logger.debug('[Analytics] User data cleared');
     }
   } catch (error) {
-    console.error('[Analytics] Failed to clear user data:', error);
+    logger.error('[Analytics] Failed to clear user data:', error);
   }
 };
 
@@ -528,42 +529,41 @@ export const clearUser = (): void => {
  */
 
 export const analytics = {
-  // Wallet events
-  walletCreated: () => trackEvent('Wallet', 'created'),
-  walletImported: () => trackEvent('Wallet', 'imported'),
-  walletBackedUp: () => trackEvent('Wallet', 'backed_up'),
+  // Feature usage
+  featureUsed: (feature: string) => trackEvent('Feature', 'used', feature),
 
-  // Transaction events
-  transactionSent: (amount: number, asset: string) =>
-    trackEvent('Transaction', 'send', asset, amount),
-  transactionReceived: (amount: number, asset: string) =>
-    trackEvent('Transaction', 'receive', asset, amount),
+  // Help events
+  helpViewed: (topic: string) => trackEvent('Help', 'viewed', topic),
+  languageChanged: (language: string) => trackEvent('Settings', 'language_changed', language),
+  leasingCancelled: () => trackEvent('Leasing', 'cancelled'),
+
+  // Leasing events
+  leasingStarted: (amount: number) => trackEvent('Leasing', 'started', undefined, amount),
+  orderCancelled: (pair: string) => trackEvent('DEX', 'order_cancelled', pair),
 
   // DEX events
   orderPlaced: (pair: string, side: 'buy' | 'sell', amount: number) =>
     trackEvent('DEX', 'order_placed', pair, amount, { side }),
-  orderCancelled: (pair: string) => trackEvent('DEX', 'order_cancelled', pair),
-  tradeExecuted: (pair: string, amount: number, price: number) =>
-    trackEvent('DEX', 'trade_executed', pair, amount, { price }),
-
-  // Leasing events
-  leasingStarted: (amount: number) => trackEvent('Leasing', 'started', undefined, amount),
-  leasingCancelled: () => trackEvent('Leasing', 'cancelled'),
-
-  // Settings events
-  themeChanged: (theme: string) => trackEvent('Settings', 'theme_changed', theme),
-  languageChanged: (language: string) => trackEvent('Settings', 'language_changed', language),
-
-  // Feature usage
-  featureUsed: (feature: string) => trackEvent('Feature', 'used', feature),
 
   // Search events
   searchPerformed: (query: string, resultsCount: number) =>
     trackEvent('Search', 'performed', query, resultsCount),
-
-  // Help events
-  helpViewed: (topic: string) => trackEvent('Help', 'viewed', topic),
   supportContacted: (method: string) => trackEvent('Support', 'contacted', method),
+
+  // Settings events
+  themeChanged: (theme: string) => trackEvent('Settings', 'theme_changed', theme),
+  tradeExecuted: (pair: string, amount: number, price: number) =>
+    trackEvent('DEX', 'trade_executed', pair, amount, { price }),
+  transactionReceived: (amount: number, asset: string) =>
+    trackEvent('Transaction', 'receive', asset, amount),
+
+  // Transaction events
+  transactionSent: (amount: number, asset: string) =>
+    trackEvent('Transaction', 'send', asset, amount),
+  walletBackedUp: () => trackEvent('Wallet', 'backed_up'),
+  // Wallet events
+  walletCreated: () => trackEvent('Wallet', 'created'),
+  walletImported: () => trackEvent('Wallet', 'imported'),
 };
 
 // Type declarations for window.amplitude and window.amplitudeInit
@@ -584,15 +584,15 @@ declare global {
 }
 
 export default {
+  analytics,
+  clearUser,
   initAnalytics,
-  trackPageView,
-  trackEvent,
   setUserId,
   setUserProperties,
-  trackTransaction,
+  trackEvent,
+  trackException,
+  trackPageView,
   trackPurchase,
   trackTiming,
-  trackException,
-  clearUser,
-  analytics,
+  trackTransaction,
 };

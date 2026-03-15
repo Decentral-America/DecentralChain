@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import {
   base16Decode,
   base58Decode,
@@ -47,7 +47,7 @@ import {
 
 export function isAddressString(input: string, chainId?: number) {
   try {
-    return verifyAddress(base58Decode(input), { chainId });
+    return verifyAddress(base58Decode(input), chainId != null ? { chainId } : {});
   } catch (_err) {
     return false;
   }
@@ -141,7 +141,6 @@ export function makeOrderBytes(
     : toBinary(
         OrderSchema,
         create(OrderSchema, {
-          chainId: order.chainId,
           amount: BigInt(order.amount),
           assetPair: {
             amountAssetId: order.assetPair.amountAsset
@@ -151,12 +150,7 @@ export function makeOrderBytes(
               ? base58Decode(order.assetPair.priceAsset)
               : new Uint8Array(),
           },
-          sender: order.eip712Signature
-            ? {
-                case: 'eip712Signature' as const,
-                value: base16Decode(order.eip712Signature.slice(2)),
-              }
-            : { case: 'senderPublicKey' as const, value: base58Decode(order.senderPublicKey) },
+          chainId: order.chainId,
           expiration: BigInt(order.expiration),
           matcherFee: amountToProto(order.matcherFee, order.matcherFeeAssetId),
           matcherPublicKey: base58Decode(order.matcherPublicKey),
@@ -170,6 +164,12 @@ export function makeOrderBytes(
                 }[order.priceMode] ?? Order_PriceMode.DEFAULT)
               : Order_PriceMode.DEFAULT,
           proofs: order.proofs?.map(base58Decode) ?? [],
+          sender: order.eip712Signature
+            ? {
+                case: 'eip712Signature' as const,
+                value: base16Decode(order.eip712Signature.slice(2)),
+              }
+            : { case: 'senderPublicKey' as const, value: base58Decode(order.senderPublicKey) },
           timestamp: BigInt(order.timestamp),
           version: order.version,
         }),
@@ -222,7 +222,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'issue',
                 value: {
@@ -236,6 +235,7 @@ export function makeTxBytes(
                     : new Uint8Array(),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.TRANSFER:
@@ -245,7 +245,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee, tx.feeAssetId),
               data: {
                 case: 'transfer',
                 value: {
@@ -254,6 +253,7 @@ export function makeTxBytes(
                   recipient: recipientToProto(tx.recipient),
                 },
               },
+              fee: amountToProto(tx.fee, tx.feeAssetId),
             }),
           );
     case TRANSACTION_TYPE.REISSUE:
@@ -263,7 +263,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'reissue',
                 value: {
@@ -271,6 +270,7 @@ export function makeTxBytes(
                   reissuable: tx.reissuable || false,
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.BURN:
@@ -280,13 +280,13 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'burn',
                 value: {
                   assetAmount: amountToProto(tx.amount, tx.assetId),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.LEASE:
@@ -296,7 +296,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'lease',
                 value: {
@@ -304,6 +303,7 @@ export function makeTxBytes(
                   recipient: recipientToProto(tx.recipient),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.CANCEL_LEASE:
@@ -313,13 +313,13 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'leaseCancel',
                 value: {
                   leaseId: base58Decode(tx.leaseId),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.ALIAS:
@@ -329,8 +329,8 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: { case: 'createAlias', value: { alias: tx.alias } },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.MASS_TRANSFER:
@@ -340,18 +340,18 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'massTransfer',
                 value: {
                   assetId: tx.assetId == null ? new Uint8Array() : base58Decode(tx.assetId),
                   attachment: !tx.attachment ? new Uint8Array() : base58Decode(tx.attachment),
                   transfers: tx.transfers.map((transfer) => ({
-                    recipient: recipientToProto(transfer.recipient),
                     amount: BigInt(transfer.amount),
+                    recipient: recipientToProto(transfer.recipient),
                   })),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.DATA:
@@ -361,7 +361,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'dataTransaction',
                 value: {
@@ -385,6 +384,7 @@ export function makeTxBytes(
                   ),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.SET_SCRIPT:
@@ -394,7 +394,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'setScript',
                 value: {
@@ -403,6 +402,7 @@ export function makeTxBytes(
                     : new Uint8Array(),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
@@ -412,7 +412,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'setAssetScript',
                 value: {
@@ -422,6 +421,7 @@ export function makeTxBytes(
                     : new Uint8Array(),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.SPONSORSHIP:
@@ -431,7 +431,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee),
               data: {
                 case: 'sponsorFee',
                 value: {
@@ -441,6 +440,7 @@ export function makeTxBytes(
                       : amountToProto(tx.minSponsoredAssetFee, tx.assetId),
                 },
               },
+              fee: amountToProto(tx.fee),
             }),
           );
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
@@ -450,7 +450,6 @@ export function makeTxBytes(
             TransactionSchema,
             create(TransactionSchema, {
               ...protobufCommon,
-              fee: amountToProto(tx.fee, tx.feeAssetId),
               data: {
                 case: 'invokeScript',
                 value: {
@@ -461,6 +460,7 @@ export function makeTxBytes(
                   payments: tx.payment.map(({ amount, assetId }) => amountToProto(amount, assetId)),
                 },
               },
+              fee: amountToProto(tx.fee, tx.feeAssetId),
             }),
           );
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
@@ -468,7 +468,6 @@ export function makeTxBytes(
         TransactionSchema,
         create(TransactionSchema, {
           ...protobufCommon,
-          fee: amountToProto(tx.fee),
           data: {
             case: 'updateAssetInfo',
             value: {
@@ -477,6 +476,7 @@ export function makeTxBytes(
               name: tx.name,
             },
           },
+          fee: amountToProto(tx.fee),
         }),
       );
   }
@@ -498,8 +498,8 @@ export function stringifyOrder(order: MessageOrder, { pretty }: { pretty?: boole
   return JSONbn.stringify(
     {
       amount: new BigNumber(amount),
-      price: new BigNumber(price),
       matcherFee: new BigNumber(matcherFee),
+      price: new BigNumber(price),
       sender: base58Encode(createAddress(base58Decode(order.senderPublicKey), order.chainId)),
       ...otherProps,
     },
@@ -516,8 +516,8 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { fee, initialFee, quantity, ...otherProps } = tx;
 
       return {
-        quantity: new BigNumber(quantity),
         fee: new BigNumber(fee),
+        quantity: new BigNumber(quantity),
         ...otherProps,
         sender,
       };
@@ -536,8 +536,8 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { fee, initialFee, quantity, ...otherProps } = tx;
 
       return {
-        quantity: new BigNumber(quantity),
         fee: new BigNumber(fee),
+        quantity: new BigNumber(quantity),
         ...otherProps,
         sender,
       };
@@ -546,8 +546,8 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { amount, fee, initialFee, ...otherProps } = tx;
 
       return {
-        fee: new BigNumber(fee),
         amount: new BigNumber(amount),
+        fee: new BigNumber(fee),
         ...otherProps,
         sender,
       };
@@ -575,11 +575,11 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { fee, initialFee, transfers, ...otherProps } = tx;
 
       return {
+        fee: new BigNumber(fee),
         transfers: transfers.map(({ amount, recipient }) => ({
           amount: new BigNumber(amount),
           recipient,
         })),
-        fee: new BigNumber(fee),
         ...otherProps,
         sender,
       };
@@ -600,9 +600,9 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { fee, initialFee, minSponsoredAssetFee, ...otherProps } = tx;
 
       return {
+        fee: new BigNumber(fee),
         minSponsoredAssetFee:
           minSponsoredAssetFee == null ? null : new BigNumber(minSponsoredAssetFee),
-        fee: new BigNumber(fee),
         ...otherProps,
         sender,
       };
@@ -611,7 +611,6 @@ function prepareTransactionForJson(tx: MessageTx) {
       const { call, fee, initialFee, payment, ...otherProps } = tx;
 
       return {
-        payment: payment.map((p) => ({ ...p, amount: new BigNumber(p.amount) })),
         call: call && {
           ...call,
           args: call.args.map(
@@ -628,6 +627,7 @@ function prepareTransactionForJson(tx: MessageTx) {
           ),
         },
         fee: new BigNumber(fee),
+        payment: payment.map((p) => ({ ...p, amount: new BigNumber(p.amount) })),
         ...otherProps,
         sender,
       };

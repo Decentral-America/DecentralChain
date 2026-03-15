@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '@/i18n/i18n';
-import App from './App';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { config, devLog } from '@/config';
 import { initializeDataService } from '@/config/dataServiceConfig';
+import i18n from '@/i18n/i18n';
 import tokenFilterService from '@/services/tokenFilters';
 import { stringifyJSON } from '@/utils/formatters';
+import App from './App';
 import './index.css';
+import { logger } from '@/lib/logger';
 
-// Provide WavesApp.stringifyJSON for data-service compatibility
-(window as any).WavesApp = {
+// Provide DCCApp.stringifyJSON for data-service compatibility
+(window as Window & { DCCApp?: { stringifyJSON: typeof stringifyJSON } }).DCCApp = {
   stringifyJSON,
 };
 
@@ -29,15 +30,15 @@ initializeDataService();
 
 // Initialize token filters (scam list and token names)
 tokenFilterService.initialize().catch((error) => {
-  console.error('[Main] Token filter initialization failed:', error);
+  logger.error('[Main] Token filter initialization failed:', error);
 });
 
 // Verify configuration system is working
 devLog('Configuration loaded:', {
+  apiUrl: config.apiUrl,
   environment: config.isDevelopment ? 'Development' : 'Production',
   network: config.network,
   nodeUrl: config.nodeUrl,
-  apiUrl: config.apiUrl,
 });
 
 /**
@@ -57,12 +58,14 @@ devLog('Configuration loaded:', {
  * 1. ErrorBoundary - Top-level error catching
  * 2. I18nextProvider - Translation support (needed globally)
  */
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
         <App />
       </I18nextProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

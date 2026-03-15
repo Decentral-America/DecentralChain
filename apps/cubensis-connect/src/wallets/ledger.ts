@@ -112,10 +112,10 @@ export class LedgerWallet extends Wallet<WalletPrivateDataOfType<'ledger'>> {
 
     const signature = await this.#ledger.signTransaction({
       amountPrecision,
-      feePrecision,
       dataBuffer,
       dataType: tx.type,
       dataVersion: tx.version,
+      feePrecision,
     });
 
     return base58Decode(signature);

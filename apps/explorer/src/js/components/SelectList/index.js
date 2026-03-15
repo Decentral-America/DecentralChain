@@ -1,1 +1,1 @@
-export { SelectListContainer as default } from './SelectList.container';
+export {SelectListContainer as default} from './SelectList.container';

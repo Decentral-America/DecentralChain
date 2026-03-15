@@ -2,10 +2,10 @@
  * Market Data WebSocket Hook
  * Real-time market price and volume updates for trading pairs
  */
-import { useEffect, useCallback, useState } from 'react';
-import { useWebSocketChannel, createWebSocketUrl } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { useCallback, useEffect, useState } from 'react';
 import { config } from '@/config';
+import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Market Update Message
@@ -57,7 +57,7 @@ export interface AllMarketsUpdate {
  * const { marketData, isLive, lastUpdate } = useMarketData();
  *
  * if (isLive) {
- *   console.log('Current price:', marketData?.currentPrice);
+ *   logger.debug('Current price:', marketData?.currentPrice);
  * }
  * ```
  */
@@ -86,35 +86,35 @@ export const useMarketData = () => {
       // Update Zustand store for global access
       updateMarketData({
         currentPrice: data.currentPrice,
-        lastPrice: data.lastPrice,
-        volume24h: data.volume24h,
         high24h: data.high24h,
+        lastPrice: data.lastPrice,
         low24h: data.low24h,
         priceChange24h: data.priceChange24h,
         priceChangePercent24h: data.priceChangePercent24h,
+        volume24h: data.volume24h,
       });
     },
-    [updateMarketData]
+    [updateMarketData],
   );
 
   // Subscribe to market data channel
   useWebSocketChannel<MarketUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleMarketUpdate,
-    !!selectedPair // Only subscribe when pair is selected
+    !!selectedPair, // Only subscribe when pair is selected
   );
 
   // Reset state when pair changes
   useEffect(() => {
     setMarketData(null);
     setIsLive(false);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
-    marketData,
-    lastUpdate,
     isLive,
+    lastUpdate,
+    marketData,
     selectedPair,
   };
 };
@@ -129,7 +129,7 @@ export const useMarketData = () => {
  * const { markets, topGainers, topLosers } = useAllMarkets();
  *
  * topGainers.forEach(market => {
- *   console.log(`${market.pair}: +${market.change24h}%`);
+ *   logger.debug(`${market.pair}: +${market.change24h}%`);
  * });
  * ```
  */
@@ -149,10 +149,10 @@ export const useAllMarkets = () => {
 
   // Subscribe to all markets channel
   useWebSocketChannel<AllMarketsUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleAllMarketsUpdate,
-    true // Always enabled
+    true, // Always enabled
   );
 
   // Calculate top gainers (sorted by price change descending)
@@ -171,11 +171,11 @@ export const useAllMarkets = () => {
   const topVolume = markets.sort((a, b) => b.volume24h - a.volume24h).slice(0, 10);
 
   return {
+    lastUpdate,
     markets,
     topGainers,
     topLosers,
     topVolume,
-    lastUpdate,
   };
 };
 
@@ -217,21 +217,21 @@ export const usePairTicker = (amountAsset?: string, priceAsset?: string) => {
 
   // Subscribe to ticker channel
   useWebSocketChannel<TickerUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleTickerUpdate,
-    !!(amountAsset && priceAsset)
+    !!(amountAsset && priceAsset),
   );
 
   // Reset state when pair changes
   useEffect(() => {
     setTicker(null);
     setIsConnected(false);
-  }, [amountAsset, priceAsset]);
+  }, []);
 
   return {
-    ticker,
     isConnected,
+    ticker,
   };
 };
 
@@ -244,7 +244,7 @@ export const formatPriceChange = (change: number): { text: string; isPositive: b
   const sign = isPositive ? '+' : '';
   const text = `${sign}${change.toFixed(2)}%`;
 
-  return { text, isPositive };
+  return { isPositive, text };
 };
 
 /**

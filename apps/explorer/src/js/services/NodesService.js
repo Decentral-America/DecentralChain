@@ -1,39 +1,45 @@
-import { nodeApi } from '../shared/api/NodeApi';
-import { ApiClientService } from './ApiClientService';
+import axios from 'axios';
+
+import {nodeApi} from '../shared/api/NodeApi';
+import {ApiClientService} from './ApiClientService';
 
 export class NodesService extends ApiClientService {
-  loadNodes = () => {
-    const nodes = this.configuration().nodes.slice();
+    constructor(configurationService, networkId) {
+        super(configurationService, networkId);
+    }
 
-    const promises = nodes.map((node, index) => {
-      const api = nodeApi(node.url);
-      return Promise.all([
-        api.version(),
-        api.blocks.height(),
-        api.baseTarget(),
-        api.transactions.utxSize(),
-      ]).then(([version, height, baseTarget, unconfirmedTxCount]) => {
-        const newNode = {
-          ...node,
-          version: version.version,
-          height: height.height,
-          baseTarget: baseTarget.baseTarget,
-          unconfirmedTxCount: unconfirmedTxCount.size,
-        };
+    loadNodes = () => {
+        const nodes = this.configuration().nodes.slice();
 
-        return {
-          index,
-          node: newNode,
-        };
-      });
-    });
+        const promises = nodes.map((node, index) => {
+            const api = nodeApi(node.url);
+            return axios.all([
+                api.version(),
+                api.blocks.height(),
+                api.baseTarget(),
+                api.transactions.utxSize()
+            ]).then(axios.spread((version, height, baseTarget, unconfirmedTxCount) => {
+                const newNode = {
+                    ...node,
+                    version: version.data.version,
+                    height: height.data.height,
+                    baseTarget: baseTarget.data.baseTarget,
+                    unconfirmedTxCount: unconfirmedTxCount.data.size
+                };
 
-    return Promise.all(promises).then((values) => {
-      values.forEach((item) => {
-        nodes[item.index] = item.node;
-      });
+                return {
+                    index,
+                    node: newNode
+                };
+            }))
+        });
 
-      return nodes;
-    });
-  };
+        return Promise.all(promises).then(values => {
+            values.forEach(item => {
+                nodes[item.index] = item.node;
+            });
+
+            return nodes;
+        });
+    }
 }

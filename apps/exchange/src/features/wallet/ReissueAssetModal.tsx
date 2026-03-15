@@ -3,12 +3,14 @@
  * Modal for reissuing (minting more) user-issued tokens
  * Matches Angular modalManager.showReissueModal functionality
  */
-import { Modal } from '@/components/organisms/Modal';
-import { Spinner } from '@/components/atoms/Spinner';
-import styled from 'styled-components';
-import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+
 import * as ds from 'data-service';
+import { useState } from 'react';
+import styled from 'styled-components';
+import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/organisms/Modal';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface ReissueAssetModalProps {
   isOpen: boolean;
@@ -35,7 +37,7 @@ export function ReissueAssetModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const displaySupply = currentSupply / Math.pow(10, decimals);
+  const displaySupply = currentSupply / 10 ** decimals;
 
   const handleReissue = async () => {
     if (!user || !amount || parseFloat(amount) <= 0) return;
@@ -44,18 +46,18 @@ export function ReissueAssetModal({
     setError(null);
 
     try {
-      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * Math.pow(10, decimals));
+      const quantityInMinimalUnits = Math.floor(parseFloat(amount) * 10 ** decimals);
 
       // Create reissue transaction
       const tx = {
-        type: 5, // Reissue transaction type
-        version: 2,
         assetId,
+        fee: 100000000, // 1 DCC (higher fee for reissue)
         quantity: quantityInMinimalUnits,
         reissuable: keepReissuable,
-        fee: 100000000, // 1 DCC (higher fee for reissue)
-        timestamp: Date.now(),
         senderPublicKey: user.publicKey,
+        timestamp: Date.now(),
+        type: 5, // Reissue transaction type
+        version: 2,
       };
 
       // Sign and broadcast transaction
@@ -65,11 +67,11 @@ export function ReissueAssetModal({
       onClose();
       setAmount('');
     } catch (err) {
-      console.error('[ReissueAssetModal] Reissue failed:', err);
+      logger.error('[ReissueAssetModal] Reissue failed:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to reissue tokens. Please check your permissions and try again.'
+          : 'Failed to reissue tokens. Please check your permissions and try again.',
       );
     } finally {
       setIsProcessing(false);

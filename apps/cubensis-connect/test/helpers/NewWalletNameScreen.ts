@@ -1,17 +1,16 @@
 export const NewWalletNameScreen = {
-  get root() {
-    return browser.findByTestId$('newWalletNameForm');
-  },
-
-  get nameInput() {
-    return this.root.findByTestId$('newAccountNameInput');
+  get continueButton() {
+    return this.root.findByText$('Continue');
   },
 
   get error() {
     return this.root.findByTestId$('newAccountNameError');
   },
 
-  get continueButton() {
-    return this.root.findByText$('Continue');
+  get nameInput() {
+    return this.root.findByTestId$('newAccountNameInput');
+  },
+  get root() {
+    return browser.findByTestId$('newWalletNameForm');
   },
 };

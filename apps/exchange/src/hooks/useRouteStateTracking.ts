@@ -8,6 +8,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface UseRouteStateTrackingOptions {
   /**
@@ -59,9 +60,8 @@ export function useRouteStateTracking(options: UseRouteStateTrackingOptions = {}
 
     // Optionally log for debugging (only when path changes)
     if (path !== lastSavedPath.current) {
-      console.log('[RouteTracking] Saved route:', path);
+      logger.debug('[RouteTracking] Saved route:', path);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, enabled, isAuthenticated]);
+  }, [location.pathname, enabled, isAuthenticated, saveLastRoute]);
   // Note: saveLastRoute intentionally omitted from deps to prevent infinite loop
 }

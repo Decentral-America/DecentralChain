@@ -3,7 +3,8 @@
  * Request queue management for sequential API calls
  * Ensures operations execute one at a time in FIFO order
  */
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Queue Item Interface
@@ -32,12 +33,29 @@ interface QueueItem<T> {
   /**
    * Priority level (higher = earlier execution)
    */
-  priority?: number;
+  priority?: number | undefined;
 
   /**
    * Timestamp when item was added
    */
   timestamp: number;
+}
+
+async function processQueueItem<T>(
+  item: QueueItem<T>,
+  onComplete?: <U>(result: U) => void,
+  onError?: (error: Error) => void,
+): Promise<void> {
+  try {
+    const result = await item.task();
+    item.resolve(result);
+    onComplete?.(result);
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    item.reject(err);
+    onError?.(err);
+    if (process.env.NODE_ENV === 'development') logger.error('[useQueue] Task error:', err);
+  }
 }
 
 /**
@@ -117,7 +135,7 @@ export interface UseQueueReturn<T> {
   /**
    * Get all queued items (for debugging)
    */
-  getQueue: () => ReadonlyArray<{ id: string; timestamp: number; priority?: number }>;
+  getQueue: () => ReadonlyArray<{ id: string; timestamp: number; priority?: number | undefined }>;
 }
 
 /**
@@ -131,7 +149,7 @@ export interface UseQueueReturn<T> {
  * ```tsx
  * const { enqueue, isProcessing, queueLength } = useQueue({
  *   maxSize: 10,
- *   onEmpty: () => console.log('Queue cleared'),
+ *   onEmpty: () => logger.debug('Queue cleared'),
  * });
  *
  * // Add tasks to queue
@@ -159,55 +177,28 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
    * Process queue sequentially
    */
   const processQueue = useCallback(async () => {
-    // Prevent concurrent processing or processing when paused
-    if (processingRef.current || isPaused || queueRef.current.length === 0) {
-      return;
-    }
+    if (processingRef.current || isPaused || queueRef.current.length === 0) return;
 
     processingRef.current = true;
-    if (isMountedRef.current) {
-      setIsProcessing(true);
-    }
+    if (isMountedRef.current) setIsProcessing(true);
 
     while (queueRef.current.length > 0 && !isPaused) {
-      // Sort by priority (higher first) then by timestamp (earlier first)
-      queueRef.current.sort((a, b) => {
-        const priorityDiff = (b.priority || 0) - (a.priority || 0);
-        if (priorityDiff !== 0) return priorityDiff;
-        return a.timestamp - b.timestamp;
-      });
+      queueRef.current.sort(
+        (a, b) => (b.priority || 0) - (a.priority || 0) || a.timestamp - b.timestamp,
+      );
 
       const item = queueRef.current.shift();
       if (!item) break;
 
-      if (isMountedRef.current) {
-        setQueueLength(queueRef.current.length);
-      }
+      if (isMountedRef.current) setQueueLength(queueRef.current.length);
 
-      try {
-        const result = await item.task();
-        item.resolve(result);
-        onItemComplete?.(result);
-      } catch (error) {
-        const err = error instanceof Error ? error : new Error(String(error));
-        item.reject(err);
-        onItemError?.(err);
-
-        // Log error in development
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[useQueue] Task error:', err);
-        }
-      }
+      await processQueueItem(item, onItemComplete, onItemError);
     }
 
     processingRef.current = false;
     if (isMountedRef.current) {
       setIsProcessing(false);
-
-      // Trigger onEmpty callback if queue is now empty
-      if (queueRef.current.length === 0 && onEmpty) {
-        onEmpty();
-      }
+      if (queueRef.current.length === 0) onEmpty?.();
     }
   }, [isPaused, onEmpty, onItemComplete, onItemError]);
 
@@ -225,11 +216,11 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
         }
 
         const item: QueueItem<T> = {
-          id: Math.random().toString(36).substring(2, 11),
-          task,
-          resolve,
-          reject,
+          id: crypto.randomUUID(),
           priority,
+          reject,
+          resolve,
+          task,
           timestamp: Date.now(),
         };
 
@@ -245,7 +236,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
         }
       });
     },
-    [maxSize, isPaused, processQueue, onMaxSize]
+    [maxSize, isPaused, processQueue, onMaxSize],
   );
 
   /**
@@ -283,8 +274,8 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
   const getQueue = useCallback(() => {
     return queueRef.current.map((item) => ({
       id: item.id,
-      timestamp: item.timestamp,
       priority: item.priority,
+      timestamp: item.timestamp,
     }));
   }, []);
 
@@ -305,23 +296,23 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
    */
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[useQueue]', {
-        queueLength,
-        isProcessing,
+      logger.debug('[useQueue]', {
         isPaused,
+        isProcessing,
+        queueLength,
       });
     }
   }, [queueLength, isProcessing, isPaused]);
 
   return {
-    enqueue,
     clear,
-    pause,
-    resume,
-    isProcessing,
-    isPaused,
-    queueLength,
+    enqueue,
     getQueue,
+    isPaused,
+    isProcessing,
+    pause,
+    queueLength,
+    resume,
   };
 };
 
@@ -332,7 +323,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
 export const useQueueWithRetry = <T = unknown>(
   maxRetries = 3,
   retryDelay = 1000,
-  options: UseQueueOptions = {}
+  options: UseQueueOptions = {},
 ): UseQueueReturn<T> => {
   const queue = useQueue<T>(options);
 
@@ -356,7 +347,7 @@ export const useQueueWithRetry = <T = unknown>(
 
       throw lastError;
     },
-    [queue, maxRetries, retryDelay]
+    [queue, maxRetries, retryDelay],
   );
 
   return {

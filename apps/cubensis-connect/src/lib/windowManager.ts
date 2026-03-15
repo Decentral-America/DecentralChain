@@ -32,11 +32,11 @@ export class WindowManager {
           });
         } catch (_e) {
           return Browser.windows.create({
-            url: NOTIFICATION_WINDOW_URL,
-            type: 'popup',
             focused: true,
-            width: 357,
             height: 622,
+            type: 'popup',
+            url: NOTIFICATION_WINDOW_URL,
+            width: 357,
           });
         }
       });
@@ -47,8 +47,8 @@ export class WindowManager {
     if (notificationWindowId == null) return;
 
     await Browser.windows.update(notificationWindowId, {
-      width: newWidth,
       height: newHeight,
+      width: newWidth,
     });
   }
 

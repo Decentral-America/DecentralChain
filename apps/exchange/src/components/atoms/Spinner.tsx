@@ -3,13 +3,14 @@
  * Animated loading indicator
  * Migrated to Material-UI CircularProgress
  */
-import React from 'react';
-import CircularProgress, {
-  CircularProgressProps as MuiCircularProgressProps,
-} from '@mui/material/CircularProgress';
+
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import CircularProgress, {
+  type CircularProgressProps as MuiCircularProgressProps,
+} from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import type React from 'react';
 
 export interface SpinnerProps extends Omit<MuiCircularProgressProps, 'size' | 'color'> {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -19,16 +20,16 @@ export interface SpinnerProps extends Omit<MuiCircularProgressProps, 'size' | 'c
 }
 
 const sizeMap = {
-  xs: 12,
-  sm: 16,
-  md: 32,
   lg: 48,
+  md: 32,
+  sm: 16,
   xl: 64,
+  xs: 12,
 };
 
 const SpinnerContainer = styled(Box)(({ theme }) => ({
-  display: 'inline-flex',
   alignItems: 'center',
+  display: 'inline-flex',
   gap: theme.spacing(1),
 }));
 

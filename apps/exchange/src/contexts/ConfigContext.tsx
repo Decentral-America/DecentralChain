@@ -1,11 +1,12 @@
-import { createContext, useContext, ReactNode, useState, useCallback, useMemo } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { config } from '@/config';
-import type { ConfigContextType, NetworkType } from '@/types/config';
+import { logger } from '@/lib/logger';
+import { type ConfigContextType, type NetworkType } from '@/types/config';
 
 // Import network configurations
 import mainnetConfig from '../configs/mainnet.json';
-import testnetConfig from '../configs/testnet.json';
 import stagenetConfig from '../configs/stagenet.json';
+import testnetConfig from '../configs/testnet.json';
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
@@ -14,8 +15,8 @@ const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
  */
 const networkConfigs = {
   mainnet: mainnetConfig,
-  testnet: testnetConfig,
   stagenet: stagenetConfig,
+  testnet: testnetConfig,
 } as const;
 
 /**
@@ -25,7 +26,7 @@ const networkConfigs = {
  */
 export const ConfigProvider = ({ children }: { children: ReactNode }) => {
   const [currentNetwork, setCurrentNetwork] = useState<NetworkType>(
-    (config.network as NetworkType) || 'mainnet'
+    (config.network as NetworkType) || 'mainnet',
   );
 
   const networkConfig = networkConfigs[currentNetwork];
@@ -33,69 +34,65 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
   const handleSetNetwork = useCallback((network: NetworkType) => {
     setCurrentNetwork(network);
     // In a real app, you might want to reload the page or update API clients
-    console.log(`Network switched to: ${network}`);
+    logger.debug(`Network switched to: ${network}`);
   }, []);
 
-  const configValue: ConfigContextType = useMemo(
-    () => {
-      // Compute networkByte dynamically from current network code
-      const networkByte = networkConfig.code.charCodeAt(0);
+  const configValue: ConfigContextType = useMemo(() => {
+    // Compute networkByte dynamically from current network code
+    const networkByte = networkConfig.code.charCodeAt(0);
 
-      return {
-        // Environment configuration from src/config
-        isDevelopment: config.isDevelopment,
-        isProduction: config.isProduction,
-        isStaging: config.isStaging,
-        enableMocks: config.enableMocks,
-        enableDebug: config.enableDebug,
-
-        // Network configuration
-        network: currentNetwork,
-        networkCode: networkConfig.code,
-        networkByte,
-        apiVersion: networkConfig.apiVersion,
-
-        // Network switching function
-        setNetwork: handleSetNetwork,
-
-        // Service URLs from network config
-        apiUrl: networkConfig.api,
-        nodeUrl: networkConfig.node,
-        matcherUrl: networkConfig.matcher,
-        explorerUrl: networkConfig.explorer,
-        dataServiceUrl: networkConfig.api,
-        coinomatUrl: networkConfig.coinomat || '',
-
-        // Application URLs from network config
-        supportUrl: networkConfig.support,
-        termsUrl: networkConfig.termsAndConditions,
-        privacyUrl: networkConfig.privacyPolicy,
-        originUrl: networkConfig.origin,
-        nodeListUrl: networkConfig.nodeList,
-      featuresConfigUrl: networkConfig.featuresConfigUrl,
-      feeConfigUrl: networkConfig.feeConfigUrl,
-      tokensNameListUrl: networkConfig.tokensNameListUrl,
-      scamListUrl: networkConfig.scamListUrl,
-      tokenRatingUrl: networkConfig.tokenrating || '',
+    return {
+      // Service URLs from network config
+      apiUrl: networkConfig.api,
+      apiVersion: networkConfig.apiVersion,
 
       // Assets from network config
       assets: networkConfig.assets || {},
+      coinomatUrl: networkConfig.coinomat || '',
+      dataServiceUrl: networkConfig.api,
+      enableDebug: config.enableDebug,
+      enableMocks: config.enableMocks,
+      explorerUrl: networkConfig.explorer,
+      featuresConfigUrl: networkConfig.featuresConfigUrl,
+      feeConfigUrl: networkConfig.feeConfigUrl,
 
-      // Trading pairs from network config
-      tradingPairs: (networkConfig.tradingPairs || []) as [string, string][],
+      // DCC Gateway configuration from network config
+      gateway: networkConfig.gateway || {},
+      // Environment configuration from src/config
+      isDevelopment: config.isDevelopment,
+      isProduction: config.isProduction,
+      isStaging: config.isStaging,
 
       // Matcher priority list from network config
       matcherPriorityList: networkConfig.matcherPriorityList || [],
+      matcherUrl: networkConfig.matcher,
 
-      // Waves Gateway configuration from network config
-      wavesGateway: networkConfig.wavesGateway || {},
+      // Network configuration
+      network: currentNetwork,
+      networkByte,
+      networkCode: networkConfig.code,
+      nodeListUrl: networkConfig.nodeList,
+      nodeUrl: networkConfig.node,
 
       // Oracle addresses from network config
       oracles: networkConfig.oracles,
-      };
-    },
-    [currentNetwork, networkConfig, handleSetNetwork]
-  );
+      originUrl: networkConfig.origin,
+      privacyUrl: networkConfig.privacyPolicy,
+      scamListUrl: networkConfig.scamListUrl,
+
+      // Network switching function
+      setNetwork: handleSetNetwork,
+
+      // Application URLs from network config
+      supportUrl: networkConfig.support,
+      termsUrl: networkConfig.termsAndConditions,
+      tokenRatingUrl: networkConfig.tokenrating || '',
+      tokensNameListUrl: networkConfig.tokensNameListUrl,
+
+      // Trading pairs from network config
+      tradingPairs: (networkConfig.tradingPairs || []) as [string, string][],
+    };
+  }, [currentNetwork, networkConfig, handleSetNetwork]);
 
   return <ConfigContext.Provider value={configValue}>{children}</ConfigContext.Provider>;
 };
@@ -105,7 +102,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
  * Access network configuration throughout the application
  * @throws {Error} If used outside ConfigProvider
  */
-// eslint-disable-next-line react-refresh/only-export-components
 export const useConfig = (): ConfigContextType => {
   const context = useContext(ConfigContext);
   if (!context) {

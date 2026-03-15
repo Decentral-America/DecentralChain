@@ -1,1 +1,1 @@
-export { TimestampView as default } from './Timestamp.view';
+export {TimestampView as default} from './Timestamp.view';

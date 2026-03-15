@@ -19,6 +19,12 @@ interface PuzzleNftInfo {
 
 const PUZZLE_MARKET_DAPP = '3PFQjjDMiZKQZdu5JqTHD7HwgSXyp9Rw9By';
 
+function assertDefined<T>(value: T | null | undefined, message: string): asserts value is T {
+  if (value == null) {
+    throw new Error(message);
+  }
+}
+
 function nftPropertyKey(id: string, property: string) {
   return `nft_${id}_${property}`;
 }
@@ -38,9 +44,9 @@ export class PuzzleNftVendor implements NftVendor<PuzzleNftInfo> {
     const nftIds = nfts.map((nft) => nft.assetId);
 
     return fetchDataEntries<DataTransactionEntryString>({
-      nodeUrl,
       address: PUZZLE_MARKET_DAPP,
       keys: nftIds.flatMap((id) => [nftPropertyKey(id, 'image'), nftPropertyKey(id, 'issuer')]),
+      nodeUrl,
     })
       .then(dataEntriesToRecord)
       .then((artworksEntries) => {
@@ -48,11 +54,14 @@ export class PuzzleNftVendor implements NftVendor<PuzzleNftInfo> {
           const creator = artworksEntries[nftPropertyKey(id, 'issuer')];
           const image = artworksEntries[nftPropertyKey(id, 'image')];
 
+          assertDefined(creator, `Missing creator for NFT ${id}`);
+          assertDefined(image, `Missing image for NFT ${id}`);
+
           return {
-            id,
-            vendor: NftVendorId.Puzzle,
             creator,
+            id,
             image,
+            vendor: NftVendorId.Puzzle,
           };
         }, []);
       });
@@ -62,8 +71,8 @@ export class PuzzleNftVendor implements NftVendor<PuzzleNftInfo> {
     return {
       creator: params.info.creator,
       creatorUrl: `https://puzzlemarket.org/address/${params.info.creator}`,
-      displayCreator: params.info.creator,
       description: params.asset.description,
+      displayCreator: params.info.creator,
       displayName: params.asset.displayName,
       foreground: params.info.image,
       id: params.info.id,

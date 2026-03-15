@@ -14,13 +14,13 @@ export function useSentryNavigationBreadcrumbs(location: Location) {
     }
 
     addBreadcrumb({
-      type: 'navigation',
       category: 'navigation',
-      level: 'info',
       data: {
         from: prevPage,
         to: currentPage,
       },
+      level: 'info',
+      type: 'navigation',
     });
 
     prevPageRef.current = currentPage;

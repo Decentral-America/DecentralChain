@@ -1,15 +1,14 @@
-@use "sass:map";
-@use "variables";
-@use "mixins.scss";
+@import "variables";
+@import "mixins.scss";
 
 .info-box {
     justify-content: space-between;
-    background-color: map.get(variables.$colors, basic50);
+    background-color: map-get($colors, basic50);
     margin-bottom: 12px;
 
     > * {
-        @include mixins.responsive_styles(
-                mixins.map-deep-merge(variables.$card_inner, (sm: (
+        @include responsive_styles(
+                map-deep-merge($card_inner, (sm: (
                     padding-top: 14px,
                     padding-bottom: 14px
                 )))
@@ -43,22 +42,18 @@
 }
 
 .tooltip {
-    @include mixins.font(body);
-    & {
-        background-color: map.get(variables.$colors, basic500) !important;
-    }
+    @include font(body);
+    background-color: map-get($colors, basic500) !important;
     &.place-top {
         &:after {
-            border-top-color: map.get(variables.$colors, basic500) !important;
+            border-top-color: map-get($colors, basic500) !important;
         }
     }
 }
 
 .line {
-    @include mixins.font(body);
-    & {
-        padding-bottom: 8px;
-    }
+    @include font(body);
+    padding-bottom: 8px;
 
     &.wide {
         padding-top: 18px;
@@ -85,51 +80,46 @@
 }
 
 .panel {
-    @include mixins.responsive_styles(variables.$card_inner);
-
-    & {
-        padding-top: 0 !important;
-        margin-top: 24px
-    }
+    @include responsive_styles($card_inner);
+    padding-top: 0 !important;
+    margin-top: 24px;
 
     &:not(:last-child) {
-        border-right: 1px solid map.get(variables.$colors, accent50);
+        border-right: 1px solid map-get($colors, accent50);
     }
 
     .panel-title {
         padding-bottom: 24px;
 
         .title {
-            @include mixins.font(headline1);
+            @include font(headline1);
         }
     }
 
-    @each $size in map.keys(variables.$breakpoints) {
+    @each $size in map-keys($breakpoints) {
         &.column-#{$size}-12 {
-            @include mixins.breakpoint($size) {
+            @include breakpoint($size) {
                 border: none;
             }
         }
     }
 
     &.panel-empty {
-        > .icon {
+        >.icon {
             width: 88px;
             height: 88px;
             margin: 0 auto;
         }
 
-        > .panel-empty-label {
-            @include mixins.font(body, white);
-            & {
-                text-align: center;
-            }
+        >.panel-empty-label {
+            @include font(body, white);
+            text-align: center;
         }
 
         &.confirmed {
             margin-top: 20vh;
 
-            > .icon {
+            >.icon {
                 background: url('../images/confirmed-88.svg') no-repeat center center;
             }
         }
@@ -141,7 +131,7 @@
             height: calc(100vh - 140px);
             box-sizing: border-box;
 
-            > .icon {
+            >.icon {
                 background: url('../images/erroring-88.svg') no-repeat center center;
 
                 &.not-found-icon {
@@ -155,9 +145,9 @@
         }
 
         &.no-data {
-            @include mixins.responsive_styles(variables.$panel_empty);
+            @include responsive_styles($panel_empty);
 
-            > .icon {
+            >.icon {
                 background: url('../images/empty-88.svg') no-repeat center center;
             }
         }
@@ -165,14 +155,12 @@
 
     .panel-row {
         padding-bottom: 36px;
-
         &:last-child {
             padding-bottom: 0;
         }
 
         > div {
             margin-right: 14px;
-
             &:last-child {
                 margin-right: 0;
             }
@@ -184,7 +172,7 @@
     @for $i from 1 through 3 {
         &:nth-child(3n+#{$i}) {
             .block-img {
-                background: url('../images/dcc-block-#{$i}.svg') no-repeat center center;
+                background: url('../images/waves-block-#{$i}.svg') no-repeat center center;
                 width: 40px;
                 height: 40px;
                 float: left;
@@ -200,9 +188,8 @@
             background: url(../images/empty-block.svg) center no-repeat;
         }
     }
-
     * {
-        color: map.get(variables.$colors, white);
+        color: map_get($colors, white);
     }
 }
 
@@ -210,32 +197,30 @@
     display: flex;
     align-items: center;
 
-    @include mixins.responsive_styles(variables.$card_inner);
+    @include responsive_styles($card_inner);
 
     .title.large {
-        @include mixins.font(headline1);
+        @include font(headline1);
     }
 
     .title.medium {
-        @include mixins.font(headline2);
+        @include font(headline2);
     }
 
     .title.small {
-        @include mixins.font(headline3);
+        @include font(headline3);
     }
 
     .title-details {
-        @include mixins.font(headline2, disabled500);
-        & {
-            flex-wrap: nowrap;
-            flex-grow: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        @include font(headline2, disabled500);
+        flex-wrap: nowrap;
+        flex-grow: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .title-details + .btn {
+    .title-details + .btn{
         margin-left: 8px;
     }
 
@@ -245,40 +230,38 @@
 }
 
 .headline2 {
-    @include mixins.responsive_styles(variables.$card_inner);
-    & {
-        margin-top: 12px;
-        margin-bottom: -6px;
-    }
+    @include responsive_styles($card_inner);
+    margin-top: 12px;
+    margin-bottom: -6px;
 
     > .title {
-        @include mixins.font(headline2);
+        @include font(headline2);
     }
 
     > .title-details {
-        @include mixins.font(headline2, disabled500);
+        @include font(headline2, disabled500);
     }
 
     > .action {
-        border-bottom: 1px dashed map.get(variables.$colors, white);
+        border-bottom: 1px dashed map-get($colors, white);
         float: right;
         cursor: pointer;
     }
 }
 
 .back {
-    @include mixins.responsive_styles(variables.$card_inner, padding-right, padding-left);
+    @include responsive_styles($card_inner, padding-right, padding-left);
 }
 
 .divider {
     width: 1px;
 
     &.divider-dashed {
-        border-left: 1px dashed map.get(variables.$colors, accent50);
+        border-left: 1px dashed map-get($colors, accent50);
     }
 
     &.divider-utx {
-        border-left: 2px solid map.get(variables.$colors, submit200);
+        border-left: 2px solid map-get($colors, submit200);
     }
 }
 
@@ -309,11 +292,11 @@
 
         > .dictionary-pair-key {
             flex: 0 0 auto;
-            background-color: map.get(variables.$colors, basic50);
+            background-color: map-get($colors, basic50);
 
-            @include mixins.responsive_styles(variables.$card_inner, padding-right, padding-left);
-            @include mixins.responsive_styles(variables.$card_column);
-            @include mixins.font(body, white);
+            @include responsive_styles($card_inner, padding-right, padding-left);
+            @include responsive_styles($card_column);
+            @include font(body, white);
         }
 
         > .dictionary-pair-value {
@@ -322,10 +305,9 @@
             flex: 0 1 auto;
             padding: 0 14px;
             overflow: hidden;
-            @include mixins.font(body);
-            & {
-                flex-wrap: wrap;
-            }
+            @include font(body);
+            flex-wrap: wrap;
+
             @media screen and (max-width: 1100px) {
                 max-width: calc(100% - 110px);
             }
@@ -334,7 +316,6 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 max-width: 100%;
-                width: 100%;
             }
 
             .ellipsis {
@@ -359,7 +340,7 @@
 }
 
 th.price, th.amount {
-    width: 220px;
+    width: 160px;
 }
 
 .arrow {
@@ -387,21 +368,10 @@ th.price, th.amount {
     &.exchange {
         background: url('../images/transaction-exchange.svg') no-repeat;
     }
-
-    &.script-invocation {
-        background: url('../images/transaction-invoke.svg') no-repeat;
-
-        &.out {
-            padding: 0;
-            margin-right: 8px;
-            transform: rotate(180deg);
-            background: url('../images/transaction-invoke.svg') no-repeat;
-        }
-    }
 }
 
 .data-container-tools {
-    background-color: map.get(variables.$colors, basic50);
+    background-color: map_get($colors, basic50);
     height: 52px;
     display: flex;
     justify-content: space-between;
@@ -416,7 +386,7 @@ th.price, th.amount {
 }
 
 .data-container {
-    background-color: map.get(variables.$colors, basic50);
+    background-color: map_get($colors, basic50);
     padding: 20px;
     overflow: auto;
     margin-top: 20px;
@@ -426,7 +396,7 @@ th.price, th.amount {
     &.empty {
         min-height: 250px;
 
-        .empty-icon-wrapper {
+        .empty-icon-wrapper{
             position: absolute;
             top: 50%;
             left: 50%;
@@ -440,11 +410,9 @@ th.price, th.amount {
         }
 
         .empty-label {
-            @include mixins.font(body, basic500);
-            & {
-                text-align: center;
-                margin-top: 10px;
-            }
+            @include font(body, basic500);
+            text-align: center;
+            margin-top: 10px;
         }
     }
 
@@ -455,7 +423,6 @@ th.price, th.amount {
         max-height: 800px;
         max-width: 100%;
         white-space: pre-wrap;
-        font-family: Roboto Mono, monospace;
 
         &::after {
             display: block;
@@ -480,15 +447,5 @@ th.price, th.amount {
             min-height: auto;
             display: flex;
         }
-    }
-}
-
-.ch-block {
-    td:first-child {
-        width: 30% !important;
-    }
-
-    td:last-child {
-        width: 70% !important;
     }
 }

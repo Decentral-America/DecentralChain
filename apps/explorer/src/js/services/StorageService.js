@@ -2,39 +2,36 @@ const ANTISPAM_CACHE_KEY = 'AntispamCache';
 const CONFIGURATION = 'Configuration';
 
 export class StorageService {
-  constructor(storage) {
-    this.storage = storage || window.localStorage;
-  }
-
-  loadObject = (key) => {
-    const objectAsString = this.storage.getItem(key);
-
-    if (!objectAsString) return null;
-
-    try {
-      return JSON.parse(objectAsString);
-    } catch {
-      return null;
+    constructor(storage) {
+        this.storage = storage || window.localStorage;
     }
-  };
 
-  saveObject = (key, object) => {
-    this.storage.setItem(key, JSON.stringify(object));
-  };
+    loadObject = key => {
+        const objectAsString = this.storage.getItem(key);
 
-  loadAntispamCache = () => {
-    return this.loadObject(ANTISPAM_CACHE_KEY);
-  };
+        if (!objectAsString)
+            return null;
 
-  saveAntispamCache = (cache) => {
-    this.saveObject(ANTISPAM_CACHE_KEY, cache);
-  };
+        return JSON.parse(objectAsString);
+    };
 
-  loadConfiguration = () => {
-    return this.loadObject(CONFIGURATION);
-  };
+    saveObject = (key, object) => {
+        this.storage.setItem(key, JSON.stringify(object));
+    };
 
-  saveConfiguration = (configuration) => {
-    this.saveObject(CONFIGURATION, configuration);
-  };
+    loadAntispamCache = () => {
+        return this.loadObject(ANTISPAM_CACHE_KEY);
+    };
+
+    saveAntispamCache = (cache) => {
+        this.saveObject(ANTISPAM_CACHE_KEY, cache);
+    };
+
+    loadConfiguration = () => {
+        return this.loadObject(CONFIGURATION);
+    };
+
+    saveConfiguration = (configuration) => {
+        this.saveObject(CONFIGURATION, configuration);
+    };
 }

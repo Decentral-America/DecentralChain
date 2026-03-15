@@ -1,34 +1,36 @@
 import { type ChainablePromiseElement } from 'webdriverio';
 
-const Permission = (wrapped: WebdriverIO.Element) => ({
-  get root() {
-    return wrapped;
-  },
-
+const Permission = (wrapped: any) => ({
   get detailsIcon() {
     return wrapped.$("[class*='settings@list']");
-  },
-
-  get status() {
-    return wrapped.$("[class*='statusColor@list']");
-  },
-
-  get origin() {
-    return wrapped.$('div');
   },
 
   get enableCheckbox() {
     return wrapped.$('button');
   },
-});
 
-const PermissionDetailsModal = (wrapped: ChainablePromiseElement<WebdriverIO.Element>) => ({
+  get origin() {
+    return wrapped.$('div');
+  },
   get root() {
     return wrapped;
   },
 
+  get status() {
+    return wrapped.$("[class*='statusColor@list']");
+  },
+});
+
+const PermissionDetailsModal = (wrapped: ChainablePromiseElement) => ({
+  get allowMessagesCheckbox() {
+    return browser.$("[class*='modalWrapper@modal']").findByText$('Allow sending messages');
+  },
+
   get deleteButton() {
     return wrapped.$('#delete');
+  },
+  get root() {
+    return wrapped;
   },
 
   get saveButton() {
@@ -43,15 +45,11 @@ const PermissionDetailsModal = (wrapped: ChainablePromiseElement<WebdriverIO.Ele
   get spendingLimitInput() {
     return wrapped.$("[class*='amountInput@settings']");
   },
-
-  get allowMessagesCheckbox() {
-    return browser.$("[class*='modalWrapper@modal']").findByText$('Allow sending messages');
-  },
 });
 
 export const PermissionControlSettingsScreen = {
-  get root() {
-    return $("[class*='content@permissionsSettings']");
+  async getPermissionByOrigin(origin: string) {
+    return Permission(await this.root.findByText$(origin).parentElement());
   },
 
   get permissionDetailsModal() {
@@ -59,14 +57,13 @@ export const PermissionControlSettingsScreen = {
   },
 
   get permissionItems() {
-    return this.root.$$("[class*='permissionItem@list']").map((it) => Permission(it));
+    return this.root.$$("[class*='permissionItem@list']").map((it: any) => Permission(it));
+  },
+  get root() {
+    return $("[class*='content@permissionsSettings']");
   },
 
   get whiteListLink() {
     return this.root.findByText$('White list');
-  },
-
-  async getPermissionByOrigin(origin: string) {
-    return Permission(await this.root.findByText$(origin).parentElement());
   },
 };

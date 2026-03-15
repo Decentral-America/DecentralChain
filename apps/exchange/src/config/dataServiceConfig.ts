@@ -4,60 +4,61 @@
  * Must be called before using any data-service features
  */
 import * as ds from 'data-service';
+import { logger } from '@/lib/logger';
 import NetworkConfig from './networkConfig';
 
 /**
  * Initialize data-service with complete network configuration
- * Matches Angular: ds.config.setConfig(WavesApp.network)
+ * Matches Angular: ds.config.setConfig(DCCApp.network)
  *
  * Note: data-service's IConfigParams interface only accepts specific fields.
- * Other config values (tradingPairs, wavesGateway, etc.) are accessed via NetworkConfig service.
+ * Other config values (tradingPairs, gateway, etc.) are accessed via NetworkConfig service.
  */
 export function initializeDataService(): void {
   // Get complete config from NetworkConfig service
   const fullConfig = NetworkConfig.getFullConfig();
 
-  console.log('[DataService] Initializing with complete mainnet config:', {
-    node: fullConfig.node,
+  logger.debug('[DataService] Initializing with complete mainnet config:', {
     api: fullConfig.api,
-    matcher: fullConfig.matcher,
-    oracleWaves: fullConfig.oracles.waves,
     assets: Object.keys(fullConfig.assets).length,
+    matcher: fullConfig.matcher,
+    node: fullConfig.node,
+    oracleDCC: fullConfig.oracles.dcc,
   });
 
   // Pass configuration fields that data-service's IConfigParams interface accepts
-  // Extended fields (tradingPairs, wavesGateway, etc.) accessed via NetworkConfig
+  // Extended fields (tradingPairs, gateway, etc.) accessed via NetworkConfig
   ds.config.setConfig({
-    // Core API endpoints
-    code: fullConfig.code,
-    node: fullConfig.node,
-    matcher: fullConfig.matcher,
     api: fullConfig.api,
     apiVersion: fullConfig.apiVersion,
 
-    // Oracles for data providers
-    oracleWaves: fullConfig.oracles.waves,
-    oracleTokenomica: fullConfig.oracles.tokenomica || '',
-
     // Asset mappings
     assets: fullConfig.assets,
-
-    // Support URLs
-    support: fullConfig.support,
-    nodeList: fullConfig.nodeList,
+    // Core API endpoints
+    code: fullConfig.code,
 
     // Legacy/optional fields
     coinomat: fullConfig.coinomat || '',
-    tokenrating: fullConfig.tokenrating || '',
+    matcher: fullConfig.matcher,
 
     // Additional fields for Angular compatibility
     minimalSeedLength: 15,
+    node: fullConfig.node,
+    nodeList: fullConfig.nodeList,
+
+    // Oracles for data providers
+    oracleDCC: fullConfig.oracles.dcc,
+    oracleTokenomica: fullConfig.oracles.tokenomica || '',
     remappedAssetNames: {},
     rewriteAssets: {},
+
+    // Support URLs
+    support: fullConfig.support,
+    tokenrating: fullConfig.tokenrating || '',
   });
 
-  console.log(
-    '[DataService] Initialized successfully - Extended config available via NetworkConfig'
+  logger.debug(
+    '[DataService] Initialized successfully - Extended config available via NetworkConfig',
   );
 
   // Note: Components should use NetworkConfig service for extended features:

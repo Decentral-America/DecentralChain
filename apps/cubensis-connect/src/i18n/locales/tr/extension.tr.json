@@ -6,13 +6,13 @@
     "cancel": "İptal et",
     "copied": "Kopyalandı!",
     "copyToClipboard": "Panoya kopyalamak için tıklayın",
+    "email": "E-posta",
+    "emailNoBackupPhrase": "Bu hesap DecentralChain Exchange hesabı kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı veya özel anahtar yok",
     "encodedSeed": "Şifrelenmiş anahtar kelimeler",
     "enter": "Giriş",
-    "email": "E-posta",
     "password": "Şifre",
     "passwordError": "Yalnış şifre",
     "privateKeyNoBackupPhrase": "Bu hesap özel anahtarlar kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı yok",
-    "emailNoBackupPhrase": "Bu hesap DecentralChain Exchange hesabı kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı veya özel anahtar yok",
     "privKey": "Özel anahtar",
     "pubKey": "Genel anahtar",
     "viewInExplorer": "Tarayıcı'da görüntüle"
@@ -21,10 +21,10 @@
   "address": {
     "add": "Yeni adres",
     "addButton": "Yeni ekle",
-    "addTooltip": "Kişilerinize bir adres ekleyin",
     "added": "Adres eklendi",
     "addressAlreadyExist": "Bu adres zaten var",
     "addressInvalidError": "Adres değeri geçersiz",
+    "addTooltip": "Kişilerinize bir adres ekleyin",
     "cancel": "İptal et",
     "copied": "Kopyalandı!",
     "copyToClipboard": "Panoya kopyalamak için tıklayın",
@@ -50,25 +50,25 @@
     "balanceLabel": "Bakiye"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "İsim",
-    "ticker": "Etiket",
-    "precision": "Ondalık kısım",
-    "quantity": "Toplam ihraç edilen",
-    "type": "Tür",
-    "reissuable": "Yeniden ihraç edilebilir",
-    "notReissuable": "Yeniden ihraç edilemez",
-    "scripted": "Komut dosyalı",
-    "notScripted": "Komut dosyasız",
-    "minSponsoredFee": "Sponsorlu Varlık Ücreti",
-    "sender": "İhraç eden",
-    "timestamp": "İhraç tarihi",
     "closeBtn": "Kapat",
-    "infoTooltip": "Varlık Bilgisi",
     "favAddTooltip": "Favorilere ekle",
     "favRemoveTooltip": "Favorilerden kaldır",
+    "id": "ID",
+    "infoTooltip": "Varlık Bilgisi",
+    "minSponsoredFee": "Sponsorlu Varlık Ücreti",
+    "name": "İsim",
+    "notReissuable": "Yeniden ihraç edilemez",
+    "notScripted": "Komut dosyasız",
+    "precision": "Ondalık kısım",
+    "quantity": "Toplam ihraç edilen",
+    "reissuable": "Yeniden ihraç edilebilir",
+    "scripted": "Komut dosyalı",
     "sendAssetTooltip": "Gönder",
+    "sender": "İhraç eden",
     "swapAssetTooltip": "Takas et",
+    "ticker": "Etiket",
+    "timestamp": "İhraç tarihi",
+    "type": "Tür",
     "viewDetailsInExplorer": "Ayrıntıları Tarayıcı'da görüntüleyin"
   },
   "assetSelectModal": {
@@ -111,14 +111,14 @@
     "saveBackup": "Yedekleme anahtarını kaydet"
   },
   "bottom": {
-    "network": {
-      "edit": "Düzenle",
-      "disabled": "Bu işlem sırasında ağ ayarlarını değiştiremezsiniz."
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "Bu işlem sırasında ağ ayarlarını değiştiremezsiniz.",
+      "edit": "Düzenle"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "Mevcuttaki hesap ismi",
@@ -167,10 +167,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "Hesapları dışa aktar",
-    "importAccounts": "Hesapları içe aktar",
     "exportAddressBook": "Adres defterini dışa aktar",
-    "importAddressBook": "Adres defterini içe aktar",
-    "exportAll": "Tümünü dışa aktar"
+    "exportAll": "Tümünü dışa aktar",
+    "importAccounts": "Hesapları içe aktar",
+    "importAddressBook": "Adres defterini içe aktar"
   },
   "exportKeystore": {
     "cancelBtn": "İptal et",
@@ -195,13 +195,13 @@
   "forgotPassword": {
     "attention": "Dikkat!",
     "attentionMessage": "Şifreyi sıfırlamak için Cubensis Connect üzerindeki tüm hesapları silmeniz, yeni bir şifre belirlemeniz, hesaplarınızın her birini yeniden Anahtar Kelimeler kullanarak içe aktarmanız gerekir.",
-    "warningMessage": "Anahtar kelimelerinizi veya Özel anahtarınızı henüz kaydetmediyseniz, hesabınıza olan erişiminizi geri alamazsınız.",
     "continueMessage": "Devam etmek için bunu aşağıdaki alana yazın",
     "phrase": "TÜM HESAPLARI SİL",
     "phraseError": "Anahtar kelime yanlış girildi.",
     "placeholder": "Buraya yazın...",
+    "resetCancel": "İptal et",
     "resetConfirm": "Hepsini sil",
-    "resetCancel": "İptal et"
+    "warningMessage": "Anahtar kelimelerinizi veya Özel anahtarınızı henüz kaydetmediyseniz, hesabınıza olan erişiminizi geri alamazsınız."
   },
   "historyCard": {
     "burn": "Varlığı Dolaşımdan Çıkarma",
@@ -241,25 +241,25 @@
     "transferSelf": "Kendinize transfer"
   },
   "historyFilters": {
-    "all": "Tümü",
-    "incoming": "Yalnızca Gelen",
-    "outgoing": "Yalnızca Giden",
-    "issue": "İhraç etme",
-    "transfer": "Transfer",
-    "reissue": "Yeniden ihraç et",
-    "burn": "Dolaşımdan çıkar",
-    "exchange": "Borsa",
-    "lease": "Kirala",
-    "cancelLease": "Kiralamayı İptal Et",
     "alias": "Takma ad",
-    "massTransfer": "Toplu Transfer",
+    "all": "Tümü",
+    "burn": "Dolaşımdan çıkar",
+    "cancelLease": "Kiralamayı İptal Et",
     "data": "Veri",
+    "exchange": "Borsa",
+    "incoming": "Yalnızca Gelen",
+    "invokeScript": "Komut dosyasını çalıştır",
+    "issue": "İhraç etme",
+    "lease": "Kirala",
+    "massTransfer": "Toplu Transfer",
+    "outgoing": "Yalnızca Giden",
+    "reissue": "Yeniden ihraç et",
+    "setAssetScript": "Varlık komut dosyasını kur",
     "setScript": "Komut dosyasını kur",
     "sponsorship": "Sponsorluk",
-    "setAssetScript": "Varlık komut dosyasını kur",
-    "invokeScript": "Komut dosyasını çalıştır",
-    "updateAssetInfo": "Varlık Bilgilerini Güncelle",
-    "type": "İşlem Türü"
+    "transfer": "Transfer",
+    "type": "İşlem Türü",
+    "updateAssetInfo": "Varlık Bilgilerini Güncelle"
   },
   "import": {
     "addAccount": "Hesap ekle",
@@ -275,31 +275,31 @@
     "readyToUse": "{{ name }}' hesabınız kullanıma hazır",
     "readyToUseAddressBook": "Adres Defteriniz kullanıma hazır",
     "readyToUseKeystore": "Hesaplarınız kullanıma hazır",
+    "viaEmail": "E-posta Hesabı",
     "viaKeystore": "Keystore Dosyası",
     "viaLedger": "Ledger",
-    "viaEmail": "E-posta Hesabı",
     "viaSeed": "Anahtar Kelime yada Özel Anahtar"
   },
   "importEmail": {
-    "importEmailTitle": "E-posta Hesabını İçe Aktar",
-    "importEmailDesc": "DecentralChain Exchange üzerinde oluşturulan e-posta hesabınızı bağlayın",
-    "passwordLabel": "Şifre",
-    "passwordRequired": "Şifre girin",
-    "loginRequired": "E-posta Hesabını Onaylayın",
+    "alreadyExists": "Bu hesap zaten mevcut",
+    "continue": "Devam et",
+    "credentialsError": "Hatalı kullanıcı adı veya şifre",
+    "dontHaveAccount": "Bir hesabınız yok mu?",
     "emailLabel": "E-posta",
     "emailRequired": "Doğru e-postayı girin",
-    "credentialsError": "Hatalı kullanıcı adı veya şifre",
-    "continue": "Devam et",
     "forgotPassword": "Parolanızı mı unuttunuz?",
-    "dontHaveAccount": "Bir hesabınız yok mu?",
-    "signUp": "Kayıt ol",
-    "verifyAccountTitle": "Hesabınızı doğrulayın",
-    "verifyAccountDesc": "Lütfen {{destination}} tarafına gönderilen 6 haneli doğrulama kodunu girin",
+    "importEmailDesc": "DecentralChain Exchange üzerinde oluşturulan e-posta hesabınızı bağlayın",
+    "importEmailTitle": "E-posta Hesabını İçe Aktar",
     "incorrectCode": "Yanlış kod. Lütfen tekrar deneyin",
-    "userDoesNotExist": "Kullanıcı bulunmamaktadır.",
     "incorrectUsernameOrPassword": " Yanlış kullanıcı adı ya da şifre.",
     "incorrectUsernameOrPasswordLimit": "Kullanıcı adını ya da şifreyi yanlış girme limitini aştınız. Herhangi bir sorununuz varsa, lütfen https://support.decentralchain.io/ adresinden destek ile iletişime geçin.",
-    "alreadyExists": "Bu hesap zaten mevcut"
+    "loginRequired": "E-posta Hesabını Onaylayın",
+    "passwordLabel": "Şifre",
+    "passwordRequired": "Şifre girin",
+    "signUp": "Kayıt ol",
+    "userDoesNotExist": "Kullanıcı bulunmamaktadır.",
+    "verifyAccountDesc": "Lütfen {{destination}} tarafına gönderilen 6 haneli doğrulama kodunu girin",
+    "verifyAccountTitle": "Hesabınızı doğrulayın"
   },
   "importKeystore": {
     "addressBookLabel": "Adres Defteri dosyası",
@@ -329,11 +329,11 @@
     "connectInstructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",
     "continueButton": "Devam et",
     "couldNotGetUsersError": "\"Ledger\"den hesap içeri aktarılamadı. Lütfen Ledger'in bağlı, kilidinin açık ve DCC uygulamasının açık olduğundan emin olun, ardından <retryButton>Yeniden dene</retryButton> butonuna tıklayın.",
-    "userIdInputNumbersError": "Yalnızca sayılara izin verilmektedir",
-    "userIdInputMaxValueError": "Hesap No {{ maxUserId }}’den büyük olamaz",
     "selectAccountInstructions": "Adresinizi seçin",
     "title": "Ledger'i içeri aktar",
-    "tryAgainButton": "Yeniden dene"
+    "tryAgainButton": "Yeniden dene",
+    "userIdInputMaxValueError": "Hesap No {{ maxUserId }}’den büyük olamaz",
+    "userIdInputNumbersError": "Yalnızca sayılara izin verilmektedir"
   },
   "importSeed": {
     "accountExistsError": "Hesap zaten '{{ name }}' olarak kayıtlı",
@@ -360,14 +360,14 @@
     "keepUp": "Cubensis Connect, DecentralChain ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   },
   "langsSettings": { "confirm": "Onayla", "title": "Dili değiştir" },
-  "ledgerErrors": {
-    "unknown": "Ledger'e bağlanılamadı. Lütfen tekrar deneyin",
-    "usedBySomeOtherApp": "Ledger zaten başka bir uygulama tarafından kullanılıyor gibi görünüyor. Ledger kullanabilecek tüm uygulamaları kapatın ve tekrar deneyin."
-  },
   "ledgerConnectModal": {
     "instructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",
     "title": "Bağlanılıyor...",
     "tryAgainButton": "Tekrar deneyin"
+  },
+  "ledgerErrors": {
+    "unknown": "Ledger'e bağlanılamadı. Lütfen tekrar deneyin",
+    "usedBySomeOtherApp": "Ledger zaten başka bir uygulama tarafından kullanılıyor gibi görünüyor. Ledger kullanabilecek tüm uygulamaları kapatın ve tekrar deneyin."
   },
   "login": {
     "enter": "Giriş",
@@ -445,10 +445,18 @@
     "viewInExplorer": "Detaylarını incele",
     "viewOnMarketplace": "Pazaryerinde gör"
   },
+  "notifications": {
+    "allowSending": "Mesaj göndermeye izin ver",
+    "closeBtn": "Kapat",
+    "messages": "Mesajlar",
+    "nextBtn": "Sonraki",
+    "time": "Zaman",
+    "toListBtn": "Bildirimler"
+  },
   "otherAccounts": {
     "addAccount": "Hesap ekle",
-    "noAccountsNote": "Mevcuttaki ağda başka hesabınız yok",
     "noAccountsFound": "Belirtilen filtreler için başka hesap bulunamadı",
+    "noAccountsNote": "Mevcuttaki ağda başka hesabınız yok",
     "title": "Diğer hesaplar"
   },
   "permission": { "customList": "Özel Liste", "whiteList": "Whitelist" },
@@ -471,13 +479,13 @@
     "approvedOrigin": "Onaylandı",
     "automaticOrigin": "Otomatik imzalama",
     "empty": "Burada hiçbir şey yok...",
-    "rejectedOrigin": "Reddedildi",
-    "title": "İzin kontrolü",
     "notify": {
       "allowed": "İzin verildi!",
       "deleted": "Silindi!",
       "disallowed": "İzin verilmedi!"
-    }
+    },
+    "rejectedOrigin": "Reddedildi",
+    "title": "İzin kontrolü"
   },
   "qrCode": { "download": "QR kodunu indir" },
   "send": {
@@ -510,11 +518,11 @@
     "settingsGeneral": "Genel",
     "suspiciousAssetsProtection": "Şüpheli varlık koruması",
     "suspiciousAssetsTooltip": "Şüpheli varlıklarla ilgili bakiyeleri ve işlemleri gösterme",
-    "time_10m": "10 dakika",
     "time_1h": "1 saat",
+    "time_5m": "5 dakika",
+    "time_10m": "10 dakika",
     "time_20m": "20 dakika",
     "time_40m": "40 dakika",
-    "time_5m": "5 dakika",
     "time_idle": "Tarayıcı zaman aşımına göre",
     "tooltipContent": "Kendinizi Clicker Trojan (virüs) tehditlerinden koruyun"
   },
@@ -543,6 +551,7 @@
     "customDataFailed": "Veriniz reddedildi!",
     "customDataName": "Veriyi imzala",
     "customDataSent": "Veriniz onaylandı!",
+    "dccAuthConfirmed": "DCC yetkilendirme talebini imzalayın!",
     "matcherConfirmed": "Eşleştiriciye istek gönder",
     "matcherRejected": "İstek imzalanmadı",
     "matcherSend": "Eşleştirici isteğini imzala",
@@ -557,8 +566,7 @@
     "transactionFailed": "İşleminiz reddedildi!",
     "transactionSend": "Gönderdiniz",
     "understand": "Anlıyorum",
-    "viewTransaction": "İşlemi görüntüle",
-    "dccAuthConfirmed": "DCC yetkilendirme talebini imzalayın!"
+    "viewTransaction": "İşlemi görüntüle"
   },
   "swap": {
     "amountToSendError": "SwopFi dApp durumu nedeniyle takas gerçekleştirilemedi. Lütfen tekrar deneyin veya mümkünse kayma toleransını biraz artırın",
@@ -579,8 +587,8 @@
     "priceLabel": "Fiyat",
     "primaryLabel": "Birincil",
     "profitLabel": "Kar",
-    "slippageToleranceModalTitle": "Kayma toleransı",
     "slippageToleranceModalDescription": "Fiyat bu orandan daha fazla oynarsa swap işlemi iptal edilecektir.",
+    "slippageToleranceModalTitle": "Kayma toleransı",
     "statusFailed": "Takas işlemi başarısız",
     "statusInProgress": "Takas işleminin tamamlanması bekleniyor...",
     "statusSucceeded": "Takas işlemi başarılı!",
@@ -608,20 +616,26 @@
     "dataHash": "Veri Karması",
     "dataTransaction": "Blokzincire giriş",
     "dataTransactionName": "Veri",
+    "dccAuthTimeStamp": "Zaman damgası",
     "decimalPoints": "Ondalık kısım",
     "description": "Açıklama",
     "details": "Detaylar",
     "dex": "DEX",
     "expires": "Süre bitimi",
     "fee": "Ücret",
+    "hash": "Hash",
     "hideTransactions": "İşlemleri gizle",
+    "issueNFT": "NFT ihraç et",
+    "issueSmartNFT": "Akıllı NFT ihraç et",
+    "issueSmartToken": "Akıllı token ihraç et",
+    "issueToken": "Token ihraç et",
     "issueType": "Tür",
     "json": "JSON",
     "lease": "Kirala",
     "leaseCancel": "Kiralama iptali",
     "massTransfer": "Toplu Transfer",
-    "matcherTimeStamp": "Eşleştirici Zaman Damgası",
     "matcherPublicKey": "Eşleştirici Genel Anahtarı",
+    "matcherTimeStamp": "Eşleştirici Zaman Damgası",
     "name": "İsim",
     "noReissuable": "Yeniden ihraç edilemez",
     "orderBuy": "Al",
@@ -642,6 +656,7 @@
     "recipient": "Alıcı",
     "recipients": "Alıcılar",
     "reissuable": "Yeniden ihraç edilebilir",
+    "reissue": "Yeniden ihraç et",
     "script": "Komut dosyası",
     "scriptInvocation": "Komut dosyası çalıştırma",
     "scriptInvocationFunction": "İşlev",
@@ -652,30 +667,15 @@
     "setSponsored": "Sponsorluğu Ayarla",
     "showAll": "Tümünü göster",
     "showTransactions": "İşlemleri göster",
-    "signRequestMatcher": "Eşleştiriciye bir istek imzala",
     "signRequestDccAuth": "DCC yetkilendirme talebini imzalayın!",
-    "updateAssetInfo": "Varlık Bilgilerini Güncelle",
-    "issueToken": "Token ihraç et",
-    "issueSmartToken": "Akıllı token ihraç et",
-    "issueNFT": "NFT ihraç et",
-    "issueSmartNFT": "Akıllı NFT ihraç et",
-    "reissue": "Yeniden ihraç et",
+    "signRequestMatcher": "Eşleştiriciye bir istek imzala",
     "transfer": "Transfer",
     "txid": "TXID",
-    "hash": "Hash",
     "txTime": "TX zamanı",
     "unknown": "Bilinmeyen",
-    "dccAuthTimeStamp": "Zaman damgası"
+    "updateAssetInfo": "Varlık Bilgilerini Güncelle"
   },
   "ui": { "logoTitle": "DCC anahtarlarınızı çevrimiçi güvende tutun" },
-  "notifications": {
-    "allowSending": "Mesaj göndermeye izin ver",
-    "toListBtn": "Bildirimler",
-    "nextBtn": "Sonraki",
-    "closeBtn": "Kapat",
-    "time": "Zaman",
-    "messages": "Mesajlar"
-  },
   "wallet": { "lease": "Kiraya verildi" },
   "welcome": {
     "getStarted": "Başlayın",

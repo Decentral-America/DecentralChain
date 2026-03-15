@@ -10,6 +10,7 @@
  */
 
 import NetworkConfig from '@/config/networkConfig';
+import { logger } from '@/lib/logger';
 
 /**
  * Common settings shared across all accounts
@@ -21,7 +22,7 @@ export interface CommonSettings {
   lastOpenVersion: string;
   whatsNewList: string[];
   network: string;
-  oracleWaves: string;
+  oracleDCC: string;
   dontShowSpam: boolean;
   logoutAfterMin: number;
   termsAccepted: boolean;
@@ -102,74 +103,74 @@ export class DefaultSettings {
    * Common defaults matching Angular DefaultSettings.js
    */
   private commonDefaults: CommonSettings = {
-    lng: 'en',
-    theme: 'default',
     advancedMode: false,
-    lastOpenVersion: '',
-    whatsNewList: [],
-    network: NetworkConfig.code,
-    oracleWaves: NetworkConfig.oracleWaves,
-    dontShowSpam: true,
-    logoutAfterMin: 5,
-    termsAccepted: true,
-    needReadNewTerms: false,
+    baseAssetId: 'DCC',
     closedNotification: [],
-    withScam: false,
+    dontShowSpam: true,
+    events: {},
+    lastOpenVersion: '',
+    lng: 'en',
+    logoutAfterMin: 5,
+    needReadNewTerms: false,
+    network: NetworkConfig.code,
+    oracleDCC: NetworkConfig.oracleDCC,
     scamListUrl: NetworkConfig.scamListUrl,
+    termsAccepted: true,
+    theme: 'default',
     tokensNameListUrl: NetworkConfig.tokensNameListUrl,
     tradeWithScriptAssets: false,
-    baseAssetId: 'DCC',
-    events: {},
+    whatsNewList: [],
+    withScam: false,
   };
 
   /**
    * User-specific defaults matching Angular DefaultSettings.js
    */
   private defaults: UserSettings = {
+    dex: {
+      assetIdPair: {
+        amount: 'DCC',
+        price: 'CRC',
+      },
+      chartCropRate: 1.5,
+      createOrder: {
+        expirationName: '30day',
+      },
+      layout: {
+        orderbook: { collapsed: false },
+        tradevolume: { collapsed: true },
+        watchlist: { collapsed: false },
+      },
+      watchlist: {
+        activeTab: 'all',
+        favourite: [['CRC']],
+        showOnlyFavorite: false,
+      },
+    },
     encryptionRounds: 5000,
     hasBackup: true,
     lastInterval: '60', // Default DEX chart resolution
+    orderLimit: 0.05,
+    pinnedAssetIdList: ['DCC', 'CRC'], // Match Angular default pinned assets
     send: {
       defaultTab: 'singleSend',
     },
-    orderLimit: 0.05,
-    pinnedAssetIdList: ['DCC', 'CRC'], // Match Angular default pinned assets
     wallet: {
       activeState: 'assets',
       assets: {
-        chartMode: 'month',
         activeChartAssetId: 'DCC',
         chartAssetIdList: ['CRC'],
-      },
-      transactions: {
-        filter: 'all',
+        chartMode: 'month',
       },
       leasing: {
         filter: 'all',
       },
       portfolio: {
-        spam: [],
         filter: 'active',
+        spam: [],
       },
-    },
-    dex: {
-      chartCropRate: 1.5,
-      assetIdPair: {
-        amount: 'DCC',
-        price: 'CRC',
-      },
-      createOrder: {
-        expirationName: '30day',
-      },
-      watchlist: {
-        showOnlyFavorite: false,
-        favourite: [['CRC']],
-        activeTab: 'all',
-      },
-      layout: {
-        watchlist: { collapsed: false },
-        orderbook: { collapsed: false },
-        tradevolume: { collapsed: true },
+      transactions: {
+        filter: 'all',
       },
     },
   };
@@ -261,7 +262,7 @@ export class DefaultSettings {
         this.settings = JSON.parse(userStr);
       }
     } catch (error) {
-      console.warn('[DefaultSettings] Failed to load from localStorage:', error);
+      logger.warn('[DefaultSettings] Failed to load from localStorage:', error);
     }
   }
 
@@ -273,7 +274,7 @@ export class DefaultSettings {
       localStorage.setItem(DefaultSettings.STORAGE_KEY_COMMON, JSON.stringify(this.commonSettings));
       localStorage.setItem(DefaultSettings.STORAGE_KEY_USER, JSON.stringify(this.settings));
     } catch (error) {
-      console.error('[DefaultSettings] Failed to save to localStorage:', error);
+      logger.error('[DefaultSettings] Failed to save to localStorage:', error);
     }
   }
 
@@ -282,7 +283,7 @@ export class DefaultSettings {
    */
   private _isCommon(path: string): boolean {
     const [start] = path.split('.');
-    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start);
+    return Object.hasOwn(this.commonDefaults, start ?? '');
   }
 
   /**
@@ -308,7 +309,8 @@ export class DefaultSettings {
    */
   private _setToObject(obj: Record<string, unknown>, path: string, value: unknown): void {
     const keys = path.split('.');
-    const lastKey = keys.pop()!;
+    const lastKey = keys.pop();
+    if (!lastKey) return;
     let current: Record<string, unknown> = obj;
 
     for (const key of keys) {
@@ -326,7 +328,8 @@ export class DefaultSettings {
    */
   private _unsetFromObject(obj: Record<string, unknown>, path: string): void {
     const keys = path.split('.');
-    const lastKey = keys.pop()!;
+    const lastKey = keys.pop();
+    if (!lastKey) return;
     let current: Record<string, unknown> = obj;
 
     for (const key of keys) {
@@ -352,7 +355,7 @@ export class DefaultSettings {
  */
 export function createDefaultSettings(
   settings?: Partial<UserSettings>,
-  commonSettings?: Partial<CommonSettings>
+  commonSettings?: Partial<CommonSettings>,
 ): DefaultSettings {
   const instance = new DefaultSettings(settings, commonSettings);
   instance.load();

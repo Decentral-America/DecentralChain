@@ -1,13 +1,13 @@
 export class MemoryCache {
-  constructor() {
-    this.cache = {};
-  }
+    constructor() {
+        this.cache = {};
+    }
 
-  get = (id) => {
-    return Promise.resolve(this.cache[id]);
-  };
+    get = id => {
+        return Promise.resolve(this.cache[id]);
+    };
 
-  put = (currency) => {
-    this.cache[currency.id] = currency;
-  };
+    put = currency => {
+        this.cache[currency.id] = currency;
+    };
 }

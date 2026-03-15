@@ -4,12 +4,12 @@
  * React hooks for error tracking and monitoring
  */
 
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
-  captureError,
   addBreadcrumb,
-  ErrorSeverity,
+  captureError,
   type ErrorContext,
+  ErrorSeverity,
 } from '@/lib/errorMonitoring';
 
 /**
@@ -89,7 +89,7 @@ export function useBreadcrumb(category: string) {
     (message: string, data?: ErrorContext, level: ErrorSeverity = ErrorSeverity.Info) => {
       addBreadcrumb(message, category, level, data);
     },
-    [category]
+    [category],
   );
 }
 
@@ -120,7 +120,7 @@ export function useApiErrorTracking() {
         type: 'api',
         ...context,
       },
-      ErrorSeverity.Error
+      ErrorSeverity.Error,
     );
   }, []);
 }

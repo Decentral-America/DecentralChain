@@ -2,30 +2,32 @@
  * Application Header
  * Top navigation bar with user info, network status, and quick actions
  */
-import { useState } from 'react';
+
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AddIcon from '@mui/icons-material/Add';
+import BadgeIcon from '@mui/icons-material/Badge';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import {
-  Menu,
-  MenuItem,
+  Avatar,
+  Box,
+  Chip,
+  Divider,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Chip,
-  Avatar,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
-  Box,
 } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import BadgeIcon from '@mui/icons-material/Badge';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AddIcon from '@mui/icons-material/Add';
-import styled from 'styled-components';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
-import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { logger } from '@/lib/logger';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -84,7 +86,7 @@ export const Header = () => {
         await navigator.clipboard.writeText(user.address);
         handleMenuClose();
       } catch (err) {
-        console.error('Failed to copy address:', err);
+        logger.error('Failed to copy address:', err);
       }
     }
   };
@@ -128,7 +130,7 @@ export const Header = () => {
           {user && (
             <>
               <UserButton onClick={handleMenuOpen}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                <Avatar sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}>
                   <PersonIcon sx={{ fontSize: 18 }} />
                 </Avatar>
                 <Stack spacing={0}>
@@ -146,23 +148,27 @@ export const Header = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 anchorOrigin={{
-                  vertical: 'bottom',
                   horizontal: 'right',
+                  vertical: 'bottom',
                 }}
                 transformOrigin={{
-                  vertical: 'top',
                   horizontal: 'right',
+                  vertical: 'top',
                 }}
                 PaperProps={{
-                  sx: { width: 280, mt: 1 },
+                  sx: { mt: 1, width: 280 },
                 }}
               >
                 {/* Address Info */}
-                <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 1.5 }}>
                   <Typography variant="caption" color="text.secondary">
                     Your Address
                   </Typography>
-                  <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
+                  <Typography
+                    variant="body2"
+                    fontFamily="monospace"
+                    sx={{ wordBreak: 'break-all' }}
+                  >
                     {user.address}
                   </Typography>
                 </Box>

@@ -1,6 +1,6 @@
 export const UpdateAssetInfoTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
+  get assetDescription() {
+    return this.root.findByTestId$('updateAssetInfoAssetDescription');
   },
 
   get assetId() {
@@ -11,11 +11,10 @@ export const UpdateAssetInfoTransactionScreen = {
     return this.root.findByTestId$('updateAssetInfoAssetName');
   },
 
-  get assetDescription() {
-    return this.root.findByTestId$('updateAssetInfoAssetDescription');
-  },
-
   get fee() {
     return this.root.findByTestId$('updateAssetInfoFee');
+  },
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

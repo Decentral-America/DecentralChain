@@ -4,8 +4,8 @@
  * Provides automatic field registration, validation, and error display for dropdowns
  */
 import React from 'react';
-import { useFormContext, FieldValues, Path, RegisterOptions } from 'react-hook-form';
-import { Select, SelectOption, SelectProps } from '@/components/atoms/Select';
+import { type FieldValues, type Path, type RegisterOptions, useFormContext } from 'react-hook-form';
+import { Select, type SelectOption, type SelectProps } from '@/components/atoms/Select';
 
 export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<SelectProps, 'name' | 'error' | 'options'> {
@@ -34,8 +34,8 @@ export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
    * Transform value before submission
    */
   transform?: {
-    input?: (value: any) => any;
-    output?: (value: any) => any;
+    input?: (value: string) => string;
+    output?: (value: string) => string;
   };
 
   /**
@@ -97,7 +97,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
 
       // Handle empty value
       if (value === '' && !allowEmpty) {
-        value = undefined as any;
+        value = undefined as unknown as string;
       }
 
       // Apply input transformation
@@ -112,7 +112,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       // Call custom onChange if provided
       onChange?.(e);
     },
-    [registerOnChange, onChange, transform, allowEmpty]
+    [registerOnChange, onChange, transform, allowEmpty],
   );
 
   const handleBlur = React.useCallback(
@@ -122,7 +122,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       // Apply output transformation
       if (transform?.output) {
         value = transform.output(value);
-        setValue(name, value as any, { shouldValidate: validateOnBlur });
+        setValue(name, value as TFieldValues[typeof name], { shouldValidate: validateOnBlur });
       }
 
       // Trigger validation on blur if enabled
@@ -136,7 +136,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       // Call custom onBlur if provided
       onBlur?.(e);
     },
-    [name, registerOnBlur, onBlur, validateOnBlur, transform, setValue, trigger]
+    [name, registerOnBlur, onBlur, validateOnBlur, transform, setValue, trigger],
   );
 
   return (
@@ -155,31 +155,31 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
 // Specialized variants for common use cases
 
 /**
- * FormSelect for asset selection (with WAVES as first option)
+ * FormSelect for asset selection (with DCC as first option)
  */
 export function FormAssetSelect<TFieldValues extends FieldValues = FieldValues>(
   props: Omit<FormSelectProps<TFieldValues>, 'options'> & {
     assets: Array<{ id: string; name: string; decimals: number }>;
-    includeWaves?: boolean;
-  }
+    includeDCC?: boolean;
+  },
 ) {
-  const { assets, includeWaves = true, ...restProps } = props;
+  const { assets, includeDCC = true, ...restProps } = props;
 
   const options = React.useMemo(() => {
     const assetOptions: SelectOption[] = assets.map((asset) => ({
-      value: asset.id,
       label: asset.name,
+      value: asset.id,
     }));
 
-    if (includeWaves) {
+    if (includeDCC) {
       assetOptions.unshift({
-        value: 'WAVES',
-        label: 'WAVES',
+        label: 'DCC',
+        value: 'DCC',
       });
     }
 
     return assetOptions;
-  }, [assets, includeWaves]);
+  }, [assets, includeDCC]);
 
   return <FormSelect<TFieldValues> {...restProps} options={options} />;
 }
@@ -188,22 +188,22 @@ export function FormAssetSelect<TFieldValues extends FieldValues = FieldValues>(
  * FormSelect for transaction type selection
  */
 export function FormTransactionTypeSelect<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormSelectProps<TFieldValues>, 'options'>
+  props: Omit<FormSelectProps<TFieldValues>, 'options'>,
 ) {
   const options: SelectOption[] = [
-    { value: '4', label: 'Transfer' },
-    { value: '11', label: 'Mass Transfer' },
-    { value: '8', label: 'Lease' },
-    { value: '9', label: 'Lease Cancel' },
-    { value: '3', label: 'Issue' },
-    { value: '5', label: 'Reissue' },
-    { value: '6', label: 'Burn' },
-    { value: '10', label: 'Create Alias' },
-    { value: '12', label: 'Data Transaction' },
-    { value: '13', label: 'Set Script' },
-    { value: '14', label: 'Sponsorship' },
-    { value: '15', label: 'Set Asset Script' },
-    { value: '16', label: 'Invoke Script' },
+    { label: 'Transfer', value: '4' },
+    { label: 'Mass Transfer', value: '11' },
+    { label: 'Lease', value: '8' },
+    { label: 'Lease Cancel', value: '9' },
+    { label: 'Issue', value: '3' },
+    { label: 'Reissue', value: '5' },
+    { label: 'Burn', value: '6' },
+    { label: 'Create Alias', value: '10' },
+    { label: 'Data Transaction', value: '12' },
+    { label: 'Set Script', value: '13' },
+    { label: 'Sponsorship', value: '14' },
+    { label: 'Set Asset Script', value: '15' },
+    { label: 'Invoke Script', value: '16' },
   ];
 
   return <FormSelect<TFieldValues> {...props} options={options} />;
@@ -213,11 +213,11 @@ export function FormTransactionTypeSelect<TFieldValues extends FieldValues = Fie
  * FormSelect for DEX order type selection
  */
 export function FormOrderTypeSelect<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormSelectProps<TFieldValues>, 'options'>
+  props: Omit<FormSelectProps<TFieldValues>, 'options'>,
 ) {
   const options: SelectOption[] = [
-    { value: 'buy', label: 'Buy' },
-    { value: 'sell', label: 'Sell' },
+    { label: 'Buy', value: 'buy' },
+    { label: 'Sell', value: 'sell' },
   ];
 
   return <FormSelect<TFieldValues> {...props} options={options} />;
@@ -227,12 +227,12 @@ export function FormOrderTypeSelect<TFieldValues extends FieldValues = FieldValu
  * FormSelect for DEX order time-in-force
  */
 export function FormTimeInForceSelect<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormSelectProps<TFieldValues>, 'options'>
+  props: Omit<FormSelectProps<TFieldValues>, 'options'>,
 ) {
   const options: SelectOption[] = [
-    { value: 'GTC', label: 'Good Till Cancelled' },
-    { value: 'IOC', label: 'Immediate or Cancel' },
-    { value: 'FOK', label: 'Fill or Kill' },
+    { label: 'Good Till Cancelled', value: 'GTC' },
+    { label: 'Immediate or Cancel', value: 'IOC' },
+    { label: 'Fill or Kill', value: 'FOK' },
   ];
 
   return <FormSelect<TFieldValues> {...props} options={options} />;
@@ -242,12 +242,12 @@ export function FormTimeInForceSelect<TFieldValues extends FieldValues = FieldVa
  * FormSelect for network selection
  */
 export function FormNetworkSelect<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormSelectProps<TFieldValues>, 'options'>
+  props: Omit<FormSelectProps<TFieldValues>, 'options'>,
 ) {
   const options: SelectOption[] = [
-    { value: 'mainnet', label: 'Mainnet (W)' },
-    { value: 'testnet', label: 'Testnet (T)' },
-    { value: 'stagenet', label: 'Stagenet (S)' },
+    { label: 'Mainnet (W)', value: 'mainnet' },
+    { label: 'Testnet (T)', value: 'testnet' },
+    { label: 'Stagenet (S)', value: 'stagenet' },
   ];
 
   return <FormSelect<TFieldValues> {...props} options={options} />;
@@ -257,26 +257,26 @@ export function FormNetworkSelect<TFieldValues extends FieldValues = FieldValues
  * FormSelect for language selection
  */
 export function FormLanguageSelect<TFieldValues extends FieldValues = FieldValues>(
-  props: Omit<FormSelectProps<TFieldValues>, 'options'>
+  props: Omit<FormSelectProps<TFieldValues>, 'options'>,
 ) {
   const options: SelectOption[] = [
-    { value: 'en', label: 'English' },
-    { value: 'ru', label: 'Русский' },
-    { value: 'zh_CN', label: '简体中文' },
-    { value: 'ja', label: '日本語' },
-    { value: 'ko', label: '한국어' },
-    { value: 'tr', label: 'Türkçe' },
-    { value: 'es', label: 'Español' },
-    { value: 'fr', label: 'Français' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'pt_BR', label: 'Português (Brasil)' },
-    { value: 'pt_PT', label: 'Português (Portugal)' },
-    { value: 'nl_NL', label: 'Nederlands' },
-    { value: 'it', label: 'Italiano' },
-    { value: 'pl', label: 'Polski' },
-    { value: 'hi_IN', label: 'हिन्दी' },
-    { value: 'id', label: 'Bahasa Indonesia' },
-    { value: 'et_EE', label: 'Eesti' },
+    { label: 'English', value: 'en' },
+    { label: 'Русский', value: 'ru' },
+    { label: '简体中文', value: 'zh_CN' },
+    { label: '日本語', value: 'ja' },
+    { label: '한국어', value: 'ko' },
+    { label: 'Türkçe', value: 'tr' },
+    { label: 'Español', value: 'es' },
+    { label: 'Français', value: 'fr' },
+    { label: 'Deutsch', value: 'de' },
+    { label: 'Português (Brasil)', value: 'pt_BR' },
+    { label: 'Português (Portugal)', value: 'pt_PT' },
+    { label: 'Nederlands', value: 'nl_NL' },
+    { label: 'Italiano', value: 'it' },
+    { label: 'Polski', value: 'pl' },
+    { label: 'हिन्दी', value: 'hi_IN' },
+    { label: 'Bahasa Indonesia', value: 'id' },
+    { label: 'Eesti', value: 'et_EE' },
   ];
 
   return <FormSelect<TFieldValues> {...props} options={options} />;

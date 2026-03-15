@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Box, Typography, TextField, MenuItem, Slider as MuiSlider } from '@mui/material';
-import { Button } from '../components/atoms/Button';
-import { Input } from '../components/atoms/Input';
-import { Checkbox } from '../components/atoms/Checkbox';
+import { Box, MenuItem, Slider as MuiSlider, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
+import { useState } from 'react';
+import { logger } from '@/lib/logger';
+import { Button } from '../components/atoms/Button';
+import { Checkbox } from '../components/atoms/Checkbox';
+import { Input } from '../components/atoms/Input';
 
 // Types
 interface TokenForm {
@@ -18,46 +20,46 @@ interface TokenForm {
 
 // Styled Components (migrating to MUI gradually)
 const Container = styled(Box)(({ theme }) => ({
-  maxWidth: 800,
   margin: '0 auto',
-  padding: theme.spacing(4, 2),
+  maxWidth: 800,
   minHeight: '100vh',
+  padding: theme.spacing(4, 2),
 }));
 
 const TextArea = styled('textarea')(({ theme }) => ({
-  width: '100%',
-  padding: theme.spacing(1.5),
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
-  resize: 'vertical',
-  fontSize: '1rem',
-  color: theme.palette.text.primary,
-  backgroundColor: theme.palette.background.paper,
-  fontFamily: '"Courier New", monospace',
-  minHeight: 120,
-  outline: 'none',
-  transition: 'border-color 0.2s ease',
-  '&:hover': {
-    borderColor: theme.palette.primary.main,
+  '&:disabled': {
+    backgroundColor: theme.palette.action.disabledBackground,
+    cursor: 'not-allowed',
   },
   '&:focus': {
     borderColor: theme.palette.primary.main,
     boxShadow: `0 0 0 3px ${theme.palette.primary.main}33`,
   },
-  '&:disabled': {
-    backgroundColor: theme.palette.action.disabledBackground,
-    cursor: 'not-allowed',
+  '&:hover': {
+    borderColor: theme.palette.primary.main,
   },
+  backgroundColor: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette.text.primary,
+  fontFamily: '"Courier New", monospace',
+  fontSize: '1rem',
+  minHeight: 120,
+  outline: 'none',
+  padding: theme.spacing(1.5),
+  resize: 'vertical',
+  transition: 'border-color 0.2s ease',
+  width: '100%',
 }));
 
 export const TokensPage: React.FC = () => {
   const [formData, setFormData] = useState<TokenForm>({
-    name: '',
-    description: '',
-    quantity: '',
     decimals: 8,
-    reissuable: false,
+    description: '',
     hasScript: false,
+    name: '',
+    quantity: '',
+    reissuable: false,
     script: '',
   });
 
@@ -76,8 +78,8 @@ export const TokensPage: React.FC = () => {
     if (!quantity) return '0';
     const num = parseFloat(quantity);
     return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
+      minimumFractionDigits: decimals,
     }).format(num);
   };
 
@@ -96,7 +98,7 @@ export const TokensPage: React.FC = () => {
     e.preventDefault();
     if (!isFormValid()) return;
 
-    console.log('Creating token with data:', formData);
+    logger.debug('Creating token with data:', formData);
     // In real implementation, this would call the blockchain API
     alert('Token creation submitted! (Demo mode - not actually created)');
   };
@@ -205,35 +207,35 @@ export const TokensPage: React.FC = () => {
         {isNFT && (
           <Box
             sx={{
-              p: 2,
               bgcolor: 'rgba(255, 193, 7, 0.1)',
-              borderLeft: 4,
               borderColor: 'warning.main',
+              borderLeft: 4,
               borderRadius: 1,
+              p: 2,
             }}
           >
             <Box sx={{ mb: 1 }}>
               <Box
                 component="span"
                 sx={{
-                  display: 'inline-block',
-                  px: 1.5,
-                  py: 0.5,
                   bgcolor: 'rgba(76, 175, 80, 0.1)',
                   border: 1,
                   borderColor: 'success.main',
                   borderRadius: 2,
                   color: 'success.main',
+                  display: 'inline-block',
                   fontSize: '0.75rem',
                   fontWeight: 600,
+                  px: 1.5,
+                  py: 0.5,
                 }}
               >
                 NFT Mode
               </Box>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              You're creating a Non-Fungible Token (NFT) with quantity 1 and 0 decimals. This token
-              will be unique and indivisible.
+              You&apos;re creating a Non-Fungible Token (NFT) with quantity 1 and 0 decimals. This
+              token will be unique and indivisible.
             </Typography>
           </Box>
         )}
@@ -245,14 +247,14 @@ export const TokensPage: React.FC = () => {
           </Typography>
           <Box
             sx={{
-              display: 'flex',
               alignItems: 'center',
-              gap: 1.5,
-              p: 2,
               bgcolor: 'background.paper',
               border: 1,
               borderColor: 'divider',
               borderRadius: 1,
+              display: 'flex',
+              gap: 1.5,
+              p: 2,
             }}
           >
             <Checkbox
@@ -283,20 +285,20 @@ export const TokensPage: React.FC = () => {
               </Typography>
               <Box
                 sx={{
-                  p: 2,
                   bgcolor: 'rgba(255, 193, 7, 0.1)',
-                  borderLeft: 4,
                   borderColor: 'warning.main',
+                  borderLeft: 4,
                   borderRadius: 1,
                   mt: 1,
+                  p: 2,
                 }}
               >
                 <Typography variant="body1" fontWeight={600} color="warning.main" sx={{ mb: 1 }}>
                   Warning: Smart Asset Script
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Adding a script to your asset makes it a "smart asset". All operations with this
-                  asset will require script validation, which may add complexity and fees.
+                  Adding a script to your asset makes it a &quot;smart asset&quot;. All operations
+                  with this asset will require script validation, which may add complexity and fees.
                 </Typography>
               </Box>
             </>
@@ -310,39 +312,39 @@ export const TokensPage: React.FC = () => {
           </Typography>
           <Box
             sx={{
-              p: 3,
-              display: 'flex',
               alignItems: 'center',
-              gap: 2,
               border: 1,
               borderColor: 'divider',
               borderRadius: 1,
+              display: 'flex',
+              gap: 2,
+              p: 3,
             }}
           >
             <Box
               sx={{
-                width: 60,
-                height: 60,
-                borderRadius: '50%',
-                background: (theme) =>
-                  `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 600,
-                fontSize: '1.5rem',
-                position: 'relative',
-                flexShrink: 0,
                 '&::after': formData.hasScript
                   ? {
-                      content: '"📜"',
-                      position: 'absolute',
                       bottom: -4,
-                      right: -4,
+                      content: '"📜"',
                       fontSize: '1.25rem',
+                      position: 'absolute',
+                      right: -4,
                     }
                   : {},
+                alignItems: 'center',
+                background: (theme) =>
+                  `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                borderRadius: '50%',
+                color: 'white',
+                display: 'flex',
+                flexShrink: 0,
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                height: 60,
+                justifyContent: 'center',
+                position: 'relative',
+                width: 60,
               }}
             >
               {formData.name ? formData.name.charAt(0).toUpperCase() : '?'}
@@ -362,11 +364,11 @@ export const TokensPage: React.FC = () => {
         {/* Warning */}
         <Box
           sx={{
-            p: 2,
             bgcolor: 'rgba(255, 193, 7, 0.1)',
-            borderLeft: 4,
             borderColor: 'warning.main',
+            borderLeft: 4,
             borderRadius: 1,
+            p: 2,
           }}
         >
           <Typography variant="body1" fontWeight={600} color="warning.main" sx={{ mb: 1 }}>
@@ -379,7 +381,7 @@ export const TokensPage: React.FC = () => {
         </Box>
 
         {/* Terms Agreement */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5 }}>
           <Checkbox checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} />
           <Typography variant="body2">
             I understand the risks and agree to the terms of token creation

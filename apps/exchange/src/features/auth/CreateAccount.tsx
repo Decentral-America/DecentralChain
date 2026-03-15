@@ -2,20 +2,21 @@
  * CreateAccount Component
  * Generates new wallet with seed phrase display and backup confirmation
  */
-import { useState, FormEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
-import { useClipboard } from '@/hooks/useClipboard';
-import { Button } from '@/components/atoms/Button';
-import { Card, CardBody } from '@/components/atoms/Card';
-import { Stack } from '@/components/atoms/Stack';
-import { Checkbox } from '@/components/atoms/Checkbox';
-import { Icon, CommonIcons } from '@/components/atoms/Icon';
-import { Input } from '@/components/atoms/Input';
 
 // Import Seed from data-service (matches Angular: ds.Seed)
 import { Seed } from 'data-service/classes/Seed';
+import { type FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { Button } from '@/components/atoms/Button';
+import { Card, CardBody } from '@/components/atoms/Card';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
+import { useClipboard } from '@/hooks/useClipboard';
+import { logger } from '@/lib/logger';
 
 const FormContainer = styled.div`
   width: 100%;
@@ -130,7 +131,7 @@ const SeedWord = styled.div`
   }
 `;
 
-const CopyButton = styled(Button)`
+const CopyButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   position: absolute;
   top: ${(p) => p.theme.spacing.sm};
   right: ${(p) => p.theme.spacing.sm};
@@ -169,7 +170,7 @@ const Divider = styled.div`
   align-items: center;
   gap: ${(p) => p.theme.spacing.md};
   margin: ${(p) => p.theme.spacing.md} 0;
-  
+
   &::before,
   &::after {
     content: '';
@@ -177,7 +178,7 @@ const Divider = styled.div`
     height: 1px;
     background: ${(p) => p.theme.colors.border};
   }
-  
+
   span {
     font-size: ${(p) => p.theme.fontSizes.sm};
     color: ${(p) => p.theme.colors.text};
@@ -198,7 +199,7 @@ const LedgerInfoBox = styled.div`
   align-items: flex-start;
   cursor: pointer;
   transition: ${(p) => p.theme.transitions.fast};
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -250,10 +251,11 @@ export const CreateAccount = () => {
   const { create, user, isAuthenticated, getActiveState } = useAuth();
   const { isCopied, copyToClipboard } = useClipboard();
   const navigate = useNavigate();
-  
+
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported = 
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+  const isLedgerSupported =
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   const words = seedPhrase.phrase.split(' ');
@@ -262,17 +264,17 @@ export const CreateAccount = () => {
   // Only navigate if we're not in the middle of creating an account
   // Matches Angular: User.getActiveState('wallet') lines 587-595
   useEffect(() => {
-    console.log('[CreateAccount] Navigation useEffect triggered:', {
-      isAuthenticated,
+    logger.debug('[CreateAccount] Navigation useEffect triggered:', {
       hasUser: !!user,
-      isLoading,
+      isAuthenticated,
       isCreating,
+      isLoading,
       willNavigate: isAuthenticated && user && !isLoading && !isCreating,
     });
 
     if (isAuthenticated && user && !isLoading && !isCreating) {
       const targetRoute = getActiveState('wallet');
-      console.log('[CreateAccount] Navigating to:', targetRoute);
+      logger.debug('[CreateAccount] Navigating to:', targetRoute);
       navigate(targetRoute, { replace: true });
     }
   }, [isAuthenticated, user, isLoading, isCreating, navigate, getActiveState]);
@@ -296,8 +298,18 @@ export const CreateAccount = () => {
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password.length < 12) {
+      setError('Password must be at least 12 characters');
+      return;
+    }
+
+    // SECURITY: Enforce password complexity for financial application
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+    if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecial) {
+      setError('Password must contain uppercase, lowercase, a digit, and a special character');
       return;
     }
 
@@ -306,7 +318,7 @@ export const CreateAccount = () => {
       return;
     }
 
-    console.log('[CreateAccount] handleContinue: Starting account creation');
+    logger.debug('[CreateAccount] handleContinue: Starting account creation');
     setIsLoading(true);
     setIsCreating(true);
     try {
@@ -314,40 +326,46 @@ export const CreateAccount = () => {
       // If not authenticated, treat as first account even if multiAccountData exists
       // (they may have logged out or cleared session)
       const isAddingAccount = isAuthenticated && user;
-      console.log('[CreateAccount] handleContinue: isAddingAccount =', isAddingAccount);
+      logger.debug('[CreateAccount] handleContinue: isAddingAccount =', isAddingAccount);
 
       if (!isAddingAccount) {
-        console.log('[CreateAccount] handleContinue: Creating account via create()');
+        logger.debug('[CreateAccount] handleContinue: Creating account via create()');
         // First/fresh account - AuthContext.create() handles signUp or existing vault
         // hasBackup is true because user confirmed checkbox
         await create(seedPhrase.phrase, password, 'My Account', true);
-        console.log(
-          '[CreateAccount] handleContinue: create() completed, waiting for state to propagate'
+        logger.debug(
+          '[CreateAccount] handleContinue: create() completed, waiting for state to propagate',
         );
         // Wait for React state to fully propagate before allowing navigation
         // This ensures ProtectedRoute sees isAuthenticated=true
         await new Promise((resolve) => setTimeout(resolve, 100));
-        console.log('[CreateAccount] handleContinue: Setting isCreating=false to allow navigation');
+        logger.debug(
+          '[CreateAccount] handleContinue: Setting isCreating=false to allow navigation',
+        );
         // Navigation happens in useEffect when user state is set
         setIsCreating(false); // Allow navigation now
         setIsLoading(false);
       } else {
-        console.log(
-          '[CreateAccount] handleContinue: Navigating to /auth/import for additional account'
+        logger.debug(
+          '[CreateAccount] handleContinue: Navigating to /auth/import for additional account',
         );
         // Additional account - requires unlocking vault
-        // Redirect to import flow which handles this properly
+        // SECURITY: Never pass seeds via router state (persists in browser history)
+        // Instead, store the seed in a short-lived in-memory reference
+        // that is cleared immediately after being read
+        const { setSeedTransfer } = await import('@/lib/secureTransfer');
+        setSeedTransfer(seedPhrase.phrase);
         setIsCreating(false); // Clear flag before navigation
         navigate('/auth/import', {
           state: {
-            seed: seedPhrase.phrase,
-            name: 'My Account',
             hasBackup: true,
+            hasSeedTransfer: true, // Signal that seed is in secure transfer
+            name: 'My Account',
           },
         });
       }
     } catch (err) {
-      console.error('[CreateAccount] handleContinue: Error during account creation:', err);
+      logger.error('[CreateAccount] handleContinue: Error during account creation:', err);
       setError(err instanceof Error ? err.message : 'Failed to create account');
       setIsLoading(false);
       setIsCreating(false); // Clear flag on error
@@ -366,7 +384,7 @@ export const CreateAccount = () => {
           <ImportLink>
             Already have a wallet?{' '}
             <a
-              href="#"
+              href="/import-account"
               onClick={(e) => {
                 e.preventDefault();
                 navigate('/import-account');
@@ -381,15 +399,16 @@ export const CreateAccount = () => {
               <LedgerInfoBox onClick={() => navigate('/import/ledger')}>
                 <LedgerIcon>🔐</LedgerIcon>
                 <div>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, margin: '0 0 4px 0' }}>
                     Use Ledger Hardware Wallet
                   </h3>
-                  <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.4', opacity: 0.9 }}>
-                    For maximum security, use your Ledger Nano device instead of a seed phrase. Your private keys never leave the device.
+                  <p style={{ fontSize: '13px', lineHeight: '1.4', margin: 0, opacity: 0.9 }}>
+                    For maximum security, use your Ledger Nano device instead of a seed phrase. Your
+                    private keys never leave the device.
                   </p>
                 </div>
               </LedgerInfoBox>
-              
+
               <Divider>
                 <span>or continue with seed phrase</span>
               </Divider>
@@ -416,6 +435,7 @@ export const CreateAccount = () => {
 
             <SeedPhraseGrid>
               {words.map((word: string, index: number) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase words can repeat
                 <SeedWord key={index}>
                   <span>{index + 1}.</span>
                   {word}
@@ -436,11 +456,11 @@ export const CreateAccount = () => {
               {error && (
                 <div
                   style={{
-                    padding: '12px',
                     background: '#f443361a',
                     border: '1px solid #f44336',
                     borderRadius: '8px',
                     color: '#f44336',
+                    padding: '12px',
                   }}
                 >
                   {error}
@@ -452,7 +472,7 @@ export const CreateAccount = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 8 characters"
+                placeholder="Minimum 12 characters (upper, lower, digit, special)"
               />
 
               <Input

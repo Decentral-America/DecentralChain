@@ -40,7 +40,7 @@ export interface SessionConfig {
 }
 
 export const DEFAULT_SESSION_CONFIG: SessionConfig = {
-  inactivityTimeout: 15 * 60 * 1000, // 15 minutes
   autoLock: true,
+  inactivityTimeout: 15 * 60 * 1000, // 15 minutes
   persistSessions: true,
 };

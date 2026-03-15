@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, CSSProperties } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 /**
@@ -28,8 +28,8 @@ const shimmer = keyframes`
 `;
 
 const ImageContainer = styled.div<{
-  $width?: number | string;
-  $height?: number | string;
+  $width?: number | string | undefined;
+  $height?: number | string | undefined;
 }>`
   position: relative;
   width: ${({ $width }) => (typeof $width === 'number' ? `${$width}px` : $width || '100%')};
@@ -113,16 +113,16 @@ export const LazyImage: React.FC<LazyImageProps> = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           // Start loading the image
           setImageSrc(src);
           observer.disconnect();
         }
       },
       {
-        threshold,
         rootMargin,
-      }
+        threshold,
+      },
     );
 
     if (containerRef.current) {
@@ -216,7 +216,7 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           // Load placeholder first
           if (placeholderSrc && !imageSrc) {
             setImageSrc(placeholderSrc);
@@ -239,9 +239,9 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
         }
       },
       {
-        threshold,
         rootMargin,
-      }
+        threshold,
+      },
     );
 
     if (containerRef.current) {

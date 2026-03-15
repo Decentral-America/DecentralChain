@@ -1,6 +1,8 @@
 import {
   configure,
+  type Queries,
   setupBrowser,
+  type WebdriverIOBoundFunctionSync,
   type WebdriverIOQueries,
   type WebdriverIOQueriesChainable,
 } from '@testing-library/webdriverio';
@@ -11,6 +13,21 @@ import { remote } from 'webdriverio';
 /** Node URL as seen from inside the Selenium Docker container */
 export const BROWSER_NODE_URL = 'http://waves-private-node:6869';
 
+/**
+ * Resolved version of {@link WebdriverIOQueriesChainable} that avoids the
+ * deferred conditional type (`Container extends SelectorsBase ? F : undefined`)
+ * which TypeScript cannot resolve for self-referential interface declarations.
+ */
+type ResolvedQueriesChainable<
+  Container extends { $: (...args: any[]) => any; $$: (...args: any[]) => any },
+> = {
+  [P in keyof Queries as `${string & P}$`]: WebdriverIOBoundFunctionSync<
+    ReturnType<Container['$']>,
+    ReturnType<Container['$$']>,
+    Queries[P]
+  >;
+};
+
 declare global {
   interface Window {
     result: any;
@@ -18,18 +35,13 @@ declare global {
 
   // biome-ignore lint/style/noNamespace: required for WebdriverIO declaration merging
   namespace WebdriverIO {
-    interface Browser extends WebdriverIOQueries, WebdriverIOQueriesChainable<Browser> {
+    interface Browser extends WebdriverIOQueries, ResolvedQueriesChainable<Browser> {
       openKeeperPopup: () => Promise<void>;
       openKeeperExtensionPage: () => Promise<void>;
     }
 
-    interface Element extends WebdriverIOQueries, WebdriverIOQueriesChainable<Element> {}
+    interface Element extends WebdriverIOQueries, ResolvedQueriesChainable<Element> {}
   }
-}
-
-declare module 'webdriverio' {
-  interface ChainablePromiseElement<T extends WebdriverIO.Element | undefined>
-    extends WebdriverIOQueriesChainable<T> {}
 }
 
 beforeAll(async () => {
@@ -40,7 +52,6 @@ beforeAll(async () => {
   Object.defineProperty(global, 'browser', {
     configurable: true,
     value: await remote({
-      logLevel: 'warn',
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
@@ -48,6 +59,7 @@ beforeAll(async () => {
         },
         pageLoadStrategy: 'eager',
       },
+      logLevel: 'warn',
       path: '/wd/hub',
       waitforTimeout: 15 * 1000,
     }),
@@ -57,7 +69,7 @@ beforeAll(async () => {
     asyncUtilTimeout: 15 * 1000,
   });
 
-  setupBrowser(browser);
+  setupBrowser(browser as any);
 
   global.$ = browser.$.bind(browser);
   global.$$ = browser.$$.bind(browser);

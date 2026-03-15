@@ -8,7 +8,8 @@
  * The fix: Isolate Recharts in a separate component boundary with error
  * recovery, and use a key-based remounting strategy to break the cycle.
  */
-import { Component, ReactNode, ErrorInfo } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { logger } from '@/lib/logger';
 
 interface RechartsWrapperProps {
   children: ReactNode;
@@ -31,8 +32,8 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
   constructor(props: RechartsWrapperProps) {
     super(props);
     this.state = {
-      hasError: false,
       errorCount: 0,
+      hasError: false,
     };
   }
 
@@ -45,11 +46,11 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
     throw error;
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (error.message.includes('Maximum update depth exceeded')) {
-      console.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
-        error: error.message,
+      logger.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
         componentStack: errorInfo.componentStack,
+        error: error.message,
       });
 
       // Increment error count
@@ -62,29 +63,29 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
     }
   }
 
-  componentDidUpdate(prevProps: RechartsWrapperProps) {
+  override componentDidUpdate(prevProps: RechartsWrapperProps) {
     // Reset error state when data changes (via dataKey prop)
     if (prevProps.dataKey !== this.props.dataKey && this.state.hasError) {
-      this.setState({ hasError: false, errorCount: 0 });
+      this.setState({ errorCount: 0, hasError: false });
     }
   }
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.resetTimer) {
       clearTimeout(this.resetTimer);
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Show loading state during recovery
       return (
         <div
           style={{
-            minHeight: '300px',
-            display: 'flex',
             alignItems: 'center',
+            display: 'flex',
             justifyContent: 'center',
+            minHeight: '300px',
           }}
         >
           Refreshing chart...

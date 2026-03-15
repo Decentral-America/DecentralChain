@@ -145,9 +145,9 @@ export function AuthFinal({
       isReject={isReject}
       isSend={isSend}
       messages={{
-        send: t('sign.authConfirmed'),
         approve: t('sign.authConfirmed'),
         reject: t('sign.authRejected'),
+        send: t('sign.authConfirmed'),
       }}
     />
   );

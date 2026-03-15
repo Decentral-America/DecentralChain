@@ -20,8 +20,8 @@ export function SettingsGeneral() {
     .sort(([, a], [, b]) => a - b)
     .map(([id, value]) => ({
       id,
-      value,
       text: t(`settings.time_${id}`, { defaultValue: id, key: id }),
+      value,
     }));
 
   return (

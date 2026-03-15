@@ -1,1 +1,1 @@
-export { Loader as default } from './Loader.container';
+export {Loader as default} from './Loader.container';

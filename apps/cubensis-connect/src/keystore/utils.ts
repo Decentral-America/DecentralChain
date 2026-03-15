@@ -19,20 +19,20 @@ async function encryptProfiles(accountsToExport: PreferencesAccount[], password:
         case 'seed':
           return {
             ...commonData,
-            type: acc.type,
             seed: await background.getAccountSeed(acc.address, acc.network, password),
+            type: acc.type,
           };
         case 'encodedSeed':
           return {
             ...commonData,
-            type: acc.type,
             encodedSeed: await background.getAccountEncodedSeed(acc.address, acc.network, password),
+            type: acc.type,
           };
         case 'privateKey':
           return {
             ...commonData,
-            type: acc.type,
             privateKey: await background.getAccountPrivateKey(acc.address, acc.network, password),
+            type: acc.type,
           };
         case 'debug':
           return {

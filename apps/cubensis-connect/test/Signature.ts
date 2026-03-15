@@ -94,14 +94,14 @@ describe('Signature', () => {
     await browser.switchToWindow(tabKeeper);
     await browser.closeWindow();
 
-    await browser.switchToWindow(tabAccounts);
+    await browser.switchToWindow(tabAccounts!);
     await browser.refresh();
 
     // TODO: Update seed phrase when DCC test node genesis config is set up
     await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
 
-    tabOrigin = tabAccounts;
-    await browser.navigateTo(`https://${WHITELIST[3]}`);
+    tabOrigin = tabAccounts!;
+    await browser.navigateTo(`https://${WHITELIST[3]!}`);
   });
 
   afterAll(async () => {
@@ -158,9 +158,9 @@ describe('Signature', () => {
     const [status, result] = await getResult();
     expect(status).toBe('REJECTED');
     expect(result).toStrictEqual({
-      message: 'User denied message',
-      data,
       code: '10',
+      data,
+      message: 'User denied message',
     });
   }
 
@@ -181,7 +181,7 @@ describe('Signature', () => {
 
     it('removes messages and closes window when tab is reloaded', async () => {
       await triggerMessageWindow(authMessageCall);
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
       await browser.switchToWindow(tabOrigin);
       await browser.refresh();
@@ -194,10 +194,10 @@ describe('Signature', () => {
     it('removes messages and closes window when the tab is closed', async () => {
       const newTabOrigin = (await browser.createWindow('tab')).handle;
       await browser.switchToWindow(newTabOrigin);
-      await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
+      await browser.navigateTo(`https://${CUSTOMLIST[1]!}`);
 
       await triggerMessageWindow(authMessageCall);
-      await validateCommonFields(CUSTOMLIST[1], 'rich', 'Testnet');
+      await validateCommonFields(CUSTOMLIST[1]!, 'rich', 'Testnet');
 
       await browser.switchToWindow(newTabOrigin);
       await browser.closeWindow();
@@ -210,11 +210,11 @@ describe('Signature', () => {
 
     it('does not close message window, if there are other messages left', async () => {
       await triggerMessageWindow(authMessageCall);
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
       const newTabOrigin = (await browser.createWindow('tab')).handle;
       await browser.switchToWindow(newTabOrigin);
-      await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
+      await browser.navigateTo(`https://${CUSTOMLIST[1]!}`);
 
       await triggerMessageWindow(authMessageCall, { waitForNewWindow: false });
       expect(await MessagesScreen.messagesCards).toHaveLength(2);
@@ -223,7 +223,7 @@ describe('Signature', () => {
       await browser.closeWindow();
 
       await browser.switchToWindow(messageWindow);
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
       await rejectTransaction();
     });
@@ -250,25 +250,25 @@ describe('Signature', () => {
 
     it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
+      await browser.navigateTo(`https://${CUSTOMLIST[0]!}`);
       await performPermissionRequest();
-      await validateCommonFields(CUSTOMLIST[0], 'rich', 'Testnet');
+      await validateCommonFields(CUSTOMLIST[0]!, 'rich', 'Testnet');
       await rejectTransaction();
       await validateRejectedResult();
     });
 
     it('Reject forever', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
+      await browser.navigateTo(`https://${CUSTOMLIST[1]!}`);
       await performPermissionRequest();
-      await validateCommonFields(CUSTOMLIST[1], 'rich', 'Testnet');
+      await validateCommonFields(CUSTOMLIST[1]!, 'rich', 'Testnet');
       await rejectTransaction({ forever: true });
       await validateRejectedResult({ data: 'rejected_forever' });
     });
 
     it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
+      await browser.navigateTo(`https://${CUSTOMLIST[0]!}`);
       await performPermissionRequest();
       await approveTransaction();
 
@@ -286,9 +286,9 @@ describe('Signature', () => {
       });
       expect(result.network).toMatchObject({
         code: 'T',
+        matcher: 'https://matcher-testnet.waves.exchange/',
         // TODO: Update test network URLs to DCC endpoints
         server: 'https://nodes-testnet.wavesnodes.com/',
-        matcher: 'https://matcher-testnet.waves.exchange/',
       });
       expect(result.txVersion).toMatchObject({
         '3': [3, 2],
@@ -333,9 +333,9 @@ describe('Signature', () => {
     }
 
     it('Rejected', async () => {
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performAuthRequest();
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
       await rejectTransaction();
       const [status, result] = await getResult();
       expect(status).toBe('REJECTED');
@@ -348,22 +348,22 @@ describe('Signature', () => {
 
     it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performAuthRequest();
       await approveTransaction();
 
       const [status, result] = await getResult();
       expect(status).toBe('RESOLVED');
       const expectedApproveResult = {
-        host: WHITELIST[3],
+        address: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
+        host: WHITELIST[3]!,
         // TODO: Wire-format prefix — must match WavesWalletAuthentication signing prefix in production
         prefix: 'WavesWalletAuthentication',
-        address: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
         publicKey: senderPublicKey,
       };
       const bytes = makeAuthBytes({
-        host: WHITELIST[3],
         data: 'generated auth data',
+        host: WHITELIST[3]!,
       });
       expect(result).toMatchObject(expectedApproveResult);
       expect(
@@ -404,16 +404,16 @@ describe('Signature', () => {
 
     it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performMatcherRequest();
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
       await rejectTransaction();
       await validateRejectedResult();
     });
 
     it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performMatcherRequest();
       await approveTransaction();
 
@@ -457,9 +457,9 @@ describe('Signature', () => {
     describe('Issue', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(ISSUE);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(IssueTransactionScreen.issueType).toHaveText('Issue Smart Token');
         await expect(IssueTransactionScreen.issueAmount).toHaveText(
@@ -477,25 +477,25 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(ISSUE);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          chainId: 84,
+          decimals: ISSUE.data.precision,
+          description: ISSUE.data.description,
+          fee: 100400000,
+          name: ISSUE.data.name,
+          quantity: new BigNumber(ISSUE.data.quantity),
+          reissuable: ISSUE.data.reissuable,
+          script: ISSUE.data.script,
+          senderPublicKey,
           type: ISSUE.type,
           version: 3 as const,
-          senderPublicKey,
-          name: ISSUE.data.name,
-          description: ISSUE.data.description,
-          quantity: new BigNumber(ISSUE.data.quantity),
-          script: ISSUE.data.script,
-          decimals: ISSUE.data.precision,
-          reissuable: ISSUE.data.reissuable,
-          fee: 100400000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -508,7 +508,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -517,9 +517,9 @@ describe('Signature', () => {
       describe('without script', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(ISSUE_WITHOUT_SCRIPT);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(IssueTransactionScreen.issueType).toHaveText('Issue Token');
           await expect(IssueTransactionScreen.issueAmount).toHaveText(
@@ -536,24 +536,24 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(ISSUE_WITHOUT_SCRIPT);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            chainId: 84,
+            decimals: ISSUE_WITHOUT_SCRIPT.data.precision,
+            description: ISSUE_WITHOUT_SCRIPT.data.description,
+            fee: 100400000,
+            name: ISSUE_WITHOUT_SCRIPT.data.name,
+            quantity: new BigNumber(ISSUE_WITHOUT_SCRIPT.data.quantity),
+            reissuable: ISSUE_WITHOUT_SCRIPT.data.reissuable,
+            senderPublicKey,
             type: ISSUE_WITHOUT_SCRIPT.type,
             version: 3 as const,
-            senderPublicKey,
-            name: ISSUE_WITHOUT_SCRIPT.data.name,
-            description: ISSUE_WITHOUT_SCRIPT.data.description,
-            quantity: new BigNumber(ISSUE_WITHOUT_SCRIPT.data.quantity),
-            decimals: ISSUE_WITHOUT_SCRIPT.data.precision,
-            reissuable: ISSUE_WITHOUT_SCRIPT.data.reissuable,
-            fee: 100400000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -568,7 +568,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -577,9 +577,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(ISSUE, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(IssueTransactionScreen.issueType).toHaveText('Issue Smart Token');
           await expect(IssueTransactionScreen.issueAmount).toHaveText(
@@ -601,19 +601,19 @@ describe('Signature', () => {
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            chainId: 84,
+            decimals: ISSUE.data.precision,
+            description: ISSUE.data.description,
+            fee: 100400000,
+            name: ISSUE.data.name,
+            quantity: new BigNumber(ISSUE.data.quantity),
+            reissuable: ISSUE.data.reissuable,
+            script: ISSUE.data.script,
+            senderPublicKey,
             type: ISSUE.type,
             version: 2 as const,
-            senderPublicKey,
-            name: ISSUE.data.name,
-            description: ISSUE.data.description,
-            quantity: new BigNumber(ISSUE.data.quantity),
-            script: ISSUE.data.script,
-            decimals: ISSUE.data.precision,
-            reissuable: ISSUE.data.reissuable,
-            fee: 100400000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -626,7 +626,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -636,9 +636,9 @@ describe('Signature', () => {
     describe('Transfer', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(TRANSFER);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(TransferTransactionScreen.transferAmount).toHaveText(
           '-123456790 NonScriptToken',
@@ -651,24 +651,24 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(TRANSFER);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: TRANSFER.type,
-          version: 3 as const,
-          senderPublicKey,
-          assetId: TRANSFER.data.amount.assetId,
-          recipient: TRANSFER.data.recipient,
           amount: TRANSFER.data.amount.amount,
+          assetId: TRANSFER.data.amount.assetId,
           attachment: '3ke2ct1rnYr52Y1jQvzNG',
+          chainId: 84,
           fee: 500000,
           feeAssetId: null,
-          chainId: 84,
+          recipient: TRANSFER.data.recipient,
+          senderPublicKey,
+          type: TRANSFER.type,
+          version: 3 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -680,7 +680,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -694,9 +694,9 @@ describe('Signature', () => {
       describe('without attachment', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(TRANSFER_WITHOUT_ATTACHMENT);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(TransferTransactionScreen.transferAmount).toHaveText('-1.23456790 WAVES');
           await expect(TransferTransactionScreen.recipient).toHaveText('alias:T:alice');
@@ -707,23 +707,23 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(TRANSFER_WITHOUT_ATTACHMENT);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: TRANSFER_WITHOUT_ATTACHMENT.type,
-            version: 3 as const,
-            senderPublicKey,
-            assetId: null,
-            recipient: 'alias:T:alice',
             amount: TRANSFER_WITHOUT_ATTACHMENT.data.amount.amount,
+            assetId: null,
+            chainId: 84,
             fee: 500000,
             feeAssetId: null,
-            chainId: 84,
+            recipient: 'alias:T:alice',
+            senderPublicKey,
+            type: TRANSFER_WITHOUT_ATTACHMENT.type,
+            version: 3 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -735,7 +735,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -744,9 +744,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(TRANSFER, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(TransferTransactionScreen.transferAmount).toHaveText(
             '-123456790 NonScriptToken',
@@ -762,24 +762,24 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(TRANSFER, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: TRANSFER.type,
-            version: 2 as const,
-            senderPublicKey,
-            assetId: TRANSFER.data.amount.assetId,
-            recipient: TRANSFER.data.recipient,
             amount: TRANSFER.data.amount.amount,
+            assetId: TRANSFER.data.amount.assetId,
             attachment: '3ke2ct1rnYr52Y1jQvzNG',
+            chainId: 84,
             fee: 500000,
             feeAssetId: null,
-            chainId: 84,
+            recipient: TRANSFER.data.recipient,
+            senderPublicKey,
+            type: TRANSFER.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -791,7 +791,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -801,9 +801,9 @@ describe('Signature', () => {
     describe('Reissue', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(REISSUE);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
           '+123456790 NonScriptToken',
@@ -816,22 +816,22 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(REISSUE);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: REISSUE.type,
-          version: 3 as const,
-          senderPublicKey,
           assetId: REISSUE.data.assetId,
-          quantity: REISSUE.data.quantity,
-          reissuable: REISSUE.data.reissuable,
           chainId: 84,
           fee: 500000,
+          quantity: REISSUE.data.quantity,
+          reissuable: REISSUE.data.reissuable,
+          senderPublicKey,
+          type: REISSUE.type,
+          version: 3 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -843,7 +843,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -851,9 +851,9 @@ describe('Signature', () => {
       describe('with money-like', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(REISSUE_WITH_MONEY_LIKE);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
             '+123456790 NonScriptToken',
@@ -866,22 +866,22 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(REISSUE_WITH_MONEY_LIKE);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: REISSUE_WITH_MONEY_LIKE.type,
-            version: 3 as const,
-            senderPublicKey,
             assetId: REISSUE_WITH_MONEY_LIKE.data.amount.assetId,
-            quantity: REISSUE_WITH_MONEY_LIKE.data.amount.amount,
-            reissuable: REISSUE_WITH_MONEY_LIKE.data.reissuable,
             chainId: 84,
             fee: 500000,
+            quantity: REISSUE_WITH_MONEY_LIKE.data.amount.amount,
+            reissuable: REISSUE_WITH_MONEY_LIKE.data.reissuable,
+            senderPublicKey,
+            type: REISSUE_WITH_MONEY_LIKE.type,
+            version: 3 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -893,7 +893,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -902,9 +902,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(REISSUE, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(ReissueTransactionScreen.reissueAmount).toHaveText(
             '+123456790 NonScriptToken',
@@ -917,22 +917,22 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(REISSUE, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: REISSUE.type,
-            version: 2 as const,
-            senderPublicKey,
             assetId: REISSUE.data.assetId,
-            quantity: REISSUE.data.quantity,
-            reissuable: REISSUE.data.reissuable,
             chainId: 84,
             fee: 500000,
+            quantity: REISSUE.data.quantity,
+            reissuable: REISSUE.data.reissuable,
+            senderPublicKey,
+            type: REISSUE.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -944,7 +944,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -954,9 +954,9 @@ describe('Signature', () => {
     describe('Burn', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(BURN);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
         await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
@@ -966,21 +966,21 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(BURN);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: BURN.type,
-          version: 3 as const,
-          senderPublicKey,
-          assetId: BURN.data.assetId,
           amount: BURN.data.amount,
+          assetId: BURN.data.assetId,
           chainId: 84,
           fee: 500000,
+          senderPublicKey,
+          type: BURN.type,
+          version: 3 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -992,7 +992,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1000,9 +1000,9 @@ describe('Signature', () => {
       describe('with quantity instead of amount', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(BURN_WITH_QUANTITY);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
           await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
@@ -1012,21 +1012,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(BURN_WITH_QUANTITY);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: BURN_WITH_QUANTITY.type,
-            version: 3 as const,
-            senderPublicKey,
-            assetId: BURN_WITH_QUANTITY.data.assetId,
             amount: BURN_WITH_QUANTITY.data.quantity,
+            assetId: BURN_WITH_QUANTITY.data.assetId,
             chainId: 84,
             fee: 500000,
+            senderPublicKey,
+            type: BURN_WITH_QUANTITY.type,
+            version: 3 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1038,7 +1038,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1047,11 +1047,11 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(BURN, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(CommonTransaction.originAddress).toHaveText(WHITELIST[3]);
+          await expect(CommonTransaction.originAddress).toHaveText(WHITELIST[3]!);
           await expect(CommonTransaction.accountName).toHaveText('rich');
           await expect(CommonTransaction.originNetwork).toHaveText('Testnet');
           await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
@@ -1062,21 +1062,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(BURN, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: BURN.type,
-            version: 2 as const,
-            senderPublicKey,
-            assetId: BURN.data.assetId,
             amount: BURN.data.amount,
+            assetId: BURN.data.assetId,
             chainId: 84,
             fee: 500000,
+            senderPublicKey,
+            type: BURN.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1088,7 +1088,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1098,9 +1098,9 @@ describe('Signature', () => {
     describe('Lease', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(LEASE);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
         await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
@@ -1113,21 +1113,21 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(LEASE);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          amount: LEASE.data.amount,
+          chainId: 84,
+          fee: 500000,
+          recipient: LEASE.data.recipient,
+          senderPublicKey,
           type: LEASE.type,
           version: 3 as const,
-          senderPublicKey,
-          amount: LEASE.data.amount,
-          recipient: LEASE.data.recipient,
-          fee: 500000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1139,7 +1139,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1147,9 +1147,9 @@ describe('Signature', () => {
       describe('with alias', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(LEASE_WITH_ALIAS);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText('alias:T:bobby');
@@ -1160,21 +1160,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(LEASE_WITH_ALIAS);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            amount: LEASE_WITH_ALIAS.data.amount,
+            chainId: 84,
+            fee: 500000,
+            recipient: 'alias:T:bobby',
+            senderPublicKey,
             type: LEASE_WITH_ALIAS.type,
             version: 3 as const,
-            senderPublicKey,
-            amount: LEASE_WITH_ALIAS.data.amount,
-            recipient: 'alias:T:bobby',
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1186,7 +1186,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1195,9 +1195,9 @@ describe('Signature', () => {
       describe('with money-like', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(LEASE_WITH_MONEY_LIKE);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
@@ -1210,21 +1210,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(LEASE_WITH_MONEY_LIKE);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            amount: LEASE_WITH_MONEY_LIKE.data.amount.amount,
+            chainId: 84,
+            fee: 500000,
+            recipient: LEASE_WITH_MONEY_LIKE.data.recipient,
+            senderPublicKey,
             type: LEASE_WITH_MONEY_LIKE.type,
             version: 3 as const,
-            senderPublicKey,
-            amount: LEASE_WITH_MONEY_LIKE.data.amount.amount,
-            recipient: LEASE_WITH_MONEY_LIKE.data.recipient,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1236,7 +1236,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1245,9 +1245,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(LEASE, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
@@ -1260,21 +1260,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(LEASE, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            amount: LEASE.data.amount,
+            chainId: 84,
+            fee: 500000,
+            recipient: LEASE.data.recipient,
+            senderPublicKey,
             type: LEASE.type,
             version: 2 as const,
-            senderPublicKey,
-            amount: LEASE.data.amount,
-            recipient: LEASE.data.recipient,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1286,7 +1286,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1296,9 +1296,9 @@ describe('Signature', () => {
     describe('Cancel lease', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(CANCEL_LEASE);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText('0.00000001 WAVES');
         await expect(LeaseCancelTransactionScreen.cancelLeaseRecipient).toHaveText('alias:T:merry');
@@ -1309,20 +1309,20 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(CANCEL_LEASE);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          chainId: 84,
+          fee: 500000,
+          leaseId: CANCEL_LEASE.data.leaseId,
+          senderPublicKey,
           type: CANCEL_LEASE.type,
           version: 3 as const,
-          senderPublicKey,
-          leaseId: CANCEL_LEASE.data.leaseId,
-          fee: 500000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1334,7 +1334,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1342,9 +1342,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(CANCEL_LEASE, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText(
             '0.00000001 WAVES',
@@ -1359,20 +1359,20 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(CANCEL_LEASE, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            chainId: 84,
+            fee: 500000,
+            leaseId: CANCEL_LEASE.data.leaseId,
+            senderPublicKey,
             type: CANCEL_LEASE.type,
             version: 2 as const,
-            senderPublicKey,
-            leaseId: CANCEL_LEASE.data.leaseId,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1384,7 +1384,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1394,9 +1394,9 @@ describe('Signature', () => {
     describe('Alias', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(ALIAS);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
         await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
@@ -1406,20 +1406,20 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(ALIAS);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          alias: ALIAS.data.alias,
+          chainId: 84,
+          fee: 500000,
+          senderPublicKey,
           type: ALIAS.type,
           version: 3 as const,
-          senderPublicKey,
-          alias: ALIAS.data.alias,
-          fee: 500000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1431,7 +1431,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1442,9 +1442,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(ALIAS, 2));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
           await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
@@ -1454,20 +1454,20 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(ALIAS, 2));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            alias: ALIAS.data.alias,
+            chainId: 84,
+            fee: 500000,
+            senderPublicKey,
             type: ALIAS.type,
             version: 2 as const,
-            senderPublicKey,
-            alias: ALIAS.data.alias,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1481,7 +1481,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1492,12 +1492,12 @@ describe('Signature', () => {
       async function checkMassTransferItems(items: Array<{ recipient: string; amount: string }>) {
         const transferItems = await MassTransferTransactionScreen.getTransferItems();
         const actualItems = await Promise.all(
-          transferItems.map(async (transferItem) => {
+          transferItems.map(async (transferItem: any) => {
             const [recipient, amount] = await Promise.all([
               transferItem.recipient.getText(),
               transferItem.amount.getText(),
             ]);
-            return { recipient, amount };
+            return { amount, recipient };
           }),
         );
         expect(actualItems).toStrictEqual(items);
@@ -1505,21 +1505,21 @@ describe('Signature', () => {
 
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(MASS_TRANSFER);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
           '-2 NonScriptToken',
         );
         await checkMassTransferItems([
           {
-            recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
             amount: '1',
+            recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
           },
           {
-            recipient: 'alias:T:merry',
             amount: '1',
+            recipient: 'alias:T:merry',
           },
         ]);
         await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
@@ -1532,25 +1532,25 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(MASS_TRANSFER);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: MASS_TRANSFER.type,
-          version: 2 as const,
-          senderPublicKey,
           assetId: MASS_TRANSFER.data.totalAmount.assetId,
+          attachment: '3ke2ct1rnYr52Y1jQvzNG',
+          chainId: 84,
+          fee: 600000,
+          senderPublicKey,
           transfers: [
             { amount: 1, recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD' },
             { amount: 1, recipient: 'alias:T:merry' },
           ],
-          fee: 600000,
-          attachment: '3ke2ct1rnYr52Y1jQvzNG',
-          chainId: 84,
+          type: MASS_TRANSFER.type,
+          version: 2 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1562,7 +1562,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1570,21 +1570,21 @@ describe('Signature', () => {
       describe('without attachment', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(MASS_TRANSFER_WITHOUT_ATTACHMENT);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
             '-0.00000123 WAVES',
           );
           await checkMassTransferItems([
             {
-              recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
               amount: '0.0000012',
+              recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
             },
             {
-              recipient: 'alias:T:merry',
               amount: '0.00000003',
+              recipient: 'alias:T:merry',
             },
           ]);
           await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
@@ -1594,24 +1594,24 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(MASS_TRANSFER_WITHOUT_ATTACHMENT);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: MASS_TRANSFER_WITHOUT_ATTACHMENT.type,
-            version: 2 as const,
-            senderPublicKey,
             assetId: null,
+            chainId: 84,
+            fee: 600000,
+            senderPublicKey,
             transfers: [
               { amount: 120, recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD' },
               { amount: 3, recipient: 'alias:T:merry' },
             ],
-            fee: 600000,
-            chainId: 84,
+            type: MASS_TRANSFER_WITHOUT_ATTACHMENT.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1623,7 +1623,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1632,21 +1632,21 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(MASS_TRANSFER, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
             '-2 NonScriptToken',
           );
           await checkMassTransferItems([
             {
-              recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
               amount: '1',
+              recipient: '3N5HNJz5otiU...BVv5HhYLdhiD',
             },
             {
-              recipient: 'alias:T:merry',
               amount: '1',
+              recipient: 'alias:T:merry',
             },
           ]);
           await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
@@ -1659,25 +1659,25 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(MASS_TRANSFER, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: MASS_TRANSFER.type,
-            version: 1 as const,
-            senderPublicKey,
             assetId: MASS_TRANSFER.data.totalAmount.assetId,
+            attachment: '3ke2ct1rnYr52Y1jQvzNG',
+            chainId: 84,
+            fee: 600000,
+            senderPublicKey,
             transfers: [
               { amount: 1, recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD' },
               { amount: 1, recipient: 'alias:T:merry' },
             ],
-            fee: 600000,
-            attachment: '3ke2ct1rnYr52Y1jQvzNG',
-            chainId: 84,
+            type: MASS_TRANSFER.type,
+            version: 1 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1689,7 +1689,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1702,7 +1702,7 @@ describe('Signature', () => {
       ) {
         const dataRows = await DataTransactionScreen.getDataRows();
         const actualItems = await Promise.all(
-          dataRows.map(async (it) => {
+          dataRows.map(async (it: any) => {
             const [key, type, value] = await Promise.all([
               it.key.getText(),
               it.type.getText(),
@@ -1716,9 +1716,9 @@ describe('Signature', () => {
 
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(DATA);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await checkDataEntries([
           {
@@ -1749,18 +1749,14 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(DATA);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: DATA.type,
-          version: 2 as const,
-          senderPublicKey,
-          fee: 500000,
           chainId: 84,
           data: [
             {
@@ -1780,6 +1776,10 @@ describe('Signature', () => {
               value: 'base64:BQbtKNoM',
             },
           ],
+          fee: 500000,
+          senderPublicKey,
+          type: DATA.type,
+          version: 2 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1792,7 +1792,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1800,9 +1800,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(DATA, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await checkDataEntries([
             {
@@ -1833,18 +1833,14 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(DATA, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: DATA.type,
-            version: 1 as const,
-            senderPublicKey,
-            fee: 500000,
             chainId: 84,
             data: [
               {
@@ -1864,6 +1860,10 @@ describe('Signature', () => {
                 value: 'base64:BQbtKNoM',
               },
             ],
+            fee: 500000,
+            senderPublicKey,
+            type: DATA.type,
+            version: 1 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1876,7 +1876,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1886,9 +1886,9 @@ describe('Signature', () => {
     describe('SetScript', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SET_SCRIPT);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
         await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
@@ -1899,20 +1899,20 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SET_SCRIPT);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: SET_SCRIPT.type,
-          version: 2 as const,
-          senderPublicKey,
           chainId: 84,
           fee: 500000,
           script: SET_SCRIPT.data.script,
+          senderPublicKey,
+          type: SET_SCRIPT.type,
+          version: 2 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -1924,7 +1924,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -1935,9 +1935,9 @@ describe('Signature', () => {
       describe('without script', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(SET_SCRIPT_WITHOUT_SCRIPT);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Remove Account Script');
           await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
@@ -1947,19 +1947,19 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(SET_SCRIPT_WITHOUT_SCRIPT);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: SET_SCRIPT_WITHOUT_SCRIPT.type,
-            version: 2 as const,
-            senderPublicKey,
             chainId: 84,
             fee: 500000,
+            senderPublicKey,
+            type: SET_SCRIPT_WITHOUT_SCRIPT.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -1973,7 +1973,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -1982,9 +1982,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SET_SCRIPT, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
           await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
@@ -1995,20 +1995,20 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SET_SCRIPT, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: SET_SCRIPT.type,
-            version: 1 as const,
-            senderPublicKey,
             chainId: 84,
             fee: 500000,
             script: SET_SCRIPT.data.script,
+            senderPublicKey,
+            type: SET_SCRIPT.type,
+            version: 1 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2020,7 +2020,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2030,9 +2030,9 @@ describe('Signature', () => {
     describe('Sponsorship', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SPONSORSHIP);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
         await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
@@ -2043,21 +2043,21 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SPONSORSHIP);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
+          chainId: 84,
+          fee: 500000,
+          minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
+          senderPublicKey,
           type: SPONSORSHIP.type,
           version: 2 as const,
-          senderPublicKey,
-          minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
-          assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
-          fee: 500000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -2069,7 +2069,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -2077,9 +2077,9 @@ describe('Signature', () => {
       describe('removal', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(SPONSORSHIP_REMOVAL);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(SponsorshipTransactionScreen.title).toHaveText('Disable Sponsorship');
           await expect(SponsorshipTransactionScreen.asset).toHaveText('NonScriptToken');
@@ -2090,21 +2090,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(SPONSORSHIP_REMOVAL);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            assetId: SPONSORSHIP_REMOVAL.data.minSponsoredAssetFee.assetId,
+            chainId: 84,
+            fee: 500000,
+            minSponsoredAssetFee: null,
+            senderPublicKey,
             type: SPONSORSHIP_REMOVAL.type,
             version: 2 as const,
-            senderPublicKey,
-            minSponsoredAssetFee: null,
-            assetId: SPONSORSHIP_REMOVAL.data.minSponsoredAssetFee.assetId,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2116,7 +2116,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2125,9 +2125,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SPONSORSHIP, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
           await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
@@ -2138,21 +2138,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SPONSORSHIP, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
+            assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
+            chainId: 84,
+            fee: 500000,
+            minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
+            senderPublicKey,
             type: SPONSORSHIP.type,
             version: 1 as const,
-            senderPublicKey,
-            minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
-            assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
-            fee: 500000,
-            chainId: 84,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2164,7 +2164,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2174,9 +2174,9 @@ describe('Signature', () => {
     describe('SetAssetScript', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SET_ASSET_SCRIPT);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
         await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
@@ -2187,21 +2187,21 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(SET_ASSET_SCRIPT);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: SET_ASSET_SCRIPT.type,
-          version: 2 as const,
-          senderPublicKey,
           assetId: SET_ASSET_SCRIPT.data.assetId,
           chainId: 84,
           fee: 100400000,
           script: SET_ASSET_SCRIPT.data.script,
+          senderPublicKey,
+          type: SET_ASSET_SCRIPT.type,
+          version: 2 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -2213,7 +2213,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -2222,9 +2222,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SET_ASSET_SCRIPT, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
           await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
@@ -2235,21 +2235,21 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(SET_ASSET_SCRIPT, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: SET_ASSET_SCRIPT.type,
-            version: 1 as const,
-            senderPublicKey,
             assetId: SET_ASSET_SCRIPT.data.assetId,
             chainId: 84,
             fee: 100400000,
             script: SET_ASSET_SCRIPT.data.script,
+            senderPublicKey,
+            type: SET_ASSET_SCRIPT.type,
+            version: 1 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2261,7 +2261,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2272,7 +2272,7 @@ describe('Signature', () => {
       async function checkArgs(args: Array<{ type: string; value: string }>) {
         const invokeArguments = await InvokeScriptTransactionScreen.getArguments();
         const actualArgs = await Promise.all(
-          invokeArguments.map(async (it) => {
+          invokeArguments.map(async (it: any) => {
             const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
             return {
               type,
@@ -2286,16 +2286,18 @@ describe('Signature', () => {
       async function checkPayments(payments: string[]) {
         const invokePayments = await InvokeScriptTransactionScreen.getPayments();
 
-        const actualPayments = await Promise.all(invokePayments.map((it) => it.getText()));
+        const actualPayments = await Promise.all(
+          [...invokePayments].map((it: any) => it.getText()),
+        );
 
         expect(actualPayments).toStrictEqual(payments);
       }
 
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(INVOKE_SCRIPT);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('2 Payments');
         await expect(InvokeScriptTransactionScreen.dApp).toHaveText('3My2kBJaGfeM...3y8rAgfV2EAx');
@@ -2324,23 +2326,23 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(INVOKE_SCRIPT);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          type: INVOKE_SCRIPT.type,
-          version: 2 as const,
-          senderPublicKey,
-          dApp: INVOKE_SCRIPT.data.dApp,
           call: INVOKE_SCRIPT.data.call,
-          payment: INVOKE_SCRIPT.data.payment,
+          chainId: 84,
+          dApp: INVOKE_SCRIPT.data.dApp,
           fee: 500000,
           feeAssetId: null,
-          chainId: 84,
+          payment: INVOKE_SCRIPT.data.payment,
+          senderPublicKey,
+          type: INVOKE_SCRIPT.type,
+          version: 2 as const,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -2352,7 +2354,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -2372,9 +2374,9 @@ describe('Signature', () => {
       describe('without call', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(INVOKE_SCRIPT_WITHOUT_CALL);
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('No Payments');
           await expect(InvokeScriptTransactionScreen.dApp).toHaveText(
@@ -2390,22 +2392,22 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(INVOKE_SCRIPT_WITHOUT_CALL);
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: INVOKE_SCRIPT_WITHOUT_CALL.type,
-            version: 2 as const,
-            senderPublicKey,
+            chainId: 84,
             dApp: 'alias:T:chris',
-            payment: INVOKE_SCRIPT_WITHOUT_CALL.data.payment,
             fee: 500000,
             feeAssetId: null,
-            chainId: 84,
+            payment: INVOKE_SCRIPT_WITHOUT_CALL.data.payment,
+            senderPublicKey,
+            type: INVOKE_SCRIPT_WITHOUT_CALL.type,
+            version: 2 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2418,7 +2420,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2427,9 +2429,9 @@ describe('Signature', () => {
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(INVOKE_SCRIPT, 1));
-          await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('2 Payments');
           await expect(InvokeScriptTransactionScreen.dApp).toHaveText(
@@ -2460,23 +2462,23 @@ describe('Signature', () => {
 
         it('Approved', async () => {
           await browser.switchToWindow(tabOrigin);
-          await browser.navigateTo(`https://${WHITELIST[3]}`);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
           await performSignTransaction(setTxVersion(INVOKE_SCRIPT, 1));
           await approveTransaction();
 
           const [status, result] = await getResult();
           expect(status).toBe('RESOLVED');
-          const parsedApproveResult = JSONbn.parse(result);
+          const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            type: INVOKE_SCRIPT.type,
-            version: 1 as const,
-            senderPublicKey,
-            dApp: INVOKE_SCRIPT.data.dApp,
             call: INVOKE_SCRIPT.data.call,
-            payment: INVOKE_SCRIPT.data.payment,
+            chainId: 84,
+            dApp: INVOKE_SCRIPT.data.dApp,
             fee: 500000,
             feeAssetId: null,
-            chainId: 84,
+            payment: INVOKE_SCRIPT.data.payment,
+            senderPublicKey,
+            type: INVOKE_SCRIPT.type,
+            version: 1 as const,
           };
           const bytes = makeTxBytes({
             ...expectedApproveResult,
@@ -2488,7 +2490,7 @@ describe('Signature', () => {
             await verifySignature(
               senderPublicKeyBytes,
               bytes,
-              base58Decode(parsedApproveResult.proofs[0]),
+              base58Decode(parsedApproveResult.proofs[0]!),
             ),
           ).toBe(true);
         });
@@ -2498,9 +2500,9 @@ describe('Signature', () => {
     describe('UpdateAssetInfo', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(UPDATE_ASSET_INFO);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(UpdateAssetInfoTransactionScreen.assetId).toHaveText(
           UPDATE_ASSET_INFO.data.assetId,
@@ -2518,22 +2520,22 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignTransaction(UPDATE_ASSET_INFO);
         await approveTransaction();
 
         const [status, result] = await getResult();
         expect(status).toBe('RESOLVED');
-        const parsedApproveResult = JSONbn.parse(result);
+        const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
+          assetId: UPDATE_ASSET_INFO.data.assetId,
+          chainId: 84,
+          description: UPDATE_ASSET_INFO.data.description,
+          fee: 100000,
+          name: UPDATE_ASSET_INFO.data.name,
+          senderPublicKey,
           type: UPDATE_ASSET_INFO.type,
           version: 1 as const,
-          senderPublicKey,
-          name: UPDATE_ASSET_INFO.data.name,
-          description: UPDATE_ASSET_INFO.data.description,
-          assetId: UPDATE_ASSET_INFO.data.assetId,
-          fee: 100000,
-          chainId: 84,
         };
         const bytes = makeTxBytes({
           ...expectedApproveResult,
@@ -2545,7 +2547,7 @@ describe('Signature', () => {
           await verifySignature(
             senderPublicKeyBytes,
             bytes,
-            base58Decode(parsedApproveResult.proofs[0]),
+            base58Decode(parsedApproveResult.proofs[0]!),
           ),
         ).toBe(true);
       });
@@ -2604,29 +2606,29 @@ describe('Signature', () => {
         describe('basic', () => {
           const INPUT = {
             data: {
+              amount: {
+                assetId: 'WAVES',
+                tokens: '100',
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'WAVES',
+                tokens: '0.03',
+              },
               matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
               orderType: 'sell',
-              expiration: Date.now() + 100000,
-              amount: {
-                tokens: '100',
-                assetId: 'WAVES',
-              },
               price: {
-                tokens: '0.01',
                 assetId: '7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT',
-              },
-              matcherFee: {
-                tokens: '0.03',
-                assetId: 'WAVES',
+                tokens: '0.01',
               },
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Sell: WAVES/NonScriptToken');
             await expect(CreateOrderMessage.orderAmount).toHaveText('-100.00000000 WAVES');
@@ -2642,24 +2644,24 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              orderType: INPUT.data.orderType,
-              version: 3,
+              amount: 10000000000,
               assetPair: {
                 amountAsset: null,
                 priceAsset: INPUT.data.price.assetId,
               },
-              price: 0,
-              amount: 10000000000,
               matcherFee: 3000000,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
-              senderPublicKey,
               matcherFeeAssetId: null,
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
+              price: 0,
+              senderPublicKey,
+              version: 3,
             };
             const bytes = binary.serializeOrder({
               ...expectedApproveResult,
@@ -2672,7 +2674,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -2681,29 +2683,29 @@ describe('Signature', () => {
         describe('with price precision conversion', () => {
           const INPUT = {
             data: {
+              amount: {
+                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
+                tokens: '1.000000',
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '0.04077612',
+              },
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
-              expiration: Date.now() + 100000,
-              amount: {
-                tokens: '1.000000',
-                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
-              },
               price: {
-                tokens: '1.014002',
                 assetId: '25FEqEjRkqK6yCkiT7Lz6SAYz7gUFCtxfCChnrVFD5AT',
-              },
-              matcherFee: {
-                tokens: '0.04077612',
-                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '1.014002',
               },
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
@@ -2719,24 +2721,24 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              orderType: INPUT.data.orderType,
-              version: 3,
+              amount: 1000000,
               assetPair: {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
-              price: 101400200,
-              amount: 1000000,
               matcherFee: 4077612,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
-              senderPublicKey,
               matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
+              price: 101400200,
+              senderPublicKey,
+              version: 3,
             };
             const bytes = binary.serializeOrder({
               ...expectedApproveResult,
@@ -2749,7 +2751,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -2758,29 +2760,29 @@ describe('Signature', () => {
         describe('with different decimals', () => {
           const INPUT = {
             data: {
+              amount: {
+                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
+                coins: 15637504,
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '0.04077612',
+              },
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
-              expiration: Date.now() + 100000,
-              amount: {
-                coins: 15637504,
-                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
-              },
               price: {
-                coins: 121140511,
                 assetId: 'WAVES',
-              },
-              matcherFee: {
-                tokens: '0.04077612',
-                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                coins: 121140511,
               },
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/WAVES');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+15.637504 Tether USD');
@@ -2796,24 +2798,24 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              orderType: INPUT.data.orderType,
-              version: 3,
+              amount: 15637504,
               assetPair: {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: null,
               },
-              price: 12114051100,
-              amount: 15637504,
               matcherFee: 4077612,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
-              senderPublicKey,
               matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
+              price: 12114051100,
+              senderPublicKey,
+              version: 3,
             };
             const bytes = binary.serializeOrder({
               ...expectedApproveResult,
@@ -2826,7 +2828,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -2837,31 +2839,31 @@ describe('Signature', () => {
         describe('with assetDecimals priceMode', () => {
           const INPUT = {
             data: {
-              version: 4,
+              amount: {
+                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
+                tokens: '1.000000',
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '0.04077612',
+              },
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
-              expiration: Date.now() + 100000,
-              priceMode: 'assetDecimals',
-              amount: {
-                tokens: '1.000000',
-                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
-              },
               price: {
-                tokens: '1.014002',
                 assetId: '25FEqEjRkqK6yCkiT7Lz6SAYz7gUFCtxfCChnrVFD5AT',
+                tokens: '1.014002',
               },
-              matcherFee: {
-                tokens: '0.04077612',
-                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
-              },
+              priceMode: 'assetDecimals',
+              version: 4,
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
@@ -2877,26 +2879,26 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              chainId: 84,
-              orderType: INPUT.data.orderType,
-              version: 4 as const,
+              amount: 1000000,
               assetPair: {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
+              chainId: 84,
+              matcherFee: 4077612,
+              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
               price: 101400200,
               priceMode: 'assetDecimals' as const,
-              amount: 1000000,
-              matcherFee: 4077612,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
               senderPublicKey,
-              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              version: 4 as const,
             };
             const bytes = makeOrderBytes({
               ...expectedApproveResult,
@@ -2909,7 +2911,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -2918,31 +2920,31 @@ describe('Signature', () => {
         describe('with fixedDecimals priceMode', () => {
           const INPUT = {
             data: {
-              version: 4,
+              amount: {
+                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
+                tokens: '1.000000',
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '0.04077612',
+              },
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
-              expiration: Date.now() + 100000,
-              priceMode: 'fixedDecimals',
-              amount: {
-                tokens: '1.000000',
-                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
-              },
               price: {
-                tokens: '1.014002',
                 assetId: '25FEqEjRkqK6yCkiT7Lz6SAYz7gUFCtxfCChnrVFD5AT',
+                tokens: '1.014002',
               },
-              matcherFee: {
-                tokens: '0.04077612',
-                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
-              },
+              priceMode: 'fixedDecimals',
+              version: 4,
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
@@ -2958,26 +2960,26 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              chainId: 84,
-              orderType: INPUT.data.orderType,
-              version: 4 as const,
+              amount: 1000000,
               assetPair: {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
+              chainId: 84,
+              matcherFee: 4077612,
+              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
               price: 101400200,
               priceMode: 'fixedDecimals' as const,
-              amount: 1000000,
-              matcherFee: 4077612,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
               senderPublicKey,
-              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              version: 4 as const,
             };
             const bytes = makeOrderBytes({
               ...expectedApproveResult,
@@ -2990,7 +2992,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -2999,30 +3001,30 @@ describe('Signature', () => {
         describe('without priceMode', () => {
           const INPUT = {
             data: {
-              version: 4,
+              amount: {
+                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
+                tokens: '1.000000',
+              },
+              expiration: Date.now() + 100000,
+              matcherFee: {
+                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+                tokens: '0.04077612',
+              },
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
-              expiration: Date.now() + 100000,
-              amount: {
-                tokens: '1.000000',
-                assetId: '5Sh9KghfkZyhjwuodovDhB6PghDUGBHiAPZ4MkrPgKtX',
-              },
               price: {
-                tokens: '1.014002',
                 assetId: '25FEqEjRkqK6yCkiT7Lz6SAYz7gUFCtxfCChnrVFD5AT',
+                tokens: '1.014002',
               },
-              matcherFee: {
-                tokens: '0.04077612',
-                assetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
-              },
+              version: 4,
             },
           } as const;
 
           it('Rejected', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
-            await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+            await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
             await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/USD-Nea272c');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+1.000000 Tether USD');
@@ -3038,26 +3040,26 @@ describe('Signature', () => {
 
           it('Approved', async () => {
             await browser.switchToWindow(tabOrigin);
-            await browser.navigateTo(`https://${WHITELIST[3]}`);
+            await browser.navigateTo(`https://${WHITELIST[3]!}`);
             await performSignOrder(createOrder, INPUT);
             await approveTransaction();
 
             const parsedApproveResult = await getResult();
             const expectedApproveResult = {
-              chainId: 84,
-              orderType: INPUT.data.orderType,
-              version: 4 as const,
+              amount: 1000000,
               assetPair: {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
+              chainId: 84,
+              matcherFee: 4077612,
+              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              matcherPublicKey: INPUT.data.matcherPublicKey,
+              orderType: INPUT.data.orderType,
               price: 101400200,
               priceMode: 'fixedDecimals' as const,
-              amount: 1000000,
-              matcherFee: 4077612,
-              matcherPublicKey: INPUT.data.matcherPublicKey,
               senderPublicKey,
-              matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
+              version: 4 as const,
             };
             const bytes = makeOrderBytes({
               ...expectedApproveResult,
@@ -3070,7 +3072,7 @@ describe('Signature', () => {
               await verifySignature(
                 senderPublicKeyBytes,
                 bytes,
-                base58Decode(parsedApproveResult.proofs[0]),
+                base58Decode(parsedApproveResult.proofs[0]!),
               ),
             ).toBe(true);
           });
@@ -3087,9 +3089,9 @@ describe('Signature', () => {
 
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCancelOrder(cancelOrder, INPUT);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(CancelOrderTransactionScreen.orderId).toHaveText(INPUT.data.id);
 
@@ -3098,7 +3100,7 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCancelOrder(cancelOrder, INPUT);
         await approveTransaction();
 
@@ -3145,23 +3147,23 @@ describe('Signature', () => {
 
     async function checkPackageAmounts(amounts: string[]) {
       const actualAmounts = await Promise.all(
-        await PackageTransactionScreen.packageAmounts.map(async (it) => await it.getText()),
+        await PackageTransactionScreen.packageAmounts.map(async (it: any) => await it.getText()),
       );
       expect(actualAmounts).toStrictEqual(amounts);
     }
 
     async function checkPackageFees(fees: string[]) {
       const actualFees = await Promise.all(
-        await PackageTransactionScreen.packageFees.map(async (it) => await it.getText()),
+        await PackageTransactionScreen.packageFees.map(async (it: any) => await it.getText()),
       );
       expect(actualFees).toStrictEqual(fees);
     }
 
     it('Rejected', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performSignTransactionPackage(PACKAGE, 'Test package');
-      await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+      await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
       await expect(PackageTransactionScreen.packageCountTitle).toHaveText('7 Transactions');
       await checkPackageAmounts([
@@ -3214,7 +3216,7 @@ describe('Signature', () => {
 
       const invokeArguments = await invokeScript.getInvokeArguments();
       const actualArgs = await Promise.all(
-        invokeArguments.map(async (it) => {
+        invokeArguments.map(async (it: any) => {
           const [type, value] = await Promise.all([it.type.getText(), it.value.getText()]);
           return { type, value };
         }),
@@ -3235,7 +3237,7 @@ describe('Signature', () => {
       ]);
 
       const actualPayments = await Promise.all(
-        await invokeScript.invokeScriptPaymentItems.map(async (it) => it.getText()),
+        await invokeScript.invokeScriptPaymentItems.map(async (it: any) => it.getText()),
       );
       expect(actualPayments).toStrictEqual(['0.00000001 WAVES', '1 NonScriptToken']);
 
@@ -3246,7 +3248,7 @@ describe('Signature', () => {
 
     it('Approved', async () => {
       await browser.switchToWindow(tabOrigin);
-      await browser.navigateTo(`https://${WHITELIST[3]}`);
+      await browser.navigateTo(`https://${WHITELIST[3]!}`);
       await performSignTransactionPackage(PACKAGE, 'Test package');
       await approveTransaction();
 
@@ -3258,176 +3260,156 @@ describe('Signature', () => {
         id: string;
         proofs: string[];
         timestamp: number;
-      }>((result) => JSONbn.parse(result));
+      }>((result) => JSONbn.parse(result) as { id: string; proofs: string[]; timestamp: number });
+
+      const tx0 = parsedApproveResult[0]!;
+      const tx1 = parsedApproveResult[1]!;
+      const tx2 = parsedApproveResult[2]!;
+      const tx3 = parsedApproveResult[3]!;
+      const tx4 = parsedApproveResult[4]!;
+      const tx5 = parsedApproveResult[5]!;
+      const tx6 = parsedApproveResult[6]!;
       const expectedApproveResult0 = {
+        chainId: 84,
+        decimals: ISSUE.data.precision,
+        description: ISSUE.data.description,
+        fee: 100400000,
+        name: ISSUE.data.name,
+        quantity: new BigNumber(ISSUE.data.quantity),
+        reissuable: ISSUE.data.reissuable,
+        script: ISSUE.data.script,
+        senderPublicKey,
         type: ISSUE.type,
         version: 3 as const,
-        senderPublicKey,
-        name: ISSUE.data.name,
-        description: ISSUE.data.description,
-        quantity: new BigNumber(ISSUE.data.quantity),
-        script: ISSUE.data.script,
-        decimals: ISSUE.data.precision,
-        reissuable: ISSUE.data.reissuable,
-        fee: 100400000,
-        chainId: 84,
       };
       const bytes0 = makeTxBytes({
         ...expectedApproveResult0,
         quantity: ISSUE.data.quantity,
-        timestamp: parsedApproveResult[0].timestamp,
+        timestamp: tx0.timestamp,
       });
-      expect(parsedApproveResult[0]).toMatchObject(expectedApproveResult0);
-      expect(parsedApproveResult[0].id).toBe(base58Encode(blake2b(bytes0)));
+      expect(tx0).toMatchObject(expectedApproveResult0);
+      expect(tx0.id).toBe(base58Encode(blake2b(bytes0)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes0,
-          base58Decode(parsedApproveResult[0].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes0, base58Decode(tx0.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult1 = {
-        type: TRANSFER.type,
-        version: 3 as const,
-        senderPublicKey,
-        assetId: TRANSFER.data.amount.assetId,
-        recipient: TRANSFER.data.recipient,
         amount: TRANSFER.data.amount.amount,
+        assetId: TRANSFER.data.amount.assetId,
         attachment: '3ke2ct1rnYr52Y1jQvzNG',
+        chainId: 84,
         fee: 500000,
         feeAssetId: null,
-        chainId: 84,
+        recipient: TRANSFER.data.recipient,
+        senderPublicKey,
+        type: TRANSFER.type,
+        version: 3 as const,
       };
       const bytes1 = makeTxBytes({
         ...expectedApproveResult1,
-        timestamp: parsedApproveResult[1].timestamp,
+        timestamp: tx1.timestamp,
       });
-      expect(parsedApproveResult[1]).toMatchObject(expectedApproveResult1);
-      expect(parsedApproveResult[1].id).toBe(base58Encode(blake2b(bytes1)));
+      expect(tx1).toMatchObject(expectedApproveResult1);
+      expect(tx1.id).toBe(base58Encode(blake2b(bytes1)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes1,
-          base58Decode(parsedApproveResult[1].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes1, base58Decode(tx1.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult2 = {
-        type: REISSUE.type,
-        version: 3 as const,
-        senderPublicKey,
         assetId: REISSUE.data.assetId,
-        quantity: REISSUE.data.quantity,
-        reissuable: REISSUE.data.reissuable,
         chainId: 84,
         fee: 500000,
+        quantity: REISSUE.data.quantity,
+        reissuable: REISSUE.data.reissuable,
+        senderPublicKey,
+        type: REISSUE.type,
+        version: 3 as const,
       };
       const bytes2 = makeTxBytes({
         ...expectedApproveResult2,
-        timestamp: parsedApproveResult[2].timestamp,
+        timestamp: tx2.timestamp,
       });
-      expect(parsedApproveResult[2]).toMatchObject(expectedApproveResult2);
-      expect(parsedApproveResult[2].id).toBe(base58Encode(blake2b(bytes2)));
+      expect(tx2).toMatchObject(expectedApproveResult2);
+      expect(tx2.id).toBe(base58Encode(blake2b(bytes2)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes2,
-          base58Decode(parsedApproveResult[2].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes2, base58Decode(tx2.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult3 = {
-        type: BURN.type,
-        version: 3 as const,
-        senderPublicKey,
-        assetId: BURN.data.assetId,
         amount: BURN.data.amount,
+        assetId: BURN.data.assetId,
         chainId: 84,
         fee: 500000,
+        senderPublicKey,
+        type: BURN.type,
+        version: 3 as const,
       };
       const bytes3 = makeTxBytes({
         ...expectedApproveResult3,
-        timestamp: parsedApproveResult[3].timestamp,
+        timestamp: tx3.timestamp,
       });
-      expect(parsedApproveResult[3]).toMatchObject(expectedApproveResult3);
-      expect(parsedApproveResult[3].id).toBe(base58Encode(blake2b(bytes3)));
+      expect(tx3).toMatchObject(expectedApproveResult3);
+      expect(tx3.id).toBe(base58Encode(blake2b(bytes3)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes3,
-          base58Decode(parsedApproveResult[3].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes3, base58Decode(tx3.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult4 = {
+        amount: LEASE.data.amount,
+        chainId: 84,
+        fee: 500000,
+        recipient: LEASE.data.recipient,
+        senderPublicKey,
         type: LEASE.type,
         version: 3 as const,
-        senderPublicKey,
-        amount: LEASE.data.amount,
-        recipient: LEASE.data.recipient,
-        fee: 500000,
-        chainId: 84,
       };
       const bytes4 = makeTxBytes({
         ...expectedApproveResult4,
-        timestamp: parsedApproveResult[4].timestamp,
+        timestamp: tx4.timestamp,
       });
-      expect(parsedApproveResult[4]).toMatchObject(expectedApproveResult4);
-      expect(parsedApproveResult[4].id).toBe(base58Encode(blake2b(bytes4)));
+      expect(tx4).toMatchObject(expectedApproveResult4);
+      expect(tx4.id).toBe(base58Encode(blake2b(bytes4)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes4,
-          base58Decode(parsedApproveResult[4].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes4, base58Decode(tx4.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult5 = {
+        chainId: 84,
+        fee: 500000,
+        leaseId: CANCEL_LEASE.data.leaseId,
+        senderPublicKey,
         type: CANCEL_LEASE.type,
         version: 3 as const,
-        senderPublicKey,
-        leaseId: CANCEL_LEASE.data.leaseId,
-        fee: 500000,
-        chainId: 84,
       };
       const bytes5 = makeTxBytes({
         ...expectedApproveResult5,
-        timestamp: parsedApproveResult[5].timestamp,
+        timestamp: tx5.timestamp,
       });
-      expect(parsedApproveResult[5]).toMatchObject(expectedApproveResult5);
-      expect(parsedApproveResult[5].id).toBe(base58Encode(blake2b(bytes5)));
+      expect(tx5).toMatchObject(expectedApproveResult5);
+      expect(tx5.id).toBe(base58Encode(blake2b(bytes5)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes5,
-          base58Decode(parsedApproveResult[5].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes5, base58Decode(tx5.proofs[0]!)),
       ).toBe(true);
 
       const expectedApproveResult6 = {
-        type: INVOKE_SCRIPT.type,
-        version: 2 as const,
-        senderPublicKey,
-        dApp: INVOKE_SCRIPT.data.dApp,
         call: INVOKE_SCRIPT.data.call,
-        payment: INVOKE_SCRIPT.data.payment,
+        chainId: 84,
+        dApp: INVOKE_SCRIPT.data.dApp,
         fee: 500000,
         feeAssetId: null,
-        chainId: 84,
+        payment: INVOKE_SCRIPT.data.payment,
+        senderPublicKey,
+        type: INVOKE_SCRIPT.type,
+        version: 2 as const,
       };
       const bytes6 = makeTxBytes({
         ...expectedApproveResult6,
-        timestamp: parsedApproveResult[6].timestamp,
+        timestamp: tx6.timestamp,
       });
-      expect(parsedApproveResult[6]).toMatchObject(expectedApproveResult6);
-      expect(parsedApproveResult[6].id).toBe(base58Encode(blake2b(bytes6)));
+      expect(tx6).toMatchObject(expectedApproveResult6);
+      expect(tx6.id).toBe(base58Encode(blake2b(bytes6)));
       expect(
-        await verifySignature(
-          senderPublicKeyBytes,
-          bytes6,
-          base58Decode(parsedApproveResult[6].proofs[0]),
-        ),
+        await verifySignature(senderPublicKeyBytes, bytes6, base58Decode(tx6.proofs[0]!)),
       ).toBe(true);
     });
   });
@@ -3454,9 +3436,9 @@ describe('Signature', () => {
     describe('Version 1', () => {
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCustomData(CUSTOM_DATA_V1);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(DataTransactionScreen.contentScript).toHaveText('base64:AADDEE==');
 
@@ -3465,16 +3447,16 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCustomData(CUSTOM_DATA_V1);
         await approveTransaction();
 
         const parsedApproveResult = await getResult();
         const expectedApproveResult = {
           binary: CUSTOM_DATA_V1.binary,
-          version: CUSTOM_DATA_V1.version,
-          publicKey: senderPublicKey,
           hash: 'BddvukE8EsQ22TC916wr9hxL5MTinpcxj7cKmyQFu1Qj',
+          publicKey: senderPublicKey,
+          version: CUSTOM_DATA_V1.version,
         };
         expect(parsedApproveResult).toMatchObject(expectedApproveResult);
         expect(
@@ -3492,7 +3474,7 @@ describe('Signature', () => {
         entries: Array<{ key: string; type: string; value: string }>,
       ) {
         const actualItems = await Promise.all(
-          (await DataTransactionScreen.getDataRows()).map(async (it) => {
+          (await DataTransactionScreen.getDataRows()).map(async (it: any) => {
             const [key, type, value] = await Promise.all([
               it.key.getText(),
               it.type.getText(),
@@ -3511,9 +3493,9 @@ describe('Signature', () => {
 
       it('Rejected', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCustomData(CUSTOM_DATA_V2);
-        await validateCommonFields(WHITELIST[3], 'rich', 'Testnet');
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await checkDataEntries([
           {
@@ -3543,16 +3525,16 @@ describe('Signature', () => {
 
       it('Approved', async () => {
         await browser.switchToWindow(tabOrigin);
-        await browser.navigateTo(`https://${WHITELIST[3]}`);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
         await performSignCustomData(CUSTOM_DATA_V2);
         await approveTransaction();
 
         const parsedApproveResult = await getResult();
         const expectedApproveResult = {
           data: CUSTOM_DATA_V2.data,
-          version: CUSTOM_DATA_V2.version,
-          publicKey: senderPublicKey,
           hash: 'CntDRDubtuhwBKsmCTtZzMLVF9TFK6hLoWP424V8Zz2K',
+          publicKey: senderPublicKey,
+          version: CUSTOM_DATA_V2.version,
         };
         expect(parsedApproveResult).toMatchObject(expectedApproveResult);
         expect(

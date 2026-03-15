@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { type AssetsRecord } from 'assets/types';
 import { type BalanceAssets } from 'balances/types';
@@ -34,7 +34,7 @@ const Row = ({
   onSendClick: (assetId: string) => void;
   onSwapClick: (assetId: string) => void;
 }>) => {
-  const [assetId, { balance = 0 } = {}] = assetEntries[index];
+  const [assetId, { balance = 0 } = {}] = assetEntries[index]!;
   const asset = assets[assetId];
 
   return (
@@ -55,8 +55,8 @@ const PLACEHOLDERS = [...Array(4).keys()].map<[string, BalanceAssets[string]]>((
   String(key),
   {
     balance: '0',
-    sponsorBalance: '0',
     minSponsoredAssetFee: '0',
+    sponsorBalance: '0',
   },
 ]);
 
@@ -193,10 +193,10 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
                   rowProps={{
                     assetEntries,
                     assets,
-                    swappableAssetIdsSet,
                     onInfoClick,
                     onSendClick,
                     onSwapClick,
+                    swappableAssetIdsSet,
                   }}
                   style={{ height, width }}
                 />

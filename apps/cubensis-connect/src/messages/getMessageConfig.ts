@@ -35,48 +35,48 @@ interface MessageConfig<T extends Message['type']> {
 const messageConfigs = {
   auth: {
     card: AuthCard,
-    screen: AuthScreen,
     final: AuthFinal,
+    screen: AuthScreen,
   },
   authOrigin: {
     card: AuthOriginCard,
-    screen: AuthOriginScreen,
     final: AuthOriginFinal,
+    screen: AuthOriginScreen,
   },
   cancelOrder: {
     card: CancelOrderCard,
-    screen: CancelOrderScreen,
     final: MessageFinal,
+    screen: CancelOrderScreen,
   },
   customData: {
     card: CustomDataCard,
-    screen: CustomDataScreen,
     final: CustomDataFinal,
-  },
-  order: {
-    card: OrderCard,
-    screen: OrderScreen,
-    final: MessageFinal,
-  },
-  request: {
-    card: RequestCard,
-    screen: RequestScreen,
-    final: RequestFinal,
-  },
-  transaction: {
-    card: TransactionCard,
-    screen: TransactionScreen,
-    final: MessageFinal,
-  },
-  transactionPackage: {
-    card: TransactionPackageCard,
-    screen: TransactionPackageScreen,
-    final: MessageFinal,
+    screen: CustomDataScreen,
   },
   dccAuth: {
     card: DccAuthCard,
-    screen: DccAuthScreen,
     final: DccAuthFinal,
+    screen: DccAuthScreen,
+  },
+  order: {
+    card: OrderCard,
+    final: MessageFinal,
+    screen: OrderScreen,
+  },
+  request: {
+    card: RequestCard,
+    final: RequestFinal,
+    screen: RequestScreen,
+  },
+  transaction: {
+    card: TransactionCard,
+    final: MessageFinal,
+    screen: TransactionScreen,
+  },
+  transactionPackage: {
+    card: TransactionPackageCard,
+    final: MessageFinal,
+    screen: TransactionPackageScreen,
   },
 };
 

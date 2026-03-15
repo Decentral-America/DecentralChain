@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, RefObject, useRef } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Position interface for x and y coordinates
@@ -27,12 +27,14 @@ export interface UseDraggableOptions {
   /**
    * Constrain dragging within bounds
    */
-  bounds?: {
-    left?: number;
-    top?: number;
-    right?: number;
-    bottom?: number;
-  };
+  bounds?:
+    | {
+        left?: number;
+        top?: number;
+        right?: number;
+        bottom?: number;
+      }
+    | undefined;
 
   /**
    * Snap to grid
@@ -138,13 +140,13 @@ export interface UseDraggableReturn {
  * const { position, handleMouseDown } = useDraggable(ref, {
  *   bounds: { left: 0, top: 0, right: 500, bottom: 500 },
  *   grid: { x: 20, y: 20 },
- *   onDragEnd: (pos) => console.log('Dropped at:', pos)
+ *   onDragEnd: (pos) => logger.debug('Dropped at:', pos)
  * });
  * ```
  */
 export function useDraggable<T extends HTMLElement>(
   ref: RefObject<T | null>,
-  options: UseDraggableOptions = {}
+  options: UseDraggableOptions = {},
 ): UseDraggableReturn {
   const {
     initialPosition = { x: 0, y: 0 },
@@ -188,7 +190,7 @@ export function useDraggable<T extends HTMLElement>(
 
       return { x, y };
     },
-    [bounds, grid]
+    [bounds, grid],
   );
 
   /**
@@ -203,7 +205,7 @@ export function useDraggable<T extends HTMLElement>(
 
       return handleElement.contains(target as Node);
     },
-    [handle, ref]
+    [handle, ref],
   );
 
   /**
@@ -228,7 +230,7 @@ export function useDraggable<T extends HTMLElement>(
       setPosition(newPosition);
       onDrag?.(newPosition);
     },
-    [constrainPosition, onDrag, preventDefault]
+    [constrainPosition, onDrag, preventDefault],
   );
 
   /**
@@ -257,10 +259,10 @@ export function useDraggable<T extends HTMLElement>(
       }
 
       dragStartRef.current = {
-        x: e.clientX,
-        y: e.clientY,
         posX: position.x,
         posY: position.y,
+        x: e.clientX,
+        y: e.clientY,
       };
 
       setIsDragging(true);
@@ -269,7 +271,7 @@ export function useDraggable<T extends HTMLElement>(
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
-    [enabled, isValidHandle, preventDefault, position, onDragStart, handleMouseMove, handleMouseUp]
+    [enabled, isValidHandle, preventDefault, position, onDragStart, handleMouseMove, handleMouseUp],
   );
 
   /**
@@ -284,6 +286,7 @@ export function useDraggable<T extends HTMLElement>(
       }
 
       const touch = e.touches[0];
+      if (!touch) return;
       const deltaX = touch.clientX - dragStartRef.current.x;
       const deltaY = touch.clientY - dragStartRef.current.y;
 
@@ -295,7 +298,7 @@ export function useDraggable<T extends HTMLElement>(
       setPosition(newPosition);
       onDrag?.(newPosition);
     },
-    [constrainPosition, onDrag, preventDefault, touchEnabled]
+    [constrainPosition, onDrag, preventDefault, touchEnabled],
   );
 
   /**
@@ -324,11 +327,12 @@ export function useDraggable<T extends HTMLElement>(
       }
 
       const touch = e.touches[0];
+      if (!touch) return;
       dragStartRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
         posX: position.x,
         posY: position.y,
+        x: touch.clientX,
+        y: touch.clientY,
       };
 
       setIsDragging(true);
@@ -346,7 +350,7 @@ export function useDraggable<T extends HTMLElement>(
       onDragStart,
       handleTouchMove,
       handleTouchEnd,
-    ]
+    ],
   );
 
   /**
@@ -358,7 +362,7 @@ export function useDraggable<T extends HTMLElement>(
       setIsDragging(false);
       dragStartRef.current = null;
     },
-    [initialPosition]
+    [initialPosition],
   );
 
   /**
@@ -374,10 +378,10 @@ export function useDraggable<T extends HTMLElement>(
   }, [handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   return {
-    position,
-    isDragging,
     handleMouseDown,
     handleTouchStart,
+    isDragging,
+    position,
     reset,
     setPosition,
   };
@@ -400,7 +404,7 @@ export function useDraggable<T extends HTMLElement>(
 export function useConstrainedDraggable<T extends HTMLElement, C extends HTMLElement>(
   ref: RefObject<T | null>,
   containerRef: RefObject<C | null>,
-  options: Omit<UseDraggableOptions, 'bounds'> = {}
+  options: Omit<UseDraggableOptions, 'bounds'> = {},
 ): UseDraggableReturn {
   const [bounds, setBounds] = useState<UseDraggableOptions['bounds']>();
 
@@ -411,10 +415,10 @@ export function useConstrainedDraggable<T extends HTMLElement, C extends HTMLEle
     const element = ref.current.getBoundingClientRect();
 
     setBounds({
-      left: 0,
-      top: 0,
-      right: container.width - element.width,
       bottom: container.height - element.height,
+      left: 0,
+      right: container.width - element.width,
+      top: 0,
     });
   }, [containerRef, ref]);
 

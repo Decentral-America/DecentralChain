@@ -1,13 +1,12 @@
 export const ReissueTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
+  get reissuableType() {
+    return this.root.findByTestId$('reissueReissuable');
   },
 
   get reissueAmount() {
     return this.root.findByTestId$('reissueAmount');
   },
-
-  get reissuableType() {
-    return this.root.findByTestId$('reissueReissuable');
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

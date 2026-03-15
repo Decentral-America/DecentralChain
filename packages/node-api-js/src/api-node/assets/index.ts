@@ -71,12 +71,13 @@ export function fetchAssetDistribution(
   assetId: string,
   height: number,
   limit: number,
+  after?: string,
   options: RequestInit = {},
 ): Promise<IAssetDistribution> {
   return request({
     base,
     options,
-    url: `/assets/${pathSegment(assetId)}/distribution/${pathSegment(height)}/limit/${pathSegment(limit)}`,
+    url: `/assets/${pathSegment(assetId)}/distribution/${pathSegment(height)}/limit/${pathSegment(limit)}${query({ after })}`,
   });
 }
 

@@ -3,19 +3,21 @@
  * Form for permanently destroying tokens to reduce supply
  * Burning tokens is irreversible and permanently removes them from circulation
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import type React from 'react';
+import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useZodForm, assetBurnSchema, AssetBurnFormData } from '@/lib/forms';
-import { FormInput } from '@/components/forms/FormInput';
+import styled from 'styled-components';
+import { useAssetDetails } from '@/api/services/assetsService';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { Spinner } from '@/components/atoms/Spinner';
+import { FormInput } from '@/components/forms/FormInput';
 import { AlertModal } from '@/components/modals/AlertModal';
 import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
-import { useAssetDetails } from '@/api/services/assetsService';
-import { Spinner } from '@/components/atoms/Spinner';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type AssetBurnFormData, assetBurnSchema, useZodForm } from '@/lib/forms';
+import { logger } from '@/lib/logger';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
 /**
  * Component Props
@@ -29,7 +31,7 @@ export interface BurnTokenFormProps {
 /**
  * Styled Components
  */
-const FormContainer = styled(Card)`
+const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>>)`
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -153,7 +155,7 @@ const CalculationText = styled.p`
  * Format quantity with decimals
  */
 const formatQuantity = (quantity: number, decimals: number): string => {
-  const actualQuantity = quantity / Math.pow(10, decimals);
+  const actualQuantity = quantity / 10 ** decimals;
   return actualQuantity.toLocaleString();
 };
 
@@ -164,7 +166,7 @@ const formatQuantity = (quantity: number, decimals: number): string => {
  * ```tsx
  * <BurnTokenForm
  *   assetId="DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p"
- *   onSuccess={(tx) => console.log('Burned:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Burned:', tx.id)}
  *   onCancel={() => navigate('/assets')}
  * />
  * ```
@@ -183,16 +185,15 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
   const form = useZodForm<AssetBurnFormData>(assetBurnSchema, {
     defaultValues: {
       assetId,
-      quantity: 0,
       fee: undefined,
+      quantity: 0,
     },
   });
 
   const burnQuantity = form.watch('quantity');
   const remainingSupply =
     asset && burnQuantity
-      ? (asset.quantity - burnQuantity * Math.pow(10, asset.decimals)) /
-        Math.pow(10, asset.decimals)
+      ? (asset.quantity - burnQuantity * 10 ** asset.decimals) / 10 ** asset.decimals
       : 0;
 
   const handleBurnSubmit = (data: AssetBurnFormData) => {
@@ -211,12 +212,12 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       setConfirmDialogOpen(false);
 
       // Convert quantity to wavelets (smallest units)
-      const quantityInWavelets = pendingBurnData.quantity * Math.pow(10, asset.decimals);
+      const quantityInWavelets = pendingBurnData.quantity * 10 ** asset.decimals;
 
       // Prepare transaction parameters
       const burnParams = {
-        assetId: pendingBurnData.assetId,
         amount: quantityInWavelets, // Burn uses 'amount' instead of 'quantity'
+        assetId: pendingBurnData.assetId,
         fee: pendingBurnData.fee || 100000, // Default 0.001 DCC fee for burn
       };
 
@@ -233,7 +234,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       // Wait for confirmation
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Success
@@ -248,7 +249,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       form.reset();
       setPendingBurnData(null);
     } catch (error) {
-      console.error('Asset burn failed:', error);
+      logger.error('Asset burn failed:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error occurred');
       setErrorModalOpen(true);
     } finally {

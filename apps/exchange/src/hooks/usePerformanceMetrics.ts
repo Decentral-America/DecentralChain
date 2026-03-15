@@ -4,7 +4,8 @@
  * Hook to display current performance metrics in dev mode
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 import { getMemoryUsage } from '@/lib/performanceMonitoring';
 
 export interface PerformanceMetrics {
@@ -72,10 +73,7 @@ export interface PerformanceMetrics {
  * ```
  */
 export function usePerformanceMetrics(
-  options: {
-    enableMemoryTracking?: boolean;
-    refreshInterval?: number;
-  } = {}
+  options: { enableMemoryTracking?: boolean; refreshInterval?: number } = {},
 ) {
   const {
     enableMemoryTracking = true,
@@ -83,33 +81,33 @@ export function usePerformanceMetrics(
   } = options;
 
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
+    apiCallCount: 0,
+    cls: null,
+
+    // Custom
+    componentRenderCount: 0,
+    domContentLoaded: null,
+    domProcessing: null,
+    fcp: null,
+    imageCount: 0,
+    imageDuration: 0,
+    inp: null,
     // Web Vitals
     lcp: null,
-    cls: null,
-    fcp: null,
-    ttfb: null,
-    inp: null,
 
     // Navigation Timing
     loadTime: null,
-    domContentLoaded: null,
-    domProcessing: null,
+
+    // Memory
+    memoryUsage: null,
+    routeChangeCount: 0,
 
     // Resource Timing
     scriptCount: 0,
     scriptDuration: 0,
     stylesheetCount: 0,
     stylesheetDuration: 0,
-    imageCount: 0,
-    imageDuration: 0,
-
-    // Memory
-    memoryUsage: null,
-
-    // Custom
-    componentRenderCount: 0,
-    apiCallCount: 0,
-    routeChangeCount: 0,
+    ttfb: null,
   });
 
   /**
@@ -122,12 +120,14 @@ export function usePerformanceMetrics(
     const webVitalsEntries = performance.getEntriesByType('largest-contentful-paint');
     if (webVitalsEntries.length > 0) {
       const lcp = webVitalsEntries[webVitalsEntries.length - 1];
-      newMetrics.lcp = Math.round(lcp.startTime * 100) / 100;
+      if (lcp) {
+        newMetrics.lcp = Math.round(lcp.startTime * 100) / 100;
+      }
     }
 
     // Get navigation timing
     const [navigationEntry] = performance.getEntriesByType(
-      'navigation'
+      'navigation',
     ) as PerformanceNavigationTiming[];
     if (navigationEntry) {
       newMetrics.loadTime = Math.round(navigationEntry.loadEventEnd * 100) / 100;
@@ -146,7 +146,7 @@ export function usePerformanceMetrics(
       Math.round(scripts.reduce((sum, r) => sum + r.duration, 0) * 100) / 100;
 
     const stylesheets = resources.filter(
-      (r) => r.initiatorType === 'link' || r.initiatorType === 'css'
+      (r) => r.initiatorType === 'link' || r.initiatorType === 'css',
     );
     newMetrics.stylesheetCount = stylesheets.length;
     newMetrics.stylesheetDuration =
@@ -179,24 +179,24 @@ export function usePerformanceMetrics(
    */
   const clear = useCallback(() => {
     setMetrics({
-      lcp: null,
+      apiCallCount: 0,
       cls: null,
-      fcp: null,
-      ttfb: null,
-      inp: null,
-      loadTime: null,
+      componentRenderCount: 0,
       domContentLoaded: null,
       domProcessing: null,
+      fcp: null,
+      imageCount: 0,
+      imageDuration: 0,
+      inp: null,
+      lcp: null,
+      loadTime: null,
+      memoryUsage: null,
+      routeChangeCount: 0,
       scriptCount: 0,
       scriptDuration: 0,
       stylesheetCount: 0,
       stylesheetDuration: 0,
-      imageCount: 0,
-      imageDuration: 0,
-      memoryUsage: null,
-      componentRenderCount: 0,
-      apiCallCount: 0,
-      routeChangeCount: 0,
+      ttfb: null,
     });
 
     // Clear browser performance data
@@ -205,7 +205,7 @@ export function usePerformanceMetrics(
       performance.clearMeasures();
       performance.clearResourceTimings();
     } catch (error) {
-      console.error('[Performance] Failed to clear performance data:', error);
+      logger.error('[Performance] Failed to clear performance data:', error);
     }
   }, []);
 
@@ -245,19 +245,19 @@ export function usePerformanceMetrics(
     });
 
     try {
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-    } catch (error) {
-      console.warn('[Performance] LCP observer not supported');
+      lcpObserver.observe({ buffered: true, type: 'largest-contentful-paint' });
+    } catch {
+      logger.warn('[Performance] LCP observer not supported');
     }
 
     return () => lcpObserver.disconnect();
   }, []);
 
   return {
-    metrics,
-    refresh,
     clear,
     isSupported: 'performance' in window && 'PerformanceObserver' in window,
+    metrics,
+    refresh,
   };
 }
 
@@ -283,7 +283,7 @@ export function usePerformanceMetrics(
 export function getPerformanceSummary(metrics: PerformanceMetrics) {
   const getRating = (
     value: number | null,
-    thresholds: { good: number; needsImprovement: number }
+    thresholds: { good: number; needsImprovement: number },
   ) => {
     if (value === null) return 'unknown';
     if (value <= thresholds.good) return 'good';
@@ -292,29 +292,29 @@ export function getPerformanceSummary(metrics: PerformanceMetrics) {
   };
 
   return {
-    lcp: {
-      value: metrics.lcp,
-      rating: getRating(metrics.lcp, { good: 2500, needsImprovement: 4000 }),
-    },
     cls: {
-      value: metrics.cls,
       rating: getRating(metrics.cls, { good: 0.1, needsImprovement: 0.25 }),
+      value: metrics.cls,
     },
     fcp: {
-      value: metrics.fcp,
       rating: getRating(metrics.fcp, { good: 1800, needsImprovement: 3000 }),
-    },
-    ttfb: {
-      value: metrics.ttfb,
-      rating: getRating(metrics.ttfb, { good: 800, needsImprovement: 1800 }),
+      value: metrics.fcp,
     },
     inp: {
-      value: metrics.inp,
       rating: getRating(metrics.inp, { good: 200, needsImprovement: 500 }),
+      value: metrics.inp,
+    },
+    lcp: {
+      rating: getRating(metrics.lcp, { good: 2500, needsImprovement: 4000 }),
+      value: metrics.lcp,
     },
     loadTime: {
-      value: metrics.loadTime,
       rating: getRating(metrics.loadTime, { good: 3000, needsImprovement: 5000 }),
+      value: metrics.loadTime,
+    },
+    ttfb: {
+      rating: getRating(metrics.ttfb, { good: 800, needsImprovement: 1800 }),
+      value: metrics.ttfb,
     },
   };
 }

@@ -34,9 +34,9 @@ export class WxWallet extends Wallet<WalletPrivateDataOfType<'wx'>> {
       network,
       networkCode,
       publicKey,
-      uuid,
-      username,
       type: 'wx',
+      username,
+      uuid,
     });
 
     this.#identity = identity;

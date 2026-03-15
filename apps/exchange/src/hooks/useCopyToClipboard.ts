@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Custom hook for copying text to clipboard with feedback
@@ -32,7 +33,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
  * );
  */
 export function useCopyToClipboard(
-  resetTimeout: number = 2000
+  resetTimeout: number = 2000,
 ): [boolean, (text: string) => Promise<void>, Error | null] {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -61,7 +62,7 @@ export function useCopyToClipboard(
       if (!navigator.clipboard) {
         const err = new Error('Clipboard API not supported in this browser');
         setError(err);
-        console.error(err);
+        logger.error(err);
         return;
       }
 
@@ -79,10 +80,10 @@ export function useCopyToClipboard(
         const error = err instanceof Error ? err : new Error('Failed to copy to clipboard');
         setError(error);
         setCopied(false);
-        console.error('Copy to clipboard failed:', error);
+        logger.error('Copy to clipboard failed:', error);
       }
     },
-    [resetTimeout]
+    [resetTimeout],
   );
 
   return [copied, copy, error];

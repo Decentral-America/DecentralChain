@@ -81,8 +81,8 @@ export function ActiveMessagePage() {
         {activeMessage.status !== MessageStatus.Failed && (
           <div
             className={clsx(transactionsStyles.txBigIcon, 'margin-main', {
-              'tx-reject-icon': isRejected,
               'tx-approve-icon': isApproved,
+              'tx-reject-icon': isRejected,
             })}
           />
         )}

@@ -34,24 +34,25 @@
  */
 
 import * as Sentry from '@sentry/react';
-import type { User } from '@sentry/types';
+import { type User } from '@sentry/react';
+import { logger } from '@/lib/logger';
 
 /**
  * Error monitoring configuration
  */
 export interface ErrorMonitoringConfig {
   /** Sentry DSN (Data Source Name) */
-  dsn?: string;
+  dsn?: string | undefined;
   /** Environment name (production, staging, development) */
-  environment?: string;
+  environment?: string | undefined;
   /** Application release version */
-  release?: string;
+  release?: string | undefined;
   /** Sample rate for performance monitoring (0.0 to 1.0) */
-  tracesSampleRate?: number;
+  tracesSampleRate?: number | undefined;
   /** Enable in development */
-  enableInDev?: boolean;
+  enableInDev?: boolean | undefined;
   /** Enable debug mode */
-  debug?: boolean;
+  debug?: boolean | undefined;
 }
 
 /**
@@ -96,46 +97,46 @@ let config: ErrorMonitoringConfig = {};
  */
 export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void => {
   if (isInitialized) {
-    console.warn('[Error Monitoring] Already initialized');
+    logger.warn('[Error Monitoring] Already initialized');
     return;
   }
 
   config = {
+    debug: import.meta.env.DEV === true,
     dsn: import.meta.env.VITE_SENTRY_DSN,
+    enableInDev: false,
     environment: import.meta.env.MODE || 'development',
     release: import.meta.env.VITE_APP_VERSION || '1.0.0',
     tracesSampleRate: 0.1, // Sample 10% of transactions
-    enableInDev: false,
-    debug: import.meta.env.DEV === true,
     ...options,
   };
 
   // Don't initialize in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
-    console.log('[Error Monitoring] Disabled in development mode');
+    logger.debug('[Error Monitoring] Disabled in development mode');
     return;
   }
 
   // Don't initialize without DSN
   if (!config.dsn) {
-    console.warn('[Error Monitoring] No DSN provided, error monitoring disabled');
+    logger.warn('[Error Monitoring] No DSN provided, error monitoring disabled');
     return;
   }
 
   try {
     Sentry.init({
       dsn: config.dsn,
-      environment: config.environment,
-      release: config.release,
+      ...(config.environment != null && { environment: config.environment }),
+      ...(config.release != null && { release: config.release }),
 
       // Performance trace sample rate
-      tracesSampleRate: config.tracesSampleRate,
+      ...(config.tracesSampleRate != null && { tracesSampleRate: config.tracesSampleRate }),
 
       // Debug mode
-      debug: config.debug,
+      ...(config.debug != null && { debug: config.debug }),
 
       // Before send hook for filtering/modifying events
-      beforeSend(event, hint) {
+      beforeSend(event, _hint) {
         // Filter out localhost errors in production
         if (event.request?.url?.includes('localhost') && config.environment === 'production') {
           return null;
@@ -169,14 +170,14 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
     isInitialized = true;
 
     if (config.debug) {
-      console.log('[Error Monitoring] Sentry initialized:', {
+      logger.debug('[Error Monitoring] Sentry initialized:', {
         dsn: config.dsn,
         environment: config.environment,
         release: config.release,
       });
     }
   } catch (error) {
-    console.error('[Error Monitoring] Failed to initialize Sentry:', error);
+    logger.error('[Error Monitoring] Failed to initialize Sentry:', error);
   }
 };
 
@@ -203,12 +204,12 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
 export const captureError = (
   error: Error | string,
   context?: ErrorContext,
-  severity: ErrorSeverity = ErrorSeverity.Error
+  severity: ErrorSeverity = ErrorSeverity.Error,
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     // Log to console in development
     if (import.meta.env.DEV) {
-      console.error('[Error Monitoring]', error, context);
+      logger.error('[Error Monitoring]', error, context);
     }
     return;
   }
@@ -216,14 +217,14 @@ export const captureError = (
   try {
     Sentry.captureException(error, {
       level: severity,
-      extra: context,
+      ...(context != null && { extra: context }),
     });
 
     if (config.debug) {
-      console.log('[Error Monitoring] Error captured:', { error, context, severity });
+      logger.debug('[Error Monitoring] Error captured:', { context, error, severity });
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to capture error:', e);
+    logger.error('[Error Monitoring] Failed to capture error:', e);
   }
 };
 
@@ -245,11 +246,11 @@ export const captureError = (
 export const captureMessage = (
   message: string,
   severity: ErrorSeverity = ErrorSeverity.Info,
-  context?: ErrorContext
+  context?: ErrorContext,
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     if (import.meta.env.DEV) {
-      console.log('[Error Monitoring]', message, context);
+      logger.debug('[Error Monitoring]', message, context);
     }
     return;
   }
@@ -257,14 +258,14 @@ export const captureMessage = (
   try {
     Sentry.captureMessage(message, {
       level: severity,
-      extra: context,
+      ...(context != null && { extra: context }),
     });
 
     if (config.debug) {
-      console.log('[Error Monitoring] Message captured:', { message, severity, context });
+      logger.debug('[Error Monitoring] Message captured:', { context, message, severity });
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to capture message:', e);
+    logger.error('[Error Monitoring] Failed to capture message:', e);
   }
 };
 
@@ -296,10 +297,10 @@ export const setUser = (user: Partial<User> | null): void => {
     Sentry.setUser(user);
 
     if (config.debug) {
-      console.log('[Error Monitoring] User set:', user);
+      logger.debug('[Error Monitoring] User set:', user);
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to set user:', e);
+    logger.error('[Error Monitoring] Failed to set user:', e);
   }
 };
 
@@ -326,10 +327,10 @@ export const setTags = (tags: Record<string, string>): void => {
     Sentry.setTags(tags);
 
     if (config.debug) {
-      console.log('[Error Monitoring] Tags set:', tags);
+      logger.debug('[Error Monitoring] Tags set:', tags);
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to set tags:', e);
+    logger.error('[Error Monitoring] Failed to set tags:', e);
   }
 };
 
@@ -358,10 +359,10 @@ export const setContext = (name: string, context: ErrorContext): void => {
     Sentry.setContext(name, context);
 
     if (config.debug) {
-      console.log('[Error Monitoring] Context set:', { name, context });
+      logger.debug('[Error Monitoring] Context set:', { context, name });
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to set context:', e);
+    logger.error('[Error Monitoring] Failed to set context:', e);
   }
 };
 
@@ -387,7 +388,7 @@ export const addBreadcrumb = (
   message: string,
   category?: string,
   level: ErrorSeverity = ErrorSeverity.Info,
-  data?: ErrorContext
+  data?: ErrorContext,
 ): void => {
   if (!isInitialized || (import.meta.env.DEV && !config.enableInDev)) {
     return;
@@ -396,16 +397,16 @@ export const addBreadcrumb = (
   try {
     Sentry.addBreadcrumb({
       message,
-      category,
-      level,
+      ...(category != null && { category }),
       data: data as Record<string, unknown>,
+      level,
     });
 
     if (config.debug) {
-      console.log('[Error Monitoring] Breadcrumb added:', { message, category, level, data });
+      logger.debug('[Error Monitoring] Breadcrumb added:', { category, data, level, message });
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to add breadcrumb:', e);
+    logger.error('[Error Monitoring] Failed to add breadcrumb:', e);
   }
 };
 
@@ -431,10 +432,10 @@ export const clearUser = (): void => {
     Sentry.setUser(null);
 
     if (config.debug) {
-      console.log('[Error Monitoring] User cleared');
+      logger.debug('[Error Monitoring] User cleared');
     }
   } catch (e) {
-    console.error('[Error Monitoring] Failed to clear user:', e);
+    logger.error('[Error Monitoring] Failed to clear user:', e);
   }
 };
 
@@ -500,7 +501,7 @@ export const startTransaction = (name: string, operation: string): string => {
   const txId = `${operation}-${name}-${Date.now()}`;
 
   if (config.debug) {
-    console.log('[Error Monitoring] Transaction started:', { txId, name, operation });
+    logger.debug('[Error Monitoring] Transaction started:', { name, operation, txId });
   }
 
   addBreadcrumb(`Transaction started: ${name}`, 'transaction', ErrorSeverity.Info, { operation });
@@ -516,20 +517,9 @@ export const errorMonitoring = {
   apiError: (endpoint: string, status: number, message: string) =>
     captureError(
       new Error(`API Error: ${endpoint}`),
-      { endpoint, status, message },
-      ErrorSeverity.Error
+      { endpoint, message, status },
+      ErrorSeverity.Error,
     ),
-
-  // Transaction errors
-  transactionFailed: (txId: string, reason: string) =>
-    captureError(new Error('Transaction Failed'), { txId, reason }, ErrorSeverity.Error),
-
-  // Network errors
-  networkError: (error: Error) => captureError(error, { type: 'network' }, ErrorSeverity.Warning),
-
-  // Validation errors
-  validationError: (field: string, value: unknown, rule: string) =>
-    captureMessage('Validation Error', ErrorSeverity.Warning, { field, value, rule }),
 
   // Authentication errors
   authError: (error: Error) => captureError(error, { type: 'authentication' }, ErrorSeverity.Error),
@@ -537,19 +527,30 @@ export const errorMonitoring = {
   // DEX errors
   dexError: (operation: string, error: Error) =>
     captureError(error, { operation, type: 'dex' }, ErrorSeverity.Error),
+
+  // Network errors
+  networkError: (error: Error) => captureError(error, { type: 'network' }, ErrorSeverity.Warning),
+
+  // Transaction errors
+  transactionFailed: (txId: string, reason: string) =>
+    captureError(new Error('Transaction Failed'), { reason, txId }, ErrorSeverity.Error),
+
+  // Validation errors
+  validationError: (field: string, value: unknown, rule: string) =>
+    captureMessage('Validation Error', ErrorSeverity.Warning, { field, rule, value }),
 };
 
 export default {
-  initErrorMonitoring,
+  addBreadcrumb,
   captureError,
   captureMessage,
-  setUser,
-  setTags,
-  setContext,
-  addBreadcrumb,
   clearUser,
   ErrorBoundary,
-  Profiler,
-  startTransaction,
   errorMonitoring,
+  initErrorMonitoring,
+  Profiler,
+  setContext,
+  setTags,
+  setUser,
+  startTransaction,
 };

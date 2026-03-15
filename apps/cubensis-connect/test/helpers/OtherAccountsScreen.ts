@@ -1,28 +1,27 @@
-const Account = (wrapped: WebdriverIO.Element) => ({
-  get root() {
-    return wrapped;
+const Account = (wrapped: any) => ({
+  get accountInfoButton() {
+    return wrapped.findByTestId$('accountInfoButton');
   },
 
   get name() {
     return wrapped.findByTestId$('accountName');
   },
-
-  get accountInfoButton() {
-    return wrapped.findByTestId$('accountInfoButton');
+  get root() {
+    return wrapped;
   },
 });
 
 export const OtherAccountsScreen = {
-  get root() {
-    return browser.findByTestId$('otherAccountsPage');
+  get accounts() {
+    return this.root.queryAllByTestId$('accountCard').map((it: any) => Account(it));
+  },
+
+  get accountsNote() {
+    return this.root.findByTestId$('accountsNote');
   },
 
   get addAccountButton() {
     return this.root.findByText$('Add account');
-  },
-
-  get accounts() {
-    return this.root.queryAllByTestId$('accountCard').map((it) => Account(it));
   },
 
   async getAccountByName(accountName: string) {
@@ -30,16 +29,15 @@ export const OtherAccountsScreen = {
       await this.root.$(`.//*[@data-testid='accountCard' and contains(., '${accountName}')]`),
     );
   },
-
-  get searchInput() {
-    return this.root.findByTestId$('accountsSearchInput');
-  },
-
-  get accountsNote() {
-    return this.root.findByTestId$('accountsNote');
+  get root() {
+    return browser.findByTestId$('otherAccountsPage');
   },
 
   get searchClearButton() {
     return this.root.findByTestId$('searchClear');
+  },
+
+  get searchInput() {
+    return this.root.findByTestId$('accountsSearchInput');
   },
 };

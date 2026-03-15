@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { type PopupState } from 'popup/store/types';
 import { PureComponent } from 'react';
@@ -40,12 +40,12 @@ interface State {
 
 class PermissionsSettingsComponent extends PureComponent<Props, State> {
   state: State = {
-    showSettings: false,
-    originsList: 'customList',
-    origin: null,
-    permissions: [],
     autoSign: null,
+    origin: null,
     originalAutoSign: null,
+    originsList: 'customList',
+    permissions: [],
+    showSettings: false,
   };
 
   deleteHandler = (origin: string) => {
@@ -63,10 +63,10 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
     const amount = new BigNumber(autoSign.totalAmount).div(10 ** 8);
     autoSign.totalAmount = amount.isNaN() ? 0 : amount.toFormat();
     this.setState({
-      origin,
       autoSign,
-      permissions,
+      origin,
       originalAutoSign: autoSign,
+      permissions,
       showSettings: true,
     });
   };
@@ -89,7 +89,7 @@ class PermissionsSettingsComponent extends PureComponent<Props, State> {
     canShowNotifications: boolean | null,
   ) => {
     this.props.setAutoOrigin({ origin, params });
-    this.props.setShowNotification({ origin, canUse: canShowNotifications });
+    this.props.setShowNotification({ canUse: canShowNotifications, origin });
     this.closeSettingsHandler();
   };
 

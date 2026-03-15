@@ -1,59 +1,59 @@
 import Currency from '../shared/Currency';
-import { ApiClientService } from './ApiClientService';
+import {ApiClientService} from './ApiClientService';
 
 const FAILURE = new Currency({
-  id: 'failure',
-  displayName: 'Failed to load',
-  precision: 8,
+    id: 'failure',
+    displayName: 'Failed to load',
+    precision: 8
 });
 
 export class CurrencyService extends ApiClientService {
-  constructor(configurationService, currencyCache, networkId) {
-    super(configurationService, networkId);
-    this.promisesCache = {};
-    this.currencyCache = currencyCache;
-  }
-
-  put = (currency) => {
-    this.currencyCache.put(currency);
-  };
-
-  get = (assetId) => {
-    if (!assetId) {
-      return Promise.resolve(Currency.DCC);
+    constructor(configurationService, currencyCache, networkId) {
+        super(configurationService, networkId);
+        this.promisesCache = {};
+        this.currencyCache = currencyCache;
     }
 
-    return this.currencyCache.get(assetId).then((currency) => {
-      if (currency) {
-        return currency;
-      }
+    put = currency => {
+        this.currencyCache.put(currency);
+    };
 
-      if (this.promisesCache[assetId]) {
-        return this.promisesCache[assetId];
-      }
+    get = assetId => {
+        if (!assetId) {
+            return Promise.resolve(Currency.WAVES);
+        }
 
-      const promise = this.getApi()
-        .assets.details(assetId)
-        .then((infoResponse) => {
-          const c = Currency.fromAssetDetails(infoResponse);
-          this.put(c);
+        return this.currencyCache.get(assetId)
+            .then(currency => {
+                if (currency) {
+                    return currency;
+                }
 
-          return c;
-        })
-        .catch((error) => {
-          console.error(error);
+                if (this.promisesCache[assetId]) {
+                    return this.promisesCache[assetId];
+                }
 
-          if (error.response) {
-            console.error(error.response.data);
-            console.error(error.response.status);
-          }
+                const promise = this.getApi().assets.details(assetId)
+                    .then(infoResponse => {
+                        const c = Currency.fromAssetDetails(infoResponse.data);
+                        this.put(c);
 
-          return FAILURE;
-        });
+                        return c;
+                    })
+                    .catch(error => {
+                        console.log(error);
 
-      this.promisesCache[assetId] = promise;
+                        if (error.response) {
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                        }
 
-      return promise;
-    });
-  };
+                        return FAILURE;
+                    });
+
+                this.promisesCache[assetId] = promise;
+
+                return promise;
+            });
+    };
 }

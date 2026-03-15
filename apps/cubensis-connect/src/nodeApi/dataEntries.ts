@@ -26,12 +26,12 @@ export function fetchDataEntries<T extends DataTransactionEntry>({
 }) {
   return fetchInBatches(allKeys, NODE_DATA_KEYS_REQUEST_LIMIT, (keys) =>
     fetch(createDataUrl(nodeUrl, address), {
-      method: 'POST',
+      body: JSON.stringify({ keys }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ keys }),
+      method: 'POST',
     }).then(
       (response): Promise<T[]> =>
         response.ok

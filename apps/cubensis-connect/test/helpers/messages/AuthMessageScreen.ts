@@ -1,10 +1,6 @@
 export const AuthMessageScreen = {
-  get root() {
-    return $("[class*='transaction@']");
-  },
-
-  get permissionDetailsButton() {
-    return this.root.findByText$('Permission details');
+  get addToBlacklistButton() {
+    return this.root.$('#rejectForever');
   },
 
   get allowMessagesCheckbox() {
@@ -15,6 +11,17 @@ export const AuthMessageScreen = {
     return this.root.findByText$('Auth');
   },
 
+  get permissionDetailsButton() {
+    return this.root.findByText$('Permission details');
+  },
+
+  get rejectArrowButton() {
+    return this.root.$("[class*='arrowButton@dropdownButton']");
+  },
+  get root() {
+    return $("[class*='transaction@']");
+  },
+
   async setResolutionTime(time: string) {
     await this.root.$("[class*='trigger@Select']").click();
     await this.root.findByText$(time, { selector: "[class*='item@Select']" }).click();
@@ -22,13 +29,5 @@ export const AuthMessageScreen = {
 
   get spendingLimitInput() {
     return this.root.$("[class*='amountInput@']");
-  },
-
-  get rejectArrowButton() {
-    return this.root.$("[class*='arrowButton@dropdownButton']");
-  },
-
-  get addToBlacklistButton() {
-    return this.root.$('#rejectForever');
   },
 };

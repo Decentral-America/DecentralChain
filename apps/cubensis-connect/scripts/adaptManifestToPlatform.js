@@ -1,6 +1,4 @@
 const action = {
-  default_title: 'Cubensis Connect',
-  default_popup: 'popup.html',
   default_icon: {
     16: 'icons/icon_16.png',
     24: 'icons/icon_24.png',
@@ -13,22 +11,23 @@ const action = {
     256: 'icons/icon_256.png',
     512: 'icons/icon_512.png',
   },
+  default_popup: 'popup.html',
+  default_title: 'Cubensis Connect',
 };
 
 const contentSecurityPolicy = "object-src 'self'; script-src 'self' 'wasm-unsafe-eval'";
 
 const manifestV2 = {
-  manifest_version: 2,
-  browser_action: action,
   background: {
     scripts: ['background.js'],
   },
+  browser_action: action,
   content_security_policy: contentSecurityPolicy,
+  manifest_version: 2,
   web_accessible_resources: ['inpage.js'],
 };
 
 const manifestV3 = {
-  manifest_version: 3,
   action,
   background: {
     service_worker: 'background.js',
@@ -36,7 +35,8 @@ const manifestV3 = {
   content_security_policy: {
     extension_pages: contentSecurityPolicy,
   },
-  web_accessible_resources: [{ resources: ['inpage.js'], matches: ['<all_urls>'] }],
+  manifest_version: 3,
+  web_accessible_resources: [{ matches: ['<all_urls>'], resources: ['inpage.js'] }],
 };
 
 const platformValues = {

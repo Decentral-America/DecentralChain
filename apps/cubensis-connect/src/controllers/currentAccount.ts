@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { isNotNull } from '_core/isNotNull';
 import { type AssetBalance, type BalancesItem } from 'balances/types';
@@ -262,47 +262,47 @@ export class CurrentAccountController {
     ]);
 
     const nativeAssetBalance: AssetBalance = {
+      balance: nativeBalance.available,
       minSponsoredAssetFee: '100000',
       sponsorBalance: nativeBalance.available,
-      balance: nativeBalance.available,
     };
 
     const balance: BalancesItem = {
       aliases,
-      available: nativeBalance.available,
-      regular: nativeBalance.regular,
-      leasedOut: new BigNumber(nativeBalance.regular).sub(nativeBalance.available).toString(),
-      network: currentNetwork,
-      txHistory,
 
       assets: Object.fromEntries([
         ['WAVES', nativeAssetBalance],
         ...myAssets.balances.map((info) => {
           const assetBalance: AssetBalance = {
+            balance: info.balance,
             minSponsoredAssetFee: info.minSponsoredAssetFee,
             sponsorBalance: info.sponsorBalance,
-            balance: info.balance,
           };
 
           return [info.assetId, assetBalance];
         }),
       ]),
+      available: nativeBalance.available,
+      leasedOut: new BigNumber(nativeBalance.regular).sub(nativeBalance.available).toString(),
+      network: currentNetwork,
       nfts: myNfts.map((nft) => ({
-        id: nft.assetId,
-        name: nft.name,
-        precision: nft.decimals,
         description: nft.description,
+        displayName: nft.name,
+        hasScript: nft.scripted,
         height: nft.issueHeight,
-        timestamp: new Date(nft.issueTimestamp).toJSON() as unknown as Date,
-        sender: nft.issuer,
+        id: nft.assetId,
+        issuer: nft.issuer,
+        minSponsoredFee: nft.minSponsoredAssetFee ?? undefined,
+        name: nft.name,
+        originTransactionId: nft.originTransactionId,
+        precision: nft.decimals,
         quantity: nft.quantity,
         reissuable: nft.reissuable,
-        hasScript: nft.scripted,
-        displayName: nft.name,
-        minSponsoredFee: nft.minSponsoredAssetFee ?? undefined,
-        originTransactionId: nft.originTransactionId,
-        issuer: nft.issuer,
+        sender: nft.issuer,
+        timestamp: new Date(nft.issueTimestamp).toJSON() as unknown as Date,
       })),
+      regular: nativeBalance.regular,
+      txHistory,
     };
 
     this.store.updateState({
@@ -317,14 +317,14 @@ export class CurrentAccountController {
     while (addresses.length > 0) {
       const splicedAddresses = addresses.splice(0, 1000);
       const response = await fetch(url, {
-        method: 'POST',
+        body: JSON.stringify({
+          addresses: splicedAddresses,
+        }),
         headers: {
           accept: 'application/json; large-significand-format=string',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          addresses: splicedAddresses,
-        }),
+        method: 'POST',
       });
 
       const regularBalances = (await response.json()) as Array<{

@@ -15,8 +15,8 @@ const allNetworks: NetworkName[] = Object.values(NetworkName);
 const networkLabels: Record<NetworkName, string> = {
   custom: 'Custom',
   mainnet: 'Mainnet',
-  testnet: 'Testnet',
   stagenet: 'Stagenet',
+  testnet: 'Testnet',
 };
 
 interface Contact {

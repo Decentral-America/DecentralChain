@@ -28,7 +28,7 @@ type ExchangeKeystoreAccount = {
   | {
       // Stored in extension data as 'wavesKeeper' for backward compat with
       // accounts originally imported from the Waves Keeper extension.
-      // TODO: Add migration to rename stored userType to 'cubensisConnect'
+      // Kept as a legacy discriminant for historical keystore payload compatibility.
       userType: 'wavesKeeper';
     }
 );
@@ -50,7 +50,6 @@ function parseKeystore(json: string): EncryptedKeystore | null {
       const { profiles } = parsedJson;
 
       return {
-        type: WalletTypes.Keystore,
         decrypt: async (password) => {
           try {
             const decrypted = await decryptSeed(base64Decode(atob(profiles)), utf8Encode(password));
@@ -60,6 +59,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
             return null;
           }
         },
+        type: WalletTypes.Keystore,
       };
     }
 
@@ -77,7 +77,6 @@ function parseKeystore(json: string): EncryptedKeystore | null {
         const { encryptionRounds, saveUsers } = parsedData;
 
         return {
-          type: WalletTypes.KeystoreWx,
           decrypt: async (password) => {
             try {
               const decrypted = await decryptSeed(
@@ -118,6 +117,7 @@ function parseKeystore(json: string): EncryptedKeystore | null {
               return null;
             }
           },
+          type: WalletTypes.KeystoreWx,
         };
       }
     }

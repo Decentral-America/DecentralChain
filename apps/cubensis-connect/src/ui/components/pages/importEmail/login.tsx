@@ -32,7 +32,7 @@ export function Login({ className, userData, onConfirm, onSubmit }: LoginProps) 
     background.identityUser().then((identityUser) => {
       const [name, domain] = userRef.current?.username.split('@') ?? [];
       onConfirm({
-        name: `${name[0]}*******@${domain}`,
+        name: `${name?.[0] ?? ''}*******@${domain}`,
         ...identityUser,
       });
     });
@@ -40,7 +40,7 @@ export function Login({ className, userData, onConfirm, onSubmit }: LoginProps) 
 
   const signIn = useCallback(
     async (username: string, password: string): Promise<void> => {
-      userRef.current = { username, password };
+      userRef.current = { password, username };
 
       if (typeof onSubmit === 'function') {
         onSubmit(userRef.current);
@@ -51,8 +51,8 @@ export function Login({ className, userData, onConfirm, onSubmit }: LoginProps) 
       switch (challengeName) {
         case 'SOFTWARE_TOKEN_MFA':
           setCodeDelivery({
-            type: 'TOTP',
             destination: 'TOTP device',
+            type: 'TOTP',
           });
           setLoginState('confirm-sign-in');
           break;

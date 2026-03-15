@@ -1,1 +1,1 @@
-export { RoutedTransactionRef as default } from './TransactionRef.view';
+export {RoutedTransactionRef as default} from './TransactionRef.view';

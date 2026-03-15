@@ -1,1 +1,1 @@
-export { RoutedNodesPage as default } from './NodesPage.container';
+export {NodesPage as default} from './NodesPage.container';

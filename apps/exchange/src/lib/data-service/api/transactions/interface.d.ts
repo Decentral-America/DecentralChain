@@ -1,390 +1,393 @@
-import { Money } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
-import { IAssetPair, TLeasingStatus, TOrderType } from '../../interface';
-import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
-
+import { type Money } from '@decentralchain/data-entities';
+import { type BigNumber } from '@decentralchain/bignumber';
+import { type IAssetPair, type TLeasingStatus, type TOrderType } from '../../interface';
+import { type TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
 
 export type T_API_TX =
-    txApi.IOldTransferTx |
-    txApi.IIssue |
-    txApi.ITransfer |
-    txApi.IReissue |
-    txApi.IBurn |
-    txApi.IExchange |
-    txApi.ILease |
-    txApi.ICancelLeasing |
-    txApi.ICreateAlias |
-    txApi.IMassTransfer |
-    txApi.IData |
-    txApi.ISponsorship |
-    txApi.ISetScript |
-    txApi.ISetAssetScript |
-    tx.Api.IScriptInvocation;
+  | txApi.IOldTransferTx
+  | txApi.IIssue
+  | txApi.ITransfer
+  | txApi.IReissue
+  | txApi.IBurn
+  | txApi.IExchange
+  | txApi.ILease
+  | txApi.ICancelLeasing
+  | txApi.ICreateAlias
+  | txApi.IMassTransfer
+  | txApi.IData
+  | txApi.ISponsorship
+  | txApi.ISetScript
+  | txApi.ISetAssetScript
+  | tx.Api.IScriptInvocation;
 
 export type T_TX =
-    IIssue |
-    ITransfer |
-    IReissue |
-    IBurn |
-    IExchange |
-    ILease |
-    ICancelLeasing |
-    ICreateAlias |
-    IMassTransfer |
-    IData |
-    ISponsorship |
-    ISetScript |
-    ISetAssetScript;
+  | IIssue
+  | ITransfer
+  | IReissue
+  | IBurn
+  | IExchange
+  | ILease
+  | ICancelLeasing
+  | ICreateAlias
+  | IMassTransfer
+  | IData
+  | ISponsorship
+  | ISetScript
+  | ISetAssetScript;
 
-export module txApi {
-
-    export interface IBaseTransaction {
-        type: number;
-        id: string;
-        timestamp: number;
-        sender: string;
-        senderPublicKey: string;
-        fee: string;
-        signature?: string;
-        proofs?: Array<string>;
-        height?: number;
-    }
-
-    export interface IOldTransferTx extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.SEND_OLD;
-        fee: string;
-        amount: string;
-        recipient: string;
-    }
-
-    export interface IIssue extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.ISSUE;
-        decimals: number;
-        description: string;
-        name: string;
-        quantity: string;
-        reissuable: boolean;
-        fee: string;
-    }
-
-    export interface ITransfer extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.TRANSFER;
-        amount: string;
-        assetId: string;
-        attachment: string;
-        fee: string;
-        feeAssetId: string;
-        recipient: string;
-    }
-
-    export interface IReissue extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.REISSUE;
-        assetId: string;
-        quantity: string;
-        reissuable: boolean;
-        fee: string;
-    }
-
-    export interface IBurn extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.BURN;
-        assetId: string;
-        amount: string;
-        fee: string;
-    }
-
-    export interface IExchange extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.EXCHANGE;
-        amount: string;
-        buyMatcherFee: string;
-        sellMatcherFee: string;
-        fee: string;
-        price: string;
-        order1: IExchangeOrder;
-        order2: IExchangeOrder;
-    }
-
-    export interface ILease extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.LEASE;
-        amount: string;
-        fee: string;
-        status?: 'active' | 'canceled';
-        recipient: string;
-    }
-
-    export interface ICancelLeasing extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.CANCEL_LEASING;
-        fee: string;
-        leaseId: string;
-        lease: ILease;
-    }
-
-    export interface ICreateAlias extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.CREATE_ALIAS;
-        alias: string;
-        fee: string;
-    }
-
-    export interface IMassTransfer extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.MASS_TRANSFER;
-        version?: number;
-        assetId: string;
-        attachment: string;
-        fee: string;
-        totalAmount: string;
-        transferCount: number;
-        transfers: Array<{ amount: string; recipient: string; }>
-    }
-
-    export interface IData extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.DATA;
-        version?: number;
-        data: Array<TDataEntry>;
-    }
-
-    export interface ISponsorship extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.SPONSORSHIP;
-        version?: number;
-        minSponsoredAssetFee: string | number;
-        assetId: string;
-    }
-
-    export interface ISetScript extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.SET_SCRIPT;
-        version?: number;
-        script: string;
-    }
-
-    export interface ISetAssetScript extends IBaseTransaction {
-        type: TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT;
-        version?: number;
-        script: string;
-    }
-
-    export interface IScriptInvocation extends IBaseTransaction {
-        type: 16;
-        version?: number;
-        call?: ICall;
-        dApp: string;
-        payment?: Array<{ amount: number; assetId: string; }>;
-    }
-
-    export interface IExchangeOrder {
-        amount: string;
-        assetPair: IAssetPair;
-        expiration: number;
-        id: string;
-        matcherFee: string;
-        matcherFeeAssetId?: string;
-        matcherPublicKey: string;
-        orderType: TOrderType;
-        price: string;
-        senderPublicKey: string;
-        signature: string;
-        timestamp: number;
-    }
-}
-
-export interface IBaseTransaction {
+// biome-ignore lint/style/noNamespace: TypeScript declaration file
+export namespace txApi {
+  export interface IBaseTransaction {
     type: number;
     id: string;
     timestamp: number;
     sender: string;
     senderPublicKey: string;
-    fee: Money;
-    isUTX: boolean;
+    fee: string;
     signature?: string;
     proofs?: Array<string>;
     height?: number;
-}
+  }
 
-export interface IOldTransferTx extends IBaseTransaction {
+  export interface IOldTransferTx extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.SEND_OLD;
-    fee: Money;
-    amount: Money;
+    fee: string;
+    amount: string;
     recipient: string;
-}
+  }
 
-export interface IIssue extends IBaseTransaction {
+  export interface IIssue extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.ISSUE;
-    precision: number;
+    decimals: number;
     description: string;
     name: string;
-    quantity: BigNumber;
+    quantity: string;
     reissuable: boolean;
-    fee: Money;
-}
+    fee: string;
+  }
 
-export interface ITransfer extends IBaseTransaction {
+  export interface ITransfer extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.TRANSFER;
-    amount: Money;
+    amount: string;
     assetId: string;
-    attachment: Uint8Array;
-    fee: Money;
+    attachment: string;
+    fee: string;
     feeAssetId: string;
     recipient: string;
-}
+  }
 
-export interface IReissue extends IBaseTransaction {
+  export interface IReissue extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.REISSUE;
     assetId: string;
-    quantity: Money;
+    quantity: string;
     reissuable: boolean;
-    fee: Money;
-}
+    fee: string;
+  }
 
-export interface IBurn extends IBaseTransaction {
+  export interface IBurn extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.BURN;
     assetId: string;
-    amount: Money;
-    fee: Money;
-}
+    amount: string;
+    fee: string;
+  }
 
-export interface IExchange extends IBaseTransaction {
+  export interface IExchange extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.EXCHANGE;
-    exchangeType: TOrderType;
-    buyMatcherFee: Money;
-    sellMatcherFee: Money;
-    amount: Money;
-    price: Money;
-    total: Money;
-    fee: Money;
+    amount: string;
+    buyMatcherFee: string;
+    sellMatcherFee: string;
+    fee: string;
+    price: string;
     order1: IExchangeOrder;
     order2: IExchangeOrder;
-    buyOrder: IExchangeOrder;
-    sellOrder: IExchangeOrder;
-}
+  }
 
-export interface ILease extends IBaseTransaction {
+  export interface ILease extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.LEASE;
-    amount: Money;
-    fee: Money;
-    isActive: boolean;
-    status?: TLeasingStatus;
+    amount: string;
+    fee: string;
+    status?: 'active' | 'canceled';
     recipient: string;
-}
+  }
 
-export interface ICancelLeasing extends IBaseTransaction {
+  export interface ICancelLeasing extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.CANCEL_LEASING;
-    fee: Money;
+    fee: string;
     leaseId: string;
-    lease?: ILease;
-}
+    lease: ILease;
+  }
 
-export interface ICreateAlias extends IBaseTransaction {
+  export interface ICreateAlias extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.CREATE_ALIAS;
     alias: string;
-    fee: Money;
-}
+    fee: string;
+  }
 
-export interface IMassTransfer extends IBaseTransaction {
+  export interface IMassTransfer extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.MASS_TRANSFER;
     version?: number;
     assetId: string;
-    attachment: Uint8Array;
-    fee: Money;
-    totalAmount: Money;
+    attachment: string;
+    fee: string;
+    totalAmount: string;
     transferCount: number;
-    transfers: Array<{ amount: Money; recipient: string; }>
-}
+    transfers: Array<{ amount: string; recipient: string }>;
+  }
 
-export interface IData extends IBaseTransaction {
+  export interface IData extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.DATA;
     version?: number;
     data: Array<TDataEntry>;
-    stringifiedData: string;
-    fee: Money;
-}
+  }
 
-export interface ISponsorship extends IBaseTransaction {
+  export interface ISponsorship extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.SPONSORSHIP;
     version?: number;
-    assetId: string
-    minSponsoredAssetFee: Money;
-}
+    minSponsoredAssetFee: string | number;
+    assetId: string;
+  }
 
-export interface ISetScript extends IBaseTransaction {
+  export interface ISetScript extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.SET_SCRIPT;
     version?: number;
     script: string;
-}
+  }
 
-export interface ISetAssetScript extends IBaseTransaction {
+  export interface ISetAssetScript extends IBaseTransaction {
     type: TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT;
     version?: number;
     script: string;
-}
+  }
 
-export interface IExchangeOrder {
-    amount: Money;
-    price: Money;
-    total: Money;
-    assetPair: IAssetPair;
-    expiration: number;
-    id: string;
-    matcherFee: Money;
-    matcherPublicKey: string;
-    orderType: TOrderType;
-    senderPublicKey: string;
-    signature: string;
-    timestamp: number;
-}
-
-export interface IScriptInvocation extends IBaseTransaction {
+  export interface IScriptInvocation extends IBaseTransaction {
+    type: 16;
     version?: number;
     call?: ICall;
     dApp: string;
-    payment?: Array<Money>;
+    payment?: Array<{ amount: number; assetId: string }>;
+  }
+
+  export interface IExchangeOrder {
+    amount: string;
+    assetPair: IAssetPair;
+    expiration: number;
+    id: string;
+    matcherFee: string;
+    matcherFeeAssetId?: string;
+    matcherPublicKey: string;
+    orderType: TOrderType;
+    price: string;
+    senderPublicKey: string;
+    signature: string;
+    timestamp: number;
+  }
+}
+
+export interface IBaseTransaction {
+  type: number;
+  id: string;
+  timestamp: number;
+  sender: string;
+  senderPublicKey: string;
+  fee: Money;
+  isUTX: boolean;
+  signature?: string;
+  proofs?: Array<string>;
+  height?: number;
+}
+
+export interface IOldTransferTx extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.SEND_OLD;
+  fee: Money;
+  amount: Money;
+  recipient: string;
+}
+
+export interface IIssue extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.ISSUE;
+  precision: number;
+  description: string;
+  name: string;
+  quantity: BigNumber;
+  reissuable: boolean;
+  fee: Money;
+}
+
+export interface ITransfer extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.TRANSFER;
+  amount: Money;
+  assetId: string;
+  attachment: Uint8Array;
+  fee: Money;
+  feeAssetId: string;
+  recipient: string;
+}
+
+export interface IReissue extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.REISSUE;
+  assetId: string;
+  quantity: Money;
+  reissuable: boolean;
+  fee: Money;
+}
+
+export interface IBurn extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.BURN;
+  assetId: string;
+  amount: Money;
+  fee: Money;
+}
+
+export interface IExchange extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.EXCHANGE;
+  exchangeType: TOrderType;
+  buyMatcherFee: Money;
+  sellMatcherFee: Money;
+  amount: Money;
+  price: Money;
+  total: Money;
+  fee: Money;
+  order1: IExchangeOrder;
+  order2: IExchangeOrder;
+  buyOrder: IExchangeOrder;
+  sellOrder: IExchangeOrder;
+}
+
+export interface ILease extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.LEASE;
+  amount: Money;
+  fee: Money;
+  isActive: boolean;
+  status?: TLeasingStatus;
+  recipient: string;
+}
+
+export interface ICancelLeasing extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.CANCEL_LEASING;
+  fee: Money;
+  leaseId: string;
+  lease?: ILease;
+}
+
+export interface ICreateAlias extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.CREATE_ALIAS;
+  alias: string;
+  fee: Money;
+}
+
+export interface IMassTransfer extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.MASS_TRANSFER;
+  version?: number;
+  assetId: string;
+  attachment: Uint8Array;
+  fee: Money;
+  totalAmount: Money;
+  transferCount: number;
+  transfers: Array<{ amount: Money; recipient: string }>;
+}
+
+export interface IData extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.DATA;
+  version?: number;
+  data: Array<TDataEntry>;
+  stringifiedData: string;
+  fee: Money;
+}
+
+export interface ISponsorship extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.SPONSORSHIP;
+  version?: number;
+  assetId: string;
+  minSponsoredAssetFee: Money;
+}
+
+export interface ISetScript extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.SET_SCRIPT;
+  version?: number;
+  script: string;
+}
+
+export interface ISetAssetScript extends IBaseTransaction {
+  type: TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT;
+  version?: number;
+  script: string;
+}
+
+export interface IExchangeOrder {
+  amount: Money;
+  price: Money;
+  total: Money;
+  assetPair: IAssetPair;
+  expiration: number;
+  id: string;
+  matcherFee: Money;
+  matcherPublicKey: string;
+  orderType: TOrderType;
+  senderPublicKey: string;
+  signature: string;
+  timestamp: number;
+}
+
+export interface IScriptInvocation extends IBaseTransaction {
+  version?: number;
+  call?: ICall;
+  dApp: string;
+  payment?: Array<Money>;
 }
 
 export interface ICall {
-    args: Array<TCallArgs>;
-    function: string;
+  args: Array<TCallArgs>;
+  function: string;
 }
 
-export type TDataEntry = TDataEntryInteger | TDataEntryBoolean | TDataEntryBinary | TDataEntryString;
+export type TDataEntry =
+  | TDataEntryInteger
+  | TDataEntryBoolean
+  | TDataEntryBinary
+  | TDataEntryString;
 
 export interface TDataEntryInteger {
-    type: 'integer';
-    key: string;
-    value: number | BigNumber;
+  type: 'integer';
+  key: string;
+  value: number | BigNumber;
 }
 
 export interface TDataEntryBoolean {
-    type: 'boolean';
-    key: string;
-    value: boolean;
+  type: 'boolean';
+  key: string;
+  value: boolean;
 }
 
 export interface TDataEntryBinary {
-    type: 'binary';
-    key: string;
-    value: string; // base64
+  type: 'binary';
+  key: string;
+  value: string; // base64
 }
 
 export interface TDataEntryString {
-    type: 'string';
-    key: string;
-    value: string;
+  type: 'string';
+  key: string;
+  value: string;
 }
 
 export type TCallArgs = TCallArgsInteger | TCallArgsBoolean | TCallArgsBinary | TCallArgsString;
 
 export interface TCallArgsInteger {
-    type: 'integer';
-    value: number;
+  type: 'integer';
+  value: number;
 }
 
 export interface TCallArgsBoolean {
-    type: 'boolean';
-    value: boolean;
+  type: 'boolean';
+  value: boolean;
 }
 
 export interface TCallArgsBinary {
-    type: 'binary';
-    value: string; // base64
+  type: 'binary';
+  value: string; // base64
 }
 
 export interface TCallArgsString {
-    type: 'string';
-    value: string;
+  type: 'string';
+  value: string;
 }

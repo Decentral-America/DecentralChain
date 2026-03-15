@@ -3,27 +3,31 @@
  * Allows users to view and backup their seed phrase after password authentication
  * Modern Material UI implementation matching Angular saveSeed module functionality
  */
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Container,
-  Typography,
-  TextField,
-  MenuItem,
-  Alert,
   Fade,
-  Slide,
-  useTheme,
   keyframes,
-  AlertTitle,
+  MenuItem,
+  Slide,
+  TextField,
+  Typography,
+  useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import * as ds from 'data-service';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/atoms/Button';
-import { SeedBackup } from '@/features/auth/SeedBackup';
-import { useAuth } from '@/contexts/AuthContext';
 import { NetworkConfig } from '@/config';
-import { Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAuth } from '@/contexts/AuthContext';
+import { SeedBackup } from '@/features/auth/SeedBackup';
+import { logger } from '@/lib/logger';
 
 // Animations
 const gradientShift = keyframes`
@@ -43,19 +47,19 @@ const pulse = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  overflow: 'hidden',
+  animation: `${gradientShift} 15s ease infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%)'
       : 'linear-gradient(135deg, #e8f0fe 0%, #f5f7fa 50%, #e3f2fd 100%)',
   backgroundSize: '200% 200%',
-  animation: `${gradientShift} 15s ease infinite`,
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  overflow: 'hidden',
   padding: theme.spacing(3),
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
@@ -65,86 +69,86 @@ const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'size', 'top', 'left'].includes(prop as string),
 })<{ delay: number; size: number; top: string; left: string }>(
   ({ theme, delay, size, top, left }) => ({
-    position: 'absolute',
-    width: size,
-    height: size,
-    top,
-    left,
-    borderRadius: '30%',
+    animation: `${float} ${6 + delay}s ease-in-out infinite`,
+    animationDelay: `${delay}s`,
+    backdropFilter: 'blur(10px)',
     background:
       theme.palette.mode === 'dark'
         ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.1), rgba(90, 129, 255, 0.1))'
         : 'linear-gradient(135deg, rgba(31, 90, 246, 0.05), rgba(90, 129, 255, 0.05))',
-    backdropFilter: 'blur(10px)',
     border: `1px solid ${
       theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(31, 90, 246, 0.1)'
     }`,
-    animation: `${float} ${6 + delay}s ease-in-out infinite`,
-    animationDelay: `${delay}s`,
+    borderRadius: '30%',
+    height: size,
+    left,
+    position: 'absolute',
+    top,
+    width: size,
     zIndex: 0,
-  })
+  }),
 );
 
 const GlowOrb = styled(Box, {
   shouldForwardProp: (prop) => !['color', 'top', 'left', 'size'].includes(prop as string),
 })<{ color: string; top: string; left: string; size: number }>(({ color, top, left, size }) => ({
-  position: 'absolute',
-  width: size,
-  height: size,
-  top,
-  left,
-  borderRadius: '50%',
-  background: `radial-gradient(circle, ${color}40 0%, ${color}00 70%)`,
-  filter: 'blur(40px)',
   animation: `${pulse} 4s ease-in-out infinite`,
+  background: `radial-gradient(circle, ${color}40 0%, ${color}00 70%)`,
+  borderRadius: '50%',
+  filter: 'blur(40px)',
+  height: size,
+  left,
+  position: 'absolute',
+  top,
+  width: size,
   zIndex: 0,
 }));
 
 const ContentWrapper = styled(Container)(({ theme }) => ({
-  position: 'relative',
-  zIndex: 1,
-  maxWidth: '800px !important',
+  backdropFilter: 'blur(20px)',
   background:
     theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.85)' : 'rgba(255, 255, 255, 0.85)',
-  backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(4),
   border: `1px solid ${
     theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
   }`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(31, 90, 246, 0.2)'
       : '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(31, 90, 246, 0.1)',
+  maxWidth: '800px !important',
+  padding: theme.spacing(4),
+  position: 'relative',
+  zIndex: 1,
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(3),
     borderRadius: theme.spacing(2),
+    padding: theme.spacing(3),
   },
 }));
 
 const AccountCard = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  borderRadius: theme.spacing(2),
+  alignItems: 'center',
   background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
   border: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(2),
+  borderRadius: theme.spacing(2),
   display: 'flex',
-  alignItems: 'center',
   gap: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  padding: theme.spacing(2.5),
 }));
 
-const AccountAvatar = styled(Box)(({ theme }) => ({
-  width: 48,
-  height: 48,
-  borderRadius: '50%',
-  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-  display: 'flex',
+const AccountAvatar = styled(Box)(({ theme: _theme }) => ({
   alignItems: 'center',
-  justifyContent: 'center',
+  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+  borderRadius: '50%',
   color: '#fff',
-  fontWeight: 700,
-  fontSize: '1.25rem',
+  display: 'flex',
   flexShrink: 0,
+  fontSize: '1.25rem',
+  fontWeight: 700,
+  height: 48,
+  justifyContent: 'center',
+  width: 48,
 }));
 
 interface User {
@@ -158,7 +162,7 @@ interface User {
 export const SaveSeedPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { user: _currentUser, getActiveState } = useAuth();
+  const { getActiveState } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   // State
@@ -176,20 +180,7 @@ export const SaveSeedPage: React.FC = () => {
   const needPassword =
     !selectedUser?.userType || ['seed', 'privateKey'].includes(selectedUser.userType);
 
-  useEffect(() => {
-    setIsVisible(true);
-    // Load user list from storage
-    loadUserList();
-  }, []);
-
-  useEffect(() => {
-    if (password) {
-      setShowPasswordError(false);
-      setNetworkError(false);
-    }
-  }, [password]);
-
-  const loadUserList = async () => {
+  const loadUserList = useCallback(async () => {
     try {
       // Get users from localStorage
       const usersData = localStorage.getItem('dcc_users');
@@ -197,13 +188,26 @@ export const SaveSeedPage: React.FC = () => {
         const users: User[] = JSON.parse(usersData);
         setUserList(users);
         if (users.length > 0) {
-          setSelectedAddress(users[0].address);
+          setSelectedAddress(users[0]?.address ?? '');
         }
       }
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setIsVisible(true);
+    // Load user list from storage
+    loadUserList();
+  }, [loadUserList]);
+
+  useEffect(() => {
+    if (password) {
+      setShowPasswordError(false);
+      setNetworkError(false);
+    }
+  }, [password]);
 
   const handleShowSeed = async () => {
     if (!selectedUser) return;
@@ -215,14 +219,14 @@ export const SaveSeedPage: React.FC = () => {
     try {
       // Import data-service for seed decryption
       // This matches the Angular implementation exactly
-      const ds = await import('data-service');
 
       const userSettings = {}; // Get from storage if needed
       const activeUser = {
         ...selectedUser,
-        password,
-        settings: userSettings,
         networkByte: NetworkConfig.networkByte, // Computed from mainnet.json code
+        password,
+        publicKey: selectedUser.publicKey || '',
+        settings: userSettings,
         userType: selectedUser.userType || 'seed', // Default to seed
       };
 
@@ -251,7 +255,7 @@ export const SaveSeedPage: React.FC = () => {
       setSeed(seedPhrase);
       setIsRevealed(true);
     } catch (error) {
-      console.error('Error revealing seed:', error);
+      logger.error('Error revealing seed:', error);
       setPassword('');
       setShowPasswordError(true);
 
@@ -269,9 +273,7 @@ export const SaveSeedPage: React.FC = () => {
     setIsRevealed(false);
     setSeed('');
     // Logout
-    import('data-service').then((ds) => {
-      ds.app.logOut();
-    });
+    ds.app.logOut();
   };
 
   const handleComplete = () => {
@@ -302,14 +304,14 @@ export const SaveSeedPage: React.FC = () => {
         <Fade in={isVisible} timeout={600}>
           <Slide direction="up" in={isVisible} timeout={800}>
             <ContentWrapper>
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Lock sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-                <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
+              <Box sx={{ py: 4, textAlign: 'center' }}>
+                <Lock sx={{ color: 'text.secondary', fontSize: 64, mb: 2 }} />
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
                   No Accounts Found
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                  You don't have any accounts with seed phrases to backup. Please create or import
-                  an account first.
+                  You don&apos;t have any accounts with seed phrases to backup. Please create or
+                  import an account first.
                 </Typography>
                 <Button variant="primary" onClick={() => navigate('/signup')}>
                   Create Account
@@ -374,7 +376,7 @@ export const SaveSeedPage: React.FC = () => {
         <Slide direction="up" in={isVisible} timeout={800}>
           <ContentWrapper>
             <Box>
-              <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, color: 'text.primary' }}>
+              <Typography variant="h4" sx={{ color: 'text.primary', fontWeight: 700, mb: 1 }}>
                 Backup Seed Phrase
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
@@ -403,21 +405,21 @@ export const SaveSeedPage: React.FC = () => {
                 >
                   {userList.map((user) => (
                     <MenuItem key={user.address} value={user.address}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ alignItems: 'center', display: 'flex', gap: 2 }}>
                         <Box
                           sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #1f5af6, #5a81ff)',
-                            display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
+                            background: 'linear-gradient(135deg, #1f5af6, #5a81ff)',
+                            borderRadius: '50%',
                             color: '#fff',
+                            display: 'flex',
                             fontWeight: 700,
+                            height: 32,
+                            justifyContent: 'center',
+                            width: 32,
                           }}
                         >
-                          {user.name?.[0]?.toUpperCase() || user.address[0].toUpperCase()}
+                          {user.name?.[0]?.toUpperCase() || user.address[0]?.toUpperCase()}
                         </Box>
                         <Box>
                           <Typography variant="body2" fontWeight={600}>
@@ -436,7 +438,8 @@ export const SaveSeedPage: React.FC = () => {
               {selectedUser && (
                 <AccountCard>
                   <AccountAvatar>
-                    {selectedUser.name?.[0]?.toUpperCase() || selectedUser.address[0].toUpperCase()}
+                    {selectedUser.name?.[0]?.toUpperCase() ||
+                      selectedUser.address[0]?.toUpperCase()}
                   </AccountAvatar>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="body1" fontWeight={600}>
@@ -471,7 +474,7 @@ export const SaveSeedPage: React.FC = () => {
                     InputProps={{
                       endAdornment: (
                         <Box
-                          sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                          sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -485,8 +488,8 @@ export const SaveSeedPage: React.FC = () => {
               <Alert severity="warning" sx={{ mb: 3 }}>
                 <AlertTitle>Security Warning</AlertTitle>
                 Never share your seed phrase with anyone. Anyone with access to your seed phrase can
-                access and steal your funds. Make sure you're in a private location before revealing
-                your seed phrase.
+                access and steal your funds. Make sure you&apos;re in a private location before
+                revealing your seed phrase.
               </Alert>
 
               <Button

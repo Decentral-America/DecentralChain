@@ -6,13 +6,13 @@
     "cancel": "Thoát",
     "copied": "Đã sao chép",
     "copyToClipboard": "Nhấn để sao chép vào bộ nhớ tạm",
+    "email": "Email",
+    "emailNoBackupPhrase": "Tài khoản này được đăng nhập bằng tài khoản DecentralChain, nên không có cụm từ sao lưu để sao chép",
     "encodedSeed": "Seed được mã hóa",
     "enter": "Vào ",
-    "email": "Email",
     "password": "Mật khẩu",
     "passwordError": "Sai mật khẩu ",
     "privateKeyNoBackupPhrase": "Tài khoản này được đăng nhập bằng private key, nên không có cụm từ sao lưu để sao chép ",
-    "emailNoBackupPhrase": "Tài khoản này được đăng nhập bằng tài khoản DecentralChain, nên không có cụm từ sao lưu để sao chép",
     "privKey": "Private key",
     "pubKey": "Public key",
     "viewInExplorer": "Xem trên trình duyệt "
@@ -21,10 +21,10 @@
   "address": {
     "add": "Người dùng mới",
     "addButton": "Thêm mới",
-    "addTooltip": "Thêm một địa chỉ vào liên lạc của bạn",
     "added": "Địa chỉ đã được thêm",
     "addressAlreadyExist": "Địa chỉ đã tồn tại",
     "addressInvalidError": "Giá trị địa chỉ không hợp lệ",
+    "addTooltip": "Thêm một địa chỉ vào liên lạc của bạn",
     "cancel": "Hủy",
     "copied": "Đã sao chép",
     "copyToClipboard": "Nhấn để sao chép vào bộ nhớ tạm",
@@ -50,25 +50,25 @@
     "balanceLabel": "Số dư"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "Tên",
-    "ticker": "Ký hiệu",
-    "precision": "Điểm thập phân",
-    "quantity": "Tổng số đã phát hành ",
-    "type": "Kiểu",
-    "reissuable": "Có thể phát hành lại ",
-    "notReissuable": "Không thể trị phát hành lại",
-    "scripted": "Đã đặt lệnh",
-    "notScripted": "Chưa đặt lệnh",
-    "minSponsoredFee": "Phí tài sản được tài trợ",
-    "sender": "Người phát hành",
-    "timestamp": "Ngày phát hành ",
     "closeBtn": "Đóng ",
-    "infoTooltip": "Thông tin tài sản ",
     "favAddTooltip": "Thêm vào danh sách yêu thích",
     "favRemoveTooltip": "Xóa khỏi danh sách yêu thíc",
+    "id": "ID",
+    "infoTooltip": "Thông tin tài sản ",
+    "minSponsoredFee": "Phí tài sản được tài trợ",
+    "name": "Tên",
+    "notReissuable": "Không thể trị phát hành lại",
+    "notScripted": "Chưa đặt lệnh",
+    "precision": "Điểm thập phân",
+    "quantity": "Tổng số đã phát hành ",
+    "reissuable": "Có thể phát hành lại ",
+    "scripted": "Đã đặt lệnh",
     "sendAssetTooltip": "Gửi ",
+    "sender": "Người phát hành",
     "swapAssetTooltip": "Swap",
+    "ticker": "Ký hiệu",
+    "timestamp": "Ngày phát hành ",
+    "type": "Kiểu",
     "viewDetailsInExplorer": "Xem thông tin trên trình duyệt"
   },
   "assetSelectModal": {
@@ -111,14 +111,14 @@
     "saveBackup": "Lưu cụm từ sao lưu"
   },
   "bottom": {
-    "network": {
-      "edit": "Sửa",
-      "disabled": "Bạn không thể thay đổi cài đặt mạng trong quá trình hoạt động này"
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "Bạn không thể thay đổi cài đặt mạng trong quá trình hoạt động này",
+      "edit": "Sửa"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "Tên tài khoản hiện tại",
@@ -167,10 +167,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "Xuất tài khoản",
-    "importAccounts": "Nhập tài khoản",
     "exportAddressBook": "Xuất sổ địa chỉ",
-    "importAddressBook": "Nhập sổ địa chỉ",
-    "exportAll": "Xuất tất cả"
+    "exportAll": "Xuất tất cả",
+    "importAccounts": "Nhập tài khoản",
+    "importAddressBook": "Nhập sổ địa chỉ"
   },
   "exportKeystore": {
     "cancelBtn": "Hủy ",
@@ -195,13 +195,13 @@
   "forgotPassword": {
     "attention": "Chú ý!",
     "attentionMessage": "Để tạo lại mật khẩu, bạn cần xóa tất cả tài khoản từ ví Cubensis Connect, tạo mật khẩu mới, nhập từng tài khoản của bạn lại bằng seedpharse",
-    "warningMessage": "Nếu bạn chưa lưu Seed hoặc Private key, thì bạn sẽ không thể khôi phục quyền truy cập vào tài khoản của mình.",
     "continueMessage": "Để tiếp tục, nhập từ này vào ô bên dưới ",
     "phrase": "XÓA TẤT CẢ TÀI KHOẢN",
     "phraseError": "Cụm từ được nhập vào không đúng",
     "placeholder": "Nhập tại đây",
+    "resetCancel": "Hủy",
     "resetConfirm": "Xóa tất cả  ",
-    "resetCancel": "Hủy"
+    "warningMessage": "Nếu bạn chưa lưu Seed hoặc Private key, thì bạn sẽ không thể khôi phục quyền truy cập vào tài khoản của mình."
   },
   "historyCard": {
     "burn": "Đốt tài sản",
@@ -241,25 +241,25 @@
     "transferSelf": "Tự chuyển"
   },
   "historyFilters": {
-    "all": "Tất cả",
-    "incoming": "Chỉ đến",
-    "outgoing": "Chỉ chuyển đi",
-    "issue": "Phát hành ",
-    "transfer": "Chuyển",
-    "reissue": "Phát hành lại ",
-    "burn": "Đốt",
-    "exchange": "Exchange ",
-    "lease": "Cho thuê",
-    "cancelLease": "Hủy cho thuê",
     "alias": "Biệt danh",
-    "massTransfer": "Chuyển hàng loạt",
+    "all": "Tất cả",
+    "burn": "Đốt",
+    "cancelLease": "Hủy cho thuê",
     "data": "Dữ liệu ",
+    "exchange": "Exchange ",
+    "incoming": "Chỉ đến",
+    "invokeScript": "Invoke kịch bản",
+    "issue": "Phát hành ",
+    "lease": "Cho thuê",
+    "massTransfer": "Chuyển hàng loạt",
+    "outgoing": "Chỉ chuyển đi",
+    "reissue": "Phát hành lại ",
+    "setAssetScript": "Đặt kịch bản tài sản",
     "setScript": "Đặt kịch bản",
     "sponsorship": "Sự bảo trợ",
-    "setAssetScript": "Đặt kịch bản tài sản",
-    "invokeScript": "Invoke kịch bản",
-    "updateAssetInfo": "Cập nhật thông tin tài sản",
-    "type": "Kiểu giao dịch"
+    "transfer": "Chuyển",
+    "type": "Kiểu giao dịch",
+    "updateAssetInfo": "Cập nhật thông tin tài sản"
   },
   "import": {
     "addAccount": "Thêm tài khoản",
@@ -281,25 +281,25 @@
     "viaSeed": "Seed Phrase hoặc Private Key"
   },
   "importEmail": {
-    "importEmailTitle": "Nhập tài khoản Email",
-    "importEmailDesc": "Kết nối với 1 tài khoản đã tạo trên DecentralChain Exchange",
-    "passwordLabel": "Mật khẩu",
-    "passwordRequired": "Nhập mật khẩu",
-    "loginRequired": "Xác nhận tài khoản Email",
+    "alreadyExists": "Tài khoản đã tồn tại",
+    "continue": "Tiếp tục",
+    "credentialsError": "Sai tên tài khoản hoặc mật khẩu",
+    "dontHaveAccount": "Không có tài khoản ?",
     "emailLabel": "Email",
     "emailRequired": "Nhập Email đúng",
-    "credentialsError": "Sai tên tài khoản hoặc mật khẩu",
-    "continue": "Tiếp tục",
     "forgotPassword": "Quên mật khẩu",
-    "dontHaveAccount": "Không có tài khoản ?",
-    "signUp": "Đăng ký",
-    "verifyAccountTitle": "Xác nhận tài khoản ",
-    "verifyAccountDesc": "Vui lòng nhập mã xác minh gồm 6 chữ số mà {{destination}} nhận được",
+    "importEmailDesc": "Kết nối với 1 tài khoản đã tạo trên DecentralChain Exchange",
+    "importEmailTitle": "Nhập tài khoản Email",
     "incorrectCode": "Sai mã. Vui lòng thử lại ",
-    "userDoesNotExist": "Người dùng không tồn tại.",
     "incorrectUsernameOrPassword": "Sai tên đăng nhập hoặc mật khẩu.",
     "incorrectUsernameOrPasswordLimit": "Bạn đã vượt quá số lần nhập sai tên người dùng hoặc mật khẩu. Nếu bạn gặp bất kỳ sự cố nào, vui lòng liên hệ với bộ phận hỗ trợ https://support.decentralchain.io/.",
-    "alreadyExists": "Tài khoản đã tồn tại"
+    "loginRequired": "Xác nhận tài khoản Email",
+    "passwordLabel": "Mật khẩu",
+    "passwordRequired": "Nhập mật khẩu",
+    "signUp": "Đăng ký",
+    "userDoesNotExist": "Người dùng không tồn tại.",
+    "verifyAccountDesc": "Vui lòng nhập mã xác minh gồm 6 chữ số mà {{destination}} nhận được",
+    "verifyAccountTitle": "Xác nhận tài khoản "
   },
   "importKeystore": {
     "addressBookLabel": "Tệp sổ địa chỉ",
@@ -329,11 +329,11 @@
     "connectInstructions": "Kết nối với thiết bị Ledger và mở ứng dụng DCC",
     "continueButton": "Tiếp tục",
     "couldNotGetUsersError": "Không thể có thêm người dùng từ Ledger. Hãy đảm bảo rằng ledger được kết nối, mở khóa và ứng dụng DCC đang mở, sau đó nhấp vào <retryButton> Thử lại </retryButton>",
-    "userIdInputNumbersError": "Chỉ chấp nhận số",
-    "userIdInputMaxValueError": "ID tài khoản không được lớn hơn {{ maxUserId }}",
     "selectAccountInstructions": "Chọn địa chỉ của bạn",
     "title": "Import Ledger",
-    "tryAgainButton": "Thử lại "
+    "tryAgainButton": "Thử lại ",
+    "userIdInputMaxValueError": "ID tài khoản không được lớn hơn {{ maxUserId }}",
+    "userIdInputNumbersError": "Chỉ chấp nhận số"
   },
   "importSeed": {
     "accountExistsError": "Tài khoản đã được gọi là '{{name}}'",
@@ -360,14 +360,14 @@
     "keepUp": "Ví Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp DecentralChain hoặc DApps. Sử dụng ví Cubensis Connect, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
   },
   "langsSettings": { "confirm": "Xác nhận", "title": "Thay đổi ngôn ngữ" },
-  "ledgerErrors": {
-    "unknown": "Không thể kết nối với Ledger. Hãy thử lại",
-    "usedBySomeOtherApp": "Có vẻ như ledger đã được sử dụng bởi một ứng dụng khác. Đóng tất cả ứng dụng mà bạn có thể sử dụng Ledger và thử lại"
-  },
   "ledgerConnectModal": {
     "instructions": "Kết nối thiết bị Ledger và mở ứng dụng DCC",
     "title": "Đang kết nối",
     "tryAgainButton": "Thử lại "
+  },
+  "ledgerErrors": {
+    "unknown": "Không thể kết nối với Ledger. Hãy thử lại",
+    "usedBySomeOtherApp": "Có vẻ như ledger đã được sử dụng bởi một ứng dụng khác. Đóng tất cả ứng dụng mà bạn có thể sử dụng Ledger và thử lại"
   },
   "login": {
     "enter": "Enter",
@@ -445,10 +445,18 @@
     "viewInExplorer": "Xem thông tin trên trình duyệt",
     "viewOnMarketplace": "Xem trên thị trường"
   },
+  "notifications": {
+    "allowSending": "Cho phép gửi tin nhắn",
+    "closeBtn": "Đóng",
+    "messages": "Tin nhắn ",
+    "nextBtn": "Tiếp theo ",
+    "time": "Thời gian",
+    "toListBtn": "Thông báo"
+  },
   "otherAccounts": {
     "addAccount": "Thêm tài khoản",
-    "noAccountsNote": "Bạn không còn tài khoản khác trên mạng hiện tại",
     "noAccountsFound": "Không tìm thấy tài khoản khác cho bộ lọc đã chọn",
+    "noAccountsNote": "Bạn không còn tài khoản khác trên mạng hiện tại",
     "title": "Các tài khoản khác"
   },
   "permission": {
@@ -474,13 +482,13 @@
     "approvedOrigin": "Đã được phê duyệt",
     "automaticOrigin": "Ký tự động",
     "empty": "Không có gì ở đây",
-    "rejectedOrigin": "Đã bị từ chối",
-    "title": "Quyền điều khiển",
     "notify": {
       "allowed": "Đã cho phép",
       "deleted": "Đã xóa",
       "disallowed": "Đã ngừng cho phép!"
-    }
+    },
+    "rejectedOrigin": "Đã bị từ chối",
+    "title": "Quyền điều khiển"
   },
   "qrCode": { "download": "Tải xuống mã QR" },
   "send": {
@@ -513,11 +521,11 @@
     "settingsGeneral": "Chung",
     "suspiciousAssetsProtection": "Bảo vệ tài sản đáng ngờ",
     "suspiciousAssetsTooltip": "Không hiển thị số dư và giao dịch liên quan đến tài sản đáng ngờ",
-    "time_10m": "10 phút",
     "time_1h": "1 giờ",
+    "time_5m": "5 phút",
+    "time_10m": "10 phút",
     "time_20m": "20 phút",
     "time_40m": "40 phút",
-    "time_5m": "5 phút",
     "time_idle": "Thời gian chờ của trình duyệt",
     "tooltipContent": "Bảo vệ bạn khỏi các mối đe dọa từ Trojan Clicker"
   },
@@ -546,6 +554,7 @@
     "customDataFailed": "Dữ liệu của bạn bị từ chối!",
     "customDataName": "Ký dữ liệu tùy chỉnh",
     "customDataSent": "Dữ liệu của bạn đã được xác nhận!",
+    "dccAuthConfirmed": "Ký một yêu cầu xác thực DCC!",
     "matcherConfirmed": "Ký một yêu cầu tới người đối sánh!",
     "matcherRejected": "Yêu cầu chưa được ký.",
     "matcherSend": "Ký một yêu cầu tới người đối sánh!",
@@ -560,8 +569,7 @@
     "transactionFailed": "Giao dịch của bạn bị từ chối!",
     "transactionSend": "Bạn đã gửi ",
     "understand": "Tôi hiểu",
-    "viewTransaction": "Xem giao dịch",
-    "dccAuthConfirmed": "Ký một yêu cầu xác thực DCC!"
+    "viewTransaction": "Xem giao dịch"
   },
   "swap": {
     "amountToSendError": "Không thể thực hiện Swap do trạng thái SwopFi dApp. Vui lòng thử lại hoặc tăng nhẹ khả năng chịu trượt giá nếu có thể",
@@ -582,8 +590,8 @@
     "priceLabel": "Giá",
     "primaryLabel": "Hàng đầu",
     "profitLabel": "Lợi nhuận",
-    "slippageToleranceModalTitle": "Khả năng chịu trượt giá",
     "slippageToleranceModalDescription": "Giao dịch swap sẽ bị hủy nếu giá thay đổi theo hướng bất lợi hơn tỷ lệ phần trăm này",
+    "slippageToleranceModalTitle": "Khả năng chịu trượt giá",
     "statusFailed": "Swap thất bại",
     "statusInProgress": "Đang chờ hoàn thành Swap ...",
     "statusSucceeded": "Swap thành công",
@@ -611,20 +619,26 @@
     "dataHash": "Hash dữ liệu",
     "dataTransaction": "Tham gia vào chuỗi khối",
     "dataTransactionName": "Dữ liệu",
+    "dccAuthTimeStamp": "Dấu thời gian",
     "decimalPoints": "Điểm thập phân",
     "description": "Phần mô tả",
     "details": "Chi tiết",
     "dex": "DEX",
     "expires": "Hết hạn",
     "fee": "Phí",
+    "hash": "Hash",
     "hideTransactions": "Ẩn giao dịch",
+    "issueNFT": "Phát hành NFT",
+    "issueSmartNFT": "Phát hành NFT thông minh",
+    "issueSmartToken": "Phát hành token thông minh",
+    "issueToken": "Phát hành token",
     "issueType": "Loại",
     "json": "JSON",
     "lease": "Cho thuê",
     "leaseCancel": "Hủy cho thuê",
     "massTransfer": "Chuyển hàng loạt",
-    "matcherTimeStamp": "Dấu thời gian đối sánh",
     "matcherPublicKey": "Đối sánh public key",
+    "matcherTimeStamp": "Dấu thời gian đối sánh",
     "name": "Tên",
     "noReissuable": "Không có giá trị phát hành lại",
     "orderBuy": "Mua",
@@ -645,6 +659,7 @@
     "recipient": "Người nhận",
     "recipients": "Người nhận",
     "reissuable": "Cấp lại",
+    "reissue": "Phát hành lại",
     "script": "Lệnh",
     "scriptInvocation": "Dẫn chứng tập lệnh",
     "scriptInvocationFunction": "Chức năng",
@@ -655,31 +670,16 @@
     "setSponsored": "Đặt tài trợ",
     "showAll": "Hiển thị tất cả",
     "showTransactions": "Hiển thị giao dịch",
-    "signRequestMatcher": "Ký yêu cầu tới Matcher",
     "signRequestDccAuth": "Ký yêu cầu xác thực DCC",
-    "updateAssetInfo": "Cập nhật thông tin tài sản",
-    "issueToken": "Phát hành token",
-    "issueSmartToken": "Phát hành token thông minh",
-    "issueNFT": "Phát hành NFT",
-    "issueSmartNFT": "Phát hành NFT thông minh",
-    "reissue": "Phát hành lại",
+    "signRequestMatcher": "Ký yêu cầu tới Matcher",
     "transfer": "Chuyển ",
     "txid": "TXID",
-    "hash": "Hash",
     "txTime": "Thời gian TX",
     "unknown": "Không rõ",
-    "dccAuthTimeStamp": "Dấu thời gian"
+    "updateAssetInfo": "Cập nhật thông tin tài sản"
   },
   "ui": {
     "logoTitle": "Giữ các khóa DCC của bạn an toàn khi trực tuyến"
-  },
-  "notifications": {
-    "allowSending": "Cho phép gửi tin nhắn",
-    "toListBtn": "Thông báo",
-    "nextBtn": "Tiếp theo ",
-    "closeBtn": "Đóng",
-    "time": "Thời gian",
-    "messages": "Tin nhắn "
   },
   "wallet": { "lease": "Đã cho thuê" },
   "welcome": {

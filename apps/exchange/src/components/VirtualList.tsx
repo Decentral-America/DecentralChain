@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 /**
@@ -6,7 +6,7 @@ import styled from 'styled-components';
  */
 export interface VirtualListItem {
   id: string | number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -80,7 +80,7 @@ const calculateVisibleRange = (
   containerHeight: number,
   itemHeight: number,
   totalItems: number,
-  overscan: number = 3
+  overscan: number = 3,
 ): { start: number; end: number } => {
   const visibleStart = Math.floor(scrollTop / itemHeight);
   const visibleEnd = Math.ceil((scrollTop + containerHeight) / itemHeight);
@@ -88,7 +88,7 @@ const calculateVisibleRange = (
   const start = Math.max(0, visibleStart - overscan);
   const end = Math.min(totalItems, visibleEnd + overscan);
 
-  return { start, end };
+  return { end, start };
 };
 
 /**
@@ -118,20 +118,11 @@ export function VirtualList<T extends VirtualListItem>({
     containerHeight,
     itemHeight,
     items.length,
-    overscan
+    overscan,
   );
 
   // Get visible items
   const visibleItems = items.slice(start, end);
-
-  // Handle scroll event
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const newScrollTop = containerRef.current.scrollTop;
-      setScrollTop(newScrollTop);
-      onScroll?.(newScrollTop);
-    }
-  };
 
   // Update container height on mount and resize
   useEffect(() => {
@@ -159,6 +150,14 @@ export function VirtualList<T extends VirtualListItem>({
     if (!container) return;
 
     let rafId: number | null = null;
+
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const newScrollTop = containerRef.current.scrollTop;
+        setScrollTop(newScrollTop);
+        onScroll?.(newScrollTop);
+      }
+    };
 
     const throttledScroll = () => {
       if (rafId) return;
@@ -238,7 +237,9 @@ export function VariableVirtualList<T extends VirtualListItem>({
   const getItemOffset = (index: number): number => {
     let offset = 0;
     for (let i = 0; i < index; i++) {
-      offset += itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      const item = items[i];
+      offset +=
+        itemHeights.get(i) || (item ? getItemHeight?.(item, i) : undefined) || estimatedItemHeight;
     }
     return offset;
   };
@@ -259,7 +260,9 @@ export function VariableVirtualList<T extends VirtualListItem>({
     // Find start index
     let currentOffset = 0;
     for (let i = 0; i < items.length; i++) {
-      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      const item = items[i];
+      const itemHeight =
+        itemHeights.get(i) || (item ? getItemHeight?.(item, i) : undefined) || estimatedItemHeight;
       if (currentOffset + itemHeight > scrollTop) {
         start = Math.max(0, i - overscan);
         break;
@@ -270,7 +273,9 @@ export function VariableVirtualList<T extends VirtualListItem>({
     // Find end index
     currentOffset = getItemOffset(start);
     for (let i = start; i < items.length; i++) {
-      const itemHeight = itemHeights.get(i) || getItemHeight?.(items[i], i) || estimatedItemHeight;
+      const item = items[i];
+      const itemHeight =
+        itemHeights.get(i) || (item ? getItemHeight?.(item, i) : undefined) || estimatedItemHeight;
       if (currentOffset > scrollTop + containerHeight) {
         end = Math.min(items.length, i + overscan);
         break;
@@ -278,18 +283,11 @@ export function VariableVirtualList<T extends VirtualListItem>({
       currentOffset += itemHeight;
     }
 
-    return { start, end };
+    return { end, start };
   };
 
   const { start, end } = getVisibleRange();
   const visibleItems = items.slice(start, end);
-
-  // Handle scroll
-  const handleScroll = () => {
-    if (containerRef.current) {
-      setScrollTop(containerRef.current.scrollTop);
-    }
-  };
 
   // Throttled scroll
   useEffect(() => {
@@ -297,6 +295,12 @@ export function VariableVirtualList<T extends VirtualListItem>({
     if (!container) return;
 
     let rafId: number | null = null;
+
+    const handleScroll = () => {
+      if (containerRef.current) {
+        setScrollTop(containerRef.current.scrollTop);
+      }
+    };
 
     const throttledScroll = () => {
       if (rafId) return;

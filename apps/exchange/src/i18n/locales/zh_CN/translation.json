@@ -1,9 +1,110 @@
 {
+  "app": {
+    "back": "返回主页",
+    "button": {
+      "cancel": "取消",
+      "continue": "继续",
+      "signIn": "登入"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "代币发行暂时不可用。",
+        "issue-title": "生成代币",
+        "massSendTitle": "大规模传送",
+        "reissue": "代币重新发行暂时无法使用。",
+        "sendTitle": "发送",
+        "set-script-title": "脚本交易"
+      },
+      "send": {
+        "errors": {
+          "fee": "您没有足够的资金来支付所需的费用。您必须支付 {{fee, money-currency}} 交易费;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "1月",
+        "2月",
+        "3月",
+        "4月",
+        "5月",
+        "6月",
+        "7月",
+        "8月",
+        "9月",
+        "10月",
+        "11月",
+        "12月"
+      ]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "我们一直在努力使Decentral.Exchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://decentralchain.io/technology/wallet）下载该应用程序！",
+        "title": "现在该更新您的应用了！"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "资产",
+      "dex": "去中心化交易所",
+      "leasing": "租赁",
+      "portfolio": "投资组合",
+      "tokens": "代币",
+      "transactions": "交易记录",
+      "wallet": "钱包"
+    },
+    "inputs": {
+      "errors": {
+        "required": "必填栏位"
+      }
+    },
+    "leftmenu": {
+      "login": "登录",
+      "logout": "登出",
+      "settings": "设置"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "已取消",
+          "filled": "填 ({{percent}}%)",
+          "opened": "开的"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "输入密码"
+      },
+      "pairing": {
+        "showQr": "显示"
+      },
+      "tryDesktop": {
+        "cancel": "继续使用网页",
+        "label": "记住我的选择，不要再提示",
+        "message": "我们建议您使用DecentralChain桌面应用程序。如果您没有这个，可以从官方网站下载。",
+        "title": "使用DecentralChain桌面应用程序",
+        "try": "打开桌面应用程序"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "可疑"
+  },
   "app.create": {
     "backupSeed": {
       "back": "返回",
       "copySeed": "复制",
-      "description": "请小心，切勿将SEED输入其他客户，因为您的帐户将被盗用，并且您将损失所有资金。您只应使用Waves的官方客户端。",
+      "description": "请小心，切勿将SEED输入其他客户，因为您的帐户将被盗用，并且您将损失所有资金。您只应使用DecentralChain的官方客户端。",
       "needConfirm": "您需要在下一个页面确认备份短语（助记词）",
       "ok": "我已经写下短语",
       "or": "或",
@@ -61,7 +162,7 @@
       "confirmBackupDescription": "验证您的备份短语",
       "next": "确认",
       "prev": "返回",
-      "successContent": "您不能改变您的秘密短语。如果您不小心将秘密短语发送给某人或怀疑诈骗者已将秘密短语移交给他人，请立即创建一个新的Waves钱包并将资金转入其中。",
+      "successContent": "您不能改变您的秘密短语。如果您不小心将秘密短语发送给某人或怀疑诈骗者已将秘密短语移交给他人，请立即创建一个新的DecentralChain钱包并将资金转入其中。",
       "successHeadline": "小心处理备份短语！",
       "understand": "我了解"
     },
@@ -69,9 +170,9 @@
       "backup": "立即备份",
       "description": "您必须保存种子短语。这对于访问您的帐户至关重要",
       "modal": {
-        "descriptionP1": "Waves平台提醒您，上个月发生了许多诈骗和网络钓鱼攻击。 欺诈者将他们的流氓软件隐藏在他们自己的Waves客户端版本中，并为了吸引用户承诺奖励和折扣。",
+        "descriptionP1": "DecentralChain平台提醒您，上个月发生了许多诈骗和网络钓鱼攻击。 欺诈者将他们的流氓软件隐藏在他们自己的DecentralChain客户端版本中，并为了吸引用户承诺奖励和折扣。",
         "descriptionP2": "请小心，绝对不要将您的SEED输入到这些“客户端”中，因为您的帐户将受到损害，您将失去所有资金。",
-        "descriptionP3": "您应该使用官方的Waves客户端。",
+        "descriptionP3": "您应该使用官方的DecentralChain客户端。",
         "ok": "我了解",
         "title": "小心处理备份短语！"
       },
@@ -86,8 +187,8 @@
   },
   "app.desktop": {
     "back": "返回主页",
-    "message": "如果您还没下载Waves桌面应用程序，可以从 [官方网站上](https://wavesplatform.com)下载。如果您已有Waves桌面应用但您无法打开，请 [发](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) 错误报告。",
-    "title": "您已选择登录Waves桌面应用程序"
+    "message": "如果您还没下载DecentralChain桌面应用程序，可以从 [官方网站上](https://decentralchain.io)下载。如果您已有DecentralChain桌面应用但您无法打开，请 [发](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) 错误报告。",
+    "title": "您已选择登录DecentralChain桌面应用程序"
   },
   "app.dex": {
     "create": {
@@ -115,9 +216,9 @@
         "1day": "1天",
         "1hour": "1小时",
         "1week": "1周",
+        "5min": "5分钟",
         "30day": "30天",
         "30min": "30分钟",
-        "5min": "5分钟",
         "amountField": "量",
         "ask": "卖价",
         "bid": "买价",
@@ -134,7 +235,7 @@
         },
         "expiration": "满期",
         "fee": "费用 {{fee}} DCC",
-        "hasScript": "取消[脚本]（https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html）进行交易",
+        "hasScript": "取消[脚本]（https://docs.decentralchain.io/en/decentralchain-client/advanced_features/script_transaction.html）进行交易",
         "last": "最新交易价",
         "limit": "限价单",
         "market": "市场订单",
@@ -231,7 +332,7 @@
         "time": "时间",
         "total": "总",
         "type": "类型",
-        "withScript": "在您的帐户中安装[脚本]（https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html）时，您无法使用该交换"
+        "withScript": "在您的帐户中安装[脚本]（https://docs.decentralchain.io/en/decentralchain-client/advanced_features/script_transaction.html）时，您无法使用该交换"
       },
       "noChartDataMessage": "{div}[没有足够的出价和需求]{div}[来创建市场深度图表]",
       "noChartDataTitle": "记录不存在",
@@ -275,9 +376,9 @@
         "chg": "变化",
         "coin": "代币",
         "helpIcon": {
-          "assetId": "资产ID",
           "AssetId1AssetId2": "资产 1 ID/资产 2 ID",
-          "description": "您可以找到有关搜索资产的更多信息[这里]（https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html )",
+          "assetId": "资产ID",
+          "description": "您可以找到有关搜索资产的更多信息[这里]（https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html )",
           "header": "你可以搜索：",
           "name": "名称",
           "name1Name2": "名称1/名称2"
@@ -334,15 +435,15 @@
       "title": {
         "all": "所有",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "历史",
         "myBalance": "我的金额",
         "myTradeHistory": "我的贸易历史",
-        "openOrders": "我的开放订单",
         "OrderHistory": "我的订单历史",
+        "openOrders": "我的开放订单",
         "trade": "交易",
-        "tradeHistory": "交易历史记录",
-        "waves": "Waves"
+        "tradeHistory": "交易历史记录"
       }
     }
   },
@@ -378,13 +479,19 @@
       "selectFileBtn": "选择文件"
     },
     "backupFileDescription": "从密钥库文件导入帐户",
+    "decentralchainClient": "DecentralChain客户端",
+    "decentralchainClientDescription": "从DecentralChain客户端导入帐户",
+    "decentralchainLiteClient": "DecentralChain Lite客户端",
+    "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户",
+    "decentralchainSeedClient": "备份SEED助记词短语",
+    "decentralchainSeedClientDescription": "从备份SEED助记词导入帐户",
     "import": {
       "signIn": "登录"
     },
     "importAccount": "导入帐户",
     "importAccountInfo": "选择从哪里导入帐户",
-    "KeeperClient": "Waves Keeper",
-    "keeperDescription": "从Waves Keeper的导入帐户",
+    "KeeperClient": "Cubensis Connect",
+    "keeperDescription": "从Cubensis Connect的导入帐户",
     "keeperForm": "安装",
     "LedgerClient": "Ledger设备",
     "ledgerDescription": "从您的分类帐设备导入帐户",
@@ -393,114 +500,7 @@
       "name": "种子或钥匙"
     },
     "seedAndKeyDescription": "从SEED或私钥导入帐户",
-    "selectButton": "选择",
-    "wavesClient": "Waves客户端",
-    "wavesClientDescription": "从Waves客户端导入帐户",
-    "wavesLiteClient": "Waves Lite客户端",
-    "wavesLiteClientDescription": "从Waves Lite客户端导入帐户",
-    "wavesSeedClient": "备份SEED助记词短语",
-    "wavesSeedClientDescription": "从备份SEED助记词导入帐户"
-  },
-  "app": {
-    "back": "返回主页",
-    "button": {
-      "cancel": "取消",
-      "continue": "继续",
-      "signIn": "登入"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "代币发行暂时不可用。",
-        "issue-title": "生成代币",
-        "massSendTitle": "大规模传送",
-        "reissue": "代币重新发行暂时无法使用。",
-        "sendTitle": "发送",
-        "set-script-title": "脚本交易"
-      },
-      "send": {
-        "errors": {
-          "fee": "您没有足够的资金来支付所需的费用。您必须支付 {{fee, money-currency}} 交易费;"
-        }
-      }
-    },
-    "date": {
-      "month": [
-        "1月",
-        "2月",
-        "3月",
-        "4月",
-        "5月",
-        "6月",
-        "7月",
-        "8月",
-        "9月",
-        "10月",
-        "11月",
-        "12月"
-      ]
-    },
-    "error": {
-      "updateClient": {
-        "body": "我们一直在努力使Decentral.Exchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://wavesplatform.com/technology/wallet）下载该应用程序！",
-        "title": "现在该更新您的应用了！"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Aloha funky coin, for any good&evil purposes ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "资产",
-      "dex": "去中心化交易所",
-      "leasing": "租赁",
-      "portfolio": "投资组合",
-      "tokens": "代币",
-      "transactions": "交易记录",
-      "wallet": "钱包"
-    },
-    "inputs": {
-      "errors": {
-        "required": "必填栏位"
-      }
-    },
-    "leftmenu": {
-      "login": "登录",
-      "logout": "登出",
-      "settings": "设置"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "已取消",
-          "filled": "填 ({{percent}}%)",
-          "opened": "开的"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "输入密码"
-      },
-      "pairing": {
-        "showQr": "显示"
-      },
-      "tryDesktop": {
-        "cancel": "继续使用网页",
-        "label": "记住我的选择，不要再提示",
-        "message": "我们建议您使用Waves桌面应用程序。如果您没有这个，可以从官方网站下载。",
-        "title": "使用Waves桌面应用程序",
-        "try": "打开桌面应用程序"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k"
-      }
-    },
-    "Suspicious": "可疑"
+    "selectButton": "选择"
   },
   "app.ledger": {
     "ledger": {
@@ -518,9 +518,9 @@
       "help": {
         "id": "{div}[手动设置ID或从列表中选择一个帐户。] \n {div}[请保存ID，导入时需要。]"
       },
+      "ImportOrSignIn": "导入帐户或",
       "id": "帐户ID",
       "importAccount": "导入 Ledger 帐户",
-      "ImportOrSignIn": "导入帐户或",
       "login": "继续",
       "name": "帐户名",
       "nameExists": "这个名字被采用了",
@@ -550,20 +550,20 @@
       "cancelDownloading": "取消下载",
       "congratulations": "恭喜你！",
       "congratulationsText": "您已经成功下载了新应用程序。要开始使用该应用程序，只需执行以下操作：",
-      "connectSupport": "如果这样做没有帮助，请联系Waves.Exchange [support]（https://support.waves.exchange/）。",
+      "connectSupport": "如果这样做没有帮助，请联系Decentral.Exchange [support]（https://support.decentral.exchange/）。",
       "download": "Download",
       "downloaded": "是",
-      "downloadText": "{div} [为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Waves.Exchange。] \n {div.margin-top} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须下载新的桌面应用程序。]",
+      "downloadText": "{div} [为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Decentral.Exchange。] \n {div.margin-top} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须下载新的桌面应用程序。]",
       "fail": "失败",
-      "failText": "请确保您已经安装并运行新的Waves.Exchange应用程序。",
-      "haveYouDownloaded": "您是否已经下载了新的Waves.Exchange桌面应用程序？",
+      "failText": "请确保您已经安装并运行新的Decentral.Exchange应用程序。",
+      "haveYouDownloaded": "您是否已经下载了新的Decentral.Exchange桌面应用程序？",
       "install": "安装应用程序",
       "installAndRun": "安装并运行该应用程序。你做完了吗？",
       "iUnderstand": "我明白",
       "lookAtFAQ1": "如果您正确执行了所有操作并继续获得失败结果，请查看",
       "lookAtFAQ2": "您可能在那里找到答案。",
-      "movingText": "{div.margin-bottom} [为了向用户提供更好的体验和更广泛的工具，该交易所正在从Decentral.Exchange转向Waves.Exchange。] \n {div.margin-bottom} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须将帐户移至新交易所。我们强烈建议您提前进行此操作。] \n {div.margin-bottom} [这种移动是快速，容易且绝对安全的。]",
-      "oldApplication": "您当前的应用程序太旧了。如果您想立即交易（2019年12月2日之前），则可以从[官方网站]（https://dex.wavesplatform.com）下载我们最新的Decentral.Exchange桌面应用程序。",
+      "movingText": "{div.margin-bottom} [为了向用户提供更好的体验和更广泛的工具，该交易所正在从Decentral.Exchange转向Decentral.Exchange。] \n {div.margin-bottom} [Decentral.Exchange将于2019年12月2日停止运行。要继续交易，您必须将帐户移至新交易所。我们强烈建议您提前进行此操作。] \n {div.margin-bottom} [这种移动是快速，容易且绝对安全的。]",
+      "oldApplication": "您当前的应用程序太旧了。如果您想立即交易（2019年12月2日之前），则可以从[官方网站]（https://dex.decentralchain.io）下载我们最新的Decentral.Exchange桌面应用程序。",
       "oops": "糟糕！出问题了...",
       "password": "Password",
       "passwordError": "Wrong Password!",
@@ -579,35 +579,43 @@
     },
     "faq": {
       "attention": {
-        "text": "{div.margin-top-1} [仅可从网络域[https://dex.wavesplatform.com]（https://dex.wavesplatform.com/）和[https： //client.wavesplatform.com](https://client.wavesplatform.com/）。要完成桌面客户端的迁移，您必须使用已经安装的Decentral.Exchange桌面应用程序。] \n\n {div.margin-top-1} [请勿使用任何其他域进行迁移，请勿在任何地方输入您的种子短语和/或私钥，也不要从您的迁移过程中指定的软件中下载任何其他客户端当前的Decentral.Exchange客户端。迁移过程不需要您在任何地方输入种子短语和/或私钥。 Waves Platform或Waves.Exchange员工绝不会要求您提供任何类型的个人信息，包括私钥和/或种子短语。] \n\n {div.margin-top-1} [迁移过程是完全免费的，并且不会影响任何网关，因为网关将正常处理所有事务。您无需支付任何费用或将令牌发送给任何人即可完成迁移。]",
+        "text": "{div.margin-top-1} [仅可从网络域[https://dex.decentralchain.io]（https://dex.decentralchain.io/）和[https： //client.decentralchain.io](https://client.decentralchain.io/）。要完成桌面客户端的迁移，您必须使用已经安装的Decentral.Exchange桌面应用程序。] \n\n {div.margin-top-1} [请勿使用任何其他域进行迁移，请勿在任何地方输入您的种子短语和/或私钥，也不要从您的迁移过程中指定的软件中下载任何其他客户端当前的Decentral.Exchange客户端。迁移过程不需要您在任何地方输入种子短语和/或私钥。 DecentralChain Platform或Decentral.Exchange员工绝不会要求您提供任何类型的个人信息，包括私钥和/或种子短语。] \n\n {div.margin-top-1} [迁移过程是完全免费的，并且不会影响任何网关，因为网关将正常处理所有事务。您无需支付任何费用或将令牌发送给任何人即可完成迁移。]",
         "title": "注意！！！"
       },
       "goHome": "去首页",
-      "text1": "Decentral.Exchange正在转变为新产品Waves.Exchange。不用担心您所有的令牌，种子短语和密码都是完全安全的。",
-      "text10": "{div.margin-bottom} [如果您使用的是旧版应用，则将无法再进行以下操作：] \n {div.line} [-创建帐户] \n {div.line} [-可以访问Decentral.Exchange界面] \n {div.line} [-查看您的投资组合] \n {div.line} [-进行任何类型的交易：转让，发行或刻录令牌，租赁WAVES或取消租赁] \n {div.line} [-使用任何网关] \n\n {div.margin-bottom} [自2019年12月2日起，您将可以使用Waves.Exchange应用程序享受此功能。] \n\n {div.margin-bottom} [但是，使用旧版应用程序，您仍然可以：] \n\n {div.line} [-登录您的帐户] \n {div.line}[-启动向Waves.Exchange的迁移过程] \n {div.line} [-为种子词组创建本地备份] \n\n {div.margin-top} [如果仍有疑问，您可以将消息发送到我们的[官方电报组]（https://t.me/wavesexchange）或在支持页面上创建{div.margin-top} ：[https：/ /support.waves.exchange/](https://support.waves.exchange/）]",
-      "text11": "没有,永不！在任何情况下都不会发生这种情况。所有种子短语仍将存储在本地设备上。交易所不可能访问该存储。",
-      "text12": "您的代币的所有权记录在Waves区块链上。只能使用种子短语或私钥访问存储在您帐户中的令牌，这些种子短语或私钥在迁移后不会更改并且不会离开您的设备。您的资产是完全安全的！",
-      "text13": "{div.margin-bottom}[我们将尽最大努力确保迁移过程对用户来说尽可能顺利。由于匹配者地址和私钥的更改，我们将无法将您的订单移至新匹配者。因此，您的整个订单历史记录将不再可用。您仍然可以使用Waves Explorer查看所有已完成的交易。 ] \n\n {div.margin-bottom}[除了您的订单历史记录之外，所有有效订单都会在12月2日被取消。这是由于切换到新匹配器而引起的必要措施。在成功迁移的情况下，您仍将保留：] \n {div.line}[–仪表板上的一组固定资产] \n {div.line}[–在交易所保存的对] \n {div.line}[–“隐藏”资产列表] \n {div.line}[–语言首选项] \n {div.line}[–帐户信息（种子短语，帐户名）] \n\n {div.margin-bottom.margin-top}[请注意，技术工作将于12月2日进行，届时将限制对旧应用程序的访问，并准备启动新应用程序。 ] \n\n {div.margin-bottom}[在此过程中，网关将正常处理所有交易（存款和取款），这将确保完全的安全性和对您资金的访问。] \n\n {div.margin-top}[您将不会失去支持！您可以随时向我们的[官方电报组]（https://t.me/wavesexchange）发送消息，也可以在支持页面上创建故障单：[https://support.waves.exchange/](https:// support.waves.exchange/）]",
-      "text14": "{div}[迁移过程大约需要八个小时。在此期间，您将无法完全访问您的应用。我们谨在此提醒您，迁移过程计划于2019年12月2日星期一进行。在当天进行的技术工作中，网关将正常处理所有交易，这将确保完全的安全性并访问您的资金。] \n\n {div}[支持随时可用！您可以随时向我们的[官方电报组]（https://t.me/wavesexchange）发送消息，也可以在支持页面上创建故障单：[https://support.waves.exchange/](https:// support.waves.exchange/）]",
-      "text15": "在12月2日，用户将需要登录Waves移动应用并点击“更新”按钮。该应用程序将更新到版本2.7.0。该更新将在2019年12月2日星期一结束之前在Google Play和App Store上提供。",
-      "text16": "目前，只有在您的银行帐户中存入/提取wUSD和wEUR时才需要KYC。目前，该团队尚无计划引入KYC进行交易或加密货币交易。",
-      "text17": "匹配器将获得一个新的地址和URL，并且其私钥将更改。由于这些更改，更新时用户的未结订单将自动取消，并且交易历史记录将变得不可用。不幸的是，没有将订单和交易历史记录转移到新匹配器的技术手段，因为每个订单都是在用户使用其私钥对其进行签名后发送给匹配器的。由于旧匹配者或新匹配者都无法访问用户的私钥，因此无法转移订单。我们知道这可能令人沮丧，但是这种方法是匹配器设计的一个功能，它是维护用户资金安全所必需的。很抱歉给您带来不便。",
-      "text18": "{div.margin-bottom} [我们已尽力确保迁移过程对用户来说尽可能顺利。如果您在移动帐户时遇到问题，请重新开始。为此，请返回旧的Web或桌面客户端，使用密码登录并按照说明进行操作。] \n\n {div.margin-bottom} [针对浏览器用户的建议：在迁移期间，请关闭所有浏览器扩展，因为它们可能会施加限制，从而干扰迁移。] \n\n {div.margin-bottom} [针对桌面客户端用户的建议：关闭防火墙或防病毒软件，因为它们可能会限制端口操作，从而干扰迁移。] \n\n {div.margin-top} [在任何情况下，您都会得到支持！您可以随时向我们的[官方电报组]（https://t.me/wavesexchange）发送消息，也可以在支持页面上创建故障单：[https://support.waves.exchange/](https:// support.waves.exchange/）]",
-      "text19": "{div.margin-bottom}[某些网关由Waves.Exchange团队操作，特别是：$ BTC，$ ETH，$ WEST，$ ERGO，$ BNT和$ USDT。] \n {div.margin-bottom}[同时，$ LTC，$ XMR，$ DASH，$ BCH，$ BSV，$ Zcash，wUSD和wEUR由Coinomat临时运营。] \n {div.margin-top}[在2019年12月2日的技术工作期间，网关将正常处理所有交易，这将确保完全的安全性和对您资金的访问。]",
-      "text2": "这是基于Decentral.Exchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91）。",
-      "text20": "在迁移过程中，您的租约不会被取消。和以前一样，用户将能够使用Waves.Exchange的租赁界面将其WAVES租赁到他们选择的节点上，并每年收取高达7％的利息。",
-      "text21": "USDT（ERC-20）网关的启动不会对wUSD和wEUR的运行产生影响。用户将能够继续根据需要进行交易。",
-      "text22": "新地址属于Waves网关（不是Coinomat）。我们将不断改进这些网关，使用户传输更快，更方便。",
-      "text23": "我们了解迁移过程可能给用户带来一些不便，因此我们准备了一个惊喜！成功将其帐户移至新交易所的所有用户都将收到一个闪烁的头像，显示在应用程序中。为此，您需要在12月2日之前完成从Decentral.Exchange到Waves.Exchange的帐户迁移，并且每个帐户中至少有一个任何类型的支出交易都符合资格。",
-      "text24": "我们计划很快增加对Decentral.Exchange先前可用的所有语言的支持。",
-      "text3": "Waves.Exchange由Decentral.Exchange团队的一部分开发和运行，与Waves社区的新开发人员合作。",
+      "text1": "Decentral.Exchange正在转变为新产品Decentral.Exchange。不用担心您所有的令牌，种子短语和密码都是完全安全的。",
+      "text2": "这是基于Decentral.Exchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91）。",
+      "text3": "Decentral.Exchange由Decentral.Exchange团队的一部分开发和运行，与DecentralChain社区的新开发人员合作。",
       "text4": "迁移标志着交易所发展的一个新阶段，现在的主要重点是用户体验。除了关注社区的要求外，新团队还将专注于构建新的交易工具和产品的全面推广，而这在以前的安排中是困难的。",
       "text5": "迁移已经开始。自2019年11月18日起，您可以将帐户移至新服务。为此，您需要更新Decentral.Exchange的网络版本和/或运行桌面应用程序，登录到您的帐户并按照说明进行操作。",
-      "text6": "是。这将是访问Waves交易生态系统中所有熟悉且方便的工具（包括Web和桌面应用程序，移动应用程序和交易所）以及新功能和服务升级的新方法。",
+      "text6": "是。这将是访问DecentralChain交易生态系统中所有熟悉且方便的工具（包括Web和桌面应用程序，移动应用程序和交易所）以及新功能和服务升级的新方法。",
       "text7": "新交易所将于2019年12月2日启动。",
       "text8": "我们希望给Decentral.Exchange用户足够的时间为使用新的交换做准备，以使他们对服务的访问不中断。我们希望两周的时间足以使大多数用户完成迁移过程。",
-      "text9": "是的，在Waves.Exchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于Decentral.Exchange的旧应用程序。",
+      "text9": "是的，在Decentral.Exchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于Decentral.Exchange的旧应用程序。",
+      "text10": "{div.margin-bottom} [如果您使用的是旧版应用，则将无法再进行以下操作：] \n {div.line} [-创建帐户] \n {div.line} [-可以访问Decentral.Exchange界面] \n {div.line} [-查看您的投资组合] \n {div.line} [-进行任何类型的交易：转让，发行或刻录令牌，租赁DCC或取消租赁] \n {div.line} [-使用任何网关] \n\n {div.margin-bottom} [自2019年12月2日起，您将可以使用Decentral.Exchange应用程序享受此功能。] \n\n {div.margin-bottom} [但是，使用旧版应用程序，您仍然可以：] \n\n {div.line} [-登录您的帐户] \n {div.line}[-启动向Decentral.Exchange的迁移过程] \n {div.line} [-为种子词组创建本地备份] \n\n {div.margin-top} [如果仍有疑问，您可以将消息发送到我们的[官方电报组]（https://t.me/decentralexchange）或在支持页面上创建{div.margin-top} ：[https：/ /support.decentral.exchange/](https://support.decentral.exchange/）]",
+      "text11": "没有,永不！在任何情况下都不会发生这种情况。所有种子短语仍将存储在本地设备上。交易所不可能访问该存储。",
+      "text12": "您的代币的所有权记录在DecentralChain区块链上。只能使用种子短语或私钥访问存储在您帐户中的令牌，这些种子短语或私钥在迁移后不会更改并且不会离开您的设备。您的资产是完全安全的！",
+      "text13": "{div.margin-bottom}[我们将尽最大努力确保迁移过程对用户来说尽可能顺利。由于匹配者地址和私钥的更改，我们将无法将您的订单移至新匹配者。因此，您的整个订单历史记录将不再可用。您仍然可以使用DecentralScan查看所有已完成的交易。 ] \n\n {div.margin-bottom}[除了您的订单历史记录之外，所有有效订单都会在12月2日被取消。这是由于切换到新匹配器而引起的必要措施。在成功迁移的情况下，您仍将保留：] \n {div.line}[–仪表板上的一组固定资产] \n {div.line}[–在交易所保存的对] \n {div.line}[–“隐藏”资产列表] \n {div.line}[–语言首选项] \n {div.line}[–帐户信息（种子短语，帐户名）] \n\n {div.margin-bottom.margin-top}[请注意，技术工作将于12月2日进行，届时将限制对旧应用程序的访问，并准备启动新应用程序。 ] \n\n {div.margin-bottom}[在此过程中，网关将正常处理所有交易（存款和取款），这将确保完全的安全性和对您资金的访问。] \n\n {div.margin-top}[您将不会失去支持！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
+      "text14": "{div}[迁移过程大约需要八个小时。在此期间，您将无法完全访问您的应用。我们谨在此提醒您，迁移过程计划于2019年12月2日星期一进行。在当天进行的技术工作中，网关将正常处理所有交易，这将确保完全的安全性并访问您的资金。] \n\n {div}[支持随时可用！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
+      "text15": "在12月2日，用户将需要登录DecentralChain移动应用并点击“更新”按钮。该应用程序将更新到版本2.7.0。该更新将在2019年12月2日星期一结束之前在Google Play和App Store上提供。",
+      "text16": "目前，只有在您的银行帐户中存入/提取wUSD和wEUR时才需要KYC。目前，该团队尚无计划引入KYC进行交易或加密货币交易。",
+      "text17": "匹配器将获得一个新的地址和URL，并且其私钥将更改。由于这些更改，更新时用户的未结订单将自动取消，并且交易历史记录将变得不可用。不幸的是，没有将订单和交易历史记录转移到新匹配器的技术手段，因为每个订单都是在用户使用其私钥对其进行签名后发送给匹配器的。由于旧匹配者或新匹配者都无法访问用户的私钥，因此无法转移订单。我们知道这可能令人沮丧，但是这种方法是匹配器设计的一个功能，它是维护用户资金安全所必需的。很抱歉给您带来不便。",
+      "text18": "{div.margin-bottom} [我们已尽力确保迁移过程对用户来说尽可能顺利。如果您在移动帐户时遇到问题，请重新开始。为此，请返回旧的Web或桌面客户端，使用密码登录并按照说明进行操作。] \n\n {div.margin-bottom} [针对浏览器用户的建议：在迁移期间，请关闭所有浏览器扩展，因为它们可能会施加限制，从而干扰迁移。] \n\n {div.margin-bottom} [针对桌面客户端用户的建议：关闭防火墙或防病毒软件，因为它们可能会限制端口操作，从而干扰迁移。] \n\n {div.margin-top} [在任何情况下，您都会得到支持！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
+      "text19": "{div.margin-bottom}[某些网关由Decentral.Exchange团队操作，特别是：$ BTC，$ ETH，$ WEST，$ ERGO，$ BNT和$ USDT。] \n {div.margin-bottom}[同时，$ LTC，$ XMR，$ DASH，$ BCH，$ BSV，$ Zcash，wUSD和wEUR由Coinomat临时运营。] \n {div.margin-top}[在2019年12月2日的技术工作期间，网关将正常处理所有交易，这将确保完全的安全性和对您资金的访问。]",
+      "text20": "在迁移过程中，您的租约不会被取消。和以前一样，用户将能够使用Decentral.Exchange的租赁界面将其DCC租赁到他们选择的节点上，并每年收取高达7％的利息。",
+      "text21": "USDT（ERC-20）网关的启动不会对wUSD和wEUR的运行产生影响。用户将能够继续根据需要进行交易。",
+      "text22": "新地址属于DecentralChain网关（不是Coinomat）。我们将不断改进这些网关，使用户传输更快，更方便。",
+      "text23": "我们了解迁移过程可能给用户带来一些不便，因此我们准备了一个惊喜！成功将其帐户移至新交易所的所有用户都将收到一个闪烁的头像，显示在应用程序中。为此，您需要在12月2日之前完成从Decentral.Exchange到Decentral.Exchange的帐户迁移，并且每个帐户中至少有一个任何类型的支出交易都符合资格。",
+      "text24": "我们计划很快增加对Decentral.Exchange先前可用的所有语言的支持。",
       "title1": "这是怎么回事？",
+      "title2": "什么是Decentral.Exchange？",
+      "title3": "谁负责开发新交易所？",
+      "title4": "Decentral.Exchange为什么要迁移到Decentral.Exchange？",
+      "title5": "何时开始迁移？",
+      "title6": "迁移是强制性的吗？",
+      "title7": "Decentral.Exchange何时启动？",
+      "title8": "为什么迁移过程要在启动前两周开始？",
+      "title9": "Decentral.Exchange启动后是否可以移动帐户？",
       "title10": "自2019年12月2日起，Decentral.Exchange应用程序将受到哪些限制？",
       "title11": "新交易所可以访问我的种子短语吗？",
       "title12": "我的代币将如何处理？",
@@ -618,19 +626,11 @@
       "title17": "匹配器将发生什么变化？",
       "title18": "如果在迁移过程中遇到任何问题或疑问该怎么办？",
       "title19": "网关代币会发生什么？",
-      "title2": "什么是Waves.Exchange？",
       "title20": "迁移后，租赁是否仍然可用？迁移过程中会取消租约吗？",
       "title21": "Tether USD（USDT）会取代wUSD和wEUR吗？",
       "title22": "为什么接收BTC和ETH的网关地址已更改？",
       "title23": "为什么这么复杂？",
-      "title24": "是否有计划扩展对新交易所接口的语言支持？",
-      "title3": "谁负责开发新交易所？",
-      "title4": "Decentral.Exchange为什么要迁移到Waves.Exchange？",
-      "title5": "何时开始迁移？",
-      "title6": "迁移是强制性的吗？",
-      "title7": "Waves.Exchange何时启动？",
-      "title8": "为什么迁移过程要在启动前两周开始？",
-      "title9": "Waves.Exchange启动后是否可以移动帐户？"
+      "title24": "是否有计划扩展对新交易所接口的语言支持？"
     },
     "migrate": {
       "achievementDesc": "您已成功迁移帐户。为了感谢您完成此过程，我们将使用闪闪发光的头像奖励您的所有帐户（至少有一笔在2019年12月2日之前进行的支出交易）！",
@@ -641,7 +641,7 @@
       "continue": "继续",
       "desc": {
         "almostFinish": "要完成帐户的迁移，请接受新的条款和条件以及隐私权政策。",
-        "enterPassword": "输入您的Waves.Exchange密码以继续迁移。",
+        "enterPassword": "输入您的Decentral.Exchange密码以继续迁移。",
         "onePassword": "为您的所有帐户创建一个密码。登录帐户并轻松切换。"
       },
       "description": {
@@ -662,8 +662,8 @@
         "moving": "开始移动"
       },
       "modalDesc": {
-        "firstPart": "为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Waves.Exchange。",
-        "redirected": "确保您已成功完成Waves.Exchange的迁移过程。完成后，您将看到相应的消息。",
+        "firstPart": "为了向用户提供更好的体验和更广泛的工具，该交易所正从Decentral.Exchange转向Decentral.Exchange。",
+        "redirected": "确保您已成功完成Decentral.Exchange的迁移过程。完成后，您将看到相应的消息。",
         "secondPart": "Decentral.Exchange将于2019年12月2日停止运营。要继续交易，您应该将帐户移至新交易所。强烈建议您提前进行此操作。",
         "thirdPart": "迁移过程快速，轻松且绝对安全。"
       },
@@ -688,18 +688,18 @@
     "modals": {
       "shutdownNotificationFirst": {
         "message1": "Decentral.Exchange will stop operating on December 2, 2019",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "One day left!"
       },
       "shutdownNotificationLast": {
-        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Decentral.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Decentral.Exchange. Thank you for the good times!",
         "submit": "I understand",
         "title": "Time to move on!"
       },
       "shutdownNotificationSecond": {
         "message1": "Decentral.Exchange will stop operating in two hours.",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "Two hours left!"
       }
@@ -733,7 +733,7 @@
           "restore": "恢复Seed助记词"
         },
         "noUsers": {
-          "description": "{div}[我们没有找到任何已保存的帐户. 返回]{div}[[client.wavesplatform.com](https://client.wavesplatform.com)]",
+          "description": "{div}[我们没有找到任何已保存的帐户. 返回]{div}[[client.decentralchain.io](https://client.decentralchain.io)]",
           "title": "没有保存的帐户"
         },
         "passwordTitle": "密码",
@@ -826,15 +826,15 @@
       "passForgot": {
         "attention": "注意！",
         "description": "要恢复密码，您需要重置所有帐户，设置新密码，从种子短语或私钥导入每个帐户。",
-        "descriptionExchange": "您将要从此设备删除所有Waves.Exchange帐户。此操作不会影响您的Decentral.Exchange帐户。",
+        "descriptionExchange": "您将要从此设备删除所有Decentral.Exchange帐户。此操作不会影响您的Decentral.Exchange帐户。",
         "importantDesc": "如果您尚未保存种子短语或私钥，则您将无法恢复对帐户的访问权限。",
-        "importantDescEx": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Waves.Exchange帐户的访问。",
-        "importantDescExchange": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Waves.Exchange帐户的访问。"
+        "importantDescEx": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Decentral.Exchange帐户的访问。",
+        "importantDescExchange": "这个动作是不可逆的！如果尚未保存种子短语或私钥，则将无法恢复对Decentral.Exchange帐户的访问。"
       },
       "password": {
         "forgot": "忘记密码了？",
         "overwrite": "覆写帐户",
-        "overwriteDescription": "覆盖此设备上的所有Waves.Exchange帐户"
+        "overwriteDescription": "覆盖此设备上的所有Decentral.Exchange帐户"
       },
       "signIn": "登录",
       "welcomeBack": "欢迎回来"
@@ -898,11 +898,11 @@
       "title": "{{name}}生成",
       "titleSuccess": "完成{{name}}生成"
     },
-    "name": "您的资产名称",
     "NFT": {
-      "description": "不可互换代币（NFT）是Waves区块链中存在的唯一个人令牌。目前，不支持在Waves Wallet和Decentral.Exchange中显示NFT。您可以在[Waves Explorer]（https://wavesexplorer.com/）中查看您的NFT",
+      "description": "不可互换代币（NFT）是DecentralChain区块链中存在的唯一个人令牌。目前，不支持在DCC Wallet和Decentral.Exchange中显示NFT。您可以在[DecentralScan]（https://decentralscan.com/）中查看您的NFT",
       "title": "您正在创建一个不可替代的代币。"
     },
+    "name": "您的资产名称",
     "notifications": {
       "isNotCreated": "代币尚未创建"
     },
@@ -973,6 +973,10 @@
     "confirmTransaction": {
       "back": "返回",
       "confirm": "确认",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
+        "header": "您没有使用Cubensis Connect确认请求"
+      },
       "description": {
         "burn": "您已消除{{quantityStr}} {{name}}",
         "cancel-leasing": "您已取消租赁交易",
@@ -1026,11 +1030,7 @@
         }
       },
       "sign": "登录",
-      "success": "您的交易正在进行中！",
-      "wavesKeeperUnconfirmed": {
-        "description": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
-        "header": "您没有使用Waves Keeper确认请求"
-      }
+      "success": "您的交易正在进行中！"
     },
     "copyError": "不能复制！您的浏览器可能已过时",
     "copySuccess": "数据被复制",
@@ -1053,10 +1053,10 @@
         "confirmRequestKeeper": {
           "cancel": "取消",
           "errorDescription": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
-          "errorDescriptionSwitchUser": "此帐户与Waves Keeper中的所选帐户不匹配。请在Waves Keeper中激活另一个帐户，然后重试。",
-          "errorHeader": "您没有使用Waves Keeper确认请求",
+          "errorDescriptionSwitchUser": "此帐户与Cubensis Connect中的所选帐户不匹配。请在Cubensis Connect中激活另一个帐户，然后重试。",
+          "errorHeader": "您没有使用Cubensis Connect确认请求",
           "sign": "重试",
-          "waiting": "等待来自Waves Keeper的确认......"
+          "waiting": "等待来自Cubensis Connect的确认......"
         },
         "confirmRequestLedger": {
           "cancel": "取消",
@@ -1309,7 +1309,7 @@
       "filter": {
         "helpIcon": {
           "assetId": "资产ID",
-          "description": "您可以找到有关搜索资产的更多信息[这里]（https://docs.wavesplatform.com/en/waves-client/）",
+          "description": "您可以找到有关搜索资产的更多信息[这里]（https://docs.decentralchain.io/en/decentralchain-client/）",
           "header": "你可以搜索：",
           "name": "名称",
           "ticker": "股票"
@@ -1325,7 +1325,7 @@
           "required": "这是必填栏"
         },
         "fee": "费用 {{fee, money-currency}}",
-        "ideLink": "脚本可以使用[Waves Ride IDE]开发（https://waves-ide.com//）",
+        "ideLink": "脚本可以使用[DecentralChain Ride IDE]开发（https://ide.decentralchain.io//）",
         "ok": "登录",
         "textAreaTitle": "Base64脚本",
         "warning": {
@@ -1354,19 +1354,19 @@
       "addressSaved": "地址已保存",
       "back": "回去",
       "error": {
-        "hasLockedKeeperDescription": "要继续使用Waves Keeper，您必须输入以前创建的密码，或创建一个新密码。",
-        "hasLockedKeeperHeader": "输入Waves Keeper的密码",
+        "hasLockedKeeperDescription": "要继续使用Cubensis Connect，您必须输入以前创建的密码，或创建一个新密码。",
+        "hasLockedKeeperHeader": "输入Cubensis Connect的密码",
         "hasNoUsersDescription": "登录现有帐户，或创建一个新帐户，然后重试。",
         "hasNoUsersHeader": "您没有有效帐户",
         "install": "安装",
         "networkDescription": "您选择的帐户位于错误的网络上。更改网络，然后再试一次。",
         "networkHeader": "更改网络",
         "notInstalledDescription": "安装后，创建一个帐户，登录，然后刷新页面以继续。",
-        "notInstalledHeader": "没有Waves Keeper？",
+        "notInstalledHeader": "没有Cubensis Connect？",
         "refresh": "重试"
       },
-      "heading": "从Waves Keeper导入帐户",
-      "loading": "来自Waves Keeper的导入帐户",
+      "heading": "从Cubensis Connect导入帐户",
+      "loading": "来自Cubensis Connect的导入帐户",
       "login": "继续",
       "name": "用户名",
       "nameExists": "这个名字被采用了",
@@ -1375,7 +1375,7 @@
       "saveUserData": "让我在这台电脑上登录"
     },
     "LedgerClient_utils": "Ledger设备",
-    "LedgerClientDescription": "从Waves Keeper导入帐户",
+    "LedgerClientDescription": "从Cubensis Connect导入帐户",
     "modal": {
       "acceptNewTerms": {
         "title": "使用条款协议"
@@ -1434,8 +1434,8 @@
         "rating": {
           "canVoteTip": "点击为代币评分",
           "tooltipLink": "更多细节",
-          "tooltipNeedWAVES": "和 0.001 DCC",
           "tooltipNeedCRC": "要为代币评分，您必须至少有1个",
+          "tooltipNeedDCC": "和 0.001 DCC",
           "tooltipText": "代币不转让，投票只需要现有余额。您的分数将在24小时后应用。在此期间请保留帐户中的当前代币。 \n费用0.001波浪币。",
           "tooltipTitle": "要为代币评分，您的钱包中必须至少有1个CRC。"
         },
@@ -1490,7 +1490,7 @@
       },
       "deposit": {
         "coinomatBCH": {
-          "helpDescrText": "交易确认后，网关将处理BCH转账到Waves账户中的代币。",
+          "helpDescrText": "交易确认后，网关将处理BCH转账到DecentralChain账户中的代币。",
           "helpDescrTitle": "将此地址输入在您的Bitcoin Cash客户端或钱包",
           "warningMinAmountText": "如果您发送少于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1498,7 +1498,7 @@
           "warningTitle": "只能将BCH发送到这个存款地址"
         },
         "coinomatBSV": {
-          "helpDescrText": "确认交易后，网关将处理将BSV转移到Waves帐户中的代币。",
+          "helpDescrText": "确认交易后，网关将处理将BSV转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在您的比特币Satoshi Vision客户端或钱包中输入此地址",
           "warningMinAmountText": "如果您发送的{{assetTicker}}低于{{minAmount, BigNumber}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1506,7 +1506,7 @@
           "warningTitle": "仅将 BSV 发送到此存款地址"
         },
         "coinomatBTC": {
-          "helpDescrText": "交易确认之后，网关将处理BTC转账至您Waves帐户的代币。",
+          "helpDescrText": "交易确认之后，网关将处理BTC转账至您DecentralChain帐户的代币。",
           "helpDescrTitle": "将此地址输入您的比特币客户端或在线钱包",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1514,7 +1514,7 @@
           "warningTitle": "通过该存款地址只能发送BTC"
         },
         "coinomatDASH": {
-          "helpDescrText": "确认交易后，网关将处理将DASH转移到Waves帐户中的代币。",
+          "helpDescrText": "确认交易后，网关将处理将DASH转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "将此地址输入您的DASH客户端或钱包",
           "warningMinAmountText": "如果您发送小于{{minAmount, BigNumber}}的{{assetTicker}}，你会失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1522,7 +1522,7 @@
           "warningTitle": "只能将DASH发送到这个存款地址"
         },
         "coinomatETH": {
-          "helpDescrText": "交易确认之后，网关将处理ETH转账至您Waves帐户的代币。",
+          "helpDescrText": "交易确认之后，网关将处理ETH转账至您DecentralChain帐户的代币。",
           "helpDescrTitle": "将此地址输入您的 以太坊客户端或在线钱包",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1530,7 +1530,7 @@
           "warningTitle": "请不要从智能合约中交存ETH！别交存ERC20代币！您只能交存以太坊Ethereum。"
         },
         "coinomatLTC": {
-          "helpDescrText": "交易确认之后，网关将处理LTC转账至您Waves帐户的代币。",
+          "helpDescrText": "交易确认之后，网关将处理LTC转账至您DecentralChain帐户的代币。",
           "helpDescrTitle": "将此地址输入您的莱特币客户端或在线钱包",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1538,7 +1538,7 @@
           "warningTitle": "通过该存款地址只能发送LTC"
         },
         "coinomatXMR": {
-          "helpDescrText": "交易确认之后，网关将处理XMR转账至您Waves帐户的代币。",
+          "helpDescrText": "交易确认之后，网关将处理XMR转账至您DecentralChain帐户的代币。",
           "helpDescrTitle": "将此地址输入在您的Monero客户端或钱包",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1546,7 +1546,7 @@
           "warningTitle": "通过该存款地址只能发送 XMR"
         },
         "coinomatZEC": {
-          "helpDescrText": "交易确认之后，网关将处理ZEC转账至您Waves帐户的代币。",
+          "helpDescrText": "交易确认之后，网关将处理ZEC转账至您DecentralChain帐户的代币。",
           "helpDescrTitle": "将此地址输入您的Zcash客户端或在线钱包",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
@@ -1555,61 +1555,61 @@
         },
         "copyAndShare": "复制和分享钱包地址",
         "currency": "货币",
-        "or": "或",
-        "pleaseNote": "请注意，网关对此操作不收取费用。",
-        "scanQrCode": "扫描二维码",
-        "title": "存款{{assetName}}",
-        "wavesGatewayBNT": {
-          "helpDescrText": "确认交易后，网关将处理将Bancor转移到Waves帐户中的代币。",
+        "gatewayBNT": {
+          "helpDescrText": "确认交易后，网关将处理将Bancor转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在您的客户或钱包中输入此地址",
           "warningMinAmountText": "如果你发送少于{{minAmount, BigNumber}} {{assetTicker}}，你将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
           "warningText": "检查您的钱包或交易所是否使用智能合约撤回Bancor。我们不接受此类交易，也不能退款。你会失去那笔钱。",
           "warningTitle": "请不要从智能合约中存入BNT！不要存入其他ERC20代币！只允许Bancor。"
         },
-        "wavesGatewayBTC": {
-          "helpDescrText": "确认交易后，网关将处理BTC到Waves帐户中令牌的转移。",
+        "gatewayBTC": {
+          "helpDescrText": "确认交易后，网关将处理BTC到DecentralChain帐户中令牌的转移。",
           "helpDescrTitle": "在您的BTC客户端或钱包中输入此地址",
           "warningMinAmountText": "如果您发送的费用低于{{minAmount, BigNumber}} {{assetTicker}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
           "warningText": "如通过该地址发送任何其他代币，您的代币将失去。",
           "warningTitle": "通过该存款地址只能发送BTC"
         },
-        "wavesGatewayERGO": {
-          "helpDescrText": "确认交易后，网关将处理将ERGO转移到Waves帐户中的代币。",
+        "gatewayERGO": {
+          "helpDescrText": "确认交易后，网关将处理将ERGO转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在ERGO客户端或钱包中输入此地址",
           "warningMinAmountText": "如果您发送的{{assetTicker}}少于{{minAmount, BigNumber}}，您将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}",
           "warningText": "将任何其他货币发送到此地址可能会导致您的存款损失。",
           "warningTitle": "仅将ERGO发送至此存款地址"
         },
-        "wavesGatewayETH": {
-          "helpDescrText": "确认交易后，网关将处理ETH到Waves帐户中的代币的转账。",
+        "gatewayETH": {
+          "helpDescrText": "确认交易后，网关将处理ETH到DecentralChain帐户中的代币的转账。",
           "helpDescrTitle": "将此地址输入您的ETH客户或钱包",
           "warningMinAmountText": "如果你发送少于{{minAmount, BigNumber}} {{assetTicker}}，你将失去这笔钱。",
           "warningMinAmountTitle": "最低存款金额为{{minAmount，BigNumber}} {{assetTicker}} ，最高存款金额为{{maxAmount}} {{assetTicker}}",
           "warningText": "检查您的钱包或交易所是否为收回ETH使用智能合约。我们不接受这种交易，也不能退款。您将会失去这笔钱。",
           "warningTitle": "请不要从智能合约中交存ETH！别交存ERC20代币！您只能交存以太坊Ethereum。"
         },
-        "wavesGatewayUSDT": {
+        "gatewayUSDT": {
           "warningMinAmountText": "如果您的汇款少于{{minAmount，BigNumber}} {{assetTicker}} ，您将损失这笔钱。",
           "warningMinAmountTitle": "最低存款额为{{minAmount，BigNumber}} {{assetTicker}} ，最大存款额为{{maxAmount}} {{assetTicker}}",
           "warningText": "检查您的钱包或交易所是否使用智能合约提取Tether USD。我们不接受此类交易，也无法退款。你会赔钱的",
           "warningTitle": "这是ERC20 USDT的存款地址。仅将USDT发送到该存款地址。将任何其他硬币或令牌发送到此地址可能会导致您的押金丢失。请不要从智能合约中存入USDT！"
         },
-        "wavesGatewayVST": {
-          "helpDescrText": "确认交易后，网关将处理将WEST转移到Waves帐户中的代币。",
+        "gatewayVST": {
+          "helpDescrText": "确认交易后，网关将处理将WEST转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在您的WEST客户端或钱包中输入此地址",
           "warningMinAmountTitle": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
         },
-        "wavesGatewayWEST": {
-          "helpDescrText": "确认交易后，网关将处理将WEST转移到Waves帐户中的代币。",
-          "helpDescrText_copy": "确认交易后，网关将处理将WEST转移到Waves帐户中的代币。",
+        "gatewayWEST": {
+          "helpDescrText": "确认交易后，网关将处理将WEST转移到DecentralChain帐户中的代币。",
+          "helpDescrText_copy": "确认交易后，网关将处理将WEST转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在您的WEST客户端或钱包中输入此地址",
           "helpDescrTitle_copy": "在您的WEST客户端或钱包中输入此地址",
           "warningMinAmountTitle": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
         },
-        "wavesGatewayWEST:warningMinAmountTitle_copy": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}",
+        "or": "或",
+        "pleaseNote": "请注意，网关对此操作不收取费用。",
+        "scanQrCode": "扫描二维码",
+        "title": "存款{{assetName}}"
       },
       "dexScriptedPair": {
         "body": "智能资产是包含脚本的资产，该脚本设置令牌流通的条件。 {div}[如果您是没有经验的用户，我们不建议您使用智能资产执行操作。在进行交易之前，请仔细阅读有关资产及其脚本的信息。]",
@@ -1627,7 +1627,7 @@
       "gatewaySign": {
         "cancel": "取消",
         "continue": "允许",
-        "description": "{{name}} 该应用程序将有权访问您的Waves地址。 它不会得到您的SEED或私钥。请不要在重定向的网站上输入您的SEED助记词。",
+        "description": "{{name}} 该应用程序将有权访问您的DecentralChain地址。 它不会得到您的SEED或私钥。请不要在重定向的网站上输入您的SEED助记词。",
         "descriptionDesktop1": "该链接将在您的默认Web浏览器中打开。如果要使用其他Web浏览器，",
         "descriptionDesktop2": "复制",
         "descriptionDesktop3": "并将链接粘贴到其URL栏中。",
@@ -1636,16 +1636,20 @@
           "headline": "出了些问题",
           "title": "错误"
         },
-        "headline": "{span.link}[{{url}}] 要访问您的Waves地址",
+        "headline": "{span.link}[{{url}}] 要访问您的DecentralChain地址",
         "retrySign": "重试",
-        "title": "登入Waves",
+        "title": "登入DecentralChain",
         "txHash": "TXHASH",
         "warning": "请不要在重定向的网站上输入您的SEED助记词。"
       },
       "import": {
-        "errorBeta": "无法从Waves客户端测试版检索您的帐户。请尝试从Waves Lite客户端导入帐户。",
+        "decentralchainBetaClient": "DecentralChain客户端测试版",
+        "decentralchainBetaClientDescription": "从DecentralChain客户端测试版导入帐户",
+        "decentralchainLiteClient": "DecentralChain Lite客户端",
+        "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户",
+        "errorBeta": "无法从DecentralChain客户端测试版检索您的帐户。请尝试从DecentralChain Lite客户端导入帐户。",
         "errorHeader": "没有找到帐户",
-        "errorLite": "我们无法从Waves Lite客户端检索您的帐户。请尝试从Waves客户端测试版导入您的帐户。",
+        "errorLite": "我们无法从DecentralChain Lite客户端检索您的帐户。请尝试从DecentralChain客户端测试版导入您的帐户。",
         "errorUnable": "无法检索您的帐户。请使用SEED助记词来恢复您的帐户。",
         "fromBetaButton": "从客户端测试版导入",
         "fromLiteButton": "从Lite客户端导入",
@@ -1659,19 +1663,15 @@
         "selectAccountDescription": "您必须允许在浏览器中显示弹出式窗口",
         "selectAccountToImport": "选择要导入的帐户",
         "selectAccountToImportFrom": "选择帐户",
-        "selectButton": "选择",
-        "wavesBetaClient": "Waves客户端测试版",
-        "wavesBetaClientDescription": "从Waves客户端测试版导入帐户",
-        "wavesLiteClient": "Waves Lite客户端",
-        "wavesLiteClientDescription": "从Waves Lite客户端导入帐户"
+        "selectButton": "选择"
       },
       "matcherChoice": {
         "customMatcher": "自定义匹配器地址",
+        "decentralchainTerms": "我已超过18岁，我同意DecentralChain使用条款和DecentralChain隐私政策。",
         "matcher": "匹配",
         "matcherTerms": "我同意Super DEX Mather使用条款。",
         "terms": "条款",
-        "title": "选择匹配器",
-        "wavesTerms": "我已超过18岁，我同意Waves使用条款和Waves隐私政策。"
+        "title": "选择匹配器"
       },
       "open-main": {
         "dex": {
@@ -1727,7 +1727,7 @@
         "scanQrCode": "扫描二维码",
         "title": "分享您的钱包地址",
         "warningText": "如发送任何其他数字资产到该地址，您的资金将永久性消失。",
-        "warningTitle": "通过该地址只能发送 Waves和Waves代币"
+        "warningTitle": "通过该地址只能发送 DecentralChain和DecentralChain代币"
       },
       "receive": {
         "accountStatus": "帐户状态",
@@ -1740,7 +1740,7 @@
         },
         "bankSuccessHeader": "您被重定向到 IDNow.eu 来进行验证。",
         "bankSuccessText": "验证完成后，您将收到包含进一步说明的电子邮件。",
-        "bankVerifiedPlateDescription": "在您提取资金之前，我们建议您查看[说明]（https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html）和[限制和交易费用]（https://coinomat.com/limits.php）。",
+        "bankVerifiedPlateDescription": "在您提取资金之前，我们建议您查看[说明]（https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html）和[限制和交易费用]（https://coinomat.com/limits.php）。",
         "bankVerifiedPlateHeader": "您必须使用以下信息填写付款细节字段：",
         "card": {
           "continue": "继续",
@@ -1754,6 +1754,9 @@
         },
         "cryptocurrency": {
           "title": "加密货币"
+        },
+        "decentralchainEnterprise": {
+          "serverError_copy": "WEST服务暂时无法使用。稍后再试。"
         },
         "error": {
           "cardAmount": {
@@ -1776,7 +1779,7 @@
         "maximumIs": "最高的是",
         "minimumIs": "最低的是",
         "providedByCoinomat": {
-          "descriprion": "{div}[Waves Platform AG does not undertake any responsibility for the activities carried out by Coinomat and does not take any part in the relationship that may arise between Coinomat and users of the Waves Platform in the provision of this service.]{div}[By using Coinomat services, you agree to be bound by [Coinomat Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php). If you do not agree to these terms, then do not use Coinomat services.]",
+          "descriprion": "{div}[DecentralChain Platform AG does not undertake any responsibility for the activities carried out by Coinomat and does not take any part in the relationship that may arise between Coinomat and users of the DecentralChain Platform in the provision of this service.]{div}[By using Coinomat services, you agree to be bound by [Coinomat Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php). If you do not agree to these terms, then do not use Coinomat services.]",
           "header": "此服务由Coinomat公司 (Сoinomat) 提供。",
           "termsReadedInputLabel": "我已阅读并同意[隐私政策](https://coinomat.com/privacy.php)。我知道我可以在任何时候完全或部分撤销我的同意, 以便将来生效。",
           "warning": "如果您有验证、付款处理问题或您愿意撤销您的同意，请联系Coinomat客服团队 -  [support@coinomat.com](给support@coinomat.com 发邮件)"
@@ -1789,9 +1792,6 @@
         "verified": "验证",
         "vostok": {
           "serverError": "WEST服务暂时无法使用。稍后再试。"
-        },
-        "wavesEnterprise": {
-          "serverError_copy": "WEST服务暂时无法使用。稍后再试。"
         },
         "wtry": {
           "info": "如果付款处理出了问题，请联系Digilira支持团队 — [support@digilira.com](mailto:support@digilira.com)"
@@ -1810,8 +1810,8 @@
         "warningPlural": "您没有保存种子短语"
       },
       "removeKeeperAccount": {
-        "heading": "删除Waves Keeper帐户",
-        "text": "这只会删除此帐户的已保存路径。它不会从Waves Keeper中删除该帐户。"
+        "heading": "删除Cubensis Connect帐户",
+        "text": "这只会删除此帐户的已保存路径。它不会从Cubensis Connect中删除该帐户。"
       },
       "removeLedgerAccount": {
         "heading": "删除Ledger帐户",
@@ -1871,13 +1871,13 @@
         },
         "gatewayTerms": {
           "accept": "接受并继续",
-          "text": "使用网关服务即表示您同意受[网关服务条款]（https://dex.wavesplatform.com/）和[交易行为]（https://dex.wavesplatform.com/）的约束。如果您不同意这些条款，请不要使用此Gateway服务。",
+          "text": "使用网关服务即表示您同意受[网关服务条款]（https://dex.decentralchain.io/）和[交易行为]（https://dex.decentralchain.io/）的约束。如果您不同意这些条款，请不要使用此Gateway服务。",
           "title": "网关服务协议"
         },
         "icoWarning": "不要将 {{assetName}} 转到ICO地址。我们将无法将这笔销售中的代币存入您的账号。",
         "idNumber": {
           "helpIcon": {
-            "description": "您可以在[此处]（https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html）找到有关将资金提取到银行帐户的更多信息。",
+            "description": "您可以在[此处]（https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html）找到有关将资金提取到银行帐户的更多信息。",
             "title": "在使用Coinomat确认银行帐户后，您的ID号是分配给每个用户的独特号码。"
           }
         },
@@ -1910,7 +1910,7 @@
           "fee": "交易费 {{fee, money-currency}}"
         },
         "notVerifiedHeader": "您尚未经过验证。",
-        "notVerifiedText": "只有经过验证的用户才能退出银行帐户。您可以找到更多关于发送和接收法定货币的信息[这里]（https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html）。",
+        "notVerifiedText": "只有经过验证的用户才能退出银行帐户。您可以找到更多关于发送和接收法定货币的信息[这里]（https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html）。",
         "or": "或",
         "placeholderRecipient": "粘贴或扫描地址",
         "recipient": "收款者",
@@ -1919,8 +1919,8 @@
         "title": "发送{{assetName}}",
         "titleComplete": "发送完成",
         "toBank": "提款到银行账户",
+        "toDecentralChain": "发送到波浪币地址",
         "total": "总额",
-        "toWaves": "发送到波浪币地址",
         "txFee": "手续费",
         "validationError": {
           "notEnoughFunds": "您的余额不足以支付所需交易费用。您需要{{fee, money-currency}} 作为交易费用。",
@@ -1963,7 +1963,7 @@
         "general": {
           "auto": "Auto",
           "blockHeight": "当前高度",
-          "blue": "Waves",
+          "blue": "DecentralChain",
           "color": "颜色",
           "dark": "黑色",
           "green": "白色",
@@ -1989,9 +1989,9 @@
         "message": "要打开设置，请登录或创建帐户",
         "network": {
           "apiAddress": "数据服务",
-          "apiAddressHelp": "数据服务提供了额外的API，用于与Waves区块链数据进行交互。",
+          "apiAddressHelp": "数据服务提供了额外的API，用于与DecentralChain区块链数据进行交互。",
           "assetNameFilter": "命名服务",
-          "assetNameFilterHelp": "此服务使用Waves令牌库检查令牌的名称。 \n要完全禁用它，请清除该字段。",
+          "assetNameFilterHelp": "此服务使用DecentralChain令牌库检查令牌的名称。 \n要完全禁用它，请清除该字段。",
           "copy": "复制",
           "dataProvider": "数据提供者",
           "dataProviderDescription": "{{dataProviderDescription}}",
@@ -2016,12 +2016,12 @@
           "showCodeLink": "显示配对码",
           "unavailable": {
             "description": {
-              "ledger": "导出不适用于存储在Ledger设备上的帐户",
-              "wavesKeeper": "Waves Keeper设置中提供了从Waves Keeper导入的帐户的导出"
+              "decentralchainKeeper": "Cubensis Connect设置中提供了从Cubensis Connect导入的帐户的导出",
+              "ledger": "导出不适用于存储在Ledger设备上的帐户"
             },
             "header": {
-              "ledger": "导出不可用",
-              "wavesKeeper": "导出不可用"
+              "decentralchainKeeper": "导出不可用",
+              "ledger": "导出不可用"
             },
             "ok": "我明白"
           }
@@ -2056,7 +2056,7 @@
         "confirm": "确认",
         "confirmRequest": "确认请求",
         "confirmRequest_utils": "确认请求",
-        "confirmRequestKeeper": "等待来自Waves Keeper的确认......",
+        "confirmRequestKeeper": "等待来自Cubensis Connect的确认......",
         "confirmRequestLedger": {
           "cancel": "取消",
           "errorDescription": "请再试一次。如果错误仍然存在，请参阅[本文]（https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues）",
@@ -2067,7 +2067,7 @@
         "confirmRequestMatcher_utils": "向匹配器签署请求。如果您不签署，则无法从Ledger帐户在去中心化交易所上进行交易。",
         "confirmRequestToMatcher": "向匹配器签署请求。如果您不签署请求，则无法在去中心化交易所上进行交易",
         "connecting": "连接中...",
-        "connectingKeeper": "连接到Waves Keeper中 ...",
+        "connectingKeeper": "连接到Cubensis Connect中 ...",
         "connectionError": "无法连接分类帐设备",
         "connectionErrorKeeper": "无法访问帐户",
         "connectionText": "您的访问已经中断。请重新登入。",
@@ -2075,7 +2075,7 @@
         "enterPin": "输入您的PIN码",
         "fee": "费用",
         "matcher": "Sign orders requests",
-        "openApp": "打开Waves应用程序",
+        "openApp": "打开DecentralChain应用程序",
         "orderType": "订单类型",
         "pair": "对",
         "price": "价格",
@@ -2088,19 +2088,16 @@
         "signByKeeper": "上等待确认",
         "signByLedger": "Ledger上等待确认",
         "signError": "请求尚未确认。",
-        "signErrorKeeper": "您没有使用Waves Keeper确认请求",
+        "signErrorKeeper": "您没有使用Cubensis Connect确认请求",
         "signErrorText": "您未在Ledger设备上确认该请求",
-        "signErrorTextImportKeeper": "使用地址{{address}}登录Waves Keeper，然后刷新页面以继续。",
+        "signErrorTextImportKeeper": "使用地址{{address}}登录Cubensis Connect，然后刷新页面以继续。",
         "signErrorTextKeeper": "请再试一次。如果错误仍然存在，请创建[帮助]的票证（https://decentralchain.io/soporte/）",
-        "signErrorTextKeeperWrongUser": "此帐户与Waves Keeper中的所选帐户不匹配。请在Waves Keeper中激活另一个帐户，然后重试。",
+        "signErrorTextKeeperWrongUser": "此帐户与Cubensis Connect中的所选帐户不匹配。请在Cubensis Connect中激活另一个帐户，然后重试。",
         "timestamp": "时间戳",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "更改赞助"
-      },
       "sponsorship": {
-        "amountPerTx": "每笔交易金额（每0.001WAVES）",
+        "amountPerTx": "每笔交易金额（每0.001DCC）",
         "assetId": "ID",
         "continue": "继续",
         "errors": {
@@ -2116,6 +2113,9 @@
         "warningHeader": "用户可以通过{{name}}支付交易费用",
         "warningText": "对于每笔交易，将从您的余额中扣除0.001 波浪币， {{name}}将记入您的帐户。当您启用赞助时（在下面的表单中输入金额），您为交易的用户收取{{name}}的金额。赞助只有在余额至少为1.005波浪币时才有效。如果您的余额低于此金额，您将无法赞助交易。"
       },
+      "sponsorship_edit": {
+        "title": "更改赞助"
+      },
       "startLease": {
         "amount": "金额",
         "balance": "余额",
@@ -2129,18 +2129,18 @@
       "termsAccept": {
         "body": {
           "advancedMode": "高级功能",
-          "analytics": "我想向开发者发送匿名统计信息来帮助改善Waves平台。",
-          "backup": "我了解如果此应用移至其他设备或已删除，我的Waves账户只能通过备份短语（助记词）进行恢复。",
+          "analytics": "我想向开发者发送匿名统计信息来帮助改善DecentralChain平台。",
+          "backup": "我了解如果此应用移至其他设备或已删除，我的DecentralChain账户只能通过备份短语（助记词）进行恢复。",
           "ok": "确认并开始",
           "privacyPolicy": "我已阅读并同意[隐私权政策]（https://decentralchain.io/privacy-policy）。",
           "read": "我已阅读、理解并同意",
           "readTermsAndConditions": "我已阅读，理解并同意[条款和细则]（https://decentralchain.io/terms-and-conditions）",
           "security": "我了解我的资产安全地存放在此设备上，而不是存放于公司",
-          "securityAndBackup": "我知道我的资金是安全地保存在这个设备上，而不是公司。如果将此应用程序移动到其他设备或删除，我的Waves只能使用备份恢复。",
+          "securityAndBackup": "我知道我的资金是安全地保存在这个设备上，而不是公司。如果将此应用程序移动到其他设备或删除，我的DecentralChain只能使用备份恢复。",
           "terms": "使用条款"
         },
         "header": {
-          "description": "Waves与众不同 — 该钱包安全地储存在您使用的设备上",
+          "description": "DecentralChain与众不同 — 该钱包安全地储存在您使用的设备上",
           "title": "完成！ 检阅明细",
           "title2": "使用条款"
         }
@@ -2180,22 +2180,22 @@
           "buttonReadMore": "阅读更多",
           "p1": "为了您的安全，请您抽时间来了解一些重要信息. 🙏",
           "p2": "如果您访问了钓鱼网站或丢失备份短语（SEED短语），我们无法恢复您的资金或冻结您的帐户。",
-          "p3": "如您愿意继续使用我们的平台，您同意接受与您SEED损失相关的所有风险。如果您丢失了SEED，您同意并承认Waves平台不会对此造成的负面后果承担责任。",
-          "title": "欢迎加入Waves平台！"
+          "p3": "如您愿意继续使用我们的平台，您同意接受与您SEED损失相关的所有风险。如果您丢失了SEED，您同意并承认DecentralChain平台不会对此造成的负面后果承担责任。",
+          "title": "欢迎加入DecentralChain平台！"
         },
         "step2": {
           "backButton": "返回",
           "cell1": "您匿名地使用您的钱包，指的是您的账户未连接到电子邮件账户或任何其他识别数据。",
           "cell2": "用某个设备或浏览器时，您的密码可以保护您的账户，为了确保您的密码短语不被保存在存储器中。",
           "cell3": "如果您忘记了密码，您可以通过您的密码短语使用账户恢复表单并轻松创建一个新密码。但是，如果您遗失了密码，您将无法访问您的帐户。",
-          "cell4": "你不能改变你的秘密短语。如果您不小心将其发送给某人或怀疑诈骗者已将其移交给他人，请立即创建一个新的Waves钱包并将资金转入其中。",
+          "cell4": "你不能改变你的秘密短语。如果您不小心将其发送给某人或怀疑诈骗者已将其移交给他人，请立即创建一个新的DecentralChain钱包并将资金转入其中。",
           "nextButton": "保护自己",
-          "p1": "注册您的账户时，您要保存您的密码（SEED）并使用密码来保护您的账户。用普通的中央服务器上，您特别注意密码, 而且您可以通过电子邮件更改和重置密码。然而，Waves与众不同  — 该钱包安全地储存在您使用的设备上：",
+          "p1": "注册您的账户时，您要保存您的密码（SEED）并使用密码来保护您的账户。用普通的中央服务器上，您特别注意密码, 而且您可以通过电子邮件更改和重置密码。然而，DecentralChain与众不同  — 该钱包安全地储存在您使用的设备上：",
           "title": "你需要知道关于您的SEED的信息"
         },
         "step3": {
           "backButton": "返回",
-          "cell1": "请总是检查URL: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell1": "请总是检查URL: [https://client.decentralchain.io](https://client.decentralchain.io)",
           "cell2": "访问您的账户时 请不要使用具有扩展程序或插件的浏览器",
           "cell3": "请不要打开来自未知发件人的电子邮件或链接。",
           "cell4": "请您定期更新您的操作系统。",
@@ -2248,27 +2248,31 @@
           "1_0_0-beta_25": "{span.line}[1. 您现在可以在设置中更改访问时间.]{span.line}[2. 我们已改正了在DEX中的买 / 卖窗口缺陷.]{span.line}[3. 如果您还没有保存您的SEED短语，我们就会提醒你.]{span.line}[4. 一些小缺陷已被改正.]",
           "1_0_0-beta_26": "{span.line}[1. 一些小缺陷已被改正.]",
           "1_0_0-beta_27": "{span.line}[1. 添加了中文.]{span.line}[2. 添加了土耳其语.]",
-          "1_0_0-beta_30": "{span.line}[1. 您现在可以消除或再发行您已生成的代币.]{span.line}[2. 添加了Waves Auth API支持.]{span.line}[3. 一些小缺陷已被改正.]",
-          "1_0_0-beta_31": "{span.line}[1. 您现在可以用信用卡购买WAVES和BTC.]{span.line}[2. 改善了买入/卖出窗口中的用户界面.]{span.line}[3. 添加了32位Windows支持.]{span.line}[4. 一些缺陷已被改正.]",
+          "1_0_0-beta_30": "{span.line}[1. 您现在可以消除或再发行您已生成的代币.]{span.line}[2. 添加了DecentralChain Auth API支持.]{span.line}[3. 一些小缺陷已被改正.]",
+          "1_0_0-beta_31": "{span.line}[1. 您现在可以用信用卡购买DCC和BTC.]{span.line}[2. 改善了买入/卖出窗口中的用户界面.]{span.line}[3. 添加了32位Windows支持.]{span.line}[4. 一些缺陷已被改正.]",
           "1_0_0-beta_32": "{span.line}[1. 您现在可以在客户端进行大规模传送.]{span.line}[2. 一些小缺陷已被改正.]",
           "1_0_0-beta_35": "{span.line}[1. 您现在可以在投资组合选项卡中对代币进行排序、筛选和隐藏.]{span.line}[2. 开通支持DASH存放]{span.line}[3. 加了印地语.]{span.line}[4. 加了荷兰语.]{span.line}[5. 您现在可以向其他用户开具发票.]{span.line}[6. 其他小缺陷已被改正了.]",
           "1_0_0-beta_36": "{span.line}[1. 主要租赁节点列在租赁页面上.]{span.line}[2. 一些缺陷已被改正了. ]",
           "1_0_0-beta_39": "{span.line}[1. 设置里添加了垃圾信息筛选.]{span.line}[2. 一些缺陷已被改正了.]",
           "1_0_0-beta_40": "{span.line}[1. 上了Monero网关.]",
           "1_0_0-beta_42": "{span.line}[1. 添加了西班牙语支持.]{span.line}[2. 您可以使用客户端而不默认保存帐户详细信息.]{span.line}[3.垃圾代币现在标记在交易页面中.]{span.line}[4. 其他缺陷已被改正.]",
-          "1_0_0-beta_47": "{span.line}[1. 全新的去中心化交易所DEX UI.]{span.line}[2. 更快更稳定的Waves客户端.]{span.line}[3. 别名功能再次可用.]{span.line}[4.修正了一些小错误.]{span.line}[5. 邀请您通过制作[视频](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) 或写[文章](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835) 参加我们的比赛.]",
+          "1_0_0-beta_47": "{span.line}[1. 全新的去中心化交易所DEX UI.]{span.line}[2. 更快更稳定的DecentralChain客户端.]{span.line}[3. 别名功能再次可用.]{span.line}[4.修正了一些小错误.]{span.line}[5. 邀请您通过制作[视频](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) 或写[文章](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835) 参加我们的比赛.]",
           "1_0_0-beta_50": "{span.line}[1.您现在可以销毁代币.]{span.line}[2. 其他缺陷已被改正.]",
-          "1_0_10": "{span.line} [1。增加了赞助交易支持。 [阅读更多]（https://docs.wavesplatform.com/en/waves-client/assets-management/sponsored-transaction.html）] \n {span.line} [2。波兰语和葡萄牙语支持已添加。]",
+          "1_0_3": "{span.line}[1.您现在可以在投资组合页面中按ID搜索代币.]\n{span.line}[2.其他缺陷已被改正.]",
+          "1_0_5": "{span.line}[1. 在DEX图表上添加了交易量表.]\n{span.line}[2. 其他缺陷已被改正.]",
+          "1_0_6": "{span.line}[1. 添加DecentralChain桌面客户端授权.]",
+          "1_0_7": "{span.line}[1.一些桌面客户故障已被改正.]\n{span.line}[2.优化TX和Portfolio页面之间的切换.]\n{span.line}[3.垃圾代币名称隐藏在TX列表中.]\n{span.line}[4.错误消息通知已被重写.]",
+          "1_0_8": "{span.line}[1. 添加Ledger Nano S支持.]\n{span.line}[2. 添加了一个用于保存您选择的授权方法的新选项.]",
+          "1_0_10": "{span.line} [1。增加了赞助交易支持。 [阅读更多]（https://docs.decentralchain.io/en/decentralchain-client/assets-management/sponsored-transaction.html）] \n {span.line} [2。波兰语和葡萄牙语支持已添加。]",
           "1_0_14": "{span.line} [1。修正了在没有波浪币余额的情况下使用赞助资产的问题。] \n {span.line} [2。修复了30天到期订单的错误。] \n {span.line} [3。其他一些小错误。]",
           "1_0_15": "{span.line} [1。关于总帐确认的问题已得到修复。] \n{span.line} [2。增加了总帐确认的等待时间。] \n{span.line} [3。详细信息已添加到错误消息中。]",
           "1_0_18": "{span.line} [1。您现在可以为您的帐户设置脚本。] \n {span.line} [2。其他小错误已得到修复。]",
           "1_0_21": "{span.line} [1。通过总帐修复授权确认。] \n {span.line} [2。修复了许多小错误。]",
           "1_0_22": "{span.line} [1。添加了高级功能以使用脚本帐户。]",
-          "1_0_25": "{span.line} [1。已添加[Waves Keeper]（https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en）支持。",
+          "1_0_25": "{span.line} [1。已添加[Cubensis Connect]（https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en）支持。",
           "1_0_27": "{span.line} [1。在投资组合中添加了“我的资产”类别。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_28": "{span.line} [1。添加了配对功能，可将现有帐户导入移动设备。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_29": "{span.line} [1。使用西里尔字母生成QR码已得到修复。] \n{span.line} [2。已添加用于监视列表搜索的工具提示。] \n{span.line} [3。进一步的美觀修复。 ]",
-          "1_0_3": "{span.line}[1.您现在可以在投资组合页面中按ID搜索代币.]\n{span.line}[2.其他缺陷已被改正.]",
           "1_0_30": "{span.line} [1。 “设置脚本”按钮已移至“设置”中的“安全”部分。 \n {span.line} [2。性能改进和外观更改。]",
           "1_0_32": "{span.line} [1。与BetterTokens的预言集成。] \n{span.line} [2。添加了对代币验证协议的支持。] \n{span.line} [3。修正通过Coinomat提取令牌的佣金。",
           "1_0_33": "{span.line} [1。如果你尝试以下的订单是与当前市场价格差距太大，您将会收到通知。]{span.line} [2. 一些缺陷已被改正了.]。",
@@ -2277,25 +2281,21 @@
           "1_0_40": "{span.line}[1。 DEX优化。] \n {span.line}[2。在浏览器标签标题中添加了汇率。] \n {span.line}[3。修复了小错误。]",
           "1_0_41": "{span.line}[1。 DEX优化。] \n {span.line}[2。添加了通知系统。] \n {span.line}[3。修复了小错误。]",
           "1_0_42": "{span.line}[1。修复了小错误。]",
-          "1_0_5": "{span.line}[1. 在DEX图表上添加了交易量表.]\n{span.line}[2. 其他缺陷已被改正.]",
-          "1_0_6": "{span.line}[1. 添加Waves桌面客户端授权.]",
-          "1_0_7": "{span.line}[1.一些桌面客户故障已被改正.]\n{span.line}[2.优化TX和Portfolio页面之间的切换.]\n{span.line}[3.垃圾代币名称隐藏在TX列表中.]\n{span.line}[4.错误消息通知已被重写.]",
-          "1_0_8": "{span.line}[1. 添加Ledger Nano S支持.]\n{span.line}[2. 添加了一个用于保存您选择的授权方法的新选项.]",
           "1_1_0": "{span.line}[1。 现在默认保存订单到期期限。]\n{span.line}[2。 修复了小错误。]",
           "1_2_0": "{span.line}[1。添加了日语和爱沙尼亚语。]\n{span.line}[2。在买入/卖出窗口中改进了用户界面。]\n{span.line}[3。修复了许多小错误。]",
           "1_2_1": "{span.line}[1。该应用程序现在保存图表大小和比例设置以及时间间隔。] \n {span.line}[2。修复了小错误。]",
           "1_2_2": "{span.line}[1。安全更新。] {span.line} [2。修复了小错误。]",
-          "1_2_3": "{span.line}[1。添加了对Ledger Waves 1.0.0 app的支持。]",
-          "1_2_6": "{span.line}[1。添加了调用脚本事务支持。 [阅读更多]（https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)] \n {span.line}[2。改进的用户界面和其他小错误已得到修复。]",
+          "1_2_3": "{span.line}[1。添加了对Ledger DecentralChain 1.0.0 app的支持。]",
+          "1_2_6": "{span.line}[1。添加了调用脚本事务支持。 [阅读更多]（https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)] \n {span.line}[2。改进的用户界面和其他小错误已得到修复。]",
           "1_2_8": "{span.line} [1。垃圾邮件令牌和交易已隐藏在客户端中。] \n {span.line} [2。改进的用户界面和其他小错误已得到修复。]",
           "1_3_0": "{span.line}[1。改进了应用程序导航和起始页面界面。]",
-          "1_3_18": "{span.line} [1。使用私钥添加了对钱包的登录。] \n {span.line} [2。令牌的24小时价格变化现在绑定到代币/ WAVES对。]",
-          "1_3_19": "{span.line} [1。 Bancor网关已经推出。] \n {span.line} [2。用户菜单界面已得到改进。]",
           "1_3_2": "{span.line} [1。 WEST网关已经推出。] \n {span.line} [2。改进的用户界面和其他小错误已得到修复。]",
-          "1_3_20": "{span.line} [1。改进了从本地存储中存储和恢复帐户的系统（需要更新[桌面应用程序]（https://wavesplatform.com/technology/wallet））。 \n {span.line} [2。修正了订单中价格的四舍五入。]",
           "1_3_5": "{span.line} [1。已添加包含[wsoc.io]（https://wsoc.io）竞赛代币的标签。 \n {span.line} [2。增加了法语支持。] \n {span.line} [3。其他小错误已得到修复。]",
-          "1_3_7": "{span.line} [1。与[tokenrating.wavesexplorer.com]集成（https://tokenrating.wavesexplorer.com）现在您可以直接在应用程序中对令牌进行评分。 \n {span.line} [2。其他小错误已得到修复。]",
+          "1_3_7": "{span.line} [1。与[tokenrating.decentralscan.com]集成（https://tokenrating.decentralscan.com）现在您可以直接在应用程序中对令牌进行评分。 \n {span.line} [2。其他小错误已得到修复。]",
           "1_3_9": "{span.line} [1。改进了Exchange和电子钱包部分的UI和功能。] \n {span.line} [2。其他小错误已得到修复。]",
+          "1_3_18": "{span.line} [1。使用私钥添加了对钱包的登录。] \n {span.line} [2。令牌的24小时价格变化现在绑定到代币/ DCC对。]",
+          "1_3_19": "{span.line} [1。 Bancor网关已经推出。] \n {span.line} [2。用户菜单界面已得到改进。]",
+          "1_3_20": "{span.line} [1。改进了从本地存储中存储和恢复帐户的系统（需要更新[桌面应用程序]（https://decentralchain.io/technology/wallet））。 \n {span.line} [2。修正了订单中价格的四舍五入。]",
           "1_4_0": "{span.line} [增加了在一个钱包内轻松切换帐户的功能。]",
           "1_4_4": "{span.line} [增加了从密钥库文件备份和还原帐户的功能]"
         },
@@ -2309,11 +2309,11 @@
     },
     "warningPlate": {
       "day": "d",
-      "dexMoves": "我们即将搬家！和我们一起在[Waves.Exchange]（https://waves.exchange）",
+      "dexMoves": "我们即将搬家！和我们一起在[Decentral.Exchange]（https://decentral.exchange）",
       "hour": "h",
-      "info": "我们正在从Decentral.Exchange迁移到Waves.Exchange。您是否要再次移动帐户？",
+      "info": "我们正在从Decentral.Exchange迁移到Decentral.Exchange。您是否要再次移动帐户？",
       "min": "m",
-      "notification": "我们正在从Decentral.Exchange迁移到Waves.Exchange。不要忘记移动您的帐户！",
+      "notification": "我们正在从Decentral.Exchange迁移到Decentral.Exchange。不要忘记移动您的帐户！",
       "sec": "s",
       "startMoving": "安全移动"
     }
@@ -2363,10 +2363,10 @@
       "available": "可得到",
       "create": "开始租赁",
       "leased": "租用的",
-      "title": "WAVES余额"
+      "title": "DCC余额"
     },
     "description": {
-      "text1": "您只能转账或交易未租凭的WAVES。租赁中的数额不能由您或任何其他人转账或交易。",
+      "text1": "您只能转账或交易未租凭的DCC。租赁中的数额不能由您或任何其他人转账或交易。",
       "text2": "一旦租赁交易出现在区块链中，您可以随时取消租赁，租赁交易通常会在租凭后的一分钟或更短的时间内出现。",
       "text3": "余额将在1000个区块后更新。",
       "title": "注意"
@@ -2377,14 +2377,14 @@
     "test": {
       "test": "文本测试"
     },
-    "title_leasing": "您已选择登录Waves桌面应用程序"
+    "title_leasing": "您已选择登录DecentralChain桌面应用程序"
   },
   "app.wallet.portfolio": {
     "allactive": "All active ({span}[{{count}}])",
     "burn": "代币消除",
     "deposit": "存款",
     "dex": "打开在DEX上",
-    "hasNftToken": "帐户具有不可替代的令牌[（NFT）]（https://wavesexplorer.com/address/ {{address}} / nft）",
+    "hasNftToken": "帐户具有不可替代的令牌[（NFT）]（https://decentralscan.com/address/ {{address}} / nft）",
     "info": "资产信息",
     "list": {
       "actions": "操作",
@@ -2578,8 +2578,8 @@
       },
       "jul2019": {
         "date": "2019年7月",
-        "text": "向Waves生态系统添加ERC20令牌网关，这意味着流行的以太坊令牌可以在平台上交易。",
-        "text_2": "开发人员简化了移动开发流程，并获得了与Waves区块链交互方式的全面描述。",
+        "text": "向DecentralChain生态系统添加ERC20令牌网关，这意味着流行的以太坊令牌可以在平台上交易。",
+        "text_2": "开发人员简化了移动开发流程，并获得了与DecentralChain区块链交互方式的全面描述。",
         "text_3": "用户可以在一个钱包应用程序中轻松切换多个帐户。",
         "title": "ERC-20网关",
         "title_2": "移动SDK和JS库改进",
@@ -2602,7 +2602,7 @@
       },
       "sep2018": {
         "date": "2018年9月",
-        "text": "与Waves集成DEX使用户能够以最高的安全性进行交易。",
+        "text": "与DecentralChain集成DEX使用户能够以最高的安全性进行交易。",
         "title": "Ledger Nano S."
       },
       "sep2019": {
@@ -2631,24 +2631,32 @@
       "api": "API",
       "apple": "苹果应用商店",
       "blog": "博客",
-      "broughtBy": "由Waves Team带给您",
+      "broughtBy": "由DecentralChain Team带给您",
       "cancel": "取消",
       "change": "更改",
       "changeName": "更换名字",
       "chart": "图表",
       "comingSoon": "快来了",
-      "contestLinkDescription": "在Decentral.Exchange的交易竞赛中赢得5,000个WAVES！",
+      "contestLinkDescription": "在Decentral.Exchange的交易竞赛中赢得5,000个DCC！",
       "contestLinkLink": "规则",
       "controlAssets": "资产控制权是你自己的 - 资金不会留下你的钱包，也不能冻结",
       "cookies": "Cookies",
       "copyAddress": "复制地址",
       "copyright": "©2019年波浪幣平台",
-      "copyright-new": "© 2019 Waves.Exchange",
+      "copyright-new": "© 2019 Decentral.Exchange",
       "copyrightVordex": "©2019 VORDEX",
       "createAccount": "创建帐号",
       "createToken": "创建令牌",
       "currentAccountName": "当前帐户名称",
       "dashboard": "仪表板",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "波浪幣区块链",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "每个订单填写0.003波浪幣",
+      "decentralchainWallet": "波浪幣钱包",
       "decentralized": "分散",
       "descExchange": "我们正在做一个很棒的新项目，它将很快准备就绪。敬请关注！",
       "dexWithHardware": "将DEX与硬件钱包Ledger Nano S和Ledger Blue配合使用",
@@ -2675,19 +2683,19 @@
       "legal": "法律",
       "linux": "Linux",
       "linuxDescription": "下载Linux应用程序",
-      "logout": "登出",
       "logOut": "登出",
+      "logout": "登出",
       "low": "24低",
       "lowFixedFees": "低，固定费用",
       "macOs": "苹果系统",
       "macOsDescription": "下载MacOS应用程序",
-      "mailto": "support.wavesplatform.com",
+      "mailto": "support.decentralchain.io",
+      "mailtoDecentralChainExchange": "support@decentral.exchange",
       "mailtoVordex": "support@vordex.com",
-      "mailtoWavesExchange": "support@waves.exchange",
       "mainPage": "主页",
       "majorFiatCryptocurrencies": "支持的主要法定货币和加密货币：BTC，LTC，ETH，USD等",
       "markets": "市场",
-      "marketsDescription": "Decentral.Exchange允许您快速安全地执行交易，无论您是通过移动应用程序，桌面客户端，网络钱包还是Waves API进行交易。",
+      "marketsDescription": "Decentral.Exchange允许您快速安全地执行交易，无论您是通过移动应用程序，桌面客户端，网络钱包还是DecentralChain API进行交易。",
       "marketsTableDescription": "要查看更多交易对，请单击",
       "marketsTableDescriptionLink": "查看Exchange",
       "menu": "菜单",
@@ -2723,20 +2731,12 @@
       "tokenCreationCosts": "令牌创建成本仅为1 DCC，需要1分钟",
       "tokenomicaToasterButton": "了解更多",
       "tokenomicaToasterText": "成为有史以来第一个用于发行和交易令牌化资产的多平台的股东",
-      "tradeOnWaves": "波浪分散交易所的交易",
-      "tradeOnWavesDescription": "快速，安全地购买和出售代币，具有集中交易的所有优势，但保留对资金的完全控制。",
+      "tradeOnDecentralChain": "波浪分散交易所的交易",
+      "tradeOnDecentralChainDescription": "快速，安全地购买和出售代币，具有集中交易的所有优势，但保留对资金的完全控制。",
       "transactions": "交易记录",
       "twitter": "推特",
       "volume": "值",
       "wallet": "智能数字钱包",
-      "wavesBlockchain": "波浪幣区块链",
-      "wavesDexWeb": "Decentral.Exchange Web",
-      "wavesExplorer": "Waves Explorer",
-      "wavesIde": "Waves IDE",
-      "wavesKeeper": "Waves Keeper",
-      "wavesLabs": "Waves Labs",
-      "wavesOrderFilled": "每个订单填写0.003波浪幣",
-      "wavesWallet": "波浪幣钱包",
       "windows": "视窗",
       "windowsDescription": "下载Windows应用程序"
     }
@@ -2757,7 +2757,7 @@
     "modal": {
       "set_protocol_error": {
         "close": "关闭",
-        "message": "无法为启动Waves客户端设置默认协议。浏览器的链接暂时不受支持！",
+        "message": "无法为启动DecentralChain客户端设置默认协议。浏览器的链接暂时不受支持！",
         "report": "报告",
         "title": "确定开放协议错误"
       }

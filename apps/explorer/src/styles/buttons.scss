@@ -1,6 +1,3 @@
-@use "sass:map";
-@use "variables";
-
 button {
     cursor: pointer;
     display: flex;
@@ -27,15 +24,15 @@ button {
         -webkit-apperance: none;
 
         &.submit {
-            background-color: map.get(variables.$colors, submit400);
-            color: map.get(variables.$colors, white);
+            background-color: map-get($colors, submit400);
+            color: map-get($colors, white);
 
             &:hover, &.hover {
-                background-color: map.get(variables.$colors, submit500);
+                background-color: map-get($colors, submit500);
             }
 
             &:active, &.active {
-                background-color: map.get(variables.$colors, submit600);
+                background-color: map-get($colors, submit600);
             }
 
             &[disabled] {

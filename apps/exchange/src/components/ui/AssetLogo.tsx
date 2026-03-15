@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 // Styled Components
@@ -19,7 +20,7 @@ const LogoImg = styled.img<{ $size: number }>`
   object-fit: cover;
 `;
 
-const Fallback = styled.div<{ $size: number; $color?: string }>`
+const Fallback = styled.div<{ $size: number; $color?: string | undefined }>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -71,9 +72,9 @@ export const AssetLogo: React.FC<AssetLogoProps> = ({
   // Generate logo URL
   const logoUrl =
     customUrl ||
-    (assetId === 'DCC' || assetId === 'WAVES'
-      ? `https://wavesplatform.com/img/logo-waves.svg`
-      : `https://assets-cdn.trustwallet.com/blockchains/waves/assets/${assetId}.png`);
+    (assetId === 'DCC' || assetId === 'DCC'
+      ? `https://decentralchain.io/img/logo-dcc.svg`
+      : `https://assets-cdn.trustwallet.com/blockchains/dcc/assets/${assetId}.png`);
 
   // Generate fallback text
   const fallback = fallbackText || (assetId ? assetId.slice(0, 2).toUpperCase() : '??');

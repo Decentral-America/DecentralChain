@@ -6,7 +6,6 @@ import { fromMessagePort, fromWebExtensionPort } from './ipc/ipc';
 if (document.documentElement.tagName === 'HTML') {
   document.head.appendChild(
     Object.assign(document.createElement('script'), {
-      src: Browser.runtime.getURL('inpage.js'),
       onload: () => {
         const messageChannel = new MessageChannel();
         const inpagePort = messageChannel.port1;
@@ -47,6 +46,7 @@ if (document.documentElement.tagName === 'HTML') {
           }),
         );
       },
+      src: Browser.runtime.getURL('inpage.js'),
     }),
   );
 }

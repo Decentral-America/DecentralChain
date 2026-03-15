@@ -264,31 +264,31 @@ export function ImportSeed() {
           if (activeTab === SEED_TAB_INDEX) {
             dispatch(
               newAccountSelect({
-                type: 'seed',
-                seed: seedValue,
                 address,
-                name: '',
                 hasBackup: true,
+                name: '',
+                seed: seedValue,
+                type: 'seed',
               }),
             );
           } else if (activeTab === ENCODED_SEED_TAB_INDEX) {
             dispatch(
               newAccountSelect({
-                type: 'encodedSeed',
-                encodedSeed: encodedSeedValue,
                 address,
-                name: '',
+                encodedSeed: encodedSeedValue,
                 hasBackup: true,
+                name: '',
+                type: 'encodedSeed',
               }),
             );
           } else {
             dispatch(
               newAccountSelect({
-                type: 'privateKey',
-                privateKey: privateKeyValue,
                 address,
-                name: '',
                 hasBackup: true,
+                name: '',
+                privateKey: privateKeyValue,
+                type: 'privateKey',
               }),
             );
           }

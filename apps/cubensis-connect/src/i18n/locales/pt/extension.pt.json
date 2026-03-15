@@ -8,13 +8,13 @@
     "cancel": "Cancelar",
     "copied": "Copiado!",
     "copyToClipboard": "Clique para copiar para a área de transferência",
+    "email": "Email",
+    "emailNoBackupPhrase": "Esta conta foi importada usando a conta DecentralChain Exchange, portanto, não há frase de backup ou chave privada para copiar",
     "encodedSeed": "Seed criptografada",
     "enter": "Entrar",
-    "email": "Email",
     "password": "Senha",
     "passwordError": "Senha incorreta",
     "privateKeyNoBackupPhrase": "Esta conta foi importada usando chave privada, portanto, não há frase de backup para copiar",
-    "emailNoBackupPhrase": "Esta conta foi importada usando a conta DecentralChain Exchange, portanto, não há frase de backup ou chave privada para copiar",
     "privKey": "Chave Privada",
     "pubKey": "Chave Pública",
     "viewInExplorer": "Ver no Explorer"
@@ -25,10 +25,10 @@
   "address": {
     "add": "Novo endereço",
     "addButton": "Adicionar novo",
-    "addTooltip": "Adicionar um endereço aos seus contatos",
     "added": "Endereço adicionado",
     "addressAlreadyExist": "O endereço já existe",
     "addressInvalidError": "Endereço inválido",
+    "addTooltip": "Adicionar um endereço aos seus contatos",
     "cancel": "Cancelae",
     "copied": "Copiado!",
     "copyToClipboard": "Clique para copiar para a área de transferência",
@@ -54,25 +54,25 @@
     "balanceLabel": "Saldo"
   },
   "assetInfo": {
-    "id": "ID",
-    "name": "Nome",
-    "ticker": "Ticker",
-    "precision": "Pontos decimais",
-    "quantity": "Total emitido",
-    "type": "Tipo",
-    "reissuable": "Reemissível",
-    "notReissuable": "Não-reemissível",
-    "scripted": "Com script",
-    "notScripted": "Sem script",
-    "minSponsoredFee": "Taxa do Ativo Patrocinado",
-    "sender": "Emissor",
-    "timestamp": "Data de emissão",
     "closeBtn": "Fechar",
-    "infoTooltip": "Informações do Ativo",
     "favAddTooltip": "Adicionar aos Favoritos",
     "favRemoveTooltip": "Remover dos Favoritos",
+    "id": "ID",
+    "infoTooltip": "Informações do Ativo",
+    "minSponsoredFee": "Taxa do Ativo Patrocinado",
+    "name": "Nome",
+    "notReissuable": "Não-reemissível",
+    "notScripted": "Sem script",
+    "precision": "Pontos decimais",
+    "quantity": "Total emitido",
+    "reissuable": "Reemissível",
+    "scripted": "Com script",
     "sendAssetTooltip": "Enviar",
+    "sender": "Emissor",
     "swapAssetTooltip": "Converter",
+    "ticker": "Ticker",
+    "timestamp": "Data de emissão",
+    "type": "Tipo",
     "viewDetailsInExplorer": "Ver detalhes no Explorer"
   },
   "assetSelectModal": {
@@ -115,14 +115,14 @@
     "saveBackup": "Salvar frase de backup"
   },
   "bottom": {
-    "network": {
-      "edit": "Editar",
-      "disabled": "Você não pode alterar as configurações de rede durante esta operação"
-    },
     "custom": "Custom",
     "mainnet": "Mainnet",
-    "testnet": "Testnet",
-    "stagenet": "Stagenet"
+    "network": {
+      "disabled": "Você não pode alterar as configurações de rede durante esta operação",
+      "edit": "Editar"
+    },
+    "stagenet": "Stagenet",
+    "testnet": "Testnet"
   },
   "changeName": {
     "currentName": "Nome atual da conta",
@@ -173,10 +173,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "Exportar contas",
-    "importAccounts": "Importar contas",
     "exportAddressBook": "Exportar livro de endereços",
-    "importAddressBook": "Importar livro de endereços",
-    "exportAll": "Exportar tudo"
+    "exportAll": "Exportar tudo",
+    "importAccounts": "Importar contas",
+    "importAddressBook": "Importar livro de endereços"
   },
   "exportKeystore": {
     "cancelBtn": "Cancelar",
@@ -201,13 +201,13 @@
   "forgotPassword": {
     "attention": "Atenção!",
     "attentionMessage": "Para redefinir a senha, você precisa excluir todas as contas da Cubensis Connect, definir uma senha nova, importar cada uma de suas contas novamente com a Seed.",
-    "warningMessage": "Se você não salvou a Seed ou a Chave Privada, não poderá recuperar o acesso à sua conta.",
     "continueMessage": "Para continuar, digite isso no campo abaixo",
     "phrase": "EXCLUIR TODAS AS CONTAS",
     "phraseError": "A frase foi digitada incorretamente",
     "placeholder": "Por favor, entre aqui.",
+    "resetCancel": "Cancelar",
     "resetConfirm": "Excluir tudo",
-    "resetCancel": "Cancelar"
+    "warningMessage": "Se você não salvou a Seed ou a Chave Privada, não poderá recuperar o acesso à sua conta."
   },
   "historyCard": {
     "burn": "Queima de Ativo",
@@ -247,25 +247,25 @@
     "transferSelf": "Autotransferência"
   },
   "historyFilters": {
-    "all": "Todos",
-    "incoming": "Apenas Entradas",
-    "outgoing": "Apenas Saídas",
-    "issue": "Emissão",
-    "transfer": "Transferência",
-    "reissue": "Reemissão",
-    "burn": "Queima",
-    "exchange": "Troca",
-    "lease": "Empréstimo",
-    "cancelLease": "Cancelamento de Empréstimo",
     "alias": "Alias",
-    "massTransfer": "Transferência em Massa",
+    "all": "Todos",
+    "burn": "Queima",
+    "cancelLease": "Cancelamento de Empréstimo",
     "data": "Dados",
+    "exchange": "Troca",
+    "incoming": "Apenas Entradas",
+    "invokeScript": "Invocação de Contrato",
+    "issue": "Emissão",
+    "lease": "Empréstimo",
+    "massTransfer": "Transferência em Massa",
+    "outgoing": "Apenas Saídas",
+    "reissue": "Reemissão",
+    "setAssetScript": "Definir Script de Ativos",
     "setScript": "Definição de Script",
     "sponsorship": "Patrocínio",
-    "setAssetScript": "Definir Script de Ativos",
-    "invokeScript": "Invocação de Contrato",
-    "updateAssetInfo": "Atualização de Informação sobre ativo",
-    "type": "Tipo de Transação"
+    "transfer": "Transferência",
+    "type": "Tipo de Transação",
+    "updateAssetInfo": "Atualização de Informação sobre ativo"
   },
   "import": {
     "addAccount": "Adicionar Conta",
@@ -287,25 +287,25 @@
     "viaSeed": "Seed ou Chave Privada"
   },
   "importEmail": {
-    "importEmailTitle": "Importar conta de Email",
-    "importEmailDesc": "Conecte uma conta de email criada na DecentralChain Exchange",
-    "passwordLabel": "Senha",
-    "passwordRequired": "Inserir senha",
-    "loginRequired": "Confirmar conta de Email",
+    "alreadyExists": "Essa conta já existe",
+    "continue": "Continuar",
+    "credentialsError": "Usuário ou senha incorretos",
+    "dontHaveAccount": "Não tem uma conta?",
     "emailLabel": "Email",
     "emailRequired": "Digite o email correto",
-    "credentialsError": "Usuário ou senha incorretos",
-    "continue": "Continuar",
     "forgotPassword": "Esqueceu sua senha?",
-    "dontHaveAccount": "Não tem uma conta?",
-    "signUp": "Registrar",
-    "verifyAccountTitle": "Verificar sua conta",
-    "verifyAccountDesc": "Insira o código de verificação de 6 dígitos recebido pelo {{destination}}",
+    "importEmailDesc": "Conecte uma conta de email criada na DecentralChain Exchange",
+    "importEmailTitle": "Importar conta de Email",
     "incorrectCode": "Código errado. Por favor, tente novamente",
-    "userDoesNotExist": "Usuário não existe.",
     "incorrectUsernameOrPassword": "O nome de usuário ou senha está incorreto.",
     "incorrectUsernameOrPasswordLimit": "O número de vezes que você cometeu um erro em seu nome de usuário ou senha excedeu o limite. Entre em contato com o suporte. https://support.decentralchain.io/",
-    "alreadyExists": "Essa conta já existe"
+    "loginRequired": "Confirmar conta de Email",
+    "passwordLabel": "Senha",
+    "passwordRequired": "Inserir senha",
+    "signUp": "Registrar",
+    "userDoesNotExist": "Usuário não existe.",
+    "verifyAccountDesc": "Insira o código de verificação de 6 dígitos recebido pelo {{destination}}",
+    "verifyAccountTitle": "Verificar sua conta"
   },
   "importKeystore": {
     "addressBookLabel": "Arquivo de livro de endereços",
@@ -335,11 +335,11 @@
     "connectInstructions": "Conecte o dispositivo Ledger e abra o aplicativo DCC",
     "continueButton": "Continuar",
     "couldNotGetUsersError": "Não foi possível obter mais usuários do ledger. Certifique-se de que o ledger esteja conectado, desbloqueado e que o aplicativo DCC esteja aberto e clique em <retryButton>Tentar Novamente</retryButton>",
-    "userIdInputNumbersError": "Apenas números são permitidos",
-    "userIdInputMaxValueError": "O ID da conta não pode ser maior que {{ maxUserId }}",
     "selectAccountInstructions": "Escolha seu endereço",
     "title": "Importar Ledger",
-    "tryAgainButton": "Tentar Novamente"
+    "tryAgainButton": "Tentar Novamente",
+    "userIdInputMaxValueError": "O ID da conta não pode ser maior que {{ maxUserId }}",
+    "userIdInputNumbersError": "Apenas números são permitidos"
   },
   "importSeed": {
     "accountExistsError": "Conta existente como '{{ name }}'",
@@ -369,14 +369,14 @@
     "confirm": "Confirmar",
     "title": "Alterar o idioma"
   },
-  "ledgerErrors": {
-    "unknown": "Não foi possível conectar ao ledger. Por favor, tente novamente",
-    "usedBySomeOtherApp": "Parece que o ledger já está sendo usado por outro aplicativo. Feche todos os aplicativos que podem usar o ledger e tente novamente."
-  },
   "ledgerConnectModal": {
     "instructions": "Conecte o dispositivo Ledger e abra o aplicativo DCC",
     "title": "Conectando...",
     "tryAgainButton": "Tentar novamente"
+  },
+  "ledgerErrors": {
+    "unknown": "Não foi possível conectar ao ledger. Por favor, tente novamente",
+    "usedBySomeOtherApp": "Parece que o ledger já está sendo usado por outro aplicativo. Feche todos os aplicativos que podem usar o ledger e tente novamente."
   },
   "login": {
     "enter": "Entrar",
@@ -446,18 +446,26 @@
     "backToNftBtn": "Voltar para NFTs"
   },
   "nftInfo": {
+    "backBtn": "Voltar",
     "creator": "Criador",
     "creatorUrlTooltip": "Visite a página do autor",
     "description": "Descrição",
     "sendBtn": "Enviar",
-    "backBtn": "Voltar",
     "viewInExplorer": "Ver detalhes no Explorer",
     "viewOnMarketplace": "Ver no marketplace"
   },
+  "notifications": {
+    "allowSending": "Permitir o envio de mensagens",
+    "closeBtn": "Fechar",
+    "messages": "Mensagens",
+    "nextBtn": "Próximo",
+    "time": "Hora",
+    "toListBtn": "Notificações"
+  },
   "otherAccounts": {
     "addAccount": "Adicionar Conta",
-    "noAccountsNote": "Você não tem outras contas na rede atual",
     "noAccountsFound": "Nenhuma outra conta foi encontrada para os filtros especificados",
+    "noAccountsNote": "Você não tem outras contas na rede atual",
     "title": "Outras contas"
   },
   "permission": {
@@ -483,13 +491,13 @@
     "approvedOrigin": "Aprovado",
     "automaticOrigin": "Assinatura automática",
     "empty": "Não há nada aqui...",
-    "rejectedOrigin": "Rejeitado",
-    "title": "Controle de permissões",
     "notify": {
       "allowed": "Permitido!",
       "deleted": "Excluído!",
       "disallowed": "Não permitido!"
-    }
+    },
+    "rejectedOrigin": "Rejeitado",
+    "title": "Controle de permissões"
   },
   "qrCode": {
     "download": "Baixar código QR"
@@ -524,11 +532,11 @@
     "settingsGeneral": "Geral",
     "suspiciousAssetsProtection": "Proteção contra ativos suspeitos",
     "suspiciousAssetsTooltip": "Não exibe saldos e transações relacionadas a ativos suspeitos",
-    "time_10m": "10 min",
     "time_1h": "1 hora",
+    "time_5m": "5 min",
+    "time_10m": "10 min",
     "time_20m": "20 min",
     "time_40m": "40 min",
-    "time_5m": "5 min",
     "time_idle": "Tempo limite do navegador",
     "tooltipContent": "Protege você das ameaças de Trojans Clicker"
   },
@@ -557,6 +565,7 @@
     "customDataFailed": "Seus dados foram rejeitados!",
     "customDataName": "Assinar dados personalizados",
     "customDataSent": "Seus dados estão confirmados!",
+    "dccAuthConfirmed": "Assine a solicitação DCC auth!",
     "matcherConfirmed": "Assine uma solicitação para o matcher!",
     "matcherRejected": "A solicitação não foi assinada.",
     "matcherSend": "Assine um pedido para o matcher!",
@@ -571,8 +580,7 @@
     "transactionFailed": "Sua transação foi rejeitada!",
     "transactionSend": "Você enviou",
     "understand": "Eu entendo",
-    "viewTransaction": "Ver transação",
-    "dccAuthConfirmed": "Assine a solicitação DCC auth!"
+    "viewTransaction": "Ver transação"
   },
   "swap": {
     "amountToSendError": "Não foi possível realizar a conversão devido ao estado do dApp SwopFi. Por favor, tente novamente ou aumente ligeiramente a tolerância ao slippage, se possível",
@@ -593,8 +601,8 @@
     "priceLabel": "Preço",
     "primaryLabel": "Primário",
     "profitLabel": "Lucro",
-    "slippageToleranceModalTitle": "Tolerância de Slippage",
     "slippageToleranceModalDescription": "O Swap será cancelado se o preço mudar desfavoravelmente em mais do que essa porcentagem",
+    "slippageToleranceModalTitle": "Tolerância de Slippage",
     "statusFailed": "Falha na conversão",
     "statusInProgress": "Aguardando a conclusão da conversão...",
     "statusSucceeded": "Conversão bem-sucedida",
@@ -622,20 +630,26 @@
     "dataHash": "Dados Hash",
     "dataTransaction": "Entrada na blockchain",
     "dataTransactionName": "Dados",
+    "dccAuthTimeStamp": "Time Stamp",
     "decimalPoints": "Pontos decimais",
     "description": "Descrição",
     "details": "Detalhes",
     "dex": "DEX",
     "expires": "Expira",
     "fee": "Taxa",
+    "hash": "Hash",
     "hideTransactions": "Ocultar transações",
+    "issueNFT": "Emitir NFT",
+    "issueSmartNFT": "Emitir Smart NFT",
+    "issueSmartToken": "Emitir Smart Token",
+    "issueToken": "Emitir token",
     "issueType": "Tipo",
     "json": "JSON",
     "lease": "Lease",
     "leaseCancel": "Cancelar Lease",
     "massTransfer": "Transferência em Massa",
-    "matcherTimeStamp": "Matcher Time Stamp",
     "matcherPublicKey": "Chave Pública do Matcher",
+    "matcherTimeStamp": "Matcher Time Stamp",
     "name": "Nome",
     "noReissuable": "Não reemissível",
     "orderBuy": "Comprar",
@@ -658,6 +672,7 @@
     "recipient": "Destinatário",
     "recipients": "Destinatários",
     "reissuable": "Reemissível",
+    "reissue": "Reemitir",
     "script": "Script",
     "scriptInvocation": "Invocação do Script",
     "scriptInvocationFunction": "Função",
@@ -668,31 +683,16 @@
     "setSponsored": "Definir Patrocínio",
     "showAll": "Mostrar Tudo",
     "showTransactions": "Mostrar Transações",
-    "signRequestMatcher": "Assinar uma solicitação ao Matcher",
     "signRequestDccAuth": "Assinar uma solicitação DCC auth",
-    "updateAssetInfo": "Atualizar Informações do Ativo",
-    "issueToken": "Emitir token",
-    "issueSmartToken": "Emitir Smart Token",
-    "issueNFT": "Emitir NFT",
-    "issueSmartNFT": "Emitir Smart NFT",
-    "reissue": "Reemitir",
+    "signRequestMatcher": "Assinar uma solicitação ao Matcher",
     "transfer": "Transferir",
     "txid": "TXID",
-    "hash": "Hash",
     "txTime": "TX Hora",
     "unknown": "Desconhecido",
-    "dccAuthTimeStamp": "Time Stamp"
+    "updateAssetInfo": "Atualizar Informações do Ativo"
   },
   "ui": {
     "logoTitle": "Mantenha suas chaves DCC seguras online"
-  },
-  "notifications": {
-    "allowSending": "Permitir o envio de mensagens",
-    "toListBtn": "Notificações",
-    "nextBtn": "Próximo",
-    "closeBtn": "Fechar",
-    "time": "Hora",
-    "messages": "Mensagens"
   },
   "wallet": {
     "lease": "Leased"

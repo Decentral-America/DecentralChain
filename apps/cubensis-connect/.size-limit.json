@@ -1,27 +1,27 @@
 [
   {
+    "limit": "30 kB",
     "name": "css",
-    "path": "dist/build/assets/*.css",
-    "limit": "30 kB"
+    "path": "dist/build/assets/*.css"
   },
   {
+    "limit": "270 kB",
     "name": "background",
-    "path": "dist/build/background.js",
-    "limit": "270 kB"
+    "path": "dist/build/background.js"
   },
   {
+    "limit": "530 kB",
     "name": "ui",
     "path": [
       "dist/build/accounts.js",
       "dist/build/notification.js",
       "dist/build/popup.js",
       "dist/build/*-*.js"
-    ],
-    "limit": "530 kB"
+    ]
   },
   {
+    "limit": "7.2 kB",
     "name": "contentscript",
-    "path": ["dist/build/contentscript.js", "dist/build/inpage.js"],
-    "limit": "7.2 kB"
+    "path": ["dist/build/contentscript.js", "dist/build/inpage.js"]
   }
 ]

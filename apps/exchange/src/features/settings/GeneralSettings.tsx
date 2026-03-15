@@ -10,9 +10,11 @@
  * - Current Block Height display (polls every 5s)
  */
 
-import { useState, useEffect } from 'react';
+import * as ds from 'data-service';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '@/contexts/SettingsContext';
+import { logger } from '@/lib/logger';
 
 // ========== Styled Components ==========
 
@@ -124,11 +126,10 @@ export const GeneralSettings = () => {
   useEffect(() => {
     const pollBlockHeight = async () => {
       try {
-        const ds = await import('data-service');
         const height = await ds.api.node.height();
         setBlockHeight(height);
       } catch (error) {
-        console.error('[GeneralSettings] Failed to fetch block height:', error);
+        logger.error('[GeneralSettings] Failed to fetch block height:', error);
       }
     };
 
@@ -162,7 +163,7 @@ export const GeneralSettings = () => {
           onChange={(e) => {
             setCommonSetting('lng', e.target.value);
             // Note: i18n integration would go here
-            console.log('[GeneralSettings] Language changed to:', e.target.value);
+            logger.debug('[GeneralSettings] Language changed to:', e.target.value);
           }}
         >
           {LANGUAGES.map((lang) => (

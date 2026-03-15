@@ -7,7 +7,7 @@ import { usePopupSelector } from '../../../../popup/store/react';
 import { Button, ErrorMessage, Input } from '../../ui';
 import * as styles from './importEmail.module.css';
 
-// TODO: Replace with DecentralChain exchange endpoints once available
+// DecentralChain exchange endpoints
 const baseByNetwork: Partial<Record<NetworkName, string>> = {
   [NetworkName.Mainnet]: 'https://exchange.decentralchain.io',
   [NetworkName.Testnet]: 'https://testnet.exchange.decentralchain.io',
@@ -31,7 +31,7 @@ export function SignInForm({ className, userData, signIn }: Props) {
   });
   const [email, setEmail] = useState<string>(userData?.username ?? '');
   const [name, domain] = email.split('@');
-  const maskedEmail = `${name[0]}******@${domain}`;
+  const maskedEmail = `${name?.[0] ?? ''}******@${domain}`;
   const [password, setPassword] = useState<string>(userData?.password ?? '');
 
   const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {

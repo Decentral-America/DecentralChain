@@ -136,13 +136,13 @@ export class WalletController extends EventEmitter {
       case 'wx':
         return new WxWallet(
           {
+            address: input.address,
             name: input.name,
             network,
             networkCode,
             publicKey: input.publicKey,
-            address: input.address,
-            uuid: input.uuid,
             username: input.username,
+            uuid: input.uuid,
           },
           this.#identity,
         );
@@ -326,7 +326,7 @@ export class WalletController extends EventEmitter {
         this.#wallets.map((wallet) =>
           this.#createWallet(
             wallet.data,
-            networks[wallet.data.networkCode],
+            networks[wallet.data.networkCode]!,
             wallet.data.networkCode,
           ),
         ),

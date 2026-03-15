@@ -3,11 +3,15 @@
  * Provides access to GatewayService functionality with reactive state management
  * Integrates with ConfigContext for gateway configurations
  */
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { GatewayService } from '@/services/gateway/GatewayService';
+import {
+  type DepositDetails,
+  type GatewayType,
+  type WithdrawDetails,
+} from '@/services/gateway/types';
 import { formatGatewayError } from '@/services/gateway/utils';
-import type { DepositDetails, WithdrawDetails, GatewayType } from '@/services/gateway/types';
 
 interface UseGatewayReturn {
   getDepositDetails: (assetId: string, userAddress: string) => Promise<DepositDetails>;
@@ -16,7 +20,7 @@ interface UseGatewayReturn {
   getRobinAddress: (
     assetId: string,
     userAddress: string,
-    recaptcha: string
+    recaptcha: string,
   ) => Promise<{ address: string; expiry: Date }>;
   hasSupportOf: (assetId: string, type: GatewayType) => boolean;
   loading: boolean;
@@ -30,15 +34,12 @@ interface UseGatewayReturn {
  * @returns Gateway operations and state
  */
 export const useGateway = (): UseGatewayReturn => {
-  const { wavesGateway } = useConfig();
+  const { gateway } = useConfig();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Memoize gatewayService instance to prevent recreation on every render
-  const gatewayService = useMemo(
-    () => new GatewayService(wavesGateway || {}),
-    [wavesGateway]
-  );
+  const gatewayService = useMemo(() => new GatewayService(gateway || {}), [gateway]);
 
   /**
    * Get deposit details for an asset
@@ -61,7 +62,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -85,7 +86,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -109,7 +110,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -123,7 +124,7 @@ export const useGateway = (): UseGatewayReturn => {
     async (
       assetId: string,
       userAddress: string,
-      recaptcha: string
+      recaptcha: string,
     ): Promise<{ address: string; expiry: Date }> => {
       setLoading(true);
       setError(null);
@@ -138,7 +139,7 @@ export const useGateway = (): UseGatewayReturn => {
         setLoading(false);
       }
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -151,7 +152,7 @@ export const useGateway = (): UseGatewayReturn => {
     (assetId: string, type: GatewayType): boolean => {
       return gatewayService.hasSupportOf(assetId, type);
     },
-    [gatewayService]
+    [gatewayService],
   );
 
   /**
@@ -162,13 +163,13 @@ export const useGateway = (): UseGatewayReturn => {
   }, []);
 
   return {
-    getDepositDetails,
-    getWithdrawDetails,
+    clearError,
+    error,
     getDepositAddress,
+    getDepositDetails,
     getRobinAddress,
+    getWithdrawDetails,
     hasSupportOf,
     loading,
-    error,
-    clearError,
   };
 };

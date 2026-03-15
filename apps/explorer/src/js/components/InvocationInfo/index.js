@@ -1,1 +1,1 @@
-export { InvocationInfoView as default } from './InvocationInfo.view';
+export {InvocationInfoView as default} from './InvocationInfo.view';

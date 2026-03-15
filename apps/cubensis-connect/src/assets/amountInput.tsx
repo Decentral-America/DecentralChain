@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { type Money } from '@decentralchain/data-entities';
 import { type BalanceAssets } from 'balances/types';
 import { usePopupSelector } from 'popup/store/react';

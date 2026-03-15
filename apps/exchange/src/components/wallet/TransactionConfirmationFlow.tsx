@@ -3,16 +3,23 @@
  * Multi-step confirmation component for reviewing and broadcasting transactions
  * Provides visual feedback through review → signing → broadcasting → success/error states
  */
-import React, { useState, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Modal } from '@/components/modals/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
+import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { transactionService, Transaction } from '@/services/transactionService';
+import { type Transaction, transactionService } from '@/services/transactionService';
 
-// Temporary type definition until @decentralchain/waves-transactions is fixed
-type ITransferParams = any;
+// Temporary type definition until @decentralchain/transactions is fixed
+type ITransferParams = {
+  recipient?: string;
+  amount?: number;
+  fee?: number;
+  attachment?: string;
+  [key: string]: unknown;
+};
 
 /**
  * Transaction Flow Steps
@@ -26,7 +33,7 @@ export interface TransactionConfirmationProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (transaction: Transaction) => void;
-  params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>;
+  params: ITransferParams;
   transactionType?: string;
 }
 
@@ -128,7 +135,7 @@ const ButtonGroup = styled.div`
  *   open={confirmOpen}
  *   onClose={() => setConfirmOpen(false)}
  *   params={{ recipient: '...', amount: 100000000 }}
- *   onSuccess={(tx) => console.log('Transaction sent:', tx.id)}
+ *   onSuccess={(tx) => logger.debug('Transaction sent:', tx.id)}
  * />
  * ```
  */
@@ -189,7 +196,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
       setStep('confirming');
       const confirmedTx = await transactionService.waitForConfirmation(
         broadcastResult.id,
-        60000 // 60 second timeout
+        60000, // 60 second timeout
       );
 
       // Step 4: Success
@@ -228,22 +235,22 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Recipient</Label>
-                  <Value>{params.recipient}</Value>
+                  <Value>{String(params.recipient ?? '')}</Value>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Amount</Label>
                   <Value>{(Number(params.amount) || 0) / 100000000} DCC</Value>
                 </ReviewRow>
-                {params.fee && (
+                {!!params.fee && (
                   <ReviewRow>
                     <Label>Fee</Label>
                     <Value>{(Number(params.fee) || 0) / 100000000} DCC</Value>
                   </ReviewRow>
                 )}
-                {params.attachment && (
+                {!!params.attachment && (
                   <ReviewRow>
                     <Label>Attachment</Label>
-                    <Value>{params.attachment}</Value>
+                    <Value>{String(params.attachment ?? '')}</Value>
                   </ReviewRow>
                 )}
               </ReviewSection>
@@ -264,7 +271,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Signing transaction...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Please wait while we sign your transaction
             </p>
           </StatusContainer>
@@ -275,7 +282,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Broadcasting to network...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Sending transaction to blockchain
             </p>
           </StatusContainer>
@@ -286,7 +293,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Waiting for confirmation...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Transaction ID: {transactionId?.slice(0, 16)}...
             </p>
           </StatusContainer>
@@ -298,15 +305,15 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
             <StatusContainer>
               <SuccessIcon>✓</SuccessIcon>
               <StatusMessage>Transaction Successful!</StatusMessage>
-              <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+              <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
                 Your transaction has been confirmed on the blockchain
               </p>
               {transactionId && (
                 <p
                   style={{
-                    fontSize: '12px',
                     color: '#999',
                     fontFamily: 'monospace',
+                    fontSize: '12px',
                     margin: '8px 0 0 0',
                   }}
                 >
@@ -328,15 +335,15 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
             <StatusContainer>
               <div
                 style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                  display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '32px',
+                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                  borderRadius: '50%',
                   color: '#EF4444',
+                  display: 'flex',
+                  fontSize: '32px',
+                  height: '64px',
+                  justifyContent: 'center',
+                  width: '64px',
                 }}
               >
                 ✕

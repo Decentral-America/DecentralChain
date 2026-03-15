@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { logger } from '@/lib/logger';
 import { useStorage } from './useStorage';
 
 /**
@@ -20,7 +21,7 @@ export const useMultiAccount = () => {
   const [accounts, setAccounts] = useStorage<Account[]>('wallet_accounts', []);
   const [currentAccountAddress, setCurrentAccountAddress] = useStorage<string | null>(
     'current_account',
-    null
+    null,
   );
 
   /**
@@ -33,7 +34,7 @@ export const useMultiAccount = () => {
         // Check if account already exists
         const exists = prev.some((acc) => acc.address === account.address);
         if (exists) {
-          console.warn(`Account with address ${account.address} already exists`);
+          logger.warn(`Account with address ${account.address} already exists`);
           return prev;
         }
         return [...prev, account];
@@ -44,7 +45,7 @@ export const useMultiAccount = () => {
         setCurrentAccountAddress(account.address);
       }
     },
-    [currentAccountAddress, setAccounts, setCurrentAccountAddress]
+    [currentAccountAddress, setAccounts, setCurrentAccountAddress],
   );
 
   /**
@@ -67,7 +68,7 @@ export const useMultiAccount = () => {
         });
       }
     },
-    [currentAccountAddress, setAccounts, setCurrentAccountAddress]
+    [currentAccountAddress, setAccounts, setCurrentAccountAddress],
   );
 
   /**
@@ -77,12 +78,12 @@ export const useMultiAccount = () => {
     (address: string) => {
       const accountExists = accounts.some((acc) => acc.address === address);
       if (!accountExists) {
-        console.error(`Account with address ${address} not found`);
+        logger.error(`Account with address ${address} not found`);
         return;
       }
       setCurrentAccountAddress(address);
     },
-    [accounts, setCurrentAccountAddress]
+    [accounts, setCurrentAccountAddress],
   );
 
   /**
@@ -91,10 +92,10 @@ export const useMultiAccount = () => {
   const updateAccount = useCallback(
     (address: string, updates: Partial<Omit<Account, 'address'>>) => {
       setAccounts((prev) =>
-        prev.map((acc) => (acc.address === address ? { ...acc, ...updates } : acc))
+        prev.map((acc) => (acc.address === address ? { ...acc, ...updates } : acc)),
       );
     },
-    [setAccounts]
+    [setAccounts],
   );
 
   /**
@@ -109,7 +110,7 @@ export const useMultiAccount = () => {
     (address: string) => {
       return accounts.some((acc) => acc.address === address);
     },
-    [accounts]
+    [accounts],
   );
 
   /**
@@ -119,23 +120,23 @@ export const useMultiAccount = () => {
     (address: string) => {
       return accounts.find((acc) => acc.address === address);
     },
-    [accounts]
+    [accounts],
   );
 
   return {
     // State
     accounts,
-    currentAccount,
-    currentAccountAddress,
 
     // Actions
     addAccount,
-    removeAccount,
-    switchAccount,
-    updateAccount,
+    currentAccount,
+    currentAccountAddress,
+    getAccount,
 
     // Utilities
     hasAccount,
-    getAccount,
+    removeAccount,
+    switchAccount,
+    updateAccount,
   };
 };

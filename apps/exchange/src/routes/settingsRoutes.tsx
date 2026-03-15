@@ -2,7 +2,7 @@
  * Settings Module Routes
  * Defines routes for application settings and preferences
  */
-import { RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router-dom';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 
 /**
@@ -16,6 +16,6 @@ import { SettingsPage } from '@/features/settings/SettingsPage';
  * Uses a tabbed interface matching the Angular app structure
  */
 export const settingsRoutes: RouteObject = {
-  path: 'settings',
   element: <SettingsPage />,
+  path: 'settings',
 };

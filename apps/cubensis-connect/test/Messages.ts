@@ -22,13 +22,13 @@ describe('Messages', () => {
   const sendNotification = (...args: [done: () => void]) => {
     const done = args[args.length - 1];
 
-    CubensisConnect.notification({ title: 'Hello!', message: 'World!' }).then(done).catch(done);
+    CubensisConnect.notification({ message: 'World!', title: 'Hello!' }).then(done).catch(done);
   };
 
   const sendNotificationWithoutWait = (...args: [done: () => void]) => {
-    const done = args[args.length - 1];
+    const [done] = args;
 
-    CubensisConnect.notification({ title: 'Hello!', message: 'World!' });
+    CubensisConnect.notification({ message: 'World!', title: 'Hello!' });
     done();
   };
 
@@ -86,7 +86,7 @@ describe('Messages', () => {
   }
 
   it('When a message is received from a new resource, permission is requested to access', async () => {
-    await browser.navigateTo(`https://${CUSTOMLIST[0]}`);
+    await browser.navigateTo(`https://${CUSTOMLIST[0]!}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
     await ContentScript.waitForCubensisConnect();
@@ -113,7 +113,7 @@ describe('Messages', () => {
   });
 
   it('When allowing access to an application, but denying messages - messages are not displayed', async () => {
-    await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
+    await browser.navigateTo(`https://${CUSTOMLIST[1]!}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
     await ContentScript.waitForCubensisConnect();
@@ -140,12 +140,12 @@ describe('Messages', () => {
     await SettingsMenuScreen.permissionsSectionLink.click();
 
     await (
-      await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[1])
+      await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[1]!)
     ).detailsIcon.click();
     await PermissionControlSettingsScreen.permissionDetailsModal.allowMessagesCheckbox.click();
     await PermissionControlSettingsScreen.permissionDetailsModal.saveButton.click();
 
-    await browser.navigateTo(`https://${CUSTOMLIST[1]}`);
+    await browser.navigateTo(`https://${CUSTOMLIST[1]!}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
     await ContentScript.waitForCubensisConnect();
@@ -162,7 +162,7 @@ describe('Messages', () => {
   });
 
   it('When receiving several messages from one resource - messages are displayed as a "batch"', async () => {
-    await browser.navigateTo(`https://${WHITELIST[3]}`);
+    await browser.navigateTo(`https://${WHITELIST[3]!}`);
 
     const { waitForNewWindows } = await Windows.captureNewWindows();
     for (let success = 0; success < 2; ) {

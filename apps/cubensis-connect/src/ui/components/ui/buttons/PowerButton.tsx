@@ -3,9 +3,7 @@ import clsx from 'clsx';
 import * as styles from './powerBtn.module.styl';
 
 export function PowerButton({ className, onClick, enabled, children, ...props }: IProps) {
-  const btnClassName = clsx(className, styles.powerBtn, {
-    [styles.powerBtnOn]: enabled,
-  });
+  const btnClassName = clsx(className, styles.powerBtn, enabled && styles.powerBtnOn);
 
   return (
     <button onClick={onClick} className={btnClassName} {...props}>

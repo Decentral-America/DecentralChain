@@ -2,7 +2,9 @@
  * Gateway Service Utility Functions
  * Utilities for address validation, config retrieval, and error formatting
  */
-import { GatewayConfig } from './types';
+
+import { logger } from '@/lib/logger';
+import { type GatewayConfig } from './types';
 
 /**
  * Validates an external blockchain address using gateway regex pattern
@@ -14,7 +16,7 @@ import { GatewayConfig } from './types';
 export const validateGatewayAddress = (
   address: string,
   assetId: string,
-  gatewayConfig: Record<string, GatewayConfig>
+  gatewayConfig: Record<string, GatewayConfig>,
 ): boolean => {
   // Handle empty or missing inputs
   if (!address || !assetId) {
@@ -23,7 +25,7 @@ export const validateGatewayAddress = (
 
   const config = gatewayConfig[assetId];
   if (!config || !config.regex) {
-    console.warn(`No gateway configuration found for asset ${assetId}`);
+    logger.warn(`No gateway configuration found for asset ${assetId}`);
     return false;
   }
 
@@ -31,7 +33,7 @@ export const validateGatewayAddress = (
     const regex = new RegExp(config.regex);
     return regex.test(address);
   } catch (error) {
-    console.error('Invalid regex pattern:', error);
+    logger.error('Invalid regex pattern:', error);
     return false;
   }
 };
@@ -44,7 +46,7 @@ export const validateGatewayAddress = (
  */
 export const getGatewayConfig = (
   assetId: string,
-  gatewayConfigs: Record<string, GatewayConfig>
+  gatewayConfigs: Record<string, GatewayConfig>,
 ): GatewayConfig | null => {
   return gatewayConfigs[assetId] || null;
 };
@@ -54,14 +56,17 @@ export const getGatewayConfig = (
  * @param error - Error object from API call
  * @returns Formatted error message
  */
-export const formatGatewayError = (error: any): string => {
+export const formatGatewayError = (error: unknown): string => {
   // Check for API response error message
-  if (error.response?.data?.message) {
-    return error.response.data.message;
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const resp = (error as { response?: { data?: { message?: string } } }).response;
+    if (resp?.data?.message) {
+      return resp.data.message;
+    }
   }
 
   // Check for standard error message
-  if (error.message) {
+  if (error instanceof Error) {
     return error.message;
   }
 

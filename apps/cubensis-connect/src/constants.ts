@@ -46,32 +46,18 @@ export const NETWORK_CONFIG: Record<
 };
 
 export const DEFAULT_MAIN_CONFIG = {
-  whitelist: ['decentralchain.io', 'explorer.decentralchain.io'],
-  networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
-  messages_config: {
-    message_expiration_ms: 30 * 60 * 1000,
-    update_messages_ms: 30 * 1000,
-    notification_title_max: 20,
-    notification_interval_min: 30 * 1000,
-    notification_message_max: 250,
-  },
-  pack_config: {
-    max: 7,
-    allow_tx: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+  assets: {
+    maxAssetsPerRequest: 100,
   },
   idle: {
-    idle: 0,
+    '1h': 60 * 60 * 1000,
     '5m': 5 * 60 * 1000,
     '10m': 10 * 60 * 1000,
     '20m': 20 * 60 * 1000,
     '40m': 40 * 60 * 1000,
-    '1h': 60 * 60 * 1000,
-  },
-  assets: {
-    maxAssetsPerRequest: 100,
+    idle: 0,
   },
   ignoreErrors: {
-    ignoreAll: false,
     beforeSend: [
       'An operation that changes interface state is in progress',
       'Failed to fetch',
@@ -83,11 +69,25 @@ export const DEFAULT_MAIN_CONFIG = {
     beforeSendBackground: [] as string[],
     beforeSendPopup: [] as string[],
     contentScriptApprove: [] as string[],
+    ignoreAll: false,
     popupApprove: [] as string[],
   },
+  messages_config: {
+    message_expiration_ms: 30 * 60 * 1000,
+    notification_interval_min: 30 * 1000,
+    notification_message_max: 250,
+    notification_title_max: 20,
+    update_messages_ms: 30 * 1000,
+  },
+  networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
   nfts: {
     signArtImgUrl: 'https://signart.infura-ipfs.io/ipfs/{domain}/{filename}',
   },
+  pack_config: {
+    allow_tx: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    max: 7,
+  },
+  whitelist: ['decentralchain.io', 'explorer.decentralchain.io'],
 };
 
 export type MainConfig = typeof DEFAULT_MAIN_CONFIG;
@@ -99,22 +99,22 @@ export type IgnoreErrorsContext = {
   [K in keyof IgnoreErrorsConfig]: IgnoreErrorsConfig[K] extends string[] ? K : never;
 }[keyof IgnoreErrorsConfig];
 
-// TODO: Replace with DecentralChain identity service endpoints once available
+// DecentralChain identity service endpoints
 export const DEFAULT_IDENTITY_CONFIG = {
-  testnet: {
-    apiUrl: 'https://id-testnet.decentralchain.io/api',
-    cognito: {
-      userPoolId: 'eu-central-1_6Bo3FEwt5',
-      clientId: '7l8bv0kmvrb4s4n1topofh9d80',
-      endpoint: 'https://testnet.decentralchain.io/cognito',
-    },
-  },
   mainnet: {
     apiUrl: 'https://id.decentralchain.io/api',
     cognito: {
-      userPoolId: 'eu-central-1_AXIpDLJQx',
       clientId: 'k63vrrmuav01s6p2d344ppnf4',
       endpoint: 'https://decentralchain.io/cognito',
+      userPoolId: 'eu-central-1_AXIpDLJQx',
+    },
+  },
+  testnet: {
+    apiUrl: 'https://id-testnet.decentralchain.io/api',
+    cognito: {
+      clientId: '7l8bv0kmvrb4s4n1topofh9d80',
+      endpoint: 'https://testnet.decentralchain.io/cognito',
+      userPoolId: 'eu-central-1_6Bo3FEwt5',
     },
   },
 };

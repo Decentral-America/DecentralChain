@@ -1,16 +1,16 @@
 /**
- * Seed utilities from @decentralchain/waves-transactions
+ * Seed utilities from @decentralchain/transactions
  * Matches Angular implementation exactly from data-service/classes/Seed.ts
  *
  * Angular implementation:
- * import { seedUtils } from '@decentralchain/waves-transactions';
+ * import { seedUtils } from '@decentralchain/transactions';
  * export const Seed = seedUtils.Seed;
  *
  * Due to Vite ESM limitations, we load the minified bundle via script tag
  * and access it from the global window object.
  */
 
-// Type definitions for the waves-transactions library
+// Type definitions for the dcc-transactions library
 interface SeedKeyPair {
   publicKey: string;
   privateKey: string;
@@ -34,33 +34,33 @@ interface SeedUtils {
   generateNewSeed(length?: number): string;
 }
 
-interface WavesTransactions {
+interface DCCTransactions {
   seedUtils: SeedUtils;
 }
 
-// Access the global WavesTransactions object loaded via script tag
+// Access the global DCCTransactions object loaded via script tag
 declare global {
   interface Window {
-    WavesTransactions: WavesTransactions;
+    DCCTransactions: DCCTransactions;
   }
 }
 
 // Get seedUtils from the global object
-const getWavesTransactions = (): WavesTransactions => {
-  if (typeof window === 'undefined' || !window.WavesTransactions) {
+const getDCCTransactions = (): DCCTransactions => {
+  if (typeof window === 'undefined' || !window.DCCTransactions) {
     throw new Error(
-      'WavesTransactions library not loaded. Ensure waves-transactions.min.js is loaded via script tag in index.html'
+      'DCCTransactions library not loaded. Ensure dcc-transactions.min.js is loaded via script tag in index.html',
     );
   }
-  return window.WavesTransactions;
+  return window.DCCTransactions;
 };
 
 const getSeedUtils = () => {
-  const wavesTransactions = getWavesTransactions();
-  if (!wavesTransactions.seedUtils || !wavesTransactions.seedUtils.Seed) {
-    throw new Error('seedUtils.Seed not available in WavesTransactions library');
+  const dccTransactions = getDCCTransactions();
+  if (!dccTransactions.seedUtils || !dccTransactions.seedUtils.Seed) {
+    throw new Error('seedUtils.Seed not available in DCCTransactions library');
   }
-  return wavesTransactions.seedUtils;
+  return dccTransactions.seedUtils;
 };
 
 // Get the Seed class from the library
@@ -75,11 +75,11 @@ const SeedClass = getSeedUtils().Seed;
  * @example
  * // Create new seed (matches: const phrase = ds.Seed.create().phrase)
  * const seed = Seed.create();
- * console.log(seed.phrase); // 15-word seed phrase
- * console.log(seed.address); // DecentralChain address (3P...)
+ * logger.debug(seed.phrase); // 15-word seed phrase
+ * logger.debug(seed.address); // DecentralChain address (3P...)
  *
  * @example
- * // Restore from phrase (matches: new ds.Seed(this.seed, window.WavesApp.network.code))
+ * // Restore from phrase (matches: new ds.Seed(this.seed, window.DCCApp.network.code))
  * const seed = Seed.fromExistingPhrase('word1 word2 ... word15');
  */
 export class Seed {
@@ -104,8 +104,8 @@ export class Seed {
     this.phrase = seedInstance.phrase;
     this.address = seedInstance.address;
     this.keyPair = {
-      publicKey: seedInstance.keyPair.publicKey,
       privateKey: seedInstance.keyPair.privateKey,
+      publicKey: seedInstance.keyPair.publicKey,
     };
   }
 
@@ -123,7 +123,7 @@ export class Seed {
 
   /**
    * Restore seed from existing phrase
-   * Matches Angular: new ds.Seed(this.seed, window.WavesApp.network.code)
+   * Matches Angular: new ds.Seed(this.seed, window.DCCApp.network.code)
    * @param phrase - Existing seed phrase (15 words)
    * @returns Seed instance restored from phrase
    */
@@ -152,7 +152,7 @@ export class Seed {
   static decrypt(
     encryptedPhrase: string,
     password: string,
-    encryptionRounds: number = 5000
+    encryptionRounds: number = 5000,
   ): string {
     return SeedClass.decryptSeedPhrase(encryptedPhrase, password, encryptionRounds);
   }

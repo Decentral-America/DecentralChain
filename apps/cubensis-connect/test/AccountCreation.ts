@@ -53,9 +53,9 @@ describe('Account creation', () => {
 
   describe('Create', () => {
     const ACCOUNTS = {
+      ANY: 'account123!@#_аккаунт',
       FIRST: 'first',
       SECOND: 'second',
-      ANY: 'account123!@#_аккаунт',
     };
 
     afterAll(deleteEachAndSwitchToAccounts);
@@ -189,7 +189,9 @@ describe('Account creation', () => {
               await pill.click();
 
               await waitForExpect(async () => {
-                expect(await selectedPillsContainer.getAllPills()).toHaveLength(prevPillsCount - 1);
+                expect(await selectedPillsContainer.getAllPills()).toHaveLength(
+                  Number(prevPillsCount) - 1,
+                );
               });
             }
 
@@ -229,7 +231,6 @@ describe('Account creation', () => {
           });
 
           it('Account successfully created and selected', async () => {
-            await NewWalletNameScreen.nameInput.setValue(ACCOUNTS.ANY);
             await NewWalletNameScreen.continueButton.click();
 
             await ImportSuccessScreen.addAnotherAccountButton.click();
@@ -251,10 +252,10 @@ describe('Account creation', () => {
 
   describe('Import via seed', () => {
     const ACCOUNTS = {
-      FIRST: { SEED: 'this is first account seed', NAME: 'first' },
+      FIRST: { NAME: 'first', SEED: 'this is first account seed' },
       MORE_24_CHARS: {
-        SEED: 'there is more than 24 characters',
         NAME: 'more than 24 characters',
+        SEED: 'there is more than 24 characters',
       },
     };
 
@@ -298,8 +299,8 @@ describe('Account creation', () => {
             await waitForExpect(async () => {
               await expect(ImportViaSeedScreen.switchAccountButton).toBeDisplayed();
             });
-            await expect(ImportViaSeedScreen.errorMessage).toHaveTextContaining(
-              'Account already known as',
+            await expect(ImportViaSeedScreen.errorMessage).toHaveText(
+              expect.stringContaining('Account already known as'),
             );
           });
 
@@ -379,16 +380,16 @@ describe('Account creation', () => {
       async function extractParsedAccountsFromDOM() {
         const accountsGroups = await ChooseAccountsForm.accountsGroups;
         return await Promise.all(
-          accountsGroups.map(async (group) => {
+          accountsGroups.map(async (group: any) => {
             const accountCards = await group.accounts;
             return {
-              label: await group.label.getText(),
               accounts: await Promise.all(
-                accountCards.map(async (account) => ({
-                  name: await account.name.getText(),
+                accountCards.map(async (account: any) => ({
                   address: await account.getAddress(),
+                  name: await account.name.getText(),
                 })),
               ),
+              label: await group.label.getText(),
             };
           }),
         );
@@ -403,19 +404,19 @@ describe('Account creation', () => {
 
         expect(await extractParsedAccountsFromDOM()).toStrictEqual([
           {
+            accounts: [{ address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r', name: 'test2' }],
             label: 'Mainnet',
-            accounts: [{ name: 'test2', address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r' }],
           },
           {
-            label: 'Testnet',
             accounts: [
-              { name: 'test', address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h' },
-              { name: 'test3', address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi' },
+              { address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h', name: 'test' },
+              { address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi', name: 'test3' },
             ],
+            label: 'Testnet',
           },
           {
+            accounts: [{ address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D', name: 'test4' }],
             label: 'Stagenet',
-            accounts: [{ name: 'test4', address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D' }],
           },
         ]);
       });
@@ -429,11 +430,11 @@ describe('Account creation', () => {
 
         expect(await extractParsedAccountsFromDOM()).toStrictEqual([
           {
-            label: 'Mainnet',
             accounts: [
-              { name: 'test', address: '3PAqjy2wRWdrEBCmj66UbNUjo5KDksk9rTA' },
-              { name: 'test2', address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r' },
+              { address: '3PAqjy2wRWdrEBCmj66UbNUjo5KDksk9rTA', name: 'test' },
+              { address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r', name: 'test2' },
             ],
+            label: 'Mainnet',
           },
         ]);
       });
@@ -446,9 +447,9 @@ describe('Account creation', () => {
       async function extractAccountCheckboxesFromDOM() {
         const accounts = await ChooseAccountsForm.accounts;
         return await Promise.all(
-          accounts.map(async (account) => ({
-            name: await account.name.getText(),
+          accounts.map(async (account: any) => ({
             address: await account.getAddress(),
+            name: await account.name.getText(),
             selected: await account.isSelected(),
           })),
         );
@@ -458,7 +459,7 @@ describe('Account creation', () => {
         const activeAccountName = await HomeScreen.activeAccountName.getText();
         await HomeScreen.otherAccountsButton.click();
         const otherAccountNames = await Promise.all(
-          (await OtherAccountsScreen.accounts).map((it) => it.name.getText()),
+          (await OtherAccountsScreen.accounts).map((it: any) => it.name.getText()),
         );
         await TopMenu.backButton.click();
         return [activeAccountName, ...otherAccountNames];
@@ -475,23 +476,23 @@ describe('Account creation', () => {
 
           expect(await extractAccountCheckboxesFromDOM()).toStrictEqual([
             {
-              name: 'test2',
               address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+              name: 'test2',
               selected: true,
             },
             {
-              name: 'test',
               address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h',
+              name: 'test',
               selected: true,
             },
             {
-              name: 'test3',
               address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi',
+              name: 'test3',
               selected: true,
             },
             {
-              name: 'test4',
               address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D',
+              name: 'test4',
               selected: true,
             },
           ]);
@@ -505,23 +506,23 @@ describe('Account creation', () => {
 
           expect(await extractAccountCheckboxesFromDOM()).toStrictEqual([
             {
-              name: 'test2',
               address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+              name: 'test2',
               selected: false,
             },
             {
-              name: 'test',
               address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h',
+              name: 'test',
               selected: true,
             },
             {
-              name: 'test3',
               address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi',
+              name: 'test3',
               selected: false,
             },
             {
-              name: 'test4',
               address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D',
+              name: 'test4',
               selected: true,
             },
           ]);
@@ -554,23 +555,23 @@ describe('Account creation', () => {
 
           expect(await extractAccountCheckboxesFromDOM()).toStrictEqual([
             {
-              name: 'test2',
               address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+              name: 'test2',
               selected: true,
             },
             {
-              name: 'test',
               address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h',
+              name: 'test',
               selected: null,
             },
             {
-              name: 'test3',
               address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi',
+              name: 'test3',
               selected: true,
             },
             {
-              name: 'test4',
               address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D',
+              name: 'test4',
               selected: null,
             },
           ]);
@@ -608,23 +609,23 @@ describe('Account creation', () => {
 
           expect(await extractAccountCheckboxesFromDOM()).toStrictEqual([
             {
-              name: 'test2',
               address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+              name: 'test2',
               selected: null,
             },
             {
-              name: 'test',
               address: '3Mxpw1i3ZP6TbiuMU1qUdv6vSBoSvkCfQ8h',
+              name: 'test',
               selected: null,
             },
             {
-              name: 'test3',
               address: '3Mxpfxhrwyn4ynCi7WpogBQ8ccP2iD86jNi',
+              name: 'test3',
               selected: null,
             },
             {
-              name: 'test4',
               address: '3MWxaD2xCMBUHnKkLJUqH3xFca2ak8wdd6D',
+              name: 'test4',
               selected: null,
             },
           ]);
@@ -652,8 +653,8 @@ describe('Account creation', () => {
           await ImportKeystoreFileScreen.continueButton.click();
 
           expect(await extractAccountCheckboxesFromDOM()).toContainEqual({
-            name: 'test2 (1)',
             address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+            name: 'test2 (1)',
             selected: true,
           });
 
@@ -682,8 +683,8 @@ describe('Account creation', () => {
           await ImportKeystoreFileScreen.continueButton.click();
 
           expect(await extractAccountCheckboxesFromDOM()).toContainEqual({
-            name: 'test2 (2)',
             address: '3PCj4z3TZ1jqZ7A9zYBoSbHnvRqFq2uy89r',
+            name: 'test2 (2)',
             selected: true,
           });
 

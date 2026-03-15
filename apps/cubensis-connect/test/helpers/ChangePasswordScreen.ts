@@ -1,37 +1,36 @@
 export const ChangePasswordScreen = {
-  get root() {
-    return $("[class*='newPassword@changePassword']");
-  },
-
-  get oldPasswordInput() {
-    return this.root.$('#old');
-  },
-
-  get oldPasswordError() {
-    return this.root.findByTestId$('oldError');
+  get newPasswordError() {
+    return this.root.findByTestId$('firstError');
   },
 
   get newPasswordInput() {
     return this.root.$('#first');
   },
 
-  get newPasswordError() {
-    return this.root.findByTestId$('firstError');
+  get notification() {
+    return $('.modal.notification');
   },
 
-  get passwordConfirmationInput() {
-    return this.root.$('#second');
+  get oldPasswordError() {
+    return this.root.findByTestId$('oldError');
+  },
+
+  get oldPasswordInput() {
+    return this.root.$('#old');
   },
 
   get passwordConfirmationError() {
     return this.root.findByTestId$('secondError');
   },
 
-  get saveButton() {
-    return this.root.findByText$('Save');
+  get passwordConfirmationInput() {
+    return this.root.$('#second');
+  },
+  get root() {
+    return $("[class*='newPassword@changePassword']");
   },
 
-  get notification() {
-    return $('.modal.notification');
+  get saveButton() {
+    return this.root.findByText$('Save');
   },
 };

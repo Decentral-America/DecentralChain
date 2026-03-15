@@ -1,1 +1,1 @@
-export { Spacer as default } from './Spacer.view';
+export {Spacer as default} from './Spacer.view';

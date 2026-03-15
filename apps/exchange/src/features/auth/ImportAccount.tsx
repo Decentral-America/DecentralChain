@@ -2,15 +2,31 @@
  * ImportAccount Component
  * Imports existing wallet via seed phrase
  */
-import { useState, FormEvent, useEffect, useRef } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/atoms/Button';
 import { Card, CardBody } from '@/components/atoms/Card';
-import { Stack } from '@/components/atoms/Stack';
-import { Icon, CommonIcons } from '@/components/atoms/Icon';
+import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
+import { Stack } from '@/components/atoms/Stack';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
+
+function validateSecret(mode: string, privateKey: string, seedPhrase: string): string {
+  if (mode === 'privatekey') {
+    const trimmed = privateKey.trim();
+    if (!trimmed) throw new Error('Please enter your private key');
+    if (trimmed.length < 32 || trimmed.length > 64)
+      throw new Error('Invalid private key format. Please check and try again.');
+    return trimmed;
+  }
+  const trimmed = seedPhrase.trim();
+  if (!trimmed) throw new Error('Please enter your seed phrase');
+  if (trimmed.split(/\s+/).length !== 15)
+    throw new Error('Seed phrase must contain exactly 15 words');
+  return trimmed;
+}
 
 const FormContainer = styled.div`
   width: 100%;
@@ -147,8 +163,9 @@ export const ImportAccount = () => {
   const navigationTarget = useRef<string>('/desktop/wallet');
 
   // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported = 
-    (typeof window !== 'undefined' && (window as any).isDesktop === true) || // Electron
+  const isLedgerSupported =
+    (typeof window !== 'undefined' &&
+      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
     (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
 
   // Check if this is the first account on mount
@@ -171,70 +188,27 @@ export const ImportAccount = () => {
     setIsLoading(true);
 
     try {
-      // Determine the secret input based on mode
-      let secretInput: string;
-
-      if (importMode === 'privatekey') {
-        const trimmedKey = privateKey.trim();
-        if (!trimmedKey) {
-          throw new Error('Please enter your private key');
-        }
-        // Basic base58 validation (44 chars typical for DecentralChain private keys)
-        if (trimmedKey.length < 32 || trimmedKey.length > 64) {
-          throw new Error('Invalid private key format. Please check and try again.');
-        }
-        secretInput = trimmedKey;
-      } else {
-        const trimmedSeed = seedPhrase.trim();
-        if (!trimmedSeed) {
-          throw new Error('Please enter your seed phrase');
-        }
-        const words = trimmedSeed.split(/\s+/);
-        if (words.length !== 15) {
-          throw new Error('Seed phrase must contain exactly 15 words');
-        }
-        secretInput = trimmedSeed;
-      }
-
-      // Validate password
-      if (!password.trim()) {
-        throw new Error('Please enter a password');
-      }
+      const secretInput = validateSecret(importMode, privateKey, seedPhrase);
+      if (!password.trim()) throw new Error('Please enter a password');
 
       if (isFirstAccount) {
-        // Validate account name for first account
-        if (!accountName.trim()) {
-          throw new Error('Please enter an account name');
-        }
-
-        // FIRST ACCOUNT: Use create() to initialize vault
+        if (!accountName.trim()) throw new Error('Please enter an account name');
         await create(secretInput, password, accountName.trim(), true);
-
-        // create() sets user state; navigate via effect once state propagates
-        navigationTarget.current = getActiveState('wallet');
-        setPendingNavigation(true);
       } else {
-        // ADDITIONAL ACCOUNT: Use addAccount() to add to existing vault
         const addedUser = await addAccount(secretInput, accountName.trim() || 'Imported Account');
-
-        if (!addedUser) {
-          throw new Error('Failed to add account');
-        }
-
-        // Login with the newly added account
+        if (!addedUser) throw new Error('Failed to add account');
         await login(addedUser.hash, password);
-
-        // login() sets user state; navigate via effect once state propagates
-        navigationTarget.current = getActiveState('wallet');
-        setPendingNavigation(true);
       }
+
+      navigationTarget.current = getActiveState('wallet');
+      setPendingNavigation(true);
     } catch (err) {
       const errorMessage =
         err instanceof Error
           ? err.message
           : 'Invalid seed phrase or password. Please check and try again.';
       setError(errorMessage);
-      console.error('Import error:', err);
+      logger.error('Import error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -255,9 +229,7 @@ export const ImportAccount = () => {
             <InfoIcon>
               <Icon name={CommonIcons.Info} size={20} color="white" />
             </InfoIcon>
-            <span>
-              Make sure you&apos;re in a private location before entering sensitive data
-            </span>
+            <span>Make sure you&apos;re in a private location before entering sensitive data</span>
           </InfoBox>
 
           {/* Import mode toggle */}
@@ -265,7 +237,10 @@ export const ImportAccount = () => {
             <ModeTab $active={importMode === 'seed'} onClick={() => setImportMode('seed')}>
               📝 Seed Phrase
             </ModeTab>
-            <ModeTab $active={importMode === 'privatekey'} onClick={() => setImportMode('privatekey')}>
+            <ModeTab
+              $active={importMode === 'privatekey'}
+              onClick={() => setImportMode('privatekey')}
+            >
               🔑 Private Key
             </ModeTab>
           </ModeToggle>
@@ -283,7 +258,7 @@ export const ImportAccount = () => {
                     Using a Ledger hardware wallet?{' '}
                     <a
                       href="/import/ledger"
-                      style={{ color: 'white', textDecoration: 'underline', fontWeight: 600 }}
+                      style={{ color: 'white', fontWeight: 600, textDecoration: 'underline' }}
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/import/ledger');
@@ -331,9 +306,11 @@ export const ImportAccount = () => {
                 label="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={isFirstAccount ? "Create a master password" : "Enter your master password"}
+                placeholder={
+                  isFirstAccount ? 'Create a master password' : 'Enter your master password'
+                }
                 disabled={isLoading}
-                autoComplete={isFirstAccount ? "new-password" : "current-password"}
+                autoComplete={isFirstAccount ? 'new-password' : 'current-password'}
                 required
               />
 
@@ -367,7 +344,7 @@ export const ImportAccount = () => {
                 Don&apos;t have a wallet?{' '}
                 <a
                   href="/signup"
-                  style={{ color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}
+                  style={{ color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/signup');

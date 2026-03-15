@@ -9,60 +9,16 @@ const InvokeArgument = (wrapped: WebdriverIO.Element) => ({
 });
 
 const PackageItem = (wrapped: WebdriverIO.Element) => ({
-  get type() {
-    return wrapped.findByTestId$('issueType');
-  },
-
   get amount() {
     return wrapped.findByTestId$('issueAmount');
-  },
-
-  get description() {
-    return wrapped.findByTestId$('issueDescription');
-  },
-
-  get decimals() {
-    return wrapped.findByTestId$('issueDecimals');
-  },
-
-  get reissuable() {
-    return wrapped.findByTestId$('issueReissuable');
-  },
-
-  get contentScript() {
-    return wrapped.findByTestId$('contentScript');
-  },
-
-  get fee() {
-    return wrapped.findByTestId$('txFee');
-  },
-
-  get transferAmount() {
-    return wrapped.findByTestId$('transferAmount');
-  },
-
-  get recipient() {
-    return wrapped.findByTestId$('recipient');
   },
 
   get attachmentContent() {
     return wrapped.findByTestId$('attachmentContent');
   },
 
-  get reissueAmount() {
-    return wrapped.findByTestId$('reissueAmount');
-  },
-
   get burnAmount() {
     return wrapped.findByTestId$('burnAmount');
-  },
-
-  get leaseAmount() {
-    return wrapped.findByTestId$('leaseAmount');
-  },
-
-  get leaseRecipient() {
-    return wrapped.findByTestId$('leaseRecipient');
   },
 
   get cancelLeaseAmount() {
@@ -73,8 +29,24 @@ const PackageItem = (wrapped: WebdriverIO.Element) => ({
     return wrapped.findByTestId$('cancelLeaseRecipient');
   },
 
-  get invokeScriptPaymentsTitle() {
-    return wrapped.findByTestId$('invokeScriptPaymentsTitle');
+  get contentScript() {
+    return wrapped.findByTestId$('contentScript');
+  },
+
+  get decimals() {
+    return wrapped.findByTestId$('issueDecimals');
+  },
+
+  get description() {
+    return wrapped.findByTestId$('issueDescription');
+  },
+
+  get fee() {
+    return wrapped.findByTestId$('txFee');
+  },
+
+  async getInvokeArguments() {
+    return await wrapped.findAllByTestId$('invokeArgument').map((it: any) => InvokeArgument(it));
   },
 
   get invokeScriptDApp() {
@@ -85,37 +57,63 @@ const PackageItem = (wrapped: WebdriverIO.Element) => ({
     return wrapped.findByTestId$('invokeScriptFunction');
   },
 
-  async getInvokeArguments() {
-    return await wrapped.findAllByTestId$('invokeArgument').map((it) => InvokeArgument(it));
-  },
-
   get invokeScriptPaymentItems() {
     return wrapped.findAllByTestId$('invokeScriptPaymentItem');
+  },
+
+  get invokeScriptPaymentsTitle() {
+    return wrapped.findByTestId$('invokeScriptPaymentsTitle');
+  },
+
+  get leaseAmount() {
+    return wrapped.findByTestId$('leaseAmount');
+  },
+
+  get leaseRecipient() {
+    return wrapped.findByTestId$('leaseRecipient');
+  },
+
+  get recipient() {
+    return wrapped.findByTestId$('recipient');
+  },
+
+  get reissuable() {
+    return wrapped.findByTestId$('issueReissuable');
+  },
+
+  get reissueAmount() {
+    return wrapped.findByTestId$('reissueAmount');
+  },
+
+  get transferAmount() {
+    return wrapped.findByTestId$('transferAmount');
+  },
+  get type() {
+    return wrapped.findByTestId$('issueType');
   },
 });
 
 export const PackageTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
-  },
-
-  get packageCountTitle() {
-    return this.root.findByTestId$('packageCountTitle');
+  async getPackageItems() {
+    return await this.root.findAllByTestId$('packageItem').map((it: any) => PackageItem(it));
   },
 
   get packageAmounts() {
     return this.root.findAllByTestId$('packageAmountItem');
   },
 
+  get packageCountTitle() {
+    return this.root.findByTestId$('packageCountTitle');
+  },
+
   get packageFees() {
     return this.root.findAllByTestId$('packageFeeItem');
+  },
+  get root() {
+    return $("[class*='transaction@']");
   },
 
   get showTransactionsButton() {
     return this.root.findByTestId$('packageDetailsToggle');
-  },
-
-  async getPackageItems() {
-    return await this.root.findAllByTestId$('packageItem').map((it) => PackageItem(it));
   },
 };

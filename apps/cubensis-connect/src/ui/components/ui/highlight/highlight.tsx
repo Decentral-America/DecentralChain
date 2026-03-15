@@ -11,7 +11,7 @@ export function Highlight({ code, language }: Props) {
       className={`language-${language}`}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: highlight component sanitizes input via Prism
       dangerouslySetInnerHTML={{
-        __html: Prism.highlight(code, Prism.languages[language], language),
+        __html: Prism.highlight(code, Prism.languages[language]!, language),
       }}
     />
   );

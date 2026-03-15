@@ -3,10 +3,12 @@
  * Enhanced table with filtering, sorting, and pagination
  * Migrated to Material-UI
  */
-import React, { useState, useMemo, useCallback } from 'react';
-import { Box, TextField, Select, MenuItem, IconButton, Typography } from '@mui/material';
+
+import { Box, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Table, Column } from './Table';
+import type React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { type Column, Table } from './Table';
 
 // Styled Components
 const SmartTableContainer = styled(Box)({
@@ -16,36 +18,36 @@ const SmartTableContainer = styled(Box)({
 });
 
 const ControlsBar = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between',
   alignItems: 'center',
-  gap: 16,
+  display: 'flex',
   flexWrap: 'wrap',
+  gap: 16,
+  justifyContent: 'space-between',
 });
 
 const PaginationControls = styled(Box)({
-  display: 'flex',
   alignItems: 'center',
+  display: 'flex',
   gap: 12,
 });
 
 const PageButton = styled(IconButton, {
   shouldForwardProp: (prop) => !['active'].includes(prop as string),
 })<{ active?: boolean }>(({ theme, active }) => ({
-  padding: '6px 12px',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: active ? theme.palette.primary.main : 'transparent',
-  color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
-  '&:hover': {
-    backgroundColor: active ? theme.palette.primary.dark : theme.palette.action.hover,
-  },
   '&:disabled': {
     opacity: 0.5,
   },
+  '&:hover': {
+    backgroundColor: active ? theme.palette.primary.dark : theme.palette.action.hover,
+  },
+  backgroundColor: active ? theme.palette.primary.main : 'transparent',
+  borderRadius: theme.shape.borderRadius,
+  color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
+  padding: '6px 12px',
 }));
 
 // Interfaces
-export interface SmartTableProps<T = any> {
+export interface SmartTableProps<T = unknown> {
   columns: Column<T>[];
   data: T[];
   pageSize?: number;
@@ -60,7 +62,40 @@ export interface SmartTableProps<T = any> {
   style?: React.CSSProperties;
 }
 
-export const SmartTable = <T extends Record<string, any>>({
+function compareValues(aVal: unknown, bVal: unknown, direction: 'asc' | 'desc'): number {
+  if (aVal === null && bVal === null) return 0;
+  if (aVal === null) return 1;
+  if (bVal === null) return -1;
+
+  if (typeof aVal === 'number' && typeof bVal === 'number') {
+    return direction === 'asc' ? aVal - bVal : bVal - aVal;
+  }
+
+  const aStr = String(aVal).toLowerCase();
+  const bStr = String(bVal).toLowerCase();
+  const cmp = aStr > bStr ? 1 : aStr < bStr ? -1 : 0;
+  return direction === 'asc' ? cmp : -cmp;
+}
+
+function getPageNumbers(totalPages: number, currentPage: number): (number | string)[] {
+  const maxPagesToShow = 5;
+  if (totalPages <= maxPagesToShow) {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  const pages: (number | string)[] = [0];
+  if (currentPage > 2) pages.push('...');
+
+  const start = Math.max(1, currentPage - 1);
+  const end = Math.min(totalPages - 2, currentPage + 1);
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (currentPage < totalPages - 3) pages.push('...');
+  pages.push(totalPages - 1);
+  return pages;
+}
+
+export const SmartTable = <T extends Record<string, unknown>>({
   columns,
   data,
   pageSize = 20,
@@ -101,38 +136,14 @@ export const SmartTable = <T extends Record<string, any>>({
 
     const lowerFilter = filterText.toLowerCase();
     return data.filter((row) =>
-      Object.values(row).some((value) => String(value).toLowerCase().includes(lowerFilter))
+      Object.values(row).some((value) => String(value).toLowerCase().includes(lowerFilter)),
     );
   }, [data, filterText, enableFiltering]);
 
   // Sort data
   const sortedData = useMemo(() => {
     if (!sortKey) return filteredData;
-
-    return [...filteredData].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
-
-      // Handle null/undefined
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
-
-      // Handle numbers
-      if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-      }
-
-      // Handle strings (case-insensitive)
-      const aStr = String(aVal).toLowerCase();
-      const bStr = String(bVal).toLowerCase();
-
-      if (sortDirection === 'asc') {
-        return aStr > bStr ? 1 : aStr < bStr ? -1 : 0;
-      } else {
-        return aStr < bStr ? 1 : aStr > bStr ? -1 : 0;
-      }
-    });
+    return [...filteredData].sort((a, b) => compareValues(a[sortKey], b[sortKey], sortDirection));
   }, [filteredData, sortKey, sortDirection]);
 
   // Paginate data
@@ -153,7 +164,7 @@ export const SmartTable = <T extends Record<string, any>>({
     (newPage: number) => {
       setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
     },
-    [totalPages]
+    [totalPages],
   );
 
   const handlePageSizeChange = useCallback((newSize: number) => {
@@ -166,41 +177,6 @@ export const SmartTable = <T extends Record<string, any>>({
     setFilterText(e.target.value);
     setCurrentPage(0); // Reset to first page when filter changes
   }, []);
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxPagesToShow = 5;
-
-    if (totalPages <= maxPagesToShow) {
-      // Show all pages
-      for (let i = 0; i < totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Show first, last, and current with ellipsis
-      pages.push(0);
-
-      if (currentPage > 2) {
-        pages.push('...');
-      }
-
-      const start = Math.max(1, currentPage - 1);
-      const end = Math.min(totalPages - 2, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 3) {
-        pages.push('...');
-      }
-
-      pages.push(totalPages - 1);
-    }
-
-    return pages;
-  };
 
   return (
     <SmartTableContainer className={className} style={style}>
@@ -258,7 +234,7 @@ export const SmartTable = <T extends Record<string, any>>({
             Previous
           </PageButton>
 
-          {getPageNumbers().map((page, index) =>
+          {getPageNumbers(totalPages, currentPage).map((page, index) =>
             typeof page === 'number' ? (
               <PageButton
                 key={page}
@@ -268,10 +244,11 @@ export const SmartTable = <T extends Record<string, any>>({
                 {page + 1}
               </PageButton>
             ) : (
+              // biome-ignore lint/suspicious/noArrayIndexKey: ellipsis entries need index to differentiate
               <Typography key={`ellipsis-${index}`} variant="body2" sx={{ px: 0.5 }}>
                 {page}
               </Typography>
-            )
+            ),
           )}
 
           <PageButton onClick={() => handlePageChange(currentPage + 1)} disabled={!hasNextPage}>
@@ -284,20 +261,20 @@ export const SmartTable = <T extends Record<string, any>>({
 };
 
 // Convenience exports with preset configurations
-export const SmartTableSmall = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'pageSize'>
+export const SmartTableSmall = <T extends Record<string, unknown>>(
+  props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={10} />;
 
-export const SmartTableLarge = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'pageSize'>
+export const SmartTableLarge = <T extends Record<string, unknown>>(
+  props: Omit<SmartTableProps<T>, 'pageSize'>,
 ) => <SmartTable {...props} pageSize={50} />;
 
-export const SmartTableNoFilters = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'enableFiltering'>
+export const SmartTableNoFilters = <T extends Record<string, unknown>>(
+  props: Omit<SmartTableProps<T>, 'enableFiltering'>,
 ) => <SmartTable {...props} enableFiltering={false} />;
 
-export const SmartTableNoPagination = <T extends Record<string, any>>(
-  props: Omit<SmartTableProps<T>, 'enablePagination'>
+export const SmartTableNoPagination = <T extends Record<string, unknown>>(
+  props: Omit<SmartTableProps<T>, 'enablePagination'>,
 ) => <SmartTable {...props} enablePagination={false} />;
 
 export default SmartTable;

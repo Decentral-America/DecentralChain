@@ -1,33 +1,32 @@
 export const NewAccountScreen = {
-  get root() {
-    return browser.findByTestId$('newAccountForm');
+  get continueButton() {
+    return this.root.findByText$('Continue');
   },
 
-  get passwordInput() {
-    return this.root.$('#first');
+  get passwordConfirmationError() {
+    return this.root.findByTestId$('secondError');
   },
 
   get passwordConfirmationInput() {
     return this.root.$('#second');
   },
 
-  get termsAndConditionsCheckbox() {
-    return this.root.findByLabelText$('I have read and agree with the Terms and Conditions');
+  get passwordError() {
+    return this.root.findByTestId$('firstError');
+  },
+
+  get passwordInput() {
+    return this.root.$('#first');
   },
 
   get privacyPolicyCheckbox() {
     return this.root.findByLabelText$('I have read and agree with the Privacy Policy');
   },
-
-  get continueButton() {
-    return this.root.findByText$('Continue');
+  get root() {
+    return browser.findByTestId$('newAccountForm');
   },
 
-  get passwordError() {
-    return this.root.findByTestId$('firstError');
-  },
-
-  get passwordConfirmationError() {
-    return this.root.findByTestId$('secondError');
+  get termsAndConditionsCheckbox() {
+    return this.root.findByLabelText$('I have read and agree with the Terms and Conditions');
   },
 };

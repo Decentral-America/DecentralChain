@@ -1,6 +1,10 @@
 export const MessagesScreen = {
-  get root() {
-    return $("[class*='messageList@'], [class*='root@messagesAndNotifications']");
+  get clearAllButton() {
+    return this.root.findByText$('Clear All');
+  },
+
+  get closeButton() {
+    return this.root.findByText$('Close');
   },
 
   get messages() {
@@ -10,12 +14,7 @@ export const MessagesScreen = {
   get messagesCards() {
     return this.root.$$("[class*='cardItem@']");
   },
-
-  get closeButton() {
-    return this.root.findByText$('Close');
-  },
-
-  get clearAllButton() {
-    return this.root.findByText$('Clear All');
+  get root() {
+    return $("[class*='messageList@'], [class*='root@messagesAndNotifications']");
   },
 };

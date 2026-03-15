@@ -15,14 +15,14 @@ export function i18nextInit() {
     )
     .use(initReactI18next)
     .init({
-      fallbackLng: 'en',
-      ns: [NS],
       defaultNS: NS,
-      react: {
-        useSuspense: false,
-      },
+      fallbackLng: 'en',
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default
+      },
+      ns: [NS],
+      react: {
+        useSuspense: false,
       },
     });
 }

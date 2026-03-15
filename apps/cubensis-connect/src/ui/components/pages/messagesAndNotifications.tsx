@@ -60,11 +60,13 @@ export function MessagesAndNotificationsPage() {
                 const group = items.slice().reverse();
 
                 return (
-                  <div key={group[0].origin} className={styles.cardItem}>
+                  <div key={group[0]!.origin} className={styles.cardItem}>
                     <div
-                      className={clsx(styles.notificationCard, transactionsStyles.transactionCard, {
-                        [transactionsStyles.groupTx]: group.length > 1,
-                      })}
+                      className={clsx(
+                        styles.notificationCard,
+                        transactionsStyles.transactionCard,
+                        group.length > 1 && transactionsStyles.groupTx,
+                      )}
                     >
                       {group.length > 1 && <div className={transactionsStyles.groupBottom} />}
 
@@ -85,7 +87,7 @@ export function MessagesAndNotificationsPage() {
                                 'basic500 body3 margin-min',
                               )}
                             >
-                              {group[0].origin}
+                              {group[0]!.origin}
                             </div>
 
                             <h2 className={clsx(styles.notificationEllipsis, 'headline')}>
@@ -94,7 +96,7 @@ export function MessagesAndNotificationsPage() {
                                   {group.length} {t('notifications.messages')}
                                 </span>
                               ) : (
-                                group[0].title
+                                group[0]!.title
                               )}
                             </h2>
                           </div>

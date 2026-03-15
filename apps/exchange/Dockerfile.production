@@ -4,10 +4,10 @@
 # ================================================================
 # Stage 1: Build the React application for all networks
 # ================================================================
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Install git (needed for some npm packages)
-RUN apk update && apk add git
+RUN apk add --no-cache git
 
 # Set working directory
 WORKDIR /app

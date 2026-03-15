@@ -2,7 +2,8 @@
  * useAdminTradingPairs Hook
  * Provides access to admin-configured DEX trading pairs from localStorage
  */
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 export interface AdminTradingPair {
   id: string;
@@ -47,7 +48,7 @@ export const useAdminTradingPairs = () => {
           setPairs([]);
         }
       } catch (error) {
-        console.error('Failed to load admin trading pairs:', error);
+        logger.error('Failed to load admin trading pairs:', error);
         setPairs([]);
       } finally {
         setIsLoading(false);
@@ -78,14 +79,14 @@ export const useAdminTradingPairs = () => {
     pairs.find(
       (pair) =>
         pair.amountAsset.ticker.toLowerCase() === amountTicker.toLowerCase() &&
-        pair.priceAsset.ticker.toLowerCase() === priceTicker.toLowerCase()
+        pair.priceAsset.ticker.toLowerCase() === priceTicker.toLowerCase(),
     );
 
   return {
-    pairs,
     featuredPairs,
-    isLoading,
     getPairById,
     getPairByTickers,
+    isLoading,
+    pairs,
   };
 };
