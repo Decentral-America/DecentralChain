@@ -7,30 +7,30 @@ import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const burnTransform = {
   ...getDefaultTransform(),
-  assetId: pipe<TDCCGuiBurn, string, string>(
-    ifElse<TDCCGuiBurn, string, string>(
+  assetId: pipe<TClientBurn, string, string>(
+    ifElse<TClientBurn, string, string>(
       has('assetId'),
       // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
-      ((data: IDCCGuiBurnMoney) => getAssetId(data.quantity)) as (data: TDCCGuiBurn) => string,
+      ((data: IClientBurnMoney) => getAssetId(data.quantity)) as (data: TClientBurn) => string,
     ),
     emptyError('Has no assetId!'),
   ),
-  chainId: prop<TDCCGuiBurn, 'chainId'>('chainId'),
-  quantity: pipe<TDCCGuiBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
+  chainId: prop<TClientBurn, 'chainId'>('chainId'),
+  quantity: pipe<TClientBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
 };
 
-export const burn = factory<TDCCGuiBurn, TWithPartialFee<BurnTransaction<string>>>(burnTransform);
+export const burn = factory<TClientBurn, TWithPartialFee<BurnTransaction<string>>>(burnTransform);
 
-export interface IDCCGuiBurnMoney extends IDefaultGuiTx<typeof TYPES.BURN> {
+export interface IClientBurnMoney extends IDefaultGuiTx<typeof TYPES.BURN> {
   quantity: TMoney;
   chainId: number;
 }
 
-export interface IDCCGuiBurnLong extends IDefaultGuiTx<typeof TYPES.BURN> {
+export interface IClientBurnLong extends IDefaultGuiTx<typeof TYPES.BURN> {
   quantity: TLong;
   assetId: string;
   chainId: number;
 }
 
-export type TDCCGuiBurn = IDCCGuiBurnMoney | IDCCGuiBurnLong;
+export type TClientBurn = IClientBurnMoney | IClientBurnLong;

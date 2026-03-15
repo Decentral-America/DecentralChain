@@ -6,7 +6,7 @@ import { prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const updateAssetInfo = factory<
-  IDCCGuiUpdateAssetInfo,
+  IClientUpdateAssetInfo,
   TWithPartialFee<UpdateAssetInfoTransaction<string>>
 >({
   ...getDefaultTransform(),
@@ -15,7 +15,7 @@ export const updateAssetInfo = factory<
   name: prop('name'),
 });
 
-export interface IDCCGuiUpdateAssetInfo extends IDefaultGuiTx<typeof TYPES.UPDATE_ASSET_INFO> {
+export interface IClientUpdateAssetInfo extends IDefaultGuiTx<typeof TYPES.UPDATE_ASSET_INFO> {
   assetId: string;
   name: string;
   description: string;

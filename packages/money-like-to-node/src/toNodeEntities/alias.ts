@@ -11,7 +11,7 @@ import {
 } from '../validators/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-export const alias = factory<IDCCGuiAlias, AliasTransaction<string>>({
+export const alias = factory<IClientAlias, AliasTransaction<string>>({
   ...getDefaultTransform(),
   alias: pipe(
     prop('alias'),
@@ -34,6 +34,6 @@ export const alias = factory<IDCCGuiAlias, AliasTransaction<string>>({
   ),
 });
 
-export interface IDCCGuiAlias extends IDefaultGuiTx<typeof TYPES.ALIAS> {
+export interface IClientAlias extends IDefaultGuiTx<typeof TYPES.ALIAS> {
   alias: string;
 }

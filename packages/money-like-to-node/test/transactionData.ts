@@ -2,7 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { type TTransaction } from '@decentralchain/ts-types';
 import { TYPES } from '../src/constants/index.js';
-import { type TDCCGuiEntity } from '../src/toNodeEntities/index.js';
+import { type TClientEntity } from '../src/toNodeEntities/index.js';
 import { type TWithPartialFee } from '../src/types/index.js';
 
 export const DCC_ASSET = new Asset({
@@ -33,7 +33,7 @@ const BTC_ASSET = new Asset({
 });
 
 interface ITestData {
-  gui: TDCCGuiEntity;
+  gui: TClientEntity;
   node: TWithPartialFee<TTransaction<string>>;
 }
 

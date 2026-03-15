@@ -5,12 +5,12 @@ import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js
 import { defaultTo, getAssetId, getCoins, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
-export const transfer = factory<IDCCGuiTransfer, TWithPartialFee<TransferTransaction<string>>>({
+export const transfer = factory<IClientTransfer, TWithPartialFee<TransferTransaction<string>>>({
   ...getDefaultTransform(),
-  amount: pipe<IDCCGuiTransfer, TMoney, string>(prop('amount'), getCoins),
+  amount: pipe<IClientTransfer, TMoney, string>(prop('amount'), getCoins),
   assetId: pipe(prop('amount'), getAssetId),
   attachment: pipe(prop('attachment'), defaultTo('')),
-  feeAssetId: pipe<IDCCGuiTransfer, TMoney | TLong | undefined | null, string | null, string>(
+  feeAssetId: pipe<IClientTransfer, TMoney | TLong | undefined | null, string | null, string>(
     prop('fee'),
     getAssetId,
     defaultTo('DCC'),
@@ -18,7 +18,7 @@ export const transfer = factory<IDCCGuiTransfer, TWithPartialFee<TransferTransac
   recipient: prop('recipient'),
 });
 
-export interface IDCCGuiTransfer extends IDefaultGuiTx<typeof TYPES.TRANSFER> {
+export interface IClientTransfer extends IDefaultGuiTx<typeof TYPES.TRANSFER> {
   recipient: string;
   amount: TMoney;
   attachment?: string | undefined;

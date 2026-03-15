@@ -39,12 +39,12 @@ const processPayment = factory<TMoney, InvokeScriptPayment<string>>({
 });
 
 export const invokeScript = factory<
-  IDCCGuiInvokeScript,
+  IClientInvokeScript,
   TWithPartialFee<InvokeScriptTransaction<string>>
 >({
   ...getDefaultTransform(),
   call: pipe<
-    IDCCGuiInvokeScript,
+    IClientInvokeScript,
     InvokeScriptCall<TLong> | null | undefined,
     InvokeScriptCall<string> | null
   >(
@@ -58,13 +58,13 @@ export const invokeScript = factory<
   ),
   chainId: prop('chainId'),
   dApp: prop('dApp'),
-  feeAssetId: pipe<IDCCGuiInvokeScript, TMoney | TLong | undefined | null, string | null, string>(
+  feeAssetId: pipe<IClientInvokeScript, TMoney | TLong | undefined | null, string | null, string>(
     prop('fee'),
     getAssetId,
     defaultTo('DCC'),
   ),
   payment: pipe<
-    IDCCGuiInvokeScript,
+    IClientInvokeScript,
     TMoney[] | null | undefined,
     InvokeScriptPayment<string>[] | null
   >(
@@ -78,7 +78,7 @@ export const invokeScript = factory<
   ),
 });
 
-export interface IDCCGuiInvokeScript extends IDefaultGuiTx<typeof TYPES.INVOKE_SCRIPT> {
+export interface IClientInvokeScript extends IDefaultGuiTx<typeof TYPES.INVOKE_SCRIPT> {
   dApp: string;
   call?: InvokeScriptCall<TLong> | null | undefined;
   payment?: TMoney[] | null | undefined;

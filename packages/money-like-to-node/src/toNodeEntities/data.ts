@@ -10,7 +10,7 @@ import { getCoins, map, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const parseValueByType = (
-  item: TDCCGuiDataTransactionEntry,
+  item: TClientDataTransactionEntry,
 ): DataTransactionEntry<string>['value'] | null => {
   switch (item.type) {
     case DATA_FIELD_TYPE.BINARY:
@@ -27,54 +27,54 @@ const parseValueByType = (
   }
 };
 
-const remapDataEntryItem = (item: TDCCGuiDataTransactionEntry): DataTransactionEntry<string> =>
+const remapDataEntryItem = (item: TClientDataTransactionEntry): DataTransactionEntry<string> =>
   ({
     key: prop('key', item),
     type: prop('type', item),
     value: parseValueByType(item),
   }) as DataTransactionEntry<string>;
 
-export const data = factory<IDCCGuiData, TWithPartialFee<DataTransaction<string>>>({
+export const data = factory<IClientData, TWithPartialFee<DataTransaction<string>>>({
   ...getDefaultTransform(),
   data: pipe(prop('data'), map(remapDataEntryItem)),
 });
 
-export interface IDCCGuiData extends IDefaultGuiTx<typeof TYPES.DATA> {
-  data: TDCCGuiDataTransactionEntry[];
+export interface IClientData extends IDefaultGuiTx<typeof TYPES.DATA> {
+  data: TClientDataTransactionEntry[];
 }
 
-type TDCCGuiDataTransactionEntry =
-  | IDCCGuiDataTransactionEntryInteger
-  | IDCCGuiDataTransactionEntryBoolean
-  | IDCCGuiDataTransactionEntryString
-  | IDCCGuiDataTransactionEntryBinary
-  | IDCCGuiDataTransactionEntryEmpty;
+type TClientDataTransactionEntry =
+  | IClientDataTransactionEntryInteger
+  | IClientDataTransactionEntryBoolean
+  | IClientDataTransactionEntryString
+  | IClientDataTransactionEntryBinary
+  | IClientDataTransactionEntryEmpty;
 
-interface IDCCGuiDataTransactionEntryInteger {
+interface IClientDataTransactionEntryInteger {
   key: string;
   type: typeof DATA_FIELD_TYPE.INTEGER;
   value: TLong;
 }
 
-interface IDCCGuiDataTransactionEntryBoolean {
+interface IClientDataTransactionEntryBoolean {
   key: string;
   type: typeof DATA_FIELD_TYPE.BOOLEAN;
   value: boolean | null;
 }
 
-interface IDCCGuiDataTransactionEntryString {
+interface IClientDataTransactionEntryString {
   key: string;
   type?: typeof DATA_FIELD_TYPE.STRING;
   value: string;
 }
 
-interface IDCCGuiDataTransactionEntryBinary {
+interface IClientDataTransactionEntryBinary {
   key: string;
   type?: typeof DATA_FIELD_TYPE.BINARY;
   value: string;
 }
 
-interface IDCCGuiDataTransactionEntryEmpty {
+interface IClientDataTransactionEntryEmpty {
   key: string;
   type?: undefined;
   value: null | undefined;
