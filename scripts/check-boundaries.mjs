@@ -38,7 +38,7 @@ function loadProjects() {
           ...pkg.devDependencies,
           ...pkg.peerDependencies,
         };
-        projects.set(pkg.name, { scope, layer, deps, dir: join(root, entry.name) });
+        projects.set(pkg.name, { deps, dir: join(root, entry.name), layer, scope });
       } catch {
         // skip packages without a parseable package.json
       }
@@ -50,7 +50,7 @@ function loadProjects() {
 const projects = loadProjects();
 let violations = 0;
 
-for (const [name, { scope, layer, deps, dir }] of projects) {
+for (const [name, { scope, layer, deps }] of projects) {
   for (const dep of Object.keys(deps)) {
     const target = projects.get(dep);
     if (!target) continue; // external dependency
@@ -63,9 +63,7 @@ for (const [name, { scope, layer, deps, dir }] of projects) {
 
     // Rule 2: Layer enforcement — cannot depend on a higher layer
     if (target.layer > layer) {
-      console.error(
-        `✗ ${name} (layer:${layer}) depends on ${dep} (layer:${target.layer})`,
-      );
+      console.error(`✗ ${name} (layer:${layer}) depends on ${dep} (layer:${target.layer})`);
       violations++;
     }
   }
