@@ -1,22 +1,50 @@
 {
-  "name": "dcc-react",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "main": "electron/main.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "typecheck": "tsc -b --noEmit",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "preview": "vite preview",
-    "merge-locales": "node scripts/mergeLocales.js",
-    "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
-    "electron:build": "tsc -p electron && electron-builder",
-    "electron:build:mac": "tsc -p electron && electron-builder --mac",
-    "electron:build:win": "tsc -p electron && electron-builder --win",
-    "electron:build:linux": "tsc -p electron && electron-builder --linux"
+  "bugs": {
+    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+  },
+  "build": {
+    "appId": "com.decentralchain.wallet",
+    "directories": {
+      "buildResources": "public",
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "category": "Finance",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.finance",
+      "entitlements": "electron/entitlements.mac.plist",
+      "entitlementsInherit": "electron/entitlements.mac.plist",
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true,
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "productName": "DCC Wallet",
+    "publish": {
+      "owner": "decentralchain",
+      "provider": "github",
+      "repo": "dcc-wallet"
+    },
+    "win": {
+      "certificateFile": null,
+      "certificatePassword": null,
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
   },
   "dependencies": {
     "@decentralchain/assets-pairs-order": "workspace:*",
@@ -89,67 +117,41 @@
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
     "prettier": "^3.6.2",
-    "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
     "vite": "^7.1.7"
   },
-  "build": {
-    "appId": "com.decentralchain.wallet",
-    "productName": "DCC Wallet",
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "package.json"
-    ],
-    "directories": {
-      "buildResources": "public",
-      "output": "release"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "decentralchain",
-      "repo": "dcc-wallet"
-    },
-    "mac": {
-      "category": "public.app-category.finance",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "electron/entitlements.mac.plist",
-      "entitlementsInherit": "electron/entitlements.mac.plist"
-    },
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
-      "certificateFile": null,
-      "certificatePassword": null
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "category": "Finance"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git",
-    "directory": "apps/exchange"
-  },
-  "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+  "engines": {
+    "node": ">=24"
   },
   "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/exchange",
+  "main": "electron/main.js",
+  "name": "dcc-react",
   "nx": {
     "tags": [
       "scope:app",
       "layer:5"
     ]
-  }
+  },
+  "private": true,
+  "repository": {
+    "directory": "apps/exchange",
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+  },
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "dev": "vite",
+    "electron:build": "tsc -p electron && electron-builder",
+    "electron:build:linux": "tsc -p electron && electron-builder --linux",
+    "electron:build:mac": "tsc -p electron && electron-builder --mac",
+    "electron:build:win": "tsc -p electron && electron-builder --win",
+    "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "merge-locales": "node scripts/mergeLocales.js",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "type": "module",
+  "version": "0.0.0"
 }

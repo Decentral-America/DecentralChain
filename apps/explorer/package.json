@@ -1,40 +1,7 @@
 {
-  "name": "explorer",
-  "version": "4.0.0",
-  "type": "module",
-  "private": true,
-  "description": "DecentralChain blockchain explorer",
   "author": "DecentralChain",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git",
-    "directory": "apps/explorer"
-  },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/explorer",
   "bugs": {
     "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
-  },
-  "license": "MIT",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Decentral-America"
-  },
-  "engines": {
-    "node": ">=24"
-  },
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "build:prod": "vite build --mode production",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "biome check --write .",
-    "lint:fix": "biome check --write .",
-    "lint:check": "biome check ."
   },
   "dependencies": {
     "@decentralchain/node-api-js": "workspace:*",
@@ -61,10 +28,9 @@
     "semver": "^7.7.2",
     "valid-url": "^1.0.9"
   },
+  "description": "DecentralChain blockchain explorer",
   "devDependencies": {
-    "@biomejs/biome": "2.4.6",
     "@decentralchain/ts-lib-crypto": "workspace:*",
-    "@evilmartians/lefthook": "2.1.3",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.1.4",
@@ -73,10 +39,42 @@
     "vite": "^7.3.1",
     "vitest": "4.0.18"
   },
+  "engines": {
+    "node": ">=24"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/explorer",
+  "license": "MIT",
+  "name": "explorer",
   "nx": {
     "tags": [
       "scope:app",
       "layer:5"
     ]
-  }
+  },
+  "private": true,
+  "repository": {
+    "directory": "apps/explorer",
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:prod": "vite build --mode production",
+    "dev": "vite",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "preview": "vite preview",
+    "start": "vite",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "type": "module",
+  "version": "4.0.0"
 }

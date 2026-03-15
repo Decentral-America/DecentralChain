@@ -27,23 +27,35 @@ describe('orderPair utility', () => {
    * Input validation
    */
   it('throws TypeError when predefinedList is not an array', () => {
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => createOrderPair('not-an-array', 'a', 'b')).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => createOrderPair(null, 'a', 'b')).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => createOrderPair(42, 'a', 'b')).toThrow(TypeError);
   });
   it('throws TypeError when first asset ID is not a string', () => {
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair(123, 'b')).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair(null, 'b')).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair(undefined, 'b')).toThrow(TypeError);
   });
   it('throws TypeError when second asset ID is not a string', () => {
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair('a', 123)).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair('a', null)).toThrow(TypeError);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair('a', undefined)).toThrow(TypeError);
   });
   it('includes informative error messages', () => {
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => createOrderPair(42, 'a', 'b')).toThrow(/Expected predefinedList to be an array/);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair(42, 'b')).toThrow(/Expected first asset ID to be a string/);
+    // @ts-expect-error testing runtime validation with wrong types
     expect(() => orderPair('a', 42)).toThrow(/Expected second asset ID to be a string/);
   });
 

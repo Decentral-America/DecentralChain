@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  typescript: 5.9.3
+
 importers:
 
   .:
@@ -147,9 +150,6 @@ importers:
       '@babel/core':
         specifier: ^7.29.0
         version: 7.29.0
-      '@biomejs/biome':
-        specifier: ^2.4.6
-        version: 2.4.7
       '@decentralchain/ledger':
         specifier: workspace:*
         version: link:../../packages/ledger
@@ -237,9 +237,6 @@ importers:
       stylus:
         specifier: ^0.64.0
         version: 0.64.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
       vite:
         specifier: ^6.3.5
         version: 6.4.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -466,9 +463,6 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.8.1
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
       typescript-eslint:
         specifier: ^8.45.0
         version: 8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
@@ -548,15 +542,9 @@ importers:
         specifier: ^1.0.9
         version: 1.0.9
     devDependencies:
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
         version: link:../../packages/ts-lib-crypto
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@types/react':
         specifier: ^19.1.10
         version: 19.2.14
@@ -565,7 +553,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
         specifier: ^5.1.4
-        version: 5.2.0(vite@7.3.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 5.2.0(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0(@noble/hashes@2.0.1)
@@ -574,10 +562,10 @@ importers:
         version: 1.98.0
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/assets-pairs-order:
     dependencies:
@@ -588,18 +576,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -609,12 +591,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/bignumber:
     dependencies:
@@ -625,18 +604,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       long:
         specifier: ^5.3.2
         version: 5.3.2
@@ -649,30 +622,21 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/browser-bus:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       jsdom:
         specifier: 28.1.0
         version: 28.1.0(@noble/hashes@2.0.1)
@@ -688,12 +652,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/crypto:
     dependencies:
@@ -707,12 +668,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@types/node':
         specifier: 25.3.3
         version: 25.3.3
@@ -725,9 +680,6 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -747,21 +699,15 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/signer':
         specifier: workspace:*
         version: link:../signer
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       jsdom:
         specifier: 28.1.0
         version: 28.1.0(@noble/hashes@2.0.1)
@@ -774,30 +720,21 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/cubensis-connect-types:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -807,12 +744,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/data-entities:
     dependencies:
@@ -823,18 +757,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -844,12 +772,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/data-service-client-js:
     dependencies:
@@ -863,21 +788,15 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/parse-json-bignumber':
         specifier: workspace:*
         version: link:../parse-json-bignumber
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -887,12 +806,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/ledger:
     dependencies:
@@ -903,18 +819,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -924,12 +834,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/marshall:
     dependencies:
@@ -943,12 +850,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -970,9 +871,6 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -986,24 +884,18 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/bignumber':
         specifier: workspace:*
         version: link:../bignumber
       '@decentralchain/data-entities':
         specifier: workspace:*
         version: link:../data-entities
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -1013,12 +905,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/node-api-js:
     dependencies:
@@ -1038,15 +927,9 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/transactions':
         specifier: workspace:*
         version: link:../transactions
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1065,9 +948,6 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       undici-types:
         specifier: 7.22.0
         version: 7.22.0
@@ -1080,18 +960,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       fast-check:
         specifier: 4.5.3
         version: 4.5.3
@@ -1104,30 +978,21 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/parse-json-bignumber:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       bignumber.js:
         specifier: 10.0.2
         version: 10.0.2
@@ -1140,12 +1005,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/protobuf-serialization:
     dependencies:
@@ -1156,24 +1018,18 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@bufbuild/buf':
         specifier: 1.66.1
         version: 1.66.1
       '@bufbuild/protoc-gen-es':
         specifier: 2.11.0
         version: 2.11.0(@bufbuild/protobuf@2.11.0)
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -1183,12 +1039,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/ride-js:
     dependencies:
@@ -1205,12 +1058,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1229,9 +1076,6 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -1263,12 +1107,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1277,7 +1115,7 @@ importers:
         version: 0.31.1
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -1287,12 +1125,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/signer:
     dependencies:
@@ -1309,15 +1144,9 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@decentralchain/transactions':
         specifier: workspace:*
         version: link:../transactions
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1339,9 +1168,6 @@ importers:
       typed-ts-events:
         specifier: ^3.0.1
         version: 3.0.1
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -1367,24 +1193,21 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
       '@bufbuild/buf':
         specifier: 1.66.1
         version: 1.66.1
       '@bufbuild/protoc-gen-es':
         specifier: 2.11.0
         version: 2.11.0(@bufbuild/protobuf@2.11.0)
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
+      '@types/node':
+        specifier: 25.5.0
+        version: 25.5.0
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0(@noble/hashes@2.0.1)
@@ -1397,12 +1220,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   packages/transactions:
     dependencies:
@@ -1425,12 +1245,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1449,9 +1263,6 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -1471,12 +1282,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
@@ -1498,9 +1303,6 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
         version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
@@ -1510,18 +1312,12 @@ importers:
       '@arethetypeswrong/cli':
         specifier: 0.18.2
         version: 0.18.2
-      '@biomejs/biome':
-        specifier: 2.4.6
-        version: 2.4.6
-      '@evilmartians/lefthook':
-        specifier: 2.1.3
-        version: 2.1.3
       '@size-limit/preset-small-lib':
         specifier: 12.0.0
         version: 12.0.0(size-limit@12.0.0(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
       publint:
         specifier: 0.3.18
         version: 0.3.18
@@ -1531,12 +1327,9 @@ importers:
       tsdown:
         specifier: 0.21.2
         version: 0.21.2(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
 packages:
 
@@ -1718,32 +1511,15 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@biomejs/biome@2.4.6':
-    resolution: {integrity: sha512-QnHe81PMslpy3mnpL8DnO2M4S4ZnYPkjlGCLWBZT/3R9M6b5daArWMMtEfP52/n174RKnwRIf3oT8+wc9ihSfQ==}
-    engines: {node: '>=14.21.3'}
-    hasBin: true
-
   '@biomejs/biome@2.4.7':
     resolution: {integrity: sha512-vXrgcmNGZ4lpdwZSpMf1hWw1aWS6B+SyeSYKTLrNsiUsAdSRN0J4d/7mF3ogJFbIwFFSOL3wT92Zzxia/d5/ng==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.4.6':
-    resolution: {integrity: sha512-NW18GSyxr+8sJIqgoGwVp5Zqm4SALH4b4gftIA0n62PTuBs6G2tHlwNAOj0Vq0KKSs7Sf88VjjmHh0O36EnzrQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@biomejs/cli-darwin-arm64@2.4.7':
     resolution: {integrity: sha512-Oo0cF5mHzmvDmTXw8XSjhCia8K6YrZnk7aCS54+/HxyMdZMruMO3nfpDsrlar/EQWe41r1qrwKiCa2QDYHDzWA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@biomejs/cli-darwin-x64@2.4.6':
-    resolution: {integrity: sha512-4uiE/9tuI7cnjtY9b07RgS7gGyYOAfIAGeVJWEfeCnAarOAS7qVmuRyX6d7JTKw28/mt+rUzMasYeZ+0R/U1Mw==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [darwin]
 
   '@biomejs/cli-darwin-x64@2.4.7':
@@ -1752,26 +1528,12 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.4.6':
-    resolution: {integrity: sha512-F/JdB7eN22txiTqHM5KhIVt0jVkzZwVYrdTR1O3Y4auBOQcXxHK4dxULf4z43QyZI5tsnQJrRBHZy7wwtL+B3A==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
   '@biomejs/cli-linux-arm64-musl@2.4.7':
     resolution: {integrity: sha512-I2NvM9KPb09jWml93O2/5WMfNR7Lee5Latag1JThDRMURVhPX74p9UDnyTw3Ae6cE1DgXfw7sqQgX7rkvpc0vw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
-
-  '@biomejs/cli-linux-arm64@2.4.6':
-    resolution: {integrity: sha512-kMLaI7OF5GN1Q8Doymjro1P8rVEoy7BKQALNz6fiR8IC1WKduoNyteBtJlHT7ASIL0Cx2jR6VUOBIbcB1B8pew==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
 
   '@biomejs/cli-linux-arm64@2.4.7':
     resolution: {integrity: sha512-om6FugwmibzfP/6ALj5WRDVSND4H2G9X0nkI1HZpp2ySf9lW2j0X68oQSaHEnls6666oy4KDsc5RFjT4m0kV0w==}
@@ -1780,26 +1542,12 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-linux-x64-musl@2.4.6':
-    resolution: {integrity: sha512-C9s98IPDu7DYarjlZNuzJKTjVHN03RUnmHV5htvqsx6vEUXCDSJ59DNwjKVD5XYoSS4N+BYhq3RTBAL8X6svEg==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
   '@biomejs/cli-linux-x64-musl@2.4.7':
     resolution: {integrity: sha512-00kx4YrBMU8374zd2wHuRV5wseh0rom5HqRND+vDldJPrWwQw+mzd/d8byI9hPx926CG+vWzq6AeiT7Yi5y59g==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
-
-  '@biomejs/cli-linux-x64@2.4.6':
-    resolution: {integrity: sha512-oHXmUFEoH8Lql1xfc3QkFLiC1hGR7qedv5eKNlC185or+o4/4HiaU7vYODAH3peRCfsuLr1g6v2fK9dFFOYdyw==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
 
   '@biomejs/cli-linux-x64@2.4.7':
     resolution: {integrity: sha512-bV8/uo2Tj+gumnk4sUdkerWyCPRabaZdv88IpbmDWARQQoA/Q0YaqPz1a+LSEDIL7OfrnPi9Hq1Llz4ZIGyIQQ==}
@@ -1808,22 +1556,10 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-win32-arm64@2.4.6':
-    resolution: {integrity: sha512-xzThn87Pf3YrOGTEODFGONmqXpTwUNxovQb72iaUOdcw8sBSY3+3WD8Hm9IhMYLnPi0n32s3L3NWU6+eSjfqFg==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [win32]
-
   '@biomejs/cli-win32-arm64@2.4.7':
     resolution: {integrity: sha512-hOUHBMlFCvDhu3WCq6vaBoG0dp0LkWxSEnEEsxxXvOa9TfT6ZBnbh72A/xBM7CBYB7WgwqboetzFEVDnMxelyw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
-    os: [win32]
-
-  '@biomejs/cli-win32-x64@2.4.6':
-    resolution: {integrity: sha512-7++XhnsPlr1HDbor5amovPjOH6vsrFOCdp93iKXhFn6bcMUI6soodj3WWKfgEO6JosKU1W5n3uky3WW9RlRjTg==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
     os: [win32]
 
   '@biomejs/cli-win32-x64@2.4.7':
@@ -2697,12 +2433,6 @@ packages:
   '@ethereumjs/util@10.1.1':
     resolution: {integrity: sha512-r2EhaeEmLZXVs1dT2HJFQysAkr63ZWATu/9tgYSp1IlvjvwyC++DLg5kCDwMM49HBq3sOAhrPnXkoqf9DV2gbw==}
     engines: {node: '>=20'}
-
-  '@evilmartians/lefthook@2.1.3':
-    resolution: {integrity: sha512-T5SXvr8R/0w3+e5dzsI8SrRQbKEJknAb6nfXJWCmHJDLpOtmyfQ1U12zHOpMANpfmo8FOcFX/+1iNNGNjoDYbw==}
-    cpu: [x64, arm64, ia32]
-    os: [darwin, linux, win32]
-    hasBin: true
 
   '@exodus/bytes@1.15.0':
     resolution: {integrity: sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ==}
@@ -3689,6 +3419,9 @@ packages:
   '@types/node@25.3.3':
     resolution: {integrity: sha512-DpzbrH7wIcBaJibpKo9nnSQL0MTRdnWttGyE5haGwK86xgMOkFLp7vEyfQPGLOJh5wNYiJ3V9PmUMDhV9u8kkQ==}
 
+  '@types/node@25.5.0':
+    resolution: {integrity: sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==}
+
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
@@ -3771,20 +3504,20 @@ packages:
     peerDependencies:
       '@typescript-eslint/parser': ^8.57.0
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/parser@8.57.0':
     resolution: {integrity: sha512-XZzOmihLIr8AD1b9hL9ccNMzEMWt/dE2u7NyTY9jJG6YNiNthaD5XtUHVF2uCXZ15ng+z2hT3MVuxnUYhq6k1g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/project-service@8.57.0':
     resolution: {integrity: sha512-pR+dK0BlxCLxtWfaKQWtYr7MhKmzqZxuii+ZjuFlZlIGRZm22HnXFqa2eY+90MUz8/i80YJmzFGDUsi8dMOV5w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/scope-manager@8.57.0':
     resolution: {integrity: sha512-nvExQqAHF01lUM66MskSaZulpPL5pgy5hI5RfrxviLgzZVffB5yYzw27uK/ft8QnKXI2X0LBrHJFr1TaZtAibw==}
@@ -3794,14 +3527,14 @@ packages:
     resolution: {integrity: sha512-LtXRihc5ytjJIQEH+xqjB0+YgsV4/tW35XKX3GTZHpWtcC8SPkT/d4tqdf1cKtesryHm2bgp6l555NYcT2NLvA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/type-utils@8.57.0':
     resolution: {integrity: sha512-yjgh7gmDcJ1+TcEg8x3uWQmn8ifvSupnPfjP21twPKrDP/pTHlEQgmKcitzF/rzPSmv7QjJ90vRpN4U+zoUjwQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/types@8.57.0':
     resolution: {integrity: sha512-dTLI8PEXhjUC7B9Kre+u0XznO696BhXcTlOn0/6kf1fHaQW8+VjJAVHJ3eTI14ZapTxdkOmc80HblPQLaEeJdg==}
@@ -3811,14 +3544,14 @@ packages:
     resolution: {integrity: sha512-m7faHcyVg0BT3VdYTlX8GdJEM7COexXxS6KqGopxdtkQRvBanK377QDHr4W/vIPAR+ah9+B/RclSW5ldVniO1Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/utils@8.57.0':
     resolution: {integrity: sha512-5iIHvpD3CZe06riAsbNxxreP+MuYgVUsV0n4bwLH//VJmgtt54sQeY2GszntJ4BjYCpMzrfVh2SBnUQTtys2lQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.9.3
 
   '@typescript-eslint/visitor-keys@8.57.0':
     resolution: {integrity: sha512-zm6xx8UT/Xy2oSr2ZXD0pZo7Jx2XsCoID2IUh9YSTFRu7z+WdwYTRk6LhUftm1crwqbuoF6I8zAFeCMw0YjwDg==}
@@ -3827,7 +3560,7 @@ packages:
   '@typescript/vfs@1.6.4':
     resolution: {integrity: sha512-PJFXFS4ZJKiJ9Qiuix6Dz/OwEIqHD7Dme1UwZhTK11vR+5dqW2ACbdndWQexBzCx+CPuMe5WBYQWCsFyGlQLlQ==}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.9.3
 
   '@vitejs/plugin-react@4.7.0':
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
@@ -5603,7 +5336,7 @@ packages:
   i18next@25.8.18:
     resolution: {integrity: sha512-lzY5X83BiL5AP77+9DydbrqkQHFN9hUzWGjqjLpPcp5ZOzuu1aSoKaU3xbBLSjWx9dAzW431y+d+aogxOZaKRA==}
     peerDependencies:
-      typescript: ^5
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7117,7 +6850,7 @@ packages:
       react: '>= 16.8.0'
       react-dom: '*'
       react-native: '*'
-      typescript: ^5
+      typescript: 5.9.3
     peerDependenciesMeta:
       react-dom:
         optional: true
@@ -7362,7 +7095,7 @@ packages:
       '@ts-macro/tsc': ^0.3.6
       '@typescript/native-preview': '>=7.0.0-dev.20250601.1'
       rolldown: ^1.0.0-rc.3
-      typescript: ^5.0.0 || ^6.0.0-beta
+      typescript: 5.9.3
       vue-tsc: ~3.2.0
     peerDependenciesMeta:
       '@ts-macro/tsc':
@@ -7894,7 +7627,7 @@ packages:
     resolution: {integrity: sha512-3TaVTaAv2gTiMB35i3FiGJaRfwb3Pyn/j3m/bfAvGe8FB7CF6u+LMYqYlDh7reQf7UNvoTvdfAqHGmPGOSsPmA==}
     engines: {node: '>=18.12'}
     peerDependencies:
-      typescript: '>=4.8.4'
+      typescript: 5.9.3
 
   ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
@@ -7916,7 +7649,7 @@ packages:
       '@tsdown/exe': 0.21.2
       '@vitejs/devtools': '*'
       publint: ^0.3.0
-      typescript: ^5.0.0
+      typescript: 5.9.3
       unplugin-unused: ^0.5.0
     peerDependenciesMeta:
       '@arethetypeswrong/core':
@@ -7995,17 +7728,7 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-      typescript: '>=4.8.4 <6.0.0'
-
-  typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
-  typescript@5.6.1-rc:
-    resolution: {integrity: sha512-E3b2+1zEFu84jB0YQi9BORDjz9+jGbwwy1Zi3G0LUNw7a7cePUrHMRNy8aPh53nXpkFGVHSxIZo5vKTfYaFiBQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
+      typescript: 5.9.3
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
@@ -8722,7 +8445,7 @@ snapshots:
       fflate: 0.8.2
       lru-cache: 11.2.7
       semver: 7.7.4
-      typescript: 5.6.1-rc
+      typescript: 5.9.3
       validate-npm-package-name: 5.0.1
 
   '@asamuzakjp/css-color@5.0.1':
@@ -8911,17 +8634,6 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@biomejs/biome@2.4.6':
-    optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.4.6
-      '@biomejs/cli-darwin-x64': 2.4.6
-      '@biomejs/cli-linux-arm64': 2.4.6
-      '@biomejs/cli-linux-arm64-musl': 2.4.6
-      '@biomejs/cli-linux-x64': 2.4.6
-      '@biomejs/cli-linux-x64-musl': 2.4.6
-      '@biomejs/cli-win32-arm64': 2.4.6
-      '@biomejs/cli-win32-x64': 2.4.6
-
   '@biomejs/biome@2.4.7':
     optionalDependencies:
       '@biomejs/cli-darwin-arm64': 2.4.7
@@ -8933,49 +8645,25 @@ snapshots:
       '@biomejs/cli-win32-arm64': 2.4.7
       '@biomejs/cli-win32-x64': 2.4.7
 
-  '@biomejs/cli-darwin-arm64@2.4.6':
-    optional: true
-
   '@biomejs/cli-darwin-arm64@2.4.7':
-    optional: true
-
-  '@biomejs/cli-darwin-x64@2.4.6':
     optional: true
 
   '@biomejs/cli-darwin-x64@2.4.7':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.4.6':
-    optional: true
-
   '@biomejs/cli-linux-arm64-musl@2.4.7':
-    optional: true
-
-  '@biomejs/cli-linux-arm64@2.4.6':
     optional: true
 
   '@biomejs/cli-linux-arm64@2.4.7':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.4.6':
-    optional: true
-
   '@biomejs/cli-linux-x64-musl@2.4.7':
-    optional: true
-
-  '@biomejs/cli-linux-x64@2.4.6':
     optional: true
 
   '@biomejs/cli-linux-x64@2.4.7':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.4.6':
-    optional: true
-
   '@biomejs/cli-win32-arm64@2.4.7':
-    optional: true
-
-  '@biomejs/cli-win32-x64@2.4.6':
     optional: true
 
   '@biomejs/cli-win32-x64@2.4.7':
@@ -9031,8 +8719,8 @@ snapshots:
   '@bufbuild/protoplugin@2.11.0':
     dependencies:
       '@bufbuild/protobuf': 2.11.0
-      '@typescript/vfs': 1.6.4(typescript@5.4.5)
-      typescript: 5.4.5
+      '@typescript/vfs': 1.6.4(typescript@5.9.3)
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -9794,8 +9482,6 @@ snapshots:
       '@ethereumjs/rlp': 10.1.1
       '@noble/curves': 2.0.1
       '@noble/hashes': 2.0.1
-
-  '@evilmartians/lefthook@2.1.3': {}
 
   '@exodus/bytes@1.15.0(@noble/hashes@2.0.1)':
     optionalDependencies:
@@ -10674,6 +10360,10 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
+  '@types/node@25.5.0':
+    dependencies:
+      undici-types: 7.18.2
+
   '@types/parse-json@4.0.2': {}
 
   '@types/plist@3.0.5':
@@ -10843,10 +10533,10 @@ snapshots:
       '@typescript-eslint/types': 8.57.0
       eslint-visitor-keys: 5.0.1
 
-  '@typescript/vfs@1.6.4(typescript@5.4.5)':
+  '@typescript/vfs@1.6.4(typescript@5.9.3)':
     dependencies:
       debug: 4.4.3
-      typescript: 5.4.5
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10874,7 +10564,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@5.2.0(vite@7.3.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))':
+  '@vitejs/plugin-react@5.2.0(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
@@ -10882,7 +10572,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -10899,6 +10589,20 @@ snapshots:
       std-env: 3.10.0
       tinyrainbow: 3.1.0
       vitest: 4.0.18(@types/node@25.3.3)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+
+  '@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))':
+    dependencies:
+      '@bcoe/v8-coverage': 1.0.2
+      '@vitest/utils': 4.0.18
+      ast-v8-to-istanbul: 0.3.12
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.2.0
+      magicast: 0.5.2
+      obug: 2.1.1
+      std-env: 3.10.0
+      tinyrainbow: 3.1.0
+      vitest: 4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   '@vitest/expect@3.2.4':
     dependencies:
@@ -10932,6 +10636,14 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 7.3.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+
+  '@vitest/mocker@4.0.18(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))':
+    dependencies:
+      '@vitest/spy': 4.0.18
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -15676,10 +15388,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  typescript@5.4.5: {}
-
-  typescript@5.6.1-rc: {}
-
   typescript@5.9.3: {}
 
   u2f-api@0.2.7: {}
@@ -16092,6 +15800,23 @@ snapshots:
       stylus: 0.64.0
       yaml: 2.8.2
 
+  vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2):
+    dependencies:
+      esbuild: 0.27.4
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.8
+      rollup: 4.59.0
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 25.5.0
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.32.0
+      sass: 1.98.0
+      stylus: 0.64.0
+      yaml: 2.8.2
+
   vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2):
     dependencies:
       '@types/chai': 5.2.3
@@ -16159,6 +15884,44 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.3.3
+      jsdom: 28.1.0(@noble/hashes@2.0.1)
+    transitivePeerDependencies:
+      - jiti
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
+
+  vitest@4.0.18(@types/node@25.5.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2):
+    dependencies:
+      '@vitest/expect': 4.0.18
+      '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2))
+      '@vitest/pretty-format': 4.0.18
+      '@vitest/runner': 4.0.18
+      '@vitest/snapshot': 4.0.18
+      '@vitest/spy': 4.0.18
+      '@vitest/utils': 4.0.18
+      es-module-lexer: 1.7.0
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      pathe: 2.0.3
+      picomatch: 4.0.3
+      std-env: 3.10.0
+      tinybench: 2.9.0
+      tinyexec: 1.0.4
+      tinyglobby: 0.2.15
+      tinyrainbow: 3.1.0
+      vite: 7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 25.5.0
       jsdom: 28.1.0(@noble/hashes@2.0.1)
     transitivePeerDependencies:
       - jiti
