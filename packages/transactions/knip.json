@@ -1,5 +1,0 @@
-{
-  "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "ignoreDependencies": ["@decentralchain/protobuf-serialization"],
-  "project": ["src/**/*.ts"]
-}
