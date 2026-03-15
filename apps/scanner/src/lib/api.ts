@@ -6,27 +6,27 @@
  * (served by separate non-node services without SDK equivalents).
  */
 import { create } from '@decentralchain/node-api-js';
-import type { IBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
-import type {
-  IAssetDistribution,
-  TAssetBalance,
-  TAssetDetails,
-  TAssetsBalance,
-  TErrorResponse,
+import { type IBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
+import {
+  type IAssetDistribution,
+  type TAssetBalance,
+  type TAssetDetails,
+  type TAssetsBalance,
+  type TErrorResponse,
 } from '@decentralchain/node-api-js/api-node/assets';
-import type { IBlock, IBlockHeader } from '@decentralchain/node-api-js/api-node/blocks';
-import type {
-  INodeStatus as INodeStatusBase,
-  INodeVersion,
+import { type IBlock, type IBlockHeader } from '@decentralchain/node-api-js/api-node/blocks';
+import {
+  type INodeStatus as INodeStatusBase,
+  type INodeVersion,
 } from '@decentralchain/node-api-js/api-node/node';
-import type {
-  IAllConnectedResponse,
-  IAllResponse,
-  IBlackPeer,
-  ISuspendedPeer,
+import {
+  type IAllConnectedResponse,
+  type IAllResponse,
+  type IBlackPeer,
+  type ISuspendedPeer,
 } from '@decentralchain/node-api-js/api-node/peers';
-import type { TRewards } from '@decentralchain/node-api-js/api-node/rewards';
-import type { Lease, Transaction } from '@/types';
+import { type TRewards } from '@decentralchain/node-api-js/api-node/rewards';
+import { type Lease, type Transaction } from '@/types';
 
 /** Augmented node status – the real API returns extra fields the SDK omits. */
 export interface INodeStatus extends INodeStatusBase {
@@ -273,8 +273,8 @@ export async function fetchFullAssetDistribution(
 
   return {
     items: allItems,
-    totalPages: pageCount,
     totalHolders: Object.keys(allItems).length,
+    totalPages: pageCount,
   };
 }
 

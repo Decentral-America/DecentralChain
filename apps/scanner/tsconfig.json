@@ -1,37 +1,36 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
-
-    /* Strictness */
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-
-    "forceConsistentCasingInFileNames": true,
-
     /* Interop */
     "allowJs": false,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-
-    /* Emit */
-    "noEmit": true,
-    "skipLibCheck": true,
 
     /* Paths */
     "baseUrl": ".",
+    "esModuleInterop": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    /* Emit */
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    /* Strictness */
+    "strict": true,
+    "target": "ESNext",
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src", "vite.config.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "test-results"]
+  "exclude": ["node_modules", "dist", "coverage", "test-results"],
+  "include": ["src", "vite.config.ts"]
 }

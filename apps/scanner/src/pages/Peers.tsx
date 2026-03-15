@@ -24,7 +24,7 @@ import {
   type IBlackPeer,
   type ISuspendedPeer,
 } from '@/lib/api';
-import type { NodeRegistrationRecord, Peer } from '@/types';
+import { type NodeRegistrationRecord, type Peer } from '@/types';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
 
@@ -68,23 +68,23 @@ export default function Peers() {
   const [nodeRegistrations, setNodeRegistrations] = useState<NodeRegistrationRecord[]>([]);
 
   const { data: connected, isLoading: connectedLoading } = useQuery<IAllConnectedResponse>({
-    queryKey: ['peers', 'connected'],
     queryFn: () => fetchConnectedPeers(),
+    queryKey: ['peers', 'connected'],
   });
 
   const { data: all, isLoading: allLoading } = useQuery<IAllResponse>({
-    queryKey: ['peers', 'all'],
     queryFn: () => fetchAllPeers(),
+    queryKey: ['peers', 'all'],
   });
 
   const { data: suspended, isLoading: suspendedLoading } = useQuery<ISuspendedPeer[]>({
-    queryKey: ['peers', 'suspended'],
     queryFn: () => fetchSuspendedPeers(),
+    queryKey: ['peers', 'suspended'],
   });
 
   const { data: blacklisted, isLoading: blacklistedLoading } = useQuery<IBlackPeer[]>({
-    queryKey: ['peers', 'blacklisted'],
     queryFn: () => fetchBlacklistedPeers(),
+    queryKey: ['peers', 'blacklisted'],
   });
 
   // Fetch node registrations
@@ -186,26 +186,26 @@ export default function Peers() {
           };
 
           const enrichedData: EnrichedPeerData = {
+            city: geo.city || '',
             country: geo.country_name || 'Unknown',
             countryCode: geo.country_code || '',
-            city: geo.city || '',
+            hostedBy: hostedBy,
+            isGreen: isGreenHost,
             registeredName:
               (typeof registration?.node_name === 'string' ? registration.node_name : null) ||
               peerNodeName ||
               null,
-            isGreen: isGreenHost,
-            hostedBy: hostedBy,
           };
 
           newEnrichedData[address] = enrichedData;
 
           // Cache the result (without registeredName as it may change)
           cache[ip] = {
+            city: enrichedData.city,
             country: enrichedData.country,
             countryCode: enrichedData.countryCode,
-            city: enrichedData.city,
-            isGreen: enrichedData.isGreen,
             hostedBy: enrichedData.hostedBy,
+            isGreen: enrichedData.isGreen,
           };
         } catch (error) {
           console.error(`Failed to enrich peer ${address}:`, error);

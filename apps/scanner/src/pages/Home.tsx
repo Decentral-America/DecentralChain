@@ -8,40 +8,40 @@ import SearchBar from '../components/shared/SearchBar';
 
 const features = [
   {
-    icon: Box,
-    title: 'Block Explorer',
     desc: 'Browse blocks, transactions, and addresses on the DecentralChain network.',
+    icon: Box,
     link: 'Blocks',
+    title: 'Block Explorer',
   },
   {
-    icon: Activity,
-    title: 'Live Block Feed',
     desc: 'Watch new blocks being forged in real time with auto-refresh.',
+    icon: Activity,
     link: 'BlockFeed',
+    title: 'Live Block Feed',
   },
   {
-    icon: Coins,
-    title: 'Asset Explorer',
     desc: 'Explore tokens, NFTs, and asset distributions across the network.',
+    icon: Coins,
     link: 'Asset',
+    title: 'Asset Explorer',
   },
   {
-    icon: BarChart3,
-    title: 'Network Statistics',
     desc: 'Detailed charts on block times, transactions, and network health.',
+    icon: BarChart3,
     link: 'NetworkStatistics',
+    title: 'Network Statistics',
   },
   {
-    icon: Globe,
-    title: 'Network Map',
     desc: 'Visualize the global distribution of DecentralChain nodes.',
+    icon: Globe,
     link: 'NetworkMap',
+    title: 'Network Map',
   },
   {
-    icon: Search,
-    title: 'Distribution Tool',
     desc: 'Analyze token holder distribution with whale/shrimp breakdowns.',
+    icon: Search,
     link: 'DistributionTool',
+    title: 'Distribution Tool',
   },
 ];
 

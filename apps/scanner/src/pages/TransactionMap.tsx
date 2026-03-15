@@ -1,5 +1,4 @@
-import type { Core, EventObject } from 'cytoscape';
-import cytoscape from 'cytoscape';
+import cytoscape, { type Core, type EventObject } from 'cytoscape';
 import fcose from 'cytoscape-fcose';
 import { AlertCircle, Info, Loader2, Network, PlayCircle, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -65,22 +64,22 @@ export default function TransactionMap() {
   const { t } = useLanguage();
   const [form, setForm] = useState<TransactionMapFormState>({
     assetId: '',
-    treatAsNative: false,
-    rootAddress: '',
     maxHops: 2,
     perAddressLimit: 200,
+    rootAddress: '',
+    treatAsNative: false,
   });
 
   const [ui, setUi] = useState<TransactionMapUiState>({
-    loading: false,
     error: null,
+    loading: false,
     progress: '',
   });
 
   const [graph, setGraph] = useState<TransactionMapGraphState>({
-    nodes: {},
     edges: [],
     hopsBuilt: 0,
+    nodes: {},
   });
 
   const cyRef = useRef<Core | null>(null);
@@ -125,14 +124,14 @@ export default function TransactionMap() {
         const ok = assetId ? txAssetId === assetId : isNative;
         if (ok && isValidAddress(recipient)) {
           out.push({
-            kind: 'transfer',
-            id: String(t_item.id),
-            ts: Number(t_item.timestamp || 0),
-            from: sender,
-            to: recipient,
             amount: Number(t_item.amount || 0),
-            fee: Number(t_item.fee || 0),
             assetId: txAssetId,
+            fee: Number(t_item.fee || 0),
+            from: sender,
+            id: String(t_item.id),
+            kind: 'transfer',
+            to: recipient,
+            ts: Number(t_item.timestamp || 0),
           });
         }
       }
@@ -147,14 +146,14 @@ export default function TransactionMap() {
             const recipient = typeof it.recipient === 'string' ? it.recipient : '';
             if (isValidAddress(recipient)) {
               out.push({
-                kind: 'mass',
-                id: String(t_item.id),
-                ts: Number(t_item.timestamp || 0),
-                from: sender,
-                to: recipient,
                 amount: Number(it.amount || 0),
-                fee: Number(t_item.fee || 0),
                 assetId: txAssetId,
+                fee: Number(t_item.fee || 0),
+                from: sender,
+                id: String(t_item.id),
+                kind: 'mass',
+                to: recipient,
+                ts: Number(t_item.timestamp || 0),
               });
             }
           }
@@ -178,14 +177,14 @@ export default function TransactionMap() {
             sender;
           if (ok && isValidAddress(recipientCandidate)) {
             out.push({
-              kind: 'invokePay',
-              id: String(t_item.id),
-              ts: Number(t_item.timestamp || 0),
-              from: sender,
-              to: recipientCandidate,
               amount: Number(p.amount || 0),
-              fee: Number(t_item.fee || 0),
               assetId: pAssetId,
+              fee: Number(t_item.fee || 0),
+              from: sender,
+              id: String(t_item.id),
+              kind: 'invokePay',
+              to: recipientCandidate,
+              ts: Number(t_item.timestamp || 0),
             });
           }
         }
@@ -198,18 +197,18 @@ export default function TransactionMap() {
     const { assetId, treatAsNative, rootAddress, maxHops, perAddressLimit } = form;
 
     if (!rootAddress.trim()) {
-      setUi({ loading: false, error: t('errorRootAddressRequired'), progress: '' });
+      setUi({ error: t('errorRootAddressRequired'), loading: false, progress: '' });
       return;
     }
 
     // Validate root address
     if (!isValidAddress(rootAddress.trim())) {
-      setUi({ loading: false, error: t('errorInvalidAddressFormat'), progress: '' });
+      setUi({ error: t('errorInvalidAddressFormat'), loading: false, progress: '' });
       return;
     }
 
-    setUi({ loading: true, error: null, progress: t('initializingProgress') });
-    const newGraph: TransactionMapGraphState = { nodes: {}, edges: [], hopsBuilt: 0 };
+    setUi({ error: null, loading: true, progress: t('initializingProgress') });
+    const newGraph: TransactionMapGraphState = { edges: [], hopsBuilt: 0, nodes: {} };
     visitedRef.current = { addresses: new Set(), txIds: new Set() };
     rawCacheRef.current = {};
 
@@ -227,10 +226,10 @@ export default function TransactionMap() {
       if (!visitedRef.current.txIds.has(key)) {
         visitedRef.current.txIds.add(key);
         newGraph.edges.push({
+          amount: tx.amount,
           id: key,
           source: tx.from,
           target: tx.to,
-          amount: tx.amount,
           ts: tx.ts,
           txid: tx.id,
         });
@@ -253,9 +252,9 @@ export default function TransactionMap() {
         setUi((prev) => ({
           ...prev,
           progress: t('processingAddressProgress', {
+            hop: hop,
             processed: processed,
             totalRemaining: processed + Q.length,
-            hop: hop,
           }),
         }));
 
@@ -307,15 +306,15 @@ export default function TransactionMap() {
 
       newGraph.hopsBuilt = maxHops;
       setGraph(newGraph);
-      setUi({ loading: false, error: null, progress: '' });
+      setUi({ error: null, loading: false, progress: '' });
 
       // Render after state update
       setTimeout(() => renderGraph(newGraph), 100);
     } catch (error: unknown) {
       console.error(t('errorBuildingGraph'), error);
       setUi({
-        loading: false,
         error: error instanceof Error ? error.message : t('errorFailedToBuildGraph'),
+        loading: false,
         progress: '',
       });
     }
@@ -337,10 +336,10 @@ export default function TransactionMap() {
 
     const edges = graphData.edges.map((e) => ({
       data: {
+        amount: e.amount,
         id: e.id,
         source: e.source,
         target: e.target,
-        amount: e.amount,
         ts: e.ts,
         txid: e.txid,
       },
@@ -350,46 +349,46 @@ export default function TransactionMap() {
       cyRef.current = cytoscape({
         container,
         elements: [...nodes, ...edges],
+        layout: {
+          name: 'fcose',
+          nodeSeparation: 100,
+          packComponents: true,
+          quality: 'proof',
+          randomize: true,
+        } as cytoscape.LayoutOptions,
         style: [
           {
             selector: 'node',
             style: {
-              label: 'data(label)',
-              'font-size': 10,
-              'text-valign': 'center',
-              'text-halign': 'center',
               'background-color': '#3b82f6',
-              width: 'mapData(weight, 0, 1e10, 20, 60)',
-              height: 'mapData(weight, 0, 1e10, 20, 60)',
               color: '#fff',
+              'font-size': 10,
+              height: 'mapData(weight, 0, 1e10, 20, 60)',
+              label: 'data(label)',
+              'text-halign': 'center',
+              'text-valign': 'center',
+              width: 'mapData(weight, 0, 1e10, 20, 60)',
             },
           },
           {
             selector: 'edge',
             style: {
               'curve-style': 'bezier',
-              'target-arrow-shape': 'triangle',
-              'target-arrow-color': '#6366f1',
               'line-color': '#6366f1',
-              width: 'mapData(amount, 0, 1e9, 1, 8)',
               'line-opacity': 0.5,
+              'target-arrow-color': '#6366f1',
+              'target-arrow-shape': 'triangle',
+              width: 'mapData(amount, 0, 1e9, 1, 8)',
             },
           },
           {
             selector: ':selected',
             style: {
-              'border-width': 3,
               'border-color': '#ef4444',
+              'border-width': 3,
             },
           },
         ],
-        layout: {
-          name: 'fcose',
-          quality: 'proof',
-          randomize: true,
-          packComponents: true,
-          nodeSeparation: 100,
-        } as cytoscape.LayoutOptions,
       });
 
       // Click handlers
@@ -420,10 +419,10 @@ export default function TransactionMap() {
       cyRef.current.destroy();
       cyRef.current = null;
     }
-    setGraph({ nodes: {}, edges: [], hopsBuilt: 0 });
+    setGraph({ edges: [], hopsBuilt: 0, nodes: {} });
     visitedRef.current = { addresses: new Set(), txIds: new Set() };
     rawCacheRef.current = {};
-    setUi({ loading: false, error: null, progress: '' });
+    setUi({ error: null, loading: false, progress: '' });
   };
 
   const truncateAddress = (addr: string): string => {
