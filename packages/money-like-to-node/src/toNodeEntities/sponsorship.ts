@@ -11,22 +11,22 @@ export interface IUpdatedISponsorshipTransaction<LONG>
 }
 
 export const sponsorship = factory<
-  IDCCGuiSponsorship,
+  IClientSponsorship,
   TWithPartialFee<IUpdatedISponsorshipTransaction<string>>
 >({
   ...getDefaultTransform(),
-  assetId: pipe<IDCCGuiSponsorship, TMoney, string>(prop('minSponsoredAssetFee'), getAssetId),
+  assetId: pipe<IClientSponsorship, TMoney, string>(prop('minSponsoredAssetFee'), getAssetId),
   minSponsoredAssetFee: ifElse(
-    pipe<IDCCGuiSponsorship, TMoney, string, boolean>(
+    pipe<IClientSponsorship, TMoney, string, boolean>(
       prop('minSponsoredAssetFee'),
       getCoins,
       isStopSponsorship,
     ),
     () => null,
-    pipe<IDCCGuiSponsorship, TMoney, string>(prop('minSponsoredAssetFee'), getCoins),
+    pipe<IClientSponsorship, TMoney, string>(prop('minSponsoredAssetFee'), getCoins),
   ),
 });
 
-export interface IDCCGuiSponsorship extends IDefaultGuiTx<typeof TYPES.SPONSORSHIP> {
+export interface IClientSponsorship extends IDefaultGuiTx<typeof TYPES.SPONSORSHIP> {
   minSponsoredAssetFee: TMoney;
 }

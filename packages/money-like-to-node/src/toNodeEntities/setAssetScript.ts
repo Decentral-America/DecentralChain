@@ -6,7 +6,7 @@ import { prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const setAssetScript = factory<
-  IDCCGuiSetAssetScript,
+  IClientSetAssetScript,
   TWithPartialFee<SetAssetScriptTransaction<string>>
 >({
   ...getDefaultTransform(),
@@ -15,7 +15,7 @@ export const setAssetScript = factory<
   script: prop('script'),
 });
 
-export interface IDCCGuiSetAssetScript extends IDefaultGuiTx<typeof TYPES.SET_ASSET_SCRIPT> {
+export interface IClientSetAssetScript extends IDefaultGuiTx<typeof TYPES.SET_ASSET_SCRIPT> {
   assetId: string;
   script: string;
   chainId: number;

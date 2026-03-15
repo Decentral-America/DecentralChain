@@ -23,37 +23,37 @@ import { sponsorship } from './sponsorship.js';
 import { transfer } from './transfer.js';
 import { updateAssetInfo } from './updateAssetInfo.js';
 
-export type { IDCCGuiAlias } from './alias.js';
-export type { TDCCGuiBurn } from './burn.js';
-export type { IDCCGuiCancelLease } from './cancelLease.js';
-export type { IDCCGuiData } from './data.js';
-export type { IDCCGuiExchange } from './exchange.js';
-export type { IDCCGuiInvokeScript } from './invokeScript.js';
-export type { IDCCGuiIssue } from './issue.js';
-export type { IDCCGuiLease } from './lease.js';
-export type { TDCCGuiMassTransfer } from './massTransfer.js';
-export type { TDCCGuiReissue } from './reissue.js';
-export type { IDCCGuiSetAssetScript } from './setAssetScript.js';
-export type { IDCCGuiSetScript } from './setScript.js';
-export type { IDCCGuiSponsorship } from './sponsorship.js';
-export type { IDCCGuiTransfer } from './transfer.js';
-export type { IDCCGuiUpdateAssetInfo } from './updateAssetInfo.js';
+export type { IClientAlias } from './alias.js';
+export type { TClientBurn } from './burn.js';
+export type { IClientCancelLease } from './cancelLease.js';
+export type { IClientData } from './data.js';
+export type { IClientExchange } from './exchange.js';
+export type { IClientInvokeScript } from './invokeScript.js';
+export type { IClientIssue } from './issue.js';
+export type { IClientLease } from './lease.js';
+export type { TClientMassTransfer } from './massTransfer.js';
+export type { TClientReissue } from './reissue.js';
+export type { IClientSetAssetScript } from './setAssetScript.js';
+export type { IClientSetScript } from './setScript.js';
+export type { IClientSponsorship } from './sponsorship.js';
+export type { IClientTransfer } from './transfer.js';
+export type { IClientUpdateAssetInfo } from './updateAssetInfo.js';
 
-import { type IDCCGuiAlias } from './alias.js';
-import { type TDCCGuiBurn } from './burn.js';
-import { type IDCCGuiCancelLease } from './cancelLease.js';
-import { type IDCCGuiData } from './data.js';
-import { type IDCCGuiExchange, type IDCCGuiExchangeOrder } from './exchange.js';
-import { type IDCCGuiInvokeScript } from './invokeScript.js';
-import { type IDCCGuiIssue } from './issue.js';
-import { type IDCCGuiLease } from './lease.js';
-import { type TDCCGuiMassTransfer } from './massTransfer.js';
-import { type TDCCGuiReissue } from './reissue.js';
-import { type IDCCGuiSetAssetScript } from './setAssetScript.js';
-import { type IDCCGuiSetScript } from './setScript.js';
-import { type IDCCGuiSponsorship } from './sponsorship.js';
-import { type IDCCGuiTransfer } from './transfer.js';
-import { type IDCCGuiUpdateAssetInfo } from './updateAssetInfo.js';
+import { type IClientAlias } from './alias.js';
+import { type TClientBurn } from './burn.js';
+import { type IClientCancelLease } from './cancelLease.js';
+import { type IClientData } from './data.js';
+import { type IClientExchange, type IClientExchangeOrder } from './exchange.js';
+import { type IClientInvokeScript } from './invokeScript.js';
+import { type IClientIssue } from './issue.js';
+import { type IClientLease } from './lease.js';
+import { type TClientMassTransfer } from './massTransfer.js';
+import { type TClientReissue } from './reissue.js';
+import { type IClientSetAssetScript } from './setAssetScript.js';
+import { type IClientSetScript } from './setScript.js';
+import { type IClientSponsorship } from './sponsorship.js';
+import { type IClientTransfer } from './transfer.js';
+import { type IClientUpdateAssetInfo } from './updateAssetInfo.js';
 
 export const node = {
   alias,
@@ -74,18 +74,18 @@ export const node = {
   updateAssetInfo,
 };
 
-function isOrder(data: TDCCGuiEntity | IDCCGuiExchangeOrder): data is IDCCGuiExchangeOrder {
+function isOrder(data: TClientEntity | IClientExchangeOrder): data is IClientExchangeOrder {
   return 'orderType' in data;
 }
 
 export function toNode(
-  item: IDCCGuiExchangeOrder,
+  item: IClientExchangeOrder,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>>;
-export function toNode<TX extends TDCCGuiEntity, TYPE extends TX['type'] = TX['type']>(
+export function toNode<TX extends TClientEntity, TYPE extends TX['type'] = TX['type']>(
   item: TX,
 ): TWithPartialFee<TransactionMap<string>[TYPE]>;
 export function toNode(
-  item: TDCCGuiEntity | IDCCGuiExchangeOrder,
+  item: TClientEntity | IClientExchangeOrder,
 ):
   | TWithPartialFee<SignableTransaction<string>>
   | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<string>> {
@@ -129,19 +129,19 @@ export function toNode(
   }
 }
 
-export type TDCCGuiEntity =
-  | IDCCGuiAlias
-  | TDCCGuiBurn
-  | IDCCGuiCancelLease
-  | IDCCGuiData
-  | IDCCGuiExchange
-  | IDCCGuiIssue
-  | TDCCGuiReissue
-  | IDCCGuiLease
-  | TDCCGuiMassTransfer
-  | IDCCGuiSetAssetScript
-  | IDCCGuiSetScript
-  | IDCCGuiSponsorship
-  | IDCCGuiTransfer
-  | IDCCGuiInvokeScript
-  | IDCCGuiUpdateAssetInfo;
+export type TClientEntity =
+  | IClientAlias
+  | TClientBurn
+  | IClientCancelLease
+  | IClientData
+  | IClientExchange
+  | IClientIssue
+  | TClientReissue
+  | IClientLease
+  | TClientMassTransfer
+  | IClientSetAssetScript
+  | IClientSetScript
+  | IClientSponsorship
+  | IClientTransfer
+  | IClientInvokeScript
+  | IClientUpdateAssetInfo;

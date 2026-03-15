@@ -6,10 +6,10 @@ import { emptyError, getAssetId, getCoins, has, ifElse, map, pipe, prop } from '
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const remapTransferItem = factory<
-  IDCCGuiMassTransferItem<TMoney | TLong>,
+  IClientMassTransferItem<TMoney | TLong>,
   MassTransferItem<string>
 >({
-  amount: pipe<IDCCGuiMassTransferItem<TMoney | TLong>, TMoney | TLong, string>(
+  amount: pipe<IClientMassTransferItem<TMoney | TLong>, TMoney | TLong, string>(
     prop('amount'),
     getCoins,
   ),
@@ -17,8 +17,8 @@ const remapTransferItem = factory<
 });
 
 const getFirstMassTransferItem = (
-  list: IDCCGuiMassTransferItem<TMoney>[],
-): IDCCGuiMassTransferItem<TMoney> => {
+  list: IClientMassTransferItem<TMoney>[],
+): IClientMassTransferItem<TMoney> => {
   if (!list.length) {
     throw new Error('MassTransfer transaction must have one transfer!');
   }
@@ -27,20 +27,20 @@ const getFirstMassTransferItem = (
 };
 
 export const massTransfer = factory<
-  TDCCGuiMassTransfer,
+  TClientMassTransfer,
   TWithPartialFee<MassTransferTransaction<string>>
 >({
   ...getDefaultTransform(),
-  assetId: pipe<TDCCGuiMassTransfer, string, string>(
-    ifElse<TDCCGuiMassTransfer, string, string>(
+  assetId: pipe<TClientMassTransfer, string, string>(
+    ifElse<TClientMassTransfer, string, string>(
       has('assetId'),
       // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
       prop<any, 'assetId'>('assetId'),
       // biome-ignore lint/suspicious/noExplicitAny: pipe() first type param can't be inferred from ifElse fallback branch
-      pipe<any, IDCCGuiMassTransferItem<TMoney>[], IDCCGuiMassTransferItem<TMoney>, TMoney, string>(
-        prop<IDCCGuiMassTransferMoney, 'transfers'>('transfers'),
+      pipe<any, IClientMassTransferItem<TMoney>[], IClientMassTransferItem<TMoney>, TMoney, string>(
+        prop<IClientMassTransferMoney, 'transfers'>('transfers'),
         getFirstMassTransferItem,
-        prop<IDCCGuiMassTransferItem<TMoney>, 'amount'>('amount'),
+        prop<IClientMassTransferItem<TMoney>, 'amount'>('amount'),
         getAssetId,
       ),
     ),
@@ -50,20 +50,20 @@ export const massTransfer = factory<
   transfers: pipe(prop('transfers'), map(remapTransferItem)),
 });
 
-export interface IDCCGuiMassTransferMoney extends IDefaultGuiTx<typeof TYPES.MASS_TRANSFER> {
+export interface IClientMassTransferMoney extends IDefaultGuiTx<typeof TYPES.MASS_TRANSFER> {
   attachment: string;
-  transfers: IDCCGuiMassTransferItem<TMoney>[];
+  transfers: IClientMassTransferItem<TMoney>[];
 }
 
-export interface IDCCGuiMassTransferLong extends IDefaultGuiTx<typeof TYPES.MASS_TRANSFER> {
+export interface IClientMassTransferLong extends IDefaultGuiTx<typeof TYPES.MASS_TRANSFER> {
   attachment: string;
   assetId: string;
-  transfers: IDCCGuiMassTransferItem<TLong>[];
+  transfers: IClientMassTransferItem<TLong>[];
 }
 
-export type TDCCGuiMassTransfer = IDCCGuiMassTransferMoney | IDCCGuiMassTransferLong;
+export type TClientMassTransfer = IClientMassTransferMoney | IClientMassTransferLong;
 
-interface IDCCGuiMassTransferItem<T extends TMoney | TLong> {
+interface IClientMassTransferItem<T extends TMoney | TLong> {
   recipient: string;
   amount: T;
 }

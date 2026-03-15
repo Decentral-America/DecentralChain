@@ -6,7 +6,7 @@ import { prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 export const cancelLease = factory<
-  IDCCGuiCancelLease,
+  IClientCancelLease,
   TWithPartialFee<CancelLeaseTransaction<string>>
 >({
   ...getDefaultTransform(),
@@ -14,7 +14,7 @@ export const cancelLease = factory<
   leaseId: prop('leaseId'),
 });
 
-export interface IDCCGuiCancelLease extends IDefaultGuiTx<typeof TYPES.CANCEL_LEASE> {
+export interface IClientCancelLease extends IDefaultGuiTx<typeof TYPES.CANCEL_LEASE> {
   leaseId: string;
   chainId: number;
 }
