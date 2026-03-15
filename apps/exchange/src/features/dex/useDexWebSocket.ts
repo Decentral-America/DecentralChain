@@ -54,10 +54,10 @@ export const useDexOrderBook = () => {
   // Handle order book updates
   const handleOrderBookUpdate = useCallback((data: OrderBookUpdate) => {
     setOrderBook({
-      timestamp: data.timestamp,
-      pair: data.pair,
-      bids: data.bids,
       asks: data.asks,
+      bids: data.bids,
+      pair: data.pair,
+      timestamp: data.timestamp,
     });
     setLastUpdate(Date.now());
     setIsLive(true);
@@ -65,7 +65,7 @@ export const useDexOrderBook = () => {
 
   // Subscribe to order book channel
   useWebSocketChannel<OrderBookUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleOrderBookUpdate,
     !!selectedPair, // Only subscribe when pair is selected
@@ -78,9 +78,9 @@ export const useDexOrderBook = () => {
   }, []);
 
   return {
-    orderBook,
-    lastUpdate,
     isLive,
+    lastUpdate,
+    orderBook,
     selectedPair,
   };
 };
@@ -115,7 +115,7 @@ export const useDexTrades = () => {
 
   // Subscribe to trades channel
   useWebSocketChannel<TradeUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleTradeUpdate,
     !!selectedPair,
@@ -127,9 +127,9 @@ export const useDexTrades = () => {
   }, []);
 
   return {
-    trades,
     lastUpdate,
     selectedPair,
+    trades,
   };
 };
 
@@ -166,7 +166,7 @@ export const useDexUserOrders = (userAddress?: string) => {
 
   // Subscribe to user orders channel
   useWebSocketChannel(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleOrderUpdate,
     !!userAddress,
@@ -214,13 +214,13 @@ export const useDexWebSocket = (options?: {
 
   return {
     orderBook: orderBook?.orderBook,
-    orderBookLastUpdate: orderBook?.lastUpdate,
     orderBookIsLive: orderBook?.isLive,
+    orderBookLastUpdate: orderBook?.lastUpdate,
+
+    orderUpdates: userOrders?.orderUpdates,
 
     trades: trades?.trades,
     tradesLastUpdate: trades?.lastUpdate,
-
-    orderUpdates: userOrders?.orderUpdates,
   };
 };
 
@@ -281,7 +281,7 @@ export const getTotalLiquidity = (
   depth = 10,
 ): { bidLiquidity: number; askLiquidity: number; totalLiquidity: number } => {
   if (!orderBook) {
-    return { bidLiquidity: 0, askLiquidity: 0, totalLiquidity: 0 };
+    return { askLiquidity: 0, bidLiquidity: 0, totalLiquidity: 0 };
   }
 
   const bidLiquidity = orderBook.bids
@@ -293,8 +293,8 @@ export const getTotalLiquidity = (
     .reduce((sum, order) => sum + order.amount * order.price, 0);
 
   return {
-    bidLiquidity,
     askLiquidity,
+    bidLiquidity,
     totalLiquidity: bidLiquidity + askLiquidity,
   };
 };

@@ -33,7 +33,7 @@ const validatePassword = (password: string): { valid: boolean; errors: string[] 
     errors.push('Password must contain at least one special character');
   }
 
-  return { valid: errors.length === 0, errors };
+  return { errors, valid: errors.length === 0 };
 };
 
 describe('Password Validation', () => {

@@ -48,18 +48,18 @@ export class AssetStorage {
 
       if (asset.reissuable !== reissuable || !quantity.eq(asset.quantity)) {
         const info = {
+          description: asset.description,
+          hasScript: asset.hasScript,
+          height: asset.height,
           id,
-          ticker: asset.ticker,
+          minSponsoredFee: asset.minSponsoredFee,
           name: asset.name,
           precision: asset.precision,
-          description: asset.description,
-          height: asset.height,
-          timestamp: asset.timestamp,
-          sender: asset.sender,
-          hasScript: asset.hasScript,
-          minSponsoredFee: asset.minSponsoredFee,
           quantity,
           reissuable,
+          sender: asset.sender,
+          ticker: asset.ticker,
+          timestamp: asset.timestamp,
         };
         this._hash[id] = new Asset(info);
       }

@@ -50,14 +50,14 @@ export function ReissueAssetModal({
 
       // Create reissue transaction
       const tx = {
-        type: 5, // Reissue transaction type
-        version: 2,
         assetId,
+        fee: 100000000, // 1 DCC (higher fee for reissue)
         quantity: quantityInMinimalUnits,
         reissuable: keepReissuable,
-        fee: 100000000, // 1 DCC (higher fee for reissue)
-        timestamp: Date.now(),
         senderPublicKey: user.publicKey,
+        timestamp: Date.now(),
+        type: 5, // Reissue transaction type
+        version: 2,
       };
 
       // Sign and broadcast transaction

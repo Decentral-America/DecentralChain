@@ -37,21 +37,21 @@ function AppContent() {
   // Initialize error monitoring on mount
   useEffect(() => {
     initErrorMonitoring({
+      debug: config.isDevelopment,
+      enableInDev: false, // Set to true to test error monitoring in development
       environment: config.isDevelopment ? 'development' : 'production',
       tracesSampleRate: config.isDevelopment ? 1.0 : 0.1,
-      enableInDev: false, // Set to true to test error monitoring in development
-      debug: config.isDevelopment,
     });
   }, []);
 
   // Initialize performance monitoring on mount
   useEffect(() => {
     initPerformanceMonitoring({
-      enableWebVitals: true,
-      enableResourceTiming: true,
-      enableNavigationTiming: true,
-      enableInDev: false, // Set to true to test performance monitoring in development
       debug: config.isDevelopment,
+      enableInDev: false, // Set to true to test performance monitoring in development
+      enableNavigationTiming: true,
+      enableResourceTiming: true,
+      enableWebVitals: true,
       reportToAnalytics: true,
       reportToErrorMonitoring: true,
     });

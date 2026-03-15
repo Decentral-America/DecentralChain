@@ -97,7 +97,7 @@ export const useAddressBalance = (
   },
 ): UseQueryResult<AddressBalance, Error> => {
   return useQuery({
-    queryKey: ['address', 'balance', address],
+    enabled: !!address && options?.enabled !== false,
     queryFn: async () => {
       // Fetch DCC balance details
       const { data: balanceDetails } = await nodeClient.get<AddressBalance>(
@@ -130,17 +130,17 @@ export const useAddressBalance = (
       // Combine data
       return {
         address: balanceDetails.address,
-        balance: balanceDetails.available ?? balanceDetails.regular ?? 0,
-        regular: balanceDetails.regular ?? 0,
+        assets, // All token balances
         available: balanceDetails.available ?? 0,
+        balance: balanceDetails.available ?? balanceDetails.regular ?? 0,
         effective: balanceDetails.effective ?? 0,
         generating: balanceDetails.generating ?? 0,
         leaseIn: balanceDetails.leaseIn ?? 0,
         leaseOut: balanceDetails.leaseOut ?? 0,
-        assets, // All token balances
+        regular: balanceDetails.regular ?? 0,
       };
     },
-    enabled: !!address && options?.enabled !== false,
+    queryKey: ['address', 'balance', address],
     ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 30000, // Consider data fresh for 30 seconds
   });
@@ -163,14 +163,14 @@ export const useAddressTransactions = (
   },
 ): UseQueryResult<Transaction[][], Error> => {
   return useQuery({
-    queryKey: ['address', 'transactions', address, limit],
+    enabled: !!address && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<Transaction[][]>(
         `/transactions/address/${address}/limit/${limit}`,
       );
       return data;
     },
-    enabled: !!address && options?.enabled !== false,
+    queryKey: ['address', 'transactions', address, limit],
     ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 10000, // Consider data fresh for 10 seconds
   });
@@ -191,12 +191,12 @@ export const useAddressData = (
   },
 ): UseQueryResult<AddressData, Error> => {
   return useQuery({
-    queryKey: ['address', 'data', address],
+    enabled: !!address && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AddressData>(`/addresses/data/${address}`);
       return data;
     },
-    enabled: !!address && options?.enabled !== false,
+    queryKey: ['address', 'data', address],
     ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 60000, // Consider data fresh for 1 minute
   });
@@ -216,12 +216,12 @@ export const useTransaction = (
   },
 ): UseQueryResult<Transaction, Error> => {
   return useQuery({
-    queryKey: ['transaction', txId],
+    enabled: !!txId && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<Transaction>(`/transactions/info/${txId}`);
       return data;
     },
-    enabled: !!txId && options?.enabled !== false,
+    queryKey: ['transaction', txId],
     staleTime: Infinity, // Transactions are immutable
   });
 };
@@ -248,12 +248,12 @@ export const useAddressScript = (
   },
 ): UseQueryResult<AddressScriptInfo, Error> => {
   return useQuery({
-    queryKey: ['address', 'script', address],
+    enabled: !!address && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AddressScriptInfo>(`/addresses/scriptInfo/${address}`);
       return data;
     },
-    enabled: !!address && options?.enabled !== false,
+    queryKey: ['address', 'script', address],
     staleTime: 300000, // Consider data fresh for 5 minutes
   });
 };

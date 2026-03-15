@@ -154,8 +154,8 @@ class ComponentListManager {
     component: ComponentType<P> | LazyExoticComponent<ComponentType<P>>,
   ): void {
     const entry: ComponentEntry<P> = {
-      metadata,
       component,
+      metadata,
       timestamp: Date.now(),
     };
 
@@ -418,10 +418,10 @@ class ComponentListManager {
     lazy: number;
   } {
     const stats = {
-      total: this.components.size,
       categories: {} as Record<string, number>,
-      tags: {} as Record<string, number>,
       lazy: 0,
+      tags: {} as Record<string, number>,
+      total: this.components.size,
     };
 
     this.categories.forEach((ids, category) => {

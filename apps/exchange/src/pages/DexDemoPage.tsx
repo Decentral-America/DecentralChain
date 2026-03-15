@@ -61,28 +61,28 @@ const priceFlash = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(180deg, #0a0e27 0%, #0f1419 100%)'
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
+  minHeight: '100vh',
 }));
 
 const DemoBanner = styled(Alert)(({ theme: _theme }) => ({
-  borderRadius: 0,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '1rem',
-  fontWeight: 600,
   '& .MuiAlert-icon': {
     animation: `${pulse} 2s ease-in-out infinite`,
   },
+  alignItems: 'center',
+  borderRadius: 0,
+  display: 'flex',
+  fontSize: '1rem',
+  fontWeight: 600,
+  justifyContent: 'center',
 }));
 
 const ContentWrapper = styled(Box)({
-  maxWidth: '1600px',
   margin: '0 auto',
+  maxWidth: '1600px',
   padding: '24px',
 });
 
@@ -93,41 +93,41 @@ const TradingGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const PairHeader = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(3),
-  marginBottom: theme.spacing(3),
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(2),
+  marginBottom: theme.spacing(3),
+  padding: theme.spacing(3),
 }));
 
 const PriceDisplay = styled(Box)(({ theme }) => ({
-  display: 'flex',
   alignItems: 'center',
+  display: 'flex',
   gap: theme.spacing(2),
   marginTop: theme.spacing(1),
 }));
 
 const LivePrice = styled(Typography)<{ trend?: 'up' | 'down' }>(({ theme, trend }) => ({
-  fontSize: '2rem',
-  fontWeight: 700,
-  fontFamily: '"Courier New", monospace',
+  animation: `${priceFlash} 0.5s ease`,
   color:
     trend === 'up'
       ? theme.palette.success.main
       : trend === 'down'
         ? theme.palette.error.main
         : theme.palette.text.primary,
-  animation: `${priceFlash} 0.5s ease`,
+  fontFamily: '"Courier New", monospace',
+  fontSize: '2rem',
+  fontWeight: 700,
 }));
 
 const TrendChip = styled(Chip)<{ trend?: 'up' | 'down' }>(({ theme, trend }) => ({
-  fontWeight: 600,
   background:
     trend === 'up'
       ? `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.success.light})`
       : `linear-gradient(135deg, ${theme.palette.error.main}, ${theme.palette.error.light})`,
   color: 'white',
+  fontWeight: 600,
 }));
 
 const StatsGrid = styled(Grid)(({ theme }) => ({
@@ -135,83 +135,83 @@ const StatsGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const StatCard = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.6)' : 'rgba(255, 255, 255, 0.6)',
   backdropFilter: 'blur(10px)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)'}`,
   borderRadius: theme.spacing(1.5),
   padding: theme.spacing(2),
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)'}`,
 }));
 
 const ChartPlaceholder = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-  backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(4),
-  height: 400,
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  backdropFilter: 'blur(24px)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(2),
+  display: 'flex',
+  height: 400,
+  justifyContent: 'center',
   marginBottom: theme.spacing(3),
+  padding: theme.spacing(4),
 }));
 
 const OrderBookCard = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(3),
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(2),
   height: '100%',
+  padding: theme.spacing(3),
 }));
 
 const OrderBookHeader = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr',
-  padding: theme.spacing(1.5),
-  fontWeight: 600,
-  fontSize: '0.875rem',
-  color: theme.palette.text.secondary,
   borderBottom: `1px solid ${theme.palette.divider}`,
+  color: theme.palette.text.secondary,
+  display: 'grid',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  gridTemplateColumns: '1fr 1fr 1fr',
   marginBottom: theme.spacing(1),
+  padding: theme.spacing(1.5),
 }));
 
 const OrderRow = styled(ListItem)<{ ordertype?: 'buy' | 'sell' }>(({ theme, ordertype }) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr',
-  padding: theme.spacing(1, 1.5),
-  fontFamily: '"Courier New", monospace',
-  fontSize: '0.875rem',
-  cursor: 'pointer',
-  transition: 'background 0.2s ease',
-  borderRadius: theme.spacing(1),
   '&:hover': {
     background: ordertype === 'buy' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
   },
+  borderRadius: theme.spacing(1),
+  cursor: 'pointer',
+  display: 'grid',
+  fontFamily: '"Courier New", monospace',
+  fontSize: '0.875rem',
+  gridTemplateColumns: '1fr 1fr 1fr',
+  padding: theme.spacing(1, 1.5),
+  transition: 'background 0.2s ease',
 }));
 
 const PriceCell = styled(Typography)<{ ordertype?: 'buy' | 'sell' }>(({ theme, ordertype }) => ({
-  fontWeight: 600,
-  fontFamily: '"Courier New", monospace',
   color: ordertype === 'buy' ? theme.palette.success.main : theme.palette.error.main,
+  fontFamily: '"Courier New", monospace',
+  fontWeight: 600,
 }));
 
 const TradeFormCard = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   backdropFilter: 'blur(24px)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
   borderRadius: theme.spacing(2),
   padding: theme.spacing(3),
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
   position: 'sticky',
   top: 24,
 }));
 
 const SignInPrompt = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.1)' : 'rgba(31, 90, 246, 0.05)',
   backdropFilter: 'blur(10px)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(3),
-  marginTop: theme.spacing(3),
+  background: theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.1)' : 'rgba(31, 90, 246, 0.05)',
   borderLeft: `4px solid ${theme.palette.primary.main}`,
+  borderRadius: theme.spacing(2),
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(3),
   textAlign: 'center',
 }));
 
@@ -225,8 +225,8 @@ const generateMockOrderBook = (type: 'buy' | 'sell'): OrderBook[] => {
     const price = basePrice + priceOffset;
     const amount = Math.random() * 100 + 10;
     orders.push({
-      price: parseFloat(price.toFixed(8)),
       amount: parseFloat(amount.toFixed(2)),
+      price: parseFloat(price.toFixed(8)),
       total: parseFloat((price * amount).toFixed(2)),
       type,
     });
@@ -242,8 +242,8 @@ const generateMockTrades = (): Trade[] => {
   for (let i = 0; i < 15; i++) {
     const time = new Date(now.getTime() - i * 60000);
     trades.push({
-      price: parseFloat((1.5 + (Math.random() - 0.5) * 0.1).toFixed(8)),
       amount: parseFloat((Math.random() * 50 + 5).toFixed(2)),
+      price: parseFloat((1.5 + (Math.random() - 0.5) * 0.1).toFixed(8)),
       time: time.toLocaleTimeString(),
       type: Math.random() > 0.5 ? 'buy' : 'sell',
     });
@@ -269,8 +269,8 @@ export const DexDemoPage: React.FC = () => {
   const [sellOrders, setSellOrders] = useState<OrderBook[]>([]);
   const [recentTrades, setRecentTrades] = useState<Trade[]>([]);
   const [snackbar, setSnackbar] = useState({
-    open: false,
     message: '',
+    open: false,
     severity: 'success' as 'success' | 'error' | 'info',
   });
 
@@ -303,12 +303,12 @@ export const DexDemoPage: React.FC = () => {
 
   const handlePlaceOrder = () => {
     if (!price || !amount) {
-      setSnackbar({ open: true, message: 'Please enter both price and amount', severity: 'error' });
+      setSnackbar({ message: 'Please enter both price and amount', open: true, severity: 'error' });
       return;
     }
     setSnackbar({
-      open: true,
       message: `Demo ${activeTab === 0 ? 'Buy' : 'Sell'} order simulated: ${amount} ${assetId1} at ${price} ${assetId2}`,
+      open: true,
       severity: 'info',
     });
   };
@@ -330,8 +330,8 @@ export const DexDemoPage: React.FC = () => {
               <Grid container spacing={3} alignItems="center">
                 <Grid
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <Typography variant="h4" fontWeight={700} gutterBottom>
@@ -354,10 +354,10 @@ export const DexDemoPage: React.FC = () => {
                   </PriceDisplay>
                 </Grid>
                 <Grid
-                  textAlign={{ xs: 'left', md: 'right' }}
+                  textAlign={{ md: 'right', xs: 'left' }}
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <Button
@@ -378,8 +378,8 @@ export const DexDemoPage: React.FC = () => {
                     <Grid
                       key={i}
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <Skeleton variant="rectangular" height={70} sx={{ borderRadius: 1.5 }} />
@@ -389,8 +389,8 @@ export const DexDemoPage: React.FC = () => {
                   <>
                     <Grid
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <StatCard elevation={0}>
@@ -404,8 +404,8 @@ export const DexDemoPage: React.FC = () => {
                     </Grid>
                     <Grid
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <StatCard elevation={0}>
@@ -423,8 +423,8 @@ export const DexDemoPage: React.FC = () => {
                     </Grid>
                     <Grid
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <StatCard elevation={0}>
@@ -442,8 +442,8 @@ export const DexDemoPage: React.FC = () => {
                     </Grid>
                     <Grid
                       size={{
-                        xs: 6,
                         sm: 3,
+                        xs: 6,
                       }}
                     >
                       <StatCard elevation={0}>
@@ -469,8 +469,8 @@ export const DexDemoPage: React.FC = () => {
               {/* Left Panel - Chart and Order Books */}
               <Grid
                 size={{
-                  xs: 12,
                   lg: 9,
+                  xs: 12,
                 }}
               >
                 {/* Chart Placeholder */}
@@ -479,7 +479,7 @@ export const DexDemoPage: React.FC = () => {
                     <Skeleton variant="rectangular" width="100%" height="100%" />
                   ) : (
                     <Box textAlign="center">
-                      <ShowChartIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+                      <ShowChartIcon sx={{ color: 'text.secondary', fontSize: 80, mb: 2 }} />
                       <Typography variant="h6" color="text.secondary">
                         Price Chart Placeholder
                       </Typography>
@@ -495,8 +495,8 @@ export const DexDemoPage: React.FC = () => {
                   {/* Buy Orders */}
                   <Grid
                     size={{
-                      xs: 12,
                       md: 4,
+                      xs: 12,
                     }}
                   >
                     <OrderBookCard elevation={0}>
@@ -524,7 +524,7 @@ export const DexDemoPage: React.FC = () => {
                                 key={key}
                                 variant="rectangular"
                                 height={32}
-                                sx={{ mb: 0.5, borderRadius: 1 }}
+                                sx={{ borderRadius: 1, mb: 0.5 }}
                               />
                             ))
                           : buyOrders.map((order) => (
@@ -555,8 +555,8 @@ export const DexDemoPage: React.FC = () => {
                   {/* Recent Trades */}
                   <Grid
                     size={{
-                      xs: 12,
                       md: 4,
+                      xs: 12,
                     }}
                   >
                     <OrderBookCard elevation={0}>
@@ -579,7 +579,7 @@ export const DexDemoPage: React.FC = () => {
                                 key={key}
                                 variant="rectangular"
                                 height={32}
-                                sx={{ mb: 0.5, borderRadius: 1 }}
+                                sx={{ borderRadius: 1, mb: 0.5 }}
                               />
                             ))
                           : recentTrades.map((trade) => (
@@ -610,8 +610,8 @@ export const DexDemoPage: React.FC = () => {
                   {/* Sell Orders */}
                   <Grid
                     size={{
-                      xs: 12,
                       md: 4,
+                      xs: 12,
                     }}
                   >
                     <OrderBookCard elevation={0}>
@@ -639,7 +639,7 @@ export const DexDemoPage: React.FC = () => {
                                 key={key}
                                 variant="rectangular"
                                 height={32}
-                                sx={{ mb: 0.5, borderRadius: 1 }}
+                                sx={{ borderRadius: 1, mb: 0.5 }}
                               />
                             ))
                           : sellOrders.map((order) => (
@@ -672,8 +672,8 @@ export const DexDemoPage: React.FC = () => {
               {/* Right Panel - Trade Form */}
               <Grid
                 size={{
-                  xs: 12,
                   lg: 3,
+                  xs: 12,
                 }}
               >
                 <Slide direction="left" in={isVisible} timeout={800}>
@@ -684,22 +684,22 @@ export const DexDemoPage: React.FC = () => {
                         onChange={handleTabChange}
                         variant="fullWidth"
                         sx={{
-                          marginBottom: 3,
-                          '& .MuiTab-root': {
-                            fontWeight: 600,
-                            fontSize: '1rem',
-                          },
                           '& .Mui-selected': {
                             color: activeTab === 0 ? 'success.main' : 'error.main',
                           },
+                          '& .MuiTab-root': {
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                          },
                           '& .MuiTabs-indicator': {
-                            height: 3,
-                            borderRadius: '3px 3px 0 0',
                             background:
                               activeTab === 0
                                 ? 'linear-gradient(135deg, #10b981, #34d399)'
                                 : 'linear-gradient(135deg, #ef4444, #f87171)',
+                            borderRadius: '3px 3px 0 0',
+                            height: 3,
                           },
+                          marginBottom: 3,
                         }}
                       >
                         <Tab label="Buy" />
@@ -710,7 +710,7 @@ export const DexDemoPage: React.FC = () => {
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{ mb: 1, display: 'block' }}
+                          sx={{ display: 'block', mb: 1 }}
                         >
                           Price ({assetId2})
                         </Typography>
@@ -730,7 +730,7 @@ export const DexDemoPage: React.FC = () => {
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{ mb: 1, display: 'block' }}
+                          sx={{ display: 'block', mb: 1 }}
                         >
                           Amount ({assetId1})
                         </Typography>
@@ -741,12 +741,12 @@ export const DexDemoPage: React.FC = () => {
                           onChange={(e) => setAmount(e.target.value)}
                           placeholder="0.00"
                           InputProps={{
-                            sx: { fontFamily: '"Courier New", monospace' },
                             endAdornment: (
                               <InputAdornment position="end">
                                 <WalletIcon fontSize="small" />
                               </InputAdornment>
                             ),
+                            sx: { fontFamily: '"Courier New", monospace' },
                           }}
                         />
                       </Box>
@@ -755,7 +755,7 @@ export const DexDemoPage: React.FC = () => {
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{ mb: 1, display: 'block' }}
+                          sx={{ display: 'block', mb: 1 }}
                         >
                           Total ({assetId2})
                         </Typography>
@@ -777,19 +777,19 @@ export const DexDemoPage: React.FC = () => {
                             size="large"
                             onClick={handlePlaceOrder}
                             sx={{
-                              background:
-                                activeTab === 0
-                                  ? 'linear-gradient(135deg, #10b981, #34d399)'
-                                  : 'linear-gradient(135deg, #ef4444, #f87171)',
-                              fontWeight: 600,
-                              fontSize: '1rem',
-                              py: 1.5,
                               '&:hover': {
                                 background:
                                   activeTab === 0
                                     ? 'linear-gradient(135deg, #059669, #10b981)'
                                     : 'linear-gradient(135deg, #dc2626, #ef4444)',
                               },
+                              background:
+                                activeTab === 0
+                                  ? 'linear-gradient(135deg, #10b981, #34d399)'
+                                  : 'linear-gradient(135deg, #ef4444, #f87171)',
+                              fontSize: '1rem',
+                              fontWeight: 600,
+                              py: 1.5,
                             }}
                           >
                             {activeTab === 0 ? 'Place Buy Order' : 'Place Sell Order'} (Demo)
@@ -813,11 +813,11 @@ export const DexDemoPage: React.FC = () => {
                       </Typography>
                       <Box
                         sx={{
-                          mt: 2,
                           display: 'flex',
-                          gap: 2,
                           flexWrap: 'wrap',
+                          gap: 2,
                           justifyContent: 'center',
+                          mt: 2,
                         }}
                       >
                         <Button
@@ -855,7 +855,7 @@ export const DexDemoPage: React.FC = () => {
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}

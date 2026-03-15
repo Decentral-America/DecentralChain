@@ -11,7 +11,7 @@ export class PollControl<T extends IHash<Poll<unknown>>> {
   }
 
   public restart(name?: string): void {
-    if (name && this._hash && this._hash[name]) {
+    if (name && this._hash?.[name]) {
       this._hash[name].restart();
       return;
     }

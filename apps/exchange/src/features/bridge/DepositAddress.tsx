@@ -62,11 +62,11 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
   return (
     <Box
       sx={{
-        textAlign: 'center',
-        p: { xs: 2, sm: 3 },
-        width: '100%',
         maxWidth: 400,
         mx: 'auto',
+        p: { sm: 3, xs: 2 },
+        textAlign: 'center',
+        width: '100%',
       }}
     >
       <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
@@ -77,13 +77,13 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
       {!qrError && address && (
         <Box
           sx={{
-            mb: 2,
-            p: 2,
             bgcolor: 'background.paper',
-            borderRadius: 1,
-            display: 'inline-block',
             border: 1,
             borderColor: 'divider',
+            borderRadius: 1,
+            display: 'inline-block',
+            mb: 2,
+            p: 2,
           }}
         >
           <QRCodeCanvas
@@ -92,8 +92,8 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
             level="M"
             includeMargin={false}
             style={{
-              maxWidth: '100%',
               height: 'auto',
+              maxWidth: '100%',
             }}
             onError={handleQrError}
           />
@@ -110,27 +110,27 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
       {/* Address Display with Copy Button */}
       <Box
         sx={{
-          display: 'flex',
           alignItems: 'center',
-          gap: 1,
-          justifyContent: 'center',
           bgcolor: 'background.default',
-          p: 1.5,
-          borderRadius: 1,
           border: 1,
           borderColor: 'divider',
+          borderRadius: 1,
+          display: 'flex',
           flexWrap: 'wrap',
+          gap: 1,
+          justifyContent: 'center',
+          p: 1.5,
         }}
       >
         <Typography
           component="code"
           sx={{
-            fontFamily: 'monospace',
-            fontSize: { xs: '0.75rem', sm: '0.85rem' },
-            wordBreak: 'break-all',
             flex: 1,
+            fontFamily: 'monospace',
+            fontSize: { sm: '0.85rem', xs: '0.75rem' },
             minWidth: 0,
             textAlign: 'left',
+            wordBreak: 'break-all',
           }}
         >
           {address}
@@ -149,7 +149,7 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
       </Box>
 
       {/* Additional Information */}
-      <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
         Scan the QR code or copy the address above
       </Typography>
     </Box>

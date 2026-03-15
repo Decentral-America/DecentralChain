@@ -6,17 +6,6 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { Card } from './Card';
 
 const meta = {
-  title: 'Atoms/Card',
-  component: Card,
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component: 'Container component for content grouping with optional hover effects.',
-      },
-    },
-  },
-  tags: ['autodocs'],
   argTypes: {
     hoverable: {
       control: 'boolean',
@@ -24,6 +13,17 @@ const meta = {
     },
     onClick: { action: 'clicked' },
   },
+  component: Card,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Container component for content grouping with optional hover effects.',
+      },
+    },
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'Atoms/Card',
 } satisfies Meta<typeof Card>;
 
 export default meta;
@@ -34,7 +34,7 @@ export const Default: Story = {
     children: (
       <div style={{ padding: '16px' }}>
         <h3 style={{ margin: '0 0 8px 0' }}>Card Title</h3>
-        <p style={{ margin: 0, color: '#666' }}>This is a basic card component.</p>
+        <p style={{ color: '#666', margin: 0 }}>This is a basic card component.</p>
       </div>
     ),
   },
@@ -42,123 +42,131 @@ export const Default: Story = {
 
 export const Hoverable: Story = {
   args: {
-    hoverable: true,
     children: (
       <div style={{ padding: '16px' }}>
         <h3 style={{ margin: '0 0 8px 0' }}>Hoverable Card</h3>
-        <p style={{ margin: 0, color: '#666' }}>Hover over this card to see the effect.</p>
+        <p style={{ color: '#666', margin: 0 }}>Hover over this card to see the effect.</p>
       </div>
     ),
+    hoverable: true,
   },
 };
 
 export const Clickable: Story = {
   args: {
-    hoverable: true,
-    onClick: () => alert('Card clicked!'),
     children: (
       <div style={{ padding: '16px' }}>
         <h3 style={{ margin: '0 0 8px 0' }}>Clickable Card</h3>
-        <p style={{ margin: 0, color: '#666' }}>Click this card to trigger an action.</p>
+        <p style={{ color: '#666', margin: 0 }}>Click this card to trigger an action.</p>
       </div>
     ),
+    hoverable: true,
+    onClick: () => alert('Card clicked!'),
   },
 };
 
 export const WithImage: Story = {
   args: {
-    hoverable: true,
     children: (
       <div>
         <div
           style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            height: '160px',
             borderRadius: '12px 12px 0 0',
+            height: '160px',
           }}
         />
         <div style={{ padding: '16px' }}>
           <h3 style={{ margin: '0 0 8px 0' }}>Card with Image</h3>
-          <p style={{ margin: 0, color: '#666' }}>This card has an image header.</p>
+          <p style={{ color: '#666', margin: 0 }}>This card has an image header.</p>
         </div>
       </div>
     ),
+    hoverable: true,
   },
 };
 
 export const TransactionCard: Story = {
   args: {
-    hoverable: true,
     children: (
       <div style={{ padding: '16px' }}>
         <div
           style={{
+            alignItems: 'center',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
             marginBottom: '8px',
           }}
         >
           <span style={{ fontWeight: 600 }}>Send Transaction</span>
           <span style={{ color: '#22c55e', fontWeight: 600 }}>+12.50 DCC</span>
         </div>
-        <div style={{ fontSize: '14px', color: '#666' }}>
+        <div style={{ color: '#666', fontSize: '14px' }}>
           <div>To: 3P9KR...7x4M</div>
           <div>2024-01-15 14:32:11</div>
         </div>
       </div>
     ),
+    hoverable: true,
   },
 };
 
 export const AssetCard: Story = {
   args: {
-    hoverable: true,
     children: (
       <div style={{ padding: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+        <div style={{ alignItems: 'center', display: 'flex', gap: '12px', marginBottom: '12px' }}>
           <div
             style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '50%',
               color: 'white',
+              display: 'flex',
               fontWeight: 'bold',
+              height: '40px',
+              justifyContent: 'center',
+              width: '40px',
             }}
           >
             DCC
           </div>
           <div>
-            <div style={{ fontWeight: 600, fontSize: '16px' }}>DecentralChain</div>
-            <div style={{ fontSize: '14px', color: '#666' }}>DCC</div>
+            <div style={{ fontSize: '16px', fontWeight: 600 }}>DecentralChain</div>
+            <div style={{ color: '#666', fontSize: '14px' }}>DCC</div>
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: '12px', color: '#666' }}>Balance</div>
+            <div style={{ color: '#666', fontSize: '12px' }}>Balance</div>
             <div style={{ fontWeight: 600 }}>1,234.56 DCC</div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '12px', color: '#666' }}>Value</div>
+            <div style={{ color: '#666', fontSize: '12px' }}>Value</div>
             <div style={{ fontWeight: 600 }}>$12,345.67</div>
           </div>
         </div>
       </div>
     ),
+    hoverable: true,
   },
 };
 
 export const Grid: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Cards in a responsive grid layout.',
+      },
+    },
+    layout: 'padded',
+  },
   render: () => (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '16px',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         width: '800px',
       }}
     >
@@ -167,18 +175,10 @@ export const Grid: Story = {
         <Card key={i} hoverable>
           <div style={{ padding: '16px', textAlign: 'center' }}>
             <h4 style={{ margin: '0 0 8px 0' }}>Card {i + 1}</h4>
-            <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Sample content</p>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Sample content</p>
           </div>
         </Card>
       ))}
     </div>
   ),
-  parameters: {
-    layout: 'padded',
-    docs: {
-      description: {
-        story: 'Cards in a responsive grid layout.',
-      },
-    },
-  },
 };

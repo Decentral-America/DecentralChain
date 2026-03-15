@@ -77,7 +77,7 @@ const TransactionNotificationItem: React.FC<TransactionNotificationItemProps> = 
         From: {shortenAddress(transaction.sender)}
       </div>
       {transaction.confirmations < 1 && (
-        <div style={{ fontSize: '0.75em', opacity: 0.6, marginTop: '4px' }}>
+        <div style={{ fontSize: '0.75em', marginTop: '4px', opacity: 0.6 }}>
           Pending confirmation...
         </div>
       )}

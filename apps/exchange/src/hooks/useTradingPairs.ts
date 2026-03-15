@@ -94,11 +94,11 @@ export function useTradingPairs(): UseTradingPairsReturn {
   );
 
   return {
+    getPairByAssets,
+    getPairsForAsset,
+    hasPair,
     pairs,
     priorityList,
-    getPairByAssets,
-    hasPair,
-    getPairsForAsset,
   };
 }
 

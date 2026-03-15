@@ -5,27 +5,27 @@ import { Box, Card, CardContent, Container, Grid, Stack, Typography } from '@mui
 
 const features = [
   {
-    title: 'Non-Custodial Wallet',
     desc: 'Full control of your private keys. Import seed phrase, create new wallets, or connect Ledger hardware wallet for maximum security.',
     icon: <AccountBalanceWalletIcon />,
+    title: 'Non-Custodial Wallet',
   },
   {
-    title: 'Integrated DEX Trading',
     desc: 'Trade any asset pair on DecentralChain DEX with limit orders, market orders, and real-time order book matching.',
     icon: <SwapHorizIcon />,
+    title: 'Integrated DEX Trading',
   },
   {
-    title: 'Staking & Leasing',
     desc: 'Earn rewards by leasing DCC tokens to network nodes. Track your staking rewards and manage leases directly from your wallet.',
     icon: <ShowChartIcon />,
+    title: 'Staking & Leasing',
   },
 ];
 
 export default function FeaturesRow() {
   return (
-    <Box component="section" sx={{ py: { xs: 4, md: 4 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 4 } }}>
       <Container maxWidth="lg">
-        <Typography variant="h3" textAlign="center" sx={{ mb: 5, fontWeight: 700 }}>
+        <Typography variant="h3" textAlign="center" sx={{ fontWeight: 700, mb: 5 }}>
           Everything you need for DecentralChain
         </Typography>
 
@@ -34,16 +34,16 @@ export default function FeaturesRow() {
             <Grid
               key={feature.title}
               size={{
-                xs: 12,
                 md: 4,
+                xs: 12,
               }}
             >
               <Card
                 sx={{
-                  height: '100%',
-                  borderRadius: 2,
                   border: '1px solid #E6EAF2',
+                  borderRadius: 2,
                   boxShadow: '0 8px 24px rgba(16,24,40,.04)',
+                  height: '100%',
                 }}
               >
                 <CardContent sx={{ p: 3 }}>

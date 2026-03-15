@@ -37,7 +37,7 @@ export const dccDataEntities = {
 export const api = { ...apiMethods };
 export const dataManager = new DataManager();
 export const config = { ...configApi };
-export const utils = { ...utilsModule, downloadFile, abortDownloading };
+export const utils = { ...utilsModule, abortDownloading, downloadFile };
 export const signature = {
   ...sign,
 };
@@ -62,7 +62,7 @@ dccDataEntitiesModule.config.set('remapAsset', (data: IAssetInfo) => {
 });
 
 export function fetch<T>(url: string, fetchOptions?: IFetchOptions): Promise<T> {
-  return request<T>({ url, fetchOptions });
+  return request<T>({ fetchOptions, url });
 }
 
 export function moneyFromTokens(tokens: TBigNumberData, assetData: TAssetData): Promise<Money> {
@@ -148,10 +148,10 @@ class App {
     return sign
       .getSignatureApi()
       .makeSignable({
-        type: SIGN_TYPE.MATCHER_ORDERS,
         data: {
           timestamp,
         },
+        type: SIGN_TYPE.MATCHER_ORDERS,
       })
       .getId();
   }

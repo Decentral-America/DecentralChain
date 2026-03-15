@@ -121,7 +121,7 @@ export const TransactionHistorySkeleton = () => (
     </SkeletonContainer>
 
     {/* Pagination */}
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '24px' }}>
       {Array.from({ length: 5 }, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <Skeleton key={i} width="32px" height="32px" borderRadius="50%" />
@@ -204,7 +204,7 @@ export const SettingsSkeleton = () => (
           {Array.from({ length: 3 }, (_, i) => `setting-${i}`).map((key) => (
             <div
               key={key}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}
             >
               <div style={{ flex: 1 }}>
                 <SkeletonText width="40%" />
@@ -226,7 +226,7 @@ export const ProfileSkeleton = () => (
   <PageContainer>
     {/* Profile header */}
     <Header>
-      <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '24px' }}>
         <SkeletonCircle width="120px" height="120px" />
         <div style={{ flex: 1 }}>
           <SkeletonText width="250px" height="28px" spacing="8px" />

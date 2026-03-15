@@ -77,8 +77,8 @@ export const useClipboard = (timeout: number = 2000): UseClipboardReturn => {
   }, []);
 
   return {
-    isCopied,
     copyToClipboard,
+    isCopied,
     reset,
   };
 };

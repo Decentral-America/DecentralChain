@@ -86,12 +86,12 @@ export const useMarketData = () => {
       // Update Zustand store for global access
       updateMarketData({
         currentPrice: data.currentPrice,
-        lastPrice: data.lastPrice,
-        volume24h: data.volume24h,
         high24h: data.high24h,
+        lastPrice: data.lastPrice,
         low24h: data.low24h,
         priceChange24h: data.priceChange24h,
         priceChangePercent24h: data.priceChangePercent24h,
+        volume24h: data.volume24h,
       });
     },
     [updateMarketData],
@@ -99,7 +99,7 @@ export const useMarketData = () => {
 
   // Subscribe to market data channel
   useWebSocketChannel<MarketUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleMarketUpdate,
     !!selectedPair, // Only subscribe when pair is selected
@@ -112,9 +112,9 @@ export const useMarketData = () => {
   }, []);
 
   return {
-    marketData,
-    lastUpdate,
     isLive,
+    lastUpdate,
+    marketData,
     selectedPair,
   };
 };
@@ -149,7 +149,7 @@ export const useAllMarkets = () => {
 
   // Subscribe to all markets channel
   useWebSocketChannel<AllMarketsUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleAllMarketsUpdate,
     true, // Always enabled
@@ -171,11 +171,11 @@ export const useAllMarkets = () => {
   const topVolume = markets.sort((a, b) => b.volume24h - a.volume24h).slice(0, 10);
 
   return {
+    lastUpdate,
     markets,
     topGainers,
     topLosers,
     topVolume,
-    lastUpdate,
   };
 };
 
@@ -217,7 +217,7 @@ export const usePairTicker = (amountAsset?: string, priceAsset?: string) => {
 
   // Subscribe to ticker channel
   useWebSocketChannel<TickerUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleTickerUpdate,
     !!(amountAsset && priceAsset),
@@ -230,8 +230,8 @@ export const usePairTicker = (amountAsset?: string, priceAsset?: string) => {
   }, []);
 
   return {
-    ticker,
     isConnected,
+    ticker,
   };
 };
 
@@ -244,7 +244,7 @@ export const formatPriceChange = (change: number): { text: string; isPositive: b
   const sign = isPositive ? '+' : '';
   const text = `${sign}${change.toFixed(2)}%`;
 
-  return { text, isPositive };
+  return { isPositive, text };
 };
 
 /**

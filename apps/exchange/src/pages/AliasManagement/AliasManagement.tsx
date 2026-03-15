@@ -92,9 +92,9 @@ export const AliasManagement = () => {
                   variant="body1"
                   fontFamily="monospace"
                   sx={{
+                    flex: 1,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    flex: 1,
                   }}
                 >
                   {user?.address}
@@ -125,7 +125,7 @@ export const AliasManagement = () => {
               </Box>
             ) : aliases.length === 0 ? (
               <Card>
-                <CardContent sx={{ textAlign: 'center', py: 8 }}>
+                <CardContent sx={{ py: 8, textAlign: 'center' }}>
                   <Typography variant="body1" color="text.secondary" gutterBottom>
                     You don&apos;t have any aliases yet
                   </Typography>

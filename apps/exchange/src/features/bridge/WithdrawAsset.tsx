@@ -250,10 +250,10 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
           {loading && (
             <Box
               sx={{
-                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                display: 'flex',
                 gap: 2,
+                justifyContent: 'center',
                 py: 2,
               }}
             >

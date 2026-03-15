@@ -34,11 +34,11 @@ export class HttpConnectProvider implements ConnectProvider {
     for (let i = attempts; i > 0; i--) {
       try {
         const res = await request<T>({
-          url: this.options.url,
           fetchOptions: {
-            method: 'POST',
             body: data,
+            method: 'POST',
           },
+          url: this.options.url,
         });
 
         return res;

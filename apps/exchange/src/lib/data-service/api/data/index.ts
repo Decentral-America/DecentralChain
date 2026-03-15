@@ -26,8 +26,8 @@ export function getOracleData(address: string): Promise<IOracleData | null> {
       .map((item) => item.content) as Array<TProviderAsset>;
 
     return {
-      oracle: oracle.content,
       assets: indexBy<TProviderAsset>(prop('id'), assets),
+      oracle: oracle.content,
     };
   });
 }

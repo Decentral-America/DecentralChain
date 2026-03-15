@@ -60,49 +60,49 @@ const DRAWER_WIDTH = 260;
 // Styled AppBar - clean white design
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: theme.palette.background.paper,
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
   borderBottom: `1px solid ${theme.palette.divider}`,
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
 }));
 
 // Styled Drawer - white sidebar with padding
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  width: DRAWER_WIDTH,
-  flexShrink: 0,
   '& .MuiDrawer-paper': {
-    width: DRAWER_WIDTH,
-    boxSizing: 'border-box',
     background: theme.palette.background.paper,
     borderRight: 'none',
     boxShadow: 'none',
+    boxSizing: 'border-box',
     paddingLeft: 0,
     paddingTop: 0,
+    width: DRAWER_WIDTH,
   },
+  flexShrink: 0,
+  width: DRAWER_WIDTH,
 }));
 
 // Logo container
 const LogoBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(0, 0, 5),
-  display: 'flex',
   alignItems: 'center',
+  display: 'flex',
   gap: theme.spacing(1),
+  padding: theme.spacing(0, 0, 5),
 }));
 
 // Styled NavLink with active state
 const StyledNavLink = styled(NavLink)(() => ({
-  textDecoration: 'none',
   color: 'inherit',
   display: 'block',
+  textDecoration: 'none',
   width: '100%',
 }));
 
 // Main content area
 const MainContent = styled(Box)<{ component?: React.ElementType }>(({ theme }) => ({
+  background: '#F9FAFB',
   flexGrow: 1,
-  padding: theme.spacing(3, 1),
   marginTop: '64px', // Height of AppBar
   minHeight: '100vh',
-  background: '#F9FAFB',
   overflowY: 'auto',
+  padding: theme.spacing(3, 1),
   [theme.breakpoints.down('sm')]: {
     marginTop: '56px', // Smaller toolbar on mobile
     padding: theme.spacing(1.5, 0.5),
@@ -114,15 +114,15 @@ const MainContent = styled(Box)<{ component?: React.ElementType }>(({ theme }) =
   '&::-webkit-scrollbar': {
     width: '8px',
   },
-  '&::-webkit-scrollbar-track': {
-    background: 'rgba(0, 0, 0, 0.05)',
-  },
   '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(0, 0, 0, 0.2)',
-    borderRadius: '4px',
     '&:hover': {
       background: 'rgba(0, 0, 0, 0.3)',
     },
+    background: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: '4px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'rgba(0, 0, 0, 0.05)',
   },
 }));
 
@@ -142,33 +142,33 @@ type NavSection = {
 // Navigation items grouped by section
 const navSections: NavSection[] = [
   {
+    items: [
+      { icon: <Apps />, label: 'Dashboard', path: '/desktop/wallet' },
+      { icon: <Inventory2Outlined />, label: 'Portfolio', path: '/desktop/wallet/portfolio' },
+      { icon: <ReceiptLong />, label: 'Transactions', path: '/desktop/wallet/transactions' },
+      { icon: <Timeline />, label: 'Leasing', path: '/desktop/wallet/leasing' },
+      { icon: <Badge />, label: 'Aliases', path: '/desktop/wallet/aliases' },
+    ],
     label: 'Main Menu',
-    items: [
-      { path: '/desktop/wallet', label: 'Dashboard', icon: <Apps /> },
-      { path: '/desktop/wallet/portfolio', label: 'Portfolio', icon: <Inventory2Outlined /> },
-      { path: '/desktop/wallet/transactions', label: 'Transactions', icon: <ReceiptLong /> },
-      { path: '/desktop/wallet/leasing', label: 'Leasing', icon: <Timeline /> },
-      { path: '/desktop/wallet/aliases', label: 'Aliases', icon: <Badge /> },
-    ],
   },
   {
+    items: [
+      { icon: <ShowChart />, label: 'Trading', path: '/desktop/dex' },
+      { icon: <SwapHoriz />, label: 'Swap', path: '/desktop/swap' },
+      { icon: <AccountBalanceWallet />, label: 'Bridge', path: '/desktop/bridge' },
+    ],
     label: 'Trading',
-    items: [
-      { path: '/desktop/dex', label: 'Trading', icon: <ShowChart /> },
-      { path: '/desktop/swap', label: 'Swap', icon: <SwapHoriz /> },
-      { path: '/desktop/bridge', label: 'Bridge', icon: <AccountBalanceWallet /> },
-    ],
   },
   {
+    items: [
+      { icon: <AddCircleOutline />, label: 'Create Token', path: '/desktop/create-token' },
+      { icon: <QueryStats />, label: 'Analytics', path: '/desktop/analytics' },
+    ],
     label: 'Tools',
-    items: [
-      { path: '/desktop/create-token', label: 'Create Token', icon: <AddCircleOutline /> },
-      { path: '/desktop/analytics', label: 'Analytics', icon: <QueryStats /> },
-    ],
   },
   {
+    items: [{ icon: <Settings />, label: 'Settings', path: '/desktop/settings' }],
     label: 'General',
-    items: [{ path: '/desktop/settings', label: 'Settings', icon: <Settings /> }],
   },
 ];
 
@@ -249,7 +249,7 @@ export const MainLayout = () => {
   };
 
   const drawer = (
-    <Box sx={{ px: 3, pt: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', pt: 4, px: 3 }}>
       {/* Logo */}
       <LogoBox>
         <Box
@@ -258,8 +258,8 @@ export const MainLayout = () => {
           alt="Decentral Exchange"
           sx={{
             height: 28,
-            width: 'auto',
             maxWidth: '100%',
+            width: 'auto',
           }}
         />
       </LogoBox>
@@ -267,21 +267,21 @@ export const MainLayout = () => {
       {/* User Profile Section */}
       <Box
         sx={{
-          mx: 2,
-          mb: 4,
-          p: 1.5,
-          borderRadius: '10px',
-          backgroundColor: '#F9FAFB',
-          display: 'flex',
           alignItems: 'center',
+          backgroundColor: '#F9FAFB',
+          borderRadius: '10px',
+          display: 'flex',
           gap: 1.5,
+          mb: 4,
+          mx: 2,
+          p: 1.5,
         }}
       >
         <Avatar
           sx={{
-            width: 40,
-            height: 40,
             bgcolor: 'primary.main',
+            height: 40,
+            width: 40,
           }}
         >
           {user?.address ? user.address.substring(0, 2).toUpperCase() : 'U'}
@@ -290,8 +290,8 @@ export const MainLayout = () => {
           <Typography
             variant="body2"
             sx={{
-              fontWeight: 600,
               color: 'text.primary',
+              fontWeight: 600,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -312,21 +312,21 @@ export const MainLayout = () => {
       </Box>
 
       {/* Navigation */}
-      <Box sx={{ px: 1, pt: 2 }}>
+      <Box sx={{ pt: 2, px: 1 }}>
         {navSections.map((section, sectionIdx) => (
           <Box key={section.label} sx={{ mb: sectionIdx < navSections.length - 1 ? 2.5 : 0 }}>
             {/* Section Label */}
             <Typography
               variant="caption"
               sx={{
+                color: 'text.secondary',
+                display: 'block',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                letterSpacing: '0.5px',
                 px: 1.5,
                 py: 1,
-                display: 'block',
-                color: 'text.secondary',
-                fontWeight: 600,
                 textTransform: 'uppercase',
-                fontSize: '0.75rem',
-                letterSpacing: '0.5px',
               }}
             >
               {section.label}
@@ -350,25 +350,25 @@ export const MainLayout = () => {
                       <ListItemButton
                         selected={isActive}
                         sx={{
-                          borderRadius: '10px',
-                          transition: 'all 0.2s ease',
-                          mb: 1.5,
+                          '&:hover': {
+                            backgroundColor: 'rgba(89, 64, 212, 0.08)',
+                          },
                           '&.Mui-selected': {
-                            background: 'linear-gradient(135deg, #5940d4 0%, #7c5dfa 100%)',
-                            color: 'white',
-                            '&:hover': {
-                              background: 'linear-gradient(135deg, #4a35c0 0%, #6b4ce8 100%)',
-                            },
                             '& .MuiListItemIcon-root': {
                               color: 'white',
                             },
                             '& .MuiListItemText-primary': {
                               color: 'white',
                             },
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #4a35c0 0%, #6b4ce8 100%)',
+                            },
+                            background: 'linear-gradient(135deg, #5940d4 0%, #7c5dfa 100%)',
+                            color: 'white',
                           },
-                          '&:hover': {
-                            backgroundColor: 'rgba(89, 64, 212, 0.08)',
-                          },
+                          borderRadius: '10px',
+                          mb: 1.5,
+                          transition: 'all 0.2s ease',
                         }}
                       >
                         <ListItemIcon
@@ -382,9 +382,9 @@ export const MainLayout = () => {
                         <ListItemText
                           primary={item.label}
                           primaryTypographyProps={{
-                            fontWeight: isActive ? 600 : 500,
-                            fontSize: '0.9rem',
                             color: isActive ? 'white' : 'inherit',
+                            fontSize: '0.9rem',
+                            fontWeight: isActive ? 600 : 500,
                           }}
                         />
                         {item.badge && (
@@ -392,11 +392,11 @@ export const MainLayout = () => {
                             label={item.badge}
                             size="small"
                             sx={{
-                              height: 20,
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
                               bgcolor: 'error.main',
                               color: 'white',
+                              fontSize: '0.7rem',
+                              fontWeight: 600,
+                              height: 20,
                             }}
                           />
                         )}
@@ -430,7 +430,7 @@ export const MainLayout = () => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, color: 'text.primary' }}
+              sx={{ color: 'text.primary', mr: 2 }}
             >
               <MenuIcon />
             </IconButton>
@@ -443,9 +443,9 @@ export const MainLayout = () => {
               src="/assets/decentralexchange.svg"
               alt="Decentral Exchange"
               sx={{
+                flexGrow: 1,
                 height: 24,
                 width: 'auto',
-                flexGrow: 1,
               }}
             />
           )}
@@ -461,8 +461,8 @@ export const MainLayout = () => {
               bgcolor: 'primary.main',
               color: 'white',
               fontWeight: 600,
-              mr: 2,
               height: 28,
+              mr: 2,
             }}
           />
 
@@ -472,27 +472,27 @@ export const MainLayout = () => {
               <Box
                 onClick={handleUserMenuOpen}
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  cursor: 'pointer',
-                  padding: '6px 12px',
-                  borderRadius: '10px',
-                  transition: 'background-color 0.2s',
                   '&:hover': {
                     backgroundColor: '#ECFDF5',
                   },
+                  alignItems: 'center',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  gap: 1,
+                  padding: '6px 12px',
+                  transition: 'background-color 0.2s',
                 }}
               >
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                <Avatar sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}>
                   <AccountCircle />
                 </Avatar>
-                <Stack spacing={0} sx={{ display: { xs: 'none', sm: 'flex' } }}>
+                <Stack spacing={0} sx={{ display: { sm: 'flex', xs: 'none' } }}>
                   <Typography
                     variant="body2"
                     sx={{
-                      fontWeight: 600,
                       color: theme.palette.text.primary,
+                      fontWeight: 600,
                     }}
                   >
                     {user.name || 'Account'}
@@ -515,19 +515,19 @@ export const MainLayout = () => {
                 open={Boolean(userMenuAnchor)}
                 onClose={handleUserMenuClose}
                 anchorOrigin={{
-                  vertical: 'bottom',
                   horizontal: 'right',
+                  vertical: 'bottom',
                 }}
                 transformOrigin={{
-                  vertical: 'top',
                   horizontal: 'right',
+                  vertical: 'top',
                 }}
                 PaperProps={{
-                  sx: { width: { xs: 'calc(100vw - 32px)', sm: 280 }, maxWidth: 320, mt: 1 },
+                  sx: { maxWidth: 320, mt: 1, width: { sm: 280, xs: 'calc(100vw - 32px)' } },
                 }}
               >
                 {/* Address Info */}
-                <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 1.5 }}>
                   <Typography variant="caption" color="text.secondary">
                     Your Address
                   </Typography>
@@ -590,7 +590,7 @@ export const MainLayout = () => {
       </StyledAppBar>
 
       {/* Navigation Drawer */}
-      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
+      <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { md: DRAWER_WIDTH } }}>
         {/* Mobile drawer */}
         {isMobile ? (
           <Drawer
@@ -600,11 +600,11 @@ export const MainLayout = () => {
             ModalProps={{ keepMounted: true }}
             sx={{
               '& .MuiDrawer-paper': {
-                width: DRAWER_WIDTH,
-                boxSizing: 'border-box',
                 background: theme.palette.background.paper,
+                boxSizing: 'border-box',
                 paddingLeft: 0,
                 paddingTop: 0,
+                width: DRAWER_WIDTH,
               },
             }}
           >
@@ -638,7 +638,7 @@ export const MainLayout = () => {
         open={copySuccess}
         autoHideDuration={3000}
         onClose={() => setCopySuccess(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
       >
         <Alert onClose={() => setCopySuccess(false)} severity="success" sx={{ width: '100%' }}>
           Address copied to clipboard!
@@ -650,7 +650,7 @@ export const MainLayout = () => {
         open={aliasSuccess}
         autoHideDuration={5000}
         onClose={() => setAliasSuccess(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
       >
         <Alert onClose={() => setAliasSuccess(false)} severity="success" sx={{ width: '100%' }}>
           Alias created successfully! It will appear in your alias list momentarily.

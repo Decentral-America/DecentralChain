@@ -25,15 +25,15 @@ const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey>
   // Derive key using PBKDF2
   return window.crypto.subtle.deriveKey(
     {
+      hash: 'SHA-256',
+      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
       name: 'PBKDF2',
       salt: salt as BufferSource,
-      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
-      hash: 'SHA-256',
     },
     keyMaterial,
     {
-      name: 'AES-GCM',
       length: 256,
+      name: 'AES-GCM',
     },
     false,
     ['encrypt', 'decrypt'],
@@ -57,8 +57,8 @@ const encryptData = async (data: string, password: string): Promise<string> => {
   // Encrypt data
   const encrypted = await window.crypto.subtle.encrypt(
     {
-      name: 'AES-GCM',
       iv,
+      name: 'AES-GCM',
     },
     key,
     dataBuffer,
@@ -93,8 +93,8 @@ const decrypt = async (encryptedData: string, password: string): Promise<string>
     // Decrypt data
     const decrypted = await window.crypto.subtle.decrypt(
       {
-        name: 'AES-GCM',
         iv,
+        name: 'AES-GCM',
       },
       key,
       data,
@@ -162,10 +162,10 @@ class SecureStorage {
     encrypt: boolean = true,
   ): Promise<void> {
     const item: SecureStorageItem<T> = {
-      value,
-      type,
-      timestamp: Date.now(),
       encrypted: encrypt,
+      timestamp: Date.now(),
+      type,
+      value,
     };
 
     const serialized = JSON.stringify(item);

@@ -2,8 +2,8 @@ import { Signal } from 'ts-utils';
 
 export class Poll<T> {
   public signals: ISignals<T> = {
-    requestSuccess: new Signal<T>(),
     requestError: new Signal<Error>(),
+    requestSuccess: new Signal<T>(),
   };
 
   public lastData: T;

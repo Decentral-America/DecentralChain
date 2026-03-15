@@ -69,12 +69,12 @@ export const useAssetDetails = (
   },
 ): UseQueryResult<AssetDetails, Error> => {
   return useQuery({
-    queryKey: ['asset', 'details', assetId],
+    enabled: !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AssetDetails>(`/assets/details/${assetId}`);
       return data;
     },
-    enabled: !!assetId && options?.enabled !== false,
+    queryKey: ['asset', 'details', assetId],
     staleTime: 300000, // 5 minutes - asset details rarely change
   });
 };
@@ -93,13 +93,13 @@ export const useMultipleAssetDetails = (
   },
 ): UseQueryResult<AssetDetails[], Error> => {
   return useQuery({
-    queryKey: ['assets', 'details', assetIds.sort().join(',')],
+    enabled: assetIds.length > 0 && options?.enabled !== false,
     queryFn: async () => {
       const requests = assetIds.map((id) => nodeClient.get<AssetDetails>(`/assets/details/${id}`));
       const responses = await Promise.all(requests);
       return responses.map((res) => res.data);
     },
-    enabled: assetIds.length > 0 && options?.enabled !== false,
+    queryKey: ['assets', 'details', assetIds.sort().join(',')],
     staleTime: 300000, // 5 minutes
   });
 };
@@ -121,12 +121,12 @@ export const useAssetBalance = (
   },
 ): UseQueryResult<AssetBalance, Error> => {
   return useQuery({
-    queryKey: ['asset', 'balance', address, assetId],
+    enabled: !!address && !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<AssetBalance>(`/assets/balance/${address}/${assetId}`);
       return data;
     },
-    enabled: !!address && !!assetId && options?.enabled !== false,
+    queryKey: ['asset', 'balance', address, assetId],
     ...(options?.refetchInterval != null && { refetchInterval: options.refetchInterval }),
     staleTime: 30000, // 30 seconds - balances change frequently
   });
@@ -150,7 +150,7 @@ export const useAssetDistribution = (
   },
 ): UseQueryResult<AssetDistribution, Error> => {
   return useQuery({
-    queryKey: ['asset', 'distribution', assetId, limit, after],
+    enabled: !!assetId && options?.enabled !== false,
     queryFn: async () => {
       const url = after
         ? `/assets/${assetId}/distribution/${limit}/after/${after}`
@@ -158,7 +158,7 @@ export const useAssetDistribution = (
       const { data } = await nodeClient.get<AssetDistribution>(url);
       return data;
     },
-    enabled: !!assetId && options?.enabled !== false,
+    queryKey: ['asset', 'distribution', assetId, limit, after],
     staleTime: 300000, // 5 minutes - distribution changes slowly
   });
 };
@@ -179,14 +179,14 @@ export const useNFTsByIssuer = (
   },
 ): UseQueryResult<NFTCollection[], Error> => {
   return useQuery({
-    queryKey: ['nft', 'issuer', issuer, limit],
+    enabled: !!issuer && options?.enabled !== false,
     queryFn: async () => {
       const { data } = await nodeClient.get<NFTCollection[]>(
         `/assets/nft/${issuer}/limit/${limit}`,
       );
       return data;
     },
-    enabled: !!issuer && options?.enabled !== false,
+    queryKey: ['nft', 'issuer', issuer, limit],
     staleTime: 60000, // 1 minute
   });
 };

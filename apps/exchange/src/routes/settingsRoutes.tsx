@@ -16,6 +16,6 @@ import { SettingsPage } from '@/features/settings/SettingsPage';
  * Uses a tabbed interface matching the Angular app structure
  */
 export const settingsRoutes: RouteObject = {
-  path: 'settings',
   element: <SettingsPage />,
+  path: 'settings',
 };

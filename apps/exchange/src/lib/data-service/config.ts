@@ -48,7 +48,7 @@ export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[
   }
   if (key === 'api' || key === 'apiVersion') {
     if (config.api && config.apiVersion) {
-      dataService = new DataServiceClient({ rootUrl: `${config.api}/${config.apiVersion}`, parse });
+      dataService = new DataServiceClient({ parse, rootUrl: `${config.api}/${config.apiVersion}` });
     }
   }
   change.dispatch(key);

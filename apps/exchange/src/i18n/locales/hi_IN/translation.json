@@ -1,4 +1,92 @@
 {
+  "app": {
+    "back": "मुख्य पेज पर वापस जाएं",
+    "button": {
+      "cancel": "रद्द करें",
+      "continue": "जारी रखें",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
+        "issue-title": "टोकन जारी करना",
+        "massSendTitle": "मास्स ट्रान्सफर",
+        "reissue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
+        "sendTitle": "भेजना",
+        "set-script-title": "स्क्रिप्ट ट्रांसक्शन"
+      },
+      "send": {
+        "errors": {
+          "fee": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} ट्रांसक्शन शुल्क का भुगतान करना होगा;"
+        }
+      }
+    },
+    "date": {
+      "month": ["जन", "फर", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सित", "अक्टू", "नव", "दिस"]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "अलोहा फंकी सिक्का, किन्ही अच्छे व बुरे प्रयोजनो के लिए ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "एसेट्स",
+      "dex": "DEX",
+      "leasing": "लीज़िंग",
+      "portfolio": "पोर्टफोलियो",
+      "tokens": "\"टोकन",
+      "transactions": "लेन-देन",
+      "wallet": "वॉलेट"
+    },
+    "inputs": {
+      "errors": {
+        "required": "यह क्षेत्र जरूरी है!"
+      }
+    },
+    "leftmenu": {
+      "login": "लॉगिन",
+      "logout": "लॉग आउट करें",
+      "settings": "सेटिंग्स"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "रद्द",
+          "filled": "भरा ({{percent}}%)",
+          "opened": "खोला गया"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "ठीक है",
+        "title": "पासवर्ड दर्ज करें"
+      },
+      "pairing": {
+        "showQr": "प्रदर्शन"
+      },
+      "tryDesktop": {
+        "cancel": "वेब के साथ जारी रखें",
+        "label": "मेरी पसंद को याद रखो और फिर से मुझे याद नहीं दिलाना",
+        "message": "हम आपको वेव्स डेस्कटॉप ऐप का उपयोग करने की सलाह देते हैं। यदि आपके पास यह नहीं है, तो आप इसे आधिकारिक साइट से डाउनलोड कर सकते हैं।",
+        "title": "वेव्स डेस्कटॉप एप्लिकेशन का उपयोग करें",
+        "try": "डेस्कटॉप ऐप खोलें"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k."
+      }
+    },
+    "Suspicious": "संदेहजनक"
+  },
   "app.create": {
     "backupSeed": {
       "back": "वापस जाएं",
@@ -115,9 +203,9 @@
         "1day": "1 दिन",
         "1hour": "1 घंटे",
         "1week": "1 सप्ताह",
+        "5min": "5 मिनट",
         "30day": "30 दिन",
         "30min": "30 मिनट",
-        "5min": "5 मिनट",
         "amountField": "राशि",
         "ask": "पूछें",
         "bid": "बोली",
@@ -275,8 +363,8 @@
         "chg": "बदलें",
         "coin": "वाइन",
         "helpIcon": {
-          "assetId": "एसेट आईडी",
           "AssetId1AssetId2": "एसेट1 आईडी / एसेट2 आईडी",
+          "assetId": "एसेट आईडी",
           "description": "आप [यहाँ] संपत्ति (https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html) खोज के बारे में अधिक जानकारी प्राप्त कर सकते हैं",
           "header": "आप द्वारा खोज सकते हैं:",
           "name": "नाम",
@@ -334,15 +422,15 @@
       "title": {
         "all": "सभी",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "history",
         "myBalance": "मेरा बैलेंस",
         "myTradeHistory": "मेरा ट्रेड इतिहास",
-        "openOrders": "मेरे खुले ऑर्डर",
         "OrderHistory": "My Order History",
+        "openOrders": "मेरे खुले ऑर्डर",
         "trade": "Trade",
-        "tradeHistory": "ट्रेड इतिहास",
-        "decentralchain": "DecentralChain"
+        "tradeHistory": "ट्रेड इतिहास"
       }
     }
   },
@@ -378,6 +466,12 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "decentralchainClient": "DCC Client",
+    "decentralchainClientDescription": "Import account from a DCC Client",
+    "decentralchainLiteClient": "वेव्स लाइट क्लाइंट",
+    "decentralchainLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें",
+    "decentralchainSeedClient": "बैकअप सीड वाक्यांश",
+    "decentralchainSeedClientDescription": "एक बैकअप सीड से खाता आयात करें",
     "import": {
       "signIn": "Sign in"
     },
@@ -393,101 +487,7 @@
       "name": "Seed or Key"
     },
     "seedAndKeyDescription": "Import account from a SEED or Private key",
-    "selectButton": "चुने",
-    "decentralchainClient": "DCC Client",
-    "decentralchainClientDescription": "Import account from a DCC Client",
-    "decentralchainLiteClient": "वेव्स लाइट क्लाइंट",
-    "decentralchainLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें",
-    "decentralchainSeedClient": "बैकअप सीड वाक्यांश",
-    "decentralchainSeedClientDescription": "एक बैकअप सीड से खाता आयात करें"
-  },
-  "app": {
-    "back": "मुख्य पेज पर वापस जाएं",
-    "button": {
-      "cancel": "रद्द करें",
-      "continue": "जारी रखें",
-      "signIn": "Sign in"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
-        "issue-title": "टोकन जारी करना",
-        "massSendTitle": "मास्स ट्रान्सफर",
-        "reissue": "टोकन जारी करना अस्थायी रूप से अनुपलब्ध है।",
-        "sendTitle": "भेजना",
-        "set-script-title": "स्क्रिप्ट ट्रांसक्शन"
-      },
-      "send": {
-        "errors": {
-          "fee": "आवश्यक शुल्क का भुगतान करने के लिए आपके पास पर्याप्त धन नहीं है। आपको {{fee, money-currency}} ट्रांसक्शन शुल्क का भुगतान करना होगा;"
-        }
-      }
-    },
-    "date": {
-      "month": ["जन", "फर", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सित", "अक्टू", "नव", "दिस"]
-    },
-    "error": {
-      "updateClient": {
-        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io/technology/wallet)!",
-        "title": "It's time to update your app!"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "अलोहा फंकी सिक्का, किन्ही अच्छे व बुरे प्रयोजनो के लिए ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "एसेट्स",
-      "dex": "DEX",
-      "leasing": "लीज़िंग",
-      "portfolio": "पोर्टफोलियो",
-      "tokens": "\"टोकन",
-      "transactions": "लेन-देन",
-      "wallet": "वॉलेट"
-    },
-    "inputs": {
-      "errors": {
-        "required": "यह क्षेत्र जरूरी है!"
-      }
-    },
-    "leftmenu": {
-      "login": "लॉगिन",
-      "logout": "लॉग आउट करें",
-      "settings": "सेटिंग्स"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "रद्द",
-          "filled": "भरा ({{percent}}%)",
-          "opened": "खोला गया"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "ठीक है",
-        "title": "पासवर्ड दर्ज करें"
-      },
-      "pairing": {
-        "showQr": "प्रदर्शन"
-      },
-      "tryDesktop": {
-        "cancel": "वेब के साथ जारी रखें",
-        "label": "मेरी पसंद को याद रखो और फिर से मुझे याद नहीं दिलाना",
-        "message": "हम आपको वेव्स डेस्कटॉप ऐप का उपयोग करने की सलाह देते हैं। यदि आपके पास यह नहीं है, तो आप इसे आधिकारिक साइट से डाउनलोड कर सकते हैं।",
-        "title": "वेव्स डेस्कटॉप एप्लिकेशन का उपयोग करें",
-        "try": "डेस्कटॉप ऐप खोलें"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k."
-      }
-    },
-    "Suspicious": "संदेहजनक"
+    "selectButton": "चुने"
   },
   "app.ledger": {
     "ledger": {
@@ -505,9 +505,9 @@
       "help": {
         "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
       },
+      "ImportOrSignIn": "इम्पोर्ट खाता या",
       "id": "Account ID",
       "importAccount": "एक लेडजर खाता आयात करें",
-      "ImportOrSignIn": "इम्पोर्ट खाता या",
       "login": "जारी रहना",
       "name": "खाते का नाम",
       "nameExists": "That name is taken",
@@ -571,6 +571,14 @@
       },
       "goHome": "Go to HomePage",
       "text1": "Decentral.Exchange is transforming into a new product, Decentral.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91).",
+      "text3": "Decentral.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the DecentralChain community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the DecentralChain trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Decentral.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
       "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Decentral.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Decentral.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
       "text12": "Ownership of your tokens is recorded on the DecentralChain blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
@@ -581,20 +589,20 @@
       "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
       "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text19": "{div.margin-bottom}[Some gateways are operated by the Decentral.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
-      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91).",
       "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Decentral.Exchange’s leasing interface, and collect interest of up to 7% per year.",
       "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
       "text22": "The new addresses belong to the DCC gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
       "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Decentral.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
       "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
-      "text3": "Decentral.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the DecentralChain community.",
-      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
-      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
-      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the DecentralChain trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
-      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
-      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
-      "text9": "Yes, migration of accounts will also be possible after the launch of Decentral.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
       "title1": "What’s going on?",
+      "title2": "What is Decentral.Exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Decentral.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Decentral.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Decentral.Exchange?",
       "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
       "title11": "Will the new exchange have access to my seed phrases?",
       "title12": "What will happen to my tokens?",
@@ -605,19 +613,11 @@
       "title17": "What changes will the matcher undergo?",
       "title18": "What if I have any problems or questions during the migration process?",
       "title19": "What will happen to gateway tokens?",
-      "title2": "What is Decentral.Exchange?",
       "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
       "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
       "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
       "title23": "Why so complicated?",
-      "title24": "Are there plans to expand language support for the interface of the new exchange?",
-      "title3": "Who is in charge of developing the new exchange?",
-      "title4": "Why is Decentral.Exchange moving to Decentral.Exchange?",
-      "title5": "When will migration begin?",
-      "title6": "Is migration mandatory?",
-      "title7": "When will Decentral.Exchange be launched?",
-      "title8": "Why did the migration process begin two weeks prior to launch?",
-      "title9": "Will it be possible to move accounts after the launch of Decentral.Exchange?"
+      "title24": "Are there plans to expand language support for the interface of the new exchange?"
     },
     "migrate": {
       "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
@@ -885,11 +885,11 @@
       "title": "{{name}} जनरेशन",
       "titleSuccess": "{{name}} जनरेशन पूर्ण"
     },
-    "name": "आपकी एसेट का नाम",
     "NFT": {
       "description": "A non-fungible token (NFT) is a unique, individual token existing on the DecentralChain blockchain. Currently, display of NFTs in DCC Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [DecentralScan](https://decentralscan.com/)",
       "title": "You are creating a non-fungible token."
     },
+    "name": "आपकी एसेट का नाम",
     "notifications": {
       "isNotCreated": "टोकन नहीं बनाया गया"
     },
@@ -960,6 +960,10 @@
     "confirmTransaction": {
       "back": "वापस जाएं",
       "confirm": "पुष्टि करें",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
+        "header": "आपने वेव्स कीपर के उपयोग के अनुरोध की पुष्टि नहीं की"
+      },
       "description": {
         "burn": "आपने {{quantityStr}} {{name}} जला दिए",
         "cancel-leasing": "आपने एक लीज़िंग लेनदेन रद्द किया",
@@ -1013,11 +1017,7 @@
         }
       },
       "sign": "साइन",
-      "success": "आपका लेनदेन होने वाला है!",
-      "decentralchainKeeperUnconfirmed": {
-        "description": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
-        "header": "आपने वेव्स कीपर के उपयोग के अनुरोध की पुष्टि नहीं की"
-      }
+      "success": "आपका लेनदेन होने वाला है!"
     },
     "copyError": "कॉपी नहीं कर सकता! आपका ब्राउज़र पुराना हो सकता है",
     "copySuccess": "ये डेटा कॉपी किया है",
@@ -1421,8 +1421,8 @@
         "rating": {
           "canVoteTip": "Click to rate token",
           "tooltipLink": "More Details",
-          "tooltipNeedDCC": "and 0.001 DCC",
           "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipNeedDCC": "and 0.001 DCC",
           "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
           "tooltipTitle": "To rate a token, you must have at least 1 CRC in your wallet."
         },
@@ -1542,10 +1542,6 @@
         },
         "copyAndShare": "पते को कॉपी व साझा करें",
         "currency": "करेंसी",
-        "or": "या",
-        "pleaseNote": "कृपया नोट करें कि यह गेटवे इस ऑपरेशन के लिए कोई फीस नहीं लगाता है।",
-        "scanQrCode": "QR कोड स्कैन करें",
-        "title": "{{assetName}} जमा करें",
         "gatewayBNT": {
           "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1596,7 +1592,11 @@
           "helpDescrTitle_copy": "Enter this address into your WEST client or wallet",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
         },
-        "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+        "or": "या",
+        "pleaseNote": "कृपया नोट करें कि यह गेटवे इस ऑपरेशन के लिए कोई फीस नहीं लगाता है।",
+        "scanQrCode": "QR कोड स्कैन करें",
+        "title": "{{assetName}} जमा करें"
       },
       "dexScriptedPair": {
         "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
@@ -1630,6 +1630,10 @@
         "warning": "उन वेबसाइटों पर अपना गुप्त वाक्यांश (SEED) न डालें, जिन पर आपको पुनर्निर्देशित किया जाएगा।"
       },
       "import": {
+        "decentralchainBetaClient": "वेव्स बीटा क्लाइंट",
+        "decentralchainBetaClientDescription": "वेव्स बीटा क्लाइंट से खाते आयात करें",
+        "decentralchainLiteClient": "वेव्स लाइट क्लाइंट",
+        "decentralchainLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें",
         "errorBeta": "हम वेव्स बीटा क्लाइंट से आपके खाते को पुनः प्राप्त करने में असमर्थ थे। वेव्स लाइट क्लाइंट से आयात करने का प्रयास करें।",
         "errorHeader": "कोई खाता नहीं मिला",
         "errorLite": "हम आपके खातों को वेव्स लाइट क्लाइंट से पुनर्प्राप्त करने में असमर्थ थे। वेव्स बीटा क्लाइंट से आयात करने का प्रयास करें।",
@@ -1646,19 +1650,15 @@
         "selectAccountDescription": "आपको अपने ब्राउज़र में पॉप-अप विंडो की अनुमति देनी होगी",
         "selectAccountToImport": "चुनें कि आप किन खातों को आयात करना चाहते हैं",
         "selectAccountToImportFrom": "यह चुनें कि खातों को कहां से आयात किया जाए",
-        "selectButton": "सेलेक्ट",
-        "decentralchainBetaClient": "वेव्स बीटा क्लाइंट",
-        "decentralchainBetaClientDescription": "वेव्स बीटा क्लाइंट से खाते आयात करें",
-        "decentralchainLiteClient": "वेव्स लाइट क्लाइंट",
-        "decentralchainLiteClientDescription": "वेव्स लाइट क्लाइंट से खाते आयात करें"
+        "selectButton": "सेलेक्ट"
       },
       "matcherChoice": {
         "customMatcher": "Custom matcher address",
+        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy.",
         "matcher": "Matcher",
         "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
         "terms": "Terms",
-        "title": "Choose matcher",
-        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy."
+        "title": "Choose matcher"
       },
       "open-main": {
         "dex": {
@@ -1742,6 +1742,9 @@
         "cryptocurrency": {
           "title": "क्रिप्टो मुद्रा"
         },
+        "decentralchainEnterprise": {
+          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
+        },
         "error": {
           "cardAmount": {
             "gte": "आपके द्वारा जमा की जा सकने वाली न्यूनतम राशि {{gte}} {{currency}} है",
@@ -1776,9 +1779,6 @@
         "verified": "सत्यापित",
         "vostok": {
           "serverError": "Service WEST temporarily unavailable. Try again later."
-        },
-        "decentralchainEnterprise": {
-          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
         },
         "wtry": {
           "info": "भुगतान प्रोसेसिंग की समस्याओं की स्थिति में, कृपया Digilira सपोर्टिंग टीम से संपर्क करें — [support@digilira.com](mailto:support@digilira.com)"
@@ -1906,8 +1906,8 @@
         "title": "भेजें {{assetName}}",
         "titleComplete": "भेजना पूर्ण",
         "toBank": "बैंक खाते से विड्रॉ",
-        "total": "कुल योग",
         "toDecentralChain": "वेव्स पते पर भेजें",
+        "total": "कुल योग",
         "txFee": "लेनदेन शुल्क",
         "validationError": {
           "notEnoughFunds": "जरूरी फीस के भुगतान के लिए आपके पास पर्याप्त फंड नहीं हैं। आपको {{fee, money-currency}} लेनदेन फीस का भुगतान करना चाहिए।",
@@ -2003,12 +2003,12 @@
           "showCodeLink": "पेयरिंग कोड दिखाएं",
           "unavailable": {
             "description": {
-              "ledger": "लेडजर नैनो एस पर संग्रहीत खातों के लिए निर्यात उपलब्ध नहीं है",
-              "decentralchainKeeper": "वेव्स कीपर से आयातित खातों के लिए निर्यात वेव्स कीपर सेटिंग्स में उपलब्ध है"
+              "decentralchainKeeper": "वेव्स कीपर से आयातित खातों के लिए निर्यात वेव्स कीपर सेटिंग्स में उपलब्ध है",
+              "ledger": "लेडजर नैनो एस पर संग्रहीत खातों के लिए निर्यात उपलब्ध नहीं है"
             },
             "header": {
-              "ledger": "निर्यात अनुपलब्ध है",
-              "decentralchainKeeper": "निर्यात अनुपलब्ध है"
+              "decentralchainKeeper": "निर्यात अनुपलब्ध है",
+              "ledger": "निर्यात अनुपलब्ध है"
             },
             "ok": "मै समझता हुँ"
           }
@@ -2083,9 +2083,6 @@
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "स्पॉन्सरशिप बदलें"
-      },
       "sponsorship": {
         "amountPerTx": "प्रति लेन-देन की राशि (प्रति 0.001 DCC)",
         "assetId": "आईडी",
@@ -2102,6 +2099,9 @@
         "title": "स्पॉन्सरशिप सक्षम करें",
         "warningHeader": "उपयोगकर्ता {{name}} में लेनदेन शुल्क का भुगतान करने में सक्षम होंगे",
         "warningText": "प्रति लेनदेन के लिए, 0.001 DCC आपके शेष राशि से काट लिए जाएंगे और {{name}} आपके खाते में जमा कर दिए जाएंगे। जब आप स्पॉन्सरशिप सक्षम करते हैं, तो {{name}} की राशि का लेन-देन उपयोगकर्ताओं से किया जाता है, यह आपके द्वारा निर्धारित किया जाता है। स्पॉन्सरशिप केवल तभी काम करेगा जब आपके पास कम से कम 1.005 DCC का बैलेंस हो। यदि आपका शेष राशि इस राशि से कम हो जाती है, तो आप लेनदेन को स्पॉन्सरशिप नहीं कर पाएंगे।"
+      },
+      "sponsorship_edit": {
+        "title": "स्पॉन्सरशिप बदलें"
       },
       "startLease": {
         "amount": "राशि",
@@ -2245,6 +2245,11 @@
           "1_0_0-beta_42": "{span.line}[1. स्पेनी भाषा सपोर्ट जोड़ा गया।]{span.line}[2. आप क्लाइंट को खाता विवरणों को सहेजे बिना डिफॉल्ट रूप में उपयोग कर सकते हैं।]{span.line}[3. स्पैम टोकन अब लेनदेन पेज पर चिह्नित है।]{span.line}[4. कुछ अतिरिक्त छोटे बग्स ठीक किए गए हैं।]",
           "1_0_0-beta_47": "{span.line}[1. नया डेक्स UI।]{span.line}[2. तेज़ और अधिक स्थिर क्लाइंट।] {span.line}[3. उपनाम की कार्यक्षमता फिर से उपलब्ध है।]{span.line}[4. कुछ मामूली बग्स सही किए गए हैं।]{span.line}[5. [वीडियो](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) बनाकर या एक [लेख](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835) लिखकर हमारी प्रतियोगिताओं में भाग लें।]",
           "1_0_0-beta_50": "{span.line}[1. अब आप अपने खाते में रखे किसी भी टोकन को जला सकते हैं।]\n{span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
+          "1_0_3": "{span.line}[1. अब आप पोर्टफोलियो पेज में आईडी द्वारा संपत्ति खोज सकते हैं।] {span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
+          "1_0_5": "{span.line}[1. डेक्स चार्ट्स पर ट्रेड वॉल्यूम स्केल जोड़ा गया है।]\n{span.line}[2. अतिरिक्त मामूली बग्स सुधार किए गए हैं।]",
+          "1_0_6": "{span.line}[1. वेव्स डेस्कटॉप क्लाइंट के माध्यम से प्राधिकरण जोड़ा गया है।]",
+          "1_0_7": "{span.line}[1. कुछ डेस्कटॉप-क्लाइंट क्रैश ठीक किए गए थे।]\n{span.line}[2. बड़ी कंटेंट के साथ TX और पोर्टफोलियो पृष्ठों के बीच अनुकूलित स्विचिंग।]\n{span.line}[3. स्पैम टोकन के नाम TX सूची में छिपे हुए हैं।]\n{span.line}[4. एरर संदेश आउटपुट पुन: प्रकाशित किया गया है।]",
+          "1_0_8": "{span.line}[1. लेडजर नैनो एस सपोर्ट को जोड़ा गया है।]\n{span.line}[2. अपनी पसंद की प्राधिकरण पद्धति को सहेजने का एक नया विकल्प जोड़ा गया है।]",
           "1_0_10": "{span.line}[1. स्पॉन्सरशिप लेनदेन समर्थन जोड़ा गया। [और पढ़ें](https://docs.decentralchain.io/en/decentralchain-client/assets-management/spired-transaction.html)]\n{span.line}[2. पोलिश और पुर्तगाली भाषाओं का समर्थन जोड़ा गया है।]",
           "1_0_14": "{span.line}[1. वेव्स बैलेंस के बिना स्पॉन्सरशिप एसेट का उपयोग करने वाला बग फिक्स्ड।]\n{span.line}[2. 30 दिनों ओर्डर समाप्ति वाला बग फिक्स्ड।]\n{span.line}[3. कुछ अन्य मामूली बग्स सही किए गए हैं।]",
           "1_0_15": "{span.line}[1. लेडजर पर पुष्टि के साथ मुद्दे सही किए गए हैं।]\n{span.line}[2. लेडजर से पुष्टि के लिए प्रतीक्षा समय बढ़ा दिया गया है।]\n{span.line}[3. एरर संदेशों में विस्तृत जानकारी जोड़ी गई है।]",
@@ -2255,7 +2260,6 @@
           "1_0_27": "{span.line}[1. पोर्टफोलियो में \"मेरी संपत्ति\" श्रेणी को जोड़ा गया।]\n{span.line}[2. मामूली बग्स सही किए गए हैं।]",
           "1_0_28": "{span.line}[1. मौजूदा खातों को मोबाइल में आयात करने के लिए फंक्शन जोड़ा गया।]\n{span.line}[2. मामूली बग्स सही किए गए हैं।]",
           "1_0_29": "{span.line}[1. सिरिलिक वर्णमाला का उपयोग कर क्यूआर कोड उत्पन्न सही की गई है।]\n{span.line}[2. वॉचलिस्ट खोज का टूलटिप जोड़ा गया है।]\n{span.line}[3. इसके अलावा कॉस्मेटिक सुधार की गई है। ]",
-          "1_0_3": "{span.line}[1. अब आप पोर्टफोलियो पेज में आईडी द्वारा संपत्ति खोज सकते हैं।] {span.line}[2. अतिरिक्त मामूली बग्स सही किए गए हैं।]",
           "1_0_30": "{span.line}[1. सेट स्क्रिप्ट बटन को सेटिंग में सुरक्षा अनुभाग में ले जाया गया है।]\n{span.line}[2. प्रदर्शन में सुधार और कॉस्मेटिक परिवर्तन।]",
           "1_0_32": "{span.line}[1. बेटरटोकन्स ऑर्केल के साथ एकीकरण।]\n{span.line}[2. टोकन सत्यापन प्रोटोकॉल के लिए अतिरिक्त समर्थन।]\n{span.line}[3. कोइनोमाट के माध्यम से टोकन वापसी के लिए फिक्स्ड कमीशन लेखांकन।]",
           "1_0_33": "{span.line} [1. यदि आप वर्तमान बाजार दर से काफी भिन्न दर पर ऑर्डर देने का प्रयास करते हैं तो आपको एक सूचना प्राप्त होगी।] {span.line} [2. मामूली बग्स सही किए गए हैं।]",
@@ -2264,10 +2268,6 @@
           "1_0_40": "{span.line}[1. डेक्स अनुकूलन।]\n{span.line}[1. ब्राउज़र टैब शीर्षक में वर्तमान जोड़ी के लिए विनिमय दर जोड़ा गया।]\n{span.line}[1. मामूली बग्स सही किए गए हैं।]",
           "1_0_41": "{span.line}[1. डेक्स अनुकूलन।]\n{span.line}[1. सूचना प्रणाली जोड़ा गया।]\n{span.line}[1. मामूली बग्स सही किए गए हैं।]",
           "1_0_42": "{span.line}[1. मामूली बग्स सुधार किए गए हैं।]",
-          "1_0_5": "{span.line}[1. डेक्स चार्ट्स पर ट्रेड वॉल्यूम स्केल जोड़ा गया है।]\n{span.line}[2. अतिरिक्त मामूली बग्स सुधार किए गए हैं।]",
-          "1_0_6": "{span.line}[1. वेव्स डेस्कटॉप क्लाइंट के माध्यम से प्राधिकरण जोड़ा गया है।]",
-          "1_0_7": "{span.line}[1. कुछ डेस्कटॉप-क्लाइंट क्रैश ठीक किए गए थे।]\n{span.line}[2. बड़ी कंटेंट के साथ TX और पोर्टफोलियो पृष्ठों के बीच अनुकूलित स्विचिंग।]\n{span.line}[3. स्पैम टोकन के नाम TX सूची में छिपे हुए हैं।]\n{span.line}[4. एरर संदेश आउटपुट पुन: प्रकाशित किया गया है।]",
-          "1_0_8": "{span.line}[1. लेडजर नैनो एस सपोर्ट को जोड़ा गया है।]\n{span.line}[2. अपनी पसंद की प्राधिकरण पद्धति को सहेजने का एक नया विकल्प जोड़ा गया है।]",
           "1_1_0": "{span.line}[1. Order expiration period is now saved by default.]\n{span.line}[2. Fixed minor bugs.]",
           "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
           "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
@@ -2276,13 +2276,13 @@
           "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_3_0": "{span.line}[1. Improved app navigation and start page interface.]",
-          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
-          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
           "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
-          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
           "1_3_7": "{span.line}[1. Integration with [tokenrating.decentralscan.com](https://tokenrating.decentralscan.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
           "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
           "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
         },
@@ -2636,6 +2636,14 @@
       "createToken": "Create token",
       "currentAccountName": "Current account name",
       "dashboard": "Dashboard",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "0.003 DCC per order filled",
+      "decentralchainWallet": "DCC Wallet",
       "decentralized": "decentralized",
       "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
       "dexWithHardware": "Use DEX with hardware wallets Ledger Nano S and Ledger Blue",
@@ -2662,15 +2670,15 @@
       "legal": "Legal",
       "linux": "Linux",
       "linuxDescription": "Download Linux application",
-      "logout": "Log Out",
       "logOut": "Log Out",
+      "logout": "Log Out",
       "low": "24 LOW",
       "lowFixedFees": "Low, fixed fees",
       "macOs": "MacOS",
       "macOsDescription": "Download MacOS application",
       "mailto": "support.decentralchain.io",
-      "mailtoVordex": "support@vordex.com",
       "mailtoDecentralChainExchange": "support@decentral.exchange",
+      "mailtoVordex": "support@vordex.com",
       "mainPage": "Main page",
       "majorFiatCryptocurrencies": "Major fiat and cryptocurrencies supported: BTC, LTC, ETH, USD, and others",
       "markets": "Markets",
@@ -2716,14 +2724,6 @@
       "twitter": "Twitter",
       "volume": "VOLUME",
       "wallet": "Wallet",
-      "decentralchainBlockchain": "DecentralChain Blockchain",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
-      "dccExplorer": "DecentralScan",
-      "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
-      "decentralchainLabs": "DecentralChain Labs",
-      "decentralchainOrderFilled": "0.003 DCC per order filled",
-      "decentralchainWallet": "DCC Wallet",
       "windows": "Windows",
       "windowsDescription": "Download Windows application"
     }

@@ -24,9 +24,9 @@ export function get(asset1: string, asset2: string): Promise<IOrderBook> {
 function remapOrderBook(orderBook, pair: AssetPair): IOrderBook {
   const remap = remapOrder(pair);
   return {
-    pair,
-    bids: orderBook.bids.map(remap),
     asks: orderBook.asks.map(remap),
+    bids: orderBook.bids.map(remap),
+    pair,
   };
 }
 

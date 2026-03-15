@@ -61,17 +61,17 @@ const ChevronIcon = styled.div`
  * Size styles
  */
 const sizeStyles = {
-  small: css`
-    padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
-    font-size: ${(p) => p.theme.fontSizes.sm};
+  large: css`
+    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.lg};
+    font-size: ${(p) => p.theme.fontSizes.lg};
   `,
   medium: css`
     padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
     font-size: ${(p) => p.theme.fontSizes.md};
   `,
-  large: css`
-    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.lg};
-    font-size: ${(p) => p.theme.fontSizes.lg};
+  small: css`
+    padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
+    font-size: ${(p) => p.theme.fontSizes.sm};
   `,
 };
 

@@ -166,13 +166,13 @@ export const QRCode: React.FC<QRCodeProps> = ({
   };
 
   const qrProps = {
-    value,
-    size,
     bgColor,
     fgColor,
-    level,
-    includeMargin,
     imageSettings,
+    includeMargin,
+    level,
+    size,
+    value,
   };
 
   const qrElement =

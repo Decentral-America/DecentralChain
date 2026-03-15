@@ -187,10 +187,10 @@ export function useFormTracking(formName: string) {
   };
 
   return {
-    trackStart,
     trackComplete,
     trackError,
     trackFieldChange,
+    trackStart,
   };
 }
 

@@ -138,10 +138,10 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
 
         // Open the new modal
         newModals[id] = {
-          open: true,
-          props: props || {},
           onClose: options?.onClose,
+          open: true,
           priority: options?.priority ?? 0,
+          props: props || {},
         };
 
         // Notify modal count change
@@ -252,13 +252,13 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
   }, [modals]);
 
   const value: ModalContextType = {
-    openModal,
-    closeModal,
     closeAllModals,
-    isModalOpen,
+    closeModal,
     getModalState,
     getOpenModals,
+    isModalOpen,
     modals,
+    openModal,
   };
 
   return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;
@@ -291,13 +291,13 @@ export const useModalControl = (
   const { openModal, closeModal, isModalOpen, getModalState } = useModal();
 
   return {
+    close: useCallback(() => closeModal(modalId), [closeModal, modalId]),
     isOpen: isModalOpen(modalId),
     open: useCallback(
       (props?: Record<string, unknown>, options?: ModalOptions) =>
         openModal(modalId, props, options),
       [openModal, modalId],
     ),
-    close: useCallback(() => closeModal(modalId), [closeModal, modalId]),
     state: getModalState(modalId),
   };
 };

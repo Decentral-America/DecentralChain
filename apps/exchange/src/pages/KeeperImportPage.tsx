@@ -67,54 +67,75 @@ enum Phase {
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  padding: theme.spacing(4),
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%)'
       : 'linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 50%, #f0f4ff 100%)',
-  position: 'relative',
+  minHeight: '100vh',
   overflow: 'hidden',
+  padding: theme.spacing(4),
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
 }));
 
 const FloatingShape = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+  animation: `\${float} 8s ease-in-out infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'radial-gradient(circle, rgba(31, 90, 246, 0.15) 0%, rgba(31, 90, 246, 0) 70%)'
       : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
-  animation: `\${float} 8s ease-in-out infinite`,
+  borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
   pointerEvents: 'none',
+  position: 'absolute',
 }));
 
 const ContentWrapper = styled(Box)({
-  maxWidth: '800px',
   margin: '0 auto',
+  maxWidth: '800px',
   position: 'relative',
   zIndex: 1,
 });
 
 const MainCard = styled(Paper)(({ theme }) => ({
+  backdropFilter: 'blur(24px)',
   background:
     theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-  backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(5),
   border: `1px solid \${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 12px 48px rgba(0, 0, 0, 0.5)'
       : '0 12px 48px rgba(0, 0, 0, 0.08)',
+  padding: theme.spacing(5),
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(3),
   },
 }));
 
 const AccountCard = styled(Paper)<{ selected?: boolean }>(({ theme, selected }) => ({
+  '&::before': selected
+    ? {
+        animation: `\${shimmer} 2s infinite`,
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+        content: '""',
+        height: '100%',
+        left: '-100%',
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+      }
+    : {},
+  '&:hover': {
+    borderColor: theme.palette.primary.main,
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 12px 40px rgba(31, 90, 246, 0.3)'
+        : '0 12px 40px rgba(31, 90, 246, 0.2)',
+    transform: 'translateY(-6px)',
+  },
+  backdropFilter: 'blur(10px)',
   background: selected
     ? theme.palette.mode === 'dark'
       ? 'rgba(31, 90, 246, 0.15)'
@@ -122,57 +143,36 @@ const AccountCard = styled(Paper)<{ selected?: boolean }>(({ theme, selected }) 
     : theme.palette.mode === 'dark'
       ? 'rgba(26, 31, 58, 0.6)'
       : 'rgba(255, 255, 255, 0.8)',
-  backdropFilter: 'blur(10px)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(3),
   border: `2px solid \${selected ? theme.palette.primary.main : 'transparent'}`,
+  borderRadius: theme.spacing(2),
   cursor: 'pointer',
-  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-  position: 'relative',
   overflow: 'hidden',
-  '&:hover': {
-    transform: 'translateY(-6px)',
-    boxShadow:
-      theme.palette.mode === 'dark'
-        ? '0 12px 40px rgba(31, 90, 246, 0.3)'
-        : '0 12px 40px rgba(31, 90, 246, 0.2)',
-    borderColor: theme.palette.primary.main,
-  },
-  '&::before': selected
-    ? {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: '-100%',
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-        animation: `\${shimmer} 2s infinite`,
-      }
-    : {},
+  padding: theme.spacing(3),
+  position: 'relative',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 }));
 
 const IconContainer = styled(Box)(({ theme }) => ({
-  width: '100px',
-  height: '100px',
-  margin: '0 auto',
-  borderRadius: '50%',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  animation: `\${pulse} 3s ease-in-out infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.2) 0%, rgba(90, 129, 255, 0.2) 100%)'
       : 'linear-gradient(135deg, rgba(31, 90, 246, 0.1) 0%, rgba(90, 129, 255, 0.1) 100%)',
   border: `3px solid \${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.3)' : 'rgba(31, 90, 246, 0.2)'}`,
-  animation: `\${pulse} 3s ease-in-out infinite`,
+  borderRadius: '50%',
+  display: 'flex',
+  height: '100px',
+  justifyContent: 'center',
+  margin: '0 auto',
   marginBottom: theme.spacing(3),
+  width: '100px',
 }));
 
 const SuccessCheckmark = styled(CheckCircleIcon)(({ theme }) => ({
-  fontSize: '100px',
-  color: theme.palette.success.main,
   animation: `\${checkmark} 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)`,
+  color: theme.palette.success.main,
+  fontSize: '100px',
 }));
 
 export const KeeperImportPage: React.FC = () => {
@@ -190,8 +190,8 @@ export const KeeperImportPage: React.FC = () => {
     message: string;
     severity: 'success' | 'error' | 'info';
   }>({
-    open: false,
     message: '',
+    open: false,
     severity: 'info',
   });
   const [isVisible, setIsVisible] = useState(false);
@@ -273,8 +273,8 @@ export const KeeperImportPage: React.FC = () => {
       setPhase(Phase.ACCOUNTS);
       setLoading(false);
       setSnackbar({
-        open: true,
         message: 'Connected to Keeper Wallet successfully!',
+        open: true,
         severity: 'success',
       });
     } catch (error: unknown) {
@@ -286,8 +286,8 @@ export const KeeperImportPage: React.FC = () => {
           case 1:
             setErrorCode(KeeperErrorCode.NO_PERMISSION);
             setSnackbar({
-              open: true,
               message: 'Permission denied. Please approve the connection in Keeper.',
+              open: true,
               severity: 'error',
             });
             break;
@@ -299,8 +299,8 @@ export const KeeperImportPage: React.FC = () => {
         }
       } else {
         setSnackbar({
-          open: true,
           message: 'Failed to connect to Keeper Wallet',
+          open: true,
           severity: 'error',
         });
       }
@@ -324,20 +324,20 @@ export const KeeperImportPage: React.FC = () => {
 
       addAccount(selectedUser.address, name || 'Keeper Account');
 
-      setSnackbar({ open: true, message: 'Account imported successfully!', severity: 'success' });
+      setSnackbar({ message: 'Account imported successfully!', open: true, severity: 'success' });
 
       setTimeout(() => {
         navigate('/wallet');
       }, 1500);
     } catch {
       setLoading(false);
-      setSnackbar({ open: true, message: 'Failed to import account', severity: 'error' });
+      setSnackbar({ message: 'Failed to import account', open: true, severity: 'error' });
     }
   };
 
   const handleCopyAddress = (address: string) => {
     navigator.clipboard.writeText(address);
-    setSnackbar({ open: true, message: 'Address copied to clipboard', severity: 'success' });
+    setSnackbar({ message: 'Address copied to clipboard', open: true, severity: 'success' });
   };
 
   const handleRetry = () => {
@@ -351,31 +351,31 @@ export const KeeperImportPage: React.FC = () => {
     return (
       <Fade in={isVisible} timeout={600}>
         <PageContainer>
-          <FloatingShape sx={{ width: '500px', height: '500px', top: '-150px', left: '-100px' }} />
+          <FloatingShape sx={{ height: '500px', left: '-100px', top: '-150px', width: '500px' }} />
           <FloatingShape
             sx={{
-              width: '400px',
-              height: '400px',
-              bottom: '-100px',
-              right: '-100px',
               animationDelay: '2s',
+              bottom: '-100px',
+              height: '400px',
+              right: '-100px',
+              width: '400px',
             }}
           />
           <FloatingShape
-            sx={{ width: '300px', height: '300px', top: '50%', right: '10%', animationDelay: '4s' }}
+            sx={{ animationDelay: '4s', height: '300px', right: '10%', top: '50%', width: '300px' }}
           />
 
           <ContentWrapper>
             <Typography
               variant="h3"
               sx={{
+                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                fontSize: { sm: '2.5rem', xs: '2rem' },
                 fontWeight: 800,
                 mb: 1,
                 textAlign: 'center',
-                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontSize: { xs: '2rem', sm: '2.5rem' },
               }}
             >
               Import from Keeper Wallet
@@ -384,10 +384,10 @@ export const KeeperImportPage: React.FC = () => {
             <Typography
               variant="body1"
               sx={{
-                textAlign: 'center',
                 color: 'text.secondary',
                 mb: 5,
                 px: 2,
+                textAlign: 'center',
               }}
             >
               Connect your Keeper browser extension to import your account
@@ -397,7 +397,7 @@ export const KeeperImportPage: React.FC = () => {
               {errorCode === KeeperErrorCode.NOT_INSTALLED ? (
                 <Grow in timeout={800}>
                   <Box sx={{ textAlign: 'center' }}>
-                    <ErrorIcon sx={{ fontSize: '80px', color: 'error.main', mb: 3 }} />
+                    <ErrorIcon sx={{ color: 'error.main', fontSize: '80px', mb: 3 }} />
                     <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
                       Keeper Wallet Not Found
                     </Typography>
@@ -431,7 +431,7 @@ export const KeeperImportPage: React.FC = () => {
               ) : (
                 <Box sx={{ textAlign: 'center' }}>
                   <IconContainer>
-                    <ExtensionIcon sx={{ fontSize: '50px', color: 'primary.main' }} />
+                    <ExtensionIcon sx={{ color: 'primary.main', fontSize: '50px' }} />
                   </IconContainer>
                   <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                     Detecting Keeper Wallet...
@@ -454,14 +454,14 @@ export const KeeperImportPage: React.FC = () => {
     return (
       <Slide in direction="left" timeout={500}>
         <PageContainer>
-          <FloatingShape sx={{ width: '500px', height: '500px', top: '-150px', left: '-100px' }} />
+          <FloatingShape sx={{ height: '500px', left: '-100px', top: '-150px', width: '500px' }} />
           <FloatingShape
             sx={{
-              width: '400px',
-              height: '400px',
-              bottom: '-100px',
-              right: '-100px',
               animationDelay: '2s',
+              bottom: '-100px',
+              height: '400px',
+              right: '-100px',
+              width: '400px',
             }}
           />
 
@@ -469,13 +469,13 @@ export const KeeperImportPage: React.FC = () => {
             <Typography
               variant="h3"
               sx={{
+                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                fontSize: { sm: '2.5rem', xs: '2rem' },
                 fontWeight: 800,
                 mb: 1,
                 textAlign: 'center',
-                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontSize: { xs: '2rem', sm: '2.5rem' },
               }}
             >
               Connect Keeper Wallet
@@ -484,35 +484,35 @@ export const KeeperImportPage: React.FC = () => {
             <Typography
               variant="body1"
               sx={{
-                textAlign: 'center',
                 color: 'text.secondary',
                 mb: 5,
+                textAlign: 'center',
               }}
             >
               Grant permission to access your Keeper accounts
             </Typography>
 
             <MainCard>
-              <Box sx={{ textAlign: 'center', mb: 4 }}>
+              <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <SuccessCheckmark />
-                <Typography variant="h6" sx={{ fontWeight: 600, color: 'success.main', mt: 2 }}>
+                <Typography variant="h6" sx={{ color: 'success.main', fontWeight: 600, mt: 2 }}>
                   Keeper Wallet Detected!
                 </Typography>
               </Box>
 
               <Paper
                 sx={{
-                  p: 3,
-                  mb: 3,
                   background: (theme) =>
                     theme.palette.mode === 'dark'
                       ? 'rgba(31, 90, 246, 0.1)'
                       : 'rgba(31, 90, 246, 0.05)',
                   border: (_theme) => `1px solid \${_theme.palette.primary.main}30`,
+                  mb: 3,
+                  p: 3,
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                  <SecurityIcon sx={{ fontSize: '32px', color: 'primary.main' }} />
+                <Box sx={{ alignItems: 'center', display: 'flex', gap: 2, mb: 2 }}>
+                  <SecurityIcon sx={{ color: 'primary.main', fontSize: '32px' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Permission Request
                   </Typography>
@@ -635,14 +635,14 @@ export const KeeperImportPage: React.FC = () => {
     return (
       <Slide in direction="left" timeout={500}>
         <PageContainer>
-          <FloatingShape sx={{ width: '500px', height: '500px', top: '-150px', left: '-100px' }} />
+          <FloatingShape sx={{ height: '500px', left: '-100px', top: '-150px', width: '500px' }} />
           <FloatingShape
             sx={{
-              width: '400px',
-              height: '400px',
-              bottom: '-100px',
-              right: '-100px',
               animationDelay: '2s',
+              bottom: '-100px',
+              height: '400px',
+              right: '-100px',
+              width: '400px',
             }}
           />
 
@@ -650,13 +650,13 @@ export const KeeperImportPage: React.FC = () => {
             <Typography
               variant="h3"
               sx={{
+                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                fontSize: { sm: '2.5rem', xs: '2rem' },
                 fontWeight: 800,
                 mb: 1,
                 textAlign: 'center',
-                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontSize: { xs: '2rem', sm: '2.5rem' },
               }}
             >
               Select Account
@@ -665,9 +665,9 @@ export const KeeperImportPage: React.FC = () => {
             <Typography
               variant="body1"
               sx={{
-                textAlign: 'center',
                 color: 'text.secondary',
                 mb: 5,
+                textAlign: 'center',
               }}
             >
               Choose which account you want to import
@@ -688,41 +688,41 @@ export const KeeperImportPage: React.FC = () => {
                             size="small"
                             icon={<CheckCircleIcon />}
                             sx={{
-                              position: 'absolute',
-                              top: 16,
-                              right: 16,
                               background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                               color: 'white',
+                              position: 'absolute',
+                              right: 16,
+                              top: 16,
                             }}
                           />
                         )}
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <Box sx={{ alignItems: 'center', display: 'flex', gap: 3 }}>
                           <Box
                             sx={{
-                              width: '64px',
-                              height: '64px',
-                              borderRadius: '50%',
-                              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-                              display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center',
+                              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                              borderRadius: '50%',
+                              display: 'flex',
                               flexShrink: 0,
+                              height: '64px',
+                              justifyContent: 'center',
+                              width: '64px',
                             }}
                           >
-                            <WalletIcon sx={{ fontSize: '32px', color: 'white' }} />
+                            <WalletIcon sx={{ color: 'white', fontSize: '32px' }} />
                           </Box>
 
                           <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
                               {user.name || 'Keeper Account'}
                             </Typography>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  fontFamily: 'monospace',
                                   color: 'text.secondary',
+                                  fontFamily: 'monospace',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
                                 }}
@@ -772,14 +772,14 @@ export const KeeperImportPage: React.FC = () => {
   return (
     <Slide in direction="left" timeout={500}>
       <PageContainer>
-        <FloatingShape sx={{ width: '500px', height: '500px', top: '-150px', left: '-100px' }} />
+        <FloatingShape sx={{ height: '500px', left: '-100px', top: '-150px', width: '500px' }} />
         <FloatingShape
           sx={{
-            width: '400px',
-            height: '400px',
-            bottom: '-100px',
-            right: '-100px',
             animationDelay: '2s',
+            bottom: '-100px',
+            height: '400px',
+            right: '-100px',
+            width: '400px',
           }}
         />
 
@@ -787,13 +787,13 @@ export const KeeperImportPage: React.FC = () => {
           <Typography
             variant="h3"
             sx={{
+              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+              fontSize: { sm: '2.5rem', xs: '2rem' },
               fontWeight: 800,
               mb: 1,
               textAlign: 'center',
-              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              fontSize: { xs: '2rem', sm: '2.5rem' },
             }}
           >
             Confirm Import
@@ -802,9 +802,9 @@ export const KeeperImportPage: React.FC = () => {
           <Typography
             variant="body1"
             sx={{
-              textAlign: 'center',
               color: 'text.secondary',
               mb: 5,
+              textAlign: 'center',
             }}
           >
             Review your account details and complete the import
@@ -813,35 +813,35 @@ export const KeeperImportPage: React.FC = () => {
           <MainCard>
             <Paper
               sx={{
-                p: 3,
-                mb: 3,
                 background: (theme) =>
                   theme.palette.mode === 'dark'
                     ? 'rgba(31, 90, 246, 0.1)'
                     : 'rgba(31, 90, 246, 0.05)',
                 border: (_theme) => `1px solid \${_theme.palette.primary.main}30`,
+                mb: 3,
+                p: 3,
               }}
             >
               <Typography
                 variant="overline"
-                sx={{ color: 'text.secondary', mb: 2, display: 'block' }}
+                sx={{ color: 'text.secondary', display: 'block', mb: 2 }}
               >
                 Selected Account
               </Typography>
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+              <Box sx={{ alignItems: 'center', display: 'flex', gap: 2, mb: 2 }}>
                 <Box
                   sx={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-                    display: 'flex',
                     alignItems: 'center',
+                    background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    height: '48px',
                     justifyContent: 'center',
+                    width: '48px',
                   }}
                 >
-                  <WalletIcon sx={{ fontSize: '24px', color: 'white' }} />
+                  <WalletIcon sx={{ color: 'white', fontSize: '24px' }} />
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="body1" sx={{ fontWeight: 600 }}>
@@ -849,7 +849,7 @@ export const KeeperImportPage: React.FC = () => {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ fontFamily: 'monospace', color: 'text.secondary' }}
+                    sx={{ color: 'text.secondary', fontFamily: 'monospace' }}
                   >
                     {selectedUser?.address}
                   </Typography>
@@ -920,7 +920,7 @@ export const KeeperImportPage: React.FC = () => {
           open={snackbar.open}
           autoHideDuration={4000}
           onClose={() => setSnackbar({ ...snackbar, open: false })}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
         >
           <Alert
             severity={snackbar.severity}

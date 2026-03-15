@@ -255,7 +255,7 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   showXAxis = true,
   showYAxis = true,
   formatDate = (timestamp) =>
-    new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    new Date(timestamp).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
   formatRate = (rate) => rate.toFixed(2),
   showTooltip = true,
   smooth = true,
@@ -268,10 +268,10 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   // Calculate chart dimensions and scales
   const { viewBox, scales, path, areaPath, points } = useMemo(() => {
     if (!data || data.length === 0) {
-      return { viewBox: '0 0 100 100', scales: null, path: '', areaPath: '', points: [] };
+      return { areaPath: '', path: '', points: [], scales: null, viewBox: '0 0 100 100' };
     }
 
-    const padding = { top: 20, right: 20, bottom: 40, left: 60 };
+    const padding = { bottom: 40, left: 60, right: 20, top: 20 };
     const chartWidth = 800;
     const chartHeight = height;
     const innerWidth = chartWidth - padding.left - padding.right;
@@ -332,21 +332,21 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
     } L ${pathPoints[0]?.x} ${padding.top + innerHeight} Z`;
 
     return {
-      viewBox: `0 0 ${chartWidth} ${chartHeight}`,
+      areaPath: areaD,
+      path: pathD,
+      points: pathPoints,
       scales: {
+        innerHeight,
+        innerWidth,
+        maxRate,
+        maxTimestamp,
+        minRate,
+        minTimestamp,
+        padding,
         x: scaleX,
         y: scaleY,
-        minRate,
-        maxRate,
-        minTimestamp,
-        maxTimestamp,
-        innerWidth,
-        innerHeight,
-        padding,
       },
-      path: pathD,
-      areaPath: areaD,
-      points: pathPoints,
+      viewBox: `0 0 ${chartWidth} ${chartHeight}`,
     };
   }, [data, height, smooth]);
 
@@ -366,7 +366,7 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   if (!scales) {
     return (
       <ChartContainer className={className}>
-        <div style={{ textAlign: 'center', paddingTop: '80px', color: '#999' }}>
+        <div style={{ color: '#999', paddingTop: '80px', textAlign: 'center' }}>
           No data available
         </div>
       </ChartContainer>

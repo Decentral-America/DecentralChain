@@ -178,10 +178,10 @@ export const PasswordProtection = ({
   // Password requirements
   const requirements = {
     length: password.length >= 12,
-    uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
     number: /[0-9]/.test(password),
     special: /[^a-zA-Z0-9]/.test(password),
+    uppercase: /[A-Z]/.test(password),
   };
 
   const handleEncrypt = async () => {

@@ -296,7 +296,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
 
       {sortedAccounts.length === 0 && (
         <Stack gap="16px">
-          <p style={{ textAlign: 'center', opacity: 0.6 }}>No accounts found in vault</p>
+          <p style={{ opacity: 0.6, textAlign: 'center' }}>No accounts found in vault</p>
           {onBack && (
             <Button onClick={onBack} variant="secondary" fullWidth>
               Go Back

@@ -255,7 +255,7 @@ For support, visit: https://decentralchain.io/support
               ) : (
                 <div style={{ textAlign: 'center' }}>
                   <Icon name={CommonIcons.Info} size={48} color="secondary" />
-                  <p style={{ marginTop: '12px', color: 'inherit' }}>
+                  <p style={{ color: 'inherit', marginTop: '12px' }}>
                     Click below to reveal your seed phrase
                   </p>
                 </div>

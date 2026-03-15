@@ -127,10 +127,10 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
       // Create backup data matching Angular format
       const backupData = {
-        type: 'dccBackup',
-        lastOpenVersion: settings.lastOpenVersion,
         data: selectedUsers,
+        lastOpenVersion: settings.lastOpenVersion,
         time: Date.now(),
+        type: 'dccBackup',
       };
 
       // Download as JSON file
@@ -166,7 +166,7 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
         {userList.length > 0 && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 500, color: '#757575' }}>
+              <span style={{ color: '#757575', fontSize: '13px', fontWeight: 500 }}>
                 Select Accounts ({selectedAddresses.size} of {userList.length})
               </span>
               <div style={{ display: 'flex', gap: '12px' }}>
@@ -175,13 +175,13 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
                     type="button"
                     onClick={selectAll}
                     style={{
-                      fontSize: '13px',
-                      color: '#2196f3',
-                      cursor: 'pointer',
                       background: 'none',
                       border: 'none',
-                      padding: 0,
+                      color: '#2196f3',
+                      cursor: 'pointer',
                       font: 'inherit',
+                      fontSize: '13px',
+                      padding: 0,
                     }}
                   >
                     Select All
@@ -192,13 +192,13 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
                     type="button"
                     onClick={unselectAll}
                     style={{
-                      fontSize: '13px',
-                      color: '#2196f3',
-                      cursor: 'pointer',
                       background: 'none',
                       border: 'none',
-                      padding: 0,
+                      color: '#2196f3',
+                      cursor: 'pointer',
                       font: 'inherit',
+                      fontSize: '13px',
+                      padding: 0,
                     }}
                   >
                     Unselect All

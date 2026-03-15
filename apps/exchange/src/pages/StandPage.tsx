@@ -51,53 +51,53 @@ const gradientShift = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  padding: theme.spacing(4),
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
-  position: 'relative',
+  minHeight: '100vh',
   overflow: 'hidden',
+  padding: theme.spacing(4),
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
 }));
 
 const FloatingShape = styled(Box)<{ delay?: number }>(({ theme, delay = 0 }) => ({
-  position: 'absolute',
-  borderRadius: '50%',
-  background: `linear-gradient(135deg, ${theme.palette.primary.main}40, ${theme.palette.secondary.main}40)`,
   animation: `${float} ${6 + delay}s ease-in-out infinite`,
   animationDelay: `${delay}s`,
+  background: `linear-gradient(135deg, ${theme.palette.primary.main}40, ${theme.palette.secondary.main}40)`,
+  borderRadius: '50%',
   pointerEvents: 'none',
+  position: 'absolute',
   zIndex: 0,
 }));
 
 const ContentWrapper = styled(Box)({
-  maxWidth: '1400px',
   margin: '0 auto',
+  maxWidth: '1400px',
   position: 'relative',
   zIndex: 1,
 });
 
 const HeroSection = styled(Box)(({ theme }) => ({
-  textAlign: 'center',
   marginBottom: theme.spacing(6),
+  textAlign: 'center',
   [theme.breakpoints.down('sm')]: {
     marginBottom: theme.spacing(4),
   },
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
+  animation: `${gradientShift} 3s linear infinite`,
+  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 50%, #8b5cf6 100%)',
+  backgroundSize: '200% auto',
   fontSize: '3.5rem',
   fontWeight: 800,
-  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 50%, #8b5cf6 100%)',
+  marginBottom: theme.spacing(2),
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
-  marginBottom: theme.spacing(2),
-  backgroundSize: '200% auto',
-  animation: `${gradientShift} 3s linear infinite`,
   [theme.breakpoints.down('md')]: {
     fontSize: '2.5rem',
   },
@@ -107,8 +107,8 @@ const Title = styled(Typography)(({ theme }) => ({
 }));
 
 const Subtitle = styled(Typography)(({ theme }) => ({
-  fontSize: '1.25rem',
   color: theme.palette.text.secondary,
+  fontSize: '1.25rem',
   marginBottom: theme.spacing(4),
   [theme.breakpoints.down('sm')]: {
     fontSize: '1rem',
@@ -116,102 +116,102 @@ const Subtitle = styled(Typography)(({ theme }) => ({
 }));
 
 const ShowcaseCard = styled(Paper)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-  backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(4),
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? '0 8px 32px rgba(0, 0, 0, 0.4)'
-      : '0 8px 32px rgba(0, 0, 0, 0.08)',
-  transition: 'all 0.3s ease',
   '&:hover': {
-    transform: 'translateY(-4px)',
     boxShadow:
       theme.palette.mode === 'dark'
         ? '0 12px 40px rgba(31, 90, 246, 0.3)'
         : '0 12px 40px rgba(31, 90, 246, 0.2)',
+    transform: 'translateY(-4px)',
   },
+  backdropFilter: 'blur(24px)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(3),
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? '0 8px 32px rgba(0, 0, 0, 0.4)'
+      : '0 8px 32px rgba(0, 0, 0, 0.08)',
+  padding: theme.spacing(4),
+  transition: 'all 0.3s ease',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(3),
   },
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
+  alignItems: 'center',
+  color: theme.palette.text.primary,
+  display: 'flex',
   fontSize: '1.5rem',
   fontWeight: 700,
-  color: theme.palette.text.primary,
-  marginBottom: theme.spacing(3),
-  display: 'flex',
-  alignItems: 'center',
   gap: theme.spacing(1),
+  marginBottom: theme.spacing(3),
 }));
 
 const DemoGroup = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(4),
   '&:last-child': {
     marginBottom: 0,
   },
+  marginBottom: theme.spacing(4),
 }));
 
 const DemoLabel = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
   fontSize: '0.875rem',
   fontWeight: 600,
-  color: theme.palette.text.secondary,
+  letterSpacing: '0.5px',
   marginBottom: theme.spacing(2),
   textTransform: 'uppercase',
-  letterSpacing: '0.5px',
 }));
 
 const ColorSwatch = styled(Box)<{ color: string }>(({ theme, color }) => ({
-  width: '100%',
-  height: 80,
-  borderRadius: theme.spacing(2),
-  background: color,
-  border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
-  position: 'relative',
-  overflow: 'hidden',
-  cursor: 'pointer',
-  transition: 'transform 0.3s ease',
+  '&::after': {
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)',
+    bottom: 0,
+    content: '""',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   '&:hover': {
     transform: 'scale(1.05)',
   },
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)',
-  },
+  background: color,
+  border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+  borderRadius: theme.spacing(2),
+  cursor: 'pointer',
+  height: 80,
+  overflow: 'hidden',
+  position: 'relative',
+  transition: 'transform 0.3s ease',
+  width: '100%',
 }));
 
 const CodeBlock = styled(Box)(({ theme }) => ({
-  background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f5f5f5',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(3),
-  fontFamily: "'Fira Code', 'Courier New', monospace",
-  fontSize: '0.875rem',
-  color: theme.palette.text.primary,
-  overflowX: 'auto',
-  position: 'relative',
-  border: `1px solid ${theme.palette.divider}`,
   '& pre': {
     margin: 0,
   },
+  background: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f5f5f5',
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.spacing(2),
+  color: theme.palette.text.primary,
+  fontFamily: "'Fira Code', 'Courier New', monospace",
+  fontSize: '0.875rem',
+  overflowX: 'auto',
+  padding: theme.spacing(3),
+  position: 'relative',
 }));
 
 const CopyButton = styled(IconButton)(({ theme }) => ({
-  position: 'absolute',
-  top: theme.spacing(1),
-  right: theme.spacing(1),
-  background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
   '&:hover': {
     background: theme.palette.primary.main,
     color: 'white',
   },
+  background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: theme.spacing(1),
 }));
 
 interface TabPanelProps {
@@ -245,8 +245,8 @@ export const StandPage: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [sliderValue, setSliderValue] = useState(50);
   const [snackbar, setSnackbar] = useState({
-    open: false,
     message: '',
+    open: false,
     severity: 'success' as 'success' | 'info' | 'warning' | 'error',
   });
 
@@ -266,7 +266,7 @@ export const StandPage: React.FC = () => {
     message: string,
     severity: 'success' | 'info' | 'warning' | 'error' = 'success',
   ) => {
-    setSnackbar({ open: true, message, severity });
+    setSnackbar({ message, open: true, severity });
   };
 
   const handleCopyCode = (code: string) => {
@@ -276,43 +276,43 @@ export const StandPage: React.FC = () => {
 
   const colors = [
     {
+      gradient: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
       name: 'Primary',
       value: '#1f5af6',
-      gradient: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
     },
     {
+      gradient: 'linear-gradient(135deg, #6c757d 0%, #adb5bd 100%)',
       name: 'Secondary',
       value: '#6c757d',
-      gradient: 'linear-gradient(135deg, #6c757d 0%, #adb5bd 100%)',
     },
     {
+      gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
       name: 'Success',
       value: '#10b981',
-      gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
     },
     {
+      gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
       name: 'Warning',
       value: '#f59e0b',
-      gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
     },
     {
+      gradient: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)',
       name: 'Error',
       value: '#ef4444',
-      gradient: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)',
     },
     {
+      gradient: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
       name: 'Info',
       value: '#3b82f6',
-      gradient: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
     },
   ];
 
   return (
     <PageContainer>
       {/* Floating Shapes */}
-      <FloatingShape sx={{ width: 300, height: 300, top: '10%', left: '5%' }} delay={0} />
-      <FloatingShape sx={{ width: 200, height: 200, top: '60%', right: '10%' }} delay={2} />
-      <FloatingShape sx={{ width: 250, height: 250, bottom: '10%', left: '15%' }} delay={4} />
+      <FloatingShape sx={{ height: 300, left: '5%', top: '10%', width: 300 }} delay={0} />
+      <FloatingShape sx={{ height: 200, right: '10%', top: '60%', width: 200 }} delay={2} />
+      <FloatingShape sx={{ bottom: '10%', height: 250, left: '15%', width: 250 }} delay={4} />
       <ContentWrapper>
         <Fade in={isVisible} timeout={600}>
           <HeroSection>
@@ -331,22 +331,22 @@ export const StandPage: React.FC = () => {
               variant="scrollable"
               scrollButtons="auto"
               sx={{
-                borderBottom: 1,
-                borderColor: 'divider',
-                marginBottom: 3,
-                '& .MuiTab-root': {
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                },
                 '& .Mui-selected': {
                   color: 'primary.main',
                 },
-                '& .MuiTabs-indicator': {
-                  height: 3,
-                  borderRadius: '3px 3px 0 0',
-                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                '& .MuiTab-root': {
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
                 },
+                '& .MuiTabs-indicator': {
+                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                  borderRadius: '3px 3px 0 0',
+                  height: 3,
+                },
+                borderBottom: 1,
+                borderColor: 'divider',
+                marginBottom: 3,
               }}
             >
               <Tab icon={<TouchAppIcon />} iconPosition="start" label="Buttons & Inputs" />
@@ -360,16 +360,16 @@ export const StandPage: React.FC = () => {
                 {/* Buttons */}
                 <Grid
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <ShowcaseCard
                     elevation={0}
                     sx={{
+                      '&:hover': { transform: 'none' },
                       background: 'transparent',
                       boxShadow: 'none',
-                      '&:hover': { transform: 'none' },
                     }}
                   >
                     <SectionTitle>
@@ -402,7 +402,7 @@ export const StandPage: React.FC = () => {
 
                     <DemoGroup>
                       <DemoLabel>Sizes</DemoLabel>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+                      <Box sx={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                         <Button variant="contained" size="small">
                           Small
                         </Button>
@@ -454,16 +454,16 @@ export const StandPage: React.FC = () => {
                 {/* Inputs & Controls */}
                 <Grid
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <ShowcaseCard
                     elevation={0}
                     sx={{
+                      '&:hover': { transform: 'none' },
                       background: 'transparent',
                       boxShadow: 'none',
-                      '&:hover': { transform: 'none' },
                     }}
                   >
                     <SectionTitle>Inputs & Controls</SectionTitle>
@@ -561,9 +561,9 @@ export const StandPage: React.FC = () => {
                       <Grid
                         key={color.name}
                         size={{
-                          xs: 6,
-                          sm: 4,
                           md: 2,
+                          sm: 4,
+                          xs: 6,
                         }}
                       >
                         <Tooltip title={`Click to copy ${color.value}`} arrow>
@@ -574,17 +574,17 @@ export const StandPage: React.FC = () => {
                             />
                             <Typography
                               variant="caption"
-                              sx={{ display: 'block', mt: 1, textAlign: 'center', fontWeight: 600 }}
+                              sx={{ display: 'block', fontWeight: 600, mt: 1, textAlign: 'center' }}
                             >
                               {color.name}
                             </Typography>
                             <Typography
                               variant="caption"
                               sx={{
-                                display: 'block',
-                                textAlign: 'center',
                                 color: 'text.secondary',
+                                display: 'block',
                                 fontFamily: 'monospace',
+                                textAlign: 'center',
                               }}
                             >
                               {color.value}
@@ -599,12 +599,12 @@ export const StandPage: React.FC = () => {
                 {/* Progress Indicators */}
                 <Grid
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <SectionTitle>Circular Progress</SectionTitle>
-                  <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                     <Box sx={{ textAlign: 'center' }}>
                       <CircularProgress />
                       <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>
@@ -634,26 +634,26 @@ export const StandPage: React.FC = () => {
 
                 <Grid
                   size={{
-                    xs: 12,
                     md: 6,
+                    xs: 12,
                   }}
                 >
                   <SectionTitle>Linear Progress</SectionTitle>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <Box>
-                      <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
+                      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
                         Indeterminate
                       </Typography>
                       <LinearProgress />
                     </Box>
                     <Box>
-                      <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
+                      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
                         Determinate ({progress}%)
                       </Typography>
                       <LinearProgress variant="determinate" value={progress} />
                     </Box>
                     <Box>
-                      <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
+                      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
                         Buffer
                       </Typography>
                       <LinearProgress
@@ -836,7 +836,7 @@ const theme = createTheme({
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}

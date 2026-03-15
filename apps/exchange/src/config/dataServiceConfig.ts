@@ -19,42 +19,42 @@ export function initializeDataService(): void {
   const fullConfig = NetworkConfig.getFullConfig();
 
   logger.debug('[DataService] Initializing with complete mainnet config:', {
-    node: fullConfig.node,
     api: fullConfig.api,
-    matcher: fullConfig.matcher,
-    oracleDCC: fullConfig.oracles.dcc,
     assets: Object.keys(fullConfig.assets).length,
+    matcher: fullConfig.matcher,
+    node: fullConfig.node,
+    oracleDCC: fullConfig.oracles.dcc,
   });
 
   // Pass configuration fields that data-service's IConfigParams interface accepts
   // Extended fields (tradingPairs, gateway, etc.) accessed via NetworkConfig
   ds.config.setConfig({
-    // Core API endpoints
-    code: fullConfig.code,
-    node: fullConfig.node,
-    matcher: fullConfig.matcher,
     api: fullConfig.api,
     apiVersion: fullConfig.apiVersion,
+
+    // Asset mappings
+    assets: fullConfig.assets,
+    // Core API endpoints
+    code: fullConfig.code,
+
+    // Legacy/optional fields
+    coinomat: fullConfig.coinomat || '',
+    matcher: fullConfig.matcher,
+
+    // Additional fields for Angular compatibility
+    minimalSeedLength: 15,
+    node: fullConfig.node,
+    nodeList: fullConfig.nodeList,
 
     // Oracles for data providers
     oracleDCC: fullConfig.oracles.dcc,
     oracleTokenomica: fullConfig.oracles.tokenomica || '',
-
-    // Asset mappings
-    assets: fullConfig.assets,
+    remappedAssetNames: {},
+    rewriteAssets: {},
 
     // Support URLs
     support: fullConfig.support,
-    nodeList: fullConfig.nodeList,
-
-    // Legacy/optional fields
-    coinomat: fullConfig.coinomat || '',
     tokenrating: fullConfig.tokenrating || '',
-
-    // Additional fields for Angular compatibility
-    minimalSeedLength: 15,
-    remappedAssetNames: {},
-    rewriteAssets: {},
   });
 
   logger.debug(

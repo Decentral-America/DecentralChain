@@ -231,24 +231,24 @@ export const useBalanceWatcher = (options: BalanceWatcherOptions = {}): BalanceW
     if (process.env.NODE_ENV === 'development' && balances) {
       logger.debug('[useBalanceWatcher] Balance updated:', {
         address,
-        balance: balances.balance,
         assetsCount: Object.keys(balances.assets || {}).length,
+        balance: balances.balance,
       });
     }
   }, [balances, address]);
 
   return {
-    balances,
-    isLoading,
-    error: error as Error | null,
-    isFetching,
-    forceRefresh,
-    startPolling,
-    stopPolling,
-    isPolling: isPollingEnabled,
     address,
+    balances,
+    error: error as Error | null,
+    forceRefresh,
     getBalanceByAsset,
     getFullBalanceList,
+    isFetching,
+    isLoading,
+    isPolling: isPollingEnabled,
+    startPolling,
+    stopPolling,
   };
 };
 

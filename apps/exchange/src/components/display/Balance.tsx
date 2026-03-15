@@ -101,26 +101,26 @@ const getShortFormat = (bn: BigNumber): { value: string; suffix: string } => {
   if (bn.gte(1000000000)) {
     // Billions
     return {
-      value: bn.div(1000000000).toFixed(1),
       suffix: 'B',
+      value: bn.div(1000000000).toFixed(1),
     };
   } else if (bn.gte(1000000)) {
     // Millions
     return {
-      value: bn.div(1000000).toFixed(1),
       suffix: 'M',
+      value: bn.div(1000000).toFixed(1),
     };
   } else if (bn.gte(1000)) {
     // Thousands
     return {
-      value: bn.div(1000).toFixed(1),
       suffix: 'K',
+      value: bn.div(1000).toFixed(1),
     };
   }
 
   return {
-    value: bn.toFixed(0),
     suffix: '',
+    value: bn.toFixed(0),
   };
 };
 
@@ -151,9 +151,9 @@ export const Balance: React.FC<BalanceProps> = ({
       // Handle zero or very small numbers
       if (bn.isZero()) {
         return {
-          type: 'normal' as const,
-          integer: '0',
           decimal: '',
+          integer: '0',
+          type: 'normal' as const,
         };
       }
 
@@ -165,9 +165,9 @@ export const Balance: React.FC<BalanceProps> = ({
         const { value, suffix } = getShortFormat(bn.abs());
         const sign = bn.isNegative() ? '-' : '';
         return {
+          suffix,
           type: 'short' as const,
           value: `${sign}${value}`,
-          suffix,
         };
       }
 
@@ -185,16 +185,16 @@ export const Balance: React.FC<BalanceProps> = ({
       const trimmedDecimal = decimal ? trimTrailingZeros(decimal) : '';
 
       return {
-        type: 'normal' as const,
-        integer: formattedInteger,
         decimal: trimmedDecimal ? `.${trimmedDecimal}` : '',
+        integer: formattedInteger,
+        type: 'normal' as const,
       };
     } catch (error) {
       logger.error('Error formatting balance:', error);
       return {
-        type: 'normal' as const,
-        integer: '0',
         decimal: '',
+        integer: '0',
+        type: 'normal' as const,
       };
     }
   }, [amount, decimals, showFullPrecision, shortMode, shortModeThreshold, showSeparator]);

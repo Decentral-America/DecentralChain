@@ -1,4 +1,92 @@
 {
+  "app": {
+    "back": "Kembali ke halaman utama",
+    "button": {
+      "cancel": "Batalkan",
+      "continue": "Lanjutkan",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Penerbitan token untuk sementara tidak tersedia.",
+        "issue-title": "Pembuatan Token",
+        "massSendTitle": "Transfer Massal",
+        "reissue": "Penerbitan Ulang Token untuk sementara tidak tersedia.",
+        "sendTitle": "Kirim",
+        "set-script-title": "Transaksi skrip"
+      },
+      "send": {
+        "errors": {
+          "fee": "Anda tidak memiliki cukup dana untuk membayar biaya yang diperlukan. Anda harus membayar biaya {{fee, money-currency}};"
+        }
+      }
+    },
+    "date": {
+      "month": ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Halo funky coin, untuk tujuan baik & jahat ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Aset",
+      "dex": "DEX",
+      "leasing": "Sewakan",
+      "portfolio": "Portofolio",
+      "tokens": "Token",
+      "transactions": "Transaksi",
+      "wallet": "Dompet"
+    },
+    "inputs": {
+      "errors": {
+        "required": "Bagian ini diperlukan!"
+      }
+    },
+    "leftmenu": {
+      "login": "Masuk",
+      "logout": "Keluar",
+      "settings": "Pengaturan"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Dibatalkan",
+          "filled": "Terisi ({{percent}}%)",
+          "opened": "Dibuka"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "Masukkan Kata Sandi"
+      },
+      "pairing": {
+        "showQr": "Tunjukkan"
+      },
+      "tryDesktop": {
+        "cancel": "Lanjutkan menggunakan web",
+        "label": "Ingat pilihan saya dan jangan mengingatkan saya lagi",
+        "message": "Kami sarankan Anda menggunakan aplikasi desktop DecentralChain. Jika Anda tidak memiliki ini, Anda dapat mengunduhnya dari Situs Resmi.",
+        "title": "Gunakan aplikasi desktop DecentralChain",
+        "try": "Buka aplikasi desktop"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "juta",
+        "thousand": "ribu"
+      }
+    },
+    "Suspicious": "Mencurigakan"
+  },
   "app.create": {
     "backupSeed": {
       "back": "kembali",
@@ -115,9 +203,9 @@
         "1day": "1 hari",
         "1hour": "1 jam",
         "1week": "1 minggu",
+        "5min": "5 menit",
         "30day": "29 hari",
         "30min": "30 menit",
-        "5min": "5 menit",
         "amountField": "Jumlah",
         "ask": "Permintaan",
         "bid": "Penawaran",
@@ -275,8 +363,8 @@
         "chg": "Chg",
         "coin": "Koin",
         "helpIcon": {
-          "assetId": "ID Aset",
           "AssetId1AssetId2": "ID Asset1 / ID Asset2",
+          "assetId": "ID Aset",
           "description": "Anda dapat mengetahui lebih lanjut tentang mencari aset [di sini] (https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html)",
           "header": "Anda dapat mencari berdasarkan:",
           "name": "Nama",
@@ -334,15 +422,15 @@
       "title": {
         "all": "Semua",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "history",
         "myBalance": "Saldo saya",
         "myTradeHistory": "Sejarah Dagang Anda",
-        "openOrders": "Pesanan Terbuka Anda",
         "OrderHistory": "Riwayat Pesanan Saya",
+        "openOrders": "Pesanan Terbuka Anda",
         "trade": "Trade",
-        "tradeHistory": "Sejarah Perdagangan",
-        "decentralchain": "DecentralChain"
+        "tradeHistory": "Sejarah Perdagangan"
       }
     }
   },
@@ -378,6 +466,12 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "decentralchainClient": "Klien DecentralChain",
+    "decentralchainClientDescription": "Mengimpor akun dari klien DecentralChain",
+    "decentralchainLiteClient": "DecentralChain Lite Client",
+    "decentralchainLiteClientDescription": "Impor akun dari DecentralChain Lite Client",
+    "decentralchainSeedClient": "Cadangkan prase SEED",
+    "decentralchainSeedClientDescription": "Impor akun dari SEED cadangan",
     "import": {
       "signIn": "Masuk"
     },
@@ -393,101 +487,7 @@
       "name": "SEED atau kunci"
     },
     "seedAndKeyDescription": "Impor akun dari SEED cadangan atau kunci pribadi",
-    "selectButton": "Memilih",
-    "decentralchainClient": "Klien DecentralChain",
-    "decentralchainClientDescription": "Mengimpor akun dari klien DecentralChain",
-    "decentralchainLiteClient": "DecentralChain Lite Client",
-    "decentralchainLiteClientDescription": "Impor akun dari DecentralChain Lite Client",
-    "decentralchainSeedClient": "Cadangkan prase SEED",
-    "decentralchainSeedClientDescription": "Impor akun dari SEED cadangan"
-  },
-  "app": {
-    "back": "Kembali ke halaman utama",
-    "button": {
-      "cancel": "Batalkan",
-      "continue": "Lanjutkan",
-      "signIn": "Sign in"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "Penerbitan token untuk sementara tidak tersedia.",
-        "issue-title": "Pembuatan Token",
-        "massSendTitle": "Transfer Massal",
-        "reissue": "Penerbitan Ulang Token untuk sementara tidak tersedia.",
-        "sendTitle": "Kirim",
-        "set-script-title": "Transaksi skrip"
-      },
-      "send": {
-        "errors": {
-          "fee": "Anda tidak memiliki cukup dana untuk membayar biaya yang diperlukan. Anda harus membayar biaya {{fee, money-currency}};"
-        }
-      }
-    },
-    "date": {
-      "month": ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
-    },
-    "error": {
-      "updateClient": {
-        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io/technology/wallet)!",
-        "title": "It's time to update your app!"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Halo funky coin, untuk tujuan baik & jahat ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "Aset",
-      "dex": "DEX",
-      "leasing": "Sewakan",
-      "portfolio": "Portofolio",
-      "tokens": "Token",
-      "transactions": "Transaksi",
-      "wallet": "Dompet"
-    },
-    "inputs": {
-      "errors": {
-        "required": "Bagian ini diperlukan!"
-      }
-    },
-    "leftmenu": {
-      "login": "Masuk",
-      "logout": "Keluar",
-      "settings": "Pengaturan"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "Dibatalkan",
-          "filled": "Terisi ({{percent}}%)",
-          "opened": "Dibuka"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "Masukkan Kata Sandi"
-      },
-      "pairing": {
-        "showQr": "Tunjukkan"
-      },
-      "tryDesktop": {
-        "cancel": "Lanjutkan menggunakan web",
-        "label": "Ingat pilihan saya dan jangan mengingatkan saya lagi",
-        "message": "Kami sarankan Anda menggunakan aplikasi desktop DecentralChain. Jika Anda tidak memiliki ini, Anda dapat mengunduhnya dari Situs Resmi.",
-        "title": "Gunakan aplikasi desktop DecentralChain",
-        "try": "Buka aplikasi desktop"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "juta",
-        "thousand": "ribu"
-      }
-    },
-    "Suspicious": "Mencurigakan"
+    "selectButton": "Memilih"
   },
   "app.ledger": {
     "ledger": {
@@ -505,9 +505,9 @@
       "help": {
         "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
       },
+      "ImportOrSignIn": "Impor akun atau",
       "id": "Account ID",
       "importAccount": "Impor akun Ledger",
-      "ImportOrSignIn": "Impor akun atau",
       "login": "Lanjutkan",
       "name": "Nama akun",
       "nameExists": "Nama telah diambil",
@@ -571,6 +571,14 @@
       },
       "goHome": "Go to HomePage",
       "text1": "Decentral.Exchange is transforming into a new product, Decentral.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91).",
+      "text3": "Decentral.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the DecentralChain community.",
+      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
+      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the DecentralChain trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
+      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Decentral.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
       "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Decentral.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Decentral.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
       "text12": "Ownership of your tokens is recorded on the DecentralChain blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
@@ -581,20 +589,20 @@
       "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
       "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text19": "{div.margin-bottom}[Some gateways are operated by the Decentral.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
-      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91).",
       "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Decentral.Exchange’s leasing interface, and collect interest of up to 7% per year.",
       "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
       "text22": "The new addresses belong to the DCC gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
       "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Decentral.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
       "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
-      "text3": "Decentral.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the DecentralChain community.",
-      "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
-      "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
-      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the DecentralChain trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
-      "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
-      "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
-      "text9": "Yes, migration of accounts will also be possible after the launch of Decentral.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
       "title1": "What’s going on?",
+      "title2": "What is Decentral.Exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Decentral.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Decentral.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Decentral.Exchange?",
       "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
       "title11": "Will the new exchange have access to my seed phrases?",
       "title12": "What will happen to my tokens?",
@@ -605,19 +613,11 @@
       "title17": "What changes will the matcher undergo?",
       "title18": "What if I have any problems or questions during the migration process?",
       "title19": "What will happen to gateway tokens?",
-      "title2": "What is Decentral.Exchange?",
       "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
       "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
       "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
       "title23": "Why so complicated?",
-      "title24": "Are there plans to expand language support for the interface of the new exchange?",
-      "title3": "Who is in charge of developing the new exchange?",
-      "title4": "Why is Decentral.Exchange moving to Decentral.Exchange?",
-      "title5": "When will migration begin?",
-      "title6": "Is migration mandatory?",
-      "title7": "When will Decentral.Exchange be launched?",
-      "title8": "Why did the migration process begin two weeks prior to launch?",
-      "title9": "Will it be possible to move accounts after the launch of Decentral.Exchange?"
+      "title24": "Are there plans to expand language support for the interface of the new exchange?"
     },
     "migrate": {
       "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
@@ -885,11 +885,11 @@
       "title": "{{name}} Dibuat",
       "titleSuccess": "{{name}} Pembuatan Selesai"
     },
-    "name": "Nama aset Anda",
     "NFT": {
       "description": "Token non-fungible (NFT) adalah token individual unik yang ada di blockchain DecentralChain. Saat ini, tampilan NFTs di dompet DecentralChain dan pada DCC DEX tidak didukung. Anda dapat melihat NFTs Anda di [DecentralScan] (https://decentralscan.com/)",
       "title": "Anda membuat token yang tidak dapat dipertukarkan."
     },
+    "name": "Nama aset Anda",
     "notifications": {
       "isNotCreated": "Token belum dibuat"
     },
@@ -960,6 +960,10 @@
     "confirmTransaction": {
       "back": "Kembali",
       "confirm": "Konfirmasi",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "Silakan coba lagi. Jika kesalahan berlanjut, kirimkan tiket ke [dukungan](https://decentralchain.io/soporte)",
+        "header": "Anda tidak mengonfirmasi permintaan menggunakan Cubensis Connect"
+      },
       "description": {
         "burn": "Anda akan membakar {{quantityStr}} {{name}}",
         "cancel-leasing": "Anda telah membatalkan sebuah transaksi leasing",
@@ -1013,11 +1017,7 @@
         }
       },
       "sign": "Konfirmasi",
-      "success": "Transaksi Anda sedang dalam perjalanan!",
-      "decentralchainKeeperUnconfirmed": {
-        "description": "Silakan coba lagi. Jika kesalahan berlanjut, kirimkan tiket ke [dukungan](https://decentralchain.io/soporte)",
-        "header": "Anda tidak mengonfirmasi permintaan menggunakan Cubensis Connect"
-      }
+      "success": "Transaksi Anda sedang dalam perjalanan!"
     },
     "copyError": "Tidak bisa menyalin! Browser Anda mungkin sudah ketinggalan zaman",
     "copySuccess": "Data disalin",
@@ -1421,8 +1421,8 @@
         "rating": {
           "canVoteTip": "Klik untuk menilai token",
           "tooltipLink": "Detail selengkapnya",
-          "tooltipNeedDCC": "dan 0,001 DCC",
           "tooltipNeedCRC": "Untuk menilai token, Anda harus memiliki setidaknya 1",
+          "tooltipNeedDCC": "dan 0,001 DCC",
           "tooltipText": "Token tidak ditransfer, hanya saldo yang ada diperlukan untuk memilih. Skor Anda akan diterapkan setelah 24 jam. Harap simpan token saat ini di akun selama waktu ini. \nBiaya 0,001 DCC.",
           "tooltipTitle": "Untuk menilai token, Anda harus memiliki setidaknya 1 CRC di dompet Anda."
         },
@@ -1542,10 +1542,6 @@
         },
         "copyAndShare": "Salin &amp; Bagikan Alamat",
         "currency": "Mata uang",
-        "or": "ATAU",
-        "pleaseNote": "Harap dicatat bahwa gateway tidak menerapkan biaya apa pun untuk operasi ini.",
-        "scanQrCode": "Pindai kode QR",
-        "title": "Setoran {{assetName}}",
         "gatewayBNT": {
           "helpDescrText": "Setelah transaksi dikonfirmasi, gateway akan memproses transfer Bancor ke token di akun DecentralChain Anda.",
           "helpDescrTitle": "Masukkan alamat ini ke klien atau dompet Anda",
@@ -1596,7 +1592,11 @@
           "helpDescrTitle_copy": "Masukkan alamat ini ke klien atau dompet WEST Anda",
           "warningMinAmountTitle": "Jumlah minimum deposit adalah {{minAmount, BigNumber}} {{assetTicker}}, jumlah deposit maksimum adalah {{maxAmount}} {{assetTicker}}"
         },
-        "gatewayWEST:warningMinAmountTitle_copy": "Jumlah minimum deposit adalah {{minAmount, BigNumber}} {{assetTicker}}, jumlah deposit maksimum adalah {{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "Jumlah minimum deposit adalah {{minAmount, BigNumber}} {{assetTicker}}, jumlah deposit maksimum adalah {{maxAmount}} {{assetTicker}}",
+        "or": "ATAU",
+        "pleaseNote": "Harap dicatat bahwa gateway tidak menerapkan biaya apa pun untuk operasi ini.",
+        "scanQrCode": "Pindai kode QR",
+        "title": "Setoran {{assetName}}"
       },
       "dexScriptedPair": {
         "body": "Aset pintar adalah aset yang menyertakan skrip yang menetapkan kondisi untuk sirkulasi token. {div} [Kami tidak menyarankan Anda melakukan operasi dengan aset pintar jika Anda adalah pengguna yang tidak berpengalaman. Sebelum melakukan transaksi, harap baca informasi tentang aset dan skripnya dengan cermat.]",
@@ -1630,6 +1630,10 @@
         "warning": "Jangan masukkan frase rahasia Anda (SEED) di situs web tempat Anda akan diarahkan."
       },
       "import": {
+        "decentralchainBetaClient": "Klien Beta DecentralChain",
+        "decentralchainBetaClientDescription": "Mengimpor akun dari Klien Beta DecentralChain",
+        "decentralchainLiteClient": "Klien Lite DecentralChain",
+        "decentralchainLiteClientDescription": "Impor akun dari Klien Lite DecentralChain",
         "errorBeta": "Kami tidak dapat mengambil akun Anda dari Klien Beta DecentralChain. Coba impor dari Klien DecentralChain Lite.",
         "errorHeader": "Tidak ada akun yang ditemukan",
         "errorLite": "Kami tidak dapat mengambil akun Anda dari Klien DecentralChain Lite. Coba impor dari DecentralChain Beta Client.",
@@ -1646,19 +1650,15 @@
         "selectAccountDescription": "Anda harus membiarkan jendela pop-up di browser Anda",
         "selectAccountToImport": "Pilih akun mana yang ingin Anda impor",
         "selectAccountToImportFrom": "Pilih tempat untuk mengimpor akun dari",
-        "selectButton": "Pilih",
-        "decentralchainBetaClient": "Klien Beta DecentralChain",
-        "decentralchainBetaClientDescription": "Mengimpor akun dari Klien Beta DecentralChain",
-        "decentralchainLiteClient": "Klien Lite DecentralChain",
-        "decentralchainLiteClientDescription": "Impor akun dari Klien Lite DecentralChain"
+        "selectButton": "Pilih"
       },
       "matcherChoice": {
         "customMatcher": "Custom matcher address",
+        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy.",
         "matcher": "Matcher",
         "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
         "terms": "Terms",
-        "title": "Choose matcher",
-        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy."
+        "title": "Choose matcher"
       },
       "open-main": {
         "dex": {
@@ -1742,6 +1742,9 @@
         "cryptocurrency": {
           "title": "Cryptocurrency"
         },
+        "decentralchainEnterprise": {
+          "serverError_copy": "Layanan WEST sementara tidak tersedia. Coba lagi nanti."
+        },
         "error": {
           "cardAmount": {
             "gte": "Jumlah minimum yang dapat Anda setorkan adalah {{gte}} {{currency}}",
@@ -1776,9 +1779,6 @@
         "verified": "Terverifikasi",
         "vostok": {
           "serverError": "Layanan WEST sementara tidak tersedia. Coba lagi nanti."
-        },
-        "decentralchainEnterprise": {
-          "serverError_copy": "Layanan WEST sementara tidak tersedia. Coba lagi nanti."
         },
         "wtry": {
           "info": "Jika ada masalah dengan proses pembayaran, silakan hubungi tim dukungan Digilira — [support@digilira.com](mailto:support@digilira.com)"
@@ -1906,8 +1906,8 @@
         "title": "Kirim {{assetName}}",
         "titleComplete": "Mengirim Lengkap",
         "toBank": "Tarik ke rekening bank",
-        "total": "Total",
         "toDecentralChain": "Kirim ke alamat DecentralChain",
+        "total": "Total",
         "txFee": "Biaya transaksi",
         "validationError": {
           "notEnoughFunds": "Anda tidak memiliki cukup dana untuk membayar biaya yang diperlukan. Anda harus membayar {{fee, money-currency}} biaya transaksi.",
@@ -2003,12 +2003,12 @@
           "showCodeLink": "Tampilkan Kode Pasangan",
           "unavailable": {
             "description": {
-              "ledger": "Ekspor tidak tersedia untuk akun yang disimpan di Perangkat Ledger",
-              "decentralchainKeeper": "Ekspor untuk akun yang diimpor dari Cubensis Connect tersedia di Cubensis Connect Settings"
+              "decentralchainKeeper": "Ekspor untuk akun yang diimpor dari Cubensis Connect tersedia di Cubensis Connect Settings",
+              "ledger": "Ekspor tidak tersedia untuk akun yang disimpan di Perangkat Ledger"
             },
             "header": {
-              "ledger": "Ekspor tidak tersedia",
-              "decentralchainKeeper": "Ekspor tidak tersedia"
+              "decentralchainKeeper": "Ekspor tidak tersedia",
+              "ledger": "Ekspor tidak tersedia"
             },
             "ok": "saya mengerti"
           }
@@ -2083,9 +2083,6 @@
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "Ubah sponsor"
-      },
       "sponsorship": {
         "amountPerTx": "Jumlah per transaksi (per 0,001 DCC)",
         "assetId": "ID",
@@ -2102,6 +2099,9 @@
         "title": "Aktifkan Sponsor",
         "warningHeader": "Pengguna akan dapat membayar biaya transaksi di {{name}}",
         "warningText": "Untuk setiap transaksi, 0,001 DCC akan dipotong dari saldo Anda dan {{name}} akan dikreditkan ke akun Anda. Jumlah {{name}} untuk dibebankan kepada pengguna untuk transaksi ditetapkan oleh Anda ketika Anda mengaktifkan Sponsorship (masukkan jumlah dalam formulir di bawah). Sponsor hanya akan berfungsi jika Anda memiliki saldo setidaknya 1,005 DCC. Jika saldo Anda turun di bawah jumlah ini, Anda tidak akan dapat mensponsori transaksi."
+      },
+      "sponsorship_edit": {
+        "title": "Ubah sponsor"
       },
       "startLease": {
         "amount": "Jumlah",
@@ -2245,6 +2245,11 @@
           "1_0_0-beta_42": "{span.line} [1. Dukungan bahasa Spanyol ditambahkan.] {span.line} [2. Anda dapat menggunakan Klien tanpa menyimpan rincian akun secara default.] {span.line} [3. Token spam sekarang ditandai di halaman Transaksi.] {span.line} [4. Bug kecil tambahan telah diperbaiki.]",
           "1_0_0-beta_47": "{span.line} [1. UI DEX yang benar-benar baru.] {span.line} [2. Klien yang lebih cepat dan stabil.] {span.line} [3. Fungsi Alias ​​tersedia lagi.] {span.line} [4. Beberapa bug kecil telah diperbaiki.] {span.line} [5. Ikut serta dalam kompetisi kami dengan membuat [video](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) atau menulis [artikel](https: // forum .decentralchain.io / t / contest-for-the-writers-decentralchain-dex-overview / 835).]",
           "1_0_0-beta_50": "{span.line} [1. Anda sekarang dapat membakar token apa pun yang Anda pegang di akun Anda.] {span.line} [2. Bug kecil tambahan telah diperbaiki.]",
+          "1_0_3": "{span.line} [1. Anda sekarang dapat mencari aset berdasarkan ID di halaman Portofolio.]\n{span.line} [2. Bug kecil tambahan telah diperbaiki.]",
+          "1_0_5": "{span.line}[1. Skala volume perdagangan telah ditambahkan pada bagan DEX.]\n{span.line}[2. Bug kecil tambahan telah diperbaiki.]",
+          "1_0_6": "{span.line}[1. Otorisasi melalui DecentralChain Desktop Client telah ditambahkan.]",
+          "1_0_7": "{span.line}[1. Beberapa crash desktop-klien diperbaiki.]\n{span.line}[2. Pengalihan yang dioptimalkan antara laman TX dan Portofolio, dengan sejumlah besar konten.]\n{span.line}[3. Nama-nama token-spam disembunyikan di daftar TX.]\n{span.line}[4. Pesan kesalahan output telah dikerjakan ulang.]",
+          "1_0_8": "{span.line}[1. Dukungan Ledger Nano S telah ditambahkan.]\n{span.line}[2. Pilihan baru untuk menyimpan pilihan metode Otorisasi Anda telah ditambahkan.]",
           "1_0_10": "{span.line} [1. Dukungan transaksi sponsor ditambahkan. [Baca lebih lanjut](https://docs.decentralchain.io/en/decentralchain-client/assets-management/sponsored-transaction.html)] {span.line} [2. Dukungan bahasa Polandia dan Portugis ditambahkan.]",
           "1_0_14": "{span.line} [1. Memperbaiki bug dengan menggunakan Sponsor Aset tanpa keseimbangan DecentralChain.] \n{span.line} [2. Memperbaiki bug dengan 30 hari masa berlaku pesanan.]\n{span.line} [3. Beberapa bug minor lainnya.]",
           "1_0_15": "{span.line} [1. Masalah dengan konfirmasi pada Buku Besar telah diperbaiki.] {span.line} [2. Meningkatnya waktu tunggu untuk konfirmasi dari Ledger.] \n{span.line} [3. Informasi detail telah ditambahkan ke pesan Kesalahan.]",
@@ -2255,7 +2260,6 @@
           "1_0_27": "{span.line} [1. Menambahkan kategori \"Aset saya\" dalam Portofolio.]\n{span.line} [2. Perbaikan bug kecil.]",
           "1_0_28": "{span.line} [1. Menambahkan fungsi penyandingan untuk mengimpor akun yang ada ke seluler.]\n{span.line} [2. Perbaikan bug kecil.]",
           "1_0_29": "{span.line} [1. Pembuatan kode QR menggunakan alfabet Cyrillic telah diperbaiki.]\n{span.line} [2. Tooltip untuk pencarian daftar pantauan telah ditambahkan.]\n{span.line} [3. Perbaikan kosmetik lebih lanjut. ]",
-          "1_0_3": "{span.line} [1. Anda sekarang dapat mencari aset berdasarkan ID di halaman Portofolio.]\n{span.line} [2. Bug kecil tambahan telah diperbaiki.]",
           "1_0_30": "{span.line} [1. Tombol Set Script telah dipindahkan ke bagian Keamanan di Pengaturan.]\n{span.line} [2. Peningkatan kinerja dan perubahan kosmetik.]",
           "1_0_32": "{span.line} [1. Integrasi dengan oracle BetterTokens.]\n{span.line} [2. Menambahkan dukungan untuk protokol verifikasi token.]\n{span.line} [3. Komisi tetap menghitung penarikan token melalui Coinomat.]",
           "1_0_33": "{span.line} [1. Sekarang Anda akan menerima pemberitahuan jika Anda mencoba melakukan pemesanan pada tingkat yang sangat berbeda dari kurs pasar saat ini. {span.line} [2. Bug minor telah diperbaiki.]",
@@ -2264,10 +2268,6 @@
           "1_0_40": "{span.line}[1. Optimasi DEX.]\n{span.line}[2. Menambahkan nilai tukar untuk pasangan saat ini dalam judul tab browser.]\n{span.line}[3. Memperbaiki bug minor.]",
           "1_0_41": "{span.line}[1. Optimasi DEX.]\n{span.line}[2. Sistem pemberitahuan ditambahkan.]\n{span.line}[3. Memperbaiki bug minor.]",
           "1_0_42": "{span.line} [1. Memperbaiki bug minor.]",
-          "1_0_5": "{span.line}[1. Skala volume perdagangan telah ditambahkan pada bagan DEX.]\n{span.line}[2. Bug kecil tambahan telah diperbaiki.]",
-          "1_0_6": "{span.line}[1. Otorisasi melalui DecentralChain Desktop Client telah ditambahkan.]",
-          "1_0_7": "{span.line}[1. Beberapa crash desktop-klien diperbaiki.]\n{span.line}[2. Pengalihan yang dioptimalkan antara laman TX dan Portofolio, dengan sejumlah besar konten.]\n{span.line}[3. Nama-nama token-spam disembunyikan di daftar TX.]\n{span.line}[4. Pesan kesalahan output telah dikerjakan ulang.]",
-          "1_0_8": "{span.line}[1. Dukungan Ledger Nano S telah ditambahkan.]\n{span.line}[2. Pilihan baru untuk menyimpan pilihan metode Otorisasi Anda telah ditambahkan.]",
           "1_1_0": "{span.line} [1. Periode kedaluwarsa pesanan sekarang disimpan secara default.] \n {span.line} [2. Memperbaiki bug minor.]",
           "1_2_0": "{span.line} [1. Menambahkan bahasa Jepang dan Estonia.] \n {span.line} [2. UI yang ditingkatkan di jendela Beli / Jual.] \n {span.line} [3. Banyak bug minor diperbaiki.]",
           "1_2_1": "{span.line} [1. Aplikasi sekarang menyimpan pengaturan ukuran dan skala grafik serta interval waktu.] \n {span.line} [2. Memperbaiki bug minor.]",
@@ -2276,13 +2276,13 @@
           "1_2_6": "{span.line} [1. Dukungan transaksi skrip invokasi ditambahkan. [Baca selengkapnya] (https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)] \n {span.line} [2. UI yang diperbaiki dan bug minor tambahan telah diperbaiki.]",
           "1_2_8": "{span.line} [1. Token dan transaksi spam telah disembunyikan di klien.] \n {span.line} [2. UI yang diperbaiki dan bug minor tambahan telah diperbaiki.]",
           "1_3_0": "{span.line} [1. Navigasi aplikasi yang ditingkatkan dan antarmuka halaman mulai.]",
-          "1_3_18": "{span.line} [1. Menambahkan login ke dompet menggunakan kunci pribadi.] \n{span.line} [2. Perubahan harga 24 jam dari token sekarang terikat ke pasangan token/DCC.]",
-          "1_3_19": "{span.line} [1. Gerbang Bancor telah diluncurkan.] \n {span.line} [2. Antarmuka menu pengguna telah ditingkatkan.]",
           "1_3_2": "{span.line} [1. Gateway WEST telah diluncurkan.] \n{span.line} [2. UI yang diperbaiki dan bug minor tambahan telah diperbaiki.]",
-          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_3_5": "{span.line} [1. Tab dengan token kontes [wsoc.io] (https://wsoc.io) telah ditambahkan.] \n {span.line} [2. Dukungan bahasa Perancis ditambahkan.] \n {span.line} [3. Bug minor tambahan telah diperbaiki.]",
           "1_3_7": "{span.line}[1. Integrasi dengan [tokenrating.decentralscan.com] (https://tokenrating.decentralscan.com) Sekarang Anda dapat menilai token langsung di app.] \n {span.line}[2. Bug minor tambahan telah diperbaiki.]",
           "1_3_9": "{span.line}[1. UI dan fungsionalitas yang lebih baik dari bagian Exchange dan Dompet.] \n {span.line}[2. Bug minor tambahan telah diperbaiki.]",
+          "1_3_18": "{span.line} [1. Menambahkan login ke dompet menggunakan kunci pribadi.] \n{span.line} [2. Perubahan harga 24 jam dari token sekarang terikat ke pasangan token/DCC.]",
+          "1_3_19": "{span.line} [1. Gerbang Bancor telah diluncurkan.] \n {span.line} [2. Antarmuka menu pengguna telah ditingkatkan.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
           "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
         },
@@ -2636,6 +2636,14 @@
       "createToken": "Buat token",
       "currentAccountName": "Nama akun saat ini",
       "dashboard": "Dasbor",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainDexWeb": "Web Decentral.Exchange",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "0,003 DecentralChain per pesanan diisi",
+      "decentralchainWallet": "Dompet DecentralChain",
       "decentralized": "Terdesentralisasi",
       "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
       "dexWithHardware": "Gunakan DEX dengan dompet perangkat keras Ledger Nano S dan Ledger Blue",
@@ -2662,15 +2670,15 @@
       "legal": "Hukum",
       "linux": "Linux",
       "linuxDescription": "Unduh aplikasi Linux",
-      "logout": "Keluar",
       "logOut": "Keluar",
+      "logout": "Keluar",
       "low": "24 RENDAH",
       "lowFixedFees": "Biaya rendah, tetap",
       "macOs": "MacOS",
       "macOsDescription": "Unduh aplikasi MacOS",
       "mailto": "support.decentralchain.io",
-      "mailtoVordex": "support@vordex.com",
       "mailtoDecentralChainExchange": "support@decentral.exchange",
+      "mailtoVordex": "support@vordex.com",
       "mainPage": "Halaman Utama",
       "majorFiatCryptocurrencies": "Fiat dan cryptocurrency utama didukung: BTC, LTC, ETH, USD, dan lainnya",
       "markets": "Pasar",
@@ -2716,14 +2724,6 @@
       "twitter": "Twitter",
       "volume": "VOLUME",
       "wallet": "Dompet",
-      "decentralchainBlockchain": "DecentralChain Blockchain",
-      "decentralchainDexWeb": "Web Decentral.Exchange",
-      "dccExplorer": "DecentralScan",
-      "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
-      "decentralchainLabs": "DecentralChain Labs",
-      "decentralchainOrderFilled": "0,003 DecentralChain per pesanan diisi",
-      "decentralchainWallet": "Dompet DecentralChain",
       "windows": "Windows",
       "windowsDescription": "Unduh aplikasi Windows"
     }

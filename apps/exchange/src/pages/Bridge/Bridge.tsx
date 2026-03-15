@@ -56,39 +56,39 @@ interface SupportedNetwork {
 // Supported networks configuration
 const SUPPORTED_NETWORKS: SupportedNetwork[] = [
   {
+    available: true,
+    color: '#F7931A',
+    icon: btcIcon,
     id: 'BTC',
     name: 'Bitcoin',
     ticker: 'BTC',
-    color: '#F7931A',
-    icon: btcIcon,
-    available: true,
   },
   {
+    available: false,
+    color: '#14F195',
+    comingSoon: true,
+    icon: solIcon,
     id: 'SOL',
     name: 'Solana',
     ticker: 'SOL',
-    color: '#14F195',
-    icon: solIcon,
-    available: false,
-    comingSoon: true,
   },
   {
+    available: false,
+    color: '#627EEA',
+    comingSoon: true,
+    icon: ethIcon,
     id: 'ETH',
     name: 'Ethereum',
     ticker: 'ETH',
-    color: '#627EEA',
-    icon: ethIcon,
-    available: false,
-    comingSoon: true,
   },
   {
+    available: false,
+    color: '#F0B90B',
+    comingSoon: true,
+    icon: bnbIcon,
     id: 'BSC',
     name: 'BNB Smart Chain',
     ticker: 'BNB',
-    color: '#F0B90B',
-    icon: bnbIcon,
-    available: false,
-    comingSoon: true,
   },
 ];
 
@@ -135,11 +135,11 @@ export const Bridge: React.FC = () => {
     // The gateway address and attachment are determined by WithdrawAsset modal
     // via getWithdrawDetails call, so we just pass them through
     await withdraw({
-      assetId: selectedAsset.assetId,
       amount,
-      targetAddress,
-      gatewayAddress: '3P...', // This comes from getWithdrawDetails in WithdrawAsset modal
+      assetId: selectedAsset.assetId,
       attachment,
+      gatewayAddress: '3P...', // This comes from getWithdrawDetails in WithdrawAsset modal
+      targetAddress,
     });
   };
 
@@ -177,8 +177,8 @@ export const Bridge: React.FC = () => {
       <ThemeProvider theme={landingTheme}>
         <Box
           sx={{
-            minHeight: '100vh',
             bgcolor: 'background.default',
+            minHeight: '100vh',
             py: 4,
           }}
         >
@@ -186,12 +186,12 @@ export const Bridge: React.FC = () => {
             <Paper
               elevation={3}
               sx={{
+                borderRadius: 2,
                 p: 4,
                 textAlign: 'center',
-                borderRadius: 2,
               }}
             >
-              <Login sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
+              <Login sx={{ color: 'primary.main', fontSize: 64, mb: 2 }} />
               <Typography variant="h5" gutterBottom fontWeight={600}>
                 Authentication Required
               </Typography>
@@ -213,8 +213,8 @@ export const Bridge: React.FC = () => {
     <ThemeProvider theme={landingTheme}>
       <Box
         sx={{
-          minHeight: '100vh',
           bgcolor: 'background.default',
+          minHeight: '100vh',
           py: 4,
         }}
       >
@@ -240,39 +240,39 @@ export const Bridge: React.FC = () => {
                 <Grid
                   key={network.id}
                   size={{
-                    xs: 6,
-                    sm: 4,
                     md: 3,
+                    sm: 4,
+                    xs: 6,
                   }}
                 >
                   <Card
                     onClick={() => network.available && setSelectedNetwork(network.id)}
                     sx={{
-                      cursor: network.available ? 'pointer' : 'not-allowed',
-                      opacity: network.available ? 1 : 0.6,
-                      border: 2,
-                      borderColor: selectedNetwork === network.id ? network.color : 'transparent',
-                      transition: 'all 0.2s',
-                      position: 'relative',
                       '&:hover': network.available
                         ? {
-                            transform: 'translateY(-4px)',
                             boxShadow: 4,
+                            transform: 'translateY(-4px)',
                           }
                         : {},
+                      border: 2,
+                      borderColor: selectedNetwork === network.id ? network.color : 'transparent',
+                      cursor: network.available ? 'pointer' : 'not-allowed',
+                      opacity: network.available ? 1 : 0.6,
+                      position: 'relative',
+                      transition: 'all 0.2s',
                     }}
                   >
-                    <CardContent sx={{ textAlign: 'center', py: 2 }}>
+                    <CardContent sx={{ py: 2, textAlign: 'center' }}>
                       <Box
                         component="img"
                         src={network.icon}
                         alt={`${network.name} logo`}
                         sx={{
-                          width: 48,
-                          height: 48,
-                          mx: 'auto',
-                          mb: 1,
                           display: 'block',
+                          height: 48,
+                          mb: 1,
+                          mx: 'auto',
+                          width: 48,
                         }}
                       />
                       <Typography variant="body1" fontWeight={600}>
@@ -284,11 +284,11 @@ export const Bridge: React.FC = () => {
                       {selectedNetwork === network.id && network.available && (
                         <CheckCircle
                           sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
                             color: network.color,
                             fontSize: 24,
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
                           }}
                         />
                       )}
@@ -303,7 +303,7 @@ export const Bridge: React.FC = () => {
           </Box>
 
           {/* Mode Toggle */}
-          <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
             <ToggleButtonGroup
               value={mode}
               exclusive
@@ -311,11 +311,11 @@ export const Bridge: React.FC = () => {
               aria-label="Bridge mode"
               sx={{
                 '& .MuiToggleButton-root': {
+                  fontSize: '1rem',
+                  fontWeight: 500,
                   px: 4,
                   py: 1.5,
                   textTransform: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 500,
                 },
               }}
             >
@@ -329,7 +329,7 @@ export const Bridge: React.FC = () => {
           </Box>
 
           {/* Info Alert */}
-          <Alert severity="info" icon={<InfoOutlined />} sx={{ mb: 4, maxWidth: 800, mx: 'auto' }}>
+          <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
             {mode === 'deposit' ? (
               <>
                 <strong>Deposit Mode:</strong> Send{' '}
@@ -371,10 +371,10 @@ export const Bridge: React.FC = () => {
           {selectedAsset && (
             <WithdrawAsset
               asset={{
+                decimals: selectedAsset.decimals,
                 id: selectedAsset.assetId,
                 name: selectedAsset.name,
                 ticker: selectedAsset.ticker,
-                decimals: selectedAsset.decimals,
               }}
               balance={selectedAsset.balance}
               open={withdrawOpen}

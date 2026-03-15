@@ -105,18 +105,18 @@ function getDefaultLanguage(): string {
 i18n
   .use(initReactI18next) // Passes i18n down to react-i18next
   .init({
-    resources,
-    lng: getDefaultLanguage(), // Language to use
+    // Debug mode (disable in production)
+    debug: false,
     fallbackLng: 'en', // Fallback language
     interpolation: {
       escapeValue: false, // React already escapes values
     },
     // Enable nested keys (e.g., 'app.ui.active')
     keySeparator: '.',
+    lng: getDefaultLanguage(), // Language to use
     // Namespace separator (not used, but set for clarity)
     nsSeparator: false,
-    // Debug mode (disable in production)
-    debug: false,
+    resources,
   });
 
 export default i18n;

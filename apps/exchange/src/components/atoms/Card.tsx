@@ -43,9 +43,9 @@ const StyledCard = styled(MuiCard, {
   shouldForwardProp: (prop) => !['hoverable', 'bordered', 'padding'].includes(prop as string),
 })<{ hoverable?: boolean; bordered?: boolean; padding?: string }>(
   ({ theme, hoverable, bordered, padding }) => ({
-    padding: padding || theme.spacing(3),
     border: bordered ? `1px solid ${theme.palette.divider}` : undefined,
     boxShadow: bordered ? 'none' : undefined,
+    padding: padding || theme.spacing(3),
     transition: theme.transitions.create(['transform', 'box-shadow'], {
       duration: theme.transitions.duration.short,
     }),
@@ -53,15 +53,15 @@ const StyledCard = styled(MuiCard, {
       padding: padding || theme.spacing(1.5),
     },
     ...(hoverable && {
-      cursor: 'pointer',
-      '&:hover': {
-        transform: 'translateY(-2px)',
-        boxShadow: theme.shadows[8],
-      },
       '&:active': {
-        transform: 'translateY(0)',
         boxShadow: theme.shadows[4],
+        transform: 'translateY(0)',
       },
+      '&:hover': {
+        boxShadow: theme.shadows[8],
+        transform: 'translateY(-2px)',
+      },
+      cursor: 'pointer',
     }),
   }),
 );
@@ -69,20 +69,20 @@ const StyledCard = styled(MuiCard, {
 /**
  * Card compound components for structured layouts
  */
-export { CardHeader, CardContent as CardBody, CardActions as CardFooter };
+export { CardActions as CardFooter, CardContent as CardBody, CardHeader };
 
 export const CardTitle = styled(Typography)(({ theme }) => ({
-  margin: 0,
+  color: theme.palette.text.primary,
   fontSize: theme.typography.h6.fontSize,
   fontWeight: theme.typography.fontWeightMedium,
-  color: theme.palette.text.primary,
+  margin: 0,
 }));
 
 export const CardDescription = styled(Typography)(({ theme }) => ({
-  margin: `${theme.spacing(0.5)} 0 0 0`,
-  fontSize: theme.typography.body2.fontSize,
   color: theme.palette.text.secondary,
+  fontSize: theme.typography.body2.fontSize,
   lineHeight: 1.5,
+  margin: `${theme.spacing(0.5)} 0 0 0`,
 }));
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(

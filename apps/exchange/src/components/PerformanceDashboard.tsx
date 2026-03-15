@@ -26,19 +26,19 @@ export function PerformanceDashboard() {
         type="button"
         onClick={() => setIsOpen(true)}
         style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          padding: '10px 20px',
           backgroundColor: '#007bff',
-          color: 'white',
           border: 'none',
           borderRadius: '5px',
+          bottom: '20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+          color: 'white',
           cursor: 'pointer',
-          zIndex: 10000,
           fontSize: '14px',
           fontWeight: 'bold',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+          padding: '10px 20px',
+          position: 'fixed',
+          right: '20px',
+          zIndex: 10000,
         }}
       >
         📊 Performance
@@ -67,50 +67,50 @@ export function PerformanceDashboard() {
   return (
     <div
       style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        width: '400px',
-        maxHeight: '600px',
         backgroundColor: 'white',
         border: '1px solid #dee2e6',
         borderRadius: '8px',
+        bottom: '20px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-        zIndex: 10000,
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
+        maxHeight: '600px',
+        overflow: 'hidden',
+        position: 'fixed',
+        right: '20px',
+        width: '400px',
+        zIndex: 10000,
       }}
     >
       {/* Header */}
       <div
         style={{
-          padding: '15px',
+          alignItems: 'center',
           backgroundColor: '#007bff',
           color: 'white',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          padding: '15px',
         }}
       >
-        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0 }}>
           📊 Performance Dashboard
         </h3>
         <button
           type="button"
           onClick={() => setIsOpen(false)}
           style={{
+            alignItems: 'center',
             background: 'none',
             border: 'none',
             color: 'white',
-            fontSize: '20px',
             cursor: 'pointer',
+            display: 'flex',
+            fontSize: '20px',
+            height: '24px',
+            justifyContent: 'center',
             padding: 0,
             width: '24px',
-            height: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
           ×
@@ -120,14 +120,14 @@ export function PerformanceDashboard() {
       {/* Content */}
       <div
         style={{
-          padding: '15px',
-          overflowY: 'auto',
           flex: 1,
+          overflowY: 'auto',
+          padding: '15px',
         }}
       >
         {/* Web Vitals */}
         <div style={{ marginBottom: '20px' }}>
-          <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>Core Web Vitals</h4>
+          <h4 style={{ color: '#333', fontSize: '14px', margin: '0 0 10px 0' }}>Core Web Vitals</h4>
 
           <MetricRow
             label="LCP"
@@ -172,7 +172,7 @@ export function PerformanceDashboard() {
 
         {/* Navigation Timing */}
         <div style={{ marginBottom: '20px' }}>
-          <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>
+          <h4 style={{ color: '#333', fontSize: '14px', margin: '0 0 10px 0' }}>
             Navigation Timing
           </h4>
 
@@ -200,7 +200,7 @@ export function PerformanceDashboard() {
 
         {/* Resource Timing */}
         <div style={{ marginBottom: '20px' }}>
-          <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>Resource Timing</h4>
+          <h4 style={{ color: '#333', fontSize: '14px', margin: '0 0 10px 0' }}>Resource Timing</h4>
 
           <MetricRow
             label="Scripts"
@@ -227,7 +227,7 @@ export function PerformanceDashboard() {
         {/* Memory Usage */}
         {metrics.memoryUsage && (
           <div style={{ marginBottom: '20px' }}>
-            <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>Memory Usage</h4>
+            <h4 style={{ color: '#333', fontSize: '14px', margin: '0 0 10px 0' }}>Memory Usage</h4>
 
             <MetricRow
               label="Used Heap"
@@ -254,7 +254,7 @@ export function PerformanceDashboard() {
 
         {/* Custom Metrics */}
         <div>
-          <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#333' }}>Custom Metrics</h4>
+          <h4 style={{ color: '#333', fontSize: '14px', margin: '0 0 10px 0' }}>Custom Metrics</h4>
 
           <MetricRow
             label="Component Renders"
@@ -282,25 +282,25 @@ export function PerformanceDashboard() {
       {/* Footer Actions */}
       <div
         style={{
-          padding: '15px',
           borderTop: '1px solid #dee2e6',
           display: 'flex',
           gap: '10px',
+          padding: '15px',
         }}
       >
         <button
           type="button"
           onClick={refresh}
           style={{
-            flex: 1,
-            padding: '8px',
             backgroundColor: '#28a745',
-            color: 'white',
             border: 'none',
             borderRadius: '4px',
+            color: 'white',
             cursor: 'pointer',
+            flex: 1,
             fontSize: '14px',
             fontWeight: 'bold',
+            padding: '8px',
           }}
         >
           🔄 Refresh
@@ -310,15 +310,15 @@ export function PerformanceDashboard() {
           type="button"
           onClick={clear}
           style={{
-            flex: 1,
-            padding: '8px',
             backgroundColor: '#dc3545',
-            color: 'white',
             border: 'none',
             borderRadius: '4px',
+            color: 'white',
             cursor: 'pointer',
+            flex: 1,
             fontSize: '14px',
             fontWeight: 'bold',
+            padding: '8px',
           }}
         >
           🗑️ Clear
@@ -340,23 +340,23 @@ function MetricRow({ label, value, rating, getRatingColor, description }: Metric
   return (
     <div
       style={{
+        alignItems: 'center',
+        borderBottom: '1px solid #f0f0f0',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
         padding: '8px 0',
-        borderBottom: '1px solid #f0f0f0',
       }}
       title={description}
     >
-      <span style={{ fontSize: '13px', color: '#555' }}>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#333' }}>{value}</span>
+      <span style={{ color: '#555', fontSize: '13px' }}>{label}</span>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '8px' }}>
+        <span style={{ color: '#333', fontSize: '13px', fontWeight: 'bold' }}>{value}</span>
         <div
           style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
             backgroundColor: getRatingColor(rating),
+            borderRadius: '50%',
+            height: '8px',
+            width: '8px',
           }}
         />
       </div>

@@ -53,7 +53,7 @@ export const AssetList = () => {
     isLoading,
     error,
   } = useQuery<Asset[]>({
-    queryKey: ['assets', user?.address],
+    enabled: !!user?.address,
     queryFn: async () => {
       // Mock data for now - will be replaced with actual API call
       // TODO: Replace with actual API endpoint when backend is ready
@@ -61,57 +61,57 @@ export const AssetList = () => {
         setTimeout(() => {
           resolve([
             {
+              balance: 25000.5,
+              change24h: 5.23,
+              decimals: 8,
               id: 'DCC',
               name: 'DecentralChain',
               symbol: 'DCC',
-              balance: 25000.5,
               usdValue: 12548.75,
-              change24h: 5.23,
-              decimals: 8,
             },
             {
+              balance: 1000.0,
+              change24h: 0.01,
+              decimals: 6,
               id: 'USDT',
               name: 'Tether USD',
               symbol: 'USDT',
-              balance: 1000.0,
               usdValue: 1000.0,
-              change24h: 0.01,
-              decimals: 6,
             },
             {
+              balance: 0.05,
+              change24h: -2.15,
+              decimals: 8,
               id: 'BTC',
               name: 'Bitcoin',
               symbol: 'BTC',
-              balance: 0.05,
               usdValue: 2250.0,
-              change24h: -2.15,
-              decimals: 8,
             },
             {
+              balance: 1.25,
+              change24h: 3.47,
+              decimals: 18,
               id: 'ETH',
               name: 'Ethereum',
               symbol: 'ETH',
-              balance: 1.25,
               usdValue: 2125.0,
-              change24h: 3.47,
-              decimals: 18,
             },
             {
+              balance: 5000.0,
+              change24h: 12.8,
+              decimals: 2,
               id: 'CRC',
               name: 'CRC Token',
               symbol: 'CRC',
-              balance: 5000.0,
               usdValue: 500.0,
-              change24h: 12.8,
-              decimals: 2,
             },
           ]);
         }, 800);
       });
     },
-    enabled: !!user?.address,
-    staleTime: 30000, // Consider data fresh for 30 seconds
+    queryKey: ['assets', user?.address],
     refetchInterval: 60000, // Refetch every minute
+    staleTime: 30000, // Consider data fresh for 30 seconds
   });
 
   if (isLoading) {

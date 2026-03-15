@@ -90,7 +90,7 @@ export const validateAliasFormat = (
 
   if (!alias) {
     errors.push('Alias is required');
-    return { valid: false, errors };
+    return { errors, valid: false };
   }
 
   const MIN_LENGTH = 4;
@@ -110,7 +110,7 @@ export const validateAliasFormat = (
   }
 
   return {
-    valid: errors.length === 0,
     errors,
+    valid: errors.length === 0,
   };
 };

@@ -195,11 +195,11 @@ export const TradeHistory: React.FC = () => {
   const trades: Trade[] = React.useMemo(() => {
     if (!tradesData) return [];
     return tradesData.map((trade) => ({
-      id: trade.id,
-      type: trade.type,
-      price: trade.price.toString(),
       amount: trade.amount.toString(),
+      id: trade.id,
+      price: trade.price.toString(),
       timestamp: trade.timestamp,
+      type: trade.type,
     }));
   }, [tradesData]);
 

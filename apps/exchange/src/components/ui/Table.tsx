@@ -20,32 +20,32 @@ import type React from 'react';
 const StyledTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => !['sortable'].includes(prop as string),
 })<{ sortable?: boolean | undefined }>(({ theme, sortable }) => ({
-  fontWeight: 600,
-  cursor: sortable ? 'pointer' : 'default',
-  userSelect: 'none',
   '&:hover': {
     backgroundColor: sortable ? theme.palette.action.hover : 'inherit',
   },
+  cursor: sortable ? 'pointer' : 'default',
+  fontWeight: 600,
+  userSelect: 'none',
 }));
 
 const StyledTableRow = styled(TableRow, {
   shouldForwardProp: (prop) => !['clickable'].includes(prop as string),
 })<{ clickable?: boolean }>(({ theme, clickable }) => ({
-  cursor: clickable ? 'pointer' : 'default',
-  transition: theme.transitions.create('background-color'),
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
   '&:last-child td': {
     borderBottom: 0,
   },
+  cursor: clickable ? 'pointer' : 'default',
+  transition: theme.transitions.create('background-color'),
 }));
 
 const SortIcon = styled('span')<{ direction?: 'asc' | 'desc' | undefined }>(
   ({ theme, direction: _direction }) => ({
-    marginLeft: theme.spacing(1),
-    fontSize: '0.75rem',
     color: theme.palette.primary.main,
+    fontSize: '0.75rem',
+    marginLeft: theme.spacing(1),
   }),
 );
 

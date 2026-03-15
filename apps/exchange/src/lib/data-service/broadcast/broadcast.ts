@@ -6,37 +6,37 @@ import { stringifyJSON } from '../utils/utils';
 
 export function broadcast(data) {
   return request({
-    url: `${get('node')}/transactions/broadcast`,
     fetchOptions: {
-      method: 'POST',
+      body: stringifyJSON(data),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      body: stringifyJSON(data),
+      method: 'POST',
     },
+    url: `${get('node')}/transactions/broadcast`,
   });
 }
 
 export function createOrderSend(txData) {
   return request({
-    url: `${get('matcher')}/orderbook`,
     fetchOptions: {
-      method: 'POST',
+      body: stringifyJSON(txData),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      body: stringifyJSON(txData),
+      method: 'POST',
     },
+    url: `${get('matcher')}/orderbook`,
   })
     .then((data: { message: Record<string, unknown> & { orderType: string } }) => {
       return parse([
         {
           ...data.message,
-          type: data.message.orderType,
-          status: 'Accepted',
           filled: 0,
+          status: 'Accepted',
+          type: data.message.orderType,
         },
       ]);
     })
@@ -45,15 +45,15 @@ export function createOrderSend(txData) {
 
 export function cancelOrderSend(txData, amountId, priceId, type: 'cancel' | 'delete' = 'cancel') {
   return request({
-    url: `${get('matcher')}/orderbook/${amountId}/${priceId}/${type}`,
     fetchOptions: {
-      method: 'POST',
+      body: stringifyJSON(txData),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      body: stringifyJSON(txData),
+      method: 'POST',
     },
+    url: `${get('matcher')}/orderbook/${amountId}/${priceId}/${type}`,
   }).then((data) => {
     removeOrderFromStore({ id: txData.orderId });
     return data;
@@ -62,15 +62,15 @@ export function cancelOrderSend(txData, amountId, priceId, type: 'cancel' | 'del
 
 export function cancelAllOrdersSend(txData) {
   return request({
-    url: `${get('matcher')}/orderbook/cancel`,
     fetchOptions: {
-      method: 'POST',
+      body: stringifyJSON(txData),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      body: stringifyJSON(txData),
+      method: 'POST',
     },
+    url: `${get('matcher')}/orderbook/cancel`,
   }).then((data) => {
     removeAllOrdersFromStore();
     return data;

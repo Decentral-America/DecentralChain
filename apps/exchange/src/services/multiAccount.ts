@@ -190,14 +190,14 @@ class MultiAccountService {
     // Store user data (ENCRYPTED when saved to storage)
     // NOTE: Ledger accounts have NO seed/privateKey - device holds private key
     this.users[userHash] = {
-      userType: userData.userType,
-      networkByte: userData.networkByte,
-      seed: userData.userType !== 'ledger' ? userData.seed : undefined,
       id: userData.id,
+      ledgerId: userData.ledgerId,
+      ledgerPath: userData.ledgerPath,
+      networkByte: userData.networkByte,
       privateKey: userData.userType !== 'ledger' ? userData.privateKey : undefined,
       publicKey,
-      ledgerPath: userData.ledgerPath,
-      ledgerId: userData.ledgerId,
+      seed: userData.userType !== 'ledger' ? userData.seed : undefined,
+      userType: userData.userType,
     };
 
     // Encrypt all users data
@@ -257,20 +257,20 @@ class MultiAccountService {
 
         return {
           ...user,
-          userType: _user.userType,
-          networkByte: _user.networkByte,
-          id: _user.id,
-          seed: _user.seed, // Decrypted seed (only in memory!)
-          privateKey: _user.privateKey,
-          publicKey: _user.publicKey,
           address: buildAddress(
             { publicKey: _user.publicKey },
             String.fromCharCode(_user.networkByte),
           ),
           hash: userHash,
+          id: _user.id,
+          ledgerId: _user.ledgerId,
           // Ledger-specific fields
           ledgerPath: _user.ledgerPath,
-          ledgerId: _user.ledgerId,
+          networkByte: _user.networkByte,
+          privateKey: _user.privateKey,
+          publicKey: _user.publicKey,
+          seed: _user.seed, // Decrypted seed (only in memory!)
+          userType: _user.userType,
         } satisfies MultiAccountUser;
       })
       .filter((u): u is MultiAccountUser => u != null)

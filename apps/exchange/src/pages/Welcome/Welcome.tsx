@@ -40,16 +40,16 @@ const pulseGlow = keyframes`
 `;
 
 const WelcomeContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  minHeight: '100vh',
+  animation: `${gradientAnimation} 15s ease infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(-45deg, #0a0e27, #1a1f3a, #0f1729, #1e2338)'
       : 'linear-gradient(-45deg, #f5f7fa, #e8f0fe, #f0f4f8, #e3f2fd)',
   backgroundSize: '400% 400%',
-  animation: `${gradientAnimation} 15s ease infinite`,
-  position: 'relative',
+  display: 'flex',
+  minHeight: '100vh',
   overflow: 'hidden',
+  position: 'relative',
 
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
@@ -57,18 +57,18 @@ const WelcomeContainer = styled(Box)(({ theme }) => ({
 }));
 
 const LeftPanel = styled(Box)(({ theme }) => ({
-  flex: 1,
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: theme.spacing(6),
-  position: 'relative',
-  overflow: 'hidden',
+  backdropFilter: 'blur(10px)',
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.15) 0%, rgba(90, 129, 255, 0.15) 100%)'
       : 'linear-gradient(135deg, rgba(31, 90, 246, 0.08) 0%, rgba(90, 129, 255, 0.08) 100%)',
-  backdropFilter: 'blur(10px)',
+  display: 'flex',
+  flex: 1,
+  justifyContent: 'center',
+  overflow: 'hidden',
+  padding: theme.spacing(6),
+  position: 'relative',
 
   [theme.breakpoints.down('md')]: {
     minHeight: 'auto',
@@ -77,9 +77,9 @@ const LeftPanel = styled(Box)(({ theme }) => ({
 }));
 
 const RightPanel = styled(Box)(({ theme }) => ({
-  flex: 1,
-  display: 'flex',
   alignItems: 'center',
+  display: 'flex',
+  flex: 1,
   justifyContent: 'center',
   padding: theme.spacing(6),
   position: 'relative',
@@ -94,57 +94,57 @@ const RightPanel = styled(Box)(({ theme }) => ({
 const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'duration'].includes(prop as string),
 })<{ delay?: number; duration?: number }>(({ theme, delay = 0, duration = 6 }) => ({
-  position: 'absolute',
-  borderRadius: '50%',
+  animation: `${float} ${duration}s ease-in-out infinite`,
+  animationDelay: `${delay}s`,
   background:
     theme.palette.mode === 'dark'
       ? 'radial-gradient(circle, rgba(31, 90, 246, 0.3), transparent)'
       : 'radial-gradient(circle, rgba(31, 90, 246, 0.2), transparent)',
-  animation: `${float} ${duration}s ease-in-out infinite`,
-  animationDelay: `${delay}s`,
+  borderRadius: '50%',
   filter: 'blur(40px)',
+  position: 'absolute',
 }));
 
 const HexagonPattern = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  opacity: theme.palette.mode === 'dark' ? 0.03 : 0.02,
   backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill='none' stroke='%23${theme.palette.mode === 'dark' ? 'ffffff' : '000000'}' stroke-width='1'/%3E%3C/svg%3E")`,
   backgroundSize: '60px 60px',
+  bottom: 0,
+  left: 0,
+  opacity: theme.palette.mode === 'dark' ? 0.03 : 0.02,
+  position: 'absolute',
+  right: 0,
+  top: 0,
 }));
 
 const GlowingOrb = styled(Box)(({ theme }) => ({
+  animation: `${pulseGlow} 4s ease-in-out infinite`,
+  background: `radial-gradient(circle, ${theme.palette.primary.main}40, transparent)`,
+  borderRadius: '50%',
+  height: '300px',
+  pointerEvents: 'none',
   position: 'absolute',
   width: '300px',
-  height: '300px',
-  borderRadius: '50%',
-  background: `radial-gradient(circle, ${theme.palette.primary.main}40, transparent)`,
-  animation: `${pulseGlow} 4s ease-in-out infinite`,
-  pointerEvents: 'none',
 }));
 
 const BrandContent = styled(Box)(() => ({
   maxWidth: '600px',
-  zIndex: 2,
   position: 'relative',
+  zIndex: 2,
 }));
 
 const ContentBox = styled(Box)(({ theme }) => ({
-  maxWidth: '500px',
-  width: '100%',
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.6)' : 'rgba(255, 255, 255, 0.8)',
   backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(3),
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.6)' : 'rgba(255, 255, 255, 0.8)',
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 20px 60px rgba(0, 0, 0, 0.5)'
       : '0 20px 60px rgba(0, 0, 0, 0.1)',
+  maxWidth: '500px',
   padding: theme.spacing(4),
   position: 'relative',
+  width: '100%',
   zIndex: 2,
 
   [theme.breakpoints.down('sm')]: {
@@ -166,24 +166,24 @@ export const Welcome = () => {
     <WelcomeContainer>
       {/* Decorative floating shapes */}
       <FloatingShape
-        sx={{ width: 200, height: 200, top: '10%', left: '5%' }}
+        sx={{ height: 200, left: '5%', top: '10%', width: 200 }}
         delay={0}
         duration={6}
       />
       <FloatingShape
-        sx={{ width: 300, height: 300, bottom: '15%', right: '10%' }}
+        sx={{ bottom: '15%', height: 300, right: '10%', width: 300 }}
         delay={1}
         duration={8}
       />
       <FloatingShape
-        sx={{ width: 150, height: 150, top: '60%', left: '15%' }}
+        sx={{ height: 150, left: '15%', top: '60%', width: 150 }}
         delay={2}
         duration={7}
       />
 
       <LeftPanel>
         <HexagonPattern />
-        <GlowingOrb sx={{ top: '-100px', left: '-100px' }} />
+        <GlowingOrb sx={{ left: '-100px', top: '-100px' }} />
         <GlowingOrb sx={{ bottom: '-150px', right: '-150px' }} />
 
         <Fade in={isVisible} timeout={1000}>
@@ -192,18 +192,18 @@ export const Welcome = () => {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem', lg: '4rem' },
-                  fontWeight: 800,
-                  mb: 3,
                   background:
                     theme.palette.mode === 'dark'
                       ? 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%)'
                       : 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                  backgroundClip: 'text',
+                  fontSize: { lg: '4rem', md: '3.5rem', sm: '3rem', xs: '2.5rem' },
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.2,
+                  mb: 3,
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  lineHeight: 1.2,
-                  letterSpacing: '-0.02em',
                 }}
               >
                 DecentralChain Wallet
@@ -214,12 +214,12 @@ export const Welcome = () => {
               <Typography
                 variant="h5"
                 sx={{
-                  fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
+                  color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.700',
+                  fontSize: { md: '1.25rem', sm: '1.125rem', xs: '1rem' },
+                  fontWeight: 400,
+                  lineHeight: 1.7,
                   mb: 5,
                   opacity: 0.9,
-                  lineHeight: 1.7,
-                  color: theme.palette.mode === 'dark' ? 'grey.300' : 'grey.700',
-                  fontWeight: 400,
                 }}
               >
                 Your gateway to the DecentralChain blockchain. Trade, send, and manage your digital
@@ -234,17 +234,17 @@ export const Welcome = () => {
                   onClick={() => navigate('/signup')}
                   size="large"
                   sx={{
-                    px: 4,
-                    py: 1.5,
+                    '&:hover': {
+                      boxShadow: '0 12px 32px rgba(31, 90, 246, 0.5)',
+                      transform: 'translateY(-2px)',
+                    },
+                    borderRadius: 2,
+                    boxShadow: '0 8px 24px rgba(31, 90, 246, 0.4)',
                     fontSize: '1.1rem',
                     fontWeight: 600,
-                    borderRadius: 2,
+                    px: 4,
+                    py: 1.5,
                     textTransform: 'none',
-                    boxShadow: '0 8px 24px rgba(31, 90, 246, 0.4)',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 32px rgba(31, 90, 246, 0.5)',
-                    },
                     transition: 'all 0.3s ease',
                   }}
                 >
@@ -255,24 +255,24 @@ export const Welcome = () => {
                   onClick={() => navigate('/signin')}
                   size="large"
                   sx={{
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    textTransform: 'none',
+                    '&:hover': {
+                      background:
+                        theme.palette.mode === 'dark'
+                          ? 'rgba(255, 255, 255, 0.15)'
+                          : 'rgba(31, 90, 246, 0.15)',
+                      transform: 'translateY(-2px)',
+                    },
                     background:
                       theme.palette.mode === 'dark'
                         ? 'rgba(255, 255, 255, 0.1)'
                         : 'rgba(31, 90, 246, 0.1)',
                     border: `2px solid ${theme.palette.primary.main}`,
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      background:
-                        theme.palette.mode === 'dark'
-                          ? 'rgba(255, 255, 255, 0.15)'
-                          : 'rgba(31, 90, 246, 0.15)',
-                    },
+                    borderRadius: 2,
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    px: 4,
+                    py: 1.5,
+                    textTransform: 'none',
                     transition: 'all 0.3s ease',
                   }}
                 >
@@ -285,7 +285,7 @@ export const Welcome = () => {
             <Fade in={isVisible} timeout={1500}>
               <Stack direction="row" spacing={4} sx={{ mt: 6 }}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main', mb: 0.5 }}>
+                  <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 0.5 }}>
                     256-bit
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.7 }}>
@@ -293,7 +293,7 @@ export const Welcome = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main', mb: 0.5 }}>
+                  <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 0.5 }}>
                     &lt;100ms
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.7 }}>
@@ -301,7 +301,7 @@ export const Welcome = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main', mb: 0.5 }}>
+                  <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 0.5 }}>
                     24/7
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.7 }}>

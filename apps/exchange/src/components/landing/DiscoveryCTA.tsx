@@ -5,48 +5,48 @@ export default function DiscoveryCTA() {
   const navigate = useNavigate();
 
   return (
-    <Box component="section" sx={{ py: { xs: 8, md: 10 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 10, xs: 8 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={6} alignItems="center">
           <Grid
-            order={{ xs: 2, md: 1 }}
+            order={{ md: 1, xs: 2 }}
             size={{
-              xs: 12,
               md: 6,
+              xs: 12,
             }}
           >
             <Box
               sx={{
-                maxWidth: 340,
-                height: 400,
-                bgcolor: 'rgba(79, 70, 229, 0.05)',
-                borderRadius: 3,
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
                 '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
                   bgcolor: 'rgba(255, 255, 255, 0.75)',
                   borderRadius: 3,
+                  bottom: 0,
+                  content: '""',
+                  left: 0,
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
                 },
+                backgroundImage:
+                  'url(https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400)',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                bgcolor: 'rgba(79, 70, 229, 0.05)',
+                borderRadius: 3,
+                height: 400,
+                maxWidth: 340,
+                position: 'relative',
               }}
             />
           </Grid>
           <Grid
-            order={{ xs: 1, md: 2 }}
+            order={{ md: 2, xs: 1 }}
             size={{
-              xs: 12,
               md: 6,
+              xs: 12,
             }}
           >
-            <Typography variant="h2" sx={{ mb: 3, fontWeight: 700 }}>
+            <Typography variant="h2" sx={{ fontWeight: 700, mb: 3 }}>
               Your gateway to decentralized finance
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>

@@ -125,9 +125,9 @@ export const ImportLedger = () => {
       // Prepare Ledger data for account creation
       const ledgerData = {
         address: selectedUser.address,
-        publicKey: selectedUser.publicKey,
-        path: selectedUser.path,
         id: selectedUser.id,
+        path: selectedUser.path,
+        publicKey: selectedUser.publicKey,
       };
 
       // Add Ledger account to multiAccount vault

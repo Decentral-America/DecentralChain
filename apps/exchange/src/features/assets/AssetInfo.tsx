@@ -141,11 +141,11 @@ const formatNumber = (num: number): string => {
  */
 const formatTimestamp = (timestamp: number): string => {
   return new Date(timestamp).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    month: 'long',
+    year: 'numeric',
   });
 };
 
@@ -249,7 +249,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
         {showIssuer && (
           <InfoItem>
             <InfoLabel>Issuer</InfoLabel>
-            <InfoValue style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+            <InfoValue style={{ fontFamily: 'monospace', fontSize: '12px' }}>
               {asset.issuer}
             </InfoValue>
           </InfoItem>
@@ -282,7 +282,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
       {!compact && (
         <InfoItem style={{ marginTop: '16px' }}>
           <InfoLabel>Origin Transaction</InfoLabel>
-          <InfoValue style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+          <InfoValue style={{ fontFamily: 'monospace', fontSize: '12px' }}>
             {asset.originTransactionId}
           </InfoValue>
         </InfoItem>

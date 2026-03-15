@@ -8,24 +8,24 @@
  * Shadow tokens for depth and elevation
  */
 export const shadows = {
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
   xxl: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
 };
 
 /**
  * Dark mode shadows with higher opacity
  */
 export const darkShadows = {
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-  md: '0 4px 6px -1px rgba(0, 0, 0, 0.4)',
+  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.4)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.4)',
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.6)',
   xxl: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.4)',
 };
 
 /**
@@ -43,8 +43,8 @@ export const transitions = {
  */
 export const easing = {
   easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
-  easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
   easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
   sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
 };
 
@@ -54,10 +54,10 @@ export const easing = {
 export const zIndex = {
   base: 0,
   dropdown: 1000,
-  sticky: 1100,
   fixed: 1200,
   modal: 1300,
   popover: 1400,
+  sticky: 1100,
   toast: 1500,
   tooltip: 1600,
 };
@@ -66,25 +66,25 @@ export const zIndex = {
  * Border radius tokens
  */
 export const borderRadius = {
-  none: '0',
-  sm: '4px',
-  md: '8px',
+  full: '9999px',
   lg: '12px',
+  md: '8px',
+  none: '0',
+  round: '50%',
+  sm: '4px',
   xl: '16px',
   xxl: '24px',
-  full: '9999px',
-  round: '50%',
 };
 
 /**
  * Spacing scale (matches theme spacing but in pixels for non-styled usage)
  */
 export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
   lg: 24,
+  md: 16,
+  sm: 8,
   xl: 32,
+  xs: 4,
   xxl: 48,
   xxxl: 64,
 };
@@ -93,9 +93,9 @@ export const spacing = {
  * Breakpoint values (matches theme breakpoints)
  */
 export const breakpoints = {
+  desktop: 1280,
   mobile: 768,
   tablet: 1024,
-  desktop: 1280,
   wide: 1536,
 };
 
@@ -103,45 +103,45 @@ export const breakpoints = {
  * Font weights
  */
 export const fontWeights = {
-  light: 300,
-  regular: 400,
-  medium: 500,
-  semibold: 600,
   bold: 700,
   extrabold: 800,
+  light: 300,
+  medium: 500,
+  regular: 400,
+  semibold: 600,
 };
 
 /**
  * Font sizes in pixels
  */
 export const fontSizes = {
-  xs: 12,
-  sm: 14,
-  md: 16,
+  display: 36,
   lg: 18,
+  md: 16,
+  sm: 14,
   xl: 20,
+  xs: 12,
   xxl: 24,
   xxxl: 30,
-  display: 36,
 };
 
 /**
  * Line heights
  */
 export const lineHeights = {
-  tight: 1.2,
+  loose: 2,
   normal: 1.5,
   relaxed: 1.75,
-  loose: 2,
+  tight: 1.2,
 };
 
 /**
  * Letter spacing
  */
 export const letterSpacing = {
-  tighter: '-0.05em',
-  tight: '-0.025em',
   normal: '0',
+  tight: '-0.025em',
+  tighter: '-0.05em',
   wide: '0.025em',
   wider: '0.05em',
   widest: '0.1em',

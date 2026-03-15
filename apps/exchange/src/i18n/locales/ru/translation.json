@@ -1,4 +1,92 @@
 {
+  "app": {
+    "back": "Перейти на главную",
+    "button": {
+      "cancel": "Отмена",
+      "continue": "Продолжить",
+      "signIn": "Войти"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Выпуск токена временно недоступен.",
+        "issue-title": "Выпуск токена",
+        "massSendTitle": "Массовая отправка",
+        "reissue": "Перевыпуск токена временно недоступен.",
+        "sendTitle": "Отправить",
+        "set-script-title": "Script транзакция"
+      },
+      "send": {
+        "errors": {
+          "fee": "У вас недостаточно средств для оплаты комиссии. Вам необходимо оплатить комиссию за транзакцию {{fee, money-currency}};"
+        }
+      }
+    },
+    "date": {
+      "month": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Алоха тестотокен ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "Мы постоянно работаем над тем, чтобы сделать Decentral.Exchange лучше и полезнее.\nПожалуйста, обновите приложение, чтобы продолжить работу. Скачайте приложение на официальном [сайте](https://decentralchain.io/technology/wallet)!",
+        "title": "Пора обновить приложение!"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Aссеты",
+      "dex": "DEX",
+      "leasing": "Лизинг",
+      "portfolio": "Портфель",
+      "tokens": "Выпуск токена",
+      "transactions": "Транзакции",
+      "wallet": "Кошелёк"
+    },
+    "inputs": {
+      "errors": {
+        "required": "Поле обязательно для заполнения!"
+      }
+    },
+    "leftmenu": {
+      "login": "Вход",
+      "logout": "Выход",
+      "settings": "Настройки"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Отменён",
+          "filled": "Выполнен на {{percent}}%",
+          "opened": "Открыт"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "Введите пароль"
+      },
+      "pairing": {
+        "showQr": "Показать"
+      },
+      "tryDesktop": {
+        "cancel": "Остаться в браузере",
+        "label": "Запомнить выбор и больше не показывать",
+        "message": "Мы рекомендуем вам использовать десктопное приложение DecentralChain. Вы можете скачать его с официального сайта.",
+        "title": "Используйте десктопное приложение DecentralChain",
+        "try": "Открыть приложение"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "Подозрительный"
+  },
   "app.create": {
     "backupSeed": {
       "back": " вернуться назад",
@@ -115,9 +203,9 @@
         "1day": "1 день",
         "1hour": "1 час",
         "1week": "1 неделя",
+        "5min": "5 минут",
         "30day": "29 дней",
         "30min": "30 минут",
-        "5min": "5 минут",
         "amountField": "Количество",
         "ask": "Ask",
         "bid": "Bid",
@@ -275,8 +363,8 @@
         "chg": "Изм.",
         "coin": "Валюта",
         "helpIcon": {
-          "assetId": "ID Ассета",
           "AssetId1AssetId2": "ID Ассета1 / ID Ассета2",
+          "assetId": "ID Ассета",
           "description": "Больше информации вы можете найти [здесь](https://docs.decentralchain.io/ru/decentralchain-dex/start-trading-on-the-decentralchain-dex.html)",
           "header": "Вы можете искать по:",
           "name": "Имя",
@@ -334,15 +422,15 @@
       "title": {
         "all": "Все",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "история",
         "myBalance": "Мой баланс",
         "myTradeHistory": "Моя история сделок",
-        "openOrders": "Мои открытые ордера",
         "OrderHistory": "Моя история ордеров",
+        "openOrders": "Мои открытые ордера",
         "trade": "Сделки",
-        "tradeHistory": "История сделок",
-        "decentralchain": "DecentralChain"
+        "tradeHistory": "История сделок"
       }
     }
   },
@@ -378,6 +466,12 @@
       "selectFileBtn": "Выберите файл"
     },
     "backupFileDescription": "Импорт аккаунтов из Keystore File",
+    "decentralchainClient": "DCC Client",
+    "decentralchainClientDescription": "Import account from a DCC Client",
+    "decentralchainLiteClient": "DecentralChain Lite Client",
+    "decentralchainLiteClientDescription": "Импорт аккаунтов из DecentralChain Lite Client",
+    "decentralchainSeedClient": "Секретная фраза",
+    "decentralchainSeedClientDescription": "Импорт аккаунта из сохраненной фразы",
     "import": {
       "signIn": "Sign in"
     },
@@ -393,101 +487,7 @@
       "name": "Секретная фраза или приватный ключ"
     },
     "seedAndKeyDescription": "Импорт аккаунта из сохраненной фразы или по приватному ключу",
-    "selectButton": "Импортировать",
-    "decentralchainClient": "DCC Client",
-    "decentralchainClientDescription": "Import account from a DCC Client",
-    "decentralchainLiteClient": "DecentralChain Lite Client",
-    "decentralchainLiteClientDescription": "Импорт аккаунтов из DecentralChain Lite Client",
-    "decentralchainSeedClient": "Секретная фраза",
-    "decentralchainSeedClientDescription": "Импорт аккаунта из сохраненной фразы"
-  },
-  "app": {
-    "back": "Перейти на главную",
-    "button": {
-      "cancel": "Отмена",
-      "continue": "Продолжить",
-      "signIn": "Войти"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "Выпуск токена временно недоступен.",
-        "issue-title": "Выпуск токена",
-        "massSendTitle": "Массовая отправка",
-        "reissue": "Перевыпуск токена временно недоступен.",
-        "sendTitle": "Отправить",
-        "set-script-title": "Script транзакция"
-      },
-      "send": {
-        "errors": {
-          "fee": "У вас недостаточно средств для оплаты комиссии. Вам необходимо оплатить комиссию за транзакцию {{fee, money-currency}};"
-        }
-      }
-    },
-    "date": {
-      "month": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"]
-    },
-    "error": {
-      "updateClient": {
-        "body": "Мы постоянно работаем над тем, чтобы сделать Decentral.Exchange лучше и полезнее.\nПожалуйста, обновите приложение, чтобы продолжить работу. Скачайте приложение на официальном [сайте](https://decentralchain.io/technology/wallet)!",
-        "title": "Пора обновить приложение!"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Алоха тестотокен ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "Aссеты",
-      "dex": "DEX",
-      "leasing": "Лизинг",
-      "portfolio": "Портфель",
-      "tokens": "Выпуск токена",
-      "transactions": "Транзакции",
-      "wallet": "Кошелёк"
-    },
-    "inputs": {
-      "errors": {
-        "required": "Поле обязательно для заполнения!"
-      }
-    },
-    "leftmenu": {
-      "login": "Вход",
-      "logout": "Выход",
-      "settings": "Настройки"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "Отменён",
-          "filled": "Выполнен на {{percent}}%",
-          "opened": "Открыт"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "Введите пароль"
-      },
-      "pairing": {
-        "showQr": "Показать"
-      },
-      "tryDesktop": {
-        "cancel": "Остаться в браузере",
-        "label": "Запомнить выбор и больше не показывать",
-        "message": "Мы рекомендуем вам использовать десктопное приложение DecentralChain. Вы можете скачать его с официального сайта.",
-        "title": "Используйте десктопное приложение DecentralChain",
-        "try": "Открыть приложение"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k"
-      }
-    },
-    "Suspicious": "Подозрительный"
+    "selectButton": "Импортировать"
   },
   "app.ledger": {
     "ledger": {
@@ -505,9 +505,9 @@
       "help": {
         "id": "{div}[Задайте ID вручную или выберите аккаунт из списка.]\n{div}[Пожалуйста, сохраните ID, он понадобится при импорте.]"
       },
+      "ImportOrSignIn": "Импортируйте аккаунт или",
       "id": "ID аккаунта",
       "importAccount": "Импортировать Ledger аккаунт",
-      "ImportOrSignIn": "Импортируйте аккаунт или",
       "login": "Продолжить",
       "name": "Название аккаунта",
       "nameExists": "Имя занято",
@@ -571,6 +571,14 @@
       },
       "goHome": "Вернуться",
       "text1": "Биржа Decentral.Exchange трансформируется в новый продукт – Decentral.Exchange. Не переживайте! Все ваши токены, seed-фразы и пароли - в полной безопасности.",
+      "text2": "Это - новая биржа, в основу которой легли все предыдущие наработки Decentral.Exchange. Более подробная информация - в [блоге](https://decentralchain.io/blog).",
+      "text3": "Разработкой и развитием биржи Decentral.Exchange занимается часть команды Decentral.Exchange совместно с новыми разработчиками из сообщества DecentralChain.",
+      "text4": "Переезд означает новую веху в развитии биржи, ключевым приоритетом которой будет, в первую очередь, пользовательский опыт. Помимо фокуса на запросах сообщества, новая команда сосредоточится на разработке новых инструментов для торговли и полноценном продвижении продукта, что было затруднительно в прежней конфигурации.",
+      "text5": "Миграция уже началась. Начиная с 18 ноября 2019 вы можете перенести свои учетные записи. Для этого нужно обновить страницу веб-версии биржи Decentral.Exchange в панели браузера и/или перезапустить десктопное приложение, войти в свою учётную запись и следовать инструкциям. ",
+      "text6": "Да, но только, если Вы хотите продолжить использовать уже знакомые и привычные экосистемные продукты, такие как веб/десктопные приложения, мобильные приложения и биржу, работающие на технологиях DecentralChain.",
+      "text7": "Запуск новой биржи запланирован на 2 декабря 2019 года.",
+      "text8": "Мы хотим дать пользователям Decentral.Exchange достаточный запас времени для подготовки к использованию новой биржи. Мы считаем, что две недели  достаточно для успешной миграции основной массы пользователей.",
+      "text9": "Да, возможность переноса аккаунтов будет доступна и после запуска Decentral.Exchange. Тем не менее, 2 декабря 2019 года в отношении старых приложений Decentral.Exchange будет применён ряд ограничений.",
       "text10": "{div.margin-bottom}[В старых приложениях вы больше НЕ СМОЖЕТЕ:]\n{div.line}[- Создавать новые учётные записи]\n{div.line}[- Получать доступ к интерфейсу Decentral.Exchange]\n{div.line}[- Просматривать портфолио]\n{div.line}[- Совершать любые типы транзакций: трансфер, выпуск токена, сжигание токена, сдача DecentralChain в лизинг, отмена лизинга]\n{div.line}[- Использовать гейтвеи]\n\n{div.margin-bottom}[Все эти операции после 2 декабря 2019 года можно будет осуществлять ТОЛЬКО в приложениях Decentral.Exchange.]\n\n{div.margin-bottom}[При помощи старых приложений вы СМОЖЕТЕ:]\n\n{div.line}[- Входить в свои учётные записи]\n{div.line}[- Инициировать процедуру переезда на Decentral.Exchange]\n{div.line}[- Создать локальный бэкап ваших seed-фраз]\n\n{div.margin-top}[Если у вас остались вопросы, вы можете обратиться в нашу [официальную Telegram-группу](tg://resolve?domain=decentralexchangeRu) или написать в поддержку: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text11": "Ни в коем случае! Это полностью исключено. Все seed-фразы будут по-прежнему храниться локально на ваших устройствах. Доступ со стороны биржи к этим хранилищам невозможен.",
       "text12": "Ваши токены находятся в блокчейне DecentralChain. Доступ к токенам, хранящимся в ваших учетных записях, осуществляется исключительно по seed-фразам или приватным ключам, которые при переезде не изменятся и не покинут ваши устройства. Это значит, что с ними всё будет в полном порядке. Ваши активы в полной безопасности!",
@@ -581,20 +589,20 @@
       "text17": "Матчер получит новый блокчейн-адрес и новый URL, и, как следствие, изменится приватный ключ матчера. Во время проведения технических работ все ордера будут отменены. К сожалению, не существует технической возможности переноса ордеров между матчерами, так как каждый ордер передается конкретному матчеру от пользователя путем подписания этого ордера пользовательским приватным ключом. Ни новый, ни старый матчеры не имеют доступа к приватным ключам пользователей, а значит, они не смогут обменяться ордерами. Мы понимаем, что такая специфика работы матчера может вызвать неудобства, но это необходимо для безопасности пользовательских средств. Приносим извинения за неудобства.",
       "text18": "{div.margin-bottom}[Мы постарались создать максимально комфортные для пользователя условия миграции. Если у вас возникли проблемы с миграцией, необходимо попробовать еще раз. Для этого вернитесь в свой старый веб/десктоп клиент, войдите при помощи пароля и следуйте инструкциям.]\n\n{div.margin-bottom}[Рекомендация для пользователей браузерной версии: на время миграции отключите все расширения браузера, так как они могут препятствовать успешному завершению процесса миграции.]\n\n{div.margin-bottom}[Рекомендации для пользователей десктопного приложения: на время миграции отключите ваш фаервол и антивирус – они могут ограничивать работу портов и препятствовать миграции.]\n\n{div.margin-top}[Если у вас остались вопросы, вы можете обратиться в нашу [официальную Telegram-группу](tg://resolve?domain=decentralexchangeRu) или написать в поддержку: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text19": "{div.margin-bottom}[Часть гейтвеев находится под управлением команды Decentral.Exchange, а именно: $BTC, $ETH, $WEST, $ERGO, $BNT, $USDT.]\n{div.margin-bottom}[В свою очередь, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD и wEUR временно управляются компанией Coinomat.]\n{div.margin-top}[Процесс миграции и технические работы никак не затронут операции ввода и вывода токенов через шлюзы (гейтвеи), которые будут выполняться в штатном режиме.]",
-      "text2": "Это - новая биржа, в основу которой легли все предыдущие наработки Decentral.Exchange. Более подробная информация - в [блоге](https://decentralchain.io/blog).",
       "text20": "В процессе переезда ваш лизинг не отменится. Пользователи, как и ранее, смогут сдать монеты DCC в лизинг и получать до 7% годовых от самостоятельно выбранных ими нод, используя лизинговый интерфейс Decentral.Exchange.",
       "text21": "Запуск шлюза Tether USD (ERC-20) никак не повлияет на работу гейтвеев wUSD и wEUR гейтвеев. Пользователи смогут свободно торговать ими на своё усмотрение.",
       "text22": "Новые адреса принадлежат шлюзу под управлением Decentral.Exchange. Команда обеспечивает поддержку и развитие шлюзов, чтобы переводы через эти шлюзы выполнялись быстро и комфортно для пользователей.",
       "text23": "Мы понимаем, что процесс миграции может вызвать некоторый дискомфорт, поэтому мы подготовили небольшой сюрприз! Все пользователи, которые успешно перенесут свои кошельки на новую биржу, получат уникальный переливающийся аватар, отображающийся в приложении. Для получения отличительного знака вам нужно успешно завершить миграцию аккаунтов с Decentral.Exchange на Decentral.Exchange до 2 декабря (включительно) и иметь на них по меньшей мере одну исходящую транзакцию любого типа.",
       "text24": "Мы планируем в ближайшее время добавить поддержку всех языков, ранее доступных на Decentral.Exchange.",
-      "text3": "Разработкой и развитием биржи Decentral.Exchange занимается часть команды Decentral.Exchange совместно с новыми разработчиками из сообщества DecentralChain.",
-      "text4": "Переезд означает новую веху в развитии биржи, ключевым приоритетом которой будет, в первую очередь, пользовательский опыт. Помимо фокуса на запросах сообщества, новая команда сосредоточится на разработке новых инструментов для торговли и полноценном продвижении продукта, что было затруднительно в прежней конфигурации.",
-      "text5": "Миграция уже началась. Начиная с 18 ноября 2019 вы можете перенести свои учетные записи. Для этого нужно обновить страницу веб-версии биржи Decentral.Exchange в панели браузера и/или перезапустить десктопное приложение, войти в свою учётную запись и следовать инструкциям. ",
-      "text6": "Да, но только, если Вы хотите продолжить использовать уже знакомые и привычные экосистемные продукты, такие как веб/десктопные приложения, мобильные приложения и биржу, работающие на технологиях DecentralChain.",
-      "text7": "Запуск новой биржи запланирован на 2 декабря 2019 года.",
-      "text8": "Мы хотим дать пользователям Decentral.Exchange достаточный запас времени для подготовки к использованию новой биржи. Мы считаем, что две недели  достаточно для успешной миграции основной массы пользователей.",
-      "text9": "Да, возможность переноса аккаунтов будет доступна и после запуска Decentral.Exchange. Тем не менее, 2 декабря 2019 года в отношении старых приложений Decentral.Exchange будет применён ряд ограничений.",
       "title1": "Что происходит?",
+      "title2": "Что такое Decentral.Exchange?",
+      "title3": "Кто занимается разработкой новой биржи?",
+      "title4": "Почему Decentral.Exchange переезжает на Decentral.Exchange?",
+      "title5": "Когда начнется миграция?",
+      "title6": "Является ли миграция обязательной?",
+      "title7": "Когда состоится запуск Decentral.Exchange?",
+      "title8": "Почему процесс миграции стартует за 2 недели до запуска?",
+      "title9": "Будет ли возможность произвести миграцию после запуска Decentral.Exchange?",
       "title10": "Какие ограничения будут применены к приложениям Decentral.Exchange после 2 декабря 2019 года?",
       "title11": "Получит ли новая биржа доступ к моим seed-фразам?",
       "title12": "Что станет с моими токенами?",
@@ -605,19 +613,11 @@
       "title17": "Какие изменения претерпят Матчер и выставленные ордера?",
       "title18": "Что, если во время процесса миграции у меня возникнут проблемы или вопросы?",
       "title19": "Что произойдет со шлюзовыми монетами?",
-      "title2": "Что такое Decentral.Exchange?",
       "title20": "Будет ли доступен лизинг после переезда? И будет ли он отменен во время переезда?",
       "title21": "Вытеснит ли Tether USD (USDT) wUSD и wEUR?",
       "title22": "Почему важно использовать новые адреса при получении BTC и ETH?",
       "title23": "А нельзя было сделать все как-то попроще?",
-      "title24": "Планируется ли расширение языковой поддержки интерфейса новой биржи?",
-      "title3": "Кто занимается разработкой новой биржи?",
-      "title4": "Почему Decentral.Exchange переезжает на Decentral.Exchange?",
-      "title5": "Когда начнется миграция?",
-      "title6": "Является ли миграция обязательной?",
-      "title7": "Когда состоится запуск Decentral.Exchange?",
-      "title8": "Почему процесс миграции стартует за 2 недели до запуска?",
-      "title9": "Будет ли возможность произвести миграцию после запуска Decentral.Exchange?"
+      "title24": "Планируется ли расширение языковой поддержки интерфейса новой биржи?"
     },
     "migrate": {
       "achievementDesc": "Вы успешно перенесли свои аккаунты. Благодарим за завершение миграции и дарим вашим аккаунтам (с хотя бы одной исходящей транзакцией до 2 декабря 2019) по переливающемуся аватару!",
@@ -886,11 +886,11 @@
       "title": "Выпуск токена \"{{name}}\"",
       "titleSuccess": "Токен \"{{name}}\" выпущен"
     },
-    "name": "Название вашего токена",
     "NFT": {
       "description": "Не взаимозаменяемый токен или NFT (от англ. non-fungible token) — особый тип токена, являющийся уникальным объектом на блокчейне DecentralChain. В настоящее время отображение NFT-токенов в DCC Wallet и на Decentral.Exchange не поддерживается. Вы можете увидеть свои NFT-токены в [DecentralScan](https://decentralscan.com/)",
       "title": "Вы создаете NFT-токен."
     },
+    "name": "Название вашего токена",
     "notifications": {
       "isNotCreated": "Токен не был выпущен"
     },
@@ -961,6 +961,10 @@
     "confirmTransaction": {
       "back": "Назад",
       "confirm": "Отправить",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "Пожалуйста, попробуйте еще раз. Если ошибка повторится, обратитесь в  [Поддержку](https://decentralchain.io/soporte/)",
+        "header": "Вы не подтвердили запрос Cubensis Connect"
+      },
       "description": {
         "burn": "Вы сожгли {{quantityStr}} {{name}}",
         "cancel-leasing": "Вы отменили транзакцию лизинга",
@@ -1014,11 +1018,7 @@
         }
       },
       "sign": "Подписать",
-      "success": "Ваша транзакция отправлена!",
-      "decentralchainKeeperUnconfirmed": {
-        "description": "Пожалуйста, попробуйте еще раз. Если ошибка повторится, обратитесь в  [Поддержку](https://decentralchain.io/soporte/)",
-        "header": "Вы не подтвердили запрос Cubensis Connect"
-      }
+      "success": "Ваша транзакция отправлена!"
     },
     "copyError": "Не получается скопировать! Возможно, ваш браузер устарел",
     "copySuccess": "Данные скопированы",
@@ -1422,8 +1422,8 @@
         "rating": {
           "canVoteTip": "Click to rate token",
           "tooltipLink": "More Details",
-          "tooltipNeedDCC": "and 0.001 DCC",
           "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipNeedDCC": "and 0.001 DCC",
           "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
           "tooltipTitle": "To rate a token, you must have at least 1 CRC in your wallet."
         },
@@ -1543,10 +1543,6 @@
         },
         "copyAndShare": "Скопируйте и поделитесь адресом",
         "currency": "Валюта",
-        "or": "ИЛИ",
-        "pleaseNote": "Обратите внимание, что шлюз не взимает комиссию за эту операцию.",
-        "scanQrCode": "Просканируйте QR-код",
-        "title": "Пополнить {{assetName}}",
         "gatewayBNT": {
           "helpDescrText": "Как только транзакция будет подтверждена, шлюз отправит Bancor-токен на ваш аккаунт DecentralChain.",
           "helpDescrTitle": "Введите этот адрес в вашем клиенте или кошельке.",
@@ -1597,7 +1593,11 @@
           "helpDescrTitle_copy": "Введите этот адрес в ваш WEST клиент или кошелёк.",
           "warningMinAmountTitle": "Минимальная сумма депозита {{minAmount, BigNumber}} {{assetTicker}}, максимальная сумма депозита {{maxAmount}} {{assetTicker}}"
         },
-        "gatewayWEST:warningMinAmountTitle_copy": "Минимальная сумма депозита {{minAmount, BigNumber}} {{assetTicker}}, максимальная сумма депозита {{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "Минимальная сумма депозита {{minAmount, BigNumber}} {{assetTicker}}, максимальная сумма депозита {{maxAmount}} {{assetTicker}}",
+        "or": "ИЛИ",
+        "pleaseNote": "Обратите внимание, что шлюз не взимает комиссию за эту операцию.",
+        "scanQrCode": "Просканируйте QR-код",
+        "title": "Пополнить {{assetName}}"
       },
       "dexScriptedPair": {
         "body": "Смарт-ассеты — это ассеты со скриптом, который устанавливает условия обращения данного токена.{div}[Мы не рекомендуем совершать операции со смарт-ассетами, если вы неопытный пользователь. Перед совершением транзакции изучите информацию об ассете и его скрипт.]",
@@ -1631,6 +1631,10 @@
         "warning": "Не вводите свою секретную фразу (SEED) на сторонних ресурсах."
       },
       "import": {
+        "decentralchainBetaClient": "DecentralChain Beta Client",
+        "decentralchainBetaClientDescription": "Импорт аккаунтов из DecentralChain Lite Client",
+        "decentralchainLiteClient": "DecentralChain Lite Client",
+        "decentralchainLiteClientDescription": "Импорт аккаунтов из DecentralChain Lite Client",
         "errorBeta": "Мы не смогли получить ваши аккаунты из DecentralChain Beta Client. Попробуйте выполнить импорт из DecentralChain Lite Client.",
         "errorHeader": "Не найдено аккаунтов",
         "errorLite": "Мы не смогли получить ваши аккаунты из DecentralChain Lite Client. Попробуйте выполнить импорт из DecentralChain Beta Client.",
@@ -1647,19 +1651,15 @@
         "selectAccountDescription": "Необходимо разрешить всплывающие окна в браузере",
         "selectAccountToImport": "Выберите аккаунты для импорта",
         "selectAccountToImportFrom": "Выберите, откуда импортировать аккаунты",
-        "selectButton": "Выбрать",
-        "decentralchainBetaClient": "DecentralChain Beta Client",
-        "decentralchainBetaClientDescription": "Импорт аккаунтов из DecentralChain Lite Client",
-        "decentralchainLiteClient": "DecentralChain Lite Client",
-        "decentralchainLiteClientDescription": "Импорт аккаунтов из DecentralChain Lite Client"
+        "selectButton": "Выбрать"
       },
       "matcherChoice": {
         "customMatcher": "Custom matcher address",
+        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy.",
         "matcher": "Matcher",
         "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
         "terms": "Terms",
-        "title": "Choose matcher",
-        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy."
+        "title": "Choose matcher"
       },
       "open-main": {
         "dex": {
@@ -1743,6 +1743,9 @@
         "cryptocurrency": {
           "title": "Криптовалюта"
         },
+        "decentralchainEnterprise": {
+          "serverError_copy": "Сервис WEST временно недоступен. Попробуйте, пожалуйста, позже."
+        },
         "error": {
           "cardAmount": {
             "gte": "Минимальная сумма ввода — {{gte}} {{currency}}",
@@ -1777,9 +1780,6 @@
         "verified": "Проверенный",
         "vostok": {
           "serverError": "Сервис WEST временно недоступен. Попробуйте, пожалуйста, позже."
-        },
-        "decentralchainEnterprise": {
-          "serverError_copy": "Сервис WEST временно недоступен. Попробуйте, пожалуйста, позже."
         },
         "wtry": {
           "info": "Если у вас возникнут проблемы с процессингом, пожалуйста, обратитесь в службу поддержки Digilira — [support@digilira.com](mailto:support@digilira.com)"
@@ -1907,8 +1907,8 @@
         "title": "Отправить {{assetName}}",
         "titleComplete": "Отправка завершена",
         "toBank": "Вывод в банк",
-        "total": "Всего",
         "toDecentralChain": "Отправить на адрес DecentralChain",
+        "total": "Всего",
         "txFee": "Комиссия",
         "validationError": {
           "notEnoughFunds": "У вас недостаточно средств для оплаты комиссии. Вам необходимо оплатить комиссию за транзакцию {{fee, money-currency}}.",
@@ -2004,12 +2004,12 @@
           "showCodeLink": "Показать QR-код",
           "unavailable": {
             "description": {
-              "ledger": "Экспорт недоступен для учетных записей, хранящихся на устройстве Ledger",
-              "decentralchainKeeper": "Экспорт для учетных записей, импортированных из Cubensis Connect, доступен в настройках Cubensis Connect"
+              "decentralchainKeeper": "Экспорт для учетных записей, импортированных из Cubensis Connect, доступен в настройках Cubensis Connect",
+              "ledger": "Экспорт недоступен для учетных записей, хранящихся на устройстве Ledger"
             },
             "header": {
-              "ledger": "Экспорт недоступен",
-              "decentralchainKeeper": "Экспорт недоступен"
+              "decentralchainKeeper": "Экспорт недоступен",
+              "ledger": "Экспорт недоступен"
             },
             "ok": "Я понял"
           }
@@ -2084,9 +2084,6 @@
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "Изменить спонсорство"
-      },
       "sponsorship": {
         "amountPerTx": "Цена транзакции (за 0.001 DCC)",
         "assetId": "ID",
@@ -2103,6 +2100,9 @@
         "title": "Включить спонсорство",
         "warningHeader": "Пользователи смогут оплачивать комиссию в {{name}}",
         "warningText": "За каждую такую транзакцию с вашего баланса будет снято 0.001 DCC и начислено {{name}}. Количество {{name}}, которое пользователь платит за транзакцию, устанавливаете вы (укажите соответствующую цену в поле ниже). Спонсорство работает только при балансе больше чем 1,005 DecentralChain. Если у вас на счету менее этой суммы, спонсорство работать не будет."
+      },
+      "sponsorship_edit": {
+        "title": "Изменить спонсорство"
       },
       "startLease": {
         "amount": "Количество",
@@ -2246,6 +2246,11 @@
           "1_0_0-beta_42": "{span.line}[1. Добавлен испанский язык.]{span.line}[2. Добавлена настройка «не запоминать аккаунт при авторизации».]{span.line}[3. Спам транзакции получили соответствующую пометку на странице транзакций.]{span.line}[4. Исправлены мелкие баги.]",
           "1_0_0-beta_47": "{span.line}[1. Новый интерфейс децентрализованной биржи.]{span.line}[2. Клиент теперь работает быстрее и стабильнее.]{span.line}[3. Операции с алиасами снова доступны.]{span.line}[4. Исправлены некоторые незначительные ошибки.]{span.line}[5. Примите участие в наших конкурсах. Снимите [видео](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) или напишите [статью](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835).]",
           "1_0_0-beta_50": "{span.line}[1. Теперь вы можете сжигать любые токены, которые имеются у вас на балансе]{span.line}[2. Исправлены мелкие баги]",
+          "1_0_3": "{span.line}[1. Теперь вы можете искать токены в портфолио по ID]\n{span.line}[2. Исправлены мелкие баги]",
+          "1_0_5": "{span.line}[1. Шкала объёма торгов теперь отображается на графиках DEX]\n{span.line}[2. Исправлены несколько мелких багов]",
+          "1_0_6": "{span.line}[1. Добавлена возможность авторизации с помощью десктопного клиента DecentralChain]",
+          "1_0_7": "{span.line}[1. Исправлены краши десктоп-клиента.]\n{span.line}[2. Оптимизирована скорость прорисовки элементов при переключении между страницами Транзакциями и Портфолио.]\n{span.line}[3. На странице Транзакции названия спам ассетов теперь скрыты.]\n{span.line}[4. Переделан формат вывода ошибок.]",
+          "1_0_8": "{span.line}[1. Добавлена поддержка Ledger Nano S]\n{span.line}[2. Добавлено сохранение настройки способа входа]",
           "1_0_10": "{span.line}[1. Добавлена поддержка спонсорских транзакций. [Подробнее](https://docs.decentralchain.io/ru/decentralchain-client/assets-management/sponsored-transaction.html)]\n{span.line}[2. Добавлены польский и португальский языки]",
           "1_0_14": "{span.line}[1. Исправлена ошибка со Спонсорскими токенами при низком балансе DecentralChain]\n{span.line}[2. Исправлена ошибка с установкой ордера с сроком на 30 дней]\n{span.line}[3. Исправлены другие незначительные ошибки]",
           "1_0_15": "{span.line}[1. Исправлены проблемы с подтверждением транзакций на Ledger]\n{span.line}[2. Увеличено время ожидания подтверждения на Ledger]\n{span.line}[3. Добавлен вывод подробной информации в сообщение об ошибке]",
@@ -2256,7 +2261,6 @@
           "1_0_27": "{span.line}[1. В Портфель добавлен фильтр \"Мои ассеты\"]\n{span.line}[2. Исправлены мелкие баги]",
           "1_0_28": "{span.line}[1. Добавлена функция экспорта аккаунта в мобильные приложения]\n{span.line}[2. Исправлены мелкие баги]",
           "1_0_29": "{span.line}[1. Добавлена поддержка генерации QR-кодов с кириллическими символами.]\n{span.line}[2. Добавлена подсказка для поиска по торговым парам.]\n{span.line}[3. Внесено несколько косметических изменений. ]",
-          "1_0_3": "{span.line}[1. Теперь вы можете искать токены в портфолио по ID]\n{span.line}[2. Исправлены мелкие баги]",
           "1_0_30": "{span.line}[1. Функционал установки скрипта перенесен в раздел настроек \"Безопасность\".]\n{span.line}[2. Улучшена производительность приложения.]",
           "1_0_32": "{span.line}[1. Интеграция с оракулом BetterTokens.]\n{span.line}[2. Добавлена поддержка протокола верификации токенов.]\n{span.line}[3. Исправлен учет комиссии при выводе токенов через Coinomat.]",
           "1_0_33": "{span.line} [1. Теперь вы получите уведомление при попытке установить ордер по цене, сильно отличающейся от рыночной] {span.line} [2. Исправлены мелкие ошибки ]",
@@ -2265,10 +2269,6 @@
           "1_0_40": "{span.line}[1. Оптимизация DEX]\n{span.line}[2. Добавлен курс текущей пары в заголовок вкладки браузера]\n{span.line}[3. Исправлены мелкие ошибки]",
           "1_0_41": "{span.line}[1. Оптимизация DEX]\n{span.line}[2. Добавлена система уведомлений]\n{span.line}[3. Исправлены мелкие ошибки]",
           "1_0_42": "{span.line}[1. Исправлены мелкие ошибки]",
-          "1_0_5": "{span.line}[1. Шкала объёма торгов теперь отображается на графиках DEX]\n{span.line}[2. Исправлены несколько мелких багов]",
-          "1_0_6": "{span.line}[1. Добавлена возможность авторизации с помощью десктопного клиента DecentralChain]",
-          "1_0_7": "{span.line}[1. Исправлены краши десктоп-клиента.]\n{span.line}[2. Оптимизирована скорость прорисовки элементов при переключении между страницами Транзакциями и Портфолио.]\n{span.line}[3. На странице Транзакции названия спам ассетов теперь скрыты.]\n{span.line}[4. Переделан формат вывода ошибок.]",
-          "1_0_8": "{span.line}[1. Добавлена поддержка Ledger Nano S]\n{span.line}[2. Добавлено сохранение настройки способа входа]",
           "1_1_0": "{span.line}[1. Добавлено сохранение срока действия ордера]\n{span.line}[2. Исправлены мелкие ошибки]",
           "1_2_0": "{span.line}[1. Добавлена поддержка японского и эстонского языков]\n{span.line}[2. Оптимизация UI]\n{span.line}[3. Исправлено множество багов]",
           "1_2_1": "{span.line}[1. Приложение теперь запоминает изменение масштаба графиков и выбранный временной интервал]\n{span.line}[2. Исправлены мелкие баги]",
@@ -2277,13 +2277,13 @@
           "1_2_6": "{span.line}[1. Добавлена поддержка Invocation-скриптов. [Подробнее](https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)]\n{span.line}[2. Улучшен UI и исправлено несколько багов.]",
           "1_2_8": "{span.line}[1. Спам токены и транзакции скрыты в клиенте.]\n{span.line}[2. Улучшен UI и исправлено несколько багов.]",
           "1_3_0": "{span.line}[1. Улучшена навигация приложения и интерфейс стартовых страниц.]",
-          "1_3_18": "{span.line}[1. Добавлен импорт из приватного ключа.]\n{span.line}[2. Изменение цены токена теперь считается по паре с DCC.]",
-          "1_3_19": "{span.line}[1. Запущен шлюз Bancor]\n{span.line}[2. Улучшен интерфейс меню пользователя.]",
           "1_3_2": "{span.line}[1. Запущен шлюз WEST.]\n{span.line}[2. Улучшен UI и исправлено несколько багов.]",
-          "1_3_20": "{span.line}[1. Улучшена система хранения и восстановления аккаунтов из локального хранилища (Необходимо обновить [desktop-приложение](https://decentralchain.io/technology/wallet))]\n{span.line}[2. Исправлено округление цен в ордербуке]",
           "1_3_5": "{span.line}[1. Добавлена вкладка с токенами конкурса [wsoc.io](https://wsoc.io)]\n{span.line}[2. Добавлена поддержка франзуского языка]\n{span.line}[3. Исправлены мелкие ошибки]",
           "1_3_7": "{span.line}[1. Интеграция с [tokenrating.decentralscan.com](https://tokenrating.decentralscan.com) Теперь вы можете голосовать за токены прямо в приложении]\n{span.line}[2. Исправлены мелкие ошибки]",
           "1_3_9": "{span.line}[1. Улучшен UI и функциональность разделов Биржа и Кошелек.]\n{span.line}[2. Исправлены мелкие ошибки.]",
+          "1_3_18": "{span.line}[1. Добавлен импорт из приватного ключа.]\n{span.line}[2. Изменение цены токена теперь считается по паре с DCC.]",
+          "1_3_19": "{span.line}[1. Запущен шлюз Bancor]\n{span.line}[2. Улучшен интерфейс меню пользователя.]",
+          "1_3_20": "{span.line}[1. Улучшена система хранения и восстановления аккаунтов из локального хранилища (Необходимо обновить [desktop-приложение](https://decentralchain.io/technology/wallet))]\n{span.line}[2. Исправлено округление цен в ордербуке]",
           "1_4_0": "{span.line}[Добавлена возможность легкого переключения между аккаунтами]",
           "1_4_4": "{span.line}[Добавлена возможность сохранять и загружать аккаунты из файла]"
         },
@@ -2637,6 +2637,14 @@
       "createToken": "Создать токен",
       "currentAccountName": "Имя вашего аккаунта",
       "dashboard": "Обзор",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "0.003 DCC за любой ордер",
+      "decentralchainWallet": "DCC Wallet",
       "decentralized": "Децентрализованная",
       "descExchange": "Мы работаем над превосходным новым проектом, который скоро будет запущен. Следите за новостями!",
       "dexWithHardware": "Пользуйтесь DEX с холодными кошельками: Ledger Nano S и Ledger Blue",
@@ -2663,15 +2671,15 @@
       "legal": "Правовая информация",
       "linux": "Linux",
       "linuxDescription": "Скачать Linux приложение",
-      "logout": "Выйти",
       "logOut": "Выйти",
+      "logout": "Выйти",
       "low": "24Ч. НИЗ.",
       "lowFixedFees": "Низкие комиссии",
       "macOs": "MacOS",
       "macOsDescription": "Скачать MacOS приложение",
       "mailto": "support.decentralchain.io",
-      "mailtoVordex": "support@vordex.com",
       "mailtoDecentralChainExchange": "support@decentral.exchange",
+      "mailtoVordex": "support@vordex.com",
       "mainPage": "Главная страница",
       "majorFiatCryptocurrencies": "Поддержка основных крипто и фиатных валют: BTC, LTC, ETH, USD, и другие",
       "markets": "Рынки",
@@ -2717,14 +2725,6 @@
       "twitter": "Twitter",
       "volume": "ОБЪЕМ",
       "wallet": "Кошелёк",
-      "decentralchainBlockchain": "DecentralChain Blockchain",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
-      "dccExplorer": "DecentralScan",
-      "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
-      "decentralchainLabs": "DecentralChain Labs",
-      "decentralchainOrderFilled": "0.003 DCC за любой ордер",
-      "decentralchainWallet": "DCC Wallet",
       "windows": "Windows",
       "windowsDescription": "Скачать Windows приложение"
     }

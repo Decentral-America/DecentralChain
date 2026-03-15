@@ -51,18 +51,18 @@ export function get(assets: string | Array<string>): Promise<Asset | Asset[]> {
 }
 
 export const dccAsset = new Asset({
-  ticker: 'DCC',
+  description: '',
+  hasScript: false,
+  height: 0,
   id: 'DCC',
+  minSponsoredFee: new BigNumber(0),
   name: 'DCC',
   precision: 8,
-  description: '',
-  height: 0,
-  hasScript: false,
-  timestamp: new Date('2016-04-11T21:00:00.000Z'),
-  minSponsoredFee: new BigNumber(0),
-  sender: '',
   quantity: 10000000000000000,
   reissuable: false,
+  sender: '',
+  ticker: 'DCC',
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 });
 
 export function getNftList(address: string, limit: number): Promise<Array<unknown>> {
@@ -79,15 +79,15 @@ export function getAssetFromNode(assetId: string): Promise<Asset> {
   return request<INodeAssetInfo>({ url: `${configGet('node')}/assets/details/${assetId}` }).then(
     (data) =>
       new Asset({
-        id: data.assetId,
-        name: data.name,
         description: data.description,
+        hasScript: data.scripted,
         height: data.issueHeight,
+        id: data.assetId,
+        minSponsoredFee: data.minSponsoredAssetFee,
+        name: data.name,
         precision: data.decimals,
         quantity: data.quantity,
-        hasScript: data.scripted,
         reissuable: data.reissuable,
-        minSponsoredFee: data.minSponsoredAssetFee,
         sender: data.issuer,
         timestamp: new Date(data.issueTimestamp),
       }),
@@ -136,11 +136,11 @@ export function remapDCCBalance(dcc: Asset, data: assetsApi.IDCCBalance): IBalan
 
   return {
     asset: dcc,
-    regular,
     available,
     inOrders,
-    leasedOut,
     leasedIn,
+    leasedOut,
+    regular,
   };
 }
 
@@ -171,11 +171,11 @@ export function remapAssetsBalance(
 
       return {
         asset,
-        regular,
         available,
         inOrders,
-        leasedOut: empty,
         leasedIn: empty,
+        leasedOut: empty,
+        regular,
       };
     })
     .sort((a, b) => (a.asset.name > b.asset.name ? 1 : a.asset.name === b.asset.name ? 0 : -1));

@@ -63,13 +63,13 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           <Box display="flex" alignItems="center" gap={1}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
-                display: 'flex',
                 alignItems: 'center',
+                background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                height: 40,
                 justifyContent: 'center',
+                width: 40,
               }}
             >
               <ReceiveIcon sx={{ color: 'white', fontSize: 20 }} />
@@ -93,11 +93,11 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           {/* QR Code */}
           <Box
             sx={{
-              p: 3,
               bgcolor: 'white',
               borderRadius: 3,
               boxShadow: 3,
               display: 'inline-block',
+              p: 3,
             }}
           >
             <QRCodeSVG value={user?.address || ''} size={200} level="H" includeMargin={false} />
@@ -106,11 +106,11 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           {/* Address */}
           <Card
             sx={{
-              width: '100%',
-              p: 2,
               bgcolor: 'grey.50',
               border: '1px solid',
               borderColor: 'grey.200',
+              p: 2,
+              width: '100%',
             }}
           >
             <Typography
@@ -131,10 +131,10 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
             disabled={!user?.address}
             startIcon={<CopyIcon />}
             sx={{
-              background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
               '&:hover': {
                 background: 'linear-gradient(135deg, #059669 0%, #0891B2 100%)',
               },
+              background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
             }}
           >
             {isCopied ? '✓ Copied!' : 'Copy Address'}

@@ -51,7 +51,7 @@ const remapPairInfo =
 
       const id = [amountAsset.id, priceAsset.id].sort().join();
 
-      return { amountAsset, priceAsset, lastPrice, firstPrice, volume, change24, id, high, low };
+      return { amountAsset, change24, firstPrice, high, id, lastPrice, low, priceAsset, volume };
     });
 
 export function info(matcher: string, pairs: AssetPair[]) {

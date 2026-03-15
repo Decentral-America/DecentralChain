@@ -30,24 +30,24 @@ export interface ModalProps {
 const ModalContent = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'size',
 })<{ size: 'small' | 'medium' | 'large' }>(({ theme, size }) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
   backgroundColor: theme.palette.background.paper,
   borderRadius: Number(theme.shape.borderRadius) * 2,
   boxShadow: theme.shadows[24],
-  maxHeight: '90vh',
-  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
-  width: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
+  left: '50%',
+  maxHeight: '90vh',
   maxWidth: '90vw',
   outline: 'none',
+  overflow: 'hidden',
+  position: 'absolute',
+  top: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
 
   [theme.breakpoints.down('sm')]: {
-    width: '95vw',
     maxHeight: '95vh',
+    width: '95vw',
   },
 }));
 
@@ -55,43 +55,43 @@ const ModalContent = styled(Box, {
  * Modal header
  */
 const ModalHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2.5),
+  alignItems: 'center',
   borderBottom: `1px solid ${theme.palette.divider}`,
   display: 'flex',
-  alignItems: 'center',
   justifyContent: 'space-between',
+  padding: theme.spacing(2.5),
 }));
 
 /**
  * Close button
  */
 const CloseButton = styled(IconButton)(({ theme }) => ({
-  marginLeft: theme.spacing(1),
-  color: theme.palette.text.secondary,
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
+  color: theme.palette.text.secondary,
+  marginLeft: theme.spacing(1),
 }));
 
 /**
  * Modal body
  */
 const ModalBody = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  overflowY: 'auto',
   flex: 1,
+  overflowY: 'auto',
+  padding: theme.spacing(2.5),
 }));
 
 /**
  * Modal footer
  */
 const ModalFooter = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2.5),
+  alignItems: 'center',
   borderTop: `1px solid ${theme.palette.divider}`,
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
   gap: theme.spacing(1.5),
+  justifyContent: 'flex-end',
+  padding: theme.spacing(2.5),
 }));
 
 /**

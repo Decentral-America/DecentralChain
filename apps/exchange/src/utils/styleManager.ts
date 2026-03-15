@@ -199,9 +199,9 @@ class StyleManagerClass {
 
     // Store entry
     this.styles.set(styleId, {
-      id: styleId,
-      element: style,
       content: css,
+      element: style,
+      id: styleId,
       timestamp: Date.now(),
     });
 
@@ -446,10 +446,10 @@ class StyleManagerClass {
     }
 
     return {
-      totalStyles: this.styles.size,
-      totalThemes: this.themes.size,
       currentTheme: this.currentTheme,
       customProperties: customPropsCount,
+      totalStyles: this.styles.size,
+      totalThemes: this.themes.size,
     };
   }
 

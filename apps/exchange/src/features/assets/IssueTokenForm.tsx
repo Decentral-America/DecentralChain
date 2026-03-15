@@ -128,12 +128,12 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
 
   const form = useZodForm<TokenIssuanceFormData>(tokenIssuanceSchema, {
     defaultValues: {
-      name: '',
-      description: '',
-      quantity: 0,
       decimals: 8,
-      reissuable: true,
+      description: '',
       fee: undefined,
+      name: '',
+      quantity: 0,
+      reissuable: true,
     },
   });
 
@@ -147,12 +147,12 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
 
       // Prepare transaction parameters
       const issueParams = {
-        name: data.name,
-        description: data.description,
-        quantity: quantityInWavelets,
         decimals: data.decimals,
-        reissuable: data.reissuable,
+        description: data.description,
         fee: data.fee || 100000000, // Default 1 DCC fee
+        name: data.name,
+        quantity: quantityInWavelets,
+        reissuable: data.reissuable,
       };
 
       // Sign transaction

@@ -211,5 +211,5 @@ export function usePerformanceMetric(name: string) {
     return duration;
   };
 
-  return { start, end };
+  return { end, start };
 }

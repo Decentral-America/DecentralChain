@@ -159,7 +159,7 @@ export const CircleChart: React.FC<CircleChartProps> = ({
   const center = size / 2;
 
   return (
-    <Container className={className} style={{ width: size, height: size }}>
+    <Container className={className} style={{ height: size, width: size }}>
       <Svg width={size} height={size} role="img" aria-label={`Progress: ${clampedValue}%`}>
         {/* Background circle */}
         <Circle
@@ -268,7 +268,7 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
   const totalLayers = values.length;
 
   return (
-    <Container style={{ width: size, height: size }}>
+    <Container style={{ height: size, width: size }}>
       {values.map((item, index) => {
         const layerSize = size - (totalLayers - index - 1) * (strokeWidth + gap) * 2;
         const radius = (layerSize - strokeWidth) / 2;

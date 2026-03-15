@@ -182,10 +182,10 @@ export function useConfirmDialog() {
     resolvePromise?: () => void;
     rejectPromise?: () => void;
   }>({
-    open: false,
-    title: '',
     message: '',
     onConfirm: () => {},
+    open: false,
+    title: '',
   });
 
   const confirm = React.useCallback(
@@ -203,12 +203,12 @@ export function useConfirmDialog() {
         setState({
           open: true,
           ...options,
+          rejectPromise: () => {
+            resolve(false);
+          },
           resolvePromise: () => {
             originalOnConfirm();
             resolve(true);
-          },
-          rejectPromise: () => {
-            resolve(false);
           },
         });
       });
@@ -244,7 +244,7 @@ export function useConfirmDialog() {
   );
 
   return {
-    confirm,
     ConfirmDialog: ConfirmDialogComponent,
+    confirm,
   };
 }

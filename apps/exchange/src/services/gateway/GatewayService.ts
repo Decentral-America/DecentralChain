@@ -77,7 +77,7 @@ export class GatewayService {
       if (config.otherNetwork) {
         // For gateways with otherNetwork, use the full-info endpoint
         // Extract ticker from asset configuration if available
-        const ticker = 'BTC'; // TODO: Get from asset config
+        const ticker = config.ticker ?? 'BTC';
         fetchUrl = `${config.url}/api/full-info/${config.otherNetwork}/${ticker}`;
       }
 
@@ -85,11 +85,11 @@ export class GatewayService {
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(fetchUrl, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        method: 'GET',
         signal: controller.signal,
       });
 
@@ -104,17 +104,17 @@ export class GatewayService {
       // Parse response into DepositDetails interface
       const depositDetails: DepositDetails = {
         address: data.otherAddress || data.address || '',
-        minimumAmount: new BigNumber(data.minAmount || data.min_amount || 0),
-        maximumAmount: new BigNumber(data.maxAmount || data.max_amount || 0),
-        gatewayFee: new BigNumber(data.fee || 0),
         disclaimerLink: data.disclaimer,
-        minRecoveryAmount: data.recovery_amount ? new BigNumber(data.recovery_amount) : undefined,
-        recoveryFee: data.recovery_fee ? new BigNumber(data.recovery_fee) : undefined,
-        supportEmail: data.email,
-        operator: data.company,
-        walletAddress: userAddress,
+        gatewayFee: new BigNumber(data.fee || 0),
         gatewayType: data.type || 'deposit',
         gatewayUrl: config.url,
+        maximumAmount: new BigNumber(data.maxAmount || data.max_amount || 0),
+        minimumAmount: new BigNumber(data.minAmount || data.min_amount || 0),
+        minRecoveryAmount: data.recovery_amount ? new BigNumber(data.recovery_amount) : undefined,
+        operator: data.company,
+        recoveryFee: data.recovery_fee ? new BigNumber(data.recovery_fee) : undefined,
+        supportEmail: data.email,
+        walletAddress: userAddress,
       };
 
       // For static tunnel type, get the specific deposit address
@@ -154,7 +154,7 @@ export class GatewayService {
       // Determine API endpoint
       let fetchUrl = `${config.url}/api/fullinfo`;
       if (config.otherNetwork) {
-        const ticker = 'BTC'; // TODO: Get from asset config
+        const ticker = config.ticker ?? 'BTC';
         fetchUrl = `${config.url}/api/full-info/${config.otherNetwork}/${ticker}`;
       }
 
@@ -162,11 +162,11 @@ export class GatewayService {
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(fetchUrl, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        method: 'GET',
         signal: controller.signal,
       });
 
@@ -182,11 +182,11 @@ export class GatewayService {
       const withdrawDetails: WithdrawDetails = {
         address: data.tnAddress || data.dccAddress || '',
         attachment: targetAddress,
-        minimumAmount: new BigNumber(data.minAmount || data.min_amount || 0),
-        maximumAmount: new BigNumber(data.maxAmount || data.max_amount || 0),
         gatewayFee: new BigNumber(data.other_total_fee || data.fee || 0),
         gatewayType: data.type || 'deposit',
         gatewayUrl: config.url,
+        maximumAmount: new BigNumber(data.maxAmount || data.max_amount || 0),
+        minimumAmount: new BigNumber(data.minAmount || data.min_amount || 0),
       };
 
       return withdrawDetails;
@@ -215,11 +215,11 @@ export class GatewayService {
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(`${config.url}/tunnel/${userAddress}`, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        method: 'GET',
         signal: controller.signal,
       });
 
@@ -257,25 +257,25 @@ export class GatewayService {
     }
 
     try {
-      const ticker = 'BTC'; // TODO: Get from asset config
+      const ticker = config.ticker ?? 'BTC';
       const otherNetwork = config.otherNetwork || 'Bitcoin';
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(`${config.url}/api/deposits`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
         body: JSON.stringify({
-          ticker,
           dstAddress: userAddress,
-          srcNetwork: otherNetwork,
           dstNetwork: 'TurtleNetwork',
           recaptcha,
+          srcNetwork: otherNetwork,
+          ticker,
         }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
         signal: controller.signal,
       });
 

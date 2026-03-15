@@ -20,29 +20,27 @@ import { Wallet } from '@/pages/Wallet';
  *   - /desktop/wallet/aliases : Alias management (create and view aliases)
  */
 export const walletRoutes: RouteObject = {
-  path: 'wallet',
-  element: <Wallet />,
   children: [
     // Dashboard overview at /desktop/wallet
     {
-      index: true,
       element: <Dashboard />,
+      index: true,
     },
     {
-      path: 'portfolio',
       element: <Portfolio />,
+      path: 'portfolio',
     },
     {
-      path: 'transactions',
       element: <TransactionsModern />,
+      path: 'transactions',
     },
     {
-      path: 'leasing',
       element: <LeasingModern />,
+      path: 'leasing',
     },
     {
-      path: 'aliases',
       element: <AliasManagement />,
+      path: 'aliases',
     },
     // Future child routes:
     // {
@@ -50,4 +48,6 @@ export const walletRoutes: RouteObject = {
     //   element: <AssetDetails />,
     // },
   ],
+  element: <Wallet />,
+  path: 'wallet',
 };

@@ -185,8 +185,8 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
   const form = useZodForm<AssetBurnFormData>(assetBurnSchema, {
     defaultValues: {
       assetId,
-      quantity: 0,
       fee: undefined,
+      quantity: 0,
     },
   });
 
@@ -216,8 +216,8 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
 
       // Prepare transaction parameters
       const burnParams = {
-        assetId: pendingBurnData.assetId,
         amount: quantityInWavelets, // Burn uses 'amount' instead of 'quantity'
+        assetId: pendingBurnData.assetId,
         fee: pendingBurnData.fee || 100000, // Default 0.001 DCC fee for burn
       };
 

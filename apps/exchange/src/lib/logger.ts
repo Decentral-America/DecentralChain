@@ -53,6 +53,11 @@ export const logger = {
     }
   },
 
+  /** Errors — sanitized to prevent sensitive data leakage */
+  error: (...args: unknown[]): void => {
+    console.error(...sanitize(args));
+  },
+
   /** Info logging — development only */
   info: (..._args: unknown[]): void => {
     if (isDev) {
@@ -62,11 +67,6 @@ export const logger = {
   /** Warnings — sanitized to prevent sensitive data leakage */
   warn: (...args: unknown[]): void => {
     console.warn(...sanitize(args));
-  },
-
-  /** Errors — sanitized to prevent sensitive data leakage */
-  error: (...args: unknown[]): void => {
-    console.error(...sanitize(args));
   },
 };
 

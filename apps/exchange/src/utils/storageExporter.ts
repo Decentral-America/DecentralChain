@@ -88,9 +88,9 @@ export const exportData = (keys: readonly string[] = EXPORT_KEYS): ExportData =>
 
   return {
     ...data,
+    encrypted: false,
     timestamp: Date.now(),
     version: '1.0.0',
-    encrypted: false,
   } as ExportData;
 };
 
@@ -147,16 +147,16 @@ export const importData = (
     }
 
     return {
-      success: errors.length === 0,
-      imported,
       errors,
+      imported,
+      success: errors.length === 0,
     };
   } catch (error) {
     logger.error('Import failed:', error);
     return {
-      success: false,
-      imported,
       errors: [error instanceof Error ? error.message : String(error)],
+      imported,
+      success: false,
     };
   }
 };
@@ -249,13 +249,13 @@ const deriveExportKey = async (password: string, salt: Uint8Array): Promise<Cryp
 
   return window.crypto.subtle.deriveKey(
     {
+      hash: 'SHA-256',
+      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
       name: 'PBKDF2',
       salt: salt as BufferSource,
-      iterations: 600000, // OWASP 2024 recommendation for PBKDF2-SHA256
-      hash: 'SHA-256',
     },
     keyMaterial,
-    { name: 'AES-GCM', length: 256 },
+    { length: 256, name: 'AES-GCM' },
     false,
     ['encrypt', 'decrypt'],
   );
@@ -281,7 +281,7 @@ export const encryptData = async (data: ExportData, password: string): Promise<s
   const key = await deriveExportKey(password, salt);
 
   // Encrypt with AES-256-GCM (includes built-in authentication tag)
-  const encrypted = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+  const encrypted = await window.crypto.subtle.encrypt({ iv, name: 'AES-GCM' }, key, plaintext);
 
   // Combine: salt(16) + iv(12) + ciphertext+tag
   const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
@@ -315,7 +315,7 @@ export const decryptData = async (
     const key = await deriveExportKey(password, salt);
 
     // Decrypt with AES-256-GCM (verifies authentication tag automatically)
-    const decrypted = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    const decrypted = await window.crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
 
     const decoder = new TextDecoder();
     const json = decoder.decode(decrypted);
@@ -436,10 +436,10 @@ export const getStorageStats = (): {
   const estimatedTotal = 5 * 1024 * 1024; // 5MB
 
   return {
-    used: totalSize,
-    total: estimatedTotal,
-    percentage: (totalSize / estimatedTotal) * 100,
     keys: keysSizes,
+    percentage: (totalSize / estimatedTotal) * 100,
+    total: estimatedTotal,
+    used: totalSize,
   };
 };
 
@@ -458,12 +458,12 @@ export const validateExportData = (
 
   if (!data) {
     errors.push('Export data is null or undefined');
-    return { valid: false, errors };
+    return { errors, valid: false };
   }
 
   if (typeof data !== 'object') {
     errors.push('Export data must be an object');
-    return { valid: false, errors };
+    return { errors, valid: false };
   }
 
   const record = data as {
@@ -487,8 +487,8 @@ export const validateExportData = (
   }
 
   return {
-    valid: errors.length === 0,
     errors,
+    valid: errors.length === 0,
   };
 };
 
@@ -496,18 +496,18 @@ export const validateExportData = (
  * Storage Exporter object with all methods
  */
 export const storageExporter = {
-  exportData,
-  importData,
-  downloadJSON,
-  downloadEncrypted,
-  readJSONFile,
-  readEncryptedFile,
-  encryptData,
-  decryptData,
   clearAllData,
-  getStorageStats,
-  validateExportData,
+  decryptData,
+  downloadEncrypted,
+  downloadJSON,
   EXPORT_KEYS,
+  encryptData,
+  exportData,
+  getStorageStats,
+  importData,
+  readEncryptedFile,
+  readJSONFile,
+  validateExportData,
 };
 
 // ExportData type already exported above

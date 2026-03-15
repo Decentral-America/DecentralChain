@@ -1,4 +1,105 @@
 {
+  "app": {
+    "back": "返回主页",
+    "button": {
+      "cancel": "取消",
+      "continue": "继续",
+      "signIn": "登入"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "代币发行暂时不可用。",
+        "issue-title": "生成代币",
+        "massSendTitle": "大规模传送",
+        "reissue": "代币重新发行暂时无法使用。",
+        "sendTitle": "发送",
+        "set-script-title": "脚本交易"
+      },
+      "send": {
+        "errors": {
+          "fee": "您没有足够的资金来支付所需的费用。您必须支付 {{fee, money-currency}} 交易费;"
+        }
+      }
+    },
+    "date": {
+      "month": [
+        "1月",
+        "2月",
+        "3月",
+        "4月",
+        "5月",
+        "6月",
+        "7月",
+        "8月",
+        "9月",
+        "10月",
+        "11月",
+        "12月"
+      ]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "我们一直在努力使Decentral.Exchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://decentralchain.io/technology/wallet）下载该应用程序！",
+        "title": "现在该更新您的应用了！"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "资产",
+      "dex": "去中心化交易所",
+      "leasing": "租赁",
+      "portfolio": "投资组合",
+      "tokens": "代币",
+      "transactions": "交易记录",
+      "wallet": "钱包"
+    },
+    "inputs": {
+      "errors": {
+        "required": "必填栏位"
+      }
+    },
+    "leftmenu": {
+      "login": "登录",
+      "logout": "登出",
+      "settings": "设置"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "已取消",
+          "filled": "填 ({{percent}}%)",
+          "opened": "开的"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "输入密码"
+      },
+      "pairing": {
+        "showQr": "显示"
+      },
+      "tryDesktop": {
+        "cancel": "继续使用网页",
+        "label": "记住我的选择，不要再提示",
+        "message": "我们建议您使用DecentralChain桌面应用程序。如果您没有这个，可以从官方网站下载。",
+        "title": "使用DecentralChain桌面应用程序",
+        "try": "打开桌面应用程序"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "可疑"
+  },
   "app.create": {
     "backupSeed": {
       "back": "返回",
@@ -115,9 +216,9 @@
         "1day": "1天",
         "1hour": "1小时",
         "1week": "1周",
+        "5min": "5分钟",
         "30day": "30天",
         "30min": "30分钟",
-        "5min": "5分钟",
         "amountField": "量",
         "ask": "卖价",
         "bid": "买价",
@@ -275,8 +376,8 @@
         "chg": "变化",
         "coin": "代币",
         "helpIcon": {
-          "assetId": "资产ID",
           "AssetId1AssetId2": "资产 1 ID/资产 2 ID",
+          "assetId": "资产ID",
           "description": "您可以找到有关搜索资产的更多信息[这里]（https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html )",
           "header": "你可以搜索：",
           "name": "名称",
@@ -334,15 +435,15 @@
       "title": {
         "all": "所有",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "历史",
         "myBalance": "我的金额",
         "myTradeHistory": "我的贸易历史",
-        "openOrders": "我的开放订单",
         "OrderHistory": "我的订单历史",
+        "openOrders": "我的开放订单",
         "trade": "交易",
-        "tradeHistory": "交易历史记录",
-        "decentralchain": "DecentralChain"
+        "tradeHistory": "交易历史记录"
       }
     }
   },
@@ -378,6 +479,12 @@
       "selectFileBtn": "选择文件"
     },
     "backupFileDescription": "从密钥库文件导入帐户",
+    "decentralchainClient": "DecentralChain客户端",
+    "decentralchainClientDescription": "从DecentralChain客户端导入帐户",
+    "decentralchainLiteClient": "DecentralChain Lite客户端",
+    "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户",
+    "decentralchainSeedClient": "备份SEED助记词短语",
+    "decentralchainSeedClientDescription": "从备份SEED助记词导入帐户",
     "import": {
       "signIn": "登录"
     },
@@ -393,114 +500,7 @@
       "name": "种子或钥匙"
     },
     "seedAndKeyDescription": "从SEED或私钥导入帐户",
-    "selectButton": "选择",
-    "decentralchainClient": "DecentralChain客户端",
-    "decentralchainClientDescription": "从DecentralChain客户端导入帐户",
-    "decentralchainLiteClient": "DecentralChain Lite客户端",
-    "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户",
-    "decentralchainSeedClient": "备份SEED助记词短语",
-    "decentralchainSeedClientDescription": "从备份SEED助记词导入帐户"
-  },
-  "app": {
-    "back": "返回主页",
-    "button": {
-      "cancel": "取消",
-      "continue": "继续",
-      "signIn": "登入"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "代币发行暂时不可用。",
-        "issue-title": "生成代币",
-        "massSendTitle": "大规模传送",
-        "reissue": "代币重新发行暂时无法使用。",
-        "sendTitle": "发送",
-        "set-script-title": "脚本交易"
-      },
-      "send": {
-        "errors": {
-          "fee": "您没有足够的资金来支付所需的费用。您必须支付 {{fee, money-currency}} 交易费;"
-        }
-      }
-    },
-    "date": {
-      "month": [
-        "1月",
-        "2月",
-        "3月",
-        "4月",
-        "5月",
-        "6月",
-        "7月",
-        "8月",
-        "9月",
-        "10月",
-        "11月",
-        "12月"
-      ]
-    },
-    "error": {
-      "updateClient": {
-        "body": "我们一直在努力使Decentral.Exchange更好，更有用。 \n请更新应用程序以继续。从官方[网站]（https://decentralchain.io/technology/wallet）下载该应用程序！",
-        "title": "现在该更新您的应用了！"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Aloha funky coin, for any good&evil purposes ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "资产",
-      "dex": "去中心化交易所",
-      "leasing": "租赁",
-      "portfolio": "投资组合",
-      "tokens": "代币",
-      "transactions": "交易记录",
-      "wallet": "钱包"
-    },
-    "inputs": {
-      "errors": {
-        "required": "必填栏位"
-      }
-    },
-    "leftmenu": {
-      "login": "登录",
-      "logout": "登出",
-      "settings": "设置"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "已取消",
-          "filled": "填 ({{percent}}%)",
-          "opened": "开的"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "输入密码"
-      },
-      "pairing": {
-        "showQr": "显示"
-      },
-      "tryDesktop": {
-        "cancel": "继续使用网页",
-        "label": "记住我的选择，不要再提示",
-        "message": "我们建议您使用DecentralChain桌面应用程序。如果您没有这个，可以从官方网站下载。",
-        "title": "使用DecentralChain桌面应用程序",
-        "try": "打开桌面应用程序"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k"
-      }
-    },
-    "Suspicious": "可疑"
+    "selectButton": "选择"
   },
   "app.ledger": {
     "ledger": {
@@ -518,9 +518,9 @@
       "help": {
         "id": "{div}[手动设置ID或从列表中选择一个帐户。] \n {div}[请保存ID，导入时需要。]"
       },
+      "ImportOrSignIn": "导入帐户或",
       "id": "帐户ID",
       "importAccount": "导入 Ledger 帐户",
-      "ImportOrSignIn": "导入帐户或",
       "login": "继续",
       "name": "帐户名",
       "nameExists": "这个名字被采用了",
@@ -584,6 +584,14 @@
       },
       "goHome": "去首页",
       "text1": "Decentral.Exchange正在转变为新产品Decentral.Exchange。不用担心您所有的令牌，种子短语和密码都是完全安全的。",
+      "text2": "这是基于Decentral.Exchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91）。",
+      "text3": "Decentral.Exchange由Decentral.Exchange团队的一部分开发和运行，与DecentralChain社区的新开发人员合作。",
+      "text4": "迁移标志着交易所发展的一个新阶段，现在的主要重点是用户体验。除了关注社区的要求外，新团队还将专注于构建新的交易工具和产品的全面推广，而这在以前的安排中是困难的。",
+      "text5": "迁移已经开始。自2019年11月18日起，您可以将帐户移至新服务。为此，您需要更新Decentral.Exchange的网络版本和/或运行桌面应用程序，登录到您的帐户并按照说明进行操作。",
+      "text6": "是。这将是访问DecentralChain交易生态系统中所有熟悉且方便的工具（包括Web和桌面应用程序，移动应用程序和交易所）以及新功能和服务升级的新方法。",
+      "text7": "新交易所将于2019年12月2日启动。",
+      "text8": "我们希望给Decentral.Exchange用户足够的时间为使用新的交换做准备，以使他们对服务的访问不中断。我们希望两周的时间足以使大多数用户完成迁移过程。",
+      "text9": "是的，在Decentral.Exchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于Decentral.Exchange的旧应用程序。",
       "text10": "{div.margin-bottom} [如果您使用的是旧版应用，则将无法再进行以下操作：] \n {div.line} [-创建帐户] \n {div.line} [-可以访问Decentral.Exchange界面] \n {div.line} [-查看您的投资组合] \n {div.line} [-进行任何类型的交易：转让，发行或刻录令牌，租赁DCC或取消租赁] \n {div.line} [-使用任何网关] \n\n {div.margin-bottom} [自2019年12月2日起，您将可以使用Decentral.Exchange应用程序享受此功能。] \n\n {div.margin-bottom} [但是，使用旧版应用程序，您仍然可以：] \n\n {div.line} [-登录您的帐户] \n {div.line}[-启动向Decentral.Exchange的迁移过程] \n {div.line} [-为种子词组创建本地备份] \n\n {div.margin-top} [如果仍有疑问，您可以将消息发送到我们的[官方电报组]（https://t.me/decentralexchange）或在支持页面上创建{div.margin-top} ：[https：/ /support.decentral.exchange/](https://support.decentral.exchange/）]",
       "text11": "没有,永不！在任何情况下都不会发生这种情况。所有种子短语仍将存储在本地设备上。交易所不可能访问该存储。",
       "text12": "您的代币的所有权记录在DecentralChain区块链上。只能使用种子短语或私钥访问存储在您帐户中的令牌，这些种子短语或私钥在迁移后不会更改并且不会离开您的设备。您的资产是完全安全的！",
@@ -594,20 +602,20 @@
       "text17": "匹配器将获得一个新的地址和URL，并且其私钥将更改。由于这些更改，更新时用户的未结订单将自动取消，并且交易历史记录将变得不可用。不幸的是，没有将订单和交易历史记录转移到新匹配器的技术手段，因为每个订单都是在用户使用其私钥对其进行签名后发送给匹配器的。由于旧匹配者或新匹配者都无法访问用户的私钥，因此无法转移订单。我们知道这可能令人沮丧，但是这种方法是匹配器设计的一个功能，它是维护用户资金安全所必需的。很抱歉给您带来不便。",
       "text18": "{div.margin-bottom} [我们已尽力确保迁移过程对用户来说尽可能顺利。如果您在移动帐户时遇到问题，请重新开始。为此，请返回旧的Web或桌面客户端，使用密码登录并按照说明进行操作。] \n\n {div.margin-bottom} [针对浏览器用户的建议：在迁移期间，请关闭所有浏览器扩展，因为它们可能会施加限制，从而干扰迁移。] \n\n {div.margin-bottom} [针对桌面客户端用户的建议：关闭防火墙或防病毒软件，因为它们可能会限制端口操作，从而干扰迁移。] \n\n {div.margin-top} [在任何情况下，您都会得到支持！您可以随时向我们的[官方电报组]（https://t.me/decentralexchange）发送消息，也可以在支持页面上创建故障单：[https://support.decentral.exchange/](https:// support.decentral.exchange/）]",
       "text19": "{div.margin-bottom}[某些网关由Decentral.Exchange团队操作，特别是：$ BTC，$ ETH，$ WEST，$ ERGO，$ BNT和$ USDT。] \n {div.margin-bottom}[同时，$ LTC，$ XMR，$ DASH，$ BCH，$ BSV，$ Zcash，wUSD和wEUR由Coinomat临时运营。] \n {div.margin-top}[在2019年12月2日的技术工作期间，网关将正常处理所有交易，这将确保完全的安全性和对您资金的访问。]",
-      "text2": "这是基于Decentral.Exchange的技术和专业知识的新交易所。有关更多详细信息，请参见[此公告]（https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91）。",
       "text20": "在迁移过程中，您的租约不会被取消。和以前一样，用户将能够使用Decentral.Exchange的租赁界面将其DCC租赁到他们选择的节点上，并每年收取高达7％的利息。",
       "text21": "USDT（ERC-20）网关的启动不会对wUSD和wEUR的运行产生影响。用户将能够继续根据需要进行交易。",
       "text22": "新地址属于DecentralChain网关（不是Coinomat）。我们将不断改进这些网关，使用户传输更快，更方便。",
       "text23": "我们了解迁移过程可能给用户带来一些不便，因此我们准备了一个惊喜！成功将其帐户移至新交易所的所有用户都将收到一个闪烁的头像，显示在应用程序中。为此，您需要在12月2日之前完成从Decentral.Exchange到Decentral.Exchange的帐户迁移，并且每个帐户中至少有一个任何类型的支出交易都符合资格。",
       "text24": "我们计划很快增加对Decentral.Exchange先前可用的所有语言的支持。",
-      "text3": "Decentral.Exchange由Decentral.Exchange团队的一部分开发和运行，与DecentralChain社区的新开发人员合作。",
-      "text4": "迁移标志着交易所发展的一个新阶段，现在的主要重点是用户体验。除了关注社区的要求外，新团队还将专注于构建新的交易工具和产品的全面推广，而这在以前的安排中是困难的。",
-      "text5": "迁移已经开始。自2019年11月18日起，您可以将帐户移至新服务。为此，您需要更新Decentral.Exchange的网络版本和/或运行桌面应用程序，登录到您的帐户并按照说明进行操作。",
-      "text6": "是。这将是访问DecentralChain交易生态系统中所有熟悉且方便的工具（包括Web和桌面应用程序，移动应用程序和交易所）以及新功能和服务升级的新方法。",
-      "text7": "新交易所将于2019年12月2日启动。",
-      "text8": "我们希望给Decentral.Exchange用户足够的时间为使用新的交换做准备，以使他们对服务的访问不中断。我们希望两周的时间足以使大多数用户完成迁移过程。",
-      "text9": "是的，在Decentral.Exchange启动后，也可以迁移帐户。但是，自2019年12月2日起，某些限制将适用于Decentral.Exchange的旧应用程序。",
       "title1": "这是怎么回事？",
+      "title2": "什么是Decentral.Exchange？",
+      "title3": "谁负责开发新交易所？",
+      "title4": "Decentral.Exchange为什么要迁移到Decentral.Exchange？",
+      "title5": "何时开始迁移？",
+      "title6": "迁移是强制性的吗？",
+      "title7": "Decentral.Exchange何时启动？",
+      "title8": "为什么迁移过程要在启动前两周开始？",
+      "title9": "Decentral.Exchange启动后是否可以移动帐户？",
       "title10": "自2019年12月2日起，Decentral.Exchange应用程序将受到哪些限制？",
       "title11": "新交易所可以访问我的种子短语吗？",
       "title12": "我的代币将如何处理？",
@@ -618,19 +626,11 @@
       "title17": "匹配器将发生什么变化？",
       "title18": "如果在迁移过程中遇到任何问题或疑问该怎么办？",
       "title19": "网关代币会发生什么？",
-      "title2": "什么是Decentral.Exchange？",
       "title20": "迁移后，租赁是否仍然可用？迁移过程中会取消租约吗？",
       "title21": "Tether USD（USDT）会取代wUSD和wEUR吗？",
       "title22": "为什么接收BTC和ETH的网关地址已更改？",
       "title23": "为什么这么复杂？",
-      "title24": "是否有计划扩展对新交易所接口的语言支持？",
-      "title3": "谁负责开发新交易所？",
-      "title4": "Decentral.Exchange为什么要迁移到Decentral.Exchange？",
-      "title5": "何时开始迁移？",
-      "title6": "迁移是强制性的吗？",
-      "title7": "Decentral.Exchange何时启动？",
-      "title8": "为什么迁移过程要在启动前两周开始？",
-      "title9": "Decentral.Exchange启动后是否可以移动帐户？"
+      "title24": "是否有计划扩展对新交易所接口的语言支持？"
     },
     "migrate": {
       "achievementDesc": "您已成功迁移帐户。为了感谢您完成此过程，我们将使用闪闪发光的头像奖励您的所有帐户（至少有一笔在2019年12月2日之前进行的支出交易）！",
@@ -898,11 +898,11 @@
       "title": "{{name}}生成",
       "titleSuccess": "完成{{name}}生成"
     },
-    "name": "您的资产名称",
     "NFT": {
       "description": "不可互换代币（NFT）是DecentralChain区块链中存在的唯一个人令牌。目前，不支持在DCC Wallet和Decentral.Exchange中显示NFT。您可以在[DecentralScan]（https://decentralscan.com/）中查看您的NFT",
       "title": "您正在创建一个不可替代的代币。"
     },
+    "name": "您的资产名称",
     "notifications": {
       "isNotCreated": "代币尚未创建"
     },
@@ -973,6 +973,10 @@
     "confirmTransaction": {
       "back": "返回",
       "confirm": "确认",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
+        "header": "您没有使用Cubensis Connect确认请求"
+      },
       "description": {
         "burn": "您已消除{{quantityStr}} {{name}}",
         "cancel-leasing": "您已取消租赁交易",
@@ -1026,11 +1030,7 @@
         }
       },
       "sign": "登录",
-      "success": "您的交易正在进行中！",
-      "decentralchainKeeperUnconfirmed": {
-        "description": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
-        "header": "您没有使用Cubensis Connect确认请求"
-      }
+      "success": "您的交易正在进行中！"
     },
     "copyError": "不能复制！您的浏览器可能已过时",
     "copySuccess": "数据被复制",
@@ -1434,8 +1434,8 @@
         "rating": {
           "canVoteTip": "点击为代币评分",
           "tooltipLink": "更多细节",
-          "tooltipNeedDCC": "和 0.001 DCC",
           "tooltipNeedCRC": "要为代币评分，您必须至少有1个",
+          "tooltipNeedDCC": "和 0.001 DCC",
           "tooltipText": "代币不转让，投票只需要现有余额。您的分数将在24小时后应用。在此期间请保留帐户中的当前代币。 \n费用0.001波浪币。",
           "tooltipTitle": "要为代币评分，您的钱包中必须至少有1个CRC。"
         },
@@ -1555,10 +1555,6 @@
         },
         "copyAndShare": "复制和分享钱包地址",
         "currency": "货币",
-        "or": "或",
-        "pleaseNote": "请注意，网关对此操作不收取费用。",
-        "scanQrCode": "扫描二维码",
-        "title": "存款{{assetName}}",
         "gatewayBNT": {
           "helpDescrText": "确认交易后，网关将处理将Bancor转移到DecentralChain帐户中的代币。",
           "helpDescrTitle": "在您的客户或钱包中输入此地址",
@@ -1609,7 +1605,11 @@
           "helpDescrTitle_copy": "在您的WEST客户端或钱包中输入此地址",
           "warningMinAmountTitle": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
         },
-        "gatewayWEST:warningMinAmountTitle_copy": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}",
+        "or": "或",
+        "pleaseNote": "请注意，网关对此操作不收取费用。",
+        "scanQrCode": "扫描二维码",
+        "title": "存款{{assetName}}"
       },
       "dexScriptedPair": {
         "body": "智能资产是包含脚本的资产，该脚本设置令牌流通的条件。 {div}[如果您是没有经验的用户，我们不建议您使用智能资产执行操作。在进行交易之前，请仔细阅读有关资产及其脚本的信息。]",
@@ -1643,6 +1643,10 @@
         "warning": "请不要在重定向的网站上输入您的SEED助记词。"
       },
       "import": {
+        "decentralchainBetaClient": "DecentralChain客户端测试版",
+        "decentralchainBetaClientDescription": "从DecentralChain客户端测试版导入帐户",
+        "decentralchainLiteClient": "DecentralChain Lite客户端",
+        "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户",
         "errorBeta": "无法从DecentralChain客户端测试版检索您的帐户。请尝试从DecentralChain Lite客户端导入帐户。",
         "errorHeader": "没有找到帐户",
         "errorLite": "我们无法从DecentralChain Lite客户端检索您的帐户。请尝试从DecentralChain客户端测试版导入您的帐户。",
@@ -1659,19 +1663,15 @@
         "selectAccountDescription": "您必须允许在浏览器中显示弹出式窗口",
         "selectAccountToImport": "选择要导入的帐户",
         "selectAccountToImportFrom": "选择帐户",
-        "selectButton": "选择",
-        "decentralchainBetaClient": "DecentralChain客户端测试版",
-        "decentralchainBetaClientDescription": "从DecentralChain客户端测试版导入帐户",
-        "decentralchainLiteClient": "DecentralChain Lite客户端",
-        "decentralchainLiteClientDescription": "从DecentralChain Lite客户端导入帐户"
+        "selectButton": "选择"
       },
       "matcherChoice": {
         "customMatcher": "自定义匹配器地址",
+        "decentralchainTerms": "我已超过18岁，我同意DecentralChain使用条款和DecentralChain隐私政策。",
         "matcher": "匹配",
         "matcherTerms": "我同意Super DEX Mather使用条款。",
         "terms": "条款",
-        "title": "选择匹配器",
-        "decentralchainTerms": "我已超过18岁，我同意DecentralChain使用条款和DecentralChain隐私政策。"
+        "title": "选择匹配器"
       },
       "open-main": {
         "dex": {
@@ -1755,6 +1755,9 @@
         "cryptocurrency": {
           "title": "加密货币"
         },
+        "decentralchainEnterprise": {
+          "serverError_copy": "WEST服务暂时无法使用。稍后再试。"
+        },
         "error": {
           "cardAmount": {
             "gte": "您可以存入的最低金额为 {{gte}} {{currency}}",
@@ -1789,9 +1792,6 @@
         "verified": "验证",
         "vostok": {
           "serverError": "WEST服务暂时无法使用。稍后再试。"
-        },
-        "decentralchainEnterprise": {
-          "serverError_copy": "WEST服务暂时无法使用。稍后再试。"
         },
         "wtry": {
           "info": "如果付款处理出了问题，请联系Digilira支持团队 — [support@digilira.com](mailto:support@digilira.com)"
@@ -1919,8 +1919,8 @@
         "title": "发送{{assetName}}",
         "titleComplete": "发送完成",
         "toBank": "提款到银行账户",
-        "total": "总额",
         "toDecentralChain": "发送到波浪币地址",
+        "total": "总额",
         "txFee": "手续费",
         "validationError": {
           "notEnoughFunds": "您的余额不足以支付所需交易费用。您需要{{fee, money-currency}} 作为交易费用。",
@@ -2016,12 +2016,12 @@
           "showCodeLink": "显示配对码",
           "unavailable": {
             "description": {
-              "ledger": "导出不适用于存储在Ledger设备上的帐户",
-              "decentralchainKeeper": "Cubensis Connect设置中提供了从Cubensis Connect导入的帐户的导出"
+              "decentralchainKeeper": "Cubensis Connect设置中提供了从Cubensis Connect导入的帐户的导出",
+              "ledger": "导出不适用于存储在Ledger设备上的帐户"
             },
             "header": {
-              "ledger": "导出不可用",
-              "decentralchainKeeper": "导出不可用"
+              "decentralchainKeeper": "导出不可用",
+              "ledger": "导出不可用"
             },
             "ok": "我明白"
           }
@@ -2096,9 +2096,6 @@
         "timestamp": "时间戳",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "更改赞助"
-      },
       "sponsorship": {
         "amountPerTx": "每笔交易金额（每0.001DCC）",
         "assetId": "ID",
@@ -2115,6 +2112,9 @@
         "title": "启用赞助",
         "warningHeader": "用户可以通过{{name}}支付交易费用",
         "warningText": "对于每笔交易，将从您的余额中扣除0.001 波浪币， {{name}}将记入您的帐户。当您启用赞助时（在下面的表单中输入金额），您为交易的用户收取{{name}}的金额。赞助只有在余额至少为1.005波浪币时才有效。如果您的余额低于此金额，您将无法赞助交易。"
+      },
+      "sponsorship_edit": {
+        "title": "更改赞助"
       },
       "startLease": {
         "amount": "金额",
@@ -2258,6 +2258,11 @@
           "1_0_0-beta_42": "{span.line}[1. 添加了西班牙语支持.]{span.line}[2. 您可以使用客户端而不默认保存帐户详细信息.]{span.line}[3.垃圾代币现在标记在交易页面中.]{span.line}[4. 其他缺陷已被改正.]",
           "1_0_0-beta_47": "{span.line}[1. 全新的去中心化交易所DEX UI.]{span.line}[2. 更快更稳定的DecentralChain客户端.]{span.line}[3. 别名功能再次可用.]{span.line}[4.修正了一些小错误.]{span.line}[5. 邀请您通过制作[视频](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) 或写[文章](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835) 参加我们的比赛.]",
           "1_0_0-beta_50": "{span.line}[1.您现在可以销毁代币.]{span.line}[2. 其他缺陷已被改正.]",
+          "1_0_3": "{span.line}[1.您现在可以在投资组合页面中按ID搜索代币.]\n{span.line}[2.其他缺陷已被改正.]",
+          "1_0_5": "{span.line}[1. 在DEX图表上添加了交易量表.]\n{span.line}[2. 其他缺陷已被改正.]",
+          "1_0_6": "{span.line}[1. 添加DecentralChain桌面客户端授权.]",
+          "1_0_7": "{span.line}[1.一些桌面客户故障已被改正.]\n{span.line}[2.优化TX和Portfolio页面之间的切换.]\n{span.line}[3.垃圾代币名称隐藏在TX列表中.]\n{span.line}[4.错误消息通知已被重写.]",
+          "1_0_8": "{span.line}[1. 添加Ledger Nano S支持.]\n{span.line}[2. 添加了一个用于保存您选择的授权方法的新选项.]",
           "1_0_10": "{span.line} [1。增加了赞助交易支持。 [阅读更多]（https://docs.decentralchain.io/en/decentralchain-client/assets-management/sponsored-transaction.html）] \n {span.line} [2。波兰语和葡萄牙语支持已添加。]",
           "1_0_14": "{span.line} [1。修正了在没有波浪币余额的情况下使用赞助资产的问题。] \n {span.line} [2。修复了30天到期订单的错误。] \n {span.line} [3。其他一些小错误。]",
           "1_0_15": "{span.line} [1。关于总帐确认的问题已得到修复。] \n{span.line} [2。增加了总帐确认的等待时间。] \n{span.line} [3。详细信息已添加到错误消息中。]",
@@ -2268,7 +2273,6 @@
           "1_0_27": "{span.line} [1。在投资组合中添加了“我的资产”类别。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_28": "{span.line} [1。添加了配对功能，可将现有帐户导入移动设备。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_29": "{span.line} [1。使用西里尔字母生成QR码已得到修复。] \n{span.line} [2。已添加用于监视列表搜索的工具提示。] \n{span.line} [3。进一步的美觀修复。 ]",
-          "1_0_3": "{span.line}[1.您现在可以在投资组合页面中按ID搜索代币.]\n{span.line}[2.其他缺陷已被改正.]",
           "1_0_30": "{span.line} [1。 “设置脚本”按钮已移至“设置”中的“安全”部分。 \n {span.line} [2。性能改进和外观更改。]",
           "1_0_32": "{span.line} [1。与BetterTokens的预言集成。] \n{span.line} [2。添加了对代币验证协议的支持。] \n{span.line} [3。修正通过Coinomat提取令牌的佣金。",
           "1_0_33": "{span.line} [1。如果你尝试以下的订单是与当前市场价格差距太大，您将会收到通知。]{span.line} [2. 一些缺陷已被改正了.]。",
@@ -2277,10 +2281,6 @@
           "1_0_40": "{span.line}[1。 DEX优化。] \n {span.line}[2。在浏览器标签标题中添加了汇率。] \n {span.line}[3。修复了小错误。]",
           "1_0_41": "{span.line}[1。 DEX优化。] \n {span.line}[2。添加了通知系统。] \n {span.line}[3。修复了小错误。]",
           "1_0_42": "{span.line}[1。修复了小错误。]",
-          "1_0_5": "{span.line}[1. 在DEX图表上添加了交易量表.]\n{span.line}[2. 其他缺陷已被改正.]",
-          "1_0_6": "{span.line}[1. 添加DecentralChain桌面客户端授权.]",
-          "1_0_7": "{span.line}[1.一些桌面客户故障已被改正.]\n{span.line}[2.优化TX和Portfolio页面之间的切换.]\n{span.line}[3.垃圾代币名称隐藏在TX列表中.]\n{span.line}[4.错误消息通知已被重写.]",
-          "1_0_8": "{span.line}[1. 添加Ledger Nano S支持.]\n{span.line}[2. 添加了一个用于保存您选择的授权方法的新选项.]",
           "1_1_0": "{span.line}[1。 现在默认保存订单到期期限。]\n{span.line}[2。 修复了小错误。]",
           "1_2_0": "{span.line}[1。添加了日语和爱沙尼亚语。]\n{span.line}[2。在买入/卖出窗口中改进了用户界面。]\n{span.line}[3。修复了许多小错误。]",
           "1_2_1": "{span.line}[1。该应用程序现在保存图表大小和比例设置以及时间间隔。] \n {span.line}[2。修复了小错误。]",
@@ -2289,13 +2289,13 @@
           "1_2_6": "{span.line}[1。添加了调用脚本事务支持。 [阅读更多]（https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)] \n {span.line}[2。改进的用户界面和其他小错误已得到修复。]",
           "1_2_8": "{span.line} [1。垃圾邮件令牌和交易已隐藏在客户端中。] \n {span.line} [2。改进的用户界面和其他小错误已得到修复。]",
           "1_3_0": "{span.line}[1。改进了应用程序导航和起始页面界面。]",
-          "1_3_18": "{span.line} [1。使用私钥添加了对钱包的登录。] \n {span.line} [2。令牌的24小时价格变化现在绑定到代币/ DCC对。]",
-          "1_3_19": "{span.line} [1。 Bancor网关已经推出。] \n {span.line} [2。用户菜单界面已得到改进。]",
           "1_3_2": "{span.line} [1。 WEST网关已经推出。] \n {span.line} [2。改进的用户界面和其他小错误已得到修复。]",
-          "1_3_20": "{span.line} [1。改进了从本地存储中存储和恢复帐户的系统（需要更新[桌面应用程序]（https://decentralchain.io/technology/wallet））。 \n {span.line} [2。修正了订单中价格的四舍五入。]",
           "1_3_5": "{span.line} [1。已添加包含[wsoc.io]（https://wsoc.io）竞赛代币的标签。 \n {span.line} [2。增加了法语支持。] \n {span.line} [3。其他小错误已得到修复。]",
           "1_3_7": "{span.line} [1。与[tokenrating.decentralscan.com]集成（https://tokenrating.decentralscan.com）现在您可以直接在应用程序中对令牌进行评分。 \n {span.line} [2。其他小错误已得到修复。]",
           "1_3_9": "{span.line} [1。改进了Exchange和电子钱包部分的UI和功能。] \n {span.line} [2。其他小错误已得到修复。]",
+          "1_3_18": "{span.line} [1。使用私钥添加了对钱包的登录。] \n {span.line} [2。令牌的24小时价格变化现在绑定到代币/ DCC对。]",
+          "1_3_19": "{span.line} [1。 Bancor网关已经推出。] \n {span.line} [2。用户菜单界面已得到改进。]",
+          "1_3_20": "{span.line} [1。改进了从本地存储中存储和恢复帐户的系统（需要更新[桌面应用程序]（https://decentralchain.io/technology/wallet））。 \n {span.line} [2。修正了订单中价格的四舍五入。]",
           "1_4_0": "{span.line} [增加了在一个钱包内轻松切换帐户的功能。]",
           "1_4_4": "{span.line} [增加了从密钥库文件备份和还原帐户的功能]"
         },
@@ -2649,6 +2649,14 @@
       "createToken": "创建令牌",
       "currentAccountName": "当前帐户名称",
       "dashboard": "仪表板",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "波浪幣区块链",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "每个订单填写0.003波浪幣",
+      "decentralchainWallet": "波浪幣钱包",
       "decentralized": "分散",
       "descExchange": "我们正在做一个很棒的新项目，它将很快准备就绪。敬请关注！",
       "dexWithHardware": "将DEX与硬件钱包Ledger Nano S和Ledger Blue配合使用",
@@ -2675,15 +2683,15 @@
       "legal": "法律",
       "linux": "Linux",
       "linuxDescription": "下载Linux应用程序",
-      "logout": "登出",
       "logOut": "登出",
+      "logout": "登出",
       "low": "24低",
       "lowFixedFees": "低，固定费用",
       "macOs": "苹果系统",
       "macOsDescription": "下载MacOS应用程序",
       "mailto": "support.decentralchain.io",
-      "mailtoVordex": "support@vordex.com",
       "mailtoDecentralChainExchange": "support@decentral.exchange",
+      "mailtoVordex": "support@vordex.com",
       "mainPage": "主页",
       "majorFiatCryptocurrencies": "支持的主要法定货币和加密货币：BTC，LTC，ETH，USD等",
       "markets": "市场",
@@ -2729,14 +2737,6 @@
       "twitter": "推特",
       "volume": "值",
       "wallet": "智能数字钱包",
-      "decentralchainBlockchain": "波浪幣区块链",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
-      "dccExplorer": "DecentralScan",
-      "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
-      "decentralchainLabs": "DecentralChain Labs",
-      "decentralchainOrderFilled": "每个订单填写0.003波浪幣",
-      "decentralchainWallet": "波浪幣钱包",
       "windows": "视窗",
       "windowsDescription": "下载Windows应用程序"
     }

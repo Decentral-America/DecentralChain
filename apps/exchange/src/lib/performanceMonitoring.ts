@@ -60,11 +60,6 @@ export interface PerformanceMonitoringConfig {
  * Performance metric thresholds (based on Google's Web Vitals)
  */
 const THRESHOLDS = {
-  // Largest Contentful Paint (ms)
-  LCP: {
-    good: 2500,
-    needsImprovement: 4000,
-  },
   // Cumulative Layout Shift (score)
   CLS: {
     good: 0.1,
@@ -75,15 +70,20 @@ const THRESHOLDS = {
     good: 1800,
     needsImprovement: 3000,
   },
-  // Time to First Byte (ms)
-  TTFB: {
-    good: 800,
-    needsImprovement: 1800,
-  },
   // Interaction to Next Paint (ms) - Replaces FID in web-vitals v3
   INP: {
     good: 200,
     needsImprovement: 500,
+  },
+  // Largest Contentful Paint (ms)
+  LCP: {
+    good: 2500,
+    needsImprovement: 4000,
+  },
+  // Time to First Byte (ms)
+  TTFB: {
+    good: 800,
+    needsImprovement: 1800,
   },
 };
 
@@ -102,19 +102,19 @@ const reportMetric = (metric: Metric): void => {
   // Log to console in debug mode
   if (config.debug) {
     logger.debug('[Performance]', {
-      name,
-      value: roundedValue,
-      rating,
       delta,
       id,
+      name,
+      rating,
+      value: roundedValue,
     });
   }
 
   // Send to analytics
   if (config.reportToAnalytics) {
     trackEvent('Web Vitals', name, rating, roundedValue, {
-      metric_id: id,
       delta: Math.round(delta * 100) / 100,
+      metric_id: id,
     });
   }
 
@@ -122,9 +122,9 @@ const reportMetric = (metric: Metric): void => {
   if (config.reportToErrorMonitoring && rating === 'poor') {
     captureMessage(`Poor ${name} performance`, ErrorSeverity.Warning, {
       metric: name,
-      value: roundedValue,
       rating,
       threshold: THRESHOLDS[name as keyof typeof THRESHOLDS]?.needsImprovement,
+      value: roundedValue,
     });
   }
 };
@@ -155,11 +155,11 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
   }
 
   config = {
-    enableWebVitals: true,
-    enableResourceTiming: true,
-    enableNavigationTiming: true,
-    enableInDev: false,
     debug: import.meta.env.DEV === true,
+    enableInDev: false,
+    enableNavigationTiming: true,
+    enableResourceTiming: true,
+    enableWebVitals: true,
     reportToAnalytics: true,
     reportToErrorMonitoring: true,
     ...options,
@@ -249,8 +249,14 @@ const trackNavigationTiming = (): void => {
     // DNS lookup time
     dns: timing.domainLookupEnd - timing.domainLookupStart,
 
-    // TCP connection time
-    tcp: timing.connectEnd - timing.connectStart,
+    // DOM content loaded
+    domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
+
+    // DOM processing time
+    domProcessing: timing.domComplete - timing.domLoading,
+
+    // Total load time
+    loadComplete: timing.loadEventEnd - timing.navigationStart,
 
     // Request time
     request: timing.responseStart - timing.requestStart,
@@ -258,14 +264,8 @@ const trackNavigationTiming = (): void => {
     // Response time
     response: timing.responseEnd - timing.responseStart,
 
-    // DOM processing time
-    domProcessing: timing.domComplete - timing.domLoading,
-
-    // DOM content loaded
-    domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-
-    // Total load time
-    loadComplete: timing.loadEventEnd - timing.navigationStart,
+    // TCP connection time
+    tcp: timing.connectEnd - timing.connectStart,
   };
 
   if (config.debug) {
@@ -313,8 +313,8 @@ const trackResourceTiming = (): void => {
     const avgDuration = totalDuration / count;
 
     stats[type] = {
-      count,
       avgDuration: Math.round(avgDuration * 100) / 100,
+      count,
       totalDuration: Math.round(totalDuration * 100) / 100,
     };
   });
@@ -391,7 +391,7 @@ export const measurePerformance = (
     const duration = Math.round(measure.duration * 100) / 100;
 
     if (config.debug) {
-      logger.debug('[Performance] Measurement:', { name, duration });
+      logger.debug('[Performance] Measurement:', { duration, name });
     }
 
     if (config.reportToAnalytics) {
@@ -463,9 +463,9 @@ export const getMemoryUsage = (): {
   const memory = window.performance.memory;
 
   return {
-    usedJSHeapSize: Math.round((memory.usedJSHeapSize / 1024 / 1024) * 100) / 100,
-    totalJSHeapSize: Math.round((memory.totalJSHeapSize / 1024 / 1024) * 100) / 100,
     jsHeapSizeLimit: Math.round((memory.jsHeapSizeLimit / 1024 / 1024) * 100) / 100,
+    totalJSHeapSize: Math.round((memory.totalJSHeapSize / 1024 / 1024) * 100) / 100,
+    usedJSHeapSize: Math.round((memory.usedJSHeapSize / 1024 / 1024) * 100) / 100,
   };
 };
 
@@ -492,8 +492,8 @@ export const trackLongTasks = (): void => {
 
         if (config.debug) {
           logger.warn('[Performance] Long task detected:', {
-            name: entry.name,
             duration,
+            name: entry.name,
             startTime: entry.startTime,
           });
         }
@@ -504,15 +504,15 @@ export const trackLongTasks = (): void => {
 
         if (config.reportToErrorMonitoring && duration > 100) {
           captureMessage('Long task detected', ErrorSeverity.Warning, {
-            task: entry.name,
             duration,
             startTime: entry.startTime,
+            task: entry.name,
           });
         }
       }
     });
 
-    observer.observe({ type: 'longtask', buffered: true });
+    observer.observe({ buffered: true, type: 'longtask' });
 
     if (config.debug) {
       logger.debug('[Performance] Long task tracking initialized');
@@ -534,21 +534,21 @@ export const performance = {
   componentRender: (component: string, duration: number) =>
     trackEvent('Component Performance', component, undefined, duration),
 
-  // Route change performance
-  routeChange: (route: string, duration: number) =>
-    trackEvent('Route Performance', route, undefined, duration),
-
   // Data loading performance
   dataLoad: (type: string, duration: number) =>
     trackEvent('Data Load Performance', type, undefined, duration),
+
+  // Route change performance
+  routeChange: (route: string, duration: number) =>
+    trackEvent('Route Performance', route, undefined, duration),
 };
 
 export default {
+  clearPerformance,
+  getMemoryUsage,
   initPerformanceMonitoring,
   markPerformance,
   measurePerformance,
-  clearPerformance,
-  getMemoryUsage,
-  trackLongTasks,
   performance,
+  trackLongTasks,
 };
