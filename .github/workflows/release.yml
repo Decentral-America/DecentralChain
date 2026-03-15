@@ -46,6 +46,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Biome lint
+        run: npx nx run-many -t biome-lint --projects='packages/*'
+
+      - name: Typecheck
+        run: npx nx run-many -t typecheck --projects='packages/*'
+
       - name: Build
         run: npx nx run-many -t build --projects='packages/*'
 
