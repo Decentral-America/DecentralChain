@@ -67,7 +67,6 @@
     "del": "^8.0.1",
     "dotenv-flow": "^4.1.0",
     "expect-webdriverio": "^5.6.4",
-    "lefthook": "^1.11.0",
     "lightningcss": "^1.32.0",
     "normalize.css": "^8.0.1",
     "postcss": "^8.5.8",

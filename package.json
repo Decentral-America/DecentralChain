@@ -34,7 +34,7 @@
     "lint:check": "biome check .",
     "prepare": "lefthook install",
     "test": "nx run-many -t test",
-    "typecheck": "nx run-many -t typecheck --exclude=cubensis-connect,dcc-react"
+    "typecheck": "nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner"
   },
   "type": "module",
   "version": "0.0.0"
