@@ -1,0 +1,59 @@
+{
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "biomejs.biome",
+        "biomejs.biome",
+        "ms-vscode.vscode-typescript-next",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "ms-azuretools.vscode-docker",
+        "editorconfig.editorconfig",
+        "christian-kohler.path-intellisense",
+        "styled-components.vscode-styled-components",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "editor.codeActionsOnSave": {},
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "files.exclude": {
+          "**/dist": true,
+          "**/node_modules": true
+        },
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  },
+  "dockerComposeFile": "docker-compose.yml",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Port forwarding is handled natively by VS Code — no Docker `ports` mapping needed.
+  // VS Code forwards ports via its built-in tunnel, making them appear as localhost
+  // to both the container app and your host machine.
+  "forwardPorts": [3333],
+  "name": "DCC Wallet React Dev Environment",
+
+  "portsAttributes": {
+    "3333": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "openBrowser",
+      "protocol": "http"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+
+  "remoteEnv": {
+    "NODE_ENV": "development"
+  },
+
+  "remoteUser": "node",
+  "service": "app",
+  "workspaceFolder": "/workspace"
+}
