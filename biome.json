@@ -80,6 +80,26 @@
   },
   "overrides": [
     {
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedKeys": "off"
+          }
+        }
+      },
+      "includes": ["**/package.json"]
+    },
+    {
+      "includes": ["tools/generators/**/*.js"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noCommonJs": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["**/test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {

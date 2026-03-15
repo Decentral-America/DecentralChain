@@ -1,62 +1,61 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "group:monorepos",
-    ":semanticCommitTypeAll(chore)"
-  ],
+  "extends": ["config:recommended", "group:monorepos", ":semanticCommitTypeAll(chore)"],
   "labels": ["dependencies"],
-  "prConcurrentLimit": 5,
-  "schedule": ["before 4am on monday"],
-  "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 6am on monday"]
   },
   "packageRules": [
     {
+      "automerge": false,
       "description": "Group all Nx packages together",
-      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"],
       "groupName": "Nx monorepo",
-      "automerge": false
+      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"]
     },
     {
+      "automerge": false,
       "description": "Group Biome updates",
-      "matchPackageNames": ["@biomejs/biome"],
       "groupName": "Biome",
-      "automerge": false
+      "matchPackageNames": ["@biomejs/biome"]
     },
     {
+      "automerge": true,
       "description": "Automerge non-major devDependencies",
       "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
+      "automerge": true,
       "description": "Automerge patch-level production dependencies",
       "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch"],
-      "automerge": true
+      "matchUpdateTypes": ["patch"]
     },
     {
       "description": "Group tsdown updates",
-      "matchPackageNames": ["tsdown"],
-      "groupName": "tsdown"
+      "groupName": "tsdown",
+      "matchPackageNames": ["tsdown"]
     },
     {
       "description": "Group Vitest ecosystem",
-      "matchPackageNames": ["vitest", "@vitest/**"],
-      "groupName": "Vitest"
+      "groupName": "Vitest",
+      "matchPackageNames": ["vitest", "@vitest/**"]
     },
     {
       "description": "Group Vite ecosystem",
-      "matchPackageNames": ["vite", "@vitejs/**"],
-      "groupName": "Vite"
+      "groupName": "Vite",
+      "matchPackageNames": ["vite", "@vitejs/**"]
     },
     {
       "description": "Prevent npm unpublish risk",
       "matchDatasources": ["npm"],
       "minimumReleaseAge": "3 days"
     }
-  ]
+  ],
+  "pnpm": {
+    "updateCatalog": true
+  },
+  "postUpdateOptions": ["pnpmDedupe"],
+  "prConcurrentLimit": 5,
+  "schedule": ["before 4am on monday"]
 }
