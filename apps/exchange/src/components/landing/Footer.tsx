@@ -8,7 +8,7 @@ const footerLinks = {
   ],
   Support: [
     { href: 'https://docs.decentralchain.io', label: 'Help Center' },
-    { href: 'https://github.com/Decentral-America/DCCGUI/issues', label: 'Report Issue' },
+    { href: 'https://github.com/Decentral-America/exchange/issues', label: 'Report Issue' },
   ],
   Trading: [
     { href: '/dex', label: 'DEX Trading' },
