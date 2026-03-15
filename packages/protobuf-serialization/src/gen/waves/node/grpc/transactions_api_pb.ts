@@ -2,52 +2,28 @@
 // @generated from file waves/node/grpc/transactions_api.proto (package waves.node.grpc, syntax proto3)
 /* eslint-disable */
 
-import { type Message } from '@bufbuild/protobuf';
-import {
-  enumDesc,
-  fileDesc,
-  type GenEnum,
-  type GenFile,
-  type GenMessage,
-  type GenService,
-  messageDesc,
-  serviceDesc,
-} from '@bufbuild/protobuf/codegenv2';
-import {
-  file_waves_invoke_script_result,
-  type InvokeScriptResult,
-} from '../../invoke_script_result_pb.js';
-import { file_waves_recipient, type Recipient } from '../../recipient_pb.js';
-import {
-  file_waves_transaction,
-  type SignedTransaction,
-  type SignedTransactionSchema,
-  type Transaction,
-} from '../../transaction_pb.js';
-import {
-  file_waves_transaction_state_snapshot,
-  type TransactionStateSnapshot,
-} from '../../transaction_state_snapshot_pb.js';
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Recipient } from "../../recipient_pb.js";
+import { file_waves_recipient } from "../../recipient_pb.js";
+import type { SignedTransaction, SignedTransactionSchema, Transaction } from "../../transaction_pb.js";
+import { file_waves_transaction } from "../../transaction_pb.js";
+import type { TransactionStateSnapshot } from "../../transaction_state_snapshot_pb.js";
+import { file_waves_transaction_state_snapshot } from "../../transaction_state_snapshot_pb.js";
+import type { InvokeScriptResult } from "../../invoke_script_result_pb.js";
+import { file_waves_invoke_script_result } from "../../invoke_script_result_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file waves/node/grpc/transactions_api.proto.
  */
-export const file_waves_node_grpc_transactions_api: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiZ3YXZlcy9ub2RlL2dycGMvdHJhbnNhY3Rpb25zX2FwaS5wcm90bxIPd2F2ZXMubm9kZS5ncnBjIuQBChFUcmFuc2FjdGlvblN0YXR1cxIKCgJpZBgBIAEoDBI5CgZzdGF0dXMYAiABKA4yKS53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25TdGF0dXMuU3RhdHVzEg4KBmhlaWdodBgDIAEoAxI+ChJhcHBsaWNhdGlvbl9zdGF0dXMYBCABKA4yIi53YXZlcy5ub2RlLmdycGMuQXBwbGljYXRpb25TdGF0dXMiOAoGU3RhdHVzEg4KCk5PVF9FWElTVFMQABIPCgtVTkNPTkZJUk1FRBABEg0KCUNPTkZJUk1FRBACItkBChNUcmFuc2FjdGlvblJlc3BvbnNlEgoKAmlkGAEgASgMEg4KBmhlaWdodBgCIAEoAxItCgt0cmFuc2FjdGlvbhgDIAEoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEj4KEmFwcGxpY2F0aW9uX3N0YXR1cxgEIAEoDjIiLndhdmVzLm5vZGUuZ3JwYy5BcHBsaWNhdGlvblN0YXR1cxI3ChRpbnZva2Vfc2NyaXB0X3Jlc3VsdBgFIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdCJjChNUcmFuc2FjdGlvbnNSZXF1ZXN0Eg4KBnNlbmRlchgBIAEoDBIjCglyZWNpcGllbnQYAiABKAsyEC53YXZlcy5SZWNpcGllbnQSFwoPdHJhbnNhY3Rpb25faWRzGAMgAygMIlwKG1RyYW5zYWN0aW9uU25hcHNob3RSZXNwb25zZRIKCgJpZBgBIAEoDBIxCghzbmFwc2hvdBgCIAEoCzIfLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdCI2ChtUcmFuc2FjdGlvblNuYXBzaG90c1JlcXVlc3QSFwoPdHJhbnNhY3Rpb25faWRzGAEgAygMIjIKF1RyYW5zYWN0aW9uc0J5SWRSZXF1ZXN0EhcKD3RyYW5zYWN0aW9uX2lkcxgDIAMoDCI4ChRDYWxjdWxhdGVGZWVSZXNwb25zZRIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKAQiUQoLU2lnblJlcXVlc3QSJwoLdHJhbnNhY3Rpb24YASABKAsyEi53YXZlcy5UcmFuc2FjdGlvbhIZChFzaWduZXJfcHVibGljX2tleRgCIAEoDCJ2ChpJbnZva2VTY3JpcHRSZXN1bHRSZXNwb25zZRItCgt0cmFuc2FjdGlvbhgBIAEoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEikKBnJlc3VsdBgCIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdCpYChFBcHBsaWNhdGlvblN0YXR1cxILCgdVTktOT1dOEAASDQoJU1VDQ0VFREVEEAESGwoXU0NSSVBUX0VYRUNVVElPTl9GQUlMRUQQAhIKCgZFTElERUQQAzKYBQoPVHJhbnNhY3Rpb25zQXBpEl8KD0dldFRyYW5zYWN0aW9ucxIkLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvbnNSZXF1ZXN0GiQud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uUmVzcG9uc2UwARJ3ChdHZXRUcmFuc2FjdGlvblNuYXBzaG90cxIsLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvblNuYXBzaG90c1JlcXVlc3QaLC53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25TbmFwc2hvdFJlc3BvbnNlMAESawoPR2V0U3RhdGVDaGFuZ2VzEiQud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uc1JlcXVlc3QaKy53YXZlcy5ub2RlLmdycGMuSW52b2tlU2NyaXB0UmVzdWx0UmVzcG9uc2UiA4gCATABEl0KC0dldFN0YXR1c2VzEigud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uc0J5SWRSZXF1ZXN0GiIud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uU3RhdHVzMAESXgoOR2V0VW5jb25maXJtZWQSJC53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25zUmVxdWVzdBokLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvblJlc3BvbnNlMAESPgoEU2lnbhIcLndhdmVzLm5vZGUuZ3JwYy5TaWduUmVxdWVzdBoYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEj8KCUJyb2FkY2FzdBIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uGhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb25CjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z',
-    [
-      file_waves_recipient,
-      file_waves_transaction,
-      file_waves_transaction_state_snapshot,
-      file_waves_invoke_script_result,
-    ],
-  );
+export const file_waves_node_grpc_transactions_api: GenFile = /*@__PURE__*/
+  fileDesc("CiZ3YXZlcy9ub2RlL2dycGMvdHJhbnNhY3Rpb25zX2FwaS5wcm90bxIPd2F2ZXMubm9kZS5ncnBjIuQBChFUcmFuc2FjdGlvblN0YXR1cxIKCgJpZBgBIAEoDBI5CgZzdGF0dXMYAiABKA4yKS53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25TdGF0dXMuU3RhdHVzEg4KBmhlaWdodBgDIAEoAxI+ChJhcHBsaWNhdGlvbl9zdGF0dXMYBCABKA4yIi53YXZlcy5ub2RlLmdycGMuQXBwbGljYXRpb25TdGF0dXMiOAoGU3RhdHVzEg4KCk5PVF9FWElTVFMQABIPCgtVTkNPTkZJUk1FRBABEg0KCUNPTkZJUk1FRBACItkBChNUcmFuc2FjdGlvblJlc3BvbnNlEgoKAmlkGAEgASgMEg4KBmhlaWdodBgCIAEoAxItCgt0cmFuc2FjdGlvbhgDIAEoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEj4KEmFwcGxpY2F0aW9uX3N0YXR1cxgEIAEoDjIiLndhdmVzLm5vZGUuZ3JwYy5BcHBsaWNhdGlvblN0YXR1cxI3ChRpbnZva2Vfc2NyaXB0X3Jlc3VsdBgFIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdCJjChNUcmFuc2FjdGlvbnNSZXF1ZXN0Eg4KBnNlbmRlchgBIAEoDBIjCglyZWNpcGllbnQYAiABKAsyEC53YXZlcy5SZWNpcGllbnQSFwoPdHJhbnNhY3Rpb25faWRzGAMgAygMIlwKG1RyYW5zYWN0aW9uU25hcHNob3RSZXNwb25zZRIKCgJpZBgBIAEoDBIxCghzbmFwc2hvdBgCIAEoCzIfLndhdmVzLlRyYW5zYWN0aW9uU3RhdGVTbmFwc2hvdCI2ChtUcmFuc2FjdGlvblNuYXBzaG90c1JlcXVlc3QSFwoPdHJhbnNhY3Rpb25faWRzGAEgAygMIjIKF1RyYW5zYWN0aW9uc0J5SWRSZXF1ZXN0EhcKD3RyYW5zYWN0aW9uX2lkcxgDIAMoDCI4ChRDYWxjdWxhdGVGZWVSZXNwb25zZRIQCghhc3NldF9pZBgBIAEoDBIOCgZhbW91bnQYAiABKAQiUQoLU2lnblJlcXVlc3QSJwoLdHJhbnNhY3Rpb24YASABKAsyEi53YXZlcy5UcmFuc2FjdGlvbhIZChFzaWduZXJfcHVibGljX2tleRgCIAEoDCJ2ChpJbnZva2VTY3JpcHRSZXN1bHRSZXNwb25zZRItCgt0cmFuc2FjdGlvbhgBIAEoCzIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEikKBnJlc3VsdBgCIAEoCzIZLndhdmVzLkludm9rZVNjcmlwdFJlc3VsdCpYChFBcHBsaWNhdGlvblN0YXR1cxILCgdVTktOT1dOEAASDQoJU1VDQ0VFREVEEAESGwoXU0NSSVBUX0VYRUNVVElPTl9GQUlMRUQQAhIKCgZFTElERUQQAzKYBQoPVHJhbnNhY3Rpb25zQXBpEl8KD0dldFRyYW5zYWN0aW9ucxIkLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvbnNSZXF1ZXN0GiQud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uUmVzcG9uc2UwARJ3ChdHZXRUcmFuc2FjdGlvblNuYXBzaG90cxIsLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvblNuYXBzaG90c1JlcXVlc3QaLC53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25TbmFwc2hvdFJlc3BvbnNlMAESawoPR2V0U3RhdGVDaGFuZ2VzEiQud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uc1JlcXVlc3QaKy53YXZlcy5ub2RlLmdycGMuSW52b2tlU2NyaXB0UmVzdWx0UmVzcG9uc2UiA4gCATABEl0KC0dldFN0YXR1c2VzEigud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uc0J5SWRSZXF1ZXN0GiIud2F2ZXMubm9kZS5ncnBjLlRyYW5zYWN0aW9uU3RhdHVzMAESXgoOR2V0VW5jb25maXJtZWQSJC53YXZlcy5ub2RlLmdycGMuVHJhbnNhY3Rpb25zUmVxdWVzdBokLndhdmVzLm5vZGUuZ3JwYy5UcmFuc2FjdGlvblJlc3BvbnNlMAESPgoEU2lnbhIcLndhdmVzLm5vZGUuZ3JwYy5TaWduUmVxdWVzdBoYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uEj8KCUJyb2FkY2FzdBIYLndhdmVzLlNpZ25lZFRyYW5zYWN0aW9uGhgud2F2ZXMuU2lnbmVkVHJhbnNhY3Rpb25CjwEKGmlvLmRlY2VudHJhbGNoYWluLmFwaS5ncnBjWlZnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzL25vZGUvZ3JwY6oCGERlY2VudHJhbENoYWluLk5vZGUuR3JwY2IGcHJvdG8z", [file_waves_recipient, file_waves_transaction, file_waves_transaction_state_snapshot, file_waves_invoke_script_result]);
 
 /**
  * @generated from message waves.node.grpc.TransactionStatus
  */
-export type TransactionStatus = Message<'waves.node.grpc.TransactionStatus'> & {
+export type TransactionStatus = Message<"waves.node.grpc.TransactionStatus"> & {
   /**
    * @generated from field: bytes id = 1;
    */
@@ -73,8 +49,7 @@ export type TransactionStatus = Message<'waves.node.grpc.TransactionStatus'> & {
  * Describes the message waves.node.grpc.TransactionStatus.
  * Use `create(TransactionStatusSchema)` to create a new message.
  */
-export const TransactionStatusSchema: GenMessage<TransactionStatus> =
-  /*@__PURE__*/
+export const TransactionStatusSchema: GenMessage<TransactionStatus> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 0);
 
 /**
@@ -100,14 +75,13 @@ export enum TransactionStatus_Status {
 /**
  * Describes the enum waves.node.grpc.TransactionStatus.Status.
  */
-export const TransactionStatus_StatusSchema: GenEnum<TransactionStatus_Status> =
-  /*@__PURE__*/
+export const TransactionStatus_StatusSchema: GenEnum<TransactionStatus_Status> = /*@__PURE__*/
   enumDesc(file_waves_node_grpc_transactions_api, 0, 0);
 
 /**
  * @generated from message waves.node.grpc.TransactionResponse
  */
-export type TransactionResponse = Message<'waves.node.grpc.TransactionResponse'> & {
+export type TransactionResponse = Message<"waves.node.grpc.TransactionResponse"> & {
   /**
    * @generated from field: bytes id = 1;
    */
@@ -138,14 +112,13 @@ export type TransactionResponse = Message<'waves.node.grpc.TransactionResponse'>
  * Describes the message waves.node.grpc.TransactionResponse.
  * Use `create(TransactionResponseSchema)` to create a new message.
  */
-export const TransactionResponseSchema: GenMessage<TransactionResponse> =
-  /*@__PURE__*/
+export const TransactionResponseSchema: GenMessage<TransactionResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 1);
 
 /**
  * @generated from message waves.node.grpc.TransactionsRequest
  */
-export type TransactionsRequest = Message<'waves.node.grpc.TransactionsRequest'> & {
+export type TransactionsRequest = Message<"waves.node.grpc.TransactionsRequest"> & {
   /**
    * @generated from field: bytes sender = 1;
    */
@@ -166,14 +139,13 @@ export type TransactionsRequest = Message<'waves.node.grpc.TransactionsRequest'>
  * Describes the message waves.node.grpc.TransactionsRequest.
  * Use `create(TransactionsRequestSchema)` to create a new message.
  */
-export const TransactionsRequestSchema: GenMessage<TransactionsRequest> =
-  /*@__PURE__*/
+export const TransactionsRequestSchema: GenMessage<TransactionsRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 2);
 
 /**
  * @generated from message waves.node.grpc.TransactionSnapshotResponse
  */
-export type TransactionSnapshotResponse = Message<'waves.node.grpc.TransactionSnapshotResponse'> & {
+export type TransactionSnapshotResponse = Message<"waves.node.grpc.TransactionSnapshotResponse"> & {
   /**
    * @generated from field: bytes id = 1;
    */
@@ -189,14 +161,13 @@ export type TransactionSnapshotResponse = Message<'waves.node.grpc.TransactionSn
  * Describes the message waves.node.grpc.TransactionSnapshotResponse.
  * Use `create(TransactionSnapshotResponseSchema)` to create a new message.
  */
-export const TransactionSnapshotResponseSchema: GenMessage<TransactionSnapshotResponse> =
-  /*@__PURE__*/
+export const TransactionSnapshotResponseSchema: GenMessage<TransactionSnapshotResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 3);
 
 /**
  * @generated from message waves.node.grpc.TransactionSnapshotsRequest
  */
-export type TransactionSnapshotsRequest = Message<'waves.node.grpc.TransactionSnapshotsRequest'> & {
+export type TransactionSnapshotsRequest = Message<"waves.node.grpc.TransactionSnapshotsRequest"> & {
   /**
    * @generated from field: repeated bytes transaction_ids = 1;
    */
@@ -207,14 +178,13 @@ export type TransactionSnapshotsRequest = Message<'waves.node.grpc.TransactionSn
  * Describes the message waves.node.grpc.TransactionSnapshotsRequest.
  * Use `create(TransactionSnapshotsRequestSchema)` to create a new message.
  */
-export const TransactionSnapshotsRequestSchema: GenMessage<TransactionSnapshotsRequest> =
-  /*@__PURE__*/
+export const TransactionSnapshotsRequestSchema: GenMessage<TransactionSnapshotsRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 4);
 
 /**
  * @generated from message waves.node.grpc.TransactionsByIdRequest
  */
-export type TransactionsByIdRequest = Message<'waves.node.grpc.TransactionsByIdRequest'> & {
+export type TransactionsByIdRequest = Message<"waves.node.grpc.TransactionsByIdRequest"> & {
   /**
    * @generated from field: repeated bytes transaction_ids = 3;
    */
@@ -225,14 +195,13 @@ export type TransactionsByIdRequest = Message<'waves.node.grpc.TransactionsByIdR
  * Describes the message waves.node.grpc.TransactionsByIdRequest.
  * Use `create(TransactionsByIdRequestSchema)` to create a new message.
  */
-export const TransactionsByIdRequestSchema: GenMessage<TransactionsByIdRequest> =
-  /*@__PURE__*/
+export const TransactionsByIdRequestSchema: GenMessage<TransactionsByIdRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 5);
 
 /**
  * @generated from message waves.node.grpc.CalculateFeeResponse
  */
-export type CalculateFeeResponse = Message<'waves.node.grpc.CalculateFeeResponse'> & {
+export type CalculateFeeResponse = Message<"waves.node.grpc.CalculateFeeResponse"> & {
   /**
    * @generated from field: bytes asset_id = 1;
    */
@@ -253,14 +222,13 @@ export type CalculateFeeResponse = Message<'waves.node.grpc.CalculateFeeResponse
  * Describes the message waves.node.grpc.CalculateFeeResponse.
  * Use `create(CalculateFeeResponseSchema)` to create a new message.
  */
-export const CalculateFeeResponseSchema: GenMessage<CalculateFeeResponse> =
-  /*@__PURE__*/
+export const CalculateFeeResponseSchema: GenMessage<CalculateFeeResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 6);
 
 /**
  * @generated from message waves.node.grpc.SignRequest
  */
-export type SignRequest = Message<'waves.node.grpc.SignRequest'> & {
+export type SignRequest = Message<"waves.node.grpc.SignRequest"> & {
   /**
    * @generated from field: waves.Transaction transaction = 1;
    */
@@ -276,14 +244,13 @@ export type SignRequest = Message<'waves.node.grpc.SignRequest'> & {
  * Describes the message waves.node.grpc.SignRequest.
  * Use `create(SignRequestSchema)` to create a new message.
  */
-export const SignRequestSchema: GenMessage<SignRequest> =
-  /*@__PURE__*/
+export const SignRequestSchema: GenMessage<SignRequest> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 7);
 
 /**
  * @generated from message waves.node.grpc.InvokeScriptResultResponse
  */
-export type InvokeScriptResultResponse = Message<'waves.node.grpc.InvokeScriptResultResponse'> & {
+export type InvokeScriptResultResponse = Message<"waves.node.grpc.InvokeScriptResultResponse"> & {
   /**
    * @generated from field: waves.SignedTransaction transaction = 1;
    */
@@ -299,8 +266,7 @@ export type InvokeScriptResultResponse = Message<'waves.node.grpc.InvokeScriptRe
  * Describes the message waves.node.grpc.InvokeScriptResultResponse.
  * Use `create(InvokeScriptResultResponseSchema)` to create a new message.
  */
-export const InvokeScriptResultResponseSchema: GenMessage<InvokeScriptResultResponse> =
-  /*@__PURE__*/
+export const InvokeScriptResultResponseSchema: GenMessage<InvokeScriptResultResponse> = /*@__PURE__*/
   messageDesc(file_waves_node_grpc_transactions_api, 8);
 
 /**
@@ -331,8 +297,7 @@ export enum ApplicationStatus {
 /**
  * Describes the enum waves.node.grpc.ApplicationStatus.
  */
-export const ApplicationStatusSchema: GenEnum<ApplicationStatus> =
-  /*@__PURE__*/
+export const ApplicationStatusSchema: GenEnum<ApplicationStatus> = /*@__PURE__*/
   enumDesc(file_waves_node_grpc_transactions_api, 0);
 
 /**
@@ -343,57 +308,59 @@ export const TransactionsApi: GenService<{
    * @generated from rpc waves.node.grpc.TransactionsApi.GetTransactions
    */
   getTransactions: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof TransactionsRequestSchema;
     output: typeof TransactionResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.GetTransactionSnapshots
    */
   getTransactionSnapshots: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof TransactionSnapshotsRequestSchema;
     output: typeof TransactionSnapshotResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.GetStateChanges
    * @deprecated
    */
   getStateChanges: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof TransactionsRequestSchema;
     output: typeof InvokeScriptResultResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.GetStatuses
    */
   getStatuses: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof TransactionsByIdRequestSchema;
     output: typeof TransactionStatusSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.GetUnconfirmed
    */
   getUnconfirmed: {
-    methodKind: 'server_streaming';
+    methodKind: "server_streaming";
     input: typeof TransactionsRequestSchema;
     output: typeof TransactionResponseSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.Sign
    */
   sign: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof SignRequestSchema;
     output: typeof SignedTransactionSchema;
-  };
+  },
   /**
    * @generated from rpc waves.node.grpc.TransactionsApi.Broadcast
    */
   broadcast: {
-    methodKind: 'unary';
+    methodKind: "unary";
     input: typeof SignedTransactionSchema;
     output: typeof SignedTransactionSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_waves_node_grpc_transactions_api, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_waves_node_grpc_transactions_api, 0);
+
