@@ -45,8 +45,11 @@ jobs:
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
 
-      - name: Lint (affected)
-        run: npx nx affected -t lint
+      - name: Biome lint (affected)
+        run: npx nx affected -t biome-lint
+
+      - name: Typecheck (affected)
+        run: npx nx affected -t typecheck --exclude=cubensis-connect
 
       - name: Build (affected)
         run: npx nx affected -t build
