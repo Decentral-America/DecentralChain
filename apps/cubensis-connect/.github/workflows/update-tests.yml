@@ -1,0 +1,44 @@
+name: Update extension test
+on:
+  push:
+    branches-ignore:
+      - master
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      # Build current branch
+      - name: Get Current branch source
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build
+      - name: Copy current dist to temp folder
+        run: mv dist dist.new
+      # Build last tag
+      - name: Find last tag
+        run: echo 'LAST_TAG='$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`) >> $GITHUB_ENV
+      - name: Get sources from last tag
+        uses: actions/checkout@v6
+        with:
+          ref: '${{ env.LAST_TAG }}'
+          clean: false
+      - uses: actions/setup-node@v6
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build
+      # Run tests
+      - run: docker compose up --wait
+      - run: npm run test:update
+      - if: ${{ always() }}
+        run: docker compose down
+      - if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: test/videos
