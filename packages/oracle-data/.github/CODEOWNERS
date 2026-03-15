@@ -1,0 +1,11 @@
+# Default owner for all files
+* @Decentral-America
+
+# Financial logic core — require explicit review
+/src/parse/       @Decentral-America
+/src/schemas/     @Decentral-America
+/src/response/    @Decentral-America
+/src/constants.ts @Decentral-America
+
+# CI/CD changes require review
+/.github/ @Decentral-America
