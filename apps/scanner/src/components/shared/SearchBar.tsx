@@ -61,10 +61,10 @@ export default function SearchBar(): React.ReactElement {
       navigate(createPageUrl('Address', `?addr=${trimmedQuery}`));
     } catch (error: unknown) {
       toast({
-        variant: 'destructive',
-        title: 'Search Error',
         description:
           error instanceof Error ? error.message : 'Could not find the requested resource',
+        title: 'Search Error',
+        variant: 'destructive',
       });
     }
 

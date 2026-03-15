@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { LucideIcon } from 'lucide-react';
-import { Activity, Box, Clock, RefreshCw, Zap } from 'lucide-react';
+import { Activity, Box, Clock, type LucideIcon, RefreshCw, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Badge } from '@/components/ui/badge';
@@ -32,19 +31,19 @@ export default function Dashboard() {
   const { data: lastBlock, isLoading: blockLoading } = useLatestBlock(autoRefresh);
 
   const { data: nodeVersion } = useQuery({
-    queryKey: ['nodeVersion'],
     queryFn: () => fetchNodeVersion(),
+    queryKey: ['nodeVersion'],
   });
 
   const currentHeight = height?.height || 0;
 
   const { data: blockHeaders, isLoading: headersLoading } = useQuery({
-    queryKey: ['blockHeaders', currentHeight],
+    enabled: currentHeight > 0,
     queryFn: async () => {
       const from = Math.max(1, currentHeight - 49);
       return fetchBlockHeadersSeq(from, currentHeight);
     },
-    enabled: currentHeight > 0,
+    queryKey: ['blockHeaders', currentHeight],
     refetchInterval: autoRefresh ? 15000 : false,
   });
 

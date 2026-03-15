@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { LucideIcon } from 'lucide-react';
-import { Activity, BarChart3, Clock, Network, Zap } from 'lucide-react';
+import { Activity, BarChart3, Clock, type LucideIcon, Network, Zap } from 'lucide-react';
 import { useMemo } from 'react';
 import {
   Bar,
@@ -16,13 +15,13 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { IAllConnectedResponse } from '@/lib/api';
 import {
   fetchBlockHeadersSeq,
   fetchConnectedPeers,
   fetchHeight,
   fetchNodeStatus,
   fetchNodeVersion,
+  type IAllConnectedResponse,
   type IBlockHeader,
   type INodeStatus,
   type INodeVersion,
@@ -33,34 +32,34 @@ export default function NetworkStatistics() {
   const { t } = useLanguage();
 
   const { data: height } = useQuery<{ height: number }>({
-    queryKey: ['height'],
     queryFn: () => fetchHeight(),
+    queryKey: ['height'],
   });
 
   const { data: nodeStatus } = useQuery<INodeStatus>({
-    queryKey: ['nodeStatus'],
     queryFn: () => fetchNodeStatus(),
+    queryKey: ['nodeStatus'],
   });
 
   const { data: nodeVersion } = useQuery<INodeVersion>({
-    queryKey: ['nodeVersion'],
     queryFn: () => fetchNodeVersion(),
+    queryKey: ['nodeVersion'],
   });
 
   const { data: connectedPeers } = useQuery<IAllConnectedResponse>({
-    queryKey: ['peers', 'connected'],
     queryFn: () => fetchConnectedPeers(),
+    queryKey: ['peers', 'connected'],
   });
 
   const currentHeight = height?.height || 0;
 
   const { data: recentBlocks, isLoading: blocksLoading } = useQuery<IBlockHeader[]>({
-    queryKey: ['recentBlocks', currentHeight],
+    enabled: currentHeight > 0,
     queryFn: async () => {
       const from = Math.max(1, currentHeight - 99);
       return fetchBlockHeadersSeq(from, currentHeight);
     },
-    enabled: currentHeight > 0,
+    queryKey: ['recentBlocks', currentHeight],
   });
 
   // Calculate analytics
@@ -95,8 +94,8 @@ export default function NetworkStatistics() {
     // Chart data for last 50 blocks
     const chartData = sorted.slice(-50).map((block) => ({
       height: block.height,
-      txCount: block.transactionCount || 0,
       timestamp: block.timestamp,
+      txCount: block.transactionCount || 0,
     }));
 
     // Block time chart data
@@ -125,9 +124,9 @@ export default function NetworkStatistics() {
       const intervalTxs = intervalBlocks.reduce((sum, b) => sum + (b.transactionCount || 0), 0);
 
       volumeTrendData.push({
+        avgPerBlock: intervalTxs / intervalBlocks.length,
         hour: `${i}h ago`,
         transactions: intervalTxs,
-        avgPerBlock: intervalTxs / intervalBlocks.length,
       });
     }
 
@@ -141,16 +140,16 @@ export default function NetworkStatistics() {
     const maxBlockSize = Math.max(...sorted.map((b) => b.blocksize || 0));
 
     return {
+      avgBlockSize: avgBlockSize.toFixed(0),
       avgBlockTime: avgBlockTime.toFixed(2),
       avgTxPerBlock: avgTxPerBlock.toFixed(2),
-      tps: tps.toFixed(3),
-      totalTxs,
-      chartData,
-      blockTimeData,
-      volumeTrendData: volumeTrendData.reverse(),
       blockSizeData,
-      avgBlockSize: avgBlockSize.toFixed(0),
+      blockTimeData,
+      chartData,
       maxBlockSize,
+      totalTxs,
+      tps: tps.toFixed(3),
+      volumeTrendData: volumeTrendData.reverse(),
     };
   }, [recentBlocks]);
 
@@ -264,7 +263,7 @@ export default function NetworkStatistics() {
                 <BarChart data={analytics.volumeTrendData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="hour" tick={{ fontSize: 12 }} />
-                  <YAxis label={{ value: t('transactions'), angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ angle: -90, position: 'insideLeft', value: t('transactions') }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: 'white',
@@ -289,9 +288,9 @@ export default function NetworkStatistics() {
                   <XAxis
                     dataKey="height"
                     tick={{ fontSize: 12 }}
-                    label={{ value: t('blockHeight'), position: 'insideBottom', offset: -5 }}
+                    label={{ offset: -5, position: 'insideBottom', value: t('blockHeight') }}
                   />
-                  <YAxis label={{ value: t('transactions'), angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ angle: -90, position: 'insideLeft', value: t('transactions') }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: 'white',
@@ -316,9 +315,9 @@ export default function NetworkStatistics() {
                   <XAxis
                     dataKey="height"
                     tick={{ fontSize: 12 }}
-                    label={{ value: t('blockHeight'), position: 'insideBottom', offset: -5 }}
+                    label={{ offset: -5, position: 'insideBottom', value: t('blockHeight') }}
                   />
-                  <YAxis label={{ value: t('seconds'), angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ angle: -90, position: 'insideLeft', value: t('seconds') }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: 'white',
@@ -349,9 +348,9 @@ export default function NetworkStatistics() {
                   <XAxis
                     dataKey="height"
                     tick={{ fontSize: 12 }}
-                    label={{ value: t('blockHeight'), position: 'insideBottom', offset: -5 }}
+                    label={{ offset: -5, position: 'insideBottom', value: t('blockHeight') }}
                   />
-                  <YAxis label={{ value: t('bytes'), angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ angle: -90, position: 'insideLeft', value: t('bytes') }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: 'white',

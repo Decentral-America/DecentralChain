@@ -33,8 +33,8 @@ export default function UnconfirmedTransactions() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['unconfirmedTransactions'],
     queryFn: () => fetchUnconfirmedTransactions(),
+    queryKey: ['unconfirmedTransactions'],
     refetchInterval: autoRefresh ? 5000 : false,
   });
 

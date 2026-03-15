@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import {
   Toast,
   ToastClose,
@@ -8,7 +8,7 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
-import type { ToastData } from '@/types';
+import { type ToastData } from '@/types';
 
 export function Toaster(): ReactElement {
   const { toasts } = useToast();

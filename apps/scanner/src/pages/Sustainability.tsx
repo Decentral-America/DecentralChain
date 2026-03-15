@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchConnectedPeers, type IAllConnectedResponse } from '@/lib/api';
-import type { Peer } from '@/types';
+import { type Peer } from '@/types';
 
 type SustainabilityStats = {
   totalNodes: number;
@@ -23,8 +23,8 @@ export default function Sustainability() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { data: connected } = useQuery<IAllConnectedResponse>({
-    queryKey: ['peers', 'connected'],
     queryFn: () => fetchConnectedPeers(),
+    queryKey: ['peers', 'connected'],
   });
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Sustainability() {
           const country = geoData.country_name || 'Unknown';
 
           if (!countriesData[country]) {
-            countriesData[country] = { total: 0, green: 0 };
+            countriesData[country] = { green: 0, total: 0 };
           }
           countriesData[country].total++;
           if (greenData.green) countriesData[country].green++;
@@ -81,12 +81,12 @@ export default function Sustainability() {
       const greenPercentage = totalChecked > 0 ? (greenCount / totalChecked) * 100 : 0;
 
       setGreenStats({
-        totalNodes: totalChecked,
+        countriesData,
         greenNodes: greenCount,
-        standardNodes: totalChecked - greenCount,
         greenPercentage,
         hostingProviders,
-        countriesData,
+        standardNodes: totalChecked - greenCount,
+        totalNodes: totalChecked,
       });
       setLoading(false);
     };
@@ -96,14 +96,14 @@ export default function Sustainability() {
 
   const pieData = greenStats
     ? [
-        { name: 'Green Hosting', value: greenStats.greenNodes, color: '#22c55e' },
-        { name: 'Standard Hosting', value: greenStats.standardNodes, color: '#94a3b8' },
+        { color: '#22c55e', name: 'Green Hosting', value: greenStats.greenNodes },
+        { color: '#94a3b8', name: 'Standard Hosting', value: greenStats.standardNodes },
       ]
     : [];
 
   const topProviders = greenStats
     ? Object.entries(greenStats.hostingProviders)
-        .map(([name, count]) => ({ name, count }))
+        .map(([name, count]) => ({ count, name }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5)
     : [];
@@ -111,9 +111,9 @@ export default function Sustainability() {
   const topGreenCountries = greenStats
     ? Object.entries(greenStats.countriesData)
         .map(([name, data]) => ({
-          name,
-          greenPercentage: (data.green / data.total) * 100,
           greenCount: data.green,
+          greenPercentage: (data.green / data.total) * 100,
+          name,
           total: data.total,
         }))
         .sort((a, b) => b.greenPercentage - a.greenPercentage)

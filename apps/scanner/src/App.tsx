@@ -7,8 +7,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { queryClientInstance } from '@/lib/query-client';
 import PageNotFound from './lib/PageNotFound';
-import type { PageName } from './pages.config';
-import { pagesConfig } from './pages.config';
+import { type PageName, pagesConfig } from './pages.config';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey: PageName = mainPage ?? (Object.keys(Pages)[0] as PageName);
