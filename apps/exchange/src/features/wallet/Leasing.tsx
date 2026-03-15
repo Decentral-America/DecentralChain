@@ -238,7 +238,7 @@ export const Leasing = () => {
 
   const tableRows = useMemo(() => {
     return (leases as Lease[]).map((lease) => {
-      const transfer = lease['transfer'] as
+      const transfer = lease.transfer as
         | { amount?: { getTokens?: () => { toNumber?: () => number } }; recipient?: string }
         | undefined;
       const rawAmount = (() => {

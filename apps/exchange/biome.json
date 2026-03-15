@@ -9,6 +9,7 @@
     },
     "enabled": true
   },
+  "extends": "//",
   "files": {
     "ignoreUnknown": false,
     "includes": ["**", "!dist", "!coverage", "!**/*.d.ts"]
@@ -108,7 +109,7 @@
       }
     }
   ],
-  "root": true,
+  "root": false,
   "vcs": {
     "clientKind": "git",
     "defaultBranch": "main",
