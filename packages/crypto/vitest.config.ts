@@ -1,20 +1,11 @@
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
-    clearMocks: true,
     coverage: {
       exclude: ['src/**/*.spec.ts', 'src/seedWords.ts'],
-      include: ['src/**/*.ts'],
-      provider: 'v8',
-      thresholds: {
-        branches: 80,
-        functions: 80,
-        lines: 80,
-        statements: 80,
-      },
     },
-    globals: true,
     include: ['src/**/*.spec.ts'],
   },
 });

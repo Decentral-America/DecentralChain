@@ -25,7 +25,10 @@ export default defineConfig({
       },
     },
     globals: true,
-    include: ['test/**/*.spec.ts'],
+    include: ['test/**/*.{spec,test}.ts'],
     reporters: ['default'],
+    typecheck: {
+      enabled: true,
+    },
   },
 });

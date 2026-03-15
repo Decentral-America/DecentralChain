@@ -1,13 +1,9 @@
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
-    clearMocks: true,
     coverage: {
-      exclude: ['src/index.ts'],
-      include: ['src/**/*.ts'],
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 70,
         functions: 70,
@@ -21,9 +17,7 @@ export default defineConfig({
       'test/nodeInteraction.spec.ts',
       'test/proto-serialize.spec.ts',
     ],
-    globals: true,
     include: ['test/**/*.spec.ts'],
-    reporters: ['default'],
     testTimeout: 30000,
   },
 });

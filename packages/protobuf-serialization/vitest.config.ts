@@ -1,12 +1,9 @@
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
-    clearMocks: true,
     coverage: {
-      include: ['src/**/*.ts'],
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 15,
         functions: 15,
@@ -14,6 +11,5 @@ export default defineConfig({
         statements: 15,
       },
     },
-    include: ['test/**/*.test.ts'],
   },
 });

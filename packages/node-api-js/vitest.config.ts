@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
-    clearMocks: true,
     coverage: {
       exclude: [
         'src/index.ts',
@@ -22,15 +22,6 @@ export default defineConfig({
         'src/tools/transactions/wait.ts',
         'src/tools/transactions/transactions.ts',
       ],
-      include: ['src/**/*.ts'],
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'json-summary'],
-      thresholds: {
-        branches: 80,
-        functions: 80,
-        lines: 80,
-        statements: 80,
-      },
     },
     // Integration tests require a running DecentralChain node.
     // Run with: npm run test:integration
@@ -40,9 +31,7 @@ export default defineConfig({
       'test/tools/addresses/index.spec.ts',
       'test/tools/blocks/index.spec.ts',
     ],
-    globals: true,
     include: ['test/**/*.spec.ts'],
-    reporters: ['default'],
     setupFiles: ['test/extendedMatcher.ts'],
     typecheck: { enabled: false },
   },
