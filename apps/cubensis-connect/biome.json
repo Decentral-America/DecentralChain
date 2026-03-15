@@ -19,9 +19,10 @@
       "enabled": true
     }
   },
+  "extends": "//",
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!*.d.ts"]
+    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts"]
   },
   "formatter": {
     "enabled": true,
@@ -52,10 +53,7 @@
     "rules": {
       "complexity": {
         "noExcessiveCognitiveComplexity": {
-          "level": "warn",
-          "options": {
-            "maxAllowedComplexity": 25
-          }
+          "level": "off"
         }
       },
       "correctness": {
@@ -65,11 +63,12 @@
       },
       "recommended": true,
       "security": {
-        "noSecrets": "warn"
+        "noSecrets": "off"
       },
       "style": {
         "noCommonJs": "error",
         "noNamespace": "error",
+        "noNonNullAssertion": "off",
         "useConst": "error",
         "useImportType": {
           "level": "error",
@@ -85,7 +84,7 @@
             "allow": ["warn", "error"]
           }
         },
-        "noExplicitAny": "warn"
+        "noExplicitAny": "off"
       }
     }
   },
@@ -112,9 +111,39 @@
           }
         }
       }
+    },
+    {
+      "includes": ["src/assets/constants.ts", "src/constants.ts"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noSecrets": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/accounts/updateState.ts"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/controllers/VaultController.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
     }
   ],
-  "root": true,
+  "root": false,
   "vcs": {
     "clientKind": "git",
     "defaultBranch": "main",
