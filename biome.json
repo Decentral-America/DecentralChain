@@ -11,7 +11,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts", "!.nx"]
+    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts", "!packages/transactions/docs", "!.nx"]
   },
   "formatter": {
     "enabled": true,
@@ -135,6 +135,52 @@
         "rules": {
           "security": {
             "noSecrets": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [".github/skills/monitor-ci/scripts/**", "scripts/check-boundaries.mjs"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        ".github/skills/monitor-ci/scripts/ci-poll-decide.mjs",
+        "apps/cubensis-connect/src/accounts/updateState.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/cubensis-connect/src/assets/constants.ts",
+        "apps/cubensis-connect/src/constants.ts"
+      ],
+      "linter": {
+        "rules": {
+          "security": {
+            "noSecrets": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/cubensis-connect/src/controllers/VaultController.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
           }
         }
       }

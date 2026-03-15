@@ -13,12 +13,17 @@
     "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/biome.json"]
   },
   "nxCloudAccessToken": "",
+  "plugins": [
+    {
+      "plugin": "./tools/nx-plugins/biome-inferred"
+    }
+  ],
   "release": {
     "changelog": {
       "projectChangelogs": true,
       "workspaceChangelog": {
-        "file": "CHANGELOG.md",
-        "createRelease": "github"
+        "createRelease": "github",
+        "file": "CHANGELOG.md"
       }
     },
     "projects": ["packages/*"],
@@ -31,6 +36,28 @@
     }
   },
   "targetDefaults": {
+    "biome-fix": {
+      "cache": false,
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/biome.json",
+        {
+          "externalDependencies": ["@biomejs/biome"]
+        }
+      ]
+    },
+    "biome-lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/biome.json",
+        {
+          "externalDependencies": ["@biomejs/biome"]
+        }
+      ]
+    },
     "build": {
       "cache": true,
       "dependsOn": ["^build"],
@@ -41,6 +68,23 @@
       "cache": true,
       "inputs": ["default"]
     },
+    "lint:check": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/biome.json",
+        {
+          "externalDependencies": ["@biomejs/biome"]
+        }
+      ]
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build"],
+      "options": {
+        "packageRoot": "{projectRoot}"
+      }
+    },
     "test": {
       "cache": true,
       "inputs": ["default", "^production"]
@@ -48,12 +92,6 @@
     "typecheck": {
       "cache": true,
       "inputs": ["default", "^production"]
-    },
-    "nx-release-publish": {
-      "dependsOn": ["build"],
-      "options": {
-        "packageRoot": "{projectRoot}"
-      }
     }
   }
 }
