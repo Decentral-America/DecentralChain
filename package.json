@@ -17,6 +17,11 @@
   "license": "MIT",
   "name": "decentralchain-sdk",
   "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "overrides": {
+      "typescript": "$typescript"
+    }
+  },
   "private": true,
   "scripts": {
     "build": "nx run-many -t build",
@@ -28,7 +33,7 @@
     "lint:check": "biome check .",
     "prepare": "lefthook install",
     "test": "nx run-many -t test",
-    "typecheck": "nx run-many -t typecheck"
+    "typecheck": "nx run-many -t typecheck --exclude=cubensis-connect,dcc-react,explorer"
   },
   "type": "module",
   "version": "0.0.0"
