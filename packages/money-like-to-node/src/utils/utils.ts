@@ -53,19 +53,19 @@ export function getCoins(money: TMoney | TLong | undefined | null): string | nul
   return result;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+// biome-ignore lint/suspicious/noExplicitAny: ICurry overloads require any — typed interfaces provide safety at call sites
 export const curry: ICurry = (func: (...args: any[]) => any) => {
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+  // biome-ignore lint/suspicious/noExplicitAny: curry implementation bridges generic overloads
   function loop(callback: (...args: any[]) => any, ...local: any[]) {
     if (callback.length <= local.length) {
       return callback(...local);
     } else {
-      // biome-ignore lint/suspicious/noExplicitAny: curried partial application
+      // biome-ignore lint/suspicious/noExplicitAny: curry partial application
       return (...args: any[]) => loop(func, ...local.concat(args));
     }
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: curried partial application
+  // biome-ignore lint/suspicious/noExplicitAny: curry partial application
   return (...args: any[]) => loop(func, ...args);
 };
 
@@ -105,16 +105,16 @@ export const defaultTo =
 
 export const map: IMap = curry(
   <T, R>(cb: (item: T) => R, list: T[]): R[] => list.map(cb),
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+  // biome-ignore lint/suspicious/noExplicitAny: curry returns generic — IMap overloads provide safety at call sites
 ) as any;
 
 export const prop: IProp = curry(
   <T extends object, K extends keyof T>(key: K, data: T): T[K] => data[key],
-  // biome-ignore lint/suspicious/noExplicitAny: curry return → IProp bridge
+  // biome-ignore lint/suspicious/noExplicitAny: curry returns generic — IProp overloads provide safety at call sites
 ) as any;
 
 export const pipe: IPipe = (...processors: ((...args: unknown[]) => unknown)[]) =>
-  // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+  // biome-ignore lint/suspicious/noExplicitAny: IPipe overloads provide safety — implementation must accept any initial value
   ((initial: any) => processors.reduce((acc, cb) => cb(acc), initial)) as any;
 
 interface IComparator {
