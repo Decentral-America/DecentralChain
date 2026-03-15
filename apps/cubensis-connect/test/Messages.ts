@@ -106,7 +106,6 @@ describe('Messages', () => {
     expect(await MessagesScreen.messages).not.toHaveLength(0);
 
     await MessagesScreen.closeButton.click();
-    // biome-ignore lint/style/noNonNullAssertion: messageWindow is guaranteed non-null here
     await Windows.waitForWindowToClose(messageWindow!);
     messageWindow = null;
     await browser.switchToWindow(tabOrigin);
@@ -190,7 +189,6 @@ describe('Messages', () => {
     await ContentScript.waitForCubensisConnect();
     await browser.executeAsync(sendNotification);
     expect(messageWindow).not.toBeNull();
-    // biome-ignore lint/style/noNonNullAssertion: asserted non-null on previous line
     await browser.switchToWindow(messageWindow!);
     await browser.refresh();
 

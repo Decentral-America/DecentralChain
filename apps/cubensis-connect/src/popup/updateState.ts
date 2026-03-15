@@ -134,9 +134,8 @@ export function createUpdateState(store: PopupStore) {
 
     const myNotifications =
       currentOrNewSelectedAccount &&
-      stateChanges.notifications &&
       stateChanges.notifications
-        .filter((notification) => notification.address === currentOrNewSelectedAccount.address)
+        ?.filter((notification) => notification.address === currentOrNewSelectedAccount.address)
         .reverse()
         .reduce<{
           items: NotificationsStoreItem[][];
