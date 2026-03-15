@@ -196,58 +196,27 @@ export const Tabs: React.FC<TabsProps> = ({
     (e: React.KeyboardEvent, currentIndex: number) => {
       if (!keyboardNavigation) return;
 
-      let nextIndex = currentIndex;
+      const findEnabled = (start: number, end: number, step: number): number => {
+        for (let i = start; step > 0 ? i < end : i >= end; i += step) {
+          if (!tabs[i]?.disabled) return i;
+        }
+        return currentIndex;
+      };
 
-      switch (e.key) {
-        case 'ArrowLeft':
-        case 'ArrowUp':
-          e.preventDefault();
-          // Move to previous non-disabled tab
-          for (let i = currentIndex - 1; i >= 0; i--) {
-            if (!tabs[i]?.disabled) {
-              nextIndex = i;
-              break;
-            }
-          }
-          break;
+      const keyMap: Record<string, () => number> = {
+        ArrowDown: () => findEnabled(currentIndex + 1, tabs.length, 1),
+        ArrowLeft: () => findEnabled(currentIndex - 1, -1, -1),
+        ArrowRight: () => findEnabled(currentIndex + 1, tabs.length, 1),
+        ArrowUp: () => findEnabled(currentIndex - 1, -1, -1),
+        End: () => findEnabled(tabs.length - 1, -1, -1),
+        Home: () => findEnabled(0, tabs.length, 1),
+      };
 
-        case 'ArrowRight':
-        case 'ArrowDown':
-          e.preventDefault();
-          // Move to next non-disabled tab
-          for (let i = currentIndex + 1; i < tabs.length; i++) {
-            if (!tabs[i]?.disabled) {
-              nextIndex = i;
-              break;
-            }
-          }
-          break;
+      const resolver = keyMap[e.key];
+      if (!resolver) return;
 
-        case 'Home':
-          e.preventDefault();
-          // Move to first non-disabled tab
-          for (let i = 0; i < tabs.length; i++) {
-            if (!tabs[i]?.disabled) {
-              nextIndex = i;
-              break;
-            }
-          }
-          break;
-
-        case 'End':
-          e.preventDefault();
-          // Move to last non-disabled tab
-          for (let i = tabs.length - 1; i >= 0; i--) {
-            if (!tabs[i]?.disabled) {
-              nextIndex = i;
-              break;
-            }
-          }
-          break;
-
-        default:
-          return;
-      }
+      e.preventDefault();
+      const nextIndex = resolver();
 
       if (nextIndex !== currentIndex) {
         handleTabChange(nextIndex);

@@ -14,25 +14,11 @@ function getBaseUrl(): string {
 }
 
 export const ExplorerLinkService = {
-  getTransactionLink(txId: string): string {
-    if (!txId) {
-      throw new Error('Transaction ID is required');
-    }
-    return `${getBaseUrl()}/tx/${txId}`;
-  },
-
   getAddressLink(address: string): string {
     if (!address) {
       throw new Error('Address is required');
     }
     return `${getBaseUrl()}/address/${address}`;
-  },
-
-  getBlockLink(blockHeight: number): string {
-    if (!blockHeight || blockHeight < 1) {
-      throw new Error('Valid block height is required');
-    }
-    return `${getBaseUrl()}/blocks/${blockHeight}`;
   },
 
   getAssetLink(assetId: string): string {
@@ -42,24 +28,17 @@ export const ExplorerLinkService = {
     return `${getBaseUrl()}/assets/${assetId}`;
   },
 
-  openTransaction(txId: string): void {
-    const url = ExplorerLinkService.getTransactionLink(txId);
-    window.open(url, '_blank', 'noopener,noreferrer');
+  getBlockLink(blockHeight: number): string {
+    if (!blockHeight || blockHeight < 1) {
+      throw new Error('Valid block height is required');
+    }
+    return `${getBaseUrl()}/blocks/${blockHeight}`;
   },
-
-  openAddress(address: string): void {
-    const url = ExplorerLinkService.getAddressLink(address);
-    window.open(url, '_blank', 'noopener,noreferrer');
-  },
-
-  openBlock(blockHeight: number): void {
-    const url = ExplorerLinkService.getBlockLink(blockHeight);
-    window.open(url, '_blank', 'noopener,noreferrer');
-  },
-
-  openAsset(assetId: string): void {
-    const url = ExplorerLinkService.getAssetLink(assetId);
-    window.open(url, '_blank', 'noopener,noreferrer');
+  getTransactionLink(txId: string): string {
+    if (!txId) {
+      throw new Error('Transaction ID is required');
+    }
+    return `${getBaseUrl()}/tx/${txId}`;
   },
 
   isConfigured(): boolean {
@@ -68,6 +47,26 @@ export const ExplorerLinkService = {
     } catch {
       return false;
     }
+  },
+
+  openAddress(address: string): void {
+    const url = ExplorerLinkService.getAddressLink(address);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  },
+
+  openAsset(assetId: string): void {
+    const url = ExplorerLinkService.getAssetLink(assetId);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  },
+
+  openBlock(blockHeight: number): void {
+    const url = ExplorerLinkService.getBlockLink(blockHeight);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  },
+
+  openTransaction(txId: string): void {
+    const url = ExplorerLinkService.getTransactionLink(txId);
+    window.open(url, '_blank', 'noopener,noreferrer');
   },
 };
 

@@ -38,6 +38,36 @@ const MAX_ALIAS_LENGTH = 30;
 const ALIAS_PATTERN = /^[a-z0-9-@_.]*$/;
 const ALIAS_FEE = 100000; // 0.001 DCC in wavelets
 
+const ALIAS_ERROR_PATTERNS: Array<{ test: (msg: string) => boolean; message: string }> = [
+  {
+    message: 'Insufficient balance. You need at least 0.001 DCC to create an alias.',
+    test: (m) => m.includes('insufficient') || m.includes('not enough balance'),
+  },
+  {
+    message: 'Unable to sign transaction. Please try logging out and back in.',
+    test: (m) => m.includes('seed') || m.includes('sign'),
+  },
+  {
+    message: 'Network error. Please check your connection and try again.',
+    test: (m) => m.includes('network') || m.includes('timeout'),
+  },
+  {
+    message: 'This alias is already taken by someone else. Please choose a different one.',
+    test: (m) =>
+      m.includes('alias') &&
+      (m.includes('already') || m.includes('claimed') || m.includes('exists')),
+  },
+];
+
+function mapAliasError(err: unknown): string {
+  if (!(err instanceof Error)) return 'Failed to create alias. Please try again.';
+  const msg = err.message.toLowerCase();
+  return (
+    ALIAS_ERROR_PATTERNS.find((p) => p.test(msg))?.message ??
+    `Failed to create alias: ${err.message}`
+  );
+}
+
 export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalProps) => {
   const { user } = useAuth();
   const { checkAvailability, fetchAliases } = useAliases();
@@ -58,10 +88,10 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
   useEffect(() => {
     if (balances) {
       logger.debug('[CreateAliasModal] Balance data:', {
-        regular: balances.regular,
+        address: balances.address,
         available: balances.available,
         balance: balances.balance,
-        address: balances.address,
+        regular: balances.regular,
       });
     }
   }, [balances]);
@@ -148,33 +178,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
       // Refresh alias list in case it was actually created
       await fetchAliases().catch((e) => logger.error('Failed to refresh aliases:', e));
 
-      // Provide user-friendly error messages
-      let errorMessage = 'Failed to create alias. Please try again.';
-
-      if (err instanceof Error) {
-        const errMsg = err.message.toLowerCase();
-        logger.debug('[CreateAliasModal] Error message:', err.message);
-
-        // Check for specific error types
-        if (errMsg.includes('insufficient') || errMsg.includes('not enough balance')) {
-          errorMessage = 'Insufficient balance. You need at least 0.001 DCC to create an alias.';
-        } else if (errMsg.includes('seed') || errMsg.includes('sign')) {
-          errorMessage = 'Unable to sign transaction. Please try logging out and back in.';
-        } else if (errMsg.includes('network') || errMsg.includes('timeout')) {
-          errorMessage = 'Network error. Please check your connection and try again.';
-        } else if (
-          errMsg.includes('alias') &&
-          (errMsg.includes('already') || errMsg.includes('claimed') || errMsg.includes('exists'))
-        ) {
-          errorMessage =
-            'This alias is already taken by someone else. Please choose a different one.';
-        } else {
-          // Use the original error message for debugging
-          errorMessage = `Failed to create alias: ${err.message}`;
-        }
-      }
-
-      setError(errorMessage);
+      setError(mapAliasError(err));
     } finally {
       setIsCreating(false);
     }
@@ -262,7 +266,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
         </Stack>
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 3 }}>
+      <DialogActions sx={{ pb: 3, px: 3 }}>
         <Button onClick={handleClose} disabled={isCreating}>
           Cancel
         </Button>

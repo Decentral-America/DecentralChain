@@ -10,6 +10,7 @@ import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Stack } from '@/components/atoms/Stack';
+import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AccountSwitcherWrapper = styled.div`
@@ -115,6 +116,8 @@ const ButtonGroup = styled.div`
 export const AccountSwitcher = () => {
   const { user, accounts, switchAccount, removeAccount, logout } = useAuth();
   const [removingAddress, setRemovingAddress] = useState<string | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const handleSwitch = (address: string) => {
     if (user?.address !== address) {
@@ -124,27 +127,25 @@ export const AccountSwitcher = () => {
 
   const handleRemove = (address: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    setConfirmRemove(address);
+  };
 
-    // Show confirmation before removing
-    if (
-      window.confirm(
-        'Are you sure you want to remove this account? This will not delete the account from the blockchain, only from this app.',
-      )
-    ) {
-      setRemovingAddress(address);
-      removeAccount(address);
+  const handleConfirmRemove = () => {
+    if (confirmRemove) {
+      setRemovingAddress(confirmRemove);
+      removeAccount(confirmRemove);
       setRemovingAddress(null);
     }
+    setConfirmRemove(null);
   };
 
   const handleLogout = () => {
-    if (
-      window.confirm(
-        'Are you sure you want to logout? You will need to import your account again to access your wallet.',
-      )
-    ) {
-      logout();
-    }
+    setConfirmLogout(true);
+  };
+
+  const handleConfirmLogout = () => {
+    logout();
+    setConfirmLogout(false);
   };
 
   return (
@@ -215,6 +216,26 @@ export const AccountSwitcher = () => {
           </ButtonGroup>
         </Stack>
       </Card>
+
+      <ConfirmDialog
+        open={!!confirmRemove}
+        onClose={() => setConfirmRemove(null)}
+        onConfirm={handleConfirmRemove}
+        title="Remove Account"
+        message="Are you sure you want to remove this account? This will not delete the account from the blockchain, only from this app."
+        confirmText="Remove"
+        destructive
+      />
+
+      <ConfirmDialog
+        open={confirmLogout}
+        onClose={() => setConfirmLogout(false)}
+        onConfirm={handleConfirmLogout}
+        title="Logout"
+        message="Are you sure you want to logout? You will need to import your account again to access your wallet."
+        confirmText="Logout"
+        destructive
+      />
     </AccountSwitcherWrapper>
   );
 };

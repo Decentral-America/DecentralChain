@@ -18,32 +18,32 @@ const SmartTableContainer = styled(Box)({
 });
 
 const ControlsBar = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between',
   alignItems: 'center',
-  gap: 16,
+  display: 'flex',
   flexWrap: 'wrap',
+  gap: 16,
+  justifyContent: 'space-between',
 });
 
 const PaginationControls = styled(Box)({
-  display: 'flex',
   alignItems: 'center',
+  display: 'flex',
   gap: 12,
 });
 
 const PageButton = styled(IconButton, {
   shouldForwardProp: (prop) => !['active'].includes(prop as string),
 })<{ active?: boolean }>(({ theme, active }) => ({
-  padding: '6px 12px',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: active ? theme.palette.primary.main : 'transparent',
-  color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
-  '&:hover': {
-    backgroundColor: active ? theme.palette.primary.dark : theme.palette.action.hover,
-  },
   '&:disabled': {
     opacity: 0.5,
   },
+  '&:hover': {
+    backgroundColor: active ? theme.palette.primary.dark : theme.palette.action.hover,
+  },
+  backgroundColor: active ? theme.palette.primary.main : 'transparent',
+  borderRadius: theme.shape.borderRadius,
+  color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
+  padding: '6px 12px',
 }));
 
 // Interfaces
@@ -60,6 +60,39 @@ export interface SmartTableProps<T = unknown> {
   emptyMessage?: string;
   className?: string;
   style?: React.CSSProperties;
+}
+
+function compareValues(aVal: unknown, bVal: unknown, direction: 'asc' | 'desc'): number {
+  if (aVal === null && bVal === null) return 0;
+  if (aVal === null) return 1;
+  if (bVal === null) return -1;
+
+  if (typeof aVal === 'number' && typeof bVal === 'number') {
+    return direction === 'asc' ? aVal - bVal : bVal - aVal;
+  }
+
+  const aStr = String(aVal).toLowerCase();
+  const bStr = String(bVal).toLowerCase();
+  const cmp = aStr > bStr ? 1 : aStr < bStr ? -1 : 0;
+  return direction === 'asc' ? cmp : -cmp;
+}
+
+function getPageNumbers(totalPages: number, currentPage: number): (number | string)[] {
+  const maxPagesToShow = 5;
+  if (totalPages <= maxPagesToShow) {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  const pages: (number | string)[] = [0];
+  if (currentPage > 2) pages.push('...');
+
+  const start = Math.max(1, currentPage - 1);
+  const end = Math.min(totalPages - 2, currentPage + 1);
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (currentPage < totalPages - 3) pages.push('...');
+  pages.push(totalPages - 1);
+  return pages;
 }
 
 export const SmartTable = <T extends Record<string, unknown>>({
@@ -110,31 +143,7 @@ export const SmartTable = <T extends Record<string, unknown>>({
   // Sort data
   const sortedData = useMemo(() => {
     if (!sortKey) return filteredData;
-
-    return [...filteredData].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
-
-      // Handle null/undefined
-      if (aVal === null && bVal === null) return 0;
-      if (aVal === null) return 1;
-      if (bVal === null) return -1;
-
-      // Handle numbers
-      if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-      }
-
-      // Handle strings (case-insensitive)
-      const aStr = String(aVal).toLowerCase();
-      const bStr = String(bVal).toLowerCase();
-
-      if (sortDirection === 'asc') {
-        return aStr > bStr ? 1 : aStr < bStr ? -1 : 0;
-      } else {
-        return aStr < bStr ? 1 : aStr > bStr ? -1 : 0;
-      }
-    });
+    return [...filteredData].sort((a, b) => compareValues(a[sortKey], b[sortKey], sortDirection));
   }, [filteredData, sortKey, sortDirection]);
 
   // Paginate data
@@ -168,41 +177,6 @@ export const SmartTable = <T extends Record<string, unknown>>({
     setFilterText(e.target.value);
     setCurrentPage(0); // Reset to first page when filter changes
   }, []);
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxPagesToShow = 5;
-
-    if (totalPages <= maxPagesToShow) {
-      // Show all pages
-      for (let i = 0; i < totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Show first, last, and current with ellipsis
-      pages.push(0);
-
-      if (currentPage > 2) {
-        pages.push('...');
-      }
-
-      const start = Math.max(1, currentPage - 1);
-      const end = Math.min(totalPages - 2, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 3) {
-        pages.push('...');
-      }
-
-      pages.push(totalPages - 1);
-    }
-
-    return pages;
-  };
 
   return (
     <SmartTableContainer className={className} style={style}>
@@ -260,7 +234,7 @@ export const SmartTable = <T extends Record<string, unknown>>({
             Previous
           </PageButton>
 
-          {getPageNumbers().map((page, index) =>
+          {getPageNumbers(totalPages, currentPage).map((page, index) =>
             typeof page === 'number' ? (
               <PageButton
                 key={page}

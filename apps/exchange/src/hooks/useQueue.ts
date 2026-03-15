@@ -41,6 +41,23 @@ interface QueueItem<T> {
   timestamp: number;
 }
 
+async function processQueueItem<T>(
+  item: QueueItem<T>,
+  onComplete?: <U>(result: U) => void,
+  onError?: (error: Error) => void,
+): Promise<void> {
+  try {
+    const result = await item.task();
+    item.resolve(result);
+    onComplete?.(result);
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    item.reject(err);
+    onError?.(err);
+    if (process.env.NODE_ENV === 'development') logger.error('[useQueue] Task error:', err);
+  }
+}
+
 /**
  * Queue Configuration Options
  */
@@ -160,55 +177,28 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
    * Process queue sequentially
    */
   const processQueue = useCallback(async () => {
-    // Prevent concurrent processing or processing when paused
-    if (processingRef.current || isPaused || queueRef.current.length === 0) {
-      return;
-    }
+    if (processingRef.current || isPaused || queueRef.current.length === 0) return;
 
     processingRef.current = true;
-    if (isMountedRef.current) {
-      setIsProcessing(true);
-    }
+    if (isMountedRef.current) setIsProcessing(true);
 
     while (queueRef.current.length > 0 && !isPaused) {
-      // Sort by priority (higher first) then by timestamp (earlier first)
-      queueRef.current.sort((a, b) => {
-        const priorityDiff = (b.priority || 0) - (a.priority || 0);
-        if (priorityDiff !== 0) return priorityDiff;
-        return a.timestamp - b.timestamp;
-      });
+      queueRef.current.sort(
+        (a, b) => (b.priority || 0) - (a.priority || 0) || a.timestamp - b.timestamp,
+      );
 
       const item = queueRef.current.shift();
       if (!item) break;
 
-      if (isMountedRef.current) {
-        setQueueLength(queueRef.current.length);
-      }
+      if (isMountedRef.current) setQueueLength(queueRef.current.length);
 
-      try {
-        const result = await item.task();
-        item.resolve(result);
-        onItemComplete?.(result);
-      } catch (error) {
-        const err = error instanceof Error ? error : new Error(String(error));
-        item.reject(err);
-        onItemError?.(err);
-
-        // Log error in development
-        if (process.env.NODE_ENV === 'development') {
-          logger.error('[useQueue] Task error:', err);
-        }
-      }
+      await processQueueItem(item, onItemComplete, onItemError);
     }
 
     processingRef.current = false;
     if (isMountedRef.current) {
       setIsProcessing(false);
-
-      // Trigger onEmpty callback if queue is now empty
-      if (queueRef.current.length === 0 && onEmpty) {
-        onEmpty();
-      }
+      if (queueRef.current.length === 0) onEmpty?.();
     }
   }, [isPaused, onEmpty, onItemComplete, onItemError]);
 
@@ -227,10 +217,10 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
 
         const item: QueueItem<T> = {
           id: crypto.randomUUID(),
-          task,
-          resolve,
-          reject,
           priority,
+          reject,
+          resolve,
+          task,
           timestamp: Date.now(),
         };
 
@@ -284,8 +274,8 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
   const getQueue = useCallback(() => {
     return queueRef.current.map((item) => ({
       id: item.id,
-      timestamp: item.timestamp,
       priority: item.priority,
+      timestamp: item.timestamp,
     }));
   }, []);
 
@@ -307,22 +297,22 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       logger.debug('[useQueue]', {
-        queueLength,
-        isProcessing,
         isPaused,
+        isProcessing,
+        queueLength,
       });
     }
   }, [queueLength, isProcessing, isPaused]);
 
   return {
-    enqueue,
     clear,
-    pause,
-    resume,
-    isProcessing,
-    isPaused,
-    queueLength,
+    enqueue,
     getQueue,
+    isPaused,
+    isProcessing,
+    pause,
+    queueLength,
+    resume,
   };
 };
 

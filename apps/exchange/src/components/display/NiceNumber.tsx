@@ -99,6 +99,59 @@ export interface NiceNumberProps {
     | 'halfTrunc';
 }
 
+interface FormatConfig {
+  compact: NiceNumberProps['compact'];
+  currency: string | undefined;
+  decimals: number | undefined;
+  maximumFractionDigits: number | undefined;
+  minimumFractionDigits: number | undefined;
+  minimumIntegerDigits: number | undefined;
+  notation: NiceNumberProps['notation'];
+  roundingMode: NiceNumberProps['roundingMode'];
+  signDisplay: NonNullable<NiceNumberProps['signDisplay']>;
+  style: NonNullable<NiceNumberProps['style']>;
+  unit: string | undefined;
+  useGrouping: boolean;
+}
+
+function buildNumberFormatOptions(config: FormatConfig): Intl.NumberFormatOptions {
+  const options: Intl.NumberFormatOptions = {
+    signDisplay: config.signDisplay,
+    style: config.style,
+    useGrouping: config.useGrouping,
+  };
+
+  if (config.currency && config.style === 'currency') options.currency = config.currency;
+  if (config.unit && config.style === 'unit') options.unit = config.unit;
+
+  if (config.compact) {
+    options.notation = 'compact';
+    options.compactDisplay = typeof config.compact === 'string' ? config.compact : 'short';
+  } else if (config.notation) {
+    options.notation = config.notation;
+  }
+
+  if (config.decimals !== undefined) {
+    options.minimumFractionDigits = config.decimals;
+    options.maximumFractionDigits = config.decimals;
+  } else {
+    if (config.minimumFractionDigits !== undefined)
+      options.minimumFractionDigits = config.minimumFractionDigits;
+    if (config.maximumFractionDigits !== undefined)
+      options.maximumFractionDigits = config.maximumFractionDigits;
+  }
+
+  if (config.minimumIntegerDigits !== undefined)
+    options.minimumIntegerDigits = config.minimumIntegerDigits;
+
+  if (config.roundingMode) {
+    (options as Intl.NumberFormatOptions & { roundingMode?: string }).roundingMode =
+      config.roundingMode;
+  }
+
+  return options;
+}
+
 /**
  * NiceNumber Component
  *
@@ -127,69 +180,26 @@ export const NiceNumber: React.FC<NiceNumberProps> = ({
 
   const formatted = useMemo(() => {
     try {
-      // Parse value if it's a string
       const numValue = typeof value === 'string' ? parseFloat(value) : value;
+      if (Number.isNaN(numValue) || !Number.isFinite(numValue)) return '0';
 
-      // Check for invalid numbers
-      if (Number.isNaN(numValue) || !Number.isFinite(numValue)) {
-        return '0';
-      }
-
-      // Determine locale (use provided locale or from i18n)
       const formatLocale = locale || i18n.language || 'en-US';
-
-      // Build formatter options
-      const options: Intl.NumberFormatOptions = {
-        style,
-        useGrouping,
+      const options = buildNumberFormatOptions({
+        compact,
+        currency,
+        decimals,
+        maximumFractionDigits,
+        minimumFractionDigits,
+        minimumIntegerDigits,
+        notation,
+        roundingMode,
         signDisplay,
-      };
+        style,
+        unit,
+        useGrouping,
+      });
 
-      // Add currency if provided
-      if (currency && style === 'currency') {
-        options.currency = currency;
-      }
-
-      // Add unit if provided
-      if (unit && style === 'unit') {
-        options.unit = unit;
-      }
-
-      // Handle compact notation
-      if (compact) {
-        options.notation = 'compact';
-        options.compactDisplay = typeof compact === 'string' ? compact : 'short';
-      } else if (notation) {
-        options.notation = notation;
-      }
-
-      // Handle decimal precision
-      if (decimals !== undefined) {
-        options.minimumFractionDigits = decimals;
-        options.maximumFractionDigits = decimals;
-      } else {
-        if (minimumFractionDigits !== undefined) {
-          options.minimumFractionDigits = minimumFractionDigits;
-        }
-        if (maximumFractionDigits !== undefined) {
-          options.maximumFractionDigits = maximumFractionDigits;
-        }
-      }
-
-      // Handle integer digits
-      if (minimumIntegerDigits !== undefined) {
-        options.minimumIntegerDigits = minimumIntegerDigits;
-      }
-
-      // Handle rounding mode (only supported in newer browsers)
-      if (roundingMode) {
-        (options as Intl.NumberFormatOptions & { roundingMode?: string }).roundingMode =
-          roundingMode;
-      }
-
-      // Create formatter and format number
-      const formatter = new Intl.NumberFormat(formatLocale, options);
-      return formatter.format(numValue);
+      return new Intl.NumberFormat(formatLocale, options).format(numValue);
     } catch (error) {
       logger.error('Error formatting number:', error);
       return String(value);

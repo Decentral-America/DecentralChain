@@ -147,41 +147,50 @@ export const useOrderBook = (
   },
 ): UseQueryResult<OrderBook, Error> => {
   return useQuery({
-    queryKey: ['orderbook', amountAsset, priceAsset, depth],
+    enabled: !!amountAsset && !!priceAsset && options?.enabled !== false,
     queryFn: async () => {
       // Use data-service which properly converts Money objects
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped data-service API
-      const orderBookData: any = await ds.api.matcher.getOrderBook(amountAsset, priceAsset);
+      interface DsOrderEntry {
+        amount: { getTokens(): { toNumber(): number } };
+        price: { getTokens(): { toNumber(): number } };
+      }
+      interface DsOrderBook {
+        bids: DsOrderEntry[];
+        asks: DsOrderEntry[];
+        pair: { amountAsset: { id: string }; priceAsset: { id: string } };
+      }
+      const orderBookData = (await ds.api.matcher.getOrderBook(
+        amountAsset,
+        priceAsset,
+      )) as DsOrderBook;
 
       // Convert Money objects to numbers (in token units, not smallest units)
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-      const bids = orderBookData.bids.slice(0, depth).map((bid: any) => ({
-        price: bid.price.getTokens().toNumber(),
+      const bids = orderBookData.bids.slice(0, depth).map((bid) => ({
         amount: bid.amount.getTokens().toNumber(),
+        price: bid.price.getTokens().toNumber(),
       }));
 
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-      const asks = orderBookData.asks.slice(0, depth).map((ask: any) => ({
-        price: ask.price.getTokens().toNumber(),
+      const asks = orderBookData.asks.slice(0, depth).map((ask) => ({
         amount: ask.amount.getTokens().toNumber(),
+        price: ask.price.getTokens().toNumber(),
       }));
 
       return {
-        timestamp: Date.now(),
+        asks,
+        bids,
         pair: {
           amountAsset: orderBookData.pair.amountAsset.id,
           priceAsset: orderBookData.pair.priceAsset.id,
         },
-        bids,
-        asks,
+        timestamp: Date.now(),
       };
     },
-    enabled: !!amountAsset && !!priceAsset && options?.enabled !== false,
+    queryKey: ['orderbook', amountAsset, priceAsset, depth],
     refetchInterval: options?.refetchInterval ?? 5000, // 5 seconds for real-time updates
-    staleTime: 3000, // 3 seconds
+    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce load
     retry: 2, // Retry failed requests up to 2 times
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce load
+    staleTime: 3000, // 3 seconds
   });
 };
 
@@ -206,7 +215,8 @@ export const useUserOrders = (
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    queryKey: ['orders', address, amountAsset, priceAsset],
+    // Disable by default until authentication is implemented
+    enabled: false, // was: !!address && options?.enabled !== false,
     queryFn: async () => {
       // For now, return empty array as this requires proper matcher authentication
       // TODO: Implement proper matcher signature authentication
@@ -218,13 +228,12 @@ export const useUserOrders = (
       // const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}?activeOnly=${activeOnly}`);
       // return data;
     },
-    // Disable by default until authentication is implemented
-    enabled: false, // was: !!address && options?.enabled !== false,
+    queryKey: ['orders', address, amountAsset, priceAsset],
     refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
-    staleTime: 5000,
+    refetchOnWindowFocus: false,
     retry: 0, // Don't retry since it's not implemented
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    refetchOnWindowFocus: false,
+    staleTime: 5000,
   });
 };
 
@@ -244,13 +253,13 @@ export const useOrderHistory = (
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    queryKey: ['orders', 'history', address, activeOnly],
+    enabled: !!address && options?.enabled !== false,
     queryFn: async () => {
       const status = activeOnly ? '/activeOnly' : '';
       const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}${status}`);
       return data;
     },
-    enabled: !!address && options?.enabled !== false,
+    queryKey: ['orders', 'history', address, activeOnly],
     staleTime: 30000, // 30 seconds
   });
 };
@@ -276,7 +285,7 @@ export const useTradeHistory = (
   },
 ): UseQueryResult<Trade[], Error> => {
   return useQuery({
-    queryKey: ['trades', amountAsset, priceAsset, limit],
+    enabled: false, // Disable until data-service integration is complete
     queryFn: async () => {
       // TODO: Implement using data-service getExchangeTxs
       // For now, return empty array as the matcher doesn't have a trades endpoint
@@ -289,12 +298,12 @@ export const useTradeHistory = (
       // );
       // return data;
     },
-    enabled: false, // Disable until data-service integration is complete
+    queryKey: ['trades', amountAsset, priceAsset, limit],
     refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
-    staleTime: 5000,
+    refetchOnWindowFocus: false,
     retry: 0, // Don't retry
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    refetchOnWindowFocus: false,
+    staleTime: 5000,
   });
 };
 
@@ -308,13 +317,13 @@ export const useMatcherSettings = (options?: {
   enabled?: boolean;
 }): UseQueryResult<MatcherSettings, Error> => {
   return useQuery({
-    queryKey: ['matcher', 'settings'],
+    enabled: options?.enabled !== false,
     queryFn: async () => {
       // Use empty string because matcherClient base URL is already '/matcher'
       const { data } = await matcherClient.get<MatcherSettings>('/');
       return data;
     },
-    enabled: options?.enabled !== false,
+    queryKey: ['matcher', 'settings'],
     staleTime: 300000, // 5 minutes - settings rarely change
   });
 };
@@ -329,12 +338,12 @@ export const useTradingPairs = (options?: {
   enabled?: boolean;
 }): UseQueryResult<TradingPairInfo[], Error> => {
   return useQuery({
-    queryKey: ['matcher', 'pairs'],
+    enabled: options?.enabled !== false,
     queryFn: async () => {
       const { data } = await matcherClient.get<TradingPairInfo[]>('/orderbook');
       return data;
     },
-    enabled: options?.enabled !== false,
+    queryKey: ['matcher', 'pairs'],
     staleTime: 60000, // 1 minute
   });
 };
@@ -398,8 +407,8 @@ export const useCancelAllOrders = (): UseMutationResult<
         '/orderbook/cancel',
         {
           sender,
-          timestamp,
           signature,
+          timestamp,
         },
       );
       return data;

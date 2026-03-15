@@ -81,18 +81,18 @@ const nullOrCb =
 const joinCandles = (candles: Candle[]): Candle => {
   const [first, second] = candles;
   if (!first) {
-    return { txsCount: 0, high: null, low: null, close: null, open: null, volume: null, time: 0 };
+    return { close: null, high: null, low: null, open: null, time: 0, txsCount: 0, volume: null };
   }
   const c1 = first;
   const c2 = second ?? first;
   return {
-    txsCount: c1.txsCount + (c2.txsCount || 0),
+    close: nullOrCb('close', valOrNullClose)(c1, c2),
     high: maxOrNull('high')(c1, c2),
     low: minOrNull('low')(c1, c2),
-    close: nullOrCb('close', valOrNullClose)(c1, c2),
     open: nullOrCb('open', valOrNullOpen)(c1, c2),
-    volume: nullOrSum('volume')(c1, c2),
     time: c1.time,
+    txsCount: c1.txsCount + (c2.txsCount || 0),
+    volume: nullOrSum('volume')(c1, c2),
   };
 };
 
@@ -119,78 +119,78 @@ const splitEvery = <T>(n: number, arr: T[]): T[][] => {
 
 // Interval presets (matches Angular INTERVAL_PRESETS)
 const INTERVAL_PRESETS: Record<string, number> = {
-  '1m': 1000 * 60,
-  '5m': 1000 * 60 * 5,
-  '15m': 1000 * 60 * 15,
-  '30m': 1000 * 60 * 30,
+  '1d': 1000 * 60 * 60 * 24,
   '1h': 1000 * 60 * 60,
+  '1m': 1000 * 60,
   '3h': 1000 * 60 * 60 * 3,
+  '5m': 1000 * 60 * 5,
   '6h': 1000 * 60 * 60 * 6,
   '12h': 1000 * 60 * 60 * 12,
-  '1d': 1000 * 60 * 60 * 24,
+  '15m': 1000 * 60 * 15,
+  '30m': 1000 * 60 * 30,
 };
 
 // Interval map with converters (matches Angular INTERVAL_MAP)
 const INTERVAL_MAP: Record<number, IntervalConfig> = {
   1: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['1m'] ?? 0,
     intervalName: '1m',
-    converter: (el) => el,
   },
   5: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['5m'] ?? 0,
     intervalName: '5m',
-    converter: (el) => el,
   },
   15: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['15m'] ?? 0,
     intervalName: '15m',
-    converter: (el) => el,
   },
   30: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['30m'] ?? 0,
     intervalName: '30m',
-    converter: (el) => el,
   },
   60: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['1h'] ?? 0,
     intervalName: '1h',
-    converter: (el) => el,
   },
   120: {
+    converter: (candles) => splitEvery(2, candles).map(joinCandles),
     interval: INTERVAL_PRESETS['1h'] ?? 0,
     intervalName: '1h',
-    converter: (candles) => splitEvery(2, candles).map(joinCandles),
   },
   180: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['3h'] ?? 0,
     intervalName: '3h',
-    converter: (el) => el,
   },
   240: {
-    interval: INTERVAL_PRESETS['1h'] ?? 0,
-    intervalName: '1h',
     converter: (candles) => {
       // Split into pairs, join each pair, then split again and join again
       const step1 = splitEvery(2, candles).map(joinCandles);
       const step2 = splitEvery(2, step1).map(joinCandles);
       return step2;
     },
+    interval: INTERVAL_PRESETS['1h'] ?? 0,
+    intervalName: '1h',
   },
   360: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['6h'] ?? 0,
     intervalName: '6h',
-    converter: (el) => el,
   },
   720: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['12h'] ?? 0,
     intervalName: '12h',
-    converter: (el) => el,
   },
   1440: {
+    converter: (el) => el,
     interval: INTERVAL_PRESETS['1d'] ?? 0,
     intervalName: '1d',
-    converter: (el) => el,
   },
 };
 
@@ -227,8 +227,8 @@ class CandlesService {
         throw new Error('Default interval config (1440) not found');
       }
       return {
-        options: [{ timeStart: from, timeEnd: to, interval: defaultConfig.intervalName }],
         config: defaultConfig,
+        options: [{ interval: defaultConfig.intervalName, timeEnd: to, timeStart: from }],
       };
     }
 
@@ -244,16 +244,16 @@ class CandlesService {
     while (currentStart <= to) {
       const currentEnd = Math.min(to, currentStart + config.interval * MAX_RESOLUTION);
       intervals.push({
-        timeStart: currentStart,
-        timeEnd: currentEnd,
         interval: config.intervalName,
+        timeEnd: currentEnd,
+        timeStart: currentStart,
       });
       currentStart = currentEnd + config.interval;
     }
 
     return {
-      options: intervals,
       config,
+      options: intervals,
     };
   }
 
@@ -263,6 +263,8 @@ class CandlesService {
   private static _resolutionToMinutes(resolution: string): number {
     const resolutionMap: Record<string, number> = {
       '1': 1,
+      '1D': 1440,
+      '1W': 10080,
       '5': 5,
       '15': 15,
       '30': 30,
@@ -273,9 +275,7 @@ class CandlesService {
       '360': 360,
       '720': 720,
       D: 1440,
-      '1D': 1440,
       W: 10080,
-      '1W': 10080,
     };
     return resolutionMap[resolution] || 1440; // Default to 1 day
   }
@@ -340,20 +340,23 @@ class CandlesService {
       logger.debug('[Candles] Raw candles count:', rawCandles.length);
 
       // Helper to convert BigNumber/Money to number (matches Angular's convertBigNumber line 60)
-      // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-      const convertBigNumber = (num: any): number | null => {
+      const convertBigNumber = (num: unknown): number | null => {
         if (!num) return null;
 
         // CRITICAL: Check isNaN() FIRST (same as Angular)
         // Money/BigNumber objects have isNaN() that checks internal validity
         // Angular: const convertBigNumber = num => (num.isNaN() ? null : Number(num.toFixed()));
-        if (typeof num === 'object' && typeof num.isNaN === 'function') {
-          // If the number is NaN, return null immediately
-          if (num.isNaN()) {
+        if (
+          typeof num === 'object' &&
+          num !== null &&
+          'isNaN' in num &&
+          typeof (num as Record<string, unknown>)['isNaN'] === 'function'
+        ) {
+          const obj = num as { isNaN(): boolean; toFixed(): string };
+          if (obj.isNaN()) {
             return null;
           }
-          // Otherwise use toFixed() to convert to number
-          return Number(num.toFixed());
+          return Number(obj.toFixed());
         }
 
         // If it's already a number
@@ -367,17 +370,24 @@ class CandlesService {
       };
 
       // Process candles (matches Angular line 62-72)
-      let processedCandles = rawCandles
-        // biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-        .map((candle: any) => ({
-          txsCount: candle.txsCount || 0,
-          high: convertBigNumber(candle.high),
-          low: convertBigNumber(candle.low),
-          close: convertBigNumber(candle.close),
-          open: convertBigNumber(candle.open),
-          volume: convertBigNumber(candle.volume),
-          time: new Date(candle.time).getTime(),
-        }));
+      interface DsCandle {
+        close: unknown;
+        high: unknown;
+        low: unknown;
+        open: unknown;
+        time: string | number;
+        txsCount?: number;
+        volume: unknown;
+      }
+      let processedCandles = (rawCandles as DsCandle[]).map((candle) => ({
+        close: convertBigNumber(candle.close),
+        high: convertBigNumber(candle.high),
+        low: convertBigNumber(candle.low),
+        open: convertBigNumber(candle.open),
+        time: new Date(candle.time).getTime(),
+        txsCount: candle.txsCount || 0,
+        volume: convertBigNumber(candle.volume),
+      }));
 
       // Apply interval-specific converter (matches Angular line 82)
       // This is the KEY STEP that was missing - aggregates/resamples candles based on interval
@@ -430,8 +440,8 @@ class CandlesService {
       () =>
         callback({
           supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'],
-          supports_time: true,
           supports_marks: false,
+          supports_time: true,
           supports_timescale_marks: false,
         }),
       0,
@@ -448,25 +458,25 @@ class CandlesService {
     const [amountAsset, priceAsset] = symbolName.split('/');
 
     const symbolInfo = {
-      name: symbolName,
-      ticker: symbolName,
-      description: `${amountAsset}/${priceAsset}`,
-      type: 'crypto',
-      session: '24x7',
-      timezone: 'Etc/UTC',
-      exchange: 'DecentralChain',
-      minmov: 1,
-      pricescale: 100000000,
-      has_intraday: true,
-      has_daily: true,
-      has_weekly_and_monthly: true,
-      supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'],
-      volume_precision: 8,
-      data_status: 'streaming',
       _dccData: {
         amountAsset: { id: amountAsset },
         priceAsset: { id: priceAsset },
       },
+      data_status: 'streaming',
+      description: `${amountAsset}/${priceAsset}`,
+      exchange: 'DecentralChain',
+      has_daily: true,
+      has_intraday: true,
+      has_weekly_and_monthly: true,
+      minmov: 1,
+      name: symbolName,
+      pricescale: 100000000,
+      session: '24x7',
+      supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'],
+      ticker: symbolName,
+      timezone: 'Etc/UTC',
+      type: 'crypto',
+      volume_precision: 8,
     };
 
     setTimeout(() => resolve(symbolInfo as SymbolInfo), 0);
