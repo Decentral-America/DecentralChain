@@ -1,0 +1,17 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
+  "extends": "//",
+  "overrides": [
+    {
+      "includes": ["src/libs/parseJsonBigNumber.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noControlCharactersInRegex": "off"
+          }
+        }
+      }
+    }
+  ],
+  "root": false
+}
