@@ -25,10 +25,10 @@ export const useAssetName = (assetId: string | null | undefined) => {
   });
 
   return {
+    decimals: isDCC ? 8 : assetDetails?.decimals || 8,
+    error,
+    isLoading,
     name: isDCC ? 'DCC' : assetDetails?.name || assetId || 'Unknown',
     ticker: isDCC ? 'DCC' : assetDetails?.name || assetId || '???',
-    decimals: isDCC ? 8 : assetDetails?.decimals || 8,
-    isLoading,
-    error,
   };
 };

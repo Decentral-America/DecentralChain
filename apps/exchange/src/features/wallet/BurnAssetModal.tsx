@@ -47,13 +47,13 @@ export function BurnAssetModal({
 
       // Create burn transaction
       const tx = {
+        assetId,
+        fee: 100000, // 0.001 DCC
+        quantity: quantityInMinimalUnits,
+        senderPublicKey: user.publicKey,
+        timestamp: Date.now(),
         type: 6, // Burn transaction type
         version: 2,
-        assetId,
-        quantity: quantityInMinimalUnits,
-        fee: 100000, // 0.001 DCC
-        timestamp: Date.now(),
-        senderPublicKey: user.publicKey,
       };
 
       // Sign and broadcast transaction

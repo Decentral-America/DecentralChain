@@ -80,19 +80,19 @@ export const useTranslation = () => {
   };
 
   return {
-    // Translation function
-    t: translate,
+    availableLanguages,
+    changeLanguage,
 
     // Language management
     currentLanguage,
     currentLanguageName,
-    changeLanguage,
-    availableLanguages,
-    isLanguageSupported,
     getLanguageByCode,
 
     // Raw i18n instance (for advanced usage)
     i18n,
+    isLanguageSupported,
+    // Translation function
+    t: translate,
   };
 };
 

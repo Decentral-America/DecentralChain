@@ -229,18 +229,18 @@ const LoadingContainer = styled.div`
 const mockLockedUsers: LegacyUser[] = [
   {
     address: '3P8JYPHrnXSfsWP1LVXySdzU1P83FE1ssDa',
-    name: 'Main Wallet',
-    userType: 'seed',
-    publicKey: '5AzfA9UfpWVYiwFwvdr77k6LWupSTGLb14b24oVdEpMM',
     encryptedSeed: 'encrypted_seed_data',
+    name: 'Main Wallet',
+    publicKey: '5AzfA9UfpWVYiwFwvdr77k6LWupSTGLb14b24oVdEpMM',
     settings: { encryptionRounds: 5000 },
+    userType: 'seed',
   },
   {
     address: '3PAWHmDyqzVWW4fYjzRiYgWiMVqxHdGqixy',
-    name: 'Trading Account',
-    userType: 'seed',
-    publicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
     encryptedSeed: 'encrypted_seed_data',
+    name: 'Trading Account',
+    publicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+    userType: 'seed',
   },
 ];
 
@@ -515,11 +515,11 @@ export const MigratePage: React.FC = () => {
                 style={{
                   background: 'none',
                   border: 'none',
-                  padding: 0,
-                  font: 'inherit',
                   color: 'inherit',
-                  textDecoration: 'underline',
                   cursor: 'pointer',
+                  font: 'inherit',
+                  padding: 0,
+                  textDecoration: 'underline',
                 }}
                 onClick={handleGoBack}
               >

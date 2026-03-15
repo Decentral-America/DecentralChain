@@ -36,11 +36,11 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
 
   // Fetch full asset details from blockchain
   const { data: assetInfo, isLoading } = useQuery({
-    queryKey: ['asset-info', assetId],
+    enabled: isOpen && !!assetId,
     queryFn: async () => {
       return (await ds.api.assets.get(assetId)) as AssetInfoData;
     },
-    enabled: isOpen && !!assetId,
+    queryKey: ['asset-info', assetId],
     staleTime: 60000, // Cache for 1 minute
   });
 
@@ -81,8 +81,8 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
               {(Number(assetInfo.quantity) / 10 ** (assetInfo.precision ?? 0)).toLocaleString(
                 undefined,
                 {
-                  minimumFractionDigits: 0,
                   maximumFractionDigits: assetInfo.precision ?? 0,
+                  minimumFractionDigits: 0,
                 },
               )}
             </Value>

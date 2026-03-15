@@ -103,74 +103,74 @@ export class DefaultSettings {
    * Common defaults matching Angular DefaultSettings.js
    */
   private commonDefaults: CommonSettings = {
-    lng: 'en',
-    theme: 'default',
     advancedMode: false,
+    baseAssetId: 'DCC',
+    closedNotification: [],
+    dontShowSpam: true,
+    events: {},
     lastOpenVersion: '',
-    whatsNewList: [],
+    lng: 'en',
+    logoutAfterMin: 5,
+    needReadNewTerms: false,
     network: NetworkConfig.code,
     oracleDCC: NetworkConfig.oracleDCC,
-    dontShowSpam: true,
-    logoutAfterMin: 5,
-    termsAccepted: true,
-    needReadNewTerms: false,
-    closedNotification: [],
-    withScam: false,
     scamListUrl: NetworkConfig.scamListUrl,
+    termsAccepted: true,
+    theme: 'default',
     tokensNameListUrl: NetworkConfig.tokensNameListUrl,
     tradeWithScriptAssets: false,
-    baseAssetId: 'DCC',
-    events: {},
+    whatsNewList: [],
+    withScam: false,
   };
 
   /**
    * User-specific defaults matching Angular DefaultSettings.js
    */
   private defaults: UserSettings = {
+    dex: {
+      assetIdPair: {
+        amount: 'DCC',
+        price: 'CRC',
+      },
+      chartCropRate: 1.5,
+      createOrder: {
+        expirationName: '30day',
+      },
+      layout: {
+        orderbook: { collapsed: false },
+        tradevolume: { collapsed: true },
+        watchlist: { collapsed: false },
+      },
+      watchlist: {
+        activeTab: 'all',
+        favourite: [['CRC']],
+        showOnlyFavorite: false,
+      },
+    },
     encryptionRounds: 5000,
     hasBackup: true,
     lastInterval: '60', // Default DEX chart resolution
+    orderLimit: 0.05,
+    pinnedAssetIdList: ['DCC', 'CRC'], // Match Angular default pinned assets
     send: {
       defaultTab: 'singleSend',
     },
-    orderLimit: 0.05,
-    pinnedAssetIdList: ['DCC', 'CRC'], // Match Angular default pinned assets
     wallet: {
       activeState: 'assets',
       assets: {
-        chartMode: 'month',
         activeChartAssetId: 'DCC',
         chartAssetIdList: ['CRC'],
-      },
-      transactions: {
-        filter: 'all',
+        chartMode: 'month',
       },
       leasing: {
         filter: 'all',
       },
       portfolio: {
-        spam: [],
         filter: 'active',
+        spam: [],
       },
-    },
-    dex: {
-      chartCropRate: 1.5,
-      assetIdPair: {
-        amount: 'DCC',
-        price: 'CRC',
-      },
-      createOrder: {
-        expirationName: '30day',
-      },
-      watchlist: {
-        showOnlyFavorite: false,
-        favourite: [['CRC']],
-        activeTab: 'all',
-      },
-      layout: {
-        watchlist: { collapsed: false },
-        orderbook: { collapsed: false },
-        tradevolume: { collapsed: true },
+      transactions: {
+        filter: 'all',
       },
     },
   };
@@ -283,7 +283,7 @@ export class DefaultSettings {
    */
   private _isCommon(path: string): boolean {
     const [start] = path.split('.');
-    return Object.prototype.hasOwnProperty.call(this.commonDefaults, start ?? '');
+    return Object.hasOwn(this.commonDefaults, start ?? '');
   }
 
   /**

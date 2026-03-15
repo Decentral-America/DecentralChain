@@ -32,14 +32,14 @@ export const Tooltip = ({
       slotProps={{
         tooltip: {
           sx: {
-            maxWidth: maxWidth,
             fontSize: '0.75rem',
+            maxWidth: maxWidth,
           },
         },
       }}
       {...props}
     >
-      <span style={{ display: 'inline-flex', alignItems: 'center' }}>{children}</span>
+      <span style={{ alignItems: 'center', display: 'inline-flex' }}>{children}</span>
     </MuiTooltip>
   );
 };

@@ -101,13 +101,13 @@ export class GatewayService {
   getFiats(): Record<string, boolean> {
     // Typical fiat asset IDs
     return {
+      CNY: true,
       EUR: true,
-      USD: true,
       GBP: true,
       JPY: true,
-      CNY: true,
       RUB: true,
       TRY: true,
+      USD: true,
     };
   }
 

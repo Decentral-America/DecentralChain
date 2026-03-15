@@ -236,8 +236,8 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
       } catch (err) {
         const signingError: SigningError = {
           code: 'SIGNING_FAILED',
-          message: `Failed to sign ${transactionType} transaction`,
           details: err,
+          message: `Failed to sign ${transactionType} transaction`,
         };
         setError(signingError);
         throw signingError;
@@ -317,8 +317,8 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
       } catch (err) {
         const signingError: SigningError = {
           code: 'SIGNING_FAILED',
-          message: 'Failed to sign Alias transaction',
           details: err,
+          message: 'Failed to sign Alias transaction',
         };
         setError(signingError);
         throw signingError;
@@ -378,32 +378,32 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   );
 
   return {
-    // Transfer
-    signTransfer,
+    clearError,
+    error,
 
-    // Asset Management
-    signIssue,
-    signReissue,
-    signBurn,
-
-    // Leasing
-    signLease,
-    signCancelLease,
+    // State
+    isSigning,
 
     // Address & Data
     signAlias,
-    signMassTransfer,
+    signBurn,
+    signCancelLease,
     signData,
+    signInvokeScript,
+
+    // Asset Management
+    signIssue,
+
+    // Leasing
+    signLease,
+    signMassTransfer,
+    signReissue,
+    signSetAssetScript,
 
     // Smart Contracts
     signSetScript,
     signSponsorship,
-    signSetAssetScript,
-    signInvokeScript,
-
-    // State
-    isSigning,
-    error,
-    clearError,
+    // Transfer
+    signTransfer,
   };
 };

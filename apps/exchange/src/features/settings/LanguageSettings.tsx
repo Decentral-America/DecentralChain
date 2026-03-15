@@ -89,8 +89,8 @@ export const LanguageSettings: React.FC = () => {
 
   // Convert SUPPORTED_LANGUAGES to SelectOption format
   const languageOptions: SelectOption[] = SUPPORTED_LANGUAGES.map((lang) => ({
-    value: lang.code,
     label: lang.name,
+    value: lang.code,
   }));
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

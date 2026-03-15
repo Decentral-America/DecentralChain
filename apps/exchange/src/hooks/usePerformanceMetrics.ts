@@ -81,33 +81,33 @@ export function usePerformanceMetrics(
   } = options;
 
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
+    apiCallCount: 0,
+    cls: null,
+
+    // Custom
+    componentRenderCount: 0,
+    domContentLoaded: null,
+    domProcessing: null,
+    fcp: null,
+    imageCount: 0,
+    imageDuration: 0,
+    inp: null,
     // Web Vitals
     lcp: null,
-    cls: null,
-    fcp: null,
-    ttfb: null,
-    inp: null,
 
     // Navigation Timing
     loadTime: null,
-    domContentLoaded: null,
-    domProcessing: null,
+
+    // Memory
+    memoryUsage: null,
+    routeChangeCount: 0,
 
     // Resource Timing
     scriptCount: 0,
     scriptDuration: 0,
     stylesheetCount: 0,
     stylesheetDuration: 0,
-    imageCount: 0,
-    imageDuration: 0,
-
-    // Memory
-    memoryUsage: null,
-
-    // Custom
-    componentRenderCount: 0,
-    apiCallCount: 0,
-    routeChangeCount: 0,
+    ttfb: null,
   });
 
   /**
@@ -179,24 +179,24 @@ export function usePerformanceMetrics(
    */
   const clear = useCallback(() => {
     setMetrics({
-      lcp: null,
+      apiCallCount: 0,
       cls: null,
-      fcp: null,
-      ttfb: null,
-      inp: null,
-      loadTime: null,
+      componentRenderCount: 0,
       domContentLoaded: null,
       domProcessing: null,
+      fcp: null,
+      imageCount: 0,
+      imageDuration: 0,
+      inp: null,
+      lcp: null,
+      loadTime: null,
+      memoryUsage: null,
+      routeChangeCount: 0,
       scriptCount: 0,
       scriptDuration: 0,
       stylesheetCount: 0,
       stylesheetDuration: 0,
-      imageCount: 0,
-      imageDuration: 0,
-      memoryUsage: null,
-      componentRenderCount: 0,
-      apiCallCount: 0,
-      routeChangeCount: 0,
+      ttfb: null,
     });
 
     // Clear browser performance data
@@ -245,7 +245,7 @@ export function usePerformanceMetrics(
     });
 
     try {
-      lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+      lcpObserver.observe({ buffered: true, type: 'largest-contentful-paint' });
     } catch {
       logger.warn('[Performance] LCP observer not supported');
     }
@@ -254,10 +254,10 @@ export function usePerformanceMetrics(
   }, []);
 
   return {
-    metrics,
-    refresh,
     clear,
     isSupported: 'performance' in window && 'PerformanceObserver' in window,
+    metrics,
+    refresh,
   };
 }
 
@@ -292,29 +292,29 @@ export function getPerformanceSummary(metrics: PerformanceMetrics) {
   };
 
   return {
-    lcp: {
-      value: metrics.lcp,
-      rating: getRating(metrics.lcp, { good: 2500, needsImprovement: 4000 }),
-    },
     cls: {
-      value: metrics.cls,
       rating: getRating(metrics.cls, { good: 0.1, needsImprovement: 0.25 }),
+      value: metrics.cls,
     },
     fcp: {
-      value: metrics.fcp,
       rating: getRating(metrics.fcp, { good: 1800, needsImprovement: 3000 }),
-    },
-    ttfb: {
-      value: metrics.ttfb,
-      rating: getRating(metrics.ttfb, { good: 800, needsImprovement: 1800 }),
+      value: metrics.fcp,
     },
     inp: {
-      value: metrics.inp,
       rating: getRating(metrics.inp, { good: 200, needsImprovement: 500 }),
+      value: metrics.inp,
+    },
+    lcp: {
+      rating: getRating(metrics.lcp, { good: 2500, needsImprovement: 4000 }),
+      value: metrics.lcp,
     },
     loadTime: {
-      value: metrics.loadTime,
       rating: getRating(metrics.loadTime, { good: 3000, needsImprovement: 5000 }),
+      value: metrics.loadTime,
+    },
+    ttfb: {
+      rating: getRating(metrics.ttfb, { good: 800, needsImprovement: 1800 }),
+      value: metrics.ttfb,
     },
   };
 }

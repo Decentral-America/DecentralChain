@@ -36,8 +36,8 @@ export const Swap: React.FC = () => {
     <ThemeProvider theme={landingTheme}>
       <Box
         sx={{
-          minHeight: '100vh',
           bgcolor: 'background.default',
+          minHeight: '100vh',
           py: 4,
         }}
       >
@@ -48,8 +48,8 @@ export const Swap: React.FC = () => {
               variant="h3"
               fontWeight={800}
               sx={{
-                mb: 1,
                 background: 'linear-gradient(135deg, #5940d4 0%, #3d26be 100%)',
+                mb: 1,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -65,8 +65,8 @@ export const Swap: React.FC = () => {
             {/* Left Column - Feature Cards */}
             <Grid
               size={{
-                xs: 12,
                 md: 4,
+                xs: 12,
               }}
             >
               <Stack spacing={3}>
@@ -80,14 +80,14 @@ export const Swap: React.FC = () => {
                   <CardContent sx={{ p: 3 }}>
                     <Box
                       sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '50%',
-                        bgcolor: 'rgba(255, 255, 255, 0.2)',
-                        display: 'flex',
                         alignItems: 'center',
+                        bgcolor: 'rgba(255, 255, 255, 0.2)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        height: 48,
                         justifyContent: 'center',
                         mb: 2,
+                        width: 48,
                       }}
                     >
                       <TrendingUp sx={{ fontSize: 24 }} />
@@ -107,15 +107,15 @@ export const Swap: React.FC = () => {
                   <CardContent sx={{ p: 3 }}>
                     <Box
                       sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: 'primary.main',
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
+                        height: 48,
                         justifyContent: 'center',
                         mb: 2,
+                        width: 48,
                       }}
                     >
                       <Speed sx={{ fontSize: 24 }} />
@@ -134,15 +134,15 @@ export const Swap: React.FC = () => {
                   <CardContent sx={{ p: 3 }}>
                     <Box
                       sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: 'secondary.main',
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
+                        height: 48,
                         justifyContent: 'center',
                         mb: 2,
+                        width: 48,
                       }}
                     >
                       <Security sx={{ fontSize: 24 }} />
@@ -161,17 +161,17 @@ export const Swap: React.FC = () => {
             {/* Right Column - Swap Interface */}
             <Grid
               size={{
-                xs: 12,
                 md: 8,
+                xs: 12,
               }}
             >
               <Paper
                 elevation={0}
                 sx={{
-                  p: 4,
-                  borderRadius: 3,
                   border: '1px solid',
                   borderColor: 'divider',
+                  borderRadius: 3,
+                  p: 4,
                 }}
               >
                 {/* Settings Header */}
@@ -201,11 +201,11 @@ export const Swap: React.FC = () => {
                   </Typography>
                   <Paper
                     sx={{
-                      p: 2.5,
                       bgcolor: '#F9FAFB',
                       border: '2px solid',
                       borderColor: 'divider',
                       borderRadius: 2,
+                      p: 2.5,
                     }}
                   >
                     <Stack direction="row" spacing={2} alignItems="center">
@@ -213,13 +213,13 @@ export const Swap: React.FC = () => {
                         variant="outlined"
                         endIcon={<KeyboardArrowDown />}
                         sx={{
-                          minWidth: 140,
-                          justifyContent: 'space-between',
                           borderColor: 'divider',
+                          justifyContent: 'space-between',
+                          minWidth: 140,
                         }}
                       >
                         <Stack direction="row" spacing={1} alignItems="center">
-                          <Avatar sx={{ width: 24, height: 24, bgcolor: '#8A63D2' }}>D</Avatar>
+                          <Avatar sx={{ bgcolor: '#8A63D2', height: 24, width: 24 }}>D</Avatar>
                           <Typography fontWeight={600}>DCC</Typography>
                         </Stack>
                       </Button>
@@ -254,20 +254,20 @@ export const Swap: React.FC = () => {
                     display: 'flex',
                     justifyContent: 'center',
                     my: -1,
-                    zIndex: 1,
                     position: 'relative',
+                    zIndex: 1,
                   }}
                 >
                   <IconButton
                     sx={{
+                      '&:hover': {
+                        bgcolor: 'primary.main',
+                        borderColor: 'primary.main',
+                        color: 'white',
+                      },
                       bgcolor: 'white',
                       border: '2px solid',
                       borderColor: 'divider',
-                      '&:hover': {
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                        borderColor: 'primary.main',
-                      },
                     }}
                   >
                     <SwapVert />
@@ -281,11 +281,11 @@ export const Swap: React.FC = () => {
                   </Typography>
                   <Paper
                     sx={{
-                      p: 2.5,
                       bgcolor: '#F9FAFB',
                       border: '2px solid',
                       borderColor: 'divider',
                       borderRadius: 2,
+                      p: 2.5,
                     }}
                   >
                     <Stack direction="row" spacing={2} alignItems="center">
@@ -293,13 +293,13 @@ export const Swap: React.FC = () => {
                         variant="outlined"
                         endIcon={<KeyboardArrowDown />}
                         sx={{
-                          minWidth: 140,
-                          justifyContent: 'space-between',
                           borderColor: 'divider',
+                          justifyContent: 'space-between',
+                          minWidth: 140,
                         }}
                       >
                         <Stack direction="row" spacing={1} alignItems="center">
-                          <Avatar sx={{ width: 24, height: 24, bgcolor: '#F7931A' }}>U</Avatar>
+                          <Avatar sx={{ bgcolor: '#F7931A', height: 24, width: 24 }}>U</Avatar>
                           <Typography fontWeight={600}>USDT</Typography>
                         </Stack>
                       </Button>
@@ -331,11 +331,11 @@ export const Swap: React.FC = () => {
                 {/* Swap Details */}
                 <Paper
                   sx={{
-                    p: 2,
                     bgcolor: '#EEF2FF',
                     border: '1px solid #5940d4',
                     borderRadius: 2,
                     mb: 3,
+                    p: 2,
                   }}
                 >
                   <Stack spacing={1}>
@@ -369,14 +369,14 @@ export const Swap: React.FC = () => {
                 {/* Info Box */}
                 <Paper
                   sx={{
-                    p: 2,
                     bgcolor: '#FFF7ED',
                     borderRadius: 2,
                     mb: 3,
+                    p: 2,
                   }}
                 >
                   <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <InfoOutlined sx={{ fontSize: 20, color: 'warning.main', mt: 0.2 }} />
+                    <InfoOutlined sx={{ color: 'warning.main', fontSize: 20, mt: 0.2 }} />
                     <Box>
                       <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
                         Coming Soon
@@ -397,17 +397,17 @@ export const Swap: React.FC = () => {
                   fullWidth
                   disabled
                   sx={{
-                    py: 2,
-                    fontSize: '1.1rem',
-                    fontWeight: 700,
-                    background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
-                    '&:hover': {
-                      background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
-                    },
                     '&:disabled': {
                       background: '#E5E7EB',
                       color: '#9CA3AF',
                     },
+                    '&:hover': {
+                      background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
+                    },
+                    background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+                    fontSize: '1.1rem',
+                    fontWeight: 700,
+                    py: 2,
                   }}
                 >
                   Connect Wallet to Swap

@@ -10,8 +10,8 @@ import { Outlet } from 'react-router-dom';
 import { landingTheme } from '@/theme/landingTheme';
 
 const WalletContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
   background: theme.palette.background.default,
+  minHeight: '100vh',
   padding: theme.spacing(3),
 
   [theme.breakpoints.down('sm')]: {

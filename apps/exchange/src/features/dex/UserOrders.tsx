@@ -190,10 +190,10 @@ const OrderTypeBadge = styled.span<{ $type: 'buy' | 'sell' }>`
  * Status badges mapping
  */
 const statusColors: Record<string, 'primary' | 'success' | 'error' | 'warning'> = {
-  pending: 'warning',
+  cancelled: 'error',
   filled: 'success',
   partially_filled: 'primary',
-  cancelled: 'error',
+  pending: 'warning',
 };
 
 /**
@@ -224,12 +224,10 @@ export const UserOrders: React.FC = () => {
   const allOrders = React.useMemo(() => {
     if (!apiOrders) return [];
     return apiOrders.map((order) => ({
-      id: order.id,
-      type: order.type,
-      price: order.price.toString(),
       amount: order.amount.toString(),
       filled: order.filled.toString(),
-      timestamp: order.timestamp,
+      id: order.id,
+      price: order.price.toString(),
       status:
         order.status === 'Accepted'
           ? ('pending' as const)
@@ -238,6 +236,8 @@ export const UserOrders: React.FC = () => {
             : order.status === 'Filled'
               ? ('filled' as const)
               : ('cancelled' as const),
+      timestamp: order.timestamp,
+      type: order.type,
     }));
   }, [apiOrders]);
 

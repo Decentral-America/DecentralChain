@@ -40,8 +40,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         indeterminate={indeterminate}
         disabled={disabled}
         inputProps={{
-          'aria-invalid': !!error,
           'aria-describedby': error ? `${checkboxId}-error` : undefined,
+          'aria-invalid': !!error,
         }}
         {...props}
       />

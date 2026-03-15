@@ -40,11 +40,11 @@ describe('logger', () => {
 
     const sensitiveObj = {
       address: 'abc123',
-      seed: 'my secret seed phrase',
-      privateKey: 'key-data',
-      password: 'hunter2',
-      mnemonic: 'word1 word2',
       amount: 100,
+      mnemonic: 'word1 word2',
+      password: 'hunter2',
+      privateKey: 'key-data',
+      seed: 'my secret seed phrase',
     };
 
     logger.debug(sensitiveObj);

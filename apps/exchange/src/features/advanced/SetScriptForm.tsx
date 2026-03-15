@@ -181,10 +181,10 @@ export const SetScriptForm: React.FC = () => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<SetScriptFormData>({
-    resolver: zodResolver(scriptSchema),
     defaultValues: {
       script: '',
     },
+    resolver: zodResolver(scriptSchema),
   });
 
   const onSubmit = async (formData: SetScriptFormData) => {
@@ -196,8 +196,8 @@ export const SetScriptForm: React.FC = () => {
     try {
       // Create setScript transaction parameters
       const params = {
-        script: formData.script || null,
         fee: 1000000, // 0.01 DCC
+        script: formData.script || null,
       };
 
       setTransactionParams(params);

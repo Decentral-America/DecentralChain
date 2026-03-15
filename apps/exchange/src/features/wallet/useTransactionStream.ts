@@ -86,7 +86,7 @@ export const useTransactionStream = (
 
   // Subscribe to transaction channel
   useWebSocketChannel<TransactionNotification>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleTransaction,
     !!address && options?.enabled !== false,
@@ -104,10 +104,10 @@ export const useTransactionStream = (
   }, []);
 
   return {
-    transactions,
-    lastTransaction,
-    isListening,
     address,
+    isListening,
+    lastTransaction,
+    transactions,
   };
 };
 
@@ -218,9 +218,9 @@ export const usePendingTransactions = () => {
   const { isListening } = useTransactionStream(handleTransaction);
 
   return {
-    pendingTransactions: pendingTxs,
-    pendingCount: pendingTxs.length,
     isListening,
+    pendingCount: pendingTxs.length,
+    pendingTransactions: pendingTxs,
   };
 };
 

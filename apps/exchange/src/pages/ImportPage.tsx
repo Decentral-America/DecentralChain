@@ -23,12 +23,12 @@ import { useNavigate } from 'react-router-dom';
 
 // Page container
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  padding: theme.spacing(4),
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
+  minHeight: '100vh',
+  padding: theme.spacing(4),
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
@@ -42,80 +42,80 @@ const ContentWrapper = styled(Container)(({ theme }) => ({
 
 // Method card with glassmorphism
 const MethodCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4, 3),
-  textAlign: 'center',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-  backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(3),
-  border: `2px solid transparent`,
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? '0 8px 24px rgba(0, 0, 0, 0.4)'
-      : '0 8px 24px rgba(0, 0, 0, 0.06))',
   '&:hover': {
-    transform: 'translateY(-8px)',
+    background:
+      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
     borderColor: theme.palette.primary.main,
     boxShadow:
       theme.palette.mode === 'dark'
         ? '0 12px 40px rgba(31, 90, 246, 0.3)'
         : '0 12px 40px rgba(31, 90, 246, 0.2)',
-    background:
-      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
+    transform: 'translateY(-8px)',
   },
+  backdropFilter: 'blur(20px)',
+  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+  border: `2px solid transparent`,
+  borderRadius: theme.spacing(3),
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? '0 8px 24px rgba(0, 0, 0, 0.4)'
+      : '0 8px 24px rgba(0, 0, 0, 0.06))',
+  cursor: 'pointer',
+  padding: theme.spacing(4, 3),
+  textAlign: 'center',
+  transition: 'all 0.3s ease',
 }));
 
 // Icon container
 const IconBox = styled(Box)(({ theme: _theme }) => ({
-  width: 80,
-  height: 80,
-  margin: '0 auto 20px',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: '50%',
   background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+  borderRadius: '50%',
   color: 'white',
+  display: 'flex',
   fontSize: 40,
+  height: 80,
+  justifyContent: 'center',
+  margin: '0 auto 20px',
+  width: 80,
 }));
 
 // Footer section
 const FooterSection = styled(Box)(({ theme }) => ({
-  textAlign: 'center',
+  borderTop: `1px solid ${theme.palette.divider}`,
   marginTop: theme.spacing(5),
   paddingTop: theme.spacing(4),
-  borderTop: `1px solid ${theme.palette.divider}`,
+  textAlign: 'center',
 }));
 
 const importMethods = [
   {
-    id: 'seed',
-    title: 'Seed Phrase / Private Key',
     description: 'Import your account using a 15-word seed phrase or private key',
     icon: <VpnKey sx={{ fontSize: 40 }} />,
+    id: 'seed',
     route: '/auth/restore',
+    title: 'Seed Phrase / Private Key',
   },
   {
-    id: 'backup',
-    title: 'Backup File',
     description: 'Restore from an encrypted backup file (.json)',
     icon: <Folder sx={{ fontSize: 40 }} />,
+    id: 'backup',
     route: '/auth/fromBackup',
+    title: 'Backup File',
   },
   {
-    id: 'ledger',
-    title: 'Ledger Hardware Wallet',
     description: 'Connect and import accounts from your Ledger device',
     icon: <Security sx={{ fontSize: 40 }} />,
+    id: 'ledger',
     route: '/auth/ledger',
+    title: 'Ledger Hardware Wallet',
   },
   {
-    id: 'keeper',
-    title: 'Cubensis Connect Extension',
     description: 'Import from Cubensis Connect browser extension',
     icon: <Extension sx={{ fontSize: 40 }} />,
+    id: 'keeper',
     route: '/auth/keeper',
+    title: 'Cubensis Connect Extension',
   },
 ];
 
@@ -137,14 +137,14 @@ export const ImportPage: React.FC = () => {
       <Fade in={isVisible} timeout={600}>
         <ContentWrapper>
           {/* Header */}
-          <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Box sx={{ mb: 6, textAlign: 'center' }}>
             <Typography
               variant="h2"
               sx={{
+                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                fontSize: { md: '2.5rem', xs: '2rem' },
                 fontWeight: 800,
                 mb: 1.5,
-                fontSize: { xs: '2rem', md: '2.5rem' },
-                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -168,8 +168,8 @@ export const ImportPage: React.FC = () => {
               <Grid
                 key={method.id}
                 size={{
-                  xs: 12,
                   sm: 6,
+                  xs: 12,
                 }}
               >
                 <Slide direction="up" in={isVisible} timeout={700 + index * 100}>
@@ -178,9 +178,9 @@ export const ImportPage: React.FC = () => {
                     <Typography
                       variant="h6"
                       sx={{
+                        fontSize: '1.25rem',
                         fontWeight: 600,
                         mb: 1.5,
-                        fontSize: '1.25rem',
                       }}
                     >
                       {method.title}
@@ -189,8 +189,8 @@ export const ImportPage: React.FC = () => {
                       variant="body2"
                       sx={{
                         color: theme.palette.text.secondary,
-                        mb: 3,
                         lineHeight: 1.6,
+                        mb: 3,
                       }}
                     >
                       {method.description}
@@ -200,17 +200,17 @@ export const ImportPage: React.FC = () => {
                       fullWidth
                       endIcon={<ArrowForward />}
                       sx={{
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        borderWidth: 2,
-                        py: 1.5,
                         '&:hover': {
-                          borderWidth: 2,
                           background:
                             theme.palette.mode === 'dark'
                               ? 'rgba(31, 90, 246, 0.1)'
                               : 'rgba(31, 90, 246, 0.05)',
+                          borderWidth: 2,
                         },
+                        borderWidth: 2,
+                        fontWeight: 600,
+                        py: 1.5,
+                        textTransform: 'none',
                       }}
                     >
                       Choose
@@ -237,16 +237,16 @@ export const ImportPage: React.FC = () => {
               size="large"
               onClick={() => navigate('/auth/signup')}
               sx={{
-                fontWeight: 600,
-                fontSize: '1.1rem',
-                textTransform: 'none',
-                color: theme.palette.primary.main,
                 '&:hover': {
                   background:
                     theme.palette.mode === 'dark'
                       ? 'rgba(31, 90, 246, 0.1)'
                       : 'rgba(31, 90, 246, 0.05)',
                 },
+                color: theme.palette.primary.main,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                textTransform: 'none',
               }}
             >
               Create New Account

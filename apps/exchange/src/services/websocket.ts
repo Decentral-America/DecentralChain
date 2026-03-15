@@ -81,11 +81,11 @@ class WebSocketClient {
 
   constructor(config: WebSocketConfig) {
     this.config = {
-      url: config.url,
-      reconnectInterval: config.reconnectInterval ?? 5000,
-      maxReconnectAttempts: config.maxReconnectAttempts ?? 10,
-      heartbeatInterval: config.heartbeatInterval ?? 30000,
       debug: config.debug ?? false,
+      heartbeatInterval: config.heartbeatInterval ?? 30000,
+      maxReconnectAttempts: config.maxReconnectAttempts ?? 10,
+      reconnectInterval: config.reconnectInterval ?? 5000,
+      url: config.url,
     };
   }
 
@@ -132,9 +132,9 @@ class WebSocketClient {
     }
 
     const message: WebSocketMessage<T> = {
-      type,
       data,
       timestamp: Date.now(),
+      type,
     };
 
     this.ws.send(JSON.stringify(message));
@@ -385,12 +385,12 @@ export const useWebSocket = (config: WebSocketConfig) => {
   }, []);
 
   return {
-    state,
     isConnected,
+    onMessage,
     send,
+    state,
     subscribe,
     unsubscribe,
-    onMessage,
   };
 };
 

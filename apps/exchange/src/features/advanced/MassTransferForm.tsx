@@ -153,14 +153,14 @@ const SummaryValue = styled.span`
  * Transfer recipient schema
  */
 const transferRecipientSchema = z.object({
-  recipient: z
-    .string()
-    .min(35, 'Invalid address')
-    .regex(/^3[A-Za-z0-9]{34}$/, 'Must be a valid DecentralChain address'),
   amount: z.string().refine((val) => {
     const num = parseFloat(val);
     return !Number.isNaN(num) && num > 0;
   }, 'Amount must be greater than 0'),
+  recipient: z
+    .string()
+    .min(35, 'Invalid address')
+    .regex(/^3[A-Za-z0-9]{34}$/, 'Must be a valid DecentralChain address'),
 });
 
 /**
@@ -168,11 +168,11 @@ const transferRecipientSchema = z.object({
  */
 const massTransferSchema = z.object({
   assetId: z.string().optional(),
+  attachment: z.string().max(140, 'Attachment must be under 140 characters').optional(),
   transfers: z
     .array(transferRecipientSchema)
     .min(2, 'At least 2 recipients required for mass transfer')
     .max(100, 'Maximum 100 recipients allowed'),
-  attachment: z.string().max(140, 'Attachment must be under 140 characters').optional(),
 });
 
 type MassTransferFormData = z.infer<typeof massTransferSchema>;
@@ -198,15 +198,15 @@ export const MassTransferForm: React.FC = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<MassTransferFormData>({
-    resolver: zodResolver(massTransferSchema),
     defaultValues: {
       assetId: '',
-      transfers: [
-        { recipient: '', amount: '' },
-        { recipient: '', amount: '' },
-      ],
       attachment: '',
+      transfers: [
+        { amount: '', recipient: '' },
+        { amount: '', recipient: '' },
+      ],
     },
+    resolver: zodResolver(massTransferSchema),
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -224,7 +224,7 @@ export const MassTransferForm: React.FC = () => {
 
   const handleAddRecipient = () => {
     if (fields.length < 100) {
-      append({ recipient: '', amount: '' });
+      append({ amount: '', recipient: '' });
     }
   };
 
@@ -243,8 +243,8 @@ export const MassTransferForm: React.FC = () => {
     try {
       // Convert form data to transaction format
       const transfersData = formData.transfers.map((transfer) => ({
-        recipient: transfer.recipient,
         amount: Math.round(parseFloat(transfer.amount) * 100000000), // Convert to wavelets
+        recipient: transfer.recipient,
       }));
 
       // Calculate fee (0.001 DCC + 0.0005 DCC per recipient)
@@ -254,10 +254,10 @@ export const MassTransferForm: React.FC = () => {
 
       // Create mass transfer parameters
       const params = {
-        transfers: transfersData,
         assetId: formData.assetId || null,
         attachment: formData.attachment || '',
         fee: totalFee,
+        transfers: transfersData,
       };
 
       setTransactionParams(params);

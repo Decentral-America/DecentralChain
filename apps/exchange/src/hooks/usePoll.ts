@@ -248,12 +248,12 @@ export const usePoll = <T>(
   return {
     data,
     error,
-    isPolling,
     isLoading,
-    startPolling,
-    stopPolling,
+    isPolling,
     refresh,
     reset,
+    startPolling,
+    stopPolling,
   };
 };
 

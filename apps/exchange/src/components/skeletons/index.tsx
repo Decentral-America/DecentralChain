@@ -109,7 +109,7 @@ export const CardSkeleton = () => (
  * Transaction list item skeleton
  */
 export const TransactionSkeleton = () => (
-  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+  <div style={{ alignItems: 'center', display: 'flex', gap: '12px' }}>
     <SkeletonCircle width="40px" height="40px" />
     <div style={{ flex: 1 }}>
       <SkeletonText width="70%" />
@@ -124,7 +124,7 @@ export const TransactionSkeleton = () => (
  */
 export const AssetSkeleton = () => (
   <SkeletonContainer spacing="12px">
-    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+    <div style={{ alignItems: 'center', display: 'flex', gap: '12px' }}>
       <SkeletonCircle width="48px" height="48px" />
       <div style={{ flex: 1 }}>
         <SkeletonText width="50%" />
@@ -148,7 +148,7 @@ export const AssetSkeleton = () => (
  * Table row skeleton
  */
 export const TableRowSkeleton = ({ columns = 4 }: { columns?: number }) => (
-  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+  <div style={{ alignItems: 'center', display: 'flex', gap: '16px' }}>
     {Array.from({ length: columns }, (_, i) => (
       // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <SkeletonText key={i} width="100%" />
@@ -212,7 +212,7 @@ export const FormSkeleton = ({ fields = 3 }: { fields?: number }) => (
  */
 export const ProfileHeaderSkeleton = () => (
   <SkeletonContainer>
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+    <div style={{ alignItems: 'center', display: 'flex', gap: '16px' }}>
       <SkeletonCircle width="80px" height="80px" />
       <div style={{ flex: 1 }}>
         <SkeletonText width="40%" height="20px" />
@@ -230,8 +230,8 @@ export const GridSkeleton = ({ items = 6, columns = 3 }: { items?: number; colum
   <div
     style={{
       display: 'grid',
-      gridTemplateColumns: `repeat(${columns}, 1fr)`,
       gap: '16px',
+      gridTemplateColumns: `repeat(${columns}, 1fr)`,
     }}
   >
     {Array.from({ length: items }, (_, i) => (

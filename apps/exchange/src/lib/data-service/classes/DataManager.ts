@@ -108,15 +108,15 @@ export class DataManager {
     };
 
     const gatewayAsset = {
-      status: 3,
-      version: DATA_PROVIDER_VERSIONS.BETA,
-      id,
-      provider: 'DCCPlatform',
-      ticker: null,
-      link: null,
-      email: null,
-      logo: null,
       description: descriptionHash[id],
+      email: null,
+      id,
+      link: null,
+      logo: null,
+      provider: 'DCCPlatform',
+      status: 3,
+      ticker: null,
+      version: DATA_PROVIDER_VERSIONS.BETA,
     };
 
     const gatewaySoonAsset = {
@@ -126,8 +126,8 @@ export class DataManager {
 
     if (id === 'DCC') {
       return {
-        status: STATUS_LIST.VERIFIED,
         description: descriptionHash.DCC,
+        status: STATUS_LIST.VERIFIED,
       } as TProviderAsset & { provider: string };
     }
 
@@ -193,7 +193,7 @@ export class DataManager {
     const oracleDCC = new Poll(this._getPollOracleApi(get('oracleDCC')), 30000);
     const oracleTokenomica = new Poll(this._getPollOracleApi(get('oracleTokenomica')), 30000);
 
-    return { balance, orders, aliases, oracleDCC, oracleTokenomica };
+    return { aliases, balance, oracleDCC, oracleTokenomica, orders };
   }
 }
 

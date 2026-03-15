@@ -177,13 +177,13 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       }, delay);
 
       const task: TimelineTask = {
-        id,
         callback,
         delay,
+        id,
+        reject: reject,
+        resolve: resolve,
         startTime,
         timeout,
-        resolve: resolve,
-        reject: reject,
       };
 
       tasksRef.current.set(id, task);
@@ -256,13 +256,13 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
       }, delay);
 
       const task: TimelineTask = {
-        id,
         callback,
         delay,
+        id,
+        reject: reject,
+        resolve: resolve,
         startTime,
         timeout,
-        resolve: resolve,
-        reject: reject,
       };
 
       tasksRef.current.set(id, task);
@@ -302,13 +302,13 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
         }, delay);
 
         const task: TimelineTask = {
-          id,
           callback: () => {}, // Empty callback for wait
           delay,
+          id,
+          reject,
+          resolve,
           startTime,
           timeout,
-          resolve,
-          reject,
         };
 
         tasksRef.current.set(id, task);
@@ -364,14 +364,14 @@ export const useTimeline = (options: UseTimelineOptions = {}): UseTimelineReturn
   }, []);
 
   return {
-    schedule,
-    scheduleWithId,
-    wait,
     cancel,
     cancelAll,
     getActiveCount,
-    hasTask,
     getRemainingTime,
+    hasTask,
+    schedule,
+    scheduleWithId,
+    wait,
   };
 };
 
@@ -454,4 +454,4 @@ export const useInterval = (
 /**
  * Export types for external usage
  */
-export type { TimelineTask, UseTimelineReturn, UseTimelineOptions };
+export type { TimelineTask, UseTimelineOptions, UseTimelineReturn };

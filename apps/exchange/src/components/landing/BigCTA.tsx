@@ -7,14 +7,14 @@ export default function BigCTA() {
   const navigate = useNavigate();
 
   return (
-    <Box component="section" sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 12, xs: 8 } }}>
       <Container maxWidth="lg">
         <Box
           sx={{
             borderRadius: 3,
-            p: { xs: 6, md: 10 },
-            textAlign: 'center',
             color: '#fff',
+            p: { md: 10, xs: 6 },
+            textAlign: 'center',
             ...ctaGradientStyles,
             boxShadow: '0 30px 80px rgba(15,25,55,.20)',
           }}
@@ -22,7 +22,7 @@ export default function BigCTA() {
           <Typography variant="h2" fontWeight={800} sx={{ mb: 3 }}>
             Start trading on Decentral.Exchange
           </Typography>
-          <Typography variant="body1" sx={{ mb: 4, opacity: 0.95, maxWidth: 600, mx: 'auto' }}>
+          <Typography variant="body1" sx={{ maxWidth: 600, mb: 4, mx: 'auto', opacity: 0.95 }}>
             Experience the future of decentralized trading with secure swaps, advanced trading
             tools, and complete control over your assets.
           </Typography>
@@ -32,14 +32,14 @@ export default function BigCTA() {
             onClick={() => navigate('/create-account')}
             endIcon={<ArrowForwardIcon />}
             sx={{
-              borderRadius: 999,
-              px: 3,
-              py: 1.5,
-              bgcolor: '#fff',
-              color: 'primary.main',
               '&:hover': {
                 bgcolor: 'rgba(255,255,255,0.9)',
               },
+              bgcolor: '#fff',
+              borderRadius: 999,
+              color: 'primary.main',
+              px: 3,
+              py: 1.5,
             }}
           >
             Create Your Wallet Now

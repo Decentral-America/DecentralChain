@@ -308,29 +308,29 @@ export const SellOrderForm: React.FC = () => {
       // In production, this would use @decentralchain/transactions order() function
       // For now, create a mock order transaction
       const orderTx = {
-        type: 7, // Order transaction type
-        version: 3,
-        orderType: 'sell',
+        amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
         assetPair: {
           amountAsset: selectedPair?.amountAsset || null,
           priceAsset: selectedPair?.priceAsset || null,
         },
-        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
-        amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
-        timestamp: Date.now(),
         expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
         matcherFee: 300000, // 0.003 DCC
         matcherPublicKey: '', // Would be fetched from matcher
+        orderType: 'sell',
+        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
         senderPublicKey: user?.publicKey || '',
+        timestamp: Date.now(),
+        type: 7, // Order transaction type
+        version: 3,
       };
 
       // Send to matcher
       const response = await fetch('/api/matcher/orderbook', {
-        method: 'POST',
+        body: JSON.stringify(orderTx),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderTx),
+        method: 'POST',
       });
 
       if (!response.ok) {
@@ -340,17 +340,20 @@ export const SellOrderForm: React.FC = () => {
 
       return response.json();
     },
+    onError: (err: Error) => {
+      setError(err.message || 'Failed to place sell order');
+    },
     onSuccess: (data) => {
       // Add order to local state for immediate UI update
       if (data.orderId) {
         addUserOrder({
-          id: data.orderId,
-          type: 'sell',
-          price: price,
           amount: amount,
           filled: '0',
-          timestamp: Date.now(),
+          id: data.orderId,
+          price: price,
           status: 'pending',
+          timestamp: Date.now(),
+          type: 'sell',
         });
       }
 
@@ -359,9 +362,6 @@ export const SellOrderForm: React.FC = () => {
       setAmount('');
       setSelectedPercentage(null);
       setError('');
-    },
-    onError: (err: Error) => {
-      setError(err.message || 'Failed to place sell order');
     },
   });
 

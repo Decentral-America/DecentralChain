@@ -305,8 +305,8 @@ export const OrderBook: React.FC = () => {
 
     // Regular formatting with proper precision
     return num.toLocaleString('en-US', {
-      minimumFractionDigits: 0,
       maximumFractionDigits: precision,
+      minimumFractionDigits: 0,
     });
   };
 

@@ -36,7 +36,7 @@ export function priceMoneyFactory(money: string | number | BigNumber, pair: Asse
 export function normalizeAssetPair(assetPair: IAssetPair): IAssetPair {
   const priceAsset = normalizeAssetId(assetPair.priceAsset);
   const amountAsset = normalizeAssetId(assetPair.amountAsset);
-  return { priceAsset, amountAsset };
+  return { amountAsset, priceAsset };
 }
 
 export function normalizeUrl(url: string): string {
@@ -163,7 +163,7 @@ export function defer<T>(): TDefer<T> {
     resolve = res;
     reject = rej;
   });
-  return { resolve, reject, promise };
+  return { promise, reject, resolve };
 }
 
 export function stringifyJSON(data: unknown): string {

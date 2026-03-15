@@ -8,16 +8,16 @@ import styled, { keyframes } from 'styled-components';
 
 const STEPS = [
   {
+    duration: 3000,
     text: 'Connect your Ledger device via USB',
-    duration: 3000,
   },
   {
+    duration: 3000,
     text: 'Enter your PIN code on the device',
-    duration: 3000,
   },
   {
-    text: 'Open the DCC application',
     duration: 3000,
+    text: 'Open the DCC application',
   },
 ];
 

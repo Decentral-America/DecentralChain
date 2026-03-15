@@ -1,4 +1,92 @@
 {
+  "app": {
+    "back": "Terug naar de hoofdpagina",
+    "button": {
+      "cancel": "Annuleer",
+      "continue": "Ga verder",
+      "signIn": "Aanmelden"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Token uitgeven is tijdelijk niet beschikbaar",
+        "issue-title": "Token creatie",
+        "massSendTitle": "Massa Transfer",
+        "reissue": "Token heruitgeven is tijdelijk niet beschikbaar",
+        "sendTitle": "Verstuurd",
+        "set-script-title": "Script transactie"
+      },
+      "send": {
+        "errors": {
+          "fee": "U heeft onvoldoende funds om de transactiekosten te voldoen. U moet {{fee, money-currency}} transactiekosten betalen;"
+        }
+      }
+    },
+    "date": {
+      "month": ["Jan", "Feb", "Maa", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "We werken er constant aan om Decentral.Exchange beter en nuttiger te maken. \n Werk de applicatie bij om door te gaan. Download de applicatie van de officiële [website] (https://decentralchain.io/technology/wallet)!",
+        "title": "Het is tijd om uw app te updaten!"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Assets",
+      "dex": "DEX",
+      "leasing": "Lease",
+      "portfolio": "Portfolio",
+      "tokens": "Tokens",
+      "transactions": "Transacties",
+      "wallet": "Wallet"
+    },
+    "inputs": {
+      "errors": {
+        "required": "Verplicht veld!"
+      }
+    },
+    "leftmenu": {
+      "login": "Inloggen",
+      "logout": "Uitloggen",
+      "settings": "Instellingen"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Geannuleerd",
+          "filled": "Voldaan ({{percent}}%)",
+          "opened": "Geopend"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "Voer wachtwoord in"
+      },
+      "pairing": {
+        "showQr": "Toon"
+      },
+      "tryDesktop": {
+        "cancel": "Doorgaan met internet",
+        "label": "Onthoud mijn keuze en herinner me er niet meer aan",
+        "message": "We raden u aan de DecentralChain-desktop-app te gebruiken. Als u dit niet hebt, kunt u het downloaden van de officiële site.",
+        "title": "Gebruik de DecentralChain desktop-app",
+        "try": "Open desktop app"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "Verdacht"
+  },
   "app.create": {
     "backupSeed": {
       "back": "terug",
@@ -115,9 +203,9 @@
         "1day": "1 dag",
         "1hour": "1 uur",
         "1week": "1 week",
+        "5min": "5 min",
         "30day": "29 dagen",
         "30min": "30 min",
-        "5min": "5 min",
         "amountField": "Bedrag",
         "ask": "Vraag",
         "bid": "Bieden",
@@ -275,8 +363,8 @@
         "chg": "Vrdr",
         "coin": "Munt",
         "helpIcon": {
-          "assetId": "Asset ID",
           "AssetId1AssetId2": "Asset1 ID / Asset2 ID",
+          "assetId": "Asset ID",
           "description": "Meer informatie over het vinden van assets [hier](https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html)",
           "header": "U kunt zoeken op:",
           "name": "Naam",
@@ -334,15 +422,15 @@
       "title": {
         "all": "Alles",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "Geschiedenis",
         "myBalance": "Mijn balans",
         "myTradeHistory": "Mijn handelsgeschiedenis",
-        "openOrders": "Mijn openstaande orders",
         "OrderHistory": "Mijn handelsgeschiedenis",
+        "openOrders": "Mijn openstaande orders",
         "trade": "Handel",
-        "tradeHistory": "Handelsgeschiedenis",
-        "decentralchain": "DecentralChain"
+        "tradeHistory": "Handelsgeschiedenis"
       }
     }
   },
@@ -378,6 +466,12 @@
       "selectFileBtn": "Kies bestand"
     },
     "backupFileDescription": "Account importeren uit Keystore-bestand",
+    "decentralchainClient": "DCC Client",
+    "decentralchainClientDescription": "Account importeren van DCC Client",
+    "decentralchainLiteClient": "DecentralChain Lite Client",
+    "decentralchainLiteClientDescription": "Accounts importeren van de DecentralChain Lite Client",
+    "decentralchainSeedClient": "Backup SEED regel",
+    "decentralchainSeedClientDescription": "Account importeren van een back-up SEED",
     "import": {
       "signIn": "Inloggen"
     },
@@ -393,101 +487,7 @@
       "name": "SEED of sleutel"
     },
     "seedAndKeyDescription": "Account importeren vanuit een SEED- of privésleutel",
-    "selectButton": "Selecteer",
-    "decentralchainClient": "DCC Client",
-    "decentralchainClientDescription": "Account importeren van DCC Client",
-    "decentralchainLiteClient": "DecentralChain Lite Client",
-    "decentralchainLiteClientDescription": "Accounts importeren van de DecentralChain Lite Client",
-    "decentralchainSeedClient": "Backup SEED regel",
-    "decentralchainSeedClientDescription": "Account importeren van een back-up SEED"
-  },
-  "app": {
-    "back": "Terug naar de hoofdpagina",
-    "button": {
-      "cancel": "Annuleer",
-      "continue": "Ga verder",
-      "signIn": "Aanmelden"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "Token uitgeven is tijdelijk niet beschikbaar",
-        "issue-title": "Token creatie",
-        "massSendTitle": "Massa Transfer",
-        "reissue": "Token heruitgeven is tijdelijk niet beschikbaar",
-        "sendTitle": "Verstuurd",
-        "set-script-title": "Script transactie"
-      },
-      "send": {
-        "errors": {
-          "fee": "U heeft onvoldoende funds om de transactiekosten te voldoen. U moet {{fee, money-currency}} transactiekosten betalen;"
-        }
-      }
-    },
-    "date": {
-      "month": ["Jan", "Feb", "Maa", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
-    },
-    "error": {
-      "updateClient": {
-        "body": "We werken er constant aan om Decentral.Exchange beter en nuttiger te maken. \n Werk de applicatie bij om door te gaan. Download de applicatie van de officiële [website] (https://decentralchain.io/technology/wallet)!",
-        "title": "Het is tijd om uw app te updaten!"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Aloha funky coin, for any good&evil purposes ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "Assets",
-      "dex": "DEX",
-      "leasing": "Lease",
-      "portfolio": "Portfolio",
-      "tokens": "Tokens",
-      "transactions": "Transacties",
-      "wallet": "Wallet"
-    },
-    "inputs": {
-      "errors": {
-        "required": "Verplicht veld!"
-      }
-    },
-    "leftmenu": {
-      "login": "Inloggen",
-      "logout": "Uitloggen",
-      "settings": "Instellingen"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "Geannuleerd",
-          "filled": "Voldaan ({{percent}}%)",
-          "opened": "Geopend"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "Voer wachtwoord in"
-      },
-      "pairing": {
-        "showQr": "Toon"
-      },
-      "tryDesktop": {
-        "cancel": "Doorgaan met internet",
-        "label": "Onthoud mijn keuze en herinner me er niet meer aan",
-        "message": "We raden u aan de DecentralChain-desktop-app te gebruiken. Als u dit niet hebt, kunt u het downloaden van de officiële site.",
-        "title": "Gebruik de DecentralChain desktop-app",
-        "try": "Open desktop app"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k"
-      }
-    },
-    "Suspicious": "Verdacht"
+    "selectButton": "Selecteer"
   },
   "app.ledger": {
     "ledger": {
@@ -505,9 +505,9 @@
       "help": {
         "id": "{div}[Stel handmatig een ID in of selecteer een account uit de lijst.] \n{div}[Bewaar de ID, deze is nodig voor het importeren.]"
       },
+      "ImportOrSignIn": "Account importeren of",
       "id": "Account ID",
       "importAccount": "Importeer een Ledger account",
-      "ImportOrSignIn": "Account importeren of",
       "login": "Doorgaan",
       "name": "Accountnaam",
       "nameExists": "Die naam is in gebruik",
@@ -571,6 +571,14 @@
       },
       "goHome": "Ga naar homepagina",
       "text1": "Decentral.Exchange transformeert in een nieuw product, Decentral.Exchange. Maak je geen zorgen! Al uw tokens, seed-zinnen en wachtwoorden zijn volkomen veilig.",
+      "text2": "Dit is een nieuwe exchange op basis van de technologie en expertise van Decentral.Exchange. Zie [deze aankondiging] (https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91) voor meer informatie.",
+      "text3": "Decentral.Exchange is ontwikkeld en wordt beheerd door een deel van het Decentral.Exchange-team, in samenwerking met nieuwe ontwikkelaars uit de DecentralChain-gemeenschap.",
+      "text4": "De migratie betekent een nieuwe fase in de ontwikkeling van de exchange, waarvan de belangrijkste prioriteit nu de gebruikerservaring zal zijn. Het nieuwe team zal zich niet alleen richten op de verzoeken van de gemeenschap, maar zich ook concentreren op het bouwen van nieuwe handelshulpmiddelen en uitgebreide promotie van het product, wat moeilijk was onder de vorige regeling.",
+      "text5": "Migratie is al begonnen. Vanaf 18 november 2019 kunt u uw accounts verplaatsen naar de nieuwe service. Daarvoor moet u de webversie van Decentral.Exchange bijwerken en / of een desktop-app uitvoeren, inloggen op uw account en de instructies volgen.",
+      "text6": "Ja. Dit zal de nieuwe manier zijn om toegang te krijgen tot alle bekende en handige tools van het DecentralChain-ecosysteem - inclusief web- en desktop-apps, mobiele apps en de exchange - plus nieuwe functies en upgrades van de service.",
+      "text7": "De lancering van de nieuwe beurs is gepland op 2 december 2019.",
+      "text8": "We willen Decentral.Exchange-gebruikers voldoende tijd geven om zich voor te bereiden op het gebruik van de nieuwe exchange, zodat hun toegang tot de service ononderbroken is. We hopen dat de periode van twee weken voldoende zal zijn voor de meerderheid van de gebruikers om het migratieproces te voltooien.",
+      "text9": "Ja, migratie van accounts is ook mogelijk na de lancering van Decentral.Exchange. Vanaf 2 december 2019 zijn er echter enkele beperkingen van toepassing op de oude apps van Decentral.Exchange.",
       "text10": "{div.margin-bottom} [Als u de oude apps gebruikt, DIT KAN NIET MEER] \n {div.line} [- Accounts maken] \n {div.line} [- Toegang hebben tot de Decentral.Exchange-interface] \n {div.line} [- Bekijk uw portfolio] \n {div.line} [- Maak transacties van welke aard dan ook: overdracht, uitgifte of het burnen van tokens, DCC leasen of leasing annuleren] \n {div.line} [- Gebruik alle gateways] \n\n {div.margin-bottom} [Vanaf 2 december 2019 kunt u van deze functionaliteit genieten met Decentral.Exchange-apps.] \n\n {div.margin-bottom} [Met de oude apps kan dit NOG STEEDS:] \n\n {div.line} [- Meld u aan bij uw accounts] \n {div.line} [- Start het migratieproces naar Decentral.Exchange] \n {div.line} [- Maak een lokale back-up van uw seed-zinnen] \n\n {div.margin-top} [Als u nog vragen heeft, kunt u een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https: / /support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text11": "Nee nooit! Dit zal onder geen enkele omstandigheid gebeuren. Alle seed-zinnen worden nog steeds lokaal op uw apparaten opgeslagen. Het is onmogelijk voor de exchange om toegang te krijgen tot die opslag.",
       "text12": "Het eigendom van je tokens wordt vastgelegd op de DecentralChain blockchain. Tokens die in uw accounts zijn opgeslagen, zijn alleen toegankelijk met seed zinnen of privésleutels die niet veranderen na de migratie en uw apparaten niet verlaten. Uw bezittingen zijn volkomen veilig!",
@@ -581,20 +589,20 @@
       "text17": "De matcher krijgt een nieuw adres en een nieuwe URL en de privésleutel verandert. Vanwege deze wijzigingen worden openstaande orders van gebruikers op het moment van update automatisch geannuleerd en worden transactiegeschiedenissen niet beschikbaar. Helaas is er geen technisch middel om bestellingen en transactiegeschiedenis over te dragen naar de nieuwe matcher, omdat elke order naar de matcher wordt verzonden nadat de gebruiker deze met zijn persoonlijke sleutel ondertekent. Aangezien de oude of nieuwe matcher geen toegang heeft tot de privésleutels van gebruikers, kunnen bestellingen niet worden overgedragen. We begrijpen dat dit frustrerend kan zijn, maar deze benadering is een kenmerk van het ontwerp van de matcher dat nodig is om de veiligheid van de funds van gebruikers te handhaven. We verontschuldigen ons voor enig ongemak.",
       "text18": "{div.margin-bottom} [We hebben ons best gedaan om ervoor te zorgen dat het migratieproces voor gebruikers zo soepel mogelijk verloopt {div.margin-bottom} . Als u problemen ondervindt bij het verplaatsen van uw accounts, begint u opnieuw. Ga daarvoor terug naar uw oude web- of desktopclient, log in met uw wachtwoord en volg de instructies.] \n\n {div.margin-bottom} [Aanbeveling voor browsergebruikers: schakel tijdens de migratie alle browserextensies uit, omdat deze beperkingen kunnen opleggen die de migratie verstoren.] \n\n {div.margin-bottom} [Aanbeveling voor gebruikers van desktopclients: schakel uw firewall of antivirussoftware uit, omdat deze beperkingen kunnen opleggen aan de poortwerking en de migratie verstoren.] \n\n {div.margin-top} [U blijft in elk geval niet zonder ondersteuning! U kunt altijd een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https://support.decentral.exchange/ 8,5(https:// support.decentral.exchange/)]",
       "text19": "{div.margin-bottom}[Sommige gateways worden beheerd door het Decentral.Exchange-team, bijvoorbeeld: $ BTC, $ ETH, $ WEST, $ ERGO, $ BNT en $ USDT.] \n {div.margin-bottom}[Ondertussen worden $ LTC, $ XMR, $ DASH, $ BCH, $ BSV, $ Zcash, wUSD en wEUR tijdelijk beheerd door Coinomat.] \n {div.margin-top}[Tijdens technische werkzaamheden op 2 december 2019 verwerken gateways alle transacties als normaal, wat volledige beveiliging en toegang tot uw fondsen garandeert.]",
-      "text2": "Dit is een nieuwe exchange op basis van de technologie en expertise van Decentral.Exchange. Zie [deze aankondiging] (https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91) voor meer informatie.",
       "text20": "Uw leases worden niet geannuleerd tijdens het migratieproces. Net als voorheen kunnen gebruikers hun DCC leasen naar de door hen gekozen nodes, met behulp van de lease-interface van Decentral.Exchange, en een rente tot 7% per jaar verkrijgen.",
       "text21": "De lancering van de USDT (ERC-20) gateway heeft geen invloed op de werking van wUSD en wEUR. Gebruikers kunnen ze blijven handelen zoals ze willen.",
       "text22": "De nieuwe adressen behoren tot de DecentralChain-gateway (niet Coinomat). We zullen deze gateways voortdurend verbeteren, waardoor transfers sneller en handiger voor gebruikers worden.",
       "text23": "We begrijpen dat het migratieproces voor gebruikers wat ongemak kan veroorzaken, dus we hebben een leuke verrassing voorbereid! Alle gebruikers die hun accounts naar de nieuwe centrale hebben verplaatst, ontvangen een glinsterende avatar die in de app wordt weergegeven. Om dit te ontvangen, moet u de migratie van uw accounts van Decentral.Exchange naar Decentral.Exchange vóór 2 december voltooien en ten minste één uitgaande transactie van elk type in elke account hebben om in aanmerking te komen.",
       "text24": "We zijn van plan binnenkort ondersteuning toe te voegen voor alle talen die eerder beschikbaar waren op Decentral.Exchange.",
-      "text3": "Decentral.Exchange is ontwikkeld en wordt beheerd door een deel van het Decentral.Exchange-team, in samenwerking met nieuwe ontwikkelaars uit de DecentralChain-gemeenschap.",
-      "text4": "De migratie betekent een nieuwe fase in de ontwikkeling van de exchange, waarvan de belangrijkste prioriteit nu de gebruikerservaring zal zijn. Het nieuwe team zal zich niet alleen richten op de verzoeken van de gemeenschap, maar zich ook concentreren op het bouwen van nieuwe handelshulpmiddelen en uitgebreide promotie van het product, wat moeilijk was onder de vorige regeling.",
-      "text5": "Migratie is al begonnen. Vanaf 18 november 2019 kunt u uw accounts verplaatsen naar de nieuwe service. Daarvoor moet u de webversie van Decentral.Exchange bijwerken en / of een desktop-app uitvoeren, inloggen op uw account en de instructies volgen.",
-      "text6": "Ja. Dit zal de nieuwe manier zijn om toegang te krijgen tot alle bekende en handige tools van het DecentralChain-ecosysteem - inclusief web- en desktop-apps, mobiele apps en de exchange - plus nieuwe functies en upgrades van de service.",
-      "text7": "De lancering van de nieuwe beurs is gepland op 2 december 2019.",
-      "text8": "We willen Decentral.Exchange-gebruikers voldoende tijd geven om zich voor te bereiden op het gebruik van de nieuwe exchange, zodat hun toegang tot de service ononderbroken is. We hopen dat de periode van twee weken voldoende zal zijn voor de meerderheid van de gebruikers om het migratieproces te voltooien.",
-      "text9": "Ja, migratie van accounts is ook mogelijk na de lancering van Decentral.Exchange. Vanaf 2 december 2019 zijn er echter enkele beperkingen van toepassing op de oude apps van Decentral.Exchange.",
       "title1": "Wat is er aan de hand?",
+      "title2": "Wat is Decentral.Exchange?",
+      "title3": "Wie is verantwoordelijk voor de ontwikkeling van de nieuwe exchange?",
+      "title4": "Waarom verhuist Decentral.Exchange naar Decentral.Exchange?",
+      "title5": "Wanneer begint de migratie?",
+      "title6": "Is migratie verplicht?",
+      "title7": "Wanneer wordt Decentral.Exchange gelanceerd?",
+      "title8": "Waarom begon het migratieproces twee weken voorafgaand aan de lancering?",
+      "title9": "Is het mogelijk om accounts te verplaatsen na de lancering van Decentral.Exchange?",
       "title10": "Welke beperkingen zijn vanaf 2 december 2019 van toepassing op Decentral.Exchange-apps?",
       "title11": "Heeft de nieuwe exchange toegang tot mijn seed zinnen?",
       "title12": "Wat gebeurt er met mijn tokens?",
@@ -605,19 +613,11 @@
       "title17": "Welke veranderingen zal de matcher ondergaan?",
       "title18": "Wat als ik problemen of vragen heb tijdens het migratieproces?",
       "title19": "Wat gebeurt er met gateway-tokens?",
-      "title2": "Wat is Decentral.Exchange?",
       "title20": "Is leasing na migratie nog steeds beschikbaar? Zullen leases worden geannuleerd tijdens het migratieproces?",
       "title21": "Zal Tether USD (USDT) wUSD en wEUR vervangen?",
       "title22": "Waarom zijn de gateway-adressen voor het ontvangen van BTC en ETH gewijzigd?",
       "title23": "Waarom zo ingewikkeld?",
-      "title24": "Zijn er plannen om taalondersteuning uit te breiden voor de interface van de nieuwe exchange?",
-      "title3": "Wie is verantwoordelijk voor de ontwikkeling van de nieuwe exchange?",
-      "title4": "Waarom verhuist Decentral.Exchange naar Decentral.Exchange?",
-      "title5": "Wanneer begint de migratie?",
-      "title6": "Is migratie verplicht?",
-      "title7": "Wanneer wordt Decentral.Exchange gelanceerd?",
-      "title8": "Waarom begon het migratieproces twee weken voorafgaand aan de lancering?",
-      "title9": "Is het mogelijk om accounts te verplaatsen na de lancering van Decentral.Exchange?"
+      "title24": "Zijn er plannen om taalondersteuning uit te breiden voor de interface van de nieuwe exchange?"
     },
     "migrate": {
       "achievementDesc": "U hebt uw accounts met succes gemigreerd. Om u te bedanken voor het voltooien van het proces, belonen we al uw accounts (met minstens één uitgaande transactie die vóór 2 december 2019 is gedaan) met glinsterende avatars!",
@@ -885,11 +885,11 @@
       "title": "{{name}} Genereren",
       "titleSuccess": "{{name}} Genereren Gelukt"
     },
-    "name": "Naam van uw asset",
     "NFT": {
       "description": "Een non-fungible token (NFT) is een uniek, individueel token dat bestaat op de DecentralChain blockchain. Momenteel wordt het weergeven van NFT's in DCC Wallet en op Decentral.Exchange niet ondersteund. U kunt uw NFT's bekijken in [DecentralScan] (https://decentralscan.com/)",
       "title": "U maakt een non-fungible token."
     },
+    "name": "Naam van uw asset",
     "notifications": {
       "isNotCreated": "Token is niet gegenereerd"
     },
@@ -960,6 +960,10 @@
     "confirmTransaction": {
       "back": "Ga Terug",
       "confirm": "Verstuur",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "Probeer alstublieft opnieuw. Indien de error aanhoudt maak dan een ticket aan bij [support](https://decentralchain.io/soporte)",
+        "header": "U heeft het verzoek niet via Cubensis Connect bevestigd"
+      },
       "description": {
         "burn": "Heeft {{quantityStr}} {{name}} geburnt",
         "cancel-leasing": "U heeft een leasing transactie geannuleerd",
@@ -1013,11 +1017,7 @@
         }
       },
       "sign": "Onderteken",
-      "success": "Uw transactie is verzonden!",
-      "decentralchainKeeperUnconfirmed": {
-        "description": "Probeer alstublieft opnieuw. Indien de error aanhoudt maak dan een ticket aan bij [support](https://decentralchain.io/soporte)",
-        "header": "U heeft het verzoek niet via Cubensis Connect bevestigd"
-      }
+      "success": "Uw transactie is verzonden!"
     },
     "copyError": "Kan niet kopiëren! Wellicht is uw browser niet up to date",
     "copySuccess": "De data is gekopieerd",
@@ -1421,8 +1421,8 @@
         "rating": {
           "canVoteTip": "Klik om token te beoordelen",
           "tooltipLink": "Bekijk Details",
-          "tooltipNeedDCC": "en 0,001 DCC",
           "tooltipNeedCRC": "Om een token te kunnen beoordelen, heeft u nodig minstens 1",
+          "tooltipNeedDCC": "en 0,001 DCC",
           "tooltipText": "Tokens worden niet overgedragen, alleen uw bestaande balans is vereist voor stemmen. Uw score wordt na 24 uur toegepast. Bewaar de huidige tokens in het account gedurende deze tijd. \nTarief 0,001 DCC.",
           "tooltipTitle": "Om een token te beoordelen, heeft u tenminste 1 CRC in uw portemonnee nodig."
         },
@@ -1542,10 +1542,6 @@
         },
         "copyAndShare": "Kopieer & deel Adres",
         "currency": "Geld",
-        "or": "OF",
-        "pleaseNote": "Let op: de gateway brengt geen transactiekosten in rekening voor deze actie.",
-        "scanQrCode": "QR-code scan",
-        "title": "Storten {{assetName}}",
         "gatewayBNT": {
           "helpDescrText": "Zodra de transactie is bevestigd, verwerkt de gateway de overdracht van Bancor naar een token in uw DecentralChain-account.",
           "helpDescrTitle": "Voer dit adres in uw client of wallet",
@@ -1596,7 +1592,11 @@
           "helpDescrTitle_copy": "Dit adres invoeren in uw WEST-client of wallet",
           "warningMinAmountTitle": "Het minimale stortingsbedrag is {{minAmount, BigNumber}} {{assetTicker}}, het maximale stortingsbedrag is {{maxAmount}} {{assetTicker}}"
         },
-        "gatewayWEST:warningMinAmountTitle_copy": "Het minimale stortingsbedrag is {{minAmount, BigNumber}} {{assetTicker}}, het maximale stortingsbedrag is {{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "Het minimale stortingsbedrag is {{minAmount, BigNumber}} {{assetTicker}}, het maximale stortingsbedrag is {{maxAmount}} {{assetTicker}}",
+        "or": "OF",
+        "pleaseNote": "Let op: de gateway brengt geen transactiekosten in rekening voor deze actie.",
+        "scanQrCode": "QR-code scan",
+        "title": "Storten {{assetName}}"
       },
       "dexScriptedPair": {
         "body": "Smart assets zijn assets die een script bevatten dat die voorwaarden van het token bepalen.{div}[We raden u niet aan om smart assets te gebruiken als u een onervaren gebruiker bent. Lees de informatie over het asset en het script zorgvuldig voordat u een transactie uitvoert.]",
@@ -1630,6 +1630,10 @@
         "warning": "Vul uw geheime regel (SEED) nooit in op websites waar u naar toe gestuurd wordt."
       },
       "import": {
+        "decentralchainBetaClient": "DecentralChain Beta Client",
+        "decentralchainBetaClientDescription": "Accounts importeren van DecentralChain Beta Client",
+        "decentralchainLiteClient": "DecentralChain Lite Client",
+        "decentralchainLiteClientDescription": "Accounts importeren van DecentralChain Lite Client",
         "errorBeta": "We konden uw accounts niet ophalen van de DecentralChain Beta Client Probeer het importeren vanuit de DecentralChain Lite Client.",
         "errorHeader": "Geen accounts gevonden",
         "errorLite": "We konden uw accounts niet ophalen bij de DecentralChain Lite Client Probeer het importeren vanuit de DecentralChain Beta Client.",
@@ -1646,19 +1650,15 @@
         "selectAccountDescription": "U moet pop-upvensters toestaan ​​in uw browser",
         "selectAccountToImport": "Selecteer welke accounts u wilt importeren",
         "selectAccountToImportFrom": "Selecteer waar u accounts van wilt importeren",
-        "selectButton": "Selecteren",
-        "decentralchainBetaClient": "DecentralChain Beta Client",
-        "decentralchainBetaClientDescription": "Accounts importeren van DecentralChain Beta Client",
-        "decentralchainLiteClient": "DecentralChain Lite Client",
-        "decentralchainLiteClientDescription": "Accounts importeren van DecentralChain Lite Client"
+        "selectButton": "Selecteren"
       },
       "matcherChoice": {
         "customMatcher": "Aangepast matcher-adres",
+        "decentralchainTerms": "Ik ben ouder dan 18 jaar en ga akkoord met de DecentralChain Gebruiksvoorwaarden en DecentralChain Privacybeleid.",
         "matcher": "Matcher",
         "matcherTerms": "Ik ga akkoord met de gebruiksvoorwaarden van Super DEX Mather.",
         "terms": "Voorwaarden",
-        "title": "Kies matcher",
-        "decentralchainTerms": "Ik ben ouder dan 18 jaar en ga akkoord met de DecentralChain Gebruiksvoorwaarden en DecentralChain Privacybeleid."
+        "title": "Kies matcher"
       },
       "open-main": {
         "dex": {
@@ -1742,6 +1742,9 @@
         "cryptocurrency": {
           "title": "Cryptovaluta"
         },
+        "decentralchainEnterprise": {
+          "serverError_copy": "Service WEST tijdelijk niet beschikbaar. Probeer het later opnieuw."
+        },
         "error": {
           "cardAmount": {
             "gte": "Het minimum bedrag dat u kunt storten is {{gte}} {{currency}}",
@@ -1776,9 +1779,6 @@
         "verified": "Geverifieerd",
         "vostok": {
           "serverError": "Service WEST tijdelijk niet beschikbaar. Probeer het later opnieuw."
-        },
-        "decentralchainEnterprise": {
-          "serverError_copy": "Service WEST tijdelijk niet beschikbaar. Probeer het later opnieuw."
         },
         "wtry": {
           "info": "Neem in geval van problemen met de betalingsverwerking contact op met het Digilira-ondersteuningsteam - [support@digilira.com](mailto:support@digilira.com)"
@@ -1906,8 +1906,8 @@
         "title": "Verstuur {{assetName}}",
         "titleComplete": "Verzenden voltooid",
         "toBank": "Opnemen naar bankrekening",
-        "total": "Totaal",
         "toDecentralChain": "Verstuur naar DecentralChain adres",
+        "total": "Totaal",
         "txFee": "Transactiekosten",
         "validationError": {
           "notEnoughFunds": "U heeft onvoldoende saldo om de benodigde fee te betalen. U moet {{fee, money-currency}} transactiekosten betalen.",
@@ -2003,12 +2003,12 @@
           "showCodeLink": "Toon Pairing Code",
           "unavailable": {
             "description": {
-              "ledger": "Exporteren is niet beschikbaar voor accounts op een Ledger",
-              "decentralchainKeeper": "Exporteren vanuit Cubensis Connect geïmporteerde accounts is beschikbaar in de instellingen van Cubensis Connect"
+              "decentralchainKeeper": "Exporteren vanuit Cubensis Connect geïmporteerde accounts is beschikbaar in de instellingen van Cubensis Connect",
+              "ledger": "Exporteren is niet beschikbaar voor accounts op een Ledger"
             },
             "header": {
-              "ledger": "Exporteren niet beschikbaar",
-              "decentralchainKeeper": "Exporteren niet beschikbaar"
+              "decentralchainKeeper": "Exporteren niet beschikbaar",
+              "ledger": "Exporteren niet beschikbaar"
             },
             "ok": "Ik begrijp het"
           }
@@ -2083,9 +2083,6 @@
         "timestamp": "Tijdstempel",
         "txId": "TXID"
       },
-      "sponsorship_edit": {
-        "title": "Verander gesponsorde transactie"
-      },
       "sponsorship": {
         "amountPerTx": "Hoeveelheid per transactie (per 0.001 DCC)",
         "assetId": "ID",
@@ -2102,6 +2099,9 @@
         "title": "Schakel gesponsorde transactie in",
         "warningHeader": "Gebruikers kunnen transactiekosten betalen in {{name}}",
         "warningText": "Voor elke transactie wordt 0.001 DCC in rekening gebracht vanaf uw account en {{name}} wordt aan uw account toegevoegd. Het aantal {{name}} dat in rekening wordt gebracht aan gebruikers van transacties wordt door u betaald als u een gesponsorde transactie inschakelt. Stel dit aantal in het formulier hieronder in. Sponsorship werkt enkel als uw balans ten minste 1.005 DCC is. Als u minder dan dit aantal DCC op uw balans heeft zal de gesponsorde transactie niet meer werken."
+      },
+      "sponsorship_edit": {
+        "title": "Verander gesponsorde transactie"
       },
       "startLease": {
         "amount": "Hoeveelheid",
@@ -2245,6 +2245,11 @@
           "1_0_0-beta_42": "{span.line}[1. Ondersteuning voor de Spaanse taal toegevoegd.]{span.line}[2. U kunt de client gebruiken zonder standaard accountgegevens op te slaan.]{span.line}[3. Spam tokens worden nu op de transactiepagina gemarkeerd.]{span.line}[4. Daarnaast zijn er kleine bugs opgelost.]",
           "1_0_0-beta_47": "{span.line}[1. Volledig nieuwe DEX UI.]{span.line}[2. Snellere en stabielere client.]{span.line}[3. Aliasfunctionaliteit is weer beschikbaar.]{span.line}[4. Sommige kleine fouten zijn opgelost.]{span.line}[5. Neem deel aan onze wedstrijden door een video te maken [video](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) of het schrijven van een artikel [article](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835).]",
           "1_0_0-beta_50": "{span.line}[1. U kunt nu tokens die u in uw account hebt, nu burnen.]{span.line}[2. Aanvullende kleine bugs zijn opgelost.]",
+          "1_0_3": "{span.line}[1. U kunt nu items zoeken op ID op de Portfolio-pagina.]\n{span.line}[2. Aanvullende kleine fouten zijn opgelost.]",
+          "1_0_5": "{span.line}[1. Handelsvolumeschaal is toegevoegd aan DEX-diagrammen.]\n{span.line}[2. Aanvullende kleine fouten zijn opgelost.]",
+          "1_0_6": "{span.line}[1. Autorisatie via DecentralChain Desktop Client is toegevoegd.]",
+          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
+          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
           "1_0_10": "{span.line} [1. Sponsorship transaction support added. [Read more](https://docs.decentralchain.io/en/decentralchain-client/assets-management/sponsored-transaction.html)]\n{span.line} [2. Polish and Portuguese languages support added.]",
           "1_0_14": "{span.line}[1. Fixed bug with using Sponsored Asset without DecentralChain balance.]\n{span.line}[2. Fixed bug with 30 days expiration orders.]\n{span.line}[3. Some other minor bugs.]",
           "1_0_15": "{span.line}[1. Issues with confirmation on Ledger have been fixed.]\n{span.line}[2. Increased waiting time for confirmation from Ledger.]\n{span.line}[3. Detailed information has been added to Error messages.]",
@@ -2255,7 +2260,6 @@
           "1_0_27": "{span.line}[1. Added \"My assets\" category in Portfolio.]\n{span.line}[2. Minor bug fixes.]",
           "1_0_28": "{span.line}[1. Added pairing function to import existing accounts to mobile.]\n{span.line}[2. Minor bug fixes.]",
           "1_0_29": "{span.line}[1. QR code generation using Cyrillic alphabet has been fixed.]\n{span.line}[2. Tooltip for watchlist search has been added.]\n{span.line}[3. Further cosmetic fixes. ]",
-          "1_0_3": "{span.line}[1. U kunt nu items zoeken op ID op de Portfolio-pagina.]\n{span.line}[2. Aanvullende kleine fouten zijn opgelost.]",
           "1_0_30": "{span.line}[1. Set Script button has been moved to Security section in Settings.]\n{span.line}[2. Performance improvements and cosmetic changes.]",
           "1_0_32": "{span.line}[1. Integration with BetterTokens’ oracle.]\n{span.line}[2. Added support for token verification protocol.]\n{span.line}[3. Fixed commission accounting for token withdrawal via Coinomat.]",
           "1_0_33": "{span.line} [1. Now you will receive a notification if you try to place an order at a rate significantly differing from the current market rate.] {span.line} [2. Minor bugs have been fixed.]",
@@ -2264,10 +2268,6 @@
           "1_0_40": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Added exchange rate for current pair in browser tab title.]\n{span.line}[3. Fixed minor bugs.]",
           "1_0_41": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Notification system added.]\n{span.line}[3. Fixed minor bugs.]",
           "1_0_42": "{span.line}[1. Fixed minor bugs.]",
-          "1_0_5": "{span.line}[1. Handelsvolumeschaal is toegevoegd aan DEX-diagrammen.]\n{span.line}[2. Aanvullende kleine fouten zijn opgelost.]",
-          "1_0_6": "{span.line}[1. Autorisatie via DecentralChain Desktop Client is toegevoegd.]",
-          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
-          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
           "1_1_0": "{span.line}[1. Order expiration period is now saved by default.]\n{span.line}[2. Fixed minor bugs.]",
           "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
           "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
@@ -2276,13 +2276,13 @@
           "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_3_0": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
-          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
-          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
           "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
-          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
           "1_3_7": "{span.line}[1. Integration with [tokenrating.decentralscan.com](https://tokenrating.decentralscan.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
           "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
+          "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_4_0": "{span.line}[Added ability for easy switching between  accounts within one wallet.]",
           "1_4_4": "{span.line} [Toegevoegde mogelijkheid voor back-up en herstel van accounts van de keystore-file]"
         },
@@ -2636,6 +2636,14 @@
       "createToken": "Token maken",
       "currentAccountName": "Huidige accountnaam",
       "dashboard": "Dashboard",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "0.003 DCC per gevulde order",
+      "decentralchainWallet": "DCC Wallet",
       "decentralized": "Gedecentraliseerde",
       "descExchange": "We werken aan een geweldig nieuw project, dat binnenkort klaar zal zijn. Hou het in de gaten!",
       "dexWithHardware": "Gebruik DEX met hardware wallets Ledger Nano S en Ledger Blue",
@@ -2662,15 +2670,15 @@
       "legal": "Legaal",
       "linux": "Linux",
       "linuxDescription": "Download de Linux-applicatie",
-      "logout": "Uitloggen",
       "logOut": "Uitloggen",
+      "logout": "Uitloggen",
       "low": "24 LAAG",
       "lowFixedFees": "Lage, vaste tarieven",
       "macOs": "MacOS",
       "macOsDescription": "Download MacOS-applicatie",
       "mailto": "support.decentralchain.io",
-      "mailtoVordex": "support@vordex.com",
       "mailtoDecentralChainExchange": "support@decentral.exchange",
+      "mailtoVordex": "support@vordex.com",
       "mainPage": "Hoofdpagina",
       "majorFiatCryptocurrencies": "Grote fiat en cryptocurrencies ondersteund: BTC, LTC, ETH, USD en anderen",
       "markets": "Markten",
@@ -2716,14 +2724,6 @@
       "twitter": "Twitter",
       "volume": "VOLUME",
       "wallet": "Wallet",
-      "decentralchainBlockchain": "DecentralChain Blockchain",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
-      "dccExplorer": "DecentralScan",
-      "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
-      "decentralchainLabs": "DecentralChain Labs",
-      "decentralchainOrderFilled": "0.003 DCC per gevulde order",
-      "decentralchainWallet": "DCC Wallet",
       "windows": "Windows",
       "windowsDescription": "Download Windows-applicatie"
     }

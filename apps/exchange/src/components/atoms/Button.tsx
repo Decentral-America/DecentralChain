@@ -44,28 +44,28 @@ export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
 const StyledButton = styled(MuiButton, {
   shouldForwardProp: (prop) => !['isLoading', 'leftIcon', 'rightIcon'].includes(prop as string),
 })<{ isLoading?: boolean }>(({ theme, isLoading }) => ({
-  position: 'relative',
-  pointerEvents: isLoading ? 'none' : 'auto',
-  '& .MuiButton-startIcon': {
-    marginRight: theme.spacing(1),
-  },
   '& .MuiButton-endIcon': {
     marginLeft: theme.spacing(1),
   },
+  '& .MuiButton-startIcon': {
+    marginRight: theme.spacing(1),
+  },
+  pointerEvents: isLoading ? 'none' : 'auto',
+  position: 'relative',
 }));
 
 const ButtonContent = styled('span')<{ isLoading?: boolean }>(({ isLoading }) => ({
-  display: 'inline-flex',
   alignItems: 'center',
+  display: 'inline-flex',
   opacity: isLoading ? 0 : 1,
 }));
 
 const LoadingSpinner = styled(CircularProgress)(({ theme: _theme }) => ({
-  position: 'absolute',
   left: '50%',
-  top: '50%',
   marginLeft: -10,
   marginTop: -10,
+  position: 'absolute',
+  top: '50%',
 }));
 
 /**
@@ -74,17 +74,17 @@ const LoadingSpinner = styled(CircularProgress)(({ theme: _theme }) => ({
 const getButtonProps = (variant?: string) => {
   switch (variant) {
     case 'primary':
-      return { variant: 'contained' as const, color: 'primary' as const };
+      return { color: 'primary' as const, variant: 'contained' as const };
     case 'secondary':
-      return { variant: 'outlined' as const, color: 'primary' as const };
+      return { color: 'primary' as const, variant: 'outlined' as const };
     case 'text':
-      return { variant: 'text' as const, color: 'primary' as const };
+      return { color: 'primary' as const, variant: 'text' as const };
     case 'danger':
-      return { variant: 'contained' as const, color: 'error' as const };
+      return { color: 'error' as const, variant: 'contained' as const };
     case 'success':
-      return { variant: 'contained' as const, color: 'success' as const };
+      return { color: 'success' as const, variant: 'contained' as const };
     default:
-      return { variant: 'contained' as const, color: 'primary' as const };
+      return { color: 'primary' as const, variant: 'contained' as const };
   }
 };
 

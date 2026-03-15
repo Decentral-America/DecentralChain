@@ -9,6 +9,6 @@ export function getLastPrice(pair: AssetPair) {
   }).then(({ lastPrice, lastSide }) => {
     const orderPrice = new OrderPrice(new BigNumber(lastPrice), pair).getTokens();
     const price = new Money(0, pair.priceAsset).cloneWithTokens(orderPrice);
-    return { price, lastSide };
+    return { lastSide, price };
   });
 }

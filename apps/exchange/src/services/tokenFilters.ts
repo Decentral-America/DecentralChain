@@ -69,8 +69,8 @@ class TokenFilterService {
 
       this.initialized = true;
       logger.debug('[TokenFilter] Initialized:', {
-        scamTokens: this.scamList.size,
         namedTokens: this.tokenNames.size,
+        scamTokens: this.scamList.size,
       });
     } catch (error) {
       logger.error('[TokenFilter] Initialization failed:', error);

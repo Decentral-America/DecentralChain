@@ -38,8 +38,8 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
         ref={ref}
         disabled={disabled}
         inputProps={{
-          'aria-invalid': !!error,
           'aria-describedby': error ? `${radioId}-error` : undefined,
+          'aria-invalid': !!error,
         }}
         {...props}
       />

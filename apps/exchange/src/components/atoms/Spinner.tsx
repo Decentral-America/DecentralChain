@@ -20,16 +20,16 @@ export interface SpinnerProps extends Omit<MuiCircularProgressProps, 'size' | 'c
 }
 
 const sizeMap = {
-  xs: 12,
-  sm: 16,
-  md: 32,
   lg: 48,
+  md: 32,
+  sm: 16,
   xl: 64,
+  xs: 12,
 };
 
 const SpinnerContainer = styled(Box)(({ theme }) => ({
-  display: 'inline-flex',
   alignItems: 'center',
+  display: 'inline-flex',
   gap: theme.spacing(1),
 }));
 

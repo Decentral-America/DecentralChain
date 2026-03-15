@@ -62,13 +62,13 @@ export const BackupSettings: React.FC = () => {
 
       const key = await crypto.subtle.deriveKey(
         {
+          hash: 'SHA-256',
+          iterations: 100000,
           name: 'PBKDF2',
           salt: encoder.encode('dcc-salt'), // Must match Angular
-          iterations: 100000,
-          hash: 'SHA-256',
         },
         keyMaterial,
-        { name: 'AES-GCM', length: 256 },
+        { length: 256, name: 'AES-GCM' },
         false,
         ['encrypt'],
       );
@@ -76,7 +76,7 @@ export const BackupSettings: React.FC = () => {
       // Encrypt data with AES-GCM
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const encrypted = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
+        { iv, name: 'AES-GCM' },
         key,
         encoder.encode(JSON.stringify(data)),
       );
@@ -144,14 +144,14 @@ export const BackupSettings: React.FC = () => {
       const checksum = await generateChecksum(JSON.stringify(dataToBackup));
 
       const backupData: WalletBackup = {
-        version: '3.0',
-        encrypted: true,
-        timestamp: Date.now(),
         data: {
           accounts,
-          settings,
           checksum,
+          settings,
         },
+        encrypted: true,
+        timestamp: Date.now(),
+        version: '3.0',
       };
 
       // Encrypt if password provided
@@ -197,7 +197,7 @@ export const BackupSettings: React.FC = () => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: 700 }}>
+      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
         Export Wallet Backup
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -225,14 +225,14 @@ export const BackupSettings: React.FC = () => {
 
       <Paper
         sx={{
-          p: 2.5,
-          mb: 3,
           background: (theme) =>
             theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
           border: (theme) => `1px solid ${theme.palette.divider}`,
+          mb: 3,
+          p: 2.5,
         }}
       >
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
           Accounts to be backed up:
         </Typography>
         {accounts.length > 0 ? (
@@ -245,7 +245,7 @@ export const BackupSettings: React.FC = () => {
                 <ListItemText
                   primary={account.name || 'Unnamed Account'}
                   secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 600 }}
+                  primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
                   secondaryTypographyProps={{ variant: 'caption' }}
                 />
               </ListItem>

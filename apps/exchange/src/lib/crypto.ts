@@ -26,13 +26,13 @@ export const deriveKey = async (password: string, salt: Uint8Array): Promise<Cry
 
   return crypto.subtle.deriveKey(
     {
+      hash: 'SHA-256',
+      iterations: PBKDF2_ITERATIONS,
       name: 'PBKDF2',
       salt: salt as BufferSource,
-      iterations: PBKDF2_ITERATIONS,
-      hash: 'SHA-256',
     },
     keyMaterial,
-    { name: 'AES-GCM', length: 256 },
+    { length: 256, name: 'AES-GCM' },
     false,
     ['encrypt', 'decrypt'],
   );
@@ -50,7 +50,7 @@ export const encryptString = async (plaintext: string, password: string): Promis
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const key = await deriveKey(password, salt);
 
-  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+  const encrypted = await crypto.subtle.encrypt({ iv, name: 'AES-GCM' }, key, data);
 
   // Combine: salt(16) + iv(12) + ciphertext+authTag
   const combined = new Uint8Array(SALT_LENGTH + IV_LENGTH + encrypted.byteLength);
@@ -75,7 +75,7 @@ export const decryptString = async (encryptedBase64: string, password: string): 
 
     const key = await deriveKey(password, salt);
 
-    const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    const decrypted = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
 
     return new TextDecoder().decode(decrypted);
   } catch {

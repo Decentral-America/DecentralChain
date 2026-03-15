@@ -144,8 +144,8 @@ export const AliasForm: React.FC = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<AliasFormData>({
-    resolver: zodResolver(aliasSchema),
     mode: 'onChange',
+    resolver: zodResolver(aliasSchema),
   });
 
   const aliasValue = watch('alias', '');

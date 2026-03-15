@@ -158,10 +158,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
         // Create and broadcast transaction
         const tx = await createTransferTransaction(
           {
-            recipient: finalRecipient,
             amount: parseFloat(amount),
             assetId: assetId === 'DCC' ? null : assetId,
             attachment,
+            recipient: finalRecipient,
           },
           user.seed,
         );
@@ -307,13 +307,13 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             <Box display="flex" alignItems="center" gap={1}>
               <Box
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #06B6D4 0%, #10B981 100%)',
-                  display: 'flex',
                   alignItems: 'center',
+                  background: 'linear-gradient(135deg, #06B6D4 0%, #10B981 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  height: 40,
                   justifyContent: 'center',
+                  width: 40,
                 }}
               >
                 <SendIcon sx={{ color: 'white', fontSize: 20 }} />
@@ -336,7 +336,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                 Transaction ID
               </Typography>
-              <Card sx={{ p: 2, bgcolor: 'grey.50' }}>
+              <Card sx={{ bgcolor: 'grey.50', p: 2 }}>
                 <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
                   {txId}
                 </Typography>
@@ -363,13 +363,13 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           <Box display="flex" alignItems="center" gap={1}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
-                display: 'flex',
                 alignItems: 'center',
+                background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                height: 40,
                 justifyContent: 'center',
+                width: 40,
               }}
             >
               <SendIcon sx={{ color: 'white', fontSize: 20 }} />
@@ -466,7 +466,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                 ),
               }}
             />
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
               Available: {parseFloat(availableBalance).toFixed(assetDecimals)} {assetName}
             </Typography>
           </Box>
@@ -485,11 +485,11 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           {/* Fee Display */}
           <Card
             sx={{
-              p: 2,
               background:
                 'linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
               border: '1px solid',
               borderColor: 'primary.light',
+              p: 2,
             }}
           >
             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -522,10 +522,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           disabled={!recipient || !amount || sendMutation.isPending}
           startIcon={<SendIcon />}
           sx={{
-            background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #4338CA 0%, #0891B2 100%)',
             },
+            background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
           }}
         >
           {sendMutation.isPending ? 'Sending...' : 'Send'}

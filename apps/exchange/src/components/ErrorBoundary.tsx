@@ -14,134 +14,134 @@ interface ErrorBoundaryState {
 
 // Inline styles to avoid theme dependency (ErrorBoundary must work before ThemeProvider)
 const errorContainerStyle: React.CSSProperties = {
-  minHeight: '100vh',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: '2rem',
   background: '#1a1a1a',
   color: '#ffffff',
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  padding: '2rem',
 };
 
 const errorCardStyle: React.CSSProperties = {
-  maxWidth: '600px',
-  width: '100%',
-  padding: '3rem',
   background: '#2a2a2a',
   border: '2px solid #3a3a3a',
   borderRadius: '16px',
   boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+  maxWidth: '600px',
+  padding: '3rem',
   textAlign: 'center',
+  width: '100%',
 };
 
 const errorIconStyle: React.CSSProperties = {
-  width: '80px',
-  height: '80px',
-  margin: '0 auto 2rem',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
   background: 'rgba(244, 67, 54, 0.2)',
   borderRadius: '50%',
+  display: 'flex',
   fontSize: '3rem',
+  height: '80px',
+  justifyContent: 'center',
+  margin: '0 auto 2rem',
+  width: '80px',
 };
 
 const errorTitleStyle: React.CSSProperties = {
-  margin: '0 0 1rem',
+  color: '#ffffff',
   fontSize: '1.75rem',
   fontWeight: 600,
-  color: '#ffffff',
+  margin: '0 0 1rem',
 };
 
 const errorMessageStyle: React.CSSProperties = {
-  margin: '0 0 2rem',
+  color: '#cccccc',
   fontSize: '1rem',
   lineHeight: 1.6,
-  color: '#cccccc',
+  margin: '0 0 2rem',
 };
 
 const errorDetailsStyle: React.CSSProperties = {
-  margin: '2rem 0',
-  padding: '1rem',
   background: '#1a1a1a',
   borderRadius: '8px',
-  textAlign: 'left',
   fontFamily: "'Monaco', 'Courier New', monospace",
   fontSize: '0.875rem',
+  margin: '2rem 0',
+  padding: '1rem',
+  textAlign: 'left',
 };
 
 const errorDetailsSummaryStyle: React.CSSProperties = {
+  color: '#cccccc',
   cursor: 'pointer',
   fontWeight: 500,
-  color: '#cccccc',
   marginBottom: '1rem',
 };
 
 const errorStackStyle: React.CSSProperties = {
-  margin: 0,
-  padding: '1rem',
   background: '#1a1a1a',
   border: '1px solid #3a3a3a',
   borderRadius: '4px',
-  overflowX: 'auto',
-  whiteSpace: 'pre-wrap',
-  wordWrap: 'break-word',
+  color: '#f44336',
   fontSize: '0.75rem',
   lineHeight: 1.5,
-  color: '#f44336',
+  margin: 0,
+  overflowX: 'auto',
+  padding: '1rem',
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
 };
 
 const buttonGroupStyle: React.CSSProperties = {
   display: 'flex',
+  flexWrap: 'wrap',
   gap: '1rem',
   justifyContent: 'center',
-  flexWrap: 'wrap',
 };
 
 const buttonPrimaryStyle: React.CSSProperties = {
-  padding: '0.75rem 2rem',
-  fontSize: '1rem',
-  fontWeight: 500,
+  background: '#2196F3',
   border: 'none',
   borderRadius: '8px',
-  cursor: 'pointer',
-  background: '#2196F3',
   color: '#ffffff',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  fontWeight: 500,
+  padding: '0.75rem 2rem',
   transition: 'all 0.2s',
 };
 
 const buttonSecondaryStyle: React.CSSProperties = {
-  padding: '0.75rem 2rem',
-  fontSize: '1rem',
-  fontWeight: 500,
+  background: '#2a2a2a',
   border: '2px solid #3a3a3a',
   borderRadius: '8px',
-  cursor: 'pointer',
-  background: '#2a2a2a',
   color: '#ffffff',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  fontWeight: 500,
+  padding: '0.75rem 2rem',
   transition: 'all 0.2s',
 };
 
 const helpTextStyle: React.CSSProperties = {
-  margin: '2rem 0 0',
-  fontSize: '0.875rem',
   color: '#999999',
+  fontSize: '0.875rem',
+  margin: '2rem 0 0',
 };
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
-      hasError: false,
       error: undefined,
       errorInfo: undefined,
+      hasError: false,
     };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
-      hasError: true,
       error,
+      hasError: true,
     };
   }
 
@@ -160,9 +160,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   handleReset = (): void => {
     this.setState({
-      hasError: false,
       error: undefined,
       errorInfo: undefined,
+      hasError: false,
     });
   };
 
@@ -189,7 +189,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </p>
 
             {this.state.error && (
-              <p style={{ ...errorMessageStyle, fontWeight: 500, color: 'inherit' }}>
+              <p style={{ ...errorMessageStyle, color: 'inherit', fontWeight: 500 }}>
                 {this.state.error.message}
               </p>
             )}

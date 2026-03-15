@@ -17,19 +17,19 @@ export interface AvatarProps extends Omit<MuiAvatarProps, 'variant'> {
 }
 
 const sizeMap = {
-  xs: 24,
-  sm: 32,
-  md: 48,
   lg: 64,
+  md: 48,
+  sm: 32,
   xl: 96,
+  xs: 24,
 };
 
 const fontSizeMap = {
-  xs: 10,
-  sm: 12,
-  md: 18,
   lg: 24,
+  md: 18,
+  sm: 12,
   xl: 36,
+  xs: 10,
 };
 
 const StyledAvatar = styled(MuiAvatar, {
@@ -39,13 +39,13 @@ const StyledAvatar = styled(MuiAvatar, {
   const fontSize = fontSizeMap[size as keyof typeof fontSizeMap] || fontSizeMap.md;
 
   return {
-    width: avatarSize,
-    height: avatarSize,
-    fontSize,
-    borderRadius: shape === 'square' ? theme.shape.borderRadius : '50%',
     backgroundColor: theme.palette.primary.main,
+    borderRadius: shape === 'square' ? theme.shape.borderRadius : '50%',
     color: 'white',
+    fontSize,
     fontWeight: theme.typography.fontWeightMedium,
+    height: avatarSize,
+    width: avatarSize,
   };
 });
 /**

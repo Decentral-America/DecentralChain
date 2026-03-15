@@ -13,8 +13,8 @@ let timer = null;
 let matcherAuthFailed = false; // Track if matcher authentication has failed
 
 export const factory = {
-  price: priceMoneyFactory,
   money: coinsMoneyFactory,
+  price: priceMoneyFactory,
 };
 
 export const remapOrder =
@@ -31,7 +31,7 @@ export const remapOrder =
     const progress = Number(filled.getTokens().div(amount.getTokens()).toFixed());
     const timestamp = new Date(order.timestamp);
     const isActive = order.status === 'Accepted' || order.status === 'PartiallyFilled';
-    return { ...order, amount, price, filled, assetPair, progress, timestamp, isActive, total };
+    return { ...order, amount, assetPair, filled, isActive, price, progress, timestamp, total };
   };
 
 export const matcherOrderRemap = remapOrder(factory);
@@ -39,9 +39,9 @@ export const matcherOrderRemap = remapOrder(factory);
 export function addSignature(signature: string, publicKey: string, timestamp: number): void {
   matcherAuthFailed = false; // Reset the failed flag when new signature is added
   addTimer({
-    timestamp: timestamp,
-    signature,
     publicKey,
+    signature,
+    timestamp: timestamp,
   });
 }
 
@@ -61,13 +61,13 @@ export const signatureTimeout: Signal<Record<string, never>> = new Signal();
 
 const fetch = <T>(url: string): Promise<T> => {
   return request<T>({
-    url: `${configGet('matcher')}/${url}`,
     fetchOptions: {
       headers: {
-        Timestamp: signatureData.timestamp,
         Signature: signatureData.signature,
+        Timestamp: signatureData.timestamp,
       },
     },
+    url: `${configGet('matcher')}/${url}`,
   }).catch((error) => {
     // Silently handle common matcher authentication errors
     // These are expected and don't need to be logged

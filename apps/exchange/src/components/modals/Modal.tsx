@@ -126,20 +126,20 @@ const Overlay = styled.div<{ zIndex: number; animationDuration: number }>`
 `;
 
 const sizeStyles = {
-  small: `
-    max-width: 400px;
-  `,
-  medium: `
-    max-width: 600px;
-  `,
-  large: `
-    max-width: 900px;
-  `,
   fullscreen: `
     max-width: 95vw;
     max-height: 95vh;
     width: 100%;
     height: 100%;
+  `,
+  large: `
+    max-width: 900px;
+  `,
+  medium: `
+    max-width: 600px;
+  `,
+  small: `
+    max-width: 400px;
   `,
 };
 

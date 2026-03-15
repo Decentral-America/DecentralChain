@@ -60,9 +60,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const muiTheme = useMemo(() => createAppTheme(theme), [theme]);
 
   const value: ThemeContextType = {
+    setTheme,
     theme,
     toggleTheme,
-    setTheme,
   };
 
   return (

@@ -10,12 +10,12 @@ interface LogoProps {
  */
 export default function Logo({ sx }: LogoProps) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
+    <Box sx={{ alignItems: 'center', display: 'flex', ...sx }}>
       <Typography
         variant="h6"
         sx={{
+          fontSize: { md: 24, xs: 20 },
           fontWeight: 700,
-          fontSize: { xs: 20, md: 24 },
           letterSpacing: '-0.5px',
         }}
       >

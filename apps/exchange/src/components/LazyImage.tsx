@@ -120,8 +120,8 @@ export const LazyImage: React.FC<LazyImageProps> = ({
         }
       },
       {
-        threshold,
         rootMargin,
+        threshold,
       },
     );
 
@@ -239,8 +239,8 @@ export const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
         }
       },
       {
-        threshold,
         rootMargin,
+        threshold,
       },
     );
 

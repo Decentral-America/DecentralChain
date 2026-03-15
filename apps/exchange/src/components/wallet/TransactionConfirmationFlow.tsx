@@ -271,7 +271,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Signing transaction...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Please wait while we sign your transaction
             </p>
           </StatusContainer>
@@ -282,7 +282,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Broadcasting to network...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Sending transaction to blockchain
             </p>
           </StatusContainer>
@@ -293,7 +293,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Waiting for confirmation...</StatusMessage>
-            <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
               Transaction ID: {transactionId?.slice(0, 16)}...
             </p>
           </StatusContainer>
@@ -305,15 +305,15 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
             <StatusContainer>
               <SuccessIcon>✓</SuccessIcon>
               <StatusMessage>Transaction Successful!</StatusMessage>
-              <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+              <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
                 Your transaction has been confirmed on the blockchain
               </p>
               {transactionId && (
                 <p
                   style={{
-                    fontSize: '12px',
                     color: '#999',
                     fontFamily: 'monospace',
+                    fontSize: '12px',
                     margin: '8px 0 0 0',
                   }}
                 >
@@ -335,15 +335,15 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
             <StatusContainer>
               <div
                 style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                  display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '32px',
+                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                  borderRadius: '50%',
                   color: '#EF4444',
+                  display: 'flex',
+                  fontSize: '32px',
+                  height: '64px',
+                  justifyContent: 'center',
+                  width: '64px',
                 }}
               >
                 ✕

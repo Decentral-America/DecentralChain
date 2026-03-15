@@ -189,7 +189,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
   const showToast = useCallback(
     (message: string, type: ToastType = 'info', duration: number = 5000) => {
       const id = `toast-${Date.now()}-${crypto.randomUUID()}`;
-      const toast: Toast = { id, message, type, duration };
+      const toast: Toast = { duration, id, message, type };
 
       setToasts((prev) => [...prev, toast]);
 
@@ -239,12 +239,12 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
   return (
     <ToastContext.Provider
       value={{
-        showToast,
-        showSuccess,
+        removeToast,
         showError,
         showInfo,
+        showSuccess,
+        showToast,
         showWarning,
-        removeToast,
       }}
     >
       {children}

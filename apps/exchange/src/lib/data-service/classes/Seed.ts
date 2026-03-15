@@ -43,8 +43,8 @@ export class Seed {
     this.phrase = phrase;
     const keyPairResult = buildKeyPair(phrase);
     this.keyPair = {
-      publicKey: keyPairResult.publicKey,
       privateKey: keyPairResult.privateKey,
+      publicKey: keyPairResult.publicKey,
     };
     this.address = buildAddress(this.keyPair.publicKey, networkByte);
   }

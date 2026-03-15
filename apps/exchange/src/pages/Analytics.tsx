@@ -71,36 +71,36 @@ export const Analytics = () => {
 
   const stats = [
     {
-      label: 'Total Portfolio Value',
-      value: isLoadingBalance ? <Skeleton width={100} /> : `${portfolioValue.toFixed(8)} DCC`,
       change: 'Available Balance',
       icon: <AccountBalanceWallet />,
+      label: 'Total Portfolio Value',
       trend: 'neutral' as const,
+      value: isLoadingBalance ? <Skeleton width={100} /> : `${portfolioValue.toFixed(8)} DCC`,
     },
     {
+      change: 'Generating Balance',
+      icon: <TrendingUp />,
       label: 'Total Profit/Loss',
+      trend: 'up' as const,
       value: isLoadingBalance ? (
         <Skeleton width={100} />
       ) : (
         `${((balances?.generating || 0) / 100000000).toFixed(8)} DCC`
       ),
-      change: 'Generating Balance',
-      icon: <TrendingUp />,
-      trend: 'up' as const,
     },
     {
-      label: 'Total Transactions',
-      value: isLoadingTransactions ? <Skeleton width={80} /> : transactionCount.toLocaleString(),
       change: `+${todayTransactionCount} today`,
       icon: <SwapHoriz />,
+      label: 'Total Transactions',
       trend: 'neutral' as const,
+      value: isLoadingTransactions ? <Skeleton width={80} /> : transactionCount.toLocaleString(),
     },
     {
-      label: '30-Day Activity',
-      value: isLoadingTransactions ? <Skeleton width={80} /> : performanceChange,
       change: 'Transaction Growth',
       icon: <Timeline />,
+      label: '30-Day Activity',
       trend: performanceChange.startsWith('+') ? ('up' as const) : ('down' as const),
+      value: isLoadingTransactions ? <Skeleton width={80} /> : performanceChange,
     },
   ];
 
@@ -114,7 +114,7 @@ export const Analytics = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
         Analytics
       </Typography>
       <Grid container spacing={3}>
@@ -122,30 +122,30 @@ export const Analytics = () => {
           <Grid
             key={stat.label}
             size={{
-              xs: 12,
-              sm: 6,
               md: 3,
+              sm: 6,
+              xs: 12,
             }}
           >
             <Paper
               sx={{
-                p: 2.5,
-                borderRadius: 2,
-                border: '1px solid #EEF2F7',
                 background: 'linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%)',
+                border: '1px solid #EEF2F7',
+                borderRadius: 2,
+                p: 2.5,
               }}
             >
               <Stack spacing={1.5}>
                 <Box
                   sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
-                    display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+                    borderRadius: 2,
                     color: '#fff',
+                    display: 'flex',
+                    height: 48,
+                    justifyContent: 'center',
+                    width: 48,
                   }}
                 >
                   {stat.icon}
@@ -166,7 +166,7 @@ export const Analytics = () => {
                         : 'text.secondary'
                   }
                   fontWeight={600}
-                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                  sx={{ alignItems: 'center', display: 'flex', gap: 0.5 }}
                 >
                   {stat.trend === 'up' && <TrendingUp fontSize="small" />}
                   {stat.trend === 'down' && <TrendingDown fontSize="small" />}
@@ -179,10 +179,10 @@ export const Analytics = () => {
       </Grid>
       <Paper
         sx={{
+          border: '1px solid #EEF2F7',
+          borderRadius: 2,
           mt: 3,
           p: 3,
-          borderRadius: 2,
-          border: '1px solid #EEF2F7',
         }}
       >
         <Typography variant="h6" fontWeight={700} gutterBottom>

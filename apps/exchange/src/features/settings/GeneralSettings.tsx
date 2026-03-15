@@ -10,6 +10,7 @@
  * - Current Block Height display (polls every 5s)
  */
 
+import * as ds from 'data-service';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -125,7 +126,6 @@ export const GeneralSettings = () => {
   useEffect(() => {
     const pollBlockHeight = async () => {
       try {
-        const ds = await import('data-service');
         const height = await ds.api.node.height();
         setBlockHeight(height);
       } catch (error) {

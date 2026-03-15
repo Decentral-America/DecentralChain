@@ -1,4 +1,43 @@
 {
+  "api": "https://data-service.decentralchain.io",
+  "apiVersion": "v0",
+  "assets": {
+    "BTC": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
+    "CRC": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
+    "DCC": "DCC",
+    "DGFTHR": "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
+  },
+  "code": "?",
+  "coinomat": "",
+  "explorer": "https://decentralscan.com",
+  "featuresConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/config.json",
+  "feeConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/fee.json",
+  "gateway": {
+    "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
+      "isThirdParty": false,
+      "regex": "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$",
+      "url": "https://btc.decentralchain.io"
+    }
+  },
+  "matcher": "https://mainnet-matcher.decentralchain.io/matcher",
+  "matcherPriorityList": [
+    { "id": "DCC", "ticker": "DCC" },
+    { "id": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "ticker": "CRC" },
+    { "id": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK", "ticker": "BTC" }
+  ],
+  "node": "https://mainnet-node.decentralchain.io",
+  "nodeList": "https://decentralscan.com/peers",
+  "oracles": {
+    "dcc": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
+    "tokenomica": ""
+  },
+  "origin": "https://decentral.exchange",
+  "privacyPolicy": "https://decentralchain.io/privacy-policy",
+  "scamListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/scam-v1.csv",
+  "support": "https://decentralchain.io/soporte",
+  "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
+  "tokenrating": "",
+  "tokensNameListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/Prominent%20token%20name%20list.csv",
   "tradingPairs": [
     ["DCC", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
     ["DCC", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
@@ -12,44 +51,5 @@
       "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
     ],
     ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"]
-  ],
-  "oracles": {
-    "dcc": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
-    "tokenomica": ""
-  },
-  "apiVersion": "v0",
-  "code": "?",
-  "node": "https://mainnet-node.decentralchain.io",
-  "matcher": "https://mainnet-matcher.decentralchain.io/matcher",
-  "api": "https://data-service.decentralchain.io",
-  "explorer": "https://decentralscan.com",
-  "coinomat": "",
-  "gateway": {
-    "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
-      "url": "https://btc.decentralchain.io",
-      "isThirdParty": false,
-      "regex": "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$"
-    }
-  },
-  "support": "https://decentralchain.io/soporte",
-  "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
-  "privacyPolicy": "https://decentralchain.io/privacy-policy",
-  "nodeList": "https://decentralscan.com/peers",
-  "tokensNameListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/Prominent%20token%20name%20list.csv",
-  "scamListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/scam-v1.csv",
-  "origin": "https://decentral.exchange",
-  "featuresConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/config.json",
-  "feeConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/fee.json",
-  "tokenrating": "",
-  "assets": {
-    "DCC": "DCC",
-    "CRC": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
-    "BTC": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK",
-    "DGFTHR": "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"
-  },
-  "matcherPriorityList": [
-    { "ticker": "DCC", "id": "DCC" },
-    { "ticker": "CRC", "id": "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo" },
-    { "ticker": "BTC", "id": "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK" }
   ]
 }

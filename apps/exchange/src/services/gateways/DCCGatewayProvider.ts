@@ -29,11 +29,11 @@ export class DCCGatewayProvider implements IGatewayService {
       // Call DCC Gateway tunnel API (matches Angular DCCGatewayService.getDepositAddress)
       const url = `${gatewayConfig.url}/tunnel/${userDCCAddress}`;
       const response = await fetch(url, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -45,10 +45,10 @@ export class DCCGatewayProvider implements IGatewayService {
       return {
         address: data.address,
         attachment: data.attachment,
-        minimumAmount: new BigNumber(data.minimumAmount || 0),
-        maximumAmount: new BigNumber(data.maximumAmount || Number.MAX_SAFE_INTEGER),
-        gatewayFee: new BigNumber(data.gatewayFee || 0),
         exchangeRate: data.exchangeRate ? new BigNumber(data.exchangeRate) : undefined,
+        gatewayFee: new BigNumber(data.gatewayFee || 0),
+        maximumAmount: new BigNumber(data.maximumAmount || Number.MAX_SAFE_INTEGER),
+        minimumAmount: new BigNumber(data.minimumAmount || 0),
       };
     } catch (error) {
       logger.error('[DCCGateway] getDepositDetails failed:', error);
@@ -82,9 +82,9 @@ export class DCCGatewayProvider implements IGatewayService {
     return {
       address: targetAddress,
       attachment: paymentId,
-      minimumAmount: new BigNumber(0.001), // Default minimum
-      maximumAmount: new BigNumber(1000000), // Default maximum
       gatewayFee: new BigNumber(0.001), // Default fee
+      maximumAmount: new BigNumber(1000000), // Default maximum
+      minimumAmount: new BigNumber(0.001), // Default minimum
     };
   }
 

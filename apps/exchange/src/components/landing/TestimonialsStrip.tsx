@@ -2,24 +2,24 @@ import { Avatar, Box, Container, Grid, Stack, Typography } from '@mui/material';
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
-    role: 'Crypto Trader',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    name: 'Sarah Johnson',
     quote:
       'The best decentralized exchange for managing my crypto portfolio with ease and security.',
+    role: 'Crypto Trader',
   },
   {
-    name: 'Michael Chen',
-    role: 'DeFi Enthusiast',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    name: 'Michael Chen',
     quote: 'Fast swaps, reliable trading, and incredibly user-friendly. Highly recommended!',
+    role: 'DeFi Enthusiast',
   },
   {
-    name: 'Emma Davis',
-    role: 'Business Owner',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+    name: 'Emma Davis',
     quote:
       'Decentral.Exchange has transformed how we handle crypto payments and treasury management.',
+    role: 'Business Owner',
   },
 ];
 
@@ -28,24 +28,24 @@ const testimonials = [
  */
 export default function TestimonialsStrip() {
   return (
-    <Box component="section" sx={{ py: { xs: 7, md: 7 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 7, xs: 7 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {testimonials.map((testimonial) => (
             <Grid
               key={testimonial.name}
               size={{
-                xs: 12,
                 md: 4,
+                xs: 12,
               }}
             >
               <Stack spacing={2} alignItems="center" textAlign="center">
                 <Avatar
                   src={testimonial.avatar}
                   sx={{
-                    width: 48,
-                    height: 48,
                     bgcolor: 'primary.main',
+                    height: 48,
+                    width: 48,
                   }}
                 >
                   {testimonial.name[0]}

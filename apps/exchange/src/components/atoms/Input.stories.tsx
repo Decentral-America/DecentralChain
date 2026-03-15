@@ -7,40 +7,40 @@ import { useState } from 'react';
 import { Input } from './Input';
 
 const meta = {
-  title: 'Atoms/Input',
-  component: Input,
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component: 'Flexible input component with label, error state, and various input types.',
-      },
-    },
-  },
-  tags: ['autodocs'],
   argTypes: {
-    label: {
-      control: 'text',
-      description: 'Input label text',
-    },
-    type: {
-      control: 'select',
-      options: ['text', 'email', 'password', 'number', 'search', 'tel', 'url'],
-      description: 'HTML input type',
-    },
-    placeholder: {
-      control: 'text',
-      description: 'Placeholder text',
+    disabled: {
+      control: 'boolean',
+      description: 'Disable input',
     },
     error: {
       control: 'text',
       description: 'Error message',
     },
-    disabled: {
-      control: 'boolean',
-      description: 'Disable input',
+    label: {
+      control: 'text',
+      description: 'Input label text',
+    },
+    placeholder: {
+      control: 'text',
+      description: 'Placeholder text',
+    },
+    type: {
+      control: 'select',
+      description: 'HTML input type',
+      options: ['text', 'email', 'password', 'number', 'search', 'tel', 'url'],
     },
   },
+  component: Input,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Flexible input component with label, error state, and various input types.',
+      },
+    },
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'Atoms/Input',
 } satisfies Meta<typeof Input>;
 
 export default meta;
@@ -49,56 +49,56 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: 'Email Address',
-    type: 'email',
     placeholder: 'Enter your email',
+    type: 'email',
   },
 };
 
 export const WithValue: Story = {
   args: {
     label: 'Username',
-    value: 'johndoe',
     placeholder: 'Enter username',
+    value: 'johndoe',
   },
 };
 
 export const WithError: Story = {
   args: {
-    label: 'Password',
-    type: 'password',
     error: 'Password must be at least 8 characters',
+    label: 'Password',
     placeholder: 'Enter password',
+    type: 'password',
   },
 };
 
 export const Disabled: Story = {
   args: {
+    disabled: true,
     label: 'Account ID',
     value: '1234567890',
-    disabled: true,
   },
 };
 
 export const NumberInput: Story = {
   args: {
     label: 'Amount',
-    type: 'number',
     placeholder: '0.00',
+    type: 'number',
   },
 };
 
 export const SearchInput: Story = {
   args: {
-    type: 'search',
     placeholder: 'Search transactions...',
+    type: 'search',
   },
 };
 
 export const PasswordInput: Story = {
   args: {
     label: 'Password',
-    type: 'password',
     placeholder: 'Enter your password',
+    type: 'password',
   },
 };
 
@@ -126,13 +126,12 @@ const InteractiveInput = () => {
         error={error}
         placeholder="Enter username (min 3 chars)"
       />
-      <p style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>Length: {value.length}</p>
+      <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>Length: {value.length}</p>
     </div>
   );
 };
 
 export const Interactive: Story = {
-  render: () => <InteractiveInput />,
   parameters: {
     docs: {
       description: {
@@ -140,9 +139,18 @@ export const Interactive: Story = {
       },
     },
   },
+  render: () => <InteractiveInput />,
 };
 
 export const AllTypes: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'All input types displayed together.',
+      },
+    },
+    layout: 'padded',
+  },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '400px' }}>
       <Input label="Text" type="text" placeholder="Text input" />
@@ -154,12 +162,4 @@ export const AllTypes: Story = {
       <Input label="URL" type="url" placeholder="https://example.com" />
     </div>
   ),
-  parameters: {
-    layout: 'padded',
-    docs: {
-      description: {
-        story: 'All input types displayed together.',
-      },
-    },
-  },
 };

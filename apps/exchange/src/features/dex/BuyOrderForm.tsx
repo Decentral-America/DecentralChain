@@ -322,20 +322,20 @@ export const BuyOrderForm: React.FC = () => {
     try {
       // Create order parameters for the matcher
       const orderData = {
-        orderType: 'limit' as const, // Use 'limit' for buy orders
         amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
-        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
-        matcherPublicKey: matcherSettings.matcherPublicKey,
-        matcherFee: matcherSettings.orderFee.dynamic.baseFee,
         assetPair: {
           amountAsset: selectedPair?.amountAsset || '',
           priceAsset: selectedPair?.priceAsset || '',
         },
-        timestamp: Date.now(),
         expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
-        senderPublicKey: user?.publicKey || '',
-        version: 3,
+        matcherFee: matcherSettings.orderFee.dynamic.baseFee,
+        matcherPublicKey: matcherSettings.matcherPublicKey,
+        orderType: 'limit' as const, // Use 'limit' for buy orders
+        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
         proofs: [], // Will be signed by user's wallet
+        senderPublicKey: user?.publicKey || '',
+        timestamp: Date.now(),
+        version: 3,
       };
 
       // Place order via matcher API
@@ -344,13 +344,13 @@ export const BuyOrderForm: React.FC = () => {
       // Success handling
       if (result?.id) {
         addUserOrder({
-          id: result.id,
-          type: 'buy',
-          price: price,
           amount: amount,
           filled: '0',
-          timestamp: Date.now(),
+          id: result.id,
+          price: price,
           status: 'pending',
+          timestamp: Date.now(),
+          type: 'buy',
         });
       }
 
@@ -367,8 +367,8 @@ export const BuyOrderForm: React.FC = () => {
 
   // Create a mutation-like object for consistency with the component's API
   const buyMutation = {
-    mutate: handleBuyOrder,
     isPending: placeOrderMutation.isPending,
+    mutate: handleBuyOrder,
   };
 
   /**

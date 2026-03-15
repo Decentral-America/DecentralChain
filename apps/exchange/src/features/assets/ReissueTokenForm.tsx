@@ -183,9 +183,9 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
   const form = useZodForm<AssetReissueFormData>(assetReissueSchema, {
     defaultValues: {
       assetId,
+      fee: undefined,
       quantity: 0,
       reissuable: asset?.reissuable ?? true,
-      fee: undefined,
     },
   });
 
@@ -206,9 +206,9 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
       // Prepare transaction parameters
       const reissueParams = {
         assetId: data.assetId,
+        fee: data.fee || 100000000, // Default 1 DCC fee
         quantity: quantityInWavelets,
         reissuable: data.reissuable,
-        fee: data.fee || 100000000, // Default 1 DCC fee
       };
 
       // Sign transaction

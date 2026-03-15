@@ -55,40 +55,40 @@ const TabContent = styled(Card as React.ComponentType<Record<string, unknown>>)`
 export const SettingsPage: React.FC = () => {
   const settingsTabs: Tab[] = [
     {
-      id: 'general',
-      label: 'General',
       content: (
         <TabContent elevation="md">
           <GeneralSettings />
         </TabContent>
       ),
+      id: 'general',
+      label: 'General',
     },
     {
-      id: 'security',
-      label: 'Security',
       content: (
         <TabContent elevation="md">
           <SecuritySettings />
         </TabContent>
       ),
+      id: 'security',
+      label: 'Security',
     },
     {
-      id: 'network',
-      label: 'Network',
       content: (
         <TabContent elevation="md">
           <NetworkSettings />
         </TabContent>
       ),
+      id: 'network',
+      label: 'Network',
     },
     {
-      id: 'info',
-      label: 'Info',
       content: (
         <TabContent elevation="md">
           <InfoSettings />
         </TabContent>
       ),
+      id: 'info',
+      label: 'Info',
     },
   ];
 

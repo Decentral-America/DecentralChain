@@ -22,8 +22,8 @@ import {
 import { parseTx } from './parse';
 
 const DEFAULT_GET_TRANSACTIONS_OPTIONS: IGetExchangeOptions = Object.assign(Object.create(null), {
-  limit: 5000,
   getAll: false,
+  limit: 5000,
 });
 
 export function list(address: string, limit = 100, after: string): Promise<Array<T_TX>> {

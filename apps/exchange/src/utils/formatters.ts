@@ -34,8 +34,8 @@ export const stringifyJSON = (
  */
 export const formatDcc = (value: number, decimals: number = 8): string => {
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
+    minimumFractionDigits: 0,
   }).format(value);
 };
 
@@ -47,8 +47,8 @@ export const formatDcc = (value: number, decimals: number = 8): string => {
  */
 export const formatAmount = (value: number, maximumFractionDigits: number = 8): string => {
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
     maximumFractionDigits,
+    minimumFractionDigits: 0,
   }).format(value);
 };
 

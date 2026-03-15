@@ -130,7 +130,7 @@ export const Header = () => {
           {user && (
             <>
               <UserButton onClick={handleMenuOpen}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                <Avatar sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}>
                   <PersonIcon sx={{ fontSize: 18 }} />
                 </Avatar>
                 <Stack spacing={0}>
@@ -148,19 +148,19 @@ export const Header = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 anchorOrigin={{
-                  vertical: 'bottom',
                   horizontal: 'right',
+                  vertical: 'bottom',
                 }}
                 transformOrigin={{
-                  vertical: 'top',
                   horizontal: 'right',
+                  vertical: 'top',
                 }}
                 PaperProps={{
-                  sx: { width: 280, mt: 1 },
+                  sx: { mt: 1, width: 280 },
                 }}
               >
                 {/* Address Info */}
-                <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 1.5 }}>
                   <Typography variant="caption" color="text.secondary">
                     Your Address
                   </Typography>

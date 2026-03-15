@@ -36,50 +36,50 @@ const bounce = keyframes`
 
 // Container
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: theme.spacing(3),
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)'
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 100%)',
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  padding: theme.spacing(3),
 }));
 
 // Update card
 const UpdateCard = styled(Paper)(({ theme }) => ({
-  maxWidth: 600,
-  padding: theme.spacing(5),
-  textAlign: 'center',
+  backdropFilter: 'blur(20px)',
   background:
     theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-  backdropFilter: 'blur(20px)',
-  borderRadius: theme.spacing(3),
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 12px 40px rgba(0, 0, 0, 0.5)'
       : '0 12px 40px rgba(0, 0, 0, 0.08)',
+  maxWidth: 600,
+  padding: theme.spacing(5),
+  textAlign: 'center',
 }));
 
 // Icon with bounce
 const IconBox = styled(Box)({
+  animation: `${bounce} 2s ease-in-out infinite`,
   fontSize: 64,
   marginBottom: 24,
-  animation: `${bounce} 2s ease-in-out infinite`,
 });
 
 // Release notes section
 const ReleaseNotesBox = styled(Box)(({ theme }) => ({
-  margin: theme.spacing(3, 0),
-  padding: theme.spacing(2.5),
   background: theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.05)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.2)' : 'rgba(31, 90, 246, 0.15)'}`,
   borderRadius: theme.spacing(2),
-  textAlign: 'left',
+  margin: theme.spacing(3, 0),
   maxHeight: 300,
   overflowY: 'auto',
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.2)' : 'rgba(31, 90, 246, 0.15)'}`,
+  padding: theme.spacing(2.5),
+  textAlign: 'left',
 }));
 
 // Props Interface
@@ -132,15 +132,15 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
         <Container maxWidth="sm">
           <UpdateCard elevation={0}>
             <IconBox>
-              <Update sx={{ fontSize: 'inherit', color: theme.palette.primary.main }} />
+              <Update sx={{ color: theme.palette.primary.main, fontSize: 'inherit' }} />
             </IconBox>
 
             <Typography
               variant="h3"
               sx={{
+                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 fontWeight: 800,
                 mb: 2,
-                background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -172,9 +172,9 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                 <Typography
                   variant="subtitle1"
                   sx={{
+                    color: theme.palette.primary.main,
                     fontWeight: 600,
                     mb: 1.5,
-                    color: theme.palette.primary.main,
                   }}
                 >
                   What&apos;s New:
@@ -185,16 +185,16 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                       <ListItemIcon sx={{ minWidth: 36 }}>
                         <CheckCircle
                           sx={{
-                            fontSize: 18,
                             color: theme.palette.success.main,
+                            fontSize: 18,
                           }}
                         />
                       </ListItemIcon>
                       <ListItemText
                         primary={feature}
                         primaryTypographyProps={{
-                          fontSize: '0.95rem',
                           color: theme.palette.text.secondary,
+                          fontSize: '0.95rem',
                         }}
                       />
                     </ListItem>
@@ -208,9 +208,9 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                 <Typography
                   variant="subtitle1"
                   sx={{
+                    color: theme.palette.primary.main,
                     fontWeight: 600,
                     mb: 1.5,
-                    color: theme.palette.primary.main,
                   }}
                 >
                   Release Notes:
@@ -218,10 +218,10 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                 <Typography
                   component="pre"
                   sx={{
+                    color: theme.palette.text.secondary,
                     fontFamily: '"Roboto Mono", monospace',
                     fontSize: '0.875rem',
                     lineHeight: 1.6,
-                    color: theme.palette.text.secondary,
                     margin: 0,
                     whiteSpace: 'pre-wrap',
                     wordWrap: 'break-word',
@@ -232,24 +232,24 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
               </ReleaseNotesBox>
             )}
 
-            <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 4 }}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={handleInstall}
                 startIcon={<Update />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-                  boxShadow: '0 4px 16px rgba(31, 90, 246, 0.3)',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #1a4ed0 0%, #4a71e6 100%)',
                     boxShadow: '0 6px 20px rgba(31, 90, 246, 0.4)',
                   },
+                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                  borderRadius: 2,
+                  boxShadow: '0 4px 16px rgba(31, 90, 246, 0.3)',
+                  fontWeight: 600,
+                  px: 4,
+                  py: 1.5,
+                  textTransform: 'none',
                 }}
               >
                 Install Update
@@ -260,19 +260,19 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
                 onClick={handleLater}
                 startIcon={<Schedule />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  borderWidth: 2,
                   '&:hover': {
-                    borderWidth: 2,
                     background:
                       theme.palette.mode === 'dark'
                         ? 'rgba(31, 90, 246, 0.1)'
                         : 'rgba(31, 90, 246, 0.05)',
+                    borderWidth: 2,
                   },
+                  borderRadius: 2,
+                  borderWidth: 2,
+                  fontWeight: 600,
+                  px: 4,
+                  py: 1.5,
+                  textTransform: 'none',
                 }}
               >
                 Later
@@ -282,9 +282,9 @@ export const DesktopUpdatePage: React.FC<DesktopUpdatePageProps> = ({
             <Typography
               variant="caption"
               sx={{
+                color: theme.palette.text.secondary,
                 display: 'block',
                 mt: 3,
-                color: theme.palette.text.secondary,
                 opacity: 0.8,
               }}
             >

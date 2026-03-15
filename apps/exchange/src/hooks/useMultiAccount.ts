@@ -126,17 +126,17 @@ export const useMultiAccount = () => {
   return {
     // State
     accounts,
-    currentAccount,
-    currentAccountAddress,
 
     // Actions
     addAccount,
-    removeAccount,
-    switchAccount,
-    updateAccount,
+    currentAccount,
+    currentAccountAddress,
+    getAccount,
 
     // Utilities
     hasAccount,
-    getAccount,
+    removeAccount,
+    switchAccount,
+    updateAccount,
   };
 };

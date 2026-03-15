@@ -57,105 +57,105 @@ import { walletRoutes } from './walletRoutes';
  */
 export const router = createBrowserRouter([
   {
-    element: <RootLayout />, // Wrap all routes with RootLayout for GlobalKeyboardShortcuts
     children: [
       {
-        path: '/',
         element: <LandingPage />, // New modern landing page
+        path: '/',
       },
       {
-        path: '/welcome',
         element: <Welcome />, // Keep old welcome page for reference
+        path: '/welcome',
       },
       {
+        element: <SignUp />,
         path: '/signup',
-        element: <SignUp />,
       },
       {
+        element: <SignUp />,
         path: '/create-account', // Alias for signup - used by landing page
-        element: <SignUp />,
       },
       {
+        element: <SignIn />,
         path: '/signin',
-        element: <SignIn />,
       },
       {
+        element: <SignIn />,
         path: '/sign-in', // Alias for signin - used by landing page
-        element: <SignIn />,
       },
       {
-        path: '/import-account',
         element: <ImportAccountPage />,
+        path: '/import-account',
       },
       {
-        path: '/save-seed',
         element: <SaveSeedPage />,
+        path: '/save-seed',
       },
       {
-        path: '/restore-backup',
         element: <RestoreFromBackupPage />,
+        path: '/restore-backup',
       },
       {
-        path: '/import/ledger',
         element: <ImportLedger />,
+        path: '/import/ledger',
       },
       {
-        path: '/desktop',
-        element: <ProtectedRoute />,
         children: [
           {
-            element: <MainLayout />,
             children: [
               {
-                index: true,
                 element: <Navigate to="/desktop/wallet" replace />,
+                index: true,
               },
               walletRoutes,
               dexRoutes,
               settingsRoutes,
               // Additional routes
               {
-                path: 'swap',
                 element: <Swap />,
+                path: 'swap',
               },
               {
-                path: 'bridge',
                 element: <Bridge />,
+                path: 'bridge',
               },
               {
-                path: 'markets',
                 element: <Markets />,
+                path: 'markets',
               },
               {
-                path: 'orderbook',
                 element: <OrderBook />,
+                path: 'orderbook',
               },
               {
-                path: 'analytics',
                 element: <Analytics />,
+                path: 'analytics',
               },
               {
-                path: 'messages',
                 element: <Messages />,
+                path: 'messages',
               },
               {
-                path: 'create-token',
                 element: <CreateToken />,
+                path: 'create-token',
               },
             ],
+            element: <MainLayout />,
           },
         ],
+        element: <ProtectedRoute />,
+        path: '/desktop',
       },
       {
+        element: <DexPairAdmin />,
         // Hidden admin route - only accessible via direct URL
         path: '/dccadmin',
-        element: <DexPairAdmin />,
       },
       {
+        element: <Navigate to="/" replace />,
         // Catch-all route for 404
         path: '*',
-        element: <Navigate to="/" replace />,
       },
     ],
+    element: <RootLayout />, // Wrap all routes with RootLayout for GlobalKeyboardShortcuts
   },
 ]);

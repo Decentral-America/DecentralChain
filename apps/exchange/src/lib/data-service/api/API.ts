@@ -23,21 +23,21 @@ import * as ratingModule from './rating/rating';
 import { getAssetsHashFromTx, parseExchangeOrder, parseTx } from './transactions/parse';
 import * as transactionsApi from './transactions/transactions';
 
-export const aliases = { getAliasesByAddress, getAddressByAlias, getAliasesByIdList };
+export const aliases = { getAddressByAlias, getAliasesByAddress, getAliasesByIdList };
 
 export const node = { height };
 
 export const matcher = {
-  getOrderBook,
-  getOrdersByPair,
   addSignature,
   clearSignature,
-  getOrders,
-  signatureTimeout,
   factory,
-  getLastPrice,
   getFeeRates,
+  getLastPrice,
+  getOrderBook,
+  getOrders,
+  getOrdersByPair,
   getSettings,
+  signatureTimeout,
 };
 
 export const matchers = matchersApi;
@@ -46,12 +46,12 @@ export const assets = { ...assetsApi };
 
 export const transactions = {
   ...transactionsApi,
-  parseTx,
-  parseExchangeOrder,
   getAssetsHashFromTx,
+  parseExchangeOrder,
+  parseTx,
 };
 
-export const utils = { ...utilsFunctions, request, assetStorage };
+export const utils = { ...utilsFunctions, assetStorage, request };
 
 export const pairs = {
   ...pairsModule,

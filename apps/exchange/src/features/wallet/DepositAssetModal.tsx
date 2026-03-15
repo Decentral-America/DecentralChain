@@ -37,9 +37,9 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
     gatewayService
       .getDepositDetails(
         {
+          displayName: assetName || assetId,
           id: assetId,
           name: assetName || assetId,
-          displayName: assetName || assetId,
           precision: 8,
         },
         user.address,

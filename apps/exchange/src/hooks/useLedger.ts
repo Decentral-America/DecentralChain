@@ -177,14 +177,14 @@ export const useLedger = (): UseLedgerReturn => {
   );
 
   return {
-    isConnected,
-    isLoading,
-    error,
-    users,
     connect,
     disconnect,
+    error,
     getUserList,
-    signTransaction,
+    isConnected,
     isInitialized,
+    isLoading,
+    signTransaction,
+    users,
   };
 };

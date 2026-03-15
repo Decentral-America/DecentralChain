@@ -83,10 +83,10 @@ export const useAdminTradingPairs = () => {
     );
 
   return {
-    pairs,
     featuredPairs,
-    isLoading,
     getPairById,
     getPairByTickers,
+    isLoading,
+    pairs,
   };
 };

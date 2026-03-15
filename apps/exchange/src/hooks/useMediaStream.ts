@@ -5,10 +5,10 @@ import { logger } from '@/lib/logger';
  * Standard video resolutions for media stream
  */
 export const RESOLUTIONS = {
-  FULL_HD: { width: 1920, height: 1080 },
-  HD: { width: 1280, height: 720 },
-  VGA: { width: 640, height: 480 },
-  QVGA: { width: 320, height: 240 },
+  FULL_HD: { height: 1080, width: 1920 },
+  HD: { height: 720, width: 1280 },
+  QVGA: { height: 240, width: 320 },
+  VGA: { height: 480, width: 640 },
 } as const;
 
 /**
@@ -173,8 +173,8 @@ const buildConstraints = (
 
   if (resolution) {
     constraints.video = {
-      width: { exact: resolution.width },
       height: { exact: resolution.height },
+      width: { exact: resolution.width },
     };
 
     // Check if browser supports facingMode
@@ -215,7 +215,7 @@ const getUserMediaWithFallback = async (
       return await navigator.mediaDevices.getUserMedia(constraints);
     } catch {
       // Try rotated resolution (width <-> height)
-      const rotated = { width: res.height, height: res.width };
+      const rotated = { height: res.width, width: res.height };
       const rotatedConstraints = buildConstraints(devices, rotated, preferBackCamera, audio);
       return await navigator.mediaDevices.getUserMedia(rotatedConstraints);
     }
@@ -333,8 +333,8 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
         const videoTrack = mediaStream.getVideoTracks()[0];
         const audioTrack = mediaStream.getAudioTracks()[0];
         logger.debug('[MediaStream] Stream started:', {
-          video: videoTrack ? videoTrack.getSettings() : 'none',
           audio: audioTrack ? audioTrack.label : 'none',
+          video: videoTrack ? videoTrack.getSettings() : 'none',
         });
       }
 
@@ -392,8 +392,8 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
           audio,
           video: {
             deviceId: { exact: deviceId },
-            width: { ideal: resolution.width },
             height: { ideal: resolution.height },
+            width: { ideal: resolution.width },
           },
         });
 
@@ -451,8 +451,8 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
 
     if (debug) {
       logger.debug('[MediaStream] Snapshot taken:', {
-        width: canvas.width,
         height: canvas.height,
+        width: canvas.width,
       });
     }
 
@@ -481,16 +481,16 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
   }, [stopStream]);
 
   return {
-    stream,
     error,
+    getDevices,
     isActive,
     isLoading,
     startStream,
     stopStream,
-    toggleStream,
-    getDevices,
+    stream,
     switchCamera,
     takeSnapshot,
+    toggleStream,
   };
 };
 
@@ -541,8 +541,8 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
       }
 
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
         audio,
+        video: true,
       });
 
       streamRef.current = mediaStream;
@@ -588,11 +588,11 @@ export const useScreenCapture = (options: { audio?: boolean; debug?: boolean } =
   }, [stopCapture]);
 
   return {
-    stream,
     error,
     isActive,
     startCapture,
     stopCapture,
+    stream,
   };
 };
 

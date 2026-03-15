@@ -121,16 +121,16 @@ const InfoBox = styled.div`
  */
 const themeOptions = [
   {
-    value: 'light' as const,
-    name: 'Light Theme',
     description: 'Bright and clean interface ideal for daytime use',
     icon: '☀️',
+    name: 'Light Theme',
+    value: 'light' as const,
   },
   {
-    value: 'dark' as const,
-    name: 'Dark Theme',
     description: 'Reduced eye strain and better battery life',
     icon: '🌙',
+    name: 'Dark Theme',
+    value: 'dark' as const,
   },
 ];
 

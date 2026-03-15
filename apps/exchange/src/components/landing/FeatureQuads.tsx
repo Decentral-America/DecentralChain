@@ -6,39 +6,39 @@ import { Avatar, Box, Card, CardContent, Container, Grid, Stack, Typography } fr
 
 const features = [
   {
-    title: 'Hardware Wallet Support',
     desc: 'Connect Ledger Nano devices for maximum security',
     icon: <SecurityIcon />,
+    title: 'Hardware Wallet Support',
   },
   {
-    title: 'Multi-Account',
     desc: 'Manage multiple wallets with one master password',
     icon: <SpeedIcon />,
+    title: 'Multi-Account',
   },
   {
-    title: 'Real-Time Trading',
     desc: 'Live order book and instant trade execution',
     icon: <AccountBalanceIcon />,
+    title: 'Real-Time Trading',
   },
   {
-    title: 'Asset Management',
     desc: 'Send, receive, and track all your DCC tokens',
     icon: <SupportAgentIcon />,
+    title: 'Asset Management',
   },
 ];
 
 export default function FeatureQuads() {
   return (
-    <Box component="section" sx={{ py: { xs: 3, md: 4 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 3 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           {features.map((feature) => (
             <Grid
               key={feature.title}
               size={{
-                xs: 12,
-                sm: 6,
                 md: 3,
+                sm: 6,
+                xs: 12,
               }}
             >
               <Card sx={{ bgcolor: '#FBFCFE', border: '1px solid #EEF2F7', boxShadow: 1 }}>
@@ -46,7 +46,7 @@ export default function FeatureQuads() {
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <Avatar
                       variant="rounded"
-                      sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}
+                      sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}
                     >
                       {feature.icon}
                     </Avatar>

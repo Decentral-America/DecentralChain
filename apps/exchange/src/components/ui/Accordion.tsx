@@ -20,10 +20,6 @@ import { FiChevronDown as FiChevronDownBase } from 'react-icons/fi';
 const FiChevronDown = FiChevronDownBase as React.ComponentType<Record<string, unknown>>;
 
 const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0,
-  },
   '&:before': {
     display: 'none',
   },
@@ -35,23 +31,16 @@ const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
   },
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  border: `1px solid ${theme.palette.divider}`,
 }));
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(2, 2.5),
-  minHeight: 56,
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  '&.Mui-expanded': {
-    backgroundColor: `${theme.palette.primary.main}10`,
-    color: theme.palette.primary.main,
-  },
   '& .MuiAccordionSummary-content': {
-    margin: 0,
     fontWeight: 600,
+    margin: 0,
   },
   '& .MuiAccordionSummary-expandIconWrapper': {
     color: theme.palette.primary.main,
@@ -62,12 +51,23 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(180deg)',
   },
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&.Mui-expanded': {
+    backgroundColor: `${theme.palette.primary.main}10`,
+    color: theme.palette.primary.main,
+  },
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  minHeight: 56,
+  padding: theme.spacing(2, 2.5),
 }));
 
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2, 2.5),
   color: theme.palette.text.primary,
   lineHeight: 1.6,
+  padding: theme.spacing(2, 2.5),
 }));
 
 // Interfaces

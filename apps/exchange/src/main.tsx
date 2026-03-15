@@ -35,10 +35,10 @@ tokenFilterService.initialize().catch((error) => {
 
 // Verify configuration system is working
 devLog('Configuration loaded:', {
+  apiUrl: config.apiUrl,
   environment: config.isDevelopment ? 'Development' : 'Production',
   network: config.network,
   nodeUrl: config.nodeUrl,
-  apiUrl: config.apiUrl,
 });
 
 /**

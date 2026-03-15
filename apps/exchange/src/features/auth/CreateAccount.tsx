@@ -265,10 +265,10 @@ export const CreateAccount = () => {
   // Matches Angular: User.getActiveState('wallet') lines 587-595
   useEffect(() => {
     logger.debug('[CreateAccount] Navigation useEffect triggered:', {
-      isAuthenticated,
       hasUser: !!user,
-      isLoading,
+      isAuthenticated,
       isCreating,
+      isLoading,
       willNavigate: isAuthenticated && user && !isLoading && !isCreating,
     });
 
@@ -358,9 +358,9 @@ export const CreateAccount = () => {
         setIsCreating(false); // Clear flag before navigation
         navigate('/auth/import', {
           state: {
-            name: 'My Account',
             hasBackup: true,
             hasSeedTransfer: true, // Signal that seed is in secure transfer
+            name: 'My Account',
           },
         });
       }
@@ -399,10 +399,10 @@ export const CreateAccount = () => {
               <LedgerInfoBox onClick={() => navigate('/import/ledger')}>
                 <LedgerIcon>🔐</LedgerIcon>
                 <div>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, margin: '0 0 4px 0' }}>
                     Use Ledger Hardware Wallet
                   </h3>
-                  <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.4', opacity: 0.9 }}>
+                  <p style={{ fontSize: '13px', lineHeight: '1.4', margin: 0, opacity: 0.9 }}>
                     For maximum security, use your Ledger Nano device instead of a seed phrase. Your
                     private keys never leave the device.
                   </p>
@@ -456,11 +456,11 @@ export const CreateAccount = () => {
               {error && (
                 <div
                   style={{
-                    padding: '12px',
                     background: '#f443361a',
                     border: '1px solid #f44336',
                     borderRadius: '8px',
                     color: '#f44336',
+                    padding: '12px',
                   }}
                 >
                   {error}

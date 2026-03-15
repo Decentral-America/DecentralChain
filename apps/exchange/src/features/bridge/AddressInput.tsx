@@ -137,7 +137,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ mt: 0.5, display: 'block', ml: 1.5 }}
+          sx={{ display: 'block', ml: 1.5, mt: 0.5 }}
         >
           Expected format: {formatHint}
         </Typography>

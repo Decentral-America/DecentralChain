@@ -163,13 +163,13 @@ export const useGateway = (): UseGatewayReturn => {
   }, []);
 
   return {
-    getDepositDetails,
-    getWithdrawDetails,
+    clearError,
+    error,
     getDepositAddress,
+    getDepositDetails,
     getRobinAddress,
+    getWithdrawDetails,
     hasSupportOf,
     loading,
-    error,
-    clearError,
   };
 };

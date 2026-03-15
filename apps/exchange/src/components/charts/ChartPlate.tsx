@@ -183,15 +183,15 @@ export const ChartPlate: React.FC<ChartPlateProps> = ({
 
       <Content>
         {loading && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: '#999' }}>Loading...</div>
+          <div style={{ color: '#999', padding: '40px 0', textAlign: 'center' }}>Loading...</div>
         )}
 
         {error && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: '#f44336' }}>{error}</div>
+          <div style={{ color: '#f44336', padding: '40px 0', textAlign: 'center' }}>{error}</div>
         )}
 
         {!loading && !error && isEmpty && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: '#999' }}>
+          <div style={{ color: '#999', padding: '40px 0', textAlign: 'center' }}>
             {emptyMessage}
           </div>
         )}

@@ -45,9 +45,9 @@ const Logo = () => (
     alt="Decentral Exchange"
     sx={{
       height: 28,
-      width: 'auto',
       maxWidth: '100%',
       ml: 1,
+      width: 'auto',
     }}
   />
 );
@@ -58,12 +58,12 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
     variant="caption"
     sx={{
       color: '#98A2B3',
+      display: 'block',
       fontWeight: 700,
       letterSpacing: 0.3,
-      textTransform: 'none',
       mb: 1.25,
       mt: 3,
-      display: 'block',
+      textTransform: 'none',
     }}
   >
     {children}
@@ -74,17 +74,17 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
 const DotBadge = ({ value }: { value: number }) => (
   <Box
     sx={{
-      ml: 1,
-      width: 24,
-      height: 24,
-      borderRadius: '50%',
+      alignItems: 'center',
       backgroundColor: '#16A34A',
+      borderRadius: '50%',
       color: '#fff',
       display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
       fontSize: 12,
       fontWeight: 700,
+      height: 24,
+      justifyContent: 'center',
+      ml: 1,
+      width: 24,
     }}
   >
     {value}
@@ -106,24 +106,24 @@ const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
       component={NavLink as unknown as React.ComponentType<Record<string, unknown>>}
       to={to}
       sx={{
+        borderRadius: 1.75,
         height: 48,
         px: 1.25,
-        borderRadius: 1.75,
         transition: 'background-color .15s ease, color .15s ease',
         ...(active
           ? {
-              background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,.25)',
               '&, & .MuiListItemIcon-root, & .MuiTypography-root': {
                 color: '#fff',
               },
+              background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,.25)',
             }
           : {
               '&:hover': { backgroundColor: '#F5F7FA' },
             }),
       }}
     >
-      <ListItemIcon sx={{ minWidth: 34, color: active ? '#fff' : '#374151' }}>{icon}</ListItemIcon>
+      <ListItemIcon sx={{ color: active ? '#fff' : '#374151', minWidth: 34 }}>{icon}</ListItemIcon>
       <ListItemText primary={label} primaryTypographyProps={{ fontSize: 16, fontWeight: 600 }} />
       {endAdornment}
     </ListItemButton>
@@ -157,9 +157,9 @@ interface WatchItemProps {
 
 const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps) => (
   <Stack direction="row" alignItems="center" spacing={1.5} sx={{ py: 1 }}>
-    <Avatar sx={{ width: 32, height: 32, bgcolor: iconBg }}>{icon}</Avatar>
+    <Avatar sx={{ bgcolor: iconBg, height: 32, width: 32 }}>{icon}</Avatar>
     <Box sx={{ flexGrow: 1 }}>
-      <Typography sx={{ fontSize: 15, fontWeight: 600, color: 'text.primary' }}>
+      <Typography sx={{ color: 'text.primary', fontSize: 15, fontWeight: 600 }}>
         {name}(
         <Box component="span" sx={{ color: 'text.secondary' }}>
           {ticker}
@@ -167,14 +167,14 @@ const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps
         )
       </Typography>
       <Stack direction="row" spacing={1} alignItems="center">
-        <Typography sx={{ fontWeight: 700, fontSize: 14 }}>${price}</Typography>
+        <Typography sx={{ fontSize: 14, fontWeight: 700 }}>${price}</Typography>
         <Box
           sx={{
             bgcolor: 'rgba(124,58,237,0.12)',
+            borderRadius: 1,
             color: '#7C3AED',
             px: 0.75,
             py: 0.25,
-            borderRadius: 1,
           }}
         >
           <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1 }}>
@@ -188,9 +188,9 @@ const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps
 
 // Profile row
 const ProfileRow = () => (
-  <Box sx={{ mt: 2.5, mb: 1 }}>
+  <Box sx={{ mb: 1, mt: 2.5 }}>
     <Stack direction="row" alignItems="center" spacing={1.25}>
-      <Avatar sx={{ width: 36, height: 36, bgcolor: '#16A34A' }}>U</Avatar>
+      <Avatar sx={{ bgcolor: '#16A34A', height: 36, width: 36 }}>U</Avatar>
       <Box sx={{ flexGrow: 1 }}>
         <Typography sx={{ fontSize: 14, fontWeight: 700 }}>DCC User</Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -204,34 +204,34 @@ const ProfileRow = () => (
 
 // Upgrade Pro card
 const UpgradeProCard = () => (
-  <Box sx={{ position: 'sticky', bottom: 16, pt: 2 }}>
+  <Box sx={{ bottom: 16, position: 'sticky', pt: 2 }}>
     <Stack
       direction="row"
       alignItems="center"
       spacing={1.5}
       sx={{
-        p: 1.5,
-        borderRadius: 2,
         background: 'linear-gradient(180deg, #424A57 0%, #1F2630 100%)',
-        color: '#fff',
+        borderRadius: 2,
         boxShadow: '0 8px 20px rgba(2,6,23,.25), inset 0 1px 0 rgba(255,255,255,.16)',
+        color: '#fff',
+        p: 1.5,
       }}
     >
       <Box
         sx={{
-          width: 40,
-          height: 40,
-          borderRadius: 2,
           background: 'rgba(255,255,255,.08)',
+          borderRadius: 2,
           display: 'grid',
-          placeItems: 'center',
           fontSize: '20px',
+          height: 40,
+          placeItems: 'center',
+          width: 40,
         }}
       >
         👑
       </Box>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography sx={{ fontWeight: 800, fontSize: 14, lineHeight: 1.2 }}>
+        <Typography sx={{ fontSize: 14, fontWeight: 800, lineHeight: 1.2 }}>
           Upgrade Pro!
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.9 }}>
@@ -255,12 +255,12 @@ export const Sidebar = () => {
       variant="permanent"
       PaperProps={{
         sx: {
-          width: 300,
-          boxSizing: 'border-box',
-          p: 2.5,
-          borderRight: '1px solid #EEF2F7',
           backgroundColor: '#fff',
+          borderRight: '1px solid #EEF2F7',
+          boxSizing: 'border-box',
           overflow: 'auto',
+          p: 2.5,
+          width: 300,
         },
       }}
     >
@@ -300,7 +300,7 @@ export const Sidebar = () => {
         />
       </List>
 
-      <Divider sx={{ my: 2.5, borderColor: '#EEF2F7' }} />
+      <Divider sx={{ borderColor: '#EEF2F7', my: 2.5 }} />
 
       <SectionLabel>Trading</SectionLabel>
       <List dense disablePadding>
@@ -324,7 +324,7 @@ export const Sidebar = () => {
         />
       </List>
 
-      <Divider sx={{ my: 2.5, borderColor: '#EEF2F7' }} />
+      <Divider sx={{ borderColor: '#EEF2F7', my: 2.5 }} />
 
       <SectionLabel>Tools</SectionLabel>
       <List dense disablePadding>
@@ -342,7 +342,7 @@ export const Sidebar = () => {
         />
       </List>
 
-      <Divider sx={{ my: 2.5, borderColor: '#EEF2F7' }} />
+      <Divider sx={{ borderColor: '#EEF2F7', my: 2.5 }} />
 
       <WatchlistHeader />
       <WatchItem

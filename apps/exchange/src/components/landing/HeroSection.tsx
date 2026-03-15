@@ -12,14 +12,14 @@ export default function HeroSection() {
     <Box
       component="section"
       sx={{
-        position: 'relative',
-        overflow: 'hidden',
-        pt: { xs: 14, md: 18 },
-        pb: { xs: 10, md: 11 },
-        color: '#fff',
-        minHeight: { xs: '85vh', md: '90vh' },
-        display: 'flex',
         alignItems: 'center',
+        color: '#fff',
+        display: 'flex',
+        minHeight: { md: '90vh', xs: '85vh' },
+        overflow: 'hidden',
+        pb: { md: 11, xs: 10 },
+        position: 'relative',
+        pt: { md: 18, xs: 14 },
       }}
     >
       {/* Hero Gradient Background */}
@@ -29,17 +29,17 @@ export default function HeroSection() {
           {/* Left Column - Text Content */}
           <Grid
             size={{
-              xs: 12,
               md: 6,
+              xs: 12,
             }}
           >
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: 40, sm: 48, md: 56 },
-                lineHeight: 1.12,
+                fontSize: { md: 56, sm: 48, xs: 40 },
                 fontWeight: 700,
                 letterSpacing: '-0.5px',
+                lineHeight: 1.12,
                 mb: 3,
               }}
             >
@@ -49,11 +49,11 @@ export default function HeroSection() {
 
             <Typography
               sx={{
-                mt: 3,
-                maxWidth: 420,
-                opacity: 0.95,
-                fontSize: { xs: 16, md: 18 },
+                fontSize: { md: 18, xs: 16 },
                 lineHeight: 1.6,
+                maxWidth: 420,
+                mt: 3,
+                opacity: 0.95,
               }}
             >
               Secure non-custodial wallet with integrated DEX trading, staking, leasing, and
@@ -62,21 +62,21 @@ export default function HeroSection() {
             </Typography>
 
             {/* CTA Buttons */}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 4 }}>
+            <Stack direction={{ sm: 'row', xs: 'column' }} spacing={2} sx={{ mt: 4 }}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={() => navigate('/create-account')}
                 sx={{
-                  borderRadius: 999,
-                  px: 3,
-                  py: 1.5,
-                  bgcolor: 'primary.main',
-                  fontSize: 16,
-                  fontWeight: 500,
                   '&:hover': {
                     bgcolor: 'primary.dark',
                   },
+                  bgcolor: 'primary.main',
+                  borderRadius: 999,
+                  fontSize: 16,
+                  fontWeight: 500,
+                  px: 3,
+                  py: 1.5,
                 }}
               >
                 Start Trading Now
@@ -88,17 +88,17 @@ export default function HeroSection() {
                 size="large"
                 onClick={() => navigate('/create-account')}
                 sx={{
-                  borderRadius: 999,
-                  px: 3,
-                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: '#fff',
+                  },
                   borderColor: 'rgba(255, 255, 255, 0.4)',
+                  borderRadius: 999,
                   color: '#fff',
                   fontSize: 16,
                   fontWeight: 500,
-                  '&:hover': {
-                    borderColor: '#fff',
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                  },
+                  px: 3,
+                  py: 1.5,
                 }}
               >
                 Create Wallet
@@ -111,11 +111,11 @@ export default function HeroSection() {
                 color="inherit"
                 onClick={() => navigate('/sign-in')}
                 sx={{
-                  opacity: 0.85,
                   '&:hover': {
-                    opacity: 1,
                     bgcolor: 'rgba(255, 255, 255, 0.1)',
+                    opacity: 1,
                   },
+                  opacity: 0.85,
                 }}
               >
                 Already have a wallet? Sign in →
@@ -126,41 +126,41 @@ export default function HeroSection() {
           {/* Right Column - Mockup Visuals */}
           <Grid
             size={{
-              xs: 12,
               md: 6,
+              xs: 12,
             }}
           >
             <Box
               sx={{
+                display: { sm: 'block', xs: 'none' },
+                height: { md: 520, sm: 420, xs: 360 },
                 position: 'relative',
-                height: { xs: 360, sm: 420, md: 520 },
-                display: { xs: 'none', sm: 'block' },
               }}
             >
               {/* Dashboard Mockup (background) */}
               <Box
                 sx={{
-                  position: 'absolute',
-                  right: { xs: -20, md: 0 },
-                  top: { xs: 40, md: 20 },
-                  width: { xs: '90%', md: '100%' },
-                  maxWidth: 520,
-                  height: { xs: 280, md: 360 },
-                  borderRadius: 3,
-                  bgcolor: 'rgba(255, 255, 255, 0.05)',
                   backdropFilter: 'blur(12px)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: 3,
                   boxShadow: '0 30px 80px rgba(0,0,0,.25)',
+                  height: { md: 360, xs: 280 },
+                  maxWidth: 520,
                   p: 2,
+                  position: 'absolute',
+                  right: { md: 0, xs: -20 },
+                  top: { md: 20, xs: 40 },
+                  width: { md: '100%', xs: '90%' },
                 }}
               >
                 <Box
                   sx={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: 2,
                     bgcolor: 'rgba(255, 255, 255, 0.03)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 2,
+                    height: '100%',
+                    width: '100%',
                   }}
                 />
               </Box>
@@ -168,25 +168,25 @@ export default function HeroSection() {
               {/* Phone Mockup (foreground) */}
               <Box
                 sx={{
-                  position: 'absolute',
-                  left: { xs: 10, md: 40 },
-                  top: { xs: -10, md: -20 },
-                  width: { xs: 140, md: 200 },
-                  height: { xs: 280, md: 400 },
-                  borderRadius: 4,
-                  bgcolor: 'rgba(255, 255, 255, 0.08)',
                   backdropFilter: 'blur(12px)',
+                  bgcolor: 'rgba(255, 255, 255, 0.08)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: 4,
                   boxShadow: '0 20px 60px rgba(0,0,0,.30)',
+                  height: { md: 400, xs: 280 },
+                  left: { md: 40, xs: 10 },
                   p: 1.5,
+                  position: 'absolute',
+                  top: { md: -20, xs: -10 },
+                  width: { md: 200, xs: 140 },
                 }}
               >
                 <Box
                   sx={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: 3,
                     bgcolor: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: 3,
+                    height: '100%',
+                    width: '100%',
                   }}
                 />
               </Box>

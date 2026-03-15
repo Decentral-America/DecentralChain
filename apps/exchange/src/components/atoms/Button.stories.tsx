@@ -6,33 +6,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { Button } from './Button';
 
 const meta = {
-  title: 'Atoms/Button',
-  component: Button,
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component:
-          'Versatile button component with multiple variants, sizes, and states. Supports loading states, icons, and full-width layouts.',
-      },
-    },
-  },
-  tags: ['autodocs'],
   argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'text', 'danger', 'success'],
-      description: 'Visual style variant',
-    },
-    size: {
-      control: 'select',
-      options: ['small', 'medium', 'large'],
-      description: 'Button size',
-    },
-    isLoading: {
-      control: 'boolean',
-      description: 'Show loading spinner',
-    },
     disabled: {
       control: 'boolean',
       description: 'Disable button interaction',
@@ -41,8 +15,34 @@ const meta = {
       control: 'boolean',
       description: 'Make button full width',
     },
+    isLoading: {
+      control: 'boolean',
+      description: 'Show loading spinner',
+    },
     onClick: { action: 'clicked' },
+    size: {
+      control: 'select',
+      description: 'Button size',
+      options: ['small', 'medium', 'large'],
+    },
+    variant: {
+      control: 'select',
+      description: 'Visual style variant',
+      options: ['primary', 'secondary', 'text', 'danger', 'success'],
+    },
   },
+  component: Button,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Versatile button component with multiple variants, sizes, and states. Supports loading states, icons, and full-width layouts.',
+      },
+    },
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  title: 'Atoms/Button',
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -140,6 +140,13 @@ export const WithIcon: Story = {
 };
 
 export const AllVariants: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'All button variants displayed together for comparison.',
+      },
+    },
+  },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
       <Button variant="primary">Primary</Button>
@@ -149,25 +156,9 @@ export const AllVariants: Story = {
       <Button variant="danger">Danger</Button>
     </div>
   ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'All button variants displayed together for comparison.',
-      },
-    },
-  },
 };
 
 export const AllSizes: Story = {
-  render: () => (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'flex-start' }}
-    >
-      <Button size="small">Small</Button>
-      <Button size="medium">Medium</Button>
-      <Button size="large">Large</Button>
-    </div>
-  ),
   parameters: {
     docs: {
       description: {
@@ -175,16 +166,18 @@ export const AllSizes: Story = {
       },
     },
   },
+  render: () => (
+    <div
+      style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '16px' }}
+    >
+      <Button size="small">Small</Button>
+      <Button size="medium">Medium</Button>
+      <Button size="large">Large</Button>
+    </div>
+  ),
 };
 
 export const AllStates: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
-      <Button>Normal</Button>
-      <Button isLoading>Loading</Button>
-      <Button disabled>Disabled</Button>
-    </div>
-  ),
   parameters: {
     docs: {
       description: {
@@ -192,4 +185,11 @@ export const AllStates: Story = {
       },
     },
   },
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
+      <Button>Normal</Button>
+      <Button isLoading>Loading</Button>
+      <Button disabled>Disabled</Button>
+    </div>
+  ),
 };

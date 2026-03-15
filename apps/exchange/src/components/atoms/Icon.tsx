@@ -25,17 +25,17 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
 const IconWrapper = styled('span', {
   shouldForwardProp: (prop) => !['size', 'color'].includes(prop as string),
 })<{ size: string; color?: string | undefined }>(({ size, color }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: size,
-  color: color || 'currentColor',
-  lineHeight: 1,
-  flexShrink: 0,
   '& svg': {
-    width: '1em',
     height: '1em',
+    width: '1em',
   },
+  alignItems: 'center',
+  color: color || 'currentColor',
+  display: 'inline-flex',
+  flexShrink: 0,
+  fontSize: size,
+  justifyContent: 'center',
+  lineHeight: 1,
 }));
 
 const getIconLibrary = (library: 'md' | 'fa' | 'fi') => {
@@ -75,28 +75,28 @@ Icon.displayName = 'Icon';
 
 // Common icon name exports for convenience
 export const CommonIcons = {
-  // Navigation
-  Home: 'MdHome' as MaterialIcons,
-  Menu: 'MdMenu' as MaterialIcons,
-  Close: 'MdClose' as MaterialIcons,
-  ArrowBack: 'MdArrowBack' as MaterialIcons,
-  ArrowForward: 'MdArrowForward' as MaterialIcons,
-  // Actions
-  Add: 'MdAdd' as MaterialIcons,
-  Remove: 'MdRemove' as MaterialIcons,
-  Edit: 'MdEdit' as MaterialIcons,
-  Delete: 'MdDelete' as MaterialIcons,
-  Save: 'MdSave' as MaterialIcons,
-  Search: 'MdSearch' as MaterialIcons,
-  // Status
-  Check: 'MdCheck' as MaterialIcons,
-  Error: 'MdError' as MaterialIcons,
-  Warning: 'MdWarning' as MaterialIcons,
-  Info: 'MdInfo' as MaterialIcons,
-  // User
-  Person: 'MdPerson' as MaterialIcons,
-  Settings: 'MdSettings' as MaterialIcons,
   // Wallet
   AccountBalanceWallet: 'MdAccountBalanceWallet' as MaterialIcons,
+  // Actions
+  Add: 'MdAdd' as MaterialIcons,
+  ArrowBack: 'MdArrowBack' as MaterialIcons,
+  ArrowForward: 'MdArrowForward' as MaterialIcons,
+  // Status
+  Check: 'MdCheck' as MaterialIcons,
+  Close: 'MdClose' as MaterialIcons,
+  Delete: 'MdDelete' as MaterialIcons,
+  Edit: 'MdEdit' as MaterialIcons,
+  Error: 'MdError' as MaterialIcons,
+  // Navigation
+  Home: 'MdHome' as MaterialIcons,
+  Info: 'MdInfo' as MaterialIcons,
+  Menu: 'MdMenu' as MaterialIcons,
+  // User
+  Person: 'MdPerson' as MaterialIcons,
+  Remove: 'MdRemove' as MaterialIcons,
+  Save: 'MdSave' as MaterialIcons,
+  Search: 'MdSearch' as MaterialIcons,
   Send: 'MdSend' as MaterialIcons,
+  Settings: 'MdSettings' as MaterialIcons,
+  Warning: 'MdWarning' as MaterialIcons,
 };

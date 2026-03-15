@@ -11,12 +11,12 @@
  * HTML Entity Map for escaping dangerous characters
  */
 const HTML_ENTITIES: Record<string, string> = {
+  "'": '&#x27;',
+  '"': '&quot;',
+  '/': '&#x2F;',
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#x27;',
-  '/': '&#x2F;',
 };
 
 /**
@@ -310,18 +310,18 @@ export const sanitizeTransactionAmount = (amount: string): string | null => {
 };
 
 export const sanitize = {
-  text: sanitizeText,
-  html: sanitizeHtml,
-  url: sanitizeUrl,
-  filename: sanitizeFilename,
-  email: sanitizeEmail,
-  number: sanitizeNumber,
-  integer: sanitizeInteger,
-  boolean: sanitizeBoolean,
   address: sanitizeAddress,
   assetId: sanitizeAssetId,
+  boolean: sanitizeBoolean,
+  email: sanitizeEmail,
+  filename: sanitizeFilename,
+  html: sanitizeHtml,
+  integer: sanitizeInteger,
+  number: sanitizeNumber,
   searchQuery: sanitizeSearchQuery,
+  text: sanitizeText,
   transactionAmount: sanitizeTransactionAmount,
+  url: sanitizeUrl,
 };
 
 /**

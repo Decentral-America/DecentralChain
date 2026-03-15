@@ -73,11 +73,11 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
 
         // Build transfer transaction parameters
         const transferParams = {
-          recipient: params.gatewayAddress,
-          assetId: params.assetId === 'DCC' ? null : params.assetId, // null for DCC
           amount: params.amount.toFixed(), // Convert BigNumber to string
+          assetId: params.assetId === 'DCC' ? null : params.assetId, // null for DCC
           attachment: attachmentBase64,
           fee: 100000, // 0.001 DCC in satoshis
+          recipient: params.gatewayAddress,
           timestamp: Date.now(),
         };
 
@@ -110,10 +110,10 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
   }, []);
 
   return {
-    withdraw,
-    loading,
-    error,
-    txId,
     clearError,
+    error,
+    loading,
+    txId,
+    withdraw,
   };
 };

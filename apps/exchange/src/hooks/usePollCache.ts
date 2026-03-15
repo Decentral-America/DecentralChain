@@ -166,13 +166,13 @@ export const usePollCache = <T>(
    * React Query integration for cached polling
    */
   const { data, isLoading, isFetching, error, isStale, refetch } = useQuery<T, Error>({
-    queryKey,
-    queryFn: fetchFn,
-    refetchInterval: enabled ? interval : false,
-    gcTime: cacheTime,
-    staleTime,
     enabled,
+    gcTime: cacheTime,
+    queryFn: fetchFn,
+    queryKey,
+    refetchInterval: enabled ? interval : false,
     refetchOnWindowFocus,
+    staleTime,
     ...(keepPreviousData && {
       placeholderData: ((previousData: T | undefined) => previousData) as never,
     }),
@@ -232,21 +232,21 @@ export const usePollCache = <T>(
   useCallback(() => {
     if (process.env.NODE_ENV === 'development') {
       logger.debug('[usePollCache]', {
-        key: queryKey,
-        isStale,
-        isFetching,
         hasData: !!data,
+        isFetching,
+        isStale,
+        key: queryKey,
       });
     }
   }, [queryKey, isStale, isFetching, data]);
 
   return {
     data,
-    isLoading,
-    isFetching,
     error: error as Error | null,
-    isStale,
     invalidate,
+    isFetching,
+    isLoading,
+    isStale,
     refetch: manualRefetch,
     remove,
     setData,
@@ -297,10 +297,10 @@ export const usePollCacheAggressive = <T>(
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
-    interval: 60000, // 1 minute
-    staleTime: 30000, // 30 seconds
     cacheTime: 600000, // 10 minutes
+    interval: 60000, // 1 minute
     refetchOnWindowFocus: false,
+    staleTime: 30000, // 30 seconds
   });
 };
 
@@ -315,9 +315,9 @@ export const usePollCacheRealtime = <T>(
 ): UsePollCacheReturn<T> => {
   return usePollCache(key, fetchFn, {
     ...options,
-    interval: 5000, // 5 seconds
-    staleTime: 2000, // 2 seconds
     cacheTime: 30000, // 30 seconds
+    interval: 5000, // 5 seconds
     refetchOnWindowFocus: true,
+    staleTime: 2000, // 2 seconds
   });
 };

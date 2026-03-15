@@ -32,8 +32,8 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
   constructor(props: RechartsWrapperProps) {
     super(props);
     this.state = {
-      hasError: false,
       errorCount: 0,
+      hasError: false,
     };
   }
 
@@ -49,8 +49,8 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (error.message.includes('Maximum update depth exceeded')) {
       logger.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
-        error: error.message,
         componentStack: errorInfo.componentStack,
+        error: error.message,
       });
 
       // Increment error count
@@ -66,7 +66,7 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
   override componentDidUpdate(prevProps: RechartsWrapperProps) {
     // Reset error state when data changes (via dataKey prop)
     if (prevProps.dataKey !== this.props.dataKey && this.state.hasError) {
-      this.setState({ hasError: false, errorCount: 0 });
+      this.setState({ errorCount: 0, hasError: false });
     }
   }
 
@@ -82,10 +82,10 @@ export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWra
       return (
         <div
           style={{
-            minHeight: '300px',
-            display: 'flex',
             alignItems: 'center',
+            display: 'flex',
             justifyContent: 'center',
+            minHeight: '300px',
           }}
         >
           Refreshing chart...

@@ -138,10 +138,10 @@ type DataTransactionFormData = z.infer<typeof dataTransactionSchema>;
  * Data type options
  */
 const dataTypeOptions: SelectOption[] = [
-  { value: 'string', label: 'String' },
-  { value: 'integer', label: 'Integer' },
-  { value: 'boolean', label: 'Boolean' },
-  { value: 'binary', label: 'Binary (Base64)' },
+  { label: 'String', value: 'string' },
+  { label: 'Integer', value: 'integer' },
+  { label: 'Boolean', value: 'boolean' },
+  { label: 'Binary (Base64)', value: 'binary' },
 ];
 
 /**
@@ -164,10 +164,10 @@ export const DataTransactionForm: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<DataTransactionFormData>({
-    resolver: zodResolver(dataTransactionSchema),
     defaultValues: {
       entries: [{ key: '', type: 'string', value: '' }],
     },
+    resolver: zodResolver(dataTransactionSchema),
   });
 
   const { fields, append, remove } = useFieldArray({

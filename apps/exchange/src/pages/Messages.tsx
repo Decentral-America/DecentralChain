@@ -9,26 +9,26 @@ import { Avatar, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 export const Messages = () => {
   const messages = [
     {
-      id: 1,
       from: 'DCC Network',
-      subject: 'New feature: Enhanced Analytics Dashboard',
+      id: 1,
       preview: 'We are excited to announce the launch of our new analytics dashboard...',
+      subject: 'New feature: Enhanced Analytics Dashboard',
       time: '2 hours ago',
       unread: true,
     },
     {
-      id: 2,
       from: 'Security Team',
-      subject: 'Security Update: Enable 2FA',
+      id: 2,
       preview: 'For enhanced security, we recommend enabling two-factor authentication...',
+      subject: 'Security Update: Enable 2FA',
       time: '5 hours ago',
       unread: true,
     },
     {
-      id: 3,
       from: 'Trading Alerts',
-      subject: 'DCC Price Alert: +15% in 24h',
+      id: 3,
       preview: 'Your DCC holdings have increased by 15% in the last 24 hours...',
+      subject: 'DCC Price Alert: +15% in 24h',
       time: '1 day ago',
       unread: false,
     },
@@ -48,23 +48,23 @@ export const Messages = () => {
           <Paper
             key={message.id}
             sx={{
-              p: 2.5,
-              borderRadius: 2,
-              border: message.unread ? '1px solid #3d26be' : '1px solid #EEF2F7',
-              bgcolor: message.unread ? '#F9F7FF' : '#fff',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
               '&:hover': {
                 boxShadow: '0 4px 12px rgba(61, 38, 190, 0.15)',
               },
+              bgcolor: message.unread ? '#F9F7FF' : '#fff',
+              border: message.unread ? '1px solid #3d26be' : '1px solid #EEF2F7',
+              borderRadius: 2,
+              cursor: 'pointer',
+              p: 2.5,
+              transition: 'all 0.2s',
             }}
           >
             <Stack direction="row" spacing={2}>
               <Avatar
                 sx={{
-                  width: 48,
-                  height: 48,
                   bgcolor: message.unread ? 'primary.main' : 'grey.300',
+                  height: 48,
+                  width: 48,
                 }}
               >
                 {message.unread ? <Mail /> : <MailOutline />}

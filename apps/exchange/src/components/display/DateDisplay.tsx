@@ -73,11 +73,13 @@ const DateWithTooltip = styled.span`
 
 // Locale map for date-fns
 const localeMap: Record<string, Locale> = {
+  de: de,
   en: enUS,
   'en-US': enUS,
   es: es,
   fr: fr,
-  de: de,
+  hi: hi,
+  'hi-IN': hi,
   it: it,
   ja: ja,
   ko: ko,
@@ -91,8 +93,6 @@ const localeMap: Record<string, Locale> = {
   tr: tr,
   zh: zhCN,
   'zh-CN': zhCN,
-  hi: hi,
-  'hi-IN': hi,
 };
 
 // Interfaces

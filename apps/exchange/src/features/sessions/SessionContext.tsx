@@ -145,8 +145,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSessions((prev) => prev.map((s) => (s.id === activeSession.id ? lockedSession : s)));
 
     broadcastEvent({
-      type: 'session-locked',
       sessionId: activeSession.id,
+      type: 'session-locked',
     });
   }, [activeSession, broadcastEvent]);
 
@@ -214,13 +214,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
     }): Promise<Session> => {
       const newSession: Session = {
-        id: `session_${Date.now()}_${crypto.randomUUID().slice(0, 9)}`,
-        userId: user.address,
         address: user.address,
-        userType: user.userType,
         createdAt: Date.now(),
-        lastActivity: Date.now(),
+        id: `session_${Date.now()}_${crypto.randomUUID().slice(0, 9)}`,
         isLocked: false,
+        lastActivity: Date.now(),
+        userId: user.address,
+        userType: user.userType,
       };
 
       setSessions((prev) => [...prev, newSession]);
@@ -228,8 +228,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       // Broadcast to other tabs
       broadcastEvent({
-        type: 'session-created',
         session: newSession,
+        type: 'session-created',
       });
 
       return newSession;
@@ -248,8 +248,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       // Broadcast to other tabs
       broadcastEvent({
-        type: 'session-switched',
         session,
+        type: 'session-switched',
       });
     },
     [sessions, broadcastEvent],
@@ -275,8 +275,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         // Broadcast to other tabs
         broadcastEvent({
-          type: 'session-unlocked',
           sessionId: activeSession.id,
+          type: 'session-unlocked',
         });
 
         return true;
@@ -297,8 +297,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       // Broadcast to other tabs
       broadcastEvent({
-        type: 'session-destroyed',
         sessionId,
+        type: 'session-destroyed',
       });
     },
     [activeSession, broadcastEvent],
@@ -317,22 +317,22 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     // Broadcast to other tabs
     broadcastEvent({
-      type: 'activity-refresh',
       sessionId: activeSession.id,
+      type: 'activity-refresh',
     });
   }, [activeSession, broadcastEvent]);
 
   const value: SessionContextValue = {
     activeSession,
-    sessions,
-    createSession,
-    switchSession,
-    lockSession,
-    unlockSession,
-    destroySession,
-    refreshActivity,
-    isSessionLocked: activeSession?.isLocked ?? false,
     config,
+    createSession,
+    destroySession,
+    isSessionLocked: activeSession?.isLocked ?? false,
+    lockSession,
+    refreshActivity,
+    sessions,
+    switchSession,
+    unlockSession,
   };
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

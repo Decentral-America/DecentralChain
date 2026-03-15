@@ -104,8 +104,8 @@ export class Seed {
     this.phrase = seedInstance.phrase;
     this.address = seedInstance.address;
     this.keyPair = {
-      publicKey: seedInstance.keyPair.publicKey,
       privateKey: seedInstance.keyPair.privateKey,
+      publicKey: seedInstance.keyPair.publicKey,
     };
   }
 
