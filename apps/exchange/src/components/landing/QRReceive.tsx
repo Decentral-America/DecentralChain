@@ -164,7 +164,7 @@ export default function QRReceive() {
             </Card>
 
             <Typography variant="caption" color="text.secondary">
-              Network: Decentral.Exchange Mainnet
+              Network: DecentralExchange Mainnet
             </Typography>
           </>
         ) : (

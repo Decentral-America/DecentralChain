@@ -29,7 +29,7 @@
     },
     "error": {
       "updateClient": {
-        "body": "We werken er constant aan om Decentral.Exchange beter en nuttiger te maken. \n Werk de applicatie bij om door te gaan. Download de applicatie van de officiële [website] (https://decentralchain.io/technology/wallet)!",
+        "body": "We werken er constant aan om DecentralExchange beter en nuttiger te maken. \n Werk de applicatie bij om door te gaan. Download de applicatie van de officiële [website] (https://decentralchain.io/technology/wallet)!",
         "title": "Het is tijd om uw app te updaten!"
       }
     },
@@ -149,7 +149,7 @@
       "confirmBackupDescription": "Bevestig uw back-up regel",
       "next": "Bevestig",
       "prev": "Terug",
-      "successContent": "U kunt uw geheime regel later niet wijzigen. Als deze geheime regel per abuis in het bezit van iemand anders komt of u vermoed dat het in het bezit van scammers is gekomen dient u onmiddelijk een nieuwe DCC wallet te maken en alle inhoud over te zetten.",
+      "successContent": "U kunt uw geheime regel later niet wijzigen. Als deze geheime regel per abuis in het bezit van iemand anders komt of u vermoed dat het in het bezit van scammers is gekomen dient u onmiddelijk een nieuwe DecentralExchange te maken en alle inhoud over te zetten.",
       "successHeadline": "Behandel uw backup regel zorgvuldig!",
       "understand": "Ik begrijp het"
     },
@@ -537,20 +537,20 @@
       "cancelDownloading": "Download annuleren",
       "congratulations": "Gefeliciteerd!",
       "congratulationsText": "U hebt de nieuwe applicatie met succes gedownload. Ga als volgt te werk om de toepassing te gebruiken:",
-      "connectSupport": "Als dat niet heeft geholpen, neem dan contact op met de Decentral.Exchange [support] (https://support.decentral.exchange/).",
+      "connectSupport": "Als dat niet heeft geholpen, neem dan contact op met de DecentralExchange [support] (https://support.decentral.exchange/).",
       "download": "Download",
       "downloaded": "Ja",
-      "downloadText": "{div.margin-bottom} [Om gebruikers een betere ervaring en een breder scala aan tools te bieden, verhuist de exchange van Decentral.Exchange naar Decentral.Exchange.] \n {div.margin-bottom} [Decentral.Exchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe exchange. We raden u ten zeerste aan dit van tevoren te doen.] \n {div.margin-bottom} [Het verplaatsen gaat snel, gemakkelijk en absoluut veilig.]",
+      "downloadText": "{div.margin-bottom} [Om gebruikers een betere ervaring en een breder scala aan tools te bieden, verhuist de exchange van DecentralExchange naar DecentralExchange.] \n {div.margin-bottom} [DecentralExchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe exchange. We raden u ten zeerste aan dit van tevoren te doen.] \n {div.margin-bottom} [Het verplaatsen gaat snel, gemakkelijk en absoluut veilig.]",
       "fail": "Mislukt",
-      "failText": "Zorg ervoor dat u de nieuwe Decentral.Exchange-toepassing hebt geïnstalleerd en uitgevoerd.",
-      "haveYouDownloaded": "Heb je de nieuwe desktop-applicatie Decentral.Exchange al gedownload?",
+      "failText": "Zorg ervoor dat u de nieuwe DecentralExchange-toepassing hebt geïnstalleerd en uitgevoerd.",
+      "haveYouDownloaded": "Heb je de nieuwe desktop-applicatie DecentralExchange al gedownload?",
       "install": "Installeer de applicatie",
       "installAndRun": "Installeer en voer de applicatie uit. Heb je het gedaan?",
       "iUnderstand": "Ik begrijp het",
       "lookAtFAQ1": "Als je alles goed hebt gedaan en steeds het Fail-resultaat krijgt, kijk dan naar de",
       "lookAtFAQ2": "Misschien vindt u daar het antwoord.",
-      "movingText": "{div.margin-bottom} [Om gebruikers een betere ervaring en een breder scala aan tools te bieden, verhuist de exchange van Decentral.Exchange naar Decentral.Exchange.] \n {div.margin-bottom} [Decentral.Exchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe uitwisseling. We raden u ten zeerste aan dit van tevoren te doen.] \n {div.margin-bottom} [Het verplaatsen gaat snel, gemakkelijk en absoluut veilig.]",
-      "oldApplication": "Uw huidige applicatie is te oud. Als u nu meteen wilt handelen (vóór 2 december 2019), kunt u onze nieuwste Decentral.Exchange-desktopapplicatie downloaden van de [officiële website](https://dex.decentralchain.io).",
+      "movingText": "{div.margin-bottom} [Om gebruikers een betere ervaring en een breder scala aan tools te bieden, verhuist de exchange van DecentralExchange naar DecentralExchange.] \n {div.margin-bottom} [DecentralExchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe uitwisseling. We raden u ten zeerste aan dit van tevoren te doen.] \n {div.margin-bottom} [Het verplaatsen gaat snel, gemakkelijk en absoluut veilig.]",
+      "oldApplication": "Uw huidige applicatie is te oud. Als u nu meteen wilt handelen (vóór 2 december 2019), kunt u onze nieuwste DecentralExchange-desktopapplicatie downloaden van de [officiële website](https://dex.decentralchain.io).",
       "oops": "Oeps! Er ging iets mis...",
       "password": "Password",
       "passwordError": "Wrong Password!",
@@ -566,20 +566,20 @@
     },
     "faq": {
       "attention": {
-        "text": "{div.margin-top-1} [Het migratieproces voor {div.margin-top-1} is ALLEEN beschikbaar via het {div.margin-top-1} [https://dex.decentralchain.io] (https://dex.decentralchain.io/) en [https: //client.decentralchain.io](https://client.decentralchain.io/). Om de migratie voor de desktop-client te voltooien, moet u de Decentral.Exchange-desktopapp gebruiken die u al hebt geïnstalleerd.] \n\n {div.margin-top-1} [Gebruik geen andere domeinen voor migratie, {div.margin-top-1} nergens uw seed-zinnen en / of privésleutels in en download geen andere clients behalve de software die is aangegeven voor het migratieproces van uw huidige Decentral.Exchange-client. Voor het migratieproces hoeft u nergens uw seed-zinnen en / of privésleutels in te voeren. DecentralChain Platform of Decentral.Exchange-medewerkers zullen u nooit vragen om enige vorm van persoonlijke informatie te verstrekken, inclusief privésleutels en / of seed-zinnen.] \n\n {div.margin-top-1} [Het migratieproces is absoluut gratis en heeft geen invloed op gateways, die alle transacties normaal verwerken. U hoeft niemand te betalen of tokens te sturen om de migratie te voltooien.]",
+        "text": "{div.margin-top-1} [Het migratieproces voor {div.margin-top-1} is ALLEEN beschikbaar via het {div.margin-top-1} [https://dex.decentralchain.io] (https://dex.decentralchain.io/) en [https: //client.decentralchain.io](https://client.decentralchain.io/). Om de migratie voor de desktop-client te voltooien, moet u de DecentralExchange-desktopapp gebruiken die u al hebt geïnstalleerd.] \n\n {div.margin-top-1} [Gebruik geen andere domeinen voor migratie, {div.margin-top-1} nergens uw seed-zinnen en / of privésleutels in en download geen andere clients behalve de software die is aangegeven voor het migratieproces van uw huidige DecentralExchange-client. Voor het migratieproces hoeft u nergens uw seed-zinnen en / of privésleutels in te voeren. DecentralChain Platform of DecentralExchange-medewerkers zullen u nooit vragen om enige vorm van persoonlijke informatie te verstrekken, inclusief privésleutels en / of seed-zinnen.] \n\n {div.margin-top-1} [Het migratieproces is absoluut gratis en heeft geen invloed op gateways, die alle transacties normaal verwerken. U hoeft niemand te betalen of tokens te sturen om de migratie te voltooien.]",
         "title": "ATTENTIE!!!!!! "
       },
       "goHome": "Ga naar homepagina",
-      "text1": "Decentral.Exchange transformeert in een nieuw product, Decentral.Exchange. Maak je geen zorgen! Al uw tokens, seed-zinnen en wachtwoorden zijn volkomen veilig.",
-      "text2": "Dit is een nieuwe exchange op basis van de technologie en expertise van Decentral.Exchange. Zie [deze aankondiging] (https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91) voor meer informatie.",
-      "text3": "Decentral.Exchange is ontwikkeld en wordt beheerd door een deel van het Decentral.Exchange-team, in samenwerking met nieuwe ontwikkelaars uit de DecentralChain-gemeenschap.",
+      "text1": "DecentralExchange transformeert in een nieuw product, DecentralExchange. Maak je geen zorgen! Al uw tokens, seed-zinnen en wachtwoorden zijn volkomen veilig.",
+      "text2": "Dit is een nieuwe exchange op basis van de technologie en expertise van DecentralExchange. Zie [deze aankondiging] (https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91) voor meer informatie.",
+      "text3": "DecentralExchange is ontwikkeld en wordt beheerd door een deel van het DecentralExchange-team, in samenwerking met nieuwe ontwikkelaars uit de DecentralChain-gemeenschap.",
       "text4": "De migratie betekent een nieuwe fase in de ontwikkeling van de exchange, waarvan de belangrijkste prioriteit nu de gebruikerservaring zal zijn. Het nieuwe team zal zich niet alleen richten op de verzoeken van de gemeenschap, maar zich ook concentreren op het bouwen van nieuwe handelshulpmiddelen en uitgebreide promotie van het product, wat moeilijk was onder de vorige regeling.",
-      "text5": "Migratie is al begonnen. Vanaf 18 november 2019 kunt u uw accounts verplaatsen naar de nieuwe service. Daarvoor moet u de webversie van Decentral.Exchange bijwerken en / of een desktop-app uitvoeren, inloggen op uw account en de instructies volgen.",
+      "text5": "Migratie is al begonnen. Vanaf 18 november 2019 kunt u uw accounts verplaatsen naar de nieuwe service. Daarvoor moet u de webversie van DecentralExchange bijwerken en / of een desktop-app uitvoeren, inloggen op uw account en de instructies volgen.",
       "text6": "Ja. Dit zal de nieuwe manier zijn om toegang te krijgen tot alle bekende en handige tools van het DecentralChain-ecosysteem - inclusief web- en desktop-apps, mobiele apps en de exchange - plus nieuwe functies en upgrades van de service.",
       "text7": "De lancering van de nieuwe beurs is gepland op 2 december 2019.",
-      "text8": "We willen Decentral.Exchange-gebruikers voldoende tijd geven om zich voor te bereiden op het gebruik van de nieuwe exchange, zodat hun toegang tot de service ononderbroken is. We hopen dat de periode van twee weken voldoende zal zijn voor de meerderheid van de gebruikers om het migratieproces te voltooien.",
-      "text9": "Ja, migratie van accounts is ook mogelijk na de lancering van Decentral.Exchange. Vanaf 2 december 2019 zijn er echter enkele beperkingen van toepassing op de oude apps van Decentral.Exchange.",
-      "text10": "{div.margin-bottom} [Als u de oude apps gebruikt, DIT KAN NIET MEER] \n {div.line} [- Accounts maken] \n {div.line} [- Toegang hebben tot de Decentral.Exchange-interface] \n {div.line} [- Bekijk uw portfolio] \n {div.line} [- Maak transacties van welke aard dan ook: overdracht, uitgifte of het burnen van tokens, DCC leasen of leasing annuleren] \n {div.line} [- Gebruik alle gateways] \n\n {div.margin-bottom} [Vanaf 2 december 2019 kunt u van deze functionaliteit genieten met Decentral.Exchange-apps.] \n\n {div.margin-bottom} [Met de oude apps kan dit NOG STEEDS:] \n\n {div.line} [- Meld u aan bij uw accounts] \n {div.line} [- Start het migratieproces naar Decentral.Exchange] \n {div.line} [- Maak een lokale back-up van uw seed-zinnen] \n\n {div.margin-top} [Als u nog vragen heeft, kunt u een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https: / /support.decentral.exchange/](https://support.decentral.exchange/)]",
+      "text8": "We willen DecentralExchange-gebruikers voldoende tijd geven om zich voor te bereiden op het gebruik van de nieuwe exchange, zodat hun toegang tot de service ononderbroken is. We hopen dat de periode van twee weken voldoende zal zijn voor de meerderheid van de gebruikers om het migratieproces te voltooien.",
+      "text9": "Ja, migratie van accounts is ook mogelijk na de lancering van DecentralExchange. Vanaf 2 december 2019 zijn er echter enkele beperkingen van toepassing op de oude apps van DecentralExchange.",
+      "text10": "{div.margin-bottom} [Als u de oude apps gebruikt, DIT KAN NIET MEER] \n {div.line} [- Accounts maken] \n {div.line} [- Toegang hebben tot de DecentralExchange-interface] \n {div.line} [- Bekijk uw portfolio] \n {div.line} [- Maak transacties van welke aard dan ook: overdracht, uitgifte of het burnen van tokens, DCC leasen of leasing annuleren] \n {div.line} [- Gebruik alle gateways] \n\n {div.margin-bottom} [Vanaf 2 december 2019 kunt u van deze functionaliteit genieten met DecentralExchange-apps.] \n\n {div.margin-bottom} [Met de oude apps kan dit NOG STEEDS:] \n\n {div.line} [- Meld u aan bij uw accounts] \n {div.line} [- Start het migratieproces naar DecentralExchange] \n {div.line} [- Maak een lokale back-up van uw seed-zinnen] \n\n {div.margin-top} [Als u nog vragen heeft, kunt u een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https: / /support.decentral.exchange/](https://support.decentral.exchange/)]",
       "text11": "Nee nooit! Dit zal onder geen enkele omstandigheid gebeuren. Alle seed-zinnen worden nog steeds lokaal op uw apparaten opgeslagen. Het is onmogelijk voor de exchange om toegang te krijgen tot die opslag.",
       "text12": "Het eigendom van je tokens wordt vastgelegd op de DecentralChain blockchain. Tokens die in uw accounts zijn opgeslagen, zijn alleen toegankelijk met seed zinnen of privésleutels die niet veranderen na de migratie en uw apparaten niet verlaten. Uw bezittingen zijn volkomen veilig!",
       "text13": "{div.margin-bottom}[We zullen ons best doen om ervoor te zorgen dat het migratieproces voor gebruikers zo soepel mogelijk {div.margin-bottom} . Vanwege wijzigingen in het adres en de persoonlijke sleutel van de matcher kunnen we uw bestellingen niet verplaatsen naar de nieuwe matcher. Daarom is uw volledige transactielgeschiedenis niet langer beschikbaar. Al uw voltooide transacties kunnen nog steeds worden bekeken met DecentralScan. ] \n\n {div.margin-bottom}[Afgezien van uw transactiegeschiedenis worden al uw actieve orders op 2 december geannuleerd. Dit is een noodzakelijke maatregel die wordt veroorzaakt door de overstap naar een nieuwe matcher. In het geval van succesvolle migratie behoudt u nog steeds:] \n {div.line}[- Een set vastgezette items op uw dashboard] \n {div.line}[- Opgeslagen paren op de uitwisseling] \n {div.line}[- Een lijst met \"verborgen\" {div.line} ] \n {div.line}[- {div.line} ] \n {div.line}[- Accountinformatie ( {div.line} , accountnamen)] \n\n {div.margin-bottom.margin-top}[Houd er rekening mee dat technisch werk zal plaatsvinden op 2 december, waarop toegang tot oude apps wordt beperkt en nieuwe apps worden voorbereid voor lancering. ] \n\n {div.margin-bottom}[Tijdens dit werk verwerken gateways alle transacties (storten en opnemen) zoals normaal, wat volledige beveiliging en is toegang tot uw fondsen garandeerd.] \n\n {div.margin-top}[U blijft niet achter zonder ondersteuning! U kunt altijd een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https://support.decentral.exchange/ 8,5(https:// support.decentral.exchange/)]",
@@ -588,22 +588,22 @@
       "text16": "Momenteel is KYC alleen vereist voor het storten / opnemen van wUSD en wEUR van / naar uw bankrekening. Op dit moment heeft het team geen plannen om KYC te introduceren voor handels- of cryptocurrency-transacties.",
       "text17": "De matcher krijgt een nieuw adres en een nieuwe URL en de privésleutel verandert. Vanwege deze wijzigingen worden openstaande orders van gebruikers op het moment van update automatisch geannuleerd en worden transactiegeschiedenissen niet beschikbaar. Helaas is er geen technisch middel om bestellingen en transactiegeschiedenis over te dragen naar de nieuwe matcher, omdat elke order naar de matcher wordt verzonden nadat de gebruiker deze met zijn persoonlijke sleutel ondertekent. Aangezien de oude of nieuwe matcher geen toegang heeft tot de privésleutels van gebruikers, kunnen bestellingen niet worden overgedragen. We begrijpen dat dit frustrerend kan zijn, maar deze benadering is een kenmerk van het ontwerp van de matcher dat nodig is om de veiligheid van de funds van gebruikers te handhaven. We verontschuldigen ons voor enig ongemak.",
       "text18": "{div.margin-bottom} [We hebben ons best gedaan om ervoor te zorgen dat het migratieproces voor gebruikers zo soepel mogelijk verloopt {div.margin-bottom} . Als u problemen ondervindt bij het verplaatsen van uw accounts, begint u opnieuw. Ga daarvoor terug naar uw oude web- of desktopclient, log in met uw wachtwoord en volg de instructies.] \n\n {div.margin-bottom} [Aanbeveling voor browsergebruikers: schakel tijdens de migratie alle browserextensies uit, omdat deze beperkingen kunnen opleggen die de migratie verstoren.] \n\n {div.margin-bottom} [Aanbeveling voor gebruikers van desktopclients: schakel uw firewall of antivirussoftware uit, omdat deze beperkingen kunnen opleggen aan de poortwerking en de migratie verstoren.] \n\n {div.margin-top} [U blijft in elk geval niet zonder ondersteuning! U kunt altijd een bericht sturen naar onze [officiële Telegram-groep] (https://t.me/decentralexchange) of een ticket maken op de ondersteuningspagina: [https://support.decentral.exchange/ 8,5(https:// support.decentral.exchange/)]",
-      "text19": "{div.margin-bottom}[Sommige gateways worden beheerd door het Decentral.Exchange-team, bijvoorbeeld: $ BTC, $ ETH, $ WEST, $ ERGO, $ BNT en $ USDT.] \n {div.margin-bottom}[Ondertussen worden $ LTC, $ XMR, $ DASH, $ BCH, $ BSV, $ Zcash, wUSD en wEUR tijdelijk beheerd door Coinomat.] \n {div.margin-top}[Tijdens technische werkzaamheden op 2 december 2019 verwerken gateways alle transacties als normaal, wat volledige beveiliging en toegang tot uw fondsen garandeert.]",
-      "text20": "Uw leases worden niet geannuleerd tijdens het migratieproces. Net als voorheen kunnen gebruikers hun DCC leasen naar de door hen gekozen nodes, met behulp van de lease-interface van Decentral.Exchange, en een rente tot 7% per jaar verkrijgen.",
+      "text19": "{div.margin-bottom}[Sommige gateways worden beheerd door het DecentralExchange-team, bijvoorbeeld: $ BTC, $ ETH, $ WEST, $ ERGO, $ BNT en $ USDT.] \n {div.margin-bottom}[Ondertussen worden $ LTC, $ XMR, $ DASH, $ BCH, $ BSV, $ Zcash, wUSD en wEUR tijdelijk beheerd door Coinomat.] \n {div.margin-top}[Tijdens technische werkzaamheden op 2 december 2019 verwerken gateways alle transacties als normaal, wat volledige beveiliging en toegang tot uw fondsen garandeert.]",
+      "text20": "Uw leases worden niet geannuleerd tijdens het migratieproces. Net als voorheen kunnen gebruikers hun DCC leasen naar de door hen gekozen nodes, met behulp van de lease-interface van DecentralExchange, en een rente tot 7% per jaar verkrijgen.",
       "text21": "De lancering van de USDT (ERC-20) gateway heeft geen invloed op de werking van wUSD en wEUR. Gebruikers kunnen ze blijven handelen zoals ze willen.",
       "text22": "De nieuwe adressen behoren tot de DecentralChain-gateway (niet Coinomat). We zullen deze gateways voortdurend verbeteren, waardoor transfers sneller en handiger voor gebruikers worden.",
-      "text23": "We begrijpen dat het migratieproces voor gebruikers wat ongemak kan veroorzaken, dus we hebben een leuke verrassing voorbereid! Alle gebruikers die hun accounts naar de nieuwe centrale hebben verplaatst, ontvangen een glinsterende avatar die in de app wordt weergegeven. Om dit te ontvangen, moet u de migratie van uw accounts van Decentral.Exchange naar Decentral.Exchange vóór 2 december voltooien en ten minste één uitgaande transactie van elk type in elke account hebben om in aanmerking te komen.",
-      "text24": "We zijn van plan binnenkort ondersteuning toe te voegen voor alle talen die eerder beschikbaar waren op Decentral.Exchange.",
+      "text23": "We begrijpen dat het migratieproces voor gebruikers wat ongemak kan veroorzaken, dus we hebben een leuke verrassing voorbereid! Alle gebruikers die hun accounts naar de nieuwe centrale hebben verplaatst, ontvangen een glinsterende avatar die in de app wordt weergegeven. Om dit te ontvangen, moet u de migratie van uw accounts van DecentralExchange naar DecentralExchange vóór 2 december voltooien en ten minste één uitgaande transactie van elk type in elke account hebben om in aanmerking te komen.",
+      "text24": "We zijn van plan binnenkort ondersteuning toe te voegen voor alle talen die eerder beschikbaar waren op DecentralExchange.",
       "title1": "Wat is er aan de hand?",
-      "title2": "Wat is Decentral.Exchange?",
+      "title2": "Wat is DecentralExchange?",
       "title3": "Wie is verantwoordelijk voor de ontwikkeling van de nieuwe exchange?",
-      "title4": "Waarom verhuist Decentral.Exchange naar Decentral.Exchange?",
+      "title4": "Waarom verhuist DecentralExchange naar DecentralExchange?",
       "title5": "Wanneer begint de migratie?",
       "title6": "Is migratie verplicht?",
-      "title7": "Wanneer wordt Decentral.Exchange gelanceerd?",
+      "title7": "Wanneer wordt DecentralExchange gelanceerd?",
       "title8": "Waarom begon het migratieproces twee weken voorafgaand aan de lancering?",
-      "title9": "Is het mogelijk om accounts te verplaatsen na de lancering van Decentral.Exchange?",
-      "title10": "Welke beperkingen zijn vanaf 2 december 2019 van toepassing op Decentral.Exchange-apps?",
+      "title9": "Is het mogelijk om accounts te verplaatsen na de lancering van DecentralExchange?",
+      "title10": "Welke beperkingen zijn vanaf 2 december 2019 van toepassing op DecentralExchange-apps?",
       "title11": "Heeft de nieuwe exchange toegang tot mijn seed zinnen?",
       "title12": "Wat gebeurt er met mijn tokens?",
       "title13": "Welke problemen kunnen gebruikers tegenkomen als gevolg van de migratie?",
@@ -628,7 +628,7 @@
       "continue": "Doorgaan",
       "desc": {
         "almostFinish": "Accepteer de nieuwe Algemene voorwaarden en Privacybeleid om de migratie van uw accounts te voltooien.",
-        "enterPassword": "Voer uw Decentral.Exchange-wachtwoord in om door te gaan met de migratie.",
+        "enterPassword": "Voer uw DecentralExchange-wachtwoord in om door te gaan met de migratie.",
         "onePassword": "Maak één wachtwoord voor al uw accounts. Log in op accounts en schakel eenvoudig tussen deze accounts."
       },
       "description": {
@@ -649,9 +649,9 @@
         "moving": "Begin met verhuizen"
       },
       "modalDesc": {
-        "firstPart": "Om gebruikers een betere ervaring en een breder scala aan tools te bieden, gaat de exchange van Decentral.Exchange naar Decentral.Exchange.",
-        "redirected": "Zorg ervoor dat u het migratieproces bij Decentral.Exchange met succes hebt voltooid. Als het klaar is, ziet u het bijbehorende bericht.",
-        "secondPart": "Decentral.Exchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe exchange. We raden u ten zeerste aan dit van tevoren te doen.",
+        "firstPart": "Om gebruikers een betere ervaring en een breder scala aan tools te bieden, gaat de exchange van DecentralExchange naar DecentralExchange.",
+        "redirected": "Zorg ervoor dat u het migratieproces bij DecentralExchange met succes hebt voltooid. Als het klaar is, ziet u het bijbehorende bericht.",
+        "secondPart": "DecentralExchange stopt met werken op 2 december 2019. Om door te gaan met handelen moet u uw accounts verplaatsen naar de nieuwe exchange. We raden u ten zeerste aan dit van tevoren te doen.",
         "thirdPart": "Het migratieproces is snel, eenvoudig en absoluut veilig."
       },
       "modalTitle": {
@@ -674,19 +674,19 @@
     },
     "modals": {
       "shutdownNotificationFirst": {
-        "message1": "Decentral.Exchange stopt met werken op 2 december 2019",
-        "message2": "Om met de exchange te kunnen werken, moet u uw accounts naar de nieuwe Decentral.Exchange verplaatsen. We raden u ten zeerste aan dit zo snel mogelijk te doen. Het verplaatsen gaat snel, gemakkelijk en is absoluut veilig.",
+        "message1": "DecentralExchange stopt met werken op 2 december 2019",
+        "message2": "Om met de exchange te kunnen werken, moet u uw accounts naar de nieuwe DecentralExchange verplaatsen. We raden u ten zeerste aan dit zo snel mogelijk te doen. Het verplaatsen gaat snel, gemakkelijk en is absoluut veilig.",
         "submit": "Ik begrijp het",
         "title": "Nog een dag!"
       },
       "shutdownNotificationLast": {
-        "message1": "Decentral.Exchange werkt niet meer. De exchange is verplaatst naar Decentral.Exchange.",
+        "message1": "DecentralExchange werkt niet meer. De exchange is verplaatst naar DecentralExchange.",
         "submit": "Ik begrijp het",
         "title": "Tijd om verder te gaan!"
       },
       "shutdownNotificationSecond": {
-        "message1": "Decentral.Exchange stopt over twee uur met werken.",
-        "message2": "Om met de exchange te kunnen werken, moet u uw accounts naar de nieuwe Decentral.Exchange verplaatsen. We raden u ten zeerste aan dit zo snel mogelijk te doen. Het verplaatsen gaat snel, gemakkelijk en is absoluut veilig.",
+        "message1": "DecentralExchange stopt over twee uur met werken.",
+        "message2": "Om met de exchange te kunnen werken, moet u uw accounts naar de nieuwe DecentralExchange verplaatsen. We raden u ten zeerste aan dit zo snel mogelijk te doen. Het verplaatsen gaat snel, gemakkelijk en is absoluut veilig.",
         "submit": "Ik begrijp het",
         "title": "Nog twee uur!"
       }
@@ -813,15 +813,15 @@
       "passForgot": {
         "attention": "Let op!",
         "description": "Om het wachtwoord te herstellen, moet u alle accounts opnieuw instellen, een nieuw wachtwoord instellen, elk account importeren via de SEED of via de privésleutel.",
-        "descriptionExchange": "U staat op het punt al uw Decentral.Exchange-accounts van dit apparaat te verwijderen. Deze actie heeft geen invloed op uw Decentral.Exchange-accounts.",
+        "descriptionExchange": "U staat op het punt al uw DecentralExchange-accounts van dit apparaat te verwijderen. Deze actie heeft geen invloed op uw DecentralExchange-accounts.",
         "importantDesc": "Als u de SEED of privésleutel niet hebt opgeslagen, kunt u de toegang tot uw account niet herstellen.",
-        "importantDescEx": "Deze actie is onomkeerbaar! Als u de seed-zin of privésleutel niet hebt opgeslagen, kunt u de toegang tot uw Decentral.Exchange-accounts niet herstellen.",
-        "importantDescExchange": "Deze actie is onomkeerbaar! Als u de seed-zin of privésleutel niet hebt opgeslagen, kunt u de toegang tot uw Decentral.Exchange-accounts niet herstellen."
+        "importantDescEx": "Deze actie is onomkeerbaar! Als u de seed-zin of privésleutel niet hebt opgeslagen, kunt u de toegang tot uw DecentralExchange-accounts niet herstellen.",
+        "importantDescExchange": "Deze actie is onomkeerbaar! Als u de seed-zin of privésleutel niet hebt opgeslagen, kunt u de toegang tot uw DecentralExchange-accounts niet herstellen."
       },
       "password": {
         "forgot": "Uw wachtwoord vergeten?",
         "overwrite": "Accounts overschrijven",
-        "overwriteDescription": "Overschrijf alle Decentral.Exchange-accounts op dit apparaat"
+        "overwriteDescription": "Overschrijf alle DecentralExchange-accounts op dit apparaat"
       },
       "signIn": "Aanmelden",
       "welcomeBack": "Welkom terug!"
@@ -886,7 +886,7 @@
       "titleSuccess": "{{name}} Genereren Gelukt"
     },
     "NFT": {
-      "description": "Een non-fungible token (NFT) is een uniek, individueel token dat bestaat op de DecentralChain blockchain. Momenteel wordt het weergeven van NFT's in DCC Wallet en op Decentral.Exchange niet ondersteund. U kunt uw NFT's bekijken in [DecentralScan] (https://decentralscan.com/)",
+      "description": "Een non-fungible token (NFT) is een uniek, individueel token dat bestaat op de DecentralChain blockchain. Momenteel wordt het weergeven van NFT's in DecentralExchange en op DecentralExchange niet ondersteund. U kunt uw NFT's bekijken in [DecentralScan] (https://decentralscan.com/)",
       "title": "U maakt een non-fungible token."
     },
     "name": "Naam van uw asset",
@@ -2175,7 +2175,7 @@
           "cell1": "U gebruikt uw wallet anoniem. Uw account is op geen enkele manier verbonden aan een e-mailadres of andere data waarmee u geÏdentificeerd kunt worden.",
           "cell2": "Uw wachtwoord beschermt uw account op een apparaat of browser. Dit is nodig om ervoor te zorgen dat uw geheime regel niet op dit apparaat hoeft te worden opgeslagen.",
           "cell3": "Indien u uw wachtwoord vergeet kunt u gemakkelijk weer via het account recovery formulier middels uw geheime regel, een nieuw wachtwoord instellen. Echter, als u uw geheime regel kwijt bent heeft u geen enkele manier om toegang tot uw account te herstellen.",
-          "cell4": "Uw kunt uw geheime regel later niet wijzigen. Als deze geheime regel per abuis in het bezit van iemand anders komt of u vermoed dat het in het bezit van scammers is gekomen dient u onmiddelijk een nieuwe DCC wallet te maken en alle inhoud over te zetten.",
+          "cell4": "Uw kunt uw geheime regel later niet wijzigen. Als deze geheime regel per abuis in het bezit van iemand anders komt of u vermoed dat het in het bezit van scammers is gekomen dient u onmiddelijk een nieuwe DecentralExchange te maken en alle inhoud over te zetten.",
           "nextButton": "Bescherm uzelf",
           "p1": "Als u uw account registreert, wordt aangegeven dat u uw geheime regel (SEED) goed moet opslaan en dat u uw account met een wachtwoord moet beveiligen. Op normale gecentraliseerde servers, is uw wachtwoord erg belangrijk maar deze kan gereset worden via e-mail indien nodig. Echter, op een gedecentraliseerd platform zoals DecentralChain is dit allemaal anders geregeld:",
           "title": "Wat u moet weten over uw SEED"
@@ -2188,7 +2188,7 @@
           "cell4": "Update uw besturingssysteem regelmatig.",
           "cell4Web": "Update uw browser en besturingssysteem regelmatig.",
           "cell5": "Gebruik officiële beveiligingssoftware. Installeer geen onbekende software waarmee u gehackt kan worden.",
-          "cell6": "Gebruik uw DCC wallet niet terwijl u een publiek Wi-Fi netwerk of een apparaat van iemand anders gebruikt.",
+          "cell6": "Gebruik uw DecentralExchange niet terwijl u een publiek Wi-Fi netwerk of een apparaat van iemand anders gebruikt.",
           "nextButton": "Ik begrijp het",
           "p1": "De meest gebruikte manier van oplichting is phishing. Phishing houdt onder andere in dat oplichters neppe communities op Facebook of andere websites en platformen maken welke erg op de originele lijken.",
           "saveSeedButton": "Sla de SEED-zin op",
@@ -2197,7 +2197,7 @@
       },
       "unsuccessfulMigration": {
         "checkbox": "Dit niet meer tonen",
-        "description": "U bent begonnen met de accountmigratie van Decentral.Exchange naar deze exchange, maar deze is nog niet voltooid. Uw accounts zijn niet verplaatst. Ga terug naar Decentral.Exchange en start het proces vanaf het begin.",
+        "description": "U bent begonnen met de accountmigratie van DecentralExchange naar deze exchange, maar deze is nog niet voltooid. Uw accounts zijn niet verplaatst. Ga terug naar DecentralExchange en start het proces vanaf het begin.",
         "title": "Onvoltooide migratie",
         "understand": "Ik begrijp het"
       }
@@ -2296,11 +2296,11 @@
     },
     "warningPlate": {
       "day": "d",
-      "dexMoves": "We gaan binnenkort verhuizen! Blijf bij ons op [Decentral.Exchange] (https://decentral.exchange)",
+      "dexMoves": "We gaan binnenkort verhuizen! Blijf bij ons op [DecentralExchange] (https://decentral.exchange)",
       "hour": "h",
-      "info": "We gaan van Decentral.Exchange naar Decentral.Exchange. Wilt u uw accounts opnieuw verplaatsen?",
+      "info": "We gaan van DecentralExchange naar DecentralExchange. Wilt u uw accounts opnieuw verplaatsen?",
       "min": "m",
-      "notification": "We gaan van Decentral.Exchange naar Decentral.Exchange. Wilt u uw accounts opnieuw verplaatsen?",
+      "notification": "We gaan van DecentralExchange naar DecentralExchange. Wilt u uw accounts opnieuw verplaatsen?",
       "sec": "s",
       "startMoving": "Veilig verhuizen"
     }
@@ -2542,7 +2542,7 @@
       "feb2017": {
         "date": "Dec 2017",
         "text": "De eerste versie van het flagship-built-in-exchange wordt gelanceerd.",
-        "title": "Decentral.Exchange Beta"
+        "title": "DecentralExchange Beta"
       },
       "feb2018": {
         "date": "Feb 2018",
@@ -2551,7 +2551,7 @@
       },
       "jan2019": {
         "date": "Jan 2019",
-        "text": "Ondersteuning voor de handel op Decentral.Exchange met Smart Accounts is ingeschakeld.",
+        "text": "Ondersteuning voor de handel op DecentralExchange met Smart Accounts is ingeschakeld.",
         "text_2": "Lancering van de Bitcoin Satoshi Vision gateway",
         "title": "Smart Account Trading",
         "title_2": "BSV Gateway"
@@ -2561,7 +2561,7 @@
         "text": "De opnieuw gelanceerde Exchange biedt een betere UX en betere prestaties dan alle andere DEX's op de markt.",
         "text_2": "De populaire wallet komt uit bèta met een grote nieuwe release.",
         "title": "Nieuwe DEX",
-        "title_2": "DCC Wallet"
+        "title_2": "DecentralExchange"
       },
       "jul2019": {
         "date": "Juli 2019",
@@ -2589,12 +2589,12 @@
       },
       "sep2018": {
         "date": "Sep 2018",
-        "text": "Integratie met Decentral.Exchange stelt gebruikers in staat om te handelen met maximale veiligheid.",
+        "text": "Integratie met DecentralExchange stelt gebruikers in staat om te handelen met maximale veiligheid.",
         "title": "Ledger Nano S"
       },
       "sep2019": {
         "date": "Sep 2019",
-        "text": "Two-factor-authenticatie geeft gebruikers van Decentral.Exchange nog meer veiligheid.",
+        "text": "Two-factor-authenticatie geeft gebruikers van DecentralExchange nog meer veiligheid.",
         "title": "2FA"
       }
     },
@@ -2624,13 +2624,13 @@
       "changeName": "Naam veranderen",
       "chart": "CHART",
       "comingSoon": "Binnenkort beschikbaar",
-      "contestLinkDescription": "Win 5.000 DCC in een handelswedstrijd op Decentral.Exchange!",
+      "contestLinkDescription": "Win 5.000 DCC in een handelswedstrijd op DecentralExchange!",
       "contestLinkLink": "Regels",
       "controlAssets": "U alleen beheert uw assets - geld verlaat uw portemonnee niet en kan niet worden bevroren.",
       "cookies": "Cookies",
       "copyAddress": "Kopieer adres",
       "copyright": "© 2019 Decentral Exchange",
-      "copyright-new": "© 2019 Decentral.Exchange",
+      "copyright-new": "© 2019 DecentralExchange",
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Account maken",
       "createToken": "Token maken",
@@ -2638,12 +2638,12 @@
       "dashboard": "Dashboard",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
-      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
       "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC per gevulde order",
-      "decentralchainWallet": "DCC Wallet",
+      "decentralchainWallet": "DecentralExchange",
       "decentralized": "Gedecentraliseerde",
       "descExchange": "We werken aan een geweldig nieuw project, dat binnenkort klaar zal zijn. Hou het in de gaten!",
       "dexWithHardware": "Gebruik DEX met hardware wallets Ledger Nano S en Ledger Blue",
@@ -2682,7 +2682,7 @@
       "mainPage": "Hoofdpagina",
       "majorFiatCryptocurrencies": "Grote fiat en cryptocurrencies ondersteund: BTC, LTC, ETH, USD en anderen",
       "markets": "Markten",
-      "marketsDescription": "Met Decentral.Exchange kunt u transacties snel en veilig uitvoeren, ongeacht of u handelt via een mobiele app, desktopclient, webportefeuille of de DecentralChain-API.",
+      "marketsDescription": "Met DecentralExchange kunt u transacties snel en veilig uitvoeren, ongeacht of u handelt via een mobiele app, desktopclient, webportefeuille of de DecentralChain-API.",
       "marketsTableDescription": "Om meer verhandelde paren te bekijken klikt u op",
       "marketsTableDescriptionLink": "Exchange bekijken",
       "menu": "Menu",
@@ -2696,7 +2696,7 @@
       "productsTools": "Producten & tools",
       "renameAccount": "Hernoem account",
       "roadmap": "Roadmap",
-      "roadmapOpportunitiesAhead": "De toekomst van Decentral.Exchange: onze roadmap voor de toekomst.",
+      "roadmapOpportunitiesAhead": "De toekomst van DecentralExchange: onze roadmap voor de toekomst.",
       "save": "Opslaan",
       "scanQrCode": "Scan QR-code",
       "scriptAccount": "Script account",

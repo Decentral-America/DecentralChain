@@ -9,7 +9,7 @@ set -e
 # Default values
 ENVIRONMENT=${1:-mainnet}
 DOCKER_REGISTRY=${DOCKER_REGISTRY:-""}
-IMAGE_NAME="dcc-wallet-react"
+IMAGE_NAME="dcc-exchange-react"
 TAG=${TAG:-"latest"}
 
 # Colors for output

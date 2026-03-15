@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Setting up DCC Wallet development environment..."
+echo "🚀 Setting up DecentralExchange development environment..."
 
 # Fix permissions for mounted volumes (node_modules is a Docker volume)
 echo "🔧 Fixing permissions..."
