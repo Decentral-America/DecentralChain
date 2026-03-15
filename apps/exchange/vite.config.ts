@@ -34,7 +34,7 @@ export default defineConfig({
         },
       },
     },
-    sourcemap: process.env['NODE_ENV'] !== 'production',
+    sourcemap: process.env.NODE_ENV !== 'production',
   },
   optimizeDeps: {
     exclude: ['data-service'],
@@ -77,7 +77,7 @@ export default defineConfig({
       '/api': {
         changeOrigin: true,
         rewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
-        target: process.env['VITE_API_URL'] || 'https://mainnet-node.decentralchain.io',
+        target: process.env.VITE_API_URL || 'https://mainnet-node.decentralchain.io',
       },
       '/matcher': {
         changeOrigin: true,
