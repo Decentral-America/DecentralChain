@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["node"]
   },
   "exclude": ["node_modules", "dist"],
   "extends": "../../tsconfig.base.json",

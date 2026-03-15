@@ -11,9 +11,7 @@
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.6",
     "@decentralchain/transactions": "workspace:*",
-    "@evilmartians/lefthook": "2.1.3",
     "@size-limit/preset-small-lib": "12.0.0",
     "@types/node": "25.3.3",
     "@vitest/coverage-v8": "4.0.18",
@@ -21,7 +19,6 @@
     "size-limit": "12.0.0",
     "tsdown": "0.21.2",
     "typed-ts-events": "^3.0.1",
-    "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
   "engines": {
@@ -62,6 +59,12 @@
   "license": "MIT",
   "main": "./dist/index.mjs",
   "name": "@decentralchain/signer",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:3"
+    ]
+  },
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -96,11 +99,5 @@
   ],
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "2.0.1",
-  "nx": {
-    "tags": [
-      "scope:sdk",
-      "layer:3"
-    ]
-  }
+  "version": "2.0.1"
 }

@@ -2,22 +2,31 @@
 // @generated from file waves/order.proto (package waves, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Amount } from "./amount_pb.js";
-import { file_waves_amount } from "./amount_pb.js";
-import type { Message } from "@bufbuild/protobuf";
+import { type Message } from '@bufbuild/protobuf';
+import {
+  enumDesc,
+  fileDesc,
+  type GenEnum,
+  type GenFile,
+  type GenMessage,
+  messageDesc,
+} from '@bufbuild/protobuf/codegenv2';
+import { type Amount, file_waves_amount } from './amount_pb.js';
 
 /**
  * Describes the file waves/order.proto.
  */
-export const file_waves_order: GenFile = /*@__PURE__*/
-  fileDesc("ChF3YXZlcy9vcmRlci5wcm90bxIFd2F2ZXMiPAoJQXNzZXRQYWlyEhcKD2Ftb3VudF9hc3NldF9pZBgBIAEoDBIWCg5wcmljZV9hc3NldF9pZBgCIAEoDCLtAwoFT3JkZXISEAoIY2hhaW5faWQYASABKAUSGgoSbWF0Y2hlcl9wdWJsaWNfa2V5GAMgASgMEiQKCmFzc2V0X3BhaXIYBCABKAsyEC53YXZlcy5Bc3NldFBhaXISJQoKb3JkZXJfc2lkZRgFIAEoDjIRLndhdmVzLk9yZGVyLlNpZGUSDgoGYW1vdW50GAYgASgDEg0KBXByaWNlGAcgASgDEhEKCXRpbWVzdGFtcBgIIAEoAxISCgpleHBpcmF0aW9uGAkgASgDEiIKC21hdGNoZXJfZmVlGAogASgLMg0ud2F2ZXMuQW1vdW50Eg8KB3ZlcnNpb24YCyABKAUSDgoGcHJvb2ZzGAwgAygMEioKCnByaWNlX21vZGUYDiABKA4yFi53YXZlcy5PcmRlci5QcmljZU1vZGUSEgoKYXR0YWNobWVudBgPIAEoDBIbChFzZW5kZXJfcHVibGljX2tleRgCIAEoDEgAEhoKEGVpcDcxMl9zaWduYXR1cmUYDSABKAxIACIZCgRTaWRlEgcKA0JVWRAAEggKBFNFTEwQASJACglQcmljZU1vZGUSCwoHREVGQVVMVBAAEhIKDkZJWEVEX0RFQ0lNQUxTEAESEgoOQVNTRVRfREVDSU1BTFMQAkIICgZzZW5kZXJCgQEKIGlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLm9yZGVyWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw", [file_waves_amount]);
+export const file_waves_order: GenFile =
+  /*@__PURE__*/
+  fileDesc(
+    'ChF3YXZlcy9vcmRlci5wcm90bxIFd2F2ZXMiPAoJQXNzZXRQYWlyEhcKD2Ftb3VudF9hc3NldF9pZBgBIAEoDBIWCg5wcmljZV9hc3NldF9pZBgCIAEoDCLtAwoFT3JkZXISEAoIY2hhaW5faWQYASABKAUSGgoSbWF0Y2hlcl9wdWJsaWNfa2V5GAMgASgMEiQKCmFzc2V0X3BhaXIYBCABKAsyEC53YXZlcy5Bc3NldFBhaXISJQoKb3JkZXJfc2lkZRgFIAEoDjIRLndhdmVzLk9yZGVyLlNpZGUSDgoGYW1vdW50GAYgASgDEg0KBXByaWNlGAcgASgDEhEKCXRpbWVzdGFtcBgIIAEoAxISCgpleHBpcmF0aW9uGAkgASgDEiIKC21hdGNoZXJfZmVlGAogASgLMg0ud2F2ZXMuQW1vdW50Eg8KB3ZlcnNpb24YCyABKAUSDgoGcHJvb2ZzGAwgAygMEioKCnByaWNlX21vZGUYDiABKA4yFi53YXZlcy5PcmRlci5QcmljZU1vZGUSEgoKYXR0YWNobWVudBgPIAEoDBIbChFzZW5kZXJfcHVibGljX2tleRgCIAEoDEgAEhoKEGVpcDcxMl9zaWduYXR1cmUYDSABKAxIACIZCgRTaWRlEgcKA0JVWRAAEggKBFNFTEwQASJACglQcmljZU1vZGUSCwoHREVGQVVMVBAAEhIKDkZJWEVEX0RFQ0lNQUxTEAESEgoOQVNTRVRfREVDSU1BTFMQAkIICgZzZW5kZXJCgQEKIGlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLm9yZGVyWkxnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNlcmlhbGl6YXRpb24vcGtnL2dycGMvZ2VuZXJhdGVkL3dhdmVzqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw',
+    [file_waves_amount],
+  );
 
 /**
  * @generated from message waves.AssetPair
  */
-export type AssetPair = Message<"waves.AssetPair"> & {
+export type AssetPair = Message<'waves.AssetPair'> & {
   /**
    * @generated from field: bytes amount_asset_id = 1;
    */
@@ -33,13 +42,14 @@ export type AssetPair = Message<"waves.AssetPair"> & {
  * Describes the message waves.AssetPair.
  * Use `create(AssetPairSchema)` to create a new message.
  */
-export const AssetPairSchema: GenMessage<AssetPair> = /*@__PURE__*/
+export const AssetPairSchema: GenMessage<AssetPair> =
+  /*@__PURE__*/
   messageDesc(file_waves_order, 0);
 
 /**
  * @generated from message waves.Order
  */
-export type Order = Message<"waves.Order"> & {
+export type Order = Message<'waves.Order'> & {
   /**
    * @generated from field: int32 chain_id = 1;
    */
@@ -108,27 +118,29 @@ export type Order = Message<"waves.Order"> & {
   /**
    * @generated from oneof waves.Order.sender
    */
-  sender: {
-    /**
-     * @generated from field: bytes sender_public_key = 2;
-     */
-    value: Uint8Array;
-    case: "senderPublicKey";
-  } | {
-    /**
-     * @generated from field: bytes eip712_signature = 13;
-     */
-    value: Uint8Array;
-    case: "eip712Signature";
-  } | { case: undefined; value?: undefined };
+  sender:
+    | {
+        /**
+         * @generated from field: bytes sender_public_key = 2;
+         */
+        value: Uint8Array;
+        case: 'senderPublicKey';
+      }
+    | {
+        /**
+         * @generated from field: bytes eip712_signature = 13;
+         */
+        value: Uint8Array;
+        case: 'eip712Signature';
+      }
+    | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message waves.Order.
  * Use `create(OrderSchema)` to create a new message.
  */
-export const OrderSchema: GenMessage<Order> = /*@__PURE__*/
-  messageDesc(file_waves_order, 1);
+export const OrderSchema: GenMessage<Order> = /*@__PURE__*/ messageDesc(file_waves_order, 1);
 
 /**
  * @generated from enum waves.Order.Side
@@ -148,8 +160,7 @@ export enum Order_Side {
 /**
  * Describes the enum waves.Order.Side.
  */
-export const Order_SideSchema: GenEnum<Order_Side> = /*@__PURE__*/
-  enumDesc(file_waves_order, 1, 0);
+export const Order_SideSchema: GenEnum<Order_Side> = /*@__PURE__*/ enumDesc(file_waves_order, 1, 0);
 
 /**
  * @generated from enum waves.Order.PriceMode
@@ -174,6 +185,6 @@ export enum Order_PriceMode {
 /**
  * Describes the enum waves.Order.PriceMode.
  */
-export const Order_PriceModeSchema: GenEnum<Order_PriceMode> = /*@__PURE__*/
+export const Order_PriceModeSchema: GenEnum<Order_PriceMode> =
+  /*@__PURE__*/
   enumDesc(file_waves_order, 1, 1);
-
