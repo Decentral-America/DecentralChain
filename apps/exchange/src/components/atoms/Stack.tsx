@@ -3,7 +3,7 @@
  * Layout primitive for vertical or horizontal stacking with consistent gaps
  * Migrated to Material-UI Stack
  */
-import MuiStack, { StackProps as MuiStackProps } from '@mui/material/Stack';
+import MuiStack, { type StackProps as MuiStackProps } from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 export interface StackProps extends Omit<MuiStackProps, 'gap'> {

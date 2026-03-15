@@ -81,16 +81,17 @@ function getDefaultLanguage(): string {
   }
 
   // Try to get from browser
-  const browserLang = navigator.language || (navigator as any).userLanguage;
+  const browserLang =
+    navigator.language || (navigator as Navigator & { userLanguage?: string }).userLanguage;
 
   // Check for exact match
-  if (resources[browserLang as keyof typeof resources]) {
+  if (browserLang && resources[browserLang as keyof typeof resources]) {
     return browserLang;
   }
 
   // Check for language code only (e.g., 'en' from 'en-US')
-  const langCode = browserLang.split('-')[0];
-  if (resources[langCode as keyof typeof resources]) {
+  const langCode = browserLang?.split('-')[0];
+  if (langCode && resources[langCode as keyof typeof resources]) {
     return langCode;
   }
 
@@ -104,18 +105,18 @@ function getDefaultLanguage(): string {
 i18n
   .use(initReactI18next) // Passes i18n down to react-i18next
   .init({
-    resources,
-    lng: getDefaultLanguage(), // Language to use
+    // Debug mode (disable in production)
+    debug: false,
     fallbackLng: 'en', // Fallback language
     interpolation: {
       escapeValue: false, // React already escapes values
     },
     // Enable nested keys (e.g., 'app.ui.active')
     keySeparator: '.',
+    lng: getDefaultLanguage(), // Language to use
     // Namespace separator (not used, but set for clarity)
     nsSeparator: false,
-    // Debug mode (disable in production)
-    debug: false,
+    resources,
   });
 
 export default i18n;

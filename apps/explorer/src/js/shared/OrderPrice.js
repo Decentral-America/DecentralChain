@@ -1,58 +1,53 @@
+import {Decimal} from 'decimal.js';
 import BigNumber from 'bignumber.js';
-import { Decimal } from 'decimal.js';
 import Money from './Money';
 
 const MATCHER_SCALE = 1e8;
 
 const roundToPriceAsset = (price, pair) => {
-  return new Decimal(new Decimal(price).toFixed(pair.priceAsset.precision, Decimal.ROUND_FLOOR));
+    return new Decimal(new Decimal(price).toFixed(pair.priceAsset.precision, Decimal.ROUND_FLOOR));
+};
+
+const normalizePrice = (price, pair) => {
+    if (price instanceof BigNumber || price._isBigNumber)
+        price = price.toString();
+
+    return new Decimal(price)
+        .div(MATCHER_SCALE)
+        .div(Math.pow(10, pair.priceAsset.precision - pair.amountAsset.precision));
 };
 
 class OrderPrice {
-  constructor(price, pair) {
-    this.amountAsset = pair.amountAsset;
-    this.priceAsset = pair.priceAsset;
-    this.price = roundToPriceAsset(price, pair);
-  }
+    constructor(price, pair) {
+        this.amountAsset = pair.amountAsset;
+        this.priceAsset = pair.priceAsset;
+        this.price = roundToPriceAsset(price, pair);
+    }
 
-  volume = (amount) => {
-    if (amount.currency.id !== this.amountAsset.id)
-      throw new Error(`Wrong amount currency. Expected: ${this.amountAsset.toString()}`);
+    toTokens = () => this.price;
+    toCoins = () => this.toTokens().mul(Decimal.pow(10, this.priceAsset.precision - this.amountAsset.precision));
+    toBackendPrice = () => this.toCoins().mul(MATCHER_SCALE).round().toNumber();
 
-    return Money.fromTokens(this.price.mul(amount.toTokens()), this.priceAsset);
-  };
+    volume = amount => {
+        if (amount.currency.id !== this.amountAsset.id)
+            throw new Error('Wrong amount currency. Expected: ' + this.amountAsset.toString());
 
-  toString() {
-    return this.price.toFixed(8);
-  }
+        return Money.fromTokens(this.toTokens().mul(amount.toTokens()), this.priceAsset);
+    };
+
+    toString() {
+        return this.toTokens().toFixed(8);
+    }
 }
 
 export default {
-  fromTokens: (price, pair) => new OrderPrice(price, pair),
+    fromTokens: function (price, pair) {
+        return new OrderPrice(price, pair);
+    },
 
-  fromBackendOrderPrice: (price, pair, version) => {
-    if (price instanceof BigNumber || price._isBigNumber) price = price.toString();
+    fromBackendPrice: function (price, pair) {
+        var normalizedPrice = normalizePrice(price, pair);
 
-    const normalizedPrice =
-      version >= 4
-        ? new Decimal(price).div(MATCHER_SCALE)
-        : new Decimal(price)
-            .div(MATCHER_SCALE)
-            .div(10 ** (pair.priceAsset.precision - pair.amountAsset.precision));
-
-    return new OrderPrice(normalizedPrice, pair);
-  },
-
-  fromBackendExchangePrice: (price, pair, version) => {
-    if (price instanceof BigNumber || price._isBigNumber) price = price.toString();
-
-    const normalizedPrice =
-      version >= 3
-        ? new Decimal(price).div(MATCHER_SCALE)
-        : new Decimal(price)
-            .div(MATCHER_SCALE)
-            .div(10 ** (pair.priceAsset.precision - pair.amountAsset.precision));
-
-    return new OrderPrice(normalizedPrice, pair);
-  },
+        return new OrderPrice(normalizedPrice, pair);
+    }
 };

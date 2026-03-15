@@ -1,6 +1,5 @@
-@use "sass:map";
-@use "variables";
-@use "mixins.scss";
+@import "variables";
+@import "mixins.scss";
 
 .headline {
     .page-navigation {
@@ -21,11 +20,11 @@
         }
     }
 
-    @include mixins.responsive_styles(variables.$card_inner);
+    @include responsive_styles($card_inner);
 
     .page-link {
         cursor: pointer;
-        border-bottom: 1px dashed map.get(variables.$colors, black);
+        border-bottom: 1px dashed map-get($colors, black);
 
         &:not(:last-child) {
             margin-right: 28px;
@@ -34,7 +33,7 @@
         &.disabled {
             cursor: default;
             border: none;
-            color: map.get(variables.$colors, white);
+            color: map-get($colors, white);
         }
 
         &.first {
@@ -60,15 +59,15 @@
         padding: 6px;
         margin: 0 4px;
         cursor: pointer;
-        @include mixins.font(body);
+        @include font(body);
 
         &:hover {
-            background-color: map.get(variables.$colors, basic50);
+            background-color: map-get($colors, basic50);
         }
 
         &.current {
-            background-color: map.get(variables.$colors, submit400);
-            color: map.get(variables.$colors, white);
+            background-color: map-get($colors, submit400);
+            color: map-get($colors, white);
         }
     }
 }

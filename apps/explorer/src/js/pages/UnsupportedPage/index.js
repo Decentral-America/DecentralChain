@@ -1,1 +1,1 @@
-export { UnsupportedPageContainer as default } from './UnsupportedPage.container';
+export {UnsupportedPageContainer as default} from './UnsupportedPage.container';

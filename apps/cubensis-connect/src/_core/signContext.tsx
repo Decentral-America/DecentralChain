@@ -38,7 +38,7 @@ function usePromiseDialogController(initiallyOpen = false) {
     setIsOpen(true);
 
     return new Promise((resolve, reject) => {
-      modalPromiseRef.current = { resolve, reject };
+      modalPromiseRef.current = { reject, resolve };
     });
   }, []);
 
@@ -59,11 +59,11 @@ function usePromiseDialogController(initiallyOpen = false) {
 
   return useMemo(
     () => ({
-      onOk,
-      onCancel,
-      open,
       close,
       isOpen,
+      onCancel,
+      onOk,
+      open,
     }),
     [close, isOpen, onCancel, onOk, open],
   );
@@ -129,7 +129,7 @@ export function SignProvider({ children }: { children: ReactNode }) {
               <h2 className={clsx('margin4', 'title1')}>{t('importEmail.loginRequired')}</h2>
 
               <Login
-                userData={{ username: account.username, password: '' }}
+                userData={{ password: '', username: account.username }}
                 onConfirm={confirmDialog.onOk}
               />
             </div>
@@ -168,5 +168,5 @@ export function useSign<OnConfirmParams>(
     [createSign, onConfirm],
   );
 
-  return { sign, isSignPending };
+  return { isSignPending, sign };
 }

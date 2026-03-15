@@ -1,4 +1,4 @@
-import BigNumber from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { type BalanceAssets } from 'balances/types';
 import clsx from 'clsx';
@@ -56,7 +56,7 @@ function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemP
               backgroundColor: new ColorHash().hex(asset.id),
             }}
           >
-            {asset.displayName[0].toUpperCase()}
+            {(asset.displayName[0] ?? '').toUpperCase()}
           </div>
         )}
       </div>
@@ -195,7 +195,7 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
                         if (newIndex > filteredAndSortedItems.length - 1) {
                           newIndex -= filteredAndSortedItems.length;
                         }
-                      } while (filteredAndSortedItems[newIndex].asset.disabled);
+                      } while (filteredAndSortedItems[newIndex]?.asset.disabled);
 
                       return newIndex;
                     });
@@ -217,23 +217,25 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
                         if (newIndex < 0) {
                           newIndex += filteredAndSortedItems.length;
                         }
-                      } while (filteredAndSortedItems[newIndex].asset.disabled);
+                      } while (filteredAndSortedItems[newIndex]?.asset.disabled);
 
                       return newIndex;
                     });
                   }
                   event.preventDefault();
                   break;
-                case 'Enter':
+                case 'Enter': {
+                  const selectedItem = filteredAndSortedItems[selectedIndex];
                   if (
                     selectedIndex !== -1 &&
-                    filteredAndSortedItems.length !== 0 &&
-                    !filteredAndSortedItems[selectedIndex].asset.disabled
+                    selectedItem != null &&
+                    !selectedItem.asset.disabled
                   ) {
-                    onSelect(filteredAndSortedItems[selectedIndex].asset.id);
+                    onSelect(selectedItem.asset.id);
                   }
                   event.preventDefault();
                   break;
+                }
               }
             }}
           />
@@ -243,10 +245,11 @@ export function AssetSelectModal({ assetBalances, assets, network, onClose, onSe
           <ul ref={listRef}>
             {filteredAndSortedItems.map(({ asset, balance }, index) => (
               <AssetSelectItem
-                className={clsx(styles.listItem, {
-                  [styles.listItemSelected]: index === selectedIndex,
-                  [styles.listItemUnavailable]: asset.disabled,
-                })}
+                className={clsx(
+                  styles.listItem,
+                  index === selectedIndex && styles.listItemSelected,
+                  asset.disabled && styles.listItemUnavailable,
+                )}
                 network={network}
                 asset={asset}
                 balance={balance}

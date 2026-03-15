@@ -3,13 +3,15 @@
  * Action button bar with Send, Receive, and Refresh buttons for wallet operations
  * Provides quick access to core wallet functionality
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
+
 import { useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { useState } from 'react';
+import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import { SendAssetModalModern } from './SendAssetModalModern';
 import { ReceiveAssetModalModern } from './ReceiveAssetModalModern';
+import { SendAssetModalModern } from './SendAssetModalModern';
 
 /**
  * Action bar container

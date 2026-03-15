@@ -1,9 +1,17 @@
-import React, { createContext, useContext, useCallback, useRef, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Event handler function type that can accept any arguments
  */
-type EventHandler<T = any> = (...args: T[]) => void;
+type EventHandler<T = unknown> = (...args: T[]) => void;
 
 /**
  * Map structure for organizing event subscriptions
@@ -27,7 +35,7 @@ interface EventContextValue {
    * @param event - Event name to emit
    * @param args - Arguments to pass to event handlers
    */
-  emit: (event: string, ...args: any[]) => void;
+  emit: (event: string, ...args: unknown[]) => void;
 
   /**
    * Subscribe to an event with a handler function
@@ -79,44 +87,44 @@ const EventContext = createContext<EventContextValue | null>(null);
  * Provides type-safe event name constants
  */
 export const EventNames = {
-  // Wallet events
-  WALLET_BALANCE_UPDATED: 'wallet:balance:updated',
-  WALLET_ACCOUNT_CHANGED: 'wallet:account:changed',
-  WALLET_CONNECTED: 'wallet:connected',
-  WALLET_DISCONNECTED: 'wallet:disconnected',
+  ASSET_BURNED: 'asset:burned',
 
-  // Transaction events
-  TRANSACTION_CREATED: 'transaction:created',
-  TRANSACTION_SIGNED: 'transaction:signed',
-  TRANSACTION_BROADCAST: 'transaction:broadcast',
-  TRANSACTION_CONFIRMED: 'transaction:confirmed',
-  TRANSACTION_FAILED: 'transaction:failed',
+  // Asset events
+  ASSET_ISSUED: 'asset:issued',
+  ASSET_REISSUED: 'asset:reissued',
+  DATA_ERROR: 'data:error',
+
+  // Data events
+  DATA_REFRESHED: 'data:refreshed',
+  DEX_ORDER_CANCELLED: 'dex:order:cancelled',
 
   // DEX events
   DEX_ORDER_CREATED: 'dex:order:created',
-  DEX_ORDER_CANCELLED: 'dex:order:cancelled',
   DEX_ORDER_FILLED: 'dex:order:filled',
   DEX_PAIR_CHANGED: 'dex:pair:changed',
-
-  // UI events
-  UI_MODAL_OPENED: 'ui:modal:opened',
-  UI_MODAL_CLOSED: 'ui:modal:closed',
-  UI_THEME_CHANGED: 'ui:theme:changed',
-  UI_LANGUAGE_CHANGED: 'ui:language:changed',
 
   // Network events
   NETWORK_CHANGED: 'network:changed',
   NETWORK_CONNECTION_LOST: 'network:connection:lost',
   NETWORK_CONNECTION_RESTORED: 'network:connection:restored',
+  TRANSACTION_BROADCAST: 'transaction:broadcast',
+  TRANSACTION_CONFIRMED: 'transaction:confirmed',
 
-  // Asset events
-  ASSET_ISSUED: 'asset:issued',
-  ASSET_REISSUED: 'asset:reissued',
-  ASSET_BURNED: 'asset:burned',
+  // Transaction events
+  TRANSACTION_CREATED: 'transaction:created',
+  TRANSACTION_FAILED: 'transaction:failed',
+  TRANSACTION_SIGNED: 'transaction:signed',
+  UI_LANGUAGE_CHANGED: 'ui:language:changed',
+  UI_MODAL_CLOSED: 'ui:modal:closed',
 
-  // Data events
-  DATA_REFRESHED: 'data:refreshed',
-  DATA_ERROR: 'data:error',
+  // UI events
+  UI_MODAL_OPENED: 'ui:modal:opened',
+  UI_THEME_CHANGED: 'ui:theme:changed',
+  WALLET_ACCOUNT_CHANGED: 'wallet:account:changed',
+  // Wallet events
+  WALLET_BALANCE_UPDATED: 'wallet:balance:updated',
+  WALLET_CONNECTED: 'wallet:connected',
+  WALLET_DISCONNECTED: 'wallet:disconnected',
 } as const;
 
 /**
@@ -125,7 +133,7 @@ export const EventNames = {
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const eventsRef = useRef<EventMap>(new Map());
 
-  const emit = useCallback((event: string, ...args: any[]) => {
+  const emit = useCallback((event: string, ...args: unknown[]) => {
     const handlers = eventsRef.current.get(event);
     if (handlers) {
       // Execute handlers in registration order
@@ -133,14 +141,14 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         try {
           handler(...args);
         } catch (error) {
-          console.error(`Error executing handler for event "${event}":`, error);
+          logger.error(`Error executing handler for event "${event}":`, error);
         }
       });
     }
 
     // Development logging
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Event emitted: ${event}`, args);
+      logger.debug(`[EventManager] Event emitted: ${event}`, args);
     }
   }, []);
 
@@ -148,12 +156,12 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (!eventsRef.current.has(event)) {
       eventsRef.current.set(event, new Set());
     }
-    eventsRef.current.get(event)!.add(handler);
+    eventsRef.current.get(event)?.add(handler);
 
     // Development logging
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Subscribed to: ${event}`, {
-        totalListeners: eventsRef.current.get(event)!.size,
+      logger.debug(`[EventManager] Subscribed to: ${event}`, {
+        totalListeners: eventsRef.current.get(event)?.size,
       });
     }
 
@@ -164,7 +172,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (handlers) {
           handlers.delete(handler);
           if (import.meta.env.DEV) {
-            console.log(`[EventManager] Unsubscribed from: ${event}`);
+            logger.debug(`[EventManager] Unsubscribed from: ${event}`);
           }
         }
       },
@@ -176,7 +184,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (handlers) {
       handlers.delete(handler);
       if (import.meta.env.DEV) {
-        console.log(`[EventManager] Handler removed from: ${event}`);
+        logger.debug(`[EventManager] Handler removed from: ${event}`);
       }
     }
   }, []);
@@ -184,7 +192,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const clearEvent = useCallback((event: string) => {
     eventsRef.current.delete(event);
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Cleared all handlers for: ${event}`);
+      logger.debug(`[EventManager] Cleared all handlers for: ${event}`);
     }
   }, []);
 
@@ -192,7 +200,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const eventCount = eventsRef.current.size;
     eventsRef.current.clear();
     if (import.meta.env.DEV) {
-      console.log(`[EventManager] Cleared all events (${eventCount} events)`);
+      logger.debug(`[EventManager] Cleared all events (${eventCount} events)`);
     }
   }, []);
 
@@ -204,7 +212,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Return total count across all events
     return Array.from(eventsRef.current.values()).reduce(
       (total, handlers) => total + handlers.size,
-      0
+      0,
     );
   }, []);
 
@@ -213,13 +221,13 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   const value: EventContextValue = {
+    clearAllEvents,
+    clearEvent,
     emit,
+    getEventNames,
+    getListenerCount,
     subscribe,
     unsubscribe,
-    clearEvent,
-    clearAllEvents,
-    getListenerCount,
-    getEventNames,
   };
 
   return <EventContext.Provider value={value}>{children}</EventContext.Provider>;
@@ -246,21 +254,20 @@ export const useEventManager = (): EventContextValue => {
  * @param deps - Dependency array for handler function
  * @example
  * useEvent('transaction:confirmed', (txId) => {
- *   console.log('Transaction confirmed:', txId);
+ *   logger.debug('Transaction confirmed:', txId);
  * }, []);
  */
 export const useEvent = (
   event: string,
   handler: EventHandler,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ): void => {
   const { subscribe } = useEventManager();
 
   useEffect(() => {
     const subscription = subscribe(event, handler);
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, subscribe, ...deps]);
+  }, [event, subscribe, ...deps, handler]);
 };
 
 /**
@@ -284,13 +291,13 @@ export const useEmit = () => {
  * @param deps - Dependency array for handler function
  * @example
  * useEventOnce('wallet:connected', () => {
- *   console.log('Wallet connected for the first time!');
+ *   logger.debug('Wallet connected for the first time!');
  * }, []);
  */
 export const useEventOnce = (
   event: string,
   handler: EventHandler,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ): void => {
   const { subscribe } = useEventManager();
   const hasCalledRef = useRef(false);
@@ -311,8 +318,7 @@ export const useEventOnce = (
     return () => {
       subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, subscribe, ...deps]);
+  }, [event, subscribe, ...deps, handler]);
 };
 
 /**
@@ -321,22 +327,21 @@ export const useEventOnce = (
  * const emit = useTypedEmit<{ txId: string; amount: number }>();
  * emit('transaction:confirmed', { txId: '123', amount: 100 });
  */
-export const useTypedEmit = <T = any,>() => {
+export const useTypedEmit = <T = unknown>() => {
   const { emit } = useEventManager();
   return useCallback(
     (event: string, data: T) => {
       emit(event, data);
     },
-    [emit]
+    [emit],
   );
 };
 
 /**
+ * Export types for external usage
+ */
+export type { EventContextValue, EventHandler, EventSubscription };
+/**
  * Export EventContext for advanced usage
  */
 export { EventContext };
-
-/**
- * Export types for external usage
- */
-export type { EventHandler, EventSubscription, EventContextValue };

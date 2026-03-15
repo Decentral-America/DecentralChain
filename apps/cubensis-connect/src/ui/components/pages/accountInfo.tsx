@@ -101,7 +101,7 @@ export function AccountInfo() {
     setShowPassword(true);
 
     new Promise<string>((resolve, reject) => {
-      defferRef.current = { resolve, reject };
+      defferRef.current = { reject, resolve };
     })
       .then((password) => request(password))
       .then((data) => {

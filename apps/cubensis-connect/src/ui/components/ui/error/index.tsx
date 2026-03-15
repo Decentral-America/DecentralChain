@@ -70,9 +70,7 @@ export class ErrorMessage extends PureComponent<Props, State> {
     return (
       <button
         type="button"
-        className={clsx(styles.error, className, {
-          [styles.modalError]: type && type === 'modal',
-        })}
+        className={clsx(styles.error, className, type === 'modal' && styles.modalError)}
         onClick={this.onClick}
         {...otherProps}
       >

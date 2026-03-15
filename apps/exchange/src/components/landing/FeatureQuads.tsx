@@ -1,45 +1,52 @@
-import { Box, Container, Grid, Card, CardContent, Typography, Stack, Avatar } from '@mui/material';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SecurityIcon from '@mui/icons-material/Security';
 import SpeedIcon from '@mui/icons-material/Speed';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import { Avatar, Box, Card, CardContent, Container, Grid, Stack, Typography } from '@mui/material';
 
 const features = [
   {
-    title: 'Hardware Wallet Support',
     desc: 'Connect Ledger Nano devices for maximum security',
     icon: <SecurityIcon />,
+    title: 'Hardware Wallet Support',
   },
   {
-    title: 'Multi-Account',
     desc: 'Manage multiple wallets with one master password',
     icon: <SpeedIcon />,
+    title: 'Multi-Account',
   },
   {
-    title: 'Real-Time Trading',
     desc: 'Live order book and instant trade execution',
     icon: <AccountBalanceIcon />,
+    title: 'Real-Time Trading',
   },
   {
-    title: 'Asset Management',
     desc: 'Send, receive, and track all your DCC tokens',
     icon: <SupportAgentIcon />,
+    title: 'Asset Management',
   },
 ];
 
 export default function FeatureQuads() {
   return (
-    <Box component="section" sx={{ py: { xs: 3, md: 4 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 3 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           {features.map((feature) => (
-            <Grid item xs={12} sm={6} md={3} key={feature.title}>
+            <Grid
+              key={feature.title}
+              size={{
+                md: 3,
+                sm: 6,
+                xs: 12,
+              }}
+            >
               <Card sx={{ bgcolor: '#FBFCFE', border: '1px solid #EEF2F7', boxShadow: 1 }}>
                 <CardContent sx={{ p: 2.5 }}>
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <Avatar
                       variant="rounded"
-                      sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}
+                      sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}
                     >
                       {feature.icon}
                     </Avatar>

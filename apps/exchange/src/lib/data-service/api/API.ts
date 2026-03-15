@@ -1,56 +1,68 @@
-import * as assetsApi from './assets/assets';
-import * as transactionsApi from './transactions/transactions';
-import { parseTx, parseExchangeOrder, getAssetsHashFromTx } from './transactions/parse';
-import * as utilsFunctions from '../utils/utils';
-import { request } from '../utils/request';
 import { assetStorage } from '../utils/AssetStorage';
-import { height } from './node/node';
-import { get as getOrderBook } from './matcher/orderBook';
-import {
-    addSignature,
-    clearSignature,
-    getOrders,
-    getOrdersByPair,
-    signatureTimeout,
-    factory
-} from './matcher/getOrders';
-import * as matchersApi from './matchers/matchers'
+import { request } from '../utils/request';
+import * as utilsFunctions from '../utils/utils';
 import * as addressModule from './address';
-import { getLastPrice } from './matcher/getLastPrice';
 import { getAddressByAlias, getAliasesByAddress, getAliasesByIdList } from './aliases/aliases';
+import * as assetsApi from './assets/assets';
+import * as dataModule from './data';
+import { getLastPrice } from './matcher/getLastPrice';
+import {
+  addSignature,
+  clearSignature,
+  factory,
+  getOrders,
+  getOrdersByPair,
+  signatureTimeout,
+} from './matcher/getOrders';
 import { getFeeRates, getSettings } from './matcher/getSettings';
+import { get as getOrderBook } from './matcher/orderBook';
+import * as matchersApi from './matchers/matchers';
+import { height } from './node/node';
 import * as pairsModule from './pairs/pairs';
 import * as ratingModule from './rating/rating';
-import * as dataModule from './data';
+import { getAssetsHashFromTx, parseExchangeOrder, parseTx } from './transactions/parse';
+import * as transactionsApi from './transactions/transactions';
 
-
-export const aliases = { getAliasesByAddress, getAddressByAlias, getAliasesByIdList };
+export const aliases = { getAddressByAlias, getAliasesByAddress, getAliasesByIdList };
 
 export const node = { height };
 
 export const matcher = {
-    getOrderBook, getOrdersByPair, addSignature, clearSignature, getOrders, signatureTimeout, factory, getLastPrice,
-    getFeeRates, getSettings
+  addSignature,
+  clearSignature,
+  factory,
+  getFeeRates,
+  getLastPrice,
+  getOrderBook,
+  getOrders,
+  getOrdersByPair,
+  getSettings,
+  signatureTimeout,
 };
 
 export const matchers = matchersApi;
 
 export const assets = { ...assetsApi };
 
-export const transactions = { ...transactionsApi, parseTx, parseExchangeOrder, getAssetsHashFromTx };
+export const transactions = {
+  ...transactionsApi,
+  getAssetsHashFromTx,
+  parseExchangeOrder,
+  parseTx,
+};
 
-export const utils = { ...utilsFunctions, request, assetStorage };
+export const utils = { ...utilsFunctions, assetStorage, request };
 
 export const pairs = {
-    ...pairsModule
+  ...pairsModule,
 };
 
 export const rating = {
-    ...ratingModule
+  ...ratingModule,
 };
 
 export const data = {
-    ...dataModule
+  ...dataModule,
 };
 
 export const address = addressModule;

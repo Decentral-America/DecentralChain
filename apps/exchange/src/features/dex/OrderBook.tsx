@@ -4,10 +4,11 @@
  * Shows price, amount, and total with color-coded buy/sell orders
  * Matches Angular implementation exactly
  */
-import React, { useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import { useDexStore } from '@/stores/dexStore';
 import { Spinner } from '@/components/atoms/Spinner';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Order book wrapper - matches Angular's dex-order-book__wrapper
@@ -199,7 +200,7 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell'; $depth: number }>`
     bottom: 0;
     width: ${(p) => p.$depth}%;
     background: ${(p) =>
-      p.$type === 'buy' ? p.theme.colors.success + '15' : p.theme.colors.error + '15'};
+      p.$type === 'buy' ? `${p.theme.colors.success}15` : `${p.theme.colors.error}15`};
     z-index: 0;
   }
 `;
@@ -284,10 +285,10 @@ export const OrderBook: React.FC = () => {
   const formatWithShortMode = (
     value: string | number,
     precision: number,
-    shortModeThreshold: number | boolean
+    shortModeThreshold: number | boolean,
   ): string => {
     const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(num)) return '0';
+    if (Number.isNaN(num)) return '0';
 
     const threshold = typeof shortModeThreshold === 'number' ? shortModeThreshold : 10000;
     const useShortMode =
@@ -296,16 +297,16 @@ export const OrderBook: React.FC = () => {
     // Short mode for large numbers
     if (useShortMode && num >= threshold) {
       if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
+        return `${(num / 1000000).toFixed(1)}M`;
       } else if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
+        return `${(num / 1000).toFixed(1)}K`;
       }
     }
 
     // Regular formatting with proper precision
     return num.toLocaleString('en-US', {
-      minimumFractionDigits: 0,
       maximumFractionDigits: precision,
+      minimumFractionDigits: 0,
     });
   };
 
@@ -329,7 +330,7 @@ export const OrderBook: React.FC = () => {
   const calculateTotal = (price: string, amount: string): string => {
     const priceNum = parseFloat(price);
     const amountNum = parseFloat(amount);
-    if (isNaN(priceNum) || isNaN(amountNum)) return '0';
+    if (Number.isNaN(priceNum) || Number.isNaN(amountNum)) return '0';
     const total = priceNum * amountNum;
     return formatWithShortMode(total, 8, true);
   };
@@ -351,8 +352,9 @@ export const OrderBook: React.FC = () => {
   // Calculate spread (difference between lowest ask and highest bid)
   const spread =
     hasAsks && hasBids
-      ? ((parseFloat(orderBook.asks[0].price) - parseFloat(orderBook.bids[0].price)) /
-          parseFloat(orderBook.bids[0].price)) *
+      ? ((parseFloat(orderBook.asks[0]?.price ?? '0') -
+          parseFloat(orderBook.bids[0]?.price ?? '0')) /
+          parseFloat(orderBook.bids[0]?.price ?? '1')) *
         100
       : 0;
 

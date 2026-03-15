@@ -44,7 +44,7 @@ export function AssetSelect({ assetBalances, network, options, value, onChange }
               backgroundColor: new ColorHash().hex(value),
             }}
           >
-            {asset.displayName[0].toUpperCase()}
+            {asset.displayName[0]?.toUpperCase()}
           </div>
         )}
 

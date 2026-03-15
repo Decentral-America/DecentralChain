@@ -60,10 +60,27 @@ declare module 'charting_library' {
 
   export interface IBasicDataFeed {
     onReady: (callback: OnReadyCallback) => void;
-    searchSymbols: (userInput: string, exchange: string, symbolType: string, onResult: SearchSymbolsCallback) => void;
+    searchSymbols: (
+      userInput: string,
+      exchange: string,
+      symbolType: string,
+      onResult: SearchSymbolsCallback,
+    ) => void;
     resolveSymbol: (symbolName: string, onResolve: ResolveCallback, onError: ErrorCallback) => void;
-    getBars: (symbolInfo: LibrarySymbolInfo, resolution: ResolutionString, periodParams: { from: number; to: number; firstDataRequest: boolean }, onResult: HistoryCallback, onError: ErrorCallback) => void;
-    subscribeBars: (symbolInfo: LibrarySymbolInfo, resolution: ResolutionString, onTick: SubscribeBarsCallback, listenerGuid: string, onResetCacheNeededCallback: () => void) => void;
+    getBars: (
+      symbolInfo: LibrarySymbolInfo,
+      resolution: ResolutionString,
+      periodParams: { from: number; to: number; firstDataRequest: boolean },
+      onResult: HistoryCallback,
+      onError: ErrorCallback,
+    ) => void;
+    subscribeBars: (
+      symbolInfo: LibrarySymbolInfo,
+      resolution: ResolutionString,
+      onTick: SubscribeBarsCallback,
+      listenerGuid: string,
+      onResetCacheNeededCallback: () => void,
+    ) => void;
     unsubscribeBars: (listenerGuid: string) => void;
   }
 }

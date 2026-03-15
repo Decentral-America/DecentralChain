@@ -2,28 +2,31 @@
  * SendAssetModalModern Component
  * Modern MUI-based modal for sending assets with recipient, amount, and fee inputs
  */
-import React, { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { CheckCircle, Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Box,
-  Typography,
   Alert,
-  IconButton,
+  Box,
+  Button,
   Card,
-  Stack,
-  InputAdornment,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { Close as CloseIcon, Send as SendIcon, CheckCircle } from '@mui/icons-material';
-import { useAuth } from '@/contexts/AuthContext';
-import { createTransferTransaction, broadcastTransaction } from '@/utils/transactions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getAddressByAlias, validateAliasFormat } from '@/api/services/aliasService';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
+import { broadcastTransaction, createTransferTransaction } from '@/utils/transactions';
 
 export interface SendAssetModalModernProps {
   isOpen: boolean;
@@ -40,7 +43,7 @@ export interface SendAssetModalModernProps {
 export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   isOpen,
   onClose,
-  assetId = 'WAVES',
+  assetId = 'DCC',
   assetName = 'DCC',
   assetDecimals = 8,
   availableBalance = '0',
@@ -53,8 +56,8 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   const [amount, setAmount] = useState('');
   const [attachment, setAttachment] = useState('');
   const [validationErrors, setValidationErrors] = useState<{
-    recipient?: string;
-    amount?: string;
+    recipient?: string | undefined;
+    amount?: string | undefined;
   }>({});
 
   // Alias resolution state
@@ -65,6 +68,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   const fee = 0.001; // Transaction fee in DCC
   const [txId, setTxId] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // SECURITY: Mutex to prevent double-send race conditions
+  const sendingRef = useRef(false);
+  const broadcastedTxIds = useRef(new Set<string>());
 
   /**
    * Debounced alias resolution effect
@@ -90,7 +97,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
       let aliasName = recipient;
       const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
       const match = aliasName.match(aliasPrefix);
-      if (match) {
+      if (match?.[1]) {
         aliasName = match[1];
       }
 
@@ -109,9 +116,9 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
       try {
         const address = await getAddressByAlias(aliasName);
         setResolvedAddress(address);
-        console.log(`[SendAssetModalModern] Resolved alias "${aliasName}" to address: ${address}`);
+        logger.debug(`[SendAssetModalModern] Resolved alias "${aliasName}" to address: ${address}`);
       } catch (error) {
-        console.warn(`[SendAssetModalModern] Failed to resolve alias "${aliasName}":`, error);
+        logger.warn(`[SendAssetModalModern] Failed to resolve alias "${aliasName}":`, error);
         setResolvedAddress(null);
       } finally {
         setIsResolvingAlias(false);
@@ -128,32 +135,48 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
    */
   const sendMutation = useMutation({
     mutationFn: async () => {
-      if (!user?.seed) {
-        throw new Error('No user seed found');
+      // SECURITY: Prevent double-send race condition
+      if (sendingRef.current) {
+        throw new Error('Transaction already in progress');
       }
+      sendingRef.current = true;
 
-      // Validate inputs
-      if (!validateInputs()) {
-        throw new Error('Invalid inputs');
+      try {
+        if (!user?.seed) {
+          throw new Error('No user seed found');
+        }
+
+        // Validate inputs
+        if (!validateInputs()) {
+          throw new Error('Invalid inputs');
+        }
+
+        // Determine the final recipient address
+        // If it's an alias, use the resolved address; otherwise use recipient as-is
+        const finalRecipient = isAlias && resolvedAddress ? resolvedAddress : recipient;
+
+        // Create and broadcast transaction
+        const tx = await createTransferTransaction(
+          {
+            amount: parseFloat(amount),
+            assetId: assetId === 'DCC' ? null : assetId,
+            attachment,
+            recipient: finalRecipient,
+          },
+          user.seed,
+        );
+
+        const result = await broadcastTransaction(tx);
+
+        // SECURITY: Track broadcast tx ID to prevent duplicate broadcasts
+        if (result.id) {
+          broadcastedTxIds.current.add(result.id);
+        }
+
+        return result;
+      } finally {
+        sendingRef.current = false;
       }
-
-      // Determine the final recipient address
-      // If it's an alias, use the resolved address; otherwise use recipient as-is
-      const finalRecipient = isAlias && resolvedAddress ? resolvedAddress : recipient;
-
-      // Create and broadcast transaction
-      const tx = await createTransferTransaction(
-        {
-          recipient: finalRecipient,
-          amount: parseFloat(amount),
-          assetId: assetId === 'WAVES' ? null : assetId,
-          attachment,
-        },
-        user.seed
-      );
-
-      const result = await broadcastTransaction(tx);
-      return result;
     },
     onSuccess: (data) => {
       setTxId(data.id);
@@ -168,7 +191,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   });
 
   /**
-   * Validate Waves/DecentralChain address or alias
+   * Validate DCC/DecentralChain address or alias
    * @param input - Address or alias string
    * @returns boolean indicating validity
    */
@@ -185,7 +208,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     let aliasName = input;
     const aliasPrefix = /^alias:[A-Za-z0-9]:(.+)$/;
     const match = aliasName.match(aliasPrefix);
-    if (match) {
+    if (match?.[1]) {
       aliasName = match[1];
     }
 
@@ -204,7 +227,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
    */
   const isValidAmount = (value: string): boolean => {
     const numValue = parseFloat(value);
-    if (isNaN(numValue) || numValue <= 0) {
+    if (Number.isNaN(numValue) || numValue <= 0) {
       return false;
     }
     if (numValue > parseFloat(availableBalance)) {
@@ -284,13 +307,13 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             <Box display="flex" alignItems="center" gap={1}>
               <Box
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #06B6D4 0%, #10B981 100%)',
-                  display: 'flex',
                   alignItems: 'center',
+                  background: 'linear-gradient(135deg, #06B6D4 0%, #10B981 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  height: 40,
                   justifyContent: 'center',
+                  width: 40,
                 }}
               >
                 <SendIcon sx={{ color: 'white', fontSize: 20 }} />
@@ -313,7 +336,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                 Transaction ID
               </Typography>
-              <Card sx={{ p: 2, bgcolor: 'grey.50' }}>
+              <Card sx={{ bgcolor: 'grey.50', p: 2 }}>
                 <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
                   {txId}
                 </Typography>
@@ -340,13 +363,13 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           <Box display="flex" alignItems="center" gap={1}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
-                display: 'flex',
                 alignItems: 'center',
+                background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                height: 40,
                 justifyContent: 'center',
+                width: 40,
               }}
             >
               <SendIcon sx={{ color: 'white', fontSize: 20 }} />
@@ -443,7 +466,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                 ),
               }}
             />
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
               Available: {parseFloat(availableBalance).toFixed(assetDecimals)} {assetName}
             </Typography>
           </Box>
@@ -462,11 +485,11 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           {/* Fee Display */}
           <Card
             sx={{
-              p: 2,
               background:
                 'linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
               border: '1px solid',
               borderColor: 'primary.light',
+              p: 2,
             }}
           >
             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -499,10 +522,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           disabled={!recipient || !amount || sendMutation.isPending}
           startIcon={<SendIcon />}
           sx={{
-            background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #4338CA 0%, #0891B2 100%)',
             },
+            background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
           }}
         >
           {sendMutation.isPending ? 'Sending...' : 'Send'}

@@ -2,11 +2,11 @@
  * DEX WebSocket Hook
  * Real-time order book and trade updates
  */
-import { useEffect, useCallback, useState } from 'react';
-import { useWebSocketChannel, createWebSocketUrl } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { useCallback, useEffect, useState } from 'react';
+import { type OrderBook, type Trade } from '@/api/services/matcherService';
 import { config } from '@/config';
-import type { OrderBook, Trade } from '@/api/services/matcherService';
+import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
+import { useDexStore } from '@/stores/dexStore';
 
 /**
  * Order Book Update Message
@@ -54,10 +54,10 @@ export const useDexOrderBook = () => {
   // Handle order book updates
   const handleOrderBookUpdate = useCallback((data: OrderBookUpdate) => {
     setOrderBook({
-      timestamp: data.timestamp,
-      pair: data.pair,
-      bids: data.bids,
       asks: data.asks,
+      bids: data.bids,
+      pair: data.pair,
+      timestamp: data.timestamp,
     });
     setLastUpdate(Date.now());
     setIsLive(true);
@@ -65,22 +65,22 @@ export const useDexOrderBook = () => {
 
   // Subscribe to order book channel
   useWebSocketChannel<OrderBookUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleOrderBookUpdate,
-    !!selectedPair // Only subscribe when pair is selected
+    !!selectedPair, // Only subscribe when pair is selected
   );
 
   // Reset state when pair changes
   useEffect(() => {
     setOrderBook(null);
     setIsLive(false);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
-    orderBook,
-    lastUpdate,
     isLive,
+    lastUpdate,
+    orderBook,
     selectedPair,
   };
 };
@@ -115,21 +115,21 @@ export const useDexTrades = () => {
 
   // Subscribe to trades channel
   useWebSocketChannel<TradeUpdate>(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleTradeUpdate,
-    !!selectedPair
+    !!selectedPair,
   );
 
   // Reset state when pair changes
   useEffect(() => {
     setTrades([]);
-  }, [selectedPair?.amountAsset, selectedPair?.priceAsset]);
+  }, []);
 
   return {
-    trades,
     lastUpdate,
     selectedPair,
+    trades,
   };
 };
 
@@ -161,21 +161,21 @@ export const useDexUserOrders = (userAddress?: string) => {
         return newUpdates.slice(0, 50);
       });
     },
-    []
+    [],
   );
 
   // Subscribe to user orders channel
   useWebSocketChannel(
-    { url: wsUrl, debug: config.enableDebug },
+    { debug: config.enableDebug, url: wsUrl },
     channel,
     handleOrderUpdate,
-    !!userAddress
+    !!userAddress,
   );
 
   // Reset state when user changes
   useEffect(() => {
     setOrderUpdates([]);
-  }, [userAddress]);
+  }, []);
 
   return {
     orderUpdates,
@@ -214,13 +214,13 @@ export const useDexWebSocket = (options?: {
 
   return {
     orderBook: orderBook?.orderBook,
-    orderBookLastUpdate: orderBook?.lastUpdate,
     orderBookIsLive: orderBook?.isLive,
+    orderBookLastUpdate: orderBook?.lastUpdate,
+
+    orderUpdates: userOrders?.orderUpdates,
 
     trades: trades?.trades,
     tradesLastUpdate: trades?.lastUpdate,
-
-    orderUpdates: userOrders?.orderUpdates,
   };
 };
 
@@ -233,8 +233,8 @@ export const calculateSpread = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0].price;
-  const bestAsk = orderBook.asks[0].price;
+  const bestBid = orderBook.bids[0]?.price ?? 0;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   return bestAsk - bestBid;
 };
@@ -249,7 +249,7 @@ export const calculateSpreadPercentage = (orderBook: OrderBook | null): number =
   }
 
   const spread = calculateSpread(orderBook);
-  const bestAsk = orderBook.asks[0].price;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   if (bestAsk === 0) return 0;
 
@@ -265,8 +265,8 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
     return 0;
   }
 
-  const bestBid = orderBook.bids[0].price;
-  const bestAsk = orderBook.asks[0].price;
+  const bestBid = orderBook.bids[0]?.price ?? 0;
+  const bestAsk = orderBook.asks[0]?.price ?? 0;
 
   return (bestBid + bestAsk) / 2;
 };
@@ -278,10 +278,10 @@ export const getMidMarketPrice = (orderBook: OrderBook | null): number => {
  */
 export const getTotalLiquidity = (
   orderBook: OrderBook | null,
-  depth = 10
+  depth = 10,
 ): { bidLiquidity: number; askLiquidity: number; totalLiquidity: number } => {
   if (!orderBook) {
-    return { bidLiquidity: 0, askLiquidity: 0, totalLiquidity: 0 };
+    return { askLiquidity: 0, bidLiquidity: 0, totalLiquidity: 0 };
   }
 
   const bidLiquidity = orderBook.bids
@@ -293,8 +293,8 @@ export const getTotalLiquidity = (
     .reduce((sum, order) => sum + order.amount * order.price, 0);
 
   return {
-    bidLiquidity,
     askLiquidity,
+    bidLiquidity,
     totalLiquidity: bidLiquidity + askLiquidity,
   };
 };

@@ -8,15 +8,15 @@ import { useConfig } from '@/contexts/ConfigContext';
 /**
  * Convert network code character to ASCII byte value
  * Used for seed generation and address validation
- * 
- * @param code - Network code character ('?' for DCC mainnet, '!' for testnet, 'W' for Waves)
- * @returns ASCII byte value (63 for '?', 33 for '!', 87 for 'W')
- * 
+ *
+ * @param code - Network code character ('?' for DCC mainnet, '!' for testnet, 'W' for legacy Waves compatibility)
+ * @returns ASCII byte value (63 for '?', 33 for '!', 87 for 'W' legacy)
+ *
  * @example
  * ```typescript
  * getNetworkByte('?') // Returns 63 (DCC mainnet)
  * getNetworkByte('!') // Returns 33 (DCC testnet)
- * getNetworkByte('W') // Returns 87 (Waves mainnet)
+ * getNetworkByte('W') // Returns 87 (legacy Waves compatibility)
  * ```
  */
 export const getNetworkByte = (code: string): number => {
@@ -26,15 +26,15 @@ export const getNetworkByte = (code: string): number => {
 /**
  * Convert network byte to character code
  * Used for displaying network identifiers
- * 
+ *
  * @param byte - ASCII byte value (network byte)
  * @returns Network code character
- * 
+ *
  * @example
  * ```typescript
  * getNetworkChar(63) // Returns '?' (DCC mainnet)
  * getNetworkChar(33) // Returns '!' (DCC testnet)
- * getNetworkChar(87) // Returns 'W' (Waves mainnet)
+ * getNetworkChar(87) // Returns 'W' (legacy Waves compatibility)
  * ```
  */
 export const getNetworkChar = (byte: number): string => {
@@ -45,9 +45,9 @@ export const getNetworkChar = (byte: number): string => {
  * React hook to get current network byte from configuration
  * Provides reactive access to network byte and code values
  * Updates automatically when network is switched via ConfigContext
- * 
+ *
  * @returns Object containing byte (number) and char (string) for current network
- * 
+ *
  * @example
  * ```typescript
  * function MyComponent() {
@@ -60,7 +60,7 @@ export const getNetworkChar = (byte: number): string => {
  */
 export const useNetworkByte = (): { byte: number; char: string } => {
   const { networkCode } = useConfig();
-  
+
   return {
     byte: getNetworkByte(networkCode),
     char: networkCode,

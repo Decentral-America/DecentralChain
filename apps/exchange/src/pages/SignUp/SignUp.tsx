@@ -2,26 +2,27 @@
  * SignUp Page
  * Full-screen mobile-app experience on mobile, 2-column layout on desktop.
  */
-import React from 'react';
+
+import LoginIcon from '@mui/icons-material/Login';
+import ShieldIcon from '@mui/icons-material/Shield';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import {
   Box,
+  Button,
   Container,
   Grid,
-  Typography,
   Stack,
-  Button,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { landingTheme } from '@/theme/landingTheme';
-import { CreateAccount } from '@/features/auth/CreateAccount';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
-import ShieldIcon from '@mui/icons-material/Shield';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import LoginIcon from '@mui/icons-material/Login';
+import { CreateAccount } from '@/features/auth/CreateAccount';
+import { landingTheme } from '@/theme/landingTheme';
 
 const SignUpInner: React.FC = () => {
   const navigate = useNavigate();
@@ -41,16 +42,20 @@ const SignUpInner: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        display: 'flex',
         alignItems: 'center',
         bgcolor: 'background.default',
+        display: 'flex',
+        minHeight: '100vh',
       }}
     >
       <Container maxWidth="xl" sx={{ py: 8 }}>
         <Grid container spacing={6} alignItems="center">
           {/* Left Column - Branding & Features */}
-          <Grid item md={5}>
+          <Grid
+            size={{
+              md: 5,
+            }}
+          >
             <Box sx={{ pr: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <Box
@@ -64,12 +69,12 @@ const SignUpInner: React.FC = () => {
               <Typography
                 variant="h2"
                 fontWeight={800}
-                sx={{ mb: 2, fontSize: '2.5rem', lineHeight: 1.2 }}
+                sx={{ fontSize: '2.5rem', lineHeight: 1.2, mb: 2 }}
               >
                 Start your trading journey today
               </Typography>
 
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: 18 }}>
+              <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
                 Create your decentralized wallet and get instant access to trading, swaps, and
                 portfolio management.
               </Typography>
@@ -80,12 +85,12 @@ const SignUpInner: React.FC = () => {
                 startIcon={<LoginIcon />}
                 onClick={() => navigate('/sign-in')}
                 sx={{
-                  mb: 4,
-                  borderWidth: 2,
+                  '&:hover': { bgcolor: 'primary.main', borderWidth: 2, color: 'white' },
                   borderColor: 'primary.main',
+                  borderWidth: 2,
                   color: 'primary.main',
                   fontWeight: 600,
-                  '&:hover': { borderWidth: 2, bgcolor: 'primary.main', color: 'white' },
+                  mb: 4,
                 }}
               >
                 Already have an account? Sign In
@@ -94,36 +99,36 @@ const SignUpInner: React.FC = () => {
               <Stack spacing={2.5}>
                 {[
                   {
-                    icon: <ShieldIcon sx={{ fontSize: 20 }} />,
                     color: 'primary.main',
-                    title: 'Non-Custodial Security',
                     desc: 'You control your private keys. Your crypto, your rules.',
+                    icon: <ShieldIcon sx={{ fontSize: 20 }} />,
+                    title: 'Non-Custodial Security',
                   },
                   {
-                    icon: <SwapHorizIcon sx={{ fontSize: 20 }} />,
                     color: 'secondary.main',
-                    title: 'Instant Token Swaps',
                     desc: 'Smart routing algorithms find you the best rates across liquidity pools.',
+                    icon: <SwapHorizIcon sx={{ fontSize: 20 }} />,
+                    title: 'Instant Token Swaps',
                   },
                   {
-                    icon: <ShowChartIcon sx={{ fontSize: 20 }} />,
                     color: 'primary.main',
-                    title: 'Real-Time Analytics',
                     desc: 'Professional charts, portfolio tracking, and market insights.',
+                    icon: <ShowChartIcon sx={{ fontSize: 20 }} />,
+                    title: 'Real-Time Analytics',
                   },
                 ].map((f) => (
                   <Stack key={f.title} direction="row" spacing={2} alignItems="flex-start">
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
+                        alignItems: 'center',
                         bgcolor: f.color,
+                        borderRadius: '50%',
                         color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         flexShrink: 0,
+                        height: 40,
+                        justifyContent: 'center',
+                        width: 40,
                       }}
                     >
                       {f.icon}
@@ -143,36 +148,40 @@ const SignUpInner: React.FC = () => {
           </Grid>
 
           {/* Right Column - Account Creation Form */}
-          <Grid item md={7}>
+          <Grid
+            size={{
+              md: 7,
+            }}
+          >
             <Box
               sx={{
-                position: 'relative',
-                borderRadius: 3,
-                overflow: 'hidden',
-                minHeight: '600px',
-                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                padding: 5,
                 background: `
                   radial-gradient(1200px 600px at 20% -10%, #FF7A59 0%, rgba(255,122,89,0) 60%),
                   radial-gradient(900px 500px at 70% 0%, #5B8CFF 0%, rgba(91,140,255,0) 60%),
                   radial-gradient(800px 400px at 40% 30%, #9D4EDD 0%, rgba(157,78,221,0) 60%),
                   linear-gradient(180deg, #0A0E1A 0%, #111827 100%)
                 `,
+                borderRadius: 3,
+                display: 'flex',
                 filter: 'saturate(1.05)',
+                justifyContent: 'center',
+                minHeight: '600px',
+                overflow: 'hidden',
+                padding: 5,
+                position: 'relative',
               }}
             >
               <Box
                 sx={{
-                  position: 'relative',
-                  zIndex: 1,
-                  width: '100%',
+                  backdropFilter: 'blur(10px)',
                   bgcolor: 'rgba(255, 255, 255, 0.95)',
                   borderRadius: 2.5,
-                  p: 4,
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  backdropFilter: 'blur(10px)',
+                  p: 4,
+                  position: 'relative',
+                  width: '100%',
+                  zIndex: 1,
                 }}
               >
                 <CreateAccount />

@@ -3,21 +3,22 @@
  * Single value selection with visual feedback
  * Migrated to Material-UI
  */
-import React from 'react';
-import { Slider as MuiSlider, Box, Typography } from '@mui/material';
+
+import { Box, Slider as MuiSlider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import type React from 'react';
 
 const SliderContainer = styled(Box)(() => ({
-  width: '100%',
   padding: '8px 0',
+  width: '100%',
 }));
 
 const Labels = styled(Box)(({ theme }) => ({
+  color: theme.palette.text.secondary,
   display: 'flex',
+  fontSize: '12px',
   justifyContent: 'space-between',
   marginTop: theme.spacing(1),
-  fontSize: '12px',
-  color: theme.palette.text.secondary,
 }));
 
 // Interfaces
@@ -87,14 +88,14 @@ export const Slider: React.FC<SliderProps> = ({
         valueLabelFormat={valueFormatter}
         marks={marks}
         sx={{
-          '& .MuiSlider-thumb': {
-            width: 20,
-            height: 20,
-          },
-          '& .MuiSlider-track': {
+          '& .MuiSlider-rail': {
             height: 6,
           },
-          '& .MuiSlider-rail': {
+          '& .MuiSlider-thumb': {
+            height: 20,
+            width: 20,
+          },
+          '& .MuiSlider-track': {
             height: 6,
           },
         }}

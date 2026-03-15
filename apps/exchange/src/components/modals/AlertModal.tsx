@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from './Modal';
 import { Button } from '@/components/atoms/Button';
+import { Modal } from './Modal';
 
 export type AlertType = 'success' | 'error' | 'warning' | 'info';
 
@@ -41,7 +41,7 @@ export interface AlertModalProps {
    * Button text
    * @default 'OK'
    */
-  buttonText?: string;
+  buttonText?: string | undefined;
 
   /**
    * Additional content to display
@@ -95,7 +95,6 @@ const IconWrapper = styled.div<{ type: AlertType }>`
           background: ${p.theme.colors.warning}20;
           color: ${p.theme.colors.warning};
         `;
-      case 'info':
       default:
         return `
           background: ${p.theme.colors.primary}20;
@@ -136,7 +135,6 @@ const getAlertIcon = (type: AlertType): string => {
       return '✕';
     case 'warning':
       return '⚠';
-    case 'info':
     default:
       return 'ℹ';
   }
@@ -187,11 +185,13 @@ export function useAlertModal() {
     type: AlertType;
     buttonText?: string;
   }>({
+    message: '',
     open: false,
     title: '',
-    message: '',
     type: 'info',
   });
+
+  const resolveRef = React.useRef<(() => void) | null>(null);
 
   const alert = React.useCallback(
     (options: { title: string; message: string; type?: AlertType; buttonText?: string }) => {
@@ -203,16 +203,17 @@ export function useAlertModal() {
         });
 
         // Store resolve function
-        (options as any).resolvePromise = resolve;
+        resolveRef.current = resolve;
       });
     },
-    []
+    [],
   );
 
   const close = React.useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));
-    (state as any).resolvePromise?.();
-  }, [state]);
+    resolveRef.current?.();
+    resolveRef.current = null;
+  }, []);
 
   const AlertModalComponent = React.useMemo(
     () => (
@@ -225,44 +226,44 @@ export function useAlertModal() {
         buttonText={state.buttonText}
       />
     ),
-    [state, close]
+    [state, close],
   );
 
   // Convenience methods for different alert types
   const success = React.useCallback(
     (title: string, message: string) => {
-      return alert({ title, message, type: 'success' });
+      return alert({ message, title, type: 'success' });
     },
-    [alert]
+    [alert],
   );
 
   const error = React.useCallback(
     (title: string, message: string) => {
-      return alert({ title, message, type: 'error' });
+      return alert({ message, title, type: 'error' });
     },
-    [alert]
+    [alert],
   );
 
   const warning = React.useCallback(
     (title: string, message: string) => {
-      return alert({ title, message, type: 'warning' });
+      return alert({ message, title, type: 'warning' });
     },
-    [alert]
+    [alert],
   );
 
   const info = React.useCallback(
     (title: string, message: string) => {
-      return alert({ title, message, type: 'info' });
+      return alert({ message, title, type: 'info' });
     },
-    [alert]
+    [alert],
   );
 
   return {
-    alert,
-    success,
-    error,
-    warning,
-    info,
     AlertModal: AlertModalComponent,
+    alert,
+    error,
+    info,
+    success,
+    warning,
   };
 }

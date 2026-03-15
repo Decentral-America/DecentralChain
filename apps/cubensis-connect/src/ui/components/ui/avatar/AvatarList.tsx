@@ -26,9 +26,10 @@ export function AvatarList<T extends AvatarListItem>({
         <button
           type="button"
           key={item.address}
-          className={clsx(styles.avatarListItem, {
-            [styles.avatarListItemSelected]: selected.address === item.address,
-          })}
+          className={clsx(
+            styles.avatarListItem,
+            selected.address === item.address && styles.avatarListItemSelected,
+          )}
           onClick={() => {
             onSelect(item);
           }}

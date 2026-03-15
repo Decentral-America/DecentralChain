@@ -14,8 +14,8 @@ export type TradingPair = [string, string];
  * Oracle configuration for external data providers
  */
 export interface OracleConfig {
-  /** Waves oracle address for price feeds and data services */
-  waves: string;
+  /** DCC oracle address for price feeds and data services */
+  dcc: string;
   /** Tokenomica oracle address (optional, may be empty) */
   tokenomica: string;
 }
@@ -31,6 +31,10 @@ export interface GatewayAssetConfig {
   isThirdParty: boolean;
   /** Regex pattern for validating deposit addresses for this asset */
   regex: string;
+  /** Gateway type identifier for provider lookup */
+  gateway_type?: string;
+  /** Gateway ID for provider lookup */
+  gateway_id?: string;
 }
 
 /**
@@ -77,7 +81,7 @@ export interface MainnetConfig {
   coinomat: string;
 
   /** Gateway configurations mapped by asset ID */
-  wavesGateway: Record<string, GatewayAssetConfig>;
+  gateway: Record<string, GatewayAssetConfig>;
 
   /** Support page URL */
   support: string;

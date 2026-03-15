@@ -6,26 +6,25 @@
     "cancel": "取消",
     "copied": "已复制",
     "copyToClipboard": "点击复制到剪贴板",
+    "email": "邮箱",
+    "emailNoBackupPhrase": "该账户通过DecentralChain Exchange账户导入，无可备份助记词或私钥",
     "encodedSeed": "加密种子",
     "enter": "输入",
-    "email": "邮箱",
     "password": "密码",
     "passwordError": "密码不正确",
     "privateKeyNoBackupPhrase": "该账户通过私钥导入，因此无备份助记词",
-    "emailNoBackupPhrase": "该账户通过DecentralChain Exchange账户导入，无可备份助记词或私钥",
     "privKey": "私钥",
     "pubKey": "公钥",
     "viewInExplorer": "在浏览器中查看"
   },
   "activeAccountCard": { "swapButton": "兑换" },
-  "assetAmountInput": { "balanceLabel": "余额" },
   "address": {
     "add": "新地址",
     "addButton": "添加新地址",
-    "addTooltip": "在您的通讯录里添加一个新地址",
     "added": "地址已添加",
     "addressAlreadyExist": "地址已存在",
     "addressInvalidError": "地址不正确",
+    "addTooltip": "在您的通讯录里添加一个新地址",
     "cancel": "取消",
     "copied": "已复制",
     "copyToClipboard": "点击复制到剪贴板",
@@ -47,26 +46,27 @@
     "wallets": "我的钱包",
     "warningAlias": "请注意，该收款人有别称账户，且不在你的通讯录里。"
   },
+  "assetAmountInput": { "balanceLabel": "余额" },
   "assetInfo": {
-    "id": "ID",
-    "name": "名称",
-    "ticker": "代码",
-    "precision": "精度数",
-    "quantity": "总发行量",
-    "type": "类型",
-    "reissuable": "可再发行",
-    "notReissuable": "不可再增发",
-    "scripted": "已脚本化",
-    "notScripted": "未脚本化",
-    "minSponsoredFee": "赞助资产费",
-    "sender": "发行方",
-    "timestamp": "发行日期",
     "closeBtn": "关闭",
-    "infoTooltip": "资产信息",
     "favAddTooltip": "收藏",
     "favRemoveTooltip": "取消收藏",
+    "id": "ID",
+    "infoTooltip": "资产信息",
+    "minSponsoredFee": "赞助资产费",
+    "name": "名称",
+    "notReissuable": "不可再增发",
+    "notScripted": "未脚本化",
+    "precision": "精度数",
+    "quantity": "总发行量",
+    "reissuable": "可再发行",
+    "scripted": "已脚本化",
     "sendAssetTooltip": "发送",
+    "sender": "发行方",
     "swapAssetTooltip": "兑换",
+    "ticker": "代码",
+    "timestamp": "发行日期",
+    "type": "类型",
     "viewDetailsInExplorer": "在浏览器中查看详情"
   },
   "assetSelectModal": {
@@ -109,14 +109,14 @@
     "saveBackup": "保存助记词"
   },
   "bottom": {
-    "network": {
-      "edit": "编辑",
-      "disabled": "在此操作中您无法改变网络设置"
-    },
     "custom": "自定义",
     "mainnet": "主网",
-    "testnet": "测试网",
-    "stagenet": "阶段网"
+    "network": {
+      "disabled": "在此操作中您无法改变网络设置",
+      "edit": "编辑"
+    },
+    "stagenet": "阶段网",
+    "testnet": "测试网"
   },
   "changeName": {
     "currentName": "当前账户名称",
@@ -165,10 +165,10 @@
   },
   "exportAndImport": {
     "exportAccounts": "导出账户",
-    "importAccounts": "导入账户",
     "exportAddressBook": "导出地址簿",
-    "importAddressBook": "导入地址簿",
-    "exportAll": "全部导出l"
+    "exportAll": "全部导出l",
+    "importAccounts": "导入账户",
+    "importAddressBook": "导入地址簿"
   },
   "exportKeystore": {
     "cancelBtn": "取消",
@@ -193,13 +193,13 @@
   "forgotPassword": {
     "attention": "请注意！",
     "attentionMessage": "要想重置密码，您需要删除Cubensis Connect钱包内的所有账户，然后设置新密码，并重新导入所有账户的助记词种子。",
-    "warningMessage": "如果您没有保存助记词种子或私钥，您将无法再次访问您的账户。",
     "continueMessage": "在以下区域中输入该内容以继续进行操作",
     "phrase": "删除所有账户",
     "phraseError": "助记词输入错误",
     "placeholder": "在此处输入...",
+    "resetCancel": "取消",
     "resetConfirm": "删除所有",
-    "resetCancel": "取消"
+    "warningMessage": "如果您没有保存助记词种子或私钥，您将无法再次访问您的账户。"
   },
   "historyCard": {
     "burn": "销毁资产",
@@ -239,25 +239,25 @@
     "transferSelf": "自转"
   },
   "historyFilters": {
-    "all": "全部",
-    "incoming": "仅转入中",
-    "outgoing": "仅转出中",
-    "issue": "发行",
-    "transfer": "转账",
-    "reissue": "再发行",
-    "burn": "销毁",
-    "exchange": "兑换",
-    "lease": "租赁",
-    "cancelLease": "取消租赁",
     "alias": "别称",
-    "massTransfer": "批量转账",
+    "all": "全部",
+    "burn": "销毁",
+    "cancelLease": "取消租赁",
     "data": "数据",
+    "exchange": "兑换",
+    "incoming": "仅转入中",
+    "invokeScript": "调用脚本",
+    "issue": "发行",
+    "lease": "租赁",
+    "massTransfer": "批量转账",
+    "outgoing": "仅转出中",
+    "reissue": "再发行",
+    "setAssetScript": "设置资产脚本",
     "setScript": "设置脚本",
     "sponsorship": "赞助",
-    "setAssetScript": "设置资产脚本",
-    "invokeScript": "调用脚本",
-    "updateAssetInfo": "更新资产信息",
-    "type": "转账类型"
+    "transfer": "转账",
+    "type": "转账类型",
+    "updateAssetInfo": "更新资产信息"
   },
   "import": {
     "addAccount": "增加账户",
@@ -279,25 +279,25 @@
     "viaSeed": "助记词种子或私钥"
   },
   "importEmail": {
-    "importEmailTitle": "导入邮箱账户",
-    "importEmailDesc": "连接在DecentralChain Exchange创建的邮箱账户",
-    "passwordLabel": "密码",
-    "passwordRequired": "输入密码",
-    "loginRequired": "确认邮箱账户",
+    "alreadyExists": "账户已存在",
+    "continue": "继续",
+    "credentialsError": "用户名或密码不正确",
+    "dontHaveAccount": "没有账户？",
     "emailLabel": "邮箱",
     "emailRequired": "输入正确的邮箱",
-    "credentialsError": "用户名或密码不正确",
-    "continue": "继续",
     "forgotPassword": "忘记密码？",
-    "dontHaveAccount": "没有账户？",
-    "signUp": "注册",
-    "verifyAccountTitle": "验证账户",
-    "verifyAccountDesc": "请输入{{destination}}收到的6位数字验证码",
+    "importEmailDesc": "连接在DecentralChain Exchange创建的邮箱账户",
+    "importEmailTitle": "导入邮箱账户",
     "incorrectCode": "验证码错误，请重新输入",
-    "userDoesNotExist": "该用户不存在。",
     "incorrectUsernameOrPassword": "账户名或密码不正确。",
     "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系DecentralChain Exchange客户支持：https://support.decentralchain.io/",
-    "alreadyExists": "账户已存在"
+    "loginRequired": "确认邮箱账户",
+    "passwordLabel": "密码",
+    "passwordRequired": "输入密码",
+    "signUp": "注册",
+    "userDoesNotExist": "该用户不存在。",
+    "verifyAccountDesc": "请输入{{destination}}收到的6位数字验证码",
+    "verifyAccountTitle": "验证账户"
   },
   "importKeystore": {
     "addressBookLabel": "地址簿文件",
@@ -358,14 +358,14 @@
     "keepUp": "Cubensis Connect钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。使用Cubensis Connect钱包，您可以签名交易并在危险的网站中保持安全"
   },
   "langsSettings": { "confirm": "确认", "title": "变更语言" },
-  "ledgerErrors": {
-    "unknown": "无法连接Ledger，请重试",
-    "usedBySomeOtherApp": "看起来Ledger已经被其他应用使用，关闭所有可能使用Ledger的应用，并重试。"
-  },
   "ledgerConnectModal": {
     "instructions": "连接Ledger设备并打开DCC应用",
     "title": "连接中...",
     "tryAgainButton": "重试"
+  },
+  "ledgerErrors": {
+    "unknown": "无法连接Ledger，请重试",
+    "usedBySomeOtherApp": "看起来Ledger已经被其他应用使用，关闭所有可能使用Ledger的应用，并重试。"
   },
   "login": {
     "enter": "输入",
@@ -443,10 +443,18 @@
     "viewInExplorer": "在浏览器中查看详情",
     "viewOnMarketplace": "在市场中查看"
   },
+  "notifications": {
+    "allowSending": "允许发送信息",
+    "closeBtn": "关闭",
+    "messages": "信息",
+    "nextBtn": "下一条",
+    "time": "时间",
+    "toListBtn": "通知"
+  },
   "otherAccounts": {
     "addAccount": "添加账户",
-    "noAccountsNote": "在当前网络中，您没有其他账户",
     "noAccountsFound": "没找到其他符合当前过滤条件的账户",
+    "noAccountsNote": "在当前网络中，您没有其他账户",
     "title": "其他账户"
   },
   "permission": { "customList": "自定义名单", "whiteList": "白名单" },
@@ -469,13 +477,13 @@
     "approvedOrigin": "已许可",
     "automaticOrigin": "自动签名",
     "empty": "这里什么也没有...",
-    "rejectedOrigin": "已拒绝",
-    "title": "权限控制",
     "notify": {
       "allowed": "已允许！",
       "deleted": "已删除！",
       "disallowed": "已不允许！"
-    }
+    },
+    "rejectedOrigin": "已拒绝",
+    "title": "权限控制"
   },
   "qrCode": { "download": "下载二维码" },
   "send": {
@@ -508,11 +516,11 @@
     "settingsGeneral": "通用",
     "suspiciousAssetsProtection": "可疑资产保护",
     "suspiciousAssetsTooltip": "不展示可疑资产的余额和交易",
-    "time_10m": "10分钟",
     "time_1h": "1小时",
+    "time_5m": "5分钟",
+    "time_10m": "10分钟",
     "time_20m": "20分钟",
     "time_40m": "40分钟",
-    "time_5m": "5分钟",
     "time_idle": "浏览器超时",
     "tooltipContent": "保护您免受Clicker木马威胁"
   },
@@ -541,6 +549,7 @@
     "customDataFailed": "您的数据已被拒绝!",
     "customDataName": "签名自定义数据",
     "customDataSent": "您的数据已被确认！!",
+    "dccAuthConfirmed": "签名DCC授权请求",
     "matcherConfirmed": "签名匹配器请求!",
     "matcherRejected": "暂未签名强求。",
     "matcherSend": "签名匹配器请求!!",
@@ -555,8 +564,7 @@
     "transactionFailed": "您的交易已被拒绝！",
     "transactionSend": "您已发送",
     "understand": "我理解",
-    "viewTransaction": "查看交易",
-    "dccAuthConfirmed": "签名DCC授权请求"
+    "viewTransaction": "查看交易"
   },
   "swap": {
     "amountToSendError": "因SwopFi应用状态问题，无法完成兑换。请重新尝试，或尝试增加滑点容忍。",
@@ -577,8 +585,8 @@
     "priceLabel": "价格",
     "primaryLabel": "首要",
     "profitLabel": "利润",
-    "slippageToleranceModalTitle": "滑点容忍",
     "slippageToleranceModalDescription": "如果价格变化大于此百分比，兑换将被取消",
+    "slippageToleranceModalTitle": "滑点容忍",
     "statusFailed": "兑换失败",
     "statusInProgress": "等待兑换完成...",
     "statusSucceeded": "兑换成功",
@@ -606,20 +614,26 @@
     "dataHash": "数据哈希",
     "dataTransaction": "区块链输入",
     "dataTransactionName": "数据",
+    "dccAuthTimeStamp": "时间戳",
     "decimalPoints": "精度数",
     "description": "描述",
     "details": "详情",
     "dex": "DEX",
     "expires": "过期",
     "fee": "费用",
+    "hash": "哈希",
     "hideTransactions": "隐藏交易",
+    "issueNFT": "发行NFT",
+    "issueSmartNFT": "发行智能NFT",
+    "issueSmartToken": "发行智能代币",
+    "issueToken": "发行代币",
     "issueType": "类型",
     "json": "JSON",
     "lease": "租赁",
     "leaseCancel": "取消租赁",
     "massTransfer": "批量转账",
-    "matcherTimeStamp": "匹配器时间戳",
     "matcherPublicKey": "匹配器公钥",
+    "matcherTimeStamp": "匹配器时间戳",
     "name": "名称",
     "noReissuable": "不可再发行",
     "orderBuy": "购买",
@@ -640,6 +654,7 @@
     "recipient": "接收人",
     "recipients": "接收人",
     "reissuable": "可再发行",
+    "reissue": "重新发行",
     "script": "脚本",
     "scriptInvocation": "脚本调用",
     "scriptInvocationFunction": "功能",
@@ -650,30 +665,15 @@
     "setSponsored": "设置赞助",
     "showAll": "展示全部",
     "showTransactions": "展示交易",
-    "signRequestMatcher": "签名匹配器请求",
     "signRequestDccAuth": "签名DCC授权请求",
-    "updateAssetInfo": "更新资产信息",
-    "issueToken": "发行代币",
-    "issueSmartToken": "发行智能代币",
-    "issueNFT": "发行NFT",
-    "issueSmartNFT": "发行智能NFT",
-    "reissue": "重新发行",
+    "signRequestMatcher": "签名匹配器请求",
     "transfer": "转账",
     "txid": "TXID",
-    "hash": "哈希",
     "txTime": "TX时间",
     "unknown": "未知",
-    "dccAuthTimeStamp": "时间戳"
+    "updateAssetInfo": "更新资产信息"
   },
   "ui": { "logoTitle": "在线安全保存您的DCC密钥" },
-  "notifications": {
-    "allowSending": "允许发送信息",
-    "toListBtn": "通知",
-    "nextBtn": "下一条",
-    "closeBtn": "关闭",
-    "time": "时间",
-    "messages": "信息"
-  },
   "wallet": { "lease": "已租赁" },
   "welcome": {
     "getStarted": "开始",

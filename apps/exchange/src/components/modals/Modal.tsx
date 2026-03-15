@@ -3,7 +3,8 @@
  * Reusable modal with overlay, animations, and accessibility features
  * Supports click-to-close, ESC key, and focus trap
  */
-import React, { useEffect, useRef, useCallback } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Portal } from '@/components/atoms/Portal';
 import { useEscapeKey, useFocusTrap } from '@/hooks';
@@ -62,7 +63,7 @@ export interface ModalProps {
    * Z-index for the modal
    * @default 1000
    */
-  zIndex?: number;
+  zIndex?: number | undefined;
 
   /**
    * Animation duration in ms
@@ -125,20 +126,20 @@ const Overlay = styled.div<{ zIndex: number; animationDuration: number }>`
 `;
 
 const sizeStyles = {
-  small: `
-    max-width: 400px;
-  `,
-  medium: `
-    max-width: 600px;
-  `,
-  large: `
-    max-width: 900px;
-  `,
   fullscreen: `
     max-width: 95vw;
     max-height: 95vh;
     width: 100%;
     height: 100%;
+  `,
+  large: `
+    max-width: 900px;
+  `,
+  medium: `
+    max-width: 600px;
+  `,
+  small: `
+    max-width: 400px;
   `,
 };
 
@@ -236,7 +237,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnOverlayClick, onClose]
+    [closeOnOverlayClick, onClose],
   );
 
   /**

@@ -3,11 +3,12 @@
  * Handles building and broadcasting gateway withdrawal transactions
  * Integrates with existing transaction signing and broadcasting infrastructure
  */
-import { useState, useCallback } from 'react';
-import { BigNumber } from '@waves/bignumber';
+
+import { type BigNumber } from '@decentralchain/bignumber';
+import { useCallback, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useBroadcast } from '@/hooks/useBroadcast';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 
 interface WithdrawParams {
   /** Asset ID to withdraw */
@@ -72,11 +73,11 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
 
         // Build transfer transaction parameters
         const transferParams = {
-          recipient: params.gatewayAddress,
-          assetId: params.assetId === 'DCC' ? null : params.assetId, // null for DCC
           amount: params.amount.toFixed(), // Convert BigNumber to string
+          assetId: params.assetId === 'DCC' ? null : params.assetId, // null for DCC
           attachment: attachmentBase64,
           fee: 100000, // 0.001 DCC in satoshis
+          recipient: params.gatewayAddress,
           timestamp: Date.now(),
         };
 
@@ -98,7 +99,7 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
         setLoading(false);
       }
     },
-    [user, signTransfer, broadcastAsync]
+    [user, signTransfer, broadcastAsync],
   );
 
   /**
@@ -109,10 +110,10 @@ export const useGatewayTransaction = (): UseGatewayTransactionReturn => {
   }, []);
 
   return {
-    withdraw,
-    loading,
-    error,
-    txId,
     clearError,
+    error,
+    loading,
+    txId,
+    withdraw,
   };
 };

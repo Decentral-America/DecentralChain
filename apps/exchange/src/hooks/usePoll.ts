@@ -3,7 +3,8 @@
  * Generic polling mechanism for any async operation with start/stop control
  * Provides automatic interval-based execution with error handling
  */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Polling Configuration Options
@@ -107,8 +108,8 @@ export interface UsePollReturn<T> {
  *   },
  *   {
  *     interval: 5000, // Poll every 5 seconds
- *     onData: (data) => console.log('New data:', data),
- *     onError: (error) => console.error('Poll error:', error)
+ *     onData: (data) => logger.debug('New data:', data),
+ *     onError: (error) => logger.error('Poll error:', error)
  *   }
  * );
  *
@@ -119,7 +120,7 @@ export interface UsePollReturn<T> {
  */
 export const usePoll = <T>(
   pollFn: () => Promise<T>,
-  options: UsePollOptions<T> = {}
+  options: UsePollOptions<T> = {},
 ): UsePollReturn<T> => {
   const {
     interval = 30000, // Default: 30 seconds
@@ -165,7 +166,7 @@ export const usePoll = <T>(
 
       // Log error in development
       if (process.env.NODE_ENV === 'development') {
-        console.error('[usePoll] Poll error:', error);
+        logger.error('[usePoll] Poll error:', error);
       }
     } finally {
       if (isMountedRef.current) {
@@ -247,12 +248,12 @@ export const usePoll = <T>(
   return {
     data,
     error,
-    isPolling,
     isLoading,
-    startPolling,
-    stopPolling,
+    isPolling,
     refresh,
     reset,
+    startPolling,
+    stopPolling,
   };
 };
 
@@ -263,7 +264,7 @@ export const usePoll = <T>(
 export const usePollWithTransform = <T, R>(
   pollFn: () => Promise<T>,
   transformFn: (data: T) => R,
-  options: UsePollOptions<R> = {}
+  options: UsePollOptions<R> = {},
 ): UsePollReturn<R> => {
   const transformedPollFn = useCallback(async () => {
     const data = await pollFn();
@@ -280,7 +281,7 @@ export const usePollWithTransform = <T, R>(
 export const usePollConditional = <T>(
   pollFn: () => Promise<T>,
   conditionFn: () => boolean,
-  options: UsePollOptions<T> = {}
+  options: UsePollOptions<T> = {},
 ): UsePollReturn<T> => {
   const conditionalPollFn = useCallback(async () => {
     if (!conditionFn()) {

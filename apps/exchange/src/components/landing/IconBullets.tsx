@@ -1,59 +1,66 @@
-import { Box, Container, Grid, Stack, Avatar, Typography } from '@mui/material';
-import SecurityIcon from '@mui/icons-material/Security';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import StorageIcon from '@mui/icons-material/Storage';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import ShieldIcon from '@mui/icons-material/Shield';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import SecurityIcon from '@mui/icons-material/Security';
+import ShieldIcon from '@mui/icons-material/Shield';
+import StorageIcon from '@mui/icons-material/Storage';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Avatar, Box, Container, Grid, Stack, Typography } from '@mui/material';
 
 const bullets = [
   {
-    title: 'DEX Trading Pairs',
     desc: 'Trade DCC, BTC, CRC and other DecentralChain assets',
     icon: <SwapHorizIcon />,
+    title: 'DEX Trading Pairs',
   },
   {
-    title: 'Limit & Market Orders',
     desc: 'Full order book access with custom pricing',
     icon: <StorageIcon />,
+    title: 'Limit & Market Orders',
   },
   {
-    title: 'Encrypted Storage',
     desc: 'PBKDF2 encryption with master password protection',
     icon: <SecurityIcon />,
+    title: 'Encrypted Storage',
   },
   {
-    title: 'Transaction History',
     desc: 'Complete audit trail of all wallet activity',
     icon: <TrendingUpIcon />,
+    title: 'Transaction History',
   },
   {
-    title: 'Ledger Integration',
     desc: 'Sign transactions with hardware device',
     icon: <ShieldIcon />,
+    title: 'Ledger Integration',
   },
   {
-    title: 'Web & Desktop',
     desc: 'Available at decentral.exchange',
     icon: <QrCode2Icon />,
+    title: 'Web & Desktop',
   },
 ];
 
 export default function IconBullets() {
   return (
-    <Box component="section" sx={{ py: { xs: 3, md: 4 }, bgcolor: 'background.default' }}>
+    <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 3 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={2.5}>
           {bullets.map((bullet) => (
-            <Grid item xs={12} sm={6} md={4} key={bullet.title}>
+            <Grid
+              key={bullet.title}
+              size={{
+                md: 4,
+                sm: 6,
+                xs: 12,
+              }}
+            >
               <Stack direction="row" spacing={2} alignItems="flex-start">
                 <Avatar
                   variant="rounded"
                   sx={{
-                    width: 40,
-                    height: 40,
                     bgcolor: 'primary.main',
                     color: '#fff',
+                    height: 40,
+                    width: 40,
                   }}
                 >
                   {bullet.icon}

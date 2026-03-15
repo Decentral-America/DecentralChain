@@ -3,14 +3,14 @@
  * Main settings interface with tabbed navigation matching Angular's structure
  * General, Security, Network, and Info tabs
  */
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
-import { Tabs, Tab } from '@/components/atoms/Tabs';
 import { Card } from '@/components/atoms/Card';
+import { type Tab, Tabs } from '@/components/atoms/Tabs';
 import { GeneralSettings } from './GeneralSettings';
-import { SecuritySettings } from './SecuritySettings';
-import { NetworkSettings } from './NetworkSettings';
 import { InfoSettings } from './InfoSettings';
+import { NetworkSettings } from './NetworkSettings';
+import { SecuritySettings } from './SecuritySettings';
 
 /**
  * Styled Components
@@ -39,7 +39,7 @@ const PageDescription = styled.p`
   line-height: 1.6;
 `;
 
-const TabContent = styled(Card)`
+const TabContent = styled(Card as React.ComponentType<Record<string, unknown>>)`
   min-height: 400px;
 `;
 
@@ -55,40 +55,40 @@ const TabContent = styled(Card)`
 export const SettingsPage: React.FC = () => {
   const settingsTabs: Tab[] = [
     {
-      id: 'general',
-      label: 'General',
       content: (
         <TabContent elevation="md">
           <GeneralSettings />
         </TabContent>
       ),
+      id: 'general',
+      label: 'General',
     },
     {
-      id: 'security',
-      label: 'Security',
       content: (
         <TabContent elevation="md">
           <SecuritySettings />
         </TabContent>
       ),
+      id: 'security',
+      label: 'Security',
     },
     {
-      id: 'network',
-      label: 'Network',
       content: (
         <TabContent elevation="md">
           <NetworkSettings />
         </TabContent>
       ),
+      id: 'network',
+      label: 'Network',
     },
     {
-      id: 'info',
-      label: 'Info',
       content: (
         <TabContent elevation="md">
           <InfoSettings />
         </TabContent>
       ),
+      id: 'info',
+      label: 'Info',
     },
   ];
 

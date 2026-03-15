@@ -1,16 +1,17 @@
 const TransferItem = (wrapped: WebdriverIO.Element) => ({
-  get recipient() {
-    return wrapped.findByTestId$('massTransferItemRecipient');
-  },
-
   get amount() {
     return wrapped.findByTestId$('massTransferItemAmount');
+  },
+  get recipient() {
+    return wrapped.findByTestId$('massTransferItemRecipient');
   },
 });
 
 export const MassTransferTransactionScreen = {
-  get root() {
-    return $("[class*='transaction@']");
+  async getTransferItems() {
+    return (await this.root.findAllByTestId$('massTransferItem')).map((it: any) =>
+      TransferItem(it),
+    );
   },
 
   get massTransferAmount() {
@@ -20,8 +21,7 @@ export const MassTransferTransactionScreen = {
   get massTransferAttachment() {
     return this.root.findByTestId$('massTransferAttachment');
   },
-
-  async getTransferItems() {
-    return (await this.root.findAllByTestId$('massTransferItem')).map((it) => TransferItem(it));
+  get root() {
+    return $("[class*='transaction@']");
   },
 };

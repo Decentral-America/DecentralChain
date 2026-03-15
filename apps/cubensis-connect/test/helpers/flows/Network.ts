@@ -1,6 +1,11 @@
 import { NetworksMenu } from '../NetworksMenu';
 
 export const Network = {
+  checkNetwork: async (network: string) => {
+    const networkMenuButton = NetworksMenu.networkMenuButton;
+    await networkMenuButton.waitForDisplayed();
+    await expect(networkMenuButton).toHaveText(network);
+  },
   switchTo: async (network: string) => {
     const currentNetwork = await NetworksMenu.networkMenuButton.getText();
     if (currentNetwork === network) return;
@@ -9,12 +14,6 @@ export const Network = {
     const networkLink = await NetworksMenu.networkByName(network);
     await networkLink.waitForDisplayed();
     await networkLink.click();
-  },
-
-  checkNetwork: async (network: string) => {
-    const networkMenuButton = NetworksMenu.networkMenuButton;
-    await networkMenuButton.waitForDisplayed();
-    await expect(networkMenuButton).toHaveText(network);
   },
 
   switchToAndCheck: async (network: string) => {

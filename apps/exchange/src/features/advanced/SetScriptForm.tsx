@@ -3,20 +3,23 @@
  * Attach smart contract scripts to accounts for advanced functionality
  * Enables programmable account rules and custom transaction validation
  */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import type React from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import { z } from 'zod';
-import { Card } from '@/components/atoms/Card';
 import { Button } from '@/components/atoms/Button';
-import { useAuth } from '@/contexts/AuthContext';
+import { Card } from '@/components/atoms/Card';
 import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 /**
  * Styled Components
  */
-const FormCard = styled(Card)`
+const FormCard = styled(Card as React.ComponentType<Record<string, unknown>>)`
   padding: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
@@ -139,7 +142,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const RemoveScriptButton = styled(Button)`
+const RemoveScriptButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   flex: 1;
 `;
 
@@ -167,7 +170,10 @@ type SetScriptFormData = z.infer<typeof scriptSchema>;
 export const SetScriptForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<any>(null);
+  const [transactionParams, setTransactionParams] = useState<{
+    script: string | null;
+    fee: number;
+  } | null>(null);
 
   const {
     register,
@@ -175,10 +181,10 @@ export const SetScriptForm: React.FC = () => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<SetScriptFormData>({
-    resolver: zodResolver(scriptSchema),
     defaultValues: {
       script: '',
     },
+    resolver: zodResolver(scriptSchema),
   });
 
   const onSubmit = async (formData: SetScriptFormData) => {
@@ -190,14 +196,14 @@ export const SetScriptForm: React.FC = () => {
     try {
       // Create setScript transaction parameters
       const params = {
-        script: formData.script || null,
         fee: 1000000, // 0.01 DCC
+        script: formData.script || null,
       };
 
       setTransactionParams(params);
       setShowConfirmation(true);
     } catch (error) {
-      console.error('Error preparing setScript transaction:', error);
+      logger.error('Error preparing setScript transaction:', error);
       alert('Failed to prepare setScript transaction');
     }
   };
@@ -260,22 +266,18 @@ export const SetScriptForm: React.FC = () => {
               {errors.script && <HelperText error>{errors.script.message}</HelperText>}
               {!errors.script && (
                 <HelperText>
-                  Enter your compiled RIDE script in base64 format (starts with "base64:")
+                  Enter your compiled RIDE script in base64 format (starts with &quot;base64:&quot;)
                 </HelperText>
               )}
             </div>
 
             <InfoBox>
               <strong>💡 Script Information:</strong>
-              <br />
-              • Scripts must be compiled RIDE code in base64 format
-              <br />
-              • Fee: 0.01 DCC (10x standard transaction fee)
-              <br />
-              • Scripts validate all outgoing transactions from your account
-              <br />
-              • Leave empty and submit to remove an existing script
-              <br />• Learn more about RIDE at docs.wavesplatform.com/en/ride/
+              <br />• Scripts must be compiled RIDE code in base64 format
+              <br />• Fee: 0.01 DCC (10x standard transaction fee)
+              <br />• Scripts validate all outgoing transactions from your account
+              <br />• Leave empty and submit to remove an existing script
+              <br />• Learn more about RIDE at docs.decentralchain.io/en/ride/
             </InfoBox>
 
             <ButtonGroup>

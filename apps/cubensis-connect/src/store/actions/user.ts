@@ -60,6 +60,6 @@ export function batchAddAccounts(
 }
 
 export const setLocale = (locale: string) => ({
-  type: ACTION.CHANGE_LNG,
   payload: locale,
+  type: ACTION.CHANGE_LNG,
 });

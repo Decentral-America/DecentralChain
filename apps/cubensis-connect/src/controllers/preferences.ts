@@ -26,9 +26,9 @@ export class PreferencesController extends EventEmitter {
 
     this.store = new ObservableStore(
       extensionStorage.getInitState({
-        currentLocale: initLangCode || 'en',
-        idleOptions: { type: '1h', interval: 60 * 60 * 1000 },
         accounts: [],
+        currentLocale: initLangCode || 'en',
+        idleOptions: { interval: 60 * 60 * 1000, type: '1h' },
         selectedAccount: undefined,
       }),
     );
@@ -90,7 +90,7 @@ export class PreferencesController extends EventEmitter {
       if (currentNetworkAccounts.length > 0) {
         const sortedAccounts = currentNetworkAccounts.sort(compareAccountsByLastUsed);
 
-        addressToSelect = sortedAccounts[0].address;
+        addressToSelect = sortedAccounts[0]!.address;
       }
 
       this.selectAccount(addressToSelect, network);
@@ -129,10 +129,10 @@ export class PreferencesController extends EventEmitter {
       selectedAccount.network !== network
     ) {
       addBreadcrumb({
-        type: 'user',
         category: 'account-change',
         level: 'info',
         message: 'Change active account',
+        type: 'user',
       });
 
       if (selectedAccount) {

@@ -87,10 +87,11 @@ export function AddressRecipient({
         <div className={clsx(styles.content, className)} data-testid={testid}>
           {showMirrorAddress ? (
             <Tooltip
-              className={clsx(styles.mirrorAddress, {
-                [styles.ethereum]: type === 'ethereum',
-                [styles.dcc]: type === 'dcc',
-              })}
+              className={clsx(
+                styles.mirrorAddress,
+                type === 'ethereum' && styles.ethereum,
+                type === 'dcc' && styles.dcc,
+              )}
               content={mirrorAddress}
               placement="top-end"
             >
@@ -99,10 +100,11 @@ export function AddressRecipient({
                   <Ellipsis
                     text={address}
                     size={12}
-                    className={clsx(styles.recipient, {
-                      [styles.ethereum]: type === 'ethereum',
-                      [styles.dcc]: type === 'dcc',
-                    })}
+                    className={clsx(
+                      styles.recipient,
+                      type === 'ethereum' && styles.ethereum,
+                      type === 'dcc' && styles.dcc,
+                    )}
                   />
                 </div>
               )}

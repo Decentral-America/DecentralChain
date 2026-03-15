@@ -2,9 +2,13 @@
 
 /**
  * Custom JSON stringifier that handles BigNumber and other special types
- * This replicates the Angular WavesApp.stringifyJSON functionality
+ * This replicates the Angular DCCApp.stringifyJSON functionality
  */
-export const stringifyJSON = (data: any, replacer?: any, space?: string | number): string => {
+export const stringifyJSON = (
+  data: unknown,
+  replacer?: ((key: string, value: unknown) => unknown) | null,
+  space?: string | number,
+): string => {
   return JSON.stringify(
     data,
     (key, value) => {
@@ -18,7 +22,7 @@ export const stringifyJSON = (data: any, replacer?: any, space?: string | number
       }
       return value;
     },
-    space
+    space,
   );
 };
 
@@ -30,8 +34,8 @@ export const stringifyJSON = (data: any, replacer?: any, space?: string | number
  */
 export const formatDcc = (value: number, decimals: number = 8): string => {
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
+    minimumFractionDigits: 0,
   }).format(value);
 };
 
@@ -43,8 +47,8 @@ export const formatDcc = (value: number, decimals: number = 8): string => {
  */
 export const formatAmount = (value: number, maximumFractionDigits: number = 8): string => {
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
     maximumFractionDigits,
+    minimumFractionDigits: 0,
   }).format(value);
 };
 

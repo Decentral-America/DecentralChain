@@ -4,8 +4,8 @@
  * Uses @decentralchain/signature-adapter for DecentralChain blockchain integration
  */
 
-import { useState, useCallback, useRef } from 'react';
 import { LedgerAdapter } from '@decentralchain/signature-adapter';
+import { useCallback, useRef, useState } from 'react';
 
 export interface LedgerUser {
   id: string;
@@ -25,7 +25,7 @@ export interface UseLedgerReturn {
   connect: () => Promise<void>;
   disconnect: () => void;
   getUserList: (offset: number, count: number) => Promise<LedgerUser[]>;
-  signTransaction: (txData: any) => Promise<string>;
+  signTransaction: (txData: Record<string, unknown>) => Promise<string>;
 
   // Lifecycle
   isInitialized: boolean;
@@ -51,7 +51,7 @@ export const useLedger = (): UseLedgerReturn => {
    * Wraps a promise with a timeout
    */
   const withTimeout = useCallback(
-    <T,>(promise: Promise<T>, timeoutMs: number = TIMEOUT_MS): Promise<T> => {
+    <T>(promise: Promise<T>, timeoutMs: number = TIMEOUT_MS): Promise<T> => {
       return Promise.race([
         promise,
         new Promise<T>((_, reject) => {
@@ -66,7 +66,7 @@ export const useLedger = (): UseLedgerReturn => {
         }
       });
     },
-    []
+    [],
   );
 
   /**
@@ -83,7 +83,7 @@ export const useLedger = (): UseLedgerReturn => {
 
       if (!available) {
         throw new Error(
-          'Ledger device not found. Please connect your device, unlock it, and open the Waves application.'
+          'Ledger device not found. Please connect your device, unlock it, and open the DCC application.',
         );
       }
 
@@ -122,8 +122,8 @@ export const useLedger = (): UseLedgerReturn => {
 
       try {
         const userList = (await withTimeout(
-          adapterRef.current.getUserList(offset, count)
-        )) as LedgerUser[];
+          adapterRef.current.getUserList(offset, count),
+        )) as unknown as LedgerUser[];
 
         setUsers(userList);
         return userList;
@@ -136,7 +136,7 @@ export const useLedger = (): UseLedgerReturn => {
         setIsLoading(false);
       }
     },
-    [withTimeout]
+    [withTimeout],
   );
 
   /**
@@ -146,7 +146,7 @@ export const useLedger = (): UseLedgerReturn => {
    * @returns Signature string
    */
   const signTransaction = useCallback(
-    async (txData: any): Promise<string> => {
+    async (txData: Record<string, unknown>): Promise<string> => {
       setIsLoading(true);
       setError(null);
 
@@ -154,7 +154,11 @@ export const useLedger = (): UseLedgerReturn => {
         // LedgerAdapter.getSignature() communicates with device and returns signature
         // Note: This is a placeholder - actual method name may differ in @decentralchain/signature-adapter
         const signature = (await withTimeout(
-          (adapterRef.current as any).getSignature(txData)
+          (
+            adapterRef.current as unknown as {
+              getSignature: (data: Record<string, unknown>) => Promise<string>;
+            }
+          ).getSignature(txData),
         )) as string;
 
         return signature;
@@ -169,18 +173,18 @@ export const useLedger = (): UseLedgerReturn => {
         setIsLoading(false);
       }
     },
-    [withTimeout]
+    [withTimeout],
   );
 
   return {
-    isConnected,
-    isLoading,
-    error,
-    users,
     connect,
     disconnect,
+    error,
     getUserList,
-    signTransaction,
+    isConnected,
     isInitialized,
+    isLoading,
+    signTransaction,
+    users,
   };
 };

@@ -1,35 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Checkbox,
-  FormControlLabel,
+  ArrowForward as ArrowForwardIcon,
+  HelpOutline as HelpIcon,
+  Security as SecurityIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
+import {
   Alert,
-  IconButton,
+  Box,
+  Button,
+  Checkbox,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fade,
+  FormControlLabel,
+  Grow,
+  IconButton,
   List,
   ListItem,
-  Fade,
-  Grow,
+  Paper,
   Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
   Tooltip,
+  Typography,
 } from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
-import {
-  Warning as WarningIcon,
-  HelpOutline as HelpIcon,
-  ArrowForward as ArrowForwardIcon,
-  Security as SecurityIcon,
-} from '@mui/icons-material';
+import { keyframes, styled } from '@mui/material/styles';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 enum MigrationStep {
   WARNING = 0,
@@ -52,48 +53,48 @@ const float = keyframes`
 
 // Styled Components
 const PageContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  padding: theme.spacing(4),
   background:
     theme.palette.mode === 'dark'
       ? 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%)'
       : 'linear-gradient(180deg, #f5f7fa 0%, #e8f0fe 50%, #f0f4ff 100%)',
-  position: 'relative',
+  minHeight: '100vh',
   overflow: 'hidden',
+  padding: theme.spacing(4),
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
 }));
 
 const FloatingShape = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  borderRadius: '40% 60% 60% 40% / 50% 50% 50% 50%',
+  animation: `${float} 10s ease-in-out infinite`,
   background:
     theme.palette.mode === 'dark'
       ? 'radial-gradient(circle, rgba(31, 90, 246, 0.15) 0%, rgba(31, 90, 246, 0) 70%)'
       : 'radial-gradient(circle, rgba(31, 90, 246, 0.1) 0%, rgba(31, 90, 246, 0) 70%)',
-  animation: `${float} 10s ease-in-out infinite`,
+  borderRadius: '40% 60% 60% 40% / 50% 50% 50% 50%',
   pointerEvents: 'none',
+  position: 'absolute',
 }));
 
 const ContentWrapper = styled(Box)({
-  maxWidth: '900px',
   margin: '0 auto',
+  maxWidth: '900px',
   position: 'relative',
   zIndex: 1,
 });
 
 const MainCard = styled(Paper)(({ theme }) => ({
+  backdropFilter: 'blur(24px)',
   background:
     theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-  backdropFilter: 'blur(24px)',
-  borderRadius: theme.spacing(3),
-  padding: theme.spacing(5),
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
+  borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
       ? '0 12px 48px rgba(0, 0, 0, 0.5)'
       : '0 12px 48px rgba(0, 0, 0, 0.08)',
+  padding: theme.spacing(5),
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(3),
   },
@@ -120,11 +121,49 @@ export const MigratePage: React.FC = () => {
     message: string;
     severity: 'success' | 'error' | 'info';
   }>({
-    open: false,
     message: '',
+    open: false,
     severity: 'info',
   });
   const [isVisible, setIsVisible] = useState(false);
+
+  const handleGenerateNewAccount = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const mockWords = [
+        'abandon',
+        'ability',
+        'able',
+        'about',
+        'above',
+        'absent',
+        'absorb',
+        'abstract',
+        'absurd',
+        'abuse',
+        'access',
+        'accident',
+        'account',
+        'accuse',
+        'achieve',
+      ];
+      setNewSeed(mockWords);
+      setNewAddress(`3P${'B'.repeat(33)}`);
+
+      setSnackbar({
+        message: 'New account generated successfully',
+        open: true,
+        severity: 'success',
+      });
+    } catch {
+      setSnackbar({ message: 'Failed to generate new account', open: true, severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     setIsVisible(true);
@@ -157,49 +196,11 @@ export const MigratePage: React.FC = () => {
     }
   }, [activeStep]);
 
-  const handleGenerateNewAccount = async () => {
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const mockWords = [
-        'abandon',
-        'ability',
-        'able',
-        'about',
-        'above',
-        'absent',
-        'absorb',
-        'abstract',
-        'absurd',
-        'abuse',
-        'access',
-        'accident',
-        'account',
-        'accuse',
-        'achieve',
-      ];
-      setNewSeed(mockWords);
-      setNewAddress('3P' + 'B'.repeat(33));
-
-      setSnackbar({
-        open: true,
-        message: 'New account generated successfully',
-        severity: 'success',
-      });
-    } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to generate new account', severity: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (activeStep === MigrationStep.GENERATE_NEW && newSeed.length === 0) {
       handleGenerateNewAccount();
     }
-  }, [activeStep, newSeed.length]);
+  }, [activeStep, newSeed.length, handleGenerateNewAccount]);
 
   const steps = [
     'Backup Warning',
@@ -214,36 +215,36 @@ export const MigratePage: React.FC = () => {
   return (
     <Fade in={isVisible} timeout={600}>
       <PageContainer>
-        <FloatingShape sx={{ width: '600px', height: '600px', top: '-200px', left: '-150px' }} />
+        <FloatingShape sx={{ height: '600px', left: '-150px', top: '-200px', width: '600px' }} />
         <FloatingShape
           sx={{
-            width: '500px',
-            height: '500px',
-            bottom: '-150px',
-            right: '-100px',
             animationDelay: '3s',
+            bottom: '-150px',
+            height: '500px',
+            right: '-100px',
+            width: '500px',
           }}
         />
         <FloatingShape
-          sx={{ width: '400px', height: '400px', top: '40%', right: '5%', animationDelay: '6s' }}
+          sx={{ animationDelay: '6s', height: '400px', right: '5%', top: '40%', width: '400px' }}
         />
 
         <Tooltip title="Need help?">
           <IconButton
             onClick={() => setHelpDialogOpen(true)}
             sx={{
-              position: 'fixed',
-              bottom: 24,
-              right: 24,
-              width: 56,
-              height: 56,
-              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
-              color: 'white',
-              boxShadow: '0 8px 24px rgba(31, 90, 246, 0.4)',
               '&:hover': {
                 background: 'linear-gradient(135deg, #1a4dd4 0%, #4a6fd9 100%)',
                 transform: 'scale(1.05)',
               },
+              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+              bottom: 24,
+              boxShadow: '0 8px 24px rgba(31, 90, 246, 0.4)',
+              color: 'white',
+              height: 56,
+              position: 'fixed',
+              right: 24,
+              width: 56,
               zIndex: 1000,
             }}
           >
@@ -255,13 +256,13 @@ export const MigratePage: React.FC = () => {
           <Typography
             variant="h3"
             sx={{
+              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+              fontSize: { sm: '2.8rem', xs: '2rem' },
               fontWeight: 800,
               mb: 1,
               textAlign: 'center',
-              background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              fontSize: { xs: '2rem', sm: '2.8rem' },
             }}
           >
             Account Migration Wizard
@@ -270,10 +271,10 @@ export const MigratePage: React.FC = () => {
           <Typography
             variant="body1"
             sx={{
-              textAlign: 'center',
               color: 'text.secondary',
               mb: 5,
               px: 2,
+              textAlign: 'center',
             }}
           >
             Safely migrate your account to a new seed phrase with full asset transfer
@@ -293,12 +294,12 @@ export const MigratePage: React.FC = () => {
             {activeStep === MigrationStep.WARNING && (
               <Grow in timeout={800}>
                 <Box>
-                  <Box sx={{ textAlign: 'center', mb: 4 }}>
+                  <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <WarningIcon
                       sx={{
-                        fontSize: '80px',
-                        color: 'warning.main',
                         animation: `${pulse} 2s ease-in-out infinite`,
+                        color: 'warning.main',
+                        fontSize: '80px',
                         mb: 2,
                       }}
                     />
@@ -360,12 +361,12 @@ export const MigratePage: React.FC = () => {
 
                   <Paper
                     sx={{
-                      p: 2,
-                      mb: 3,
                       background: (theme) =>
                         theme.palette.mode === 'dark'
                           ? 'rgba(255, 255, 255, 0.05)'
                           : 'rgba(0, 0, 0, 0.03)',
+                      mb: 3,
+                      p: 2,
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -408,7 +409,7 @@ export const MigratePage: React.FC = () => {
           fullWidth
         >
           <DialogTitle>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
               <HelpIcon color="primary" />
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 Migration Help
@@ -420,7 +421,7 @@ export const MigratePage: React.FC = () => {
               Why should I migrate my account?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-              Migration creates a new account with enhanced security. It's recommended if you
+              Migration creates a new account with enhanced security. It&apos;s recommended if you
               suspect your seed phrase may have been compromised or want to start fresh.
             </Typography>
 
@@ -457,7 +458,7 @@ export const MigratePage: React.FC = () => {
           open={snackbar.open}
           autoHideDuration={4000}
           onClose={() => setSnackbar({ ...snackbar, open: false })}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
         >
           <Alert
             severity={snackbar.severity}

@@ -3,9 +3,9 @@
  * Merges all Angular locale JSON files into single translation.json for each language
  * Supports 17 languages: de, en, es, et_EE, fr, hi_IN, id, it, ja, ko, nl_NL, pl, pt_BR, pt_PT, ru, tr, zh_CN
  */
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -74,8 +74,6 @@ function mergeLanguageFiles(languageCode) {
   // Write merged translation file
   const outputPath = path.join(destPath, 'translation.json');
   fs.writeFileSync(outputPath, JSON.stringify(merged, null, 2), 'utf8');
-
-  console.log(`✓ Merged ${languageCode}: ${files.length} files -> translation.json`);
   return files.length;
 }
 
@@ -83,32 +81,25 @@ function mergeLanguageFiles(languageCode) {
  * Main execution
  */
 function main() {
-  console.log('🌍 Merging locale files...\n');
-
   // Ensure destination directory exists
   if (!fs.existsSync(DEST_DIR)) {
     fs.mkdirSync(DEST_DIR, { recursive: true });
   }
 
-  let totalFiles = 0;
-  let processedLanguages = 0;
+  let _totalFiles = 0;
+  let _processedLanguages = 0;
 
   LANGUAGES.forEach((lang) => {
     const sourcePath = path.join(SOURCE_DIR, lang);
 
     if (fs.existsSync(sourcePath)) {
       const fileCount = mergeLanguageFiles(lang);
-      totalFiles += fileCount;
-      processedLanguages++;
+      _totalFiles += fileCount;
+      _processedLanguages++;
     } else {
       console.warn(`⚠ Warning: ${lang} directory not found at ${sourcePath}`);
     }
   });
-
-  console.log(
-    `\n✅ Successfully processed ${processedLanguages}/${LANGUAGES.length} languages (${totalFiles} total files)`
-  );
-  console.log(`📁 Output directory: ${DEST_DIR}`);
 }
 
 // Run the script

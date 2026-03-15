@@ -2,7 +2,7 @@
  * useAsync Hook
  * Manages async function execution with loading, error, and data states
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface UseAsyncState<T> {
   data: T | null;

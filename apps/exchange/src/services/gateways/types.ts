@@ -5,7 +5,7 @@
  * Matches Angular's gateway architecture for BTC, ETH, USDT, and other crypto assets
  */
 
-import type { BigNumber } from '@waves/bignumber';
+import { type BigNumber } from '@decentralchain/bignumber';
 
 /**
  * Asset interface (minimal definition for gateway operations)
@@ -26,7 +26,7 @@ export interface IGatewayDetails {
   address: string;
 
   /** Optional attachment/memo for the transaction */
-  attachment?: string;
+  attachment?: string | undefined;
 
   /** Minimum amount allowed for this operation */
   minimumAmount: BigNumber;
@@ -38,7 +38,7 @@ export interface IGatewayDetails {
   gatewayFee: BigNumber;
 
   /** Exchange rate (if applicable, e.g., for wrapped tokens) */
-  exchangeRate?: BigNumber;
+  exchangeRate?: BigNumber | undefined;
 
   /** Additional provider-specific data */
   [key: string]: unknown;
@@ -46,16 +46,16 @@ export interface IGatewayDetails {
 
 /**
  * Gateway Service Provider Interface
- * All gateway providers (WavesGateway, Coinomat, etc.) must implement this
+ * All gateway providers (DCCGateway, Coinomat, etc.) must implement this
  */
 export interface IGatewayService {
   /**
    * Get deposit details for an asset
    * @param asset - Asset to deposit
-   * @param userWavesAddress - User's Waves address to receive deposited tokens
+   * @param userDCCAddress - User's DCC address to receive deposited tokens
    * @returns Deposit details including gateway address and fees
    */
-  getDepositDetails(asset: GatewayAsset, userWavesAddress: string): Promise<IGatewayDetails>;
+  getDepositDetails(asset: GatewayAsset, userDCCAddress: string): Promise<IGatewayDetails>;
 
   /**
    * Get withdrawal details for an asset
@@ -67,11 +67,11 @@ export interface IGatewayService {
   getWithdrawDetails(
     asset: GatewayAsset,
     targetAddress: string,
-    paymentId?: string
+    paymentId?: string,
   ): Promise<IGatewayDetails>;
 
   /**
-   * Get send details (Waves Gateway specific)
+   * Get send details (DCC Gateway specific)
    * @param asset - Asset to send
    * @param targetAddress - Target address
    * @returns Send details
@@ -80,10 +80,10 @@ export interface IGatewayService {
 
   /**
    * Get SEPA details (Coinomat specific)
-   * @param userWavesAddress - User's Waves address
+   * @param userDCCAddress - User's DCC address
    * @returns SEPA deposit details
    */
-  getSepaDetails?(userWavesAddress: string): Promise<IGatewayDetails>;
+  getSepaDetails?(userDCCAddress: string): Promise<IGatewayDetails>;
 
   /**
    * Get all supported assets for this gateway
@@ -111,8 +111,8 @@ export interface GatewayConfig {
   /** Gateway ID for provider lookup */
   gateway_id?: string;
 
-  /** Waves asset ID for this gateway asset */
-  waves_asset_id?: string;
+  /** DCC asset ID for this gateway asset */
+  dcc_asset_id?: string;
 
   /** Original asset ID in external blockchain */
   assetId?: string;

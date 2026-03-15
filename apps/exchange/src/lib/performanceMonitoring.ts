@@ -31,9 +31,10 @@
  * ```
  */
 
-import { onCLS, onFCP, onLCP, onTTFB, onINP, type Metric } from 'web-vitals';
+import { type Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 import { trackEvent } from '@/lib/analytics';
 import { captureMessage, ErrorSeverity } from '@/lib/errorMonitoring';
+import { logger } from '@/lib/logger';
 
 /**
  * Performance monitoring configuration
@@ -59,11 +60,6 @@ export interface PerformanceMonitoringConfig {
  * Performance metric thresholds (based on Google's Web Vitals)
  */
 const THRESHOLDS = {
-  // Largest Contentful Paint (ms)
-  LCP: {
-    good: 2500,
-    needsImprovement: 4000,
-  },
   // Cumulative Layout Shift (score)
   CLS: {
     good: 0.1,
@@ -74,15 +70,20 @@ const THRESHOLDS = {
     good: 1800,
     needsImprovement: 3000,
   },
-  // Time to First Byte (ms)
-  TTFB: {
-    good: 800,
-    needsImprovement: 1800,
-  },
   // Interaction to Next Paint (ms) - Replaces FID in web-vitals v3
   INP: {
     good: 200,
     needsImprovement: 500,
+  },
+  // Largest Contentful Paint (ms)
+  LCP: {
+    good: 2500,
+    needsImprovement: 4000,
+  },
+  // Time to First Byte (ms)
+  TTFB: {
+    good: 800,
+    needsImprovement: 1800,
   },
 };
 
@@ -100,20 +101,20 @@ const reportMetric = (metric: Metric): void => {
 
   // Log to console in debug mode
   if (config.debug) {
-    console.log('[Performance]', {
-      name,
-      value: roundedValue,
-      rating,
+    logger.debug('[Performance]', {
       delta,
       id,
+      name,
+      rating,
+      value: roundedValue,
     });
   }
 
   // Send to analytics
   if (config.reportToAnalytics) {
     trackEvent('Web Vitals', name, rating, roundedValue, {
-      metric_id: id,
       delta: Math.round(delta * 100) / 100,
+      metric_id: id,
     });
   }
 
@@ -121,9 +122,9 @@ const reportMetric = (metric: Metric): void => {
   if (config.reportToErrorMonitoring && rating === 'poor') {
     captureMessage(`Poor ${name} performance`, ErrorSeverity.Warning, {
       metric: name,
-      value: roundedValue,
       rating,
       threshold: THRESHOLDS[name as keyof typeof THRESHOLDS]?.needsImprovement,
+      value: roundedValue,
     });
   }
 };
@@ -149,16 +150,16 @@ const reportMetric = (metric: Metric): void => {
  */
 export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig = {}): void => {
   if (isInitialized) {
-    console.warn('[Performance] Already initialized');
+    logger.warn('[Performance] Already initialized');
     return;
   }
 
   config = {
-    enableWebVitals: true,
-    enableResourceTiming: true,
-    enableNavigationTiming: true,
-    enableInDev: false,
     debug: import.meta.env.DEV === true,
+    enableInDev: false,
+    enableNavigationTiming: true,
+    enableResourceTiming: true,
+    enableWebVitals: true,
     reportToAnalytics: true,
     reportToErrorMonitoring: true,
     ...options,
@@ -166,7 +167,7 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
 
   // Don't track in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
-    console.log('[Performance] Disabled in development mode');
+    logger.debug('[Performance] Disabled in development mode');
     return;
   }
 
@@ -189,10 +190,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       onINP(reportMetric);
 
       if (config.debug) {
-        console.log('[Performance] Web Vitals tracking initialized');
+        logger.debug('[Performance] Web Vitals tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize Web Vitals:', error);
+      logger.error('[Performance] Failed to initialize Web Vitals:', error);
     }
   }
 
@@ -206,10 +207,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       });
 
       if (config.debug) {
-        console.log('[Performance] Navigation timing tracking initialized');
+        logger.debug('[Performance] Navigation timing tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize navigation timing:', error);
+      logger.error('[Performance] Failed to initialize navigation timing:', error);
     }
   }
 
@@ -223,10 +224,10 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
       });
 
       if (config.debug) {
-        console.log('[Performance] Resource timing tracking initialized');
+        logger.debug('[Performance] Resource timing tracking initialized');
       }
     } catch (error) {
-      console.error('[Performance] Failed to initialize resource timing:', error);
+      logger.error('[Performance] Failed to initialize resource timing:', error);
     }
   }
 
@@ -248,8 +249,14 @@ const trackNavigationTiming = (): void => {
     // DNS lookup time
     dns: timing.domainLookupEnd - timing.domainLookupStart,
 
-    // TCP connection time
-    tcp: timing.connectEnd - timing.connectStart,
+    // DOM content loaded
+    domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
+
+    // DOM processing time
+    domProcessing: timing.domComplete - timing.domLoading,
+
+    // Total load time
+    loadComplete: timing.loadEventEnd - timing.navigationStart,
 
     // Request time
     request: timing.responseStart - timing.requestStart,
@@ -257,18 +264,12 @@ const trackNavigationTiming = (): void => {
     // Response time
     response: timing.responseEnd - timing.responseStart,
 
-    // DOM processing time
-    domProcessing: timing.domComplete - timing.domLoading,
-
-    // DOM content loaded
-    domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-
-    // Total load time
-    loadComplete: timing.loadEventEnd - timing.navigationStart,
+    // TCP connection time
+    tcp: timing.connectEnd - timing.connectStart,
   };
 
   if (config.debug) {
-    console.log('[Performance] Navigation timing:', metrics);
+    logger.debug('[Performance] Navigation timing:', metrics);
   }
 
   if (config.reportToAnalytics) {
@@ -312,14 +313,14 @@ const trackResourceTiming = (): void => {
     const avgDuration = totalDuration / count;
 
     stats[type] = {
-      count,
       avgDuration: Math.round(avgDuration * 100) / 100,
+      count,
       totalDuration: Math.round(totalDuration * 100) / 100,
     };
   });
 
   if (config.debug) {
-    console.log('[Performance] Resource timing:', stats);
+    logger.debug('[Performance] Resource timing:', stats);
   }
 
   if (config.reportToAnalytics) {
@@ -353,10 +354,10 @@ export const markPerformance = (name: string): void => {
     window.performance.mark(name);
 
     if (config.debug) {
-      console.log('[Performance] Mark created:', name);
+      logger.debug('[Performance] Mark created:', name);
     }
   } catch (error) {
-    console.error('[Performance] Failed to create mark:', error);
+    logger.error('[Performance] Failed to create mark:', error);
   }
 };
 
@@ -373,13 +374,13 @@ export const markPerformance = (name: string): void => {
  * markPerformance('api-start');
  * const data = await api.fetch();
  * const duration = measurePerformance('api-call', 'api-start');
- * console.log(`API took ${duration}ms`);
+ * logger.debug(`API took ${duration}ms`);
  * ```
  */
 export const measurePerformance = (
   name: string,
   startMark: string,
-  endMark?: string
+  endMark?: string,
 ): number | null => {
   if (!window.performance || !window.performance.measure) {
     return null;
@@ -390,7 +391,7 @@ export const measurePerformance = (
     const duration = Math.round(measure.duration * 100) / 100;
 
     if (config.debug) {
-      console.log('[Performance] Measurement:', { name, duration });
+      logger.debug('[Performance] Measurement:', { duration, name });
     }
 
     if (config.reportToAnalytics) {
@@ -399,7 +400,7 @@ export const measurePerformance = (
 
     return duration;
   } catch (error) {
-    console.error('[Performance] Failed to measure performance:', error);
+    logger.error('[Performance] Failed to measure performance:', error);
     return null;
   }
 };
@@ -430,10 +431,10 @@ export const clearPerformance = (name?: string): void => {
     }
 
     if (config.debug) {
-      console.log('[Performance] Cleared:', name || 'all');
+      logger.debug('[Performance] Cleared:', name || 'all');
     }
   } catch (error) {
-    console.error('[Performance] Failed to clear performance:', error);
+    logger.error('[Performance] Failed to clear performance:', error);
   }
 };
 
@@ -445,7 +446,7 @@ export const clearPerformance = (name?: string): void => {
  * @example
  * ```tsx
  * const memory = getMemoryUsage();
- * console.log(`Memory: ${memory?.usedJSHeapSize}MB`);
+ * logger.debug(`Memory: ${memory?.usedJSHeapSize}MB`);
  * ```
  */
 export const getMemoryUsage = (): {
@@ -462,9 +463,9 @@ export const getMemoryUsage = (): {
   const memory = window.performance.memory;
 
   return {
-    usedJSHeapSize: Math.round((memory.usedJSHeapSize / 1024 / 1024) * 100) / 100,
-    totalJSHeapSize: Math.round((memory.totalJSHeapSize / 1024 / 1024) * 100) / 100,
     jsHeapSizeLimit: Math.round((memory.jsHeapSizeLimit / 1024 / 1024) * 100) / 100,
+    totalJSHeapSize: Math.round((memory.totalJSHeapSize / 1024 / 1024) * 100) / 100,
+    usedJSHeapSize: Math.round((memory.usedJSHeapSize / 1024 / 1024) * 100) / 100,
   };
 };
 
@@ -480,7 +481,7 @@ export const getMemoryUsage = (): {
  */
 export const trackLongTasks = (): void => {
   if (!window.PerformanceObserver) {
-    console.warn('[Performance] PerformanceObserver not supported');
+    logger.warn('[Performance] PerformanceObserver not supported');
     return;
   }
 
@@ -490,9 +491,9 @@ export const trackLongTasks = (): void => {
         const duration = Math.round(entry.duration * 100) / 100;
 
         if (config.debug) {
-          console.warn('[Performance] Long task detected:', {
-            name: entry.name,
+          logger.warn('[Performance] Long task detected:', {
             duration,
+            name: entry.name,
             startTime: entry.startTime,
           });
         }
@@ -503,21 +504,21 @@ export const trackLongTasks = (): void => {
 
         if (config.reportToErrorMonitoring && duration > 100) {
           captureMessage('Long task detected', ErrorSeverity.Warning, {
-            task: entry.name,
             duration,
             startTime: entry.startTime,
+            task: entry.name,
           });
         }
       }
     });
 
-    observer.observe({ entryTypes: ['longtask'] });
+    observer.observe({ buffered: true, type: 'longtask' });
 
     if (config.debug) {
-      console.log('[Performance] Long task tracking initialized');
+      logger.debug('[Performance] Long task tracking initialized');
     }
   } catch (error) {
-    console.error('[Performance] Failed to track long tasks:', error);
+    logger.error('[Performance] Failed to track long tasks:', error);
   }
 };
 
@@ -533,21 +534,21 @@ export const performance = {
   componentRender: (component: string, duration: number) =>
     trackEvent('Component Performance', component, undefined, duration),
 
-  // Route change performance
-  routeChange: (route: string, duration: number) =>
-    trackEvent('Route Performance', route, undefined, duration),
-
   // Data loading performance
   dataLoad: (type: string, duration: number) =>
     trackEvent('Data Load Performance', type, undefined, duration),
+
+  // Route change performance
+  routeChange: (route: string, duration: number) =>
+    trackEvent('Route Performance', route, undefined, duration),
 };
 
 export default {
+  clearPerformance,
+  getMemoryUsage,
   initPerformanceMonitoring,
   markPerformance,
   measurePerformance,
-  clearPerformance,
-  getMemoryUsage,
-  trackLongTasks,
   performance,
+  trackLongTasks,
 };

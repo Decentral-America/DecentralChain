@@ -3,26 +3,28 @@
  * Modal dialog for depositing external assets (BTC) to DecentralChain
  * Displays deposit address with QR code, instructions, amounts, fees, and expiry countdown
  */
-import { useState, useEffect } from 'react';
+
+import { AccessTime, InfoOutlined } from '@mui/icons-material';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Typography,
   Alert,
-  CircularProgress,
+  Box,
   Button,
-  Divider,
   Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
   Link,
+  Typography,
 } from '@mui/material';
-import { InfoOutlined, AccessTime } from '@mui/icons-material';
-import { useGateway } from '@/hooks/useGateway';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useGateway } from '@/hooks/useGateway';
+import { logger } from '@/lib/logger';
+import { type DepositDetails } from '@/services/gateway/types';
 import { DepositAddress } from './DepositAddress';
-import type { DepositDetails } from '@/services/gateway/types';
 
 interface DepositAssetProps {
   /** Asset to deposit */
@@ -57,46 +59,44 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
   /**
-   * Load deposit details when modal opens
-   */
-  useEffect(() => {
-    if (open && user?.address) {
-      loadDepositDetails();
-    }
-    
-    // Reset state when modal closes
-    if (!open) {
-      setDepositDetails(null);
-      setTimeRemaining(null);
-      clearError();
-    }
-  }, [open, asset.id, user?.address]);
-
-  /**
    * Fetch deposit details from gateway
    */
-  const loadDepositDetails = async () => {
+  const loadDepositDetails = useCallback(async () => {
     if (!user?.address) return;
 
     try {
       const details = await getDepositDetails(asset.id, user.address);
       setDepositDetails(details);
     } catch (err) {
-      console.error('Failed to load deposit details:', err);
+      logger.error('Failed to load deposit details:', err);
     }
-  };
+  }, [user?.address, getDepositDetails, asset.id]);
+
+  /**
+   * Load deposit details when modal opens
+   */
+  useEffect(() => {
+    if (open && user?.address) {
+      loadDepositDetails();
+    }
+
+    // Reset state when modal closes
+    if (!open) {
+      setDepositDetails(null);
+      setTimeRemaining(null);
+      clearError();
+    }
+  }, [open, user?.address, clearError, loadDepositDetails]);
 
   /**
    * Setup countdown timer for round-robin addresses
    */
   useEffect(() => {
-    if (
-      depositDetails?.gatewayType === 'round-robin' &&
-      depositDetails.expiry
-    ) {
+    if (depositDetails?.gatewayType === 'round-robin' && depositDetails.expiry) {
+      const expiryTime = depositDetails.expiry;
       // Initial calculation
       const calculateRemaining = () => {
-        const remaining = depositDetails.expiry!.getTime() - Date.now();
+        const remaining = expiryTime.getTime() - Date.now();
         return Math.max(0, remaining);
       };
 
@@ -135,17 +135,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
       }}
     >
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
           <Typography variant="h6" component="span">
             Deposit {asset.name}
           </Typography>
           {depositDetails?.gatewayType === 'round-robin' && (
-            <Chip
-              label="Temporary"
-              size="small"
-              color="warning"
-              icon={<AccessTime />}
-            />
+            <Chip label="Temporary" size="small" color="warning" icon={<AccessTime />} />
           )}
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -158,12 +153,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
         {loading && (
           <Box
             sx={{
+              alignItems: 'center',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              gap: 2,
               justifyContent: 'center',
               py: 4,
-              gap: 2,
             }}
           >
             <CircularProgress />
@@ -184,10 +179,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
         {depositDetails && !loading && (
           <Box>
             {/* Deposit Address with QR Code */}
-            <DepositAddress
-              address={depositDetails.address}
-              assetName={asset.ticker}
-            />
+            <DepositAddress address={depositDetails.address} assetName={asset.ticker} />
 
             <Divider sx={{ my: 3 }} />
 
@@ -196,7 +188,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
               <Typography variant="subtitle2" gutterBottom sx={{ mb: 1.5 }}>
                 Transaction Limits
               </Typography>
-              
+
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="body2" color="text.secondary">
@@ -228,30 +220,28 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
             </Box>
 
             {/* Round-Robin Expiry Warning */}
-            {depositDetails.gatewayType === 'round-robin' &&
-              timeRemaining !== null && (
-                <Alert
-                  severity={timeRemaining < 300000 ? 'error' : 'warning'}
-                  icon={<AccessTime />}
-                  sx={{ mb: 2 }}
-                >
-                  <Typography variant="body2">
-                    This address expires in{' '}
-                    <strong>{formatTimeRemaining(timeRemaining)}</strong>
+            {depositDetails.gatewayType === 'round-robin' && timeRemaining !== null && (
+              <Alert
+                severity={timeRemaining < 300000 ? 'error' : 'warning'}
+                icon={<AccessTime />}
+                sx={{ mb: 2 }}
+              >
+                <Typography variant="body2">
+                  This address expires in <strong>{formatTimeRemaining(timeRemaining)}</strong>
+                </Typography>
+                {timeRemaining < 300000 && (
+                  <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
+                    Less than 5 minutes remaining. Complete your deposit soon!
                   </Typography>
-                  {timeRemaining < 300000 && (
-                    <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
-                      Less than 5 minutes remaining. Complete your deposit soon!
-                    </Typography>
-                  )}
-                </Alert>
-              )}
+                )}
+              </Alert>
+            )}
 
             {/* Instructions */}
             <Alert severity="info" icon={<InfoOutlined />} sx={{ mb: 2 }}>
               <Typography variant="body2">
-                Send {asset.ticker} to the address above. Your wrapped tokens will appear
-                in your DecentralChain wallet after network confirmations.
+                Send {asset.ticker} to the address above. Your wrapped tokens will appear in your
+                DecentralChain wallet after network confirmations.
               </Typography>
             </Alert>
 
@@ -259,9 +249,8 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
             {depositDetails.minRecoveryAmount && depositDetails.recoveryFee && (
               <Box sx={{ mb: 2 }}>
                 <Typography variant="caption" color="text.secondary" display="block">
-                  Recovery available for amounts above{' '}
-                  {depositDetails.minRecoveryAmount.toFixed()} {asset.ticker} (fee:{' '}
-                  {depositDetails.recoveryFee.toFixed()} {asset.ticker})
+                  Recovery available for amounts above {depositDetails.minRecoveryAmount.toFixed()}{' '}
+                  {asset.ticker} (fee: {depositDetails.recoveryFee.toFixed()} {asset.ticker})
                 </Typography>
               </Box>
             )}

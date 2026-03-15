@@ -8,14 +8,14 @@
  * Matches Angular's token filtering functionality.
  */
 
-import axios from 'axios';
 import NetworkConfig from '@/config/networkConfig';
+import { logger } from '@/lib/logger';
 
 export interface TokenInfo {
   assetId: string;
   name: string;
-  ticker?: string;
-  verified?: boolean;
+  ticker?: string | undefined;
+  verified?: boolean | undefined;
 }
 
 class TokenFilterService {
@@ -45,7 +45,7 @@ class TokenFilterService {
 
   private async _performInitialization(): Promise<void> {
     try {
-      console.log('[TokenFilter] Initializing token filters...');
+      logger.debug('[TokenFilter] Initializing token filters...');
 
       // Fetch both lists in parallel
       const [scamResponse, namesResponse] = await Promise.all([
@@ -55,7 +55,9 @@ class TokenFilterService {
 
       // Process scam list
       if (scamResponse) {
-        scamResponse.forEach((id) => this.scamList.add(id));
+        scamResponse.forEach((id) => {
+          this.scamList.add(id);
+        });
       }
 
       // Process token names
@@ -66,12 +68,12 @@ class TokenFilterService {
       }
 
       this.initialized = true;
-      console.log('[TokenFilter] Initialized:', {
-        scamTokens: this.scamList.size,
+      logger.debug('[TokenFilter] Initialized:', {
         namedTokens: this.tokenNames.size,
+        scamTokens: this.scamList.size,
       });
     } catch (error) {
-      console.error('[TokenFilter] Initialization failed:', error);
+      logger.error('[TokenFilter] Initialization failed:', error);
       // Don't throw - allow app to function without filters
       // Mark as initialized anyway to prevent repeated failures
       this.initialized = true;
@@ -84,23 +86,23 @@ class TokenFilterService {
     try {
       const scamUrl = NetworkConfig.scamListUrl;
       if (!scamUrl) {
-        console.warn('[TokenFilter] scamListUrl not configured');
+        logger.warn('[TokenFilter] scamListUrl not configured');
         return null;
       }
 
-      const response = await axios.get<string>(scamUrl, {
-        timeout: 10000,
-        responseType: 'text',
+      const response = await fetch(scamUrl, {
+        signal: AbortSignal.timeout(10000),
       });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       // Parse CSV - each line is an asset ID
-      const lines = response.data
+      const lines = (await response.text())
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
       return lines;
     } catch (error) {
-      console.error('[TokenFilter] Failed to fetch scam list:', error);
+      logger.error('[TokenFilter] Failed to fetch scam list:', error);
       return null;
     }
   }
@@ -109,17 +111,17 @@ class TokenFilterService {
     try {
       const namesUrl = NetworkConfig.tokensNameListUrl;
       if (!namesUrl) {
-        console.warn('[TokenFilter] tokensNameListUrl not configured');
+        logger.warn('[TokenFilter] tokensNameListUrl not configured');
         return null;
       }
 
-      const response = await axios.get<string>(namesUrl, {
-        timeout: 10000,
-        responseType: 'text',
+      const response = await fetch(namesUrl, {
+        signal: AbortSignal.timeout(10000),
       });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       // Parse CSV - format: assetId,name,ticker
-      const lines = response.data
+      const lines = (await response.text())
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
@@ -129,8 +131,8 @@ class TokenFilterService {
         const parts = line.split(',').map((p) => p.trim());
         if (parts.length >= 2) {
           tokens.push({
-            assetId: parts[0],
-            name: parts[1],
+            assetId: parts[0] ?? '',
+            name: parts[1] ?? '',
             ticker: parts[2] || undefined,
             verified: true,
           });
@@ -139,7 +141,7 @@ class TokenFilterService {
 
       return tokens;
     } catch (error) {
-      console.error('[TokenFilter] Failed to fetch token names:', error);
+      logger.error('[TokenFilter] Failed to fetch token names:', error);
       return null;
     }
   }

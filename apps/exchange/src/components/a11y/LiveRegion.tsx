@@ -28,7 +28,7 @@
  * ```
  */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 /**
@@ -269,7 +269,7 @@ export const AnnouncementProvider: React.FC<{ children: React.ReactNode }> = ({ 
   >([]);
 
   const announce = (message: string, politeness: 'polite' | 'assertive' = 'polite') => {
-    const id = `announcement-${Date.now()}-${Math.random()}`;
+    const id = `announcement-${Date.now()}-${crypto.randomUUID()}`;
     setAnnouncements((prev) => [...prev, { id, message, politeness }]);
   };
 

@@ -1,4 +1,4 @@
-const AssetCard = (wrapped: WebdriverIO.Element) => ({
+const AssetCard = (wrapped: any) => ({
   get moreButton() {
     return wrapped.findByTestId$('moreBtn');
   },
@@ -9,18 +9,6 @@ const AssetCard = (wrapped: WebdriverIO.Element) => ({
 });
 
 export const HomeScreen = {
-  isDisplayed: async () => {
-    try {
-      return await browser.findByTestId$('assetsForm', {}, { timeout: 5000 }).isDisplayed();
-    } catch {
-      return false;
-    }
-  },
-
-  get root() {
-    return browser.findByTestId$('assetsForm');
-  },
-
   get activeAccountCard() {
     return this.root.findByTestId$('activeAccountCard');
   },
@@ -29,16 +17,8 @@ export const HomeScreen = {
     return this.activeAccountCard.findByTestId$('accountName');
   },
 
-  get otherAccountsButton() {
-    return this.root.findByTestId$('otherAccountsButton');
-  },
-
-  get showQRButton() {
-    return this.root.$('.showQrIcon');
-  },
-
   get assets() {
-    return this.root.$$("[class*='assetCard@assetItem']").map((it) => AssetCard(it));
+    return this.root.$$("[class*='assetCard@assetItem']").map((it: any) => AssetCard(it));
   },
 
   async getAssetByName(name: string) {
@@ -47,5 +27,24 @@ export const HomeScreen = {
       .$(".//ancestor::*[contains(@class, 'assetCard@')]");
     await element.waitForDisplayed();
     return AssetCard(element);
+  },
+  isDisplayed: async () => {
+    try {
+      return await browser.findByTestId$('assetsForm', {}, { timeout: 5000 }).isDisplayed();
+    } catch {
+      return false;
+    }
+  },
+
+  get otherAccountsButton() {
+    return this.root.findByTestId$('otherAccountsButton');
+  },
+
+  get root() {
+    return browser.findByTestId$('assetsForm');
+  },
+
+  get showQRButton() {
+    return this.root.$('.showQrIcon');
   },
 };

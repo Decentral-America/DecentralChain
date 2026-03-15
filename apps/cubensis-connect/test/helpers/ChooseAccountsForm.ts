@@ -1,10 +1,10 @@
-const Account = (wrapped: WebdriverIO.Element) => ({
-  get name() {
-    return wrapped.findByTestId$('accountName');
-  },
-
+const Account = (wrapped: any) => ({
   get checkbox() {
     return wrapped.$("[name='selected']");
+  },
+
+  async getAddress() {
+    return await wrapped.getAttribute('title');
   },
 
   async isSelected() {
@@ -12,45 +12,31 @@ const Account = (wrapped: WebdriverIO.Element) => ({
     if (!(await checkbox.isExisting())) return null;
     return await checkbox.isSelected();
   },
-
-  async getAddress() {
-    return await wrapped.getAttribute('title');
+  get name() {
+    return wrapped.findByTestId$('accountName');
   },
 });
 
-const AccountsGroup = (wrapped: WebdriverIO.Element) => ({
+const AccountsGroup = (wrapped: any) => ({
+  get accounts() {
+    return wrapped.findAllByTestId$('accountCard').map((it: any) => Account(it));
+  },
   get label() {
     return wrapped.findByTestId$('accountsGroupLabel');
-  },
-
-  get accounts() {
-    return wrapped.findAllByTestId$('accountCard').map((it) => Account(it));
   },
 });
 
 export const ChooseAccountsForm = {
-  get root() {
-    return $("[class*='root@chooseItems'],[class*='root@chooseAccounts']");
+  get accounts() {
+    return this.root.findAllByTestId$('accountCard').map((it: any) => Account(it));
   },
 
-  get importButton() {
-    return this.root.findByTestId$('submitButton');
+  get accountsGroups() {
+    return this.root.findAllByTestId$('accountsGroup').map((it: any) => AccountsGroup(it));
   },
 
   get exportButton() {
     return this.root.findByTestId$('exportButton');
-  },
-
-  get accountsGroups() {
-    return this.root.findAllByTestId$('accountsGroup').map((it) => AccountsGroup(it));
-  },
-
-  get accounts() {
-    return this.root.findAllByTestId$('accountCard').map((it) => Account(it));
-  },
-
-  get skipButton() {
-    return this.root.findByText$('Skip');
   },
 
   async getAccountByAddress(address: string) {
@@ -61,11 +47,22 @@ export const ChooseAccountsForm = {
     );
   },
 
-  get modalPasswordInput() {
-    return browser.findByTestId$('passwordInput');
+  get importButton() {
+    return this.root.findByTestId$('submitButton');
   },
 
   get modalEnterButton() {
     return browser.findByTestId$('verifyButton');
+  },
+
+  get modalPasswordInput() {
+    return browser.findByTestId$('passwordInput');
+  },
+  get root() {
+    return $("[class*='root@chooseItems'],[class*='root@chooseAccounts']");
+  },
+
+  get skipButton() {
+    return this.root.findByText$('Skip');
   },
 };

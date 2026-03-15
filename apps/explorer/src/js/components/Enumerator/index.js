@@ -1,1 +1,1 @@
-export { Enumerator as default } from './Enumerator.view';
+export {Enumerator as default} from './Enumerator.view';

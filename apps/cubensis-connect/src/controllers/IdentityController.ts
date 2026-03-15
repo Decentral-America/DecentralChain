@@ -280,10 +280,10 @@ export class IdentityController implements IdentityApi {
 
       const config = this.getIdentityConfig(currentNetwork);
       this.userPool = new CognitoUserPool({
-        UserPoolId: config.cognito.userPoolId,
         ClientId: config.cognito.clientId,
-        Storage: this.store,
         endpoint: config.cognito.endpoint,
+        Storage: this.store,
+        UserPoolId: config.cognito.userPoolId,
       });
     }
   }
@@ -309,35 +309,22 @@ export class IdentityController implements IdentityApi {
       }
 
       this.user = new CognitoUser({
-        Username: username,
         Pool: this.userPool,
         Storage: this.store,
+        Username: username,
       });
 
-      this.userData = { username, password };
+      this.userData = { password, username };
 
       this.user.authenticateUser(
         new AuthenticationDetails({
-          Username: username,
-          Password: password,
           ClientMetadata: {
             'custom:encryptionKey': base58Encode(publicKey),
           },
+          Password: password,
+          Username: username,
         }),
         {
-          onSuccess: async () => {
-            this.identity = await this.fetchIdentityUser();
-            this.identity.uuid = this.user?.getUsername() ?? '';
-            this.identity.username = this.userData?.username ?? '';
-            this.user = undefined;
-            this.userData = undefined;
-
-            resolve({});
-          },
-
-          onFailure: (err) => {
-            reject(err);
-          },
           customChallenge() {
             resolve({ challengeName: 'CUSTOM_CHALLENGE' });
           },
@@ -350,10 +337,23 @@ export class IdentityController implements IdentityApi {
           newPasswordRequired() {
             resolve({ challengeName: 'NEW_PASSWORD_REQUIRED' });
           },
-          totpRequired(challengeName) {
-            resolve({ challengeName });
+
+          onFailure: (err) => {
+            reject(err);
+          },
+          onSuccess: async () => {
+            this.identity = await this.fetchIdentityUser();
+            this.identity.uuid = this.user?.getUsername() ?? '';
+            this.identity.username = this.userData?.username ?? '';
+            this.user = undefined;
+            this.userData = undefined;
+
+            resolve({});
           },
           selectMFAType(challengeName) {
+            resolve({ challengeName });
+          },
+          totpRequired(challengeName) {
             resolve({ challengeName });
           },
         },
@@ -372,6 +372,9 @@ export class IdentityController implements IdentityApi {
       this.user.sendMFACode(
         code,
         {
+          onFailure: (err) => {
+            reject(err);
+          },
           onSuccess: async (session) => {
             if (this.user) {
               delete this.user.challengeName;
@@ -388,9 +391,6 @@ export class IdentityController implements IdentityApi {
               resolve();
             }
           },
-          onFailure: (err) => {
-            reject(err);
-          },
         },
         mfaType,
         {
@@ -404,11 +404,11 @@ export class IdentityController implements IdentityApi {
     const token = this.getIdToken().getJwtToken();
     const cfg = this.getConfig();
     return fetch(`${cfg.apiUrl}/v1/user`, {
-      method: 'GET',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
+      method: 'GET',
     }).then((response) => response.json());
   }
 
@@ -565,13 +565,13 @@ export class IdentityController implements IdentityApi {
     const token = this.getIdToken().getJwtToken();
     const cfg = this.getConfig();
     return fetch(`${cfg.apiUrl}/v1/sign`, {
-      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      method: 'POST',
     }).then(handleResponse<{ signature: string }>);
   }
 

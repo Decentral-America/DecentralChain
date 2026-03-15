@@ -1,9 +1,97 @@
 {
+  "app": {
+    "back": "Back to main page",
+    "button": {
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "signIn": "Sign in"
+    },
+    "confirmTransaction": {
+      "notPermitted": {
+        "issue": "Token issuance is temporarily unavailable.",
+        "issue-title": "Token generation",
+        "massSendTitle": "Mass Transfer",
+        "reissue": "Token reissuance is temporarily unavailable.",
+        "sendTitle": "Send",
+        "set-script-title": "Script transaction"
+      },
+      "send": {
+        "errors": {
+          "fee": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee;"
+        }
+      }
+    },
+    "date": {
+      "month": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    },
+    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
+      "description": "Aloha funky coin, for any good&evil purposes ;)"
+    },
+    "error": {
+      "updateClient": {
+        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://decentralchain.io/technology/wallet)!",
+        "title": "It's time to update your app!"
+      }
+    },
+    "fee": "{{money, money-fee}}",
+    "header": {
+      "assets": "Assets",
+      "dex": "DEX",
+      "leasing": "Leasing",
+      "portfolio": "Portfolio",
+      "tokens": "Tokens",
+      "transactions": "Transactions",
+      "wallet": "Wallet"
+    },
+    "inputs": {
+      "errors": {
+        "required": "This field is required!"
+      }
+    },
+    "leftmenu": {
+      "login": "Log in",
+      "logout": "Log out",
+      "settings": "Settings"
+    },
+    "matcher": {
+      "orders": {
+        "statuses": {
+          "canceled": "Canceled",
+          "filled": "Filled ({{percent}}%)",
+          "opened": "Opened"
+        }
+      }
+    },
+    "modal": {
+      "enterPassword": {
+        "ok": "OK",
+        "title": "Enter Password"
+      },
+      "pairing": {
+        "showQr": "Show"
+      },
+      "tryDesktop": {
+        "cancel": "Continue with web",
+        "label": "Remember my choice and do not remind me again",
+        "message": "We recommend you use the DecentralChain desktop app. If you don't have this, you can download it from the official site.",
+        "title": "Use the DecentralChain desktop app",
+        "try": "Open desktop app"
+      }
+    },
+    "money-currency": "{{money, money-currency}}",
+    "number": {
+      "short": {
+        "million": "M",
+        "thousand": "k"
+      }
+    },
+    "Suspicious": "Suspicious"
+  },
   "app.create": {
     "backupSeed": {
       "back": "go back",
       "copySeed": "copy them",
-      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official Waves clients.",
+      "description": "Please be careful and never input your SEED into other clients, because your account will be compromised and you will lose all of your funds. You should only use the official DCC clients.",
       "needConfirm": "You will confirm this phrase on the next screen.",
       "ok": "I’ve written it down",
       "or": "or",
@@ -61,7 +149,7 @@
       "confirmBackupDescription": "Verify your backup phrase",
       "next": "Confirm",
       "prev": "Go back",
-      "successContent": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new Waves wallet immediately and transfer your funds to it.",
+      "successContent": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new DCC wallet immediately and transfer your funds to it.",
       "successHeadline": "Treat your backup phrase with care!",
       "understand": "I Understand"
     },
@@ -69,9 +157,9 @@
       "backup": "Back Up Now",
       "description": "You must save the Seed phrase. It is crucial for accessing your account",
       "modal": {
-        "descriptionP1": "Waves Platform would like to warn you about the increased frequency of scam and phishing attacks over the last month. Fraudsters are hiding their malware in their own versions of the Waves client and promising bonuses and discounts to lure in users.",
+        "descriptionP1": "DecentralChain Platform would like to warn you about the increased frequency of scam and phishing attacks over the last month. Fraudsters are hiding their malware in their own versions of the DCC client and promising bonuses and discounts to lure in users.",
         "descriptionP2": "Please be careful and never input your SEED into these 'clients', because your account will be compromised and you will lose all of your funds.",
-        "descriptionP3": "You should ONLY use the official Waves client.",
+        "descriptionP3": "You should ONLY use the official DCC client.",
         "ok": "I understand",
         "title": "Treat your backup phrase with care!"
       },
@@ -86,8 +174,8 @@
   },
   "app.desktop": {
     "back": "Back to main page",
-    "message": "If you don't have this, you can download it from the [official site](https://wavesplatform.com). If you have the Waves desktop app but it has not opened, please [send](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) a bug report.",
-    "title": "You have chosen to log into the Waves desktop app"
+    "message": "If you don't have this, you can download it from the [official site](https://decentralchain.io). If you have the DecentralChain desktop app but it has not opened, please [send](https://docs.google.com/forms/d/e/1FAIpQLSeV-CEGD-OU5_Db8T6DjPv_uYy9XQ0MDy_h7dDho5_Nrhw-dw/viewform) a bug report.",
+    "title": "You have chosen to log into the DecentralChain desktop app"
   },
   "app.dex": {
     "create": {
@@ -115,9 +203,9 @@
         "1day": "1 day",
         "1hour": "1 hour",
         "1week": "1 week",
+        "5min": "5 min",
         "30day": "29 days",
         "30min": "30 min",
-        "5min": "5 min",
         "amountField": "Amount",
         "ask": "Ask",
         "bid": "Bid",
@@ -134,7 +222,7 @@
         },
         "expiration": "Expiration",
         "fee": "Fee {{fee}} DCC",
-        "hasScript": "Cancel [script](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) to trade",
+        "hasScript": "Cancel [script](https://docs.decentralchain.io/en/decentralchain-client/advanced_features/script_transaction.html) to trade",
         "last": "Last",
         "limit": "Limit Order",
         "market": "Market Order",
@@ -231,7 +319,7 @@
         "time": "Time",
         "total": "Total",
         "type": "Type",
-        "withScript": "You cannot use the exchange while a [script](https://docs.wavesplatform.com/en/waves-client/advanced_features/script_transaction.html) is installed on your account"
+        "withScript": "You cannot use the exchange while a [script](https://docs.decentralchain.io/en/decentralchain-client/advanced_features/script_transaction.html) is installed on your account"
       },
       "noChartDataMessage": "{div}[Not enough bids and asks]{div}[to create market depth chart]",
       "noChartDataTitle": "Nothing Here…",
@@ -275,9 +363,9 @@
         "chg": "Chg",
         "coin": "Coin",
         "helpIcon": {
-          "assetId": "Asset ID",
           "AssetId1AssetId2": "Asset1 ID / Asset2 ID",
-          "description": "You can find out more about searching assets [here](https://docs.wavesplatform.com/en/waves-dex/start-trading-on-the-waves-dex.html )",
+          "assetId": "Asset ID",
+          "description": "You can find out more about searching assets [here](https://docs.decentralchain.io/en/decentralchain-dex/start-trading-on-the-decentralchain-dex.html )",
           "header": "You can search by:",
           "name": "Name",
           "name1Name2": "Name1 / Name2"
@@ -334,15 +422,15 @@
       "title": {
         "all": "All",
         "btc": "Btc",
+        "decentralchain": "DecentralChain",
         "eth": "ETH",
         "history": "history",
         "myBalance": "My Balance",
         "myTradeHistory": "My Trade History",
-        "openOrders": "My Open Orders",
         "OrderHistory": "My Order History",
+        "openOrders": "My Open Orders",
         "trade": "Trade",
-        "tradeHistory": "Trade History",
-        "waves": "Waves"
+        "tradeHistory": "Trade History"
       }
     }
   },
@@ -378,13 +466,19 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "decentralchainClient": "DCC Client",
+    "decentralchainClientDescription": "Import account from a DCC Client",
+    "decentralchainLiteClient": "DecentralChain Lite Client",
+    "decentralchainLiteClientDescription": "Import accounts from the DecentralChain Lite Client",
+    "decentralchainSeedClient": "Backup SEED Phrase",
+    "decentralchainSeedClientDescription": "Import account from a backup SEED",
     "import": {
       "signIn": "Sign in"
     },
     "importAccount": "Import accounts",
     "importAccountInfo": "Select where to import accounts from",
-    "KeeperClient": "Waves Keeper",
-    "keeperDescription": "Import account from the Waves Keeper",
+    "KeeperClient": "Cubensis Connect",
+    "keeperDescription": "Import account from the Cubensis Connect",
     "keeperForm": "Install",
     "LedgerClient": "Ledger Device",
     "ledgerDescription": "Import accounts from your Ledger Device",
@@ -393,114 +487,7 @@
       "name": "Seed or Key"
     },
     "seedAndKeyDescription": "Import account from a SEED or Private key",
-    "selectButton": "Select",
-    "wavesClient": "Waves Client",
-    "wavesClientDescription": "Import account from a Waves Client",
-    "wavesLiteClient": "Waves Lite Client",
-    "wavesLiteClientDescription": "Import accounts from the Waves Lite Client",
-    "wavesSeedClient": "Backup SEED Phrase",
-    "wavesSeedClientDescription": "Import account from a backup SEED"
-  },
-  "app": {
-    "back": "Back to main page",
-    "button": {
-      "cancel": "Cancel",
-      "continue": "Continue",
-      "signIn": "Sign in"
-    },
-    "confirmTransaction": {
-      "notPermitted": {
-        "issue": "Token issuance is temporarily unavailable.",
-        "issue-title": "Token generation",
-        "massSendTitle": "Mass Transfer",
-        "reissue": "Token reissuance is temporarily unavailable.",
-        "sendTitle": "Send",
-        "set-script-title": "Script transaction"
-      },
-      "send": {
-        "errors": {
-          "fee": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee;"
-        }
-      }
-    },
-    "date": {
-      "month": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
-    },
-    "error": {
-      "updateClient": {
-        "body": "We are constantly working to make Decentral.Exchange better and more useful.\nPlease update the application to continue.  Download the application from the official [website](https://wavesplatform.com/technology/wallet)!",
-        "title": "It's time to update your app!"
-      }
-    },
-    "EXK2jJo1PbL9CUNr5FSedw6cueZH5MUCDXNhR1WQEZa4": {
-      "description": "Aloha funky coin, for any good&evil purposes ;)"
-    },
-    "fee": "{{money, money-fee}}",
-    "header": {
-      "assets": "Assets",
-      "dex": "DEX",
-      "leasing": "Leasing",
-      "portfolio": "Portfolio",
-      "tokens": "Tokens",
-      "transactions": "Transactions",
-      "wallet": "Wallet"
-    },
-    "inputs": {
-      "errors": {
-        "required": "This field is required!"
-      }
-    },
-    "leftmenu": {
-      "login": "Log in",
-      "logout": "Log out",
-      "settings": "Settings"
-    },
-    "matcher": {
-      "orders": {
-        "statuses": {
-          "canceled": "Canceled",
-          "filled": "Filled ({{percent}}%)",
-          "opened": "Opened"
-        }
-      }
-    },
-    "modal": {
-      "enterPassword": {
-        "ok": "OK",
-        "title": "Enter Password"
-      },
-      "pairing": {
-        "showQr": "Show"
-      },
-      "tryDesktop": {
-        "cancel": "Continue with web",
-        "label": "Remember my choice and do not remind me again",
-        "message": "We recommend you use the Waves desktop app. If you don't have this, you can download it from the official site.",
-        "title": "Use the Waves desktop app",
-        "try": "Open desktop app"
-      }
-    },
-    "money-currency": "{{money, money-currency}}",
-    "number": {
-      "short": {
-        "million": "M",
-        "thousand": "k"
-      }
-    },
-    "Suspicious": "Suspicious"
+    "selectButton": "Select"
   },
   "app.ledger": {
     "ledger": {
@@ -518,9 +505,9 @@
       "help": {
         "id": "{div}[Set an ID manually or select an account from the list.]\n{div}[Please save the ID, it would be needed for importing.]"
       },
+      "ImportOrSignIn": "Import account or",
       "id": "Account ID",
       "importAccount": "Import a Ledger account",
-      "ImportOrSignIn": "Import account or",
       "login": "Continue",
       "name": "Account name",
       "nameExists": "That name is taken",
@@ -550,20 +537,20 @@
       "cancelDownloading": "Cancel download",
       "congratulations": "Congratulations!",
       "congratulationsText": "You have successfully downloaded the new application. To start using the application, simply do the following:",
-      "connectSupport": "If that did not help, then contact the Waves.Exchange [support](https://support.waves.exchange/).",
+      "connectSupport": "If that did not help, then contact the Decentral.Exchange [support](https://support.decentral.exchange/).",
       "download": "Download",
       "downloaded": "yes",
-      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
+      "downloadText": "{div}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Decentral.Exchange.]\n{div.margin-top}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to download the new desktop application.]",
       "fail": "Fail",
-      "failText": "Please make sure that you have installed and run the new Waves.Exchange application.",
-      "haveYouDownloaded": "Have you already downloaded the new Waves.Exchange desktop application?",
+      "failText": "Please make sure that you have installed and run the new Decentral.Exchange application.",
+      "haveYouDownloaded": "Have you already downloaded the new Decentral.Exchange desktop application?",
       "install": "Install the application",
       "installAndRun": "Install and run the application. Have you done it?",
       "iUnderstand": "I understand",
       "lookAtFAQ1": "If you did everything properly and keep getting the Fail result, then take a look at the",
       "lookAtFAQ2": "You might find the answer there.",
-      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Waves.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
-      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.wavesplatform.com).",
+      "movingText": "{div.margin-bottom}[To offer users a better experience and wider range of tools, the exchange is moving from Decentral.Exchange to Decentral.Exchange.]\n{div.margin-bottom}[Decentral.Exchange will stop operating on December 2, 2019. To continue trading you have to move your accounts to the new exchange. We strongly recommend that you do this in advance.]\n{div.margin-bottom}[The moving is fast, easy, and absolutely secure.]",
+      "oldApplication": "Your current application is too old. If you want to trade just right now (before December 2, 2019), you can download our latest Decentral.Exchange desktop application from the [official website](https://dex.decentralchain.io).",
       "oops": "Oops! Something went wrong...",
       "password": "Password",
       "passwordError": "Wrong Password!",
@@ -579,35 +566,43 @@
     },
     "faq": {
       "attention": {
-        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.wavesplatform.com](https://dex.wavesplatform.com/) and [https://client.wavesplatform.com](https://client.wavesplatform.com/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. Waves Platform or Waves.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
+        "text": "{div.margin-top-1}[The migration process for web wallets is ONLY available from the web domain [https://dex.decentralchain.io](https://dex.decentralchain.io/) and [https://client.decentralchain.io](https://client.decentralchain.io/). To complete migration for the desktop client you have to use the Decentral.Exchange desktop application you have already installed.]\n\n{div.margin-top-1}[Do not use any other domains for migration, do not input your seed phrases and/or private keys anywhere, and do not download any other clients aside from the software indicated for the migration process from your current Decentral.Exchange client. The migration process does not require you to input your seed phrases and/or private keys anywhere. DecentralChain Platform or Decentral.Exchange employees will never ask you to provide any kind of personal information, including private keys and/or seed phrases.]\n\n{div.margin-top-1}[The migration process is absolutely free, and it will not affect any gateways, which will process all transactions as normal. You do not need to pay or send any tokens to anyone to complete migration.]",
         "title": "ATTENTION!!! "
       },
       "goHome": "Go to HomePage",
-      "text1": "Decentral.Exchange is transforming into a new product, Waves.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
-      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Waves.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Waves.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
-      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
-      "text12": "Ownership of your tokens is recorded on the Waves blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
-      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using Waves Explorer. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
-      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
-      "text15": "On December 2, users will need to log into the Waves mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
-      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
-      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
-      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/wavesexchange) or create a ticket on the support page: [https://support.waves.exchange/](https://support.waves.exchange/)]",
-      "text19": "{div.margin-bottom}[Some gateways are operated by the Waves.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
-      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.wavesplatform.com/waves-dex-to-be-spun-off-43da9f6e2a91).",
-      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Waves.Exchange’s leasing interface, and collect interest of up to 7% per year.",
-      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
-      "text22": "The new addresses belong to the Waves gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
-      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Waves.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
-      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
-      "text3": "Waves.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the Waves community.",
+      "text1": "Decentral.Exchange is transforming into a new product, Decentral.Exchange. Don’t worry! All of your tokens, seed phrases and passwords are completely safe.",
+      "text2": "This is a new exchange based on Decentral.Exchange’s technology and expertise. For more details, see [this announcement](https://blog.decentralchain.io/decentralchain-dex-to-be-spun-off-43da9f6e2a91).",
+      "text3": "Decentral.Exchange is developed and run by part of the Decentral.Exchange team, in collaboration with new developers from the DecentralChain community.",
       "text4": "The migration signifies a new phase in the development of the exchange, the main priority of which will now be user experience. In addition to focusing on the community’s requests, the new team will concentrate on building new trading tools and comprehensive promotion of the product, which was difficult under the previous arrangement.",
       "text5": "Migration has already begun. As of November 18, 2019, you can move your accounts to the new service. To do that, you’ll need to update Decentral.Exchange’s web version and/or run a desktop app, log into your account and follow the instructions.",
-      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the Waves trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
+      "text6": "Yes. This will be the new way to access all of the familiar and convenient tools of the DecentralChain trading ecosystem – including web and desktop apps, mobile apps and the exchange – plus new features and upgrades to the service.",
       "text7": "The new exchange’s launch is scheduled for December 2, 2019.",
       "text8": "We want to give Decentral.Exchange users enough time to prepare for using the new exchange, so that their access to the service is uninterrupted. We hope that the two-week period will be sufficient for the majority of users to complete the migration process.",
-      "text9": "Yes, migration of accounts will also be possible after the launch of Waves.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "text9": "Yes, migration of accounts will also be possible after the launch of Decentral.Exchange. However, as of December 2, 2019, some restrictions will apply to Decentral.Exchange’s old apps.",
+      "text10": "{div.margin-bottom}[If you are using the old apps, you will NO LONGER BE ABLE TO:]\n{div.line}[- Create accounts]\n{div.line}[- Have access to the Decentral.Exchange interface]\n{div.line}[- View your portfolio]\n{div.line}[- Make transactions of any kind: transfer, issue or burn tokens, lease DCC or cancel leasing]\n{div.line}[- Use any gateways]\n\n{div.margin-bottom}[As of December 2, 2019, you will be able to enjoy this functionality with Decentral.Exchange apps.]\n\n{div.margin-bottom}[However, with the old apps, you will STILL BE ABLE TO:]\n\n{div.line}[- Log into your accounts]\n{div.line}[- Initiate the process of migration to Decentral.Exchange]\n{div.line}[- Create a local backup of your seed phrases]\n\n{div.margin-top}[If you still have questions, you can send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
+      "text11": "No, never! This will not happen under any circumstances. All seed phrases will still be stored locally on your devices. It is impossible for the exchange to gain access to that storage.",
+      "text12": "Ownership of your tokens is recorded on the DecentralChain blockchain. Tokens stored in your accounts can only be accessed with seed phrases or private keys that will not change after the migration and will not leave your devices. Your assets are completely safe!",
+      "text13": "{div.margin-bottom}[We’ll do our best to ensure the migration process is as smooth as possible for users. Because of changes to the matcher’s address and private key, we won’t be able to move your orders to the new matcher. Therefore, your entire order history will no longer be available. All your completed transactions can still be viewed using DecentralScan. ]\n\n{div.margin-bottom}[Apart from your order history, all your active orders will be cancelled on December 2. This is a necessary measure caused by the switch to a new matcher. In the case of successful migration, you will still retain:]\n{div.line}[– A set of pinned assets on your dashboard]\n{div.line}[– Saved pairs on the exchange]\n{div.line}[– A list of “hidden” assets]\n{div.line}[– Language preferences]\n{div.line}[– Account information (seed phrases, account names)]\n\n{div.margin-bottom.margin-top}[Please keep in mind that technical work will take place on December 2, upon which access to old apps will be restricted and new apps will be prepared for launch. ]\n\n{div.margin-bottom}[During this work, gateways will process all transactions (deposit and withdrawal) as normal, which will ensure full security and access to your funds.]\n\n{div.margin-top}[You won’t be left without support! You can always send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
+      "text14": "{div}[The migration process will take roughly eight hours. During that time, you won’t have full access to your apps. We’d like to remind you that the migration process is scheduled for Monday, December 2, 2019. During the technical work that will take place that day, gateways will process all transactions as normal, which will ensure full security and access to your funds.]\n\n{div}[Support is at hand! You can always send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
+      "text15": "On December 2, users will need to log into the DCC mobile app and hit the Update button. The app will be updated to version 2.7.0. The update will be available on Google Play and the App Store before the end of the day on Monday, December 2, 2019.",
+      "text16": "Currently, KYC is only required for deposit/withdrawal of wUSD and wEUR from/to your bank account. At the moment, the team has no plans to introduce KYC for trading or cryptocurrency transactions.",
+      "text17": "The matcher will get a new address and URL, and its private key will change. Due to these changes, users’ open orders at the time of update will automatically be cancelled and transaction histories will become unavailable. Unfortunately, there is no technical means of transferring orders and transaction histories to the new matcher, because each order is sent to the matcher after the user signs it with their private key. Since neither the old or new matcher can access users’ private keys, orders cannot be transferred. We understand that this might be frustrating, but this approach is a feature of the matcher's design that is required to maintain the safety of users’ funds. We apologize for any inconvenience.",
+      "text18": "{div.margin-bottom}[We have done our best to ensure the migration process will be as smooth as possible for users. If you have problems moving your accounts, please start again. To do that, go back to your old web or desktop client, log in with your password and follow the instructions.]\n\n{div.margin-bottom}[Recommendation for browser users: during migration, turn off all browser extensions, since they could impose restrictions, interfering with migration.]\n\n{div.margin-bottom}[Recommendation for desktop client users: turn off your firewall or antivirus software, since they could impose restrictions on port operation, interfering with migration.]\n\n{div.margin-top}[In any case, you will not be left without support! You can always send a message to our [official Telegram group](https://t.me/decentralexchange) or create a ticket on the support page: [https://support.decentral.exchange/](https://support.decentral.exchange/)]",
+      "text19": "{div.margin-bottom}[Some gateways are operated by the Decentral.Exchange team, specifically: $BTC, $ETH, $WEST, $ERGO, $BNT and $USDT.]\n{div.margin-bottom}[Meanwhile, $LTC, $XMR, $DASH, $BCH, $BSV, $Zcash, wUSD and wEUR are temporarily operated by Coinomat.]\n{div.margin-top}[During technical work on December 2, 2019, gateways will process all transactions as normal, which will ensure full security and access to your funds.]",
+      "text20": "Your leases will not be cancelled during the migration process. Just as before, users will be able to lease their DCC to the nodes they choose, using Decentral.Exchange’s leasing interface, and collect interest of up to 7% per year.",
+      "text21": "The launch of the USDT (ERC-20) gateway will have no impact on the operation of wUSD and wEUR. Users will be able to continue trading them as they wish.",
+      "text22": "The new addresses belong to the DCC gateway (not Coinomat). We will constantly be improving these gateways, making transfers faster and more convenient for users.",
+      "text23": "We understand that the migration process may bring some inconvenience for users, so we have prepared a nice surprise! All users who have successfully moved their accounts to the new exchange will receive a glittering avatar, displayed in the app. To receive this, you will need to complete the migration of your accounts from Decentral.Exchange to Decentral.Exchange by December 2, and have at least one outgoing transaction of any type in each account to qualify.",
+      "text24": "We plan to add support for all languages previously available on Decentral.Exchange soon.",
       "title1": "What’s going on?",
+      "title2": "What is Decentral.Exchange?",
+      "title3": "Who is in charge of developing the new exchange?",
+      "title4": "Why is Decentral.Exchange moving to Decentral.Exchange?",
+      "title5": "When will migration begin?",
+      "title6": "Is migration mandatory?",
+      "title7": "When will Decentral.Exchange be launched?",
+      "title8": "Why did the migration process begin two weeks prior to launch?",
+      "title9": "Will it be possible to move accounts after the launch of Decentral.Exchange?",
       "title10": "What restrictions will apply to Decentral.Exchange apps as of December 2, 2019?",
       "title11": "Will the new exchange have access to my seed phrases?",
       "title12": "What will happen to my tokens?",
@@ -618,19 +613,11 @@
       "title17": "What changes will the matcher undergo?",
       "title18": "What if I have any problems or questions during the migration process?",
       "title19": "What will happen to gateway tokens?",
-      "title2": "What is Waves.Exchange?",
       "title20": "Will leasing still be available after migration? Will leases be cancelled during the migration process?",
       "title21": "Will Tether USD (USDT) replace wUSD and wEUR?",
       "title22": "Why have the gateway addresses for receiving BTC and ETH been changed?",
       "title23": "Why so complicated?",
-      "title24": "Are there plans to expand language support for the interface of the new exchange?",
-      "title3": "Who is in charge of developing the new exchange?",
-      "title4": "Why is Decentral.Exchange moving to Waves.Exchange?",
-      "title5": "When will migration begin?",
-      "title6": "Is migration mandatory?",
-      "title7": "When will Waves.Exchange be launched?",
-      "title8": "Why did the migration process begin two weeks prior to launch?",
-      "title9": "Will it be possible to move accounts after the launch of Waves.Exchange?"
+      "title24": "Are there plans to expand language support for the interface of the new exchange?"
     },
     "migrate": {
       "achievementDesc": "You’ve successfully migrated your accounts. To thank you for completing the process, we’re rewarding all your accounts (with at least one outgoing transaction made before December 2, 2019) with glittering avatars!",
@@ -641,7 +628,7 @@
       "continue": "Continue",
       "desc": {
         "almostFinish": "To finish the migration of your accounts, accept the new Terms and Conditions and Privacy Policy.",
-        "enterPassword": "Enter your Waves.Exchange password to continue the migration.",
+        "enterPassword": "Enter your Decentral.Exchange password to continue the migration.",
         "onePassword": "Create one password for all your accounts. Sign into accounts and switch between them easily."
       },
       "description": {
@@ -663,7 +650,7 @@
       },
       "modalDesc": {
         "firstPart": "Before proceeding remember to save or write down your private seed phrase in a secure and private.",
-        "redirected": "Make sure that you have successfully completed the migration process at Waves.Exchange. Once it is done, you will see the corresponding message.",
+        "redirected": "Make sure that you have successfully completed the migration process at Decentral.Exchange. Once it is done, you will see the corresponding message.",
         "secondPart": "We are not responsible of mistakes made by the user of any Decentral.Exchange-related software or service, e.g., forgotten passwords or seeds, seeds backed up incorrectly, payments sent to wrong addresses, and accidental deletion of wallets.",
         "thirdPart": "The migration process is fast, easy and absolutely secure."
       },
@@ -688,18 +675,18 @@
     "modals": {
       "shutdownNotificationFirst": {
         "message1": "Decentral.Exchange will stop operating on December 2, 2019",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "One day left!"
       },
       "shutdownNotificationLast": {
-        "message1": "Decentral.Exchange is no longer working. The exchange moved to Waves.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Waves.Exchange. Thank you for the good times!",
+        "message1": "Decentral.Exchange is no longer working. The exchange moved to Decentral.Exchange. Don't worry! You are still able to move your accounts from Decentral.Exchange to Decentral.Exchange. Thank you for the good times!",
         "submit": "I understand",
         "title": "Time to move on!"
       },
       "shutdownNotificationSecond": {
         "message1": "Decentral.Exchange will stop operating in two hours.",
-        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Waves.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
+        "message2": "To proceed to work with the exchange, you have to move your accounts to the new Decentral.Exchange. We strongly recommend that you do this ASAP. The moving is fast, easy, and absolutely secure.",
         "submit": "I understand",
         "title": "Two hours left!"
       }
@@ -733,7 +720,7 @@
           "restore": "Restore Seed"
         },
         "noUsers": {
-          "description": "{div}[We have not found any saved accounts. Return to the] {div}[[client.wavesplatform.com](https://client.wavesplatform.com)]",
+          "description": "{div}[We have not found any saved accounts. Return to the] {div}[[client.decentralchain.io](https://client.decentralchain.io)]",
           "title": "No accounts saved"
         },
         "passwordTitle": "Password",
@@ -826,15 +813,15 @@
       "passForgot": {
         "attention": "Attention!",
         "description": "To recover the password, you need to reset all accounts, set a new password, import each account from the Seed phrase or via Private key.",
-        "descriptionExchange": "You are about to delete all of your Waves.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
+        "descriptionExchange": "You are about to delete all of your Decentral.Exchange accounts from this device. This action will not affect your Decentral.Exchange accounts.",
         "importantDesc": "If you have not saved the Seed phrase or Private key, then you will not be able to recover access to your account.",
-        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts.",
-        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Waves.Exchange accounts."
+        "importantDescEx": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Decentral.Exchange accounts.",
+        "importantDescExchange": "This action is irreversible! If you have not saved the Seed phrase or private key, then you will not be able to recover access to your Decentral.Exchange accounts."
       },
       "password": {
         "forgot": "Forgot your password?",
         "overwrite": "Overwrite accounts",
-        "overwriteDescription": "Overwrite all Waves.Exchange accounts on this device"
+        "overwriteDescription": "Overwrite all Decentral.Exchange accounts on this device"
       },
       "signIn": "Sign in",
       "welcomeBack": "Welcome Back!"
@@ -898,11 +885,11 @@
       "title": "{{name}} Generation",
       "titleSuccess": "{{name}} Generation Complete"
     },
-    "name": "Name of your asset",
     "NFT": {
-      "description": "A non-fungible token (NFT) is a unique, individual token existing on the Waves blockchain. Currently, display of NFTs in Waves Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [Waves Explorer](https://wavesexplorer.com/)",
+      "description": "A non-fungible token (NFT) is a unique, individual token existing on the DecentralChain blockchain. Currently, display of NFTs in DCC Wallet and on Decentral.Exchange is not supported. You can see your NFTs in [DecentralScan](https://decentralscan.com/)",
       "title": "You are creating a non-fungible token."
     },
+    "name": "Name of your asset",
     "notifications": {
       "isNotCreated": "Token has not been created"
     },
@@ -973,6 +960,10 @@
     "confirmTransaction": {
       "back": "Go Back",
       "confirm": "Send",
+      "decentralchainKeeperUnconfirmed": {
+        "description": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
+        "header": "You did not confirm the request using Cubensis Connect"
+      },
       "description": {
         "burn": "You have burned {{quantityStr}} {{name}}",
         "cancel-leasing": "You have canceled a leasing transaction",
@@ -1026,11 +1017,7 @@
         }
       },
       "sign": "Sign",
-      "success": "Your transaction is on the way!",
-      "wavesKeeperUnconfirmed": {
-        "description": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
-        "header": "You did not confirm the request using Waves Keeper"
-      }
+      "success": "Your transaction is on the way!"
     },
     "copyError": "Cannot copy! Your browser may be outdated",
     "copySuccess": "The data is copied",
@@ -1053,10 +1040,10 @@
         "confirmRequestKeeper": {
           "cancel": "Cancel",
           "errorDescription": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
-          "errorDescriptionSwitchUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
-          "errorHeader": "You did not confirm the request using Waves Keeper",
+          "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+          "errorHeader": "You did not confirm the request using Cubensis Connect",
           "sign": "Retry",
-          "waiting": "Waiting for confirmation from Waves Keeper..."
+          "waiting": "Waiting for confirmation from Cubensis Connect..."
         },
         "confirmRequestLedger": {
           "cancel": "Cancel",
@@ -1309,7 +1296,7 @@
       "filter": {
         "helpIcon": {
           "assetId": "Asset ID",
-          "description": "You can find out more about searching assets [here](https://docs.wavesplatform.com/en/waves-client/)",
+          "description": "You can find out more about searching assets [here](https://docs.decentralchain.io/en/decentralchain-client/)",
           "header": "You can search by:",
           "name": "Name",
           "ticker": "Ticker"
@@ -1325,7 +1312,7 @@
           "required": "This field is required"
         },
         "fee": "Fee {{fee, money-currency}}",
-        "ideLink": "Script can be developed with [Waves Ride IDE](https://waves-ide.com//)",
+        "ideLink": "Script can be developed with [DecentralChain Ride IDE](https://ide.decentralchain.io//)",
         "ok": "Sign",
         "textAreaTitle": "Base64 script",
         "warning": {
@@ -1354,19 +1341,19 @@
       "addressSaved": "Address saved",
       "back": "Go back",
       "error": {
-        "hasLockedKeeperDescription": "To continue working with Waves Keeper, you must enter a previously-created password, or create a new one.",
-        "hasLockedKeeperHeader": "Enter password from Waves Keeper",
+        "hasLockedKeeperDescription": "To continue working with Cubensis Connect, you must enter a previously-created password, or create a new one.",
+        "hasLockedKeeperHeader": "Enter password from Cubensis Connect",
         "hasNoUsersDescription": "Log in to an existing account, or create a new one, then try again.",
         "hasNoUsersHeader": "You do not have an active account",
         "install": "Install",
         "networkDescription": "The account you selected is on the wrong network. Change network, then try again.",
         "networkHeader": "Change network",
         "notInstalledDescription": "After installing, create an account, sign in, and then refresh the page to continue.",
-        "notInstalledHeader": "Don't have Waves Keeper?",
+        "notInstalledHeader": "Don't have Cubensis Connect?",
         "refresh": "Retry"
       },
-      "heading": "Import account from the Waves Keeper",
-      "loading": "Import account from the Waves Keeper",
+      "heading": "Import account from the Cubensis Connect",
+      "loading": "Import account from the Cubensis Connect",
       "login": "Continue",
       "name": "Account name",
       "nameExists": "That name is taken",
@@ -1375,7 +1362,7 @@
       "saveUserData": "Keep me signed in on this computer"
     },
     "LedgerClient_utils": "Ledger Device",
-    "LedgerClientDescription": "Import account from the Waves Keeper",
+    "LedgerClientDescription": "Import account from the Cubensis Connect",
     "modal": {
       "acceptNewTerms": {
         "title": "Terms of Use Agreement"
@@ -1434,8 +1421,8 @@
         "rating": {
           "canVoteTip": "Click to rate token",
           "tooltipLink": "More Details",
-          "tooltipNeedWAVES": "and 0.001 DCC",
           "tooltipNeedCRC": "To rate a token, you must have at least 1",
+          "tooltipNeedDCC": "and 0.001 DCC",
           "tooltipText": "Tokens are not transferred, only an existing balance is required for voting.  Your score will be applied after 24 hours. Please keep the current tokens in the account during this time. \nFee 0.001 DCC.",
           "tooltipTitle": "To rate a token, you must have at least 1 CRC in your wallet."
         },
@@ -1490,7 +1477,7 @@
       },
       "deposit": {
         "coinomatBCH": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BCH to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BCH to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Bitcoin Cash client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1498,7 +1485,7 @@
           "warningTitle": "Send only BCH to this deposit address"
         },
         "coinomatBSV": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BSV to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BSV to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Bitcoin Satoshi Vision client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1506,7 +1493,7 @@
           "warningTitle": "Send only BSV to this deposit address"
         },
         "coinomatBTC": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Bitcoin client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1514,7 +1501,7 @@
           "warningTitle": "Send only BTC to this deposit address"
         },
         "coinomatDASH": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of DASH to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of DASH to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your DASH client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1522,7 +1509,7 @@
           "warningTitle": "Send only DASH to this deposit address"
         },
         "coinomatETH": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Ethereum client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1530,7 +1517,7 @@
           "warningTitle": "Please do not deposit ETH from smart contracts! Do not deposit ERC20 tokens! Only Ethereum is allowed."
         },
         "coinomatLTC": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of LTC to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of LTC to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Litecoin client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1538,7 +1525,7 @@
           "warningTitle": "Send only LTC to this deposit address"
         },
         "coinomatXMR": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of XMR to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of XMR to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Monero client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1546,7 +1533,7 @@
           "warningTitle": "Send only XMR to this deposit address"
         },
         "coinomatZEC": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ZEC to a token in your Waves account.",
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ZEC to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your Zcash client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
@@ -1555,61 +1542,61 @@
         },
         "copyAndShare": "Copy & Share Address",
         "currency": "Currency",
-        "or": "OR",
-        "pleaseNote": "Please note that the gateway doesn't apply any fees for this operation.",
-        "scanQrCode": "Scan QR Code",
-        "title": "Deposit {{assetName}}",
-        "wavesGatewayBNT": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your Waves account.",
+        "gatewayBNT": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
           "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Bancor. We do not accept such transactions and can’t refund them. You will lose that money.",
           "warningTitle": "Please do not deposit BNT from smart contracts! Do not deposit other ERC20 tokens! Only Bancor is allowed."
         },
-        "wavesGatewayBTC": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your Waves account.",
+        "gatewayBTC": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of BTC to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your BTC client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
           "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
           "warningTitle": "Send only BTC to this deposit address"
         },
-        "wavesGatewayERGO": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ERGO to a token in your Waves account.",
+        "gatewayERGO": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ERGO to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your ERGO client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
           "warningText": "Sending any other currency to this address may result in the loss of your deposit.",
           "warningTitle": "Send only ERGO to this deposit address"
         },
-        "wavesGatewayETH": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your Waves account.",
+        "gatewayETH": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of ETH to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your ETH client or wallet",
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
           "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw ETH. We do not accept such transactions and can’t refund them. You will lose that money.",
           "warningTitle": "Please do not deposit ETH from smart contracts! Do not deposit ERC20 tokens! Only Ethereum is allowed."
         },
-        "wavesGatewayUSDT": {
+        "gatewayUSDT": {
           "warningMinAmountText": "If you will send less than {{minAmount, BigNumber}} {{assetTicker}}, you will lose that money.",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
           "warningText": "Check if your wallet or exchange uses smart-contracts to withdraw Tether USD. We do not accept such transactions and can’t refund them. You will lose that money",
           "warningTitle": "This is ERC20 USDT deposit address. Send only USDT to this deposit address. Sending any other coin or token to this address may result in the loss of your deposit. Please do not deposit USDT from smart contracts!"
         },
-        "wavesGatewayVST": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+        "gatewayVST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your WEST client or wallet",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
         },
-        "wavesGatewayWEST": {
-          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
-          "helpDescrText_copy": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your Waves account.",
+        "gatewayWEST": {
+          "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DecentralChain account.",
+          "helpDescrText_copy": "Once the transaction is confirmed, the gateway will process the transfer of WEST to a token in your DecentralChain account.",
           "helpDescrTitle": "Enter this address into your WEST client or wallet",
           "helpDescrTitle_copy": "Enter this address into your WEST client or wallet",
           "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
         },
-        "wavesGatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
+        "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+        "or": "OR",
+        "pleaseNote": "Please note that the gateway doesn't apply any fees for this operation.",
+        "scanQrCode": "Scan QR Code",
+        "title": "Deposit {{assetName}}"
       },
       "dexScriptedPair": {
         "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
@@ -1627,7 +1614,7 @@
       "gatewaySign": {
         "cancel": "Cancel",
         "continue": "Allow",
-        "description": "{{name}} will have access to your Waves address. It will not get your SEED or Private key. Don't enter your secret phrase (SEED) on websites you will be redirected on.",
+        "description": "{{name}} will have access to your DecentralChain address. It will not get your SEED or Private key. Don't enter your secret phrase (SEED) on websites you will be redirected on.",
         "descriptionDesktop1": "The link will be opened in your default web browser. If you want to use another web browser,",
         "descriptionDesktop2": "copy",
         "descriptionDesktop3": "and paste the link into its URL bar.",
@@ -1636,16 +1623,20 @@
           "headline": "Something went wrong",
           "title": "Error"
         },
-        "headline": "{span.link}[{{url}}] wants to access your Waves Address",
+        "headline": "{span.link}[{{url}}] wants to access your DecentralChain Address",
         "retrySign": "Retry",
-        "title": "Sign in with Waves",
+        "title": "Sign in with DecentralChain",
         "txHash": "TXHASH",
         "warning": "Don't enter your secret phrase (SEED) on websites you will be redirected on."
       },
       "import": {
-        "errorBeta": "We were unable to retrieve your accounts from the Waves Beta Client. Try importing from the Waves Lite Client.",
+        "decentralchainBetaClient": "DecentralChain Beta Client",
+        "decentralchainBetaClientDescription": "Import accounts from DecentralChain Beta Client",
+        "decentralchainLiteClient": "DecentralChain Lite Client",
+        "decentralchainLiteClientDescription": "Import accounts from DecentralChain Lite Client",
+        "errorBeta": "We were unable to retrieve your accounts from the DecentralChain Beta Client. Try importing from the DecentralChain Lite Client.",
         "errorHeader": "No accounts found",
-        "errorLite": "We were unable to retrieve your accounts from the Waves Lite Client. Try importing from the Waves Beta Client.",
+        "errorLite": "We were unable to retrieve your accounts from the DecentralChain Lite Client. Try importing from the DecentralChain Beta Client.",
         "errorUnable": "We were unable to retrieve your accounts. Please restore them by using their backup SEEDs.",
         "fromBetaButton": "Import from Beta Client",
         "fromLiteButton": "Import from Lite Client",
@@ -1659,19 +1650,15 @@
         "selectAccountDescription": "You must allow pop-up windows in your browser",
         "selectAccountToImport": "Select which accounts you want to import",
         "selectAccountToImportFrom": "Select where to import accounts from",
-        "selectButton": "Select",
-        "wavesBetaClient": "Waves Beta Client",
-        "wavesBetaClientDescription": "Import accounts from Waves Beta Client",
-        "wavesLiteClient": "Waves Lite Client",
-        "wavesLiteClientDescription": "Import accounts from Waves Lite Client"
+        "selectButton": "Select"
       },
       "matcherChoice": {
         "customMatcher": "Custom matcher address",
+        "decentralchainTerms": "I am over 18 years old, and I agree to the DecentralChain Terms of Use and DecentralChain Privacy Policy.",
         "matcher": "Matcher",
         "matcherTerms": "I agree to the Super DEX Mather Terms of Use.",
         "terms": "Terms",
-        "title": "Choose matcher",
-        "wavesTerms": "I am over 18 years old, and I agree to the Waves Terms of Use and Waves Privacy Policy."
+        "title": "Choose matcher"
       },
       "open-main": {
         "dex": {
@@ -1727,7 +1714,7 @@
         "scanQrCode": "Scan QR Code",
         "title": "Share your address",
         "warningText": "Sending any other digital asset to this address will result in the permanent loss of your funds.",
-        "warningTitle": "Send only DCC and Waves tokens to this address"
+        "warningTitle": "Send only DCC and DecentralChain tokens to this address"
       },
       "receive": {
         "accountStatus": "Account status",
@@ -1740,7 +1727,7 @@
         },
         "bankSuccessHeader": "You were redirected to the IDNow.eu for verification.",
         "bankSuccessText": "After you go through the verification you will receive an email with further instructions.",
-        "bankVerifiedPlateDescription": "Before you withdraw your funds, we recommend you look at the [instructions](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html) and [limits and transaction fees](https://coinomat.com/limits.php).",
+        "bankVerifiedPlateDescription": "Before you withdraw your funds, we recommend you look at the [instructions](https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html) and [limits and transaction fees](https://coinomat.com/limits.php).",
         "bankVerifiedPlateHeader": "Your funds are now available for withdrawal to a bank account.",
         "card": {
           "continue": "Continue",
@@ -1754,6 +1741,9 @@
         },
         "cryptocurrency": {
           "title": "Cryptocurrency"
+        },
+        "decentralchainEnterprise": {
+          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
         },
         "error": {
           "cardAmount": {
@@ -1776,7 +1766,7 @@
         "maximumIs": "the maximum is",
         "minimumIs": "The minimum is",
         "providedByCoinomat": {
-          "descriprion": "{div}[This service is provided by Coinomat Company (Сoinomat).\nWaves Platform AG does not undertake any responsibility for the activities carried out by Coinomat and does not take any part in the relationship that may arise between Coinomat and users of the Waves Platform.]{div}[By using Coinomat services, you agree to be bound by [Coinomat Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php). If you do not agree to these terms, then do not use Coinomat services.]",
+          "descriprion": "{div}[This service is provided by Coinomat Company (Сoinomat).\nDecentralChain Platform AG does not undertake any responsibility for the activities carried out by Coinomat and does not take any part in the relationship that may arise between Coinomat and users of the DecentralChain Platform.]{div}[By using Coinomat services, you agree to be bound by [Coinomat Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php). If you do not agree to these terms, then do not use Coinomat services.]",
           "header": "This service is provided by Coinomat Company (Сoinomat).",
           "termsReadedInputLabel": "I agree with the [Terms of Service and Conduction of Transactions](https://coinomat.com/terms.php), [Limits](https://coinomat.com/limits.php) and [Privacy Policy](https://coinomat.com/privacy.php) of Coinomat Company.",
           "warning": "In case of problems with verification, payment processing or revoke your consent, please contact the Coinomat support team — [support@coinomat.com](mailto:support@coinomat.com)"
@@ -1789,9 +1779,6 @@
         "verified": "Verified",
         "vostok": {
           "serverError": "Service WEST temporarily unavailable. Try again later."
-        },
-        "wavesEnterprise": {
-          "serverError_copy": "Service WEST temporarily unavailable. Try again later."
         },
         "wtry": {
           "info": "In case of problems with payment processing, please contact the Digilira support team — [support@digilira.com](mailto:support@digilira.com)"
@@ -1810,8 +1797,8 @@
         "warningPlural": "You did not save your Seed phrases"
       },
       "removeKeeperAccount": {
-        "heading": "Remove Waves Keeper account",
-        "text": "This will only delete the saved path to this account. It will not delete the account from Waves Keeper."
+        "heading": "Remove Cubensis Connect account",
+        "text": "This will only delete the saved path to this account. It will not delete the account from Cubensis Connect."
       },
       "removeLedgerAccount": {
         "heading": "Remove Ledger account",
@@ -1871,13 +1858,13 @@
         },
         "gatewayTerms": {
           "accept": "Accept and Continue",
-          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.wavesplatform.com/) and [Conduction of Transactions](https://dex.wavesplatform.com/). If you do not agree to these terms, then do not use this Gateway service.",
+          "text": "By using Gateway service, you agree to be bound by [Gateway Terms of Service](https://dex.decentralchain.io/) and [Conduction of Transactions](https://dex.decentralchain.io/). If you do not agree to these terms, then do not use this Gateway service.",
           "title": "Gateway service agreement"
         },
         "icoWarning": "Do not withdraw {{assetName}} to an ICO. We will not credit your account with tokens from that sale.",
         "idNumber": {
           "helpIcon": {
-            "description": "You can find out more about withdrawing money to a bank account [here](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html).",
+            "description": "You can find out more about withdrawing money to a bank account [here](https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html).",
             "title": "Your ID number is a unique number assigned to each user after confirming a bank account with Coinomat."
           }
         },
@@ -1910,7 +1897,7 @@
           "fee": "Transaction Fee {{fee, money-currency}}"
         },
         "notVerifiedHeader": "You have not been verified.",
-        "notVerifiedText": "Withdrawal to a bank account is only available to verified users. You can find out more about sending and receiving fiat money [here](https://docs.wavesplatform.com/en/waves-client/transfers-and-gateways/eur-usd-transfers.html).",
+        "notVerifiedText": "Withdrawal to a bank account is only available to verified users. You can find out more about sending and receiving fiat money [here](https://docs.decentralchain.io/en/decentralchain-client/transfers-and-gateways/eur-usd-transfers.html).",
         "or": "or",
         "placeholderRecipient": "Paste or scan an address",
         "recipient": "Recipient",
@@ -1919,8 +1906,8 @@
         "title": "Send {{assetName}}",
         "titleComplete": "Sending Complete",
         "toBank": "Withdraw to bank account",
+        "toDecentralChain": "Send to DecentralChain address",
         "total": "Total",
-        "toWaves": "Send to Waves address",
         "txFee": "Transaction Fee",
         "validationError": {
           "notEnoughFunds": "You don't have enough funds to pay the required fees. You must pay {{fee, money-currency}} transaction fee.",
@@ -1963,7 +1950,7 @@
         "general": {
           "auto": "Auto",
           "blockHeight": "Current height",
-          "blue": "Waves",
+          "blue": "DecentralChain",
           "color": "Color",
           "dark": "Dark",
           "green": "Classic",
@@ -1989,9 +1976,9 @@
         "message": "To open Settings, sign in or create an account",
         "network": {
           "apiAddress": "Data service",
-          "apiAddressHelp": "The Data Service provides additional APIs for interacting with Waves blockchain data.",
+          "apiAddressHelp": "The Data Service provides additional APIs for interacting with DecentralChain blockchain data.",
           "assetNameFilter": "Naming service",
-          "assetNameFilterHelp": "This service checks the name of the token with the Waves token library.\nFor completely disable it, clear the field.",
+          "assetNameFilterHelp": "This service checks the name of the token with the DecentralChain token library.\nFor completely disable it, clear the field.",
           "copy": "copy",
           "dataProvider": "Data provider",
           "dataProviderDescription": "{{dataProviderDescription}}",
@@ -2016,12 +2003,12 @@
           "showCodeLink": "Show Pairing Code",
           "unavailable": {
             "description": {
-              "ledger": "Export is not available for accounts stored on Ledger Device",
-              "wavesKeeper": "Export for accounts imported from Waves Keeper is available in Waves Keeper Settings"
+              "decentralchainKeeper": "Export for accounts imported from Cubensis Connect is available in Cubensis Connect Settings",
+              "ledger": "Export is not available for accounts stored on Ledger Device"
             },
             "header": {
-              "ledger": "Export unavailable",
-              "wavesKeeper": "Export unavailable"
+              "decentralchainKeeper": "Export unavailable",
+              "ledger": "Export unavailable"
             },
             "ok": "I understand"
           }
@@ -2056,7 +2043,7 @@
         "confirm": "Confirm",
         "confirmRequest": "Confirm request",
         "confirmRequest_utils": "Confirm request",
-        "confirmRequestKeeper": "Waiting for confirmation from Waves Keeper...",
+        "confirmRequestKeeper": "Waiting for confirmation from Cubensis Connect...",
         "confirmRequestLedger": {
           "cancel": "Cancel",
           "errorDescription": "Please try again. If the error persists, please refer to [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2067,7 +2054,7 @@
         "confirmRequestMatcher_utils": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account.",
         "confirmRequestToMatcher": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX.",
         "connecting": "Connecting...",
-        "connectingKeeper": "Connecting to Waves Keeper...",
+        "connectingKeeper": "Connecting to Cubensis Connect...",
         "connectionError": "Unable to Connect Ledger Device",
         "connectionErrorKeeper": "Unable to access account",
         "connectionText": "The connection may have timed out. Please try again.",
@@ -2075,7 +2062,7 @@
         "enterPin": "Enter your PIN code",
         "fee": "Fee",
         "matcher": "Sign orders requests",
-        "openApp": "Open the Waves App",
+        "openApp": "Open the DecentralChain App",
         "orderType": "Order type",
         "pair": "Pair",
         "price": "Price",
@@ -2085,19 +2072,16 @@
         "requestId": "Request hash",
         "retry": "Retry",
         "sell": "Sell",
-        "signByKeeper": "Waiting for confirmation from Waves Keeper...",
+        "signByKeeper": "Waiting for confirmation from Cubensis Connect...",
         "signByLedger": "Waiting for confirmation on Ledger Device…",
         "signError": "The request has not been confirmed.",
-        "signErrorKeeper": "You did not confirm the request using Waves Keeper",
+        "signErrorKeeper": "You did not confirm the request using Cubensis Connect",
         "signErrorText": "You did not confirm the request on your Ledger Device",
-        "signErrorTextImportKeeper": "Sign in to Waves Keeper with address {{address}}, and then refresh page to continue.",
+        "signErrorTextImportKeeper": "Sign in to Cubensis Connect with address {{address}}, and then refresh page to continue.",
         "signErrorTextKeeper": "Please try again. If the error persists, please create a ticket to [Support](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Waves Keeper. Please activate another account in Waves Keeper and try again.",
+        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
         "timestamp": "Timestamp",
         "txId": "TXID"
-      },
-      "sponsorship_edit": {
-        "title": "Change sponsorship"
       },
       "sponsorship": {
         "amountPerTx": "Amount per transaction (per 0.001 DCC)",
@@ -2116,6 +2100,9 @@
         "warningHeader": "Users will be able to pay transaction fees in {{name}}",
         "warningText": "For each transaction, 0.001 DCC will be deducted from your balance and {{name}} will be credited to your account. The amount of {{name}} to be charged to users for transactions is set by you when you enable Sponsorship (enter the amount in the form below). Sponsorship will only work if you have a balance of at least 1.005 DCC. If your balance falls below this amount, you will be unable to sponsor transactions."
       },
+      "sponsorship_edit": {
+        "title": "Change sponsorship"
+      },
       "startLease": {
         "amount": "Amount",
         "balance": "Balance",
@@ -2129,18 +2116,18 @@
       "termsAccept": {
         "body": {
           "advancedMode": "Advanced features",
-          "analytics": "I would like to help improve the Waves platform by sending anonymous usage statistics to the developers.",
-          "backup": "I understand that if this app is moved to another device or deleted, my Waves can only be recovered with the backup phrase.",
+          "analytics": "I would like to help improve the DecentralChain platform by sending anonymous usage statistics to the developers.",
+          "backup": "I understand that if this app is moved to another device or deleted, my DecentralChain can only be recovered with the backup phrase.",
           "ok": "Confirm and Begin",
           "privacyPolicy": "I have read and agree with the [Privacy Policy](https://decentralchain.io/privacy-policy).",
           "read": "I have read, understood and agree to the",
           "readTermsAndConditions": "Eu li, compreendi e concordo com os [Termos e Condições](https://decentralchain.io/terms-and-conditions)",
           "security": "I understand that my funds are held securely on this device, not by a company",
-          "securityAndBackup": "I understand that my funds are held securely on this device, not by a company. If this app is moved to another device or deleted, my Waves can only be recovered with the backup phrase.",
+          "securityAndBackup": "I understand that my funds are held securely on this device, not by a company. If this app is moved to another device or deleted, my DecentralChain can only be recovered with the backup phrase.",
           "terms": "Terms of Use"
         },
         "header": {
-          "description": "Waves is different — the wallet is stored safely on your device",
+          "description": "DecentralChain is different — the wallet is stored safely on your device",
           "title": "Done! Let’s review",
           "title2": "Terms of Use"
         }
@@ -2180,22 +2167,22 @@
           "buttonReadMore": "Read more",
           "p1": "Please take some time to understand some important things for your own safety. 🙏",
           "p2": "We cannot recover your funds or freeze your account if you visit a phishing site or lose your backup phrase (aka SEED phrase).",
-          "p3": "By continuing to use our platform, you agree to accept all risks associated with the loss of your SEED, including but not limited to the inability to obtain your funds and dispose of them. In case you lose your SEED, you agree and acknowledge that the Waves Platform would not be responsible for the negative consequences of this.",
-          "title": "Welcome to the Waves Platform!"
+          "p3": "By continuing to use our platform, you agree to accept all risks associated with the loss of your SEED, including but not limited to the inability to obtain your funds and dispose of them. In case you lose your SEED, you agree and acknowledge that the DecentralChain Platform would not be responsible for the negative consequences of this.",
+          "title": "Welcome to the DecentralChain Platform!"
         },
         "step2": {
           "backButton": "Go Back",
           "cell1": "You use your wallet anonymously, meaning your account is not connected to an email account or any other identifying data.",
           "cell2": "Your password protects your account when working on a certain device or browser. It is needed in order to ensure that your secret phrase is not saved in storage.",
           "cell3": "If you forget your password, you can easily create a new one by using the account recovery form via your secret phrase. If you lose your secret phrase, however, you will have no way to access your account.",
-          "cell4": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new Waves wallet immediately and transfer your funds to it.",
+          "cell4": "You cannot change your secret phrase. If you accidentally sent it to someone or suspect that scammers have taken it over, then create a new DCC wallet immediately and transfer your funds to it.",
           "nextButton": "Protect Yourself",
-          "p1": "When registering your account, you will be asked to save your secret phrase (SEED) and to protect your account with a password. On normal centralized servers, special attention is paid to the password, which can be changed and reset via email, if the need arises. However, on decentralized platforms such as Waves, everything is arranged differently:",
+          "p1": "When registering your account, you will be asked to save your secret phrase (SEED) and to protect your account with a password. On normal centralized servers, special attention is paid to the password, which can be changed and reset via email, if the need arises. However, on decentralized platforms such as DecentralChain, everything is arranged differently:",
           "title": "What you need to know about your SEED"
         },
         "step3": {
           "backButton": "Go Back",
-          "cell1": "Always check the URL: [https://client.wavesplatform.com](https://client.wavesplatform.com)",
+          "cell1": "Always check the URL: [https://client.decentralchain.io](https://client.decentralchain.io)",
           "cell2": "Do not use browsers that have extensions or plugins to access your account.",
           "cell3": "Do not open emails or links from unknown senders.",
           "cell4": "Regularly update your operating system.",
@@ -2243,12 +2230,12 @@
       "termsAssign": "I have read and agree with the",
       "whatsNew": {
         "body": {
-          "1_0_0": "{span.line}[1. The Waves Client has come out of beta.]{span.line}[2. You can now pin and unpin any assets to the main page.]{span.line}[3. Night mode added.]{span.line}[4. You can now import all your accounts from the old Client easily.]{span.line}[5. Minor bug fixes.]",
+          "1_0_0": "{span.line}[1. The DCC Client has come out of beta.]{span.line}[2. You can now pin and unpin any assets to the main page.]{span.line}[3. Night mode added.]{span.line}[4. You can now import all your accounts from the old Client easily.]{span.line}[5. Minor bug fixes.]",
           "1_0_0-beta_23": "{span.line}[1. We have added a 'What's new' section!]{span.line}[2. You can now add a name to your account.]{span.line}[3. Some minor bugs have been fixed.]",
           "1_0_0-beta_25": "{span.line}[1. You can now change session time in Settings.]{span.line}[2. We have fixed the bug with the Buy/Sell window in DEX to prevent it being moved outside the viewing area.]{span.line}[3. We will now remind you if you have not saved your SEED.]{span.line}[4. Some minor bugs have been fixed.]",
           "1_0_0-beta_26": "{span.line}[1. Some minor bugs have been fixed.]",
           "1_0_0-beta_27": "{span.line}[1. Added Chinese language.]{span.line}[2. Added Turkish language.]",
-          "1_0_0-beta_30": "{span.line}[1. You can now burn and reissue tokens you have generated.]{span.line}[2. Added the Waves Auth API support.]{span.line}[3. Some minor bugs have been fixed.]",
+          "1_0_0-beta_30": "{span.line}[1. You can now burn and reissue tokens you have generated.]{span.line}[2. Added the DecentralChain Auth API support.]{span.line}[3. Some minor bugs have been fixed.]",
           "1_0_0-beta_31": "{span.line}[1. You can now buy DCC and BTC with a credit card.]{span.line}[2. Improved UI in the Buy/Sell window.]{span.line}[3. Support for 32-bit Windows added.]{span.line}[4. Numerous other bugs fixed.]",
           "1_0_0-beta_32": "{span.line}[1. You can now make mass transfers from the Client.]{span.line}[2. Some minor bugs have been fixed.]",
           "1_0_0-beta_35": "{span.line}[1. You can now sort, filter and hide tokens in the Portfolio tab.]{span.line}[2. DASH gateway has been launched.]{span.line}[3. Hindi language support added.]{span.line}[4. Dutch language support added.]{span.line}[5. You can now invoice other users.]{span.line}[6. Additional minor bugs have been fixed.]",
@@ -2256,19 +2243,23 @@
           "1_0_0-beta_39": "{span.line}[1. A spam filter has been added to Settings.]{span.line}[2. Additional minor bugs have been fixed.]",
           "1_0_0-beta_40": "{span.line}[1. Monero gateway has been launched.]",
           "1_0_0-beta_42": "{span.line}[1. Spanish language support added.]{span.line}[2. You can use the Client without saving account details by default.]{span.line}[3. Spam tokens are now marked in the Transaction page.]{span.line}[4. Additional minor bugs have been fixed.]",
-          "1_0_0-beta_47": "{span.line}[1. Completely new DEX UI.]{span.line}[2. Faster and more stable Client.]{span.line}[3. Alias functionality is available again.]{span.line}[4. Some minor bugs have been fixed.]{span.line}[5. Take part in our competitions by making a [video](https://forum.wavesplatform.com/t/contest-best-waves-dex-video-review/822) or writing an [article](https://forum.wavesplatform.com/t/contest-for-the-writers-waves-dex-overview/835).]",
+          "1_0_0-beta_47": "{span.line}[1. Completely new DEX UI.]{span.line}[2. Faster and more stable Client.]{span.line}[3. Alias functionality is available again.]{span.line}[4. Some minor bugs have been fixed.]{span.line}[5. Take part in our competitions by making a [video](https://forum.decentralchain.io/t/contest-best-decentralchain-dex-video-review/822) or writing an [article](https://forum.decentralchain.io/t/contest-for-the-writers-decentralchain-dex-overview/835).]",
           "1_0_0-beta_50": "{span.line}[1. You can now burn any tokens you hold in your account.]{span.line}[2. Additional minor bugs have been fixed.]",
-          "1_0_10": "{span.line}[1. Sponsorship transaction support added. [Read more](https://docs.wavesplatform.com/en/waves-client/assets-management/sponsored-transaction.html)]\n{span.line}[2. Polish and Portuguese languages support added.]",
-          "1_0_14": "{span.line}[1. Fixed bug with using Sponsored Asset without Waves balance.]\n{span.line}[2. Fixed bug with 30 days expiration orders.]\n{span.line}[3. Some other minor bugs.]",
+          "1_0_3": "{span.line}[1. You can now search assets by ID in the Portfolio page.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_5": "{span.line}[1. Trade volume scale has been added on DEX charts.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_0_6": "{span.line}[1. Authorisation via DecentralChain Desktop Client has been added.]",
+          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
+          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
+          "1_0_10": "{span.line}[1. Sponsorship transaction support added. [Read more](https://docs.decentralchain.io/en/decentralchain-client/assets-management/sponsored-transaction.html)]\n{span.line}[2. Polish and Portuguese languages support added.]",
+          "1_0_14": "{span.line}[1. Fixed bug with using Sponsored Asset without DecentralChain balance.]\n{span.line}[2. Fixed bug with 30 days expiration orders.]\n{span.line}[3. Some other minor bugs.]",
           "1_0_15": "{span.line}[1. Issues with confirmation on Ledger have been fixed.]\n{span.line}[2. Increased waiting time for confirmation from Ledger.]\n{span.line}[3. Detailed information has been added to Error messages.]",
           "1_0_18": "{span.line}[1. You can now set a script for your account.]\n{span.line}[2. Additional minor bugs have been fixed.]",
           "1_0_21": "{span.line}[1. Fixed authorisation confirmation via Ledger.]\n{span.line}[2. Numerous minor bugs fixed.]",
           "1_0_22": "{span.line}[1. Added advanced features to work with scripted accounts.]",
-          "1_0_25": "{span.line}[1. [Waves Keeper](https://chrome.google.com/webstore/detail/waves-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) support has been added.]",
+          "1_0_25": "{span.line}[1. [Cubensis Connect](https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) support has been added.]",
           "1_0_27": "{span.line}[1. Added \"My assets\" category in Portfolio.]\n{span.line}[2. Minor bugs have been fixed.]",
           "1_0_28": "{span.line}[1. Added pairing function to import existing accounts to mobile.]\n{span.line}[2. Minor bugs have been fixed.]",
           "1_0_29": "{span.line}[1. QR code generation using Cyrillic alphabet has been fixed.]\n{span.line}[2. Tooltip for watchlist search has been added.]\n{span.line}[3. Further cosmetic fixes. ]",
-          "1_0_3": "{span.line}[1. You can now search assets by ID in the Portfolio page.]\n{span.line}[2. Additional minor bugs have been fixed.]",
           "1_0_30": "{span.line}[1. Set Script button has been moved to Security section in Settings.]\n{span.line}[2. Performance improvements and cosmetic changes.]",
           "1_0_32": "{span.line}[1. Integration with BetterTokens’ oracle.]\n{span.line}[2. Added support for token verification protocol.]\n{span.line}[3. Fixed commission accounting for token withdrawal via Coinomat.]",
           "1_0_33": "{span.line} [1. Agora você receberá uma notificação se tentar criar uma ordem com um valor significativamente diferente do atual preço de mercado.] {span.line} [2. Correção de pequenos bugs.]",
@@ -2277,25 +2268,21 @@
           "1_0_40": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Added exchange rate for current pair in browser tab title.]\n{span.line}[3. Fixed minor bugs.]",
           "1_0_41": "{span.line}[1. DEX optimisation.]\n{span.line}[2. Notification system added.]\n{span.line}[3. Fixed minor bugs.]",
           "1_0_42": "{span.line}[1. Fixed minor bugs.]",
-          "1_0_5": "{span.line}[1. Trade volume scale has been added on DEX charts.]\n{span.line}[2. Additional minor bugs have been fixed.]",
-          "1_0_6": "{span.line}[1. Authorisation via Waves Desktop Client has been added.]",
-          "1_0_7": "{span.line}[1. Some desktop-client crashes were fixed.]\n{span.line}[2. Optimized switching between TX and Portfolio pages, with a big amount of content.]\n{span.line}[3. Spam-tokens names are hidden on TX list.]\n{span.line}[4. Error messages output has been reworked.]",
-          "1_0_8": "{span.line}[1. Ledger Nano S support has been added.]\n{span.line}[2. A new option for saving your choice of Authorisation method has been added.]",
           "1_1_0": "{span.line}[1. O período de expiração da ordem agora é salvo por padrão.]\n{span.line}[2. Correção de pequenos bugs.]",
           "1_2_0": "{span.line}[1. Added Japanese and Estonian languages.]\n{span.line}[2. Improved UI in the Buy/Sell window.]\n{span.line}[3. Numerous minor bugs fixed.]",
           "1_2_1": "{span.line}[1. The application now saves the chart size and scale settings as well as the time interval.]\n{span.line}[2. Fixed minor bugs.]",
           "1_2_2": "{span.line}[1. Security updates.]{span.line}[2. Fixed minor bugs.]",
-          "1_2_3": "{span.line}[1. Added support for Ledger Waves 1.0.0 app.]",
-          "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.wavesplatform.com/ride-for-dapps-hits-waves-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_2_3": "{span.line}[1. Added support for Ledger DecentralChain 1.0.0 app.]",
+          "1_2_6": "{span.line}[1. Invocation script transaction support added. [Read more](https://blog.decentralchain.io/ride-for-dapps-hits-decentralchain-testnet-e3f2906dd2aa)]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_2_8": "{span.line}[1. Spam tokens and transactions have been hidden in client.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
           "1_3_0": "{span.line}[1. Improved app navigation and start page interface.]",
+          "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
+          "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
+          "1_3_7": "{span.line}[1. Integration with [tokenrating.decentralscan.com](https://tokenrating.decentralscan.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
           "1_3_18": "{span.line}[1. Added login to wallet using a private key.]\n{span.line}[2. The 24 hours price change of a token is now bound to token/DCC pair.]",
           "1_3_19": "{span.line}[1. Bancor gateway has been launched.]\n{span.line}[2. User menu interface has been improved.]",
-          "1_3_2": "{span.line}[1. WEST gateway has been launched.]\n{span.line}[2. Improved UI and additional minor bugs have been fixed.]",
-          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://wavesplatform.com/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
-          "1_3_5": "{span.line}[1. A tab with [wsoc.io](https://wsoc.io) contest tokens has been added.]\n{span.line}[2. French language support added.]\n{span.line}[3. Additional minor bugs have been fixed.]",
-          "1_3_7": "{span.line}[1. Integration with [tokenrating.wavesexplorer.com](https://tokenrating.wavesexplorer.com) Now you can rate tokens directly in the app.]\n{span.line}[2. Additional minor bugs have been fixed.]",
-          "1_3_9": "{span.line}[1. Improved UI and functionality of Exchange and Wallet sections.]\n{span.line}[2. Additional minor bugs have been fixed.]",
+          "1_3_20": "{span.line}[1. Improved system for storing and restoring accounts from local storage (Need to update the [desktop application](https://decentralchain.io/technology/wallet)).]\n{span.line}[2. Fixed rounding of prices in the orderbook.]",
           "1_4_0": "{span.line}[Added ability for easy switching between accounts within one wallet.]",
           "1_4_4": "{span.line}[Added ability to backup and restore accounts from the keystore-file]"
         },
@@ -2309,11 +2296,11 @@
     },
     "warningPlate": {
       "day": "d",
-      "dexMoves": "We are moving soon! Stay with us at [Waves.Exchange](https://waves.exchange)",
+      "dexMoves": "We are moving soon! Stay with us at [Decentral.Exchange](https://decentral.exchange)",
       "hour": "h",
-      "info": "We're moving from Decentral.Exchange to Waves.Exchange. Do you want to move your accounts again?",
+      "info": "We're moving from Decentral.Exchange to Decentral.Exchange. Do you want to move your accounts again?",
       "min": "m",
-      "notification": "We're moving from Decentral.Exchange to Waves.Exchange. Don't forget to move your accounts!",
+      "notification": "We're moving from Decentral.Exchange to Decentral.Exchange. Don't forget to move your accounts!",
       "sec": "s",
       "startMoving": "Safe moving"
     }
@@ -2377,14 +2364,14 @@
     "test": {
       "test": "text test"
     },
-    "title_leasing": "You have chosen to log into the Waves desktop app"
+    "title_leasing": "You have chosen to log into the DecentralChain desktop app"
   },
   "app.wallet.portfolio": {
     "allactive": "All active ({span}[{{count}}])",
     "burn": "Token Burn",
     "deposit": "Deposit",
     "dex": "Open in DEX",
-    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://wavesexplorer.com/address/{{address}}/nft)",
+    "hasNftToken": "Account has non-fungible tokens [(NFT)](https://decentralscan.com/address/{{address}}/nft)",
     "info": "Asset Info",
     "list": {
       "actions": "Actions",
@@ -2574,12 +2561,12 @@
         "text": "The relaunched exchange offers a better UX and performance than any other DEX on the market.",
         "text_2": "The popular wallet comes out of beta with a major new release.",
         "title": "New DEX",
-        "title_2": "Waves Wallet"
+        "title_2": "DCC Wallet"
       },
       "jul2019": {
         "date": "Jul 2019",
-        "text": "Addition of ERC20 token gateway to the Waves ecosystem, meaning that popular Ethereum tokens can be traded on the platform.",
-        "text_2": "Developers have simplified mobile development processes and gain comprehensive descriptions for means of interacting with the Waves blockchain.",
+        "text": "Addition of ERC20 token gateway to the DecentralChain ecosystem, meaning that popular Ethereum tokens can be traded on the platform.",
+        "text_2": "Developers have simplified mobile development processes and gain comprehensive descriptions for means of interacting with the DecentralChain blockchain.",
         "text_3": "Users have the ability to switch easily between multiple accounts within one wallet app.",
         "title": "ERC-20 Gateway",
         "title_2": "Mobile SDK and JS library improvement",
@@ -2631,7 +2618,7 @@
       "api": "API",
       "apple": "App Store",
       "blog": "Blog",
-      "broughtBy": "Brought to you by Waves Team",
+      "broughtBy": "Brought to you by DecentralChain Team",
       "cancel": "Cancel",
       "change": "CHANGE",
       "changeName": "Change Name",
@@ -2643,12 +2630,20 @@
       "cookies": "Cookies",
       "copyAddress": "Copy address",
       "copyright": "© 2021 Blockchain Costa Rica",
-      "copyright-new": "© 2019 Waves.Exchange",
+      "copyright-new": "© 2019 Decentral.Exchange",
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Create token",
       "currentAccountName": "Current account name",
       "dashboard": "Dashboard",
+      "dccExplorer": "DecentralScan",
+      "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainDexWeb": "Decentral.Exchange Web",
+      "decentralchainIde": "DecentralChain IDE",
+      "decentralchainKeeper": "Cubensis Connect",
+      "decentralchainLabs": "DecentralChain Labs",
+      "decentralchainOrderFilled": "0.003 DCC per order filled",
+      "decentralchainWallet": "DCC Wallet",
       "decentralized": "decentralized",
       "descExchange": "We are working on an awesome new project, which will be ready soon. Stay tuned!",
       "dexWithHardware": "Use DEX with hardware wallets Ledger Nano S and Ledger Blue",
@@ -2675,19 +2670,19 @@
       "legal": "Legal",
       "linux": "Linux",
       "linuxDescription": "Download Linux application",
-      "logout": "Log Out",
       "logOut": "Log Out",
+      "logout": "Log Out",
       "low": "24 LOW",
       "lowFixedFees": "Low, fixed fees",
       "macOs": "MacOS",
       "macOsDescription": "Download MacOS application",
-      "mailto": "support.wavesplatform.com",
+      "mailto": "support.decentralchain.io",
+      "mailtoDecentralChainExchange": "support@decentral.exchange",
       "mailtoVordex": "support@vordex.com",
-      "mailtoWavesExchange": "support@waves.exchange",
       "mainPage": "Main page",
       "majorFiatCryptocurrencies": "Major fiat and cryptocurrencies supported: BTC, LTC, ETH, USD, and others",
       "markets": "Markets",
-      "marketsDescription": "Decentral.Exchange allows you to execute trades swiftly and securely, regardless of whether you’re trading via mobile app, desktop client, web wallet or the Waves API.",
+      "marketsDescription": "Decentral.Exchange allows you to execute trades swiftly and securely, regardless of whether you’re trading via mobile app, desktop client, web wallet or the DecentralChain API.",
       "marketsTableDescription": "To view more traded pairs click",
       "marketsTableDescriptionLink": "View Exchange",
       "menu": "Menu",
@@ -2723,20 +2718,12 @@
       "tokenCreationCosts": "Token creation costs just 1 DCC and takes 1 minute",
       "tokenomicaToasterButton": "Saber Mais",
       "tokenomicaToasterText": "Torne-se acionista da primeira tudo-em-um plataforma para emissão e negociação secundária de ativos tokenizados",
-      "tradeOnWaves": "Trade on the Waves decentralized Exchange",
-      "tradeOnWavesDescription": "Buy and sell tokens quickly and securely with all advantages of a centralised exchange, but retaining complete control of your funds.",
+      "tradeOnDecentralChain": "Trade on the DecentralChain decentralized Exchange",
+      "tradeOnDecentralChainDescription": "Buy and sell tokens quickly and securely with all advantages of a centralised exchange, but retaining complete control of your funds.",
       "transactions": "Transactions",
       "twitter": "Twitter",
       "volume": "VOLUME",
       "wallet": "Wallet",
-      "wavesBlockchain": "Waves Blockchain",
-      "wavesDexWeb": "Decentral.Exchange Web",
-      "wavesExplorer": "Waves Explorer",
-      "wavesIde": "Waves IDE",
-      "wavesKeeper": "Waves Keeper",
-      "wavesLabs": "Waves Labs",
-      "wavesOrderFilled": "0.003 DCC per order filled",
-      "wavesWallet": "Waves Wallet",
       "windows": "Windows",
       "windowsDescription": "Download Windows application"
     }
@@ -2757,7 +2744,7 @@
     "modal": {
       "set_protocol_error": {
         "close": "Close",
-        "message": "Can't set default protocol for launch waves client. Links from browser temporally not supported!",
+        "message": "Can't set default protocol for launch decentralchain client. Links from browser temporally not supported!",
         "report": "Report",
         "title": "Set open protocol error"
       }

@@ -2,8 +2,9 @@
  * Divider Component
  * Visual separator for content sections
  */
-import styled from 'styled-components';
+
 import React from 'react';
+import styled from 'styled-components';
 
 export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
   orientation?: 'horizontal' | 'vertical';
@@ -15,7 +16,7 @@ export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
 
 const DividerLine = styled.hr<{
   orientation: 'horizontal' | 'vertical';
-  spacing?: string;
+  spacing?: string | undefined;
   thickness: string;
   variant: string;
   hasLabel: boolean;
@@ -63,7 +64,7 @@ const DividerLabel = styled.span`
 export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
   (
     { orientation = 'horizontal', spacing, thickness = '1px', variant = 'solid', label, ...props },
-    ref
+    ref,
   ) => {
     if (label) {
       return (
@@ -75,7 +76,7 @@ export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
             thickness={thickness}
             variant={variant}
             hasLabel={true}
-            {...props}
+            {...(props as Record<string, unknown>)}
           />
           <DividerLabel>{label}</DividerLabel>
           <DividerLine
@@ -97,10 +98,10 @@ export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
         thickness={thickness}
         variant={variant}
         hasLabel={false}
-        {...props}
+        {...(props as Record<string, unknown>)}
       />
     );
-  }
+  },
 );
 
 Divider.displayName = 'Divider';

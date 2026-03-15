@@ -6,16 +6,16 @@
  * This service encrypts all user seed phrases and private keys using a password
  * and stores them in a single encrypted blob in localStorage.
  */
-// Import crypto functions from @waves/ts-lib-crypto
+// Import crypto functions from @decentralchain/ts-lib-crypto
 import {
-  encryptSeed,
-  decryptSeed,
   base58Encode,
   blake2b,
-  stringToBytes,
   address as buildAddress,
   publicKey as buildPublicKey,
-} from '@waves/ts-lib-crypto';
+  decryptSeed,
+  encryptSeed,
+  stringToBytes,
+} from '@decentralchain/ts-lib-crypto';
 
 interface UserData {
   userType: 'seed' | 'privateKey' | 'ledger';
@@ -32,13 +32,32 @@ interface UserData {
 interface EncryptedUser {
   userType: string;
   networkByte: number;
-  seed?: string;
-  id?: string;
-  privateKey?: string;
+  seed?: string | undefined;
+  id?: string | undefined;
+  privateKey?: string | undefined;
   publicKey: string;
   // Ledger-specific fields
-  ledgerPath?: string;
-  ledgerId?: string;
+  ledgerPath?: string | undefined;
+  ledgerId?: string | undefined;
+}
+
+/**
+ * User object returned by toList() - merges encrypted user data with metadata
+ */
+export interface MultiAccountUser {
+  userType: string;
+  networkByte: number;
+  id: string | undefined;
+  seed: string | undefined;
+  privateKey: string | undefined;
+  publicKey: string;
+  address: string;
+  hash: string;
+  ledgerPath: string | undefined;
+  ledgerId: string | undefined;
+  lastLogin?: number;
+  /** Spread from metadata - allows additional fields like name, settings, matcherSign */
+  [key: string]: unknown;
 }
 
 interface AddUserResult {
@@ -73,7 +92,7 @@ class MultiAccountService {
    */
   signUp(
     password: string,
-    rounds: number = 5000
+    rounds: number = 5000,
   ): Promise<{
     multiAccountData: string;
     multiAccountHash: string;
@@ -134,7 +153,7 @@ class MultiAccountService {
   /**
    * Add User - Add a new account to the encrypted multi-account system
    * THIS IS THE CRITICAL FUNCTION - encrypts seed/privateKey
-   * 
+   *
    * IMPORTANT: Ledger accounts do NOT have seed/privateKey
    * They only store publicKey, networkByte, and Ledger-specific fields
    *
@@ -148,7 +167,7 @@ class MultiAccountService {
 
     // Build public key from seed, private key, or use provided publicKey (Ledger)
     let publicKey: string;
-    
+
     if (userData.userType === 'ledger') {
       // Ledger: publicKey must be provided from device
       if (!userData.publicKey) {
@@ -160,7 +179,7 @@ class MultiAccountService {
       publicKey = buildPublicKey(userData.seed);
     } else if (userData.privateKey) {
       // PrivateKey account
-      publicKey = buildPublicKey({ privateKey: userData.privateKey });
+      publicKey = buildPublicKey({ privateKey: userData.privateKey } as unknown as string);
     } else {
       throw new Error('Must provide seed, privateKey, or publicKey');
     }
@@ -171,14 +190,14 @@ class MultiAccountService {
     // Store user data (ENCRYPTED when saved to storage)
     // NOTE: Ledger accounts have NO seed/privateKey - device holds private key
     this.users[userHash] = {
-      userType: userData.userType,
-      networkByte: userData.networkByte,
-      seed: userData.userType !== 'ledger' ? userData.seed : undefined,
       id: userData.id,
+      ledgerId: userData.ledgerId,
+      ledgerPath: userData.ledgerPath,
+      networkByte: userData.networkByte,
       privateKey: userData.userType !== 'ledger' ? userData.privateKey : undefined,
       publicKey,
-      ledgerPath: userData.ledgerPath,
-      ledgerId: userData.ledgerId,
+      seed: userData.userType !== 'ledger' ? userData.seed : undefined,
+      userType: userData.userType,
     };
 
     // Encrypt all users data
@@ -224,7 +243,7 @@ class MultiAccountService {
    * @param multiAccountUsers - User metadata from localStorage
    * @returns Array of complete user objects with decrypted data
    */
-  toList(multiAccountUsers: Record<string, any>): any[] {
+  toList(multiAccountUsers: Record<string, Record<string, unknown>>): MultiAccountUser[] {
     if (!this.isSignedIn) {
       return [];
     }
@@ -238,24 +257,24 @@ class MultiAccountService {
 
         return {
           ...user,
-          userType: _user.userType,
-          networkByte: _user.networkByte,
-          id: _user.id,
-          seed: _user.seed, // Decrypted seed (only in memory!)
-          privateKey: _user.privateKey,
-          publicKey: _user.publicKey,
           address: buildAddress(
             { publicKey: _user.publicKey },
-            String.fromCharCode(_user.networkByte)
+            String.fromCharCode(_user.networkByte),
           ),
           hash: userHash,
+          id: _user.id,
+          ledgerId: _user.ledgerId,
           // Ledger-specific fields
           ledgerPath: _user.ledgerPath,
-          ledgerId: _user.ledgerId,
-        };
+          networkByte: _user.networkByte,
+          privateKey: _user.privateKey,
+          publicKey: _user.publicKey,
+          seed: _user.seed, // Decrypted seed (only in memory!)
+          userType: _user.userType,
+        } satisfies MultiAccountUser;
       })
-      .filter(Boolean)
-      .sort((a, b) => (b.lastLogin || 0) - (a.lastLogin || 0));
+      .filter((u): u is MultiAccountUser => u != null)
+      .sort((a, b) => (Number(b.lastLogin) || 0) - (Number(a.lastLogin) || 0));
   }
 
   /**
@@ -284,7 +303,7 @@ class MultiAccountService {
     oldPassword: string,
     newPassword: string,
     rounds: number,
-    hash: string
+    hash: string,
   ): Promise<{
     multiAccountData: string;
     multiAccountHash: string;

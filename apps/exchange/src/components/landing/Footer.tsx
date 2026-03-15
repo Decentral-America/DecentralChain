@@ -1,24 +1,24 @@
-import { Box, Container, Grid, Typography, Link, Stack, Divider } from '@mui/material';
+import { Box, Container, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 
 const footerLinks = {
   Resources: [
-    { label: 'Documentation', href: 'https://docs.decentralchain.io' },
-    { label: 'DecentralChain', href: 'https://decentralchain.io' },
-    { label: 'Block Explorer', href: 'https://decentralscan.com' },
-  ],
-  Wallet: [
-    { label: 'Create Wallet', href: '/create-account' },
-    { label: 'Import Account', href: '/import' },
-    { label: 'Ledger Support', href: '/import/ledger' },
-  ],
-  Trading: [
-    { label: 'DEX Trading', href: '/dex' },
-    { label: 'Staking', href: '/leasing' },
-    { label: 'Portfolio', href: '/wallet' },
+    { href: 'https://docs.decentralchain.io', label: 'Documentation' },
+    { href: 'https://decentralchain.io', label: 'DecentralChain' },
+    { href: 'https://decentralscan.com', label: 'Block Explorer' },
   ],
   Support: [
-    { label: 'Help Center', href: 'https://docs.decentralchain.io' },
-    { label: 'Report Issue', href: 'https://github.com/Decentral-America/DCCGUI/issues' },
+    { href: 'https://docs.decentralchain.io', label: 'Help Center' },
+    { href: 'https://github.com/Decentral-America/DCCGUI/issues', label: 'Report Issue' },
+  ],
+  Trading: [
+    { href: '/dex', label: 'DEX Trading' },
+    { href: '/leasing', label: 'Staking' },
+    { href: '/wallet', label: 'Portfolio' },
+  ],
+  Wallet: [
+    { href: '/create-account', label: 'Create Wallet' },
+    { href: '/import', label: 'Import Account' },
+    { href: '/import/ledger', label: 'Ledger Support' },
   ],
 };
 
@@ -27,34 +27,47 @@ export default function Footer() {
     <Box
       component="footer"
       sx={{
-        borderTop: '1px solid #E6EAF2',
         bgcolor: 'background.default',
-        pt: { xs: 7, md: 9 },
-        pb: { xs: 5, md: 6 },
+        borderTop: '1px solid #E6EAF2',
+        pb: { md: 6, xs: 5 },
+        pt: { md: 9, xs: 7 },
       }}
     >
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Brand */}
-          <Grid item xs={12} md={4}>
+          <Grid
+            size={{
+              md: 4,
+              xs: 12,
+            }}
+          >
             <Box
               component="img"
               src="/assets/decentralexchange.svg"
               alt="Decentral Exchange"
               sx={{
                 height: 32,
-                width: 'auto',
                 mb: 2,
+                width: 'auto',
               }}
             />
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
-              Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and manage your DCC tokens securely.
+              Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and
+              manage your DCC tokens securely.
             </Typography>
           </Grid>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
-            <Grid item xs={6} sm={3} md={2} key={title}>
+            <Grid
+              key={title}
+              size={{
+                md: 2,
+                sm: 3,
+                xs: 6,
+              }}
+            >
               <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>
                 {title}
               </Typography>
@@ -80,7 +93,7 @@ export default function Footer() {
         <Divider sx={{ my: 4 }} />
 
         <Stack
-          direction={{ xs: 'column', sm: 'row' }}
+          direction={{ sm: 'row', xs: 'column' }}
           justifyContent="space-between"
           alignItems="center"
           spacing={2}
