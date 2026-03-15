@@ -85,17 +85,17 @@
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.91.3",
     "@testing-library/jest-dom": "^6.9.1",
-    "@types/node": "^25.5.0",
+    "@types/node": "catalog:",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/coverage-v8": "4.1.0",
+    "@vitest/coverage-v8": "catalog:",
     "electron": "^41.0.2",
     "electron-builder": "^26.8.1",
     "electron-updater": "^6.8.3",
-    "jsdom": "^28.1.0",
+    "jsdom": "catalog:",
     "vite": "^8.0.0",
-    "vitest": "4.1.0"
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24"

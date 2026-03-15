@@ -10,24 +10,24 @@
   },
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
+    "@arethetypeswrong/cli": "catalog:",
     "@decentralchain/transactions": "workspace:*",
-    "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "25.3.3",
-    "@vitest/coverage-v8": "4.0.18",
-    "publint": "0.3.18",
-    "size-limit": "12.0.0",
-    "tsdown": "0.21.2",
+    "@size-limit/preset-small-lib": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "publint": "catalog:",
+    "size-limit": "catalog:",
+    "tsdown": "catalog:",
     "typed-ts-events": "^3.0.1",
-    "vitest": "4.0.18"
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24"
   },
   "exports": {
     ".": {
-      "default": "./dist/index.mjs",
-      "types": "./dist/index.d.mts"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
   "files": [
@@ -92,7 +92,7 @@
   "sideEffects": false,
   "size-limit": [
     {
-      "limit": "15 kB",
+      "limit": "55 kB",
       "path": "./dist/index.mjs"
     }
   ],

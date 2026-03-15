@@ -10,31 +10,31 @@
   },
   "description": "Official TypeScript cryptographic library for the DecentralChain blockchain — key generation, digital signatures, hashing, encoding, and encryption primitives for building secure dApps and protocol integrations.",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
-    "@size-limit/preset-small-lib": "12.0.0",
-    "@types/node": "25.3.3",
-    "@vitest/coverage-v8": "4.0.18",
+    "@arethetypeswrong/cli": "catalog:",
+    "@size-limit/preset-small-lib": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "fast-check": "4.5.3",
-    "publint": "0.3.18",
-    "size-limit": "12.0.0",
-    "tsdown": "0.21.2",
-    "vitest": "4.0.18"
+    "publint": "catalog:",
+    "size-limit": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24"
   },
   "exports": {
     ".": {
-      "default": "./dist/index.mjs",
-      "types": "./dist/index.d.mts"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./bytes": {
-      "default": "./dist/bytes.mjs",
-      "types": "./dist/bytes.d.mts"
+      "types": "./dist/bytes.d.mts",
+      "default": "./dist/bytes.mjs"
     },
     "./rsa": {
-      "default": "./dist/rsa.mjs",
-      "types": "./dist/rsa.d.mts"
+      "types": "./dist/rsa.d.mts",
+      "default": "./dist/rsa.mjs"
     }
   },
   "files": [

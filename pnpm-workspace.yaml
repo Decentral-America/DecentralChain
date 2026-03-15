@@ -1,6 +1,18 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+
+catalog:
+  '@arethetypeswrong/cli': 0.18.2
+  '@size-limit/preset-small-lib': 12.0.0
+  '@types/node': 25.5.0
+  '@vitest/coverage-v8': 4.0.18
+  jsdom: 28.1.0
+  publint: 0.3.18
+  size-limit: 12.0.0
+  tsdown: 0.21.2
+  vitest: 4.0.18
+
 allowBuilds:
   lefthook: false
   nx: false

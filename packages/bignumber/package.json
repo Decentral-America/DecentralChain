@@ -8,22 +8,22 @@
   },
   "description": "Official arbitrary-precision BigNumber library for the DecentralChain blockchain SDK — safe arithmetic and byte serialization for token amounts, transaction fees, and on-chain financial computations",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
-    "@size-limit/preset-small-lib": "12.0.0",
-    "@vitest/coverage-v8": "4.0.18",
+    "@arethetypeswrong/cli": "catalog:",
+    "@size-limit/preset-small-lib": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "long": "^5.3.2",
-    "publint": "0.3.18",
-    "size-limit": "12.0.0",
-    "tsdown": "0.21.2",
-    "vitest": "4.0.18"
+    "publint": "catalog:",
+    "size-limit": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24"
   },
   "exports": {
     ".": {
-      "default": "./dist/index.mjs",
-      "types": "./dist/index.d.mts"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
   "files": [
