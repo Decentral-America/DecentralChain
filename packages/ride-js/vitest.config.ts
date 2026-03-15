@@ -1,7 +1,8 @@
 import path from 'node:path';
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   resolve: {
     alias: {
       // The @waves/ts-lib-crypto ESM bundle is broken (Buffer.from undefined
@@ -11,11 +12,8 @@ export default defineConfig({
     },
   },
   test: {
-    clearMocks: true,
     coverage: {
       include: ['src/**/*.js'],
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'json-summary'],
       thresholds: {
         branches: 65,
         functions: 74,
@@ -24,9 +22,7 @@ export default defineConfig({
       },
     },
     environment: 'node',
-    globals: true,
     include: ['test/**/*.spec.{ts,js}'],
-    reporters: ['default'],
     testTimeout: 60_000,
   },
 });

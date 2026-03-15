@@ -1,19 +1,17 @@
-import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vitest/config';
+import baseConfig from '../../vitest.base.config';
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   test: {
-    clearMocks: true,
     coverage: {
-      exclude: ['src/index.ts'],
-      include: ['src/**/*.ts'],
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'json-summary'],
-      // Note: V8 coverage thresholds are not meaningful for a types-only package
+      // V8 coverage thresholds are not meaningful for a types-only package
       // (0 executable statements). Type safety is validated via expectTypeOf tests.
+      thresholds: {
+        branches: 0,
+        functions: 0,
+        lines: 0,
+        statements: 0,
+      },
     },
-    globals: true,
-    include: ['test/**/*.spec.ts'],
-    reporters: ['default'],
-    typecheck: { enabled: true },
   },
 });
