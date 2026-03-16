@@ -40,8 +40,8 @@ export type CodeDelivery = {
   destination: string;
 };
 
-function startsWith(source: string, target: string, flags = 'i'): boolean {
-  return !!source.match(new RegExp(`^${target}`, flags));
+function startsWith(source: string, target: string): boolean {
+  return source.toLocaleLowerCase().startsWith(target.toLocaleLowerCase());
 }
 
 const fetch = globalThis.fetch;

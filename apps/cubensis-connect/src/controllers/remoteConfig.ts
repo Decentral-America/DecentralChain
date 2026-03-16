@@ -40,6 +40,10 @@ const extendValues = (defaultValues: any, newValues: any) => {
   );
 };
 
+const escapeRegExp = (value: string): string => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 export class RemoteConfigController extends EventEmitter {
   store;
 
@@ -126,7 +130,7 @@ export class RemoteConfigController extends EventEmitter {
     return (
       ignoreErrorsConfig.ignoreAll ||
       ignoreErrorsConfig[context].some((str) => {
-        const re = new RegExp(str);
+        const re = new RegExp(escapeRegExp(str), 'i');
 
         return re.test(message);
       })

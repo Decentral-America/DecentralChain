@@ -35,22 +35,18 @@ export class WindowProtocol<T> extends EventEmitter<IEvents<T>> {
   private readonly type: TProtocolType;
   private readonly targetOrigin: string;
 
-  constructor(win: IWindow, type: TProtocolType, targetOrigin = '*') {
+  constructor(win: IWindow, type: TProtocolType, targetOrigin = WindowProtocol.getDefaultOrigin()) {
     super();
 
     this.win = win;
     this.type = type;
-    this.targetOrigin = targetOrigin;
-
-    // Warn developers when dispatching to wildcard origin — potential security risk
-    // for financial applications. Use an explicit origin whenever possible.
     if (type === PROTOCOL_TYPES.DISPATCH && targetOrigin === '*') {
-      console.warn(
-        '[WindowProtocol] DISPATCH protocol created with wildcard targetOrigin "*". ' +
-          'This sends messages to ALL origins and may expose sensitive data. ' +
-          'Pass an explicit origin (e.g. "https://your-domain.com") for production use.',
+      throw new Error(
+        '[WindowProtocol] Wildcard targetOrigin "*" is not allowed for DISPATCH protocol. ' +
+          'Pass an explicit origin (e.g. "https://your-domain.com").',
       );
     }
+    this.targetOrigin = targetOrigin;
 
     this.handler = (event: IMessageEvent<T>) => {
       this.trigger('message', event);
@@ -89,4 +85,12 @@ export class WindowProtocol<T> extends EventEmitter<IEvents<T>> {
       removeEventListener: empty as unknown as IWindow['removeEventListener'],
     };
   })();
+
+  private static getDefaultOrigin(): string {
+    if (typeof window !== 'undefined' && typeof window.location?.origin === 'string') {
+      return window.location.origin;
+    }
+
+    return '/';
+  }
 }
