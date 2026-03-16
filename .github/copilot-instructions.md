@@ -150,6 +150,7 @@ The `.github/prompts/` directory contains reusable slash-command prompts for com
 - `/validate-workspace` — run full quality pipeline
 - `/explore-workspace` — understand project relationships and architecture
 - `/monitor-ci` — monitor Nx Cloud CI pipeline
+- `/upstream-sync` — check for and port changes from upstream Waves repositories
 
 ### VS Code Integration
 

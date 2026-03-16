@@ -77,6 +77,7 @@ The Nx MCP server (configured in `.vscode/mcp.json`) provides structured access 
 | `validate-workspace` | Run full quality pipeline (boundaries → lint → typecheck → test → build) |
 | `explore-workspace` | Understand project relationships and dependency graph |
 | `monitor-ci` | Monitor Nx Cloud CI pipeline with self-healing |
+| `upstream-sync` | Check for and port changes from upstream Waves repositories |
 
 ### VS Code Workspace Config
 
@@ -104,6 +105,7 @@ Shared team configuration (committed to repo):
 | `nx-generate` | Discover and run Nx generators |
 | `nx-run-tasks` | Run Nx tasks (build, test, lint) |
 | `nx-workspace` | Explore workspace structure, projects, and dependencies |
+| `upstream-sync` | Sync DCC packages with upstream Waves repos — fetch, diff, evaluate, port, validate |
 
 
 <!-- nx configuration end-->

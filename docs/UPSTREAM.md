@@ -635,9 +635,11 @@ Actionable items where Waves references remain and should be cleaned up:
 
 ## 19. Upstream Sync Tracking
 
-> **Purpose**: Map every monorepo package to its Waves upstream repo and track the last shared commit. Updated manually whenever upstream changes are pulled in.
+> **Purpose**: Map every monorepo package to its Waves upstream repo and track the last shared commit. Updated whenever upstream changes are ported.
 >
-> **Why manual?** DCC was cloned from Waves without GitHub's fork mechanism. The repos share commit history, so `git log` and `git diff` work across both trees — but syncing is a manual review-and-port process, not an automated merge.
+> **Why manual?** DCC was cloned from Waves without GitHub's fork mechanism. The repos share commit history, so `git log` and `git diff` work across both trees — but syncing is a review-and-port process, not an automated merge.
+>
+> **AI agents**: The complete sync procedure is documented as a skill at `.github/skills/upstream-sync/SKILL.md`. Use the `/upstream-sync` prompt to invoke it. The skill contains the full workflow: fetch, diff, evaluate, port, validate, commit, and update this table.
 
 ### Monorepo → Upstream Map
 
@@ -688,12 +690,14 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### How to Port a Change
 
+> For the full detailed procedure including what to skip, what to port, adaptation rules, and validation steps, see `.github/skills/upstream-sync/SKILL.md`.
+
 1. Review `git log <last-synced>..HEAD` in the upstream clone
 2. Skip tooling changes (ESLint/Prettier/Jest/tsup), dependency bumps (Renovate), and CJS additions — none apply to our stack
 3. Manually apply relevant bugfixes or features to the monorepo package
-4. Adapt to DCC conventions (Biome, strict TS, ESM imports)
-5. Run `nx run @decentralchain/<pkg> test`
-6. Commit: `fix(DCC-###): port upstream <short-hash> — <description>`
+4. Adapt to DCC conventions (Biome, strict TS, ESM imports, `@decentralchain/*` package names)
+5. Validate: `pnpm nx run @decentralchain/<pkg>:biome-lint && pnpm nx run @decentralchain/<pkg>:typecheck && pnpm nx run @decentralchain/<pkg>:test`
+6. Commit: `fix(<pkg>): port upstream <short-hash> — <description>`
 7. Update this table: set **Upstream Commit** to the new Waves hash, **DCC Commit** to your monorepo commit, and the **Date**
 
 ### Priority Watch List
