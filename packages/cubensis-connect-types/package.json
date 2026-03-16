@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "description": "TypeScript type definitions for the CubensisConnect browser-extension API",
   "devDependencies": {
@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/cubensis-connect-types",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/cubensis-connect-types",
   "keywords": [
     "types",
     "typescript",
@@ -57,7 +57,7 @@
   "repository": {
     "directory": "packages/cubensis-connect-types",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

@@ -12,7 +12,7 @@ set -euo pipefail
 #   ./scripts/archive-polyrepos.sh --apply  # actually archive
 
 ORG="Decentral-America"
-MONOREPO="https://github.com/${ORG}/decentralchain-sdk"
+MONOREPO="https://github.com/${ORG}/DecentralChain"
 
 REPOS=(
   assets-pairs-order

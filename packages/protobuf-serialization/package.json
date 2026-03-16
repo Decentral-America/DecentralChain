@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.11.0"
@@ -38,7 +38,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/protobuf-serialization",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/protobuf-serialization",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -72,7 +72,7 @@
   "repository": {
     "directory": "packages/protobuf-serialization",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "rm -rf dist && buf generate && tsdown",

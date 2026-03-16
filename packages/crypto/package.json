@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain <https://github.com/Decentral-America>",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
@@ -36,7 +36,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/crypto",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/crypto",
   "keywords": [
     "decentralchain",
     "crypto",
@@ -65,7 +65,7 @@
   "repository": {
     "directory": "packages/crypto",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "npm run build:wasm && npm run build:ts",

@@ -1,7 +1,7 @@
 {
   "author": "Blockchain Costa Rica <soporte@decentralchain.io>",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@decentralchain/bignumber": "workspace:*",
@@ -85,7 +85,7 @@
   "engines": {
     "node": ">=24"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/cubensis-connect",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/apps/cubensis-connect",
   "license": "SEE LICENSE IN LICENSE.md",
   "name": "cubensis-connect",
   "nx": {
@@ -101,7 +101,7 @@
   "repository": {
     "directory": "apps/cubensis-connect",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "node scripts/build.mjs",

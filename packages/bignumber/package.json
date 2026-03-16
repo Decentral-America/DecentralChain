@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "bignumber.js": "^10.0.2"
@@ -35,7 +35,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/bignumber",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/bignumber",
   "keywords": [
     "bignumber",
     "bigint",
@@ -69,7 +69,7 @@
   "repository": {
     "directory": "packages/bignumber",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

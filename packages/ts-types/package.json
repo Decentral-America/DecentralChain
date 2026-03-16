@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "description": "Shared TypeScript type definitions for the DecentralChain SDK",
   "devDependencies": {
@@ -31,7 +31,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/ts-types",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts-types",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -56,7 +56,7 @@
   "repository": {
     "directory": "packages/ts-types",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

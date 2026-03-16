@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@decentralchain/node-api-js": "workspace:*",
@@ -53,7 +53,7 @@
   "engines": {
     "node": ">=24"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/scanner",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/apps/scanner",
   "keywords": [
     "blockchain",
     "explorer",
@@ -81,7 +81,7 @@
   "repository": {
     "directory": "apps/scanner",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "vite build",
