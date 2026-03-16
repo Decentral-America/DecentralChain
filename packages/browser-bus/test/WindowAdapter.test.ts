@@ -270,6 +270,23 @@ describe('Window adapter', () => {
   });
 
   describe('WindowProtocol dispatch-type destroy', () => {
+    it('uses current window origin as default targetOrigin for dispatch', () => {
+      const win = mockWindow<TMessageContent>();
+      const protocol = new WindowProtocol<TMessageContent>(win, PROTOCOL_TYPES.DISPATCH);
+
+      expect((protocol as unknown as { targetOrigin: string }).targetOrigin).toBe(
+        window.location.origin,
+      );
+    });
+
+    it('throws when dispatch protocol uses wildcard targetOrigin', () => {
+      const win = mockWindow<TMessageContent>();
+
+      expect(() => {
+        new WindowProtocol<TMessageContent>(win, PROTOCOL_TYPES.DISPATCH, '*');
+      }).toThrow('Wildcard targetOrigin "*" is not allowed for DISPATCH protocol');
+    });
+
     it('destroy on dispatch protocol replaces win with fakeWin', () => {
       const win = mockWindow<TMessageContent>();
       const protocol = new WindowProtocol<TMessageContent>(win, PROTOCOL_TYPES.DISPATCH);
