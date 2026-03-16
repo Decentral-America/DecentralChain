@@ -113,3 +113,49 @@ Refer to these docs for deep context:
 - **`docs/STATUS.md`** — Per-package health, timeline, open issues, remediation priority matrix
 - **`docs/SECURITY-AUDIT.md`** — 6-phase security audit playbook with severity definitions and checklists
 - **`docs/CONVENTIONS.md`** — Coding standards, TypeScript strictness, testing standards, file templates, naming conventions
+
+## AI & Editor Integration
+
+### Nx MCP Server
+
+The workspace is configured with the **Nx MCP server** (`.vscode/mcp.json`), which provides AI agents with structured access to workspace metadata — project graph, dependencies, available targets, tags, and generators. This is far more reliable than parsing files manually.
+
+Key Nx MCP tools available:
+- `nx_workspace` — query workspace structure and all projects
+- `nx_project_details` — get config, targets, and tags for a specific project
+- `nx_visualize_graph` — render the dependency graph
+- `nx_generators` — discover available code generators (including our custom `sdk-package` generator)
+- `nx_generator_schema` — get the schema for a specific generator
+- `nx_docs` — search up-to-date Nx documentation (prevents hallucination)
+
+**Always prefer Nx MCP tools over manual file parsing** when answering questions about workspace structure, project relationships, or task configuration.
+
+### Additional MCP Servers
+
+Three more MCP servers are configured in `.vscode/mcp.json`:
+
+| Server | Purpose |
+|--------|---------|
+| **Context7** (`@upstash/context7-mcp`) | Fetches up-to-date documentation for any npm library — prevents hallucinating outdated APIs |
+| **Chrome DevTools** (`chrome-devtools-mcp`) | Browser automation for testing the exchange, scanner, and cubensis-connect apps — screenshots, network inspection, interaction automation, Lighthouse audits |
+| **GitHub** (`api.githubcopilot.com/mcp/`) | Direct GitHub API access — create PRs, manage issues, search code, handle reviews without leaving the editor |
+
+### Reusable Prompts
+
+The `.github/prompts/` directory contains reusable slash-command prompts for common monorepo workflows:
+- `/build-package` — build a specific package via Nx
+- `/test-affected` — test only what changed
+- `/add-dependency` — add cross-package deps with layer validation
+- `/debug-build` — diagnose build/typecheck/lint failures
+- `/validate-workspace` — run full quality pipeline
+- `/explore-workspace` — understand project relationships and architecture
+- `/monitor-ci` — monitor Nx Cloud CI pipeline
+
+### VS Code Integration
+
+The full team uses VS Code with shared workspace configuration:
+- **`.vscode/settings.json`** — Biome as sole formatter, TS SDK, monorepo-optimized settings
+- **`.vscode/extensions.json`** — Required: Biome + Nx Console + GitHub Copilot + Vitest Explorer + GitLens
+- **`.vscode/tasks.json`** — Build/test/lint/typecheck as Command Palette tasks
+- **`.vscode/launch.json`** — Debug configs for Vitest and Vite dev servers
+- **`.vscode/mcp.json`** — Nx MCP + Context7 + Chrome DevTools + GitHub for AI-assisted development
