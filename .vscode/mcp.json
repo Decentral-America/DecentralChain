@@ -1,0 +1,23 @@
+{
+  "inputs": [],
+  "servers": {
+    "chrome-devtools": {
+      "args": ["chrome-devtools-mcp@latest"],
+      "command": "npx"
+    },
+    "context7": {
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "command": "npx",
+      "type": "stdio"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "nx": {
+      "args": ["nx", "mcp"],
+      "command": "npx",
+      "type": "stdio"
+    }
+  }
+}

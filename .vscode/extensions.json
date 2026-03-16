@@ -1,3 +1,11 @@
 {
-  "recommendations": ["biomejs.biome", "nrwl.angular-console"]
+  "recommendations": [
+    "biomejs.biome",
+    "nrwl.angular-console",
+    "github.copilot",
+    "github.copilot-chat",
+    "vitest.explorer",
+    "eamodio.gitlens"
+  ],
+  "unwantedRecommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"]
 }

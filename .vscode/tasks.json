@@ -1,0 +1,66 @@
+{
+  "tasks": [
+    {
+      "command": "pnpm nx affected -t build",
+      "group": "build",
+      "label": "Build Affected",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": ["$tsc"],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm nx run-many -t build",
+      "group": "build",
+      "label": "Build All",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": ["$tsc"],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm nx affected -t test",
+      "group": "test",
+      "label": "Test Affected",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm nx affected -t biome-lint",
+      "group": "test",
+      "label": "Lint Affected",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner",
+      "group": "test",
+      "label": "Typecheck All",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": ["$tsc"],
+      "type": "shell"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "label": "Validate Boundaries",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm nx graph",
+      "label": "Nx Graph",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "pnpm biome check --write .",
+      "label": "Format (Biome)",
+      "presentation": { "panel": "shared", "reveal": "always" },
+      "problemMatcher": [],
+      "type": "shell"
+    }
+  ],
+  "version": "2.0.0"
+}
