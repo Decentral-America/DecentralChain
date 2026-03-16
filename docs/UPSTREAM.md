@@ -21,7 +21,12 @@
 11. [Strategic Roadmap](#11-strategic-roadmap)
 12. [DCC-Original Projects](#12-dcc-original-projects)
 13. [Concept Mapping Reference](#13-concept-mapping-reference)
-14. [Appendix A — Full Waves Inventory](#appendix-a--full-waves-inventory)
+14. [Feature Parity — Cubensis Connect vs Waves Keeper](#14-feature-parity--cubensis-connect-vs-waves-keeper)
+15. [External Services & Dependencies](#15-external-services--dependencies)
+16. [Supply-Chain Dependency Chain](#16-supply-chain-dependency-chain)
+17. [Crypto Function Name Mapping](#17-crypto-function-name-mapping)
+18. [Unfinished Branding Residuals](#18-unfinished-branding-residuals)
+19. [Appendix A — Full Waves Inventory](#appendix-a--full-waves-inventory)
 
 ---
 
@@ -398,6 +403,20 @@ These represent DCC's **differentiation** — features Waves either never built 
 
 ## 13. Concept Mapping Reference
 
+### Ride Language — Quick Reference
+
+Ride is the smart contract language used on both Waves and DecentralChain. It is non-Turing-complete (no loops, no recursion — iteration via `FOLD<N>`), functional, statically typed, and lazy-evaluated.
+
+| Topic | DecentralChain Docs | Waves Docs |
+|:------|:-------------------|:-----------|
+| Syntax Basics | [dcc/ride/syntax](https://docs.decentralchain.io/en/master/03_ride-language/01_syntax-basics.html) | [waves/ride/getting-started](https://docs.waves.tech/en/ride/getting-started) |
+| Data Types | [dcc/ride/data-types](https://docs.decentralchain.io/en/master/03_ride-language/02_data-types.html) | [waves/ride/data-types](https://docs.waves.tech/en/ride/data-types/) |
+| Functions | [dcc/ride/functions](https://docs.decentralchain.io/en/master/03_ride-language/03_functions.html) | [waves/ride/functions](https://docs.waves.tech/en/ride/functions/) |
+| Script Types | [dcc/ride/scripts](https://docs.decentralchain.io/en/master/03_ride-language/04_script-types.html) | [waves/ride/script](https://docs.waves.tech/en/ride/script/) |
+| Structures | [dcc/ride/structures](https://docs.decentralchain.io/en/master/03_ride-language/05_structures.html) | [waves/ride/structures](https://docs.waves.tech/en/ride/structures/) |
+| FOLD iterations | [dcc/ride/fold](https://docs.decentralchain.io/en/master/03_ride-language/06_iterations-with-fold.html) | [waves/ride/fold](https://docs.waves.tech/en/ride/functions/built-in-functions/) |
+| dApp-to-App | [dcc/ride/dapp-invocation](https://docs.decentralchain.io/en/master/03_ride-language/07_dapp-to-app-invocation.html) | [waves/ride/dapp-to-dapp](https://docs.waves.tech/en/ride/advanced/dapp-to-app/) |
+
 ### Waves → DecentralChain Concept Map
 
 | Concept | Waves Docs | DecentralChain Docs |
@@ -434,6 +453,162 @@ These represent DCC's **differentiation** — features Waves either never built 
 | `@waves/assets-pairs-order` | `@decentralchain/assets-pairs-order` |
 | `@waves/protobuf-serialization` | `@decentralchain/protobuf-serialization` |
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
+
+---
+
+## 14. Feature Parity — Cubensis Connect vs Waves Keeper
+
+| Feature | Waves Keeper | Cubensis Connect | Gap |
+|---------|-------------|------------------|-----|
+| Create wallet (seed phrase) | ✅ | ✅ | — |
+| Import seed / keystore / Ledger | ✅ | ✅ | — |
+| Import via email (Cognito) | ✅ | ✅ | See [Cognito caveat](STATUS.md#7-remediation-priority-matrix) |
+| Multi-account, multi-network | ✅ | ✅ | — |
+| Send/sign all 18 transaction types | ✅ | ✅ | — |
+| Sign arbitrary data | ✅ | ✅ | — |
+| Transaction history | ✅ | ✅ | — |
+| NFT display (5 vendors) | ✅ | ✅ | — |
+| NFT display (WavesDomains) | ✅ | ❌ | **Removed** — no DCC domain service |
+| `.waves` address resolution | ✅ | ❌ | **Removed** — requires domain resolution API |
+| In-wallet swap | ✅ | ✅ | Uses `@decentralchain/swap-client` (DCC-69) |
+| DApp browser permissions | ✅ | ✅ | — |
+| Idle auto-lock | ✅ | ✅ | — |
+| Leasing | ✅ | ✅ | — |
+| dccAuth (message signing) | ✅ (wavesAuth) | ✅ | Renamed, functionally identical |
+| `CubensisConnect` global API | `WavesKeeper` | ✅ | Deprecated `KeeperWallet`/`WavesKeeper` aliases maintained |
+| Sentry error reporting | ✅ | ⚠️ | No DSN configured — errors are silently dropped |
+| Extension store listing | ✅ | ❌ | Not published to Chrome Web Store or Firefox AMO |
+| Remote config updates | ✅ | ✅ | Uses `dcc-configs` repo |
+
+### NFT Vendor System
+
+The wallet uses a vendor-based plugin pattern where each NFT project has a dedicated renderer.
+
+| Vendor | Status | External Service |
+|--------|--------|------------------|
+| Ducks | ✅ | wavesducks.com |
+| Ducklings | ✅ | wavesducks.com |
+| DucksArtefacts | ✅ | wavesducks.com |
+| Puzzle | ✅ | puzzlemarket.org |
+| SignArt | ✅ | mainnet.sign-art.app |
+| **WavesDomains** | ❌ Removed | No DCC equivalent |
+| Unknown (fallback) | ✅ | — |
+
+**Impact of WavesDomains removal:** NFTs from that vendor render with the "Unknown" fallback — a generic card. No crash, no data loss. If DCC launches its own domain system (e.g., `.dcc`), the vendor can be re-implemented.
+
+---
+
+## 15. External Services & Dependencies
+
+### DCC-Controlled Services
+
+| Service | URL | Function |
+|---------|-----|----------|
+| Data Service API | `api.decentralchain.io` | Asset info, ticker data |
+| Swap API | `swap-api.decentralchain.io` | Token swap routing & execution |
+| Identity API | `id.decentralchain.io/api` | Email-based account management |
+| Cognito Proxy | `decentralchain.io/cognito` | AWS Cognito auth proxy |
+| Remote Config | `raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json` | Runtime config |
+| Suspicious Token List | `raw.githubusercontent.com/Decentral-America/waves-community/master/...` | Scam token CSV (⚠️ repo still named `waves-community`) |
+
+### Third-Party Services (Not DCC-Controlled)
+
+| Service | URL | Function | Risk |
+|---------|-----|----------|------|
+| Waves Ducks | `wavesducks.com/api/v1/` | Duck NFT images & metadata | May not serve DCC NFT data |
+| Puzzle Market | `puzzlemarket.org` | Puzzle NFT metadata | Independent project |
+| SignArt | `mainnet.sign-art.app` | Art NFT metadata & IPFS images | Uses Infura IPFS gateway |
+| Keeper Wallet web app | `web.keeper-wallet.app` | **Still in whitelist** | ⚠️ Waves-controlled domain |
+| Keeper Wallet swap | `swap.keeper-wallet.app` | **Still in whitelist** | ⚠️ Waves-controlled domain |
+
+### Cognito User Pool Details
+
+The email-login identity system uses AWS Cognito. These pool IDs need ownership verification:
+
+| Environment | Pool ID | Client ID |
+|-------------|---------|-----------|
+| Mainnet | `eu-central-1_AXIpDLJQx` | `k63vrrmuav01s6p2d344ppnf4` |
+| Testnet | `eu-central-1_6Bo3FEwt5` | `7l8bv0kmvrb4s4n1topofh9d80` |
+
+**If Waves-owned:** DCC email accounts are actually Waves accounts — Waves could revoke access to user seeds. **This is the P0 risk** documented in [STATUS.md](STATUS.md#7-remediation-priority-matrix).
+
+---
+
+## 16. Supply-Chain Dependency Chain
+
+The critical path from unforked upstream packages through DCC consumers. An issue in any upstream package affects all downstream:
+
+```
+@keeper-wallet/waves-crypto  ← NOT FORKED (crypto foundation)
+  └── cubensis-connect (21 import sites)
+  └── @decentralchain/ts-lib-crypto
+        └── @decentralchain/transactions
+              └── @decentralchain/signature-adapter
+                    └── @decentralchain/signer
+              └── @decentralchain/node-api-js
+        └── @decentralchain/marshall
+              └── @decentralchain/protobuf-serialization (proto namespace: waves)
+        └── @decentralchain/ledger
+
+@decentralchain/swap-client  ← FORKED (DCC-69) ✅
+  └── cubensis-connect (swap feature only)
+
+@waves/ride-lang + @waves/ride-repl  ← NOT FORKED (RIDE compiler)
+  └── @decentralchain/ride-js
+```
+
+---
+
+## 17. Crypto Function Name Mapping
+
+Reference for the future `@keeper-wallet/waves-crypto` → `@decentralchain/wallet-crypto` fork. Names look similar but **APIs are NOT drop-in compatible** — different signatures and return types.
+
+| waves-crypto function | ts-lib-crypto equivalent | Compatible? |
+|---|---|---|
+| `base58Decode` | `base58Decode` | ✅ Exact |
+| `base58Encode` | `base58Encode` | ✅ Exact |
+| `base64Decode` | `base64Decode` | ✅ Exact |
+| `base64Encode` | `base64Encode` | ✅ Exact |
+| `base16Decode` | `base16Decode` | ✅ Exact |
+| `base16Encode` | `base16Encode` | ✅ Exact |
+| `blake2b` | `blake2b` | ✅ Exact |
+| `keccak` | `keccak` | ✅ Exact |
+| `signBytes` | `signBytes` | ⚠️ Same name, **different signature** |
+| `verifyAddress` | `verifyAddress` | ✅ Exact |
+| `verifySignature` | `verifySignature` | ✅ Exact |
+| `decryptSeed` | `decryptSeed` | ⚠️ Same name, **different return type** |
+| `encryptSeed` | `encryptSeed` | ⚠️ Same name, **different return type** |
+| `createAddress` | `address` / `buildAddress` | ❌ Rename required |
+| `createPrivateKey` | `privateKey` | ❌ Rename required |
+| `createPublicKey` | `publicKey` | ❌ Rename required |
+| `createSharedKey` | `sharedKey` | ❌ Rename required |
+| `decryptMessage` | `messageDecrypt` | ❌ Rename required |
+| `encryptMessage` | `messageEncrypt` | ❌ Rename required |
+| `generateRandomSeed` | `randomSeed` | ❌ Rename required |
+| `utf8Decode` | `bytesToString` | ❌ Rename required |
+| `utf8Encode` | `stringToBytes` | ❌ Rename required |
+
+---
+
+## 18. Unfinished Branding Residuals
+
+Actionable items where Waves references remain and should be cleaned up:
+
+| Reference | File | Action |
+|-----------|------|--------|
+| `waves-community` repo name in URL | `controllers/assetInfo.ts:34` | Rename GitHub repo → `dcc-community` |
+| `support.waves.exchange` in error message | `importEmail/signInForm.tsx:99` | Check DCC Cognito backend error strings |
+| `web.keeper-wallet.app` in whitelist | `constants.ts:52` | Remove if DCC doesn't use Keeper web app |
+| `swap.keeper-wallet.app` in whitelist | `constants.ts:53` | Remove if DCC doesn't use Keeper swap |
+
+### UX Regressions vs Upstream
+
+| Feature | Impact | Effort to Restore | Priority |
+|---------|--------|-------------------|----------|
+| WavesDomains NFT vendor | NFTs render as "Unknown" | Low (re-add vendor) — needs DCC domain service | Low |
+| `.waves` address resolution | Cannot type domain names | Medium — needs API | Medium |
+| Sentry error reporting | No runtime error visibility | Low (create Sentry project, set DSN) | **High** |
+| Extension store listings | Users must side-load | Medium (store review process) | **High** |
 
 ---
 

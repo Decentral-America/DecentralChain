@@ -109,16 +109,16 @@ decentralchain-sdk/
 
 ## 4. Toolchain
 
-| Layer | Tool | Version | Why |
-|-------|------|---------|-----|
-| **Package Manager** | pnpm | 10.x | Strict isolation, workspace protocol, catalogs, fast |
-| **Task Runner** | Nx | 22.x | Dependency-aware pipeline, caching, project graph, MCP |
-| **Bundler** | tsdown | 0.x | Native `workspace: true` support, ESM-only |
-| **Linter/Formatter** | Biome | 2.x | Single Rust-native tool, monorepo support via `extends: "//"` |
-| **Test Runner** | Vitest | 4.x | Native workspace support, ESM-native |
-| **TypeScript** | TypeScript | 5.9.x | Project references, strict mode |
-| **Git Hooks** | Lefthook | 1.x | Parallel execution, root-level config |
-| **Node.js** | Node.js | ≥24 | Active LTS |
+| Layer | Tool | Version | Why This Tool |
+|-------|------|---------|---------------|
+| **Package Manager** | pnpm | 10.x | **Strict isolation** prevents phantom dependencies (unlike npm's flat hoisting). `workspace:*` protocol auto-resolves at publish. `catalog:` centralizes shared versions. 3x faster installs than npm via content-addressable store. |
+| **Task Runner** | Nx | 22.x | **Only monorepo tool with native MCP server** — AI agents can query the project graph, run tasks, and monitor builds via 15+ MCP tools. Computation caching replays unchanged tasks in <100ms. `nx affected` detects which packages changed and only rebuilds those, cutting CI from minutes to seconds. See [§15 Decision Log](#15-decision-log) for Nx vs Turborepo. |
+| **Bundler** | tsdown | 0.x | **Understands `workspace:*` natively** — no config needed to resolve monorepo deps. Uses Rolldown (Rust) under the hood for speed. ESM-only output with `.mjs` + `.d.mts` matches our ESM-only policy. Successor to tsup with better monorepo support; tsup required workarounds for workspace deps. |
+| **Linter/Formatter** | Biome | 2.x | **Replaces both ESLint AND Prettier with one Rust-native binary** — 10-100x faster than ESLint. Single `biome.json` configures both lint and format. Monorepo-aware via `"extends": "//"` (inherits root config). No plugin ecosystem to maintain. Zero-config for 90% of rules. |
+| **Test Runner** | Vitest | 4.x | **Native ESM support** — Jest requires `babel-jest` or `ts-jest` transforms for ESM, Vitest runs ESM natively. Same expect/describe/it API as Jest (zero migration friction). Built-in V8 coverage (no `nyc` or `istanbul` needed). `vitest.workspace.ts` for monorepo-native config. |
+| **TypeScript** | TypeScript | 5.9.x | **Maximum strictness catches bugs at compile time, not in production.** TS 5.9 adds `--noUncheckedSideEffectImports` and improved `isolatedDeclarations`. Project references enable incremental builds — editor only typechecks the current package + its deps. tsdown handles emit; `tsc` is only for type checking. |
+| **Git Hooks** | Lefthook | 1.x | **Parallel execution** runs Biome + typecheck simultaneously (unlike husky which is sequential). Written in Go — fast startup. Supports `stage_fixed: true` to auto-stage Biome's fixes. No Node.js dependency for the hook runner itself. |
+| **Node.js** | Node.js | ≥24 | **Native `fetch`, native `crypto.subtle`, native test runner** — eliminates `node-fetch`, `isomorphic-fetch`. Native `Uint8Array` improvements for crypto operations. `--experimental-strip-types` allows running `.ts` files directly in scripts. |
 
 ### Build Tool Distribution
 
@@ -365,19 +365,21 @@ Custom AI skills in `.github/skills/` cover: `nx-generate`, `nx-run-tasks`, `nx-
 
 ## 15. Decision Log
 
+Every significant architectural choice is documented here with the reasoning that drove it. This log helps future contributors (and AI agents) understand **why** things are the way they are — not just what they are.
+
 | # | Decision | Rationale |
 |---|----------|-----------|
-| D-1 | **pnpm** over npm | Strict dependency isolation, workspace protocol, catalogs, disk efficiency |
-| D-2 | **Nx** over Turborepo | Best-in-class AI integration (native MCP, 15+ tools), superior project graph, `nx import` for history preservation. Config investment pays compound returns. See [full comparison](ARCHITECTURE.md#appendix-turborepo-vs-nx) |
-| D-3 | **Changesets** for publishing | Industry standard, works with any task runner, portable |
-| D-4 | **`packages/` + `apps/`** layout | Clear separation of publishable libs vs. private apps |
-| D-5 | **TypeScript project references** | Incremental builds, editor performance, correct type isolation |
-| D-6 | **Per-package Vitest configs** | Preserves per-package coverage thresholds, matches Nx caching |
-| D-7 | **Root Biome v2** with `extends: "//"` | Eliminates 20+ duplicate configs |
+| D-1 | **pnpm** over npm/yarn | npm's flat `node_modules` allows phantom dependencies (importing packages you didn't declare). pnpm's content-addressable store + symlinks prevent this. `workspace:*` protocol resolves to local source in dev and real versions at publish — eliminates the entire `fix-cross-deps.mjs` workflow. `catalog:` centralizes 15+ shared devDep versions in one place. Yarn v4 was considered but pnpm's workspace protocol is more mature and Corepack support is better. |
+| D-2 | **Nx** over Turborepo | Turborepo is simpler (~35 lines config vs ~60), but Nx wins on three dimensions that matter most for this project: **(1) AI-first**: native MCP server with 15+ tools lets AI agents query workspace structure, run tasks, and monitor builds — Turborepo has no equivalent. **(2) Migration**: `nx import` preserves full git history per package during monorepo consolidation — critical for audit trail. **(3) Project graph**: interactive web UI + dependency-aware task ordering vs Turborepo's static Graphviz. See [full comparison below](#nx-vs-turborepo--why-nx). |
+| D-3 | **Nx Release** for publishing | Independent versioning per-package driven by conventional commits. `nx release` handles version bumps, changelog generation, and npm publish with provenance in one command. Works with the project graph to only version packages with actual changes. |
+| D-4 | **`packages/` + `apps/`** layout | npm-published SDK libraries live in `packages/`, private applications in `apps/`. This makes the publish boundary explicit — everything in `packages/` ships to npm, nothing in `apps/` does. Nx tags (`scope:sdk` vs `scope:app`) enforce the boundary: SDK packages cannot depend on apps. |
+| D-5 | **TypeScript project references** | Without project references, `tsc` typechecks the entire monorepo as one unit — slow and error-prone. With references, each package is a `composite` project that builds independently. The editor only loads types for the current package + its declared dependencies, keeping IntelliSense fast even at 25 projects. Incremental builds skip unchanged packages. |
+| D-6 | **Per-package Vitest configs** | Each package has its own `vitest.config.ts` extending a shared base. This allows per-package coverage thresholds (crypto at 95%, new packages at 80%), per-package test include patterns, and proper Nx caching — Nx caches test results per-project, so a shared config would invalidate all caches on any test config change. |
+| D-7 | **Root Biome v2** with `extends: "//"` | One `biome.json` at root defines all lint/format rules for the entire monorepo. Packages inherit with `"extends": "//"` (Biome's monorepo resolution syntax). Only packages with genuine overrides need their own `biome.json` (e.g., swap-client disables lint for generated protobuf code). This eliminated 20+ near-identical config files. |
 | D-8 | **Exclude node-scala** | Scala/sbt — fundamentally different toolchain |
-| D-9 | **Include all TS apps importing `@decentralchain/*`** | Principled rule that scales. Team velocity demands zero publish-install-test-fix latency |
-| D-10 | **`workspace:*` protocol** | Eliminates `fix-cross-deps.mjs`, auto-resolves at publish |
-| D-11 | **`nx import`** for history | Preserves full commit history per package in monorepo |
+| D-9 | **Include all TS apps importing `@decentralchain/*`** | The inclusion rule is intentionally simple: "if it's TypeScript and imports `@decentralchain/*`, it belongs here." This ensures that when a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. |
+| D-10 | **`workspace:*` protocol** | In the polyrepo era, `fix-cross-deps.mjs` had to manually update 22 cross-dependency versions before every publish. `workspace:*` tells pnpm "use the local source in dev, replace with the real published version at publish time." Zero manual version management, zero version drift, zero publish-order bugs. |
+| D-11 | **`nx import`** for history | Every package was imported with full git history preserved. This means `git log packages/transactions/` shows the complete commit history from the original polyrepo. Essential for: security audits ("when was this crypto code last touched?"), blame ("who wrote this signing logic?"), and bisect ("which commit broke serialization?"). The alternative — fresh `git init` — would have destroyed the audit trail for financial infrastructure code. |
 
 ### Nx vs Turborepo — Why Nx
 

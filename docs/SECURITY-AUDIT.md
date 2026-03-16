@@ -24,6 +24,8 @@
 
 ## 1. Severity Definitions
 
+> **Why severity tiers with SLAs?** Financial SDKs handle private keys and sign transactions that move real money. A CRITICAL finding in a signing library is qualitatively different from a CRITICAL in a static website — it can result in permanent, irreversible fund loss. The SLA tiers ensure that the response urgency matches the blast radius: CRITICAL = stop everything and fix, HIGH = fix before the next release, MEDIUM = current sprint. Without explicit SLAs, security findings languish in backlogs alongside feature requests.
+
 | Severity | Definition | Response SLA |
 |----------|-----------|--------------|
 | **CRITICAL** | Exploitable in the wild; data loss, key theft, or fund theft possible. Blocks release. | Immediate fix |
