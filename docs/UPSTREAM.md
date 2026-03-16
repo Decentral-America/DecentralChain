@@ -26,7 +26,8 @@
 16. [Supply-Chain Dependency Chain](#16-supply-chain-dependency-chain)
 17. [Crypto Function Name Mapping](#17-crypto-function-name-mapping)
 18. [Unfinished Branding Residuals](#18-unfinished-branding-residuals)
-19. [Appendix A — Full Waves Inventory](#appendix-a--full-waves-inventory)
+19. [Upstream Sync Tracking](#19-upstream-sync-tracking)
+20. [Appendix A — Full Waves Inventory](#appendix-a--full-waves-inventory)
 
 ---
 
@@ -38,7 +39,7 @@ DecentralChain (DCC) is an independent blockchain that forked the Waves protocol
 
 Every forked package has been:
 
-- Rebranded from `@waves/*` to `@decentralchain/*`
+- Rebranded from `@waves/*` and `@keeper-wallet/*` to `@decentralchain/*`
 - Modernized beyond upstream (ESM-only, TypeScript 5.9 strict, Biome, Vitest, tsdown)
 - Audited (3,747+ tests, 0 failures, 0 npm vulnerabilities)
 - Published to npm under `@decentralchain/*`
@@ -139,30 +140,30 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 | # | DCC Package | Waves Source | Org | Layer | Grafted | Published |
 |---|------------|-------------|-----|-------|---------|-----------|
-| 1 | ts-types | ts-types | wavesplatform | Foundation | 🔗 | 2.0.0 |
-| 2 | bignumber | bignumber | wavesplatform | Foundation | — | 1.1.1 |
-| 3 | ts-lib-crypto | ts-lib-crypto | wavesplatform | Foundation | 🔗 | 2.0.0 |
-| 4 | parse-json-bignumber | parse-json-bignumber | wavesplatform | Foundation | 🔗 | 2.0.0 |
-| 5 | marshall | marshall | wavesplatform | Serialization | — | 1.0.0 |
-| 6 | protobuf-serialization | protobuf-schemas | wavesplatform | Serialization | — | 2.0.0 |
-| 7 | data-entities | waves-data-entities | wavesplatform | Domain Model | — | 3.0.0 |
-| 8 | assets-pairs-order | assets-pairs-order | wavesplatform | Domain Model | — | 5.0.1 |
-| 9 | oracle-data | oracle-data | wavesplatform | Domain Model | — | 1.0.0 |
-| 10 | node-api-js | node-api-js | wavesplatform | API Client | 🔗 | 2.0.0 |
-| 11 | transactions | waves-transactions | wavesplatform | Transaction Building | 🔗 | 5.0.0 |
-| 12 | money-like-to-node | money-like-to-node | wavesplatform | Transaction Building | — | 1.0.0 |
-| 13 | data-service-client-js | data-service-client-js | wavesplatform | API Client | 🔗 | 4.2.0 |
-| 14 | browser-bus | waves-browser-bus | wavesplatform | Communication | 🔗 | 1.0.0 |
-| 15 | ledger | waves-ledger-js | wavesplatform | Hardware Wallet | 🔗 | 5.0.0 |
-| 16 | signature-adapter | waves-signature-adapter | wavesplatform | Signing | 🔗 | 7.0.0 |
-| 17 | signer | signer | wavesplatform | Signing | — | 2.0.0 |
-| 18 | ride-js | ride-js | wavesplatform | Smart Contracts | — | 2.3.0 |
+| 1 | ts-types | ts-types | wavesplatform | Foundation | 🔗 | 2.0.1 |
+| 2 | bignumber | bignumber | wavesplatform | Foundation | — | 1.2.1 |
+| 3 | ts-lib-crypto | ts-lib-crypto | wavesplatform | Foundation | 🔗 | 2.0.1 |
+| 4 | parse-json-bignumber | parse-json-bignumber | wavesplatform | Foundation | 🔗 | 2.0.1 |
+| 5 | marshall | marshall | wavesplatform | Serialization | — | 1.0.1 |
+| 6 | protobuf-serialization | protobuf-schemas | wavesplatform | Serialization | — | 3.0.0 |
+| 7 | data-entities | waves-data-entities | wavesplatform | Domain Model | — | 3.0.1 |
+| 8 | assets-pairs-order | assets-pairs-order | wavesplatform | Domain Model | — | 5.0.2 |
+| 9 | oracle-data | oracle-data | wavesplatform | Domain Model | — | 1.0.1 |
+| 10 | node-api-js | node-api-js | wavesplatform | API Client | 🔗 | 2.0.1 |
+| 11 | transactions | waves-transactions | wavesplatform | Transaction Building | 🔗 | 5.0.1 |
+| 12 | money-like-to-node | money-like-to-node | wavesplatform | Transaction Building | — | 1.0.1 |
+| 13 | data-service-client-js | data-service-client-js | wavesplatform | API Client | 🔗 | 4.2.1 |
+| 14 | browser-bus | waves-browser-bus | wavesplatform | Communication | 🔗 | 1.0.1 |
+| 15 | ledger | waves-ledger-js | wavesplatform | Hardware Wallet | 🔗 | 5.1.1 |
+| 16 | signature-adapter | waves-signature-adapter | wavesplatform | Signing | 🔗 | 7.0.1 |
+| 17 | signer | signer | wavesplatform | Signing | — | 2.0.1 |
+| 18 | ride-js | ride-js | wavesplatform | Smart Contracts | — | 2.3.1 |
 | 19 | cubensis-connect | Keeper-Wallet-Extension | Keeper-Wallet | Application | 🔗 | — |
-| 20 | cubensis-connect-types | waveskeeper-types | Keeper-Wallet | Wallet Types | 🔗 | 1.0.0 |
-| 21 | cubensis-connect-provider | provider-keeper | Keeper-Wallet | Signing | 🔗 | 1.0.0 |
-| 22 | explorer | WavesExplorerLite | wavesplatform | Application | — | — |
-| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 1.0.0 |
-| 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.0 |
+| 20 | cubensis-connect-types | waveskeeper-types | Keeper-Wallet | Wallet Types | 🔗 | 1.0.1 |
+| 21 | cubensis-connect-provider | provider-keeper | Keeper-Wallet | Signing | 🔗 | 1.0.1 |
+| 22 | scanner | WavesExplorerLite | wavesplatform | Application | — | — |
+| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 2.0.0 |
+| 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.2 |
 
 **🔗 Grafted** = full upstream Waves git history preserved via `git filter-repo` or subtree merge.
 
@@ -190,53 +191,59 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | **6 — Hardware Wallet** | ledger | Ledger device integration via WebUSB |
 | **7 — Signing** | signature-adapter, signer, cubensis-connect-provider | Multi-provider signing (seed, Ledger, wallet extension) |
 | **8 — Smart Contracts** | ride-js | RIDE language compiler (wraps `@waves/ride-lang`) |
-| **9 — Applications** | explorer, exchange, cubensis-connect, swap-client | End-user apps and DeFi clients |
+| **9 — Applications** | scanner, exchange, cubensis-connect, swap-client | End-user apps and DeFi clients |
 
 ### Dependency Graph
 
 ```
-                        ┌─────────────┐
-                        │  ts-types   │  (zero deps — pure types)
-                        └──────┬──────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-       ┌──────▼──────┐  ┌─────▼──────┐  ┌──────▼──────┐
-       │  bignumber   │  │ts-lib-crypto│  │  marshall   │
-       └──────┬──────┘  └─────┬──────┘  └──────┬──────┘
-              │               │                │
-              │         ┌─────┼───────┐        │
-              │         │     │       │        │
-       ┌──────▼──────┐  │  ┌──▼───┐   │  ┌────▼─────────────┐
-       │data-entities│  │  │ledger│   │  │protobuf-serializ.│
-       └──────┬──────┘  │  └──────┘   │  └────┬─────────────┘
-              │         │             │        │
-       ┌──────▼──────────▼─────────────▼────────▼──┐
-       │             transactions                   │
-       └──────┬────────────────────────┬───────────┘
-              │                        │
-       ┌──────▼──────┐         ┌──────▼──────────┐
-       │ node-api-js │         │signature-adapter│
-       └──────┬──────┘         └──────┬──────────┘
-              │                       │
-       ┌──────▼──────┐         ┌──────▼──────┐
-       │   signer    │         │money-like   │
-       └──────┬──────┘         │  -to-node   │
-              │                └─────────────┘
-       ┌──────▼──────────────┐
-       │cubensis-connect-prov│
-       └─────────────────────┘
+  ts-types  (zero @decentralchain deps — pure types)
+    ├── transactions (+ ts-lib-crypto, marshall, protobuf-serialization)
+    ├── node-api-js (+ bignumber, ts-lib-crypto)
+    └── signature-adapter (+ bignumber, data-entities, ledger, money-like-to-node, transactions)
 
-  Independent:
-  ┌─────────────────┐  ┌──────────────┐  ┌──────────┐  ┌──────────────┐
-  │parse-json-bignum│  │assets-pairs  │  │browser-bus│  │data-svc      │
-  └─────────────────┘  │   -order     │  └──────────┘  │-client-js    │
-                       └──────────────┘                 └──────────────┘
+  ts-lib-crypto  (zero @decentralchain deps — @noble/curves + @noble/hashes)
+    ├── transactions
+    ├── node-api-js
+    ├── signer (+ node-api-js, ts-types)
+    └── ride-js (+ @waves/ride-lang, @waves/ride-repl)
+
+  bignumber  (zero @decentralchain deps — bignumber.js)
+    ├── data-entities
+    ├── node-api-js
+    └── signature-adapter
+
+  marshall  (zero @decentralchain deps — base64-js, long)
+    ├── transactions
+    └── cubensis-connect-provider (+ cubensis-connect-types)
+
+  protobuf-serialization  (zero @decentralchain deps — @bufbuild/protobuf)
+    └── transactions
+
+  ledger  (zero @decentralchain deps — @ledgerhq/logs)
+    └── signature-adapter
+
+  data-entities  (← bignumber)
+    └── signature-adapter
+
+  transactions  (← ts-types, ts-lib-crypto, marshall, protobuf-serialization)
+    └── signature-adapter
+
+  node-api-js  (← ts-types, bignumber, ts-lib-crypto)
+    └── signer
+
+  signature-adapter  (← ts-types, bignumber, data-entities, ledger, money-like-to-node, transactions)
+
+  signer  (← ts-types, ts-lib-crypto, node-api-js)
+
+  cubensis-connect-provider  (← cubensis-connect-types, marshall)
+
+  Independent (no @decentralchain deps):
+    parse-json-bignumber, assets-pairs-order, browser-bus,
+    data-service-client-js, oracle-data, money-like-to-node,
+    cubensis-connect-types, crypto, swap-client
 
   Applications (consume SDK packages):
-  ┌──────────────┐  ┌──────────┐  ┌──────────────────┐
-  │   explorer   │  │ exchange │  │ cubensis-connect  │
-  └──────────────┘  └──────────┘  └──────────────────┘
+    cubensis-connect, exchange, scanner
 ```
 
 ---
@@ -269,13 +276,12 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 
 | Package | Used By | Risk | Status |
 |---------|---------|------|--------|
-| `@keeper-wallet/waves-crypto` ^3.0.0 | cubensis-connect (21 files) | **HIGH** — core crypto for wallet | P1: Fork → `@decentralchain/wallet-crypto` |
 | `@waves/ride-lang` 1.6.1 | ride-js | **LOW** — chain-agnostic Scala.js compiler | No action needed |
 | `@waves/ride-repl` 1.6.1 | ride-js | **LOW** — chain-agnostic Scala.js REPL | No action needed |
 
 **Resolved upstream dependencies:**
 - ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69)
-- ~~`@keeper-wallet/waves-crypto`~~ → Partially resolved: `@decentralchain/crypto@1.0.0` covers SDK packages. Cubensis-connect still uses `@keeper-wallet/waves-crypto` directly (different API surface — see [§9](#9-crypto-library-architecture)).
+- ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 21 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
 
 ---
 
@@ -285,7 +291,7 @@ The ecosystem uses **two** cryptographic libraries — this is intentional, not 
 
 | Library | Paradigm | Used By | Purpose |
 |---------|----------|---------|---------|
-| `@decentralchain/ts-lib-crypto` | **Sync**, pure JS (`@noble/curves`) | 6 SDK packages | General-purpose SDK crypto |
+| `@decentralchain/ts-lib-crypto` | **Sync**, pure JS (`@noble/curves`) | 4 SDK packages + exchange app | General-purpose SDK crypto |
 | `@decentralchain/crypto` | **Async**, Rust/WASM + WebCrypto | cubensis-connect | Browser wallet crypto (hardware-accelerated AES) |
 
 ### Why Both Exist
@@ -453,6 +459,13 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `@waves/assets-pairs-order` | `@decentralchain/assets-pairs-order` |
 | `@waves/protobuf-serialization` | `@decentralchain/protobuf-serialization` |
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
+| `@waves/ride-js` | `@decentralchain/ride-js` |
+| `@keeper-wallet/waves-crypto` | `@decentralchain/crypto` |
+| `@keeper-wallet/swap-client` | `@decentralchain/swap-client` |
+| `@keeper-wallet/waveskeeper-types` | `@decentralchain/cubensis-connect-types` |
+| `@keeper-wallet/provider-keeper` | `@decentralchain/cubensis-connect-provider` |
+| Keeper-Wallet-Extension | `cubensis-connect` (app) |
+| WavesExplorerLite | `scanner` (app) |
 
 ---
 
@@ -518,8 +531,6 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 | Waves Ducks | `wavesducks.com/api/v1/` | Duck NFT images & metadata | May not serve DCC NFT data |
 | Puzzle Market | `puzzlemarket.org` | Puzzle NFT metadata | Independent project |
 | SignArt | `mainnet.sign-art.app` | Art NFT metadata & IPFS images | Uses Infura IPFS gateway |
-| Keeper Wallet web app | `web.keeper-wallet.app` | **Still in whitelist** | ⚠️ Waves-controlled domain |
-| Keeper Wallet swap | `swap.keeper-wallet.app` | **Still in whitelist** | ⚠️ Waves-controlled domain |
 
 ### Cognito User Pool Details
 
@@ -536,19 +547,26 @@ The email-login identity system uses AWS Cognito. These pool IDs need ownership 
 
 ## 16. Supply-Chain Dependency Chain
 
-The critical path from unforked upstream packages through DCC consumers. An issue in any upstream package affects all downstream:
+The dependency chains through DCC packages. Crypto and swap-client are fully forked. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). Only `@waves/ride-lang` + `@waves/ride-repl` remain unforked (low risk — chain-agnostic).
 
 ```
-@keeper-wallet/waves-crypto  ← NOT FORKED (crypto foundation)
-  └── cubensis-connect (21 import sites)
-  └── @decentralchain/ts-lib-crypto
-        └── @decentralchain/transactions
-              └── @decentralchain/signature-adapter
-                    └── @decentralchain/signer
-              └── @decentralchain/node-api-js
-        └── @decentralchain/marshall
-              └── @decentralchain/protobuf-serialization (proto namespace: waves)
-        └── @decentralchain/ledger
+@decentralchain/crypto  ← FORKED (DCC-70) ✅  [was @keeper-wallet/waves-crypto]
+  └── cubensis-connect (21 import sites migrated — DCC-59) ✅
+
+@decentralchain/ts-lib-crypto  (independent — uses @noble/curves, NOT @decentralchain/crypto)
+  └── @decentralchain/transactions
+        └── @decentralchain/signature-adapter
+              └── @decentralchain/signer
+        └── @decentralchain/node-api-js
+  └── @decentralchain/signer
+  └── @decentralchain/ride-js
+  └── @decentralchain/node-api-js
+
+@decentralchain/marshall
+  └── @decentralchain/transactions
+        └── (see above)
+  └── @decentralchain/protobuf-serialization (proto namespace: waves)
+  └── @decentralchain/cubensis-connect-provider
 
 @decentralchain/swap-client  ← FORKED (DCC-69) ✅
   └── cubensis-connect (swap feature only)
@@ -561,7 +579,7 @@ The critical path from unforked upstream packages through DCC consumers. An issu
 
 ## 17. Crypto Function Name Mapping
 
-Reference for the future `@keeper-wallet/waves-crypto` → `@decentralchain/wallet-crypto` fork. Names look similar but **APIs are NOT drop-in compatible** — different signatures and return types.
+Reference mapping between the upstream `@keeper-wallet/waves-crypto` and the forked `@decentralchain/crypto`. Names look similar but **APIs are NOT drop-in compatible** — different signatures and return types.
 
 | waves-crypto function | ts-lib-crypto equivalent | Compatible? |
 |---|---|---|
@@ -597,9 +615,12 @@ Actionable items where Waves references remain and should be cleaned up:
 | Reference | File | Action |
 |-----------|------|--------|
 | `waves-community` repo name in URL | `controllers/assetInfo.ts:34` | Rename GitHub repo → `dcc-community` |
-| `support.waves.exchange` in error message | `importEmail/signInForm.tsx:99` | Check DCC Cognito backend error strings |
-| `web.keeper-wallet.app` in whitelist | `constants.ts:52` | Remove if DCC doesn't use Keeper web app |
-| `swap.keeper-wallet.app` in whitelist | `constants.ts:53` | Remove if DCC doesn't use Keeper swap |
+
+### Resolved Branding Items
+
+- ~~`support.waves.exchange` in error message~~ → Cleaned up
+- ~~`web.keeper-wallet.app` in whitelist~~ → Removed
+- ~~`swap.keeper-wallet.app` in whitelist~~ → Removed
 
 ### UX Regressions vs Upstream
 
@@ -609,6 +630,84 @@ Actionable items where Waves references remain and should be cleaned up:
 | `.waves` address resolution | Cannot type domain names | Medium — needs API | Medium |
 | Sentry error reporting | No runtime error visibility | Low (create Sentry project, set DSN) | **High** |
 | Extension store listings | Users must side-load | Medium (store review process) | **High** |
+
+---
+
+## 19. Upstream Sync Tracking
+
+> **Purpose**: Map every monorepo package to its Waves upstream repo and track the last shared commit. Updated manually whenever upstream changes are pulled in.
+>
+> **Why manual?** DCC was cloned from Waves without GitHub's fork mechanism. The repos share commit history, so `git log` and `git diff` work across both trees — but syncing is a manual review-and-port process, not an automated merge.
+
+### Monorepo → Upstream Map
+
+Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is the last Waves commit we've incorporated. **DCC Commit** is where that sync lives in our monorepo history.
+
+| # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
+|---|--------------|---------------|----------------|------------|------|----------|
+| 1 | `packages/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `fc15f0c` | `309a179` | 2026-03-02 | 🟢 Active |
+| 2 | `packages/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
+| 3 | `packages/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `96273e7` | `3c6bd7c` | 2026-03-02 | 🟢 Active |
+| 4 | `packages/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
+| 5 | `packages/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
+| 6 | `packages/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `e7cf7fb` | `c6ca904` | 2025-12-18 | 🟡 Moderate |
+| 7 | `packages/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
+| 8 | `packages/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
+| 9 | `packages/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
+| 10 | `packages/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `f992dc9` | `0567bba` | 2024-02-06 | 🟡 Moderate |
+| 11 | `packages/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `df16cb3` | `5a5152c` | 2024-02-06 | 🟡 Moderate |
+| 12 | `packages/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
+| 13 | `packages/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
+| 14 | `packages/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
+| 15 | `packages/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
+| 16 | `packages/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
+| 17 | `packages/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
+| 18 | `packages/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `dafe635` | `b98a091` | 2026-03-02 | 🟢 Active |
+| 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` | `a46ae18` | 2025-05-28 | 🟢 Active |
+| 20 | `packages/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
+| 21 | `packages/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
+| 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `daaf628` | `b473e02` | 2025-10-24 | 🟡 Moderate |
+| 23 | `packages/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
+| 24 | `packages/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
+
+**Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
+
+### How to Check for New Upstream Changes
+
+```bash
+# Clone an upstream repo (first time only)
+git clone https://github.com/wavesplatform/<repo>.git Waves/<repo>
+
+# Pull latest
+cd Waves/<repo> && git pull
+
+# See what's new since last sync (use commit from table above)
+git log --oneline <last-synced-commit>..HEAD
+git diff <last-synced-commit>..HEAD -- src/
+```
+
+### How to Port a Change
+
+1. Review `git log <last-synced>..HEAD` in the upstream clone
+2. Skip tooling changes (ESLint/Prettier/Jest/tsup), dependency bumps (Renovate), and CJS additions — none apply to our stack
+3. Manually apply relevant bugfixes or features to the monorepo package
+4. Adapt to DCC conventions (Biome, strict TS, ESM imports)
+5. Run `nx run @decentralchain/<pkg> test`
+6. Commit: `fix(DCC-###): port upstream <short-hash> — <description>`
+7. Update this table: set **Upstream Commit** to the new Waves hash, **DCC Commit** to your monorepo commit, and the **Date**
+
+### Priority Watch List
+
+| Upstream Repo | Why | Check |
+|--------------|-----|-------|
+| ts-types | Foundation types — affects entire SDK | Weekly |
+| ts-lib-crypto | Crypto primitives — security-critical | Weekly |
+| ride-js | RIDE compiler = new language features | Weekly |
+| signer | Signing flow changes | Bi-weekly |
+| protobuf-schemas | Wire format = protocol updates | Bi-weekly |
+| Keeper-Wallet-Extension | Wallet features we may want | Monthly |
+| waves-transactions | New transaction type support | Monthly |
+| node-api-js | New API endpoints | Monthly |
 
 ---
 
