@@ -14,7 +14,9 @@
 4. [TypeScript Strictness Matrix](#4-typescript-strictness-matrix)
 5. [Per-Package Status](#5-per-package-status)
 6. [npm Distribution](#6-npm-distribution)
-7. [Remediation Priority Matrix](#7-remediation-priority-matrix)
+7. [Cross-Repo Dependency Chain Risks](#7-cross-repo-dependency-chain-risks)
+8. [Common Migration Recipe](#8-common-migration-recipe)
+9. [Remediation Priority Matrix](#9-remediation-priority-matrix)
 
 ---
 
@@ -70,6 +72,8 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
 
 ### Standard Toolchain (22 SDK packages)
 
+> **Why this stack?** See [ARCHITECTURE.md — Toolchain](ARCHITECTURE.md#toolchain) for the detailed rationale behind each tool choice. The short version: every tool was chosen to maximize correctness guarantees for financial infrastructure while minimizing configuration surface area. One linter+formatter (Biome), one bundler (tsdown), one test runner (Vitest), one package manager (pnpm) — no choice paralysis, no integration bugs.
+
 | Tool | Version | Purpose |
 |------|---------|---------|
 | TypeScript | 5.9.x | Type safety (tsdown handles emit) |
@@ -90,6 +94,8 @@ git commit → lefthook pre-commit →
 ```
 
 ### Deviations
+
+> Each deviation is documented with its reason — these are **intentional exceptions**, not technical debt. Removing them would either break functionality (ride-js Scala.js interop), lose browser compatibility (exchange ES2020), or require upstream changes to third-party code generators (protobuf-serialization).
 
 | Package | Deviation | Reason |
 |---------|-----------|--------|
@@ -214,7 +220,94 @@ ride-js (manual workflow_dispatch), explorer, exchange (private apps), cubensis-
 
 ---
 
-## 7. Remediation Priority Matrix
+## 7. Cross-Repo Dependency Chain Risks
+
+> These are cascading risks where a problem in one upstream dependency affects multiple DCC packages. Understanding these chains is critical for incident response and prioritizing remediation.
+
+### `@keeper-wallet/waves-crypto` Supply Chain
+
+This is the **highest-risk dependency chain** in the ecosystem. A single npm package controlled by the Waves/Keeper Wallet team flows through cubensis-connect into every DCC wallet operation:
+
+```
+@keeper-wallet/waves-crypto (Waves-controlled npm package)
+  └─ cubensis-connect (21 direct imports)
+       ├─ Used for: seed encryption, key derivation, address generation
+       ├─ Used for: transaction signing, message signing
+       └─ Used for: auth token generation
+```
+
+**Risk**: If the `@keeper-wallet/waves-crypto` npm package is unpublished, compromised, or updated with breaking changes, cubensis-connect loses all crypto functionality. The package owner could theoretically push a malicious update that exfiltrates seeds.
+
+**Mitigation**: Fork to `@decentralchain/wallet-crypto` (see Remediation Matrix, P1). The DCC `ts-lib-crypto` package already contains equivalent functionality — the fork is primarily a re-export wrapper to maintain import compatibility. See [UPSTREAM.md §17](UPSTREAM.md#17-crypto-function-name-mapping) for the function name mapping.
+
+### `@waves/ride-lang` + `@waves/ride-repl` Chain
+
+```
+@waves/ride-lang (Waves npm package — Scala.js compiled)
+@waves/ride-repl (Waves npm package — Scala.js compiled)
+  └─ ride-js (DCC wrapper)
+       └─ No downstream DCC consumers (isolated)
+```
+
+**Risk**: LOW. These are language compiler packages, not security-sensitive. They are chain-agnostic (RIDE compiles the same regardless of chain ID). If unpublished, ride-js stops working but no funds are at risk. No viable fork exists — the Scala.js source is in the Waves monorepo.
+
+### AWS Cognito Pool Chain
+
+```
+AWS Cognito (eu-central-1_AXIpDLJQx, eu-central-1_6Bo3FEwt5)
+  └─ cubensis-connect (seed backup/restore)
+       └─ User wallet seeds (if opted-in to cloud backup)
+```
+
+**Risk**: P0 — CRITICAL. If these pools are owned by Waves (not DCC), the pool owner can access encrypted seed data. Even if seeds are encrypted client-side, the pool owner controls the authentication flow and could deploy a phishing Cognito hosted UI.
+
+**Mitigation**: Verify ownership (see Remediation Matrix, P0). If Waves-owned, migrate to DCC-owned Cognito pools or remove cloud backup entirely.
+
+---
+
+## 8. Common Migration Recipe
+
+> Every package in this monorepo followed the same 4-phase migration pattern. This recipe is documented here for historical reference and as a template for any future forks.
+
+### Phase 1 — Rebrand
+
+1. Fork repository, update `package.json`: name to `@decentralchain/*`, author, repository, homepage
+2. Replace Waves branding in README, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT
+3. Replace Waves network URLs with DCC equivalents
+4. Add governance docs (LICENSE, CHANGELOG, SECURITY.md)
+5. Run `grep -rn 'waves\|Waves\|WAVES' src/` — fix all except wire-format constants
+
+### Phase 2 — Bulletproof
+
+1. Replace Jest with Vitest (`vitest.config.ts`, update test imports)
+2. Enable `strict: true` in `tsconfig.json`, fix all type errors
+3. Add Biome (`biome.json` extending root), remove ESLint/Prettier configs
+4. Add Lefthook (`lefthook.yml`) for commit-time enforcement
+5. Run `biome check --write .` — auto-fix formatting and lint issues
+6. Run `tsc --noEmit` — fix all type errors
+7. Run `vitest run --coverage` — verify thresholds met
+
+### Phase 3 — Modernize
+
+1. Replace tsup/tsc/webpack/rollup with tsdown (`tsdown.config.ts`)
+2. Configure ESM-only output (`"type": "module"` in package.json)
+3. Set up `exports` field with proper `types` + `import` conditions
+4. Add `publint`, `attw`, `size-limit` validation scripts
+5. Enable `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
+6. Run `knip` — remove dead exports, unused deps, orphaned files
+7. Add `verbatimModuleSyntax` where feasible
+
+### Phase 4 — Audit
+
+1. Follow the [Security Audit Playbook](SECURITY-AUDIT.md) (Phases A–F)
+2. Run grep audit for dangerous patterns (`eval`, `Math.random`, `http://`, etc.)
+3. Verify all tests run offline (no network calls)
+4. Document any remaining deviations in this STATUS.md
+5. Mark package as ✅ in per-package status table
+
+---
+
+## 9. Remediation Priority Matrix
 
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|
