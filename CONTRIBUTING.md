@@ -14,8 +14,8 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 ## Setup
 
 ```bash
-git clone https://github.com/Decentral-America/decentralchain-sdk.git
-cd decentralchain-sdk
+git clone https://github.com/Decentral-America/DecentralChain.git
+cd DecentralChain
 pnpm install
 ```
 

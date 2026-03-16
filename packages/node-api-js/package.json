@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@decentralchain/bignumber": "workspace:*",
@@ -84,7 +84,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/node-api-js",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/node-api-js",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -110,7 +110,7 @@
   "repository": {
     "directory": "packages/node-api-js",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",
