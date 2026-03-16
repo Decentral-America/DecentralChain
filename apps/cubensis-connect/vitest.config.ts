@@ -6,8 +6,15 @@ export default mergeConfig(
   defineConfig({
     test: {
       bail: 1,
-      exclude: ['test/helpers/**', 'test/utils/**', 'test/fixtures/**', 'test/Update.ts'],
+      exclude: [
+        'test/helpers/**',
+        'test/utils/**',
+        'test/fixtures/**',
+        'test/Update.ts',
+        'test/globals.d.ts',
+      ],
       fileParallelism: false,
+      globals: true,
       hookTimeout: 300_000,
       include: ['test/**/*.ts'],
       sequence: { concurrent: false },

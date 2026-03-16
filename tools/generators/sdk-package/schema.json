@@ -1,25 +1,25 @@
 {
   "$schema": "https://json-schema.org/schema",
   "id": "sdk-package",
-  "title": "DecentralChain SDK Package Generator",
-  "type": "object",
   "properties": {
-    "name": {
-      "type": "string",
-      "description": "Package name (without @decentralchain/ prefix)",
-      "x-prompt": "What is the package name? (e.g. 'my-utils')"
-    },
     "description": {
-      "type": "string",
       "description": "One-line npm description",
+      "type": "string",
       "x-prompt": "Provide a short description for the package"
     },
     "layer": {
-      "type": "number",
-      "description": "Dependency layer (0=Primitives, 1=Domain, 2=Services, 3=Integration, 4=Adapter)",
       "default": 0,
+      "description": "Dependency layer (0=Primitives, 1=Domain, 2=Services, 3=Integration, 4=Adapter)",
+      "type": "number",
       "x-prompt": "Which dependency layer? (0=Primitives, 1=Domain, 2=Services, 3=Integration, 4=Adapter)"
+    },
+    "name": {
+      "description": "Package name (without @decentralchain/ prefix)",
+      "type": "string",
+      "x-prompt": "What is the package name? (e.g. 'my-utils')"
     }
   },
-  "required": ["name", "description"]
+  "required": ["name", "description"],
+  "title": "DecentralChain SDK Package Generator",
+  "type": "object"
 }
