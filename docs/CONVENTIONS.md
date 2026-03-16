@@ -25,6 +25,8 @@
 
 ## 1. Quality Pipeline
 
+> **Why this aggressive pipeline?** This SDK handles real financial transactions — signing, serialization, and key derivation for a blockchain where bugs mean permanent, irreversible loss of funds. A format error in a serialized transaction can burn tokens. A type error in amount calculation can send the wrong value. The pipeline is designed so that **zero issues reach `main`** — every defect is caught at the earliest possible stage (commit-time, not CI-time, not production).
+
 ### Commit-Time Enforcement (Lefthook)
 
 ```yaml
@@ -46,7 +48,7 @@ pre-commit:
 lint:check → typecheck → test:coverage → build → publint → attw → size-limit
 ```
 
-Every step must pass with zero errors before the next runs.
+Every step must pass with zero errors before the next runs. The order is deliberate: lint and typecheck are the fastest and cheapest gates (seconds), so they fail first and fast. Testing runs next because there's no point building a package with failing tests. Build runs after tests pass, and package-quality tools (`publint`, `attw`, `size-limit`) validate the build output last.
 
 ### Script Standards
 
@@ -75,22 +77,26 @@ Every package.json must include these scripts:
 
 ### Tool Responsibility Matrix
 
-| Concern | Tool | Config File |
-|---------|------|-------------|
-| Formatting | Biome | `biome.json` |
-| Linting | Biome | `biome.json` |
-| Type checking | TypeScript | `tsconfig.json` |
-| Testing | Vitest | `vitest.config.ts` |
-| Building | tsdown | `tsdown.config.ts` |
-| Git hooks | Lefthook | `lefthook.yml` |
-| Package validation | publint + attw | — |
-| Bundle size | size-limit | `.size-limit.json` |
-| Dead code | knip | `knip.json` |
-| Dependency audit | pnpm audit | — |
+Each concern has **exactly one owner** — no overlap, no gaps. This prevents the "who checks formatting?" ambiguity that plagues setups where ESLint and Prettier fight over semicolons.
+
+| Concern | Tool | Config File | Why This Tool |
+|---------|------|-------------|---------------|
+| Formatting | Biome | `biome.json` | Single Rust binary replaces Prettier — 25-100× faster, zero config drift between lint and format |
+| Linting | Biome | `biome.json` | Same binary as formatting — one tool, one config, one pass. No ESLint plugin hell |
+| Type checking | TypeScript | `tsconfig.json` | Language-native type system with strict mode — no alternative exists at this level |
+| Testing | Vitest | `vitest.config.ts` | Native ESM support without Babel transforms; built-in V8 coverage; Jest-compatible API |
+| Building | tsdown | `tsdown.config.ts` | Rolldown-powered Rust bundler with `workspace: true` monorepo support; ESM-only output |
+| Git hooks | Lefthook | `lefthook.yml` | Go binary — no `node_modules/.hooks` fragility; parallel command execution; cross-platform |
+| Package validation | publint + attw | — | publint validates exports map; attw verifies TypeScript types resolve for consumers |
+| Bundle size | size-limit | `.size-limit.json` | Prevents accidental dependency bloat before publish |
+| Dead code | knip | `knip.json` | Detects unused exports, files, and deps that other tools miss |
+| Dependency audit | pnpm audit | — | Native pnpm feature — checks against GitHub Advisory Database |
 
 ---
 
 ## 2. Biome Configuration
+
+> **Why Biome over ESLint + Prettier?** ESLint + Prettier requires 5-15 npm packages (`eslint`, `prettier`, `eslint-config-*`, `eslint-plugin-*`, `eslint-plugin-prettier`, `eslint-config-prettier`), each with its own config and version matrix. Biome is a single Rust binary that formats and lints in one pass — 25-100× faster than the ESLint+Prettier combo. In a 25-package monorepo, this eliminates hundreds of ESLint plugin dependencies and prevents the common "Prettier formatted it, ESLint un-formatted it" feedback loop. Biome's rule set covers >90% of what ESLint + typescript-eslint provides for TypeScript projects.
 
 ### Root biome.json (Monorepo)
 
@@ -134,6 +140,8 @@ const result: any = externalSdk.call();
 ---
 
 ## 3. TypeScript Standards
+
+> **Why strict TypeScript in a financial SDK?** Every `any` type is a potential runtime crash that TypeScript could have caught at compile time. In financial infrastructure, a wrong type (`number` where `bigint` was needed, `string` where `Uint8Array` was expected) can produce silent data corruption — a mis-serialized transaction that burns funds. `strict: true` plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` close the three most common escape hatches that allow type holes into production code.
 
 ### Required Flags
 
@@ -192,6 +200,8 @@ All packages must enable `"strict": true`, which includes:
 
 ## 4. Testing Standards
 
+> **Why Vitest over Jest?** Jest requires Babel transforms to handle ESM and TypeScript — a complex, fragile toolchain. Vitest runs ESM natively (no transforms), has built-in V8 coverage (no `istanbul` instrumentation overhead), and shares the same config format as Vite. For a monorepo that's 100% ESM + TypeScript, Vitest eliminates an entire class of "works in source, fails in test" configuration bugs. Its Jest-compatible API means zero learning curve.
+
 ### Configuration
 
 ```typescript
@@ -220,7 +230,7 @@ export default defineConfig({
 ```
 
 ### Coverage Thresholds
-
+> **Why these specific thresholds?** Below 80%, too many code paths are untested to have confidence in refactoring. Above 95% (for non-crypto code), you're testing generated code and trivial re-exports with diminishing returns. The 90% established / 80% new / 95% crypto split reflects industry best practice for financial libraries: crypto and signing code demands near-total coverage because a single untested branch can produce invalid signatures; general utility code has lower risk per uncovered line.
 | Maturity | Lines | Branches | Functions |
 |----------|-------|----------|-----------|
 | Established (>1yr) | ≥90% | ≥85% | ≥90% |
@@ -247,6 +257,10 @@ export default defineConfig({
 ---
 
 ## 5. Build Pipeline
+
+> **Why ESM-only?** CommonJS is a Node.js-specific module system. ESM is the JavaScript language standard, supported by all modern runtimes (Node ≥16, Deno, Bun, browsers). Publishing ESM-only eliminates the dual-package hazard (CJS and ESM copies of the same module loaded simultaneously causing `instanceof` failures and doubled singletons). It enables proper tree-shaking (bundlers can statically analyze `import`/`export`), and reduces package size by ~40% vs dual CJS+ESM. Every consumer of this SDK already supports ESM — there is no CJS-only consumer to support.
+
+> **Why tsdown over tsup/tsc/rollup?** tsdown is Rolldown-powered (Rust) — 5-10× faster than tsup (which uses esbuild, Go). It supports `workspace: true` for monorepo builds, generates `.d.ts` files via TypeScript's own emit (accurate types, not heuristic-based), and produces clean ESM output without the wrapper noise that tsc emits. Unlike raw `tsc`, it bundles and tree-shakes, producing smaller output.
 
 ### tsdown Configuration (TypeScript packages)
 
@@ -316,6 +330,8 @@ After every build, verify with:
 
 ## 7. Source Code Requirements
 
+> **Why these specific bans?** Each banned pattern has caused real incidents in blockchain projects: `Math.random()` produced predictable "random" keys in a browser wallet (CVE-level); `eval()` enabled RCE through a crafted transaction memo; `http://` URLs allowed MITM of a signing request; `innerHTML` enabled XSS that redirected users to a phishing signer. These aren't theoretical — they're the OWASP Top 10 applied to blockchain SDK context.
+
 ### Mandatory for Every Source File
 
 - No `@waves` imports except documented wire-format constraints
@@ -342,6 +358,8 @@ All findings must be resolved except intentional semantic aliases (e.g., `isPubl
 ---
 
 ## 8. Dependency Policy
+
+> **Why so strict on dependencies?** Every npm dependency is an attack surface. The `event-stream` incident (2018) showed that a single compromised transitive dependency can steal cryptocurrency. For an SDK that handles private keys and transaction signing, each dependency is a potential supply-chain attack vector. Preferring native APIs reduces the attack surface to Node.js itself (which has a dedicated security team and CVE process). The 2-year-since-last-publish rule catches abandoned packages where known vulnerabilities will never be patched.
 
 ### Prefer
 
@@ -371,6 +389,8 @@ All findings must be resolved except intentional semantic aliases (e.g., `isPubl
 ---
 
 ## 9. Git & Commit Conventions
+
+> **Why Conventional Commits with Jira IDs?** Conventional Commit prefixes (`feat`, `fix`, `refactor`) enable automated changelog generation and semantic version bumping — Nx Release reads these to determine whether a change is a patch, minor, or major. The `DCC-###` Jira ID creates a traceable chain from business requirement → code change → released version, which is essential for audit compliance in financial software. Without this, a "why was this changed?" question requires git archaeology.
 
 ### Commit Format
 
