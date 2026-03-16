@@ -1,0 +1,45 @@
+{
+  "configurations": [
+    {
+      "args": ["run", "${relativeFile}", "--no-coverage"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "name": "Vitest: Current File",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "smartStep": true,
+      "type": "node"
+    },
+    {
+      "args": ["watch", "${relativeFile}", "--no-coverage"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "name": "Vitest: Current File (Watch)",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "smartStep": true,
+      "type": "node"
+    },
+    {
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/apps/exchange",
+      "name": "Exchange: Dev Server",
+      "request": "launch",
+      "runtimeArgs": ["vite", "--mode", "development"],
+      "runtimeExecutable": "npx",
+      "type": "node"
+    },
+    {
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/apps/scanner",
+      "name": "Scanner: Dev Server",
+      "request": "launch",
+      "runtimeArgs": ["vite", "--mode", "development"],
+      "runtimeExecutable": "npx",
+      "type": "node"
+    }
+  ],
+  "version": "0.2.0"
+}

@@ -1,18 +1,71 @@
 {
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+
+  // ─── Disable competing formatters / linters ─────────────────────────
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  // ─── Biome (sole formatter + linter) ────────────────────────────────
   "biome.lspBin": "node_modules/@biomejs/biome/bin/biome",
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",
+  "editor.detectIndentation": false,
   "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+
+  // ─── Editor ─────────────────────────────────────────────────────────
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+
+  // Collapse build artifacts under source files in the explorer
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.mjs, ${capture}.d.ts, ${capture}.d.mts, ${capture}.js.map, ${capture}.mjs.map",
+    "biome.json": "knip.json, lefthook.yml",
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, .node-version",
+    "README.md": "LICENSE, LICENSE.md, CHANGELOG.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md",
+    "tsconfig.json": "tsconfig.*.json"
+  },
+
+  // ─── Files ──────────────────────────────────────────────────────────
   "files.eol": "\n",
+  "files.exclude": {
+    "**/.nx": true,
+    "**/coverage": true,
+    "**/dist": true
+  },
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+
+  // ─── Nx Console ─────────────────────────────────────────────────────
+  "nxConsole.showNodeVersionOnStartup": false,
+
+  // ─── Search ─────────────────────────────────────────────────────────
   "search.exclude": {
     "**/.nx": true,
     "**/coverage": true,
     "**/dist": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/pnpm-lock.yaml": true
   },
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+
+  // ─── TypeScript ─────────────────────────────────────────────────────
   "typescript.tsdk": "node_modules/typescript/lib"
 }
