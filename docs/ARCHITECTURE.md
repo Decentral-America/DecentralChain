@@ -1,6 +1,6 @@
 # Monorepo Architecture
 
-> **Purpose**: Documents the architecture, design decisions, toolchain choices, and operational structure of the `decentralchain-sdk` monorepo. This is the technical reference for how the monorepo is built and why.
+> **Purpose**: Documents the architecture, design decisions, toolchain choices, and operational structure of the `DecentralChain` monorepo. This is the technical reference for how the monorepo is built and why.
 >
 > **Audience**: SDK contributors, DevOps engineers, AI agents interacting with the workspace.
 
@@ -12,23 +12,23 @@
 2. [Inclusion Rule](#2-inclusion-rule)
 3. [Directory Structure](#3-directory-structure)
 4. [Toolchain](#4-toolchain)
-5. [Package Tiers](#5-package-tiers)
-6. [Nx Configuration](#6-nx-configuration)
-7. [pnpm Workspace & Catalogs](#7-pnpm-workspace--catalogs)
-8. [TypeScript Project References](#8-typescript-project-references)
-9. [Biome Monorepo Config](#9-biome-monorepo-config)
-10. [Build Pipeline](#10-build-pipeline)
-11. [CI/CD Architecture](#11-cicd-architecture)
-12. [Publishing Strategy](#12-publishing-strategy)
-13. [Developer Workflow](#13-developer-workflow)
-14. [AI Integration](#14-ai-integration)
+5. [AI & Editor Integration](#5-ai--editor-integration)
+6. [Package Tiers](#6-package-tiers)
+7. [Nx Configuration](#7-nx-configuration)
+8. [pnpm Workspace & Catalogs](#8-pnpm-workspace--catalogs)
+9. [TypeScript Project References](#9-typescript-project-references)
+10. [Biome Monorepo Config](#10-biome-monorepo-config)
+11. [Build Pipeline](#11-build-pipeline)
+12. [CI/CD Architecture](#12-cicd-architecture)
+13. [Publishing Strategy](#13-publishing-strategy)
+14. [Developer Workflow](#14-developer-workflow)
 15. [Decision Log](#15-decision-log)
 
 ---
 
 ## 1. Overview
 
-The `decentralchain-sdk` monorepo consolidates all `@decentralchain/*` SDK libraries and TypeScript applications into a single repository managed by **Nx + pnpm**.
+The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries and TypeScript applications into a single repository managed by **Nx + pnpm**.
 
 ### Before (Polyrepo) → After (Monorepo)
 
@@ -71,7 +71,7 @@ The `decentralchain-sdk` monorepo consolidates all `@decentralchain/*` SDK libra
 ## 3. Directory Structure
 
 ```
-decentralchain-sdk/
+DecentralChain/
 ├── .github/
 │   ├── copilot-instructions.md     AI context for Copilot
 │   ├── skills/                     8 custom AI skills
@@ -131,7 +131,318 @@ decentralchain-sdk/
 
 ---
 
-## 5. Package Tiers
+## 5. AI & Editor Integration
+
+> **Why AI-first?** This monorepo was designed from day one with AI agents as first-class consumers of its metadata. Nx was chosen over Turborepo specifically because of its native MCP server — the only monorepo tool that exposes the project graph, task pipeline, and workspace structure to AI agents via a standard protocol. Every configuration file, skill, prompt, and VS Code setting documented here serves a dual purpose: human developer productivity *and* AI agent effectiveness. In a 25-project monorepo handling financial transactions, AI agents that understand the architecture produce safer, more consistent code than agents that only see individual files.
+
+### 5.1 — Design Philosophy
+
+Nx provides what Victor Savkin calls the "30,000-foot map" of the codebase. Raw file access is like navigating a city using only street view — you can see individual buildings but can't pick optimal routes. The Nx project graph, tags, task pipeline, and generator metadata give AI agents the architectural map they need to make informed decisions about where to place code, what a change impacts, and which patterns to follow.
+
+The integration operates at three abstraction levels:
+
+| Level | What AI Sees | How It's Provided |
+|-------|-------------|-------------------|
+| **30,000-ft** (architecture) | Project graph, dependency layers, team ownership, task pipeline | Nx MCP server (`nx_workspace`, `nx_project_details`, `nx_visualize_graph`) |
+| **1,000-ft** (conventions) | Coding standards, module boundaries, build/test patterns, domain context | `copilot-instructions.md`, `AGENTS.md`, `docs/*.md` |
+| **0-ft** (code) | Individual files, functions, types | VS Code editor context, file reads, semantic search |
+
+### 5.2 — Nx MCP Server
+
+The Nx Model Context Protocol server is the backbone of AI integration. Configured in `.vscode/mcp.json`, it starts automatically when any MCP-compatible client (Copilot, Cursor, Claude) connects:
+
+```jsonc
+// .vscode/mcp.json
+{
+  "servers": {
+    "nx": {
+      "command": "npx",
+      "args": ["nx", "mcp"],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+The MCP server exposes pre-computed metadata that would otherwise require parsing dozens of `package.json`, `tsconfig.json`, and `nx.json` files:
+
+| MCP Tool | What It Returns | Use Case |
+|----------|----------------|----------|
+| `nx_workspace` | All 25 projects with names, tags, types, relationships | "What projects exist? What depends on `ts-types`?" |
+| `nx_project_details` | Targets, config, dependencies, tags for one project | "What targets can I run for `transactions`?" |
+| `nx_visualize_graph` | Interactive dependency graph (opens in browser) | "Show me how packages are connected" |
+| `nx_generators` | All available generators (official + custom `sdk-package`) | "What generators can scaffold a new package?" |
+| `nx_generator_schema` | Full schema with all options for a specific generator | "What options does `sdk-package` accept?" |
+| `nx_docs` | Up-to-date Nx documentation search | "How do I configure task pipelines?" (prevents hallucination) |
+| `nx_workspace_path` | Absolute path to the workspace root | Runtime context for file operations |
+| `nx_available_plugins` | Installable Nx plugins from the registry | "What plugins exist for Vite/Vitest/etc?" |
+| `nx_current_running_tasks_details` | Currently executing tasks with status | "What's building right now?" |
+| `nx_current_running_task_output` | Stdout/stderr of a running task | "Show me the build output" |
+
+**Rule: Always prefer Nx MCP tools over manual file parsing.** An agent calling `nx_project_details` gets accurate, pre-computed data in one call. An agent reading `package.json` + `project.json` + `nx.json` manually may miss inferred targets, misinterpret `dependsOn`, or skip tags.
+
+### 5.3 — Context7 MCP Server
+
+A second MCP server provides on-demand access to up-to-date documentation for any npm library:
+
+```jsonc
+// .vscode/mcp.json
+{
+  "servers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+| Tool | Purpose |
+|------|---------|
+| `resolve-library-id` | Resolve a library name to its Context7 ID |
+| `query-docs` | Fetch current documentation and code examples for any library |
+
+This prevents AI agents from hallucinating outdated APIs for Nx, Vitest, Biome, tsdown, or any dependency in the workspace.
+
+### 5.4 — Chrome DevTools MCP Server
+
+A browser automation MCP server for front-end development and testing of the three apps (exchange, scanner, cubensis-connect):
+
+```jsonc
+// .vscode/mcp.json
+{
+  "servers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  }
+}
+```
+
+| Tool Category | Examples | Use Case |
+|---------------|----------|----------|
+| Navigation | `navigate_page`, `new_page`, `close_page`, `list_pages` | Open app URLs, manage tabs |
+| Interaction | `click`, `fill`, `hover`, `press_key`, `type_text`, `drag` | Automate UI interactions |
+| Inspection | `take_screenshot`, `take_snapshot`, `evaluate_script` | Visual debugging, DOM inspection |
+| Forms | `fill_form`, `upload_file`, `select_page` | Test form flows |
+| Network | `list_network_requests`, `get_network_request` | Debug API calls from the DEX/explorer |
+| Console | `list_console_messages`, `get_console_message` | Catch runtime errors |
+| Performance | `performance_start_trace`, `performance_stop_trace`, `lighthouse_audit` | Profile app performance |
+| Dialogs | `handle_dialog`, `wait_for` | Handle confirmations, modals |
+
+This is particularly useful for debugging the exchange app's trading interface and the scanner's block explorer UI — agents can take screenshots, inspect network requests to the DecentralChain node, and automate interaction flows.
+
+### 5.5 — GitHub MCP Server
+
+The GitHub Copilot MCP server provides direct access to GitHub's API for repository operations:
+
+```jsonc
+// .vscode/mcp.json
+{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    }
+  }
+}
+```
+
+| Tool Category | Examples | Use Case |
+|---------------|----------|----------|
+| Issues | `list_issues`, `issue_read`, `issue_write`, `add_issue_comment` | Manage issues, add comments |
+| Pull Requests | `list_pull_requests`, `create_pull_request`, `merge_pull_request` | PR workflow without leaving editor |
+| Code Search | `search_code`, `search_repositories`, `search_issues` | Find patterns across the org |
+| Files | `get_file_contents`, `create_or_update_file`, `push_files` | Read/write repo files via API |
+| Branches | `create_branch`, `list_branches`, `list_commits` | Branch management |
+| Releases | `list_releases`, `get_latest_release` | Track package releases |
+| Reviews | `pull_request_review_write`, `request_copilot_review` | Code review automation |
+
+This enables agents to create PRs, comment on issues, search code across the organization, and manage the full GitHub workflow without switching to the browser.
+
+### 5.6 — Agent Configuration Files
+
+Two files at the repository root define how AI agents should interact with the workspace:
+
+| File | Audience | Content |
+|------|----------|---------|
+| `.github/copilot-instructions.md` | GitHub Copilot (VS Code) | Full project context: architecture overview, layer system, tech stack, conventions, domain context (blockchain, transaction types, crypto primitives), documentation pointers, Nx MCP reference, prompt catalog, VS Code config summary |
+| `AGENTS.md` | All AI agents (Copilot, Claude, Cursor, etc.) | Compact rules: project structure, tech stack versions, 7 coding rules, key commands, Nx MCP tools, prompt table, skill catalog, VS Code config table |
+
+Both files reference the same source of truth (the `docs/` folder) and the same MCP tools, ensuring consistency regardless of which AI client reads them.
+
+### 5.7 — Custom AI Skills
+
+Eight domain-specific skills in `.github/skills/` teach AI agents how to perform complex monorepo workflows. Each skill is a Markdown file with YAML frontmatter that declares when to invoke it, followed by step-by-step instructions.
+
+| Skill | File | Trigger |
+|-------|------|---------|
+| **add-sdk-package** | `.github/skills/add-sdk-package/SKILL.md` | "create a new package", "scaffold a library" |
+| **link-workspace-packages** | `.github/skills/link-workspace-packages/SKILL.md` | "add a dependency", "cannot find module", "TS2307" |
+| **release-packages** | `.github/skills/release-packages/SKILL.md` | "publish", "release", "version" |
+| **validate-architecture** | `.github/skills/validate-architecture/SKILL.md` | "check boundaries", "validate", "audit quality" |
+| **monitor-ci** | `.github/skills/monitor-ci/SKILL.md` | "monitor ci", "watch ci", "check ci status" |
+| **nx-generate** | `.github/skills/nx-generate/SKILL.md` | "scaffold", "generate", "create a lib" |
+| **nx-run-tasks** | `.github/skills/nx-run-tasks/SKILL.md` | "build", "test", "lint", "run" |
+| **nx-workspace** | `.github/skills/nx-workspace/SKILL.md` | "what projects exist?", "how is X configured?" |
+
+Skills are composable — for example, `add-sdk-package` invokes the `sdk-package` generator (discovered via `nx_generators` MCP tool), then `link-workspace-packages` wires up dependencies with layer validation.
+
+### 5.8 — Custom Agents
+
+| Agent | File | Purpose |
+|-------|------|---------|
+| **ci-monitor-subagent** | `.github/agents/ci-monitor-subagent.agent.md` | Lightweight CI helper spawned by `/monitor-ci`. Executes one MCP tool call (fetch CI status, fetch fix details, apply/reject self-healing fix) and returns the result. Stateless by design. |
+
+The subagent pattern keeps the main conversation uncluttered — complex CI monitoring loops delegate individual MCP calls to the subagent.
+
+### 5.9 — Reusable Prompts (Slash Commands)
+
+Seven prompt files in `.github/prompts/` provide one-shot monorepo workflows accessible via `/prompt-name` in VS Code Copilot Chat:
+
+| Prompt | File | What It Does |
+|--------|------|--------------|
+| `/build-package` | `build-package.prompt.md` | Build a single package + deps via Nx, with post-build validation (publint, attw) |
+| `/test-affected` | `test-affected.prompt.md` | Run tests only on changed packages using `nx affected`, with coverage threshold reference |
+| `/add-dependency` | `add-dependency.prompt.md` | Add a `workspace:*` dep between packages with layer boundary validation and tsconfig reference update |
+| `/debug-build` | `debug-build.prompt.md` | Step-by-step diagnosis for build/typecheck/lint failures, including common causes and nuclear options |
+| `/validate-workspace` | `validate-workspace.prompt.md` | Full quality pipeline: boundaries → lint → typecheck → test → build |
+| `/explore-workspace` | `explore-workspace.prompt.md` | Understand project relationships via Nx graph and MCP tools |
+| `/monitor-ci` | `monitor-ci.prompt.md` | Monitor Nx Cloud CI pipeline with self-healing fix support |
+
+Prompts are designed to integrate seamlessly: `/build-package` references the same Nx commands as `.vscode/tasks.json`, `/add-dependency` references the same layer system as `scripts/check-boundaries.mjs`, and `/debug-build` references the same quality pipeline as `docs/CONVENTIONS.md`.
+
+### 5.10 — VS Code Workspace Configuration
+
+All VS Code configuration is committed to the repo so every team member gets identical, AI-optimized settings on `git pull`:
+
+#### Extensions (`.vscode/extensions.json`)
+
+| Extension | ID | Why |
+|-----------|----|-----|
+| **Biome** | `biomejs.biome` | Sole formatter + linter. Replaces ESLint + Prettier. |
+| **Nx Console** | `nrwl.angular-console` | Project graph visualization, task running UI, generator forms, **Nx MCP server host** |
+| **GitHub Copilot** | `github.copilot` | AI code completion with monorepo context via MCP |
+| **GitHub Copilot Chat** | `github.copilot-chat` | Agent mode, slash commands, prompt files, skills |
+| **Vitest Explorer** | `vitest.explorer` | Run/debug tests per-package from the sidebar |
+| **GitLens** | `eamodio.gitlens` | Git blame, history — critical for 25-package monorepo archaeology |
+
+Prettier and ESLint are explicitly listed in `unwantedRecommendations` to prevent conflicts with Biome.
+
+#### Editor Settings (`.vscode/settings.json`)
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| `editor.defaultFormatter` | `biomejs.biome` | Biome is the sole formatter — enforced per-language for TS, JS, JSON |
+| `editor.rulers` | `[100]` | Visual guide matching Biome's `lineWidth: 100` |
+| `editor.formatOnSave` | `true` | Auto-format on every save — no manual formatting ever |
+| `typescript.preferences.importModuleSpecifier` | `"non-relative"` | Generates `@decentralchain/*` imports instead of `../../packages/...` |
+| `typescript.preferences.preferTypeOnlyAutoImports` | `true` | Matches `verbatimModuleSyntax: true` requirement |
+| `explorer.fileNesting.enabled` | `true` | Collapses `.d.mts`, `.mjs`, `.map`, `CHANGELOG.md`, etc. under source files |
+| `files.exclude` | `.nx`, `dist`, `coverage` | Hides build artifacts from the explorer |
+| `search.exclude` | + `pnpm-lock.yaml` | Prevents lockfile noise in search results |
+
+#### Tasks (`.vscode/tasks.json`)
+
+Eight Nx tasks available via Command Palette (`Cmd+Shift+B` / `Ctrl+Shift+B`):
+
+| Task | Command | Shortcut Group |
+|------|---------|----------------|
+| Build Affected | `pnpm nx affected -t build` | build |
+| Build All | `pnpm nx run-many -t build` | build |
+| Test Affected | `pnpm nx affected -t test` | test |
+| Lint Affected | `pnpm nx affected -t biome-lint` | test |
+| Typecheck All | `pnpm nx run-many -t typecheck --exclude=...` | test |
+| Validate Boundaries | `node scripts/check-boundaries.mjs` | — |
+| Nx Graph | `pnpm nx graph` | — |
+| Format (Biome) | `pnpm biome check --write .` | — |
+
+#### Debug Configs (`.vscode/launch.json`)
+
+| Configuration | What It Does |
+|---------------|--------------|
+| Vitest: Current File | Debug the test file currently open in the editor |
+| Vitest: Current File (Watch) | Same but in watch mode for TDD |
+| Exchange: Dev Server | Launch the DEX app with Vite |
+| Scanner: Dev Server | Launch the block explorer with Vite |
+
+### 5.11 — How Everything Connects
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AI Agent (Copilot/Claude/Cursor)            │
+│                                                                     │
+│  reads:  copilot-instructions.md + AGENTS.md                       │
+│          → learns architecture, layers, conventions, domain        │
+│                                                                     │
+│  calls:  Nx MCP server (nx_workspace, nx_project_details, ...)     │
+│          → gets pre-computed project graph, tags, targets          │
+│                                                                     │
+│  calls:  Context7 MCP server (query-docs)                          │
+│          → gets up-to-date library documentation                   │
+│                                                                     │
+│  calls:  Chrome DevTools MCP (take_screenshot, evaluate_script)    │
+│          → automates browser testing for exchange/scanner apps     │
+│                                                                     │
+│  calls:  GitHub MCP (create_pull_request, search_code, ...)        │
+│          → manages issues, PRs, and code search from the editor   │
+│                                                                     │
+│  invokes: Skills (.github/skills/*)                                │
+│          → follows domain-specific multi-step workflows            │
+│                                                                     │
+│  uses:   Prompts (.github/prompts/*.prompt.md)                     │
+│          → executes common monorepo tasks via slash commands       │
+│                                                                     │
+│  spawns: Subagents (.github/agents/*)                              │
+│          → delegates CI monitoring to stateless helpers            │
+├─────────────────────────────────────────────────────────────────────┤
+│                        VS Code Editor                              │
+│                                                                     │
+│  settings.json → enforces same Biome rules, TS preferences         │
+│  extensions.json → installs Nx Console (MCP host), Biome, Copilot  │
+│  tasks.json → same Nx commands as prompts, accessible via Cmd+B    │
+│  launch.json → debug tests and dev servers                         │
+│  mcp.json → auto-starts 4 MCP servers on agent connect            │
+├─────────────────────────────────────────────────────────────────────┤
+│                        Monorepo Infrastructure                     │
+│                                                                     │
+│  nx.json → task pipeline, caching, affected detection              │
+│  biome.json → lint/format rules (shared via "extends": "//")       │
+│  tsconfig.base.json → strict TS, project references                │
+│  scripts/check-boundaries.mjs → layer enforcement (0–4)            │
+│  tools/nx-plugins/biome-inferred/ → auto-generates biome targets   │
+│  tools/generators/sdk-package/ → scaffolds new packages            │
+│  docs/*.md → deep context for agents and humans alike              │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Every layer references the others: prompts use the same Nx commands as tasks, skills invoke generators discovered via MCP, copilot-instructions point to the same docs that humans read, and the editor settings enforce the same rules as the CI pipeline.
+
+### 5.12 — File Inventory
+
+| File | Purpose | Consumers |
+|------|---------|-----------|
+| `.vscode/mcp.json` | MCP server configuration (Nx + Context7 + Chrome DevTools + GitHub) | VS Code, Copilot, Cursor |
+| `.vscode/settings.json` | Editor settings (Biome, TS, file nesting, rulers) | All team members |
+| `.vscode/extensions.json` | Required + unwanted extensions | All team members |
+| `.vscode/tasks.json` | 8 Nx tasks for Command Palette | All team members |
+| `.vscode/launch.json` | 4 debug configurations (Vitest + Vite) | All team members |
+| `.github/copilot-instructions.md` | Full project context for Copilot | GitHub Copilot |
+| `AGENTS.md` | Compact agent rules + skill catalog | All AI agents |
+| `.github/skills/*/SKILL.md` | 8 domain-specific workflow skills | AI agents |
+| `.github/agents/*.agent.md` | 1 subagent (CI monitor) | AI agents |
+| `.github/prompts/*.prompt.md` | 7 reusable slash-command prompts | VS Code Copilot Chat |
+| `docs/ARCHITECTURE.md` | This file — architecture reference | Humans + AI agents |
+| `docs/CONVENTIONS.md` | Coding standards, quality pipeline | Humans + AI agents |
+| `docs/STATUS.md` | Per-package health, remediation matrix | Humans + AI agents |
+| `docs/SECURITY-AUDIT.md` | 6-phase security audit playbook | Humans + AI agents |
+| `docs/UPSTREAM.md` | Waves provenance, wire-format constraints | Humans + AI agents |
+
+---
+
+## 6. Package Tiers
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -160,7 +471,7 @@ decentralchain-sdk/
 
 ---
 
-## 6. Nx Configuration
+## 7. Nx Configuration
 
 Nx operates in **package-based mode** — it infers targets from `package.json` scripts and orchestrates them with caching and dependency awareness.
 
@@ -191,7 +502,7 @@ bulletproof → dependsOn: [lint:fix, typecheck, test]
 
 ---
 
-## 7. pnpm Workspace & Catalogs
+## 8. pnpm Workspace & Catalogs
 
 ### Workspace Protocol
 
@@ -235,7 +546,7 @@ One place to update a shared dependency version → all packages get it.
 
 ---
 
-## 8. TypeScript Project References
+## 9. TypeScript Project References
 
 Each package's `tsconfig.json` extends the root `tsconfig.base.json` and declares `references` to its `@decentralchain/*` dependencies:
 
@@ -257,7 +568,7 @@ Benefits: incremental builds, editor performance, correct type isolation across 
 
 ---
 
-## 9. Biome Monorepo Config
+## 10. Biome Monorepo Config
 
 Biome v2 has native monorepo support via `"extends": "//"` syntax.
 
@@ -267,7 +578,7 @@ Biome v2 has native monorepo support via `"extends": "//"` syntax.
 
 ---
 
-## 10. Build Pipeline
+## 11. Build Pipeline
 
 ```
 pnpm install
@@ -281,7 +592,7 @@ Nx caches results in `.nx/cache/`. If inputs haven't changed, tasks replay from 
 
 ---
 
-## 11. CI/CD Architecture
+## 12. CI/CD Architecture
 
 ### Pull Request CI
 
@@ -299,7 +610,7 @@ On PRs, use `nx affected -t test` to only test packages whose source changed —
 
 ---
 
-## 12. Publishing Strategy
+## 13. Publishing Strategy
 
 ### Workspace Protocol Resolution
 
@@ -316,7 +627,7 @@ All packages publish with signed provenance:
 
 ---
 
-## 13. Developer Workflow
+## 14. Developer Workflow
 
 ```bash
 # Install everything
@@ -346,22 +657,6 @@ pnpm --filter @decentralchain/signer test
 
 ---
 
-## 14. AI Integration
-
-Nx provides a native MCP server (`nx mcp`) with 15+ tools for AI agents:
-
-| Tool | Purpose |
-|------|---------|
-| `nx_workspace` | Query workspace structure and project list |
-| `nx_project_details` | Get details for a specific project |
-| `nx_docs` | Search Nx documentation |
-| `nx_visualize_graph` | Render dependency graph |
-| `nx_generators` | Discover available code generators |
-| `nx_current_running_tasks_details` | Monitor running tasks |
-
-Custom AI skills in `.github/skills/` cover: `nx-generate`, `nx-run-tasks`, `nx-workspace`, `add-sdk-package`, `link-workspace-packages`, `release-packages`, `validate-architecture`, `monitor-ci`.
-
----
 
 ## 15. Decision Log
 
