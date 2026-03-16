@@ -61,6 +61,8 @@
   "scripts": {
     "build": "tsdown",
     "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
     "clean": "rm -rf dist coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -68,7 +70,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run lint && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
   },
   "sideEffects": false,
   "size-limit": [

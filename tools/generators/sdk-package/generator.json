@@ -1,9 +1,9 @@
 {
   "generators": {
     "sdk-package": {
+      "description": "Generate a new @decentralchain/* SDK package with all required configs",
       "factory": "./index",
-      "schema": "./schema.json",
-      "description": "Generate a new @decentralchain/* SDK package with all required configs"
+      "schema": "./schema.json"
     }
   }
 }
