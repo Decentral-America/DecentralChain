@@ -1,7 +1,7 @@
 {
   "tasks": [
     {
-      "command": "pnpm nx affected -t build",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx affected -t build",
       "group": "build",
       "label": "Build Affected",
       "presentation": { "panel": "shared", "reveal": "always" },
@@ -9,7 +9,7 @@
       "type": "shell"
     },
     {
-      "command": "pnpm nx run-many -t build",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx run-many -t build",
       "group": "build",
       "label": "Build All",
       "presentation": { "panel": "shared", "reveal": "always" },
@@ -17,7 +17,7 @@
       "type": "shell"
     },
     {
-      "command": "pnpm nx affected -t test",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx affected -t test",
       "group": "test",
       "label": "Test Affected",
       "presentation": { "panel": "shared", "reveal": "always" },
@@ -25,7 +25,7 @@
       "type": "shell"
     },
     {
-      "command": "pnpm nx affected -t biome-lint",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx affected -t biome-lint",
       "group": "test",
       "label": "Lint Affected",
       "presentation": { "panel": "shared", "reveal": "always" },
@@ -33,7 +33,7 @@
       "type": "shell"
     },
     {
-      "command": "pnpm nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner",
       "group": "test",
       "label": "Typecheck All",
       "presentation": { "panel": "shared", "reveal": "always" },
@@ -41,21 +41,21 @@
       "type": "shell"
     },
     {
-      "command": "node scripts/check-boundaries.mjs",
+      "command": "bash scripts/run-with-required-node.sh node scripts/check-boundaries.mjs",
       "label": "Validate Boundaries",
       "presentation": { "panel": "shared", "reveal": "always" },
       "problemMatcher": [],
       "type": "shell"
     },
     {
-      "command": "pnpm nx graph",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx graph",
       "label": "Nx Graph",
       "presentation": { "panel": "shared", "reveal": "always" },
       "problemMatcher": [],
       "type": "shell"
     },
     {
-      "command": "pnpm biome check --write .",
+      "command": "bash scripts/run-with-required-node.sh pnpm biome check --write .",
       "label": "Format (Biome)",
       "presentation": { "panel": "shared", "reveal": "always" },
       "problemMatcher": [],
