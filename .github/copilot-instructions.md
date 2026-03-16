@@ -104,3 +104,12 @@ Key abstractions across packages:
 - `Long` / `BigNumber` for blockchain precision arithmetic
 - `SignedTransaction<T>` / `TransactionFromNode<T>` for transaction lifecycle
 - `Seed` / `KeyPair` for cryptographic identity (curve25519 + blake2b/keccak)
+
+## Internal Documentation
+
+Refer to these docs for deep context:
+- **`docs/UPSTREAM.md`** — Waves provenance, ecosystem mapping, gap analysis, wire-format constraints
+- **`docs/ARCHITECTURE.md`** — Monorepo design, dependency tiers, Nx config, build pipeline, decision log
+- **`docs/STATUS.md`** — Per-package health, timeline, open issues, remediation priority matrix
+- **`docs/SECURITY-AUDIT.md`** — 6-phase security audit playbook with severity definitions and checklists
+- **`docs/CONVENTIONS.md`** — Coding standards, TypeScript strictness, testing standards, file templates, naming conventions
