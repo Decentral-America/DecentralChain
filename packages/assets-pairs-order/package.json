@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "bs58": "^6.0.0"
@@ -34,7 +34,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/assets-pairs-order",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/assets-pairs-order",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -71,7 +71,7 @@
   "repository": {
     "directory": "packages/assets-pairs-order",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

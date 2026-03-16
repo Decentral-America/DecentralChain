@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Decentral-America/decentralchain-sdk/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Decentral-America/decentralchain-sdk" alt="License" />
+  <a href="https://github.com/Decentral-America/DecentralChain/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Decentral-America/DecentralChain" alt="License" />
   </a>
   <img src="https://img.shields.io/badge/node-%3E%3D24-brightgreen" alt="Node >=24" />
   <img src="https://img.shields.io/badge/pnpm-10-orange" alt="pnpm 10" />

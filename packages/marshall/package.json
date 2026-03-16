@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "base64-js": "^1.3.0",
@@ -37,7 +37,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/marshall",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/marshall",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -69,7 +69,7 @@
   "repository": {
     "directory": "packages/marshall",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",
