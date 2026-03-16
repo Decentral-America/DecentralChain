@@ -20,7 +20,8 @@
   "packageManager": "pnpm@10.32.1",
   "pnpm": {
     "overrides": {
-      "typescript": "$typescript"
+      "typescript": "$typescript",
+      "yauzl": "^3.2.1"
     }
   },
   "private": true,
