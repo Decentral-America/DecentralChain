@@ -46,6 +46,50 @@ node scripts/check-boundaries.mjs   # Validate module boundary layers
 pnpm nx graph                       # Visualize dependency graph
 ```
 
+## AI & Editor Integration
+
+### Nx MCP Server
+
+The Nx MCP server (configured in `.vscode/mcp.json`) provides structured access to workspace metadata. **Always prefer Nx MCP tools over manual file parsing** for workspace structure, project relationships, and task configuration:
+
+- `nx_workspace` — full project list, tags, relationships
+- `nx_project_details` — targets, config, dependencies for one project
+- `nx_visualize_graph` — interactive dependency graph
+- `nx_generators` — available generators (including custom `sdk-package`)
+- `nx_docs` — up-to-date Nx documentation
+
+### Additional MCP Servers
+
+| Server | Purpose |
+|--------|---------|
+| **Context7** | Up-to-date library documentation for any npm dependency |
+| **Chrome DevTools** | Browser automation — screenshots, network inspection, interaction testing for exchange/scanner/cubensis-connect |
+| **GitHub** | GitHub API — issues, PRs, code search, reviews, branch management |
+
+### Reusable Prompts (`.github/prompts/`)
+
+| Prompt | Purpose |
+|--------|---------|
+| `build-package` | Build a specific package and its dependencies via Nx |
+| `test-affected` | Test only what changed using `nx affected` |
+| `add-dependency` | Add cross-package deps with automatic layer validation |
+| `debug-build` | Diagnose build/typecheck/lint failures |
+| `validate-workspace` | Run full quality pipeline (boundaries → lint → typecheck → test → build) |
+| `explore-workspace` | Understand project relationships and dependency graph |
+| `monitor-ci` | Monitor Nx Cloud CI pipeline with self-healing |
+
+### VS Code Workspace Config
+
+Shared team configuration (committed to repo):
+
+| File | Purpose |
+|------|---------|
+| `.vscode/settings.json` | Biome as sole formatter, TS SDK, monorepo file nesting |
+| `.vscode/extensions.json` | Required: Biome, Nx Console, Copilot, Vitest Explorer, GitLens |
+| `.vscode/tasks.json` | Build/test/lint/typecheck as Command Palette tasks |
+| `.vscode/launch.json` | Debug configs for Vitest tests and Vite dev servers |
+| `.vscode/mcp.json` | Nx MCP + Context7 + Chrome DevTools + GitHub |
+
 ---
 
 ## Available Skills
