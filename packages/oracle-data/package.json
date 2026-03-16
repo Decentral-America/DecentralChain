@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "description": "Official TypeScript SDK for parsing, encoding, validating, and diffing oracle data on the DecentralChain blockchain — provider identity, asset verification, and data transaction field utilities",
   "devDependencies": {
@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/oracle-data",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/oracle-data",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -62,7 +62,7 @@
   "repository": {
     "directory": "packages/oracle-data",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

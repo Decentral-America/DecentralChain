@@ -1,7 +1,7 @@
 {
   "author": "DecentralChain",
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.11.0",
@@ -42,7 +42,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/swap-client",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/swap-client",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -72,7 +72,7 @@
   "repository": {
     "directory": "packages/swap-client",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown",

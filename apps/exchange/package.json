@@ -1,6 +1,6 @@
 {
   "bugs": {
-    "url": "https://github.com/Decentral-America/decentralchain-sdk/issues"
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "build": {
     "appId": "com.decentralchain.exchange",
@@ -100,7 +100,7 @@
   "engines": {
     "node": ">=24"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/apps/exchange",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/apps/exchange",
   "main": "electron/main.js",
   "name": "exchange",
   "nx": {
@@ -113,7 +113,7 @@
   "repository": {
     "directory": "apps/exchange",
     "type": "git",
-    "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsc -b && vite build",
