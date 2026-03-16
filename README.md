@@ -54,6 +54,16 @@
 | `@decentralchain/scanner` | DecentralScan blockchain explorer |
 | `@decentralchain/cubensis-connect` | Wallet extension |
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/UPSTREAM.md](docs/UPSTREAM.md) | Waves provenance, ecosystem mapping, gap analysis, migration history |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Monorepo architecture, dependency tiers, toolchain, design decisions |
+| [docs/STATUS.md](docs/STATUS.md) | Per-package health, timeline, remediation tracking, npm distribution |
+| [docs/SECURITY-AUDIT.md](docs/SECURITY-AUDIT.md) | Security audit playbook for financial blockchain infrastructure |
+| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Coding standards, quality gates, file templates, naming conventions |
+
 ## Development
 
 ```bash
