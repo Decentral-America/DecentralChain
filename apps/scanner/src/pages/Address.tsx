@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { ArrowUpDown, Coins, FileText, Search, TrendingUp, Wallet } from 'lucide-react';
 import { type FormEvent, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,10 +30,16 @@ import {
   type TAssetDetails,
   type TAssetsBalance,
 } from '@/lib/api';
+import {
+  useActiveLeases,
+  useAddressAssets,
+  useAddressNFTs,
+} from '@/hooks/useAddress';
+import { useAddressTransactions } from '@/hooks/useTransactions';
 import { type Lease, type Transaction } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
-import AssetLogo from '../components/shared/AssetLogo'; // New import
+import AssetLogo from '../components/shared/AssetLogo';
 import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 
@@ -46,38 +51,40 @@ interface TxSortConfig {
   direction: SortDirection;
 }
 
+interface LoaderData {
+  address: string | null;
+  balances: TAssetsBalance | null;
+}
+
+export async function loader({ request }: { request: Request }): Promise<LoaderData> {
+  const addr = new URL(request.url).searchParams.get('addr');
+  if (!addr) return { address: null, balances: null };
+  const balances = await fetchAssetsBalance(addr).catch(() => null);
+  return { address: addr, balances };
+}
+
+export function meta({ data }: { data?: LoaderData }) {
+  if (!data?.address) return [{ title: 'Address — DecentralScan' }];
+  return [
+    { title: `${data.address.slice(0, 8)}… — DecentralScan` },
+    { name: 'description', content: `Address ${data.address} on DecentralChain` },
+  ];
+}
+
 export default function Address() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialAddress = urlParams.get('addr') || '';
+  const { address: serverAddress } = useLoaderData() as LoaderData;
+  const [searchParams] = useSearchParams();
+  const addressFromUrl = searchParams.get('addr') ?? serverAddress ?? '';
 
-  const [searchAddress, setSearchAddress] = useState(initialAddress);
-  const [address, setAddress] = useState(initialAddress);
+  const [searchAddress, setSearchAddress] = useState(addressFromUrl);
+  const [address, setAddress] = useState(addressFromUrl);
 
-  const { data: balances, isLoading: balancesLoading } = useQuery<TAssetsBalance>({
-    enabled: !!address,
-    queryFn: () => fetchAssetsBalance(address),
-    queryKey: ['balances', address],
-  });
-
-  const { data: transactions, isLoading: txLoading } = useQuery<Transaction[]>({
-    enabled: !!address,
-    queryFn: () => fetchAddressTransactions(address, 50),
-    queryKey: ['transactions', address],
-  });
-
-  const { data: nfts, isLoading: nftsLoading } = useQuery<TAssetDetails[]>({
-    enabled: !!address,
-    queryFn: () => fetchAddressNFTs(address, 100),
-    queryKey: ['nfts', address],
-  });
-
-  const { data: leases, isLoading: leasesLoading } = useQuery<Lease[]>({
-    enabled: !!address,
-    queryFn: () => fetchActiveLeases(address),
-    queryKey: ['leases', address],
-  });
+  const { data: balances, isLoading: balancesLoading } = useAddressAssets(address || null);
+  const { data: transactions, isLoading: txLoading } = useAddressTransactions(address || null, 50);
+  const { data: nfts, isLoading: nftsLoading } = useAddressNFTs(address || null, 100);
+  const { data: leases, isLoading: leasesLoading } = useActiveLeases(address || null);
 
   const [txSearchTerm, setTxSearchTerm] = useState('');
   const [txTypeFilter, setTxTypeFilter] = useState('all');
@@ -165,7 +172,7 @@ export default function Address() {
         <CardContent>
           <form onSubmit={handleSearch} className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder={t('enterAddress')}
@@ -186,10 +193,10 @@ export default function Address() {
         <>
           {/* Header */}
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('addressDetails')}</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-2">{t('addressDetails')}</h1>
             <div className="flex items-center gap-2 mt-4">
-              <Wallet className="w-5 h-5 text-gray-500" />
-              <code className="text-sm bg-gray-100 px-3 py-2 rounded">{address}</code>
+              <Wallet className="w-5 h-5 text-muted-foreground" />
+              <code className="text-sm bg-muted px-3 py-2 rounded">{address}</code>
               <CopyButton text={address} label={t('copyAddress')} />
             </div>
           </div>
@@ -235,7 +242,7 @@ export default function Address() {
                         <Link
                           key={balance.assetId}
                           to={createPageUrl('Asset', `?id=${balance.assetId}`)}
-                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <AssetLogo assetId={balance.assetId} size="sm" />
@@ -243,7 +250,7 @@ export default function Address() {
                               <p className="font-medium">
                                 {balance.issueTransaction?.name || t('unknownAsset')}
                               </p>
-                              <p className="text-xs text-gray-500 font-mono">
+                              <p className="text-xs text-muted-foreground font-mono">
                                 {truncate(balance.assetId, 12)}
                               </p>
                             </div>
@@ -255,7 +262,7 @@ export default function Address() {
                                 balance.issueTransaction?.decimals || 8,
                               )}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               {balance.balance?.toLocaleString()} {t('units')}
                             </p>
                           </div>
@@ -263,7 +270,7 @@ export default function Address() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center text-gray-500 py-8">{t('noBalancesFound')}</p>
+                    <p className="text-center text-muted-foreground py-8">{t('noBalancesFound')}</p>
                   )}
                 </CardContent>
               </Card>
@@ -277,7 +284,7 @@ export default function Address() {
                     <CardTitle>{t('recentTransactions')}</CardTitle>
                     <div className="flex gap-2 w-full md:w-auto">
                       <div className="relative flex-1 md:w-48">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                           placeholder={t('searchBySenderRecipient')}
                           className="pl-8"
@@ -365,7 +372,7 @@ export default function Address() {
                             <TableCell>
                               <Link
                                 to={createPageUrl('Transaction', `?id=${tx.id}`)}
-                                className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                                className="text-link hover:text-link-hover font-mono text-sm"
                               >
                                 {truncate(tx.id, 14)}
                               </Link>
@@ -373,7 +380,7 @@ export default function Address() {
                             <TableCell>
                               <Badge variant="secondary">{tx.type}</Badge>
                             </TableCell>
-                            <TableCell className="text-sm text-gray-600">
+                            <TableCell className="text-sm text-muted-foreground">
                               {fromUnix(tx.timestamp)}
                             </TableCell>
                             <TableCell className="text-right font-medium">
@@ -384,7 +391,7 @@ export default function Address() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <p className="text-center text-gray-500 py-8">
+                    <p className="text-center text-muted-foreground py-8">
                       {txSearchTerm || txTypeFilter !== 'all'
                         ? t('noTransactionsMatch')
                         : t('noTransactionsFound')}
@@ -423,14 +430,14 @@ export default function Address() {
                           <p className="text-sm font-medium truncate text-center">
                             {nft.name || t('unnamedNFT')}
                           </p>
-                          <p className="text-xs text-gray-500 font-mono truncate text-center">
+                          <p className="text-xs text-muted-foreground font-mono truncate text-center">
                             {truncate(nft.assetId, 8)}
                           </p>
                         </Link>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center text-gray-500 py-8">{t('noNFTsFound')}</p>
+                    <p className="text-center text-muted-foreground py-8">{t('noNFTsFound')}</p>
                   )}
                 </CardContent>
               </Card>
@@ -468,7 +475,7 @@ export default function Address() {
                             <TableCell>
                               <Link
                                 to={createPageUrl('Address', `?addr=${lease.recipient}`)}
-                                className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                                className="text-link hover:text-link-hover font-mono text-sm"
                               >
                                 {truncate(lease.recipient, 12)}
                               </Link>
@@ -477,7 +484,7 @@ export default function Address() {
                               {formatAmount(lease.amount)} DC
                             </TableCell>
                             <TableCell>
-                              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                              <Badge variant="secondary" className="bg-success/10 text-success">
                                 {t('active')}
                               </Badge>
                             </TableCell>
@@ -486,7 +493,7 @@ export default function Address() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <p className="text-center text-gray-500 py-8">{t('noActiveLeases')}</p>
+                    <p className="text-center text-muted-foreground py-8">{t('noActiveLeases')}</p>
                   )}
                 </CardContent>
               </Card>

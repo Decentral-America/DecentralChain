@@ -296,3 +296,59 @@ export async function fetchPairInfo(
   }
   return (await response.json()) as PairInfoResponse;
 }
+
+// ── Geo Enrichment (ipinfo.io) ─────────────────────────────────────────
+// ipinfo.io — industry-standard IP geolocation (50K lookups/month free).
+// Proxied through /api/geo/* in dev (Vite) and prod (nginx) for
+// consistent behavior and to centralize rate-limit budget.
+
+export interface GeoData {
+  country: string;
+  countryCode: string;
+  city: string;
+  region: string;
+  org: string;
+  timezone: string;
+}
+
+export interface GreenHostData {
+  green: boolean;
+  hostedBy: string | null;
+}
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+export async function fetchGeoForIp(ip: string, signal?: AbortSignal): Promise<GeoData> {
+  const response = await fetch(`/api/geo/${ip}/json`, { signal });
+  if (response.status === 429) throw new Error('RATE_LIMITED');
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const data = (await response.json()) as {
+    country?: string;
+    city?: string;
+    region?: string;
+    org?: string;
+    timezone?: string;
+  };
+  const code = data.country || '';
+  return {
+    city: data.city || '',
+    country: (code && regionNames.of(code)) || code || 'Unknown',
+    countryCode: code,
+    org: data.org || '',
+    region: data.region || '',
+    timezone: data.timezone || '',
+  };
+}
+
+export async function fetchGreenCheck(ip: string, signal?: AbortSignal): Promise<GreenHostData> {
+  const response = await fetch(`/api/greencheck/${ip}`, { signal });
+  if (!response.ok) return { green: false, hostedBy: null };
+  const data = (await response.json()) as {
+    green?: boolean;
+    hosted_by?: string;
+  };
+  return {
+    green: data.green || false,
+    hostedBy: data.hosted_by || null,
+  };
+}

@@ -34,7 +34,7 @@ export default function Node() {
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-sm text-gray-500 mb-2">{title}</p>
+            <p className="text-sm text-muted-foreground mb-2">{title}</p>
             {statusLoading || versionLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
@@ -42,8 +42,8 @@ export default function Node() {
             )}
             {badge && <Badge className="mt-2">{badge}</Badge>}
           </div>
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Icon className="w-6 h-6 text-blue-600" />
+          <div className="p-3 bg-info/10 rounded-xl">
+            <Icon className="w-6 h-6 text-info" />
           </div>
         </div>
       </CardContent>
@@ -53,8 +53,8 @@ export default function Node() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('nodeInformationTitle')}</h1>
-        <p className="text-gray-600">{t('viewNodeStatus')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('nodeInformationTitle')}</h1>
+        <p className="text-muted-foreground">{t('viewNodeStatus')}</p>
       </div>
 
       {/* Quick Stats */}
@@ -101,19 +101,19 @@ export default function Node() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-gray-500 mb-2">{t('blockchainHeight')}</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('blockchainHeight')}</p>
                 <p className="font-semibold text-lg">
                   {status?.blockchainHeight?.toLocaleString() || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-2">{t('stateHeight')}</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('stateHeight')}</p>
                 <p className="font-semibold text-lg">
                   {status?.stateHeight?.toLocaleString() || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-2">{t('updatedTimestamp')}</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('updatedTimestamp')}</p>
                 <p className="font-semibold">
                   {status?.updatedTimestamp
                     ? new Date(status.updatedTimestamp).toLocaleString()
@@ -121,7 +121,7 @@ export default function Node() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-2">{t('updatedDate')}</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('updatedDate')}</p>
                 <p className="font-semibold">
                   {status?.updatedDate ? new Date(status.updatedDate).toLocaleString() : 'N/A'}
                 </p>
@@ -140,7 +140,7 @@ export default function Node() {
           {statusLoading ? (
             <Skeleton className="h-96 w-full" />
           ) : (
-            <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-xs">
+            <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs">
               {JSON.stringify({ status, version }, null, 2)}
             </pre>
           )}

@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, BarChart3, Coins, Search, TrendingUp, Users } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import {
   Bar,
   BarChart,
@@ -28,6 +27,7 @@ import {
   type IBlockHeader,
   type TAssetDetails,
 } from '@/lib/api';
+import { useAssetDetails } from '@/hooks/useAssets';
 import { type TokenAssetStat } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -47,24 +47,37 @@ const COLORS = [
   '#14b8a6',
 ];
 
+interface LoaderData {
+  asset: TAssetDetails | null;
+}
+
+export async function loader({ request }: { request: Request }): Promise<LoaderData> {
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id) return { asset: null };
+  const asset = await fetchAssetDetailsById(id).catch(() => null);
+  return { asset };
+}
+
+export function meta({ data }: { data?: LoaderData }) {
+  if (!data?.asset) return [{ title: 'Asset — DecentralScan' }];
+  return [
+    { title: `${data.asset.name ?? data.asset.assetId.slice(0, 8)} — DecentralScan` },
+    { name: 'description', content: `Asset ${data.asset.assetId} on DecentralChain` },
+  ];
+}
+
 export default function Asset() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialAssetId = urlParams.get('id') || '';
+  const { asset: serverAsset } = useLoaderData() as LoaderData;
+  const [searchParams] = useSearchParams();
+  const assetIdFromUrl = searchParams.get('id') ?? '';
 
-  const [searchAssetId, setSearchAssetId] = useState(initialAssetId);
-  const [assetId, setAssetId] = useState(initialAssetId);
+  const [searchAssetId, setSearchAssetId] = useState(assetIdFromUrl);
+  const [assetId, setAssetId] = useState(assetIdFromUrl);
 
-  const {
-    data: asset,
-    isLoading,
-    error,
-  } = useQuery({
-    enabled: !!assetId,
-    queryFn: () => fetchAssetDetailsById(assetId),
-    queryKey: ['asset', assetId],
-  });
+  const { data: asset, isLoading, error } = useAssetDetails(assetId || null);
+  const displayAsset = asset ?? serverAsset ?? null;
 
   const handleSearch = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -87,7 +100,7 @@ export default function Asset() {
         <CardContent>
           <form onSubmit={handleSearch} className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder={t('enterAssetId')}
@@ -110,10 +123,12 @@ export default function Asset() {
       {assetId && (
         <>
           <div className="flex items-start gap-4">
-            {asset && <AssetLogo assetId={asset.assetId} size="xl" />}
+            {displayAsset && <AssetLogo assetId={displayAsset.assetId} size="xl" />}
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('assetDetails')}</h1>
-              {asset && <p className="text-gray-600 mt-1">{asset.name || t('unnamedAsset')}</p>}
+              <h1 className="text-4xl font-bold text-foreground mb-2">{t('assetDetails')}</h1>
+              {displayAsset && (
+                <p className="text-muted-foreground mt-1">{displayAsset.name || t('unnamedAsset')}</p>
+              )}
             </div>
           </div>
 
@@ -124,7 +139,7 @@ export default function Asset() {
             </Alert>
           )}
 
-          {isLoading ? (
+          {isLoading && !displayAsset ? (
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -139,11 +154,11 @@ export default function Asset() {
                 </div>
               </CardContent>
             </Card>
-          ) : asset ? (
+          ) : displayAsset ? (
             <>
               {/* Asset Information */}
               <Card className="border-none shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+                <CardHeader className="bg-gradient-to-r from-success to-success/80 text-success-foreground">
                   <CardTitle className="flex items-center gap-2">
                     <Coins className="w-5 h-5" />
                     {t('assetInformation')}
@@ -152,47 +167,47 @@ export default function Asset() {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('assetName')}</p>
-                      <p className="text-2xl font-bold">{asset.name || 'N/A'}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('assetName')}</p>
+                      <p className="text-2xl font-bold">{displayAsset.name || 'N/A'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('decimals')}</p>
-                      <p className="font-semibold">{asset.decimals}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('decimals')}</p>
+                      <p className="font-semibold">{displayAsset.decimals}</p>
                     </div>
                     <div className="md:col-span-2">
-                      <p className="text-sm text-gray-500 mb-2">{t('assetId')}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('assetId')}</p>
                       <div className="flex items-center gap-2">
-                        <code className="text-sm bg-gray-50 p-2 rounded flex-1 overflow-x-auto">
-                          {asset.assetId}
+                        <code className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto">
+                          {displayAsset.assetId}
                         </code>
-                        <CopyButton text={asset.assetId} label={t('copyAssetId')} />
+                        <CopyButton text={displayAsset.assetId} label={t('copyAssetId')} />
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('totalQuantity')}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('totalQuantity')}</p>
                       <p className="font-semibold">
-                        {formatAmount(Number(asset.quantity), Number(asset.decimals))}
+                        {formatAmount(Number(displayAsset.quantity), Number(displayAsset.decimals))}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('reissuable')}</p>
-                      <Badge variant={asset.reissuable ? 'default' : 'secondary'}>
-                        {asset.reissuable ? t('yes') : t('no')}
+                      <p className="text-sm text-muted-foreground mb-2">{t('reissuable')}</p>
+                      <Badge variant={displayAsset.reissuable ? 'default' : 'secondary'}>
+                        {displayAsset.reissuable ? t('yes') : t('no')}
                       </Badge>
                     </div>
                     <div className="md:col-span-2">
-                      <p className="text-sm text-gray-500 mb-2">{t('issuer')}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('issuer')}</p>
                       <Link
-                        to={createPageUrl('Address', `?addr=${asset.issuer}`)}
-                        className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                        to={createPageUrl('Address', `?addr=${displayAsset.issuer}`)}
+                        className="text-link hover:text-link-hover font-mono text-sm"
                       >
-                        {asset.issuer}
+                        {displayAsset.issuer}
                       </Link>
                     </div>
-                    {asset.description && (
+                    {displayAsset.description && (
                       <div className="md:col-span-2">
-                        <p className="text-sm text-gray-500 mb-2">{t('description')}</p>
-                        <p className="text-gray-700">{asset.description}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('description')}</p>
+                        <p className="text-foreground">{displayAsset.description}</p>
                       </div>
                     )}
                   </div>
@@ -205,12 +220,12 @@ export default function Asset() {
                   <CardTitle>{t('distributionAnalysis')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <Users className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-4 text-lg font-medium text-gray-900">
+                  <Users className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-4 text-lg font-medium text-foreground">
                     {t('exploreHolderDistribution')}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500 mb-4">{t('useAdvancedTool')}</p>
-                  <Link to={createPageUrl('DistributionTool', `?assetId=${asset.assetId}`)}>
+                  <p className="mt-1 text-sm text-muted-foreground mb-4">{t('useAdvancedTool')}</p>
+                  <Link to={createPageUrl('DistributionTool', `?assetId=${displayAsset.assetId}`)}>
                     <Button>{t('launchDistributionTool')}</Button>
                   </Link>
                 </CardContent>
@@ -222,8 +237,8 @@ export default function Asset() {
                   <CardTitle>{t('rawAssetData')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-xs">
-                    {JSON.stringify(asset, null, 2)}
+                  <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs">
+                    {JSON.stringify(displayAsset, null, 2)}
                   </pre>
                 </CardContent>
               </Card>
@@ -381,7 +396,7 @@ function AssetActivityWidget() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 text-center py-8">{t('noAssetActivity')}</p>
+          <p className="text-muted-foreground text-center py-8">{t('noAssetActivity')}</p>
         </CardContent>
       </Card>
     );
@@ -412,7 +427,7 @@ function AssetActivityWidget() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Pie Chart */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-4 text-center">
+            <h3 className="text-sm font-medium text-foreground mb-4 text-center">
               {t('transactionDistribution')}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -436,14 +451,14 @@ function AssetActivityWidget() {
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-4 text-center">
-              <p className="text-2xl font-bold text-gray-900">{assetActivity.totalAssets}</p>
-              <p className="text-sm text-gray-600">{t('uniqueAssetsTraded')}</p>
+              <p className="text-2xl font-bold text-foreground">{assetActivity.totalAssets}</p>
+              <p className="text-sm text-muted-foreground">{t('uniqueAssetsTraded')}</p>
             </div>
           </div>
 
           {/* Bar Chart */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-4 text-center">
+            <h3 className="text-sm font-medium text-foreground mb-4 text-center">
               {t('transactionVolume')}
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -459,27 +474,27 @@ function AssetActivityWidget() {
               </BarChart>
             </ResponsiveContainer>
             <div className="mt-4 text-center">
-              <p className="text-2xl font-bold text-gray-900">{assetActivity.totalTxCount}</p>
-              <p className="text-sm text-gray-600">{t('totalTransactions')}</p>
+              <p className="text-2xl font-bold text-foreground">{assetActivity.totalTxCount}</p>
+              <p className="text-sm text-muted-foreground">{t('totalTransactions')}</p>
             </div>
           </div>
         </div>
 
         {/* Asset List */}
         <div className="mt-8">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">{t('topAssets')}</h3>
+          <h3 className="text-sm font-medium text-foreground mb-3">{t('topAssets')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {assetActivity.assets.map((asset) => (
               <Link
                 key={asset.assetId}
                 to={createPageUrl('Asset', `?id=${asset.assetId}`)}
-                className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white border rounded-lg hover:shadow-md transition-shadow"
+                className="flex items-center justify-between p-3 bg-gradient-to-r from-muted to-background border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3">
                   <AssetLogo assetId={asset.assetId} size="sm" />
                   <div>
                     <p className="font-medium text-sm">{asset.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {formatAmount(asset.totalAmount, asset.decimals)} {t('transferred')}
                     </p>
                   </div>

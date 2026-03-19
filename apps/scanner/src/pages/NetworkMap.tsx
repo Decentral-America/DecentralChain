@@ -68,8 +68,8 @@ export default function NetworkMap() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('networkMapTitle')}</h1>
-        <p className="text-gray-600">{t('geographicalDistribution')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('networkMapTitle')}</h1>
+        <p className="text-muted-foreground">{t('geographicalDistribution')}</p>
       </div>
 
       <Alert>
@@ -156,10 +156,10 @@ export default function NetworkMap() {
                         <p className="font-semibold text-sm mb-1">
                           {peer.peerName || t('unknownNode')}
                         </p>
-                        <p className="text-xs text-gray-600 mb-1">
+                        <p className="text-xs text-muted-foreground mb-1">
                           <strong>{t('addressColon')}</strong> {peer.address}
                         </p>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-muted-foreground">
                           <strong>{t('locationColon')}</strong> {peer.city} {t('simulated')}
                         </p>
                       </div>
@@ -187,20 +187,20 @@ export default function NetworkMap() {
               geolocatedPeers.map((peer) => (
                 <div
                   key={`${peer.address || peer.peerName}-${peer.lat}-${peer.lng}`}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted"
                 >
                   <div>
                     <p className="font-medium text-sm">{peer.peerName || t('unknownNode')}</p>
-                    <p className="text-xs text-gray-500 font-mono">{peer.address}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{peer.address}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-600">{peer.city}</p>
-                    <p className="text-xs text-gray-400">{t('simulated')}</p>
+                    <p className="text-xs text-muted-foreground">{peer.city}</p>
+                    <p className="text-xs text-muted-foreground">{t('simulated')}</p>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 py-4">{t('noPeersFound')}</p>
+              <p className="text-center text-muted-foreground py-4">{t('noPeersFound')}</p>
             )}
           </div>
         </CardContent>

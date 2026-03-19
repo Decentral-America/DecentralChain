@@ -436,8 +436,8 @@ export default function TransactionMap() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('transactionMapTitle')}</h1>
-        <p className="text-gray-600">{t('visualizeTransactionFlow')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('transactionMapTitle')}</h1>
+        <p className="text-muted-foreground">{t('visualizeTransactionFlow')}</p>
       </div>
 
       <Alert>
@@ -552,7 +552,7 @@ export default function TransactionMap() {
           </div>
 
           {ui.progress && (
-            <div className="text-sm text-gray-600 flex items-center gap-2">
+            <div className="text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin" />
               {ui.progress}
             </div>
@@ -572,19 +572,19 @@ export default function TransactionMap() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500">{t('addressesCountLabel')}</p>
+              <p className="text-sm text-muted-foreground">{t('addressesCountLabel')}</p>
               <p className="text-2xl font-bold">{nodeCount}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500">{t('transfersCountLabel')}</p>
+              <p className="text-sm text-muted-foreground">{t('transfersCountLabel')}</p>
               <p className="text-2xl font-bold">{edgeCount}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500">{t('hopsExploredLabel')}</p>
+              <p className="text-sm text-muted-foreground">{t('hopsExploredLabel')}</p>
               <p className="text-2xl font-bold">{graph.hopsBuilt}</p>
             </CardContent>
           </Card>
@@ -606,7 +606,7 @@ export default function TransactionMap() {
           <div
             ref={containerRef}
             id="tx-graph"
-            className="w-full bg-gray-50 rounded-lg border"
+            className="w-full bg-muted rounded-lg border"
             style={{ height: '70vh', minHeight: '500px' }}
           />
         </CardContent>
@@ -617,7 +617,7 @@ export default function TransactionMap() {
         <CardHeader>
           <CardTitle className="text-base">{t('legendTitle')}</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-gray-600 space-y-2">
+        <CardContent className="text-sm text-muted-foreground space-y-2">
           <p>{t('legendNodeSize')}</p>
           <p>{t('legendEdgeWidth')}</p>
           <p>{t('legendClickEdge')}</p>

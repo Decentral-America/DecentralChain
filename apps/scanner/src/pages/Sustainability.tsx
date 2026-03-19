@@ -6,7 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchConnectedPeers, type IAllConnectedResponse } from '@/lib/api';
+import {
+  fetchConnectedPeers,
+  fetchGeoForIp,
+  fetchGreenCheck,
+  type IAllConnectedResponse,
+} from '@/lib/api';
 import { type Peer } from '@/types';
 
 type SustainabilityStats = {
@@ -48,23 +53,16 @@ export default function Sustainability() {
           const ip = address.split('/')[1]?.split(':')[0];
           if (!ip) continue;
 
-          // Check green hosting
-          const greenResponse = await fetch(
-            `https://api.thegreenwebfoundation.org/api/v3/greencheck/${ip}`,
-          );
-          const greenData = (await greenResponse.json()) as { green?: boolean; hosted_by?: string };
+          const [greenData, geoData] = await Promise.all([fetchGreenCheck(ip), fetchGeoForIp(ip)]);
 
           totalChecked++;
           if (greenData.green) {
             greenCount++;
-            const provider = greenData.hosted_by || 'Unknown';
+            const provider = greenData.hostedBy || 'Unknown';
             hostingProviders[provider] = (hostingProviders[provider] || 0) + 1;
           }
 
-          // Get country data
-          const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
-          const geoData = (await geoResponse.json()) as { country_name?: string };
-          const country = geoData.country_name || 'Unknown';
+          const country = geoData.country || 'Unknown';
 
           if (!countriesData[country]) {
             countriesData[country] = { green: 0, total: 0 };
@@ -123,11 +121,11 @@ export default function Sustainability() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-          <Leaf className="w-10 h-10 text-green-600" />
+        <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+          <Leaf className="w-10 h-10 text-success" />
           Network Sustainability
         </h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Tracking renewable energy usage across DecentralChain network nodes
         </p>
       </div>
@@ -138,13 +136,13 @@ export default function Sustainability() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Green Hosting %</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-sm text-muted-foreground mb-1">Green Hosting %</p>
+                <p className="text-3xl font-bold text-success">
                   {loading ? '...' : `${greenStats?.greenPercentage.toFixed(1)}%`}
                 </p>
               </div>
-              <div className="p-3 bg-green-100 rounded-xl">
-                <Leaf className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-success/10 rounded-xl">
+                <Leaf className="w-6 h-6 text-success" />
               </div>
             </div>
           </CardContent>
@@ -154,13 +152,13 @@ export default function Sustainability() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Green Nodes</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-sm text-muted-foreground mb-1">Green Nodes</p>
+                <p className="text-3xl font-bold text-success">
                   {loading ? '...' : greenStats?.greenNodes || 0}
                 </p>
               </div>
-              <div className="p-3 bg-green-100 rounded-xl">
-                <Zap className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-success/10 rounded-xl">
+                <Zap className="w-6 h-6 text-success" />
               </div>
             </div>
           </CardContent>
@@ -170,13 +168,13 @@ export default function Sustainability() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Total Analyzed</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Total Analyzed</p>
+                <p className="text-3xl font-bold text-foreground">
                   {loading ? '...' : greenStats?.totalNodes || 0}
                 </p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-xl">
-                <Globe className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-info/10 rounded-xl">
+                <Globe className="w-6 h-6 text-info" />
               </div>
             </div>
           </CardContent>
@@ -188,7 +186,7 @@ export default function Sustainability() {
         <Card className="border-none shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Leaf className="w-5 h-5 text-green-600" />
+              <Leaf className="w-5 h-5 text-success" />
               Hosting Distribution
             </CardTitle>
           </CardHeader>
@@ -226,7 +224,7 @@ export default function Sustainability() {
         <Card className="border-none shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-green-600" />
+              <Award className="w-5 h-5 text-success" />
               Top Green Hosting Providers
             </CardTitle>
           </CardHeader>
@@ -244,15 +242,15 @@ export default function Sustainability() {
                 {topProviders.map((provider, index) => (
                   <div key={provider.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Badge className="bg-green-100 text-green-800">#{index + 1}</Badge>
+                      <Badge className="bg-success/10 text-success">#{index + 1}</Badge>
                       <span className="font-medium">{provider.name}</span>
                     </div>
-                    <span className="text-2xl font-bold text-green-600">{provider.count}</span>
+                    <span className="text-2xl font-bold text-success">{provider.count}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-center text-gray-500 py-8">No green providers found</p>
+              <p className="text-center text-muted-foreground py-8">No green providers found</p>
             )}
           </CardContent>
         </Card>
@@ -262,7 +260,7 @@ export default function Sustainability() {
       <Card className="border-none shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-green-600" />
+            <TrendingUp className="w-5 h-5 text-success" />
             Top Countries by Green Hosting Adoption
           </CardTitle>
         </CardHeader>
@@ -281,13 +279,13 @@ export default function Sustainability() {
                 <div key={country.name} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Badge className="bg-green-100 text-green-800">#{index + 1}</Badge>
+                      <Badge className="bg-success/10 text-success">#{index + 1}</Badge>
                       <span className="font-medium">{country.name}</span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-muted-foreground">
                         ({country.greenCount}/{country.total} nodes)
                       </span>
                     </div>
-                    <span className="text-lg font-bold text-green-600">
+                    <span className="text-lg font-bold text-success">
                       {country.greenPercentage.toFixed(1)}%
                     </span>
                   </div>
@@ -296,21 +294,21 @@ export default function Sustainability() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500 py-8">No data available</p>
+            <p className="text-center text-muted-foreground py-8">No data available</p>
           )}
         </CardContent>
       </Card>
 
       {/* Info Card */}
-      <Card className="border-none shadow-lg bg-gradient-to-br from-green-50 to-emerald-50">
+      <Card className="border-none shadow-lg bg-gradient-to-br from-success/5 to-success/10">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Leaf className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-success/10 rounded-xl">
+              <Leaf className="w-6 h-6 text-success" />
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-2">About Green Hosting</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Green hosting indicates that the server infrastructure uses renewable energy sources
                 or carbon offset programs. Data is verified by The Green Web Foundation, an
                 independent organization tracking the environmental impact of the internet.

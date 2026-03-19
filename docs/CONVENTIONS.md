@@ -380,11 +380,41 @@ All findings must be resolved except intentional semantic aliases (e.g., `isPubl
 ### Before Adding a Dependency
 
 1. Check npm for maintenance status and vulnerability reports
-2. Check bundle size on bundlephobia  
+2. Check bundle size on bundlephobia
 3. Run `npm audit` after install
 4. Verify ESM support (`"type": "module"` or `"exports"` field)
 5. Prefer packages with included TypeScript types (no `@types/` needed)
 6. Run `npm ls <package>` to check for duplicate versions
+
+### Automated Dependency Updates (Renovate)
+
+Dependency updates are automated via the [Renovate](https://docs.renovatebot.com/) GitHub App, configured in `renovate.json` at the workspace root.
+
+**Base preset**: `config:best-practices` — includes `config:recommended`, `security:minimumReleaseAgeNpm` (3-day npm unpublish protection), `abandonments:recommended` (flags packages with no release in 1 year), `:configMigration`, `:pinDevDependencies`, and `helpers:pinGitHubActionDigests`.
+
+**Schedule**: Mondays before 4am (Costa Rica time). Lock file maintenance runs before 6am.
+
+**Merge strategy**:
+
+| Update type | Behavior |
+|-------------|----------|
+| devDependencies (minor/patch) | Automerge after CI passes |
+| dependencies (patch) | Automerge after CI passes |
+| Lock file maintenance | Automerge after CI passes |
+| Major updates (all packages) | Requires Dependency Dashboard approval |
+| Nx, TypeScript, Electron | Requires Dependency Dashboard approval + manual review |
+| Biome | Manual review (no automerge) |
+
+**Grouping**: Related packages are grouped into single PRs to reduce noise and lock file conflicts. The 22 package rules cover the full tech stack — see `renovate.json` for the complete list. Key groups: Nx, Biome, TypeScript, Vitest, Vite, tsdown, React, Radix UI, Sentry, TanStack, Testing Library, Tailwind, Electron, MUI, Ledger, Protobuf, Noble crypto, i18next, and package quality tools.
+
+**Supply-chain protection**:
+- `@waves/ride-lang` and `@waves/ride-repl` are in `ignoreDeps` — Renovate will never propose updates for these unforked Waves dependencies
+- `security:minimumReleaseAgeNpm` prevents updating to npm packages less than 3 days old (unpublish window protection)
+- `abandonments:recommended` flags packages without a release in 1 year
+
+**Noise reduction**: `prConcurrentLimit: 5`, `prHourlyLimit: 3`, `prCreation: "not-pending"` (PRs only appear after CI finishes), `platformAutomerge: true` (uses GitHub's native merge queue).
+
+**Config validation**: Run `npx --yes --package renovate -- renovate-config-validator --strict renovate.json` to validate changes before pushing.
 
 ---
 

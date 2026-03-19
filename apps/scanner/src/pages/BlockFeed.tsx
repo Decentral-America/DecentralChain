@@ -115,8 +115,8 @@ export default function BlockFeed() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('liveBlockFeed')}</h1>
-          <p className="text-gray-600">{t('realtimeBlockUpdates')}</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">{t('liveBlockFeed')}</h1>
+          <p className="text-muted-foreground">{t('realtimeBlockUpdates')}</p>
         </div>
         <Button
           onClick={() => setPaused(!paused)}
@@ -138,10 +138,10 @@ export default function BlockFeed() {
       </div>
 
       {!paused && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-success/20 bg-success/5">
           <CardContent className="p-4 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-green-600 animate-pulse" />
-            <span className="text-sm font-medium text-green-900">
+            <Activity className="w-5 h-5 text-success animate-pulse" />
+            <span className="text-sm font-medium text-success">
               {t('live')} - {t('monitoringNewBlocks')}
             </span>
           </CardContent>
@@ -156,16 +156,20 @@ export default function BlockFeed() {
           : blocks.map((block) => (
               <div key={block.height}>
                 <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-                  <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <CardHeader className="bg-gradient-to-r from-info/10 to-accent">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="bg-blue-600 text-white rounded-lg px-4 py-2">
+                        <div className="bg-primary text-primary-foreground rounded-lg px-4 py-2">
                           <p className="text-xs font-medium">{t('height')}</p>
                           <p className="text-2xl font-bold">{block.height.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">{fromUnix(block.timestamp)}</p>
-                          <p className="text-xs text-gray-400">{timeAgo(block.timestamp)}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {fromUnix(block.timestamp)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {timeAgo(block.timestamp)}
+                          </p>
                         </div>
                       </div>
                       <Badge variant="secondary" className="text-lg">
@@ -176,19 +180,19 @@ export default function BlockFeed() {
                   <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <p className="text-sm text-gray-500 mb-1">{t('blockId')}</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('blockId')}</p>
                         <div className="flex items-center gap-2">
-                          <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                          <code className="text-xs bg-muted px-2 py-1 rounded">
                             {truncate(block.signature, 16)}
                           </code>
                           <CopyButton text={block.signature} />
                         </div>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 mb-1">{t('generator')}</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('generator')}</p>
                         <Link
                           to={createPageUrl('Address', `?addr=${block.generator}`)}
-                          className="text-blue-600 hover:text-blue-700 text-sm font-mono"
+                          className="text-link hover:text-link-hover text-sm font-mono"
                         >
                           {truncate(block.generator, 12)}
                         </Link>
@@ -257,7 +261,9 @@ function TransactionList({ blockHeight }: { blockHeight: number }): ReactElement
   }
 
   if (!block?.transactions || block.transactions.length === 0) {
-    return <p className="text-sm text-gray-500 mt-3 text-center">{t('noTransactionsInBlock')}</p>;
+    return (
+      <p className="text-sm text-muted-foreground mt-3 text-center">{t('noTransactionsInBlock')}</p>
+    );
   }
 
   return (
@@ -266,12 +272,12 @@ function TransactionList({ blockHeight }: { blockHeight: number }): ReactElement
         <Link
           key={tx.id}
           to={createPageUrl('Transaction', `?id=${tx.id}`)}
-          className="block p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+          className="block p-3 border rounded-lg hover:bg-muted transition-colors"
         >
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <code className="text-xs font-mono truncate block">{truncate(tx.id, 20)}</code>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t('type')}: {tx.type}
               </p>
             </div>
