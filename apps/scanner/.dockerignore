@@ -6,3 +6,8 @@ dist
 .env
 .env.*
 !.env.example
+coverage
+e2e
+.react-router
+test-results
+playwright-report
