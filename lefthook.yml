@@ -20,3 +20,14 @@ commit-msg:
         grep -qE
         '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?: .+'
         {1}
+    no-key-in-description:
+      # Catches: feat(scanner): DCC-123 something  ← key belongs in parens, not after the colon
+      # Correct: feat(DCC-123): something
+      run: >-
+        ! grep -qE
+        '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)\([^)]+\)!?: DCC-[0-9]+'
+        {1}
+      fail_text: >-
+        DCC ticket key must go inside the parentheses, not in the description.
+        Wrong:   feat(scanner): DCC-123 my change
+        Correct: feat(DCC-123): my change
