@@ -66,9 +66,19 @@ export function ErrorBoundary() {
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.address) return [{ title: 'Address — DecentralScan' }];
+  const short = `${data.address.slice(0, 8)}…`;
+  const title = `${short} — DecentralScan`;
+  const description = `Wallet address ${data.address} on DecentralChain. View balances, transactions, and leases.`;
   return [
-    { title: `${data.address.slice(0, 8)}… — DecentralScan` },
-    { content: `Address ${data.address} on DecentralChain`, name: 'description' },
+    { title },
+    { content: description, name: 'description' },
+    { content: title, property: 'og:title' },
+    { content: description, property: 'og:description' },
+    { content: 'website', property: 'og:type' },
+    { content: '/og-image.png', property: 'og:image' },
+    { content: 'summary', name: 'twitter:card' },
+    { content: title, name: 'twitter:title' },
+    { content: description, name: 'twitter:description' },
   ];
 }
 

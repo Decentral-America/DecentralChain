@@ -16,6 +16,33 @@ import { type Route } from './+types/root';
 
 export const links: Route.LinksFunction = () => [{ href: '/manifest.json', rel: 'manifest' }];
 
+/** DCC-158 — Global OG image cards + base meta tags. */
+export function meta(): Route.MetaDescriptors {
+  return [
+    { title: 'DecentralScan — DecentralChain Block Explorer' },
+    {
+      content:
+        'Explore blocks, transactions, addresses, assets, and network health on the DecentralChain (DCC) mainnet in real time.',
+      name: 'description',
+    },
+    { content: 'DecentralScan — DecentralChain Block Explorer', property: 'og:title' },
+    {
+      content:
+        'Real-time blockchain explorer for the DecentralChain (DCC) network. Explore blocks, transactions, addresses, DEX pairs, and network statistics.',
+      property: 'og:description',
+    },
+    { content: 'website', property: 'og:type' },
+    { content: '/og-image.png', property: 'og:image' },
+    { content: 'summary_large_image', name: 'twitter:card' },
+    { content: 'DecentralScan — DecentralChain Block Explorer', name: 'twitter:title' },
+    {
+      content: 'Real-time blockchain explorer for the DecentralChain (DCC) network.',
+      name: 'twitter:description',
+    },
+    { content: '/og-image.png', name: 'twitter:image' },
+  ];
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
