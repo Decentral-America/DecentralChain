@@ -57,8 +57,8 @@ export default function Blocks() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('blocks')}</h1>
-        <p className="text-gray-600">{t('blockExplorer')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('blocks')}</h1>
+        <p className="text-muted-foreground">{t('blockExplorer')}</p>
       </div>
 
       <Card className="border-none shadow-lg">
@@ -66,7 +66,7 @@ export default function Blocks() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <CardTitle>{t('blockExplorer')}</CardTitle>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 {t('showingBlocks')} {fromHeight.toLocaleString()} - {toHeight.toLocaleString()}
               </span>
             </div>
@@ -114,7 +114,7 @@ export default function Blocks() {
                       .map((block) => (
                         <TableRow
                           key={block.signature}
-                          className="hover:bg-gray-50 cursor-pointer transition-colors"
+                          className="hover:bg-muted cursor-pointer transition-colors"
                           onClick={() =>
                             (window.location.href = createPageUrl(
                               'BlockDetail',
@@ -125,7 +125,7 @@ export default function Blocks() {
                           <TableCell className="font-semibold">
                             <Link
                               to={createPageUrl('BlockDetail', `?height=${block.height}`)}
-                              className="text-blue-600 hover:text-blue-700"
+                              className="text-link hover:text-link-hover"
                             >
                               {block.height.toLocaleString()}
                             </Link>
@@ -136,13 +136,13 @@ export default function Blocks() {
                               <CopyButton text={block.signature} />
                             </div>
                           </TableCell>
-                          <TableCell className="text-sm text-gray-600">
+                          <TableCell className="text-sm text-muted-foreground">
                             {fromUnix(block.timestamp)}
                           </TableCell>
                           <TableCell>
                             <Link
                               to={createPageUrl('Address', `?addr=${block.generator}`)}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-mono"
+                              className="text-link hover:text-link-hover text-sm font-mono"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {truncate(block.generator, 12)}
@@ -179,7 +179,7 @@ export default function Blocks() {
               </Button>
             </div>
 
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {t('pageOf')
                 .replace(
                   '{current}',

@@ -170,7 +170,7 @@ export default function NetworkStatistics() {
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-sm text-gray-500 mb-2">{title}</p>
+            <p className="text-sm text-muted-foreground mb-2">{title}</p>
             {blocksLoading ? (
               <Skeleton className="h-8 w-24" />
             ) : (
@@ -189,8 +189,8 @@ export default function NetworkStatistics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('networkStatisticsTitle')}</h1>
-        <p className="text-gray-600">{t('advancedAnalytics')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('networkStatisticsTitle')}</h1>
+        <p className="text-muted-foreground">{t('advancedAnalytics')}</p>
       </div>
 
       {/* Key Metrics */}
@@ -199,7 +199,7 @@ export default function NetworkStatistics() {
           title={t('avgBlockTime')}
           value={analytics ? `${analytics.avgBlockTime}s` : '...'}
           icon={Clock}
-          color="text-blue-600"
+          color="text-info"
         />
         <StatCard
           title={t('transactionsPerSecond')}
@@ -211,13 +211,13 @@ export default function NetworkStatistics() {
           title={t('avgTxPerBlock')}
           value={analytics ? analytics.avgTxPerBlock : '...'}
           icon={BarChart3}
-          color="text-green-600"
+          color="text-success"
         />
         <StatCard
           title={t('connectedPeers')}
           value={connectedPeers?.peers?.length || 0}
           icon={Network}
-          color="text-orange-600"
+          color="text-warning"
         />
       </div>
 
@@ -232,15 +232,15 @@ export default function NetworkStatistics() {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('nodeVersion')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('nodeVersion')}</p>
               <p className="font-semibold text-lg">{nodeVersion?.version || 'N/A'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('currentHeight')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('currentHeight')}</p>
               <p className="font-semibold text-lg">{currentHeight.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('blockGeneratorStatus')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('blockGeneratorStatus')}</p>
               <Badge
                 variant={nodeStatus?.blockGeneratorStatus === 'active' ? 'default' : 'secondary'}
               >
@@ -380,21 +380,21 @@ export default function NetworkStatistics() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('totalTransactions')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('totalTransactions')}</p>
               <p className="text-2xl font-bold">{analytics?.totalTxs.toLocaleString() || '...'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('blocksAnalyzed')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('blocksAnalyzed')}</p>
               <p className="text-2xl font-bold">{recentBlocks?.length || 0}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('avgBlockSize')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('avgBlockSize')}</p>
               <p className="text-2xl font-bold">
                 {analytics?.avgBlockSize ? `${analytics.avgBlockSize} ${t('bytes')}` : '...'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('maxBlockSize')}</p>
+              <p className="text-sm text-muted-foreground mb-2">{t('maxBlockSize')}</p>
               <p className="text-2xl font-bold">
                 {analytics?.maxBlockSize
                   ? `${analytics.maxBlockSize.toLocaleString()} ${t('bytes')}`

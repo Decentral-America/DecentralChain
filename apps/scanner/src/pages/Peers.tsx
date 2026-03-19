@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { CheckCircle, Globe, Leaf, MapPin, Network, Pause, XCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { NodeRegistration } from '@/api/entities';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { extractIp, usePeerGeo } from '@/hooks/usePeerGeo';
 import {
   fetchAllPeers,
   fetchBlacklistedPeers,
@@ -37,15 +38,6 @@ type PeerApiShape =
   | null
   | undefined;
 
-type EnrichedPeerData = {
-  country: string;
-  countryCode: string;
-  city: string;
-  registeredName: string | null;
-  isGreen: boolean;
-  hostedBy: string | null;
-};
-
 const extractPeers = (data: PeerApiShape): Peer[] => {
   if (!data) return [];
   if (Array.isArray(data)) {
@@ -64,7 +56,6 @@ const extractPeers = (data: PeerApiShape): Peer[] => {
 
 export default function Peers() {
   const { t } = useLanguage();
-  const [enrichedPeers, setEnrichedPeers] = useState<Record<string, EnrichedPeerData>>({});
   const [nodeRegistrations, setNodeRegistrations] = useState<NodeRegistrationRecord[]>([]);
 
   const { data: connected, isLoading: connectedLoading } = useQuery<IAllConnectedResponse>({
@@ -100,133 +91,38 @@ export default function Peers() {
     fetchRegistrations();
   }, []);
 
-  // Enrich peer data with node names and countries
-  useEffect(() => {
-    const enrichPeers = async (peers: PeerApiShape) => {
-      const peerList = extractPeers(peers);
-      if (!peerList.length) return;
+  // Collect all unique IPs across every peer list for geo enrichment
+  const uniqueIps = useMemo(() => {
+    const allPeers = [
+      ...extractPeers(connected),
+      ...extractPeers(all),
+      ...extractPeers(suspended),
+      ...extractPeers(blacklisted),
+    ];
+    const seen = new Set<string>();
+    for (const peer of allPeers) {
+      const ip = extractIp(peer.address || peer.declaredAddress);
+      if (ip) seen.add(ip);
+    }
+    return [...seen];
+  }, [connected, all, suspended, blacklisted]);
 
-      const newEnrichedData: Record<string, EnrichedPeerData> = {};
-      const CACHE_KEY = 'peer_enrichment_cache';
+  // React Query handles caching, deduplication, retry, and AbortController
+  const geoByIp = usePeerGeo(uniqueIps);
 
-      // Load cache from localStorage
-      let cache: Record<string, Omit<EnrichedPeerData, 'registeredName'>> = {};
-      try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) cache = JSON.parse(cached);
-      } catch (error) {
-        console.error('Failed to load cache:', error);
-      }
-
-      for (const peer of peerList) {
-        const address = peer.address || peer.declaredAddress;
-        const peerNodeName = typeof peer.nodeName === 'string' ? peer.nodeName : null;
-        if (!address || enrichedPeers[address]) continue;
-
-        try {
-          // Extract IP from address (format: /ip:port)
-          const ip = address.split('/')[1]?.split(':')[0];
-          if (!ip) continue;
-
-          // Check cache first
-          if (cache[ip]) {
-            const registration = nodeRegistrations.find(
-              (reg) =>
-                reg.status === 'approved' &&
-                peerNodeName &&
-                typeof reg.node_name === 'string' &&
-                peerNodeName.toLowerCase().includes(reg.node_name.toLowerCase()),
-            );
-
-            newEnrichedData[address] = {
-              ...cache[ip],
-              registeredName:
-                (typeof registration?.node_name === 'string' ? registration.node_name : null) ||
-                peerNodeName ||
-                null,
-            };
-            continue;
-          }
-
-          // Add delay to respect API rate limits
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          // Get geolocation data
-          const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
-          const geoData = await geoResponse.json();
-
-          // Find matching node registration
-          const registration = nodeRegistrations.find(
-            (reg) =>
-              reg.status === 'approved' &&
-              peerNodeName &&
-              typeof reg.node_name === 'string' &&
-              peerNodeName.toLowerCase().includes(reg.node_name.toLowerCase()),
-          );
-
-          // Check green hosting
-          let isGreenHost = false;
-          let hostedBy = null;
-          try {
-            const hostname = ip;
-            const greenResponse = await fetch(
-              `https://api.thegreenwebfoundation.org/api/v3/greencheck/${hostname}`,
-            );
-            const greenData = await greenResponse.json();
-            isGreenHost = greenData.green || false;
-            hostedBy = greenData.hosted_by || null;
-          } catch (error) {
-            console.error(`Failed to check green hosting for ${ip}:`, error);
-          }
-
-          const geo = geoData as {
-            country_name?: string;
-            country_code?: string;
-            city?: string;
-          };
-
-          const enrichedData: EnrichedPeerData = {
-            city: geo.city || '',
-            country: geo.country_name || 'Unknown',
-            countryCode: geo.country_code || '',
-            hostedBy: hostedBy,
-            isGreen: isGreenHost,
-            registeredName:
-              (typeof registration?.node_name === 'string' ? registration.node_name : null) ||
-              peerNodeName ||
-              null,
-          };
-
-          newEnrichedData[address] = enrichedData;
-
-          // Cache the result (without registeredName as it may change)
-          cache[ip] = {
-            city: enrichedData.city,
-            country: enrichedData.country,
-            countryCode: enrichedData.countryCode,
-            hostedBy: enrichedData.hostedBy,
-            isGreen: enrichedData.isGreen,
-          };
-        } catch (error) {
-          console.error(`Failed to enrich peer ${address}:`, error);
-        }
-      }
-
-      // Save updated cache
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-      } catch (error) {
-        console.error('Failed to save cache:', error);
-      }
-
-      setEnrichedPeers((prev) => ({ ...prev, ...newEnrichedData }));
-    };
-
-    enrichPeers(connected);
-    enrichPeers(all);
-    enrichPeers(suspended);
-    enrichPeers(blacklisted);
-  }, [connected, all, suspended, blacklisted, nodeRegistrations, enrichedPeers]);
+  const resolveNodeName = (peer: Peer): string | null => {
+    const peerNodeName = typeof peer.nodeName === 'string' ? peer.nodeName : null;
+    const registration = nodeRegistrations.find(
+      (reg) =>
+        reg.status === 'approved' &&
+        peerNodeName &&
+        typeof reg.node_name === 'string' &&
+        peerNodeName.toLowerCase().includes(reg.node_name.toLowerCase()),
+    );
+    return (
+      (typeof registration?.node_name === 'string' ? registration.node_name : null) || peerNodeName
+    );
+  };
 
   const PeerTable = ({ peers, isLoading }: { peers: PeerApiShape; isLoading: boolean }) => {
     const peerList = extractPeers(peers);
@@ -273,8 +169,11 @@ export default function Peers() {
             ) : peerList.length > 0 ? (
               peerList.map((peer) => {
                 const address = peer.address || peer.declaredAddress;
-                const enrichedData = address ? enrichedPeers[address] : undefined;
-                const nodeName = enrichedData?.registeredName || peer.nodeName || t('unknownNode');
+                const ip = extractIp(address);
+                const peerGeo = ip ? geoByIp[ip] : undefined;
+                const geo = peerGeo?.geo;
+                const green = peerGeo?.green;
+                const nodeName = resolveNodeName(peer) || t('unknownNode');
 
                 return (
                   <TableRow key={peer.address || peer.declaredAddress || nodeName}>
@@ -286,28 +185,30 @@ export default function Peers() {
                       <div className="flex items-center gap-2">{nodeName}</div>
                     </TableCell>
                     <TableCell>
-                      {enrichedData ? (
+                      {geo ? (
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-3 h-3 text-gray-400" />
-                          <span>{enrichedData.country}</span>
-                          {enrichedData.countryCode && (
+                          <MapPin className="w-3 h-3 text-muted-foreground" />
+                          <span>{[geo.city, geo.country].filter(Boolean).join(', ')}</span>
+                          {geo.countryCode && (
                             <span className="text-xl">
                               {String.fromCodePoint(
-                                ...[...enrichedData.countryCode.toUpperCase()].map(
+                                ...[...geo.countryCode.toUpperCase()].map(
                                   (c) => 127397 + c.charCodeAt(0),
                                 ),
                               )}
                             </span>
                           )}
                         </div>
+                      ) : peerGeo?.isLoading ? (
+                        <Skeleton className="h-4 w-24" />
                       ) : (
-                        <span className="text-gray-400">...</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      {enrichedData ? (
-                        enrichedData.isGreen ? (
-                          <Badge className="bg-green-100 text-green-800 gap-1">
+                      {green ? (
+                        green.green ? (
+                          <Badge className="bg-success/10 text-success gap-1">
                             <Leaf className="w-3 h-3" />
                             Green
                           </Badge>
@@ -316,11 +217,13 @@ export default function Peers() {
                             Standard
                           </Badge>
                         )
+                      ) : peerGeo?.isLoading ? (
+                        <Skeleton className="h-4 w-16" />
                       ) : (
-                        <span className="text-gray-400">...</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-sm text-gray-600">
+                    <TableCell className="text-sm text-muted-foreground">
                       {peer.lastSeen ? fromUnix(peer.lastSeen) : 'N/A'}
                     </TableCell>
                   </TableRow>
@@ -328,7 +231,7 @@ export default function Peers() {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-gray-500 py-8">
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   {t('noPeersFound')}
                 </TableCell>
               </TableRow>
@@ -342,8 +245,8 @@ export default function Peers() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('networkPeers')}</h1>
-        <p className="text-gray-600">{t('viewPeerConnections')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('networkPeers')}</h1>
+        <p className="text-muted-foreground">{t('viewPeerConnections')}</p>
       </div>
 
       {/* Stats */}
@@ -352,13 +255,13 @@ export default function Peers() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('connected')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('connected')}</p>
                 <p className="text-2xl font-bold">
                   {connectedLoading ? '...' : extractPeers(connected).length || 0}
                 </p>
               </div>
-              <div className="p-3 bg-green-100 rounded-xl">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-success/10 rounded-xl">
+                <CheckCircle className="w-6 h-6 text-success" />
               </div>
             </div>
           </CardContent>
@@ -368,13 +271,13 @@ export default function Peers() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('allPeers')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('allPeers')}</p>
                 <p className="text-2xl font-bold">
                   {allLoading ? '...' : extractPeers(all).length || 0}
                 </p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-xl">
-                <Globe className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-info/10 rounded-xl">
+                <Globe className="w-6 h-6 text-info" />
               </div>
             </div>
           </CardContent>
@@ -384,13 +287,13 @@ export default function Peers() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('suspended')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('suspended')}</p>
                 <p className="text-2xl font-bold">
                   {suspendedLoading ? '...' : extractPeers(suspended).length || 0}
                 </p>
               </div>
-              <div className="p-3 bg-orange-100 rounded-xl">
-                <Pause className="w-6 h-6 text-orange-600" />
+              <div className="p-3 bg-warning/10 rounded-xl">
+                <Pause className="w-6 h-6 text-warning" />
               </div>
             </div>
           </CardContent>
@@ -400,13 +303,13 @@ export default function Peers() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('blacklisted')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('blacklisted')}</p>
                 <p className="text-2xl font-bold">
                   {blacklistedLoading ? '...' : extractPeers(blacklisted).length || 0}
                 </p>
               </div>
-              <div className="p-3 bg-red-100 rounded-xl">
-                <XCircle className="w-6 h-6 text-red-600" />
+              <div className="p-3 bg-destructive/10 rounded-xl">
+                <XCircle className="w-6 h-6 text-destructive" />
               </div>
             </div>
           </CardContent>

@@ -1,61 +1,148 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "group:monorepos", ":semanticCommitTypeAll(chore)"],
+  "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "labels": ["dependencies"],
+  "timezone": "America/Costa_Rica",
+  "schedule": ["before 4am on monday"],
+  "prCreation": "not-pending",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 3,
+  "platformAutomerge": true,
   "lockFileMaintenance": {
     "enabled": true,
+    "automerge": true,
     "schedule": ["before 6am on monday"]
   },
+  "postUpdateOptions": ["pnpmDedupe"],
+  "ignoreDeps": ["@waves/ride-lang", "@waves/ride-repl"],
   "packageRules": [
     {
+      "description": "Group Nx ecosystem — review manually, dashboard approval required",
+      "groupName": "Nx",
+      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"],
       "automerge": false,
-      "description": "Group all Nx packages together",
-      "groupName": "Nx monorepo",
-      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"]
+      "dependencyDashboardApproval": true
     },
     {
-      "automerge": false,
-      "description": "Group Biome updates",
+      "description": "Group Biome — review manually (affects all 25 projects)",
       "groupName": "Biome",
-      "matchPackageNames": ["@biomejs/biome"]
+      "matchPackageNames": ["@biomejs/biome"],
+      "automerge": false
     },
     {
-      "automerge": true,
-      "description": "Automerge non-major devDependencies",
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "description": "Group TypeScript — review manually, dashboard approval required",
+      "groupName": "TypeScript",
+      "matchPackageNames": ["typescript"],
+      "automerge": false,
+      "dependencyDashboardApproval": true
     },
     {
-      "automerge": true,
-      "description": "Automerge patch-level production dependencies",
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch"]
-    },
-    {
-      "description": "Group tsdown updates",
-      "groupName": "tsdown",
-      "matchPackageNames": ["tsdown"]
-    },
-    {
-      "description": "Group Vitest ecosystem",
+      "description": "Group Vitest + coverage (used by all 25 projects via catalog)",
       "groupName": "Vitest",
       "matchPackageNames": ["vitest", "@vitest/**"]
     },
     {
-      "description": "Group Vite ecosystem",
+      "description": "Group Vite + plugins (exchange, scanner, cubensis-connect)",
       "groupName": "Vite",
       "matchPackageNames": ["vite", "@vitejs/**"]
     },
     {
-      "description": "Prevent npm unpublish risk",
-      "matchDatasources": ["npm"],
-      "minimumReleaseAge": "3 days"
+      "description": "Group tsdown (builds 21/22 SDK packages via catalog)",
+      "groupName": "tsdown",
+      "matchPackageNames": ["tsdown"]
+    },
+    {
+      "description": "Group React ecosystem (exchange, scanner, cubensis-connect)",
+      "groupName": "React",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom",
+        "react-router",
+        "react-router-dom"
+      ]
+    },
+    {
+      "description": "Group Radix UI primitives (scanner)",
+      "groupName": "Radix UI",
+      "matchPackageNames": ["@radix-ui/**"]
+    },
+    {
+      "description": "Group Sentry (exchange + scanner + cubensis-connect)",
+      "groupName": "Sentry",
+      "matchPackageNames": ["@sentry/**"]
+    },
+    {
+      "description": "Group TanStack Query (exchange + scanner)",
+      "groupName": "TanStack Query",
+      "matchPackageNames": ["@tanstack/**"]
+    },
+    {
+      "description": "Group Testing Library (exchange + scanner + cubensis-connect)",
+      "groupName": "Testing Library",
+      "matchPackageNames": ["@testing-library/**"]
+    },
+    {
+      "description": "Group Tailwind CSS ecosystem (scanner)",
+      "groupName": "Tailwind CSS",
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/**", "tailwind-merge", "tw-animate-css"]
+    },
+    {
+      "description": "Group Electron (exchange desktop app)",
+      "groupName": "Electron",
+      "matchPackageNames": ["electron", "electron-builder", "electron-updater"],
+      "automerge": false,
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group MUI (exchange)",
+      "groupName": "MUI",
+      "matchPackageNames": ["@mui/**", "@emotion/**"]
+    },
+    {
+      "description": "Group Ledger HW transport (ledger package)",
+      "groupName": "Ledger",
+      "matchPackageNames": ["@ledgerhq/**"]
+    },
+    {
+      "description": "Group protobuf toolchain (protobuf-serialization, swap-client)",
+      "groupName": "Protobuf",
+      "matchPackageNames": ["protobufjs", "@bufbuild/**"]
+    },
+    {
+      "description": "Group noble crypto libs (crypto package)",
+      "groupName": "Noble crypto",
+      "matchPackageNames": ["@noble/**", "@scure/**"]
+    },
+    {
+      "description": "Group i18n (exchange + cubensis-connect)",
+      "groupName": "i18next",
+      "matchPackageNames": ["i18next", "react-i18next", "i18next-resources-to-backend"]
+    },
+    {
+      "description": "Group package quality tools (all SDK packages via catalog)",
+      "groupName": "Package quality tools",
+      "matchPackageNames": ["publint", "@arethetypeswrong/cli", "size-limit", "@size-limit/**"]
+    },
+    {
+      "description": "Automerge non-major devDependencies (low risk)",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Automerge patch-level production dependencies",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Require dashboard approval for all major updates",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
     }
-  ],
-  "pnpm": {
-    "updateCatalog": true
-  },
-  "postUpdateOptions": ["pnpmDedupe"],
-  "prConcurrentLimit": 5,
-  "schedule": ["before 4am on monday"]
+  ]
 }

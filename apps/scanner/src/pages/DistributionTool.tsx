@@ -45,8 +45,8 @@ import { formatAmount, truncate } from '../components/utils/formatters';
 const TIERS = {
   DOLPHIN: { color: 'text-sky-600', emoji: '🐬', name: 'Dolphin', threshold: 0.0001 },
   SHARK: { color: 'text-indigo-600', emoji: '🦈', name: 'Shark', threshold: 0.001 },
-  SHRIMP: { color: 'text-gray-500', emoji: '🦐', name: 'Shrimp', threshold: 0 },
-  WHALE: { color: 'text-blue-600', emoji: '🐋', name: 'Whale', threshold: 0.01 },
+  SHRIMP: { color: 'text-muted-foreground', emoji: '🦐', name: 'Shrimp', threshold: 0 },
+  WHALE: { color: 'text-info', emoji: '🐋', name: 'Whale', threshold: 0.01 },
 };
 
 const PAGE_SIZE = 25;
@@ -320,8 +320,8 @@ export default function DistributionTool() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">{t('assetDistributionTool')}</h1>
-          <p className="text-gray-600 mt-1">{t('analyzeHolderDistribution')}</p>
+          <h1 className="text-4xl font-bold text-foreground">{t('assetDistributionTool')}</h1>
+          <p className="text-muted-foreground mt-1">{t('analyzeHolderDistribution')}</p>
         </div>
       </div>
 
@@ -342,7 +342,7 @@ export default function DistributionTool() {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 items-end">
             <div className="flex-1">
-              <label htmlFor="asset-id" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="asset-id" className="block text-sm font-medium text-foreground mb-1">
                 {t('assetId')}
               </label>
               <Input
@@ -353,7 +353,7 @@ export default function DistributionTool() {
               />
             </div>
             <div className="w-full md:w-48">
-              <label htmlFor="height" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="height" className="block text-sm font-medium text-foreground mb-1">
                 {t('heightOptional')}
               </label>
               <Input
@@ -390,10 +390,10 @@ export default function DistributionTool() {
         <Card className="border-none shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+              <Loader2 className="w-5 h-5 animate-spin text-info" />
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{t('fetchingData')}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-medium text-foreground">{t('fetchingData')}</p>
+                <p className="text-sm text-muted-foreground">
                   {t('pagesFetched')
                     .replace('{pages}', String(fetchProgress.pages))
                     .replace('{holders}', fetchProgress.holders.toLocaleString())}
@@ -460,7 +460,7 @@ export default function DistributionTool() {
                     <p className="text-xl font-bold truncate">{assetData.name}</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 font-mono truncate">
+                <p className="text-sm text-muted-foreground font-mono truncate">
                   {truncate(assetData.assetId)}
                 </p>
               </CardContent>
@@ -473,7 +473,7 @@ export default function DistributionTool() {
                 <p className="text-2xl font-bold">
                   {formatAmount(Number(assetData.quantity), Number(assetData.decimals))}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {t('snapshotAt').replace('{height}', String(submittedHeight))}
                 </p>
               </CardContent>
@@ -486,7 +486,7 @@ export default function DistributionTool() {
                 <p className="text-2xl font-bold">
                   {processedData.stats.holderCount.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-500">{t('uniqueAddresses')}</p>
+                <p className="text-sm text-muted-foreground">{t('uniqueAddresses')}</p>
               </CardContent>
             </Card>
             <Card>
@@ -495,7 +495,7 @@ export default function DistributionTool() {
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold">{processedData.stats.gini.toFixed(4)}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {processedData.stats.gini > 0.7
                     ? t('highConcentration')
                     : processedData.stats.gini > 0.4
@@ -520,7 +520,7 @@ export default function DistributionTool() {
                       ]
                     }
                   </p>
-                  <p className="text-sm text-gray-500">{t(`${tier.name.toLowerCase()}s`)}</p>
+                  <p className="text-sm text-muted-foreground">{t(`${tier.name.toLowerCase()}s`)}</p>
                 </div>
               ))}
             </CardContent>
@@ -539,7 +539,7 @@ export default function DistributionTool() {
                 </CardTitle>
                 <div className="flex gap-2 w-full md:w-auto">
                   <div className="relative flex-1">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder={t('searchAddress')}
                       className="pl-8"
@@ -595,7 +595,7 @@ export default function DistributionTool() {
                             <div className="flex items-center gap-2">
                               <Link
                                 to={createPageUrl('Address', `?addr=${h.address}`)}
-                                className="font-mono text-sm text-blue-600"
+                                className="font-mono text-sm text-info"
                               >
                                 {h.address}
                               </Link>
@@ -606,7 +606,7 @@ export default function DistributionTool() {
                             {formatAmount(h.balance, assetData.decimals)}
                           </TableCell>
                           <TableCell className="text-right">{h.percentage.toFixed(4)}%</TableCell>
-                          <TableCell className="text-right text-gray-500">
+                          <TableCell className="text-right text-muted-foreground">
                             {h.cumulative.toFixed(4)}%
                           </TableCell>
                         </TableRow>
@@ -623,7 +623,7 @@ export default function DistributionTool() {
               </div>
               {/* Pagination */}
               <div className="border-t p-4 flex items-center justify-between">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   {t('showingHolders')
                     .replace(
                       '{from}',

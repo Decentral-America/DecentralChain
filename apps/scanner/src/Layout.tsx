@@ -21,8 +21,8 @@ import {
   X,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { type ReactNode, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -43,7 +43,7 @@ interface NavigationItem {
   icon: LucideIcon;
 }
 
-function LayoutContent({ children }: { children: ReactNode }) {
+function LayoutContent() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -77,10 +77,10 @@ function LayoutContent({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9]">
+    <div className="min-h-screen bg-background">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-black"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-background focus:text-foreground"
       >
         Skip to main content
       </a>
@@ -90,7 +90,9 @@ function LayoutContent({ children }: { children: ReactNode }) {
       {/* Header */}
       <header
         className={`sticky top-0 z-50 border-b transition-all duration-300 ${
-          scrolled ? 'bg-white/95 backdrop-blur-lg shadow-sm' : 'bg-white/80 backdrop-blur-md'
+          scrolled
+            ? 'bg-background/95 backdrop-blur-lg shadow-sm'
+            : 'bg-background/80 backdrop-blur-md'
         }`}
       >
         {/* Top Row - Logo, Search, and Controls */}
@@ -106,8 +108,8 @@ function LayoutContent({ children }: { children: ReactNode }) {
                 />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-gray-900">{t('appName')}</h1>
-                <p className="text-xs text-gray-500">{t('appSubtitle')}</p>
+                <h1 className="text-lg font-bold text-foreground">{t('appName')}</h1>
+                <p className="text-xs text-muted-foreground">{t('appSubtitle')}</p>
               </div>
             </Link>
 
@@ -139,13 +141,13 @@ function LayoutContent({ children }: { children: ReactNode }) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onClick={() => changeLanguage('en')}
-                    className={language === 'en' ? 'bg-blue-50' : ''}
+                    className={language === 'en' ? 'bg-accent' : ''}
                   >
                     🇺🇸 English
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => changeLanguage('es')}
-                    className={language === 'es' ? 'bg-blue-50' : ''}
+                    className={language === 'es' ? 'bg-accent' : ''}
                   >
                     🇪🇸 Español
                   </DropdownMenuItem>
@@ -172,7 +174,7 @@ function LayoutContent({ children }: { children: ReactNode }) {
         </div>
 
         {/* Navigation Tabs Row - Desktop */}
-        <div className="hidden lg:block border-t bg-white/50">
+        <div className="hidden lg:block border-t bg-background/50">
           <div className="container mx-auto px-4">
             <nav
               aria-label="Main navigation"
@@ -184,8 +186,8 @@ function LayoutContent({ children }: { children: ReactNode }) {
                   to={item.url}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     location.pathname === item.url
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -198,7 +200,7 @@ function LayoutContent({ children }: { children: ReactNode }) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t bg-white">
+          <div className="lg:hidden border-t bg-background">
             <nav
               aria-label="Mobile navigation"
               className="container mx-auto px-4 py-4 grid grid-cols-2 gap-2"
@@ -210,8 +212,8 @@ function LayoutContent({ children }: { children: ReactNode }) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === item.url
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:bg-accent'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -225,20 +227,20 @@ function LayoutContent({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main id="main-content" className="container mx-auto px-4 py-8">
-        {children}
+        <Outlet />
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white mt-16">
+      <footer className="border-t bg-background mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Box className="w-4 h-4" />
               <span>
                 {t('appName')} {t('appSubtitle')}
               </span>
             </div>
-            <p className="text-sm text-gray-500">Powered by DecentralChain Public API</p>
+            <p className="text-sm text-muted-foreground">Powered by DecentralChain Public API</p>
           </div>
         </div>
       </footer>
@@ -246,10 +248,10 @@ function LayoutContent({ children }: { children: ReactNode }) {
   );
 }
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout() {
   return (
     <LanguageProvider>
-      <LayoutContent>{children}</LayoutContent>
+      <LayoutContent />
     </LanguageProvider>
   );
 }

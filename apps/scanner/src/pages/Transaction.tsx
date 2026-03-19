@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, ArrowLeft, CheckCircle, Clock, Receipt, Search } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,54 +8,56 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchTransactionInfo, fetchUnconfirmedTransactionInfo } from '@/lib/api';
+import { useTransaction } from '@/hooks/useTransactions';
+import type { Transaction } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 
+interface LoaderData {
+  tx: Transaction | null;
+}
+
+export async function loader({ request }: { request: Request }): Promise<LoaderData> {
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id) return { tx: null };
+  const tx =
+    (await fetchTransactionInfo(id).catch(() => null) as Transaction | null) ??
+    (await fetchUnconfirmedTransactionInfo(id).catch(() => null) as Transaction | null);
+  return { tx };
+}
+
+export function meta({ data }: { data?: LoaderData }) {
+  if (!data?.tx) return [{ title: 'Transaction — DecentralScan' }];
+  return [
+    { title: `Tx ${data.tx.id.slice(0, 8)}… — DecentralScan` },
+    { name: 'description', content: `Transaction ${data.tx.id} on DecentralChain` },
+  ];
+}
+
 export default function Transaction() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialTxId = urlParams.get('id') || '';
+  const { tx: serverTx } = useLoaderData() as LoaderData;
+  const [searchParams] = useSearchParams();
+  const txId = searchParams.get('id') ?? '';
 
-  const [searchTxId, setSearchTxId] = useState(initialTxId);
-  const [txId, setTxId] = useState(initialTxId);
+  const [searchTxId, setSearchTxId] = useState(txId);
 
-  const {
-    data: tx,
-    isLoading,
-    error,
-  } = useQuery({
-    enabled: !!txId,
-    queryFn: async () => {
-      if (!txId) return null;
-      try {
-        const confirmedTx = await fetchTransactionInfo(txId);
-        if (confirmedTx) return confirmedTx;
-      } catch (err) {
-        console.warn('Failed to fetch confirmed transaction:', err);
-      }
-      try {
-        const unconfirmedTx = await fetchUnconfirmedTransactionInfo(txId);
-        if (unconfirmedTx) return unconfirmedTx;
-      } catch (err) {
-        console.warn('Failed to fetch unconfirmed transaction:', err);
-      }
-      return null;
-    },
-    queryKey: ['transaction', txId],
-  });
+  const { data: tx, isLoading, error } = useTransaction(txId ?? null);
+
+  // Merge server-fetched data as initial data when query key matches
+  const displayTx = tx ?? serverTx ?? null;
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchTxId.trim()) {
-      setTxId(searchTxId.trim());
       navigate(createPageUrl('Transaction', `?id=${searchTxId.trim()}`));
     }
   };
 
-  const isConfirmed = tx?.height && tx.height > 0;
+  const isConfirmed = displayTx?.height && displayTx.height > 0;
 
   return (
     <div className="space-y-6">
@@ -71,7 +72,7 @@ export default function Transaction() {
         <CardContent>
           <form onSubmit={handleSearch} className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder={t('enterTransactionId')}
@@ -96,8 +97,8 @@ export default function Transaction() {
               {t('back')}
             </Button>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">{t('transactionDetails')}</h1>
-              {tx && (
+              <h1 className="text-4xl font-bold text-foreground">{t('transactionDetails')}</h1>
+              {displayTx && (
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant={isConfirmed ? 'default' : 'secondary'}>
                     {isConfirmed ? (
@@ -124,7 +125,7 @@ export default function Transaction() {
             </Alert>
           )}
 
-          {isLoading ? (
+          {isLoading && !displayTx ? (
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -139,7 +140,7 @@ export default function Transaction() {
                 </div>
               </CardContent>
             </Card>
-          ) : tx ? (
+          ) : displayTx ? (
             <>
               {/* Transaction Summary */}
               <Card className="border-none shadow-lg">
@@ -152,43 +153,43 @@ export default function Transaction() {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">
-                      <p className="text-sm text-gray-500 mb-2">{t('transactionId')}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('transactionId')}</p>
                       <div className="flex items-center gap-2">
-                        <code className="text-sm bg-gray-50 p-2 rounded flex-1 overflow-x-auto">
-                          {tx.id}
+                        <code className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto">
+                          {displayTx.id}
                         </code>
-                        <CopyButton text={tx.id} label={t('copyTransactionId')} />
+                        <CopyButton text={displayTx.id} label={t('copyTransactionId')} />
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('type')}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('type')}</p>
                       <Badge variant="secondary" className="text-base">
-                        {tx.type}
+                        {displayTx.type}
                       </Badge>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('version')}</p>
-                      <p className="font-semibold">{tx.version}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('version')}</p>
+                      <p className="font-semibold">{displayTx.version}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('timestamp')}</p>
-                      <p className="font-semibold">{fromUnix(tx.timestamp)}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(tx.timestamp).toLocaleString()}
+                      <p className="text-sm text-muted-foreground mb-2">{t('timestamp')}</p>
+                      <p className="font-semibold">{fromUnix(displayTx.timestamp)}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(displayTx.timestamp).toLocaleString()}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 mb-2">{t('fee')}</p>
-                      <p className="font-semibold">{formatAmount(Number(tx.fee))} DC</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('fee')}</p>
+                      <p className="font-semibold">{formatAmount(Number(displayTx.fee))} DC</p>
                     </div>
-                    {tx.height && (
+                    {displayTx.height && (
                       <div>
-                        <p className="text-sm text-gray-500 mb-2">{t('blockHeight')}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('blockHeight')}</p>
                         <Link
-                          to={createPageUrl('BlockDetail', `?height=${tx.height}`)}
-                          className="text-blue-600 hover:text-blue-700 font-semibold"
+                          to={createPageUrl('BlockDetail', `?height=${displayTx.height}`)}
+                          className="text-link hover:text-link-hover font-semibold"
                         >
-                          {tx.height.toLocaleString()}
+                          {displayTx.height.toLocaleString()}
                         </Link>
                       </div>
                     )}
@@ -203,42 +204,42 @@ export default function Transaction() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {tx.sender && (
+                    {displayTx.sender && (
                       <div>
-                        <p className="text-sm text-gray-500 mb-2">{t('sender')}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('sender')}</p>
                         <Link
-                          to={createPageUrl('Address', `?addr=${tx.sender}`)}
-                          className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                          to={createPageUrl('Address', `?addr=${displayTx.sender}`)}
+                          className="text-link hover:text-link-hover font-mono text-sm"
                         >
-                          {tx.sender}
+                          {displayTx.sender}
                         </Link>
                       </div>
                     )}
-                    {tx.recipient && (
+                    {displayTx.recipient && (
                       <div>
-                        <p className="text-sm text-gray-500 mb-2">{t('recipient')}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('recipient')}</p>
                         <Link
-                          to={createPageUrl('Address', `?addr=${tx.recipient}`)}
-                          className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                          to={createPageUrl('Address', `?addr=${displayTx.recipient}`)}
+                          className="text-link hover:text-link-hover font-mono text-sm"
                         >
-                          {tx.recipient}
+                          {displayTx.recipient}
                         </Link>
                       </div>
                     )}
-                    {tx.amount !== undefined && (
+                    {displayTx.amount !== undefined && (
                       <div>
-                        <p className="text-sm text-gray-500 mb-2">{t('amount')}</p>
-                        <p className="text-2xl font-bold">{formatAmount(tx.amount)} DC</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('amount')}</p>
+                        <p className="text-2xl font-bold">{formatAmount(displayTx.amount)} DC</p>
                       </div>
                     )}
-                    {tx.assetId && (
+                    {displayTx.assetId && (
                       <div>
-                        <p className="text-sm text-gray-500 mb-2">{t('asset')}</p>
+                        <p className="text-sm text-muted-foreground mb-2">{t('asset')}</p>
                         <Link
-                          to={createPageUrl('Asset', `?id=${tx.assetId}`)}
-                          className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                          to={createPageUrl('Asset', `?id=${displayTx.assetId}`)}
+                          className="text-link hover:text-link-hover font-mono text-sm"
                         >
-                          {truncate(tx.assetId, 16)}
+                          {truncate(displayTx.assetId, 16)}
                         </Link>
                       </div>
                     )}
@@ -252,8 +253,8 @@ export default function Transaction() {
                   <CardTitle>{t('rawTransactionData')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-xs">
-                    {JSON.stringify(tx, null, 2)}
+                  <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs">
+                    {JSON.stringify(displayTx, null, 2)}
                   </pre>
                 </CardContent>
               </Card>
