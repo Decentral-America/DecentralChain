@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { Activity, Box, Clock, type LucideIcon, RefreshCw, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -15,12 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { fetchBlockHeadersSeq, fetchNodeVersion } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, fromUnix, timeAgo, truncate } from '../components/utils/formatters';
 import { useBlockHeight, useLatestBlock } from '../hooks/useBlockPolling';
+import { useBlockHeaders } from '../hooks/useBlocks';
+import { useNodeVersion } from '../hooks/useNode';
 
 export default function Dashboard() {
   const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
@@ -30,22 +30,15 @@ export default function Dashboard() {
 
   const { data: lastBlock, isLoading: blockLoading } = useLatestBlock(autoRefresh);
 
-  const { data: nodeVersion } = useQuery({
-    queryFn: () => fetchNodeVersion(),
-    queryKey: ['nodeVersion'],
-  });
+  const { data: nodeVersion } = useNodeVersion();
 
   const currentHeight = height?.height || 0;
 
-  const { data: blockHeaders, isLoading: headersLoading } = useQuery({
-    enabled: currentHeight > 0,
-    queryFn: async () => {
-      const from = Math.max(1, currentHeight - 49);
-      return fetchBlockHeadersSeq(from, currentHeight);
-    },
-    queryKey: ['blockHeaders', currentHeight],
-    refetchInterval: autoRefresh ? 15000 : false,
-  });
+  const { data: blockHeaders, isLoading: headersLoading } = useBlockHeaders(
+    Math.max(1, currentHeight - 49),
+    currentHeight,
+    { enabled: currentHeight > 0, refetchInterval: autoRefresh ? 15_000 : false },
+  );
 
   const StatCard = ({
     title,
@@ -66,7 +59,7 @@ export default function Dashboard() {
       />
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium text-gray-600">{title}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
           <div className={`p-2.5 rounded-xl ${gradient} bg-opacity-20`}>
             <Icon className={`w-5 h-5 ${gradient.replace('bg-', 'text-')}`} />
           </div>
@@ -74,7 +67,7 @@ export default function Dashboard() {
       </CardHeader>
       <CardContent>
         <div className="flex items-end justify-between">
-          <p className="text-3xl font-bold text-gray-900">{value}</p>
+          <p className="text-3xl font-bold text-foreground">{value}</p>
           {badge && (
             <Badge variant="secondary" className="mb-1">
               {badge}
@@ -90,15 +83,15 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('networkOverview')}</h1>
-          <p className="text-gray-600">{t('realtimeStats')}</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">{t('networkOverview')}</h1>
+          <p className="text-muted-foreground">{t('realtimeStats')}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="auto-refresh" className="text-sm text-gray-600">
+          <Label htmlFor="auto-refresh" className="text-sm text-muted-foreground">
             {t('autoRefresh')}
           </Label>
           <Switch id="auto-refresh" checked={autoRefresh} onCheckedChange={setAutoRefresh} />
-          {autoRefresh && <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />}
+          {autoRefresh && <RefreshCw className="w-4 h-4 text-info animate-spin" />}
         </div>
       </div>
 
@@ -108,7 +101,7 @@ export default function Dashboard() {
           title={t('currentHeight')}
           value={heightLoading ? '...' : currentHeight.toLocaleString()}
           icon={Activity}
-          gradient="bg-blue-600"
+          gradient="bg-primary"
         />
         <StatCard
           title={t('nodeVersion')}
@@ -136,38 +129,38 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('blockId')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('blockId')}</p>
                 <div className="flex items-center gap-2">
                   <code className="text-sm font-mono">{truncate(lastBlock.signature, 12)}</code>
                   <CopyButton text={lastBlock.signature} label={t('copyBlockId')} />
                 </div>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('height')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('height')}</p>
                 <Link
                   to={createPageUrl('BlockDetail', `?height=${lastBlock.height}`)}
-                  className="text-blue-600 hover:text-blue-700 font-semibold"
+                  className="text-link hover:text-link-hover font-semibold"
                 >
                   {lastBlock.height.toLocaleString()}
                 </Link>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('transactions')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('transactions')}</p>
                 <p className="font-semibold">{lastBlock.transactionCount || 0}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('timestamp')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('timestamp')}</p>
                 <p className="text-sm">{fromUnix(lastBlock.timestamp)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('reward')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('reward')}</p>
                 <p className="font-semibold">{formatAmount(Number(lastBlock.reward || 0))} DC</p>
               </div>
               <div className="md:col-span-2">
-                <p className="text-sm text-gray-500 mb-1">{t('generator')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('generator')}</p>
                 <Link
                   to={createPageUrl('Address', `?addr=${lastBlock.generator}`)}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-mono"
+                  className="text-link hover:text-link-hover text-sm font-mono"
                 >
                   {truncate(lastBlock.generator, 16)}
                 </Link>
@@ -224,7 +217,7 @@ export default function Dashboard() {
                       .map((block) => (
                         <TableRow
                           key={block.signature}
-                          className="hover:bg-gray-50 cursor-pointer"
+                          className="hover:bg-muted cursor-pointer"
                           onClick={() =>
                             (window.location.href = createPageUrl(
                               'BlockDetail',
@@ -235,7 +228,7 @@ export default function Dashboard() {
                           <TableCell className="font-medium">
                             <Link
                               to={createPageUrl('BlockDetail', `?height=${block.height}`)}
-                              className="text-blue-600 hover:text-blue-700"
+                              className="text-link hover:text-link-hover"
                             >
                               {block.height.toLocaleString()}
                             </Link>
@@ -246,13 +239,13 @@ export default function Dashboard() {
                               <CopyButton text={block.signature} />
                             </div>
                           </TableCell>
-                          <TableCell className="text-sm text-gray-600">
+                          <TableCell className="text-sm text-muted-foreground">
                             {timeAgo(block.timestamp)}
                           </TableCell>
                           <TableCell>
                             <Link
                               to={createPageUrl('Address', `?addr=${block.generator}`)}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-mono"
+                              className="text-link hover:text-link-hover text-sm font-mono"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {truncate(block.generator, 8)}

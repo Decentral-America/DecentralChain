@@ -608,6 +608,23 @@ Nx caches results in `.nx/cache/`. If inputs haven't changed, tasks replay from 
 
 On PRs, use `nx affected -t test` to only test packages whose source changed — reduces CI time from ~5 minutes to seconds for single-package changes.
 
+### Automated Dependency Updates
+
+[Renovate](https://docs.renovatebot.com/) runs weekly (Mondays before 4am CST) via the hosted GitHub App. Configuration lives in `renovate.json` at the workspace root.
+
+| Aspect | Configuration |
+|--------|---------------|
+| Base preset | `config:best-practices` (includes npm unpublish protection, abandonment detection, GitHub Action digest pinning) |
+| Commit style | `chore(deps):` via `:semanticCommitTypeAll(chore)` — matches our conventional commits convention |
+| Catalog support | Renovate natively reads `pnpm-workspace.yaml` catalogs — shared versions (vitest, tsdown, etc.) update in one PR |
+| Lock file | Weekly `pnpm-lock.yaml` refresh with automerge |
+| Deduplication | `pnpmDedupe` runs after every update |
+| Ignored | `@waves/ride-lang`, `@waves/ride-repl` — unforked upstream deps that must not be auto-updated |
+
+22 `packageRules` group related dependencies (Nx, Biome, TypeScript, Vitest, Vite, React, Radix UI, Sentry, TanStack, Tailwind, Electron, MUI, Ledger, Protobuf, Noble crypto, i18next, etc.) to minimize PR count and lock file conflicts. High-impact updates (Nx, TypeScript, Electron, all majors) require Dependency Dashboard approval before a PR is created.
+
+See [CONVENTIONS.md — Automated Dependency Updates](CONVENTIONS.md#automated-dependency-updates-renovate) for the full merge strategy and supply-chain protection details.
+
 ---
 
 ## 13. Publishing Strategy

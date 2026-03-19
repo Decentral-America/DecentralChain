@@ -1,57 +1,31 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vitest/config';
+import { reactRouter } from '@react-router/dev/vite';
+import { defineConfig } from 'vite';
+import type {} from 'vitest/config';
 
 export default defineConfig({
-  build: {
-    chunkSizeWarningLimit: 600,
-    rolldownOptions: {
-      output: {
-        codeSplitting: {
-          groups: [
-            {
-              name: 'react-vendor',
-              priority: 20,
-              test: /[\\/]node_modules[\\/](react|react-dom|react-router)[\\/]/,
-            },
-            {
-              name: 'recharts-vendor',
-              priority: 15,
-              test: /[\\/]node_modules[\\/]recharts[\\/]/,
-            },
-            {
-              name: 'radix-vendor',
-              priority: 15,
-              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-            },
-            {
-              name: 'query-vendor',
-              priority: 15,
-              test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
-            },
-            {
-              name: 'map-vendor',
-              priority: 15,
-              test: /[\\/]node_modules[\\/](leaflet|react-leaflet)[\\/]/,
-            },
-            {
-              name: 'sentry-vendor',
-              priority: 10,
-              test: /[\\/]node_modules[\\/]@sentry[\\/]/,
-            },
-          ],
-        },
-      },
-    },
-  },
-  plugins: [react()],
+  plugins: [reactRouter()],
   resolve: {
     alias: {
       '@/': '/src/',
     },
   },
+  server: {
+    proxy: {
+      '/api/geo': {
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/geo/, ''),
+        target: 'https://ipinfo.io',
+      },
+      '/api/greencheck': {
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/greencheck/, '/api/v3/greencheck'),
+        target: 'https://api.thegreenwebfoundation.org',
+      },
+    },
+  },
   test: {
     coverage: {
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/**/*.d.ts', 'src/test/**'],
+      exclude: ['src/root.tsx', 'src/vite-env.d.ts', 'src/**/*.d.ts', 'src/test/**'],
       include: ['src/**/*.{ts,tsx}'],
       provider: 'v8',
       thresholds: {

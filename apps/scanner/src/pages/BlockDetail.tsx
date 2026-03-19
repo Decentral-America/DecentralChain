@@ -1,37 +1,52 @@
-import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, ArrowLeft, Box } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useLoaderData, useSearchParams } from 'react-router';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchBlockAt, fetchBlockById } from '@/lib/api';
+import { fetchBlockAt, fetchBlockById, type IBlock } from '@/lib/api';
+import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
 
-export default function BlockDetail() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const height = urlParams.get('height');
-  const id = urlParams.get('id');
+interface LoaderData {
+  block: IBlock | null;
+}
 
-  const {
-    data: block,
-    isLoading,
-    error,
-  } = useQuery({
-    enabled: !!(height || id),
-    queryFn: async () => {
-      if (height) {
-        return fetchBlockAt(parseInt(height, 10));
-      } else if (id) {
-        return fetchBlockById(id);
-      }
-      throw new Error('No block identifier provided');
-    },
-    queryKey: ['block', height, id],
-  });
+export async function loader({ request }: { request: Request }): Promise<LoaderData> {
+  const params = new URL(request.url).searchParams;
+  const height = params.get('height');
+  const id = params.get('id');
+  if (!height && !id) return { block: null };
+  const block = height
+    ? await fetchBlockAt(parseInt(height, 10)).catch(() => null)
+    : await fetchBlockById(id!).catch(() => null);
+  return { block };
+}
+
+export function meta({ data }: { data?: LoaderData }) {
+  if (!data?.block) return [{ title: 'Block — DecentralScan' }];
+  return [
+    { title: `Block #${data.block.height?.toLocaleString() ?? 'N/A'} — DecentralScan` },
+    { name: 'description', content: `Block at height ${data.block.height} on DecentralChain` },
+  ];
+}
+
+export default function BlockDetail() {
+  const { block: serverBlock } = useLoaderData() as LoaderData;
+  const [searchParams] = useSearchParams();
+  const height = searchParams.get('height');
+  const id = searchParams.get('id');
+
+  const heightNum = height ? parseInt(height, 10) : null;
+  const blockByHeight = useBlockAt(id ? null : heightNum);
+  const blockById = useBlockById(height ? null : id);
+
+  const queryResult = id ? blockById : blockByHeight;
+  const { isLoading, error } = queryResult;
+  const block = queryResult.data ?? serverBlock ?? null;
 
   if (error) {
     return (
@@ -56,9 +71,9 @@ export default function BlockDetail() {
           Back
         </Button>
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Block Details</h1>
+          <h1 className="text-4xl font-bold text-foreground">Block Details</h1>
           {block && (
-            <p className="text-gray-600 mt-1">Height: {block.height?.toLocaleString() || 'N/A'}</p>
+            <p className="text-muted-foreground mt-1">Height: {block.height?.toLocaleString() || 'N/A'}</p>
           )}
         </div>
       </div>
@@ -91,20 +106,20 @@ export default function BlockDetail() {
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Block Height</p>
+                  <p className="text-sm text-muted-foreground mb-2">Block Height</p>
                   <p className="text-2xl font-bold">{block.height?.toLocaleString() || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Timestamp</p>
+                  <p className="text-sm text-muted-foreground mb-2">Timestamp</p>
                   <p className="font-semibold">{fromUnix(block.timestamp)}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {block.timestamp ? new Date(block.timestamp).toLocaleString() : 'N/A'}
                   </p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-sm text-gray-500 mb-2">Block Signature</p>
+                  <p className="text-sm text-muted-foreground mb-2">Block Signature</p>
                   <div className="flex items-center gap-2">
-                    <code className="text-sm bg-gray-50 p-2 rounded flex-1 overflow-x-auto">
+                    <code className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto">
                       {block.signature || 'N/A'}
                     </code>
                     {block.signature && (
@@ -113,40 +128,40 @@ export default function BlockDetail() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Version</p>
+                  <p className="text-sm text-muted-foreground mb-2">Version</p>
                   <Badge>{block.version || 'N/A'}</Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Transactions</p>
+                  <p className="text-sm text-muted-foreground mb-2">Transactions</p>
                   <p className="font-semibold">{block.transactionCount || 0}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Block Size</p>
+                  <p className="text-sm text-muted-foreground mb-2">Block Size</p>
                   <p className="font-semibold">{(block.blocksize || 0).toLocaleString()} bytes</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Reward</p>
+                  <p className="text-sm text-muted-foreground mb-2">Reward</p>
                   <p className="font-semibold">{block.reward || 0} DC</p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-sm text-gray-500 mb-2">Generator</p>
+                  <p className="text-sm text-muted-foreground mb-2">Generator</p>
                   {block.generator ? (
                     <Link
                       to={createPageUrl('Address', `?addr=${block.generator}`)}
-                      className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                      className="text-link hover:text-link-hover font-mono text-sm"
                     >
                       {block.generator}
                     </Link>
                   ) : (
-                    <p className="text-gray-500">N/A</p>
+                    <p className="text-muted-foreground">N/A</p>
                   )}
                 </div>
                 {block.reference && (
                   <div className="md:col-span-2">
-                    <p className="text-sm text-gray-500 mb-2">Parent Block</p>
+                    <p className="text-sm text-muted-foreground mb-2">Parent Block</p>
                     <Link
                       to={createPageUrl('BlockDetail', `?id=${block.reference}`)}
-                      className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                      className="text-link hover:text-link-hover font-mono text-sm"
                     >
                       {truncate(block.reference, 20)}
                     </Link>
@@ -167,16 +182,16 @@ export default function BlockDetail() {
                   {block.transactions.map((tx, index) => (
                     <div
                       key={tx.id || index}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted transition-colors"
                     >
                       <div className="flex-1">
                         <Link
                           to={createPageUrl('Transaction', `?id=${tx.id}`)}
-                          className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                          className="text-link hover:text-link-hover font-mono text-sm"
                         >
                           {truncate(tx.id, 16)}
                         </Link>
-                        <p className="text-sm text-gray-500 mt-1">Type: {tx.type}</p>
+                        <p className="text-sm text-muted-foreground mt-1">Type: {tx.type}</p>
                       </div>
                       <Badge variant="secondary">Fee: {tx.fee || 0}</Badge>
                     </div>
@@ -192,7 +207,7 @@ export default function BlockDetail() {
               <CardTitle>Raw Block Data</CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-xs">
+              <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs">
                 {JSON.stringify(block, null, 2)}
               </pre>
             </CardContent>

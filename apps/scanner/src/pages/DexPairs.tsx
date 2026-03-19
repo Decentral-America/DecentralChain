@@ -171,8 +171,8 @@ export default function DexPairs() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('dexTradingPairs')}</h1>
-        <p className="text-gray-600">{t('exploreDexPairs')}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{t('dexTradingPairs')}</h1>
+        <p className="text-muted-foreground">{t('exploreDexPairs')}</p>
       </div>
 
       {/* Stats */}
@@ -181,11 +181,11 @@ export default function DexPairs() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('totalPairs')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('totalPairs')}</p>
                 <p className="text-2xl font-bold">{loading ? '...' : pairsData.length}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-xl">
-                <ArrowUpDown className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-info/10 rounded-xl">
+                <ArrowUpDown className="w-6 h-6 text-info" />
               </div>
             </div>
           </CardContent>
@@ -195,11 +195,11 @@ export default function DexPairs() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('totalVolume24h')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('totalVolume24h')}</p>
                 <p className="text-2xl font-bold">{loading ? '...' : totalVolume.toFixed(2)}</p>
               </div>
-              <div className="p-3 bg-green-100 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-success/10 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-success" />
               </div>
             </div>
           </CardContent>
@@ -209,12 +209,12 @@ export default function DexPairs() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t('totalTrades24h')}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('totalTrades24h')}</p>
                 <p className="text-2xl font-bold">
                   {loading ? '...' : totalTrades.toLocaleString()}
                 </p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-xl">
+              <div className="p-3 bg-purple-600/10 rounded-xl">
                 <Activity className="w-6 h-6 text-purple-600" />
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function DexPairs() {
             <CardTitle>{t('allTradingPairs')}</CardTitle>
             <div className="flex gap-2 w-full md:w-auto">
               <div className="relative flex-1 md:w-64">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder={t('searchPairs')}
                   className="pl-8"
@@ -336,7 +336,7 @@ export default function DexPairs() {
                   {filteredAndSortedPairs.map((pair) => (
                     <TableRow
                       key={`${pair.amountAsset}-${pair.priceAsset}-${pair.pairName}`}
-                      className="hover:bg-gray-50"
+                      className="hover:bg-muted"
                     >
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -346,14 +346,14 @@ export default function DexPairs() {
                             <div className="flex gap-1 mt-1">
                               <Link
                                 to={createPageUrl('Asset', `?id=${pair.amountAsset}`)}
-                                className="text-xs text-blue-600 hover:text-blue-700"
+                                className="text-xs text-link hover:text-link-hover"
                               >
                                 {pair.amountAssetName}
                               </Link>
-                              <span className="text-xs text-gray-400">/</span>
+                              <span className="text-xs text-muted-foreground">/</span>
                               <Link
                                 to={createPageUrl('Asset', `?id=${pair.priceAsset}`)}
-                                className="text-xs text-blue-600 hover:text-blue-700"
+                                className="text-xs text-link hover:text-link-hover"
                               >
                                 {pair.priceAssetName}
                               </Link>
@@ -378,7 +378,7 @@ export default function DexPairs() {
                       <TableCell className="font-mono text-sm">{pair.high.toFixed(8)}</TableCell>
                       <TableCell className="font-mono text-sm">{pair.low.toFixed(8)}</TableCell>
                       <TableCell className="font-semibold">{pair.volume.toFixed(2)}</TableCell>
-                      <TableCell className="text-gray-600">
+                      <TableCell className="text-muted-foreground">
                         {pair.txsCount.toLocaleString()}
                       </TableCell>
                     </TableRow>

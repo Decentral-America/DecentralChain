@@ -49,6 +49,7 @@
 - [ ] Check npm download counts + last-publish dates for all deps (abandoned packages = risk)
 - [ ] No postinstall scripts from third-party packages unless explicitly approved
 - [ ] Verify `pnpm.overrides` or `resolutions` are necessary and documented
+- [ ] Verify Renovate config (`renovate.json`) — `@waves/ride-lang` and `@waves/ride-repl` are in `ignoreDeps`, `security:minimumReleaseAgeNpm` is active (3-day npm unpublish protection), `abandonments:recommended` flags unmaintained packages
 
 ### Red Flags
 

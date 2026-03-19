@@ -52,15 +52,15 @@ export default function UnconfirmedTransactions() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('unconfirmedTransactions')}</h1>
-          <p className="text-gray-600">{t('transactionsWaitingBlocks')}</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">{t('unconfirmedTransactions')}</h1>
+          <p className="text-muted-foreground">{t('transactionsWaitingBlocks')}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="auto-refresh" className="text-sm text-gray-600">
+          <Label htmlFor="auto-refresh" className="text-sm text-muted-foreground">
             {t('autoRefresh')}
           </Label>
           <Switch id="auto-refresh" checked={autoRefresh} onCheckedChange={setAutoRefresh} />
-          {autoRefresh && <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />}
+          {autoRefresh && <RefreshCw className="w-4 h-4 text-info animate-spin" />}
         </div>
       </div>
 
@@ -72,7 +72,7 @@ export default function UnconfirmedTransactions() {
               {t('pendingTransactions')} ({filteredTransactions?.length || 0})
             </CardTitle>
             <div className="relative w-full md:w-64">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={t('searchByIdOrAddress')}
                 className="pl-8"
@@ -120,7 +120,7 @@ export default function UnconfirmedTransactions() {
                   filteredTransactions.map((tx) => (
                     <TableRow
                       key={tx.id}
-                      className="hover:bg-gray-50 cursor-pointer"
+                      className="hover:bg-muted cursor-pointer"
                       onClick={() =>
                         (window.location.href = createPageUrl('Transaction', `?id=${tx.id}`))
                       }
@@ -129,7 +129,7 @@ export default function UnconfirmedTransactions() {
                         <div className="flex items-center gap-2">
                           <Link
                             to={createPageUrl('Transaction', `?id=${tx.id}`)}
-                            className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                            className="text-link hover:text-link-hover font-mono text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {truncate(tx.id, 10)}
@@ -144,7 +144,7 @@ export default function UnconfirmedTransactions() {
                         {tx.sender ? (
                           <Link
                             to={createPageUrl('Address', `?addr=${tx.sender}`)}
-                            className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                            className="text-link hover:text-link-hover font-mono text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {truncate(tx.sender, 8)}
@@ -157,7 +157,7 @@ export default function UnconfirmedTransactions() {
                         {tx.recipient ? (
                           <Link
                             to={createPageUrl('Address', `?addr=${tx.recipient}`)}
-                            className="text-blue-600 hover:text-blue-700 font-mono text-sm"
+                            className="text-link hover:text-link-hover font-mono text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {truncate(tx.recipient, 8)}
@@ -170,14 +170,14 @@ export default function UnconfirmedTransactions() {
                         {tx.amount ? `${formatAmount(tx.amount)} DC` : '-'}
                       </TableCell>
                       <TableCell className="text-right">{formatAmount(tx.fee)} DC</TableCell>
-                      <TableCell className="text-sm text-gray-600">
+                      <TableCell className="text-sm text-muted-foreground">
                         {timeAgo(tx.timestamp)}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-gray-500 py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {searchTerm ? t('noTransactionsMatch') : t('noUnconfirmedTransactions')}
                     </TableCell>
                   </TableRow>
