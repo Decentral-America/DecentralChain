@@ -2,7 +2,6 @@
  * Dashboard Page - Refactored Example
  *
  * Demonstrates clean architecture patterns:
- * - Services for data access
  * - Custom hooks for state management
  * - Presentational components for rendering
  * - Clear separation of concerns
@@ -26,13 +25,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatAmount, fromUnix, timeAgo, truncate } from '@/components/utils/formatters';
-import { useBlocks, useLatestBlock } from '@/infrastructure/state/index.ts';
-
-// New enterprise imports
-import { type Block } from '@/models/index.ts';
-import { serviceContainer } from '@/services/service-container.ts';
-import { createPageUrl } from '@/utils';
+import { fromUnix, timeAgo, truncate } from '@/components/utils/formatters';
+import { useBlockHeight, useLatestBlock } from '@/hooks/useBlockPolling';
+import { useBlockHeaders } from '@/hooks/useBlocks';
+import { useNodeVersion } from '@/hooks/useNode';
+import { type IBlock, type IBlockHeader } from '@/lib/api';
 
 /**
  * Props for the dashboard stat card component
@@ -79,7 +76,7 @@ function StatCard({ title, value, icon: Icon, gradient, badge }: StatCardProps) 
 /**
  * Latest Block Details Component (pure presentation)
  */
-function LatestBlockDetail({ block }: { block: Block }) {
+function LatestBlockDetail({ block }: { block: IBlock }) {
   const { t } = useLanguage();
 
   return (
@@ -95,8 +92,8 @@ function LatestBlockDetail({ block }: { block: Block }) {
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t('blockId')}</p>
             <div className="flex items-center gap-2">
-              <code className="text-sm font-mono">{truncate(block.id, 12)}</code>
-              <CopyButton text={block.id} label={t('copyBlockId')} />
+              <code className="text-sm font-mono">{truncate(block.signature, 12)}</code>
+              <CopyButton text={block.signature} label={t('copyBlockId')} />
             </div>
           </div>
           <div>
@@ -116,10 +113,6 @@ function LatestBlockDetail({ block }: { block: Block }) {
             <p className="text-sm text-muted-foreground mb-1">{t('timestamp')}</p>
             <p className="text-sm">{fromUnix(block.timestamp)}</p>
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">{t('baseTarget')}</p>
-            <p className="font-semibold font-mono text-sm">{block.baseTarget}</p>
-          </div>
           <div className="md:col-span-2">
             <p className="text-sm text-muted-foreground mb-1">{t('generator')}</p>
             <Link
@@ -138,7 +131,7 @@ function LatestBlockDetail({ block }: { block: Block }) {
 /**
  * Recent Blocks Table Component (pure presentation)
  */
-function RecentBlocksTable({ blocks, isLoading }: { blocks?: Block[]; isLoading: boolean }) {
+function RecentBlocksTable({ blocks, isLoading }: { blocks?: IBlockHeader[]; isLoading: boolean }) {
   const { t } = useLanguage();
 
   return (
@@ -160,15 +153,15 @@ function RecentBlocksTable({ blocks, isLoading }: { blocks?: Block[]; isLoading:
             </TableHeader>
             <TableBody>
               {isLoading
-                ? Array.from({ length: 10 }).map((_, i) => (
-                    <TableRow key={i}>
+                ? Array.from({ length: 10 }, (_, i) => `skeleton-${i}`).map((skeletonKey) => (
+                    <TableRow key={skeletonKey}>
                       <TableCell colSpan={5}>
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
                     </TableRow>
                   ))
                 : blocks?.map((block) => (
-                    <TableRow key={block.id}>
+                    <TableRow key={block.signature}>
                       <TableCell className="font-mono text-sm">
                         <Link
                           to={`/blockdetail?height=${block.height}`}
@@ -177,7 +170,9 @@ function RecentBlocksTable({ blocks, isLoading }: { blocks?: Block[]; isLoading:
                           {block.height}
                         </Link>
                       </TableCell>
-                      <TableCell className="font-mono text-sm">{truncate(block.id, 8)}</TableCell>
+                      <TableCell className="font-mono text-sm">
+                        {truncate(block.signature, 8)}
+                      </TableCell>
                       <TableCell className="text-sm">{timeAgo(block.timestamp)}</TableCell>
                       <TableCell className="font-mono text-sm">
                         <Link
@@ -211,29 +206,20 @@ export default function Dashboard() {
   const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
   const { t } = useLanguage();
 
-  // Data fetching via custom hooks (abstract React Query)
-  const { data: latestBlock, isLoading: latestBlockLoading } = useLatestBlock({
-    refetchInterval: autoRefresh ? 15000 : false,
-  });
+  // Data fetching via custom hooks
+  const { data: height, isLoading: latestBlockLoading } = useBlockHeight(autoRefresh);
+  const { data: latestBlock } = useLatestBlock(autoRefresh);
+  const { data: nodeVersionData } = useNodeVersion();
 
-  // Get current height from latest block
-  const currentHeight = latestBlock?.height || 0;
+  const currentHeight = height?.height || 0;
+  const nodeVersion = nodeVersionData?.version ?? '...';
 
   // Fetch recent block headers (last 50)
   const from = Math.max(1, currentHeight - 49);
-  const { data: blockHeaders, isLoading: headersLoading } = useBlocks({
-    from,
-    to: currentHeight,
+  const { data: blockHeaders, isLoading: headersLoading } = useBlockHeaders(from, currentHeight, {
     enabled: currentHeight > 0,
+    refetchInterval: autoRefresh ? 15_000 : false,
   });
-
-  // Fetch node version (side effect for stat card)
-  const [nodeVersion, setNodeVersion] = useState<string>('...');
-  React.useEffect(() => {
-    serviceContainer.nodes.getNodeVersion().then((v) => {
-      setNodeVersion(v.version);
-    });
-  }, []);
 
   return (
     <div className="space-y-8">
@@ -278,7 +264,7 @@ export default function Dashboard() {
       {latestBlock && <LatestBlockDetail block={latestBlock} />}
 
       {/* Recent Blocks Table */}
-      <RecentBlocksTable blocks={blockHeaders as any} isLoading={headersLoading} />
+      <RecentBlocksTable blocks={blockHeaders} isLoading={headersLoading} />
     </div>
   );
 }

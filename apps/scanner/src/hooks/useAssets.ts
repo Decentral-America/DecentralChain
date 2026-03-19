@@ -5,7 +5,10 @@ import { fetchAssetDetailsById, type TAssetDetails } from '@/lib/api';
 export function useAssetDetails(assetId: string | null): UseQueryResult<TAssetDetails> {
   return useQuery({
     enabled: !!assetId,
-    queryFn: () => fetchAssetDetailsById(assetId!),
+    queryFn: () => {
+      if (!assetId) throw new Error('assetId is required');
+      return fetchAssetDetailsById(assetId);
+    },
     queryKey: ['asset', assetId],
     staleTime: 60_000,
   });
