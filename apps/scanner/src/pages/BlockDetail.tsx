@@ -7,11 +7,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
-import { fetchBlockAt, fetchBlockById, type IBlock } from '@/lib/api';
+import { fetchBlockById, fetchBlockHeadersSeq, type IBlock } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
 
+/**
+ * DCC-156 — Deferred data streaming.
+ *
+ * For height-based navigation:
+ *   - Awaits a lightweight block header (fast, no tx list) for immediate SSR HTML.
+ *   - Client-side React Query (`useBlockAt`) streams in the full block with transactions.
+ *
+ * For ID-based navigation:
+ *   - No header-only endpoint exists — awaits the full block as before.
+ */
 interface LoaderData {
   block: IBlock | null;
 }
@@ -21,14 +31,20 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   const height = params.get('height');
   const id = params.get('id');
   if (!height && !id) return { block: null };
-  const block = height
-    ? await fetchBlockAt(parseInt(height, 10)).catch(() => null)
-    : id
-      ? await fetchBlockById(id).catch(() => null)
-      : null;
-  if (!block) {
-    throw data('Block not found', { status: 404 });
+
+  if (height) {
+    // Fast path: fetch only the block header (no transaction list) for initial SSR HTML.
+    // The full block (with transactions) is hydrated client-side by useBlockAt().
+    const heightNum = parseInt(height, 10);
+    const headers = await fetchBlockHeadersSeq(heightNum, heightNum).catch(() => []);
+    const header = headers[0] ?? null;
+    if (!header) throw data('Block not found', { status: 404 });
+    return { block: header as unknown as IBlock };
   }
+
+  // ID path: no header-only endpoint — fetch full block.
+  const block = id ? await fetchBlockById(id).catch(() => null) : null;
+  if (!block) throw data('Block not found', { status: 404 });
   return { block };
 }
 
@@ -43,9 +59,21 @@ export function ErrorBoundary() {
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.block) return [{ title: 'Block — DecentralScan' }];
+  const height = data.block.height?.toLocaleString() ?? 'N/A';
+  const generator = (data.block as IBlock).generator ?? '';
+  const txCount = data.block.transactionCount ?? 0;
+  const title = `Block #${height} — DecentralScan`;
+  const description = `Block at height ${height} on DecentralChain. Generator: ${generator || 'N/A'}, Transactions: ${txCount}.`;
   return [
-    { title: `Block #${data.block.height?.toLocaleString() ?? 'N/A'} — DecentralScan` },
-    { content: `Block at height ${data.block.height} on DecentralChain`, name: 'description' },
+    { title },
+    { content: description, name: 'description' },
+    { content: title, property: 'og:title' },
+    { content: description, property: 'og:description' },
+    { content: 'website', property: 'og:type' },
+    { content: '/og-image.png', property: 'og:image' },
+    { content: 'summary', name: 'twitter:card' },
+    { content: title, name: 'twitter:title' },
+    { content: description, name: 'twitter:description' },
   ];
 }
 
