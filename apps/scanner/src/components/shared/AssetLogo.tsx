@@ -103,9 +103,9 @@ export default function AssetLogo({
           }}
         />
         <div
-          className={`${sizeClass} rounded-full bg-gradient-to-br from-blue-100 to-purple-100 items-center justify-center ${className} hidden`}
+          className={`${sizeClass} rounded-full bg-gradient-to-br from-info/10 to-primary/10 items-center justify-center ${className} hidden`}
         >
-          <Coins className={`${iconSize} text-blue-600`} />
+          <Coins className={`${iconSize} text-info`} />
         </div>
       </>
     );
@@ -114,9 +114,9 @@ export default function AssetLogo({
   // Placeholder for assets without logos
   return (
     <div
-      className={`${sizeClass} rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center ${className}`}
+      className={`${sizeClass} rounded-full bg-gradient-to-br from-info/10 to-primary/10 flex items-center justify-center ${className}`}
     >
-      <Coins className={`${iconSize} text-blue-600`} />
+      <Coins className={`${iconSize} text-info`} />
     </div>
   );
 }

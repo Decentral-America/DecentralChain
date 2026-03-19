@@ -1,11 +1,11 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import {
   fetchAddressTransactions,
   fetchTransactionInfo,
   fetchUnconfirmedTransactionInfo,
   fetchUnconfirmedTransactions,
 } from '@/lib/api';
-import type { Transaction } from '@/types';
+import { type Transaction } from '@/types';
 
 /**
  * Fetch a transaction by ID, trying the confirmed pool first then the unconfirmed pool.
