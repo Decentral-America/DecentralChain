@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { fetchNodeStatus, fetchNodeVersion } from '@/lib/api';
 
 /** Fetch the node software version string. Very stable — cached for 5 minutes. */

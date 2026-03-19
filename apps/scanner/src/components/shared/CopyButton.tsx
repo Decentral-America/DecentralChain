@@ -31,7 +31,7 @@ export default function CopyButton({ text, label }: CopyButtonProps): React.Reac
             aria-label={copied ? 'Copied' : label || 'Copy'}
           >
             {copied ? (
-              <Check className="h-3.5 w-3.5 text-green-600" aria-hidden="true" />
+              <Check className="h-3.5 w-3.5 text-success" aria-hidden="true" />
             ) : (
               <Copy className="h-3.5 w-3.5" aria-hidden="true" />
             )}

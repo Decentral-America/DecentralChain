@@ -78,7 +78,7 @@ export default function SearchBar(): React.ReactElement {
       className="relative flex-1 max-w-2xl"
     >
       <Search
-        className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
         aria-hidden="true"
       />
       <Input
