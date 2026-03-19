@@ -21,8 +21,8 @@
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "@/*": ["./src/*"],
       "./+types/*": ["./.react-router/types/src/+types/*"],
+      "@/*": ["./src/*"],
       "~/*": ["./.react-router/types/*"]
     },
     "resolveJsonModule": true,

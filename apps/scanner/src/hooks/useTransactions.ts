@@ -42,7 +42,10 @@ export function useAddressTransactions(
 ): UseQueryResult<Transaction[]> {
   return useQuery({
     enabled: !!address,
-    queryFn: () => fetchAddressTransactions(address!, limit) as Promise<Transaction[]>,
+    queryFn: () => {
+      if (!address) throw new Error('address is required');
+      return fetchAddressTransactions(address, limit) as Promise<Transaction[]>;
+    },
     queryKey: ['addressTransactions', address, limit],
     staleTime: 10_000,
   });

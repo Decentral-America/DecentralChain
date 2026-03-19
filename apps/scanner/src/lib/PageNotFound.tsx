@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 export default function PageNotFound(): React.ReactElement {
   const location = useLocation();
@@ -11,23 +11,22 @@ export default function PageNotFound(): React.ReactElement {
           {/* 404 Error Code */}
           <div className="space-y-2">
             <h1 className="text-7xl font-light text-muted-foreground/50">404</h1>
-            <div className="h-0.5 w-16 bg-border mx-auto"></div>
+            <div className="h-0.5 w-16 bg-border mx-auto" />
           </div>
 
           {/* Main Message */}
           <div className="space-y-3">
             <h2 className="text-2xl font-medium text-foreground">Page Not Found</h2>
             <p className="text-muted-foreground leading-relaxed">
-              The page <span className="font-medium text-foreground">"{pageName}"</span> could not be
-              found in this application.
+              The page <span className="font-medium text-foreground">"{pageName}"</span> could not
+              be found in this application.
             </p>
           </div>
 
           {/* Action Button */}
           <div className="pt-6">
-            <button
-              type="button"
-              onClick={() => (window.location.href = '/')}
+            <Link
+              to="/"
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-lg hover:bg-muted hover:border-border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
             >
               <svg
@@ -47,7 +46,7 @@ export default function PageNotFound(): React.ReactElement {
                 />
               </svg>
               Go Home
-            </button>
+            </Link>
           </div>
         </div>
       </div>

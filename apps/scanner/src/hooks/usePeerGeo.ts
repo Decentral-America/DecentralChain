@@ -53,7 +53,9 @@ export function usePeerGeo(ips: string[]): Record<string, PeerGeoResult> {
 
   const result: Record<string, PeerGeoResult> = {};
   for (let i = 0; i < ips.length; i++) {
-    result[ips[i]!] = {
+    const ip = ips[i];
+    if (ip === undefined) continue;
+    result[ip] = {
       geo: geoQueries[i]?.data,
       green: greenQueries[i]?.data,
       isLoading: (geoQueries[i]?.isLoading ?? false) || (greenQueries[i]?.isLoading ?? false),

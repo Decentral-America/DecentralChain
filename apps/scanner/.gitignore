@@ -17,6 +17,9 @@ dist-ssr
 build
 *.local
 
+# React Router generated types (auto-generated, do not edit)
+.react-router/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

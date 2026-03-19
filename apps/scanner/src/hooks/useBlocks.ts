@@ -13,7 +13,10 @@ const STALE = 10_000;
 export function useBlockAt(height: number | null): UseQueryResult<IBlock> {
   return useQuery({
     enabled: height !== null && height > 0,
-    queryFn: () => fetchBlockAt(height!),
+    queryFn: () => {
+      if (height === null) throw new Error('height is required');
+      return fetchBlockAt(height);
+    },
     queryKey: ['block', 'height', height],
     staleTime: STALE,
   });
@@ -23,7 +26,10 @@ export function useBlockAt(height: number | null): UseQueryResult<IBlock> {
 export function useBlockById(id: string | null): UseQueryResult<IBlock> {
   return useQuery({
     enabled: !!id,
-    queryFn: () => fetchBlockById(id!),
+    queryFn: () => {
+      if (!id) throw new Error('id is required');
+      return fetchBlockById(id);
+    },
     queryKey: ['block', 'id', id],
     staleTime: STALE,
   });

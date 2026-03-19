@@ -1,20 +1,20 @@
 import './App.css';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
+  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
 } from 'react-router';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { queryClientInstance } from '@/lib/query-client';
-import type { Route } from './+types/root';
+import { type Route } from './+types/root';
 
-export const links: Route.LinksFunction = () => [{ rel: 'manifest', href: '/manifest.json' }];
+export const links: Route.LinksFunction = () => [{ href: '/manifest.json', rel: 'manifest' }];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

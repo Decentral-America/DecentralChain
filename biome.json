@@ -11,7 +11,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts", "!packages/transactions/docs", "!.nx"]
+    "includes": [
+      "**",
+      "!dist",
+      "!coverage",
+      "!**/*.d.ts",
+      "!packages/transactions/docs",
+      "!.nx",
+      "!**/.react-router"
+    ]
   },
   "formatter": {
     "enabled": true,
