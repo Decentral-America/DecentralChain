@@ -1,11 +1,11 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import {
   fetchAllPeers,
   fetchBlacklistedPeers,
   fetchConnectedPeers,
   fetchSuspendedPeers,
 } from '@/lib/api';
-import type { Peer } from '@/types';
+import { type Peer } from '@/types';
 
 const STALE = 30_000;
 const INTERVAL = 30_000;

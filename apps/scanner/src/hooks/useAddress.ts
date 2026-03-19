@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import {
   fetchActiveLeases,
   fetchAddressNFTs,
@@ -8,7 +8,7 @@ import {
   type TAssetDetails,
   type TAssetsBalance,
 } from '@/lib/api';
-import type { Lease } from '@/types';
+import { type Lease } from '@/types';
 
 /** Fetch full balance details (regular, generating, available, effective) for an address. */
 export function useAddressBalance(address: string | null): UseQueryResult<IBalanceDetails> {
