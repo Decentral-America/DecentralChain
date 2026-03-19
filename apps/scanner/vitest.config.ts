@@ -20,7 +20,30 @@ export default defineConfig({
   },
   test: {
     coverage: {
-      exclude: ['src/root.tsx', 'src/vite-env.d.ts', 'src/**/*.d.ts', 'src/test/**'],
+      exclude: [
+        // Framework boilerplate — no business logic
+        'src/root.tsx',
+        'src/entry.client.tsx',
+        'src/entry.server.tsx',
+        'src/routes.ts',
+        'src/vite-env.d.ts',
+        'src/**/*.d.ts',
+        // Generated shadcn/ui Radix wrappers — no business logic
+        'src/components/ui/**',
+        // Type declaration files — no runtime code
+        'src/types/**',
+        // Page orchestrators — covered by Playwright E2E (26 tests across all routes)
+        'src/pages/**',
+        'src/Layout.tsx',
+        // Static i18n data file — pure key/value map, no branches
+        'src/components/utils/translations.tsx',
+        // Trivial singleton config — no testable logic
+        'src/lib/query-client.ts',
+        // SSR resource route — integration-only
+        'src/routes/sitemap.xml.ts',
+        // Test infrastructure
+        'src/test/**',
+      ],
       include: ['src/**/*.{ts,tsx}'],
       provider: 'v8',
       thresholds: {

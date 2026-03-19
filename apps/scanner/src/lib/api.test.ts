@@ -9,6 +9,7 @@
  *   2. returns the expected shape
  *   3. throws on error responses
  */
+import { create } from '@decentralchain/node-api-js';
 import { describe, expect, it, vi } from 'vitest';
 import {
   fetchAddressTransactions,
@@ -242,5 +243,224 @@ describe('api — getBlockTransactions helper', () => {
   it('returns empty array when block has no transactions', () => {
     const txs = getBlockTransactions({ ...mockBlock, transactions: [] } as unknown as IBlock);
     expect(txs).toHaveLength(0);
+  });
+});
+
+// ── api — rewards ──────────────────────────────────────────────────────────
+
+describe('api — rewards', () => {
+  it('fetchRewards returns reward object', async () => {
+    const { fetchRewards } = await import('./api');
+    const rewards = await fetchRewards();
+    expect(rewards).toMatchObject({ currentReward: 600_000_000 });
+  });
+
+  it('fetchRewards accepts an optional height', async () => {
+    const { fetchRewards } = await import('./api');
+    const rewards = await fetchRewards(1000);
+    expect(rewards).toBeDefined();
+  });
+});
+
+// ── api — addresses ────────────────────────────────────────────────────────
+
+describe('api — addresses', () => {
+  it('fetchBalanceDetails returns balance object', async () => {
+    const { fetchBalanceDetails } = await import('./api');
+    const balance = await fetchBalanceDetails('3Paddr');
+    expect(balance).toMatchObject({ available: '1000', regular: '1000' });
+  });
+});
+
+// ── api — fetchBatchAssetDetails error filtering ───────────────────────────
+
+describe('api — fetchBatchAssetDetails error filtering', () => {
+  it('filters out error responses from batch result', async () => {
+    // Access the singleton nodeApi instance that api.ts captured on import
+    const nodeApi = vi.mocked(create).mock.results[0]?.value as {
+      assets: { fetchAssetsDetails: ReturnType<typeof vi.fn> };
+    };
+    nodeApi.assets.fetchAssetsDetails.mockResolvedValueOnce([
+      { assetId: 'VALID', name: 'Valid Token' },
+      { error: 2, message: 'invalid asset id' },
+    ]);
+    const map = await fetchBatchAssetDetails(['VALID', 'INVALID']);
+    expect(map.has('VALID')).toBe(true);
+    expect(map.has('INVALID')).toBe(false);
+  });
+});
+
+// ── api — distribution multi-page pagination ──────────────────────────────
+
+describe('api — distribution pagination', () => {
+  it('follows hasNext cursor through multiple pages', async () => {
+    const nodeApi = vi.mocked(create).mock.results[0]?.value as {
+      assets: { fetchAssetDistribution: ReturnType<typeof vi.fn> };
+    };
+    nodeApi.assets.fetchAssetDistribution
+      .mockResolvedValueOnce({ hasNext: true, items: { addr1: 100 }, lastItem: 'addr1' })
+      .mockResolvedValueOnce({ hasNext: false, items: { addr2: 200 }, lastItem: null });
+
+    const result = await fetchFullAssetDistribution('WAVES', 100);
+    expect(result.totalPages).toBe(2);
+    expect(result.totalHolders).toBe(2);
+    expect(result.items).toMatchObject({ addr1: 100, addr2: 200 });
+  });
+
+  it('calls onProgress callback for each page', async () => {
+    const nodeApi = vi.mocked(create).mock.results[0]?.value as {
+      assets: { fetchAssetDistribution: ReturnType<typeof vi.fn> };
+    };
+    nodeApi.assets.fetchAssetDistribution
+      .mockResolvedValueOnce({ hasNext: true, items: { x: 1 }, lastItem: 'x' })
+      .mockResolvedValueOnce({ hasNext: false, items: { y: 2 }, lastItem: null });
+
+    const onProgress = vi.fn();
+    await fetchFullAssetDistribution('WAVES', 100, onProgress);
+    expect(onProgress).toHaveBeenCalledTimes(2);
+    expect(onProgress).toHaveBeenNthCalledWith(1, 1, 1, true);
+    expect(onProgress).toHaveBeenNthCalledWith(2, 2, 2, false);
+  });
+});
+
+// ── api — raw fetch wrappers ───────────────────────────────────────────────
+
+describe('api — fetchMatcherOrderbook', () => {
+  it('returns orderbook on success', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ markets: [{ amountAsset: 'A', priceAsset: 'B' }] }),
+        ok: true,
+      }),
+    );
+    const { fetchMatcherOrderbook } = await import('./api');
+    const result = await fetchMatcherOrderbook();
+    expect(result.markets).toHaveLength(1);
+    vi.unstubAllGlobals();
+  });
+
+  it('throws on non-ok HTTP response', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 }));
+    const { fetchMatcherOrderbook } = await import('./api');
+    await expect(fetchMatcherOrderbook()).rejects.toThrow('HTTP 503');
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('api — fetchPairInfo', () => {
+  it('returns pair info on success', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            data: { firstPrice: 1, lastPrice: 2, txsCount: 10, volume: 500 },
+          }),
+        ok: true,
+        status: 200,
+      }),
+    );
+    const { fetchPairInfo } = await import('./api');
+    const result = await fetchPairInfo('WAVES', 'USDT');
+    expect(result?.data?.lastPrice).toBe(2);
+    vi.unstubAllGlobals();
+  });
+
+  it('returns null on 404', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }));
+    const { fetchPairInfo } = await import('./api');
+    const result = await fetchPairInfo('WAVES', 'MISSING');
+    expect(result).toBeNull();
+    vi.unstubAllGlobals();
+  });
+
+  it('throws on non-404 error response', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
+    const { fetchPairInfo } = await import('./api');
+    await expect(fetchPairInfo('WAVES', 'USDT')).rejects.toThrow('HTTP 500');
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('api — fetchGeoForIp', () => {
+  it('returns geo data on success', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            city: 'Berlin',
+            country: 'DE',
+            org: 'AS1234 Provider',
+            region: 'Berlin',
+            timezone: 'Europe/Berlin',
+          }),
+        ok: true,
+        status: 200,
+      }),
+    );
+    const { fetchGeoForIp } = await import('./api');
+    const geo = await fetchGeoForIp('1.2.3.4');
+    expect(geo.city).toBe('Berlin');
+    expect(geo.org).toBe('AS1234 Provider');
+    vi.unstubAllGlobals();
+  });
+
+  it('throws RATE_LIMITED on 429', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 429 }));
+    const { fetchGeoForIp } = await import('./api');
+    await expect(fetchGeoForIp('1.2.3.4')).rejects.toThrow('RATE_LIMITED');
+    vi.unstubAllGlobals();
+  });
+
+  it('throws generic HTTP error on other non-ok status', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 }));
+    const { fetchGeoForIp } = await import('./api');
+    await expect(fetchGeoForIp('1.2.3.4')).rejects.toThrow('HTTP 503');
+    vi.unstubAllGlobals();
+  });
+
+  it('returns country name from country code', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ city: 'New York', country: 'US' }),
+        ok: true,
+        status: 200,
+      }),
+    );
+    const { fetchGeoForIp } = await import('./api');
+    const geo = await fetchGeoForIp('8.8.8.8');
+    expect(geo.countryCode).toBe('US');
+    expect(typeof geo.country).toBe('string');
+    expect(geo.country.length).toBeGreaterThan(0);
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('api — fetchGreenCheck', () => {
+  it('returns hosted green data on success', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ green: true, hosted_by: 'GreenHost' }),
+        ok: true,
+      }),
+    );
+    const { fetchGreenCheck } = await import('./api');
+    const result = await fetchGreenCheck('1.2.3.4');
+    expect(result.green).toBe(true);
+    expect(result.hostedBy).toBe('GreenHost');
+    vi.unstubAllGlobals();
+  });
+
+  it('returns fallback {green: false, hostedBy: null} on non-ok response', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }));
+    const { fetchGreenCheck } = await import('./api');
+    const result = await fetchGreenCheck('9.9.9.9');
+    expect(result.green).toBe(false);
+    expect(result.hostedBy).toBeNull();
+    vi.unstubAllGlobals();
   });
 });

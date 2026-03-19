@@ -17,9 +17,6 @@ type Pages = {
   "/blocks": {
     params: {};
   };
-  "/blockfeed": {
-    params: {};
-  };
   "/blockdetail": {
     params: {};
   };
@@ -33,6 +30,12 @@ type Pages = {
     params: {};
   };
   "/dexpairs": {
+    params: {};
+  };
+  "/network": {
+    params: {};
+  };
+  "/blockfeed": {
     params: {};
   };
   "/unconfirmedtransactions": {
@@ -62,16 +65,19 @@ type Pages = {
   "/home": {
     params: {};
   };
+  "/sitemap.xml": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/blocks" | "/blockfeed" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
+    page: "/" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/sitemap.xml";
   };
   "Layout.tsx": {
     id: "Layout";
-    page: "/" | "/blocks" | "/blockfeed" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
+    page: "/" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
   };
   "pages/Dashboard.tsx": {
     id: "pages/Dashboard";
@@ -80,10 +86,6 @@ type RouteFiles = {
   "pages/Blocks.tsx": {
     id: "pages/Blocks";
     page: "/blocks";
-  };
-  "pages/BlockFeed.tsx": {
-    id: "pages/BlockFeed";
-    page: "/blockfeed";
   };
   "pages/BlockDetail.tsx": {
     id: "pages/BlockDetail";
@@ -104,6 +106,14 @@ type RouteFiles = {
   "pages/DexPairs.tsx": {
     id: "pages/DexPairs";
     page: "/dexpairs";
+  };
+  "pages/Network.tsx": {
+    id: "pages/Network";
+    page: "/network";
+  };
+  "pages/BlockFeed.tsx": {
+    id: "pages/BlockFeed";
+    page: "/blockfeed";
   };
   "pages/UnconfirmedTransactions.tsx": {
     id: "pages/UnconfirmedTransactions";
@@ -141,6 +151,10 @@ type RouteFiles = {
     id: "pages/Home";
     page: "/home";
   };
+  "routes/sitemap.xml.ts": {
+    id: "routes/sitemap.xml";
+    page: "/sitemap.xml";
+  };
 };
 
 type RouteModules = {
@@ -148,12 +162,13 @@ type RouteModules = {
   "Layout": typeof import("./src/Layout.tsx");
   "pages/Dashboard": typeof import("./src/pages/Dashboard.tsx");
   "pages/Blocks": typeof import("./src/pages/Blocks.tsx");
-  "pages/BlockFeed": typeof import("./src/pages/BlockFeed.tsx");
   "pages/BlockDetail": typeof import("./src/pages/BlockDetail.tsx");
   "pages/Transaction": typeof import("./src/pages/Transaction.tsx");
   "pages/Address": typeof import("./src/pages/Address.tsx");
   "pages/Asset": typeof import("./src/pages/Asset.tsx");
   "pages/DexPairs": typeof import("./src/pages/DexPairs.tsx");
+  "pages/Network": typeof import("./src/pages/Network.tsx");
+  "pages/BlockFeed": typeof import("./src/pages/BlockFeed.tsx");
   "pages/UnconfirmedTransactions": typeof import("./src/pages/UnconfirmedTransactions.tsx");
   "pages/DistributionTool": typeof import("./src/pages/DistributionTool.tsx");
   "pages/TransactionMap": typeof import("./src/pages/TransactionMap.tsx");
@@ -163,4 +178,5 @@ type RouteModules = {
   "pages/Sustainability": typeof import("./src/pages/Sustainability.tsx");
   "pages/Node": typeof import("./src/pages/Node.tsx");
   "pages/Home": typeof import("./src/pages/Home.tsx");
+  "routes/sitemap.xml": typeof import("./src/routes/sitemap.xml.ts");
 };
