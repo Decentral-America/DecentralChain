@@ -1,6 +1,7 @@
 import { ArrowUpDown, Coins, FileText, Search, TrendingUp, Wallet } from 'lucide-react';
 import { type FormEvent, useMemo, useState } from 'react';
-import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import RouteError from '@/components/RouteError';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,21 +23,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  fetchActiveLeases,
-  fetchAddressNFTs,
-  fetchAddressTransactions,
-  fetchAssetsBalance,
-  type TAssetDetails,
-  type TAssetsBalance,
-} from '@/lib/api';
-import {
-  useActiveLeases,
-  useAddressAssets,
-  useAddressNFTs,
-} from '@/hooks/useAddress';
+import { useActiveLeases, useAddressAssets, useAddressNFTs } from '@/hooks/useAddress';
 import { useAddressTransactions } from '@/hooks/useTransactions';
-import { type Lease, type Transaction } from '@/types';
+import { fetchAssetsBalance, type TAssetsBalance } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
@@ -60,14 +49,26 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   const addr = new URL(request.url).searchParams.get('addr');
   if (!addr) return { address: null, balances: null };
   const balances = await fetchAssetsBalance(addr).catch(() => null);
+  if (!balances) {
+    throw data('Address not found', { status: 404 });
+  }
   return { address: addr, balances };
+}
+
+export function ErrorBoundary() {
+  return (
+    <RouteError
+      notFoundTitle="Address Not Found"
+      notFoundDescription="No wallet address with that ID exists on DecentralChain. Please check the address and try again."
+    />
+  );
 }
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.address) return [{ title: 'Address — DecentralScan' }];
   return [
     { title: `${data.address.slice(0, 8)}… — DecentralScan` },
-    { name: 'description', content: `Address ${data.address} on DecentralChain` },
+    { content: `Address ${data.address} on DecentralChain`, name: 'description' },
   ];
 }
 

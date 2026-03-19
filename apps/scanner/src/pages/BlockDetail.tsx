@@ -1,12 +1,13 @@
 import { AlertCircle, ArrowLeft, Box } from 'lucide-react';
-import { Link, useLoaderData, useSearchParams } from 'react-router';
+import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchBlockAt, fetchBlockById, type IBlock } from '@/lib/api';
 import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
+import { fetchBlockAt, fetchBlockById, type IBlock } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
@@ -22,20 +23,35 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   if (!height && !id) return { block: null };
   const block = height
     ? await fetchBlockAt(parseInt(height, 10)).catch(() => null)
-    : await fetchBlockById(id!).catch(() => null);
+    : id
+      ? await fetchBlockById(id).catch(() => null)
+      : null;
+  if (!block) {
+    throw data('Block not found', { status: 404 });
+  }
   return { block };
+}
+
+export function ErrorBoundary() {
+  return (
+    <RouteError
+      notFoundTitle="Block Not Found"
+      notFoundDescription="No block with that height or ID exists on DecentralChain. Please check the value and try again."
+    />
+  );
 }
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.block) return [{ title: 'Block — DecentralScan' }];
   return [
     { title: `Block #${data.block.height?.toLocaleString() ?? 'N/A'} — DecentralScan` },
-    { name: 'description', content: `Block at height ${data.block.height} on DecentralChain` },
+    { content: `Block at height ${data.block.height} on DecentralChain`, name: 'description' },
   ];
 }
 
 export default function BlockDetail() {
   const { block: serverBlock } = useLoaderData() as LoaderData;
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const height = searchParams.get('height');
   const id = searchParams.get('id');
@@ -51,7 +67,7 @@ export default function BlockDetail() {
   if (error) {
     return (
       <div className="space-y-6">
-        <Button variant="ghost" onClick={() => window.history.back()} className="gap-2">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
           <ArrowLeft className="w-4 h-4" />
           Back
         </Button>
@@ -66,14 +82,16 @@ export default function BlockDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" onClick={() => window.history.back()} className="gap-2">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
           <ArrowLeft className="w-4 h-4" />
           Back
         </Button>
         <div>
           <h1 className="text-4xl font-bold text-foreground">Block Details</h1>
           {block && (
-            <p className="text-muted-foreground mt-1">Height: {block.height?.toLocaleString() || 'N/A'}</p>
+            <p className="text-muted-foreground mt-1">
+              Height: {block.height?.toLocaleString() || 'N/A'}
+            </p>
           )}
         </div>
       </div>
