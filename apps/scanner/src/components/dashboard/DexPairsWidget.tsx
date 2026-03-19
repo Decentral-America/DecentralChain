@@ -129,7 +129,7 @@ export default function DexPairsWidget() {
             />
           </div>
         ) : pairsData.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">{t('noTradingPairs')}</p>
+          <p className="text-center text-muted-foreground py-8">{t('noTradingPairs')}</p>
         ) : (
           <div className="overflow-x-auto">
             <Table>
@@ -146,7 +146,7 @@ export default function DexPairsWidget() {
                 {pairsData.map((pair) => (
                   <TableRow
                     key={`${pair.amountAsset}-${pair.priceAsset}-${pair.pairName}`}
-                    className="hover:bg-gray-50"
+                    className="hover:bg-muted"
                   >
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -173,7 +173,9 @@ export default function DexPairsWidget() {
                     <TableCell className="text-right font-semibold">
                       {pair.volume.toFixed(2)}
                     </TableCell>
-                    <TableCell className="text-right text-gray-600">{pair.txsCount}</TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {pair.txsCount}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

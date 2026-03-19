@@ -1,5 +1,11 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import { fetchBlockAt, fetchBlockById, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
+import {
+  fetchBlockAt,
+  fetchBlockById,
+  fetchBlockHeadersSeq,
+  type IBlock,
+  type IBlockHeader,
+} from '@/lib/api';
 
 const STALE = 10_000;
 
