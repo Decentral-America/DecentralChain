@@ -1,38 +1,51 @@
 import { AlertCircle, ArrowLeft, CheckCircle, Clock, Receipt, Search } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
-import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchTransactionInfo, fetchUnconfirmedTransactionInfo } from '@/lib/api';
 import { useTransaction } from '@/hooks/useTransactions';
-import type { Transaction } from '@/types';
+import { fetchTransactionInfo, fetchUnconfirmedTransactionInfo } from '@/lib/api';
+import { type Transaction as TransactionType } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 
 interface LoaderData {
-  tx: Transaction | null;
+  tx: TransactionType | null;
 }
 
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return { tx: null };
   const tx =
-    (await fetchTransactionInfo(id).catch(() => null) as Transaction | null) ??
-    (await fetchUnconfirmedTransactionInfo(id).catch(() => null) as Transaction | null);
+    ((await fetchTransactionInfo(id).catch(() => null)) as Transaction | null) ??
+    ((await fetchUnconfirmedTransactionInfo(id).catch(() => null)) as Transaction | null);
+  if (!tx) {
+    throw data('Transaction not found', { status: 404 });
+  }
   return { tx };
+}
+
+export function ErrorBoundary() {
+  return (
+    <RouteError
+      notFoundTitle="Transaction Not Found"
+      notFoundDescription="No transaction with that ID exists on DecentralChain. Please check the ID and try again."
+    />
+  );
 }
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.tx) return [{ title: 'Transaction — DecentralScan' }];
   return [
     { title: `Tx ${data.tx.id.slice(0, 8)}… — DecentralScan` },
-    { name: 'description', content: `Transaction ${data.tx.id} on DecentralChain` },
+    { content: `Transaction ${data.tx.id} on DecentralChain`, name: 'description' },
   ];
 }
 
@@ -92,7 +105,7 @@ export default function Transaction() {
       {txId && (
         <>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => window.history.back()} className="gap-2">
+            <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               {t('back')}
             </Button>

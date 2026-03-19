@@ -1,6 +1,6 @@
 import { AlertCircle, BarChart3, Coins, Search, TrendingUp, Users } from 'lucide-react';
-import { type FormEvent, useEffect, useState } from 'react';
-import { Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import {
   Bar,
   BarChart,
@@ -12,12 +12,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAssetDetails } from '@/hooks/useAssets';
 import {
   fetchAssetDetailsById,
   fetchBlockAt,
@@ -27,7 +29,6 @@ import {
   type IBlockHeader,
   type TAssetDetails,
 } from '@/lib/api';
-import { useAssetDetails } from '@/hooks/useAssets';
 import { type TokenAssetStat } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -55,14 +56,26 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return { asset: null };
   const asset = await fetchAssetDetailsById(id).catch(() => null);
+  if (!asset) {
+    throw data('Asset not found', { status: 404 });
+  }
   return { asset };
+}
+
+export function ErrorBoundary() {
+  return (
+    <RouteError
+      notFoundTitle="Asset Not Found"
+      notFoundDescription="No asset with that ID exists on DecentralChain. Please check the asset ID and try again."
+    />
+  );
 }
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.asset) return [{ title: 'Asset — DecentralScan' }];
   return [
     { title: `${data.asset.name ?? data.asset.assetId.slice(0, 8)} — DecentralScan` },
-    { name: 'description', content: `Asset ${data.asset.assetId} on DecentralChain` },
+    { content: `Asset ${data.asset.assetId} on DecentralChain`, name: 'description' },
   ];
 }
 
@@ -127,7 +140,9 @@ export default function Asset() {
             <div className="flex-1">
               <h1 className="text-4xl font-bold text-foreground mb-2">{t('assetDetails')}</h1>
               {displayAsset && (
-                <p className="text-muted-foreground mt-1">{displayAsset.name || t('unnamedAsset')}</p>
+                <p className="text-muted-foreground mt-1">
+                  {displayAsset.name || t('unnamedAsset')}
+                </p>
               )}
             </div>
           </div>
@@ -266,9 +281,11 @@ function AssetActivityWidget() {
   });
 
   const currentHeight = height?.height || 0;
+  const cancelledRef = useRef(false);
 
   useEffect(() => {
     if (!currentHeight) return;
+    cancelledRef.current = false;
 
     const fetchAssetActivity = async () => {
       setLoading(true);
@@ -326,7 +343,7 @@ function AssetActivityWidget() {
         // Only proceed if we got at least some data
         if (successfulBlocks === 0 || Object.keys(assetStats).length === 0) {
           console.warn('Failed to fetch any asset activity data or no transactions found.');
-          setLoading(false);
+          if (!cancelledRef.current) setLoading(false);
           return;
         }
 
@@ -349,19 +366,24 @@ function AssetActivityWidget() {
           }
         }
 
-        setAssetActivity({
-          assets: topAssets,
-          totalAssets: Object.keys(assetStats).length,
-          totalTxCount,
-        });
+        if (!cancelledRef.current) {
+          setAssetActivity({
+            assets: topAssets,
+            totalAssets: Object.keys(assetStats).length,
+            totalTxCount,
+          });
+        }
       } catch (error: unknown) {
         console.error('Failed to fetch asset activity:', error);
       } finally {
-        setLoading(false);
+        if (!cancelledRef.current) setLoading(false);
       }
     };
 
     fetchAssetActivity();
+    return () => {
+      cancelledRef.current = true;
+    };
   }, [currentHeight]);
 
   if (loading) {
