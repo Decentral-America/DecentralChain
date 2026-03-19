@@ -31,8 +31,10 @@ build
 *.sln
 *.sw?
 
-# AI-generated docs and artifacts
-docs/
+# Auto-generated analysis artifacts (not operational docs)
 ENTERPRISE_REFACTOR_COMPLETE.md
+
+# Operational docs are tracked (RUNBOOK.md, SRS.md, etc.)
+# docs/ is intentionally NOT excluded here
 
 .env
