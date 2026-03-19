@@ -68,6 +68,32 @@
   "license": "MIT",
   "name": "scanner",
   "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+          "{projectRoot}/build"
+        ]
+      },
+      "test": {
+        "inputs": [
+          "default",
+          "^production"
+        ],
+        "outputs": [
+          "{projectRoot}/coverage"
+        ]
+      },
+      "ci:check": {
+        "cache": false,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "default",
+          "^production"
+        ]
+      }
+    },
     "tags": [
       "scope:app",
       "layer:5"
@@ -83,11 +109,12 @@
     "build": "react-router build",
     "bulletproof": "npm run lint:fix && npm run typecheck && npm run test:run",
     "bulletproof:check": "npm run lint:check && npm run typecheck && npm run test:run",
-    "ci:check": "npm run bulletproof:check && npm run build && npm audit --audit-level=high",
+    "ci:check": "npm run lint:check && npm run typecheck && npm run test:coverage && npm run build && npm audit --audit-level=high",
     "dev": "react-router dev",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome check .",
+    "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepare": "lefthook install",
     "preview": "react-router-serve build/server/index.js",
