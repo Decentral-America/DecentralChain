@@ -73,9 +73,23 @@ export function ErrorBoundary() {
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.asset) return [{ title: 'Asset — DecentralScan' }];
+  const assetName = data.asset.name ?? data.asset.assetId.slice(0, 8);
+  const title = `${assetName} — DecentralScan`;
+  const supply =
+    typeof data.asset.quantity === 'string' || typeof data.asset.quantity === 'number'
+      ? `Supply: ${Number(data.asset.quantity).toLocaleString()}.`
+      : '';
+  const description = `Asset ${data.asset.assetId} on DecentralChain. ${supply} View holders, distribution, and transaction history.`;
   return [
-    { title: `${data.asset.name ?? data.asset.assetId.slice(0, 8)} — DecentralScan` },
-    { content: `Asset ${data.asset.assetId} on DecentralChain`, name: 'description' },
+    { title },
+    { content: description, name: 'description' },
+    { content: title, property: 'og:title' },
+    { content: description, property: 'og:description' },
+    { content: 'website', property: 'og:type' },
+    { content: '/og-image.png', property: 'og:image' },
+    { content: 'summary', name: 'twitter:card' },
+    { content: title, name: 'twitter:title' },
+    { content: description, name: 'twitter:description' },
   ];
 }
 
