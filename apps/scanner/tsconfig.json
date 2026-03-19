@@ -21,18 +21,24 @@
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "./+types/*": ["./.react-router/types/src/+types/*"],
       "@/*": ["./src/*"],
       "~/*": ["./.react-router/types/*"]
     },
     "resolveJsonModule": true,
+    "rootDirs": [".", ".react-router/types"],
     "skipLibCheck": true,
 
     /* Strictness */
     "strict": true,
     "target": "ESNext",
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "@react-router/dev"]
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
   "exclude": ["node_modules", "dist", "coverage", "test-results"],
-  "include": ["src", ".react-router/types", "vite.config.ts", "react-router.config.ts"]
+  "include": [
+    "src",
+    ".react-router/types",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "react-router.config.ts"
+  ]
 }

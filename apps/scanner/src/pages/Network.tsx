@@ -463,9 +463,10 @@ function PeersTab() {
             ) : (
               peerList.map((peer, idx) => {
                 const ip = extractIp(peer.address || peer.declaredAddress);
-                const geo = ip ? geoByIp[ip] : null;
+                const geoResult = ip ? geoByIp[ip] : undefined;
+                const geoData = geoResult?.geo;
                 const nodeName = resolveNodeName(peer);
-                const greenHosting = geo?.hosting?.green;
+                const greenHosting = geoResult?.green?.green;
                 return (
                   <TableRow key={peer.address || idx}>
                     <TableCell className="font-mono text-xs">{peer.address ?? '—'}</TableCell>
@@ -483,12 +484,12 @@ function PeersTab() {
                       )}
                     </TableCell>
                     <TableCell>
-                      {geo ? (
+                      {geoData ? (
                         <div className="flex items-center gap-1">
                           <Globe className="w-3 h-3 text-muted-foreground" />
                           <span className="text-sm">
-                            {geo.city ? `${geo.city}, ` : ''}
-                            {geo.country}
+                            {geoData.city ? `${geoData.city}, ` : ''}
+                            {geoData.country}
                           </span>
                         </div>
                       ) : (
@@ -508,7 +509,7 @@ function PeersTab() {
                       )}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {peer.lastSeen ? fromUnix(Math.floor(peer.lastSeen / 1000)) : '—'}
+                      {peer.lastSeen ? fromUnix(Math.floor(Number(peer.lastSeen) / 1000)) : '—'}
                     </TableCell>
                   </TableRow>
                 );

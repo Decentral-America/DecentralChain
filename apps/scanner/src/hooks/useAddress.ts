@@ -11,7 +11,9 @@ import {
 import { type Lease } from '@/types';
 
 /** Fetch full balance details (regular, generating, available, effective) for an address. */
-export function useAddressBalance(address: string | null): UseQueryResult<IBalanceDetails> {
+export function useAddressBalance(
+  address: string | null,
+): UseQueryResult<IBalanceDetails<string | number>> {
   return useQuery({
     enabled: !!address,
     queryFn: () => {

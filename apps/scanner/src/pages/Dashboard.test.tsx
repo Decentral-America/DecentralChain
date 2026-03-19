@@ -103,7 +103,10 @@ describe('Dashboard page', () => {
   it('populates current height stat card after data loads', async () => {
     renderDashboard();
     await waitFor(() => {
-      expect(screen.getByText('100')).toBeDefined();
+      // StatCard renders its value in a <p> element; block-at-height links are
+      // <a> elements — so we discriminate by tag name to avoid ambiguity.
+      const statValue = screen.getAllByText('100').find((el) => el.tagName === 'P');
+      expect(statValue).toBeInTheDocument();
     });
   });
 
