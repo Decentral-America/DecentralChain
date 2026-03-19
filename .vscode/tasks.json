@@ -33,7 +33,7 @@
       "type": "shell"
     },
     {
-      "command": "bash scripts/run-with-required-node.sh pnpm nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner",
+      "command": "bash scripts/run-with-required-node.sh pnpm nx run-many -t typecheck --exclude=cubensis-connect,exchange",
       "group": "test",
       "label": "Typecheck All",
       "presentation": { "panel": "shared", "reveal": "always" },
