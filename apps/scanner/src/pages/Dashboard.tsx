@@ -1,6 +1,6 @@
 import { Activity, Box, Clock, type LucideIcon, RefreshCw, Zap } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -23,6 +23,7 @@ import { useBlockHeaders } from '../hooks/useBlocks';
 import { useNodeVersion } from '../hooks/useNode';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
   const { t } = useLanguage();
 
@@ -219,10 +220,7 @@ export default function Dashboard() {
                           key={block.signature}
                           className="hover:bg-muted cursor-pointer"
                           onClick={() =>
-                            (window.location.href = createPageUrl(
-                              'BlockDetail',
-                              `?height=${block.height}`,
-                            ))
+                            navigate(createPageUrl('BlockDetail', `?height=${block.height}`))
                           }
                         >
                           <TableCell className="font-medium">

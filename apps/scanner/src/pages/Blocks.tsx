@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,6 +20,7 @@ import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
 
 export default function Blocks() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const { data: height } = useQuery({
@@ -116,10 +117,7 @@ export default function Blocks() {
                           key={block.signature}
                           className="hover:bg-muted cursor-pointer transition-colors"
                           onClick={() =>
-                            (window.location.href = createPageUrl(
-                              'BlockDetail',
-                              `?height=${block.height}`,
-                            ))
+                            navigate(createPageUrl('BlockDetail', `?height=${block.height}`))
                           }
                         >
                           <TableCell className="font-semibold">
