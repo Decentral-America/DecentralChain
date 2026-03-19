@@ -28,4 +28,8 @@ build
 *.sln
 *.sw?
 
+# AI-generated docs and artifacts
+docs/
+ENTERPRISE_REFACTOR_COMPLETE.md
+
 .env
