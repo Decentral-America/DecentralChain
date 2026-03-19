@@ -14,7 +14,10 @@ import { type Lease } from '@/types';
 export function useAddressBalance(address: string | null): UseQueryResult<IBalanceDetails> {
   return useQuery({
     enabled: !!address,
-    queryFn: () => fetchBalanceDetails(address!),
+    queryFn: () => {
+      if (!address) throw new Error('address is required');
+      return fetchBalanceDetails(address);
+    },
     queryKey: ['balanceDetails', address],
     staleTime: 10_000,
   });
@@ -24,7 +27,10 @@ export function useAddressBalance(address: string | null): UseQueryResult<IBalan
 export function useAddressAssets(address: string | null): UseQueryResult<TAssetsBalance> {
   return useQuery({
     enabled: !!address,
-    queryFn: () => fetchAssetsBalance(address!),
+    queryFn: () => {
+      if (!address) throw new Error('address is required');
+      return fetchAssetsBalance(address);
+    },
     queryKey: ['addressAssets', address],
     staleTime: 10_000,
   });
@@ -37,7 +43,10 @@ export function useAddressNFTs(
 ): UseQueryResult<TAssetDetails[]> {
   return useQuery({
     enabled: !!address,
-    queryFn: () => fetchAddressNFTs(address!, limit),
+    queryFn: () => {
+      if (!address) throw new Error('address is required');
+      return fetchAddressNFTs(address, limit);
+    },
     queryKey: ['addressNFTs', address, limit],
     staleTime: 30_000,
   });
@@ -47,7 +56,10 @@ export function useAddressNFTs(
 export function useActiveLeases(address: string | null): UseQueryResult<Lease[]> {
   return useQuery({
     enabled: !!address,
-    queryFn: () => fetchActiveLeases(address!) as Promise<Lease[]>,
+    queryFn: () => {
+      if (!address) throw new Error('address is required');
+      return fetchActiveLeases(address) as Promise<Lease[]>;
+    },
     queryKey: ['activeLeases', address],
     staleTime: 10_000,
   });
