@@ -1,13 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet';
+import { Globe, Info, MapPin } from 'lucide-react';
+import { lazy, Suspense, useMemo } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchAllPeers, fetchConnectedPeers } from '@/lib/api';
-import 'leaflet/dist/leaflet.css';
-import { Globe, Info, MapPin } from 'lucide-react';
 import { useLanguage } from '../components/contexts/LanguageContext';
+import { type GeolocatedPeer } from './NetworkMapContent';
+
+/**
+ * Leaflet accesses `window` at module load time and crashes in SSR/Node.js.
+ * Guard the dynamic import so it's only evaluated on the client.
+ */
+const NetworkMapContent = lazy(() =>
+  typeof window !== 'undefined'
+    ? import('./NetworkMapContent')
+    : Promise.resolve({ default: () => null as unknown as React.ReactElement }),
+);
 
 // Mock geolocation data for demonstration
 // In production, this would come from a geolocation API
@@ -40,7 +49,7 @@ export default function NetworkMap() {
     queryKey: ['peers', 'all'],
   });
 
-  const geolocatedPeers = useMemo(() => {
+  const geolocatedPeers = useMemo((): GeolocatedPeer[] => {
     if (!connectedPeers?.peers) return [];
 
     return connectedPeers.peers.map((peer) => {
@@ -129,44 +138,15 @@ export default function NetworkMap() {
             <Skeleton className="h-[600px] w-full" />
           ) : (
             <div className="h-[600px] w-full">
-              <MapContainer
-                center={[20, 0]}
-                zoom={2}
-                style={{ height: '100%', width: '100%' }}
-                className="z-0"
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              <Suspense fallback={<Skeleton className="h-[600px] w-full" />}>
+                <NetworkMapContent
+                  geolocatedPeers={geolocatedPeers}
+                  unknownNodeLabel={t('unknownNode')}
+                  addressLabel={t('addressColon')}
+                  locationLabel={t('locationColon')}
+                  simulatedLabel={t('simulated')}
                 />
-
-                {geolocatedPeers.map((peer) => (
-                  <CircleMarker
-                    key={`${peer.address || peer.peerName}-${peer.lat}-${peer.lng}`}
-                    center={[peer.lat, peer.lng]}
-                    radius={8}
-                    fillColor="#3b82f6"
-                    fillOpacity={0.6}
-                    stroke={true}
-                    color="#1e40af"
-                    weight={2}
-                  >
-                    <Popup>
-                      <div className="p-2">
-                        <p className="font-semibold text-sm mb-1">
-                          {peer.peerName || t('unknownNode')}
-                        </p>
-                        <p className="text-xs text-muted-foreground mb-1">
-                          <strong>{t('addressColon')}</strong> {peer.address}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          <strong>{t('locationColon')}</strong> {peer.city} {t('simulated')}
-                        </p>
-                      </div>
-                    </Popup>
-                  </CircleMarker>
-                ))}
-              </MapContainer>
+              </Suspense>
             </div>
           )}
         </CardContent>
