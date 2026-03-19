@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, BarChart3, Coins, Search, TrendingUp, Users } from 'lucide-react';
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';

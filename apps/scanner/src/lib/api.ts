@@ -32,6 +32,8 @@ import { type Lease, type Transaction } from '@/types';
 export interface INodeStatus extends INodeStatusBase {
   blockGeneratorStatus?: string;
   historyReplierEnabled?: boolean;
+  peersCount?: number;
+  stateHash?: string;
 }
 
 /** SDK TLong resolves to string | number at runtime. */

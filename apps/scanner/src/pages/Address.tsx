@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useActiveLeases, useAddressAssets, useAddressNFTs } from '@/hooks/useAddress';
 import { useAddressTransactions } from '@/hooks/useTransactions';
 import { fetchAssetsBalance, type TAssetsBalance } from '@/lib/api';
+import { type Transaction } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
