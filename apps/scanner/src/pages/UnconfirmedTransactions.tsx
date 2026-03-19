@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, Clock, RefreshCw, Search } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +24,7 @@ import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, timeAgo, truncate } from '../components/utils/formatters';
 
 export default function UnconfirmedTransactions() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,7 +53,9 @@ export default function UnconfirmedTransactions() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">{t('unconfirmedTransactions')}</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            {t('unconfirmedTransactions')}
+          </h1>
           <p className="text-muted-foreground">{t('transactionsWaitingBlocks')}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -121,9 +124,7 @@ export default function UnconfirmedTransactions() {
                     <TableRow
                       key={tx.id}
                       className="hover:bg-muted cursor-pointer"
-                      onClick={() =>
-                        (window.location.href = createPageUrl('Transaction', `?id=${tx.id}`))
-                      }
+                      onClick={() => navigate(createPageUrl('Transaction', `?id=${tx.id}`))}
                     >
                       <TableCell>
                         <div className="flex items-center gap-2">
