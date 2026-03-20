@@ -17,7 +17,7 @@
   "extends": "//",
   "files": {
     "ignoreUnknown": true,
-    "includes": ["src/**/*.{ts,tsx}", "e2e/**/*.ts", "*.{ts,json}"],
+    "includes": ["src/**/*.{ts,tsx}", "e2e/**/*.ts", "*.{ts,json}", "!test-results/**"],
     "maxSize": 1048576
   },
   "formatter": {

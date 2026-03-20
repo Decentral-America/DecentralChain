@@ -1,30 +1,40 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM node:24-alpine AS build
-WORKDIR /app
+FROM node:24-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-# Copy manifests first for layer-caching
-COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts
+FROM base AS build
+# git is required by Nx for workspace operations (affected detection, hashing)
+RUN apk add --no-cache git
+WORKDIR /workspace
 
-COPY . .
-RUN npm run build
+# Copy only the workspace files needed to build scanner and its workspace deps.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml nx.json biome.json tsconfig.base.json .node-version ./
+COPY scripts ./scripts
+COPY tools ./tools
+COPY packages ./packages
+COPY apps/scanner ./apps/scanner
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
+RUN pnpm nx run scanner:build --skip-nx-cache
+RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
+    && cp -R apps/scanner/build /prod/scanner/build
 
 # ── Stage 2: Runtime ─────────────────────────────────────────────────────────
 #
 # react-router v7 SSR produces a Node server bundle at build/server/index.js.
 # It is served with `react-router-serve`, not nginx.
 # nginx would only work for a static SPA export (ssr: false), which this is not.
-FROM node:24-alpine AS runtime
+FROM base AS runtime
 
 # Security: run as non-root
 RUN addgroup -S scanner && adduser -S -G scanner scanner
 
 WORKDIR /app
 
-# Only copy build output and the runtime server package
-COPY --from=build /app/build ./build
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
+# Only copy the deployed scanner app and its production dependencies.
+COPY --from=build /prod/scanner ./
 
 # Ensure non-root owns the files
 RUN chown -R scanner:scanner /app
@@ -42,4 +52,4 @@ ENV NODE_ENV=production \
 EXPOSE 3000
 
 # react-router-serve reads build/server/index.js and handles SSR
-CMD ["npx", "react-router-serve", "./build/server/index.js"]
+CMD ["pnpm", "start"]

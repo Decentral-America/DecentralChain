@@ -19,6 +19,10 @@ packages/crypto/pkg/
 # Test coverage
 coverage/
 
+# Playwright test output
+test-results/
+playwright-report/
+
 # OS
 .DS_Store
 Thumbs.db

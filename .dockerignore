@@ -1,0 +1,14 @@
+.git
+.github
+.nx
+.DS_Store
+node_modules
+**/node_modules
+coverage
+**/coverage
+dist
+**/dist
+build
+**/build
+playwright-report
+test-results
