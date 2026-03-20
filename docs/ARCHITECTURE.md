@@ -55,7 +55,7 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 | Category | Location | Count | Examples |
 |----------|----------|-------|---------|
 | SDK libraries | `packages/*` | 22 | All `@decentralchain/*` npm-published packages |
-| Apps consuming SDK | `apps/*` | 3 | cubensis-connect (9 SDK deps), exchange (8), explorer (3) |
+| Apps consuming SDK | `apps/*` | 3 | cubensis-connect (9 SDK deps), exchange (8), scanner (3) |
 
 ### What's Out
 
@@ -79,7 +79,7 @@ DecentralChain/
 ├── apps/
 │   ├── cubensis-connect/           Browser wallet extension
 │   ├── exchange/                   Electron DEX trading app
-│   └── explorer/                   Block explorer web app
+│   └── scanner/                    Block explorer web app
 ├── packages/
 │   ├── ts-types/                   Core TypeScript types
 │   ├── bignumber/                  Arbitrary precision math
@@ -125,7 +125,7 @@ DecentralChain/
 | Tool | Used By |
 |------|---------|
 | tsdown | 17 standard SDK libraries |
-| Vite | exchange, explorer, cubensis-connect |
+| Vite | exchange, scanner, cubensis-connect |
 | tsc + wasm-pack | crypto (Rust/WASM hybrid) |
 | buf + tsdown | protobuf-serialization, swap-client |
 
@@ -465,7 +465,7 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 │ cubensis-connect-provider                                       │
 ├─────────────────────────────────────────────────────────────────┤
 │ APPS — Not published to npm (in monorepo)                       │
-│ cubensis-connect · exchange · explorer                          │
+│ cubensis-connect · exchange · scanner                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

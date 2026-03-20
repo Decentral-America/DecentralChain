@@ -26,7 +26,7 @@ DecentralChain forked 24 packages from the Waves blockchain ecosystem in Februar
 
 **Current state:**
 - **22 SDK libraries**: Clean, publish-ready, modern tooling (ESM, Vitest, tsdown, Biome, TS 5.9 strict)
-- **3 applications**: cubensis-connect (wallet), exchange (DEX), explorer (block explorer)
+- **3 applications**: cubensis-connect (wallet), exchange (DEX), scanner (block explorer)
 - **1 P0 risk remains**: User seeds stored in potentially Waves-owned AWS Cognito pools (cubensis-connect)
 - **2 unforked Waves deps**: `@waves/ride-lang` + `@waves/ride-repl` (LOW — chain-agnostic Scala.js)
 - **0 npm audit vulnerabilities** across all packages
@@ -48,7 +48,7 @@ All 23 Waves packages forked, rebranded `@waves/*` → `@decentralchain/*`, ESM-
 
 ### Modernize & Standardize (Mar 5–7, 2026)
 
-Build tooling standardization. ride-js webpack→tsup, Jest→Vitest, security fixes (30s timeout, `console.error`, removed `test.only` masking). Explorer and exchange initial ESM + Biome migration.
+Build tooling standardization. ride-js webpack→tsup, Jest→Vitest, security fixes (30s timeout, `console.error`, removed `test.only` masking). Scanner and exchange initial ESM + Biome migration.
 
 ### Cubensis-Connect Rebrand (Mar 8–9, 2026)
 
@@ -103,7 +103,7 @@ git commit → lefthook pre-commit →
 | protobuf-serialization | No tsdown | Uses `pbjs`/`pbts` codegen directly |
 | crypto | wasm-pack build | Rust/WASM hybrid |
 | cubensis-connect | webpack, TS 5.9.3, Biome | Partially modernized (Phase 2-3 complete) |
-| explorer | No TypeScript compilation | Vite app with JS source |
+| scanner | SSR application | React Router 7 SSR app with dedicated runbook and production Docker image |
 | exchange | `target: ES2020` | Broader browser support for Electron |
 
 ---
@@ -186,15 +186,20 @@ All 22 SDK libraries have:
 - Only 6 test files for 405 source files
 - All 13 signing functions throw "Not implemented"
 
-#### explorer (Block Explorer)
+#### scanner (Block Explorer)
 
-**Critical issues:**
-- Zero test files — CI gate is vacuous
-- `launch.sh` injects `$API_NODE_URL` unsanitized into JS — script injection risk
-- README references `gulp`, `yarn` (project uses Vite + npm)
-- 59 class components with `_isMounted` anti-pattern
+**Status:** Production-ready after DCC-108 hardening.
 
-**Positive:** Waves migration 100% complete, nginx config excellent (CSP, HSTS 1yr, X-Frame-Options DENY).
+**Current state:**
+- React Router 7 framework mode with SSR enabled
+- Dynamic meta/OG tags for transaction, address, asset, and block detail pages
+- `/sitemap.xml` resource route and `robots.txt` integration
+- Non-root Docker runtime and versioned deployment runbook
+- 189 passing tests with 82.86% lines / 73.01% branches / 86.76% functions / 85.06% statements
+
+**Residual follow-up work:**
+- README and deployment docs must stay aligned with the monorepo SSR runtime model
+- Release gating depends on the workspace-aware scanner audit script because pnpm lockfile ownership is at the monorepo root
 
 ---
 
@@ -216,7 +221,7 @@ These require `npm install @decentralchain/<pkg>@next`:
 
 ### Not Published to npm
 
-ride-js (manual workflow_dispatch), explorer, exchange (private apps), cubensis-connect (extension).
+ride-js (manual workflow_dispatch), scanner, exchange (private apps), cubensis-connect (extension).
 
 ---
 
@@ -318,7 +323,7 @@ AWS Cognito (eu-central-1_AXIpDLJQx, eu-central-1_6Bo3FEwt5)
 | **P2** | Rename `waves-community` repo | Rename GitHub repo + update scam token URL | ⬜ Pending |
 | **P2** | Set up Sentry DSN | Create project, inject via build env | ⬜ Pending |
 | **P2** | Exchange nginx hardening | Fix CORS, add CSP, fix IP trust, add USER directive | ⬜ Pending |
-| **P2** | Explorer test coverage | Add tests for critical paths | ⬜ Pending |
+| **P2** | Scanner README drift | Keep scanner README aligned with RR7 SSR + monorepo deployment model | ⬜ Pending |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |
