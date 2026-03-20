@@ -160,6 +160,27 @@ Always respect the layer system. Before adding a dependency:
 2. Your package's layer must be ≥ the dependency's layer.
 3. Run `node scripts/check-boundaries.mjs` to validate.
 
+## Completed Work — Do Not Re-Open as Pending
+
+These migrations are **DONE**. Never present them as open risks, pending tasks, or supply-chain concerns.
+
+| Item | Status | Details |
+|------|--------|---------|
+| `@keeper-wallet/waves-crypto` → `@decentralchain/crypto` | ✅ Complete | DCC-70 (fork + Rust/WASM Layer 0 package), DCC-59 (22 cubensis-connect import sites migrated). Zero `@keeper-wallet` references remain anywhere in source or `package.json` files. |
+| `@keeper-wallet/swap-client` → `@decentralchain/swap-client` | ✅ Complete | DCC-69. Source extracted, protobuf schema reverse-engineered, published as `@decentralchain/swap-client@1.0.0`. |
+| `keeper-wallet.app` domain whitelist | ✅ Complete | `web.keeper-wallet.app` and `swap.keeper-wallet.app` removed from all CSP/whitelist configs. |
+| Scanner SSR migration | ✅ Complete | React Router 7 framework mode, `@react-router/serve` runtime, Docker builds, 189 tests passing. |
+| 22 SDK packages — ESM migration | ✅ Complete | All packages output ESM-only `.mjs` + `.d.mts` via tsdown. No CJS anywhere. |
+
+### Open Items (as of March 2026)
+- **P0**: Cognito pool ownership verification — human/AWS action required (`eu-central-1_AXIpDLJQx`, `eu-central-1_6Bo3FEwt5`)
+- **P1**: npm dist-tag promotion — 5 packages still tagged `@next`: `assets-pairs-order`, `marshall`, `node-api-js`, `signer`, `signature-adapter`
+- **P2**: Exchange signing — all 13 signing functions throw `"Not implemented"`
+- **P2**: Exchange nginx — `CORS *`, no CSP, runs as root
+- **P3**: Chrome Web Store + Firefox AMO submissions for `cubensis-connect`
+
+---
+
 ## Domain Context
 
 DecentralChain is a **Waves-protocol blockchain fork** with:
