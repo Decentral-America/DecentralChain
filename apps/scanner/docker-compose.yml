@@ -1,7 +1,9 @@
 services:
   scanner:
+    image: decentralchain/scanner:latest
     build:
-      context: .
+      context: ../..
+      dockerfile: apps/scanner/Dockerfile
       target: runtime
     ports:
       - "3000:3000"
