@@ -61,11 +61,19 @@ pnpm nx run scanner:test
 pnpm nx run scanner:build
 node -e "const fs=require('fs'); if(!fs.existsSync('apps/scanner/build/server/index.js')) { console.error('BUILD ARTIFACT MISSING'); process.exit(1); } console.log('OK');"
 
-# 7. Security audit
-cd apps/scanner && npm audit --audit-level=high
+# 7. Security audit (scanner-only dependency paths)
+node apps/scanner/scripts/audit-scanner-deps.mjs
 ```
 
-Or run the full gate in one command (from `apps/scanner/`):
+Or run the full gate in one command.
+
+From the monorepo root:
+
+```bash
+bash scripts/run-with-required-node.sh pnpm nx run scanner:ci:check
+```
+
+From `apps/scanner/`:
 
 ```bash
 npm run release:gate
@@ -88,18 +96,18 @@ pnpm nx run scanner:build
 ### Docker build
 
 ```bash
-cd apps/scanner
+cd /path/to/DecentralChain
 
-# Build image
-docker build -t decentralchain/scanner:latest .
+# Build image from the monorepo root so workspace dependencies resolve correctly
+docker build -f apps/scanner/Dockerfile -t decentralchain/scanner:latest .
 
 # Tag for a specific version
-docker build -t decentralchain/scanner:v1.2.3 .
+docker build -f apps/scanner/Dockerfile -t decentralchain/scanner:v1.2.3 .
 ```
 
 The Dockerfile is a two-stage build:
-1. **build stage** — installs deps with `npm ci --ignore-scripts`, runs `npm run build`
-2. **runtime stage** — copies only `build/`, `node_modules/`, `package.json`; runs as non-root `scanner` user
+1. **build stage** — installs workspace deps with `pnpm install --frozen-lockfile`, runs `pnpm nx run scanner:build`, then deploys a production-only scanner bundle with `pnpm deploy --legacy --prod`
+2. **runtime stage** — copies the deployed scanner app, runs as non-root `scanner`, and serves `build/server/index.js` via `pnpm start`
 
 ---
 
@@ -108,6 +116,8 @@ The Dockerfile is a two-stage build:
 ### Docker Compose (recommended for single-host)
 
 ```bash
+cd apps/scanner
+
 # Start (or restart) the container
 docker compose up -d --force-recreate
 
@@ -250,7 +260,9 @@ git revert <bad-commit-sha>
 cd apps/scanner && npm run release:gate
 
 # Rebuild and redeploy
-docker build -t decentralchain/scanner:latest .
+cd ../..
+docker build -f apps/scanner/Dockerfile -t decentralchain/scanner:latest .
+cd apps/scanner
 docker compose up -d --force-recreate
 ```
 

@@ -50,7 +50,7 @@ When deploying DecentralScan:
 
 - Always serve over HTTPS in production
 - Set appropriate Content Security Policy headers
-- Keep dependencies up to date (`npm audit`)
+- Keep dependencies up to date and run the scanner-specific gate (`npm run release:gate` or `node apps/scanner/scripts/audit-scanner-deps.mjs` from the workspace root)
 - Use the included Nginx configuration which sets security headers
 - Do not commit `.env` files or secrets to version control
 

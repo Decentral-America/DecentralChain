@@ -87,42 +87,32 @@ Whether you're a node operator monitoring uptime, a developer debugging transact
 ## 🏗 Architecture
 
 ```
-explorer/
-├── .github/
-│   └── workflows/ci.yml        # GitHub Actions CI pipeline
-├── e2e/                         # Playwright E2E tests
+apps/scanner/
 ├── src/
-│   ├── api/
-│   │   └── entities.ts          # Entity CRUD factory (localStorage)
-│   ├── components/
-│   │   ├── contexts/            # React contexts (Language, etc.)
-│   │   ├── dashboard/           # Dashboard widget components
-│   │   ├── shared/              # Shared components (SearchBar, CopyButton)
-│   │   ├── ui/                  # 18 Radix UI primitives (shadcn/ui)
-│   │   ├── ErrorBoundary.tsx    # Global error boundary with recovery
-│   │   └── ThemeProvider.tsx    # Dark/light theme provider
-│   ├── hooks/                   # Custom React hooks
-│   ├── lib/
-│   │   ├── query-client.ts      # React Query configuration
-│   │   └── utils.ts             # Utility functions (cn, etc.)
-│   ├── pages/                   # 17 page components (see Features)
-│   ├── App.tsx                  # Root component with routing
-│   ├── Layout.tsx               # Shell layout (nav, header, footer)
-│   └── main.tsx                 # Entry point
-├── Dockerfile                   # Multi-stage production build
-├── docker-compose.yml           # One-command deployment
-├── nginx.conf                   # Production Nginx configuration
-├── vite.config.js               # Vite build configuration
-├── tailwind.config.js           # Tailwind CSS theming
-└── playwright.config.js         # E2E test configuration
+│   ├── components/              # UI, contexts, error boundaries, shared widgets
+│   ├── hooks/                   # React Query and page-specific hooks
+│   ├── lib/                     # API wrappers, utilities, query client
+│   ├── pages/                   # Route modules and SSR meta/loaders
+│   ├── routes/                  # Resource routes (for example sitemap.xml)
+│   ├── entry.client.tsx         # React Router client entry
+│   ├── entry.server.tsx         # React Router SSR server entry
+│   ├── root.tsx                 # App shell and global meta
+│   └── routes.ts                # Route manifest
+├── e2e/                         # Playwright smoke and app-level tests
+├── docs/RUNBOOK.md              # Deploy / rollback / incident procedures
+├── Dockerfile                   # Workspace-aware multi-stage SSR image
+├── docker-compose.yml           # Single-host deployment using root build context
+├── react-router.config.ts       # RR7 framework/SSR configuration
+├── vite.config.ts               # Vite + React Router integration
+└── vitest.config.ts             # Unit coverage configuration
 ```
 
 ### Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Framework** | React 19 with Hooks |
-| **Build Tool** | Vite 8 |
+| **Framework** | React 19 + React Router 7 framework mode |
+| **Build Tool** | Vite 8 + RR7 SSR build |
 | **Routing** | React Router 7 |
 | **State Management** | React Query 5 (TanStack Query) |
 | **UI Components** | Radix UI + shadcn/ui |
@@ -133,8 +123,9 @@ explorer/
 | **Theming** | next-themes (dark/light/system) |
 | **Error Tracking** | Sentry |
 | **Testing** | Vitest + React Testing Library + Playwright |
-| **CI/CD** | GitHub Actions |
-| **Deployment** | Docker + Nginx |
+| **Workspace** | Nx 22 + pnpm 10 monorepo |
+| **CI/CD** | Nx task graph + GitHub Actions |
+| **Deployment** | Docker + React Router SSR server |
 
 ---
 
@@ -142,20 +133,21 @@ explorer/
 
 ### Prerequisites
 
-- **Node.js** ≥ 20
-- **npm** ≥ 10
+- **Node.js** ≥ 24
+- **pnpm** ≥ 10
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/dylanpersonguy/explorer.git
-cd explorer
+# Clone the monorepo
+git clone https://github.com/Decentral-America/DecentralChain.git
+cd DecentralChain
 
-# Install dependencies
-npm install
+# Install workspace dependencies
+pnpm install --frozen-lockfile
 
-# Start development server
+# Start the scanner dev server
+cd apps/scanner
 npm run dev
 ```
 
@@ -175,9 +167,10 @@ Copy the example environment file and configure as needed:
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start Vite dev server with HMR |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Preview production build locally |
+| `npm run dev` | Start the RR7 development server |
+| `npm run build` | Production SSR build to `build/client` + `build/server` |
+| `npm run preview` | Serve the built SSR app locally |
+| `npm run start` | Start the built SSR server bundle |
 | `npm run lint` | Run Biome checks (no auto-fix) |
 | `npm run lint:fix` | Run Biome checks with auto-fix |
 | `npm run lint:check` | Alias for strict Biome checks |
@@ -186,7 +179,8 @@ Copy the example environment file and configure as needed:
 | `npm run test:run` | Run unit tests once |
 | `npm run test:coverage` | Run tests with coverage report |
 | `npm run test:e2e` | Run Playwright E2E tests |
-| `npm run ci:check` | Run lint + typecheck + tests + build + high-severity audit |
+| `npm run ci:check` | Run workspace-aware lint + typecheck + tests + build + scanner-only security audit |
+| `npm run release:gate` | Alias for the full production gate |
 
 ### Lint Policy
 
@@ -199,8 +193,10 @@ This repo enforces a strict Biome baseline in CI. Warnings are treated as failur
 ### Docker (Recommended)
 
 ```bash
-# Build and start with Docker Compose
-docker compose up -d
+cd apps/scanner
+
+# Build and start with Docker Compose (uses monorepo root as build context)
+docker compose up -d --build
 
 # The app is now available at http://localhost:3000
 ```
@@ -208,20 +204,20 @@ docker compose up -d
 ### Manual Build
 
 ```bash
-# Build for production
-npm run build
+# From the monorepo root, build the SSR image
+cd /path/to/DecentralChain
+docker build -f apps/scanner/Dockerfile -t decentralchain/scanner:latest .
 
-# Serve the dist/ directory with any static file server
-npx serve dist
+# Or build/preview without Docker
+cd apps/scanner
+npm run build
+npm run preview
 ```
 
-### Nginx
+### Runtime Model
 
-An optimized [nginx.conf](nginx.conf) is included for production deployments with:
-- Gzip compression
-- Static asset caching
-- SPA history fallback
-- Security headers
+This app is **not** a static SPA export. Production serves the Node SSR bundle at `build/server/index.js` via `react-router-serve`.
+See [docs/RUNBOOK.md](docs/RUNBOOK.md) for the full deploy and rollback flow.
 
 ---
 
@@ -245,11 +241,11 @@ npm run test:e2e
 
 | Area | Tests |
 |------|-------|
-| **ErrorBoundary** | Error display, recovery, fallback UI |
-| **LanguageContext** | i18n switching, translation keys, persistence |
-| **Error Logger** | Error formatting, Sentry integration, rate limiting |
-| **Utilities** | Class name merging, helper functions |
-| **E2E** | Full user flows — navigation, search |
+| **Hooks & API layer** | Unit coverage for node/data-service integration paths |
+| **Error boundaries** | Route and application failure handling |
+| **SSR routing** | Smoke coverage across primary routes |
+| **Network map / UI flows** | Playwright navigation and rendering coverage |
+| **SEO / route integrity** | Loader/meta/resource route behavior via unit and smoke tests |
 
 ---
 
@@ -257,8 +253,8 @@ npm run test:e2e
 
 DecentralScan ships with English and Spanish translations. Adding a new language is straightforward:
 
-1. Add your translations to `src/components/contexts/LanguageContext.jsx`
-2. Add the language option to the language switcher in `Layout.jsx`
+1. Add your translations to `src/components/utils/translations.tsx`
+2. Expose the language option through the UI language switcher in the layout shell
 
 The language selection persists across sessions via localStorage.
 
@@ -269,7 +265,7 @@ The language selection persists across sessions via localStorage.
 The app supports **light**, **dark**, and **system** themes powered by `next-themes` and Tailwind CSS:
 
 - Theme toggle is available in the top navigation bar
-- Colors are defined as HSL CSS variables in `tailwind.config.js`
+- Colors are defined in the scanner CSS/theme tokens
 - All 18 Radix UI components automatically adapt to the active theme
 
 ---
