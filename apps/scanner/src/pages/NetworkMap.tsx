@@ -132,7 +132,6 @@ export default function NetworkMap() {
                   unknownNodeLabel={t('unknownNode')}
                   addressLabel={t('addressColon')}
                   locationLabel={t('locationColon')}
-                  simulatedLabel={t('simulated')}
                 />
               </Suspense>
             </div>

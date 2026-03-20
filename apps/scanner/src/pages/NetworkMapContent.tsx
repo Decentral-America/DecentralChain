@@ -21,7 +21,6 @@ interface NetworkMapContentProps {
   unknownNodeLabel: string;
   addressLabel: string;
   locationLabel: string;
-  simulatedLabel: string;
 }
 
 export default function NetworkMapContent({
@@ -29,7 +28,6 @@ export default function NetworkMapContent({
   unknownNodeLabel,
   addressLabel,
   locationLabel,
-  simulatedLabel,
 }: NetworkMapContentProps) {
   return (
     <MapContainer
@@ -60,7 +58,7 @@ export default function NetworkMapContent({
                 <strong>{addressLabel}</strong> {peer.address}
               </p>
               <p className="text-xs text-muted-foreground">
-                <strong>{locationLabel}</strong> {peer.city} {simulatedLabel}
+                <strong>{locationLabel}</strong> {peer.city}
               </p>
             </div>
           </Popup>
