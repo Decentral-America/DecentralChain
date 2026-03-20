@@ -119,6 +119,7 @@
     "prepare": "lefthook install",
     "preview": "react-router-serve build/server/index.js",
     "test": "vitest run --coverage",
+    "release:gate": "npm run ci:check",
     "test:coverage": "vitest run --coverage",
     "test:fast": "vitest run",
     "test:e2e": "playwright test",

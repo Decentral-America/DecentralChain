@@ -311,6 +311,8 @@ export interface GeoData {
   region: string;
   org: string;
   timezone: string;
+  /** Latitude,Longitude as returned by ipinfo.io (e.g. "37.386,-122.084") */
+  loc?: string;
 }
 
 export interface GreenHostData {
