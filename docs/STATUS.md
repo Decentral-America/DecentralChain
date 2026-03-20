@@ -198,8 +198,9 @@ All 22 SDK libraries have:
 - 189 passing tests with 82.86% lines / 73.01% branches / 86.76% functions / 85.06% statements
 
 **Residual follow-up work:**
-- README and deployment docs must stay aligned with the monorepo SSR runtime model
-- Release gating depends on the workspace-aware scanner audit script because pnpm lockfile ownership is at the monorepo root
+- ✅ README and deployment docs aligned with monorepo SSR runtime model (completed Mar 20, 2026)
+- ✅ Workspace-aware scanner audit script (`scripts/audit-scanner-deps.mjs`) added (completed Mar 20, 2026)
+- Release gating: `ci:check` / `release:gate` are workspace-aware and scope the pnpm audit to scanner dependency paths only
 
 ---
 
