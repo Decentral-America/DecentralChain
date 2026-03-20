@@ -54,7 +54,8 @@
 ### Red Flags
 
 ```
-@waves/* (non-wire-format deps), @keeper-wallet/*
+@waves/* (non-wire-format deps)
+@keeper-wallet/* (fully migrated to @decentralchain/crypto — flag any accidental re-introduction)
 file: or link: in production dependencies
 postinstall scripts from untrusted packages
 Packages with 0 maintainers or >2yr since last publish
@@ -201,7 +202,7 @@ CI skip comments in main branch
 - [ ] No Waves branding except documented wire-format constraints (see [UPSTREAM.md](UPSTREAM.md))
 - [ ] All LICENSE files present and correct (MIT)
 - [ ] `package.json` → `author`, `repository`, `homepage` reference DCC
-- [ ] No `waves.exchange`, `keeper-wallet.app`, or `wavesplatform.com` URLs except in historical docs
+- [ ] No `waves.exchange`, `keeper-wallet.app`, or `wavesplatform.com` URLs in active code (historical docs excepted)
 - [ ] README files reference DecentralChain, not Waves
 - [ ] Extension store descriptions and screenshots use DCC branding
 - [ ] Contributor license: CONTRIBUTING.md present and references correct legal entity
