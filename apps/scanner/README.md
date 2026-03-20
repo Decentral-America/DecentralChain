@@ -80,7 +80,7 @@ Whether you're a node operator monitoring uptime, a developer debugging transact
 | **Playwright** | End-to-end browser tests with CI integration |
 | **Biome** | Consistent formatting + lint enforcement |
 | **CI/CD** | GitHub Actions pipeline — lint, typecheck, test, build on every push |
-| **Docker** | Production-ready multi-stage Docker build with Nginx |
+| **Docker** | Production-ready multi-stage Docker build with React Router SSR server |
 
 ---
 
@@ -275,9 +275,9 @@ The app supports **light**, **dark**, and **system** themes powered by `next-the
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feat/amazing-feature`)
+2. Create your feature branch (`git checkout -b feat/DCC-###-short-description`)
+3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/) (`git commit -m 'feat(DCC-###): add amazing feature'`)
+4. Push to the branch (`git push origin feat/DCC-###-short-description`)
 5. Open a Pull Request
 
 ---
