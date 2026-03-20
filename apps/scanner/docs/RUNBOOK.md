@@ -106,8 +106,8 @@ docker build -f apps/scanner/Dockerfile -t decentralchain/scanner:v1.2.3 .
 ```
 
 The Dockerfile is a two-stage build:
-1. **build stage** — installs workspace deps with `pnpm install --frozen-lockfile`, runs `pnpm nx run scanner:build`, then deploys a production-only scanner bundle with `pnpm deploy --legacy --prod`
-2. **runtime stage** — copies the deployed scanner app, runs as non-root `scanner`, and serves `build/server/index.js` via `pnpm start`
+1. **build stage** — runs `git init` (required because the `lefthook install` prepare script calls `git rev-parse`), installs workspace deps with `pnpm install --frozen-lockfile`, runs `pnpm nx run scanner:build`, then deploys a production-only scanner bundle with `pnpm --filter scanner --prod deploy --legacy /prod/scanner` — this bundles the scanner app and all its production `node_modules` into a self-contained directory
+2. **runtime stage** — copies `/prod/scanner` (app + `node_modules`) from the build stage, runs as non-root user `scanner`, and serves `build/server/index.js` via `pnpm start` (which calls `react-router-serve`)
 
 ---
 
@@ -396,10 +396,11 @@ sh: react-router-serve: not found
 
 The `node_modules/.bin/react-router-serve` must be present in the runtime image.
 
-In `Dockerfile`, ensure `node_modules` is copied from the build stage:
+The Dockerfile uses `pnpm --filter scanner --prod deploy --legacy /prod/scanner` in the build stage, which creates a self-contained `node_modules` directory inside `/prod/scanner` containing all production dependencies including `@react-router/serve`. This entire directory is then copied to the runtime stage:
 ```dockerfile
-COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /prod/scanner ./
 ```
+If `react-router-serve` is missing, the most likely cause is that `@react-router/serve` is listed under `devDependencies` instead of `dependencies` in `apps/scanner/package.json`. Verify it appears in `dependencies` — `pnpm deploy --prod` only includes `dependencies`, not `devDependencies`.
 
 ### Permission denied errors
 
