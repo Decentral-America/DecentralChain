@@ -1,0 +1,17 @@
+{
+  "background_color": "#0b1220",
+  "description": "DecentralChain blockchain explorer for blocks, transactions, addresses, assets, and network health.",
+  "display": "standalone",
+  "icons": [
+    {
+      "purpose": "any",
+      "sizes": "any",
+      "src": "/favicon.svg",
+      "type": "image/svg+xml"
+    }
+  ],
+  "name": "DecentralScan",
+  "short_name": "DecentralScan",
+  "start_url": "/dashboard",
+  "theme_color": "#0b1220"
+}
