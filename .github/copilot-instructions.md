@@ -83,7 +83,76 @@ pnpm nx run-many -t typecheck      # Type-check all (excludes cubensis-connect)
 
 ### Git Hooks (Lefthook)
 - **pre-commit**: Biome check on staged files + typecheck (parallel).
-- **commit-msg**: Conventional commits format required (`feat:`, `fix:`, `chore:`, etc.).
+- **commit-msg**: Conventional commits format enforced (see convention below).
+
+### Commit Message Convention
+
+**Format:**
+```
+<type>(DCC-###): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+- `DCC-###` is the Jira ticket key — **required** when a ticket exists, **omitted** when there is none.
+- Description: lowercase, imperative mood, no trailing period.
+
+**Allowed types:**
+
+| Type | When to Use |
+|------|-------------|
+| `feat` | New feature or capability |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `style` | Formatting/whitespace — no logic change |
+| `refactor` | Code restructuring — no feature or fix |
+| `perf` | Performance improvement |
+| `test` | Adding or updating tests |
+| `build` | Build system or external dependencies |
+| `ci` | CI/CD configuration |
+| `chore` | Maintenance (dep bumps, config tweaks) |
+| `revert` | Reverting a previous commit |
+
+**Validation rules:**
+
+| Rule | Correct | Wrong |
+|------|---------|-------|
+| Type lowercase | `feat(DCC-15):` | ~~`Feat(DCC-15):`~~ |
+| Scope uppercase Jira key | `fix(DCC-42):` | ~~`fix(dcc-42):`~~ |
+| Description lowercase | `add reserved directive` | ~~`Add reserved directive`~~ |
+| No trailing period | `fix field numbering` | ~~`fix field numbering.`~~ |
+| Imperative mood | `add`, `fix`, `remove` | ~~`added`, `fixed`, `removed`~~ |
+| Scope required when ticket exists | `chore(DCC-7): upgrade protobufjs` | ~~`chore: upgrade protobufjs`~~ |
+| Scope omitted when no ticket | `docs: update README` | ~~`docs(): update README`~~ |
+
+**Branch naming:** `<type>/DCC-###-short-kebab-description`
+```
+feat/DCC-15-proto-reserved-directive
+fix/DCC-42-block-header-field-numbering
+docs/DCC-99-update-readme
+```
+
+**Breaking change:**
+```
+feat(DCC-18)!: remove CJS output from marshall package
+
+ESM-only output aligns with the SDK-wide Node 24+ requirement.
+
+BREAKING CHANGE: CJS build output removed. Package is now ESM-only.
+Refs: DCC-1, DCC-7
+```
+
+**Examples:**
+```
+feat(DCC-15): add reserved directive to transaction proto
+fix(DCC-42): correct field numbering in block header
+chore(DCC-7): upgrade protobufjs to v8
+test(DCC-15): add roundtrip tests for CommitToGeneration
+docs: update README
+style: fix formatting in transaction builder
+```
 
 ### Module Boundaries
 Always respect the layer system. Before adding a dependency:
