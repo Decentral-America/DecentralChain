@@ -34,7 +34,9 @@ test.describe('Static assets', () => {
 
   test('JS bundle executes', async ({ page }) => {
     await page.goto('/');
-    const hasReactRoot = await page.evaluate(() => !!document.getElementById('root'));
-    expect(hasReactRoot).toBe(true);
+    const hasClientScripts = await page.evaluate(
+      () => document.querySelectorAll('script[type="module"]').length > 0,
+    );
+    expect(hasClientScripts).toBe(true);
   });
 });

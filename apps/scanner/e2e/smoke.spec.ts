@@ -143,11 +143,11 @@ test.describe('Blocks page', () => {
 // ── Transaction page (sub-tabs) ────────────────────────────────────────────
 
 test.describe('Transaction page sub-tabs', () => {
-  test('Confirmed tab trigger is visible', async ({ page }) => {
+  test('Transactions tab trigger is visible', async ({ page }) => {
     await page.goto('/transaction');
     await page.waitForLoadState('domcontentloaded');
-    const confirmedTab = page.getByRole('tab', { name: /confirmed/i }).first();
-    await expect(confirmedTab).toBeVisible();
+    const transactionsTab = page.getByRole('tab', { name: /transactions/i }).first();
+    await expect(transactionsTab).toBeVisible();
   });
 
   test('Mempool tab trigger is visible', async ({ page }) => {
@@ -197,7 +197,7 @@ test.describe('Network page sub-tabs', () => {
     await page.waitForLoadState('domcontentloaded');
     const peersTab = page.getByRole('tab', { name: /peers/i });
     await peersTab.click();
-    const panel = page.getByRole('tabpanel');
+    const panel = page.getByRole('tabpanel', { name: /peers/i }).first();
     await expect(panel).toBeVisible();
   });
 
@@ -206,7 +206,7 @@ test.describe('Network page sub-tabs', () => {
     await page.waitForLoadState('domcontentloaded');
     const nodeTab = page.getByRole('tab', { name: /node/i });
     await nodeTab.click();
-    const panel = page.getByRole('tabpanel');
+    const panel = page.getByRole('tabpanel', { name: /node/i }).first();
     await expect(panel).toBeVisible();
   });
 });
