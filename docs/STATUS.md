@@ -28,6 +28,7 @@ DecentralChain forked 24 packages from the Waves blockchain ecosystem in Februar
 - **22 SDK libraries**: Clean, publish-ready, modern tooling (ESM, Vitest, tsdown, Biome, TS 5.9 strict)
 - **3 applications**: cubensis-connect (wallet), exchange (DEX), scanner (block explorer)
 - **1 P0 risk remains**: User seeds stored in potentially Waves-owned AWS Cognito pools (cubensis-connect)
+- ~~P1 supply-chain risk~~: `@keeper-wallet/waves-crypto` **eliminated** — fully forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59)
 - **2 unforked Waves deps**: `@waves/ride-lang` + `@waves/ride-repl` (LOW — chain-agnostic Scala.js)
 - **0 npm audit vulnerabilities** across all packages
 
@@ -171,10 +172,12 @@ All 22 SDK libraries have:
 
 **Critical issues:**
 - **P0**: Cognito pool ownership — are `eu-central-1_AXIpDLJQx` and `eu-central-1_6Bo3FEwt5` DCC-owned? If Waves-owned, they could revoke access to user seeds.
-- **P1**: `@keeper-wallet/waves-crypto` still used in 21 files — supply-chain risk (fork path: `@decentralchain/wallet-crypto`)
-- **P1**: `keeper-wallet.app` domains in whitelist — Waves-controlled
 
-**Security fixes applied:** Math.random replaced, XSS mitigation (2 findings), source maps disabled in prod, `noreferrer` added to external links.
+**Resolved P1 issues:**
+- ~~`@keeper-wallet/waves-crypto` in 21 files~~ — **Eliminated (DCC-70).** Fully forked as `@decentralchain/crypto` (Layer 0, Rust/WASM). All 22 import sites in cubensis-connect migrated to the DCC-owned package (DCC-59).
+- ~~`keeper-wallet.app` domains in whitelist~~ — **Removed.** `web.keeper-wallet.app` and `swap.keeper-wallet.app` stripped from constants.
+
+**Security fixes applied:** Math.random replaced, XSS mitigation (2 findings), source maps disabled in prod, `noreferrer` added to external links, `@keeper-wallet/waves-crypto` supply chain eliminated, `keeper-wallet.app` whitelist entries removed.
 
 #### exchange (DEX)
 
@@ -230,21 +233,19 @@ ride-js (manual workflow_dispatch), scanner, exchange (private apps), cubensis-c
 
 > These are cascading risks where a problem in one upstream dependency affects multiple DCC packages. Understanding these chains is critical for incident response and prioritizing remediation.
 
-### `@keeper-wallet/waves-crypto` Supply Chain
+### ~~`@keeper-wallet/waves-crypto` Supply Chain~~ — RESOLVED ✅ (DCC-70, DCC-59)
 
-This is the **highest-risk dependency chain** in the ecosystem. A single npm package controlled by the Waves/Keeper Wallet team flows through cubensis-connect into every DCC wallet operation:
+**This risk has been fully eliminated.** `@keeper-wallet/waves-crypto` was forked as `@decentralchain/crypto` (Layer 0, Rust/WASM) and is now a first-party package in this monorepo. All 22 cubensis-connect import sites were migrated. `keeper-wallet.app` domains removed from whitelist.
 
 ```
-@keeper-wallet/waves-crypto (Waves-controlled npm package)
-  └─ cubensis-connect (21 direct imports)
+@decentralchain/crypto  ← DCC-owned, Rust/WASM, audited, Layer 0
+  └─ cubensis-connect (22 import sites)
        ├─ Used for: seed encryption, key derivation, address generation
        ├─ Used for: transaction signing, message signing
        └─ Used for: auth token generation
 ```
 
-**Risk**: If the `@keeper-wallet/waves-crypto` npm package is unpublished, compromised, or updated with breaking changes, cubensis-connect loses all crypto functionality. The package owner could theoretically push a malicious update that exfiltrates seeds.
-
-**Mitigation**: Fork to `@decentralchain/wallet-crypto` (see Remediation Matrix, P1). The DCC `ts-lib-crypto` package already contains equivalent functionality — the fork is primarily a re-export wrapper to maintain import compatibility. See [UPSTREAM.md §17](UPSTREAM.md#17-crypto-function-name-mapping) for the function name mapping.
+The former supply-chain risk (Waves-controlled package with access to seed crypto operations) no longer exists. `@decentralchain/crypto` is maintained in this monorepo, published under the `@decentralchain` npm org, and subject to the same audit standards as all SDK packages. See [UPSTREAM.md §9](UPSTREAM.md#9-crypto-library-architecture) for the two-library architecture (`crypto` + `ts-lib-crypto`).
 
 ### `@waves/ride-lang` + `@waves/ride-repl` Chain
 
@@ -318,13 +319,13 @@ AWS Cognito (eu-central-1_AXIpDLJQx, eu-central-1_6Bo3FEwt5)
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|
 | **P0** | Cognito pool ownership | Verify DCC owns the AWS Cognito pools | ⬜ Pending |
-| **P1** | Fork `@keeper-wallet/waves-crypto` | Fork → `@decentralchain/wallet-crypto`; update 21 imports | ⬜ Pending |
-| **P1** | Remove `keeper-wallet.app` from whitelist | Delete 2 lines in constants.ts | ⬜ Pending |
+| ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
+| ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
 | **P1** | Promote npm `next` → `latest` | 5 packages need dist-tag promotion | ⬜ Pending |
 | **P2** | Rename `waves-community` repo | Rename GitHub repo + update scam token URL | ⬜ Pending |
 | **P2** | Set up Sentry DSN | Create project, inject via build env | ⬜ Pending |
 | **P2** | Exchange nginx hardening | Fix CORS, add CSP, fix IP trust, add USER directive | ⬜ Pending |
-| **P2** | Scanner README drift | Keep scanner README aligned with RR7 SSR + monorepo deployment model | ⬜ Pending |
+| ~~P2~~ | ~~Scanner README drift~~ | Completed Mar 20, 2026 | ✅ Completed |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |

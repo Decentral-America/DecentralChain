@@ -281,7 +281,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 
 **Resolved upstream dependencies:**
 - ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69)
-- ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 21 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
+- ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 22 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
 
 ---
 
@@ -551,7 +551,7 @@ The dependency chains through DCC packages. Crypto and swap-client are fully for
 
 ```
 @decentralchain/crypto  ← FORKED (DCC-70) ✅  [was @keeper-wallet/waves-crypto]
-  └── cubensis-connect (21 import sites migrated — DCC-59) ✅
+  └── cubensis-connect (22 import sites migrated — DCC-59) ✅
 
 @decentralchain/ts-lib-crypto  (independent — uses @noble/curves, NOT @decentralchain/crypto)
   └── @decentralchain/transactions
