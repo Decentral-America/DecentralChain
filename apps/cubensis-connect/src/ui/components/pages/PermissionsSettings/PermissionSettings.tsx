@@ -1,9 +1,8 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
-import { type PopupState } from 'popup/store/types';
-import { PureComponent } from 'react';
-import { type WithTranslation, withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { setShowNotification } from 'store/actions/notifications';
 import { allowOrigin, deleteOrigin, disableOrigin, setAutoOrigin } from 'store/actions/permissions';
 import { Loader, Modal } from 'ui/components/ui';
@@ -11,176 +10,131 @@ import { Loader, Modal } from 'ui/components/ui';
 import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './components';
 import * as styles from './permissionsSettings.module.styl';
 
-interface StateProps {
-  origins?: { [key: string]: TAutoAuth[] } | undefined;
-  pending?: boolean | undefined;
-  allowed?: boolean | undefined;
-  disallowed?: boolean | undefined;
-  deleted?: boolean | undefined;
-}
+export function PermissionsSettings() {
+  const { t } = useTranslation();
+  const dispatch = usePopupDispatch();
+  const origins = usePopupSelector((s) => s.origins);
+  const storePerms = usePopupSelector((s) => (s as any).permissions) as
+    | { pending?: boolean; allowed?: boolean; disallowed?: boolean; deleted?: boolean }
+    | undefined;
+  const pending = storePerms?.pending;
+  const allowed = storePerms?.allowed;
+  const disallowed = storePerms?.disallowed;
+  const deleted = storePerms?.deleted;
 
-interface DispatchProps {
-  allowOrigin: (origin: string) => void;
-  deleteOrigin: (origin: string) => void;
-  disableOrigin: (origin: string) => void;
-  setAutoOrigin: (permissions: { origin: string; params: Partial<TAutoAuth> }) => void;
-  setShowNotification: (permissions: { origin: string; canUse: boolean | null }) => void;
-}
+  const [showSettings, setShowSettings] = useState(false);
+  const [originsList, setOriginsList] = useState<TTabTypes>('customList');
+  const [origin, setOrigin] = useState<string | null>(null);
+  const [permissions, setPermissions] = useState<TPermission[]>([]);
+  const [autoSign, setAutoSign] = useState<TAutoAuth | null>(null);
+  const [originalAutoSign, setOriginalAutoSign] = useState<TAutoAuth | null>(null);
 
-type Props = WithTranslation & StateProps & DispatchProps;
-
-interface State {
-  showSettings: boolean;
-  originsList: string;
-  origin: string | null;
-  permissions: TPermission[];
-  autoSign: TAutoAuth | null;
-  originalAutoSign: TAutoAuth | null;
-}
-
-class PermissionsSettingsComponent extends PureComponent<Props, State> {
-  state: State = {
-    autoSign: null,
-    origin: null,
-    originalAutoSign: null,
-    originsList: 'customList',
-    permissions: [],
-    showSettings: false,
-  };
-
-  deleteHandler = (origin: string) => {
-    this.props.deleteOrigin(origin);
-    this.closeSettingsHandler();
-  };
-
-  showSettingsHandler = (origin: string) => {
-    const origins = this.props.origins ?? {};
-    const entry = Object.entries(origins).find(([name]) => name === origin);
-    if (!entry) return;
-    const [, permissions] = entry;
-    const autoSign =
-      (permissions || []).find(({ type }) => type === 'allowAutoSign') || Object.create(null);
-    const amount = new BigNumber(autoSign.totalAmount).div(10 ** 8);
-    autoSign.totalAmount = amount.isNaN() ? 0 : amount.toFormat();
-    this.setState({
-      autoSign,
-      origin,
-      originalAutoSign: autoSign,
-      permissions,
-      showSettings: true,
-    });
-  };
-
-  toggleApproveHandler = (origin: string, enable: boolean) => {
-    if (enable) {
-      this.props.allowOrigin(origin);
-    } else {
-      this.props.disableOrigin(origin);
-    }
-  };
-
-  onChangeOriginSettings = (autoSign: TAutoAuth) => {
-    this.setState({ autoSign });
-  };
-
-  saveSettingsHandler = (
-    params: Partial<TAutoAuth>,
-    origin: string,
-    canShowNotifications: boolean | null,
-  ) => {
-    this.props.setAutoOrigin({ origin, params });
-    this.props.setShowNotification({ canUse: canShowNotifications, origin });
-    this.closeSettingsHandler();
-  };
-
-  closeSettingsHandler = () => {
-    this.setState({ showSettings: false });
-  };
-
-  resetSettingsHandler = () => {
-    this.setState({ origin: null, permissions: [] });
-  };
-
-  render() {
-    const { t, origins, pending, allowed, disallowed, deleted } = this.props;
-    const tabs = ['customList', 'whiteList'].map((name) => ({
-      item: t(`permission.${name}`),
-      name,
-    }));
-    const className = clsx(styles.content);
-
-    return (
-      <div className={className}>
-        <h2 className="title1 center margin-main-big">{t('permissionsSettings.title')}</h2>
-
-        <Loader hide={!pending} />
-
-        <Tabs
-          tabs={tabs}
-          currentTab={this.state.originsList}
-          onSelectTab={(originsList) => this.setState({ originsList })}
-        />
-
-        <List
-          origins={origins ?? {}}
-          showType={this.state.originsList as TTabTypes}
-          showSettings={this.showSettingsHandler}
-          toggleApprove={this.toggleApproveHandler}
-        />
-
-        <Modal
-          showModal={this.state.showSettings}
-          animation={Modal.ANIMATION.FLASH}
-          onExited={this.resetSettingsHandler}
-        >
-          {this.state.showSettings &&
-            this.state.origin &&
-            this.state.autoSign &&
-            this.state.originalAutoSign && (
-              <OriginSettings
-                originName={this.state.origin}
-                permissions={this.state.permissions}
-                origins={origins ?? {}}
-                autoSign={this.state.autoSign}
-                originalAutoSign={this.state.originalAutoSign}
-                onSave={this.saveSettingsHandler}
-                onChangePerms={this.onChangeOriginSettings}
-                onClose={this.closeSettingsHandler}
-                onDelete={this.deleteHandler}
-              />
-            )}
-        </Modal>
-
-        <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={allowed || disallowed || deleted}>
-          <div className="modal notification">
-            {allowed ? t('permissionsSettings.notify.allowed') : null}
-            {disallowed ? t('permissionsSettings.notify.disallowed') : null}
-            {deleted ? t('permissionsSettings.notify.deleted') : null}
-          </div>
-        </Modal>
-      </div>
-    );
+  function handleDelete(originName: string) {
+    dispatch(deleteOrigin(originName));
+    handleCloseSettings();
   }
+
+  function handleShowSettings(originName: string) {
+    const originsMap = origins ?? {};
+    const entry = Object.entries(originsMap).find(([name]) => name === originName);
+    if (!entry) return;
+    const [, perms] = entry;
+    const autoSignEntry: TAutoAuth =
+      ((perms || []) as any[]).find((p) => typeof p === 'object' && p?.type === 'allowAutoSign') ??
+      Object.create(null);
+    const amount = new BigNumber(autoSignEntry.totalAmount ?? '0').div(10 ** 8);
+    autoSignEntry.totalAmount = amount.isNaN() ? 0 : (amount.toFormat() as any);
+    setAutoSign(autoSignEntry);
+    setOrigin(originName);
+    setOriginalAutoSign(autoSignEntry);
+    setPermissions(perms as TPermission[]);
+    setShowSettings(true);
+  }
+
+  function handleToggleApprove(originName: string, enable: boolean) {
+    if (enable) {
+      dispatch(allowOrigin(originName));
+    } else {
+      dispatch(disableOrigin(originName));
+    }
+  }
+
+  function handleChangeOriginSettings(newAutoSign: TAutoAuth) {
+    setAutoSign(newAutoSign);
+  }
+
+  function handleSaveSettings(
+    params: Partial<TAutoAuth>,
+    originName: string,
+    canShowNotifications: boolean | null,
+  ) {
+    dispatch(setAutoOrigin({ origin: originName, params: params as any }));
+    dispatch(setShowNotification({ canUse: canShowNotifications, origin: originName }));
+    handleCloseSettings();
+  }
+
+  function handleCloseSettings() {
+    setShowSettings(false);
+  }
+
+  function handleResetSettings() {
+    setOrigin(null);
+    setPermissions([]);
+  }
+
+  const tabs = ['customList', 'whiteList'].map((name) => ({
+    item: t(`permission.${name}`),
+    name,
+  }));
+
+  return (
+    <div className={clsx(styles.content)}>
+      <h2 className="title1 center margin-main-big">{t('permissionsSettings.title')}</h2>
+
+      <Loader hide={!pending} />
+
+      <Tabs
+        tabs={tabs}
+        currentTab={originsList}
+        onSelectTab={(tab) => setOriginsList(tab as TTabTypes)}
+      />
+
+      <List
+        origins={(origins ?? {}) as any}
+        showType={originsList as TTabTypes}
+        showSettings={handleShowSettings}
+        toggleApprove={handleToggleApprove}
+      />
+
+      <Modal
+        showModal={showSettings}
+        animation={Modal.ANIMATION.FLASH}
+        onExited={handleResetSettings}
+      >
+        {showSettings && origin && autoSign && originalAutoSign && (
+          <OriginSettings
+            originName={origin}
+            permissions={permissions}
+            origins={(origins ?? {}) as any}
+            autoSign={autoSign}
+            originalAutoSign={originalAutoSign}
+            onSave={handleSaveSettings}
+            onChangePerms={handleChangeOriginSettings}
+            onClose={handleCloseSettings}
+            onDelete={handleDelete}
+          />
+        )}
+      </Modal>
+
+      <Modal animation={Modal.ANIMATION.FLASH_SCALE} showModal={allowed || disallowed || deleted}>
+        <div className="modal notification">
+          {allowed ? t('permissionsSettings.notify.allowed') : null}
+          {disallowed ? t('permissionsSettings.notify.disallowed') : null}
+          {deleted ? t('permissionsSettings.notify.deleted') : null}
+        </div>
+      </Modal>
+    </div>
+  );
 }
-
-function mapStateToProps(store: PopupState): StateProps {
-  return {
-    origins: store.origins,
-    // @ts-expect-error
-    ...store.permissions,
-  };
-}
-
-const actions = {
-  allowOrigin,
-  deleteOrigin,
-  disableOrigin,
-  setAutoOrigin,
-  setShowNotification,
-};
-
-const connector = connect(mapStateToProps, actions);
-// @ts-expect-error Redux connect + exactOptionalPropertyTypes conflict on action creator meta types
-export const PermissionsSettings = connector(withTranslation()(PermissionsSettingsComponent));
 
 export type TTabTypes = 'customList' | 'whiteList';

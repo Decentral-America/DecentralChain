@@ -1,7 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
-import { PureComponent } from 'react';
-import { type WithTranslation, withTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Input, Select } from 'ui/components/ui';
 
 import * as styles from './settings.module.styl';
@@ -35,255 +35,38 @@ const CONFIG = {
   ],
 };
 
-class OriginSettingsComponent extends PureComponent<IProps, IState> {
-  state: IState = {
-    canSave: false,
-    canShowNotifications: null,
-    edited: false,
-    interval: null,
-    notifications: null,
-    selected: null,
-    totalAmount: null,
-  };
-
-  static _getAutoSign(autoSign: TAutoAuth): TAutoAuth {
-    if (!autoSign || typeof autoSign === 'string') {
-      return { interval: null, totalAmount: null, type: 'allowAutoSign' };
-    }
-
-    return autoSign;
+function getAutoSign(autoSign: TAutoAuth): TAutoAuth {
+  if (!autoSign || typeof autoSign === 'string') {
+    return { interval: null, totalAmount: null, type: 'allowAutoSign' };
   }
-
-  static getDerivedStateFromProps(props: Readonly<IProps>, state: IState): Partial<IState> {
-    const { interval = null, totalAmount } = OriginSettingsComponent._getAutoSign(props.autoSign);
-    const selected = CONFIG.list.find(({ value }) => value === interval)?.id;
-    const notifications = props.permissions.find(
-      (item) => item && (item as any).type === 'useNotifications',
-    ) as TNotification;
-    const inWhiteList = (props.origins[props.originName] || []).includes('whiteList');
-    let canShowNotifications = state.canShowNotifications;
-    const canUse = notifications?.canUse;
-    const canUseNotify = canUse || (canUse == null && inWhiteList);
-
-    if (canShowNotifications === null && canUseNotify) {
-      canShowNotifications = true;
-    }
-
-    if (props.originName == null) {
-      canShowNotifications = null;
-    }
-
-    return {
-      ...state,
-      canShowNotifications,
-      interval,
-      notifications,
-      selected: selected ?? null,
-      totalAmount,
-    };
-  }
-
-  onClose = () => {
-    this.setState({
-      canSave: false,
-      canShowNotifications: null,
-      edited: false,
-      interval: null,
-      notifications: null,
-      selected: null,
-      totalAmount: null,
-    });
-
-    this.props.onClose();
-  };
-
-  canUseNotificationsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ canShowNotifications: e.target.checked });
-    this.calculateCanSave(this.state.interval, this.state.totalAmount, e.target.checked);
-  };
-
-  selectTimeHandler = (time: number | string) => {
-    const found = CONFIG.list.find(({ id }) => id === time);
-    if (!found) return;
-    this.setState({ edited: true, interval: found.value, selected: time });
-    this.calculateCanSave(found.value, this.state.totalAmount, this.state.canShowNotifications);
-  };
-
-  calculateCanSave(
-    newInterval: number | null,
-    newTotalAmount: string | null,
-    newCanShowNotifications: boolean | null,
-  ) {
-    const sign = OriginSettingsComponent._getAutoSign(this.props.originalAutoSign);
-    let canSave = false;
-
-    newTotalAmount = newInterval ? newTotalAmount : '';
-
-    if (newCanShowNotifications !== !!this.state.notifications) {
-      canSave = true;
-    }
-
-    if (Number(sign.interval) !== Number(newInterval)) {
-      canSave = true;
-    }
-
-    if (Number(sign.totalAmount || 0) !== Number(newTotalAmount || 0)) {
-      canSave = true;
-    }
-
-    if (!Number(newTotalAmount) && Number(newInterval)) {
-      canSave = false;
-    }
-
-    this.setState({ canSave });
-
-    this.props.onChangePerms({
-      interval: newInterval,
-      totalAmount: newTotalAmount,
-      type: 'allowAutoSign',
-    });
-  }
-
-  deleteHandler = () => {
-    this.props.onDelete(this.props.originName);
-  };
-
-  saveHandler = () => {
-    const { interval, totalAmount, canShowNotifications } = this.state;
-    const res = new BigNumber(totalAmount ?? '0').mul(10 ** 8);
-    const data = {
-      interval: Number(interval) || null,
-      totalAmount: res.isNaN() ? null : res.toFixed(0),
-    };
-    this.props.onSave(data, this.props.originName, canShowNotifications);
-  };
-
-  amountHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const parsedValue = value
-      .replace(/[^0-9.]/g, '')
-      .split('.')
-      .slice(0, 2);
-    if (parsedValue[1]) {
-      parsedValue[1] = parsedValue[1].slice(0, 8);
-    }
-
-    const newValue = parsedValue.join('.');
-
-    this.setState({ edited: true, totalAmount: parsedValue.join('.') });
-    this.calculateCanSave(this.state.interval, newValue, this.state.canShowNotifications);
-  };
-
-  render(): React.ReactNode {
-    const inWhiteList = this.props.permissions.includes('whiteList');
-    const { t, originName } = this.props;
-
-    const timeList = CONFIG.list.map((item) => {
-      return {
-        id: item.id,
-        text: t(item.i18nKey, { key: item.id }),
-        value: item.value,
-      };
-    });
-
-    const totalAmount = this.state.totalAmount || '';
-    const value = (this.state.interval ? totalAmount : '') || '';
-
-    return (
-      <div className="modal cover">
-        <div id="originSettings" className="modal-form">
-          <h2 className={clsx(styles.title)}>{t('permissionSettings.modal.title')}</h2>
-
-          <div className={styles.description}>
-            {t('permissionSettings.modal.description', { originName })}
-          </div>
-
-          <Select
-            className={styles.selectTime}
-            fill
-            selectList={timeList}
-            selected={this.state.selected ?? ''}
-            description={t('permissionSettings.modal.time')}
-            onSelectItem={this.selectTimeHandler}
-          />
-
-          <div className={clsx(styles.amount)}>
-            <div className="left input-title basic500 tag1">
-              {t('permissionSettings.modal.amount')}
-            </div>
-            <Input
-              disabled={!this.state.interval}
-              onChange={this.amountHandler}
-              className={styles.amountInput}
-              value={value}
-              placeholder="0"
-            />
-            <div className={styles.dcc}>DCC</div>
-          </div>
-
-          <div className="flex margin-main-big margin-main-big-top">
-            <Input
-              id="checkbox_noshow"
-              type="checkbox"
-              checked={this.state.canShowNotifications ?? false}
-              onChange={this.canUseNotificationsHandler}
-            />
-            <label htmlFor="checkbox_noshow">{t('notifications.allowSending')}</label>
-          </div>
-
-          {!inWhiteList ? (
-            <div className="buttons-wrapper">
-              <Button id="delete" type="button" onClick={this.deleteHandler} view="warning">
-                {t('permissionSettings.modal.delete')}
-              </Button>
-
-              <Button
-                id="save"
-                type="submit"
-                view="submit"
-                disabled={!this.state.canSave}
-                onClick={this.saveHandler}
-              >
-                {t('permissionSettings.modal.save')}
-              </Button>
-            </div>
-          ) : (
-            <Button
-              id="save"
-              type="submit"
-              view="submit"
-              disabled={!this.state.canSave}
-              onClick={this.saveHandler}
-            >
-              {t('permissionSettings.modal.save')}
-            </Button>
-          )}
-
-          <Button
-            id="cancel"
-            className={styles.cancelBtn}
-            type="button"
-            view="transparent"
-            onClick={this.props.onClose}
-          >
-            {t('permissionSettings.modal.cancel')}
-          </Button>
-
-          <Button
-            className="modal-close"
-            onClick={this.props.onClose}
-            type="button"
-            view="transparent"
-          />
-        </div>
-      </div>
-    );
-  }
+  return autoSign;
 }
 
-export const OriginSettings = withTranslation()(OriginSettingsComponent);
+function deriveInitialState(
+  autoSign: TAutoAuth,
+  permissions: TPermission[],
+  origins: Record<string, unknown[]>,
+  originName: string,
+) {
+  const { interval = null, totalAmount } = getAutoSign(autoSign);
+  const selected = CONFIG.list.find(({ value }) => value === interval)?.id ?? null;
+  const notifications = permissions.find(
+    (item) => item && (item as TNotification).type === 'useNotifications',
+  ) as TNotification | undefined;
+  const inWhiteList = (origins[originName] || []).includes('whiteList');
+  const canUse = notifications?.canUse;
+  const canUseNotify = canUse || (canUse == null && inWhiteList);
+  const canShowNotifications = canUseNotify ? true : null;
+  return {
+    canShowNotifications,
+    interval,
+    notifications,
+    selected,
+    totalAmount: totalAmount ?? null,
+  };
+}
 
-interface IProps extends WithTranslation {
+export interface IProps {
   origins: Record<string, unknown[]>;
   autoSign: TAutoAuth;
   originalAutoSign: TAutoAuth;
@@ -297,6 +80,201 @@ interface IProps extends WithTranslation {
   onClose: () => void;
   onDelete: (origin: string) => void;
   onChangePerms: (permission: TAutoAuth) => void;
+}
+
+export function OriginSettings({
+  origins,
+  autoSign,
+  originalAutoSign,
+  permissions,
+  originName,
+  onSave,
+  onClose,
+  onDelete,
+  onChangePerms,
+}: IProps) {
+  const { t } = useTranslation();
+
+  const [interval, setInterval] = useState<number | null>(() => getAutoSign(autoSign).interval);
+  const [totalAmount, setTotalAmount] = useState<string | null>(
+    () => getAutoSign(autoSign).totalAmount ?? null,
+  );
+  const [selected, setSelected] = useState<string | null>(
+    () => CONFIG.list.find(({ value }) => value === getAutoSign(autoSign).interval)?.id ?? null,
+  );
+  const [canSave, setCanSave] = useState(false);
+  const [canShowNotifications, setCanShowNotifications] = useState<boolean | null>(() => {
+    const init = deriveInitialState(autoSign, permissions, origins, originName);
+    return init.canShowNotifications;
+  });
+
+  // Re-initialize when a different origin is opened (component reused without unmount).
+  // Intentionally omits autoSign/permissions/origins from deps: those reflect live-edit state
+  // and must NOT reset the form mid-interaction. originName change = new modal session.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional — only re-init on new origin session
+  useEffect(() => {
+    const init = deriveInitialState(autoSign, permissions, origins, originName);
+    setInterval(init.interval);
+    setTotalAmount(init.totalAmount);
+    setSelected(init.selected);
+    setCanShowNotifications(init.canShowNotifications);
+    setCanSave(false);
+  }, [originName]);
+
+  const notifications = permissions.find(
+    (item) => item && (item as TNotification).type === 'useNotifications',
+  ) as TNotification | undefined;
+
+  function calculateCanSave(
+    newInterval: number | null,
+    newTotalAmount: string | null,
+    newCanShowNotifications: boolean | null,
+  ) {
+    const sign = getAutoSign(originalAutoSign);
+    const effectiveTotalAmount = newInterval ? newTotalAmount : '';
+    let save = false;
+
+    if (newCanShowNotifications !== !!notifications) save = true;
+    if (Number(sign.interval) !== Number(newInterval)) save = true;
+    if (Number(sign.totalAmount || 0) !== Number(effectiveTotalAmount || 0)) save = true;
+    if (!Number(effectiveTotalAmount) && Number(newInterval)) save = false;
+
+    setCanSave(save);
+    onChangePerms({
+      interval: newInterval,
+      totalAmount: effectiveTotalAmount ?? null,
+      type: 'allowAutoSign',
+    });
+  }
+
+  function handleClose() {
+    setCanSave(false);
+    setCanShowNotifications(null);
+    setInterval(null);
+    setSelected(null);
+    setTotalAmount(null);
+    onClose();
+  }
+
+  function handleSelectTime(time: number | string) {
+    const found = CONFIG.list.find(({ id }) => id === time);
+    if (!found) return;
+    setInterval(found.value);
+    setSelected(time as string);
+    calculateCanSave(found.value, totalAmount, canShowNotifications);
+  }
+
+  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    const parsedValue = value
+      .replace(/[^0-9.]/g, '')
+      .split('.')
+      .slice(0, 2);
+    if (parsedValue[1]) {
+      parsedValue[1] = parsedValue[1].slice(0, 8);
+    }
+    const newValue = parsedValue.join('.');
+    setTotalAmount(newValue);
+    calculateCanSave(interval, newValue, canShowNotifications);
+  }
+
+  function handleNotificationsChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setCanShowNotifications(e.target.checked);
+    calculateCanSave(interval, totalAmount, e.target.checked);
+  }
+
+  function handleSave() {
+    const res = new BigNumber(totalAmount ?? '0').mul(10 ** 8);
+    onSave(
+      {
+        interval: Number(interval) || null,
+        totalAmount: res.isNaN() ? null : res.toFixed(0),
+      },
+      originName,
+      canShowNotifications,
+    );
+  }
+
+  const inWhiteList = permissions.includes('whiteList');
+  const effectiveTotalAmount = interval ? (totalAmount ?? '') : '';
+
+  const timeList = CONFIG.list.map((item) => ({
+    id: item.id,
+    text: t(item.i18nKey, { key: item.id }),
+    value: item.value,
+  }));
+
+  return (
+    <div className="modal cover">
+      <div id="originSettings" className="modal-form">
+        <h2 className={clsx(styles.title)}>{t('permissionSettings.modal.title')}</h2>
+
+        <div className={styles.description}>
+          {t('permissionSettings.modal.description', { originName })}
+        </div>
+
+        <Select
+          className={styles.selectTime}
+          fill
+          selectList={timeList}
+          selected={(selected ?? '') as any}
+          description={t('permissionSettings.modal.time')}
+          onSelectItem={handleSelectTime}
+        />
+
+        <div className={clsx(styles.amount)}>
+          <div className="left input-title basic500 tag1">
+            {t('permissionSettings.modal.amount')}
+          </div>
+          <Input
+            disabled={!interval}
+            onChange={handleAmountChange}
+            className={styles.amountInput}
+            value={effectiveTotalAmount}
+            placeholder="0"
+          />
+          <div className={styles.dcc}>DCC</div>
+        </div>
+
+        <div className="flex margin-main-big margin-main-big-top">
+          <Input
+            id="checkbox_noshow"
+            type="checkbox"
+            checked={canShowNotifications ?? false}
+            onChange={handleNotificationsChange}
+          />
+          <label htmlFor="checkbox_noshow">{t('notifications.allowSending')}</label>
+        </div>
+
+        {!inWhiteList ? (
+          <div className="buttons-wrapper">
+            <Button id="delete" type="button" onClick={() => onDelete(originName)} view="warning">
+              {t('permissionSettings.modal.delete')}
+            </Button>
+            <Button id="save" type="submit" view="submit" disabled={!canSave} onClick={handleSave}>
+              {t('permissionSettings.modal.save')}
+            </Button>
+          </div>
+        ) : (
+          <Button id="save" type="submit" view="submit" disabled={!canSave} onClick={handleSave}>
+            {t('permissionSettings.modal.save')}
+          </Button>
+        )}
+
+        <Button
+          id="cancel"
+          className={styles.cancelBtn}
+          type="button"
+          view="transparent"
+          onClick={handleClose}
+        >
+          {t('permissionSettings.modal.cancel')}
+        </Button>
+
+        <Button className="modal-close" onClick={onClose} type="button" view="transparent" />
+      </div>
+    </div>
+  );
 }
 
 export type TPermission = string | TAutoAuth | TNotification;
@@ -313,13 +291,3 @@ type TNotification = {
   time: number;
   canUse: boolean;
 };
-
-interface IState {
-  interval: number | null;
-  totalAmount: string | null;
-  canSave: boolean;
-  edited: boolean;
-  selected: number | string | null;
-  notifications: TNotification | null;
-  canShowNotifications: boolean | null;
-}

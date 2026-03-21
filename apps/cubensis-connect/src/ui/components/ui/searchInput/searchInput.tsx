@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { createRef } from 'react';
+import { useRef } from 'react';
 import { Button, Input } from 'ui/components/ui';
 
 import * as styles from './searchInput.module.css';
@@ -11,13 +11,13 @@ interface Props extends React.HTMLProps<HTMLInputElement> {
 }
 
 export function SearchInput({ className, value, onInput, onClear, ...restProps }: Props) {
-  const inputRef = createRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={clsx(styles.searchWrapper, className)}>
       <Input
         {...restProps}
-        forwardRef={inputRef}
+        ref={inputRef}
         wrapperClassName={styles.searchInputWrapper}
         className={clsx(styles.searchInput, 'font300')}
         onInput={onInput}
