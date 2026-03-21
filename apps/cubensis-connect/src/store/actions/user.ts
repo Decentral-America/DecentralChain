@@ -23,13 +23,6 @@ export function createAccount(
     | { type: 'ledger'; address: string; id: number; publicKey: string }
     | { type: 'privateKey'; privateKey: string }
     | { type: 'seed'; seed: string }
-    | {
-        type: 'wx';
-        address: string;
-        publicKey: string;
-        username: string;
-        uuid: string;
-      }
   ),
   type: WalletTypes,
 ): AccountsThunkAction<Promise<void>> {

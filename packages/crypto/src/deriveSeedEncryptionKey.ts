@@ -1,32 +1,33 @@
-import { base16Encode } from './base16.js';
-import { initWasm } from './initWasm.js';
-import { sha256 } from './sha256.js';
-import { utf8Decode, utf8Encode } from './utf8.js';
-
+/**
+ * Derives a 256-bit AES-GCM CryptoKey from a password and salt using
+ * PBKDF2-SHA-256 with 600,000 iterations (NIST SP 800-132 §5.3 minimum).
+ *
+ * @param password - UTF-8 encoded password bytes
+ * @param salt     - 16-byte random salt (NIST minimum: 128 bits)
+ * @returns        - Extractable AES-GCM-256 CryptoKey for encrypt/decrypt
+ */
 export async function deriveSeedEncryptionKey(
   password: Uint8Array,
-  hashRounds: number,
   salt: Uint8Array,
-) {
-  let hashedPassword = password;
-
-  while (hashRounds--) {
-    hashedPassword = utf8Encode(base16Encode(new Uint8Array(await sha256(hashedPassword))));
-  }
-
-  const hashedPasswordBytes = Uint8Array.from(
-    utf8Decode(hashedPassword)
-      .split('')
-      .map((c) => c.charCodeAt(0)),
+): Promise<CryptoKey> {
+  const baseKey = await crypto.subtle.importKey(
+    'raw',
+    password as Uint8Array<ArrayBuffer>,
+    'PBKDF2',
+    false,
+    ['deriveKey'],
   );
 
-  const wasm = await initWasm();
-
-  const part1 = wasm.md5(Uint8Array.of(...hashedPasswordBytes, ...salt));
-  const part2 = wasm.md5(Uint8Array.of(...part1, ...hashedPasswordBytes, ...salt));
-
-  const key = Uint8Array.of(...part1, ...part2);
-  const iv = wasm.md5(Uint8Array.of(...part2, ...hashedPasswordBytes, ...salt));
-
-  return [key, iv] as const;
+  return crypto.subtle.deriveKey(
+    {
+      hash: 'SHA-256',
+      iterations: 600_000,
+      name: 'PBKDF2',
+      salt: salt as Uint8Array<ArrayBuffer>,
+    },
+    baseKey,
+    { length: 256, name: 'AES-GCM' },
+    true, // extractable: required for session key storage (C-3)
+    ['encrypt', 'decrypt'],
+  );
 }

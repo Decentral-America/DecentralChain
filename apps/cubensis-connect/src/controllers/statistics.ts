@@ -212,11 +212,25 @@ export class StatisticsController {
     const network = this.#networkController.getNetwork();
     const time = Date.now();
 
-    const track = () => {
+    // Hash `origin` before it leaves the device (GDPR Art. 5 data minimisation, CWE-359).
+    // SHA-256 truncated to 8 bytes (hex) is non-reversible but consistent for analytics grouping.
+    const sanitizeProperties = async (
+      props: typeof eventProperties,
+    ): Promise<typeof eventProperties> => {
+      if (!('origin' in props) || typeof props.origin !== 'string') return props;
+      const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(props.origin));
+      const hex = Array.from(new Uint8Array(hash).subarray(0, 8))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+      return { ...props, origin: hex };
+    };
+
+    const track = async () => {
+      const sanitized = await sanitizeProperties(eventProperties);
       this.#amplitudeEventQueue.push({
         app_version: KEEPER_VERSION,
         chainId,
-        event_properties: eventProperties,
+        event_properties: sanitized,
         event_type: eventType,
         insert_id: nanoid(),
         ip: '$remote',
@@ -247,7 +261,7 @@ export class StatisticsController {
             time,
             token: __MIXPANEL_TOKEN__,
             version: KEEPER_VERSION,
-            ...eventProperties,
+            ...sanitized,
           },
         });
       }
@@ -267,11 +281,11 @@ export class StatisticsController {
       const now = Date.now();
 
       if (lastTrackedMs == null || now >= lastTrackedMs + 12 * 60 * 60 * 1000) {
-        track();
+        void track();
         this.#store.updateState({ ...state, [stateKey]: now });
       }
     } else {
-      track();
+      void track();
     }
   }
 }

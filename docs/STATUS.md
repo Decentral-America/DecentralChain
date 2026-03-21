@@ -30,21 +30,21 @@ All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 5.9 strict throughout. Ze
 
 ### Apps — current reality
 
-**cubensis-connect** is on **Vite 8** (upgraded from 6), MV3 already wired for Chrome/Edge (MV2 stays for Firefox intentionally), `@sentry/browser@10.43.0` already installed, CSP already has `wasm-unsafe-eval`. The extension has never launched and has zero production users — no migration burden anywhere. P0 work is replacing the Cognito identity model with **FROST 2-of-2 threshold signing** (ZcashFoundation/frost-ed25519 v3.0.0-rc.0, NCC-audited).
+**cubensis-connect** is on **Vite 8** (upgraded from 6), MV3 already wired for Chrome/Edge (MV2 stays for Firefox intentionally), `@sentry/browser@10.43.0` already installed, CSP already has `wasm-unsafe-eval`. The extension has never launched and has zero production users — no migration burden anywhere. Identity model is **1-of-1, seed-phrase only** — users hold their own keys with no custodial component. Cognito is fully removed.
 
-**exchange** is functional but incomplete. Vite 8, React, DEX UI — but all 12 signing functions in `useTransactionSigning.ts` throw `"Not implemented"`. Root cause is not a broken package; `@decentralchain/transactions` simply isn't listed in exchange's `package.json` and the imports are commented out. Ten-minute fix. nginx also needs hardening (CORS `*`, no CSP, HSTS too short, runs as root).
+**exchange** is functional but incomplete. Vite 8, React, DEX UI. nginx is hardened (CSP enforced, HSTS 1yr, non-root container, no CORS wildcard — all fixed in DCC-141). **Still broken: all 12 signing functions** in `useTransactionSigning.ts` throw `"Not implemented"`. `@decentralchain/transactions` is not listed in `apps/exchange/package.json` and all imports are commented out with a "Vite compat" TODO. This is the last P2 blocker for the exchange.
 
 **scanner** is production-hardened. SSR with React Router 7, non-root Docker, 189 tests passing (82.86% line coverage). Done.
 
-### Active P0
+### Active P1
 
-FROST 2-of-2 identity for cubensis-connect: `packages/frost-wasm` (Rust+WASM), Railway `frost-signer` service (Axum 0.8.8), `FrostIdentityController.ts` replacing the 611-line Cognito controller. Use frost-ed25519 **v3.0.0-rc.0** (`no_std` by default, cleanest WASM target). Issue #1030 (missing `ZeroizeOnDrop` on some types) is a required manual step in the wrapper regardless — explicitly zeroize all key material at the WASM boundary.
+5 packages still tagged `@next` on npm need dist-tag promotion to `@latest`: `assets-pairs-order`, `marshall`, `node-api-js`, `signer`, `signature-adapter`.
 
 ### Closed risks
 
 - `@keeper-wallet/waves-crypto` supply chain — forked as `@decentralchain/crypto`, 22 import sites migrated (DCC-70, DCC-59) ✅
 - `keeper-wallet.app` domains in whitelist — removed ✅
-- Cognito pool risk — moot, zero users, being replaced by FROST ✅
+- Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`) — fully removed (DCC-117, DCC-118) ✅
 
 ---
 
@@ -117,7 +117,7 @@ git commit → lefthook pre-commit →
 | ride-js | `strict: false`, `sideEffects: true` | JS source wrapping Scala.js; `interop.js` mutates globalThis |
 | protobuf-serialization | No tsdown | Uses `pbjs`/`pbts` codegen directly |
 | crypto | wasm-pack build | Rust/WASM hybrid |
-| cubensis-connect | Custom build script (`scripts/build.mjs`), TS 5.9.3 | Vite 8 (upgraded Mar 2026), MV3 on Chrome/Edge already implemented. `@sentry/browser` v10.43.0 already installed. CSP includes `wasm-unsafe-eval` (FROST-ready). Phase 2-3 complete. |
+| cubensis-connect | Custom build script (`scripts/build.mjs`), TS 5.9.3 | Vite 8 (upgraded Mar 2026), MV3 on Chrome/Edge already implemented. `@sentry/browser` v10.43.0 already installed. CSP includes `wasm-unsafe-eval` (for `@decentralchain/crypto` WASM). Phase 2-3 complete. |
 | scanner | SSR application | React Router 7 SSR app with dedicated runbook and production Docker image |
 | exchange | `target: ES2020` | Broader browser support for Electron |
 
@@ -183,9 +183,6 @@ All 22 SDK libraries have:
 #### cubensis-connect (Wallet Extension)
 
 **Migration**: Phase 1 (Rebrand) ✅ | Phase 2-3 (Modernize) ✅ | Phase 4 (Audit) ✅
-
-**Critical issues:**
-- **P0**: Cognito pool ownership — are `eu-central-1_AXIpDLJQx` and `eu-central-1_6Bo3FEwt5` DCC-owned? If Waves-owned, they could revoke access to user seeds.
 
 **Resolved P1 issues:**
 - ~~`@keeper-wallet/waves-crypto` in 21 files~~ — **Eliminated (DCC-70).** Fully forked as `@decentralchain/crypto` (Layer 0, Rust/WASM). All 22 import sites in cubensis-connect migrated to the DCC-owned package (DCC-59).
@@ -272,20 +269,16 @@ The former supply-chain risk (Waves-controlled package with access to seed crypt
 
 **Risk**: LOW. These are language compiler packages, not security-sensitive. They are chain-agnostic (RIDE compiles the same regardless of chain ID). If unpublished, ride-js stops working but no funds are at risk. No viable fork exists — the Scala.js source is in the Waves monorepo.
 
-### ~~AWS Cognito Pool Chain~~ — CLOSED ✅
+### ~~AWS Cognito~~ — CLOSED ✅
 
-**This risk is permanently resolved — not by migration, but by obsolescence.**
+**This risk is permanently resolved.**
 
-Cubensis Connect has **never launched and has zero production users**. No user seeds have ever been stored in `eu-central-1_AXIpDLJQx` or `eu-central-1_6Bo3FEwt5`. There is nothing to migrate, verify, or protect.
-
-The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`, the `id.decentralchain.io/v1/sign` custodial endpoint) is being replaced wholesale by **FROST 2-of-2 threshold signing** — a non-custodial, audited (NCC Group 2023), RFC 9591-compliant MPC protocol over ed25519. See `docs/MPC-RESEARCH.md` for the full analysis.
+Cubensis Connect has **never launched and has zero production users**. The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`, the `id.decentralchain.io/v1/sign` custodial endpoint) has been removed. Cubensis Connect uses **1-of-1 seed-phrase custody** — the user holds the only key. No server component. Seed loss is unrecoverable by design.
 
 ```
-FROST 2-of-2 (new)
-  ├─ packages/frost-wasm   ← ZcashFoundation/frost-ed25519, WASM-compiled
-  ├─ Railway frost-signer  ← holds sk_2 only (half-key, insufficient alone)
-  └─ cubensis-connect      ← holds sk_1 only (encrypted at rest)
-       └─ No single point of compromise for user funds
+1-of-1 (current)
+  └─ cubensis-connect  ← holds encrypted seed (AES-GCM, PBKDF2 600k rounds)
+       └─ No custody component — user is sole key holder
 ```
 
 ---
@@ -336,8 +329,7 @@ FROST 2-of-2 (new)
 
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|
-| ~~P0~~ | ~~Cognito pool ownership~~ | Irrelevant — CB has **zero production users and has never launched**. No user seeds exist in any pool. FROST 2-of-2 replaces the entire Cognito architecture. (See below.) | ✅ Closed |
-| **P0** | FROST 2-of-2 identity | Build `FrostIdentityController` + Railway `frost-signer` service + `packages/frost-wasm` (replaces `IdentityController.ts`) | ⬜ Pending |
+| ~~P0~~ | ~~Cognito architecture~~ | Removed — `IdentityController.ts` deleted (DCC-118), `amazon-cognito-identity-js` removed (DCC-117). 1-of-1 seed model. | ✅ Closed |
 | ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
 | ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
 | **P1** | Promote npm `next` → `latest` | 5 packages need dist-tag promotion | ⬜ Pending |

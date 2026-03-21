@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { LedgerConnectModal } from 'ledger/connectModal';
 import { LedgerServiceStatus, ledgerService } from 'ledger/service';
 import { usePopupSelector } from 'popup/store/react';
@@ -11,14 +10,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
-import { Button } from 'ui/components/ui/buttons/Button';
 import { Modal } from 'ui/components/ui/modal/Modal';
-import Background from 'ui/services/Background';
-
-import { Login } from '../ui/components/pages/importEmail/login';
-import * as styles from './signContext.module.css';
 
 type CreateSign = <P>(onConfirm: (params: P) => void) => (params: P) => Promise<void>;
 
@@ -70,8 +63,6 @@ function usePromiseDialogController(initiallyOpen = false) {
 }
 
 export function SignProvider({ children }: { children: ReactNode }) {
-  const { t } = useTranslation();
-
   const account = usePopupSelector((state) => state.selectedAccount);
 
   const confirmDialog = usePromiseDialogController();
@@ -79,17 +70,6 @@ export function SignProvider({ children }: { children: ReactNode }) {
   const createSign: CreateSign = useCallback(
     (onConfirm) => async (params) => {
       switch (account?.type) {
-        case 'wx':
-          try {
-            await Background.identityRestore(account.uuid);
-            onConfirm(params);
-          } catch (_e) {
-            await confirmDialog.open();
-            await Background.identityUpdate();
-            onConfirm(params);
-            confirmDialog.close();
-          }
-          break;
         case 'ledger':
           await ledgerService.updateStatus(account.networkCode);
 
@@ -114,28 +94,6 @@ export function SignProvider({ children }: { children: ReactNode }) {
   return (
     <>
       <SignContext.Provider value={contextValue}>{children}</SignContext.Provider>
-
-      {account?.type === 'wx' && (
-        <Modal showModal={confirmDialog.isOpen} animation={Modal.ANIMATION.FLASH}>
-          <div className={clsx('modal', 'cover', styles.root)}>
-            <div className={styles.content}>
-              <Button
-                className="modal-close"
-                onClick={confirmDialog.onCancel}
-                type="button"
-                view="transparent"
-              />
-
-              <h2 className={clsx('margin4', 'title1')}>{t('importEmail.loginRequired')}</h2>
-
-              <Login
-                userData={{ password: '', username: account.username }}
-                onConfirm={confirmDialog.onOk}
-              />
-            </div>
-          </div>
-        </Modal>
-      )}
 
       {account?.type === 'ledger' && (
         <Modal animation={Modal.ANIMATION.FLASH} showModal={confirmDialog.isOpen}>

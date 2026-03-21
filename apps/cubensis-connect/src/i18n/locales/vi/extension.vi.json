@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "Thông tin tài khoản" },
+  "accountCard": {
+    "infoTooltip": "Thông tin tài khoản"
+  },
   "accountInfo": {
     "address": "Địa chỉ của bạn",
     "backUp": "Cụm từ sao lưu",
@@ -7,7 +9,6 @@
     "copied": "Đã sao chép",
     "copyToClipboard": "Nhấn để sao chép vào bộ nhớ tạm",
     "email": "Email",
-    "emailNoBackupPhrase": "Tài khoản này được đăng nhập bằng tài khoản DecentralChain, nên không có cụm từ sao lưu để sao chép",
     "encodedSeed": "Seed được mã hóa",
     "enter": "Vào ",
     "password": "Mật khẩu",
@@ -17,7 +18,9 @@
     "pubKey": "Public key",
     "viewInExplorer": "Xem trên trình duyệt "
   },
-  "activeAccountCard": { "swapButton": "Swap" },
+  "activeAccountCard": {
+    "swapButton": "Swap"
+  },
   "address": {
     "add": "Người dùng mới",
     "addButton": "Thêm mới",
@@ -108,6 +111,7 @@
     "confirmBackupInfo": "Bạn sẽ xác nhận cụm này ở bước sau",
     "continue": "Tiếp tục",
     "copied": "Đã sao chép",
+    "lossWarning": "Nếu bạn mất cụm từ sao lưu, bạn sẽ mất vĩnh viễn quyền truy cập vào tài sản của mình. Không có tùy chọn khôi phục.",
     "saveBackup": "Lưu cụm từ sao lưu"
   },
   "bottom": {
@@ -151,7 +155,9 @@
     "wrongSeed": "Sai thứ tự thử lại"
   },
   "copyAddress": "Sao chép địa chỉ",
-  "date": { "today": "Hôm nay" },
+  "date": {
+    "today": "Hôm nay"
+  },
   "deleteAccount": {
     "attention": "Chú ý!",
     "delete": "Xóa tài khoản",
@@ -280,27 +286,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "Seed Phrase hoặc Private Key"
   },
-  "importEmail": {
-    "alreadyExists": "Tài khoản đã tồn tại",
-    "continue": "Tiếp tục",
-    "credentialsError": "Sai tên tài khoản hoặc mật khẩu",
-    "dontHaveAccount": "Không có tài khoản ?",
-    "emailLabel": "Email",
-    "emailRequired": "Nhập Email đúng",
-    "forgotPassword": "Quên mật khẩu",
-    "importEmailDesc": "Kết nối với 1 tài khoản đã tạo trên DecentralChain Exchange",
-    "importEmailTitle": "Nhập tài khoản Email",
-    "incorrectCode": "Sai mã. Vui lòng thử lại ",
-    "incorrectUsernameOrPassword": "Sai tên đăng nhập hoặc mật khẩu.",
-    "incorrectUsernameOrPasswordLimit": "Bạn đã vượt quá số lần nhập sai tên người dùng hoặc mật khẩu. Nếu bạn gặp bất kỳ sự cố nào, vui lòng liên hệ với bộ phận hỗ trợ https://support.decentralchain.io/.",
-    "loginRequired": "Xác nhận tài khoản Email",
-    "passwordLabel": "Mật khẩu",
-    "passwordRequired": "Nhập mật khẩu",
-    "signUp": "Đăng ký",
-    "userDoesNotExist": "Người dùng không tồn tại.",
-    "verifyAccountDesc": "Vui lòng nhập mã xác minh gồm 6 chữ số mà {{destination}} nhận được",
-    "verifyAccountTitle": "Xác nhận tài khoản "
-  },
   "importKeystore": {
     "addressBookLabel": "Tệp sổ địa chỉ",
     "addressBookPasswordPlaceholder": "Mật khẩu được dùng để tạo tệp",
@@ -359,7 +344,10 @@
     "joinUs": "Tham gia cộng đồng DecentralChain",
     "keepUp": "Ví Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên Web của bên thứ 3 có chức năng tích hợp DecentralChain hoặc DApps. Sử dụng ví Cubensis Connect, bạn có thể ký các giao dịch và vẫn an toàn trước các trang web độc hại"
   },
-  "langsSettings": { "confirm": "Xác nhận", "title": "Thay đổi ngôn ngữ" },
+  "langsSettings": {
+    "confirm": "Xác nhận",
+    "title": "Thay đổi ngôn ngữ"
+  },
   "ledgerConnectModal": {
     "instructions": "Kết nối thiết bị Ledger và mở ứng dụng DCC",
     "title": "Đang kết nối",
@@ -490,7 +478,9 @@
     "rejectedOrigin": "Đã bị từ chối",
     "title": "Quyền điều khiển"
   },
-  "qrCode": { "download": "Tải xuống mã QR" },
+  "qrCode": {
+    "download": "Tải xuống mã QR"
+  },
   "send": {
     "amountInputLabel": "Số lượng",
     "amountRequiredError": "Số tiền được yêu cầu",
@@ -653,7 +643,9 @@
     "paymentsCount": "{{count}} Thanh toán",
     "paymentsCount_plural": "{{count}} Thanh toán",
     "paymentsNone": "Không thanh toán",
-    "permission": { "details": "Chi tiết quyền" },
+    "permission": {
+      "details": "Chi tiết quyền"
+    },
     "price": "Giá",
     "publicKey": "Public key",
     "recipient": "Người nhận",
@@ -681,7 +673,9 @@
   "ui": {
     "logoTitle": "Giữ các khóa DCC của bạn an toàn khi trực tuyến"
   },
-  "wallet": { "lease": "Đã cho thuê" },
+  "wallet": {
+    "lease": "Đã cho thuê"
+  },
   "welcome": {
     "getStarted": "Bắt đầu",
     "info": "Cubensis Connect là cách an toàn nhất để tương tác với các tài nguyên web của bên thứ ba có chức năng tích hợp DecentralChain hoặc DApps.",
