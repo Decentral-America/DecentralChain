@@ -192,6 +192,10 @@ export class MessageController extends EventEmitter {
     }
   }
 
+  getMessages() {
+    return this.store.getState().messages;
+  }
+
   getMessageById(id: string) {
     const result = this.store.getState().messages.find((message) => message.id === id);
 

@@ -46,7 +46,7 @@ function makeExtensionStorage(sessionOverride?: { vaultKeyBytes?: string | null 
 // Minimal stubs for unused WalletController dependencies
 // ---------------------------------------------------------------------------
 
-const stubLedger = {} as Parameters<typeof WalletController.prototype.constructor>[0]['ledger'];
+const stubLedger = {} as ConstructorParameters<typeof WalletController>[0]['ledger'];
 const stubAssetInfo = vi.fn();
 const stubTrash = {
   addItem: vi.fn(),
