@@ -22,6 +22,12 @@ export default mergeConfig(baseConfig, {
         'src/tools/transactions/wait.ts',
         'src/tools/transactions/transactions.ts',
       ],
+      thresholds: {
+        // Network-dependent error-handling branches (HTTP 4xx/5xx, connection
+        // timeout) require a live DecentralChain node; covered by integration
+        // tests in vitest.integration.config.ts.
+        branches: 88,
+      },
     },
     // Integration tests require a running DecentralChain node.
     // Run with: npm run test:integration
