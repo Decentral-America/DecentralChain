@@ -92,8 +92,8 @@ DecentralChain/
 │   ├── ARCHITECTURE.md             This file
 │   ├── UPSTREAM.md                 Waves provenance & ecosystem
 │   ├── STATUS.md                   Per-package health & timeline
-│   ├── SECURITY-AUDIT.md           Security audit checklist
-│   └── CONVENTIONS.md              Coding standards & quality pipeline
+│   ├── CONVENTIONS.md              Coding standards & quality pipeline
+│   └── RELEASE-CHECKLIST.md        Pre-release gate checklist & Go/No-Go template
 ├── scripts/                        Monorepo automation
 ├── tools/                          Nx plugins & custom tooling
 ├── biome.json                      Root Biome config (shared)
@@ -437,8 +437,8 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 | `docs/ARCHITECTURE.md` | This file — architecture reference | Humans + AI agents |
 | `docs/CONVENTIONS.md` | Coding standards, quality pipeline | Humans + AI agents |
 | `docs/STATUS.md` | Per-package health, remediation matrix | Humans + AI agents |
-| `docs/SECURITY-AUDIT.md` | 6-phase security audit playbook | Humans + AI agents |
 | `docs/UPSTREAM.md` | Waves provenance, wire-format constraints | Humans + AI agents |
+| `docs/RELEASE-CHECKLIST.md` | Pre-release gate checklist & Go/No-Go template | Humans |
 
 ---
 
