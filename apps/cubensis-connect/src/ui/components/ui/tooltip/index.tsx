@@ -51,6 +51,7 @@ export function Tooltip({
   );
 
   useEffect(() => {
+    // #app-modal is the shared portal root for overlays; its absence (e.g. test env) is safe to skip.
     const root = document.getElementById('app-modal');
     if (!root) return;
 
