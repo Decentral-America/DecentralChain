@@ -32,7 +32,7 @@ All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 5.9 strict throughout. Ze
 
 **cubensis-connect** is on **Vite 8** (upgraded from 6), MV3 already wired for Chrome/Edge (MV2 stays for Firefox intentionally), `@sentry/browser@10.43.0` already installed, CSP already has `wasm-unsafe-eval`. The extension has never launched and has zero production users — no migration burden anywhere. Identity model is **1-of-1, seed-phrase only** — users hold their own keys with no custodial component. Cognito is fully removed.
 
-**exchange** is functional but incomplete. Vite 8, React, DEX UI — but all 12 signing functions in `useTransactionSigning.ts` throw `"Not implemented"`. Root cause is not a broken package; `@decentralchain/transactions` simply isn't listed in exchange's `package.json` and the imports are commented out. Ten-minute fix. nginx also needs hardening (CORS `*`, no CSP, HSTS too short, runs as root).
+**exchange** is functional but incomplete. Vite 8, React, DEX UI. nginx is hardened (CSP enforced, HSTS 1yr, non-root container, no CORS wildcard — all fixed in DCC-141). **Still broken: all 12 signing functions** in `useTransactionSigning.ts` throw `"Not implemented"`. `@decentralchain/transactions` is not listed in `apps/exchange/package.json` and all imports are commented out with a "Vite compat" TODO. This is the last P2 blocker for the exchange.
 
 **scanner** is production-hardened. SSR with React Router 7, non-root Docker, 189 tests passing (82.86% line coverage). Done.
 
