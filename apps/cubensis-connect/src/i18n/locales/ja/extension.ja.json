@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "アカウント情報" },
+  "accountCard": {
+    "infoTooltip": "アカウント情報"
+  },
   "accountInfo": {
     "address": "アドレス",
     "backUp": "バックアップフレーズ",
@@ -7,7 +9,6 @@
     "copied": "コピーしました。",
     "copyToClipboard": "クリックしてクリップボードにコピーします。",
     "email": "メール",
-    "emailNoBackupPhrase": "このアカウントはDecentralChain Exchangeアカウントを使用してインポートされたため、バックアップフレーズや秘密鍵をコピーする必要はありません。",
     "encodedSeed": "暗号化されたシードフレーズ",
     "enter": "確定",
     "password": "パスワード",
@@ -17,7 +18,9 @@
     "pubKey": "公開鍵",
     "viewInExplorer": "エクスプローラーで確認"
   },
-  "activeAccountCard": { "swapButton": "スワップ" },
+  "activeAccountCard": {
+    "swapButton": "スワップ"
+  },
   "address": {
     "add": "新しいアドレス",
     "addButton": "新規追加",
@@ -108,6 +111,7 @@
     "confirmBackupInfo": "次の画面でフレーズを確認します。",
     "continue": "続ける",
     "copied": "コピーしました。",
+    "lossWarning": "バックアップフレーズを紛失すると、資金へのアクセスが永久に失われます。復元オプションはありません。",
     "saveBackup": "バックアップフレーズを保存"
   },
   "bottom": {
@@ -151,7 +155,9 @@
     "wrongSeed": "順番が間違っています。再試行してください。"
   },
   "copyAddress": "アドレスをコピー",
-  "date": { "today": "本日" },
+  "date": {
+    "today": "本日"
+  },
   "deleteAccount": {
     "attention": "注意",
     "delete": "アカウント削除",
@@ -280,27 +286,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "シードフレーズまたは秘密鍵"
   },
-  "importEmail": {
-    "alreadyExists": "アカウントは既に存在しています。",
-    "continue": "続ける",
-    "credentialsError": "ユーザー名またはパスワードが間違っています。",
-    "dontHaveAccount": "アカウントを持っていませんか？",
-    "emailLabel": "メール",
-    "emailRequired": "正しいメールを入力してください。",
-    "forgotPassword": "パスワードを忘れましたか？",
-    "importEmailDesc": "DecentralChain Exchangeで作成したメールアカウントを接続します。",
-    "importEmailTitle": "メールアカウントをインポート",
-    "incorrectCode": "認証コードが間違っています。再入力してください。",
-    "incorrectUsernameOrPassword": "ユーザー名またはパスワードが間違っています。",
-    "incorrectUsernameOrPasswordLimit": "ユーザ名またはパスワードを間違えた回数が上限を超えました。サポートまでご連絡ください。https://support.decentralchain.io/",
-    "loginRequired": "メールアカウントを確認",
-    "passwordLabel": "パスワード",
-    "passwordRequired": "パスワードを入力",
-    "signUp": "登録",
-    "userDoesNotExist": "ユーザーが存在しません。",
-    "verifyAccountDesc": "{{destination}}で受信した6桁の認証コードを入力してください。",
-    "verifyAccountTitle": "アカウントを検証"
-  },
   "importKeystore": {
     "addressBookLabel": "アドレス帳ファイル",
     "addressBookPasswordPlaceholder": "ファイル作成時に使用したパスワード",
@@ -359,7 +344,10 @@
     "joinUs": "DecentralChainコミュニティへ参加",
     "keepUp": "Cubensis ConnectはDecentralChainに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。Cubensis Connectを使用してトランザクションに署名することができ、悪意のあるサイトから身を守ることができます。"
   },
-  "langsSettings": { "confirm": "確認", "title": "言語切替" },
+  "langsSettings": {
+    "confirm": "確認",
+    "title": "言語切替"
+  },
   "ledgerConnectModal": {
     "instructions": "Ledgerデバイスを接続し、DCCアプリを開く",
     "title": "接続中",
@@ -490,7 +478,9 @@
     "rejectedOrigin": "却下",
     "title": "アクセス権管理"
   },
-  "qrCode": { "download": "QRコードをダウンロード" },
+  "qrCode": {
+    "download": "QRコードをダウンロード"
+  },
   "send": {
     "amountInputLabel": "数量",
     "amountRequiredError": "数量は必須です。",
@@ -653,7 +643,9 @@
     "paymentsCount": "{{count}} 支払い",
     "paymentsCount_plural": "{{count}} 支払い",
     "paymentsNone": "支払いなし",
-    "permission": { "details": "許可内容" },
+    "permission": {
+      "details": "許可内容"
+    },
     "price": "価格",
     "publicKey": "公開鍵",
     "recipient": "受取人",
@@ -678,8 +670,12 @@
     "unknown": "不明",
     "updateAssetInfo": "アセット情報を更新"
   },
-  "ui": { "logoTitle": "DCCキーをオンラインで安全に管理" },
-  "wallet": { "lease": "リース中" },
+  "ui": {
+    "logoTitle": "DCCキーをオンラインで安全に管理"
+  },
+  "wallet": {
+    "lease": "リース中"
+  },
   "welcome": {
     "getStarted": "開始",
     "info": "Cubensis ConnectはDecentralChainに統合された機能またはサードパーティdAppsとやり取りするための最も安全な方法です。",

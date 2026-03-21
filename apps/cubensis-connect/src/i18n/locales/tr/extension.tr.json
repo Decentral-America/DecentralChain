@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "Hesap bilgisi" },
+  "accountCard": {
+    "infoTooltip": "Hesap bilgisi"
+  },
   "accountInfo": {
     "address": "Adresiniz",
     "backUp": "Yedekleme anahtarı",
@@ -7,7 +9,6 @@
     "copied": "Kopyalandı!",
     "copyToClipboard": "Panoya kopyalamak için tıklayın",
     "email": "E-posta",
-    "emailNoBackupPhrase": "Bu hesap DecentralChain Exchange hesabı kullanılarak içe aktarıldı, dolayısıyla kopyalanacak yedekleme anahtarı veya özel anahtar yok",
     "encodedSeed": "Şifrelenmiş anahtar kelimeler",
     "enter": "Giriş",
     "password": "Şifre",
@@ -17,7 +18,9 @@
     "pubKey": "Genel anahtar",
     "viewInExplorer": "Tarayıcı'da görüntüle"
   },
-  "activeAccountCard": { "swapButton": "Takas et" },
+  "activeAccountCard": {
+    "swapButton": "Takas et"
+  },
   "address": {
     "add": "Yeni adres",
     "addButton": "Yeni ekle",
@@ -108,6 +111,7 @@
     "confirmBackupInfo": "Bu anahtar kelimleri bir sonraki ekranda onaylayacaksınız",
     "continue": "Devam et",
     "copied": "Kopyalandı!",
+    "lossWarning": "Yedekleme ifadenizi kaybederseniz, fonlarınıza erişimi kalıcı olarak kaybedersiniz. Kurtarma seçeneği yoktur.",
     "saveBackup": "Yedekleme anahtarını kaydet"
   },
   "bottom": {
@@ -151,7 +155,9 @@
     "wrongSeed": "Yanlış emir, tekrar deneyin"
   },
   "copyAddress": "Adresi kopyala",
-  "date": { "today": "Bugün" },
+  "date": {
+    "today": "Bugün"
+  },
   "deleteAccount": {
     "attention": "Dikkat!",
     "delete": "Hesabı sil",
@@ -280,27 +286,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "Anahtar Kelime yada Özel Anahtar"
   },
-  "importEmail": {
-    "alreadyExists": "Bu hesap zaten mevcut",
-    "continue": "Devam et",
-    "credentialsError": "Hatalı kullanıcı adı veya şifre",
-    "dontHaveAccount": "Bir hesabınız yok mu?",
-    "emailLabel": "E-posta",
-    "emailRequired": "Doğru e-postayı girin",
-    "forgotPassword": "Parolanızı mı unuttunuz?",
-    "importEmailDesc": "DecentralChain Exchange üzerinde oluşturulan e-posta hesabınızı bağlayın",
-    "importEmailTitle": "E-posta Hesabını İçe Aktar",
-    "incorrectCode": "Yanlış kod. Lütfen tekrar deneyin",
-    "incorrectUsernameOrPassword": " Yanlış kullanıcı adı ya da şifre.",
-    "incorrectUsernameOrPasswordLimit": "Kullanıcı adını ya da şifreyi yanlış girme limitini aştınız. Herhangi bir sorununuz varsa, lütfen https://support.decentralchain.io/ adresinden destek ile iletişime geçin.",
-    "loginRequired": "E-posta Hesabını Onaylayın",
-    "passwordLabel": "Şifre",
-    "passwordRequired": "Şifre girin",
-    "signUp": "Kayıt ol",
-    "userDoesNotExist": "Kullanıcı bulunmamaktadır.",
-    "verifyAccountDesc": "Lütfen {{destination}} tarafına gönderilen 6 haneli doğrulama kodunu girin",
-    "verifyAccountTitle": "Hesabınızı doğrulayın"
-  },
   "importKeystore": {
     "addressBookLabel": "Adres Defteri dosyası",
     "addressBookPasswordPlaceholder": "Dosya oluşturmak için kullanılan şifre",
@@ -359,7 +344,10 @@
     "joinUs": "DecentralChain Topluluğuna Katılın",
     "keepUp": "Cubensis Connect, DecentralChain ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur. Cubensis Connect'i kullanarak işlemleri imzalayabilir ve kötü niyetli sitelerden korunabilirsiniz."
   },
-  "langsSettings": { "confirm": "Onayla", "title": "Dili değiştir" },
+  "langsSettings": {
+    "confirm": "Onayla",
+    "title": "Dili değiştir"
+  },
   "ledgerConnectModal": {
     "instructions": "Ledger cihazını bağlayın ve DCC uygulamasını açın",
     "title": "Bağlanılıyor...",
@@ -459,7 +447,10 @@
     "noAccountsNote": "Mevcuttaki ağda başka hesabınız yok",
     "title": "Diğer hesaplar"
   },
-  "permission": { "customList": "Özel Liste", "whiteList": "Whitelist" },
+  "permission": {
+    "customList": "Özel Liste",
+    "whiteList": "Whitelist"
+  },
   "permissionSettings": {
     "modal": {
       "amount": "Harcama limiti",
@@ -487,7 +478,9 @@
     "rejectedOrigin": "Reddedildi",
     "title": "İzin kontrolü"
   },
-  "qrCode": { "download": "QR kodunu indir" },
+  "qrCode": {
+    "download": "QR kodunu indir"
+  },
   "send": {
     "amountInputLabel": "Miktar",
     "amountRequiredError": "Tutar gerekli",
@@ -650,7 +643,9 @@
     "paymentsCount": "{{count}} Ödeme",
     "paymentsCount_plural": "{{count}} Ödeme(ler)",
     "paymentsNone": "Ödeme yok",
-    "permission": { "details": "İzin ayrıntıları" },
+    "permission": {
+      "details": "İzin ayrıntıları"
+    },
     "price": "Fiyat",
     "publicKey": "Genel anahtar",
     "recipient": "Alıcı",
@@ -675,8 +670,12 @@
     "unknown": "Bilinmeyen",
     "updateAssetInfo": "Varlık Bilgilerini Güncelle"
   },
-  "ui": { "logoTitle": "DCC anahtarlarınızı çevrimiçi güvende tutun" },
-  "wallet": { "lease": "Kiraya verildi" },
+  "ui": {
+    "logoTitle": "DCC anahtarlarınızı çevrimiçi güvende tutun"
+  },
+  "wallet": {
+    "lease": "Kiraya verildi"
+  },
   "welcome": {
     "getStarted": "Başlayın",
     "info": "Cubensis Connect, DecentralChain ile entegre edilmiş işlevsellik veya merkezi olmayan uygulamalar (DApp) içeren üçüncü taraf web kaynaklarıyla etkileşim kurmanın en güvenli yoludur.",

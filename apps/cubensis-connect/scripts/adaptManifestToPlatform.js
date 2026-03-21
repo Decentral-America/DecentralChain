@@ -35,6 +35,7 @@ const manifestV3 = {
   content_security_policy: {
     extension_pages: contentSecurityPolicy,
   },
+  host_permissions: ['http://*/*', 'https://*/*'],
   manifest_version: 3,
   web_accessible_resources: [{ matches: ['<all_urls>'], resources: ['inpage.js'] }],
 };

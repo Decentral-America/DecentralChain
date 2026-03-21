@@ -15,7 +15,6 @@ import { make, pipe, subscribe } from 'wonka';
 
 import {
   type AssetsConfig,
-  type DEFAULT_IDENTITY_CONFIG,
   type DEFAULT_MAIN_CONFIG,
   type IgnoreErrorsConfig,
   type NftConfig,
@@ -57,14 +56,12 @@ export interface StorageLocalState {
     pack_config: typeof DEFAULT_MAIN_CONFIG.pack_config;
     idle: typeof DEFAULT_MAIN_CONFIG.idle;
   };
-  cognitoSessions: string | undefined;
   currentLocale: string;
   currentNetwork: NetworkName;
   customCodes: Record<NetworkName, string | null>;
   customMatchers: Record<NetworkName, string | null>;
   customNodes: Record<NetworkName, string | null>;
   data: TrashItem[];
-  identityConfig: typeof DEFAULT_IDENTITY_CONFIG;
   idleOptions: IdleOptions;
   ignoreErrorsConfig: IgnoreErrorsConfig;
   initialized: boolean;
@@ -90,13 +87,24 @@ export interface StorageLocalState {
   userId: string | undefined;
   WalletController: {
     vault: string | undefined;
+    /**
+     * Base64-encoded 16-byte PBKDF2 salt used to derive the current vault key.
+     * Stored separately from the vault ciphertext so the same key can be reused
+     * for subsequent saves without re-running PBKDF2 from the password.
+     */
+    vaultSalt: string | undefined;
   };
   whitelist: string[];
 }
 
 export interface StorageSessionState {
-  memo?: Record<string, string | null> | undefined;
-  password?: string | null | undefined;
+  /**
+   * Base64-encoded raw 32-byte AES-256-GCM vault key derived via PBKDF2.
+   * Stored instead of the plaintext password so that a session compromise
+   * does not expose the user's password (CWE-256 / OWASP A02:2021).
+   * Cleared on lock and on browser restart (browser.storage.session lifetime).
+   */
+  vaultKeyBytes?: string | null | undefined;
 }
 
 export class ExtensionStorage {

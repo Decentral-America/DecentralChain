@@ -298,19 +298,7 @@ describe('encryptMessage/decryptMessage', () => {
 });
 
 describe('encryptSeed/decryptSeed', () => {
-  test('fixed', async () => {
-    expect(
-      utf8Decode(
-        await decryptSeed(
-          new Uint8Array([
-            83, 97, 108, 116, 101, 100, 95, 95, 59, 101, 65, 239, 197, 127, 191, 144, 31, 110, 249,
-            46, 194, 198, 28, 177, 124, 40, 252, 136, 133, 69, 231, 2,
-          ]),
-          utf8Encode('🔑'),
-        ),
-      ),
-    ).toBe('🙈');
-  });
+  // No fixed-output test — PBKDF2+AES-GCM uses random salt+nonce per call; round-trip is the correct invariant.
 
   test('random', async () => {
     await expect(
@@ -323,6 +311,11 @@ describe('encryptSeed/decryptSeed', () => {
         utf8Encode('🗝️'),
       ),
     ).resolves.toStrictEqual(utf8Encode('Exact16BytesText'));
+  });
+
+  test('wrong password throws', async () => {
+    const ciphertext = await encryptSeed(utf8Encode('secret'), utf8Encode('correct'));
+    await expect(decryptSeed(ciphertext, utf8Encode('wrong'))).rejects.toThrow();
   });
 });
 

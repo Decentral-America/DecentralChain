@@ -70,7 +70,6 @@ export function NewWalletName() {
             ledger: WalletTypes.Ledger,
             privateKey: WalletTypes.PrivateKey,
             seed: WalletTypes.Seed,
-            wx: WalletTypes.Wx,
           };
 
           await dispatch(createAccount(account, accountTypeToWalletType[account.type]));

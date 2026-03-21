@@ -1,0 +1,55 @@
+.smallCardContent {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+}
+
+.origin {
+  margin-bottom: 4px;
+  max-width: 250px;
+  overflow: hidden;
+  color: var(--color-basic500);
+  font-size: 12px;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-size: 18px;
+}
+
+.infoBlock {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--color-basic50);
+  border-radius: 8px;
+}
+
+.infoBlockText {
+  color: var(--color-basic500);
+  font-size: 13px;
+}
+
+.keyBlock {
+  margin-top: 16px;
+}
+
+.keyLabel {
+  margin-bottom: 4px;
+  color: var(--color-basic500);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.keyValue {
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--color-basic800);
+}

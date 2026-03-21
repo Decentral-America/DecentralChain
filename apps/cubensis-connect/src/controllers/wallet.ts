@@ -2,8 +2,7 @@ import {
   base58Encode,
   base64Decode,
   base64Encode,
-  decryptSeed,
-  encryptSeed,
+  deriveSeedEncryptionKey,
   utf8Decode,
   utf8Encode,
 } from '@decentralchain/crypto';
@@ -18,26 +17,46 @@ import { PrivateKeyWallet } from 'wallets/privateKey';
 import { SeedWallet } from 'wallets/seed';
 import { type CreateWalletInput, type WalletPrivateData } from 'wallets/types';
 import { type Wallet } from 'wallets/wallet';
-import { WxWallet } from 'wallets/wx';
 
 import { NETWORK_CONFIG } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';
+import { CONFIG } from '../ui/appConfig';
 import { type AssetInfoController } from './assetInfo';
-import { type IdentityApi } from './IdentityController';
 import { type TrashController } from './trash';
 
-async function encryptVault(input: WalletPrivateData[], password: string) {
+/**
+ * Encrypt wallet data using a pre-derived AES-GCM-256 CryptoKey.
+ * Format: [16-byte random salt][12-byte nonce][ciphertext + 16-byte GCM auth tag].
+ * The leading 16-byte salt is not used for key derivation here (the key is pre-derived);
+ * it maintains format consistency with decryptVault which reads nonce at offset 16.
+ */
+async function encryptVault(input: WalletPrivateData[], key: CryptoKey): Promise<string> {
   const json = JSON.stringify(input);
-  const vault = await encryptSeed(utf8Encode(json), utf8Encode(password));
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const nonce = crypto.getRandomValues(new Uint8Array(12));
 
-  return base64Encode(vault);
+  const ciphertext = new Uint8Array(
+    await crypto.subtle.encrypt({ iv: nonce, name: 'AES-GCM' }, key, utf8Encode(json)),
+  );
+
+  return base64Encode(Uint8Array.of(...salt, ...nonce, ...ciphertext));
 }
 
-async function decryptVault(vault: string, password: string) {
+/**
+ * Decrypt a vault blob using a pre-derived AES-GCM-256 CryptoKey.
+ * Throws if the authentication tag is invalid (wrong key or corrupt blob).
+ */
+async function decryptVault(vault: string, key: CryptoKey): Promise<WalletPrivateData[]> {
   try {
-    const decryptedSeed = await decryptSeed(base64Decode(vault), utf8Encode(password));
+    const bytes = base64Decode(vault);
+    const nonce = bytes.subarray(16, 28); // skip 16-byte salt prefix
+    const ciphertext = bytes.subarray(28);
 
-    return JSON.parse(utf8Decode(decryptedSeed)) as WalletPrivateData[];
+    const plaintext = new Uint8Array(
+      await crypto.subtle.decrypt({ iv: nonce, name: 'AES-GCM' }, key, ciphertext),
+    );
+
+    return JSON.parse(utf8Decode(plaintext)) as WalletPrivateData[];
   } catch {
     throw new Error('Invalid password');
   }
@@ -45,9 +64,9 @@ async function decryptVault(vault: string, password: string) {
 
 export class WalletController extends EventEmitter {
   #assetInfo;
-  #identity;
   #ledger;
-  #password: string | null | undefined;
+  /** Derived AES-GCM-256 vault key. Never the password. */
+  #vaultKey: CryptoKey | null | undefined;
   #setSession;
   #trashController;
   #wallets: Array<Wallet<WalletPrivateData>>;
@@ -57,13 +76,11 @@ export class WalletController extends EventEmitter {
   constructor({
     assetInfo,
     extensionStorage,
-    identity,
     ledger,
     trash,
   }: {
     assetInfo: AssetInfoController['assetInfo'];
     extensionStorage: ExtensionStorage;
-    identity: IdentityApi;
     ledger: LedgerApi;
     trash: TrashController;
   }) {
@@ -71,22 +88,33 @@ export class WalletController extends EventEmitter {
 
     this.store = new ObservableStore(
       extensionStorage.getInitState({
-        WalletController: { vault: undefined },
+        WalletController: { vault: undefined, vaultSalt: undefined },
       }),
     );
 
     extensionStorage.subscribe(this.store);
 
     this.#assetInfo = assetInfo;
-    this.#identity = identity;
     this.#ledger = ledger;
-    this.#password = extensionStorage.getInitSession().password;
     this.#setSession = extensionStorage.setSession.bind(extensionStorage);
     this.#trashController = trash;
     this.#wallets = [];
 
-    if (this.#password) {
-      this.#restoreWallets(this.#password);
+    const { vaultKeyBytes } = extensionStorage.getInitSession();
+
+    if (vaultKeyBytes) {
+      // Import the stored key and restore wallets without requiring the password.
+      crypto.subtle
+        .importKey('raw', base64Decode(vaultKeyBytes), 'AES-GCM', true, ['encrypt', 'decrypt'])
+        .then((key) => {
+          this.#vaultKey = key;
+          return this.#restoreWallets();
+        })
+        .catch(() => {
+          // Corrupt session key — clear it; user must re-enter password.
+          this.#vaultKey = null;
+          this.#setSession({ vaultKeyBytes: null });
+        });
     }
   }
 
@@ -133,42 +161,41 @@ export class WalletController extends EventEmitter {
           networkCode,
           seed: input.seed,
         });
-      case 'wx':
-        return new WxWallet(
-          {
-            address: input.address,
-            name: input.name,
-            network,
-            networkCode,
-            publicKey: input.publicKey,
-            username: input.username,
-            uuid: input.uuid,
-          },
-          this.#identity,
-        );
     }
   }
 
-  async #saveWallets() {
-    invariant(this.#password);
+  async #setVaultKey(key: CryptoKey | null): Promise<void> {
+    this.#vaultKey = key;
+
+    if (key) {
+      const raw = new Uint8Array(await crypto.subtle.exportKey('raw', key));
+      this.#setSession({ vaultKeyBytes: base64Encode(raw) });
+    } else {
+      this.#setSession({ vaultKeyBytes: null });
+    }
+  }
+
+  async #saveWallets(): Promise<void> {
+    invariant(this.#vaultKey);
 
     const vault = await encryptVault(
       this.#wallets.map((wallet) => wallet.data),
-      this.#password,
+      this.#vaultKey,
     );
 
-    this.store.updateState({ WalletController: { vault } });
+    // Shallow-merge: preserve vaultSalt alongside vault.
+    const current = this.store.getState().WalletController;
+    this.store.updateState({ WalletController: { ...current, vault } });
   }
 
-  async #restoreWallets(password: string) {
-    if (!password) throw new Error('Password is required');
+  async #restoreWallets(): Promise<void> {
+    invariant(this.#vaultKey, 'Vault key required to restore wallets');
 
-    const state = this.store.getState();
-    const { vault } = state.WalletController;
+    const { vault } = this.store.getState().WalletController;
 
     if (!vault) return;
 
-    const decryptedVault = await decryptVault(vault, password);
+    const decryptedVault = await decryptVault(vault, this.#vaultKey);
 
     this.#wallets = await Promise.all(
       decryptedVault.map((user) => this.#createWallet(user, user.network, user.networkCode)),
@@ -181,26 +208,18 @@ export class WalletController extends EventEmitter {
     return this.#wallets.filter((wallet) => wallet.data.network === network);
   }
 
-  #setPassword(password: string | null) {
-    if (password?.length === 0) {
-      throw new Error('Password is required');
-    }
+  async #putWalletIntoTrash(wallet: Wallet<WalletPrivateData>): Promise<void> {
+    invariant(this.#vaultKey);
 
-    this.#password = password;
-    this.#setSession({ password });
-  }
-
-  async #putWalletIntoTrash(wallet: Wallet<WalletPrivateData>) {
-    invariant(this.#password);
-
-    const walletsData = await encryptSeed(
-      utf8Encode(JSON.stringify(wallet.data)),
-      utf8Encode(this.#password),
+    const data = utf8Encode(JSON.stringify(wallet.data));
+    const nonce = crypto.getRandomValues(new Uint8Array(12));
+    const ciphertext = new Uint8Array(
+      await crypto.subtle.encrypt({ iv: nonce, name: 'AES-GCM' }, this.#vaultKey, data),
     );
 
     this.#trashController.addItem({
       address: wallet.data.address,
-      walletsData: base64Encode(walletsData),
+      walletsData: base64Encode(Uint8Array.of(...nonce, ...ciphertext)),
     });
   }
 
@@ -281,7 +300,18 @@ export class WalletController extends EventEmitter {
   }
 
   async initVault(password: string) {
-    this.#setPassword(password);
+    if (password.length < CONFIG.PASSWORD_MIN_LENGTH) {
+      throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
+    }
+
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveSeedEncryptionKey(utf8Encode(password), salt);
+
+    // Persist salt so future password verification can re-derive the same key.
+    const current = this.store.getState().WalletController;
+    this.store.updateState({ WalletController: { ...current, vaultSalt: base64Encode(salt) } });
+
+    await this.#setVaultKey(key);
     await this.#saveWallets();
   }
 
@@ -292,30 +322,60 @@ export class WalletController extends EventEmitter {
       this.emit('removeWallet', wallet);
     });
 
-    this.#setPassword(null);
+    await this.#setVaultKey(null);
     this.#wallets = [];
     this.emit('updateWallets');
-    this.store.updateState({ WalletController: { vault: undefined } });
+    this.store.updateState({ WalletController: { vault: undefined, vaultSalt: undefined } });
   }
 
   async assertPasswordIsValid(password: string) {
-    await this.#restoreWallets(password);
+    const { vault, vaultSalt } = this.store.getState().WalletController;
+
+    if (!vault || !vaultSalt) throw new Error('Vault not initialized');
+
+    const key = await deriveSeedEncryptionKey(utf8Encode(password), base64Decode(vaultSalt));
+    await decryptVault(vault, key); // throws on wrong password
   }
 
   async newPassword(oldPassword: string, newPassword: string) {
-    await this.#restoreWallets(oldPassword);
-    this.#setPassword(newPassword);
+    if (newPassword.length < CONFIG.PASSWORD_MIN_LENGTH) {
+      throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
+    }
+
+    await this.assertPasswordIsValid(oldPassword);
+
+    const newSalt = crypto.getRandomValues(new Uint8Array(16));
+    const newKey = await deriveSeedEncryptionKey(utf8Encode(newPassword), newSalt);
+
+    const current = this.store.getState().WalletController;
+    this.store.updateState({
+      WalletController: { ...current, vaultSalt: base64Encode(newSalt) },
+    });
+
+    await this.#setVaultKey(newKey);
     await this.#saveWallets();
   }
 
   lock() {
-    this.#setPassword(null);
+    void this.#setVaultKey(null);
     this.#wallets = [];
   }
 
   async unlock(password: string) {
-    await this.#restoreWallets(password);
-    this.#setPassword(password);
+    const { vault, vaultSalt } = this.store.getState().WalletController;
+
+    if (!vault) return;
+
+    if (!vaultSalt) throw new Error('Vault salt missing — vault may be from an older version');
+
+    const key = await deriveSeedEncryptionKey(utf8Encode(password), base64Decode(vaultSalt));
+    const decryptedVault = await decryptVault(vault, key); // throws on wrong password
+
+    await this.#setVaultKey(key);
+
+    this.#wallets = await Promise.all(
+      decryptedVault.map((user) => this.#createWallet(user, user.network, user.networkCode)),
+    );
 
     if (this.#wallets.some((wallet) => !wallet.data.network)) {
       const networks = Object.fromEntries(

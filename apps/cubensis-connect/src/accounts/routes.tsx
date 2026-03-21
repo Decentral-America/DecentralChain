@@ -9,7 +9,6 @@ import { ConfirmBackup } from '../ui/components/pages/ConfirmBackup';
 import { DeleteAllAccounts } from '../ui/components/pages/deleteAllAccounts/deleteAllAccounts';
 import { AccountsHome } from '../ui/components/pages/Import';
 import { ImportDebug } from '../ui/components/pages/importDebug';
-import { ImportEmail } from '../ui/components/pages/importEmail/importEmail';
 import { ImportAddressBook } from '../ui/components/pages/importKeystore/importAddressBook';
 import { ImportKeystore } from '../ui/components/pages/importKeystore/importKeystore';
 import { ImportLedger } from '../ui/components/pages/importLedger/importLedger';
@@ -99,16 +98,6 @@ export const routes: RouteObject[] = [
           </>
         ),
         path: '/import-keystore',
-      },
-      {
-        element: (
-          <>
-            <Menu hasBack hasLogo />
-            <ImportEmail />
-            <BottomPanel />
-          </>
-        ),
-        path: '/import-email',
       },
       {
         element: (

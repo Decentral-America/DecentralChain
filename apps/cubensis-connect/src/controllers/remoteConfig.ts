@@ -1,18 +1,14 @@
 import { EventEmitter } from 'events';
-import { deepEqual } from 'fast-equals';
-import { NetworkName } from 'networks/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 
 import {
-  DEFAULT_IDENTITY_CONFIG,
   DEFAULT_MAIN_CONFIG,
   type IgnoreErrorsContext,
   type MainConfig,
   STATUS,
 } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';
-import { type IdentityConfig } from './IdentityController';
 
 const extendValues = (defaultValues: any, newValues: any) => {
   return Object.entries(defaultValues).reduce(
@@ -58,7 +54,6 @@ export class RemoteConfigController extends EventEmitter {
           messages_config: DEFAULT_MAIN_CONFIG.messages_config,
           pack_config: DEFAULT_MAIN_CONFIG.pack_config,
         },
-        identityConfig: DEFAULT_IDENTITY_CONFIG,
         ignoreErrorsConfig: DEFAULT_MAIN_CONFIG.ignoreErrors,
         nftConfig: DEFAULT_MAIN_CONFIG.nfts,
         status: STATUS.PENDING,
@@ -69,15 +64,11 @@ export class RemoteConfigController extends EventEmitter {
     extensionStorage.subscribe(this.store);
 
     this.#updateMainConfig();
-    this.#updateIdentityConfig();
 
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
         case 'updateMainConfig':
           this.#updateMainConfig();
-          break;
-        case 'updateIdentityConfig':
-          this.#updateIdentityConfig();
           break;
       }
     });
@@ -137,14 +128,6 @@ export class RemoteConfigController extends EventEmitter {
     );
   }
 
-  getIdentityConfig(network: NetworkName): IdentityConfig {
-    const { identityConfig } = this.store.getState();
-
-    return identityConfig[
-      network === NetworkName.Testnet ? NetworkName.Testnet : NetworkName.Mainnet
-    ];
-  }
-
   getAssetsConfig() {
     const { assetsConfig } = this.store.getState();
     return assetsConfig;
@@ -171,54 +154,5 @@ export class RemoteConfigController extends EventEmitter {
     }
 
     Browser.alarms.create('updateMainConfig', { delayInMinutes: 1 });
-  }
-
-  async #updateIdentityConfig() {
-    const { identityConfig } = this.store.getState();
-    const networks = [NetworkName.Mainnet, NetworkName.Testnet];
-
-    fetch('https://configs.decentralchain.io/web/networks.json')
-      .then((resp) =>
-        resp.ok ? resp.json() : resp.text().then((text) => Promise.reject(new Error(text))),
-      )
-      .then(
-        (
-          networkConfigs: Array<{
-            configService: { url: string; featuresConfigUrl: string };
-            name: string;
-          }>,
-        ) =>
-          Promise.all(
-            networks.map(async (network) => {
-              const envNetworkConfig = networkConfigs.find((c) => c.name === network);
-              if (!envNetworkConfig) {
-                throw new Error(`No network configuration found for ${network}`);
-              }
-
-              return fetch(
-                `${envNetworkConfig.configService.url}/` +
-                  `${envNetworkConfig.configService.featuresConfigUrl}`,
-              ).then((response) =>
-                response.ok
-                  ? response.json()
-                  : response.text().then((text) => Promise.reject(new Error(text))),
-              );
-            }),
-          ),
-      )
-      .then((networkConfigs) => {
-        const fetchedConfig = Object.fromEntries(
-          networks.map((network, i) => [network, networkConfigs[i].identity]),
-        );
-
-        if (!deepEqual(identityConfig, fetchedConfig)) {
-          this.store.updateState({
-            identityConfig: Object.assign({}, identityConfig, fetchedConfig),
-          });
-          this.emit('identityConfigChanged');
-        }
-      })
-      .catch(() => undefined) // ignore
-      .then(() => Browser.alarms.create('updateIdentityConfig', { delayInMinutes: 1 }));
   }
 }

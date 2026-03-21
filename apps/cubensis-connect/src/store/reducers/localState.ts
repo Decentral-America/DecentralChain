@@ -12,7 +12,6 @@ export type NewAccountState = {
   | { type: 'ledger'; id: number; publicKey: string }
   | { type: 'privateKey'; privateKey: string }
   | { type: 'seed'; seed: string }
-  | { type: 'wx'; publicKey: string; uuid: string; username: string }
 );
 
 function newAccount(
