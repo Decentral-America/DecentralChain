@@ -30,7 +30,7 @@ await build({
     emptyOutDir: true,
     minify: !isDev,
     outDir: distBuild,
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         accounts: resolve(root, 'accounts.html'),
         notification: resolve(root, 'notification.html'),
@@ -62,10 +62,10 @@ await build({
     },
     minify: !isDev,
     outDir: distBuild,
-    rollupOptions: {
-      output: {
-        inlineDynamicImports: true,
-      },
+    rolldownOptions: {
+      // Suppresses [EMPTY_IMPORT_META] warnings: data: URIs don't need a base URL
+      // so replacing import.meta with {} is correct for IIFE builds.
+      transform: { define: { 'import.meta': '{}' } },
     },
     sourcemap: isDev ? 'inline' : 'hidden',
     target: 'esnext',
@@ -74,7 +74,7 @@ await build({
   mode,
 });
 
-// ── Step 3: Build content scripts ─────────────────────────────────
+// ── Step 3: Build content scripts ─────────────────────────────────────────────────
 console.log('  [3/4] Building content scripts...');
 for (const entry of ['contentscript', 'inpage']) {
   await build({
@@ -88,10 +88,10 @@ for (const entry of ['contentscript', 'inpage']) {
       },
       minify: !isDev,
       outDir: distBuild,
-      rollupOptions: {
-        output: {
-          inlineDynamicImports: true,
-        },
+      rolldownOptions: {
+        // Suppresses [EMPTY_IMPORT_META] warnings: data: URIs don't need a base URL
+        // so replacing import.meta with {} is correct for IIFE builds.
+        transform: { define: { 'import.meta': '{}' } },
       },
       sourcemap: isDev ? 'inline' : 'hidden',
       target: 'esnext',
