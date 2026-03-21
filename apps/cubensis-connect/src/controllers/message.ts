@@ -384,6 +384,16 @@ export class MessageController extends EventEmitter {
           message.status = MessageStatus.Signed;
           break;
         }
+        case 'getKEK': {
+          const sharedKey = await wallet.createSharedKey(
+            message.data.publicKey,
+            message.data.prefix,
+          );
+
+          message.result = base58Encode(sharedKey);
+          message.status = MessageStatus.Signed;
+          break;
+        }
       }
 
       this.#updateMessage(message);
@@ -1865,6 +1875,14 @@ export class MessageController extends EventEmitter {
           throw ERRORS.REQUEST_ERROR((err as any).message, messageInput);
         }
       }
+      case 'getKEK':
+        return {
+          ...messageInput,
+          ext_uuid: messageInput.options?.uid,
+          id: nanoid(),
+          status: MessageStatus.UnApproved,
+          timestamp: Date.now(),
+        };
     }
   }
 }
