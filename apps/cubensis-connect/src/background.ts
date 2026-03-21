@@ -47,7 +47,6 @@ import { type IgnoreErrorsContext } from './constants';
 import { AddressBookController } from './controllers/AddressBookController';
 import { AssetInfoController } from './controllers/assetInfo';
 import { CurrentAccountController } from './controllers/currentAccount';
-import { IdentityController } from './controllers/IdentityController';
 import { IdleController } from './controllers/idle';
 import { MessageController } from './controllers/message';
 import { NftInfoController } from './controllers/NftInfoController';
@@ -188,7 +187,6 @@ class BackgroundService extends EventEmitter {
   addressBookController;
   assetInfoController;
   currentAccountController;
-  identityController;
   idleController;
   messageController;
   networkController;
@@ -223,11 +221,6 @@ class BackgroundService extends EventEmitter {
       extensionStorage: this.extensionStorage,
     });
 
-    this.remoteConfigController.on('identityConfigChanged', () => {
-      // update cognito identity configuration
-      this.identityController.configure();
-    });
-
     this.permissionsController = new PermissionsController({
       extensionStorage: this.extensionStorage,
       remoteConfig: this.remoteConfigController,
@@ -248,8 +241,6 @@ class BackgroundService extends EventEmitter {
     // On network change
     this.networkController.store.subscribe(() => {
       this.preferencesController.ensureSelectedAccountInCurrentNetwork();
-      // update cognito identity configuration
-      this.identityController.configure();
     });
 
     // Ui State. Provides storage for ui application
@@ -257,24 +248,10 @@ class BackgroundService extends EventEmitter {
       extensionStorage: this.extensionStorage,
     });
 
-    this.identityController = new IdentityController({
-      extensionStorage: this.extensionStorage,
-      getIdentityConfig: this.remoteConfigController.getIdentityConfig.bind(
-        this.remoteConfigController,
-      ),
-      getNetwork: this.networkController.getNetwork.bind(this.networkController),
-      getSelectedAccount: this.preferencesController.getSelectedAccount.bind(
-        this.preferencesController,
-      ),
-    });
-
     // Wallet. Wallet creation, app locking, signing method
     this.walletController = new WalletController({
       assetInfo: (...args) => this.assetInfoController.assetInfo(...args),
       extensionStorage: this.extensionStorage,
-      identity: {
-        signBytes: this.identityController.signBytes.bind(this.identityController),
-      },
       ledger: {
         signOrder: (data) =>
           this.ledgerSign('order', {
@@ -302,7 +279,6 @@ class BackgroundService extends EventEmitter {
 
     this.vaultController = new VaultController({
       extensionStorage: this.extensionStorage,
-      identity: this.identityController,
       wallet: this.walletController,
     });
 
@@ -318,19 +294,6 @@ class BackgroundService extends EventEmitter {
       this.preferencesController.syncAccounts(accounts);
       this.currentAccountController.updateCurrentAccountBalance();
     });
-
-    this.walletController
-      .on('addWallet', (wallet) => {
-        if (wallet.getAccount().type === 'wx') {
-          // persist current session to storage
-          this.identityController.persistSession(wallet.getAccount().uuid);
-        }
-      })
-      .on('removeWallet', (wallet) => {
-        if (wallet.getAccount().type === 'wx') {
-          this.identityController.removeSession(wallet.getAccount().uuid);
-        }
-      });
 
     this.networkController.store.subscribe(() =>
       this.currentAccountController.updateCurrentAccountBalance(),
@@ -512,14 +475,6 @@ class BackgroundService extends EventEmitter {
       // state
       getState: async <K extends keyof StorageLocalState>(params?: K[]) =>
         this.extensionStorage.getState(params),
-      identityClear: async () => this.identityController.clearSession(),
-      identityConfirmSignIn: async (code: string) => this.identityController.confirmSignIn(code),
-      identityRestore: this.identityController.restoreSession.bind(this.identityController),
-
-      identitySignIn: async (username: string, password: string) =>
-        this.identityController.signIn(username, password),
-      identityUpdate: this.identityController.updateSession.bind(this.identityController),
-      identityUser: async () => this.identityController.getIdentityUser(),
 
       initVault: async (password: string) => {
         await this.vaultController.init(password);

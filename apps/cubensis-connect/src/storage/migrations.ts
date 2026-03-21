@@ -15,7 +15,6 @@ const flatState: Migration = {
     const CONTROLLERS = [
       'AssetInfoController',
       'CurrentAccountController',
-      'IdentityController',
       'IdleController',
       'MessageController',
       'NetworkController',
@@ -52,7 +51,6 @@ const flatState: Migration = {
     const CONTROLLERS_STATE = {
       AssetInfoController: ['assets'],
       CurrentAccountController: ['balances'],
-      IdentityController: ['cognitoSessions'],
       IdleController: ['lastUpdateIdle'],
       MessageController: ['messages'],
       NetworkController: ['currentNetwork', 'customNodes', 'customMatchers', 'customCodes'],
@@ -65,14 +63,7 @@ const flatState: Migration = {
         'currentNetworkAccounts',
         'selectedAccount',
       ],
-      RemoteConfigController: [
-        'blacklist',
-        'whitelist',
-        'config',
-        'ignoreErrorsConfig',
-        'identityConfig',
-        'status',
-      ],
+      RemoteConfigController: ['blacklist', 'whitelist', 'config', 'ignoreErrorsConfig', 'status'],
       StatisticsController: ['lastIdleKeeper', 'lastInstallKeeper', 'lastOpenKeeper', 'userId'],
       TrashController: ['data'],
       UiStateController: ['uiState'],

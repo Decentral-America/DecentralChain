@@ -1,11 +1,9 @@
 import ObservableStore from 'obs-store';
 
 import { type ExtensionStorage } from '../storage/storage';
-import { type IdentityController } from './IdentityController';
 import { type WalletController } from './wallet';
 
 export class VaultController {
-  #identity;
   #wallet;
 
   store;
@@ -13,11 +11,9 @@ export class VaultController {
   constructor({
     extensionStorage,
     wallet,
-    identity,
   }: {
     extensionStorage: ExtensionStorage;
     wallet: WalletController;
-    identity: IdentityController;
   }) {
     this.store = new ObservableStore(
       extensionStorage.getInitState({ initialized: false, locked: false }),
@@ -25,7 +21,6 @@ export class VaultController {
 
     extensionStorage.subscribe(this.store);
 
-    this.#identity = identity;
     this.#wallet = wallet;
 
     this.store.updateState({
@@ -36,32 +31,25 @@ export class VaultController {
 
   async init(password: string) {
     await this.#wallet.initVault(password);
-    this.#identity.initVault(password);
     this.store.updateState({ initialized: true, locked: false });
   }
 
   lock() {
     this.#wallet.lock();
-    this.#identity.lock();
     this.store.updateState({ locked: true });
   }
 
   async unlock(password: string) {
     await this.#wallet.unlock(password);
-    this.#identity.unlock(password);
     this.store.updateState({ locked: false });
   }
 
   async update(oldPassword: string, newPassword: string) {
-    await Promise.all([
-      this.#wallet.newPassword(oldPassword, newPassword),
-      this.#identity.updateVault(oldPassword, newPassword),
-    ]);
+    await this.#wallet.newPassword(oldPassword, newPassword);
   }
 
   async clear() {
     await this.#wallet.deleteVault();
-    this.#identity.deleteVault();
     this.store.updateState({ initialized: false, locked: true });
   }
 

@@ -245,21 +245,6 @@ export function AccountInfo() {
             <CopyText getText={getEncodedSeed} showCopy type="key" onCopy={onCopyHandler} />
           </div>
         </div>
-      ) : account.type === 'wx' ? (
-        <>
-          <div className="margin-main-big">
-            <div className="input-title basic500 tag1">{t('accountInfo.email')}</div>
-            <div className={`input-like tag1 ${styles.ellipsis}`}>
-              <CopyText showCopy showText text={account.username} onCopy={onCopyHandler} />
-            </div>
-          </div>
-
-          <div className="margin-main-big basic500">
-            <div className="input-title tag1">{t('accountInfo.backUp')}</div>
-
-            <div>{t('accountInfo.emailNoBackupPhrase')}</div>
-          </div>
-        </>
       ) : account.type === 'debug' ? (
         <div className="margin-main-big basic500">
           <div className="input-title tag1">{t('accountInfo.backUp')}</div>
