@@ -1,20 +1,6 @@
 {
-  "applications": {
-    "gecko": {
-      "id": "soporte@decentralchain.io"
-    }
-  },
   "author": "soporte@decentralchain.io",
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "chromeos": "Alt+Shift+K",
-        "linux": "Alt+Shift+K",
-        "mac": "Alt+Shift+K",
-        "windows": "Alt+Shift+K"
-      }
-    }
-  },
+  "commands": {},
   "content_scripts": [
     {
       "all_frames": true,

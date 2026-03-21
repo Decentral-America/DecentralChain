@@ -16,13 +16,36 @@ const action = {
 };
 
 const contentSecurityPolicy =
-  "default-src 'self'; object-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' https://*.decentralchain.io";
+  "default-src 'self'; object-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.decentralchain.io";
+
+const commandsMV2 = {
+  _execute_browser_action: {
+    suggested_key: {
+      chromeos: 'Alt+Shift+K',
+      linux: 'Alt+Shift+K',
+      mac: 'Alt+Shift+K',
+      windows: 'Alt+Shift+K',
+    },
+  },
+};
+
+const commandsMV3 = {
+  _execute_action: {
+    suggested_key: {
+      chromeos: 'Alt+Shift+K',
+      linux: 'Alt+Shift+K',
+      mac: 'Alt+Shift+K',
+      windows: 'Alt+Shift+K',
+    },
+  },
+};
 
 const manifestV2 = {
   background: {
     scripts: ['background.js'],
   },
   browser_action: action,
+  commands: commandsMV2,
   content_security_policy: contentSecurityPolicy,
   manifest_version: 2,
   web_accessible_resources: ['inpage.js'],
@@ -33,6 +56,7 @@ const manifestV3 = {
   background: {
     service_worker: 'background.js',
   },
+  commands: commandsMV3,
   content_security_policy: {
     extension_pages: contentSecurityPolicy,
   },

@@ -28,7 +28,9 @@ console.log('  [1/4] Building UI pages...');
 await build({
   build: {
     emptyOutDir: true,
-    minify: !isDev,
+    // OXC minifier (Vite 8 default) drops the __commonJSMin CJS wrapper in
+    // shared chunks, causing "l is not a function" at runtime in popup/accounts.
+    minify: false,
     outDir: distBuild,
     rolldownOptions: {
       input: {
@@ -38,7 +40,12 @@ await build({
       },
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: '[name]-[hash].js',
+        // Chrome extensions reject filenames beginning with "_" (reserved by the system).
+        // Strip leading underscores from Vite internal chunks (e.g. __vite-browser-external).
+        chunkFileNames: (chunkInfo) => {
+          const safeName = chunkInfo.name.replace(/^_+/, 'chunk-');
+          return `${safeName}-[hash].js`;
+        },
         entryFileNames: '[name].js',
       },
     },
@@ -60,7 +67,9 @@ await build({
       formats: ['iife'],
       name: 'CubensisBackground',
     },
-    minify: !isDev,
+    // OXC minifier (Vite 8 default) drops the __commonJSMin CJS wrapper in IIFE
+    // builds, causing "c is not a function" at runtime. Keep unminified.
+    minify: false,
     outDir: distBuild,
     rolldownOptions: {
       // Suppresses [EMPTY_IMPORT_META] warnings: data: URIs don't need a base URL
@@ -86,7 +95,8 @@ for (const entry of ['contentscript', 'inpage']) {
         formats: ['iife'],
         name: `Cubensis_${entry}`,
       },
-      minify: !isDev,
+      // Same OXC minifier IIFE bug as background — keep unminified.
+      minify: false,
       outDir: distBuild,
       rolldownOptions: {
         // Suppresses [EMPTY_IMPORT_META] warnings: data: URIs don't need a base URL
