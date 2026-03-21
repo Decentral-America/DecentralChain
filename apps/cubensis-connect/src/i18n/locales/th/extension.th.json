@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "ข้อมูลบัญชี" },
+  "accountCard": {
+    "infoTooltip": "ข้อมูลบัญชี"
+  },
   "accountInfo": {
     "address": "ที่อยู่ของคุณ",
     "backUp": "Backup phrase",
@@ -7,7 +9,6 @@
     "copied": "คัดลอกแล้ว!",
     "copyToClipboard": "คลิกเพื่อคัดลอกไปยังคลิปบอร์ด",
     "email": "อีเมล",
-    "emailNoBackupPhrase": "บัญชีนี้ถูกนำเข้าโดยใช้บัญชี DecentralChain Exchange จึงไม่มี backup phrase หรือ private key ให้คัดลอก",
     "encodedSeed": "Encoded seed",
     "enter": "Enter",
     "password": "รหัสผ่าน",
@@ -17,7 +18,9 @@
     "pubKey": "Public key",
     "viewInExplorer": "ดูใน Explorer"
   },
-  "activeAccountCard": { "swapButton": "swap" },
+  "activeAccountCard": {
+    "swapButton": "swap"
+  },
   "address": {
     "add": "ที่อยู่ใหม่",
     "addButton": "เพิ่มใหม่",
@@ -151,7 +154,9 @@
     "wrongSeed": "ลำดับผิด, ลองอีกครั้ง"
   },
   "copyAddress": "คัดลอกที่อยู่",
-  "date": { "today": "วันนี้" },
+  "date": {
+    "today": "วันนี้"
+  },
   "deleteAccount": {
     "attention": "โปรดทราบ!",
     "delete": "ลบบัญชี",
@@ -280,27 +285,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "Seed Phrase หรือ Private Key"
   },
-  "importEmail": {
-    "alreadyExists": "มีบัญชีนี้อยู่แล้ว",
-    "continue": "ดำเนินการต่อ",
-    "credentialsError": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-    "dontHaveAccount": "ยังไม่มีบัญชี?",
-    "emailLabel": "อีเมล",
-    "emailRequired": "ป้อนอีเมลที่ถูกต้อง",
-    "forgotPassword": "ลืมรหัสผ่าน?",
-    "importEmailDesc": "เชื่อมต่อบัญชีอีเมลที่สร้างขึ้นบน DecentralChain Exchange",
-    "importEmailTitle": "นำเข้าบัญชีอีเมล",
-    "incorrectCode": "รหัสผิด กรุณาลองอีกครั้ง",
-    "incorrectUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-    "incorrectUsernameOrPasswordLimit": "คุณใช้ชื่อผู้ใช้หรือรหัสผ่านที่ไม่ถูกต้อง หากคุณมีปัญหาใดๆ โปรดติดต่อฝ่ายดูแล https://support.decentralchain.io/",
-    "loginRequired": "ยืนยันบัญชีอีเมล",
-    "passwordLabel": "รหัสผ่าน",
-    "passwordRequired": "ใส่รหัสผ่าน",
-    "signUp": "สมัครบัญชี",
-    "userDoesNotExist": "ไม่มีผู้ใช้",
-    "verifyAccountDesc": "โปรดป้อนรหัสการตรวจสอบ 6 หลักที่ได้รับจาก {{destination}}",
-    "verifyAccountTitle": "ตรวจสอบบัญชีของคุณ"
-  },
   "importKeystore": {
     "addressBookLabel": "ไฟล์สมุดที่อยู่",
     "addressBookPasswordPlaceholder": "รหัสผ่านที่ใช้สร้างไฟล์",
@@ -359,7 +343,10 @@
     "joinUs": "เข้าร่วมชุมชน DecentralChain ",
     "keepUp": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการโต้ตอบกับแหล่งข้อมูลเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps การใช้ Cubensis Connect คุณสามารถลงนามในการทำธุรกรรมและยังคงปลอดภัยจากเว็บไซต์ที่เป็นอันตราย"
   },
-  "langsSettings": { "confirm": "ยืนยัน", "title": "เปลี่ยนภาษา" },
+  "langsSettings": {
+    "confirm": "ยืนยัน",
+    "title": "เปลี่ยนภาษา"
+  },
   "ledgerConnectModal": {
     "instructions": "เชื่อมต่อ ledger และ DCC app",
     "title": "กำลังเชื่อมต่อ ...",
@@ -490,7 +477,9 @@
     "rejectedOrigin": "ถูกปฏิเสธ",
     "title": "การควบคุมการอนุญาต"
   },
-  "qrCode": { "download": "ดาวน์โหลดรหัส QR" },
+  "qrCode": {
+    "download": "ดาวน์โหลดรหัส QR"
+  },
   "send": {
     "amountInputLabel": "จำนวน",
     "amountRequiredError": "ต้องระบุจำนวน",
@@ -653,7 +642,9 @@
     "paymentsCount": "{{count}} การชำระเงิน",
     "paymentsCount_plural": "{{count}} การชำระเงิน",
     "paymentsNone": "ไม่มีการชำระเงิน",
-    "permission": { "details": "รายละเอียดการอนุญาต" },
+    "permission": {
+      "details": "รายละเอียดการอนุญาต"
+    },
     "price": "ราคา",
     "publicKey": "Public Key",
     "recipient": "ผู้รับ",
@@ -678,8 +669,12 @@
     "unknown": "ไม่ทราบ",
     "updateAssetInfo": "อัปเดตข้อมูลสินทรัพย์"
   },
-  "ui": { "logoTitle": "เก็บ  DCC key ของคุณให้ปลอดภัยทางออนไลน์" },
-  "wallet": { "lease": "Leased" },
+  "ui": {
+    "logoTitle": "เก็บ  DCC key ของคุณให้ปลอดภัยทางออนไลน์"
+  },
+  "wallet": {
+    "lease": "Leased"
+  },
   "welcome": {
     "getStarted": "เริ่ม",
     "info": "Cubensis Connect เป็นวิธีที่ปลอดภัยที่สุดในการทำงานร่วมกับเว็บของ third-party ด้วย DecentralChain-integrated functionality หรือ DApps",

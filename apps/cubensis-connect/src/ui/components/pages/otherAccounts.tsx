@@ -34,9 +34,7 @@ export function OtherAccountsPage() {
         (!term ||
           account.name.toLowerCase().indexOf(term.toLowerCase()) !== -1 ||
           account.address === term ||
-          account.publicKey === term ||
-          (account.type === 'wx' &&
-            account.username.toLowerCase().indexOf(term.toLowerCase()) !== -1)),
+          account.publicKey === term),
     )
     .sort(compareAccountsByLastUsed);
 

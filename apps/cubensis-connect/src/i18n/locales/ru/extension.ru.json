@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "Информация об аккаунте" },
+  "accountCard": {
+    "infoTooltip": "Информация об аккаунте"
+  },
   "accountInfo": {
     "address": "Ваш адрес",
     "backUp": "Фраза восстановления",
@@ -7,7 +9,6 @@
     "copied": "Скопировано!",
     "copyToClipboard": "Скопировать в буфер обмена",
     "email": "Email",
-    "emailNoBackupPhrase": "Невозможно скопировать фразу восстановления или приватный ключ, так как импорт аккаунта был произведен с помощью аккаунта DecentralChain Exchange",
     "encodedSeed": "Зашифрованная seed-фраза",
     "enter": "Войти",
     "password": "Пароль",
@@ -17,7 +18,9 @@
     "pubKey": "Открытый ключ",
     "viewInExplorer": "Открыть в Explorer"
   },
-  "activeAccountCard": { "swapButton": "Обменять" },
+  "activeAccountCard": {
+    "swapButton": "Обменять"
+  },
   "address": {
     "add": "Новый адрес",
     "addButton": "Добавить новый",
@@ -151,7 +154,9 @@
     "wrongSeed": "Неверный порядок слов, попробуйте еще"
   },
   "copyAddress": "Скопировать адрес",
-  "date": { "today": "Сегодня" },
+  "date": {
+    "today": "Сегодня"
+  },
   "deleteAccount": {
     "attention": "Внимание!",
     "delete": "Удалить аккаунт",
@@ -283,27 +288,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "Seed-фраза или приватный ключ"
   },
-  "importEmail": {
-    "alreadyExists": "Аккаунт уже существует",
-    "continue": "Продолжить",
-    "credentialsError": "Неверное имя пользователя или пароль",
-    "dontHaveAccount": "Нет аккаунта?",
-    "emailLabel": "Email",
-    "emailRequired": "Введите корректный Email",
-    "forgotPassword": "Забыли пароль?",
-    "importEmailDesc": "Подключите Email-аккаунт, созданный на DecentralChain Exchange",
-    "importEmailTitle": "Импорт Email-аккаунта",
-    "incorrectCode": "Неправильный код. Пожалуйста, попробуйте еще раз",
-    "incorrectUsernameOrPassword": "Неверное имя пользователя или пароль.",
-    "incorrectUsernameOrPasswordLimit": "Вы превысили лимит попыток ввода имени пользователя или пароля. Если у вас возникли какие-либо трудности, пожалуйста, свяжитесь со службой поддержки https://support.decentralchain.io/.",
-    "loginRequired": "Подтвердите Email-аккаунт",
-    "passwordLabel": "Пароль",
-    "passwordRequired": "Введите пароль",
-    "signUp": "Зарегистрироваться",
-    "userDoesNotExist": "Пользователь не существует.",
-    "verifyAccountDesc": "Пожалуйста, введите 6-значный проверочный код, отправленный на {{destination}}.",
-    "verifyAccountTitle": "Подтвердите свой аккаунт"
-  },
   "importKeystore": {
     "addressBookLabel": "Файл контактов",
     "addressBookPasswordPlaceholder": "Пароль для создания файла",
@@ -363,7 +347,10 @@
     "joinUs": "Присоединиться к сообществу DecentralChain",
     "keepUp": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в DecentralChain функциональностью или DApps. Используя Cubensis Connect, вы можете подписывать транзакции и оставаться в безопасности от вредоносных сайтов."
   },
-  "langsSettings": { "confirm": "Подтвердить", "title": "Сменить язык" },
+  "langsSettings": {
+    "confirm": "Подтвердить",
+    "title": "Сменить язык"
+  },
   "ledgerConnectModal": {
     "instructions": "Подключите устройство Ledger и откройте приложение DCC",
     "title": "Подключение...",
@@ -494,7 +481,9 @@
     "rejectedOrigin": "Отказано",
     "title": "Управление разрешениями"
   },
-  "qrCode": { "download": "Загрузить QR-код" },
+  "qrCode": {
+    "download": "Загрузить QR-код"
+  },
   "send": {
     "amountInputLabel": "Сумма",
     "amountRequiredError": "Нужно ввести сумму",
@@ -660,7 +649,9 @@
     "paymentsCount_1": "{{ count }} платежа",
     "paymentsCount_2": "{{ count }} платежей",
     "paymentsNone": "Нет платежей",
-    "permission": { "details": "Сведения о разрешении" },
+    "permission": {
+      "details": "Сведения о разрешении"
+    },
     "price": "Цена",
     "publicKey": "Открытый ключ",
     "recipient": "Получатель",
@@ -688,7 +679,9 @@
   "ui": {
     "logoTitle": "Обеспечьте безопасность своих ключей DCC онлайн"
   },
-  "wallet": { "lease": "В лизинге" },
+  "wallet": {
+    "lease": "В лизинге"
+  },
   "welcome": {
     "getStarted": "Начать",
     "info": "Cubensis Connect - это самый безопасный способ взаимодействия со сторонними веб-ресурсами с интегрированной в DecentralChain функциональностью или DApps. ",
