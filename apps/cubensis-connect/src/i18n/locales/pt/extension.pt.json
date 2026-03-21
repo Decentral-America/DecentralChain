@@ -111,6 +111,7 @@
     "confirmBackupInfo": "Você confirmará esta frase na próxima tela",
     "continue": "Continuar",
     "copied": "Copiado!",
+    "lossWarning": "Se você perder sua frase de backup, perderá permanentemente o acesso aos seus fundos. Não há opção de recuperação.",
     "saveBackup": "Salvar frase de backup"
   },
   "bottom": {

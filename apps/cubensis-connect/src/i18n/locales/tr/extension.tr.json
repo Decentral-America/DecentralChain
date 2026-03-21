@@ -111,6 +111,7 @@
     "confirmBackupInfo": "Bu anahtar kelimleri bir sonraki ekranda onaylayacaksınız",
     "continue": "Devam et",
     "copied": "Kopyalandı!",
+    "lossWarning": "Yedekleme ifadenizi kaybederseniz, fonlarınıza erişimi kalıcı olarak kaybedersiniz. Kurtarma seçeneği yoktur.",
     "saveBackup": "Yedekleme anahtarını kaydet"
   },
   "bottom": {
