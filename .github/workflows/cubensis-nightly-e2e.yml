@@ -1,0 +1,68 @@
+name: Cubensis Connect — Nightly E2E
+
+on:
+  schedule:
+    # 02:00 UTC every day — runs against main so failures always map to a committed state.
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering from the Actions UI for on-demand E2E runs.
+
+permissions:
+  contents: read
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  e2e:
+    name: WebdriverIO E2E (Chrome)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    defaults:
+      run:
+        working-directory: apps/cubensis-connect
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version-file: .node-version
+
+      - name: Install dependencies
+        working-directory: .
+        run: pnpm install --frozen-lockfile
+
+      - name: Build extension (chrome)
+        run: CUBENSIS_PLATFORM=chrome NODE_ENV=production node scripts/build.mjs
+
+      - name: Start E2E services (DCC private node + Chrome WebDriver)
+        run: docker compose up dcc-private-node hub chrome --wait
+        timeout-minutes: 5
+
+      - name: Run E2E tests
+        run: pnpm run test
+        env:
+          # Points the WebdriverIO runner at the Selenium Hub started above.
+          SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+
+      - name: Upload test videos on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-videos-${{ github.run_id }}
+          path: apps/cubensis-connect/test/videos/
+          retention-days: 7
+
+      - name: Stop E2E services
+        if: always()
+        run: docker compose down --volumes
