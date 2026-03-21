@@ -111,6 +111,7 @@
     "confirmBackupInfo": "Bạn sẽ xác nhận cụm này ở bước sau",
     "continue": "Tiếp tục",
     "copied": "Đã sao chép",
+    "lossWarning": "Nếu bạn mất cụm từ sao lưu, bạn sẽ mất vĩnh viễn quyền truy cập vào tài sản của mình. Không có tùy chọn khôi phục.",
     "saveBackup": "Lưu cụm từ sao lưu"
   },
   "bottom": {

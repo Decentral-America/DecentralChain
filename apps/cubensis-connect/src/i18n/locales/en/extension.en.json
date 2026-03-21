@@ -112,6 +112,7 @@
     "confirmBackupInfo": "You will confirm this phrase on the next screen",
     "continue": "Continue",
     "copied": "Copied!",
+    "lossWarning": "If you lose your backup phrase, you permanently lose access to your funds. There is no recovery option.",
     "saveBackup": "Save backup phrase"
   },
   "bottom": {

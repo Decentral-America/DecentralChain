@@ -111,6 +111,7 @@
     "confirmBackupInfo": "Confirmarás esta frase en la siguiente pantalla",
     "continue": "Continuar",
     "copied": "¡Copiado!",
+    "lossWarning": "Si pierde su frase de respaldo, perderá permanentemente el acceso a sus fondos. No hay opción de recuperación.",
     "saveBackup": "Guardar frase de respaldo"
   },
   "bottom": {

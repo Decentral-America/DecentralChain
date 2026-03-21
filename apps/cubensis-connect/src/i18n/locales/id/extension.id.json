@@ -111,6 +111,7 @@
     "confirmBackupInfo": "Anda akan mengkonfirmasi frasa ini di layar berikutnya",
     "continue": "Lanjutkan",
     "copied": "Disalin!",
+    "lossWarning": "Jika Anda kehilangan frasa cadangan, Anda kehilangan akses ke dana Anda secara permanen. Tidak ada opsi pemulihan.",
     "saveBackup": "Simpan backup phrase"
   },
   "bottom": {

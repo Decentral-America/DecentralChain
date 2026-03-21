@@ -19,6 +19,10 @@ export function BackUpSeed() {
     <div className={styles.content}>
       <h2 className="title1 margin2">{t('backupSeed.saveBackup')}</h2>
 
+      <div className={`error tag1 margin2 ${styles.lossWarning}`}>
+        {t('backupSeed.lossWarning')}
+      </div>
+
       <div className="flex margin-main">
         <div className="basic500 tag1">{t('backupSeed.backupCarefully')}</div>
         <Copy
