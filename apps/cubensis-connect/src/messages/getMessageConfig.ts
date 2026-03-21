@@ -6,6 +6,7 @@ import { AuthOriginCard, AuthOriginFinal, AuthOriginScreen } from './authOrigin/
 import { CancelOrderCard, CancelOrderScreen } from './cancelOrder/cancelOrder';
 import { CustomDataCard, CustomDataFinal, CustomDataScreen } from './customData/customData';
 import { DccAuthCard, DccAuthFinal, DccAuthScreen } from './dccAuth/dccAuth';
+import { GetKEKCard, GetKEKFinal, GetKEKScreen } from './getKEK/getKEK';
 import { OrderCard, OrderScreen } from './order/order';
 import { RequestCard, RequestFinal, RequestScreen } from './request/request';
 import { TransactionCard, TransactionScreen } from './transaction/transaction';
@@ -57,6 +58,11 @@ const messageConfigs = {
     card: DccAuthCard,
     final: DccAuthFinal,
     screen: DccAuthScreen,
+  },
+  getKEK: {
+    card: GetKEKCard,
+    final: GetKEKFinal,
+    screen: GetKEKScreen,
   },
   order: {
     card: OrderCard,

@@ -801,14 +801,17 @@ class BackgroundService extends EventEmitter {
           throw ERRORS.INVALID_FORMAT(undefined, 'publicKey is invalid');
         }
 
-        const wallet = this.walletController.getWallet(
-          selectedAccount.address,
-          selectedAccount.network,
-        );
+        // Require explicit per-call user approval before returning a derived shared key (CWE-200).
+        const message = await this.messageController.newMessage({
+          ...commonMessageInput,
+          account: selectedAccount,
+          data: { prefix, publicKey },
+          type: 'getKEK',
+        });
 
-        const sharedKey = await wallet.createSharedKey(publicKey, prefix);
+        showNotification();
 
-        return base58Encode(sharedKey);
+        return this.messageController.getMessageResult(message.id);
       },
       notification: async (data?: { message?: string; title?: string }) => {
         const { selectedAccount } = await this.validatePermission(origin, connectionId);
