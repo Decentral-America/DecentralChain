@@ -21,6 +21,7 @@ import { type Wallet } from 'wallets/wallet';
 
 import { NETWORK_CONFIG } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';
+import { CONFIG } from '../ui/appConfig';
 import { type AssetInfoController } from './assetInfo';
 import { type TrashController } from './trash';
 
@@ -163,8 +164,8 @@ export class WalletController extends EventEmitter {
   }
 
   #setPassword(password: string | null) {
-    if (password?.length === 0) {
-      throw new Error('Password is required');
+    if (password !== null && password.length < CONFIG.PASSWORD_MIN_LENGTH) {
+      throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
     }
 
     this.#password = password;
