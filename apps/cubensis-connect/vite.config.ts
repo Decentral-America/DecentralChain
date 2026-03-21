@@ -67,6 +67,7 @@ export default defineConfig({
   },
   plugins: [
     bufferPolyfill(),
+    fixCommonJSMinOrdering(),
     react({
       babel: {
         plugins: [
@@ -97,18 +98,67 @@ export default defineConfig({
  * Injects `import { Buffer } from 'buffer'` into source files that reference
  * `Buffer` — replaces webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }).
  */
+/**
+ * Injects `import { Buffer } from 'buffer'` into source files that reference
+ * `Buffer` — replaces webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }).
+ *
+ * Applied to both project source files (.ts/.tsx) and ESM files inside
+ * node_modules that use `Buffer` as an undeclared global (e.g. \@ledgerhq/*).
+ * CJS files in node_modules are skipped — they receive `Buffer` via rolldown's
+ * __commonJSMin CJS interop wrapper instead.
+ */
 function bufferPolyfill(): Plugin {
   return {
     name: 'buffer-polyfill',
     transform(code, id) {
-      if (id.includes('node_modules') || !id.match(/\.[jt]sx?$/)) return null;
+      if (!id.match(/\.[jt]sx?$|\.[cm]?js$/)) return null;
       if (!code.includes('Buffer')) return null;
       // Avoid double-injection
       if (code.includes("from 'buffer'") || code.includes('from "buffer"')) return null;
+      // For node_modules, only apply to ES module files (those using import/export)
+      // to avoid interfering with CJS bundles handled by the __commonJSMin wrapper.
+      if (id.includes('node_modules')) {
+        if (!/^\s*(import\s|export\s)/m.test(code)) return null;
+      }
       return {
         code: `import { Buffer } from 'buffer';\n${code}`,
         map: null,
       };
     },
+  };
+}
+
+/**
+ * Fixes a rolldown (≤ rc.9) code-generation ordering bug where the
+ * `__commonJSMin` CJS-interop helper is emitted AFTER the first call site
+ * in a shared chunk. JavaScript `var` hoisting makes the function visible
+ * in scope but still `undefined` at the point of call, causing
+ * "TypeError: __commonJSMin is not a function" at runtime.
+ *
+ * This hook reorders any affected chunk so the definition precedes all uses.
+ */
+function fixCommonJSMinOrdering(): Plugin {
+  return {
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== 'chunk') continue;
+
+        const { code } = chunk;
+        if (!code.includes('__commonJSMin')) continue;
+
+        const firstUseIdx = code.indexOf('__commonJSMin(');
+        const defMatch = /^var __commonJSMin = .+;$/m.exec(code);
+
+        if (firstUseIdx === -1 || defMatch === null) continue;
+        if (defMatch.index <= firstUseIdx) continue; // already in correct order
+
+        // Move the single-line definition above the first use site.
+        const defLine = defMatch[0];
+        const beforeDef = code.slice(0, defMatch.index);
+        const afterDef = code.slice(defMatch.index + defLine.length).replace(/^\n/, '');
+        chunk.code = `${defLine}\n${beforeDef}${afterDef}`;
+      }
+    },
+    name: 'fix-commonjsmin-ordering',
   };
 }
