@@ -96,7 +96,7 @@ The 4 `@ts-expect-error` suppressions are for documented Redux `connect()` + `ex
 
 ### C-1 · ✅ FIXED — MD5-Based Key Derivation Function replaced with PBKDF2 + AES-GCM
 
-**Fixed in:** This sprint  
+**Fixed in:** This sprint
 **Files changed:**
 - `packages/crypto/src/deriveSeedEncryptionKey.ts` — complete rewrite: PBKDF2-SHA-256 600k iterations, returns `CryptoKey`
 - `packages/crypto/src/encryptSeed.ts` — 16-byte random salt, 12-byte nonce, AES-GCM-256
