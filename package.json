@@ -20,6 +20,7 @@
   "packageManager": "pnpm@10.32.1",
   "pnpm": {
     "overrides": {
+      "fast-xml-parser": ">=5.5.7",
       "typescript": "$typescript",
       "yauzl": "^3.2.1"
     }
