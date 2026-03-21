@@ -18,12 +18,10 @@ import { PrivateKeyWallet } from 'wallets/privateKey';
 import { SeedWallet } from 'wallets/seed';
 import { type CreateWalletInput, type WalletPrivateData } from 'wallets/types';
 import { type Wallet } from 'wallets/wallet';
-import { WxWallet } from 'wallets/wx';
 
 import { NETWORK_CONFIG } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';
 import { type AssetInfoController } from './assetInfo';
-import { type IdentityApi } from './IdentityController';
 import { type TrashController } from './trash';
 
 async function encryptVault(input: WalletPrivateData[], password: string) {
@@ -45,7 +43,6 @@ async function decryptVault(vault: string, password: string) {
 
 export class WalletController extends EventEmitter {
   #assetInfo;
-  #identity;
   #ledger;
   #password: string | null | undefined;
   #setSession;
@@ -57,13 +54,11 @@ export class WalletController extends EventEmitter {
   constructor({
     assetInfo,
     extensionStorage,
-    identity,
     ledger,
     trash,
   }: {
     assetInfo: AssetInfoController['assetInfo'];
     extensionStorage: ExtensionStorage;
-    identity: IdentityApi;
     ledger: LedgerApi;
     trash: TrashController;
   }) {
@@ -78,7 +73,6 @@ export class WalletController extends EventEmitter {
     extensionStorage.subscribe(this.store);
 
     this.#assetInfo = assetInfo;
-    this.#identity = identity;
     this.#ledger = ledger;
     this.#password = extensionStorage.getInitSession().password;
     this.#setSession = extensionStorage.setSession.bind(extensionStorage);
@@ -133,19 +127,6 @@ export class WalletController extends EventEmitter {
           networkCode,
           seed: input.seed,
         });
-      case 'wx':
-        return new WxWallet(
-          {
-            address: input.address,
-            name: input.name,
-            network,
-            networkCode,
-            publicKey: input.publicKey,
-            username: input.username,
-            uuid: input.uuid,
-          },
-          this.#identity,
-        );
     }
   }
 
