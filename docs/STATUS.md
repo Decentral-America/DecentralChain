@@ -22,15 +22,29 @@
 
 ## 1. Executive Summary
 
-DecentralChain forked 24 packages from the Waves blockchain ecosystem in February–March 2026. All have completed migration (rebrand → bulletproof → modernize → audit) and are consolidated in this monorepo.
+24 packages forked from Waves in February–March 2026, all migrated (rebrand → bulletproof → modernize → audit) and consolidated into this monorepo. The SDK is clean. The apps have open work.
 
-**Current state:**
-- **22 SDK libraries**: Clean, publish-ready, modern tooling (ESM, Vitest, tsdown, Biome, TS 5.9 strict)
-- **3 applications**: cubensis-connect (wallet), exchange (DEX), scanner (block explorer)
-- **1 P0 risk remains**: User seeds stored in potentially Waves-owned AWS Cognito pools (cubensis-connect)
-- ~~P1 supply-chain risk~~: `@keeper-wallet/waves-crypto` **eliminated** — fully forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59)
-- **2 unforked Waves deps**: `@waves/ride-lang` + `@waves/ride-repl` (LOW — chain-agnostic Scala.js)
-- **0 npm audit vulnerabilities** across all packages
+### SDK (22 libraries)
+
+All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 5.9 strict throughout. Zero `@waves/*` runtime deps except `@waves/ride-lang` + `@waves/ride-repl` in ride-js (Scala.js compiler — chain-agnostic, low risk). Zero npm audit vulnerabilities. 5 packages still tagged `@next` on npm (need dist-tag promotion).
+
+### Apps — current reality
+
+**cubensis-connect** is on **Vite 8** (upgraded from 6), MV3 already wired for Chrome/Edge (MV2 stays for Firefox intentionally), `@sentry/browser@10.43.0` already installed, CSP already has `wasm-unsafe-eval`. The extension has never launched and has zero production users — no migration burden anywhere. P0 work is replacing the Cognito identity model with **FROST 2-of-2 threshold signing** (ZcashFoundation/frost-ed25519 v3.0.0-rc.0, NCC-audited).
+
+**exchange** is functional but incomplete. Vite 8, React, DEX UI — but all 12 signing functions in `useTransactionSigning.ts` throw `"Not implemented"`. Root cause is not a broken package; `@decentralchain/transactions` simply isn't listed in exchange's `package.json` and the imports are commented out. Ten-minute fix. nginx also needs hardening (CORS `*`, no CSP, HSTS too short, runs as root).
+
+**scanner** is production-hardened. SSR with React Router 7, non-root Docker, 189 tests passing (82.86% line coverage). Done.
+
+### Active P0
+
+FROST 2-of-2 identity for cubensis-connect: `packages/frost-wasm` (Rust+WASM), Railway `frost-signer` service (Axum 0.8.8), `FrostIdentityController.ts` replacing the 611-line Cognito controller. Use frost-ed25519 **v3.0.0-rc.0** (`no_std` by default, cleanest WASM target). Issue #1030 (missing `ZeroizeOnDrop` on some types) is a required manual step in the wrapper regardless — explicitly zeroize all key material at the WASM boundary.
+
+### Closed risks
+
+- `@keeper-wallet/waves-crypto` supply chain — forked as `@decentralchain/crypto`, 22 import sites migrated (DCC-70, DCC-59) ✅
+- `keeper-wallet.app` domains in whitelist — removed ✅
+- Cognito pool risk — moot, zero users, being replaced by FROST ✅
 
 ---
 
@@ -103,7 +117,7 @@ git commit → lefthook pre-commit →
 | ride-js | `strict: false`, `sideEffects: true` | JS source wrapping Scala.js; `interop.js` mutates globalThis |
 | protobuf-serialization | No tsdown | Uses `pbjs`/`pbts` codegen directly |
 | crypto | wasm-pack build | Rust/WASM hybrid |
-| cubensis-connect | webpack, TS 5.9.3, Biome | Partially modernized (Phase 2-3 complete) |
+| cubensis-connect | Custom build script (`scripts/build.mjs`), TS 5.9.3 | Vite 8 (upgraded Mar 2026), MV3 on Chrome/Edge already implemented. `@sentry/browser` v10.43.0 already installed. CSP includes `wasm-unsafe-eval` (FROST-ready). Phase 2-3 complete. |
 | scanner | SSR application | React Router 7 SSR app with dedicated runbook and production Docker image |
 | exchange | `target: ES2020` | Broader browser support for Electron |
 
@@ -258,17 +272,21 @@ The former supply-chain risk (Waves-controlled package with access to seed crypt
 
 **Risk**: LOW. These are language compiler packages, not security-sensitive. They are chain-agnostic (RIDE compiles the same regardless of chain ID). If unpublished, ride-js stops working but no funds are at risk. No viable fork exists — the Scala.js source is in the Waves monorepo.
 
-### AWS Cognito Pool Chain
+### ~~AWS Cognito Pool Chain~~ — CLOSED ✅
+
+**This risk is permanently resolved — not by migration, but by obsolescence.**
+
+Cubensis Connect has **never launched and has zero production users**. No user seeds have ever been stored in `eu-central-1_AXIpDLJQx` or `eu-central-1_6Bo3FEwt5`. There is nothing to migrate, verify, or protect.
+
+The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`, the `id.decentralchain.io/v1/sign` custodial endpoint) is being replaced wholesale by **FROST 2-of-2 threshold signing** — a non-custodial, audited (NCC Group 2023), RFC 9591-compliant MPC protocol over ed25519. See `docs/MPC-RESEARCH.md` for the full analysis.
 
 ```
-AWS Cognito (eu-central-1_AXIpDLJQx, eu-central-1_6Bo3FEwt5)
-  └─ cubensis-connect (seed backup/restore)
-       └─ User wallet seeds (if opted-in to cloud backup)
+FROST 2-of-2 (new)
+  ├─ packages/frost-wasm   ← ZcashFoundation/frost-ed25519, WASM-compiled
+  ├─ Railway frost-signer  ← holds sk_2 only (half-key, insufficient alone)
+  └─ cubensis-connect      ← holds sk_1 only (encrypted at rest)
+       └─ No single point of compromise for user funds
 ```
-
-**Risk**: P0 — CRITICAL. If these pools are owned by Waves (not DCC), the pool owner can access encrypted seed data. Even if seeds are encrypted client-side, the pool owner controls the authentication flow and could deploy a phishing Cognito hosted UI.
-
-**Mitigation**: Verify ownership (see Remediation Matrix, P0). If Waves-owned, migrate to DCC-owned Cognito pools or remove cloud backup entirely.
 
 ---
 
@@ -318,13 +336,15 @@ AWS Cognito (eu-central-1_AXIpDLJQx, eu-central-1_6Bo3FEwt5)
 
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|
-| **P0** | Cognito pool ownership | Verify DCC owns the AWS Cognito pools | ⬜ Pending |
+| ~~P0~~ | ~~Cognito pool ownership~~ | Irrelevant — CB has **zero production users and has never launched**. No user seeds exist in any pool. FROST 2-of-2 replaces the entire Cognito architecture. (See below.) | ✅ Closed |
+| **P0** | FROST 2-of-2 identity | Build `FrostIdentityController` + Railway `frost-signer` service + `packages/frost-wasm` (replaces `IdentityController.ts`) | ⬜ Pending |
 | ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
 | ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
 | **P1** | Promote npm `next` → `latest` | 5 packages need dist-tag promotion | ⬜ Pending |
 | **P2** | Rename `waves-community` repo | Rename GitHub repo + update scam token URL | ⬜ Pending |
-| **P2** | Set up Sentry DSN | Create project, inject via build env | ⬜ Pending |
-| **P2** | Exchange nginx hardening | Fix CORS, add CSP, fix IP trust, add USER directive | ⬜ Pending |
+| **P2** | Exchange signing stubs | 12 functions in `useTransactionSigning.ts` throw `"Not implemented"`. Root cause: `@decentralchain/transactions` is missing from exchange `package.json` deps and imports are commented out. The package builds and works. Fix: add `workspace:*` dep + uncomment 15 lines | ⬜ Pending |
+| **P2** | Set up Sentry DSN | `@sentry/browser@10.43.0` already installed in cubensis-connect. `VITE_SENTRY_DSN` already in scanner runbook. Exchange needs `@sentry/react`. Action: create Sentry project, inject DSN env var at build time | ⬜ Pending |
+| **P2** | Exchange nginx hardening | In `apps/exchange/nginx.conf`: (1) replace `Access-Control-Allow-Origin *` with specific allowed origins, (2) add `Content-Security-Policy` header, (3) raise HSTS to `max-age=31536000`, (4) remove deprecated `X-XSS-Protection`, (5) add `Permissions-Policy`, (6) add `USER nginx` to Dockerfile | ⬜ Pending |
 | ~~P2~~ | ~~Scanner README drift~~ | Completed Mar 20, 2026 | ✅ Completed |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
