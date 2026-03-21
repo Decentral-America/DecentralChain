@@ -70,7 +70,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <UsdPricesContext.Provider value={observe}>{children}</UsdPricesContext.Provider>;
+  return <UsdPricesContext value={observe}>{children}</UsdPricesContext>;
 }
 
 export function useUsdPrices(assetIds: string[]) {
