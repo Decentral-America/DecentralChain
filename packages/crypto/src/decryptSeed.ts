@@ -1,21 +1,23 @@
 import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey.js';
 
-export async function decryptSeed(input: Uint8Array, password: Uint8Array, hashRounds = 5000) {
-  const [key, iv] = await deriveSeedEncryptionKey(password, hashRounds, input.subarray(8, 16));
+/**
+ * Decrypts a blob produced by `encryptSeed`.
+ *
+ * Expected format: [16-byte salt][12-byte nonce][ciphertext + 16-byte GCM auth tag]
+ * Throws if the password is wrong (GCM authentication tag mismatch).
+ */
+export async function decryptSeed(input: Uint8Array, password: Uint8Array): Promise<Uint8Array> {
+  const salt = input.subarray(0, 16);
+  const nonce = input.subarray(16, 28);
+  const ciphertext = input.subarray(28);
 
-  const importedKey = await crypto.subtle.importKey(
-    'raw',
-    key as Uint8Array<ArrayBuffer>,
-    'AES-CBC',
-    false,
-    ['decrypt'],
-  );
+  const key = await deriveSeedEncryptionKey(password, salt);
 
   return new Uint8Array(
     await crypto.subtle.decrypt(
-      { iv: iv as Uint8Array<ArrayBuffer>, length: iv.length, name: 'AES-CBC' },
-      importedKey,
-      input.subarray(16) as Uint8Array<ArrayBuffer>,
+      { iv: nonce as Uint8Array<ArrayBuffer>, name: 'AES-GCM' },
+      key,
+      ciphertext as Uint8Array<ArrayBuffer>,
     ),
   );
 }
