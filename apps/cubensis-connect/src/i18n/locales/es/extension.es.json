@@ -9,7 +9,6 @@
     "copied": "¡Copiado!",
     "copyToClipboard": "Haz click para copiar al portapales",
     "email": "Email",
-    "emailNoBackupPhrase": "Esta cuenta se importó con la cuenta de DecentralChain Exchange, por lo que no hay una frase de respaldo ni una clave privada para copiar",
     "encodedSeed": "Seed criptografica",
     "enter": "Entrar",
     "password": "Contraseña",
@@ -112,6 +111,7 @@
     "confirmBackupInfo": "Confirmarás esta frase en la siguiente pantalla",
     "continue": "Continuar",
     "copied": "¡Copiado!",
+    "lossWarning": "Si pierde su frase de respaldo, perderá permanentemente el acceso a sus fondos. No hay opción de recuperación.",
     "saveBackup": "Guardar frase de respaldo"
   },
   "bottom": {
@@ -285,27 +285,6 @@
     "viaKeystore": "Archivo de almacén de claves",
     "viaLedger": "Ledger",
     "viaSeed": "Frase inicial o clave privada"
-  },
-  "importEmail": {
-    "alreadyExists": "la cuenta ya existe",
-    "continue": "Continuar",
-    "credentialsError": "Nombre de usuario o contraseña incorrecta",
-    "dontHaveAccount": "¿No tienes una cuenta?",
-    "emailLabel": "Correo electrónico",
-    "emailRequired": "Ingrese el correo electrónico correcto",
-    "forgotPassword": "¿Se te olvidó tu contraseña?",
-    "importEmailDesc": "Conecte una cuenta de correo electrónico creada en DecentralChain Exchange",
-    "importEmailTitle": "Importar cuenta de correo electrónico",
-    "incorrectCode": "Codigo erroneo. Inténtalo de nuevo",
-    "incorrectUsernameOrPassword": "Nombre de usuario o contraseña incorrecta.",
-    "incorrectUsernameOrPasswordLimit": "Ha excedido el limite de nombre de usuario y contraseña incorrecta. Si tiene algún problema comuníquese con soporte https://support.decentralchain.io/.",
-    "loginRequired": "Confirmar cuenta de correo electrónico",
-    "passwordLabel": "Contraseña",
-    "passwordRequired": "Introducir la contraseña",
-    "signUp": "Regístrate",
-    "userDoesNotExist": "Usuario no existe.",
-    "verifyAccountDesc": "Ingrese el código de verificación de 6 dígitos recibido por {{destination}}",
-    "verifyAccountTitle": "Verifica tu cuenta"
   },
   "importKeystore": {
     "addressBookLabel": "Archivo de la libreta de direcciones",
