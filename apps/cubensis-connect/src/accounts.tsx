@@ -44,6 +44,7 @@ Promise.all([
     .then(({ currentLocale }: { currentLocale?: string }) => i18next.changeLanguage(currentLocale)),
   i18nextInit(),
 ]).then(() => {
+  // #app-content is the React root defined in accounts.html — guaranteed present at this point.
   const rootEl = document.getElementById('app-content');
   invariant(rootEl);
 
