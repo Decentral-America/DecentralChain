@@ -116,14 +116,14 @@ sha256sum dist/*.zip
 ### 4.1 MV3 Manifest Spot-Check
 
 ```bash
-node -e "
-const fs = require('fs');
-const m = JSON.parse(fs.readFileSync('apps/cubensis-connect/dist/chrome/manifest.json'));
+node --input-type=module <<'EOF'
+import { readFileSync } from 'fs';
+const m = JSON.parse(readFileSync('apps/cubensis-connect/dist/chrome/manifest.json', 'utf8'));
 console.assert(m.manifest_version === 3, 'Expected MV3');
 console.assert(Array.isArray(m.host_permissions), 'Missing host_permissions');
 console.assert(!m.permissions.some(p => p.startsWith('http')), 'Host pattern in permissions');
 console.log('MV3 manifest check: PASS');
-"
+EOF
 ```
 
 ### 4.2 No Private Key Leakage in Background Script
@@ -137,14 +137,14 @@ grep -c "mnemonic\|privateKey\|seed" apps/cubensis-connect/dist/chrome/backgroun
 ### 4.3 CSP Validation
 
 ```bash
-node -e "
-const fs = require('fs');
-const m = JSON.parse(fs.readFileSync('apps/cubensis-connect/dist/chrome/manifest.json'));
+node --input-type=module <<'EOF'
+import { readFileSync } from 'fs';
+const m = JSON.parse(readFileSync('apps/cubensis-connect/dist/chrome/manifest.json', 'utf8'));
 const csp = m.content_security_policy?.extension_pages ?? '';
 console.assert(!csp.includes('unsafe-eval') || csp.includes('wasm-unsafe-eval'), 'unsafe-eval without wasm restriction');
 console.assert(!csp.includes('unsafe-inline'), 'unsafe-inline present');
 console.log('CSP check: PASS');
-"
+EOF
 ```
 
 ---

@@ -53,6 +53,8 @@
 
 ## Gate 5 — Infrastructure Readiness
 
+> Evidence pack template: [docs/GO-NO-GO-INFRA.md](./GO-NO-GO-INFRA.md)
+
 | Check | Criteria | Owner |
 |-------|----------|-------|
 | Cognito pools decommissioned | AWS Cognito pools `eu-central-1_AXIpDLJQx` and `eu-central-1_6Bo3FEwt5` are deleted or belong to DCC | AWS / Ops |
