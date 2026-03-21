@@ -25,7 +25,7 @@ export class VaultController {
 
     this.store.updateState({
       initialized: Boolean(wallet.store.getState().WalletController.vault),
-      locked: !extensionStorage.getInitSession().password,
+      locked: !extensionStorage.getInitSession().vaultKeyBytes,
     });
   }
 
