@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { PureComponent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from './Button';
 import * as styles from './dropdownButton.module.styl';
@@ -9,95 +9,54 @@ interface Props extends React.ComponentProps<'div'> {
   placement?: 'top' | 'bottom' | undefined;
 }
 
-interface State {
-  showList: boolean;
-}
+export function DropdownButton({ children, placement = 'bottom', className }: Props) {
+  const [showList, setShowList] = useState(false);
+  const elementRef = useRef<HTMLDivElement | null>(null);
 
-export class DropdownButton extends PureComponent<Props, State> {
-  private element: HTMLDivElement | null | undefined;
+  useEffect(() => {
+    if (!showList) return;
 
-  getRef = (element: HTMLDivElement | null) => {
-    this.element = element;
-  };
-
-  clickHandler = () => {
-    const showList = this.state.showList;
-
-    if (!showList) {
-      this.setClickOut();
-    } else {
-      this.removeClickOut();
-    }
-
-    this.setState({ showList: !this.state.showList });
-  };
-
-  clickOutHandler = (e: MouseEvent) => {
-    let el = e.target as Node | null;
-
-    while (el) {
-      if (el === this.element) {
-        return null;
+    function handleClickOut(e: MouseEvent) {
+      let el = e.target as Node | null;
+      while (el) {
+        if (el === elementRef.current) return;
+        el = el.parentElement;
       }
-
-      el = el.parentElement;
+      setShowList(false);
     }
 
-    this.clickHandler();
-  };
-
-  componentWillUnmount(): void {
-    this.removeClickOut();
-  }
-
-  setClickOut = () => {
-    document.addEventListener('click', this.clickOutHandler, { capture: true });
-  };
-
-  removeClickOut = () => {
-    document.removeEventListener('click', this.clickOutHandler, {
-      capture: true,
-    });
-  };
-
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      showList: false,
+    document.addEventListener('click', handleClickOut, { capture: true });
+    return () => {
+      document.removeEventListener('click', handleClickOut, { capture: true });
     };
-  }
+  }, [showList]);
 
-  render() {
-    const { children, placement = 'bottom', className } = this.props;
-    const [defaultItem, ...otherItems] = children as React.ReactElement[];
+  const [defaultItem, ...otherItems] = children as React.ReactElement[];
 
-    return (
-      <div className={clsx(styles.splitButton, className, 'buttons-group')} ref={this.getRef}>
-        <div className="relative flex">
-          {defaultItem}
+  return (
+    <div className={clsx(styles.splitButton, className, 'buttons-group')} ref={elementRef}>
+      <div className="relative flex">
+        {defaultItem}
 
-          <div className={clsx(styles.arrowButton)}>
-            <Button
-              type="button"
-              view={(defaultItem as React.ReactElement<any>).props.view}
-              onClick={this.clickHandler}
-              className={clsx(styles.dropdownButton)}
-            />
-          </div>
+        <div className={clsx(styles.arrowButton)}>
+          <Button
+            type="button"
+            view={(defaultItem as React.ReactElement<any>).props.view}
+            onClick={() => setShowList((prev) => !prev)}
+            className={clsx(styles.dropdownButton)}
+          />
         </div>
-
-        {this.state.showList && (
-          <div className={clsx(styles.list, placement === 'top' && styles.listPlacementTop)}>
-            {otherItems.map((item, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: React elements with no stable ID
-              <div key={index} className={styles.listItem}>
-                {item}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-    );
-  }
+
+      {showList && (
+        <div className={clsx(styles.list, placement === 'top' && styles.listPlacementTop)}>
+          {otherItems.map((item, index) => (
+            <div key={item.key ?? String(index)} className={styles.listItem}>
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

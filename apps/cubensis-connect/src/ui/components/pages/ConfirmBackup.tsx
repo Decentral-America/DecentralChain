@@ -1,20 +1,15 @@
-import { type AccountsState } from 'accounts/store/types';
-import { Component } from 'react';
-import { type WithTranslation, withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { usePopupSelector } from 'popup/store/react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { type NewAccountState } from 'store/reducers/localState';
-import { type WithNavigate, withNavigate } from 'ui/router';
 
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
 import * as styles from './styles/confirmBackup.module.styl';
 
-interface StateProps {
-  account: Extract<NewAccountState, { type: 'seed' }>;
-}
+type Props = Record<never, never>;
 
-type Props = WithTranslation & StateProps & WithNavigate;
-
-interface State {
+interface ListState {
   seed: string | null;
   list: PillsListItem[];
   selectedList: PillsListItem[];
@@ -23,140 +18,126 @@ interface State {
   disabled: boolean;
 }
 
-class ConfirmBackupComponent extends Component<Props, State> {
-  state: State = {
+function buildShuffledList(seed: string): PillsListItem[] {
+  const list = seed.split(' ').map((text, id) => ({ hidden: false, id, selected: true, text }));
+
+  // Fisher-Yates shuffle using CSPRNG — seed words must never use Math.random()
+  for (let i = list.length - 1; i > 0; i--) {
+    const rand = new Uint32Array(1);
+    crypto.getRandomValues(rand);
+    const j = rand[0]! % (i + 1);
+    [list[i], list[j]] = [list[j]!, list[i]!];
+  }
+
+  return list;
+}
+
+export function ConfirmBackup(_props: Props) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const account = usePopupSelector(
+    (state) => state.localState.newAccount as Extract<NewAccountState, { type: 'seed' }>,
+  );
+
+  const [state, setState] = useState<ListState>(() => ({
     complete: false,
     disabled: false,
-    list: [],
-    seed: null,
+    list: buildShuffledList(account.seed),
+    seed: account.seed,
     selectedList: [],
     wrongSeed: false,
-  };
+  }));
 
-  static getDerivedStateFromProps(props: Readonly<Props>, state: State): Partial<State> | null {
-    const { seed } = props.account;
-
-    if (seed === state.seed) {
-      return null;
+  useEffect(() => {
+    if (account.seed !== state.seed) {
+      setState((prev) => ({
+        ...prev,
+        complete: false,
+        list: buildShuffledList(account.seed),
+        seed: account.seed,
+        selectedList: [],
+        wrongSeed: false,
+      }));
     }
+  }, [account.seed, state.seed]);
 
-    const list = seed.split(' ').map((text, id) => ({ hidden: false, id, selected: true, text }));
-
-    // Fisher-Yates shuffle using CSPRNG — seed words must never use Math.random()
-    for (let i = list.length - 1; i > 0; i--) {
-      const rand = new Uint32Array(1);
-      crypto.getRandomValues(rand);
-      const j = rand[0]! % (i + 1);
-      [list[i], list[j]] = [list[j]!, list[i]!];
-    }
-
-    return { ...state, list, seed };
-  }
-
-  onSelect = (list: PillsListItem) => this._onSelect(list);
-
-  onUnSelect = (list: PillsListItem) => this._onUnSelect(list);
-
-  onClear = () => this._onClear();
-
-  onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => this._onSubmit(e);
-
-  render() {
-    const { t } = this.props;
-    const { selectedList, list, complete, wrongSeed } = this.state;
-    const showButton = complete && !wrongSeed;
-    const showClear = complete && wrongSeed;
-
-    return (
-      <div className={styles.content}>
-        <h2 className="title1 margin1">{t('confirmBackup.confirmBackup')}</h2>
-
-        <Pills
-          className={`${styles.readSeed} plate body3`}
-          list={selectedList}
-          selected={false}
-          onSelect={this.onUnSelect}
-        />
-
-        <div className="center body3">
-          {complete ? null : t('confirmBackup.selectWord')}
-          {showClear ? (
-            <ErrorMessage show className={styles.noMargin}>
-              {t('confirmBackup.wrongSeed')}
-            </ErrorMessage>
-          ) : null}
-        </div>
-
-        <Pills className={styles.writeSeed} list={list} selected onSelect={this.onSelect} />
-        {showButton ? (
-          <Button
-            id="confirmBackup"
-            type="submit"
-            view="submit"
-            disabled={this.state.disabled}
-            className={styles.confirm}
-            onClick={this.onSubmit}
-          >
-            {t('confirmBackup.confirm')}
-          </Button>
-        ) : null}
-        {showClear ? (
-          <div className={`center tag1 ${styles.clearSeed}`}>
-            <Button type="button" view="transparent" onClick={this.onClear}>
-              <span className="submit400">{t('confirmBackup.clear')} </span>
-              {t('confirmBackup.selectAgain')}
-            </Button>
-          </div>
-        ) : null}
-      </div>
-    );
-  }
-
-  private _onSubmit(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    this.setState({ disabled: true });
-    this.props.navigate('/account-name', { replace: true });
-  }
-
-  private _onSelect({ text, id }: PillsListItem) {
-    const selected = [...this.state.selectedList, { id, text }];
-    this._setSelected(selected);
-  }
-
-  private _onUnSelect({ id }: PillsListItem) {
-    const selected = this.state.selectedList.filter((item) => item.id !== id);
-    this._setSelected(selected);
-  }
-
-  private _setSelected(selected: PillsListItem[]) {
-    const list = this.state.list;
+  function setSelected(selected: PillsListItem[]) {
+    const { list, seed } = state;
     const selectedTextsList = selected.map((item) => item.text);
     const selectedIdsList = selected.map((item) => item.id);
 
-    const state = {
+    setState({
+      ...state,
       complete: selected.length === list.length,
-      list: this.state.list.map((item) => {
-        item.hidden = selectedIdsList.includes(item.id);
-        return item;
-      }),
+      list: list.map((item) => ({ ...item, hidden: selectedIdsList.includes(item.id) })),
       selectedList: selected,
-      wrongSeed: this.state.seed !== selectedTextsList.join(' '),
-    };
-
-    this.setState(state);
+      wrongSeed: seed !== selectedTextsList.join(' '),
+    });
   }
 
-  private _onClear() {
-    this._setSelected([]);
+  function handleSelect({ text, id }: PillsListItem) {
+    setSelected([...state.selectedList, { id, text }]);
   }
+
+  function handleUnSelect({ id }: PillsListItem) {
+    setSelected(state.selectedList.filter((item) => item.id !== id));
+  }
+
+  function handleClear() {
+    setSelected([]);
+  }
+
+  function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    setState((prev) => ({ ...prev, disabled: true }));
+    navigate('/account-name', { replace: true });
+  }
+
+  const { selectedList, list, complete, wrongSeed } = state;
+  const showButton = complete && !wrongSeed;
+  const showClear = complete && wrongSeed;
+
+  return (
+    <div className={styles.content}>
+      <h2 className="title1 margin1">{t('confirmBackup.confirmBackup')}</h2>
+
+      <Pills
+        className={`${styles.readSeed} plate body3`}
+        list={selectedList}
+        selected={false}
+        onSelect={handleUnSelect}
+      />
+
+      <div className="center body3">
+        {complete ? null : t('confirmBackup.selectWord')}
+        {showClear ? (
+          <ErrorMessage show className={styles.noMargin}>
+            {t('confirmBackup.wrongSeed')}
+          </ErrorMessage>
+        ) : null}
+      </div>
+
+      <Pills className={styles.writeSeed} list={list} selected onSelect={handleSelect} />
+      {showButton ? (
+        <Button
+          id="confirmBackup"
+          type="submit"
+          view="submit"
+          disabled={state.disabled}
+          className={styles.confirm}
+          onClick={handleSubmit}
+        >
+          {t('confirmBackup.confirm')}
+        </Button>
+      ) : null}
+      {showClear ? (
+        <div className={`center tag1 ${styles.clearSeed}`}>
+          <Button type="button" view="transparent" onClick={handleClear}>
+            <span className="submit400">{t('confirmBackup.clear')} </span>
+            {t('confirmBackup.selectAgain')}
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
 }
-
-const mapStateToProps = (state: AccountsState): StateProps => {
-  return {
-    account: state.localState.newAccount as Extract<NewAccountState, { type: 'seed' }>,
-  };
-};
-
-export const ConfirmBackup = connect(mapStateToProps)(
-  withTranslation()(withNavigate(ConfirmBackupComponent)),
-);

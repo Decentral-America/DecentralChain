@@ -1,32 +1,30 @@
 import copy from 'copy-to-clipboard';
-import { Children, cloneElement, PureComponent } from 'react';
+import { Children, cloneElement } from 'react';
 
 interface Props {
-  text: string | null | undefined;
+  text?: string | null | undefined;
   children: React.ReactNode;
-  options: {
+  options?: {
     debug?: boolean | undefined;
     message?: string | undefined;
-    format?: string; // MIME type | undefined
+    format?: string; // MIME type
     onCopy?: ((clipboardData: object) => void) | undefined;
   };
-  onCopy: (...args: unknown[]) => unknown;
+  onCopy?: ((...args: unknown[]) => void) | undefined;
 }
 
-export class Copy extends PureComponent<Props> {
-  static defaultProps = {
-    onCopy: undefined,
-    options: { format: 'text/plain' },
-    text: '',
-  };
+export function Copy({
+  text = '',
+  onCopy,
+  children,
+  options = { format: 'text/plain' },
+  ...props
+}: Props) {
+  const elem = Children.only(children);
 
-  onClick = (event: { stopPropagation: () => void; preventDefault: () => void }) => {
-    const { text, onCopy, children, options } = this.props;
-
+  function handleClick(event: { stopPropagation: () => void; preventDefault: () => void }) {
     event.stopPropagation();
     event.preventDefault();
-
-    const elem = Children.only(children);
 
     const result = copy(text ?? '', options as Parameters<typeof copy>[1]);
 
@@ -36,20 +34,19 @@ export class Copy extends PureComponent<Props> {
 
     if (
       elem &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (elem as React.ReactElement<any>).props &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       typeof (elem as React.ReactElement<any>).props.onClick === 'function'
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (elem as React.ReactElement<any>).props.onClick(event);
     }
-  };
-
-  render() {
-    const { text, onCopy, options, children, ...props } = this.props;
-    const elem = Children.only(children);
-
-    return cloneElement(elem as React.ReactElement<any>, {
-      ...props,
-      onClick: this.onClick,
-    });
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return cloneElement(elem as React.ReactElement<any>, {
+    ...props,
+    onClick: handleClick,
+  });
 }

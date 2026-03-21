@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 
@@ -25,39 +25,36 @@ interface Props {
   onExited?: (() => void) | undefined;
 }
 
-export class Modal extends PureComponent<Props> {
-  static modalRoot: HTMLElement;
-  static ANIMATION = {
-    FLASH: 'flash_modal',
-    FLASH_SCALE: 'flash_scale_modal',
-  };
-  el: HTMLDivElement;
+let modalRoot: HTMLElement | null = null;
 
-  constructor(props: Props) {
-    super(props);
-    this.el = document.createElement('div');
-    this.el.classList.add(styles.modalWrapper!);
-    Modal.modalRoot = Modal.modalRoot || document.getElementById('app-modal');
+export function Modal(props: Props) {
+  const elRef = useRef<HTMLDivElement | null>(null);
+
+  if (!elRef.current) {
+    const el = document.createElement('div');
+    el.classList.add(styles.modalWrapper!);
+    elRef.current = el;
   }
 
-  componentDidMount() {
-    Modal.modalRoot.appendChild(this.el);
-  }
+  useEffect(() => {
+    if (!modalRoot) {
+      modalRoot = document.getElementById('app-modal');
+    }
+    modalRoot?.appendChild(elRef.current!);
+    return () => {
+      modalRoot?.removeChild(elRef.current!);
+    };
+  }, []);
 
-  componentWillUnmount() {
-    Modal.modalRoot.removeChild(this.el);
-  }
-
-  render() {
-    return createPortal(
-      <ModalWrapper
-        onExited={this.props.onExited}
-        animation={this.props.animation}
-        showModal={this.props.showModal}
-      >
-        {this.props.children}
-      </ModalWrapper>,
-      this.el,
-    );
-  }
+  return createPortal(
+    <ModalWrapper onExited={props.onExited} animation={props.animation} showModal={props.showModal}>
+      {props.children}
+    </ModalWrapper>,
+    elRef.current,
+  );
 }
+
+Modal.ANIMATION = {
+  FLASH: 'flash_modal',
+  FLASH_SCALE: 'flash_scale_modal',
+};

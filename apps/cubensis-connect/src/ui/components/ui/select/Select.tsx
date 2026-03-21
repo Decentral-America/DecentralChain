@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import * as styles from './Select.module.css';
@@ -25,7 +26,8 @@ interface Props<T> {
   className?: string | undefined;
   description?: TText | undefined;
   fill?: boolean | undefined;
-  forwardRef?: React.MutableRefObject<HTMLDivElement> | undefined;
+  /** React 19: ref is a plain prop — no forwardRef wrapper needed */
+  ref?: React.Ref<HTMLDivElement | null> | undefined;
   listPlacement?: ListPlacement | undefined;
   selectList: ReadonlyArray<SelectItem<T>>;
   selected: T;
@@ -39,7 +41,7 @@ export function Select<T>({
   className,
   description,
   fill,
-  forwardRef,
+  ref,
   listPlacement = 'bottom',
   selected,
   selectList,
@@ -76,12 +78,14 @@ export function Select<T>({
 
   const getRef = useCallback(
     (element: HTMLDivElement) => {
-      if (forwardRef) {
-        forwardRef.current = element;
-      }
       rootRef.current = element;
+      if (typeof ref === 'function') {
+        ref(element);
+      } else if (ref != null) {
+        (ref as React.MutableRefObject<HTMLDivElement | null>).current = element;
+      }
     },
-    [forwardRef],
+    [ref],
   );
 
   const selectedItem = selectList.find(({ id }) => id === selected) || selectList[0];

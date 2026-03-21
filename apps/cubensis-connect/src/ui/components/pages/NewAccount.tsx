@@ -1,7 +1,6 @@
-import { type AccountsState } from 'accounts/store/types';
-import { PureComponent } from 'react';
-import { type WithTranslation, withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { usePopupSelector } from 'popup/store/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import Background from 'ui/services/Background';
 
@@ -11,229 +10,157 @@ import * as styles from './NewAccount.module.css';
 
 const MIN_LENGTH = CONFIG.PASSWORD_MIN_LENGTH;
 
-const mapStateToProps = (state: AccountsState) => ({
-  initialized: state.state?.initialized,
-});
+type FieldError = { error: string } | null | undefined;
 
-type Props = WithTranslation & ReturnType<typeof mapStateToProps>;
-
-class NewAccountComponent extends PureComponent<Props> {
-  state = {
-    buttonDisabled: true,
-    conditionsAccepted: false,
-    firstError: null,
-    firstValue: '',
-    passwordError: false,
-    secondError: null,
-    secondValue: '',
-    termsAccepted: false,
-  };
-
-  static _isDisabledButton(
-    { firstValue, secondValue }: { firstValue: string; secondValue: string },
-    termsAccepted: boolean,
-    conditionsAccepted: boolean,
-  ) {
-    if (!termsAccepted || !conditionsAccepted) {
-      return true;
-    }
-
-    if (!firstValue || !secondValue) {
-      return true;
-    }
-
-    const isFirstError = NewAccountComponent._validateFirst(firstValue);
-    const isSecondError = NewAccountComponent._validateSecond(firstValue, secondValue);
-
-    return isFirstError || isSecondError;
-  }
-
-  static _validateFirst(firstValue: string) {
-    if (!firstValue) {
-      return null;
-    }
-
-    if (firstValue.length < MIN_LENGTH) {
-      return { error: 'isSmall' };
-    }
-  }
-
-  static _validateSecond(firstValue: string, secondValue: string) {
-    if (!secondValue || !firstValue) {
-      return null;
-    }
-
-    if (firstValue === secondValue) {
-      return null;
-    }
-
-    return { error: 'noMatch' };
-  }
-
-  onFirstBlur = () => this._onFirstBlur();
-
-  onSecondBlur = () => this._onSecondBlur();
-
-  onChangeFist = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this._onChangeInputs(e.target.value, this.state.secondValue);
-
-  onChangeSecond = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this._onChangeInputs(this.state.firstValue, e.target.value);
-
-  handleTermsAcceptedChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ termsAccepted: e.currentTarget.checked }, () => {
-      this._onChangeInputs(this.state.firstValue, this.state.secondValue);
-    });
-  };
-
-  handleonditionsAcceptedChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ conditionsAccepted: e.currentTarget.checked }, () => {
-      this._onChangeInputs(this.state.firstValue, this.state.secondValue);
-    });
-  };
-
-  onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!this.state.passwordError && this.state.firstValue) {
-      Background.initVault(this.state.firstValue);
-    }
-  };
-
-  render() {
-    const { initialized, t } = this.props;
-
-    if (initialized) {
-      return <Navigate replace to="/" />;
-    }
-
-    return (
-      <div className={styles.account}>
-        <form data-testid="newAccountForm" className={styles.content} onSubmit={this.onSubmit}>
-          <h2 className={`${styles.title} title1`}>{t('newAccount.protect')}</h2>
-
-          <div className={styles.inner}>
-            <div className="margin1 relative">
-              <div className="basic500 tag1 left input-title">{t('newAccount.createPassword')}</div>
-              <Input
-                autoComplete="new-password"
-                autoFocus
-                error={!!this.state.firstError}
-                id="first"
-                onBlur={this.onFirstBlur}
-                onChange={this.onChangeFist}
-                type="password"
-                view="password"
-                wrapperClassName="margin1"
-              />
-
-              <ErrorMessage show={this.state.firstError} data-testid="firstError">
-                {t('newAccount.smallPass')}
-              </ErrorMessage>
-            </div>
-            <div className="margin1 relative">
-              <div className="basic500 tag1 left input-title">
-                {t('newAccount.confirmPassword')}
-              </div>
-              <Input
-                autoComplete="new-password"
-                error={!!this.state.secondError}
-                id="second"
-                onBlur={this.onSecondBlur}
-                onChange={this.onChangeSecond}
-                type="password"
-                view="password"
-              />
-              <ErrorMessage show={this.state.secondError} data-testid="secondError">
-                {t('newAccount.notMatch')}
-              </ErrorMessage>
-            </div>
-          </div>
-          <div className={styles.checkboxWrapper}>
-            <Input
-              wrapperClassName={styles.checkbox}
-              id="termsAccepted"
-              type="checkbox"
-              checked={this.state.termsAccepted}
-              onChange={this.handleTermsAcceptedChange}
-            />
-            <label htmlFor="termsAccepted">
-              {t('newAccount.acceptTerms')}{' '}
-              <a
-                href="https://decentralchain.io/terms-of-use"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('newAccount.termsAndConditions')}
-              </a>
-            </label>
-          </div>
-          <div className={styles.checkboxWrapper}>
-            <Input
-              wrapperClassName={styles.checkbox}
-              id="conditionsAccepted"
-              type="checkbox"
-              checked={this.state.conditionsAccepted}
-              onChange={this.handleonditionsAcceptedChange}
-            />
-            <label htmlFor="conditionsAccepted">
-              {t('newAccount.acceptTerms')}{' '}
-              <a
-                href="https://decentralchain.io/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('newAccount.privacyPolicy')}
-              </a>
-            </label>
-          </div>
-
-          <Button
-            className={styles.button}
-            type="submit"
-            view="submit"
-            disabled={this.state.buttonDisabled}
-          >
-            {t('newAccount.create')}
-          </Button>
-          <div className={`${styles.text} tag1 basic500`}>{t('newAccount.passinfo')}</div>
-        </form>
-        <div className={styles.footer}>
-          <LangsSelect />
-        </div>
-      </div>
-    );
-  }
-
-  _onFirstBlur() {
-    this._checkValues(this.state.firstValue, this.state.secondValue);
-  }
-
-  _onSecondBlur() {
-    this._checkValues(this.state.firstValue, this.state.secondValue);
-  }
-
-  _onChangeInputs(firstValue: string, secondValue: string) {
-    this.setState({ firstValue, secondValue });
-    this._checkValues(firstValue, secondValue);
-  }
-
-  _checkValues(firstValue: string, secondValue: string) {
-    const { termsAccepted, conditionsAccepted } = this.state;
-    const firstError = NewAccountComponent._validateFirst(firstValue);
-    const secondError = NewAccountComponent._validateSecond(firstValue, secondValue);
-    const passwordError = !!(firstError || secondError);
-    const buttonDisabled = NewAccountComponent._isDisabledButton(
-      {
-        firstValue,
-        secondValue,
-      },
-      termsAccepted,
-      conditionsAccepted,
-    );
-
-    this.setState({ buttonDisabled, firstError, passwordError, secondError });
-  }
+function validateFirst(firstValue: string): FieldError {
+  if (!firstValue) return null;
+  if (firstValue.length < MIN_LENGTH) return { error: 'isSmall' };
+  return null;
 }
 
-export const NewAccount = connect(mapStateToProps)(withTranslation()(NewAccountComponent));
+function validateSecond(firstValue: string, secondValue: string): FieldError {
+  if (!secondValue || !firstValue) return null;
+  if (firstValue === secondValue) return null;
+  return { error: 'noMatch' };
+}
+
+function isDisabled(
+  firstValue: string,
+  secondValue: string,
+  termsAccepted: boolean,
+  conditionsAccepted: boolean,
+): boolean {
+  if (!termsAccepted || !conditionsAccepted) return true;
+  if (!firstValue || !secondValue) return true;
+  return !!(validateFirst(firstValue) || validateSecond(firstValue, secondValue));
+}
+
+export function NewAccount() {
+  const { t } = useTranslation();
+  const initialized = usePopupSelector((state) => state.state?.initialized);
+
+  const [firstValue, setFirstValue] = useState('');
+  const [secondValue, setSecondValue] = useState('');
+  const [firstError, setFirstError] = useState<FieldError>(null);
+  const [secondError, setSecondError] = useState<FieldError>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [conditionsAccepted, setConditionsAccepted] = useState(false);
+
+  if (initialized) {
+    return <Navigate replace to="/" />;
+  }
+
+  const buttonDisabled = isDisabled(firstValue, secondValue, termsAccepted, conditionsAccepted);
+
+  function checkValues(fv: string, sv: string) {
+    setFirstError(validateFirst(fv));
+    setSecondError(validateSecond(fv, sv));
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (firstValue) {
+      Background.initVault(firstValue);
+    }
+  }
+
+  return (
+    <div className={styles.account}>
+      <form data-testid="newAccountForm" className={styles.content} onSubmit={handleSubmit}>
+        <h2 className={`${styles.title} title1`}>{t('newAccount.protect')}</h2>
+
+        <div className={styles.inner}>
+          <div className="margin1 relative">
+            <div className="basic500 tag1 left input-title">{t('newAccount.createPassword')}</div>
+            <Input
+              autoComplete="new-password"
+              autoFocus
+              error={!!firstError}
+              id="first"
+              onBlur={() => checkValues(firstValue, secondValue)}
+              onChange={(e) => {
+                setFirstValue(e.target.value);
+                checkValues(e.target.value, secondValue);
+              }}
+              type="password"
+              view="password"
+              wrapperClassName="margin1"
+            />
+            <ErrorMessage show={firstError} data-testid="firstError">
+              {t('newAccount.smallPass')}
+            </ErrorMessage>
+          </div>
+          <div className="margin1 relative">
+            <div className="basic500 tag1 left input-title">{t('newAccount.confirmPassword')}</div>
+            <Input
+              autoComplete="new-password"
+              error={!!secondError}
+              id="second"
+              onBlur={() => checkValues(firstValue, secondValue)}
+              onChange={(e) => {
+                setSecondValue(e.target.value);
+                checkValues(firstValue, e.target.value);
+              }}
+              type="password"
+              view="password"
+            />
+            <ErrorMessage show={secondError} data-testid="secondError">
+              {t('newAccount.notMatch')}
+            </ErrorMessage>
+          </div>
+        </div>
+        <div className={styles.checkboxWrapper}>
+          <Input
+            wrapperClassName={styles.checkbox}
+            id="termsAccepted"
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => {
+              setTermsAccepted(e.currentTarget.checked);
+            }}
+          />
+          <label htmlFor="termsAccepted">
+            {t('newAccount.acceptTerms')}{' '}
+            <a
+              href="https://decentralchain.io/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('newAccount.termsAndConditions')}
+            </a>
+          </label>
+        </div>
+        <div className={styles.checkboxWrapper}>
+          <Input
+            wrapperClassName={styles.checkbox}
+            id="conditionsAccepted"
+            type="checkbox"
+            checked={conditionsAccepted}
+            onChange={(e) => {
+              setConditionsAccepted(e.currentTarget.checked);
+            }}
+          />
+          <label htmlFor="conditionsAccepted">
+            {t('newAccount.acceptTerms')}{' '}
+            <a
+              href="https://decentralchain.io/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('newAccount.privacyPolicy')}
+            </a>
+          </label>
+        </div>
+
+        <Button className={styles.button} type="submit" view="submit" disabled={buttonDisabled}>
+          {t('newAccount.create')}
+        </Button>
+        <div className={`${styles.text} tag1 basic500`}>{t('newAccount.passinfo')}</div>
+      </form>
+      <div className={styles.footer}>
+        <LangsSelect />
+      </div>
+    </div>
+  );
+}

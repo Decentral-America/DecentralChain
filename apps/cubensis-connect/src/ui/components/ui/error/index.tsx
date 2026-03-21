@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { PureComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import * as styles from './error.module.styl';
@@ -37,57 +36,36 @@ interface Props {
   errors?: Array<{ code: number; key: string; msg: string }> | undefined;
 }
 
-interface State {
-  hidden?: boolean | undefined;
-  showed: unknown;
-}
-
-export class ErrorMessage extends PureComponent<Props, State> {
-  state: State = { showed: false };
-
-  static getDerivedStateFromProps(props: Props, state: State): State | null {
-    const { showed } = state;
-    const { show } = props;
-
-    if (!state || showed !== show) {
-      return { ...state, showed: show };
-    }
-
+export function ErrorMessage({
+  children,
+  className = '',
+  errors,
+  type,
+  show,
+  hideByClick: _hideByClick,
+  onClick,
+  ...otherProps
+}: Props) {
+  if (type === 'modal') {
     return null;
   }
 
-  onClick = (e: unknown) => this._onClick(e);
-
-  render() {
-    const { showed } = this.state;
-
-    const { children, className = '', errors, type, show, ...otherProps } = this.props;
-
-    if (type === 'modal') {
-      return null;
+  function handleClick(e: unknown) {
+    if (onClick) {
+      onClick(e);
     }
-
-    return (
-      <button
-        type="button"
-        className={clsx(styles.error, className, type === 'modal' && styles.modalError)}
-        onClick={this.onClick}
-        {...otherProps}
-      >
-        <Errors errors={errors} show={showed} />
-        {showed ? children : null}
-      </button>
-    );
+    // hideByClick had no measurable effect in the original (state.hidden was never read in render)
   }
 
-  _onClick(e: unknown) {
-    if (this.props.onClick) {
-      this.props.onClick(e);
-      return null;
-    }
-
-    if (this.props.hideByClick) {
-      this.setState({ hidden: true });
-    }
-  }
+  return (
+    <button
+      type="button"
+      className={clsx(styles.error, className)}
+      onClick={handleClick}
+      {...otherProps}
+    >
+      <Errors errors={errors} show={show} />
+      {show ? children : null}
+    </button>
+  );
 }
