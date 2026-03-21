@@ -15,7 +15,6 @@ import { make, pipe, subscribe } from 'wonka';
 
 import {
   type AssetsConfig,
-  type DEFAULT_IDENTITY_CONFIG,
   type DEFAULT_MAIN_CONFIG,
   type IgnoreErrorsConfig,
   type NftConfig,
@@ -57,14 +56,12 @@ export interface StorageLocalState {
     pack_config: typeof DEFAULT_MAIN_CONFIG.pack_config;
     idle: typeof DEFAULT_MAIN_CONFIG.idle;
   };
-  cognitoSessions: string | undefined;
   currentLocale: string;
   currentNetwork: NetworkName;
   customCodes: Record<NetworkName, string | null>;
   customMatchers: Record<NetworkName, string | null>;
   customNodes: Record<NetworkName, string | null>;
   data: TrashItem[];
-  identityConfig: typeof DEFAULT_IDENTITY_CONFIG;
   idleOptions: IdleOptions;
   ignoreErrorsConfig: IgnoreErrorsConfig;
   initialized: boolean;
@@ -95,7 +92,6 @@ export interface StorageLocalState {
 }
 
 export interface StorageSessionState {
-  memo?: Record<string, string | null> | undefined;
   password?: string | null | undefined;
 }
 

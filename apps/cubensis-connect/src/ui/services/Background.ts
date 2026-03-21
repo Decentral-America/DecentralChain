@@ -1,5 +1,4 @@
 import { type __BackgroundUiApiDirect } from 'background';
-import { type IdentityUser } from 'controllers/IdentityController';
 import { type AnalyticsEvent } from 'controllers/statistics';
 import { type MessageInputOfType, type MessageTx, type MoneyLike } from 'messages/types';
 import { type NetworkName } from 'networks/types';
@@ -319,36 +318,6 @@ class Background {
     return bg.shouldIgnoreError(context, message);
   }
 
-  async identityRestore(userId: string): Promise<void> {
-    const bg = await this.getBackground();
-    return (await bg.identityRestore(userId)) as any;
-  }
-
-  async identityUpdate(): Promise<void> {
-    const bg = await this.getBackground();
-    return bg.identityUpdate();
-  }
-
-  async identityClear(): Promise<void> {
-    const bg = await this.getBackground();
-    return bg.identityClear();
-  }
-
-  async identitySignIn(username: string, password: string) {
-    const bg = await this.getBackground();
-    return bg.identitySignIn(username, password);
-  }
-
-  async identityConfirmSignIn(code: string) {
-    const bg = await this.getBackground();
-    return bg.identityConfirmSignIn(code);
-  }
-
-  async identityUser(): Promise<IdentityUser> {
-    const bg = await this.getBackground();
-    return (await bg.identityUser()) as any;
-  }
-
   async ledgerSignResponse(requestId: string, error: unknown): Promise<void>;
   async ledgerSignResponse(requestId: string, error: null, signature: string): Promise<void>;
   async ledgerSignResponse(requestId: string, error: unknown, signature?: string) {
@@ -387,9 +356,7 @@ export enum WalletTypes {
   Seed = 'seed',
   EncodedSeed = 'encoded_seed',
   PrivateKey = 'private_key',
-  Wx = 'wx',
   Ledger = 'ledger',
   Keystore = 'keystore',
-  KeystoreWx = 'keystore_wx',
   Debug = 'debug',
 }
