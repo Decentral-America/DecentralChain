@@ -106,6 +106,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "cleanup": "rimraf dist",
+    "ci:check": "pnpm run lint && pnpm run typecheck && pnpm run test:unit && node scripts/validate-manifest.mjs",
     "dev": "NODE_ENV=development node scripts/build.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
