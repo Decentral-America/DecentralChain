@@ -26,13 +26,13 @@ import { type TrashController } from './trash';
 
 /**
  * Encrypt wallet data using a pre-derived AES-GCM-256 CryptoKey.
- * Format: [16-byte random salt][12-byte nonce][ciphertext + 16-byte GCM auth tag].
- * The leading 16-byte salt is not used for key derivation here (the key is pre-derived);
- * it maintains format consistency with decryptVault which reads nonce at offset 16.
+ * Format: [32-byte random salt][12-byte nonce][ciphertext + 16-byte GCM auth tag].
+ * The leading 32-byte salt is not used for key derivation here (the key is pre-derived);
+ * it maintains format consistency with decryptVault which reads nonce at offset 32.
  */
 async function encryptVault(input: WalletPrivateData[], key: CryptoKey): Promise<string> {
   const json = JSON.stringify(input);
-  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const salt = crypto.getRandomValues(new Uint8Array(32));
   const nonce = crypto.getRandomValues(new Uint8Array(12));
 
   const ciphertext = new Uint8Array(
@@ -49,8 +49,8 @@ async function encryptVault(input: WalletPrivateData[], key: CryptoKey): Promise
 async function decryptVault(vault: string, key: CryptoKey): Promise<WalletPrivateData[]> {
   try {
     const bytes = base64Decode(vault);
-    const nonce = bytes.subarray(16, 28); // skip 16-byte salt prefix
-    const ciphertext = bytes.subarray(28);
+    const nonce = bytes.subarray(32, 44); // skip 32-byte salt prefix
+    const ciphertext = bytes.subarray(44);
 
     const plaintext = new Uint8Array(
       await crypto.subtle.decrypt({ iv: nonce, name: 'AES-GCM' }, key, ciphertext),
@@ -304,7 +304,7 @@ export class WalletController extends EventEmitter {
       throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
     }
 
-    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const salt = crypto.getRandomValues(new Uint8Array(32)); // NIST SP 800-132: ≥128 bits; 256 bits used
     const key = await deriveSeedEncryptionKey(utf8Encode(password), salt);
 
     // Persist salt so future password verification can re-derive the same key.
@@ -344,7 +344,7 @@ export class WalletController extends EventEmitter {
 
     await this.assertPasswordIsValid(oldPassword);
 
-    const newSalt = crypto.getRandomValues(new Uint8Array(16));
+    const newSalt = crypto.getRandomValues(new Uint8Array(32)); // NIST SP 800-132: ≥128 bits; 256 bits used
     const newKey = await deriveSeedEncryptionKey(utf8Encode(newPassword), newSalt);
 
     const current = this.store.getState().WalletController;
