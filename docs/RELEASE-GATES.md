@@ -57,7 +57,7 @@
 
 | Check | Criteria | Owner |
 |-------|----------|-------|
-| Cognito pools decommissioned | AWS Cognito pools `eu-central-1_AXIpDLJQx` and `eu-central-1_6Bo3FEwt5` are deleted or belong to DCC | AWS / Ops |
+| Cognito code removed | `grep -r "IdentityController\|amazon-cognito" apps/cubensis-connect/src/` returns zero matches | Platform Infra |
 | Node API reachable | `https://nodes.decentralchain.io` responds 200 on mainnet & testnet | Ops |
 | Data service reachable | `https://api.decentralchain.io` health-check green | Ops |
 | Remote config reachable | `https://raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json` returns valid JSON | Ops |
