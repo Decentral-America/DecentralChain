@@ -6,32 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { batchAddAccounts } from 'store/actions/user';
 import invariant from 'tiny-invariant';
-import { getNetworkByNetworkCode } from 'ui/utils/network';
-
 import { WalletTypes } from '../../../services/Background';
 import { ImportKeystoreChooseAccounts } from './chooseAccounts';
 import { ImportKeystoreChooseFile } from './chooseFile';
-
-type ExchangeKeystoreAccount = {
-  address: string;
-  name: string;
-  networkByte: number;
-} & (
-  | {
-      userType: 'seed';
-      seed: string;
-    }
-  | {
-      userType: 'ledger';
-      id: number;
-    }
-  | {
-      // Stored in extension data as 'wavesKeeper' for backward compat with
-      // accounts originally imported from the Waves Keeper extension.
-      // Kept as a legacy discriminant for historical keystore payload compatibility.
-      userType: 'wavesKeeper';
-    }
-);
 
 interface EncryptedKeystore {
   type: WalletTypes;
@@ -63,65 +40,10 @@ function parseKeystore(json: string): EncryptedKeystore | null {
       };
     }
 
-    if ('data' in parsedJson && typeof parsedJson.data === 'string') {
-      const parsedData: unknown = JSON.parse(atob(parsedJson.data));
-
-      if (
-        parsedData &&
-        typeof parsedData === 'object' &&
-        'encryptionRounds' in parsedData &&
-        typeof parsedData.encryptionRounds === 'number' &&
-        'saveUsers' in parsedData &&
-        typeof parsedData.saveUsers === 'string'
-      ) {
-        const { encryptionRounds, saveUsers } = parsedData;
-
-        return {
-          decrypt: async (password) => {
-            try {
-              const decrypted = await decryptSeed(
-                base64Decode(saveUsers),
-                utf8Encode(password),
-                encryptionRounds,
-              );
-
-              const accounts: ExchangeKeystoreAccount[] = JSON.parse(utf8Decode(decrypted));
-
-              const profiles: KeystoreProfiles = {
-                custom: { accounts: [] },
-                mainnet: { accounts: [] },
-                stagenet: { accounts: [] },
-                testnet: { accounts: [] },
-              };
-
-              accounts
-                .filter(
-                  (acc): acc is Extract<ExchangeKeystoreAccount, { userType: 'seed' }> =>
-                    acc.userType === 'seed',
-                )
-                .forEach((acc) => {
-                  const networkCode = String.fromCharCode(acc.networkByte);
-                  const network = getNetworkByNetworkCode(networkCode);
-
-                  profiles[network].accounts.push({
-                    address: acc.address,
-                    name: acc.name,
-                    networkCode,
-                    seed: acc.seed,
-                    type: 'seed',
-                  });
-                });
-
-              return profiles;
-            } catch {
-              return null;
-            }
-          },
-          type: WalletTypes.KeystoreWx,
-        };
-      }
-    }
-
+    // Note: The Waves Exchange keystore format ('data' key with encryptionRounds)
+    // is not supported. It was encrypted with a legacy MD5/AES-CBC KDF that is
+    // incompatible with the PBKDF2/AES-GCM vault now used by Cubensis Connect.
+    // Users migrating from Waves Exchange should export seed phrases directly.
     return null;
   } catch {
     return null;

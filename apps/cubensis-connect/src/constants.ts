@@ -1,5 +1,4 @@
 import { NetworkName } from 'networks/types';
-
 export const MAX_TX_HISTORY_ITEMS = 101;
 export const MAX_NFT_ITEMS = 1000;
 
@@ -98,23 +97,3 @@ export type NftConfig = MainConfig['nfts'];
 export type IgnoreErrorsContext = {
   [K in keyof IgnoreErrorsConfig]: IgnoreErrorsConfig[K] extends string[] ? K : never;
 }[keyof IgnoreErrorsConfig];
-
-// DecentralChain identity service endpoints
-export const DEFAULT_IDENTITY_CONFIG = {
-  mainnet: {
-    apiUrl: 'https://id.decentralchain.io/api',
-    cognito: {
-      clientId: 'k63vrrmuav01s6p2d344ppnf4',
-      endpoint: 'https://decentralchain.io/cognito',
-      userPoolId: 'eu-central-1_AXIpDLJQx',
-    },
-  },
-  testnet: {
-    apiUrl: 'https://id-testnet.decentralchain.io/api',
-    cognito: {
-      clientId: '7l8bv0kmvrb4s4n1topofh9d80',
-      endpoint: 'https://testnet.decentralchain.io/cognito',
-      userPoolId: 'eu-central-1_6Bo3FEwt5',
-    },
-  },
-};

@@ -1,47 +1,65 @@
 # Multi-stage Docker build for DecentralExchange React App
 # Mirrors Angular build process with multi-network support
+#
+# IMPORTANT — build context must be the monorepo root, not apps/exchange/:
+#   docker build -f apps/exchange/Dockerfile.production \
+#                -t decentralchain/exchange:production .
+#
+# The exchange depends on 8 @decentralchain/* workspace:* packages that are
+# resolved by pnpm from the monorepo workspace. npm cannot resolve workspace:*
+# references, so this Dockerfile uses pnpm + corepack.
 
 # ================================================================
 # Stage 1: Build the React application for all networks
 # ================================================================
 FROM node:24-alpine AS builder
 
-# Install git (needed for some npm packages)
-RUN apk add --no-cache git
+# Install git (required for lefthook install prepare script) and enable pnpm via corepack
+RUN apk add --no-cache git \
+    && corepack enable \
+    && corepack prepare pnpm@latest --activate
 
-# Set working directory
-WORKDIR /app
+# Monorepo root is the build context
+WORKDIR /monorepo
 
-# Copy package files first for better layer caching
-COPY package*.json ./
+# Copy workspace manifests first for optimal layer caching
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY tsconfig.base.json nx.json vitest.base.config.ts ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Copy all SDK packages (workspace:* deps for exchange)
+COPY packages/ ./packages/
 
-# Copy source code
-COPY . .
+# Copy the exchange app and its Nx tooling
+COPY apps/exchange/ ./apps/exchange/
+COPY tools/ ./tools/
 
-# Build for all three networks
+# git init so lefthook (prepare script) can run without error
+# --ignore-scripts skips lefthook hooks — not needed in Docker
+RUN git init && pnpm install --frozen-lockfile --ignore-scripts
+
+# Build all three networks from the exchange directory
+WORKDIR /monorepo/apps/exchange
+
 # Mainnet
-ENV VITE_NETWORK=mainnet
-ENV VITE_NODE_URL=https://mainnet-node.decentralchain.io
-ENV VITE_MATCHER_URL=https://mainnet-matcher.decentralchain.io
-ENV VITE_DATA_SERVICE_URL=https://data-service.decentralchain.io
-RUN npm run build && mv dist mainnet
+RUN VITE_NETWORK=mainnet \
+    VITE_NODE_URL=https://mainnet-node.decentralchain.io \
+    VITE_MATCHER_URL=https://mainnet-matcher.decentralchain.io \
+    VITE_DATA_SERVICE_URL=https://data-service.decentralchain.io \
+    pnpm run build && mv dist /tmp/mainnet
 
 # Testnet
-ENV VITE_NETWORK=testnet
-ENV VITE_NODE_URL=https://testnet-node.decentralchain.io
-ENV VITE_MATCHER_URL=https://testnet-matcher.decentralchain.io
-ENV VITE_DATA_SERVICE_URL=https://testnet-data-service.decentralchain.io
-RUN npm run build && mv dist testnet
+RUN VITE_NETWORK=testnet \
+    VITE_NODE_URL=https://testnet-node.decentralchain.io \
+    VITE_MATCHER_URL=https://testnet-matcher.decentralchain.io \
+    VITE_DATA_SERVICE_URL=https://testnet-data-service.decentralchain.io \
+    pnpm run build && mv dist /tmp/testnet
 
 # Stagenet
-ENV VITE_NETWORK=stagenet
-ENV VITE_NODE_URL=https://stagenet-node.decentralchain.io
-ENV VITE_MATCHER_URL=https://stagenet-matcher.decentralchain.io
-ENV VITE_DATA_SERVICE_URL=https://stagenet-data-service.decentralchain.io
-RUN npm run build && mv dist stagenet
+RUN VITE_NETWORK=stagenet \
+    VITE_NODE_URL=https://stagenet-node.decentralchain.io \
+    VITE_MATCHER_URL=https://stagenet-matcher.decentralchain.io \
+    VITE_DATA_SERVICE_URL=https://stagenet-data-service.decentralchain.io \
+    pnpm run build && mv dist /tmp/stagenet
 
 # ================================================================
 # Stage 2: Serve with Nginx (Production)
@@ -60,20 +78,34 @@ RUN apk update && apk add gettext libintl && \
 WORKDIR /srv/www
 
 # Copy all network builds from builder stage
-COPY --from=builder /app/mainnet /srv/www/dcc-react/dist/mainnet
-COPY --from=builder /app/testnet /srv/www/dcc-react/dist/testnet
-COPY --from=builder /app/stagenet /srv/www/dcc-react/dist/stagenet
+COPY --from=builder /tmp/mainnet /srv/www/dcc-react/dist/mainnet
+COPY --from=builder /tmp/testnet /srv/www/dcc-react/dist/testnet
+COPY --from=builder /tmp/stagenet /srv/www/dcc-react/dist/stagenet
 
 # Copy nginx configuration files
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default.conf
 
-# Expose port 80
-EXPOSE 80
+# Grant the nginx user write access to the runtime directories it needs.
+# This must happen while we are still root (before USER nginx).
+RUN chown -R nginx:nginx /srv/www \
+    && chown -R nginx:nginx /var/cache/nginx \
+    && chown -R nginx:nginx /var/log/nginx \
+    && chown -R nginx:nginx /etc/nginx/conf.d \
+    && chown -R nginx:nginx /etc/nginx/sites-enabled \
+    && chown -R nginx:nginx /etc/nginx/sites-available \
+    && touch /var/run/nginx.pid \
+    && chown nginx:nginx /var/run/nginx.pid
+
+# Drop to unprivileged user for all subsequent operations including CMD.
+USER nginx
+
+# Internal port matches the non-privileged listen directive in default.conf.
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Start nginx with environment variable substitution
 CMD ["/bin/sh", "-c", "envsubst '${WEB_ENVIRONMENT}' < /etc/nginx/sites-available/default.conf > /etc/nginx/sites-enabled/web-${WEB_ENVIRONMENT}.conf && nginx -g 'daemon off;'"]

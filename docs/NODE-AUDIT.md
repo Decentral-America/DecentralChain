@@ -256,7 +256,7 @@ Feature 25 also bundles **RIDE V9**, the latest version of the smart contract la
 | Test runner | Jest (most packages) | **Vitest** (native ESM, V8 coverage) |
 | Test count | ~3800 scattered | 3800+ unified, single run |
 | Package audits | Mixed | Zero npm audit vulnerabilities |
-| FROST/MPC wallet | None | **In development** (NCC-audited FROST 2-of-2) |
+| Non-custodial wallet | None | **Cubensis Connect** (1-of-1, user holds seed) |
 | Blockchain explorer | Waves Explorer (Waves-branded) | DecentralScan (full rebuild, React 19 + RR7 SSR) |
 | Node version | Node 16/18 | **Node ≥ 24** |
 | CI | Per-repo GitHub Actions | **Nx Cloud** (computation caching, affected detection) |
@@ -265,9 +265,9 @@ Feature 25 also bundles **RIDE V9**, the latest version of the smart contract la
 
 | Dimension | Keeper Wallet | Cubensis Connect |
 |-----------|---------------|------------------|
-| Seed phrase required | Yes (no seedless option) | ~~Cognito wx~~ → FROST 2-of-2 seedless (in dev) |
-| Threshold signing | None | **FROST 2-of-2, Ed25519-native, NCC-audited** |
-| Custodial risk | No (full self-custodial) | FROST 2-of-2 (neither party can sign alone) |
+| Seed phrase required | Yes (no seedless option) | Seed phrase, 1-of-1 (user is sole key holder) |
+| Threshold signing | None | None — by design |
+| Custodial risk | No (full self-custodial) | No — user holds seed, no server component |
 | MetaMask support | Via Waves dApp | Via Cubensis + EthRpc |
 | Non-custodial seedless | Never launched | **First in Waves protocol family** |
 
@@ -541,7 +541,6 @@ Go compiles to a single ~20MB binary with no JVM. A Go light client can:
 - Embed in infrastructure tools (Kubernetes operators, serverless functions)
 - Compile to WASM → browser light client (verify transactions in the browser)
 - Run on edge nodes / Raspberry Pi nodes for the LPoS staking ecosystem
-- Serve as the basis for the FROST signing service (the Railway signer from `docs/MPC-RESEARCH.md` could be a Go service instead of Node.js)
 
 ### 9.3 Starting Point
 
@@ -553,8 +552,7 @@ DCC's Go node should fork `gowaves` and:
 1. Change the network application name to `"decentralchain"`
 2. Update chain ID defaults
 3. Add BLS-12381 verification for CommitToGeneration
-4. Add Deterministic Finality client-side verification
-5. Implement a FROST signing service as an embedded library
+4. Publish as `github.com/Decentral-America/dcc-go`
 
 ### 9.4 Immediate action
 
@@ -743,15 +741,13 @@ Organized by impact/effort ratio. Highest impact, lowest risk first.
 
 **Risk**: Zero.
 
-### Phase 10 — FROST MPC + Cubensis Connect (8-12 weeks)
+### Phase 10 — Cubensis Connect Store Submissions (1 week)
 
-Per `docs/MPC-RESEARCH.md`:
-1. `packages/frost-wasm` package with ZcashFoundation `frost-ed25519` compiled to WASM
-2. Railway identity service FROST DKG + signing endpoints
-3. `FrostIdentityController` replacing 611-line Cognito implementation
-4. Chrome Web Store + Firefox AMO submission
+1. Chrome Web Store submission
+2. Firefox AMO submission
+3. Edge Add-ons listing
 
-**Risk**: Medium (new cryptographic code). Mitigated by using NCC-audited library.
+**Risk**: Low. Extension is already built.
 
 ---
 
@@ -760,7 +756,7 @@ Per `docs/MPC-RESEARCH.md`:
 DecentralChain is not a Waves clone. It is a **Waves evolution** — taking everything Waves built correctly and adding what Waves never built.
 
 **What we inherited right:**
-- Ed25519 signing (correct choice in 2016, proves out in 2026 via FROST)
+- Ed25519 signing (correct choice in 2016, remains the right choice)
 - NG Protocol (still competitive, 1000 TPS at 2s block time)
 - Ride smart contracts (non-Turing-complete = safe by default)
 - LPoS consensus (open participation, instant delegation)
@@ -773,13 +769,12 @@ DecentralChain is not a Waves clone. It is a **Waves evolution** — taking ever
 - **DCC-first tokenomics** with no external stablecoin dependency
 - **Modern TypeScript SDK** — ESM-only, Vitest, Biome, Nx, TypeScript 5.9 strict
 - **DCC blockchain explorer** — DecentralScan, full rebuild on React 19 + React Router 7 SSR
-- **Non-custodial seedless wallet in development** — FROST 2-of-2, first in Waves protocol family
+- **Self-custodial wallet** — Cubensis Connect, 1-of-1 seed-phrase model, user is sole key holder
 
 **What we are completing:**
 - Node identity migration (phases 1–6 above)
 - node-go (phase 8)
-- FROST wallet (phase 10)
-- Store submissions (Cubensis Connect)
+- Store submissions (Cubensis Connect, phase 10)
 
 **What we have that Waves has abandoned:**
 - The Waves team is moving toward Waves 2.0 / consensus overhaul. The `@waves/*` npm packages are no longer maintained with the care they once were. DCC's monorepo has 3,800+ tests, zero audit vulnerabilities, and a unified modern toolchain. The SDK is already superior to the upstream.

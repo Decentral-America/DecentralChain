@@ -1,5 +1,7 @@
 {
-  "accountCard": { "infoTooltip": "账户信息" },
+  "accountCard": {
+    "infoTooltip": "账户信息"
+  },
   "accountInfo": {
     "address": "地址",
     "backUp": "备份助记词",
@@ -7,7 +9,6 @@
     "copied": "已复制",
     "copyToClipboard": "点击复制到剪贴板",
     "email": "邮箱",
-    "emailNoBackupPhrase": "该账户通过DecentralChain Exchange账户导入，无可备份助记词或私钥",
     "encodedSeed": "加密种子",
     "enter": "输入",
     "password": "密码",
@@ -17,7 +18,9 @@
     "pubKey": "公钥",
     "viewInExplorer": "在浏览器中查看"
   },
-  "activeAccountCard": { "swapButton": "兑换" },
+  "activeAccountCard": {
+    "swapButton": "兑换"
+  },
   "address": {
     "add": "新地址",
     "addButton": "添加新地址",
@@ -46,7 +49,9 @@
     "wallets": "我的钱包",
     "warningAlias": "请注意，该收款人有别称账户，且不在你的通讯录里。"
   },
-  "assetAmountInput": { "balanceLabel": "余额" },
+  "assetAmountInput": {
+    "balanceLabel": "余额"
+  },
   "assetInfo": {
     "closeBtn": "关闭",
     "favAddTooltip": "收藏",
@@ -106,6 +111,7 @@
     "confirmBackupInfo": "您将在下一页中确认该助记词",
     "continue": "继续",
     "copied": "已复制",
+    "lossWarning": "如果您丢失了备份助记词，您将永久失去对资金的访问权限，无法恢复。",
     "saveBackup": "保存助记词"
   },
   "bottom": {
@@ -149,7 +155,9 @@
     "wrongSeed": "顺序错误，请重试"
   },
   "copyAddress": "复制地址",
-  "date": { "today": "今天" },
+  "date": {
+    "today": "今天"
+  },
   "deleteAccount": {
     "attention": "请注意！",
     "delete": "删除账户",
@@ -278,27 +286,6 @@
     "viaLedger": "Ledger",
     "viaSeed": "助记词种子或私钥"
   },
-  "importEmail": {
-    "alreadyExists": "账户已存在",
-    "continue": "继续",
-    "credentialsError": "用户名或密码不正确",
-    "dontHaveAccount": "没有账户？",
-    "emailLabel": "邮箱",
-    "emailRequired": "输入正确的邮箱",
-    "forgotPassword": "忘记密码？",
-    "importEmailDesc": "连接在DecentralChain Exchange创建的邮箱账户",
-    "importEmailTitle": "导入邮箱账户",
-    "incorrectCode": "验证码错误，请重新输入",
-    "incorrectUsernameOrPassword": "账户名或密码不正确。",
-    "incorrectUsernameOrPasswordLimit": "您输入的账户名或密码超过限制。如果您有任何问题，请联系DecentralChain Exchange客户支持：https://support.decentralchain.io/",
-    "loginRequired": "确认邮箱账户",
-    "passwordLabel": "密码",
-    "passwordRequired": "输入密码",
-    "signUp": "注册",
-    "userDoesNotExist": "该用户不存在。",
-    "verifyAccountDesc": "请输入{{destination}}收到的6位数字验证码",
-    "verifyAccountTitle": "验证账户"
-  },
   "importKeystore": {
     "addressBookLabel": "地址簿文件",
     "addressBookPasswordPlaceholder": "创建文件需使用密码",
@@ -357,7 +344,10 @@
     "joinUs": "加入DecentralChain社区",
     "keepUp": "Cubensis Connect钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。使用Cubensis Connect钱包，您可以签名交易并在危险的网站中保持安全"
   },
-  "langsSettings": { "confirm": "确认", "title": "变更语言" },
+  "langsSettings": {
+    "confirm": "确认",
+    "title": "变更语言"
+  },
   "ledgerConnectModal": {
     "instructions": "连接Ledger设备并打开DCC应用",
     "title": "连接中...",
@@ -457,7 +447,10 @@
     "noAccountsNote": "在当前网络中，您没有其他账户",
     "title": "其他账户"
   },
-  "permission": { "customList": "自定义名单", "whiteList": "白名单" },
+  "permission": {
+    "customList": "自定义名单",
+    "whiteList": "白名单"
+  },
   "permissionSettings": {
     "modal": {
       "amount": "花费限额",
@@ -485,7 +478,9 @@
     "rejectedOrigin": "已拒绝",
     "title": "权限控制"
   },
-  "qrCode": { "download": "下载二维码" },
+  "qrCode": {
+    "download": "下载二维码"
+  },
   "send": {
     "amountInputLabel": "数量",
     "amountRequiredError": "数量为必填项",
@@ -648,7 +643,9 @@
     "paymentsCount": "{{count}} 支付",
     "paymentsCount_plural": "{{count}} 支付",
     "paymentsNone": "无支付",
-    "permission": { "details": "权限详情" },
+    "permission": {
+      "details": "权限详情"
+    },
     "price": "价格",
     "publicKey": "公钥",
     "recipient": "接收人",
@@ -673,8 +670,12 @@
     "unknown": "未知",
     "updateAssetInfo": "更新资产信息"
   },
-  "ui": { "logoTitle": "在线安全保存您的DCC密钥" },
-  "wallet": { "lease": "已租赁" },
+  "ui": {
+    "logoTitle": "在线安全保存您的DCC密钥"
+  },
+  "wallet": {
+    "lease": "已租赁"
+  },
   "welcome": {
     "getStarted": "开始",
     "info": "Cubensis Connect钱包是您与集成DecentralChain功能的三方网站资源或Dapp交互最安全的方式。",

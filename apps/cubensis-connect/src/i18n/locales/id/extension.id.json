@@ -9,7 +9,6 @@
     "copied": "Disalin!",
     "copyToClipboard": "Klik untuk salin ke clipboard",
     "email": "Email",
-    "emailNoBackupPhrase": "Akun ini diimpor menggunakan decentralchain.io, jadi tidak ada Backup phrase untuk disalin",
     "encodedSeed": "Encoded seed",
     "enter": "Masuk",
     "password": "Password",
@@ -112,6 +111,7 @@
     "confirmBackupInfo": "Anda akan mengkonfirmasi frasa ini di layar berikutnya",
     "continue": "Lanjutkan",
     "copied": "Disalin!",
+    "lossWarning": "Jika Anda kehilangan frasa cadangan, Anda kehilangan akses ke dana Anda secara permanen. Tidak ada opsi pemulihan.",
     "saveBackup": "Simpan backup phrase"
   },
   "bottom": {
@@ -286,27 +286,6 @@
     "viaKeystore": "Keystore File",
     "viaLedger": "Ledger",
     "viaSeed": "Seed Phrase atau Private Key"
-  },
-  "importEmail": {
-    "alreadyExists": "Akun sudah ada",
-    "continue": "Lnajutkan",
-    "credentialsError": "Username atau kata sandi salah",
-    "dontHaveAccount": "Tidak punya akun?",
-    "emailLabel": "Email",
-    "emailRequired": "Masukkan email yang benar",
-    "forgotPassword": "Lupa password?",
-    "importEmailDesc": "Hubungkan akun email yang dibuat di DecentralChain Exchange",
-    "importEmailTitle": "Import Email akun",
-    "incorrectCode": "Salah kode. Tolong, coba lagi",
-    "incorrectUsernameOrPassword": "Nama pengguna atau kata sandi salah.",
-    "incorrectUsernameOrPasswordLimit": "beberapa kali anda telah membuat kesalahan dalam nama pengguna atau kata sandi Anda adalah https://support.decentralchain.io/",
-    "loginRequired": "Konfirmasi email akun",
-    "passwordLabel": "Password",
-    "passwordRequired": "Maukkan password",
-    "signUp": "Daftar",
-    "userDoesNotExist": "Pengguna tidak ada.",
-    "verifyAccountDesc": "Harap masukkan kode verifikasi 6 digit yang diterima oleh {{destination}}",
-    "verifyAccountTitle": "Verifikasi akun anda"
   },
   "importKeystore": {
     "addressBookLabel": "File Buku Alamat",

@@ -6,13 +6,6 @@ export type CreateWalletInput = { name: string } & (
   | { type: 'ledger'; address: string; id: number; publicKey: string }
   | { type: 'privateKey'; privateKey: string }
   | { type: 'seed'; seed: string }
-  | {
-      type: 'wx';
-      address: string;
-      publicKey: string;
-      username: string;
-      uuid: string;
-    }
 );
 
 export type WalletAccount = {
@@ -27,7 +20,6 @@ export type WalletAccount = {
   | { type: 'ledger'; id: number }
   | { type: 'privateKey' }
   | { type: 'seed' }
-  | { type: 'wx'; uuid: string; username: string }
 );
 
 export type WalletPrivateData = {
@@ -42,7 +34,6 @@ export type WalletPrivateData = {
   | { type: 'ledger'; id: number }
   | { type: 'privateKey'; privateKey: string }
   | { type: 'seed'; seed: string }
-  | { type: 'wx'; uuid: string; username: string }
 );
 
 export type WalletPrivateDataOfType<T extends WalletPrivateData['type']> = Extract<

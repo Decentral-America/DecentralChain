@@ -1,32 +1,22 @@
 # DecentralChain SDK — Copilot Instructions
 
-## Project Overview
+## Project
 
-This is the **DecentralChain SDK monorepo** — a unified TypeScript workspace for all `@decentralchain/*` npm packages. It consolidates 22 SDK libraries and 3 applications that together form the complete developer toolkit for the DecentralChain blockchain (a Waves-protocol fork using Liquid Proof-of-Stake consensus and the Ride smart contract language).
+TypeScript monorepo — 22 `@decentralchain/*` SDK packages + 3 apps (exchange, scanner, cubensis-connect). Blockchain is a Waves-protocol fork (LPoS, Ride smart contracts).
 
-## Architecture
+## Dependency Layers
 
-### Package Layers (enforced by `scripts/check-boundaries.mjs`)
-
-Packages are organized into dependency layers (0–4). A package may only depend on packages in the same layer or below.
+Packages are organized in layers 0–4. A package may only import from the same or lower layer. Enforced by `scripts/check-boundaries.mjs`. Always check `nx.tags` → `layer:N` before adding a cross-package dependency.
 
 | Layer | Packages |
 |-------|----------|
-| **0 — Primitives** | `ts-types`, `bignumber`, `crypto`, `ts-lib-crypto`, `parse-json-bignumber`, `browser-bus`, `assets-pairs-order`, `cubensis-connect-types`, `ledger`, `marshall`, `oracle-data`, `protobuf-serialization` |
-| **1 — Domain** | `data-entities`, `money-like-to-node`, `ride-js`, `swap-client` |
-| **2 — Services** | `transactions`, `node-api-js`, `data-service-client-js` |
-| **3 — Integration** | `signer` |
-| **4 — Adapter** | `signature-adapter`, `cubensis-connect-provider` |
+| **0** | `ts-types`, `bignumber`, `crypto`, `ts-lib-crypto`, `parse-json-bignumber`, `browser-bus`, `assets-pairs-order`, `cubensis-connect-types`, `ledger`, `marshall`, `oracle-data`, `protobuf-serialization` |
+| **1** | `data-entities`, `money-like-to-node`, `ride-js`, `swap-client` |
+| **2** | `transactions`, `node-api-js`, `data-service-client-js` |
+| **3** | `signer` |
+| **4** | `signature-adapter`, `cubensis-connect-provider` |
 
-### Applications (`apps/`)
-
-| App | Description |
-|-----|-------------|
-| `exchange` | DecentralChain DEX trading interface (Vite + React) |
-| `scanner` | Blockchain explorer (Vite + React) |
-| `cubensis-connect` | Browser extension wallet |
-
-Apps have `scope:app` tags and can depend on any SDK package. SDK packages must never depend on apps.
+Apps (`scope:app`) may depend on any package. SDK packages must never depend on apps.
 
 ## Tech Stack
 
@@ -90,69 +80,21 @@ pnpm nx run-many -t typecheck      # Type-check all (excludes cubensis-connect)
 **Format:**
 ```
 <type>(DCC-###): <description>
-
-[optional body]
-
-[optional footer(s)]
 ```
 
-- `DCC-###` is the Jira ticket key — **required** when a ticket exists, **omitted** when there is none.
+- Scope is the Jira key — **required** when a ticket exists, **omitted** when there is none.
 - Description: lowercase, imperative mood, no trailing period.
-
-**Allowed types:**
-
-| Type | When to Use |
-|------|-------------|
-| `feat` | New feature or capability |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting/whitespace — no logic change |
-| `refactor` | Code restructuring — no feature or fix |
-| `perf` | Performance improvement |
-| `test` | Adding or updating tests |
-| `build` | Build system or external dependencies |
-| `ci` | CI/CD configuration |
-| `chore` | Maintenance (dep bumps, config tweaks) |
-| `revert` | Reverting a previous commit |
-
-**Validation rules:**
-
-| Rule | Correct | Wrong |
-|------|---------|-------|
-| Type lowercase | `feat(DCC-15):` | ~~`Feat(DCC-15):`~~ |
-| Scope uppercase Jira key | `fix(DCC-42):` | ~~`fix(dcc-42):`~~ |
-| Description lowercase | `add reserved directive` | ~~`Add reserved directive`~~ |
-| No trailing period | `fix field numbering` | ~~`fix field numbering.`~~ |
-| Imperative mood | `add`, `fix`, `remove` | ~~`added`, `fixed`, `removed`~~ |
-| Scope required when ticket exists | `chore(DCC-7): upgrade protobufjs` | ~~`chore: upgrade protobufjs`~~ |
-| Scope omitted when no ticket | `docs: update README` | ~~`docs(): update README`~~ |
-
-**Branch naming:** `<type>/DCC-###-short-kebab-description`
-```
-feat/DCC-15-proto-reserved-directive
-fix/DCC-42-block-header-field-numbering
-docs/DCC-99-update-readme
-```
-
-**Breaking change:**
-```
-feat(DCC-18)!: remove CJS output from marshall package
-
-ESM-only output aligns with the SDK-wide Node 24+ requirement.
-
-BREAKING CHANGE: CJS build output removed. Package is now ESM-only.
-Refs: DCC-1, DCC-7
-```
+- Allowed types: `feat` `fix` `docs` `style` `refactor` `perf` `test` `build` `ci` `chore` `revert`
 
 **Examples:**
 ```
 feat(DCC-15): add reserved directive to transaction proto
 fix(DCC-42): correct field numbering in block header
 chore(DCC-7): upgrade protobufjs to v8
-test(DCC-15): add roundtrip tests for CommitToGeneration
 docs: update README
-style: fix formatting in transaction builder
 ```
+
+**Branch naming:** `<type>/DCC-###-short-kebab-description`
 
 ### Module Boundaries
 Always respect the layer system. Before adding a dependency:
@@ -160,24 +102,14 @@ Always respect the layer system. Before adding a dependency:
 2. Your package's layer must be ≥ the dependency's layer.
 3. Run `node scripts/check-boundaries.mjs` to validate.
 
-## Completed Work — Do Not Re-Open as Pending
+## Known Facts — Do Not Contradict
 
-These migrations are **DONE**. Never present them as open risks, pending tasks, or supply-chain concerns.
+- **No `@keeper-wallet/*` anywhere** — fully migrated to `@decentralchain/*`. Zero references in source or `package.json` files.
+- **No Cognito, no WX identity** — `amazon-cognito-identity-js` removed, pool IDs were never DCC-owned, all code deleted. Architecture is 1-of-1 seed-phrase only. Never surface this as a concern.
+- **ESM-only** — all 22 packages output `.mjs` + `.d.mts`. No CJS exists.
+- **Exchange signing is `"Not implemented"`** — `useTransactionSigning.ts` throws on all 13 functions. This is a known open P2, not a regression to investigate.
 
-| Item | Status | Details |
-|------|--------|---------|
-| `@keeper-wallet/waves-crypto` → `@decentralchain/crypto` | ✅ Complete | DCC-70 (fork + Rust/WASM Layer 0 package), DCC-59 (22 cubensis-connect import sites migrated). Zero `@keeper-wallet` references remain anywhere in source or `package.json` files. |
-| `@keeper-wallet/swap-client` → `@decentralchain/swap-client` | ✅ Complete | DCC-69. Source extracted, protobuf schema reverse-engineered, published as `@decentralchain/swap-client@1.0.0`. |
-| `keeper-wallet.app` domain whitelist | ✅ Complete | `web.keeper-wallet.app` and `swap.keeper-wallet.app` removed from all CSP/whitelist configs. |
-| Scanner SSR migration | ✅ Complete | React Router 7 framework mode, `@react-router/serve` runtime, Docker builds, 189 tests passing. |
-| 22 SDK packages — ESM migration | ✅ Complete | All packages output ESM-only `.mjs` + `.d.mts` via tsdown. No CJS anywhere. |
-
-### Open Items (as of March 2026)
-- **P0**: Cognito pool ownership verification — human/AWS action required (`eu-central-1_AXIpDLJQx`, `eu-central-1_6Bo3FEwt5`)
-- **P1**: npm dist-tag promotion — 5 packages still tagged `@next`: `assets-pairs-order`, `marshall`, `node-api-js`, `signer`, `signature-adapter`
-- **P2**: Exchange signing — all 13 signing functions throw `"Not implemented"`
-- **P2**: Exchange nginx — `CORS *`, no CSP, runs as root
-- **P3**: Chrome Web Store + Firefox AMO submissions for `cubensis-connect`
+For current status and open work, see `docs/STATUS.md`.
 
 ---
 
@@ -204,49 +136,3 @@ Refer to these docs for deep context:
 - **`docs/SECURITY-AUDIT.md`** — 6-phase security audit playbook with severity definitions and checklists
 - **`docs/CONVENTIONS.md`** — Coding standards, TypeScript strictness, testing standards, file templates, naming conventions
 
-## AI & Editor Integration
-
-### Nx MCP Server
-
-The workspace is configured with the **Nx MCP server** (`.vscode/mcp.json`), which provides AI agents with structured access to workspace metadata — project graph, dependencies, available targets, tags, and generators. This is far more reliable than parsing files manually.
-
-Key Nx MCP tools available:
-- `nx_workspace` — query workspace structure and all projects
-- `nx_project_details` — get config, targets, and tags for a specific project
-- `nx_visualize_graph` — render the dependency graph
-- `nx_generators` — discover available code generators (including our custom `sdk-package` generator)
-- `nx_generator_schema` — get the schema for a specific generator
-- `nx_docs` — search up-to-date Nx documentation (prevents hallucination)
-
-**Always prefer Nx MCP tools over manual file parsing** when answering questions about workspace structure, project relationships, or task configuration.
-
-### Additional MCP Servers
-
-Three more MCP servers are configured in `.vscode/mcp.json`:
-
-| Server | Purpose |
-|--------|---------|
-| **Context7** (`@upstash/context7-mcp`) | Fetches up-to-date documentation for any npm library — prevents hallucinating outdated APIs |
-| **Chrome DevTools** (`chrome-devtools-mcp`) | Browser automation for testing the exchange, scanner, and cubensis-connect apps — screenshots, network inspection, interaction automation, Lighthouse audits |
-| **GitHub** (`api.githubcopilot.com/mcp/`) | Direct GitHub API access — create PRs, manage issues, search code, handle reviews without leaving the editor |
-
-### Reusable Prompts
-
-The `.github/prompts/` directory contains reusable slash-command prompts for common monorepo workflows:
-- `/build-package` — build a specific package via Nx
-- `/test-affected` — test only what changed
-- `/add-dependency` — add cross-package deps with layer validation
-- `/debug-build` — diagnose build/typecheck/lint failures
-- `/validate-workspace` — run full quality pipeline
-- `/explore-workspace` — understand project relationships and architecture
-- `/monitor-ci` — monitor Nx Cloud CI pipeline
-- `/upstream-sync` — check for and port changes from upstream Waves repositories
-
-### VS Code Integration
-
-The full team uses VS Code with shared workspace configuration:
-- **`.vscode/settings.json`** — Biome as sole formatter, TS SDK, monorepo-optimized settings
-- **`.vscode/extensions.json`** — Required: Biome + Nx Console + GitHub Copilot + Vitest Explorer + GitLens
-- **`.vscode/tasks.json`** — Build/test/lint/typecheck as Command Palette tasks
-- **`.vscode/launch.json`** — Debug configs for Vitest and Vite dev servers
-- **`.vscode/mcp.json`** — Nx MCP + Context7 + Chrome DevTools + GitHub for AI-assisted development
