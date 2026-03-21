@@ -22,17 +22,13 @@ Notes:
 
 ## Section 1 — Dependency Ownership Evidence
 
-### 1.1 Cognito Decommission
+### 1.1 Cognito Removal
 
-| Pool ID | Region | Status | Evidence |
-|---------|--------|--------|----------|
-| `eu-central-1_AXIpDLJQx` | eu-central-1 | ⚠️ Pending human verification | AWS Console screenshot required |
-| `eu-central-1_6Bo3FEwt5` | eu-central-1 | ⚠️ Pending human verification | AWS Console screenshot required |
-
-**Required action (P0 — human):** An AWS account owner must confirm both Cognito
-User Pools are either deleted or transferred to a DCC-controlled AWS account.
-This cannot be automated. Attach an AWS Console screenshot or IAM policy export
-as evidence.
+| Check | Status | Evidence |
+|-------|--------|----------|
+| `amazon-cognito-identity-js` removed | ✅ Done — DCC-117 | `grep amazon-cognito apps/cubensis-connect/package.json` → 0 matches |
+| `IdentityController.ts` deleted | ✅ Done — DCC-118 | File does not exist in source tree |
+| All Cognito source references | ✅ Done | `grep -r cognito apps/cubensis-connect/src/` → 0 matches |
 
 ### 1.2 npm Package Ownership
 

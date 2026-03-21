@@ -44,7 +44,7 @@ All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 5.9 strict throughout. Ze
 
 - `@keeper-wallet/waves-crypto` supply chain — forked as `@decentralchain/crypto`, 22 import sites migrated (DCC-70, DCC-59) ✅
 - `keeper-wallet.app` domains in whitelist — removed ✅
-- Cognito pool risk — moot, zero users, Cognito fully removed (1-of-1 seed model) ✅
+- Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`) — fully removed (DCC-117, DCC-118) ✅
 
 ---
 
@@ -184,9 +184,6 @@ All 22 SDK libraries have:
 
 **Migration**: Phase 1 (Rebrand) ✅ | Phase 2-3 (Modernize) ✅ | Phase 4 (Audit) ✅
 
-**Critical issues:**
-- **P0**: Cognito pool ownership — are `eu-central-1_AXIpDLJQx` and `eu-central-1_6Bo3FEwt5` DCC-owned? If Waves-owned, they could revoke access to user seeds.
-
 **Resolved P1 issues:**
 - ~~`@keeper-wallet/waves-crypto` in 21 files~~ — **Eliminated (DCC-70).** Fully forked as `@decentralchain/crypto` (Layer 0, Rust/WASM). All 22 import sites in cubensis-connect migrated to the DCC-owned package (DCC-59).
 - ~~`keeper-wallet.app` domains in whitelist~~ — **Removed.** `web.keeper-wallet.app` and `swap.keeper-wallet.app` stripped from constants.
@@ -272,13 +269,11 @@ The former supply-chain risk (Waves-controlled package with access to seed crypt
 
 **Risk**: LOW. These are language compiler packages, not security-sensitive. They are chain-agnostic (RIDE compiles the same regardless of chain ID). If unpublished, ride-js stops working but no funds are at risk. No viable fork exists — the Scala.js source is in the Waves monorepo.
 
-### ~~AWS Cognito Pool Chain~~ — CLOSED ✅
+### ~~AWS Cognito~~ — CLOSED ✅
 
-**This risk is permanently resolved — not by migration, but by obsolescence.**
+**This risk is permanently resolved.**
 
-Cubensis Connect has **never launched and has zero production users**. No user seeds have ever been stored in `eu-central-1_AXIpDLJQx` or `eu-central-1_6Bo3FEwt5`. There is nothing to migrate, verify, or protect.
-
-The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`, the `id.decentralchain.io/v1/sign` custodial endpoint) has been removed. Cubensis Connect uses **1-of-1 seed-phrase custody** — the user holds the only key. No server component, no threshold signing. Seed loss is unrecoverable by design.
+Cubensis Connect has **never launched and has zero production users**. The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identity-js`, the `id.decentralchain.io/v1/sign` custodial endpoint) has been removed. Cubensis Connect uses **1-of-1 seed-phrase custody** — the user holds the only key. No server component. Seed loss is unrecoverable by design.
 
 ```
 1-of-1 (current)
@@ -334,8 +329,7 @@ The entire Cognito architecture (`IdentityController.ts`, `amazon-cognito-identi
 
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|
-| ~~P0~~ | ~~Cognito pool ownership~~ | Irrelevant — CB has **zero production users and has never launched**. No user seeds exist in any pool. FROST 2-of-2 replaces the entire Cognito architecture. (See below.) | ✅ Closed |
-| **P0** | FROST 2-of-2 identity | Build `FrostIdentityController` + Railway `frost-signer` service + `packages/frost-wasm` (replaces `IdentityController.ts`) | ⬜ Pending |
+| ~~P0~~ | ~~Cognito architecture~~ | Removed — `IdentityController.ts` deleted (DCC-118), `amazon-cognito-identity-js` removed (DCC-117). 1-of-1 seed model. | ✅ Closed |
 | ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
 | ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
 | **P1** | Promote npm `next` → `latest` | 5 packages need dist-tag promotion | ⬜ Pending |
