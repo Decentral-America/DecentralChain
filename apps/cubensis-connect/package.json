@@ -111,6 +111,7 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:dev": "vitest --watch",
+    "test:unit": "vitest run --config vitest.unit.config.ts",
     "test:update": "vitest run test/Update.ts",
     "typecheck": "tsc -p src",
     "zip": "node scripts/zip.js"
