@@ -111,6 +111,7 @@
     "confirmBackupInfo": "您将在下一页中确认该助记词",
     "continue": "继续",
     "copied": "已复制",
+    "lossWarning": "如果您丢失了备份助记词，您将永久失去对资金的访问权限，无法恢复。",
     "saveBackup": "保存助记词"
   },
   "bottom": {
