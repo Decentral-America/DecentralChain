@@ -1,25 +1,25 @@
 import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey.js';
-import { utf8Encode } from './utf8.js';
 
-export async function encryptSeed(input: Uint8Array, password: Uint8Array, hashRounds = 5000) {
-  const salt = crypto.getRandomValues(new Uint8Array(8));
-  const [key, iv] = await deriveSeedEncryptionKey(password, hashRounds, salt);
+/**
+ * Encrypts `input` with a PBKDF2-SHA-256 derived key (600k iterations) and AES-GCM-256.
+ *
+ * Output format: [16-byte salt][12-byte nonce][ciphertext + 16-byte GCM auth tag]
+ *
+ * NIST SP 800-38D: AES-GCM with 96-bit (12-byte) random IV.
+ * NIST SP 800-132: 128-bit (16-byte) minimum salt.
+ */
+export async function encryptSeed(input: Uint8Array, password: Uint8Array): Promise<Uint8Array> {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await deriveSeedEncryptionKey(password, salt);
+  const nonce = crypto.getRandomValues(new Uint8Array(12));
 
-  const importedKey = await crypto.subtle.importKey(
-    'raw',
-    key as Uint8Array<ArrayBuffer>,
-    'AES-CBC',
-    false,
-    ['encrypt'],
-  );
-
-  const encrypted = new Uint8Array(
+  const ciphertext = new Uint8Array(
     await crypto.subtle.encrypt(
-      { iv: iv as Uint8Array<ArrayBuffer>, length: iv.length, name: 'AES-CBC' },
-      importedKey,
+      { iv: nonce as Uint8Array<ArrayBuffer>, name: 'AES-GCM' },
+      key,
       input as Uint8Array<ArrayBuffer>,
     ),
   );
 
-  return Uint8Array.of(...utf8Encode('Salted__'), ...salt, ...encrypted);
+  return Uint8Array.of(...salt, ...nonce, ...ciphertext);
 }
