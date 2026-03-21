@@ -1,5 +1,6 @@
 import { base58Decode, base58Encode, verifySignature } from '@decentralchain/crypto';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { captureException } from '@sentry/browser';
 import { collectBalances } from 'balances/utils';
 import EventEmitter from 'events';
 import { deepEqual } from 'fast-equals';
@@ -287,6 +288,15 @@ class BackgroundService extends EventEmitter {
       if (!state.locked || !state.initialized) {
         const accounts = this.walletController.getAccounts();
         this.preferencesController.syncAccounts(accounts);
+      }
+
+      if (state.locked) {
+        // Reject all pending sign messages when the vault locks so callers
+        // receive an immediate rejection instead of waiting indefinitely.
+        const { messages } = this.messageController.store.getState();
+        for (const { id } of messages) {
+          this.messageController.reject(id);
+        }
       }
     });
 
@@ -629,7 +639,10 @@ class BackgroundService extends EventEmitter {
         if (!message || message.account.address !== selectedAccount.address) {
           messageId = null;
         }
-      } catch {
+      } catch (err) {
+        // Message lookup may fail if the stored messageId is stale (e.g. extension restart).
+        // Reset so a fresh auth message is created below.
+        console.warn('validatePermission: stale messageId lookup failed', err);
         messageId = null;
       }
     }
@@ -659,6 +672,9 @@ class BackgroundService extends EventEmitter {
         } else if (err.data === MessageStatus.RejectedForever) {
           this.messageController.setPermission(origin, PERMISSIONS.REJECTED);
         }
+      } else {
+        // Unexpected error during permission flow — capture for observability.
+        captureException(err);
       }
 
       throw err;
