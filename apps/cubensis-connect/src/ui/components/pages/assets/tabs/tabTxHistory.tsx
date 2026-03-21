@@ -66,6 +66,30 @@ const PLACEHOLDERS = [...Array(4).keys()].map<TransactionFromNode>(
     }) as TransactionFromNode,
 );
 
+/** Typed representation of a single item from an invoke script's stateChanges tree */
+interface StateChangeItem {
+  asset?: string;
+  address?: string;
+  assetId?: string;
+  leaseId?: string;
+  dApp?: string;
+  name?: string;
+  call?: { function?: string };
+  stateChanges?: StateChanges;
+}
+
+/** Recursive stateChanges structure returned by the DCC node for invokeScript transactions */
+interface StateChanges {
+  transfers?: StateChangeItem[];
+  issues?: StateChangeItem[];
+  reissues?: StateChangeItem[];
+  burns?: StateChangeItem[];
+  sponsorFees?: StateChangeItem[];
+  leases?: StateChangeItem[];
+  leaseCancels?: StateChangeItem[];
+  invokes?: StateChangeItem[];
+}
+
 export function TabTxHistory() {
   const { t, i18n } = useTranslation();
   const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
@@ -98,7 +122,7 @@ export function TabTxHistory() {
     (value: boolean) => setFilters({ ...filters, onlyOutgoing: value }),
   ];
 
-  const flat = (stateChanges: any): any[] =>
+  const flat = (stateChanges: StateChanges): StateChangeItem[] =>
     (stateChanges?.transfers ?? [])
       .concat(stateChanges?.issues ?? [])
       .concat(stateChanges?.reissues ?? [])
@@ -109,29 +133,30 @@ export function TabTxHistory() {
       .concat(stateChanges?.invokes ?? [])
       .concat(
         (stateChanges?.invokes ?? []).reduce(
-          (result: unknown[], el: { stateChanges: unknown[] }) =>
-            result.concat(flat(el.stateChanges)),
+          (result: StateChangeItem[], el: StateChangeItem) =>
+            result.concat(flat(el.stateChanges ?? {})),
           [],
         ),
       );
 
-  const hasInvokeStateChanges = (stateChanges: any): boolean =>
+  const hasInvokeStateChanges = (stateChanges: StateChanges): boolean =>
     flat(stateChanges || {}).reduce(
-      (hasItems, el) =>
+      (hasItems: boolean, el: StateChangeItem) =>
         hasItems ||
         [el.asset, el.address, el.assetId, el.leaseId, el.dApp].includes(term) ||
         [
           el.address,
           el.name,
-          assets[el.assetId]?.displayName,
+          assets[el.assetId ?? '']?.displayName,
           el.call?.function || 'default',
-        ].reduce((result, name) => result || icontains(name, term), false),
+        ].reduce((result: boolean, name) => result || icontains(name, term), false),
       false,
     );
 
-  const hasInvokeTransfers = (stateChanges: any): boolean =>
+  const hasInvokeTransfers = (stateChanges: StateChanges): boolean =>
     flat(stateChanges).reduce(
-      (hasTransfers, el) => hasTransfers || addressOrAlias.includes(el.address),
+      (hasTransfers: boolean, el: StateChangeItem) =>
+        hasTransfers || addressOrAlias.includes(el.address ?? ''),
       false,
     );
 
@@ -226,7 +251,7 @@ export function TabTxHistory() {
           {({ ref, ...restProps }) => (
             <Select
               className={styles.filterTxSelect}
-              forwardRef={ref}
+              ref={ref}
               selected={type}
               selectList={buildTxTypeOptions(t)}
               theme="underlined"

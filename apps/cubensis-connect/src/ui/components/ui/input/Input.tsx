@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import type React from 'react';
 import { useCallback, useRef, useState } from 'react';
 
 import * as styles from './Input.module.css';
@@ -21,7 +22,8 @@ export type InputProps = {
   className?: string | undefined;
   disabled?: boolean | undefined;
   error?: unknown | undefined;
-  forwardRef?: React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null> | undefined;
+  /** React 19: ref is a plain prop — no forwardRef wrapper needed */
+  ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement | null> | undefined;
   id?: string | undefined;
   maxLength?: number | undefined;
   placeholder?: string | undefined;
@@ -42,7 +44,7 @@ export function Input({
   multiLine,
   view = 'default',
   type,
-  forwardRef,
+  ref,
   ...props
 }: InputProps) {
   const [rootType, setRootType] = useState(type);
@@ -50,12 +52,15 @@ export function Input({
   const rootRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const getRef = useCallback(
     (element: HTMLInputElement | HTMLTextAreaElement | null) => {
-      if (forwardRef) {
-        forwardRef.current = element;
-      }
       rootRef.current = element;
+      if (typeof ref === 'function') {
+        ref(element);
+      } else if (ref != null) {
+        (ref as React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null>).current =
+          element;
+      }
     },
-    [forwardRef],
+    [ref],
   );
 
   return (
