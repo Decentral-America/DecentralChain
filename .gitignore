@@ -40,3 +40,9 @@ Thumbs.db
 *.log
 npm-debug.log*
 scripts/sync-to-polyrepos.sh
+
+# AI prompt scratch files (migration/audit worksheets — not source docs)
+0-MIGRATE.md
+1-BULLETPROOF.md
+2-MODERNIZE.md
+3-AUDIT.md
