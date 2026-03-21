@@ -145,7 +145,6 @@ Promise.all([
     document.addEventListener('keyup', () => Background.updateIdle());
     document.addEventListener('mousedown', () => Background.updateIdle());
     document.addEventListener('focus', () => Background.updateIdle());
-    window.addEventListener('beforeunload', () => background.identityClear());
 
     if (Browser.extension.getViews({ type: 'popup' }).length > 0) {
       Background.closeNotificationWindow();

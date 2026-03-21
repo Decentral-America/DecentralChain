@@ -83,8 +83,7 @@ export function InvokeScriptCard({
 
                   <tbody>
                     {tx.call.args.map((arg, index) => (
-                      // biome-ignore lint/suspicious/noArrayIndexKey: function arguments are positional, no stable ID
-                      <tr key={index} data-testid="invokeArgument">
+                      <tr key={`${arg.type}:${index}`} data-testid="invokeArgument">
                         <td data-testid="invokeArgumentType">{arg.type}</td>
 
                         <td data-testid="invokeArgumentValue">
@@ -112,8 +111,7 @@ export function InvokeScriptCard({
                   invariant(asset);
 
                   return (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: payment items may share assetId, no unique ID
-                    <div key={index} className={styles.paymentItem}>
+                    <div key={`${item.assetId ?? 'WAVES'}:${index}`} className={styles.paymentItem}>
                       <Balance
                         balance={new Money(item.amount, new Asset(asset))}
                         data-testid="invokeScriptPaymentItem"

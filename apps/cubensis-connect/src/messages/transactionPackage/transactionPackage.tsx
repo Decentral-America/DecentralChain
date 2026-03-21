@@ -128,13 +128,12 @@ export function TransactionPackageCard({
             {message.data.flatMap((tx) =>
               getBalanceChanges(tx, assets)
                 .filter((amount) => !amount.getTokens().eq(0))
-                .map((amount, index) => {
+                .map((amount) => {
                   const coins = amount.getCoins();
 
                   return (
                     <Balance
-                      // biome-ignore lint/suspicious/noArrayIndexKey: computed balance amounts have no stable ID
-                      key={index}
+                      key={amount.asset.id}
                       addSign={coins.gt(0) ? '+' : undefined}
                       balance={amount}
                       className={styles.amountItem}
@@ -157,9 +156,8 @@ export function TransactionPackageCard({
 
             <div className="margin-min">
               <div className="margin-main">
-                {fees.map((fee, index) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: fee items have no stable unique ID
-                  <div key={index}>
+                {fees.map((fee) => (
+                  <div key={fee.asset.id}>
                     <Balance data-testid="packageFeeItem" balance={fee} isShortFormat showAsset />
                   </div>
                 ))}
@@ -234,8 +232,7 @@ export function TransactionPackageScreen({
             };
 
             return (
-              // biome-ignore lint/suspicious/noArrayIndexKey: transaction index corresponds to input.data position
-              <div key={index} data-testid="packageItem">
+              <div key={`${id}:${index}`} data-testid="packageItem">
                 <TransactionCard message={msg} />
                 <TxInfo message={msg} />
               </div>
@@ -257,7 +254,6 @@ export function TransactionPackageScreen({
               .map((item, index) => {
                 return (
                   <MessageIcon
-                    // biome-ignore lint/suspicious/noArrayIndexKey: static icon display, list never reorders
                     key={`icon-${item.type}-${index}`}
                     className={styles.icon}
                     type={
