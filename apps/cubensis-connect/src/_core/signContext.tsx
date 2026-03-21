@@ -93,7 +93,7 @@ export function SignProvider({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <SignContext.Provider value={contextValue}>{children}</SignContext.Provider>
+      <SignContext value={contextValue}>{children}</SignContext>
 
       {account?.type === 'ledger' && (
         <Modal animation={Modal.ANIMATION.FLASH} showModal={confirmDialog.isOpen}>
