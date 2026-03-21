@@ -67,7 +67,7 @@ export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onS
               autoComplete="current-password"
               data-testid="passwordInput"
               error={passwordError}
-              forwardRef={passwordInputRef}
+              ref={passwordInputRef}
               type="password"
               value={password}
               view="password"
