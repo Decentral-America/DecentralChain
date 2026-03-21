@@ -317,8 +317,7 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 
 ### Phase 4 — Audit
 
-1. Follow the [Security Audit Playbook](SECURITY-AUDIT.md) (Phases A–F)
-2. Run grep audit for dangerous patterns (`eval`, `Math.random`, `http://`, etc.)
+1. Run grep audit for dangerous patterns (`eval`, `Math.random`, `http://`, etc.)
 3. Verify all tests run offline (no network calls)
 4. Document any remaining deviations in this STATUS.md
 5. Mark package as ✅ in per-package status table
