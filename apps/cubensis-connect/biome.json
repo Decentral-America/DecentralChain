@@ -141,19 +141,6 @@
           }
         }
       }
-    },
-    {
-      "includes": [
-        "src/messages/transaction/invokeScript.tsx",
-        "src/messages/transactionPackage/transactionPackage.tsx"
-      ],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noArrayIndexKey": "off"
-          }
-        }
-      }
     }
   ],
   "root": false,
