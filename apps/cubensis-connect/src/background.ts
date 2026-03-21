@@ -293,7 +293,7 @@ class BackgroundService extends EventEmitter {
       if (state.locked) {
         // Reject all pending sign messages when the vault locks so callers
         // receive an immediate rejection instead of waiting indefinitely.
-        const { messages } = this.messageController.store.getState();
+        const messages = this.messageController.getMessages();
         for (const { id } of messages) {
           this.messageController.reject(id);
         }
