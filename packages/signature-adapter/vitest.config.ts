@@ -10,6 +10,11 @@ export default mergeConfig(baseConfig, {
         'src/prepareTx/index.ts',
         'src/prepareTx/interfaces.ts',
       ],
+      thresholds: {
+        // Remaining uncovered branches are provider-dispatch error paths that
+        // require live hardware or a connected wallet for full exercising.
+        branches: 88,
+      },
     },
   },
 });
