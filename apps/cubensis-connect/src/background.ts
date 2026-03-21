@@ -90,7 +90,8 @@ Browser.runtime.onConnect.addListener(async (remotePort) => {
 
   if (remotePort.name === 'contentscript') {
     bgService.setupPageConnection(remotePort);
-  } else {
+  } else if (remotePort.sender?.id === Browser.runtime.id) {
+    // Only accept UI connections from this extension itself.
     bgService.setupUiConnection(remotePort);
   }
 });
