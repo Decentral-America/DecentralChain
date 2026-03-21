@@ -25,6 +25,7 @@ interface Props {
   onExited?: (() => void) | undefined;
 }
 
+// #app-modal is a static element in the extension HTML pages used as the portal root for all modals.
 let modalRoot: HTMLElement | null = null;
 
 export function Modal(props: Props) {

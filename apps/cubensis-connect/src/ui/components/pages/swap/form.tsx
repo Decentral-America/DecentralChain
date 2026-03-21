@@ -135,10 +135,8 @@ export function SwapForm({
     txType: TRANSACTION_TYPE.INVOKE_SCRIPT,
   });
 
-  const [{ fromAssetId, toAssetId }, setAssetIds] = useState({
-    fromAssetId: initialFromAssetId,
-    toAssetId: initialToAssetId,
-  });
+  const [fromAssetId, setFromAssetId] = useState(initialFromAssetId);
+  const [toAssetId, setToAssetId] = useState(initialToAssetId);
 
   const [feeAssetId, setFeeAssetId] = useState(() => {
     const defaultOption =
@@ -483,10 +481,7 @@ export function SwapForm({
             value={fromAmountValue}
             showUsdAmount
             onAssetChange={(newAssetId) => {
-              setAssetIds((prevState) => ({
-                ...prevState,
-                fromAssetId: newAssetId,
-              }));
+              setFromAssetId(newAssetId);
             }}
             onBalanceClick={() => {
               let max = fromAssetBalance;
@@ -512,10 +507,8 @@ export function SwapForm({
               className={styles.swapDirectionBtn}
               type="button"
               onClick={() => {
-                setAssetIds((prevState) => ({
-                  fromAssetId: prevState.toAssetId,
-                  toAssetId: prevState.fromAssetId,
-                }));
+                setFromAssetId(toAssetId);
+                setToAssetId(fromAssetId);
 
                 const newFromAmount =
                   fromAmountValue === '' || swapVendorInfo.type !== 'data'
@@ -556,10 +549,7 @@ export function SwapForm({
                 options={toSwappableAssets}
                 value={toAssetId}
                 onChange={(newAssetId) => {
-                  setAssetIds((prevState) => ({
-                    ...prevState,
-                    toAssetId: newAssetId,
-                  }));
+                  setToAssetId(newAssetId);
                 }}
               />
             </div>

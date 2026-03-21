@@ -232,7 +232,7 @@ export function TransactionPackageScreen({
             };
 
             return (
-              <div key={`${id}:${index}`} data-testid="packageItem">
+              <div key={item.id} data-testid="packageItem">
                 <TransactionCard message={msg} />
                 <TxInfo message={msg} />
               </div>
@@ -251,10 +251,10 @@ export function TransactionPackageScreen({
             {data
               .slice()
               .reverse()
-              .map((item, index) => {
+              .map((item) => {
                 return (
                   <MessageIcon
-                    key={`icon-${item.type}-${index}`}
+                    key={`icon-${item.id}`}
                     className={styles.icon}
                     type={
                       {

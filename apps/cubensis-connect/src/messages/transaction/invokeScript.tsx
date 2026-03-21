@@ -83,7 +83,8 @@ export function InvokeScriptCard({
 
                   <tbody>
                     {tx.call.args.map((arg, index) => (
-                      <tr key={`${arg.type}:${index}`} data-testid="invokeArgument">
+                      // biome-ignore lint/suspicious/noArrayIndexKey: invoke args are position-defined; arg.type is not unique (e.g. two integer args)
+                      <tr key={index} data-testid="invokeArgument">
                         <td data-testid="invokeArgumentType">{arg.type}</td>
 
                         <td data-testid="invokeArgumentValue">
@@ -106,12 +107,12 @@ export function InvokeScriptCard({
 
             <div className={transactionsStyles.txValue}>
               <div className={clsx('plate', 'break-all')}>
-                {tx.payment.map((item, index) => {
+                {tx.payment.map((item) => {
                   const asset = assets[item.assetId ?? 'WAVES'];
                   invariant(asset);
 
                   return (
-                    <div key={`${item.assetId ?? 'WAVES'}:${index}`} className={styles.paymentItem}>
+                    <div key={item.assetId ?? 'WAVES'} className={styles.paymentItem}>
                       <Balance
                         balance={new Money(item.amount, new Asset(asset))}
                         data-testid="invokeScriptPaymentItem"
