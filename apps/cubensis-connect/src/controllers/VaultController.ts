@@ -58,16 +58,22 @@ export class VaultController {
   }
 
   migrate() {
-    const state = this.#wallet.store.getState().WalletController;
+    // `state` may contain legacy fields (`initialized`, `locked`) that were
+    // stored in WalletController in older versions and have since been moved to
+    // VaultController's own store. Use a typed intersection instead of `any`.
+    type LegacyWalletState = {
+      vault: string | undefined;
+      vaultSalt: string | undefined;
+      initialized?: boolean;
+      locked?: boolean;
+    };
+    const state = this.#wallet.store.getState().WalletController as LegacyWalletState;
 
-    if ((state as any).initialized != null) {
-      this.store.updateState({
-        initialized: (state as any).initialized,
-      });
-
-      delete (state as any).locked;
-      delete (state as any).initialized;
-      this.#wallet.store.putState(state as any);
+    if (state.initialized != null) {
+      this.store.updateState({ initialized: state.initialized });
+      delete state.locked;
+      delete state.initialized;
+      this.#wallet.store.putState({ WalletController: state });
     }
   }
 }
