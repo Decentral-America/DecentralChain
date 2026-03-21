@@ -282,6 +282,11 @@ export type MessageInput = {
       type: 'dccAuth';
       data: MessageInputDccAuth;
     }
+  | {
+      /** User must explicitly approve before a dApp receives a derived shared key (CWE-200). */
+      type: 'getKEK';
+      data: { publicKey: string; prefix: string };
+    }
 );
 
 export type MessageInputOfType<T extends MessageInput['type']> = Extract<MessageInput, { type: T }>;
@@ -586,6 +591,14 @@ export type Message = {
         data: MessageDccAuth;
         origin?: string | undefined;
         result?: MessageDccAuthSigned | undefined;
+      }
+    | {
+        type: 'getKEK';
+        /** The dApp-supplied public key for ECDH derivation. Displayed to the user before approval. */
+        data: { publicKey: string; prefix: string };
+        origin?: string | undefined;
+        /** Base58-encoded derived shared key, set after user approves. */
+        result?: string | undefined;
       }
   );
 
