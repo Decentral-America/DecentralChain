@@ -15,7 +15,8 @@ const action = {
   default_title: 'Cubensis Connect',
 };
 
-const contentSecurityPolicy = "object-src 'self'; script-src 'self' 'wasm-unsafe-eval'";
+const contentSecurityPolicy =
+  "default-src 'self'; object-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' https://*.decentralchain.io";
 
 const manifestV2 = {
   background: {
@@ -37,7 +38,9 @@ const manifestV3 = {
   },
   host_permissions: ['http://*/*', 'https://*/*'],
   manifest_version: 3,
-  web_accessible_resources: [{ matches: ['<all_urls>'], resources: ['inpage.js'] }],
+  web_accessible_resources: [
+    { matches: ['<all_urls>'], resources: ['inpage.js'], use_dynamic_url: true },
+  ],
 };
 
 const platformValues = {
