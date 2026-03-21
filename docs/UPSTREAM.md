@@ -369,7 +369,6 @@ Ranked by strategic value to DCC:
 
 ### In Progress
 
-- [ ] Resolve cubensis-connect P0 — verify Cognito pool ownership
 - [ ] Promote npm packages from `next` → `latest` dist-tag
 
 ### Next
@@ -531,17 +530,6 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 | Waves Ducks | `wavesducks.com/api/v1/` | Duck NFT images & metadata | May not serve DCC NFT data |
 | Puzzle Market | `puzzlemarket.org` | Puzzle NFT metadata | Independent project |
 | SignArt | `mainnet.sign-art.app` | Art NFT metadata & IPFS images | Uses Infura IPFS gateway |
-
-### Cognito User Pool Details
-
-The email-login identity system uses AWS Cognito. These pool IDs need ownership verification:
-
-| Environment | Pool ID | Client ID |
-|-------------|---------|-----------|
-| Mainnet | `eu-central-1_AXIpDLJQx` | `k63vrrmuav01s6p2d344ppnf4` |
-| Testnet | `eu-central-1_6Bo3FEwt5` | `7l8bv0kmvrb4s4n1topofh9d80` |
-
-**If Waves-owned:** DCC email accounts are actually Waves accounts — Waves could revoke access to user seeds. **This is the P0 risk** documented in [STATUS.md](STATUS.md#7-remediation-priority-matrix).
 
 ---
 
