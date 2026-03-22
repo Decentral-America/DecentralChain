@@ -1,0 +1,27 @@
+{
+  "background_color": "#1e1e2d",
+  "description": "Trade on the native DEX — powered by DecentralChain.",
+  "dir": "ltr",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "icons": [
+    {
+      "purpose": "any maskable",
+      "sizes": "any",
+      "src": "/favicon.svg",
+      "type": "image/svg+xml"
+    },
+    {
+      "sizes": "180x180",
+      "src": "/apple-touch-icon.png",
+      "type": "image/png"
+    }
+  ],
+  "lang": "en",
+  "name": "Decentral Exchange",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "DCC DEX",
+  "start_url": "/",
+  "theme_color": "#1e1e2d"
+}
