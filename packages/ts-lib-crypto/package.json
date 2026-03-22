@@ -14,7 +14,7 @@
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "fast-check": "4.5.3",
+    "fast-check": "4.6.0",
     "publint": "catalog:",
     "size-limit": "catalog:",
     "tsdown": "catalog:",

@@ -19,7 +19,7 @@
     "publint": "catalog:",
     "size-limit": "catalog:",
     "tsdown": "catalog:",
-    "undici-types": "7.22.0",
+    "undici-types": "7.24.5",
     "vitest": "catalog:"
   },
   "engines": {
