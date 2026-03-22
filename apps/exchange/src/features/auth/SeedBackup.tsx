@@ -245,8 +245,8 @@ For support, visit: https://decentralchain.io/support
               {revealed ? (
                 <SeedPhraseGrid>
                   {words.map((word, index) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase words can repeat
-                    <SeedWord key={index}>
+                    // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase position is semantically significant; words can repeat
+                    <SeedWord key={`${index}-${word}`}>
                       <WordNumber>{index + 1}.</WordNumber>
                       <WordText>{word}</WordText>
                     </SeedWord>

@@ -435,8 +435,8 @@ export const CreateAccount = () => {
 
             <SeedPhraseGrid>
               {words.map((word: string, index: number) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase words can repeat
-                <SeedWord key={index}>
+                // biome-ignore lint/suspicious/noArrayIndexKey: seed phrase position is semantically significant; words can repeat
+                <SeedWord key={`${index}-${word}`}>
                   <span>{index + 1}.</span>
                   {word}
                 </SeedWord>
