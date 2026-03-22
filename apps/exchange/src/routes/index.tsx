@@ -1,69 +1,37 @@
 /**
  * Application Router Configuration
- * Defines all routes using React Router v6 createBrowserRouter
+ * Defines all routes using React Router v7 createBrowserRouter with route-level
+ * code splitting. Auth pages (LandingPage, SignUp, SignIn, ImportAccountPage, SaveSeedPage)
+ * are eagerly loaded. All other pages use the `lazy` property for code splitting.
  */
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from '@/components/layout';
 import { MainLayout } from '@/layouts/MainLayout';
 import { RootLayout } from '@/layouts/RootLayout';
-import { Analytics } from '@/pages/Analytics';
-// Admin pages (hidden routes)
-import { DexPairAdmin } from '@/pages/admin/DexPairAdmin';
-import { Bridge } from '@/pages/Bridge';
-import { CreateToken } from '@/pages/CreateToken';
+import { ErrorPage } from '@/pages/ErrorPage';
+// Auth pages — eager (critical path, user lands here first)
 import { ImportAccountPage } from '@/pages/ImportAccountPage';
-import { ImportLedger } from '@/pages/ImportLedger';
-// Direct imports for auth pages (critical entry points)
 import LandingPage from '@/pages/LandingPage';
-// Additional pages
-import { Markets } from '@/pages/Markets';
-import { Messages } from '@/pages/Messages';
-import { OrderBook } from '@/pages/OrderBook';
-import { RestoreFromBackupPage } from '@/pages/RestoreFromBackup';
 import { SaveSeedPage } from '@/pages/SaveSeed';
 import { SignIn } from '@/pages/SignIn';
 import { SignUp } from '@/pages/SignUp';
-import { Swap } from '@/pages/Swap';
-import { Welcome } from '@/pages/Welcome';
 import { dexRoutes } from './dexRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { walletRoutes } from './walletRoutes';
 
 /**
- * Application router with nested routes
- * - / : Welcome page (landing with login/create/import options)
- * - /signup : New account creation page
- * - /signin : User authentication page
- *   - Future child routes:
- *     - /create : Create new account
- *     - /import : Import existing account
- *     - /import/seed : Import by seed phrase
- *     - /import/ledger : Import from Ledger
- *     - /import/keeper : Import from Keeper
- * - /desktop : Protected authenticated layout
- *   - /desktop/wallet : Wallet module with nested routes
- *     - /desktop/wallet/portfolio : Portfolio view
- *     - /desktop/wallet/transactions : Transaction history
- *     - /desktop/wallet/assets/:assetId : Asset details
- *     - /desktop/wallet/leasing : Leasing management
- *   - /desktop/dex : DEX trading module with nested routes
- *     - /desktop/dex : Trading view with default pair
- *     - /desktop/dex/pair/:amountAsset/:priceAsset : Specific trading pair
- *     - /desktop/dex/history : Order and trade history
- *   - /desktop/settings : Settings module with nested routes
- *     - /desktop/settings/general : General preferences
- *     - /desktop/settings/network : Network configuration
- *     - /desktop/settings/security : Security settings
+ * Application router with nested routes and route-level code splitting.
+ * Auth pages are eager; all other pages lazy-loaded via React Router v7 `lazy`.
  */
 export const router = createBrowserRouter([
   {
     children: [
       {
-        element: <LandingPage />, // New modern landing page
+        element: <LandingPage />,
         path: '/',
       },
       {
-        element: <Welcome />, // Keep old welcome page for reference
+        lazy: () => import('@/pages/Welcome').then((m) => ({ Component: m.Welcome })),
         path: '/welcome',
       },
       {
@@ -72,7 +40,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <SignUp />,
-        path: '/create-account', // Alias for signup - used by landing page
+        path: '/create-account',
       },
       {
         element: <SignIn />,
@@ -80,7 +48,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <SignIn />,
-        path: '/sign-in', // Alias for signin - used by landing page
+        path: '/sign-in',
       },
       {
         element: <ImportAccountPage />,
@@ -91,11 +59,14 @@ export const router = createBrowserRouter([
         path: '/save-seed',
       },
       {
-        element: <RestoreFromBackupPage />,
+        lazy: () =>
+          import('@/pages/RestoreFromBackup').then((m) => ({
+            Component: m.RestoreFromBackupPage,
+          })),
         path: '/restore-backup',
       },
       {
-        element: <ImportLedger />,
+        lazy: () => import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
         path: '/import/ledger',
       },
       {
@@ -109,33 +80,33 @@ export const router = createBrowserRouter([
               walletRoutes,
               dexRoutes,
               settingsRoutes,
-              // Additional routes
               {
-                element: <Swap />,
+                lazy: () => import('@/pages/Swap').then((m) => ({ Component: m.Swap })),
                 path: 'swap',
               },
               {
-                element: <Bridge />,
+                lazy: () => import('@/pages/Bridge').then((m) => ({ Component: m.Bridge })),
                 path: 'bridge',
               },
               {
-                element: <Markets />,
+                lazy: () => import('@/pages/Markets').then((m) => ({ Component: m.Markets })),
                 path: 'markets',
               },
               {
-                element: <OrderBook />,
+                lazy: () => import('@/pages/OrderBook').then((m) => ({ Component: m.OrderBook })),
                 path: 'orderbook',
               },
               {
-                element: <Analytics />,
+                lazy: () => import('@/pages/Analytics').then((m) => ({ Component: m.Analytics })),
                 path: 'analytics',
               },
               {
-                element: <Messages />,
+                lazy: () => import('@/pages/Messages').then((m) => ({ Component: m.Messages })),
                 path: 'messages',
               },
               {
-                element: <CreateToken />,
+                lazy: () =>
+                  import('@/pages/CreateToken').then((m) => ({ Component: m.CreateToken })),
                 path: 'create-token',
               },
             ],
@@ -146,16 +117,16 @@ export const router = createBrowserRouter([
         path: '/desktop',
       },
       {
-        element: <DexPairAdmin />,
-        // Hidden admin route - only accessible via direct URL
+        lazy: () =>
+          import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
         path: '/dccadmin',
       },
       {
         element: <Navigate to="/" replace />,
-        // Catch-all route for 404
         path: '*',
       },
     ],
-    element: <RootLayout />, // Wrap all routes with RootLayout for GlobalKeyboardShortcuts
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
   },
 ]);
