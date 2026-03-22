@@ -1,6 +1,7 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import pkg from './package.json' with { type: 'json' };
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -35,6 +36,9 @@ export default defineConfig({
       },
     },
     sourcemap: process.env['NODE_ENV'] !== 'production',
+  },
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
   },
   optimizeDeps: {
     exclude: ['data-service'],
@@ -82,12 +86,10 @@ export default defineConfig({
       '/matcher': {
         changeOrigin: true,
         rewrite: (reqPath) => reqPath.replace(/^\/matcher/, '/matcher'),
-        secure: false,
         target: 'https://mainnet-matcher.decentralchain.io',
       },
       '/trading-view': {
         changeOrigin: true,
-        secure: false,
         target: 'https://charts.decentral.exchange',
       },
     },
