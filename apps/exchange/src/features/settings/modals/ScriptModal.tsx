@@ -3,11 +3,14 @@
  * Manage smart contract scripts for advanced users
  * Simplified placeholder - full implementation would match Angular ScriptModalCtrl
  */
+
+import * as ds from 'data-service';
 import type React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
@@ -68,23 +71,23 @@ export interface ScriptModalProps {
 export const ScriptModal: React.FC<ScriptModalProps> = ({ isOpen, onClose }) => {
   const [script, setScript] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { signSetScript } = useTransactionSigning();
 
   const handleSave = async () => {
     setIsLoading(true);
+    setErrorMessage(null);
 
     try {
-      // TODO: Implement actual script compilation and setting
-      // This would involve:
-      // 1. Compile RIDE script using dcc-transactions
-      // 2. Create setScript transaction
-      // 3. Sign and broadcast to network
-      // 4. Wait for confirmation
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      logger.debug('Script would be set:', script);
+      const signedTx = await signSetScript({ script: script || null });
+      await ds.broadcast(signedTx);
+      logger.debug('[ScriptModal] Set script transaction broadcast');
       onClose();
     } catch (error) {
       logger.error('Script setting failed:', error);
+      const msg =
+        error instanceof Error ? error.message : 'Failed to set script. Please try again.';
+      setErrorMessage(msg);
     } finally {
       setIsLoading(false);
     }
@@ -126,6 +129,23 @@ match tx {
 }"
           disabled={isLoading}
         />
+
+        {errorMessage && (
+          <div
+            style={{
+              backgroundColor: '#ffebee',
+              border: '1px solid #ef9a9a',
+              borderRadius: '4px',
+              color: '#c62828',
+              fontSize: '13px',
+              lineHeight: 1.5,
+              marginTop: '8px',
+              padding: '12px',
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
 
         <ButtonGroup>
           <Button variant="text" onClick={onClose} disabled={isLoading}>
