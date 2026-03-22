@@ -12,8 +12,10 @@ export interface ICandleInfo {
   readonly volume: BigNumber | string | number;
   readonly quoteVolume: BigNumber | string | number;
   readonly weightedAveragePrice: BigNumber | string | number;
-  readonly maxHeight: number;
-  readonly txsCount: number;
+  /** Block height of the last transaction in this candle. May be null for empty candles. */
+  readonly maxHeight: number | null | undefined;
+  /** Number of transactions in this candle. May be null for empty candles. */
+  readonly txsCount: number | null | undefined;
 }
 
 /** Serialized representation of a Candle, returned by `Candle.toJSON()`. */
@@ -57,12 +59,15 @@ export class Candle {
     const remapped = config.get('remapCandle')(candleObject);
 
     // ── Validate integer fields ───────────────────────────────────
-    if (!Number.isInteger(remapped.maxHeight) || remapped.maxHeight < 0) {
+    // maxHeight and txsCount may be null/undefined for empty candles returned by the API.
+    const maxHeight = remapped.maxHeight ?? 0;
+    const txsCount = remapped.txsCount ?? 0;
+    if (!Number.isInteger(maxHeight) || maxHeight < 0) {
       throw new Error(
         `Invalid maxHeight: ${String(remapped.maxHeight)} — must be a non-negative integer`,
       );
     }
-    if (!Number.isInteger(remapped.txsCount) || remapped.txsCount < 0) {
+    if (!Number.isInteger(txsCount) || txsCount < 0) {
       throw new Error(
         `Invalid txsCount: ${String(remapped.txsCount)} — must be a non-negative integer`,
       );
@@ -77,8 +82,8 @@ export class Candle {
     this.weightedAveragePrice = toBigNumber(remapped.weightedAveragePrice);
 
     this.time = remapped.time;
-    this.maxHeight = remapped.maxHeight;
-    this.txsCount = remapped.txsCount;
+    this.maxHeight = maxHeight;
+    this.txsCount = txsCount;
   }
 
   /** Serialize this Candle to a plain JSON-friendly object. */

@@ -24,12 +24,12 @@ const Container = styled.div`
   gap: ${(p) => p.theme.spacing.lg};
 `;
 
-const SettingRow = styled.div<{ border?: boolean }>`
+const SettingRow = styled.div<{ $border?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: ${(p) => p.theme.spacing.md} 0;
-  border-bottom: ${(p) => (p.border ? `1px solid ${p.theme.colors.border}` : 'none')};
+  border-bottom: ${(p) => (p.$border ? `1px solid ${p.theme.colors.border}` : 'none')};
   gap: ${(p) => p.theme.spacing.md};
 
   &:last-child {
@@ -202,7 +202,7 @@ export const GeneralSettings = () => {
       </SettingRow>
 
       {/* Current Block Height (read-only) */}
-      <SettingRow border>
+      <SettingRow $border>
         <SettingLabel>Current Block Height</SettingLabel>
         <SettingValue>{blockHeight > 0 ? blockHeight.toLocaleString() : 'Loading...'}</SettingValue>
       </SettingRow>

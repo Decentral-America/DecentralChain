@@ -350,6 +350,42 @@ describe('Security: Candle field validation', () => {
         }),
     ).toThrow('Invalid maxHeight');
   });
+
+  it('should accept null maxHeight (empty candles from API) defaulting to 0', () => {
+    expect(
+      () =>
+        new Candle({
+          close: '1',
+          high: '1',
+          low: '1',
+          maxHeight: null,
+          open: '1',
+          quoteVolume: '1',
+          time: new Date(),
+          txsCount: 0,
+          volume: '1',
+          weightedAveragePrice: '1',
+        }),
+    ).not.toThrow();
+  });
+
+  it('should accept undefined maxHeight defaulting to 0', () => {
+    expect(
+      () =>
+        new Candle({
+          close: '1',
+          high: '1',
+          low: '1',
+          maxHeight: undefined,
+          open: '1',
+          quoteVolume: '1',
+          time: new Date(),
+          txsCount: 0,
+          volume: '1',
+          weightedAveragePrice: '1',
+        }),
+    ).not.toThrow();
+  });
 });
 
 describe('Security: Money defense-in-depth', () => {

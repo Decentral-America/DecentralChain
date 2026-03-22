@@ -13,7 +13,7 @@ const InfoSection = styled.div`
   padding: 16px 0;
 `;
 
-const InfoRow = styled.div<{ border?: boolean }>`
+const InfoRow = styled.div<{ $border?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -21,7 +21,7 @@ const InfoRow = styled.div<{ border?: boolean }>`
   border-bottom: 1px solid #f0f0f0;
 
   ${(props) =>
-    props.border &&
+    props.$border &&
     `
     border-bottom: 2px solid #e0e0e0;
   `}
@@ -113,7 +113,7 @@ export const InfoSettings: React.FC = () => {
       </InfoRow>
 
       {/* Copyright */}
-      <InfoRow border>
+      <InfoRow $border>
         <Copyright>&copy; {new Date().getFullYear()} Blockchain Costa Rica</Copyright>
         <Logo>DecentralChain</Logo>
       </InfoRow>

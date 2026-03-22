@@ -16,7 +16,7 @@ const transformer = (input: unknown): unknown => {
       if (!Array.isArray(data)) {
         throw new Error(`Transform error: expected array for list type, got ${typeof data}`);
       }
-      return data.map(transformer);
+      return data.map(transformer).filter((item) => item != null);
     case ApiTypes.Asset:
       return transformAsset(data as IAssetJSON);
     case ApiTypes.Alias:
@@ -34,7 +34,11 @@ const transformer = (input: unknown): unknown => {
 
 const transformAsset = (data: IAssetJSON): Asset | null => (data === null ? null : new Asset(data));
 const transformPair = id;
-const transformCandle = (data: ICandleJSON): Candle | null =>
-  data === null ? null : new Candle(data);
+const transformCandle = (data: ICandleJSON | null): Candle | null => {
+  if (data === null) return null;
+  // Empty candles from the API have null OHLCV fields — skip them rather than throw.
+  if ((data as unknown as Record<string, unknown>).open == null) return null;
+  return new Candle(data);
+};
 
 export default transformer;

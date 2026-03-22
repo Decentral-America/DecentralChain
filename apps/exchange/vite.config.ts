@@ -45,7 +45,6 @@ export default defineConfig({
     include: [
       '@mui/material',
       '@mui/material/styles',
-      '@mui/system',
       '@mui/icons-material',
       '@emotion/react',
       '@emotion/styled',

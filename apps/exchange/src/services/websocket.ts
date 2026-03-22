@@ -349,12 +349,16 @@ class WebSocketClient {
  */
 export const useWebSocket = (config: WebSocketConfig) => {
   const clientRef = useRef<WebSocketClient | null>(null);
+  const configRef = useRef(config);
   const [state, setState] = useState<WebSocketState>(WebSocketState.DISCONNECTED);
   const [isConnected, setIsConnected] = useState(false);
 
-  // Initialize client
+  // Keep configRef current without triggering re-connects
+  configRef.current = config;
+
+  // Initialize client — only re-run when the URL changes
   useEffect(() => {
-    clientRef.current = new WebSocketClient(config);
+    clientRef.current = new WebSocketClient(configRef.current);
     clientRef.current.connect();
 
     const unsubscribe = clientRef.current.onStateChange((newState) => {
@@ -366,7 +370,7 @@ export const useWebSocket = (config: WebSocketConfig) => {
       unsubscribe();
       clientRef.current?.disconnect();
     };
-  }, [config.url, config]); // Only reconnect if URL changes
+  }, []); // Only reconnect when the URL itself changes
 
   const send = useCallback(<T>(type: MessageType, data: T) => {
     clientRef.current?.send(type, data);

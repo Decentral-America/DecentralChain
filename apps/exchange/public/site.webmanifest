@@ -6,15 +6,16 @@
   "display_override": ["window-controls-overlay", "standalone"],
   "icons": [
     {
-      "purpose": "any maskable",
+      "purpose": "any",
       "sizes": "any",
       "src": "/favicon.svg",
       "type": "image/svg+xml"
     },
     {
-      "sizes": "180x180",
-      "src": "/apple-touch-icon.png",
-      "type": "image/png"
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "/favicon.svg",
+      "type": "image/svg+xml"
     }
   ],
   "lang": "en",
