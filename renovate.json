@@ -1,40 +1,33 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
+  "ignoreDeps": ["@waves/ride-lang", "@waves/ride-repl"],
   "labels": ["dependencies"],
-  "timezone": "America/Costa_Rica",
-  "schedule": ["before 4am on monday"],
-  "prCreation": "not-pending",
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 3,
-  "platformAutomerge": true,
   "lockFileMaintenance": {
-    "enabled": true,
     "automerge": true,
+    "enabled": true,
     "schedule": ["before 6am on monday"]
   },
-  "postUpdateOptions": ["pnpmDedupe"],
-  "ignoreDeps": ["@waves/ride-lang", "@waves/ride-repl"],
   "packageRules": [
     {
+      "automerge": false,
+      "dependencyDashboardApproval": true,
       "description": "Group Nx ecosystem — review manually, dashboard approval required",
       "groupName": "Nx",
-      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"],
-      "automerge": false,
-      "dependencyDashboardApproval": true
+      "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"]
     },
     {
+      "automerge": false,
       "description": "Group Biome — review manually (affects all 25 projects)",
       "groupName": "Biome",
-      "matchPackageNames": ["@biomejs/biome"],
-      "automerge": false
+      "matchPackageNames": ["@biomejs/biome"]
     },
     {
+      "automerge": false,
+      "dependencyDashboardApproval": true,
       "description": "Group TypeScript — review manually, dashboard approval required",
       "groupName": "TypeScript",
-      "matchPackageNames": ["typescript"],
-      "automerge": false,
-      "dependencyDashboardApproval": true
+      "matchPackageNames": ["typescript"]
     },
     {
       "description": "Group Vitest + coverage (used by all 25 projects via catalog)",
@@ -89,11 +82,11 @@
       "matchPackageNames": ["tailwindcss", "@tailwindcss/**", "tailwind-merge", "tw-animate-css"]
     },
     {
+      "automerge": false,
+      "dependencyDashboardApproval": true,
       "description": "Group Electron (exchange desktop app)",
       "groupName": "Electron",
-      "matchPackageNames": ["electron", "electron-builder", "electron-updater"],
-      "automerge": false,
-      "dependencyDashboardApproval": true
+      "matchPackageNames": ["electron", "electron-builder", "electron-updater"]
     },
     {
       "description": "Group MUI (exchange)",
@@ -126,23 +119,35 @@
       "matchPackageNames": ["publint", "@arethetypeswrong/cli", "size-limit", "@size-limit/**"]
     },
     {
+      "automerge": true,
+      "automergeType": "pr",
       "description": "Automerge non-major devDependencies (low risk)",
       "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true,
-      "automergeType": "pr"
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
+      "automerge": true,
+      "automergeType": "pr",
       "description": "Automerge patch-level production dependencies",
       "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch"],
-      "automerge": true,
-      "automergeType": "pr"
+      "matchUpdateTypes": ["patch"]
     },
     {
+      "dependencyDashboardApproval": true,
       "description": "Require dashboard approval for all major updates",
-      "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true
+      "matchUpdateTypes": ["major"]
+    },
+    {
+      "description": "Pin GitHub Actions to full SHA for supply chain security — Renovate keeps them current",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
     }
-  ]
+  ],
+  "platformAutomerge": true,
+  "postUpdateOptions": ["pnpmDedupe"],
+  "prConcurrentLimit": 5,
+  "prCreation": "not-pending",
+  "prHourlyLimit": 3,
+  "schedule": ["before 4am on monday"],
+  "timezone": "America/Costa_Rica"
 }
