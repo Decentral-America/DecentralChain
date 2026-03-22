@@ -25,18 +25,14 @@ interface DecentralChainCandle {
   volume: number;
 }
 
-/**
- * Configuration for supported resolutions
- */
+/** Supported TradingView resolutions and exchange metadata */
 const configurationData = {
   exchanges: [{ desc: 'DecentralChain DEX', name: 'DecentralChain', value: 'DecentralChain' }],
   supported_resolutions: ['1', '5', '15', '30', '60', '240', 'D', 'W', 'M'] as ResolutionString[],
   symbols_types: [{ name: 'crypto', value: 'crypto' }],
 };
 
-/**
- * Convert resolution to API interval format
- */
+/** Map TradingView resolution string to matcher API interval name */
 const resolutionToInterval = (resolution: string): string => {
   const map: Record<string, string> = {
     '1': '1m',
@@ -49,12 +45,26 @@ const resolutionToInterval = (resolution: string): string => {
     M: '1M',
     W: '1w',
   };
-  return map[resolution] || '1h';
+  return map[resolution] ?? '1h';
 };
 
-/**
- * Fetch candles from DecentralChain matcher
- */
+/** Map TradingView resolution string to milliseconds — used to size the polling window */
+const resolutionToMs = (resolution: string): number => {
+  const map: Record<string, number> = {
+    '1': 60_000,
+    '5': 300_000,
+    '15': 900_000,
+    '30': 1_800_000,
+    '60': 3_600_000,
+    '240': 14_400_000,
+    D: 86_400_000,
+    M: 2_592_000_000,
+    W: 604_800_000,
+  };
+  return map[resolution] ?? 3_600_000;
+};
+
+/** Fetch candlestick bars from the DecentralChain matcher REST endpoint */
 const fetchCandles = async (
   amountAsset: string,
   priceAsset: string,
@@ -74,7 +84,7 @@ const fetchCandles = async (
     if (!response.ok) throw new Error('Failed to fetch candles');
 
     const data = await response.json();
-    return data.candles || [];
+    return (data.candles as DecentralChainCandle[] | undefined) ?? [];
   } catch (error) {
     logger.error('Error fetching candles:', error);
     return [];
@@ -82,8 +92,13 @@ const fetchCandles = async (
 };
 
 /**
- * Create TradingView datafeed
- * @param matcherUrl - Matcher base URL from config (e.g. https://mainnet-matcher.decentralchain.io)
+ * Create a TradingView IBasicDataFeed instance for a DecentralChain trading pair.
+ *
+ * @param amountAsset     - Base asset ID (e.g. "DCC")
+ * @param priceAsset      - Quote asset ID (e.g. BTC asset ID)
+ * @param amountAssetName - Base asset display name
+ * @param priceAssetName  - Quote asset display name
+ * @param matcherUrl      - Matcher base URL from config
  */
 export const createDatafeed = (
   amountAsset: string,
@@ -92,6 +107,9 @@ export const createDatafeed = (
   priceAssetName: string,
   matcherUrl: string = 'https://mainnet-matcher.decentralchain.io',
 ): IBasicDataFeed => {
+  // Per-datafeed subscription registry: listenerGuid → polling timer handle
+  const subscriptions = new Map<string, ReturnType<typeof setInterval>>();
+
   return {
     getBars: async (
       _symbolInfo: LibrarySymbolInfo,
@@ -141,6 +159,7 @@ export const createDatafeed = (
         onError(error instanceof Error ? error.message : String(error));
       }
     },
+
     onReady: (callback: OnReadyCallback) => {
       setTimeout(() => callback(configurationData), 0);
     },
@@ -186,18 +205,69 @@ export const createDatafeed = (
       ]);
     },
 
+    /**
+     * Subscribe to real-time bar updates via REST polling.
+     *
+     * The DCC matcher exposes no dedicated candlestick WebSocket stream, so this
+     * implementation polls the candlestick REST endpoint every 15 seconds. On each
+     * tick it requests the last 2 × resolution window and emits the most recent bar
+     * to TradingView only when it represents a bar newer than the last emitted one.
+     *
+     * A first poll fires immediately (before the first interval elapses) so the chart
+     * responds as soon as the datafeed connects. Polling is cancelled by `unsubscribeBars`.
+     */
     subscribeBars: (
       _symbolInfo: LibrarySymbolInfo,
-      _resolution: ResolutionString,
-      _onTick: SubscribeBarsCallback,
+      resolution: ResolutionString,
+      onTick: SubscribeBarsCallback,
       listenerGuid: string,
       _onResetCacheNeededCallback: () => void,
     ) => {
-      // TODO: Implement real-time updates via WebSocket
-      logger.debug('subscribeBars:', listenerGuid);
+      const POLL_INTERVAL_MS = 15_000;
+      // Fetch last 2 × resolution to capture both in-progress and last completed bar
+      const windowMs = resolutionToMs(resolution) * 2;
+      let lastEmittedTime = 0;
+
+      const poll = async () => {
+        const now = Date.now();
+        const candles = await fetchCandles(
+          amountAsset,
+          priceAsset,
+          now - windowMs,
+          now,
+          resolutionToInterval(resolution),
+          matcherUrl,
+        );
+        if (candles.length === 0) return;
+
+        const latest = candles[candles.length - 1];
+        if (!latest || latest.time <= lastEmittedTime) return;
+
+        lastEmittedTime = latest.time;
+        onTick({
+          close: latest.close,
+          high: latest.high,
+          low: latest.low,
+          open: latest.open,
+          time: latest.time,
+          volume: latest.volume,
+        });
+      };
+
+      void poll(); // Immediate first tick — do not await (fire-and-forget)
+      subscriptions.set(
+        listenerGuid,
+        setInterval(() => void poll(), POLL_INTERVAL_MS),
+      );
+      logger.debug('subscribeBars registered:', listenerGuid);
     },
 
     unsubscribeBars: (listenerGuid: string) => {
+      const timer = subscriptions.get(listenerGuid);
+      if (timer !== undefined) {
+        clearInterval(timer);
+        subscriptions.delete(listenerGuid);
+      }
       logger.debug('unsubscribeBars:', listenerGuid);
     },
   };
