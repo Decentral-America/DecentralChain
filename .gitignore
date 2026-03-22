@@ -46,3 +46,6 @@ scripts/sync-to-polyrepos.sh
 1-BULLETPROOF.md
 2-MODERNIZE.md
 3-AUDIT.md
+
+.claude/worktrees
+.claude/settings.local.json
