@@ -54,6 +54,7 @@
     "@decentralchain/data-service-client-js": "workspace:*",
     "@decentralchain/oracle-data": "workspace:*",
     "@decentralchain/signature-adapter": "workspace:*",
+    "@decentralchain/transactions": "workspace:*",
     "@decentralchain/ts-lib-crypto": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -131,5 +132,5 @@
     "typecheck": "tsc -b --noEmit"
   },
   "type": "module",
-  "version": "0.0.0"
+  "version": "1.0.0"
 }
