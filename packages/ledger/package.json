@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@ledgerhq/logs": "6.14.0"
+    "@ledgerhq/logs": "6.16.0"
   },
   "description": "DecentralChain Ledger hardware wallet integration library",
   "devDependencies": {
