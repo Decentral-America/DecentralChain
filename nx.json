@@ -43,21 +43,12 @@
   },
   "targetDefaults": {
     "biome-fix": {
-      "cache": false,
-      "inputs": [
-        "default",
-        "^default",
-        "{workspaceRoot}/biome.json",
-        {
-          "externalDependencies": ["@biomejs/biome"]
-        }
-      ]
+      "cache": false
     },
     "biome-lint": {
       "cache": true,
       "inputs": [
         "default",
-        "^default",
         "{workspaceRoot}/biome.json",
         {
           "externalDependencies": ["@biomejs/biome"]
