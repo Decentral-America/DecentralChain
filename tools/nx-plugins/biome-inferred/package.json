@@ -1,7 +1,8 @@
 {
-  "main": "index.cjs",
+  "exports": "./index.js",
+  "main": "index.js",
   "name": "@decentralchain/nx-biome-inferred",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "version": "0.0.0"
 }

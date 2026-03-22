@@ -1,4 +1,4 @@
-const { formatFiles, generateFiles, joinPathFragments, names } = require('@nx/devkit');
+import { formatFiles, generateFiles, joinPathFragments, names } from '@nx/devkit';
 
 /** @param {import("@nx/devkit").Tree} tree */
 async function generator(tree, options) {
@@ -15,10 +15,9 @@ async function generator(tree, options) {
   };
 
   // Scaffold from template files
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), projectRoot, templateVars);
+  generateFiles(tree, joinPathFragments(import.meta.dirname, 'files'), projectRoot, templateVars);
 
   await formatFiles(tree);
 }
 
-module.exports = generator;
-module.exports.default = generator;
+export default generator;
