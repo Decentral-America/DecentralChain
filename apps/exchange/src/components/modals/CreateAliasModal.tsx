@@ -18,7 +18,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import * as ds from 'data-service';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAliases } from '@/hooks/useAliases';
@@ -153,11 +152,9 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
     setError(null);
 
     try {
-      // Create the transaction
-      const fee = await ds.moneyFromCoins(ALIAS_FEE, 'DCC');
       const signedTx = await signAlias({
         alias,
-        fee,
+        fee: ALIAS_FEE,
       });
 
       logger.debug(`[CreateAliasModal] Broadcasting transaction for alias: ${alias}`);

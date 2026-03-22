@@ -311,6 +311,9 @@ importers:
       '@decentralchain/signature-adapter':
         specifier: workspace:*
         version: link:../../packages/signature-adapter
+      '@decentralchain/transactions':
+        specifier: workspace:*
+        version: link:../../packages/transactions
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
         version: link:../../packages/ts-lib-crypto

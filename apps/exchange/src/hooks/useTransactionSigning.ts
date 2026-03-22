@@ -1,99 +1,42 @@
 /**
  * Transaction Signing Hook
  * Provides methods to sign various transaction types using @decentralchain/transactions
- * Handles all 17 transaction types with proper parameter validation
  */
+
+import {
+  alias,
+  burn,
+  cancelLease,
+  data,
+  type IAliasParams,
+  type IBurnParams,
+  type ICancelLeaseParams,
+  type IDataParams,
+  type IInvokeScriptParams,
+  type IIssueParams,
+  type ILeaseParams,
+  type IMassTransferParams,
+  type IReissueParams,
+  type ISetAssetScriptParams,
+  type ISetScriptParams,
+  type ISponsorshipParams,
+  type ITransferParams,
+  invokeScript,
+  issue,
+  lease,
+  massTransfer,
+  reissue,
+  setAssetScript,
+  setScript,
+  sponsorship,
+  transfer,
+} from '@decentralchain/transactions';
 import { useCallback, useState } from 'react';
-
-// TODO: Re-enable when @decentralchain/transactions is fixed for Vite
-// import {
-//   transfer,
-//   issue,
-//   reissue,
-//   burn,
-//   lease,
-//   cancelLease,
-//   alias,
-//   massTransfer,
-//   data,
-//   setScript,
-//   sponsorship,
-//   setAssetScript,
-//   invokeScript,
-// } from '@decentralchain/transactions';
-
-// Temporary stub functions until package is fixed
-const transfer = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const issue = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const reissue = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const burn = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const lease = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const cancelLease = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const massTransfer = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const data = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const setScript = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const sponsorship = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const setAssetScript = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-const invokeScript = (_params: Record<string, unknown>, _seed: string) => {
-  throw new Error('Not implemented - awaiting package fix');
-};
-
-// Temporary type definitions until package is fixed
-type ITransferParams = Record<string, unknown>;
-type IIssueParams = Record<string, unknown>;
-type IReissueParams = Record<string, unknown>;
-type IBurnParams = Record<string, unknown>;
-type ILeaseParams = Record<string, unknown>;
-type ICancelLeaseParams = Record<string, unknown>;
-type IAliasParams = Record<string, unknown>;
-type IMassTransferParams = Record<string, unknown>;
-type IDataParams = Record<string, unknown>;
-type ISetScriptParams = Record<string, unknown>;
-type ISponsorshipParams = Record<string, unknown>;
-type ISetAssetScriptParams = Record<string, unknown>;
-type IInvokeScriptParams = Record<string, unknown>;
-
-// import type {
-//   ITransferParams,
-//   IIssueParams,
-//   IReissueParams,
-//   IBurnParams,
-//   ILeaseParams,
-//   ICancelLeaseParams,
-//   IAliasParams,
-//   IMassTransferParams,
-//   IDataParams,
-//   ISetScriptParams,
-//   ISponsorshipParams,
-//   ISetAssetScriptParams,
-//   IInvokeScriptParams,
-// } from '@decentralchain/transactions';
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
-import { createAliasTransaction } from '@/utils/transactions';
+import { multiAccount } from '@/services/multiAccount';
+
+const MULTI_ACCOUNT_USERS_KEY = 'multiAccountUsers';
 
 /**
  * Signing error interface
@@ -176,8 +119,8 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   const [error, setError] = useState<SigningError | null>(null);
 
   /**
-   * Get seed from user
-   * NOTE: In production, this should decrypt encryptedSeed with user password
+   * Get the decrypted seed from in-memory multiAccount state.
+   * multiAccount.toList() returns in-memory decrypted data — no re-decryption needed.
    */
   const getSeed = useCallback((): string => {
     if (!user) {
@@ -190,49 +133,33 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
       );
     }
 
-    // TODO: Implement seed decryption with user password
-    // For now, throw error if encryptedSeed exists but no decryption implemented
-    if (user.encryptedSeed) {
-      throw new Error('Seed decryption not yet implemented. Please enter password.');
+    const storedUsers = JSON.parse(localStorage.getItem(MULTI_ACCOUNT_USERS_KEY) ?? '{}') as Record<
+      string,
+      Record<string, unknown>
+    >;
+
+    const entry = multiAccount.toList(storedUsers).find((u) => u.publicKey === user.publicKey);
+
+    if (!entry?.seed) {
+      throw new Error('Seed not available — please re-authenticate');
     }
 
-    throw new Error('No seed available for signing');
+    return entry.seed;
   }, [user]);
 
-  /**
-   * Get chain ID from network configuration (network byte character)
-   */
-  const getChainId = useCallback((): number => {
-    return networkByte;
-  }, [networkByte]);
+  const clearError = useCallback(() => setError(null), []);
 
   /**
-   * Generic signing wrapper with error handling
+   * Error-handling wrapper. Calls fn() directly (no type params) so each
+   * builder is invoked at its own call-site, letting TypeScript pick the
+   * correct first overload rather than the wider last-overload fallback.
    */
-  const signTransaction = useCallback(
-    async <T>(
-      signingFn: (params: T, seed: string) => unknown,
-      params: T,
-      transactionType: string,
-    ): Promise<unknown> => {
+  const withSigning = useCallback(
+    async (fn: () => unknown, transactionType: string): Promise<unknown> => {
       setIsSigning(true);
       setError(null);
-
       try {
-        const seed = getSeed();
-        const chainId = getChainId();
-
-        // Merge chainId and senderPublicKey with params
-        // TypeScript assertion needed because we're adding required fields
-        const fullParams = {
-          ...params,
-          chainId,
-          senderPublicKey: user?.publicKey,
-        } as T;
-
-        const signedTx = signingFn(fullParams, seed);
-
-        return signedTx;
+        return fn();
       } catch (err) {
         const signingError: SigningError = {
           code: 'SIGNING_FAILED',
@@ -245,165 +172,143 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
         setIsSigning(false);
       }
     },
-    [getSeed, getChainId, user],
-  );
-
-  /**
-   * Clear error state
-   */
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
-
-  // Transfer Transaction
-  const signTransfer = useCallback(
-    async (params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(transfer, params as ITransferParams, 'Transfer');
-    },
-    [signTransaction],
-  );
-
-  // Issue Transaction
-  const signIssue = useCallback(
-    async (params: Omit<IIssueParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(issue, params as IIssueParams, 'Issue');
-    },
-    [signTransaction],
-  );
-
-  // Reissue Transaction
-  const signReissue = useCallback(
-    async (params: Omit<IReissueParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(reissue, params as IReissueParams, 'Reissue');
-    },
-    [signTransaction],
-  );
-
-  // Burn Transaction
-  const signBurn = useCallback(
-    async (params: Omit<IBurnParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(burn, params as IBurnParams, 'Burn');
-    },
-    [signTransaction],
-  );
-
-  // Lease Transaction
-  const signLease = useCallback(
-    async (params: Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(lease, params as ILeaseParams, 'Lease');
-    },
-    [signTransaction],
-  );
-
-  // Cancel Lease Transaction
-  const signCancelLease = useCallback(
-    async (params: Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(cancelLease, params as ICancelLeaseParams, 'CancelLease');
-    },
-    [signTransaction],
-  );
-
-  // Alias Transaction
-  const signAlias = useCallback(
-    async (params: Omit<IAliasParams, 'chainId' | 'senderPublicKey'>) => {
-      setIsSigning(true);
-      setError(null);
-
-      try {
-        // createAliasTransaction uses data-service signature API directly
-        // It doesn't need a seed parameter
-        const signedTx = await createAliasTransaction(params as { alias: string; fee: number }, '');
-        return signedTx;
-      } catch (err) {
-        const signingError: SigningError = {
-          code: 'SIGNING_FAILED',
-          details: err,
-          message: 'Failed to sign Alias transaction',
-        };
-        setError(signingError);
-        throw signingError;
-      } finally {
-        setIsSigning(false);
-      }
-    },
     [],
   );
 
-  // Mass Transfer Transaction
+  const signTransfer = useCallback(
+    (params: Omit<ITransferParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => transfer({ ...params, chainId: networkByte } as ITransferParams, getSeed()),
+        'Transfer',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signIssue = useCallback(
+    (params: Omit<IIssueParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => issue({ ...params, chainId: networkByte } as IIssueParams, getSeed()),
+        'Issue',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signReissue = useCallback(
+    (params: Omit<IReissueParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => reissue({ ...params, chainId: networkByte } as IReissueParams, getSeed()),
+        'Reissue',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signBurn = useCallback(
+    (params: Omit<IBurnParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => burn({ ...params, chainId: networkByte } as IBurnParams, getSeed()),
+        'Burn',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signLease = useCallback(
+    (params: Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => lease({ ...params, chainId: networkByte } as ILeaseParams, getSeed()),
+        'Lease',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signCancelLease = useCallback(
+    (params: Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => cancelLease({ ...params, chainId: networkByte } as ICancelLeaseParams, getSeed()),
+        'CancelLease',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
+  const signAlias = useCallback(
+    (params: Omit<IAliasParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => alias({ ...params, chainId: networkByte } as IAliasParams, getSeed()),
+        'Alias',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
   const signMassTransfer = useCallback(
-    async (params: Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(massTransfer, params as IMassTransferParams, 'MassTransfer');
-    },
-    [signTransaction],
+    (params: Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => massTransfer({ ...params, chainId: networkByte } as IMassTransferParams, getSeed()),
+        'MassTransfer',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
-  // Data Transaction
   const signData = useCallback(
-    async (params: Omit<IDataParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(data, params as IDataParams, 'Data');
-    },
-    [signTransaction],
+    (params: Omit<IDataParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => data({ ...params, chainId: networkByte } as IDataParams, getSeed()),
+        'Data',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
-  // Set Script Transaction
   const signSetScript = useCallback(
-    async (params: Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(setScript, params as ISetScriptParams, 'SetScript');
-    },
-    [signTransaction],
+    (params: Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => setScript({ ...params, chainId: networkByte } as ISetScriptParams, getSeed()),
+        'SetScript',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
-  // Sponsorship Transaction
   const signSponsorship = useCallback(
-    async (params: Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(sponsorship, params as ISponsorshipParams, 'Sponsorship');
-    },
-    [signTransaction],
+    (params: Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => sponsorship({ ...params, chainId: networkByte } as ISponsorshipParams, getSeed()),
+        'Sponsorship',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
-  // Set Asset Script Transaction
   const signSetAssetScript = useCallback(
-    async (params: Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(setAssetScript, params as ISetAssetScriptParams, 'SetAssetScript');
-    },
-    [signTransaction],
+    (params: Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () =>
+          setAssetScript({ ...params, chainId: networkByte } as ISetAssetScriptParams, getSeed()),
+        'SetAssetScript',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
-  // Invoke Script Transaction
   const signInvokeScript = useCallback(
-    async (params: Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>) => {
-      return signTransaction(invokeScript, params as IInvokeScriptParams, 'InvokeScript');
-    },
-    [signTransaction],
+    (params: Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => invokeScript({ ...params, chainId: networkByte } as IInvokeScriptParams, getSeed()),
+        'InvokeScript',
+      ),
+    [withSigning, getSeed, networkByte],
   );
 
   return {
     clearError,
     error,
-
-    // State
     isSigning,
-
-    // Address & Data
     signAlias,
     signBurn,
     signCancelLease,
     signData,
     signInvokeScript,
-
-    // Asset Management
     signIssue,
-
-    // Leasing
     signLease,
     signMassTransfer,
     signReissue,
     signSetAssetScript,
-
-    // Smart Contracts
     signSetScript,
     signSponsorship,
-    // Transfer
     signTransfer,
   };
 };
