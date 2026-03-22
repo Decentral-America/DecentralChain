@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import networkConfig from '@/config/networkConfig';
 
 // Styled Components
 const LogoContainer = styled.div<{ $size: number }>`
@@ -69,11 +70,11 @@ export const AssetLogo: React.FC<AssetLogoProps> = ({
 }) => {
   const [error, setError] = useState(false);
 
-  // Generate logo URL
+  // Generate logo URL — DCC native asset logo derived from the configured origin
   const logoUrl =
     customUrl ||
-    (assetId === 'DCC' || assetId === 'DCC'
-      ? `https://decentralchain.io/img/logo-dcc.svg`
+    (assetId === 'DCC'
+      ? `${networkConfig.origin}/img/logo-dcc.svg`
       : `https://assets-cdn.trustwallet.com/blockchains/dcc/assets/${assetId}.png`);
 
   // Generate fallback text

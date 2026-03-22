@@ -76,9 +76,10 @@ export const InfoSettings: React.FC = () => {
   const supportLink = networkConfig.support || 'https://support.decentralchain.io';
   const supportLinkName = supportLink.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
-  // Legal links
-  const termsLink = 'https://decentralchain.io/terms';
-  const privacyLink = 'https://decentralchain.io/privacy';
+  // Legal links — sourced from mainnet.json via networkConfig
+  const termsLink =
+    networkConfig.termsAndConditions || 'https://decentralchain.io/terms-and-conditions';
+  const privacyLink = networkConfig.privacyPolicy || 'https://decentralchain.io/privacy-policy';
 
   return (
     <InfoSection>

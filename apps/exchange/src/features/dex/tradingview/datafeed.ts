@@ -53,7 +53,7 @@ const resolutionToInterval = (resolution: string): string => {
 };
 
 /**
- * Fetch candles from DecentralChain data service
+ * Fetch candles from DecentralChain matcher
  */
 const fetchCandles = async (
   amountAsset: string,
@@ -61,12 +61,10 @@ const fetchCandles = async (
   from: number,
   to: number,
   interval: string,
+  matcherUrl: string,
 ): Promise<DecentralChainCandle[]> => {
   try {
-    // Get matcher address from config (you may need to adjust this)
-    const matcher = 'https://matcher.decentral-chain.io';
-
-    const url = `${matcher}/matcher/orderbook/${amountAsset}/${priceAsset}/candlestick/${interval}`;
+    const url = `${matcherUrl}/matcher/orderbook/${amountAsset}/${priceAsset}/candlestick/${interval}`;
     const params = new URLSearchParams({
       timeEnd: to.toString(),
       timeStart: from.toString(),
@@ -85,12 +83,14 @@ const fetchCandles = async (
 
 /**
  * Create TradingView datafeed
+ * @param matcherUrl - Matcher base URL from config (e.g. https://mainnet-matcher.decentralchain.io)
  */
 export const createDatafeed = (
   amountAsset: string,
   priceAsset: string,
   amountAssetName: string,
   priceAssetName: string,
+  matcherUrl: string = 'https://mainnet-matcher.decentralchain.io',
 ): IBasicDataFeed => {
   return {
     getBars: async (
@@ -115,6 +115,7 @@ export const createDatafeed = (
           from * 1000, // Convert to milliseconds
           to * 1000,
           interval,
+          matcherUrl,
         );
 
         if (candles.length === 0) {
