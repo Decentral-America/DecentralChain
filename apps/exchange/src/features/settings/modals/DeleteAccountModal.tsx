@@ -11,6 +11,7 @@ import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { multiAccount } from '@/services/multiAccount';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -97,29 +98,36 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleDelete = async () => {
     if (!confirmed || !user) return;
 
     setIsDeleting(true);
+    setErrorMessage(null);
 
     try {
-      // TODO: Implement actual account deletion
-      // This would use: user.resetAll() or similar service method
-      // For now, we'll simulate the deletion process
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const result = await multiAccount.deleteUser(user.hash);
 
-      // In real implementation:
-      // - Remove account from multi-account storage
-      // - Clear localStorage data for this account
-      // - Call user.resetAll() or removeAccount(user.hash)
+      // Persist updated encrypted blob
+      localStorage.setItem('multiAccountData', result.multiAccountData);
+      localStorage.setItem('multiAccountHash', result.multiAccountHash);
 
-      // Logout and navigate to welcome page
+      // Remove user from unencrypted metadata
+      const storedUsers = JSON.parse(localStorage.getItem('multiAccountUsers') ?? '{}') as Record<
+        string,
+        unknown
+      >;
+      delete storedUsers[user.hash];
+      localStorage.setItem('multiAccountUsers', JSON.stringify(storedUsers));
+
       await logout();
-      navigate('/welcome');
+      navigate('/');
     } catch (error) {
       logger.error('Delete account failed:', error);
-      // Show error notification
+      const msg =
+        error instanceof Error ? error.message : 'Failed to delete account. Please try again.';
+      setErrorMessage(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -155,6 +163,23 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
             I understand this will permanently delete my account and I have backed up my seed phrase
           </CheckboxLabel>
         </CheckboxContainer>
+
+        {errorMessage && (
+          <div
+            style={{
+              backgroundColor: '#ffebee',
+              border: '1px solid #ef9a9a',
+              borderRadius: '4px',
+              color: '#c62828',
+              fontSize: '13px',
+              lineHeight: 1.5,
+              marginBottom: '8px',
+              padding: '12px',
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
 
         <ButtonGroup>
           <Button variant="text" onClick={onClose} disabled={isDeleting}>
