@@ -163,7 +163,7 @@ export function verifyAuthData(
   params: IAuthParams,
   chainId?: string | number,
 ): boolean {
-  chainId = chainId ?? 'L';
+  chainId = chainId ?? '?';
   const bytes = serializeAuthData(params);
   const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (
@@ -176,7 +176,7 @@ export function verifyDccAuthData(
   params: { publicKey: string; timestamp: number },
   chainId?: string | number,
 ): boolean {
-  chainId = chainId ?? 'L';
+  chainId = chainId ?? '?';
   const bytes = serializeDccAuthData(params);
   const myAddress = address({ publicKey: authData.publicKey }, chainId);
   return (
