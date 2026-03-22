@@ -192,11 +192,15 @@ All 22 SDK libraries have:
 
 **Security hardening (DCC-134) ✅:** nginx CORS wildcard removed, full OWASP 2026 CSP added (including `Permissions-Policy`, `COOP`, `CORP`), HSTS raised to 2yr, `USER nginx` in Dockerfile (non-root), rate limiting on API proxy. All critical nginx/Docker issues resolved.
 
+**Config hardening (Mar 22, 2026) ✅:** All hardcoded URLs replaced with config-driven values (`networkConfig`/`mainnet.json`): candlesService matcher fallback corrected, InfoSettings terms/privacy from `termsAndConditions`/`privacyPolicy` keys, AssetLogo DCC logo URL derived from `networkConfig.origin`.
+
+**TradingView datafeed domain (Mar 22, 2026) ✅:** `matcherUrl` threaded as parameter into `createDatafeed`; hardcoded `matcher.decentral-chain.io` eliminated.
+
 **Remaining open:**
-- 6 test files for 406 source files
-- `RestoreFromBackupPage`: restore logic is a stub (`setTimeout` placeholder) — blocked on node
-- TradingView datafeed hardcodes `matcher.decentral-chain.io` (wrong domain; correct: `mainnet-matcher.decentralchain.io`)
+- 6 test files for 406 source files (low coverage ratio)
+- `RestoreFromBackupPage`: restore logic is a stub (`setTimeout` placeholder) — unimplemented; all dependencies exist (`Seed.decrypt`, `addAccount`, `navigate`) but wiring is missing
 - Matcher signature authentication TODO in `matcherService.ts` — blocked on node
+- TradingView `subscribeBars` WebSocket real-time feed — TODO placeholder
 
 #### scanner (Block Explorer)
 
