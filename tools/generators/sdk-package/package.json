@@ -2,6 +2,6 @@
   "generators": "./generator.json",
   "name": "@decentralchain/sdk-package-generator",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "version": "0.0.0"
 }
