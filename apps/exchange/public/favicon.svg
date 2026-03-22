@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="96" fill="#392CB7"/>
+  <!-- Letter D path for Decentral Exchange -->
+  <path d="M128 128 h80 c88 0 148 56 148 128 s-60 128-148 128 h-80 z
+             M192 192 v128 h16 c48 0 84-28 84-64 s-36-64-84-64 z"
+        fill="white"/>
+</svg>

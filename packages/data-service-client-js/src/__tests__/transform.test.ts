@@ -67,6 +67,63 @@ describe('Default transformer', () => {
     expect(result).toBeNull();
   });
 
+  it('returns null for candle type when open field is null (empty candle from API)', () => {
+    const input = {
+      __type: ApiTypes.Candle,
+      data: {
+        close: null,
+        high: null,
+        low: null,
+        maxHeight: null,
+        open: null,
+        quoteVolume: null,
+        time: new Date(),
+        txsCount: null,
+        volume: null,
+        weightedAveragePrice: null,
+      },
+    };
+    const result = transformer(input);
+    expect(result).toBeNull();
+  });
+
+  it('filters out empty candles (null open) from a list of candles', () => {
+    const validCandle = {
+      __type: ApiTypes.Candle,
+      data: {
+        close: '1.5',
+        high: '2.0',
+        low: '1.0',
+        maxHeight: 100,
+        open: '1.2',
+        quoteVolume: '10',
+        time: new Date('2024-01-01'),
+        txsCount: 5,
+        volume: '100',
+        weightedAveragePrice: '1.3',
+      },
+    };
+    const emptyCandle = {
+      __type: ApiTypes.Candle,
+      data: {
+        close: null,
+        high: null,
+        low: null,
+        maxHeight: null,
+        open: null,
+        quoteVolume: null,
+        time: new Date('2024-01-02'),
+        txsCount: null,
+        volume: null,
+        weightedAveragePrice: null,
+      },
+    };
+    const input = { __type: ApiTypes.List, data: [validCandle, emptyCandle, validCandle] };
+    const result = transformer(input) as unknown[];
+    // Only the two valid candles should be in the result
+    expect(result).toHaveLength(2);
+  });
+
   it('returns the original object for unknown types', () => {
     const input = { __type: 'unknown', data: { foo: 'bar' }, extra: 123 };
     const result = transformer(input);

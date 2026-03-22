@@ -34,25 +34,25 @@ const SecuritySection = styled.div`
   padding: 16px 0;
 `;
 
-const Row = styled.div<{ border?: boolean }>`
+const Row = styled.div<{ $border?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 12px 0;
-  ${({ border }) =>
-    border &&
+  ${({ $border }) =>
+    $border &&
     `
     border-bottom: 1px solid #e0e0e0;
   `}
 `;
 
-const FlexRow = styled.div<{ border?: boolean }>`
+const FlexRow = styled.div<{ $border?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  ${({ border }) =>
-    border &&
+  ${({ $border }) =>
+    $border &&
     `
     border-bottom: 1px solid #e0e0e0;
   `}
@@ -334,14 +334,14 @@ export const SecuritySettings: React.FC = () => {
       </FlexRow>
 
       {/* Delete Account */}
-      <FlexRow border>
+      <FlexRow $border>
         <Label>Account</Label>
         <DangerLink onClick={showDeleteAccountModal}>Delete Account</DangerLink>
       </FlexRow>
 
       {/* Script Management (Advanced Mode only) */}
       {commonSettings.advancedMode && (
-        <FlexRow border>
+        <FlexRow $border>
           <Label>Smart Contract</Label>
           <ScriptButton onClick={showScriptModal}>
             {hasScript ? 'Update Script' : 'Set Script'}
