@@ -350,7 +350,7 @@ class CandlesService {
           typeof num === 'object' &&
           num !== null &&
           'isNaN' in num &&
-          typeof (num as Record<string, unknown>)['isNaN'] === 'function'
+          typeof (num as Record<string, unknown>).isNaN === 'function'
         ) {
           const obj = num as { isNaN(): boolean; toFixed(): string };
           if (obj.isNaN()) {
@@ -407,7 +407,8 @@ class CandlesService {
 
       return finalCandles;
     } catch (error) {
-      logger.error('[Candles] Error fetching candles:', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      logger.error('[Candles] Error fetching candles:', msg, error);
       // Wait and return empty array on error (matches Angular)
       await new Promise((resolve) => setTimeout(resolve, 5000));
       return [];

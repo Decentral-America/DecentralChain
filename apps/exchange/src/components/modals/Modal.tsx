@@ -109,15 +109,15 @@ const slideUp = keyframes`
   }
 `;
 
-const Overlay = styled.div<{ zIndex: number; animationDuration: number }>`
+const Overlay = styled.div<{ $zIndex: number; $animationDuration: number }>`
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: ${(p) => p.zIndex};
-  animation: ${fadeIn} ${(p) => p.animationDuration}ms ease-out;
+  z-index: ${(p) => p.$zIndex};
+  animation: ${fadeIn} ${(p) => p.$animationDuration}ms ease-out;
   padding: ${(p) => p.theme.spacing.lg};
   overflow-y: auto;
 
@@ -145,14 +145,14 @@ const sizeStyles = {
 
 const ModalContent = styled.div<{
   size: 'small' | 'medium' | 'large' | 'fullscreen';
-  animationDuration: number;
+  $animationDuration: number;
 }>`
   background: ${(p) => p.theme.colors.background};
   border-radius: ${(p) => p.theme.radii.lg};
   box-shadow: ${(p) => p.theme.shadows.xl};
   width: 90%;
   ${(p) => sizeStyles[p.size]}
-  animation: ${slideUp} ${(p) => p.animationDuration}ms ease-out;
+  animation: ${slideUp} ${(p) => p.$animationDuration}ms ease-out;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -290,14 +290,14 @@ export const Modal: React.FC<ModalProps> = ({
     <Portal>
       <Overlay
         onClick={handleOverlayClick}
-        zIndex={zIndex}
-        animationDuration={animationDuration}
+        $zIndex={zIndex}
+        $animationDuration={animationDuration}
         data-testid={`${testId}-overlay`}
       >
         <ModalContent
           ref={modalRef}
           size={size}
-          animationDuration={animationDuration}
+          $animationDuration={animationDuration}
           className={className}
           role="dialog"
           aria-modal="true"
