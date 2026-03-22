@@ -50,7 +50,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Run E2E tests
-        run: pnpm run test
+        run: pnpm run test:e2e
         env:
           # Points the WebdriverIO runner at the Selenium Hub started above.
           SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
