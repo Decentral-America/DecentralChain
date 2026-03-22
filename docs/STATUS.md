@@ -32,13 +32,13 @@ All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 5.9 strict throughout. Ze
 
 **cubensis-connect** is on **Vite 8** (upgraded from 6), MV3 already wired for Chrome/Edge (MV2 stays for Firefox intentionally), `@sentry/browser@10.43.0` already installed, CSP already has `wasm-unsafe-eval`. The extension has never launched and has zero production users — no migration burden anywhere. Identity model is **1-of-1, seed-phrase only** — users hold their own keys with no custodial component. Cognito is fully removed.
 
-**exchange** is functional but incomplete. Vite 8, React, DEX UI. nginx is hardened (CSP enforced, HSTS 1yr, non-root container, no CORS wildcard — all fixed in DCC-141). **Still broken: all 12 signing functions** in `useTransactionSigning.ts` throw `"Not implemented"`. `@decentralchain/transactions` is not listed in `apps/exchange/package.json` and all imports are commented out with a "Vite compat" TODO. This is the last P2 blocker for the exchange.
+**exchange** is functional. Vite 8.0.1, React, DEX UI. nginx is hardened to OWASP 2026 (CSP, HSTS 2yr, Permissions-Policy, COOP, CORP, non-root, rate-limited API proxy — all applied in DCC-134). All 13 signing functions in `useTransactionSigning.ts` are fully implemented using `@decentralchain/transactions` with seed-based signing via `multiAccount`. Exchange is feature-complete pending the new node implementation.
 
 **scanner** is production-hardened. SSR with React Router 7, non-root Docker, 189 tests passing (82.86% line coverage). Done.
 
 ### Active P1
 
-5 packages still tagged `@next` on npm need dist-tag promotion to `@latest`: `assets-pairs-order`, `marshall`, `node-api-js`, `signer`, `signature-adapter`.
+5 packages still tagged `@next` on npm are **intentionally held** pending the new node implementation. They will be promoted to `@latest` once the node is ready: `assets-pairs-order`, `marshall`, `node-api-js`, `signer`, `signature-adapter`.
 
 ### Closed risks
 
@@ -170,9 +170,7 @@ All 22 SDK libraries have:
 
 | Package | Issue | Severity |
 |---------|-------|----------|
-| **transactions** | `chainId` defaults to `'L'` not DCC mainnet `'?'` | Medium |
-| **transactions** | `protobuf-serialization` linked via `file:` | Low |
-| **node-api-js** | Default chainId `'L'` may not match all networks | Low |
+| **transactions** | Transaction builders default `chainId` to `76` (`'L'`) — auth/verify functions fixed (DCC-134); builder functions (`alias`, `burn`, `issue`, etc.) still call `networkByte(chainId, 76)`. Callers must always pass explicit `chainId`. | Low |
 | **browser-bus** | Wildcard `'*'` targetOrigin still allowed (warned) | Low |
 | **signature-adapter** | `ramda` adds bundle weight | Low |
 | **ride-js** | Depends on unforked `@waves/ride-lang` + `@waves/ride-repl` | Low |
@@ -192,13 +190,13 @@ All 22 SDK libraries have:
 
 #### exchange (DEX)
 
-**Critical issues:**
-- Nginx `Access-Control-Allow-Origin: *` on financial application
-- No Content-Security-Policy in production nginx
-- `set_real_ip_from 0.0.0.0/0` — IP spoofing risk
-- Docker runs as root
-- Only 6 test files for 405 source files
-- All 13 signing functions throw "Not implemented"
+**Security hardening (DCC-134) ✅:** nginx CORS wildcard removed, full OWASP 2026 CSP added (including `Permissions-Policy`, `COOP`, `CORP`), HSTS raised to 2yr, `USER nginx` in Dockerfile (non-root), rate limiting on API proxy. All critical nginx/Docker issues resolved.
+
+**Remaining open:**
+- 6 test files for 406 source files
+- `RestoreFromBackupPage`: restore logic is a stub (`setTimeout` placeholder) — blocked on node
+- TradingView datafeed hardcodes `matcher.decentral-chain.io` (wrong domain; correct: `mainnet-matcher.decentralchain.io`)
+- Matcher signature authentication TODO in `matcherService.ts` — blocked on node
 
 #### scanner (Block Explorer)
 
@@ -331,11 +329,11 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P0~~ | ~~Cognito architecture~~ | Removed — `IdentityController.ts` deleted (DCC-118), `amazon-cognito-identity-js` removed (DCC-117). 1-of-1 seed model. | ✅ Closed |
 | ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
 | ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
-| **P1** | Promote npm `next` → `latest` | 5 packages need dist-tag promotion | ⬜ Pending |
+| **P1** | Promote npm `next` → `latest` | 5 packages intentionally held at `@next` pending new node implementation. Promote when node is ready. | ⬜ Blocked on node |
 | **P2** | Rename `waves-community` repo | Rename GitHub repo + update scam token URL | ⬜ Pending |
-| **P2** | Exchange signing stubs | 12 functions in `useTransactionSigning.ts` throw `"Not implemented"`. Root cause: `@decentralchain/transactions` is missing from exchange `package.json` deps and imports are commented out. The package builds and works. Fix: add `workspace:*` dep + uncomment 15 lines | ⬜ Pending |
+| ~~P2~~ | ~~Exchange signing stubs~~ | All 13 functions fully implemented in `useTransactionSigning.ts` using `@decentralchain/transactions` + seed signing via `multiAccount` | ✅ Completed |
 | **P2** | Set up Sentry DSN | `@sentry/browser@10.43.0` already installed in cubensis-connect. `VITE_SENTRY_DSN` already in scanner runbook. Exchange needs `@sentry/react`. Action: create Sentry project, inject DSN env var at build time | ⬜ Pending |
-| **P2** | Exchange nginx hardening | In `apps/exchange/nginx.conf`: (1) replace `Access-Control-Allow-Origin *` with specific allowed origins, (2) add `Content-Security-Policy` header, (3) raise HSTS to `max-age=31536000`, (4) remove deprecated `X-XSS-Protection`, (5) add `Permissions-Policy`, (6) add `USER nginx` to Dockerfile | ⬜ Pending |
+| ~~P2~~ | ~~Exchange nginx hardening~~ | Full OWASP 2026 hardening applied (DCC-134): no CORS wildcard, robust CSP, HSTS 2yr, `Permissions-Policy`, `COOP`, `CORP`, `USER nginx`, rate limiting | ✅ Completed |
 | ~~P2~~ | ~~Scanner README drift~~ | Completed Mar 20, 2026 | ✅ Completed |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
