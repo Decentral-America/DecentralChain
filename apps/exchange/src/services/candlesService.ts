@@ -312,7 +312,7 @@ class CandlesService {
     try {
       // Get matcher address (like Angular does)
       const fullConfig = NetworkConfig.getFullConfig();
-      const matcherUrl = fullConfig.matcher || 'https://matcher.decentralchain.io';
+      const matcherUrl = fullConfig.matcher || 'https://mainnet-matcher.decentralchain.io/matcher';
 
       // Fetch matcher public key from the matcher endpoint
       const matcherPublicKeyResponse = await fetch(`${matcherUrl}/`);
