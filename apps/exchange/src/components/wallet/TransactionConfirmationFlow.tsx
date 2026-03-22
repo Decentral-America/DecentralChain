@@ -3,6 +3,22 @@
  * Multi-step confirmation component for reviewing and broadcasting transactions
  * Provides visual feedback through review → signing → broadcasting → success/error states
  */
+
+import {
+  type IAliasParams,
+  type IBurnParams,
+  type ICancelLeaseParams,
+  type IDataParams,
+  type IInvokeScriptParams,
+  type IIssueParams,
+  type ILeaseParams,
+  type IMassTransferParams,
+  type IReissueParams,
+  type ISetAssetScriptParams,
+  type ISetScriptParams,
+  type ISponsorshipParams,
+  type ITransferParams,
+} from '@decentralchain/transactions';
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
@@ -12,14 +28,8 @@ import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { type Transaction, transactionService } from '@/services/transactionService';
 
-// Temporary type definition until @decentralchain/transactions is fixed
-type ITransferParams = {
-  recipient?: string;
-  amount?: number;
-  fee?: number;
-  attachment?: string;
-  [key: string]: unknown;
-};
+type TxParams = Record<string, unknown>;
+const cast = <T,>(p: TxParams): T => p as unknown as T;
 
 /**
  * Transaction Flow Steps
@@ -28,12 +38,14 @@ type ConfirmationStep = 'review' | 'signing' | 'broadcasting' | 'confirming' | '
 
 /**
  * Component Props
+ * params is typed broadly because this component handles multiple transaction types;
+ * the correct signer is chosen at runtime based on transactionType.
  */
 export interface TransactionConfirmationProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (transaction: Transaction) => void;
-  params: ITransferParams;
+  params: Record<string, unknown>;
   transactionType?: string;
 }
 
@@ -149,7 +161,22 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
   const [step, setStep] = useState<ConfirmationStep>('review');
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  const { signTransfer, isSigning } = useTransactionSigning();
+  const {
+    signTransfer,
+    signAlias,
+    signData,
+    signMassTransfer,
+    signSetScript,
+    signIssue,
+    signLease,
+    signCancelLease,
+    signBurn,
+    signSponsorship,
+    signReissue,
+    signSetAssetScript,
+    signInvokeScript,
+    isSigning,
+  } = useTransactionSigning();
 
   /**
    * Reset flow state when modal closes
@@ -172,6 +199,75 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
   }, [step, handleClose]);
 
   /**
+   * Dispatch signing to the correct builder based on the normalised type string.
+   * Using a switch instead of a nested ternary keeps cyclomatic complexity low,
+   * makes dead-code analysis tractable, and satisfies enterprise readability standards.
+   */
+  const signByType = useCallback(
+    (type: string): Promise<unknown> => {
+      switch (type) {
+        case 'alias':
+          return signAlias(cast<Omit<IAliasParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'data':
+          return signData(cast<Omit<IDataParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'masstransfer':
+        case 'mass-transfer':
+          return signMassTransfer(
+            cast<Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>>(params),
+          );
+        case 'setscript':
+        case 'set-script':
+          return signSetScript(cast<Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'issue':
+          return signIssue(cast<Omit<IIssueParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'lease':
+          return signLease(cast<Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'cancellease':
+        case 'cancel-lease':
+          return signCancelLease(
+            cast<Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>>(params),
+          );
+        case 'burn':
+          return signBurn(cast<Omit<IBurnParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'sponsorship':
+          return signSponsorship(
+            cast<Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>>(params),
+          );
+        case 'reissue':
+          return signReissue(cast<Omit<IReissueParams, 'chainId' | 'senderPublicKey'>>(params));
+        case 'setassetscript':
+        case 'set-asset-script':
+          return signSetAssetScript(
+            cast<Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>>(params),
+          );
+        case 'invokescript':
+        case 'invoke-script':
+          return signInvokeScript(
+            cast<Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>>(params),
+          );
+        default:
+          return signTransfer(cast<Omit<ITransferParams, 'chainId' | 'senderPublicKey'>>(params));
+      }
+    },
+    [
+      params,
+      signAlias,
+      signBurn,
+      signCancelLease,
+      signData,
+      signInvokeScript,
+      signIssue,
+      signLease,
+      signMassTransfer,
+      signReissue,
+      signSetAssetScript,
+      signSetScript,
+      signSponsorship,
+      signTransfer,
+    ],
+  );
+
+  /**
    * Execute transaction: sign → broadcast → wait for confirmation
    */
   const handleConfirm = useCallback(async () => {
@@ -180,7 +276,8 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
 
       // Step 1: Signing
       setStep('signing');
-      const signedTx = await signTransfer(params);
+      const type = transactionType?.toLowerCase() ?? 'transfer';
+      const signedTx = await signByType(type);
 
       // Step 2: Broadcasting
       setStep('broadcasting');
@@ -208,7 +305,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
       setStep('error');
     }
-  }, [params, signTransfer, onSuccess]);
+  }, [transactionType, signByType, onSuccess]);
 
   /**
    * Retry after error
@@ -235,22 +332,22 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Recipient</Label>
-                  <Value>{String(params.recipient ?? '')}</Value>
+                  <Value>{String(params['recipient'] ?? '')}</Value>
                 </ReviewRow>
                 <ReviewRow>
                   <Label>Amount</Label>
-                  <Value>{(Number(params.amount) || 0) / 100000000} DCC</Value>
+                  <Value>{(Number(params['amount']) || 0) / 100000000} DCC</Value>
                 </ReviewRow>
-                {!!params.fee && (
+                {!!params['fee'] && (
                   <ReviewRow>
                     <Label>Fee</Label>
-                    <Value>{(Number(params.fee) || 0) / 100000000} DCC</Value>
+                    <Value>{(Number(params['fee']) || 0) / 100000000} DCC</Value>
                   </ReviewRow>
                 )}
-                {!!params.attachment && (
+                {!!params['attachment'] && (
                   <ReviewRow>
                     <Label>Attachment</Label>
-                    <Value>{String(params.attachment ?? '')}</Value>
+                    <Value>{String(params['attachment'] ?? '')}</Value>
                   </ReviewRow>
                 )}
               </ReviewSection>
