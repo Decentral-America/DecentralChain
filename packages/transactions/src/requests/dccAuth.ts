@@ -26,7 +26,7 @@ export function dccAuth(
   validate.dccAuth({ publicKey, timestamp });
 
   const rx = {
-    address: address({ publicKey }, chainId ?? 'L'),
+    address: address({ publicKey }, chainId ?? '?'),
     hash: '',
     publicKey,
     signature: '',

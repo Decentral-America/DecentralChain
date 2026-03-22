@@ -30,7 +30,7 @@ export function auth(
   validate.auth(params as unknown as Record<string, unknown>);
 
   const rx = {
-    address: address({ publicKey }, chainId ?? 'L'),
+    address: address({ publicKey }, chainId ?? '?'),
     data: params.data,
     hash: '',
     host: params.host,
