@@ -68,8 +68,8 @@ const Logo = styled.div`
 `;
 
 export const InfoSettings: React.FC = () => {
-  // Get version from package.json
-  const appVersion = '1.0.0'; // TODO: Import from package.json
+  // Injected at build time by Vite (see vite.config.ts define block)
+  const appVersion = import.meta.env.VITE_APP_VERSION ?? '0.0.0';
   const appName = 'Decentral Exchange';
 
   // Get support link from mainnet.json
@@ -114,7 +114,7 @@ export const InfoSettings: React.FC = () => {
 
       {/* Copyright */}
       <InfoRow border>
-        <Copyright>&copy; 2021 Blockchain Costa Rica</Copyright>
+        <Copyright>&copy; {new Date().getFullYear()} Blockchain Costa Rica</Copyright>
         <Logo>DecentralChain</Logo>
       </InfoRow>
     </InfoSection>
