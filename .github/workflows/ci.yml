@@ -45,6 +45,16 @@ jobs:
       - name: Security audit
         run: pnpm audit --audit-level=high
 
+      - name: Scan for secrets (Trivy)
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          scanners: secret
+
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
 
