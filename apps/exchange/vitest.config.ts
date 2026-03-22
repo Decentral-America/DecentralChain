@@ -3,7 +3,21 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // charting_library is a proprietary ambient module (type declarations only).
+    // Vite's import-analysis plugin still tries to resolve it at test time even
+    // for all-type imports, so we serve an empty ESM stub to unblock resolution.
+    {
+      load(id: string) {
+        return id === '\0charting_library' ? 'export {};' : null;
+      },
+      name: 'vitest-charting-library-stub',
+      resolveId(id: string) {
+        return id === 'charting_library' ? '\0charting_library' : null;
+      },
+    },
+  ],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
