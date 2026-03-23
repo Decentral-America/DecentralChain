@@ -52,8 +52,8 @@
  *   externalDependencies          — the installed Biome version
  */
 
-import { createNodesFromFiles } from '@nx/devkit';
 import { dirname } from 'node:path';
+import { createNodesFromFiles } from '@nx/devkit';
 
 const PLUGIN_NAME = '@decentralchain/nx-biome-inferred';
 
@@ -143,7 +143,6 @@ export const createNodesV2 = [
  * a no-op — the loaded object never needs to be mutated.
  */
 export default {
-  name: PLUGIN_NAME,
   createNodesV2,
+  name: PLUGIN_NAME,
 };
-

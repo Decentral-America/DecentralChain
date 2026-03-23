@@ -102,6 +102,9 @@
           "security": {
             "noSecrets": "off"
           },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
           "suspicious": {
             "noExplicitAny": "off"
           }

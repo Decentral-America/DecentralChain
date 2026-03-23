@@ -54,12 +54,19 @@
           "options": {
             "maxAllowedComplexity": 25
           }
-        }
+        },
+        "noUselessUndefined": "warn"
       },
       "correctness": {
         "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error",
         "noUnusedVariables": "error"
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error",
+        "noNestedPromises": "error",
+        "noUselessReturn": "info"
       },
       "recommended": true,
       "security": {
@@ -82,7 +89,10 @@
           "options": {
             "allow": ["warn", "error"]
           }
-        }
+        },
+        "noDeprecatedImports": "warn",
+        "noImportCycles": "warn",
+        "noUnusedExpressions": "error"
       }
     }
   },
