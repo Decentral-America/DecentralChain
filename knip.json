@@ -1,13 +1,51 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": [
+    "vitest.base.config.ts",
+    "**/vitest.config.ts",
+    "**/vitest.unit.config.ts",
+    "**/vite.config.ts",
+    "**/tsdown.config.ts",
+    "**/.agents/**",
+    "**/.github/skills/**",
+    "**/.opencode/**",
+    "scripts/**",
+    "tools/**"
+  ],
+  "ignoreDependencies": ["@vitest/coverage-v8", "undici-types"],
+  "vitest": {
+    "config": []
+  },
   "workspaces": {
-    "apps/*": {
-      "entry": ["src/index.ts", "src/main.ts", "src/index.tsx", "src/main.tsx"],
+    ".": {
+      "entry": [],
+      "project": []
+    },
+    "apps/cubensis-connect": {
+      "entry": [
+        "src/popup.tsx",
+        "src/popupRoot.tsx",
+        "src/accounts.tsx",
+        "src/accountsRoot.tsx",
+        "src/background.ts",
+        "src/contentscript.ts",
+        "src/inpage.ts",
+        "src/notification.tsx",
+        "src/constants.ts"
+      ],
+      "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
+    },
+    "apps/exchange": {
+      "entry": ["src/main.tsx", "src/pages/**/*.tsx"],
+      "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
+    },
+    "apps/scanner": {
+      "entry": ["src/main.tsx", "src/entry.server.tsx", "src/pages/**/*.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/*": {
       "entry": ["src/index.ts"],
-      "project": ["src/**/*.ts"]
+      "project": ["src/**/*.ts", "test/**/*.ts"]
     }
   }
 }
