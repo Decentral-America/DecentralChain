@@ -5,6 +5,7 @@ import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-r
 import {
   Bar,
   BarChart,
+  // biome-ignore lint/suspicious/noDeprecatedImports: recharts marks Cell's internal CellReader context as deprecated; Cell itself is still the documented public API with no replacement
   Cell,
   Pie,
   PieChart,
@@ -111,7 +112,7 @@ export default function Asset() {
     e.preventDefault();
     if (searchAssetId.trim()) {
       setAssetId(searchAssetId.trim());
-      navigate(createPageUrl('Asset', `?id=${searchAssetId.trim()}`));
+      void navigate(createPageUrl('Asset', `?id=${searchAssetId.trim()}`));
     }
   };
 
@@ -395,7 +396,7 @@ function AssetActivityWidget() {
       }
     };
 
-    fetchAssetActivity();
+    void fetchAssetActivity();
     return () => {
       cancelledRef.current = true;
     };

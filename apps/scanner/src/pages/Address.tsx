@@ -117,7 +117,7 @@ export default function Address() {
     e.preventDefault();
     if (searchAddress.trim()) {
       setAddress(searchAddress.trim());
-      navigate(createPageUrl('Address', `?addr=${searchAddress.trim()}`));
+      void navigate(createPageUrl('Address', `?addr=${searchAddress.trim()}`));
     }
   };
 

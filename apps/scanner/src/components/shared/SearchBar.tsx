@@ -23,7 +23,7 @@ export default function SearchBar(): React.ReactElement {
     try {
       // Check if it's a block height (all digits)
       if (/^\d+$/.test(trimmedQuery)) {
-        navigate(createPageUrl('BlockDetail', `?height=${trimmedQuery}`));
+        void navigate(createPageUrl('BlockDetail', `?height=${trimmedQuery}`));
         setLoading(false);
         return;
       }
@@ -33,21 +33,21 @@ export default function SearchBar(): React.ReactElement {
         // Try as block ID first
         try {
           await fetchBlockById(trimmedQuery);
-          navigate(createPageUrl('BlockDetail', `?id=${trimmedQuery}`));
+          void navigate(createPageUrl('BlockDetail', `?id=${trimmedQuery}`));
           setLoading(false);
           return;
         } catch (_blockError) {
           // Try as transaction ID
           try {
             await fetchTransactionInfo(trimmedQuery);
-            navigate(createPageUrl('Transaction', `?id=${trimmedQuery}`));
+            void navigate(createPageUrl('Transaction', `?id=${trimmedQuery}`));
             setLoading(false);
             return;
           } catch (_txError) {
             // Try as asset ID
             try {
               await fetchAssetDetailsById(trimmedQuery);
-              navigate(createPageUrl('Asset', `?id=${trimmedQuery}`));
+              void navigate(createPageUrl('Asset', `?id=${trimmedQuery}`));
               setLoading(false);
               return;
             } catch (_assetError) {
@@ -58,7 +58,7 @@ export default function SearchBar(): React.ReactElement {
       }
 
       // Otherwise, assume it's an address
-      navigate(createPageUrl('Address', `?addr=${trimmedQuery}`));
+      void navigate(createPageUrl('Address', `?addr=${trimmedQuery}`));
     } catch (error: unknown) {
       toast({
         description:
