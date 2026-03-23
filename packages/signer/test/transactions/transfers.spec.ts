@@ -7,10 +7,10 @@ const MASTER_ADDRESS = libs.crypto.address(ACCOUNTS.SIMPLE.seed, NETWORK_BYTE);
 let signer: Signer;
 let provider: TestProvider = new TestProvider(ACCOUNTS.SIMPLE.seed);
 
-beforeEach(() => {
+beforeEach(async () => {
   signer = new Signer({ NODE_URL: MOCK_URL });
   provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
-  signer.setProvider(provider as any);
+  await signer.setProvider(provider as any);
 });
 
 it('Transfer Signer', async () => {

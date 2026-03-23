@@ -412,7 +412,7 @@ describe('lib', () => {
     // --- Replacer function ---
     it('uses replacer function', () => {
       const result = stringify({ a: 1, b: 2, c: 3 }, (_key: string, value: unknown) => {
-        if (_key === 'b') return undefined;
+        if (_key === 'b') return;
         return value;
       });
       expect(JSON.parse(result)).toEqual({ a: 1, c: 3 });
@@ -1088,7 +1088,7 @@ describe('lib', () => {
         const { stringify } = create(options);
         const data = { a: new BigNumber(42), b: 1 };
         const result = stringify(data, (_key, value) => {
-          if (_key === 'a') return undefined;
+          if (_key === 'a') return;
           return value;
         });
         expect(result).toBe('{"b":1}');

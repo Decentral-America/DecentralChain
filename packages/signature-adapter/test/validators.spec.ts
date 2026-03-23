@@ -50,7 +50,7 @@ describe('Check validators', () => {
       expect(
         (() => {
           const signable = adapter.makeSignable(signData);
-          signable.getDataForApi();
+          void signable.getDataForApi();
           return true;
         })(),
       ).toBe(true);

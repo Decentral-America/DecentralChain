@@ -42,7 +42,9 @@ export const TRANSACTION_TYPE = {
   CANCEL_LEASE: 9 as const,
   DATA: 12 as const,
   EXCHANGE: 7 as const,
-  // TODO Remove after refactor ts-types lib
+  // GENESIS is included here for completeness with the Waves protocol transaction set.
+  // ts-types already exports TRANSACTION_TYPE.GENESIS; this local constant mirrors it
+  // for consumers that depend on this package directly.
   GENESIS: 1 as const,
   ISSUE: 3 as const,
   LEASE: 8 as const,

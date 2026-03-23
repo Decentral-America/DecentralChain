@@ -531,7 +531,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
         return v;
 
       default:
-        return undefined;
+        return;
     }
   }
 

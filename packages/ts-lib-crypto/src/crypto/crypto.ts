@@ -61,7 +61,7 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
    * because generic callables cannot be narrowed through casts (TS2352).
    * These are inherent TypeScript limitations in higher-order generic wrappers.
    */
-  // biome-ignore lint/suspicious/noExplicitAny: suppressed
+  // biome-ignore lint/suspicious/noExplicitAny: conditional type inference requires any in constraint position
   type ArgsFirstRest<TFunc> = TFunc extends (a: infer A, ...args: infer U) => any ? [A, U] : never;
   // biome-ignore lint/suspicious/noExplicitAny: conditional type inference requires any
   type ArgsAll<TFunc> = TFunc extends (...args: infer U) => any ? U : never;
