@@ -41,7 +41,7 @@ export function ExportAddressBook() {
           }}
           onSubmit={async (password, encrypted) => {
             await downloadKeystore(undefined, addressesToExport, password, encrypted);
-            navigate(-2);
+            void navigate(-2);
           }}
         />
       )}

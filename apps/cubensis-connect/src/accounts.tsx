@@ -21,6 +21,7 @@ import { ledgerService } from './ledger/service';
 import { type LedgerSignRequest } from './ledger/types';
 import { initSentry } from './sentry/init';
 import { setLoading } from './store/actions/localState';
+import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { RootWrapper } from './ui/components/RootWrapper';
 import Background, { type BackgroundUiApi } from './ui/services/Background';
 
@@ -38,7 +39,7 @@ initSentry({
 
 const store = createAccountsStore();
 
-Promise.all([
+void Promise.all([
   Browser.storage.local
     .get('currentLocale')
     .then(({ currentLocale }: { currentLocale?: string }) => i18next.changeLanguage(currentLocale)),
@@ -50,11 +51,13 @@ Promise.all([
 
   createRoot(rootEl).render(
     <StrictMode>
-      <Provider store={store}>
-        <RootWrapper>
-          <AccountsRoot />
-        </RootWrapper>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <RootWrapper>
+            <AccountsRoot />
+          </RootWrapper>
+        </Provider>
+      </ErrorBoundary>
     </StrictMode>,
   );
 

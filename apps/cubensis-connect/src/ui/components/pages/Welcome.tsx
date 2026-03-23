@@ -29,7 +29,7 @@ export function Welcome({ isPopup }: Props) {
               'accounts',
             );
           }
-          navigate('/init-vault');
+          void navigate('/init-vault');
         }}
       >
         {t('welcome.getStarted')}

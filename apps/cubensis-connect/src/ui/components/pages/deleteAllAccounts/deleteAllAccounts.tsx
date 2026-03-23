@@ -69,7 +69,7 @@ export function DeleteAllAccounts() {
         <Button
           type="button"
           onClick={() => {
-            navigate(-1);
+            void navigate(-1);
           }}
           data-testid="resetCancel"
         >
@@ -81,7 +81,7 @@ export function DeleteAllAccounts() {
           disabled={hasError}
           onClick={async () => {
             await dispatch(deleteAllAccounts());
-            navigate('/', { replace: true });
+            void navigate('/', { replace: true });
           }}
           data-testid="resetConfirm"
         >

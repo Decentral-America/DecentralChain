@@ -63,12 +63,12 @@ export class RemoteConfigController extends EventEmitter {
 
     extensionStorage.subscribe(this.store);
 
-    this.#updateMainConfig();
+    void this.#updateMainConfig();
 
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
         case 'updateMainConfig':
-          this.#updateMainConfig();
+          void this.#updateMainConfig();
           break;
       }
     });

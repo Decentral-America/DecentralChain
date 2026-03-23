@@ -169,23 +169,25 @@ export class ExtensionStorage {
           store.unsubscribe(observer.next);
         };
       }),
-      subscribe(async (updatedState) => {
-        const currentState = await Browser.storage.local.get(Object.keys(updatedState));
+      subscribe((updatedState) => {
+        void (async () => {
+          const currentState = await Browser.storage.local.get(Object.keys(updatedState));
 
-        const changedState = Object.fromEntries(
-          Object.entries(updatedState)
-            .map(([key, value]) => [key, value === undefined ? null : value] as const)
-            .filter(([key, value]) => !deepEqual(currentState[key], value)),
-        );
+          const changedState = Object.fromEntries(
+            Object.entries(updatedState)
+              .map(([key, value]) => [key, value === undefined ? null : value] as const)
+              .filter(([key, value]) => !deepEqual(currentState[key], value)),
+          );
 
-        const changedKeys = Object.keys(changedState);
+          const changedKeys = Object.keys(changedState);
 
-        if (changedKeys.length === 0) {
-          return;
-        }
+          if (changedKeys.length === 0) {
+            return;
+          }
 
-        this.#state = { ...this.#state, ...changedState };
-        Browser.storage.local.set(changedState);
+          this.#state = { ...this.#state, ...changedState };
+          await Browser.storage.local.set(changedState);
+        })();
       }),
     );
   }

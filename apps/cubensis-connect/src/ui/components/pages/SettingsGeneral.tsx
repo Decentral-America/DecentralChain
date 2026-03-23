@@ -46,7 +46,7 @@ export function SettingsGeneral() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/change-password');
+              void navigate('/change-password');
             }}
           >
             <div className="body1 left">{t('settings.password')}</div>

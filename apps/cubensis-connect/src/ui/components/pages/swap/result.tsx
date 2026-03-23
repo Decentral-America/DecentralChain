@@ -82,9 +82,11 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
           const txInfoUrl = new URL(`/transactions/info/${transactionId}`, nodeBaseUrl);
 
           try {
-            const txInfo = (await fetch(txInfoUrl.toString()).then((res) =>
-              res.ok ? res.json() : res.text().then((text) => Promise.reject(new Error(text))),
-            )) as {
+            const txInfoResponse = await fetch(txInfoUrl.toString());
+            if (!txInfoResponse.ok) {
+              throw new Error(await txInfoResponse.text());
+            }
+            const txInfo = (await txInfoResponse.json()) as {
               stateChanges: {
                 transfers: Array<{
                   address: string;
@@ -147,7 +149,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
       }
     }
 
-    updateStatus(null);
+    void updateStatus(null);
 
     return () => {
       cancelled = true;

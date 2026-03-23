@@ -32,7 +32,7 @@ export function ExportAccounts() {
           }}
           onSubmit={async (password) => {
             await downloadKeystore(accountsToExport, undefined, password);
-            navigate(-2);
+            void navigate(-2);
           }}
         />
       )}

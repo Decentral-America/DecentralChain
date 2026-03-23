@@ -49,7 +49,7 @@ export function OtherAccountsPage() {
 
   const addAccount = () => {
     background.showTab(`${window.location.origin}/accounts.html`, 'accounts');
-    navigate('/', { replace: true });
+    void navigate('/', { replace: true });
   };
 
   useEffect(() => startPolling(10000, () => background.updateOtherAccountsBalances()), []);
@@ -94,10 +94,10 @@ export function OtherAccountsPage() {
               balance={balancesMoney[account.address]}
               onClick={(clickedAccount) => {
                 dispatch(selectAccount(clickedAccount));
-                navigate('/', { replace: true });
+                void navigate('/', { replace: true });
               }}
               onInfoClick={(clickedAccount) => {
-                navigate(`/account-info/${clickedAccount.address}`);
+                void navigate(`/account-info/${clickedAccount.address}`);
               }}
             />
           ))

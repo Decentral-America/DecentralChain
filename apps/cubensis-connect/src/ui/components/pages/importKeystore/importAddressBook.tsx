@@ -113,7 +113,7 @@ export function ImportAddressBook() {
           }
 
           dispatch(setAddresses(getFormattedAddresses(addresses, keystoreAddresses)));
-          navigate('/import-address-book/success');
+          void navigate('/import-address-book/success');
         } catch (_err) {
           setError(t('importKeystore.errorUnexpected'));
         }

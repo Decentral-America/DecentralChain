@@ -63,7 +63,7 @@ class Background {
 
   async updateIdle() {
     this.updatedByUser = true;
-    this._updateIdle();
+    void this._updateIdle();
   }
 
   async setIdleOptions(options: { type: string }) {

@@ -49,7 +49,7 @@ export function BackUpSeed() {
         className="margin-main-big"
         type="submit"
         onClick={() => {
-          navigate('/create-account/confirm-backup');
+          void navigate('/create-account/confirm-backup');
         }}
       >
         {t('backupSeed.continue')}
@@ -58,7 +58,7 @@ export function BackUpSeed() {
       <Button
         id="cancelCreation"
         onClick={() => {
-          navigate('/');
+          void navigate('/');
         }}
       >
         {t('backupSeed.cancel')}

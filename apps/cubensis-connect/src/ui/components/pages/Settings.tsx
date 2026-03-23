@@ -28,7 +28,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/address-book');
+              void navigate('/address-book');
             }}
           >
             <div className="body1 left">{t('address.title')}</div>
@@ -42,7 +42,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/settings/general');
+              void navigate('/settings/general');
             }}
           >
             <div className="body1 left">{t('settings.settingsGeneral')}</div>
@@ -56,7 +56,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/settings/permissions');
+              void navigate('/settings/permissions');
             }}
           >
             <div className="body1 left">{t('settings.permissionsControl')}</div>
@@ -70,7 +70,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/settings/language');
+              void navigate('/settings/language');
             }}
           >
             <div className="body1 left">{t('settings.langs')}</div>
@@ -84,7 +84,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/settings/network');
+              void navigate('/settings/network');
             }}
           >
             <div className="body1 left">{t('settings.network')}</div>
@@ -99,7 +99,7 @@ export function Settings() {
             view="transparent"
             className={styles.settingsBtn}
             onClick={() => {
-              navigate('/settings/export-and-import');
+              void navigate('/settings/export-and-import');
             }}
           >
             <div className="body1 left">{t('settings.exportAndImport')}</div>
@@ -182,7 +182,7 @@ export function Settings() {
               type="button"
               className={styles.deleteAccounts}
               onClick={() => {
-                navigate('/delete-all-accounts');
+                void navigate('/delete-all-accounts');
               }}
             >
               <i className={styles.icon}> </i>
@@ -194,7 +194,7 @@ export function Settings() {
               type="button"
               className={styles.logout}
               onClick={() => {
-                navigate('/');
+                void navigate('/');
                 Background.lock();
               }}
             >

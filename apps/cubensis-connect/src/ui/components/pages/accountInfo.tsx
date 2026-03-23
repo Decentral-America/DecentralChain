@@ -167,7 +167,7 @@ export function AccountInfo() {
                 view="transparent"
                 className={styles.accountName}
                 onClick={() => {
-                  navigate(`/change-account-name/${params.address}`);
+                  void navigate(`/change-account-name/${params.address}`);
                 }}
               >
                 <span className="basic500 body1">{account.name}</span>
@@ -258,7 +258,7 @@ export function AccountInfo() {
           type="button"
           className={styles.deleteButton}
           onClick={() => {
-            navigate(`/delete-account/${params.address}`);
+            void navigate(`/delete-account/${params.address}`);
           }}
         >
           <div className={`${styles.deleteIcon} delete-icon`} />
