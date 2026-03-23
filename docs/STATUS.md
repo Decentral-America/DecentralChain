@@ -96,6 +96,18 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
 - **Git history cleaned**: 40→31 commits via two-phase interactive rebase. 19 no-key commits squashed into 9 cleaner descriptive commits.
 - **Test suite**: 1,228 tests across 67 test files and 25 projects — all pass.
 
+### Audit Round 5 — Quality Gates & Compliance (Mar 23, 2026)
+
+- **GitHub Actions permissions**: Verified all 3 workflows (`ci.yml`, `release.yml`, `cubensis-nightly-e2e.yml`) already carry explicit `permissions:` blocks — no change needed.
+- **ErrorBoundary unit tests**: Created `apps/cubensis-connect/src/ui/components/ErrorBoundary.test.tsx` — 4 tests covering `getDerivedStateFromError` (static method) and `componentDidCatch` (Sentry reporting). Updated `vitest.unit.config.ts` to include `@vitejs/plugin-react` plugin and `.tsx` glob so React component tests run in the unit suite. All 4 pass.
+- **Tooling format compliance**: Auto-fixed trailing whitespace and formatting in 7 skill scripts (`tools/nx-plugins/biome-inferred/index.js`, 3× `.agents/`, 2× `.github/skills/`, 2× `.opencode/skills/`) and `opencode.json`. `biome format .` → 1,716 files, 0 errors.
+- **`noDeprecatedImports` audit**: Eliminated all 5 violations flagged by Biome 2.4's `suspicious/noDeprecatedImports` rule:
+  - `packages/transactions/src/transactions/data.ts` — replaced `DataFiledType` (typo alias) with the canonical `DataFieldType` in 3 places.
+  - `packages/cubensis-connect-types/src/index.ts` — re-export changed from deprecated `TCubensisConnectApi` to canonical `ICubensisConnectApi` (same export alias, backward-compatible).
+  - `packages/cubensis-connect-types/test/types.spec.ts` — added `biome-ignore` with rationale (the test exists specifically to verify the deprecated alias remains resolvable).
+  - `apps/scanner/src/pages/Asset.tsx` and `Sustainability.tsx` — added `biome-ignore` with rationale for recharts `Cell` (internal `CellReader` context annotation, not a removed public API).
+- **Gate results post-Round 5**: `biome-lint` 25/25 ✅ · `typecheck` 23/23 ✅ · `test` 25/25 ✅ · `biome format` 1,716 files clean ✅ · `noDeprecatedImports` 0 warnings ✅
+
 ---
 
 ## 3. Ecosystem Tech Stack
@@ -202,6 +214,8 @@ All 22 SDK libraries have:
 - ~~`keeper-wallet.app` domains in whitelist~~ — **Removed.** `web.keeper-wallet.app` and `swap.keeper-wallet.app` stripped from constants.
 
 **Security fixes applied:** Math.random replaced, XSS mitigation (2 findings), source maps disabled in prod, `noreferrer` added to external links, `@keeper-wallet/waves-crypto` supply chain eliminated, `keeper-wallet.app` whitelist entries removed.
+
+**Unit test coverage (Mar 23, 2026):** `vitest.unit.config.ts` now covers `.tsx` files and includes `@vitejs/plugin-react`. `ErrorBoundary.test.tsx` added — 4 tests covering `getDerivedStateFromError` and `componentDidCatch` (Sentry integration).
 
 #### exchange (DEX)
 
@@ -355,6 +369,8 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P2~~ | ~~Scanner README drift~~ | Completed Mar 20, 2026 | ✅ Completed |
 | ~~P2~~ | ~~TradingView datafeed~~ | `subscribeBars` implemented with 15s polling, dedup, immediate first tick. `matcherUrl` threaded from `networkConfig`. 14 unit tests. All hardcoded URLs eliminated. | ✅ Completed |
 | ~~P2~~ | ~~Dependency audit & stack validation~~ | All 25+ packages at latest (including majors). Rust-all-the-way-down stack confirmed. AI agents configured. Git history cleaned. 1,228 tests pass. | ✅ Completed (Mar 22, 2026) |
+| ~~P2~~ | ~~`noDeprecatedImports` audit~~ | 5 violations fixed: `DataFiledType` typo, `TCubensisConnectApi` re-export, `biome-ignore` for recharts `Cell` (false positive). 0 warnings across 1,741 files. | ✅ Completed (Mar 23, 2026) |
+| ~~P2~~ | ~~ErrorBoundary unit test~~ | `ErrorBoundary.test.tsx` created — 4 tests for `getDerivedStateFromError` + `componentDidCatch`. `vitest.unit.config.ts` extended to cover `.tsx` with React plugin. | ✅ Completed (Mar 23, 2026) |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |
