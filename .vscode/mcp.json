@@ -6,7 +6,7 @@
       "url": "https://mcp.atlassian.com/v1/mcp"
     },
     "chrome-devtools": {
-      "args": ["chrome-devtools-mcp@latest"],
+      "args": ["chrome-devtools-mcp@latest", "--browserUrl=http://127.0.0.1:9222"],
       "command": "npx"
     },
     "context7": {
