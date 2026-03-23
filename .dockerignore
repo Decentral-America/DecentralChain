@@ -10,5 +10,13 @@ dist
 **/dist
 build
 **/build
+*.tsbuildinfo
+**/*.tsbuildinfo
 playwright-report
+**/playwright-report
 test-results
+**/test-results
+**/.react-router
+*.log
+**/npm-debug.log*
+**/pnpm-debug.log*
