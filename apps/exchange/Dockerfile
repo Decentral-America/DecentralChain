@@ -5,7 +5,8 @@
 # ================================================================
 # Stage 1: Build the React application
 # ================================================================
-FROM node:24-alpine AS builder
+# renovate: image=node tag=24-alpine
+FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS builder
 
 # Build arguments for network configuration
 ARG VITE_NETWORK=mainnet
@@ -41,7 +42,8 @@ RUN npm run build
 # ================================================================
 # Stage 2: Serve with Nginx
 # ================================================================
-FROM nginx:stable-alpine
+# renovate: image=nginx tag=stable-alpine
+FROM nginx:stable-alpine@sha256:5b4900b042ccfa8b0a73df622c3a60f2322faeb2be800cbee5aa7b44d241649e
 
 # Environment variable for runtime
 ARG VITE_NETWORK=mainnet

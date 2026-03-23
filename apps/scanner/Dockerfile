@@ -1,5 +1,6 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM node:24-alpine AS base
+# renovate: image=node tag=24-alpine
+FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -50,6 +51,9 @@ ENV NODE_ENV=production \
     VITE_SENTRY_DSN=""
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD wget -qO- http://localhost:3000/ || exit 1
 
 # react-router-serve reads build/server/index.js and handles SSR
 CMD ["pnpm", "start"]
