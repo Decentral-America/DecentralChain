@@ -75,8 +75,7 @@ const SeedClass = getSeedUtils().Seed;
  * @example
  * // Create new seed (matches: const phrase = ds.Seed.create().phrase)
  * const seed = Seed.create();
- * logger.debug(seed.phrase); // 15-word seed phrase
- * logger.debug(seed.address); // DecentralChain address (3P...)
+ * // Use seed.phrase and seed.address — never log or expose seed material
  *
  * @example
  * // Restore from phrase (matches: new ds.Seed(this.seed, window.DCCApp.network.code))

@@ -86,7 +86,7 @@ describe('createDatafeed', () => {
       // onReady schedules its callback via setTimeout(fn, 0) — wait for it to fire
       await vi.waitFor(() => expect(onReady).toHaveBeenCalledOnce());
 
-      const [config] = onReady.mock.calls[0] as [{ supported_resolutions: string[] }][];
+      const [config] = onReady.mock.calls[0]! as [{ supported_resolutions: string[] }];
       expect(config.supported_resolutions).toEqual(
         expect.arrayContaining(['1', '5', '15', '30', '60', '240', 'D', 'W', 'M']),
       );
@@ -106,7 +106,7 @@ describe('createDatafeed', () => {
       datafeed.onReady(onReady);
       await vi.waitFor(() => expect(onReady).toHaveBeenCalledOnce());
 
-      const [config] = onReady.mock.calls[0] as [{ exchanges: Array<{ value: string }> }][];
+      const [config] = onReady.mock.calls[0]! as [{ exchanges: Array<{ value: string }> }];
       expect(config.exchanges[0]?.value).toBe('DecentralChain');
     });
   });
@@ -127,9 +127,9 @@ describe('createDatafeed', () => {
 
       datafeed.resolveSymbol('DCC/BTC', onResolve, vi.fn());
       await vi.waitFor(() => expect(onResolve).toHaveBeenCalledOnce());
-      const [symbolInfo] = onResolve.mock.calls[0] as [
+      const [symbolInfo] = onResolve.mock.calls[0]! as [
         { description: string; session: string; timezone: string },
-      ][];
+      ];
       expect(symbolInfo.description).toBe('DCC/BTC');
       expect(symbolInfo.session).toBe('24x7');
       expect(symbolInfo.timezone).toBe('Etc/UTC');
@@ -153,7 +153,7 @@ describe('createDatafeed', () => {
       datafeed.searchSymbols('anything', 'DecentralChain', 'crypto', onResult);
 
       expect(onResult).toHaveBeenCalledOnce();
-      const [results] = onResult.mock.calls[0] as [Array<{ symbol: string; exchange: string }>][];
+      const [results] = onResult.mock.calls[0]! as [Array<{ symbol: string; exchange: string }>];
       expect(results).toHaveLength(1);
       expect(results[0]?.symbol).toBe('DCC/BTC');
       expect(results[0]?.exchange).toBe('DecentralChain');
@@ -342,7 +342,7 @@ describe('createDatafeed', () => {
       // Wait for the asynchronous first poll to resolve
       await vi.waitFor(() => expect(onTick).toHaveBeenCalledOnce());
 
-      const [bar] = onTick.mock.calls[0] as [{ time: number; close: number }][];
+      const [bar] = onTick.mock.calls[0]! as [{ time: number; close: number }];
       expect(bar.time).toBe(candle.time);
       expect(bar.close).toBe(candle.close);
 
@@ -480,8 +480,8 @@ describe('createDatafeed', () => {
       });
 
       // Each subscription received its own candle
-      const [bar1] = onTick1.mock.calls[0] as [{ time: number }][];
-      const [bar2] = onTick2.mock.calls[0] as [{ time: number }][];
+      const [bar1] = onTick1.mock.calls[0]! as [{ time: number }];
+      const [bar2] = onTick2.mock.calls[0]! as [{ time: number }];
       expect(bar1.time).toBe(candle1.time);
       expect(bar2.time).toBe(candle2.time);
 

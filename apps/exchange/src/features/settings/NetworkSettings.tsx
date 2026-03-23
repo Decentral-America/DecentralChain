@@ -109,7 +109,7 @@ export const NetworkSettings: React.FC = () => {
     const updateDS = async () => {
       await ds.config.setConfig({ api, matcher, node });
     };
-    updateDS();
+    void updateDS();
   }, [node, matcher, api]);
 
   const handleCopy = async (text: string, field: string) => {

@@ -194,7 +194,7 @@ export const AccountManagerPage = () => {
     if (!multiAccount.isSignedIn) {
       // Vault locked, need password
       logger.debug('[AccountManager] Vault locked, redirecting to login');
-      navigate('/auth/login');
+      void navigate('/auth/login');
     }
   }, [navigate]);
 
@@ -208,7 +208,7 @@ export const AccountManagerPage = () => {
 
       // Navigate using getActiveState helper
       const targetRoute = getActiveState('wallet');
-      navigate(targetRoute);
+      void navigate(targetRoute);
     } catch (error) {
       logger.error('[AccountManager] Switch failed:', error);
       setIsLoading(false);
@@ -217,7 +217,7 @@ export const AccountManagerPage = () => {
 
   const handleAddAccount = () => {
     // Navigate to import account flow
-    navigate('/auth/import');
+    void navigate('/auth/import');
   };
 
   const handleLogoutAll = async () => {
@@ -231,7 +231,7 @@ export const AccountManagerPage = () => {
 
     // Logout locks the vault
     await logout();
-    navigate('/auth/login');
+    void navigate('/auth/login');
   };
 
   // Filter out current account from other accounts list

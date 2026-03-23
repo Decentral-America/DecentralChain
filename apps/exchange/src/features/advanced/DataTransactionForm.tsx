@@ -4,6 +4,7 @@
  * Supports string, integer, boolean, and binary data types
  */
 
+import { type IDataParams } from '@decentralchain/transactions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type React from 'react';
 import { useState } from 'react';
@@ -14,7 +15,10 @@ import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
 import { Select, type SelectOption } from '@/components/atoms/Select';
-import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import {
+  TransactionConfirmationFlow,
+  type TxOmit,
+} from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
@@ -156,7 +160,7 @@ const dataTypeOptions: SelectOption[] = [
 export const DataTransactionForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
+  const [transactionParams, setTransactionParams] = useState<TxOmit<IDataParams> | null>(null);
 
   const {
     register,
@@ -193,25 +197,23 @@ export const DataTransactionForm: React.FC = () => {
 
     try {
       // Convert form entries to transaction data format
-      const dataEntries = formData.entries.map((entry) => {
-        let value: string | number | boolean;
-
+      // DataEntry is derived from IDataParams to stay in sync with the type contract.
+      type DataEntry = TxOmit<IDataParams>['data'][number];
+      const dataEntries = formData.entries.map((entry): DataEntry => {
         switch (entry.type) {
           case 'integer':
-            value = parseInt(entry.value, 10);
-            break;
+            return { key: entry.key, type: entry.type, value: parseInt(entry.value, 10) };
           case 'boolean':
-            value = entry.value.toLowerCase() === 'true';
-            break;
+            return {
+              key: entry.key,
+              type: entry.type,
+              value: entry.value.toLowerCase() === 'true',
+            };
+          case 'binary':
+            return { key: entry.key, type: entry.type, value: entry.value };
           default:
-            value = entry.value;
+            return { key: entry.key, type: 'string', value: entry.value };
         }
-
-        return {
-          key: entry.key,
-          type: entry.type,
-          value,
-        };
       });
 
       // Create data transaction parameters

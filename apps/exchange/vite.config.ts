@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import pkg from './package.json' with { type: 'json' };
 
+const { NODE_ENV, VITE_API_URL } = process.env;
+
 // https://vite.dev/config/
 export default defineConfig({
   build: {
@@ -30,12 +32,10 @@ export default defineConfig({
           if (/node_modules\/(@mui|@emotion)\//.test(id)) {
             return 'mui-core';
           }
-
-          return;
         },
       },
     },
-    sourcemap: process.env['NODE_ENV'] !== 'production',
+    sourcemap: NODE_ENV !== 'production',
   },
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
@@ -80,7 +80,7 @@ export default defineConfig({
       '/api': {
         changeOrigin: true,
         rewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
-        target: process.env['VITE_API_URL'] || 'https://mainnet-node.decentralchain.io',
+        target: VITE_API_URL || 'https://mainnet-node.decentralchain.io',
       },
       '/matcher': {
         changeOrigin: true,

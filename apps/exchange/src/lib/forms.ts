@@ -350,11 +350,11 @@ export type PasswordConfirmationFormData = z.infer<typeof passwordConfirmationSc
  * Extracts first error message from field errors
  */
 export function getFormError(fieldErrors: unknown): string | undefined {
-  if (!fieldErrors || typeof fieldErrors !== 'object') return undefined;
+  if (!fieldErrors || typeof fieldErrors !== 'object') return;
   if ('message' in fieldErrors && typeof fieldErrors.message === 'string') {
     return fieldErrors.message;
   }
-  return undefined;
+  return;
 }
 
 /**

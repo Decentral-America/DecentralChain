@@ -398,7 +398,7 @@ export const BuyOrderForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      buyMutation.mutate();
+      void buyMutation.mutate();
     }
   };
 

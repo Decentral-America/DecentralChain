@@ -134,7 +134,7 @@ export const GeneralSettings = () => {
     };
 
     // Initial fetch
-    pollBlockHeight();
+    void pollBlockHeight();
 
     // Poll every 5 seconds
     const interval = setInterval(pollBlockHeight, 5000);

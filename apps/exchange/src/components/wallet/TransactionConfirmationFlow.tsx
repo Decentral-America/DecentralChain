@@ -28,26 +28,366 @@ import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { type Transaction, transactionService } from '@/services/transactionService';
 
-type TxParams = Record<string, unknown>;
-const cast = <T,>(p: TxParams): T => p as unknown as T;
+/**
+ * Strips the network-specific fields that are injected by the signing layer.
+ * All transaction param interfaces extend IBasicParams which carries these fields;
+ * callers construct params without them and the signer fills them in at sign-time.
+ */
+export type TxOmit<T> = Omit<T, 'chainId' | 'senderPublicKey'>;
+
+/**
+ * Discriminated union that pairs each canonical transaction-type string with its
+ * correctly-typed params object. TypeScript narrows params automatically when
+ * transactionType is checked in a switch.
+ */
+export type TxVariant =
+  | { transactionType: 'transfer'; params: TxOmit<ITransferParams> }
+  | { transactionType: 'alias'; params: TxOmit<IAliasParams> }
+  | { transactionType: 'data'; params: TxOmit<IDataParams> }
+  | { transactionType: 'massTransfer'; params: TxOmit<IMassTransferParams> }
+  | { transactionType: 'setScript'; params: TxOmit<ISetScriptParams> }
+  | { transactionType: 'issue'; params: TxOmit<IIssueParams> }
+  | { transactionType: 'lease'; params: TxOmit<ILeaseParams> }
+  | { transactionType: 'cancelLease'; params: TxOmit<ICancelLeaseParams> }
+  | { transactionType: 'burn'; params: TxOmit<IBurnParams> }
+  | { transactionType: 'sponsorship'; params: TxOmit<ISponsorshipParams> }
+  | { transactionType: 'reissue'; params: TxOmit<IReissueParams> }
+  | { transactionType: 'setAssetScript'; params: TxOmit<ISetAssetScriptParams> }
+  | { transactionType: 'invokeScript'; params: TxOmit<IInvokeScriptParams> };
+
+type SignerMap = {
+  signTransfer: (p: TxOmit<ITransferParams>) => Promise<unknown>;
+  signAlias: (p: TxOmit<IAliasParams>) => Promise<unknown>;
+  signData: (p: TxOmit<IDataParams>) => Promise<unknown>;
+  signMassTransfer: (p: TxOmit<IMassTransferParams>) => Promise<unknown>;
+  signSetScript: (p: TxOmit<ISetScriptParams>) => Promise<unknown>;
+  signIssue: (p: TxOmit<IIssueParams>) => Promise<unknown>;
+  signLease: (p: TxOmit<ILeaseParams>) => Promise<unknown>;
+  signCancelLease: (p: TxOmit<ICancelLeaseParams>) => Promise<unknown>;
+  signBurn: (p: TxOmit<IBurnParams>) => Promise<unknown>;
+  signSponsorship: (p: TxOmit<ISponsorshipParams>) => Promise<unknown>;
+  signReissue: (p: TxOmit<IReissueParams>) => Promise<unknown>;
+  signSetAssetScript: (p: TxOmit<ISetAssetScriptParams>) => Promise<unknown>;
+  signInvokeScript: (p: TxOmit<IInvokeScriptParams>) => Promise<unknown>;
+};
+
+/**
+ * Pure dispatch function — maps each TxVariant member to its corresponding signer.
+ * Resides at module scope so TypeScript can verify exhaustiveness and callers can
+ * unit-test dispatch logic without mounting the component.
+ */
+function signVariant(variant: TxVariant, signers: SignerMap): Promise<unknown> {
+  switch (variant.transactionType) {
+    case 'transfer':
+      return signers.signTransfer(variant.params);
+    case 'alias':
+      return signers.signAlias(variant.params);
+    case 'data':
+      return signers.signData(variant.params);
+    case 'massTransfer':
+      return signers.signMassTransfer(variant.params);
+    case 'setScript':
+      return signers.signSetScript(variant.params);
+    case 'issue':
+      return signers.signIssue(variant.params);
+    case 'lease':
+      return signers.signLease(variant.params);
+    case 'cancelLease':
+      return signers.signCancelLease(variant.params);
+    case 'burn':
+      return signers.signBurn(variant.params);
+    case 'sponsorship':
+      return signers.signSponsorship(variant.params);
+    case 'reissue':
+      return signers.signReissue(variant.params);
+    case 'setAssetScript':
+      return signers.signSetAssetScript(variant.params);
+    case 'invokeScript':
+      return signers.signInvokeScript(variant.params);
+  }
+}
+
+const DCC_DECIMALS = 1e8;
+
+/**
+ * Renders the per-transaction-type review rows inside the confirmation modal.
+ * Module-level so TypeScript can verify exhaustiveness independently of the render tree.
+ */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: exhaustive discriminated-union renderer — complexity is proportional to the number of transaction types (13), not to implementation choices.
+function renderReviewFields(variant: TxVariant): React.ReactNode {
+  switch (variant.transactionType) {
+    case 'transfer':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Recipient</Label>
+            <Value>{variant.params.recipient}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Amount</Label>
+            <Value>{(Number(variant.params.amount) || 0) / DCC_DECIMALS} DCC</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+          {!!variant.params.attachment && (
+            <ReviewRow>
+              <Label>Attachment</Label>
+              <Value>{String(variant.params.attachment)}</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'alias':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Alias</Label>
+            <Value>{variant.params.alias}</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'data':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Entries</Label>
+            <Value>{variant.params.data.length} entry(ies)</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'massTransfer':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Recipients</Label>
+            <Value>{variant.params.transfers.length} transfer(s)</Value>
+          </ReviewRow>
+          {variant.params.assetId != null && (
+            <ReviewRow>
+              <Label>Asset ID</Label>
+              <Value>{variant.params.assetId}</Value>
+            </ReviewRow>
+          )}
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'setScript':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Script</Label>
+            <Value>
+              {variant.params.script
+                ? `${variant.params.script.slice(0, 20)}\u2026`
+                : 'Remove script'}
+            </Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'issue':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Name</Label>
+            <Value>{variant.params.name}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Quantity</Label>
+            <Value>{String(variant.params.quantity)}</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'lease':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Recipient</Label>
+            <Value>{variant.params.recipient}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Amount</Label>
+            <Value>{(Number(variant.params.amount) || 0) / DCC_DECIMALS} DCC</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'cancelLease':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Lease ID</Label>
+            <Value>{variant.params.leaseId}</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'burn':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Asset ID</Label>
+            <Value>{variant.params.assetId}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Amount</Label>
+            <Value>{String(variant.params.amount)}</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'reissue':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Asset ID</Label>
+            <Value>{variant.params.assetId}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Quantity</Label>
+            <Value>{String(variant.params.quantity)}</Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'sponsorship':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Asset ID</Label>
+            <Value>{variant.params.assetId}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Min Sponsored Fee</Label>
+            <Value>
+              {variant.params.minSponsoredAssetFee != null
+                ? String(variant.params.minSponsoredAssetFee)
+                : 'Disable sponsorship'}
+            </Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'setAssetScript':
+      return (
+        <>
+          <ReviewRow>
+            <Label>Asset ID</Label>
+            <Value>{variant.params.assetId}</Value>
+          </ReviewRow>
+          <ReviewRow>
+            <Label>Script</Label>
+            <Value>
+              {variant.params.script
+                ? `${variant.params.script.slice(0, 20)}\u2026`
+                : 'Remove script'}
+            </Value>
+          </ReviewRow>
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+    case 'invokeScript':
+      return (
+        <>
+          <ReviewRow>
+            <Label>dApp</Label>
+            <Value>{variant.params.dApp}</Value>
+          </ReviewRow>
+          {variant.params.call != null && (
+            <ReviewRow>
+              <Label>Function</Label>
+              <Value>{variant.params.call.function}</Value>
+            </ReviewRow>
+          )}
+          {variant.params.fee != null && (
+            <ReviewRow>
+              <Label>Fee</Label>
+              <Value>{(Number(variant.params.fee) || 0) / DCC_DECIMALS} DCC</Value>
+            </ReviewRow>
+          )}
+        </>
+      );
+  }
+}
 
 /**
  * Transaction Flow Steps
  */
 type ConfirmationStep = 'review' | 'signing' | 'broadcasting' | 'confirming' | 'success' | 'error';
 
-/**
- * Component Props
- * params is typed broadly because this component handles multiple transaction types;
- * the correct signer is chosen at runtime based on transactionType.
- */
-export interface TransactionConfirmationProps {
+type BaseProps = {
   open: boolean;
   onClose: () => void;
   onSuccess?: (transaction: Transaction) => void;
-  params: Record<string, unknown>;
-  transactionType?: string;
-}
+};
+
+/**
+ * Props are a discriminated union: transactionType narrows params to the exact
+ * interface required by that transaction type. No runtime casting, no escape hatches.
+ */
+export type TransactionConfirmationProps = BaseProps & TxVariant;
 
 /**
  * Styled Components
@@ -146,18 +486,14 @@ const ButtonGroup = styled.div`
  * <TransactionConfirmationFlow
  *   open={confirmOpen}
  *   onClose={() => setConfirmOpen(false)}
- *   params={{ recipient: '...', amount: 100000000 }}
- *   onSuccess={(tx) => logger.debug('Transaction sent:', tx.id)}
+ *   transactionType="transfer"
+ *   params={{ recipient: '3N…', amount: 100000000 }}
+ *   onSuccess={(tx) => console.log('Transaction sent:', tx.id)}
  * />
  * ```
  */
-export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps> = ({
-  open,
-  onClose,
-  onSuccess,
-  params,
-  transactionType = 'Transfer',
-}) => {
+export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps> = (props) => {
+  const { open, onClose, onSuccess } = props;
   const [step, setStep] = useState<ConfirmationStep>('review');
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
@@ -199,76 +535,9 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
   }, [step, handleClose]);
 
   /**
-   * Dispatch signing to the correct builder based on the normalised type string.
-   * Using a switch instead of a nested ternary keeps cyclomatic complexity low,
-   * makes dead-code analysis tractable, and satisfies enterprise readability standards.
-   */
-  const signByType = useCallback(
-    (type: string): Promise<unknown> => {
-      switch (type) {
-        case 'alias':
-          return signAlias(cast<Omit<IAliasParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'data':
-          return signData(cast<Omit<IDataParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'masstransfer':
-        case 'mass-transfer':
-          return signMassTransfer(
-            cast<Omit<IMassTransferParams, 'chainId' | 'senderPublicKey'>>(params),
-          );
-        case 'setscript':
-        case 'set-script':
-          return signSetScript(cast<Omit<ISetScriptParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'issue':
-          return signIssue(cast<Omit<IIssueParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'lease':
-          return signLease(cast<Omit<ILeaseParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'cancellease':
-        case 'cancel-lease':
-          return signCancelLease(
-            cast<Omit<ICancelLeaseParams, 'chainId' | 'senderPublicKey'>>(params),
-          );
-        case 'burn':
-          return signBurn(cast<Omit<IBurnParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'sponsorship':
-          return signSponsorship(
-            cast<Omit<ISponsorshipParams, 'chainId' | 'senderPublicKey'>>(params),
-          );
-        case 'reissue':
-          return signReissue(cast<Omit<IReissueParams, 'chainId' | 'senderPublicKey'>>(params));
-        case 'setassetscript':
-        case 'set-asset-script':
-          return signSetAssetScript(
-            cast<Omit<ISetAssetScriptParams, 'chainId' | 'senderPublicKey'>>(params),
-          );
-        case 'invokescript':
-        case 'invoke-script':
-          return signInvokeScript(
-            cast<Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>>(params),
-          );
-        default:
-          return signTransfer(cast<Omit<ITransferParams, 'chainId' | 'senderPublicKey'>>(params));
-      }
-    },
-    [
-      params,
-      signAlias,
-      signBurn,
-      signCancelLease,
-      signData,
-      signInvokeScript,
-      signIssue,
-      signLease,
-      signMassTransfer,
-      signReissue,
-      signSetAssetScript,
-      signSetScript,
-      signSponsorship,
-      signTransfer,
-    ],
-  );
-
-  /**
-   * Execute transaction: sign → broadcast → wait for confirmation
+   * Execute transaction: sign → broadcast → wait for confirmation.
+   * signVariant is a module-level pure function; TypeScript verifies exhaustiveness
+   * at compile time — no runtime casts anywhere in this path.
    */
   const handleConfirm = useCallback(async () => {
     try {
@@ -276,8 +545,23 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
 
       // Step 1: Signing
       setStep('signing');
-      const type = transactionType?.toLowerCase() ?? 'transfer';
-      const signedTx = await signByType(type);
+      // props is the discriminated-union type; narrowing in signVariant is compile-time verified
+      const variant: TxVariant = props;
+      const signedTx = await signVariant(variant, {
+        signAlias,
+        signBurn,
+        signCancelLease,
+        signData,
+        signInvokeScript,
+        signIssue,
+        signLease,
+        signMassTransfer,
+        signReissue,
+        signSetAssetScript,
+        signSetScript,
+        signSponsorship,
+        signTransfer,
+      });
 
       // Step 2: Broadcasting
       setStep('broadcasting');
@@ -305,7 +589,23 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
       setStep('error');
     }
-  }, [transactionType, signByType, onSuccess]);
+  }, [
+    props,
+    onSuccess,
+    signTransfer,
+    signAlias,
+    signData,
+    signMassTransfer,
+    signSetScript,
+    signIssue,
+    signLease,
+    signCancelLease,
+    signBurn,
+    signSponsorship,
+    signReissue,
+    signSetAssetScript,
+    signInvokeScript,
+  ]);
 
   /**
    * Retry after error
@@ -320,7 +620,8 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
    */
   const renderContent = () => {
     switch (step) {
-      case 'review':
+      case 'review': {
+        const variant: TxVariant = props;
         return (
           <>
             <Content>
@@ -328,28 +629,9 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
               <ReviewSection>
                 <ReviewRow>
                   <Label>Type</Label>
-                  <Value>{transactionType}</Value>
+                  <Value>{props.transactionType}</Value>
                 </ReviewRow>
-                <ReviewRow>
-                  <Label>Recipient</Label>
-                  <Value>{String(params['recipient'] ?? '')}</Value>
-                </ReviewRow>
-                <ReviewRow>
-                  <Label>Amount</Label>
-                  <Value>{(Number(params['amount']) || 0) / 100000000} DCC</Value>
-                </ReviewRow>
-                {!!params['fee'] && (
-                  <ReviewRow>
-                    <Label>Fee</Label>
-                    <Value>{(Number(params['fee']) || 0) / 100000000} DCC</Value>
-                  </ReviewRow>
-                )}
-                {!!params['attachment'] && (
-                  <ReviewRow>
-                    <Label>Attachment</Label>
-                    <Value>{String(params['attachment'] ?? '')}</Value>
-                  </ReviewRow>
-                )}
+                {renderReviewFields(variant)}
               </ReviewSection>
             </Content>
             <ButtonGroup>
@@ -357,11 +639,12 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
                 Cancel
               </Button>
               <Button variant="primary" onClick={handleConfirm} disabled={isSigning}>
-                Confirm & Send
+                Confirm &amp; Send
               </Button>
             </ButtonGroup>
           </>
         );
+      }
 
       case 'signing':
         return (
