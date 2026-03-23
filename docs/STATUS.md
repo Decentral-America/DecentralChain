@@ -81,6 +81,21 @@ Full ecosystem audit: 141+ dead files deleted, `useLiteralKeys` re-enabled acros
 
 All 25 projects imported into single monorepo via `nx import` with full git history. Nx + pnpm workspace configured. Root biome.json, tsconfig.base.json, vitest.base.config.ts.
 
+### TradingView Datafeed & Exchange Completion (Mar 22, 2026)
+
+- **subscribeBars**: Implemented 15-second polling datafeed with dedup guard and immediate first-tick delivery. Replaces empty TODO stub. 14 unit tests.
+- **networkConfig tests**: 43 unit tests covering all 3 network configs + edge cases.
+- **matcherUrl wiring**: `matcherUrl` threaded from `networkConfig` into `createDatafeed` — hardcoded `matcher.decentral-chain.io` eliminated.
+- **exchange hardening**: All hardcoded service URLs replaced with `networkConfig`-driven values.
+
+### Dependency Upgrade & Stack Validation (Mar 22, 2026)
+
+- **All 25+ package.json files at latest**: Major bumps applied — jsdom 28→29, protobufjs 7→8, zip-a-folder 4→6, plus dozens of minor/patch bumps across all apps and SDK packages.
+- **Technology stack confirmed optimal** (Rust-all-the-way-down): tsdown (Rolldown), Vite 8 (Rolldown built-in), `@vitejs/plugin-react` (OXC via Rolldown — faster than SWC in Vite 8), Biome (Rust), lightningcss/Tailwind Oxide (Rust CSS), Vitest, `@swc/core` as optional Nx peer.
+- **AI agents configured**: `nx configure-ai-agents` generated 52 files — `.agents/` skills for OpenAI Codex, `.codex/` config, `.opencode/` skills + commands + agents, `opencode.json` MCP config. `AGENTS.md` updated with Nx general guidelines block.
+- **Git history cleaned**: 40→31 commits via two-phase interactive rebase. 19 no-key commits squashed into 9 cleaner descriptive commits.
+- **Test suite**: 1,228 tests across 67 test files and 25 projects — all pass.
+
 ---
 
 ## 3. Ecosystem Tech Stack
@@ -92,9 +107,9 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
 | Tool | Version | Purpose |
 |------|---------|---------|
 | TypeScript | 5.9.x | Type safety (tsdown handles emit) |
-| tsdown | 0.x | ESM-only bundling |
+| tsdown | 0.21.x | ESM-only bundling (Rolldown-based) |
 | Biome | 2.4.x | Lint + format (replaces ESLint + Prettier) |
-| Vitest | 4.x | Test runner + V8 coverage |
+| Vitest | 4.1.x | Test runner + V8 coverage |
 | Lefthook | 1.x | Git hook enforcement |
 | publint | 0.3.x | Package.json exports validation |
 | attw | 0.18.x | TypeScript export verification |
@@ -198,9 +213,8 @@ All 22 SDK libraries have:
 
 **Remaining open:**
 - 6 test files for 406 source files (low coverage ratio)
-- `RestoreFromBackupPage`: restore logic is a stub (`setTimeout` placeholder) — unimplemented; all dependencies exist (`Seed.decrypt`, `addAccount`, `navigate`) but wiring is missing
+- `RestoreFromBackupPage`: restore logic has a `setTimeout` placeholder — the backup import flow is not fully wired; `Seed.decrypt`, `addAccount`, and `navigate` all exist but the async chain is incomplete
 - Matcher signature authentication TODO in `matcherService.ts` — blocked on node
-- TradingView `subscribeBars` WebSocket real-time feed — TODO placeholder
 
 #### scanner (Block Explorer)
 
@@ -339,6 +353,8 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | **P2** | Set up Sentry DSN | `@sentry/browser@10.43.0` already installed in cubensis-connect. `VITE_SENTRY_DSN` already in scanner runbook. Exchange needs `@sentry/react`. Action: create Sentry project, inject DSN env var at build time | ⬜ Pending |
 | ~~P2~~ | ~~Exchange nginx hardening~~ | Full OWASP 2026 hardening applied (DCC-134): no CORS wildcard, robust CSP, HSTS 2yr, `Permissions-Policy`, `COOP`, `CORP`, `USER nginx`, rate limiting | ✅ Completed |
 | ~~P2~~ | ~~Scanner README drift~~ | Completed Mar 20, 2026 | ✅ Completed |
+| ~~P2~~ | ~~TradingView datafeed~~ | `subscribeBars` implemented with 15s polling, dedup, immediate first tick. `matcherUrl` threaded from `networkConfig`. 14 unit tests. All hardcoded URLs eliminated. | ✅ Completed |
+| ~~P2~~ | ~~Dependency audit & stack validation~~ | All 25+ packages at latest (including majors). Rust-all-the-way-down stack confirmed. AI agents configured. Git history cleaned. 1,228 tests pass. | ✅ Completed (Mar 22, 2026) |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
 | **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |
