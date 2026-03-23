@@ -17,11 +17,12 @@ This is the **DecentralChain SDK monorepo** — a unified TypeScript workspace p
 
 ## Tech Stack
 
-- **Nx 22.5.x** — task orchestration, caching, affected detection, independent versioning
+- **Nx 22.6.x** — task orchestration, caching, affected detection, independent versioning
 - **pnpm 10.32.x** — `workspace:*` protocol, corepack-managed
 - **TypeScript 5.9.x** — maximum strictness, ES2024, bundler moduleResolution, verbatimModuleSyntax
 - **Biome 2.4.x** — linting + formatting (replaces ESLint/Prettier). Root config + per-package `"extends": "//"`.
 - **tsdown 0.21.x** — build tool for 21/22 packages (ESM-only `.mjs` + `.d.mts`). crypto uses tsc + wasm-pack.
+- **Vite 8.x** — app bundler (exchange, scanner, cubensis-connect). Rolldown built-in.
 - **Vitest 4.x** — testing with v8 coverage
 - **Node.js >= 24** required
 

@@ -74,8 +74,19 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 DecentralChain/
 ├── .github/
 │   ├── copilot-instructions.md     AI context for Copilot
-│   ├── skills/                     8 custom AI skills
+│   ├── skills/                     11 custom AI skills
+│   ├── prompts/                    7 reusable slash-command prompts
+│   ├── agents/                     1 CI monitor subagent
 │   └── workflows/                  CI/CD pipelines
+├── .agents/
+│   └── skills/                     7 skills for OpenAI Codex
+├── .codex/
+│   ├── config.toml                 Codex agent config
+│   └── agents/                     CI monitor subagent for Codex
+├── .opencode/
+│   ├── skills/                     7 skills for OpenCode
+│   ├── commands/                   Slash commands for OpenCode
+│   └── agents/                     CI monitor subagent for OpenCode
 ├── apps/
 │   ├── cubensis-connect/           Browser wallet extension
 │   ├── exchange/                   Electron DEX trading app
@@ -98,6 +109,7 @@ DecentralChain/
 ├── tools/                          Nx plugins & custom tooling
 ├── biome.json                      Root Biome config (shared)
 ├── nx.json                         Nx task pipeline
+├── opencode.json                   OpenCode MCP config (nx-mcp)
 ├── pnpm-workspace.yaml             Workspace packages + catalogs
 ├── tsconfig.base.json              Shared TypeScript config
 ├── vitest.base.config.ts           Shared Vitest config
@@ -113,7 +125,9 @@ DecentralChain/
 |-------|------|---------|---------------|
 | **Package Manager** | pnpm | 10.x | **Strict isolation** prevents phantom dependencies (unlike npm's flat hoisting). `workspace:*` protocol auto-resolves at publish. `catalog:` centralizes shared versions. 3x faster installs than npm via content-addressable store. |
 | **Task Runner** | Nx | 22.x | **Only monorepo tool with native MCP server** — AI agents can query the project graph, run tasks, and monitor builds via 15+ MCP tools. Computation caching replays unchanged tasks in <100ms. `nx affected` detects which packages changed and only rebuilds those, cutting CI from minutes to seconds. See [§15 Decision Log](#15-decision-log) for Nx vs Turborepo. |
-| **Bundler** | tsdown | 0.x | **Understands `workspace:*` natively** — no config needed to resolve monorepo deps. Uses Rolldown (Rust) under the hood for speed. ESM-only output with `.mjs` + `.d.mts` matches our ESM-only policy. Successor to tsup with better monorepo support; tsup required workarounds for workspace deps. |
+| **SDK Bundler** | tsdown | 0.21.x | **Understands `workspace:*` natively** — no config needed to resolve monorepo deps. Uses Rolldown (Rust) under the hood for speed. ESM-only output with `.mjs` + `.d.mts` matches our ESM-only policy. Successor to tsup with better monorepo support; tsup required workarounds for workspace deps. |
+| **App Bundler** | Vite | 8.x | **Rolldown built-in** (enabled by default in Vite 8) — Rust-native bundler with native ESM output. Replaces the old esbuild/Rollup combo. All three apps (exchange, scanner, cubensis-connect) use Vite 8. |
+| **React JSX Transform** | @vitejs/plugin-react | 6.x | **Uses OXC (Rust) via Rolldown** for JSX/TSX transformation — faster than SWC in Vite 8 context. `@vitejs/plugin-react-swc` was evaluated and explicitly warns in Vite 8: "We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used." See [D-12](#15-decision-log). |
 | **Linter/Formatter** | Biome | 2.x | **Replaces both ESLint AND Prettier with one Rust-native binary** — 10-100x faster than ESLint. Single `biome.json` configures both lint and format. Monorepo-aware via `"extends": "//"` (inherits root config). No plugin ecosystem to maintain. Zero-config for 90% of rules. |
 | **Test Runner** | Vitest | 4.x | **Native ESM support** — Jest requires `babel-jest` or `ts-jest` transforms for ESM, Vitest runs ESM natively. Same expect/describe/it API as Jest (zero migration friction). Built-in V8 coverage (no `nyc` or `istanbul` needed). `vitest.workspace.ts` for monorepo-native config. |
 | **TypeScript** | TypeScript | 5.9.x | **Maximum strictness catches bugs at compile time, not in production.** TS 5.9 adds `--noUncheckedSideEffectImports` and improved `isolatedDeclarations`. Project references enable incremental builds — editor only typechecks the current package + its deps. tsdown handles emit; `tsc` is only for type checking. |
@@ -122,12 +136,14 @@ DecentralChain/
 
 ### Build Tool Distribution
 
-| Tool | Used By |
-|------|---------|
-| tsdown | 17 standard SDK libraries |
-| Vite | exchange, scanner, cubensis-connect |
-| tsc + wasm-pack | crypto (Rust/WASM hybrid) |
-| buf + tsdown | protobuf-serialization, swap-client |
+| Tool | Used By | Engine |
+|------|---------|--------|
+| tsdown | 17 standard SDK libraries | Rolldown (Rust) |
+| Vite 8 | exchange, scanner, cubensis-connect | Rolldown (Rust) |
+| tsc + wasm-pack | crypto (Rust/WASM hybrid) | Rust |
+| buf + tsdown | protobuf-serialization, swap-client | Rolldown (Rust) |
+
+> **Rust-all-the-way-down**: Every tool in the build pipeline that can be Rust-based is. tsdown uses Rolldown, Vite 8 uses Rolldown, @vitejs/plugin-react uses OXC (Rolldown's built-in transformer), Biome is Rust, lightningcss (cubensis-connect CSS) is Rust, Tailwind v4 Oxide (scanner CSS) is Rust. @swc/core is also present as an optional peer of Nx, enabling SWC-based TypeScript transforms in the Nx task pipeline.
 
 ---
 
@@ -431,9 +447,16 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 | `.vscode/launch.json` | 4 debug configurations (Vitest + Vite) | All team members |
 | `.github/copilot-instructions.md` | Full project context for Copilot | GitHub Copilot |
 | `AGENTS.md` | Compact agent rules + skill catalog | All AI agents |
-| `.github/skills/*/SKILL.md` | 8 domain-specific workflow skills | AI agents |
+| `.github/skills/*/SKILL.md` | 11 domain-specific workflow skills | AI agents |
 | `.github/agents/*.agent.md` | 1 subagent (CI monitor) | AI agents |
 | `.github/prompts/*.prompt.md` | 7 reusable slash-command prompts | VS Code Copilot Chat |
+| `.agents/skills/` | 7 skills for OpenAI Codex | OpenAI Codex |
+| `.codex/config.toml` | Codex agent configuration | OpenAI Codex |
+| `.codex/agents/ci-monitor-subagent.toml` | CI monitor subagent for Codex | OpenAI Codex |
+| `.opencode/skills/` | 7 skills for OpenCode AI | OpenCode |
+| `.opencode/commands/` | Slash commands for OpenCode | OpenCode |
+| `.opencode/agents/ci-monitor-subagent.md` | CI monitor subagent for OpenCode | OpenCode |
+| `opencode.json` | OpenCode MCP config pointing to `npx nx mcp` | OpenCode |
 | `docs/ARCHITECTURE.md` | This file — architecture reference | Humans + AI agents |
 | `docs/CONVENTIONS.md` | Coding standards, quality pipeline | Humans + AI agents |
 | `docs/STATUS.md` | Per-package health, remediation matrix | Humans + AI agents |
@@ -692,6 +715,7 @@ Every significant architectural choice is documented here with the reasoning tha
 | D-9 | **Include all TS apps importing `@decentralchain/*`** | The inclusion rule is intentionally simple: "if it's TypeScript and imports `@decentralchain/*`, it belongs here." This ensures that when a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. |
 | D-10 | **`workspace:*` protocol** | In the polyrepo era, `fix-cross-deps.mjs` had to manually update 22 cross-dependency versions before every publish. `workspace:*` tells pnpm "use the local source in dev, replace with the real published version at publish time." Zero manual version management, zero version drift, zero publish-order bugs. |
 | D-11 | **`nx import`** for history | Every package was imported with full git history preserved. This means `git log packages/transactions/` shows the complete commit history from the original polyrepo. Essential for: security audits ("when was this crypto code last touched?"), blame ("who wrote this signing logic?"), and bisect ("which commit broke serialization?"). The alternative — fresh `git init` — would have destroyed the audit trail for financial infrastructure code. |
+| D-12 | **`@vitejs/plugin-react`** over `@vitejs/plugin-react-swc` | In Vite 8 + Rolldown, `@vitejs/plugin-react` is the correct choice. When `@vitejs/plugin-react-swc` was tested, Vite 8 itself printed: _"We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown"_. This is because Vite 8's Rolldown bundler uses OXC (Rust, built into Rolldown) for JSX/TSX transformation — OXC is faster than SWC in this context. `@vitejs/plugin-react-swc` only outperforms when you use SWC-specific plugins (e.g., custom transforms). Since the three DCC apps use no SWC plugins, `@vitejs/plugin-react` + OXC is the faster path. `@swc/core` remains present as an optional peer of `nx@22.6.1`, enabling SWC-based transforms in the Nx task pipeline — a separate concern from the Vite JSX pipeline. |
 
 ### Nx vs Turborepo — Why Nx
 
