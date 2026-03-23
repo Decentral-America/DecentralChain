@@ -127,7 +127,7 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/desktop/wallet/assets/${asset.id}`);
+    void navigate(`/desktop/wallet/assets/${asset.id}`);
   };
 
   // Get first letter of asset name for fallback icon

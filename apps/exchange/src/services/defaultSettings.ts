@@ -297,7 +297,7 @@ export class DefaultSettings {
       if (current && typeof current === 'object' && key in current) {
         current = (current as Record<string, unknown>)[key];
       } else {
-        return undefined;
+        return;
       }
     }
 

@@ -50,7 +50,6 @@ const getFactory = (isTokens: boolean): IFactory => {
   }
 };
 
-// TODO Remove is tokens flag after support Dima's api
 export function parseTx(
   transactions: Array<T_API_TX>,
   isUTX: boolean,

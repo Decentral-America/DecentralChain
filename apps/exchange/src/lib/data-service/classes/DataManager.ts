@@ -1,10 +1,4 @@
 import { type Money } from '@decentralchain/data-entities';
-import {
-  DATA_PROVIDER_VERSIONS,
-  STATUS_LIST,
-  type TProviderAsset,
-} from '@decentralchain/oracle-data';
-import { path } from 'ramda';
 import { getAliasesByAddress } from '../api/aliases/aliases';
 import { balanceList } from '../api/assets/assets';
 import { type IBalanceItem } from '../api/assets/interface';
@@ -15,18 +9,6 @@ import { type IHash } from '../interface';
 import { type IPollAPI, Poll } from '../utils/Poll';
 import { PollControl } from './PollControl';
 import { UTXManager } from './UTXManager';
-
-interface DCCAppGlobal {
-  defaultAssets: { BTC: string };
-}
-
-interface AngularGlobal {
-  element: (el: Element) => {
-    injector: () => {
-      get: (name: string) => { get: (path: string) => unknown };
-    };
-  };
-}
 
 export class DataManager {
   public transactions: UTXManager = new UTXManager();
@@ -81,77 +63,6 @@ export class DataManager {
     return this.pollControl.getPollHash().aliases.lastData || [];
   }
 
-  public getOracleAssetDataByOracleName(
-    id: string,
-    oracleName: string = 'oracleDCC',
-  ): TProviderAsset & { provider: string } {
-    const pollHash = this.pollControl.getPollHash();
-    const lastData = path<IOracleData>([oracleName, 'lastData'], pollHash);
-    const assets = lastData?.assets || Object.create(null);
-    const DCCApp = (window as unknown as { DCCApp: DCCAppGlobal }).DCCApp;
-
-    const gateways = {
-      [DCCApp.defaultAssets.BTC]: true,
-    };
-
-    const gatewaysSoon =
-      (window as unknown as { angular: AngularGlobal }).angular
-        .element(document.body)
-        .injector()
-        .get('configService')
-        .get('GATEWAYS_SOON') || [];
-
-    const descriptionHash = {
-      DCC: {
-        en: 'DecentralCoin (DCC) es la moneda nativa del protocolo DecentralChain. DecentralChain permite facilitar la creación de activos, coleccionables digitales, redes de blockchain privadas y aplicaciones descentralizadas, para facilitar la adopción de tecnologías descentralizadas en empresas y comunidades',
-      },
-    };
-
-    const gatewayAsset = {
-      description: descriptionHash[id],
-      email: null,
-      id,
-      link: null,
-      logo: null,
-      provider: 'DCCPlatform',
-      status: 3,
-      ticker: null,
-      version: DATA_PROVIDER_VERSIONS.BETA,
-    };
-
-    const gatewaySoonAsset = {
-      ...gatewayAsset,
-      status: 4,
-    };
-
-    if (id === 'DCC') {
-      return {
-        description: descriptionHash.DCC,
-        status: STATUS_LIST.VERIFIED,
-      } as TProviderAsset & { provider: string };
-    }
-
-    if (gatewaysSoon.indexOf(id) > -1) {
-      return gatewaySoonAsset;
-    }
-
-    if (gateways[id]) {
-      return gatewayAsset;
-    }
-
-    return assets[id] ? { ...assets[id], provider: lastData.oracle.name } : null;
-  }
-
-  public getOraclesAssetData(id: string) {
-    const dataOracleDCC = this.getOracleAssetDataByOracleName(id, 'oracleDCC');
-    const dataOracleTokenomica = this.getOracleAssetDataByOracleName(id, 'oracleTokenomica');
-    return dataOracleDCC || dataOracleTokenomica;
-  }
-
-  public getOracleData(oracleName: string) {
-    return this.pollControl.getPollHash()[oracleName].lastData;
-  }
-
   private _getPollBalanceApi(): IPollAPI<Array<IBalanceItem>> {
     const get = () => {
       const hash = this.pollControl.getPollHash();
@@ -204,13 +115,3 @@ type TPollHash = {
   oracleDCC: Poll<IOracleData>;
   oracleTokenomica: Poll<IOracleData>;
 };
-
-export interface IOracleAsset {
-  id: string;
-  status: number; // TODO! Add enum
-  logo: string;
-  site: string;
-  ticker: string;
-  email: string;
-  description?: Record<string, string>;
-}

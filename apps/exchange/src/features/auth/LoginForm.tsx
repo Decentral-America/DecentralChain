@@ -121,7 +121,7 @@ export const LoginForm = () => {
   useEffect(() => {
     if (pendingNavigation && isAuthenticated && user) {
       setPendingNavigation(false);
-      navigate(navigationTarget.current);
+      void navigate(navigationTarget.current);
     }
   }, [pendingNavigation, isAuthenticated, user, navigate]);
 

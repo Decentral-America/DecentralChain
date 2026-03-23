@@ -462,7 +462,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
   // Auto-start stream if enabled
   useEffect(() => {
     if (autoStart) {
-      startStream();
+      void startStream();
     }
   }, [autoStart, startStream]);
 

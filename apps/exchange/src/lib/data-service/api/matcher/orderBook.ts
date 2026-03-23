@@ -11,11 +11,10 @@ export function get(asset1: string, asset2: string): Promise<IOrderBook> {
     timer = setTimeout(() => reject(new Error('Request timeout!')), 3000);
   });
 
-  const promise = getAssetPair(asset1, asset2).then((pair) => {
+  const promise = getAssetPair(asset1, asset2).then(async (pair) => {
     clearTimeout(timer);
-    return request({ url: `${getConfig('matcher')}/orderbook/${pair.toString()}` }).then(
-      addParam(remapOrderBook, pair),
-    );
+    const result = await request({ url: `${getConfig('matcher')}/orderbook/${pair.toString()}` });
+    return addParam(remapOrderBook, pair)(result);
   });
 
   return Promise.race([promise, timeout]);

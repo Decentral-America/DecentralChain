@@ -77,7 +77,7 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
    */
   useEffect(() => {
     if (open && user?.address) {
-      loadDepositDetails();
+      void loadDepositDetails();
     }
 
     // Reset state when modal closes

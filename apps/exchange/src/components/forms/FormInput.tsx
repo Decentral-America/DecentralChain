@@ -86,14 +86,14 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
   // Get nested error message
   const error = React.useMemo(() => {
     const fieldError = errors[name];
-    if (!fieldError) return undefined;
+    if (!fieldError) return;
 
     // Handle nested errors
     if (typeof fieldError === 'object' && 'message' in fieldError) {
       return (fieldError.message as string) || undefined;
     }
 
-    return undefined;
+    return;
   }, [errors, name]);
 
   // Register field with react-hook-form
@@ -116,7 +116,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       }
 
       // Call react-hook-form onChange
-      registerOnChange(e);
+      void registerOnChange(e);
 
       // Call custom onChange if provided
       onChange?.(e);
@@ -146,7 +146,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       }
 
       // Call react-hook-form onBlur
-      registerOnBlur(e);
+      void registerOnBlur(e);
 
       // Call custom onBlur if provided
       onBlur?.(e);
