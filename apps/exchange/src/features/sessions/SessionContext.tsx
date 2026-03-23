@@ -6,6 +6,7 @@
 import type React from 'react';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
+import { multiAccount } from '@/services/multiAccount';
 import {
   DEFAULT_SESSION_CONFIG,
   type Session,
@@ -33,6 +34,8 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 const STORAGE_KEY = 'dcc_sessions';
 const ACTIVE_SESSION_KEY = 'dcc_active_session';
 const BROADCAST_CHANNEL_NAME = 'dcc_sessions_channel';
+// Must match AuthContext — OWASP 2024 recommendation for PBKDF2-SHA-256
+const PBKDF2_ROUNDS = 600000;
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeSession, setActiveSession] = useState<Session | null>(null);
@@ -256,13 +259,20 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   );
 
   const unlockSession = useCallback(
-    async (_password: string): Promise<boolean> => {
+    async (password: string): Promise<boolean> => {
       if (!activeSession) return false;
 
       try {
-        // Validate password with data-service (matching Angular)
-        // This is a placeholder - actual implementation would verify with stored hash
-        // In production, this would call data-service to verify password
+        // Verify the password by decrypting the vault — if wrong, signIn throws
+        const multiAccountData = localStorage.getItem('multiAccountData');
+        const multiAccountHash = localStorage.getItem('multiAccountHash');
+
+        if (!multiAccountData || !multiAccountHash) {
+          logger.error('unlockSession: no vault data found in storage');
+          return false;
+        }
+
+        await multiAccount.signIn(multiAccountData, password, PBKDF2_ROUNDS, multiAccountHash);
 
         const unlockedSession = {
           ...activeSession,
@@ -273,7 +283,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setActiveSession(unlockedSession);
         setSessions((prev) => prev.map((s) => (s.id === activeSession.id ? unlockedSession : s)));
 
-        // Broadcast to other tabs
         broadcastEvent({
           sessionId: activeSession.id,
           type: 'session-unlocked',
