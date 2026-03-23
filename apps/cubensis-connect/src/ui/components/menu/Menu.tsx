@@ -24,7 +24,7 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
             type="button"
             className={styles.settingsIcon}
             onClick={() => {
-              navigate('/settings');
+              void navigate('/settings');
             }}
           />
 
@@ -32,7 +32,7 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
             type="button"
             className={styles.navigationIcon}
             onClick={() => {
-              navigate('/about');
+              void navigate('/about');
             }}
           />
         </>
@@ -43,7 +43,7 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
           type="button"
           className={`${styles.arrowBackIcon} arrow-back-icon`}
           onClick={() => {
-            navigate(-1);
+            void navigate(-1);
           }}
         />
       )}
@@ -53,7 +53,7 @@ export function Menu({ hasClose, hasBack, hasLogo, hasSettings }: Props) {
           type="button"
           className={`${styles.closeIcon} close-icon`}
           onClick={() => {
-            navigate(-1);
+            void navigate(-1);
           }}
         />
       )}

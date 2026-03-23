@@ -124,7 +124,7 @@ export function NftCollection() {
             mode={DisplayMode.Name}
             nfts={creatorNfts}
             onClick={(nft) => {
-              navigate(`/nft/${nft.id}`);
+              void navigate(`/nft/${nft.id}`);
             }}
           />
         )}
@@ -133,7 +133,7 @@ export function NftCollection() {
           <Button
             className="fullwidth"
             onClick={() => {
-              navigate(-1);
+              void navigate(-1);
             }}
           >
             {t('nftCollection.backToNftBtn')}

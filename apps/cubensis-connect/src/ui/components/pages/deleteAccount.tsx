@@ -23,7 +23,7 @@ export function DeleteAccount() {
           id="deleteAccount"
           onClick={async () => {
             await dispatch(deleteAccount(params.address ?? ''));
-            navigate('/', { replace: true });
+            void navigate('/', { replace: true });
           }}
           type="button"
           view="warning"

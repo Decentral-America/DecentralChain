@@ -142,7 +142,7 @@ export function ImportSeed() {
       } else {
         setIsAddressInProgress(true);
 
-        createPrivateKey(utf8Encode(trimmedSeedValue))
+        void createPrivateKey(utf8Encode(trimmedSeedValue))
           .then(createPublicKey)
           .then((publicKey) => {
             const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
@@ -171,7 +171,7 @@ export function ImportSeed() {
         } else {
           setIsAddressInProgress(true);
 
-          createPrivateKey(base58Decode(unprefixed))
+          void createPrivateKey(base58Decode(unprefixed))
             .then(createPublicKey)
             .then((publicKey) => {
               const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
@@ -208,7 +208,7 @@ export function ImportSeed() {
         } else {
           setIsAddressInProgress(true);
 
-          createPublicKey(privateKey)
+          void createPublicKey(privateKey)
             .then((publicKey) => {
               const newAddress = base58Encode(createAddress(publicKey, networkCode.charCodeAt(0)));
 
@@ -249,7 +249,7 @@ export function ImportSeed() {
 
           if (showValidationError && existingAccount) {
             dispatch(selectAccount(existingAccount));
-            navigate('/import-success');
+            void navigate('/import-success');
             return;
           }
 
@@ -293,7 +293,7 @@ export function ImportSeed() {
             );
           }
 
-          navigate('/account-name');
+          void navigate('/account-name');
         }}
       >
         <Tabs

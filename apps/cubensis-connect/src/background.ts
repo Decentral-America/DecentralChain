@@ -162,23 +162,23 @@ async function setupBackgroundService() {
   const windowManager = new WindowManager();
   backgroundService.on('Show notification', windowManager.showWindow.bind(windowManager));
   backgroundService.on('Close notification', () => {
-    windowManager.closeWindow();
+    void windowManager.closeWindow();
   });
   backgroundService.on('Resize notification', (width, height) => {
-    windowManager.resizeWindow(width, height);
+    void windowManager.resizeWindow(width, height);
   });
   // Tabs manager
   const tabsManager = new TabsManager({ extensionStorage });
   backgroundService.on('Show tab', async (url, name) => {
     backgroundService.emit('closePopupWindow');
-    tabsManager.getOrCreate(url, name);
+    await tabsManager.getOrCreate(url, name);
   });
   backgroundService.on('Close current tab', async () => {
-    return tabsManager.closeCurrentTab();
+    await tabsManager.closeCurrentTab();
   });
 
   backgroundService.messageController.clearMessages();
-  windowManager.closeWindow();
+  void windowManager.closeWindow();
 
   return backgroundService;
 }
@@ -715,13 +715,15 @@ class BackgroundService extends EventEmitter {
             ? fromPromise(this.getPublicState(origin, connectionId))
             : empty,
         ),
-        onStart(async () => {
-          if (
-            this.preferencesController.getSelectedAccount() != null &&
-            this.permissionsController.hasPermission(origin, PERMISSIONS.APPROVED)
-          ) {
-            lastPublicState = await this.getPublicState(origin, connectionId);
-          }
+        onStart(() => {
+          void (async () => {
+            if (
+              this.preferencesController.getSelectedAccount() != null &&
+              this.permissionsController.hasPermission(origin, PERMISSIONS.APPROVED)
+            ) {
+              lastPublicState = await this.getPublicState(origin, connectionId);
+            }
+          })();
         }),
         filter((publicState) => !deepEqual(publicState, lastPublicState)),
         tap((publicState) => {

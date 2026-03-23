@@ -70,53 +70,55 @@ export function handleMethodCallRequests<K extends string>(
   api: ApiObject<K>,
   sendResponse: (result: 'KEEPER_PONG' | MethodCallResponsePayload<unknown>) => void,
 ) {
-  return tap(async (data) => {
-    if (data === 'KEEPER_PING') {
-      sendResponse('KEEPER_PONG');
-      return;
-    }
+  return tap((data) => {
+    void (async () => {
+      if (data === 'KEEPER_PING') {
+        sendResponse('KEEPER_PONG');
+        return;
+      }
 
-    if (
-      typeof data !== 'object' ||
-      data == null ||
-      !('keeperMethodCallRequest' in data) ||
-      typeof data.keeperMethodCallRequest !== 'object' ||
-      data.keeperMethodCallRequest == null ||
-      !('id' in data.keeperMethodCallRequest) ||
-      typeof data.keeperMethodCallRequest.id !== 'string' ||
-      !('method' in data.keeperMethodCallRequest) ||
-      typeof data.keeperMethodCallRequest.method !== 'string' ||
-      !('args' in data.keeperMethodCallRequest) ||
-      !Array.isArray(data.keeperMethodCallRequest.args)
-    ) {
-      return;
-    }
+      if (
+        typeof data !== 'object' ||
+        data == null ||
+        !('keeperMethodCallRequest' in data) ||
+        typeof data.keeperMethodCallRequest !== 'object' ||
+        data.keeperMethodCallRequest == null ||
+        !('id' in data.keeperMethodCallRequest) ||
+        typeof data.keeperMethodCallRequest.id !== 'string' ||
+        !('method' in data.keeperMethodCallRequest) ||
+        typeof data.keeperMethodCallRequest.method !== 'string' ||
+        !('args' in data.keeperMethodCallRequest) ||
+        !Array.isArray(data.keeperMethodCallRequest.args)
+      ) {
+        return;
+      }
 
-    const { id, method, args } = data.keeperMethodCallRequest;
+      const { id, method, args } = data.keeperMethodCallRequest;
 
-    try {
-      const result = await api[method as K](...args);
+      try {
+        const result = await api[method as K](...args);
 
-      sendResponse({
-        keeperMethodCallResponse: { data: result, id },
-      });
-    } catch (err) {
-      sendResponse({
-        keeperMethodCallResponse: {
-          error:
-            err instanceof Response
-              ? { message: await err.text() }
-              : err && typeof err === 'object'
-                ? {
-                    ...err,
-                    message: String('message' in err ? err.message : err),
-                  }
-                : { message: String(err) },
-          id,
-          isError: true,
-        },
-      });
-    }
+        sendResponse({
+          keeperMethodCallResponse: { data: result, id },
+        });
+      } catch (err) {
+        sendResponse({
+          keeperMethodCallResponse: {
+            error:
+              err instanceof Response
+                ? { message: await err.text() }
+                : err && typeof err === 'object'
+                  ? {
+                      ...err,
+                      message: String('message' in err ? err.message : err),
+                    }
+                  : { message: String(err) },
+            id,
+            isError: true,
+          },
+        });
+      }
+    })();
   });
 }
 

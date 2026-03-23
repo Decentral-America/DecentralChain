@@ -29,7 +29,7 @@ export function ExportAndImport() {
         type="button"
         view="transparent"
         onClick={() => {
-          navigate('/export-accounts');
+          void navigate('/export-accounts');
         }}
       >
         <p className="body1 left">{t('exportAndImport.exportAccounts')}</p>
@@ -43,7 +43,7 @@ export function ExportAndImport() {
             `${window.location.origin}/accounts.html#/import-keystore`,
             'import-keystore',
           );
-          navigate('/', { replace: true });
+          void navigate('/', { replace: true });
         }}
       >
         <p className="body1 left">{t('exportAndImport.importAccounts')}</p>
@@ -54,7 +54,7 @@ export function ExportAndImport() {
         type="button"
         view="transparent"
         onClick={() => {
-          navigate('/export-address-book');
+          void navigate('/export-address-book');
         }}
       >
         <p className="body1 left">{t('exportAndImport.exportAddressBook')}</p>
@@ -68,7 +68,7 @@ export function ExportAndImport() {
             `${window.location.origin}/accounts.html#/import-address-book`,
             'import-address-book',
           );
-          navigate('/', { replace: true });
+          void navigate('/', { replace: true });
         }}
       >
         <p className="body1 left">{t('exportAndImport.importAddressBook')}</p>
@@ -100,7 +100,7 @@ export function ExportAndImport() {
                 password,
                 encrypted,
               );
-              navigate('/settings', { replace: true });
+              void navigate('/settings', { replace: true });
             }}
           />
         )}

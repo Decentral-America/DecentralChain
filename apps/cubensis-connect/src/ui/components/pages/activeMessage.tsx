@@ -174,7 +174,7 @@ export function ActiveMessagePage() {
                 Background.closeNotificationWindow();
               } else {
                 dispatch(setActiveMessage(undefined));
-                navigate('/');
+                void navigate('/');
               }
             }}
           >

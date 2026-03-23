@@ -129,8 +129,8 @@ export class StatisticsController {
           this.track({ eventType: 'idleKeeper' });
           break;
         case 'drainEventQueues':
-          this.#drainAmplitudeEventQueue();
-          this.#drainMixPanelEventQueue();
+          void this.#drainAmplitudeEventQueue();
+          void this.#drainMixPanelEventQueue();
           break;
       }
     });
@@ -171,7 +171,7 @@ export class StatisticsController {
         // Dealing with limits
         // See https://www.docs.developers.amplitude.com/analytics/apis/batch-event-upload-api/#responses
         this.#amplitudeEventQueue.unshift(...events);
-        this.#scheduleDrainEventQueues();
+        await this.#scheduleDrainEventQueues();
       } else {
         const text = await response.text();
 
@@ -197,7 +197,7 @@ export class StatisticsController {
         // Dealing with limits
         // See https://developer.mixpanel.com/reference/track-event#limits
         this.#mixPanelEventQueue.unshift(...events);
-        this.#scheduleDrainEventQueues();
+        await this.#scheduleDrainEventQueues();
       } else {
         const text = await response.text();
 
@@ -266,7 +266,7 @@ export class StatisticsController {
         });
       }
 
-      this.#scheduleDrainEventQueues();
+      void this.#scheduleDrainEventQueues();
     };
 
     if (eventType === 'idleKeeper' || eventType === 'openKeeper') {

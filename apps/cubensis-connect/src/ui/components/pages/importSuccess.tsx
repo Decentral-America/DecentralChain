@@ -78,7 +78,7 @@ export function ImportSuccess({ isKeystoreImport }: { isKeystoreImport?: boolean
           className={styles.button}
           type="button"
           onClick={() => {
-            navigate('/', { replace: true });
+            void navigate('/', { replace: true });
           }}
         >
           {t('import.addAnotherAccount')}

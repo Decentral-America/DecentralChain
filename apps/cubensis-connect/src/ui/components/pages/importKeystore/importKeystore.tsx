@@ -142,7 +142,7 @@ export function ImportKeystore() {
       allNetworksAccounts={allNetworksAccounts}
       profiles={profiles}
       onSkip={() => {
-        navigate('/');
+        void navigate('/');
       }}
       onSubmit={async (selectedAccounts) => {
         invariant(walletType);
@@ -158,7 +158,7 @@ export function ImportKeystore() {
           ),
         );
 
-        navigate('/import-keystore/success');
+        void navigate('/import-keystore/success');
       }}
     />
   );

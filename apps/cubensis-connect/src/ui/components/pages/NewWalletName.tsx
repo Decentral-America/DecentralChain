@@ -57,7 +57,7 @@ export function NewWalletName() {
 
           if (existingAccount) {
             dispatch(selectAccount(existingAccount));
-            navigate('/import-success');
+            void navigate('/import-success');
             return;
           }
 
@@ -74,7 +74,7 @@ export function NewWalletName() {
 
           await dispatch(createAccount(account, accountTypeToWalletType[account.type]));
 
-          navigate('/import-success');
+          void navigate('/import-success');
         }}
       >
         <div className="margin1">
@@ -112,7 +112,7 @@ export function NewWalletName() {
                 className="margin1"
                 type="button"
                 onClick={() => {
-                  navigate('/', { replace: true });
+                  void navigate('/', { replace: true });
                 }}
               >
                 {t('newAccountName.cancel')}

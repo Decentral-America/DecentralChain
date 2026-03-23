@@ -90,7 +90,7 @@ export function ConfirmBackup(_props: Props) {
   function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     setState((prev) => ({ ...prev, disabled: true }));
-    navigate('/account-name', { replace: true });
+    void navigate('/account-name', { replace: true });
   }
 
   const { selectedList, list, complete, wrongSeed } = state;

@@ -32,11 +32,11 @@ export function fetchDataEntries<T extends DataTransactionEntry>({
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    }).then(
-      (response): Promise<T[]> =>
-        response.ok
-          ? response.json()
-          : response.text().then((text) => Promise.reject(new Error(text))),
-    ),
+    }).then(async (response): Promise<T[]> => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(await response.text());
+    }),
   );
 }

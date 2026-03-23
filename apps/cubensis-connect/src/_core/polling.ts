@@ -12,7 +12,7 @@ export function startPolling(ms: number, fn: (abortSignal: AbortSignal) => Promi
     }
   }
 
-  update();
+  void update();
 
   return () => {
     clearTimeout(timeout);
