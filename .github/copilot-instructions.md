@@ -22,11 +22,12 @@ Apps (`scope:app`) may depend on any package. SDK packages must never depend on 
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| **Nx** | 22.5.x | Workspace orchestration, task caching, affected detection, release |
+| **Nx** | 22.6.x | Workspace orchestration, task caching, affected detection, release |
 | **pnpm** | 10.32.x | Package manager with `workspace:*` protocol |
 | **TypeScript** | 5.9.x | Maximum strictness (strict + all extra flags), ES2024, bundler moduleResolution |
 | **Biome** | 2.4.x | Linting + formatting (replaces ESLint/Prettier entirely) |
 | **tsdown** | 0.21.x | Build tool for 21/22 packages (ESM-only `.mjs` + `.d.mts`) |
+| **Vite** | 8.x | App bundler (exchange, scanner, cubensis-connect) — Rolldown built-in |
 | **Vitest** | 4.x | Testing with v8 coverage |
 | **Node.js** | ≥24 | Required runtime (see `.node-version`) |
 
@@ -107,7 +108,8 @@ Always respect the layer system. Before adding a dependency:
 - **No `@keeper-wallet/*` anywhere** — fully migrated to `@decentralchain/*`. Zero references in source or `package.json` files.
 - **No Cognito, no WX identity** — `amazon-cognito-identity-js` removed, pool IDs were never DCC-owned, all code deleted. Architecture is 1-of-1 seed-phrase only. Never surface this as a concern.
 - **ESM-only** — all 22 packages output `.mjs` + `.d.mts`. No CJS exists.
-- **Exchange signing is `"Not implemented"`** — `useTransactionSigning.ts` throws on all 13 functions. This is a known open P2, not a regression to investigate.
+- **Exchange signing is fully implemented** — all 13 functions in `useTransactionSigning.ts` are wired using `@decentralchain/transactions` + seed-based signing via `multiAccount`. Exchange is feature-complete pending the new node implementation.
+- **TradingView datafeed is implemented** — `subscribeBars` uses 15-second polling with dedup and immediate first tick. `matcherUrl` is wired from `networkConfig` — no hardcoded URLs remain.
 
 For current status and open work, see `docs/STATUS.md`.
 
