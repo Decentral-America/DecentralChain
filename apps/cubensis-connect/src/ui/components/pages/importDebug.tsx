@@ -80,7 +80,7 @@ export function ImportDebug() {
             ),
           );
 
-          navigate('/import-success');
+          void navigate('/import-success');
         }}
       >
         <div className="margin1">

@@ -48,7 +48,7 @@ export function AccountsHome() {
   const [isDebug, setDebug] = useState(false);
 
   useEffect(() => {
-    TransportWebUSB.isSupported().then(setIsLedgerSupported);
+    void TransportWebUSB.isSupported().then(setIsLedgerSupported);
 
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('debug')) {
@@ -68,7 +68,7 @@ export function AccountsHome() {
             customCodes[currentNetwork] || NETWORK_CONFIG[currentNetwork].networkCode;
 
           await generateNewWalletItems(networkCode);
-          navigate('/create-account');
+          void navigate('/create-account');
         }}
       >
         {t('import.createNew')}
@@ -86,7 +86,7 @@ export function AccountsHome() {
               data-testid="importDebug"
               view="transparent"
               onClick={() => {
-                navigate('/import-debug');
+                void navigate('/import-debug');
               }}
             >
               <svg
@@ -110,7 +110,7 @@ export function AccountsHome() {
             data-testid="importSeed"
             view="transparent"
             onClick={() => {
-              navigate('/import-seed');
+              void navigate('/import-seed');
             }}
           >
             <svg
@@ -139,7 +139,7 @@ export function AccountsHome() {
             disabled={!isLedgerSupported}
             view="transparent"
             onClick={() => {
-              navigate('/import-ledger');
+              void navigate('/import-ledger');
             }}
           >
             <svg
@@ -168,7 +168,7 @@ export function AccountsHome() {
             data-testid="importKeystore"
             view="transparent"
             onClick={() => {
-              navigate('/import-keystore');
+              void navigate('/import-keystore');
             }}
           >
             <svg

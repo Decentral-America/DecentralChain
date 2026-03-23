@@ -20,7 +20,7 @@ export function RootAccounts() {
       return;
     }
 
-    navigate('/', { replace: true });
+    void navigate('/', { replace: true });
     prevNetworkRef.current = currentNetwork;
   }, [currentNetwork, navigate]);
 

@@ -117,11 +117,11 @@ export class AssetInfoController {
     this.getNetwork = getNetwork;
 
     if (initState.suspiciousAssets.length === 0) {
-      this.updateSuspiciousAssets();
+      void this.updateSuspiciousAssets();
     }
 
-    this.updateInfo();
-    this.updateSwappableAssetIdsByVendor();
+    void this.updateInfo();
+    void this.updateSwappableAssetIdsByVendor();
 
     Browser.alarms.create('updateSuspiciousAssets', {
       periodInMinutes: SUSPICIOUS_PERIOD_IN_MINUTES,
@@ -136,13 +136,13 @@ export class AssetInfoController {
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
         case 'updateSuspiciousAssets':
-          this.updateSuspiciousAssets();
+          void this.updateSuspiciousAssets();
           break;
         case 'updateInfo':
-          this.updateInfo();
+          void this.updateInfo();
           break;
         case 'updateSwappableAssetIdsByVendor':
-          this.updateSwappableAssetIdsByVendor();
+          void this.updateSwappableAssetIdsByVendor();
           break;
         default:
           break;

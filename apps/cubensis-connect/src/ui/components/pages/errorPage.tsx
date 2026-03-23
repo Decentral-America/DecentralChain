@@ -35,7 +35,7 @@ export function ErrorPage() {
 
       if (activePopup.notify) {
         dispatch(deleteNotifications(activePopup.notify.map((x) => x.id))).then(() => {
-          navigate('/messages-and-notifications');
+          void navigate('/messages-and-notifications');
         });
       }
     }

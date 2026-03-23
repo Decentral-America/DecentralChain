@@ -68,7 +68,7 @@ export function Login() {
           type="button"
           className={styles.forgotLnk}
           onClick={() => {
-            navigate('/forgot-password');
+            void navigate('/forgot-password');
           }}
         >
           {t('login.passwordForgot')}

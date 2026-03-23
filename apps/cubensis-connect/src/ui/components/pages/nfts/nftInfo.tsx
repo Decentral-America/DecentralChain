@@ -109,7 +109,7 @@ export function NftInfo() {
       <div className={styles.stickyBottomPanel}>
         <Button
           onClick={() => {
-            navigate(-1);
+            void navigate(-1);
           }}
         >
           {t('nftInfo.backBtn')}
@@ -118,7 +118,7 @@ export function NftInfo() {
           type="submit"
           view="submit"
           onClick={() => {
-            navigate(`/send/${nft?.id}`);
+            void navigate(`/send/${nft?.id}`);
           }}
         >
           {t('nftInfo.sendBtn')}

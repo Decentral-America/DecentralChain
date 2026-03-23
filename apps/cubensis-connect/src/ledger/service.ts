@@ -63,7 +63,7 @@ class LedgerService {
     }
 
     if (this._networkCode !== networkCode) {
-      this.disconnect();
+      await this.disconnect();
       return;
     }
 
@@ -81,9 +81,9 @@ class LedgerService {
           msg,
         )
       ) {
-        this.disconnect();
+        await this.disconnect();
       } else if (/unable to claim interface/i.test(msg)) {
-        this.disconnect(LedgerServiceStatus.UsedBySomeOtherApp);
+        await this.disconnect(LedgerServiceStatus.UsedBySomeOtherApp);
       } else if (/an operation that changes the device state is in progress/i.test(msg)) {
         this._connectionRetryIsNeeded = true;
       } else {

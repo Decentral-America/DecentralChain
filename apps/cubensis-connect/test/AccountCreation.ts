@@ -351,7 +351,6 @@ describe('Account creation', () => {
             await browser.openKeeperPopup();
 
             await expect(HomeScreen.activeAccountName).toHaveText(ACCOUNTS.MORE_24_CHARS.NAME);
-            7;
           });
         });
       });

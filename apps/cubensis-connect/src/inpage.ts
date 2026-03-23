@@ -36,10 +36,10 @@ declare global {
 
 const proxy = createIpcCallProxy<keyof __BackgroundPageApiDirect, __BackgroundPageApiDirect>(
   (request) => {
-    messagePortPromise.then((messagePort) => messagePort.postMessage(request));
+    void messagePortPromise.then((messagePort) => messagePort.postMessage(request));
   },
   make((observer) => {
-    messagePortPromise.then((messagePort) => {
+    void messagePortPromise.then((messagePort) => {
       pipe(
         fromMessagePort(messagePort),
         subscribe((value) => {
@@ -55,7 +55,7 @@ const proxy = createIpcCallProxy<keyof __BackgroundPageApiDirect, __BackgroundPa
 const publicStateUpdates = make<PublicState>((observer) => {
   proxy.subscribeToPublicState();
 
-  messagePortPromise.then((messagePort) => {
+  void messagePortPromise.then((messagePort) => {
     pipe(
       fromMessagePort(messagePort),
       subscribe((value) => {

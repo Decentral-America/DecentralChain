@@ -136,7 +136,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                                 const newNet = networkHash[network]!;
 
                                 if (newNet.nodeBaseUrl) {
-                                  setNewNetwork(network);
+                                  void setNewNetwork(network);
                                 } else {
                                   setIsCustomNetworkModalShown(true);
                                 }
@@ -193,7 +193,7 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                   setIsCustomNetworkModalShown(false);
 
                   if (currentNetwork !== NetworkName.Custom) {
-                    setNewNetwork(NetworkName.Custom);
+                    void setNewNetwork(NetworkName.Custom);
                   }
                 }}
               />

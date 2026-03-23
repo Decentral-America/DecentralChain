@@ -54,7 +54,7 @@ export function UsdPricesProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    update({ firstRun: true });
+    void update({ firstRun: true });
 
     return () => {
       cancelled = true;

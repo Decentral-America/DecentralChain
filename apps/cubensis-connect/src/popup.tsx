@@ -23,6 +23,7 @@ import { createUpdateState } from './popup/updateState';
 import { PopupRoot } from './popupRoot';
 import { initSentry } from './sentry/init';
 import { setLoading } from './store/actions/localState';
+import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { RootWrapper } from './ui/components/RootWrapper';
 import Background, { type BackgroundUiApi } from './ui/services/Background';
 
@@ -40,7 +41,7 @@ initSentry({
 
 const store = createPopupStore();
 
-Promise.all([
+void Promise.all([
   Browser.storage.local
     .get('currentLocale')
     .then(({ currentLocale }: { currentLocale?: string }) => i18next.changeLanguage(currentLocale)),
@@ -52,15 +53,17 @@ Promise.all([
 
   createRoot(rootEl).render(
     <StrictMode>
-      <Provider store={store}>
-        <RootWrapper>
-          <UsdPricesProvider>
-            <SignProvider>
-              <PopupRoot />
-            </SignProvider>
-          </UsdPricesProvider>
-        </RootWrapper>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <RootWrapper>
+            <UsdPricesProvider>
+              <SignProvider>
+                <PopupRoot />
+              </SignProvider>
+            </UsdPricesProvider>
+          </RootWrapper>
+        </Provider>
+      </ErrorBoundary>
     </StrictMode>,
   );
 

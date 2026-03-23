@@ -73,7 +73,7 @@ export function ChangeAccountName() {
 
           dispatch(notificationChangeName(true));
 
-          navigate(-1);
+          void navigate(-1);
         }}
       >
         <div className="tag1 basic500 input-title">{t('changeName.newName')}</div>

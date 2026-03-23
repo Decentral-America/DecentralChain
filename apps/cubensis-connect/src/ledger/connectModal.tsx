@@ -43,13 +43,13 @@ export function LedgerConnectModal({ networkCode, onClose, onReady }: Props) {
   useEffect(() => {
     return () => {
       if (ledgerService.status !== LedgerServiceStatus.Ready) {
-        ledgerService.disconnect();
+        void ledgerService.disconnect();
       }
     };
   }, []);
 
   useEffect(() => {
-    connectToLedger();
+    void connectToLedger();
   }, [connectToLedger]);
 
   return (

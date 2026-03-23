@@ -114,7 +114,7 @@ export function TabNfts() {
           nfts={creatorNfts}
           counters={creatorCounts}
           onClick={(asset) => {
-            navigate(`/nft-collection/${asset.creator}`);
+            void navigate(`/nft-collection/${asset.creator}`);
           }}
           renderMore={() =>
             (myNfts?.length ?? 0) > MAX_NFT_ITEMS - 1 && (
