@@ -141,6 +141,11 @@
       "description": "Pin GitHub Actions to full SHA for supply chain security — Renovate keeps them current",
       "matchManagers": ["github-actions"],
       "pinDigests": true
+    },
+    {
+      "description": "Pin Dockerfile and Docker Compose base images to SHA256 digests — Renovate keeps them current",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "pinDigests": true
     }
   ],
   "platformAutomerge": true,
