@@ -81,16 +81,16 @@ export function PopupHome() {
             setTimeout(() => setShowCopy(false), 1000);
           }}
           onSwapClick={() => {
-            navigate('/swap');
+            void navigate('/swap');
           }}
           onOtherAccountsClick={() => {
-            navigate('/other-accounts');
+            void navigate('/other-accounts');
           }}
           onClick={(account) => {
-            navigate(`/account-info/${account.address}`);
+            void navigate(`/account-info/${account.address}`);
           }}
           onShowQr={() => {
-            navigate('/qr-code');
+            void navigate('/qr-code');
           }}
         />
       </div>
@@ -111,10 +111,10 @@ export function PopupHome() {
               }
             }}
             onSendClick={(assetId) => {
-              navigate(`/send/${assetId}`);
+              void navigate(`/send/${assetId}`);
             }}
             onSwapClick={(assetId) => {
-              navigate(`/swap?${new URLSearchParams({ fromAssetId: assetId })}`);
+              void navigate(`/swap?${new URLSearchParams({ fromAssetId: assetId })}`);
             }}
           />
           <TabNfts />

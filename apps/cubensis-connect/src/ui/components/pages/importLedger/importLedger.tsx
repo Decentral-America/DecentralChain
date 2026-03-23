@@ -147,7 +147,7 @@ export function ImportLedger() {
       return;
     }
 
-    connectToLedger();
+    void connectToLedger();
   }, [connectToLedger, isReady]);
 
   useEffect(() => {
@@ -165,31 +165,32 @@ export function ImportLedger() {
 
     setGetUsersError(null);
 
-    getUsersPromiseRef.current = getUsersPromiseRef.current.then(() =>
-      ledgerService.ledger?.getPaginationUsersData(page * USERS_PER_PAGE, USERS_PER_PAGE - 1).then(
-        (users) => {
-          setLedgerUsersPages((prevState) => ({ ...prevState, [page]: users }));
-        },
-        () => {
-          setGetUsersError(
-            <Trans
-              t={t}
-              i18nKey="importLedger.couldNotGetUsersError"
-              components={{
-                retryButton: (
-                  <button
-                    className={styles.errorRetryButton}
-                    type="button"
-                    onClick={connectToLedger}
-                  />
-                ),
-              }}
-            />,
-          );
-          setIsReady(false);
-        },
-      ),
-    );
+    getUsersPromiseRef.current = getUsersPromiseRef.current.then(async () => {
+      try {
+        const users = await ledgerService.ledger?.getPaginationUsersData(
+          page * USERS_PER_PAGE,
+          USERS_PER_PAGE - 1,
+        );
+        setLedgerUsersPages((prevState) => ({ ...prevState, [page]: users }));
+      } catch {
+        setGetUsersError(
+          <Trans
+            t={t}
+            i18nKey="importLedger.couldNotGetUsersError"
+            components={{
+              retryButton: (
+                <button
+                  className={styles.errorRetryButton}
+                  type="button"
+                  onClick={connectToLedger}
+                />
+              ),
+            }}
+          />,
+        );
+        setIsReady(false);
+      }
+    });
   }, [connectToLedger, isCurPageLoaded, isReady, page, t]);
 
   return (
@@ -297,7 +298,7 @@ export function ImportLedger() {
                   }),
                 );
 
-                navigate('/account-name');
+                void navigate('/account-name');
               }}
             >
               {t('importLedger.continueButton')}

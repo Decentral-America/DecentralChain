@@ -176,7 +176,7 @@ export function Send() {
                         value={amountValue}
                         showUsdAmount
                         onAssetChange={(assetId) => {
-                          navigate(`/send/${assetId}`, { replace: true });
+                          void navigate(`/send/${assetId}`, { replace: true });
                         }}
                         onBalanceClick={() => {
                           setAmountValue(balance.toTokens());

@@ -76,11 +76,11 @@ export class CurrentAccountController {
 
     Browser.alarms.onAlarm.addListener(({ name }) => {
       if (name === 'updateCurrentAccountBalance') {
-        this.updateCurrentAccountBalance();
+        void this.updateCurrentAccountBalance();
       }
     });
 
-    this.restartPolling();
+    void this.restartPolling();
   }
 
   restartPolling() {

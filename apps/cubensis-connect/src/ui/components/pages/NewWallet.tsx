@@ -109,7 +109,7 @@ export function NewWallet() {
         onSubmit={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          navigate('/create-account/save-backup');
+          void navigate('/create-account/save-backup');
         }}
       >
         <Button type="submit" view="submit" id="continue">
