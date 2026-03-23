@@ -42,7 +42,7 @@ export const useAsync = <T>(asyncFunction: () => Promise<T>, immediate: boolean 
 
   useEffect(() => {
     if (immediate) {
-      execute();
+      void execute();
     }
   }, [immediate, execute]);
 

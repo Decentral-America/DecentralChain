@@ -53,7 +53,7 @@ export const ImportLedger = () => {
     };
 
     if (!isInitialized) {
-      initConnection();
+      void initConnection();
     }
   }, [isInitialized, connect, getUserList]);
 
@@ -74,7 +74,7 @@ export const ImportLedger = () => {
       }
     };
 
-    loadUsers();
+    void loadUsers();
   }, [offset, isConnected, getUserList, useDefaultAddress]);
 
   const handlePageLeft = () => {
@@ -141,7 +141,7 @@ export const ImportLedger = () => {
 
       // Navigate to wallet
       const targetRoute = getActiveState('wallet');
-      navigate(targetRoute);
+      void navigate(targetRoute);
     } catch (err) {
       logger.error('Ledger import error:', err);
       setShowErrorModal(true);
@@ -165,7 +165,7 @@ export const ImportLedger = () => {
   };
 
   const handleCancel = () => {
-    navigate('/import');
+    void navigate('/import');
   };
 
   if (showConnectModal) {

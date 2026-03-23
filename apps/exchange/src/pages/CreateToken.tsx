@@ -50,7 +50,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { landingTheme } from '@/theme/landingTheme';
 
@@ -165,8 +164,9 @@ export const CreateToken = () => {
   };
 
   const handleSubmit = () => {
-    logger.debug('Creating token:', { count, description, name, precision, reissuable, script });
-    // TODO: Implement token creation logic
+    // Token creation requires the new node implementation — not yet available.
+    // This handler is intentionally a no-op until the issue transaction endpoint
+    // is wired to the on-chain IssueTransaction flow.
   };
 
   return (
@@ -517,6 +517,7 @@ export const CreateToken = () => {
                                   component="a"
                                   href="https://docs.decentralchain.io"
                                   target="_blank"
+                                  rel="noopener noreferrer"
                                   sx={{ color: 'primary.light', textDecoration: 'underline' }}
                                 >
                                   Learn more
@@ -976,26 +977,30 @@ export const CreateToken = () => {
                     Next
                   </Button>
                 ) : (
-                  <Button
-                    variant="contained"
-                    size="large"
-                    startIcon={<AddCircleOutline />}
-                    onClick={handleSubmit}
-                    disabled={!isStepValid()}
-                    sx={{
-                      '&:disabled': {
-                        background: '#E5E7EB',
-                        color: '#9CA3AF',
-                      },
-                      '&:hover': {
-                        background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
-                      },
-                      background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
-                      minWidth: 160,
-                    }}
-                  >
-                    Create Token
-                  </Button>
+                  <Tooltip title="Token creation requires node integration — coming soon">
+                    <span>
+                      <Button
+                        variant="contained"
+                        size="large"
+                        startIcon={<AddCircleOutline />}
+                        onClick={handleSubmit}
+                        disabled={true}
+                        sx={{
+                          '&:disabled': {
+                            background: '#E5E7EB',
+                            color: '#9CA3AF',
+                          },
+                          '&:hover': {
+                            background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
+                          },
+                          background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+                          minWidth: 160,
+                        }}
+                      >
+                        Create Token
+                      </Button>
+                    </span>
+                  </Tooltip>
                 )}
               </Stack>
             </Grid>

@@ -4,6 +4,7 @@
  * Enables programmable account rules and custom transaction validation
  */
 
+import { type ISetScriptParams } from '@decentralchain/transactions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type React from 'react';
 import { useState } from 'react';
@@ -12,7 +13,10 @@ import styled from 'styled-components';
 import { z } from 'zod';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
-import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import {
+  TransactionConfirmationFlow,
+  type TxOmit,
+} from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
@@ -170,10 +174,7 @@ type SetScriptFormData = z.infer<typeof scriptSchema>;
 export const SetScriptForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<{
-    script: string | null;
-    fee: number;
-  } | null>(null);
+  const [transactionParams, setTransactionParams] = useState<TxOmit<ISetScriptParams> | null>(null);
 
   const {
     register,
@@ -277,7 +278,15 @@ export const SetScriptForm: React.FC = () => {
               <br />• Fee: 0.01 DCC (10x standard transaction fee)
               <br />• Scripts validate all outgoing transactions from your account
               <br />• Leave empty and submit to remove an existing script
-              <br />• Learn more about RIDE at docs.decentralchain.io/en/ride/
+              <br />• Learn more about RIDE at{' '}
+              <a
+                href="https://docs.decentralchain.io/en/ride/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit' }}
+              >
+                docs.decentralchain.io/en/ride/
+              </a>
             </InfoBox>
 
             <ButtonGroup>

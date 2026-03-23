@@ -67,6 +67,8 @@ interface Lease {
   timestamp: number | string | Date;
   status?: 'active' | 'cancelled' | 'canceled';
   typeName?: string;
+  /** Present on lease-cancel transactions from the recent-tx API */
+  transfer?: unknown;
   // Additional fields may be returned from recent transactions API
   [key: string]: unknown;
 }
@@ -238,7 +240,7 @@ export const Leasing = () => {
 
   const tableRows = useMemo(() => {
     return (leases as Lease[]).map((lease) => {
-      const transfer = lease['transfer'] as
+      const transfer = lease.transfer as
         | { amount?: { getTokens?: () => { toNumber?: () => number } }; recipient?: string }
         | undefined;
       const rawAmount = (() => {

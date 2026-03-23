@@ -81,7 +81,7 @@ export const useScriptInfoPolling = (
     logger.debug('[ScriptInfo] Starting polling for address:', address);
     initialTimeoutId = setTimeout(() => {
       // First poll
-      fetchScriptInfo();
+      void fetchScriptInfo();
 
       // Then poll every 10 seconds
       intervalId = setInterval(fetchScriptInfo, POLL_INTERVAL);

@@ -199,7 +199,7 @@ export const SaveSeedPage: React.FC = () => {
   useEffect(() => {
     setIsVisible(true);
     // Load user list from storage
-    loadUserList();
+    void loadUserList();
   }, [loadUserList]);
 
   useEffect(() => {
@@ -278,7 +278,7 @@ export const SaveSeedPage: React.FC = () => {
 
   const handleComplete = () => {
     const targetRoute = getActiveState('wallet');
-    navigate(targetRoute);
+    void navigate(targetRoute);
   };
 
   if (userList.length === 0) {
@@ -468,7 +468,7 @@ export const SaveSeedPage: React.FC = () => {
                     placeholder="Enter your password"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter' && password) {
-                        handleShowSeed();
+                        void handleShowSeed();
                       }
                     }}
                     InputProps={{

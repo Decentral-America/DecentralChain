@@ -49,8 +49,6 @@ export const connect = {
 export const signAdapters = signatureAdapters;
 export const isValidAddress = utilsIsValidAddress;
 
-// export const prepareForBroadcast = prepareForBroadcastF;
-// export const getTransactionId = getTransactionIdF;
 export const broadcast = broadcastF;
 export const createOrder = createOrderSend;
 export const cancelOrder = cancelOrderSend;

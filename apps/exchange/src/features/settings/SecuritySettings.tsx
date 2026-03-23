@@ -243,7 +243,7 @@ export const SecuritySettings: React.FC = () => {
       }
     };
 
-    loadSecretData();
+    void loadSecretData();
   }, [user]);
 
   // Handle copy with field tracking

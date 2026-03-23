@@ -256,7 +256,7 @@ const getAssetRequestCb = (list: Array<string>): Promise<Array<Asset>> => {
   return splitRequest(
     list,
     ds.getAssets as unknown as (ids: string[]) => Promise<{ data: Array<Asset | null> }>,
-  ) //TODO delete after modify client lib
+  ) // Cast needed until data-service-client-js tightens getAssets return type
     .then((response) => {
       const assets = response.data;
       const fails = [];

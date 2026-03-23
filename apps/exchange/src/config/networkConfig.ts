@@ -55,7 +55,7 @@ const NetworkConfig = {
       if (value && typeof value === 'object' && k in value) {
         value = (value as Record<string, unknown>)[k];
       } else {
-        return undefined;
+        return;
       }
     }
 
@@ -74,7 +74,7 @@ const NetworkConfig = {
     for (const [ticker, assetId] of Object.entries(_config.assets)) {
       if (assetId === id) return ticker;
     }
-    return undefined;
+    return;
   },
 
   getFullConfig(): MainnetConfig {

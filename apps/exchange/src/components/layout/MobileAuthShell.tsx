@@ -43,7 +43,7 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
     if (onBack) {
       onBack();
     } else {
-      navigate(-1);
+      void navigate(-1);
     }
   };
 

@@ -8,7 +8,7 @@ const footerLinks = {
   ],
   Support: [
     { href: 'https://docs.decentralchain.io', label: 'Help Center' },
-    { href: 'https://github.com/Decentral-America/exchange/issues', label: 'Report Issue' },
+    { href: 'https://github.com/Decentral-America/DecentralChain/issues', label: 'Report Issue' },
   ],
   Trading: [
     { href: '/dex', label: 'DEX Trading' },
@@ -99,7 +99,7 @@ export default function Footer() {
           spacing={2}
         >
           <Typography variant="caption" color="text.secondary">
-            © 2025 Decentral Exchange. Built on DecentralChain.
+            © {new Date().getFullYear()} Decentral Exchange. Built on DecentralChain.
           </Typography>
           <Stack direction="row" spacing={3}>
             <Link

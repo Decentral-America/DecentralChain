@@ -178,7 +178,7 @@ export const ImportAccount = () => {
   useEffect(() => {
     if (pendingNavigation && isAuthenticated && user) {
       setPendingNavigation(false);
-      navigate(navigationTarget.current);
+      void navigate(navigationTarget.current);
     }
   }, [pendingNavigation, isAuthenticated, user, navigate]);
 
@@ -261,7 +261,7 @@ export const ImportAccount = () => {
                       style={{ color: 'white', fontWeight: 600, textDecoration: 'underline' }}
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate('/import/ledger');
+                        void navigate('/import/ledger');
                       }}
                     >
                       Import from Ledger
@@ -347,7 +347,7 @@ export const ImportAccount = () => {
                   style={{ color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate('/signup');
+                    void navigate('/signup');
                   }}
                 >
                   Create one

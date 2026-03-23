@@ -58,7 +58,7 @@ export const useAliases = () => {
 
   // Load aliases when user changes
   useEffect(() => {
-    fetchAliases();
+    void fetchAliases();
   }, [fetchAliases]);
 
   // Validate and check if alias is available
@@ -160,7 +160,7 @@ export const useAliases = () => {
           }
         };
 
-        checkAlias();
+        void checkAlias();
         pollingIntervalRef.current = setInterval(checkAlias, pollInterval);
 
         pollingTimeoutRef.current = setTimeout(() => {

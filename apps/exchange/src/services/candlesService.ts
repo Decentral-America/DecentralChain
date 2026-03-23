@@ -350,7 +350,7 @@ class CandlesService {
           typeof num === 'object' &&
           num !== null &&
           'isNaN' in num &&
-          typeof (num as Record<string, unknown>).isNaN === 'function'
+          typeof (num as { isNaN?: unknown }).isNaN === 'function'
         ) {
           const obj = num as { isNaN(): boolean; toFixed(): string };
           if (obj.isNaN()) {

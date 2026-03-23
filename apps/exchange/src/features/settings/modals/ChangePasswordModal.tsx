@@ -190,7 +190,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             disabled={isLoading || success}
-            placeholder="Enter new password (min 8 characters)"
+            placeholder="Enter new password (min 12 characters)"
           />
         </InputGroup>
 

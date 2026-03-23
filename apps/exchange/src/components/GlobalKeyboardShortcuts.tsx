@@ -56,7 +56,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
     {
       // Alternative settings shortcut (Mac standard)
       'ctrl+,': () => {
-        navigate('/desktop/settings');
+        void navigate('/desktop/settings');
         onShortcutTriggered?.('Navigate to Settings');
       },
 
@@ -80,13 +80,13 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       },
       // Primary navigation
       'ctrl+k': () => {
-        navigate('/desktop/dex');
+        void navigate('/desktop/dex');
         onShortcutTriggered?.('Navigate to DEX');
       },
 
       'ctrl+l': () => {
         // Navigate to leasing
-        navigate('/desktop/wallet/leasing');
+        void navigate('/desktop/wallet/leasing');
         onShortcutTriggered?.('View Leasing');
       },
 
@@ -94,7 +94,7 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
       'ctrl+n': () => {
         // Navigate to create transaction based on current page
         if (location.pathname.includes('/wallet')) {
-          navigate('/desktop/wallet/send');
+          void navigate('/desktop/wallet/send');
         } else if (location.pathname.includes('/dex')) {
           // Focus on trading form
           document.querySelector<HTMLInputElement>('input[name="amount"]')?.focus();
@@ -104,21 +104,21 @@ export function GlobalKeyboardShortcuts({ onShortcutTriggered }: GlobalKeyboardS
 
       'ctrl+p': () => {
         // Navigate to portfolio view
-        navigate('/desktop/wallet/portfolio');
+        void navigate('/desktop/wallet/portfolio');
         onShortcutTriggered?.('View Portfolio');
       },
       'ctrl+s': () => {
-        navigate('/desktop/settings');
+        void navigate('/desktop/settings');
         onShortcutTriggered?.('Navigate to Settings');
       },
 
       'ctrl+t': () => {
         // Navigate to transaction history
-        navigate('/desktop/wallet/transactions');
+        void navigate('/desktop/wallet/transactions');
         onShortcutTriggered?.('View Transactions');
       },
       'ctrl+w': () => {
-        navigate('/desktop/wallet');
+        void navigate('/desktop/wallet');
         onShortcutTriggered?.('Navigate to Wallet');
       },
     },

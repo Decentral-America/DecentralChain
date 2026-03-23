@@ -50,7 +50,7 @@ export default function QRReceive() {
   const handleSendClick = () => {
     if (!user) {
       // Redirect to sign in if not authenticated
-      navigate('/sign-in');
+      void navigate('/sign-in');
       return;
     }
     // Open send modal for authenticated users

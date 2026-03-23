@@ -209,7 +209,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     };
 
-    restoreSession();
+    void restoreSession();
   }, [sessionRestored, clearSession]);
 
   /**
@@ -240,7 +240,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     };
 
-    loadAccounts();
+    void loadAccounts();
   }, []);
 
   /**
@@ -918,7 +918,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Check if idle time exceeds threshold
     if (idleMinutes >= logoutThreshold) {
       logger.debug('[Auth] Auto-logout triggered after', idleMinutes, 'minutes of inactivity');
-      logout();
+      void logout();
     }
   }, [idleMinutes, user, logout]); // Check whenever idle time changes
 

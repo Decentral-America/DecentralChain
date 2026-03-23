@@ -61,10 +61,10 @@ export function getExchangeTxList(
   };
 
   return request({
-    method: () =>
-      getDataService()
-        .getExchangeTxs(requestParams)
-        .then((r) => getData(r, [])),
+    method: async () => {
+      const r = await getDataService().getExchangeTxs(requestParams);
+      return getData(r, []);
+    },
   }).then(
     (transactions: ITransaction[]) =>
       parseTx(transactions as unknown as T_API_TX[], false, true) as unknown as IExchange[],

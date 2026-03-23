@@ -361,7 +361,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
    * Load settings from localStorage on mount and when user changes
    */
   useEffect(() => {
-    loadSettings();
+    void loadSettings();
   }, [loadSettings]);
 
   /**
@@ -386,7 +386,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem(STORAGE_KEYS.COMMON_SETTINGS, JSON.stringify(updated));
 
       // Trigger side effects
-      applySideEffects(key as string, value);
+      void applySideEffects(key as string, value);
     },
     [commonSettings, applySideEffects],
   );
