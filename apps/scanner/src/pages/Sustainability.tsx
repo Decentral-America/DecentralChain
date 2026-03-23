@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Award, Globe, Leaf, TrendingUp, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
+// biome-ignore lint/suspicious/noDeprecatedImports: recharts marks Cell's internal CellReader context as deprecated; Cell itself is still the documented public API with no replacement
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,7 +90,7 @@ export default function Sustainability() {
       setLoading(false);
     };
 
-    analyzeGreenHosting();
+    void analyzeGreenHosting();
   }, [connected]);
 
   const pieData = greenStats

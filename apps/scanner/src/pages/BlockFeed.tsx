@@ -89,7 +89,7 @@ export default function BlockFeed() {
             lastHeightRef.current = newHeight;
           }
         };
-        fetchMissing();
+        void fetchMissing();
       } else if (gap > MAX_GAP_TO_FETCH) {
         // Gap too large, just add the new block and update reference
         console.warn(`Gap too large (${gap} blocks), skipping missing blocks`);
