@@ -83,7 +83,7 @@ export interface Asset {
   name: string;
   symbol: string;
   balance: number;
-  usdValue: number;
+  usdValue?: number;
   change24h?: number;
   icon?: string;
   decimals?: number;
@@ -156,7 +156,7 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
       </AssetInfo>
 
       <div>
-        <AssetValue>{formatUSD(asset.usdValue)}</AssetValue>
+        <AssetValue>{asset.usdValue != null ? formatUSD(asset.usdValue) : '—'}</AssetValue>
         {asset.change24h !== undefined && (
           <AssetValueChange $positive={asset.change24h >= 0}>
             {formatChange(asset.change24h)}

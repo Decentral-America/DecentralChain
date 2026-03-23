@@ -1,12 +1,14 @@
 /**
  * AssetList Component
- * Scrollable list of user assets with balances and values
+ * Scrollable list of user assets with real balances fetched from the DCC node
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import styled from 'styled-components';
+import { waveletsToCoins } from '@/api/services/addressService';
+import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { Spinner } from '@/components/atoms/Spinner';
 import { Stack } from '@/components/atoms/Stack';
-import { useAuth } from '@/contexts/AuthContext';
+import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { type Asset, AssetCard } from './AssetCard';
 
 const AssetListContainer = styled.div`
@@ -45,76 +47,45 @@ const ListHeader = styled.div`
 `;
 
 export const AssetList = () => {
-  const { user } = useAuth();
+  const { balances, isLoading, error } = useBalanceWatcher({ interval: 10000 });
 
-  // Fetch assets with React Query
-  const {
-    data: assets,
-    isLoading,
-    error,
-  } = useQuery<Asset[]>({
-    enabled: !!user?.address,
-    queryFn: async () => {
-      // Mock data for now - will be replaced with actual API call
-      // TODO: Replace with actual API endpoint when backend is ready
-      return new Promise<Asset[]>((resolve) => {
-        setTimeout(() => {
-          resolve([
-            {
-              balance: 25000.5,
-              change24h: 5.23,
-              decimals: 8,
-              id: 'DCC',
-              name: 'DecentralChain',
-              symbol: 'DCC',
-              usdValue: 12548.75,
-            },
-            {
-              balance: 1000.0,
-              change24h: 0.01,
-              decimals: 6,
-              id: 'USDT',
-              name: 'Tether USD',
-              symbol: 'USDT',
-              usdValue: 1000.0,
-            },
-            {
-              balance: 0.05,
-              change24h: -2.15,
-              decimals: 8,
-              id: 'BTC',
-              name: 'Bitcoin',
-              symbol: 'BTC',
-              usdValue: 2250.0,
-            },
-            {
-              balance: 1.25,
-              change24h: 3.47,
-              decimals: 18,
-              id: 'ETH',
-              name: 'Ethereum',
-              symbol: 'ETH',
-              usdValue: 2125.0,
-            },
-            {
-              balance: 5000.0,
-              change24h: 12.8,
-              decimals: 2,
-              id: 'CRC',
-              name: 'CRC Token',
-              symbol: 'CRC',
-              usdValue: 500.0,
-            },
-          ]);
-        }, 800);
-      });
-    },
-    queryKey: ['assets', user?.address],
-    refetchInterval: 60000, // Refetch every minute
-    staleTime: 30000, // Consider data fresh for 30 seconds
+  const assetEntries = useMemo(
+    () => Object.entries(balances?.assets ?? {}) as Array<[string, number]>,
+    [balances?.assets],
+  );
+  const assetIds = useMemo(() => assetEntries.map(([id]) => id), [assetEntries]);
+
+  const { data: assetDetails, isLoading: isDetailsLoading } = useMultipleAssetDetails(assetIds, {
+    enabled: assetIds.length > 0,
   });
 
-  if (isLoading) {
+  const assets = useMemo<Asset[]>(() => {
+    const assetDetailMap = new Map((assetDetails ?? []).map((d) => [d.assetId, d]));
+
+    const dccRow: Asset = {
+      balance: waveletsToCoins(balances?.available ?? balances?.balance ?? 0),
+      decimals: 8,
+      id: 'DCC',
+      name: 'DecentralChain',
+      symbol: 'DCC',
+    };
+
+    const tokenRows: Asset[] = assetEntries.map(([assetId, rawBalance]) => {
+      const detail = assetDetailMap.get(assetId);
+      const decimals = detail?.decimals ?? 8;
+      return {
+        balance: rawBalance / 10 ** decimals,
+        decimals,
+        id: assetId,
+        name: detail?.name ?? assetId,
+        symbol: detail?.name ?? assetId.slice(0, 8),
+      } satisfies Asset;
+    });
+
+    return [dccRow, ...tokenRows];
+  }, [balances, assetEntries, assetDetails]);
+
+  if (isLoading || isDetailsLoading) {
     return (
       <AssetListContainer>
         <LoadingWrapper>

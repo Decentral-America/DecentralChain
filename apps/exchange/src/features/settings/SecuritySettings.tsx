@@ -15,6 +15,7 @@
  * Matches Angular's settings.html Security tab exactly
  */
 
+import { base58Decode, stringToBytes } from '@decentralchain/ts-lib-crypto';
 import * as ds from 'data-service';
 import type React from 'react';
 import { useEffect, useState } from 'react';
@@ -216,18 +217,17 @@ export const SecuritySettings: React.FC = () => {
         ]);
 
         // Validate encoded seed matches actual seed (Angular validation logic)
-        // TODO: Re-enable seed validation once @decentralchain/transactions is properly configured
-        const canSeed = encoded && seed && typeof seed === 'string';
-        // if (canSeed) {
-        //   try {
-        //     const seedBytes = libs.crypto.stringToBytes(seed as string).join(',');
-        //     const encodedBytes = libs.crypto.base58Decode(encoded as string).join(',');
-        //     canSeed = seedBytes === encodedBytes;
-        //   } catch (e) {
-        //     logger.error('[SecuritySettings] Seed validation error:', e);
-        //     canSeed = false;
-        //   }
-        // }
+        let canSeed = !!(encoded && seed && typeof seed === 'string');
+        if (canSeed) {
+          try {
+            const seedBytes = stringToBytes(seed as string).join(',');
+            const encodedBytes = base58Decode(encoded as string).join(',');
+            canSeed = seedBytes === encodedBytes;
+          } catch (e) {
+            logger.error('[SecuritySettings] Seed validation error:', e);
+            canSeed = false;
+          }
+        }
 
         // Set state with type assertions
         setPhrase(canSeed ? (seed as string) : null);
