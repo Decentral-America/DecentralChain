@@ -239,7 +239,7 @@ export const MainLayout = () => {
   };
 
   const handleManageAliases = () => {
-    navigate('/desktop/wallet/aliases');
+    void navigate('/desktop/wallet/aliases');
     handleUserMenuClose();
   };
 
@@ -549,7 +549,7 @@ export const MainLayout = () => {
 
                 <MenuItem
                   onClick={() => {
-                    navigate('/desktop/wallet');
+                    void navigate('/desktop/wallet');
                     handleUserMenuClose();
                   }}
                 >

@@ -4,6 +4,7 @@
  * Aliases are permanent and must be unique on the network
  */
 
+import { type IAliasParams } from '@decentralchain/transactions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type React from 'react';
 import { useState } from 'react';
@@ -13,7 +14,10 @@ import { z } from 'zod';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
-import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import {
+  TransactionConfirmationFlow,
+  type TxOmit,
+} from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
@@ -136,7 +140,7 @@ type AliasFormData = z.infer<typeof aliasSchema>;
 export const AliasForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
+  const [transactionParams, setTransactionParams] = useState<TxOmit<IAliasParams> | null>(null);
 
   const {
     register,

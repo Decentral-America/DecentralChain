@@ -92,12 +92,12 @@ export const Header = () => {
   };
 
   const handleViewWallet = () => {
-    navigate('/desktop/wallet');
+    void navigate('/desktop/wallet');
     handleMenuClose();
   };
 
   const handleManageAliases = () => {
-    navigate('/desktop/wallet/aliases');
+    void navigate('/desktop/wallet/aliases');
     handleMenuClose();
   };
 

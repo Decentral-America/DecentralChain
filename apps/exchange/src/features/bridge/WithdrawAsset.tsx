@@ -89,7 +89,7 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
    */
   useEffect(() => {
     if (open && isAddressValid && targetAddress) {
-      loadWithdrawDetails();
+      void loadWithdrawDetails();
     } else {
       setWithdrawDetails(null);
     }

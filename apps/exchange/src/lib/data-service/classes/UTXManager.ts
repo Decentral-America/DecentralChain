@@ -16,7 +16,7 @@ export class UTXManager {
     this._address = address;
     this._txList = [];
     this._txHash = Object.create(null);
-    this._getTransactionsFromUTX();
+    void this._getTransactionsFromUTX();
   }
 
   public dropAddress(): void {

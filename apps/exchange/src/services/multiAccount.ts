@@ -178,8 +178,8 @@ class MultiAccountService {
       // Seed account
       publicKey = buildPublicKey(userData.seed);
     } else if (userData.privateKey) {
-      // PrivateKey account
-      publicKey = buildPublicKey({ privateKey: userData.privateKey } as unknown as string);
+      // PrivateKey account: pass as TPrivateKey<string> — string extends TBinaryIn
+      publicKey = buildPublicKey({ privateKey: userData.privateKey });
     } else {
       throw new Error('Must provide seed, privateKey, or publicKey');
     }

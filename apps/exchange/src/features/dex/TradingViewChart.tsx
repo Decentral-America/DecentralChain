@@ -44,7 +44,7 @@ let loadPromise: Promise<void> | null = null;
  * Tries multiple sources: public folder, proxy, and external CDN
  */
 const loadTradingViewLibrary = (): Promise<void> => {
-  if (loadPromise) return loadPromise;
+  if (loadPromise !== null) return loadPromise;
 
   loadPromise = new Promise((resolve, reject) => {
     // Check if already loaded
@@ -108,13 +108,24 @@ const loadTradingViewLibrary = (): Promise<void> => {
     };
 
     // Try sources in order: public folder -> proxy -> external CDN
-    tryLoadFromPublic()
-      .then(resolve)
-      .catch(() =>
-        tryLoadFromProxy()
-          .then(resolve)
-          .catch(() => tryLoadFromCDN().then(resolve).catch(reject)),
-      );
+    void (async () => {
+      try {
+        await tryLoadFromPublic();
+        resolve();
+      } catch {
+        try {
+          await tryLoadFromProxy();
+          resolve();
+        } catch {
+          try {
+            await tryLoadFromCDN();
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
+        }
+      }
+    })();
   });
 
   return loadPromise;
@@ -198,7 +209,7 @@ export const TradingViewChart: React.FC = () => {
       }
     };
 
-    initChart();
+    void initChart();
 
     return () => {
       isMounted = false;

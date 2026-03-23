@@ -191,7 +191,7 @@ export const usePoll = <T>(
 
     // Execute immediately on start if configured
     if (executeImmediately) {
-      executePoll();
+      void executePoll();
     }
 
     // Set up interval for subsequent polls

@@ -7,32 +7,26 @@ export function request<T>(params: IRequestParams<T>): Promise<T> {
   if (params.url) {
     params.fetchOptions = addDefaultRequestParams(params.url, params.fetchOptions);
     promise = fetch(normalizeUrl(params.url), params.fetchOptions || Object.create(null)).then(
-      (response) => {
+      async (response) => {
         const isJSON = response.headers
           .get('Content-Type')
           .toLowerCase()
           .includes('application/json');
         if (response.ok) {
-          return response.text().then((data) => (isJSON ? parse(data) : data));
+          const data = await response.text();
+          return isJSON ? parse(data) : data;
         } else {
+          const error = tryParseError(await response.text());
           if (response.status >= 500 && response.status <= 599) {
-            return response
-              .text()
-              .then(tryParseError)
-              .then((error) => {
-                if (typeof error === 'object' && error.message) {
-                  return Promise.reject(error);
-                } else {
-                  return Promise.reject(
-                    new Error(`An unexpected error has occurred: #${response.status}`),
-                  );
-                }
-              });
+            if (typeof error === 'object' && error.message) {
+              return Promise.reject(error);
+            } else {
+              return Promise.reject(
+                new Error(`An unexpected error has occurred: #${response.status}`),
+              );
+            }
           } else {
-            return response
-              .text()
-              .then(tryParseError)
-              .then((error) => Promise.reject(error));
+            return Promise.reject(error);
           }
         }
       },
@@ -42,7 +36,6 @@ export function request<T>(params: IRequestParams<T>): Promise<T> {
   } else {
     throw new Error('Wrong request params!');
   }
-  // TODO catch errors
 
   return promise;
 }

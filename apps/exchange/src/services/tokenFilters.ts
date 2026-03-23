@@ -30,7 +30,7 @@ class TokenFilterService {
    */
   async initialize(): Promise<void> {
     // Return existing initialization if in progress
-    if (this.initPromise) {
+    if (this.initPromise !== null) {
       return this.initPromise;
     }
 
@@ -162,7 +162,7 @@ class TokenFilterService {
    * @returns Token info if available
    */
   getTokenInfo(assetId: string): TokenInfo | undefined {
-    if (!assetId) return undefined;
+    if (!assetId) return;
     return this.tokenNames.get(assetId);
   }
 

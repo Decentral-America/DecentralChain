@@ -60,12 +60,17 @@ export const BackupSettings: React.FC = () => {
         'deriveKey',
       ]);
 
+      // SECURITY NOTE: The static salt and 100 000 iteration count are intentional backward-
+      // compatibility constraints imposed by the legacy Angular wallet. Changing either value
+      // would silently break decryption of existing backups created by that app. When Angular
+      // compatibility is no longer required, migrate to a random per-backup salt (prepended to
+      // the ciphertext) and ≥ 600 000 iterations per OWASP 2024 PBKDF2 guidance.
       const key = await crypto.subtle.deriveKey(
         {
           hash: 'SHA-256',
           iterations: 100000,
           name: 'PBKDF2',
-          salt: encoder.encode('dcc-salt'), // Must match Angular
+          salt: encoder.encode('dcc-salt'), // Fixed: must match Angular backup format
         },
         keyMaterial,
         { length: 256, name: 'AES-GCM' },

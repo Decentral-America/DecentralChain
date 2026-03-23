@@ -232,7 +232,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
 
         // Auto-start processing if not paused
         if (!isPaused) {
-          processQueue();
+          void processQueue();
         }
       });
     },
@@ -265,7 +265,7 @@ export const useQueue = <T = unknown>(options: UseQueueOptions = {}): UseQueueRe
    */
   const resume = useCallback(() => {
     setIsPaused(false);
-    processQueue();
+    void processQueue();
   }, [processQueue]);
 
   /**

@@ -275,7 +275,7 @@ export const CreateAccount = () => {
     if (isAuthenticated && user && !isLoading && !isCreating) {
       const targetRoute = getActiveState('wallet');
       logger.debug('[CreateAccount] Navigating to:', targetRoute);
-      navigate(targetRoute, { replace: true });
+      void navigate(targetRoute, { replace: true });
     }
   }, [isAuthenticated, user, isLoading, isCreating, navigate, getActiveState]);
 
@@ -356,7 +356,7 @@ export const CreateAccount = () => {
         const { setSeedTransfer } = await import('@/lib/secureTransfer');
         setSeedTransfer(seedPhrase.phrase);
         setIsCreating(false); // Clear flag before navigation
-        navigate('/auth/import', {
+        void navigate('/auth/import', {
           state: {
             hasBackup: true,
             hasSeedTransfer: true, // Signal that seed is in secure transfer
@@ -387,7 +387,7 @@ export const CreateAccount = () => {
               href="/import-account"
               onClick={(e) => {
                 e.preventDefault();
-                navigate('/import-account');
+                void navigate('/import-account');
               }}
             >
               Import one instead

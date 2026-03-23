@@ -281,7 +281,7 @@ export const useSecureStorage = <T = unknown>(
   const [value, setValue] = useState<T | null>(initialValue || null);
 
   useEffect(() => {
-    secureStorage.getItem<T>(key).then((stored) => {
+    void secureStorage.getItem<T>(key).then((stored) => {
       if (stored !== null) {
         setValue(stored);
       }

@@ -4,6 +4,7 @@
  * Supports up to 100 recipients with batch optimization
  */
 
+import { type IMassTransferParams } from '@decentralchain/transactions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type React from 'react';
 import { useState } from 'react';
@@ -13,7 +14,10 @@ import { z } from 'zod';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
-import { TransactionConfirmationFlow } from '@/components/wallet/TransactionConfirmationFlow';
+import {
+  TransactionConfirmationFlow,
+  type TxOmit,
+} from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
@@ -189,7 +193,9 @@ type MassTransferFormData = z.infer<typeof massTransferSchema>;
 export const MassTransferForm: React.FC = () => {
   const { user } = useAuth();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [transactionParams, setTransactionParams] = useState<Record<string, unknown> | null>(null);
+  const [transactionParams, setTransactionParams] = useState<TxOmit<IMassTransferParams> | null>(
+    null,
+  );
 
   const {
     register,

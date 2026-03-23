@@ -214,7 +214,7 @@ export const DateDisplay: React.FC<DateDisplayProps> = ({
 
   // Tooltip content
   const tooltipContent = useMemo(() => {
-    if (!showTooltip || !isValid(dateObj)) return undefined;
+    if (!showTooltip || !isValid(dateObj)) return;
 
     try {
       return format(dateObj, tooltipFormat, {

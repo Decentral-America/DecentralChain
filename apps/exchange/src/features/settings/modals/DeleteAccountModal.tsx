@@ -122,7 +122,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
       localStorage.setItem('multiAccountUsers', JSON.stringify(storedUsers));
 
       await logout();
-      navigate('/');
+      void navigate('/');
     } catch (error) {
       logger.error('Delete account failed:', error);
       const msg =
