@@ -13,7 +13,7 @@ export interface PeerGeoResult {
  * Extract the IP portion from a peer address string (format: "/ip:port").
  */
 export function extractIp(address: string | undefined): string | undefined {
-  if (!address) return undefined;
+  if (!address) return;
   return address.split('/')[1]?.split(':')[0];
 }
 
