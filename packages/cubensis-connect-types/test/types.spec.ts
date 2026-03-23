@@ -42,6 +42,7 @@ import {
   type TCallArgsInteger,
   type TCallArgsString,
   type TCreateAliasTxData,
+  // biome-ignore lint/suspicious/noDeprecatedImports: intentional — this test validates the backward-compat alias exists and is type-equivalent to ICubensisConnectApi
   type TCubensisConnectApi,
   type TData,
   type TDataTxData,

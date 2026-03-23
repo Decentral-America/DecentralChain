@@ -136,7 +136,7 @@ export class DCCLedger {
     this._dccLibPromise = null;
     this._unsubscribeLog?.();
     this._unsubscribeLog = null;
-    if (transportPromise) {
+    if (transportPromise !== null) {
       try {
         const transport = await transportPromise;
         await transport.close();

@@ -118,7 +118,7 @@ export function switchTransactionByType<R extends TChoices>(
     if (handler != null) {
       return (handler as (data: Transaction<TLong>) => unknown)(tx);
     }
-    return undefined;
+    return;
   }) as ISwitchTransactionResult<R>;
 }
 

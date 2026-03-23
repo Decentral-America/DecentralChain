@@ -10,7 +10,7 @@ import {
 } from '@decentralchain/protobuf-serialization';
 import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
-  type DataFiledType,
+  type DataFieldType,
   type DataTransaction,
   type DataTransactionEntry,
   TRANSACTION_TYPE,
@@ -37,10 +37,10 @@ const typeMap = {
 const mapType = <T>(
   value: T,
   type: string | undefined | null,
-): [DataFiledType, number, (value: T) => Uint8Array] => {
+): [DataFieldType, number, (value: T) => Uint8Array] => {
   const key = type ?? typeof value;
   const entry = (typeMap as Record<string, readonly [string, number, unknown]>)[key] ?? typeMap._;
-  return entry as [DataFiledType, number, (value: T) => Uint8Array];
+  return entry as [DataFieldType, number, (value: T) => Uint8Array];
 };
 
 const convertValue = (

@@ -301,19 +301,19 @@ export class Signable<T extends TSignData = TSignData> {
   }
 
   public addMyProof(): Promise<string> {
-    if (this._addProofPromise) {
+    if (this._addProofPromise !== undefined) {
       return this._addProofPromise;
     }
 
     this._addProofPromise = this.hasMySignature()
-      .then((hasMySignature) => {
+      .then(async (hasMySignature) => {
         if (!hasMySignature) {
-          return this.getSignature().then((signature) => {
-            this.addProof(signature);
-            return signature;
-          });
+          const signature = await this.getSignature();
+          this.addProof(signature);
+          return signature;
         } else {
-          return this.getMyProofs().then((list) => list[list.length - 1] as string);
+          const list = await this.getMyProofs();
+          return list[list.length - 1] as string;
         }
       })
       .finally(() => {

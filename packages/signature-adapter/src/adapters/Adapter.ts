@@ -35,9 +35,7 @@ export abstract class Adapter {
     return Promise.resolve(false);
   }
 
-  public onDestroy(_cb?: (...args: never[]) => unknown): void {
-    return;
-  }
+  public onDestroy(_cb?: (...args: never[]) => unknown): void {}
 
   public getNetworkByte(): number {
     return this._code ?? Adapter._code;

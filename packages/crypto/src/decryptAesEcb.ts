@@ -167,6 +167,7 @@ export function decryptAesEcb(keyInput: Uint8Array, input: Uint8Array) {
       t.setUint32(i, result.getUint32(blockOffset + i, true) ^ decryptionKey.getUint32(i));
     }
 
+    // biome-ignore-start lint/style/noNonNullAssertion: AES T-table and S-box indices come from getUint8() (always 0–255); all 256-entry tables guarantee in-bounds access
     for (let offset = 4; offset < 56; offset += 4) {
       for (let i = 0; i < 4; i++) {
         a.setUint32(
@@ -200,6 +201,7 @@ export function decryptAesEcb(keyInput: Uint8Array, input: Uint8Array) {
 
       const key4 = decryptionKey.getUint8(kOffset);
       const si4 = Si[t.getUint8(((i + 1) & 0b11) << 2)]! ^ key4;
+      // biome-ignore-end lint/style/noNonNullAssertion: AES T-table and S-box indices come from getUint8() (always 0–255); all 256-entry tables guarantee in-bounds access
 
       const offset = blockOffset + (i << 2);
       result.setUint8(offset, si1);

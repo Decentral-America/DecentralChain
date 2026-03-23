@@ -150,7 +150,7 @@ import {
   type TCallArgsInteger as _TCallArgsInteger,
   type TCallArgsString as _TCallArgsString,
   type TCreateAliasTxData as _TCreateAliasTxData,
-  type TCubensisConnectApi as _TCubensisConnectApi,
+  type ICubensisConnectApi as _TCubensisConnectApi,
   type TData as _TData,
   type TDataTxData as _TDataTxData,
   type TIntegerData as _TIntegerData,
