@@ -88,7 +88,7 @@ export default function Peers() {
         console.error('Failed to fetch node registrations:', error);
       }
     };
-    fetchRegistrations();
+    void fetchRegistrations();
   }, []);
 
   // Collect all unique IPs across every peer list for geo enrichment

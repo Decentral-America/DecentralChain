@@ -100,7 +100,7 @@ export default function Transaction() {
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchTxId.trim()) {
-      navigate(createPageUrl('Transaction', `?id=${searchTxId.trim()}`));
+      void navigate(createPageUrl('Transaction', `?id=${searchTxId.trim()}`));
     }
   };
 

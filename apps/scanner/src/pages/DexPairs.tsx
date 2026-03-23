@@ -123,7 +123,7 @@ export default function DexPairs() {
       }
     };
 
-    fetchPairsData();
+    void fetchPairsData();
   }, [orderbook]);
 
   const handleSort = (key: DexSortKey): void => {
