@@ -94,43 +94,33 @@ export async function waitForTx(
     expired = true;
   });
 
-  const promise = (): Promise<TxInfo> =>
-    tx_route
-      .fetchInfo(apiBase, txId, requestOptions)
-      .then((x) => {
+  const promise = async (): Promise<TxInfo> => {
+    try {
+      const x = await tx_route.fetchInfo(apiBase, txId, requestOptions);
+      to.cancel();
+      return x;
+    } catch (e: unknown) {
+      const err = e as {
+        response?: { status?: number };
+        status?: number;
+        code?: number;
+        message?: string;
+      };
+      // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
+      const status = err.response ? err.response.status : (err.status ?? err.code);
+      if (status === 400 || status === 401 || status === 403 || status === 405 || status === 422) {
         to.cancel();
-        return x;
-      })
-      .catch(
-        (e: {
-          response?: { status?: number };
-          status?: number;
-          code?: number;
-          message?: string;
-        }) => {
-          // Non-retriable HTTP errors: fail immediately instead of wasting the timeout
-          const status = e.response ? e.response.status : (e.status ?? e.code);
-          if (
-            status === 400 ||
-            status === 401 ||
-            status === 403 ||
-            status === 405 ||
-            status === 422
-          ) {
-            to.cancel();
-            return Promise.reject(
-              new Error(
-                `waitForTx failed with non-retriable error (HTTP ${status}): ${e.message ?? e}`,
-              ),
-            );
-          }
-          // 404 means tx not yet in a block — keep polling
-          // 500/502/503 could be transient — keep polling
-          return delay(1000).then((_) =>
-            expired ? Promise.reject(new Error('Tx wait stopped: timeout')) : promise(),
-          );
-        },
-      );
+        throw new Error(
+          `waitForTx failed with non-retriable error (HTTP ${status}): ${err.message ?? String(e)}`,
+        );
+      }
+      // 404 means tx not yet in a block — keep polling
+      // 500/502/503 could be transient — keep polling
+      await delay(1000);
+      if (expired) throw new Error('Tx wait stopped: timeout');
+      return promise();
+    }
+  };
 
   return promise();
 }

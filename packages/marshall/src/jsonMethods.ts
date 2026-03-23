@@ -11,7 +11,7 @@ import { LONG } from './serializePrimitives';
 
 function resolvePath(path: string[], obj: unknown): unknown {
   if (path.length === 0) return obj;
-  if (typeof obj !== 'object' || obj === null) return undefined;
+  if (typeof obj !== 'object' || obj === null) return;
 
   return resolvePath(path.slice(1), (obj as Record<string, unknown>)[path[0] as string]);
 }
@@ -114,7 +114,7 @@ export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
       return stringifyObject(value as Record<string, unknown>);
     }
 
-    return undefined;
+    return;
   }
 
   function stringifyArray(array: unknown[]): string {

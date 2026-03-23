@@ -390,7 +390,7 @@ const create = (options?: Options) => {
         return v;
     }
 
-    return undefined;
+    return;
   }
 
   const stringify = (val: unknown, replacer?: unknown, space?: number | string): string => {

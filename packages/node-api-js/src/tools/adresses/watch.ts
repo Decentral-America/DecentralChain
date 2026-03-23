@@ -61,60 +61,66 @@ export class Watch extends EventEmitter<IEvents> {
     };
 
     fetchTransactions(this._base, this.address, 1)
-      .then(([tx]) => {
+      // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: transaction polling with multi-conditional height filtering
+      .then(async ([tx]) => {
         if (!tx) {
           this._addTimeout();
           return null;
         }
 
-        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: transaction polling with multi-conditional height filtering
-        this.getTransactionsInHeight(tx, 310).then((list) => {
-          const hash = Watch._groupByHeight(list);
-          const heightList = keys(hash)
-            .map(Number)
-            .sort((a, b) => b - a);
-          const last = heightList[0];
-          const prev = heightList[1];
+        let list: Awaited<ReturnType<typeof this.getTransactionsInHeight>>;
+        try {
+          list = await this.getTransactionsInHeight(tx, 310);
+        } catch {
+          onError();
+          return;
+        }
 
-          if (last === undefined) {
-            this._addTimeout();
-            return;
-          }
+        const hash = Watch._groupByHeight(list);
+        const heightList = keys(hash)
+          .map(Number)
+          .sort((a, b) => b - a);
+        const last = heightList[0];
+        const prev = heightList[1];
 
-          const lastTxs = hash[last] ?? [];
-          const prevTxs = prev !== undefined ? (hash[prev] ?? []) : [];
+        if (last === undefined) {
+          this._addTimeout();
+          return;
+        }
 
-          if (!this._lastBlock.height) {
+        const lastTxs = hash[last] ?? [];
+        const prevTxs = prev !== undefined ? (hash[prev] ?? []) : [];
+
+        if (!this._lastBlock.height) {
+          this._lastBlock = {
+            height: last,
+            lastId: prevTxs.length ? (prevTxs[0]?.id ?? '') : '',
+            transactions: lastTxs,
+          };
+          this.trigger('change-state', list);
+        } else {
+          const wasDispatchHash = indexBy(prop('id'), this._lastBlock.transactions);
+          const toDispatch = Watch._getTransactionsToDispatch(
+            [...lastTxs, ...prevTxs],
+            wasDispatchHash,
+            this._lastBlock.lastId,
+          );
+
+          if (this._lastBlock.height !== last) {
             this._lastBlock = {
               height: last,
               lastId: prevTxs.length ? (prevTxs[0]?.id ?? '') : '',
               transactions: lastTxs,
             };
-            this.trigger('change-state', list);
           } else {
-            const wasDispatchHash = indexBy(prop('id'), this._lastBlock.transactions);
-            const toDispatch = Watch._getTransactionsToDispatch(
-              [...lastTxs, ...prevTxs],
-              wasDispatchHash,
-              this._lastBlock.lastId,
-            );
-
-            if (this._lastBlock.height !== last) {
-              this._lastBlock = {
-                height: last,
-                lastId: prevTxs.length ? (prevTxs[0]?.id ?? '') : '',
-                transactions: lastTxs,
-              };
-            } else {
-              this._lastBlock.transactions.push(...toDispatch);
-            }
-
-            if (toDispatch.length) {
-              this.trigger('change-state', toDispatch);
-            }
+            this._lastBlock.transactions.push(...toDispatch);
           }
-          this._addTimeout();
-        }, onError);
+
+          if (toDispatch.length) {
+            this.trigger('change-state', toDispatch);
+          }
+        }
+        this._addTimeout();
       })
       .catch(onError);
   }

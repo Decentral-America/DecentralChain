@@ -536,7 +536,7 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
       } catch (e) {
         return e;
       }
-      return undefined;
+      return null;
     })
     .filter((item: unknown) => item);
 

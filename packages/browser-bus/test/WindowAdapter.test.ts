@@ -219,14 +219,14 @@ describe('Window adapter', () => {
 
     it('Create', () =>
       new Promise<void>((done) => {
-        WindowAdapter.createSimpleWindowAdapter().then(() => {
+        void WindowAdapter.createSimpleWindowAdapter().then(() => {
           done();
         });
       }));
 
     it('Add Listener', () =>
       new Promise<void>((done) => {
-        WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
+        void WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
           let ok = false;
 
           adapter.addListener(() => {
@@ -244,7 +244,7 @@ describe('Window adapter', () => {
         const win = mockWindow();
         (window as any).opener = win;
 
-        WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
+        void WindowAdapter.createSimpleWindowAdapter().then((adapter) => {
           let listenerCount = 0;
           let sendCount = 0;
 
@@ -527,7 +527,7 @@ describe('Window adapter', () => {
       new Promise<void>((done) => {
         const targetWin = mockWindow<TMessageContent>();
 
-        WindowAdapter.createSimpleWindowAdapter(targetWin as any).then((adapter) => {
+        void WindowAdapter.createSimpleWindowAdapter(targetWin as any).then((adapter) => {
           let callCount = 0;
           targetWin.onPostMessageRun.on(() => {
             callCount++;

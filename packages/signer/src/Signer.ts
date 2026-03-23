@@ -220,25 +220,23 @@ export class Signer {
       this.currentProvider = provider;
       this._logger.info('Provider has been set.');
 
-      this._connectPromise = this._networkBytePromise.then((byte) =>
-        provider
-          .connect({
+      this._connectPromise = this._networkBytePromise.then(async (byte) => {
+        try {
+          await provider.connect({
             NETWORK_BYTE: byte,
             NODE_URL: this._options.NODE_URL,
-          })
-          .then(() => {
-            this._logger.info('Provider has connected to node.');
-            return provider;
-          })
-          .catch((e: unknown) => {
-            const message = e instanceof Error ? e.message : String(e);
-            const error = this._handleError(ERRORS.PROVIDER_CONNECT, [
-              { error: message, node: this._options.NODE_URL },
-            ]);
-            this._logger.error(error);
-            return Promise.reject(error);
-          }),
-      );
+          });
+          this._logger.info('Provider has connected to node.');
+          return provider;
+        } catch (e: unknown) {
+          const message = e instanceof Error ? e.message : String(e);
+          const error = this._handleError(ERRORS.PROVIDER_CONNECT, [
+            { error: message, node: this._options.NODE_URL },
+          ]);
+          this._logger.error(error);
+          throw error;
+        }
+      });
     } finally {
       this._settingProvider = false;
     }

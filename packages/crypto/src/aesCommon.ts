@@ -180,6 +180,7 @@ export function createAesKeys(keyInput: Uint8Array) {
 
   let roundConstantWordsIndex = 0;
   let kcI = 8;
+  // biome-ignore-start lint/style/noNonNullAssertion: AES S-box and T-table indices come from getUint8() which always returns 0–255; all lookup arrays are exactly 256 entries, so every access is in-bounds
   while (kcI < KEY_LENGTH) {
     keyInputCopy.setUint32(
       0,
@@ -231,6 +232,7 @@ export function createAesKeys(keyInput: Uint8Array) {
       true,
     );
   }
+  // biome-ignore-end lint/style/noNonNullAssertion: AES S-box and T-table indices come from getUint8() which always returns 0–255; all lookup arrays are exactly 256 entries, so every access is in-bounds
 
   return { decryptionKey, encryptionKey };
 }

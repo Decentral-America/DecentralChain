@@ -6,7 +6,7 @@ import { ACCOUNTS, MOCK_URL, NETWORK_BYTE, SMART_ASSET_SCRIPT } from '../test-en
 const signer = new Signer({ NODE_URL: MOCK_URL });
 const provider = new TestProvider(ACCOUNTS.SMART.seed);
 
-signer.setProvider(provider as any);
+void signer.setProvider(provider as any);
 
 const issue = signer
   .issue({

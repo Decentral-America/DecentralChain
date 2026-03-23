@@ -306,7 +306,7 @@ describe('Bus', () => {
           secondAdapter.dispatchAdapterEvent(data);
         });
 
-        bus.request(requestData.name, 10, 100).then((r) => {
+        void bus.request(requestData.name, 10, 100).then((r) => {
           expect(r).toBe(11);
           done();
         });
@@ -336,15 +336,18 @@ describe('Bus', () => {
           secondAdapter.dispatchAdapterEvent(data);
         });
 
-        bus.request(requestData.name, 10, 100).then((r) => {
-          expect(r).toBe(11);
+        void bus
+          .request(requestData.name, 10, 100)
+          .then((r) => {
+            expect(r).toBe(11);
 
-          secondBus.unregisterHandler(requestData.name);
+            secondBus.unregisterHandler(requestData.name);
 
-          bus.request(requestData.name, 10, 100).catch(() => {
+            return bus.request(requestData.name, 10, 100);
+          })
+          .catch(() => {
             done();
           });
-        });
       }));
 
     it('has no handler for request', () =>
@@ -426,7 +429,7 @@ describe('Bus', () => {
           secondAdapter.dispatchAdapterEvent(data);
         });
 
-        bus.request('echo', null, 500).then((result) => {
+        void bus.request('echo', null, 500).then((result) => {
           // When content is not an object, _messageToData returns it as-is
           expect(result).toBe('raw-string-content');
           done();
@@ -445,7 +448,7 @@ describe('Bus', () => {
           } as any);
         });
 
-        bus.request('echo', null, 500).then((result) => {
+        void bus.request('echo', null, 500).then((result) => {
           // When msg.type is not 'error' or 'data', returns the whole object
           expect(result).toEqual({ content: 42, type: 'unknown-type' });
           done();

@@ -68,7 +68,7 @@ export class CubensisConnectAdapter extends Adapter {
     super(networkCode);
     this._address = address;
     this._pKey = publicKey;
-    CubensisConnectAdapter._initExtension();
+    void CubensisConnectAdapter._initExtension();
     CubensisConnectAdapter.onUpdate(this.handleUpdate);
     this._isDestroyed = false;
   }
@@ -275,9 +275,9 @@ export class CubensisConnectAdapter extends Adapter {
   public static override initOptions(options: { networkCode: number; extension?: unknown }) {
     Adapter.initOptions(options);
     CubensisConnectAdapter.setApiExtension(options.extension);
-    CubensisConnectAdapter._initExtension();
+    void CubensisConnectAdapter._initExtension();
     try {
-      CubensisConnectAdapter._api.publicState().then(CubensisConnectAdapter._updateState);
+      void CubensisConnectAdapter._api.publicState().then(CubensisConnectAdapter._updateState);
     } catch {
       /* ignored */
     }
@@ -330,16 +330,14 @@ export class CubensisConnectAdapter extends Adapter {
 
     const dccApi = CubensisConnectAdapter._getApiCb();
     if (dccApi) {
-      return dccApi.initialPromise.then((api: ICubensisConnect) => {
+      return dccApi.initialPromise.then(async (api: ICubensisConnect) => {
         CubensisConnectAdapter._api = api;
         CubensisConnectAdapter._api.on('update', CubensisConnectAdapter._updateState);
-        CubensisConnectAdapter._api.publicState().then((state) => {
-          if (state.txVersion) {
-            CubensisConnectAdapter._txVersion = state.txVersion as typeof DEFAULT_TX_VERSIONS;
-          }
-
-          CubensisConnectAdapter._updateState(state);
-        });
+        const state = await CubensisConnectAdapter._api.publicState();
+        if (state.txVersion) {
+          CubensisConnectAdapter._txVersion = state.txVersion as typeof DEFAULT_TX_VERSIONS;
+        }
+        CubensisConnectAdapter._updateState(state);
       });
     }
   }

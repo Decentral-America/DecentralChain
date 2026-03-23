@@ -5,10 +5,10 @@ import { ACCOUNTS, MASTER_ACCOUNT_SEED, MOCK_URL } from '../test-env';
 let signer: Signer;
 let provider: TestProvider = new TestProvider(MASTER_ACCOUNT_SEED);
 
-beforeEach(() => {
+beforeEach(async () => {
   signer = new Signer({ NODE_URL: MOCK_URL });
   provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
-  signer.setProvider(provider as any);
+  await signer.setProvider(provider as any);
 });
 
 it('Alias', () =>

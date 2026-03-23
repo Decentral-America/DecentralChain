@@ -4,7 +4,7 @@ import { ACCOUNTS, MOCK_URL } from '../test-env';
 
 const signer = new Signer({ NODE_URL: MOCK_URL });
 const provider = new TestProvider(ACCOUNTS.SIMPLE.seed);
-signer.setProvider(provider as any);
+void signer.setProvider(provider as any);
 
 const issue = signer
   .issue({
