@@ -1,31 +1,35 @@
+import { type Action } from '@reduxjs/toolkit';
+
 import { type AppMiddleware } from '../../popup/store/types';
 import background from '../../ui/services/Background';
-import { ACTION } from '../actions/constants';
 import {
+  allowOrigin as allowOriginAction,
   allowOriginDone,
   autoOriginDone,
+  deleteOrigin as deleteOriginAction,
   deleteOriginDone,
+  disableOrigin,
   disallowOriginDone,
   pendingOrigin,
+  setAutoOrigin as setAutoOriginAction,
 } from '../actions/permissions';
-import { type AppAction } from '../types';
 
 let _timer: ReturnType<typeof setTimeout>;
 
 const _permissionMW =
   (
-    type: AppAction['type'],
+    matchAction: { match: (a: Action) => boolean },
     method: keyof typeof background,
-    actionCb: (payload: unknown) => AppAction,
+    actionCb: (payload: unknown) => Action,
   ): AppMiddleware =>
   (store) =>
   (next) =>
   (action) => {
-    if (action.type !== type) {
+    if (!matchAction.match(action)) {
       return next(action);
     }
     store.dispatch(pendingOrigin(true));
-    (background[method] as any)(action.payload)
+    (background[method] as (p: unknown) => Promise<unknown>)(action.payload)
       .then(() => {
         clearTimeout(_timer);
         store.dispatch(actionCb(action.payload));
@@ -37,22 +41,10 @@ const _permissionMW =
       .catch(() => store.dispatch(pendingOrigin(false)));
   };
 
-export const allowOrigin = _permissionMW(ACTION.PERMISSIONS.ALLOW, 'allowOrigin', allowOriginDone);
+export const allowOrigin = _permissionMW(allowOriginAction, 'allowOrigin', allowOriginDone);
 
-export const setAutoOrigin = _permissionMW(
-  ACTION.PERMISSIONS.SET_AUTO,
-  'setAutoSign',
-  autoOriginDone,
-);
+export const setAutoOrigin = _permissionMW(setAutoOriginAction, 'setAutoSign', autoOriginDone);
 
-export const disAllowOrigin = _permissionMW(
-  ACTION.PERMISSIONS.DISALLOW,
-  'disableOrigin',
-  disallowOriginDone,
-);
+export const disAllowOrigin = _permissionMW(disableOrigin, 'disableOrigin', disallowOriginDone);
 
-export const deleteOrigin = _permissionMW(
-  ACTION.PERMISSIONS.DELETE,
-  'deleteOrigin',
-  deleteOriginDone,
-);
+export const deleteOrigin = _permissionMW(deleteOriginAction, 'deleteOrigin', deleteOriginDone);

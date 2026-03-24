@@ -5,7 +5,6 @@ import { type AccountsState } from '../../accounts/store/types';
 import { NETWORK_CONFIG } from '../../constants';
 import { type NetworkName } from '../../networks/types';
 import Background, { WalletTypes } from '../../ui/services/Background';
-import { ACTION } from './constants';
 import { selectAccount } from './localState';
 import { updateActiveState } from './notifications';
 
@@ -58,7 +57,6 @@ export const batchAddAccounts = createAsyncThunk<
   }
 });
 
-export const setLocale = (payload: string) => ({
-  payload,
-  type: ACTION.CHANGE_LNG,
-});
+// Command action — intercepted by BackgroundMW (changeLang), does not update Redux state directly.
+// The background service stores the locale and pushes back updateLocale which updates the reducer.
+export { setLocale } from './network';
