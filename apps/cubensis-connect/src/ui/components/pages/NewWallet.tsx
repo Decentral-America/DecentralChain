@@ -6,10 +6,10 @@ import {
   generateRandomSeed,
   utf8Encode,
 } from '@decentralchain/crypto';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { type NewAccountState } from '#store/reducers/localState';
 
 import { newAccountSelect } from '../../../store/actions/localState';

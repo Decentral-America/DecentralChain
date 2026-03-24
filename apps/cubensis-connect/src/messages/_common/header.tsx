@@ -1,7 +1,7 @@
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { type Message } from '#messages/types';
 import { type PreferencesAccount } from '#preferences/types';
-import { useTranslation } from 'react-i18next';
 
 import * as styles from '../../ui/components/pages/styles/transactions.module.css';
 import { MessageWallet } from './wallet';

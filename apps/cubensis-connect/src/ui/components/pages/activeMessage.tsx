@@ -1,11 +1,11 @@
 import clsx from 'clsx';
-import { MessageStatus } from '#messages/types';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { setActiveMessage } from '#store/actions/notifications';
 import invariant from 'tiny-invariant';
+import { MessageStatus } from '#messages/types';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { setActiveMessage } from '#store/actions/notifications';
 import Background from '#ui/services/Background';
 
 import { MessageHeader } from '../../../messages/_common/header';

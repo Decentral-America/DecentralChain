@@ -1,5 +1,5 @@
-import { usePopupDispatch } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
+import { usePopupDispatch } from '#popup/store/react';
 import { removeAddress } from '#store/actions/addresses';
 
 import { Button, Modal } from '..';

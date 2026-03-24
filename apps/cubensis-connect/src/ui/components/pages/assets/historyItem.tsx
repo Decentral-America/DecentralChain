@@ -2,9 +2,9 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { type Long, TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
 import clsx from 'clsx';
-import { MessageIcon } from '#messages/_common/icon';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MessageIcon } from '#messages/_common/icon';
 
 import { InfoIcon } from '../../../../icons/info';
 import { usePopupSelector } from '../../../../popup/store/react';

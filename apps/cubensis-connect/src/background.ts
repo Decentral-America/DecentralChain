@@ -1,31 +1,9 @@
 import { base58Decode, base58Encode, verifySignature } from '@decentralchain/crypto';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
-import { collectBalances } from '#balances/utils';
 import EventEmitter from 'events';
 import { deepEqual } from 'fast-equals';
-import { getExtraFee } from '#fee/utils';
-import { SUPPORTED_LANGUAGES } from '#i18n/constants';
-import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from '#ipc/ipc';
-import { type LedgerSignRequest } from '#ledger/types';
-import { ERRORS, KeeperError } from '#lib/keeperError';
-import { TabsManager } from '#lib/tabsManager';
-import {
-  type Message,
-  type MessageCustomDataSigned,
-  type MessageInputOfType,
-  type MessageOfType,
-  MessageStatus,
-  type MessageTx,
-} from '#messages/types';
-import { makeCustomDataBytes, makeTxBytes } from '#messages/utils';
 import { nanoid } from 'nanoid';
-import { type NetworkName } from '#networks/types';
-import { PERMISSIONS } from '#permissions/constants';
-import { type PermissionObject } from '#permissions/types';
-import { type IdleOptions, type PreferencesAccount } from '#preferences/types';
-import { initSentry } from '#sentry/init';
-import { type UiState } from '#store/reducers/updateState';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import {
@@ -42,6 +20,28 @@ import {
   takeUntil,
   tap,
 } from 'wonka';
+import { collectBalances } from '#balances/utils';
+import { getExtraFee } from '#fee/utils';
+import { SUPPORTED_LANGUAGES } from '#i18n/constants';
+import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from '#ipc/ipc';
+import { type LedgerSignRequest } from '#ledger/types';
+import { ERRORS, KeeperError } from '#lib/keeperError';
+import { TabsManager } from '#lib/tabsManager';
+import {
+  type Message,
+  type MessageCustomDataSigned,
+  type MessageInputOfType,
+  type MessageOfType,
+  MessageStatus,
+  type MessageTx,
+} from '#messages/types';
+import { makeCustomDataBytes, makeTxBytes } from '#messages/utils';
+import { type NetworkName } from '#networks/types';
+import { PERMISSIONS } from '#permissions/constants';
+import { type PermissionObject } from '#permissions/types';
+import { type IdleOptions, type PreferencesAccount } from '#preferences/types';
+import { initSentry } from '#sentry/init';
+import { type UiState } from '#store/reducers/updateState';
 
 import { fromWebExtensionEvent } from './_core/wonka';
 import { type IgnoreErrorsContext } from './constants';

@@ -1,7 +1,7 @@
-import { usePopupSelector } from '#popup/store/react';
 import QrCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePopupSelector } from '#popup/store/react';
 
 import { Button } from '../ui/buttons/Button';
 import { Loader } from '../ui/loader/Loader';

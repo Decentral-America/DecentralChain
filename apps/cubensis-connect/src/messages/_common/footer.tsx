@@ -1,8 +1,8 @@
-import { useSign } from '#_core/signContext';
 import clsx from 'clsx';
-import { usePopupSelector } from '#popup/store/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSign } from '#_core/signContext';
+import { usePopupSelector } from '#popup/store/react';
 import * as transactionsStyles from '#ui/components/pages/styles/transactions.module.css';
 import { ApproveBtn } from '#ui/components/ui/buttons/ApproveBtn';
 import { Button } from '#ui/components/ui/buttons/Button';

@@ -1,8 +1,8 @@
 import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { setAddresses } from '#store/actions/addresses';
 import { fromEthereumToDccAddress, isEthereumAddress } from '#ui/utils/ethereum';
 

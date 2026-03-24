@@ -1,11 +1,11 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { type TransactionFromNode } from '@decentralchain/ts-types';
+import ObservableStore from 'obs-store';
+import Browser from 'webextension-polyfill';
 import { isNotNull } from '#_core/isNotNull';
 import { type AssetBalance, type BalancesItem } from '#balances/types';
 import { collectBalances } from '#balances/utils';
 import { type NftAssetDetail } from '#nfts/types';
-import ObservableStore from 'obs-store';
-import Browser from 'webextension-polyfill';
 
 import { MAX_NFT_ITEMS, MAX_TX_HISTORY_ITEMS } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';

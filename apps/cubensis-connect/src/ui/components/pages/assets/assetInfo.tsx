@@ -1,6 +1,6 @@
 import { Asset, Money } from '@decentralchain/data-entities';
-import { type AssetDetail } from '#assets/types';
 import { useTranslation } from 'react-i18next';
+import { type AssetDetail } from '#assets/types';
 
 import { usePopupSelector } from '../../../../popup/store/react';
 import { getAssetDetailLink } from '../../../urls';

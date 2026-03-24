@@ -1,6 +1,6 @@
 import ObservableStore from 'obs-store';
-import { type IdleOptions } from '#preferences/types';
 import Browser from 'webextension-polyfill';
+import { type IdleOptions } from '#preferences/types';
 
 import { type ExtensionStorage } from '../storage/storage';
 import { type PreferencesController } from './preferences';

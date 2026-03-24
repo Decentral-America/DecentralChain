@@ -1,11 +1,11 @@
 import clsx from 'clsx';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
 import { MessageFinal } from '#messages/_common/final';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
 import { type PreferencesAccount } from '#preferences/types';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import invariant from 'tiny-invariant';
 import Background from '#ui/services/Background';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
