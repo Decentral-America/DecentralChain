@@ -1,7 +1,6 @@
-import { type AppActionOfType } from '../types';
 import { ACTION } from './constants';
 
-export const allowOrigin = (origin: string): AppActionOfType<typeof ACTION.PERMISSIONS.ALLOW> => ({
+export const allowOrigin = (origin: string) => ({
   payload: origin,
   type: ACTION.PERMISSIONS.ALLOW,
 });
@@ -14,56 +13,39 @@ export const setAutoOrigin = (origin: {
     interval: number | null;
     approved?: unknown[];
   }>;
-}): AppActionOfType<typeof ACTION.PERMISSIONS.SET_AUTO> => ({
-  payload: origin,
-  type: ACTION.PERMISSIONS.SET_AUTO,
-});
+}) => ({ payload: origin, type: ACTION.PERMISSIONS.SET_AUTO });
 
-export const disableOrigin = (
-  origin: string,
-): AppActionOfType<typeof ACTION.PERMISSIONS.DISALLOW> => ({
+export const disableOrigin = (origin: string) => ({
   payload: origin,
   type: ACTION.PERMISSIONS.DISALLOW,
 });
 
-export const deleteOrigin = (
-  origin: string,
-): AppActionOfType<typeof ACTION.PERMISSIONS.DELETE> => ({
+export const deleteOrigin = (origin: string) => ({
   payload: origin,
   type: ACTION.PERMISSIONS.DELETE,
 });
 
-export const pendingOrigin = (
-  state: boolean,
-): AppActionOfType<typeof ACTION.PERMISSIONS.PENDING> => ({
+export const pendingOrigin = (state: boolean) => ({
   payload: state,
   type: ACTION.PERMISSIONS.PENDING,
 });
 
-export const allowOriginDone = (
-  state: unknown,
-): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW> => ({
+export const allowOriginDone = (state: unknown) => ({
   payload: state,
   type: ACTION.PERMISSIONS.CONFIRMED_ALLOW,
 });
 
-export const autoOriginDone = (
-  state: unknown,
-): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_AUTO> => ({
+export const autoOriginDone = (state: unknown) => ({
   payload: state,
   type: ACTION.PERMISSIONS.CONFIRMED_AUTO,
 });
 
-export const disallowOriginDone = (
-  state: unknown,
-): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW> => ({
+export const disallowOriginDone = (state: unknown) => ({
   payload: state,
-  type: ACTION.PERMISSIONS.CONFIRMED_ALLOW,
+  type: ACTION.PERMISSIONS.CONFIRMED_DISALLOW,
 });
 
-export const deleteOriginDone = (
-  state: unknown,
-): AppActionOfType<typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW> => ({
+export const deleteOriginDone = (state: unknown) => ({
   payload: state,
-  type: ACTION.PERMISSIONS.CONFIRMED_ALLOW,
+  type: ACTION.PERMISSIONS.CONFIRMED_DELETE,
 });

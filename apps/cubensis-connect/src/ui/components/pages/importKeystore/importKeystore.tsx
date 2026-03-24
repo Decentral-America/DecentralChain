@@ -148,14 +148,14 @@ export function ImportKeystore() {
         invariant(walletType);
 
         await dispatch(
-          batchAddAccounts(
-            selectedAccounts.map((acc) => ({
+          batchAddAccounts({
+            accounts: selectedAccounts.map((acc) => ({
               type: 'seed',
               ...acc,
               network: getNetworkByNetworkCode(acc.networkCode),
             })),
-            walletType,
-          ),
+            type: walletType,
+          }),
         );
 
         void navigate('/import-keystore/success');

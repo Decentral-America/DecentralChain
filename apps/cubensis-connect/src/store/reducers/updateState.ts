@@ -1,9 +1,12 @@
+import { createReducer, type PayloadAction } from '@reduxjs/toolkit';
+
 import { type AssetsRecord } from '../../assets/types';
+import { type BalancesItem } from '../../balances/types';
 import { type Message } from '../../messages/types';
 import { NetworkName } from '../../networks/types';
-import { type PreferencesAccount } from '../../preferences/types';
+import { type NftInfo } from '../../nfts/nfts';
+import { type IdleOptions, type PreferencesAccount } from '../../preferences/types';
 import { ACTION } from '../actions/constants';
-import { type AppAction, type AppActionPayload } from '../types';
 import {
   type AssetFilters,
   type NftFilters,
@@ -17,62 +20,179 @@ export * from './notifications';
 export * from './remoteConfig';
 export type { AssetFilters, NftFilters, TxHistoryFilters, UiState };
 
-function createSimpleReducer<TActionType extends AppAction['type']>(
-  initialState: AppActionPayload<TActionType>,
-  actionType: TActionType,
-) {
-  return (state = initialState, action: AppAction): AppActionPayload<TActionType> =>
-    (actionType === action.type ? action.payload : state) as any;
-}
+export const uiState = createReducer({} as UiState, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_UI_STATE,
+    (_, action) => (action as unknown as PayloadAction<UiState>).payload,
+  );
+});
 
-export const uiState = createSimpleReducer({}, ACTION.UPDATE_UI_STATE);
+export const accounts = createReducer([] as PreferencesAccount[], (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS,
+    (_, action) => (action as unknown as PayloadAction<PreferencesAccount[]>).payload,
+  );
+});
 
-export const accounts = createSimpleReducer([], ACTION.UPDATE_CURRENT_NETWORK_ACCOUNTS);
+export const allNetworksAccounts = createReducer([] as PreferencesAccount[], (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_ALL_NETWORKS_ACCOUNTS,
+    (_, action) => (action as unknown as PayloadAction<PreferencesAccount[]>).payload,
+  );
+});
 
-export const allNetworksAccounts = createSimpleReducer([], ACTION.UPDATE_ALL_NETWORKS_ACCOUNTS);
+export const selectedAccount = createReducer({} as PreferencesAccount | undefined, (builder) => {
+  builder
+    .addCase(
+      ACTION.SELECT_ACCOUNT,
+      (_, action) => (action as unknown as PayloadAction<PreferencesAccount>).payload,
+    )
+    .addCase(
+      ACTION.UPDATE_SELECTED_ACCOUNT,
+      (_, action) => (action as unknown as PayloadAction<PreferencesAccount>).payload,
+    );
+});
 
-export function selectedAccount(
-  state: PreferencesAccount | undefined = {} as unknown as undefined,
-  action: AppAction,
-): PreferencesAccount | undefined {
-  switch (action.type) {
-    case ACTION.SELECT_ACCOUNT:
-    case ACTION.UPDATE_SELECTED_ACCOUNT:
-      return action.payload;
-    default:
-      return state;
-  }
-}
+export const currentNetwork = createReducer(NetworkName.Mainnet as NetworkName, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_CURRENT_NETWORK,
+    (_, action) => (action as unknown as PayloadAction<NetworkName>).payload,
+  );
+});
 
-export const currentNetwork = createSimpleReducer(
-  NetworkName.Mainnet,
-  ACTION.UPDATE_CURRENT_NETWORK,
+export const balances = createReducer({} as Partial<Record<string, BalancesItem>>, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_BALANCES,
+    (_, action) =>
+      (action as unknown as PayloadAction<Partial<Record<string, BalancesItem>>>).payload,
+  );
+});
+
+export const currentLocale = createReducer('en', (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_FROM_LNG,
+    (_, action) => (action as unknown as PayloadAction<string>).payload,
+  );
+});
+
+export const customNodes = createReducer(
+  {} as Partial<Record<NetworkName, string | null>>,
+  (builder) => {
+    builder.addCase(
+      ACTION.UPDATE_NODES,
+      (_, action) =>
+        (action as unknown as PayloadAction<Partial<Record<NetworkName, string | null>>>).payload,
+    );
+  },
 );
 
-export const balances = createSimpleReducer({}, ACTION.UPDATE_BALANCES);
+export const customCodes = createReducer(
+  {} as Partial<Record<NetworkName, string | null>>,
+  (builder) => {
+    builder.addCase(
+      ACTION.UPDATE_CODES,
+      (_, action) =>
+        (action as unknown as PayloadAction<Partial<Record<NetworkName, string | null>>>).payload,
+    );
+  },
+);
 
-export const currentLocale = createSimpleReducer('en', ACTION.UPDATE_FROM_LNG);
-export const customNodes = createSimpleReducer({}, ACTION.UPDATE_NODES);
-export const customCodes = createSimpleReducer({}, ACTION.UPDATE_CODES);
-export const customMatcher = createSimpleReducer({}, ACTION.UPDATE_MATCHER);
-export const origins = createSimpleReducer({}, ACTION.UPDATE_ORIGINS);
+export const customMatcher = createReducer(
+  {} as Partial<Record<NetworkName, string | null>>,
+  (builder) => {
+    builder.addCase(
+      ACTION.UPDATE_MATCHER,
+      (_, action) =>
+        (action as unknown as PayloadAction<Partial<Record<NetworkName, string | null>>>).payload,
+    );
+  },
+);
 
-export const idleOptions = createSimpleReducer({}, ACTION.REMOTE_CONFIG.UPDATE_IDLE);
+export const origins = createReducer({} as Partial<Record<string, unknown[]>>, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_ORIGINS,
+    (_, action) => (action as unknown as PayloadAction<Partial<Record<string, unknown[]>>>).payload,
+  );
+});
 
-export const messages = (state: Message[] = [], action: AppAction) => {
-  switch (action.type) {
-    case ACTION.UPDATE_MESSAGES:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+export const idleOptions = createReducer({} as Partial<IdleOptions>, (builder) => {
+  builder.addCase(
+    ACTION.REMOTE_CONFIG.UPDATE_IDLE,
+    (_, action) => (action as unknown as PayloadAction<Partial<IdleOptions>>).payload,
+  );
+});
 
-export const assets = createSimpleReducer({} as AssetsRecord, ACTION.SET_ASSETS);
-export const swappableAssetIdsByVendor = createSimpleReducer({}, ACTION.UPDATE_SWAPPABLE_ASSETS);
-export const usdPrices = createSimpleReducer({}, ACTION.SET_USD_PRICES);
-export const assetLogos = createSimpleReducer({}, ACTION.SET_ASSET_LOGOS);
-export const assetTickers = createSimpleReducer({}, ACTION.SET_ASSET_TICKERS);
-export const addresses = createSimpleReducer({}, ACTION.UPDATE_ADDRESSES);
-export const nfts = createSimpleReducer(null, ACTION.UPDATE_NFTS);
-export const state = createSimpleReducer(null, ACTION.UPDATE_APP_STATE);
+export const messages = createReducer([] as Message[], (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_MESSAGES,
+    (_, action) => (action as unknown as PayloadAction<Message[]>).payload,
+  );
+});
+
+export const assets = createReducer({} as AssetsRecord, (builder) => {
+  builder.addCase(
+    ACTION.SET_ASSETS,
+    (_, action) => (action as unknown as PayloadAction<AssetsRecord>).payload,
+  );
+});
+
+export const swappableAssetIdsByVendor = createReducer(
+  {} as Record<string, string[]>,
+  (builder) => {
+    builder.addCase(
+      ACTION.UPDATE_SWAPPABLE_ASSETS,
+      (_, action) => (action as unknown as PayloadAction<Record<string, string[]>>).payload,
+    );
+  },
+);
+
+export const usdPrices = createReducer({} as Partial<Record<string, string>>, (builder) => {
+  builder.addCase(
+    ACTION.SET_USD_PRICES,
+    (_, action) => (action as unknown as PayloadAction<Partial<Record<string, string>>>).payload,
+  );
+});
+
+export const assetLogos = createReducer({} as Record<string, string>, (builder) => {
+  builder.addCase(
+    ACTION.SET_ASSET_LOGOS,
+    (_, action) => (action as unknown as PayloadAction<Record<string, string>>).payload,
+  );
+});
+
+export const assetTickers = createReducer({} as Record<string, string>, (builder) => {
+  builder.addCase(
+    ACTION.SET_ASSET_TICKERS,
+    (_, action) => (action as unknown as PayloadAction<Record<string, string>>).payload,
+  );
+});
+
+export const addresses = createReducer({} as Record<string, string>, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_ADDRESSES,
+    (_, action) => (action as unknown as PayloadAction<Record<string, string>>).payload,
+  );
+});
+
+export const nfts = createReducer(null as Record<string, NftInfo> | null, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_NFTS,
+    (_, action) => (action as unknown as PayloadAction<Record<string, NftInfo> | null>).payload,
+  );
+});
+
+export const state = createReducer(
+  null as { initialized: boolean | null | undefined; locked: boolean | null | undefined } | null,
+  (builder) => {
+    builder.addCase(
+      ACTION.UPDATE_APP_STATE,
+      (_, action) =>
+        (
+          action as unknown as PayloadAction<{
+            initialized: boolean | null | undefined;
+            locked: boolean | null | undefined;
+          } | null>
+        ).payload,
+    );
+  },
+);

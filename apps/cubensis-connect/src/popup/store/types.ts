@@ -1,13 +1,20 @@
-import { type Dispatch, type MiddlewareAPI, type Store } from 'redux';
-import { type ThunkAction, type ThunkDispatch } from 'redux-thunk';
+import {
+  type Dispatch,
+  type MiddlewareAPI,
+  type ThunkAction,
+  type ThunkDispatch,
+} from '@reduxjs/toolkit';
 
 import { type AppAction } from '../../store/types';
 import { type reducer } from './reducer';
 
 export type PopupState = ReturnType<typeof reducer>;
 
-export type PopupStore = Store<PopupState, AppAction> & {
-  dispatch: ThunkDispatch<PopupState, undefined, AppAction>;
+export type PopupDispatch = ThunkDispatch<PopupState, undefined, AppAction>;
+
+export type PopupStore = {
+  dispatch: PopupDispatch;
+  getState: () => PopupState;
 };
 
 export type PopupThunkAction<ReturnType> = ThunkAction<
@@ -17,6 +24,7 @@ export type PopupThunkAction<ReturnType> = ThunkAction<
   AppAction
 >;
 
+// Explicitly typed middleware signature keeps action typed as AppAction (not unknown)
 export type AppMiddleware = (
-  api: MiddlewareAPI<Dispatch, PopupState>,
-) => (next: Dispatch<AppAction>) => (action: AppAction) => void;
+  api: MiddlewareAPI<Dispatch<AppAction>, PopupState>,
+) => (next: Dispatch<AppAction>) => (action: AppAction) => unknown;
