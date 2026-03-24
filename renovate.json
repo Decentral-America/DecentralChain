@@ -3,6 +3,15 @@
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": ["@waves/ride-lang", "@waves/ride-repl"],
   "labels": ["dependencies"],
+  "vulnerabilityAlerts": {
+    "automerge": true,
+    "description": "Security vulnerability fixes — automerge immediately after CI passes",
+    "enabled": true,
+    "labels": ["security", "dependencies"],
+    "prCreation": "immediate",
+    "prPriority": 10
+  },
+  "osvVulnerabilityAlerts": true,
   "lockFileMaintenance": {
     "automerge": true,
     "enabled": true,
@@ -23,9 +32,10 @@
       "matchPackageNames": ["@biomejs/biome"]
     },
     {
+      "allowedVersions": ">=5.0.0 <6.0.0",
       "automerge": false,
       "dependencyDashboardApproval": true,
-      "description": "Group TypeScript — review manually, dashboard approval required",
+      "description": "Group TypeScript — restrict to v5.x; v6 is a major language version and must be manually adopted after evaluation",
       "groupName": "TypeScript",
       "matchPackageNames": ["typescript"]
     },
@@ -121,6 +131,18 @@
     {
       "automerge": true,
       "automergeType": "pr",
+      "description": "Automerge GitHub Actions minor/patch SHA updates — Renovate keeps digests current, CI gates the merge",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "automerge": true,
+      "automergeType": "pr",
       "description": "Automerge non-major devDependencies (low risk)",
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["minor", "patch"]
@@ -150,9 +172,9 @@
   ],
   "platformAutomerge": true,
   "postUpdateOptions": ["pnpmDedupe"],
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 10,
   "prCreation": "not-pending",
-  "prHourlyLimit": 3,
+  "prHourlyLimit": 5,
   "schedule": ["before 4am on monday"],
   "timezone": "America/Costa_Rica"
 }
