@@ -1,9 +1,9 @@
 import { DCCLedger as DccLedger } from '@decentralchain/ledger';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { captureException } from '@sentry/browser';
-import { type PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from '#preferences/types';
 import invariant from 'tiny-invariant';
-import Background from 'ui/services/Background';
+import Background from '#ui/services/Background';
 
 import { type LedgerSignRequest } from './types';
 

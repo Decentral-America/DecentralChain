@@ -1,4 +1,4 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import QrCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

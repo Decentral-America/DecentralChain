@@ -1,17 +1,17 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
-import { TxDetailTabs } from 'messages/_common/detailTabs';
-import { MessageFooter } from 'messages/_common/footer';
-import { MessageHeader } from 'messages/_common/header';
-import { MessageIcon } from 'messages/_common/icon';
-import { stringifyOrder } from 'messages/utils';
-import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import { TxDetailTabs } from '#messages/_common/detailTabs';
+import { MessageFooter } from '#messages/_common/footer';
+import { MessageHeader } from '#messages/_common/header';
+import { MessageIcon } from '#messages/_common/icon';
+import { stringifyOrder } from '#messages/utils';
+import { usePopupSelector } from '#popup/store/react';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
-import { Balance } from 'ui/components/ui/balance/Balance';
-import { DateFormat } from 'ui/components/ui/Date/DateFormat';
+import { Balance } from '#ui/components/ui/balance/Balance';
+import { DateFormat } from '#ui/components/ui/Date/DateFormat';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { type MessageOfType } from '../types';

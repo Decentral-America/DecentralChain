@@ -1,8 +1,8 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { type NewAccountState } from 'store/reducers/localState';
+import { type NewAccountState } from '#store/reducers/localState';
 
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
 import * as styles from './styles/confirmBackup.module.styl';

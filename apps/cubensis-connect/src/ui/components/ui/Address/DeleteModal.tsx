@@ -1,6 +1,6 @@
-import { usePopupDispatch } from 'popup/store/react';
+import { usePopupDispatch } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
-import { removeAddress } from 'store/actions/addresses';
+import { removeAddress } from '#store/actions/addresses';
 
 import { Button, Modal } from '..';
 import * as styles from './DeleteModal.module.css';

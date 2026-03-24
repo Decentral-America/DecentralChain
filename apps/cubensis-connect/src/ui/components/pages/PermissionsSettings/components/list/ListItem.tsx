@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Button } from 'ui/components/ui/buttons';
+import { Button } from '#ui/components/ui/buttons';
 
 import { type TAutoAuth } from '../originSettings/OriginSettings';
 import * as styles from './list.module.styl';

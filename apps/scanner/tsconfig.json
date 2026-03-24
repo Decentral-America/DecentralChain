@@ -5,13 +5,12 @@
     "allowSyntheticDefaultImports": true,
 
     /* Paths */
-    "baseUrl": ".",
     "esModuleInterop": true,
 
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["ES2025", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
 
@@ -30,7 +29,7 @@
 
     /* Strictness */
     "strict": true,
-    "target": "ESNext",
+    "target": "ES2025",
     "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
   "exclude": ["node_modules", "dist", "coverage", "test-results"],

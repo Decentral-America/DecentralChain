@@ -1,11 +1,11 @@
 import clsx from 'clsx';
 import copy from 'copy-to-clipboard';
-import { CheckIcon } from 'icons/check';
-import { CopyIcon } from 'icons/copy';
+import { CheckIcon } from '#icons/check';
+import { CopyIcon } from '#icons/copy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Highlight } from 'ui/components/ui/highlight/highlight';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'ui/components/ui/Tabs/Tabs';
+import { Highlight } from '#ui/components/ui/highlight/highlight';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '#ui/components/ui/Tabs/Tabs';
 
 import * as styles from './detailTabs.module.css';
 

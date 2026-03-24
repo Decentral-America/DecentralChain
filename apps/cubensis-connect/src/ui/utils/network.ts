@@ -1,5 +1,5 @@
 import { base58Decode } from '@decentralchain/crypto';
-import { NetworkName } from 'networks/types';
+import { NetworkName } from '#networks/types';
 
 function getNetworkCodeByAddress(address: string): string {
   return String.fromCharCode(base58Decode(address)[1]!);

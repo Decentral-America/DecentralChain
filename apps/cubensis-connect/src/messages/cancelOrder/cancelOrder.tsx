@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { MessageFooter } from 'messages/_common/footer';
-import { MessageHeader } from 'messages/_common/header';
-import { MessageIcon } from 'messages/_common/icon';
-import { type PreferencesAccount } from 'preferences/types';
+import { MessageFooter } from '#messages/_common/footer';
+import { MessageHeader } from '#messages/_common/header';
+import { MessageIcon } from '#messages/_common/icon';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';

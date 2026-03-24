@@ -1,16 +1,16 @@
 import { TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
 import clsx from 'clsx';
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { Trans, useTranslation } from 'react-i18next';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
 import { List, type RowComponentProps } from 'react-window';
 import invariant from 'tiny-invariant';
-import { icontains } from 'ui/components/pages/assets/helpers';
-import { HistoryItem } from 'ui/components/pages/assets/historyItem';
-import * as styles from 'ui/components/pages/styles/assets.module.styl';
-import { SearchInput, Select, TabPanel } from 'ui/components/ui';
-import { Tooltip } from 'ui/components/ui/tooltip';
-import { getTxHistoryLink } from 'ui/urls';
+import { icontains } from '#ui/components/pages/assets/helpers';
+import { HistoryItem } from '#ui/components/pages/assets/historyItem';
+import * as styles from '#ui/components/pages/styles/assets.module.styl';
+import { SearchInput, Select, TabPanel } from '#ui/components/ui';
+import { Tooltip } from '#ui/components/ui/tooltip';
+import { getTxHistoryLink } from '#ui/urls';
 
 import { MAX_TX_HISTORY_ITEMS } from '../../../../../constants';
 import { buildTxTypeOptions, CARD_FULL_HEIGHT, FULL_GROUP_HEIGHT, useUiState } from './helpers';

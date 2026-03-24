@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "outDir": "./dist"
+    "lib": ["ES2025", "DOM"],
+    "outDir": "./dist",
+    "types": ["node"]
   },
   "exclude": ["node_modules", "dist", "src/**/*.spec.ts"],
   "extends": "../../tsconfig.base.json",

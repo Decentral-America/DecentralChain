@@ -7,12 +7,12 @@ import {
   utf8Encode,
 } from '@decentralchain/crypto';
 import clsx from 'clsx';
-import { isAddressString, isBase58 } from 'messages/utils';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { isAddressString, isBase58 } from '#messages/utils';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { newAccountSelect, selectAccount } from 'store/actions/localState';
+import { newAccountSelect, selectAccount } from '#store/actions/localState';
 import invariant from 'tiny-invariant';
 
 import { NETWORK_CONFIG } from '../../../constants';

@@ -1,12 +1,12 @@
 import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
-import { type KeystoreProfiles } from 'keystore/types';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { type KeystoreProfiles } from '#keystore/types';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { batchAddAccounts } from 'store/actions/user';
+import { batchAddAccounts } from '#store/actions/user';
 import invariant from 'tiny-invariant';
-import { getNetworkByNetworkCode } from 'ui/utils/network';
+import { getNetworkByNetworkCode } from '#ui/utils/network';
 import { WalletTypes } from '../../../services/Background';
 import { ImportKeystoreChooseAccounts } from './chooseAccounts';
 import { ImportKeystoreChooseFile } from './chooseFile';

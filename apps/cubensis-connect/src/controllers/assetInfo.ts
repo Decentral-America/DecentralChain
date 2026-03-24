@@ -1,6 +1,6 @@
-import { isNotNull } from '_core/isNotNull';
-import { type AssetDetail } from 'assets/types';
-import { NetworkName } from 'networks/types';
+import { isNotNull } from '#_core/isNotNull';
+import { type AssetDetail } from '#assets/types';
+import { NetworkName } from '#networks/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 

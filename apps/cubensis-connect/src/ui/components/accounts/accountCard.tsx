@@ -1,5 +1,5 @@
 import { type Money } from '@decentralchain/data-entities';
-import { type PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '../ui/avatar/Avatar';

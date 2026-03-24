@@ -1,7 +1,7 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getNetworkByAddress } from 'ui/utils/network';
+import { getNetworkByAddress } from '#ui/utils/network';
 
 import { downloadKeystore } from '../../../../keystore/utils';
 import { ExportKeystoreChooseItems } from './chooseItems';

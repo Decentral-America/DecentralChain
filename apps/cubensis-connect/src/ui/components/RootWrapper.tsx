@@ -1,4 +1,4 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 
 import { LoadingScreen } from './pages/loadingScreen';
 

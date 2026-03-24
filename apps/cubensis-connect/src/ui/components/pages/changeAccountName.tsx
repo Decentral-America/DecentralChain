@@ -1,10 +1,10 @@
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { type PreferencesAccount } from '#preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { notificationChangeName } from 'store/actions/localState';
-import Background from 'ui/services/Background';
+import { notificationChangeName } from '#store/actions/localState';
+import Background from '#ui/services/Background';
 
 import { CONFIG } from '../../appConfig';
 import { Button, ErrorMessage, Input } from '../ui';

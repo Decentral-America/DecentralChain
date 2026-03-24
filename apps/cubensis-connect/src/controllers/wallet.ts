@@ -7,16 +7,16 @@ import {
   utf8Encode,
 } from '@decentralchain/crypto';
 import { EventEmitter } from 'events';
-import { type NetworkName } from 'networks/types';
+import { type NetworkName } from '#networks/types';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
-import { DebugWallet } from 'wallets/debug';
-import { EncodedSeedWallet } from 'wallets/encodedSeed';
-import { type LedgerApi, LedgerWallet } from 'wallets/ledger';
-import { PrivateKeyWallet } from 'wallets/privateKey';
-import { SeedWallet } from 'wallets/seed';
-import { type CreateWalletInput, type WalletPrivateData } from 'wallets/types';
-import { type Wallet } from 'wallets/wallet';
+import { DebugWallet } from '#wallets/debug';
+import { EncodedSeedWallet } from '#wallets/encodedSeed';
+import { type LedgerApi, LedgerWallet } from '#wallets/ledger';
+import { PrivateKeyWallet } from '#wallets/privateKey';
+import { SeedWallet } from '#wallets/seed';
+import { type CreateWalletInput, type WalletPrivateData } from '#wallets/types';
+import { type Wallet } from '#wallets/wallet';
 
 import { NETWORK_CONFIG } from '../constants';
 import { type ExtensionStorage } from '../storage/storage';

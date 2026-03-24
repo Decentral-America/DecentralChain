@@ -1,8 +1,8 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetsRecord } from 'assets/types';
+import { type AssetsRecord } from '#assets/types';
 import { deepEqual } from 'fast-equals';
 import { type TFunction } from 'i18next';
-import { type Nft, NftVendorId } from 'nfts/types';
+import { type Nft, NftVendorId } from '#nfts/types';
 import { useState } from 'react';
 
 import { usePopupDispatch, usePopupSelector } from '../../../../../popup/store/react';

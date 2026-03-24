@@ -1,13 +1,13 @@
 import clsx from 'clsx';
-import { LedgerServiceStatus, ledgerService } from 'ledger/service';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { LedgerServiceStatus, ledgerService } from '#ledger/service';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { newAccountSelect } from 'store/actions/localState';
-import { Button } from 'ui/components/ui/buttons/Button';
-import { ErrorMessage } from 'ui/components/ui/error';
-import { Input } from 'ui/components/ui/input';
+import { newAccountSelect } from '#store/actions/localState';
+import { Button } from '#ui/components/ui/buttons/Button';
+import { ErrorMessage } from '#ui/components/ui/error';
+import { Input } from '#ui/components/ui/input';
 
 import { NETWORK_CONFIG } from '../../../../constants';
 import { LedgerAvatarList } from './avatarList';

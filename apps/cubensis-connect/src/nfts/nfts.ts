@@ -1,4 +1,4 @@
-import { type AssetDetail } from 'assets/types';
+import { type AssetDetail } from '#assets/types';
 
 import { type NftConfig } from '../constants';
 import { type Nft, type NftAssetDetail, type NftVendor, NftVendorId } from './types';

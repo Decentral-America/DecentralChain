@@ -1,14 +1,14 @@
 import clsx from 'clsx';
-import { NftList } from 'nfts/nftList';
-import { createNft } from 'nfts/nfts';
-import { DisplayMode, type Nft } from 'nfts/types';
-import { usePopupSelector } from 'popup/store/react';
+import { NftList } from '#nfts/nftList';
+import { createNft } from '#nfts/nfts';
+import { DisplayMode, type Nft } from '#nfts/types';
+import { usePopupSelector } from '#popup/store/react';
 import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import * as styles from 'ui/components/pages/styles/assets.module.styl';
-import { SearchInput, TabPanel } from 'ui/components/ui';
-import { getNftsLink } from 'ui/urls';
+import * as styles from '#ui/components/pages/styles/assets.module.styl';
+import { SearchInput, TabPanel } from '#ui/components/ui';
+import { getNftsLink } from '#ui/urls';
 
 import { MAX_NFT_ITEMS } from '../../../../../constants';
 import { sortAndFilterNfts, useUiState } from './helpers';

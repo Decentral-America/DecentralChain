@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     /* Path Mappings */
-    "baseUrl": ".",
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["ES2024", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "lib": ["ES2025", "DOM"],
     "noUnusedParameters": false,
     "paths": {
       "@/*": ["./src/*"],

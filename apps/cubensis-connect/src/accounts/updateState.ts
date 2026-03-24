@@ -1,5 +1,5 @@
 import { deepEqual } from 'fast-equals';
-import { type StorageLocalState } from 'storage/storage';
+import { type StorageLocalState } from '#storage/storage';
 
 import {
   updateAddresses,

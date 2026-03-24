@@ -1,12 +1,12 @@
-import { useAccountsDispatch, useAccountsSelector } from 'accounts/store/react';
+import { useAccountsDispatch, useAccountsSelector } from '#accounts/store/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { newAccountName, selectAccount } from 'store/actions/localState';
-import { createAccount } from 'store/actions/user';
-import { CONFIG } from 'ui/appConfig';
-import { Button, ErrorMessage, Input } from 'ui/components/ui';
-import { WalletTypes } from 'ui/services/Background';
+import { newAccountName, selectAccount } from '#store/actions/localState';
+import { createAccount } from '#store/actions/user';
+import { CONFIG } from '#ui/appConfig';
+import { Button, ErrorMessage, Input } from '#ui/components/ui';
+import { WalletTypes } from '#ui/services/Background';
 
 import * as styles from './newWalletName.module.css';
 

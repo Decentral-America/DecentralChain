@@ -1,6 +1,6 @@
-import { LedgerConnectModal } from 'ledger/connectModal';
-import { LedgerServiceStatus, ledgerService } from 'ledger/service';
-import { usePopupSelector } from 'popup/store/react';
+import { LedgerConnectModal } from '#ledger/connectModal';
+import { LedgerServiceStatus, ledgerService } from '#ledger/service';
+import { usePopupSelector } from '#popup/store/react';
 import {
   createContext,
   type ReactNode,
@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import invariant from 'tiny-invariant';
-import { Modal } from 'ui/components/ui/modal/Modal';
+import { Modal } from '#ui/components/ui/modal/Modal';
 
 type CreateSign = <P>(onConfirm: (params: P) => void) => (params: P) => Promise<void>;
 

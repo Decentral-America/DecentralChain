@@ -1,9 +1,9 @@
 import { type TransactionFromNode } from '@decentralchain/ts-types';
 import { addBreadcrumb, setTag } from '@sentry/browser';
-import { JSONbn } from '_core/jsonBn';
-import { type MessageOrder, type MessageTx } from 'messages/types';
-import { stringifyOrder, stringifyTransaction } from 'messages/utils';
-import { NetworkName } from 'networks/types';
+import { JSONbn } from '#_core/jsonBn';
+import { type MessageOrder, type MessageTx } from '#messages/types';
+import { stringifyOrder, stringifyTransaction } from '#messages/utils';
+import { NetworkName } from '#networks/types';
 import ObservableStore from 'obs-store';
 
 import { NETWORK_CONFIG } from '../constants';

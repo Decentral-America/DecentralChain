@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button } from 'ui/components/ui/buttons/Button';
-import { ErrorMessage } from 'ui/components/ui/error';
-import { Input } from 'ui/components/ui/input';
-import { Modal } from 'ui/components/ui/modal/Modal';
+import { Button } from '#ui/components/ui/buttons/Button';
+import { ErrorMessage } from '#ui/components/ui/error';
+import { Input } from '#ui/components/ui/input';
+import { Modal } from '#ui/components/ui/modal/Modal';
 
 import * as styles from './passwordModal.module.styl';
 

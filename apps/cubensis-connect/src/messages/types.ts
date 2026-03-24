@@ -10,7 +10,7 @@ import {
   type LeaseTransactionFromNode,
   type TRANSACTION_TYPE,
 } from '@decentralchain/ts-types';
-import { type PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from '#preferences/types';
 
 interface MessageInputAuth {
   data: string;

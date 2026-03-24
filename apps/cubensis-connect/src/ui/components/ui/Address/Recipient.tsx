@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { isAddressString, isAlias, processAliasOrAddress } from 'messages/utils';
-import { usePopupSelector } from 'popup/store/react';
+import { isAddressString, isAlias, processAliasOrAddress } from '#messages/utils';
+import { usePopupSelector } from '#popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,7 +8,7 @@ import {
   fromEthereumToDccAddress,
   isEthereumAddress,
   isValidEthereumAddress,
-} from 'ui/utils/ethereum';
+} from '#ui/utils/ethereum';
 
 import { Ellipsis } from '../../ui';
 import { Tooltip } from '../tooltip';
