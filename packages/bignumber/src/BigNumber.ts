@@ -408,6 +408,5 @@ export class BigNumber {
 
 // biome-ignore lint/style/noNamespace: declaration merging for BigNumber.ROUND_MODE enum
 export namespace BigNumber {
-  // biome-ignore lint/performance/noNamespaceImport: namespace alias pattern required to re-export enum into declaration-merged namespace
   export import ROUND_MODE = RoundModeModule.ROUND_MODE;
 }
