@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import * as avatar from 'identity-img';
-import { type PreferencesAccount } from '#preferences/types';
 import { useMemo } from 'react';
+import { type PreferencesAccount } from '#preferences/types';
 
 import * as styles from './avatar.module.styl';
 

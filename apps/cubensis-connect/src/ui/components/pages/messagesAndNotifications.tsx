@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 
 import { MessageWallet } from '../../../messages/_common/wallet';
 import { getMessageConfig } from '../../../messages/getMessageConfig';

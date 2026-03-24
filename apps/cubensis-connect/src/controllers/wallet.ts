@@ -7,9 +7,9 @@ import {
   utf8Encode,
 } from '@decentralchain/crypto';
 import { EventEmitter } from 'events';
-import { type NetworkName } from '#networks/types';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
+import { type NetworkName } from '#networks/types';
 import { DebugWallet } from '#wallets/debug';
 import { EncodedSeedWallet } from '#wallets/encodedSeed';
 import { type LedgerApi, LedgerWallet } from '#wallets/ledger';

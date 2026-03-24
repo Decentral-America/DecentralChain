@@ -1,10 +1,15 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { setShowNotification } from '#store/actions/notifications';
-import { allowOrigin, deleteOrigin, disableOrigin, setAutoOrigin } from '#store/actions/permissions';
+import {
+  allowOrigin,
+  deleteOrigin,
+  disableOrigin,
+  setAutoOrigin,
+} from '#store/actions/permissions';
 import { Loader, Modal } from '#ui/components/ui';
 
 import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './components';

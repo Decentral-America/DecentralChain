@@ -1,4 +1,6 @@
 import { Asset, Money } from '@decentralchain/data-entities';
+import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
 import {
   type FeeOption,
   getFeeOptions,
@@ -6,8 +8,6 @@ import {
   isEnoughBalanceForFeeAndSpendingAmounts,
 } from '#fee/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { useTranslation } from 'react-i18next';
-import invariant from 'tiny-invariant';
 import Background from '#ui/services/Background';
 
 import * as styles from '../../../ui/components/pages/styles/transactions.module.css';

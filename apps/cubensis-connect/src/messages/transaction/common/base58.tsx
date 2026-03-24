@@ -1,6 +1,6 @@
 import { base58Decode, base58Encode, utf8Decode, utf8Encode } from '@decentralchain/crypto';
-import { isPrintableString } from '#_core/isPrintableString';
 import clsx from 'clsx';
+import { isPrintableString } from '#_core/isPrintableString';
 
 import * as styles from './base58.module.css';
 

@@ -1,5 +1,5 @@
-import { Spinner } from '#_core/spinner';
 import clsx from 'clsx';
+import { Spinner } from '#_core/spinner';
 
 import * as styles from './Button.module.css';
 

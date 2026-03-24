@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { SUPPORTED_LANGUAGES } from '#i18n/constants';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SUPPORTED_LANGUAGES } from '#i18n/constants';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 
 import { setLocale } from '../../../store/actions/user';
 import { Button } from '../ui';

@@ -1,17 +1,17 @@
 import { captureException } from '@sentry/browser';
+import { deepEqual } from 'fast-equals';
+import type ObservableStore from 'obs-store';
+import Browser from 'webextension-polyfill';
+import { make, pipe, subscribe } from 'wonka';
 import { type AssetsRecord } from '#assets/types';
 import { type TrashItem } from '#controllers/trash';
-import { deepEqual } from 'fast-equals';
 import { type Message } from '#messages/types';
 import { type NetworkName } from '#networks/types';
 import { type NftInfo } from '#nfts/nfts';
 import { type NotificationsStoreItem } from '#notifications/types';
-import type ObservableStore from 'obs-store';
 import { type PermissionValue } from '#permissions/types';
 import { type IdleOptions, type PreferencesAccount } from '#preferences/types';
 import { type UiState } from '#store/reducers/updateState';
-import Browser from 'webextension-polyfill';
-import { make, pipe, subscribe } from 'wonka';
 
 import {
   type AssetsConfig,

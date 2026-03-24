@@ -1,7 +1,7 @@
-import { useSentryNavigationBreadcrumbs } from '#_core/useSentryNavigationBreadcrumbs';
-import { useAccountsSelector } from '#accounts/store/react';
 import { useEffect, useRef } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useSentryNavigationBreadcrumbs } from '#_core/useSentryNavigationBreadcrumbs';
+import { useAccountsSelector } from '#accounts/store/react';
 
 import { Login } from './pages/login';
 import { Welcome } from './pages/Welcome';

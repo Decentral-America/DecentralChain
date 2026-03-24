@@ -1,6 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import invariant from 'tiny-invariant';
 import { type AssetDetail, type AssetsRecord } from '#assets/types';
 import { type AssetBalance, type BalancesItem } from '#balances/types';
 import {
@@ -20,7 +21,6 @@ import {
   type MessageTxTransfer,
   type MessageTxUpdateAssetInfo,
 } from '#messages/types';
-import invariant from 'tiny-invariant';
 
 export async function getExtraFee(address: string, node: string) {
   const response = await fetch(new URL(`/addresses/scriptInfo/${address}`, node));

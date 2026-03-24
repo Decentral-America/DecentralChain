@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { isAddressString, isAlias, processAliasOrAddress } from '#messages/utils';
-import { usePopupSelector } from '#popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isAddressString, isAlias, processAliasOrAddress } from '#messages/utils';
+import { usePopupSelector } from '#popup/store/react';
 import {
   fromDccToEthereumAddress,
   fromEthereumToDccAddress,

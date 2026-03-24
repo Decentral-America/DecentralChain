@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { DataEntries } from '#messages/_common/dataEntries';
 import { TxDetailTabs } from '#messages/_common/detailTabs';
 import { Expandable } from '#messages/_common/expandable';
@@ -8,7 +9,6 @@ import { MessageIcon } from '#messages/_common/icon';
 import { TxInfo } from '#messages/transaction/common/info';
 import { stringifyTransaction } from '#messages/utils';
 import { type PreferencesAccount } from '#preferences/types';
-import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { type MessageOfType, type MessageTxData } from '../types';
