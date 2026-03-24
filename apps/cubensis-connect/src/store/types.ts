@@ -320,3 +320,18 @@ export type AppAction =
 export type AppActionOfType<T extends AppAction['type']> = Extract<AppAction, { type: T }>;
 
 export type AppActionPayload<T extends AppAction['type']> = AppActionOfType<T>['payload'];
+
+/**
+ * Narrows an RTK `Action<Type>` (string-key addCase) to its full `AppAction` shape.
+ * RTK's overload for addCase(stringLiteral, reducer) infers the action parameter
+ * as bare `Action<Type>` with no payload — this helper restores proper typing.
+ *
+ * TypeScript cannot narrow generic conditional types in function bodies.
+ * The cast is safe: T is constrained to AppAction['type'], so payload is always
+ * AppActionPayload<T> at runtime.
+ */
+export function typedPayload<T extends AppAction['type']>(action: {
+  type: T;
+}): AppActionPayload<T> {
+  return (action as unknown as { payload: AppActionPayload<T> }).payload;
+}
