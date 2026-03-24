@@ -1,5 +1,4 @@
 import { binary } from '@decentralchain/marshall';
-import { request, stringify } from '@decentralchain/node-api-js';
 import { address, verifySignature } from '@decentralchain/ts-lib-crypto';
 import {
   type AliasTransaction,
@@ -27,6 +26,8 @@ import { isOrder } from './generic';
 import { serializeAuthData } from './requests/auth';
 import { serializeCustomData, type TSignedData } from './requests/custom-data';
 import { serializeDccAuthData } from './requests/dccAuth';
+import { matcherRequest } from './tools/request';
+import { stringifyOrder } from './tools/stringify';
 import {
   type IAuthParams,
   type ICancelOrder,
@@ -214,10 +215,10 @@ export function submitOrder(
     matcherUrl = opts.matcherUrl;
     endpoint = opts.market ? 'matcher/orderbook/market' : 'matcher/orderbook';
   }
-  return request({
+  return matcherRequest({
     base: matcherUrl,
     options: {
-      body: stringify(ord),
+      body: stringifyOrder(ord),
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
     },
@@ -240,10 +241,10 @@ export function cancelSubmittedOrder(
   matcherUrl: string,
 ) {
   const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`;
-  return request({
+  return matcherRequest({
     base: matcherUrl,
     options: {
-      body: stringify(co),
+      body: stringifyOrder(co),
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
     },

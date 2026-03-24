@@ -16,7 +16,8 @@
 6. [npm Distribution](#6-npm-distribution)
 7. [Cross-Repo Dependency Chain Risks](#7-cross-repo-dependency-chain-risks)
 8. [Common Migration Recipe](#8-common-migration-recipe)
-9. [Remediation Priority Matrix](#9-remediation-priority-matrix)
+9. [Pre-Existing Known Non-Issues](#9-pre-existing-known-non-issues)
+10. [Remediation Priority Matrix](#10-remediation-priority-matrix)
 
 ---
 
@@ -229,8 +230,9 @@ All 22 SDK libraries have:
 | Package | Issue | Severity |
 |---------|-------|----------|
 | **transactions** | Transaction builders default `chainId` to `76` (`'L'`) — auth/verify functions fixed (DCC-134); builder functions (`alias`, `burn`, `issue`, etc.) still call `networkByte(chainId, 76)`. Callers must always pass explicit `chainId`. | Low |
+| ~~**transactions ↔ node-api-js**~~ | ~~`transactions` (L2) imports `request()` and `stringify()` from `node-api-js` (L2) — used in `general.ts` for matcher order placement/cancellation HTTP calls.~~ **Fixed:** self-contained `src/tools/request.ts` + `src/tools/stringify.ts` added to `transactions`; phantom `node-api-js` runtime dep eliminated. | ~~Info~~ ✅ |
 | **browser-bus** | Wildcard `'*'` targetOrigin still allowed (warned) | Low |
-| **signature-adapter** | `ramda` adds bundle weight | Low |
+| ~~**signature-adapter**~~ | ~~`ramda` adds bundle weight~~ **Fixed:** `ramda` removed; `path()` replaced with native optional chaining, `equals()` replaced with `deepEqual()` in `utils.ts`. | ~~Low~~ ✅ |
 | **ride-js** | Depends on unforked `@waves/ride-lang` + `@waves/ride-repl` | Low |
 | **ledger** | `SECRET = 'WAVES'` in APDU — firmware constraint | Info |
 
@@ -385,7 +387,20 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 
 ---
 
-## 9. Remediation Priority Matrix
+## 9. Pre-Existing Known Non-Issues
+
+> Documented here to prevent future agents or contributors from filing tickets, wasting audit time, or attempting automated fixes on items that are intentional, expected, or explicitly unactionable.
+
+| Item | Description | Why Not Actionable |
+|------|-------------|-------------------|
+| **scanner + Vite 8 peer dep warning** | `@react-router/dev@7.13.2` declares `vite@^5\|\|^6\|\|^7` as a peer dependency. We are on Vite 8.0.2. pnpm emits a peer dep warning at install time. | This is a peer dep declaration lag on the react-router side — the build, SSR, and all tests work correctly. Vite 8 is fully compatible. Fix belongs upstream in `@react-router/dev`. Not blocking. |
+| **`charting_library` unlisted in exchange** | TradingView's Charting Library is vendored manually in `apps/exchange/public/charting_library/` and is not present in `package.json` or `pnpm-lock.yaml`. knip and publint may flag it as missing. | TradingView does not publish to npm — the library can only be obtained via their private Git access. It must be vendored. This is expected and correct. Any tool that reports it as missing is working as designed for npm-published deps. |
+| **`TRANSACTION_TYPE_NUMBER.UPDATE_ASSET_INFO` and `.ETHEREUM_TX` in `constants.ts`** | Transaction type numbers 17 (`UPDATE_ASSET_INFO`) and 18 (`ETHEREUM_TX`) are declared in the enum for protocol completeness but have no handler in `Signable.ts`'s switch statement. | These are protocol stubs — they exist in the Waves wire format and are declared for completeness. Neither type is currently used on DCC mainnet. `Signable.ts` will produce an unhandled-case error if called with them, which is the correct behavior until the types are implemented. |
+| **knip: 479 unused exports / 214 unused types** | Running `knip` reports a large number of unused exports across SDK packages and apps. | SDK packages export their full public API for external npm consumers — knip cannot trace usage across npm boundaries. App-internal modules that are entry points (service workers, content scripts, popup entry) are also invisible to knip's module graph analysis. These are not dead code. Do not delete based on knip output alone without cross-checking the `exports` field in each package's `package.json`. |
+
+---
+
+## 10. Remediation Priority Matrix
 
 | Priority | Item | Action | Status |
 |----------|------|--------|--------|

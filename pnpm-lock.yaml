@@ -1090,9 +1090,6 @@ importers:
       '@decentralchain/ts-types':
         specifier: workspace:*
         version: link:../ts-types
-      ramda:
-        specifier: ^0.32.0
-        version: 0.32.0
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -1100,9 +1097,6 @@ importers:
       '@size-limit/preset-small-lib':
         specifier: 'catalog:'
         version: 12.0.1(size-limit@12.0.1(jiti@2.6.1))
-      '@types/ramda':
-        specifier: ^0.31.1
-        version: 0.31.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.1(vitest@4.1.1(@types/node@25.5.0)(jsdom@29.0.1(@noble/hashes@2.0.1))(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)(sass@1.98.0)(stylus@0.64.0)(yaml@2.8.2)))
@@ -4350,9 +4344,6 @@ packages:
 
   '@types/qrcode@1.5.6':
     resolution: {integrity: sha512-te7NQcV2BOvdj2b1hCAHzAoMNuj65kNBMz0KBaxM6c3VGBOhU0dURQKOtH8CFNI/dsKkwlv32p26qYQTWoB5bw==}
-
-  '@types/ramda@0.31.1':
-    resolution: {integrity: sha512-Vt6sFXnuRpzaEj+yeutA0q3bcAsK7wdPuASIzR9LXqL4gJPyFw8im9qchlbp4ltuf3kDEIRmPJTD/Fkg60dn7g==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -8093,9 +8084,6 @@ packages:
   truncate-utf8-bytes@1.0.2:
     resolution: {integrity: sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==}
 
-  ts-toolbelt@9.6.0:
-    resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
-
   ts-utils@6.1.0:
     resolution: {integrity: sha512-9KF44uW1AVr9IjkohFmVPDKo9kLeNdpAKUF0q8uuHxrI6jusJbk6Zbx3MJAMh9v32HOwOvNGm7pAm84VAP7bAg==}
 
@@ -8155,9 +8143,6 @@ packages:
 
   typed-ts-events@3.0.1:
     resolution: {integrity: sha512-WYdfmLgs0CA3yFkzu7CfKBKAftMzol2eONV6RzAehdVmiMTWojdC5IZqkolUWWZhkABqCxvLuV4QDEVAYs484w==}
-
-  types-ramda@0.31.0:
-    resolution: {integrity: sha512-vaoC35CRC3xvL8Z6HkshDbi6KWM1ezK0LHN0YyxXWUn9HKzBNg/T3xSGlJZjCYspnOD3jE7bcizsp0bUXZDxnQ==}
 
   typescript@6.0.2:
     resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
@@ -11678,10 +11663,6 @@ snapshots:
   '@types/qrcode@1.5.6':
     dependencies:
       '@types/node': 25.5.0
-
-  '@types/ramda@0.31.1':
-    dependencies:
-      types-ramda: 0.31.0
 
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
     dependencies:
@@ -15879,8 +15860,6 @@ snapshots:
     dependencies:
       utf8-byte-length: 1.0.5
 
-  ts-toolbelt@9.6.0: {}
-
   ts-utils@6.1.0: {}
 
   tsconfig-paths@4.2.0:
@@ -15935,10 +15914,6 @@ snapshots:
       mime-types: 2.1.35
 
   typed-ts-events@3.0.1: {}
-
-  types-ramda@0.31.0:
-    dependencies:
-      ts-toolbelt: 9.6.0
 
   typescript@6.0.2: {}
 

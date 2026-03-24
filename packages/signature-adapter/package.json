@@ -9,14 +9,12 @@
     "@decentralchain/ledger": "workspace:*",
     "@decentralchain/money-like-to-node": "workspace:*",
     "@decentralchain/transactions": "workspace:*",
-    "@decentralchain/ts-types": "workspace:*",
-    "ramda": "^0.32.0"
+    "@decentralchain/ts-types": "workspace:*"
   },
   "description": "Multi-provider transaction signing adapter for DecentralChain blockchain",
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
     "@size-limit/preset-small-lib": "catalog:",
-    "@types/ramda": "^0.31.1",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
