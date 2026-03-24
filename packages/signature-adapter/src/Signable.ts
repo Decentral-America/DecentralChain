@@ -26,8 +26,16 @@ import {
 /** Minimal adapter contract required by Signable — breaks the circular dependency with Adapter. */
 interface IAdapter {
   signRequest(databytes: Uint8Array, signData?: unknown): Promise<string>;
-  signTransaction(bytes: Uint8Array, precisions: Record<string, number>, signData?: unknown): Promise<string>;
-  signOrder(bytes: Uint8Array, precisions: Record<string, number>, signData: unknown): Promise<string>;
+  signTransaction(
+    bytes: Uint8Array,
+    precisions: Record<string, number>,
+    signData?: unknown,
+  ): Promise<string>;
+  signOrder(
+    bytes: Uint8Array,
+    precisions: Record<string, number>,
+    signData: unknown,
+  ): Promise<string>;
   getNetworkByte(): number;
   getSignVersions(): Record<SIGN_TYPE, number[]>;
   getPublicKey(): Promise<string>;
