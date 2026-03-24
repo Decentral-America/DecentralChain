@@ -1,7 +1,6 @@
 import { waitTime } from './utils';
 
 export const NETWORK_BYTE = 68; // 'D' for DecentralChain
-export const NODE_URL = 'https://nodes.decentralchain.io';
 export const MOCK_URL = 'https://mock.com';
 
 /**
