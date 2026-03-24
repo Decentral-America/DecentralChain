@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import Background from 'ui/services/Background';
+import Background from '#ui/services/Background';
 
 import { BigLogo } from '../head';
 import { Button, ErrorMessage, Input } from '../ui';

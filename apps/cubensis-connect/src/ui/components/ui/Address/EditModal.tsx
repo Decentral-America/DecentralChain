@@ -1,8 +1,8 @@
-import { isAddressString, isAlias } from 'messages/utils';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { isAddressString, isAlias } from '#messages/utils';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { removeAddress, setAddress } from 'store/actions/addresses';
+import { removeAddress, setAddress } from '#store/actions/addresses';
 
 import { Button, ErrorMessage, Input, Modal } from '..';
 import * as styles from './EditModal.module.css';

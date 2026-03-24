@@ -1,8 +1,8 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import background from 'ui/services/Background';
+import background from '#ui/services/Background';
 
 import { downloadKeystore } from '../../../keystore/utils';
 import { isExportable } from '../pages/exportAccounts/chooseItems';

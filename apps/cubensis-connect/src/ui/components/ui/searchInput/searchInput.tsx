@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useRef } from 'react';
-import { Button, Input } from 'ui/components/ui';
+import { Button, Input } from '#ui/components/ui';
 
 import * as styles from './searchInput.module.css';
 

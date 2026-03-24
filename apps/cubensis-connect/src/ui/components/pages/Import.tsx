@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import background from 'ui/services/Background';
+import background from '#ui/services/Background';
 
 import { NETWORK_CONFIG } from '../../../constants';
 import { usePopupSelector } from '../../../popup/store/react';

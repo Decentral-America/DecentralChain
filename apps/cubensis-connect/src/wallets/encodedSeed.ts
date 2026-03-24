@@ -6,7 +6,7 @@ import {
   createPublicKey,
   signBytes,
 } from '@decentralchain/crypto';
-import { type NetworkName } from 'networks/types';
+import { type NetworkName } from '#networks/types';
 
 import { type WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';

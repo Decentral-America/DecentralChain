@@ -1,5 +1,5 @@
-import { type NetworkName } from 'networks/types';
-import { Wallet } from 'wallets/wallet';
+import { type NetworkName } from '#networks/types';
+import { Wallet } from '#wallets/wallet';
 
 import { type WalletPrivateDataOfType } from './types';
 

@@ -1,6 +1,6 @@
 import { type RouteObject } from 'react-router-dom';
-import { ErrorPage } from 'ui/components/pages/errorPage';
-import { RootAccounts } from 'ui/components/RootAccounts';
+import { ErrorPage } from '#ui/components/pages/errorPage';
+import { RootAccounts } from '#ui/components/RootAccounts';
 
 import { BottomPanel } from '../layout/bottomPanel';
 import { Menu } from '../ui/components/menu/Menu';

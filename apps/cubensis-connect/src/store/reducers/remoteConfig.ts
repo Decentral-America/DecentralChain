@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type StorageLocalState } from 'storage/storage';
+import { type StorageLocalState } from '#storage/storage';
 
 const configSlice = createSlice({
   initialState: {} as StorageLocalState['config'] | Record<never, unknown>,

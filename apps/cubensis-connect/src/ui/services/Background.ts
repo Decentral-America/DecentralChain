@@ -1,10 +1,10 @@
-import { type __BackgroundUiApiDirect } from 'background';
-import { type AnalyticsEvent } from 'controllers/statistics';
-import { type MessageInputOfType, type MessageTx, type MoneyLike } from 'messages/types';
-import { type NetworkName } from 'networks/types';
-import { type PreferencesAccount } from 'preferences/types';
-import { type UiState } from 'store/reducers/updateState';
-import { type CreateWalletInput } from 'wallets/types';
+import { type __BackgroundUiApiDirect } from '#background';
+import { type AnalyticsEvent } from '#controllers/statistics';
+import { type MessageInputOfType, type MessageTx, type MoneyLike } from '#messages/types';
+import { type NetworkName } from '#networks/types';
+import { type PreferencesAccount } from '#preferences/types';
+import { type UiState } from '#store/reducers/updateState';
+import { type CreateWalletInput } from '#wallets/types';
 
 import { type IgnoreErrorsContext } from '../../constants';
 import { type StorageLocalState } from '../../storage/storage';

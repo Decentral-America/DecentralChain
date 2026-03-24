@@ -1,14 +1,14 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { isNotNull } from '_core/isNotNull';
-import { type MessageTx } from 'messages/types';
+import { isNotNull } from '#_core/isNotNull';
+import { type MessageTx } from '#messages/types';
 import ObservableStore from 'obs-store';
-import { PERMISSIONS } from 'permissions/constants';
+import { PERMISSIONS } from '#permissions/constants';
 import {
   type PermissionObject,
   type PermissionType,
   type PermissionValue,
-} from 'permissions/types';
+} from '#permissions/types';
 
 import { ERRORS } from '../lib/keeperError';
 import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';

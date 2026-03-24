@@ -1,9 +1,9 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { type TransactionFromNode } from '@decentralchain/ts-types';
-import { isNotNull } from '_core/isNotNull';
-import { type AssetBalance, type BalancesItem } from 'balances/types';
-import { collectBalances } from 'balances/utils';
-import { type NftAssetDetail } from 'nfts/types';
+import { isNotNull } from '#_core/isNotNull';
+import { type AssetBalance, type BalancesItem } from '#balances/types';
+import { collectBalances } from '#balances/utils';
+import { type NftAssetDetail } from '#nfts/types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 

@@ -1,6 +1,6 @@
 import { deepEqual } from 'fast-equals';
-import { type NotificationsStoreItem } from 'notifications/types';
-import { type StorageLocalState } from 'storage/storage';
+import { type NotificationsStoreItem } from '#notifications/types';
+import { type StorageLocalState } from '#storage/storage';
 
 import { type AssetsRecord } from '../assets/types';
 import { collectBalances } from '../balances/utils';

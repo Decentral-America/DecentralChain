@@ -7,7 +7,7 @@ import {
   utf8Decode,
   utf8Encode,
 } from '@decentralchain/crypto';
-import { type MessageTx } from 'messages/types';
+import { type MessageTx } from '#messages/types';
 
 import { type WalletAccount, type WalletPrivateData } from './types';
 

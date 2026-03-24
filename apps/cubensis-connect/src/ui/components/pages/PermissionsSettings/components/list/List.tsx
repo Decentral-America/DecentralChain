@@ -1,6 +1,6 @@
 import { type TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { type TTabTypes } from 'ui/components/pages/PermissionsSettings/PermissionSettings';
+import { type TTabTypes } from '#ui/components/pages/PermissionsSettings/PermissionSettings';
 
 import { type TAutoAuth } from '../originSettings';
 import { ListItem } from './ListItem';

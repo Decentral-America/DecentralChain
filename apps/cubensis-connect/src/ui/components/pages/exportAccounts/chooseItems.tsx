@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import { NetworkName } from 'networks/types';
-import { type PreferencesAccount } from 'preferences/types';
+import { NetworkName } from '#networks/types';
+import { type PreferencesAccount } from '#preferences/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar } from 'ui/components/ui/avatar/Avatar';
-import { Button } from 'ui/components/ui/buttons/Button';
-import { Ellipsis } from 'ui/components/ui/ellipsis/Ellipsis';
-import { Modal } from 'ui/components/ui/modal/Modal';
+import { Avatar } from '#ui/components/ui/avatar/Avatar';
+import { Button } from '#ui/components/ui/buttons/Button';
+import { Ellipsis } from '#ui/components/ui/ellipsis/Ellipsis';
+import { Modal } from '#ui/components/ui/modal/Modal';
 
 import * as styles from './chooseItems.module.styl';
 

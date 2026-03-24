@@ -1,10 +1,10 @@
 import clsx from 'clsx';
-import { usePopupDispatch } from 'popup/store/react';
+import { usePopupDispatch } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { deleteAllAccounts } from 'store/actions/user';
-import { Button, ErrorMessage, Input } from 'ui/components/ui';
+import { deleteAllAccounts } from '#store/actions/user';
+import { Button, ErrorMessage, Input } from '#ui/components/ui';
 
 import * as styles from './deleteAccounts.module.css';
 

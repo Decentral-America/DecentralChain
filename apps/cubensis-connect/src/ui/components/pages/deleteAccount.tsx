@@ -1,4 +1,4 @@
-import { usePopupDispatch } from 'popup/store/react';
+import { usePopupDispatch } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 

@@ -4,11 +4,11 @@ import {
   getFeeOptions,
   getSpendingAmountsForSponsorableTx,
   isEnoughBalanceForFeeAndSpendingAmounts,
-} from 'fee/utils';
-import { usePopupSelector } from 'popup/store/react';
+} from '#fee/utils';
+import { usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
-import Background from 'ui/services/Background';
+import Background from '#ui/services/Background';
 
 import * as styles from '../../../ui/components/pages/styles/transactions.module.css';
 import { Balance, DateFormat, Select, type SelectItem } from '../../../ui/components/ui';

@@ -1,4 +1,4 @@
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 
 import { SwapAccountInfoHeader } from './accountInfoHeader';

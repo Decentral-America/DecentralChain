@@ -8,7 +8,7 @@
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": ["ES2024"],
+    "lib": ["ES2025"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
@@ -22,7 +22,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2024",
+    "target": "ES2025",
     "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "dist"]

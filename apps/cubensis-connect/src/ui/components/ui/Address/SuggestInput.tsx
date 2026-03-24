@@ -1,10 +1,10 @@
 import { base58Decode } from '@decentralchain/crypto';
-import { isAddressString } from 'messages/utils';
-import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import { isAddressString } from '#messages/utils';
+import { usePopupSelector } from '#popup/store/react';
+import { type PreferencesAccount } from '#preferences/types';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { icontains } from 'ui/components/pages/assets/helpers';
+import { icontains } from '#ui/components/pages/assets/helpers';
 
 import { Button, type InputProps, Modal, SearchInput } from '..';
 import { AddressTooltip } from '../Address/Tooltip';

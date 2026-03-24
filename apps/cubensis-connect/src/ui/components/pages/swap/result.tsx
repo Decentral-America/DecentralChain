@@ -1,12 +1,12 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import { captureException, withScope } from '@sentry/browser';
 import clsx from 'clsx';
-import { NetworkName } from 'networks/types';
-import { usePopupSelector } from 'popup/store/react';
+import { NetworkName } from '#networks/types';
+import { usePopupSelector } from '#popup/store/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Balance } from 'ui/components/ui/balance/Balance';
-import { Button } from 'ui/components/ui/buttons/Button';
+import { Balance } from '#ui/components/ui/balance/Balance';
+import { Button } from '#ui/components/ui/buttons/Button';
 
 import { NETWORK_CONFIG } from '../../../../constants';
 import { SwapLayout } from './layout';
