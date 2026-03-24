@@ -3,20 +3,12 @@
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": ["@waves/ride-lang", "@waves/ride-repl"],
   "labels": ["dependencies"],
-  "vulnerabilityAlerts": {
-    "automerge": true,
-    "description": "Security vulnerability fixes — automerge immediately after CI passes",
-    "enabled": true,
-    "labels": ["security", "dependencies"],
-    "prCreation": "immediate",
-    "prPriority": 10
-  },
-  "osvVulnerabilityAlerts": true,
   "lockFileMaintenance": {
     "automerge": true,
     "enabled": true,
     "schedule": ["before 6am on monday"]
   },
+  "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
       "automerge": false,
@@ -132,13 +124,8 @@
       "automerge": true,
       "automergeType": "pr",
       "description": "Automerge GitHub Actions minor/patch SHA updates — Renovate keeps digests current, CI gates the merge",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ]
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
       "automerge": true,
@@ -176,5 +163,13 @@
   "prCreation": "not-pending",
   "prHourlyLimit": 5,
   "schedule": ["before 4am on monday"],
-  "timezone": "America/Costa_Rica"
+  "timezone": "America/Costa_Rica",
+  "vulnerabilityAlerts": {
+    "automerge": true,
+    "description": "Security vulnerability fixes — automerge immediately after CI passes",
+    "enabled": true,
+    "labels": ["security", "dependencies"],
+    "prCreation": "immediate",
+    "prPriority": 10
+  }
 }
