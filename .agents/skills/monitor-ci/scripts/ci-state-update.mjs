@@ -104,11 +104,11 @@ function postAction() {
   const agentTriggered = action !== 'fix-auto-applying';
 
   output({
-    agentTriggered,
-    expectedCommitSha: trackByCommitSha ? commitSha : null,
-    lastCipeUrl: trackByCipeUrl ? cipeUrl : null,
-    pollCount: 0,
     waitMode: true,
+    pollCount: 0,
+    lastCipeUrl: trackByCipeUrl ? cipeUrl : null,
+    expectedCommitSha: trackByCommitSha ? commitSha : null,
+    agentTriggered,
   });
 }
 
@@ -133,11 +133,13 @@ function cycleCheck() {
   const approachingLimit = cycleCount >= maxCycles - 2;
 
   output({
-    agentTriggered: false,
-    approachingLimit,
     cycleCount,
+    agentTriggered: false,
     envRerunCount,
-    message: approachingLimit ? `Approaching cycle limit (${cycleCount}/${maxCycles})` : null,
+    approachingLimit,
+    message: approachingLimit
+      ? `Approaching cycle limit (${cycleCount}/${maxCycles})`
+      : null,
   });
 }
 

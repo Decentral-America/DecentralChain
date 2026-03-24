@@ -12,7 +12,12 @@
     "scripts/**",
     "tools/**"
   ],
-  "ignoreDependencies": ["@vitest/coverage-v8", "undici-types"],
+  "ignoreDependencies": [
+    "@vitest/coverage-v8",
+    "undici-types",
+    "@bufbuild/protoc-gen-es",
+    "wasm-pack"
+  ],
   "vitest": {
     "config": []
   },
@@ -46,6 +51,25 @@
     "packages/*": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/ride-js": {
+      "entry": ["src/index.js"],
+      "project": ["src/**/*.{ts,js}"]
+    },
+    "packages/protobuf-serialization": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"],
+      "ignore": ["src/gen/**"]
+    },
+    "packages/swap-client": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"],
+      "ignore": ["src/gen/**"]
+    },
+    "packages/node-api-js": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"],
+      "ignore": []
     }
   }
 }
