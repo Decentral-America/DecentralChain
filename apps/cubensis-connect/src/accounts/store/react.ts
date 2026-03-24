@@ -1,7 +1,6 @@
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { type AccountsState, type AccountsStore } from './types';
+import { type AccountsDispatch, type AccountsState } from './types';
 
-export const useAccountsSelector: TypedUseSelectorHook<AccountsState> = useSelector;
-
-export const useAccountsDispatch = () => useDispatch<AccountsStore['dispatch']>();
+export const useAccountsSelector = useSelector.withTypes<AccountsState>();
+export const useAccountsDispatch = useDispatch.withTypes<AccountsDispatch>();

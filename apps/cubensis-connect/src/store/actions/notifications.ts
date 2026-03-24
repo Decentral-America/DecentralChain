@@ -15,30 +15,22 @@ export function deleteNotifications(
   };
 }
 
-export function setShowNotification(options: { origin: string; canUse: boolean | null }) {
-  return {
-    payload: options,
-    type: ACTION.NOTIFICATIONS.SET_PERMS,
-  };
-}
+export const setShowNotification = (options: { origin: string; canUse: boolean | null }) => ({
+  payload: options,
+  type: ACTION.NOTIFICATIONS.SET_PERMS,
+});
 
-export function setActiveNotification(notify: NotificationsStoreItem[] | undefined) {
-  return {
-    payload: notify,
-    type: ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION,
-  };
-}
+export const setActiveNotification = (notify: NotificationsStoreItem[] | undefined) => ({
+  payload: notify,
+  type: ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION,
+});
 
-export function setActiveMessage(msg: Message | undefined) {
-  return {
-    payload: msg,
-    type: ACTION.MESSAGES.SET_ACTIVE_MESSAGE,
-  };
-}
+export const setActiveMessage = (msg: Message | undefined) => ({
+  payload: msg,
+  type: ACTION.MESSAGES.SET_ACTIVE_MESSAGE,
+});
 
-export function updateActiveState() {
-  return {
-    payload: null,
-    type: ACTION.MESSAGES.UPDATE_ACTIVE,
-  };
-}
+export const updateActiveState = () => ({
+  payload: null,
+  type: ACTION.MESSAGES.UPDATE_ACTIVE,
+});

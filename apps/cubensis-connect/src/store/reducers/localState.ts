@@ -1,35 +1,9 @@
-import { combineReducers } from 'redux';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { ACTION } from '../actions/constants';
-import { type AppAction } from '../types';
 import { type NewAccountState } from './stateTypes';
 
 export type { NewAccountState };
-
-function newAccount(
-  state: NewAccountState = {
-    address: '',
-    name: '',
-    seed: '',
-    type: 'seed',
-  },
-  action: AppAction,
-): NewAccountState {
-  switch (action.type) {
-    case ACTION.NEW_ACCOUNT_NAME: {
-      const name = action.payload != null ? action.payload : state.name;
-      return { ...state, name };
-    }
-    case ACTION.NEW_ACCOUNT_SELECT:
-      return { ...state, ...action.payload };
-  }
-
-  return state;
-}
-
-function loading(state = true, { type, payload }: AppAction) {
-  return type === ACTION.SET_LOADING ? payload : state;
-}
 
 interface NotificationsState {
   accountCreationSuccess?: boolean | undefined;
@@ -39,24 +13,47 @@ interface NotificationsState {
   selected?: boolean | undefined;
 }
 
-function notifications(
-  state: NotificationsState = {},
-  { type, payload }: AppAction,
-): NotificationsState {
-  switch (type) {
-    case ACTION.NOTIFICATION_SELECT:
-      return { ...state, selected: payload };
-    case ACTION.NOTIFICATION_DELETE:
-      return { ...state, deleted: payload };
-    case ACTION.NOTIFICATION_NAME_CHANGED:
-      return { ...state, changeName: payload };
-    default:
-      return state;
-  }
-}
+const initialState = {
+  loading: true,
+  newAccount: {
+    address: '',
+    name: '',
+    seed: '',
+    type: 'seed' as const,
+  } as NewAccountState,
+  notifications: {} as NotificationsState,
+};
 
-export const localState = combineReducers({
-  loading,
-  newAccount,
-  notifications,
+const localStateSlice = createSlice({
+  extraReducers: (builder) => {
+    builder
+      .addCase(ACTION.NEW_ACCOUNT_NAME, (state, action) => {
+        state.newAccount.name =
+          (action as unknown as PayloadAction<string | null | undefined>).payload ??
+          state.newAccount.name;
+      })
+      .addCase(ACTION.NEW_ACCOUNT_SELECT, (state, action) => {
+        state.newAccount = {
+          ...state.newAccount,
+          ...(action as unknown as PayloadAction<NewAccountState>).payload,
+        };
+      })
+      .addCase(ACTION.SET_LOADING, (state, action) => {
+        state.loading = (action as unknown as PayloadAction<boolean>).payload;
+      })
+      .addCase(ACTION.NOTIFICATION_SELECT, (state, action) => {
+        state.notifications.selected = (action as unknown as PayloadAction<boolean>).payload;
+      })
+      .addCase(ACTION.NOTIFICATION_DELETE, (state, action) => {
+        state.notifications.deleted = (action as unknown as PayloadAction<boolean>).payload;
+      })
+      .addCase(ACTION.NOTIFICATION_NAME_CHANGED, (state, action) => {
+        state.notifications.changeName = (action as unknown as PayloadAction<boolean>).payload;
+      });
+  },
+  initialState,
+  name: 'localState',
+  reducers: {},
 });
+
+export const localState = localStateSlice.reducer;

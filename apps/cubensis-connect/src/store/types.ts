@@ -197,22 +197,27 @@ export type AppAction =
     }
   | {
       type: typeof ACTION.PERMISSIONS.PENDING;
-      payload?: never;
+      payload: boolean;
       meta?: never;
     }
   | {
       type: typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW;
-      payload?: never;
+      payload: unknown;
       meta?: never;
     }
   | {
       type: typeof ACTION.PERMISSIONS.CONFIRMED_DISALLOW;
-      payload?: never;
+      payload: unknown;
       meta?: never;
     }
   | {
       type: typeof ACTION.PERMISSIONS.CONFIRMED_DELETE;
-      payload?: never;
+      payload: unknown;
+      meta?: never;
+    }
+  | {
+      type: typeof ACTION.PERMISSIONS.CONFIRMED_AUTO;
+      payload: unknown;
       meta?: never;
     }
   | {
@@ -244,26 +249,6 @@ export type AppAction =
       meta?: never;
     }
   | {
-      type: typeof ACTION.PERMISSIONS.PENDING;
-      payload: boolean;
-      meta?: never;
-    }
-  | {
-      type: typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW;
-      payload: unknown;
-      meta?: never;
-    }
-  | {
-      type: typeof ACTION.PERMISSIONS.CONFIRMED_AUTO;
-      payload: unknown;
-      meta?: never;
-    }
-  | {
-      type: typeof ACTION.PERMISSIONS.CONFIRMED_ALLOW;
-      payload: unknown;
-      meta?: never;
-    }
-  | {
       type: typeof ACTION.CHANGE_LNG;
       payload: string;
       meta?: never;
@@ -288,7 +273,7 @@ export type AppAction =
     }
   | {
       type: typeof ACTION.SET_UI_STATE;
-      payload: UiState;
+      payload: Partial<UiState>;
       meta?: never;
     }
   | {

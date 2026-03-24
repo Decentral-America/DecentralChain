@@ -1,30 +1,23 @@
-import { applyMiddleware, createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import { type ThunkDispatch, thunk } from 'redux-thunk';
 
 import * as middleware from '../../store/middleware';
-import { type AppAction } from '../../store/types';
 import { reducer } from './reducer';
-import { type PopupState } from './types';
 
 export function createPopupStore() {
-  const store = createStore<
-    PopupState,
-    AppAction,
-    { dispatch: ThunkDispatch<PopupState, undefined, AppAction> },
-    Record<never, unknown>
-  >(
-    reducer as any,
-    applyMiddleware(
-      thunk,
-      ...(Object.values(middleware) as any[]),
-      ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
-    ),
-  );
+  const store = configureStore({
+    devTools: process.env.NODE_ENV !== 'production',
+    middleware: (getDefault) =>
+      getDefault({ serializableCheck: false }).concat(
+        ...(Object.values(middleware) as any[]),
+        ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
+      ) as any,
+    reducer,
+  });
 
   if (import.meta.hot) {
     import.meta.hot.accept('./reducer', () => {
-      store.replaceReducer(reducer as any);
+      store.replaceReducer(reducer);
     });
   }
 
