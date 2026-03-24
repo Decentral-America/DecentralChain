@@ -1,8 +1,8 @@
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
-import { type NotificationsStoreItem } from 'notifications/types';
+import { type NotificationsStoreItem } from '#notifications/types';
 import ObservableStore from 'obs-store';
-import { type PreferencesAccount } from 'preferences/types';
+import { type PreferencesAccount } from '#preferences/types';
 import Browser from 'webextension-polyfill';
 
 import { ERRORS } from '../lib/keeperError';

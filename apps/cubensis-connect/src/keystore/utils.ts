@@ -1,6 +1,6 @@
 import { base64Encode, encryptSeed, utf8Encode } from '@decentralchain/crypto';
-import { type NetworkName } from 'networks/types';
-import { type PreferencesAccount } from 'preferences/types';
+import { type NetworkName } from '#networks/types';
+import { type PreferencesAccount } from '#preferences/types';
 
 import background from '../ui/services/Background';
 import { type KeystoreAccount, type KeystoreProfiles } from './types';

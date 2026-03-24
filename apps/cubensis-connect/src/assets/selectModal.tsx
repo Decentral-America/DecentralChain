@@ -1,14 +1,14 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { type BalanceAssets } from 'balances/types';
+import { type BalanceAssets } from '#balances/types';
 import clsx from 'clsx';
 import ColorHash from 'color-hash';
-import { type NetworkName } from 'networks/types';
+import { type NetworkName } from '#networks/types';
 import { cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'ui/components/ui/buttons/Button';
-import { Input } from 'ui/components/ui/input';
-import { Tooltip } from 'ui/components/ui/tooltip';
+import { Button } from '#ui/components/ui/buttons/Button';
+import { Input } from '#ui/components/ui/input';
+import { Tooltip } from '#ui/components/ui/tooltip';
 
 import * as styles from './selectModal.module.css';
 import { type AssetDetail } from './types';

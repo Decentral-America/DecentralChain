@@ -1,15 +1,15 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
-import { TxDetailTabs } from 'messages/_common/detailTabs';
-import { MessageFooter } from 'messages/_common/footer';
-import { MessageHeader } from 'messages/_common/header';
-import { MessageIcon } from 'messages/_common/icon';
-import { TxInfo } from 'messages/transaction/common/info';
-import { stringifyTransaction } from 'messages/utils';
-import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import { TxDetailTabs } from '#messages/_common/detailTabs';
+import { MessageFooter } from '#messages/_common/footer';
+import { MessageHeader } from '#messages/_common/header';
+import { MessageIcon } from '#messages/_common/icon';
+import { TxInfo } from '#messages/transaction/common/info';
+import { stringifyTransaction } from '#messages/utils';
+import { usePopupSelector } from '#popup/store/react';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
-import { Balance } from 'ui/components/ui/balance/Balance';
+import { Balance } from '#ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { AddressRecipient } from '../../ui/components/ui/Address/Recipient';

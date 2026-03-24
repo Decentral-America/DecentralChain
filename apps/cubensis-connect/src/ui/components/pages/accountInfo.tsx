@@ -1,9 +1,9 @@
 import { Asset, Money } from '@decentralchain/data-entities';
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { notificationChangeName } from 'store/actions/localState';
+import { notificationChangeName } from '#store/actions/localState';
 
 import Background from '../../services/Background';
 import { getAccountLink } from '../../urls';

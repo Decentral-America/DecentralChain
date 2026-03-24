@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import background from 'ui/services/Background';
+import background from '#ui/services/Background';
 
 import { BigLogo } from '../head';
 import { Button, LangsSelect } from '../ui';

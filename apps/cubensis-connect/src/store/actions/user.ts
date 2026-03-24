@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { type CreateWalletInput } from 'wallets/types';
+import { type CreateWalletInput } from '#wallets/types';
 
 import { type AccountsState } from '../../accounts/store/types';
 import { NETWORK_CONFIG } from '../../constants';

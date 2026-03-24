@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { Avatar } from 'ui/components/ui/avatar/Avatar';
-import { Tooltip } from 'ui/components/ui/tooltip';
+import { Avatar } from '#ui/components/ui/avatar/Avatar';
+import { Tooltip } from '#ui/components/ui/tooltip';
 
 import * as styles from './avatarList.module.css';
 

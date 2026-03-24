@@ -17,8 +17,8 @@ import {
 } from '@decentralchain/protobuf-serialization';
 import { type LeaseTransactionFromNode, TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
-import { JSONbn } from '_core/jsonBn';
-import { type AssetsRecord } from 'assets/types';
+import { JSONbn } from '#_core/jsonBn';
+import { type AssetsRecord } from '#assets/types';
 import EventEmitter from 'events';
 import {
   computeHash,
@@ -33,7 +33,7 @@ import {
   processAliasOrAddress,
   stringifyOrder,
   stringifyTransaction,
-} from 'messages/utils';
+} from '#messages/utils';
 import { nanoid } from 'nanoid';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';

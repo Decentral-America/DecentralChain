@@ -1,8 +1,8 @@
 import { type BigNumber } from '@decentralchain/bignumber';
 import { type Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
-import { usePopupSelector } from 'popup/store/react';
-import { type PreferencesAccount } from 'preferences/types';
+import { usePopupSelector } from '#popup/store/react';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '../ui/avatar/Avatar';

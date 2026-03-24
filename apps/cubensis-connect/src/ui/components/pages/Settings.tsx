@@ -1,7 +1,7 @@
-import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import Background from 'ui/services/Background';
+import Background from '#ui/services/Background';
 
 import { setUiState } from '../../../store/actions/uiState';
 import { Button, PowerButton } from '../ui';

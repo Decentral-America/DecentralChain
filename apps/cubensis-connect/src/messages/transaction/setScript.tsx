@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import { TxDetailTabs } from 'messages/_common/detailTabs';
-import { Expandable } from 'messages/_common/expandable';
-import { MessageFooter } from 'messages/_common/footer';
-import { MessageHeader } from 'messages/_common/header';
-import { MessageIcon } from 'messages/_common/icon';
-import { TxInfo } from 'messages/transaction/common/info';
-import { stringifyTransaction } from 'messages/utils';
-import { type PreferencesAccount } from 'preferences/types';
+import { TxDetailTabs } from '#messages/_common/detailTabs';
+import { Expandable } from '#messages/_common/expandable';
+import { MessageFooter } from '#messages/_common/footer';
+import { MessageHeader } from '#messages/_common/header';
+import { MessageIcon } from '#messages/_common/icon';
+import { TxInfo } from '#messages/transaction/common/info';
+import { stringifyTransaction } from '#messages/utils';
+import { type PreferencesAccount } from '#preferences/types';
 import { useTranslation } from 'react-i18next';
 
 import { Script } from '../_common/script';

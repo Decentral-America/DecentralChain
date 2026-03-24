@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import { usePopupSelector } from 'popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import { useMemo } from 'react';
 
 import { useUsdPrices } from '../../../../_core/usdPrices';

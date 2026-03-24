@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { Ellipsis } from 'ui/components/ui';
+import { Ellipsis } from '#ui/components/ui';
 
 import { InfoIcon } from '../icons/info';
 import * as styles from './nftCard.module.css';

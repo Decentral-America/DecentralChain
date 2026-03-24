@@ -1,8 +1,8 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type AssetDetail, type AssetsRecord } from 'assets/types';
-import { type AssetBalance, type BalancesItem } from 'balances/types';
+import { type AssetDetail, type AssetsRecord } from '#assets/types';
+import { type AssetBalance, type BalancesItem } from '#balances/types';
 import {
   type MessageTx,
   type MessageTxAlias,
@@ -19,7 +19,7 @@ import {
   type MessageTxSponsorship,
   type MessageTxTransfer,
   type MessageTxUpdateAssetInfo,
-} from 'messages/types';
+} from '#messages/types';
 import invariant from 'tiny-invariant';
 
 export async function getExtraFee(address: string, node: string) {

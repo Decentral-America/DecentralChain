@@ -1,8 +1,8 @@
-import { useAccountsSelector } from 'accounts/store/react';
+import { useAccountsSelector } from '#accounts/store/react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import background from 'ui/services/Background';
+import background from '#ui/services/Background';
 
 import { Button } from '../ui';
 import * as styles from './importSuccess.module.css';

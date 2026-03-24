@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ExportButton, ResetButton } from 'ui/components/ui';
+import { ExportButton, ResetButton } from '#ui/components/ui';
 
 import { BigLogo } from '../head';
 import * as styles from './loadingScreen.module.css';

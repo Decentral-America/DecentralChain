@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'ui/components/ui/buttons/Button';
-import { ErrorMessage } from 'ui/components/ui/error';
+import { Button } from '#ui/components/ui/buttons/Button';
+import { ErrorMessage } from '#ui/components/ui/error';
 
 import * as styles from './connectModal.module.css';
 import { LedgerServiceStatus, ledgerService } from './service';

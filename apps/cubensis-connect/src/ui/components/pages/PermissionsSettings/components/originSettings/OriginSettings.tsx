@@ -2,7 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Select } from 'ui/components/ui';
+import { Button, Input, Select } from '#ui/components/ui';
 
 import * as styles from './settings.module.styl';
 

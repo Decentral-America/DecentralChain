@@ -1,5 +1,5 @@
 import ObservableStore from 'obs-store';
-import { fromEthereumToDccAddress, isEthereumAddress } from 'ui/utils/ethereum';
+import { fromEthereumToDccAddress, isEthereumAddress } from '#ui/utils/ethereum';
 
 import { type ExtensionStorage } from '../storage/storage';
 
