@@ -1,6 +1,6 @@
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { type PopupState, type PopupStore } from './types';
+import { type PopupDispatch, type PopupState } from './types';
 
-export const usePopupSelector: TypedUseSelectorHook<PopupState> = useSelector;
-export const usePopupDispatch = () => useDispatch<PopupStore['dispatch']>();
+export const usePopupSelector = useSelector.withTypes<PopupState>();
+export const usePopupDispatch = useDispatch.withTypes<PopupDispatch>();

@@ -186,7 +186,7 @@ export function AddressSuggestInput({ onSuggest, ...props }: Props) {
 
   const chainId = usePopupSelector((state) => state.selectedAccount?.networkCode?.charCodeAt(0));
   const accounts = usePopupSelector((state) => state.accounts);
-  const addresses = usePopupSelector<Record<string, string>>((state) =>
+  const addresses = usePopupSelector((state) =>
     Object.entries(state.addresses).reduce(
       (acc, [address, name]) => {
         if (isAddressString(address, chainId) && base58Decode(address)[1] === chainId) {

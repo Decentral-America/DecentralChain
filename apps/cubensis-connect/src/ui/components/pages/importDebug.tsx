@@ -70,14 +70,14 @@ export function ImportDebug() {
           }
 
           await dispatch(
-            createAccount(
-              {
+            createAccount({
+              account: {
                 address,
                 name,
                 type: 'debug',
               },
-              WalletTypes.Debug,
-            ),
+              type: WalletTypes.Debug,
+            }),
           );
 
           void navigate('/import-success');

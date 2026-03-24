@@ -1,12 +1,11 @@
+import { createReducer, type PayloadAction } from '@reduxjs/toolkit';
+
 import { DEFAULT_MAIN_CONFIG, type NftConfig } from '../../constants';
 import { ACTION } from '../actions/constants';
-import { type AppAction } from '../types';
 
-export function nftConfig(state = DEFAULT_MAIN_CONFIG.nfts, action: AppAction): NftConfig {
-  switch (action.type) {
-    case ACTION.UPDATE_NFT_CONFIG:
-      return action.payload;
-    default:
-      return state;
-  }
-}
+export const nftConfig = createReducer(DEFAULT_MAIN_CONFIG.nfts as NftConfig, (builder) => {
+  builder.addCase(
+    ACTION.UPDATE_NFT_CONFIG,
+    (_, action) => (action as unknown as PayloadAction<NftConfig>).payload,
+  );
+});

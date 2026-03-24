@@ -72,7 +72,7 @@ export function NewWalletName() {
             seed: WalletTypes.Seed,
           };
 
-          await dispatch(createAccount(account, accountTypeToWalletType[account.type]));
+          await dispatch(createAccount({ account, type: accountTypeToWalletType[account.type] }));
 
           void navigate('/import-success');
         }}

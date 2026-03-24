@@ -12,16 +12,18 @@ export function SettingsGeneral() {
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const idle = usePopupSelector<Record<string, any>>((state) => (state.config as any)?.idle || {});
+  const idle = usePopupSelector(
+    (state) => ((state.config as any)?.idle ?? {}) as Record<string, number>,
+  );
 
   const idleOptions = usePopupSelector((state) => state.idleOptions);
 
   const selectList = Object.entries(idle)
     .sort(([, a], [, b]) => a - b)
-    .map(([id, value]) => ({
+    .map(([id]) => ({
       id,
       text: t(`settings.time_${id}`, { defaultValue: id, key: id }),
-      value,
+      value: id,
     }));
 
   return (

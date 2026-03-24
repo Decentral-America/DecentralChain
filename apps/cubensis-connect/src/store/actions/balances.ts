@@ -1,7 +1,3 @@
 import { ACTION } from './constants';
 
-export function getBalances() {
-  return {
-    type: ACTION.GET_BALANCES,
-  };
-}
+export const getBalances = () => ({ type: ACTION.GET_BALANCES });

@@ -1,37 +1,23 @@
-import { applyMiddleware, createStore, type Middleware, type Reducer } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import { type ThunkDispatch, thunk } from 'redux-thunk';
 
 import * as middleware from '../../store/middleware';
-import { type AppAction } from '../../store/types';
 import { reducer } from './reducer';
-import { type AccountsState } from './types';
 
 export function createAccountsStore() {
-  const typedReducer = reducer as unknown as Reducer<AccountsState, AppAction>;
-  const typedMiddleware = Object.values(middleware) as Middleware<
-    Record<never, unknown>,
-    AccountsState,
-    ThunkDispatch<AccountsState, undefined, AppAction>
-  >[];
-
-  const store = createStore<
-    AccountsState,
-    AppAction,
-    { dispatch: ThunkDispatch<AccountsState, undefined, AppAction> },
-    Record<never, unknown>
-  >(
-    typedReducer,
-    applyMiddleware(
-      thunk,
-      ...typedMiddleware,
-      ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
-    ),
-  );
+  const store = configureStore({
+    devTools: process.env.NODE_ENV !== 'production',
+    middleware: (getDefault) =>
+      getDefault({ serializableCheck: false }).concat(
+        ...(Object.values(middleware) as any[]),
+        ...(process.env.NODE_ENV === 'development' ? [createLogger({ collapsed: true })] : []),
+      ) as any,
+    reducer,
+  });
 
   if (import.meta.hot) {
     import.meta.hot.accept('./reducer', () => {
-      store.replaceReducer(typedReducer);
+      store.replaceReducer(reducer);
     });
   }
 

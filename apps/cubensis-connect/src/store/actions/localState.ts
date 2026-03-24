@@ -1,38 +1,58 @@
-import { type PopupThunkAction } from '../../popup/store/types';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { type PopupState, type PopupThunkAction } from '../../popup/store/types';
+import { type PreferencesAccount } from '../../preferences/types';
 import Background from '../../ui/services/Background';
-import { type AppAction, type AppActionPayload } from '../types';
+import { type NewAccountState } from '../reducers/stateTypes';
 import { ACTION } from './constants';
 import { setActiveMessage, setActiveNotification } from './notifications';
 
-function createMVAction<TActionType extends AppAction['type']>(type: TActionType) {
-  return (payload: AppActionPayload<TActionType>) => ({
-    payload,
-    type,
-  });
-}
+export const newAccountName = (payload: string | null | undefined) => ({
+  payload,
+  type: ACTION.NEW_ACCOUNT_NAME,
+});
 
-export const newAccountName = createMVAction(ACTION.NEW_ACCOUNT_NAME);
-export const newAccountSelect = createMVAction(ACTION.NEW_ACCOUNT_SELECT);
-export const selectAccount = createMVAction(ACTION.SELECT_ACCOUNT);
+export const newAccountSelect = (payload: NewAccountState) => ({
+  payload,
+  type: ACTION.NEW_ACCOUNT_SELECT,
+});
 
-const notificationDelete = createMVAction(ACTION.NOTIFICATION_DELETE);
+export const selectAccount = (payload: PreferencesAccount) => ({
+  payload,
+  type: ACTION.SELECT_ACCOUNT,
+});
 
-export function deleteAccount(address: string): PopupThunkAction<Promise<void>> {
-  return async (dispatch, getState) => {
+const notificationDelete = (payload: boolean) => ({
+  payload,
+  type: ACTION.NOTIFICATION_DELETE,
+});
+
+export const deleteAccount = createAsyncThunk<void, string, { state: PopupState }>(
+  'localState/deleteAccount',
+  async (address, { dispatch, getState }) => {
     const { currentNetwork } = getState();
 
     await Background.removeWallet(address, currentNetwork);
 
     dispatch(notificationDelete(true));
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise<void>((resolve) => setTimeout(resolve, 1000));
     dispatch(notificationDelete(false));
-  };
-}
+  },
+);
 
-export const setLoading = createMVAction(ACTION.SET_LOADING);
-export const notificationSelect = createMVAction(ACTION.NOTIFICATION_SELECT);
+export const setLoading = (payload: boolean) => ({
+  payload,
+  type: ACTION.SET_LOADING,
+});
 
-export const notificationChangeName = createMVAction(ACTION.NOTIFICATION_NAME_CHANGED);
+export const notificationSelect = (payload: boolean) => ({
+  payload,
+  type: ACTION.NOTIFICATION_SELECT,
+});
+
+export const notificationChangeName = (payload: boolean) => ({
+  payload,
+  type: ACTION.NOTIFICATION_NAME_CHANGED,
+});
 
 export function clearMessagesStatus(): PopupThunkAction<void> {
   return (dispatch, getState) => {
@@ -48,4 +68,7 @@ export function clearMessagesStatus(): PopupThunkAction<void> {
   };
 }
 
-export const setIdle = createMVAction(ACTION.REMOTE_CONFIG.SET_IDLE);
+export const setIdle = (payload: string) => ({
+  payload,
+  type: ACTION.REMOTE_CONFIG.SET_IDLE,
+});
