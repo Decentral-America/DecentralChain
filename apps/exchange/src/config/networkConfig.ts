@@ -74,7 +74,6 @@ const NetworkConfig = {
     for (const [ticker, assetId] of Object.entries(_config.assets)) {
       if (assetId === id) return ticker;
     }
-    return;
   },
 
   getFullConfig(): MainnetConfig {
