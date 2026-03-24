@@ -1,5 +1,3 @@
-import { type AppAction, type AppActionPayload } from '..//types';
-
 export const ACTION = {
   ADD_ACCOUNT: 'ADD_ACCOUNT',
   CHANGE_LNG: 'CHANGE_LNG',
@@ -78,10 +76,3 @@ export const ACTION = {
   UPDATE_SWAPPABLE_ASSETS: 'UPDATE_SWAPPABLE_ASSETS',
   UPDATE_UI_STATE: 'UPDATE_UI_STATE',
 } as const;
-
-export const createAction =
-  <TActionType extends AppAction['type']>(type: TActionType) =>
-  (payload: AppActionPayload<TActionType>) => ({
-    payload,
-    type,
-  });

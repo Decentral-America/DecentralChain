@@ -354,7 +354,6 @@ export function getFormError(fieldErrors: unknown): string | undefined {
   if ('message' in fieldErrors && typeof fieldErrors.message === 'string') {
     return fieldErrors.message;
   }
-  return;
 }
 
 /**

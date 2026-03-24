@@ -1,4 +1,5 @@
-import { ACTION, createAction } from './constants';
+import { ACTION } from './constants';
+import { createAction } from './factory';
 
 export const setAddresses = createAction(ACTION.SET_ADDRESSES);
 export const setAddress = createAction(ACTION.SET_ADDRESS);
