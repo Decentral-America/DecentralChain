@@ -21,10 +21,11 @@ import { PostMessageConnectProvider } from './connect/PostMessageConnectProvider
 import { type TAssetData, type TBigNumberData } from './interface';
 import * as sign from './sign';
 import { type IUserData } from './sign';
+import { toAsset } from './utils/assetUtils';
 import { abortDownloading, downloadFile } from './utils/DownloadFile';
 import { type IFetchOptions, request } from './utils/request';
 import * as utilsModule from './utils/utils';
-import { normalizeTime, type TTimeType, toAsset } from './utils/utils';
+import { normalizeTime, type TTimeType } from './utils/utils';
 
 export { getAdapterByType, getAvailableList } from '@decentralchain/signature-adapter';
 export { Seed } from './classes/Seed';

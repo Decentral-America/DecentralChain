@@ -1,7 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { type Asset, type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { DCC_ID } from '@decentralchain/signature-adapter';
-import { get } from '../api/assets/assets';
 import { get as configGet, timeDiff } from '../config';
 import { type IAssetPair, type IHash } from '../interface';
 
@@ -145,10 +144,6 @@ function getCurryCallback<T, R>(
 
 export function toBigNumber(some: string | number | BigNumber): BigNumber {
   return some instanceof BigNumber ? some : new BigNumber(some);
-}
-
-export function toAsset(asset: Asset | string): Promise<Asset> {
-  return typeof asset === 'string' ? get(asset) : Promise.resolve(asset);
 }
 
 export type TDefer<T> = {

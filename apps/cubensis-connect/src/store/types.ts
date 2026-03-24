@@ -1,4 +1,3 @@
-import { type Dispatch, type MiddlewareAPI } from 'redux';
 import { type StorageLocalState } from 'storage/storage';
 
 import { type AssetsRecord } from '../assets/types';
@@ -9,10 +8,9 @@ import { type NetworkName } from '../networks/types';
 import { type NftInfo } from '../nfts/nfts';
 import { type NotificationsStoreItem } from '../notifications/types';
 import { type PermissionValue } from '../permissions/types';
-import { type PopupState } from '../popup/store/types';
 import { type IdleOptions, type PreferencesAccount } from '../preferences/types';
 import { type ACTION } from './actions/constants';
-import { type NewAccountState, type UiState } from './reducers/updateState';
+import { type NewAccountState, type UiState } from './reducers/stateTypes';
 
 export type AppAction =
   | {
@@ -337,7 +335,3 @@ export type AppAction =
 export type AppActionOfType<T extends AppAction['type']> = Extract<AppAction, { type: T }>;
 
 export type AppActionPayload<T extends AppAction['type']> = AppActionOfType<T>['payload'];
-
-export type AppMiddleware = (
-  api: MiddlewareAPI<Dispatch, PopupState>,
-) => (next: Dispatch<AppAction>) => (action: AppAction) => void;

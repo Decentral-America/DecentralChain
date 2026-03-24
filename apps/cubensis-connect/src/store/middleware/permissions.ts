@@ -1,3 +1,4 @@
+import { type AppMiddleware } from '../../popup/store/types';
 import background from '../../ui/services/Background';
 import { ACTION } from '../actions/constants';
 import {
@@ -7,7 +8,7 @@ import {
   disallowOriginDone,
   pendingOrigin,
 } from '../actions/permissions';
-import { type AppAction, type AppMiddleware } from '../types';
+import { type AppAction } from '../types';
 
 let _timer: ReturnType<typeof setTimeout>;
 

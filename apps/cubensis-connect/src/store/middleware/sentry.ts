@@ -1,7 +1,6 @@
 import { addBreadcrumb, setTag } from '@sentry/browser';
-
+import { type AppMiddleware } from '../../popup/store/types';
 import { ACTION } from '../actions/constants';
-import { type AppMiddleware } from '../types';
 
 export const sentryBreadcrumbs: AppMiddleware = () => (next) => (action) => {
   addBreadcrumb({

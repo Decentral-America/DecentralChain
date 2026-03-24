@@ -2,9 +2,7 @@ import { MAINNET_DATA } from '@decentralchain/assets-pairs-order';
 import { type IAssetInfo } from '@decentralchain/data-entities';
 import { DataServiceClient } from '@decentralchain/data-service-client-js';
 import { Signal } from 'ts-utils';
-import { time } from './api/node/node';
 import { type IHash } from './interface';
-import { request } from './utils/request';
 
 const config: IConfigParams = Object.create(null);
 let dataService = null;
@@ -28,10 +26,11 @@ export function get<K extends keyof IConfigParams>(key: K): IConfigParams[K] {
 export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[K]): void {
   config[key] = value;
   if (key === 'node') {
-    time()
-      .then((serverTime) => {
+    fetch(`${value}/utils/time`)
+      .then((r) => r.json() as Promise<{ NTP: number }>)
+      .then(({ NTP }) => {
         const now = Date.now();
-        const dif = now - serverTime.getTime();
+        const dif = now - new Date(NTP).getTime();
 
         if (Math.abs(dif) > 1000 * 30) {
           timeDiff = dif;
@@ -42,9 +41,10 @@ export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[
       .catch(() => null);
   }
   if (key === 'matcher') {
-    matcherSettingsPromise = request<unknown>({
-      url: `${value}/settings`,
-    }).then((data) => data.priceAssets);
+    matcherSettingsPromise = fetch(`${String(value)}/settings`)
+      .then((r) => r.json() as Promise<{ priceAssets: Array<string> }>)
+      .then((data) => data.priceAssets)
+      .catch(() => MAINNET_DATA);
   }
   if (key === 'api' || key === 'apiVersion') {
     if (config.api && config.apiVersion) {

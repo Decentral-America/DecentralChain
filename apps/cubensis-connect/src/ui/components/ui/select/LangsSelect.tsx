@@ -3,8 +3,8 @@ import { SUPPORTED_LANGUAGES } from 'i18n/constants';
 import { usePopupDispatch, usePopupSelector } from 'popup/store/react';
 
 import { setLocale } from '../../../../store/actions/user';
-import { Select } from '../';
 import * as styles from './LangsSelect.module.css';
+import { Select } from './Select';
 
 export function LangsSelect() {
   const dispatch = usePopupDispatch();
