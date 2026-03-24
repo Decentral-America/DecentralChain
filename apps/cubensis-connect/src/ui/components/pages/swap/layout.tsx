@@ -1,5 +1,5 @@
-import { usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
+import { usePopupSelector } from '#popup/store/react';
 
 import { SwapAccountInfoHeader } from './accountInfoHeader';
 import * as styles from './layout.module.css';

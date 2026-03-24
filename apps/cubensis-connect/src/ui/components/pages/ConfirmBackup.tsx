@@ -1,7 +1,7 @@
-import { usePopupSelector } from '#popup/store/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { usePopupSelector } from '#popup/store/react';
 import { type NewAccountState } from '#store/reducers/localState';
 
 import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';

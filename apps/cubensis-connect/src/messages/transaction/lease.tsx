@@ -1,5 +1,6 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { TxDetailTabs } from '#messages/_common/detailTabs';
 import { MessageFooter } from '#messages/_common/footer';
 import { MessageHeader } from '#messages/_common/header';
@@ -8,7 +9,6 @@ import { TxInfo } from '#messages/transaction/common/info';
 import { stringifyTransaction } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
 import { type PreferencesAccount } from '#preferences/types';
-import { useTranslation } from 'react-i18next';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { Balance } from '../../ui/components/ui';

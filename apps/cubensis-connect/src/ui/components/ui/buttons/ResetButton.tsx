@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal } from '#ui/components/ui';
 import Browser from 'webextension-polyfill';
+import { Button, Modal } from '#ui/components/ui';
 
 import * as styles from './ResetButton.module.css';
 

@@ -1,8 +1,8 @@
 import { captureException } from '@sentry/browser';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { deleteNotifications } from '#store/actions/notifications';
 import { ExportButton, ResetButton } from '#ui/components/ui';
 import Background from '#ui/services/Background';

@@ -1,14 +1,14 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { type AssetsRecord } from '#assets/types';
-import { type BalanceAssets } from '#balances/types';
 import clsx from 'clsx';
-import { usePopupSelector } from '#popup/store/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
 import { List, type RowComponentProps } from 'react-window';
 import invariant from 'tiny-invariant';
+import { type AssetsRecord } from '#assets/types';
+import { type BalanceAssets } from '#balances/types';
+import { usePopupSelector } from '#popup/store/react';
 import { AssetItem } from '#ui/components/pages/assets//assetItem';
 import { icontains } from '#ui/components/pages/assets/helpers';
 import * as styles from '#ui/components/pages/styles/assets.module.styl';

@@ -1,7 +1,7 @@
+import ObservableStore from 'obs-store';
 import { NetworkName } from '#networks/types';
 import { fetchNftInfo } from '#nfts/nfts';
 import { type NftAssetDetail } from '#nfts/types';
-import ObservableStore from 'obs-store';
 
 import { type ExtensionStorage } from '../storage/storage';
 import { type NetworkController } from './network';
