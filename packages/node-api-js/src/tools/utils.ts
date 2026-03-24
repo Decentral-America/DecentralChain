@@ -1,5 +1,5 @@
 import { type Transaction, type TransactionMap } from '@decentralchain/ts-types';
-import { type TLong } from '../interface';
+import { type TLong } from '../types';
 
 /**
  * Encode a value for safe interpolation into a URL path segment.
@@ -118,7 +118,6 @@ export function switchTransactionByType<R extends TChoices>(
     if (handler != null) {
       return (handler as (data: Transaction<TLong>) => unknown)(tx);
     }
-    return;
   }) as ISwitchTransactionResult<R>;
 }
 
