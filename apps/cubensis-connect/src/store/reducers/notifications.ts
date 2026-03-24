@@ -1,23 +1,41 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { type Message } from '../../messages/types';
 import { type NotificationsStoreItem } from '../../notifications/types';
-import { ACTION } from '../actions/constants';
-import { typedPayload } from '../types';
 
-export const notifications = createReducer([] as NotificationsStoreItem[][], (builder) => {
-  builder.addCase(ACTION.NOTIFICATIONS.SET, (_, action) => typedPayload(action));
+// ─── notifications ─────────────────────────────────────────────────────────
+const notificationsSlice = createSlice({
+  initialState: [] as NotificationsStoreItem[][],
+  name: 'notifications',
+  reducers: {
+    setNotifications: (_state, action: PayloadAction<NotificationsStoreItem[][]>) => action.payload,
+  },
 });
+export const notifications = notificationsSlice.reducer;
+export const { setNotifications } = notificationsSlice.actions;
 
-interface ActivePopupState {
+// ─── activePopup ───────────────────────────────────────────────────────────
+export interface ActivePopupState {
   msg?: Message | undefined;
   notify?: NotificationsStoreItem[] | undefined;
 }
 
-export const activePopup = createReducer(null as ActivePopupState | null, (builder) => {
-  builder
-    .addCase(ACTION.MESSAGES.SET_ACTIVE_AUTO, (state, action): ActivePopupState | null => {
-      const payload = typedPayload(action);
+interface SetActiveAutoPayload {
+  allMessages?: Message[] | undefined;
+  messages: Message[];
+  notifications: NotificationsStoreItem[][];
+}
+
+const activePopupSlice = createSlice({
+  initialState: null as ActivePopupState | null,
+  name: 'activePopup',
+  reducers: {
+    clearActive: (): null => null,
+    setActiveAuto: (
+      state,
+      action: PayloadAction<SetActiveAutoPayload>,
+    ): ActivePopupState | null => {
+      const payload = action.payload;
 
       if (state != null) {
         const { msg, notify } = state;
@@ -43,14 +61,23 @@ export const activePopup = createReducer(null as ActivePopupState | null, (build
         : payload.messages.length === 1
           ? { msg: payload.messages[0] }
           : { notify: payload.notifications[0] };
-    })
-    .addCase(ACTION.MESSAGES.UPDATE_ACTIVE, () => null)
-    .addCase(ACTION.MESSAGES.SET_ACTIVE_MESSAGE, (_, action): ActivePopupState | null => {
-      const msg = typedPayload(action);
+    },
+    setActiveMessage: (
+      _state,
+      action: PayloadAction<Message | undefined>,
+    ): ActivePopupState | null => {
+      const msg = action.payload;
       return msg != null ? { msg } : null;
-    })
-    .addCase(ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION, (_, action): ActivePopupState | null => {
-      const notify = typedPayload(action);
+    },
+    setActiveNotification: (
+      _state,
+      action: PayloadAction<NotificationsStoreItem[] | undefined>,
+    ): ActivePopupState | null => {
+      const notify = action.payload;
       return notify != null ? { notify } : null;
-    });
+    },
+  },
 });
+export const activePopup = activePopupSlice.reducer;
+export const { setActiveAuto, clearActive, setActiveMessage, setActiveNotification } =
+  activePopupSlice.actions;

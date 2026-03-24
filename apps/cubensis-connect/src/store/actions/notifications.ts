@@ -1,9 +1,15 @@
+import { createAction } from '@reduxjs/toolkit';
 import { type PopupThunkAction } from 'popup/store/types';
 import Background from 'ui/services/Background';
 
-import { type Message } from '../../messages/types';
 import { type NotificationsStoreItem } from '../../notifications/types';
-import { ACTION } from './constants';
+import { setActiveNotification } from '../reducers/notifications';
+
+export {
+  clearActive as updateActiveState,
+  setActiveMessage,
+  setActiveNotification,
+} from '../reducers/notifications';
 
 export function deleteNotifications(
   ids: string[],
@@ -15,22 +21,7 @@ export function deleteNotifications(
   };
 }
 
-export const setShowNotification = (options: { origin: string; canUse: boolean | null }) => ({
-  payload: options,
-  type: ACTION.NOTIFICATIONS.SET_PERMS,
-});
-
-export const setActiveNotification = (notify: NotificationsStoreItem[] | undefined) => ({
-  payload: notify,
-  type: ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION,
-});
-
-export const setActiveMessage = (msg: Message | undefined) => ({
-  payload: msg,
-  type: ACTION.MESSAGES.SET_ACTIVE_MESSAGE,
-});
-
-export const updateActiveState = () => ({
-  payload: null,
-  type: ACTION.MESSAGES.UPDATE_ACTIVE,
-});
+// Command action — intercepted by BackgroundMW (setNotificationPerms), does not update Redux state
+export const setShowNotification = createAction<{ origin: string; canUse: boolean | null }>(
+  'notifications/setShowPermission',
+);

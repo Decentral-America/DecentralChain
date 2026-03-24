@@ -1,6 +1,7 @@
 import { addBreadcrumb, setTag } from '@sentry/browser';
+
 import { type AppMiddleware } from '../../popup/store/types';
-import { ACTION } from '../actions/constants';
+import { updateCurrentNetwork, updateSelectedAccount } from '../reducers/updateState';
 
 export const sentryBreadcrumbs: AppMiddleware = () => (next) => (action) => {
   addBreadcrumb({
@@ -11,25 +12,22 @@ export const sentryBreadcrumbs: AppMiddleware = () => (next) => (action) => {
     type: 'info',
   });
 
-  switch (action.type) {
-    case ACTION.UPDATE_CURRENT_NETWORK:
-      setTag('network', action.payload);
+  if (updateCurrentNetwork.match(action)) {
+    setTag('network', action.payload);
 
-      addBreadcrumb({
-        category: 'network-change',
-        level: 'info',
-        message: `Change network to ${action.payload}`,
-        type: 'user',
-      });
-      break;
-    case ACTION.UPDATE_SELECTED_ACCOUNT:
-      addBreadcrumb({
-        category: 'account-change',
-        level: 'info',
-        message: 'Change active account',
-        type: 'user',
-      });
-      break;
+    addBreadcrumb({
+      category: 'network-change',
+      level: 'info',
+      message: `Change network to ${action.payload}`,
+      type: 'user',
+    });
+  } else if (updateSelectedAccount.match(action)) {
+    addBreadcrumb({
+      category: 'account-change',
+      level: 'info',
+      message: 'Change active account',
+      type: 'user',
+    });
   }
 
   return next(action);

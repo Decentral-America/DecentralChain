@@ -1,30 +1,24 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+
 import { type PopupState, type PopupThunkAction } from '../../popup/store/types';
-import { type PreferencesAccount } from '../../preferences/types';
 import Background from '../../ui/services/Background';
-import { type NewAccountState } from '../reducers/stateTypes';
-import { ACTION } from './constants';
+import {
+  setNewAccountName,
+  setNewAccountSelect,
+  setNotificationDeleted,
+} from '../reducers/localState';
 import { setActiveMessage, setActiveNotification } from './notifications';
 
-export const newAccountName = (payload: string | null | undefined) => ({
-  payload,
-  type: ACTION.NEW_ACCOUNT_NAME,
-});
+// Re-export slice action creators under backward-compatible names
+export {
+  setLoading,
+  setNotificationNameChanged as notificationChangeName,
+  setNotificationSelected as notificationSelect,
+} from '../reducers/localState';
+export { selectAccount } from '../reducers/updateState';
 
-export const newAccountSelect = (payload: NewAccountState) => ({
-  payload,
-  type: ACTION.NEW_ACCOUNT_SELECT,
-});
-
-export const selectAccount = (payload: PreferencesAccount) => ({
-  payload,
-  type: ACTION.SELECT_ACCOUNT,
-});
-
-const notificationDelete = (payload: boolean) => ({
-  payload,
-  type: ACTION.NOTIFICATION_DELETE,
-});
+export const newAccountName = setNewAccountName;
+export const newAccountSelect = setNewAccountSelect;
 
 export const deleteAccount = createAsyncThunk<void, string, { state: PopupState }>(
   'localState/deleteAccount',
@@ -33,26 +27,11 @@ export const deleteAccount = createAsyncThunk<void, string, { state: PopupState 
 
     await Background.removeWallet(address, currentNetwork);
 
-    dispatch(notificationDelete(true));
+    dispatch(setNotificationDeleted(true));
     await new Promise<void>((resolve) => setTimeout(resolve, 1000));
-    dispatch(notificationDelete(false));
+    dispatch(setNotificationDeleted(false));
   },
 );
-
-export const setLoading = (payload: boolean) => ({
-  payload,
-  type: ACTION.SET_LOADING,
-});
-
-export const notificationSelect = (payload: boolean) => ({
-  payload,
-  type: ACTION.NOTIFICATION_SELECT,
-});
-
-export const notificationChangeName = (payload: boolean) => ({
-  payload,
-  type: ACTION.NOTIFICATION_NAME_CHANGED,
-});
 
 export function clearMessagesStatus(): PopupThunkAction<void> {
   return (dispatch, getState) => {
@@ -68,7 +47,5 @@ export function clearMessagesStatus(): PopupThunkAction<void> {
   };
 }
 
-export const setIdle = (payload: string) => ({
-  payload,
-  type: ACTION.REMOTE_CONFIG.SET_IDLE,
-});
+// setIdle is a BackgroundMW command action — kept as a typed action creator
+export { setIdle } from './network';
