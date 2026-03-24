@@ -2,7 +2,6 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { convert } from '@decentralchain/money-like-to-node';
 import { libs } from '@decentralchain/transactions';
 import { type ExchangeTransactionOrder, type SignableTransaction } from '@decentralchain/ts-types';
-import { type Adapter } from './adapters/Adapter';
 import { ERRORS } from './constants';
 import {
   DCC_ID,
@@ -23,6 +22,17 @@ import {
   last,
   normalizeAssetId,
 } from './utils';
+
+/** Minimal adapter contract required by Signable — breaks the circular dependency with Adapter. */
+interface IAdapter {
+  signRequest(databytes: Uint8Array, signData?: unknown): Promise<string>;
+  signTransaction(bytes: Uint8Array, precisions: Record<string, number>, signData?: unknown): Promise<string>;
+  signOrder(bytes: Uint8Array, precisions: Record<string, number>, signData: unknown): Promise<string>;
+  getNetworkByte(): number;
+  getSignVersions(): Record<SIGN_TYPE, number[]>;
+  getPublicKey(): Promise<string>;
+  getAddress(): Promise<string>;
+}
 
 const { base58Encode, blake2b, verifySignature } = libs.crypto;
 
@@ -52,7 +62,7 @@ interface IAssetIdTransaction {
 export class Signable<T extends TSignData = TSignData> {
   public readonly type: SIGN_TYPE;
   private readonly _forSign: T;
-  private readonly _adapter: Adapter;
+  private readonly _adapter: IAdapter;
   private readonly _bytePromise: Promise<Uint8Array>;
   private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
   private _signPromise: Promise<string> | undefined;
@@ -63,7 +73,7 @@ export class Signable<T extends TSignData = TSignData> {
   /** Maximum number of proofs allowed per transaction (protocol limit). */
   private static readonly MAX_PROOFS = 8;
 
-  constructor(forSign: T, adapter: Adapter) {
+  constructor(forSign: T, adapter: IAdapter) {
     const networkCode = adapter.getNetworkByte();
     this._forSign = { ...forSign };
     this.type = forSign.type;

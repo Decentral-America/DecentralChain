@@ -1,5 +1,5 @@
 import { default as BigNum } from 'bignumber.js';
-import { type BigNumber } from './BigNumber.js';
+import { type ROUND_MODE } from './roundMode.js';
 
 /**
  * Global configuration manager for BigNumber formatting and rounding.
@@ -44,7 +44,7 @@ export class Config {
 /** Configuration options for BigNumber behavior. */
 export interface IConfig {
   /** Global rounding mode for arithmetic operations. */
-  ROUNDING_MODE: BigNumber.ROUND_MODE;
+  ROUNDING_MODE: ROUND_MODE;
   /** Partial format overrides for `toFormat()` output. */
   FORMAT: Partial<IFormat>;
 }

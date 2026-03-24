@@ -3,6 +3,9 @@ import * as dccTransactions from '@decentralchain/transactions';
 import { libs, protoSerialize } from '@decentralchain/transactions';
 import { type IAdapterSignMethods } from './interfaces';
 import { prepare } from './prepare';
+import { SIGN_TYPE } from './signType';
+
+export { SIGN_TYPE };
 
 const { processors } = prepare;
 
@@ -104,31 +107,6 @@ const processScript = (srcScript: string | null) => {
 
 export enum TRANSACTION_TYPE_NUMBER {
   SEND_OLD = 2,
-  ISSUE = 3,
-  TRANSFER = 4,
-  REISSUE = 5,
-  BURN = 6,
-  EXCHANGE = 7,
-  LEASE = 8,
-  CANCEL_LEASING = 9,
-  CREATE_ALIAS = 10,
-  MASS_TRANSFER = 11,
-  DATA = 12,
-  SET_SCRIPT = 13,
-  SPONSORSHIP = 14,
-  SET_ASSET_SCRIPT = 15,
-  SCRIPT_INVOCATION = 16,
-  UPDATE_ASSET_INFO = 17,
-  ETHEREUM_TX = 18,
-}
-
-export enum SIGN_TYPE {
-  AUTH = 1000,
-  MATCHER_ORDERS = 1001,
-  CREATE_ORDER = 1002,
-  CANCEL_ORDER = 1003,
-  COINOMAT_CONFIRMATION = 1004,
-  DCC_CONFIRMATION = 1005,
   ISSUE = 3,
   TRANSFER = 4,
   REISSUE = 5,

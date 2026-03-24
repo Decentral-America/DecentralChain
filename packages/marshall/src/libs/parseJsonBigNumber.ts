@@ -389,8 +389,6 @@ const create = (options?: Options) => {
         gap = mind;
         return v;
     }
-
-    return;
   }
 
   const stringify = (val: unknown, replacer?: unknown, space?: number | string): string => {
