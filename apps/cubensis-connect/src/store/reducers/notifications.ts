@@ -1,14 +1,12 @@
-import { createReducer, type PayloadAction } from '@reduxjs/toolkit';
+import { createReducer } from '@reduxjs/toolkit';
 
 import { type Message } from '../../messages/types';
 import { type NotificationsStoreItem } from '../../notifications/types';
 import { ACTION } from '../actions/constants';
+import { typedPayload } from '../types';
 
 export const notifications = createReducer([] as NotificationsStoreItem[][], (builder) => {
-  builder.addCase(
-    ACTION.NOTIFICATIONS.SET,
-    (_, action) => (action as unknown as PayloadAction<NotificationsStoreItem[][]>).payload,
-  );
+  builder.addCase(ACTION.NOTIFICATIONS.SET, (_, action) => typedPayload(action));
 });
 
 interface ActivePopupState {
@@ -19,13 +17,7 @@ interface ActivePopupState {
 export const activePopup = createReducer(null as ActivePopupState | null, (builder) => {
   builder
     .addCase(ACTION.MESSAGES.SET_ACTIVE_AUTO, (state, action): ActivePopupState | null => {
-      const payload = (
-        action as unknown as PayloadAction<{
-          allMessages: Message[] | undefined;
-          messages: Message[];
-          notifications: NotificationsStoreItem[][];
-        }>
-      ).payload;
+      const payload = typedPayload(action);
 
       if (state != null) {
         const { msg, notify } = state;
@@ -54,12 +46,11 @@ export const activePopup = createReducer(null as ActivePopupState | null, (build
     })
     .addCase(ACTION.MESSAGES.UPDATE_ACTIVE, () => null)
     .addCase(ACTION.MESSAGES.SET_ACTIVE_MESSAGE, (_, action): ActivePopupState | null => {
-      const msg = (action as unknown as PayloadAction<Message | undefined>).payload;
+      const msg = typedPayload(action);
       return msg != null ? { msg } : null;
     })
     .addCase(ACTION.MESSAGES.SET_ACTIVE_NOTIFICATION, (_, action): ActivePopupState | null => {
-      const notify = (action as unknown as PayloadAction<NotificationsStoreItem[] | undefined>)
-        .payload;
+      const notify = typedPayload(action);
       return notify != null ? { notify } : null;
     });
 });
