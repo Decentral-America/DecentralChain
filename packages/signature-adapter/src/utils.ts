@@ -6,7 +6,6 @@ import {
   type MassTransferTransaction,
   type SignableTransaction,
 } from '@decentralchain/ts-types';
-import path from 'ramda/src/path';
 import { DCC_ID } from './prepareTx';
 
 export function find<T>(some: Partial<T>, list: T[]) {
@@ -176,7 +175,7 @@ function getMassTransferFee(
   const transferPrice = new BigNumber(
     getConfigProperty(tx.type, 'price_per_transfer', config) || 0,
   );
-  const transfersCount: number = path(['transfers', 'length'], tx) || 0;
+  const transfersCount: number = tx.transfers?.length ?? 0;
   const smartAssetExtraFee =
     tx.assetId && smartAssetIdList.includes(tx.assetId)
       ? new BigNumber(config.smart_asset_extra_fee)
@@ -199,10 +198,11 @@ function getConfigProperty<T extends keyof IFeeConfigItem>(
   propertyName: T,
   config: IFeeConfig,
 ): IFeeConfigItem[T] {
-  const value = path(['calculate_fee_rules', type, propertyName], config) as
-    | IFeeConfigItem[T]
-    | undefined;
-  return isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value;
+  const value = config.calculate_fee_rules[type]?.[propertyName];
+  if (!isEmpty(value)) {
+    return value as IFeeConfigItem[T];
+  }
+  return config.calculate_fee_rules.default[propertyName];
 }
 
 export interface IFeeConfig {
@@ -219,4 +219,20 @@ export interface IFeeConfigItem {
   min_price_step: BigNumber;
   fee: BigNumber;
   nftFee: BigNumber;
+}
+
+/**
+ * Structural deep equality for plain state objects (no functions, no circular refs).
+ * Used in CubensisConnectAdapter to avoid firing update callbacks when state is unchanged.
+ */
+export function deepEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== 'object' || typeof b !== 'object') return false;
+  if (a === null || b === null) return false;
+  const keysA = Object.keys(a as object);
+  const keysB = Object.keys(b as object);
+  if (keysA.length !== keysB.length) return false;
+  return keysA.every((k) =>
+    deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]),
+  );
 }

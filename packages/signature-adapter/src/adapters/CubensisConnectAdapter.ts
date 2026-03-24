@@ -1,7 +1,7 @@
-import equals from 'ramda/src/equals';
 import { AdapterType } from '../adapterType';
 import { SIGN_TYPE, type TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
+import { deepEqual } from '../utils';
 import { Adapter } from './Adapter';
 
 /** Shape of sign data passed through the signing bridge. */
@@ -308,7 +308,7 @@ export class CubensisConnectAdapter extends Adapter {
   }
 
   private static _updateState(state: ICubensisConnectState) {
-    if (equals(CubensisConnectAdapter._state, state)) {
+    if (deepEqual(CubensisConnectAdapter._state, state)) {
       return;
     }
 
