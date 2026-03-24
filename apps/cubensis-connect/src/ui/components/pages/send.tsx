@@ -1,11 +1,11 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { isAddressString, isAlias } from '#messages/utils';
-import { createNft } from '#nfts/nfts';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { isAddressString, isAlias } from '#messages/utils';
+import { createNft } from '#nfts/nfts';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { getBalances } from '#store/actions/balances';
 import Background from '#ui/services/Background';
 

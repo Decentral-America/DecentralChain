@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
 import { NftCover } from '#nfts/nftCard';
 import { createNft } from '#nfts/nfts';
 import { usePopupSelector } from '#popup/store/react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Ellipsis, Loader } from '#ui/components/ui';
 import { Tooltip } from '#ui/components/ui/tooltip';
 import { getAccountLink, getAssetDetailLink } from '#ui/urls';

@@ -1,15 +1,15 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
 import { MessageFinal } from '#messages/_common/final';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
 import { usePopupDispatch } from '#popup/store/react';
 import { type PreferencesAccount } from '#preferences/types';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { setShowNotification } from '#store/actions/notifications';
 import { setAutoOrigin } from '#store/actions/permissions';
-import invariant from 'tiny-invariant';
 import Background from '#ui/services/Background';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';

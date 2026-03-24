@@ -1,10 +1,10 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { compareAccountsByLastUsed } from '#preferences/utils';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { compareAccountsByLastUsed } from '#preferences/utils';
 import { selectAccount } from '#store/actions/localState';
 import { SearchInput } from '#ui/components/ui/searchInput/searchInput';
 import background from '#ui/services/Background';

@@ -1,8 +1,8 @@
-import { isAddressString } from '#messages/utils';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { isAddressString } from '#messages/utils';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { createAccount } from '#store/actions/user';
 import * as styles from '#ui/components/pages/importDebug.module.css';
 import { Button, ErrorMessage, Input } from '#ui/components/ui';

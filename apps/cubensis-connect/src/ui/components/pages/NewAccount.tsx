@@ -1,7 +1,7 @@
-import { usePopupSelector } from '#popup/store/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
+import { usePopupSelector } from '#popup/store/react';
 import Background from '#ui/services/Background';
 
 import { CONFIG } from '../../appConfig';

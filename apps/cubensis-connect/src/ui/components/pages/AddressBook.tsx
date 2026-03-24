@@ -1,6 +1,6 @@
-import { usePopupSelector } from '#popup/store/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePopupSelector } from '#popup/store/react';
 import { icontains } from '#ui/components/pages/assets/helpers';
 
 import { Avatar, Button, Copy, Ellipsis, Modal, SearchInput } from '../ui';

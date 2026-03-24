@@ -1,8 +1,8 @@
+import ObservableStore from 'obs-store';
+import Browser from 'webextension-polyfill';
 import { isNotNull } from '#_core/isNotNull';
 import { type AssetDetail } from '#assets/types';
 import { NetworkName } from '#networks/types';
-import ObservableStore from 'obs-store';
-import Browser from 'webextension-polyfill';
 
 import { defaultAssetTickers } from '../assets/constants';
 import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';

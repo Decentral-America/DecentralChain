@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 
 import { setIdle } from '../../../store/actions/localState';
 import { Button, Select } from '../ui';
