@@ -11,7 +11,6 @@
     "@arethetypeswrong/cli": "catalog:",
     "@decentralchain/bignumber": "workspace:*",
     "@decentralchain/data-entities": "workspace:*",
-    "@decentralchain/ts-types": "workspace:*",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
