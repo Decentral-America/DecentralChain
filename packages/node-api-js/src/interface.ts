@@ -5,7 +5,7 @@ import {
   type TCallableFuncArgumentsRecord,
 } from './api-node/addresses';
 
-export type TLong = string | number;
+export type { TLong } from './types';
 
 export type TRANSACTION_TYPE_MAP = {
   3: 'issue';

@@ -1,6 +1,6 @@
 import { type BigNumber } from '@decentralchain/bignumber';
 import { type Money } from '@decentralchain/data-entities';
-import { type SIGN_TYPE } from './constants';
+import { type SIGN_TYPE } from './signType';
 
 export interface IARGS_ENTRY {
   type: string;

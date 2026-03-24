@@ -1,10 +1,10 @@
 import { type ErrorHandler } from './helpers.js';
 import { type IConsole } from './logger.js';
-import { type Signer } from './Signer.js';
 import { ERRORS, SignerError } from './SignerError.js';
 import { type SignerOptions } from './types/index.js';
 
-type TSigner = { [Key in keyof Signer]: Signer[Key] } & {
+type TSigner = {
+  currentProvider: { user: unknown } | null | undefined;
   _logger: IConsole;
   _handleError: ErrorHandler;
   _options: SignerOptions;
@@ -15,7 +15,7 @@ const getErrorHandler = (signer: TSigner): ErrorHandler => {
 };
 
 export const ensureProvider = (
-  _target: Signer,
+  _target: unknown,
   _propertyKey: string,
   descriptor: PropertyDescriptor,
 ): void => {
@@ -35,7 +35,7 @@ export const ensureProvider = (
 };
 
 export const catchProviderError = (
-  _target: Signer,
+  _target: unknown,
   _propertyKey: string,
   descriptor: PropertyDescriptor,
 ): void => {
@@ -62,7 +62,7 @@ export const catchProviderError = (
 };
 
 export const checkAuth = (
-  _target: Signer,
+  _target: unknown,
   _propertyKey: string,
   descriptor: PropertyDescriptor,
 ): void => {

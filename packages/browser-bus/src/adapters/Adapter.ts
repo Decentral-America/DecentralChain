@@ -1,4 +1,4 @@
-import { type IOneArgFunction, type TMessageContent } from '../bus/Bus.js';
+import { type IOneArgFunction, type TMessageContent } from '../bus/types.js';
 
 /**
  * Abstract base class for message transport adapters.

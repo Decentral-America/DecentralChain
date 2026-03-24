@@ -22,7 +22,7 @@ import {
   type TPrimitive,
   type TSchema,
 } from './schemaTypes';
-import { serializerFromSchema } from './serialize';
+import { serializerFromSchema } from './serializeFromSchema';
 import {
   ADDRESS_OR_ALIAS,
   BASE58_STRING,

@@ -1,6 +1,8 @@
-import { type SIGN_TYPE, SIGN_TYPES, type TSignData } from './';
+import { SIGN_TYPES } from './constants';
+import { type TSignData } from './interfaces';
 import { prepare } from './prepare';
 import { getValidateSchema } from './schemas';
+import { type SIGN_TYPE } from './signType';
 
 export default function (forSign: TSignData, networkByte: number): Uint8Array {
   const prepareMap = getValidateSchema(networkByte)[forSign.type];

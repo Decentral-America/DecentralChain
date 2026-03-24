@@ -1,8 +1,8 @@
 import { type DataTransactionEntry } from '@decentralchain/ts-types';
-import { type TLong } from '../../interface';
 import query from '../../tools/query';
 import request from '../../tools/request';
 import { deepAssign, pathSegment } from '../../tools/utils';
+import { type TLong } from '../../types';
 
 export function fetchDataKey(
   base: string,

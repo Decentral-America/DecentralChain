@@ -5,7 +5,6 @@
  */
 
 import { type ConnectOptions } from '@decentralchain/signer';
-import { type ProviderCubensis } from './ProviderCubensis';
 
 /**
  * Normalizes a node URL for comparison by stripping trailing slashes.
@@ -34,7 +33,7 @@ export function ensureNetwork(
   const origin = descriptor.value as (...args: unknown[]) => unknown;
 
   descriptor.value = function (
-    this: { [Key in keyof ProviderCubensis]: ProviderCubensis[Key] } & {
+    this: {
       _api: CubensisConnect.ICubensisConnectApi;
       _options: ConnectOptions;
     },

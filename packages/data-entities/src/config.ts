@@ -1,5 +1,5 @@
-import { type IAssetInfo } from './entities/Asset';
-import { type ICandleInfo } from './entities/Candle';
+import { type IAssetInfo } from './entities/asset-types';
+import { type ICandleInfo } from './entities/candle-types';
 
 /** Configuration options for data entity transformations. */
 export interface IConfig {
