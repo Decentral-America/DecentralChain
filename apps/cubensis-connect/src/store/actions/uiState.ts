@@ -1,7 +1,7 @@
-import { type UiState } from '../reducers/updateState';
-import { ACTION } from './constants';
+// setUiState is a command action — BackgroundMW merges it with current uiState,
+// dispatches updateUiState, and persists via Background.setUiState.
+import { createAction } from '@reduxjs/toolkit';
 
-export const setUiState = (ui: Partial<UiState>) => ({
-  payload: ui,
-  type: ACTION.SET_UI_STATE,
-});
+import { type UiState } from '../reducers/updateState';
+
+export const setUiState = createAction<Partial<UiState>>('uiState/set');

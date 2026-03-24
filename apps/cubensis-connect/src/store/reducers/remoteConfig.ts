@@ -1,12 +1,13 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { type StorageLocalState } from 'storage/storage';
 
-import { ACTION } from '../actions/constants';
-import { typedPayload } from '../types';
-
-export const config = createReducer(
-  {} as StorageLocalState['config'] | Record<never, unknown>,
-  (builder) => {
-    builder.addCase(ACTION.REMOTE_CONFIG.SET_CONFIG, (_, action) => typedPayload(action));
+const configSlice = createSlice({
+  initialState: {} as StorageLocalState['config'] | Record<never, unknown>,
+  name: 'config',
+  reducers: {
+    setRemoteConfig: (_state, action: PayloadAction<Partial<StorageLocalState['config']>>) =>
+      action.payload,
   },
-);
+});
+export const config = configSlice.reducer;
+export const { setRemoteConfig } = configSlice.actions;

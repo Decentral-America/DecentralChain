@@ -1,7 +1,8 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import { type NetworkName } from '../../networks/types';
 import { type PopupThunkAction } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
-import { ACTION } from './constants';
 
 export function setNetwork(network: NetworkName): PopupThunkAction<Promise<void>> {
   return async () => {
@@ -9,17 +10,16 @@ export function setNetwork(network: NetworkName): PopupThunkAction<Promise<void>
   };
 }
 
-export const setCustomNode = (payload: { network: NetworkName; node: string | null }) => ({
-  payload,
-  type: ACTION.CHANGE_NODE,
-});
-
-export const setCustomCode = (payload: { network: NetworkName; code: string | null }) => ({
-  payload,
-  type: ACTION.CHANGE_NETWORK_CODE,
-});
-
-export const setCustomMatcher = (payload: { network: NetworkName; matcher: string | null }) => ({
-  payload,
-  type: ACTION.CHANGE_MATCHER,
-});
+// Command actions — intercepted by BackgroundMW, do not update Redux state directly.
+// The background service stores the value and pushes back the corresponding update action.
+export const setCustomNode = createAction<{ network: NetworkName; node: string | null }>(
+  'network/setCustomNode',
+);
+export const setCustomCode = createAction<{ network: NetworkName; code: string | null }>(
+  'network/setCustomCode',
+);
+export const setCustomMatcher = createAction<{ network: NetworkName; matcher: string | null }>(
+  'network/setCustomMatcher',
+);
+export const setLocale = createAction<string>('locale/set');
+export const setIdle = createAction<string>('remoteConfig/setIdle');

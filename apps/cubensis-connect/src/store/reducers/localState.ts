@@ -1,7 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { ACTION } from '../actions/constants';
-import { typedPayload } from '../types';
 import { type NewAccountState } from './stateTypes';
 
 export type { NewAccountState };
@@ -26,30 +24,36 @@ const initialState = {
 };
 
 const localStateSlice = createSlice({
-  extraReducers: (builder) => {
-    builder
-      .addCase(ACTION.NEW_ACCOUNT_NAME, (state, action) => {
-        state.newAccount.name = typedPayload(action) ?? state.newAccount.name;
-      })
-      .addCase(ACTION.NEW_ACCOUNT_SELECT, (state, action) => {
-        state.newAccount = { ...state.newAccount, ...typedPayload(action) };
-      })
-      .addCase(ACTION.SET_LOADING, (state, action) => {
-        state.loading = typedPayload(action);
-      })
-      .addCase(ACTION.NOTIFICATION_SELECT, (state, action) => {
-        state.notifications.selected = typedPayload(action);
-      })
-      .addCase(ACTION.NOTIFICATION_DELETE, (state, action) => {
-        state.notifications.deleted = typedPayload(action);
-      })
-      .addCase(ACTION.NOTIFICATION_NAME_CHANGED, (state, action) => {
-        state.notifications.changeName = typedPayload(action);
-      });
-  },
   initialState,
   name: 'localState',
-  reducers: {},
+  reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setNewAccountName: (state, action: PayloadAction<string | null | undefined>) => {
+      state.newAccount.name = action.payload ?? state.newAccount.name;
+    },
+    setNewAccountSelect: (state, action: PayloadAction<Partial<NewAccountState>>) => {
+      state.newAccount = { ...state.newAccount, ...action.payload } as NewAccountState;
+    },
+    setNotificationDeleted: (state, action: PayloadAction<boolean>) => {
+      state.notifications.deleted = action.payload;
+    },
+    setNotificationNameChanged: (state, action: PayloadAction<boolean>) => {
+      state.notifications.changeName = action.payload;
+    },
+    setNotificationSelected: (state, action: PayloadAction<boolean>) => {
+      state.notifications.selected = action.payload;
+    },
+  },
 });
 
 export const localState = localStateSlice.reducer;
+export const {
+  setNewAccountName,
+  setNewAccountSelect,
+  setLoading,
+  setNotificationSelected,
+  setNotificationDeleted,
+  setNotificationNameChanged,
+} = localStateSlice.actions;
