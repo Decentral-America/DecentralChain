@@ -125,7 +125,7 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
   - `popup/store/types.ts ↔ popup/store/create.ts`: inlined `PopupStore` type (no longer uses `ReturnType<typeof createPopupStore>`)
   - `accounts/store/types.ts ↔ accounts/store/create.ts`: inlined `AccountsStore` type
   - `LangsSelect.tsx`: direct import of `Select` from `./Select` instead of barrel `'../'`
-- **Gate results post-Round 6**: `biome-lint` 25/25 ✅ · `typecheck` 24/24 (cubensis-connect excluded — 2 pre-existing errors in untouched files) ✅ · `test` 24/24 (ride-js excluded — pre-existing known failures) ✅ · `build` 25/25 ✅ · total Biome warnings: **0 across all 25 projects**
+- **Gate results post-Round 6**: `biome-lint` 25/25 ✅ · `typecheck` 24/24 (cubensis-connect excluded — 3 pre-existing errors in untouched files: `ErrorBoundary.test.tsx` TS2554, `activeNotification.tsx` TS18047/TS2339, `importLedger.tsx` TS2345) ✅ · `test` 24/24 (ride-js excluded — pre-existing known failures) ✅ · `build` 25/25 ✅ · total Biome warnings: **0 across all 25 projects**
 
 ---
 
