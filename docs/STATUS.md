@@ -108,6 +108,25 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
   - `apps/scanner/src/pages/Asset.tsx` and `Sustainability.tsx` — added `biome-ignore` with rationale for recharts `Cell` (internal `CellReader` context annotation, not a removed public API).
 - **Gate results post-Round 5**: `biome-lint` 25/25 ✅ · `typecheck` 23/23 ✅ · `test` 25/25 ✅ · `biome format` 1,716 files clean ✅ · `noDeprecatedImports` 0 warnings ✅
 
+### Audit Round 6 — Zero Biome Violations Across All 25 Projects (Mar 2026)
+
+- **noImportCycles elimination — 22 SDK packages** (commit `b865f4da1`): Broke 10 circular import chains by extracting type definitions and pure constants into new files. 7 new type-extraction files created. All 22 SDK packages: zero Biome warnings.
+- **Stale suppressions cleanup** (commit `ec71646c0`): Removed unused `biome-ignore lint/performance/noNamespaceImport` suppression in `bignumber/BigNumber.ts` (flagged by `suppressions/unused`). Reformatted `IAdapter` interface in `signature-adapter/Signable.ts` to multi-line style (biome formatter compliance).
+- **exchange app cycle elimination** (commit `d89791d3d`):
+  - Root cycles fixed: `config.ts ↔ api/node/node`, `config.ts ↔ utils/request`, `utils/utils.ts ↔ api/assets/assets`, `ConfigService.ts ↔ data-service/index.ts`
+  - `config.ts` — removed all imports pointing into `api/` and `utils/`; inlined `fetch()` calls for server-time sync and matcher settings
+  - `ConfigService.ts` — removed `import { fetch } from '../'`; replaced with `globalThis.fetch` + `.text()` + `JSON.parse`
+  - `utils/utils.ts` — removed `import { get } from '../api/assets/assets'`; extracted `toAsset()` into new `utils/assetUtils.ts`
+  - 4× `noUselessReturn` bare `return;` removed (FormInput, FormSelect, networkConfig, forms.ts)
+- **cubensis-connect app cycle elimination** (commit `d89791d3d`):
+  - `store/types.ts ↔ reducers/updateState.ts`: extracted `NewAccountState`, `UiState`, `AssetFilters`, `NftFilters`, `TxHistoryFilters` into new `reducers/stateTypes.ts`
+  - `store/types.ts ↔ popup/store/types.ts`: moved `AppMiddleware` type to `popup/store/types.ts`; removed `PopupState` import from `store/types.ts`
+  - `store/types.ts ↔ store/actions/constants.ts`: extracted `createAction` into new `store/actions/factory.ts`; removed `AppAction`/`AppActionPayload` imports from constants
+  - `popup/store/types.ts ↔ popup/store/create.ts`: inlined `PopupStore` type (no longer uses `ReturnType<typeof createPopupStore>`)
+  - `accounts/store/types.ts ↔ accounts/store/create.ts`: inlined `AccountsStore` type
+  - `LangsSelect.tsx`: direct import of `Select` from `./Select` instead of barrel `'../'`
+- **Gate results post-Round 6**: `biome-lint` 25/25 ✅ · `typecheck` 24/24 (cubensis-connect excluded — 2 pre-existing errors in untouched files) ✅ · `test` 24/24 (ride-js excluded — pre-existing known failures) ✅ · `build` 25/25 ✅ · total Biome warnings: **0 across all 25 projects**
+
 ---
 
 ## 3. Ecosystem Tech Stack
