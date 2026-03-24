@@ -4,11 +4,18 @@ import { NetworkName } from '../../networks/types';
 import { type PreferencesAccount } from '../../preferences/types';
 import { ACTION } from '../actions/constants';
 import { type AppAction, type AppActionPayload } from '../types';
+import {
+  type AssetFilters,
+  type NftFilters,
+  type TxHistoryFilters,
+  type UiState,
+} from './stateTypes';
 
 export * from './localState';
 export * from './nftConfig';
 export * from './notifications';
 export * from './remoteConfig';
+export type { AssetFilters, NftFilters, TxHistoryFilters, UiState };
 
 function createSimpleReducer<TActionType extends AppAction['type']>(
   initialState: AppActionPayload<TActionType>,
@@ -16,32 +23,6 @@ function createSimpleReducer<TActionType extends AppAction['type']>(
 ) {
   return (state = initialState, action: AppAction): AppActionPayload<TActionType> =>
     (actionType === action.type ? action.payload : state) as any;
-}
-
-export type AssetFilters = {
-  term?: string | undefined;
-  onlyMy?: boolean | undefined;
-  onlyFavorites?: boolean | undefined;
-};
-export type NftFilters = {
-  term?: string | undefined;
-};
-export type TxHistoryFilters = {
-  term?: string | undefined;
-  type?: number | undefined;
-  onlyIncoming?: boolean | undefined;
-  onlyOutgoing?: boolean | undefined;
-};
-
-export interface UiState {
-  account?: unknown | undefined;
-  assetFilters?: AssetFilters | undefined;
-  assetsTab?: number | undefined;
-  autoClickProtection?: boolean | undefined;
-  nftFilters?: NftFilters | undefined;
-  showSuspiciousAssets?: boolean | undefined;
-  slippageToleranceIndex?: number | undefined;
-  txHistoryFilters?: TxHistoryFilters | undefined;
 }
 
 export const uiState = createSimpleReducer({}, ACTION.UPDATE_UI_STATE);

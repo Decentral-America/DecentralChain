@@ -1,6 +1,5 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { clone, get, getPaths, Signal } from 'ts-utils';
-import { fetch } from '../';
 
 interface IFeeItem<T> {
   add_smart_asset_fee: boolean;
@@ -77,19 +76,18 @@ export class ConfigService {
   }
 
   protected _getConfig(): Promise<IConfig> {
-    return fetch(this.dccApp.network.featuresConfigUrl)
-      .then((data) => {
-        if (typeof data === 'string') {
-          return JSON.parse(data);
-        }
-        return data;
-      })
+    return globalThis
+      .fetch(this.dccApp.network.featuresConfigUrl)
+      .then((r) => r.text())
+      .then((data) => JSON.parse(data) as IConfig)
       .catch(() => Promise.resolve(this.dccApp.network.featuresConfig));
   }
 
   protected _getFeeConfig(): Promise<IFeeConfig<BigNumber>> {
-    return fetch(this.dccApp.network.feeConfigUrl)
-      .then(this.dccApp.parseJSON)
+    return globalThis
+      .fetch(this.dccApp.network.feeConfigUrl)
+      .then((r) => r.text())
+      .then((data) => this.dccApp.parseJSON(data))
       .then(ConfigService.parseFeeConfig)
       .catch(() => Promise.resolve(this.dccApp.network.feeConfig));
   }

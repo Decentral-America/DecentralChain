@@ -2,17 +2,9 @@ import { combineReducers } from 'redux';
 
 import { ACTION } from '../actions/constants';
 import { type AppAction } from '../types';
+import { type NewAccountState } from './stateTypes';
 
-export type NewAccountState = {
-  address: string;
-  hasBackup?: boolean | undefined;
-  name: string;
-} & (
-  | { type: 'encodedSeed'; encodedSeed: string }
-  | { type: 'ledger'; id: number; publicKey: string }
-  | { type: 'privateKey'; privateKey: string }
-  | { type: 'seed'; seed: string }
-);
+export type { NewAccountState };
 
 function newAccount(
   state: NewAccountState = {

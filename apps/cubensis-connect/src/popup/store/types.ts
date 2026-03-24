@@ -1,12 +1,14 @@
-import { type ThunkAction } from 'redux-thunk';
+import { type Dispatch, type MiddlewareAPI, type Store } from 'redux';
+import { type ThunkAction, type ThunkDispatch } from 'redux-thunk';
 
 import { type AppAction } from '../../store/types';
-import { type createPopupStore } from './create';
 import { type reducer } from './reducer';
 
 export type PopupState = ReturnType<typeof reducer>;
 
-export type PopupStore = ReturnType<typeof createPopupStore>;
+export type PopupStore = Store<PopupState, AppAction> & {
+  dispatch: ThunkDispatch<PopupState, undefined, AppAction>;
+};
 
 export type PopupThunkAction<ReturnType> = ThunkAction<
   ReturnType,
@@ -14,3 +16,7 @@ export type PopupThunkAction<ReturnType> = ThunkAction<
   undefined,
   AppAction
 >;
+
+export type AppMiddleware = (
+  api: MiddlewareAPI<Dispatch, PopupState>,
+) => (next: Dispatch<AppAction>) => (action: AppAction) => void;

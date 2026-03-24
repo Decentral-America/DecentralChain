@@ -78,8 +78,6 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
     if (typeof fieldError === 'object' && 'message' in fieldError) {
       return (fieldError.message as string) || undefined;
     }
-
-    return;
   }, [errors, name]);
 
   // Register field with react-hook-form
