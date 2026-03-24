@@ -1,5 +1,6 @@
 import BigNum from 'bignumber.js';
 import { Config, type IFormat } from './Config.js';
+import * as RoundModeModule from './roundMode.js';
 
 /** Input types accepted by BigNumber methods. */
 type TLong = string | number | BigNumber;
@@ -407,16 +408,6 @@ export class BigNumber {
 
 // biome-ignore lint/style/noNamespace: declaration merging for BigNumber.ROUND_MODE enum
 export namespace BigNumber {
-  /** Available rounding modes, matching bignumber.js semantics. */
-  export enum ROUND_MODE {
-    ROUND_UP,
-    ROUND_DOWN,
-    ROUND_CEIL,
-    ROUND_FLOOR,
-    ROUND_HALF_UP,
-    ROUND_HALF_DOWN,
-    ROUND_HALF_EVEN,
-    ROUND_HALF_CEIL,
-    ROUND_HALF_FLOOR,
-  }
+  // biome-ignore lint/performance/noNamespaceImport: namespace alias pattern required to re-export enum into declaration-merged namespace
+  export import ROUND_MODE = RoundModeModule.ROUND_MODE;
 }

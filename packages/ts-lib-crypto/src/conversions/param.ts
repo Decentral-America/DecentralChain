@@ -4,8 +4,8 @@ import {
   type TRawStringIn,
   type TRawStringInDiscriminator,
 } from '../crypto/interface';
-import { base58Decode } from './base-xx';
-import { stringToBytes } from './string-bytes';
+import base58 from '../libs/base58';
+import { strToUtf8Array } from '../libs/Utf8';
 
 const isString = (val: unknown): val is string => typeof val === 'string' || val instanceof String;
 const isUint8Array = (val: unknown): val is Uint8Array => val instanceof Uint8Array;
@@ -16,7 +16,7 @@ const isTRawStringInDiscriminator = (_: TRawStringIn): _ is TRawStringInDiscrimi
 
 /** Convert a `TBinaryIn` value (Base58 string, Uint8Array, or number[]) to `Uint8Array`. */
 export const _fromIn = (inValue: TBinaryIn): TBytes => {
-  if (isString(inValue)) return base58Decode(inValue);
+  if (isString(inValue)) return base58.decode(inValue);
 
   if (isUint8Array(inValue)) return inValue;
 
@@ -29,7 +29,7 @@ export const _fromRawIn = (inValue: TRawStringIn): TBytes => {
   if (isTRawStringInDiscriminator(inValue))
     throw new Error('Unexpected TRawStringInDiscriminator value');
 
-  if (isString(inValue)) return stringToBytes(inValue);
+  if (isString(inValue)) return strToUtf8Array(inValue);
 
   if (isUint8Array(inValue)) return inValue;
 

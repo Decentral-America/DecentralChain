@@ -113,8 +113,6 @@ export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
     if (value && typeof value === 'object') {
       return stringifyObject(value as Record<string, unknown>);
     }
-
-    return;
   }
 
   function stringifyArray(array: unknown[]): string {
