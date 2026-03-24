@@ -127,6 +127,18 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
   - `LangsSelect.tsx`: direct import of `Select` from `./Select` instead of barrel `'../'`
 - **Gate results post-Round 6**: `biome-lint` 25/25 ✅ · `typecheck` 24/24 (cubensis-connect excluded — 3 pre-existing errors in untouched files: `ErrorBoundary.test.tsx` TS2554, `activeNotification.tsx` TS18047/TS2339, `importLedger.tsx` TS2345) ✅ · `test` 24/24 (ride-js excluded — pre-existing known failures) ✅ · `build` 25/25 ✅ · total Biome warnings: **0 across all 25 projects**
 
+### Audit Round 7 — Final Production Audit (Mar 24, 2026)
+
+Comprehensive production readiness audit: researched Biome 2.4.8, TypeScript 5.9, Nx 22.6.1, tsdown 0.21, Vitest 4.x changelogs. All tools verified at latest patch. Zero npm CVEs. Five targeted fixes found and resolved:
+
+- **cubensis-connect RTK migration verified**: All 8 action files, deleted `constants.ts`, `AppAction` replaced with `UnknownAction`, `actionCreator.match()` middleware — clean. `biome-lint` 0 errors, `test` 25/25.
+- **ErrorBoundary.tsx TS2554 fixed**: `getDerivedStateFromError()` missing required `_error: unknown` React parameter — added it, matching React's actual signature. Eliminates all 3 previously-tracked pre-existing TS errors.
+- **importLedger.tsx TS2345 fixed**: `setLedgerUsersPages` spread call assigned `User[] | undefined` to `LedgerUser[]` state. Extracted `const usersPage: LedgerUser[] = users ?? []` (structural subtyping). Pattern now consistent with existing line 126.
+- **Duplicate dependency fixed** (`money-like-to-node/package.json`): `@decentralchain/ts-types` was listed in both `dependencies` AND `devDependencies`. Caught by new Biome 2.4 `suspicious/noDuplicateDependencies` rule. Removed from devDependencies — runtime dep only.
+- **biome.json hardened**: Added `suspicious/noDuplicateDependencies: "warn"` (promoted from nursery to stable in Biome 2.4.0). Upgraded `nursery/noUselessReturn: "info" → "warn"` for actionable pre-commit feedback.
+- **CI improved**: `biome format` step upgraded to `--reporter=github` (Biome 2.4 multi-reporter outputs `::warning`/`::error` annotations directly on PR diff lines in GitHub Actions).
+- **Gate results post-Round 7**: `boundaries` 25/25 ✅ · `biome-lint` 25/25 ✅ · `typecheck` **25/25** ✅ (cubensis-connect now included — 0 errors) · `test` 25/25 ✅ · `audit` 0 CVEs ✅ · Biome warnings: **0 across all 25 projects**
+
 ---
 
 ## 3. Ecosystem Tech Stack
@@ -139,7 +151,7 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
 |------|---------|---------|
 | TypeScript | 5.9.x | Type safety (tsdown handles emit) |
 | tsdown | 0.21.x | ESM-only bundling (Rolldown-based) |
-| Biome | 2.4.x | Lint + format (replaces ESLint + Prettier) |
+| Biome | 2.4.8 | Lint + format (replaces ESLint + Prettier) |
 | Vitest | 4.1.x | Test runner + V8 coverage |
 | Lefthook | 1.x | Git hook enforcement |
 | publint | 0.3.x | Package.json exports validation |
