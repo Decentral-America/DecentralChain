@@ -171,7 +171,8 @@ export function ImportLedger() {
           page * USERS_PER_PAGE,
           USERS_PER_PAGE - 1,
         );
-        setLedgerUsersPages((prevState) => ({ ...prevState, [page]: users }));
+        const usersPage: LedgerUser[] = users ?? [];
+        setLedgerUsersPages((prevState) => ({ ...prevState, [page]: usersPage }));
       } catch {
         setGetUsersError(
           <Trans
