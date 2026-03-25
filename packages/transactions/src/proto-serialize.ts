@@ -35,6 +35,7 @@ import {
   type AliasTransaction,
   type BurnTransaction,
   type CancelLeaseTransaction,
+  type CommitToGenerationTransaction,
   type DataTransaction,
   type DataTransactionEntry,
   type ExchangeTransaction,
@@ -319,6 +320,19 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
       res.description = d.description;
       break;
     }
+    case 'commitToGeneration': {
+      const d = t.data.value;
+      res['generationPeriodStart'] = d.generationPeriodStart;
+      res['endorserPublicKey'] =
+        d.endorserPublicKey == null || d.endorserPublicKey.length === 0
+          ? null
+          : base58Encode(d.endorserPublicKey);
+      res['commitmentSignature'] =
+        d.commitmentSignature == null || d.commitmentSignature.length === 0
+          ? null
+          : base58Encode(d.commitmentSignature);
+      break;
+    }
     default:
       throw new Error(`Unsupported tx type ${t.data.case}`);
   }
@@ -485,6 +499,14 @@ const getUpdateAssetInfoData = (t: UpdateAssetInfoTransaction) => {
   };
 };
 
+const getCommitToGenerationData = (t: CommitToGenerationTransaction) => ({
+  commitmentSignature:
+    t.commitmentSignature == null ? new Uint8Array() : base58Decode(t.commitmentSignature),
+  endorserPublicKey:
+    t.endorserPublicKey == null ? new Uint8Array() : base58Decode(t.endorserPublicKey),
+  generationPeriodStart: t.generationPeriodStart,
+});
+
 const getTxData = (
   t: Exclude<TTransaction, GenesisTransaction>,
 ): unknown /*dccProto.waves.ITransaction*/ => {
@@ -535,6 +557,9 @@ const getTxData = (
       break;
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
       txData = getUpdateAssetInfoData(t);
+      break;
+    case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
+      txData = getCommitToGenerationData(t);
       break;
   }
 
@@ -729,9 +754,11 @@ const nameByType = {
   15: 'setAssetScript' as const,
   16: 'invokeScript' as const,
   17: 'updateAssetInfo' as const,
+  19: 'commitToGeneration' as const,
 };
 const typeByName = {
   burn: 6 as const,
+  commitToGeneration: 19 as const,
   createAlias: 10 as const,
   dataTransaction: 12 as const,
   exchange: 7 as const,

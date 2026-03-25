@@ -26,6 +26,7 @@ export type {
   ICancelLeaseParams,
   ICancelOrder,
   ICancelOrderParams,
+  ICommitToGenerationParams,
   IDataParams,
   IDeleteDataEntry,
   IInvokeScriptParams,
@@ -51,6 +52,7 @@ export type {
 export { alias } from './transactions/alias';
 export { burn } from './transactions/burn';
 export { cancelLease } from './transactions/cancel-lease';
+export { commitToGeneration } from './transactions/commit-to-generation';
 export { data } from './transactions/data';
 export { exchange } from './transactions/exchange';
 export { invokeScript } from './transactions/invoke-script';
