@@ -6,7 +6,7 @@
  */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createElement, type ReactNode } from 'react';
+import { createElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 const mockNavigate = vi.fn();
@@ -49,10 +49,6 @@ async function typeAndSubmit(user: ReturnType<typeof userEvent.setup>, query: st
   await user.type(input, query);
   await user.click(screen.getByRole('button', { name: /search/i }));
 }
-
-// Re-export ReactNode to satisfy the mock — not needed here
-// We just need ReactNode used somewhere so biome doesn't complain about unused import
-const _unused: ReactNode = null;
 
 describe('SearchBar', () => {
   beforeEach(() => {

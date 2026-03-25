@@ -113,7 +113,6 @@ export default function NetworkStatistics() {
 
     // Transaction Volume Trend (hourly aggregation for last 24h estimate)
     const volumeTrendData: Array<{ hour: string; transactions: number; avgPerBlock: number }> = [];
-    const _blocksPerHour = 3600 / avgBlockTime; // Estimate
     const hoursToShow = 24;
     const blocksPerInterval = Math.floor(sorted.length / hoursToShow);
 
