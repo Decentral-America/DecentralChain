@@ -24,7 +24,7 @@ export const validateGatewayAddress = (
   }
 
   const config = gatewayConfig[assetId];
-  if (!config || !config.regex) {
+  if (!config?.regex) {
     logger.warn(`No gateway configuration found for asset ${assetId}`);
     return false;
   }
