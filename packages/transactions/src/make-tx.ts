@@ -3,6 +3,7 @@ import {
   type AliasTransaction,
   type BurnTransaction,
   type CancelLeaseTransaction,
+  type CommitToGenerationTransaction,
   type DataTransaction,
   type ExchangeTransaction,
   type InvokeScriptTransaction,
@@ -22,6 +23,7 @@ import {
   type IAliasParams,
   type IBurnParams,
   type ICancelLeaseParams,
+  type ICommitToGenerationParams,
   type IDataParams,
   type IInvokeScriptParams,
   type IIssueParams,
@@ -32,6 +34,7 @@ import {
   type ISetScriptParams,
   type ISponsorshipParams,
   type ITransferParams,
+  type IUpdateAssetInfoParams,
   type TTransaction as TTransactionBase,
   type WithId,
   type WithSender,
@@ -39,6 +42,7 @@ import {
 import { alias } from './transactions/alias';
 import { burn } from './transactions/burn';
 import { cancelLease } from './transactions/cancel-lease';
+import { commitToGeneration } from './transactions/commit-to-generation';
 import { data } from './transactions/data';
 import { exchange } from './transactions/exchange';
 import { invokeScript } from './transactions/invoke-script';
@@ -72,6 +76,7 @@ type TxTypeMap = {
   [TRANSACTION_TYPE.EXCHANGE]: ExchangeTransaction;
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: InvokeScriptTransaction;
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction;
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: CommitToGenerationTransaction;
 };
 type TTxParamsWithType<T extends SupportedTransactionType> = TxParamsTypeMap[T] & { type: T };
 
@@ -90,7 +95,8 @@ type TxParamsTypeMap = {
   [TRANSACTION_TYPE.SPONSORSHIP]: ISponsorshipParams;
   [TRANSACTION_TYPE.EXCHANGE]: ExchangeTransaction;
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: IInvokeScriptParams;
-  [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction;
+  [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: IUpdateAssetInfoParams;
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: ICommitToGenerationParams;
 };
 
 /**
@@ -154,6 +160,10 @@ export function makeTx<T extends SupportedTransactionType>(
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
       return updateAssetInfo(
         params as unknown as UpdateAssetInfoTransaction,
+      ) as unknown as TTransaction<T> & WithId;
+    case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
+      return commitToGeneration(
+        params as unknown as ICommitToGenerationParams & WithSender,
       ) as unknown as TTransaction<T> & WithId;
     default:
       throw new Error(`Unknown tx type: ${params.type}`);
@@ -225,6 +235,8 @@ export function makeTxBytes<T extends SupportedTransactionType>(
         ? txToProtoBytes(tx as unknown as TTransactionBase)
         : binary.serializeTx(tx);
     case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
+      return txToProtoBytes(tx as unknown as TTransactionBase);
+    case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
       return txToProtoBytes(tx as unknown as TTransactionBase);
     default:
       throw new Error(`Unknown tx type: ${tx.type}`);
