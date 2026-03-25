@@ -408,7 +408,7 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P1~~ | ~~Fork `@keeper-wallet/waves-crypto`~~ | Forked as `@decentralchain/crypto` (DCC-70); 22 import sites migrated (DCC-59) | ✅ Completed |
 | ~~P1~~ | ~~Remove `keeper-wallet.app` from whitelist~~ | Removed — `web.keeper-wallet.app` + `swap.keeper-wallet.app` stripped from constants | ✅ Completed |
 | **P1** | Promote npm `next` → `latest` | 5 packages intentionally held at `@next` pending new node implementation. Promote when node is ready. | ⬜ Blocked on node |
-| **P2** | Rename `waves-community` repo | Rename GitHub repo + update scam token URL | ⬜ Pending |
+| ~~P2~~ | ~~Rename `waves-community` repo~~ | Feature removed entirely (`05d55efd2`). The scam-token CSV was never fetched (Decentral-America/waves-community 404s since fork). Removed all 3 layers: fetch/store, `isSuspicious` flag, and Settings UI toggle. | ✅ Closed — moot |
 | ~~P2~~ | ~~Exchange signing stubs~~ | All 13 functions fully implemented in `useTransactionSigning.ts` using `@decentralchain/transactions` + seed signing via `multiAccount` | ✅ Completed |
 | **P2** | Set up Sentry DSN | `@sentry/browser@10.43.0` already installed in cubensis-connect. `VITE_SENTRY_DSN` already in scanner runbook. Exchange needs `@sentry/react`. Action: create Sentry project, inject DSN env var at build time | ⬜ Pending |
 | ~~P2~~ | ~~Exchange nginx hardening~~ | Full OWASP 2026 hardening applied (DCC-134): no CORS wildcard, robust CSP, HSTS 2yr, `Permissions-Policy`, `COOP`, `CORP`, `USER nginx`, rate limiting | ✅ Completed |
