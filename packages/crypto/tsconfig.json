@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["ES2025", "DOM"],
     "outDir": "./dist",
+    "rootDir": "./src",
     "types": ["node"]
   },
   "exclude": ["node_modules", "dist", "src/**/*.spec.ts"],

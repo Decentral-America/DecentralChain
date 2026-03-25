@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "./dist"
+    // Generated protobuf files (src/gen/**) emit TypeScript enums which
+    // are incompatible with erasableSyntaxOnly:true. Suppressed here until
+    // the protobuf generator is updated to emit const-object style output.
+    "erasableSyntaxOnly": false,
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "exclude": ["node_modules", "dist"],
   "extends": "../../tsconfig.base.json",
