@@ -252,6 +252,7 @@ export interface IBlockHeader {
   };
   stateHash?: string;
   rewardShares?: Record<string, TLong>;
+  finalizationVoting?: IFinalizationVoting;
   challengedHeader?: {
     headerSignature: string;
     features: number[];
@@ -265,4 +266,18 @@ export interface IBlockHeader {
 export interface IBlock extends IBlockHeader {
   fee: TLong;
   transactions: (Transaction<TLong> & WithApiMixin)[];
+}
+
+export interface IFinalizationVoting {
+  endorserIndexes: number[];
+  aggregatedEndorsementSignature: string;
+  finalizedHeight: number;
+  conflictEndorsements?: IConflictEndorsement[];
+}
+
+export interface IConflictEndorsement {
+  endorserIndex: number;
+  finalizedBlockId: string;
+  finalizedHeight: number;
+  signature: string;
 }

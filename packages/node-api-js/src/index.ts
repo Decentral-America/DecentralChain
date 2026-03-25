@@ -2,6 +2,7 @@ import { create as createFn } from './create';
 import dccAddress2eth from './tools/adresses/dccAddress2eth';
 import ethAddress2dcc from './tools/adresses/ethAddress2dcc';
 import dccAsset2Eth from './tools/assets/dccAsset2eth';
+import { cancelSubmittedOrder, submitOrder } from './tools/matcher/order';
 import request from './tools/request';
 import stringify from './tools/stringify';
 import ethTxId2dcc from './tools/transactions/ethTxId2dcc';
@@ -12,7 +13,16 @@ export type { IOptions as IBroadcastOptions } from './tools/transactions/broadca
 export { default as broadcastTx } from './tools/transactions/broadcast';
 export type { IWaitOptions } from './tools/transactions/wait';
 export { default as waitForTx } from './tools/transactions/wait';
-export { dccAddress2eth, dccAsset2Eth, ethAddress2dcc, ethTxId2dcc, request, stringify };
+export {
+  cancelSubmittedOrder,
+  dccAddress2eth,
+  dccAsset2Eth,
+  ethAddress2dcc,
+  ethTxId2dcc,
+  request,
+  stringify,
+  submitOrder,
+};
 
 export const create = createFn;
 
