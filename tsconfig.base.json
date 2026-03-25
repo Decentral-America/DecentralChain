@@ -4,12 +4,12 @@
     "allowUnusedLabels": false,
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
+    "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "lib": ["ES2025"],
     "module": "ESNext",
+    "moduleDetection": "force",
     "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -23,6 +23,9 @@
     "sourceMap": true,
     "strict": true,
     "target": "ES2025",
+    // TS 6.0: default changed from enumerate-all-@types to []. Explicit for clarity.
+    // Per-package tsconfigs add what they need (e.g. ["node"], ["vitest/globals"]).
+    "types": [],
     "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "dist"]

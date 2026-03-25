@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
+    // Generated protobuf file (src/gen/messages_pb.ts) emits TypeScript enums
+    // which are incompatible with erasableSyntaxOnly:true. Suppressed until
+    // the generator is updated to emit const-object style output.
+    "erasableSyntaxOnly": false,
     "lib": ["ES2025", "DOM"],
     "outDir": "./dist",
+    "rootDir": "./src",
     "types": ["node"]
   },
   "exclude": ["node_modules", "dist"],
