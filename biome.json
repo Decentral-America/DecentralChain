@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.9/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -191,6 +191,8 @@
     {
       "includes": [
         ".github/skills/monitor-ci/scripts/ci-poll-decide.mjs",
+        ".agents/skills/monitor-ci/scripts/ci-poll-decide.mjs",
+        ".opencode/skills/monitor-ci/scripts/ci-poll-decide.mjs",
         "apps/cubensis-connect/src/accounts/updateState.ts"
       ],
       "linter": {
