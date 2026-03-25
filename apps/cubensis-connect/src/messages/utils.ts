@@ -75,13 +75,12 @@ export function processAliasOrAddress(recipient: string, chainId: number) {
 }
 
 export function makeAuthBytes(data: { host: string; data: string }) {
-  // Wire-format signing prefix — must remain 'WavesWalletAuthentication' for
-  // backward-compatible signature verification with existing signed messages.
-  // TODO: Introduce a new 'DccWalletAuthentication' prefix once the network
-  // defines its own authentication protocol, and keep this as a legacy fallback.
+  // DCC canonical auth domain separator — aligns with @decentralchain/transactions
+  // serializeAuthData() and verifyAuthData(). All three SDK auth paths now use
+  // the same prefix, making cross-tool signature verification work correctly.
   return Uint8Array.of(
     ...serializePrimitives.LEN(serializePrimitives.SHORT)(serializePrimitives.STRING)(
-      'WavesWalletAuthentication',
+      'DccWalletAuthentication',
     ),
     ...serializePrimitives.LEN(serializePrimitives.SHORT)(serializePrimitives.STRING)(
       data.host || '',

@@ -145,7 +145,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     getBytes: {
       1: (txData) => {
         const { host, data } = txData as { host: string; data: string };
-        const pBytes = LEN(SHORT)(STRING)('DCCWalletAuthentication');
+        const pBytes = LEN(SHORT)(STRING)('DccWalletAuthentication');
         const hostBytes = LEN(SHORT)(STRING)(host || '');
         const dataBytes = LEN(SHORT)(STRING)(data || '');
 

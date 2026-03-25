@@ -1623,10 +1623,9 @@ export class MessageController extends EventEmitter {
 
         const host = messageInput.data.host || new URL(`https://${messageInput.origin}`).host;
 
-        // Wire-format signing prefix — must remain 'WavesWalletAuthentication'
-        // for backward-compatible auth verification. See messages/utils.ts.
-        // TODO: Introduce 'DccWalletAuthentication' once network defines its own auth protocol.
-        const prefix = 'WavesWalletAuthentication';
+        // DCC canonical auth prefix — returned verbatim in the result object
+        // delivered to dApps. Must match the domain separator used in makeAuthBytes.
+        const prefix = 'DccWalletAuthentication';
 
         return {
           ...messageInput,

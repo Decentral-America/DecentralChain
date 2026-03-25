@@ -25,7 +25,7 @@ describe('getTxBytes', () => {
         data: {
           data: 'testData',
           host: 'localhost',
-          prefix: 'DCCWalletAuthentication',
+          prefix: 'DccWalletAuthentication',
           version: 1,
         },
         type: SIGN_TYPE.AUTH,
@@ -61,7 +61,7 @@ describe('getTxBytes', () => {
         data: {
           data: 'testData',
           host: 'localhost',
-          prefix: 'DCCWalletAuthentication',
+          prefix: 'DccWalletAuthentication',
         },
         type: SIGN_TYPE.AUTH,
       } as any,

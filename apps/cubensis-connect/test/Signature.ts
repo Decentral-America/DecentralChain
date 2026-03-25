@@ -357,8 +357,8 @@ describe('Signature', () => {
       const expectedApproveResult = {
         address: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
         host: WHITELIST[3]!,
-        // TODO: Wire-format prefix — must match WavesWalletAuthentication signing prefix in production
-        prefix: 'WavesWalletAuthentication',
+        // TODO: Wire-format prefix — must match DccWalletAuthentication signing prefix in production
+        prefix: 'DccWalletAuthentication',
         publicKey: senderPublicKey,
       };
       const bytes = makeAuthBytes({
