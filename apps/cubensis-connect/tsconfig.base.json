@@ -1,15 +1,25 @@
 {
   "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    // App uses TypeScript enums (e.g. networks/types.ts, messages/types.ts, ledger/service.ts).
+    // erasableSyntaxOnly cannot be true until those are migrated to const-object style.
+    "erasableSyntaxOnly": false,
     "exactOptionalPropertyTypes": true,
-    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "lib": ["ES2025", "DOM"],
     "module": "ESNext",
+    "moduleDetection": "force",
     "moduleResolution": "bundler",
     "noEmit": true,
     "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    // Extension DOM APIs use indexer patterns (e.g. PermissionsController, storage).
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -17,6 +27,8 @@
     "strict": true,
     "target": "ES2025",
     "types": ["vite/client"],
+    // App has enums and many imports without `import type` that are used as types only.
+    // verbatimModuleSyntax must stay false until those are migrated (same migration as erasableSyntaxOnly).
     "verbatimModuleSyntax": false
   },
   "exclude": ["test", "node_modules"],

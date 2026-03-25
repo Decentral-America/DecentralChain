@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "lib": ["ES2025", "DOM"],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "exclude": ["node_modules", "dist"],
   "extends": "../../tsconfig.base.json",

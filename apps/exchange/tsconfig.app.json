@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     /* Path Mappings */
-    "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["ES2025", "DOM"],
+    "lib": ["es2025", "dom"],
     "noUnusedParameters": false,
     "paths": {
       "@/*": ["./src/*"],

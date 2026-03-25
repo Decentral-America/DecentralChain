@@ -2,8 +2,9 @@
   "author": "DecentralChain",
   "description": "DecentralChain SDK — Unified TypeScript monorepo for all @decentralchain packages",
   "devDependencies": {
-    "@biomejs/biome": "2.4.8",
+    "@biomejs/biome": "2.4.9",
     "@nx/devkit": "22.6.1",
+    "esbuild": "0.27.4",
     "lefthook": "2.1.4",
     "nx": "22.6.1",
     "typescript": "6.0.2"
@@ -36,7 +37,7 @@
     "lint:check": "biome check .",
     "prepare": "lefthook install",
     "test": "nx run-many -t test",
-    "typecheck": "CI=true nx run-many -t typecheck --exclude=cubensis-connect,exchange,scanner"
+    "typecheck": "nx run-many -t typecheck --exclude=exchange,scanner"
   },
   "type": "module",
   "version": "0.0.0"

@@ -1,17 +1,14 @@
 {
   "compilerOptions": {
-    /* Interop */
-    "allowJs": false,
-    "allowSyntheticDefaultImports": true,
-
-    /* Paths */
-    "esModuleInterop": true,
-
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    // No TypeScript enums in scanner source — pure const/type-based.
+    "erasableSyntaxOnly": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["ES2025", "DOM"],
     "module": "ESNext",
+    "moduleDetection": "force",
     "moduleResolution": "bundler",
 
     /* Emit */
@@ -19,6 +16,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
+    "noUnusedLocals": true,
     "paths": {
       "@/*": ["./src/*"],
       "~/*": ["./.react-router/types/*"]
@@ -30,7 +29,8 @@
     /* Strictness */
     "strict": true,
     "target": "ES2025",
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "dist", "coverage", "test-results"],
   "include": [
