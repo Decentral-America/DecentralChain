@@ -8,7 +8,6 @@ export interface AssetDetail {
   id: string;
   isFavorite?: boolean | undefined;
   issuer: string;
-  isSuspicious?: boolean | undefined;
   lastUpdated?: number | undefined;
   minSponsoredFee?: string | number | undefined;
   name: string;

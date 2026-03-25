@@ -15,8 +15,6 @@ export function Settings() {
 
   const autoClickProtection = usePopupSelector((state) => state.uiState.autoClickProtection);
 
-  const showSuspiciousAssets = usePopupSelector((state) => state.uiState.showSuspiciousAssets);
-
   return (
     <div className={styles.content}>
       <div className={`${styles.title1} title1`}>{t('settings.settings')}</div>
@@ -137,40 +135,6 @@ export function Settings() {
             data-testid="clickProtectionTooltip"
           >
             {(props) => <i className="helpIcon" data-testid="clickProtectionIcon" {...props} />}
-          </Tooltip>
-        </div>
-
-        <div className={`${styles.showSuspiciousAssets} tag1`} data-testid="showSuspiciousAssets">
-          <PowerButton
-            onClick={() =>
-              dispatch(
-                setUiState({
-                  showSuspiciousAssets: !showSuspiciousAssets,
-                }),
-              )
-            }
-            enabled={!showSuspiciousAssets}
-            data-testid="showSuspiciousAssetsBtn"
-            data-teston={!showSuspiciousAssets}
-          />
-          <div className={`${styles.powerBtnState} left`}>
-            <div>{t('settings.suspiciousAssetsProtection')}</div>
-            <div data-testid="showSuspiciousAssetsStatus">
-              {showSuspiciousAssets ? (
-                <span className="basic500">{t('settings.autoClickDisable')}</span>
-              ) : (
-                <span className="submit400">{t('settings.autoClickEnable')}</span>
-              )}
-            </div>
-          </div>
-          <Tooltip
-            content={t('settings.suspiciousAssetsTooltip')}
-            className={styles.helpTooltip}
-            data-testid="showSuspiciousAssetsTooltip"
-          >
-            {(props) => (
-              <i className="helpIcon" data-testid="showSuspiciousAssetsIcon" {...props} />
-            )}
           </Tooltip>
         </div>
       </div>

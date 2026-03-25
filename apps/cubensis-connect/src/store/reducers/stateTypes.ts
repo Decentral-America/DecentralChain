@@ -34,7 +34,6 @@ export interface UiState {
   assetsTab?: number | undefined;
   autoClickProtection?: boolean | undefined;
   nftFilters?: NftFilters | undefined;
-  showSuspiciousAssets?: boolean | undefined;
   slippageToleranceIndex?: number | undefined;
   txHistoryFilters?: TxHistoryFilters | undefined;
 }
