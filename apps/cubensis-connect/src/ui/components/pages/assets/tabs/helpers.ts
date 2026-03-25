@@ -30,24 +30,20 @@ export function useUiState<T extends keyof UiState>(
 export function sortAssetEntries<T>(
   assetEntries: Array<[string, T]>,
   assets: AssetsRecord,
-  showSuspiciousAssets: boolean | undefined,
 ): Array<[string, T]> {
-  return assetEntries
-    .filter(([assetId]) => showSuspiciousAssets || !assets[assetId]?.isSuspicious)
-    .sort(([aAssetId], [bAssetId]) => {
-      const a = assets[aAssetId];
-      const b = assets[bAssetId];
+  return assetEntries.sort(([aAssetId], [bAssetId]) => {
+    const a = assets[aAssetId];
+    const b = assets[bAssetId];
 
-      return (
-        (aAssetId === 'WAVES' && -1) ||
-        (bAssetId === 'WAVES' && 1) ||
-        (a && b
-          ? +!!b.isFavorite - +!!a.isFavorite ||
-            +!!a.isSuspicious - +!!b.isSuspicious ||
-            (a.displayName ?? '').localeCompare(b.displayName ?? '')
-          : 0)
-      );
-    });
+    return (
+      (aAssetId === 'WAVES' && -1) ||
+      (bAssetId === 'WAVES' && 1) ||
+      (a && b
+        ? +!!b.isFavorite - +!!a.isFavorite ||
+          (a.displayName ?? '').localeCompare(b.displayName ?? '')
+        : 0)
+    );
+  });
 }
 
 export function sortAndFilterNfts<T extends Nft>(

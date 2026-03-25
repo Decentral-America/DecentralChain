@@ -368,37 +368,6 @@ describe('Settings', () => {
       });
     });
 
-    describe('Suspicious assets protection', () => {
-      beforeAll(async () => {
-        await expect(SettingsMenuScreen.root).toBeDisplayed();
-      });
-
-      it('Can be disabled', async () => {
-        await SettingsMenuScreen.suspiciousAssetsProtectionButton.click();
-        expect(await SettingsMenuScreen.suspiciousAssetsProtectionButton).toHaveAttr(
-          'data-teston',
-          'false',
-        );
-        await expect(SettingsMenuScreen.suspiciousAssetsProtectionStatus).toHaveText('Disabled');
-      });
-
-      it('Can be enabled', async () => {
-        await SettingsMenuScreen.suspiciousAssetsProtectionButton.click();
-        await expect(SettingsMenuScreen.suspiciousAssetsProtectionButton).toHaveAttr(
-          'data-teston',
-          'true',
-        );
-        await expect(SettingsMenuScreen.suspiciousAssetsProtectionStatus).toHaveText('Enabled');
-      });
-
-      it('Display tooltip', async () => {
-        await SettingsMenuScreen.suspiciousAssetsProtectionIcon.moveTo();
-        await expect(SettingsMenuScreen.helpTooltip).toHaveText(
-          "Don't show balances and transactions related to suspicious assets",
-        );
-      });
-    });
-
     describe('Logout', () => {
       afterAll(async () => {
         await performLogin(DEFAULT_PASSWORD);

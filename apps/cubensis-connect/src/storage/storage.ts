@@ -80,7 +80,6 @@ export interface StorageLocalState {
   origins: Record<string, PermissionValue[]>;
   selectedAccount: PreferencesAccount | undefined;
   status: number;
-  suspiciousAssets: string[];
   tabs: Partial<Record<string, Browser.Tabs.Tab>>;
   uiState: UiState;
   usdPrices: Record<string, string>;
