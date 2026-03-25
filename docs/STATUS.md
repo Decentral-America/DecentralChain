@@ -128,6 +128,22 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
   - `LangsSelect.tsx`: direct import of `Select` from `./Select` instead of barrel `'../'`
 - **Gate results post-Round 6**: `biome-lint` 25/25 ✅ · `typecheck` 24/24 (cubensis-connect excluded — 3 pre-existing errors in untouched files: `ErrorBoundary.test.tsx` TS2554, `activeNotification.tsx` TS18047/TS2339, `importLedger.tsx` TS2345) ✅ · `test` 24/24 (ride-js excluded — pre-existing known failures) ✅ · `build` 25/25 ✅ · total Biome warnings: **0 across all 25 projects**
 
+### Audit Round 8 — Scanner SSR Build Fix (Mar 25, 2026)
+
+- **Scanner SSR `ReferenceError: window is not defined`**: Leaflet 1.9.4 ships CJS that references `window` at module evaluation time. Vite 8/Rolldown bundles it eagerly during SSR, crashing the server build. Fixed by adding a `ssrBrowserOnlyStub()` Vite plugin in `apps/scanner/vite.config.ts` — stubs `leaflet` and `react-leaflet` to empty no-op exports when `opts.ssr === true`. Build passes: SSR 117 modules, client 154 kB `NetworkMapContent` chunk.
+- **Biome sort order**: Fixed `useSortedKeys` violation in the plugin return object (keys `enforce`/`load`/`name`/`resolveId` sorted alphabetically).
+- **Biome schema**: All 26 `biome.json` files updated from schema `2.4.8` → `2.4.9`.
+- **Gate results post-Round 8**: `boundaries` 25/25 ✅ · `biome-lint` 25/25 ✅ · `typecheck` 25/25 ✅ · `test` 25/25 ✅ · `build` 25/25 ✅ (scanner SSR now clean) · `audit` 0 CVEs ✅
+
+### Audit Round 9 — Production Sign-Off Audit (Mar 25, 2026)
+
+Full dependency, security, and infrastructure sweep against official changelogs. All tools confirmed at absolute latest. Two targeted fixes applied:
+
+- **Scanner nginx.conf `proxy_cache_valid` dead directive**: `/api/geo/` and `/api/greencheck/` proxy locations contained `proxy_cache_valid 200 24h;` with no corresponding `proxy_cache_path` or `proxy_cache <zone>` — the directive had zero effect and was misleading. Removed. Both locations now correctly pass through to ipinfo.io and thegreenwebfoundation.org.
+- **Exchange `electron` pinned to 41.0.4**: `apps/exchange/package.json` bumped from `^41.0.3` → `^41.0.4` (released 2026-03-25), picking up the latest Chromium security patches for the desktop distribution.
+- **All workspace tools verified at latest**: Nx 22.6.1 ✅ · Biome 2.4.9 ✅ · TypeScript 6.0.2 ✅ · Vitest 4.1.1 ✅ · tsdown 0.21.5 ✅ · pnpm 10.33.0 ✅ · `pnpm outdated` → empty.
+- **Gate results post-Round 9**: `boundaries` 25/25 ✅ · `biome-lint` 25/25 ✅ · `typecheck` 25/25 ✅ · `audit` 0 CVEs ✅
+
 ### Audit Round 7 — Final Production Audit (Mar 24, 2026)
 
 Comprehensive production readiness audit: researched Biome 2.4.8, TypeScript 5.9, Nx 22.6.1, tsdown 0.21, Vitest 4.x changelogs. All tools verified at latest patch. Zero npm CVEs. Five targeted fixes found and resolved:
@@ -150,11 +166,11 @@ Comprehensive production readiness audit: researched Biome 2.4.8, TypeScript 5.9
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| TypeScript | 5.9.x | Type safety (tsdown handles emit) |
+| TypeScript | 6.0.x | Type safety (tsdown handles emit) |
 | tsdown | 0.21.x | ESM-only bundling (Rolldown-based) |
-| Biome | 2.4.8 | Lint + format (replaces ESLint + Prettier) |
+| Biome | 2.4.9 | Lint + format (replaces ESLint + Prettier) |
 | Vitest | 4.1.x | Test runner + V8 coverage |
-| Lefthook | 1.x | Git hook enforcement |
+| Lefthook | 2.x | Git hook enforcement |
 | publint | 0.3.x | Package.json exports validation |
 | attw | 0.18.x | TypeScript export verification |
 | size-limit | 12.x | Bundle size budgets |

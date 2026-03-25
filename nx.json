@@ -1,5 +1,6 @@
 {
   "$schema": "https://cdn.jsdelivr.net/npm/nx@22.6.1/schemas/nx-schema.json",
+  "analytics": false,
   "defaultBase": "main",
   "generators": {
     "sdk-package": {
@@ -8,10 +9,7 @@
     }
   },
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/test/**/*",
@@ -19,10 +17,7 @@
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/vitest.config.ts"
     ],
-    "sharedGlobals": [
-      "{workspaceRoot}/tsconfig.base.json",
-      "{workspaceRoot}/biome.json"
-    ]
+    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/biome.json"]
   },
   "nxCloudAccessToken": "",
   "plugins": [
@@ -38,9 +33,7 @@
         "file": "CHANGELOG.md"
       }
     },
-    "projects": [
-      "packages/*"
-    ],
+    "projects": ["packages/*"],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true,
@@ -59,77 +52,44 @@
         "default",
         "{workspaceRoot}/biome.json",
         {
-          "externalDependencies": [
-            "@biomejs/biome"
-          ]
+          "externalDependencies": ["@biomejs/biome"]
         }
       ]
     },
     "build": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ],
-      "outputs": [
-        "{projectRoot}/dist"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"],
+      "outputs": ["{projectRoot}/dist"]
     },
     "check:exports": {
       "cache": true,
-      "dependsOn": [
-        "build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
     },
     "check:publint": {
       "cache": true,
-      "dependsOn": [
-        "build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
     },
     "check:size": {
       "cache": true,
-      "dependsOn": [
-        "build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["build"],
+      "inputs": ["production", "^production"]
     },
     "nx-release-publish": {
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "{projectRoot}"
       }
     },
     "test": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^production"
-      ]
+      "inputs": ["default", "^production"]
     },
     "typecheck": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^production"
-      ]
+      "inputs": ["default", "^production"]
     }
-  },
-  "analytics": true
+  }
 }
