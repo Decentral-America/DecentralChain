@@ -14,6 +14,11 @@ const getErrorHandler = (signer: TSigner): ErrorHandler => {
   return signer._handleError;
 };
 
+/**
+ * Guard for **synchronous** methods. Throws synchronously when no provider is
+ * set, which is the correct contract for methods that return a non-Promise value
+ * (e.g. `on`, `once`, `off`).
+ */
 export function ensureProvider<This extends TSigner, Args extends unknown[], Return>(
   target: (this: This, ...args: Args) => Return,
   context: ClassMethodDecoratorContext,
@@ -29,16 +34,49 @@ export function ensureProvider<This extends TSigner, Args extends unknown[], Ret
   };
 }
 
-export function catchProviderError<This extends TSigner, Args extends unknown[], Return>(
+/**
+ * Guard for **async** methods. Returns `Promise.reject` instead of throwing
+ * synchronously, so callers only need a single `.catch()` / `await` try-catch
+ * — not both a synchronous `try` block AND a rejection handler.
+ *
+ * Type-constrained to `Return extends Promise<unknown>` so the compiler rejects
+ * accidental use on sync methods at build time.
+ */
+export function ensureProviderAsync<
+  This extends TSigner,
+  Args extends unknown[],
+  Return extends Promise<unknown>,
+>(
+  target: (this: This, ...args: Args) => Return,
+  context: ClassMethodDecoratorContext,
+): (this: This, ...args: Args) => Return {
+  const methodName = String(context.name);
+  return function (this: This, ...args: Args): Return {
+    if (!this.currentProvider) {
+      const handler = getErrorHandler(this);
+      const error = handler(ERRORS.ENSURE_PROVIDER, [methodName]);
+      return Promise.reject(error) as Return;
+    }
+    return target.call(this, ...args);
+  };
+}
+
+/**
+ * Wraps async provider calls to intercept and log unexpected errors.
+ * Type-constrained to `Return extends Promise<unknown>` — compile-time
+ * enforcement that this decorator is only applied to async methods.
+ * No runtime `instanceof Promise` branching needed.
+ */
+export function catchProviderError<
+  This extends TSigner,
+  Args extends unknown[],
+  Return extends Promise<unknown>,
+>(
   target: (this: This, ...args: Args) => Return,
   _context: ClassMethodDecoratorContext,
 ): (this: This, ...args: Args) => Return {
   return function (this: This, ...args: Args): Return {
-    const result = target.call(this, ...args);
-    if (!(result instanceof Promise)) {
-      return result;
-    }
-    return result.catch((e: unknown) => {
+    return target.call(this, ...args).catch((e: unknown) => {
       if (e === 'Error: User rejection!') {
         return Promise.reject(e);
       }
@@ -53,11 +91,20 @@ export function catchProviderError<This extends TSigner, Args extends unknown[],
       this._logger?.error(error);
 
       return Promise.reject(e);
-    }) as unknown as Return;
+    }) as Return;
   };
 }
 
-export function checkAuth<This extends TSigner, Args extends unknown[], Return>(
+/**
+ * Auth guard for **async** methods. Returns `Promise.reject` instead of
+ * throwing synchronously, preserving a uniform async error contract for callers.
+ * Type-constrained to `Return extends Promise<unknown>`.
+ */
+export function checkAuthAsync<
+  This extends TSigner,
+  Args extends unknown[],
+  Return extends Promise<unknown>,
+>(
   target: (this: This, ...args: Args) => Return,
   context: ClassMethodDecoratorContext,
 ): (this: This, ...args: Args) => Return {
@@ -66,7 +113,7 @@ export function checkAuth<This extends TSigner, Args extends unknown[], Return>(
     if (this.currentProvider?.user == null) {
       const handler = getErrorHandler(this);
       const error = handler(ERRORS.NOT_AUTHORIZED, [methodName]);
-      throw error;
+      return Promise.reject(error) as Return;
     }
     return target.call(this, ...args);
   };

@@ -223,12 +223,25 @@ describe('Signer decorators', () => {
     expect(() => signer.once('connect', vi.fn())).toThrow();
   });
 
-  it('checkAuth: calling getBalance() before login throws synchronously', async () => {
+  it('ensureProviderAsync: calling login() without a provider rejects (not throws synchronously)', async () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
-    // A provider with user=null triggers the checkAuth guard (user == null)
+    // No setProvider — must NOT throw synchronously; must return a rejected Promise
+    let threw = false;
+    let result: Promise<unknown> | undefined;
+    try {
+      result = signer.login();
+    } catch {
+      threw = true;
+    }
+    expect(threw).toBe(false);
+    await expect(result).rejects.toBeInstanceOf(SignerEnsureProviderError);
+  });
+
+  it('checkAuthAsync: calling getBalance() before login rejects (not throws synchronously)', async () => {
+    const signer = new Signer({ NODE_URL: MOCK_URL });
+    // A provider with user=null triggers the checkAuthAsync guard (user == null)
     const mockProvider = {
       ...completeProvider,
-      // connect must return a Promise; the guard fires before the network call
       connect: vi.fn().mockResolvedValue(undefined),
       off: vi.fn().mockReturnThis(),
       on: vi.fn().mockReturnThis(),
@@ -237,8 +250,17 @@ describe('Signer decorators', () => {
     };
     await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
 
-    // checkAuth throws synchronously before returning the Promise
-    expect(() => signer.getBalance()).toThrow();
+    // Must NOT throw synchronously — must return a rejected Promise so callers
+    // only need a single .catch() / await try-catch, not both.
+    let threw = false;
+    let result: Promise<unknown> | undefined;
+    try {
+      result = signer.getBalance();
+    } catch {
+      threw = true;
+    }
+    expect(threw).toBe(false);
+    await expect(result).rejects.toBeInstanceOf(SignerAuthError);
   });
 });
 
