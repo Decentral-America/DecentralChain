@@ -94,7 +94,6 @@ export function TabTxHistory() {
   const { t, i18n } = useTranslation();
   const networkCode = usePopupSelector((state) => state.selectedAccount?.networkCode);
   const assets = usePopupSelector((state) => state.assets);
-  const showSuspiciousAssets = usePopupSelector((state) => !!state.uiState?.showSuspiciousAssets);
   const address = usePopupSelector((state) => state.selectedAccount?.address);
   const aliases = usePopupSelector((state) => state.balances[address ?? '']?.aliases || []);
   const addressOrAlias = [address, ...aliases];
@@ -179,7 +178,6 @@ export function TabTxHistory() {
           );
 
           return (
-            (!showSuspiciousAssets || !assets[tx.assetId]?.isSuspicious) &&
             (!term ||
               tx.id === term ||
               tx.assetId === term ||

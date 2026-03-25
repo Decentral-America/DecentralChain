@@ -41,16 +41,4 @@ export const SettingsMenuScreen = {
   get root() {
     return $("[class*='content@settings']");
   },
-
-  get suspiciousAssetsProtectionButton() {
-    return this.root.findByTestId$('showSuspiciousAssetsBtn');
-  },
-
-  get suspiciousAssetsProtectionIcon() {
-    return this.root.findByTestId$('showSuspiciousAssetsIcon');
-  },
-
-  get suspiciousAssetsProtectionStatus() {
-    return this.root.findByTestId$('showSuspiciousAssetsStatus');
-  },
 };

@@ -69,7 +69,6 @@ interface Props {
 export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
   const { t } = useTranslation();
   const assets = usePopupSelector((state) => state.assets);
-  const showSuspiciousAssets = usePopupSelector((state) => state.uiState?.showSuspiciousAssets);
   const address = usePopupSelector((state) => state.selectedAccount?.address);
   const myAssets = usePopupSelector((state) => state.balances[address ?? '']?.assets);
   const swappableAssetIdsByVendor = usePopupSelector((state) => state.swappableAssetIdsByVendor);
@@ -101,7 +100,6 @@ export function TabAssets({ onInfoClick, onSendClick, onSwapClick }: Props) {
             (!term || assetId === term || icontains(assets[assetId]?.displayName, term)),
         ),
         assets,
-        showSuspiciousAssets,
       )
     : PLACEHOLDERS;
 

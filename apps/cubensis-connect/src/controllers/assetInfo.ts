@@ -25,10 +25,6 @@ const NATIVE_ASSET: AssetDetail = {
   timestamp: '2016-04-11T21:00:00.000Z' as any,
 };
 
-// TODO: Migrate repo from waves-community to dcc-community and update path
-const SUSPICIOUS_LIST_URL =
-  'https://raw.githubusercontent.com/Decentral-America/waves-community/master/Scam%20tokens%20according%20to%20the%20opinion%20of%20Waves%20Community.csv';
-const SUSPICIOUS_PERIOD_IN_MINUTES = 60;
 const MAX_AGE = 60 * 60 * 1000;
 
 const DATA_SERVICE_URL = 'https://api.decentralchain.io';
@@ -36,25 +32,6 @@ const SWAP_SERVICE_URL = 'https://swap-api.decentralchain.io';
 
 const INFO_PERIOD_IN_MINUTES = 60;
 const SWAPPABLE_ASSETS_UPDATE_PERIOD_IN_MINUTES = 240;
-
-function binarySearch<T>(sortedArray: T[], key: T) {
-  let start = 0;
-  let end = sortedArray.length - 1;
-
-  while (start <= end) {
-    const middle = Math.floor((start + end) / 2);
-
-    if (sortedArray[middle] === key) {
-      return middle;
-    } else if (sortedArray[middle]! < key) {
-      start = middle + 1;
-    } else {
-      end = middle - 1;
-    }
-  }
-
-  return -1;
-}
 
 interface AssetInfoResponseItem {
   assetId: string;
@@ -105,7 +82,6 @@ export class AssetInfoController {
         },
       },
       assetTickers: defaultAssetTickers,
-      suspiciousAssets: [],
       swappableAssetIdsByVendor: {},
       usdPrices: {},
     });
@@ -116,16 +92,9 @@ export class AssetInfoController {
     this.getNode = getNode;
     this.getNetwork = getNetwork;
 
-    if (initState.suspiciousAssets.length === 0) {
-      void this.updateSuspiciousAssets();
-    }
-
     void this.updateInfo();
     void this.updateSwappableAssetIdsByVendor();
 
-    Browser.alarms.create('updateSuspiciousAssets', {
-      periodInMinutes: SUSPICIOUS_PERIOD_IN_MINUTES,
-    });
     Browser.alarms.create('updateInfo', {
       periodInMinutes: INFO_PERIOD_IN_MINUTES,
     });
@@ -135,9 +104,6 @@ export class AssetInfoController {
 
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
-        case 'updateSuspiciousAssets':
-          void this.updateSuspiciousAssets();
-          break;
         case 'updateInfo':
           void this.updateInfo();
           break;
@@ -188,15 +154,6 @@ export class AssetInfoController {
 
   isMaxAgeExceeded(lastUpdated: number | undefined) {
     return Date.now() - new Date(lastUpdated || 0).getTime() > MAX_AGE;
-  }
-
-  isSuspiciousAsset(assetId: string) {
-    const { assets, suspiciousAssets } = this.store.getState();
-    const network = this.getNetwork();
-
-    return network === NetworkName.Mainnet && suspiciousAssets
-      ? binarySearch(suspiciousAssets, assetId) > -1
-      : assets[network][assetId]?.isSuspicious;
   }
 
   async assetInfo(assetId: string | null) {
@@ -254,7 +211,6 @@ export class AssetInfoController {
       hasScript: info.scripted,
       height: info.issueHeight,
       id: info.assetId,
-      isSuspicious: this.isSuspiciousAsset(info.assetId),
       issuer: info.issuer,
       lastUpdated: Date.now(),
       minSponsoredFee: info.minSponsoredAssetFee,
@@ -341,30 +297,6 @@ export class AssetInfoController {
       });
 
       this.store.updateState({ assets });
-    }
-  }
-
-  async updateSuspiciousAssets() {
-    const { assets, suspiciousAssets } = this.store.getState();
-    const network = this.getNetwork();
-
-    if (!suspiciousAssets || network === NetworkName.Mainnet) {
-      const resp = await fetch(new URL(SUSPICIOUS_LIST_URL));
-
-      if (resp.ok) {
-        const suspiciousAssets = (await resp.text()).split('\n').sort();
-
-        if (suspiciousAssets) {
-          for (const assetId of Object.keys(assets[NetworkName.Mainnet])) {
-            const asset = assets[NetworkName.Mainnet][assetId];
-            if (asset) {
-              asset.isSuspicious = binarySearch(suspiciousAssets, assetId) > -1;
-            }
-          }
-        }
-
-        this.store.updateState({ assets, suspiciousAssets });
-      }
     }
   }
 
