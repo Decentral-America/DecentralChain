@@ -40,3 +40,13 @@ export type WalletPrivateDataOfType<T extends WalletPrivateData['type']> = Extra
   WalletPrivateData,
   { type: T }
 >;
+
+export enum WalletTypes {
+  New = 'new',
+  Seed = 'seed',
+  EncodedSeed = 'encoded_seed',
+  PrivateKey = 'private_key',
+  Ledger = 'ledger',
+  Keystore = 'keystore',
+  Debug = 'debug',
+}

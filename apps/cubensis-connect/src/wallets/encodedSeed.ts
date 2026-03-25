@@ -74,11 +74,11 @@ export class EncodedSeedWallet extends Wallet<WalletPrivateDataOfType<'encodedSe
     };
   }
 
-  getEncodedSeed() {
+  override getEncodedSeed() {
     return this.data.encodedSeed;
   }
 
-  async getPrivateKey() {
+  override async getPrivateKey() {
     return createPrivateKey(base58Decode(this.data.encodedSeed));
   }
 

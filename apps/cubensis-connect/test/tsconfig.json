@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "exactOptionalPropertyTypes": false,
-    "lib": ["esnext", "dom"],
+    "lib": ["ES2025", "DOM"],
     "noImplicitAny": false,
     "noUncheckedIndexedAccess": false,
-    "skipLibCheck": true,
-    "types": ["vitest/globals", "vite/client", "@wdio/globals/types", "expect-webdriverio"]
+    "types": ["vitest/globals", "vite/client", "expect-webdriverio"]
   },
   "extends": "../tsconfig.base",
   "include": [".", "../types"]
