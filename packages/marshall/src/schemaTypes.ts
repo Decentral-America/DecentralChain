@@ -1,9 +1,10 @@
-export enum DATA_FIELD_TYPE {
-  INTEGER = 'integer',
-  BOOLEAN = 'boolean',
-  STRING = 'string',
-  BINARY = 'binary',
-}
+export const DATA_FIELD_TYPE = {
+  BINARY: 'binary',
+  BOOLEAN: 'boolean',
+  INTEGER: 'integer',
+  STRING: 'string',
+} as const;
+export type DATA_FIELD_TYPE = (typeof DATA_FIELD_TYPE)[keyof typeof DATA_FIELD_TYPE];
 
 export type TSchema = TObject | TArray | IAnyOf | TDataTxItem | TPrimitive;
 
@@ -65,10 +66,10 @@ class AnyOfClass implements IAnyOf {
   public discriminatorBytePos = 0; // defaults to 0
   public valueField?: string; // defaults to whole object
 
-  constructor(
-    private _items: [number, TSchema, string?][],
-    options?: TAnyOfOptions,
-  ) {
+  private _items: [number, TSchema, string?][];
+
+  constructor(items: [number, TSchema, string?][], options?: TAnyOfOptions) {
+    this._items = items;
     Object.assign(this, options);
   }
 

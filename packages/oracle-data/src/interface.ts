@@ -25,12 +25,12 @@ export interface IProviderAsset {
 }
 
 export interface ISuccessResponse<T> {
-  status: RESPONSE_STATUSES.OK;
+  status: typeof RESPONSE_STATUSES.OK;
   content: T;
 }
 
 export interface IErrorResponse<T> {
-  status: RESPONSE_STATUSES.ERROR;
+  status: typeof RESPONSE_STATUSES.ERROR;
   content: Partial<T>;
   errors: IResponseError[];
 }
@@ -47,22 +47,22 @@ export interface IBaseDataTx {
 }
 
 export interface IStringDataTXField extends IBaseDataTx {
-  type: DATA_ENTRY_TYPES.STRING;
+  type: typeof DATA_ENTRY_TYPES.STRING;
   value: string;
 }
 
 export interface IIntegerDataTXField extends IBaseDataTx {
-  type: DATA_ENTRY_TYPES.INTEGER;
+  type: typeof DATA_ENTRY_TYPES.INTEGER;
   value: number;
 }
 
 export interface IBooleanDataTXField extends IBaseDataTx {
-  type: DATA_ENTRY_TYPES.BOOLEAN;
+  type: typeof DATA_ENTRY_TYPES.BOOLEAN;
   value: boolean;
 }
 
 export interface IBinaryDataTXField extends IBaseDataTx {
-  type: DATA_ENTRY_TYPES.BINARY;
+  type: typeof DATA_ENTRY_TYPES.BINARY;
   value: string;
 }
 
@@ -72,7 +72,10 @@ export type TDataTxField =
   | IBooleanDataTXField
   | IBinaryDataTXField;
 
-export type TSuspicious = STATUS_LIST.SCAM | STATUS_LIST.SUSPICIOUS | STATUS_LIST.NOT_VERIFY;
+export type TSuspicious =
+  | typeof STATUS_LIST.SCAM
+  | typeof STATUS_LIST.SUSPICIOUS
+  | typeof STATUS_LIST.NOT_VERIFY;
 export type TScamAsset = Partial<IProviderAsset> & {
   status: TSuspicious;
   id: string;

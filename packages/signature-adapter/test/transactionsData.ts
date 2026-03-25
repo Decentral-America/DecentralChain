@@ -629,11 +629,13 @@ export const txs = {
         name: 'test app',
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
       },
-      id: '7dkH46Y2gnKrewpNdz2nwQG2pHZkmsH8PJ66S5y51uqg',
+      // id and proof regenerated after prefix rename from WavesWalletAuthentication
+      // to DccWalletAuthentication. Generated with TEST_SEED (produces pubkey above).
+      id: '3q1YCA9e25ndPDVW7ebzinsbE8EidvAHehMmKk2WMPZ9',
       name: 'auth request',
       network: 'W',
       proof:
-        '35aiw81R8ik6Kf7oi9NseauStwoPKgABJx9EossZc53vtd5V4ysZ3CvD8fthFA6ETNj61u9f7EiSRqcVV3DisAJG',
+        '41BT5R7yoK2bUobhAhLrQxk7e53sSgosge53y8faGDJYp4bbBpXq3p8CRY5zXqBQ1UsRQWPcQ2cZLVH8GP3F8HvL',
     },
   },
 

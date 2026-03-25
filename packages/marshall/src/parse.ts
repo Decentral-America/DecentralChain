@@ -1,6 +1,6 @@
 import { range } from './libs/utils';
 import { byteToStringWithLength, P_BYTE, P_LONG, P_SHORT, type TParser } from './parsePrimitives';
-import { getTransactionSchema, orderSchemaV2 } from './schemas';
+import { getTransactionSchema, orderSchemaV2, type TRANSACTION_TYPE } from './schemas';
 import { type TSchema } from './schemaTypes';
 
 export type TToLongConverter<LONG> = (val: string) => LONG;
@@ -162,7 +162,7 @@ export function parseTx<LONG = string>(
   toLongConverter?: TToLongConverter<LONG>,
 ) {
   const { type, version } = parseHeader(bytes);
-  const schema = getTransactionSchema(type, version);
+  const schema = getTransactionSchema(type as TRANSACTION_TYPE, version);
 
   return parserFromSchema(schema, toLongConverter)(bytes).value;
 }

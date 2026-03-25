@@ -105,25 +105,27 @@ const processScript = (srcScript: string | null) => {
   return scriptText ? `base64:${scriptText}` : null;
 };
 
-export enum TRANSACTION_TYPE_NUMBER {
-  SEND_OLD = 2,
-  ISSUE = 3,
-  TRANSFER = 4,
-  REISSUE = 5,
-  BURN = 6,
-  EXCHANGE = 7,
-  LEASE = 8,
-  CANCEL_LEASING = 9,
-  CREATE_ALIAS = 10,
-  MASS_TRANSFER = 11,
-  DATA = 12,
-  SET_SCRIPT = 13,
-  SPONSORSHIP = 14,
-  SET_ASSET_SCRIPT = 15,
-  SCRIPT_INVOCATION = 16,
-  UPDATE_ASSET_INFO = 17,
-  ETHEREUM_TX = 18,
-}
+export const TRANSACTION_TYPE_NUMBER = {
+  BURN: 6,
+  CANCEL_LEASING: 9,
+  CREATE_ALIAS: 10,
+  DATA: 12,
+  ETHEREUM_TX: 18,
+  EXCHANGE: 7,
+  ISSUE: 3,
+  LEASE: 8,
+  MASS_TRANSFER: 11,
+  REISSUE: 5,
+  SCRIPT_INVOCATION: 16,
+  SEND_OLD: 2,
+  SET_ASSET_SCRIPT: 15,
+  SET_SCRIPT: 13,
+  SPONSORSHIP: 14,
+  TRANSFER: 4,
+  UPDATE_ASSET_INFO: 17,
+} as const;
+export type TRANSACTION_TYPE_NUMBER =
+  (typeof TRANSACTION_TYPE_NUMBER)[keyof typeof TRANSACTION_TYPE_NUMBER];
 
 export interface ITypesMap {
   getBytes: Record<number, TByteSerializer>;

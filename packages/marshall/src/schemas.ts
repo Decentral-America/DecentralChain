@@ -38,24 +38,25 @@ import {
   STRING,
 } from './serializePrimitives';
 
-export enum TRANSACTION_TYPE {
-  GENESIS = 1,
-  PAYMENT = 2,
-  ISSUE = 3,
-  TRANSFER = 4,
-  REISSUE = 5,
-  BURN = 6,
-  EXCHANGE = 7,
-  LEASE = 8,
-  CANCEL_LEASE = 9,
-  ALIAS = 10,
-  MASS_TRANSFER = 11,
-  DATA = 12,
-  SET_SCRIPT = 13,
-  SPONSORSHIP = 14,
-  SET_ASSET_SCRIPT = 15,
-  INVOKE_SCRIPT = 16,
-}
+export const TRANSACTION_TYPE = {
+  ALIAS: 10,
+  BURN: 6,
+  CANCEL_LEASE: 9,
+  DATA: 12,
+  EXCHANGE: 7,
+  GENESIS: 1,
+  INVOKE_SCRIPT: 16,
+  ISSUE: 3,
+  LEASE: 8,
+  MASS_TRANSFER: 11,
+  PAYMENT: 2,
+  REISSUE: 5,
+  SET_ASSET_SCRIPT: 15,
+  SET_SCRIPT: 13,
+  SPONSORSHIP: 14,
+  TRANSFER: 4,
+} as const;
+export type TRANSACTION_TYPE = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
 
 const shortConverter = {
   fromBytes: P_SHORT,
@@ -66,25 +67,18 @@ const intConverter = {
   fromBytes: P_INT,
   toBytes: INT,
 };
-// biome-ignore lint/style/noNamespace: txFields groups related field constructors used throughout this file; refactoring to a plain object would break the established pattern with no benefit
-export namespace txFields {
+export const txFields = (() => {
   //Field constructors
-  export const longField = (name: string): TObjectField => [
-    name,
-    { fromBytes: P_LONG, toBytes: LONG },
-  ];
+  const longField = (name: string): TObjectField => [name, { fromBytes: P_LONG, toBytes: LONG }];
 
-  export const byteField = (name: string): TObjectField => [
-    name,
-    { fromBytes: P_BYTE, toBytes: BYTE },
-  ];
+  const byteField = (name: string): TObjectField => [name, { fromBytes: P_BYTE, toBytes: BYTE }];
 
-  export const booleanField = (name: string): TObjectField => [
+  const booleanField = (name: string): TObjectField => [
     name,
     { fromBytes: P_BOOLEAN, toBytes: BOOL },
   ];
 
-  export const stringField = (name: string): TObjectField => [
+  const stringField = (name: string): TObjectField => [
     name,
     {
       fromBytes: P_STRING_VAR(P_SHORT),
@@ -92,7 +86,7 @@ export namespace txFields {
     },
   ];
 
-  export const base58field32 = (name: string): TObjectField => [
+  const base58field32 = (name: string): TObjectField => [
     name,
     {
       fromBytes: P_BASE58_FIXED(32),
@@ -101,7 +95,7 @@ export namespace txFields {
   ];
 
   // String 'DCC' often used instead of null. That's why we should serialize it as null
-  export const base58Option32 = (name: string): TObjectField => [
+  const base58Option32 = (name: string): TObjectField => [
     name,
     {
       fromBytes: P_OPTION(P_BASE58_FIXED(32)),
@@ -110,7 +104,7 @@ export namespace txFields {
     },
   ];
 
-  export const base64field = (name: string): TObjectField => [
+  const base64field = (name: string): TObjectField => [
     name,
     {
       fromBytes: P_BASE64(P_SHORT),
@@ -118,7 +112,7 @@ export namespace txFields {
     },
   ];
 
-  export const byteConstant = (byte: number): TObjectField => [
+  const byteConstant = (byte: number): TObjectField => [
     'noname',
     {
       fromBytes: () => ({ shift: 1, value: undefined }),
@@ -127,7 +121,7 @@ export namespace txFields {
   ];
 
   // Primitive fields
-  export const alias: TObjectField = [
+  const alias: TObjectField = [
     'alias',
     {
       fromBytes: byteNewAliasToString,
@@ -135,14 +129,14 @@ export namespace txFields {
     },
   ];
 
-  export const amount = longField('amount');
+  const amount = longField('amount');
 
-  export const assetDescription = stringField('description');
+  const assetDescription = stringField('description');
 
-  export const assetId = base58field32('assetId');
-  export const assetName = stringField('name');
+  const assetId = base58field32('assetId');
+  const assetName = stringField('name');
 
-  export const attachment: TObjectField = [
+  const attachment: TObjectField = [
     'attachment',
     {
       fromBytes: P_BASE58_VAR(P_SHORT),
@@ -150,23 +144,23 @@ export namespace txFields {
     },
   ];
 
-  export const chainId = byteField('chainId');
+  const chainId = byteField('chainId');
 
-  export const decimals = byteField('decimals');
+  const decimals = byteField('decimals');
 
-  export const fee = longField('fee');
+  const fee = longField('fee');
 
-  export const leaseAssetId = base58Option32('leaseAssetId');
+  const leaseAssetId = base58Option32('leaseAssetId');
 
-  export const leaseId = base58field32('leaseId');
+  const leaseId = base58field32('leaseId');
 
-  export const optionalAssetId = base58Option32('assetId');
+  const optionalAssetId = base58Option32('assetId');
 
-  export const quantity = longField('quantity');
+  const quantity = longField('quantity');
 
-  export const reissuable = booleanField('reissuable');
+  const reissuable = booleanField('reissuable');
 
-  export const recipient: TObjectField = [
+  const recipient: TObjectField = [
     'recipient',
     {
       fromBytes: byteToAddressOrAlias,
@@ -174,7 +168,7 @@ export namespace txFields {
     },
   ];
 
-  export const script: TObjectField = [
+  const script: TObjectField = [
     'script',
     {
       fromBytes: byteToScript,
@@ -182,9 +176,9 @@ export namespace txFields {
     },
   ];
 
-  export const senderPublicKey = base58field32('senderPublicKey');
+  const senderPublicKey = base58field32('senderPublicKey');
 
-  export const signature: TObjectField = [
+  const signature: TObjectField = [
     'signature',
     {
       fromBytes: P_BASE58_FIXED(64),
@@ -192,15 +186,15 @@ export namespace txFields {
     },
   ];
 
-  export const timestamp = longField('timestamp');
+  const timestamp = longField('timestamp');
 
-  export const type = byteField('type');
+  const type = byteField('type');
 
-  export const version = byteField('version');
+  const version = byteField('version');
 
   // Complex fields
 
-  export const proofs: TObjectField = [
+  const proofs: TObjectField = [
     'proofs',
     {
       items: {
@@ -216,7 +210,7 @@ export namespace txFields {
     type: 'object',
   };
 
-  export const transfers: TObjectField = [
+  const transfers: TObjectField = [
     'transfers',
     {
       items: transfer,
@@ -237,7 +231,7 @@ export namespace txFields {
     type: 'dataTxField',
   };
 
-  export const data: TObjectField = [
+  const data: TObjectField = [
     'data',
     {
       items: dataTxItem,
@@ -278,7 +272,7 @@ export namespace txFields {
     { valueField: 'value' },
   );
 
-  export const functionCall: TObjectField = [
+  const functionCall: TObjectField = [
     'call',
     {
       optional: true,
@@ -307,20 +301,58 @@ export namespace txFields {
     },
   ];
 
-  export const payment: TObject = {
+  const payment: TObject = {
     schema: [amount, optionalAssetId],
     type: 'object',
     withLength: shortConverter,
   };
 
-  export const payments: TObjectField = [
+  const payments: TObjectField = [
     'payment',
     {
       items: payment,
       type: 'array',
     },
   ];
-}
+
+  return {
+    alias,
+    amount,
+    assetDescription,
+    assetId,
+    assetName,
+    attachment,
+    base58field32,
+    base58Option32,
+    base64field,
+    booleanField,
+    byteConstant,
+    byteField,
+    chainId,
+    data,
+    decimals,
+    fee,
+    functionCall,
+    leaseAssetId,
+    leaseId,
+    longField,
+    optionalAssetId,
+    payment,
+    payments,
+    proofs,
+    quantity,
+    recipient,
+    reissuable,
+    script,
+    senderPublicKey,
+    signature,
+    stringField,
+    timestamp,
+    transfers,
+    type,
+    version,
+  };
+})();
 
 export const orderSchemaV1: TObject = {
   schema: [

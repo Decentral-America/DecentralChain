@@ -1,18 +1,20 @@
 import { type BigNumber } from '@decentralchain/bignumber';
 import { type Asset, type AssetPair, type Candle } from '@decentralchain/data-entities';
 
-export enum ApiTypes {
-  List = 'list',
-  Asset = 'asset',
-  Pair = 'pair',
-  Transaction = 'transaction',
-  Alias = 'alias',
-  Candle = 'candle',
-}
-export enum HttpMethods {
-  Get = 'GET',
-  Post = 'POST',
-}
+export const ApiTypes = {
+  Alias: 'alias',
+  Asset: 'asset',
+  Candle: 'candle',
+  List: 'list',
+  Pair: 'pair',
+  Transaction: 'transaction',
+} as const;
+export type ApiTypes = (typeof ApiTypes)[keyof typeof ApiTypes];
+export const HttpMethods = {
+  Get: 'GET',
+  Post: 'POST',
+} as const;
+export type HttpMethods = (typeof HttpMethods)[keyof typeof HttpMethods];
 export interface ILibRequest {
   url: string;
   method: HttpMethods;

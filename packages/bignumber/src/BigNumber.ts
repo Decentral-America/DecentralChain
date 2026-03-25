@@ -34,6 +34,9 @@ export class BigNumber {
   /** Global configuration for formatting and rounding. */
   public static config = new Config();
 
+  /** Rounding mode constants, matching bignumber.js semantics. */
+  public static readonly ROUND_MODE = RoundModeModule.ROUND_MODE;
+
   /**
    * Creates a new BigNumber instance.
    * @param long - A numeric value: string, number, bignumber.js instance, or another BigNumber.
@@ -406,7 +409,9 @@ export class BigNumber {
   }
 }
 
-// biome-ignore lint/style/noNamespace: declaration merging for BigNumber.ROUND_MODE enum
+// Type-only namespace to expose BigNumber.ROUND_MODE as a type annotation.
+// The corresponding const value is available as BigNumber.ROUND_MODE (static property above).
+// biome-ignore lint/style/noNamespace: type-only namespace — erasable in TS 6, provides BigNumber.ROUND_MODE type without emitting JS
 export namespace BigNumber {
-  export import ROUND_MODE = RoundModeModule.ROUND_MODE;
+  export type ROUND_MODE = RoundModeModule.ROUND_MODE;
 }

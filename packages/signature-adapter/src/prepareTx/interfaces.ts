@@ -31,102 +31,102 @@ export type TSignData =
 
 export interface ISignAuthData {
   data: IAuthData;
-  type: SIGN_TYPE.AUTH;
+  type: typeof SIGN_TYPE.AUTH;
 }
 
 export interface ISignCoinomatConfirmation {
   data: ICoinomatData;
-  type: SIGN_TYPE.COINOMAT_CONFIRMATION;
+  type: typeof SIGN_TYPE.COINOMAT_CONFIRMATION;
 }
 
 export interface ISignGetOrders {
   data: IGetOrders;
-  type: SIGN_TYPE.MATCHER_ORDERS;
+  type: typeof SIGN_TYPE.MATCHER_ORDERS;
 }
 
 export interface ISignCreateOrder {
   data: ICreateOrder;
-  type: SIGN_TYPE.CREATE_ORDER;
+  type: typeof SIGN_TYPE.CREATE_ORDER;
 }
 
 export interface ISignCancelOrder {
   data: ICancelOrder;
-  type: SIGN_TYPE.CANCEL_ORDER;
+  type: typeof SIGN_TYPE.CANCEL_ORDER;
 }
 
 export interface ISignTransferData {
   data: ITransferData;
-  type: SIGN_TYPE.TRANSFER;
+  type: typeof SIGN_TYPE.TRANSFER;
 }
 
 export interface ISignIssue {
   data: IIssue;
-  type: SIGN_TYPE.ISSUE;
+  type: typeof SIGN_TYPE.ISSUE;
 }
 
 export interface ISignReissue {
   data: IReissue;
-  type: SIGN_TYPE.REISSUE;
+  type: typeof SIGN_TYPE.REISSUE;
 }
 
 export interface ISignBurn {
   data: IBurn;
-  type: SIGN_TYPE.BURN;
+  type: typeof SIGN_TYPE.BURN;
 }
 
 export interface ISIgnUpdateAssetInfo {
   data: IUpdateAssetInfo;
-  type: SIGN_TYPE.UPDATE_ASSET_INFO;
+  type: typeof SIGN_TYPE.UPDATE_ASSET_INFO;
 }
 
 export interface ISignExchange {
   data: IExchange;
-  type: SIGN_TYPE.EXCHANGE;
+  type: typeof SIGN_TYPE.EXCHANGE;
 }
 
 export interface ISignLease {
   data: ILease;
-  type: SIGN_TYPE.LEASE;
+  type: typeof SIGN_TYPE.LEASE;
 }
 
 export interface ISignCancelLeasing {
   data: ICancelLeasing;
-  type: SIGN_TYPE.CANCEL_LEASING;
+  type: typeof SIGN_TYPE.CANCEL_LEASING;
 }
 
 export interface ISignCreateAlias {
   data: ICreateAlias;
-  type: SIGN_TYPE.CREATE_ALIAS;
+  type: typeof SIGN_TYPE.CREATE_ALIAS;
 }
 
 export interface ISignMassTransfer {
   data: IMassTransfer;
-  type: SIGN_TYPE.MASS_TRANSFER;
+  type: typeof SIGN_TYPE.MASS_TRANSFER;
 }
 
 export interface IDataTxData {
   data: IData;
-  type: SIGN_TYPE.DATA;
+  type: typeof SIGN_TYPE.DATA;
 }
 
 export interface ISetScriptData {
   data: ISetScript;
-  type: SIGN_TYPE.SET_SCRIPT;
+  type: typeof SIGN_TYPE.SET_SCRIPT;
 }
 
 export interface ISponsorshipData {
   data: ISponsorship;
-  type: SIGN_TYPE.SPONSORSHIP;
+  type: typeof SIGN_TYPE.SPONSORSHIP;
 }
 
 export interface ISetAssetScriptData {
   data: ISetAssetScript;
-  type: SIGN_TYPE.SET_ASSET_SCRIPT;
+  type: typeof SIGN_TYPE.SET_ASSET_SCRIPT;
 }
 
 export interface IScriptInvocationData {
   data: IScriptInvocation;
-  type: SIGN_TYPE.SCRIPT_INVOCATION;
+  type: typeof SIGN_TYPE.SCRIPT_INVOCATION;
 }
 
 export interface IScriptInvocation extends ICreateTxData {

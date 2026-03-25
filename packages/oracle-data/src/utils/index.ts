@@ -94,7 +94,7 @@ export function descriptionToField(): (data: IProviderData) => IStringDataTXFiel
     const fields = Object.keys(desc).map((lang) => {
       return {
         key: DATA_PROVIDER_DESCRIPTION_PATTERN.replace(PATTERNS.LANG, `<${lang}>`),
-        type: DATA_ENTRY_TYPES.STRING as DATA_ENTRY_TYPES.STRING,
+        type: DATA_ENTRY_TYPES.STRING as typeof DATA_ENTRY_TYPES.STRING,
         value: desc[lang] ?? '',
       };
     });
@@ -178,7 +178,7 @@ export function toAssetDescription(): (data: TProviderAsset) => TDataTxField[] {
       const replacer = replaceKey(data.id, lang);
       return {
         key: replacer(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION as string),
-        type: DATA_ENTRY_TYPES.STRING as DATA_ENTRY_TYPES.STRING,
+        type: DATA_ENTRY_TYPES.STRING as typeof DATA_ENTRY_TYPES.STRING,
         value: data.description?.[lang] ?? '',
       };
     });
