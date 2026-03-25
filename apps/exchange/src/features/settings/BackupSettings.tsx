@@ -24,21 +24,38 @@ import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
-interface BackupAccountEntry {
-  address: string;
+/** User metadata entry as stored under multiAccountUsers in localStorage. */
+interface StoredUserMeta {
   name?: string;
+  lastLogin?: number;
   [key: string]: unknown;
 }
 
+/**
+ * Inner payload of a v4.0 backup, encrypted with the user-supplied backup password.
+ * Seeds are already encrypted inside multiAccountData (multiAccount vault format);
+ * this adds a second AES-GCM envelope so a stolen backup file alone exposes nothing.
+ */
+interface BackupPayload {
+  /** Encrypted vault blob (@decentralchain/ts-lib-crypto encryptSeed format). */
+  multiAccountData: string;
+  /** Blake2b hash for vault integrity verification at login time. */
+  multiAccountHash: string;
+  /** Raw JSON string of Record<userHash, StoredUserMeta> — names, settings, lastLogin. */
+  multiAccountUsers: string;
+  /** SHA-256 hex of JSON.stringify({multiAccountData, multiAccountHash, multiAccountUsers}). */
+  checksum: string;
+}
+
+/** v4.0 backup file produced by this application. */
 interface WalletBackup {
-  version: string;
-  encrypted: boolean;
+  version: '4.0';
+  encrypted: true;
   timestamp: number;
-  data: {
-    accounts: BackupAccountEntry[];
-    settings?: Record<string, unknown>;
-    checksum: string;
-  };
+  /** Non-sensitive hint — actual count verified via checksum after decryption. */
+  accountCount: number;
+  /** Base64-encoded AES-GCM ciphertext (12-byte IV prepended) of BackupPayload as JSON. */
+  data: string;
 }
 
 export const BackupSettings: React.FC = () => {
@@ -49,7 +66,7 @@ export const BackupSettings: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const encryptBackup = async (data: WalletBackup['data'], password: string): Promise<string> => {
+  const encryptBackup = async (data: BackupPayload, password: string): Promise<string> => {
     try {
       // Match Angular's encryption exactly: PBKDF2 + AES-GCM
       const encoder = new TextEncoder();
@@ -128,54 +145,42 @@ export const BackupSettings: React.FC = () => {
     setIsExporting(true);
 
     try {
-      // Get all accounts from localStorage
-      const accountsData = localStorage.getItem('dcc_users');
-      const settingsData = localStorage.getItem('dcc_settings');
+      // Read from the multiAccount storage keys — the single source of truth for all account data
+      const multiAccountData = localStorage.getItem('multiAccountData');
+      const multiAccountHash = localStorage.getItem('multiAccountHash');
+      const multiAccountUsers = localStorage.getItem('multiAccountUsers') ?? '{}';
 
-      const accounts = accountsData ? JSON.parse(accountsData) : [];
-      const settings = settingsData ? JSON.parse(settingsData) : null;
-
-      if (accounts.length === 0) {
-        throw new Error('No accounts to backup');
+      if (!multiAccountData || !multiAccountHash) {
+        throw new Error('No wallet found. Please create an account before exporting a backup.');
       }
 
-      // Prepare backup data
-      const dataToBackup = {
-        accounts,
-        settings,
-      };
+      const userMeta = JSON.parse(multiAccountUsers) as Record<string, StoredUserMeta>;
+      const accountCount = Object.keys(userMeta).length;
+      if (accountCount === 0) {
+        throw new Error('No accounts to backup.');
+      }
 
-      // Generate checksum
-      const checksum = await generateChecksum(JSON.stringify(dataToBackup));
+      // Build the inner payload — seeds are already encrypted inside multiAccountData;
+      // the backup password adds a second AES-GCM envelope so a stolen file alone exposes nothing.
+      const payloadFields = { multiAccountData, multiAccountHash, multiAccountUsers };
+      const checksum = await generateChecksum(JSON.stringify(payloadFields));
+      const payload: BackupPayload = { ...payloadFields, checksum };
+      const encryptedPayload = await encryptBackup(payload, password);
 
-      const backupData: WalletBackup = {
-        data: {
-          accounts,
-          checksum,
-          settings,
-        },
+      const backup: WalletBackup = {
+        accountCount,
+        data: encryptedPayload,
         encrypted: true,
         timestamp: Date.now(),
-        version: '3.0',
+        version: '4.0',
       };
 
-      // Encrypt if password provided
-      const encryptedData = await encryptBackup(backupData.data, password);
-
-      const finalBackup = {
-        ...backupData,
-        data: encryptedData,
-      };
-
-      // Create download
-      const blob = new Blob([JSON.stringify(finalBackup, null, 2)], {
-        type: 'application/json',
-      });
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const timestamp = new Date().toISOString().split('T')[0];
+      const dateStr = new Date().toISOString().split('T')[0];
       a.href = url;
-      a.download = `dcc-exchange-backup-${timestamp}.json`;
+      a.download = `dcc-exchange-backup-${dateStr}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -185,7 +190,6 @@ export const BackupSettings: React.FC = () => {
       setPassword('');
       setConfirmPassword('');
 
-      // Auto-hide success message after 5 seconds
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create backup';
@@ -196,9 +200,13 @@ export const BackupSettings: React.FC = () => {
     }
   };
 
-  // Get account info for preview
-  const accountsData = localStorage.getItem('dcc_users');
-  const accounts = accountsData ? JSON.parse(accountsData) : [];
+  // Preview — read from multiAccountUsers metadata (seeds stay encrypted, no addresses needed here)
+  const multiAccountUsersRaw = localStorage.getItem('multiAccountUsers') ?? '{}';
+  const accountMeta = JSON.parse(multiAccountUsersRaw) as Record<string, StoredUserMeta>;
+  const accounts = Object.entries(accountMeta).map(([hash, meta]) => ({
+    hash,
+    name: meta.name ?? 'Unnamed Account',
+  }));
 
   return (
     <Box>
@@ -242,16 +250,14 @@ export const BackupSettings: React.FC = () => {
         </Typography>
         {accounts.length > 0 ? (
           <List dense>
-            {accounts.map((account: BackupAccountEntry) => (
-              <ListItem key={account.address} sx={{ py: 0.5 }}>
+            {accounts.map((account) => (
+              <ListItem key={account.hash} sx={{ py: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   <AccountCircle fontSize="small" color="primary" />
                 </ListItemIcon>
                 <ListItemText
-                  primary={account.name || 'Unnamed Account'}
-                  secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
+                  primary={account.name}
                   primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
-                  secondaryTypographyProps={{ variant: 'caption' }}
                 />
               </ListItem>
             ))}
@@ -275,7 +281,7 @@ export const BackupSettings: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter a strong password"
-          helperText="Minimum 8 characters. This password encrypts your backup file."
+          helperText="Minimum 12 characters. This password encrypts your backup file."
           sx={{ mb: 2 }}
         />
 
@@ -302,10 +308,10 @@ export const BackupSettings: React.FC = () => {
           <strong>Backup includes:</strong>
         </Typography>
         <Typography variant="body2" component="div">
-          • All account addresses and encrypted seeds
-          <br />• Wallet settings and preferences
+          • Encrypted vault — all seeds protected by your wallet password
           <br />• Account names and metadata
-          <br />• AES-256 encryption with your password
+          <br />• Wallet settings and preferences
+          <br />• Double-layered AES-256 encryption with your backup password
         </Typography>
       </Alert>
 
