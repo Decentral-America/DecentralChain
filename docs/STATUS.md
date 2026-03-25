@@ -418,7 +418,7 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P2~~ | ~~`noDeprecatedImports` audit~~ | 5 violations fixed: `DataFiledType` typo, `TCubensisConnectApi` re-export, `biome-ignore` for recharts `Cell` (false positive). 0 warnings across 1,741 files. | ✅ Completed (Mar 23, 2026) |
 | ~~P2~~ | ~~ErrorBoundary unit test~~ | `ErrorBoundary.test.tsx` created — 4 tests for `getDerivedStateFromError` + `componentDidCatch`. `vitest.unit.config.ts` extended to cover `.tsx` with React plugin. | ✅ Completed (Mar 23, 2026) |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
-| **P3** | `WavesWalletAuthentication` dual prefix | Add `DccWalletAuthentication` with old as fallback | ⬜ Pending |
+| ~~P3~~ | ~~`WavesWalletAuthentication` dual prefix~~ | All three divergent spellings unified to `DccWalletAuthentication`: cubensis-connect `makeAuthBytes` + stored `prefix` (utils.ts, message.ts), `signature-adapter` `constants.ts` + `schemas.ts` (was `DCCWalletAuthentication` — wrong capitalisation). `verifyAuthData()` in `@decentralchain/transactions` now produces the same bytes as cubensis-connect signing, making cross-tool signature verification functional for the first time since the fork. 7 files updated; 9 unit tests pass; both packages typecheck clean. | ✅ Completed (Mar 24, 2026) |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |
 | **N/A** | Protobuf `waves` namespace | Do not rename — wire format | — |
 | **N/A** | `@waves/ride-lang` + `ride-repl` | No action unless RIDE language modified | — |
