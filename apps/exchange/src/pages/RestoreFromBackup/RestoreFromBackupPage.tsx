@@ -145,40 +145,31 @@ const DropZone = styled(Paper, {
   transition: 'all 0.3s ease',
 }));
 
+/**
+ * Inner payload of a v4.0 backup — recovered after AES-GCM decryption with the backup password.
+ * Seeds are already encrypted inside multiAccountData (multiAccount vault format).
+ */
+interface BackupPayload {
+  multiAccountData: string;
+  multiAccountHash: string;
+  /** Raw JSON string of Record<userHash, {name?, lastLogin?, ...}>. */
+  multiAccountUsers: string;
+  /** SHA-256 hex of JSON.stringify({multiAccountData, multiAccountHash, multiAccountUsers}). */
+  checksum: string;
+}
+
+/** v4.0 backup file shape as written to disk by BackupSettings. */
 interface WalletBackup {
-  version: string;
-  encrypted: boolean;
+  version: '4.0';
+  encrypted: true;
   timestamp: number;
-  data: {
-    accounts: Array<{
-      address: string;
-      publicKey: string;
-      encryptedSeed: string;
-      name?: string;
-      userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
-    }>;
-    settings?: Record<string, unknown>;
-    checksum: string;
-  };
+  /** Non-sensitive hint — actual count verified via checksum after decryption. */
+  accountCount: number;
+  /** Base64-encoded AES-GCM ciphertext (12-byte IV prepended) of BackupPayload as JSON. */
+  data: string;
 }
 
 const steps = ['Upload Backup', 'Enter Password', 'Restore Accounts'];
-
-function mergeAccounts(incoming: Array<{ address: string; [key: string]: unknown }>): {
-  merged: unknown[];
-  newCount: number;
-} {
-  const existing = JSON.parse(localStorage.getItem('dcc_users') || '[]') as unknown[];
-  const merged = [...existing];
-  let newCount = 0;
-  for (const account of incoming) {
-    if (!merged.some((a: unknown) => (a as { address: string }).address === account.address)) {
-      merged.push(account);
-      newCount++;
-    }
-  }
-  return { merged, newCount };
-}
 
 export const RestoreFromBackupPage: React.FC = () => {
   const theme = useTheme();
@@ -196,6 +187,7 @@ export const RestoreFromBackupPage: React.FC = () => {
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [restoredAccounts, setRestoredAccounts] = useState<number>(0);
+  const [restoredUsers, setRestoredUsers] = useState<Record<string, { name?: string }>>({});
 
   useEffect(() => {
     setIsVisible(true);
@@ -229,18 +221,38 @@ export const RestoreFromBackupPage: React.FC = () => {
 
     try {
       const content = await file.text();
-      const backup: WalletBackup = JSON.parse(content);
+      const parsed = JSON.parse(content) as {
+        version?: string;
+        encrypted?: boolean;
+        data?: unknown;
+        timestamp?: number;
+        accountCount?: number;
+      };
 
-      // Validate backup structure
-      if (!backup.version || !backup.data || !backup.data.accounts) {
-        throw new Error('Invalid backup file structure');
+      if (
+        parsed.version !== '4.0' ||
+        parsed.encrypted !== true ||
+        typeof parsed.data !== 'string'
+      ) {
+        if (parsed.version && parsed.version !== '4.0') {
+          throw new Error(
+            `Backup format v${parsed.version} is not supported. Please export a new backup from Settings → Backup.`,
+          );
+        }
+        throw new Error(
+          'Invalid backup file. This does not appear to be a valid DCC wallet backup.',
+        );
       }
 
       setBackupFile(file);
-      setBackupData(backup);
+      setBackupData(parsed as WalletBackup);
       setActiveStep(1);
     } catch (err) {
-      setError('Invalid backup file. Please check the file and try again.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Invalid backup file. Please check the file and try again.',
+      );
       logger.error('Backup parse error:', err);
     }
   }, []);
@@ -310,6 +322,13 @@ export const RestoreFromBackupPage: React.FC = () => {
     }
   };
 
+  const generateChecksum = async (data: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  };
+
   const handleRestore = async () => {
     if (!backupData || !password) return;
 
@@ -317,20 +336,31 @@ export const RestoreFromBackupPage: React.FC = () => {
     setError('');
 
     try {
-      let accountsData = backupData.data.accounts;
-      if (backupData.encrypted) {
-        const decryptedData = await decryptBackup(JSON.stringify(backupData.data), password);
-        accountsData = (decryptedData as { accounts: typeof accountsData }).accounts;
+      // Decrypt the outer backup envelope with the user-supplied backup password
+      const payload = (await decryptBackup(backupData.data, password)) as BackupPayload;
+
+      // Verify checksum — detect file corruption or tampering before writing anything
+      const { checksum, ...fields } = payload;
+      const computed = await generateChecksum(JSON.stringify(fields));
+      if (computed !== checksum) {
+        throw new Error(
+          'Backup file is corrupted or has been tampered with. Checksum does not match.',
+        );
       }
 
-      const { merged, newCount } = mergeAccounts(accountsData);
-      localStorage.setItem('dcc_users', JSON.stringify(merged));
-      if (backupData.data.settings)
-        localStorage.setItem('dcc_settings', JSON.stringify(backupData.data.settings));
+      // Atomically restore the three multiAccount storage keys
+      localStorage.setItem('multiAccountData', payload.multiAccountData);
+      localStorage.setItem('multiAccountHash', payload.multiAccountHash);
+      localStorage.setItem('multiAccountUsers', payload.multiAccountUsers);
 
-      setRestoredAccounts(newCount);
+      // Invalidate any stale in-memory session (vault content has changed)
+      sessionStorage.removeItem('activeSession');
+
+      const userMeta = JSON.parse(payload.multiAccountUsers) as Record<string, { name?: string }>;
+      const count = Object.keys(userMeta).length;
+      setRestoredAccounts(count);
+      setRestoredUsers(userMeta);
       setActiveStep(2);
-      setTimeout(() => navigate(getActiveState('wallet')), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to restore backup';
       setError(errorMessage);
@@ -401,9 +431,7 @@ export const RestoreFromBackupPage: React.FC = () => {
             Enter Password
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-            {backupData?.encrypted
-              ? 'Enter the password used to encrypt this backup'
-              : 'Backup file is not encrypted'}
+            Enter the password you used when creating this backup
           </Typography>
 
           {error && (
@@ -431,10 +459,10 @@ export const RestoreFromBackupPage: React.FC = () => {
                 <strong>Version:</strong> {backupData.version}
               </Typography>
               <Typography variant="body2">
-                <strong>Accounts:</strong> {backupData.data.accounts.length}
+                <strong>Accounts:</strong> {backupData.accountCount}
               </Typography>
               <Typography variant="body2">
-                <strong>Encrypted:</strong> {backupData.encrypted ? 'Yes' : 'No'}
+                <strong>Encrypted:</strong> Yes
               </Typography>
               <Typography variant="body2">
                 <strong>Date:</strong> {new Date(backupData.timestamp).toLocaleString()}
@@ -442,43 +470,36 @@ export const RestoreFromBackupPage: React.FC = () => {
             </Paper>
           )}
 
-          {backupData?.encrypted && (
-            <TextField
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              label="Backup Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter backup password"
-              sx={{ mb: 3 }}
-              InputProps={{
-                endAdornment: (
-                  <Box
-                    sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </Box>
-                ),
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && password) {
-                  void handleRestore();
-                }
-              }}
-            />
-          )}
+          <TextField
+            fullWidth
+            type={showPassword ? 'text' : 'password'}
+            label="Backup Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter backup password"
+            sx={{ mb: 3 }}
+            InputProps={{
+              endAdornment: (
+                <Box
+                  sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </Box>
+              ),
+            }}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && password) {
+                void handleRestore();
+              }
+            }}
+          />
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button variant="secondary" onClick={() => setActiveStep(0)} fullWidth>
               Back
             </Button>
-            <Button
-              variant="primary"
-              onClick={handleRestore}
-              disabled={backupData?.encrypted && !password}
-              fullWidth
-            >
+            <Button variant="primary" onClick={handleRestore} disabled={!password} fullWidth>
               {isProcessing ? 'Restoring...' : 'Restore Wallet'}
             </Button>
           </Box>
@@ -502,7 +523,7 @@ export const RestoreFromBackupPage: React.FC = () => {
             {restoredAccounts} account{restoredAccounts !== 1 ? 's' : ''} restored from backup
           </Typography>
 
-          {backupData && backupData.data.accounts.length > 0 && (
+          {restoredAccounts > 0 && (
             <Paper
               sx={{
                 background:
@@ -518,23 +539,23 @@ export const RestoreFromBackupPage: React.FC = () => {
                 Restored Accounts:
               </Typography>
               <List dense>
-                {backupData.data.accounts.slice(0, 5).map((account) => (
-                  <ListItem key={account.address} sx={{ py: 0.5 }}>
-                    <ListItemIcon sx={{ minWidth: 36 }}>
-                      <AccountCircle fontSize="small" color="primary" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={account.name || 'Unnamed Account'}
-                      secondary={`${account.address.slice(0, 12)}...${account.address.slice(-8)}`}
-                      primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
-                      secondaryTypographyProps={{ variant: 'caption' }}
-                    />
-                  </ListItem>
-                ))}
-                {backupData.data.accounts.length > 5 && (
+                {Object.entries(restoredUsers)
+                  .slice(0, 5)
+                  .map(([hash, meta]) => (
+                    <ListItem key={hash} sx={{ py: 0.5 }}>
+                      <ListItemIcon sx={{ minWidth: 36 }}>
+                        <AccountCircle fontSize="small" color="primary" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={meta.name ?? 'Unnamed Account'}
+                        primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
+                      />
+                    </ListItem>
+                  ))}
+                {restoredAccounts > 5 && (
                   <ListItem>
                     <ListItemText
-                      primary={`... and ${backupData.data.accounts.length - 5} more`}
+                      primary={`... and ${restoredAccounts - 5} more`}
                       primaryTypographyProps={{ color: 'text.secondary', variant: 'caption' }}
                     />
                   </ListItem>
@@ -544,7 +565,7 @@ export const RestoreFromBackupPage: React.FC = () => {
           )}
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Redirecting to wallet in 3 seconds...
+            Sign in with your wallet password to access your accounts.
           </Typography>
 
           <Button
