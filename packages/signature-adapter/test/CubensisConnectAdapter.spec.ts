@@ -23,7 +23,7 @@ const keeperMock = {
     data: 'test',
     host: 'www.yandex.ru',
     name: 'test',
-    prefix: 'DCCWalletAuthentication',
+    prefix: 'DccWalletAuthentication',
     publicKey: 'FNFBjt2Z3PS3wkDyJeoChGWde6pUvMkGGA3A3kBKzM28',
     signature:
       '3xvbSznhRTgDP5vMSoPpqwVf29hSdDQLFpdbtVaMHCyzuFFEgSodB7MXZTescxcYiVtR9wCgTGmZPWTApMVMg6qP',
