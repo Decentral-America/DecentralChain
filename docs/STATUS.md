@@ -260,7 +260,7 @@ All 22 SDK libraries have:
 
 **Remaining open:**
 - 6 test files for 406 source files (low coverage ratio)
-- `RestoreFromBackupPage`: restore logic has a `setTimeout` placeholder — the backup import flow is not fully wired; `Seed.decrypt`, `addAccount`, and `navigate` all exist but the async chain is incomplete
+- ~~`RestoreFromBackupPage`: restore logic has a `setTimeout` placeholder — the backup import flow is not fully wired~~ ✅ Fixed `ef3326c99` — v4.0 vault-snapshot backup format; `BackupSettings` now reads/writes the correct `multiAccount*` keys; `RestoreFromBackupPage` decrypts, verifies SHA-256 checksum, and atomically restores the vault; `setTimeout` navigation removed
 - Matcher signature authentication TODO in `matcherService.ts` — blocked on node
 
 #### scanner (Block Explorer)
