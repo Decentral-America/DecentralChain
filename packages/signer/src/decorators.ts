@@ -14,35 +14,31 @@ const getErrorHandler = (signer: TSigner): ErrorHandler => {
   return signer._handleError;
 };
 
-export const ensureProvider = (
-  _target: unknown,
-  _propertyKey: string,
-  descriptor: PropertyDescriptor,
-): void => {
-  const origin = descriptor.value;
-
-  descriptor.value = function (this: TSigner, ...args: unknown[]): unknown {
-    const provider = this.currentProvider;
-
-    if (!provider) {
+export function ensureProvider<This extends TSigner, Args extends unknown[], Return>(
+  target: (this: This, ...args: Args) => Return,
+  context: ClassMethodDecoratorContext,
+): (this: This, ...args: Args) => Return {
+  const methodName = String(context.name);
+  return function (this: This, ...args: Args): Return {
+    if (!this.currentProvider) {
       const handler = getErrorHandler(this);
-      const error = handler(ERRORS.ENSURE_PROVIDER, [_propertyKey]);
+      const error = handler(ERRORS.ENSURE_PROVIDER, [methodName]);
       throw error;
     }
-
-    return origin.apply(this, args);
+    return target.call(this, ...args);
   };
-};
+}
 
-export const catchProviderError = (
-  _target: unknown,
-  _propertyKey: string,
-  descriptor: PropertyDescriptor,
-): void => {
-  const origin = descriptor.value;
-
-  descriptor.value = function (this: TSigner, ...args: unknown[]): unknown {
-    return origin.apply(this, args).catch((e: unknown) => {
+export function catchProviderError<This extends TSigner, Args extends unknown[], Return>(
+  target: (this: This, ...args: Args) => Return,
+  _context: ClassMethodDecoratorContext,
+): (this: This, ...args: Args) => Return {
+  return function (this: This, ...args: Args): Return {
+    const result = target.call(this, ...args);
+    if (!(result instanceof Promise)) {
+      return result;
+    }
+    return result.catch((e: unknown) => {
       if (e === 'Error: User rejection!') {
         return Promise.reject(e);
       }
@@ -57,24 +53,21 @@ export const catchProviderError = (
       this._logger?.error(error);
 
       return Promise.reject(e);
-    });
+    }) as unknown as Return;
   };
-};
+}
 
-export const checkAuth = (
-  _target: unknown,
-  _propertyKey: string,
-  descriptor: PropertyDescriptor,
-): void => {
-  const origin = descriptor.value;
-
-  descriptor.value = function (this: TSigner, ...args: unknown[]): unknown {
+export function checkAuth<This extends TSigner, Args extends unknown[], Return>(
+  target: (this: This, ...args: Args) => Return,
+  context: ClassMethodDecoratorContext,
+): (this: This, ...args: Args) => Return {
+  const methodName = String(context.name);
+  return function (this: This, ...args: Args): Return {
     if (this.currentProvider?.user == null) {
       const handler = getErrorHandler(this);
-      const error = handler(ERRORS.NOT_AUTHORIZED, [_propertyKey]);
+      const error = handler(ERRORS.NOT_AUTHORIZED, [methodName]);
       throw error;
     }
-
-    return origin.apply(this, args);
+    return target.call(this, ...args);
   };
-};
+}
