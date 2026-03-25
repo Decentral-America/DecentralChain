@@ -256,7 +256,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 |-------|----------|---------------|
 | `'WAVES'` | Native asset sentinel in API responses and transaction data | All nodes, SDKs, and DApps expect this string. Client-side sentinel — node returns `null` for native asset. 60+ references across 20+ files. Display name shows "DCC" in UIs. |
 | `package waves;` | Protobuf namespace in `.proto` files | Wire format for gRPC and `Any` types. Nodes expect `waves.Transaction` on the wire. Renaming breaks all gRPC clients and serialization. |
-| `'WavesWalletAuthentication'` | Signing domain separator for message authentication | Cryptographic domain separator used in `wavesAuth`/`dccAuth`. Changing invalidates all existing signed auth messages in the wild. |
+| `'DccWalletAuthentication'` | Signing domain separator for message authentication | DCC canonical auth prefix. Unified across cubensis-connect, @decentralchain/transactions, and @decentralchain/signature-adapter in commit 86abbf880 (Mar 24, 2026). |
 | `'WAVES'` in Ledger APDU | Hardware wallet firmware constant | Burned into Ledger device app. Would require custom Ledger app submission. |
 | BIP-44 coin type `5741564` | HD wallet derivation path | Intentional — DCC users keep their existing Waves-derived keys. |
 
@@ -265,7 +265,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 | Reference | Reason | Locations |
 |-----------|--------|-----------|
 | `'WAVES'` asset ID | Client sentinel for native asset | All SDK packages |
-| `'WavesWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts` |
+| `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/transactions/src/requests/auth.ts`, `packages/signature-adapter/src/prepareTx/constants.ts` |
 | Protobuf `waves` namespace | Wire-format package name | `protobuf-serialization/proto/waves/**` |
 | `@waves/ride-lang` + `@waves/ride-repl` | Chain-agnostic Scala.js binaries — same bytecode works on any Waves-protocol chain | `ride-js/package.json` |
 | Third-party NFT URLs | External services (wavesducks.com, puzzlemarket.org, sign-art.app) — community projects | `cubensis-connect` NFT vendor files |

@@ -237,7 +237,7 @@ Then update `docs/UPSTREAM.md` §19:
 
 - **Do NOT cherry-pick** — the repos share history but have diverged in structure. Manual application is safer.
 - **Do NOT blindly port all changes** — evaluate each commit. Most Renovate bumps and tooling changes are noise.
-- **Do NOT rename wire-format constants** — `'WAVES'` asset ID, `waves` protobuf namespace, `'WavesWalletAuthentication'` prefix, `'WAVES'` Ledger secret, BIP-44 path `44'/5741560'` must stay as-is.
+- **Do NOT rename wire-format constants** — `'WAVES'` asset ID, `waves` protobuf namespace, `'WAVES'` Ledger secret, BIP-44 path `44'/5741560'` must stay as-is. Note: `'DccWalletAuthentication'` is the DCC auth prefix (unified Mar 24, 2026) — do not revert to `'WavesWalletAuthentication'`.
 - **Do NOT port CJS additions** — DCC is ESM-only.
 - **Do NOT port `@keeper-wallet/waves-crypto` imports** — cubensis-connect uses `@decentralchain/crypto` now (DCC-59, DCC-70).
 
@@ -249,7 +249,7 @@ These Waves-branded strings are protocol constants — renaming them breaks the 
 |----------|-------|-----|
 | `'WAVES'` | Asset ID everywhere | On-chain protocol identifier |
 | `package waves;` | `.proto` files | Binary wire format |
-| `'WavesWalletAuthentication'` | Auth signing | Cryptographic domain separator |
+| `'DccWalletAuthentication'` | Auth signing | DCC canonical auth domain separator (unified Mar 24, 2026). Do NOT revert to `'WavesWalletAuthentication'`. |
 | `'WAVES'` | Ledger APDU | Hardware wallet firmware |
 | `44'/5741560'` | HD derivation | BIP-44 standard path |
 
