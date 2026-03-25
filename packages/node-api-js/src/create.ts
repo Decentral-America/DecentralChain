@@ -7,6 +7,7 @@ import * as blocksModule from './api-node/blocks';
 import * as consensusModule from './api-node/consensus';
 import * as debugModule from './api-node/debug';
 import * as ethModule from './api-node/eth';
+import * as finalizationModule from './api-node/finalization';
 import * as leasingModule from './api-node/leasing';
 import * as nodeModule from './api-node/node';
 import * as peersModule from './api-node/peers';
@@ -21,6 +22,7 @@ import getTransactionsWithAssets from './tools/adresses/getTransactionsWithAsset
 import createWatch from './tools/adresses/watch';
 import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
+import * as matcherOrderModule from './tools/matcher/order';
 import parse from './tools/parse';
 import query from './tools/query';
 import request from './tools/request';
@@ -66,6 +68,7 @@ export function create(base: string) {
   const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
   const consensus: TWrapRecord<typeof consensusModule> = wrapRecord(base, consensusModule);
   const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
+  const finalization: TWrapRecord<typeof finalizationModule> = wrapRecord(base, finalizationModule);
   const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
   const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
   const eth: TWrapRecord<typeof ethModule> = wrapRecord(base, ethModule);
@@ -81,6 +84,9 @@ export function create(base: string) {
     blocks: {
       getNetworkByte: wrapRequest(base, getNetworkByte),
       getNetworkCode: wrapRequest(base, getNetworkCode),
+    },
+    matcher: {
+      order: wrapRecord(base, matcherOrderModule),
     },
     parse,
     query,
@@ -102,6 +108,7 @@ export function create(base: string) {
     consensus,
     debug,
     eth,
+    finalization,
     leasing,
     node,
     peers,
