@@ -3,7 +3,12 @@ import { fetchBalanceDetails } from '@decentralchain/node-api-js/api-node/addres
 import { fetchAssetsBalance } from '@decentralchain/node-api-js/api-node/assets';
 import { TRANSACTION_TYPE, type Transaction, type TransactionType } from '@decentralchain/ts-types';
 import { DEFAULT_OPTIONS } from './constants.js';
-import { catchProviderError, checkAuth, ensureProvider } from './decorators.js';
+import {
+  catchProviderError,
+  checkAuthAsync,
+  ensureProvider,
+  ensureProviderAsync,
+} from './decorators.js';
 import { type ErrorHandler, errorHandlerFactory } from './helpers.js';
 import { type IConsole, makeConsole, makeOptions } from './logger.js';
 import { ERRORS } from './SignerError.js';
@@ -253,8 +258,8 @@ export class Signer {
    * await signer.getBalance();
    * ```
    */
-  @ensureProvider
-  @checkAuth
+  @ensureProviderAsync
+  @checkAuthAsync
   public getBalance(): Promise<Array<Balance>> {
     const userData = this._userData;
     if (!userData) throw new Error('User not authenticated');
@@ -306,7 +311,7 @@ export class Signer {
    * await signer.login();
    * ```
    */
-  @ensureProvider
+  @ensureProviderAsync
   public login(): Promise<UserData> {
     const provider = this.currentProvider;
     if (!provider) throw new Error('Provider not set');
@@ -328,7 +333,7 @@ export class Signer {
   }
 
   /** Log out the current user. */
-  @ensureProvider
+  @ensureProviderAsync
   public async logout(): Promise<void> {
     await this._connectPromise;
 
@@ -348,19 +353,19 @@ export class Signer {
   // ---------------------------------------------------------------------------
 
   /** Sign a message (the provider may add a prefix). */
-  @ensureProvider
+  @ensureProviderAsync
   public signMessage(message: string | number): Promise<string> {
     return this._connectPromise.then((provider) => provider.signMessage(message));
   }
 
   /** Sign an exchange order. */
-  @ensureProvider
+  @ensureProviderAsync
   public signOrder(order: TOrderArgs): Promise<TSignedOrder> {
     return this._connectPromise.then((provider) => provider.signOrder(order));
   }
 
   /** Sign typed data. */
-  @ensureProvider
+  @ensureProviderAsync
   public signTypedData(data: Array<TypedData>): Promise<string> {
     return this._connectPromise.then((provider) => provider.signTypedData(data));
   }
