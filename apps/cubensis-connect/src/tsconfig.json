@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "lib": ["ES2025", "DOM"],
     "paths": {
       "#_core": ["./_core/index.ts"],
       "#_core/*": ["./_core/*"],
@@ -29,9 +28,7 @@
       "#swap/*": ["./swap/*"],
       "#ui/*": ["./ui/*"],
       "#wallets/*": ["./wallets/*"]
-    },
-    "skipLibCheck": true,
-    "types": ["vite/client"]
+    }
   },
   "extends": "../tsconfig.base",
   "include": [".", "../types"]
