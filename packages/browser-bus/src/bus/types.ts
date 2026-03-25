@@ -1,15 +1,17 @@
 /** Message type discriminator. */
-export enum EventType {
-  Event = 0,
-  Action = 1,
-  Response = 2,
-}
+export const EventType = {
+  Action: 1,
+  Event: 0,
+  Response: 2,
+} as const;
+export type EventType = (typeof EventType)[keyof typeof EventType];
 
 /** Response status discriminator. */
-export enum ResponseStatus {
-  Success = 0,
-  Error = 1,
-}
+export const ResponseStatus = {
+  Error: 1,
+  Success: 0,
+} as const;
+export type ResponseStatus = (typeof ResponseStatus)[keyof typeof ResponseStatus];
 
 /** Channel identifier type. */
 export type TChannelId = string | number;
@@ -19,7 +21,7 @@ export type IOneArgFunction<T, R> = (data: T) => R;
 
 /** Event message shape. */
 export interface IEventData {
-  type: EventType.Event;
+  type: typeof EventType.Event;
   channelId?: TChannelId | undefined;
   name: string | number | symbol;
   data?: unknown;
@@ -29,7 +31,7 @@ export interface IEventData {
 export interface IRequestData {
   id: string | number;
   channelId?: TChannelId | undefined;
-  type: EventType.Action;
+  type: typeof EventType.Action;
   name: string | number | symbol;
   data?: unknown;
 }
@@ -38,7 +40,7 @@ export interface IRequestData {
 export interface IResponseData {
   id: string | number;
   channelId?: TChannelId | undefined;
-  type: EventType.Response;
+  type: typeof EventType.Response;
   status: ResponseStatus;
   content: unknown;
 }

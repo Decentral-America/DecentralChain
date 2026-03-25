@@ -1,8 +1,8 @@
-export enum AdapterType {
-  Seed = 'seed',
-  PrivateKey = 'privateKey',
-  CubensisConnect = 'cubensisConnect',
-  Ledger = 'ledger',
-  Tresor = 'tresor',
-  Custom = 'custom',
-}
+export const AdapterType = {
+  CubensisConnect: 'cubensisConnect',
+  Custom: 'custom',
+  Ledger: 'ledger',
+  PrivateKey: 'privateKey',
+  Seed: 'seed',
+} as const;
+export type AdapterType = (typeof AdapterType)[keyof typeof AdapterType];
