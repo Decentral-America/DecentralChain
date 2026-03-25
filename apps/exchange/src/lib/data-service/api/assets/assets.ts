@@ -32,7 +32,7 @@ export function get(assets: string | Array<string>): Promise<Asset | Asset[]> {
     })
     .then((list: Array<Asset>) => {
       const rewriteAssets = configGet('rewriteAssets') || {};
-      if (!rewriteAssets || !list || !list.map) {
+      if (!rewriteAssets || !list?.map) {
         return list;
       }
 

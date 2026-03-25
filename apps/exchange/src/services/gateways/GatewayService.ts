@@ -206,7 +206,7 @@ export class GatewayService {
     targetAddress: string,
   ): Promise<IGatewayDetails | null> {
     const provider = this.getProvider(asset);
-    if (!provider || !provider.getSendDetails) {
+    if (!provider?.getSendDetails) {
       return null;
     }
 
@@ -226,7 +226,7 @@ export class GatewayService {
    */
   validateAddress(asset: GatewayAsset, address: string): boolean {
     const gatewayConfig = NetworkConfig.getGatewayConfig(asset.id);
-    if (!gatewayConfig || !gatewayConfig.regex) {
+    if (!gatewayConfig?.regex) {
       return false;
     }
 

@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Matches Angular: User._onChangePropsForSave() lines 909-919
    */
   useEffect(() => {
-    if (!user || !user.hash) return;
+    if (!user?.hash) return;
 
     // Debounce settings save (500ms)
     const timer = setTimeout(() => {
@@ -284,7 +284,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    */
   const shouldRefreshMatcherSign = useCallback(
     (matcherSign?: { timestamp: number; signature: string }): boolean => {
-      if (!matcherSign || !matcherSign.timestamp || !matcherSign.signature) {
+      if (!matcherSign?.timestamp || !matcherSign.signature) {
         return true; // No signature or incomplete
       }
 

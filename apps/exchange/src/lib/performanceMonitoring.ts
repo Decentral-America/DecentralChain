@@ -238,7 +238,7 @@ export const initPerformanceMonitoring = (options: PerformanceMonitoringConfig =
  * Track navigation timing metrics
  */
 const trackNavigationTiming = (): void => {
-  if (!window.performance || !window.performance.timing) {
+  if (!window.performance?.timing) {
     return;
   }
 
@@ -285,7 +285,7 @@ const trackNavigationTiming = (): void => {
  * Track resource timing metrics
  */
 const trackResourceTiming = (): void => {
-  if (!window.performance || !window.performance.getEntriesByType) {
+  if (!window.performance?.getEntriesByType) {
     return;
   }
 
@@ -346,7 +346,7 @@ const trackResourceTiming = (): void => {
  * ```
  */
 export const markPerformance = (name: string): void => {
-  if (!window.performance || !window.performance.mark) {
+  if (!window.performance?.mark) {
     return;
   }
 
@@ -382,7 +382,7 @@ export const measurePerformance = (
   startMark: string,
   endMark?: string,
 ): number | null => {
-  if (!window.performance || !window.performance.measure) {
+  if (!window.performance?.measure) {
     return null;
   }
 
@@ -455,7 +455,7 @@ export const getMemoryUsage = (): {
   jsHeapSizeLimit: number;
 } | null => {
   //@ts-expect-error - memory API is not standard
-  if (!window.performance || !window.performance.memory) {
+  if (!window.performance?.memory) {
     return null;
   }
 

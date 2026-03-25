@@ -41,7 +41,7 @@ export const getAddressByAlias = async (alias: string): Promise<string> => {
 
     logger.debug(`[aliasService] Successfully resolved alias "${alias}" to:`, result);
 
-    if (!result || !result.address) {
+    if (!result?.address) {
       throw new Error(`Alias "${alias}" resolved but no address returned`);
     }
 
