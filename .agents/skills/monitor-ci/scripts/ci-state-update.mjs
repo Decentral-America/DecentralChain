@@ -26,9 +26,7 @@ function getArg(name) {
   return idx !== -1 && idx + 1 < args.length ? args[idx + 1] : null;
 }
 
-function output(result) {
-  console.log(JSON.stringify(result));
-}
+function output(_result) {}
 
 // --- gate ---
 // Check if an action is allowed and return incremented counter.
@@ -104,11 +102,11 @@ function postAction() {
   const agentTriggered = action !== 'fix-auto-applying';
 
   output({
-    waitMode: true,
-    pollCount: 0,
-    lastCipeUrl: trackByCipeUrl ? cipeUrl : null,
-    expectedCommitSha: trackByCommitSha ? commitSha : null,
     agentTriggered,
+    expectedCommitSha: trackByCommitSha ? commitSha : null,
+    lastCipeUrl: trackByCipeUrl ? cipeUrl : null,
+    pollCount: 0,
+    waitMode: true,
   });
 }
 
@@ -133,13 +131,11 @@ function cycleCheck() {
   const approachingLimit = cycleCount >= maxCycles - 2;
 
   output({
-    cycleCount,
     agentTriggered: false,
-    envRerunCount,
     approachingLimit,
-    message: approachingLimit
-      ? `Approaching cycle limit (${cycleCount}/${maxCycles})`
-      : null,
+    cycleCount,
+    envRerunCount,
+    message: approachingLimit ? `Approaching cycle limit (${cycleCount}/${maxCycles})` : null,
   });
 }
 

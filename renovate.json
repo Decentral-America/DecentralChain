@@ -24,10 +24,10 @@
       "matchPackageNames": ["@biomejs/biome"]
     },
     {
-      "allowedVersions": ">=5.0.0 <6.0.0",
+      "allowedVersions": ">=6.0.0 <7.0.0",
       "automerge": false,
       "dependencyDashboardApproval": true,
-      "description": "Group TypeScript — restrict to v5.x; v6 is a major language version and must be manually adopted after evaluation",
+      "description": "Group TypeScript — keep within v6.x; v7 is a future major and must be manually adopted after evaluation",
       "groupName": "TypeScript",
       "matchPackageNames": ["typescript"]
     },

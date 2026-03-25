@@ -62,7 +62,7 @@ jobs:
         run: npx nx affected -t biome-lint
 
       - name: Typecheck (affected)
-        run: npx nx affected -t typecheck --exclude=cubensis-connect
+        run: npx nx affected -t typecheck
 
       - name: Build (affected)
         run: npx nx affected -t build
