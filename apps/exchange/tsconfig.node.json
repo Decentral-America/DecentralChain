@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "erasableSyntaxOnly": true,
-    "lib": ["ES2024"],
+    "lib": ["ES2025"],
     "noUnusedParameters": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "types": ["node"],
-    "verbatimModuleSyntax": true
+    "types": ["node"]
   },
   "extends": "./tsconfig.base.json",
   "include": ["vite.config.ts"]
