@@ -71,7 +71,7 @@ export class PrivateKeyWallet extends Wallet<WalletPrivateDataOfType<'privateKey
     };
   }
 
-  async getPrivateKey() {
+  override async getPrivateKey() {
     return base58Decode(this.data.privateKey);
   }
 

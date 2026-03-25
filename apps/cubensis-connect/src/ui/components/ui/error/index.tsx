@@ -12,7 +12,7 @@ const Errors = ({
 }) => {
   const { t } = useTranslation();
 
-  if (!show || !errors || !errors.length) {
+  if (!show || !errors?.length) {
     return null;
   }
 

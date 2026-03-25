@@ -82,7 +82,7 @@ export class NotificationsController extends EventEmitter {
     const { notification_title_max, notification_message_max, notification_interval_min } =
       this.#getMessagesConfig();
 
-    if (!data || !data.origin) {
+    if (!data?.origin) {
       throw ERRORS.NOTIFICATION_DATA_ERROR();
     }
 

@@ -1119,7 +1119,7 @@ class BackgroundService extends EventEmitter {
     let port: Browser.Runtime.Port | null = sourcePort;
     const { sender } = port;
 
-    if (!sender || !sender.url) {
+    if (!sender?.url) {
       return;
     }
 
