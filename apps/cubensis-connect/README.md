@@ -306,7 +306,7 @@ Possible errors:
 
 <details><summary><a id="validity"></a><b>How to check signature validity</b></summary>
 
-Signed data consists of three parts: `prefix` (`WavesWalletAuthentication` string) + `host` + provided data. All strings are converted to `length bytes` + `value bytes` as in Data Transactions. Prefix string and the host is required for security purposes if malicious service tries to use data and signature.
+Signed data consists of three parts: `prefix` (`DccWalletAuthentication` string) + `host` + provided data. All strings are converted to `length bytes` + `value bytes` as in Data Transactions. Prefix string and the host is required for security purposes if malicious service tries to use data and signature.
 
 We also suggest address validation in case the signature and public key is valid but the address was swapped.
 
@@ -367,7 +367,7 @@ def str_with_length(string_data):
 
 
 def signed_data(host, data):
-    prefix = 'WavesWalletAuthentication'
+    prefix = 'DccWalletAuthentication'
     return str_with_length(prefix) + str_with_length(host) + str_with_length(data)
 
 
@@ -421,7 +421,7 @@ use deemru\WavesKit;
 
 function signed_data( $host, $data )
 {
-    $prefix = 'WavesWalletAuthentication';
+    $prefix = 'DccWalletAuthentication';
     return str_with_length($prefix) . str_with_length($host) . str_with_length($data);
 }
 

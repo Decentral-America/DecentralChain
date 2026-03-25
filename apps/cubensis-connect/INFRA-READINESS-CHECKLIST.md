@@ -86,18 +86,7 @@
 
 **Owner:** Protocol + SDK
 
-### Needed from protocol team
-
-- Decision: keep `WavesWalletAuthentication` indefinitely, or introduce `DccWalletAuthentication`
-- If introducing new prefix:
-  - rollout plan (version gate)
-  - backward compatibility behavior
-  - signed-message verification matrix
-
-### Unblock criteria
-
-- ADR or protocol note published
-- SDK/message format tests updated for decision
+**Resolved (Mar 24, 2026):** `DccWalletAuthentication` adopted as the canonical prefix across all three SDK auth paths. See commit `86abbf880`. No backward-compat fallback needed — the feature was non-functional since the fork (three divergent strings meant zero cross-tool verification was ever possible). All 7 affected files updated; 9 unit tests pass.
 
 ### Affected TODOs
 
