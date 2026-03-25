@@ -1,8 +1,48 @@
 import { reactRouter } from '@react-router/dev/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+
+/**
+ * Stubs browser-only packages for the SSR build environment.
+ *
+ * Rolldown (Vite 8) evaluates CJS module code at bundle time to resolve exports.
+ * leaflet@1.9.4 accesses `window` at the top level of leaflet-src.js and crashes
+ * Node.js during SSR bundling. react-leaflet (ESM v5) transitively imports leaflet.
+ *
+ * This plugin intercepts resolution of these packages when building for SSR and
+ * returns lightweight stubs so Rolldown never evaluates the real modules. The
+ * runtime guard in NetworkMap.tsx (typeof window !== 'undefined') already ensures
+ * the NetworkMapContent chunk is never loaded server-side.
+ */
+function ssrBrowserOnlyStub(): Plugin {
+  const STUBS: Record<string, string> = {
+    leaflet: 'export default {};',
+    'react-leaflet': [
+      'export const MapContainer = () => null;',
+      'export const TileLayer = () => null;',
+      'export const CircleMarker = () => null;',
+      'export const Popup = () => null;',
+      'export const useMap = () => null;',
+    ].join('\n'),
+  };
+
+  return {
+    enforce: 'pre',
+    load(id) {
+      if (id.startsWith('\0ssr-stub:')) {
+        return STUBS[id.slice('\0ssr-stub:'.length)] ?? 'export default {};';
+      }
+    },
+    name: 'dcc:ssr-browser-only-stub',
+    resolveId(id, _importer, opts) {
+      if (opts?.ssr && id in STUBS) {
+        return `\0ssr-stub:${id}`;
+      }
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [reactRouter()],
+  plugins: [ssrBrowserOnlyStub(), reactRouter()],
   resolve: {
     alias: {
       '@/': '/src/',
