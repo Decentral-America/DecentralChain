@@ -78,7 +78,8 @@ export type TTxParams<LONG = string | number> =
   | ISetScriptParams<LONG>
   | ISponsorshipParams<LONG>
   | ITransferParams<LONG>
-  | IUpdateAssetInfoParams<LONG>;
+  | IUpdateAssetInfoParams<LONG>
+  | ICommitToGenerationParams<LONG>;
 
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
@@ -110,6 +111,7 @@ export interface IBasicParams<LONG = string | number> {
    * If not set, 76 ('L' for DecentralChain mainnet) will be used as default
    */
   chainId?: string | number;
+  version?: number;
 }
 
 /**
@@ -340,6 +342,15 @@ export interface IUpdateAssetInfoParams<LONG = string | number> extends IBasicPa
    * New asset description
    */
   description: string;
+}
+
+/**
+ * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
+ */
+export interface ICommitToGenerationParams<LONG = string | number> extends IBasicParams<LONG> {
+  generationPeriodStart: number;
+  endorserPublicKey?: string;
+  commitmentSignature?: string;
 }
 
 export type TTransaction = Exclude<

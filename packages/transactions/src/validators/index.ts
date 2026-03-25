@@ -5,6 +5,7 @@ import { authValidator as auth } from './auth';
 import { burnValidator as burn } from './burn';
 import { cancelLeaseValidator as cancelLease } from './cancel-lease';
 import { cancelOrderValidator as cancelOrder } from './cancel-order';
+import { commitToGeneractionValidator as commitToGeneraction } from './commit-to-generaction';
 import { customDataValidator as customData } from './custom-data';
 import { dataValidator as data, dataFieldValidator } from './data';
 import { authValidator as dccAuth } from './dccAuth';
@@ -27,6 +28,7 @@ export const validate = {
   burn,
   cancelLease,
   cancelOrder,
+  commitToGeneraction,
   customData,
   data,
   dataFieldValidator,

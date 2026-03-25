@@ -4,6 +4,7 @@ import {
   type AliasTransaction,
   type BurnTransaction,
   type CancelLeaseTransaction,
+  type CommitToGenerationTransaction,
   type DataTransaction,
   type ExchangeTransaction,
   type ExchangeTransactionOrder,
@@ -40,6 +41,7 @@ import {
 import { alias } from './transactions/alias';
 import { burn } from './transactions/burn';
 import { cancelLease } from './transactions/cancel-lease';
+import { commitToGeneration } from './transactions/commit-to-generation';
 import { data } from './transactions/data';
 import { exchange } from './transactions/exchange';
 import { invokeScript } from './transactions/invoke-script';
@@ -94,6 +96,9 @@ const txTypeMap: {
   },
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: {
     sign: (x, seed) => updateAssetInfo(x as UpdateAssetInfoTransaction, seed),
+  },
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: {
+    sign: (x, seed) => commitToGeneration(x as CommitToGenerationTransaction, seed),
   },
 };
 
