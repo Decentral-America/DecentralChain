@@ -57,7 +57,7 @@ const getDCCTransactions = (): DCCTransactions => {
 
 const getSeedUtils = () => {
   const dccTransactions = getDCCTransactions();
-  if (!dccTransactions.seedUtils || !dccTransactions.seedUtils.Seed) {
+  if (!dccTransactions.seedUtils?.Seed) {
     throw new Error('seedUtils.Seed not available in DCCTransactions library');
   }
   return dccTransactions.seedUtils;
