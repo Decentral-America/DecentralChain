@@ -25,9 +25,20 @@ function tc39DecoratorsPlugin(): Plugin {
     enforce: 'pre',
     name: 'dcc:tc39-decorators',
     async transform(code, id) {
-      if (!/\.m?tsx?$/.test(id) || !DECORATOR_RE.test(code)) return null;
+      // Match TypeScript sources AND pre-built ESM outputs (.mjs/.js).
+      // Pre-built workspace-package dist files can contain raw TC39 decorator
+      // syntax when the bundler (Rolldown/oxc) passes decorators through
+      // unchanged. Node.js 24 doesn't support TC39 decorators natively
+      // (--js-decorators is still experimental), so we must lower them here.
+      if (!/\.m?[jt]sx?$/.test(id) || !DECORATOR_RE.test(code)) return null;
+      const loader =
+        id.endsWith('.tsx') || id.endsWith('.jsx')
+          ? 'tsx'
+          : id.endsWith('.ts') || id.endsWith('.mts')
+            ? 'ts'
+            : 'js';
       const result = await esbuildTransform(code, {
-        loader: id.endsWith('.tsx') ? 'tsx' : 'ts',
+        loader,
         sourcemap: 'inline',
         supported: { decorators: false },
         target: 'esnext',
@@ -64,7 +75,9 @@ export default defineConfig({
     },
     globals: true,
     include: ['test/**/*.{spec,test}.ts'],
-    reporters: ['default'],
+    reporters: process.env.CI
+      ? ['default', ['junit', { outputFile: 'test-results/junit.xml' }]]
+      : ['default'],
     typecheck: {
       enabled: true,
     },

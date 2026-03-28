@@ -50,6 +50,18 @@ function loadProjects() {
 const projects = loadProjects();
 let violations = 0;
 
+// Pre-flight: every SDK package must have a layer: tag.
+// Without it, Number(undefined) = NaN and NaN comparisons always return false,
+// silently bypassing all layer enforcement — so we catch it explicitly here.
+for (const [name, { scope, layer }] of projects) {
+  if (scope === 'sdk' && Number.isNaN(layer)) {
+    console.error(
+      `✗ ${name} (scope:sdk) is missing a "layer:N" nx.tag — add it to package.json nx.tags`,
+    );
+    violations++;
+  }
+}
+
 for (const [name, { scope, layer, deps }] of projects) {
   for (const dep of Object.keys(deps)) {
     const target = projects.get(dep);
@@ -61,8 +73,9 @@ for (const [name, { scope, layer, deps }] of projects) {
       violations++;
     }
 
-    // Rule 2: Layer enforcement — cannot depend on a higher layer
-    if (target.layer > layer) {
+    // Rule 2: Layer enforcement — skip if either side lacks a layer tag
+    // (already reported above; avoids duplicate errors per dependency)
+    if (!Number.isNaN(layer) && !Number.isNaN(target.layer) && target.layer > layer) {
       console.error(`✗ ${name} (layer:${layer}) depends on ${dep} (layer:${target.layer})`);
       violations++;
     }
