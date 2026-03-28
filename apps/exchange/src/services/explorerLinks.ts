@@ -7,7 +7,7 @@
  * Matches Angular's explorer integration patterns.
  */
 
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 
 function getBaseUrl(): string {
   return NetworkConfig.explorer;
@@ -69,5 +69,3 @@ export const ExplorerLinkService = {
     window.open(url, '_blank', 'noopener,noreferrer');
   },
 };
-
-export default ExplorerLinkService;

@@ -169,6 +169,10 @@ interface WalletBackup {
   data: string;
 }
 
+const HiddenInput = styled('input')({
+  display: 'none',
+});
+
 const steps = ['Upload Backup', 'Enter Password', 'Restore Accounts'];
 
 export const RestoreFromBackupPage: React.FC = () => {
@@ -381,11 +385,10 @@ export const RestoreFromBackupPage: React.FC = () => {
             Select your wallet backup file (.json)
           </Typography>
 
-          <input
+          <HiddenInput
             type="file"
             accept=".json"
             onChange={handleFileInputChange}
-            style={{ display: 'none' }}
             id="backup-file-input"
           />
 

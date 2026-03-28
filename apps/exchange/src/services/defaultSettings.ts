@@ -9,7 +9,7 @@
  * - User Settings: Per-account preferences (pinned assets, wallet state, DEX preferences)
  */
 
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 
 /**
@@ -176,8 +176,8 @@ export class DefaultSettings {
   };
 
   constructor(settings?: Partial<UserSettings>, commonSettings?: Partial<CommonSettings>) {
-    this.settings = settings || {};
-    this.commonSettings = commonSettings || {};
+    this.settings = settings ?? {};
+    this.commonSettings = commonSettings ?? {};
   }
 
   /**

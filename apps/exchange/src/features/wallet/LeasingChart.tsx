@@ -1,15 +1,13 @@
 /**
  * Leasing Donut Chart Component
  * Visualizes available, leased out, and leased in DCC balances
- * Uses Victory Charts (React 19 compatible)
+ * Uses @visx/shape Pie (<20 kB tree-shaken vs recharts ~500 kB d3 bundle)
  */
-import { useMemo } from 'react';
-import { VictoryContainer, VictoryPie as VictoryPieBase } from 'victory';
-
-// React 19 type compatibility cast
-const VictoryPie = VictoryPieBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Group } from '@visx/group';
+import { Pie } from '@visx/shape';
+import { useMemo } from 'react';
 
 interface LeasingChartProps {
   available: number; // Available DCC balance in wavelets
@@ -27,21 +25,20 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
   const leasedOutDcc = leasedOut / DCC_DECIMALS;
   const leasedInDcc = leasedIn / DCC_DECIMALS;
 
-  // Memoize chart data to prevent unnecessary re-renders with Recharts
-  const chartData = useMemo(
+  const segments = useMemo(
     () => [
       {
-        color: theme.palette.primary.main,
+        fill: theme.palette.primary.main,
         name: 'Available',
         value: availableDcc,
       },
       {
-        color: theme.palette.warning.light,
+        fill: theme.palette.warning.light,
         name: 'Leased Out',
         value: leasedOutDcc,
       },
       {
-        color: theme.palette.info.light,
+        fill: theme.palette.info.light,
         name: 'Leased In',
         value: leasedInDcc,
       },
@@ -56,43 +53,58 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
     ],
   );
 
-  // Total balance = available + leased out (matches Angular)
-  const totalDcc = chartData.reduce((sum, segment) => sum + segment.value, 0);
+  const totalDcc = segments.reduce((sum, s) => sum + s.value, 0);
   const hasBalance = totalDcc > 0;
 
-  const displayData = chartData.map((segment, index) => ({
-    ...segment,
-    value: hasBalance ? segment.value : index === 0 ? 1 : 0,
-  }));
+  // When balance is zero show a placeholder ring so the donut is always visible
+  const displayData = hasBalance
+    ? segments
+    : segments.map((s, i) => ({ ...s, value: i === 0 ? 1 : 0 }));
+
+  // Fixed SVG dimensions — viewBox scales to fill container
+  const svgSize = 280;
+  const cx = svgSize / 2;
+  const cy = svgSize / 2;
+  const outerR = 110;
+  const innerR = 70;
 
   return (
     <Stack spacing={3} sx={{ height: '100%', position: 'relative' }}>
       <Typography variant="subtitle1" fontWeight={600}>
         DCC Distribution
       </Typography>
-      <Box sx={{ maxWidth: 360, mx: 'auto', position: 'relative', width: '100%' }}>
-        <VictoryPie
-          data={displayData}
-          x="name"
-          y="value"
-          colorScale={displayData.map((segment) => segment.color)}
-          innerRadius={hasBalance ? 80 : 90}
-          labelRadius={120}
-          labels={({ datum }: { datum: { value?: number; [key: string]: unknown } }) =>
-            hasBalance && (datum.value as number) > 0
-              ? `${Math.round(((datum.value as number) / totalDcc) * 100)}%`
-              : ''
-          }
-          style={{
-            labels: {
-              fill: theme.palette.text.secondary,
-              fontFamily: theme.typography.fontFamily,
-              fontSize: 14,
-            },
-          }}
-          padding={{ bottom: 20, left: 20, right: 20, top: 20 }}
-          containerComponent={<VictoryContainer responsive />}
-        />
+      <Box sx={{ flex: 1, maxWidth: 360, mx: 'auto', position: 'relative', width: '100%' }}>
+        {/* SVG scales to parent width; height locked to aspectRatio via viewBox */}
+        <svg
+          viewBox={`0 0 ${svgSize} ${svgSize}`}
+          width="100%"
+          height={svgSize}
+          aria-label="DCC balance distribution donut chart"
+          role="img"
+        >
+          <Group top={cy} left={cx}>
+            <Pie
+              data={displayData}
+              pieValue={(d) => d.value}
+              outerRadius={outerR}
+              innerRadius={innerR}
+              padAngle={hasBalance ? 0.02 : 0}
+            >
+              {(pie) =>
+                pie.arcs.map((arc) => (
+                  <path
+                    key={arc.data.name}
+                    d={pie.path(arc) ?? ''}
+                    fill={arc.data.fill}
+                    stroke={theme.palette.background.paper}
+                    strokeWidth={2}
+                  />
+                ))
+              }
+            </Pie>
+          </Group>
+        </svg>
+        {/* Centre label overlay */}
         <Box
           sx={{
             left: '50%',
@@ -127,11 +139,11 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
         justifyContent="center"
         alignItems="center"
       >
-        {chartData.map((segment) => (
+        {segments.map((segment) => (
           <Stack direction="row" spacing={1} alignItems="center" key={segment.name}>
             <Box
               sx={{
-                bgcolor: segment.color,
+                bgcolor: segment.fill,
                 borderRadius: 1,
                 height: 14,
                 width: 14,

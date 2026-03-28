@@ -88,5 +88,3 @@ export function useCopyToClipboard(
 
   return [copied, copy, error];
 }
-
-export default useCopyToClipboard;

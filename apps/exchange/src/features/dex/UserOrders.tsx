@@ -186,6 +186,20 @@ const OrderTypeBadge = styled.span<{ $type: 'buy' | 'sell' }>`
   text-transform: uppercase;
 `;
 
+const ConfirmBody = styled.div`
+  padding: 16px;
+`;
+
+const ConfirmText = styled.p`
+  margin-bottom: 16px;
+`;
+
+const ConfirmActions = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+`;
+
 /**
  * Status badges mapping
  */
@@ -398,11 +412,11 @@ export const UserOrders: React.FC = () => {
           onClose={() => setCancellingOrderId(null)}
           title="Cancel Order"
         >
-          <div style={{ padding: '16px' }}>
-            <p style={{ marginBottom: '16px' }}>
+          <ConfirmBody>
+            <ConfirmText>
               Are you sure you want to cancel this order? This action cannot be undone.
-            </p>
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            </ConfirmText>
+            <ConfirmActions>
               <Button
                 variant="secondary"
                 size="small"
@@ -419,8 +433,8 @@ export const UserOrders: React.FC = () => {
               >
                 Cancel Order
               </Button>
-            </div>
-          </div>
+            </ConfirmActions>
+          </ConfirmBody>
         </Modal>
       )}
     </OrdersContainer>

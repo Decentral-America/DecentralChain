@@ -6,12 +6,9 @@
 
 import { CheckCircle, ContentCopy } from '@mui/icons-material';
 import { Alert, Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { QRCodeCanvas as QRCodeCanvasBase } from 'qrcode.react';
 import { useEffect, useState } from 'react';
+import { QRCodeCanvas } from '@/components/display/QRCode';
 import { logger } from '@/lib/logger';
-
-// React 19 type compatibility cast
-const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<Record<string, unknown>>;
 
 interface DepositAddressProps {
   /** External blockchain address (e.g., BTC address) */

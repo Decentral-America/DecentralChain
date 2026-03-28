@@ -193,6 +193,12 @@ const HelpText = styled.p`
   margin: 0;
 `;
 
+const EmptyStateText = styled.p`
+  opacity: 0.6;
+  text-align: center;
+  margin: 0;
+`;
+
 /**
  * Format timestamp as relative time
  */
@@ -296,7 +302,7 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
 
       {sortedAccounts.length === 0 && (
         <Stack gap="16px">
-          <p style={{ opacity: 0.6, textAlign: 'center' }}>No accounts found in vault</p>
+          <EmptyStateText>No accounts found in vault</EmptyStateText>
           {onBack && (
             <Button onClick={onBack} variant="secondary" fullWidth>
               Go Back

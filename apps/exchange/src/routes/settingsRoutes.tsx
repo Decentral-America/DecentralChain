@@ -3,7 +3,6 @@
  * Defines routes for application settings and preferences
  */
 import { type RouteObject } from 'react-router-dom';
-import { SettingsPage } from '@/features/settings/SettingsPage';
 
 /**
  * Settings routes structure:
@@ -13,9 +12,13 @@ import { SettingsPage } from '@/features/settings/SettingsPage';
  *   - Network: Node configuration, network selection
  *   - Info: Version, updates, legal information
  *
- * Uses a tabbed interface matching the Angular app structure
+ * Uses a tabbed interface matching the Angular app structure.
+ * Uses React Router v7 `lazy` for code splitting — settings module excluded from main bundle.
  */
 export const settingsRoutes: RouteObject = {
-  element: <SettingsPage />,
+  lazy: async () => {
+    const { SettingsPage } = await import('@/features/settings/SettingsPage');
+    return { Component: SettingsPage };
+  },
   path: 'settings',
 };

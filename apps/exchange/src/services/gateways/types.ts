@@ -121,14 +121,15 @@ export interface GatewayConfig {
 /**
  * Gateway error codes
  */
-export enum GatewayErrorCode {
-  GATEWAY_BLOCKED = 1001,
-  INVALID_ADDRESS = 1002,
-  AMOUNT_TOO_LOW = 1003,
-  AMOUNT_TOO_HIGH = 1004,
-  GATEWAY_UNAVAILABLE = 1005,
-  UNKNOWN_ERROR = 9999,
-}
+export const GatewayErrorCode = {
+  AMOUNT_TOO_HIGH: 1004,
+  AMOUNT_TOO_LOW: 1003,
+  GATEWAY_BLOCKED: 1001,
+  GATEWAY_UNAVAILABLE: 1005,
+  INVALID_ADDRESS: 1002,
+  UNKNOWN_ERROR: 9999,
+} as const;
+export type GatewayErrorCode = (typeof GatewayErrorCode)[keyof typeof GatewayErrorCode];
 
 /**
  * Gateway error type

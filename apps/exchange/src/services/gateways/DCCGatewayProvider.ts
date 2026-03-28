@@ -7,7 +7,7 @@
  */
 
 import { BigNumber } from '@decentralchain/bignumber';
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 import { type GatewayAsset, type IGatewayDetails, type IGatewayService } from './types';
 

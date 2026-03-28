@@ -240,6 +240,27 @@ const ImportLink = styled.p`
   }
 `;
 
+const LedgerTitle = styled.h3`
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px;
+`;
+
+const LedgerSubtext = styled.p`
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.9;
+`;
+
+const ValidationError = styled.div`
+  background: #f443361a;
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  color: #f44336;
+  padding: 12px;
+`;
+
 export const CreateAccount = () => {
   const [seedPhrase] = useState<Seed>(() => Seed.create());
   const [password, setPassword] = useState('');
@@ -399,13 +420,11 @@ export const CreateAccount = () => {
               <LedgerInfoBox onClick={() => navigate('/import/ledger')}>
                 <LedgerIcon>🔐</LedgerIcon>
                 <div>
-                  <h3 style={{ fontSize: '14px', fontWeight: 600, margin: '0 0 4px 0' }}>
-                    Use Ledger Hardware Wallet
-                  </h3>
-                  <p style={{ fontSize: '13px', lineHeight: '1.4', margin: 0, opacity: 0.9 }}>
+                  <LedgerTitle>Use Ledger Hardware Wallet</LedgerTitle>
+                  <LedgerSubtext>
                     For maximum security, use your Ledger Nano device instead of a seed phrase. Your
                     private keys never leave the device.
-                  </p>
+                  </LedgerSubtext>
                 </div>
               </LedgerInfoBox>
 
@@ -453,19 +472,7 @@ export const CreateAccount = () => {
 
           <form onSubmit={handleContinue}>
             <Stack gap="16px">
-              {error && (
-                <div
-                  style={{
-                    background: '#f443361a',
-                    border: '1px solid #f44336',
-                    borderRadius: '8px',
-                    color: '#f44336',
-                    padding: '12px',
-                  }}
-                >
-                  {error}
-                </div>
-              )}
+              {error && <ValidationError>{error}</ValidationError>}
 
               <Input
                 label="Create Password"

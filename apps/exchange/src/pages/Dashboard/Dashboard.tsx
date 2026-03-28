@@ -91,6 +91,7 @@ function mapTxToActivity(tx: DashboardTx, userAddress: string) {
 
   return {
     amount,
+    // biome-ignore lint/nursery/useNullishCoalescing: assetId='' means native DCC asset — semantic || fallback to null is intentional
     assetId: tx.assetId || null,
     isReceived,
     status: 'completed',

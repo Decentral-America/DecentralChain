@@ -636,5 +636,3 @@ export const Portfolio = () => {
     </Box>
   );
 };
-
-export default Portfolio;

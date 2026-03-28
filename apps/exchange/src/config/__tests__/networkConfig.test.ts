@@ -9,7 +9,7 @@
  * config-reading logic with no network calls, mocks, or side effects.
  */
 import { describe, expect, it } from 'vitest';
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 
 describe('NetworkConfig', () => {
   describe('HTTP URL getters', () => {

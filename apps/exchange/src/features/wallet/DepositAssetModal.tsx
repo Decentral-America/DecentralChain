@@ -37,9 +37,9 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
     gatewayService
       .getDepositDetails(
         {
-          displayName: assetName || assetId,
+          displayName: assetName ?? assetId,
           id: assetId,
-          name: assetName || assetId,
+          name: assetName ?? assetId,
           precision: 8,
         },
         user.address,
@@ -67,7 +67,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Deposit ${assetName || assetId}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`Deposit ${assetName ?? assetId}`}>
       {isLoading ? (
         <LoadingContainer>
           <Spinner size="lg" />
@@ -83,7 +83,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
           <Warning>
             <WarningIcon>⚠️</WarningIcon>
             <WarningText>
-              Only send <strong>{assetName || assetId}</strong> to this address. Sending other
+              Only send <strong>{assetName ?? assetId}</strong> to this address. Sending other
               assets will result in permanent loss of funds.
             </WarningText>
           </Warning>
@@ -98,7 +98,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
 
           <QRPlaceholder>
             <QRText>QR Code would display here</QRText>
-            <QRSubtext>Scan to deposit {assetName || assetId}</QRSubtext>
+            <QRSubtext>Scan to deposit {assetName ?? assetId}</QRSubtext>
           </QRPlaceholder>
 
           <InfoSection>

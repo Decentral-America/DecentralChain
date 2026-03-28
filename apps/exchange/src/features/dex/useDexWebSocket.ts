@@ -198,7 +198,7 @@ export const useDexWebSocket = (options?: {
     enableTrades = true,
     enableUserOrders = false,
     userAddress,
-  } = options || {};
+  } = options ?? {};
 
   // Subscribe to order book if enabled
   const orderBookData = useDexOrderBook();

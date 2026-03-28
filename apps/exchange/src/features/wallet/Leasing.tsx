@@ -861,5 +861,3 @@ export const Leasing = () => {
     </Container>
   );
 };
-
-export default Leasing;

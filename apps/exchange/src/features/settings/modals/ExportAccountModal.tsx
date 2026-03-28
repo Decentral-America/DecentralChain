@@ -67,7 +67,32 @@ const ButtonGroup = styled.div`
   justify-content: flex-end;
   margin-top: 20px;
 `;
+const SelectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
 
+const SelectionLabel = styled.span`
+  color: #757575;
+  font-size: 13px;
+  font-weight: 500;
+`;
+
+const SelectionActions = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const TextButton = styled.button`
+  background: none;
+  border: none;
+  color: #2196f3;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  padding: 0;
+`;
 export interface ExportAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -165,47 +190,23 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
 
         {userList.length > 0 && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#757575', fontSize: '13px', fontWeight: 500 }}>
+            <SelectionHeader>
+              <SelectionLabel>
                 Select Accounts ({selectedAddresses.size} of {userList.length})
-              </span>
-              <div style={{ display: 'flex', gap: '12px' }}>
+              </SelectionLabel>
+              <SelectionActions>
                 {selectedAddresses.size !== userList.length && (
-                  <button
-                    type="button"
-                    onClick={selectAll}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#2196f3',
-                      cursor: 'pointer',
-                      font: 'inherit',
-                      fontSize: '13px',
-                      padding: 0,
-                    }}
-                  >
+                  <TextButton type="button" onClick={selectAll}>
                     Select All
-                  </button>
+                  </TextButton>
                 )}
                 {selectedAddresses.size > 0 && (
-                  <button
-                    type="button"
-                    onClick={unselectAll}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#2196f3',
-                      cursor: 'pointer',
-                      font: 'inherit',
-                      fontSize: '13px',
-                      padding: 0,
-                    }}
-                  >
+                  <TextButton type="button" onClick={unselectAll}>
                     Unselect All
-                  </button>
+                  </TextButton>
                 )}
-              </div>
-            </div>
+              </SelectionActions>
+            </SelectionHeader>
 
             <UserList>
               {userList.map((userItem) => (
@@ -237,5 +238,3 @@ export const ExportAccountModal: React.FC<ExportAccountModalProps> = ({ isOpen, 
     </Modal>
   );
 };
-
-export default ExportAccountModal;

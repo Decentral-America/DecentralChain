@@ -4,6 +4,9 @@
  * Zero external dependencies - pure browser APIs
  */
 
+import { useEffect, useState } from 'react';
+import { logger } from '@/lib/logger';
+
 /**
  * Storage Key Type
  */
@@ -278,7 +281,7 @@ export const useSecureStorage = <T = unknown>(
   key: string,
   initialValue?: T,
 ): [T | null, (value: T) => Promise<void>, () => void] => {
-  const [value, setValue] = useState<T | null>(initialValue || null);
+  const [value, setValue] = useState<T | null>(initialValue ?? null);
 
   useEffect(() => {
     void secureStorage.getItem<T>(key).then((stored) => {
@@ -300,7 +303,3 @@ export const useSecureStorage = <T = unknown>(
 
   return [value, setStoredValue, removeStoredValue];
 };
-
-// Import useState and useEffect for the hook
-import { useEffect, useState } from 'react';
-import { logger } from '@/lib/logger';

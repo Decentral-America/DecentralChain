@@ -12,13 +12,9 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
 import { useState } from 'react';
-
-// React 19 type compatibility cast
-const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
-
 import { useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from '@/components/display/QRCode';
 import { useAuth } from '@/contexts/AuthContext';
 import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
 import { useClipboard } from '@/hooks/useClipboard';

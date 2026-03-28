@@ -333,5 +333,3 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
     </RadioGroupContainer>
   </div>
 );
-
-export default Radio;

@@ -47,6 +47,7 @@ export function normalizeUrl(url: string): string {
 }
 
 export function normalizeAssetId(assetId: string | undefined) {
+  // biome-ignore lint/nursery/useNullishCoalescing: empty string assetId is invalid — fall back to DCC_ID sentinel
   return assetId || DCC_ID;
 }
 

@@ -88,6 +88,17 @@ const DangerButton = styled(Button as React.ComponentType<Record<string, unknown
   }
 `;
 
+const FormError = styled.div`
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-radius: 4px;
+  color: #c62828;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  padding: 12px;
+`;
+
 export interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -164,22 +175,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
           </CheckboxLabel>
         </CheckboxContainer>
 
-        {errorMessage && (
-          <div
-            style={{
-              backgroundColor: '#ffebee',
-              border: '1px solid #ef9a9a',
-              borderRadius: '4px',
-              color: '#c62828',
-              fontSize: '13px',
-              lineHeight: 1.5,
-              marginBottom: '8px',
-              padding: '12px',
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
+        {errorMessage && <FormError>{errorMessage}</FormError>}
 
         <ButtonGroup>
           <Button variant="text" onClick={onClose} disabled={isDeleting}>
@@ -193,5 +189,3 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
     </Modal>
   );
 };
-
-export default DeleteAccountModal;

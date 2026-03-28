@@ -476,6 +476,35 @@ const ButtonGroup = styled.div`
   margin-top: 8px;
 `;
 
+const ReviewTitle = styled.h3`
+  margin: 0;
+`;
+
+const StatusHint = styled.p`
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+`;
+
+const TxIdHint = styled.p`
+  color: #999;
+  font-family: monospace;
+  font-size: 12px;
+  margin: 8px 0 0;
+`;
+
+const ErrorIcon = styled.div`
+  align-items: center;
+  background-color: rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  color: #ef4444;
+  display: flex;
+  font-size: 32px;
+  height: 64px;
+  justify-content: center;
+  width: 64px;
+`;
+
 /**
  * Transaction Confirmation Flow Component
  *
@@ -488,7 +517,7 @@ const ButtonGroup = styled.div`
  *   onClose={() => setConfirmOpen(false)}
  *   transactionType="transfer"
  *   params={{ recipient: '3N…', amount: 100000000 }}
- *   onSuccess={(tx) => console.log('Transaction sent:', tx.id)}
+ *   onSuccess={(tx) => logger.info('Transaction sent', tx.id)}
  * />
  * ```
  */
@@ -625,7 +654,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
         return (
           <>
             <Content>
-              <h3 style={{ margin: 0 }}>Review Transaction</h3>
+              <ReviewTitle>Review Transaction</ReviewTitle>
               <ReviewSection>
                 <ReviewRow>
                   <Label>Type</Label>
@@ -651,9 +680,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Signing transaction...</StatusMessage>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-              Please wait while we sign your transaction
-            </p>
+            <StatusHint>Please wait while we sign your transaction</StatusHint>
           </StatusContainer>
         );
 
@@ -662,9 +689,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Broadcasting to network...</StatusMessage>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-              Sending transaction to blockchain
-            </p>
+            <StatusHint>Sending transaction to blockchain</StatusHint>
           </StatusContainer>
         );
 
@@ -673,9 +698,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
           <StatusContainer>
             <Spinner size="lg" />
             <StatusMessage>Waiting for confirmation...</StatusMessage>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-              Transaction ID: {transactionId?.slice(0, 16)}...
-            </p>
+            <StatusHint>Transaction ID: {transactionId?.slice(0, 16)}...</StatusHint>
           </StatusContainer>
         );
 
@@ -685,21 +708,8 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
             <StatusContainer>
               <SuccessIcon>✓</SuccessIcon>
               <StatusMessage>Transaction Successful!</StatusMessage>
-              <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-                Your transaction has been confirmed on the blockchain
-              </p>
-              {transactionId && (
-                <p
-                  style={{
-                    color: '#999',
-                    fontFamily: 'monospace',
-                    fontSize: '12px',
-                    margin: '8px 0 0 0',
-                  }}
-                >
-                  ID: {transactionId}
-                </p>
-              )}
+              <StatusHint>Your transaction has been confirmed on the blockchain</StatusHint>
+              {transactionId && <TxIdHint>ID: {transactionId}</TxIdHint>}
             </StatusContainer>
             <ButtonGroup>
               <Button variant="primary" onClick={handleClose}>
@@ -713,21 +723,7 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
         return (
           <>
             <StatusContainer>
-              <div
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                  borderRadius: '50%',
-                  color: '#EF4444',
-                  display: 'flex',
-                  fontSize: '32px',
-                  height: '64px',
-                  justifyContent: 'center',
-                  width: '64px',
-                }}
-              >
-                ✕
-              </div>
+              <ErrorIcon>✕</ErrorIcon>
               <StatusMessage>Transaction Failed</StatusMessage>
               <ErrorMessage>{error}</ErrorMessage>
             </StatusContainer>

@@ -8,7 +8,7 @@
  * Matches Angular's token filtering functionality.
  */
 
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 
 export interface TokenInfo {
@@ -178,6 +178,7 @@ class TokenFilterService {
     const info = this.getTokenInfo(assetId);
     if (!info) return fallback;
 
+    // biome-ignore lint/nursery/useNullishCoalescing: ticker/name may be '' (empty = no display name) — || fallback chain is intentional
     return info.ticker || info.name || fallback;
   }
 

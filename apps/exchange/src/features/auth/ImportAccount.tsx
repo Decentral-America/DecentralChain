@@ -144,6 +144,18 @@ const ModeTab = styled.button<{ $active: boolean }>`
   }
 `;
 
+const WhiteLink = styled.a`
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+`;
+
+const InheritLink = styled.a`
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+`;
+
 type ImportMode = 'seed' | 'privatekey';
 
 export const ImportAccount = () => {
@@ -256,16 +268,15 @@ export const ImportAccount = () => {
                   </InfoIcon>
                   <div>
                     Using a Ledger hardware wallet?{' '}
-                    <a
+                    <WhiteLink
                       href="/import/ledger"
-                      style={{ color: 'white', fontWeight: 600, textDecoration: 'underline' }}
                       onClick={(e) => {
                         e.preventDefault();
                         void navigate('/import/ledger');
                       }}
                     >
                       Import from Ledger
-                    </a>
+                    </WhiteLink>
                   </div>
                 </InfoBox>
               )}
@@ -342,16 +353,15 @@ export const ImportAccount = () => {
 
               <HelpText>
                 Don&apos;t have a wallet?{' '}
-                <a
+                <InheritLink
                   href="/signup"
-                  style={{ color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={(e) => {
                     e.preventDefault();
                     void navigate('/signup');
                   }}
                 >
                   Create one
-                </a>
+                </InheritLink>
               </HelpText>
             </Stack>
           </form>

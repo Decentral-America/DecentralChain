@@ -170,5 +170,3 @@ export const Change24Large: React.FC<Omit<Change24Props, 'size'>> = (props) => (
 export const Change24NoArrow: React.FC<Omit<Change24Props, 'showArrow'>> = (props) => (
   <Change24 {...props} showArrow={false} />
 );
-
-export default Change24;

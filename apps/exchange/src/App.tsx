@@ -3,6 +3,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import './App.css';
+import { AnnouncementProvider } from '@/components/a11y';
+import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { config } from '@/config';
 import {
   AuthProvider,
@@ -12,18 +14,15 @@ import {
   ThemeProvider,
   ToastProvider,
 } from '@/contexts';
+import { initAnalytics } from '@/lib/analytics';
+import { ErrorBoundary, initErrorMonitoring } from '@/lib/errorMonitoring';
+import { initPerformanceMonitoring } from '@/lib/performanceMonitoring';
 import { queryClient } from '@/lib/react-query';
+import { router } from '@/routes';
 import { GlobalStyles as GlobalStylesBase } from '@/styles';
 
 // React 19 type compatibility cast
 const GlobalStyles = GlobalStylesBase as React.ComponentType<Record<string, unknown>>;
-
-import { AnnouncementProvider } from '@/components/a11y';
-import { PerformanceDashboard } from '@/components/PerformanceDashboard';
-import { initAnalytics } from '@/lib/analytics';
-import { ErrorBoundary, initErrorMonitoring } from '@/lib/errorMonitoring';
-import { initPerformanceMonitoring } from '@/lib/performanceMonitoring';
-import { router } from '@/routes';
 
 function AppContent() {
   // Initialize analytics on mount

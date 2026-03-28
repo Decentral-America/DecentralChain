@@ -97,6 +97,11 @@ const ButtonGroup = styled.div`
   }
 `;
 
+const FieldError = styled.div`
+  color: red;
+  font-size: 14px;
+`;
+
 const AddButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   width: 100%;
   max-width: 200px;
@@ -302,7 +307,7 @@ export const DataTransactionForm: React.FC = () => {
             ))}
 
             {errors.entries && typeof errors.entries.message === 'string' && (
-              <div style={{ color: 'red', fontSize: '14px' }}>{errors.entries.message}</div>
+              <FieldError>{errors.entries.message}</FieldError>
             )}
           </EntriesContainer>
 

@@ -90,6 +90,16 @@ const LedgerButton = styled(Button as React.ComponentType<Record<string, unknown
   }
 `;
 
+const TextButton = styled.button`
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+`;
+
 export const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -274,23 +284,14 @@ export const LoginForm = () => {
 
               <HelpText>
                 Don&apos;t have a wallet?{' '}
-                <button
+                <TextButton
                   type="button"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    font: 'inherit',
-                    padding: 0,
-                    textDecoration: 'underline',
-                  }}
                   onClick={() => {
                     setShowNoAccountModal(true);
                   }}
                 >
                   Create or import one
-                </button>
+                </TextButton>
               </HelpText>
             </Stack>
           </form>

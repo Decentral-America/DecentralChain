@@ -167,6 +167,7 @@ const buildConstraints = (
   audio?: boolean | MediaTrackConstraints,
 ): MediaStreamConstraints => {
   const constraints: MediaStreamConstraints = {
+    // biome-ignore lint/nursery/useNullishCoalescing: audio===false is explicitly disabled; equivalently false either way
     audio: audio || false,
     video: false,
   };

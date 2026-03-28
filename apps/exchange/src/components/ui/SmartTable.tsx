@@ -180,6 +180,7 @@ export const SmartTable = <T extends Record<string, unknown>>({
 
   return (
     <SmartTableContainer className={className} style={style}>
+      {/* biome-ignore lint/nursery/useNullishCoalescing: boolean OR — enableFiltering=false must still show controls when enablePagination=true; ?? would incorrectly short-circuit */}
       {(enableFiltering || enablePagination) && (
         <ControlsBar>
           {enableFiltering && (
@@ -276,5 +277,3 @@ export const SmartTableNoFilters = <T extends Record<string, unknown>>(
 export const SmartTableNoPagination = <T extends Record<string, unknown>>(
   props: Omit<SmartTableProps<T>, 'enablePagination'>,
 ) => <SmartTable {...props} enablePagination={false} />;
-
-export default SmartTable;

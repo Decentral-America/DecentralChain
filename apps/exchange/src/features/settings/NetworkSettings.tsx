@@ -7,7 +7,7 @@ import * as ds from 'data-service';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import networkConfig from '@/config/networkConfig';
+import { NetworkConfig as networkConfig } from '@/config/networkConfig';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
 
@@ -192,5 +192,3 @@ export const NetworkSettings: React.FC = () => {
     </NetworkSection>
   );
 };
-
-export default NetworkSettings;

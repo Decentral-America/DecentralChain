@@ -94,7 +94,7 @@ export const handleApiError = (
     logger.error('API Error:', error);
   }
 
-  // Get error message
+  // biome-ignore lint/nursery/useNullishCoalescing: empty string customMessage means no override — fall through to generated message
   const errorMessage = customMessage || getErrorMessage(error);
 
   // Show toast notification

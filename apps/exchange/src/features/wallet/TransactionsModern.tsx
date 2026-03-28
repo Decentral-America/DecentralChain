@@ -59,5 +59,3 @@ export const TransactionsModern = () => {
     </Box>
   );
 };
-
-export default TransactionsModern;

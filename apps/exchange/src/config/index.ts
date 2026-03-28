@@ -5,7 +5,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import NetworkConfig from './networkConfig';
+import { NetworkConfig } from './networkConfig';
 
 export interface Config {
   // Environment flags

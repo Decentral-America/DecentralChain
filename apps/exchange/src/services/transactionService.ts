@@ -9,25 +9,26 @@ import { logger } from '@/lib/logger';
 /**
  * Transaction Type Enum
  */
-export enum TransactionType {
-  Genesis = 1,
-  Payment = 2,
-  Issue = 3,
-  Transfer = 4,
-  Reissue = 5,
-  Burn = 6,
-  Exchange = 7,
-  Lease = 8,
-  LeaseCancel = 9,
-  Alias = 10,
-  MassTransfer = 11,
-  Data = 12,
-  SetScript = 13,
-  Sponsorship = 14,
-  SetAssetScript = 15,
-  InvokeScript = 16,
-  UpdateAssetInfo = 17,
-}
+export const TransactionType = {
+  Alias: 10,
+  Burn: 6,
+  Data: 12,
+  Exchange: 7,
+  Genesis: 1,
+  InvokeScript: 16,
+  Issue: 3,
+  Lease: 8,
+  LeaseCancel: 9,
+  MassTransfer: 11,
+  Payment: 2,
+  Reissue: 5,
+  SetAssetScript: 15,
+  SetScript: 13,
+  Sponsorship: 14,
+  Transfer: 4,
+  UpdateAssetInfo: 17,
+} as const;
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType];
 
 /**
  * Transaction Status
@@ -54,7 +55,7 @@ export interface Transaction {
  * Transfer Transaction
  */
 export interface TransferTransaction extends Transaction {
-  type: TransactionType.Transfer;
+  type: typeof TransactionType.Transfer;
   recipient: string;
   assetId?: string;
   amount: number;

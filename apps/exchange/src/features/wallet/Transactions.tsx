@@ -173,6 +173,10 @@ const PaginationButtons = styled.div`
   gap: ${(p) => p.theme.spacing.sm};
 `;
 
+const StatusCell = styled.span`
+  text-transform: capitalize;
+`;
+
 export interface Transaction {
   id: string;
   type: 'transfer' | 'receive' | 'send' | 'exchange' | 'swap' | 'lease' | 'cancel_lease';
@@ -504,7 +508,7 @@ export const Transactions = () => {
                     <td>{tx.fee.toFixed(8)}</td>
                     <td>{new Date(tx.timestamp).toLocaleString()}</td>
                     <td>
-                      <span style={{ textTransform: 'capitalize' }}>{tx.status}</span>
+                      <StatusCell>{tx.status}</StatusCell>
                     </td>
                   </tr>
                 ))}
