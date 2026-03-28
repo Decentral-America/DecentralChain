@@ -219,5 +219,3 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
     </SliderContainer>
   );
 };
-
-export default RangeSlider;

@@ -3,9 +3,7 @@
     "allowImportingTsExtensions": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    // App uses TypeScript enums (e.g. errorMonitoring.ts, websocket.ts, gateways/types.ts).
-    // erasableSyntaxOnly cannot be true until those are migrated to const-object style.
-    "erasableSyntaxOnly": false,
+    "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",

@@ -324,6 +324,7 @@ export const BackupSettings: React.FC = () => {
           !password ||
           !confirmPassword ||
           password !== confirmPassword ||
+          // biome-ignore lint/nursery/useNullishCoalescing: boolean OR chain — ?? would short-circuit when isExporting===false, skipping accounts check
           isExporting ||
           accounts.length === 0
         }

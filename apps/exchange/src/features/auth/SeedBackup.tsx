@@ -171,6 +171,15 @@ const InstructionsList = styled.ol`
   }
 `;
 
+const RevealPlaceholder = styled.div`
+  text-align: center;
+`;
+
+const RevealHint = styled.p`
+  color: inherit;
+  margin-top: 12px;
+`;
+
 export const SeedBackup = ({ seedPhrase, onComplete }: SeedBackupProps) => {
   const [revealed, setRevealed] = useState(false);
   const { isCopied, copyToClipboard } = useClipboard();
@@ -253,12 +262,10 @@ For support, visit: https://decentralchain.io/support
                   ))}
                 </SeedPhraseGrid>
               ) : (
-                <div style={{ textAlign: 'center' }}>
+                <RevealPlaceholder>
                   <Icon name={CommonIcons.Info} size={48} color="secondary" />
-                  <p style={{ color: 'inherit', marginTop: '12px' }}>
-                    Click below to reveal your seed phrase
-                  </p>
-                </div>
+                  <RevealHint>Click below to reveal your seed phrase</RevealHint>
+                </RevealPlaceholder>
               )}
             </SeedPhraseBox>
 

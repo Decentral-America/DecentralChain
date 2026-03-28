@@ -273,5 +273,3 @@ export const EnclosedTabs: React.FC<Omit<TabsProps, 'variant'>> = (props) => (
 export const PillTabs: React.FC<Omit<TabsProps, 'variant'>> = (props) => (
   <Tabs {...props} variant="pills" />
 );
-
-export default Tabs;

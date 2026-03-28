@@ -39,6 +39,10 @@
     }
   },
   "linter": {
+    "domains": {
+      "react": "recommended",
+      "test": "recommended"
+    },
     "enabled": true,
     "rules": {
       "complexity": {
@@ -66,6 +70,7 @@
       "style": {
         "noCommonJs": "error",
         "noNamespace": "error",
+        "noNonNullAssertion": "error",
         "useConst": "error",
         "useImportType": {
           "level": "error",
@@ -81,7 +86,8 @@
             "allow": ["warn", "error"]
           }
         },
-        "noControlCharactersInRegex": "off"
+        "noControlCharactersInRegex": "off",
+        "noExplicitAny": "error"
       }
     }
   },
@@ -107,6 +113,31 @@
           },
           "suspicious": {
             "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/components/ErrorBoundary.tsx",
+        "src/components/GlobalKeyboardShortcuts.tsx",
+        "src/components/PerformanceDashboard.tsx",
+        "src/components/atoms/Tooltip.tsx",
+        "src/components/charts/**",
+        "src/components/display/QRCode.tsx",
+        "src/components/landing/CoinsMarquee.tsx",
+        "src/components/modals/AlertModal.tsx",
+        "src/components/modals/ConfirmDialog.tsx",
+        "src/components/notifications/TransactionNotificationsMonitor.tsx",
+        "src/components/skeletons/PageSkeletons.tsx",
+        "src/pages/ErrorPage.tsx",
+        "**/*.stories.tsx",
+        "**/*.stories.ts"
+      ],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noInlineStyles": "off"
           }
         }
       }

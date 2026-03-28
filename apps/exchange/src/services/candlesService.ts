@@ -5,7 +5,7 @@
 
 import { base58Decode, address as buildAddress } from '@decentralchain/ts-lib-crypto';
 import { config } from 'data-service';
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 
 const POLL_DELAY = 800;

@@ -186,6 +186,7 @@ class StyleManagerClass {
    */
   injectCSS(css: string, id?: string): string {
     // Generate ID if not provided
+    // biome-ignore lint/nursery/useNullishCoalescing: empty string id is invalid — generate a new one
     const styleId = id || `style-${++this.styleCounter}`;
 
     // Remove existing style with same ID

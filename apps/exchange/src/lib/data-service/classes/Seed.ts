@@ -38,7 +38,7 @@ export class Seed {
    * @param chainId - Network byte (default: 87 for DCC mainnet)
    */
   constructor(phrase: string, chainId?: number) {
-    const networkByte = chainId || networkCode;
+    const networkByte = chainId ?? networkCode;
 
     this.phrase = phrase;
     const keyPairResult = buildKeyPair(phrase);
@@ -68,7 +68,7 @@ export class Seed {
    * @returns Seed instance restored from phrase
    */
   static fromExistingPhrase(phrase: string, chainId?: number): Seed {
-    return new Seed(phrase, chainId || networkCode);
+    return new Seed(phrase, chainId ?? networkCode);
   }
 
   /**

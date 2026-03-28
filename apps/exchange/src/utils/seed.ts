@@ -96,7 +96,7 @@ export class Seed {
    * @param chainId - Network byte (default: from env or '?')
    */
   constructor(phrase: string, chainId?: string) {
-    const networkByte = chainId || import.meta.env.VITE_NETWORK_BYTE || '?';
+    const networkByte = chainId ?? import.meta.env.VITE_NETWORK_BYTE ?? '?';
     const chainCode = typeof networkByte === 'string' ? networkByte.charCodeAt(0) : networkByte;
     const seedInstance = new SeedClass(phrase, chainCode);
 

@@ -69,5 +69,3 @@ export const logger = {
     console.warn(...sanitize(args));
   },
 };
-
-export default logger;

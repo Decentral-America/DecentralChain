@@ -70,6 +70,7 @@ export const createTransferTransaction = async (
   }
 
   // Convert amount to Money object using moneyFromTokens (matches Angular)
+  // biome-ignore lint/nursery/useNullishCoalescing: assetId='' means native DCC asset — || fallback to 'DCC' string identifier is intentional
   const amountMoney = await ds.moneyFromTokens(params.amount.toString(), params.assetId || 'DCC');
 
   // Get the fee as Money object using wavelets (smallest unit)
@@ -83,11 +84,12 @@ export const createTransferTransaction = async (
   // Create transaction data object (simplified version without dcc.node.transactions)
   const txData = {
     amount: amountMoney,
+    // biome-ignore lint/nursery/useNullishCoalescing: assetId='' means native DCC asset — || null is intentional
     assetId: params.assetId || null,
     attachment: attachmentBytes,
     fee: feeMoney,
     recipient: params.recipient,
-    timestamp: params.timestamp || Date.now(),
+    timestamp: params.timestamp ?? Date.now(),
   };
 
   logger.debug('[createTransferTransaction] Transaction prepared');
@@ -131,7 +133,7 @@ export const createLeaseTransaction = async (
 
   // Convert amount and fee to Money objects
   const amount = await ds.moneyFromCoins(params.amount, 'DCC');
-  const fee = await ds.moneyFromCoins(params.fee || 100000, 'DCC');
+  const fee = await ds.moneyFromCoins(params.fee ?? 100000, 'DCC');
 
   const signable = signApi.makeSignable({
     data: {

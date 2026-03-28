@@ -85,5 +85,3 @@ export function useAutoFocus<T extends HTMLElement>(
 
   return ref;
 }
-
-export default useAutoFocus;

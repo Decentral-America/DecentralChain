@@ -5,7 +5,7 @@
  */
 import * as ds from 'data-service';
 import { logger } from '@/lib/logger';
-import NetworkConfig from './networkConfig';
+import { NetworkConfig } from './networkConfig';
 
 /**
  * Initialize data-service with complete network configuration

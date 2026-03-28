@@ -20,7 +20,7 @@ export const useAssetName = (assetId: string | null | undefined) => {
     data: assetDetails,
     isLoading,
     error,
-  } = useAssetDetails(assetId || '', {
+  } = useAssetDetails(assetId ?? '', {
     enabled: !isDCC,
   });
 

@@ -315,5 +315,3 @@ export const CarouselTriple = (props: Omit<CarouselProps, 'itemsPerView'>) => (
 export const CarouselAutoPlay = (props: Omit<CarouselProps, 'autoPlayInterval'>) => (
   <Carousel {...props} autoPlayInterval={3000} />
 );
-
-export default Carousel;

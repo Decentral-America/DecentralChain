@@ -168,7 +168,7 @@ export const importData = (
  */
 export const downloadJSON = (filename?: string, data?: ExportData): void => {
   try {
-    const exportedData = data || exportData();
+    const exportedData = data ?? exportData();
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
     const defaultFilename = `wallet-export-${timestamp}.json`;
 
@@ -179,6 +179,7 @@ export const downloadJSON = (filename?: string, data?: ExportData): void => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
+    // biome-ignore lint/nursery/useNullishCoalescing: empty string filename is invalid — fall back to default
     a.download = filename || defaultFilename;
     a.style.display = 'none';
     document.body.appendChild(a);
@@ -343,6 +344,7 @@ export const downloadEncrypted = async (password: string, filename?: string): Pr
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
+  // biome-ignore lint/nursery/useNullishCoalescing: empty string filename is invalid — fall back to default
   a.download = filename || defaultFilename;
   a.style.display = 'none';
   document.body.appendChild(a);
