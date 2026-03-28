@@ -309,6 +309,9 @@ importers:
       '@decentralchain/data-service-client-js':
         specifier: workspace:*
         version: link:../../packages/data-service-client-js
+      '@decentralchain/node-api-js':
+        specifier: workspace:*
+        version: link:../../packages/node-api-js
       '@decentralchain/oracle-data':
         specifier: workspace:*
         version: link:../../packages/oracle-data
