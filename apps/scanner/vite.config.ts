@@ -41,8 +41,41 @@ function ssrBrowserOnlyStub(): Plugin {
   };
 }
 
+/**
+ * @react-router/dev@7.x still sets Vite's deprecated `esbuild` config option
+ * (for JSX handling) when running on Vite 8, which now uses oxc by default.
+ * This wrapper strips the `esbuild` key from every plugin config hook in the
+ * react-router plugin suite so Vite 8 does not emit the deprecation warning.
+ * JSX is handled by the explicit `oxc` setting in defineConfig below.
+ * Remove this wrapper once @react-router/dev migrates to the `oxc` option.
+ */
+function withoutEsbuildConfig(plugins: Plugin | Plugin[]): Plugin[] {
+  const arr = Array.isArray(plugins) ? plugins : [plugins];
+  return arr.map((p) => {
+    if (!p.config) return p;
+    const orig = p.config;
+    return {
+      ...p,
+      config: async function (this: unknown, ...args: Parameters<typeof orig>) {
+        const result = await Reflect.apply(orig, this, args);
+        if (result && typeof result === 'object' && 'esbuild' in result) {
+          const { esbuild: _removed, ...rest } = result as Record<string, unknown>;
+          return rest;
+        }
+        return result;
+      },
+    };
+  });
+}
+
 export default defineConfig({
-  plugins: [ssrBrowserOnlyStub(), reactRouter()],
+  // Vite 8 uses oxc for JavaScript transforms. Configure jsx here explicitly.
+  oxc: {
+    jsx: {
+      runtime: 'automatic',
+    },
+  },
+  plugins: [ssrBrowserOnlyStub(), ...withoutEsbuildConfig(reactRouter())],
   resolve: {
     alias: {
       '@/': '/src/',

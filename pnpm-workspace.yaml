@@ -16,3 +16,9 @@ catalog:
 allowBuilds:
   lefthook: false
   nx: false
+
+# Suppress the cyclic workspace dependency warning.
+# node-api-js ↔ transactions: transactions lists node-api-js as a peerDependency;
+# node-api-js lists transactions in devDependencies for test fixtures only.
+# This is intentional – the cycle is test-only and causes no runtime issues.
+ignoreWorkspaceCycles: true

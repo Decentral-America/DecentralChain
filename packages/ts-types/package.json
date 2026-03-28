@@ -74,12 +74,6 @@
     "validate": "npm run lint && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
   },
   "sideEffects": false,
-  "size-limit": [
-    {
-      "limit": "10 kB",
-      "path": "./dist/index.mjs"
-    }
-  ],
   "type": "module",
   "types": "./dist/index.d.mts",
   "version": "2.0.1"

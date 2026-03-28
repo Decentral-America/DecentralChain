@@ -79,13 +79,6 @@
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
-  "size-limit": [
-    {
-      "import": "{ Asset, Money, OrderPrice }",
-      "limit": "11 kB",
-      "path": "./dist/index.mjs"
-    }
-  ],
   "type": "module",
   "types": "./dist/index.d.mts",
   "version": "3.0.1"

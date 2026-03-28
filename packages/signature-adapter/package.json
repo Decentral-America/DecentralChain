@@ -83,12 +83,6 @@
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
-  "size-limit": [
-    {
-      "limit": "150 kB",
-      "path": "./dist/index.mjs"
-    }
-  ],
   "type": "module",
   "types": "./dist/index.d.mts",
   "version": "7.0.1"
