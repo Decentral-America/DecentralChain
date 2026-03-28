@@ -2,9 +2,11 @@ import { QRCodeCanvas as QRCodeCanvasBase, QRCodeSVG as QRCodeSVGBase } from 'qr
 import React from 'react';
 import styled from 'styled-components';
 
-// React 19 type compatibility casts
-const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
-const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<Record<string, unknown>>;
+// React 19 type compatibility casts — single source of truth; import from here rather than casting in consumers
+export const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
+export const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<
+  Record<string, unknown>
+>;
 
 /**
  * QRCode Component
@@ -217,5 +219,3 @@ export const QRCodeLarge: React.FC<Omit<QRCodeProps, 'size'>> = (props) => (
 export const QRCodeForAddress: React.FC<Omit<QRCodeProps, 'label' | 'showWrapper'>> = (props) => (
   <QRCode {...props} label={props.value} showWrapper={true} />
 );
-
-export default QRCode;

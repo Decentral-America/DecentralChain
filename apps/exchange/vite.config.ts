@@ -32,6 +32,12 @@ export default defineConfig({
           if (/node_modules\/(@mui|@emotion)\//.test(id)) {
             return 'mui-core';
           }
+
+          if (/node_modules\/@sentry\//.test(id)) {
+            // Sentry must be in its own chunk, not co-located with feature routes (e.g. Leasing).
+            // Without this, Vite may defer Sentry until a lazy route loads, delaying error capture.
+            return 'sentry';
+          }
         },
       },
     },

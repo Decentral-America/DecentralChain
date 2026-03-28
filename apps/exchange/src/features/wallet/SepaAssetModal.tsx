@@ -16,7 +16,7 @@ interface SepaAssetModalProps {
 
 export function SepaAssetModal({ isOpen, onClose, assetId, assetName }: SepaAssetModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`SEPA Transfer - ${assetName || assetId}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`SEPA Transfer - ${assetName ?? assetId}`}>
       <Content>
         <Warning>
           <WarningIcon>⚠️</WarningIcon>

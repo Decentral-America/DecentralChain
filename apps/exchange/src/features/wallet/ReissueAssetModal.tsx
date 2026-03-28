@@ -90,13 +90,13 @@ export function ReissueAssetModal({
   const isValidAmount = amount && parseFloat(amount) > 0;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Reissue ${assetName || assetId}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`Reissue ${assetName ?? assetId}`}>
       <Content>
         <InfoSection>
           <InfoLabel>Current Supply</InfoLabel>
           <InfoValue>
             {displaySupply.toLocaleString(undefined, { maximumFractionDigits: decimals })}{' '}
-            {assetName || assetId}
+            {assetName ?? assetId}
           </InfoValue>
         </InfoSection>
 
@@ -112,7 +112,7 @@ export function ReissueAssetModal({
               disabled={isProcessing}
               autoFocus
             />
-            <TokenSymbol>{assetName || assetId}</TokenSymbol>
+            <TokenSymbol>{assetName ?? assetId}</TokenSymbol>
           </InputWrapper>
           {amount && (
             <HintText>
@@ -120,7 +120,7 @@ export function ReissueAssetModal({
               {(displaySupply + parseFloat(amount)).toLocaleString(undefined, {
                 maximumFractionDigits: decimals,
               })}{' '}
-              {assetName || assetId}
+              {assetName ?? assetId}
             </HintText>
           )}
         </FormSection>

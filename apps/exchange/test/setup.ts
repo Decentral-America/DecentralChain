@@ -25,7 +25,7 @@ class MockIntersectionObserver {
   disconnect = () => {};
   takeRecords = (): IntersectionObserverEntry[] => [];
 }
-window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
+window.IntersectionObserver = MockIntersectionObserver as typeof IntersectionObserver;
 
 // Mock ResizeObserver
 class MockResizeObserver {
@@ -33,14 +33,14 @@ class MockResizeObserver {
   unobserve = () => {};
   disconnect = () => {};
 }
-window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+window.ResizeObserver = MockResizeObserver as typeof ResizeObserver;
 
 // Mock crypto.subtle for test environment
 if (!window.crypto?.subtle) {
   Object.defineProperty(window, 'crypto', {
     value: {
       getRandomValues: <T extends ArrayBufferView>(array: T): T => {
-        const bytes = array as unknown as Uint8Array;
+        const bytes = array as Uint8Array;
         for (let i = 0; i < bytes.length; i++) {
           bytes[i] = Math.floor(Math.random() * 256);
         }

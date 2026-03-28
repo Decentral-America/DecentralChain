@@ -137,5 +137,3 @@ export const Table = <T extends Record<string, unknown>>({
     </TableContainer>
   );
 };
-
-export default Table;

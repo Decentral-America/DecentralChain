@@ -8,34 +8,36 @@ import { logger } from '@/lib/logger';
 /**
  * WebSocket Connection State
  */
-export enum WebSocketState {
-  CONNECTING = 'connecting',
-  CONNECTED = 'connected',
-  DISCONNECTED = 'disconnected',
-  ERROR = 'error',
-}
+export const WebSocketState = {
+  CONNECTED: 'connected',
+  CONNECTING: 'connecting',
+  DISCONNECTED: 'disconnected',
+  ERROR: 'error',
+} as const;
+export type WebSocketState = (typeof WebSocketState)[keyof typeof WebSocketState];
 
 /**
  * WebSocket Message Types
  */
-export enum MessageType {
+export const MessageType = {
   // Blockchain events
-  BLOCK = 'block',
-  TRANSACTION = 'transaction',
-  MICROBLOCK = 'microblock',
+  BLOCK: 'block',
+  MICROBLOCK: 'microblock',
 
   // DEX events
-  ORDER_BOOK_UPDATE = 'orderbook_update',
-  TRADE = 'trade',
-  ORDER_FILLED = 'order_filled',
-  ORDER_CANCELLED = 'order_cancelled',
+  ORDER_BOOK_UPDATE: 'orderbook_update',
+  ORDER_CANCELLED: 'order_cancelled',
+  ORDER_FILLED: 'order_filled',
+  PING: 'ping',
+  PONG: 'pong',
 
   // System events
-  SUBSCRIBE = 'subscribe',
-  UNSUBSCRIBE = 'unsubscribe',
-  PING = 'ping',
-  PONG = 'pong',
-}
+  SUBSCRIBE: 'subscribe',
+  TRADE: 'trade',
+  TRANSACTION: 'transaction',
+  UNSUBSCRIBE: 'unsubscribe',
+} as const;
+export type MessageType = (typeof MessageType)[keyof typeof MessageType];
 
 /**
  * WebSocket Message Interface

@@ -62,7 +62,16 @@ const ButtonGroup = styled.div`
   justify-content: flex-end;
   margin-top: 20px;
 `;
-
+const FormError = styled.div`
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-radius: 4px;
+  color: #c62828;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+  padding: 12px;
+`;
 export interface ScriptModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -130,22 +139,7 @@ match tx {
           disabled={isLoading}
         />
 
-        {errorMessage && (
-          <div
-            style={{
-              backgroundColor: '#ffebee',
-              border: '1px solid #ef9a9a',
-              borderRadius: '4px',
-              color: '#c62828',
-              fontSize: '13px',
-              lineHeight: 1.5,
-              marginTop: '8px',
-              padding: '12px',
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
+        {errorMessage && <FormError>{errorMessage}</FormError>}
 
         <ButtonGroup>
           <Button variant="text" onClick={onClose} disabled={isLoading}>
@@ -159,5 +153,3 @@ match tx {
     </Modal>
   );
 };
-
-export default ScriptModal;

@@ -3,12 +3,6 @@
  * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases
  */
 import { type RouteObject } from 'react-router-dom';
-import { Portfolio } from '@/features/wallet';
-import { LeasingModern } from '@/features/wallet/LeasingModern';
-import { TransactionsModern } from '@/features/wallet/TransactionsModern';
-import { AliasManagement } from '@/pages/AliasManagement';
-import { Dashboard } from '@/pages/Dashboard';
-import { Wallet } from '@/pages/Wallet';
 
 /**
  * Wallet routes structure:
@@ -18,36 +12,57 @@ import { Wallet } from '@/pages/Wallet';
  *   - /desktop/wallet/assets/:assetId : Individual asset details
  *   - /desktop/wallet/leasing : Leasing management (stake/lease DCC)
  *   - /desktop/wallet/aliases : Alias management (create and view aliases)
+ *
+ * Uses React Router v7 `lazy` for code splitting — all wallet page components
+ * are excluded from the main bundle and loaded on first navigation to that route.
  */
 export const walletRoutes: RouteObject = {
   children: [
     // Dashboard overview at /desktop/wallet
     {
-      element: <Dashboard />,
       index: true,
+      lazy: async () => {
+        const { Dashboard } = await import('@/pages/Dashboard');
+        return { Component: Dashboard };
+      },
     },
     {
-      element: <Portfolio />,
+      lazy: async () => {
+        const { Portfolio } = await import('@/features/wallet');
+        return { Component: Portfolio };
+      },
       path: 'portfolio',
     },
     {
-      element: <TransactionsModern />,
+      lazy: async () => {
+        const { TransactionsModern } = await import('@/features/wallet/TransactionsModern');
+        return { Component: TransactionsModern };
+      },
       path: 'transactions',
     },
     {
-      element: <LeasingModern />,
+      lazy: async () => {
+        const { LeasingModern } = await import('@/features/wallet/LeasingModern');
+        return { Component: LeasingModern };
+      },
       path: 'leasing',
     },
     {
-      element: <AliasManagement />,
+      lazy: async () => {
+        const { AliasManagement } = await import('@/pages/AliasManagement');
+        return { Component: AliasManagement };
+      },
       path: 'aliases',
     },
     // Future child routes:
     // {
     //   path: 'assets/:assetId',
-    //   element: <AssetDetails />,
+    //   lazy: async () => { const { AssetDetails } = await import('@/pages/AssetDetails'); return { Component: AssetDetails }; },
     // },
   ],
-  element: <Wallet />,
+  lazy: async () => {
+    const { Wallet } = await import('@/pages/Wallet');
+    return { Component: Wallet };
+  },
   path: 'wallet',
 };

@@ -327,4 +327,3 @@ export const sanitize = {
 /**
  * Default export
  */
-export default sanitize;

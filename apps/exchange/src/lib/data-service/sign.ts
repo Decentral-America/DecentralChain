@@ -64,7 +64,7 @@ export function getSignatureApi(): Adapter {
 export function getDefaultSignatureApi(user): Adapter {
   const encryptionRounds = user.settings.get('encryptionRounds');
   const userData = { ...user, encryptionRounds };
-  const Adapter = getAdapterByType(user.userType) || getAdapterByType(adapterList[0].type);
+  const Adapter = getAdapterByType(user.userType) ?? getAdapterByType(adapterList[0].type);
 
   return new Adapter(userData);
 }

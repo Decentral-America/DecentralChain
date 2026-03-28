@@ -150,6 +150,10 @@ const RemoveScriptButton = styled(Button as React.ComponentType<Record<string, u
   flex: 1;
 `;
 
+const InlineLink = styled.a`
+  color: inherit;
+`;
+
 /**
  * Script schema
  */
@@ -279,14 +283,13 @@ export const SetScriptForm: React.FC = () => {
               <br />• Scripts validate all outgoing transactions from your account
               <br />• Leave empty and submit to remove an existing script
               <br />• Learn more about RIDE at{' '}
-              <a
+              <InlineLink
                 href="https://docs.decentralchain.io/en/ride/"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: 'inherit' }}
               >
                 docs.decentralchain.io/en/ride/
-              </a>
+              </InlineLink>
             </InfoBox>
 
             <ButtonGroup>
