@@ -46,13 +46,17 @@
     }
   },
   "linter": {
+    "domains": {
+      "project": "recommended",
+      "types": "recommended"
+    },
     "enabled": true,
     "rules": {
       "complexity": {
         "noExcessiveCognitiveComplexity": {
           "level": "warn",
           "options": {
-            "maxAllowedComplexity": 25
+            "maxAllowedComplexity": 15
           }
         },
         "noUselessUndefined": "warn"
@@ -63,14 +67,20 @@
         "noUnusedVariables": "error"
       },
       "nursery": {
+        "noDuplicateSelectors": "warn",
         "noFloatingPromises": "error",
+        "noInlineStyles": "warn",
         "noMisusedPromises": "error",
         "noNestedPromises": "error",
-        "noUselessReturn": "warn"
+        "noRedundantDefaultExport": "error",
+        "noUntrustedLicenses": "warn",
+        "noUselessReturn": "warn",
+        "useImportsFirst": "error",
+        "useNullishCoalescing": "warn"
       },
       "recommended": true,
       "security": {
-        "noSecrets": "warn"
+        "noSecrets": "error"
       },
       "style": {
         "noCommonJs": "error",
@@ -92,12 +102,21 @@
         },
         "noDeprecatedImports": "warn",
         "noDuplicateDependencies": "warn",
-        "noImportCycles": "warn",
+        "noImportCycles": "error",
         "noUnusedExpressions": "error"
       }
     }
   },
   "overrides": [
+    {
+      "includes": ["knip.json"],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    },
     {
       "assist": {
         "actions": {
@@ -179,9 +198,17 @@
       }
     },
     {
-      "includes": [".github/skills/monitor-ci/scripts/**", "scripts/check-boundaries.mjs"],
+      "includes": [
+        ".agents/skills/monitor-ci/scripts/**",
+        ".github/skills/monitor-ci/scripts/**",
+        ".opencode/skills/monitor-ci/scripts/**",
+        "scripts/check-boundaries.mjs"
+      ],
       "linter": {
         "rules": {
+          "nursery": {
+            "useNullishCoalescing": "off"
+          },
           "suspicious": {
             "noConsole": "off"
           }
@@ -222,6 +249,16 @@
         "rules": {
           "suspicious": {
             "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "useImportsFirst": "off"
           }
         }
       }
