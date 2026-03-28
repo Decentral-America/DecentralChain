@@ -38,7 +38,7 @@ export const errorHandlerFactory =
     errorCode: keyof typeof ERRORS_MAP,
     parameters: ConstructorParameters<(typeof ERRORS_MAP)[typeof errorCode]>,
   ): SignerError => {
-    const error = new (ERRORS_MAP[errorCode] as unknown as new (...args: unknown[]) => SignerError)(
+    const error = new (ERRORS_MAP[errorCode] as new (...args: unknown[]) => SignerError)(
       ...(parameters || []),
     );
     logger.error(error.toString());

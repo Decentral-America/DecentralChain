@@ -90,7 +90,7 @@ describe('OrderPrice', () => {
   describe('input validation', () => {
     it('should throw on invalid input type', () => {
       // Runtime guard for JS consumers — bypass TS typing with cast
-      expect(() => OrderPrice.fromMatcherCoins({} as unknown as string, pairTwo)).toThrow(
+      expect(() => OrderPrice.fromMatcherCoins({} as string, pairTwo)).toThrow(
         'Please use strings, numbers, or BigNumber',
       );
     });

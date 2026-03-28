@@ -16,6 +16,7 @@ export const MATCHER_URL = 'https://matcher.decentralchain.io';
 
 export const TIMEOUT = 60000;
 
-// @ts-expect-error
+// @ts-expect-error TS2461: randomBytes returns Uint8Array; spread via [...value] is valid
+// at runtime but TypeScript's strict iterator inference rejects the spread.
 export const randomHexString = (l: number) =>
   [...randomBytes(l)].map((n) => n.toString(16)).join('');

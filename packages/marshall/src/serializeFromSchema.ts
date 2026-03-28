@@ -22,7 +22,7 @@ export const serializerFromSchema =
     if (schema.type === 'array') {
       serializer = serializerFromSchema(schema.items, fromLongConverter);
       itemBytes = concat(...(obj as unknown[]).map((item: unknown) => serializer(item)));
-      return concat((schema.toBytes || SHORT)((obj as unknown[]).length), itemBytes);
+      return concat((schema.toBytes ?? SHORT)((obj as unknown[]).length), itemBytes);
     } else if (schema.type === 'object') {
       let objBytes: Uint8Array = new Uint8Array(0);
 
@@ -77,7 +77,7 @@ export const serializerFromSchema =
         // Otherwise we serialize field and write discriminator. Eg. {type: 'integer', value: 10000}
       } else {
         itemBytes = serializer(rec[schema.valueField]);
-        return concat((schema.toBytes || BYTE)(anyOfItem.key), itemBytes);
+        return concat((schema.toBytes ?? BYTE)(anyOfItem.key), itemBytes);
       }
     } else if (schema.type === 'primitive' || schema.type === undefined) {
       return schema.toBytes(obj);

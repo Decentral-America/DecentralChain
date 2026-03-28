@@ -26,7 +26,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function massTransfer(
   params: IMassTransferParams,
   seed: TSeedTypes,
@@ -36,11 +35,12 @@ export function massTransfer(
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs;
 export function massTransfer(
-  paramsOrTx: IMassTransferParams & Partial<MassTransferTransaction & WithProofs>,
+  paramsOrTx: (IMassTransferParams | MassTransferTransaction) & { proofs?: string[] },
   seed?: TSeedTypes,
 ): MassTransferTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.MASS_TRANSFER;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.MASS_TRANSFER;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.MASS_TRANSFER) as MassTransferTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -63,7 +63,7 @@ export function massTransfer(
     type,
     version,
   };
-  validate.massTransfer(tx as unknown as Record<string, unknown>);
+  validate.massTransfer(tx);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

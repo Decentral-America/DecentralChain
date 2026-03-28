@@ -1,6 +1,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import * as marshall from '@decentralchain/marshall';
+// internal libraries access
+import * as crypto from '@decentralchain/ts-lib-crypto';
+import * as nodeInteraction from './nodeInteraction';
+import * as protoSerialize from './proto-serialize';
+import * as seedUtils from './seedUtils';
+import * as validators from './validators';
+
 export {
   cancelSubmittedOrder,
   serialize,
@@ -12,7 +20,7 @@ export {
   verifyDccAuthData,
 } from './general';
 export { makeTx, makeTxBytes } from './make-tx';
-export type { INodeRequestOptions, IStateChangeResponse } from './nodeInteraction';
+export type { INodeRequestOptions } from './nodeInteraction';
 export { broadcast, waitForTx } from './nodeInteraction';
 export { auth } from './requests/auth';
 export { cancelOrder } from './requests/cancel-order';
@@ -68,18 +76,9 @@ export { updateAssetInfo } from './transactions/update-asset-info';
 
 export type { TOption, TSeedTypes } from './types';
 
-import * as marshall from '@decentralchain/marshall';
-// internal libraries access
-import * as crypto from '@decentralchain/ts-lib-crypto';
-
 const libs = {
   crypto,
   marshall,
 };
-
-import * as nodeInteraction from './nodeInteraction';
-import * as protoSerialize from './proto-serialize';
-import * as seedUtils from './seedUtils';
-import * as validators from './validators';
 
 export { libs, nodeInteraction, protoSerialize, seedUtils, validators };

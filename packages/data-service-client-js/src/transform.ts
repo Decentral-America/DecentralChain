@@ -37,8 +37,7 @@ const transformPair = id;
 const transformCandle = (data: ICandleJSON | null): Candle | null => {
   if (data === null) return null;
   // Empty candles from the API have null OHLCV fields — skip them rather than throw.
-  // biome-ignore lint/complexity/useLiteralKeys: TypeScript noPropertyAccessFromIndexSignature requires bracket notation for index signatures
-  if ((data as unknown as Record<string, unknown>)['open'] == null) return null;
+  if (data.open == null) return null;
   return new Candle(data);
 };
 

@@ -18,7 +18,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function reissue(
   paramsOrTx: IReissueParams,
   seed: TSeedTypes,
@@ -28,11 +27,11 @@ export function reissue(
   seed?: TSeedTypes,
 ): ReissueTransaction & WithId & WithProofs;
 export function reissue(
-  paramsOrTx: IReissueParams & Partial<ReissueTransaction & WithProofs>,
+  paramsOrTx: IReissueParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): ReissueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.REISSUE;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.REISSUE;
+  const version = (paramsOrTx.version ?? DEFAULT_VERSIONS.REISSUE) as ReissueTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -50,7 +49,7 @@ export function reissue(
     version,
   };
 
-  validate.reissue(tx as unknown as Record<string, unknown>);
+  validate.reissue(tx);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

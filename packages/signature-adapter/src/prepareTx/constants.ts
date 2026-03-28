@@ -1,6 +1,7 @@
+import { Money } from '@decentralchain/data-entities';
 import { toNode as mlToNode, type TClientEntity } from '@decentralchain/money-like-to-node';
-import * as dccTransactions from '@decentralchain/transactions';
-import { libs, protoSerialize } from '@decentralchain/transactions';
+import { libs, protoSerialize, type TTransaction, validators } from '@decentralchain/transactions';
+import { type ExchangeTransactionOrder } from '@decentralchain/ts-types';
 import { type IAdapterSignMethods } from './interfaces';
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './signType';
@@ -9,23 +10,22 @@ export { SIGN_TYPE };
 
 const { processors } = prepare;
 
-import { Money } from '@decentralchain/data-entities';
-
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
 const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
 
-// ── Runtime Bridge Types ──────────────────────────────────────────────────
-// These type aliases + const bridges document the boundary between this
-// package's Record<string, unknown> pipeline and the strongly-typed APIs
-// in @decentralchain/transactions and @decentralchain/marshall.
-// Each `as unknown as` cast is a single, auditable bridge point — zero `any`.
+// ── Proto serializer wrappers ────────────────────────────────────────────────
+// txToProtoBytes / orderToProtoBytes accept strongly-typed transaction objects.
+// These thin wrappers accept plain `object` so the dispatch table can use a
+// uniform `(data: object) => Uint8Array` signature throughout. The single cast
+// inside each wrapper is the only bridge to the proto API — zero `as unknown`.
 
-/** Byte serializer compatible with the TxRecord handler pipeline. */
-type TByteSerializer = (data: TxRecord) => Uint8Array;
+const protoTxBytes = (data: object): Uint8Array => txToProtoBytes(data as TTransaction);
+const protoOrderBytes = (data: object): Uint8Array =>
+  orderToProtoBytes(data as ExchangeTransactionOrder);
 
-/** Transaction factory bridge — heterogeneous tx records in and out. */
-type TTxBridgeFn = (r: TxRecord) => TxRecord;
+/** Single typed bridge from the pipeline's generic record to mlToNode's TClientEntity union. */
+const toClientNode = (d: IPipelineData) => mlToNode(d as object as TClientEntity);
 
 /** Proof fields present on exchange order data at runtime. */
 interface IExchangeOrderData {
@@ -34,76 +34,59 @@ interface IExchangeOrderData {
   [key: string]: unknown;
 }
 
+/** Typed view of the mlToNode exchange result for version normalisation and order patching. */
+interface IExchangeNodeTx extends Record<string, unknown> {
+  version: number | string;
+  order1?: IExchangeOrderData;
+  order2?: IExchangeOrderData;
+}
+
 /**
- * Transaction/order record with known field names flowing through the signing pipeline.
- * Explicit properties enable dot-notation access, satisfying both
- * `noPropertyAccessFromIndexSignature` (TS) and `useLiteralKeys` (Biome).
+ * Pipeline data record flowing through per-SIGN_TYPE toNode handlers.
+ * Explicit properties allow dot-notation access despite the index signature,
+ * satisfying `noPropertyAccessFromIndexSignature`. All fields are `unknown`
+ * to preserve type safety at the boundary — handlers cast as needed.
  */
-interface TxRecord {
-  timestamp?: unknown;
-  price?: unknown;
-  orderId?: unknown;
-  senderPublicKey?: unknown;
-  proofs?: unknown;
-  recipient?: unknown;
-  attachment?: unknown;
+interface IPipelineData {
   amount?: unknown;
-  quantity?: unknown;
-  script?: unknown;
-  version?: unknown;
+  assetId?: unknown;
+  attachment?: unknown;
   buyOrder?: unknown;
-  sellOrder?: unknown;
+  chainId?: unknown;
+  dApp?: unknown;
+  id?: unknown;
+  orderId?: unknown;
   order1?: unknown;
   order2?: unknown;
-  chainId?: unknown;
+  price?: unknown;
+  proofs?: unknown;
+  quantity?: unknown;
+  recipient?: unknown;
+  script?: unknown;
+  sellOrder?: unknown;
+  senderPublicKey?: unknown;
+  timestamp?: unknown;
   transfers?: unknown;
-  assetId?: unknown;
-  dApp?: unknown;
+  version?: unknown;
   [key: string]: unknown;
 }
 
-// Proto serialization bridges
-const protoTxBytes = txToProtoBytes as unknown as TByteSerializer;
-const protoOrderBytes = orderToProtoBytes as unknown as TByteSerializer;
-
-// Transaction factory bridges
-const txOrder = dccTransactions.order as unknown as TTxBridgeFn;
-const txTransfer = dccTransactions.transfer as unknown as TTxBridgeFn;
-const txIssue = dccTransactions.issue as unknown as TTxBridgeFn;
-const txReissue = dccTransactions.reissue as unknown as TTxBridgeFn;
-const txBurn = dccTransactions.burn as unknown as TTxBridgeFn;
-const txExchange = dccTransactions.exchange as unknown as TTxBridgeFn;
-const txLease = dccTransactions.lease as unknown as TTxBridgeFn;
-const txCancelLease = dccTransactions.cancelLease as unknown as TTxBridgeFn;
-const txAlias = dccTransactions.alias as unknown as TTxBridgeFn;
-const txMassTransfer = dccTransactions.massTransfer as unknown as TTxBridgeFn;
-const txData = dccTransactions.data as unknown as TTxBridgeFn;
-const txSetScript = dccTransactions.setScript as unknown as TTxBridgeFn;
-const txSponsorship = dccTransactions.sponsorship as unknown as TTxBridgeFn;
-const txSetAssetScript = dccTransactions.setAssetScript as unknown as TTxBridgeFn;
-const txInvokeScript = dccTransactions.invokeScript as unknown as TTxBridgeFn;
-const txUpdateAssetInfo = dccTransactions.updateAssetInfo as unknown as TTxBridgeFn;
-
-const toNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
-  const r = mlToNode(data as unknown as TClientEntity);
-  const result: TxRecord = { ...r, timestamp: new Date(r.timestamp).getTime() };
-  return convert ? convert(result) : result;
-};
-
-const burnToNode = (data: TxRecord, convert?: TTxBridgeFn): TxRecord => {
-  const r = mlToNode(data as unknown as TClientEntity);
-  const withAmount: TxRecord = {
-    ...r,
-    amount: (r as { quantity?: unknown }).quantity,
-  };
-  withAmount.timestamp = new Date(withAmount.timestamp as number).getTime();
-  return convert ? convert(withAmount) : withAmount;
-};
-
 const processScript = (srcScript: string | null) => {
-  const scriptText = (srcScript || '').replace('base64:', '');
+  const scriptText = (srcScript ?? '').replace('base64:', '');
   return scriptText ? `base64:${scriptText}` : null;
 };
+
+// ── Node-format pipeline ──────────────────────────────────────────────────────
+// Each toNode() handler in SIGN_TYPES converts the generic pipeline data into a
+// validated, node-compatible transaction record by following three steps:
+//   1. Pre-process: resolve Money objects, attachments, recipients, etc.
+//   2. Convert: call mlToNode() to normalise Money → string amounts, DCC → null.
+//   3. Validate: call the appropriate transaction validator as a defence-in-depth
+//      check before bytes are computed.
+//
+// The `as object as TClientEntity` cast in `toClientNode()` bridges IPipelineData
+// to mlToNode's typed union. At runtime, each handler's data IS the correct
+// TClientEntity sub-type for its SIGN_TYPE (enforced by the dispatch table key).
 
 export const TRANSACTION_TYPE_NUMBER = {
   BURN: 6,
@@ -128,13 +111,13 @@ export type TRANSACTION_TYPE_NUMBER =
   (typeof TRANSACTION_TYPE_NUMBER)[keyof typeof TRANSACTION_TYPE_NUMBER];
 
 export interface ITypesMap {
-  getBytes: Record<number, TByteSerializer>;
+  getBytes: Record<number, (data: object) => Uint8Array>;
   adapter: keyof IAdapterSignMethods;
-  toNode?: (data: TxRecord, networkByte: number) => TxRecord;
+  toNode?: (data: IPipelineData, networkByte: number) => Record<string, unknown>;
 }
 
-const getCancelOrderBytes = (txData: TxRecord) => {
-  const { orderId, id, senderPublicKey, sender } = txData;
+const getCancelOrderBytes = (txData: object) => {
+  const { orderId, id, senderPublicKey, sender } = txData as Record<string, unknown>;
   const pBytes = BASE58_STRING((senderPublicKey || sender) as string);
   const orderIdBytes = BASE58_STRING((id || orderId) as string);
 
@@ -210,7 +193,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     toNode: (data) => {
       const price = processors.toOrderPrice(data);
       const priceObj = data.price as Money;
-      return toNode({ ...data, price: Money.fromCoins(price, priceObj.asset) }, txOrder);
+      const input = { ...data, price: Money.fromCoins(price, priceObj.asset) };
+      const result = toClientNode(input);
+      validators.validate.order(result);
+      return result;
     },
   },
   [SIGN_TYPE.CANCEL_ORDER]: {
@@ -232,17 +218,16 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
-    toNode: (data, networkByte: number) =>
-      toNode(
-        {
-          ...data,
-          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
-          recipient: processors.recipient(String.fromCharCode(networkByte))(
-            data.recipient as string,
-          ),
-        },
-        txTransfer,
-      ),
+    toNode: (data, networkByte) => {
+      const input = {
+        ...data,
+        attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
+        recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient as string),
+      };
+      const result = toClientNode(input);
+      validators.validate.transfer(result);
+      return result;
+    },
   },
   [SIGN_TYPE.ISSUE]: {
     adapter: 'signTransaction',
@@ -250,15 +235,16 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
-    toNode: (data) =>
-      toNode(
-        {
-          ...data,
-          quantity: data.amount || data.quantity,
-          script: processScript(data.script as string | null),
-        },
-        txIssue,
-      ),
+    toNode: (data) => {
+      const input = {
+        ...data,
+        quantity: data.amount || data.quantity,
+        script: processScript(data.script as string | null),
+      };
+      const result = toClientNode(input);
+      validators.validate.issue(result);
+      return result;
+    },
   },
   [SIGN_TYPE.REISSUE]: {
     adapter: 'signTransaction',
@@ -267,8 +253,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       3: protoTxBytes,
     },
     toNode: (data) => {
-      const quantity = data.amount || data.quantity;
-      return toNode({ ...data, quantity }, txReissue);
+      const input = { ...data, quantity: data.amount || data.quantity };
+      const result = toClientNode(input);
+      validators.validate.reissue(result);
+      return result;
     },
   },
   [SIGN_TYPE.BURN]: {
@@ -278,8 +266,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       3: protoTxBytes,
     },
     toNode: (data) => {
-      const quantity = data.amount || data.quantity;
-      return burnToNode({ ...data, quantity }, txBurn);
+      // mlToNode's burn entity reads 'quantity' from input and maps it to 'amount' in output.
+      const input = { ...data, quantity: data.amount || data.quantity };
+      const result = toClientNode(input);
+      validators.validate.burn(result);
+      return result;
     },
   },
   [SIGN_TYPE.UPDATE_ASSET_INFO]: {
@@ -287,7 +278,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     getBytes: {
       1: protoTxBytes,
     },
-    toNode: (data) => toNode(data, txUpdateAssetInfo),
+    toNode: (data) => {
+      const result = toClientNode(data);
+      validators.validate.updateAssetInfo(result);
+      return result;
+    },
   },
   [SIGN_TYPE.EXCHANGE]: {
     adapter: 'signTransaction',
@@ -298,7 +293,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       3: protoTxBytes,
     },
     toNode: (data) => {
-      const tx = toNode(data);
+      const tx = toClientNode(data) as IExchangeNodeTx;
       // Version 0 is an internal identifier for legacy exchange v1 serialization
       if (tx.version === 0 || tx.version === '0') {
         tx.version = 1;
@@ -306,16 +301,18 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       const buyOrder = data.buyOrder as IExchangeOrderData;
       const sellOrder = data.sellOrder as IExchangeOrderData;
       const order1 = {
-        ...(tx.order1 as TxRecord),
+        ...(tx.order1 ?? {}),
         proofs: buyOrder.proofs ?? buyOrder.signature,
         signature: buyOrder.signature || buyOrder.proofs?.[0],
       };
       const order2 = {
-        ...(tx.order2 as TxRecord),
+        ...(tx.order2 ?? {}),
         proofs: sellOrder.proofs ?? sellOrder.signature,
         signature: sellOrder.signature || sellOrder.proofs?.[0],
       };
-      return txExchange({ ...tx, order1, order2 });
+      const result = { ...tx, order1, order2 };
+      validators.validate.exchange(result);
+      return result;
     },
   },
   [SIGN_TYPE.LEASE]: {
@@ -324,16 +321,15 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
-    toNode: (data, networkByte: number) =>
-      toNode(
-        {
-          ...data,
-          recipient: processors.recipient(String.fromCharCode(networkByte))(
-            data.recipient as string,
-          ),
-        },
-        txLease,
-      ),
+    toNode: (data, networkByte) => {
+      const input = {
+        ...data,
+        recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient as string),
+      };
+      const result = toClientNode(input);
+      validators.validate.lease(result);
+      return result;
+    },
   },
   [SIGN_TYPE.CANCEL_LEASING]: {
     adapter: 'signTransaction',
@@ -341,7 +337,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
-    toNode: (data) => toNode(data, txCancelLease),
+    toNode: (data) => {
+      const result = toClientNode(data);
+      validators.validate.cancelLease(result);
+      return result;
+    },
   },
   [SIGN_TYPE.CREATE_ALIAS]: {
     adapter: 'signTransaction',
@@ -349,7 +349,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       2: binary.serializeTx,
       3: protoTxBytes,
     },
-    toNode: (data) => ({ ...toNode(data, txAlias), chainId: data.chainId }),
+    toNode: (data) => {
+      const result = toClientNode(data);
+      validators.validate.alias(result);
+      return { ...result, chainId: data.chainId };
+    },
   },
   [SIGN_TYPE.MASS_TRANSFER]: {
     adapter: 'signTransaction',
@@ -358,27 +362,27 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data, networkByte: number) => {
+    toNode: (data, networkByte) => {
       const transfers = data.transfers as Array<{
         amount: Money;
         name?: string;
         recipient?: string;
         [k: string]: unknown;
       }>;
-      return toNode(
-        {
-          ...data,
-          assetId: data.assetId || transfers[0]?.amount.asset.id,
-          attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
-          transfers: transfers.map((item) => {
-            const recipient = processors.recipient(String.fromCharCode(networkByte))(
-              (item.name || item.recipient) as string,
-            );
-            return { ...item, recipient };
-          }),
-        },
-        txMassTransfer,
-      );
+      const input = {
+        ...data,
+        assetId: data.assetId || transfers[0]?.amount.asset.id,
+        attachment: processors.attachment(data.attachment as string | number[] | Uint8Array),
+        transfers: transfers.map((item) => {
+          const recipient = processors.recipient(String.fromCharCode(networkByte))(
+            (item.name || item.recipient) as string,
+          );
+          return { ...item, recipient };
+        }),
+      };
+      const result = toClientNode(input);
+      validators.validate.massTransfer(result);
+      return result;
     },
   },
   [SIGN_TYPE.DATA]: {
@@ -388,7 +392,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data) => toNode(data, txData),
+    toNode: (data) => {
+      const result = toClientNode(data);
+      validators.validate.data(result);
+      return result;
+    },
   },
   [SIGN_TYPE.SET_SCRIPT]: {
     adapter: 'signTransaction',
@@ -397,14 +405,15 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data) =>
-      toNode(
-        {
-          ...data,
-          script: processScript(data.script as string | null),
-        },
-        txSetScript,
-      ),
+    toNode: (data) => {
+      const input = {
+        ...data,
+        script: processScript(data.script as string | null),
+      };
+      const result = toClientNode(input);
+      validators.validate.setScript(result);
+      return result;
+    },
   },
   [SIGN_TYPE.SPONSORSHIP]: {
     adapter: 'signTransaction',
@@ -413,7 +422,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data) => toNode(data, txSponsorship),
+    toNode: (data) => {
+      const result = toClientNode(data);
+      validators.validate.sponsorship(result);
+      return result;
+    },
   },
   [SIGN_TYPE.SET_ASSET_SCRIPT]: {
     adapter: 'signTransaction',
@@ -422,14 +435,15 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data) =>
-      toNode(
-        {
-          ...data,
-          script: processScript(data.script as string | null),
-        },
-        txSetAssetScript,
-      ),
+    toNode: (data) => {
+      const input = {
+        ...data,
+        script: processScript(data.script as string | null),
+      };
+      const result = toClientNode(input);
+      validators.validate.setAssetScript(result);
+      return result;
+    },
   },
   [SIGN_TYPE.SCRIPT_INVOCATION]: {
     adapter: 'signTransaction',
@@ -438,14 +452,15 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
       1: binary.serializeTx,
       2: protoTxBytes,
     },
-    toNode: (data, networkByte: number) =>
-      toNode(
-        {
-          ...data,
-          dApp: processors.recipient(String.fromCharCode(networkByte))(data.dApp as string),
-        },
-        txInvokeScript,
-      ),
+    toNode: (data, networkByte) => {
+      const input = {
+        ...data,
+        dApp: processors.recipient(String.fromCharCode(networkByte))(data.dApp as string),
+      };
+      const result = toClientNode(input);
+      validators.validate.invokeScript(result);
+      return result;
+    },
   },
   [SIGN_TYPE.ETHEREUM_TX]: {
     adapter: 'signTransaction',

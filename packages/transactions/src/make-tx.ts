@@ -100,145 +100,81 @@ type TxParamsTypeMap = {
 };
 
 /**
+ * Typed dispatch map — one entry per transaction type.
+ * Consolidates all per-arm casts into a single, documented assertion when
+ * accessing the handler. Each handler is individually type-safe for its own
+ * transaction type; the map is indexed by SupportedTransactionType so the
+ * lookup `makeTxDispatch[params.type]` can be cast once to `MakeTxFn<T>`.
+ */
+type MakeTxFn<K extends SupportedTransactionType> = (
+  params: TxParamsTypeMap[K] & WithSender,
+) => TxTypeMap[K] & WithId;
+
+const makeTxDispatch: { [K in SupportedTransactionType]: MakeTxFn<K> } = {
+  [TRANSACTION_TYPE.ISSUE]: (p) => issue(p),
+  [TRANSACTION_TYPE.TRANSFER]: (p) => transfer(p),
+  [TRANSACTION_TYPE.REISSUE]: (p) => reissue(p),
+  [TRANSACTION_TYPE.BURN]: (p) => burn(p),
+  [TRANSACTION_TYPE.LEASE]: (p) => lease(p),
+  [TRANSACTION_TYPE.CANCEL_LEASE]: (p) => cancelLease(p),
+  [TRANSACTION_TYPE.ALIAS]: (p) => alias(p),
+  [TRANSACTION_TYPE.MASS_TRANSFER]: (p) => massTransfer(p),
+  [TRANSACTION_TYPE.DATA]: (p) => data(p),
+  [TRANSACTION_TYPE.SET_SCRIPT]: (p) => setScript(p),
+  [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: (p) => setAssetScript(p),
+  [TRANSACTION_TYPE.SPONSORSHIP]: (p) => sponsorship(p),
+  [TRANSACTION_TYPE.EXCHANGE]: (p) => exchange(p as ExchangeTransaction & { proofs: string[] }),
+  [TRANSACTION_TYPE.INVOKE_SCRIPT]: (p) => invokeScript(p),
+  [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: (p) => updateAssetInfo(p as UpdateAssetInfoTransaction),
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: (p) => commitToGeneration(p),
+};
+
+/**
  * Makes transaction from params. Validates all fields and calculates id
  */
 export function makeTx<T extends SupportedTransactionType>(
   params: TTxParamsWithType<T> & WithSender,
 ): TTransaction<T> & WithId {
-  switch (params.type) {
-    case TRANSACTION_TYPE.ISSUE:
-      return issue(params as unknown as IIssueParams & WithSender) as unknown as TTransaction<T> &
-        WithId;
-    case TRANSACTION_TYPE.TRANSFER:
-      return transfer(
-        params as unknown as ITransferParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.REISSUE:
-      return reissue(
-        params as unknown as IReissueParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.BURN:
-      return burn(params as unknown as IBurnParams & WithSender) as unknown as TTransaction<T> &
-        WithId;
-    case TRANSACTION_TYPE.LEASE:
-      return lease(params as unknown as ILeaseParams & WithSender) as unknown as TTransaction<T> &
-        WithId;
-    case TRANSACTION_TYPE.CANCEL_LEASE:
-      return cancelLease(
-        params as unknown as ICancelLeaseParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.ALIAS:
-      return alias(params as unknown as IAliasParams & WithSender) as unknown as TTransaction<T> &
-        WithId;
-    case TRANSACTION_TYPE.MASS_TRANSFER:
-      return massTransfer(
-        params as unknown as IMassTransferParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.DATA:
-      return data(params as unknown as IDataParams & WithSender) as unknown as TTransaction<T> &
-        WithId;
-    case TRANSACTION_TYPE.SET_SCRIPT:
-      return setScript(
-        params as unknown as ISetScriptParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
-      return setAssetScript(
-        params as unknown as ISetAssetScriptParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.SPONSORSHIP:
-      return sponsorship(
-        params as unknown as ISponsorshipParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.EXCHANGE:
-      return exchange(
-        params as unknown as ExchangeTransaction & { proofs: string[] },
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return invokeScript(
-        params as unknown as IInvokeScriptParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return updateAssetInfo(
-        params as unknown as UpdateAssetInfoTransaction,
-      ) as unknown as TTransaction<T> & WithId;
-    case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
-      return commitToGeneration(
-        params as unknown as ICommitToGenerationParams & WithSender,
-      ) as unknown as TTransaction<T> & WithId;
-    default:
-      throw new Error(`Unknown tx type: ${params.type}`);
-  }
+  // Single typed assertion: the dispatch map guarantees the handler for
+  // params.type produces TTransaction<T> & WithId at the call site.
+  const handler = makeTxDispatch[params.type] as MakeTxFn<T>;
+  if (!handler) throw new Error(`Unknown tx type: ${params.type}`);
+  return handler(params as TxParamsTypeMap[T] & WithSender);
 }
+
+/**
+ * Minimum version at which protobuf serialization supersedes legacy binary serialization.
+ * Types with value 0 always use proto (they have no legacy binary format).
+ */
+const PROTO_MIN_VERSION: { [K in SupportedTransactionType]: number } = {
+  [TRANSACTION_TYPE.ISSUE]: 3,
+  [TRANSACTION_TYPE.TRANSFER]: 3,
+  [TRANSACTION_TYPE.REISSUE]: 3,
+  [TRANSACTION_TYPE.BURN]: 3,
+  [TRANSACTION_TYPE.LEASE]: 3,
+  [TRANSACTION_TYPE.CANCEL_LEASE]: 3,
+  [TRANSACTION_TYPE.ALIAS]: 3,
+  [TRANSACTION_TYPE.EXCHANGE]: 3,
+  [TRANSACTION_TYPE.MASS_TRANSFER]: 2,
+  [TRANSACTION_TYPE.DATA]: 2,
+  [TRANSACTION_TYPE.SET_SCRIPT]: 2,
+  [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: 2,
+  [TRANSACTION_TYPE.SPONSORSHIP]: 2,
+  [TRANSACTION_TYPE.INVOKE_SCRIPT]: 2,
+  [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: 0, // proto-only, no legacy format
+  [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: 0, // proto-only, no legacy format
+} as const;
 
 /**
  * Makes transaction bytes from validated transaction
  */
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: switch over 14 transaction types — inherent complexity
 export function makeTxBytes<T extends SupportedTransactionType>(
   tx: TTxParamsWithType<T> & WithSender & { version: number },
 ): Uint8Array {
-  switch (tx.type) {
-    case TRANSACTION_TYPE.ISSUE:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.TRANSFER:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.REISSUE:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.BURN:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.LEASE:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.CANCEL_LEASE:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.ALIAS:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.MASS_TRANSFER:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.DATA:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.SET_SCRIPT:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.SPONSORSHIP:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.EXCHANGE:
-      return tx.version > 2
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      return tx.version > 1
-        ? txToProtoBytes(tx as unknown as TTransactionBase)
-        : binary.serializeTx(tx);
-    case TRANSACTION_TYPE.UPDATE_ASSET_INFO:
-      return txToProtoBytes(tx as unknown as TTransactionBase);
-    case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
-      return txToProtoBytes(tx as unknown as TTransactionBase);
-    default:
-      throw new Error(`Unknown tx type: ${tx.type}`);
+  if (tx.version >= PROTO_MIN_VERSION[tx.type]) {
+    // Params satisfy TTransaction at runtime; TypeScript cannot prove this
+    // without materialising T — single documented cross-schema assertion.
+    return txToProtoBytes(tx as unknown as TTransactionBase);
   }
+  return binary.serializeTx(tx);
 }

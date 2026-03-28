@@ -77,14 +77,11 @@ export class WindowProtocol<T> extends EventEmitter<IEvents<T>> {
     this.win = WindowProtocol._fakeWin;
   }
 
-  private static readonly _fakeWin: IWindow = (() => {
-    const empty = () => null;
-    return {
-      addEventListener: empty as unknown as IWindow['addEventListener'],
-      postMessage: empty as unknown as IWindow['postMessage'],
-      removeEventListener: empty as unknown as IWindow['removeEventListener'],
-    };
-  })();
+  private static readonly _fakeWin: IWindow = {
+    addEventListener(): void {},
+    postMessage(): void {},
+    removeEventListener(): void {},
+  };
 
   private static getDefaultOrigin(): string {
     if (typeof window !== 'undefined' && typeof window.location?.origin === 'string') {

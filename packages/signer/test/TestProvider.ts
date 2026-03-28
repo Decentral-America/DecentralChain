@@ -30,7 +30,7 @@ export class TestProvider implements Provider {
 
     this.user = {
       address: libs.crypto.address(this.seed),
-      publicKey: libs.crypto.privateKey(this.seed),
+      publicKey: libs.crypto.publicKey(this.seed),
     };
   }
 
@@ -70,12 +70,12 @@ export class TestProvider implements Provider {
       publicKey: libs.crypto.publicKey(this.seed),
     });
 
-    this.debugEmitter.trigger('login', [] as unknown as []);
+    this.debugEmitter.trigger('login', [] as []);
     return promise;
   }
 
   public logout(): Promise<void> {
-    this.debugEmitter.trigger('logout', [] as unknown as []);
+    this.debugEmitter.trigger('logout', [] as []);
     return Promise.resolve();
   }
 
@@ -104,8 +104,7 @@ export class TestProvider implements Provider {
 
   public signMessage(data: string | number): Promise<string> {
     this.debugEmitter.trigger('signMessage', [data]);
-    // TODO
-    return Promise.resolve('TODO');
+    return Promise.reject(new Error('signMessage: not implemented in TestProvider'));
   }
 
   public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
@@ -115,8 +114,7 @@ export class TestProvider implements Provider {
 
   public signTypedData(data: Array<TypedData>): Promise<string> {
     this.debugEmitter.trigger('signTypedData', [data]);
-    // TODO
-    return Promise.resolve('TODO');
+    return Promise.reject(new Error('signTypedData: not implemented in TestProvider'));
   }
 }
 

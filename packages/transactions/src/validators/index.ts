@@ -1,5 +1,3 @@
-export * from './validators';
-
 import { aliasValidator as alias } from './alias';
 import { authValidator as auth } from './auth';
 import { burnValidator as burn } from './burn';
@@ -21,6 +19,8 @@ import { setScriptValidator as setScript } from './set-script';
 import { sponsorshipValidator as sponsorship } from './sponsorship';
 import { transferValidator as transfer } from './transfer';
 import { updateAssetInfoValidator as updateAssetInfo } from './update-asset-info';
+
+export * from './validators';
 
 export const validate = {
   alias,

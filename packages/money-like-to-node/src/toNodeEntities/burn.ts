@@ -7,6 +7,7 @@ import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const burnTransform = {
   ...getDefaultTransform(),
+  amount: pipe<TClientBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
   assetId: pipe<TClientBurn, string, string>(
     ifElse<TClientBurn, string, string>(
       has('assetId'),
@@ -17,7 +18,6 @@ const burnTransform = {
     emptyError('Has no assetId!'),
   ),
   chainId: prop<TClientBurn, 'chainId'>('chainId'),
-  quantity: pipe<TClientBurn, TMoney | TLong, string>(prop('quantity'), getCoins),
 };
 
 export const burn = factory<TClientBurn, TWithPartialFee<BurnTransaction<string>>>(burnTransform);

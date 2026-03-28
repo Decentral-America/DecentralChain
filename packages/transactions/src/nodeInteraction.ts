@@ -163,7 +163,6 @@ export async function waitNBlocks(
   const { apiBase } = { ...DEFAULT_NODE_REQUEST_OPTIONS, ...options };
   const height = await currentHeight(apiBase);
   const target = height + blocksCount;
-  // console.log(`current height: ${height} target: ${target}`)
   return await waitForHeight(target, options);
 }
 
@@ -310,10 +309,8 @@ export async function scriptInfo(
   address: string,
   nodeUrl: string,
   requestOptions?: RequestInit,
-): Promise<Record<string, unknown>> {
-  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions) as unknown as Promise<
-    Record<string, unknown>
-  >;
+): Promise<addresses_route.IScriptInfo> {
+  return addresses_route.fetchScriptInfo(nodeUrl, address, requestOptions);
 }
 
 /**
@@ -324,10 +321,8 @@ export async function scriptInfo(
 export async function scriptMeta(
   address: string,
   nodeUrl: string,
-): Promise<Record<string, unknown>> {
-  return addresses_route.fetchScriptInfoMeta(nodeUrl, address) as unknown as Promise<
-    Record<string, unknown>
-  >;
+): Promise<addresses_route.IScriptInfoMetaResponse> {
+  return addresses_route.fetchScriptInfoMeta(nodeUrl, address);
 }
 
 /**
@@ -360,9 +355,6 @@ export async function rewards(
   return rewards_route.fetchRewards(nodeUrl, _height, requestOptions);
 }
 
-/** @deprecated Use TStateChanges from @decentralchain/node-api-js/api-node/debug */
-export type IStateChangeResponse = TStateChanges;
-
 /**
  * Get invokeScript tx state changes
  * @param transactionId - invokeScript transaction id as base58 string
@@ -383,14 +375,10 @@ export async function stateChanges(
  * @param tx - transaction to send
  * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
  */
-export function broadcast<T extends SignedTransaction<Transaction<Long>>>(
+export function broadcast<T extends SignedTransaction<Transaction<string | number>>>(
   tx: T,
   nodeUrl: string,
   requestOptions?: RequestInit,
 ): Promise<T & WithApiMixin> {
-  return tx_route.broadcast(
-    nodeUrl,
-    tx as unknown as Parameters<typeof tx_route.broadcast>[1],
-    requestOptions,
-  ) as unknown as Promise<T & WithApiMixin>;
+  return tx_route.broadcast(nodeUrl, tx, requestOptions ?? {});
 }

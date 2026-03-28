@@ -1,8 +1,8 @@
-import { getError, isBase58, isHash, isPublicKey, validateByShema } from './validators';
+import { getError, isAssetId, isBase58, isPublicKey, validateByShema } from './validators';
 
 const cancelOrderScheme = {
   hash: isBase58,
-  orderId: isHash,
+  orderId: isAssetId,
   sender: isPublicKey,
   signature: isBase58,
 };
