@@ -132,6 +132,8 @@ export class Signable<T extends TSignData = TSignData> {
 
     try {
       this._preparedData = prepare.signSchema(prepareMap)(
+        // TSignData['data'] is a discriminated-union member; no structural overlap
+        // with Record<string,unknown> so the double assertion is required here.
         this._forSign.data as unknown as Record<string, unknown>,
         true,
       );
@@ -158,7 +160,8 @@ export class Signable<T extends TSignData = TSignData> {
     if (this._forSign.type === SIGN_TYPE.CREATE_ORDER) {
       const currentFee = currentCreateOrderFactory(config, minOrderFee);
       return currentFee(
-        (await this.getDataForApi()) as unknown as ExchangeTransactionOrder<BigNumber>,
+        // getDataForApi() returns Promise<unknown>; casting from unknown directly is valid.
+        (await this.getDataForApi()) as ExchangeTransactionOrder<BigNumber>,
         hasMatcherScript,
         smartAssetIdList,
       );
@@ -170,6 +173,8 @@ export class Signable<T extends TSignData = TSignData> {
     const txData = await this.getSignData();
     const bytes = await this.getBytes();
     return currentFee(
+      // Record<string,unknown> and SignableTransaction<BigNumber> (discriminated union)
+      // have no mutual assignability, so the double assertion is required here.
       txData as unknown as SignableTransaction<BigNumber>,
       bytes,
       hasScript,
@@ -198,6 +203,8 @@ export class Signable<T extends TSignData = TSignData> {
   }
 
   public async getAssetIds(): Promise<string[]> {
+    // Record<string,unknown> requires all keys to be unknown; IAssetIdTransaction
+    // has type: number (required), so TS sees no sufficient overlap — double assertion needed.
     const transaction = (await this.getSignData()) as unknown as IAssetIdTransaction;
     const hash = Object.create(null) as Record<string, boolean>;
     hash[DCC_ID] = true;
@@ -350,6 +357,8 @@ export class Signable<T extends TSignData = TSignData> {
 
     try {
       return convert(
+        // Spread of Record<string,unknown> has no overlap with the SignableTransaction
+        // discriminated union, so the double assertion is required here.
         { ...data, proofs } as unknown as SignableTransaction<string>,
         (item: unknown) => new BigNumber(item as string),
       );
@@ -382,8 +391,15 @@ export class Signable<T extends TSignData = TSignData> {
     return this;
   }
 
+  /** Access _forSign.data as the IPrecisionData fields required by signing helpers.
+   * Single cast site: TSignData['data'] is a discriminated union that cannot be
+   * structurally narrowed to IPrecisionData without an explicit assertion. */
+  private get _precisionData(): IPrecisionData {
+    return this._forSign.data as unknown as IPrecisionData;
+  }
+
   private _getAmountPrecision() {
-    const data = this._forSign.data as unknown as IPrecisionData;
+    const data = this._precisionData;
     if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
       const payment = data.payment ?? [];
       return payment.length && payment[0]?.asset ? payment[0].asset.precision : 0;
@@ -392,14 +408,13 @@ export class Signable<T extends TSignData = TSignData> {
   }
 
   private _getAmount2Precision() {
-    const data = this._forSign.data as unknown as IPrecisionData;
+    const data = this._precisionData;
     const payment = data.payment ?? [];
     return payment.length === 2 && payment[1]?.asset ? payment[1].asset.precision : 0;
   }
 
   private _getFeePrecision() {
-    const data = this._forSign.data as unknown as IPrecisionData;
-    return data.fee?.asset?.precision ?? 0;
+    return this._precisionData.fee?.asset?.precision ?? 0;
   }
 }
 

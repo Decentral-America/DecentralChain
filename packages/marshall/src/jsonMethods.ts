@@ -1,13 +1,12 @@
-import create from './libs/parseJsonBigNumber';
-
-const { parse } = create();
-
 import { convertLongFields, convertTxLongFields } from './convert';
+import create from './libs/parseJsonBigNumber';
 import { type TToLongConverter } from './parse';
 import { getTransactionSchema, orderVersionMap, type TRANSACTION_TYPE } from './schemas';
 import { type DATA_FIELD_TYPE, type TSchema } from './schemaTypes';
 import { type TFromLongConverter } from './serialize';
 import { LONG } from './serializePrimitives';
+
+const { parse } = create();
 
 function resolvePath(path: string[], obj: unknown): unknown {
   if (path.length === 0) return obj;
@@ -16,36 +15,33 @@ function resolvePath(path: string[], obj: unknown): unknown {
   return resolvePath(path.slice(1), (obj as Record<string, unknown>)[path[0] as string]);
 }
 
-const isLongProp = (
+function goSchemaPath(
+  path: string[],
+  schema: TSchema | undefined,
   fullPath: string[],
-  fullSchema: TSchema | undefined,
   targetObject: unknown,
-): boolean => {
-  function go(path: string[], schema?: TSchema): boolean {
-    if (schema == null) return false;
+): boolean {
+  if (schema == null) return false;
 
-    if (path.length === 0 && (schema.type === 'primitive' || schema.type === undefined))
-      return schema.toBytes === LONG;
+  if (path.length === 0 && (schema.type === 'primitive' || schema.type === undefined))
+    return schema.toBytes === LONG;
 
-    if (schema.type === 'object') {
-      const field = schema.schema.find(([name, _]) => name === path[0]);
-      return go(path.slice(1), field?.[1]);
+  switch (schema.type) {
+    case 'object': {
+      const field = schema.schema.find(([name]) => name === path[0]);
+      return goSchemaPath(path.slice(1), field?.[1], fullPath, targetObject);
     }
-
-    if (schema.type === 'array') {
-      return go(path.slice(1), schema.items);
-    }
-
-    if (schema.type === 'dataTxField') {
+    case 'array':
+      return goSchemaPath(path.slice(1), schema.items, fullPath, targetObject);
+    case 'dataTxField': {
       if (path[0] !== 'value') return false;
       const dataObj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as {
         type: string;
       };
       const dataSchema = schema.items.get(dataObj.type as DATA_FIELD_TYPE);
-      return go(path.slice(1), dataSchema);
+      return goSchemaPath(path.slice(1), dataSchema, fullPath, targetObject);
     }
-
-    if (schema.type === 'anyOf') {
+    case 'anyOf': {
       const obj = resolvePath(fullPath.slice(0, fullPath.length - 1), targetObject) as Record<
         string,
         unknown
@@ -53,23 +49,20 @@ const isLongProp = (
       const objType = obj[schema.discriminatorField] as string;
       const objSchema = schema.itemByKey(objType);
       if (!objSchema) return false;
-
-      // If valueField exists in schema we also check if value and not type field is currently processed. E.g:
-      // {type: 'integer', value: 1000}
-      if (schema.valueField != null && fullPath[fullPath.length - 1] === schema.valueField) {
-        return go(path.slice(1), objSchema.schema);
-      }
-      //  Otherwise whole object is used as value. E.g.: {type:14, sender: 'example', amount: 1000}
-      else {
-        return go(path, objSchema.schema);
-      }
+      if (schema.valueField != null && fullPath[fullPath.length - 1] === schema.valueField)
+        return goSchemaPath(path.slice(1), objSchema.schema, fullPath, targetObject);
+      return goSchemaPath(path, objSchema.schema, fullPath, targetObject);
     }
-
-    return false;
+    default:
+      return false;
   }
+}
 
-  return go(fullPath, fullSchema);
-};
+const isLongProp = (
+  fullPath: string[],
+  fullSchema: TSchema | undefined,
+  targetObject: unknown,
+): boolean => goSchemaPath(fullPath, fullSchema, fullPath, targetObject);
 
 /**
  * Converts object to JSON string using binary schema. For every string found, it checks if given string is LONG property.
@@ -81,38 +74,28 @@ export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
   const path: string[] = [];
   const stack: unknown[] = [];
 
-  function stringifyValue(value: unknown): string | undefined {
-    if (typeof value === 'string') {
-      if (isLongProp(path, schema, obj)) {
-        return value;
-      }
-    }
-
-    if (
+  function isScalarValue(value: unknown): boolean {
+    return (
+      value === null ||
       typeof value === 'boolean' ||
       value instanceof Boolean ||
-      value === null ||
       typeof value === 'number' ||
       value instanceof Number ||
-      typeof value === 'string' ||
       value instanceof String ||
       value instanceof Date ||
       typeof value === 'bigint'
-    ) {
-      // BigInt needs special handling - convert to string representation for JSON
-      if (typeof value === 'bigint') {
-        return value.toString();
-      }
-      return JSON.stringify(value);
-    }
+    );
+  }
 
-    if (Array.isArray(value)) {
-      return stringifyArray(value);
+  function stringifyValue(value: unknown): string | undefined {
+    if (typeof value === 'string') {
+      return isLongProp(path, schema, obj) ? value : JSON.stringify(value);
     }
-
-    if (value && typeof value === 'object') {
+    if (typeof value === 'bigint') return (value as bigint).toString();
+    if (isScalarValue(value)) return JSON.stringify(value);
+    if (Array.isArray(value)) return stringifyArray(value);
+    if (value && typeof value === 'object')
       return stringifyObject(value as Record<string, unknown>);
-    }
   }
 
   function stringifyArray(array: unknown[]): string {
@@ -181,7 +164,10 @@ export function stringifyWithSchema(obj: unknown, schema?: TSchema): string {
     return typeof value !== 'undefined' && typeof value !== 'function' && typeof value !== 'symbol';
   }
 
-  return stringifyValue(obj) || '';
+  return (
+    // biome-ignore lint/nursery/useNullishCoalescing: intentional truthy fallback — empty string result should also yield ''
+    stringifyValue(obj) || ''
+  );
 }
 
 /**
@@ -233,6 +219,7 @@ export function stringifyOrder<LONG>(
   ord: { version?: number; [key: string]: unknown },
   fromLongConverter?: TFromLongConverter<LONG>,
 ): string {
+  // biome-ignore lint/nursery/useNullishCoalescing: version 0 is semantically invalid for order schemas; || correctly treats 0 and null/undefined as "unspecified", defaulting to version 1
   const version = ord.version || 1;
   const schema = orderVersionMap[version];
   if (schema == null) throw new Error(`Unknown order version: ${version}`);

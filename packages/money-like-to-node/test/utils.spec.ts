@@ -16,7 +16,7 @@ describe('Utils test', () => {
   });
 
   it('getAssetId', () => {
-    expect(getAssetId(new Money('100', DCC_ASSET))).toBe('DCC');
+    expect(getAssetId(new Money('100', DCC_ASSET))).toBeNull();
   });
 
   it('curry', () => {

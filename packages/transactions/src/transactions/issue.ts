@@ -4,7 +4,11 @@
 
 import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { type IssueTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import {
+  type AssetDecimals,
+  type IssueTransaction,
+  TRANSACTION_TYPE,
+} from '@decentralchain/ts-types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,
@@ -20,7 +24,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function issue(
   params: IIssueParams,
   seed: TSeedTypes,
@@ -30,17 +33,17 @@ export function issue(
   seed?: TSeedTypes,
 ): IssueTransaction & WithId & WithProofs;
 export function issue(
-  paramsOrTx: IIssueParams & Partial<IssueTransaction & WithProofs>,
+  paramsOrTx: (IIssueParams | IssueTransaction) & { proofs?: string[] },
   seed?: TSeedTypes,
 ): IssueTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.ISSUE;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.ISSUE;
+  const version = (paramsOrTx.version ?? DEFAULT_VERSIONS.ISSUE) as IssueTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: IssueTransaction & WithId & WithProofs = {
     chainId: networkByte(paramsOrTx.chainId, 76),
-    decimals: paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals,
+    decimals: (paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals) as AssetDecimals,
     description: paramsOrTx.description,
     fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
     id: '',
@@ -55,7 +58,7 @@ export function issue(
     version,
   };
 
-  validate.issue(tx as unknown as Record<string, unknown>);
+  validate.issue(tx);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

@@ -73,48 +73,68 @@ export function addAssetId(id: string) {
   };
 }
 
+function collectLangDescription(
+  lang: string,
+  hash: THash,
+  id: string | undefined,
+  required: boolean | undefined,
+  errors: IResponseError[],
+  description: Record<string, string>,
+): void {
+  const key = getDescriptionKey(lang, id);
+  try {
+    description[lang] = getFieldValue(hash, key, DATA_ENTRY_TYPES.STRING) as string;
+  } catch (e: unknown) {
+    if (required ?? true) {
+      errors.push({
+        /* v8 ignore next */
+        error: e instanceof Error ? e : new Error(String(e)),
+        path: `description.${lang}`,
+      });
+    }
+  }
+}
+
+function applyDescription(
+  store: { description?: Record<string, string>; [key: string]: unknown },
+  hash: THash,
+  id: string | undefined,
+  required: boolean | undefined,
+  errors: IResponseError[],
+): { description?: Record<string, string>; [key: string]: unknown } {
+  try {
+    const langList = getFieldValue(
+      hash,
+      DATA_PROVIDER_KEYS.LANG_LIST,
+      DATA_ENTRY_TYPES.STRING,
+    ) as string;
+    const description: Record<string, string> = Object.create(null) as Record<string, string>;
+    const langs = langList.length > 0 ? langList.split(',') : [];
+
+    langs.forEach((lang) => {
+      collectLangDescription(lang, hash, id, required, errors, description);
+    });
+
+    if (Object.keys(description).length > 0) {
+      store.description = description;
+    }
+  } catch (e: unknown) {
+    if (required ?? true) {
+      errors.push({
+        /* v8 ignore next */
+        error: e instanceof Error ? e : new Error(String(e)),
+        path: 'description',
+      });
+    }
+  }
+  return store;
+}
+
 /** Process description fields from the hash into the store. */
 export function processDescription(id?: string, required?: boolean) {
   return (errors: IResponseError[]) =>
-    (store: { description?: Record<string, string>; [key: string]: unknown }, hash: THash) => {
-      try {
-        const langList = getFieldValue(
-          hash,
-          DATA_PROVIDER_KEYS.LANG_LIST,
-          DATA_ENTRY_TYPES.STRING,
-        ) as string;
-        const description: Record<string, string> = Object.create(null) as Record<string, string>;
-        const langs = langList.length > 0 ? langList.split(',') : [];
-
-        langs.forEach((lang) => {
-          const key = getDescriptionKey(lang, id);
-          try {
-            description[lang] = getFieldValue(hash, key, DATA_ENTRY_TYPES.STRING) as string;
-          } catch (e: unknown) {
-            if (required ?? true) {
-              errors.push({
-                /* v8 ignore next */
-                error: e instanceof Error ? e : new Error(String(e)),
-                path: `description.${lang}`,
-              });
-            }
-          }
-        });
-
-        if (Object.keys(description).length > 0) {
-          store.description = description;
-        }
-      } catch (e: unknown) {
-        if (required ?? true) {
-          errors.push({
-            /* v8 ignore next */
-            error: e instanceof Error ? e : new Error(String(e)),
-            path: 'description',
-          });
-        }
-      }
-      return store;
-    };
+    (store: { description?: Record<string, string>; [key: string]: unknown }, hash: THash) =>
+      applyDescription(store, hash, id, required, errors);
 }
 
 /** Extract a field value from the hash, throwing if missing or wrong type. */

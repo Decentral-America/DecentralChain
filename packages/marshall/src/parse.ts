@@ -18,7 +18,7 @@ export const parserFromSchema =
 
     if (schema.type === 'array') {
       const result: unknown[] = [];
-      const { value: len, shift } = (schema.fromBytes || P_SHORT)(bytes, start);
+      const { value: len, shift } = (schema.fromBytes ?? P_SHORT)(bytes, start);
       cursor += shift;
 
       range(0, len).forEach((_) => {
@@ -60,7 +60,7 @@ export const parserFromSchema =
 
       return { shift: cursor - start, value: result };
     } else if (schema.type === 'anyOf') {
-      const typeInfo = (schema.fromBytes || P_BYTE)(bytes, cursor + schema.discriminatorBytePos);
+      const typeInfo = (schema.fromBytes ?? P_BYTE)(bytes, cursor + schema.discriminatorBytePos);
 
       // Do not advance cursor if the object is serialized with the discriminator or discriminator is not at position 0
       if (schema.valueField && schema.discriminatorBytePos === 0) {

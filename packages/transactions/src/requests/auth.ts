@@ -4,13 +4,12 @@
 
 import { serializePrimitives } from '@decentralchain/marshall';
 import { address, base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
-
-const { STRING, LEN, SHORT } = serializePrimitives;
-
 import { convertToPairs, getSenderPublicKey } from '../generic';
 import { type IAuth, type IAuthParams } from '../transactions';
 import { type TPrivateKey } from '../types';
 import { validate } from '../validators';
+
+const { STRING, LEN, SHORT } = serializePrimitives;
 
 export const serializeAuthData = (auth: { host: string; data: string }) =>
   concat(
@@ -25,9 +24,10 @@ export function auth(
   chainId?: string | number,
 ): IAuth {
   const seedsAndIndexes = convertToPairs(seed);
+  // biome-ignore lint/nursery/useNullishCoalescing: empty string publicKey is a valid sentinel meaning "derive from seed" — || truthy fallback is intentional
   const publicKey = params.publicKey || getSenderPublicKey(seedsAndIndexes, {});
 
-  validate.auth(params as unknown as Record<string, unknown>);
+  validate.auth(params);
 
   const rx = {
     address: address({ publicKey }, chainId ?? '?'),

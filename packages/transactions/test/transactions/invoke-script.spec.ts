@@ -161,7 +161,12 @@ describe('invokeScript', () => {
     expect(tx).toMatchObject({ ...testInvokeScriptParams });
   });
 
-  it.todo('Should create invoke tx for default function — needs fixture update');
+  it('Should create invoke tx for default function (call is null)', () => {
+    const tx = invokeScript({ dApp: '3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1' }, stringSeed);
+    expect(tx.call).toBeNull();
+    expect(tx.dApp).toBe('3N3Cn2pYtqzj7N9pviSesNe8KG9Cmb718Y1');
+    expect(tx.type).toBe(16);
+  });
 });
 
 describe('serialize/deserialize invoke tx', () => {

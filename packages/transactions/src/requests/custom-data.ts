@@ -75,7 +75,10 @@ export function serializeCustomData(d: TCustomData) {
     const ser = binary.serializerFromSchema(schemas.txFields.data[1]);
     return concat([255, 255, 255, 2], ser(d.data));
   } else {
-    //@ts-expect-error
-    throw new Error(`Invalid CustomData version: ${d?.version}`);
+    // Exhaustive guard: d is typed as `never` here because TCustomData = V1 | V2
+    // and both cases are handled above. If a new version is ever added to TCustomData
+    // without a matching case, TypeScript will error on this assignment.
+    const _exhaustive: never = d;
+    throw new Error(`Invalid CustomData version: ${JSON.stringify(_exhaustive)}`);
   }
 }

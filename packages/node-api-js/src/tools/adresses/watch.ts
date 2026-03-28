@@ -131,36 +131,33 @@ export class Watch extends EventEmitter<IEvents> {
   ): Promise<(Transaction<TLong> & WithApiMixin)[]> {
     const height = from.height;
 
+    const resolveForHeight = (
+      list: (Transaction<TLong> & WithApiMixin)[],
+      downloaded: (Transaction<TLong> & WithApiMixin)[],
+      loop: (
+        d: (Transaction<TLong> & WithApiMixin)[],
+      ) => Promise<(Transaction<TLong> & WithApiMixin)[]>,
+    ): (Transaction<TLong> & WithApiMixin)[] | Promise<(Transaction<TLong> & WithApiMixin)[]> => {
+      if (downloaded.length === list.length) return downloaded;
+      const hash = Watch._groupByHeight(list);
+      const heightList = keys(hash)
+        .map(Number)
+        .sort((a, b) => b - a);
+      const [last, prev] = heightList;
+      if (last !== height) return loop(list);
+      const lastTxs = hash[last] ?? [];
+      if (prev === undefined) return loop(list);
+      const firstPrev = (hash[prev] ?? [])[0];
+      return firstPrev ? [...lastTxs, firstPrev] : loop(list);
+    };
+
     const loop = (
       downloaded: (Transaction<TLong> & WithApiMixin)[],
     ): Promise<(Transaction<TLong> & WithApiMixin)[]> => {
-      if (downloaded.length >= limit) {
-        return Promise.resolve(downloaded);
-      }
-
-      return fetchTransactions(this._base, this.address, downloaded.length + 100).then((list) => {
-        if (downloaded.length === list.length) {
-          return downloaded;
-        }
-        const hash = Watch._groupByHeight(list);
-        const heightList = keys(hash)
-          .map(Number)
-          .sort((a, b) => b - a);
-        const last = heightList[0];
-        const prev = heightList[1];
-
-        if (last === height) {
-          const lastTxs = hash[last] ?? [];
-          if (prev !== undefined) {
-            const prevTxs = hash[prev] ?? [];
-            const firstPrev = prevTxs[0];
-            return firstPrev ? [...lastTxs, firstPrev] : loop(list);
-          }
-          return loop(list);
-        } else {
-          return loop(list);
-        }
-      });
+      if (downloaded.length >= limit) return Promise.resolve(downloaded);
+      return fetchTransactions(this._base, this.address, downloaded.length + 100).then((list) =>
+        resolveForHeight(list, downloaded, loop),
+      );
     };
 
     return loop([from]);

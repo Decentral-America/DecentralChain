@@ -43,7 +43,7 @@ export function cancelSubmittedOrder(
   amountAsset: string | null,
   priceAsset: string | null,
 ): Promise<unknown> {
-  const endpoint = `matcher/orderbook/${amountAsset || 'WAVES'}/${priceAsset || 'WAVES'}/cancel`;
+  const endpoint = `matcher/orderbook/${amountAsset ?? 'WAVES'}/${priceAsset ?? 'WAVES'}/cancel`;
 
   return request({
     base,

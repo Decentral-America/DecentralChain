@@ -18,7 +18,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function cancelLease(
   params: ICancelLeaseParams,
   seed: TSeedTypes,
@@ -28,11 +27,12 @@ export function cancelLease(
   seed?: TSeedTypes,
 ): CancelLeaseTransaction & WithId & WithProofs;
 export function cancelLease(
-  paramsOrTx: ICancelLeaseParams & Partial<CancelLeaseTransaction & WithProofs>,
+  paramsOrTx: ICancelLeaseParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): CancelLeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.CANCEL_LEASE;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.CANCEL_LEASE;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.CANCEL_LEASE) as CancelLeaseTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -48,7 +48,7 @@ export function cancelLease(
     version,
   };
 
-  validate.cancelLease(tx as unknown as Record<string, unknown>);
+  validate.cancelLease(tx);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

@@ -105,7 +105,9 @@ it('tx serialize', async () => {
     MASTER_ACCOUNT.SEED,
   );
 
-  // @ts-expect-error fetchTransactionSerialize may have different signature
+  // @ts-expect-error: tx from issue() lacks WithApiMixin (applicationStatus/spentComplexity)
+  // required by fetchTransactionSerialize's second parameter — intentional: testing
+  // that the endpoint accepts signed-but-not-yet-broadcast transactions
   const serialized = await api.utils.fetchTransactionSerialize(tx);
   expect(serialized.bytes).toBeInstanceOf(Array);
 });

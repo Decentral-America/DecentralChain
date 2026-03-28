@@ -1,5 +1,6 @@
-import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { base58Encode, publicKey } from '@decentralchain/ts-lib-crypto';
 import { transfer } from '../../src';
+import { protoBytesToTx, txToProtoBytes } from '../../src/proto-serialize';
 import {
   checkBinarySerializeDeserialize,
   checkProtoSerializeDeserialize,
@@ -93,5 +94,27 @@ describe('serialize/deserialize transfer binary tx', () => {
     it(name, () => {
       checkBinarySerializeDeserialize({ Bytes: Bytes, Json: Json });
     });
+  });
+});
+
+describe('proto round-trip: transfer with byte attachment', () => {
+  const stringSeed = 'df3dd6d884714288a39af0bd973a1771c9f00f168cf040d6abb6a50dd5e055d8';
+
+  it('preserves non-empty binary attachment through encode → decode', () => {
+    // Use bytes that include non-printable chars so the test is not accidentally passing
+    // because the attachment happened to be valid UTF-8 text.
+    const binaryPayload = new Uint8Array([0x00, 0x01, 0xab, 0xff, 0x42]);
+    const attachment = base58Encode(binaryPayload);
+    const tx = transfer({ ...transferMinimalParams, attachment }, stringSeed);
+    const protoBytes = txToProtoBytes(tx);
+    const parsed = protoBytesToTx(protoBytes);
+    expect(parsed.attachment).toBe(attachment);
+  });
+
+  it('preserves empty attachment through encode → decode', () => {
+    const tx = transfer({ ...transferMinimalParams, attachment: '' }, stringSeed);
+    const protoBytes = txToProtoBytes(tx);
+    const parsed = protoBytesToTx(protoBytes);
+    expect(parsed.attachment).toBe('');
   });
 });

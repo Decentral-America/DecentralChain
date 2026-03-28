@@ -14,7 +14,7 @@ export abstract class Adapter {
   protected constructor(networkCode?: string | number) {
     networkCode = typeof networkCode === 'string' ? networkCode.charCodeAt(0) : networkCode;
     this.type = (this.constructor as typeof Adapter).type;
-    const resolvedCode = networkCode || Adapter._code;
+    const resolvedCode = networkCode ?? Adapter._code;
     if (!resolvedCode) {
       throw new Error(
         'Network code is required. Call Adapter.initOptions({ networkCode }) or pass networkCode to the constructor.',
@@ -85,8 +85,8 @@ export abstract class Adapter {
     const bytes = typeof data === 'string' ? stringToBytes(data) : Uint8Array.from(data);
     const serializeData = {
       binary: libs.crypto.base64Encode(bytes),
-      version: 1,
-    } as unknown as Parameters<typeof serializeCustomData>[0];
+      version: 1 as const,
+    };
     const binary = serializeCustomData(serializeData);
     return this.signRequest(binary, { type: 'customData', ...serializeData });
   }

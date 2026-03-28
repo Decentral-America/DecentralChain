@@ -631,7 +631,8 @@ describe('Adapter', () => {
 
   describe('unsupported transaction type', () => {
     it('throws for unknown transaction type', () => {
-      const tx = { type: 999 } as unknown as SignerTx;
+      // @ts-expect-error: type 999 is intentionally not a valid SignerTx to test error path
+      const tx: SignerTx = { type: 999 };
       expect(() => keeperTxFactory(tx)).toThrow('Unsupported transaction type');
     });
   });

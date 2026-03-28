@@ -196,6 +196,44 @@ export class SwapClient {
     };
   }
 
+  private buildDataResponse(
+    data: {
+      amount: unknown;
+      minReceived: unknown;
+      originalAmount: unknown;
+      originalMinReceived: unknown;
+      priceImpact?: number;
+      transaction: {
+        call: { arguments?: Response_Exchange_Transaction_Argument[]; function?: string };
+        dApp?: string;
+      };
+    },
+    swapParams: SwapParams,
+  ): SwapClientResponse {
+    return {
+      amountCoins: new BigNumber(String(data.amount)).toString(),
+      minimumReceivedCoins: new BigNumber(String(data.minReceived)).toString(),
+      originalAmountCoins: new BigNumber(String(data.originalAmount)).toString(),
+      originalMinimumReceivedCoins: new BigNumber(String(data.originalMinReceived)).toString(),
+      priceImpact: data.priceImpact ?? 0,
+      swapParams,
+      tx: {
+        call: {
+          args: (data.transaction.call.arguments ?? []).map((a) => convertArg(a)),
+          function: data.transaction.call.function ?? '',
+        },
+        dApp: data.transaction.dApp ?? '',
+        payment: [
+          {
+            amount: swapParams.amountCoins.toString(),
+            assetId: swapParams.fromAssetId === NATIVE_ASSET_ID ? null : swapParams.fromAssetId,
+          },
+        ],
+      },
+      type: 'data',
+    };
+  }
+
   private handleMessage(event: MessageEvent) {
     if (!this.activeRequest) {
       return;
@@ -208,7 +246,6 @@ export class SwapClient {
     }
 
     const exchange = decoded.payload.value;
-
     let response: SwapClientResponse;
 
     if (exchange.result.case === 'data') {
@@ -217,31 +254,10 @@ export class SwapClient {
         console.error('[SwapClient] Malformed exchange data: missing required fields');
         return;
       }
-
-      const { swapParams } = this.activeRequest;
-
-      response = {
-        amountCoins: new BigNumber(String(data.amount)).toString(),
-        minimumReceivedCoins: new BigNumber(String(data.minReceived)).toString(),
-        originalAmountCoins: new BigNumber(String(data.originalAmount)).toString(),
-        originalMinimumReceivedCoins: new BigNumber(String(data.originalMinReceived)).toString(),
-        priceImpact: data.priceImpact ?? 0,
-        swapParams,
-        tx: {
-          call: {
-            args: (data.transaction.call.arguments ?? []).map((a) => convertArg(a)),
-            function: data.transaction.call.function ?? '',
-          },
-          dApp: data.transaction.dApp ?? '',
-          payment: [
-            {
-              amount: swapParams.amountCoins.toString(),
-              assetId: swapParams.fromAssetId === NATIVE_ASSET_ID ? null : swapParams.fromAssetId,
-            },
-          ],
-        },
-        type: 'data',
-      };
+      response = this.buildDataResponse(
+        data as Parameters<typeof this.buildDataResponse>[0],
+        this.activeRequest.swapParams,
+      );
     } else if (exchange.result.case === 'error') {
       const error = exchange.result.value;
       response = {

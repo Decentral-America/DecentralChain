@@ -9,9 +9,9 @@ import {
 import { DCC_ID } from './prepareTx';
 
 export function find<T>(some: Partial<T>, list: T[]) {
-  const keys = Object.keys(some);
-  // @ts-expect-error - dynamic key access on partial type
-  const isEqual = (a) => keys.every((n) => a[n] === some[n]);
+  const keys = Object.keys(some) as (keyof T & string)[];
+  const isEqual = (a: T) =>
+    keys.every((n) => (a as Record<string, unknown>)[n] === (some as Record<string, unknown>)[n]);
   for (const item of list) {
     if (isEqual(item)) {
       return item;
@@ -112,9 +112,9 @@ export function currentFeeFactory(
       case TRANSACTION_TYPE.REISSUE:
       case TRANSACTION_TYPE.BURN:
       case TRANSACTION_TYPE.TRANSFER:
-        return minFee.add(getSmartAssetFeeByAssetId(tx.assetId, config, smartAssetIdList || []));
+        return minFee.add(getSmartAssetFeeByAssetId(tx.assetId, config, smartAssetIdList ?? []));
       case TRANSACTION_TYPE.MASS_TRANSFER:
-        return minFee.add(getMassTransferFee(tx, config, smartAssetIdList || []));
+        return minFee.add(getMassTransferFee(tx, config, smartAssetIdList ?? []));
       case TRANSACTION_TYPE.DATA:
         return accountFee.add(getDataFee(bytes, tx, config));
       case TRANSACTION_TYPE.ISSUE:
