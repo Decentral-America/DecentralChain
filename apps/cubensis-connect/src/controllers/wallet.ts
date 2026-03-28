@@ -9,20 +9,21 @@ import {
 import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
-import { type NetworkName } from '#networks/types';
+import type { NetworkName } from '#networks/types';
 import { DebugWallet } from '#wallets/debug';
 import { EncodedSeedWallet } from '#wallets/encodedSeed';
-import { type LedgerApi, LedgerWallet } from '#wallets/ledger';
+import type { LedgerApi } from '#wallets/ledger';
+import { LedgerWallet } from '#wallets/ledger';
 import { PrivateKeyWallet } from '#wallets/privateKey';
 import { SeedWallet } from '#wallets/seed';
-import { type CreateWalletInput, type WalletPrivateData } from '#wallets/types';
-import { type Wallet } from '#wallets/wallet';
+import type { CreateWalletInput, WalletPrivateData } from '#wallets/types';
+import type { Wallet } from '#wallets/wallet';
 
 import { NETWORK_CONFIG } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 import { CONFIG } from '../ui/appConfig';
-import { type AssetInfoController } from './assetInfo';
-import { type TrashController } from './trash';
+import type { AssetInfoController } from './assetInfo';
+import type { TrashController } from './trash';
 
 /**
  * Encrypt wallet data using a pre-derived AES-GCM-256 CryptoKey.
@@ -383,13 +384,14 @@ export class WalletController extends EventEmitter {
       );
 
       this.#wallets = await Promise.all(
-        this.#wallets.map((wallet) =>
-          this.#createWallet(
-            wallet.data,
-            networks[wallet.data.networkCode]!,
-            wallet.data.networkCode,
-          ),
-        ),
+        this.#wallets.map((wallet) => {
+          const networkName = networks[wallet.data.networkCode];
+          invariant(
+            networkName != null,
+            `wallet: unknown networkCode '${wallet.data.networkCode}' — NETWORK_CONFIG out of sync`,
+          );
+          return this.#createWallet(wallet.data, networkName, wallet.data.networkCode);
+        }),
       );
 
       await this.#saveWallets();

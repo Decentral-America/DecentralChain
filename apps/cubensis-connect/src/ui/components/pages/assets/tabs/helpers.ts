@@ -1,13 +1,14 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { deepEqual } from 'fast-equals';
-import { type TFunction } from 'i18next';
+import type { TFunction } from 'i18next';
 import { useState } from 'react';
-import { type AssetsRecord } from '#assets/types';
-import { type Nft, NftVendorId } from '#nfts/types';
+import type { AssetsRecord } from '#assets/types';
+import type { Nft } from '#nfts/types';
+import { NftVendorId } from '#nfts/types';
 
 import { usePopupDispatch, usePopupSelector } from '../../../../../popup/store/react';
 import { setUiState } from '../../../../../store/actions/uiState';
-import { type UiState } from '../../../../../store/reducers/updateState';
+import type { UiState } from '../../../../../store/reducers/updateState';
 
 export function useUiState<T extends keyof UiState>(
   key: T,

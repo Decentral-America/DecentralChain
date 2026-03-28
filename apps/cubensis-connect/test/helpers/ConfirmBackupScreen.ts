@@ -1,4 +1,4 @@
-import { type ChainablePromiseElement } from 'webdriverio';
+import type { ChainablePromiseElement } from 'webdriverio';
 
 const PillsContainer = (wrapped: ChainablePromiseElement) => ({
   getAllPills: async () => {

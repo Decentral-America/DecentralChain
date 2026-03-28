@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
+import invariant from 'tiny-invariant';
 
 import * as styles from './modal.module.styl';
 
@@ -8,7 +9,7 @@ const ModalWrapper = (props: Props) => {
   return (
     <CSSTransition
       in={props.showModal ?? false}
-      classNames={props.animation || 'default_modal'}
+      classNames={props.animation ?? 'default_modal'}
       timeout={400}
       unmountOnExit
       onExited={props.onExited}
@@ -33,17 +34,21 @@ export function Modal(props: Props) {
 
   if (!elRef.current) {
     const el = document.createElement('div');
-    el.classList.add(styles.modalWrapper!);
+    // modal.module.styl always defines .modalWrapper — invariant defends against stale CSS module types
+    invariant(styles.modalWrapper != null, 'modal.module.styl must export .modalWrapper class');
+    el.classList.add(styles.modalWrapper);
     elRef.current = el;
   }
 
   useEffect(() => {
+    const el = elRef.current;
+    invariant(el != null, 'Modal: elRef must be set during render before effect runs');
     if (!modalRoot) {
       modalRoot = document.getElementById('app-modal');
     }
-    modalRoot?.appendChild(elRef.current!);
+    modalRoot?.appendChild(el);
     return () => {
-      modalRoot?.removeChild(elRef.current!);
+      modalRoot?.removeChild(el);
     };
   }, []);
 

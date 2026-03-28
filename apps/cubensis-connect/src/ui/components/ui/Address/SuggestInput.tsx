@@ -3,10 +3,10 @@ import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isAddressString } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { icontains } from '#ui/components/pages/assets/helpers';
-
-import { Button, type InputProps, Modal, SearchInput } from '..';
+import type { InputProps } from '..';
+import { Button, Modal, SearchInput } from '..';
 import { AddressTooltip } from '../Address/Tooltip';
 import { AddressInput } from './Input';
 import * as styles from './SuggestInput.module.css';

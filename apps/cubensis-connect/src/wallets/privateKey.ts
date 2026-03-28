@@ -5,9 +5,9 @@ import {
   createPublicKey,
   signBytes,
 } from '@decentralchain/crypto';
-import { type NetworkName } from '#networks/types';
+import type { NetworkName } from '#networks/types';
 
-import { type WalletPrivateDataOfType } from './types';
+import type { WalletPrivateDataOfType } from './types';
 import { Wallet } from './wallet';
 
 export class PrivateKeyWallet extends Wallet<WalletPrivateDataOfType<'privateKey'>> {

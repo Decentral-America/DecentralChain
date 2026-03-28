@@ -3,7 +3,7 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { type AssetDetail } from '#assets/types';
+import type { AssetDetail } from '#assets/types';
 import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { getBalances } from '#store/actions/balances';
 import { useUiState } from '#ui/components/pages/assets/tabs/helpers';

@@ -2,6 +2,6 @@
 // dispatches updateUiState, and persists via Background.setUiState.
 import { createAction } from '@reduxjs/toolkit';
 
-import { type UiState } from '../reducers/updateState';
+import type { UiState } from '../reducers/updateState';
 
 export const setUiState = createAction<Partial<UiState>>('uiState/set');

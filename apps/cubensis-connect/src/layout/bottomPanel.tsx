@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 
 import { NETWORK_CONFIG } from '../constants';
@@ -133,7 +134,11 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                             : () => {
                                 setIsDropdownShown(false);
 
-                                const newNet = networkHash[network]!;
+                                const newNet = networkHash[network];
+                                invariant(
+                                  newNet != null,
+                                  `bottomPanel: unknown network '${network as string}'`,
+                                );
 
                                 if (newNet.nodeBaseUrl) {
                                   void setNewNetwork(network);

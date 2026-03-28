@@ -1,4 +1,4 @@
-import { type NetworkName } from '#networks/types';
+import type { NetworkName } from '#networks/types';
 
 export type CreateWalletInput = { name: string } & (
   | { type: 'debug'; address: string }
@@ -41,12 +41,13 @@ export type WalletPrivateDataOfType<T extends WalletPrivateData['type']> = Extra
   { type: T }
 >;
 
-export enum WalletTypes {
-  New = 'new',
-  Seed = 'seed',
-  EncodedSeed = 'encoded_seed',
-  PrivateKey = 'private_key',
-  Ledger = 'ledger',
-  Keystore = 'keystore',
-  Debug = 'debug',
-}
+export const WalletTypes = {
+  Debug: 'debug',
+  EncodedSeed: 'encoded_seed',
+  Keystore: 'keystore',
+  Ledger: 'ledger',
+  New: 'new',
+  PrivateKey: 'private_key',
+  Seed: 'seed',
+} as const;
+export type WalletTypes = (typeof WalletTypes)[keyof typeof WalletTypes];

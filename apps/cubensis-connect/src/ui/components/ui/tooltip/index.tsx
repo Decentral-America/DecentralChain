@@ -1,15 +1,9 @@
-import {
-  arrow,
-  autoUpdate,
-  flip,
-  offset,
-  type Placement,
-  shift,
-  useFloating,
-} from '@floating-ui/react-dom';
+import type { Placement } from '@floating-ui/react-dom';
+import { arrow, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import invariant from 'tiny-invariant';
 
 import * as modal from '../modal/modal.module.styl';
 import * as styles from './tooltip.module.css';
@@ -17,6 +11,7 @@ import * as styles from './tooltip.module.css';
 interface Props {
   className?: string | undefined;
   children: (renderProps: {
+    // biome-ignore lint/suspicious/noExplicitAny: MutableRefObject is invariant on element type; HTMLElement | null is not assignable to Ref<HTMLButtonElement> or Ref<HTMLDivElement> when consumers spread this onto intrinsic JSX elements
     ref: React.MutableRefObject<any>;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
@@ -56,8 +51,9 @@ export function Tooltip({
     if (!root) return;
 
     const child = document.createElement('div');
-    child.classList.add(modal.modalWrapper!);
-    root.appendChild(child);
+    // modal.module.styl always defines .modalWrapper; invariant defends against stale CSS module types
+    invariant(modal.modalWrapper != null, 'modal.module.styl must export .modalWrapper class');
+    child.classList.add(modal.modalWrapper);
     setEl(child);
 
     return () => {

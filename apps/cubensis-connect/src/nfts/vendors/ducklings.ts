@@ -1,14 +1,10 @@
 // NOTE: This vendor integrates with wavesducks.com (third-party NFT project).
 // URLs and biographical text referencing "Waves Ducks" / "WavesDucks" are
 // content from that third-party project and not DCC branding.
+import invariant from 'tiny-invariant';
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
-import {
-  type CreateParams,
-  type FetchInfoParams,
-  type NftAssetDetail,
-  type NftVendor,
-  NftVendorId,
-} from '../types';
+import type { CreateParams, FetchInfoParams, NftAssetDetail, NftVendor } from '../types';
+import { NftVendorId } from '../types';
 import { capitalize } from '../utils';
 
 const DUCKLINGS_DAPP = '3PKmLiGEfqLWMC1H9xhzqvAZKUXfFm8uoeg';
@@ -16,7 +12,7 @@ const DUCKLINGS_DAPP = '3PKmLiGEfqLWMC1H9xhzqvAZKUXfFm8uoeg';
 interface DucklingsNftInfo {
   growthLevel: number;
   id: string;
-  vendor: NftVendorId.Ducklings;
+  vendor: typeof NftVendorId.Ducklings;
 }
 
 function ducklingLevelKey(id: string) {
@@ -24,7 +20,7 @@ function ducklingLevelKey(id: string) {
 }
 
 export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
-  id = NftVendorId.Ducklings as const;
+  id = NftVendorId.Ducklings;
 
   is(nft: NftAssetDetail) {
     return nft.issuer === DUCKLINGS_DAPP;
@@ -45,7 +41,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       .then(dataEntriesToRecord)
       .then((dataEntries) =>
         nftIds.map((id): DucklingsNftInfo => {
-          const level = parseInt((dataEntries[ducklingLevelKey(id)] as any) ?? 0, 10);
+          const level = parseInt(String(dataEntries[ducklingLevelKey(id)] ?? 0), 10);
 
           return {
             growthLevel: level > 0 ? level / 1e14 : 0,
@@ -63,7 +59,8 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
     );
 
     const ducklingNames = Object.keys(DUCKLING_DESCRIPTIONS);
-    const name = ducklingNames[nameIndex % ducklingNames.length]!;
+    invariant(ducklingNames.length > 0, 'ducklings: DUCKLING_DESCRIPTIONS must be non-empty');
+    const name = ducklingNames[nameIndex % ducklingNames.length] as string;
 
     const adjectiveIndex = [16, 10, 1, 9, 9, 7].reduce(
       (acc, index) => acc + asset.id.charCodeAt(index),
@@ -77,6 +74,7 @@ export class DucklingsNftVendor implements NftVendor<DucklingsNftInfo> {
       displayCreator: 'Ducklings',
 
       displayName: `${capitalize(
+        // biome-ignore lint/style/noNonNullAssertion: modulo-bounded index into non-empty const array
         DUCKLING_ADJECTIVES[adjectiveIndex % DUCKLING_ADJECTIVES.length]!,
       )} ${capitalize(name)}`,
 
