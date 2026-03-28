@@ -26,7 +26,9 @@ function getArg(name) {
   return idx !== -1 && idx + 1 < args.length ? args[idx + 1] : null;
 }
 
-function output(_result) {}
+function output(result) {
+  console.log(JSON.stringify(result));
+}
 
 // --- gate ---
 // Check if an action is allowed and return incremented counter.
