@@ -1,0 +1,8 @@
+2026-03-28T19:39:15.5990000Z Evaluating ci.if
+2026-03-28T19:39:15.5990000Z Evaluating: success()
+2026-03-28T19:39:15.5990000Z Result: true
+2026-03-28T19:39:15.6050000Z Requested labels: ubuntu-latest
+2026-03-28T19:39:15.6050000Z Job defined at: Decentral-America/DecentralChain/.github/workflows/ci.yml@refs/heads/main
+2026-03-28T19:39:15.6050000Z Waiting for a runner to pick up this job...
+2026-03-28T19:39:16.0900000Z Job is about to start running on the hosted runner: GitHub Actions 1000002018
+2026-03-28T19:39:16.0890000Z Job is waiting for a hosted runner to come online.
