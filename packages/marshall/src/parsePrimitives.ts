@@ -122,7 +122,7 @@ export const byteToStringWithLength = (bytes: Uint8Array, start: number = 0) => 
 };
 
 export const byteToBase58 = (bytes: Uint8Array, start: number = 0, length?: number) => {
-  const shift = length || 32;
+  const shift = length ?? 32;
   const value = base58.encode(bytes.slice(start, start + shift));
   return { shift, value };
 };

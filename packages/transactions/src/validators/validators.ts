@@ -302,7 +302,7 @@ export const isValidAlias = validatePipe(
   ),
 );
 
-export const isHash = validatePipe(
+const isHash = validatePipe(
   isRequired(true),
   isBase58,
   pipe((value: string) => base58Decode(value), bytesLength(32)),
@@ -407,7 +407,7 @@ export const validateByShema =
     shema: Record<string, (value: any) => any>,
     errorTpl: (key: string, value?: unknown) => string,
   ) =>
-  (tx: Record<string, unknown>) => {
+  (tx: object) => {
     Object.entries(shema).forEach(([key, cb]) => {
       const value = prop(key)(tx || {});
       if (!cb(value)) {

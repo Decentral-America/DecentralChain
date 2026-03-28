@@ -107,6 +107,7 @@ export type {
 
 // ─── Global Augmentation ─────────────────────────────────────────────────────
 
+// biome-ignore lint/nursery/useImportsFirst: intentional — private import block placed after public exports for documentation clarity; all types are from the same './types.js' module
 import {
   type IAuthData as _IAuthData,
   type IAuthResponse as _IAuthResponse,

@@ -2,7 +2,7 @@ import { type MassTransferItem, type MassTransferTransaction } from '@decentralc
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
-import { emptyError, getAssetId, getCoins, has, ifElse, map, pipe, prop } from '../utils/index.js';
+import { getAssetId, getCoins, has, ifElse, map, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const remapTransferItem = factory<
@@ -31,20 +31,23 @@ export const massTransfer = factory<
   TWithPartialFee<MassTransferTransaction<string>>
 >({
   ...getDefaultTransform(),
-  assetId: pipe<TClientMassTransfer, string, string>(
-    ifElse<TClientMassTransfer, string, string>(
-      has('assetId'),
-      // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
-      prop<any, 'assetId'>('assetId'),
+  assetId: ifElse<TClientMassTransfer, string | null, string | null>(
+    has('assetId'),
+    // biome-ignore lint/suspicious/noExplicitAny: curried prop() can't infer type param in partial application
+    prop<any, 'assetId'>('assetId'),
+    pipe<
       // biome-ignore lint/suspicious/noExplicitAny: pipe() first type param can't be inferred from ifElse fallback branch
-      pipe<any, IClientMassTransferItem<TMoney>[], IClientMassTransferItem<TMoney>, TMoney, string>(
-        prop<IClientMassTransferMoney, 'transfers'>('transfers'),
-        getFirstMassTransferItem,
-        prop<IClientMassTransferItem<TMoney>, 'amount'>('amount'),
-        getAssetId,
-      ),
+      any,
+      IClientMassTransferItem<TMoney>[],
+      IClientMassTransferItem<TMoney>,
+      TMoney,
+      string | null
+    >(
+      prop<IClientMassTransferMoney, 'transfers'>('transfers'),
+      getFirstMassTransferItem,
+      prop<IClientMassTransferItem<TMoney>, 'amount'>('amount'),
+      getAssetId,
     ),
-    emptyError('Has no assetId!'),
   ),
   attachment: prop('attachment'),
   transfers: pipe(prop('transfers'), map(remapTransferItem)),

@@ -50,7 +50,7 @@ export class SeedAdapter extends Adapter {
     }
 
     this.seed = {
-      address: libs.crypto.address(seed, networkCode || this.getNetworkByte()),
+      address: libs.crypto.address(seed, networkCode ?? this.getNetworkByte()),
       encrypt: (password: string, encryptionRounds?: number) => {
         return Seed.encryptSeedPhrase(`base58:${this.encodedSeed}`, password, encryptionRounds);
       },

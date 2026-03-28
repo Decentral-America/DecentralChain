@@ -1,6 +1,7 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
+  dts: true,
   entry: [
     'src/index.ts',
     'src/api-node/transactions/index.ts',
@@ -15,5 +16,6 @@ export default defineConfig({
     'src/api-node/leasing/index.ts',
     'src/api-node/eth/index.ts',
   ],
+  format: ['esm'],
   sourcemap: true,
 });

@@ -310,6 +310,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     return error('Bad array');
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON object parser — closure nesting inside create() inflates the score, but the algorithm cannot be split further without obscuring the grammar
   const object = (): Record<string, unknown> => {
     let key: string;
     // Use null-prototype object to prevent __proto__ pollution and data loss
@@ -622,6 +623,7 @@ function create<T = unknown>(options?: IOptions<T>): JsonHandler {
     }
 
     if (typeof reviver === 'function') {
+      // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive reviver walk — nesting inside parse() inside create() inflates the metric; extracting would require threading the reviver parameter through every recursive branch
       const walk = (holder: Record<string, unknown>, key: string): unknown => {
         const val = holder[key];
         if (val && typeof val === 'object') {

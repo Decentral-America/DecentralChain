@@ -215,10 +215,21 @@ describe('transactions v3', () => {
     TIMEOUT,
   );
 
-  it.todo('correctly serializes transfers with byte attachments');
+  it('correctly serializes transfers with byte attachments', () => {
+    // _a is a v3 transfer fixture whose attachment field is base58-encoded binary data
+    // (not a UTF-8 string). This exercises the base58Decode → proto encode → base58Encode
+    // round-trip for non-empty byte attachments, distinct from the empty-attachment case
+    // already covered by the serialize/deserialize suite.
+    const tx = deleteProofsAndId({ ...transferWithByteAttachment });
+    const protoBytes = txToProtoBytes(tx as Parameters<typeof txToProtoBytes>[0]);
+    const parsed = protoBytesToTx(protoBytes);
+    expect(parsed).toMatchObject(tx);
+    // Explicit assertion: the binary attachment must survive the proto round-trip intact.
+    expect(parsed.attachment).toBe(transferWithByteAttachment.attachment);
+  });
 });
 
-const _a = {
+const transferWithByteAttachment = {
   amount: 500,
   assetId: '9NNLqSE68fimL5GpKFacu67auqtq5aYPVnvWJZJPigNA',
   attachment: '3MyAGEBuZGDKZDzYn6sbh2noqk9uYHy4kjw',

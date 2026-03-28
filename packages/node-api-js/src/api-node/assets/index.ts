@@ -182,7 +182,7 @@ export async function fetchAssetsBalance(
       timestamp: assetDetails.issueTimestamp,
       type: TRANSACTION_TYPE.ISSUE,
       version: 3,
-    } as unknown as NonNullable<TAssetBalance['issueTransaction']>;
+    } as NonNullable<TAssetBalance['issueTransaction']>;
   });
 
   return balancesResponse;

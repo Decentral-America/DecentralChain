@@ -47,7 +47,15 @@ export class CubensisConnectAdapter extends Adapter {
   private static _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
   private static _getApiCb: (() => ICubensisConnect) | undefined;
 
-  private static _api: ICubensisConnect;
+  private static _api: ICubensisConnect | undefined;
+
+  /** Asserted accessor — callers must be guarded by isAvailable() which initialises _api. */
+  private static get _apiInstance(): ICubensisConnect {
+    if (CubensisConnectAdapter._api == null) {
+      throw new Error('CubensisConnect not ready');
+    }
+    return CubensisConnectAdapter._api;
+  }
 
   private handleUpdate = (state: ICubensisConnectState) => {
     if (!state.locked && state.account?.address !== this._address) {
@@ -76,7 +84,7 @@ export class CubensisConnectAdapter extends Adapter {
   public override async isAvailable(ignoreLocked = false): Promise<void> {
     try {
       await CubensisConnectAdapter.isAvailable(this.getNetworkByte());
-      const data = await CubensisConnectAdapter._api.publicState();
+      const data = await CubensisConnectAdapter._apiInstance.publicState();
       CubensisConnectAdapter._updateState(data);
 
       if (data.locked) {
@@ -112,7 +120,7 @@ export class CubensisConnectAdapter extends Adapter {
 
     let error: (Error & { code?: number }) | undefined, data: ICubensisConnectState | undefined;
     try {
-      data = await CubensisConnectAdapter._api.publicState();
+      data = await CubensisConnectAdapter._apiInstance.publicState();
       CubensisConnectAdapter._updateState(data);
 
       if (data.txVersion) {
@@ -142,7 +150,7 @@ export class CubensisConnectAdapter extends Adapter {
 
   public async isLocked() {
     await CubensisConnectAdapter.isAvailable();
-    const data = await CubensisConnectAdapter._api.publicState();
+    const data = await CubensisConnectAdapter._apiInstance.publicState();
 
     CubensisConnectAdapter._updateState(data);
 
@@ -193,12 +201,12 @@ export class CubensisConnectAdapter extends Adapter {
     signData?: SignableData,
   ): Promise<string> {
     await this.isAvailable(true);
-    signData = (signData || _ || {}) as SignableData;
+    signData = (signData ?? _ ?? {}) as SignableData;
     if (signData?.type === 'customData') {
-      return (await CubensisConnectAdapter._api.signCustomData(signData)).signature;
+      return (await CubensisConnectAdapter._apiInstance.signCustomData(signData)).signature;
     }
 
-    return await CubensisConnectAdapter._api.signRequest(
+    return await CubensisConnectAdapter._apiInstance.signRequest(
       CubensisConnectAdapter._serializedData(signData),
     );
   }
@@ -209,7 +217,7 @@ export class CubensisConnectAdapter extends Adapter {
     signData: unknown,
   ): Promise<string> {
     await this.isAvailable(true);
-    const dataStr = await CubensisConnectAdapter._api.signTransaction(
+    const dataStr = await CubensisConnectAdapter._apiInstance.signTransaction(
       CubensisConnectAdapter._serializedData(signData),
     );
     const { proofs, signature } = JSON.parse(dataStr) as { proofs?: string[]; signature?: string };
@@ -229,17 +237,17 @@ export class CubensisConnectAdapter extends Adapter {
     let promise: Promise<string> | undefined;
     switch (signData.type) {
       case SIGN_TYPE.CREATE_ORDER:
-        promise = CubensisConnectAdapter._api.signOrder(
+        promise = CubensisConnectAdapter._apiInstance.signOrder(
           CubensisConnectAdapter._serializedData(signData),
         );
         break;
       case SIGN_TYPE.CANCEL_ORDER:
-        promise = CubensisConnectAdapter._api.signCancelOrder(
+        promise = CubensisConnectAdapter._apiInstance.signCancelOrder(
           CubensisConnectAdapter._serializedData(signData),
         );
         break;
       default:
-        return CubensisConnectAdapter._api.signRequest(
+        return CubensisConnectAdapter._apiInstance.signRequest(
           CubensisConnectAdapter._serializedData(signData),
         );
     }
@@ -266,7 +274,7 @@ export class CubensisConnectAdapter extends Adapter {
 
   public static override async getUserList() {
     await CubensisConnectAdapter.isAvailable();
-    return CubensisConnectAdapter._api.publicState().then((data) => {
+    return CubensisConnectAdapter._apiInstance.publicState().then((data) => {
       CubensisConnectAdapter._updateState(data);
       return [data.account];
     });
@@ -277,7 +285,9 @@ export class CubensisConnectAdapter extends Adapter {
     CubensisConnectAdapter.setApiExtension(options.extension);
     void CubensisConnectAdapter._initExtension();
     try {
-      void CubensisConnectAdapter._api.publicState().then(CubensisConnectAdapter._updateState);
+      void CubensisConnectAdapter._apiInstance
+        .publicState()
+        .then(CubensisConnectAdapter._updateState);
     } catch {
       /* ignored */
     }
@@ -294,7 +304,7 @@ export class CubensisConnectAdapter extends Adapter {
 
     CubensisConnectAdapter._getApiCb = extensionCb;
     // Reset the cached API so _initExtension() re-evaluates the new callback
-    CubensisConnectAdapter._api = undefined as unknown as ICubensisConnect;
+    CubensisConnectAdapter._api = undefined;
   }
 
   public static onUpdate(cb: (state: ICubensisConnectState) => void) {
@@ -321,7 +331,7 @@ export class CubensisConnectAdapter extends Adapter {
 
   private static _initExtension() {
     if (CubensisConnectAdapter._api) {
-      return CubensisConnectAdapter._api.initialPromise;
+      return CubensisConnectAdapter._apiInstance.initialPromise;
     }
 
     if (!CubensisConnectAdapter._getApiCb) {
@@ -332,8 +342,8 @@ export class CubensisConnectAdapter extends Adapter {
     if (dccApi) {
       return dccApi.initialPromise.then(async (api: ICubensisConnect) => {
         CubensisConnectAdapter._api = api;
-        CubensisConnectAdapter._api.on('update', CubensisConnectAdapter._updateState);
-        const state = await CubensisConnectAdapter._api.publicState();
+        CubensisConnectAdapter._apiInstance.on('update', CubensisConnectAdapter._updateState);
+        const state = await CubensisConnectAdapter._apiInstance.publicState();
         if (state.txVersion) {
           CubensisConnectAdapter._txVersion = state.txVersion as typeof DEFAULT_TX_VERSIONS;
         }

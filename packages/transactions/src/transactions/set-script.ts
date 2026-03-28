@@ -25,7 +25,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function setScript(
   params: ISetScriptParams,
   seed: TSeedTypes,
@@ -35,11 +34,12 @@ export function setScript(
   seed?: TSeedTypes,
 ): SetScriptTransaction & WithId & WithProofs;
 export function setScript(
-  paramsOrTx: ISetScriptParams & Partial<SetScriptTransaction & WithProofs>,
+  paramsOrTx: ISetScriptParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): SetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_SCRIPT;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SET_SCRIPT;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.SET_SCRIPT) as SetScriptTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   if (paramsOrTx.script === undefined)
@@ -61,7 +61,7 @@ export function setScript(
     version,
   };
 
-  validate.setScript(tx as unknown as Record<string, unknown>);
+  validate.setScript(tx);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

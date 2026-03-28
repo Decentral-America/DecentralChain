@@ -12,7 +12,7 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { describe, expect, it, vi } from 'vitest';
 import { makeConsole, makeOptions } from '../src/logger';
-import Signer from '../src/Signer';
+import { Signer } from '../src/Signer';
 import {
   ERRORS,
   SignerApiArgumentsError,
@@ -57,7 +57,8 @@ describe('validateSignerOptions', () => {
   });
 
   it('non-string NODE_URL fails', () => {
-    const result = validateSignerOptions({ NODE_URL: 123 as unknown as string });
+    // @ts-expect-error: intentional non-string NODE_URL to exercise runtime validation
+    const result = validateSignerOptions({ NODE_URL: 123 });
     expect(result.isValid).toBe(false);
     expect(result.invalidOptions).toContain('NODE_URL');
   });
@@ -82,8 +83,10 @@ describe('validateSignerOptions', () => {
   });
 
   it('invalid LOG_LEVEL fails', () => {
+    // @ts-expect-error: 'debug' is intentionally not a valid LOG_LEVEL to exercise runtime validation
+    const invalidLevel: 'verbose' = 'debug';
     const result = validateSignerOptions({
-      LOG_LEVEL: 'debug' as unknown as 'verbose',
+      LOG_LEVEL: invalidLevel,
       NODE_URL: MOCK_URL,
     });
     expect(result.isValid).toBe(false);
@@ -106,6 +109,7 @@ const completeProvider = {
   logout: () => {},
   sign: () => {},
   signMessage: () => {},
+  signOrder: () => {},
   signTypedData: () => {},
 };
 
@@ -248,7 +252,7 @@ describe('Signer decorators', () => {
       once: vi.fn().mockReturnThis(),
       user: null,
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
 
     // Must NOT throw synchronously — must return a rejected Promise so callers
     // only need a single .catch() / await try-catch, not both.
@@ -675,6 +679,7 @@ const makeMockProvider = (signImpl?: () => Promise<unknown>) => ({
   once: vi.fn().mockReturnThis(),
   sign: vi.fn().mockImplementation(signImpl ?? (() => Promise.resolve([]))),
   signMessage: vi.fn().mockResolvedValue(''),
+  signOrder: vi.fn().mockResolvedValue({}),
   signTypedData: vi.fn().mockResolvedValue(''),
 });
 
@@ -690,7 +695,7 @@ describe('Signer._sign error branches', () => {
   it('isSignAndBroadcastByProvider=true throws SignerProviderSignIsNotSupport', async () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const mockProvider = { ...makeMockProvider(), isSignAndBroadcastByProvider: true as const };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     expect(() => signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).sign()).toThrow(
       SignerProviderSignIsNotSupport,
     );
@@ -699,9 +704,7 @@ describe('Signer._sign error branches', () => {
   it('unknown transaction type fails validation', () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     expect(() =>
-      (signer as unknown as { _sign: (txs: unknown[]) => unknown })._sign([
-        { amount: 1, type: 9999 },
-      ]),
+      (signer as { _sign: (txs: unknown[]) => unknown })._sign([{ amount: 1, type: 9999 }]),
     ).toThrow(SignerApiArgumentsError);
   });
 });
@@ -714,7 +717,7 @@ describe('catchProviderError decorator branches', () => {
   it('user rejection string passes through unrewrapped', async () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const provider = makeMockProvider(() => Promise.reject('Error: User rejection!'));
-    await signer.setProvider(provider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(provider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).sign()).rejects.toBe(
       'Error: User rejection!',
     );
@@ -724,7 +727,7 @@ describe('catchProviderError decorator branches', () => {
     const original = new SignerAuthError('sign');
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const provider = makeMockProvider(() => Promise.reject(original));
-    await signer.setProvider(provider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(provider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).sign()).rejects.toBe(
       original,
     );
@@ -733,7 +736,7 @@ describe('catchProviderError decorator branches', () => {
   it('unknown error is logged and re-rejected as original', async () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const provider = makeMockProvider(() => Promise.reject(new Error('network failure')));
-    await signer.setProvider(provider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(provider as Parameters<typeof signer.setProvider>[0]);
     await expect(
       signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).sign(),
     ).rejects.toThrow('network failure');
@@ -743,7 +746,7 @@ describe('catchProviderError decorator branches', () => {
     // Rejection with an object lacking .message triggers the `?? String(e)` branch
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const provider = makeMockProvider(() => Promise.reject({ code: 'ERR_CUSTOM' }));
-    await signer.setProvider(provider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(provider as Parameters<typeof signer.setProvider>[0]);
     await expect(
       signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).sign(),
     ).rejects.toEqual({ code: 'ERR_CUSTOM' });
@@ -756,13 +759,14 @@ describe('catchProviderError decorator branches', () => {
 
 describe('Signer - login error paths', () => {
   it('user rejection propagates through unwrapped', async () => {
+    const rejection = new Error('User rejection!');
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const mockProvider = {
       ...makeMockProvider(),
-      login: vi.fn().mockRejectedValue('Error: User rejection!'),
+      login: vi.fn().mockRejectedValue(rejection),
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
-    await expect(signer.login()).rejects.toBe('Error: User rejection!');
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
+    await expect(signer.login()).rejects.toBe(rejection);
   });
 
   it('Error instance is wrapped in SignerProviderInternalError', async () => {
@@ -771,7 +775,7 @@ describe('Signer - login error paths', () => {
       ...makeMockProvider(),
       login: vi.fn().mockRejectedValue(new Error('auth failed')),
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.login()).rejects.toBeInstanceOf(SignerProviderInternalError);
   });
 
@@ -781,7 +785,7 @@ describe('Signer - login error paths', () => {
       ...makeMockProvider(),
       login: vi.fn().mockRejectedValue('string-error'),
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.login()).rejects.toBeInstanceOf(SignerProviderInternalError);
   });
 });
@@ -797,14 +801,14 @@ describe('Signer - logout error path', () => {
       ...makeMockProvider(),
       logout: vi.fn().mockRejectedValue(new Error('logout failed')),
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.logout()).rejects.toBeInstanceOf(SignerProviderInternalError);
   });
 
   it('non-Error logout rejection uses String() fallback', async () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const mockProvider = { ...makeMockProvider(), logout: vi.fn().mockRejectedValue('logout-err') };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     await expect(signer.logout()).rejects.toBeInstanceOf(SignerProviderInternalError);
   });
 });
@@ -818,7 +822,7 @@ describe('Signer - setProvider invalid provider', () => {
     const signer = new Signer({ NODE_URL: MOCK_URL });
     const badProvider = { connect: () => {}, login: () => {} }; // missing logout, sign, etc.
     await expect(
-      signer.setProvider(badProvider as unknown as Parameters<typeof signer.setProvider>[0]),
+      signer.setProvider(badProvider as Parameters<typeof signer.setProvider>[0]),
     ).rejects.toBeInstanceOf(SignerProviderInterfaceError);
   });
 });
@@ -965,10 +969,12 @@ describe('validation edge cases - isValidAlias malformed aliases', () => {
 
 describe('validation edge cases - isPublicKey and isValidAddress', () => {
   it('transfer: non-string senderPublicKey fails', () => {
+    // @ts-expect-error: intentional non-string senderPublicKey to exercise isPublicKey runtime check
+    const badPubKey: string = 12345;
     const r = argsValidators[TRANSACTION_TYPE.TRANSFER]({
       amount: 1000,
       recipient: 'alias:D:test',
-      senderPublicKey: 12345 as unknown as string,
+      senderPublicKey: badPubKey,
       type: TRANSACTION_TYPE.TRANSFER,
     });
     expect(r.isValid).toBe(false);
@@ -987,9 +993,11 @@ describe('validation edge cases - isPublicKey and isValidAddress', () => {
   });
 
   it('transfer: non-string recipient fails (isRecipient !isString branch)', () => {
+    // @ts-expect-error: intentional non-string recipient to exercise isRecipient runtime check
+    const badRecipient: string = 42;
     const r = argsValidators[TRANSACTION_TYPE.TRANSFER]({
       amount: 1000,
-      recipient: 42 as unknown as string,
+      recipient: badRecipient,
       type: TRANSACTION_TYPE.TRANSFER,
     });
     expect(r.isValid).toBe(false);
@@ -1052,7 +1060,7 @@ describe('Signer - _createPipelineAPI broadcast', () => {
       ...makeMockProvider(() => Promise.resolve(signedTx)),
       isSignAndBroadcastByProvider: true as const,
     };
-    await signer.setProvider(mockProvider as unknown as Parameters<typeof signer.setProvider>[0]);
+    await signer.setProvider(mockProvider as Parameters<typeof signer.setProvider>[0]);
     const result = await signer.transfer({ amount: 1000, recipient: 'alias:D:test' }).broadcast();
     expect(result).toEqual(signedTx);
     expect(mockProvider.sign).toHaveBeenCalled();

@@ -7,7 +7,7 @@ import {
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
-import { defaultTo, getAssetId, getCoins, ifElse, map, pipe, prop } from '../utils/index.js';
+import { getAssetId, getCoins, ifElse, map, pipe, prop } from '../utils/index.js';
 import { getDefaultTransform, type IDefaultGuiTx } from './general.js';
 
 const isNull = (data: unknown) => data == null;
@@ -19,9 +19,10 @@ const processArgument = (
   if (data.type === 'integer') {
     return { type: data.type, value: getCoins(data.value) };
   }
-  // Non-integer args (string, binary, boolean, list) don't contain LONG values
-  // at runtime. The Phantom<'LONG', TLong> on list args is purely structural.
-  return data as unknown as InvokeScriptCallArgument<string>;
+  if (data.type === 'list') {
+    return { type: data.type, value: data.value.map(processArgument) };
+  }
+  return data;
 };
 
 const processCall = factory<InvokeScriptCall<TLong>, InvokeScriptCall<string>>({
@@ -58,11 +59,7 @@ export const invokeScript = factory<
   ),
   chainId: prop('chainId'),
   dApp: prop('dApp'),
-  feeAssetId: pipe<IClientInvokeScript, TMoney | TLong | undefined | null, string | null, string>(
-    prop('fee'),
-    getAssetId,
-    defaultTo('DCC'),
-  ),
+  feeAssetId: pipe(prop('fee'), getAssetId),
   payment: pipe<
     IClientInvokeScript,
     TMoney[] | null | undefined,

@@ -557,6 +557,14 @@ const anyOrder = anyOf(
         withLength: intConverter,
       },
     ],
+    [
+      3,
+      {
+        schema: [...orderSchemaV3.schema, ...proofsSchemaV1.schema],
+        type: 'object',
+        withLength: intConverter,
+      },
+    ],
   ],
   { discriminatorBytePos: 4, discriminatorField: 'version' },
 );
@@ -758,6 +766,7 @@ export function getTransactionSchema(type: TRANSACTION_TYPE, version?: number): 
     throw new Error(`Incorrect tx type: ${type}`);
   }
 
+  // biome-ignore lint/nursery/useNullishCoalescing: version 0 is semantically invalid for tx schemas; || correctly treats both 0 and null/undefined as "unspecified" and defaults to version 1
   const schema = schemas[version || 1];
   if (typeof schema !== 'object') {
     throw new Error(`Incorrect tx version: ${version}`);

@@ -58,14 +58,35 @@ import { type TSeedTypes } from './types';
 
 type TLong = string | number;
 
-const txTypeMap: {
-  [type: number]: {
-    sign: (
-      tx: Transaction<TLong> | (TTxParams & WithTxType),
-      seed: TSeedTypes,
-    ) => SignedTransaction<Transaction<TLong>>;
-  };
-} = {
+// Union of all transaction types that can be signed via signTx.
+// Adding a new transaction type here forces a TypeScript error if the
+// corresponding entry is missing from signableTxMap below (Record<> exhaustiveness).
+type SignableTransactionType =
+  | typeof TRANSACTION_TYPE.ISSUE
+  | typeof TRANSACTION_TYPE.TRANSFER
+  | typeof TRANSACTION_TYPE.REISSUE
+  | typeof TRANSACTION_TYPE.BURN
+  | typeof TRANSACTION_TYPE.LEASE
+  | typeof TRANSACTION_TYPE.CANCEL_LEASE
+  | typeof TRANSACTION_TYPE.ALIAS
+  | typeof TRANSACTION_TYPE.MASS_TRANSFER
+  | typeof TRANSACTION_TYPE.DATA
+  | typeof TRANSACTION_TYPE.SET_SCRIPT
+  | typeof TRANSACTION_TYPE.SET_ASSET_SCRIPT
+  | typeof TRANSACTION_TYPE.SPONSORSHIP
+  | typeof TRANSACTION_TYPE.EXCHANGE
+  | typeof TRANSACTION_TYPE.INVOKE_SCRIPT
+  | typeof TRANSACTION_TYPE.UPDATE_ASSET_INFO
+  | typeof TRANSACTION_TYPE.COMMIT_TO_GENERATION;
+
+type SignFn = (
+  tx: Transaction<TLong> | (TTxParams & WithTxType),
+  seed: TSeedTypes,
+) => SignedTransaction<Transaction<TLong>>;
+
+// Record<SignableTransactionType, ...> is exhaustive: TypeScript will error
+// if any entry in SignableTransactionType is missing — no more silent gaps.
+const signableTxMap: Record<SignableTransactionType, { sign: SignFn }> = {
   [TRANSACTION_TYPE.ISSUE]: { sign: (x, seed) => issue(x as IssueTransaction<TLong>, seed) },
   [TRANSACTION_TYPE.TRANSFER]: {
     sign: (x, seed) => transfer(x as TransferTransaction<TLong>, seed),
@@ -111,7 +132,7 @@ export function signTx(
   tx: Transaction | (TTxParams & WithTxType),
   seed: TSeedTypes,
 ): SignedTransaction<Transaction> {
-  const entry = txTypeMap[tx.type];
+  const entry = (signableTxMap as Record<number, { sign: SignFn } | undefined>)[tx.type];
   if (!entry) throw new Error(`Unknown tx type: ${tx.type}`);
 
   return entry.sign(tx, seed);
@@ -139,7 +160,7 @@ export function verify(
   proofN = 0,
   publicKey?: string,
 ): boolean {
-  publicKey = publicKey || obj.senderPublicKey;
+  publicKey = publicKey ?? obj.senderPublicKey;
   if (!publicKey) throw new Error('No public key provided and transaction has no senderPublicKey');
   const bytes = serialize(obj);
   if (obj.version == null) {
@@ -245,7 +266,7 @@ export function cancelSubmittedOrder(
   priceAsset: string | null,
   matcherUrl: string,
 ) {
-  const endpoint = `matcher/orderbook/${amountAsset || 'DCC'}/${priceAsset || 'DCC'}/cancel`;
+  const endpoint = `matcher/orderbook/${amountAsset ?? 'DCC'}/${priceAsset ?? 'DCC'}/cancel`;
   return matcherRequest({
     base: matcherUrl,
     options: {

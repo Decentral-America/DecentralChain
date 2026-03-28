@@ -6,7 +6,9 @@ export default defineConfig({
   deps: {
     neverBundle: ['@waves/ride-lang', '@waves/ride-repl', '@waves/ts-lib-crypto'],
   },
+  dts: true,
   entry: ['src/index.js'],
+  format: ['esm'],
   shims: true,
   sourcemap: true,
 });

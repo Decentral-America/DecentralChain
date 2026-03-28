@@ -25,7 +25,7 @@ function _callFunc(callData?: ICall | null): ICall | null {
   }
 
   return {
-    args: callData?.args || [],
+    args: callData?.args ?? [],
     function: callData?.function || '',
   };
 }
@@ -83,14 +83,9 @@ function _toNumberString(some: string | number | BigNumber | Money) {
   return _toBigNumber(some).toString();
 }
 
-function _toSponsorshipFee(money: Money): BigNumber {
+function _toSponsorshipFee(money: Money): BigNumber | null {
   const coins = money.getCoins();
-  if (coins.eq(0)) {
-    //@ts-expect-error
-    return null;
-  } else {
-    return coins;
-  }
+  return coins.eq(0) ? null : coins;
 }
 
 function _moneyToAssetId(money: Money): string {
@@ -136,7 +131,7 @@ function _addValue(value: unknown) {
 }
 
 function _expiration(date?: number) {
-  return date || new Date().setDate(new Date().getDate() + 20);
+  return date ?? new Date().setDate(new Date().getDate() + 20);
 }
 
 function _transfers<A, R>(recipient: (r: string) => string, amount: (a: A) => R) {

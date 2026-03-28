@@ -17,7 +17,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function updateAssetInfo(
   params: IUpdateAssetInfoParams,
   seed: TSeedTypes,
@@ -27,11 +26,12 @@ export function updateAssetInfo(
   seed?: TSeedTypes,
 ): UpdateAssetInfoTransaction & WithId & WithProofs;
 export function updateAssetInfo(
-  paramsOrTx: IUpdateAssetInfoParams & Partial<UpdateAssetInfoTransaction & WithProofs>,
+  paramsOrTx: IUpdateAssetInfoParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): UpdateAssetInfoTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.UPDATE_ASSET_INFO;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.UPDATE_ASSET_INFO;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.UPDATE_ASSET_INFO) as UpdateAssetInfoTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -49,7 +49,7 @@ export function updateAssetInfo(
     version,
   };
 
-  validate.updateAssetInfo(tx as unknown as Record<string, unknown>);
+  validate.updateAssetInfo(tx);
 
   const bytes = txToProtoBytes(tx);
 

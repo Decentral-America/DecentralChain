@@ -48,7 +48,8 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error: txOk.order1 is intentionally malformed (contains exchange
+    // tx fields instead of order fields) — tests that exchange() signals type errors
     exchange({ ...txOk }, seed1);
   });
 
@@ -212,9 +213,85 @@ describe('exchange', () => {
     expect(tx).toMatchObject({ ...txOk });
   });
 
-  it.todo('Should build exchange tx ver2-1-3 — needs order V3 fixture');
+  it('Should build exchange tx ver2-1-3', () => {
+    const order1 = {
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
+      matcherFee: 100,
+      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
+      orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 1,
+    };
 
-  it.todo('Should build exchange tx ver2-2-3 — needs order V3 fixture');
+    const order2 = {
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
+      matcherFee: 100,
+      matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
+      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
+      orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
+    };
+
+    const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
+      order1: order(order1, seed1),
+      order2: order(order2, seed2),
+      price: 500000000,
+      sellMatcherFee: 100,
+      version: 2,
+    };
+
+    const tx = exchange({ ...txOk }, seed1);
+    expect(tx).toMatchObject({ ...txOk });
+  });
+
+  it('Should build exchange tx ver2-2-3', () => {
+    const order1 = {
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
+      matcherFee: 100,
+      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
+      orderType: 'buy' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 2,
+    };
+
+    const order2 = {
+      amount: 100,
+      amountAsset: '3JmaWyFqWo8YSA8x3DXCBUW7veesxacvKx19dMv7wTMg',
+      matcherFee: 100,
+      matcherFeeAssetId: 'DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK',
+      matcherPublicKey: 'BvJEWY79uQEFetuyiZAF5U4yjPioMj9J6ZrF9uTNfe3E',
+      orderType: 'sell' as const,
+      price: 500000000,
+      priceAsset: null,
+      version: 3,
+    };
+
+    const txOk = {
+      amount: 100,
+      buyMatcherFee: 100,
+      chainId: 84,
+      fee: 700000,
+      order1: order(order1, seed1),
+      order2: order(order2, seed2),
+      price: 500000000,
+      sellMatcherFee: 100,
+      version: 2,
+    };
+
+    const tx = exchange({ ...txOk }, seed1);
+    expect(tx).toMatchObject({ ...txOk });
+  });
 
   it('Should build exchange tx ver3-4-4', () => {
     const order1 = {
@@ -492,7 +569,8 @@ describe('exchange', () => {
       version: 3,
     };
 
-    // @ts-expect-error
+    // @ts-expect-error: txOk intentionally missing 'proofs' — validates that
+    // exchange() runs and produces a matching object even without proofs field
     const tx = exchange({ ...txOk }, seed1);
     expect(tx).toMatchObject({ ...txOk });
   });
