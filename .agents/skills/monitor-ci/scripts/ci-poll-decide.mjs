@@ -54,6 +54,15 @@ let ci;
 try {
   ci = JSON.parse(ciInfoJson);
 } catch {
+  console.log(
+    JSON.stringify({
+      action: 'done',
+      code: 'error',
+      envRerunCount,
+      message: 'Failed to parse ci_information JSON',
+      noProgressCount: inputNoProgressCount + 1,
+    }),
+  );
   process.exit(0);
 }
 
@@ -371,6 +380,8 @@ function buildOutput(decision) {
   if (code === 'new_cipe_detected') result.newCipeDetected = true;
   if (extra?.verifiableTaskIds) result.verifiableTaskIds = extra.verifiableTaskIds;
   if (extra?.autoApplySkipReason) result.autoApplySkipReason = extra.autoApplySkipReason;
+
+  console.log(JSON.stringify(result));
 }
 
 // --- Run ---

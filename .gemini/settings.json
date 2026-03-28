@@ -1,0 +1,10 @@
+{
+  "contextFileName": "AGENTS.md",
+  "mcpServers": {
+    "nx-mcp": {
+      "args": ["nx", "mcp"],
+      "command": "npx",
+      "type": "stdio"
+    }
+  }
+}

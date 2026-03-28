@@ -130,7 +130,7 @@ DecentralChain/
 | **React JSX Transform** | @vitejs/plugin-react | 6.x | **Uses OXC (Rust) via Rolldown** for JSX/TSX transformation — faster than SWC in Vite 8 context. `@vitejs/plugin-react-swc` was evaluated and explicitly warns in Vite 8: "We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used." See [D-12](#15-decision-log). |
 | **Linter/Formatter** | Biome | 2.x | **Replaces both ESLint AND Prettier with one Rust-native binary** — 10-100x faster than ESLint. Single `biome.json` configures both lint and format. Monorepo-aware via `"extends": "//"` (inherits root config). No plugin ecosystem to maintain. Zero-config for 90% of rules. |
 | **Test Runner** | Vitest | 4.x | **Native ESM support** — Jest requires `babel-jest` or `ts-jest` transforms for ESM, Vitest runs ESM natively. Same expect/describe/it API as Jest (zero migration friction). Built-in V8 coverage (no `nyc` or `istanbul` needed). `vitest.workspace.ts` for monorepo-native config. |
-| **TypeScript** | TypeScript | 5.9.x | **Maximum strictness catches bugs at compile time, not in production.** TS 5.9 adds `--noUncheckedSideEffectImports` and improved `isolatedDeclarations`. Project references enable incremental builds — editor only typechecks the current package + its deps. tsdown handles emit; `tsc` is only for type checking. |
+| **TypeScript** | TypeScript | 6.0.x | **Maximum strictness catches bugs at compile time, not in production.** TS 6.0 adds `erasableSyntaxOnly`, fully-specified imports enforcement, and `noUncheckedSideEffectImports` as stable. Project references enable incremental builds — editor only typechecks the current package + its deps. tsdown handles emit; `tsc` is only for type checking. |
 | **Git Hooks** | Lefthook | 1.x | **Parallel execution** runs Biome + typecheck simultaneously (unlike husky which is sequential). Written in Go — fast startup. Supports `stage_fixed: true` to auto-stage Biome's fixes. No Node.js dependency for the hook runner itself. |
 | **Node.js** | Node.js | ≥24 | **Native `fetch`, native `crypto.subtle`, native test runner** — eliminates `node-fetch`, `isomorphic-fetch`. Native `Uint8Array` improvements for crypto operations. `--experimental-strip-types` allows running `.ts` files directly in scripts. |
 
@@ -549,9 +549,9 @@ Shared external dependency versions defined once in `pnpm-workspace.yaml`:
 
 ```yaml
 catalog:
-  typescript: ^5.9.3
-  '@biomejs/biome': ^2.4.6
-  vitest: ^4.0.0
+  typescript: ^6.0.2
+  '@biomejs/biome': ^2.4.9
+  vitest: ^4.1.2
 ```
 
 Packages reference them with `"catalog:"` in their `package.json`:

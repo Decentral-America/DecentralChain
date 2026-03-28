@@ -27,12 +27,24 @@ Fill in and attach to the release PR before any approval gate is signed off.
 
 ```
 Go / No-Go Decision: Cubensis Connect vX.Y.Z
-Date:
+Date:        2026-03-26 (Audit Round 11)
 Approvers:  Engineering Lead — [ ]
             Security Lead    — [ ]
             Product Lead     — [ ]
-Decision:   [ ] GO   [ ] NO-GO
+Decision:   [ ] GO   [x] NO-GO
 Notes:
+  BLOCKED — backend infrastructure not yet deployed.
+  DNS does not resolve for nodes.decentralchain.io, nodes-testnet.decentralchain.io,
+  api.decentralchain.io, mainnet-matcher.decentralchain.io (all return NXDOMAIN).
+  Gate 5 (Backend Services Health) cannot be cleared until node deployment is complete.
+
+  All other gates CLEAR as of Audit Round 11:
+  · Gate 1 (Supply Chain): zero @keeper-wallet deps, zero Cognito code ✅
+  · Gate 2 (Build Quality): biome-lint 25/25, typecheck 25/25, test 25/25 (1,228 tests) ✅
+  · Gate 3 (Manifest): MV3 16/16 — no unsafe-inline, wasm-unsafe-eval correct ✅
+  · Gate 4 (UX/Onboarding): 1-of-1 seed model, no custodial component ✅
+  · Gate 5 (Backend Services): ⬜ BLOCKED — DNS not resolving, deployment pending
+  · Gate 6 (Store Submission): pending Gate 5 clearance
 ```
 
 ---
