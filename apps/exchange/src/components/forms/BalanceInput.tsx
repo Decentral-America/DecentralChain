@@ -393,5 +393,3 @@ export const BalanceInput: React.FC<BalanceInputProps> = ({
     </BalanceInputWrapper>
   );
 };
-
-export default BalanceInput;

@@ -4,7 +4,7 @@
  */
 import type React from 'react';
 import styled from 'styled-components';
-import networkConfig from '@/config/networkConfig';
+import { NetworkConfig as networkConfig } from '@/config/networkConfig';
 
 const InfoSection = styled.div`
   display: flex;
@@ -121,5 +121,3 @@ export const InfoSettings: React.FC = () => {
     </InfoSection>
   );
 };
-
-export default InfoSettings;

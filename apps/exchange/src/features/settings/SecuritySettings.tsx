@@ -360,5 +360,3 @@ export const SecuritySettings: React.FC = () => {
     </SecuritySection>
   );
 };
-
-export default SecuritySettings;

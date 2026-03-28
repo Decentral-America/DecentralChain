@@ -6,7 +6,7 @@
  */
 
 import { useMemo } from 'react';
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { type MatcherPriorityItem, type TradingPair } from '@/config/types';
 
 export interface UseTradingPairsReturn {
@@ -101,5 +101,3 @@ export function useTradingPairs(): UseTradingPairsReturn {
     priorityList,
   };
 }
-
-export default useTradingPairs;

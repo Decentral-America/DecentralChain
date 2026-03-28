@@ -232,5 +232,3 @@ export const BalanceLarge: React.FC<Omit<BalanceProps, 'size'>> = (props) => (
 export const BalanceShort: React.FC<Omit<BalanceProps, 'shortMode'>> = (props) => (
   <Balance {...props} shortMode={true} />
 );
-
-export default Balance;

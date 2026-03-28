@@ -93,6 +93,45 @@ export const SkeletonContainer = styled.div<{ spacing?: string }>`
   gap: ${(props) => props.spacing || '16px'};
 `;
 
+/** Flex row for skeleton items */
+const SkeletonRow = styled.div<{ gap?: string }>`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.gap || '12px'};
+`;
+
+/** Flex-1 fill for skeleton items */
+const SkeletonFill = styled.div`
+  flex: 1;
+`;
+
+/** Side-by-side spread row */
+const SkeletonSpread = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+/** Centered flex row */
+const SkeletonCenter = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+`;
+
+/** Table header row */
+const SkeletonHeaderRow = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+`;
+
+/** Dynamic CSS grid for grid skeletons */
+const SkeletonGrid = styled.div<{ columns: number }>`
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(${(props) => props.columns}, 1fr);
+`;
+
 /**
  * Card skeleton component
  */
@@ -109,14 +148,14 @@ export const CardSkeleton = () => (
  * Transaction list item skeleton
  */
 export const TransactionSkeleton = () => (
-  <div style={{ alignItems: 'center', display: 'flex', gap: '12px' }}>
+  <SkeletonRow>
     <SkeletonCircle width="40px" height="40px" />
-    <div style={{ flex: 1 }}>
+    <SkeletonFill>
       <SkeletonText width="70%" />
       <SkeletonText width="40%" height="12px" />
-    </div>
+    </SkeletonFill>
     <SkeletonText width="80px" />
-  </div>
+  </SkeletonRow>
 );
 
 /**
@@ -124,23 +163,23 @@ export const TransactionSkeleton = () => (
  */
 export const AssetSkeleton = () => (
   <SkeletonContainer spacing="12px">
-    <div style={{ alignItems: 'center', display: 'flex', gap: '12px' }}>
+    <SkeletonRow gap="12px">
       <SkeletonCircle width="48px" height="48px" />
-      <div style={{ flex: 1 }}>
+      <SkeletonFill>
         <SkeletonText width="50%" />
         <SkeletonText width="30%" height="12px" />
-      </div>
-    </div>
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div style={{ flex: 1 }}>
+      </SkeletonFill>
+    </SkeletonRow>
+    <SkeletonSpread>
+      <SkeletonFill>
         <SkeletonText width="40%" height="12px" />
         <SkeletonText width="60%" />
-      </div>
-      <div style={{ flex: 1 }}>
+      </SkeletonFill>
+      <SkeletonFill>
         <SkeletonText width="40%" height="12px" />
         <SkeletonText width="60%" />
-      </div>
-    </div>
+      </SkeletonFill>
+    </SkeletonSpread>
   </SkeletonContainer>
 );
 
@@ -148,12 +187,12 @@ export const AssetSkeleton = () => (
  * Table row skeleton
  */
 export const TableRowSkeleton = ({ columns = 4 }: { columns?: number }) => (
-  <div style={{ alignItems: 'center', display: 'flex', gap: '16px' }}>
+  <SkeletonRow gap="16px">
     {Array.from({ length: columns }, (_, i) => (
       // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <SkeletonText key={i} width="100%" />
     ))}
-  </div>
+  </SkeletonRow>
 );
 
 /**
@@ -162,12 +201,12 @@ export const TableRowSkeleton = ({ columns = 4 }: { columns?: number }) => (
 export const TableSkeleton = ({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) => (
   <SkeletonContainer>
     {/* Header */}
-    <div style={{ display: 'flex', gap: '16px', marginBottom: '8px' }}>
+    <SkeletonHeaderRow>
       {Array.from({ length: columns }, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
         <SkeletonText key={i} width="100%" height="14px" />
       ))}
-    </div>
+    </SkeletonHeaderRow>
     {/* Rows */}
     {Array.from({ length: rows }, (_, i) => (
       // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
@@ -183,11 +222,11 @@ export const ChartSkeleton = () => (
   <SkeletonContainer>
     <SkeletonText width="30%" />
     <Skeleton height="200px" />
-    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+    <SkeletonCenter>
       <SkeletonText width="80px" height="12px" />
       <SkeletonText width="80px" height="12px" />
       <SkeletonText width="80px" height="12px" />
-    </div>
+    </SkeletonCenter>
   </SkeletonContainer>
 );
 
@@ -212,14 +251,14 @@ export const FormSkeleton = ({ fields = 3 }: { fields?: number }) => (
  */
 export const ProfileHeaderSkeleton = () => (
   <SkeletonContainer>
-    <div style={{ alignItems: 'center', display: 'flex', gap: '16px' }}>
+    <SkeletonRow gap="16px">
       <SkeletonCircle width="80px" height="80px" />
-      <div style={{ flex: 1 }}>
+      <SkeletonFill>
         <SkeletonText width="40%" height="20px" />
         <SkeletonText width="60%" height="14px" />
         <SkeletonText width="30%" height="12px" />
-      </div>
-    </div>
+      </SkeletonFill>
+    </SkeletonRow>
   </SkeletonContainer>
 );
 
@@ -227,18 +266,12 @@ export const ProfileHeaderSkeleton = () => (
  * Grid skeleton (for asset grid, card grid, etc.)
  */
 export const GridSkeleton = ({ items = 6, columns = 3 }: { items?: number; columns?: number }) => (
-  <div
-    style={{
-      display: 'grid',
-      gap: '16px',
-      gridTemplateColumns: `repeat(${columns}, 1fr)`,
-    }}
-  >
+  <SkeletonGrid columns={columns}>
     {Array.from({ length: items }, (_, i) => (
       // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholder
       <CardSkeleton key={i} />
     ))}
-  </div>
+  </SkeletonGrid>
 );
 
 /**

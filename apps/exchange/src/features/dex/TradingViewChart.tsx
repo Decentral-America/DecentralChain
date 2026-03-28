@@ -245,14 +245,14 @@ export const TradingViewChart: React.FC = () => {
         </Alert>
       )}
 
-      <div
+      <Box
         id={elementIdRef.current}
-        style={{
+        ref={containerRef}
+        sx={{
           display: loadingState === 'success' ? 'block' : 'none',
           height: '100%',
           width: '100%',
         }}
-        ref={containerRef}
       />
     </ChartContainer>
   );

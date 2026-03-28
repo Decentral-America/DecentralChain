@@ -10,7 +10,7 @@
  * 3. Provides unified API for all gateway operations
  */
 
-import NetworkConfig from '@/config/networkConfig';
+import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 import {
   type GatewayAsset,

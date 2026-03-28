@@ -141,7 +141,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({
           onClose: options?.onClose,
           open: true,
           priority: options?.priority ?? 0,
-          props: props || {},
+          props: props ?? {},
         };
 
         // Notify modal count change

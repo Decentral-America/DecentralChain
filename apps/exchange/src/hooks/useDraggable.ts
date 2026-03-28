@@ -358,7 +358,7 @@ export function useDraggable<T extends HTMLElement>(
    */
   const reset = useCallback(
     (newPosition?: Position) => {
-      setPosition(newPosition || initialPosition);
+      setPosition(newPosition ?? initialPosition);
       setIsDragging(false);
       dragStartRef.current = null;
     },

@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import networkConfig from '@/config/networkConfig';
+import { NetworkConfig as networkConfig } from '@/config/networkConfig';
 
 // Styled Components
 const LogoContainer = styled.div<{ $size: number }>`
@@ -127,5 +127,3 @@ export const AssetLogoLarge: React.FC<Omit<AssetLogoProps, 'size'>> = (props) =>
 export const AssetLogoXLarge: React.FC<Omit<AssetLogoProps, 'size'>> = (props) => (
   <AssetLogo {...props} size={64} />
 );
-
-export default AssetLogo;

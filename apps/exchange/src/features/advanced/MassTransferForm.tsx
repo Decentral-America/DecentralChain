@@ -144,6 +144,11 @@ const SummaryRow = styled.div`
   }
 `;
 
+const FieldError = styled.div`
+  color: red;
+  font-size: 14px;
+`;
+
 const SummaryLabel = styled.span`
   color: ${({ theme }) => theme.colors.disabled};
 `;
@@ -359,7 +364,7 @@ export const MassTransferForm: React.FC = () => {
             ))}
 
             {errors.transfers && typeof errors.transfers.message === 'string' && (
-              <div style={{ color: 'red', fontSize: '14px' }}>{errors.transfers.message}</div>
+              <FieldError>{errors.transfers.message}</FieldError>
             )}
           </RecipientsContainer>
 

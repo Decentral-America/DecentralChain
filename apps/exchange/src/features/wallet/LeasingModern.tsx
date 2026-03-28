@@ -59,5 +59,3 @@ export const LeasingModern = () => {
     </Box>
   );
 };
-
-export default LeasingModern;

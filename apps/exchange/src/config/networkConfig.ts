@@ -16,7 +16,18 @@ import {
   type TradingPair,
 } from './types';
 
-const _config: MainnetConfig = mainnetConfigJson as unknown as MainnetConfig;
+// `satisfies MainnetConfig` validates the full config shape at compile time.
+// Three fields require explicit widening from their JSON-inferred narrow types:
+//   · assets   → { BTC:string, ... } is a Record<string,string> — safe widening
+//   · gateway  → same pattern for gateway asset map
+//   · tradingPairs → JSON infers string[][] (no tuple guarantee); cast to TradingPair[]
+// If mainnet.json ever drops a required field, `satisfies` will error here.
+const _config = {
+  ...mainnetConfigJson,
+  assets: mainnetConfigJson.assets as Record<string, string>,
+  gateway: mainnetConfigJson.gateway as Record<string, GatewayAssetConfig>,
+  tradingPairs: mainnetConfigJson.tradingPairs as TradingPair[],
+} satisfies MainnetConfig;
 
 const NetworkConfig = {
   get api(): string {
@@ -153,4 +164,3 @@ const NetworkConfig = {
 };
 
 export { NetworkConfig };
-export default NetworkConfig;

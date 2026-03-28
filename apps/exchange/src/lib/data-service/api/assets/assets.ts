@@ -197,8 +197,8 @@ export function applyTxAndOrdersDif(
   ordersHash?: IHash<Money>,
 ): IBalanceItem | Array<IBalanceItem> {
   const list = toArray(balance);
-  txHash = txHash || Object.create(null);
-  ordersHash = ordersHash || Object.create(null);
+  txHash = txHash ?? Object.create(null);
+  ordersHash = ordersHash ?? Object.create(null);
   list.forEach((balance) => {
     balance.regular = moneyDif(balance.regular, txHash[balance.asset.id]);
     balance.available = moneyDif(

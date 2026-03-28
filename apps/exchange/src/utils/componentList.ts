@@ -469,7 +469,7 @@ export const renderWithSuspense = <P = unknown>(
 ): ReactNode => {
   return createElement(
     Suspense,
-    { fallback: fallback || createElement('div', null, 'Loading...') },
+    { fallback: fallback ?? createElement('div', null, 'Loading...') },
     createElement(
       Component as ComponentType<Record<string, unknown>>,
       props as Record<string, unknown>,

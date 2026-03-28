@@ -157,6 +157,7 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       {...inputProps}
       {...registration}
       ref={ref}
+      // biome-ignore lint/nursery/useNullishCoalescing: errorMessage may be '' (empty string = no error text) — || fallback to error prop is intentional
       error={errorMessage || error}
       onChange={handleChange}
       onBlur={handleBlur}

@@ -187,14 +187,14 @@ export const trackPageView = (path: string, title?: string): void => {
     ReactGA.send({
       hitType: 'pageview',
       page: path,
-      title: title || document.title,
+      title: title ?? document.title,
     });
 
     // Amplitude
     if (typeof window !== 'undefined' && window.amplitudePushEvent) {
       window.amplitudePushEvent('Page View', {
         path,
-        title: title || document.title,
+        title: title ?? document.title,
         url: window.location.href,
       });
     }

@@ -7,7 +7,7 @@
  */
 
 import { useCallback } from 'react';
-import ExplorerLinkService from '@/services/explorerLinks';
+import { ExplorerLinkService } from '@/services/explorerLinks';
 
 export interface ExplorerLinks {
   // Link generators

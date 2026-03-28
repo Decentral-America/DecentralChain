@@ -41,7 +41,7 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   const { gateway, assets } = useConfig();
 
   // Build list of gateway assets with their details
-  const gatewayAssets: GatewayAsset[] = Object.keys(gateway || {}).map((assetId) => {
+  const gatewayAssets: GatewayAsset[] = Object.keys(gateway ?? {}).map((assetId) => {
     const assetInfo: {
       displayName?: string;
       name?: string;
@@ -62,18 +62,18 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
             [key: string]: unknown;
           }
         >
-      )[assetId] || {};
-    const balance = balances[assetId] || new BigNumber(0);
+      )[assetId] ?? {};
+    const balance = balances[assetId] ?? new BigNumber(0);
 
     return {
       assetId,
       balance,
-      decimals: Number(assetInfo.precision || 8),
+      decimals: Number(assetInfo.precision ?? 8),
       hasDeposit: true, // All gateway assets support deposit
       hasWithdraw: true, // All gateway assets support withdraw
       icon: assetInfo.icon,
-      name: String(assetInfo.displayName || assetInfo.name || 'Unknown Asset'),
-      ticker: String(assetInfo.ticker || assetId.substring(0, 8)),
+      name: String(assetInfo.displayName ?? assetInfo.name ?? 'Unknown Asset'),
+      ticker: String(assetInfo.ticker ?? assetId.substring(0, 8)),
     };
   });
 

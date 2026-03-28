@@ -143,6 +143,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       {...registration}
       ref={ref}
       options={options}
+      // biome-ignore lint/nursery/useNullishCoalescing: errorMessage may be '' (empty string = no error text) — || fallback to error prop is intentional
       error={errorMessage || error}
       onChange={handleChange}
       onBlur={handleBlur}

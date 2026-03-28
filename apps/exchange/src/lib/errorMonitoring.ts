@@ -65,13 +65,14 @@ export interface ErrorContext {
 /**
  * Error severity levels
  */
-export enum ErrorSeverity {
-  Fatal = 'fatal',
-  Error = 'error',
-  Warning = 'warning',
-  Info = 'info',
-  Debug = 'debug',
-}
+export const ErrorSeverity = {
+  Debug: 'debug',
+  Error: 'error',
+  Fatal: 'fatal',
+  Info: 'info',
+  Warning: 'warning',
+} as const;
+export type ErrorSeverity = (typeof ErrorSeverity)[keyof typeof ErrorSeverity];
 
 let isInitialized = false;
 let config: ErrorMonitoringConfig = {};

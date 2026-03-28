@@ -90,7 +90,7 @@ export function BurnAssetModal({
   const isValidAmount = amount && parseFloat(amount) > 0 && parseFloat(amount) <= maxAmount;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Burn ${assetName || assetId}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`Burn ${assetName ?? assetId}`}>
       <Content>
         <Warning>
           <WarningIcon>🔥</WarningIcon>
@@ -115,7 +115,7 @@ export function BurnAssetModal({
             </MaxButton>
           </InputContainer>
           <BalanceInfo>
-            Available: {maxAmount.toFixed(decimals)} {assetName || assetId}
+            Available: {maxAmount.toFixed(decimals)} {assetName ?? assetId}
           </BalanceInfo>
         </FormSection>
 
@@ -139,7 +139,7 @@ export function BurnAssetModal({
             <InfoRow>
               <InfoLabel>Amount to Burn:</InfoLabel>
               <InfoValue $highlight>
-                {parseFloat(amount).toFixed(decimals)} {assetName || assetId}
+                {parseFloat(amount).toFixed(decimals)} {assetName ?? assetId}
               </InfoValue>
             </InfoRow>
           )}

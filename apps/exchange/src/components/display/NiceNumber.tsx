@@ -249,5 +249,3 @@ export const NicePercent: React.FC<Omit<NiceNumberProps, 'style'>> = (props) => 
 export const NiceCompact: React.FC<Omit<NiceNumberProps, 'compact'>> = (props) => (
   <NiceNumber {...props} compact={true} />
 );
-
-export default NiceNumber;

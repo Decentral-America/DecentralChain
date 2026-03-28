@@ -1,7 +1,4 @@
 /**
  * Notifications Components
  */
-export {
-  default as TransactionNotificationsMonitorDefault,
-  TransactionNotificationsMonitor,
-} from './TransactionNotificationsMonitor';
+export { TransactionNotificationsMonitor } from './TransactionNotificationsMonitor';

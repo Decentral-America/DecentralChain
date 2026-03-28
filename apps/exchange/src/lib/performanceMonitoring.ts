@@ -431,7 +431,7 @@ export const clearPerformance = (name?: string): void => {
     }
 
     if (config.debug) {
-      logger.debug('[Performance] Cleared:', name || 'all');
+      logger.debug('[Performance] Cleared:', name ?? 'all');
     }
   } catch (error) {
     logger.error('[Performance] Failed to clear performance:', error);

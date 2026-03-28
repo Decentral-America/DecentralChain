@@ -119,5 +119,3 @@ export const SliderWithLabels: React.FC<Omit<SliderProps, 'showLabels'>> = (prop
 export const SliderNoValue: React.FC<Omit<SliderProps, 'showValue'>> = (props) => (
   <Slider {...props} showValue={false} />
 );
-
-export default Slider;

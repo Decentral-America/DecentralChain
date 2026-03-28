@@ -264,5 +264,3 @@ export const TimeOnly: React.FC<Omit<DateDisplayProps, 'format'>> = (props) => (
 export const DateWithTime: React.FC<Omit<DateDisplayProps, 'format'>> = (props) => (
   <DateDisplay {...props} format="PPpp" />
 );
-
-export default DateDisplay;

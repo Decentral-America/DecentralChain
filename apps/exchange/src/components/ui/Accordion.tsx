@@ -205,5 +205,3 @@ export const SingleAccordion: React.FC<Omit<AccordionProps, 'allowMultiple'>> = 
 export const MultipleAccordion: React.FC<Omit<AccordionProps, 'allowMultiple'>> = (props) => (
   <Accordion {...props} allowMultiple={true} />
 );
-
-export default Accordion;
