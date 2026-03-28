@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DCC } from '../src/dcc.js';
+import { DCC } from '../src/DCC.js';
 import { type LedgerTransport } from '../src/types.js';
 
 /**
