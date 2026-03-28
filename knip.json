@@ -1,22 +1,56 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
+  // Exclude unused exports/types from the report: SDK packages have zero unused exports (verified),
+  // and app workspaces (exchange, scanner) are in active development — many components and features
+  // are being built ahead of routing and will be wired in as dev continues.
+  // Unused files and unused dependencies are still tracked.
+  "exclude": ["exports", "types"],
   "ignore": [
-    "vitest.base.config.ts",
-    "**/vitest.config.ts",
-    "**/vitest.unit.config.ts",
-    "**/vite.config.ts",
-    "**/tsdown.config.ts",
-    "**/.agents/**",
-    "**/.github/skills/**",
-    "**/.opencode/**",
-    "scripts/**",
-    "tools/**"
+    // exchange: ambient module-augmentation declaration files — not imported, but required for type inference
+    "apps/exchange/src/styles/styled.d.ts",
+    "apps/exchange/src/types/charting_library.d.ts"
   ],
   "ignoreDependencies": [
     "@vitest/coverage-v8",
     "undici-types",
     "@bufbuild/protoc-gen-es",
-    "wasm-pack"
+    // cubensis-connect: browser polyfills referenced via vite.config.ts aliases/plugins
+    "buffer",
+    "events",
+    "stream-browserify",
+    "util",
+    // cubensis-connect: babel plugins referenced as string names in vite.config.ts babel config
+    "@babel/core",
+    "babel-plugin-prismjs",
+    // cubensis-connect: CSS @import in global.css — not visible to knip static analysis
+    "normalize.css",
+    // cubensis-connect: ambient WebUSB global types needed by @ledgerhq/hw-transport-webusb
+    "@types/w3c-web-usb",
+    // cubensis-connect: mocha-style globals used in e2e tests via webdriverio
+    "@types/mocha",
+    // scanner: used in vitest.config.ts + postcss.config.js / CSS @import
+    "@vitejs/plugin-react",
+    "@tailwindcss/postcss",
+    "tailwindcss",
+    "tw-animate-css",
+    // exchange: used in advanced transaction forms and wallet features not yet wired into routing
+    "@hookform/resolvers",
+    "zod",
+    // exchange: data-service layer (lib/data-service/**) is build-ahead — fully implemented but not yet
+    // wired to routing/pages. These deps are actively used there and will be production deps once connected.
+    "@decentralchain/assets-pairs-order",
+    "@decentralchain/browser-bus",
+    "@decentralchain/data-entities",
+    "@decentralchain/data-service-client-js",
+    "@decentralchain/oracle-data",
+    "ramda",
+    "ts-utils",
+    // exchange: TradingView charting library is a proprietary binary distribution — not on npm
+    "charting_library",
+    // sdk-package: local NX generator (not an npm package)
+    "sdk-package",
+    // root: esbuild is a peer/transitive dep used by vitest to transform vitest.config.ts files in every package
+    "esbuild"
   ],
   "vitest": {
     "config": []
@@ -35,27 +69,107 @@
         "src/background.ts",
         "src/contentscript.ts",
         "src/inpage.ts",
-        "src/notification.tsx",
         "src/constants.ts",
         "test/*.ts"
       ],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
     "apps/exchange": {
-      "entry": ["src/main.tsx", "src/pages/**/*.tsx"],
+      "entry": ["src/main.tsx", "src/pages/**/*.tsx", "test/setup.ts"],
+      // Build-ahead directories: fully implemented but not yet wired to routing/pages.
+      // These will be connected as features land in the routing layer.
+      // Tracked in STATUS.md § "Active Work State".
+      "ignore": [
+        // lib: all internal library modules (data-service, forms, api, secure storage, auth, etc.)
+        "src/lib/**",
+        // api: build-ahead REST client layer
+        "src/api/**",
+        // features: build-ahead feature modules not yet routed
+        "src/features/advanced/**",
+        "src/features/assets/**",
+        "src/features/auth/**",
+        "src/features/sessions/**",
+        "src/features/settings/**",
+        "src/features/dex/useDexWebSocket.ts",
+        "src/features/dex/useMarketData.ts",
+        "src/features/dex/index.ts",
+        "src/features/wallet/AssetInfoModal.tsx",
+        "src/features/wallet/BurnAssetModal.tsx",
+        "src/features/wallet/DepositAssetModal.tsx",
+        "src/features/wallet/ReissueAssetModal.tsx",
+        "src/features/wallet/SepaAssetModal.tsx",
+        // components: build-ahead UI atoms and display components
+        "src/components/display/**",
+        "src/components/atoms/Avatar.tsx",
+        "src/components/atoms/Box.tsx",
+        "src/components/atoms/Button.stories.tsx",
+        "src/components/atoms/Card.stories.tsx",
+        "src/components/atoms/Divider.tsx",
+        "src/components/atoms/GlassCard.tsx",
+        "src/components/atoms/Grid.tsx",
+        "src/components/atoms/index.ts",
+        "src/components/atoms/Input.stories.tsx",
+        "src/components/atoms/Radio.tsx",
+        "src/components/atoms/Tooltip.tsx",
+        "src/components/AssetName.tsx",
+        "src/components/Breadcrumbs.tsx",
+        "src/components/charts/RechartsWrapper.tsx",
+        "src/components/landing/TestimonialsStrip.tsx",
+        "src/components/modals/**",
+        "src/components/notifications/index.ts",
+        "src/components/organisms/index.ts",
+        "src/components/organisms/LanguageSwitcher.tsx",
+        "src/components/wallet/**",
+        // contexts: build-ahead context providers
+        "src/contexts/EventContext.tsx",
+        // hooks: build-ahead React hooks
+        "src/hooks/useAssetName.ts",
+        "src/hooks/useAuthEvents.ts",
+        "src/hooks/useExplorerLinks.ts",
+        "src/hooks/useMediaStream.ts",
+        "src/hooks/useMultiAccount.ts",
+        "src/hooks/usePoll.ts",
+        "src/hooks/usePollCache.ts",
+        "src/hooks/useQueue.ts",
+        "src/hooks/useStorage.ts",
+        "src/hooks/useTimeline.ts",
+        "src/hooks/useTradingPairs.ts",
+        // pages: build-ahead page modules not yet in router
+        "src/pages/AccountManager/**",
+        // services: all build-ahead service implementations
+        "src/services/**",
+        // stores: build-ahead state stores
+        "src/stores/**",
+        // styles: build-ahead style tokens and theming system
+        "src/styles/**",
+        // types: build-ahead type definitions and declarations
+        "src/types/**",
+        // utils: build-ahead utility modules
+        "src/utils/**"
+      ],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
     "apps/scanner": {
-      "entry": ["src/main.tsx", "src/entry.server.tsx", "src/pages/**/*.tsx"],
+      "entry": [
+        "src/entry.client.tsx",
+        "src/entry.server.tsx",
+        "src/pages/**/*.tsx",
+        "src/root.tsx"
+      ],
       "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/*": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
-    "packages/node-api-js": {
+    "packages/crypto": {
       "entry": ["src/index.ts"],
-      "ignore": [],
+      // wasm-pack is a Rust binary tool (not an npm package) invoked via `wasm-pack build` in package scripts
+      "ignoreBinaries": ["wasm-pack"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/node-api-js": {
+      "entry": ["src/index.ts", "test/**/*.spec.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/protobuf-serialization": {
