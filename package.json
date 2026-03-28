@@ -3,10 +3,11 @@
   "description": "DecentralChain SDK — Unified TypeScript monorepo for all @decentralchain packages",
   "devDependencies": {
     "@biomejs/biome": "2.4.9",
-    "@nx/devkit": "22.6.1",
+    "@nx/devkit": "22.6.3",
     "esbuild": "0.27.4",
+    "knip": "6.0.6",
     "lefthook": "2.1.4",
-    "nx": "22.6.1",
+    "nx": "22.6.3",
     "typescript": "6.0.2"
   },
   "engines": {
@@ -21,8 +22,12 @@
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "overrides": {
+      "brace-expansion": ">=5.0.5",
       "fast-xml-parser": ">=5.5.7",
+      "path-to-regexp": ">=0.1.13",
+      "picomatch": ">=4.0.4",
       "typescript": "$typescript",
+      "yaml": ">=2.8.3",
       "yauzl": "^3.2.1"
     }
   },
