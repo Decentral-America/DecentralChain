@@ -468,6 +468,47 @@ const transfers = (options: IFieldOptions) => {
   }
 };
 
+const validateDataEntryValue = (
+  type: string | undefined,
+  itemOptions: IFieldOptions,
+  isArgs: boolean | undefined,
+): void => {
+  switch (type) {
+    case 'integer':
+      numberLike(itemOptions);
+      break;
+    case 'boolean':
+      boolean(itemOptions);
+      break;
+    case 'binary':
+      binary(itemOptions);
+      break;
+    case 'string':
+      string(itemOptions);
+      break;
+    case undefined:
+      isNull(itemOptions);
+      break;
+    case 'list':
+      if (isArgs) {
+        const listValues = {
+          ...itemOptions,
+          name: `${itemOptions.name}:list`,
+          value: itemOptions.value,
+        };
+        if (listValues.value) {
+          data(listValues, true);
+        }
+      }
+      break;
+    default:
+      error(
+        { ...itemOptions, name: itemOptions.name.replace(/:value$/, ':type'), value: type },
+        ERROR_MSG.WRONG_TYPE,
+      );
+  }
+};
+
 const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
   required(options);
   const { value } = options;
@@ -476,15 +517,10 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
   }
   const entries = value as Array<{ key?: string; type?: string; value?: unknown }>;
   const errors = entries
-    .map(({ key, type, value }, index) => {
+    .map(({ key, type, value: entryValue }, index) => {
       if (!noKey) {
         try {
-          string({
-            ...options,
-            name: `${options.name}:${index}:key`,
-            optional: false,
-            value: key,
-          });
+          string({ ...options, name: `${options.name}:${index}:key`, optional: false, value: key });
         } catch (e) {
           return e;
         }
@@ -493,46 +529,10 @@ const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
         ...options,
         name: `${options.name}:${index}:value`,
         optional: false,
-        value,
+        value: entryValue,
       };
-
       try {
-        switch (type) {
-          case 'integer':
-            numberLike(itemOptions);
-            break;
-          case 'boolean':
-            boolean(itemOptions);
-            break;
-          case 'binary':
-            binary(itemOptions);
-            break;
-          case 'string':
-            string(itemOptions);
-            break;
-          case undefined:
-            isNull(itemOptions);
-            break;
-          case 'list':
-            if (isArgs) {
-              const listValues = {
-                ...itemOptions,
-                name: `${itemOptions.name}:list`,
-                value: itemOptions.value,
-              };
-
-              if (listValues.value) {
-                data(listValues, true);
-                break;
-              }
-            }
-            break;
-          default:
-            error(
-              { ...options, name: `${options.name}:${index}:type`, value: key },
-              ERROR_MSG.WRONG_TYPE,
-            );
-        }
+        validateDataEntryValue(type, itemOptions, isArgs);
       } catch (e) {
         return e;
       }

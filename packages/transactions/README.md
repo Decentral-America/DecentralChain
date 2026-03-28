@@ -162,10 +162,32 @@ Transactions can be signed using:
 
 ## Chain IDs
 
-| Network | Byte | Char |
-| ------- | ---- | ---- |
-| Mainnet | 76   | L    |
-| Testnet | 84   | T    |
+> **`chainId` is required — always pass it explicitly.**
+>
+> Every builder function accepts `chainId` and defaults to `76` (`'L'`) via
+> the internal `networkByte(chainId, 76)` helper. This means **omitting `chainId`
+> silently produces a mainnet transaction** even when you intend to build a testnet
+> transaction. A mainnet-signed transaction broadcast to testnet will be rejected; the
+> reverse is worse — a testnet transaction broadcast to mainnet will be permanently
+> recorded on the real chain.
+>
+> **Always pass `chainId` explicitly:**
+> ```typescript
+> // ✅ Explicit — intent is clear, no silent mainnet default
+> transfer({ recipient, amount, chainId: '?' }, seed);  // DCC mainnet
+> transfer({ recipient, amount, chainId: '!' }, seed);  // DCC testnet
+>
+> // ❌ Implicit — defaults to chainId 76 ('L') silently
+> transfer({ recipient, amount }, seed);
+> ```
+
+| Network | Byte | Char | Use for |
+| ------- | ---- | ---- | ------- |
+| DCC Mainnet | 63 | `?` | Production transactions |
+| DCC Testnet | 33 | `!` | Testing / development |
+| Waves Mainnet | 87 | `W` | Waves-protocol mainnet (NOT DCC) |
+| Waves Testnet | 84 | `T` | Waves-protocol testnet (NOT DCC) |
+| Stagenet | 83 | `S` | Shared stagenet (Waves-compatible) |
 
 ## Dependencies
 

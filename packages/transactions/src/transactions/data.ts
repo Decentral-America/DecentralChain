@@ -48,24 +48,27 @@ const convertValue = (
   value: Uint8Array | string | number | boolean,
   _opt: string,
 ) => {
-  return type === 'binary' && (value instanceof Uint8Array || Array.isArray(value))
-    ? `base64:${Buffer.from(value as unknown as ArrayLike<number>).toString('base64')}`
-    : value;
+  if (type === 'binary' && value instanceof Uint8Array) {
+    return `base64:${Buffer.from(value).toString('base64')}`;
+  }
+  if (type === 'binary' && Array.isArray(value)) {
+    return `base64:${Buffer.from(value as number[]).toString('base64')}`;
+  }
+  return value;
 };
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function data(params: IDataParams, seed: TSeedTypes): DataTransaction & WithId & WithProofs;
 export function data(
   paramsOrTx: (IDataParams & WithSender) | DataTransaction,
   seed?: TSeedTypes,
 ): DataTransaction & WithId & WithProofs;
 export function data(
-  paramsOrTx: IDataParams & Partial<DataTransaction & WithProofs>,
+  paramsOrTx: IDataParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): DataTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.DATA;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.DATA;
+  const version = (paramsOrTx.version ?? DEFAULT_VERSIONS.DATA) as DataTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -142,7 +145,7 @@ export function data(
     version,
   };
 
-  validate.data(tx as unknown as Record<string, unknown>);
+  validate.data(tx);
 
   const bytes1 = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

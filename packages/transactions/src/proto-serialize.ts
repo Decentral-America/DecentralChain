@@ -322,11 +322,14 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
     }
     case 'commitToGeneration': {
       const d = t.data.value;
+      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
       res['generationPeriodStart'] = d.generationPeriodStart;
+      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
       res['endorserPublicKey'] =
         d.endorserPublicKey == null || d.endorserPublicKey.length === 0
           ? null
           : base58Encode(d.endorserPublicKey);
+      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
       res['commitmentSignature'] =
         d.commitmentSignature == null || d.commitmentSignature.length === 0
           ? null
@@ -341,8 +344,8 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
     res.sender = address({ publicKey: t.senderPublicKey }, t.chainId);
   } else {
     const recipient =
-      res.recipient ||
-      res.dApp ||
+      res.recipient ??
+      res.dApp ??
       (res.transfers as Array<{ recipient?: string }> | undefined)?.[0]?.recipient;
     if (recipient) {
       res.sender = address(
@@ -356,7 +359,7 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
 }
 
 export function orderToProtoBytes(obj: ExchangeTransactionOrder): Uint8Array {
-  return toBinary(OrderSchema, orderToProto(obj as unknown as OrderProtoInput));
+  return toBinary(OrderSchema, orderToProto(obj as OrderProtoInput));
 }
 
 export function protoBytesToOrder(bytes: Uint8Array) {
@@ -373,9 +376,9 @@ const getCommonFields = ({
   ...rest
 }: TTransaction) => {
   const typename = nameByType[type as keyof typeof nameByType];
-  let chainId: number | undefined = (rest as unknown as WithChainId).chainId;
+  let chainId: number | undefined = (rest as WithChainId).chainId;
   if (chainId == null) {
-    const r = rest as unknown as {
+    const r = rest as {
       recipient?: unknown;
       dApp?: unknown;
       transfers?: Array<{ recipient?: string }>;
@@ -393,7 +396,7 @@ const getCommonFields = ({
   return {
     chainId,
     data: typename,
-    fee: amountToProto(fee, (rest as unknown as { feeAssetId?: string | null }).feeAssetId),
+    fee: amountToProto(fee, (rest as { feeAssetId?: string | null }).feeAssetId),
     senderPublicKey: base58Decode(senderPublicKey),
     timestamp: BigInt(timestamp),
     type,
@@ -476,7 +479,7 @@ const getSetAssetScriptData = (t: SetAssetScriptTransaction) => ({
 });
 const getInvokeData = (t: InvokeScriptTransaction) => {
   const callSchemaEntry = (
-    schemas.invokeScriptSchemaV1 as unknown as {
+    schemas.invokeScriptSchemaV1 as {
       schema: [string | string[], Parameters<typeof binary.serializerFromSchema>[0]][];
     }
   ).schema[5];
@@ -604,21 +607,25 @@ export const signedTxToProto = (t: TTx): SignedTransaction => {
   });
 };
 
-const orderToProto = (o: OrderProtoInput): Order => {
-  let priceMode: Order_PriceMode | undefined;
-  if (o.version === 4 && 'priceMode' in o) {
-    if (o.priceMode === 0 || o.priceMode === 'default') {
-      priceMode = undefined;
-    } else {
-      if (o.priceMode === 'assetDecimals') {
-        priceMode = Order_PriceMode.ASSET_DECIMALS;
-      } else {
-        priceMode = Order_PriceMode.FIXED_DECIMALS;
-      }
-    }
-  } else priceMode = undefined;
+function priceModeToProto(version: unknown, priceMode: unknown): Order_PriceMode | undefined {
+  if (version !== 4) return;
+  if (priceMode === 0 || priceMode === 'default' || priceMode == null) return;
+  return priceMode === 'assetDecimals'
+    ? Order_PriceMode.ASSET_DECIMALS
+    : Order_PriceMode.FIXED_DECIMALS;
+}
 
+function priceModeFromProto(
+  version: number,
+  priceMode: Order_PriceMode | undefined,
+): 'fixedDecimals' | 'assetDecimals' | undefined {
+  if (version !== 4 || priceMode == null) return;
+  return priceMode === Order_PriceMode.FIXED_DECIMALS ? 'fixedDecimals' : 'assetDecimals';
+}
+
+const orderToProto = (o: OrderProtoInput): Order => {
   const isNullOrDcc = (asset: string | null) => asset == null || asset.toLowerCase() === 'dcc';
+  const priceMode = priceModeToProto(o.version, 'priceMode' in o ? o.priceMode : undefined);
   const ap = o.assetPair as { amountAsset: string | null; priceAsset: string | null };
   return create(OrderSchema, {
     amount: BigInt(o.amount as string | number),
@@ -654,14 +661,7 @@ const orderToProto = (o: OrderProtoInput): Order => {
 const orderFromProto = (
   po: Order,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId => {
-  let priceMode: string | undefined;
-  if (po.version === 4 && po.priceMode != null) {
-    if (po.priceMode === Order_PriceMode.FIXED_DECIMALS) {
-      priceMode = 'fixedDecimals';
-    } else {
-      priceMode = 'assetDecimals';
-    }
-  }
+  const priceMode = priceModeFromProto(po.version, po.priceMode);
 
   return {
     amount: convertNumber(po.amount),
@@ -689,15 +689,18 @@ const orderFromProto = (
     matcherPublicKey: base58Encode(po.matcherPublicKey),
     orderType: po.orderSide === Order_Side.BUY ? 'buy' : 'sell',
     price: convertNumber(po.price),
-    // @ts-expect-error
-    priceMode: priceMode,
+    // priceMode is conditional: present only for V4, absent for V1–V3. The
+    // spread avoids assigning `undefined` into the V4-required field, and the
+    // single cast bridges the version-discriminant union (1|2|3|4 cannot prove
+    // a single member without runtime narrowing).
+    ...(priceMode !== undefined ? { priceMode } : {}),
     senderPublicKey:
       po.sender.case === 'senderPublicKey'
         ? base58Encode(po.sender.value)
         : base58Encode(new Uint8Array()),
     timestamp: Number(po.timestamp),
     version: po.version as 1 | 2 | 3 | 4,
-  };
+  } as SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithChainId;
 };
 
 const recipientToProto = (r: string): Recipient =>

@@ -423,13 +423,13 @@ describe('Data provider tests', () => {
     });
 
     it('toField throws on null value', () => {
-      const data = { ...PROVIDER_DATA, name: undefined } as unknown as IProviderData;
+      const data = { ...PROVIDER_DATA, name: undefined } as IProviderData;
       const fieldProcessor = toField('name', DATA_PROVIDER_KEYS.NAME, DATA_ENTRY_TYPES.STRING);
       expect(() => fieldProcessor(data)).toThrow('Empty field name!');
     });
 
     it('toField throws on wrong type - expects integer', () => {
-      const data = { ...PROVIDER_DATA, version: 'not-a-number' } as unknown as IProviderData;
+      const data = { ...PROVIDER_DATA, version: 'not-a-number' } as IProviderData;
       const fieldProcessor = toField(
         'version',
         DATA_PROVIDER_KEYS.VERSION,
@@ -439,13 +439,13 @@ describe('Data provider tests', () => {
     });
 
     it('toField throws on wrong type - expects boolean', () => {
-      const data = { version: 'not-a-boolean' } as unknown as IProviderData;
+      const data = { version: 'not-a-boolean' } as IProviderData;
       const fieldProcessor = toField('version', 'some_key', DATA_ENTRY_TYPES.BOOLEAN);
       expect(() => fieldProcessor(data)).toThrow('Wrong value type!');
     });
 
     it('toField throws on wrong type - expects binary/string', () => {
-      const data = { version: 123 } as unknown as IProviderData;
+      const data = { version: 123 } as IProviderData;
       const fieldProcessor = toField('version', 'some_key', DATA_ENTRY_TYPES.BINARY);
       expect(() => fieldProcessor(data)).toThrow('Wrong value type!');
     });

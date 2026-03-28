@@ -47,13 +47,7 @@ export type InvokeScriptCallArgument<LONG = Long> =
   | InvokeScriptCallBinaryArgument
   | InvokeScriptCallBooleanArgument
   | InvokeScriptCallIntegerArgument<LONG>
-  | InvokeScriptCallListArgument<
-      LONG,
-      | InvokeScriptCallStringArgument
-      | InvokeScriptCallBinaryArgument
-      | InvokeScriptCallBooleanArgument
-      | InvokeScriptCallIntegerArgument
-    >;
+  | InvokeScriptCallListArgument<LONG>;
 
 export type InvokeScriptCallArgumentGeneric<Type, Value> = {
   type: Type;
@@ -71,14 +65,11 @@ export type InvokeScriptCallIntegerArgument<LONG = Long> = InvokeScriptCallArgum
   LONG
 >;
 
-export type InvokeScriptCallListArgument<
-  LONG,
-  ITEMS extends
-    | InvokeScriptCallStringArgument
-    | InvokeScriptCallBinaryArgument
-    | InvokeScriptCallBooleanArgument
-    | InvokeScriptCallIntegerArgument,
-> = InvokeScriptCallArgumentGeneric<'list', Array<ITEMS>> & Phantom<'LONG', LONG>;
+export type InvokeScriptCallListArgument<LONG = Long> = InvokeScriptCallArgumentGeneric<
+  'list',
+  Array<InvokeScriptCallArgument<LONG>>
+> &
+  Phantom<'LONG', LONG>;
 
 // ── Mass Transfer ───────────────────────────────────────────────────────────
 export type MassTransferItem<LONG = Long> = {

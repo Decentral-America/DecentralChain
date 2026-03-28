@@ -13,7 +13,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function lease(
   params: ILeaseParams,
   seed: TSeedTypes,
@@ -23,11 +22,11 @@ export function lease(
   seed?: TSeedTypes,
 ): LeaseTransaction & WithId & WithProofs;
 export function lease(
-  paramsOrTx: ILeaseParams & Partial<LeaseTransaction & WithProofs>,
+  paramsOrTx: ILeaseParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): LeaseTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.LEASE;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.LEASE;
+  const version = (paramsOrTx.version ?? DEFAULT_VERSIONS.LEASE) as LeaseTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -44,7 +43,7 @@ export function lease(
     version,
   };
 
-  validate.lease(tx as unknown as Record<string, unknown>);
+  validate.lease(tx);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

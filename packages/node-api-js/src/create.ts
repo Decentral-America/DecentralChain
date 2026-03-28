@@ -46,7 +46,10 @@ type BroadcastWrapped = {
   ): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
+// Function-type wildcard: concrete API functions with specific parameter types are NOT
+// assignable to `(base: string, ...args: unknown[]) => unknown` under contravariant
+// parameter typing, so `any[]` / `any` are required to accept any function signature.
+// biome-ignore lint/suspicious/noExplicitAny: function-type constraint — unknown[] breaks assignability
 type ApiFunction = (base: string, ...args: any[]) => any;
 
 type TWrapRecord<T extends Record<string, ApiFunction>> = {

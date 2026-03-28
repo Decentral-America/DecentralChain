@@ -13,7 +13,7 @@ function validateTxSignature(
 ): boolean {
   const bytes = tx.version > protoBytesMinVersion ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
-  return verifySignature(publicKey || tx.senderPublicKey, bytes, tx.proofs[proofNumber] as string);
+  return verifySignature(publicKey ?? tx.senderPublicKey, bytes, tx.proofs[proofNumber] as string);
 }
 
 export { validateTxSignature };

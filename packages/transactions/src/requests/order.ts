@@ -59,7 +59,23 @@ import { validate } from '../validators';
  * ```
  *
  */
-// @ts-expect-error TS2394: overload incompatible — IOrderParams lacks WithSender required by impl union
+function applyVersionedOrderFields(
+  ord: SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs,
+  orderExt: IOrderParams & WithSender,
+): void {
+  if (ord.version >= 3) {
+    Object.assign(ord, {
+      matcherFeeAssetId: orderExt.matcherFeeAssetId === 'DCC' ? null : orderExt.matcherFeeAssetId,
+    });
+  }
+  if (ord.version === 4) {
+    ord.priceMode = orderExt.priceMode || 'fixedDecimals';
+    Object.assign(ord, { chainId: networkByte(orderExt.chainId, 76) });
+    if (orderExt.eip712Signature) Object.assign(ord, { eip712Signature: orderExt.eip712Signature });
+  }
+}
+
+/* @echo DOCS */
 export function order(
   paramsOrOrder: IOrderParams,
   seed: TSeedTypes,
@@ -69,7 +85,7 @@ export function order(
   seed?: TSeedTypes,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder>;
 export function order(
-  paramsOrOrder: (IOrderParams & WithSender) | (ExchangeTransactionOrder & WithProofs & WithSender),
+  paramsOrOrder: IOrderParams | (ExchangeTransactionOrder & WithProofs & WithSender),
   seed?: TSeedTypes,
 ): SignedIExchangeTransactionOrder<ExchangeTransactionOrder> {
   const amountAsset = isOrder(paramsOrOrder)
@@ -113,17 +129,7 @@ export function order(
     version: version as SignedIExchangeTransactionOrder<ExchangeTransactionOrder>['version'],
   } as SignedIExchangeTransactionOrder<ExchangeTransactionOrder> & WithId & WithProofs;
 
-  if (ord.version >= 3) {
-    (ord as unknown as { matcherFeeAssetId: string | null | undefined }).matcherFeeAssetId =
-      orderExt.matcherFeeAssetId === 'DCC' ? null : orderExt.matcherFeeAssetId;
-  }
-
-  if (ord.version === 4) {
-    ord.priceMode = orderExt.priceMode || 'fixedDecimals';
-    (ord as unknown as { chainId: number }).chainId = networkByte(orderExt.chainId, 76);
-    if (orderExt.eip712Signature)
-      (ord as unknown as { eip712Signature: string }).eip712Signature = orderExt.eip712Signature;
-  }
+  applyVersionedOrderFields(ord, orderExt);
 
   const bytes = ord.version > 3 ? orderToProtoBytes(ord) : binary.serializeOrder(ord);
 
@@ -136,9 +142,12 @@ export function order(
   ord.id = base58Encode(blake2b(bytes));
 
   // OrderV1 uses signature instead of proofs
-  if (ord.version === undefined || ord.version === 1)
-    // @ts-expect-error – version narrowing causes `never` on proofs
-    (ord as Record<string, unknown>).signature = ord.proofs?.[0] ?? '';
+  if (ord.version === undefined || ord.version === 1) {
+    // At runtime, proofs always exists on ord even for v1; TypeScript narrows the
+    // versioned union so we access it through a plain object cast.
+    const firstProof = (ord as { proofs?: string[] }).proofs?.[0];
+    (ord as { signature?: string }).signature = firstProof ?? '';
+  }
 
   return ord;
 }

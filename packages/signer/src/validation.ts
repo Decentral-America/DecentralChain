@@ -97,7 +97,7 @@ const isNonNegativeAmount = (value: unknown): boolean => {
 };
 
 const orEq =
-  <T>(list: T[]) =>
+  <T>(list: ReadonlyArray<T>) =>
   (item: unknown): boolean =>
     list.includes(item as T);
 
@@ -341,13 +341,49 @@ const validator: ValidatorFn = (scheme, method) => (transaction) => {
   };
 };
 
-const getCommonValidators = (transactionType: TransactionType) => ({
-  fee: validateOptional(isNonNegativeAmount),
-  proofs: validateOptional(isArray),
-  senderPublicKey: validateOptional(isPublicKey),
-  type: (value: unknown) => value === transactionType,
-  version: validateOptional(orEq([undefined, 1, 2, 3])),
-});
+/**
+ * Per-transaction-type allowed version numbers, aligned with
+ * packages/transactions/src/validators/*. Transactions that only gained
+ * protobuf support in version 2 or 3 do NOT support v1; sending a v1 tx of
+ * those types would fail at the node with an invalid transaction error.
+ * Keeping this map in sync with the transactions validators prevents the
+ * signer from accepting a version that the transactions package rejects.
+ *
+ * GENESIS, PAYMENT, and ETHEREUM are not user-signable; they are omitted and
+ * fall through to the [undefined, 1, 2, 3] default below.
+ */
+const TX_VERSION_CONSTRAINTS: Partial<Record<TransactionType, ReadonlyArray<number | undefined>>> =
+  {
+    [TRANSACTION_TYPE.ALIAS]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.BURN]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.CANCEL_LEASE]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: [1],
+    [TRANSACTION_TYPE.DATA]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.EXCHANGE]: [undefined, 1, 2, 3],
+    [TRANSACTION_TYPE.INVOKE_SCRIPT]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.ISSUE]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.LEASE]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.MASS_TRANSFER]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.REISSUE]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.SET_SCRIPT]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.SPONSORSHIP]: [undefined, 1, 2],
+    [TRANSACTION_TYPE.TRANSFER]: [undefined, 2, 3],
+    [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: [undefined, 1],
+  };
+
+const getCommonValidators = (transactionType: TransactionType) => {
+  const allowedVersions: ReadonlyArray<number | undefined> = TX_VERSION_CONSTRAINTS[
+    transactionType
+  ] ?? [undefined, 1, 2, 3];
+  return {
+    fee: validateOptional(isNonNegativeAmount),
+    proofs: validateOptional(isArray),
+    senderPublicKey: validateOptional(isPublicKey),
+    type: (value: unknown) => value === transactionType,
+    version: validateOptional(orEq(allowedVersions)),
+  };
+};
 
 const issueArgsScheme = {
   ...getCommonValidators(TRANSACTION_TYPE.ISSUE),
@@ -487,6 +523,19 @@ const invokeArgsScheme = {
 };
 const invokeArgsValidator = validator(invokeArgsScheme, 'invoke');
 
+// UPDATE_ASSET_INFO: only version 1 exists in the protocol.
+// Accept undefined (builder defaults to 1) or explicit 1 — reject 2/3
+// to prevent submitting a non-existent tx version to the node.
+const updateAssetInfoArgsScheme = {
+  ...getCommonValidators(TRANSACTION_TYPE.UPDATE_ASSET_INFO),
+  assetId: isString,
+  chainId: validateOptional(isNumber),
+  description: validateOptional(isValidAssetDescription),
+  name: validateOptional(isValidAssetName),
+  version: validateOptional(orEq([undefined, 1])),
+};
+const updateAssetInfoArgsValidator = validator(updateAssetInfoArgsScheme, 'update asset info');
+
 // ── Public API (3 exports consumed by Signer.ts) ────────────────
 
 export const argsValidators: Record<number, ReturnType<typeof validator>> = {
@@ -504,6 +553,7 @@ export const argsValidators: Record<number, ReturnType<typeof validator>> = {
   [TRANSACTION_TYPE.EXCHANGE]: exchangeArgsValidator,
   [TRANSACTION_TYPE.SET_ASSET_SCRIPT]: setAssetScriptArgsValidator,
   [TRANSACTION_TYPE.INVOKE_SCRIPT]: invokeArgsValidator,
+  [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: updateAssetInfoArgsValidator,
 };
 
 type SignerOptionsValidation = { isValid: boolean; invalidOptions: string[] };
@@ -542,9 +592,11 @@ export const validateSignerOptions = (options: Partial<SignerOptions>): SignerOp
 };
 
 export const validateProviderInterface = (
-  provider: Record<string, unknown>,
+  provider: unknown,
 ): { isValid: boolean; invalidProperties: string[] } => {
   const isFunction = (value: unknown): boolean => typeof value === 'function';
+  // Single cast: we immediately verify each field is a function before trusting it.
+  const record = provider as Record<string, unknown>;
 
   const scheme: Record<string, (value: unknown) => boolean> = {
     connect: isFunction,
@@ -552,13 +604,14 @@ export const validateProviderInterface = (
     logout: isFunction,
     sign: isFunction,
     signMessage: isFunction,
+    signOrder: isFunction,
     signTypedData: isFunction,
   };
 
   const invalidProperties: string[] = [];
 
   for (const [fieldName, fieldValidator] of Object.entries(scheme)) {
-    if (!fieldValidator(provider[fieldName])) {
+    if (!fieldValidator(record[fieldName])) {
       invalidProperties.push(fieldName);
     }
   }

@@ -58,6 +58,3 @@ export const DATA_FIELD_TYPE = {
 // ── Derived Types ───────────────────────────────────────────────────────────
 export type TransactionType = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
 export type DataFieldType = (typeof DATA_FIELD_TYPE)[keyof typeof DATA_FIELD_TYPE];
-
-/** @deprecated Use `DataFieldType` instead — this name contains a typo. */
-export type DataFiledType = DataFieldType;

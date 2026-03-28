@@ -75,9 +75,10 @@ export function fee(params: IBasicParams, def: number) {
 }
 
 export function normalizeAssetId(assetId: string | null) {
-  if (assetId === '') throw new Error('Asset ID cannot be an empty string. Use null for DCC.');
-  assetId = assetId || null;
-  return assetId != null && assetId.toUpperCase() === 'DCC' ? null : assetId;
+  // Treat empty string the same as null — both mean "native DCC asset".
+  // '' is falsy but NOT nullish, so ?? does not catch it; use explicit check.
+  if (assetId == null || assetId === '') return null;
+  return assetId.toUpperCase() === 'DCC' ? null : assetId;
 }
 
 export function chainIdFromRecipient(recipient: string): number {

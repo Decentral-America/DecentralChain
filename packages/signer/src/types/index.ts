@@ -64,7 +64,10 @@ export interface Provider {
   signTypedData(data: Array<TypedData>): Promise<string>;
 
   /** Sign an array of transactions */
-  sign<T extends SignerTx>(toSign: T[] | T): Promise<SignedTx<T>>;
+  sign<T extends SignerTx>(toSign: T[]): Promise<Array<SignedTx<T>>>;
+  /** Sign a single transaction */
+  sign<T extends SignerTx>(toSign: T): Promise<SignedTx<T>>;
+  sign<T extends SignerTx>(toSign: T[] | T): Promise<Array<SignedTx<T>> | SignedTx<T>>;
 }
 
 export interface UserData {

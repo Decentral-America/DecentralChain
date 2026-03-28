@@ -17,7 +17,8 @@ const testAsset = new Asset({
 });
 
 const keeperMock = {
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — method signature uses implicit any params;
+  // only the paths exercised by the test suite are implemented
   auth: async (_data) => ({
     address: '3P4ECBVGKmsYwSBqEmeZCTAYLtkBCB6eKKM',
     data: 'test',
@@ -29,7 +30,7 @@ const keeperMock = {
       '3xvbSznhRTgDP5vMSoPpqwVf29hSdDQLFpdbtVaMHCyzuFFEgSodB7MXZTescxcYiVtR9wCgTGmZPWTApMVMg6qP',
   }),
   initialPromise: Promise.resolve() as any,
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — void return omits required promise shape
   on: (_key: string, _cb) => {},
   publicState: async () => ({
     account: {
@@ -38,13 +39,13 @@ const keeperMock = {
     },
     locked: false,
   }),
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — implicit any params, stub return
   signCancelOrder: async (_data) => {},
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — implicit any params, stub return
   signOrder: async (_data) => {},
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — implicit any params, stub return
   signRequest: async (_data) => {},
-  // @ts-expect-error - mock impl
+  // @ts-expect-error: partial mock — implicit any on data, only tested types handled
   signTransaction: async (data) => {
     switch (data.type) {
       case TRANSACTION_TYPE_NUMBER.SPONSORSHIP:

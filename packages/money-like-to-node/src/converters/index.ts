@@ -27,8 +27,20 @@ import {
 } from '@decentralchain/ts-types';
 import { TYPES } from '../constants/index.js';
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-interface TConvertMap<TO, T extends SignableTransaction<any>> {
+const convertArg = <FROM, TO>(
+  factory: IFactory<FROM, TO>,
+  item: InvokeScriptCallArgument<FROM>,
+): InvokeScriptCallArgument<TO> => {
+  if (item.type === 'integer') {
+    return { type: item.type, value: factory(item.value) };
+  }
+  if (item.type === 'list') {
+    return { type: item.type, value: item.value.map((i) => convertArg(factory, i)) };
+  }
+  return item;
+};
+
+interface TConvertMap<TO, T extends SignableTransaction<unknown>> {
   [TYPES.ISSUE]: TReplaceParam<T, 'fee' | 'quantity', TO>;
   [TYPES.TRANSFER]: TReplaceParam<T, 'fee' | 'amount', TO>;
   [TYPES.REISSUE]: TReplaceParam<T, 'fee' | 'quantity', TO>;
@@ -65,8 +77,7 @@ type TReplaceParam<T, KEYS, NEW_VALUE> = {
 
 type IFactory<FROM, TO> = (long: FROM) => TO;
 
-// biome-ignore lint/suspicious/noExplicitAny: legacy untyped code
-const defaultConvert = <FROM, TO, T extends Transaction<any>>(
+const defaultConvert = <FROM, TO, T extends Transaction<FROM>>(
   data: T,
   factory: IFactory<FROM, TO>,
 ): TReplaceParam<T, 'fee', TO> => {
@@ -191,13 +202,7 @@ const invokeScript = <FROM, TO, TX extends InvokeScriptTransaction<FROM>>(
   call: tx.call
     ? {
         ...tx.call,
-        args: tx.call.args.map(
-          (item) =>
-            ({
-              ...item,
-              value: item.type === 'integer' ? factory(item.value) : item.value,
-            }) as InvokeScriptCallArgument<TO>,
-        ),
+        args: tx.call.args.map((item) => convertArg(factory, item)),
       }
     : tx.call,
   payment: tx.payment
@@ -226,10 +231,55 @@ const commitToGeneration = <FROM, TO, TX extends CommitToGenerationTransaction<F
 // verify that TReplaceParam over a narrowed union variant (e.g. CancelLeaseV1)
 // is assignable to the parent SignableTransaction<TO> union, because of Phantom
 // type parameters that carry FROM rather than TO. The runtime logic is correct —
-// defaultConvert replaces fee with factory(fee) — so we use explicit casts.
+// defaultConvert replaces fee with factory(fee) — so a single boundary assertion
+// is placed in the outer `convert` wrapper; `convertImpl` uses no casts at all.
 type ConvertResult<TO> =
   | SignableTransaction<TO>
   | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<TO>>;
+
+function convertImpl<FROM, TO>(
+  tx: SignableTransaction<FROM> | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>,
+  factory: IFactory<FROM, TO>,
+) {
+  if ('orderType' in tx) return order(tx, factory);
+
+  switch (tx.type) {
+    case TYPES.ISSUE:
+      return issue(tx, factory);
+    case TYPES.TRANSFER:
+      return transfer(tx, factory);
+    case TYPES.REISSUE:
+      return reissue(tx, factory);
+    case TYPES.BURN:
+      return burn(tx, factory);
+    case TYPES.EXCHANGE:
+      return exchange(tx, factory);
+    case TYPES.LEASE:
+      return lease(tx, factory);
+    case TYPES.CANCEL_LEASE:
+      return cancelLease(tx, factory);
+    case TYPES.ALIAS:
+      return alias(tx, factory);
+    case TYPES.MASS_TRANSFER:
+      return massTransfer(tx, factory);
+    case TYPES.DATA:
+      return data(tx, factory);
+    case TYPES.SET_SCRIPT:
+      return setScript(tx, factory);
+    case TYPES.SPONSORSHIP:
+      return sponsorship(tx, factory);
+    case TYPES.SET_ASSET_SCRIPT:
+      return setAssetScript(tx, factory);
+    case TYPES.INVOKE_SCRIPT:
+      return invokeScript(tx, factory);
+    case TYPES.UPDATE_ASSET_INFO:
+      return updateAssetInfo(tx, factory);
+    case TYPES.COMMIT_TO_GENERATION:
+      return commitToGeneration(tx, factory);
+    default:
+      throw new Error('Unknown transaction type!');
+  }
+}
 
 export function convert<
   FROM,
@@ -246,44 +296,8 @@ export function convert<FROM, TO>(
   tx: SignableTransaction<FROM> | SignedIExchangeTransactionOrder<ExchangeTransactionOrder<FROM>>,
   factory: IFactory<FROM, TO>,
 ): ConvertResult<TO> {
-  if ('orderType' in tx) {
-    return order(tx, factory) as unknown as ConvertResult<TO>;
-  }
-
-  switch (tx.type) {
-    case TYPES.ISSUE:
-      return issue(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.TRANSFER:
-      return transfer(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.REISSUE:
-      return reissue(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.BURN:
-      return burn(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.EXCHANGE:
-      return exchange(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.LEASE:
-      return lease(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.CANCEL_LEASE:
-      return cancelLease(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.ALIAS:
-      return alias(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.MASS_TRANSFER:
-      return massTransfer(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.DATA:
-      return data(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.SET_SCRIPT:
-      return setScript(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.SPONSORSHIP:
-      return sponsorship(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.SET_ASSET_SCRIPT:
-      return setAssetScript(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.INVOKE_SCRIPT:
-      return invokeScript(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.UPDATE_ASSET_INFO:
-      return updateAssetInfo(tx, factory) as unknown as ConvertResult<TO>;
-    case TYPES.COMMIT_TO_GENERATION:
-      return commitToGeneration(tx, factory) as unknown as ConvertResult<TO>;
-    default:
-      throw new Error('Unknown transaction type!');
-  }
+  // Single documented cross-schema assertion — ConvertResult<TO> is structurally
+  // equivalent to convertImpl's inferred return; phantom FROM→TO variance prevents
+  // TypeScript from closing the proof without this boundary assertion.
+  return convertImpl(tx, factory) as unknown as ConvertResult<TO>;
 }

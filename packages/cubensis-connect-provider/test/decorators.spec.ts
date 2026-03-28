@@ -6,7 +6,8 @@ describe('ensureNetwork', () => {
 
   // Minimal context mock — ensureNetwork ignores context (_context), so only
   // need to satisfy the TypeScript type. Use null cast for simplicity.
-  const mockContext = null as unknown as ClassMethodDecoratorContext;
+  // @ts-expect-error: null satisfies mock context; ensureNetwork ignores this parameter
+  const mockContext: ClassMethodDecoratorContext = null;
 
   function createInstance(nodeUrl: string, networkByte: number) {
     return {

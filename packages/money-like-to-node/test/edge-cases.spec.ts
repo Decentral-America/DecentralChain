@@ -218,7 +218,7 @@ describe('getCoins — all input forms', () => {
 
 describe('getAssetId — all input forms', () => {
   it('returns asset id from Money object', () => {
-    expect(getAssetId(new Money('100', DCC_ASSET))).toBe('DCC');
+    expect(getAssetId(new Money('100', DCC_ASSET))).toBeNull();
   });
 
   it('returns asset id from Money object with BTC', () => {
@@ -420,7 +420,7 @@ describe('node.* named converters', () => {
     expect(result.fee).toBe('100');
     expect(result.amount).toBe('500');
     expect(result.assetId).toBe(BTC_ASSET.id);
-    expect(result.feeAssetId).toBe('DCC');
+    expect(result.feeAssetId).toBeNull();
     expect(result.recipient).toBe('dest');
   });
 
@@ -435,7 +435,7 @@ describe('node.* named converters', () => {
       version: 1,
     });
 
-    expect(result.quantity).toBe('500');
+    expect(result.amount).toBe('500');
     expect(result.assetId).toBe(BTC_ASSET.id);
   });
 
@@ -485,7 +485,7 @@ describe('node.* named converters', () => {
 
     expect(result.call).toBeNull();
     expect(result.payment).toBeNull();
-    expect(result.feeAssetId).toBe('DCC');
+    expect(result.feeAssetId).toBeNull();
   });
 
   it('node.invokeScript converts call args and payment', () => {
@@ -532,7 +532,7 @@ describe('node.* named converters', () => {
     expect(result.matcherFee).toBe('300');
     expect(result.assetPair).toEqual({
       amountAsset: BTC_ASSET.id,
-      priceAsset: 'DCC',
+      priceAsset: null,
     });
   });
 });
@@ -1284,6 +1284,6 @@ describe('toNode() — additional entity types', () => {
       type: TYPES.MASS_TRANSFER,
       version: 1,
     } as any);
-    expect(result.assetId).toBe('DCC');
+    expect(result.assetId).toBeNull();
   });
 });

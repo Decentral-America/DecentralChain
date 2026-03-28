@@ -1,7 +1,13 @@
 import { broadcastTx, getNetworkByte, waitForTx } from '@decentralchain/node-api-js';
 import { fetchBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
 import { fetchAssetsBalance } from '@decentralchain/node-api-js/api-node/assets';
-import { TRANSACTION_TYPE, type Transaction, type TransactionType } from '@decentralchain/ts-types';
+import {
+  type SignedTransaction,
+  TRANSACTION_TYPE,
+  type Transaction,
+  type TransactionType,
+  type WithApiMixin,
+} from '@decentralchain/ts-types';
 import { DEFAULT_OPTIONS } from './constants.js';
 import {
   catchProviderError,
@@ -49,11 +55,13 @@ import {
   type SignerSponsorshipTx,
   type SignerTransferTx,
   type SignerTx,
+  type SignerUpdateAssetInfoTx,
   type SponsorshipArgs,
   type TOrderArgs,
   type TransferArgs,
   type TSignedOrder,
   type TypedData,
+  type UpdateAssetInfoArgs,
   type UserData,
 } from './types/index.js';
 import { argsValidators, validateProviderInterface, validateSignerOptions } from './validation.js';
@@ -178,7 +186,10 @@ export class Signer {
     toBroadcast: SignedTx<T> | Array<SignedTx<T>>,
     options?: BroadcastOptions,
   ): Promise<BroadcastedTx<SignedTx<T>> | BroadcastedTx<Array<SignedTx<T>>>> {
-    return broadcastTx(this._options.NODE_URL, toBroadcast as never, options) as never;
+    if (Array.isArray(toBroadcast)) {
+      return this._broadcastWire(toBroadcast);
+    }
+    return this._broadcastWire(toBroadcast, options);
   }
 
   /** Retrieve the network byte for the configured node. */
@@ -211,9 +222,7 @@ export class Signer {
     this._settingProvider = true;
 
     try {
-      const providerValidation = validateProviderInterface(
-        provider as unknown as Record<string, unknown>,
-      );
+      const providerValidation = validateProviderInterface(provider);
 
       if (!providerValidation.isValid) {
         const error = this._handleError(ERRORS.PROVIDER_INTERFACE, [
@@ -262,7 +271,7 @@ export class Signer {
   @checkAuthAsync
   public getBalance(): Promise<Array<Balance>> {
     const userData = this._userData;
-    if (!userData) throw new Error('User not authenticated');
+    if (!userData) return Promise.reject(new Error('User not authenticated'));
     return Promise.all([
       fetchBalanceDetails(this._options.NODE_URL, userData.address).then((data) => ({
         amount: String(data.available),
@@ -323,7 +332,7 @@ export class Signer {
         return data;
       })
       .catch((err: unknown) => {
-        if (err === 'Error: User rejection!') {
+        if (err instanceof Error && err.message === 'User rejection!') {
           throw err;
         }
         const message = err instanceof Error ? err.message : String(err);
@@ -453,19 +462,32 @@ export class Signer {
     return this._invoke([])(data);
   }
 
+  public updateAssetInfo(data: UpdateAssetInfoArgs): ChainApi1stCall<SignerUpdateAssetInfoTx> {
+    return this._updateAssetInfo([])(data);
+  }
+
   // ---------------------------------------------------------------------------
   // Wait for confirmation
   // ---------------------------------------------------------------------------
 
   /** Wait for a single transaction to reach the specified confirmation depth. */
-  public waitTxConfirm<T extends Transaction>(tx: T, confirmations: number): Promise<T>;
+  public waitTxConfirm<T extends Transaction & WithApiMixin>(
+    tx: T,
+    confirmations: number,
+  ): Promise<T>;
   /** Wait for multiple transactions to reach the specified confirmation depth. */
-  public waitTxConfirm<T extends Transaction>(tx: T[], confirmations: number): Promise<T[]>;
-  public waitTxConfirm<T extends Transaction>(
+  public waitTxConfirm<T extends Transaction & WithApiMixin>(
+    tx: T[],
+    confirmations: number,
+  ): Promise<T[]>;
+  public waitTxConfirm<T extends Transaction & WithApiMixin>(
     tx: T | T[],
     confirmations: number,
   ): Promise<T | T[]> {
-    return waitForTx(this._options.NODE_URL, tx as never, { confirmations }) as never;
+    if (Array.isArray(tx)) {
+      return waitForTx(this._options.NODE_URL, tx, { confirmations });
+    }
+    return waitForTx(this._options.NODE_URL, tx, { confirmations });
   }
 
   // ---------------------------------------------------------------------------
@@ -584,6 +606,14 @@ export class Signer {
         type: TRANSACTION_TYPE.INVOKE_SCRIPT,
       });
 
+  private readonly _updateAssetInfo =
+    (txList: SignerTx[]) =>
+    (data: UpdateAssetInfoArgs): ChainApi1stCall<SignerUpdateAssetInfoTx> =>
+      this._createPipelineAPI<SignerUpdateAssetInfoTx>(txList, {
+        ...data,
+        type: TRANSACTION_TYPE.UPDATE_ASSET_INFO,
+      });
+
   // ---------------------------------------------------------------------------
   // Private — pipeline API factory
   // ---------------------------------------------------------------------------
@@ -600,12 +630,14 @@ export class Signer {
       alias: this._alias(chainArgs),
       broadcast(options?: BroadcastOptions) {
         if (_this.currentProvider?.isSignAndBroadcastByProvider === true) {
-          return _this.currentProvider.sign(txs) as never;
+          // isSignAndBroadcastByProvider: the provider signs AND broadcasts atomically.
+          // Its sign() returns BroadcastedTx<SignedTx<T>> at runtime — a contract not
+          // expressible in Provider.sign's declared type. See _broadcastWire for the
+          // same pattern isolated at the node-api-js boundary.
+          return _this.currentProvider.sign(txs as T[]) as Promise<BroadcastedTx<SignedTx<T>>>;
         }
 
-        return (_this._sign<T>(txs as unknown as T[]) as unknown as Promise<SignedTx<T>>).then(
-          (signed) => _this.broadcast(signed, options),
-        ) as never;
+        return _this._sign(txs).then((signed) => _this._broadcastWire(signed, options));
       },
       burn: this._burn(chainArgs),
       cancelLease: this._cancelLease(chainArgs),
@@ -618,9 +650,10 @@ export class Signer {
       reissue: this._reissue(chainArgs),
       setAssetScript: this._setAssetScript(chainArgs),
       setScript: this._setScript(chainArgs),
-      sign: () => _this._sign<T>(txs as unknown as T[]) as never,
+      sign: () => _this._sign(txs),
       sponsorship: this._sponsorship(chainArgs),
       transfer: this._transfer(chainArgs),
+      updateAssetInfo: this._updateAssetInfo(chainArgs),
     } as unknown as ChainApi1stCall<T>;
   }
 
@@ -685,14 +718,50 @@ export class Signer {
     }
 
     if (validation.isValid) {
-      return this._connectPromise.then(
-        (provider) => provider.sign(toSign as unknown as SignerTx[]) as never,
-      );
+      // Provider.sign(T[]) overload returns Promise<Array<SignedTx<T>>> — no cast needed.
+      return this._connectPromise.then((provider) => provider.sign(toSign));
     }
 
     const error = this._handleError(ERRORS.API_ARGUMENTS, [validation.errors]);
     throw error;
   }
-}
 
-export default Signer;
+  // ---------------------------------------------------------------------------
+  // Private — broadcastTx wire bridge
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Isolated escape hatch for the cross-package type boundary between
+   * SignedTx<T> (signer-internal) and SignedTransaction<Transaction> (node-api-js).
+   *
+   * SignedTx<T> = SignedTransaction<TransactionMap[T['type']]> & WithId, which is
+   * structurally a SignedTransaction<Transaction> in every concrete case.
+   * TypeScript cannot prove this without materialising T['type'] at compile time —
+   * hence this single private method is the sole location of `as unknown as` in
+   * the broadcast path.
+   */
+  private _broadcastWire<T extends SignerTx>(
+    tx: SignedTx<T>,
+    options?: BroadcastOptions,
+  ): Promise<BroadcastedTx<SignedTx<T>>>;
+  private _broadcastWire<T extends SignerTx>(
+    txs: Array<SignedTx<T>>,
+    options?: BroadcastOptions,
+  ): Promise<BroadcastedTx<SignedTx<T>[]>>;
+  private _broadcastWire<T extends SignerTx>(
+    txOrArr: SignedTx<T> | Array<SignedTx<T>>,
+    options?: BroadcastOptions,
+  ): Promise<BroadcastedTx<SignedTx<T>> | BroadcastedTx<SignedTx<T>[]>> {
+    if (Array.isArray(txOrArr)) {
+      return broadcastTx(
+        this._options.NODE_URL,
+        txOrArr as unknown as SignedTransaction<Transaction>[],
+      ) as unknown as Promise<BroadcastedTx<SignedTx<T>[]>>;
+    }
+    return broadcastTx(
+      this._options.NODE_URL,
+      txOrArr as unknown as SignedTransaction<Transaction>,
+      options,
+    ) as unknown as Promise<BroadcastedTx<SignedTx<T>>>;
+  }
+}

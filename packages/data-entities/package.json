@@ -72,8 +72,6 @@
     "clean": "rm -rf dist coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "postpublish": "git push",
-    "postversion": "npm publish",
     "prepack": "npm run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

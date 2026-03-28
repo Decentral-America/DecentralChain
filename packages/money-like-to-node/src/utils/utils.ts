@@ -1,6 +1,6 @@
 import { type TLong, type TMoney } from '../types/index.js';
 
-export function getAssetId(money: TMoney): string;
+export function getAssetId(money: TMoney): string | null;
 export function getAssetId(money: TLong | null | undefined): null;
 export function getAssetId(money: TMoney | TLong | null | undefined): string | null;
 export function getAssetId(money: TMoney | TLong | null | undefined): string | null {
@@ -9,9 +9,14 @@ export function getAssetId(money: TMoney | TLong | null | undefined): string | n
   }
 
   if ('toCoins' in money) {
-    return money.asset.id;
+    // Normalize the native-token sentinel to null — the canonical network form.
+    // 'DCC' is a display alias; serializers (proto and binary) both emit empty
+    // bytes for null, making null the single correct wire representation.
+    const id = money.asset.id;
+    return id === 'DCC' ? null : id;
   } else if ('assetId' in money) {
-    return money.assetId;
+    const id = money.assetId;
+    return id === 'DCC' ? null : id;
   } else {
     return null;
   }
@@ -103,19 +108,27 @@ export const defaultTo =
   (data: T | null | undefined): T =>
     data ?? value;
 
-export const map: IMap = curry(
-  <T, R>(cb: (item: T) => R, list: T[]): R[] => list.map(cb),
-  // biome-ignore lint/suspicious/noExplicitAny: curry returns generic — IMap overloads provide safety at call sites
-) as any;
+function mapImpl<T, R>(cb: (item: T) => R, list: T[]): R[];
+function mapImpl<T, R>(cb: (item: T) => R): (list: T[]) => R[];
+function mapImpl<T, R>(cb: (item: T) => R, list?: T[]): R[] | ((list: T[]) => R[]) {
+  if (list !== undefined) return list.map(cb);
+  return (lst: T[]) => lst.map(cb);
+}
+export const map: IMap = mapImpl;
 
-export const prop: IProp = curry(
-  <T extends object, K extends keyof T>(key: K, data: T): T[K] => data[key],
-  // biome-ignore lint/suspicious/noExplicitAny: curry returns generic — IProp overloads provide safety at call sites
-) as any;
+function propImpl<T extends object, K extends keyof T>(key: K, data: T): T[K];
+function propImpl<T extends object, K extends keyof T>(key: K): (data: T) => T[K];
+function propImpl<T extends object, K extends keyof T>(
+  key: K,
+  data?: T,
+): T[K] | ((data: T) => T[K]) {
+  if (data !== undefined) return data[key];
+  return (d: T) => d[key];
+}
+export const prop: IProp = propImpl;
 
 export const pipe: IPipe = (...processors: ((...args: unknown[]) => unknown)[]) =>
-  // biome-ignore lint/suspicious/noExplicitAny: IPipe overloads provide safety — implementation must accept any initial value
-  ((initial: any) => processors.reduce((acc, cb) => cb(acc), initial)) as any;
+  ((initial: unknown) => processors.reduce<unknown>((acc, cb) => cb(acc), initial)) as IPipe;
 
 interface IComparator {
   (a: number, b: number): boolean;

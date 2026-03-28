@@ -274,9 +274,7 @@ describe('Window adapter', () => {
       const win = mockWindow<TMessageContent>();
       const protocol = new WindowProtocol<TMessageContent>(win, PROTOCOL_TYPES.DISPATCH);
 
-      expect((protocol as unknown as { targetOrigin: string }).targetOrigin).toBe(
-        window.location.origin,
-      );
+      expect((protocol as { targetOrigin: string }).targetOrigin).toBe(window.location.origin);
     });
 
     it('throws when dispatch protocol uses wildcard targetOrigin', () => {

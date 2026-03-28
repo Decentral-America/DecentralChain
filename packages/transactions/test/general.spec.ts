@@ -2,6 +2,7 @@ import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
 import { type Transaction } from '@decentralchain/ts-types';
 import { broadcast, burn, data, type IDataParams, reissue, signTx } from '../src';
 import { serialize, verify } from '../src/general';
+import { normalizeAssetId } from '../src/generic';
 import { order } from '../src/requests/order';
 import { exampleTxs } from './exampleTxs';
 import { API_BASE } from './integration/config';
@@ -72,4 +73,25 @@ it('verify signatures of txs and orders', async () => {
   const tx = burn({ ...burnMinimalParams, version: 2 }, [null, stringSeed]);
   expect(verify(ord)).toEqual(true);
   expect(verify(tx, 1)).toEqual(true);
+});
+
+describe('normalizeAssetId', () => {
+  it('returns null for null input', () => {
+    expect(normalizeAssetId(null)).toBeNull();
+  });
+
+  it('returns null for empty string — treats empty string as native DCC asset', () => {
+    expect(normalizeAssetId('')).toBeNull();
+  });
+
+  it('returns null for "DCC" string (case-insensitive)', () => {
+    expect(normalizeAssetId('DCC')).toBeNull();
+    expect(normalizeAssetId('dcc')).toBeNull();
+    expect(normalizeAssetId('Dcc')).toBeNull();
+  });
+
+  it('passes through a valid asset ID unchanged', () => {
+    const assetId = '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS';
+    expect(normalizeAssetId(assetId)).toEqual(assetId);
+  });
 });

@@ -13,18 +13,17 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function burn(params: IBurnParams, seed: TSeedTypes): BurnTransaction & WithId & WithProofs;
 export function burn(
   paramsOrTx: (IBurnParams & WithSender) | BurnTransaction,
   seed?: TSeedTypes,
 ): BurnTransaction & WithId & WithProofs;
 export function burn(
-  paramsOrTx: IBurnParams & Partial<BurnTransaction & WithProofs>,
+  paramsOrTx: IBurnParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): BurnTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.BURN;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.BURN;
+  const version = (paramsOrTx.version ?? DEFAULT_VERSIONS.BURN) as BurnTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -41,7 +40,7 @@ export function burn(
     version,
   };
 
-  validate.burn(tx as unknown as Record<string, unknown>);
+  validate.burn(tx);
 
   const bytes = version > 2 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

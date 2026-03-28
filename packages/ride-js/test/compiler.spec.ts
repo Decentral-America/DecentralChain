@@ -130,10 +130,20 @@ func bar() = WriteSet([])`;
     expect(res.result).toEqual('res1: Boolean = true');
   });
 
-  // Previously this test's floating promise (forEach + .then) silently swallowed
-  // all failures. The RIDE REPL's Scala.js crypto returns errors for every algorithm
-  // ("Failed to read asymmetric key" / "Last unit does not have enough valid bits").
-  // Skipped until @waves/ride-lang is updated or replaced.
+  // RSA verify is not supported in the Scala.js WASM build shipped by @waves/ride-lang.
+  // The RIDE REPL's crypto layer throws "Failed to read asymmetric key" / "Last unit does
+  // not have enough valid bits" for every RSA algorithm (NOALG..SHA3512).
+  //
+  // Root cause: the Scala.js → WASM compilation does not bundle a native RSA provider;
+  // async RSA operations require Web Crypto or a JVM RSA implementation, neither of which
+  // is available in the WASM sandbox.
+  //
+  // Upstream tracking: https://github.com/wavesplatform/ride-js (no open issue as of 2026-03)
+  // Unblock path: either @waves/ride-lang ships a WASM-compatible RSA shim, or DCC forks
+  // ride-js and substitutes a JS RSA implementation (e.g. node:crypto or @noble/rsa).
+  //
+  // Do NOT re-enable without a local proof-of-concept that `rsaVerify(SHA256,...)` returns
+  // a Boolean true/false instead of the current error response.
   test.skip('rsa verify', async () => {
     const { evaluate } = compiler.repl();
     const pk = `let pk = fromBase64String("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt5IE7IAnSq7uK8FknxfEm2OtPvFOQlVy4F9arLp0PmhIRkDMpk7nWu3aNn6NBYX4kiigOLBhRDwNAZTJXnCjS8FQ/trZRo7oANiCX9kKwJZKQQCjLS0KSRWQWunDF7l9EUhTwb3QzhdSvYJLy3lOk90ZPB+36YvHooFx8oLIJimJhgbPXL95Yk6i+wh32Zhda616+9q/EftA5I4emJZRFLareSXM/MR03IFjYdh4S7LH+OPr94IQY/26Pt5HmS0X4W500HjxEp1vF8Irx3GYiF6Abk7JK5Gyf6W8ApEfAofj0s8qfLfHhH4JHg/QwW4NSd1NrhRMov2H7v31BVsRgwIDAQAB")`;

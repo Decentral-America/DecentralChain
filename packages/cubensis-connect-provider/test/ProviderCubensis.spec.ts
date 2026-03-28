@@ -33,7 +33,7 @@ function createMockApi(): CubensisConnect.TCubensisConnectApi {
     signRequest: vi.fn(),
     signTransaction: vi.fn(),
     signTransactionPackage: vi.fn(),
-  } as unknown as CubensisConnect.TCubensisConnectApi;
+  } as CubensisConnect.TCubensisConnectApi;
 }
 
 /**
@@ -42,14 +42,14 @@ function createMockApi(): CubensisConnect.TCubensisConnectApi {
  * CubensisConnect object, and initialPromise resolves to void once ready.
  */
 function installMockExtension(api: CubensisConnect.TCubensisConnectApi) {
-  (window as unknown as Record<string, unknown>).CubensisConnect = {
+  (window as Window & Record<string, unknown>).CubensisConnect = {
     ...api,
     initialPromise: Promise.resolve(),
   };
 }
 
 function removeMockExtension() {
-  delete (window as unknown as Record<string, unknown>).CubensisConnect;
+  delete (window as Window & Record<string, unknown>).CubensisConnect;
 }
 
 describe('ProviderCubensis', () => {
@@ -105,7 +105,7 @@ describe('ProviderCubensis', () => {
 
     it('rejects when initialPromise rejects', async () => {
       // Override the extension mock to have a rejecting initialPromise
-      (window as unknown as Record<string, unknown>).CubensisConnect = {
+      (window as Window & Record<string, unknown>).CubensisConnect = {
         initialPromise: Promise.reject(new Error('Extension init failed')),
       };
 

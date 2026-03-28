@@ -37,9 +37,10 @@ it('Script info simple', async () => {
 
 it('data by key', async () => {
   const data = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
-  // @ts-expect-error data may have dynamic type
+  // @ts-expect-error: DataTransactionEntry is a discriminated union; .type/.value
+  // exist on all members but TS requires narrowing before direct access
   expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-  // @ts-expect-error data may have dynamic type
+  // @ts-expect-error: DataTransactionEntry discriminated union — see comment above
   expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
 });
 

@@ -29,7 +29,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function invokeScript(
   params: IInvokeScriptParams,
   seed: TSeedTypes,
@@ -39,11 +38,12 @@ export function invokeScript(
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs;
 export function invokeScript(
-  paramsOrTx: IInvokeScriptParams & Partial<InvokeScriptTransaction & WithProofs>,
+  paramsOrTx: (IInvokeScriptParams | InvokeScriptTransaction) & { proofs?: string[] },
   seed?: TSeedTypes,
 ): InvokeScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.INVOKE_SCRIPT;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.INVOKE_SCRIPT;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.INVOKE_SCRIPT) as InvokeScriptTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -54,7 +54,7 @@ export function invokeScript(
     fee: fee(paramsOrTx, 500000),
     feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),
     id: '',
-    payment: mapPayment(paramsOrTx.payment),
+    payment: mapPayment((paramsOrTx.payment ?? undefined) as InvokeScriptPayment[] | undefined),
     proofs: paramsOrTx.proofs || [],
     senderPublicKey,
     timestamp: paramsOrTx.timestamp || Date.now(),
@@ -62,7 +62,7 @@ export function invokeScript(
     version,
   };
 
-  validate.invokeScript(tx as unknown as Record<string, unknown>);
+  validate.invokeScript(tx);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 
@@ -80,5 +80,5 @@ const mapPayment = (payments?: InvokeScriptPayment[]): InvokeScriptPayment[] =>
     : payments.map((pmt) => ({ ...pmt, assetId: pmt.assetId === 'DCC' ? null : pmt.assetId }));
 
 const callField = (paramsOrTx: { call?: { function: string; args?: unknown[] } | null }) => {
-  return paramsOrTx.call ? { ...paramsOrTx.call, args: paramsOrTx.call.args || [] } : null;
+  return paramsOrTx.call ? { ...paramsOrTx.call, args: paramsOrTx.call.args ?? [] } : null;
 };

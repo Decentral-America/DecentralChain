@@ -38,8 +38,56 @@ const int32ToBigEndianBytes = (value: number): Uint8Array => {
   return result;
 };
 
+type BlsSigningData = { endorserPublicKey: string; commitmentSignature: string };
+
+function resolveBlsSigningData(
+  paramsOrTx: ICommitToGenerationParams & { proofs?: string[] },
+  primarySeed: ReturnType<typeof convertToPairs>[number][0] | undefined,
+): BlsSigningData {
+  const needsComputation =
+    paramsOrTx.endorserPublicKey == null || paramsOrTx.commitmentSignature == null;
+  const blsKeyPair =
+    !needsComputation || primarySeed == null
+      ? undefined
+      : dccCrypto.blsKeyPair(
+          isPrivateKey(primarySeed) ? primarySeed.privateKey : privateKey(primarySeed),
+        );
+
+  const endorserPublicKey =
+    paramsOrTx.endorserPublicKey ??
+    (blsKeyPair != null ? base58Encode(blsKeyPair.blsPublic) : undefined);
+
+  if (endorserPublicKey == null) {
+    throw new Error(
+      'Please provide either seed or endorserPublicKey for CommitToGenerationTransaction',
+    );
+  }
+
+  const blsSecret = blsKeyPair?.blsSecret;
+  const commitmentSignature =
+    paramsOrTx.commitmentSignature ??
+    (blsSecret != null
+      ? base58Encode(
+          dccCrypto.blsSign(
+            blsSecret,
+            concat(
+              base58Decode(endorserPublicKey),
+              int32ToBigEndianBytes(paramsOrTx.generationPeriodStart),
+            ),
+          ),
+        )
+      : undefined);
+
+  if (commitmentSignature == null) {
+    throw new Error(
+      'Please provide either seed or commitmentSignature for CommitToGenerationTransaction',
+    );
+  }
+
+  return { commitmentSignature, endorserPublicKey };
+}
+
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function commitToGeneration(
   params: ICommitToGenerationParams,
   seed: TSeedTypes,
@@ -49,59 +97,17 @@ export function commitToGeneration(
   seed?: TSeedTypes,
 ): CommitToGenerationTransaction & WithId & WithProofs;
 export function commitToGeneration(
-  paramsOrTx: ICommitToGenerationParams & Partial<CommitToGenerationTransaction & WithProofs>,
+  paramsOrTx: ICommitToGenerationParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): CommitToGenerationTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.COMMIT_TO_GENERATION;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.COMMIT_TO_GENERATION;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.COMMIT_TO_GENERATION) as CommitToGenerationTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   const primarySeed = seedsAndIndexes[0]?.[0];
 
-  const shouldComputeBls =
-    paramsOrTx.endorserPublicKey == null || paramsOrTx.commitmentSignature == null;
-
-  const blsKeyPair =
-    !shouldComputeBls || primarySeed == null
-      ? undefined
-      : dccCrypto.blsKeyPair(
-          isPrivateKey(primarySeed) ? primarySeed.privateKey : privateKey(primarySeed),
-        );
-  const blsSecret = blsKeyPair?.blsSecret;
-
-  const endorserPublicKey =
-    paramsOrTx.endorserPublicKey == null
-      ? blsKeyPair == null
-        ? undefined
-        : base58Encode(blsKeyPair.blsPublic)
-      : paramsOrTx.endorserPublicKey;
-
-  if (endorserPublicKey == null) {
-    throw new Error(
-      'Please provide either seed or endorserPublicKey for CommitToGenerationTransaction',
-    );
-  }
-
-  const commitmentSignature =
-    paramsOrTx.commitmentSignature == null
-      ? blsSecret == null
-        ? undefined
-        : base58Encode(
-            dccCrypto.blsSign(
-              blsSecret,
-              concat(
-                base58Decode(endorserPublicKey),
-                int32ToBigEndianBytes(paramsOrTx.generationPeriodStart),
-              ),
-            ),
-          )
-      : paramsOrTx.commitmentSignature;
-
-  if (commitmentSignature == null) {
-    throw new Error(
-      'Please provide either seed or commitmentSignature for CommitToGenerationTransaction',
-    );
-  }
+  const { endorserPublicKey, commitmentSignature } = resolveBlsSigningData(paramsOrTx, primarySeed);
 
   const tx: CommitToGenerationTransaction & WithId & WithProofs = {
     chainId: networkByte(paramsOrTx.chainId, 76),
@@ -117,7 +123,7 @@ export function commitToGeneration(
     version,
   };
 
-  validate.commitToGeneraction(tx as unknown as Record<string, unknown>);
+  validate.commitToGeneraction(tx);
 
   const bytes = txToProtoBytes(tx);
 

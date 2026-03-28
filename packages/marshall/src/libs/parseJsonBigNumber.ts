@@ -201,6 +201,7 @@ const create = (options?: Options) => {
     return error('Bad array');
   };
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive descent JSON object parser — inherent complexity mirrors number/string parsers above
   const object = (): Record<string, unknown> => {
     let key: string;
     const obj: Record<string, unknown> = {};
@@ -342,6 +343,7 @@ const create = (options?: Options) => {
         if (Object.prototype.toString.apply(val) === '[object Array]') {
           length = val.length;
           for (i = 0; i < length; i += 1) {
+            // biome-ignore lint/nursery/useNullishCoalescing: intentional truthy fallback — JSON array serialization converts empty/undefined elements to 'null'
             partial[i] = str(i, val) || 'null';
           }
 
@@ -417,6 +419,7 @@ const create = (options?: Options) => {
     return (
       str('', {
         '': val,
+        // biome-ignore lint/nursery/useNullishCoalescing: intentional truthy fallback — JSON.stringify returns '' for undefined top-level values, which should also yield ''
       }) || ''
     );
   };

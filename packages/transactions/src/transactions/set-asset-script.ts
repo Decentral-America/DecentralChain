@@ -25,7 +25,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function setAssetScript(
   params: ISetAssetScriptParams,
   seed: TSeedTypes,
@@ -35,11 +34,12 @@ export function setAssetScript(
   seed?: TSeedTypes,
 ): SetAssetScriptTransaction & WithId & WithProofs;
 export function setAssetScript(
-  paramsOrTx: ISetAssetScriptParams & Partial<SetAssetScriptTransaction & WithProofs>,
+  paramsOrTx: ISetAssetScriptParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): SetAssetScriptTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SET_ASSET_SCRIPT;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SET_ASSET_SCRIPT;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.SET_ASSET_SCRIPT) as SetAssetScriptTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   if (paramsOrTx.script == null) throw new Error('Asset script cannot be empty');
@@ -50,14 +50,14 @@ export function setAssetScript(
     fee: fee(paramsOrTx, 100000000),
     id: '',
     proofs: paramsOrTx.proofs || [],
-    script: base64Prefix(paramsOrTx.script) || '',
+    script: base64Prefix(paramsOrTx.script) ?? '',
     senderPublicKey,
     timestamp: paramsOrTx.timestamp || Date.now(),
     type,
     version,
   };
 
-  validate.setAssetScript(tx as unknown as Record<string, unknown>);
+  validate.setAssetScript(tx);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

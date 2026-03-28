@@ -1,5 +1,5 @@
 import { libs } from '@decentralchain/transactions';
-import Signer from '../src/Signer';
+import { Signer } from '../src/Signer';
 import { TestProvider } from './TestProvider';
 import { MOCK_URL, NETWORK_BYTE } from './test-env';
 

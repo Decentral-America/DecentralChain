@@ -18,7 +18,6 @@ import { type TSeedTypes } from '../types';
 import { validate } from '../validators';
 
 /* @echo DOCS */
-// @ts-expect-error TS2394: overload incompatible due to version/chainId type widening in intersection
 export function sponsorship(
   params: ISponsorshipParams,
   seed: TSeedTypes,
@@ -28,11 +27,12 @@ export function sponsorship(
   seed?: TSeedTypes,
 ): SponsorshipTransaction & WithId & WithProofs;
 export function sponsorship(
-  paramsOrTx: ISponsorshipParams & Partial<SponsorshipTransaction & WithProofs>,
+  paramsOrTx: ISponsorshipParams & { proofs?: string[] },
   seed?: TSeedTypes,
 ): SponsorshipTransaction & WithId & WithProofs {
   const type = TRANSACTION_TYPE.SPONSORSHIP;
-  const version = paramsOrTx.version ?? DEFAULT_VERSIONS.SPONSORSHIP;
+  const version = (paramsOrTx.version ??
+    DEFAULT_VERSIONS.SPONSORSHIP) as SponsorshipTransaction['version'];
   const seedsAndIndexes = convertToPairs(seed);
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
@@ -49,7 +49,7 @@ export function sponsorship(
     version,
   };
 
-  validate.sponsorship(tx as unknown as Record<string, unknown>);
+  validate.sponsorship(tx);
 
   const bytes = version > 1 ? txToProtoBytes(tx) : binary.serializeTx(tx);
 

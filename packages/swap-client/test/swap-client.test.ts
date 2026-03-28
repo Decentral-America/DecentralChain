@@ -743,7 +743,7 @@ describe('convertArg', () => {
   });
 
   it('throws on unexpected arg type', () => {
-    const arg = { value: { case: 'unknown' } } as unknown as Response_Exchange_Transaction_Argument;
+    const arg = { value: { case: 'unknown' } } as Response_Exchange_Transaction_Argument;
     expect(() => convertArg(arg)).toThrow('unexpected arg.value');
   });
 });

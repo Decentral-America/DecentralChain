@@ -77,7 +77,7 @@ export function catchProviderError<
 ): (this: This, ...args: Args) => Return {
   return function (this: This, ...args: Args): Return {
     return target.call(this, ...args).catch((e: unknown) => {
-      if (e === 'Error: User rejection!') {
+      if (e instanceof Error && e.message === 'User rejection!') {
         return Promise.reject(e);
       }
 
