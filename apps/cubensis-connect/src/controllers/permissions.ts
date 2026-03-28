@@ -2,17 +2,13 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import ObservableStore from 'obs-store';
 import { isNotNull } from '#_core/isNotNull';
-import { type MessageTx } from '#messages/types';
+import type { MessageTx } from '#messages/types';
 import { PERMISSIONS } from '#permissions/constants';
-import {
-  type PermissionObject,
-  type PermissionType,
-  type PermissionValue,
-} from '#permissions/types';
+import type { PermissionObject, PermissionType, PermissionValue } from '#permissions/types';
 
 import { ERRORS } from '../lib/keeperError';
-import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
+import type { RemoteConfigController } from './remoteConfig';
 
 const findPermissionFabric = (permission: PermissionType) => (item: PermissionValue) => {
   if (typeof item === 'string') {
@@ -162,7 +158,11 @@ export class PermissionsController {
       return null;
     }
 
-    const newAutoSign = { ...(autoSign as any), interval, totalAmount };
+    const newAutoSign: PermissionObject = {
+      ...(typeof autoSign === 'string' ? { type: autoSign as PermissionType } : autoSign),
+      interval,
+      totalAmount,
+    };
     this.updatePermission(origin, newAutoSign);
   }
 
@@ -247,7 +247,10 @@ export class PermissionsController {
       return false;
     }
 
-    let { totalAmount = 0, interval = 0, approved = [] } = permission as PermissionObject;
+    const permObj = permission as PermissionObject;
+    const totalAmount: string | number = permObj.totalAmount ?? 0;
+    const interval: number = permObj.interval ?? 0;
+    let approved: { amount: string; time: number }[] = permObj.approved?.slice() ?? [];
 
     const currentTime = Date.now();
     approved = approved.filter(({ time }) => currentTime - time < interval);
@@ -269,7 +272,7 @@ export class PermissionsController {
 
   updatePermission(origin: string, permission: PermissionValue) {
     const findPermission = findPermissionFabric(
-      (permission as PermissionObject).type || permission,
+      typeof permission === 'string' ? permission : permission.type,
     );
     const permissions = [
       ...this.getPermissions(origin).filter((item) => !findPermission(item)),
@@ -310,8 +313,8 @@ export class PermissionsController {
         if (!permissions.includes(permission)) {
           permissions.push(permission);
         }
-        if (!permissions.includes(type as any)) {
-          permissions.push(type as any);
+        if (!permissions.includes(type)) {
+          permissions.push(type);
         }
         acc[origin] = permissions;
         return acc;

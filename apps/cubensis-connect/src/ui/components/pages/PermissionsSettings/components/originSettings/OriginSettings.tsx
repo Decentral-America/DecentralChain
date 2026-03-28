@@ -2,6 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { PermissionValue } from '#permissions/types';
 import { Button, Input, Select } from '#ui/components/ui';
 
 import * as styles from './settings.module.styl';
@@ -45,7 +46,7 @@ function getAutoSign(autoSign: TAutoAuth): TAutoAuth {
 function deriveInitialState(
   autoSign: TAutoAuth,
   permissions: TPermission[],
-  origins: Record<string, unknown[]>,
+  origins: Record<string, PermissionValue[]>,
   originName: string,
 ) {
   const { interval = null, totalAmount } = getAutoSign(autoSign);
@@ -66,8 +67,8 @@ function deriveInitialState(
   };
 }
 
-export interface IProps {
-  origins: Record<string, unknown[]>;
+interface IProps {
+  origins: Record<string, PermissionValue[]>;
   autoSign: TAutoAuth;
   originalAutoSign: TAutoAuth;
   permissions: TPermission[];
@@ -217,7 +218,7 @@ export function OriginSettings({
           className={styles.selectTime}
           fill
           selectList={timeList}
-          selected={(selected ?? '') as any}
+          selected={selected ?? ''}
           description={t('permissionSettings.modal.time')}
           onSelectItem={handleSelectTime}
         />

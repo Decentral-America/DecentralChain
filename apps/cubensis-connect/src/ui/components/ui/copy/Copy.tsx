@@ -34,17 +34,17 @@ export function Copy({
 
     if (
       elem &&
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: ReactElement<any> required for dynamic .props access in cloneElement wrapper
       (elem as React.ReactElement<any>).props &&
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: ReactElement<any> required for dynamic .props access in cloneElement wrapper
       typeof (elem as React.ReactElement<any>).props.onClick === 'function'
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: ReactElement<any> required for dynamic .props access in cloneElement wrapper
       (elem as React.ReactElement<any>).props.onClick(event);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: ReactElement<any> required for dynamic .props access in cloneElement wrapper
   return cloneElement(elem as React.ReactElement<any>, {
     ...props,
     onClick: handleClick,

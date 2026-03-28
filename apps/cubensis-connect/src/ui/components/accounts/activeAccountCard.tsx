@@ -1,9 +1,9 @@
-import { type BigNumber } from '@decentralchain/bignumber';
-import { type Money } from '@decentralchain/data-entities';
+import type { BigNumber } from '@decentralchain/bignumber';
+import type { Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import { Avatar } from '../ui/avatar/Avatar';
 import { Balance } from '../ui/balance/Balance';

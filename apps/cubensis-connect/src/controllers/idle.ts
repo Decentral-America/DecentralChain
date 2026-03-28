@@ -1,10 +1,10 @@
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
-import { type IdleOptions } from '#preferences/types';
+import type { IdleOptions } from '#preferences/types';
 
-import { type ExtensionStorage } from '../storage/storage';
-import { type PreferencesController } from './preferences';
-import { type VaultController } from './VaultController';
+import type { ExtensionStorage } from '../storage/storage';
+import type { PreferencesController } from './preferences';
+import type { VaultController } from './VaultController';
 
 const IDLE_INTERVAL = 60;
 
@@ -25,12 +25,10 @@ export class IdleController {
     vaultController: VaultController;
   }) {
     Browser.idle.setDetectionInterval(IDLE_INTERVAL);
+    const storedIdleOptions = preferencesController.store.getState().idleOptions;
     this.options = {
-      // @ts-expect-error
-      interval: 15 * 60 * 1000,
-      // @ts-expect-error
-      type: 'idle',
-      ...preferencesController.store.getState().idleOptions,
+      interval: storedIdleOptions.interval ?? 15 * 60 * 1000,
+      type: storedIdleOptions.type ?? 'idle',
     };
     this.preferencesController = preferencesController;
     this.vaultController = vaultController;

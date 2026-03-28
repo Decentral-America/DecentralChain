@@ -1,4 +1,4 @@
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import { MessageFinal } from './_common/final';
 import { AuthCard, AuthFinal, AuthScreen } from './auth/auth';
@@ -14,7 +14,7 @@ import {
   TransactionPackageCard,
   TransactionPackageScreen,
 } from './transactionPackage/transactionPackage';
-import { type Message, type MessageOfType } from './types';
+import type { Message, MessageOfType } from './types';
 
 interface MessageConfig<T extends Message['type']> {
   card: React.ComponentType<{
@@ -87,5 +87,5 @@ const messageConfigs = {
 };
 
 export function getMessageConfig<T extends Message['type']>(input: MessageOfType<T>) {
-  return messageConfigs[input.type] as unknown as MessageConfig<T>;
+  return messageConfigs[input.type] as MessageConfig<T>;
 }

@@ -1,19 +1,19 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import { type TransactionFromNode } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 import { isNotNull } from '#_core/isNotNull';
-import { type AssetBalance, type BalancesItem } from '#balances/types';
+import type { AssetBalance, BalancesItem } from '#balances/types';
 import { collectBalances } from '#balances/utils';
-import { type NftAssetDetail } from '#nfts/types';
+import type { NftAssetDetail } from '#nfts/types';
 
 import { MAX_NFT_ITEMS, MAX_TX_HISTORY_ITEMS } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
-import { type AssetInfoController } from './assetInfo';
-import { type NftInfoController } from './NftInfoController';
-import { type NetworkController } from './network';
-import { type PreferencesController } from './preferences';
-import { type VaultController } from './VaultController';
+import type { ExtensionStorage } from '../storage/storage';
+import type { AssetInfoController } from './assetInfo';
+import type { NftInfoController } from './NftInfoController';
+import type { NetworkController } from './network';
+import type { PreferencesController } from './preferences';
+import type { VaultController } from './VaultController';
 
 const PERIOD_IN_SECONDS = 10;
 
@@ -299,7 +299,7 @@ export class CurrentAccountController {
         quantity: nft.quantity,
         reissuable: nft.reissuable,
         sender: nft.issuer,
-        timestamp: new Date(nft.issueTimestamp).toJSON() as unknown as Date,
+        timestamp: new Date(nft.issueTimestamp),
       })),
       regular: nativeBalance.regular,
       txHistory,

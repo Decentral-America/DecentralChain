@@ -1,23 +1,24 @@
 import { captureException } from '@sentry/browser';
 import { deepEqual } from 'fast-equals';
 import type ObservableStore from 'obs-store';
+import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import { make, pipe, subscribe } from 'wonka';
-import { type AssetsRecord } from '#assets/types';
-import { type TrashItem } from '#controllers/trash';
-import { type Message } from '#messages/types';
-import { type NetworkName } from '#networks/types';
-import { type NftInfo } from '#nfts/nfts';
-import { type NotificationsStoreItem } from '#notifications/types';
-import { type PermissionValue } from '#permissions/types';
-import { type IdleOptions, type PreferencesAccount } from '#preferences/types';
-import { type UiState } from '#store/reducers/updateState';
+import type { AssetsRecord } from '#assets/types';
+import type { TrashItem } from '#controllers/trash';
+import type { Message } from '#messages/types';
+import type { NetworkName } from '#networks/types';
+import type { NftInfo } from '#nfts/nfts';
+import type { NotificationsStoreItem } from '#notifications/types';
+import type { PermissionValue } from '#permissions/types';
+import type { IdleOptions, PreferencesAccount } from '#preferences/types';
+import type { UiState } from '#store/reducers/updateState';
 
-import {
-  type AssetsConfig,
-  type DEFAULT_MAIN_CONFIG,
-  type IgnoreErrorsConfig,
-  type NftConfig,
+import type {
+  AssetsConfig,
+  DEFAULT_MAIN_CONFIG,
+  IgnoreErrorsConfig,
+  NftConfig,
 } from '../constants';
 import { MIGRATIONS } from './migrations';
 
@@ -96,7 +97,7 @@ export interface StorageLocalState {
   whitelist: string[];
 }
 
-export interface StorageSessionState {
+interface StorageSessionState {
   /**
    * Base64-encoded raw 32-byte AES-256-GCM vault key derived via PBKDF2.
    * Stored instead of the plaintext password so that a session compromise
@@ -242,19 +243,30 @@ export async function createExtensionStorage() {
 
     if (version < CURRENT_MIGRATION_VERSION) {
       for (let i = version; i < CURRENT_MIGRATION_VERSION; i++) {
-        await MIGRATIONS[i]!.migrate();
+        const migration = MIGRATIONS[i];
+        invariant(
+          migration != null,
+          `storage: MIGRATIONS[${i}] missing — migration list out of sync`,
+        );
+        await migration.migrate();
       }
     } else if (version > CURRENT_MIGRATION_VERSION) {
       for (let i = version; i > CURRENT_MIGRATION_VERSION; i--) {
-        await MIGRATIONS[i - 1]!.rollback();
+        const rollback = MIGRATIONS[i - 1];
+        invariant(
+          rollback != null,
+          `storage: MIGRATIONS[${i - 1}] missing — rollback list out of sync`,
+        );
+        await rollback.rollback();
       }
     }
 
     await Browser.storage.local.set({
       migrationVersion: CURRENT_MIGRATION_VERSION,
     });
-  } catch (err: any) {
-    if (!err.message.includes('FILE_ERROR_NO_SPACE')) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (!message.includes('FILE_ERROR_NO_SPACE')) {
       captureException(err);
     }
   }

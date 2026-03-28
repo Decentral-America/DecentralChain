@@ -1,6 +1,6 @@
-import { type AssetDetail } from '#assets/types';
+import type { AssetDetail } from '#assets/types';
 
-import { type NftConfig } from '../constants';
+import type { NftConfig } from '../constants';
 
 export interface NftAssetDetail {
   assetId: string;
@@ -18,14 +18,15 @@ export interface NftAssetDetail {
   scripted: boolean;
 }
 
-export enum NftVendorId {
-  Ducklings = 'ducklings',
-  Ducks = 'ducks',
-  DucksArtefact = 'ducks-artefact',
-  SignArt = 'sign-art',
-  Puzzle = 'puzzle',
-  Unknown = 'unknown',
-}
+export const NftVendorId = {
+  Ducklings: 'ducklings',
+  Ducks: 'ducks',
+  DucksArtefact: 'ducks-artefact',
+  Puzzle: 'puzzle',
+  SignArt: 'sign-art',
+  Unknown: 'unknown',
+} as const;
+export type NftVendorId = (typeof NftVendorId)[keyof typeof NftVendorId];
 
 export interface Nft {
   background?: React.CSSProperties | undefined;
@@ -59,7 +60,8 @@ export interface NftVendor<T extends { vendor: NftVendorId }> {
   create(params: CreateParams<T>): Nft;
 }
 
-export enum DisplayMode {
-  Name,
-  Creator,
-}
+export const DisplayMode = {
+  Creator: 1,
+  Name: 0,
+} as const;
+export type DisplayMode = (typeof DisplayMode)[keyof typeof DisplayMode];

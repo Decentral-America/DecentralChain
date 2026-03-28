@@ -1,6 +1,7 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-
-import { DEFAULT_MAIN_CONFIG, type NftConfig } from '../../constants';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type { NftConfig } from '../../constants';
+import { DEFAULT_MAIN_CONFIG } from '../../constants';
 
 const nftConfigSlice = createSlice({
   initialState: DEFAULT_MAIN_CONFIG.nfts as NftConfig,

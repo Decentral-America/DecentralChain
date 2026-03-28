@@ -1,8 +1,10 @@
-import { TRANSACTION_TYPE, type TransactionFromNode } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { Trans, useTranslation } from 'react-i18next';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
-import { List, type RowComponentProps } from 'react-window';
+import type { RowComponentProps } from 'react-window';
+import { List } from 'react-window';
 import invariant from 'tiny-invariant';
 import { usePopupSelector } from '#popup/store/react';
 import { icontains } from '#ui/components/pages/assets/helpers';
@@ -29,7 +31,8 @@ const Row = ({
   historyLink: string;
 }>) => {
   const { t } = useTranslation();
-  const historyOrGroup = historyWithGroups[index]!;
+  const historyOrGroup = historyWithGroups[index];
+  invariant(historyOrGroup != null, `tabTxHistory row ${index}: out of bounds`);
 
   return (
     <div style={style}>
@@ -147,7 +150,7 @@ export function TabTxHistory() {
           el.address,
           el.name,
           assets[el.assetId ?? '']?.displayName,
-          el.call?.function || 'default',
+          el.call?.function ?? 'default',
         ].reduce((result: boolean, name) => result || icontains(name, term), false),
       false,
     );
@@ -162,6 +165,7 @@ export function TabTxHistory() {
   const historyWithGroups = txHistory
     ? txHistory
         .slice(0, MAX_TX_HISTORY_ITEMS - 1)
+        // biome-ignore lint/suspicious/noExplicitAny: TransactionFromNode is a wide discriminated union; filter accesses optional properties via ??
         .filter((tx: any) => {
           const hasMassTransfers = (tx.transfers ?? []).reduce(
             (result: boolean, transfer: { amount: number; recipient: string }) =>
@@ -207,7 +211,8 @@ export function TabTxHistory() {
             if (
               tx.timestamp &&
               (!prevItems[index - 1] ||
-                new Date(prevItems[index - 1]!.timestamp).toDateString() !== d.toDateString())
+                new Date((prevItems[index - 1] as TransactionFromNode).timestamp).toDateString() !==
+                  d.toDateString())
             ) {
               const [Y, M, D] = [d.getFullYear(), d.getMonth(), d.getDate()];
               const options: Intl.DateTimeFormatOptions = {
@@ -250,7 +255,7 @@ export function TabTxHistory() {
             <Select
               className={styles.filterTxSelect}
               ref={ref}
-              selected={type}
+              selected={type ?? 0}
               selectList={buildTxTypeOptions(t)}
               theme="underlined"
               onSelectItem={(_id, value) => {
@@ -345,12 +350,13 @@ export function TabTxHistory() {
                 <List
                   rowComponent={Row}
                   rowCount={historyWithGroups.length}
-                  rowHeight={(index) =>
-                    'groupName' in historyWithGroups[index]!
+                  rowHeight={(index) => {
+                    const row = historyWithGroups[index];
+                    return row != null && 'groupName' in row
                       ? FULL_GROUP_HEIGHT
                       : CARD_FULL_HEIGHT *
-                        (1 + Number(index === historyWithGroups.length - 1 && hasMore))
-                  }
+                          (1 + Number(index === historyWithGroups.length - 1 && hasMore));
+                  }}
                   rowProps={{
                     hasFilters: term || type || onlyIn || onlyOut,
                     hasMore,

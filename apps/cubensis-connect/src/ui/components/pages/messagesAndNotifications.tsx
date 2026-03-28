@@ -58,9 +58,14 @@ export function MessagesAndNotificationsPage() {
             <div className="margin-main-big">
               {notifications.map((items) => {
                 const group = items.slice().reverse();
+                const firstItem = group[0];
+                invariant(
+                  firstItem != null,
+                  'messagesAndNotifications: notification group is empty',
+                );
 
                 return (
-                  <div key={group[0]!.origin} className={styles.cardItem}>
+                  <div key={firstItem.origin} className={styles.cardItem}>
                     <div
                       className={clsx(
                         styles.notificationCard,
@@ -87,7 +92,7 @@ export function MessagesAndNotificationsPage() {
                                 'basic500 body3 margin-min',
                               )}
                             >
-                              {group[0]!.origin}
+                              {firstItem.origin}
                             </div>
 
                             <h2 className={clsx(styles.notificationEllipsis, 'headline')}>
@@ -96,7 +101,7 @@ export function MessagesAndNotificationsPage() {
                                   {group.length} {t('notifications.messages')}
                                 </span>
                               ) : (
-                                group[0]!.title
+                                firstItem.title
                               )}
                             </h2>
                           </div>

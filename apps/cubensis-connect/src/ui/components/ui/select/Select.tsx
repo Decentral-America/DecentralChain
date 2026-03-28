@@ -30,7 +30,8 @@ interface Props<T> {
   ref?: React.Ref<HTMLDivElement | null> | undefined;
   listPlacement?: ListPlacement | undefined;
   selectList: ReadonlyArray<SelectItem<T>>;
-  selected: T;
+  /** The `id` of the currently selected item (compared against `SelectItem.id`). */
+  selected: string | number;
   theme?: Theme | undefined;
   onMouseEnter?: (() => void) | undefined;
   onMouseLeave?: (() => void) | undefined;

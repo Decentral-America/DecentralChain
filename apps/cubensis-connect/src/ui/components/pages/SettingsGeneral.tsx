@@ -12,9 +12,7 @@ export function SettingsGeneral() {
   const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
-  const idle = usePopupSelector(
-    (state) => ((state.config as any)?.idle ?? {}) as Record<string, number>,
-  );
+  const idle = usePopupSelector((state) => (state.config?.idle ?? {}) as Record<string, number>);
 
   const idleOptions = usePopupSelector((state) => state.idleOptions);
 
@@ -36,7 +34,7 @@ export function SettingsGeneral() {
             description={t('settings.sessionTimeout')}
             fill
             selectList={selectList}
-            selected={idleOptions.type}
+            selected={idleOptions.type ?? ''}
             onSelectItem={(id: string | number) => dispatch(setIdle(id as string))}
           />
         </div>

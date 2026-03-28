@@ -1,6 +1,7 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { type NewAccountState } from './stateTypes';
+import type { NewAccountState } from './stateTypes';
 
 export type { NewAccountState };
 

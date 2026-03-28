@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { type PopupState, type PopupThunkAction } from '../../popup/store/types';
+import type { PopupState, PopupThunkAction } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
 import {
   setNewAccountName,
@@ -13,7 +13,6 @@ import { setActiveMessage, setActiveNotification } from './notifications';
 export {
   setLoading,
   setNotificationNameChanged as notificationChangeName,
-  setNotificationSelected as notificationSelect,
 } from '../reducers/localState';
 export { selectAccount } from '../reducers/updateState';
 

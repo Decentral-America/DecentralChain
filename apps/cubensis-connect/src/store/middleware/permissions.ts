@@ -1,6 +1,6 @@
-import { type Action } from '@reduxjs/toolkit';
+import type { Action } from '@reduxjs/toolkit';
 
-import { type AppMiddleware } from '../../popup/store/types';
+import type { AppMiddleware } from '../../popup/store/types';
 import background from '../../ui/services/Background';
 import {
   allowOrigin as allowOriginAction,

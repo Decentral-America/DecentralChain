@@ -9,15 +9,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 import { isNotNull } from '#_core/isNotNull';
 import { useSign } from '#_core/signContext';
-import { type AssetDetail } from '#assets/types';
+import type { AssetDetail } from '#assets/types';
 import { useAssetIdByTicker } from '#assets/utils';
 import { convertFeeToAsset } from '#fee/utils';
 import { computeTxHash, makeTxBytes } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
 import background from '#ui/services/Background';
 import Background from '#ui/services/Background';
-
-import { type OnSwapParams, SwapForm } from './form';
+import type { OnSwapParams } from './form';
+import { SwapForm } from './form';
 import { SwapResult } from './result';
 import * as styles from './swap.module.css';
 
@@ -203,8 +203,8 @@ export function Swap() {
           if (match) {
             capture = false;
 
-            const actualAmountCoins = new BigNumber(match[1]!);
-            const expectedAmountCoins = new BigNumber(match[2]!);
+            const actualAmountCoins = new BigNumber(match[1] ?? '0');
+            const expectedAmountCoins = new BigNumber(match[2] ?? '0');
 
             background.track({
               actualAmountCoins: actualAmountCoins.toFixed(),
@@ -227,7 +227,7 @@ export function Swap() {
           if (match) {
             capture = false;
 
-            const expectedAmountCoins = new BigNumber(match[1]!);
+            const expectedAmountCoins = new BigNumber(match[1] ?? '0');
 
             background.track({
               eventType: 'swapAssets',

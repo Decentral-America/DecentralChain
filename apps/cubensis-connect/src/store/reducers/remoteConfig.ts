@@ -1,8 +1,9 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type StorageLocalState } from '#storage/storage';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type { StorageLocalState } from '#storage/storage';
 
 const configSlice = createSlice({
-  initialState: {} as StorageLocalState['config'] | Record<never, unknown>,
+  initialState: {} as Partial<StorageLocalState['config']>,
   name: 'config',
   reducers: {
     setRemoteConfig: (_state, action: PayloadAction<Partial<StorageLocalState['config']>>) =>

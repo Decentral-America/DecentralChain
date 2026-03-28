@@ -7,11 +7,11 @@ import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
 import { stringifyTransaction } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { Balance, DateFormat } from '../../ui/components/ui';
-import { type MessageOfType, type MessageTxUpdateAssetInfo } from '../types';
+import type { MessageOfType, MessageTxUpdateAssetInfo } from '../types';
 
 export function UpdateAssetInfoCard({ className }: { className?: string }) {
   const { t } = useTranslation();

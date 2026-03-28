@@ -4,7 +4,8 @@ import { Ellipsis } from '#ui/components/ui';
 
 import { InfoIcon } from '../icons/info';
 import * as styles from './nftCard.module.css';
-import { DisplayMode, type Nft } from './types';
+import type { Nft } from './types';
+import { DisplayMode } from './types';
 
 export function NftCover({ className, nft }: { className?: string; nft: Nft | undefined }) {
   const [isLoading, setLoading] = useState(true);

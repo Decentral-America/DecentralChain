@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { MessageFinal } from '#messages/_common/final';
 import { MessageFooter } from '#messages/_common/footer';
 import { MessageHeader } from '#messages/_common/header';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 import * as styles from './auth.module.css';
 
 export function AuthCard({

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import { Avatar } from '../../ui/components/ui/avatar/Avatar';
 import { Copy } from '../../ui/components/ui/copy/Copy';

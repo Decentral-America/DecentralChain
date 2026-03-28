@@ -10,11 +10,11 @@ import { MessageIcon } from '#messages/_common/icon';
 import { Script } from '#messages/_common/script';
 import { TxInfo } from '#messages/transaction/common/info';
 import { stringifyTransaction } from '#messages/utils';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Balance } from '#ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxIssue } from '../types';
+import type { MessageOfType, MessageTxIssue } from '../types';
 
 export function IssueCard({
   className,

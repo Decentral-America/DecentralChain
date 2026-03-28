@@ -1,12 +1,12 @@
-import {
-  type Dispatch,
-  type MiddlewareAPI,
-  type ThunkAction,
-  type ThunkDispatch,
-  type UnknownAction,
+import type {
+  Dispatch,
+  MiddlewareAPI,
+  ThunkAction,
+  ThunkDispatch,
+  UnknownAction,
 } from '@reduxjs/toolkit';
 
-import { type reducer } from './reducer';
+import type { reducer } from './reducer';
 
 export type PopupState = ReturnType<typeof reducer>;
 

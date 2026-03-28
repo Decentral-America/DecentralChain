@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import invariant from 'tiny-invariant';
 import { usePopupSelector } from '#popup/store/react';
-import { type NewAccountState } from '#store/reducers/localState';
-
-import { Button, ErrorMessage, Pills, type PillsListItem } from '../ui';
+import type { NewAccountState } from '#store/reducers/localState';
+import type { PillsListItem } from '../ui';
+import { Button, ErrorMessage, Pills } from '../ui';
 import * as styles from './styles/confirmBackup.module.styl';
 
 type Props = Record<never, never>;
@@ -25,8 +26,16 @@ function buildShuffledList(seed: string): PillsListItem[] {
   for (let i = list.length - 1; i > 0; i--) {
     const rand = new Uint32Array(1);
     crypto.getRandomValues(rand);
-    const j = rand[0]! % (i + 1);
-    [list[i], list[j]] = [list[j]!, list[i]!];
+    // rand[0] is always defined: Uint32Array(1) guarantees index 0 exists
+    const j = (rand[0] as number) % (i + 1);
+    const itemI = list[i];
+    const itemJ = list[j];
+    invariant(
+      itemI != null && itemJ != null,
+      `ConfirmBackup shuffle: indices out of bounds (i=${i}, j=${j})`,
+    );
+    list[i] = itemJ;
+    list[j] = itemI;
   }
 
   return list;

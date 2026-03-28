@@ -9,11 +9,11 @@ import { MessageIcon } from '#messages/_common/icon';
 import { TxInfo } from '#messages/transaction/common/info';
 import { stringifyTransaction } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Balance } from '#ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTxSponsorship } from '../types';
+import type { MessageOfType, MessageTxSponsorship } from '../types';
 
 export function SponsorshipCard({
   className,

@@ -1,15 +1,11 @@
 import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import type { IgnoreErrorsContext, MainConfig } from '../constants';
+import { DEFAULT_MAIN_CONFIG, STATUS } from '../constants';
+import type { ExtensionStorage } from '../storage/storage';
 
-import {
-  DEFAULT_MAIN_CONFIG,
-  type IgnoreErrorsContext,
-  type MainConfig,
-  STATUS,
-} from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
-
+// biome-ignore lint/suspicious/noExplicitAny: extendValues merges heterogeneous config objects — Record<string,unknown> is the structural minimum but any preserves mutable index signatures
 const extendValues = (defaultValues: any, newValues: any) => {
   return Object.entries(defaultValues).reduce(
     (acc, [key, value]) => {
