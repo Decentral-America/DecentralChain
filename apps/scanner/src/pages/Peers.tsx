@@ -120,7 +120,7 @@ export default function Peers() {
         peerNodeName.toLowerCase().includes(reg.node_name.toLowerCase()),
     );
     return (
-      (typeof registration?.node_name === 'string' ? registration.node_name : null) || peerNodeName
+      (typeof registration?.node_name === 'string' ? registration.node_name : null) ?? peerNodeName
     );
   };
 
@@ -173,7 +173,7 @@ export default function Peers() {
                 const peerGeo = ip ? geoByIp[ip] : undefined;
                 const geo = peerGeo?.geo;
                 const green = peerGeo?.green;
-                const nodeName = resolveNodeName(peer) || t('unknownNode');
+                const nodeName = resolveNodeName(peer) ?? t('unknownNode');
 
                 return (
                   <TableRow key={peer.address || peer.declaredAddress || nodeName}>

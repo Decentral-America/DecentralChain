@@ -172,8 +172,8 @@ export default function TransactionMap() {
           const pAssetId = typeof p.assetId === 'string' ? p.assetId : null;
           const ok = assetId ? pAssetId === assetId : pAssetId == null && (treatAsNative || true);
           const recipientCandidate =
-            (typeof t_item.recipient === 'string' ? t_item.recipient : null) ||
-            (typeof p.recipient === 'string' ? p.recipient : null) ||
+            (typeof t_item.recipient === 'string' ? t_item.recipient : null) ??
+            (typeof p.recipient === 'string' ? p.recipient : null) ??
             sender;
           if (ok && isValidAddress(recipientCandidate)) {
             out.push({

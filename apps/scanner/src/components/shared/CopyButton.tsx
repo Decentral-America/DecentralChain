@@ -28,7 +28,7 @@ export default function CopyButton({ text, label }: CopyButtonProps): React.Reac
             size="icon"
             className="h-7 w-7"
             onClick={handleCopy}
-            aria-label={copied ? 'Copied' : label || 'Copy'}
+            aria-label={copied ? 'Copied' : (label ?? 'Copy')}
           >
             {copied ? (
               <Check className="h-3.5 w-3.5 text-success" aria-hidden="true" />
@@ -38,7 +38,7 @@ export default function CopyButton({ text, label }: CopyButtonProps): React.Reac
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{copied ? 'Copied!' : label || 'Copy'}</p>
+          <p>{copied ? 'Copied!' : (label ?? 'Copy')}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
