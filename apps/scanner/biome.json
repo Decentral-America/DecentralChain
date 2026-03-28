@@ -37,7 +37,8 @@
   },
   "linter": {
     "domains": {
-      "react": "recommended"
+      "react": "recommended",
+      "test": "recommended"
     },
     "enabled": true,
     "rules": {
@@ -88,6 +89,16 @@
         "rules": {
           "suspicious": {
             "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/pages/TransactionMap.tsx"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noInlineStyles": "off"
           }
         }
       }
