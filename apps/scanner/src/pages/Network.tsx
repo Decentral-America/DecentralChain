@@ -424,7 +424,7 @@ function PeersTab() {
         peerNodeName.toLowerCase().includes(reg.node_name.toLowerCase()),
     );
     return (
-      (typeof registration?.node_name === 'string' ? registration.node_name : null) || peerNodeName
+      (typeof registration?.node_name === 'string' ? registration.node_name : null) ?? peerNodeName
     );
   };
 
