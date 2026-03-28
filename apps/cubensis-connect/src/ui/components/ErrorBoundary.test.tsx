@@ -1,12 +1,12 @@
-import { type ErrorInfo } from 'react';
+import * as Sentry from '@sentry/browser';
+import type { ErrorInfo } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { ErrorBoundary } from './ErrorBoundary';
 
 vi.mock('@sentry/browser', () => ({
   captureException: vi.fn(),
 }));
-
-import * as Sentry from '@sentry/browser';
-import { ErrorBoundary } from './ErrorBoundary';
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {

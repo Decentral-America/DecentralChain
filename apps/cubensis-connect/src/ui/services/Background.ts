@@ -1,13 +1,14 @@
-import { type __BackgroundUiApiDirect } from '#background';
-import { type AnalyticsEvent } from '#controllers/statistics';
-import { type MessageInputOfType, type MessageTx, type MoneyLike } from '#messages/types';
-import { type NetworkName } from '#networks/types';
-import { type PreferencesAccount } from '#preferences/types';
-import { type UiState } from '#store/reducers/updateState';
-import { type CreateWalletInput } from '#wallets/types';
+import type { __BackgroundUiApiDirect } from '#background';
+import type { AnalyticsEvent } from '#controllers/statistics';
+import type { MessageInputOfType, MessageTx, MoneyLike } from '#messages/types';
+import type { NetworkName } from '#networks/types';
+import type { PermissionObject } from '#permissions/types';
+import type { PreferencesAccount } from '#preferences/types';
+import type { UiState } from '#store/reducers/updateState';
+import type { CreateWalletInput } from '#wallets/types';
 
-import { type IgnoreErrorsContext } from '../../constants';
-import { type StorageLocalState } from '../../storage/storage';
+import type { IgnoreErrorsContext } from '../../constants';
+import type { StorageLocalState } from '../../storage/storage';
 
 export type BackgroundUiApi = __BackgroundUiApiDirect;
 
@@ -86,9 +87,12 @@ class Background {
     return bg.deleteOrigin(origin);
   }
 
-  async setAutoSign(origin: string, options: { interval: number; totalAmount: number }) {
+  async setAutoSign(arg: {
+    origin: string;
+    params: Pick<PermissionObject, 'interval' | 'totalAmount'>;
+  }) {
     const bg = await this.getBackground();
-    return (bg.setAutoSign as any)(origin, options);
+    return bg.setAutoSign(arg);
   }
 
   async setNotificationPermissions(options: { origin: string; canUse: boolean | null }) {
@@ -324,7 +328,7 @@ class Background {
     const bg = await this.getBackground();
     return bg.ledgerSignResponse(
       requestId,
-      error && (error as any).message ? (error as any).message : null,
+      error instanceof Error ? error.message : error != null ? String(error) : null,
       signature,
     );
   }

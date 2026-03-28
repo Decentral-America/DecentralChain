@@ -1,4 +1,4 @@
-import { type SignData, type SignOrderData, type SignTxData } from '@decentralchain/ledger';
+import type { SignData, SignOrderData, SignTxData } from '@decentralchain/ledger';
 
 export type LedgerSignRequest = { id: string } & (
   | { type: 'order'; data: SignOrderData }

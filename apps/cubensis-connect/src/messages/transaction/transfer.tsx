@@ -10,12 +10,12 @@ import { MessageIcon } from '#messages/_common/icon';
 import { TxInfo } from '#messages/transaction/common/info';
 import { stringifyTransaction } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { AddressRecipient } from '../../ui/components/ui/Address/Recipient';
 import { Balance } from '../../ui/components/ui/balance/Balance';
-import { type MessageOfType, type MessageTxTransfer } from '../types';
+import type { MessageOfType, MessageTxTransfer } from '../types';
 import { Base58 } from './common/base58';
 
 export function TransferCard({ className, tx }: { className?: string; tx: MessageTxTransfer }) {

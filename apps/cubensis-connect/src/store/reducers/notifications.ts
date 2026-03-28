@@ -1,7 +1,8 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { type Message } from '../../messages/types';
-import { type NotificationsStoreItem } from '../../notifications/types';
+import type { Message } from '../../messages/types';
+import type { NotificationsStoreItem } from '../../notifications/types';
 
 // ─── notifications ─────────────────────────────────────────────────────────
 const notificationsSlice = createSlice({
@@ -15,7 +16,7 @@ export const notifications = notificationsSlice.reducer;
 export const { setNotifications } = notificationsSlice.actions;
 
 // ─── activePopup ───────────────────────────────────────────────────────────
-export interface ActivePopupState {
+interface ActivePopupState {
   msg?: Message | undefined;
   notify?: NotificationsStoreItem[] | undefined;
 }
@@ -50,8 +51,8 @@ const activePopupSlice = createSlice({
         if (notify) {
           return {
             notify:
-              payload.notifications.find(([item]) => item!.origin === notify[0]!.origin) ??
-              payload.notifications[0]!,
+              payload.notifications.find(([item]) => item?.origin === notify[0]?.origin) ??
+              payload.notifications[0],
           };
         }
       }

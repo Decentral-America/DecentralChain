@@ -16,7 +16,7 @@ const action = {
 };
 
 const contentSecurityPolicy =
-  "default-src 'self'; object-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.decentralchain.io";
+  "default-src 'self'; object-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.decentralchain.io";
 
 const commandsMV2 = {
   _execute_browser_action: {

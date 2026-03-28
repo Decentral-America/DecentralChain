@@ -32,7 +32,7 @@ function isDisabled(
 ): boolean {
   if (!termsAccepted || !conditionsAccepted) return true;
   if (!firstValue || !secondValue) return true;
-  return !!(validateFirst(firstValue) || validateSecond(firstValue, secondValue));
+  return !!(validateFirst(firstValue) ?? validateSecond(firstValue, secondValue));
 }
 
 export function NewAccount() {

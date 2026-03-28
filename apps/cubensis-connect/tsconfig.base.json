@@ -2,9 +2,7 @@
   "compilerOptions": {
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    // App uses TypeScript enums (e.g. networks/types.ts, messages/types.ts, ledger/service.ts).
-    // erasableSyntaxOnly cannot be true until those are migrated to const-object style.
-    "erasableSyntaxOnly": false,
+    "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
@@ -27,9 +25,7 @@
     "strict": true,
     "target": "ES2025",
     "types": ["vite/client"],
-    // App has enums and many imports without `import type` that are used as types only.
-    // verbatimModuleSyntax must stay false until those are migrated (same migration as erasableSyntaxOnly).
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": true
   },
   "exclude": ["test", "node_modules"],
   "include": ["src", "types", "vitest.config.ts"]

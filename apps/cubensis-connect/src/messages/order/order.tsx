@@ -9,12 +9,12 @@ import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
 import { stringifyOrder } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Balance } from '#ui/components/ui/balance/Balance';
 import { DateFormat } from '#ui/components/ui/Date/DateFormat';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 
 export function OrderCard({
   className,

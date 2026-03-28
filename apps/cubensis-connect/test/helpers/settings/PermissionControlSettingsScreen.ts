@@ -1,4 +1,4 @@
-import { type ChainablePromiseElement } from 'webdriverio';
+import type { ChainablePromiseElement } from 'webdriverio';
 
 const Permission = (wrapped: any) => ({
   get detailsIcon() {

@@ -1,13 +1,13 @@
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 import { isNotNull } from '#_core/isNotNull';
-import { type AssetDetail } from '#assets/types';
+import type { AssetDetail } from '#assets/types';
 import { NetworkName } from '#networks/types';
 
 import { defaultAssetTickers } from '../assets/constants';
-import { type ExtensionStorage, type StorageLocalState } from '../storage/storage';
-import { type NetworkController } from './network';
-import { type RemoteConfigController } from './remoteConfig';
+import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
+import type { NetworkController } from './network';
+import type { RemoteConfigController } from './remoteConfig';
 
 // 'WAVES' is the protocol-level native asset ID — do not rename.
 const NATIVE_ASSET: AssetDetail = {
@@ -22,7 +22,7 @@ const NATIVE_ASSET: AssetDetail = {
   reissuable: false,
   sender: '',
   ticker: 'DCC',
-  timestamp: '2016-04-11T21:00:00.000Z' as any,
+  timestamp: new Date('2016-04-11T21:00:00.000Z'),
 };
 
 const MAX_AGE = 60 * 60 * 1000;
@@ -153,7 +153,7 @@ export class AssetInfoController {
   }
 
   isMaxAgeExceeded(lastUpdated: number | undefined) {
-    return Date.now() - new Date(lastUpdated || 0).getTime() > MAX_AGE;
+    return Date.now() - new Date(lastUpdated ?? 0).getTime() > MAX_AGE;
   }
 
   async assetInfo(assetId: string | null) {
@@ -182,7 +182,7 @@ export class AssetInfoController {
           assets[network][assetId] = {
             ...assets[network][assetId],
             ...this.toAssetDetails(assetInfo),
-          } as any;
+          };
           this.store.updateState({ assets });
           break;
         }
@@ -213,7 +213,7 @@ export class AssetInfoController {
       id: info.assetId,
       issuer: info.issuer,
       lastUpdated: Date.now(),
-      minSponsoredFee: info.minSponsoredAssetFee,
+      minSponsoredFee: info.minSponsoredAssetFee ?? undefined,
       name: info.name,
       originTransactionId: info.originTransactionId,
       precision: info.decimals,
@@ -221,7 +221,7 @@ export class AssetInfoController {
       reissuable: info.reissuable,
       sender: info.issuer,
       ticker: assetTickers[info.assetId],
-      timestamp: new Date(parseInt(info.issueTimestamp, 10)).toJSON(),
+      timestamp: new Date(parseInt(info.issueTimestamp, 10)),
     };
   }
 
@@ -272,7 +272,7 @@ export class AssetInfoController {
           .filter((assetId) => {
             const asset = assets[network][assetId];
 
-            return ignoreCache || !asset || this.isMaxAgeExceeded(asset.lastUpdated);
+            return ignoreCache ?? (!asset || this.isMaxAgeExceeded(asset.lastUpdated));
           }),
       ),
     );
@@ -293,7 +293,7 @@ export class AssetInfoController {
         assets[network][assetInfo.assetId] = {
           ...assets[network][assetInfo.assetId],
           ...this.toAssetDetails(assetInfo),
-        } as any;
+        };
       });
 
       this.store.updateState({ assets });

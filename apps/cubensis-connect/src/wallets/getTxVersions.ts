@@ -1,6 +1,6 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type MessageTx } from '#messages/types';
-import { type PreferencesAccount } from '#preferences/types';
+import type { MessageTx } from '#messages/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 type TxVersions = {
   [T in MessageTx['type']]: Array<NonNullable<Extract<MessageTx, { type: T }>['version']>>;

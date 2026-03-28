@@ -24,27 +24,27 @@ import { collectBalances } from '#balances/utils';
 import { getExtraFee } from '#fee/utils';
 import { SUPPORTED_LANGUAGES } from '#i18n/constants';
 import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from '#ipc/ipc';
-import { type LedgerSignRequest } from '#ledger/types';
+import type { LedgerSignRequest } from '#ledger/types';
 import { ERRORS, KeeperError } from '#lib/keeperError';
 import { TabsManager } from '#lib/tabsManager';
-import {
-  type Message,
-  type MessageCustomDataSigned,
-  type MessageInputOfType,
-  type MessageOfType,
-  MessageStatus,
-  type MessageTx,
+import type {
+  Message,
+  MessageCustomDataSigned,
+  MessageInputOfType,
+  MessageOfType,
+  MessageTx,
 } from '#messages/types';
+import { MessageStatus } from '#messages/types';
 import { makeCustomDataBytes, makeTxBytes } from '#messages/utils';
-import { type NetworkName } from '#networks/types';
+import type { NetworkName } from '#networks/types';
 import { PERMISSIONS } from '#permissions/constants';
-import { type PermissionObject } from '#permissions/types';
-import { type IdleOptions, type PreferencesAccount } from '#preferences/types';
+import type { PermissionObject } from '#permissions/types';
+import type { IdleOptions, PreferencesAccount } from '#preferences/types';
 import { initSentry } from '#sentry/init';
-import { type UiState } from '#store/reducers/updateState';
+import type { UiState } from '#store/reducers/updateState';
 
 import { fromWebExtensionEvent } from './_core/wonka';
-import { type IgnoreErrorsContext } from './constants';
+import type { IgnoreErrorsContext } from './constants';
 import { AddressBookController } from './controllers/AddressBookController';
 import { AssetInfoController } from './controllers/assetInfo';
 import { CurrentAccountController } from './controllers/currentAccount';
@@ -56,18 +56,15 @@ import { NotificationsController } from './controllers/notifications';
 import { PermissionsController } from './controllers/permissions';
 import { PreferencesController } from './controllers/preferences';
 import { RemoteConfigController } from './controllers/remoteConfig';
-import { type AnalyticsEvent, StatisticsController } from './controllers/statistics';
+import type { AnalyticsEvent } from './controllers/statistics';
+import { StatisticsController } from './controllers/statistics';
 import { TrashController } from './controllers/trash';
 import { UiStateController } from './controllers/uiState';
 import { VaultController } from './controllers/VaultController';
 import { WalletController } from './controllers/wallet';
 import { WindowManager } from './lib/windowManager';
-import {
-  backupStorage,
-  createExtensionStorage,
-  type ExtensionStorage,
-  type StorageLocalState,
-} from './storage/storage';
+import type { ExtensionStorage, StorageLocalState } from './storage/storage';
+import { backupStorage, createExtensionStorage } from './storage/storage';
 import { getTxVersions } from './wallets/getTxVersions';
 
 const bgPromise = setupBackgroundService();
@@ -398,6 +395,11 @@ class BackgroundService extends EventEmitter {
         const trackMessageEvent = (msg: Message) => {
           if (msg.type === 'transactionPackage') {
             msg.data.forEach((data, index) => {
+              const inputDatum = msg.input.data[index];
+              invariant(
+                inputDatum != null,
+                `background: input/data arrays out of sync at index ${index}`,
+              );
               trackMessageEvent({
                 ...msg,
                 broadcast: false,
@@ -405,7 +407,7 @@ class BackgroundService extends EventEmitter {
                 input: {
                   account: msg.account,
                   broadcast: false,
-                  data: msg.input.data[index]!,
+                  data: inputDatum,
                   type: 'transaction',
                 },
                 result: msg.result?.[index],
@@ -641,8 +643,8 @@ class BackgroundService extends EventEmitter {
         }
       } catch (err) {
         // Message lookup may fail if the stored messageId is stale (e.g. extension restart).
-        // Reset so a fresh auth message is created below.
-        console.warn('validatePermission: stale messageId lookup failed', err);
+        // Capture for observability and reset so a fresh auth message is created below.
+        captureException(err);
         messageId = null;
       }
     }

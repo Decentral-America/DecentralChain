@@ -129,7 +129,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                   setAddressValue(e.target.value);
                   setAddressError('');
                 }}
-                value={address || addressValue}
+                value={address ?? addressValue}
                 disabled={!!address}
                 addressError={addressError}
                 showMirrorAddress

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 import { downloadKeystore } from '../../../../keystore/utils';
 import { ExportKeystoreChooseItems } from './chooseItems';

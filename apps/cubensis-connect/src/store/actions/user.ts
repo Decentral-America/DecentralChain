@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { type CreateWalletInput } from '#wallets/types';
+import type { CreateWalletInput } from '#wallets/types';
 
-import { type AccountsState } from '../../accounts/store/types';
+import type { AccountsState } from '../../accounts/store/types';
 import { NETWORK_CONFIG } from '../../constants';
-import { type NetworkName } from '../../networks/types';
+import type { NetworkName } from '../../networks/types';
 import Background, { WalletTypes } from '../../ui/services/Background';
 import { selectAccount } from './localState';
 import { updateActiveState } from './notifications';

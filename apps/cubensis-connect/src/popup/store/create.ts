@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger';
 
 import * as middleware from '../../store/middleware';
 import { reducer } from './reducer';
-import { type AppMiddleware } from './types';
+import type { AppMiddleware } from './types';
 
 const appMiddleware: AppMiddleware[] = Object.values(middleware) as AppMiddleware[];
 

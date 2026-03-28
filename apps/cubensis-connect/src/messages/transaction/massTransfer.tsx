@@ -10,12 +10,12 @@ import { MessageIcon } from '#messages/_common/icon';
 import { TxInfo } from '#messages/transaction/common/info';
 import { isAlias, processAliasOrAddress, stringifyTransaction } from '#messages/utils';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Balance } from '#ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { AddressRecipient } from '../../ui/components/ui/Address/Recipient';
-import { type MessageOfType, type MessageTxMassTransfer } from '../types';
+import type { MessageOfType, MessageTxMassTransfer } from '../types';
 import { Base58 } from './common/base58';
 import * as styles from './massTransfer.module.css';
 

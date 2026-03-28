@@ -4,10 +4,11 @@ import clsx from 'clsx';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
-import { List, type RowComponentProps } from 'react-window';
+import type { RowComponentProps } from 'react-window';
+import { List } from 'react-window';
 import invariant from 'tiny-invariant';
-import { type AssetsRecord } from '#assets/types';
-import { type BalanceAssets } from '#balances/types';
+import type { AssetsRecord } from '#assets/types';
+import type { BalanceAssets } from '#balances/types';
 import { usePopupSelector } from '#popup/store/react';
 import { AssetItem } from '#ui/components/pages/assets//assetItem';
 import { icontains } from '#ui/components/pages/assets/helpers';
@@ -34,7 +35,9 @@ const Row = ({
   onSendClick: (assetId: string) => void;
   onSwapClick: (assetId: string) => void;
 }>) => {
-  const [assetId, { balance = 0 } = {}] = assetEntries[index]!;
+  const entry = assetEntries[index];
+  invariant(entry != null, `tabAssets row ${index}: entry missing`);
+  const [assetId, { balance = 0 } = {}] = entry;
   const asset = assets[assetId];
 
   return (

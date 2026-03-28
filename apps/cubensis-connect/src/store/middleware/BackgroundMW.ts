@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 
-import { type AppMiddleware } from '../../popup/store/types';
+import type { AppMiddleware } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
 import { removeAddress, setAddress, setAddresses } from '../actions/addresses';
 import { getBalances } from '../actions/balances';

@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { NftList } from '#nfts/nftList';
 import { createNft } from '#nfts/nfts';
-import { DisplayMode, type Nft } from '#nfts/types';
+import type { Nft } from '#nfts/types';
+import { DisplayMode } from '#nfts/types';
 import { usePopupSelector } from '#popup/store/react';
 import * as styles from '#ui/components/pages/styles/assets.module.styl';
 import { SearchInput, TabPanel } from '#ui/components/ui';
@@ -66,7 +67,7 @@ export function TabNfts() {
           if (!creator) return [creatorNfts, creatorCounts];
 
           if (Object.hasOwn(creatorCounts, creator)) {
-            creatorCounts[creator] = creatorCounts[creator]! + 1;
+            creatorCounts[creator] = (creatorCounts[creator] ?? 0) + 1;
             return [creatorNfts, creatorCounts];
           }
 

@@ -3,11 +3,11 @@ import { base58Decode, base58Encode, blake2b, verifySignature } from '@decentral
 import { binary } from '@decentralchain/marshall';
 
 import { JSONbn } from '../src/_core/jsonBn';
-import {
-  type MessageInputCancelOrder,
-  type MessageInputCustomData,
-  type MessageInputOrder,
-  type MessageInputTx,
+import type {
+  MessageInputCancelOrder,
+  MessageInputCustomData,
+  MessageInputOrder,
+  MessageInputTx,
 } from '../src/messages/types';
 import {
   makeAuthBytes,

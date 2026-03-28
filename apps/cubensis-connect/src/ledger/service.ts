@@ -2,16 +2,17 @@ import { DCCLedger as DccLedger } from '@decentralchain/ledger';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { captureException } from '@sentry/browser';
 import invariant from 'tiny-invariant';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import Background from '#ui/services/Background';
 
-import { type LedgerSignRequest } from './types';
+import type { LedgerSignRequest } from './types';
 
-export enum LedgerServiceStatus {
-  Disconnected = 'DISCONNECTED',
-  UsedBySomeOtherApp = 'USED_BY_SOME_OTHER_APP',
-  Ready = 'READY',
-}
+export const LedgerServiceStatus = {
+  Disconnected: 'DISCONNECTED',
+  Ready: 'READY',
+  UsedBySomeOtherApp: 'USED_BY_SOME_OTHER_APP',
+} as const;
+export type LedgerServiceStatus = (typeof LedgerServiceStatus)[keyof typeof LedgerServiceStatus];
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -22,7 +23,7 @@ class LedgerService {
   private _ledger: DccLedger | null | undefined;
   private _networkCode: string | null = null;
   private _signRequestPromise = Promise.resolve();
-  private _status = LedgerServiceStatus.Disconnected;
+  private _status: LedgerServiceStatus = LedgerServiceStatus.Disconnected;
 
   get ledger() {
     return this._ledger;
@@ -142,7 +143,14 @@ class LedgerService {
       await Background.ledgerSignResponse(request.id, null, signature);
     } catch (err) {
       if (err) {
-        if ((err as any).name === 'TransportStatusError' && (err as any).statusCode === 37120) {
+        if (
+          err != null &&
+          typeof err === 'object' &&
+          'name' in err &&
+          err.name === 'TransportStatusError' &&
+          'statusCode' in err &&
+          err.statusCode === 37120
+        ) {
           await Background.ledgerSignResponse(
             request.id,
             new Error('Request is rejected on ledger'),
@@ -165,7 +173,7 @@ class LedgerService {
     return this._signRequestPromise;
   }
 
-  async disconnect(status = LedgerServiceStatus.Disconnected) {
+  async disconnect(status: LedgerServiceStatus = LedgerServiceStatus.Disconnected) {
     const ledger = this._ledger;
     this._ledger = null;
     this._networkCode = null;

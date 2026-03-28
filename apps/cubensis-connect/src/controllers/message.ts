@@ -15,7 +15,8 @@ import {
   DataTransactionDataSchema,
   toBinary,
 } from '@decentralchain/protobuf-serialization';
-import { type LeaseTransactionFromNode, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import type { LeaseTransactionFromNode } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
@@ -23,7 +24,7 @@ import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import { JSONbn } from '#_core/jsonBn';
-import { type AssetsRecord } from '#assets/types';
+import type { AssetsRecord } from '#assets/types';
 import {
   computeHash,
   computeTxHash,
@@ -46,28 +47,56 @@ import {
   isEnoughBalanceForFeeAndSpendingAmounts,
 } from '../fee/utils';
 import { ERRORS, KeeperError } from '../lib/keeperError';
-import {
-  type Message,
-  type MessageInput,
-  type MessageInputOfType,
-  type MessageInputTx,
-  type MessageOfType,
-  MessageStatus,
-  type MessageTx,
-  type MessageTxInvokeScript,
-  type MessageTxTransfer,
-  type MoneyLike,
+import type {
+  Message,
+  MessageInput,
+  MessageInputOfType,
+  MessageInputTx,
+  MessageOfType,
+  MessageTx,
+  MessageTxInvokeScript,
+  MessageTxTransfer,
+  MoneyLike,
 } from '../messages/types';
+import { MessageStatus } from '../messages/types';
 import { PERMISSIONS } from '../permissions/constants';
-import { type PreferencesAccount } from '../preferences/types';
-import { type ExtensionStorage } from '../storage/storage';
+import type { PreferencesAccount } from '../preferences/types';
+import type { ExtensionStorage } from '../storage/storage';
 import { getTxVersions } from '../wallets/getTxVersions';
-import { type AssetInfoController } from './assetInfo';
-import { type CurrentAccountController } from './currentAccount';
-import { type NetworkController } from './network';
-import { type PermissionsController } from './permissions';
-import { type RemoteConfigController } from './remoteConfig';
-import { type WalletController } from './wallet';
+import type { AssetInfoController } from './assetInfo';
+import type { CurrentAccountController } from './currentAccount';
+import type { NetworkController } from './network';
+import type { PermissionsController } from './permissions';
+import type { RemoteConfigController } from './remoteConfig';
+import type { WalletController } from './wallet';
+
+/**
+ * The subset of a transaction needed to compute fee options for sponsorable
+ * transaction types (Transfer and InvokeScript). Extracted as a named type so
+ * it can be used both in the private method signature and in call-site casts
+ * (TypeScript does not allow `typeof this.#privateMethod` in generic positions).
+ */
+type SponsorableTxParams = {
+  fee?: MessageTx['fee'] | undefined;
+  initialFee?: MessageTx['initialFee'] | undefined;
+} & (
+  | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
+      Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
+  | (Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
+      Partial<Pick<MessageTxInvokeScript, 'initialFeeAssetId'>>)
+);
+
+/**
+ * Returns the first (preferred) version from a non-empty tx versions array.
+ * Every entry in DEFAULT_TX_VERSIONS / LEDGER_TX_VERSIONS has ≥ 1 element, so
+ * this invariant should never fire in production — but it gives a clear error if
+ * a new tx type is ever added to the type system before its versions entry is wired.
+ */
+function pickDefaultTxVersion<T extends number>(versions: T[], txType: number | string): T {
+  invariant(versions.length > 0, `No supported tx versions for type ${String(txType)}`);
+  // Invariant above guarantees index 0 is defined; cast avoids noUncheckedIndexedAccess widening.
+  return versions[0] as T;
+}
 
 function moneyLikeToMoney(amount: MoneyLike, assets: AssetsRecord) {
   const asset = new Asset(assets[amount.assetId ?? 'WAVES'] ?? assets.WAVES);
@@ -76,17 +105,17 @@ function moneyLikeToMoney(amount: MoneyLike, assets: AssetsRecord) {
     let result = new Money(0, asset);
 
     if ('tokens' in amount) {
-      result = result.cloneWithTokens(amount.tokens || 0);
+      result = result.cloneWithTokens(amount.tokens ?? 0);
     }
 
     if ('coins' in amount) {
-      result = result.add(result.cloneWithCoins(amount.coins || 0));
+      result = result.add(result.cloneWithCoins(amount.coins ?? 0));
     }
 
     return result;
   }
 
-  return new Money(amount.amount || 0, asset);
+  return new Money(amount.amount ?? 0, asset);
 }
 
 export class MessageController extends EventEmitter {
@@ -154,7 +183,6 @@ export class MessageController extends EventEmitter {
         throw new Error(await err.text());
       }
 
-      console.error(err);
       captureException(err);
       throw ERRORS.UNKNOWN(String(err));
     }
@@ -568,15 +596,7 @@ export class MessageController extends EventEmitter {
 
   #getFeeInAssetWithEnoughBalance(
     assets: AssetsRecord,
-    txParams: {
-      fee?: MessageTx['fee'] | undefined;
-      initialFee?: MessageTx['initialFee'] | undefined;
-    } & (
-      | (Omit<MessageTxTransfer, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
-          Partial<Pick<MessageTxTransfer, 'initialFeeAssetId'>>)
-      | (Omit<MessageTxInvokeScript, 'fee' | 'id' | 'initialFee' | 'initialFeeAssetId'> &
-          Partial<Pick<MessageTxInvokeScript, 'initialFeeAssetId'>>)
-    ),
+    txParams: SponsorableTxParams,
     feeMoneyLike: MoneyLike,
   ) {
     const balance = this.getAccountBalance();
@@ -666,7 +686,8 @@ export class MessageController extends EventEmitter {
     switch (messageInputTx.type) {
       case TRANSACTION_TYPE.ISSUE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -730,7 +751,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.TRANSFER: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -792,9 +814,10 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
+            this.#getFeeInAssetWithEnoughBalance(assets, txParams as SponsorableTxParams, {
               assetId: feeAssetId,
               coins: fee,
+              // biome-ignore lint/nursery/useNullishCoalescing: (A && B) || C pattern — when A is false, B is not null/undefined but false; || correctly provides the fallback while ?? would not
             })) || {
             fee,
             feeAssetId,
@@ -810,7 +833,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.REISSUE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -886,7 +910,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.BURN: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -960,7 +985,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.LEASE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1023,7 +1049,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.CANCEL_LEASE: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1088,7 +1115,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.ALIAS: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1134,7 +1162,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.MASS_TRANSFER: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1211,7 +1240,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.DATA: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1303,7 +1333,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SET_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1357,7 +1388,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SPONSORSHIP: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1416,7 +1448,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.SET_ASSET_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1464,7 +1497,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.INVOKE_SCRIPT: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1529,9 +1563,10 @@ export class MessageController extends EventEmitter {
         const tx = {
           ...txParams,
           ...((senderPublicKey === account.publicKey &&
-            this.#getFeeInAssetWithEnoughBalance(assets, txParams as any, {
+            this.#getFeeInAssetWithEnoughBalance(assets, txParams as SponsorableTxParams, {
               assetId: feeAssetId,
               coins: fee,
+              // biome-ignore lint/nursery/useNullishCoalescing: (A && B) || C pattern — when A is false, B is not null/undefined but false; || correctly provides the fallback while ?? would not
             })) || {
             fee,
             feeAssetId,
@@ -1547,7 +1582,8 @@ export class MessageController extends EventEmitter {
       }
       case TRANSACTION_TYPE.UPDATE_ASSET_INFO: {
         const versions = getTxVersions(account.type)[messageInputTx.type];
-        const version = messageInputTx.data.version ?? versions[0]!;
+        const version =
+          messageInputTx.data.version ?? pickDefaultTxVersion(versions, messageInputTx.type);
 
         if (!versions.includes(version)) {
           throw ERRORS.REQUEST_ERROR('unsupported tx version', messageInputTx);
@@ -1693,7 +1729,10 @@ export class MessageController extends EventEmitter {
             timestamp: Date.now(),
           };
         } catch (err) {
-          throw ERRORS.REQUEST_ERROR((err as any).message, messageInput);
+          throw ERRORS.REQUEST_ERROR(
+            err instanceof Error ? err.message : String(err),
+            messageInput,
+          );
         }
       }
       case 'order': {
@@ -1740,13 +1779,22 @@ export class MessageController extends EventEmitter {
 
         const version = messageInput.data.data.version ?? 3;
 
+        // A valid DCC address is always ≥ 2 bytes: [networkId, chainId, ...].
+        // Extract chain ID before the object literal so the invariant fires with a clear message.
+        const accountAddrBytes = base58Decode(messageInput.account.address);
+        invariant(
+          accountAddrBytes.length >= 2,
+          'Account address too short to contain chain ID byte',
+        );
+        const chainIdFromAddress = accountAddrBytes[1] as number;
+
         const orderParams = {
           amount: moneyLikeToMoney(messageInput.data.data.amount, assets).toCoins(),
           assetPair: {
             amountAsset: amountAssetId,
             priceAsset: priceAssetId,
           },
-          chainId: messageInput.data.data.chainId ?? base58Decode(messageInput.account.address)[1]!,
+          chainId: messageInput.data.data.chainId ?? chainIdFromAddress,
           eip712Signature: messageInput.data.data.eip712Signature,
           expiration: messageInput.data.data.expiration,
           matcherFee: moneyLikeToMoney(messageInput.data.data.matcherFee, assets).toCoins(),
@@ -1875,7 +1923,10 @@ export class MessageController extends EventEmitter {
             timestamp: Date.now(),
           };
         } catch (err) {
-          throw ERRORS.REQUEST_ERROR((err as any).message, messageInput);
+          throw ERRORS.REQUEST_ERROR(
+            err instanceof Error ? err.message : String(err),
+            messageInput,
+          );
         }
       }
       case 'getKEK':

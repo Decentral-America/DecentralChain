@@ -18,11 +18,12 @@ interface Props {
   onClose: () => void;
 }
 
-enum SwapStatus {
-  Pending,
-  Succeeded,
-  Failed,
-}
+const SwapStatus = {
+  Failed: 2,
+  Pending: 0,
+  Succeeded: 1,
+} as const;
+type SwapStatus = (typeof SwapStatus)[keyof typeof SwapStatus];
 
 type TxStatus =
   | { status: 'not_found'; id: string }
@@ -51,7 +52,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
 
   const { nodeBaseUrl } = NETWORK_CONFIG[currentNetwork];
 
-  const [swapStatus, setSwapStatus] = useState(SwapStatus.Pending);
+  const [swapStatus, setSwapStatus] = useState<SwapStatus>(SwapStatus.Pending);
   const [receivedMoney, setReceivedMoney] = useState<Money | null>(null);
 
   useEffect(() => {
@@ -201,7 +202,7 @@ export function SwapResult({ fromMoney, transactionId, onClose }: Props) {
               <div className={styles.cardText}>
                 <Balance addSign="-" split showAsset balance={fromMoney} />
 
-                {[SwapStatus.Pending, SwapStatus.Succeeded].includes(swapStatus) && (
+                {(swapStatus === SwapStatus.Pending || swapStatus === SwapStatus.Succeeded) && (
                   <Balance addSign="+" split showAsset balance={receivedMoney ?? undefined} />
                 )}
               </div>

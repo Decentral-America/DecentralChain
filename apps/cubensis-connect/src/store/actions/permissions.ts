@@ -9,7 +9,7 @@ export const setAutoOrigin = createAction<{
     type: 'allowAutoSign';
     totalAmount: string | null;
     interval: number | null;
-    approved?: unknown[];
+    approved: unknown[];
   }>;
 }>('permissions/setAuto');
 export const disableOrigin = createAction<string>('permissions/disallow');

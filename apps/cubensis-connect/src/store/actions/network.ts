@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type NetworkName } from '../../networks/types';
-import { type PopupThunkAction } from '../../popup/store/types';
+import type { NetworkName } from '../../networks/types';
+import type { PopupThunkAction } from '../../popup/store/types';
 import Background from '../../ui/services/Background';
 
 export function setNetwork(network: NetworkName): PopupThunkAction<Promise<void>> {

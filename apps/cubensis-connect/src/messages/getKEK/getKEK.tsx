@@ -5,13 +5,13 @@ import invariant from 'tiny-invariant';
 import { MessageFinal } from '#messages/_common/final';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import Background from '#ui/services/Background';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
 import { ApproveBtn } from '../../ui/components/ui/buttons/ApproveBtn';
 import { Button } from '../../ui/components/ui/buttons/Button';
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 import * as styles from './getKEK.module.css';
 
 export function GetKEKCard({

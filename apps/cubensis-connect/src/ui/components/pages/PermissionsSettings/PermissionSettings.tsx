@@ -2,6 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { PermissionObject, PermissionValue } from '#permissions/types';
 import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { setShowNotification } from '#store/actions/notifications';
 import {
@@ -11,21 +12,15 @@ import {
   setAutoOrigin,
 } from '#store/actions/permissions';
 import { Loader, Modal } from '#ui/components/ui';
-
-import { List, OriginSettings, type TAutoAuth, Tabs, type TPermission } from './components';
+import type { TAutoAuth, TPermission } from './components';
+import { List, OriginSettings, Tabs } from './components';
 import * as styles from './permissionsSettings.module.styl';
 
 export function PermissionsSettings() {
   const { t } = useTranslation();
   const dispatch = usePopupDispatch();
   const origins = usePopupSelector((s) => s.origins);
-  const storePerms = usePopupSelector((s) => (s as any).permissions) as
-    | { pending?: boolean; allowed?: boolean; disallowed?: boolean; deleted?: boolean }
-    | undefined;
-  const pending = storePerms?.pending;
-  const allowed = storePerms?.allowed;
-  const disallowed = storePerms?.disallowed;
-  const deleted = storePerms?.deleted;
+  const { pending, allowed, disallowed, deleted } = usePopupSelector((s) => s.permissionsUiState);
 
   const [showSettings, setShowSettings] = useState(false);
   const [originsList, setOriginsList] = useState<TTabTypes>('customList');
@@ -44,11 +39,20 @@ export function PermissionsSettings() {
     const entry = Object.entries(originsMap).find(([name]) => name === originName);
     if (!entry) return;
     const [, perms] = entry;
-    const autoSignEntry: TAutoAuth =
-      ((perms || []) as any[]).find((p) => typeof p === 'object' && p?.type === 'allowAutoSign') ??
-      Object.create(null);
+    const rawAutoSign = (perms ?? []).find(
+      (p): p is PermissionObject & { type: 'allowAutoSign' } =>
+        typeof p !== 'string' && p.type === 'allowAutoSign',
+    );
+    const autoSignEntry: TAutoAuth = rawAutoSign
+      ? {
+          approved: rawAutoSign.approved as unknown[] | undefined,
+          interval: rawAutoSign.interval ?? null,
+          totalAmount: rawAutoSign.totalAmount != null ? String(rawAutoSign.totalAmount) : null,
+          type: 'allowAutoSign',
+        }
+      : Object.create(null);
     const amount = new BigNumber(autoSignEntry.totalAmount ?? '0').div(10 ** 8);
-    autoSignEntry.totalAmount = amount.isNaN() ? 0 : (amount.toFormat() as any);
+    autoSignEntry.totalAmount = amount.isNaN() ? null : amount.toFormat();
     setAutoSign(autoSignEntry);
     setOrigin(originName);
     setOriginalAutoSign(autoSignEntry);
@@ -73,7 +77,19 @@ export function PermissionsSettings() {
     originName: string,
     canShowNotifications: boolean | null,
   ) {
-    dispatch(setAutoOrigin({ origin: originName, params: params as any }));
+    dispatch(
+      setAutoOrigin({
+        origin: originName,
+        // Strip undefined values to satisfy exactOptionalPropertyTypes: params are
+        // always a defined subset (interval + totalAmount), never approved: undefined.
+        params: Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as {
+          type?: 'allowAutoSign';
+          totalAmount?: string | null;
+          interval?: number | null;
+          approved?: unknown[];
+        },
+      }),
+    );
     dispatch(setShowNotification({ canUse: canShowNotifications, origin: originName }));
     handleCloseSettings();
   }
@@ -86,6 +102,8 @@ export function PermissionsSettings() {
     setOrigin(null);
     setPermissions([]);
   }
+
+  const safeOrigins = (origins ?? {}) as Record<string, PermissionValue[]>;
 
   const tabs = ['customList', 'whiteList'].map((name) => ({
     item: t(`permission.${name}`),
@@ -105,7 +123,7 @@ export function PermissionsSettings() {
       />
 
       <List
-        origins={(origins ?? {}) as any}
+        origins={safeOrigins}
         showType={originsList as TTabTypes}
         showSettings={handleShowSettings}
         toggleApprove={handleToggleApprove}
@@ -120,7 +138,7 @@ export function PermissionsSettings() {
           <OriginSettings
             originName={origin}
             permissions={permissions}
-            origins={(origins ?? {}) as any}
+            origins={safeOrigins}
             autoSign={autoSign}
             originalAutoSign={originalAutoSign}
             onSave={handleSaveSettings}

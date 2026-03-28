@@ -49,6 +49,10 @@
     }
   },
   "linter": {
+    "domains": {
+      "react": "recommended",
+      "test": "recommended"
+    },
     "enabled": true,
     "rules": {
       "complexity": {
@@ -68,12 +72,12 @@
       "style": {
         "noCommonJs": "error",
         "noNamespace": "error",
-        "noNonNullAssertion": "off",
+        "noNonNullAssertion": "error",
         "useConst": "error",
         "useImportType": {
           "level": "error",
           "options": {
-            "style": "inlineType"
+            "style": "separatedType"
           }
         }
       },
@@ -83,8 +87,7 @@
           "options": {
             "allow": ["warn", "error"]
           }
-        },
-        "noExplicitAny": "off"
+        }
       }
     }
   },
@@ -93,6 +96,9 @@
       "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
       "linter": {
         "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
           "suspicious": {
             "noExplicitAny": "off"
           }
@@ -133,11 +139,28 @@
       }
     },
     {
-      "includes": ["src/controllers/VaultController.ts"],
+      "includes": [
+        "src/_core/spinner.tsx",
+        "src/assets/assetSelect.tsx",
+        "src/assets/selectModal.tsx",
+        "src/nfts/nftCard.tsx",
+        "src/nfts/nftList.tsx",
+        "src/ui/components/ErrorBoundary.tsx",
+        "src/ui/components/pages/assets/assetLogo.tsx",
+        "src/ui/components/pages/assets/tabs/tabAssets.tsx",
+        "src/ui/components/pages/assets/tabs/tabTxHistory.tsx",
+        "src/ui/components/pages/swap/form.tsx",
+        "src/ui/components/ui/Address/SuggestInput.tsx",
+        "src/ui/components/ui/avatar/Avatar.tsx",
+        "src/ui/components/ui/tooltip/index.tsx",
+        "accounts.html",
+        "notification.html",
+        "popup.html"
+      ],
       "linter": {
         "rules": {
-          "suspicious": {
-            "noExplicitAny": "off"
+          "nursery": {
+            "noInlineStyles": "off"
           }
         }
       }

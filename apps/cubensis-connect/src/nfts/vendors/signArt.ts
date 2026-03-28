@@ -1,13 +1,8 @@
-import { type DataTransactionEntryString } from '@decentralchain/ts-types';
+import type { DataTransactionEntryString } from '@decentralchain/ts-types';
 
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
-import {
-  type CreateParams,
-  type FetchInfoParams,
-  type NftAssetDetail,
-  type NftVendor,
-  NftVendorId,
-} from '../types';
+import type { CreateParams, FetchInfoParams, NftAssetDetail, NftVendor } from '../types';
+import { NftVendorId } from '../types';
 
 const SIGN_ART_DAPP = '3PDBLdsUrcsiPxNbt8g2gQVoefKgzt3kJzV';
 const SIGN_ART_USER_DAPP = '3PGSWDgad4RtceQYXBpq2x73mXLRJYLRqRP';
@@ -20,7 +15,7 @@ interface SignArtNftInfo {
   id: string;
   name: string;
   userName: string;
-  vendor: NftVendorId.SignArt;
+  vendor: typeof NftVendorId.SignArt;
 }
 
 function nftIdKey(id: string) {
@@ -34,7 +29,7 @@ function assertDefined<T>(value: T | null | undefined, message: string): asserts
 }
 
 export class SignArtNftVendor implements NftVendor<SignArtNftInfo> {
-  id = NftVendorId.SignArt as const;
+  id = NftVendorId.SignArt;
 
   is(nft: NftAssetDetail) {
     return nft.issuer === SIGN_ART_DAPP;

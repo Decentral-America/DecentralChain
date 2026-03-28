@@ -1,11 +1,12 @@
 import { deepEqual } from 'fast-equals';
-import { type NotificationsStoreItem } from '#notifications/types';
-import { type StorageLocalState } from '#storage/storage';
+import type { NotificationsStoreItem } from '#notifications/types';
+import type { StorageLocalState } from '#storage/storage';
 
-import { type AssetsRecord } from '../assets/types';
+import type { AssetsRecord } from '../assets/types';
 import { collectBalances } from '../balances/utils';
-import { type Message, MessageStatus } from '../messages/types';
-import { type NetworkName } from '../networks/types';
+import type { Message } from '../messages/types';
+import { MessageStatus } from '../messages/types';
+import type { NetworkName } from '../networks/types';
 import {
   setActiveAuto,
   setAssetLogos,
@@ -33,7 +34,7 @@ import {
   updateSwappableAssets,
   updateUiState,
 } from '../store/reducers/updateState';
-import { type PopupStore } from './store/types';
+import type { PopupStore } from './store/types';
 
 function getParam<S, D>(param: S, defaultParam: D) {
   if (param) {
@@ -135,13 +136,13 @@ export function createUpdateState(store: PopupStore) {
           hash: Record<string, NotificationsStoreItem[]>;
         }>(
           (acc, item) => {
-            if (!acc.hash[item.origin]) {
-              acc.hash[item.origin] = [];
-              acc.items.push(acc.hash[item.origin]!);
+            let group = acc.hash[item.origin];
+            if (!group) {
+              group = [];
+              acc.hash[item.origin] = group;
+              acc.items.push(group);
             }
-
-            acc.hash[item.origin]!.push(item);
-
+            group.push(item);
             return acc;
           },
           { hash: {}, items: [] },
@@ -161,7 +162,7 @@ export function createUpdateState(store: PopupStore) {
       store.dispatch(setActiveAuto(setActiveAutoPayload));
     }
 
-    const newSelectedAccount = getParam(stateChanges.selectedAccount, {} as unknown as undefined);
+    const newSelectedAccount = getParam(stateChanges.selectedAccount, undefined);
     if (newSelectedAccount && !deepEqual(newSelectedAccount, currentState.selectedAccount)) {
       store.dispatch(updateSelectedAccount(newSelectedAccount));
     }

@@ -1,11 +1,10 @@
-import {
-  configure,
-  type Queries,
-  setupBrowser,
-  type WebdriverIOBoundFunctionSync,
-  type WebdriverIOQueries,
-  type WebdriverIOQueriesChainable,
+import type {
+  Queries,
+  WebdriverIOBoundFunctionSync,
+  WebdriverIOQueries,
+  WebdriverIOQueriesChainable,
 } from '@testing-library/webdriverio';
+import { configure, setupBrowser } from '@testing-library/webdriverio';
 import { expect } from 'expect-webdriverio';
 import { afterAll, beforeAll } from 'vitest';
 import { remote } from 'webdriverio';

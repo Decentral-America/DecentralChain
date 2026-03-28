@@ -1,21 +1,16 @@
 // NOTE: This vendor integrates with wavesducks.com (third-party NFT project)
-import {
-  type CreateParams,
-  type FetchInfoParams,
-  type NftAssetDetail,
-  type NftVendor,
-  NftVendorId,
-} from '../types';
+import type { CreateParams, FetchInfoParams, NftAssetDetail, NftVendor } from '../types';
+import { NftVendorId } from '../types';
 
 const DUCKS_ARTEFACTS_DAPP = '3P5E9xamcWoymiqLx8ZdmR7o4fJSRMGp1WR';
 
 interface DucksArtefactsNftInfo {
   id: string;
-  vendor: NftVendorId.DucksArtefact;
+  vendor: typeof NftVendorId.DucksArtefact;
 }
 
 export class DucksArtefactsNftVendor implements NftVendor<DucksArtefactsNftInfo> {
-  id = NftVendorId.DucksArtefact as const;
+  id = NftVendorId.DucksArtefact;
 
   is(nft: NftAssetDetail) {
     return nft.issuer === DUCKS_ARTEFACTS_DAPP;

@@ -9,8 +9,9 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import invariant from 'tiny-invariant';
 import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { type NewAccountState } from '#store/reducers/localState';
+import type { NewAccountState } from '#store/reducers/localState';
 
 import { newAccountSelect } from '../../../store/actions/localState';
 import { AvatarList, Button } from '../ui';
@@ -55,8 +56,12 @@ export function NewWallet() {
 
   const [list] = useState<NewWalletItem[]>(() => {
     const selected =
-      generatedWalletItems.find((item) => account && item.address === account.address) ||
-      generatedWalletItems[0]!;
+      generatedWalletItems.find((item) => account && item.address === account.address) ??
+      generatedWalletItems[0];
+    invariant(
+      selected != null,
+      'NewWallet: generateNewWalletItems must be called before NewWallet renders',
+    );
 
     dispatch(
       newAccountSelect({

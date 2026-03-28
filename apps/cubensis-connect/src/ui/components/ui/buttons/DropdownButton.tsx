@@ -41,7 +41,10 @@ export function DropdownButton({ children, placement = 'bottom', className }: Pr
         <div className={clsx(styles.arrowButton)}>
           <Button
             type="button"
-            view={(defaultItem as React.ReactElement<any>).props.view}
+            view={
+              // biome-ignore lint/suspicious/noExplicitAny: ReactElement<any> required to access .props.view on a generic React child
+              (defaultItem as React.ReactElement<any>).props.view
+            }
             onClick={() => setShowList((prev) => !prev)}
             className={clsx(styles.dropdownButton)}
           />

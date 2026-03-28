@@ -1,7 +1,7 @@
-import { type NetworkName } from '#networks/types';
+import type { NetworkName } from '#networks/types';
 import { Wallet } from '#wallets/wallet';
 
-import { type WalletPrivateDataOfType } from './types';
+import type { WalletPrivateDataOfType } from './types';
 
 export class DebugWallet extends Wallet<WalletPrivateDataOfType<'debug'>> {
   constructor({

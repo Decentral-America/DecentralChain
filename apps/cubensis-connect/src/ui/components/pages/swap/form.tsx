@@ -1,10 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import {
-  SwapClient,
-  SwapClientErrorCode,
-  type SwapClientInvokeTransaction,
-} from '@decentralchain/swap-client';
+import type { SwapClientInvokeTransaction } from '@decentralchain/swap-client';
+import { SwapClient, SwapClientErrorCode } from '@decentralchain/swap-client';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import clsx from 'clsx';
 import { Fragment, useEffect, useMemo, useState } from 'react';
@@ -12,9 +9,10 @@ import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { useDebouncedValue } from '#_core/useDebouncedValue';
 import { AssetAmountInput } from '#assets/amountInput';
-import { AssetSelect, type AssetSelectOption } from '#assets/assetSelect';
-import { type AssetDetail } from '#assets/types';
-import { type BalancesItem } from '#balances/types';
+import type { AssetSelectOption } from '#assets/assetSelect';
+import { AssetSelect } from '#assets/assetSelect';
+import type { AssetDetail } from '#assets/types';
+import type { BalancesItem } from '#balances/types';
 import { useFeeOptions } from '#fee/useFeeOptions';
 import { convertFeeToAsset } from '#fee/utils';
 import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
@@ -188,7 +186,7 @@ export function SwapForm({
     finalFeeOptions.push(nativeFee);
   }
 
-  const [swapVendor, setSwapVendor] = useState(SwapVendor.Keeper);
+  const [swapVendor, setSwapVendor] = useState<SwapVendor>(SwapVendor.Keeper);
   const [swapVendorTouched, setSwapVendorTouched] = useState(false);
 
   const slippageToleranceIndex = usePopupSelector(
@@ -199,7 +197,11 @@ export function SwapForm({
     dispatch(setUiState({ slippageToleranceIndex: index }));
   }
 
-  const slippageTolerance = SLIPPAGE_TOLERANCE_OPTIONS[slippageToleranceIndex]!;
+  const slippageTolerance = SLIPPAGE_TOLERANCE_OPTIONS[slippageToleranceIndex];
+  invariant(
+    slippageTolerance != null,
+    `form: invalid slippageToleranceIndex ${slippageToleranceIndex}`,
+  );
 
   const [swapInfo, setSwapInfo] = useState(swapInfoLoadingState);
 
@@ -871,7 +873,7 @@ export function SwapForm({
                   />
                 ) : (
                   <span className={styles.summaryValueText}>
-                    {formatFeeOption(finalFeeOptions[0]!)}
+                    {finalFeeOptions[0] != null && formatFeeOption(finalFeeOptions[0])}
                   </span>
                 )}
               </div>

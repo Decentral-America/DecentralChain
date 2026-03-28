@@ -1,8 +1,8 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
+import type { FeeOption } from '#fee/utils';
 import {
-  type FeeOption,
   getFeeOptions,
   getSpendingAmountsForSponsorableTx,
   isEnoughBalanceForFeeAndSpendingAmounts,
@@ -11,8 +11,9 @@ import { usePopupSelector } from '#popup/store/react';
 import Background from '#ui/services/Background';
 
 import * as styles from '../../../ui/components/pages/styles/transactions.module.css';
-import { Balance, DateFormat, Select, type SelectItem } from '../../../ui/components/ui';
-import { type MessageOfType } from '../../types';
+import type { SelectItem } from '../../../ui/components/ui';
+import { Balance, DateFormat, Select } from '../../../ui/components/ui';
+import type { MessageOfType } from '../../types';
 
 interface Props {
   message: MessageOfType<'transaction'>;

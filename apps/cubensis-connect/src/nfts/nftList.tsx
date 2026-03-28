@@ -1,11 +1,12 @@
 import clsx from 'clsx';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
-import { List, type RowComponentProps } from 'react-window';
+import type { RowComponentProps } from 'react-window';
+import { List } from 'react-window';
 import invariant from 'tiny-invariant';
 
 import { NftCard } from './nftCard';
 import * as styles from './nftList.module.css';
-import { type DisplayMode, type Nft } from './types';
+import type { DisplayMode, Nft } from './types';
 
 const NFT_ROW_HEIGHT = 162;
 const NFT_ROW_MARGIN_BOTTOM = 8;
@@ -29,7 +30,8 @@ const Row = ({
   renderMore?: () => React.ReactNode;
 }>) => {
   const leftIndex = 2 * index;
-  const leftNft = rows[leftIndex]!;
+  const leftNft = rows[leftIndex];
+  invariant(leftNft != null, `NftList row ${index}: leftNft missing at index ${leftIndex}`);
   const leftCount = (leftNft?.creator && counts[leftNft.creator]) || 0;
 
   const rightIndex = leftIndex + 1;

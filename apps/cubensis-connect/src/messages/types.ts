@@ -1,16 +1,16 @@
-import {
-  type AssetDecimals,
-  type DataTransactionEntry,
-  type DataTransactionEntryBinary,
-  type DataTransactionEntryBoolean,
-  type DataTransactionEntryInteger,
-  type DataTransactionEntryString,
-  type InvokeScriptCallArgument,
-  type InvokeScriptPayment,
-  type LeaseTransactionFromNode,
-  type TRANSACTION_TYPE,
+import type {
+  AssetDecimals,
+  DataTransactionEntry,
+  DataTransactionEntryBinary,
+  DataTransactionEntryBoolean,
+  DataTransactionEntryInteger,
+  DataTransactionEntryString,
+  InvokeScriptCallArgument,
+  InvokeScriptPayment,
+  LeaseTransactionFromNode,
+  TRANSACTION_TYPE,
 } from '@decentralchain/ts-types';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
 interface MessageInputAuth {
   data: string;
@@ -486,14 +486,15 @@ export type MessageTx =
   | MessageTxInvokeScript
   | MessageTxUpdateAssetInfo;
 
-export enum MessageStatus {
-  Failed = 'failed',
-  Published = 'published',
-  Rejected = 'rejected',
-  RejectedForever = 'rejected_forever',
-  Signed = 'signed',
-  UnApproved = 'unapproved',
-}
+export const MessageStatus = {
+  Failed: 'failed',
+  Published: 'published',
+  Rejected: 'rejected',
+  RejectedForever: 'rejected_forever',
+  Signed: 'signed',
+  UnApproved: 'unapproved',
+} as const;
+export type MessageStatus = (typeof MessageStatus)[keyof typeof MessageStatus];
 
 interface MessageDccAuth extends MessageInputDccAuth {
   address: string;

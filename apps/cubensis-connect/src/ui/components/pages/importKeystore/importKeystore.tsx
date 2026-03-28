@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
-import { type KeystoreProfiles } from '#keystore/types';
+import type { KeystoreProfiles } from '#keystore/types';
 import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
 import { batchAddAccounts } from '#store/actions/user';
 import { getNetworkByNetworkCode } from '#ui/utils/network';

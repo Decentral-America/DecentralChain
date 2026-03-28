@@ -126,7 +126,7 @@ export function ImportKeystoreChooseFile({
       <Button
         className={styles.keystoreButton}
         data-testid="submitButton"
-        disabled={loading || keystoreFile == null || (showPassword && !password)}
+        disabled={loading ?? (keystoreFile == null || (showPassword && !password))}
         loading={loading}
         type="submit"
         view="submit"

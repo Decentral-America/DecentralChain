@@ -1,7 +1,7 @@
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 
-import { type MessageOfType } from '../types';
+import type { MessageOfType } from '../types';
 import { AliasCard, AliasScreen } from './alias';
 import { BurnCard, BurnScreen } from './burn';
 import { CancelLeaseCard, CancelLeaseScreen } from './cancelLease';

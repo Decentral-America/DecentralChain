@@ -9,40 +9,40 @@ import {
   verifyAddress,
 } from '@decentralchain/crypto';
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
+import type { Amount, Recipient } from '@decentralchain/protobuf-serialization';
 import {
-  type Amount,
   AmountSchema,
   create,
   DataEntrySchema,
   Order_PriceMode,
   Order_Side,
   OrderSchema,
-  type Recipient,
   RecipientSchema,
   TransactionSchema,
   toBinary,
 } from '@decentralchain/protobuf-serialization';
-import { type InvokeScriptCallArgument, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import type { InvokeScriptCallArgument } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 
 import { JSONbn } from '../_core/jsonBn';
-import {
-  type MessageInputCustomData,
-  type MessageOrder,
-  type MessageTx,
-  type MessageTxAlias,
-  type MessageTxBurn,
-  type MessageTxCancelLease,
-  type MessageTxData,
-  type MessageTxInvokeScript,
-  type MessageTxIssue,
-  type MessageTxLease,
-  type MessageTxMassTransfer,
-  type MessageTxReissue,
-  type MessageTxSetAssetScript,
-  type MessageTxSetScript,
-  type MessageTxSponsorship,
-  type MessageTxTransfer,
-  type MessageTxUpdateAssetInfo,
+import type {
+  MessageInputCustomData,
+  MessageOrder,
+  MessageTx,
+  MessageTxAlias,
+  MessageTxBurn,
+  MessageTxCancelLease,
+  MessageTxData,
+  MessageTxInvokeScript,
+  MessageTxIssue,
+  MessageTxLease,
+  MessageTxMassTransfer,
+  MessageTxReissue,
+  MessageTxSetAssetScript,
+  MessageTxSetScript,
+  MessageTxSponsorship,
+  MessageTxTransfer,
+  MessageTxUpdateAssetInfo,
 } from './types';
 
 export function isAddressString(input: string, chainId?: number) {
@@ -56,7 +56,8 @@ export function isAddressString(input: string, chainId?: number) {
 export function isAlias(input: string) {
   const parts = input.split(':');
 
-  return parts.length === 3 && parts[0] === 'alias' && /^[-_.@0-9a-z]{4,30}$/.test(parts[2]!);
+  // parts.length === 3 is checked first — parts[0] and parts[2] are guaranteed to exist
+  return parts.length === 3 && parts[0] === 'alias' && /^[-_.@0-9a-z]{4,30}$/.test(parts[2] ?? '');
 }
 
 export function isBase58(input: string) {
@@ -113,7 +114,7 @@ export function makeCustomDataBytes(data: MessageInputCustomData) {
       ...binary.serializerFromSchema(schemas.txFields.data[1])(data.data),
     );
   } else {
-    throw new Error(`Invalid CustomData version: ${(data as any).version}`);
+    throw new Error(`Invalid CustomData version: ${(data as { version: unknown }).version}`);
   }
 }
 
@@ -614,14 +615,16 @@ function prepareTransactionForJson(tx: MessageTx) {
           ...call,
           args: call.args.map(
             function convertArgToBigNumber(arg): InvokeScriptCallArgument<BigNumber> {
-              return arg.type === 'integer'
-                ? { type: arg.type, value: new BigNumber(arg.value) }
-                : arg.type === 'list'
-                  ? {
-                      type: arg.type,
-                      value: arg.value.map(convertArgToBigNumber) as unknown as any,
-                    }
-                  : arg;
+              if (arg.type === 'integer') {
+                return { type: arg.type, value: new BigNumber(arg.value) };
+              }
+              if (arg.type === 'list') {
+                return {
+                  type: arg.type,
+                  value: arg.value.map(convertArgToBigNumber),
+                };
+              }
+              return arg;
             },
           ),
         },
