@@ -8,6 +8,10 @@
 
 All packages in this monorepo follow independent versioning. Security patches are applied to the latest version of each affected package.
 
+## Automated Security Scanning
+
+Every pull request runs automated dependency-review (GitHub's `dependency-review-action`) and every release generates an SBOM via `anchore/sbom-action`. Run `pnpm audit` locally before opening a PR.
+
 ## Reporting a Vulnerability
 
 **Do NOT open a public GitHub issue.**
