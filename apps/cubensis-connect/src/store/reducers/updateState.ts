@@ -1,24 +1,21 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { type AssetsRecord } from '../../assets/types';
-import { type BalancesItem } from '../../balances/types';
-import { type Message } from '../../messages/types';
+import type { AssetsRecord } from '../../assets/types';
+import type { BalancesItem } from '../../balances/types';
+import type { Message } from '../../messages/types';
 import { NetworkName } from '../../networks/types';
-import { type NftInfo } from '../../nfts/nfts';
-import { type PermissionValue } from '../../permissions/types';
-import { type IdleOptions, type PreferencesAccount } from '../../preferences/types';
-import {
-  type AssetFilters,
-  type NftFilters,
-  type TxHistoryFilters,
-  type UiState,
-} from './stateTypes';
+import type { NftInfo } from '../../nfts/nfts';
+import type { PermissionValue } from '../../permissions/types';
+import type { IdleOptions, PreferencesAccount } from '../../preferences/types';
+import type { UiState } from './stateTypes';
 
 export * from './localState';
 export * from './nftConfig';
 export * from './notifications';
+export * from './permissionsUiState';
 export * from './remoteConfig';
-export type { AssetFilters, NftFilters, TxHistoryFilters, UiState };
+export type { UiState };
 
 // ─── uiState ───────────────────────────────────────────────────────────────
 const uiStateSlice = createSlice({

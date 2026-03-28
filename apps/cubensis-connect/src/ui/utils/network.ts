@@ -1,8 +1,14 @@
 import { base58Decode } from '@decentralchain/crypto';
+import invariant from 'tiny-invariant';
 import { NetworkName } from '#networks/types';
 
 function getNetworkCodeByAddress(address: string): string {
-  return String.fromCharCode(base58Decode(address)[1]!);
+  const addrBytes = base58Decode(address);
+  invariant(
+    addrBytes.length >= 2,
+    `getNetworkCodeByAddress: address too short (${addrBytes.length} bytes)`,
+  );
+  return String.fromCharCode(addrBytes[1] as number);
 }
 
 export function getNetworkByNetworkCode(networkCode: string): NetworkName {

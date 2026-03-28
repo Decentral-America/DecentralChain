@@ -82,7 +82,7 @@ export function ExportPasswordModal({ showAttention, showEncrypted, onClose, onS
             </ErrorMessage>
           </div>
 
-          {(showAttention || encrypted) && (
+          {(showAttention ?? encrypted) && (
             <p className={clsx(styles.attention, 'body1', 'disabled500')}>
               <Trans
                 t={t}

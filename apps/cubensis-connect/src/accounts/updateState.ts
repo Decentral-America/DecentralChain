@@ -1,5 +1,5 @@
 import { deepEqual } from 'fast-equals';
-import { type StorageLocalState } from '#storage/storage';
+import type { StorageLocalState } from '#storage/storage';
 
 import {
   updateAddresses,
@@ -14,7 +14,7 @@ import {
   updateSelectedAccount,
   updateUiState,
 } from '../store/reducers/updateState';
-import { type AccountsStore } from './store/types';
+import type { AccountsStore } from './store/types';
 
 function getParam<S, D>(param: S, defaultParam: D) {
   if (param) {
@@ -57,7 +57,7 @@ export function createUpdateState(store: AccountsStore) {
       store.dispatch(updateCurrentNetwork(currentNetwork));
     }
 
-    const newSelectedAccount = getParam(stateChanges.selectedAccount, {} as unknown as undefined);
+    const newSelectedAccount = getParam(stateChanges.selectedAccount, undefined);
     if (newSelectedAccount && !deepEqual(newSelectedAccount, currentState.selectedAccount)) {
       store.dispatch(updateSelectedAccount(newSelectedAccount));
     }

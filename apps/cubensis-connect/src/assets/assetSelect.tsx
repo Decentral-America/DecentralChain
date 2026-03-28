@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import ColorHash from 'color-hash';
 import { useState } from 'react';
-import { type BalanceAssets } from '#balances/types';
-import { type NetworkName } from '#networks/types';
+import type { BalanceAssets } from '#balances/types';
+import type { NetworkName } from '#networks/types';
 import { Modal } from '#ui/components/ui/modal/Modal';
 
 import * as styles from './assetSelect.module.css';
-import { AssetSelectModal, type AssetSelectModalOption } from './selectModal';
+import type { AssetSelectModalOption } from './selectModal';
+import { AssetSelectModal } from './selectModal';
 import { useAssetLogo } from './utils';
 
 export type AssetSelectOption = AssetSelectModalOption;

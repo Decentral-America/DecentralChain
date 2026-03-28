@@ -1,7 +1,8 @@
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';
 import type Browser from 'webextension-polyfill';
-import { filter, make, map, pipe, type Source, subscribe, take, takeUntil, tap } from 'wonka';
+import type { Source } from 'wonka';
+import { filter, make, map, pipe, subscribe, take, takeUntil, tap } from 'wonka';
 
 import { fromWebExtensionEvent } from '../_core/wonka';
 
@@ -56,6 +57,7 @@ interface MethodCallRequestPayload<K> {
   keeperMethodCallRequest: MethodCallRequest<K>;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: `unknown[]` breaks strictFunctionTypes contravariance — concrete API methods with specific typed params are not assignable to (...args: unknown[]) => Promise<unknown>; any[] is the correct structural supertype for IPC dispatch
 type ApiObject<K extends string> = Record<K, (...args: any[]) => Promise<unknown>>;
 
 type MethodCallResponse<T> =
@@ -195,7 +197,7 @@ export function createIpcCallProxy<K extends string, T extends ApiObject<K>>(
             if (response.isError) {
               reject(response.error);
             } else {
-              resolve(response.data as any);
+              resolve(response.data as Awaited<ReturnType<T[Method]>>);
             }
           }),
         );

@@ -211,7 +211,7 @@ export function ImportLedger() {
                   <LedgerAvatarList
                     selectedId={selectedUserId}
                     size={38}
-                    users={ledgerUsersPages[page]!}
+                    users={ledgerUsersPages[page] ?? []}
                     onSelect={(id) => {
                       setSelectAccountError(null);
                       setSelectedUserId(id);

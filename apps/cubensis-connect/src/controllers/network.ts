@@ -1,13 +1,13 @@
-import { type TransactionFromNode } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/ts-types';
 import { addBreadcrumb, setTag } from '@sentry/browser';
 import ObservableStore from 'obs-store';
 import { JSONbn } from '#_core/jsonBn';
-import { type MessageOrder, type MessageTx } from '#messages/types';
+import type { MessageOrder, MessageTx } from '#messages/types';
 import { stringifyOrder, stringifyTransaction } from '#messages/utils';
 import { NetworkName } from '#networks/types';
 
 import { NETWORK_CONFIG } from '../constants';
-import { type ExtensionStorage } from '../storage/storage';
+import type { ExtensionStorage } from '../storage/storage';
 
 export class NetworkController {
   store;
@@ -59,7 +59,7 @@ export class NetworkController {
     return this.store.getState().currentNetwork;
   }
 
-  setCustomNode(url: string | null, network = NetworkName.Mainnet) {
+  setCustomNode(url: string | null, network: NetworkName = NetworkName.Mainnet) {
     const { customNodes } = this.store.getState();
     customNodes[network] = url;
     this.store.updateState({ customNodes });
@@ -82,7 +82,7 @@ export class NetworkController {
   }
 
   getNetworkCode(network?: NetworkName) {
-    network = network || this.getNetwork();
+    network = network ?? this.getNetwork();
 
     return this.getCustomCodes()[network] || NETWORK_CONFIG[network].networkCode;
   }
@@ -92,7 +92,7 @@ export class NetworkController {
   }
 
   getNode(network?: NetworkName) {
-    network = network || this.getNetwork();
+    network = network ?? this.getNetwork();
 
     return this.getCustomNodes()[network] || NETWORK_CONFIG[network].nodeBaseUrl;
   }

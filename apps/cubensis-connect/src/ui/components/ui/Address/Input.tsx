@@ -1,4 +1,5 @@
-import { ErrorMessage, Input, type InputProps } from '..';
+import type { InputProps } from '..';
+import { ErrorMessage, Input } from '..';
 import * as styles from './Input.module.css';
 
 type Props = Extract<InputProps, { multiLine?: false | undefined }> & {

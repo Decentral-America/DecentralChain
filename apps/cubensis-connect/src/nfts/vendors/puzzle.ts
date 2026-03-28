@@ -1,18 +1,12 @@
-import { type DataTransactionEntryString } from '@decentralchain/ts-types';
+import type { DataTransactionEntryString } from '@decentralchain/ts-types';
 
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
-import {
-  type CreateParams,
-  type FetchInfoParams,
-  type Nft,
-  type NftAssetDetail,
-  type NftVendor,
-  NftVendorId,
-} from '../types';
+import type { CreateParams, FetchInfoParams, Nft, NftAssetDetail, NftVendor } from '../types';
+import { NftVendorId } from '../types';
 
 interface PuzzleNftInfo {
   id: string;
-  vendor: NftVendorId.Puzzle;
+  vendor: typeof NftVendorId.Puzzle;
   image: string;
   creator: string;
 }
@@ -30,7 +24,7 @@ function nftPropertyKey(id: string, property: string) {
 }
 
 export class PuzzleNftVendor implements NftVendor<PuzzleNftInfo> {
-  id = NftVendorId.Puzzle as const;
+  id = NftVendorId.Puzzle;
 
   is(nft: NftAssetDetail): boolean {
     return nft.issuer === PUZZLE_MARKET_DAPP;

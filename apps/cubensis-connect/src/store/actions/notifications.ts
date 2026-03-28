@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
-import { type PopupThunkAction } from '#popup/store/types';
+import type { PopupThunkAction } from '#popup/store/types';
 import Background from '#ui/services/Background';
 
-import { type NotificationsStoreItem } from '../../notifications/types';
+import type { NotificationsStoreItem } from '../../notifications/types';
 import { setActiveNotification } from '../reducers/notifications';
 
 export {

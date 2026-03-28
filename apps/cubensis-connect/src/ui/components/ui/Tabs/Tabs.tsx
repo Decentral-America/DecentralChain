@@ -105,8 +105,10 @@ export function Tabs({ children, activeTab: activeTabProp, onTabChange }: TabsPr
       {Children.map(children, (child) => {
         switch (child.type) {
           case TabPanels:
+            // biome-ignore lint/suspicious/noExplicitAny: cloneElement requires ReactElement<any> to pass arbitrary tab props
             return cloneElement(child as React.ReactElement<any>, { activeIndex: activeTab });
           case TabList:
+            // biome-ignore lint/suspicious/noExplicitAny: cloneElement requires ReactElement<any> to pass arbitrary tab props
             return cloneElement(child as React.ReactElement<any>, {
               activeIndex: activeTab,
               onActiveTab: (activeIndex: number) => {

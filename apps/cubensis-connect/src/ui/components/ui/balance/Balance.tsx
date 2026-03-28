@@ -1,4 +1,4 @@
-import { type Money } from '@decentralchain/data-entities';
+import type { Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
 
 import { Loader } from '../loader';

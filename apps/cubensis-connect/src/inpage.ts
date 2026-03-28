@@ -1,6 +1,6 @@
 import { filter, make, map, pipe, subscribe, take } from 'wonka';
 
-import { type __BackgroundPageApiDirect, type PublicState } from './background';
+import type { __BackgroundPageApiDirect, PublicState } from './background';
 import { createIpcCallProxy, fromMessagePort, fromPostMessage } from './ipc/ipc';
 
 const messagePortPromise = new Promise<MessagePort>((resolve) =>
@@ -69,7 +69,7 @@ const publicStateUpdates = make<PublicState>((observer) => {
             break;
           case 'updatePublicState':
             if ('publicState' in value) {
-              observer.next(value.publicState as any);
+              observer.next(value.publicState as PublicState);
             }
             break;
         }

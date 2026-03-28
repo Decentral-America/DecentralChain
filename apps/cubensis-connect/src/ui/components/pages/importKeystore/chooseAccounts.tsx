@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type KeystoreAccount, type KeystoreProfiles } from '#keystore/types';
+import type { KeystoreAccount, KeystoreProfiles } from '#keystore/types';
 import { NetworkName } from '#networks/types';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Button } from '#ui/components/ui';
 import { Avatar } from '#ui/components/ui/avatar/Avatar';
 

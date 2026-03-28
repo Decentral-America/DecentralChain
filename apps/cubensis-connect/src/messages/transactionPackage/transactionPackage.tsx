@@ -5,18 +5,18 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
-import { type AssetsRecord } from '#assets/types';
+import type { AssetsRecord } from '#assets/types';
 import { MessageFooter } from '#messages/_common/footer';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
 import { TxInfo } from '#messages/transaction/common/info';
 import { TransactionCard } from '#messages/transaction/transaction';
 import { usePopupSelector } from '#popup/store/react';
-import { type PreferencesAccount } from '#preferences/types';
+import type { PreferencesAccount } from '#preferences/types';
 import { Balance } from '#ui/components/ui/balance/Balance';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
-import { type MessageOfType, type MessageTx } from '../types';
+import type { MessageOfType, MessageTx } from '../types';
 import * as styles from './transactionPackage.module.css';
 
 function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
@@ -213,6 +213,11 @@ export function TransactionPackageScreen({
 
         {isOpen &&
           data.map((item, index) => {
+            const inputDatum = input.data[index];
+            invariant(
+              inputDatum != null,
+              `transactionPackage: input/data arrays out of sync at index ${index}`,
+            );
             const msg: MessageOfType<'transaction'> = {
               account,
               broadcast: false,
@@ -223,7 +228,7 @@ export function TransactionPackageScreen({
               input: {
                 account,
                 broadcast: false,
-                data: input.data[index]!,
+                data: inputDatum,
                 type: 'transaction',
               },
               status,

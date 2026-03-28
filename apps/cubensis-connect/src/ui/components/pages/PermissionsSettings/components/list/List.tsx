@@ -1,23 +1,26 @@
-import { type TFunction } from 'i18next';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { type TTabTypes } from '#ui/components/pages/PermissionsSettings/PermissionSettings';
+import type { PermissionObject, PermissionValue } from '#permissions/types';
+import type { TTabTypes } from '#ui/components/pages/PermissionsSettings/PermissionSettings';
 
-import { type TAutoAuth } from '../originSettings';
 import { ListItem } from './ListItem';
 import * as styles from './list.module.styl';
 
 function getPermissionsText(
   t: TFunction<'translation', undefined>,
-  perms: Array<string | TAutoAuth>,
+  perms: PermissionValue[],
 ): React.ReactElement {
   let hasApproved = false;
-  let hasAuto: string | boolean | TAutoAuth | undefined = false;
+  let hasAuto: PermissionValue | boolean | undefined = false;
 
   if (perms.length) {
     hasApproved = perms.includes('approved');
     hasAuto =
       hasApproved &&
-      perms.find((item) => (typeof item !== 'object' ? false : item.type === 'allowAutoSign'));
+      perms.find(
+        (item): item is PermissionObject =>
+          typeof item !== 'string' && item.type === 'allowAutoSign',
+      );
   }
 
   return (
@@ -28,10 +31,7 @@ function getPermissionsText(
   );
 }
 
-const getFilteredOrigins = (
-  origins: Record<string, Array<string | TAutoAuth>>,
-  attr: TTabTypes,
-) => {
+const getFilteredOrigins = (origins: Record<string, PermissionValue[]>, attr: TTabTypes) => {
   return Object.keys(origins)
     .filter((name) => {
       const permissions = origins[name] || [];
@@ -47,12 +47,12 @@ const getFilteredOrigins = (
         acc[name] = origins[name] || [];
         return acc;
       },
-      Object.create(null) as Record<string, Array<string | TAutoAuth>>,
+      Object.create(null) as Record<string, PermissionValue[]>,
     );
 };
 
 interface IProps {
-  origins: Record<string, Array<string | TAutoAuth>>;
+  origins: Record<string, PermissionValue[]>;
   showType: TTabTypes;
   showSettings: (origin: string) => void;
   toggleApprove: (origin: string, enable: boolean) => void;
@@ -79,8 +79,8 @@ export function List({ origins, showType, showSettings, toggleApprove }: IProps)
         <ListItem
           key={name}
           originName={name}
-          permissions={origins[name]!}
-          permissionsText={getPermissionsText(t, origins[name]!)}
+          permissions={origins[name] ?? []}
+          permissionsText={getPermissionsText(t, origins[name] ?? [])}
           showSettings={showSettings}
           toggleApprove={toggleApprove}
         />

@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import { type AppMiddleware } from '../../popup/store/types';
+import type { AppMiddleware } from '../../popup/store/types';
 import * as middleware from '../../store/middleware';
 import { reducer } from './reducer';
 

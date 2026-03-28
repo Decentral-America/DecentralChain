@@ -1,13 +1,13 @@
 import { addBreadcrumb } from '@sentry/browser';
 import EventEmitter from 'events';
 import ObservableStore from 'obs-store';
-import { type NetworkName } from '#networks/types';
-import { type IdleOptions } from '#preferences/types';
+import type { NetworkName } from '#networks/types';
+import type { IdleOptions } from '#preferences/types';
 import { compareAccountsByLastUsed } from '#preferences/utils';
-import { type WalletAccount } from '#wallets/types';
+import type { WalletAccount } from '#wallets/types';
 
-import { type ExtensionStorage } from '../storage/storage';
-import { type NetworkController } from './network';
+import type { ExtensionStorage } from '../storage/storage';
+import type { NetworkController } from './network';
 
 export class PreferencesController extends EventEmitter {
   store;
@@ -27,7 +27,7 @@ export class PreferencesController extends EventEmitter {
     this.store = new ObservableStore(
       extensionStorage.getInitState({
         accounts: [],
-        currentLocale: initLangCode || 'en',
+        currentLocale: initLangCode ?? 'en',
         idleOptions: { interval: 60 * 60 * 1000, type: '1h' },
         selectedAccount: undefined,
       }),
@@ -90,7 +90,7 @@ export class PreferencesController extends EventEmitter {
       if (currentNetworkAccounts.length > 0) {
         const sortedAccounts = currentNetworkAccounts.sort(compareAccountsByLastUsed);
 
-        addressToSelect = sortedAccounts[0]!.address;
+        addressToSelect = sortedAccounts[0]?.address;
       }
 
       this.selectAccount(addressToSelect, network);

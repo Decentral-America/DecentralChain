@@ -1,7 +1,7 @@
 import clsx from 'clsx';
+import type { PermissionValue } from '#permissions/types';
 import { Button } from '#ui/components/ui/buttons';
 
-import { type TAutoAuth } from '../originSettings/OriginSettings';
 import * as styles from './list.module.styl';
 
 export const ListItem: React.FunctionComponent<IParams> = ({
@@ -32,7 +32,7 @@ export const ListItem: React.FunctionComponent<IParams> = ({
 );
 
 const ItemButton: React.FunctionComponent<{
-  permissions: Array<string | TAutoAuth>;
+  permissions: PermissionValue[];
   onClick: (enable: boolean) => void;
 }> = ({ permissions, onClick }) => {
   if (permissions.includes('whiteList')) {
@@ -69,7 +69,7 @@ const SettingsButton: React.FunctionComponent<{
 
 interface IParams extends React.ComponentProps<'div'> {
   originName: string;
-  permissions: Array<string | TAutoAuth>;
+  permissions: PermissionValue[];
   permissionsText: React.ReactElement;
   showSettings: (origin: string) => void;
   toggleApprove: (origin: string, enable: boolean) => void;
