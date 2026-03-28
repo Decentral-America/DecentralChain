@@ -49,6 +49,7 @@
   "dependencies": {
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/bignumber": "workspace:*",
+    "@decentralchain/node-api-js": "workspace:*",
     "@decentralchain/browser-bus": "workspace:*",
     "@decentralchain/data-entities": "workspace:*",
     "@decentralchain/data-service-client-js": "workspace:*",
