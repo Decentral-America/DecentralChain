@@ -51,16 +51,21 @@ function ssrBrowserOnlyStub(): Plugin {
  */
 function withoutEsbuildConfig(plugins: Plugin | Plugin[]): Plugin[] {
   const arr = Array.isArray(plugins) ? plugins : [plugins];
-  return arr.map((p) => {
+  return arr.map((p): Plugin => {
     if (!p.config) return p;
-    const orig = p.config;
+    // Plugin['config'] is ObjectHook<fn> — may be { handler: fn } or the fn itself.
+    const origHook = p.config;
+    const origFn = typeof origHook === 'function' ? origHook : origHook.handler;
     return {
       ...p,
-      config: async function (this: unknown, ...args: Parameters<typeof orig>) {
-        const result = await Reflect.apply(orig, this, args);
+      config: async function (
+        this: ThisParameterType<typeof origFn>,
+        ...args: Parameters<typeof origFn>
+      ) {
+        const result = await Reflect.apply(origFn, this, args);
         if (result && typeof result === 'object' && 'esbuild' in result) {
           const { esbuild: _removed, ...rest } = result as Record<string, unknown>;
-          return rest;
+          return rest as Awaited<ReturnType<typeof origFn>>;
         }
         return result;
       },
