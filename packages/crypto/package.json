@@ -57,7 +57,20 @@
     "tags": [
       "scope:sdk",
       "layer:0"
-    ]
+    ],
+    "targets": {
+      "build": {
+        "outputs": [
+          "{projectRoot}/dist",
+          "{projectRoot}/pkg"
+        ]
+      },
+      "typecheck": {
+        "dependsOn": [
+          "build"
+        ]
+      }
+    }
   },
   "publishConfig": {
     "access": "public",
