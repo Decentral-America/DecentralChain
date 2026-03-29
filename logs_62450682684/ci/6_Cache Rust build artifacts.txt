@@ -1,0 +1,60 @@
+﻿2026-03-29T00:36:22.2580431Z ##[group]Run Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+2026-03-29T00:36:22.2580794Z with:
+2026-03-29T00:36:22.2580974Z   workspaces: packages/crypto
+2026-03-29T00:36:22.2581192Z   cache-on-failure: true
+2026-03-29T00:36:22.2581392Z   prefix-key: v0-rust
+2026-03-29T00:36:22.2581580Z   add-job-id-key: true
+2026-03-29T00:36:22.2581793Z   add-rust-environment-hash-key: true
+2026-03-29T00:36:22.2582032Z   cache-targets: true
+2026-03-29T00:36:22.2582222Z   cache-all-crates: false
+2026-03-29T00:36:22.2582433Z   cache-workspace-crates: false
+2026-03-29T00:36:22.2582659Z   save-if: true
+2026-03-29T00:36:22.2582836Z   cache-provider: github
+2026-03-29T00:36:22.2583025Z   cache-bin: true
+2026-03-29T00:36:22.2583199Z   lookup-only: false
+2026-03-29T00:36:22.2583372Z   cmd-format: {0}
+2026-03-29T00:36:22.2583534Z env:
+2026-03-29T00:36:22.2583688Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:22.2583937Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:22.2584218Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:36:22.2584458Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:36:22.2584653Z   CARGO_TERM_COLOR: always
+2026-03-29T00:36:22.2584856Z ##[endgroup]
+2026-03-29T00:36:22.5314863Z (node:2519) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-03-29T00:36:22.5316261Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-03-29T00:36:22.6350983Z ##[group]Cache Configuration
+2026-03-29T00:36:22.6351649Z Cache Provider:
+2026-03-29T00:36:22.6352544Z     github
+2026-03-29T00:36:22.6352876Z Workspaces:
+2026-03-29T00:36:22.6353466Z     /home/runner/work/DecentralChain/DecentralChain/packages/crypto
+2026-03-29T00:36:22.6354133Z Cache Paths:
+2026-03-29T00:36:22.6354502Z     /home/runner/.cargo/bin
+2026-03-29T00:36:22.6354963Z     /home/runner/.cargo/.crates.toml
+2026-03-29T00:36:22.6355424Z     /home/runner/.cargo/.crates2.json
+2026-03-29T00:36:22.6355924Z     /home/runner/.cargo/registry
+2026-03-29T00:36:22.6356364Z     /home/runner/.cargo/git
+2026-03-29T00:36:22.6357111Z     /home/runner/work/DecentralChain/DecentralChain/packages/crypto/target
+2026-03-29T00:36:22.6357836Z Restore Key:
+2026-03-29T00:36:22.6358276Z     v0-rust-ci-Linux-x64-8b64806b
+2026-03-29T00:36:22.6358981Z Cache Key:
+2026-03-29T00:36:22.6359402Z     v0-rust-ci-Linux-x64-8b64806b-c639c0f6
+2026-03-29T00:36:22.6360078Z .. Prefix:
+2026-03-29T00:36:22.6360445Z   - v0-rust-ci-Linux-x64
+2026-03-29T00:36:22.6360907Z .. Environment considered:
+2026-03-29T00:36:22.6361299Z   - Rust Versions:
+2026-03-29T00:36:22.6361945Z     - 1.94.1 x86_64-unknown-linux-gnu e408947bfd200af42db322daf0fadfe7e26d3bd1
+2026-03-29T00:36:22.6362831Z     - 1.94.1 x86_64-unknown-linux-gnu e408947bfd200af42db322daf0fadfe7e26d3bd1
+2026-03-29T00:36:22.6363432Z   - CARGO_HOME
+2026-03-29T00:36:22.6363738Z   - CARGO_INCREMENTAL
+2026-03-29T00:36:22.6364105Z   - CARGO_TERM_COLOR
+2026-03-29T00:36:22.6364509Z .. Lockfiles considered:
+2026-03-29T00:36:22.6365264Z   - /home/runner/work/DecentralChain/DecentralChain/packages/crypto/Cargo.toml
+2026-03-29T00:36:22.6366261Z ##[endgroup]
+2026-03-29T00:36:22.6366485Z 
+2026-03-29T00:36:22.6366687Z ... Restoring cache ...
+2026-03-29T00:36:22.6897293Z Cache hit for: v0-rust-ci-Linux-x64-8b64806b-c639c0f6
+2026-03-29T00:36:22.8054322Z Received 3208656 of 3208656 (100.0%), 36.4 MBs/sec
+2026-03-29T00:36:22.8054988Z Cache Size: ~3 MB (3208656 B)
+2026-03-29T00:36:22.8081969Z [command]/usr/bin/tar -xf /home/runner/work/_temp/0f3a2e41-f98e-469f-88d4-2e68d37514f7/cache.tzst -P -C /home/runner/work/DecentralChain/DecentralChain --use-compress-program unzstd
+2026-03-29T00:36:22.8249235Z Cache restored successfully
+2026-03-29T00:36:22.8254188Z Restored from cache key "v0-rust-ci-Linux-x64-8b64806b-c639c0f6" full match: true.

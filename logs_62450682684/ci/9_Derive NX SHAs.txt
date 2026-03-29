@@ -1,0 +1,27 @@
+﻿2026-03-29T00:36:37.6493715Z ##[group]Run nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1
+2026-03-29T00:36:37.6494085Z with:
+2026-03-29T00:36:37.6494370Z   gh-token: ***
+2026-03-29T00:36:37.6494565Z   main-branch-name: main
+2026-03-29T00:36:37.6494782Z   remote: origin
+2026-03-29T00:36:37.6494995Z   set-environment-variables-for-job: true
+2026-03-29T00:36:37.6495460Z   error-on-no-successful-workflow: false
+2026-03-29T00:36:37.6495732Z   last-successful-event: push
+2026-03-29T00:36:37.6495965Z   working-directory: .
+2026-03-29T00:36:37.6496200Z   use-previous-merge-group-commit: true
+2026-03-29T00:36:37.6496445Z env:
+2026-03-29T00:36:37.6496614Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:37.6496875Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:37.6497172Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:36:37.6497402Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:36:37.6497598Z   CARGO_TERM_COLOR: always
+2026-03-29T00:36:37.6497801Z   CACHE_ON_FAILURE: true
+2026-03-29T00:36:37.6498002Z ##[endgroup]
+2026-03-29T00:36:37.9197270Z 
+2026-03-29T00:36:37.9198054Z Workflow Id not provided. Using workflow '246278355'
+2026-03-29T00:36:38.4533494Z 
+2026-03-29T00:36:38.4534432Z Found the last successful workflow run on 'origin/main'
+2026-03-29T00:36:38.4535196Z Commit: 18caaeb6701d4c9cb3b663a1f22fe9bc8690169c
+2026-03-29T00:36:38.4535626Z 
+2026-03-29T00:36:38.4535938Z Base SHA18caaeb6701d4c9cb3b663a1f22fe9bc8690169c
+2026-03-29T00:36:38.4536618Z Head SHAeeb692c036ecab247927884dc372b57146660fdb
+2026-03-29T00:36:38.4620471Z NX_BASE and NX_HEAD environment variables have been set for the current Job

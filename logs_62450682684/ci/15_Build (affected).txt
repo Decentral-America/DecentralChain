@@ -1,0 +1,933 @@
+﻿2026-03-29T00:39:24.2100363Z ##[group]Run npx nx affected -t build
+2026-03-29T00:39:24.2100816Z [36;1mnpx nx affected -t build[0m
+2026-03-29T00:39:24.2138438Z shell: /usr/bin/bash -e {0}
+2026-03-29T00:39:24.2138931Z env:
+2026-03-29T00:39:24.2139106Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:39:24.2139400Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:39:24.2139728Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:39:24.2139976Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:39:24.2140182Z   CARGO_TERM_COLOR: always
+2026-03-29T00:39:24.2140394Z   CACHE_ON_FAILURE: true
+2026-03-29T00:39:24.2140638Z   NX_BASE: 18caaeb6701d4c9cb3b663a1f22fe9bc8690169c
+2026-03-29T00:39:24.2140958Z   NX_HEAD: eeb692c036ecab247927884dc372b57146660fdb
+2026-03-29T00:39:24.2141237Z ##[endgroup]
+2026-03-29T00:39:24.6846117Z 
+2026-03-29T00:39:24.6850761Z [7m[1m[38;5;214m NX [39m[22m[27m  [38;5;214mNo explicit --base argument provided, but found environment variable NX_BASE so using its value as the affected base: [1m18caaeb6701d4c9cb3b663a1f22fe9bc8690169c[22m[39m
+2026-03-29T00:39:24.6851798Z 
+2026-03-29T00:39:24.6851807Z 
+2026-03-29T00:39:24.6853062Z [7m[1m[38;5;214m NX [39m[22m[27m  [38;5;214mNo explicit --head argument provided, but found environment variable NX_HEAD so using its value as the affected head: [1meeb692c036ecab247927884dc372b57146660fdb[22m[39m
+2026-03-29T00:39:24.6853948Z 
+2026-03-29T00:39:25.2758827Z 
+2026-03-29T00:39:25.2760358Z [7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mbuild[22m for 25 projects:[39m
+2026-03-29T00:39:25.2760801Z 
+2026-03-29T00:39:25.2760959Z [2m-[22m scanner
+2026-03-29T00:39:25.2761530Z [2m-[22m @decentralchain/assets-pairs-order
+2026-03-29T00:39:25.2761924Z [2m-[22m exchange
+2026-03-29T00:39:25.2762261Z [2m-[22m @decentralchain/bignumber
+2026-03-29T00:39:25.2763042Z [2m-[22m @decentralchain/data-service-client-js
+2026-03-29T00:39:25.2763954Z [2m-[22m @decentralchain/money-like-to-node
+2026-03-29T00:39:25.2764461Z [2m-[22m @decentralchain/signature-adapter
+2026-03-29T00:39:25.2764916Z [2m-[22m @decentralchain/data-entities
+2026-03-29T00:39:25.2765282Z [2m-[22m cubensis-connect
+2026-03-29T00:39:25.2765660Z [2m-[22m @decentralchain/node-api-js
+2026-03-29T00:39:25.2766045Z [2m-[22m @decentralchain/signer
+2026-03-29T00:39:25.2766496Z [2m-[22m @decentralchain/cubensis-connect-provider
+2026-03-29T00:39:25.2766953Z [2m-[22m @decentralchain/swap-client
+2026-03-29T00:39:25.2767349Z [2m-[22m @decentralchain/browser-bus
+2026-03-29T00:39:25.2767787Z [2m-[22m @decentralchain/cubensis-connect-types
+2026-03-29T00:39:25.2768207Z [2m-[22m @decentralchain/ledger
+2026-03-29T00:39:25.2768802Z [2m-[22m @decentralchain/marshall
+2026-03-29T00:39:25.2769263Z [2m-[22m @decentralchain/transactions
+2026-03-29T00:39:25.2769665Z [2m-[22m @decentralchain/oracle-data
+2026-03-29T00:39:25.2770097Z [2m-[22m @decentralchain/parse-json-bignumber
+2026-03-29T00:39:25.2770579Z [2m-[22m @decentralchain/protobuf-serialization
+2026-03-29T00:39:25.2771004Z [2m-[22m @decentralchain/ride-js
+2026-03-29T00:39:25.2771403Z [2m-[22m @decentralchain/ts-lib-crypto
+2026-03-29T00:39:25.2772020Z [2m-[22m @decentralchain/ts-types
+2026-03-29T00:39:25.2772389Z [2m-[22m @decentralchain/crypto
+2026-03-29T00:39:25.2772578Z 
+2026-03-29T00:39:25.2772710Z [2m[36m[39m[22m
+2026-03-29T00:39:25.2935033Z 
+2026-03-29T00:39:25.2936374Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/bignumber:build  [2m[local cache][22m
+2026-03-29T00:39:25.2936891Z 
+2026-03-29T00:39:25.2936900Z 
+2026-03-29T00:39:25.2937486Z > @decentralchain/bignumber@1.2.1 build /home/runner/work/DecentralChain/DecentralChain/packages/bignumber
+2026-03-29T00:39:25.2938103Z > tsdown
+2026-03-29T00:39:25.2938235Z 
+2026-03-29T00:39:25.2939404Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.2940626Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/bignumber/tsdown.config.ts[24m 
+2026-03-29T00:39:25.2941466Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.2942193Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.2942667Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.2943060Z [34mℹ[39m Build start
+2026-03-29T00:39:25.2944209Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m12.40 kB[22m [2m│ gzip: 3.50 kB[22m
+2026-03-29T00:39:25.2945587Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m22.61 kB[22m [2m│ gzip: 5.96 kB[22m
+2026-03-29T00:39:25.2946631Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 2.49 kB[22m [2m│ gzip: 0.90 kB[22m
+2026-03-29T00:39:25.2947643Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 9.09 kB[22m [2m│ gzip: 2.58 kB[22m
+2026-03-29T00:39:25.2948147Z [34mℹ[39m 4 files, total: 46.59 kB
+2026-03-29T00:39:25.2948810Z [32m✔[39m Build complete in [32m1162ms[39m
+2026-03-29T00:39:25.2949248Z ##[endgroup]
+2026-03-29T00:39:25.2949776Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/ts-types:build  [2m[local cache][22m
+2026-03-29T00:39:25.2950118Z 
+2026-03-29T00:39:25.2950137Z 
+2026-03-29T00:39:25.2950544Z > @decentralchain/ts-types@2.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/ts-types
+2026-03-29T00:39:25.2951209Z > tsdown
+2026-03-29T00:39:25.2951322Z 
+2026-03-29T00:39:25.2951730Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.2952575Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/ts-types/tsdown.config.ts[24m 
+2026-03-29T00:39:25.2953178Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.2953518Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.2953875Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.2954172Z [34mℹ[39m Build start
+2026-03-29T00:39:25.2954673Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m 1.63 kB[22m [2m│ gzip: 0.59 kB[22m
+2026-03-29T00:39:25.2955311Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m17.85 kB[22m [2m│ gzip: 2.76 kB[22m
+2026-03-29T00:39:25.2955934Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m 3.60 kB[22m [2m│ gzip: 0.90 kB[22m
+2026-03-29T00:39:25.2956623Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m31.66 kB[22m [2m│ gzip: 4.85 kB[22m
+2026-03-29T00:39:25.2957114Z [34mℹ[39m 4 files, total: 54.73 kB
+2026-03-29T00:39:25.2957476Z [32m✔[39m Build complete in [32m1277ms[39m
+2026-03-29T00:39:25.2957867Z ##[endgroup]
+2026-03-29T00:39:25.2958378Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/ts-lib-crypto:build  [2m[local cache][22m
+2026-03-29T00:39:25.2958889Z 
+2026-03-29T00:39:25.2958896Z 
+2026-03-29T00:39:25.2959505Z > @decentralchain/ts-lib-crypto@2.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/ts-lib-crypto
+2026-03-29T00:39:25.2960011Z > tsdown
+2026-03-29T00:39:25.2960104Z 
+2026-03-29T00:39:25.2960498Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.2961351Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/ts-lib-crypto/tsdown.config.ts[24m 
+2026-03-29T00:39:25.2962251Z [34mℹ[39m entry: [34msrc/index.ts, src/bytes.ts[39m
+2026-03-29T00:39:25.2962627Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.2962977Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.2963322Z [34mℹ[39m entry: [34msrc/rsa.ts[39m
+2026-03-29T00:39:25.2963648Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.2963990Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.2964279Z [34mℹ[39m Build start
+2026-03-29T00:39:25.2964758Z [34mℹ[39m [2mdist/[22m[1mrsa.mjs[22m        [2m 4.88 kB[22m [2m│ gzip: 1.88 kB[22m
+2026-03-29T00:39:25.2965754Z [34mℹ[39m [2mdist/[22mrsa.mjs.map    [2m11.13 kB[22m [2m│ gzip: 3.53 kB[22m
+2026-03-29T00:39:25.2966467Z [34mℹ[39m [2mdist/[22mrsa.d.mts.map  [2m 0.56 kB[22m [2m│ gzip: 0.30 kB[22m
+2026-03-29T00:39:25.2967137Z [34mℹ[39m [2mdist/[22m[32m[1mrsa.d.mts[22m[39m      [2m 2.19 kB[22m [2m│ gzip: 0.96 kB[22m
+2026-03-29T00:39:25.2967804Z [34mℹ[39m 4 files, total: 18.75 kB
+2026-03-29T00:39:25.2968156Z [32m✔[39m Build complete in [32m2807ms[39m
+2026-03-29T00:39:25.2969088Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m                 [2m  1.51 kB[22m [2m│ gzip:  0.60 kB[22m
+2026-03-29T00:39:25.2970185Z [34mℹ[39m [2mdist/[22m[1mbytes.mjs[22m                 [2m  1.51 kB[22m [2m│ gzip:  0.60 kB[22m
+2026-03-29T00:39:25.2970919Z [34mℹ[39m [2mdist/[22mcrypto-QJk9Rafk.mjs.map   [2m110.61 kB[22m [2m│ gzip: 28.11 kB[22m
+2026-03-29T00:39:25.2971880Z [34mℹ[39m [2mdist/[22mcrypto-QJk9Rafk.mjs       [2m 54.45 kB[22m [2m│ gzip: 17.66 kB[22m
+2026-03-29T00:39:25.2972912Z [34mℹ[39m [2mdist/[22mbytes-CRnszTx_.d.mts.map  [2m  6.42 kB[22m [2m│ gzip:  1.73 kB[22m
+2026-03-29T00:39:25.2973635Z [34mℹ[39m [2mdist/[22mindex.d.mts.map           [2m  2.06 kB[22m [2m│ gzip:  0.58 kB[22m
+2026-03-29T00:39:25.2974305Z [34mℹ[39m [2mdist/[22mindex.mjs.map             [2m  1.32 kB[22m [2m│ gzip:  0.56 kB[22m
+2026-03-29T00:39:25.2974981Z [34mℹ[39m [2mdist/[22mbytes.mjs.map             [2m  1.31 kB[22m [2m│ gzip:  0.56 kB[22m
+2026-03-29T00:39:25.2975725Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m               [2m  4.27 kB[22m [2m│ gzip:  1.33 kB[22m
+2026-03-29T00:39:25.2976506Z [34mℹ[39m [2mdist/[22m[32m[1mbytes.d.mts[22m[39m               [2m  2.33 kB[22m [2m│ gzip:  0.86 kB[22m
+2026-03-29T00:39:25.2977279Z [34mℹ[39m [2mdist/[22m[32mbytes-CRnszTx_.d.mts[39m      [2m 12.91 kB[22m [2m│ gzip:  3.44 kB[22m
+2026-03-29T00:39:25.2977791Z [34mℹ[39m 11 files, total: 198.71 kB
+2026-03-29T00:39:25.2978154Z [32m✔[39m Build complete in [32m2816ms[39m
+2026-03-29T00:39:25.2982051Z ##[endgroup]
+2026-03-29T00:39:25.2982819Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/data-entities:build  [2m[local cache][22m
+2026-03-29T00:39:25.2983202Z 
+2026-03-29T00:39:25.2983218Z 
+2026-03-29T00:39:25.2983692Z > @decentralchain/data-entities@3.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/data-entities
+2026-03-29T00:39:25.2984410Z > tsdown
+2026-03-29T00:39:25.2984509Z 
+2026-03-29T00:39:25.2984920Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.2985805Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/data-entities/tsdown.config.ts[24m 
+2026-03-29T00:39:25.2986673Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.2987162Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.2987527Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.2987852Z [34mℹ[39m Build start
+2026-03-29T00:39:25.2988803Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m19.26 kB[22m [2m│ gzip: 4.80 kB[22m
+2026-03-29T00:39:25.2989711Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m34.58 kB[22m [2m│ gzip: 7.99 kB[22m
+2026-03-29T00:39:25.2990362Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 5.03 kB[22m [2m│ gzip: 1.38 kB[22m
+2026-03-29T00:39:25.2991097Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m14.84 kB[22m [2m│ gzip: 3.28 kB[22m
+2026-03-29T00:39:25.2991589Z [34mℹ[39m 4 files, total: 73.70 kB
+2026-03-29T00:39:25.2991940Z [32m✔[39m Build complete in [32m937ms[39m
+2026-03-29T00:39:25.2998326Z ##[endgroup]
+2026-03-29T00:39:25.2999134Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/marshall:build  [2m[local cache][22m
+2026-03-29T00:39:25.2999467Z 
+2026-03-29T00:39:25.2999474Z 
+2026-03-29T00:39:25.2999900Z > @decentralchain/marshall@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/marshall
+2026-03-29T00:39:25.3000361Z > tsdown
+2026-03-29T00:39:25.3000458Z 
+2026-03-29T00:39:25.3000869Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3002070Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/marshall/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3003112Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3003487Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3004062Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3004417Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3004945Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m           [2m47.62 kB[22m [2m│ gzip: 11.39 kB[22m
+2026-03-29T00:39:25.3005703Z [34mℹ[39m [2mdist/[22mindex.mjs.map       [2m98.46 kB[22m [2m│ gzip: 22.75 kB[22m
+2026-03-29T00:39:25.3006788Z [34mℹ[39m [2mdist/[22mindex.d.mts.map     [2m 4.83 kB[22m [2m│ gzip:  1.37 kB[22m
+2026-03-29T00:39:25.3007480Z [34mℹ[39m [2mdist/[22mchunk-CfYAbeIz.mjs  [2m 0.36 kB[22m [2m│ gzip:  0.26 kB[22m
+2026-03-29T00:39:25.3008217Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m         [2m14.87 kB[22m [2m│ gzip:  3.49 kB[22m
+2026-03-29T00:39:25.3008882Z [34mℹ[39m 5 files, total: 166.15 kB
+2026-03-29T00:39:25.3009245Z [32m✔[39m Build complete in [32m2081ms[39m
+2026-03-29T00:39:25.3013543Z ##[endgroup]
+2026-03-29T00:39:25.3014253Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/protobuf-serialization:build  [2m[local cache][22m
+2026-03-29T00:39:25.3014964Z 
+2026-03-29T00:39:25.3014981Z 
+2026-03-29T00:39:25.3015841Z > @decentralchain/protobuf-serialization@3.0.0 build /home/runner/work/DecentralChain/DecentralChain/packages/protobuf-serialization
+2026-03-29T00:39:25.3016503Z > rm -rf dist && buf generate && tsdown
+2026-03-29T00:39:25.3016689Z 
+2026-03-29T00:39:25.3017125Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3018059Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/protobuf-serialization/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3019013Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3019374Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3019726Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3020035Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3020744Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m 46.99 kB[22m [2m│ gzip: 11.07 kB[22m
+2026-03-29T00:39:25.3021447Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m138.63 kB[22m [2m│ gzip: 23.17 kB[22m
+2026-03-29T00:39:25.3022089Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 17.07 kB[22m [2m│ gzip:  5.32 kB[22m
+2026-03-29T00:39:25.3022799Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 75.65 kB[22m [2m│ gzip:  9.48 kB[22m
+2026-03-29T00:39:25.3023296Z [34mℹ[39m 4 files, total: 278.35 kB
+2026-03-29T00:39:25.3023672Z [32m✔[39m Build complete in [32m1293ms[39m
+2026-03-29T00:39:25.3055284Z ##[endgroup]
+2026-03-29T00:39:25.3056080Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/ledger:build  [2m[local cache][22m
+2026-03-29T00:39:25.3056421Z 
+2026-03-29T00:39:25.3056429Z 
+2026-03-29T00:39:25.3056838Z > @decentralchain/ledger@5.1.1 build /home/runner/work/DecentralChain/DecentralChain/packages/ledger
+2026-03-29T00:39:25.3057310Z > tsdown
+2026-03-29T00:39:25.3057427Z 
+2026-03-29T00:39:25.3057943Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3059604Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/ledger/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3060627Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3061081Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3061710Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3062168Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3063255Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m23.74 kB[22m [2m│ gzip:  6.89 kB[22m
+2026-03-29T00:39:25.3064333Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m40.90 kB[22m [2m│ gzip: 11.03 kB[22m
+2026-03-29T00:39:25.3065141Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 3.00 kB[22m [2m│ gzip:  1.13 kB[22m
+2026-03-29T00:39:25.3066034Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m13.31 kB[22m [2m│ gzip:  3.79 kB[22m
+2026-03-29T00:39:25.3067493Z [34mℹ[39m 4 files, total: 80.94 kB
+2026-03-29T00:39:25.3067880Z [32m✔[39m Build complete in [32m1310ms[39m
+2026-03-29T00:39:25.3071925Z ##[endgroup]
+2026-03-29T00:39:25.3072940Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/transactions:build  [2m[local cache][22m
+2026-03-29T00:39:25.3073355Z 
+2026-03-29T00:39:25.3073363Z 
+2026-03-29T00:39:25.3073830Z > @decentralchain/transactions@5.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/transactions
+2026-03-29T00:39:25.3074325Z > tsdown
+2026-03-29T00:39:25.3074427Z 
+2026-03-29T00:39:25.3074852Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3075721Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/transactions/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3076564Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3077077Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3077469Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3077769Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3078498Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m           [2m 90.40 kB[22m [2m│ gzip: 19.82 kB[22m
+2026-03-29T00:39:25.3079627Z [34mℹ[39m [2mdist/[22mindex.mjs.map       [2m212.12 kB[22m [2m│ gzip: 41.79 kB[22m
+2026-03-29T00:39:25.3080307Z [34mℹ[39m [2mdist/[22mindex.d.mts.map     [2m 14.60 kB[22m [2m│ gzip:  3.37 kB[22m
+2026-03-29T00:39:25.3080968Z [34mℹ[39m [2mdist/[22mchunk-CfYAbeIz.mjs  [2m  0.36 kB[22m [2m│ gzip:  0.26 kB[22m
+2026-03-29T00:39:25.3081699Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m         [2m 37.40 kB[22m [2m│ gzip:  7.26 kB[22m
+2026-03-29T00:39:25.3082200Z [34mℹ[39m 5 files, total: 354.88 kB
+2026-03-29T00:39:25.3082556Z [32m✔[39m Build complete in [32m2126ms[39m
+2026-03-29T00:39:25.3088081Z ##[endgroup]
+2026-03-29T00:39:25.3089257Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/parse-json-bignumber:build  [2m[local cache][22m
+2026-03-29T00:39:25.3090219Z 
+2026-03-29T00:39:25.3090229Z 
+2026-03-29T00:39:25.3090780Z > @decentralchain/parse-json-bignumber@2.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/parse-json-bignumber
+2026-03-29T00:39:25.3091343Z > tsdown
+2026-03-29T00:39:25.3091447Z 
+2026-03-29T00:39:25.3091868Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3092787Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/parse-json-bignumber/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3093428Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3093774Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3094127Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3094427Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3094934Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m 9.66 kB[22m [2m│ gzip: 3.38 kB[22m
+2026-03-29T00:39:25.3095952Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m25.85 kB[22m [2m│ gzip: 7.67 kB[22m
+2026-03-29T00:39:25.3096602Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 0.58 kB[22m [2m│ gzip: 0.31 kB[22m
+2026-03-29T00:39:25.3097496Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 2.63 kB[22m [2m│ gzip: 1.10 kB[22m
+2026-03-29T00:39:25.3098006Z [34mℹ[39m 4 files, total: 38.72 kB
+2026-03-29T00:39:25.3098368Z [32m✔[39m Build complete in [32m698ms[39m
+2026-03-29T00:39:25.3106902Z ##[endgroup]
+2026-03-29T00:39:25.3107602Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/money-like-to-node:build  [2m[local cache][22m
+2026-03-29T00:39:25.3107987Z 
+2026-03-29T00:39:25.3107995Z 
+2026-03-29T00:39:25.3108700Z > @decentralchain/money-like-to-node@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/money-like-to-node
+2026-03-29T00:39:25.3109251Z > tsdown
+2026-03-29T00:39:25.3109347Z 
+2026-03-29T00:39:25.3109760Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3110882Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/money-like-to-node/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3111542Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3111888Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3112241Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3112543Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3113054Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m17.44 kB[22m [2m│ gzip:  4.55 kB[22m
+2026-03-29T00:39:25.3113705Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m61.07 kB[22m [2m│ gzip: 12.98 kB[22m
+2026-03-29T00:39:25.3114332Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 5.82 kB[22m [2m│ gzip:  1.47 kB[22m
+2026-03-29T00:39:25.3115042Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m11.23 kB[22m [2m│ gzip:  2.42 kB[22m
+2026-03-29T00:39:25.3115558Z [34mℹ[39m 4 files, total: 95.56 kB
+2026-03-29T00:39:25.3115930Z [32m✔[39m Build complete in [32m1235ms[39m
+2026-03-29T00:39:25.3185338Z ##[endgroup]
+2026-03-29T00:39:25.3186136Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/node-api-js:build  [2m[local cache][22m
+2026-03-29T00:39:25.3186493Z 
+2026-03-29T00:39:25.3186501Z 
+2026-03-29T00:39:25.3186962Z > @decentralchain/node-api-js@2.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/node-api-js
+2026-03-29T00:39:25.3187448Z > tsdown
+2026-03-29T00:39:25.3187544Z 
+2026-03-29T00:39:25.3188051Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3190032Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/node-api-js/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3193253Z [34mℹ[39m entry: [34msrc/index.ts, src/api-node/transactions/index.ts, src/api-node/blocks/index.ts, src/api-node/addresses/index.ts, src/api-node/assets/index.ts, src/api-node/rewards/index.ts, src/api-node/debug/index.ts, src/api-node/alias/index.ts, src/api-node/node/index.ts, src/api-node/peers/index.ts, src/api-node/leasing/index.ts, src/api-node/eth/index.ts[39m
+2026-03-29T00:39:25.3195267Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3195728Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3196101Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3196791Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m                          [2m26.00 kB[22m [2m│ gzip:  6.96 kB[22m
+2026-03-29T00:39:25.3197764Z [34mℹ[39m [2mdist/[22m[1mapi-node/debug/index.mjs[22m           [2m 6.34 kB[22m [2m│ gzip:  1.52 kB[22m
+2026-03-29T00:39:25.3198869Z [34mℹ[39m [2mdist/[22m[1mapi-node/assets/index.mjs[22m          [2m 4.57 kB[22m [2m│ gzip:  1.47 kB[22m
+2026-03-29T00:39:25.3199883Z [34mℹ[39m [2mdist/[22m[1mapi-node/blocks/index.mjs[22m          [2m 4.48 kB[22m [2m│ gzip:  0.98 kB[22m
+2026-03-29T00:39:25.3201017Z [34mℹ[39m [2mdist/[22m[1mapi-node/peers/index.mjs[22m           [2m 1.19 kB[22m [2m│ gzip:  0.42 kB[22m
+2026-03-29T00:39:25.3202058Z [34mℹ[39m [2mdist/[22m[1mapi-node/leasing/index.mjs[22m         [2m 1.03 kB[22m [2m│ gzip:  0.52 kB[22m
+2026-03-29T00:39:25.3203156Z [34mℹ[39m [2mdist/[22m[1mapi-node/eth/index.mjs[22m             [2m 0.83 kB[22m [2m│ gzip:  0.47 kB[22m
+2026-03-29T00:39:25.3204059Z [34mℹ[39m [2mdist/[22m[1mapi-node/alias/index.mjs[22m           [2m 0.72 kB[22m [2m│ gzip:  0.36 kB[22m
+2026-03-29T00:39:25.3204894Z [34mℹ[39m [2mdist/[22m[1mapi-node/addresses/index.mjs[22m       [2m 0.67 kB[22m [2m│ gzip:  0.26 kB[22m
+2026-03-29T00:39:25.3205715Z [34mℹ[39m [2mdist/[22m[1mapi-node/rewards/index.mjs[22m         [2m 0.66 kB[22m [2m│ gzip:  0.38 kB[22m
+2026-03-29T00:39:25.3206527Z [34mℹ[39m [2mdist/[22m[1mapi-node/node/index.mjs[22m            [2m 0.66 kB[22m [2m│ gzip:  0.33 kB[22m
+2026-03-29T00:39:25.3207350Z [34mℹ[39m [2mdist/[22m[1mapi-node/transactions/index.mjs[22m    [2m 0.41 kB[22m [2m│ gzip:  0.19 kB[22m
+2026-03-29T00:39:25.3208335Z [34mℹ[39m [2mdist/[22mindex.mjs.map                      [2m56.92 kB[22m [2m│ gzip: 13.97 kB[22m
+2026-03-29T00:39:25.3209382Z [34mℹ[39m [2mdist/[22mtransactions-CGh-y-qv.mjs.map      [2m21.20 kB[22m [2m│ gzip:  5.47 kB[22m
+2026-03-29T00:39:25.3210167Z [34mℹ[39m [2mdist/[22mapi-node/debug/index.mjs.map       [2m11.56 kB[22m [2m│ gzip:  2.65 kB[22m
+2026-03-29T00:39:25.3210940Z [34mℹ[39m [2mdist/[22maddresses-C-EZIMo4.mjs.map         [2m 9.97 kB[22m [2m│ gzip:  2.65 kB[22m
+2026-03-29T00:39:25.3211706Z [34mℹ[39m [2mdist/[22mtransactions-CGh-y-qv.mjs          [2m 9.84 kB[22m [2m│ gzip:  2.81 kB[22m
+2026-03-29T00:39:25.3212468Z [34mℹ[39m [2mdist/[22mapi-node/assets/index.mjs.map      [2m 9.08 kB[22m [2m│ gzip:  2.66 kB[22m
+2026-03-29T00:39:25.3213199Z [34mℹ[39m [2mdist/[22mindex.d.mts.map                    [2m 8.05 kB[22m [2m│ gzip:  2.15 kB[22m
+2026-03-29T00:39:25.3213941Z [34mℹ[39m [2mdist/[22mapi-node/blocks/index.mjs.map      [2m 7.70 kB[22m [2m│ gzip:  1.63 kB[22m
+2026-03-29T00:39:25.3214697Z [34mℹ[39m [2mdist/[22mutils-BIHKvuBS.mjs.map             [2m 6.68 kB[22m [2m│ gzip:  2.40 kB[22m
+2026-03-29T00:39:25.3215442Z [34mℹ[39m [2mdist/[22mrequest-fy8g-AWG.mjs.map           [2m 6.14 kB[22m [2m│ gzip:  2.68 kB[22m
+2026-03-29T00:39:25.3216221Z [34mℹ[39m [2mdist/[22maddresses-C-EZIMo4.mjs             [2m 5.05 kB[22m [2m│ gzip:  1.44 kB[22m
+2026-03-29T00:39:25.3216983Z [34mℹ[39m [2mdist/[22mrequest-fy8g-AWG.mjs               [2m 3.53 kB[22m [2m│ gzip:  1.65 kB[22m
+2026-03-29T00:39:25.3217733Z [34mℹ[39m [2mdist/[22mutils-BIHKvuBS.mjs                 [2m 3.15 kB[22m [2m│ gzip:  1.30 kB[22m
+2026-03-29T00:39:25.3218472Z [34mℹ[39m [2mdist/[22mindex-De-tsBF3.d.mts.map           [2m 2.52 kB[22m [2m│ gzip:  0.76 kB[22m
+2026-03-29T00:39:25.3219380Z [34mℹ[39m [2mdist/[22mindex-BHcwJ5ds.d.mts.map           [2m 2.50 kB[22m [2m│ gzip:  0.70 kB[22m
+2026-03-29T00:39:25.3220297Z [34mℹ[39m [2mdist/[22mapi-node/peers/index.mjs.map       [2m 2.26 kB[22m [2m│ gzip:  0.69 kB[22m
+2026-03-29T00:39:25.3221056Z [34mℹ[39m [2mdist/[22mindex-WDjnLCCB.d.mts.map           [2m 2.05 kB[22m [2m│ gzip:  0.60 kB[22m
+2026-03-29T00:39:25.3221809Z [34mℹ[39m [2mdist/[22mindex-BW-LAw-T.d.mts.map           [2m 1.83 kB[22m [2m│ gzip:  0.55 kB[22m
+2026-03-29T00:39:25.3222566Z [34mℹ[39m [2mdist/[22mapi-node/leasing/index.mjs.map     [2m 1.68 kB[22m [2m│ gzip:  0.79 kB[22m
+2026-03-29T00:39:25.3223324Z [34mℹ[39m [2mdist/[22mindex-BDMOMg_V.d.mts.map           [2m 1.54 kB[22m [2m│ gzip:  0.48 kB[22m
+2026-03-29T00:39:25.3224077Z [34mℹ[39m [2mdist/[22minterface-BKF9QGl6.mjs.map         [2m 1.53 kB[22m [2m│ gzip:  0.63 kB[22m
+2026-03-29T00:39:25.3224834Z [34mℹ[39m [2mdist/[22mapi-node/eth/index.mjs.map         [2m 1.36 kB[22m [2m│ gzip:  0.60 kB[22m
+2026-03-29T00:39:25.3225592Z [34mℹ[39m [2mdist/[22mapi-node/rewards/index.mjs.map     [2m 1.07 kB[22m [2m│ gzip:  0.56 kB[22m
+2026-03-29T00:39:25.3226366Z [34mℹ[39m [2mdist/[22mapi-node/node/index.mjs.map        [2m 0.95 kB[22m [2m│ gzip:  0.45 kB[22m
+2026-03-29T00:39:25.3227123Z [34mℹ[39m [2mdist/[22mapi-node/alias/index.mjs.map       [2m 0.87 kB[22m [2m│ gzip:  0.42 kB[22m
+2026-03-29T00:39:25.3227875Z [34mℹ[39m [2mdist/[22mindex-BAdpC657.d.mts.map           [2m 0.70 kB[22m [2m│ gzip:  0.30 kB[22m
+2026-03-29T00:39:25.3228753Z [34mℹ[39m [2mdist/[22minterface-DoY1YYwV.d.mts.map       [2m 0.62 kB[22m [2m│ gzip:  0.24 kB[22m
+2026-03-29T00:39:25.3229520Z [34mℹ[39m [2mdist/[22mindex-DuFOsavc.d.mts.map           [2m 0.39 kB[22m [2m│ gzip:  0.22 kB[22m
+2026-03-29T00:39:25.3230269Z [34mℹ[39m [2mdist/[22mindex-BOdKJblp.d.mts.map           [2m 0.38 kB[22m [2m│ gzip:  0.24 kB[22m
+2026-03-29T00:39:25.3231001Z [34mℹ[39m [2mdist/[22mchunk-CfYAbeIz.mjs                 [2m 0.36 kB[22m [2m│ gzip:  0.26 kB[22m
+2026-03-29T00:39:25.3231882Z [34mℹ[39m [2mdist/[22minterface-BKF9QGl6.mjs             [2m 0.35 kB[22m [2m│ gzip:  0.19 kB[22m
+2026-03-29T00:39:25.3232645Z [34mℹ[39m [2mdist/[22mindex-1fVXcpp-.d.mts.map           [2m 0.34 kB[22m [2m│ gzip:  0.20 kB[22m
+2026-03-29T00:39:25.3233390Z [34mℹ[39m [2mdist/[22mindex-DJ7gz3z-.d.mts.map           [2m 0.27 kB[22m [2m│ gzip:  0.20 kB[22m
+2026-03-29T00:39:25.3234137Z [34mℹ[39m [2mdist/[22mindex-8Ckr3GLi.d.mts.map           [2m 0.27 kB[22m [2m│ gzip:  0.18 kB[22m
+2026-03-29T00:39:25.3234942Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m                        [2m20.18 kB[22m [2m│ gzip:  5.27 kB[22m
+2026-03-29T00:39:25.3235803Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/addresses/index.d.mts[22m[39m     [2m 1.25 kB[22m [2m│ gzip:  0.40 kB[22m
+2026-03-29T00:39:25.3236673Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/debug/index.d.mts[22m[39m         [2m 0.76 kB[22m [2m│ gzip:  0.30 kB[22m
+2026-03-29T00:39:25.3237534Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/blocks/index.d.mts[22m[39m        [2m 0.71 kB[22m [2m│ gzip:  0.28 kB[22m
+2026-03-29T00:39:25.3238416Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/assets/index.d.mts[22m[39m        [2m 0.67 kB[22m [2m│ gzip:  0.25 kB[22m
+2026-03-29T00:39:25.3239426Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/transactions/index.d.mts[22m[39m  [2m 0.52 kB[22m [2m│ gzip:  0.22 kB[22m
+2026-03-29T00:39:25.3240304Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/peers/index.d.mts[22m[39m         [2m 0.44 kB[22m [2m│ gzip:  0.20 kB[22m
+2026-03-29T00:39:25.3241161Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/node/index.d.mts[22m[39m          [2m 0.20 kB[22m [2m│ gzip:  0.13 kB[22m
+2026-03-29T00:39:25.3242010Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/alias/index.d.mts[22m[39m         [2m 0.18 kB[22m [2m│ gzip:  0.12 kB[22m
+2026-03-29T00:39:25.3242876Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/leasing/index.d.mts[22m[39m       [2m 0.15 kB[22m [2m│ gzip:  0.12 kB[22m
+2026-03-29T00:39:25.3243881Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/rewards/index.d.mts[22m[39m       [2m 0.11 kB[22m [2m│ gzip:  0.10 kB[22m
+2026-03-29T00:39:25.3244737Z [34mℹ[39m [2mdist/[22m[32m[1mapi-node/eth/index.d.mts[22m[39m           [2m 0.10 kB[22m [2m│ gzip:  0.10 kB[22m
+2026-03-29T00:39:25.3245558Z [34mℹ[39m [2mdist/[22m[32mindex-BHcwJ5ds.d.mts[39m               [2m 6.74 kB[22m [2m│ gzip:  1.92 kB[22m
+2026-03-29T00:39:25.3246355Z [34mℹ[39m [2mdist/[22m[32mindex-De-tsBF3.d.mts[39m               [2m 6.12 kB[22m [2m│ gzip:  1.80 kB[22m
+2026-03-29T00:39:25.3247142Z [34mℹ[39m [2mdist/[22m[32mindex-WDjnLCCB.d.mts[39m               [2m 5.29 kB[22m [2m│ gzip:  1.48 kB[22m
+2026-03-29T00:39:25.3247917Z [34mℹ[39m [2mdist/[22m[32mindex-BW-LAw-T.d.mts[39m               [2m 4.90 kB[22m [2m│ gzip:  1.25 kB[22m
+2026-03-29T00:39:25.3248813Z [34mℹ[39m [2mdist/[22m[32mindex-BDMOMg_V.d.mts[39m               [2m 3.69 kB[22m [2m│ gzip:  1.09 kB[22m
+2026-03-29T00:39:25.3249617Z [34mℹ[39m [2mdist/[22m[32mindex-BAdpC657.d.mts[39m               [2m 1.68 kB[22m [2m│ gzip:  0.56 kB[22m
+2026-03-29T00:39:25.3250414Z [34mℹ[39m [2mdist/[22m[32minterface-DoY1YYwV.d.mts[39m           [2m 1.38 kB[22m [2m│ gzip:  0.58 kB[22m
+2026-03-29T00:39:25.3251210Z [34mℹ[39m [2mdist/[22m[32mindex-DuFOsavc.d.mts[39m               [2m 0.89 kB[22m [2m│ gzip:  0.43 kB[22m
+2026-03-29T00:39:25.3252000Z [34mℹ[39m [2mdist/[22m[32mindex-BOdKJblp.d.mts[39m               [2m 0.72 kB[22m [2m│ gzip:  0.40 kB[22m
+2026-03-29T00:39:25.3252783Z [34mℹ[39m [2mdist/[22m[32mindex-1fVXcpp-.d.mts[39m               [2m 0.65 kB[22m [2m│ gzip:  0.31 kB[22m
+2026-03-29T00:39:25.3253563Z [34mℹ[39m [2mdist/[22m[32mindex-8Ckr3GLi.d.mts[39m               [2m 0.53 kB[22m [2m│ gzip:  0.28 kB[22m
+2026-03-29T00:39:25.3254346Z [34mℹ[39m [2mdist/[22m[32mindex-DJ7gz3z-.d.mts[39m               [2m 0.50 kB[22m [2m│ gzip:  0.26 kB[22m
+2026-03-29T00:39:25.3255040Z [34mℹ[39m 70 files, total: 288.66 kB
+2026-03-29T00:39:25.3255419Z [32m✔[39m Build complete in [32m3160ms[39m
+2026-03-29T00:39:25.3261532Z ##[endgroup]
+2026-03-29T00:39:25.3262249Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/crypto:build  [2m[local cache][22m
+2026-03-29T00:39:25.3262594Z 
+2026-03-29T00:39:25.3262602Z 
+2026-03-29T00:39:25.3263003Z > @decentralchain/crypto@1.0.2 build /home/runner/work/DecentralChain/DecentralChain/packages/crypto
+2026-03-29T00:39:25.3263568Z > npm run build:wasm && npm run build:ts
+2026-03-29T00:39:25.3263753Z 
+2026-03-29T00:39:25.3264114Z npm warn Unknown env config "catalog". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3264886Z npm warn Unknown env config "ignore-workspace-cycles". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3265707Z npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3266497Z npm warn Unknown env config "npm-globalconfig". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3267244Z npm warn Unknown env config "_jsr-registry". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3267610Z 
+2026-03-29T00:39:25.3267754Z > @decentralchain/crypto@1.0.2 build:wasm
+2026-03-29T00:39:25.3268238Z > wasm-pack build --target web --release && rimraf pkg/package.json pkg/.gitignore
+2026-03-29T00:39:25.3268729Z 
+2026-03-29T00:39:25.3269098Z [INFO]: 🎯  Checking for the Wasm target...
+2026-03-29T00:39:25.3269737Z [INFO]: 🌀  Compiling to Wasm...
+2026-03-29T00:39:25.3270174Z [1m[92m   Compiling[0m wasm-bindgen-shared v0.2.115
+2026-03-29T00:39:25.3270601Z [1m[92m   Compiling[0m unicode-ident v1.0.24
+2026-03-29T00:39:25.3270989Z [1m[92m   Compiling[0m proc-macro2 v1.0.106
+2026-03-29T00:39:25.3271338Z [1m[92m   Compiling[0m quote v1.0.45
+2026-03-29T00:39:25.3271693Z [1m[92m   Compiling[0m rustversion v1.0.22
+2026-03-29T00:39:25.3272405Z [1m[92m   Compiling[0m bumpalo v3.20.2
+2026-03-29T00:39:25.3275078Z [1m[92m   Compiling[0m once_cell v1.21.4
+2026-03-29T00:39:25.3275609Z [1m[92m   Compiling[0m cfg-if v1.0.4
+2026-03-29T00:39:25.3276049Z [1m[92m   Compiling[0m zerocopy v0.8.48
+2026-03-29T00:39:25.3276440Z [1m[92m   Compiling[0m wasm-bindgen v0.2.115
+2026-03-29T00:39:25.3276808Z [1m[92m   Compiling[0m getrandom v0.3.4
+2026-03-29T00:39:25.3277146Z [1m[92m   Compiling[0m syn v2.0.117
+2026-03-29T00:39:25.3277485Z [1m[92m   Compiling[0m signature v2.2.0
+2026-03-29T00:39:25.3277825Z [1m[92m   Compiling[0m ct-codecs v1.1.6
+2026-03-29T00:39:25.3278158Z [1m[92m   Compiling[0m ed25519 v2.2.3
+2026-03-29T00:39:25.3278487Z [1m[92m   Compiling[0m md5-rs v0.1.5
+2026-03-29T00:39:25.3279098Z [1m[92m   Compiling[0m wasm-bindgen-macro-support v0.2.115
+2026-03-29T00:39:25.3279515Z [1m[92m   Compiling[0m ppv-lite86 v0.2.21
+2026-03-29T00:39:25.3279912Z [1m[92m   Compiling[0m wasm-bindgen-macro v0.2.115
+2026-03-29T00:39:25.3280295Z [1m[92m   Compiling[0m js-sys v0.3.92
+2026-03-29T00:39:25.3280677Z [1m[92m   Compiling[0m ed25519-compact v2.2.0
+2026-03-29T00:39:25.3281039Z [1m[92m   Compiling[0m getrandom v0.2.17
+2026-03-29T00:39:25.3281386Z [1m[92m   Compiling[0m rand_core v0.6.4
+2026-03-29T00:39:25.3281735Z [1m[92m   Compiling[0m rand_chacha v0.3.1
+2026-03-29T00:39:25.3282073Z [1m[92m   Compiling[0m rand v0.8.5
+2026-03-29T00:39:25.3282435Z [1m[92m   Compiling[0m ed25519-axolotl v1.7.1
+2026-03-29T00:39:25.3283171Z [1m[92m   Compiling[0m decentralchain-crypto v1.0.0 (/home/runner/work/DecentralChain/DecentralChain/packages/crypto)
+2026-03-29T00:39:25.3283915Z [1m[92m    Finished[0m `release` profile [optimized] target(s) in 22.71s
+2026-03-29T00:39:25.3284710Z [INFO]: ⬇️  Installing wasm-bindgen...
+2026-03-29T00:39:25.3285289Z [INFO]: Optimizing wasm binaries with `wasm-opt`...
+2026-03-29T00:39:25.3285659Z [INFO]: ✨   Done in 26.72s
+2026-03-29T00:39:25.3286340Z [INFO]: 📦   Your wasm pkg is ready to publish at /home/runner/work/DecentralChain/DecentralChain/packages/crypto/pkg.
+2026-03-29T00:39:25.3287303Z npm warn Unknown env config "catalog". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3288073Z npm warn Unknown env config "ignore-workspace-cycles". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3289046Z npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3289824Z npm warn Unknown env config "npm-globalconfig". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3291030Z npm warn Unknown env config "_jsr-registry". This will stop working in the next major version of npm.
+2026-03-29T00:39:25.3291687Z 
+2026-03-29T00:39:25.3291955Z > @decentralchain/crypto@1.0.2 build:ts
+2026-03-29T00:39:25.3292380Z > tsc
+2026-03-29T00:39:25.3292536Z 
+2026-03-29T00:39:25.3292900Z ##[endgroup]
+2026-03-29T00:39:25.3293889Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/signature-adapter:build  [2m[local cache][22m
+2026-03-29T00:39:25.3294551Z 
+2026-03-29T00:39:25.3294563Z 
+2026-03-29T00:39:25.3295484Z > @decentralchain/signature-adapter@7.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/signature-adapter
+2026-03-29T00:39:25.3296449Z > tsdown
+2026-03-29T00:39:25.3296620Z 
+2026-03-29T00:39:25.3297293Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3298879Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/signature-adapter/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3299570Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3299924Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3300285Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3300586Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3301099Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m 77.65 kB[22m [2m│ gzip: 15.26 kB[22m
+2026-03-29T00:39:25.3301786Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m163.48 kB[22m [2m│ gzip: 32.22 kB[22m
+2026-03-29T00:39:25.3302615Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 14.28 kB[22m [2m│ gzip:  3.20 kB[22m
+2026-03-29T00:39:25.3303327Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 30.64 kB[22m [2m│ gzip:  6.11 kB[22m
+2026-03-29T00:39:25.3303823Z [34mℹ[39m 4 files, total: 286.05 kB
+2026-03-29T00:39:25.3304439Z [33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
+2026-03-29T00:39:25.3304939Z   - rolldown-plugin-dts:generate (60%)
+2026-03-29T00:39:25.3305238Z   - rolldown-plugin-dts:resolver (19%)
+2026-03-29T00:39:25.3305676Z See https://rolldown.rs/options/checks#plugintimings for more details.
+2026-03-29T00:39:25.3305958Z 
+2026-03-29T00:39:25.3306161Z [32m✔[39m Build complete in [32m3227ms[39m
+2026-03-29T00:39:25.3339651Z ##[endgroup]
+2026-03-29T00:39:25.3340327Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/swap-client:build  [2m[local cache][22m
+2026-03-29T00:39:25.3340716Z 
+2026-03-29T00:39:25.3340723Z 
+2026-03-29T00:39:25.3341185Z > @decentralchain/swap-client@2.0.0 build /home/runner/work/DecentralChain/DecentralChain/packages/swap-client
+2026-03-29T00:39:25.3341668Z > tsdown
+2026-03-29T00:39:25.3341766Z 
+2026-03-29T00:39:25.3342173Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3343349Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/swap-client/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3344006Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3344357Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3344762Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3345170Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3345823Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m10.70 kB[22m [2m│ gzip: 3.73 kB[22m
+2026-03-29T00:39:25.3346502Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m28.69 kB[22m [2m│ gzip: 7.37 kB[22m
+2026-03-29T00:39:25.3347373Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 1.78 kB[22m [2m│ gzip: 0.65 kB[22m
+2026-03-29T00:39:25.3348085Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 4.28 kB[22m [2m│ gzip: 1.22 kB[22m
+2026-03-29T00:39:25.3348834Z [34mℹ[39m 4 files, total: 45.45 kB
+2026-03-29T00:39:25.3349223Z [32m✔[39m Build complete in [32m2177ms[39m
+2026-03-29T00:39:25.3353703Z ##[endgroup]
+2026-03-29T00:39:25.3354327Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/signer:build  [2m[local cache][22m
+2026-03-29T00:39:25.3354649Z 
+2026-03-29T00:39:25.3354657Z 
+2026-03-29T00:39:25.3355056Z > @decentralchain/signer@2.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/signer
+2026-03-29T00:39:25.3355502Z > tsdown
+2026-03-29T00:39:25.3355597Z 
+2026-03-29T00:39:25.3355997Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3356853Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/signer/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3357449Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3357843Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3358454Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3359068Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3359736Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m38.65 kB[22m [2m│ gzip:  9.68 kB[22m
+2026-03-29T00:39:25.3360596Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m84.58 kB[22m [2m│ gzip: 19.22 kB[22m
+2026-03-29T00:39:25.3361252Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 7.96 kB[22m [2m│ gzip:  1.94 kB[22m
+2026-03-29T00:39:25.3361959Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m15.37 kB[22m [2m│ gzip:  4.16 kB[22m
+2026-03-29T00:39:25.3362456Z [34mℹ[39m 4 files, total: 146.57 kB
+2026-03-29T00:39:25.3362819Z [32m✔[39m Build complete in [32m1721ms[39m
+2026-03-29T00:39:25.3367528Z ##[endgroup]
+2026-03-29T00:39:25.3368186Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/oracle-data:build  [2m[local cache][22m
+2026-03-29T00:39:25.3368758Z 
+2026-03-29T00:39:25.3368772Z 
+2026-03-29T00:39:25.3369248Z > @decentralchain/oracle-data@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/oracle-data
+2026-03-29T00:39:25.3369740Z > tsdown
+2026-03-29T00:39:25.3369840Z 
+2026-03-29T00:39:25.3370343Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3371480Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/oracle-data/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3372108Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3372451Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3372805Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3373104Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3373606Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m14.99 kB[22m [2m│ gzip: 3.79 kB[22m
+2026-03-29T00:39:25.3374277Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m32.74 kB[22m [2m│ gzip: 7.68 kB[22m
+2026-03-29T00:39:25.3374892Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 2.21 kB[22m [2m│ gzip: 0.71 kB[22m
+2026-03-29T00:39:25.3375580Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 5.93 kB[22m [2m│ gzip: 1.63 kB[22m
+2026-03-29T00:39:25.3376064Z [34mℹ[39m 4 files, total: 55.88 kB
+2026-03-29T00:39:25.3376415Z [32m✔[39m Build complete in [32m1457ms[39m
+2026-03-29T00:39:25.3395388Z ##[endgroup]
+2026-03-29T00:39:25.3396054Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/data-service-client-js:build  [2m[local cache][22m
+2026-03-29T00:39:25.3396462Z 
+2026-03-29T00:39:25.3396469Z 
+2026-03-29T00:39:25.3397031Z > @decentralchain/data-service-client-js@4.2.1 build /home/runner/work/DecentralChain/DecentralChain/packages/data-service-client-js
+2026-03-29T00:39:25.3397796Z > tsdown
+2026-03-29T00:39:25.3397909Z 
+2026-03-29T00:39:25.3398466Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3399799Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/data-service-client-js/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3400715Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3401212Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3401683Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3402001Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3402521Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m18.60 kB[22m [2m│ gzip: 4.37 kB[22m
+2026-03-29T00:39:25.3403183Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m43.22 kB[22m [2m│ gzip: 9.52 kB[22m
+2026-03-29T00:39:25.3403803Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 2.66 kB[22m [2m│ gzip: 0.81 kB[22m
+2026-03-29T00:39:25.3404497Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 4.78 kB[22m [2m│ gzip: 1.30 kB[22m
+2026-03-29T00:39:25.3405016Z [34mℹ[39m 4 files, total: 69.26 kB
+2026-03-29T00:39:25.3405376Z [32m✔[39m Build complete in [32m1361ms[39m
+2026-03-29T00:39:25.3408590Z ##[endgroup]
+2026-03-29T00:39:25.3409560Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/browser-bus:build  [2m[local cache][22m
+2026-03-29T00:39:25.3409919Z 
+2026-03-29T00:39:25.3409927Z 
+2026-03-29T00:39:25.3410389Z > @decentralchain/browser-bus@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/browser-bus
+2026-03-29T00:39:25.3410872Z > tsdown
+2026-03-29T00:39:25.3410967Z 
+2026-03-29T00:39:25.3411377Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3412241Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/browser-bus/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3412977Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3413567Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3414150Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3414456Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3415185Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m19.76 kB[22m [2m│ gzip:  5.61 kB[22m
+2026-03-29T00:39:25.3416079Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m45.80 kB[22m [2m│ gzip: 12.28 kB[22m
+2026-03-29T00:39:25.3416749Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 4.93 kB[22m [2m│ gzip:  1.53 kB[22m
+2026-03-29T00:39:25.3417498Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 9.85 kB[22m [2m│ gzip:  3.13 kB[22m
+2026-03-29T00:39:25.3418000Z [34mℹ[39m 4 files, total: 80.34 kB
+2026-03-29T00:39:25.3418360Z [32m✔[39m Build complete in [32m1229ms[39m
+2026-03-29T00:39:25.3422986Z ##[endgroup]
+2026-03-29T00:39:25.3423852Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/cubensis-connect-types:build  [2m[local cache][22m
+2026-03-29T00:39:25.3424251Z 
+2026-03-29T00:39:25.3424258Z 
+2026-03-29T00:39:25.3424848Z > @decentralchain/cubensis-connect-types@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/cubensis-connect-types
+2026-03-29T00:39:25.3425436Z > tsdown
+2026-03-29T00:39:25.3425536Z 
+2026-03-29T00:39:25.3425940Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3426960Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/cubensis-connect-types/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3427949Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3428320Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3429047Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3429385Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3429904Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m 0.01 kB[22m [2m│ gzip: 0.03 kB[22m
+2026-03-29T00:39:25.3430833Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 8.00 kB[22m [2m│ gzip: 2.05 kB[22m
+2026-03-29T00:39:25.3431751Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m24.71 kB[22m [2m│ gzip: 5.39 kB[22m
+2026-03-29T00:39:25.3432255Z [34mℹ[39m 3 files, total: 32.72 kB
+2026-03-29T00:39:25.3432614Z [32m✔[39m Build complete in [32m952ms[39m
+2026-03-29T00:39:25.3437398Z ##[endgroup]
+2026-03-29T00:39:25.3438219Z ##[group]🔁 [2m> [22m[2mnx run[22m @decentralchain/assets-pairs-order:build  [2m[local cache][22m
+2026-03-29T00:39:25.3438792Z 
+2026-03-29T00:39:25.3438801Z 
+2026-03-29T00:39:25.3439329Z > @decentralchain/assets-pairs-order@5.0.2 build /home/runner/work/DecentralChain/DecentralChain/packages/assets-pairs-order
+2026-03-29T00:39:25.3439867Z > tsdown
+2026-03-29T00:39:25.3439968Z 
+2026-03-29T00:39:25.3440367Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:25.3441263Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/assets-pairs-order/tsdown.config.ts[24m 
+2026-03-29T00:39:25.3441923Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:25.3442280Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:25.3442637Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:25.3442937Z [34mℹ[39m Build start
+2026-03-29T00:39:25.3443438Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m3.95 kB[22m [2m│ gzip: 1.49 kB[22m
+2026-03-29T00:39:25.3444078Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m6.33 kB[22m [2m│ gzip: 2.13 kB[22m
+2026-03-29T00:39:25.3444705Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m0.41 kB[22m [2m│ gzip: 0.25 kB[22m
+2026-03-29T00:39:25.3445394Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m1.81 kB[22m [2m│ gzip: 0.72 kB[22m
+2026-03-29T00:39:25.3445881Z [34mℹ[39m 4 files, total: 12.49 kB
+2026-03-29T00:39:25.3446233Z [32m✔[39m Build complete in [32m697ms[39m
+2026-03-29T00:39:28.1222012Z ##[endgroup]
+2026-03-29T00:39:28.1223254Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/cubensis-connect-provider:build
+2026-03-29T00:39:28.1224326Z 
+2026-03-29T00:39:28.1224346Z 
+2026-03-29T00:39:28.1225473Z > @decentralchain/cubensis-connect-provider@1.0.1 build /home/runner/work/DecentralChain/DecentralChain/packages/cubensis-connect-provider
+2026-03-29T00:39:28.1226670Z > tsdown
+2026-03-29T00:39:28.1226872Z 
+2026-03-29T00:39:28.1227698Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:28.1229770Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/cubensis-connect-provider/tsdown.config.ts[24m 
+2026-03-29T00:39:28.1231093Z [34mℹ[39m entry: [34msrc/index.ts[39m
+2026-03-29T00:39:28.1231724Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:28.1232384Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:28.1232953Z [34mℹ[39m Build start
+2026-03-29T00:39:28.1233889Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m        [2m18.57 kB[22m [2m│ gzip:  5.81 kB[22m
+2026-03-29T00:39:28.1235155Z [34mℹ[39m [2mdist/[22mindex.mjs.map    [2m37.05 kB[22m [2m│ gzip: 10.22 kB[22m
+2026-03-29T00:39:28.1236461Z [34mℹ[39m [2mdist/[22mindex.d.mts.map  [2m 1.20 kB[22m [2m│ gzip:  0.52 kB[22m
+2026-03-29T00:39:28.1237761Z [34mℹ[39m [2mdist/[22m[32m[1mindex.d.mts[22m[39m      [2m 4.99 kB[22m [2m│ gzip:  1.81 kB[22m
+2026-03-29T00:39:28.1238867Z [34mℹ[39m 4 files, total: 61.81 kB
+2026-03-29T00:39:28.1239553Z [32m✔[39m Build complete in [32m1793ms[39m
+2026-03-29T00:39:31.8797023Z ##[endgroup]
+2026-03-29T00:39:31.8799844Z ##[group]✅ [2m> [22m[2mnx run[22m cubensis-connect:build
+2026-03-29T00:39:31.8801465Z 
+2026-03-29T00:39:31.8802478Z 
+2026-03-29T00:39:31.8804233Z > cubensis-connect@ build /home/runner/work/DecentralChain/DecentralChain/apps/cubensis-connect
+2026-03-29T00:39:31.8806589Z > node scripts/build.mjs
+2026-03-29T00:39:31.8808075Z 
+2026-03-29T00:39:31.8809726Z 
+2026-03-29T00:39:31.8811495Z 🔨 Building Cubensis Connect (production)...
+2026-03-29T00:39:31.8813020Z 
+2026-03-29T00:39:31.8814233Z   [1/4] Building UI pages...
+2026-03-29T00:39:31.8816256Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:31.8833390Z [2K
+2026-03-29T00:39:31.8836230Z transforming...[33m[plugin rolldown:vite-resolve] Module "buffer" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/ledger/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8840927Z [33m[plugin rolldown:vite-resolve] Module "buffer" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/swap-client/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8845378Z [33m[plugin rolldown:vite-resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/crypto/dist/initWasm.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8850187Z [33m[plugin rolldown:vite-resolve] Module "buffer" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/crypto/pkg/decentralchain_crypto.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8852396Z [32m✓[39m 1006 modules transformed.
+2026-03-29T00:39:31.8852862Z rendering chunks...
+2026-03-29T00:39:31.8853239Z computing gzip size...
+2026-03-29T00:39:31.8854382Z [2mdist/build/[0m[32maccounts.html                                  [39m[2m[1m    0.91 kB[0m[0m[2m │ gzip:   0.44 kB[0m
+2026-03-29T00:39:31.8855871Z [2mdist/build/[0m[32mpopup.html                                     [39m[2m[1m    0.98 kB[0m[0m[2m │ gzip:   0.45 kB[0m
+2026-03-29T00:39:31.8857686Z [2mdist/build/[0m[32mnotification.html                              [39m[2m[1m    0.98 kB[0m[0m[2m │ gzip:   0.45 kB[0m
+2026-03-29T00:39:31.8859620Z [2mdist/build/[0m[2massets/[0m[32mt-set-script-cancel-48-BqGPqaVb.svg     [39m[2m[1m    4.58 kB[0m[0m[2m │ gzip:   1.78 kB[0m
+2026-03-29T00:39:31.8861703Z [2mdist/build/[0m[2massets/[0m[32mUNI-BmcZOAZz.svg                        [39m[2m[1m    4.66 kB[0m[0m[2m │ gzip:   2.20 kB[0m
+2026-03-29T00:39:31.8863430Z [2mdist/build/[0m[2massets/[0m[32mt-tokenburn-48-DK8wEPgn.svg             [39m[2m[1m    4.77 kB[0m[0m[2m │ gzip:   2.26 kB[0m
+2026-03-29T00:39:31.8865197Z [2mdist/build/[0m[2massets/[0m[32mapple-store-icon-Bi0hMKN7.svg           [39m[2m[1m    5.24 kB[0m[0m[2m │ gzip:   2.19 kB[0m
+2026-03-29T00:39:31.8866909Z [2mdist/build/[0m[2massets/[0m[32mt-swap-48-CKN_ZIZQ.svg                  [39m[2m[1m    5.27 kB[0m[0m[2m │ gzip:   2.00 kB[0m
+2026-03-29T00:39:31.8869105Z [2mdist/build/[0m[2massets/[0m[32mgoogle-play-icon-CuANDt7D.svg           [39m[2m[1m    5.58 kB[0m[0m[2m │ gzip:   2.34 kB[0m
+2026-03-29T00:39:31.8870852Z [2mdist/build/[0m[2massets/[0m[32musers-04SZkWV3.svg                      [39m[2m[1m    5.80 kB[0m[0m[2m │ gzip:   2.71 kB[0m
+2026-03-29T00:39:31.8872491Z [2mdist/build/[0m[2massets/[0m[32mTSN-C0ccMe_U.svg                        [39m[2m[1m    6.08 kB[0m[0m[2m │ gzip:   1.67 kB[0m
+2026-03-29T00:39:31.8874129Z [2mdist/build/[0m[2massets/[0m[32mSHIB-BMinMcYE.svg                       [39m[2m[1m    8.24 kB[0m[0m[2m │ gzip:   2.95 kB[0m
+2026-03-29T00:39:31.8875620Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-th-regular-B2J1BNkc.woff2     [39m[2m[1m    8.43 kB[0m[0m
+2026-03-29T00:39:31.8877106Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-th-bold-Ck_jrPsV.woff2        [39m[2m[1m    8.47 kB[0m[0m
+2026-03-29T00:39:31.8878828Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-th-medium-DoLD0UK3.woff2      [39m[2m[1m    8.51 kB[0m[0m
+2026-03-29T00:39:31.8880402Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-th-light-0p0jvhYF.woff2       [39m[2m[1m    8.53 kB[0m[0m
+2026-03-29T00:39:31.8882032Z [2mdist/build/[0m[2massets/[0m[32mSCONEX-C6iVNXqK.svg                     [39m[2m[1m   28.52 kB[0m[0m[2m │ gzip:  20.80 kB[0m
+2026-03-29T00:39:31.8883813Z [2mdist/build/[0m[2massets/[0m[32mdecentralchain_crypto_bg-DdnNBNRH.wasm  [39m[2m[1m   47.43 kB[0m[0m[2m │ gzip:  20.81 kB[0m
+2026-03-29T00:39:31.8885410Z [2mdist/build/[0m[2massets/[0m[32mroboto-light-HpPPlWdz.woff2             [39m[2m[1m   50.08 kB[0m[0m
+2026-03-29T00:39:31.8886904Z [2mdist/build/[0m[2massets/[0m[32mroboto-bold-DlldiKhv.woff2              [39m[2m[1m   50.19 kB[0m[0m
+2026-03-29T00:39:31.8888373Z [2mdist/build/[0m[2massets/[0m[32mroboto-regular-ZS8w50yb.woff2           [39m[2m[1m   50.24 kB[0m[0m
+2026-03-29T00:39:31.8890107Z [2mdist/build/[0m[2massets/[0m[32mroboto-medium-1O5nOIK6.woff2            [39m[2m[1m   50.46 kB[0m[0m
+2026-03-29T00:39:31.8891736Z [2mdist/build/[0m[2massets/[0m[32mCRV-CJX1jfdi.svg                        [39m[2m[1m  107.59 kB[0m[0m[2m │ gzip:  35.64 kB[0m
+2026-03-29T00:39:31.8893484Z [2mdist/build/[0m[2massets/[0m[32mcubensis-connect-lock-BRX7NhhU.svg      [39m[2m[1m  238.88 kB[0m[0m[2m │ gzip:  33.24 kB[0m
+2026-03-29T00:39:31.8895107Z [2mdist/build/[0m[2massets/[0m[32mloader-Dc6aqSNH.gif                     [39m[2m[1m  581.61 kB[0m[0m
+2026-03-29T00:39:31.8896572Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-zh-light-B3EeXslO.woff2       [39m[2m[1m1,563.48 kB[0m[0m
+2026-03-29T00:39:31.8898086Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-zh-regular-CFfB6ltu.woff2     [39m[2m[1m1,595.29 kB[0m[0m
+2026-03-29T00:39:31.8899821Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-ja-light-C9QPygPv.woff2       [39m[2m[1m1,606.70 kB[0m[0m
+2026-03-29T00:39:31.8901363Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-zh-medium-Ce6fZQqC.woff2      [39m[2m[1m1,615.22 kB[0m[0m
+2026-03-29T00:39:31.8903216Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-ja-regular-D41JklPF.woff2     [39m[2m[1m1,648.30 kB[0m[0m
+2026-03-29T00:39:31.8904768Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-zh-bold-DOfHEuOr.woff2        [39m[2m[1m1,657.47 kB[0m[0m
+2026-03-29T00:39:31.8906280Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-ja-medium-C6tlitJm.woff2      [39m[2m[1m1,674.74 kB[0m[0m
+2026-03-29T00:39:31.8907781Z [2mdist/build/[0m[2massets/[0m[32mnoto-sans-ja-bold-CXV-376O.woff2        [39m[2m[1m1,719.98 kB[0m[0m
+2026-03-29T00:39:31.8909641Z [2mdist/build/[0m[2massets/[0m[35maccounts-DAZMuj8k.css                   [39m[2m[1m   10.43 kB[0m[0m[2m │ gzip:   2.61 kB[0m
+2026-03-29T00:39:31.8911392Z [2mdist/build/[0m[2massets/[0m[35mRootWrapper-Cdt0lLx-.css                [39m[2m[1m   45.88 kB[0m[0m[2m │ gzip:  10.48 kB[0m
+2026-03-29T00:39:31.8913312Z [2mdist/build/[0m[2massets/[0m[35mpopup-Artdb2rN.css                      [39m[2m[1m  121.41 kB[0m[0m[2m │ gzip:  27.30 kB[0m
+2026-03-29T00:39:31.8914888Z [2mdist/build/[0m[36mnotification.js                                [39m[2m[1m    0.09 kB[0m[0m[2m │ gzip:   0.09 kB[0m
+2026-03-29T00:39:31.8916339Z [2mdist/build/[0m[36mpopup.js                                       [39m[2m[1m    0.09 kB[0m[0m[2m │ gzip:   0.09 kB[0m
+2026-03-29T00:39:31.8918114Z [2mdist/build/[0m[36mchunk-vite-browser-external-CrbYhXJA.js        [39m[2m[1m    0.27 kB[0m[0m[2m │ gzip:   0.20 kB[0m[2m │ map:     0.19 kB[0m
+2026-03-29T00:39:31.8920344Z [2mdist/build/[0m[36mextension.zh-DGRIN5PY.js                       [39m[2m[1m   26.22 kB[0m[0m[2m │ gzip:   9.06 kB[0m[2m │ map:    29.62 kB[0m
+2026-03-29T00:39:31.8922359Z [2mdist/build/[0m[36mextension.id-BfhHP7OI.js                       [39m[2m[1m   28.10 kB[0m[0m[2m │ gzip:   8.67 kB[0m[2m │ map:    31.50 kB[0m
+2026-03-29T00:39:31.8924260Z [2mdist/build/[0m[36mextension.en-DD5YpUFx.js                       [39m[2m[1m   28.20 kB[0m[0m[2m │ gzip:   8.42 kB[0m[2m │ map:    31.64 kB[0m
+2026-03-29T00:39:31.8926190Z [2mdist/build/[0m[36mextension.pt-DDKVibfk.js                       [39m[2m[1m   29.53 kB[0m[0m[2m │ gzip:   9.09 kB[0m[2m │ map:    32.93 kB[0m
+2026-03-29T00:39:31.8928036Z [2mdist/build/[0m[36mextension.tr-WKYBg210.js                       [39m[2m[1m   29.97 kB[0m[0m[2m │ gzip:   9.45 kB[0m[2m │ map:    33.37 kB[0m
+2026-03-29T00:39:31.8930178Z [2mdist/build/[0m[36mextension.es-BaZwhS9i.js                       [39m[2m[1m   30.30 kB[0m[0m[2m │ gzip:   9.37 kB[0m[2m │ map:    33.70 kB[0m
+2026-03-29T00:39:31.8932016Z [2mdist/build/[0m[36mextension.vi-BE49aU4S.js                       [39m[2m[1m   32.56 kB[0m[0m[2m │ gzip:   9.47 kB[0m[2m │ map:    35.96 kB[0m
+2026-03-29T00:39:31.8933823Z [2mdist/build/[0m[36mextension.ja-nB_WQJ01.js                       [39m[2m[1m   34.39 kB[0m[0m[2m │ gzip:   9.66 kB[0m[2m │ map:    37.79 kB[0m
+2026-03-29T00:39:31.8935604Z [2mdist/build/[0m[36mextension.ru-D85c04MF.js                       [39m[2m[1m   41.46 kB[0m[0m[2m │ gzip:  10.76 kB[0m[2m │ map:    44.92 kB[0m
+2026-03-29T00:39:31.8937393Z [2mdist/build/[0m[36mextension.th-Zoo4cjUC.js                       [39m[2m[1m   47.20 kB[0m[0m[2m │ gzip:  10.05 kB[0m[2m │ map:    50.60 kB[0m
+2026-03-29T00:39:31.8939422Z [2mdist/build/[0m[36mbuffer-Bh5EMJr1.js                             [39m[2m[1m   56.71 kB[0m[0m[2m │ gzip:  12.50 kB[0m[2m │ map:   104.70 kB[0m
+2026-03-29T00:39:31.8941174Z [2mdist/build/[0m[36maccounts.js                                    [39m[2m[1m   88.32 kB[0m[0m[2m │ gzip:  17.96 kB[0m[2m │ map:   153.75 kB[0m
+2026-03-29T00:39:31.8942955Z [2mdist/build/[0m[36mpopup-C7RLm997.js                              [39m[33m[1m  910.65 kB[0m[39m[2m │ gzip: 236.66 kB[0m[2m │ map: 1,435.22 kB[0m
+2026-03-29T00:39:31.8944821Z [2mdist/build/[0m[36mRootWrapper-DkV76thW.js                        [39m[33m[1m1,868.26 kB[0m[39m[2m │ gzip: 429.20 kB[0m[2m │ map: 3,965.56 kB[0m
+2026-03-29T00:39:31.8945877Z 
+2026-03-29T00:39:31.8946716Z [33m[33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
+2026-03-29T00:39:31.8947545Z   - buffer-polyfill (68%)
+2026-03-29T00:39:31.8947945Z   - vite:css (13%)
+2026-03-29T00:39:31.8948329Z   - rolldown:vite-resolve (11%)
+2026-03-29T00:39:31.8949314Z See https://rolldown.rs/options/checks#plugintimings for more details.
+2026-03-29T00:39:31.8950007Z [39m
+2026-03-29T00:39:31.8950403Z [32m✓ built in 4.43s[39m
+2026-03-29T00:39:31.8950855Z   [2/4] Building background script...
+2026-03-29T00:39:31.8951766Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:31.8952430Z [2K
+2026-03-29T00:39:31.8955629Z transforming...[33m[plugin rolldown:vite-resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/crypto/dist/initWasm.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8961254Z [33m[plugin rolldown:vite-resolve] Module "buffer" has been externalized for browser compatibility, imported by "/home/runner/work/DecentralChain/DecentralChain/packages/crypto/pkg/decentralchain_crypto.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.[39m
+2026-03-29T00:39:31.8963637Z [32m✓[39m 539 modules transformed.
+2026-03-29T00:39:31.8964083Z rendering chunks...
+2026-03-29T00:39:31.8964456Z computing gzip size...
+2026-03-29T00:39:31.8965643Z [2mdist/build/[0m[36mbackground.js  [39m[33m[1m1,548.02 kB[0m[39m[2m │ gzip: 452.86 kB[0m[2m │ map: 2,291.65 kB[0m
+2026-03-29T00:39:31.8966369Z 
+2026-03-29T00:39:31.8966614Z [32m✓ built in 533ms[39m
+2026-03-29T00:39:31.8967066Z   [3/4] Building content scripts...
+2026-03-29T00:39:31.8967980Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:31.8968857Z [2K
+2026-03-29T00:39:31.8969446Z transforming...[32m✓[39m 12 modules transformed.
+2026-03-29T00:39:31.8969987Z rendering chunks...
+2026-03-29T00:39:31.8970351Z computing gzip size...
+2026-03-29T00:39:31.8971488Z [2mdist/build/[0m[36mcontentscript.js  [39m[2m[1m91.07 kB[0m[0m[2m │ gzip: 19.01 kB[0m[2m │ map: 193.70 kB[0m
+2026-03-29T00:39:31.8972162Z 
+2026-03-29T00:39:31.8972418Z [32m✓ built in 107ms[39m
+2026-03-29T00:39:31.8973257Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:31.8973905Z [2K
+2026-03-29T00:39:31.8974434Z transforming...[32m✓[39m 11 modules transformed.
+2026-03-29T00:39:31.8974946Z rendering chunks...
+2026-03-29T00:39:31.8975312Z computing gzip size...
+2026-03-29T00:39:31.8976347Z [2mdist/build/[0m[36minpage.js  [39m[2m[1m59.62 kB[0m[0m[2m │ gzip: 13.03 kB[0m[2m │ map: 144.47 kB[0m
+2026-03-29T00:39:31.8977217Z 
+2026-03-29T00:39:31.8977454Z [32m✓ built in 80ms[39m
+2026-03-29T00:39:31.8977897Z   [4/4] Generating platform builds...
+2026-03-29T00:39:31.8978189Z 
+2026-03-29T00:39:31.8978402Z ✅ Build complete!
+2026-03-29T00:39:31.8978810Z 
+2026-03-29T00:39:31.8979073Z   Platform dirs: chrome, firefox, opera, edge
+2026-03-29T00:39:31.8979559Z   Output: dist/
+2026-03-29T00:39:31.8979747Z 
+2026-03-29T00:39:33.5201078Z ##[endgroup]
+2026-03-29T00:39:33.5204491Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/ride-js:build
+2026-03-29T00:39:33.5206618Z 
+2026-03-29T00:39:33.5208266Z 
+2026-03-29T00:39:33.5210775Z > @decentralchain/ride-js@2.3.1 build /home/runner/work/DecentralChain/DecentralChain/packages/ride-js
+2026-03-29T00:39:33.5213250Z > tsdown && cp src/index.d.ts dist/index.d.mts
+2026-03-29T00:39:33.5214971Z 
+2026-03-29T00:39:33.5217110Z [34mℹ[39m [34mtsdown v0.21.6[39m powered by [38;2;255;126;23mrolldown v1.0.0-rc.12[39m
+2026-03-29T00:39:33.5223585Z [34mℹ[39m config file: [4m/home/runner/work/DecentralChain/DecentralChain/packages/ride-js/tsdown.config.ts[24m 
+2026-03-29T00:39:33.5227348Z [34mℹ[39m entry: [34msrc/index.js[39m
+2026-03-29T00:39:33.5228053Z [34mℹ[39m target: [34mnode24.0.0[39m
+2026-03-29T00:39:33.5229511Z [34mℹ[39m tsconfig: [34mtsconfig.json[39m
+2026-03-29T00:39:33.5231608Z [34mℹ[39m Build start
+2026-03-29T00:39:33.5233202Z [34mℹ[39m [2mdist/[22m[1mindex.mjs[22m      [2m 7.42 kB[22m [2m│ gzip: 2.44 kB[22m
+2026-03-29T00:39:33.5240305Z [34mℹ[39m [2mdist/[22mindex.mjs.map  [2m11.71 kB[22m [2m│ gzip: 3.78 kB[22m
+2026-03-29T00:39:33.5241162Z [34mℹ[39m 2 files, total: 19.12 kB
+2026-03-29T00:39:33.5241818Z [32m✔[39m Build complete in [32m244ms[39m
+2026-03-29T00:39:36.6461898Z ##[endgroup]
+2026-03-29T00:39:36.6470755Z ##[group]✅ [2m> [22m[2mnx run[22m scanner:build
+2026-03-29T00:39:36.6471217Z 
+2026-03-29T00:39:36.6471235Z 
+2026-03-29T00:39:36.6471860Z > scanner@1.0.0 build /home/runner/work/DecentralChain/DecentralChain/apps/scanner
+2026-03-29T00:39:36.6472981Z > react-router build
+2026-03-29T00:39:36.6473219Z 
+2026-03-29T00:39:36.6473509Z Using Vite Environment API (experimental)
+2026-03-29T00:39:36.6474536Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:36.6475221Z [2K
+2026-03-29T00:39:36.6475817Z transforming...[32m✓[39m 2610 modules transformed.
+2026-03-29T00:39:36.6476381Z rendering chunks...
+2026-03-29T00:39:36.6476773Z computing gzip size...
+2026-03-29T00:39:36.6477985Z [2mbuild/client/[0m[32m.vite/manifest.json                         [39m[2m[1m 31.23 kB[0m[0m[2m │ gzip:   3.32 kB[0m
+2026-03-29T00:39:36.6480019Z [2mbuild/client/[0m[2massets/[0m[35mroot-x1XGuNl0.css                    [39m[2m[1m  0.00 kB[0m[0m[2m │ gzip:   0.02 kB[0m
+2026-03-29T00:39:36.6481898Z [2mbuild/client/[0m[2massets/[0m[35mNetworkMapContent-vh-t_kPv.css       [39m[2m[1m 15.09 kB[0m[0m[2m │ gzip:   6.36 kB[0m
+2026-03-29T00:39:36.6483783Z [2mbuild/client/[0m[2massets/[0m[36msitemap.xml-DUpu_G_a.js              [39m[2m[1m  0.00 kB[0m[0m[2m │ gzip:   0.02 kB[0m
+2026-03-29T00:39:36.6485635Z [2mbuild/client/[0m[2massets/[0m[36mNetworkMapContent-B-JIGJPn.js        [39m[2m[1m  0.07 kB[0m[0m[2m │ gzip:   0.08 kB[0m
+2026-03-29T00:39:36.6487400Z [2mbuild/client/[0m[2massets/[0m[36mutils-CV3la8uY.js                    [39m[2m[1m  0.08 kB[0m[0m[2m │ gzip:   0.10 kB[0m
+2026-03-29T00:39:36.6489569Z [2mbuild/client/[0m[2massets/[0m[36mchevron-left-D_5rTmzL.js             [39m[2m[1m  0.11 kB[0m[0m[2m │ gzip:   0.13 kB[0m
+2026-03-29T00:39:36.6491384Z [2mbuild/client/[0m[2massets/[0m[36mchevron-right-Df6vpvNe.js            [39m[2m[1m  0.11 kB[0m[0m[2m │ gzip:   0.13 kB[0m
+2026-03-29T00:39:36.6493266Z [2mbuild/client/[0m[2massets/[0m[36mloader-circle-BZBLKrZD.js            [39m[2m[1m  0.13 kB[0m[0m[2m │ gzip:   0.14 kB[0m
+2026-03-29T00:39:36.6495036Z [2mbuild/client/[0m[2massets/[0m[36marrow-left-KOsJtf1P.js               [39m[2m[1m  0.15 kB[0m[0m[2m │ gzip:   0.15 kB[0m
+2026-03-29T00:39:36.6497571Z [2mbuild/client/[0m[2massets/[0m[36mclock-D8yAv7Re.js                    [39m[2m[1m  0.15 kB[0m[0m[2m │ gzip:   0.15 kB[0m
+2026-03-29T00:39:36.6499729Z [2mbuild/client/[0m[2massets/[0m[36msearch-iLc9sbn0.js                   [39m[2m[1m  0.16 kB[0m[0m[2m │ gzip:   0.16 kB[0m
+2026-03-29T00:39:36.6501614Z [2mbuild/client/[0m[2massets/[0m[36mtrending-up-CX0gJIzZ.js              [39m[2m[1m  0.16 kB[0m[0m[2m │ gzip:   0.16 kB[0m
+2026-03-29T00:39:36.6503419Z [2mbuild/client/[0m[2massets/[0m[36mcircle-check-big-DlQHUuzN.js         [39m[2m[1m  0.18 kB[0m[0m[2m │ gzip:   0.17 kB[0m
+2026-03-29T00:39:36.6505246Z [2mbuild/client/[0m[2massets/[0m[36mchevron-up-CUU5U_Jm.js               [39m[2m[1m  0.19 kB[0m[0m[2m │ gzip:   0.16 kB[0m
+2026-03-29T00:39:36.6507009Z [2mbuild/client/[0m[2massets/[0m[36minfo-BvsrE82m.js                     [39m[2m[1m  0.19 kB[0m[0m[2m │ gzip:   0.16 kB[0m
+2026-03-29T00:39:36.6508998Z [2mbuild/client/[0m[2massets/[0m[36mcircle-x-BKB8ESIE.js                 [39m[2m[1m  0.19 kB[0m[0m[2m │ gzip:   0.16 kB[0m
+2026-03-29T00:39:36.6511013Z [2mbuild/client/[0m[2massets/[0m[36mpause-Cvw4NdYJ.js                    [39m[2m[1m  0.20 kB[0m[0m[2m │ gzip:   0.15 kB[0m
+2026-03-29T00:39:36.6512855Z [2mbuild/client/[0m[2massets/[0m[36mactivity-VN0PQ76L.js                 [39m[2m[1m  0.22 kB[0m[0m[2m │ gzip:   0.19 kB[0m
+2026-03-29T00:39:36.6514628Z [2mbuild/client/[0m[2massets/[0m[36mskeleton-YnELBlzJ.js                 [39m[2m[1m  0.22 kB[0m[0m[2m │ gzip:   0.19 kB[0m
+2026-03-29T00:39:36.6516362Z [2mbuild/client/[0m[2massets/[0m[36mglobe-DiQGKqvD.js                    [39m[2m[1m  0.23 kB[0m[0m[2m │ gzip:   0.18 kB[0m
+2026-03-29T00:39:36.6518135Z [2mbuild/client/[0m[2massets/[0m[36marrow-up-down-Dv985vVU.js            [39m[2m[1m  0.23 kB[0m[0m[2m │ gzip:   0.18 kB[0m
+2026-03-29T00:39:36.6520609Z [2mbuild/client/[0m[2massets/[0m[36mcircle-alert-BS54Font.js             [39m[2m[1m  0.23 kB[0m[0m[2m │ gzip:   0.17 kB[0m
+2026-03-29T00:39:36.6522497Z [2mbuild/client/[0m[2massets/[0m[36mchart-column-C0bZ6xhV.js             [39m[2m[1m  0.24 kB[0m[0m[2m │ gzip:   0.18 kB[0m
+2026-03-29T00:39:36.6524362Z [2mbuild/client/[0m[2massets/[0m[36mzap-D7Msm9qO.js                      [39m[2m[1m  0.25 kB[0m[0m[2m │ gzip:   0.19 kB[0m
+2026-03-29T00:39:36.6526100Z [2mbuild/client/[0m[2massets/[0m[36mleaf-Df-vFVnh.js                     [39m[2m[1m  0.25 kB[0m[0m[2m │ gzip:   0.21 kB[0m
+2026-03-29T00:39:36.6527930Z [2mbuild/client/[0m[2massets/[0m[36mtriangle-alert-CEhP53Fx.js           [39m[2m[1m  0.25 kB[0m[0m[2m │ gzip:   0.20 kB[0m
+2026-03-29T00:39:36.6530162Z [2mbuild/client/[0m[2massets/[0m[36mdist-DGjfroI_.js                     [39m[2m[1m  0.25 kB[0m[0m[2m │ gzip:   0.18 kB[0m
+2026-03-29T00:39:36.6531894Z [2mbuild/client/[0m[2massets/[0m[36mcoins-D8UG0kZ6.js                    [39m[2m[1m  0.27 kB[0m[0m[2m │ gzip:   0.21 kB[0m
+2026-03-29T00:39:36.6533658Z [2mbuild/client/[0m[2massets/[0m[36mbox-CdDwXAAu.js                      [39m[2m[1m  0.29 kB[0m[0m[2m │ gzip:   0.21 kB[0m
+2026-03-29T00:39:36.6535407Z [2mbuild/client/[0m[2massets/[0m[36mrefresh-cw-irh7a8wU.js               [39m[2m[1m  0.31 kB[0m[0m[2m │ gzip:   0.21 kB[0m
+2026-03-29T00:39:36.6537177Z [2mbuild/client/[0m[2massets/[0m[36museBlockPolling-B3oGIl8h.js          [39m[2m[1m  0.33 kB[0m[0m[2m │ gzip:   0.22 kB[0m
+2026-03-29T00:39:36.6539186Z [2mbuild/client/[0m[2massets/[0m[36mnetwork-B9II8SGp.js                  [39m[2m[1m  0.37 kB[0m[0m[2m │ gzip:   0.22 kB[0m
+2026-03-29T00:39:36.6540977Z [2mbuild/client/[0m[2massets/[0m[36museTransactions-D1X80MGB.js          [39m[2m[1m  0.49 kB[0m[0m[2m │ gzip:   0.29 kB[0m
+2026-03-29T00:39:36.6542747Z [2mbuild/client/[0m[2massets/[0m[36mserver-ByXhiIYG.js                   [39m[2m[1m  0.51 kB[0m[0m[2m │ gzip:   0.30 kB[0m
+2026-03-29T00:39:36.6544760Z [2mbuild/client/[0m[2massets/[0m[36mdist-BAgixHWM.js                     [39m[2m[1m  0.55 kB[0m[0m[2m │ gzip:   0.35 kB[0m
+2026-03-29T00:39:36.6546562Z [2mbuild/client/[0m[2massets/[0m[36museBlocks-DF5hkWr3.js                [39m[2m[1m  0.60 kB[0m[0m[2m │ gzip:   0.33 kB[0m
+2026-03-29T00:39:36.6548336Z [2mbuild/client/[0m[2massets/[0m[36minput-CIYwe6HK.js                    [39m[2m[1m  0.62 kB[0m[0m[2m │ gzip:   0.39 kB[0m
+2026-03-29T00:39:36.6550361Z [2mbuild/client/[0m[2massets/[0m[36mdist-BF5coFX5.js                     [39m[2m[1m  0.64 kB[0m[0m[2m │ gzip:   0.39 kB[0m
+2026-03-29T00:39:36.6552140Z [2mbuild/client/[0m[2massets/[0m[36mreceipt-BRSIiNuJ.js                  [39m[2m[1m  0.64 kB[0m[0m[2m │ gzip:   0.27 kB[0m
+2026-03-29T00:39:36.6554410Z [2mbuild/client/[0m[2massets/[0m[36mbadge-bpAn-u4D.js                    [39m[2m[1m  0.79 kB[0m[0m[2m │ gzip:   0.41 kB[0m
+2026-03-29T00:39:36.6556253Z [2mbuild/client/[0m[2massets/[0m[36mformatters-XqUYGYpc.js               [39m[2m[1m  0.94 kB[0m[0m[2m │ gzip:   0.49 kB[0m
+2026-03-29T00:39:36.6558053Z [2mbuild/client/[0m[2massets/[0m[36malert-vcGHukil.js                    [39m[2m[1m  1.02 kB[0m[0m[2m │ gzip:   0.52 kB[0m
+2026-03-29T00:39:36.6560038Z [2mbuild/client/[0m[2massets/[0m[36mcard-DeTjRuQ8.js                     [39m[2m[1m  1.05 kB[0m[0m[2m │ gzip:   0.40 kB[0m
+2026-03-29T00:39:36.6561762Z [2mbuild/client/[0m[2massets/[0m[36mdist-YIgmB5vu.js                     [39m[2m[1m  1.18 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+2026-03-29T00:39:36.6563430Z [2mbuild/client/[0m[2massets/[0m[36mentities-BwPaL_Rm.js                 [39m[2m[1m  1.31 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+2026-03-29T00:39:36.6566310Z [2mbuild/client/[0m[2massets/[0m[36mbutton-Cr9gMS1Z.js                   [39m[2m[1m  1.32 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+2026-03-29T00:39:36.6568790Z [2mbuild/client/[0m[2massets/[0m[36muse-toast-BrU2lQRm.js                [39m[2m[1m  1.34 kB[0m[0m[2m │ gzip:   0.67 kB[0m
+2026-03-29T00:39:36.6570723Z [2mbuild/client/[0m[2massets/[0m[36mdist-CcF-NUvM.js                     [39m[2m[1m  1.53 kB[0m[0m[2m │ gzip:   0.81 kB[0m
+2026-03-29T00:39:36.6572731Z [2mbuild/client/[0m[2massets/[0m[36mtable-CxtJIA3s.js                    [39m[2m[1m  1.64 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+2026-03-29T00:39:36.6574519Z [2mbuild/client/[0m[2massets/[0m[36mAssetLogo-Blu6_91r.js                [39m[2m[1m  1.82 kB[0m[0m[2m │ gzip:   0.79 kB[0m
+2026-03-29T00:39:36.6576266Z [2mbuild/client/[0m[2massets/[0m[36mdist-cLjChF3t2.js                    [39m[2m[1m  1.93 kB[0m[0m[2m │ gzip:   0.88 kB[0m
+2026-03-29T00:39:36.6577979Z [2mbuild/client/[0m[2massets/[0m[36mSearchBar-B7mXixKk.js                [39m[2m[1m  1.95 kB[0m[0m[2m │ gzip:   0.96 kB[0m
+2026-03-29T00:39:36.6580121Z [2mbuild/client/[0m[2massets/[0m[36mprogress-ChHx3eck.js                 [39m[2m[1m  2.00 kB[0m[0m[2m │ gzip:   0.99 kB[0m
+2026-03-29T00:39:36.6581877Z [2mbuild/client/[0m[2massets/[0m[36mRouteError-BAWR4HqT.js               [39m[2m[1m  2.22 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+2026-03-29T00:39:36.6583579Z [2mbuild/client/[0m[2massets/[0m[36mdist-D8-ihZ2H.js                     [39m[2m[1m  2.36 kB[0m[0m[2m │ gzip:   1.04 kB[0m
+2026-03-29T00:39:36.6585191Z [2mbuild/client/[0m[2massets/[0m[36mHome-Bnzk08EL.js                     [39m[2m[1m  3.04 kB[0m[0m[2m │ gzip:   1.26 kB[0m
+2026-03-29T00:39:36.6586849Z [2mbuild/client/[0m[2massets/[0m[36mswitch-fD_D2gIn.js                   [39m[2m[1m  3.17 kB[0m[0m[2m │ gzip:   1.49 kB[0m
+2026-03-29T00:39:36.6588536Z [2mbuild/client/[0m[2massets/[0m[36mtabs-pPeIrYxb.js                     [39m[2m[1m  3.39 kB[0m[0m[2m │ gzip:   1.40 kB[0m
+2026-03-29T00:39:36.6590575Z [2mbuild/client/[0m[2massets/[0m[36mdist-DhuAALtQ.js                     [39m[2m[1m  3.41 kB[0m[0m[2m │ gzip:   1.54 kB[0m
+2026-03-29T00:39:36.6592629Z [2mbuild/client/[0m[2massets/[0m[36mreact-dom-39f_a821.js                [39m[2m[1m  3.54 kB[0m[0m[2m │ gzip:   1.34 kB[0m
+2026-03-29T00:39:36.6594424Z [2mbuild/client/[0m[2massets/[0m[36mNode-BzrcARzU.js                     [39m[2m[1m  3.95 kB[0m[0m[2m │ gzip:   1.23 kB[0m
+2026-03-29T00:39:36.6596218Z [2mbuild/client/[0m[2massets/[0m[36musePeerGeo-CIPPUC17.js               [39m[2m[1m  4.20 kB[0m[0m[2m │ gzip:   1.89 kB[0m
+2026-03-29T00:39:36.6598096Z [2mbuild/client/[0m[2massets/[0m[36mNetworkMap-CrR6StWw.js               [39m[2m[1m  4.22 kB[0m[0m[2m │ gzip:   1.45 kB[0m
+2026-03-29T00:39:36.6600076Z [2mbuild/client/[0m[2massets/[0m[36mdist-BMtFCnAq.js                     [39m[2m[1m  4.75 kB[0m[0m[2m │ gzip:   1.99 kB[0m
+2026-03-29T00:39:36.6601900Z [2mbuild/client/[0m[2massets/[0m[36mUnconfirmedTransactions-Di5EcX5b.js  [39m[2m[1m  4.75 kB[0m[0m[2m │ gzip:   1.69 kB[0m
+2026-03-29T00:39:36.6603739Z [2mbuild/client/[0m[2massets/[0m[36mBlocks-gX5whPZV.js                   [39m[2m[1m  4.79 kB[0m[0m[2m │ gzip:   1.64 kB[0m
+2026-03-29T00:39:36.6605551Z [2mbuild/client/[0m[2massets/[0m[36mBlockFeed-Cyj0EFLj.js                [39m[2m[1m  6.53 kB[0m[0m[2m │ gzip:   2.35 kB[0m
+2026-03-29T00:39:36.6607402Z [2mbuild/client/[0m[2massets/[0m[36mBlockDetail-CXbj3Qu_.js              [39m[2m[1m  6.78 kB[0m[0m[2m │ gzip:   2.04 kB[0m
+2026-03-29T00:39:36.6609496Z [2mbuild/client/[0m[2massets/[0m[36mDashboard-CZjEY_1W.js                [39m[2m[1m  6.89 kB[0m[0m[2m │ gzip:   2.07 kB[0m
+2026-03-29T00:39:36.6611358Z [2mbuild/client/[0m[2massets/[0m[36mSustainability-kKPknMRM.js           [39m[2m[1m  7.85 kB[0m[0m[2m │ gzip:   2.38 kB[0m
+2026-03-29T00:39:36.6613137Z [2mbuild/client/[0m[2massets/[0m[36mPeers-DeUzU5d_.js                    [39m[2m[1m  7.91 kB[0m[0m[2m │ gzip:   2.21 kB[0m
+2026-03-29T00:39:36.6615126Z [2mbuild/client/[0m[2massets/[0m[36mDexPairs-yO6UNYA1.js                 [39m[2m[1m  8.40 kB[0m[0m[2m │ gzip:   2.56 kB[0m
+2026-03-29T00:39:36.6616890Z [2mbuild/client/[0m[2massets/[0m[36mjsx-runtime-BH6l9wu9.js              [39m[2m[1m  8.52 kB[0m[0m[2m │ gzip:   3.25 kB[0m
+2026-03-29T00:39:36.6618948Z [2mbuild/client/[0m[2massets/[0m[36mNetworkStatistics-CDcRUjy2.js        [39m[2m[1m  8.60 kB[0m[0m[2m │ gzip:   2.37 kB[0m
+2026-03-29T00:39:36.6620792Z [2mbuild/client/[0m[2massets/[0m[36museQuery-ddn28wZB.js                 [39m[2m[1m  8.81 kB[0m[0m[2m │ gzip:   3.24 kB[0m
+2026-03-29T00:39:36.6622521Z [2mbuild/client/[0m[2massets/[0m[36mCopyButton-C5MisGWQ.js               [39m[2m[1m  9.32 kB[0m[0m[2m │ gzip:   3.51 kB[0m
+2026-03-29T00:39:36.6624287Z [2mbuild/client/[0m[2massets/[0m[36mTransaction-Cjih8F-7.js              [39m[2m[1m 11.18 kB[0m[0m[2m │ gzip:   3.11 kB[0m
+2026-03-29T00:39:36.6626035Z [2mbuild/client/[0m[2massets/[0m[36mAsset-C4HDbbb6.js                    [39m[2m[1m 12.43 kB[0m[0m[2m │ gzip:   3.97 kB[0m
+2026-03-29T00:39:36.6627763Z [2mbuild/client/[0m[2massets/[0m[36mNetwork-NUTLA6qW.js                  [39m[2m[1m 13.69 kB[0m[0m[2m │ gzip:   3.81 kB[0m
+2026-03-29T00:39:36.6629875Z [2mbuild/client/[0m[2massets/[0m[36mQueryClientProvider-BnQqxP3U.js      [39m[2m[1m 13.80 kB[0m[0m[2m │ gzip:   4.76 kB[0m
+2026-03-29T00:39:36.6631725Z [2mbuild/client/[0m[2massets/[0m[36mDistributionTool-xRwuBIiE.js         [39m[2m[1m 14.14 kB[0m[0m[2m │ gzip:   4.53 kB[0m
+2026-03-29T00:39:36.6633489Z [2mbuild/client/[0m[2massets/[0m[36mes2015-BGjITNEa.js                   [39m[2m[1m 16.49 kB[0m[0m[2m │ gzip:   6.32 kB[0m
+2026-03-29T00:39:36.6635188Z [2mbuild/client/[0m[2massets/[0m[36mPieChart-DuHNMq3Y.js                 [39m[2m[1m 16.60 kB[0m[0m[2m │ gzip:   5.26 kB[0m
+2026-03-29T00:39:36.6636895Z [2mbuild/client/[0m[2massets/[0m[36mroot-B5oMyi38.js                     [39m[2m[1m 17.86 kB[0m[0m[2m │ gzip:   5.77 kB[0m
+2026-03-29T00:39:36.6639254Z [2mbuild/client/[0m[2massets/[0m[36mLineChart-BLlZVcbC.js                [39m[2m[1m 20.93 kB[0m[0m[2m │ gzip:   6.18 kB[0m
+2026-03-29T00:39:36.6641025Z [2mbuild/client/[0m[2massets/[0m[36mLanguageContext-CcjgM0_j.js          [39m[2m[1m 26.97 kB[0m[0m[2m │ gzip:   8.29 kB[0m
+2026-03-29T00:39:36.6642846Z [2mbuild/client/[0m[2massets/[0m[36mutils-DMyv_tPi.js                    [39m[2m[1m 27.82 kB[0m[0m[2m │ gzip:   9.13 kB[0m
+2026-03-29T00:39:36.6644652Z [2mbuild/client/[0m[2massets/[0m[36mLayout-D5WMuAt9.js                   [39m[2m[1m 27.95 kB[0m[0m[2m │ gzip:   8.13 kB[0m
+2026-03-29T00:39:36.6646364Z [2mbuild/client/[0m[2massets/[0m[36mdist-UhjsL34p.js                     [39m[2m[1m 30.19 kB[0m[0m[2m │ gzip:  11.39 kB[0m
+2026-03-29T00:39:36.6648082Z [2mbuild/client/[0m[2massets/[0m[36mAddress-CRascjz9.js                  [39m[2m[1m 32.46 kB[0m[0m[2m │ gzip:  10.20 kB[0m
+2026-03-29T00:39:36.6650173Z [2mbuild/client/[0m[2massets/[0m[36mBarChart-BiRLP1cQ.js                 [39m[2m[1m 40.42 kB[0m[0m[2m │ gzip:  11.39 kB[0m
+2026-03-29T00:39:36.6651964Z [2mbuild/client/[0m[2massets/[0m[36mapi-BCg5kA0p.js                      [39m[2m[1m 55.53 kB[0m[0m[2m │ gzip:  19.46 kB[0m
+2026-03-29T00:39:36.6653768Z [2mbuild/client/[0m[2massets/[0m[36mchunk-UVKPFVEO-DWo4rGpg.js           [39m[2m[1m118.91 kB[0m[0m[2m │ gzip:  39.15 kB[0m
+2026-03-29T00:39:36.6655639Z [2mbuild/client/[0m[2massets/[0m[36mNetworkMapContent-DL8_-d7p.js        [39m[2m[1m154.09 kB[0m[0m[2m │ gzip:  45.30 kB[0m
+2026-03-29T00:39:36.6657476Z [2mbuild/client/[0m[2massets/[0m[36mentry.client-98KMkpDE.js             [39m[2m[1m183.19 kB[0m[0m[2m │ gzip:  58.01 kB[0m
+2026-03-29T00:39:36.6659522Z [2mbuild/client/[0m[2massets/[0m[36mCategoricalChart-DSX1Z_R-.js         [39m[2m[1m302.31 kB[0m[0m[2m │ gzip:  91.63 kB[0m
+2026-03-29T00:39:36.6661701Z [2mbuild/client/[0m[2massets/[0m[36mTransactionMap-CqqORGm7.js           [39m[33m[1m567.87 kB[0m[39m[2m │ gzip: 173.65 kB[0m
+2026-03-29T00:39:36.6662504Z 
+2026-03-29T00:39:36.6663409Z [33m[33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
+2026-03-29T00:39:36.6664318Z   - react-router:dot-server (32%)
+2026-03-29T00:39:36.6664835Z   - dcc:ssr-browser-only-stub (30%)
+2026-03-29T00:39:36.6665356Z   - react-router:virtual-modules (18%)
+2026-03-29T00:39:36.6665915Z   - react-router:inject-hmr-runtime (10%)
+2026-03-29T00:39:36.6666463Z   - react-router:hmr-runtime (3%)
+2026-03-29T00:39:36.6667241Z See https://rolldown.rs/options/checks#plugintimings for more details.
+2026-03-29T00:39:36.6667953Z [39m
+2026-03-29T00:39:36.6668493Z [33m[plugin builtin:vite-reporter] [33m[1m
+2026-03-29T00:39:36.6669544Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-03-29T00:39:36.6670373Z - Using dynamic import() to code-split the application
+2026-03-29T00:39:36.6671751Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-03-29T00:39:36.6673393Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m[33m[39m
+2026-03-29T00:39:36.6674271Z [32m✓ built in 5.03s[39m
+2026-03-29T00:39:36.6675090Z [36mvite v8.0.3 [32mbuilding ssr environment for production...[36m[39m
+2026-03-29T00:39:36.6675715Z [2K
+2026-03-29T00:39:36.6676250Z transforming...[32m✓[39m 117 modules transformed.
+2026-03-29T00:39:36.6676776Z rendering chunks...
+2026-03-29T00:39:36.6676979Z 
+2026-03-29T00:39:36.6677456Z [32m✓[39m 3 assets cleaned from React Router server build.
+2026-03-29T00:39:36.6678359Z [2mbuild/client/assets/NetworkMapContent-vh-t_kPv.css[22m
+2026-03-29T00:39:36.6679579Z [2mbuild/server/assets/NetworkMapContent-vh-t_kPv.css[22m
+2026-03-29T00:39:36.6680475Z [2mbuild/server/assets/server-build-x1XGuNl0.css[22m
+2026-03-29T00:39:36.6681198Z 
+2026-03-29T00:39:36.6681694Z Prerender (html): / -> [1mbuild/client/index.html[22m
+2026-03-29T00:39:36.6682271Z computing gzip size...
+2026-03-29T00:39:36.6683438Z [2mbuild/server/[0m[32m.vite/manifest.json                    [39m[2m[1m  0.96 kB[0m[0m[2m │ gzip:  0.28 kB[0m
+2026-03-29T00:39:36.6685161Z [2mbuild/server/[0m[2massets/[0m[35mserver-build-x1XGuNl0.css       [39m[2m[1m  0.00 kB[0m[0m[2m │ gzip:  0.02 kB[0m
+2026-03-29T00:39:36.6687027Z [2mbuild/server/[0m[2massets/[0m[35mNetworkMapContent-vh-t_kPv.css  [39m[2m[1m 15.09 kB[0m[0m[2m │ gzip:  6.36 kB[0m
+2026-03-29T00:39:36.6689138Z [2mbuild/server/[0m[2massets/[0m[36mNetworkMapContent-ChX3j2hT.js   [39m[2m[1m  0.11 kB[0m[0m[2m │ gzip:  0.09 kB[0m
+2026-03-29T00:39:36.6690985Z [2mbuild/server/[0m[2massets/[0m[36mNetworkMapContent-D8_uptkL.js   [39m[2m[1m  1.97 kB[0m[0m[2m │ gzip:  0.86 kB[0m
+2026-03-29T00:39:36.6692586Z [2mbuild/server/[0m[36mindex.js                               [39m[2m[1m474.35 kB[0m[0m[2m │ gzip: 95.54 kB[0m
+2026-03-29T00:39:36.6693216Z 
+2026-03-29T00:39:36.6693491Z [32m✓ built in 1.35s[39m
+2026-03-29T00:39:49.8345155Z ##[endgroup]
+2026-03-29T00:39:49.8346258Z ##[group]✅ [2m> [22m[2mnx run[22m exchange:build
+2026-03-29T00:39:49.8346571Z 
+2026-03-29T00:39:49.8346581Z 
+2026-03-29T00:39:49.8346990Z > exchange@1.0.0 build /home/runner/work/DecentralChain/DecentralChain/apps/exchange
+2026-03-29T00:39:49.8347471Z > tsc -b && vite build
+2026-03-29T00:39:49.8347620Z 
+2026-03-29T00:39:49.8348058Z [36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+2026-03-29T00:39:49.8348512Z [2K
+2026-03-29T00:39:49.8349196Z transforming...[32m✓[39m 13249 modules transformed.
+2026-03-29T00:39:49.8349577Z rendering chunks...
+2026-03-29T00:39:49.8349831Z computing gzip size...
+2026-03-29T00:39:49.8350536Z [2mdist/[0m[32mindex.html                              [39m[2m[1m    3.67 kB[0m[0m[2m │ gzip:   1.04 kB[0m
+2026-03-29T00:39:49.8351897Z [2mdist/[0m[2massets/[0m[35mindex-Bni-Xl2G.css               [39m[2m[1m    1.53 kB[0m[0m[2m │ gzip:   0.71 kB[0m
+2026-03-29T00:39:49.8352974Z [2mdist/[0m[2massets/[0m[36mwallet-D6fvirYm.js               [39m[2m[1m    0.09 kB[0m[0m[2m │ gzip:   0.10 kB[0m
+2026-03-29T00:39:49.8354074Z [2mdist/[0m[2massets/[0m[36msecureTransfer-v9WXwXrG.js       [39m[2m[1m    0.12 kB[0m[0m[2m │ gzip:   0.11 kB[0m
+2026-03-29T00:39:49.8355228Z [2mdist/[0m[2massets/[0m[36mStack-C3Yt8XaB.js                [39m[2m[1m    0.24 kB[0m[0m[2m │ gzip:   0.19 kB[0m
+2026-03-29T00:39:49.8356286Z [2mdist/[0m[2massets/[0m[36mSpinner-C5Btu-ss.js              [39m[2m[1m    0.44 kB[0m[0m[2m │ gzip:   0.32 kB[0m
+2026-03-29T00:39:49.8357348Z [2mdist/[0m[2massets/[0m[36mlogger-DCqzUGgi.js               [39m[2m[1m    0.53 kB[0m[0m[2m │ gzip:   0.31 kB[0m
+2026-03-29T00:39:49.8358420Z [2mdist/[0m[2massets/[0m[36mWallet-DAwpI8F8.js               [39m[2m[1m    0.62 kB[0m[0m[2m │ gzip:   0.39 kB[0m
+2026-03-29T00:39:49.8359879Z [2mdist/[0m[2massets/[0m[36massetService-Cqy9u68W.js         [39m[2m[1m    0.77 kB[0m[0m[2m │ gzip:   0.51 kB[0m
+2026-03-29T00:39:49.8360826Z [2mdist/[0m[2massets/[0m[36museClipboard-CbOrq5rq.js         [39m[2m[1m    0.86 kB[0m[0m[2m │ gzip:   0.49 kB[0m
+2026-03-29T00:39:49.8361754Z [2mdist/[0m[2massets/[0m[36mrolldown-runtime-B1FJdls4.js     [39m[2m[1m    1.07 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+2026-03-29T00:39:49.8362650Z [2mdist/[0m[2massets/[0m[36maliasService-ikHhFb_2.js         [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.56 kB[0m
+2026-03-29T00:39:49.8363539Z [2mdist/[0m[2massets/[0m[36mLeasingModern-DFrcyXNK.js        [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+2026-03-29T00:39:49.8364441Z [2mdist/[0m[2massets/[0m[36mTransactionsModern-2cjsjyaY.js   [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+2026-03-29T00:39:49.8365350Z [2mdist/[0m[2massets/[0m[36mCard-DEpDXLoZ.js                 [39m[2m[1m    1.19 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+2026-03-29T00:39:49.8366446Z [2mdist/[0m[2massets/[0m[36mMarkets-DybEoLJW.js              [39m[2m[1m    1.43 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+2026-03-29T00:39:49.8367297Z [2mdist/[0m[2massets/[0m[36mButton-DXTQ7stq.js               [39m[2m[1m    1.54 kB[0m[0m[2m │ gzip:   0.74 kB[0m
+2026-03-29T00:39:49.8368156Z [2mdist/[0m[2massets/[0m[36mLedgerContext-jOLxQNtC.js        [39m[2m[1m    1.76 kB[0m[0m[2m │ gzip:   0.82 kB[0m
+2026-03-29T00:39:49.8369455Z [2mdist/[0m[2massets/[0m[36mMessages-BSzHhv9G.js             [39m[2m[1m    1.85 kB[0m[0m[2m │ gzip:   0.89 kB[0m
+2026-03-29T00:39:49.8370330Z [2mdist/[0m[2massets/[0m[36mModal-00xkySGC.js                [39m[2m[1m    1.96 kB[0m[0m[2m │ gzip:   0.99 kB[0m
+2026-03-29T00:39:49.8371164Z [2mdist/[0m[2massets/[0m[36mclient-mZgLVis5.js               [39m[2m[1m    2.04 kB[0m[0m[2m │ gzip:   1.03 kB[0m
+2026-03-29T00:39:49.8372063Z [2mdist/[0m[2massets/[0m[36museBalanceWatcher-DdKRmcvu.js    [39m[2m[1m    2.08 kB[0m[0m[2m │ gzip:   0.98 kB[0m
+2026-03-29T00:39:49.8372961Z [2mdist/[0m[2massets/[0m[36mtransactions-BmVYi5z1.js         [39m[2m[1m    2.45 kB[0m[0m[2m │ gzip:   1.13 kB[0m
+2026-03-29T00:39:49.8373837Z [2mdist/[0m[2massets/[0m[36mOrderBook-BIfhClIA.js            [39m[2m[1m    2.77 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+2026-03-29T00:39:49.8374753Z [2mdist/[0m[2massets/[0m[36mtransactionService-BcR2odwJ.js   [39m[2m[1m    2.83 kB[0m[0m[2m │ gzip:   1.22 kB[0m
+2026-03-29T00:39:49.8375642Z [2mdist/[0m[2massets/[0m[36mAnalytics-CPcpgno-.js            [39m[2m[1m    3.45 kB[0m[0m[2m │ gzip:   1.42 kB[0m
+2026-03-29T00:39:49.8376526Z [2mdist/[0m[2massets/[0m[36mAliasManagement-CiHw5oGQ.js      [39m[2m[1m    3.96 kB[0m[0m[2m │ gzip:   1.41 kB[0m
+2026-03-29T00:39:49.8377413Z [2mdist/[0m[2massets/[0m[36mToastContext-CfRJZChO.js         [39m[2m[1m    4.84 kB[0m[0m[2m │ gzip:   1.91 kB[0m
+2026-03-29T00:39:49.8378505Z [2mdist/[0m[2massets/[0m[36museMutation-BxrvsslL.js          [39m[2m[1m    5.61 kB[0m[0m[2m │ gzip:   1.82 kB[0m
+2026-03-29T00:39:49.8379680Z [2mdist/[0m[2massets/[0m[36mConfigContext-CJyZFVWO.js        [39m[2m[1m    5.77 kB[0m[0m[2m │ gzip:   2.23 kB[0m
+2026-03-29T00:39:49.8380555Z [2mdist/[0m[2massets/[0m[36mWelcome-CXRhoPpP.js              [39m[2m[1m    6.54 kB[0m[0m[2m │ gzip:   2.24 kB[0m
+2026-03-29T00:39:49.8381401Z [2mdist/[0m[2massets/[0m[36mSwap-BGSW82H3.js                 [39m[2m[1m    6.96 kB[0m[0m[2m │ gzip:   1.79 kB[0m
+2026-03-29T00:39:49.8382282Z [2mdist/[0m[2massets/[0m[36mQueryClientProvider-yAj9B0DL.js  [39m[2m[1m    7.69 kB[0m[0m[2m │ gzip:   3.04 kB[0m
+2026-03-29T00:39:49.8383189Z [2mdist/[0m[2massets/[0m[36mDexPairAdmin-BfUlt9XU.js         [39m[2m[1m    9.98 kB[0m[0m[2m │ gzip:   2.68 kB[0m
+2026-03-29T00:39:49.8384099Z [2mdist/[0m[2massets/[0m[36mRestoreFromBackup-B0qEdAnn.js    [39m[2m[1m   10.98 kB[0m[0m[2m │ gzip:   3.99 kB[0m
+2026-03-29T00:39:49.8385008Z [2mdist/[0m[2massets/[0m[36mImportLedger-aDAGUQxI.js         [39m[2m[1m   14.06 kB[0m[0m[2m │ gzip:   4.23 kB[0m
+2026-03-29T00:39:49.8385875Z [2mdist/[0m[2massets/[0m[36museQuery-Do8I_vT-.js             [39m[2m[1m   15.05 kB[0m[0m[2m │ gzip:   5.01 kB[0m
+2026-03-29T00:39:49.8386737Z [2mdist/[0m[2massets/[0m[36mCreateToken-VZAtXFJZ.js          [39m[2m[1m   17.51 kB[0m[0m[2m │ gzip:   4.93 kB[0m
+2026-03-29T00:39:49.8387613Z [2mdist/[0m[2massets/[0m[36mDashboard-jJ0jlnB2.js            [39m[2m[1m   23.26 kB[0m[0m[2m │ gzip:   6.95 kB[0m
+2026-03-29T00:39:49.8388485Z [2mdist/[0m[2massets/[0m[36mSettingsPage-6yBfmOSk.js         [39m[2m[1m   27.17 kB[0m[0m[2m │ gzip:   7.49 kB[0m
+2026-03-29T00:39:49.8389574Z [2mdist/[0m[2massets/[0m[36mBridge-M1Q_qI0k.js               [39m[2m[1m   27.60 kB[0m[0m[2m │ gzip:   8.48 kB[0m
+2026-03-29T00:39:49.8390620Z [2mdist/[0m[2massets/[0m[36mui-CGlD0zmQ.js                   [39m[2m[1m   30.70 kB[0m[0m[2m │ gzip:  11.79 kB[0m
+2026-03-29T00:39:49.8391460Z [2mdist/[0m[2massets/[0m[36mDex-_uL_DWWV.js                  [39m[2m[1m   63.09 kB[0m[0m[2m │ gzip:  16.03 kB[0m
+2026-03-29T00:39:49.8392296Z [2mdist/[0m[2massets/[0m[36msentry-4aOUgwjH.js               [39m[2m[1m   91.21 kB[0m[0m[2m │ gzip:  30.99 kB[0m
+2026-03-29T00:39:49.8393151Z [2mdist/[0m[2massets/[0m[36mrouter-BlOF1RyH.js               [39m[2m[1m   92.80 kB[0m[0m[2m │ gzip:  30.77 kB[0m
+2026-03-29T00:39:49.8394008Z [2mdist/[0m[2massets/[0m[36mvendor-BEJMNqAU.js               [39m[2m[1m  178.32 kB[0m[0m[2m │ gzip:  56.33 kB[0m
+2026-03-29T00:39:49.8394865Z [2mdist/[0m[2massets/[0m[36mmui-core-DuLVAMNz.js             [39m[2m[1m  425.95 kB[0m[0m[2m │ gzip: 127.09 kB[0m
+2026-03-29T00:39:49.8395729Z [2mdist/[0m[2massets/[0m[36mAuthContext-lH5spWUm.js          [39m[2m[1m  478.19 kB[0m[0m[2m │ gzip: 153.49 kB[0m
+2026-03-29T00:39:49.8396629Z [2mdist/[0m[2massets/[0m[36mLeasing-CKA6Hg4D.js              [39m[33m[1m2,307.91 kB[0m[39m[2m │ gzip: 666.49 kB[0m
+2026-03-29T00:39:49.8397499Z [2mdist/[0m[2massets/[0m[36mindex-DCWOIrvx.js                [39m[33m[1m3,651.80 kB[0m[39m[2m │ gzip: 951.66 kB[0m
+2026-03-29T00:39:49.8397876Z 
+2026-03-29T00:39:49.8399483Z [33m[33m[INEFFECTIVE_DYNAMIC_IMPORT] Warning:[0m src/features/wallet/index.ts is dynamically imported by src/routes/walletRoutes.tsx but also statically imported by src/components/notifications/TransactionNotificationsMonitor.tsx, dynamic import will not move module into another chunk.
+2026-03-29T00:39:49.8400631Z [39m
+2026-03-29T00:39:49.8400944Z [33m[plugin builtin:vite-reporter] [33m[1m
+2026-03-29T00:39:49.8401389Z (!) Some chunks are larger than 1000 kB after minification. Consider:
+2026-03-29T00:39:49.8401841Z - Using dynamic import() to code-split the application
+2026-03-29T00:39:49.8402769Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-03-29T00:39:49.8403666Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m[33m[39m
+2026-03-29T00:39:49.8404142Z [32m✓ built in 1.74s[39m
+2026-03-29T00:39:49.8503440Z ##[endgroup]
+2026-03-29T00:39:49.8504030Z [2m[32m[39m[22m
+2026-03-29T00:39:49.8504259Z 
+2026-03-29T00:39:49.8505023Z [7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mbuild[22m for 25 projects[39m
+2026-03-29T00:39:49.8505400Z 
+2026-03-29T00:39:49.8505847Z [2mNx read the output from the cache instead of running the command for 20 out of 25 tasks.[22m
+2026-03-29T00:39:49.8506189Z 
