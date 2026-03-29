@@ -14,6 +14,7 @@ permissions:
   contents: read
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
@@ -78,6 +79,10 @@ jobs:
           exit-code: '1'
           severity: CRITICAL,HIGH
           scanners: secret
+          # Disable cache to avoid trivy-action's internal setup-trivy calling
+          # actions/cache@0400d5f (Node20) which conflicts with FORCE_JAVASCRIPT_ACTIONS_TO_NODE24.
+          # Secret scanning is fast and does not benefit from DB caching.
+          cache: 'false'
 
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
