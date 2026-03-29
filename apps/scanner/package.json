@@ -106,8 +106,8 @@
   },
   "scripts": {
     "build": "react-router build",
-    "bulletproof": "pnpm run lint:fix && npm run typecheck && npm run test:run",
-    "bulletproof:check": "pnpm run lint:check && npm run typecheck && npm run test:run",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test:run",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test:run",
     "ci:check": "cd ../.. && bash scripts/run-with-required-node.sh pnpm nx run scanner:biome-lint --skip-nx-cache && bash scripts/run-with-required-node.sh pnpm nx run scanner:typecheck --skip-nx-cache && bash scripts/run-with-required-node.sh pnpm nx run scanner:test --skip-nx-cache && bash scripts/run-with-required-node.sh pnpm nx run scanner:build --skip-nx-cache && bash scripts/run-with-required-node.sh node apps/scanner/scripts/audit-scanner-deps.mjs",
     "dev": "react-router dev",
     "format": "biome format --write .",

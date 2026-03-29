@@ -16,6 +16,8 @@ export default defineConfig({
     'src/api-node/leasing/index.ts',
     'src/api-node/eth/index.ts',
   ],
+  fixedExtension: true,
   format: ['esm'],
+  platform: 'neutral',
   sourcemap: true,
 });
