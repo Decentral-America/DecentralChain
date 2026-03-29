@@ -1,0 +1,19 @@
+﻿2026-03-29T00:36:22.8375796Z ##[group]Run curl -fsSL \
+2026-03-29T00:36:22.8376301Z [36;1mcurl -fsSL \[0m
+2026-03-29T00:36:22.8377080Z [36;1m  https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.14.0/wasm-pack-v0.14.0-x86_64-unknown-linux-musl.tar.gz \[0m
+2026-03-29T00:36:22.8377690Z [36;1m  -o /tmp/wasm-pack.tar.gz[0m
+2026-03-29T00:36:22.8378224Z [36;1mecho "278a8d668085821f4d1a637bd864f1713f872b0ae3a118c77562a308c0abfe8d  /tmp/wasm-pack.tar.gz" | sha256sum --check[0m
+2026-03-29T00:36:22.8379326Z [36;1mtar -xzf /tmp/wasm-pack.tar.gz -C /tmp[0m
+2026-03-29T00:36:22.8380082Z [36;1mmv /tmp/wasm-pack-v0.14.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack[0m
+2026-03-29T00:36:22.8380789Z [36;1mwasm-pack --version[0m
+2026-03-29T00:36:22.8408452Z shell: /usr/bin/bash -e {0}
+2026-03-29T00:36:22.8408913Z env:
+2026-03-29T00:36:22.8409086Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:22.8409361Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:22.8409670Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:36:22.8409938Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:36:22.8410142Z   CARGO_TERM_COLOR: always
+2026-03-29T00:36:22.8410341Z   CACHE_ON_FAILURE: true
+2026-03-29T00:36:22.8410551Z ##[endgroup]
+2026-03-29T00:36:23.0495707Z /tmp/wasm-pack.tar.gz: OK
+2026-03-29T00:36:23.1047403Z wasm-pack 0.14.0
