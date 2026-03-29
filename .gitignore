@@ -48,4 +48,4 @@ scripts/sync-to-polyrepos.sh
 3-AUDIT.md
 
 .claude/worktrees
-.claude/settings.local.json
+.claude/settings.local.jsonlogs_*
