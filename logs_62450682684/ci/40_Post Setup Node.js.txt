@@ -1,5 +1,0 @@
-﻿2026-03-29T00:42:43.6796622Z Post job cleanup.
-2026-03-29T00:42:43.8277614Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/DecentralChain/DecentralChain --files-from manifest.txt --use-compress-program zstdmt
-2026-03-29T00:42:49.6129277Z Sent 202949289 of 404275881 (50.2%), 193.4 MBs/sec
-2026-03-29T00:42:49.7889258Z Sent 404275881 of 404275881 (100.0%), 327.6 MBs/sec
-2026-03-29T00:42:49.9143628Z Cache saved with the key: node-cache-Linux-x64-pnpm-33c5343a18faa4224ca7be5b6c7a8f1ed0289ba25d24c0459075a39b9160a64c

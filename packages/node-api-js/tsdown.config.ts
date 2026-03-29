@@ -1,6 +1,9 @@
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
+  // ts-types is a prod dep (value + types); keep it external so rolldown
+  // does not inline TRANSACTION_TYPE and emit bare-import artifacts.
+  deps: { neverBundle: ['@decentralchain/ts-types'] },
   dts: true,
   entry: [
     'src/index.ts',
