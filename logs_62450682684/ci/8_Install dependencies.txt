@@ -1,0 +1,57 @@
+﻿2026-03-29T00:36:23.1094774Z ##[group]Run pnpm install --frozen-lockfile
+2026-03-29T00:36:23.1095343Z [36;1mpnpm install --frozen-lockfile[0m
+2026-03-29T00:36:23.1134386Z shell: /usr/bin/bash -e {0}
+2026-03-29T00:36:23.1134798Z env:
+2026-03-29T00:36:23.1135093Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:23.1135562Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:23.1136089Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:36:23.1136776Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:36:23.1137128Z   CARGO_TERM_COLOR: always
+2026-03-29T00:36:23.1137511Z   CACHE_ON_FAILURE: true
+2026-03-29T00:36:23.1137867Z ##[endgroup]
+2026-03-29T00:36:23.4435618Z Scope: all 26 workspace projects
+2026-03-29T00:36:23.5569676Z Lockfile is up to date, resolution step is skipped
+2026-03-29T00:36:23.6266974Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-03-29T00:36:23.7502635Z Packages: +1347
+2026-03-29T00:36:23.7503893Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-03-29T00:36:24.6287460Z Progress: resolved 1347, reused 0, downloaded 73, added 30
+2026-03-29T00:36:25.6292708Z Progress: resolved 1347, reused 0, downloaded 189, added 153
+2026-03-29T00:36:26.6284644Z Progress: resolved 1347, reused 0, downloaded 376, added 275
+2026-03-29T00:36:27.6305396Z Progress: resolved 1347, reused 0, downloaded 616, added 606
+2026-03-29T00:36:28.6750238Z Progress: resolved 1347, reused 0, downloaded 720, added 685
+2026-03-29T00:36:29.6702124Z Progress: resolved 1347, reused 0, downloaded 721, added 685
+2026-03-29T00:36:30.6703799Z Progress: resolved 1347, reused 0, downloaded 739, added 693
+2026-03-29T00:36:31.6942780Z Progress: resolved 1347, reused 0, downloaded 905, added 781
+2026-03-29T00:36:32.7183533Z Progress: resolved 1347, reused 0, downloaded 1007, added 871
+2026-03-29T00:36:33.7187528Z Progress: resolved 1347, reused 0, downloaded 1083, added 909
+2026-03-29T00:36:34.7185852Z Progress: resolved 1347, reused 0, downloaded 1200, added 1044
+2026-03-29T00:36:35.7211878Z Progress: resolved 1347, reused 0, downloaded 1267, added 1075
+2026-03-29T00:36:36.3185926Z Progress: resolved 1347, reused 0, downloaded 1347, added 1347, done
+2026-03-29T00:36:37.2677641Z 
+2026-03-29T00:36:37.2678107Z devDependencies:
+2026-03-29T00:36:37.2678441Z + @biomejs/biome 2.4.9
+2026-03-29T00:36:37.2678955Z + @nx/devkit 22.6.3
+2026-03-29T00:36:37.2679192Z + esbuild 0.27.4
+2026-03-29T00:36:37.2679409Z + knip 6.0.6
+2026-03-29T00:36:37.2679620Z + lefthook 2.1.4
+2026-03-29T00:36:37.2679872Z + nx 22.6.3
+2026-03-29T00:36:37.2680091Z + typescript 6.0.2
+2026-03-29T00:36:37.2680320Z + vitest 4.1.2
+2026-03-29T00:36:37.2680453Z 
+2026-03-29T00:36:37.3193601Z . prepare$ lefthook install
+2026-03-29T00:36:37.3776075Z . prepare: sync hooks: ✔️ (commit-msg, pre-commit)
+2026-03-29T00:36:37.3809867Z . prepare: Done
+2026-03-29T00:36:37.4569057Z apps/scanner prepare$ lefthook install
+2026-03-29T00:36:37.5112280Z apps/scanner prepare: sync hooks: ✔️ (commit-msg, pre-commit)
+2026-03-29T00:36:37.5148344Z apps/scanner prepare: Done
+2026-03-29T00:36:37.5360103Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-03-29T00:36:37.5361198Z │                                                                              │
+2026-03-29T00:36:37.5362275Z │   Ignored build scripts: @bufbuild/buf@1.66.1,                               │
+2026-03-29T00:36:37.5363493Z │   @evilmartians/lefthook@2.1.4, @parcel/watcher@2.5.6, @swc/core@1.15.21,    │
+2026-03-29T00:36:37.5364709Z │   core-js-pure@3.48.0, edgedriver@6.3.0, electron-winstaller@5.4.0,          │
+2026-03-29T00:36:37.5365903Z │   electron@41.1.0, esbuild@0.27.4, geckodriver@6.1.0.                        │
+2026-03-29T00:36:37.5367091Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-03-29T00:36:37.5368201Z │   to run scripts.                                                            │
+2026-03-29T00:36:37.5369479Z │                                                                              │
+2026-03-29T00:36:37.5370526Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-03-29T00:36:37.5581659Z Done in 14.4s using pnpm v10.33.0

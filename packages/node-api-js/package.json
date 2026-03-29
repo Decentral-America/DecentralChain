@@ -119,7 +119,7 @@
     "check:size": "size-limit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",

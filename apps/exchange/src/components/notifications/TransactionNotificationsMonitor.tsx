@@ -5,7 +5,10 @@
 import { useCallback, useEffect } from 'react';
 import { config } from '@/config';
 import { useToast } from '@/contexts/ToastContext';
-import { type TransactionNotification, useIncomingTransactions } from '@/features/wallet';
+import {
+  type TransactionNotification,
+  useIncomingTransactions,
+} from '@/features/wallet/useTransactionStream';
 import { useAssetDetails } from '@/hooks/useAssetDetails';
 import { logger } from '@/lib/logger';
 

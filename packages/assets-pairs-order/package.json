@@ -81,12 +81,12 @@
     "check:size": "size-limit",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "prepack": "npm run build",
-    "prepublishOnly": "npm run validate",
+    "prepack": "pnpm run build",
+    "prepublishOnly": "pnpm run validate",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run lint && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
+    "validate": "pnpm run lint && npm run typecheck && npm run test && npm run check:publint && npm run check:exports && npm run check:size"
   },
   "sideEffects": false,
   "type": "module",

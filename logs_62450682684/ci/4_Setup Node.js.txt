@@ -1,0 +1,21 @@
+﻿2026-03-29T00:36:06.3878297Z ##[group]Run actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+2026-03-29T00:36:06.3878981Z with:
+2026-03-29T00:36:06.3879164Z   cache: pnpm
+2026-03-29T00:36:06.3879354Z   node-version-file: .node-version
+2026-03-29T00:36:06.3879594Z   check-latest: false
+2026-03-29T00:36:06.3879892Z   token: ***
+2026-03-29T00:36:06.3880082Z   package-manager-cache: true
+2026-03-29T00:36:06.3880303Z env:
+2026-03-29T00:36:06.3880463Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:06.3880729Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:06.3881012Z ##[endgroup]
+2026-03-29T00:36:06.5336103Z Resolved .node-version as 24
+2026-03-29T00:36:06.5595311Z Found in cache @ /opt/hostedtoolcache/node/24.14.0/x64
+2026-03-29T00:36:06.5598884Z ##[group]Environment details
+2026-03-29T00:36:09.6666431Z node: v24.14.0
+2026-03-29T00:36:09.6666956Z npm: 11.9.0
+2026-03-29T00:36:09.6667237Z yarn: 1.22.22
+2026-03-29T00:36:09.6668266Z ##[endgroup]
+2026-03-29T00:36:09.6692461Z [command]/home/runner/setup-pnpm/node_modules/.bin/pnpm store path --silent
+2026-03-29T00:36:10.0797701Z /home/runner/setup-pnpm/node_modules/.bin/store/v10
+2026-03-29T00:36:10.1812387Z pnpm cache is not found
