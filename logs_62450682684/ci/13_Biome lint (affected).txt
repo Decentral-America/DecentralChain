@@ -1,0 +1,210 @@
+﻿2026-03-29T00:36:46.7028084Z ##[group]Run npx nx affected -t biome-lint
+2026-03-29T00:36:46.7028421Z [36;1mnpx nx affected -t biome-lint[0m
+2026-03-29T00:36:46.7055169Z shell: /usr/bin/bash -e {0}
+2026-03-29T00:36:46.7055410Z env:
+2026-03-29T00:36:46.7055587Z   NX_CLOUD_ACCESS_TOKEN: 
+2026-03-29T00:36:46.7055870Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-03-29T00:36:46.7056183Z   CARGO_HOME: /home/runner/.cargo
+2026-03-29T00:36:46.7056427Z   CARGO_INCREMENTAL: 0
+2026-03-29T00:36:46.7056633Z   CARGO_TERM_COLOR: always
+2026-03-29T00:36:46.7056845Z   CACHE_ON_FAILURE: true
+2026-03-29T00:36:46.7057095Z   NX_BASE: 18caaeb6701d4c9cb3b663a1f22fe9bc8690169c
+2026-03-29T00:36:46.7057426Z   NX_HEAD: eeb692c036ecab247927884dc372b57146660fdb
+2026-03-29T00:36:46.7057684Z ##[endgroup]
+2026-03-29T00:36:49.4388415Z 
+2026-03-29T00:36:49.4393280Z [7m[1m[38;5;214m NX [39m[22m[27m  [38;5;214mNo explicit --base argument provided, but found environment variable NX_BASE so using its value as the affected base: [1m18caaeb6701d4c9cb3b663a1f22fe9bc8690169c[22m[39m
+2026-03-29T00:36:49.4394327Z 
+2026-03-29T00:36:49.4394335Z 
+2026-03-29T00:36:49.4395587Z [7m[1m[38;5;214m NX [39m[22m[27m  [38;5;214mNo explicit --head argument provided, but found environment variable NX_HEAD so using its value as the affected head: [1meeb692c036ecab247927884dc372b57146660fdb[22m[39m
+2026-03-29T00:36:49.4396487Z 
+2026-03-29T00:36:50.1458369Z 
+2026-03-29T00:36:50.1459954Z [7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mbiome-lint[22m for 25 projects:[39m
+2026-03-29T00:36:50.1460378Z 
+2026-03-29T00:36:50.1460533Z [2m-[22m scanner
+2026-03-29T00:36:50.1461378Z [2m-[22m @decentralchain/assets-pairs-order
+2026-03-29T00:36:50.1461741Z [2m-[22m exchange
+2026-03-29T00:36:50.1462039Z [2m-[22m @decentralchain/bignumber
+2026-03-29T00:36:50.1462438Z [2m-[22m @decentralchain/data-service-client-js
+2026-03-29T00:36:50.1462848Z [2m-[22m @decentralchain/money-like-to-node
+2026-03-29T00:36:50.1463437Z [2m-[22m @decentralchain/signature-adapter
+2026-03-29T00:36:50.1464054Z [2m-[22m @decentralchain/data-entities
+2026-03-29T00:36:50.1464383Z [2m-[22m cubensis-connect
+2026-03-29T00:36:50.1464707Z [2m-[22m @decentralchain/node-api-js
+2026-03-29T00:36:50.1465036Z [2m-[22m @decentralchain/signer
+2026-03-29T00:36:50.1465426Z [2m-[22m @decentralchain/cubensis-connect-provider
+2026-03-29T00:36:50.1465816Z [2m-[22m @decentralchain/swap-client
+2026-03-29T00:36:50.1466157Z [2m-[22m @decentralchain/browser-bus
+2026-03-29T00:36:50.1466531Z [2m-[22m @decentralchain/cubensis-connect-types
+2026-03-29T00:36:50.1466900Z [2m-[22m @decentralchain/ledger
+2026-03-29T00:36:50.1467230Z [2m-[22m @decentralchain/marshall
+2026-03-29T00:36:50.1467568Z [2m-[22m @decentralchain/transactions
+2026-03-29T00:36:50.1467913Z [2m-[22m @decentralchain/oracle-data
+2026-03-29T00:36:50.1468293Z [2m-[22m @decentralchain/parse-json-bignumber
+2026-03-29T00:36:50.1468984Z [2m-[22m @decentralchain/protobuf-serialization
+2026-03-29T00:36:50.1469371Z [2m-[22m @decentralchain/ride-js
+2026-03-29T00:36:50.1469718Z [2m-[22m @decentralchain/ts-lib-crypto
+2026-03-29T00:36:50.1470057Z [2m-[22m @decentralchain/ts-types
+2026-03-29T00:36:50.1470377Z [2m-[22m @decentralchain/crypto
+2026-03-29T00:36:50.1470544Z 
+2026-03-29T00:36:50.1470658Z [2m[36m[39m[22m
+2026-03-29T00:36:59.8319695Z 
+2026-03-29T00:36:59.8322969Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/bignumber:biome-lint
+2026-03-29T00:36:59.8327248Z 
+2026-03-29T00:36:59.8327828Z [2m> [22mpnpm biome check packages/bignumber
+2026-03-29T00:36:59.8328223Z 
+2026-03-29T00:36:59.8328501Z Checked 11 files in 8s. No fixes applied.
+2026-03-29T00:36:59.8397927Z ##[endgroup]
+2026-03-29T00:36:59.8400759Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/ts-lib-crypto:biome-lint
+2026-03-29T00:36:59.8403168Z 
+2026-03-29T00:36:59.8403728Z [2m> [22mpnpm biome check packages/ts-lib-crypto
+2026-03-29T00:36:59.8404184Z 
+2026-03-29T00:36:59.8404517Z Checked 77 files in 8s. No fixes applied.
+2026-03-29T00:36:59.8602550Z ##[endgroup]
+2026-03-29T00:36:59.8604810Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/ts-types:biome-lint
+2026-03-29T00:36:59.8606424Z 
+2026-03-29T00:36:59.8609483Z [2m> [22mpnpm biome check packages/ts-types
+2026-03-29T00:36:59.8620319Z 
+2026-03-29T00:36:59.8621753Z Checked 11 files in 8s. No fixes applied.
+2026-03-29T00:37:10.1001934Z ##[endgroup]
+2026-03-29T00:37:10.1004552Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/marshall:biome-lint
+2026-03-29T00:37:10.1006242Z 
+2026-03-29T00:37:10.1007825Z [2m> [22mpnpm biome check packages/marshall
+2026-03-29T00:37:10.1009958Z 
+2026-03-29T00:37:10.1011401Z Checked 24 files in 9s. No fixes applied.
+2026-03-29T00:37:10.2060495Z ##[endgroup]
+2026-03-29T00:37:10.2063214Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/transactions:biome-lint
+2026-03-29T00:37:10.2064862Z 
+2026-03-29T00:37:10.2066506Z [2m> [22mpnpm biome check packages/transactions
+2026-03-29T00:37:10.2067990Z 
+2026-03-29T00:37:10.2069981Z Checked 125 files in 9s. No fixes applied.
+2026-03-29T00:37:10.2730780Z ##[endgroup]
+2026-03-29T00:37:10.2733476Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/protobuf-serialization:biome-lint
+2026-03-29T00:37:10.2735480Z 
+2026-03-29T00:37:10.2737264Z [2m> [22mpnpm biome check packages/protobuf-serialization
+2026-03-29T00:37:10.2739252Z 
+2026-03-29T00:37:10.2740783Z Checked 25 files in 9s. No fixes applied.
+2026-03-29T00:37:10.2831952Z (node:2748) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 exit listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+2026-03-29T00:37:10.2835996Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-03-29T00:37:19.8786964Z ##[endgroup]
+2026-03-29T00:37:19.8789783Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/data-entities:biome-lint
+2026-03-29T00:37:19.8791566Z 
+2026-03-29T00:37:19.8794522Z [2m> [22mpnpm biome check packages/data-entities
+2026-03-29T00:37:19.8795987Z 
+2026-03-29T00:37:19.8797390Z Checked 24 files in 8s. No fixes applied.
+2026-03-29T00:37:19.9052731Z ##[endgroup]
+2026-03-29T00:37:19.9055198Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/node-api-js:biome-lint
+2026-03-29T00:37:19.9059376Z 
+2026-03-29T00:37:19.9061901Z [2m> [22mpnpm biome check packages/node-api-js
+2026-03-29T00:37:19.9064307Z 
+2026-03-29T00:37:19.9066569Z Checked 77 files in 8s. No fixes applied.
+2026-03-29T00:37:20.0401537Z ##[endgroup]
+2026-03-29T00:37:20.0410378Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/ledger:biome-lint
+2026-03-29T00:37:20.0410934Z 
+2026-03-29T00:37:20.0412524Z [2m> [22mpnpm biome check packages/ledger
+2026-03-29T00:37:20.0412968Z 
+2026-03-29T00:37:20.0413273Z Checked 14 files in 8s. No fixes applied.
+2026-03-29T00:37:29.4700816Z ##[endgroup]
+2026-03-29T00:37:29.4704985Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/parse-json-bignumber:biome-lint
+2026-03-29T00:37:29.4705676Z 
+2026-03-29T00:37:29.4706222Z [2m> [22mpnpm biome check packages/parse-json-bignumber
+2026-03-29T00:37:29.4706680Z 
+2026-03-29T00:37:29.4706979Z Checked 9 files in 8s. No fixes applied.
+2026-03-29T00:37:29.4773957Z (node:2748) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGINT listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+2026-03-29T00:37:29.4778360Z (node:2748) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGTERM listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+2026-03-29T00:37:29.4781430Z (node:2748) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGHUP listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+2026-03-29T00:37:29.4786848Z ##[endgroup]
+2026-03-29T00:37:29.4787849Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/money-like-to-node:biome-lint
+2026-03-29T00:37:29.4788394Z 
+2026-03-29T00:37:29.4789146Z [2m> [22mpnpm biome check packages/money-like-to-node
+2026-03-29T00:37:29.4789935Z 
+2026-03-29T00:37:29.4790220Z Checked 35 files in 8s. No fixes applied.
+2026-03-29T00:37:29.6117685Z ##[endgroup]
+2026-03-29T00:37:29.6120617Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/crypto:biome-lint
+2026-03-29T00:37:29.6123636Z 
+2026-03-29T00:37:29.6126349Z [2m> [22mpnpm biome check packages/crypto
+2026-03-29T00:37:29.6128122Z 
+2026-03-29T00:37:29.6128440Z Checked 32 files in 8s. No fixes applied.
+2026-03-29T00:37:38.9511633Z ##[endgroup]
+2026-03-29T00:37:38.9532791Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/cubensis-connect-types:biome-lint
+2026-03-29T00:37:38.9533450Z 
+2026-03-29T00:37:38.9533969Z [2m> [22mpnpm biome check packages/cubensis-connect-types
+2026-03-29T00:37:38.9534367Z 
+2026-03-29T00:37:38.9534621Z Checked 9 files in 8s. No fixes applied.
+2026-03-29T00:37:38.9773311Z ##[endgroup]
+2026-03-29T00:37:38.9782394Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/oracle-data:biome-lint
+2026-03-29T00:37:38.9783027Z 
+2026-03-29T00:37:38.9783573Z [2m> [22mpnpm biome check packages/oracle-data
+2026-03-29T00:37:38.9783952Z 
+2026-03-29T00:37:38.9784231Z Checked 14 files in 8s. No fixes applied.
+2026-03-29T00:37:39.0251929Z ##[endgroup]
+2026-03-29T00:37:39.0255630Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/swap-client:biome-lint
+2026-03-29T00:37:39.0259197Z 
+2026-03-29T00:37:39.0259686Z [2m> [22mpnpm biome check packages/swap-client
+2026-03-29T00:37:39.0260052Z 
+2026-03-29T00:37:39.0260309Z Checked 9 files in 8s. No fixes applied.
+2026-03-29T00:37:48.6050657Z ##[endgroup]
+2026-03-29T00:37:48.6051905Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/signer:biome-lint
+2026-03-29T00:37:48.6052762Z 
+2026-03-29T00:37:48.6053201Z [2m> [22mpnpm biome check packages/signer
+2026-03-29T00:37:48.6053531Z 
+2026-03-29T00:37:48.6053797Z Checked 28 files in 8s. No fixes applied.
+2026-03-29T00:37:48.7401954Z ##[endgroup]
+2026-03-29T00:37:48.7405765Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/data-service-client-js:biome-lint
+2026-03-29T00:37:48.7411754Z 
+2026-03-29T00:37:48.7412394Z [2m> [22mpnpm biome check packages/data-service-client-js
+2026-03-29T00:37:48.7412817Z 
+2026-03-29T00:37:48.7413088Z Checked 24 files in 8s. No fixes applied.
+2026-03-29T00:37:48.7931480Z ##[endgroup]
+2026-03-29T00:37:48.7932697Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/signature-adapter:biome-lint
+2026-03-29T00:37:48.7933273Z 
+2026-03-29T00:37:48.7933765Z [2m> [22mpnpm biome check packages/signature-adapter
+2026-03-29T00:37:48.7934160Z 
+2026-03-29T00:37:48.7934432Z Checked 51 files in 8s. No fixes applied.
+2026-03-29T00:37:58.2401284Z ##[endgroup]
+2026-03-29T00:37:58.2404644Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/assets-pairs-order:biome-lint
+2026-03-29T00:37:58.2406705Z 
+2026-03-29T00:37:58.2408874Z [2m> [22mpnpm biome check packages/assets-pairs-order
+2026-03-29T00:37:58.2410487Z 
+2026-03-29T00:37:58.2411896Z Checked 11 files in 8s. No fixes applied.
+2026-03-29T00:37:58.6537364Z ##[endgroup]
+2026-03-29T00:37:58.6566404Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/browser-bus:biome-lint
+2026-03-29T00:37:58.6568532Z 
+2026-03-29T00:37:58.6571923Z [2m> [22mpnpm biome check packages/browser-bus
+2026-03-29T00:37:58.6573687Z 
+2026-03-29T00:37:58.6575153Z Checked 24 files in 8s. No fixes applied.
+2026-03-29T00:38:00.1152745Z ##[endgroup]
+2026-03-29T00:38:00.1155751Z ##[group]✅ [2m> [22m[2mnx run[22m cubensis-connect:biome-lint
+2026-03-29T00:38:00.1157761Z 
+2026-03-29T00:38:00.1160011Z [2m> [22mpnpm biome check apps/cubensis-connect
+2026-03-29T00:38:00.1161825Z 
+2026-03-29T00:38:00.1179507Z Checked 475 files in 10s. No fixes applied.
+2026-03-29T00:38:09.4987737Z ##[endgroup]
+2026-03-29T00:38:09.4990882Z ##[group]✅ [2m> [22m[2mnx run[22m scanner:biome-lint
+2026-03-29T00:38:09.4992795Z 
+2026-03-29T00:38:09.5009661Z [2m> [22mpnpm biome check apps/scanner
+2026-03-29T00:38:09.5011543Z 
+2026-03-29T00:38:09.5013274Z Checked 107 files in 9s. No fixes applied.
+2026-03-29T00:38:10.3155063Z ##[endgroup]
+2026-03-29T00:38:10.3158484Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/cubensis-connect-provider:biome-lint
+2026-03-29T00:38:10.3160948Z 
+2026-03-29T00:38:10.3165202Z [2m> [22mpnpm biome check packages/cubensis-connect-provider
+2026-03-29T00:38:10.3165647Z 
+2026-03-29T00:38:10.3165903Z Checked 21 files in 8s. No fixes applied.
+2026-03-29T00:38:10.3707890Z ##[endgroup]
+2026-03-29T00:38:10.3711082Z ##[group]✅ [2m> [22m[2mnx run[22m exchange:biome-lint
+2026-03-29T00:38:10.3717225Z 
+2026-03-29T00:38:10.3717738Z [2m> [22mpnpm biome check apps/exchange
+2026-03-29T00:38:10.3718102Z 
+2026-03-29T00:38:10.3718420Z Checked 432 files in 10s. No fixes applied.
+2026-03-29T00:38:13.5878120Z ##[endgroup]
+2026-03-29T00:38:13.5879768Z ##[group]✅ [2m> [22m[2mnx run[22m @decentralchain/ride-js:biome-lint
+2026-03-29T00:38:13.5880333Z 
+2026-03-29T00:38:13.5880755Z [2m> [22mpnpm biome check packages/ride-js
+2026-03-29T00:38:13.5881085Z 
+2026-03-29T00:38:13.5881364Z Checked 80 files in 3s. No fixes applied.
+2026-03-29T00:38:13.5892840Z ##[endgroup]
+2026-03-29T00:38:13.5893311Z [2m[32m[39m[22m
+2026-03-29T00:38:13.5893465Z 
+2026-03-29T00:38:13.5893945Z [7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mbiome-lint[22m for 25 projects[39m
+2026-03-29T00:38:13.5894312Z 
+2026-03-29T00:38:13.5894322Z 

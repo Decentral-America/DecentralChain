@@ -68,7 +68,7 @@
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
-    "build": "npm run build:wasm && npm run build:ts",
+    "build": "pnpm run build:wasm && npm run build:ts",
     "build:ts": "tsc",
     "build:wasm": "wasm-pack build --target web --release && rimraf pkg/package.json pkg/.gitignore",
     "check:exports": "attw --pack . --ignore-rules cjs-resolves-to-esm",
@@ -76,7 +76,7 @@
     "dev:wasm": "wasm-pack build --target web --dev && rimraf pkg/package.json pkg/.gitignore",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
