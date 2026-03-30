@@ -49,3 +49,5 @@ scripts/sync-to-polyrepos.sh
 
 .claude/worktrees
 .claude/settings.local.jsonlogs_*
+
+.claude/settings.local.json
