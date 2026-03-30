@@ -5,10 +5,11 @@
     "@biomejs/biome": "2.4.9",
     "@nx/devkit": "22.6.3",
     "esbuild": "0.27.4",
-    "knip": "6.0.6",
+    "knip": "6.1.0",
     "lefthook": "2.1.4",
     "nx": "22.6.3",
     "typescript": "6.0.2",
+    "vite": "8.0.3",
     "vitest": "catalog:"
   },
   "engines": {

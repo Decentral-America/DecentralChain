@@ -38,10 +38,32 @@ export default defineConfig({
             // Without this, Vite may defer Sentry until a lazy route loads, delaying error capture.
             return 'sentry';
           }
+
+          // TradingView charting library is massive — isolate it for lazy-loaded DEX route
+          if (/node_modules\/(charting_library|tradingview)/.test(id)) {
+            return 'tradingview';
+          }
+
+          // Crypto + serialization libs — only needed for transaction signing
+          if (
+            /node_modules\/(@decentralchain\/(ts-lib-crypto|crypto|transactions|protobuf-serialization|marshall)|@noble\/|@scure\/)/.test(
+              id,
+            )
+          ) {
+            return 'crypto';
+          }
+
+          // i18n — loaded at app init but doesn't need to block initial render
+          if (/node_modules\/(i18next|react-i18next)\//.test(id)) {
+            return 'i18n';
+          }
         },
       },
     },
-    sourcemap: NODE_ENV !== 'production',
+    // Generate hidden source maps for Sentry error symbolication.
+    // 'hidden' maps are not referenced from bundled JS (not served to users),
+    // but can be uploaded to Sentry during CI for production stack traces.
+    sourcemap: NODE_ENV === 'production' ? 'hidden' : true,
   },
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),

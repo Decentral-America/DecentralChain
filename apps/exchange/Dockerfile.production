@@ -18,7 +18,7 @@ FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e
 # Install git (required for lefthook install prepare script) and enable pnpm via corepack
 RUN apk add --no-cache git \
     && corepack enable \
-    && corepack prepare pnpm@latest --activate
+    && corepack prepare pnpm@10.33.0 --activate
 
 # Monorepo root is the build context
 WORKDIR /monorepo
