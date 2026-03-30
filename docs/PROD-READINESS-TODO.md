@@ -759,3 +759,22 @@ Zero code issues found. All tool versions confirmed still at latest (Nx 22.6.3 p
 **MD cleanup:** 5 stale node-go audit artifacts deleted — `AUDIT_COMPLETION_SUMMARY.md`, `DELIVERABLES_INDEX.md`, `ENTERPRISE_VERIFICATION_REPORT.md`, `AUDIT_VERIFIED_2026-03-28.md`, `REMEDIATION_PLAN_2026-03-28.md`.
 
 **Gates:** All ✅ — 1778 biome files clean, 25/25 typecheck/test/build, 0 CVEs, 0 lint issues.
+
+---
+
+### Audit 5 — 2026-03-30 (Security CVE Floor Fix + Go Patch Precision)
+
+**Commits:** DCC `b123c84` · node-go `e0e67ed`
+
+**Research scope:** Full changelog audit for all 25+ tools — Biome 2.4, TypeScript 6.0.2, Vite 8.0.3, Vitest 4.1.2, Nx 22.6.3, tsdown 0.21.7, pnpm 10.33.0, React 19.2.4, MUI 7.3.9, react-router 7.13.2, i18next 26.0.2, Sentry JS SDK 10.46.0, Go 1.26.1, golangci-lint v2.11.4, govulncheck v1.1.4; all 29 GHA actions re-verified at latest SHA-pinned versions.
+
+**DCC:** `apps/exchange/package.json` — `@sentry/react` floor constraint bumped `^10.45.0` → `^10.46.0`. Sentry 10.46.0 ships `fix(deps): bump socket.io-parser to 4.2.6` (CVE-2026-33151). The lockfile was already resolving to 10.46.0 but the minimum constraint was pre-CVE-fix; explicit floor now matches the CVE-clean release. `pnpm install` run; lockfile specifier updated.
+
+**node-go:** `go.mod` directive updated `go 1.26` → `go 1.26.1` via `go get go@1.26.1`. Enterprise best practice since Go 1.21+: specify exact patch version to pin the minimum toolchain. `go mod tidy` run; go.sum updated.
+
+**Biome 2.4 promoted rules (all 24 already passing):**
+- `noImportCycles` → `suspicious` (stable): confirmed 0 cycles in all 25 projects
+- `noDeprecatedImports` → `suspicious` (stable): confirmed 0 deprecated imports
+- All other promoted nursery rules: biome check = 0 errors, 1778 files clean
+
+**Gates:** All ✅ — DCC: lint 25/25, typecheck 25/25, test 1227 passed/1 skipped, build 25/25, publint 22/22, exports 22/22, size 21/21, biome 1778 clean, pnpm audit 0 CVEs, pnpm outdated 0. node-go: build clean, go mod tidy clean, govulncheck 0 vulns, golangci-lint 0 issues.
