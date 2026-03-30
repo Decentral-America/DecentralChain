@@ -1,8 +1,6 @@
 # Docker Compose for DCC React Wallet
 # Supports all three network environments
 
-version: '3.8'
-
 services:
   # ================================================================
   # Mainnet deployment

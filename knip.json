@@ -8,7 +8,13 @@
   "ignore": [
     // exchange: ambient module-augmentation declaration files — not imported, but required for type inference
     "apps/exchange/src/styles/styled.d.ts",
-    "apps/exchange/src/types/charting_library.d.ts"
+    "apps/exchange/src/types/charting_library.d.ts",
+    // monitor-ci: standalone CLI scripts executed by GitHub Actions / AI agents (not imported by JS modules)
+    ".agents/skills/monitor-ci/scripts/**",
+    ".github/skills/monitor-ci/scripts/**",
+    ".opencode/skills/monitor-ci/scripts/**",
+    // NX generators: invoked by NX CLI, not imported
+    "tools/generators/**"
   ],
   "ignoreDependencies": [
     "@vitest/coverage-v8",
@@ -48,17 +54,17 @@
     // exchange: TradingView charting library is a proprietary binary distribution — not on npm
     "charting_library",
     // sdk-package: local NX generator (not an npm package)
-    "sdk-package",
-    // root: esbuild is a peer/transitive dep used by vitest to transform vitest.config.ts files in every package
-    "esbuild"
+    "sdk-package"
+    // Note: esbuild is now tracked via vitest.base.config.ts root entry — removed from ignore
   ],
   "vitest": {
     "config": []
   },
   "workspaces": {
     ".": {
-      "entry": [],
-      "project": []
+      // vitest.base.config.ts is the shared Vitest base config imported by all package vitest.config.ts files.
+      // This entry is required so knip can trace the vitest/config and vite/esbuild imports.
+      "entry": ["vitest.base.config.ts"]
     },
     "apps/cubensis-connect": {
       "entry": [
@@ -162,10 +168,19 @@
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
+    // tests are co-located in src/__tests__/ not test/
+    "packages/assets-pairs-order": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    },
     "packages/crypto": {
       "entry": ["src/index.ts"],
       // wasm-pack is a Rust binary tool (not an npm package) invoked via `wasm-pack build` in package scripts
       "ignoreBinaries": ["wasm-pack"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/data-service-client-js": {
+      "entry": ["src/index.ts"],
       "project": ["src/**/*.ts"]
     },
     "packages/node-api-js": {
