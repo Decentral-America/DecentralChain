@@ -844,6 +844,46 @@ All remaining actions (`checkout`, `setup-go`, `setup-buildx`, `login`, `metadat
 
 ---
 
+### Audit 10 — 2026-03-30 (node-go: 6 New Revive Rules + Complete sort→slices Migration)
+
+**Scope:** node-go (primary). golangci-lint changelog analysis (v2.5.0–v2.9.0). All findings fixed.
+
+**6 new revive rules enabled:**
+- `use-slices-sort` (v2.9.0) — replace all `sort.*` calls with `slices.*` stdlib equivalents
+- `identical-ifelseif-branches` (v2.5.0) — collapse duplicated if/else if bodies into single condition
+- `inefficient-map-lookup` (v2.7.0) — eliminate redundant double map lookups
+- `forbidden-call-in-wg-go` (v2.7.0) — prevent WaitGroup usage bugs in goroutines
+- `unnecessary-if` (v2.7.0) — simplify trivial boolean conditionals
+- `useless-fallthrough` (v2.5.0) — remove explicit fallthrough in final switch cases
+
+**Sort→slices migration — complete codebase sweep (37 files, −152 lines net):**
+- 26 production files migrated: `slices.SortFunc` / `SortStableFunc` / `Sort` / `IsSortedFunc`
+- 3 test files migrated: `active_peers_test.go`, `ethabi/parsing_test.go`, `proto_test.go`
+- **23 dead sort.Interface implementations removed** (Len/Less/Swap deleted or type fully removed):
+  `bigIntSlice`, `rewardsByAddress`, `pairs`, `byKey`, `changesByKey`, `stateComponents`,
+  `pathsByLengthAscending`, `dataEntrySorter`, `transferSorter`, `issueSorter`,
+  `reissueSorter`, `burnSorter`, `sponsorshipSorter`, `leaseSorter`, `leaseCancelSorter`,
+  `PeerNodesByName`, `ByMarkets`, `ByTickers`, `BySymbols`, `ByCandlesTimestampBackward`,
+  `TradesByTimestampBackward`, `ActiveConnections`, `ByTime`
+
+**Identical-ifelseif-branches fixes:**
+- `pkg/node/helpers.go`: `if lastBlock.Timestamp > now { ... } else if now-lastBlock.Timestamp < max { ... }` → single `||`
+- `pkg/ride/compiler/ast_parser.go`: identical branch collapse for tuple min-length check
+
+**Additional:**
+- `pkg/crypto/internal/edwards25519.go:ScMinimal` — `//nolint:revive` for reference impl
+- `pkg/node/state_fsm/tasks/tasks.go:type_` — updated nolint explanation for `var-naming`
+
+**Gates — node-go** (Go 1.26.1 · golangci-lint v2.11.4 · **41 rules** · govulncheck v1.1.4):
+- `go build ./...` → CLEAN ✅
+- `go vet ./...` → CLEAN ✅
+- `govulncheck ./...` → "No vulnerabilities found." ✅
+- `golangci-lint run ./...` → **0 issues (41 linters, full codebase)** ✅
+
+**Commit:** `6585129` on `dev` branch (node-go)
+
+---
+
 ### Audit 9 — 2026-03-30 (node-go: 3 New Linters, 100% GHA SHA Verified, Code Modernization)
 
 **Scope:** node-go (primary), DCC (verification-only). Full GHA SHA audit across all 6 workflows. 3 new linters enabled; all findings fixed.
