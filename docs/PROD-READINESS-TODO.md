@@ -935,3 +935,65 @@ All remaining actions (`checkout`, `setup-go`, `setup-buildx`, `login`, `metadat
 - `build` → **25/25** ✅
 
 **Commit:** `4b7f196` on `dev` branch (node-go)
+
+---
+
+### Audit 18 — 2026-03-31 (node-go: arangolint + nonamedreturns, 83 Linters, 0 Issues)
+
+**Scope:** node-go (primary). Full changelog research v2.7.2–v2.11.4. 2 new linters enabled; 24 violations fixed across 17 files.
+
+**node-go — 2 new linters enabled:**
+- `arangolint` (golangci-lint v2.2.0 / updated v2.9.0) — ArangoDB query best practices + injection detection (0 violations, no ArangoDB usage in codebase)
+- `nonamedreturns` — prohibit named return values where not semantically required; prevents accidental naked-return bugs beyond nakedret's scope
+
+**Fixes applied (24 nonamedreturns violations across 17 files):**
+- `cmd/forkdetector/internal/queues_test.go`: net.Conn mock Read/Write — remove names
+- `pkg/api/node_api.go`: `assetsDetailsByIDs` — unnamed error return
+- `pkg/grpc/server/transactions_api.go`: `Broadcast` — unnamed returns
+- `pkg/importer/importer.go`: `CheckBalances` — unnamed error return
+- `pkg/keyvalue/bloom_filter.go`: `WriteTo`/`ReadFrom` — delegation pattern, remove names
+- `pkg/miner/scheduler/scheduler.go`: `MapR` closure — unnamed returns
+- `pkg/node/peer_manager/peer_manager.go`: `NewConnection` — unnamed error return
+- `pkg/node/state_fsm/ng/inv_request.go`: `Add2Cache`/`Request` — unnamed bool returns
+- `pkg/p2p/common/common.go`: `DuplicateChecker.Add` — unnamed bool return
+- `pkg/p2p/conn/conn.go`: `multiReader.Read` — unnamed returns; naked return fixed to explicit `return n, err`
+- `pkg/state/assets.go`: `marshalBinary` — unnamed returns
+- `pkg/state/monetary_policy.go`: `blockRewardVotingPeriod` — `start =`/`end =` → `start :=`/`end :=`
+- `pkg/state/rewards_calculator.go`: `handleFeature20` — unnamed return
+- `pkg/state/scripts_cache.go`: `get`/`set`/`deleteIfExists` — unnamed returns; `get` naked return fixed to explicit `return ast.Tree{}, false`
+- `pkg/state/state.go`: `blockRewardVotingPeriod` — `start, end =` → `start, end :=`
+- `pkg/util/fifo_cache/cache.go`: `Get` — unnamed returns; naked return fixed to explicit `return value, ok`
+- `pkg/util/limit_listener/listen.go`: `Read` — delegation pattern, remove names
+
+**Exclusions for nonamedreturns (semantically required named returns):**
+- `pkg/proto/` — Ethereum-compat types: `(r, s, v *big.Int)` naming, wire-format semantics
+- `pkg/crypto/internal/` — RFC/IETF reference implementation variable names
+- `pkg/ride/crypto/` — PKCS#1 reference implementation variable names
+- `itests/` — `NewConnection`: defer **writes** to named `err` return for connection cleanup
+- `pkg/p2p/outgoing/` — `connector.connect`: defer reads named `err` set by explicit returns
+
+**Tool versions (all at latest):**
+- Go 1.26.1 · golangci-lint v2.11.4 · govulncheck v1.1.4 · gofumpt v0.9.2
+- All direct Go module deps at latest (except gnark/gnark-crypto — pinned pair: gnark v0.14.0 + gnark-crypto v0.19.2)
+
+**linter candidates surveyed and deferred (too noisy for current sprint):**
+- `wsl_v5`: 18,290 violations (whitespace enforcement — major reformatting sprint)
+- `err113`: 1,835 violations (dynamic error wrapping — major refactor sprint)
+- `paralleltest`: 1,357 violations (test parallelization — separate sprint)
+- `funcorder`: 457 violations (function ordering — style sprint)
+
+**Gates — node-go** (Go 1.26.1 · golangci-lint v2.11.4 · **83 linters** · govulncheck v1.1.4):
+- `go build ./...` → CLEAN ✅
+- `go vet ./...` → CLEAN ✅
+- `govulncheck ./...` → "No vulnerabilities found." ✅
+- `golangci-lint run ./...` → **0 issues (83 linters)** ✅
+
+**Gates — DCC** (Biome 2.4.10 · Nx 22.6.3 · pnpm 10.33.0):
+- `pnpm audit` → **0 vulnerabilities** ✅
+- `lint:check` → **clean** ✅
+- `typecheck` → **25/25** ✅
+- `test` → **25/25** ✅ (1,227 passed / 1 skipped / 0 failed)
+- `build` → **25/25** ✅
+- `knip 6.1.1` → deferred (0 downloads, published same day as audit)
+
+**Commit:** `d2a08ff` on `dev` branch (node-go)
