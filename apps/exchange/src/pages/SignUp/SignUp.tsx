@@ -75,8 +75,8 @@ const SignUpInner: React.FC = () => {
               </Typography>
 
               <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
-                Create your decentralized wallet and get instant access to trading, swaps, and
-                portfolio management.
+                Create your decentralized wallet and get instant access to trading and portfolio
+                management.
               </Typography>
 
               <Button

@@ -25,7 +25,6 @@ import {
   permissionsUiState,
   selectedAccount,
   state,
-  swappableAssetIdsByVendor,
   uiState,
   usdPrices,
 } from '../../store/reducers/updateState';
@@ -55,7 +54,6 @@ export const reducer = combineReducers({
   permissionsUiState,
   selectedAccount,
   state,
-  swappableAssetIdsByVendor,
   uiState,
   usdPrices,
 });

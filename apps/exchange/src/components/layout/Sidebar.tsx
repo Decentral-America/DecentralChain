@@ -18,7 +18,6 @@ import {
   ReceiptLong,
   SettingsOutlined,
   ShowChart,
-  SwapHoriz,
   Timeline,
 } from '@mui/icons-material';
 import {
@@ -309,12 +308,6 @@ export const Sidebar = () => {
           label="Trading"
           icon={<ShowChart />}
           to="/desktop/dex"
-        />
-        <NavItem
-          active={isActive('/desktop/swap')}
-          label="Swap"
-          icon={<SwapHoriz />}
-          to="/desktop/swap"
         />
         <NavItem
           active={isActive('/desktop/bridge')}

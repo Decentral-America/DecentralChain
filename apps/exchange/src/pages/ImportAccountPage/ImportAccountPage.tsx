@@ -128,7 +128,7 @@ const ImportAccountInner: React.FC = () => {
                   },
                   {
                     color: 'primary.main',
-                    desc: 'Access all trading, swaps, and portfolio management tools instantly.',
+                    desc: 'Access all trading and portfolio management tools instantly.',
                     icon: <ShowChartIcon sx={{ fontSize: 20 }} />,
                     title: 'Full Features',
                   },
