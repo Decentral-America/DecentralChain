@@ -18,9 +18,7 @@
     "pubKey": "Public key",
     "viewInExplorer": "Lihat di explorer"
   },
-  "activeAccountCard": {
-    "swapButton": "Swap"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "Alamat baru",
     "addButton": "Tambah baru",
@@ -68,7 +66,6 @@
     "scripted": "Tertulis",
     "sendAssetTooltip": "Kirim",
     "sender": "Penerbit",
-    "swapAssetTooltip": "Swap",
     "ticker": "Ticker",
     "timestamp": "Tanggal rilis",
     "type": "Jenis",
@@ -560,37 +557,6 @@
     "transactionFailed": "Transaksi Anda ditolak!",
     "transactionSend": "Kamu telah mengirim",
     "understand": "OK",
-    "viewTransaction": "Lihat transaksi"
-  },
-  "swap": {
-    "amountToSendError": "Tidak dapat melakukan swap karena status dApp SwapFi. Silakan coba lagi atau sedikit tingkatkan toleransi selip jika memungkinkan",
-    "closeBtnText": "Tutup",
-    "exchangeChannelConnectionError": "Tidak dapat terhubung ke layanan swap. Silakan coba lagi nanti",
-    "exchangeChannelInvalidAssetPairError": "Pasangan aset tidak tersedia",
-    "exchangeChannelUnavailableError": "Layanan tidak merespons",
-    "exchangeChannelUnknownError": "Tidak tersedia untuk pertukaran ini",
-    "failMessage": "Swap tidak berhasil, silakan coba lagi",
-    "fromInputLabel": "Dari",
-    "insufficientFundsError": "Dana tidak mencukupi",
-    "maxAmountExceeded": "Jumlah tidak boleh melebihi {{ maxAmount }}",
-    "minimumReceived": "Minimum Diterima",
-    "minimumReceivedTooltip": "Jumlah minimum yang akan Anda terima, dengan mempertimbangkan toleransi selip",
-    "notAvailable": "N/A",
-    "notSwappablePairTooltip": " Pertukaranantara {{ assetDisplayName1 }} dan {{ assetDisplayName2 }} tidak didukung",
-    "priceImpactTooltip": "Selisih antara harga exchanger dan perkiraan harga karena ukuran perdagangan.",
-    "priceLabel": "Price",
-    "primaryLabel": "Primer",
-    "profitLabel": "Profit",
-    "slippageToleranceModalDescription": "Swap akan dibatalkan jika harga berubah lebih dari persentase ini",
-    "slippageToleranceModalTitle": "Slippage Tolerance",
-    "statusFailed": "Gagal",
-    "statusInProgress": "Menunggu penyelesaian pertukaran...",
-    "statusSucceeded": "Berhasil!",
-    "submitButtonText": "Swap",
-    "title": "Swap aset",
-    "toInputLabel": "Kepada ( perkiraan)",
-    "transactionFee": "Biaya transaksi",
-    "transactionFeeTooltip": "Biaya jaringan untuk pemanggilan Smart contract",
     "viewTransaction": "Lihat transaksi"
   },
   "transactions": {

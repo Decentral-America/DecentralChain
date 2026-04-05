@@ -18,9 +18,7 @@
     "pubKey": "Clave publica",
     "viewInExplorer": "Ver en el explorador"
   },
-  "activeAccountCard": {
-    "swapButton": "Intercambio"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "Nueva dirección",
     "addButton": "Agregar nueva",
@@ -68,7 +66,6 @@
     "scripted": "Guion",
     "sendAssetTooltip": "Enviar",
     "sender": "Emisor",
-    "swapAssetTooltip": "Intercambiar",
     "ticker": "Ticker",
     "timestamp": "Fecha de asunto",
     "type": "Escribe",
@@ -559,37 +556,6 @@
     "transactionFailed": "¡Su transacción ha sido rechazada!",
     "transactionSend": "Has enviado",
     "understand": "entiendo",
-    "viewTransaction": "Ver transacción"
-  },
-  "swap": {
-    "amountToSendError": "No se pudo realizar el intercambio debido al estado de SwopFi dApp. Vuelva a intentarlo o aumente ligeramente la tolerancia al deslizamiento si es posible",
-    "closeBtnText": "Cerrar",
-    "exchangeChannelConnectionError": "No se pudo conectar al servicio de intercambio. Por favor, inténtelo de nuevo más tarde",
-    "exchangeChannelInvalidAssetPairError": "El par de activos no está disponible",
-    "exchangeChannelUnavailableError": "El servicio no responde",
-    "exchangeChannelUnknownError": "No disponible para este intercambio",
-    "failMessage": "El intercambio no se realizó correctamente, inténtalo de nuevo",
-    "fromInputLabel": "Desde",
-    "insufficientFundsError": "Fondos insuficientes",
-    "maxAmountExceeded": "La cantidad no debe exceder {{ maxAmount }}",
-    "minimumReceived": "mínimo recibido",
-    "minimumReceivedTooltip": "Cantidad mínima que recibirá, teniendo en cuenta la tolerancia al deslizamiento",
-    "notAvailable": "N/A",
-    "notSwappablePairTooltip": "No se admite el cambio entre {{ assetDisplayName1 }} y {{ assetDisplayName2 }}",
-    "priceImpactTooltip": "La diferencia entre el precio de intercambio y el precio estimado debido al tamaño de la operación.",
-    "priceLabel": "Precio",
-    "primaryLabel": "Primario",
-    "profitLabel": "Ganancia",
-    "slippageToleranceModalDescription": "El intercambio se cancelará si el precio cambia desfavorablemente en más de este porcentaje",
-    "slippageToleranceModalTitle": "Tolerancia del Slippage",
-    "statusFailed": "Intercambio fallido",
-    "statusInProgress": "Esperando a que se complete el intercambio...",
-    "statusSucceeded": "Intercambio exitoso",
-    "submitButtonText": "Intercambio",
-    "title": "Intercambiar activos",
-    "toInputLabel": "Hasta (estimado)",
-    "transactionFee": "Tarifa de transacción",
-    "transactionFeeTooltip": "Tarifa de red para la invocación del contrato inteligente",
     "viewTransaction": "Ver transacción"
   },
   "transactions": {

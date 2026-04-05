@@ -18,9 +18,7 @@
     "pubKey": "Chave Pública",
     "viewInExplorer": "Ver no Explorer"
   },
-  "activeAccountCard": {
-    "swapButton": "Converter"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "Novo endereço",
     "addButton": "Adicionar novo",
@@ -68,7 +66,6 @@
     "scripted": "Com script",
     "sendAssetTooltip": "Enviar",
     "sender": "Emissor",
-    "swapAssetTooltip": "Converter",
     "ticker": "Ticker",
     "timestamp": "Data de emissão",
     "type": "Tipo",
@@ -559,37 +556,6 @@
     "transactionFailed": "Sua transação foi rejeitada!",
     "transactionSend": "Você enviou",
     "understand": "Eu entendo",
-    "viewTransaction": "Ver transação"
-  },
-  "swap": {
-    "amountToSendError": "Não foi possível realizar a conversão devido ao estado do dApp SwopFi. Por favor, tente novamente ou aumente ligeiramente a tolerância ao slippage, se possível",
-    "closeBtnText": "Fechar",
-    "exchangeChannelConnectionError": "Não foi possível conectar ao serviço de swap. Por favor, tente novamente mais tarde",
-    "exchangeChannelInvalidAssetPairError": "O par de Ativos não está disponível",
-    "exchangeChannelUnavailableError": "Serviço não está respondendo",
-    "exchangeChannelUnknownError": "Indisponível para este swap",
-    "failMessage": "A conversão não foi bem-sucedida, tente novamente",
-    "fromInputLabel": "De",
-    "insufficientFundsError": "Saldo Insuficiente",
-    "maxAmountExceeded": "O valor não deve exceder {{ maxAmount }}",
-    "minimumReceived": "Mínimo Recebido",
-    "minimumReceivedTooltip": "Valor mínimo que você receberá, levando em consideração a tolerância ao slippage",
-    "notAvailable": "N/D",
-    "notSwappablePairTooltip": "Swap entre {{ assetDisplayName1 }} e {{ assetDisplayName2 }} não é suportado",
-    "priceImpactTooltip": "A diferença entre o preço no conversor e o preço estimado devido ao tamanho da negociação.",
-    "priceLabel": "Preço",
-    "primaryLabel": "Primário",
-    "profitLabel": "Lucro",
-    "slippageToleranceModalDescription": "O Swap será cancelado se o preço mudar desfavoravelmente em mais do que essa porcentagem",
-    "slippageToleranceModalTitle": "Tolerância de Slippage",
-    "statusFailed": "Falha na conversão",
-    "statusInProgress": "Aguardando a conclusão da conversão...",
-    "statusSucceeded": "Conversão bem-sucedida",
-    "submitButtonText": "Converter",
-    "title": "Conversão de ativos",
-    "toInputLabel": "Para (estimado)",
-    "transactionFee": "Taxa da transação",
-    "transactionFeeTooltip": "Taxa de rede para a invocação de contrato inteligente",
     "viewTransaction": "Ver transação"
   },
   "transactions": {

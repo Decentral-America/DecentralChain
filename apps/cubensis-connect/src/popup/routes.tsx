@@ -27,7 +27,6 @@ import { SelectedAccountQr } from '../ui/components/pages/SelectedAccountQr';
 import { Settings } from '../ui/components/pages/Settings';
 import { SettingsGeneral } from '../ui/components/pages/SettingsGeneral';
 import { Send } from '../ui/components/pages/send';
-import { Swap } from '../ui/components/pages/swap/swap';
 import { Root } from '../ui/components/Root';
 
 export const routes: RouteObject[] = [
@@ -97,15 +96,6 @@ export const routes: RouteObject[] = [
           </>
         ),
         path: '/send/:assetId',
-      },
-      {
-        element: (
-          <>
-            <Menu hasBack hasLogo />
-            <Swap />
-          </>
-        ),
-        path: '/swap',
       },
       {
         element: (

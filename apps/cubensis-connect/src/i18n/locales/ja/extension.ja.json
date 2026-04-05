@@ -18,9 +18,7 @@
     "pubKey": "公開鍵",
     "viewInExplorer": "エクスプローラーで確認"
   },
-  "activeAccountCard": {
-    "swapButton": "スワップ"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "新しいアドレス",
     "addButton": "新規追加",
@@ -68,7 +66,6 @@
     "scripted": "スクリプト",
     "sendAssetTooltip": "送金",
     "sender": "発行者",
-    "swapAssetTooltip": "スワップ",
     "ticker": "シンボル",
     "timestamp": "発行日",
     "type": "タイプ",
@@ -560,37 +557,6 @@
     "transactionSend": "送信しました。",
     "understand": "理解しました。",
     "viewTransaction": "トランザクション確認"
-  },
-  "swap": {
-    "amountToSendError": "Swop.Fi dAppの状態によりスワップできませんでした。再試行するか、可能であればスリッページの許容範囲を少し広げてください。",
-    "closeBtnText": "クローズ",
-    "exchangeChannelConnectionError": "スワップサービスに接続できませんでした。後で再度お試しください",
-    "exchangeChannelInvalidAssetPairError": "アセットペアが利用できません",
-    "exchangeChannelUnavailableError": "サービスが応答していません",
-    "exchangeChannelUnknownError": "このスワップには利用できません",
-    "failMessage": "スワップに失敗しました。再度試してください。",
-    "fromInputLabel": "スワップ元",
-    "insufficientFundsError": "資金不足",
-    "maxAmountExceeded": "数量は {{ maxAmount }}を超えてはいけません",
-    "minimumReceived": "最低受取数量",
-    "minimumReceivedTooltip": "スリッページの許容範囲を考慮した最低受取数量",
-    "notAvailable": "利用不可",
-    "notSwappablePairTooltip": "{{ assetDisplayName1 }} と {{ assetDisplayName2 }} のスワップはサポートされていません",
-    "priceImpactTooltip": "取引数量による取引価格と見積価格の差",
-    "priceLabel": "価格",
-    "primaryLabel": "プライマリー",
-    "profitLabel": "利益",
-    "slippageToleranceModalDescription": "価格がスリッページ許容量以上に不利に変化した場合、スワップはキャンセルされます",
-    "slippageToleranceModalTitle": "スリッページ許容量",
-    "statusFailed": "スワップが失敗しました。",
-    "statusInProgress": "スワップ完了を待っています。",
-    "statusSucceeded": "スワップが成功しました。",
-    "submitButtonText": "スワップ",
-    "title": "アセットをスワップ",
-    "toInputLabel": "スワップ先（見積）",
-    "transactionFee": "トランザクション手数料",
-    "transactionFeeTooltip": "スマートコントラクトの呼び出しにかかるネットワーク手数料",
-    "viewTransaction": "トランザクションを確認"
   },
   "transactions": {
     "allowAccess": "アクセス許可",

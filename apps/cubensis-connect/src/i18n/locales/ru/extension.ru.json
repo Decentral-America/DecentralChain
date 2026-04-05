@@ -18,9 +18,7 @@
     "pubKey": "Открытый ключ",
     "viewInExplorer": "Открыть в Explorer"
   },
-  "activeAccountCard": {
-    "swapButton": "Обменять"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "Новый адрес",
     "addButton": "Добавить новый",
@@ -68,7 +66,6 @@
     "scripted": "Со скриптом",
     "sendAssetTooltip": "Отправить",
     "sender": "Эмитент",
-    "swapAssetTooltip": "Обменять",
     "ticker": "Тикер",
     "timestamp": "Дата эмиссии",
     "type": "Тип",
@@ -564,38 +561,6 @@
     "transactionFailed": "Ваша транзакция отклонена!",
     "transactionSend": "Вы отправили",
     "understand": "Я понимаю",
-    "viewTransaction": "Просмотреть транзакцию"
-  },
-  "swap": {
-    "amountDifferenceTooltip": "Некоторые вендоры кешируют свои результаты, поэтому Cubensis Connect скорректировал их, чтобы предоставить вам самое актуальное значение",
-    "amountToSendError": "Не удалось выполнить обмен из-за состояния SwopFi dApp. Пожалуйста, попробуйте еще раз или немного увеличьте допуск проскальзывания, если это возможно",
-    "closeBtnText": "Закрыть",
-    "exchangeChannelConnectionError": "Не удалось подключиться к сервису обмена. Пожалуйста, повторите попытку позже",
-    "exchangeChannelInvalidAssetPairError": "Валютная пара недоступна",
-    "exchangeChannelUnavailableError": "Сервис не отвечает",
-    "exchangeChannelUnknownError": "Недоступно для данного обмена",
-    "failMessage": "Сделка не удалась, попробуйте еще раз",
-    "fromInputLabel": "Отдадите",
-    "insufficientFundsError": "Недостаточно средств",
-    "maxAmountExceeded": "Сумма не должна превышать {{ maxAmount }}",
-    "minimumReceived": "Минимальная сумма к получению",
-    "minimumReceivedTooltip": "Минимальная сумма, которую вы получите, с учетом допуска проскальзывания",
-    "notAvailable": "Недоступно",
-    "notSwappablePairTooltip": "Обмен между {{ assetDisplayName1 }} и {{ assetDisplayName2 }} не поддерживается",
-    "priceImpactTooltip": "Разница между ценой на бирже и расчетной ценой из-за размера сделки.",
-    "priceLabel": "Цена",
-    "primaryLabel": "Основной",
-    "profitLabel": "Выгода",
-    "slippageToleranceModalDescription": "Транзакция обмена будет отменена, если цена изменится не в вашу пользу более, чем на указанный процент",
-    "slippageToleranceModalTitle": "Допуск проскальзывания",
-    "statusFailed": "Сделка не удалась",
-    "statusInProgress": "Ждем завершения сделки",
-    "statusSucceeded": "Сделка успешна",
-    "submitButtonText": "Обменять",
-    "title": "Обменять активы",
-    "toInputLabel": "Получите (расчетная сумма)",
-    "transactionFee": "Комиссия за транзакцию",
-    "transactionFeeTooltip": "Комиссия сети за вызов смарт-контракта",
     "viewTransaction": "Просмотреть транзакцию"
   },
   "transactions": {

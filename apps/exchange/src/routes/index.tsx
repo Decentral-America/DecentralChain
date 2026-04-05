@@ -81,10 +81,6 @@ export const router = createBrowserRouter([
               dexRoutes,
               settingsRoutes,
               {
-                lazy: () => import('@/pages/Swap').then((m) => ({ Component: m.Swap })),
-                path: 'swap',
-              },
-              {
                 lazy: () => import('@/pages/Bridge').then((m) => ({ Component: m.Bridge })),
                 path: 'bridge',
               },

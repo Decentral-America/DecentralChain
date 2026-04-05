@@ -18,9 +18,7 @@
     "pubKey": "Public key",
     "viewInExplorer": "Xem trên trình duyệt "
   },
-  "activeAccountCard": {
-    "swapButton": "Swap"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "Người dùng mới",
     "addButton": "Thêm mới",
@@ -68,7 +66,6 @@
     "scripted": "Đã đặt lệnh",
     "sendAssetTooltip": "Gửi ",
     "sender": "Người phát hành",
-    "swapAssetTooltip": "Swap",
     "ticker": "Ký hiệu",
     "timestamp": "Ngày phát hành ",
     "type": "Kiểu",
@@ -559,37 +556,6 @@
     "transactionFailed": "Giao dịch của bạn bị từ chối!",
     "transactionSend": "Bạn đã gửi ",
     "understand": "Tôi hiểu",
-    "viewTransaction": "Xem giao dịch"
-  },
-  "swap": {
-    "amountToSendError": "Không thể thực hiện Swap do trạng thái SwopFi dApp. Vui lòng thử lại hoặc tăng nhẹ khả năng chịu trượt giá nếu có thể",
-    "closeBtnText": "Đóng",
-    "exchangeChannelConnectionError": "Không thể kết nối tới dịch vụ swap, hãy thử lại sau",
-    "exchangeChannelInvalidAssetPairError": "Cặp tài sản không khả dụng",
-    "exchangeChannelUnavailableError": "Dịch vụ không phản hồi",
-    "exchangeChannelUnknownError": "Giao dịch swap này không khả dụng",
-    "failMessage": "Swap không thành công, hãy thử lại",
-    "fromInputLabel": "Từ",
-    "insufficientFundsError": "Không đủ tiền",
-    "maxAmountExceeded": "Số lượng không được vượt quá “ {{ maxAmount }}",
-    "minimumReceived": "Nhận được tối thiểu",
-    "minimumReceivedTooltip": "Số tiền tối thiểu bạn sẽ nhận được, có tính đến khả năng trượt giá",
-    "notAvailable": "N/A",
-    "notSwappablePairTooltip": "Giao dịch swap giữa {{ assetDisplayName1 }} và {{ assetDisplayName2 }} không được hỗ trợ",
-    "priceImpactTooltip": "Sự khác biệt giữa giá trao đổi và giá ước tính do quy mô thương mại.",
-    "priceLabel": "Giá",
-    "primaryLabel": "Hàng đầu",
-    "profitLabel": "Lợi nhuận",
-    "slippageToleranceModalDescription": "Giao dịch swap sẽ bị hủy nếu giá thay đổi theo hướng bất lợi hơn tỷ lệ phần trăm này",
-    "slippageToleranceModalTitle": "Khả năng chịu trượt giá",
-    "statusFailed": "Swap thất bại",
-    "statusInProgress": "Đang chờ hoàn thành Swap ...",
-    "statusSucceeded": "Swap thành công",
-    "submitButtonText": "Swap",
-    "title": "Swap tài sản",
-    "toInputLabel": "Tới (ước tính)",
-    "transactionFee": "Phí giao dịch",
-    "transactionFeeTooltip": "Phí mạng cho việc gọi hợp đồng thông minh",
     "viewTransaction": "Xem giao dịch"
   },
   "transactions": {

@@ -17,7 +17,6 @@ import {
   ReceiptLong,
   Settings,
   ShowChart,
-  SwapHoriz,
   Timeline,
 } from '@mui/icons-material';
 import {
@@ -154,7 +153,6 @@ const navSections: NavSection[] = [
   {
     items: [
       { icon: <ShowChart />, label: 'Trading', path: '/desktop/dex' },
-      { icon: <SwapHoriz />, label: 'Swap', path: '/desktop/swap' },
       { icon: <AccountBalanceWallet />, label: 'Bridge', path: '/desktop/bridge' },
     ],
     label: 'Trading',

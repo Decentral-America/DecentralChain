@@ -7,7 +7,6 @@ import type { WalletTypes } from '#wallets/types';
 import type { Message, MessageTx } from '../messages/types';
 import type { NetworkName } from '../networks/types';
 import type { ExtensionStorage } from '../storage/storage';
-import type { SwapVendor } from '../swap/constants';
 import type { NetworkController } from './network';
 
 const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detect() ?? {};
@@ -38,20 +37,6 @@ export type AnalyticsEvent =
       msgType: Message['type'];
       type?: MessageTx['type'] | undefined;
       dApp?: string | undefined;
-    }
-  | {
-      eventType: 'swapAssets';
-      actualAmountCoins?: string | undefined;
-      expectedAmountCoins?: string | undefined;
-      expectedActualDelta?: string | undefined;
-      fromAssetId: string;
-      fromCoins: string;
-      minReceivedCoins: string;
-      slippageTolerance: number;
-      status: 'success' | 'lessThanExpected';
-      toAssetId: string;
-      toCoins: string;
-      vendor: SwapVendor;
     };
 
 interface AmplitudeEvent {

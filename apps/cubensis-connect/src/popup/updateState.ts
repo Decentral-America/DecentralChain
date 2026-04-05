@@ -31,7 +31,6 @@ import {
   updateNodes,
   updateOrigins,
   updateSelectedAccount,
-  updateSwappableAssets,
   updateUiState,
 } from '../store/reducers/updateState';
 import type { PopupStore } from './store/types';
@@ -219,14 +218,6 @@ export function createUpdateState(store: PopupStore) {
     const networkAssets = assetsParam?.[network];
     if (networkAssets && !deepEqual(networkAssets, currentState.assets)) {
       store.dispatch(setAssets(networkAssets));
-    }
-
-    const swappableAssetIdsByVendor = getParam(stateChanges.swappableAssetIdsByVendor, {});
-    if (
-      swappableAssetIdsByVendor &&
-      !deepEqual(currentState.swappableAssetIdsByVendor, swappableAssetIdsByVendor)
-    ) {
-      store.dispatch(updateSwappableAssets(swappableAssetIdsByVendor));
     }
 
     const usdPrices = getParam(stateChanges.usdPrices, {});

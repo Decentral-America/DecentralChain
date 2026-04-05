@@ -80,9 +80,6 @@ export function PopupHome() {
             setShowCopy(true);
             setTimeout(() => setShowCopy(false), 1000);
           }}
-          onSwapClick={() => {
-            void navigate('/swap');
-          }}
           onOtherAccountsClick={() => {
             void navigate('/other-accounts');
           }}
@@ -112,9 +109,6 @@ export function PopupHome() {
             }}
             onSendClick={(assetId) => {
               void navigate(`/send/${assetId}`);
-            }}
-            onSwapClick={(assetId) => {
-              void navigate(`/swap?${new URLSearchParams({ fromAssetId: assetId })}`);
             }}
           />
           <TabNfts />
