@@ -19,9 +19,7 @@
     "pubKey": "Public key",
     "viewInExplorer": "View in Explorer"
   },
-  "activeAccountCard": {
-    "swapButton": "Swap"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "New address",
     "addButton": "Add new",
@@ -69,7 +67,6 @@
     "scripted": "Scripted",
     "sendAssetTooltip": "Send",
     "sender": "Issuer",
-    "swapAssetTooltip": "Swap",
     "ticker": "Ticker",
     "timestamp": "Issue date",
     "type": "Type",
@@ -574,38 +571,6 @@
   "spoiler": {
     "hide": "Hide",
     "view": "View"
-  },
-  "swap": {
-    "amountDifferenceTooltip": "Some vendors cache their results, so Cubensis Connect has adjusted them to give you the most up-to-date value",
-    "amountToSendError": "Could not perform swap due to SwopFi dApp state. Please try again or slightly increase slippage tolerance if possible",
-    "closeBtnText": "Close",
-    "exchangeChannelConnectionError": "Could not connect to swap service. Please try again later",
-    "exchangeChannelInvalidAssetPairError": "Asset pair is not available",
-    "exchangeChannelUnavailableError": "Service is not responding",
-    "exchangeChannelUnknownError": "Unavailable for this swap",
-    "failMessage": "Swap did not succeed, please try again",
-    "fromInputLabel": "From",
-    "insufficientFundsError": "Insufficient funds",
-    "maxAmountExceeded": "Amount must not exceed {{ maxAmount }}",
-    "minimumReceived": "Minimum Received",
-    "minimumReceivedTooltip": "Minimum amount you will receive, taking slippage tolerance into account",
-    "notAvailable": "N/A",
-    "notSwappablePairTooltip": "Swap between {{ assetDisplayName1 }} and {{ assetDisplayName2 }} is not supported",
-    "priceImpactTooltip": "The difference between the exchanger price and estimated price due to trade size.",
-    "priceLabel": "Price",
-    "primaryLabel": "Primary",
-    "profitLabel": "Profit",
-    "slippageToleranceModalDescription": "Swap will be cancelled if the price changes unfavorably by more than this percentage",
-    "slippageToleranceModalTitle": "Slippage Tolerance",
-    "statusFailed": "Swap failed",
-    "statusInProgress": "Waiting for swap completion...",
-    "statusSucceeded": "Swap succeeded",
-    "submitButtonText": "Swap",
-    "title": "Swap assets",
-    "toInputLabel": "To (estimated)",
-    "transactionFee": "Transaction Fee",
-    "transactionFeeTooltip": "Network fee for the smart contract invocation",
-    "viewTransaction": "View transaction"
   },
   "transactions": {
     "allowAccess": "Allow access",

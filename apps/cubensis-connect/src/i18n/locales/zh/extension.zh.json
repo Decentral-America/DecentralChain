@@ -18,9 +18,7 @@
     "pubKey": "公钥",
     "viewInExplorer": "在浏览器中查看"
   },
-  "activeAccountCard": {
-    "swapButton": "兑换"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "新地址",
     "addButton": "添加新地址",
@@ -68,7 +66,6 @@
     "scripted": "已脚本化",
     "sendAssetTooltip": "发送",
     "sender": "发行方",
-    "swapAssetTooltip": "兑换",
     "ticker": "代码",
     "timestamp": "发行日期",
     "type": "类型",
@@ -559,37 +556,6 @@
     "transactionFailed": "您的交易已被拒绝！",
     "transactionSend": "您已发送",
     "understand": "我理解",
-    "viewTransaction": "查看交易"
-  },
-  "swap": {
-    "amountToSendError": "因SwopFi应用状态问题，无法完成兑换。请重新尝试，或尝试增加滑点容忍。",
-    "closeBtnText": "关闭",
-    "exchangeChannelConnectionError": "无法连接兑换服务，请稍后重试。",
-    "exchangeChannelInvalidAssetPairError": "资产兑不可用",
-    "exchangeChannelUnavailableError": "服务无响应",
-    "exchangeChannelUnknownError": "此兑换不可用",
-    "failMessage": "兑换未成功，请重试",
-    "fromInputLabel": "输入",
-    "insufficientFundsError": "资金不足",
-    "maxAmountExceeded": "数量不能超过 {{ maxAmount }}",
-    "minimumReceived": "最小接收",
-    "minimumReceivedTooltip": "考虑滑点容忍在内，您将收到的最小数量",
-    "notAvailable": "N/A",
-    "notSwappablePairTooltip": "不支持 {{ assetDisplayName1 }} 和{{ assetDisplayName2 }}的资产兑换",
-    "priceImpactTooltip": "显示兑换价格和因交易大小造成的预估价格之间的差异",
-    "priceLabel": "价格",
-    "primaryLabel": "首要",
-    "profitLabel": "利润",
-    "slippageToleranceModalDescription": "如果价格变化大于此百分比，兑换将被取消",
-    "slippageToleranceModalTitle": "滑点容忍",
-    "statusFailed": "兑换失败",
-    "statusInProgress": "等待兑换完成...",
-    "statusSucceeded": "兑换成功",
-    "submitButtonText": "兑换",
-    "title": "资产兑换",
-    "toInputLabel": "兑换 (大约数量)",
-    "transactionFee": "转账费",
-    "transactionFeeTooltip": "智能合约调用的网络费用",
     "viewTransaction": "查看交易"
   },
   "transactions": {

@@ -104,7 +104,8 @@ DecentralChain/
 │   ├── UPSTREAM.md                 Waves provenance & ecosystem
 │   ├── STATUS.md                   Per-package health & timeline
 │   ├── CONVENTIONS.md              Coding standards & quality pipeline
-│   └── RELEASE-CHECKLIST.md        Pre-release gate checklist & Go/No-Go template
+│   ├── RELEASE-CHECKLIST.md        Pre-release gate checklist & Go/No-Go template
+│   └── ECOSYSTEM.md                Full runtime topology: repos, services, flows
 ├── scripts/                        Monorepo automation
 ├── tools/                          Nx plugins & custom tooling
 ├── biome.json                      Root Biome config (shared)
@@ -141,7 +142,7 @@ DecentralChain/
 | tsdown | 17 standard SDK libraries | Rolldown (Rust) |
 | Vite 8 | exchange, scanner, cubensis-connect | Rolldown (Rust) |
 | tsc + wasm-pack | crypto (Rust/WASM hybrid) | Rust |
-| buf + tsdown | protobuf-serialization, swap-client | Rolldown (Rust) |
+| buf + tsdown | protobuf-serialization | Rolldown (Rust) |
 
 > **Rust-all-the-way-down**: Every tool in the build pipeline that can be Rust-based is. tsdown uses Rolldown, Vite 8 uses Rolldown, @vitejs/plugin-react uses OXC (Rolldown's built-in transformer), Biome is Rust, lightningcss (cubensis-connect CSS) is Rust, Tailwind v4 Oxide (scanner CSS) is Rust. @swc/core is also present as an optional peer of Nx, enabling SWC-based TypeScript transforms in the Nx task pipeline.
 
@@ -462,6 +463,7 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 | `docs/STATUS.md` | Per-package health, remediation matrix | Humans + AI agents |
 | `docs/UPSTREAM.md` | Waves provenance, wire-format constraints | Humans + AI agents |
 | `docs/RELEASE-CHECKLIST.md` | Pre-release gate checklist & Go/No-Go template | Humans |
+| `docs/ECOSYSTEM.md` | Full runtime topology: all repos, services, SDK deps, data flows | Humans + AI agents |
 
 ---
 
@@ -476,7 +478,6 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 ├─────────────────────────────────────────────────────────────────┤
 │ TIER 1 — Core (depends on Tier 0)                              │
 │ data-entities · money-like-to-node · node-api-js · ride-js     │
-│ swap-client                                                     │
 ├─────────────────────────────────────────────────────────────────┤
 │ TIER 2 — Integration (depends on Tier 0+1)                     │
 │ data-service-client-js · transactions                           │
@@ -521,7 +522,6 @@ bulletproof → dependsOn: [lint:fix, typecheck, test]
 |---------|--------------|--------------|
 | crypto | `build:wasm` | Runs `wasm-pack` for Rust → WASM |
 | protobuf-serialization | `generate` | Runs `buf generate` for proto compilation |
-| swap-client | `generate` | Runs `buf generate` for proto compilation |
 
 ---
 
@@ -710,7 +710,7 @@ Every significant architectural choice is documented here with the reasoning tha
 | D-4 | **`packages/` + `apps/`** layout | npm-published SDK libraries live in `packages/`, private applications in `apps/`. This makes the publish boundary explicit — everything in `packages/` ships to npm, nothing in `apps/` does. Nx tags (`scope:sdk` vs `scope:app`) enforce the boundary: SDK packages cannot depend on apps. |
 | D-5 | **TypeScript project references** | Without project references, `tsc` typechecks the entire monorepo as one unit — slow and error-prone. With references, each package is a `composite` project that builds independently. The editor only loads types for the current package + its declared dependencies, keeping IntelliSense fast even at 25 projects. Incremental builds skip unchanged packages. |
 | D-6 | **Per-package Vitest configs** | Each package has its own `vitest.config.ts` extending a shared base. This allows per-package coverage thresholds (crypto at 95%, new packages at 80%), per-package test include patterns, and proper Nx caching — Nx caches test results per-project, so a shared config would invalidate all caches on any test config change. |
-| D-7 | **Root Biome v2** with `extends: "//"` | One `biome.json` at root defines all lint/format rules for the entire monorepo. Packages inherit with `"extends": "//"` (Biome's monorepo resolution syntax). Only packages with genuine overrides need their own `biome.json` (e.g., swap-client disables lint for generated protobuf code). This eliminated 20+ near-identical config files. |
+| D-7 | **Root Biome v2** with `extends: "//"` | One `biome.json` at root defines all lint/format rules for the entire monorepo. Packages inherit with `"extends": "//"` (Biome's monorepo resolution syntax). Only packages with genuine overrides need their own `biome.json` (e.g., `protobuf-serialization` disables lint for generated protobuf code). This eliminated 20+ near-identical config files. |
 | D-8 | **Exclude node-scala** | Scala/sbt — fundamentally different toolchain |
 | D-9 | **Include all TS apps importing `@decentralchain/*`** | The inclusion rule is intentionally simple: "if it's TypeScript and imports `@decentralchain/*`, it belongs here." This ensures that when a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. |
 | D-10 | **`workspace:*` protocol** | In the polyrepo era, `fix-cross-deps.mjs` had to manually update 22 cross-dependency versions before every publish. `workspace:*` tells pnpm "use the local source in dev, replace with the real published version at publish time." Zero manual version management, zero version drift, zero publish-order bugs. |

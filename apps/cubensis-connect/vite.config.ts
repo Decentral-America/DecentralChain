@@ -41,7 +41,6 @@ const srcDirs = [
   'sentry',
   'storage',
   'store',
-  'swap',
   'ui',
   'wallets',
 ];

@@ -72,7 +72,7 @@ The migration philosophy: **fork the protocol-critical core, modernize beyond up
 | **Inter-Chain Gateway** | Decentralized bridge for cross-chain asset transfers (ERC-20 ↔ DCC) |
 | **Proof of Incentivized Sustainability** | Carbon credit generation per transaction; eco-friendly node hosting rewards |
 | **Carbon Sequestration** | Tokenized carbon credits via Costa Rica's FONAFIFO program |
-| **Native Swap** | AMM-powered on-chain token swap (constant product formula) |
+| **Native Swap** | AMM-powered on-chain token swap (constant product formula) — **DEFERRED: removed from v1 launch scope; preserved in `feat/swap` branch** |
 | **CR Coin** | Social currency for Costa Rica built on DCC |
 | **Cubensis Connect** | Browser wallet extension (replaces Keeper Wallet) |
 
@@ -113,7 +113,7 @@ DCC is byte-compatible with Waves at the protocol level, except for chain IDs.
 | **Testnet matcher** | `matcher-testnet.waves.exchange` | `matcher.decentralchain.io` | ✅ |
 | **Stagenet matcher** | `matcher-stagenet.waves.exchange` | `stagenet-matcher.decentralchain.io` | ✅ |
 | **Data service API** | `api.wavesplatform.com` | `api.decentralchain.io` | ✅ |
-| **Swap API** | `swap-api.keeper-wallet.app` | `swap-api.decentralchain.io` | ✅ |
+| **Swap API** | `swap-api.keeper-wallet.app` | `swap-api.decentralchain.io` | ⏸️ DEFERRED |
 | **Identity API** | `id.waves.exchange/api` | `id.decentralchain.io/api` | ✅ |
 | **Explorer** | `wavesexplorer.com` | `explorer.decentralchain.io` | ✅ |
 
@@ -162,7 +162,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 20 | cubensis-connect-types | waveskeeper-types | Keeper-Wallet | Wallet Types | 🔗 | 1.0.1 |
 | 21 | cubensis-connect-provider | provider-keeper | Keeper-Wallet | Signing | 🔗 | 1.0.1 |
 | 22 | scanner | WavesExplorerLite | wavesplatform | Application | — | — |
-| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 2.0.0 |
+| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 2.0.0 | ⚠️ Removed from `main` for clean launch; preserved in `feat/swap` branch |
 | 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.2 |
 
 **🔗 Grafted** = full upstream Waves git history preserved via `git filter-repo` or subtree merge.
@@ -171,7 +171,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 - **cubensis-connect-provider**: All 412 upstream commits analyzed individually. ~260 Renovate noise, ~30 CI/tooling, 2 genuine bugs cherry-picked. DCC architecture intentionally diverged (7 modular src files / 126 tests vs Waves' 2 monolithic files / 32 tests).
 - **cubensis-connect**: 1,305 upstream commits brought in via full rebase onto `waves/master`. Branding re-applied: 86 files covering dep renames, network codes, URLs, manifest, i18n (10 locales), global API (KeeperWallet→CubensisConnect).
-- **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible.
+- **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible. **Subsequently removed from `main` for clean launch (no DEX contracts on DCC mainnet); full implementation preserved in `feat/swap` branch.**
 - **crypto**: 234-commit Waves history preserved. Rust/WASM + TypeScript hybrid. Timing-safe HMAC comparison added (security fix). 44 tests, 99% coverage.
 
 ---
@@ -191,7 +191,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | **6 — Hardware Wallet** | ledger | Ledger device integration via WebUSB |
 | **7 — Signing** | signature-adapter, signer, cubensis-connect-provider | Multi-provider signing (seed, Ledger, wallet extension) |
 | **8 — Smart Contracts** | ride-js | RIDE language compiler (wraps `@waves/ride-lang`) |
-| **9 — Applications** | scanner, exchange, cubensis-connect, swap-client | End-user apps and DeFi clients |
+| **9 — Applications** | scanner, exchange, cubensis-connect | End-user apps |
 
 ### Dependency Graph
 
@@ -240,7 +240,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
   Independent (no @decentralchain deps):
     parse-json-bignumber, assets-pairs-order, browser-bus,
     data-service-client-js, oracle-data, money-like-to-node,
-    cubensis-connect-types, crypto, swap-client
+    cubensis-connect-types, crypto
 
   Applications (consume SDK packages):
     cubensis-connect, exchange, scanner
@@ -280,7 +280,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 | `@waves/ride-repl` 1.6.1 | ride-js | **LOW** — chain-agnostic Scala.js REPL | No action needed |
 
 **Resolved upstream dependencies:**
-- ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69)
+- ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69); subsequently removed from `main` for clean launch — preserved in `feat/swap` branch
 - ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 22 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
 
 ---
@@ -460,7 +460,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
 | `@waves/ride-js` | `@decentralchain/ride-js` |
 | `@keeper-wallet/waves-crypto` | `@decentralchain/crypto` |
-| `@keeper-wallet/swap-client` | `@decentralchain/swap-client` |
+| `@keeper-wallet/swap-client` | `@decentralchain/swap-client` (⚠️ removed from `main`; in `feat/swap`) |
 | `@keeper-wallet/waveskeeper-types` | `@decentralchain/cubensis-connect-types` |
 | `@keeper-wallet/provider-keeper` | `@decentralchain/cubensis-connect-provider` |
 | Keeper-Wallet-Extension | `cubensis-connect` (app) |
@@ -482,7 +482,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | NFT display (5 vendors) | ✅ | ✅ | — |
 | NFT display (WavesDomains) | ✅ | ❌ | **Removed** — no DCC domain service |
 | `.waves` address resolution | ✅ | ❌ | **Removed** — requires domain resolution API |
-| In-wallet swap | ✅ | ✅ | Uses `@decentralchain/swap-client` (DCC-69) |
+| In-wallet swap | ✅ | ⏸️ DEFERRED | Swap removed from launch scope; preserved in `feat/swap` branch |
 | DApp browser permissions | ✅ | ✅ | — |
 | Idle auto-lock | ✅ | ✅ | — |
 | Leasing | ✅ | ✅ | — |
@@ -517,7 +517,7 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 | Service | URL | Function |
 |---------|-----|----------|
 | Data Service API | `api.decentralchain.io` | Asset info, ticker data |
-| Swap API | `swap-api.decentralchain.io` | Token swap routing & execution |
+| Swap API | `swap-api.decentralchain.io` | Token swap routing & execution | ⏸️ DEFERRED |
 | Identity API | `id.decentralchain.io/api` | Email-based account management |
 | Cognito Proxy | `decentralchain.io/cognito` | AWS Cognito auth proxy |
 | Remote Config | `raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json` | Runtime config |
@@ -535,7 +535,7 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 
 ## 16. Supply-Chain Dependency Chain
 
-The dependency chains through DCC packages. Crypto and swap-client are fully forked. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). Only `@waves/ride-lang` + `@waves/ride-repl` remain unforked (low risk — chain-agnostic).
+The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). Only `@waves/ride-lang` + `@waves/ride-repl` remain unforked (low risk — chain-agnostic). `swap-client` was forked (DCC-69) but subsequently removed from `main` for clean launch — preserved in `feat/swap` branch.
 
 ```
 @decentralchain/crypto  ← FORKED (DCC-70) ✅  [was @keeper-wallet/waves-crypto]

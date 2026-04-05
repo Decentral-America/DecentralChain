@@ -182,18 +182,6 @@ const assetsSlice = createSlice({
 export const assets = assetsSlice.reducer;
 export const { setAssets } = assetsSlice.actions;
 
-// ─── swappableAssetIdsByVendor ─────────────────────────────────────────────
-const swappableAssetsSlice = createSlice({
-  initialState: {} as Record<string, string[]>,
-  name: 'swappableAssetIdsByVendor',
-  reducers: {
-    updateSwappableAssets: (_state, action: PayloadAction<Record<string, string[]>>) =>
-      action.payload,
-  },
-});
-export const swappableAssetIdsByVendor = swappableAssetsSlice.reducer;
-export const { updateSwappableAssets } = swappableAssetsSlice.actions;
-
 // ─── usdPrices ─────────────────────────────────────────────────────────────
 const usdPricesSlice = createSlice({
   initialState: {} as Partial<Record<string, string>>,

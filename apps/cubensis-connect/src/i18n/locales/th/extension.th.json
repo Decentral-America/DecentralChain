@@ -18,9 +18,7 @@
     "pubKey": "Public key",
     "viewInExplorer": "ดูใน Explorer"
   },
-  "activeAccountCard": {
-    "swapButton": "swap"
-  },
+  "activeAccountCard": {},
   "address": {
     "add": "ที่อยู่ใหม่",
     "addButton": "เพิ่มใหม่",
@@ -68,7 +66,6 @@
     "scripted": "สคริปต์",
     "sendAssetTooltip": "ส่ง",
     "sender": "ผู้ออกเหรียญ",
-    "swapAssetTooltip": "swap",
     "ticker": "Ticker",
     "timestamp": "วันที่ออกเหรียญ",
     "type": "Type",
@@ -560,37 +557,6 @@
     "transactionSend": "คุณได้ทำการส่งแล้ว",
     "understand": "ฉันเข้าใจ",
     "viewTransaction": "ดูการทำธุรกรรม"
-  },
-  "swap": {
-    "amountToSendError": "ไม่สามารถ swap ได้เนื่องจากสถานะ Swopfi Dapp โปรดลองอีกครั้งหรือเพิ่ม slippage tolerance เล็กน้อยหากเป็นไปได้",
-    "closeBtnText": "ปิด",
-    "exchangeChannelConnectionError": "ไม่สามารถเชื่อมต่อกับบริการ swap  กรุณาลองใหม่อีกครั้งในภายหลัง",
-    "exchangeChannelInvalidAssetPairError": "ไม่มีคู่สินทรัพย์",
-    "exchangeChannelUnavailableError": "การบริการไม่ตอบสนอง",
-    "exchangeChannelUnknownError": "ไม่พร้อมใช้งานสำหรับการ swap นี้",
-    "failMessage": "Swap ไม่ประสบความสำเร็จ, โปรดลองอีกครั้ง",
-    "fromInputLabel": "จาก",
-    "insufficientFundsError": "เงินไม่เพียงพอ",
-    "maxAmountExceeded": "จำนวนเงินต้องไม่เกิน {{ maxAmount }}",
-    "minimumReceived": "รับขั้นต่ำ",
-    "minimumReceivedTooltip": "จำนวนเงินขั้นต่ำที่คุณจะได้รับ, โปรดพิจารณาถึง slippage tolerance",
-    "notAvailable": "ไม่มี",
-    "notSwappablePairTooltip": "ไม่รองรับการ swap ระหว่าง {{ assetDisplayName1 }} และ {{ assetDisplayName2 }}",
-    "priceImpactTooltip": "ความแตกต่างระหว่างราคาแลกเปลี่ยนและราคาประมาณการเนื่องจากปริมาณการซื้อขาย",
-    "priceLabel": "ราคา",
-    "primaryLabel": "Primary",
-    "profitLabel": "กำไร",
-    "slippageToleranceModalDescription": "การ swap จะถูกยกเลิกหากราคาเปลี่ยนแปลงไปในทางไม่ดีเกินกว่าเปอร์เซ็นต์นี้",
-    "slippageToleranceModalTitle": "Slippage Tolerance",
-    "statusFailed": "การ swap ล้มเหลว",
-    "statusInProgress": "รอการ swap เสร็จสมบูรณ์ ...",
-    "statusSucceeded": "การ Swap สำเร็จ",
-    "submitButtonText": "Swap",
-    "title": "การ swap สินทรัพย์",
-    "toInputLabel": "ถึง (โดยประมาณ)",
-    "transactionFee": "ค่าธรรมเนียมการทำธุรกรรม",
-    "transactionFeeTooltip": "ค่าธรรมเนียมเครือข่ายสำหรับการเรียกใช้ smart contract",
-    "viewTransaction": "ดูรายการธุรกรรม"
   },
   "transactions": {
     "allowAccess": "อนุญาตให้เข้าถึง",

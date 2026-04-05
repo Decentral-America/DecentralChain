@@ -25,7 +25,6 @@
       "#sentry/*": ["./sentry/*"],
       "#storage/*": ["./storage/*"],
       "#store/*": ["./store/*"],
-      "#swap/*": ["./swap/*"],
       "#ui/*": ["./ui/*"],
       "#wallets/*": ["./wallets/*"]
     }

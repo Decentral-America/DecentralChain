@@ -13,25 +13,14 @@ import { MoreActions } from './moreActions';
 interface Props {
   balance: Money | undefined;
   assetId: string;
-  isSwappable: boolean;
   className?: string | undefined;
   onInfoClick: (assetId: string) => void;
   onSendClick: (assetId: string) => void;
-  onSwapClick: (assetId: string) => void;
 }
 
-export function AssetItem({
-  balance,
-  assetId,
-  isSwappable,
-  className,
-  onInfoClick,
-  onSendClick,
-  onSwapClick,
-}: Props) {
+export function AssetItem({ balance, assetId, className, onInfoClick, onSendClick }: Props) {
   const { t } = useTranslation();
   const assets = usePopupSelector((state) => state.assets);
-  const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const asset = assets[assetId];
 
   const displayName = asset?.displayName;
@@ -138,29 +127,6 @@ export function AssetItem({
               </button>
             )}
           </Tooltip>
-
-          {currentNetwork === 'mainnet' && isSwappable && (
-            <Tooltip content={t('assetInfo.swapAssetTooltip')}>
-              {(props) => (
-                <button
-                  className={styles.swapBtn}
-                  type="button"
-                  onClick={() => onSwapClick(assetId)}
-                  {...props}
-                >
-                  <svg
-                    aria-hidden="true"
-                    className={styles.swapIcon}
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                  >
-                    <path d="m11.56 4.01-1.266-1.268a.6.6 0 0 1 .848-.848l2.291 2.29a.6.6 0 0 1 0 .85l-2.29 2.29a.6.6 0 1 1-.85-.848l1.268-1.267H4.99a.6.6 0 0 1 0-1.2h6.57ZM2.44 9.99l1.266 1.268a.6.6 0 1 1-.848.848L.567 9.816a.6.6 0 0 1 0-.85l2.29-2.29a.6.6 0 1 1 .849.848L2.439 8.791h6.57a.6.6 0 0 1 0 1.2h-6.57Z" />
-                  </svg>
-                </button>
-              )}
-            </Tooltip>
-          )}
         </MoreActions>
       )}
     </div>
