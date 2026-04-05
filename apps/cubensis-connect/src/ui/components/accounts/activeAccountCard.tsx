@@ -23,7 +23,6 @@ interface Props {
   onCopy: () => void;
   onOtherAccountsClick: () => void;
   onShowQr: () => void;
-  onSwapClick: () => void;
 }
 
 export function ActiveAccountCard({
@@ -34,7 +33,6 @@ export function ActiveAccountCard({
   onCopy,
   onOtherAccountsClick,
   onShowQr,
-  onSwapClick,
 }: Props) {
   const { t } = useTranslation();
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
@@ -79,16 +77,6 @@ export function ActiveAccountCard({
       />
 
       <div className={styles.controls}>
-        {isMainnet && (
-          <button type="button" className={styles.button} onClick={onSwapClick}>
-            <svg aria-hidden="true" width="14" height="14" fill="currentColor">
-              <path d="m11.56 4.01-1.266-1.268a.6.6 0 0 1 .848-.848l2.291 2.29a.6.6 0 0 1 0 .85l-2.29 2.29a.6.6 0 1 1-.85-.848l1.268-1.267H4.99a.6.6 0 0 1 0-1.2h6.57ZM2.44 9.99l1.266 1.268a.6.6 0 1 1-.848.848L.567 9.816a.6.6 0 0 1 0-.85l2.29-2.29a.6.6 0 1 1 .849.848L2.439 8.791h6.57a.6.6 0 0 1 0 1.2h-6.57Z" />
-            </svg>
-
-            <span>{t('activeAccountCard.swapButton')}</span>
-          </button>
-        )}
-
         <span className={styles.controlsExpand} />
 
         <Tooltip content={t('copyAddress')}>

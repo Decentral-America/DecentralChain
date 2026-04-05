@@ -28,10 +28,8 @@ const NATIVE_ASSET: AssetDetail = {
 const MAX_AGE = 60 * 60 * 1000;
 
 const DATA_SERVICE_URL = 'https://api.decentralchain.io';
-const SWAP_SERVICE_URL = 'https://swap-api.decentralchain.io';
 
 const INFO_PERIOD_IN_MINUTES = 60;
-const SWAPPABLE_ASSETS_UPDATE_PERIOD_IN_MINUTES = 240;
 
 interface AssetInfoResponseItem {
   assetId: string;
@@ -82,7 +80,6 @@ export class AssetInfoController {
         },
       },
       assetTickers: defaultAssetTickers,
-      swappableAssetIdsByVendor: {},
       usdPrices: {},
     });
     this.store = new ObservableStore(initState);
@@ -93,22 +90,15 @@ export class AssetInfoController {
     this.getNetwork = getNetwork;
 
     void this.updateInfo();
-    void this.updateSwappableAssetIdsByVendor();
 
     Browser.alarms.create('updateInfo', {
       periodInMinutes: INFO_PERIOD_IN_MINUTES,
-    });
-    Browser.alarms.create('updateSwappableAssetIdsByVendor', {
-      periodInMinutes: SWAPPABLE_ASSETS_UPDATE_PERIOD_IN_MINUTES,
     });
 
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
         case 'updateInfo':
           void this.updateInfo();
-          break;
-        case 'updateSwappableAssetIdsByVendor':
-          void this.updateSwappableAssetIdsByVendor();
           break;
         default:
           break;
@@ -360,14 +350,6 @@ export class AssetInfoController {
           ),
         );
       }
-    }
-  }
-
-  async updateSwappableAssetIdsByVendor() {
-    const resp = await fetch(new URL('/assets', SWAP_SERVICE_URL));
-    if (resp.ok) {
-      const swappableAssetIdsByVendor = (await resp.json()) as Record<string, string[]>;
-      this.store.updateState({ swappableAssetIdsByVendor });
     }
   }
 }

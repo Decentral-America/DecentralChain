@@ -149,7 +149,6 @@
         "src/ui/components/pages/assets/assetLogo.tsx",
         "src/ui/components/pages/assets/tabs/tabAssets.tsx",
         "src/ui/components/pages/assets/tabs/tabTxHistory.tsx",
-        "src/ui/components/pages/swap/form.tsx",
         "src/ui/components/ui/Address/SuggestInput.tsx",
         "src/ui/components/ui/avatar/Avatar.tsx",
         "src/ui/components/ui/tooltip/index.tsx",

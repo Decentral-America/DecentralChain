@@ -47,7 +47,6 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@decentralchain/ledger": "workspace:*",
-    "@decentralchain/swap-client": "workspace:*",
     "@ledgerhq/hw-transport-webusb": "^6.33.0",
     "@size-limit/file": "^12.0.1",
     "@testing-library/webdriverio": "^3.2.1",
@@ -140,7 +139,6 @@
     "#sentry/*": "./src/sentry/*",
     "#storage/*": "./src/storage/*",
     "#store/*": "./src/store/*",
-    "#swap/*": "./src/swap/*",
     "#ui/*": "./src/ui/*",
     "#wallets/*": "./src/wallets/*"
   },

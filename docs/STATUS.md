@@ -72,7 +72,7 @@ Wallet extension rebrand: KeeperWallet→CubensisConnect, WavesDomains removed, 
 
 ### Swap Client Fork (Mar 10, 2026)
 
-`@keeper-wallet/swap-client` was private/deleted. Source extracted from npm tarball, protobuf schema reverse-engineered, full migration to DCC toolchain. Published as `@decentralchain/swap-client@1.0.0`.
+`@keeper-wallet/swap-client` was private/deleted. Source extracted from npm tarball, protobuf schema reverse-engineered, full migration to DCC toolchain. Published as `@decentralchain/swap-client@1.0.0`. **Subsequently removed from `main` for clean v1 launch (no DEX contracts on DCC mainnet); full implementation preserved in `feat/swap` branch.**
 
 ### Production Hardening (Mar 11, 2026)
 
@@ -406,7 +406,6 @@ git commit → lefthook pre-commit →
 | Package | strict | noUncheckedIndexedAccess | exactOptionalPropertyTypes | verbatimModuleSyntax |
 |---------|:------:|:------------------------:|:--------------------------:|:--------------------:|
 | browser-bus | ✅ | ✅ | ✅ | ✅ |
-| swap-client | ✅ | ✅ | ✅ | ✅ |
 | ts-types | ✅ | ✅ | ✅ | ✅ |
 | parse-json-bignumber | ✅ | ✅ | ✅ | ✅ |
 | data-service-client-js | ✅ | ✅ | ✅ | ✅ |
