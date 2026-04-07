@@ -2,16 +2,17 @@
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": "src",
-    "outDir": "dist",
+    "ignoreDeprecations": "6.0",
     "module": "commonjs",
-    "target": "es2016",
-    "sourceMap": true,
     "moduleResolution": "node",
-    "strict": true,
-    "preserveConstEnums": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "outDir": "dist",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2016"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"]
 }
