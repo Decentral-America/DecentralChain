@@ -1,0 +1,99 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "data-service",
+  "projectType": "application",
+  "root": "apps/data-service",
+  "sourceRoot": "apps/data-service/src",
+  "tags": ["scope:app", "layer:5", "npm:private", "type:service", "runtime:node"],
+  "targets": {
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "inputs": ["production", "^production"],
+      "options": {
+        "command": "pnpm run build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "dev": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run dev",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": ["default", "{workspaceRoot}/biome.json", "{projectRoot}/biome.json"],
+      "options": {
+        "command": "pnpm biome check apps/data-service/src",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint:check": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": ["default", "{workspaceRoot}/biome.json", "{projectRoot}/biome.json"],
+      "options": {
+        "command": "pnpm biome check apps/data-service/src",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint:fix": {
+      "cache": false,
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm biome check --write apps/data-service/src",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "pairs": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run pairs",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run start",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": ["default", "^production"],
+      "options": {
+        "command": "pnpm run test",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:run": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": ["default", "^production"],
+      "options": {
+        "command": "pnpm run test:run",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "inputs": ["default", "^production"],
+      "options": {
+        "command": "pnpm run typecheck",
+        "cwd": "{projectRoot}"
+      }
+    }
+  }
+}
