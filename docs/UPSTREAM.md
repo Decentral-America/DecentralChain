@@ -35,7 +35,7 @@
 
 DecentralChain (DCC) is an independent blockchain that forked the Waves protocol. The `@decentralchain/*` SDK packages published from this monorepo were migrated from the upstream `@waves/*` npm packages maintained across two GitHub organizations: [`wavesplatform`](https://github.com/wavesplatform) (124 repos) and [`Keeper-Wallet`](https://github.com/Keeper-Wallet) (10 repos).
 
-**Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked the **24 TypeScript packages** that compose the complete SDK core — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain. The remaining ~110 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
+**Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked or imported **25 upstream repositories** — the **24 TypeScript packages** composing the complete SDK core (every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain) plus the **`data-service` REST API application** (DCC-221, DCC-233). The remaining ~109 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
 
 Every forked package has been:
 
@@ -164,6 +164,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 22 | scanner | WavesExplorerLite | wavesplatform | Application | — | — |
 | 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 2.0.0 | ⚠️ Removed from `main` for clean launch; preserved in `feat/swap` branch |
 | 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.2 |
+| 25 | data-service | data-service | wavesplatform | Application | 🔗 | — |
 
 **🔗 Grafted** = full upstream Waves git history preserved via `git filter-repo` or subtree merge.
 
@@ -173,6 +174,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 - **cubensis-connect**: 1,305 upstream commits brought in via full rebase onto `waves/master`. Branding re-applied: 86 files covering dep renames, network codes, URLs, manifest, i18n (10 locales), global API (KeeperWallet→CubensisConnect).
 - **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible. **Subsequently removed from `main` for clean launch (no DEX contracts on DCC mainnet); full implementation preserved in `feat/swap` branch.**
 - **crypto**: 234-commit Waves history preserved. Rust/WASM + TypeScript hybrid. Timing-safe HMAC comparison added (security fix). 44 tests, 99% coverage.
+- **data-service**: 395-commit Waves history preserved via `git subtree add` (DCC-221, DCC-233). Koa.js REST API serving candles, pairs, and trades at `api.decentralchain.io`. DCC identity layer (chain IDs, endpoint branding) applied in **DCC-234**. Toolchain modernization (Biome, strict tsconfig, ESM) in **DCC-219/220/222**. Vitest migration in **DCC-223**.
 
 ---
 
@@ -191,7 +193,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | **6 — Hardware Wallet** | ledger | Ledger device integration via WebUSB |
 | **7 — Signing** | signature-adapter, signer, cubensis-connect-provider | Multi-provider signing (seed, Ledger, wallet extension) |
 | **8 — Smart Contracts** | ride-js | RIDE language compiler (wraps `@waves/ride-lang`) |
-| **9 — Applications** | scanner, exchange, cubensis-connect | End-user apps |
+| **9 — Applications** | scanner, exchange, cubensis-connect, data-service | End-user apps |
 
 ### Dependency Graph
 
@@ -243,7 +245,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
     cubensis-connect-types, crypto
 
   Applications (consume SDK packages):
-    cubensis-connect, exchange, scanner
+    cubensis-connect, exchange, scanner, data-service
 ```
 
 ---
@@ -322,7 +324,7 @@ Of 134 upstream Waves repositories, DCC's coverage:
 | **Archived/deprecated** | 7 | ❌ Skip — dead upstream |
 | **Multi-language SDKs** (Java, Python, Go, Rust, C#, etc.) | ~20 | ⏸️ Fork on community demand |
 | **Mobile wallets** (iOS/Android) | 4 | ⏸️ Separate initiative |
-| **Infrastructure** (Scala node, matcher, data-service, Rust microservices) | ~20 | 🔍 Evaluate selectively |
+| **Infrastructure** (Scala node, matcher, Rust microservices) | ~20 | 🔍 Evaluate selectively — `data-service` ✅ imported as `apps/data-service` (DCC-221) |
 | **Developer tooling** (IDE, surfboard, ride-vscode) | ~8 | 🟡 High value candidates |
 | **Internal/CI/trivial** | ~25 | ❌ Skip |
 | **Applications** (GamesUI, DAO, experiments) | ~10 | ❌ Skip — DCC builds its own |
@@ -336,7 +338,7 @@ Ranked by strategic value to DCC:
 | 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
 | 🟢 **Tier 1** | `blockchain-postgres-sync` (16★) | Analytics backbone for block explorers and data APIs | Medium |
 | 🟢 **Tier 1** | `gowaves` (255★) | Lighter Go node alternative for validators | High |
-| 🟢 **Tier 1** | `data-service` (31★) | REST API for indexed data — powers data-service-client-js | Medium |
+| ✅ **Done** | `data-service` | Imported as `apps/data-service` — full 395-commit history via `git subtree` (DCC-221, DCC-233) | — |
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
@@ -366,6 +368,7 @@ Ranked by strategic value to DCC:
 - [x] Consolidate into monorepo with Nx + pnpm
 - [x] Fork `@keeper-wallet/swap-client` → `@decentralchain/swap-client` (DCC-69)
 - [x] Fork `@keeper-wallet/waves-crypto` → `@decentralchain/crypto` (DCC-70)
+- [x] Import `wavesplatform/data-service` → `apps/data-service` (DCC-221, DCC-233)
 
 ### In Progress
 
@@ -381,7 +384,6 @@ Ranked by strategic value to DCC:
 ### Future
 
 - [ ] Evaluate `gowaves` Go node for lighter validator infrastructure
-- [ ] Evaluate `data-service` REST data API
 - [ ] Fork language SDKs (Java, Python, Go, Rust) on community demand
 - [ ] Mobile wallet initiative (dedicated team required)
 
@@ -659,8 +661,11 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` | `b473e02` | 2026-03-25 | 🟢 Active |
 | 23 | `packages/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
 | 24 | `packages/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
+| 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` | `7d40c14f` | 2026-04-07 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
+
+> **`apps/data-service` import notes:** Imported via `git subtree add` from the local `Legacy/Waves/data-service` upstream clone (wavesplatform v0.38.0 — commit `4820824d`). Full 395-commit history is preserved in the monorepo. Import method: `git subtree` (not fork). DCC-specific identity layer (endpoint URLs, chain IDs, env var names, branding) is applied separately in **DCC-234**. Toolchain modernization (Biome replacing ESLint/Prettier, strict tsconfig, ESM imports) is tracked in **DCC-219**, **DCC-220**, **DCC-222**. Vitest migration from Jest is **DCC-223**.
 
 ### How to Check for New Upstream Changes
 
@@ -698,6 +703,7 @@ git diff <last-synced-commit>..HEAD -- src/
 | signer | Signing flow changes | Bi-weekly |
 | protobuf-schemas | Wire format = protocol updates | Bi-weekly |
 | Keeper-Wallet-Extension | Wallet features we may want | Monthly |
+| data-service | Now in monorepo — watch for upstream bugfixes and new endpoint features to port | Monthly |
 | waves-transactions | New transaction type support | Monthly |
 | node-api-js | New API endpoints | Monthly |
 
@@ -707,11 +713,11 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### By Category (134 repos total)
 
-**Already Forked to DCC (24):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto.
+**Already Forked to DCC (25):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**.
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
-**Infrastructure (~20):** Waves/node (1171★ Scala), gowaves (255★ Go), matcher (18★ Scala), data-service (31★ TS), blockchain-postgres-sync (16★ Rust), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
+**Infrastructure (~20):** Waves/node (1171★ Scala), gowaves (255★ Go), matcher (18★ Scala), ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, blockchain-postgres-sync (16★ Rust), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
 **Multi-Language SDKs (~20):** Java (WavesJ 47★, waves-transactions-java, waves-crypto-java), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
 
