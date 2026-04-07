@@ -1,0 +1,13 @@
+{
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "verbose": true,
+  "forceExit": true,
+  "bail": true,
+  "rootDir": "../src",
+  "testMatch": ["**/*.test.js", "**/*.test.ts"],
+  "testURL": "http://localhost/",
+  "moduleFileExtensions": ["js", "ts", "json", "node"],
+  "setupFilesAfterEnv": ["../config/jest.extentions.js"]
+}
