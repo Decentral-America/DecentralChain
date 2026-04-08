@@ -241,36 +241,8 @@ describe('createSharedKey', () => {
 });
 
 describe('encryptMessage/decryptMessage', () => {
-  test('fixed', async () => {
-    const [alicePrivateKey, bobPrivateKey] = await Promise.all([
-      createPrivateKey(utf8Encode('alice')),
-      createPrivateKey(utf8Encode('bob')),
-    ]);
-
-    const alicePublicKey = await createPublicKey(alicePrivateKey);
-
-    const sharedKey = await createSharedKey(
-      bobPrivateKey,
-      alicePublicKey,
-      utf8Encode('some prefix'),
-    );
-
-    await expect(
-      decryptMessage(
-        sharedKey,
-        new Uint8Array([
-          1, 70, 131, 21, 17, 230, 156, 255, 51, 12, 239, 245, 90, 237, 97, 158, 54, 166, 88, 183,
-          60, 31, 35, 124, 64, 243, 48, 198, 112, 101, 59, 219, 209, 171, 133, 127, 229, 165, 239,
-          128, 130, 40, 47, 15, 59, 168, 97, 101, 61, 38, 3, 111, 130, 109, 165, 218, 190, 161, 2,
-          170, 200, 248, 71, 56, 167, 84, 114, 118, 115, 143, 163, 110, 168, 25, 67, 216, 218, 131,
-          123, 55, 15, 250, 107, 110, 114, 253, 242, 88, 139, 88, 173, 181, 103, 50, 113, 185, 17,
-          180, 112, 234, 204, 39, 8, 244, 126, 207, 49, 223, 165, 54, 94, 209, 178, 29, 61, 166,
-          218, 228, 90, 74, 70, 3, 90, 148, 193, 29, 191, 182, 172, 16, 161, 229, 137, 215, 12, 10,
-          79, 171, 49, 34, 228, 123, 160, 203,
-        ]),
-      ),
-    ).resolves.toStrictEqual(utf8Encode('中國的東西'));
-  });
+  // No fixed-output test — XChaCha20-Poly1305 uses a random 24-byte nonce per call.
+  // The AES-CTR fixed vector from the previous construction is intentionally removed.
 
   test('random', async () => {
     const [aPrivateKey, bPrivateKey] = await Promise.all([
@@ -291,9 +263,20 @@ describe('encryptMessage/decryptMessage', () => {
     ]);
 
     const messageBytes = utf8Encode('中國的東西');
-    const encryptedMessage = await encryptMessage(aSharedKey, messageBytes);
+    const encryptedMessage = encryptMessage(aSharedKey, messageBytes);
 
-    await expect(decryptMessage(bSharedKey, encryptedMessage)).resolves.toStrictEqual(messageBytes);
+    expect(decryptMessage(bSharedKey, encryptedMessage)).toStrictEqual(messageBytes);
+  });
+
+  test('tamper detection', async () => {
+    const key = crypto.getRandomValues(new Uint8Array(32));
+    const message = utf8Encode('test');
+    const encrypted = encryptMessage(key, message);
+
+    // Flip a byte in the ciphertext — Poly1305 must reject it
+    const tampered = new Uint8Array(encrypted);
+    tampered[30] ^= 0xff;
+    expect(() => decryptMessage(key, tampered)).toThrow();
   });
 });
 

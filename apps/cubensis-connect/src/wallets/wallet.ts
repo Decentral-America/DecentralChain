@@ -76,7 +76,7 @@ export abstract class Wallet<TData extends WalletPrivateData> {
   async encryptMessage(message: string, publicKey: string, prefix = 'cubensisconnect') {
     const sharedKey = await this.createSharedKey(publicKey, prefix);
 
-    const encryptedMessage = await encryptMessage(sharedKey, utf8Encode(message));
+    const encryptedMessage = encryptMessage(sharedKey, utf8Encode(message));
 
     return base58Encode(encryptedMessage);
   }
@@ -84,7 +84,7 @@ export abstract class Wallet<TData extends WalletPrivateData> {
   async decryptMessage(message: string, publicKey: string, prefix = 'cubensisconnect') {
     const sharedKey = await this.createSharedKey(publicKey, prefix);
 
-    const decryptedMessage = await decryptMessage(sharedKey, base58Decode(message));
+    const decryptedMessage = decryptMessage(sharedKey, base58Decode(message));
 
     return utf8Decode(decryptedMessage);
   }
