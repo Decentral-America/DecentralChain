@@ -1,13 +1,9 @@
-import { libs, seedUtils } from '@decentralchain/transactions';
+import { libs, type seedUtils } from '@decentralchain/transactions';
 import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
-import { Adapter, type ISeedUser, type IUser } from './Adapter';
+import { Adapter, type IUser } from './Adapter';
 
-const Seed = seedUtils.Seed;
 const signWithPrivateKey = libs.crypto.signBytes;
-
-/** Minimum acceptable encryption rounds to prevent brute-force attacks on encrypted seeds */
-const MIN_ENCRYPTION_ROUNDS = 5000;
 
 export class SeedAdapter extends Adapter {
   public isEncoded = false;
@@ -22,12 +18,12 @@ export class SeedAdapter extends Adapter {
     if (typeof data === 'string') {
       seed = data;
     } else {
-      const user = data as ISeedUser;
-      const encryptionRounds = Math.max(
-        user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
-        MIN_ENCRYPTION_ROUNDS,
+      // Legacy MD5+AES-CBC encrypted seed format was removed in DCC-192.
+      // Provide unencrypted seed instead.
+      throw new Error(
+        'Encrypted seed import (encryptedSeed + password) is no longer supported. ' +
+          'The legacy MD5+AES-CBC KDF was removed. Provide a plaintext seed.',
       );
-      seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
     }
 
     if (typeof seed === 'string' && seed.startsWith('base58:')) {
@@ -51,9 +47,6 @@ export class SeedAdapter extends Adapter {
 
     this.seed = {
       address: libs.crypto.address(seed, networkCode ?? this.getNetworkByte()),
-      encrypt: (password: string, encryptionRounds?: number) => {
-        return Seed.encryptSeedPhrase(`base58:${this.encodedSeed}`, password, encryptionRounds);
-      },
       keyPair: {
         privateKey: libs.crypto.privateKey(seed),
         publicKey: libs.crypto.publicKey(seed),
