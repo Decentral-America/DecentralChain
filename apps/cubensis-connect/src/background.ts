@@ -773,7 +773,7 @@ class BackgroundService extends EventEmitter {
         return this.messageController.getMessageResult(message.id);
       },
 
-      decryptMessage: async (message: string, publicKey: string, prefix: string) => {
+      decryptMessage: async (message: string, publicKey: string, _prefix: string) => {
         const { selectedAccount } = await this.validatePermission(origin, connectionId);
 
         if (!message || typeof message !== 'string') {
@@ -789,10 +789,10 @@ class BackgroundService extends EventEmitter {
           selectedAccount.network,
         );
 
-        return wallet.decryptMessage(message, publicKey, prefix);
+        return wallet.decryptMessage(message, publicKey);
       },
 
-      encryptMessage: async (message: string, publicKey: string, prefix: string) => {
+      encryptMessage: async (message: string, publicKey: string, _prefix: string) => {
         const { selectedAccount } = await this.validatePermission(origin, connectionId);
 
         if (!message || typeof message !== 'string') {
@@ -808,7 +808,7 @@ class BackgroundService extends EventEmitter {
           selectedAccount.network,
         );
 
-        return wallet.encryptMessage(message, publicKey, prefix);
+        return wallet.encryptMessage(message, publicKey);
       },
 
       getKEK: async (publicKey: string, prefix: string) => {

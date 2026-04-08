@@ -62,27 +62,21 @@ export abstract class Wallet<TData extends WalletPrivateData> {
     throw new Error('Cannot get private key');
   }
 
-  async createSharedKey(publicKey: string, prefix: string) {
+  async createSharedKey(publicKey: string) {
     const privateKey = await this.getPrivateKey();
-
-    return createSharedKey(
-      privateKey,
-      base58Decode(publicKey),
-      // TODO: Wire-format key derivation suffix — changing breaks shared-key interop
-      utf8Encode(`${prefix || ''}waves`),
-    );
+    return createSharedKey(privateKey, base58Decode(publicKey));
   }
 
-  async encryptMessage(message: string, publicKey: string, prefix = 'cubensisconnect') {
-    const sharedKey = await this.createSharedKey(publicKey, prefix);
+  async encryptMessage(message: string, publicKey: string) {
+    const sharedKey = await this.createSharedKey(publicKey);
 
     const encryptedMessage = encryptMessage(sharedKey, utf8Encode(message));
 
     return base58Encode(encryptedMessage);
   }
 
-  async decryptMessage(message: string, publicKey: string, prefix = 'cubensisconnect') {
-    const sharedKey = await this.createSharedKey(publicKey, prefix);
+  async decryptMessage(message: string, publicKey: string) {
+    const sharedKey = await this.createSharedKey(publicKey);
 
     const decryptedMessage = decryptMessage(sharedKey, base58Decode(message));
 

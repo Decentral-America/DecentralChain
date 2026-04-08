@@ -194,7 +194,11 @@ describe('createPublicKey', () => {
 });
 
 describe('createSharedKey', () => {
-  test('fixed', async () => {
+  // DCC-191: fixed vector was tied to HMAC-SHA256(sha256(prefix), rawShared);
+  // new construction is HKDF-SHA256(rawShared, info="decentralchain").
+  // The round-trip Diffie-Hellman symmetry test below is the correct invariant.
+
+  test('symmetric', async () => {
     const [alicePrivateKey, bobPrivateKey] = await Promise.all([
       createPrivateKey(utf8Encode('alice')),
       createPrivateKey(utf8Encode('bob')),
@@ -205,20 +209,9 @@ describe('createSharedKey', () => {
       createPublicKey(bobPrivateKey),
     ]);
 
-    const prefix = utf8Encode('waves');
+    const sharedA = await createSharedKey(alicePrivateKey, bobPublicKey);
 
-    const sharedA = await createSharedKey(alicePrivateKey, bobPublicKey, prefix);
-
-    expect(sharedA).toStrictEqual(
-      new Uint8Array([
-        162, 119, 172, 77, 222, 66, 171, 20, 118, 107, 37, 115, 109, 17, 113, 83, 54, 170, 225, 88,
-        131, 11, 248, 8, 89, 222, 157, 198, 100, 46, 125, 5,
-      ]),
-    );
-
-    await expect(createSharedKey(bobPrivateKey, alicePublicKey, prefix)).resolves.toStrictEqual(
-      sharedA,
-    );
+    await expect(createSharedKey(bobPrivateKey, alicePublicKey)).resolves.toStrictEqual(sharedA);
   });
 
   test('random', async () => {
@@ -232,10 +225,8 @@ describe('createSharedKey', () => {
       createPublicKey(bPrivateKey),
     ]);
 
-    const prefix = utf8Encode('something random');
-
-    await expect(createSharedKey(bPrivateKey, aPublicKey, prefix)).resolves.toStrictEqual(
-      await createSharedKey(aPrivateKey, bPublicKey, prefix),
+    await expect(createSharedKey(bPrivateKey, aPublicKey)).resolves.toStrictEqual(
+      await createSharedKey(aPrivateKey, bPublicKey),
     );
   });
 });
