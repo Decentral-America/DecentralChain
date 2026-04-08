@@ -1,7 +1,7 @@
 /**
  * Unit tests for WalletController vault cryptography.
  *
- * These tests exercise PBKDF2-SHA-256 key derivation, AES-GCM-256 encryption,
+ * These tests exercise Argon2id key derivation, XChaCha20-Poly1305 encryption,
  * password verification, and vault format correctness — all without any
  * WebExtension runtime or DOM.
  *
@@ -134,7 +134,7 @@ describe('WalletController vault cryptography', () => {
     // or migrated session (e.g. after extension update clears session storage).
     // The wallet should not throw and should remain locked until unlocked.
 
-    // Use a string that base64-decodes to an invalid AES-GCM key length.
+    // Use a string that base64-decodes to an invalid Argon2id key length.
     const corruptKeyBytes = btoa('not-a-valid-256-bit-key');
     const { controller } = makeController({ vaultKeyBytes: corruptKeyBytes });
 
