@@ -2,10 +2,12 @@ import {
   base58Encode,
   base64Decode,
   base64Encode,
-  deriveSeedEncryptionKey,
+  deriveKey,
   utf8Decode,
   utf8Encode,
 } from '@decentralchain/crypto';
+import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
+import { randomBytes } from '@noble/ciphers/utils.js';
 import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
@@ -26,37 +28,27 @@ import type { AssetInfoController } from './assetInfo';
 import type { TrashController } from './trash';
 
 /**
- * Encrypt wallet data using a pre-derived AES-GCM-256 CryptoKey.
- * Format: [32-byte random salt][12-byte nonce][ciphertext + 16-byte GCM auth tag].
- * The leading 32-byte salt is not used for key derivation here (the key is pre-derived);
- * it maintains format consistency with decryptVault which reads nonce at offset 32.
+ * Encrypt wallet data using a pre-derived Argon2id key and XChaCha20-Poly1305.
+ * Format: [24-byte nonce][ciphertext + 16-byte Poly1305 auth tag].
+ * XChaCha20 uses a 192-bit nonce — safe for random generation without birthday bound.
  */
-async function encryptVault(input: WalletPrivateData[], key: CryptoKey): Promise<string> {
+function encryptVault(input: WalletPrivateData[], key: Uint8Array): string {
   const json = JSON.stringify(input);
-  const salt = crypto.getRandomValues(new Uint8Array(32));
-  const nonce = crypto.getRandomValues(new Uint8Array(12));
-
-  const ciphertext = new Uint8Array(
-    await crypto.subtle.encrypt({ iv: nonce, name: 'AES-GCM' }, key, utf8Encode(json)),
-  );
-
-  return base64Encode(Uint8Array.of(...salt, ...nonce, ...ciphertext));
+  const nonce = randomBytes(24);
+  const ciphertext = xchacha20poly1305(key, nonce).encrypt(utf8Encode(json));
+  return base64Encode(Uint8Array.of(...nonce, ...ciphertext));
 }
 
 /**
- * Decrypt a vault blob using a pre-derived AES-GCM-256 CryptoKey.
+ * Decrypt a vault blob using a pre-derived Argon2id key and XChaCha20-Poly1305.
  * Throws if the authentication tag is invalid (wrong key or corrupt blob).
  */
-async function decryptVault(vault: string, key: CryptoKey): Promise<WalletPrivateData[]> {
+function decryptVault(vault: string, key: Uint8Array): WalletPrivateData[] {
   try {
     const bytes = base64Decode(vault);
-    const nonce = bytes.subarray(32, 44); // skip 32-byte salt prefix
-    const ciphertext = bytes.subarray(44);
-
-    const plaintext = new Uint8Array(
-      await crypto.subtle.decrypt({ iv: nonce, name: 'AES-GCM' }, key, ciphertext),
-    );
-
+    const nonce = bytes.subarray(0, 24);
+    const ciphertext = bytes.subarray(24);
+    const plaintext = xchacha20poly1305(key, nonce).decrypt(ciphertext);
     return JSON.parse(utf8Decode(plaintext)) as WalletPrivateData[];
   } catch {
     throw new Error('Invalid password');
@@ -66,8 +58,8 @@ async function decryptVault(vault: string, key: CryptoKey): Promise<WalletPrivat
 export class WalletController extends EventEmitter {
   #assetInfo;
   #ledger;
-  /** Derived AES-GCM-256 vault key. Never the password. */
-  #vaultKey: CryptoKey | null | undefined;
+  /** Derived Argon2id vault key (32-byte raw). Never the password. */
+  #vaultKey: Uint8Array | null | undefined;
   #setSession;
   #trashController;
   #wallets: Array<Wallet<WalletPrivateData>>;
@@ -104,18 +96,13 @@ export class WalletController extends EventEmitter {
     const { vaultKeyBytes } = extensionStorage.getInitSession();
 
     if (vaultKeyBytes) {
-      // Import the stored key and restore wallets without requiring the password.
-      crypto.subtle
-        .importKey('raw', base64Decode(vaultKeyBytes), 'AES-GCM', true, ['encrypt', 'decrypt'])
-        .then((key) => {
-          this.#vaultKey = key;
-          return this.#restoreWallets();
-        })
-        .catch(() => {
-          // Corrupt session key — clear it; user must re-enter password.
-          this.#vaultKey = null;
-          this.#setSession({ vaultKeyBytes: null });
-        });
+      // Restore the raw key bytes from session and reload wallets without password.
+      this.#vaultKey = base64Decode(vaultKeyBytes);
+      this.#restoreWallets().catch(() => {
+        // Corrupt session key — clear it; user must re-enter password.
+        this.#vaultKey = null;
+        this.#setSession({ vaultKeyBytes: null });
+      });
     }
   }
 
@@ -165,25 +152,17 @@ export class WalletController extends EventEmitter {
     }
   }
 
-  async #setVaultKey(key: CryptoKey | null): Promise<void> {
+  #setVaultKey(key: Uint8Array | null): void {
     this.#vaultKey = key;
-
-    if (key) {
-      const raw = new Uint8Array(await crypto.subtle.exportKey('raw', key));
-      this.#setSession({ vaultKeyBytes: base64Encode(raw) });
-    } else {
-      this.#setSession({ vaultKeyBytes: null });
-    }
+    this.#setSession({ vaultKeyBytes: key ? base64Encode(key) : null });
   }
 
-  async #saveWallets(): Promise<void> {
+  #saveWallets(): void {
     invariant(this.#vaultKey);
-
-    const vault = await encryptVault(
+    const vault = encryptVault(
       this.#wallets.map((wallet) => wallet.data),
       this.#vaultKey,
     );
-
     // Shallow-merge: preserve vaultSalt alongside vault.
     const current = this.store.getState().WalletController;
     this.store.updateState({ WalletController: { ...current, vault } });
@@ -196,7 +175,7 @@ export class WalletController extends EventEmitter {
 
     if (!vault) return;
 
-    const decryptedVault = await decryptVault(vault, this.#vaultKey);
+    const decryptedVault = decryptVault(vault, this.#vaultKey);
 
     this.#wallets = await Promise.all(
       decryptedVault.map((user) => this.#createWallet(user, user.network, user.networkCode)),
@@ -209,15 +188,11 @@ export class WalletController extends EventEmitter {
     return this.#wallets.filter((wallet) => wallet.data.network === network);
   }
 
-  async #putWalletIntoTrash(wallet: Wallet<WalletPrivateData>): Promise<void> {
+  #putWalletIntoTrash(wallet: Wallet<WalletPrivateData>): void {
     invariant(this.#vaultKey);
-
     const data = utf8Encode(JSON.stringify(wallet.data));
-    const nonce = crypto.getRandomValues(new Uint8Array(12));
-    const ciphertext = new Uint8Array(
-      await crypto.subtle.encrypt({ iv: nonce, name: 'AES-GCM' }, this.#vaultKey, data),
-    );
-
+    const nonce = randomBytes(24);
+    const ciphertext = xchacha20poly1305(this.#vaultKey, nonce).encrypt(data);
     this.#trashController.addItem({
       address: wallet.data.address,
       walletsData: base64Encode(Uint8Array.of(...nonce, ...ciphertext)),
@@ -236,7 +211,7 @@ export class WalletController extends EventEmitter {
     }
 
     this.#wallets.push(wallet);
-    await this.#saveWallets();
+    this.#saveWallets();
 
     this.emit('addWallet', wallet);
     this.emit('updateWallets');
@@ -253,7 +228,7 @@ export class WalletController extends EventEmitter {
 
     this.#wallets.push(...newWallets);
 
-    await this.#saveWallets();
+    this.#saveWallets();
 
     newWallets.forEach((wallet) => {
       this.emit('addWallet', wallet);
@@ -267,9 +242,9 @@ export class WalletController extends EventEmitter {
 
     if (!wallet) return;
 
-    await this.#putWalletIntoTrash(wallet);
+    this.#putWalletIntoTrash(wallet);
     this.#wallets = this.#wallets.filter((w) => w !== wallet);
-    await this.#saveWallets();
+    this.#saveWallets();
     this.emit('removeWallet', wallet);
     this.emit('updateWallets');
   }
@@ -290,7 +265,7 @@ export class WalletController extends EventEmitter {
     );
 
     if (changed) {
-      await this.#saveWallets();
+      this.#saveWallets();
     }
 
     this.emit('updateWallets');
@@ -305,25 +280,25 @@ export class WalletController extends EventEmitter {
       throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
     }
 
-    const salt = crypto.getRandomValues(new Uint8Array(32)); // NIST SP 800-132: ≥128 bits; 256 bits used
-    const key = await deriveSeedEncryptionKey(utf8Encode(password), salt);
+    const salt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const key = await deriveKey(utf8Encode(password), salt);
 
     // Persist salt so future password verification can re-derive the same key.
     const current = this.store.getState().WalletController;
     this.store.updateState({ WalletController: { ...current, vaultSalt: base64Encode(salt) } });
 
-    await this.#setVaultKey(key);
-    await this.#saveWallets();
+    this.#setVaultKey(key);
+    this.#saveWallets();
   }
 
   async deleteVault() {
-    await Promise.all(this.#wallets.map((wallet) => this.#putWalletIntoTrash(wallet)));
+    for (const wallet of this.#wallets) this.#putWalletIntoTrash(wallet);
 
     this.#wallets.forEach((wallet) => {
       this.emit('removeWallet', wallet);
     });
 
-    await this.#setVaultKey(null);
+    this.#setVaultKey(null);
     this.#wallets = [];
     this.emit('updateWallets');
     this.store.updateState({ WalletController: { vault: undefined, vaultSalt: undefined } });
@@ -334,8 +309,8 @@ export class WalletController extends EventEmitter {
 
     if (!vault || !vaultSalt) throw new Error('Vault not initialized');
 
-    const key = await deriveSeedEncryptionKey(utf8Encode(password), base64Decode(vaultSalt));
-    await decryptVault(vault, key); // throws on wrong password
+    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt));
+    decryptVault(vault, key); // throws on wrong password
   }
 
   async newPassword(oldPassword: string, newPassword: string) {
@@ -345,20 +320,20 @@ export class WalletController extends EventEmitter {
 
     await this.assertPasswordIsValid(oldPassword);
 
-    const newSalt = crypto.getRandomValues(new Uint8Array(32)); // NIST SP 800-132: ≥128 bits; 256 bits used
-    const newKey = await deriveSeedEncryptionKey(utf8Encode(newPassword), newSalt);
+    const newSalt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const newKey = await deriveKey(utf8Encode(newPassword), newSalt);
 
     const current = this.store.getState().WalletController;
     this.store.updateState({
       WalletController: { ...current, vaultSalt: base64Encode(newSalt) },
     });
 
-    await this.#setVaultKey(newKey);
-    await this.#saveWallets();
+    this.#setVaultKey(newKey);
+    this.#saveWallets();
   }
 
   lock() {
-    void this.#setVaultKey(null);
+    this.#setVaultKey(null);
     this.#wallets = [];
   }
 
@@ -369,10 +344,10 @@ export class WalletController extends EventEmitter {
 
     if (!vaultSalt) throw new Error('Vault salt missing — vault may be from an older version');
 
-    const key = await deriveSeedEncryptionKey(utf8Encode(password), base64Decode(vaultSalt));
-    const decryptedVault = await decryptVault(vault, key); // throws on wrong password
+    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt));
+    const decryptedVault = decryptVault(vault, key); // throws on wrong password
 
-    await this.#setVaultKey(key);
+    this.#setVaultKey(key);
 
     this.#wallets = await Promise.all(
       decryptedVault.map((user) => this.#createWallet(user, user.network, user.networkCode)),
@@ -394,7 +369,7 @@ export class WalletController extends EventEmitter {
         }),
       );
 
-      await this.#saveWallets();
+      this.#saveWallets();
     }
 
     this.emit('updateWallets');
