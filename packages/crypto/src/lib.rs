@@ -1,6 +1,21 @@
+use argon2::{Algorithm, Argon2, Params, Version};
 use ed25519_axolotl::utils::extras::{curve25519_sign, curve25519_sign_open};
 use ed25519_compact::x25519;
 use wasm_bindgen::prelude::*;
+
+/// Derives an output key of `output_len` bytes from a password and salt using
+/// Argon2id (RFC 9106 v0x13) with OWASP 2024 interactive-minimum parameters:
+/// m = 19 456 KiB (19 MiB), t = 2 iterations, p = 1 lane.
+#[wasm_bindgen]
+pub fn derive_key(password: &[u8], salt: &[u8], output_len: usize) -> Box<[u8]> {
+    let params = Params::new(19_456, 2, 1, Some(output_len)).expect("argon2 params are valid");
+    let argon2 = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
+    let mut output = vec![0u8; output_len];
+    argon2
+        .hash_password_into(password, salt, &mut output)
+        .expect("argon2 derive_key failed");
+    output.into_boxed_slice()
+}
 
 #[wasm_bindgen]
 pub fn create_private_key(hashed_seed: &[u8]) -> Box<[u8]> {
@@ -28,13 +43,6 @@ pub fn create_shared_key(private_key: &[u8], public_key: &[u8]) -> Box<[u8]> {
     let pk = x25519::PublicKey::from_slice(public_key).unwrap();
 
     pk.dh(&sk).unwrap().to_vec().into_boxed_slice()
-}
-
-#[wasm_bindgen]
-pub fn md5(input: &[u8]) -> Box<[u8]> {
-    let mut ctx = md5_rs::Context::new();
-    ctx.read(input);
-    ctx.finish().to_vec().into_boxed_slice()
 }
 
 #[wasm_bindgen]
