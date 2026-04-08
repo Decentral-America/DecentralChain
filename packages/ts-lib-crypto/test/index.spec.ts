@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest';
 import { crypto, MAIN_NET_CHAIN_ID } from '../src';
-import { decryptSeed, encryptSeed } from '../src/crypto/seed-ecryption';
 
 const {
   seedWithNonce,
@@ -148,15 +147,4 @@ test('concat split roundtrip', () => {
   expect(a2).toEqual(Uint8Array.from([1, 2, 3, 4]));
   expect(b2).toEqual(Uint8Array.from(b));
   expect(c2).toEqual(c);
-});
-
-test('should decrypt and encrypt seed', () => {
-  const pass = '🦋';
-  const encrypted = 'U2FsdGVkX1/cD65nXrTMcViAYyCQXMrGi8XAdD8mVqFPwv6RJjKm7qHAf9jL3zgY';
-  const decrypted = 'asd asd asd asd asd asd';
-
-  const d = decryptSeed(encrypted, pass);
-  const d2 = decryptSeed(encryptSeed(decrypted, pass), pass);
-  expect(d).toEqual(decrypted);
-  expect(d2).toEqual(decrypted);
 });

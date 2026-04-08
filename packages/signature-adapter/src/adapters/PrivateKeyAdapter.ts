@@ -1,14 +1,11 @@
-import { libs, seedUtils } from '@decentralchain/transactions';
+import { libs } from '@decentralchain/transactions';
 import { AdapterType } from '../adapterType';
 import { SIGN_TYPE } from '../prepareTx';
-import { Adapter, type IPrivateKeyUser, type IUser } from './Adapter';
+import { Adapter, type IUser } from './Adapter';
 
 const publicKey = libs.crypto.publicKey;
 const address = libs.crypto.address;
 const signWithPrivateKey = libs.crypto.signBytes;
-
-/** Minimum acceptable encryption rounds to prevent brute-force attacks on encrypted keys */
-const MIN_ENCRYPTION_ROUNDS = 5000;
 
 export class PrivateKeyAdapter extends Adapter {
   private privateKey = '';
@@ -22,15 +19,11 @@ export class PrivateKeyAdapter extends Adapter {
     if (typeof data === 'string') {
       this.privateKey = data;
     } else {
-      const user = data as IPrivateKeyUser;
-      const encryptionRounds = Math.max(
-        user.encryptionRounds ?? MIN_ENCRYPTION_ROUNDS,
-        MIN_ENCRYPTION_ROUNDS,
-      );
-      this.privateKey = seedUtils.Seed.decryptSeedPhrase(
-        user.encryptedPrivateKey || '',
-        user.password,
-        encryptionRounds,
+      // Legacy MD5+AES-CBC encrypted private key format was removed in DCC-192.
+      // Provide unencrypted private key instead.
+      throw new Error(
+        'Encrypted private key import (encryptedPrivateKey + password) is no longer supported. ' +
+          'The legacy MD5+AES-CBC KDF was removed. Provide a plaintext private key.',
       );
     }
 

@@ -206,11 +206,6 @@ export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
     iv?: TBinaryIn,
   ) => TBytes;
 
-  //Seed encryption (Same algorithm as in DecentralChain client and keeper).
-  //Uses EvpKDF to derive key and iv from password. Then outputs AES-CBC encrypted seed in OpenSSL format as Base64 string
-  encryptSeed: (seed: string, password: string, encryptionRounds?: number) => TBase64;
-  decryptSeed: (encryptedSeed: TBase64, password: string, encryptionRounds?: number) => string;
-
   //Merkle
   merkleVerify: (rootHash: Uint8Array, merkleProof: Uint8Array, leafData: Uint8Array) => boolean;
 

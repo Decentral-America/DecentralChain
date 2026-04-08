@@ -29,7 +29,6 @@ import {
 } from './interface';
 import { merkleVerify } from './merkle-verify';
 import { random, randomBytes, randomSeed } from './random';
-import { decryptSeed, encryptSeed } from './seed-ecryption';
 import { signBytes } from './sign';
 import { verifyAddress, verifyPublicKey, verifySignature } from './verification';
 
@@ -129,8 +128,6 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
     buildAddress,
     bytesToString,
     concat,
-    decryptSeed,
-    encryptSeed,
     keccak,
     merkleVerify,
     messageDecrypt,

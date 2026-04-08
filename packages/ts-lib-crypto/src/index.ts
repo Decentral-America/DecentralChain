@@ -37,8 +37,6 @@ export const {
   messageEncrypt,
   aesDecrypt,
   aesEncrypt,
-  encryptSeed,
-  decryptSeed,
   merkleVerify,
   split,
   concat,
