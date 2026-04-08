@@ -36,7 +36,10 @@ function encryptVault(input: WalletPrivateData[], key: Uint8Array): string {
   const json = JSON.stringify(input);
   const nonce = randomBytes(24);
   const ciphertext = xchacha20poly1305(key, nonce).encrypt(utf8Encode(json));
-  return base64Encode(Uint8Array.of(...nonce, ...ciphertext));
+  const blob = new Uint8Array(nonce.length + ciphertext.length);
+  blob.set(nonce, 0);
+  blob.set(ciphertext, nonce.length);
+  return base64Encode(blob);
 }
 
 /**
