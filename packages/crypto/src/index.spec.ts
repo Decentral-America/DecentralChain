@@ -272,7 +272,7 @@ describe('encryptMessage/decryptMessage', () => {
 });
 
 describe('encryptSeed/decryptSeed', () => {
-  // No fixed-output test — PBKDF2+AES-GCM uses random salt+nonce per call; round-trip is the correct invariant.
+  // No fixed-output test — Argon2id+XChaCha20-Poly1305 uses random salt+nonce per call; round-trip is the correct invariant.
 
   test('random', async () => {
     await expect(
