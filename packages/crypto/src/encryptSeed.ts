@@ -1,25 +1,22 @@
-import { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey.js';
+import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
+import { randomBytes } from '@noble/ciphers/utils.js';
+
+import { deriveKey } from './deriveKey.js';
 
 /**
- * Encrypts `input` with a PBKDF2-SHA-256 derived key (600k iterations) and AES-GCM-256.
+ * Encrypts `input` with an Argon2id-derived key and XChaCha20-Poly1305.
  *
- * Output format: [16-byte salt][12-byte nonce][ciphertext + 16-byte GCM auth tag]
+ * Output format: [16-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
  *
- * NIST SP 800-38D: AES-GCM with 96-bit (12-byte) random IV.
- * NIST SP 800-132: 128-bit (16-byte) minimum salt.
+ * RFC 9106 §3.1: 128-bit salt minimum.
+ * XChaCha20 uses a 192-bit nonce — safe for random generation (no birthday bound).
  */
 export async function encryptSeed(input: Uint8Array, password: Uint8Array): Promise<Uint8Array> {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const key = await deriveSeedEncryptionKey(password, salt);
-  const nonce = crypto.getRandomValues(new Uint8Array(12));
+  const salt = randomBytes(16);
+  const key = await deriveKey(password, salt);
+  const nonce = randomBytes(24);
 
-  const ciphertext = new Uint8Array(
-    await crypto.subtle.encrypt(
-      { iv: nonce as Uint8Array<ArrayBuffer>, name: 'AES-GCM' },
-      key,
-      input as Uint8Array<ArrayBuffer>,
-    ),
-  );
+  const ciphertext = xchacha20poly1305(key, nonce).encrypt(input);
 
   return Uint8Array.of(...salt, ...nonce, ...ciphertext);
 }
