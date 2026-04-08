@@ -8,7 +8,13 @@ import { deriveKey } from './deriveKey.js';
  * Expected format: [16-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
  * Throws if the password is wrong (Poly1305 authentication tag mismatch).
  */
+/** 16 (salt) + 24 (nonce) + 16 (Poly1305 tag) = 56-byte minimum. */
+const DECRYPT_SEED_MIN = 56;
+
 export async function decryptSeed(input: Uint8Array, password: Uint8Array): Promise<Uint8Array> {
+  if (input.length < DECRYPT_SEED_MIN) {
+    throw new Error('decryptSeed: input too short');
+  }
   const salt = input.subarray(0, 16);
   const nonce = input.subarray(16, 40);
   const ciphertext = input.subarray(40);

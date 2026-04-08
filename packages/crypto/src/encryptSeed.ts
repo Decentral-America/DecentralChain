@@ -1,5 +1,6 @@
 import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
 import { randomBytes } from '@noble/ciphers/utils.js';
+import { concatBytes } from '@noble/hashes/utils.js';
 
 import { deriveKey } from './deriveKey.js';
 
@@ -18,5 +19,5 @@ export async function encryptSeed(input: Uint8Array, password: Uint8Array): Prom
 
   const ciphertext = xchacha20poly1305(key, nonce).encrypt(input);
 
-  return Uint8Array.of(...salt, ...nonce, ...ciphertext);
+  return concatBytes(salt, nonce, ciphertext);
 }
