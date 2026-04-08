@@ -246,11 +246,9 @@ describe('encryptMessage/decryptMessage', () => {
       createPublicKey(bPrivateKey),
     ]);
 
-    const prefix = utf8Encode('some prefix');
-
     const [aSharedKey, bSharedKey] = await Promise.all([
-      createSharedKey(aPrivateKey, bPublicKey, prefix),
-      createSharedKey(bPrivateKey, aPublicKey, prefix),
+      createSharedKey(aPrivateKey, bPublicKey),
+      createSharedKey(bPrivateKey, aPublicKey),
     ]);
 
     const messageBytes = utf8Encode('中國的東西');
