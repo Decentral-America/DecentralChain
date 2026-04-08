@@ -417,10 +417,7 @@ export class MessageController extends EventEmitter {
           break;
         }
         case 'getKEK': {
-          const sharedKey = await wallet.createSharedKey(
-            message.data.publicKey,
-            message.data.prefix,
-          );
+          const sharedKey = await wallet.createSharedKey(message.data.publicKey);
 
           message.result = base58Encode(sharedKey);
           message.status = MessageStatus.Signed;
