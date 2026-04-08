@@ -104,6 +104,9 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.8
         version: 2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@noble/ciphers':
+        specifier: ^2.1.1
+        version: 2.1.1
       '@reduxjs/toolkit':
         specifier: 2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
@@ -11880,7 +11883,9 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@jest/schemas@30.0.5':
     dependencies:
@@ -17131,7 +17136,9 @@ snapshots:
       pretty-format: 24.9.0
       throat: 4.1.0
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   jest-leak-detector@24.9.0:
     dependencies:

@@ -8,7 +8,7 @@ export { createPublicKey } from './createPublicKey.js';
 export { createSharedKey } from './createSharedKey.js';
 export { decryptMessage } from './decryptMessage.js';
 export { decryptSeed } from './decryptSeed.js';
-export { deriveSeedEncryptionKey } from './deriveSeedEncryptionKey.js';
+export { deriveKey } from './deriveKey.js';
 export { encryptMessage } from './encryptMessage.js';
 export { encryptSeed } from './encryptSeed.js';
 export { generateRandomSeed } from './generateRandomSeed.js';
