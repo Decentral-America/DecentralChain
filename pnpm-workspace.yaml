@@ -5,13 +5,13 @@ packages:
 catalog:
   '@arethetypeswrong/cli': 0.18.2
   '@size-limit/preset-small-lib': 12.0.1
-  '@types/node': 25.5.0
-  '@vitest/coverage-v8': 4.1.2
-  jsdom: 29.0.1
+  '@types/node': 25.5.2
+  '@vitest/coverage-v8': 4.1.4
+  jsdom: 29.0.2
   publint: 0.3.18
   size-limit: 12.0.1
   tsdown: 0.21.7
-  vitest: 4.1.2
+  vitest: 4.1.4
 
 allowBuilds:
   lefthook: false
