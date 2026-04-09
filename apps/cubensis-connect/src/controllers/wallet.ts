@@ -86,8 +86,8 @@ export class WalletController extends EventEmitter {
       extensionStorage.getInitState({
         WalletController: {
           vault: undefined as string | undefined,
-          vaultSalt: undefined as string | undefined,
           vaultPepper: undefined as string | undefined,
+          vaultSalt: undefined as string | undefined,
         },
       }),
     );
@@ -290,7 +290,7 @@ export class WalletController extends EventEmitter {
       throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
     }
 
-    const salt = randomBytes(32);   // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const salt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
     const pepper = randomBytes(32); // OWASP pepper: stored separately from vault data
     const key = await deriveKey(utf8Encode(password), salt, pepper);
 
@@ -307,8 +307,8 @@ export class WalletController extends EventEmitter {
     this.store.updateState({
       WalletController: {
         ...current,
-        vaultSalt: base64Encode(salt),
         vaultPepper: base64Encode(pepper),
+        vaultSalt: base64Encode(salt),
       },
     });
 
@@ -326,7 +326,9 @@ export class WalletController extends EventEmitter {
     this.#setVaultKey(null);
     this.#wallets = [];
     this.emit('updateWallets');
-    this.store.updateState({ WalletController: { vault: undefined, vaultSalt: undefined, vaultPepper: undefined } });
+    this.store.updateState({
+      WalletController: { vault: undefined, vaultPepper: undefined, vaultSalt: undefined },
+    });
   }
 
   async assertPasswordIsValid(password: string) {
@@ -350,7 +352,7 @@ export class WalletController extends EventEmitter {
 
     // Re-generate both salt AND pepper on every password change.
     // If migrating from a legacy vault (no pepper), this transparently adds pepper.
-    const newSalt = randomBytes(32);   // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const newSalt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
     const newPepper = randomBytes(32); // OWASP pepper: rotate on password change
     const newKey = await deriveKey(utf8Encode(newPassword), newSalt, newPepper);
 
@@ -358,8 +360,8 @@ export class WalletController extends EventEmitter {
     this.store.updateState({
       WalletController: {
         ...current,
-        vaultSalt: base64Encode(newSalt),
         vaultPepper: base64Encode(newPepper),
+        vaultSalt: base64Encode(newSalt),
       },
     });
 
