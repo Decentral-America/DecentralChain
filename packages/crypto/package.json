@@ -6,6 +6,7 @@
   "dependencies": {
     "@noble/ciphers": "^2.1.1",
     "@noble/hashes": "^2.0.1",
+    "@noble/post-quantum": "^0.6.0",
     "@scure/base": "^2.0.0"
   },
   "description": "Async WASM cryptographic library for DecentralChain — Ed25519/X25519 key generation, signing, AES encryption, seed management",
