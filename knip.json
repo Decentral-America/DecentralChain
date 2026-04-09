@@ -17,7 +17,6 @@
     "tools/generators/**"
   ],
   "ignoreDependencies": [
-    "@vitest/coverage-v8",
     "undici-types",
     "@bufbuild/protoc-gen-es",
     // cubensis-connect: browser polyfills referenced via vite.config.ts aliases/plugins
