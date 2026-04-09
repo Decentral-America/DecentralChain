@@ -10,53 +10,34 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     outDir: 'dist',
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks(id) {
-          if (!id.includes('node_modules')) {
-            return;
-          }
-
-          if (/node_modules\/(react|react-dom)\//.test(id)) {
-            return 'vendor';
-          }
-
-          if (id.includes('node_modules/react-router')) {
-            return 'router';
-          }
-
-          if (id.includes('node_modules/styled-components')) {
-            return 'ui';
-          }
-
-          if (/node_modules\/(@mui|@emotion)\//.test(id)) {
-            return 'mui-core';
-          }
-
-          if (/node_modules\/@sentry\//.test(id)) {
+        // Rolldown's canonical chunk splitting API (replaces deprecated manualChunks function form).
+        // Each group is matched by regex; higher priority wins when patterns overlap.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor', priority: 80, test: /node_modules\/(react|react-dom)\// },
+            { name: 'router', priority: 70, test: /node_modules\/react-router/ },
+            { name: 'ui', priority: 60, test: /node_modules\/styled-components/ },
+            { name: 'mui-core', priority: 50, test: /node_modules\/(@mui|@emotion)\// },
             // Sentry must be in its own chunk, not co-located with feature routes (e.g. Leasing).
             // Without this, Vite may defer Sentry until a lazy route loads, delaying error capture.
-            return 'sentry';
-          }
-
-          // TradingView charting library is massive — isolate it for lazy-loaded DEX route
-          if (/node_modules\/(charting_library|tradingview)/.test(id)) {
-            return 'tradingview';
-          }
-
-          // Crypto + serialization libs — only needed for transaction signing
-          if (
-            /node_modules\/(@decentralchain\/(ts-lib-crypto|crypto|transactions|protobuf-serialization|marshall)|@noble\/|@scure\/)/.test(
-              id,
-            )
-          ) {
-            return 'crypto';
-          }
-
-          // i18n — loaded at app init but doesn't need to block initial render
-          if (/node_modules\/(i18next|react-i18next)\//.test(id)) {
-            return 'i18n';
-          }
+            { name: 'sentry', priority: 40, test: /node_modules\/@sentry\// },
+            // TradingView charting library is massive — isolate it for lazy-loaded DEX route
+            {
+              name: 'tradingview',
+              priority: 30,
+              test: /node_modules\/(charting_library|tradingview)/,
+            },
+            // Crypto + serialization libs — only needed for transaction signing
+            {
+              name: 'crypto',
+              priority: 20,
+              test: /node_modules\/(@decentralchain\/(ts-lib-crypto|crypto|transactions|protobuf-serialization|marshall)|@noble\/|@scure\/)/,
+            },
+            // i18n — loaded at app init but doesn't need to block initial render
+            { name: 'i18n', priority: 10, test: /node_modules\/(i18next|react-i18next)\// },
+          ],
         },
       },
     },
