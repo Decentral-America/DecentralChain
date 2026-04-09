@@ -9,7 +9,7 @@
   "description": "Official Protocol Buffers schema definitions and multi-language bindings for the DecentralChain blockchain protocol — encoding/decoding transactions, blocks, events, and gRPC APIs.",
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
-    "@bufbuild/buf": "1.66.1",
+    "@bufbuild/buf": "1.67.0",
     "@bufbuild/protoc-gen-es": "2.11.0",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
