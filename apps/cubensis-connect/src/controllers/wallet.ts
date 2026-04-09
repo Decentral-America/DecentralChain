@@ -84,7 +84,11 @@ export class WalletController extends EventEmitter {
 
     this.store = new ObservableStore(
       extensionStorage.getInitState({
-        WalletController: { vault: undefined, vaultSalt: undefined },
+        WalletController: {
+          vault: undefined as string | undefined,
+          vaultSalt: undefined as string | undefined,
+          vaultPepper: undefined as string | undefined,
+        },
       }),
     );
 
@@ -196,9 +200,12 @@ export class WalletController extends EventEmitter {
     const data = utf8Encode(JSON.stringify(wallet.data));
     const nonce = randomBytes(24);
     const ciphertext = xchacha20poly1305(this.#vaultKey, nonce).encrypt(data);
+    const blob = new Uint8Array(nonce.length + ciphertext.length);
+    blob.set(nonce, 0);
+    blob.set(ciphertext, nonce.length);
     this.#trashController.addItem({
       address: wallet.data.address,
-      walletsData: base64Encode(Uint8Array.of(...nonce, ...ciphertext)),
+      walletsData: base64Encode(blob),
     });
   }
 
@@ -283,12 +290,27 @@ export class WalletController extends EventEmitter {
       throw new Error(`Password must be at least ${CONFIG.PASSWORD_MIN_LENGTH} characters`);
     }
 
-    const salt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
-    const key = await deriveKey(utf8Encode(password), salt);
+    const salt = randomBytes(32);   // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const pepper = randomBytes(32); // OWASP pepper: stored separately from vault data
+    const key = await deriveKey(utf8Encode(password), salt, pepper);
 
-    // Persist salt so future password verification can re-derive the same key.
+    // Persist salt and pepper so future unlocks can re-derive the same key.
+    // Pepper is stored separately from the vault blob: protects against offline
+    // brute-force if only the vault is exfiltrated (e.g., via backup or partial leak).
+    // NOTE (OWASP §pepper): OWASP recommends storing the pepper in an HSM or separate
+    // secrets vault. In a browser extension, chrome.storage.local is the best available
+    // option — but an attacker who exfiltrates all of chrome.storage.local obtains
+    // both the vault blob and the pepper. The pepper still provides meaningful protection
+    // against attacks that compromise only the vault blob (e.g., via a backup file or
+    // a partial storage leak). This limitation is inherent to the browser extension model.
     const current = this.store.getState().WalletController;
-    this.store.updateState({ WalletController: { ...current, vaultSalt: base64Encode(salt) } });
+    this.store.updateState({
+      WalletController: {
+        ...current,
+        vaultSalt: base64Encode(salt),
+        vaultPepper: base64Encode(pepper),
+      },
+    });
 
     this.#setVaultKey(key);
     this.#saveWallets();
@@ -304,15 +326,18 @@ export class WalletController extends EventEmitter {
     this.#setVaultKey(null);
     this.#wallets = [];
     this.emit('updateWallets');
-    this.store.updateState({ WalletController: { vault: undefined, vaultSalt: undefined } });
+    this.store.updateState({ WalletController: { vault: undefined, vaultSalt: undefined, vaultPepper: undefined } });
   }
 
   async assertPasswordIsValid(password: string) {
-    const { vault, vaultSalt } = this.store.getState().WalletController;
+    const { vault, vaultSalt, vaultPepper } = this.store.getState().WalletController;
 
     if (!vault || !vaultSalt) throw new Error('Vault not initialized');
 
-    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt));
+    // vaultPepper may be undefined for legacy vaults (created before pepper was introduced).
+    // deriveKey treats undefined pepper as no-pepper — backward compatible.
+    const pepper = vaultPepper != null ? base64Decode(vaultPepper) : undefined;
+    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt), pepper);
     decryptVault(vault, key); // throws on wrong password
   }
 
@@ -323,12 +348,19 @@ export class WalletController extends EventEmitter {
 
     await this.assertPasswordIsValid(oldPassword);
 
-    const newSalt = randomBytes(32); // RFC 9106 §3.1: ≥128 bits; 256 bits used
-    const newKey = await deriveKey(utf8Encode(newPassword), newSalt);
+    // Re-generate both salt AND pepper on every password change.
+    // If migrating from a legacy vault (no pepper), this transparently adds pepper.
+    const newSalt = randomBytes(32);   // RFC 9106 §3.1: ≥128 bits; 256 bits used
+    const newPepper = randomBytes(32); // OWASP pepper: rotate on password change
+    const newKey = await deriveKey(utf8Encode(newPassword), newSalt, newPepper);
 
     const current = this.store.getState().WalletController;
     this.store.updateState({
-      WalletController: { ...current, vaultSalt: base64Encode(newSalt) },
+      WalletController: {
+        ...current,
+        vaultSalt: base64Encode(newSalt),
+        vaultPepper: base64Encode(newPepper),
+      },
     });
 
     this.#setVaultKey(newKey);
@@ -341,13 +373,16 @@ export class WalletController extends EventEmitter {
   }
 
   async unlock(password: string) {
-    const { vault, vaultSalt } = this.store.getState().WalletController;
+    const { vault, vaultSalt, vaultPepper } = this.store.getState().WalletController;
 
     if (!vault) return;
 
     if (!vaultSalt) throw new Error('Vault salt missing — vault may be from an older version');
 
-    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt));
+    // vaultPepper is undefined for legacy vaults — deriveKey treats it as no-pepper.
+    // New vaults always have a pepper. Legacy vaults get peppered on next password change.
+    const pepper = vaultPepper != null ? base64Decode(vaultPepper) : undefined;
+    const key = await deriveKey(utf8Encode(password), base64Decode(vaultSalt), pepper);
     const decryptedVault = decryptVault(vault, key); // throws on wrong password
 
     this.#setVaultKey(key);

@@ -87,18 +87,24 @@ export interface StorageLocalState {
   WalletController: {
     vault: string | undefined;
     /**
-     * Base64-encoded 16-byte PBKDF2 salt used to derive the current vault key.
+     * Base64-encoded 32-byte Argon2id salt used to derive the current vault key.
      * Stored separately from the vault ciphertext so the same key can be reused
-     * for subsequent saves without re-running PBKDF2 from the password.
+     * for subsequent unlocks without re-running Argon2id from the password.
      */
     vaultSalt: string | undefined;
+    /**
+     * Base64-encoded 32-byte Argon2id pepper (pre-hash strategy, OWASP §pepper).
+     * Stored in extension local storage separately from vault consumer backups.
+     * Optional: absent in legacy vaults created before pepper support was added.
+     */
+    vaultPepper?: string;
   };
   whitelist: string[];
 }
 
 interface StorageSessionState {
   /**
-   * Base64-encoded raw 32-byte AES-256-GCM vault key derived via PBKDF2.
+   * Base64-encoded raw 32-byte Argon2id-derived vault key used with XChaCha20-Poly1305.
    * Stored instead of the plaintext password so that a session compromise
    * does not expose the user's password (CWE-256 / OWASP A02:2021).
    * Cleared on lock and on browser restart (browser.storage.session lifetime).
