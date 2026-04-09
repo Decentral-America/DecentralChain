@@ -34,7 +34,11 @@ const IV_LEN = 12;
 // Source: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 const MIN_PBKDF2_ITERATIONS = 600_000;
 
-async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, rounds: number): Promise<CryptoKey> {
+async function deriveKey(
+  password: string,
+  salt: Uint8Array<ArrayBuffer>,
+  rounds: number,
+): Promise<CryptoKey> {
   const enc = new TextEncoder();
   const rawKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, [
     'deriveKey',

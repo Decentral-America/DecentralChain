@@ -1,5 +1,6 @@
 import './App.css';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import {
   isRouteErrorResponse,
   Links,
@@ -11,6 +12,7 @@ import {
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
+import { logError } from '@/lib/error-logger';
 import { queryClientInstance } from '@/lib/query-client';
 import { type Route } from './+types/root';
 
@@ -72,7 +74,18 @@ export default function App() {
   return <Outlet />;
 }
 
+// React Router v7 Framework Mode requires the error boundary to be exported
+// under the exact name "ErrorBoundary". The function is named "ErrorBoundaryRoute"
+// internally to avoid shadowing the ErrorBoundary class component imported above.
+export { ErrorBoundaryRoute as ErrorBoundary };
+
 export function ErrorBoundaryRoute({ error }: Route.ErrorBoundaryProps) {
+  useEffect(() => {
+    if (error instanceof Error) {
+      logError(error, { type: 'route_error' });
+    }
+  }, [error]);
+
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;
