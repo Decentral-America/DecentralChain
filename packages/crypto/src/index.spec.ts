@@ -6,14 +6,18 @@ import {
   base64Decode,
   base64Encode,
   createAddress,
+  createHybridKeypair,
   createPrivateKey,
   createPublicKey,
   createSharedKey,
   decryptMessage,
   decryptSeed,
+  deriveKey,
   encryptMessage,
   encryptSeed,
   generateRandomSeed,
+  hybridDecapsulate,
+  hybridEncapsulate,
   signBytes,
   utf8Decode,
   utf8Encode,
@@ -289,6 +293,28 @@ describe('encryptSeed/decryptSeed', () => {
     const ciphertext = await encryptSeed(utf8Encode('secret'), utf8Encode('correct'));
     await expect(decryptSeed(ciphertext, utf8Encode('wrong'))).rejects.toThrow();
   });
+
+  test('with pepper round-trips correctly', async () => {
+    const pepper = crypto.getRandomValues(new Uint8Array(32));
+    const ciphertext = await encryptSeed(utf8Encode('🌱'), utf8Encode('pw'), pepper);
+    await expect(decryptSeed(ciphertext, utf8Encode('pw'), pepper)).resolves.toStrictEqual(
+      utf8Encode('🌱'),
+    );
+  });
+
+  test('wrong pepper throws', async () => {
+    const pepper = new Uint8Array(32).fill(0xaa);
+    const wrongPepper = new Uint8Array(32).fill(0xbb);
+    const ciphertext = await encryptSeed(utf8Encode('seed'), utf8Encode('pw'), pepper);
+    await expect(decryptSeed(ciphertext, utf8Encode('pw'), wrongPepper)).rejects.toThrow();
+  });
+
+  test('pepper vs no-pepper throws', async () => {
+    const pepper = new Uint8Array(32).fill(0x01);
+    const ciphertext = await encryptSeed(utf8Encode('seed'), utf8Encode('pw'), pepper);
+    // Omitting pepper must fail — derives a different key
+    await expect(decryptSeed(ciphertext, utf8Encode('pw'))).rejects.toThrow();
+  });
 });
 
 test('generateRandomSeed', () => {
@@ -297,6 +323,104 @@ test('generateRandomSeed', () => {
   expect(generateRandomSeed()).not.toStrictEqual(generateRandomSeed());
   expect(generateRandomSeed()).not.toStrictEqual(generateRandomSeed());
   expect(generateRandomSeed()).not.toStrictEqual(generateRandomSeed());
+});
+
+describe('deriveKey pepper', () => {
+  test('with pepper produces different key than without pepper', async () => {
+    const password = utf8Encode('hunter2');
+    const salt = new Uint8Array(32).fill(0xab);
+    const pepper = new Uint8Array(32).fill(0xcd);
+
+    const keyNoPepper = await deriveKey(password, salt);
+    const keyWithPepper = await deriveKey(password, salt, pepper);
+
+    expect(keyWithPepper).not.toStrictEqual(keyNoPepper);
+    expect(keyWithPepper).toHaveLength(32);
+  });
+
+  test('same pepper+password+salt always produces same key', async () => {
+    const password = utf8Encode('stable');
+    const salt = new Uint8Array(32).fill(0x11);
+    const pepper = new Uint8Array(32).fill(0x22);
+
+    const key1 = await deriveKey(password, salt, pepper);
+    const key2 = await deriveKey(password, salt, pepper);
+
+    expect(key1).toStrictEqual(key2);
+  });
+
+  test('different peppers produce different keys', async () => {
+    const password = utf8Encode('p');
+    const salt = new Uint8Array(32).fill(0x33);
+    const pepper1 = new Uint8Array(32).fill(0x44);
+    const pepper2 = new Uint8Array(32).fill(0x55);
+
+    const key1 = await deriveKey(password, salt, pepper1);
+    const key2 = await deriveKey(password, salt, pepper2);
+
+    expect(key1).not.toStrictEqual(key2);
+  });
+});
+
+describe('hybrid KEM (ML-KEM-768 + X25519 / XWing)', () => {
+  test('encapsulate/decapsulate produces same shared secret (round-trip)', () => {
+    const { publicKey, secretKey } = createHybridKeypair();
+
+    const { cipherText, sharedSecret: senderShared } = hybridEncapsulate(publicKey);
+    const recipientShared = hybridDecapsulate(cipherText, secretKey);
+
+    expect(senderShared).toStrictEqual(recipientShared);
+    expect(senderShared).toHaveLength(32);
+  });
+
+  test('key sizes match XWing spec (publicKey=1216B, secretKey=32B seed, cipherText=1120B)', () => {
+    const { publicKey, secretKey } = createHybridKeypair();
+    const { cipherText } = hybridEncapsulate(publicKey);
+
+    expect(publicKey).toHaveLength(1216);
+    // XWing uses compact 32-byte seed as secretKey — X25519 and ML-KEM-768 keys
+    // are derived from this seed during decapsulation. See draft-connolly-cfrg-xwing-kem-09 §3.
+    expect(secretKey).toHaveLength(32);
+    expect(cipherText).toHaveLength(1120);
+  });
+
+  test('different encapsulations to same key produce different shared secrets', () => {
+    const { publicKey, secretKey } = createHybridKeypair();
+
+    const { cipherText: ct1, sharedSecret: ss1 } = hybridEncapsulate(publicKey);
+    const { cipherText: ct2, sharedSecret: ss2 } = hybridEncapsulate(publicKey);
+
+    expect(ss1).not.toStrictEqual(ss2);
+    expect(ct1).not.toStrictEqual(ct2);
+
+    // Both still decapsulate correctly
+    expect(hybridDecapsulate(ct1, secretKey)).toStrictEqual(ss1);
+    expect(hybridDecapsulate(ct2, secretKey)).toStrictEqual(ss2);
+  });
+
+  test('deterministic keygen from seed', () => {
+    const seed = new Uint8Array(32).fill(0xff); // XWing keygen takes 32-byte seed
+    const keys1 = createHybridKeypair(seed);
+    const keys2 = createHybridKeypair(seed);
+
+    expect(keys1.publicKey).toStrictEqual(keys2.publicKey);
+    expect(keys1.secretKey).toStrictEqual(keys2.secretKey);
+  });
+
+  test('hybrid shared secret is usable as XChaCha20-Poly1305 key (E2E smoke)', () => {
+    const { publicKey, secretKey } = createHybridKeypair();
+    const { sharedSecret } = hybridEncapsulate(publicKey);
+    const recipientShared = hybridDecapsulate(hybridEncapsulate(publicKey).cipherText, secretKey);
+
+    // Shared secrets are valid 32-byte keys — usable directly with encryptMessage.
+    expect(sharedSecret).toHaveLength(32);
+    expect(recipientShared).toHaveLength(32);
+
+    const msg = utf8Encode('quantum-resistant hello');
+    const encrypted = encryptMessage(sharedSecret, msg);
+    const decrypted = decryptMessage(sharedSecret, encrypted);
+    expect(decrypted).toStrictEqual(msg);
+  });
 });
 
 test('signBytes/verifySignature', async () => {
