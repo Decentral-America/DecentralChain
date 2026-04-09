@@ -5,17 +5,85 @@
  *
  * This service encrypts all user seed phrases and private keys using a password
  * and stores them in a single encrypted blob in localStorage.
+ *
+ * Encryption: PBKDF2-SHA-256 (key derivation) + AES-256-GCM (authenticated
+ * encryption). Uses the Web Crypto API — browser-native, zero dependencies.
+ *
+ * Wire format (base64):
+ *   byte 0       : version = 0x01
+ *   bytes 1–16   : PBKDF2 salt (16 random bytes)
+ *   bytes 17–28  : AES-GCM IV (12 random bytes)
+ *   bytes 29–end : AES-GCM ciphertext + 16-byte auth tag
  */
-// Import crypto functions from @decentralchain/ts-lib-crypto
 import {
   base58Encode,
   blake2b,
   address as buildAddress,
   publicKey as buildPublicKey,
-  decryptSeed,
-  encryptSeed,
   stringToBytes,
 } from '@decentralchain/ts-lib-crypto';
+
+// ---------------------------------------------------------------------------
+// Web Crypto helpers — PBKDF2 key derivation + AES-256-GCM encrypt/decrypt
+// ---------------------------------------------------------------------------
+
+const ENC_VERSION = 0x01;
+const SALT_LEN = 16;
+const IV_LEN = 12;
+// OWASP Password Storage Cheat Sheet (2026): PBKDF2-HMAC-SHA256 minimum = 600,000 iterations.
+// Source: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+const MIN_PBKDF2_ITERATIONS = 600_000;
+
+async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, rounds: number): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const rawKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, [
+    'deriveKey',
+  ]);
+  return crypto.subtle.deriveKey(
+    { hash: 'SHA-256', iterations: Math.max(MIN_PBKDF2_ITERATIONS, rounds), name: 'PBKDF2', salt },
+    rawKey,
+    { length: 256, name: 'AES-GCM' },
+    false,
+    ['encrypt', 'decrypt'],
+  );
+}
+
+async function encryptString(plaintext: string, password: string, rounds: number): Promise<string> {
+  const salt = crypto.getRandomValues(new Uint8Array(SALT_LEN));
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LEN));
+  const key = await deriveKey(password, salt, rounds);
+  const cipherBuf = await crypto.subtle.encrypt(
+    { iv, name: 'AES-GCM' },
+    key,
+    new TextEncoder().encode(plaintext),
+  );
+  const out = new Uint8Array(1 + SALT_LEN + IV_LEN + cipherBuf.byteLength);
+  out[0] = ENC_VERSION;
+  out.set(salt, 1);
+  out.set(iv, 1 + SALT_LEN);
+  out.set(new Uint8Array(cipherBuf), 1 + SALT_LEN + IV_LEN);
+  // Array.from is stack-safe for any buffer size; spread operator can overflow for large Uint8Arrays.
+  return btoa(Array.from(out, (c) => String.fromCharCode(c)).join(''));
+}
+
+async function decryptString(encrypted: string, password: string, rounds: number): Promise<string> {
+  const bytes = Uint8Array.from(atob(encrypted), (c) => c.charCodeAt(0));
+  if (bytes[0] !== ENC_VERSION) {
+    // Old OpenSSL/MD5 format starts with bytes for "Salted__" (0x53, 0x61, …).
+    // That format was removed in DCC-176. Users with legacy encrypted data must
+    // reset their accounts — the old encryption scheme is no longer safe.
+    throw new Error(
+      'Legacy encrypted data format detected (pre-DCC-176). ' +
+        'Please reset your account: sign out and re-import your seed.',
+    );
+  }
+  const salt = bytes.slice(1, 1 + SALT_LEN);
+  const iv = bytes.slice(1 + SALT_LEN, 1 + SALT_LEN + IV_LEN);
+  const ciphertext = bytes.slice(1 + SALT_LEN + IV_LEN);
+  const key = await deriveKey(password, salt, rounds);
+  const plainBuf = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
+  return new TextDecoder().decode(plainBuf);
+}
 
 interface UserData {
   userType: 'seed' | 'privateKey' | 'ledger';
@@ -87,12 +155,12 @@ class MultiAccountService {
    * Called when creating the very first account
    *
    * @param password - Master password for encrypting all accounts
-   * @param rounds - PBKDF2 rounds for key derivation (default 5000)
+   * @param rounds - PBKDF2 rounds for key derivation (default: OWASP minimum 600,000 for PBKDF2-HMAC-SHA256)
    * @returns Encrypted data and hash
    */
-  signUp(
+  async signUp(
     password: string,
-    rounds: number = 5000,
+    rounds: number = MIN_PBKDF2_ITERATIONS,
   ): Promise<{
     multiAccountData: string;
     multiAccountHash: string;
@@ -103,12 +171,9 @@ class MultiAccountService {
 
     const str = JSON.stringify(this.users);
     const multiAccountHash = base58Encode(blake2b(stringToBytes(str)));
-    const multiAccountData = encryptSeed(str, this.password, this.rounds);
+    const multiAccountData = await encryptString(str, this.password, this.rounds);
 
-    return Promise.resolve({
-      multiAccountData,
-      multiAccountHash,
-    });
+    return { multiAccountData, multiAccountHash };
   }
 
   /**
@@ -121,23 +186,22 @@ class MultiAccountService {
    * @param hash - Expected hash for verification
    * @throws Error if password is wrong or data corrupted
    */
-  signIn(encryptedAccount: string, password: string, rounds: number, hash: string): Promise<void> {
-    try {
-      const str = decryptSeed(encryptedAccount, password, rounds);
+  async signIn(
+    encryptedAccount: string,
+    password: string,
+    rounds: number,
+    hash: string,
+  ): Promise<void> {
+    const str = await decryptString(encryptedAccount, password, rounds);
 
-      // Verify integrity
-      if (base58Encode(blake2b(stringToBytes(str))) !== hash) {
-        throw new Error('Hash does not match - data may be corrupted');
-      }
-
-      this.password = password;
-      this.rounds = rounds;
-      this.users = JSON.parse(str);
-
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
+    // Verify integrity
+    if (base58Encode(blake2b(stringToBytes(str))) !== hash) {
+      throw new Error('Hash does not match - data may be corrupted');
     }
+
+    this.password = password;
+    this.rounds = rounds;
+    this.users = JSON.parse(str);
   }
 
   /**
@@ -160,7 +224,7 @@ class MultiAccountService {
    * @param userData - User account data (seed, privateKey, or Ledger)
    * @returns Encrypted data, hash, and user identifier
    */
-  addUser(userData: UserData): Promise<AddUserResult> {
+  async addUser(userData: UserData): Promise<AddUserResult> {
     if (!this.password || !this.rounds) {
       throw new Error('Must call signUp() or signIn() first');
     }
@@ -203,13 +267,9 @@ class MultiAccountService {
     // Encrypt all users data
     const str = JSON.stringify(this.users);
     const multiAccountHash = base58Encode(blake2b(stringToBytes(str)));
-    const multiAccountData = encryptSeed(str, this.password, this.rounds);
+    const multiAccountData = await encryptString(str, this.password, this.rounds);
 
-    return Promise.resolve({
-      multiAccountData,
-      multiAccountHash,
-      userHash,
-    });
+    return { multiAccountData, multiAccountHash, userHash };
   }
 
   /**
@@ -218,7 +278,7 @@ class MultiAccountService {
    * @param userHash - Hash identifier of user to remove
    * @returns Updated encrypted data and hash
    */
-  deleteUser(userHash: string): Promise<AddUserResult> {
+  async deleteUser(userHash: string): Promise<AddUserResult> {
     if (!this.password || !this.rounds) {
       throw new Error('Must be signed in to delete user');
     }
@@ -227,13 +287,9 @@ class MultiAccountService {
 
     const str = JSON.stringify(this.users);
     const multiAccountHash = base58Encode(blake2b(stringToBytes(str)));
-    const multiAccountData = encryptSeed(str, this.password, this.rounds);
+    const multiAccountData = await encryptString(str, this.password, this.rounds);
 
-    return Promise.resolve({
-      multiAccountData,
-      multiAccountHash,
-      userHash,
-    });
+    return { multiAccountData, multiAccountHash, userHash };
   }
 
   /**
@@ -298,7 +354,7 @@ class MultiAccountService {
    * @param hash - Current hash for verification
    * @returns New encrypted data with same hash
    */
-  changePassword(
+  async changePassword(
     encryptedAccount: string,
     oldPassword: string,
     newPassword: string,
@@ -308,29 +364,22 @@ class MultiAccountService {
     multiAccountData: string;
     multiAccountHash: string;
   }> {
-    try {
-      // Decrypt with old password
-      const str = decryptSeed(encryptedAccount, oldPassword, rounds);
+    // Decrypt with old password
+    const str = await decryptString(encryptedAccount, oldPassword, rounds);
 
-      // Verify integrity
-      if (base58Encode(blake2b(stringToBytes(str))) !== hash) {
-        throw new Error('Hash does not match');
-      }
-
-      // Re-encrypt with new password
-      this.password = newPassword;
-      this.rounds = rounds;
-      this.users = JSON.parse(str);
-
-      const multiAccountData = encryptSeed(str, this.password, this.rounds);
-
-      return Promise.resolve({
-        multiAccountData,
-        multiAccountHash: hash, // Hash stays the same
-      });
-    } catch (e) {
-      return Promise.reject(e);
+    // Verify integrity
+    if (base58Encode(blake2b(stringToBytes(str))) !== hash) {
+      throw new Error('Hash does not match');
     }
+
+    // Re-encrypt with new password
+    this.password = newPassword;
+    this.rounds = rounds;
+    this.users = JSON.parse(str);
+
+    const multiAccountData = await encryptString(str, this.password, this.rounds);
+
+    return { multiAccountData, multiAccountHash: hash };
   }
 }
 
