@@ -4,7 +4,7 @@ use ed25519_compact::x25519;
 use wasm_bindgen::prelude::*;
 
 /// Derives an output key of `output_len` bytes from a password and salt using
-/// Argon2id (RFC 9106 v0x13) with OWASP 2024 interactive-minimum parameters:
+/// Argon2id (RFC 9106 v0x13) with OWASP interactive-minimum parameters:
 /// m = 19 456 KiB (19 MiB), t = 2 iterations, p = 1 lane.
 #[wasm_bindgen]
 pub fn derive_key(password: &[u8], salt: &[u8], output_len: usize) -> Box<[u8]> {
