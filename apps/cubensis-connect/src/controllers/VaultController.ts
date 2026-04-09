@@ -64,6 +64,7 @@ export class VaultController {
     type LegacyWalletState = {
       vault: string | undefined;
       vaultSalt: string | undefined;
+      vaultPepper?: string | undefined;
       initialized?: boolean;
       locked?: boolean;
     };
@@ -73,7 +74,12 @@ export class VaultController {
       this.store.updateState({ initialized: state.initialized });
       delete state.locked;
       delete state.initialized;
-      this.#wallet.store.putState({ WalletController: state });
+      this.#wallet.store.putState({
+        WalletController: {
+          vaultPepper: undefined as string | undefined,
+          ...state,
+        },
+      });
     }
   }
 }
