@@ -31,6 +31,7 @@ import {
   type IBlockHeader,
   type TAssetDetails,
 } from '@/lib/api';
+import { logError, logWarn } from '@/lib/error-logger';
 import { type TokenAssetStat } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -351,14 +352,14 @@ function AssetActivityWidget() {
               }
             }
           } catch (err: unknown) {
-            console.error(`Failed to fetch block ${block.height}:`, err);
+            logError(err, { block: block.height, context: 'fetchBlock' });
             // Continue with other blocks
           }
         }
 
         // Only proceed if we got at least some data
         if (successfulBlocks === 0 || Object.keys(assetStats).length === 0) {
-          console.warn('Failed to fetch any asset activity data or no transactions found.');
+          logWarn('Failed to fetch any asset activity data or no transactions found');
           if (!cancelledRef.current) setLoading(false);
           return;
         }
@@ -376,7 +377,7 @@ function AssetActivityWidget() {
             asset.name = details.name || 'Unknown';
             asset.decimals = details.decimals || 8;
           } catch (err: unknown) {
-            console.error(`Failed to fetch asset details for ${asset.assetId}:`, err);
+            logError(err, { assetId: asset.assetId, context: 'fetchAssetDetails' });
             asset.name = truncate(asset.assetId, 8);
             asset.decimals = 8;
           }
@@ -390,7 +391,7 @@ function AssetActivityWidget() {
           });
         }
       } catch (error: unknown) {
-        console.error('Failed to fetch asset activity:', error);
+        logError(error, { context: 'fetchAssetActivity' });
       } finally {
         if (!cancelledRef.current) setLoading(false);
       }

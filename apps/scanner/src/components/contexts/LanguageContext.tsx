@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { logWarn } from '@/lib/error-logger';
 import { type Language, type LanguageContextValue } from '@/types';
 import { translations } from '../utils/translations';
 
@@ -16,7 +17,7 @@ export const LanguageProvider = ({
         const stored = localStorage.getItem('language');
         return stored === 'es' ? 'es' : 'en';
       } catch (error) {
-        console.warn('localStorage not available:', error);
+        logWarn('localStorage not available', { error });
         return 'en';
       }
     }
@@ -30,7 +31,7 @@ export const LanguageProvider = ({
       try {
         localStorage.setItem('language', lang);
       } catch (error) {
-        console.warn('localStorage not available:', error);
+        logWarn('localStorage not available', { error });
       }
     }
   };

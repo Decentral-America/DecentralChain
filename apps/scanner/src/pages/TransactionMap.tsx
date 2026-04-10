@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { fetchAddressTransactions } from '@/lib/api';
+import { logError, logWarn } from '@/lib/error-logger';
 import { useLanguage } from '../components/contexts/LanguageContext';
 
 // Register fcose layout once
@@ -260,7 +261,7 @@ export default function TransactionMap() {
 
         // Skip if not a valid address
         if (!isValidAddress(addr)) {
-          console.warn(t('warningSkippingInvalidAddress', { address: addr }));
+          logWarn(t('warningSkippingInvalidAddress', { address: addr }));
           continue;
         }
 
@@ -273,7 +274,7 @@ export default function TransactionMap() {
             res = await fetchAddressTransactions(addr, perAddressLimit);
             rawCacheRef.current[addr] = res;
           } catch (error: unknown) {
-            console.warn(
+            logWarn(
               t('warningFailedToFetchTxs', {
                 address: addr,
                 message: error instanceof Error ? error.message : String(error),
@@ -311,7 +312,7 @@ export default function TransactionMap() {
       // Render after state update
       setTimeout(() => renderGraph(newGraph), 100);
     } catch (error: unknown) {
-      console.error(t('errorBuildingGraph'), error);
+      logError(error, { context: t('errorBuildingGraph') });
       setUi({
         error: error instanceof Error ? error.message : t('errorFailedToBuildGraph'),
         loading: false,
@@ -409,7 +410,7 @@ export default function TransactionMap() {
         alert(`${t('addressCopied')}: ${id}`);
       });
     } catch (error: unknown) {
-      console.error(t('errorRenderingGraph'), error);
+      logError(error, { context: t('errorRenderingGraph') });
       setUi((prev) => ({ ...prev, error: t('errorFailedToRenderGraph') }));
     }
   };
