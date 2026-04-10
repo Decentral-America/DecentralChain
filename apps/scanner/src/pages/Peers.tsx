@@ -25,6 +25,7 @@ import {
   type IBlackPeer,
   type ISuspendedPeer,
 } from '@/lib/api';
+import { logError } from '@/lib/error-logger';
 import { type NodeRegistrationRecord, type Peer } from '@/types';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
@@ -85,7 +86,7 @@ export default function Peers() {
         const registrations = await NodeRegistration.list();
         setNodeRegistrations(registrations);
       } catch (error) {
-        console.error('Failed to fetch node registrations:', error);
+        logError(error, { context: 'fetchNodeRegistrations' });
       }
     };
     void fetchRegistrations();
