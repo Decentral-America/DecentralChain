@@ -25,9 +25,9 @@
  *  - Cross-output-format consistency (Base58 vs Bytes)
  */
 
+import { decryptSeed, encryptSeed } from '@decentralchain/crypto';
 import { describe, expect, test } from 'vitest';
 import { crypto, MAIN_NET_CHAIN_ID, TEST_NET_CHAIN_ID } from '../src';
-import { decryptSeed, encryptSeed } from '../src/crypto/seed-ecryption';
 
 // ─── Fixtures ───────────────────────────────────────────────────────────────
 const SEEDS = [
@@ -515,35 +515,46 @@ describe('AES Encrypt/Decrypt', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 12. SEED ENCRYPT/DECRYPT
+// 12. SEED ENCRYPT/DECRYPT (Argon2id + XChaCha20-Poly1305 — @decentralchain/crypto)
 // ═══════════════════════════════════════════════════════════════════════════
 describe('Seed Encrypt/Decrypt', () => {
-  test('encrypt then decrypt recovers seed', () => {
+  test('encrypt then decrypt recovers seed', async () => {
     const seed = 'my secret seed phrase for testing';
     const password = 'strongPassword123!';
-    const encrypted = encryptSeed(seed, password);
-    const decrypted = decryptSeed(encrypted, password);
-    expect(decrypted).toBe(seed);
+    const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes(password));
+    const decrypted = await decryptSeed(encrypted, stringToBytes(password));
+    expect(bytesToString(decrypted)).toBe(seed);
   });
 
-  test('encrypted output is base64', () => {
-    const encrypted = encryptSeed('test seed', 'pass');
-    // Should be valid base64
-    expect(() => base64Decode(encrypted)).not.toThrow();
+  test('encrypted output is Uint8Array with correct blob structure', async () => {
+    const seed = 'test seed'; // 9 UTF-8 bytes
+    const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes('pass'));
+    expect(encrypted).toBeInstanceOf(Uint8Array);
+    // Format: [16-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
+    // 16 + 24 + 9 + 16 = 65 bytes for 'test seed'
+    expect(encrypted.byteLength).toBe(65);
   });
 
-  test('different passwords produce different ciphertext', () => {
+  test('different passwords produce different ciphertext', async () => {
     const seed = 'identical seed';
-    const e1 = encryptSeed(seed, 'password1');
-    const e2 = encryptSeed(seed, 'password2');
-    expect(e1).not.toBe(e2);
+    const e1 = await encryptSeed(stringToBytes(seed), stringToBytes('password1'));
+    const e2 = await encryptSeed(stringToBytes(seed), stringToBytes('password2'));
+    // Different Argon2id keys → different ciphertext (also different random salt/nonce)
+    expect(e1).not.toEqual(e2);
   });
 
-  test('emoji password works', () => {
+  test('emoji password works', async () => {
     const seed = 'test seed with emoji password';
     const pass = '🦋🔑';
-    const encrypted = encryptSeed(seed, pass);
-    expect(decryptSeed(encrypted, pass)).toBe(seed);
+    const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes(pass));
+    const decrypted = await decryptSeed(encrypted, stringToBytes(pass));
+    expect(bytesToString(decrypted)).toBe(seed);
+  });
+
+  test('wrong password fails with authentication error', async () => {
+    const seed = 'test seed for auth verification';
+    const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes('correct-pass'));
+    await expect(decryptSeed(encrypted, stringToBytes('wrong-pass'))).rejects.toThrow();
   });
 });
 

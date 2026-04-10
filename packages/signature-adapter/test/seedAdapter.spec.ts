@@ -33,46 +33,30 @@ describe('WSeed adapter test', () => {
     expect(encodedSeed).toBe(encoded);
   });
 
-  it('Create adapter from user seed', async () => {
+  it('rejects legacy encrypted seed format (encryptedSeed + password removed in DCC-192)', () => {
+    // The MD5+AES-CBC KDF used by encryptedSeed was removed in DCC-192.
+    // SeedAdapter now throws immediately when given this legacy format.
     const user = {
       encryptedSeed: 'U2FsdGVkX19iOsZUUXdokaat9g3MVg9B4FCW199Zoap7S04dO6XtP5w5fzFHOGvo',
       encryptionRounds: 5000,
       password: '123123',
     };
-    const adapter = new SeedAdapter(user, 'T');
-    const address = await adapter.getAddress();
-    const privateKey = await adapter.getPrivateKey();
-    const mySeed = await adapter.getSeed();
-    const encodedSeed = await adapter.getEncodedSeed();
-    expect(adapter.isEncoded).toBe(false);
-    expect(mySeed).toBe('1234567890123456789123456789');
-    expect(address).toBe('3Mt8YNnmFkdrGrHMdt9mtjZgWBAZuF9zj7V');
-    expect(privateKey).toBe('3jMMBzk5hDVhBrKVferGnnS49oejmrQHHjTxU3NowZ6x');
-    expect(encodedSeed).toBe(
-      libs.crypto.base58Encode(libs.crypto.stringToBytes('1234567890123456789123456789')),
+    expect(() => new SeedAdapter(user as any, 'T')).toThrow(
+      'Encrypted seed import (encryptedSeed + password) is no longer supported',
     );
   });
 
-  it('Create adapter from user encoded seed', async () => {
+  it('rejects legacy encrypted encoded seed format (encryptedSeed + password removed in DCC-192)', () => {
+    // Base58-encoded encrypted seed was also using MD5+AES-CBC KDF — removed in DCC-192.
     const user = {
       encryptedSeed:
         'U2FsdGVkX18qITSaCcqnwW3+CW081VQeOFq4abcshIdyR/6e1BJatQclPAoo0IuOsnfE462VYLcnVEBbV18Vdw==',
       encryptionRounds: 5000,
       password: '12345678',
     };
-    const adapter = new SeedAdapter(user, 'T');
-    const address = await adapter.getAddress();
-    const privateKey = await adapter.getPrivateKey();
-    const mySeed = await adapter.getSeed();
-    const encodedSeed = await adapter.getEncodedSeed();
-    expect(adapter.isEncoded).toBe(true);
-    expect(mySeed).toBe('1234567890123456789123456789');
-    expect(address).toBe('3Mt8YNnmFkdrGrHMdt9mtjZgWBAZuF9zj7V');
-    expect(privateKey).toBe('3jMMBzk5hDVhBrKVferGnnS49oejmrQHHjTxU3NowZ6x');
-    const eSeed = libs.crypto.base58Encode(
-      libs.crypto.stringToBytes('1234567890123456789123456789'),
+    expect(() => new SeedAdapter(user as any, 'T')).toThrow(
+      'Encrypted seed import (encryptedSeed + password) is no longer supported',
     );
-    expect(encodedSeed).toBe(eSeed);
   });
 
   it('Create adapter from base58 seed with strange symbols', async () => {

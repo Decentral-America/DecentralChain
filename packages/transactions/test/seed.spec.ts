@@ -3,12 +3,10 @@ import { seedUtils } from '../src';
 const { Seed, generateNewSeed, strengthenPassword } = seedUtils;
 
 describe('seed', () => {
-  it('should decrypt seed', () => {
-    const encrypted =
-      'U2FsdGVkX19tuxILcDC5gj/GecPmDGEc2l51pCwdBOdtVclJ5rMT4M3Ns9Q+G4rV8wzrVTkhc/nnne5iI9ki/5uEqkGDheAi8xjQTF+MY4Q=';
-    expect(seedUtils.decryptSeed(encrypted, 'asd')).toEqual(
-      'asd asd asd asd asd asd asd asd asd asd asd asd1',
-    );
+  it('seedUtils.decryptSeed is removed — legacy MD5+AES-CBC KDF removed in DCC-192', () => {
+    // The top-level decryptSeed was removed in DCC-192.
+    // Seed decryption is now handled via @decentralchain/crypto decryptSeed (Argon2id).
+    expect(typeof (seedUtils as any).decryptSeed).not.toBe('function');
   });
 
   it('should generate new seed', () => {
@@ -43,21 +41,28 @@ describe('Seed class', () => {
     expect(Object.isFrozen(seed.keyPair)).toBe(true);
   });
 
-  it('should encrypt and decrypt seed phrase', () => {
+  it('Seed instance does not expose encrypt() — legacy KDF removed in DCC-192', () => {
+    // Seed.prototype.encrypt was removed in DCC-192 along with MD5+AES-CBC.
+    // Use @decentralchain/crypto encryptSeed (Argon2id + XChaCha20-Poly1305) instead.
     const seed = new Seed(validPhrase);
-    const encrypted = seed.encrypt('strongpassword');
-    expect(typeof encrypted).toBe('string');
-    const decrypted = Seed.decryptSeedPhrase(encrypted, 'strongpassword');
-    expect(decrypted).toBe(validPhrase);
+    expect(typeof (seed as any).encrypt).not.toBe('function');
   });
 
-  it('should throw on decryption with wrong password', () => {
-    const encrypted = Seed.encryptSeedPhrase(validPhrase, 'correctpw');
-    expect(() => Seed.decryptSeedPhrase(encrypted, 'wrongpw')).toThrow('password is wrong');
+  it('Seed.decryptSeedPhrase is removed — legacy KDF removed in DCC-192', () => {
+    // Static Seed.decryptSeedPhrase was removed in DCC-192.
+    // Use @decentralchain/crypto decryptSeed (Argon2id + XChaCha20-Poly1305) instead.
+    expect(typeof (Seed as any).decryptSeedPhrase).not.toBe('function');
   });
 
-  it('should throw when encrypting seed phrase that is too short', () => {
-    expect(() => Seed.encryptSeedPhrase('short', 'password')).toThrow('too short');
+  it('Seed.encryptSeedPhrase is removed — legacy KDF removed in DCC-192', () => {
+    // Seed.encryptSeedPhrase was removed in DCC-192 along with the MD5+AES-CBC KDF.
+    expect(typeof (Seed as any).encryptSeedPhrase).not.toBe('function');
+  });
+
+  it('Seed constructor still enforces minimum phrase length (>= 12 chars)', () => {
+    // The min-length guard on Seed construction is preserved post-DCC-192.
+    expect(() => Seed.fromExistingPhrase('short')).toThrow('minimum length');
+    expect(() => new Seed('short')).toThrow('less than allowed');
   });
 
   it('should create seed via factory method', () => {

@@ -147,7 +147,7 @@ describe('WalletController vault cryptography', () => {
     expect(controller.getAccounts()).toHaveLength(0);
   });
 
-  it('salt size: initVault stores a 32-byte PBKDF2 salt (NIST SP 800-132)', async () => {
+  it('salt size: initVault stores a 32-byte Argon2id salt (RFC 9106 §3.1: ≥128 bits)', async () => {
     const { controller } = makeController();
     await controller.initVault('salt-size-check');
 
