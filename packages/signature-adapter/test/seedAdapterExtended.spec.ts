@@ -1,21 +1,23 @@
-import { libs, seedUtils } from '@decentralchain/transactions';
+import { libs } from '@decentralchain/transactions';
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
 
 const testSeed = 'some test seed words without money on mainnet';
 
 describe('SeedAdapter - extended coverage', () => {
-  it('constructs from encrypted seed (IUser)', () => {
-    const password = 'testPassword';
-    const encryptedSeed = seedUtils.Seed.encryptSeedPhrase(testSeed, password);
-    const adapter = new SeedAdapter(
-      {
-        encryptedSeed,
-        encryptionRounds: 5000,
-        password,
-      } as any,
-      'W',
-    );
-    expect(adapter.getSyncAddress()).toBeTruthy();
+  it('rejects legacy encrypted seed (IUser) — MD5+AES-CBC removed in DCC-192', () => {
+    // seedUtils.Seed.encryptSeedPhrase was removed in DCC-192 along with the
+    // MD5+AES-CBC KDF. SeedAdapter now throws for any IUser with encryptedSeed.
+    expect(
+      () =>
+        new SeedAdapter(
+          {
+            encryptedSeed: 'U2FsdGVkX19iOsZUUXdokaat9g3MVg9B4FCW199Zoap7S04dO6XtP5w5fzFHOGvo',
+            encryptionRounds: 5000,
+            password: 'testPassword',
+          } as any,
+          'W',
+        ),
+    ).toThrow('Encrypted seed import (encryptedSeed + password) is no longer supported');
   });
 
   it('constructs from base58-encoded seed', () => {
@@ -67,13 +69,12 @@ describe('SeedAdapter - extended coverage', () => {
     expect(sig.length).toBeGreaterThan(0);
   });
 
-  it('seed encrypt function works', async () => {
+  it('seed object does not expose legacy encrypt method (removed in DCC-192)', () => {
+    // The Seed class's encrypt() method was removed along with the MD5+AES-CBC KDF.
+    // Seed encryption is now handled externally via @decentralchain/crypto encryptSeed.
     const adapter = new SeedAdapter(testSeed, 'W');
-    // Access the seed through the private field to test encrypt
     const seedObj = (adapter as any).seed;
-    const encrypted = seedObj.encrypt('password123');
-    expect(typeof encrypted).toBe('string');
-    expect(encrypted.length).toBeGreaterThan(0);
+    expect(typeof seedObj?.encrypt).not.toBe('function');
   });
 
   it('static isAvailable returns true', async () => {

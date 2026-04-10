@@ -1,4 +1,4 @@
-import { libs, seedUtils } from '@decentralchain/transactions';
+import { libs } from '@decentralchain/transactions';
 import { Adapter } from '../src/adapters/Adapter';
 import { PrivateKeyAdapter } from '../src/adapters/PrivateKeyAdapter';
 import { SIGN_TYPE } from '../src/prepareTx';
@@ -17,16 +17,22 @@ describe('PrivateKeyAdapter - extended tests', () => {
     expect(pk).toBe(testPrivateKey);
   });
 
-  it('creates adapter from encrypted private key user object', () => {
-    const password = 'testPassword123';
-    const encrypted = seedUtils.Seed.encryptSeedPhrase(testPrivateKey, password, 5000);
-    const user = {
-      encryptedPrivateKey: encrypted,
-      encryptionRounds: 5000,
-      password,
-    };
-    const adapter = new PrivateKeyAdapter(user, 'W');
-    expect(adapter.isDestroyed()).toBe(false);
+  it('rejects legacy encrypted private key format (encryptedPrivateKey + password removed in DCC-192)', () => {
+    // MD5+AES-CBC KDF was removed in DCC-192. PrivateKeyAdapter now throws
+    // immediately when given the IUser { encryptedPrivateKey, encryptionRounds } format.
+    expect(
+      () =>
+        new PrivateKeyAdapter(
+          {
+            encryptedPrivateKey: 'U2FsdGVkX19iOsZUUXdokaat9g3MVg9B4FCW199Zoap7S04dO6XtP5w5fzFHOGvo',
+            encryptionRounds: 5000,
+            password: 'testPassword123',
+          } as any,
+          'W',
+        ),
+    ).toThrow(
+      'Encrypted private key import (encryptedPrivateKey + password) is no longer supported',
+    );
   });
 
   it('creates adapter from user with no encryptedPrivateKey', () => {
