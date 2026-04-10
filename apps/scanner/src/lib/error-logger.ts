@@ -60,6 +60,36 @@ export function getErrorLog(): Array<{
   return [...errorLog];
 }
 
+const warnLog: Array<{
+  message: string;
+  timestamp: string;
+  [key: string]: unknown;
+}> = [];
+
+export function logWarn(message: unknown, context: Record<string, unknown> = {}): void {
+  const entry: { message: string; timestamp: string; [key: string]: unknown } = {
+    message: message instanceof Error ? message.message : String(message),
+    timestamp: new Date().toISOString(),
+    ...context,
+  };
+
+  warnLog.push(entry);
+  if (warnLog.length > MAX_LOG_SIZE) {
+    warnLog.shift();
+  }
+
+  console.warn('[ErrorLogger]', entry.message, context);
+  // Warnings are informational; not forwarded to Sentry
+}
+
+export function getWarnLog(): Array<{
+  message: string;
+  timestamp: string;
+  [key: string]: unknown;
+}> {
+  return [...warnLog];
+}
+
 // Global unhandled error & rejection handlers
 if (typeof window !== 'undefined') {
   window.addEventListener('error', (event) => {

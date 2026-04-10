@@ -3,6 +3,7 @@ import { createReadableStreamFromReadable } from '@react-router/node';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { type AppLoadContext, type EntryContext, ServerRouter } from 'react-router';
+import { logError } from '@/lib/error-logger';
 
 const ABORT_DELAY = 5_000;
 
@@ -36,7 +37,7 @@ export default function handleRequest(
         },
         onError(error: unknown) {
           responseStatusCode = 500;
-          if (shellRendered) console.error(error);
+          if (shellRendered) logError(error, { context: 'ssr_shell_render' });
         },
         onShellError(error: unknown) {
           reject(error);

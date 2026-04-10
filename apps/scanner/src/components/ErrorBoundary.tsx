@@ -1,6 +1,7 @@
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { logError } from '@/lib/error-logger';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -24,13 +25,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     this.setState({ errorInfo });
-    // Log to external service if configured
-    if (window.__ERROR_LOGGER__) {
-      window.__ERROR_LOGGER__(error, {
-        componentStack: errorInfo.componentStack ?? undefined,
-      });
-    }
-    console.error('[ErrorBoundary]', error, errorInfo);
+    logError(error, {
+      componentStack: errorInfo.componentStack ?? undefined,
+    });
   }
 
   handleReset = (): void => {

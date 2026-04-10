@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchBlockAt, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
+import { logError, logWarn } from '@/lib/error-logger';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext'; // Added import
 import CopyButton from '../components/shared/CopyButton';
@@ -38,7 +39,11 @@ export default function BlockFeed() {
 
       // Safety check
       if (to - from > MAX_BLOCKS_PER_REQUEST) {
-        console.warn(`Block range too large: ${from}-${to}, limiting to ${MAX_BLOCKS_PER_REQUEST}`);
+        logWarn('Block range too large, limiting request', {
+          from,
+          limit: MAX_BLOCKS_PER_REQUEST,
+          to,
+        });
         return fetchBlockHeadersSeq(to - MAX_BLOCKS_PER_REQUEST + 1, to);
       }
 
@@ -84,7 +89,7 @@ export default function BlockFeed() {
             setBlocks((prev) => [...sorted, ...prev.slice(0, 50 - sorted.length)]);
             lastHeightRef.current = newHeight;
           } catch (error) {
-            console.error(`Failed to fetch missing blocks:`, error);
+            logError(error, { context: 'fetchMissingBlocks' });
             setBlocks((prev) => [lastBlock, ...prev.slice(0, 49)]);
             lastHeightRef.current = newHeight;
           }
@@ -92,7 +97,7 @@ export default function BlockFeed() {
         void fetchMissing();
       } else if (gap > MAX_GAP_TO_FETCH) {
         // Gap too large, just add the new block and update reference
-        console.warn(`Gap too large (${gap} blocks), skipping missing blocks`);
+        logWarn('Gap too large, skipping missing block fetch', { gap });
         setBlocks((prev) => [lastBlock, ...prev.slice(0, 49)]);
         lastHeightRef.current = newHeight;
       }

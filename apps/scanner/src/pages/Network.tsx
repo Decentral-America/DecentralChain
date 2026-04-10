@@ -69,6 +69,7 @@ import {
   type INodeVersion,
   type ISuspendedPeer,
 } from '@/lib/api';
+import { logError } from '@/lib/error-logger';
 import { type NodeRegistrationRecord, type Peer } from '@/types';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
@@ -394,7 +395,7 @@ function PeersTab() {
   useEffect(() => {
     NodeRegistration.list()
       .then(setNodeRegistrations)
-      .catch((err: unknown) => console.error('Failed to fetch node registrations:', err));
+      .catch((err: unknown) => logError(err, { context: 'fetchNodeRegistrations' }));
   }, []);
 
   const uniqueIps = useMemo(() => {

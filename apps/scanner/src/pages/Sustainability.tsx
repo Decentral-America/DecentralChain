@@ -13,6 +13,7 @@ import {
   fetchGreenCheck,
   type IAllConnectedResponse,
 } from '@/lib/api';
+import { logError } from '@/lib/error-logger';
 import { type Peer } from '@/types';
 
 type SustainabilityStats = {
@@ -73,7 +74,7 @@ export default function Sustainability() {
 
           await new Promise((resolve) => setTimeout(resolve, 100));
         } catch (error) {
-          console.error('Failed to analyze peer:', error);
+          logError(error, { context: 'analyzePeer' });
         }
       }
 

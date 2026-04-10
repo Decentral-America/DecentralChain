@@ -22,6 +22,7 @@ import {
   fetchPairInfo,
   type OrderbookResponse,
 } from '@/lib/api';
+import { logError } from '@/lib/error-logger';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
@@ -117,7 +118,7 @@ export default function DexPairs() {
 
         setPairsData(pairs);
       } catch (error) {
-        console.error('Failed to fetch pairs data:', error);
+        logError(error, { context: 'fetchPairsData' });
       } finally {
         setLoading(false);
       }
