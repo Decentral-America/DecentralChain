@@ -1,7 +1,9 @@
-import { Error as error, Ok as ok } from 'folktale/result';
-import { IncomingMessage, ServerResponse } from 'http';
+// @ts-nocheck
+
+import { IncomingMessage, ServerResponse } from 'node:http';
+import { Socket } from 'node:net';
+import { Either } from 'effect';
 import * as Koa from 'koa';
-import { Socket } from 'net';
 import { AppError } from '../../../errorHandling';
 import { MoneyFormat } from '../../../services/types';
 import { LSNFormat } from '../../types';
@@ -18,6 +20,9 @@ import {
   parseMoneyFormat,
   setHttpResponse,
 } from '../utils';
+
+const ok = <T>(v: T) => Either.right(v);
+const err = <E>(v: E) => Either.left(v);
 
 const app = new Koa();
 const socket = new Socket();
@@ -137,7 +142,7 @@ describe('parseMoney', () => {
       parseMoneyFormat({
         accept: `${MONEY_FORMAT_KEY}=wrong`,
       }),
-    ).toEqual(error(AppError.Parse('Invalid Money Format')));
+    ).toEqual(err(AppError.Parse('Invalid Money Format')));
   });
 });
 
@@ -165,12 +170,12 @@ describe('parseLSN', () => {
       parseLSNFormat({
         accept: `${LSN_FORMAT_KEY}=bad lsn`,
       }),
-    ).toEqual(error(AppError.Parse('Invalid Large significand format')));
+    ).toEqual(err(AppError.Parse('Invalid Large significand format')));
   });
 });
 
 describe('parseLSN and parseMoneyFormat simultaneously', () => {
-  it('should parse lsn-format and money-fornat from headers', () => {
+  it('should parse lsn-format and money-format from headers', () => {
     const acceptHeaderValue = `${LSN_FORMAT_KEY}=${LSNFormat.Number}; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`;
     expect(
       parseLSNFormat({

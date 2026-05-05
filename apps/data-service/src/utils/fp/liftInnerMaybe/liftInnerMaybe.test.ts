@@ -1,14 +1,15 @@
-import { type Maybe, of as maybeOf } from 'folktale/maybe';
-import { Error, of as resultOf } from 'folktale/result';
-
+// @ts-nocheck
+import { Either, Option } from 'effect';
 import { liftInnerMaybe } from '.';
 
-const validationLeftValue = Error<string, number>('Bad value');
-const mockValidate = (r: number) => (r === 1 ? resultOf<string, number>(r) : validationLeftValue);
+const validationLeftValue = Either.left<string, number>('Bad value');
+const mockValidate = (r: number): Either.Either<string, number> =>
+  r === 1 ? Either.right(r) : validationLeftValue;
 
-test('liftInnerM', () => {
-  const validateMaybeV = (m: Maybe<number>) => liftInnerMaybe(resultOf, mockValidate, m);
+test('liftInnerMaybe', () => {
+  const validateMaybeV = (m: Option.Option<number>) =>
+    liftInnerMaybe((v: number) => Either.right(v), mockValidate, m);
 
-  expect(validateMaybeV(maybeOf(1))).toEqual(resultOf(maybeOf(1)));
-  expect(validateMaybeV(maybeOf(2))).toEqual(validationLeftValue);
+  expect(validateMaybeV(Option.some(1))).toEqual(Either.right(Option.some(1)));
+  expect(validateMaybeV(Option.some(2))).toEqual(validationLeftValue);
 });

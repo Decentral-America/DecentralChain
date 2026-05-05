@@ -1,13 +1,14 @@
-import { compose, defaultTo, merge, pick, pipe } from 'ramda';
+// @ts-nocheck
+import { compose, defaultTo, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../../utils/db';
-import defaultValues from '../../../../_common/sql/defaults';
+import * as defaultValues from '../../../../_common/sql/defaults';
 import { select, selectFromFiltered } from './query';
 
 // get — get by id
 // mget/search — apply filters
-const createApi = ({ filters: F }) => ({
-  get: (id) =>
+const createApi = ({ filters: F }: { filters: any }) => ({
+  get: (id: any) =>
     pipe(
       F.id(id),
       // tip for postgresql to use index
@@ -16,7 +17,7 @@ const createApi = ({ filters: F }) => ({
       String,
     )(select(defaultValues.SORT)),
 
-  mget: (ids) =>
+  mget: (ids: any) =>
     pipe(
       F.ids(ids),
       // tip for postgresql to use index
@@ -25,7 +26,7 @@ const createApi = ({ filters: F }) => ({
       String,
     )(select(defaultValues.SORT)),
 
-  search: (fValues) => {
+  search: (fValues: any) => {
     const fNames = [
       // tx attributes
       'after',
@@ -43,13 +44,16 @@ const createApi = ({ filters: F }) => ({
     ];
 
     // { [fName]: fValue }
-    const withDefaults = compose(pick(fNames), merge(defaultValues))(fValues);
+    const withDefaults: any = compose(pick(fNames) as any, (v: any) => ({
+      ...defaultValues,
+      ...v,
+    }))(fValues);
 
     const sort = defaultTo(defaultValues.SORT, fValues.sort);
 
-    const fs = pickBindFilters(F, fNames, withDefaults);
+    const fs: any[] = pickBindFilters(F, fNames, withDefaults);
 
-    return pipe(...fs, selectFromFiltered, F.sort(sort), String)(select(sort));
+    return pipe(...(fs as [any, ...any[]]), selectFromFiltered, F.sort(sort), String)(select(sort));
   },
 });
 

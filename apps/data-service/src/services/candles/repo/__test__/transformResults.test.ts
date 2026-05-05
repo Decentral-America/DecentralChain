@@ -1,14 +1,15 @@
+// @ts-nocheck
 import { groupBy, map, pipe, toPairs } from 'ramda';
-import { addMissingCandles, transformCandle } from '../transformResults';
-import { candleMonoid } from '../candleMonoid';
-import { interval, Unit, CandleInterval } from '../../../../types';
+import { CandleInterval, interval, Unit } from '../../../../types';
 import { floor, trunc } from '../../../../utils/date';
 import { concatAll } from '../../../../utils/fp/concatAll';
+import { candleMonoid } from '../candleMonoid';
+import { addMissingCandles, transformCandle } from '../transformResults';
 
 const truncToMinutes = trunc(Unit.Minute);
 
-import oneDayCandles from './mocks/oneDayCandles';
 import monthCandles from './mocks/monthCandles';
+import oneDayCandles from './mocks/oneDayCandles';
 import yearCandles from './mocks/yearCandles';
 
 const date1 = new Date('2018-11-01T00:00:00.000Z'),

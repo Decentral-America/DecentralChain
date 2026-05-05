@@ -1,4 +1,4 @@
-import { compose, init, last, take } from 'ramda';
+import { init, last, take } from 'ramda';
 
 import { type SearchedItems } from '../../../../../types';
 import { type WithLimit } from '../../../../_common';
@@ -17,10 +17,13 @@ const createMeta =
     const metaBuilder: ResponseMeta = {
       isLastPage: true,
     };
-    const lastResponse = last(init(responsesRaw));
+    const lastResponse = last(init(responsesRaw)) as ResponseRaw | undefined;
     if (typeof lastResponse !== 'undefined') {
       metaBuilder.isLastPage = responsesRaw.length < request.limit;
-      metaBuilder.lastCursor = serialize(request, lastResponse);
+      const cursor = serialize(request, lastResponse as ResponseRaw);
+      if (cursor !== undefined) {
+        metaBuilder.lastCursor = cursor;
+      }
     }
     return metaBuilder;
   };
@@ -31,10 +34,8 @@ export const transformResults =
     serialize: CursorSerialization<Cursor, Request, ResponseRaw>['serialize'],
   ) =>
   (responses: ResponseRaw[], request: Request): SearchedItems<ResponseTransformed> => {
-    const transformedData = compose(
-      (rs) => rs.map((r) => transformDbResponse(r, request)),
-      take<ResponseRaw>(request.limit),
-    )(responses);
+    const limited = (take as any)(request.limit)(responses) as ResponseRaw[];
+    const transformedData = limited.map((r) => transformDbResponse(r, request));
 
     return {
       items: transformedData,

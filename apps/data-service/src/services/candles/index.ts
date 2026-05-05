@@ -1,4 +1,4 @@
-import { type Task } from 'folktale/concurrency/task';
+import { Effect, pipe } from 'effect';
 import { type AppError } from '../../errorHandling';
 import { type AssetIdsPair, type CandleInfo, type SearchedItems, type Service } from '../../types';
 import { searchWithDecimalsProcessing } from '../_common/transformation/withDecimalsProcessing';
@@ -15,23 +15,20 @@ export type CandlesService = {
 
 export default (
   repo: CandlesRepo,
-  validatePairs: (matcher: string, pairs: AssetIdsPair[]) => Task<AppError, void>,
+  validatePairs: (matcher: string, pairs: AssetIdsPair[]) => Effect.Effect<void, AppError>,
   assetsService: AssetsService,
 ): CandlesService => ({
   search: (req) =>
-    validatePairs(req.matcher, [
-      {
-        amountAsset: req.amountAsset,
-        priceAsset: req.priceAsset,
-      },
-    ]).chain(() =>
-      searchWithDecimalsProcessing<CandlesServiceSearchRequest, CandleInfo>(
-        modifyDecimals(assetsService, [req.amountAsset, req.priceAsset]),
-        repo.search,
-      )(req).map((result) => ({
+    pipe(
+      validatePairs(req.matcher, [{ amountAsset: req.amountAsset, priceAsset: req.priceAsset }]),
+      Effect.flatMap(() =>
+        searchWithDecimalsProcessing<CandlesServiceSearchRequest, CandleInfo>(
+          modifyDecimals(assetsService, [req.amountAsset, req.priceAsset]),
+          repo.search,
+        )(req),
+      ),
+      Effect.map((result) => ({
         ...result,
-        // weightedAveragePrice can be float after candles concatenation because of dividing
-        // but for long moneyFormat it should be long
         items:
           req.moneyFormat === MoneyFormat.Long
             ? result.items.map((candle) => ({
@@ -39,23 +36,22 @@ export default (
                 weightedAveragePrice:
                   candle.txsCount > 0
                     ? candle.weightedAveragePrice.decimalPlaces(0)
-                    : // in fact it will be null
-                      candle.weightedAveragePrice,
+                    : candle.weightedAveragePrice,
               }))
             : result.items,
       })),
     ),
+
   searchLast: (req) =>
-    validatePairs(req.matcher, [
-      {
-        amountAsset: req.amountAsset,
-        priceAsset: req.priceAsset,
-      },
-    ]).chain(() =>
-      searchWithDecimalsProcessing<CandlesServiceSearchRequest, CandleInfo>(
-        modifyDecimals(assetsService, [req.amountAsset, req.priceAsset]),
-        repo.searchLast,
-      )(req).map((result) =>
+    pipe(
+      validatePairs(req.matcher, [{ amountAsset: req.amountAsset, priceAsset: req.priceAsset }]),
+      Effect.flatMap(() =>
+        searchWithDecimalsProcessing<CandlesServiceSearchRequest, CandleInfo>(
+          modifyDecimals(assetsService, [req.amountAsset, req.priceAsset]),
+          repo.searchLast,
+        )(req),
+      ),
+      Effect.map((result) =>
         result && Array.isArray(result.items) && result.items[0]
           ? {
               ...result.items[0],

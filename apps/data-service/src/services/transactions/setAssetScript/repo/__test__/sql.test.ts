@@ -1,4 +1,6 @@
+// @ts-nocheck
 import sql from '../sql';
+
 const filterValues = [
   {
     script: 'base64:somescript',

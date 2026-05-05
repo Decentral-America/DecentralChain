@@ -1,36 +1,35 @@
-import { Joi } from '../../../../utils/validation';
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 import { OrderPriceMode, OrderType } from './types';
 
-const orderTypes = (prefix: string) => ({
-  [`${prefix}_id`]: Joi.string().base58().required(),
-  [`${prefix}_version`]: Joi.string().noNullChars().required().allow(null),
-  [`${prefix}_type`]: Joi.string().valid(OrderType.Buy, OrderType.Sell).required(),
-  [`${prefix}_sender`]: Joi.string().base58().required(),
-  [`${prefix}_sender_public_key`]: Joi.string().base58().required(),
-  [`${prefix}_signature`]: Joi.string().base58().required().allow(''),
-  [`${prefix}_matcher_fee`]: Joi.object().bignumber().required(),
-  [`${prefix}_price`]: Joi.object().bignumber().required(),
-  [`${prefix}_amount`]: Joi.object().bignumber().required(),
-  [`${prefix}_time_stamp`]: Joi.object().type(Date).required(),
-  [`${prefix}_expiration`]: Joi.object().type(Date).required(),
-  [`${prefix}_matcher_fee_asset_id`]: Joi.string().assetId().allow(null),
-  [`${prefix}_eip712signature`]: Joi.string().eip712Signature().allow(null),
-  [`${prefix}_price_mode`]: Joi.string()
-    .valid(OrderPriceMode.AssetDecimals, OrderPriceMode.FixedDecimals)
-    .allow(null),
+const orderFields = (prefix: string): Record<string, Schema.Schema<any>> => ({
+  [`${prefix}_id`]: S.Base58,
+  [`${prefix}_version`]: Schema.NullOr(S.NoNullChars),
+  [`${prefix}_type`]: Schema.Literal(OrderType.Buy, OrderType.Sell),
+  [`${prefix}_sender`]: S.Base58,
+  [`${prefix}_sender_public_key`]: S.Base58,
+  [`${prefix}_signature`]: Schema.Union(S.Base58, Schema.Literal('')),
+  [`${prefix}_matcher_fee`]: S.Bignumber,
+  [`${prefix}_price`]: S.Bignumber,
+  [`${prefix}_amount`]: S.Bignumber,
+  [`${prefix}_time_stamp`]: Schema.DateFromSelf,
+  [`${prefix}_expiration`]: Schema.DateFromSelf,
+  [`${prefix}_matcher_fee_asset_id`]: Schema.NullOr(S.AssetId),
+  [`${prefix}_eip712signature`]: Schema.NullOr(S.Eip712Signature),
+  [`${prefix}_price_mode`]: Schema.NullOr(
+    Schema.Literal(OrderPriceMode.AssetDecimals, OrderPriceMode.FixedDecimals),
+  ),
 });
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-  amount: Joi.object().bignumber().required(),
-  amount_asset: Joi.string().assetId().required(),
-  buy_matcher_fee: Joi.object().bignumber().required(),
-  price: Joi.object().bignumber().required(),
-
-  price_asset: Joi.string().assetId().required(),
-  sell_matcher_fee: Joi.object().bignumber().required(),
-
-  ...orderTypes('o1'),
-  ...orderTypes('o2'),
-});
+  amount: S.Bignumber,
+  amount_asset: S.AssetId,
+  buy_matcher_fee: S.Bignumber,
+  price: S.Bignumber,
+  price_asset: S.AssetId,
+  sell_matcher_fee: S.Bignumber,
+  ...orderFields('o1'),
+  ...orderFields('o2'),
+} as any);

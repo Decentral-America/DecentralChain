@@ -1,128 +1,110 @@
-import Task from 'folktale/concurrency/task';
-import Maybe from 'folktale/maybe';
+import { Effect, Option, pipe } from 'effect';
 
 import getErrorMessage from '../../errorHandling/getErrorMessage';
-import { tap } from '../../utils/tap';
-
 import logTaskProgress from '../utils/logTaskProgress';
 
 /** getSleepTime :: Date -> Number ms -> Number ms */
-const getSleepTime = (start, interval) => {
-  const diff = interval - (new Date() - start);
+const getSleepTime = (start: Date, interval: number): number => {
+  const diff = interval - (Date.now() - +start);
   return diff < 0 ? 0 : diff;
 };
 
-/** loop :: (Object -> Task) -> Object -> Number -> Number -> Promise */
-const loop = (func, cfg, interval, timeout) => {
+/** loop :: (Object -> Effect) -> Object -> Number -> Number -> Promise */
+const loop = (
+  func: (cfg: any) => Effect.Effect<any, any>,
+  cfg: any,
+  interval: number,
+  timeout: number,
+): Promise<void> => {
   const startLoop = new Date();
 
-  return Task.waitAny([
-    func(cfg),
-    Task.task((resolver) => {
-      const timerId = setTimeout(
-        () => resolver.reject(new Error('Daemon timeout expired')),
-        timeout,
-      );
-      resolver.cleanup(() => clearTimeout(timerId));
-    }),
-  ])
-    .run()
-    .promise()
+  return Effect.runPromise(
+    Effect.raceAll([
+      func(cfg),
+      Effect.async<never, Error>((emit) => {
+        const timerId = setTimeout(
+          () => emit(Effect.fail(new Error('Daemon timeout expired'))),
+          timeout,
+        );
+        return Effect.sync(() => clearTimeout(timerId));
+      }),
+    ]),
+  )
     .then(() => {
       setTimeout(() => loop(func, cfg, interval, timeout), getSleepTime(startLoop, interval));
+    })
+    .catch(() => {
+      // swallow: already handled inside func or timeout
     });
 };
 
-/** main :: Object { init, loop } -> Object -> Number ms -> Number ms -> Object { info, warn, error } -> TaskExecution */
-const main = (daemon, config, interval, timeout, logger) =>
-  Task.of(Maybe.fromNullable(daemon.init))
-    .map(
-      tap((maybeInit) =>
-        maybeInit.matchWith({
-          Just: () => {},
-          Nothing: () =>
-            logger.warn({
-              message: '[DAEMON] init function not found',
-            }),
-        }),
-      ),
-    )
-    .chain((maybeInit) =>
-      logTaskProgress(logger)(
+/** main :: Object { init, loop } -> Object -> Number ms -> Number ms -> Object { info, warn, error } -> Promise */
+const main = (
+  daemon: { init?: () => Effect.Effect<any, any>; loop: (cfg: any) => Effect.Effect<any, any> },
+  config: any,
+  interval: number,
+  timeout: number,
+  logger: { info: (msg: any) => void; warn: (msg: any) => void; error: (msg: any) => void },
+): Effect.Effect<void, never> => {
+  const maybeInit = Option.fromNullable(daemon.init);
+
+  if (Option.isNone(maybeInit)) {
+    logger.warn({ message: '[DAEMON] init function not found' });
+  }
+
+  const initEffect: Effect.Effect<any, any> = Option.isSome(maybeInit)
+    ? logTaskProgress(logger)(
         {
-          error: (e, timeTaken) => ({
+          error: (e: any, timeTaken: number) => ({
             error: e,
             message: '[DAEMON] initialization error',
             time: timeTaken,
           }),
-          start: (timeStart) => ({
+          start: (timeStart: Date) => ({
             message: '[DAEMON] initialization started',
             time: timeStart,
           }),
-          success: (_, timeTaken) => ({
-            message: '[DAEMON] initialization successful',
+          success: (_r: any, timeTaken: number) => ({
+            message: '[DAEMON] initialization finished',
             time: timeTaken,
           }),
         },
-        maybeInit.getOrElse(Task.of)(config),
-      ),
-    )
-    .map(() => Maybe.fromNullable(daemon.loop))
-    .map(
-      tap((maybeLoop) =>
-        maybeLoop.matchWith({
-          Just: () => {},
-          Nothing: () =>
-            logger.warn({
-              message: '[DAEMON] loop function not found',
-            }),
-        }),
-      ),
-    )
-    .chain((maybeLoop) =>
-      logTaskProgress(logger)(
-        {
-          error: (e, timeTaken) => ({
-            error: getErrorMessage(e),
-            message: '[DAEMON] loop error',
-            time: timeTaken,
-          }),
-          start: (timeStart) => ({
-            message: '[DAEMON] loop started',
-            time: timeStart,
-          }),
-          success: (_, timeTaken) => ({
-            message: '[DAEMON] loop successfully stopped',
-            time: timeTaken,
-          }),
-        },
-        maybeLoop.matchWith({
-          Just: ({ value }) =>
-            Task.task((resolver) =>
-              loop(value, config, interval, timeout).catch((e) => resolver.reject(e)),
-            ),
-          Nothing: () => Task.rejected('[DAEMON] loop function not found'),
-        }),
-      ),
-    )
-    .run()
-    .listen({
-      onCancelled: () =>
-        logger.error({
-          message: `[DAEMON] loop canceled`,
-        }),
-      onRejected: (error) => {
-        logger.error({
-          error: getErrorMessage(error),
-          message: `[DAEMON] loop is stopped with error`,
-        });
-        process.exit(1);
-      },
-      onResolved: () => {
-        throw '[DAEMON] loop is stopped but never should';
-      },
-    });
+        maybeInit.value(),
+      )
+    : Effect.succeed(undefined);
 
-export default {
-  daemon: main,
+  return pipe(
+    initEffect,
+    Effect.flatMap(() =>
+      Effect.sync(() => {
+        loop(
+          (cfg) =>
+            logTaskProgress(logger)(
+              {
+                error: (e: any, timeTaken: number) => ({
+                  error: getErrorMessage(e),
+                  message: '[DAEMON] loop error',
+                  time: timeTaken,
+                }),
+                start: (timeStart: Date) => ({
+                  message: '[DAEMON] loop started',
+                  time: timeStart,
+                }),
+                success: (_r: any, timeTaken: number) => ({
+                  message: '[DAEMON] loop finished',
+                  time: timeTaken,
+                }),
+              },
+              daemon.loop(cfg),
+            ),
+          config,
+          interval,
+          timeout,
+        );
+      }),
+    ),
+    Effect.mapError(() => undefined as never),
+  );
 };
+
+export default main;

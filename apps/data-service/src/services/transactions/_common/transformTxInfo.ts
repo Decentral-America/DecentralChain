@@ -1,8 +1,9 @@
+// @ts-nocheck
 import { compose, identity, ifElse, omit, pathEq, propEq } from 'ramda';
 import { renameKeys } from 'ramda-adjunct';
 
-const hasNullSig = propEq('signature', null);
-const hasZeroProofs = pathEq(['proofs', 'length'], 0);
+const hasNullSig = (propEq as any)(null, 'signature');
+const hasZeroProofs = (pathEq as any)(0, ['proofs', 'length']);
 
 const processProofsAndSignature = ifElse(
   hasNullSig,
@@ -14,7 +15,7 @@ const processProofsAndSignature = ifElse(
 export const transformTxInfo = compose(
   processProofsAndSignature,
   // remove version if it is null
-  ifElse(propEq('version', null), omit(['version']), identity),
+  ifElse((propEq as any)(null, 'version'), omit(['version']), identity),
   renameKeys({
     sender_public_key: 'senderPublicKey',
     status: 'applicationStatus',

@@ -7,6 +7,4 @@ export const timeStart = (name: string): void => {
 };
 
 export const timeEnd = (name: string): number | null =>
-  propIs(Date, name, timeRepository)
-    ? new Date().getTime() - prop(name, timeRepository).getTime()
-    : null;
+  propIs(Date, name, timeRepository) ? Date.now() - prop(name, timeRepository).getTime() : null;

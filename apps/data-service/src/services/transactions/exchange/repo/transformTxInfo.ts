@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type BigNumber } from '@decentralchain/data-entities';
 import { compose, pick } from 'ramda';
 import { renameKeys } from 'ramda-adjunct';
@@ -27,7 +28,7 @@ const createOrder =
     amount_asset: amountAsset,
     sender_public_key: matcherPublicKey,
   }: T) => {
-    const version = parseInt(versionStr) || 1;
+    const version = parseInt(versionStr, 10) || 1;
 
     const o: any = {
       amount,

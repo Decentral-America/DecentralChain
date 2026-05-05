@@ -1,4 +1,5 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
+import { Effect, pipe } from 'effect';
 import {
   type AssetsService,
   type AssetsServiceMgetRequest,
@@ -24,8 +25,8 @@ const mgetOrSearchHandler = (assetsService: AssetsService) =>
   createHttpHandler(
     (req, lsnFormat) =>
       isMgetRequest(req)
-        ? assetsService.mget(req).map(serializeMget(asset, lsnFormat))
-        : assetsService.search(req).map(serializeSearch(asset, lsnFormat)),
+        ? pipe(assetsService.mget(req), Effect.map(serializeMget(asset, lsnFormat)))
+        : pipe(assetsService.search(req), Effect.map(serializeSearch(asset, lsnFormat))),
     parseMgetOrSearch,
   );
 
@@ -34,7 +35,8 @@ export default (assetsService: AssetsService): Router => {
     .get(
       '/assets/:id',
       createHttpHandler(
-        (req, lsnFormat) => assetsService.get(req).map(serializeGet(asset, lsnFormat)),
+        (req, lsnFormat) =>
+          pipe(assetsService.get(req), Effect.map(serializeGet(asset, lsnFormat))),
         parseGet,
       ),
     )

@@ -1,16 +1,4 @@
-import { type Task, of as taskOf } from 'folktale/concurrency/task';
-import { type Maybe } from 'folktale/maybe';
-import { type Result } from 'folktale/result';
-import { resultToTask } from '../../../utils/fp';
-// @hack because of ramda 'tap' not working with null values
-// https://github.com/ramda/ramda/issues/2421
-// @todo refactor after ramda fix
-import { tap } from '../../../utils/tap';
-
-import { applyValidation } from './applyToResult';
-
-export { applyTransformation } from './applyToResult';
-
+import { Effect, type Option, pipe } from 'effect';
 import {
   type AppError,
   type DbError,
@@ -19,6 +7,9 @@ import {
   type ValidationError,
 } from '../../../errorHandling';
 import { type SearchedItems } from '../../../types';
+import { eitherToEffect } from '../../../utils/fp';
+import { tap } from '../../../utils/tap';
+import { applyValidation } from './applyToResult';
 import {
   type EmitEvent,
   type GetResolverDependencies,
@@ -27,25 +18,28 @@ import {
   type ValidateSync,
 } from './types';
 
+export { applyTransformation } from './applyToResult';
+
 const createResolver = <RequestRaw, RequestTransformed, ResponseRaw, ResponseTransformed>(
-  transformInput: (r: RequestRaw) => Result<ValidationError, RequestTransformed>,
-  getData: (r: RequestTransformed) => Task<DbError | Timeout, ResponseRaw>,
+  transformInput: (
+    r: RequestRaw,
+  ) => import('effect').Either.Either<RequestTransformed, ValidationError>,
+  getData: (r: RequestTransformed) => Effect.Effect<ResponseRaw, DbError | Timeout>,
   validateAllResults: ValidateSync<ResolverError, ResponseRaw>,
   transformAllResults: (response: ResponseRaw, request: RequestRaw) => ResponseTransformed,
   emitEvent: EmitEvent,
   request: RequestRaw,
-): Task<AppError, ResponseTransformed> =>
-  taskOf<never, RequestRaw>(request)
-    .map(transformInput)
-    .chain(resultToTask)
-    .map(tap(emitEvent('TRANSFORM_INPUT_OK')))
-    .chain(getData)
-    .map(tap(emitEvent('DB_QUERY_OK')))
-    .map(validateAllResults)
-    .chain(resultToTask)
-    .map(tap(emitEvent('RESULT_VALIDATION_OK')))
-    .map((result: ResponseRaw) => transformAllResults(result, request))
-    .map(tap(emitEvent('TRANSFORM_RESULT_OK')));
+): Effect.Effect<ResponseTransformed, AppError> =>
+  pipe(
+    eitherToEffect(transformInput(request)),
+    Effect.tap(tap(emitEvent('TRANSFORM_INPUT_OK'))),
+    Effect.flatMap(getData),
+    Effect.tap(tap(emitEvent('DB_QUERY_OK'))),
+    Effect.flatMap((raw) => eitherToEffect(validateAllResults(raw))),
+    Effect.tap(tap(emitEvent('RESULT_VALIDATION_OK'))),
+    Effect.map((result) => transformAllResults(result, request)),
+    Effect.tap(tap(emitEvent('TRANSFORM_RESULT_OK'))),
+  ) as unknown as Effect.Effect<ResponseTransformed, AppError>;
 
 const getResolver =
   <RequestRaw, RequestTransformed, ResponseRaw, ResponseTransformed>(
@@ -56,8 +50,13 @@ const getResolver =
       ResponseTransformed
     >,
   ) =>
-  (request: RequestRaw): Task<AppError, Maybe<ResponseTransformed>> =>
-    createResolver<RequestRaw, RequestTransformed, Maybe<ResponseRaw>, Maybe<ResponseTransformed>>(
+  (request: RequestRaw): Effect.Effect<Option.Option<ResponseTransformed>, AppError> =>
+    createResolver<
+      RequestRaw,
+      RequestTransformed,
+      Option.Option<ResponseRaw>,
+      Option.Option<ResponseTransformed>
+    >(
       dependencies.transformInput,
       dependencies.getData,
       applyValidation.get(dependencies.validateResult),
@@ -75,12 +74,12 @@ const mgetResolver =
       ResponseTransformed
     >,
   ) =>
-  (request: RequestRaw) =>
+  (request: RequestRaw): Effect.Effect<Option.Option<ResponseTransformed>[], AppError> =>
     createResolver<
       RequestRaw,
       RequestTransformed,
-      Maybe<ResponseRaw>[],
-      Maybe<ResponseTransformed>[]
+      Option.Option<ResponseRaw>[],
+      Option.Option<ResponseTransformed>[]
     >(
       dependencies.transformInput,
       dependencies.getData,
@@ -99,7 +98,7 @@ const searchResolver =
       ResponseTransformed
     >,
   ) =>
-  (request: RequestRaw) =>
+  (request: RequestRaw): Effect.Effect<SearchedItems<ResponseTransformed>, AppError> =>
     createResolver<
       RequestRaw,
       RequestTransformed,

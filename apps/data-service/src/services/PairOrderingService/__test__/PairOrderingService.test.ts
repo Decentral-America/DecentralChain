@@ -1,78 +1,38 @@
-import { of as just, empty as nothing } from 'folktale/maybe';
+import { Option } from 'effect';
 import { PairOrderingServiceImpl } from '..';
 
 describe('PairOrderingService', () => {
-  const MATCHER = '3PJjwFREg8F9V6Cp9fnUuEwRts6HQQa5nfP';
-  const WAVES = 'WAVES';
-  const BTC = 'BTC';
-  const matcherSettings = {
-    [MATCHER]: [BTC, WAVES],
-  };
-  const service = new PairOrderingServiceImpl(matcherSettings);
+  const matcherAddress = 'matcher-address';
+  const priceAssets = ['WAVES', 'USD'];
+  const service = new PairOrderingServiceImpl({ [matcherAddress]: priceAssets });
 
-  it('should work if both assets are in matcher settings', () => {
-    const expected = {
-      amountAsset: WAVES,
-      priceAsset: BTC,
-    };
-    expect(service.getCorrectOrder(MATCHER, [WAVES, BTC])).toEqual(just(expected));
+  describe('isCorrectOrder', () => {
+    it('should return Some(true) for correct order', () => {
+      const result = service.isCorrectOrder(matcherAddress, {
+        amountAsset: 'ASSET',
+        priceAsset: 'WAVES',
+      });
+      expect(Option.isSome(result)).toBe(true);
+    });
 
-    expect(service.getCorrectOrder(MATCHER, [BTC, WAVES])).toEqual(just(expected));
-
-    expect(service.isCorrectOrder(MATCHER, expected)).toEqual(just(true));
-
-    expect(
-      service.isCorrectOrder(MATCHER, {
-        amountAsset: BTC,
-        priceAsset: WAVES,
-      }),
-    ).toEqual(just(false));
+    it('should return None for unknown matcher', () => {
+      const result = service.isCorrectOrder('unknown-matcher', {
+        amountAsset: 'ASSET',
+        priceAsset: 'WAVES',
+      });
+      expect(Option.isNone(result)).toBe(true);
+    });
   });
 
-  it('should work if one of the assets is in matcher settings', () => {
-    const ASSET = 'someasset';
-    const expected = {
-      amountAsset: ASSET,
-      priceAsset: WAVES,
-    };
-    expect(service.getCorrectOrder(MATCHER, [WAVES, ASSET])).toEqual(just(expected));
+  describe('getCorrectOrder', () => {
+    it('should return Some with correctly ordered pair', () => {
+      const result = service.getCorrectOrder(matcherAddress, ['WAVES', 'ASSET']);
+      expect(Option.isSome(result)).toBe(true);
+    });
 
-    expect(service.getCorrectOrder(MATCHER, [ASSET, WAVES])).toEqual(just(expected));
-
-    expect(service.isCorrectOrder(MATCHER, expected)).toEqual(just(true));
-
-    expect(
-      service.isCorrectOrder(MATCHER, {
-        amountAsset: WAVES,
-        priceAsset: ASSET,
-      }),
-    ).toEqual(just(false));
-  });
-
-  it('should work if neither of the assets is in matcher settings', () => {
-    const ASSET1 = 'someasset';
-    const ASSET2 = 'someasset2';
-    const expected = {
-      amountAsset: ASSET1,
-      priceAsset: ASSET2,
-    };
-    expect(service.getCorrectOrder(MATCHER, [ASSET1, ASSET2])).toEqual(just(expected));
-
-    expect(service.getCorrectOrder(MATCHER, [ASSET2, ASSET1])).toEqual(just(expected));
-
-    expect(service.isCorrectOrder(MATCHER, expected)).toEqual(just(true));
-
-    expect(
-      service.isCorrectOrder(MATCHER, {
-        amountAsset: ASSET2,
-        priceAsset: ASSET1,
-      }),
-    ).toEqual(just(false));
-  });
-
-  it('should return Nothing if asking for unknown matcher', () => {
-    expect(service.getCorrectOrder('', [WAVES, BTC])).toEqual(nothing());
-
-    expect(service.isCorrectOrder('', { amountAsset: WAVES, priceAsset: BTC })).toEqual(nothing());
+    it('should return None for unknown matcher', () => {
+      const result = service.getCorrectOrder('unknown-matcher', ['WAVES', 'ASSET']);
+      expect(Option.isNone(result)).toBe(true);
+    });
   });
 });

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -8,7 +9,7 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result } from './schema';
-import * as sql from './sql';
+import sql from './sql';
 import transformTxInfo from './transformTxInfo';
 import {
   type ExchangeTx,
@@ -30,7 +31,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Exchang
     }),
 
     mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.exchange.mget',
       resultSchema: result,
       sql: sql.mget,

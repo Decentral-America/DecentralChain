@@ -1,13 +1,14 @@
+// @ts-nocheck
 import { defaultTo, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../utils/db';
-import defaultValues from '../../../_common/sql/defaults';
+import * as defaultValues from '../../../_common/sql/defaults';
 import { select, selectFromFiltered } from './query';
 
 // get — get by id
 // mget/search — apply filters
-const createApi = ({ filters: F }) => ({
-  get: (id) =>
+const createApi = ({ filters: F }: { filters: any }) => ({
+  get: (id: any) =>
     pipe(
       F.id(id),
       // tips for postgresql to use index
@@ -16,7 +17,7 @@ const createApi = ({ filters: F }) => ({
       String,
     )(select),
 
-  mget: (ids) =>
+  mget: (ids: any) =>
     pipe(
       F.ids(ids),
       // tip for postgresql to use index
@@ -26,7 +27,7 @@ const createApi = ({ filters: F }) => ({
       String,
     )(select),
 
-  search: (fValues) => {
+  search: (fValues: any) => {
     const fNames = [
       // tx attributes
       'timeStart',
@@ -52,9 +53,15 @@ const createApi = ({ filters: F }) => ({
 
     const sort = defaultTo(defaultValues.SORT, fValues.sort);
 
-    const fs = pickBindFilters(F, fNames, withDefaults);
+    const fs: any[] = pickBindFilters(F, fNames, withDefaults);
 
-    return pipe(...fs, selectFromFiltered, F.limit(fValues.limit), F.sort(sort), String)(select);
+    return pipe(
+      ...(fs as [any, ...any[]]),
+      selectFromFiltered,
+      F.limit(fValues.limit),
+      F.sort(sort),
+      String,
+    )(select);
   },
 });
 

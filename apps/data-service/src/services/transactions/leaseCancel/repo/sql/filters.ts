@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { whereIn } from '../../../../../utils/db/knex';
 
-import { createByTimeStamp, createByBlockTimeStamp } from '../../../_common/sql';
+import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
 import commonFilters from '../../../_common/sql/filters';
 import commonFiltersOrder from '../../../_common/sql/filtersOrder';
 
@@ -19,15 +20,13 @@ const byTimeStamp = createByTimeStamp('txs_9');
 
 const byBlockTimeStamp = createByBlockTimeStamp('txs_9');
 
-export default {
-  filters: {
-    ...commonFilters,
-    blockTimeEnd: byBlockTimeStamp('<='),
-    blockTimeStart: byBlockTimeStamp('>='),
+export const filters = {
+  ...commonFilters,
+  blockTimeEnd: byBlockTimeStamp('<='),
+  blockTimeStart: byBlockTimeStamp('>='),
 
-    recipient: byRecipient,
-    timeEnd: byTimeStamp('<='),
-    timeStart: byTimeStamp('>='),
-  },
-  filtersOrder: [...commonFiltersOrder, 'timeStart', 'timeEnd', 'recipient'],
+  recipient: byRecipient,
+  timeEnd: byTimeStamp('<='),
+  timeStart: byTimeStamp('>='),
 };
+export const filtersOrder = [...commonFiltersOrder, 'timeStart', 'timeEnd', 'recipient'];

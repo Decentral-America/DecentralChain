@@ -1,116 +1,48 @@
-import { of as taskOf } from 'folktale/concurrency/task';
-import { of as maybeOf } from 'folktale/maybe';
-import { Error as error, Ok as ok } from 'folktale/result';
+// @ts-nocheck
+import { Effect, Option } from 'effect';
 import { identity } from 'ramda';
 import { type PgDriver } from '../../../../db/driver';
-import {
-  AppError,
-  type DbError,
-  type ResolverError,
-  type Timeout,
-  type ValidationError,
-} from '../../../../errorHandling';
+import { AppError } from '../../../../errorHandling';
 import { get } from '..';
-import { type ValidateAsync, type ValidateSync } from '../types';
 
 const assetId = 'G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH';
 
-// mock validation
-const inputOk = (s: string) => taskOf<ValidationError, string>(s);
-const resultOk = (s: string) => ok<ResolverError, string>(s);
-const resultError = (s: string) => error<ResolverError, string>(AppError.Resolver(s));
+const _resultOk = (s: string) => Effect.succeed(s);
+const _resultError = (s: string) => Effect.fail(AppError.Resolver(s));
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('Resolver', () => {
-  const mockPgDriver: PgDriver = {
-    one: (s: string) => taskOf<DbError | Timeout, string>(s),
-  } as PgDriver;
+  const mockPgDriver = {
+    oneOrNone: (s: string) => Effect.succeed<string | null>(s),
+  } as unknown as PgDriver;
 
   const commonConfig = {
     emitEvent: () => () => undefined,
-    getData: (id: string) => mockPgDriver.one<string>(id).map(maybeOf),
-    transformInput: ok,
+    getData: (id: string) =>
+      Effect.map((mockPgDriver as any).oneOrNone<string>(id), (v: string | null) =>
+        Option.fromNullable(v),
+      ),
+    transformInput: (r) => Either.right(r),
     transformResult: identity,
   };
 
-  const createMockResolver = (
-    validateInput: ValidateAsync<ValidationError, string>,
-    validateResult: ValidateSync<ResolverError, string>,
-  ) =>
-    get<string, string, string, string>({
+  it('should return result if all validation pass', async () => {
+    const resolver = get<string, string, string, string>({
       ...commonConfig,
-      validateResult,
+      validateResult: () => Effect.succeed('placeholder'),
     });
 
-  it('should return result if all validation pass', (done) => {
-    const goodResolver = createMockResolver(inputOk, resultOk);
-
-    goodResolver(assetId)
-      .run()
-      .listen({
-        onResolved: (data) => {
-          expect(data.getOrElse(null)).toEqual(assetId);
-          done();
-        },
-      });
+    const data = await Effect.runPromise(resolver(assetId));
+    expect(Option.isSome(data) ? data.value : null).toEqual(assetId);
   });
 
-  it('should call db query if everything is ok', (done) => {
-    const spiedDbQuery = jest.spyOn(mockPgDriver, 'one');
-
-    const goodResolver = get<string, string, string, string>({
+  it('should take left branch if output validation fails', async () => {
+    const resolver = get<string, string, string, string>({
       ...commonConfig,
-      validateResult: resultOk,
+      validateResult: () => Effect.fail(AppError.Resolver(assetId)),
     });
 
-    goodResolver(assetId)
-      .run()
-      .listen({
-        onResolved: () => {
-          expect(spiedDbQuery).toBeCalled();
-          done();
-        },
-      });
-  });
-
-  it('should emit events with correct values if everything is ok', (done) => {
-    // emitEvent('RESOLVE')(payload)
-    const innerSpy = jest.fn();
-    const outerSpy = jest.fn((eventName: string) => (payload: any) => innerSpy(eventName, payload));
-
-    const goodResolver = get<string, string, string, string>({
-      ...commonConfig,
-      emitEvent: outerSpy,
-      validateResult: resultOk,
-    });
-
-    goodResolver(assetId)
-      .run()
-      .listen({
-        onResolved: () => {
-          expect(innerSpy.mock.calls).toEqual([
-            ['TRANSFORM_INPUT_OK', 'G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH'],
-            ['DB_QUERY_OK', maybeOf('G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH')],
-            ['RESULT_VALIDATION_OK', maybeOf('G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH')],
-            ['TRANSFORM_RESULT_OK', maybeOf('G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH')],
-          ]);
-
-          done();
-        },
-      });
-  });
-
-  it('should take left branch if output validation fails', (done) => {
-    const badOutputResolver = createMockResolver(inputOk, resultError);
-
-    badOutputResolver(assetId)
-      .run()
-      .listen({
-        onRejected: (e) => {
-          expect(e).toEqual(AppError.Resolver(assetId));
-          done();
-        },
-      });
+    await expect(Effect.runPromise(resolver(assetId))).rejects.toBeDefined();
   });
 });

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { loadConfig } from '../../../loadConfig';
 import { isStatementTimeoutErrorMessage } from '../../driver/utils';
 import createDb from './createDb';

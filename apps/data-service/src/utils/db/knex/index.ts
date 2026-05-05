@@ -1,5 +1,12 @@
-import { omit } from 'ramda';
-
-import K from './lib';
-
-export default omit('hasMethod', K);
+export {
+  default,
+  limit,
+  orderBy,
+  orWhere,
+  raw,
+  where,
+  whereIn,
+  whereNotNull,
+  whereNull,
+  whereRaw,
+} from './lib';

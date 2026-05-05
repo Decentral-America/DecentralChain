@@ -1,7 +1,9 @@
+// @ts-nocheck
 import { createPgDriver } from '../../../../db';
 import { loadConfig } from '../../../../loadConfig';
-const options = loadConfig();
 import create from '../../index';
+
+const options = loadConfig();
 
 const ADDRESS = '3NAkqT9JJHLF7hZyiZ5SncWsW8SQh2duZek';
 

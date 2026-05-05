@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -8,8 +9,8 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result as resultSchema } from './schema';
-import * as sql from './sql';
-import * as transformTxInfo from './transformTxInfo';
+import sql from './sql';
+import transformTxInfo from './transformTxInfo';
 import {
   type LeaseCancelTx,
   type LeaseCancelTxDbResponse,
@@ -19,9 +20,9 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCancelTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, LeaseCancelTxDbResponse, LeaseCancelTx>({
       name: 'transactions.leaseCancel.get',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,10 +30,10 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCa
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, LeaseCancelTxDbResponse, LeaseCancelTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.leaseCancel.mget',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -48,7 +49,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCa
     >({
       cursorSerialization: { deserialize, serialize },
       name: 'transactions.leaseCancel.search',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

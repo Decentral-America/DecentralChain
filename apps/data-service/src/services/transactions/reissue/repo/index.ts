@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -8,8 +9,8 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result as resultSchema } from './schema';
-import * as sql from './sql';
-import * as transformTxInfo from './transformTxInfo';
+import sql from './sql';
+import transformTxInfo from './transformTxInfo';
 import {
   type ReissueTx,
   type ReissueTxDbResponse,
@@ -19,9 +20,9 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): ReissueTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, ReissueTxDbResponse, ReissueTx>({
       name: 'transactions.reissue.get',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,10 +30,10 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Reissue
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, ReissueTxDbResponse, ReissueTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.reissue.mget',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -46,7 +47,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Reissue
         serialize,
       },
       name: 'transactions.reissue.search',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

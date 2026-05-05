@@ -41,22 +41,22 @@ export type AliasesRepo = Repo<
 
 export default ({ drivers, emitEvent }: CommonRepoDependencies): AliasesRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<AliasesGetRequest, AliasDbResponse, AliasInfo>({
       name: 'aliases.get',
-      resultSchema: output,
+      resultSchema: output as any,
       sql: sql.get,
-      transformResult: transformDbResponse,
+      transformResult: transformDbResponse as any,
     })({
       emitEvent: emitEvent,
       pg: drivers.pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('alias'),
+    mget: mgetByIdsPreset<string, AliasDbResponse, AliasInfo>({
+      matchRequestResult: propEq('alias') as any,
       name: 'aliases.mget',
-      resultSchema: output,
+      resultSchema: output as any,
       sql: sql.mget,
-      transformResult: transformDbResponse,
+      transformResult: transformDbResponse as any,
     })({
       emitEvent: emitEvent,
       pg: drivers.pg,
@@ -65,12 +65,12 @@ export default ({ drivers, emitEvent }: CommonRepoDependencies): AliasesRepo => 
     search: searchPreset<Cursor, AliasesSearchRequest, AliasDbResponse, AliasInfo>({
       cursorSerialization: {
         deserialize,
-        serialize,
+        serialize: serialize as any,
       },
       name: 'aliases.search',
-      resultSchema: output,
+      resultSchema: output as any,
       sql: sql.search,
-      transformResult: transformDbResponse,
+      transformResult: transformDbResponse as any,
     })({
       emitEvent: emitEvent,
       pg: drivers.pg,

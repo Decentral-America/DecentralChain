@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/data-entities';
-import { of as taskOf } from 'folktale/concurrency/task';
+import { Effect, Option, pipe } from 'effect';
 import { type RateMgetParams, type RateWithPairIds, type Service } from '../../types';
 import { type RateSerivceCreatorDependencies } from '..';
 import { MoneyFormat, type WithMoneyFormat } from '../types';
@@ -29,38 +29,35 @@ export default function ({
   );
 
   return (request: RateMgetParams & WithMoneyFormat) =>
-    estimator
-      .mget(request)
-      .map((data) =>
+    pipe(
+      estimator.mget(request),
+      Effect.map((data) =>
         data.map((item) => ({
           amountAsset: item.req.amountAsset.id,
           priceAsset: item.req.priceAsset.id,
-          rate: item.res.fold(
-            () => new BigNumber(0),
-            (it) => it.rate,
-          ),
+          rate: Option.isSome(item.res) ? item.res.value.rate : new BigNumber(0),
         })),
-      )
-      .chain((items) =>
-        request.moneyFormat === MoneyFormat.Long
-          ? taskOf(
-              items.map((r) => ({
-                ...r,
-                rate: r.rate.decimalPlaces(0),
-              })),
-            )
-          : assets
-              .precisions({
-                ids: items.reduce<string[]>(
-                  (acc, item) => acc.concat([item.amountAsset, item.priceAsset]),
-                  [],
-                ),
-              })
-              .map((precisions) =>
-                items.map((item, idx) => ({
-                  ...item,
-                  rate: item.rate.shiftedBy(-8 - precisions[idx * 2 + 1] + precisions[idx * 2]),
-                })),
+      ),
+      Effect.flatMap((items) => {
+        if (request.moneyFormat === MoneyFormat.Long) {
+          return Effect.succeed(items.map((r) => ({ ...r, rate: r.rate.decimalPlaces(0) })));
+        }
+        return pipe(
+          assets.precisions({
+            ids: items.reduce<string[]>(
+              (acc, item) => acc.concat([item.amountAsset, item.priceAsset]),
+              [],
+            ),
+          }),
+          Effect.map((precisions) =>
+            items.map((item, idx) => ({
+              ...item,
+              rate: item.rate.shiftedBy(
+                -8 - (precisions[idx * 2 + 1] as number) + (precisions[idx * 2] as number),
               ),
-      );
+            })),
+          ),
+        );
+      }),
+    );
 }

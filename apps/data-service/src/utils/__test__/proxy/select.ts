@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { equals } from 'ramda';
 
 const select = (jestSpy) => ({

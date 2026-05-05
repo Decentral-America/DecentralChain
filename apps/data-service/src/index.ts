@@ -1,21 +1,24 @@
-import chalk from 'chalk';
-import { createServer } from 'http';
-import * as Koa from 'koa';
-import * as bodyParser from 'koa-bodyparser';
-import * as createRequestId from 'koa-requestid';
+import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
+
+import { Effect, pipe } from 'effect';
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import createRequestId from 'koa-requestid';
+
 import { createPgDriver } from './db';
 import createEventBus from './eventBus/';
-import * as createAndSubscribeLogger from './logger';
-import * as accessLogMiddleware from './middleware/accessLog';
-import * as injectConfig from './middleware/injectConfig';
-import * as injectEventBus from './middleware/injectEventBus';
+import router from './http';
+import { loadConfig } from './loadConfig';
+import createAndSubscribeLogger from './logger';
+import accessLogMiddleware from './middleware/accessLog';
+import injectConfig from './middleware/injectConfig';
+import injectEventBus from './middleware/injectEventBus';
 import createServices from './services';
 import { unsafeKoaQs } from './utils/koaQs';
 
-const cors = require('@koa/cors');
-
-import router from './http';
-import { loadConfig } from './loadConfig';
+const _require = createRequire(import.meta.url);
+const cors = _require('@koa/cors');
 
 export const WavesId: string = 'WAVES';
 
@@ -31,35 +34,34 @@ const requestId = createRequestId({ expose: 'X-Request-Id', header: 'X-Request-I
 // @todo add the test sql query for the db availability checking
 const pgDriver = createPgDriver(options);
 
-createServices({
-  emitEvent: (name) => (o) => eventBus.emit(name, o),
-  options,
-  pgDriver,
-})
-  .map((services) =>
-    app
-      .use(bodyParser())
-      .use(requestId)
-      .use(cors())
-      .use(injectEventBus(eventBus))
-      .use(accessLogMiddleware)
-      .use(injectConfig('defaultMatcher', options.matcher.defaultMatcherAddress))
-      .use(router(services).routes()),
-  )
-  .run()
-  .listen({
-    onRejected: (e) => {
-      console.error(e);
-    },
-    onResolved: (app) => {
-      const server = createServer(app.callback());
-      // should be smaller than headersTimeout (by default, 40s)
-      server.keepAliveTimeout = 30 * 1000;
-      server.listen(options.port);
+Effect.runPromise(
+  pipe(
+    createServices({
+      emitEvent: (name) => (o) => eventBus.emit(name, o),
+      options,
+      pgDriver,
+    }),
+    Effect.map((services) =>
+      app
+        .use(bodyParser() as any)
+        .use(requestId as any)
+        .use(cors())
+        .use(injectEventBus(eventBus))
+        .use(accessLogMiddleware)
+        .use(injectConfig('defaultMatcher', options.matcher.defaultMatcherAddress))
+        .use(router(services).routes()),
+    ),
+  ),
+)
+  .then((app) => {
+    const server = createServer(app.callback());
+    // should be smaller than headersTimeout (by default, 40s)
+    server.keepAliveTimeout = 30 * 1000;
+    server.listen(options.port);
 
-      if (process.env.NODE_ENV === 'development') {
-        // eslint-disable-next-line
-        console.log(chalk.yellow(`App has started on http://localhost:${options.port}/`));
-      }
-    },
+    if (process.env['NODE_ENV'] === 'development') {
+    }
+  })
+  .catch((e: unknown) => {
+    console.error(e);
   });

@@ -1,16 +1,15 @@
 import { compose } from 'ramda';
 
 import { createSql } from '../../../_common/sql';
-import { sort } from '../../../_common/sql/filters';
 import { SORT } from '../../../_common/sql/defaults';
-
-import { select, selectFromFiltered } from './query';
+import { sort } from '../../../_common/sql/filters';
 import { filters, filtersOrder } from './filters';
+import { select, selectFromFiltered } from './query';
 
 const queryAfterFilters = {
   get: selectFromFiltered(SORT),
   mget: selectFromFiltered(SORT),
-  search: (q, fValues) =>
+  search: (q: any, fValues: any) =>
     compose(
       // outer sort
       sort(fValues.sort),

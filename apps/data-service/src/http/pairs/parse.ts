@@ -1,4 +1,4 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either } from 'effect';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { loadConfig } from '../../loadConfig';
@@ -8,7 +8,6 @@ import { type PairsGetRequest, type PairsMgetRequest } from '../../services/pair
 import { parseFilterValues, withDefaults } from '../_common/filters';
 import commonFilters from '../_common/filters/filters';
 import { type HttpRequest } from '../_common/types';
-import { withMatcher } from '../_common/utils';
 import {
   isMgetRequest,
   isSearchByAssetRequest,
@@ -22,53 +21,57 @@ const config = loadConfig();
 export const get = ({
   params,
   query,
-}: HttpRequest<['amountAsset', 'priceAsset']>): Result<ParseError, PairsGetRequest> => {
+}: HttpRequest<['amountAsset', 'priceAsset']>): Either.Either<PairsGetRequest, ParseError> => {
   if (isNil(params)) {
-    return error(new ParseError(new Error('Params is empty')));
+    return Either.left(new ParseError(new Error('Params is empty')));
   }
 
   if (isNil(query)) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return parseFilterValues({
-    matcher: commonFilters.query,
-  })(query).chain((fValues) => {
-    const fValuesWithDefaults = mergeAll<PairsGetRequest & WithMatcher>([
-      {
-        matcher: config.matcher.defaultMatcherAddress,
-      },
-      withDefaults(fValues),
-    ]);
+  return (Either.flatMap as any)(
+    parseFilterValues({
+      matcher: commonFilters.query,
+    })(query),
+    (fValues: any) => {
+      const fValuesWithDefaults: Partial<PairsGetRequest & WithMatcher> = mergeAll<any>([
+        {
+          matcher: config.matcher.defaultMatcherAddress,
+        },
+        withDefaults(fValues),
+      ]);
 
-    if (!withMatcher(fValuesWithDefaults)) {
-      return error(new ParseError(new Error('Matcher is not defined')));
-    }
+      if (!fValuesWithDefaults.matcher) {
+        return Either.left(new ParseError(new Error('Matcher is not defined')));
+      }
 
-    return ok({
-      matcher: fValuesWithDefaults.matcher,
-      pair: {
-        amountAsset: params.amountAsset,
-        priceAsset: params.priceAsset,
-      },
-    });
-  });
+      return Either.right({
+        matcher: fValuesWithDefaults.matcher,
+        pair: {
+          amountAsset: params.amountAsset,
+          priceAsset: params.priceAsset,
+        },
+      });
+    },
+  );
 };
 
 export const mgetOrSearch = ({
   query,
-}: HttpRequest): Result<ParseError, PairsMgetRequest | PairsServiceSearchRequest> => {
+}: HttpRequest): Either.Either<PairsMgetRequest | PairsServiceSearchRequest, ParseError> => {
   if (!query) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return mgetOrSearchParser(query).chain((fValues) => {
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
+  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
     if (isMgetRequest(fValues)) {
-      return ok(fValues);
+      return Either.right(fValues);
     } else {
-      const fValuesWithDefaults = mergeAll<
+      const fValuesWithDefaults: Partial<
         PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit
-      >([
+      > = mergeAll<any>([
         {
           matcher: config.matcher.defaultMatcherAddress,
         },
@@ -77,14 +80,14 @@ export const mgetOrSearch = ({
 
       if (isSearchCommonRequest(fValuesWithDefaults)) {
         if (isSearchByAssetRequest(fValuesWithDefaults)) {
-          return ok(fValuesWithDefaults);
+          return Either.right(fValuesWithDefaults);
         } else if (isSearchByAssetsRequest(fValuesWithDefaults)) {
-          return ok(fValuesWithDefaults);
+          return Either.right(fValuesWithDefaults);
         } else {
-          return ok(fValuesWithDefaults);
+          return Either.right(fValuesWithDefaults);
         }
       } else {
-        return error(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
+        return Either.left(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
       }
     }
   });

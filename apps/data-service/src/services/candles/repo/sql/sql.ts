@@ -1,4 +1,5 @@
-import * as knex from 'knex';
+import { Either, pipe } from 'effect';
+import { type Knex, knex } from 'knex';
 import { CandleInterval, type Interval } from '../../../../types';
 import { unsafeIntervalsFromStrings } from '../../../../utils/interval';
 import { type CandlesSearchRequest } from '../../repo';
@@ -54,7 +55,7 @@ export const selectCandles = ({
   timeEnd,
   matcher,
   interval,
-}: CandleSelectionParams): knex.QueryBuilder =>
+}: CandleSelectionParams): Knex.QueryBuilder =>
   pg({ c: 'candles' })
     .select(FIELDS)
     .where('amount_asset_id', amountAsset)
@@ -65,10 +66,13 @@ export const selectCandles = ({
     .where(
       'interval',
       // should always be valid after validation
-      highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)).matchWith({
-        Error: ({ value: error }) => CandleInterval.Minute1,
-        Ok: ({ value: i }) => i.source,
-      }),
+      pipe(
+        highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)),
+        Either.match({
+          onLeft: () => CandleInterval.Minute1,
+          onRight: (i) => i.source,
+        }),
+      ),
     );
 
 export const search = ({
@@ -89,7 +93,7 @@ export const search = ({
         priceAsset,
         timeEnd,
         timeStart,
-      }),
+      }) as any,
     })
     .orderBy('c.time_start', 'asc')
     .toString();
@@ -100,7 +104,7 @@ export const selectLastCandle = ({
   timeEnd,
   matcher,
   interval,
-}: CandleSelectionParams): knex.QueryBuilder =>
+}: CandleSelectionParams): Knex.QueryBuilder =>
   pg({ c: 'candles' })
     .select(FIELDS)
     .where('amount_asset_id', amountAsset)
@@ -111,10 +115,13 @@ export const selectLastCandle = ({
     .where(
       'interval',
       // should always be valid after validation
-      highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)).matchWith({
-        Error: ({ value: error }) => CandleInterval.Minute1,
-        Ok: ({ value: i }) => i.source,
-      }),
+      pipe(
+        highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)),
+        Either.match({
+          onLeft: () => CandleInterval.Minute1,
+          onRight: (i) => i.source,
+        }),
+      ),
     );
 
 export const searchLast = ({
@@ -135,7 +142,7 @@ export const searchLast = ({
         priceAsset,
         timeEnd,
         timeStart,
-      }),
+      }) as any,
     })
     .orderBy('c.time_start', 'desc')
     .limit(1)
@@ -144,8 +151,4 @@ export const searchLast = ({
 export const sql = {
   search,
   searchLast,
-};
-
-module.exports = {
-  sql,
 };

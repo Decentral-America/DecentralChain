@@ -1,6 +1,6 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
 
-const accessLogMiddleware = async (ctx, next) => {
+const accessLogMiddleware = async (ctx: any, next: any) => {
   const start = performance.now();
   ctx.eventBus.emit('REQUEST', { level: 'info' });
 

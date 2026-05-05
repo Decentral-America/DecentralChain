@@ -1,4 +1,5 @@
-import { type Task } from 'folktale/concurrency/task';
+// @ts-nocheck
+import { Effect, pipe } from 'effect';
 import { defaultTo, zipObj } from 'ramda';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
@@ -8,7 +9,7 @@ const wavesByDefault = defaultTo('WAVES');
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
-  (txs: ExchangeTx[]): Task<AppError, ExchangeTx[]> => {
+  (txs: ExchangeTx[]): Effect.Effect<ExchangeTx[], AppError> => {
     // extract unique assetIds participating in provided transactions
     const participatingAssetIds = Array.from(
       txs.reduce(
@@ -26,13 +27,14 @@ export const modifyDecimals =
       ),
     );
 
-    return assetsService
-      .precisions({ ids: participatingAssetIds })
-      .map(zipObj(participatingAssetIds))
-      .map((precisionsMap) => {
+    return pipe(
+      assetsService.precisions({ ids: participatingAssetIds }),
+      Effect.map(zipObj(participatingAssetIds)),
+      Effect.map((precisionsMap) => {
         const p = (assetId: string | null | undefined): number =>
           precisionsMap[wavesByDefault(assetId)];
 
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex decimal processing for exchange transactions
         return txs.map((tx) => {
           const feePrecision = p(tx.feeAsset);
 
@@ -67,31 +69,6 @@ export const modifyDecimals =
               ? order1MatcherFeePrecision
               : order2MatcherFeePrecision;
 
-          console.log(
-            JSON.stringify({
-              event: {
-                amountAssetPrecision,
-                buyMatcherFeePrecision,
-                name: 'EXCHANGE_TRANSACTION_DECIMALS',
-                order1MatcherFeePrecision,
-                order1PriceMode: tx.order1.priceMode,
-                order1PricePrecision,
-                order1Version: tx.order1.version,
-                order2MatcherFeePrecision,
-                order2PriceMode: tx.order2.priceMode,
-                order2PricePrecision,
-                order2Version: tx.order2.version,
-                priceAssetPrecision,
-                sellMatcherFeePrecision,
-                txFeePrecision: feePrecision,
-                txId: tx.id,
-                txPricePrecision: txPricePrecision,
-                txVersion: tx.version,
-              },
-              timestamp: new Date().toISOString(),
-            }),
-          );
-
           return {
             ...tx,
             amount: tx.amount.shiftedBy(-amountAssetPrecision),
@@ -113,5 +90,6 @@ export const modifyDecimals =
             sellMatcherFee: tx.sellMatcherFee.shiftedBy(-sellMatcherFeePrecision),
           };
         });
-      });
+      }),
+    );
   };

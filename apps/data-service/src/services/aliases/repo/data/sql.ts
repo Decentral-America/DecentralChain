@@ -1,4 +1,4 @@
-import * as knex from 'knex';
+import { type Knex, knex } from 'knex';
 import { complement, compose } from 'ramda';
 import {
   type AliasesSearchRequest,
@@ -19,16 +19,16 @@ const isAddress = (addressOrAlias: string) => addressOrAlias.length >= minAddres
 
 const getAliasRowNumber = (after: string) => pg('aliases_cte').select('rn').where('alias', after);
 
-const baseQuery = (qb: knex.QueryBuilder) => qb.from({ t: 'txs_10' }).select('t.uid');
+const baseQuery = (qb: Knex.QueryBuilder) => (qb.from({ t: 'txs_10' }) as any).select('t.uid');
 
-const selectAfterFilters = (filtered: knex.QueryBuilder) =>
-  pg.select(columns).from({ a: filtered });
+const selectAfterFilters = (filtered: Knex.QueryBuilder) =>
+  (pg.select(columns) as any).from({ a: filtered });
 
-const filterByAliases = (qb: knex.QueryBuilder, aliasSet: string[]) =>
+const filterByAliases = (qb: Knex.QueryBuilder, aliasSet: string[]) =>
   qb.whereIn('t.alias', aliasSet);
 
-const selectFilteredAliases = (filtered: knex.QueryBuilder) =>
-  pg.from({
+const selectFilteredAliases = (filtered: Knex.QueryBuilder) =>
+  (pg as any).from({
     counted_aliases: pg({ t: 'txs_10' })
       .select('t.alias')
       .min({ address: 't.sender' }) // first sender
@@ -49,15 +49,19 @@ const withQueries = (req: AliasesSearchRequest): req is AliasesSearchRequest & W
 
 export default {
   get: (alias: string) =>
-    selectAfterFilters(selectFilteredAliases(filterByAliases(baseQuery(pg()), [alias])))
+    selectAfterFilters(
+      selectFilteredAliases(filterByAliases(baseQuery(pg.queryBuilder()), [alias])),
+    )
       .clone()
       .toString(),
   mget: (aliases: string[]) =>
-    selectAfterFilters(selectFilteredAliases(filterByAliases(baseQuery(pg()), aliases)))
+    selectAfterFilters(
+      selectFilteredAliases(filterByAliases(baseQuery(pg.queryBuilder()), aliases)),
+    )
       .clone()
       .toString(),
   search: (req: AliasesSearchRequest) => {
-    const query = baseQuery(pg());
+    const query = baseQuery(pg.queryBuilder());
 
     let aliases: string[] = [];
 
@@ -68,7 +72,7 @@ export default {
     } else if (withQueries(req)) {
       query.whereIn('sender', req.queries.filter(isAddress));
       aliases = req.queries.filter(complement(isAddress));
-      query.unionAll((qb: knex.QueryBuilder) => filterByAliases(baseQuery(qb), aliases));
+      query.unionAll((qb: Knex.QueryBuilder) => filterByAliases(baseQuery(qb), aliases));
     }
 
     const q = selectAfterFilters(
@@ -80,10 +84,11 @@ export default {
       .orderBy('rn', 'asc')
       .limit(req.limit);
 
-    return compose<knex.QueryBuilder, knex.QueryBuilder, string>(
+    return (compose as any)(
       // aliases are considered broken if 'duplicates' not equal to 1
-      (q) => (req.showBroken ? q.toString() : q.clone().where('duplicates', 1).toString()),
-      (q) => (req.after ? q.where('rn', '>', getAliasRowNumber(req.after)) : q),
+      (q: Knex.QueryBuilder) =>
+        req.showBroken ? q.toString() : q.clone().where('duplicates', 1).toString(),
+      (q: Knex.QueryBuilder) => (req.after ? q.where('rn', '>', getAliasRowNumber(req.after)) : q),
     )(q);
   },
 };

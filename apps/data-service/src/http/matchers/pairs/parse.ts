@@ -1,4 +1,4 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either } from 'effect';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../../errorHandling';
 import { type WithLimit, type WithMatcher, type WithSortOrder } from '../../../services/_common';
@@ -6,23 +6,20 @@ import { type PairsServiceSearchRequest } from '../../../services/pairs';
 import { type PairsGetRequest, type PairsMgetRequest } from '../../../services/pairs/repo/types';
 import { withDefaults } from '../../_common/filters';
 import { type HttpRequest } from '../../_common/types';
-import {
-  isMgetRequest,
-  isSearchByAssetRequest,
-  isSearchByAssetsRequest,
-  isSearchCommonRequest,
-  mgetOrSearchParser,
-} from '../../pairs/utils';
+import { isMgetRequest, isSearchCommonRequest, mgetOrSearchParser } from '../../pairs/utils';
 
 export const get = ({
   params,
-}: HttpRequest<['matcher', 'amountAsset', 'priceAsset']>): Result<ParseError, PairsGetRequest> => {
+}: HttpRequest<['matcher', 'amountAsset', 'priceAsset']>): Either.Either<
+  PairsGetRequest,
+  ParseError
+> => {
   if (isNil(params)) {
-    return error(new ParseError(new Error('Params is empty')));
+    return Either.left(new ParseError(new Error('Params is empty')));
   }
 
   if (params.amountAsset && params.priceAsset) {
-    return ok({
+    return Either.right({
       matcher: params.matcher,
       pair: {
         amountAsset: params.amountAsset,
@@ -30,48 +27,43 @@ export const get = ({
       },
     });
   } else {
-    return error(new ParseError(new Error('AmountAssetId or PriceAssetId are not set')));
+    return Either.left(new ParseError(new Error('AmountAssetId or PriceAssetId are not set')));
   }
 };
 
 export const mgetOrSearch = ({
   params,
   query,
-}: HttpRequest<['matcher']>): Result<ParseError, PairsMgetRequest | PairsServiceSearchRequest> => {
+}: HttpRequest<['matcher']>): Either.Either<
+  PairsMgetRequest | PairsServiceSearchRequest,
+  ParseError
+> => {
   if (isNil(params)) {
-    return error(new ParseError(new Error('Params is empty')));
+    return Either.left(new ParseError(new Error('Params is empty')));
   }
 
   if (isNil(query)) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return mgetOrSearchParser(query).chain((fValues) => {
+  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
     if (isMgetRequest(fValues)) {
-      return ok({
+      return Either.right({
         matcher: params.matcher,
         pairs: fValues.pairs,
       });
     } else {
-      const fValuesWithDefaults = mergeAll<
-        PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit
-      >([
+      const fValuesWithDefaults = mergeAll<any>([
         withDefaults(fValues),
         {
           matcher: params.matcher,
         },
-      ]);
+      ]) as PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit;
 
-      if (isSearchCommonRequest(fValuesWithDefaults)) {
-        if (isSearchByAssetRequest(fValuesWithDefaults)) {
-          return ok(fValuesWithDefaults);
-        } else if (isSearchByAssetsRequest(fValuesWithDefaults)) {
-          return ok(fValuesWithDefaults);
-        } else {
-          return ok(fValuesWithDefaults);
-        }
+      if (isSearchCommonRequest(fValuesWithDefaults as any)) {
+        return Either.right(fValuesWithDefaults);
       } else {
-        return error(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
+        return Either.left(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
       }
     }
   });

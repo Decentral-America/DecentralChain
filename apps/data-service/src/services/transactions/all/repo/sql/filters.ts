@@ -1,6 +1,6 @@
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
 import * as commonFilters from '../../../_common/sql/filters';
-import * as commonFiltersOrder from '../../../_common/sql/filtersOrder';
+import commonFiltersOrder from '../../../_common/sql/filtersOrder';
 
 const byTimeStamp = createByTimeStamp('txs');
 

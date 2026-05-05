@@ -1,6 +1,8 @@
-import { Ok as ok } from 'folktale/result';
+import { Either } from 'effect';
 import { SortOrder } from '../../../../services/_common';
 import { parseFilterValues } from '..';
+
+const ok = <T>(v: T) => Either.right(v);
 
 describe('Filter values parsing', () => {
   const parseQuery = parseFilterValues({});

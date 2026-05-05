@@ -1,34 +1,46 @@
-import { type Maybe } from 'folktale/maybe';
-import { type Result, of as resultOf } from 'folktale/result';
-import { traverse } from 'ramda';
-import { liftInnerMaybe } from '../../../utils/fp';
+import { Either, Option } from 'effect';
+import { liftInnerOption } from '../../../utils/fp';
 
-export namespace applyValidation {
-  export const get =
-    <E, A>(fn: (a: A) => Result<E, A>) =>
-    (m: Maybe<A>) =>
-      liftInnerMaybe(resultOf, fn, m);
-  export const mget =
-    <E, A>(fn: (a: A) => Result<E, A>) =>
-    (ms: Maybe<A>[]): Result<E, Maybe<A>[]> =>
-      traverse(resultOf, (m: Maybe<A>) => liftInnerMaybe(resultOf, fn, m), ms);
-  export const search =
-    <E, A>(fn: (a: A) => Result<E, A>) =>
-    (as: A[]): Result<E, A[]> =>
-      traverse(resultOf, fn, as);
-}
+/** Sequences Either results over a collection. Left short-circuits. */
+const sequenceEither = <A, E>(eithers: Either.Either<A, E>[]): Either.Either<A[], E> => {
+  const results: A[] = [];
+  for (const e of eithers) {
+    if (Either.isLeft(e)) return e as Either.Either<A[], E>;
+    results.push(e.right);
+  }
+  return Either.right(results);
+};
 
-export namespace applyTransformation {
-  export const get =
+export const applyValidation = {
+  get:
+    <A, E>(fn: (a: A) => Either.Either<A, E>) =>
+    (m: Option.Option<A>): Either.Either<Option.Option<A>, E> =>
+      liftInnerOption(fn as any, m) as any,
+
+  mget:
+    <A, E>(fn: (a: A) => Either.Either<A, E>) =>
+    (ms: Option.Option<A>[]): Either.Either<Option.Option<A>[], E> =>
+      sequenceEither(ms.map((m) => liftInnerOption(fn as any, m) as any)) as any,
+
+  search:
+    <A, E>(fn: (a: A) => Either.Either<A, E>) =>
+    (as: A[]): Either.Either<A[], E> =>
+      sequenceEither(as.map(fn)),
+};
+
+export const applyTransformation = {
+  get:
     <A, B>(fn: (a: A) => B) =>
-    (m: Maybe<A>): B | null =>
-      m.map(fn).getOrElse(null);
-  export const mget =
+    (m: Option.Option<A>): B | null =>
+      Option.isSome(m) ? fn(m.value) : null,
+
+  mget:
     <A, B>(fn: (a: A) => B) =>
-    (ms: Maybe<A>[]): (B | null)[] =>
-      ms.map(applyTransformation.get(fn));
-  export const search =
+    (ms: Option.Option<A>[]): (B | null)[] =>
+      ms.map(applyTransformation.get(fn)),
+
+  search:
     <A, B>(fn: (a: A) => B) =>
     (as: A[]): B[] =>
-      as.map(fn);
-}
+      as.map(fn),
+};

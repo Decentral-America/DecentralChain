@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/data-entities';
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { type DataEntryValue } from '../../services/transactions/data/repo/types';
@@ -20,23 +20,32 @@ const isDataEntryType = (raw: unknown): raw is DataEntryType =>
     DataEntryType.String,
   ].includes(raw as DataEntryType);
 
-function parseValue(type: DataEntryType.Boolean, vs: string): Result<ParseError, boolean>;
-function parseValue(type: DataEntryType.Integer, vs: string): Result<ParseError, BigNumber>;
 function parseValue(
-  type: DataEntryType.Binary | DataEntryType.String,
+  type: typeof DataEntryType.Boolean,
   vs: string,
-): Result<ParseError, string>;
-function parseValue(type: DataEntryType | undefined, vu: undefined): Result<ParseError, undefined>;
+): Either.Either<boolean, ParseError>;
+function parseValue(
+  type: typeof DataEntryType.Integer,
+  vs: string,
+): Either.Either<BigNumber, ParseError>;
+function parseValue(
+  type: typeof DataEntryType.Binary | typeof DataEntryType.String,
+  vs: string,
+): Either.Either<string, ParseError>;
+function parseValue(
+  type: DataEntryType | undefined,
+  vu: undefined,
+): Either.Either<undefined, ParseError>;
 function parseValue(
   type: DataEntryType | undefined,
   vu: string | undefined,
-): Result<ParseError, DataEntryValue>;
+): Either.Either<DataEntryValue, ParseError>;
 
 function parseValue(
   type?: DataEntryType,
   value?: string,
-): Result<ParseError, DataEntryValue | undefined> {
-  if (type === undefined || value === undefined) return ok(undefined);
+): Either.Either<DataEntryValue | undefined, ParseError> {
+  if (type === undefined || value === undefined) return Either.right(undefined);
   if (type === DataEntryType.Boolean) return parseBool(value);
   else if (type === DataEntryType.Integer) {
     try {
@@ -44,47 +53,58 @@ function parseValue(
       if (v.isNaN()) {
         throw new Error('Provided value is not a number');
       } else {
-        return ok(v);
+        return Either.right(v);
       }
     } catch (e) {
-      return error(new ParseError(e));
+      return Either.left(new ParseError(e as Error | string));
     }
-  } else return ok(value);
+  } else return Either.right(value);
 }
 
 const parseDataEntryType: Parser<DataEntryType | undefined> = (raw) => {
-  if (isNil(raw)) return ok(undefined);
+  if (isNil(raw)) return Either.right(undefined);
 
   if (isDataEntryType(raw)) {
-    return ok(raw);
+    return Either.right(raw);
   } else {
-    return error(new ParseError(new Error('Invalid type param value')));
+    return Either.left(new ParseError(new Error('Invalid type param value')));
   }
 };
 
 export const parseDataMgetOrSearch = ({
   query,
-}: HttpRequest<string[]>): Result<ParseError, ServiceMgetRequest | DataTxsServiceSearchRequest> => {
+}: HttpRequest<string[]>): Either.Either<
+  ServiceMgetRequest | DataTxsServiceSearchRequest,
+  ParseError
+> => {
   if (!query) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return parseFilterValues({
-    key: commonFilters.query,
-    type: parseDataEntryType,
-    value: commonFilters.query,
-  })(query).chain((fValues) => {
-    if (isMgetRequest(fValues)) {
-      return ok(fValues);
-    } else {
-      const fValuesWithDefaults = withDefaults(fValues);
-      if (!isNil(fValuesWithDefaults.value) && isNil(fValuesWithDefaults.type)) {
-        return error(new ParseError(new Error('Type param has to be set with value param')));
+  return (Either.flatMap as any)(
+    parseFilterValues({
+      key: commonFilters.query,
+      type: parseDataEntryType,
+      value: commonFilters.query,
+    })(query),
+    (fValues: any) => {
+      if (isMgetRequest(fValues)) {
+        return Either.right(fValues);
+      } else {
+        const fValuesWithDefaults = withDefaults(fValues);
+        if (!isNil(fValuesWithDefaults.value) && isNil(fValuesWithDefaults.type)) {
+          return Either.left(
+            new ParseError(new Error('Type param has to be set with value param')),
+          );
+        }
+        return Either.map(
+          parseValue(fValuesWithDefaults.type, fValuesWithDefaults.value),
+          (value) => ({
+            ...fValuesWithDefaults,
+            ...(value ? { value } : {}),
+          }),
+        );
       }
-      return parseValue(fValuesWithDefaults.type, fValuesWithDefaults.value).map((value) => ({
-        ...fValuesWithDefaults,
-        ...(value ? { value } : {}),
-      }));
-    }
-  });
+    },
+  );
 };

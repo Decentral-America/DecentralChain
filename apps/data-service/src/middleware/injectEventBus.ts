@@ -1,6 +1,6 @@
-import { pick, curryN } from 'ramda';
+import { curryN, pick } from 'ramda';
 
-const collectRequestData = (ctx) => ({
+const collectRequestData = (ctx: any) => ({
   ...pick(['headers', 'httpVersion', 'method', 'url'])(ctx.request),
   headers: Object.entries(ctx.request.headers)
     .map((h) => h.join(':'))
@@ -8,10 +8,12 @@ const collectRequestData = (ctx) => ({
   requestId: ctx.state.id,
 });
 
-export default (eventBus) => async (ctx, next) => {
+export default (eventBus: any) => async (ctx: any, next: any) => {
   // Add request info to all logs
   const request = collectRequestData(ctx);
-  const emit = curryN(2, (message, data) => eventBus.emit('log', { data, message, request }));
+  const emit = curryN(2, (message: any, data: any) =>
+    eventBus.emit('log', { data, message, request }),
+  );
   ctx.eventBus = { emit };
   await next();
 };

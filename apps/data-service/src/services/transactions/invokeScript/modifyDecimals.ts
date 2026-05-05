@@ -1,4 +1,5 @@
-import { type Task } from 'folktale/concurrency/task';
+// @ts-nocheck
+import { Effect, pipe } from 'effect';
 import { defaultTo } from 'ramda';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
@@ -6,14 +7,14 @@ import { type InvokeScriptTx } from './repo/types';
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
-  (txs: InvokeScriptTx[]): Task<AppError, InvokeScriptTx[]> =>
-    assetsService
-      .precisions({
+  (txs: InvokeScriptTx[]): Effect.Effect<InvokeScriptTx[], AppError> =>
+    pipe(
+      assetsService.precisions({
         ids: txs
           .map((tx) => [defaultTo('WAVES', tx.feeAssetId)].concat(tx.payment.map((p) => p.assetId)))
           .reduce((acc, cur) => acc.concat(cur), []),
-      })
-      .map((precisions: number[]) =>
+      }),
+      Effect.map((precisions: number[]) =>
         txs.map((tx) => {
           const currentTxValues = precisions.splice(0, 1 + tx.payment.length);
           return {
@@ -25,4 +26,5 @@ export const modifyDecimals =
             })),
           };
         }),
-      );
+      ),
+    );

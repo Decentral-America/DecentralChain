@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { compose, curry } from 'ramda';
 
 const setMilliseconds = curry(
@@ -8,6 +9,6 @@ const incMinutes = curry(
   (min: number, dateTime: Date): Date => new Date(dateTime.getTime() + 60 * 1000 + min),
 );
 
-export const truncMilliseconds = setMilliseconds(0);
+export const truncMilliseconds: any = setMilliseconds(0);
 export const truncSeconds = compose(setSeconds(0), setMilliseconds(0));
 export const fillSeconds = compose(incMinutes(1), setSeconds(0), setMilliseconds(0));

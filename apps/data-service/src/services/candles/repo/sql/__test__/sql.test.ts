@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { interval as intervalFromString } from '../../../../../types/interval';
 import { sql } from '../sql';
 

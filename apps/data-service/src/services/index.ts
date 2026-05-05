@@ -1,4 +1,4 @@
-import { type Task, of as taskOf } from 'folktale/concurrency/task';
+import { Effect, pipe } from 'effect';
 import { type PgDriver } from '../db/driver';
 import { type AppError } from '../errorHandling';
 import { type DataServiceConfig } from '../loadConfig';
@@ -156,7 +156,7 @@ export default ({
   options: DataServiceConfig;
   pgDriver: PgDriver;
   emitEvent: EmitEvent;
-}): Task<AppError, ServiceMesh> => {
+}): Effect.Effect<ServiceMesh, AppError> => {
   const matcherConfig: Record<string, string> = {};
 
   if (options.matcher.settingsURL) {
@@ -164,163 +164,170 @@ export default ({
   }
 
   // @todo async init whatever is necessary
-  return PairOrderingServiceImpl.create(matcherConfig).map((pairOrderingService) => {
-    // caches
-    const ratesCache = new RateCacheImpl(200000, 60000); // 1 minute
-    const pairsCache = createPairsCache(1000, 5000);
-    const assetsCache = createAssetsCache(10000, 60000); // 1 minute
+  return pipe(
+    PairOrderingServiceImpl.create(matcherConfig),
+    Effect.map((pairOrderingService) => {
+      // caches
+      const ratesCache = new RateCacheImpl(200000, 60000); // 1 minute
+      const pairsCache = createPairsCache(1000, 5000);
+      const assetsCache = createAssetsCache(10000, 60000); // 1 minute
 
-    const commonDeps = {
-      drivers: {
-        pg: pgDriver,
-      },
-      emitEvent,
-    };
+      const commonDeps = {
+        drivers: {
+          pg: pgDriver,
+        },
+        emitEvent,
+      };
 
-    // common init services
-    const aliasesRepo = createAliasesRepo(commonDeps);
-    const aliases = createAliasesService(aliasesRepo);
+      // common init services
+      const aliasesRepo = createAliasesRepo(commonDeps);
+      const aliases = createAliasesService(aliasesRepo);
 
-    const assetsRepo = createAssetsRepo({
-      ...commonDeps,
-      cache: assetsCache,
-    });
-    const assets = createAssetsService(assetsRepo);
+      const assetsRepo = createAssetsRepo({
+        ...commonDeps,
+        cache: assetsCache,
+      });
+      const assets = createAssetsService(assetsRepo);
 
-    const pairsRepo = createPairsRepo({ ...commonDeps, cache: pairsCache });
-    const pairsNoAsyncValidation = createPairsService(pairsRepo, () => taskOf(undefined), assets);
-    const pairsWithAsyncValidation = createPairsService(
-      pairsRepo,
-      (matcher: string, pairs: AssetIdsPair[]) =>
-        validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
-      assets,
-    );
+      const pairsRepo = createPairsRepo({ ...commonDeps, cache: pairsCache });
+      const pairsNoAsyncValidation = createPairsService(
+        pairsRepo,
+        () => Effect.succeed(undefined),
+        assets,
+      );
+      const pairsWithAsyncValidation = createPairsService(
+        pairsRepo,
+        (matcher: string, pairs: AssetIdsPair[]) =>
+          validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
+        assets,
+      );
 
-    const thresholdAssetRateService = new ThresholdAssetRateService(
-      options.thresholdAssetId,
-      options.matcher.defaultMatcherAddress,
-      pairsNoAsyncValidation,
-      emitEvent('log'),
-    );
+      const thresholdAssetRateService = new ThresholdAssetRateService(
+        options.thresholdAssetId,
+        options.matcher.defaultMatcherAddress,
+        pairsNoAsyncValidation,
+        emitEvent('log'),
+      );
 
-    const aliasTxsRepo = createAliasTxsRepo(commonDeps);
-    const aliasTxs = createAliasTxsService(aliasTxsRepo, assets);
-    const burnTxsRepo = createBurnTxsRepo(commonDeps);
-    const burnTxs = createBurnTxsService(burnTxsRepo, assets);
-    const dataTxsRepo = createDataTxsRepo(commonDeps);
-    const dataTxs = createDataTxsService(dataTxsRepo, assets);
-    const exchangeTxsRepo = createExchangeTxsRepo(commonDeps);
-    const exchangeTxs = createExchangeTxsService(exchangeTxsRepo, assets);
-    const genesisTxsRepo = createGenesisTxsRepo(commonDeps);
-    const genesisTxs = createGenesisTxsService(genesisTxsRepo, assets);
-    const invokeScriptTxsRepo = createInvokeScriptTxsRepo(commonDeps);
-    const invokeScriptTxs = createInvokeScriptTxsService(invokeScriptTxsRepo, assets);
-    const issueTxsRepo = createIssueTxsRepo(commonDeps);
-    const issueTxs = createIssueTxsService(issueTxsRepo, assets);
-    const leaseTxsRepo = createLeaseTxsRepo(commonDeps);
-    const leaseTxs = createLeaseTxsService(leaseTxsRepo, assets);
-    const leaseCancelTxsRepo = createLeaseCancelTxsRepo(commonDeps);
-    const leaseCancelTxs = createLeaseCancelTxsService(leaseCancelTxsRepo, assets);
-    const massTransferTxsRepo = createMassTransferTxsRepo(commonDeps);
-    const massTransferTxs = createMassTransferTxsService(massTransferTxsRepo, assets);
-    const paymentTxsRepo = createPaymentTxsRepo(commonDeps);
-    const paymentTxs = createPaymentTxsService(paymentTxsRepo, assets);
-    const reissueTxsRepo = createReissueTxsRepo(commonDeps);
-    const reissueTxs = createReissueTxsService(reissueTxsRepo, assets);
-    const setAssetScriptTxsRepo = createSetAssetScriptTxsRepo(commonDeps);
-    const setAssetScriptTxs = createSetAssetScriptTxsService(setAssetScriptTxsRepo, assets);
-    const setScriptTxsRepo = createSetScriptTxsRepo(commonDeps);
-    const setScriptTxs = createSetScriptTxsService(setScriptTxsRepo, assets);
-    const sponsorshipTxsRepo = createSponsorshipTxsRepo(commonDeps);
-    const sponsorshipTxs = createSponsorshipTxsService(sponsorshipTxsRepo, assets);
-    const transferTxsRepo = createTransferTxsRepo(commonDeps);
-    const transferTxs = createTransferTxsService(transferTxsRepo, assets);
-    const updateAssetInfoRepo = createUpdateAssetInfoTxsRepo(commonDeps);
-    const updateAssetInfoTxs = createUpdateAssetInfoTxsService(updateAssetInfoRepo, assets);
-    const ethereumLikeRepo = createEthereumLikeTxsRepo(commonDeps);
-    const ethereumLikeTxs = createEthereumLikeTxsService(ethereumLikeRepo, assets);
+      const aliasTxsRepo = createAliasTxsRepo(commonDeps);
+      const aliasTxs = createAliasTxsService(aliasTxsRepo, assets);
+      const burnTxsRepo = createBurnTxsRepo(commonDeps);
+      const burnTxs = createBurnTxsService(burnTxsRepo, assets);
+      const dataTxsRepo = createDataTxsRepo(commonDeps);
+      const dataTxs = createDataTxsService(dataTxsRepo, assets);
+      const exchangeTxsRepo = createExchangeTxsRepo(commonDeps);
+      const exchangeTxs = createExchangeTxsService(exchangeTxsRepo, assets);
+      const genesisTxsRepo = createGenesisTxsRepo(commonDeps);
+      const genesisTxs = createGenesisTxsService(genesisTxsRepo, assets);
+      const invokeScriptTxsRepo = createInvokeScriptTxsRepo(commonDeps);
+      const invokeScriptTxs = createInvokeScriptTxsService(invokeScriptTxsRepo, assets);
+      const issueTxsRepo = createIssueTxsRepo(commonDeps);
+      const issueTxs = createIssueTxsService(issueTxsRepo, assets);
+      const leaseTxsRepo = createLeaseTxsRepo(commonDeps);
+      const leaseTxs = createLeaseTxsService(leaseTxsRepo, assets);
+      const leaseCancelTxsRepo = createLeaseCancelTxsRepo(commonDeps);
+      const leaseCancelTxs = createLeaseCancelTxsService(leaseCancelTxsRepo, assets);
+      const massTransferTxsRepo = createMassTransferTxsRepo(commonDeps);
+      const massTransferTxs = createMassTransferTxsService(massTransferTxsRepo, assets);
+      const paymentTxsRepo = createPaymentTxsRepo(commonDeps);
+      const paymentTxs = createPaymentTxsService(paymentTxsRepo, assets);
+      const reissueTxsRepo = createReissueTxsRepo(commonDeps);
+      const reissueTxs = createReissueTxsService(reissueTxsRepo, assets);
+      const setAssetScriptTxsRepo = createSetAssetScriptTxsRepo(commonDeps);
+      const setAssetScriptTxs = createSetAssetScriptTxsService(setAssetScriptTxsRepo, assets);
+      const setScriptTxsRepo = createSetScriptTxsRepo(commonDeps);
+      const setScriptTxs = createSetScriptTxsService(setScriptTxsRepo, assets);
+      const sponsorshipTxsRepo = createSponsorshipTxsRepo(commonDeps);
+      const sponsorshipTxs = createSponsorshipTxsService(sponsorshipTxsRepo, assets);
+      const transferTxsRepo = createTransferTxsRepo(commonDeps);
+      const transferTxs = createTransferTxsService(transferTxsRepo, assets);
+      const updateAssetInfoRepo = createUpdateAssetInfoTxsRepo(commonDeps);
+      const updateAssetInfoTxs = createUpdateAssetInfoTxsService(updateAssetInfoRepo, assets);
+      const ethereumLikeRepo = createEthereumLikeTxsRepo(commonDeps);
+      const ethereumLikeTxs = createEthereumLikeTxsService(ethereumLikeRepo, assets);
 
-    const rateRepo = new RemoteRateRepo(commonDeps.drivers.pg);
+      const rateRepo = new RemoteRateRepo(commonDeps.drivers.pg);
 
-    const rates = createRateService({
-      ...commonDeps,
-      assets,
-      baseAssetId: options.rateBaseAssetId,
-      cache: ratesCache,
-      pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
-      pairs: pairsNoAsyncValidation,
-      repo: rateRepo,
-      thresholdAssetRateService: thresholdAssetRateService,
-    });
+      const rates = createRateService({
+        ...commonDeps,
+        assets,
+        baseAssetId: options.rateBaseAssetId,
+        cache: ratesCache,
+        pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
+        pairs: pairsNoAsyncValidation,
+        repo: rateRepo,
+        thresholdAssetRateService: thresholdAssetRateService,
+      });
 
-    const candlesRepo = createCandlesRepo(commonDeps);
-    const candlesNoAsyncValidation = createCandlesService(
-      candlesRepo,
-      () => taskOf(undefined),
-      assets,
-    );
-    const candlesWithAsyncValidation = createCandlesService(
-      candlesRepo,
-      (matcher: string, pairs: AssetIdsPair[]) =>
-        validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
-      assets,
-    );
+      const candlesRepo = createCandlesRepo(commonDeps);
+      const candlesNoAsyncValidation = createCandlesService(
+        candlesRepo,
+        () => Effect.succeed(undefined),
+        assets,
+      );
+      const candlesWithAsyncValidation = createCandlesService(
+        candlesRepo,
+        (matcher: string, pairs: AssetIdsPair[]) =>
+          validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
+        assets,
+      );
 
-    // specific init services
-    // all txs service
-    const allTxsRepo = createAllTxsRepo(commonDeps);
-    const allTxs = createAllTxsService(allTxsRepo)({
-      1: genesisTxs,
-      2: paymentTxs,
-      3: issueTxs,
-      4: transferTxs,
-      5: reissueTxs,
-      6: burnTxs,
-      7: exchangeTxs,
-      8: leaseTxs,
-      9: leaseCancelTxs,
-      10: aliasTxs,
-      11: massTransferTxs,
-      12: dataTxs,
-      13: setScriptTxs,
-      14: sponsorshipTxs,
-      15: setAssetScriptTxs,
-      16: invokeScriptTxs,
-      17: updateAssetInfoTxs,
-      18: ethereumLikeTxs,
-    });
+      // specific init services
+      // all txs service
+      const allTxsRepo = createAllTxsRepo(commonDeps);
+      const allTxs = createAllTxsService(allTxsRepo)({
+        1: genesisTxs,
+        2: paymentTxs,
+        3: issueTxs,
+        4: transferTxs,
+        5: reissueTxs,
+        6: burnTxs,
+        7: exchangeTxs,
+        8: leaseTxs,
+        9: leaseCancelTxs,
+        10: aliasTxs,
+        11: massTransferTxs,
+        12: dataTxs,
+        13: setScriptTxs,
+        14: sponsorshipTxs,
+        15: setAssetScriptTxs,
+        16: invokeScriptTxs,
+        17: updateAssetInfoTxs,
+        18: ethereumLikeTxs,
+      });
 
-    return {
-      aliases,
-      assets,
-      candles: candlesNoAsyncValidation,
-      matchers: {
-        candles: candlesWithAsyncValidation,
-        pairs: pairsWithAsyncValidation,
-        rates,
-      },
-      pairs: pairsNoAsyncValidation,
-      transactions: {
-        alias: aliasTxs,
-        all: allTxs,
-        burn: burnTxs,
-        data: dataTxs,
-        ethereumLike: ethereumLikeTxs,
-        exchange: exchangeTxs,
-        genesis: genesisTxs,
-        invokeScript: invokeScriptTxs,
-        issue: issueTxs,
-        lease: leaseTxs,
-        leaseCancel: leaseCancelTxs,
-        massTransfer: massTransferTxs,
-        payment: paymentTxs,
-        reissue: reissueTxs,
-        setAssetScript: setAssetScriptTxs,
-        setScript: setScriptTxs,
-        sponsorship: sponsorshipTxs,
-        transfer: transferTxs,
-        updateAssetInfo: updateAssetInfoTxs,
-      },
-    };
-  });
+      return {
+        aliases,
+        assets,
+        candles: candlesNoAsyncValidation,
+        matchers: {
+          candles: candlesWithAsyncValidation,
+          pairs: pairsWithAsyncValidation,
+          rates,
+        },
+        pairs: pairsNoAsyncValidation,
+        transactions: {
+          alias: aliasTxs,
+          all: allTxs,
+          burn: burnTxs,
+          data: dataTxs,
+          ethereumLike: ethereumLikeTxs,
+          exchange: exchangeTxs,
+          genesis: genesisTxs,
+          invokeScript: invokeScriptTxs,
+          issue: issueTxs,
+          lease: leaseTxs,
+          leaseCancel: leaseCancelTxs,
+          massTransfer: massTransferTxs,
+          payment: paymentTxs,
+          reissue: reissueTxs,
+          setAssetScript: setAssetScriptTxs,
+          setScript: setScriptTxs,
+          sponsorship: sponsorshipTxs,
+          transfer: transferTxs,
+          updateAssetInfo: updateAssetInfoTxs,
+        },
+      };
+    }),
+  );
 };

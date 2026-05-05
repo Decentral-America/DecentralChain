@@ -1,4 +1,5 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
+import { Effect, pipe } from 'effect';
 import {
   type AliasesService,
   type AliasesServiceMgetRequest,
@@ -24,8 +25,8 @@ const mgetOrSearchHandler = (aliasesService: AliasesService) =>
   createHttpHandler(
     (req) =>
       isMgetRequest(req)
-        ? aliasesService.mget(req).map(mgetSerializer(alias))
-        : aliasesService.search(req).map(searchSerializer(alias)),
+        ? pipe(aliasesService.mget(req), Effect.map(mgetSerializer(alias)))
+        : pipe(aliasesService.search(req), Effect.map(searchSerializer(alias))),
     parseMgetOrSearch,
   );
 
@@ -33,7 +34,10 @@ export default (aliasesService: AliasesService): Router => {
   return subrouter
     .get(
       '/aliases/:id',
-      createHttpHandler((req) => aliasesService.get(req).map(getSerializer(alias)), parseGet),
+      createHttpHandler(
+        (req) => pipe(aliasesService.get(req), Effect.map(getSerializer(alias))),
+        parseGet,
+      ),
     )
     .get('/aliases', mgetOrSearchHandler(aliasesService))
     .post('/aliases', postToGet(mgetOrSearchHandler(aliasesService)));

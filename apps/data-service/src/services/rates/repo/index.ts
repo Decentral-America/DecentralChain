@@ -1,5 +1,5 @@
 import { type Asset, BigNumber } from '@decentralchain/data-entities';
-import { type Task } from 'folktale/concurrency/task';
+import { type Effect } from 'effect';
 import { chain, partition, uniqWith } from 'ramda';
 
 import { type CacheSync } from '../../../types';
@@ -10,7 +10,7 @@ import { type RateCacheKey } from './impl/RateCache';
 export type RateCache = CacheSync<RateCacheKey, VolumeAwareRateInfo>;
 
 export type AsyncMget<Req, Res, Error> = {
-  mget(req: Req): Task<Error, Res[]>;
+  mget(req: Req): Effect.Effect<Res[], Error>;
 };
 
 export type PairsForRequest = {
@@ -26,8 +26,6 @@ export const partitionByPreComputed = (
   baseAsset: Asset,
 ): PairsForRequest => {
   const generatePossibleRequestItems = createGeneratePossibleRequestItemsWithAsset(baseAsset);
-  // pair is symmetric if amountAsset == priceAsset
-  // therefore rate = 1, volume = 0
   const [symmetric, asymmetric] = partition(pairIsSymmetric, pairs);
 
   const eqRates: Array<VolumeAwareRateInfo> = symmetric.map((pair) => ({
@@ -43,16 +41,14 @@ export const partitionByPreComputed = (
 
   if (shouldCache) {
     const [cached, uncached] = partition((it) => cache.has(getCacheKey(it)), allPairsToRequest);
-
-    const cachedRates = cached.map((pair) => cache.get(getCacheKey(pair)).unsafeGet());
-    return {
-      preComputed: cachedRates.concat(eqRates),
-      toBeRequested: uncached,
-    };
+    // Option.isSome is guaranteed here because cache.has returned true
+    const cachedRates = cached.map((pair) => {
+      const m = cache.get(getCacheKey(pair));
+      if (m._tag !== 'Some') throw new Error('Cache miss after has()');
+      return m.value;
+    });
+    return { preComputed: cachedRates.concat(eqRates), toBeRequested: uncached };
   } else {
-    return {
-      preComputed: eqRates,
-      toBeRequested: allPairsToRequest,
-    };
+    return { preComputed: eqRates, toBeRequested: allPairsToRequest };
   }
 };

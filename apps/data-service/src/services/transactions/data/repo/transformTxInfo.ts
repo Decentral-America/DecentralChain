@@ -1,4 +1,4 @@
-import { compose, reject, isNil } from 'ramda';
+import { compose, isNil, reject } from 'ramda';
 
 import { transformTxInfo } from '../../_common/transformTxInfo';
 

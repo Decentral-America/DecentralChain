@@ -1,4 +1,4 @@
-import * as checkEnv from 'check-env';
+import checkEnv from 'check-env';
 import { always, isNil, memoizeWith } from 'ramda';
 
 export type PostgresConfig = {
@@ -47,18 +47,19 @@ export const loadDefaultConfig = (): DefaultConfig => {
   checkEnv(commonEnvVariables);
 
   return {
-    logLevel: process.env.LOG_LEVEL || 'info',
-    port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
-    postgresDatabase: process.env.PGDATABASE || 'mainnet',
-    postgresHost: process.env.PGHOST || '',
-    postgresPassword: process.env.PGPASSWORD || 'postgres',
-    postgresPoolSize: process.env.PGPOOLSIZE ? parseInt(process.env.PGPOOLSIZE) : 20,
-    postgresPort: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
+    logLevel: process.env['LOG_LEVEL'] || 'info',
+    port: process.env['PORT'] ? parseInt(process.env['PORT'], 10) : 3000,
+    postgresDatabase: process.env['PGDATABASE'] || 'mainnet',
+    postgresHost: process.env['PGHOST'] || '',
+    postgresPassword: process.env['PGPASSWORD'] || 'postgres',
+    postgresPoolSize: process.env['PGPOOLSIZE'] ? parseInt(process.env['PGPOOLSIZE'], 10) : 20,
+    postgresPort: process.env['PGPORT'] ? parseInt(process.env['PGPORT'], 10) : 5432,
     postgresStatementTimeout:
-      isNil(process.env.PGSTATEMENTTIMEOUT) || isNaN(parseInt(process.env.PGSTATEMENTTIMEOUT))
+      isNil(process.env['PGSTATEMENTTIMEOUT']) ||
+      Number.isNaN(parseInt(process.env['PGSTATEMENTTIMEOUT'], 10))
         ? false
-        : parseInt(process.env.PGSTATEMENTTIMEOUT),
-    postgresUser: process.env.PGUSER || 'postgres',
+        : parseInt(process.env['PGSTATEMENTTIMEOUT'], 10),
+    postgresUser: process.env['PGUSER'] || 'postgres',
   };
 };
 
@@ -82,26 +83,26 @@ const load = (): DataServiceConfig => {
 
   const matcher: MatcherConfig = {
     matcher: {
-      defaultMatcherAddress: process.env.DEFAULT_MATCHER as string,
+      defaultMatcherAddress: process.env['DEFAULT_MATCHER'] as string,
     },
   };
 
   const volumeThreshold = ensurePositiveNumber(
-    parseInt(process.env.RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD as string),
+    parseInt(process.env['RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD'] as string, 10),
     'RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD environment variable should be a positive integer',
   );
 
   const rate: RatesConfig = {
     pairAcceptanceVolumeThreshold: volumeThreshold,
-    rateBaseAssetId: (process.env.RATE_BASE_ASSET_ID as string) || 'WAVES',
-    thresholdAssetId: process.env.RATE_THRESHOLD_ASSET_ID as string,
+    rateBaseAssetId: (process.env['RATE_BASE_ASSET_ID'] as string) || 'WAVES',
+    thresholdAssetId: process.env['RATE_THRESHOLD_ASSET_ID'] as string,
   };
 
   if (
-    typeof process.env.MATCHER_SETTINGS_URL !== 'undefined' &&
-    process.env.MATCHER_SETTINGS_URL !== ''
+    typeof process.env['MATCHER_SETTINGS_URL'] !== 'undefined' &&
+    process.env['MATCHER_SETTINGS_URL'] !== ''
   ) {
-    matcher.matcher.settingsURL = process.env.MATCHER_SETTINGS_URL;
+    matcher.matcher.settingsURL = process.env['MATCHER_SETTINGS_URL'];
   }
 
   return {

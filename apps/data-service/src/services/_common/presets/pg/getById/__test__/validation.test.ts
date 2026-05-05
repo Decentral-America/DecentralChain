@@ -1,12 +1,9 @@
-import { of as taskOf } from 'folktale/concurrency/task';
-import { type SchemaLike } from 'joi';
+import { Effect, Option, Schema } from 'effect';
 import { always, identity, T } from 'ramda';
 import { type PgDriver } from '../../../../../../db/driver';
-import { Joi } from '../../../../../../utils/validation';
-
 import { getByIdPreset } from '../../getById';
 
-const createService = (resultSchema: SchemaLike) =>
+const createService = (resultSchema: Schema.Schema<any>) =>
   getByIdPreset<string, string, string>({
     name: 'some_name',
     resultSchema,
@@ -14,38 +11,26 @@ const createService = (resultSchema: SchemaLike) =>
     transformResult: identity,
   })({
     emitEvent: always(T),
-    pg: { oneOrNone: (id: string) => taskOf(id) } as PgDriver,
+    pg: { oneOrNone: (id: string) => Effect.succeed(id) } as unknown as PgDriver,
   });
 
 describe('getById', () => {
   describe('input validation', () => {
-    // passing result validation
-    const service = createService(Joi.any());
+    const service = createService(Schema.String);
 
-    it('passes if id param is a string', (done) =>
-      service('someidgoeshere2942415')
-        .run()
-        .listen({
-          onRejected: () => done.fail,
-          onResolved: (x) => {
-            expect(x).toBeJust('someidgoeshere2942415');
-            done();
-          },
-        }));
+    it('passes if id param is a string', async () => {
+      const result = await Effect.runPromise(service('someidgoeshere2942415'));
+      expect(Option.isSome(result) ? result.value : null).toBe('someidgoeshere2942415');
+    });
   });
 
   describe('result validation', () => {
-    // failing result validation
-    const service = createService(Joi.any().valid('qweasd'));
+    // Schema that only accepts 'qweasd'
+    const strictSchema = Schema.Literal('qweasd');
+    const service = createService(strictSchema);
 
-    it('applies schema correctly', (done) =>
-      service('someidgoeshere2942415')
-        .run()
-        .listen({
-          onRejected: (e) => {
-            expect(e.type).toBe('Resolver');
-            done();
-          },
-        }));
+    it('applies schema correctly — rejects invalid values', async () => {
+      await expect(Effect.runPromise(service('someidgoeshere2942415'))).rejects.toBeDefined();
+    });
   });
 });

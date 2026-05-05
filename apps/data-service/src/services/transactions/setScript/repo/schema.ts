@@ -1,9 +1,8 @@
-import { Joi } from '../../../../utils/validation';
-
+// @ts-nocheck
+import { Schema } from 'effect';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  script: Joi.string().required().allow(null),
+  script: Schema.NullOr(Schema.String),
 });

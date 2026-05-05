@@ -1,4 +1,4 @@
-import { type Maybe } from 'folktale/maybe';
+import { type Option } from 'effect';
 import {
   type SearchedItems,
   type Service,
@@ -18,8 +18,11 @@ type EthereumLikeTxsServiceMgetRequest = ServiceMgetRequest<EthereumLikeTxsMgetR
 type EthereumLikeTxsServiceSearchRequest = EthereumLikeTxsSearchRequest;
 
 export type EthereumLikeTxsService = {
-  get: Service<EthereumLikeTxsServiceGetRequest & WithMoneyFormat, Maybe<EthereumLikeTx>>;
-  mget: Service<EthereumLikeTxsServiceMgetRequest & WithMoneyFormat, Maybe<EthereumLikeTx>[]>;
+  get: Service<EthereumLikeTxsServiceGetRequest & WithMoneyFormat, Option.Option<EthereumLikeTx>>;
+  mget: Service<
+    EthereumLikeTxsServiceMgetRequest & WithMoneyFormat,
+    Option.Option<EthereumLikeTx>[]
+  >;
   search: Service<
     EthereumLikeTxsServiceSearchRequest & WithMoneyFormat,
     SearchedItems<EthereumLikeTx>

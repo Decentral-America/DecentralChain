@@ -1,6 +1,5 @@
 import { Asset, BigNumber } from '@decentralchain/data-entities';
-import { empty } from 'folktale/maybe';
-
+import { Option } from 'effect';
 import { MoneyFormat } from '../../../../types';
 import RateInfoLookup from '../RateInfoLookup';
 
@@ -36,21 +35,22 @@ describe('RateInfoLookup', () => {
 
       const data = [
         {
-          amountAsset: amountAsset,
+          amountAsset,
           priceAsset: baseAsset,
           rate: new BigNumber(10),
           volumeWaves: new BigNumber(100),
         },
       ];
 
-      const lookup = new RateInfoLookup(data, empty(), baseAsset);
+      const lookup = new RateInfoLookup(data, Option.none(), baseAsset);
 
       const request = {
         amountAsset: baseAsset,
         moneyFormat: MoneyFormat.Long,
         priceAsset: amountAsset,
       };
-      const rate = lookup.get(request).getOrElse(undefined);
+      const result = lookup.get(request);
+      const rate = Option.isSome(result) ? result.value : undefined;
 
       expect(rate).toBeDefined();
       expect(rate?.amountAsset.id).toEqual(request.amountAsset.id);

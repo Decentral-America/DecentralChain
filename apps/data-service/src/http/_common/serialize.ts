@@ -1,4 +1,4 @@
-import { type Maybe } from 'folktale/maybe';
+import { type Option } from 'effect';
 import { list, type SearchedItems, type Serializable } from '../../types';
 import { stringify } from '../../utils/json';
 import { LSNFormat } from '../types';
@@ -10,35 +10,24 @@ export const get =
     toSerializable: (t: T | null) => Res,
     lsnFormat: LSNFormat = LSNFormat.String,
   ) =>
-  (m: Maybe<T>): HttpResponse =>
-    m.matchWith({
-      Just: ({ value }) =>
-        HttpResponse.Ok(stringify(lsnFormat)(toSerializable(value))).withHeaders({
+  (m: Option.Option<T>): HttpResponse =>
+    m._tag === 'Some'
+      ? HttpResponse.Ok(stringify(lsnFormat)(toSerializable(m.value))).withHeaders({
           'Content-Type': contentTypeWithLSN(lsnFormat),
-        }),
-      Nothing: () => HttpResponse.NotFound(),
-    });
+        })
+      : HttpResponse.NotFound();
 
 export const mget =
   <T extends R, Res extends Serializable<string, R | null>, R = T>(
     toSerializable: (t: T | null) => Res,
     lsnFormat: LSNFormat = LSNFormat.String,
   ) =>
-  (ms: Maybe<T>[]): HttpResponse =>
+  (ms: Option.Option<T>[]): HttpResponse =>
     HttpResponse.Ok(
       stringify(lsnFormat)(
-        list(
-          ms.map((maybe) =>
-            maybe.matchWith({
-              Just: ({ value }) => toSerializable(value),
-              Nothing: () => toSerializable(null),
-            }),
-          ),
-        ),
+        list(ms.map((m) => (m._tag === 'Some' ? toSerializable(m.value) : toSerializable(null)))),
       ),
-    ).withHeaders({
-      'Content-Type': contentTypeWithLSN(lsnFormat),
-    });
+    ).withHeaders({ 'Content-Type': contentTypeWithLSN(lsnFormat) });
 
 export const search =
   <T extends R, Res extends Serializable<string, R | null>, R = T>(
@@ -50,12 +39,7 @@ export const search =
       stringify(lsnFormat)(
         list(
           data.items.map((a) => toSerializable(a)),
-          {
-            isLastPage: data.isLastPage,
-            lastCursor: data.lastCursor,
-          },
+          { isLastPage: data.isLastPage, lastCursor: data.lastCursor },
         ),
       ),
-    ).withHeaders({
-      'Content-Type': contentTypeWithLSN(lsnFormat),
-    });
+    ).withHeaders({ 'Content-Type': contentTypeWithLSN(lsnFormat) });

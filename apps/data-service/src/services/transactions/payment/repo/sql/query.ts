@@ -1,4 +1,5 @@
 import { knex as _knex } from 'knex';
+
 const pg = _knex({ client: 'pg' });
 
 const columnsWithoutRecipient = {
@@ -21,7 +22,7 @@ const columnsWithoutRecipient = {
 
 const select = pg({ t: 'txs_2' });
 
-const selectFromFiltered = (s) => (filtered) =>
+const selectFromFiltered = (s: any) => (filtered: any) =>
   pg
     .select(columnsWithoutRecipient)
     .select({ recipient: 't.recipient' })

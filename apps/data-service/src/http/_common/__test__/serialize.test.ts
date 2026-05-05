@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/data-entities';
-import { of as maybeOf } from 'folktale/maybe';
+import { Option } from 'effect';
 import { list } from '../../../types/list';
 import { stringify } from '../../../utils/json';
 import { LSNFormat } from '../../types';
@@ -26,7 +26,7 @@ const testItem = {
 
 describe('Serializer', () => {
   describe('get', () => {
-    const data = maybeOf(testItem);
+    const data = Option.some(testItem);
 
     it('should correctly serialize data with number LSN Format', () => {
       const lsnFormat = LSNFormat.Number;
@@ -48,7 +48,7 @@ describe('Serializer', () => {
   });
 
   describe('mget', () => {
-    const data = [maybeOf(testItem), maybeOf(testItem)];
+    const data = [Option.some(testItem), Option.some(testItem)];
 
     it('should correctly serialize data with Number LSN Format', () => {
       const lsnFormat = LSNFormat.Number;

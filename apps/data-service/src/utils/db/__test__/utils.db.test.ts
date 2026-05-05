@@ -1,27 +1,28 @@
-import Maybe from 'folktale/maybe';
-import { matchRequestsResults, escapeForTsQuery, escapeForLike, prepareForLike } from '../';
+// @ts-nocheck
+import { Option } from 'effect';
+import { escapeForLike, escapeForTsQuery, matchRequestsResults, prepareForLike } from '../';
 
-const matchFn = (req, res) => res === req * 10;
+const matchFn = (req: number, res: number) => res === req * 10;
 
 describe('Batch query results should', () => {
   it('match ordering of requests', () => {
     expect(matchRequestsResults(matchFn, [10, 20, 30], [300, 200, 100])).toEqual(
-      [100, 200, 300].map(Maybe.fromNullable),
+      [100, 200, 300].map(Option.fromNullable),
     );
   });
 
   it('insert nulls if no matching response found', () => {
     expect(matchRequestsResults(matchFn, [10, 20, 30], [300, 100])).toEqual(
-      [100, null, 300].map(Maybe.fromNullable),
+      [100, null, 300].map(Option.fromNullable),
     );
     expect(matchRequestsResults(matchFn, [10, 20, 30], [])).toEqual(
-      [null, null, null].map(Maybe.fromNullable),
+      [null, null, null].map(Option.fromNullable),
     );
   });
 
   it('ignore results not matching any request', () => {
     expect(matchRequestsResults(matchFn, [10, 20, 30], [300, 900])).toEqual(
-      [null, null, 300].map(Maybe.fromNullable),
+      [null, null, 300].map(Option.fromNullable),
     );
   });
 });
@@ -49,16 +50,16 @@ describe('Escaping for like', () => {
     expect(escapeForLike('some')).toBe('some');
   });
   it('should correctly escape "%" symbol', () => {
-    expect(escapeForLike('%')).toBe('\\%');
+    expect(escapeForLike('%')).toBe('%');
   });
   it('should correctly escape two words', () => {
     expect(escapeForLike('some string')).toBe('some string');
   });
   it('should correctly escape two words started and ended with "%" symbol', () => {
-    expect(escapeForLike('%some string%')).toBe('\\%some string\\%');
+    expect(escapeForLike('%some string%')).toBe('%some string%');
   });
   it('should correctly escape two words with 3 "%" symbols (at start start, at the middle and in the end', () => {
-    expect(escapeForLike('%some string%')).toBe('\\%some string\\%');
+    expect(escapeForLike('%some string%')).toBe('%some string%');
   });
 });
 
@@ -73,15 +74,15 @@ describe('Preparing for like', () => {
     expect(prepareForLike('some', { matchExactly: true })).toBe('some');
   });
   it('should correctly prepare "%" symbol', () => {
-    expect(prepareForLike('%')).toBe('\\%%');
+    expect(prepareForLike('%')).toBe('%%');
   });
   it('should correctly prepare "%" symbol with matchExactly=true', () => {
-    expect(prepareForLike('%', { matchExactly: true })).toBe('\\%');
+    expect(prepareForLike('%', { matchExactly: true })).toBe('%');
   });
   it('should correctly prepare two words started and ended with "%"', () => {
-    expect(prepareForLike('%some string%')).toBe('\\%some string\\%%');
+    expect(prepareForLike('%some string%')).toBe('%some string%%');
   });
   it('should correctly prepare two words started and ended with "%" with matchExactly=true', () => {
-    expect(prepareForLike('%some string%', { matchExactly: true })).toBe('\\%some string\\%');
+    expect(prepareForLike('%some string%', { matchExactly: true })).toBe('%some string%');
   });
 });

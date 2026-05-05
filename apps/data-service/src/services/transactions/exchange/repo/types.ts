@@ -39,15 +39,17 @@ export type ExchangeTxDbResponse = RawTx & {
   o2_matcher_fee_asset_id: string;
 };
 
-export enum OrderPriceMode {
-  AssetDecimals = 'assetDecimals',
-  FixedDecimals = 'fixedDecimals',
-}
+export const OrderPriceMode = {
+  AssetDecimals: 'assetDecimals',
+  FixedDecimals: 'fixedDecimals',
+} as const;
+export type OrderPriceMode = (typeof OrderPriceMode)[keyof typeof OrderPriceMode];
 
-export enum OrderType {
-  Buy = 'buy',
-  Sell = 'sell',
-}
+export const OrderType = {
+  Buy: 'buy',
+  Sell: 'sell',
+} as const;
+export type OrderType = (typeof OrderType)[keyof typeof OrderType];
 
 type Order = {
   id: string;

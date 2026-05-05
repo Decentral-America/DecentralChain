@@ -1,11 +1,15 @@
+// @ts-nocheck
+import { createRequire } from 'node:module';
 import { zipObj } from 'ramda';
-
-// presets
-import { get, mget, search } from './presets';
-
 // dependencies
 import { createPgDriver } from '../../../../db';
 import { loadConfig } from '../../../../loadConfig';
+import allServiceCreator from '../../all';
+import allCommonDataServiceCreator from '../../all/commonData';
+// presets
+import { get, mget, search } from './presets';
+
+const _require = createRequire(import.meta.url);
 const options = loadConfig();
 const drivers = {
   pg: createPgDriver(options),
@@ -39,13 +43,10 @@ const serviceNames = {
 const serviceInstances = zipObj(
   Object.keys(serviceNames),
   Object.values(serviceNames).map((svcName) => {
-    const serviceCreator = require(`../../${svcName}`).default;
+    const serviceCreator = _require(`../../${svcName}`).default;
     return serviceCreator(commonServiceCreatorOptions);
   }),
 );
-
-import allCommonDataServiceCreator from '../../all/commonData';
-import allServiceCreator from '../../all';
 
 const allServiceInstances = {
   ...serviceInstances,

@@ -1,8 +1,9 @@
 import { knex as _knex } from 'knex';
-const pg = _knex({ client: 'pg' });
-import { where, orWhere, hasMethod } from '../lib';
 
-import { curryN, compose } from 'ramda';
+const pg = _knex({ client: 'pg' });
+
+import { compose, curryN } from 'ramda';
+import { hasMethod, orWhere, where } from '../lib';
 
 test('`hasMethod` works with real knex obj', () => {
   const q = pg.table('t').select('x');

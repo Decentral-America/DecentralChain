@@ -1,4 +1,5 @@
-import { type Task } from 'folktale/concurrency/task';
+import { type Effect, pipe } from 'effect';
+import * as EffectLib from 'effect/Effect';
 import { defaultTo, splitEvery, zipWith } from 'ramda';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
@@ -6,21 +7,22 @@ import { type TransferTx } from './repo/types';
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
-  (txs: TransferTx[]): Task<AppError, TransferTx[]> =>
-    assetsService
-      .precisions({
+  (txs: TransferTx[]): Effect.Effect<TransferTx[], AppError> =>
+    pipe(
+      assetsService.precisions({
         ids: txs
           .map((tx) => [defaultTo('WAVES', tx.feeAsset), tx.assetId])
           .reduce((acc, cur) => acc.concat(cur), []),
-      })
-      .map((v) =>
+      }),
+      EffectLib.map((v) =>
         zipWith(
-          (tx, [feeAssetPrecision, assetPrecision]) => ({
+          (tx, prec: (number | undefined)[]) => ({
             ...tx,
-            amount: tx.amount.shiftedBy(-assetPrecision),
-            fee: tx.fee.shiftedBy(-feeAssetPrecision),
+            amount: tx.amount.shiftedBy(-(prec[1] ?? 0)),
+            fee: tx.fee.shiftedBy(-(prec[0] ?? 0)),
           }),
           txs,
-          splitEvery(v.length / txs.length, v),
+          splitEvery(v.length / txs.length, v) as (number | undefined)[][],
         ),
-      );
+      ),
+    );

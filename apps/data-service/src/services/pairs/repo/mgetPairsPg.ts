@@ -1,5 +1,4 @@
-import { type Task } from 'folktale/concurrency/task';
-import { type Maybe } from 'folktale/maybe';
+import { Effect, type Option, pipe } from 'effect';
 import { type PgDriver } from '../../../db/driver';
 import { addMeta, type DbError, type Timeout } from '../../../errorHandling';
 import { matchRequestsResults } from '../../../utils/db';
@@ -17,8 +16,16 @@ export const mgetPairsPg =
     matchRequestResult: (req: Id[], res: ResponseRaw) => boolean;
     pg: PgDriver;
   }) =>
-  (request: Request): Task<DbError | Timeout, Maybe<ResponseRaw>[]> =>
-    pg
-      .any<ResponseRaw>(sql(request))
-      .map((responses) => matchRequestsResults(matchRequestResult, request.pairs, responses))
-      .mapRejected(addMeta({ params: request, request: name }));
+  (request: Request): Effect.Effect<Option.Option<ResponseRaw>[], DbError | Timeout> =>
+    pipe(
+      pg.any<ResponseRaw>(sql(request)),
+      Effect.map(
+        (responses) =>
+          matchRequestsResults(
+            matchRequestResult,
+            request.pairs,
+            responses,
+          ) as Option.Option<ResponseRaw>[],
+      ),
+      Effect.mapError(addMeta({ params: request, request: name })),
+    );

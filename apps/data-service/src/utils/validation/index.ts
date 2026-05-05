@@ -1,16 +1,19 @@
-import { Error as errorResult, Ok as okResult } from 'folktale/result';
-import { type SchemaLike, type ValidationError } from 'joi';
-import * as JoiRaw from './joi';
+import { Either, ParseResult, pipe, Schema } from 'effect';
 
+export * from './schema';
+
+/**
+ * Validates `value` against `schema` without coercion.
+ * Returns `Either.right(value)` on success or `Either.left(errorFactory(...))` on failure.
+ */
 export const validate = <ErrorType, T>(
-  schema: SchemaLike,
-  errorFactory: (e: ValidationError, value: T) => ErrorType,
-  value: T,
-) => {
-  const { error } = JoiRaw.validate(value, schema, { convert: false });
-  return error
-    ? errorResult<ErrorType, T>(errorFactory(error, value))
-    : okResult<ErrorType, T>(value);
-};
-
-export const Joi = JoiRaw;
+  schema: any,
+  errorFactory: (message: string, value: unknown) => ErrorType,
+  value: unknown,
+): Either.Either<T, ErrorType> =>
+  pipe(
+    Schema.validateEither(schema)(value),
+    Either.mapLeft((parseError) =>
+      errorFactory(ParseResult.TreeFormatter.formatErrorSync(parseError), value),
+    ),
+  ) as Either.Either<T, ErrorType>;

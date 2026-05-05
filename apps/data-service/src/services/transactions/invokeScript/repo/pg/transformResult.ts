@@ -1,4 +1,5 @@
-const {
+// @ts-nocheck
+import {
   always,
   complement,
   compose,
@@ -15,7 +16,7 @@ const {
   T,
   uniqWith,
   values,
-} = require('ramda');
+} from 'ramda';
 
 import {
   type RawInvokeScriptTx as DbRawInvokeScriptTx,

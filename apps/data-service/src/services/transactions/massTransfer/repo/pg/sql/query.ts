@@ -1,4 +1,5 @@
 import { knex as _knex } from 'knex';
+
 const pg = _knex({ client: 'pg' });
 
 const select = pg({ t: 'txs_11' })
@@ -6,7 +7,7 @@ const select = pg({ t: 'txs_11' })
   .groupBy('t.uid')
   .select('t.uid');
 
-const selectFromFiltered = (filtered) =>
+const selectFromFiltered = (filtered: any) =>
   pg
     .select({
       amount: 'tfs.amount',
@@ -36,3 +37,4 @@ export default {
   select,
   selectFromFiltered,
 };
+export { select, selectFromFiltered };

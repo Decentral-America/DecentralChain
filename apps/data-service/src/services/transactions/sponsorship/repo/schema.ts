@@ -1,10 +1,9 @@
-import { Joi } from '../../../../utils/validation';
-
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  asset_id: Joi.string().base58().required(),
-  min_sponsored_asset_fee: Joi.object().bignumber().required().allow(null),
+  asset_id: S.Base58,
+  min_sponsored_asset_fee: Schema.NullOr(S.Bignumber),
 });

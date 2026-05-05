@@ -1,4 +1,5 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
+import { Effect, pipe } from 'effect';
 import { type CandlesService } from '../../services/candles';
 import { createHttpHandler } from '../_common';
 import { parse } from './parse';
@@ -11,14 +12,22 @@ export default ({ search, searchLast }: CandlesService): Router =>
     .get(
       '/candles/:amountAsset/:priceAsset',
       createHttpHandler(
-        (req, lsnFormat) => search(req).map((res) => serialize(res, lsnFormat)),
+        (req, lsnFormat) =>
+          pipe(
+            search(req),
+            Effect.map((res) => serialize(res, lsnFormat)),
+          ),
         parse,
       ),
     )
     .get(
       '/last_candle/:amountAsset/:priceAsset',
       createHttpHandler(
-        (req, lsnFormat) => searchLast(req).map((res) => serializeCandleInfo(res, lsnFormat)),
+        (req, lsnFormat) =>
+          pipe(
+            searchLast(req),
+            Effect.map((res) => serializeCandleInfo(res, lsnFormat)),
+          ),
         parse,
       ),
     );

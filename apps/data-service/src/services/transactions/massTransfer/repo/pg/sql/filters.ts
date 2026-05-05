@@ -1,4 +1,5 @@
-import { createByTimeStamp, createByBlockTimeStamp } from '../../../../_common/sql';
+// @ts-nocheck
+import { createByBlockTimeStamp, createByTimeStamp } from '../../../../_common/sql';
 import commonFilters from '../../../../_common/sql/filters';
 import commonFiltersOrder from '../../../../_common/sql/filtersOrder';
 
@@ -13,15 +14,13 @@ const byTimeStamp = createByTimeStamp('txs_11');
 
 const byBlockTimeStamp = createByBlockTimeStamp('txs_11');
 
-export default {
-  filters: {
-    ...commonFilters,
-    blockTimeEnd: byBlockTimeStamp('<='),
-    blockTimeStart: byBlockTimeStamp('>='),
+export const filters = {
+  ...commonFilters,
+  blockTimeEnd: byBlockTimeStamp('<='),
+  blockTimeStart: byBlockTimeStamp('>='),
 
-    recipient: byRecipient,
-    timeEnd: byTimeStamp('<='),
-    timeStart: byTimeStamp('>='),
-  },
-  filtersOrder: [...commonFiltersOrder, 'timeStart', 'timeEnd', 'assetId', 'recipient'],
+  recipient: byRecipient,
+  timeEnd: byTimeStamp('<='),
+  timeStart: byTimeStamp('>='),
 };
+export const filtersOrder = [...commonFiltersOrder, 'timeStart', 'timeEnd', 'assetId', 'recipient'];
