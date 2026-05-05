@@ -1,7 +1,8 @@
-import * as Joi from '../../../utils/validation/joi';
+import { Schema } from 'effect';
+import * as S from '../../../utils/validation/schema';
 
-export const output = Joi.object().keys({
-  address: Joi.string().base58().required().allow(null),
-  alias: Joi.string().required(),
-  duplicates: Joi.object().bignumber(),
+export const output = Schema.Struct({
+  address: Schema.NullOr(S.Base58),
+  alias: Schema.String,
+  duplicates: Schema.optional(S.Bignumber),
 });

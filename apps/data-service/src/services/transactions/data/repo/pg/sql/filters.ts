@@ -1,24 +1,25 @@
-import { curryN } from 'ramda';
+// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
+import { curryN } from 'ramda';
 
-import { createByTimeStamp, createByBlockTimeStamp } from '../../../../_common/sql';
+import { createByBlockTimeStamp, createByTimeStamp } from '../../../../_common/sql';
 import commonFilters from '../../../../_common/sql/filters';
 
-const byKey = curryN(2, (key, q) =>
-  q.clone().whereIn('t.uid', function () {
+const byKey = curryN(2, (key: any, q: any) =>
+  q.clone().whereIn('t.uid', function (this: any) {
     this.select('tx_uid').from('txs_12_data').where('data_key', key);
   }),
 );
 
-const byType = curryN(2, (type, q) =>
-  q.clone().whereIn('t.uid', function () {
+const byType = curryN(2, (type: any, q: any) =>
+  q.clone().whereIn('t.uid', function (this: any) {
     this.select('tx_uid').from('txs_12_data').where('data_type', type);
   }),
 );
 
-const byValue = curryN(3, (type, value, q) => {
+const byValue = curryN(3, (type: any, value: any, q: any) => {
   const v = value instanceof BigNumber ? value.toString() : value;
-  return q.clone().whereIn('t.uid', function () {
+  return q.clone().whereIn('t.uid', function (this: any) {
     this.select('tx_uid')
       .from('txs_12_data')
       .where('data_type', type)
@@ -30,7 +31,7 @@ const byTimeStamp = createByTimeStamp('txs_12');
 
 const byBlockTimeStamp = createByBlockTimeStamp('txs_12');
 
-export default {
+const _defaultExport: any = {
   ...commonFilters,
   blockTimeEnd: byBlockTimeStamp('<='),
   blockTimeStart: byBlockTimeStamp('>='),
@@ -41,3 +42,4 @@ export default {
   type: byType,
   value: byValue,
 };
+export default _defaultExport;

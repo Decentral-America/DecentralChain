@@ -1,4 +1,4 @@
-import * as knex from 'knex';
+import { type Knex, knex } from 'knex';
 import { compose } from 'ramda';
 import { type AssetIdsPair } from '../../../types';
 import { escapeForTsQuery, prepareForLike } from '../../../utils/db';
@@ -34,20 +34,20 @@ const isSearchByAssetsRequest = (req: PairsSearchRequest): req is SearchByAssets
   return (
     'search_by_assets' in req &&
     Array.isArray(req.search_by_assets) &&
-    req.search_by_assets.length == 2
+    req.search_by_assets.length === 2
   );
 };
 
-const getMatchExactly = (matchExactly: boolean[] | undefined): boolean[] => {
+const getMatchExactly = (matchExactly: boolean[] | undefined): [boolean, boolean] => {
   const DEFAULT_MATCH_EXACTLY = false;
 
   if (typeof matchExactly === 'undefined') {
     return [DEFAULT_MATCH_EXACTLY, DEFAULT_MATCH_EXACTLY];
   } else {
     if (matchExactly.length === 1) {
-      return [matchExactly[0], matchExactly[0]];
+      return [matchExactly[0] as boolean, matchExactly[0] as boolean];
     } else {
-      return matchExactly;
+      return [matchExactly[0] as boolean, matchExactly[1] as boolean];
     }
   }
 };
@@ -63,26 +63,27 @@ const query = (pairs: AssetIdsPair[], matcher: string): string =>
     .toString();
 
 const searchAssets = (
-  qb: knex.QueryBuilder,
+  qb: Knex.QueryBuilder,
   query: string,
   matchExactly: boolean,
   tableAlias: string = 't',
 ) => {
   // will be used on to_tsvector('simple', asset_name) search
   const cleanedQuery = escapeForTsQuery(query);
-  return qb.distinct('asset_id').from(function (this: knex.QueryBuilder) {
-    this.table({ [tableAlias]: 'assets' })
+  return (qb.distinct('asset_id') as any).from(function (this: Knex.QueryBuilder) {
+    (this as any)
+      .table({ [tableAlias]: 'assets' })
       .column({ asset_id: `${tableAlias}.asset_id` })
       .where(`${tableAlias}.asset_id`, query)
       .orWhere(`${tableAlias}.ticker`, 'ilike', prepareForLike(query, { matchExactly }))
-      .unionAll((q) =>
+      .unionAll((q: any) =>
         q
           .from({ [`${tableAlias}2`]: 'assets_metadata' })
           .column({ asset_id: `${tableAlias}2.asset_id` })
           .where(`${tableAlias}2.asset_name`, 'ilike', prepareForLike(query, { matchExactly })),
       )
-      .unionAll((q) =>
-        compose((q: knex.QueryBuilder) =>
+      .unionAll((q: any) =>
+        compose((q: Knex.QueryBuilder) =>
           cleanedQuery.length
             ? q.orWhereRaw(`to_tsvector('simple', ${tableAlias}3.asset_name) @@ to_tsquery(?)`, [
                 `${cleanedQuery}:*`,
@@ -116,7 +117,7 @@ export const search = (req: PairsSearchRequest): string => {
   if (isSearchByAssetRequest(req)) {
     const { search_by_asset: amountAsset, match_exactly: matchExactly } = req;
     return q
-      .with('assets_cte', (qb: knex.QueryBuilder) =>
+      .with('assets_cte', (qb: Knex.QueryBuilder) =>
         searchAssets(qb, amountAsset, getMatchExactly(matchExactly)[0]),
       )
       .innerJoin({ amount_cte: 'assets_cte' }, 'amount_cte.asset_id', 't.amount_asset_id')
@@ -128,13 +129,13 @@ export const search = (req: PairsSearchRequest): string => {
     const [amountAssetExactly, priceAssetExaclty] = getMatchExactly(req.match_exactly);
 
     return q
-      .with('assets_cte', (qb: knex.QueryBuilder) =>
-        qb
+      .with('assets_cte', (qb: Knex.QueryBuilder) =>
+        (qb as any)
           .from({
-            t1: searchAssets(pg.queryBuilder(), amountAsset, amountAssetExactly, 'a'),
+            t1: searchAssets(pg.queryBuilder(), amountAsset, amountAssetExactly, 'a') as any,
           })
-          .crossJoin((qb: knex.QueryBuilder) =>
-            searchAssets(qb, priceAsset, priceAssetExaclty, 'p').as('t2'),
+          .crossJoin((qb: Knex.QueryBuilder) =>
+            (searchAssets(qb, priceAsset, priceAssetExaclty, 'p') as any).as('t2'),
           )
           .columns({
             amount_asset_id: 't1.asset_id',
@@ -148,7 +149,7 @@ export const search = (req: PairsSearchRequest): string => {
           'direct_cte.price_asset_id': 't.price_asset_id',
         },
       )
-      .unionAll((qb: knex.QueryBuilder) =>
+      .unionAll((qb: Knex.QueryBuilder) =>
         qb
           .select(COLUMNS.map((column) => `t1.${column}`))
           .from({ t1: 'pairs' })

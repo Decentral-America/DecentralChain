@@ -1,22 +1,20 @@
-// configuration
+import { createRequire } from 'node:module';
+
+import { createPgDriver } from '../../db';
+import createLogger from '../../logger/winston';
 import { loadConfig } from './loadConfig';
 
-const configuration = loadConfig();
+const _require = createRequire(import.meta.url);
+const { daemon: runDaemon } = _require('../presets/daemon');
+const createDaemon = _require('./create');
 
-// logger
-import * as createLogger from '../../logger/winston';
+const configuration = loadConfig();
 
 const logger = createLogger({
   logLevel: 'info',
 });
 
-// pg driver
-import { createPgDriver } from '../../db';
-
 const pgDriver = createPgDriver(configuration);
-
-const { daemon: runDaemon } = require('../presets/daemon');
-const createDaemon = require('./create');
 
 runDaemon(
   createDaemon(

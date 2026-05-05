@@ -1,5 +1,5 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
-import { compose, isNil, mapObjIndexed, merge, reject } from 'ramda';
+import { Either, pipe } from 'effect';
+import { isNil, mapObjIndexed, reject } from 'ramda';
 import { type ParseError } from '../../../errorHandling';
 import { SortOrder, type WithLimit, type WithSortOrder } from '../../../services/_common';
 import commonFilters from './filters';
@@ -11,13 +11,7 @@ const DEFAULT_SORT = SortOrder.Descending;
 export const DEFAULT_MAX_LIMIT = DEFAULT_LIMIT;
 
 export const withDefaults = <T>(fValues: T): T & WithLimit & WithSortOrder =>
-  merge(
-    {
-      limit: DEFAULT_LIMIT,
-      sort: DEFAULT_SORT,
-    },
-    fValues,
-  );
+  ({ limit: DEFAULT_LIMIT, sort: DEFAULT_SORT, ...fValues }) as T & WithLimit & WithSortOrder;
 
 export const parseFilterValues =
   <Filters extends Record<string, Parser<any, any>>>(filters: Filters) =>
@@ -38,37 +32,31 @@ export const parseFilterValues =
     >,
   >(
     values: Partial<
-      // Parameters<Filters[K]>[0] is the 1st arg of Parser - raw value
       { [K in keyof Filters]: Parameters<Filters[K]>[0] } & {
         [K in keyof CommonFilters]: Parameters<CommonFilters[K]>[0];
       }
     >,
-  ): Result<ParseError, ParsedFilterValues> =>
-    compose<
-      Filters | CommonFilters,
-      AllParsedFilterValues,
-      Result<ParseError, ParsedFilterValues>,
-      Result<ParseError, ParsedFilterValues>
-    >(
-      (r) => r.map(reject(isNil)),
-      (d) =>
-        Object.keys(d).reduce(
-          (acc, cur) =>
-            acc.chain((a) =>
-              d[cur].matchWith({
-                Error: ({ value }) => error(value),
-                Ok: ({ value }) =>
-                  ok({
-                    ...a,
-                    [cur]: value,
-                  }),
-              }),
-            ),
-          ok<ParseError, ParsedFilterValues>({} as ParsedFilterValues),
-        ),
-      mapObjIndexed<
-        Parser<ParsedFilterValues[keyof ParsedFilterValues]>,
-        ReturnType<Parser<ParsedFilterValues[keyof ParsedFilterValues]>>,
-        AllParsedFilterValues
-      >((val, key) => val(values[key])),
-    )({ ...commonFilters, ...filters });
+  ): Either.Either<ParsedFilterValues, ParseError> => {
+    const allFilters = { ...commonFilters, ...filters };
+    const parsed = (mapObjIndexed as any)(
+      (val: any, key: string) => val((values as any)[key]),
+      allFilters,
+    ) as AllParsedFilterValues;
+
+    const reduced = Object.keys(parsed).reduce(
+      (acc: Either.Either<ParsedFilterValues, ParseError>, cur) => {
+        return Either.flatMap(acc, (a) => {
+          const result: Either.Either<any, ParseError> | undefined = (parsed as any)[cur];
+          if (result === undefined) return Either.right(a);
+          if (Either.isLeft(result)) return result as Either.Either<ParsedFilterValues, ParseError>;
+          return Either.right({ ...a, [cur]: result.right });
+        });
+      },
+      Either.right({} as ParsedFilterValues),
+    );
+
+    return pipe(
+      reduced,
+      Either.map(reject(isNil) as (v: ParsedFilterValues) => ParsedFilterValues),
+    );
+  };

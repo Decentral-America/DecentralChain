@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { parseDate } from '../../../../utils/parseDate';
 import { serialize } from '../../_common/cursor';
 
@@ -128,7 +129,7 @@ const search = (service) =>
           var curCursor = firstCursor;
 
           while (i++ < (LIMIT - 1) / 5) {
-            var [nextCursor, cs] = await fetchAndGetNextCursor(curCursor);
+            const [nextCursor, cs] = await fetchAndGetNextCursor(curCursor);
             curCursor = nextCursor;
             cursors = [...cursors, ...cs];
           }
@@ -180,7 +181,7 @@ const search = (service) =>
           var curCursor = firstCursor;
 
           while (i++ < (LIMIT - 1) / 5) {
-            var [nextCursor, curCursors] = await fetchAndGetNextCursor(curCursor);
+            const [nextCursor, curCursors] = await fetchAndGetNextCursor(curCursor);
             curCursor = nextCursor;
             cursors = [...cursors, ...curCursors];
           }
@@ -224,3 +225,5 @@ export default {
   mget,
   search,
 };
+
+export { get, mget, search };

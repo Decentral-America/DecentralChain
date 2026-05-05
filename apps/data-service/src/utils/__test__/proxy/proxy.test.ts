@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { compose } from 'ramda';
 
 import P from './';

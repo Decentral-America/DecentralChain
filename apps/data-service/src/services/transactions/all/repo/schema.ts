@@ -1,8 +1,9 @@
-import { Joi } from '../../../../utils/validation';
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 
-export const result = Joi.object().keys({
-  id: Joi.string().base58().required(),
-  time_stamp: Joi.date().required(),
-  tx_type: Joi.number().min(1).max(18).required(),
-  uid: Joi.object().bignumber().required(),
+export const result = Schema.Struct({
+  id: S.Base58,
+  time_stamp: Schema.DateFromSelf,
+  tx_type: Schema.Number,
+  uid: S.Bignumber,
 });

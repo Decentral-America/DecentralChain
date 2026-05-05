@@ -1,43 +1,32 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
-import { compose, findLastIndex, reverse, values } from 'ramda';
+import { Either, pipe } from 'effect';
+import { findLastIndex, values } from 'ramda';
 import { ValidationError } from '../errorHandling';
 import { type Interval, interval, parseUnit, units } from '../types/interval';
 
 export const div = (a: Interval, b: Interval): number => a.length / b.length;
 
-export const fromMilliseconds = (milliseconds: number): Result<ValidationError, Interval> => {
+export const unsafeIntervalsFromStrings = (strs: string[]): Interval[] =>
+  strs.map((s) => Either.getOrThrow(interval(s)));
+
+export const fromMilliseconds = (
+  milliseconds: number,
+): Either.Either<Interval, ValidationError> => {
   const secs = milliseconds / 1000;
-
   const unitsValues = values(units);
-  let unitIndex = findLastIndex((x: number) => x >= secs && secs % x == 0)(unitsValues);
+  let unitIndex = findLastIndex((x: number) => x >= secs && secs % x === 0)(unitsValues);
+  if (!~unitIndex) unitIndex = 0;
 
-  // 'Second' unit is by default
-  if (!~unitIndex) {
-    unitIndex = 0;
-  }
-
-  return parseUnit(Object.keys(units)[unitIndex]).matchWith({
-    Error: ({ value: e }) => error(e),
-    Ok: ({ value: unit }) => {
-      const length = secs / units[unit];
-      // whether length is integer
+  return pipe(
+    parseUnit(Object.keys(units)[unitIndex] as string),
+    Either.flatMap((unit) => {
+      const length = (secs / units[unit as keyof typeof units]) as number;
       if (length % 1 === 0) {
-        return ok({
-          length: milliseconds,
-          source: `${length}${unit}`,
-          unit,
-        });
+        return Either.right({ length: milliseconds, source: `${length}${unit}`, unit });
       } else {
-        return error(new ValidationError('Provided milliseconds number is not a valid number'));
+        return Either.left(
+          new ValidationError(`Cannot convert ${milliseconds}ms to a clean interval`),
+        );
       }
-    },
-  });
+    }),
+  );
 };
-
-export const unsafeIntervalsFromStrings = (strings: string[]): Interval[] =>
-  strings.map((str) => interval(str).unsafeGet());
-
-export const unsafeIntervalsFromStringsReversed = compose<string[], Interval[], Interval[]>(
-  reverse,
-  unsafeIntervalsFromStrings,
-);

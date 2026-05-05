@@ -1,4 +1,4 @@
-import { createByTimeStamp, createByBlockTimeStamp } from '../../../_common/sql';
+import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
 import commonFilters from '../../../_common/sql/filters';
 import commonFiltersOrder from '../../../_common/sql/filtersOrder';
 
@@ -6,14 +6,12 @@ const byTimeStamp = createByTimeStamp('txs_13');
 
 const byBlockTimeStamp = createByBlockTimeStamp('txs_13');
 
-export default {
-  filters: {
-    ...commonFilters,
-    blockTimeEnd: byBlockTimeStamp('<='),
-    blockTimeStart: byBlockTimeStamp('>='),
-    timeEnd: byTimeStamp('<='),
+export const filters = {
+  ...commonFilters,
+  blockTimeEnd: byBlockTimeStamp('<='),
+  blockTimeStart: byBlockTimeStamp('>='),
+  timeEnd: byTimeStamp('<='),
 
-    timeStart: byTimeStamp('>='),
-  },
-  filtersOrder: [...commonFiltersOrder, 'timeStart', 'timeEnd', 'script'],
+  timeStart: byTimeStamp('>='),
 };
+export const filtersOrder = [...commonFiltersOrder, 'timeStart', 'timeEnd', 'script'];

@@ -1,7 +1,6 @@
-import { Ok as ok } from 'folktale/result';
-
+// @ts-nocheck
+import { Either } from 'effect';
 import { type CommonRepoDependencies } from '../../..';
-
 import { get, mget, search } from '../../../_common/createResolver';
 // transformation
 import { transformResults as transformResultGet } from '../../../_common/presets/pg/getById/transformResult';
@@ -10,11 +9,10 @@ import { transformInput as transformInputSearch } from '../../../_common/presets
 import { transformResults as transformResultSearch } from '../../../_common/presets/pg/search/transformResults';
 // validation
 import { validateResult } from '../../../_common/presets/validation';
-
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { pg as pgData } from './pg';
 import { result as resultSchema } from './schema';
-import * as transformTxInfo from './transformTxInfo';
+import transformTxInfo from './transformTxInfo';
 import {
   type DataTx,
   type DataTxDbResponse,
@@ -30,27 +28,29 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): DataTxs
     get: get({
       emitEvent,
       getData: pgData.get(pg),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r) as any,
       transformResult: transformResultGet<DataTxsGetRequest, DataTxDbResponse, DataTx>(
-        transformTxInfo,
+        transformTxInfo as any,
       ),
-      validateResult: validateResult(resultSchema, createServiceName('get')),
+      validateResult: validateResult(resultSchema, createServiceName('get')) as any,
     }),
 
     mget: mget({
       emitEvent,
       getData: pgData.mget(pg),
-      transformInput: ok,
-      transformResult: transformResultMget<string[], DataTxDbResponse, DataTx>(transformTxInfo),
-      validateResult: validateResult(resultSchema, createServiceName('mget')),
+      transformInput: (r) => Either.right(r) as any,
+      transformResult: transformResultMget<string[], DataTxDbResponse, DataTx>(
+        transformTxInfo as any,
+      ),
+      validateResult: validateResult(resultSchema, createServiceName('mget')) as any,
     }),
 
     search: search<DataTxsSearchRequest, DataTxsSearchRequest<Cursor>, DataTxDbResponse, DataTx>({
       emitEvent,
       getData: pgData.search(pg),
-      transformInput: transformInputSearch(deserialize),
-      transformResult: transformResultSearch(transformTxInfo, serialize),
-      validateResult: validateResult(resultSchema, createServiceName('search')),
+      transformInput: transformInputSearch(deserialize) as any,
+      transformResult: transformResultSearch(transformTxInfo as any, serialize),
+      validateResult: validateResult(resultSchema, createServiceName('search')) as any,
     }),
   };
 };

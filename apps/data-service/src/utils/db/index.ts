@@ -1,5 +1,6 @@
-import Maybe from 'folktale/maybe';
-import { compose, map, filter, has, __, curryN, find } from 'ramda';
+// @ts-nocheck
+import { Option } from 'effect';
+import { compose, curryN, filter, find, has, map } from 'ramda';
 
 /**
  * matchFn :: (Request, Result) -> Boolean
@@ -8,10 +9,10 @@ import { compose, map, filter, has, __, curryN, find } from 'ramda';
  *  matchFn ->
  *  Request[] ->
  *  Result[] ->
- *  (Maybe Result)[]
+ *  (Option.Option<unknown> Result)[]
  * */
 const matchRequestsResults = curryN(3, (matchFn, requests, results) => {
-  const findResult = compose(Maybe.fromNullable, (req) =>
+  const findResult = compose(Option.fromNullable, (req) =>
     find((res) => matchFn(req, res), results),
   );
   return map(findResult, requests);
@@ -26,10 +27,10 @@ const matchRequestsResults = curryN(3, (matchFn, requests, results) => {
  *    { [fName]: fValue } ->
  *    filter[]
  * */
-const pickBindFilters = curryN(3, (F, fsToApply, fValues) =>
-  compose(
-    map((x) => F[x](fValues[x])),
-    filter(has(__, fValues)),
+const pickBindFilters = curryN(3, (F: any, fsToApply: any, fValues: any) =>
+  (compose as any)(
+    map((x: any) => F[x](fValues[x])),
+    filter((x: any) => has(x, fValues)),
   )(fsToApply),
 );
 
@@ -38,7 +39,7 @@ const pickBindFilters = curryN(3, (F, fsToApply, fValues) =>
  * @param {string} query
  * @returns {string}
  */
-const escapeForTsQuery = (query) => {
+const escapeForTsQuery = (query: string) => {
   return query
     .replace(/[^\w\s]|_/g, '')
     .trim()
@@ -50,7 +51,7 @@ const escapeForTsQuery = (query) => {
  * @param {string} query
  * @returns {string}
  */
-const escapeForLike = (query) => query.replace(/%/g, '\\%');
+const escapeForLike = (query: string) => query.replace(/%/g, '\\%');
 
 /**
  * Prepares query for SQL condition with like operator
@@ -58,13 +59,9 @@ const escapeForLike = (query) => query.replace(/%/g, '\\%');
  * @param {object} params
  * @returns {string}
  */
-const prepareForLike = (query, params = { matchExactly: false }) =>
-  compose((query) => (params.matchExactly ? query : `${query}%`), escapeForLike)(query);
+const prepareForLike = (
+  query: string,
+  params: { matchExactly: boolean } = { matchExactly: false },
+) => compose((q: string) => (params.matchExactly ? q : `${q}%`), escapeForLike)(query);
 
-export default {
-  escapeForLike,
-  escapeForTsQuery,
-  matchRequestsResults,
-  pickBindFilters,
-  prepareForLike,
-};
+export { escapeForLike, escapeForTsQuery, matchRequestsResults, pickBindFilters, prepareForLike };

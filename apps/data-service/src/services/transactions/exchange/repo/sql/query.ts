@@ -1,4 +1,5 @@
 import { knex as _knex } from 'knex';
+
 const pg = _knex({ client: 'pg' });
 
 const columns = {
@@ -59,9 +60,10 @@ const columns = {
 
 const select = pg({ t: 'txs_7' });
 
-const selectFromFiltered = (filtered) => pg.from({ t: filtered }).select(columns);
+const selectFromFiltered = (filtered: any) => pg.from({ t: filtered }).select(columns);
 
 export default {
   select,
   selectFromFiltered,
 };
+export { select, selectFromFiltered };

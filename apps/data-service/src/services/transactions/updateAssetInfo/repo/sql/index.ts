@@ -1,7 +1,6 @@
 import { createSql } from '../../../_common/sql';
-
-import { select, selectFromFiltered } from './query';
 import { filters, filtersOrder } from './filters';
+import { select, selectFromFiltered } from './query';
 
 const queryAfterFilters = {
   get: selectFromFiltered,

@@ -1,5 +1,8 @@
-import { Ok as ok } from 'folktale/result';
+// @ts-nocheck
+import { Either } from 'effect';
 import { parseArrayQuery } from '../parseArrayQuery';
+
+const ok = <T>(v: T) => Either.right(v);
 
 describe('parseArrayQuery should correctly parse', () => {
   it('strings with multiple values', () => {

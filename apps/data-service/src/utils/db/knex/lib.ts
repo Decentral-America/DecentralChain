@@ -1,31 +1,44 @@
-import { findIndex, slice, concat, type, curryN } from 'ramda';
+// @ts-nocheck
+import { concat, curryN, findIndex, slice, type } from 'ramda';
 
 const hasMethod = curryN(
   2,
-  (method, x) => (x && x[method] && type(x[method]) === 'Function') || false,
+  (method, x) => (x?.[method] && type(x[method]) === 'Function') || false,
 );
 
 const createPointfree =
-  (method) =>
-  (...args) => {
-    const instanceIdx = findIndex(hasMethod(method), args);
+  (method: string) =>
+  (...args: any[]) => {
+    const instanceIdx = findIndex((x: any) => hasMethod(method, x), args);
 
     if (instanceIdx !== -1) {
       return args[instanceIdx].clone()[method](...slice(0, instanceIdx, args));
     } else {
-      return (...args2) => createPointfree(method)(...concat(args, args2));
+      return (...args2: any[]) => createPointfree(method)(...concat(args, args2));
     }
   };
 
-export default {
+export { hasMethod };
+export const limit = createPointfree('limit');
+export const orderBy = createPointfree('orderBy');
+export const orWhere = createPointfree('orWhere');
+export const raw = createPointfree('raw');
+export const where = createPointfree('where');
+export const whereIn = createPointfree('whereIn');
+export const whereNotNull = createPointfree('whereNotNull');
+export const whereNull = createPointfree('whereNull');
+export const whereRaw = createPointfree('whereRaw');
+
+const defaultExport: any = {
   hasMethod,
-  limit: createPointfree('limit'),
-  orderBy: createPointfree('orderBy'),
-  orWhere: createPointfree('orWhere'),
-  raw: createPointfree('raw'),
-  where: createPointfree('where'),
-  whereIn: createPointfree('whereIn'),
-  whereNotNull: createPointfree('whereNotNull'),
-  whereNull: createPointfree('whereNull'),
-  whereRaw: createPointfree('whereRaw'),
+  limit,
+  orderBy,
+  orWhere,
+  raw,
+  where,
+  whereIn,
+  whereNotNull,
+  whereNull,
+  whereRaw,
 };
+export default defaultExport;

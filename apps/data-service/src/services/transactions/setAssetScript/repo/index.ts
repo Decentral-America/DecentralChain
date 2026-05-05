@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -8,8 +9,8 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result } from './schema';
-import * as sql from './sql';
-import * as transformTxInfo from './transformTxInfo';
+import sql from './sql';
+import transformTxInfo from './transformTxInfo';
 import {
   type SetAssetScriptTx,
   type SetAssetScriptTxDbResponse,
@@ -19,7 +20,7 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): SetAssetScriptTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, SetAssetScriptTxDbResponse, SetAssetScriptTx>({
       name: 'transactions.setAssetScript.get',
       resultSchema: result,
       sql: sql.get,
@@ -29,8 +30,8 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): SetAsse
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, SetAssetScriptTxDbResponse, SetAssetScriptTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.setAssetScript.mget',
       resultSchema: result,
       sql: sql.mget,

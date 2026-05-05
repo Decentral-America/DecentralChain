@@ -1,6 +1,6 @@
 import { BigNumber } from '@decentralchain/data-entities';
-import { type Task, of as taskOf } from 'folktale/concurrency/task';
-import * as knex from 'knex';
+import { Effect, Option, pipe } from 'effect';
+import { knex } from 'knex';
 import { chain } from 'ramda';
 import { type PgDriver } from '../../../../db/driver';
 import { type DbError, type Timeout } from '../../../../errorHandling';
@@ -20,26 +20,35 @@ type CandleRate = {
 export default class RemoteRateRepo
   implements AsyncMget<RateMgetParams, RateWithPairIds, DbError | Timeout>
 {
-  constructor(private readonly dbDriver: PgDriver) {}
+  private readonly dbDriver: PgDriver;
 
-  mget(request: RateMgetParams): Task<DbError | Timeout, Array<RateWithPairIds>> {
+  constructor(dbDriver: PgDriver) {
+    this.dbDriver = dbDriver;
+  }
+
+  mget(request: RateMgetParams): Effect.Effect<RateWithPairIds[], DbError | Timeout> {
     const pairsSqlParams = chain((it) => [it.amountAsset, it.priceAsset], request.pairs);
 
     const sql = pg.raw(makeSql(request.pairs.length), [
-      request.timestamp.getOrElse(new Date()),
+      Option.getOrElse(request.timestamp, () => new Date()),
       request.matcher,
       ...pairsSqlParams,
     ]);
 
-    const dbTask: Task<DbError | Timeout, CandleRate[]> =
-      request.pairs.length === 0 ? taskOf([]) : this.dbDriver.any(sql.toString());
+    const dbEffect: Effect.Effect<CandleRate[], DbError | Timeout> =
+      request.pairs.length === 0
+        ? Effect.succeed([])
+        : this.dbDriver.any<CandleRate>(sql.toString());
 
-    return dbTask.map((result) =>
-      result.map((it) => ({
-        amountAsset: it.amount_asset_id,
-        priceAsset: it.price_asset_id,
-        rate: it.weighted_average_price || new BigNumber(0),
-      })),
+    return pipe(
+      dbEffect,
+      Effect.map((result) =>
+        result.map((it) => ({
+          amountAsset: it.amount_asset_id,
+          priceAsset: it.price_asset_id,
+          rate: it.weighted_average_price || new BigNumber(0),
+        })),
+      ),
     );
   }
 }

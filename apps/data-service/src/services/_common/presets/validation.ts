@@ -1,19 +1,17 @@
-import { type Task } from 'folktale/concurrency/task';
-import { type Result } from 'folktale/result';
-import { type SchemaLike } from 'joi';
+import { type Effect, type Either } from 'effect';
 import { AppError, type ResolverError, type ValidationError } from '../../../errorHandling';
-import { resultToTask } from '../../../utils/fp';
+import { eitherToEffect } from '../../../utils/fp';
 import { validate } from '../../../utils/validation';
 
 export const validateInput =
-  <T>(schema: SchemaLike, name: string) =>
-  (value: T): Task<ValidationError, T> =>
-    resultToTask(
+  <T>(schema: any, name: string) =>
+  (value: T): Effect.Effect<T, ValidationError> =>
+    eitherToEffect(
       validate(
         schema,
-        (error, value) =>
-          AppError.Validation('Input validation failed', {
-            error,
+        (message) =>
+          AppError.Validation(`Input validation failed: ${message}`, {
+            error: new Error(message),
             resolver: name,
             value,
           }),
@@ -22,13 +20,13 @@ export const validateInput =
     );
 
 export const validateResult =
-  <T>(schema: SchemaLike, name: string) =>
-  (value: T): Result<ResolverError, T> =>
+  <T>(schema: any, name: string) =>
+  (value: T): Either.Either<T, ResolverError> =>
     validate(
       schema,
-      (error, value) =>
-        AppError.Resolver('Result validation failed', {
-          error,
+      (message) =>
+        AppError.Resolver(`Result validation failed: ${message}`, {
+          error: new Error(message),
           resolver: name,
           value,
         }),

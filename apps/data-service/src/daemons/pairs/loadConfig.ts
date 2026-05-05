@@ -9,11 +9,11 @@ export type PairsConfig = PostgresConfig &
 
 const load = (): PairsConfig => ({
   ...loadDefaultConfig(),
-  pairsUpdateInterval: process.env.PAIRS_UPDATE_INTERVAL
-    ? parseInt(process.env.PAIRS_UPDATE_INTERVAL)
+  pairsUpdateInterval: process.env['PAIRS_UPDATE_INTERVAL']
+    ? parseInt(process.env['PAIRS_UPDATE_INTERVAL'], 10)
     : 2500,
-  pairsUpdateTimeout: process.env.PAIRS_UPDATE_TIMEOUT
-    ? parseInt(process.env.PAIRS_UPDATE_TIMEOUT)
+  pairsUpdateTimeout: process.env['PAIRS_UPDATE_TIMEOUT']
+    ? parseInt(process.env['PAIRS_UPDATE_TIMEOUT'], 10)
     : 20000,
 });
 

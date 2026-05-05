@@ -1,8 +1,8 @@
-import { type Maybe } from 'folktale/maybe';
+import { Option } from 'effect';
 
 export const transformResults =
   <Id, ResponseRaw, ResponseTransformed>(
     transformDbResponse: (results: ResponseRaw, request?: Id) => ResponseTransformed,
   ) =>
-  (maybeResponse: Maybe<ResponseRaw>, request?: Id): Maybe<ResponseTransformed> =>
-    maybeResponse.map(transformDbResponse);
+  (maybeResponse: Option.Option<ResponseRaw>, request?: Id): Option.Option<ResponseTransformed> =>
+    Option.map(maybeResponse, (r) => transformDbResponse(r, request));

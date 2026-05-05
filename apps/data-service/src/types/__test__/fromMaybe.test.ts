@@ -1,4 +1,4 @@
-import { empty as maybeEmpty, of as maybeOf } from 'folktale/maybe';
+import { Option } from 'effect';
 import { fromMaybe } from '../';
 import { type Serializable, toSerializable } from '../serializable';
 
@@ -26,6 +26,6 @@ const transform = (raw?: RawData): Data => {
 };
 
 describe('fromMaybe should construct type from', () => {
-  it('Just', () => expect(fromMaybe(transform)(maybeOf(data))).toEqual(mock));
-  it('Nothing', () => expect(fromMaybe(transform)(maybeEmpty())).toEqual(mockWithNull));
+  it('Some', () => expect(fromMaybe(transform)(Option.some(data))).toEqual(mock));
+  it('None', () => expect(fromMaybe(transform)(Option.none())).toEqual(mockWithNull));
 });

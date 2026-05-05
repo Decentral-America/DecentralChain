@@ -1,9 +1,10 @@
-import { identity, pathEq, ifElse } from 'ramda';
+import { identity, ifElse, pathEq } from 'ramda';
+
 const colorize = (s: string): string => s; // was json-colorizer
 
 const bindedStringify = JSON.stringify.bind(JSON);
 
-const isDev = pathEq(['env', 'NODE_ENV'], 'development');
+const isDev = (pathEq as any)(['env', 'NODE_ENV'], 'development');
 const stringifyMetaInProd = ifElse(
   isDev,
   () => identity,
@@ -13,8 +14,8 @@ const separator = () => new Array(64).fill('-').join('');
 
 const stringify = ifElse(
   isDev,
-  () => (json) => `${colorize(JSON.stringify(json, null, 2))}\n${separator()}`,
-  () => (json) => JSON.stringify(json),
+  () => (json: any) => `${colorize(JSON.stringify(json, null, 2))}\n${separator()}`,
+  () => (json: any) => JSON.stringify(json),
 )(process);
 
 export default {
@@ -22,3 +23,4 @@ export default {
   stringify,
   stringifyMetaInProd,
 };
+export { isDev, stringify, stringifyMetaInProd };

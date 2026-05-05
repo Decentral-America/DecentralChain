@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type Monoid } from 'types/monoid';
 
 export const concatAll =

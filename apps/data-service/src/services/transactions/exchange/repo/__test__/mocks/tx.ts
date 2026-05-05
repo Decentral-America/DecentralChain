@@ -44,6 +44,5 @@ const txExchange = {
   tx_version: null,
 };
 
-export default {
-  txExchange,
-};
+export { txExchange };
+export default { txExchange };
