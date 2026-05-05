@@ -18,6 +18,9 @@
       "test": "recommended"
     },
     "rules": {
+      "complexity": {
+        "useLiteralKeys": "off"
+      },
       "correctness": {
         "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error",
