@@ -1,4 +1,4 @@
-import { fromNullable } from 'folktale/maybe';
+import { Effect, Option, pipe } from 'effect';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 
@@ -13,7 +13,8 @@ export const getData =
     pg: PgDriver;
   }) =>
   (id: Id) =>
-    pg
-      .oneOrNone<ResponseRaw>(sql(id))
-      .map(fromNullable)
-      .mapRejected(addMeta({ params: { id }, request: name }));
+    pipe(
+      pg.oneOrNone<ResponseRaw>(sql(id)),
+      Effect.map(Option.fromNullable),
+      Effect.mapError(addMeta({ params: { id }, request: name })),
+    );

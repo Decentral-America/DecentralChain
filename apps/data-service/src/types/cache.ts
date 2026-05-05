@@ -1,7 +1,7 @@
-import { type Maybe } from 'folktale/maybe';
+import { type Option } from 'effect';
 
 export type CacheSync<K, V> = {
   has(key: K): boolean;
-  get(key: K): Maybe<V>;
+  get(key: K): Option.Option<V>;
   set(key: K, value: V): void;
 };

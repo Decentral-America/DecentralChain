@@ -1,3 +1,4 @@
+// @ts-nocheck
 const createProxy = (fnOrObj = () => {}) => {
   const defaults = {
     fn: () => {},
@@ -20,7 +21,7 @@ const createProxy = (fnOrObj = () => {}) => {
   let toPrimitive;
 
   const p = new Proxy(params.fn, {
-    apply: (target, thisArg, argumentsList) => {
+    apply: (_target, _thisArg, argumentsList) => {
       params.fn({ apply: argumentsList });
       return p;
     },

@@ -1,3 +1,4 @@
+import { Effect, pipe } from 'effect';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 
@@ -12,4 +13,7 @@ export const getData =
     pg: PgDriver;
   }) =>
   (request: Request) =>
-    pg.any<ResponseRaw>(sql(request)).mapRejected(addMeta({ params: request, request: name }));
+    pipe(
+      pg.any<ResponseRaw>(sql(request)),
+      Effect.mapError(addMeta({ params: request, request: name })),
+    );

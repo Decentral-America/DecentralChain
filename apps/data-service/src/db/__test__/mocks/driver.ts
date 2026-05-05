@@ -1,11 +1,19 @@
-import { reduce, curry } from 'ramda';
+// @ts-nocheck
+import { curry, reduce } from 'ramda';
 
 const createDriver = curry((resolve, fn) => {
   const m = (...args) => resolve(fn(...args));
 
   const ms = ['none', 'any', 'one', 'many', 'oneOrNone', 'oneOrMany', 'task', 'tx'];
 
-  return reduce((acc, x) => ((acc[x] = m), acc), {}, ms);
+  return reduce(
+    (acc: any, x: any) => {
+      acc[x] = m;
+      return acc;
+    },
+    {},
+    ms,
+  );
 });
 
 export default createDriver;

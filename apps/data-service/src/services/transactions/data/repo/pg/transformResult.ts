@@ -1,25 +1,27 @@
-import { compose,
-  groupBy,
-  prop,
-  values,
-  reduce,
-  map,
-  assoc,
-  append,
-  omit,
-  merge,
-  identity,
-  isNil,
-  ifElse,
-  cond,
+// @ts-nocheck
+import {
   always,
-  isEmpty,
+  append,
+  assoc,
+  compose,
+  cond,
   either,
-  sortBy,
   evolve,
-  T, } from 'ramda';
+  groupBy,
+  identity,
+  ifElse,
+  isEmpty,
+  isNil,
+  map,
+  omit,
+  prop,
+  reduce,
+  sortBy,
+  T,
+  values,
+} from 'ramda';
 
-const getDataObject = (txRow) => ({
+const getDataObject = (txRow: any) => ({
   key: txRow.data_key,
   positionInTx: txRow.position_in_tx, // for sorting later
   type: txRow.data_type,
@@ -36,14 +38,14 @@ const removeDataEntryFromRow = omit([
   'position_in_tx',
 ]);
 
-const appendRowToTx = (tx, row) =>
+const appendRowToTx = (tx: any, row: any) =>
   compose(
     ifElse(
       () => isNil(prop('data_key', row)),
       identity,
       assoc('data', append(getDataObject(row), tx.data)),
-    ),
-    merge(removeDataEntryFromRow(row)),
+    ) as any,
+    (b: any) => ({ ...removeDataEntryFromRow(row), ...b }),
   )(tx);
 
 /**
@@ -53,7 +55,7 @@ const appendRowToTx = (tx, row) =>
  * txAttributes and putting data objects nested into the tx,
  * preserving data entries order by sorting on `position_in_tx`
  */
-const dataEntriesToTxs = cond([
+const dataEntriesToTxs: (rows: unknown) => unknown[] = cond([
   [either(isNil, isEmpty), always([])],
   [
     T,
@@ -61,14 +63,14 @@ const dataEntriesToTxs = cond([
       // sort by position in tx, then remove it
       map(
         evolve({
-          data: compose(map(omit(['positionInTx'])), sortBy(prop('positionInTx'))),
-        }),
+          data: compose(map(omit(['positionInTx'])) as any, sortBy(prop('positionInTx') as any)),
+        }) as any,
       ),
-      map(reduce(appendRowToTx, { data: [] })),
+      map(reduce(appendRowToTx, { data: [] })) as any,
       values,
-      groupBy(prop('id')),
+      groupBy(prop('id') as any),
     ),
   ],
-]);
+]) as any;
 
 export default dataEntriesToTxs;

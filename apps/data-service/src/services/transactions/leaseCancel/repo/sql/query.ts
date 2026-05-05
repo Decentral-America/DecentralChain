@@ -1,9 +1,10 @@
 import { knex as _knex } from 'knex';
+
 const pg = _knex({ client: 'pg' });
 
 const select = pg({ t: 'txs_9' });
 
-const selectFromFiltered = (filtered) =>
+const selectFromFiltered = (filtered: any) =>
   filtered
     .select({
       fee: 't.fee',

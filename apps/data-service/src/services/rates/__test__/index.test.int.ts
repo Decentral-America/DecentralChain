@@ -1,12 +1,12 @@
+// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
-import { of as taskOf } from 'folktale/concurrency/task';
-import { empty } from 'folktale/maybe';
+import { Effect, Option, pipe } from 'effect';
 
 // common
 import { createPgDriver } from '../../../db';
 import createEventBus from '../../../eventBus';
 import { loadConfig } from '../../../loadConfig';
-import { isEmpty } from '../../../utils/fp/maybeOps';
+import { isEmpty } from '../../../utils/fp/optionOps';
 import { SortOrder } from '../../_common';
 import { type EmitEvent } from '../../_common/createResolver/types';
 import createAssetsService from '../../assets';
@@ -51,7 +51,11 @@ const assetsRepo = createAssetsRepo({
 const assets = createAssetsService(assetsRepo);
 
 const pairsRepo = createPairsRepo({ ...commonDeps, cache: pairsCache });
-const pairsNoAsyncValidation = createPairsService(pairsRepo, () => taskOf(undefined), assets);
+const pairsNoAsyncValidation = createPairsService(
+  pairsRepo,
+  () => Effect.succeed(undefined as undefined),
+  assets,
+);
 
 const thresholdAssetRateService = new ThresholdAssetRateService(
   options.thresholdAssetId,
@@ -74,162 +78,146 @@ const ratesService = createRateService({
 });
 
 describe('Rates', () => {
-  // Test case:
-  // 1. Calculate thresholdWaves in Waves using thresholdAssetRateService and acceptance volume threshold
-  // 2. Find pair P with volumeWaves greater or equal to thresholdWaves
-  // 3. Get rate R1 for pair P via rateRepo
-  // 4. Get rate R2 for pair P via ratesService
-  // 5. Compare R1 with R2, it should be equal
   it('should return direct rate', async () => {
-    await thresholdAssetRateService
-      .get()
-      .chain((mRate) => {
-        if (isEmpty(mRate)) {
-          throw new Error('Cannot calculate threshold rate');
-        }
-        const rate = mRate.unsafeGet();
-
-        // 1.
-        const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(rate);
-
-        // 2.
-        return pairsNoAsyncValidation
-          .search({
-            limit: 10,
-            matcher: options.matcher.defaultMatcherAddress,
-            moneyFormat: MoneyFormat.Float,
-            sort: SortOrder.Descending,
-          })
-          .map((pairs) => {
-            return pairs.items
-              .filter((pair) => pair.priceAsset != options.rateBaseAssetId)
-              .find((pair) => {
-                if (pair.volumeWaves == null) {
-                  return false;
-                }
-
-                return pair.volumeWaves.isGreaterThanOrEqualTo(thresholdWaves);
-              });
-          });
-      })
-      .chain((pair) => {
-        if (typeof pair === 'undefined') {
-          throw new Error('Pair with volume greater then threshold not found');
-        }
-
-        const t1 = rateRepo
-          .mget({
-            matcher: options.matcher.defaultMatcherAddress,
-            pairs: [pair],
-            timestamp: empty(),
-          })
-          .map((rates) => {
-            if (rates.length === 0) {
-              throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
-            }
-
-            return rates[0].rate;
-          });
-
-        const t2 = ratesService({
-          matcher: options.matcher.defaultMatcherAddress,
-          moneyFormat: MoneyFormat.Long,
-          pairs: [{ amountAsset: pair.amountAsset, priceAsset: pair.priceAsset }],
-          timestamp: empty(),
-        }).map((rates) => {
-          if (rates.length === 0) {
-            throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
+    await Effect.runPromise(
+      pipe(
+        thresholdAssetRateService.get(),
+        Effect.flatMap((mRate) => {
+          if (isEmpty(mRate)) {
+            return Effect.fail(new Error('Cannot calculate threshold rate'));
           }
-
-          return rates[0].rate;
-        });
-
-        return t1.and(t2).map(([r1, r2]) => {
-          expect(r1).toEqual(r2);
-        });
-      })
-      .run()
-      .promise();
+          const rate = (mRate as Option.Some<BigNumber>).value;
+          const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(
+            rate,
+          );
+          return pipe(
+            pairsNoAsyncValidation.search({
+              limit: 10,
+              matcher: options.matcher.defaultMatcherAddress,
+              moneyFormat: MoneyFormat.Float,
+              sort: SortOrder.Descending,
+            }),
+            Effect.map((pairs) =>
+              pairs.items
+                .filter((pair) => pair.priceAsset !== options.rateBaseAssetId)
+                .find((pair) => {
+                  if (pair.volumeWaves == null) return false;
+                  return pair.volumeWaves.isGreaterThanOrEqualTo(thresholdWaves);
+                }),
+            ),
+          );
+        }),
+        Effect.flatMap((pair) => {
+          if (typeof pair === 'undefined') {
+            return Effect.fail(new Error('Pair with volume greater then threshold not found'));
+          }
+          const t1 = pipe(
+            rateRepo.mget({
+              matcher: options.matcher.defaultMatcherAddress,
+              pairs: [pair],
+              timestamp: Option.none(),
+            }),
+            Effect.map((rates) => {
+              if (rates.length === 0)
+                throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
+              return rates[0]?.rate;
+            }),
+          );
+          const t2 = pipe(
+            ratesService({
+              matcher: options.matcher.defaultMatcherAddress,
+              moneyFormat: MoneyFormat.Long,
+              pairs: [{ amountAsset: pair.amountAsset, priceAsset: pair.priceAsset }],
+              timestamp: Option.none(),
+            }),
+            Effect.map((rates) => {
+              if (rates.length === 0)
+                throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
+              return rates[0]?.rate;
+            }),
+          );
+          return pipe(
+            Effect.all([t1, t2] as const),
+            // biome-ignore lint/suspicious/useIterableCallbackReturn: Effect.map is not Array.map
+            Effect.map(([r1, r2]) => {
+              expect(r1).toEqual(r2);
+            }),
+          );
+        }),
+        Effect.mapError((e) => {
+          throw e instanceof Error ? e : new Error(String(e));
+        }),
+      ),
+    );
   });
 
-  // Test case:
-  // 1. Calculate thresholdWaves in Waves using thresholdAssetRateService and acceptance volume threshold
-  // 2. Find pair P with volumeWaves less than thresholdWaves
-  // 3. Get rate R1 for pair P via rateRepo
-  // 4. Get rate R2 for pair P via ratesService
-  // 5. Compare R1 with R2, it should not be equal
   it('should return rate derived via specified baseAsset', async () => {
-    await thresholdAssetRateService
-      .get()
-      .chain((mRate) => {
-        if (isEmpty(mRate)) {
-          throw new Error('Cannot calculate threshold rate');
-        }
-
-        const rate = mRate.unsafeGet();
-
-        // 1.
-        const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(rate);
-
-        // 2.
-        return pairsNoAsyncValidation
-          .search({
-            limit: 10,
-            matcher: options.matcher.defaultMatcherAddress,
-            moneyFormat: MoneyFormat.Float,
-            sort: SortOrder.Descending,
-          })
-          .map((pairs) => {
-            return pairs.items
-              .filter((pair) => pair.priceAsset != options.rateBaseAssetId)
-              .find((pair) => {
-                if (pair.volumeWaves == null) {
-                  return false;
-                }
-
-                return pair.volumeWaves.isLessThan(thresholdWaves);
-              });
-          });
-      })
-      .chain((pair) => {
-        if (typeof pair === 'undefined') {
-          throw new Error('Pair with volume less then threshold not found');
-        }
-
-        // 3.
-        const t1 = rateRepo
-          .mget({
-            matcher: options.matcher.defaultMatcherAddress,
-            pairs: [pair],
-            timestamp: empty(),
-          })
-          .map((rates) => {
-            if (rates.length === 0) {
-              throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
-            }
-
-            return rates[0].rate;
-          });
-
-        // 4.
-        const t2 = ratesService({
-          matcher: options.matcher.defaultMatcherAddress,
-          moneyFormat: MoneyFormat.Long,
-          pairs: [pair],
-          timestamp: empty(),
-        }).map((rates) => {
-          if (rates.length === 0) {
-            throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
-          }
-
-          return rates[0].rate;
-        });
-
-        return t1.and(t2).map(([r1, r2]) => {
-          expect(r1).not.toEqual(r2);
-        });
-      })
-      .run()
-      .promise();
+    await Effect.runPromise(
+      pipe(
+        thresholdAssetRateService.get(),
+        Effect.flatMap((mRate) => {
+          if (isEmpty(mRate)) return Effect.fail(new Error('Cannot calculate threshold rate'));
+          const rate = (mRate as Option.Some<BigNumber>).value;
+          const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(
+            rate,
+          );
+          return pipe(
+            pairsNoAsyncValidation.search({
+              limit: 10,
+              matcher: options.matcher.defaultMatcherAddress,
+              moneyFormat: MoneyFormat.Float,
+              sort: SortOrder.Descending,
+            }),
+            Effect.map((pairs) =>
+              pairs.items
+                .filter((pair) => pair.priceAsset !== options.rateBaseAssetId)
+                .find((pair) => {
+                  if (pair.volumeWaves == null) return false;
+                  return pair.volumeWaves.isLessThan(thresholdWaves);
+                }),
+            ),
+          );
+        }),
+        Effect.flatMap((pair) => {
+          if (typeof pair === 'undefined')
+            return Effect.fail(new Error('Pair with volume less then threshold not found'));
+          const t1 = pipe(
+            rateRepo.mget({
+              matcher: options.matcher.defaultMatcherAddress,
+              pairs: [pair],
+              timestamp: Option.none(),
+            }),
+            Effect.map((rates) => {
+              if (rates.length === 0)
+                throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
+              return rates[0]?.rate;
+            }),
+          );
+          const t2 = pipe(
+            ratesService({
+              matcher: options.matcher.defaultMatcherAddress,
+              moneyFormat: MoneyFormat.Long,
+              pairs: [pair],
+              timestamp: Option.none(),
+            }),
+            Effect.map((rates) => {
+              if (rates.length === 0)
+                throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
+              return rates[0]?.rate;
+            }),
+          );
+          return pipe(
+            Effect.all([t1, t2] as const),
+            // biome-ignore lint/suspicious/useIterableCallbackReturn: Effect.map is not Array.map
+            Effect.map(([r1, r2]) => {
+              expect(r1).not.toEqual(r2);
+            }),
+          );
+        }),
+        Effect.mapError((e) => {
+          throw e instanceof Error ? e : new Error(String(e));
+        }),
+      ),
+    );
   });
 });

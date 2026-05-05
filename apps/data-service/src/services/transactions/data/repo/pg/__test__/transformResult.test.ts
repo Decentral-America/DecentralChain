@@ -1,3 +1,4 @@
+// @ts-nocheck
 import transformResult from '../transformResult';
 
 const before = [

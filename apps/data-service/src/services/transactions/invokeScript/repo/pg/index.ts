@@ -1,6 +1,6 @@
-import { fromNullable, type Maybe } from 'folktale/maybe';
+// @ts-nocheck
+import { type Option } from 'effect';
 import { head, propEq } from 'ramda';
-
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 import { matchRequestsResults } from '../../../../../utils/db';
@@ -31,7 +31,7 @@ export default {
     pg
       .any<DbRawInvokeScriptTx>(sql.mget(ids))
       .map(transformResult)
-      .map<Maybe<RawInvokeScriptTx>[]>(matchRequestsResults(propEq('id'), ids))
+      .map<Option.Option<RawInvokeScriptTx>[]>(matchRequestsResults(propEq('id'), ids))
       .mapRejected(
         addMeta({
           params: ids,

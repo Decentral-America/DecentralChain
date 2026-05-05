@@ -1,9 +1,11 @@
-import createService from '../../genesis';
+// @ts-nocheck
+
 import { createPgDriver } from '../../../../../db';
+import { loadConfig } from '../../../../../loadConfig';
 import { parseDate } from '../../../../../utils/parseDate';
 import { serialize } from '../../../_common/cursor';
+import createService from '../../genesis';
 
-import { loadConfig } from '../../../../../loadConfig';
 const options = loadConfig();
 
 const drivers = {

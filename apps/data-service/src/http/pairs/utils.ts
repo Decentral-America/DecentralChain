@@ -1,5 +1,6 @@
-import { Error as error, Ok as ok } from 'folktale/result';
+import { Either } from 'effect';
 import { isNil } from 'ramda';
+import { type ParseError } from '../../errorHandling';
 import { isSortOrder } from '../../services/_common';
 import {
   type PairsMgetRequest,
@@ -19,21 +20,23 @@ const PAIRS_MAX_LIMIT = 1000;
 export type ParseMatchExactly = Parser<boolean[]>;
 export const parseMatchExactly: ParseMatchExactly = (matchExactlyRaw?: string) =>
   isNil(matchExactlyRaw)
-    ? ok(undefined)
-    : parseArrayQuery(matchExactlyRaw).chain((ss) =>
+    ? Either.right(undefined)
+    : Either.flatMap(parseArrayQuery(matchExactlyRaw), (ss) =>
         typeof ss === 'undefined'
-          ? ok(undefined)
-          : ss.map(parseBool).reduceRight(
-              (acc, cur) => {
-                return acc.chain((a) =>
-                  cur.matchWith({
-                    Error: ({ value }) => error(value),
-                    Ok: ({ value }) => (typeof value === 'undefined' ? ok(a) : ok([...a, value])),
-                  }),
-                );
-              },
-              ok([] as boolean[]),
-            ),
+          ? Either.right(undefined)
+          : ss
+              .map(parseBool)
+              .reduceRight(
+                (acc: Either.Either<boolean[], ParseError>, cur) =>
+                  Either.flatMap(acc, (a) =>
+                    Either.isLeft(cur)
+                      ? Either.left(cur.left)
+                      : cur.right === undefined
+                        ? Either.right(a)
+                        : Either.right([...a, cur.right]),
+                  ),
+                Either.right<boolean[]>([]),
+              ),
       );
 
 export const mgetOrSearchParser = parseFilterValues({
@@ -42,7 +45,7 @@ export const mgetOrSearchParser = parseFilterValues({
   matcher: commonFilters.query,
   pairs: parsePairs,
   search_by_asset: commonFilters.query,
-  search_by_assets: parseArrayQuery as ParseArrayQuery, // merge function type and overloads
+  search_by_assets: parseArrayQuery as ParseArrayQuery,
 });
 
 type ParserFnType = typeof mgetOrSearchParser;
@@ -74,7 +77,7 @@ export const isSearchByAssetsRequest = (
 ): req is SearchByAssetsRequest =>
   'search_by_assets' in req &&
   Array.isArray(req.search_by_assets) &&
-  req.search_by_assets.length == 2 &&
+  req.search_by_assets.length === 2 &&
   'match_exactly' in req &&
   Array.isArray(req.match_exactly) &&
-  req.match_exactly.length == 2;
+  req.match_exactly.length === 2;

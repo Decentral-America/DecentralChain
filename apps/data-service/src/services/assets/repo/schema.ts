@@ -1,16 +1,17 @@
-import * as Joi from '../../../utils/validation/joi';
+import { Schema } from 'effect';
+import * as S from '../../../utils/validation/schema';
 
-export const result = Joi.object().keys({
-  asset_id: Joi.string().assetId().required(),
-  asset_name: Joi.string().required(),
-  decimals: Joi.number().required(),
-  description: Joi.string().allow(''),
-  has_script: Joi.boolean().required(),
-  issue_height: Joi.number().required(),
-  issue_timestamp: Joi.object().type(Date).required(),
-  min_sponsored_asset_fee: Joi.object().bignumber().required().allow(null),
-  reissuable: Joi.boolean().required(),
-  sender: Joi.string().base58().allow('').required(),
-  ticker: Joi.string().required().allow(null, ''),
-  total_quantity: Joi.object().bignumber(),
+export const result = Schema.Struct({
+  asset_id: S.AssetId,
+  asset_name: Schema.String,
+  decimals: Schema.Number,
+  description: Schema.optional(Schema.String),
+  has_script: Schema.Boolean,
+  issue_height: Schema.Number,
+  issue_timestamp: Schema.DateFromSelf,
+  min_sponsored_asset_fee: Schema.NullOr(S.Bignumber),
+  reissuable: Schema.Boolean,
+  sender: Schema.String,
+  ticker: Schema.NullOr(Schema.String),
+  total_quantity: Schema.optional(S.Bignumber),
 });

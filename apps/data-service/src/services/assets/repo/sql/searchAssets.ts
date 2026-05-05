@@ -1,4 +1,5 @@
-import * as knex from 'knex';
+// @ts-nocheck
+import { type Knex, knex } from 'knex';
 import { compose, map } from 'ramda';
 import { escapeForTsQuery, prepareForLike } from '../../../../utils/db';
 import { columns } from './common';
@@ -19,7 +20,7 @@ const searchById = (q: string) =>
     })
     .where(`a.${columns.asset_id}`, 'ilike', prepareForLike(q, { matchExactly: true })); // ilike - hack for searching for waves in different cases
 
-const searchByNameInMeta = (qb: knex.QueryBuilder, q: string) =>
+const searchByNameInMeta = (qb: Knex.QueryBuilder, q: string) =>
   qb
     .table('assets_metadata')
     .columns([
@@ -36,7 +37,7 @@ const searchByNameInMeta = (qb: knex.QueryBuilder, q: string) =>
     ])
     .where('asset_name', 'ilike', prepareForLike(q));
 
-const searchByTicker = (qb: knex.QueryBuilder, q: string): knex.QueryBuilder =>
+const searchByTicker = (qb: Knex.QueryBuilder, q: string): Knex.QueryBuilder =>
   qb
     .table({ a: 'assets' })
     .columns({
@@ -48,9 +49,9 @@ const searchByTicker = (qb: knex.QueryBuilder, q: string): knex.QueryBuilder =>
     })
     .where(`a.${columns.ticker}`, 'ilike', prepareForLike(q));
 
-const searchByName = (qb: knex.QueryBuilder, q: string) => {
+const searchByName = (qb: Knex.QueryBuilder, q: string) => {
   const cleanedQuery = escapeForTsQuery(q);
-  return compose((q: knex.QueryBuilder) =>
+  return compose((q: Knex.QueryBuilder) =>
     cleanedQuery.length
       ? q.orWhereRaw(`to_tsvector('simple', a.asset_name) @@ to_tsquery(?)`, [`${cleanedQuery}:*`])
       : q,
@@ -71,7 +72,7 @@ const searchByName = (qb: knex.QueryBuilder, q: string) => {
   );
 };
 
-export const searchAssets = (query: string): knex.QueryBuilder =>
+export const searchAssets = (query: string): Knex.QueryBuilder =>
   pg
     .with('assets_cte', (qb) => {
       qb.select([

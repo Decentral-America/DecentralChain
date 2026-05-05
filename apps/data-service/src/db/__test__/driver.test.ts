@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createPgDriver } from '../driver';
 
 import { driver } from './mocks';

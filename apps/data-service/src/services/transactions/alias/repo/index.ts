@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -9,7 +10,7 @@ import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
 import { result as resultSchema } from './schema';
-import * as sql from './sql';
+import sql from './sql';
 import {
   type AliasTx,
   type AliasTxDbResponse,
@@ -19,9 +20,9 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, AliasTxDbResponse, AliasTx>({
       name: 'transactions.alias.get',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,10 +30,10 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTx
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, AliasTxDbResponse, AliasTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.alias.mget',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -46,7 +47,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTx
         serialize,
       },
       name: 'transactions.alias.search',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

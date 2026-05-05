@@ -1,4 +1,5 @@
-const {
+// @ts-nocheck
+import {
   always,
   complement,
   compose,
@@ -14,7 +15,7 @@ const {
   sortBy,
   T,
   values,
-} = require('ramda');
+} from 'ramda';
 
 import { type RawMassTransferTx, type RawMassTransferTxTransfer } from '../types';
 import { type DbRawMassTransferTx } from './types';

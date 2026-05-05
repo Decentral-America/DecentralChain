@@ -1,95 +1,102 @@
-import { compose, map, pick, filter, has, __, identity, reverse, merge } from 'ramda';
-import { knex as _knex } from 'knex';
-const pg = _knex({ client: 'pg' });
-
-import commonFiltersOrder from './filtersOrder';
+// @ts-nocheck
+import { knex as _knex, type Knex } from 'knex';
+import { __, compose, filter, has, identity, map, pick, reverse } from 'ramda';
+import * as defaultValues from './defaults';
 import commonFilters from './filters';
-import defaultValues from './defaults';
+import commonFiltersOrder from './filtersOrder';
+
+const pg = _knex({ client: 'pg' });
 
 const createSql = ({
   query,
   filters = commonFilters,
   filtersOrder = commonFiltersOrder,
-  queryAfterFilters = {},
+  queryAfterFilters = {} as Record<string, unknown>,
+}: {
+  query: any;
+  filters?: typeof commonFilters;
+  filtersOrder?: string[];
+  queryAfterFilters?: Record<string, unknown>;
 }) => {
-  const queryAfterFiltersWithDefaults = merge(
-    {
-      get: identity,
-      mget: identity,
-      search: identity,
-    },
-    queryAfterFilters,
-  );
+  const queryAfterFiltersWithDefaults: Record<string, (q: unknown, params?: unknown) => unknown> = {
+    get: identity as (q: unknown) => unknown,
+    mget: identity as (q: unknown) => unknown,
+    search: identity as (q: unknown) => unknown,
+    ...(queryAfterFilters as Record<string, (q: unknown, params?: unknown) => unknown>),
+  };
 
   return {
-    get: (id) =>
+    get: (id: unknown) =>
       compose(
         String,
-        (q) => queryAfterFiltersWithDefaults.get(q, id),
-        // tip for postgresql to use index
+        (q: unknown) => queryAfterFiltersWithDefaults.get?.(q, id),
         filters.limit(1),
-        filters.id(id),
+        filters.id(id as string),
       )(query),
 
-    mget: (ids) =>
+    mget: (ids: unknown[]) =>
       compose(
         String,
-        (q) => queryAfterFiltersWithDefaults.mget(q, ids),
-        // tip for postgresql to use index
+        (q: unknown) => queryAfterFiltersWithDefaults.mget?.(q, ids),
         filters.sort(defaultValues.SORT),
-        // tip for postgresql to use index
         filters.limit(ids.length),
-        filters.ids(ids),
+        filters.ids(ids as string[]),
       )(query),
 
-    search: (fValues) => {
+    search: (fValues: Record<string, unknown>) => {
       const fValuesPicked = pick(filtersOrder, fValues);
       const appliedFs = compose(
-        map((x) => filters[x](fValuesPicked[x])),
+        map((x: string) =>
+          (filters as Record<string, (v: unknown) => (q: unknown) => unknown>)[x]?.(
+            fValuesPicked[x],
+          ),
+        ),
         filter(has(__, fValuesPicked)),
         reverse,
       )(filtersOrder);
 
-      return compose(
+      return (compose as any)(
         String,
-        (q) => queryAfterFiltersWithDefaults.search(q, fValuesPicked),
-        ...appliedFs,
-        (q) => q.clone(),
+        (q: unknown) => queryAfterFiltersWithDefaults.search?.(q, fValuesPicked),
+        ...(appliedFs as Array<(q: unknown) => unknown>),
+        (q: { clone: () => unknown }) => q.clone(),
       )(query);
     },
   };
 };
 
-const createByTimeStamp = (t) => (comparator) => (ts) => (q) =>
-  q
-    .clone()
-    .where(
+const createByTimeStamp =
+  (t: string) => (comparator: string) => (ts: Date) => (q: Knex.QueryBuilder) =>
+    q
+      .clone()
+      .where(
+        't.uid',
+        comparator,
+        pg(t)
+          .select('uid')
+          .where('time_stamp', comparator, ts.toISOString())
+          .orderByRaw(`time_stamp <-> '${ts.toISOString()}'::timestamptz`)
+          .limit(1),
+      );
+
+const createByBlockTimeStamp =
+  (t: string) => (comparator: string) => (ts: Date) => (q: Knex.QueryBuilder) =>
+    q.clone().where(
       't.uid',
       comparator,
       pg(t)
         .select('uid')
-        .where('time_stamp', comparator, ts.toISOString())
-        .orderByRaw(`time_stamp <-> '${ts.toISOString()}'::timestamptz`)
+        .where(
+          'height',
+          comparator,
+          pg('blocks')
+            .select('height')
+            .where('time_stamp', comparator, ts.toISOString())
+            .orderByRaw(`time_stamp <-> '${ts.toISOString()}'::timestamptz`)
+            .limit(1),
+        )
+        .orderBy('height', comparator === '>=' ? 'asc' : 'desc')
         .limit(1),
     );
-
-const createByBlockTimeStamp = (t) => (comparator) => (ts) => (q) =>
-  q.clone().where(
-    't.uid',
-    comparator,
-    pg(t)
-      .select('uid')
-      .where(
-        'height',
-        comparator,
-        pg('blocks')
-          .select('height')
-          .where('time_stamp', comparator, ts.toISOString())
-          .orderByRaw(`time_stamp <-> '${ts.toISOString()}'::timestamptz`)
-          .limit(1),
-      )
-      .orderBy('height', comparator == '>=' ? 'asc' : 'desc')
-      .limit(1),
-  );
 
 export { createByBlockTimeStamp, createByTimeStamp, createSql, defaultValues };

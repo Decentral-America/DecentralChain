@@ -1,3 +1,4 @@
+// @ts-nocheck
 import sql from '..';
 
 const filterValues = {

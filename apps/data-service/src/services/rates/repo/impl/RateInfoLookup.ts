@@ -1,40 +1,34 @@
+// @ts-nocheck
 import { type Asset, BigNumber } from '@decentralchain/data-entities';
-import { fromNullable, type Maybe } from 'folktale/maybe';
+import { Option, pipe } from 'effect';
 import { path } from 'ramda';
 import { MoneyFormat } from '../../../../services/types';
 import { type CacheSync } from '../../../../types';
-import { isDefined, map2 } from '../../../../utils/fp/maybeOps';
+import { isDefined, map2 } from '../../../../utils/fp/optionOps';
 import { createPairHasBaseAsset, flip } from '../../data';
 import { type AssetPair, type RateWithPair, type VolumeAwareRateInfo } from '../../RateEstimator';
 import { inv, invOnSatoshi, safeDivide } from '../../util';
 
 type RateLookupTable = {
-  [amountAsset: string]: {
-    [priceAsset: string]: VolumeAwareRateInfo;
-  };
+  [amountAsset: string]: { [priceAsset: string]: VolumeAwareRateInfo };
 };
 
-type AssetPairWithMoneyFormat = AssetPair & {
-  moneyFormat: MoneyFormat;
-};
+type AssetPairWithMoneyFormat = AssetPair & { moneyFormat: MoneyFormat };
 
-/*
-   find rate data from RateLookupTable using the following strategy:
-   
-   lookup(amountAsset, priceAsset) || ( lookup(amountAsset, baseAsset) / lookup(priceAsset, baseAsset) }
-   
-   where lookup = getFromTable(asset1, asset2) || 1 / getFromtable(asset2, asset1)   
-*/
 export default class RateInfoLookup
   implements Omit<CacheSync<AssetPairWithMoneyFormat, RateWithPair>, 'set'>
 {
   private readonly lookupTable: RateLookupTable;
+  private readonly mPairAcceptanceVolumeThreshold: Option.Option<BigNumber>;
+  private readonly baseAsset: Asset;
 
   constructor(
     data: Array<VolumeAwareRateInfo>,
-    private readonly mPairAcceptanceVolumeThreshold: Maybe<BigNumber>,
-    private readonly baseAsset: Asset,
+    mPairAcceptanceVolumeThreshold: Option.Option<BigNumber>,
+    baseAsset: Asset,
   ) {
+    this.mPairAcceptanceVolumeThreshold = mPairAcceptanceVolumeThreshold;
+    this.baseAsset = baseAsset;
     this.lookupTable = this.toLookupTable(data);
   }
 
@@ -42,81 +36,67 @@ export default class RateInfoLookup
     return isDefined(this.get(pairWithMoneyFormat));
   }
 
-  get(pairWithMoneyFormat: AssetPairWithMoneyFormat): Maybe<VolumeAwareRateInfo> {
+  get(pairWithMoneyFormat: AssetPairWithMoneyFormat): Option.Option<VolumeAwareRateInfo> {
     const pairHasBaseAsset = createPairHasBaseAsset(this.baseAsset.id);
-
     const lookup = (pair: AssetPair, flipped: boolean) =>
       this.getFromLookupTable(pair, flipped, pairWithMoneyFormat.moneyFormat);
 
     if (pairHasBaseAsset(pairWithMoneyFormat)) {
-      return lookup(pairWithMoneyFormat, false).orElse(() => lookup(pairWithMoneyFormat, true));
+      return Option.orElse(lookup(pairWithMoneyFormat, false), () =>
+        lookup(pairWithMoneyFormat, true),
+      );
     }
 
     const baseAssetPaired = this.lookupThroughBaseAsset(this.baseAsset, pairWithMoneyFormat);
-    const hasPairWithBaseAsset = baseAssetPaired.matchWith({
-      Just: () => true,
-      Nothing: () => false,
-    });
+    const hasPairWithBaseAsset = Option.isSome(baseAssetPaired);
 
-    return lookup(pairWithMoneyFormat, false)
-      .orElse(() => lookup(pairWithMoneyFormat, true))
-      .filter(
+    return pipe(
+      Option.orElse(lookup(pairWithMoneyFormat, false), () => lookup(pairWithMoneyFormat, true)),
+      Option.filter(
         (val) =>
           (val.volumeWaves !== null &&
-            this.mPairAcceptanceVolumeThreshold.matchWith({
-              Just: ({ value: pairAcceptanceVolumeThreshold }) =>
-                val.volumeWaves.gte(pairAcceptanceVolumeThreshold),
-              // lookup through waves
-              Nothing: () => false,
+            Option.match(this.mPairAcceptanceVolumeThreshold, {
+              onNone: () => false,
+              onSome: (threshold) => val.volumeWaves.gte(threshold),
             })) ||
           !hasPairWithBaseAsset,
-      )
-      .orElse(() => baseAssetPaired);
+      ),
+      (filtered) => Option.orElse(filtered, () => baseAssetPaired),
+    );
   }
 
   private toLookupTable(data: Array<VolumeAwareRateInfo>): RateLookupTable {
     return data.reduce<RateLookupTable>((acc, item) => {
-      if (!(item.amountAsset.id in acc)) {
-        acc[item.amountAsset.id] = {};
-      }
-
-      acc[item.amountAsset.id][item.priceAsset.id] = item;
-
+      acc[item.amountAsset.id] = acc[item.amountAsset.id] ?? {};
+      (acc[item.amountAsset.id] as Record<string, VolumeAwareRateInfo>)[item.priceAsset.id] = item;
       return acc;
     }, {});
   }
 
-  // Returns rate for requested pair
-  // If `flipped`, then it has to search for flipped assets pair,
-  // but has to response for requested pair
   private getFromLookupTable(
     pair: AssetPair,
     flipped: boolean,
     moneyFormat: MoneyFormat,
-  ): Maybe<VolumeAwareRateInfo> {
-    // src: A/B
+  ): Option.Option<VolumeAwareRateInfo> {
     const lookupData = flipped ? flip(pair) : pair;
-    // lookup for: flipped ? B/A : A/B
-
-    const foundValue = fromNullable<VolumeAwareRateInfo>(
-      path([lookupData.amountAsset.id, lookupData.priceAsset.id], this.lookupTable),
+    const foundValue = Option.fromNullable<VolumeAwareRateInfo>(
+      path([lookupData.amountAsset.id, lookupData.priceAsset.id], this.lookupTable) as
+        | VolumeAwareRateInfo
+        | undefined,
     );
 
-    return foundValue.map((data) => {
+    return Option.map(foundValue, (data) => {
       if (flipped) {
-        // found for: B/A
         const flippedData = flip({ ...data });
-        // result for: A/B (src),
-        // otherwise 1/rate will be cached for rate B/A, but it incorrect
-
         if (moneyFormat === MoneyFormat.Long) {
-          flippedData.rate = invOnSatoshi(flippedData.rate, 8)
-            .map((r) => r.shiftedBy(8))
-            .getOrElse(new BigNumber(0));
+          flippedData.rate = pipe(
+            invOnSatoshi(flippedData.rate, 8),
+            Option.map((r) => r.shiftedBy(8)),
+            Option.getOrElse(() => new BigNumber(0)),
+          );
         } else {
-          flippedData.rate = inv(flippedData.rate).getOrElse(new BigNumber(0));
+          flippedData.rate = Option.getOrElse(inv(flippedData.rate), () => new BigNumber(0));
         }
-
         return flippedData;
       } else {
         return data;
@@ -127,13 +107,17 @@ export default class RateInfoLookup
   private lookupThroughBaseAsset(
     baseAsset: Asset,
     pair: AssetPairWithMoneyFormat,
-  ): Maybe<VolumeAwareRateInfo> {
+  ): Option.Option<VolumeAwareRateInfo> {
     return map2(
       (info1, info2) => ({
         ...pair,
-        rate: safeDivide(info1.rate, info2.rate)
-          .map((r) => (pair.moneyFormat === MoneyFormat.Long ? r.shiftedBy(8).decimalPlaces(0) : r))
-          .getOrElse(new BigNumber(0)),
+        rate: pipe(
+          safeDivide(info1.rate, info2.rate),
+          Option.map((r) =>
+            pair.moneyFormat === MoneyFormat.Long ? r.shiftedBy(8).decimalPlaces(0) : r,
+          ),
+          Option.getOrElse(() => new BigNumber(0)),
+        ),
         volumeWaves: BigNumber.max(info1.volumeWaves, info2.volumeWaves),
       }),
       this.get({

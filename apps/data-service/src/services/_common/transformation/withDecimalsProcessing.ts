@@ -1,67 +1,73 @@
-import { type Task, of as taskOf } from 'folktale/concurrency/task';
-import { empty, type Maybe, of as maybeOf } from 'folktale/maybe';
+import { Effect, Option, pipe } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import { type SearchedItems } from '../../../types';
-import { swapMaybeF } from '../../../utils/fp';
+import { swapOptionEffect } from '../../../utils/fp';
 import { MoneyFormat, type WithMoneyFormat } from '../../types';
 
 export const getWithDecimalsProcessing =
   <GetRequest extends WithMoneyFormat, Response>(
-    modifyDecimals: (items: Response[]) => Task<AppError, Response[]>,
-    get: (r: GetRequest) => Task<AppError, Maybe<Response>>,
+    modifyDecimals: (items: Response[]) => Effect.Effect<Response[], AppError>,
+    get: (r: GetRequest) => Effect.Effect<Option.Option<Response>, AppError>,
   ) =>
-  (req: GetRequest) =>
-    get(req).chain<AppError, Maybe<Response>>((m) =>
-      req.moneyFormat == MoneyFormat.Long
-        ? taskOf<AppError, Maybe<Response>>(m)
-        : swapMaybeF<AppError, Response>(
-            taskOf,
-            m.map((item) => modifyDecimals([item]).map((res) => res[0])),
+  (req: GetRequest): Effect.Effect<Option.Option<Response>, AppError> =>
+    pipe(
+      get(req),
+      Effect.flatMap((m) => {
+        if (req.moneyFormat === MoneyFormat.Long) return Effect.succeed(m);
+        return swapOptionEffect(
+          pipe(
+            m,
+            Option.map((item) =>
+              pipe(
+                modifyDecimals([item]),
+                Effect.map((res) => res[0] as (typeof res)[0]),
+              ),
+            ),
           ),
+        );
+      }),
     );
 
 export const mgetWithDecimalsProcessing =
   <MgetRequest extends WithMoneyFormat, Response>(
-    modifyDecimals: (items: Response[]) => Task<AppError, Response[]>,
-    mget: (r: MgetRequest) => Task<AppError, Maybe<Response>[]>,
+    modifyDecimals: (items: Response[]) => Effect.Effect<Response[], AppError>,
+    mget: (r: MgetRequest) => Effect.Effect<Option.Option<Response>[], AppError>,
   ) =>
-  (req: MgetRequest) =>
-    mget(req).chain<AppError, Maybe<Response>[]>((ms) =>
-      req.moneyFormat == MoneyFormat.Long
-        ? taskOf(ms)
-        : modifyDecimals(
-            ms
-              .filter((m) =>
-                m.matchWith({
-                  Just: () => true,
-                  Nothing: () => false,
-                }),
-              )
-              .map((m) => m.unsafeGet()),
-          ).map((res) => {
+  (req: MgetRequest): Effect.Effect<Option.Option<Response>[], AppError> =>
+    pipe(
+      mget(req),
+      Effect.flatMap((ms) => {
+        if (req.moneyFormat === MoneyFormat.Long) return Effect.succeed(ms);
+        const somes = ms.filter(Option.isSome).map((m) => m.value);
+        return pipe(
+          modifyDecimals(somes),
+          Effect.map((res) => {
             let idx = 0;
             return ms.map((m) =>
-              m.matchWith({
-                Just: (_) => maybeOf(res[idx++]),
-                Nothing: () => empty(),
-              }),
+              Option.isSome(m)
+                ? Option.some(res[idx++] as NonNullable<(typeof res)[number]>)
+                : Option.none(),
             );
           }),
+        );
+      }),
     );
 
 export const searchWithDecimalsProcessing =
   <SearchRequest extends WithMoneyFormat, Response>(
-    modifyDecimals: (items: Response[]) => Task<AppError, Response[]>,
-    search: (r: SearchRequest) => Task<AppError, SearchedItems<Response>>,
+    modifyDecimals: (items: Response[]) => Effect.Effect<Response[], AppError>,
+    search: (r: SearchRequest) => Effect.Effect<SearchedItems<Response>, AppError>,
   ) =>
-  (req: SearchRequest) =>
-    search(req).chain<AppError, SearchedItems<Response>>((res) =>
-      req.moneyFormat == MoneyFormat.Long
-        ? taskOf(res)
-        : modifyDecimals(res.items).map((items) => ({
-            ...res,
-            items,
-          })),
+  (req: SearchRequest): Effect.Effect<SearchedItems<Response>, AppError> =>
+    pipe(
+      search(req),
+      Effect.flatMap((res) => {
+        if (req.moneyFormat === MoneyFormat.Long) return Effect.succeed(res);
+        return pipe(
+          modifyDecimals(res.items),
+          Effect.map((items) => ({ ...res, items })),
+        );
+      }),
     );
 
 export const withDecimalsProcessing = <
@@ -70,16 +76,16 @@ export const withDecimalsProcessing = <
   SearchRequest extends WithMoneyFormat,
   Response,
 >(
-  modifyDecimals: (items: Response[]) => Task<AppError, Response[]>,
+  modifyDecimals: (items: Response[]) => Effect.Effect<Response[], AppError>,
   service: {
-    get: (r: GetRequest) => Task<AppError, Maybe<Response>>;
-    mget: (r: MgetRequest) => Task<AppError, Maybe<Response>[]>;
-    search: (r: SearchRequest) => Task<AppError, SearchedItems<Response>>;
+    get: (r: GetRequest) => Effect.Effect<Option.Option<Response>, AppError>;
+    mget: (r: MgetRequest) => Effect.Effect<Option.Option<Response>[], AppError>;
+    search: (r: SearchRequest) => Effect.Effect<SearchedItems<Response>, AppError>;
   },
 ): {
-  get: (r: GetRequest) => Task<AppError, Maybe<Response>>;
-  mget: (r: MgetRequest) => Task<AppError, Maybe<Response>[]>;
-  search: (r: SearchRequest) => Task<AppError, SearchedItems<Response>>;
+  get: (r: GetRequest) => Effect.Effect<Option.Option<Response>, AppError>;
+  mget: (r: MgetRequest) => Effect.Effect<Option.Option<Response>[], AppError>;
+  search: (r: SearchRequest) => Effect.Effect<SearchedItems<Response>, AppError>;
 } => ({
   get: getWithDecimalsProcessing(modifyDecimals, service.get),
   mget: mgetWithDecimalsProcessing(modifyDecimals, service.mget),

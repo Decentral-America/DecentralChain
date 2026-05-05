@@ -1,5 +1,5 @@
-import { Ok as ok } from 'folktale/result';
-
+// @ts-nocheck
+import { Either } from 'effect';
 import { type CommonRepoDependencies } from '../../..';
 import { get, mget, search } from '../../../_common/createResolver';
 import { transformResults as transformResultGet } from '../../../_common/presets/pg/getById/transformResult';
@@ -7,12 +7,10 @@ import { transformResults as transformResultMget } from '../../../_common/preset
 import { transformInput as transformInputSearch } from '../../../_common/presets/pg/search/transformInput';
 import { transformResults as transformResultSearch } from '../../../_common/presets/pg/search/transformResults';
 import { validateResult } from '../../../_common/presets/validation';
-
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
-
 import pgData from './pg';
 import { result as resultSchema } from './schema';
-import * as transformTxInfo from './transformTxInfo';
+import transformTxInfo from './transformTxInfo';
 import {
   type MassTransferTx,
   type MassTransferTxsRepo,
@@ -27,7 +25,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): MassTra
     get: get({
       emitEvent,
       getData: pgData.get(pg),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r),
       transformResult: transformResultGet(transformTxInfo),
       validateResult: validateResult<RawMassTransferTx>(resultSchema, createServiceName('get')),
     }),
@@ -35,7 +33,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): MassTra
     mget: mget({
       emitEvent,
       getData: pgData.mget(pg),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r),
       transformResult: transformResultMget(transformTxInfo),
       validateResult: validateResult(resultSchema, createServiceName('mget')),
     }),

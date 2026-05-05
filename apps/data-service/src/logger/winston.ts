@@ -1,5 +1,6 @@
 import winston from 'winston';
 import { stringify } from './utils';
+
 const {
   format: { combine, timestamp, printf },
 } = winston;
@@ -12,7 +13,7 @@ const consoleTransport = new winston.transports.Console({
 });
 
 // Initialization
-const createLogger = (options) =>
+const createLogger = (options: any) =>
   winston.createLogger({
     level: options.logLevel,
     transports: [consoleTransport],

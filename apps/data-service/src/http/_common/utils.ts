@@ -1,7 +1,6 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
-import { type IncomingHttpHeaders } from 'http';
+import { type IncomingHttpHeaders } from 'node:http';
+import { Either } from 'effect';
 import { type Context } from 'koa';
-
 import { ParseError } from '../../errorHandling';
 import { type WithMatcher } from '../../services/_common';
 import { MoneyFormat } from '../../services/types';
@@ -26,8 +25,10 @@ export const DEFAULT_LSN_FORMAT = LSNFormat.Number;
 export const MONEY_FORMAT_KEY = 'money-format';
 export const DEFAULT_MONEY_FORMAT = MoneyFormat.Float;
 
-export const parseLSNFormat = (httpHeaders: IncomingHttpHeaders): Result<ParseError, LSNFormat> => {
-  const acceptHeader = httpHeaders['accept'];
+export const parseLSNFormat = (
+  httpHeaders: IncomingHttpHeaders,
+): Either.Either<LSNFormat, ParseError> => {
+  const acceptHeader = httpHeaders.accept;
 
   if (typeof acceptHeader === 'string' && acceptHeader.includes(LSN_FORMAT_KEY)) {
     // lsn format param assuredly is string
@@ -40,12 +41,12 @@ export const parseLSNFormat = (httpHeaders: IncomingHttpHeaders): Result<ParseEr
     ) as LSNFormat;
 
     if (![LSNFormat.Number, LSNFormat.String].includes(lsnFormat)) {
-      return error(new ParseError(new Error('Invalid Large significand format')));
+      return Either.left(new ParseError(new Error('Invalid Large significand format')));
     } else {
-      return ok(lsnFormat);
+      return Either.right(lsnFormat);
     }
   } else {
-    return ok(DEFAULT_LSN_FORMAT);
+    return Either.right(DEFAULT_LSN_FORMAT);
   }
 };
 
@@ -59,8 +60,8 @@ export const contentTypeWithLSN = (
 
 export const parseMoneyFormat = (
   httpHeaders: IncomingHttpHeaders,
-): Result<ParseError, MoneyFormat> => {
-  const acceptHeader = httpHeaders['accept'];
+): Either.Either<MoneyFormat, ParseError> => {
+  const acceptHeader = httpHeaders.accept;
 
   if (typeof acceptHeader === 'string' && acceptHeader.includes(MONEY_FORMAT_KEY)) {
     // money format param assuredly is string
@@ -74,12 +75,12 @@ export const parseMoneyFormat = (
     ) as MoneyFormat;
 
     if (![MoneyFormat.Float, MoneyFormat.Long].includes(moneyFormat)) {
-      return error(new ParseError(new Error('Invalid Money Format')));
+      return Either.left(new ParseError(new Error('Invalid Money Format')));
     } else {
-      return ok(moneyFormat);
+      return Either.right(moneyFormat);
     }
   } else {
-    return ok(DEFAULT_MONEY_FORMAT);
+    return Either.right(DEFAULT_MONEY_FORMAT);
   }
 };
 

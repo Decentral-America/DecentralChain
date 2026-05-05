@@ -1,11 +1,10 @@
-import { Joi } from '../../../../utils/validation';
-
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  asset_id: Joi.string().assetId().required(),
-  quantity: Joi.object().bignumber().required(),
-  reissuable: Joi.boolean().required(),
+  asset_id: S.AssetId,
+  quantity: S.Bignumber,
+  reissuable: Schema.Boolean,
 });

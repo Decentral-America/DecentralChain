@@ -1,5 +1,4 @@
-import { type Task } from 'folktale/concurrency/task';
-import { Ok as ok } from 'folktale/result';
+import { type Effect, Either } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import {
   type CandleInfo,
@@ -25,7 +24,7 @@ export type CandlesSearchRequest = {
 };
 
 export type RepoSearchLast<Request, Response> = {
-  readonly searchLast: (request: Request) => Task<AppError, RepoSearchResponse<Response>>;
+  readonly searchLast: (request: Request) => Effect.Effect<RepoSearchResponse<Response>, AppError>;
 };
 
 export type CandlesRepo = RepoSearch<CandlesSearchRequest, CandleInfo> &
@@ -42,7 +41,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Candles
         pg,
         sql: sql.search,
       }),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r),
       transformResult: transformResults,
       validateResult: validateResult(output, SERVICE__SEARCH__NAME),
     }),
@@ -53,7 +52,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Candles
         pg,
         sql: sql.searchLast,
       }),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r),
       transformResult: transformLastResult,
       validateResult: validateResult(output, SERVICE__SEARCH_LAST__NAME),
     }),

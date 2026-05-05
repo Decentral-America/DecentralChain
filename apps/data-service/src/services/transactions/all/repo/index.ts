@@ -21,20 +21,20 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AllTxsR
   return {
     get: getByIdPreset<AllTxsGetRequest, TxDbResponse, CommonTransactionInfo>({
       name: 'transactions.all.commonData.get',
-      resultSchema: result,
+      resultSchema: result as any,
       sql: sql.get,
-      transformResult: transformTxInfo,
+      transformResult: transformTxInfo as any,
     })({
       emitEvent,
       pg,
     }),
 
     mget: mgetByIdsPreset<string, TxDbResponse, CommonTransactionInfo>({
-      matchRequestResult: propEq('id'),
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.all.commonData.mget',
-      resultSchema: result,
+      resultSchema: result as any,
       sql: sql.mget,
-      transformResult: transformTxInfo,
+      transformResult: transformTxInfo as any,
     })({
       emitEvent,
       pg,
@@ -46,9 +46,9 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AllTxsR
         serialize,
       },
       name: 'transactions.all.commonData.search',
-      resultSchema: result,
+      resultSchema: result as any,
       sql: sql.search,
-      transformResult: transformTxInfo,
+      transformResult: transformTxInfo as any,
     })({
       emitEvent,
       pg,

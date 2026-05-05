@@ -1,6 +1,4 @@
-import { Ok as ok } from 'folktale/result';
-import { type SchemaLike } from 'joi';
-
+import { Either } from 'effect';
 import { get as getResolver } from '../../../createResolver';
 import { type RepoPresetInitOptions } from '../../types';
 import { validateResult } from '../../validation';
@@ -15,7 +13,7 @@ export const getByIdPreset =
     transformResult,
   }: {
     name: string;
-    resultSchema: SchemaLike;
+    resultSchema: any;
     transformResult: (response: ResponseRaw, request?: Id) => ResponseTransformed;
     sql: (r: Id) => string;
   }) =>
@@ -23,7 +21,7 @@ export const getByIdPreset =
     getResolver<Id, Id, ResponseRaw, ResponseTransformed>({
       emitEvent,
       getData: getData({ name, pg, sql }),
-      transformInput: ok,
+      transformInput: (r) => Either.right(r),
       transformResult: transformResultFn<Id, ResponseRaw, ResponseTransformed>(transformResult),
       validateResult: validateResult(resultSchema, name),
     });

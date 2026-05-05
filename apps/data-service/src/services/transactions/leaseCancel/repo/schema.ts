@@ -1,9 +1,8 @@
-import { Joi } from '../../../../utils/validation';
-
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  lease_id: Joi.string().base58().required(),
+  lease_id: S.Base58,
 });

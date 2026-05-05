@@ -42,7 +42,7 @@ describe('collect function', () => {
     const arr = [1, 2, 3, 4, 5];
 
     const takeOddToString = (n: number): string | undefined =>
-      n % 2 === 1 ? n.toString() + 'w' : undefined;
+      n % 2 === 1 ? `${n.toString()}w` : undefined;
 
     const expected = ['1w', '3w', '5w'];
 

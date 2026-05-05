@@ -1,72 +1,69 @@
 import { type BigNumber } from '@decentralchain/data-entities';
-import { type Task, of as taskOf } from 'folktale/concurrency/task';
-import { empty, type Maybe, of as maybeOf } from 'folktale/maybe';
-import * as LRU from 'lru-cache';
+import { Effect, Option, pipe } from 'effect';
+import { LRUCache } from 'lru-cache';
 import { WavesId } from '../..';
 import { type AppError } from '../../errorHandling';
 import { type PairsService } from '../pairs';
 import { MoneyFormat } from '../types';
 
-type LogRow = {
-  message: string;
-  data: any;
-};
-
+type LogRow = { message: string; data: any };
 type Logger = (l: LogRow) => void;
 
 export interface IThresholdAssetRateService {
-  get(): Task<AppError, Maybe<BigNumber>>;
+  get(): Effect.Effect<Option.Option<BigNumber>, AppError>;
 }
 
 export class ThresholdAssetRateService implements IThresholdAssetRateService {
-  private cache: LRU<string, BigNumber>;
+  private cache: LRUCache<string, BigNumber>;
+  private readonly thresholdAssetId: string;
+  private readonly matcherAddress: string;
+  private readonly pairsService: PairsService;
+  private readonly logger: Logger;
 
   constructor(
-    private readonly thresholdAssetId: string,
-    private readonly matcherAddress: string,
-    private readonly pairsService: PairsService,
-    private readonly logger: Logger,
+    thresholdAssetId: string,
+    matcherAddress: string,
+    pairsService: PairsService,
+    logger: Logger,
   ) {
-    this.cache = new LRU({ maxAge: 60000 });
+    this.thresholdAssetId = thresholdAssetId;
+    this.matcherAddress = matcherAddress;
+    this.pairsService = pairsService;
+    this.logger = logger;
+    this.cache = new LRUCache({ max: 1, ttl: 60_000 });
   }
 
-  get(): Task<AppError, Maybe<BigNumber>> {
-    const rate = this.cache.get(this.thresholdAssetId);
-    if (rate === undefined) {
-      // rate was not set or is stale
-      return this.pairsService
-        .get({
-          matcher: this.matcherAddress,
-          moneyFormat: MoneyFormat.Long,
-          pair: {
-            amountAsset: WavesId,
-            priceAsset: this.thresholdAssetId,
-          },
-        })
-        .chain((m) => {
-          return m.matchWith({
-            Just: ({ value }) => {
-              if (value === null) {
-                this.logger({
-                  data: `Rate for pair WAVES/${this.thresholdAssetId} not found`,
-                  message: 'GET_THRESHOLD_RATE',
-                });
-                return taskOf(empty());
-              }
-              this.cache.set(this.thresholdAssetId, value.weightedAveragePrice);
-              return taskOf(maybeOf(value.weightedAveragePrice));
-            },
-            Nothing: () => {
-              this.logger({
-                data: `Pair WAVES/${this.thresholdAssetId} not found`,
-                message: 'GET_THRESHOLD_RATE',
-              });
-              return taskOf(empty());
-            },
-          });
-        });
-    } else {
-      return taskOf(maybeOf(rate));
+  get(): Effect.Effect<Option.Option<BigNumber>, AppError> {
+    const cached = Option.fromNullable(this.cache.get(this.thresholdAssetId));
+    if (Option.isSome(cached)) {
+      return Effect.succeed(cached);
     }
+
+    return pipe(
+      this.pairsService.get({
+        matcher: this.matcherAddress,
+        moneyFormat: MoneyFormat.Long,
+        pair: { amountAsset: WavesId, priceAsset: this.thresholdAssetId },
+      }),
+      Effect.map((m) => {
+        if (Option.isNone(m)) {
+          this.logger({
+            data: `Pair WAVES/${this.thresholdAssetId} not found`,
+            message: 'GET_THRESHOLD_RATE',
+          });
+          return Option.none<BigNumber>();
+        }
+        const value = m.value;
+        if (value === null) {
+          this.logger({
+            data: `Rate for pair WAVES/${this.thresholdAssetId} not found`,
+            message: 'GET_THRESHOLD_RATE',
+          });
+          return Option.none<BigNumber>();
+        }
+        this.cache.set(this.thresholdAssetId, value.weightedAveragePrice);
+        return Option.some(value.weightedAveragePrice);
+      }),
+    );
   }
 }

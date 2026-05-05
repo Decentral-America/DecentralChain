@@ -13,7 +13,7 @@ const functionNameToPayload = (functionName: string | null): EthereumLikeTxPaylo
         type: 'invocation',
       };
 
-const bufferToETHHex = (b: Buffer) => '0x' + b.toString('hex');
+const bufferToETHHex = (b: Buffer) => `0x${b.toString('hex')}`;
 
 export default compose(
   transformTxInfo,

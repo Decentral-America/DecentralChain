@@ -1,5 +1,5 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
-import type * as Router from '@koa/router';
+import type Router from '@koa/router';
+import { Effect, Either, pipe } from 'effect';
 import { ParseError } from '../../errorHandling';
 import { type ServiceMesh } from '../../services';
 import { type WithLimit, type WithSortOrder } from '../../services/_common';
@@ -26,30 +26,33 @@ export const isMgetRequest = (req: unknown): req is ServiceMgetRequest =>
 
 export const parseGet = ({
   params,
-}: HttpRequest<['id']>): Result<ParseError, ServiceGetRequest> => {
-  if (params && params.id) {
-    return ok({
+}: HttpRequest<['id']>): Either.Either<ServiceGetRequest, ParseError> => {
+  if (params?.id) {
+    return Either.right({
       id: params.id,
     });
   } else {
-    return error(new ParseError(new Error('TransactionId is required')));
+    return Either.left(new ParseError(new Error('TransactionId is required')));
   }
 };
 
 export const parseMgetOrSearch =
   <SearchRequest>(customFilters: Record<string, Parser<any>>) =>
-  ({ query }: HttpRequest): Result<ParseError, ServiceMgetRequest | SearchRequest> => {
+  ({ query }: HttpRequest): Either.Either<ServiceMgetRequest | SearchRequest, ParseError> => {
     if (!query) {
-      return error(new ParseError(new Error('Query is empty')));
+      return Either.left(new ParseError(new Error('Query is empty')));
     }
 
-    return parseFilterValues(customFilters)(query).map((fValues) => {
-      if (isMgetRequest(fValues)) {
-        return fValues;
-      } else {
-        return withDefaults(fValues as SearchRequest);
-      }
-    });
+    return pipe(
+      parseFilterValues(customFilters)(query),
+      Either.map((fValues) => {
+        if (isMgetRequest(fValues)) {
+          return fValues;
+        } else {
+          return withDefaults(fValues as SearchRequest);
+        }
+      }),
+    );
   };
 
 export const createTransactionHttpHandlers = <SearchRequest extends WithSortOrder & WithLimit>(
@@ -57,21 +60,25 @@ export const createTransactionHttpHandlers = <SearchRequest extends WithSortOrde
   prefix: string,
   service: ServiceMesh['transactions'][keyof ServiceMesh['transactions']],
   parseRequest: {
-    get: (req: HttpRequest<['id']>) => Result<ParseError, ServiceGetRequest>;
+    get: (req: HttpRequest<['id']>) => Either.Either<ServiceGetRequest, ParseError>;
     mgetOrSearch: (
       req: HttpRequest<string[]>,
-    ) => Result<ParseError, ServiceMgetRequest | SearchRequest>;
+    ) => Either.Either<ServiceMgetRequest | SearchRequest, ParseError>;
   },
 ) => {
   const mgetOrSearchHandler = createHttpHandler(
     (req, lsnFormat) =>
       isMgetRequest(req)
-        ? service
-            .mget(req)
-            .map(mgetSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat))
-        : service
-            .search(req)
-            .map(searchSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
+        ? pipe(
+            service.mget(req),
+            Effect.map(mgetSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
+          )
+        : pipe(
+            service.search(req),
+            Effect.map(
+              searchSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat),
+            ),
+          ),
     parseRequest.mgetOrSearch,
   );
 
@@ -80,9 +87,10 @@ export const createTransactionHttpHandlers = <SearchRequest extends WithSortOrde
       `${prefix}/:id`,
       createHttpHandler(
         (req, lsnFormat) =>
-          service
-            .get(req)
-            .map(getSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
+          pipe(
+            service.get(req),
+            Effect.map(getSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
+          ),
         parseRequest.get,
       ),
     )

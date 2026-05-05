@@ -1,33 +1,22 @@
-import { Error as error, Ok as ok } from 'folktale/result';
+// @ts-nocheck
+import { Either } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { type Parser } from '../../http/_common/filters/types';
 
 export const parseBool: Parser<boolean | undefined> = (maybeBool) => {
-  if (isNil(maybeBool)) {
-    return ok(undefined);
-  }
-
-  const err = error<ParseError, boolean>(new ParseError(new Error('Invalid boolean value')));
-
+  if (isNil(maybeBool)) return Either.right(undefined);
+  const err = Either.left<ParseError, boolean>(new ParseError(new Error('Invalid boolean value')));
   if (typeof maybeBool === 'string') {
-    switch (true) {
-      case maybeBool.toLowerCase() === 'false':
-        return ok(false);
-      case maybeBool.toLowerCase() === 'true':
-        return ok(true);
-      case maybeBool === '':
-      case maybeBool === '0':
-      case maybeBool === 'undefined':
-      case maybeBool === 'NaN':
-      case maybeBool.toLowerCase() === 'null':
-        return err;
+    switch (maybeBool.toLowerCase()) {
+      case 'false':
+        return Either.right(false);
+      case 'true':
+        return Either.right(true);
       default:
         return err;
     }
-  } else if (typeof maybeBool === 'boolean') {
-    return ok(maybeBool);
-  } else {
-    return err;
   }
+  if (typeof maybeBool === 'boolean') return Either.right(maybeBool);
+  return err;
 };

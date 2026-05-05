@@ -1,6 +1,7 @@
-import { where, orWhere, hasMethod, limit } from '../lib';
+// @ts-nocheck
 
 import { create as createProxy } from '../../../__test__/proxy';
+import { hasMethod, limit, orWhere, where } from '../lib';
 
 const knexMock = {
   clone() {

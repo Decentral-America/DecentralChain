@@ -1,13 +1,12 @@
-import { Joi } from '../../../../utils/validation';
-
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  amount: Joi.object().bignumber().required(),
-  asset_id: Joi.string().assetId().required(),
-  attachment: Joi.string().required().allow(''),
-  fee_asset: Joi.string().assetId().required(),
-  recipient: Joi.string().required(),
+  amount: S.Bignumber,
+  asset_id: S.AssetId,
+  attachment: Schema.String,
+  fee_asset: S.AssetId,
+  recipient: Schema.String,
 });

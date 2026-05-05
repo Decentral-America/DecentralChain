@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 import { type CandlesService } from '../../services/candles';
 import { type PairsService } from '../../services/pairs';
 import { type RatesMgetService } from '../../services/rates';

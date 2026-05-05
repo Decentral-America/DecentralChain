@@ -1,20 +1,13 @@
-import { of as taskOf } from 'folktale/concurrency/task';
-import { of as justOf } from 'folktale/maybe';
-import { Ok as ok } from 'folktale/result';
+import { Effect, Either, Option, pipe } from 'effect';
 import { type AssetIdsPair, type CacheSync, type PairInfo } from '../../../types';
 import { forEach, isEmpty } from '../../../utils/fp/maybeOps';
 import { tap } from '../../../utils/tap';
 import { type CommonRepoDependencies } from '../..';
-
 // resolver creation and presets
 import { get as createGetResolver, mget as createMgetResolver } from '../../_common/createResolver';
 import { getData as getByIdPg } from '../../_common/presets/pg/getById/pg';
 import { searchPreset } from '../../_common/presets/pg/search';
 import { validateResult } from '../../_common/presets/validation';
-
-// service logic
-export { create as createCache } from './cache';
-
 import { type Cursor, deserialize, serialize } from './cursor';
 import { matchRequestResult } from './matchRequestResult';
 import { mgetPairsPg } from './mgetPairsPg';
@@ -27,6 +20,9 @@ import {
   type PairsRepo,
   type PairsSearchRequest,
 } from './types';
+
+// service logic
+export { create as createCache } from './cache';
 
 export default ({
   drivers,
@@ -50,19 +46,23 @@ export default ({
     emitEvent,
 
     // cache first
-    getData: (req) =>
-      cache.get(req).matchWith({
-        Just: ({ value }) => taskOf(justOf(value)),
-        Nothing: () =>
-          getByIdPg<PairDbResponse, PairsGetRequest>({
-            name: SERVICE_NAME.GET,
-            pg: drivers.pg,
-            sql: sql.get,
-          })(req).map(tap((maybeResp) => forEach((x) => cache.set(req, x), maybeResp))),
-      }),
-    transformInput: ok,
-    transformResult: (res) => res.map(transformResult),
-    validateResult: validateResult(resultSchema, SERVICE_NAME.GET),
+    getData: (req) => {
+      const cached = cache.get(req);
+      if (Option.isSome(cached)) {
+        return Effect.succeed(Option.some(cached.value));
+      }
+      return pipe(
+        getByIdPg<PairDbResponse, PairsGetRequest>({
+          name: SERVICE_NAME.GET,
+          pg: drivers.pg,
+          sql: sql.get,
+        })(req),
+        Effect.map(tap((maybeResp) => forEach((x) => cache.set(req, x), maybeResp))),
+      );
+    },
+    transformInput: (r) => Either.right(r),
+    transformResult: (res) => Option.map(res, transformResult),
+    validateResult: validateResult(resultSchema, SERVICE_NAME.GET) as any,
   });
 
   const mget = createMgetResolver<
@@ -85,35 +85,38 @@ export default ({
         return acc;
       }, []);
 
-      const notCachedPairs = notCachedIndexes.map((i) => request.pairs[i]);
+      const notCachedPairs = notCachedIndexes.map((i) => request.pairs[i]) as AssetIdsPair[];
 
-      return mgetPairsPg({
-        matchRequestResult,
-        name: SERVICE_NAME.MGET,
-        pg: drivers.pg,
-        sql: sql.mget,
-      })({
-        matcher: request.matcher,
-        pairs: notCachedPairs,
-      }).map((pairsFromDb) => {
-        pairsFromDb.forEach((pair, index) =>
-          forEach((p) => {
-            results[notCachedIndexes[index]] = pair;
-            cache.set(
-              {
-                matcher: request.matcher,
-                pair: notCachedPairs[index],
-              },
-              p,
-            );
-          }, pair),
-        );
-        return results;
-      });
+      return pipe(
+        mgetPairsPg({
+          matchRequestResult,
+          name: SERVICE_NAME.MGET,
+          pg: drivers.pg,
+          sql: sql.mget,
+        })({
+          matcher: request.matcher,
+          pairs: notCachedPairs,
+        }),
+        Effect.map((pairsFromDb) => {
+          pairsFromDb.forEach((pair, index) => {
+            forEach((p) => {
+              results[notCachedIndexes[index] as number] = pair;
+              cache.set(
+                {
+                  matcher: request.matcher,
+                  pair: notCachedPairs[index] as AssetIdsPair,
+                },
+                p,
+              );
+            }, pair);
+          });
+          return results;
+        }),
+      );
     },
-    transformInput: ok,
-    transformResult: (res) => res.map((m, i) => m.map(transformResult)),
-    validateResult: validateResult(resultSchema, SERVICE_NAME.MGET),
+    transformInput: (r) => Either.right(r),
+    transformResult: (res) => res.map((m) => Option.map(m, transformResult)),
+    validateResult: validateResult(resultSchema, SERVICE_NAME.MGET) as any,
   });
 
   const search = searchPreset<Cursor, PairsSearchRequest, PairDbResponse, PairInfo & AssetIdsPair>({
@@ -122,7 +125,7 @@ export default ({
       serialize,
     },
     name: SERVICE_NAME.SEARCH,
-    resultSchema,
+    resultSchema: resultSchema as any,
     sql: sql.search,
     transformResult,
   })({

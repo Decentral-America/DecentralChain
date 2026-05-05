@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { knex as _knex } from 'knex';
-const pg = _knex({ client: 'pg' });
 import { curryN } from 'ramda';
-
-import { createByTimeStamp, createByBlockTimeStamp } from '../../../_common/sql';
+import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
 import commonFilters from '../../../_common/sql/filters';
+
+const pg = _knex({ client: 'pg' });
 
 const byOrderSender = curryN(2, (orderSender, q) =>
   pg.union(
@@ -30,19 +31,17 @@ const byTimeStamp = createByTimeStamp('txs_7');
 
 const byBlockTimeStamp = createByBlockTimeStamp('txs_7');
 
-export default {
-  filters: {
-    ...commonFilters,
-    amountAsset: byAsset('amount'),
-    blockTimeEnd: byBlockTimeStamp('<='),
-    blockTimeStart: byBlockTimeStamp('>='),
+export const filters: any = {
+  ...commonFilters,
+  amountAsset: byAsset('amount'),
+  blockTimeEnd: byBlockTimeStamp('<='),
+  blockTimeStart: byBlockTimeStamp('>='),
 
-    matcher: commonFilters.sender,
-    orderId: byOrder,
-    priceAsset: byAsset('price'),
-    sender: byOrderSender,
-    senders: byOrderSenders,
-    timeEnd: byTimeStamp('<='),
-    timeStart: byTimeStamp('>='),
-  },
+  matcher: commonFilters.sender,
+  orderId: byOrder,
+  priceAsset: byAsset('price'),
+  sender: byOrderSender,
+  senders: byOrderSenders,
+  timeEnd: byTimeStamp('<='),
+  timeStart: byTimeStamp('>='),
 };

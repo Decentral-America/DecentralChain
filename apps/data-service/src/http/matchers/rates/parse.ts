@@ -1,5 +1,4 @@
-import { fromNullable } from 'folktale/maybe';
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either, Option } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../../errorHandling';
 import { type RateMgetParams } from '../../../types';
@@ -10,26 +9,29 @@ import { type HttpRequest } from '../../_common/types';
 export const parse = ({
   params,
   query,
-}: HttpRequest<['matcher']>): Result<ParseError, RateMgetParams> => {
+}: HttpRequest<['matcher']>): Either.Either<RateMgetParams, ParseError> => {
   if (isNil(params)) {
-    return error(new ParseError(new Error('Params is empty')));
+    return Either.left(new ParseError(new Error('Params is empty')));
   }
   if (isNil(query)) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return parseFilterValues({
-    pairs: parsePairs,
-    timestamp: parseDate,
-  })(query).chain((fValues) => {
-    if (isNil(fValues.pairs)) {
-      return error(new ParseError(new Error('Pairs are incorrect or are not set')));
-    }
+  return Either.flatMap(
+    parseFilterValues({
+      pairs: parsePairs,
+      timestamp: parseDate,
+    })(query),
+    (fValues) => {
+      if (isNil(fValues.pairs)) {
+        return Either.left(new ParseError(new Error('Pairs are incorrect or are not set')));
+      }
 
-    return ok({
-      matcher: params.matcher,
-      pairs: fValues.pairs,
-      timestamp: fromNullable(fValues.timestamp),
-    });
-  });
+      return Either.right({
+        matcher: params.matcher,
+        pairs: fValues.pairs,
+        timestamp: Option.fromNullable(fValues.timestamp),
+      });
+    },
+  );
 };

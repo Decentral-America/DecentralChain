@@ -1,3 +1,4 @@
+// @ts-nocheck
 import createDb from './createDb';
 
 describe('Db', () => {

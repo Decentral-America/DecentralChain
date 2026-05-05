@@ -1,3 +1,4 @@
+// @ts-nocheck
 import P from './';
 
 describe('Selector', () => {

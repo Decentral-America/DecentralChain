@@ -1,6 +1,6 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either, pipe } from 'effect';
 import { isNil, mergeAll } from 'ramda';
-import { isJoiError, ParseError, ValidationError } from '../../errorHandling';
+import { ParseError, ValidationError } from '../../errorHandling';
 import { loadConfig } from '../../loadConfig';
 import { type WithMatcher } from '../../services/_common';
 import { type CandlesSearchRequest } from '../../services/candles/repo';
@@ -10,7 +10,6 @@ import { div } from '../../utils/interval';
 import { parseFilterValues, withDefaults } from '../_common/filters';
 import commonFilters from '../_common/filters/filters';
 import { type HttpRequest } from '../_common/types';
-import { withMatcher } from '../_common/utils';
 
 const config = loadConfig();
 
@@ -41,126 +40,129 @@ type ParseIntervalOptions = {
 
 export const parseInterval =
   ({ min, max, divisibleBy, allowed }: ParseIntervalOptions) =>
-  (v: string | undefined): Result<ParseError, Interval | undefined> =>
-    commonFilters.query(v).chain((s: string | undefined) => {
-      if (isNil(s)) return ok(s);
-      else {
-        return intervalFromString(s)
-          .chain((i: Interval) => {
-            if (i.length < min.length) {
-              return error<ValidationError, Interval>(
-                new ValidationError(`Provided interval is smaller then minimum allowed`, {
-                  actual: i.source,
-                  allowed: min.source,
-                }),
-              );
-            }
+  (v: string | undefined): Either.Either<Interval | undefined, ParseError> =>
+    Either.flatMap(commonFilters.query(v), (s: string | undefined) => {
+      if (isNil(s)) return Either.right(s);
 
-            if (i.length > max.length) {
-              return error<ValidationError, Interval>(
-                new ValidationError(`Provided interval is bigger then maximum allowed`, {
-                  actual: i.source,
-                  allowed: max.source,
-                }),
-              );
-            }
+      return pipe(
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: interval parsing logic requires multiple validations
+        Either.flatMap(intervalFromString(s), (i: Interval) => {
+          if (i.length < min.length) {
+            return Either.left(
+              new ValidationError('Provided interval is smaller then minimum allowed', {
+                actual: i.source,
+                allowed: min.source,
+              }),
+            );
+          }
 
-            const d = div(i, divisibleBy);
-            if (d % 1 > 0) {
-              return error<ValidationError, Interval>(
-                new ValidationError(`Interval must be divisible by ${divisibleBy.source}`),
-              );
-            }
+          if (i.length > max.length) {
+            return Either.left(
+              new ValidationError('Provided interval is bigger then maximum allowed', {
+                actual: i.source,
+                allowed: max.source,
+              }),
+            );
+          }
 
-            if (
-              Array.isArray(allowed) &&
-              allowed.length > 0 &&
-              isNil(allowed.find((candleInterval) => candleInterval == i.source))
-            ) {
-              return error<ValidationError, Interval>(
-                new ValidationError('Interval must be one of the allowed', {
-                  actual: i.source,
-                  allowed,
-                }),
-              );
-            }
+          const d = div(i, divisibleBy);
+          if (d % 1 > 0) {
+            return Either.left(
+              new ValidationError(`Interval must be divisible by ${divisibleBy.source}`),
+            );
+          }
 
-            return ok<ValidationError, Interval>(i);
-          })
-          .mapError((e) => {
-            return isJoiError(e.meta) ? new ParseError(e.error) : new ParseError(e.error, e.meta);
-          });
-      }
+          if (
+            Array.isArray(allowed) &&
+            allowed.length > 0 &&
+            isNil(allowed.find((candleInterval) => candleInterval === i.source))
+          ) {
+            return Either.left(
+              new ValidationError('Interval must be one of the allowed', {
+                actual: i.source,
+                allowed,
+              }),
+            );
+          }
+
+          return Either.right(i);
+        }),
+        Either.mapLeft((e) => new ParseError(e.error, e.meta)),
+      );
     });
 
 export const parse = ({
   params,
   query,
-}: HttpRequest<['amountAsset', 'priceAsset']>): Result<ParseError, CandlesSearchRequest> => {
+}: HttpRequest<['amountAsset', 'priceAsset']>): Either.Either<CandlesSearchRequest, ParseError> => {
   if (isNil(params)) {
-    return error(new ParseError(new Error('Params is empty')));
+    return Either.left(new ParseError(new Error('Params is empty')));
   }
 
   if (isNil(query)) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  const minInterval = intervalFromString('1m').unsafeGet();
-  const maxInterval = intervalFromString('1M').unsafeGet();
+  const minInterval = Either.getOrThrow(intervalFromString('1m'));
+  const maxInterval = Either.getOrThrow(intervalFromString('1M'));
 
-  return parseFilterValues({
-    interval: parseInterval({
-      allowed: CandleIntervals,
-      divisibleBy: minInterval,
-      max: maxInterval,
-      min: minInterval,
-    }),
-    matcher: commonFilters.query,
-  })(query).chain((fValues) => {
-    const fValuesWithDefaults = mergeAll<CandlesSearchRequest & WithMatcher>([
-      {
-        matcher: config.matcher.defaultMatcherAddress,
-        timeEnd: new Date(),
-      },
-      withDefaults(fValues),
-    ]);
+  return (Either.flatMap as any)(
+    parseFilterValues({
+      interval: parseInterval({
+        allowed: CandleIntervals,
+        divisibleBy: minInterval,
+        max: maxInterval,
+        min: minInterval,
+      }),
+      matcher: commonFilters.query,
+    })(query),
+    (fValues: any) => {
+      const fValuesWithDefaults: Partial<CandlesSearchRequest & WithMatcher> = mergeAll<any>([
+        {
+          matcher: config.matcher.defaultMatcherAddress,
+          timeEnd: new Date(),
+        },
+        withDefaults(fValues),
+      ]);
 
-    if (!withMatcher(fValuesWithDefaults)) {
-      return error(new ParseError(new Error('Matcher is not defined')));
-    }
+      if (!fValuesWithDefaults.matcher) {
+        return Either.left(new ParseError(new Error('Matcher is not defined')));
+      }
 
-    if (isNil(fValuesWithDefaults.timeStart)) {
-      return error(new ParseError(new Error('timeStart is required')));
-    }
+      if (isNil(fValuesWithDefaults.timeStart)) {
+        return Either.left(new ParseError(new Error('timeStart is required')));
+      }
 
-    if (isNil(fValuesWithDefaults.interval)) {
-      return error(new ParseError(new Error('interval is required')));
-    }
+      if (isNil(fValuesWithDefaults.interval)) {
+        return Either.left(new ParseError(new Error('interval is required')));
+      }
 
-    if (isNil(fValuesWithDefaults.matcher)) {
-      return error(new ParseError(new Error('matcher is required')));
-    }
+      if (isNil(fValuesWithDefaults.matcher)) {
+        return Either.left(new ParseError(new Error('matcher is required')));
+      }
 
-    const periodLength =
-      fValuesWithDefaults.timeEnd.getTime() - fValuesWithDefaults.timeStart.getTime();
-    const expectedCandlesCount = Math.ceil(periodLength / fValuesWithDefaults.interval.length);
-    if (expectedCandlesCount > MAX_CANDLES_COUNT) {
-      return error(
-        new ParseError(
-          new Error(
-            `${expectedCandlesCount} of candles is more then allowed of ${MAX_CANDLES_COUNT}. Try to decrease requested period of time.`,
+      const periodLength =
+        (fValuesWithDefaults.timeEnd as Date).getTime() -
+        (fValuesWithDefaults.timeStart as Date).getTime();
+      const expectedCandlesCount = Math.ceil(periodLength / fValuesWithDefaults.interval.length);
+      if (expectedCandlesCount > MAX_CANDLES_COUNT) {
+        return Either.left(
+          new ParseError(
+            new Error(
+              `${expectedCandlesCount} of candles is more then allowed of ${MAX_CANDLES_COUNT}. Try to decrease requested period of time.`,
+            ),
           ),
-        ),
-      );
-    }
+        );
+      }
 
-    return ok({
-      amountAsset: params.amountAsset,
-      interval: fValuesWithDefaults.interval,
-      matcher: fValuesWithDefaults.matcher,
-      priceAsset: params.priceAsset,
-      timeEnd: fValuesWithDefaults.timeEnd,
-      timeStart: fValuesWithDefaults.timeStart,
-    });
-  });
+      return Either.right({
+        amountAsset: params.amountAsset,
+        interval: fValuesWithDefaults.interval,
+        matcher: fValuesWithDefaults.matcher,
+        priceAsset: params.priceAsset,
+        timeEnd: fValuesWithDefaults.timeEnd ?? new Date(),
+        timeStart: fValuesWithDefaults.timeStart,
+      } as CandlesSearchRequest);
+    },
+  );
 };

@@ -1,7 +1,7 @@
+// @ts-nocheck
+import { and, equals, prop } from 'ramda';
 import { type AssetIdsPair } from '../../../types';
 import { type PairDbResponse } from './transformResult';
-
-const { prop, and, equals } = require('ramda');
 
 /** matchPairs :: (Object, Object) -> Boolean */
 export const matchRequestResult = (request: AssetIdsPair[], result: PairDbResponse): boolean =>

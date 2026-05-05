@@ -1,12 +1,15 @@
-const http = require('http');
+// @ts-nocheck
 
-import { type EventEmitter } from 'events';
+import { type EventEmitter } from 'node:events';
+import { createRequire } from 'node:module';
 // dependencies
 import { createPgDriver } from '../../../../db';
 import { loadConfig } from '../../../../loadConfig';
 import { parse } from '../../../../utils/json';
 import { SortOrder } from '../../../_common';
 import createRepo, { createCache } from '../';
+
+const http = createRequire(import.meta.url)('node:http');
 
 const options = loadConfig();
 const drivers = {

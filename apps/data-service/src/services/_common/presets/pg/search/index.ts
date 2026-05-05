@@ -1,5 +1,4 @@
-import { type SchemaLike } from 'joi';
-import { type RepoSearch } from 'types';
+import { type RepoSearch } from '../../../../../types';
 import { type WithLimit, type WithSortOrder } from '../../../../_common';
 import { search } from '../../../createResolver';
 import { type CursorSerialization, type RequestWithCursor } from '../../../pagination';
@@ -24,7 +23,7 @@ export const searchPreset =
   }: {
     name: string;
     sql: (r: RequestWithCursor<Request, Cursor>) => string;
-    resultSchema: SchemaLike;
+    resultSchema: any;
     transformResult: (response: ResponseRaw, request?: Request) => ResponseTransformed;
     cursorSerialization: CursorSerialization<
       Cursor,

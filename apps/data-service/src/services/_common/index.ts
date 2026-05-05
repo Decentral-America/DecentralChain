@@ -1,7 +1,8 @@
-export enum SortOrder {
-  Ascending = 'asc',
-  Descending = 'desc',
-}
+export const SortOrder = {
+  Ascending: 'asc',
+  Descending: 'desc',
+} as const;
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
 export const isSortOrder = (raw: unknown): raw is SortOrder =>
   [SortOrder.Ascending, SortOrder.Descending].includes(raw as SortOrder);

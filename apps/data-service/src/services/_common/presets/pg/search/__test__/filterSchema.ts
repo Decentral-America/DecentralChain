@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type CursorSerialization } from 'services/_common/pagination';
 import { Joi } from '../../../../../../utils/validation';
 
@@ -13,6 +14,7 @@ export default <Cursor, Request, Response>(
     timeEnd: Joi.when('timeStart', {
       is: Joi.exist(),
       otherwise: Joi.date().min(DATE0),
+      // biome-ignore lint/suspicious/noThenProperty: Joi validation DSL property
       then: Joi.date().min(Joi.ref('timeStart')),
     }),
     timeStart: Joi.date().min(DATE0),

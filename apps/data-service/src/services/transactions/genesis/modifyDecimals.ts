@@ -1,19 +1,21 @@
-import { type Task } from 'folktale/concurrency/task';
+// @ts-nocheck
+import { Effect, pipe } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
 import { type GenesisTx } from './repo/types';
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
-  (txs: GenesisTx[]): Task<AppError, GenesisTx[]> =>
-    assetsService
-      .precisions({
+  (txs: GenesisTx[]): Effect.Effect<GenesisTx[], AppError> =>
+    pipe(
+      assetsService.precisions({
         ids: ['WAVES'],
-      })
-      .map(([assetPrecision]) =>
+      }),
+      Effect.map(([assetPrecision]) =>
         txs.map((tx) => ({
           ...tx,
           amount: tx.amount.shiftedBy(-assetPrecision),
           fee: tx.fee.shiftedBy(-assetPrecision),
         })),
-      );
+      ),
+    );

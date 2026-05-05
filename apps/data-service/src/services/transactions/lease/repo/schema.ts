@@ -1,10 +1,9 @@
-import { Joi } from '../../../../utils/validation';
-
+import { Schema } from 'effect';
+import * as S from '../../../../utils/validation/schema';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-
-  amount: Joi.object().bignumber().required(),
-  recipient: Joi.string().required(),
+  amount: S.Bignumber,
+  recipient: Schema.String,
 });

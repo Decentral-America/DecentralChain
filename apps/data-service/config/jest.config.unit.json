@@ -1,13 +1,13 @@
 {
+  "bail": true,
+  "forceExit": true,
+  "moduleFileExtensions": ["js", "ts", "json", "node"],
+  "rootDir": "../src",
+  "setupFilesAfterEnv": ["../config/jest.extentions.js"],
+  "testMatch": ["**/*.test.js", "**/*.test.ts"],
+  "testURL": "http://localhost/",
   "transform": {
     "^.+\\.ts$": "ts-jest"
   },
-  "verbose": true,
-  "forceExit": true,
-  "bail": true,
-  "rootDir": "../src",
-  "testMatch": ["**/*.test.js", "**/*.test.ts"],
-  "testURL": "http://localhost/",
-  "moduleFileExtensions": ["js", "ts", "json", "node"],
-  "setupFilesAfterEnv": ["../config/jest.extentions.js"]
+  "verbose": true
 }

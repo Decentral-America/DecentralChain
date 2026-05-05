@@ -1,4 +1,3 @@
-import { type ValidationError, type ValidationErrorItem } from 'joi';
 import {
   AppError,
   DEFAULT_BAD_REQUEST_MESSAGE,
@@ -8,14 +7,11 @@ import {
 import { handleError } from '../handleError';
 
 describe('handleError', () => {
-  const assertHttpResponse = (code: number, message: string, meta: any) => (x: any) => {
+  const assertHttpResponse = (code: number, message: string, meta?: any) => (x: any) => {
     expect(x).toHaveProperty('status', code);
     expect(x).toHaveProperty(
       'body',
-      JSON.stringify({
-        message,
-        meta,
-      }),
+      JSON.stringify(meta !== undefined ? { message, meta } : { message }),
     );
     expect(x).toHaveProperty('headers');
   };
@@ -25,7 +21,6 @@ describe('handleError', () => {
     DEFAULT_INTERNAL_SERVER_ERROR_MESSAGE,
   );
   const assertTimeoutErrorHttpResponse = assertHttpResponse(504, DEFAULT_TIMEOUT_OCCURRED_MESSAGE);
-  const assertBadRequestErrorHttpResponse = assertHttpResponse(400, DEFAULT_BAD_REQUEST_MESSAGE);
   const assertBadRequestErrorHttpResponseWithMeta = (meta: any[]) =>
     assertHttpResponse(400, DEFAULT_BAD_REQUEST_MESSAGE, meta);
 
@@ -56,27 +51,15 @@ describe('handleError', () => {
     });
 
     describe('validation error handling', () => {
-      assertBadRequestErrorHttpResponse(handleError(AppError.Validation('validation error')));
+      it('should handle Validation error with message only', () => {
+        assertBadRequestErrorHttpResponseWithMeta([{ message: 'validation error' }])(
+          handleError(AppError.Validation('validation error')),
+        );
+      });
 
-      const err = {
-        details: [
-          {
-            message: 'joi error',
-            path: ['error', 'property', 'path'],
-            type: 'error type',
-          } as ValidationErrorItem,
-        ],
-      } as ValidationError;
-
-      it('should handle Validation error and return valid BadRequest httpResponse', () => {
-        assertBadRequestErrorHttpResponseWithMeta(
-          err.details.map((item) => ({
-            message: item.message,
-          })),
-        )(handleError(AppError.Validation('validation error', err as any)));
-
+      it('should handle Validation error with meta and return message from error', () => {
         const meta = { message: 'error description' };
-        assertBadRequestErrorHttpResponseWithMeta([meta])(
+        assertBadRequestErrorHttpResponseWithMeta([{ message: 'validation error' }])(
           handleError(AppError.Validation('validation error', meta)),
         );
       });

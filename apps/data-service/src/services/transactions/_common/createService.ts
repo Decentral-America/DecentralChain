@@ -1,5 +1,4 @@
-import { type Task } from 'folktale/concurrency/task';
-import { type Maybe } from 'folktale/maybe';
+import { type Effect, type Option } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import { type Repo, type SearchedItems } from '../../../types';
 
@@ -14,9 +13,9 @@ export const createService = <
 >(
   repo: Repo<GetRequest, MgetRequest, SearchRequest, Response>,
 ): {
-  get: (req: ServiceGetRequest) => Task<AppError, Maybe<Response>>;
-  mget: (req: ServiceMgetRequest) => Task<AppError, Maybe<Response>[]>;
-  search: (req: ServiceSearchRequest) => Task<AppError, SearchedItems<Response>>;
+  get: (req: ServiceGetRequest) => Effect.Effect<Option.Option<Response>, AppError>;
+  mget: (req: ServiceMgetRequest) => Effect.Effect<Option.Option<Response>[], AppError>;
+  search: (req: ServiceSearchRequest) => Effect.Effect<SearchedItems<Response>, AppError>;
 } => ({
   get: (req: ServiceGetRequest) => repo.get(req.id),
   mget: (req: ServiceMgetRequest) => repo.mget(req.ids),

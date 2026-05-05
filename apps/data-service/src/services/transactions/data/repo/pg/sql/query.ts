@@ -1,9 +1,10 @@
 import { knex as _knex } from 'knex';
+
 const pg = _knex({ client: 'pg' });
 
 const select = pg.from({ t: 'txs_12' }).select('t.uid');
 
-const selectFromFiltered = (filtered) =>
+const selectFromFiltered = (filtered: any) =>
   pg
     .with('ts', filtered)
     .select({
@@ -36,3 +37,4 @@ export default {
   select,
   selectFromFiltered,
 };
+export { select, selectFromFiltered };

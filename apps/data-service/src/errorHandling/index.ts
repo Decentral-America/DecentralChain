@@ -11,5 +11,5 @@ export const DEFAULT_BAD_REQUEST_MESSAGE = 'Bad Request';
 
 export function addMeta<T extends AppError>(meta: ErrorMetaInfo): (e: T) => T;
 export function addMeta(meta: ErrorMetaInfo): (e: AppError) => AppError {
-  return (e: AppError) => toAppError(e.type)(meta, e.error);
+  return (e: AppError) => toAppError(e.type)(meta)(e.error);
 }

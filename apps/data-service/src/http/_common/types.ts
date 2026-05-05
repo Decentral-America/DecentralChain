@@ -1,4 +1,4 @@
-import { type IncomingHttpHeaders } from 'http';
+import { type IncomingHttpHeaders } from 'node:http';
 import {
   DEFAULT_BAD_REQUEST_MESSAGE,
   DEFAULT_INTERNAL_SERVER_ERROR_MESSAGE,
@@ -24,8 +24,8 @@ export class HttpResponse {
 
   private constructor(status: number, body?: string, headers?: Record<string, string>) {
     this.status = status;
-    this.body = body;
-    this.headers = headers;
+    if (body !== undefined) this.body = body;
+    if (headers !== undefined) this.headers = headers;
   }
 
   public static Ok(body?: string, headers?: Record<string, string>) {

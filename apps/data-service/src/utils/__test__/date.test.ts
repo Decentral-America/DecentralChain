@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { interval } from '../../types';
 import { add, ceil, floor, round, subtract } from '../date';
 

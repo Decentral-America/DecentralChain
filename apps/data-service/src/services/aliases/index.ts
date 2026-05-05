@@ -1,5 +1,4 @@
-import { type Maybe } from 'folktale/maybe';
-
+import { type Option } from 'effect';
 import { type AliasInfo, type SearchedItems, type Service } from '../../types';
 import { type WithMoneyFormat } from '../types';
 import {
@@ -9,7 +8,7 @@ import {
   type AliasesSearchRequest,
 } from './repo';
 
-export { WithAddress, WithAddresses, WithQueries } from './repo';
+export type { WithAddress, WithAddresses, WithQueries } from './repo';
 
 export type AliasesServiceGetRequest = {
   id: AliasesGetRequest;
@@ -22,8 +21,8 @@ export type AliasesServiceMgetRequest = {
 export type AliasesServiceSearchRequest = AliasesSearchRequest;
 
 export type AliasesService = {
-  get: Service<AliasesServiceGetRequest & WithMoneyFormat, Maybe<AliasInfo>>;
-  mget: Service<AliasesServiceMgetRequest & WithMoneyFormat, Maybe<AliasInfo>[]>;
+  get: Service<AliasesServiceGetRequest & WithMoneyFormat, Option.Option<AliasInfo>>;
+  mget: Service<AliasesServiceMgetRequest & WithMoneyFormat, Option.Option<AliasInfo>[]>;
   search: Service<AliasesServiceSearchRequest & WithMoneyFormat, SearchedItems<AliasInfo>>;
 };
 

@@ -1,9 +1,8 @@
-import { Error as error, Ok as ok } from 'folktale/result';
+import { Either } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../../errorHandling';
 import { isSortOrder } from '../../../services/_common';
 import { parseArrayQuery, parseDate, parseTrimmedStringIfDefined } from '../../../utils/parsers';
-
 import { DEFAULT_MAX_LIMIT } from './';
 import { type CommonFilters } from './types';
 
@@ -12,15 +11,15 @@ export const limit =
   (max: number): CommonFilters['limit'] =>
   (raw) => {
     if (isNil(raw)) {
-      return ok(undefined);
+      return Either.right(undefined);
     } else {
-      const n = parseInt(raw);
-      if (isNaN(n)) {
-        return error(new ParseError(new Error('limit has to be a number')));
+      const n = parseInt(raw, 10);
+      if (Number.isNaN(n)) {
+        return Either.left(new ParseError(new Error('limit has to be a number')));
       } else if (n > max) {
-        return error(new ParseError(new Error(`Max limit ${max} exceeded`)));
+        return Either.left(new ParseError(new Error(`Max limit ${max} exceeded`)));
       } else {
-        return ok(n);
+        return Either.right(n);
       }
     }
   };
@@ -28,10 +27,10 @@ export const limit =
 // default sort is SortOrder.Descending
 const sort: CommonFilters['sort'] = (s) =>
   typeof s === 'undefined'
-    ? ok(undefined)
+    ? Either.right(undefined)
     : isSortOrder(s)
-      ? ok(s)
-      : error(new ParseError(new Error('Invalid sort value')));
+      ? Either.right(s)
+      : Either.left(new ParseError(new Error('Invalid sort value')));
 
 const after: CommonFilters['after'] = parseTrimmedStringIfDefined;
 

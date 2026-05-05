@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 import { type ServiceMesh } from '../../services';
 import commonFilters from '../_common/filters/filters';
 import { type Parser } from '../_common/filters/types';
@@ -178,7 +178,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
   const ethereumLike = createTransactionHttpHandlers(
     new Router(),
     '/transactions/ethereum-like',
-    txsServices['ethereumLike'],
+    txsServices.ethereumLike,
     createParseRequest({
       function: commonFilters.query,
       type: commonFilters.query,
