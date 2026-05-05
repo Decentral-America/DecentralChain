@@ -1,17 +1,17 @@
 import { propEq } from 'ramda';
 
-import { AliasInfo, Repo, XOR } from '../../../types';
+import { type AliasInfo, type Repo, type XOR } from '../../../types';
 
-import { CommonRepoDependencies } from '../..';
-import { WithLimit, WithSortOrder } from '../../_common';
-import { RequestWithCursor } from '../../_common/pagination';
+import { type CommonRepoDependencies } from '../..';
+import { type WithLimit, type WithSortOrder } from '../../_common';
+import { type RequestWithCursor } from '../../_common/pagination';
 import { getByIdPreset } from '../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../_common/presets/pg/search';
 
-import { serialize, deserialize, Cursor } from './cursor';
+import { type Cursor, deserialize, serialize } from './cursor';
 import sql from './data/sql';
-import { transformDbResponse, AliasDbResponse } from './data/transformResult';
+import { type AliasDbResponse, transformDbResponse } from './data/transformResult';
 import { output } from './schema';
 
 export type AliasesGetRequest = string;
@@ -39,49 +39,41 @@ export type AliasesRepo = Repo<
   AliasInfo
 >;
 
-export default ({
-  drivers,
-  emitEvent,
-}: CommonRepoDependencies): AliasesRepo => {
+export default ({ drivers, emitEvent }: CommonRepoDependencies): AliasesRepo => {
   return {
     get: getByIdPreset({
       name: 'aliases.get',
-      sql: sql.get,
       resultSchema: output,
+      sql: sql.get,
       transformResult: transformDbResponse,
     })({
-      pg: drivers.pg,
       emitEvent: emitEvent,
+      pg: drivers.pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'aliases.mget',
-      sql: sql.mget,
-      resultSchema: output,
-      transformResult: transformDbResponse,
       matchRequestResult: propEq('alias'),
+      name: 'aliases.mget',
+      resultSchema: output,
+      sql: sql.mget,
+      transformResult: transformDbResponse,
     })({
-      pg: drivers.pg,
       emitEvent: emitEvent,
+      pg: drivers.pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      AliasesSearchRequest,
-      AliasDbResponse,
-      AliasInfo
-    >({
-      name: 'aliases.search',
-      sql: sql.search,
-      resultSchema: output,
-      transformResult: transformDbResponse,
+    search: searchPreset<Cursor, AliasesSearchRequest, AliasDbResponse, AliasInfo>({
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'aliases.search',
+      resultSchema: output,
+      sql: sql.search,
+      transformResult: transformDbResponse,
     })({
-      pg: drivers.pg,
       emitEvent: emitEvent,
+      pg: drivers.pg,
     }),
   };
 };

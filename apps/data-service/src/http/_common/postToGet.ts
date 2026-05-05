@@ -1,9 +1,9 @@
+import { type Middleware } from 'koa';
 import { stringify } from 'qs';
-import { Middleware } from 'koa';
 
 type PostToGet = (routeMiddleWare: Middleware) => Middleware;
 
-export const postToGet: PostToGet = routeMiddleware => async (ctx, next) => {
+export const postToGet: PostToGet = (routeMiddleware) => async (ctx, next) => {
   ctx.method = 'GET';
   // @hack, can't rely on koa-qs in this one
   // Need to explicitly call with { indices: false }

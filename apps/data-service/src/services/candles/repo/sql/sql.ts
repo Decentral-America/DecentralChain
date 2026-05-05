@@ -1,25 +1,25 @@
 import * as knex from 'knex';
-import { CandleInterval, Interval } from '../../../../types';
+import { CandleInterval, type Interval } from '../../../../types';
 import { unsafeIntervalsFromStrings } from '../../../../utils/interval';
+import { type CandlesSearchRequest } from '../../repo';
 import { highestDividerLessThan } from './utils';
-import { CandlesSearchRequest } from '../../repo';
 
 const pg = knex({ client: 'pg' });
 
 const FIELDS = {
-  time_start: 'c.time_start',
   amount_asset_id: 'c.amount_asset_id',
-  price_asset_id: 'c.price_asset_id',
-  low: pg.raw('(c.low)::numeric'),
-  high: pg.raw('(c.high)::numeric'),
-  volume: pg.raw('(c.volume)::numeric'),
-  quote_volume: pg.raw('(c.quote_volume)::numeric'),
-  max_height: 'c.max_height',
-  txs_count: 'c.txs_count',
-  weighted_average_price: pg.raw('(c.weighted_average_price)::numeric'),
-  open: pg.raw('(c.open)::numeric'),
   close: pg.raw('(c.close)::numeric'),
+  high: pg.raw('(c.high)::numeric'),
   interval: 'c.interval',
+  low: pg.raw('(c.low)::numeric'),
+  max_height: 'c.max_height',
+  open: pg.raw('(c.open)::numeric'),
+  price_asset_id: 'c.price_asset_id',
+  quote_volume: pg.raw('(c.quote_volume)::numeric'),
+  time_start: 'c.time_start',
+  txs_count: 'c.txs_count',
+  volume: pg.raw('(c.volume)::numeric'),
+  weighted_average_price: pg.raw('(c.weighted_average_price)::numeric'),
 };
 
 const DIVIDERS = [
@@ -66,9 +66,9 @@ export const selectCandles = ({
       'interval',
       // should always be valid after validation
       highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)).matchWith({
-        Ok: ({ value: i }) => i.source,
         Error: ({ value: error }) => CandleInterval.Minute1,
-      })
+        Ok: ({ value: i }) => i.source,
+      }),
     );
 
 export const search = ({
@@ -84,11 +84,11 @@ export const search = ({
     .from({
       c: selectCandles({
         amountAsset,
-        priceAsset,
-        timeStart,
-        timeEnd,
         interval,
         matcher,
+        priceAsset,
+        timeEnd,
+        timeStart,
       }),
     })
     .orderBy('c.time_start', 'asc')
@@ -102,21 +102,20 @@ export const selectLastCandle = ({
   interval,
 }: CandleSelectionParams): knex.QueryBuilder =>
   pg({ c: 'candles' })
-  .select(FIELDS)
-  .where('amount_asset_id', amountAsset)
-  .where('price_asset_id', priceAsset)
-  .where('time_start', '<=', timeEnd.toISOString())
-  .where('matcher_address', matcher)
-  .where('txs_count', '>', 0)
-  .where(
-    'interval',
-    // should always be valid after validation
-    highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)).matchWith({
-      Ok: ({ value: i }) => i.source,
-      Error: ({ value: error }) => CandleInterval.Minute1,
-    })
-  )
-;
+    .select(FIELDS)
+    .where('amount_asset_id', amountAsset)
+    .where('price_asset_id', priceAsset)
+    .where('time_start', '<=', timeEnd.toISOString())
+    .where('matcher_address', matcher)
+    .where('txs_count', '>', 0)
+    .where(
+      'interval',
+      // should always be valid after validation
+      highestDividerLessThan(interval, unsafeIntervalsFromStrings(DIVIDERS)).matchWith({
+        Error: ({ value: error }) => CandleInterval.Minute1,
+        Ok: ({ value: i }) => i.source,
+      }),
+    );
 
 export const searchLast = ({
   amountAsset,
@@ -131,11 +130,11 @@ export const searchLast = ({
     .from({
       c: selectLastCandle({
         amountAsset,
-        priceAsset,
-        timeStart,
-        timeEnd,
         interval,
         matcher,
+        priceAsset,
+        timeEnd,
+        timeStart,
       }),
     })
     .orderBy('c.time_start', 'desc')
@@ -144,8 +143,8 @@ export const searchLast = ({
 
 export const sql = {
   search,
-  searchLast
-}
+  searchLast,
+};
 
 module.exports = {
   sql,

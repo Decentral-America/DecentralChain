@@ -1,4 +1,4 @@
-import { AliasInfo } from '../../../../types';
+import { type AliasInfo } from '../../../../types';
 
 export type AliasDbResponse = {
   alias: string;
@@ -7,6 +7,6 @@ export type AliasDbResponse = {
 };
 
 export const transformDbResponse = (result: AliasDbResponse): AliasInfo => ({
-  alias: result.alias,
   address: result.duplicates > 1 ? null : result.address,
+  alias: result.alias,
 });

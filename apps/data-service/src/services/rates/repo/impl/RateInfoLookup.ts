@@ -1,13 +1,12 @@
-import { Maybe, fromNullable } from 'folktale/maybe';
+import { type Asset, BigNumber } from '@decentralchain/data-entities';
+import { fromNullable, type Maybe } from 'folktale/maybe';
 import { path } from 'ramda';
-import { Asset, BigNumber } from '@waves/data-entities';
-
-import { CacheSync } from '../../../../types';
-import { flip, createPairHasBaseAsset } from '../../data';
-import { inv, invOnSatoshi, safeDivide } from '../../util';
-import { isDefined, map2 } from '../../../../utils/fp/maybeOps';
 import { MoneyFormat } from '../../../../services/types';
-import { AssetPair, VolumeAwareRateInfo, RateWithPair } from '../../RateEstimator';
+import { type CacheSync } from '../../../../types';
+import { isDefined, map2 } from '../../../../utils/fp/maybeOps';
+import { createPairHasBaseAsset, flip } from '../../data';
+import { type AssetPair, type RateWithPair, type VolumeAwareRateInfo } from '../../RateEstimator';
+import { inv, invOnSatoshi, safeDivide } from '../../util';
 
 type RateLookupTable = {
   [amountAsset: string]: {
@@ -34,7 +33,7 @@ export default class RateInfoLookup
   constructor(
     data: Array<VolumeAwareRateInfo>,
     private readonly mPairAcceptanceVolumeThreshold: Maybe<BigNumber>,
-    private readonly baseAsset: Asset
+    private readonly baseAsset: Asset,
   ) {
     this.lookupTable = this.toLookupTable(data);
   }
@@ -50,16 +49,11 @@ export default class RateInfoLookup
       this.getFromLookupTable(pair, flipped, pairWithMoneyFormat.moneyFormat);
 
     if (pairHasBaseAsset(pairWithMoneyFormat)) {
-      return lookup(pairWithMoneyFormat, false).orElse(() =>
-        lookup(pairWithMoneyFormat, true)
-      );
+      return lookup(pairWithMoneyFormat, false).orElse(() => lookup(pairWithMoneyFormat, true));
     }
 
-    let baseAssetPaired = this.lookupThroughBaseAsset(
-      this.baseAsset,
-      pairWithMoneyFormat
-    );
-    let hasPairWithBaseAsset = baseAssetPaired.matchWith({
+    const baseAssetPaired = this.lookupThroughBaseAsset(this.baseAsset, pairWithMoneyFormat);
+    const hasPairWithBaseAsset = baseAssetPaired.matchWith({
       Just: () => true,
       Nothing: () => false,
     });
@@ -75,7 +69,7 @@ export default class RateInfoLookup
               // lookup through waves
               Nothing: () => false,
             })) ||
-          !hasPairWithBaseAsset
+          !hasPairWithBaseAsset,
       )
       .orElse(() => baseAssetPaired);
   }
@@ -98,20 +92,20 @@ export default class RateInfoLookup
   private getFromLookupTable(
     pair: AssetPair,
     flipped: boolean,
-    moneyFormat: MoneyFormat
+    moneyFormat: MoneyFormat,
   ): Maybe<VolumeAwareRateInfo> {
     // src: A/B
     const lookupData = flipped ? flip(pair) : pair;
     // lookup for: flipped ? B/A : A/B
 
-    let foundValue = fromNullable<VolumeAwareRateInfo>(
-      path([lookupData.amountAsset.id, lookupData.priceAsset.id], this.lookupTable)
+    const foundValue = fromNullable<VolumeAwareRateInfo>(
+      path([lookupData.amountAsset.id, lookupData.priceAsset.id], this.lookupTable),
     );
 
     return foundValue.map((data) => {
       if (flipped) {
         // found for: B/A
-        let flippedData = flip({ ...data });
+        const flippedData = flip({ ...data });
         // result for: A/B (src),
         // otherwise 1/rate will be cached for rate B/A, but it incorrect
 
@@ -132,28 +126,26 @@ export default class RateInfoLookup
 
   private lookupThroughBaseAsset(
     baseAsset: Asset,
-    pair: AssetPairWithMoneyFormat
+    pair: AssetPairWithMoneyFormat,
   ): Maybe<VolumeAwareRateInfo> {
     return map2(
       (info1, info2) => ({
         ...pair,
         rate: safeDivide(info1.rate, info2.rate)
-          .map((r) =>
-            pair.moneyFormat === MoneyFormat.Long ? r.shiftedBy(8).decimalPlaces(0) : r
-          )
+          .map((r) => (pair.moneyFormat === MoneyFormat.Long ? r.shiftedBy(8).decimalPlaces(0) : r))
           .getOrElse(new BigNumber(0)),
         volumeWaves: BigNumber.max(info1.volumeWaves, info2.volumeWaves),
       }),
       this.get({
         amountAsset: pair.amountAsset,
-        priceAsset: baseAsset,
         moneyFormat: pair.moneyFormat,
+        priceAsset: baseAsset,
       }),
       this.get({
         amountAsset: pair.priceAsset,
-        priceAsset: baseAsset,
         moneyFormat: pair.moneyFormat,
-      })
+        priceAsset: baseAsset,
+      }),
     );
   }
 }

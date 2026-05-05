@@ -1,7 +1,7 @@
-import { Asset } from '@waves/data-entities';
-import { CacheSync, Repo } from '../../../types';
-import { WithSortOrder, WithLimit } from '../../_common';
-import { RequestWithCursor } from '../../_common/pagination';
+import { type Asset } from '@decentralchain/data-entities';
+import { type CacheSync, type Repo } from '../../../types';
+import { type WithLimit, type WithSortOrder } from '../../_common';
+import { type RequestWithCursor } from '../../_common/pagination';
 
 export type AssetsCache = CacheSync<string, AssetDbResponse>;
 
@@ -21,12 +21,7 @@ export type AssetsSearchRequest = RequestWithCursor<
   string
 >;
 
-export type AssetsRepo = Repo<
-  AssetsGetRequest,
-  AssetsMgetRequest,
-  AssetsSearchRequest,
-  Asset
->;
+export type AssetsRepo = Repo<AssetsGetRequest, AssetsMgetRequest, AssetsSearchRequest, Asset>;
 
 export type AssetDbResponse = {
   asset_id: string;

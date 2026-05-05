@@ -1,4 +1,4 @@
-import { Result, Ok as ok, Error as error } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { ValidationError } from '../errorHandling';
 import { interval as intervalRegex } from '../utils/regex';
 
@@ -60,22 +60,20 @@ export type Interval = {
 
 export const interval = (source: string): Result<ValidationError, Interval> => {
   if (!intervalRegex.test(source))
-    return error(
-      new ValidationError(`Provided string (${source}) is not valid interval`)
-    );
+    return error(new ValidationError(`Provided string (${source}) is not valid interval`));
 
   return parseUnit(source).matchWith({
+    Error: ({ value: e }) => error(e),
     Ok: ({ value: unit }) => {
       return parseLength(source, unit).matchWith({
+        Error: ({ value: e }) => error(e),
         Ok: ({ value: length }) =>
           ok({
             length,
-            unit,
             source,
+            unit,
           }),
-        Error: ({ value: e }) => error(e),
       });
     },
-    Error: ({ value: e }) => error(e),
   });
 };

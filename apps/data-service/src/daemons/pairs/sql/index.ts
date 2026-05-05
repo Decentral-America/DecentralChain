@@ -1,2 +1,2 @@
-export { truncateTable } from './truncateTable';
 export { fillTable } from './fillTable';
+export { truncateTable } from './truncateTable';

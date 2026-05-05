@@ -25,17 +25,11 @@ export type GetResolverDependencies<ReqRaw, ReqTransformed, ResRaw, ResTransform
 export type MgetResolverDependencies<ReqRaw, ReqTransformed, ResRaw, ResTransformed> =
   CommonResolverDependencies<ReqRaw, ReqTransformed, ResRaw> & {
     getData: (r: ReqTransformed) => Task<DbError | Timeout, Maybe<ResRaw>[]>;
-    transformResult: (
-      result: Maybe<ResRaw>[],
-      request: ReqRaw
-    ) => Maybe<ResTransformed>[];
+    transformResult: (result: Maybe<ResRaw>[], request: ReqRaw) => Maybe<ResTransformed>[];
   };
 
 export type SearchResolverDependencies<ReqRaw, ReqTransformed, ResRaw, ResTransformed> =
   CommonResolverDependencies<ReqRaw, ReqTransformed, ResRaw> & {
     getData: (r: ReqTransformed) => Task<DbError | Timeout, ResRaw[]>;
-    transformResult: (
-      results: ResRaw[],
-      request: ReqRaw
-    ) => SearchedItems<ResTransformed>;
+    transformResult: (results: ResRaw[], request: ReqRaw) => SearchedItems<ResTransformed>;
   };

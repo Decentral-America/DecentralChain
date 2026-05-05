@@ -1,64 +1,62 @@
-import { SchemaLike } from 'joi';
-
+import { type SchemaLike } from 'joi';
+import { type RepoSearch } from 'types';
+import { type WithLimit, type WithSortOrder } from '../../../../_common';
 import { search } from '../../../createResolver';
+import { type CursorSerialization, type RequestWithCursor } from '../../../pagination';
+import { type RepoPresetInitOptions } from '../../types';
 import { validateResult } from '../../validation';
-import { RepoPresetInitOptions } from '../../types';
-import { WithLimit, WithSortOrder } from '../../../../_common';
-import { RequestWithCursor, CursorSerialization } from '../../../pagination';
+import { getData } from './pg';
 import { transformInput } from './transformInput';
 import { transformResults } from './transformResults';
-import { getData } from './pg';
-import { RepoSearch } from 'types';
 
-export const searchPreset = <
-  Cursor,
-  Request extends RequestWithCursor<WithLimit & WithSortOrder, any>,
-  ResponseRaw,
-  ResponseTransformed
->({
-  name,
-  sql,
-  resultSchema,
-  transformResult,
-  cursorSerialization,
-}: {
-  name: string;
-  sql: (r: RequestWithCursor<Request, Cursor>) => string;
-  resultSchema: SchemaLike;
-  transformResult: (
-    response: ResponseRaw,
-    request?: Request
-  ) => ResponseTransformed;
-  cursorSerialization: CursorSerialization<
+export const searchPreset =
+  <
     Cursor,
-    RequestWithCursor<Request, string>,
-    ResponseRaw
-  >;
-}) => ({
-  pg,
-  emitEvent,
-}: RepoPresetInitOptions): RepoSearch<
-  RequestWithCursor<Request, string>,
-  ResponseTransformed
->['search'] =>
-  search<
-    RequestWithCursor<Request, string>,
-    RequestWithCursor<Request, Cursor>,
+    Request extends RequestWithCursor<WithLimit & WithSortOrder, any>,
     ResponseRaw,
-    ResponseTransformed
+    ResponseTransformed,
   >({
-    transformInput: transformInput(cursorSerialization.deserialize),
-    transformResult: transformResults<
+    name,
+    sql,
+    resultSchema,
+    transformResult,
+    cursorSerialization,
+  }: {
+    name: string;
+    sql: (r: RequestWithCursor<Request, Cursor>) => string;
+    resultSchema: SchemaLike;
+    transformResult: (response: ResponseRaw, request?: Request) => ResponseTransformed;
+    cursorSerialization: CursorSerialization<
       Cursor,
       RequestWithCursor<Request, string>,
+      ResponseRaw
+    >;
+  }) =>
+  ({
+    pg,
+    emitEvent,
+  }: RepoPresetInitOptions): RepoSearch<
+    RequestWithCursor<Request, string>,
+    ResponseTransformed
+  >['search'] =>
+    search<
+      RequestWithCursor<Request, string>,
+      RequestWithCursor<Request, Cursor>,
       ResponseRaw,
       ResponseTransformed
-    >(transformResult, cursorSerialization.serialize),
-    validateResult: validateResult(resultSchema, name),
-    getData: getData<Request, ResponseRaw>({
-      name,
-      sql,
-      pg,
-    }),
-    emitEvent,
-  });
+    >({
+      emitEvent,
+      getData: getData<Request, ResponseRaw>({
+        name,
+        pg,
+        sql,
+      }),
+      transformInput: transformInput(cursorSerialization.deserialize),
+      transformResult: transformResults<
+        Cursor,
+        RequestWithCursor<Request, string>,
+        ResponseRaw,
+        ResponseTransformed
+      >(transformResult, cursorSerialization.serialize),
+      validateResult: validateResult(resultSchema, name),
+    });

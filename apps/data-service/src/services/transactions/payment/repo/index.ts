@@ -1,65 +1,57 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
 import {
-  PaymentTxsRepo,
-  PaymentTxsSearchRequest,
-  PaymentTxDbResponse,
-  PaymentTx,
+  type PaymentTx,
+  type PaymentTxDbResponse,
+  type PaymentTxsRepo,
+  type PaymentTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): PaymentTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): PaymentTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.payment.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.payment.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.payment.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      PaymentTxsSearchRequest,
-      PaymentTxDbResponse,
-      PaymentTx
-    >({
-      name: 'transactions.payment.search',
-      sql: sql.search,
-      resultSchema,
-      transformResult: transformTxInfo,
+    search: searchPreset<Cursor, PaymentTxsSearchRequest, PaymentTxDbResponse, PaymentTx>({
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.payment.search',
+      resultSchema,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

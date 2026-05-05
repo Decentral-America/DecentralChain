@@ -1,42 +1,35 @@
-import { Context } from 'koa';
-import { Result, Ok as ok } from 'folktale/result';
-import { Task } from 'folktale/concurrency/task';
-import { ParseError, AppError, ResolverError } from '../../errorHandling';
-import { WithMoneyFormat as WithMoneyFormat } from '../../services/types';
+import { type Task } from 'folktale/concurrency/task';
+import { Ok as ok, type Result } from 'folktale/result';
+import { type Context } from 'koa';
+import { type AppError, type ParseError, ResolverError } from '../../errorHandling';
+import { type WithMoneyFormat } from '../../services/types';
 import { resultToTask } from '../../utils/fp';
 import { handleError } from '../_common/handleError';
-import { LSNFormat } from '../types';
-import { HttpRequest, HttpResponse } from './types';
+import { type LSNFormat } from '../types';
+import { type HttpRequest, type HttpResponse } from './types';
 import {
+  contentTypeWithMoneyFormat,
   parseLSNFormat,
   parseMoneyFormat,
   setHttpResponse,
-  contentTypeWithMoneyFormat,
 } from './utils';
 
 export function createHttpHandler<Params extends string[], Request>(
-  getResponse: (
-    request: WithMoneyFormat,
-    lsnFormat: LSNFormat
-  ) => Task<AppError, HttpResponse>
+  getResponse: (request: WithMoneyFormat, lsnFormat: LSNFormat) => Task<AppError, HttpResponse>,
 ): (ctx: Context) => Promise<void>;
 export function createHttpHandler<Params extends string[], Request>(
   getResponse: (
     request: Request & WithMoneyFormat,
-    lsnFormat: LSNFormat
+    lsnFormat: LSNFormat,
   ) => Task<AppError, HttpResponse>,
-  parseRequest: (
-    httpRequest: HttpRequest<Params>
-  ) => Result<ParseError, Request>
+  parseRequest: (httpRequest: HttpRequest<Params>) => Result<ParseError, Request>,
 ): (ctx: Context) => Promise<void>;
 export function createHttpHandler<Params extends string[], Request>(
   getResponse: (
     req: WithMoneyFormat | (Request & WithMoneyFormat),
-    lsnFormat: LSNFormat
+    lsnFormat: LSNFormat,
   ) => Task<AppError, HttpResponse>,
-  parseRequest?: (
-    httpRequest: HttpRequest<Params>
-  ) => Result<ParseError, Request>
+  parseRequest?: (httpRequest: HttpRequest<Params>) => Result<ParseError, Request>,
 ): (ctx: Context) => Promise<void> {
   return async (ctx: Context): Promise<void> => {
     ctx.eventBus.emit('ENDPOINT_HIT', {
@@ -45,30 +38,29 @@ export function createHttpHandler<Params extends string[], Request>(
 
     const setResponse = setHttpResponse(ctx);
 
-    const safeParse: (
-      httpRequest: HttpRequest<Params>
-    ) => Result<ParseError, Request | void> = parseRequest || (() => ok());
+    const safeParse: (httpRequest: HttpRequest<Params>) => Result<ParseError, Request | void> =
+      parseRequest || (() => ok());
 
     try {
       await resultToTask(
         safeParse({
+          headers: ctx.headers,
           params: ctx.params,
           query: ctx.query,
-          headers: ctx.headers,
         }).chain((req) =>
           parseMoneyFormat(ctx.headers).map((dec) => ({
             ...req,
             moneyFormat: dec,
-          }))
-        )
+          })),
+        ),
       )
         .chain((req) =>
           resultToTask(parseLSNFormat(ctx.headers)).chain((lsnFormat) =>
             getResponse(req, lsnFormat).map((res) => ({
               request: req,
               response: res,
-            }))
-          )
+            })),
+          ),
         )
         .mapRejected((e) => {
           ctx.eventBus.emit('ERROR', e);
@@ -85,11 +77,11 @@ export function createHttpHandler<Params extends string[], Request>(
                 dto.response.headers['Content-Type'] !== 'undefined'
                   ? contentTypeWithMoneyFormat(
                       dto.request.moneyFormat,
-                      dto.response.headers['Content-Type']
+                      dto.response.headers['Content-Type'],
                     )
                   : contentTypeWithMoneyFormat(dto.request.moneyFormat),
-            })
-          )
+            }),
+          ),
         )
         .catch(setResponse);
     } catch (e) {

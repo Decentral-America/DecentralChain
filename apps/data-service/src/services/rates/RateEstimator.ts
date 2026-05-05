@@ -1,21 +1,21 @@
-import { rejected, Task } from 'folktale/concurrency/task';
-import { Maybe, of as maybeOf } from 'folktale/maybe';
-import { splitEvery, sequence } from 'ramda';
-import { Asset, BigNumber } from '@waves/data-entities';
+import { type Asset, BigNumber } from '@decentralchain/data-entities';
+import { rejected, type Task } from 'folktale/concurrency/task';
+import { type Maybe, of as maybeOf } from 'folktale/maybe';
+import { sequence, splitEvery } from 'ramda';
 
-import { AppError, DbError, Timeout } from '../../errorHandling';
+import { AppError, type DbError, type Timeout } from '../../errorHandling';
+import { type RateInfo, type RateMgetParams, type RateWithPairIds } from '../../types';
 import { collect } from '../../utils/collection';
-import { tap } from '../../utils/tap';
 import { isEmpty } from '../../utils/fp/maybeOps';
-import { RateInfo, RateMgetParams, RateWithPairIds } from '../../types';
-import { PairsService } from '../pairs';
-import { AssetsService } from '../assets';
+import { tap } from '../../utils/tap';
+import { type AssetsService } from '../assets';
+import { type PairsService } from '../pairs';
 import { MoneyFormat } from '../types';
 
-import { partitionByPreComputed, AsyncMget, RateCache } from './repo';
-import { RateCacheKey } from './repo/impl/RateCache';
+import { type AsyncMget, partitionByPreComputed, type RateCache } from './repo';
+import { type RateCacheKey } from './repo/impl/RateCache';
 import RateInfoLookup from './repo/impl/RateInfoLookup';
-import { IThresholdAssetRateService } from './ThresholdAssetRateService';
+import { type IThresholdAssetRateService } from './ThresholdAssetRateService';
 
 type ReqAndRes<TReq, TRes> = {
   req: TReq;
@@ -36,27 +36,23 @@ export default class RateEstimator
   constructor(
     private readonly baseAssetId: string,
     private readonly cache: RateCache,
-    private readonly remoteGet: AsyncMget<
-      RateMgetParams,
-      RateWithPairIds,
-      DbError | Timeout
-    >,
+    private readonly remoteGet: AsyncMget<RateMgetParams, RateWithPairIds, DbError | Timeout>,
     private readonly pairs: PairsService,
     private readonly pairAcceptanceVolumeThreshold: number,
     private readonly thresholdAssetRateService: IThresholdAssetRateService,
-    private readonly assetsService: AssetsService
+    private readonly assetsService: AssetsService,
   ) {}
 
   mget(
-    request: RateMgetParams
+    request: RateMgetParams,
   ): Task<AppError | DbError | Timeout, ReqAndRes<AssetPair, RateWithPairIds>[]> {
     const { pairs, timestamp, matcher } = request;
 
     const shouldCache = isEmpty(timestamp);
 
     const getCacheKey = (pair: AssetPair): RateCacheKey => ({
-      pair,
       matcher,
+      pair,
     });
 
     const cacheUnlessCached = (item: VolumeAwareRateInfo) => {
@@ -69,37 +65,24 @@ export default class RateEstimator
     const cacheAllUnlessCached = (items: Array<VolumeAwareRateInfo>) =>
       items.forEach((it) => cacheUnlessCached(it));
 
-    let ids = pairs.reduce((acc, cur) => {
+    const ids = pairs.reduce((acc, cur) => {
       acc.push(cur.amountAsset, cur.priceAsset);
       return acc;
-    }, new Array<string>());
+    }, [] as string[]);
 
     ids.push(this.baseAssetId);
 
     return this.assetsService.mget({ ids }).chain((ms) =>
       sequence<Maybe<Asset>, Maybe<Asset[]>>(maybeOf, ms).matchWith({
-        Nothing: () =>
-          rejected(
-            AppError.Validation(
-              'Some of the assets of specified pairs do not exist in the blockchain',
-              {
-                ids: collect<Maybe<Asset>, number>((m, idx) =>
-                  isEmpty(m) ? idx : undefined
-                )(ms).map((idx) => ids[idx]),
-              }
-            )
-          ) as any,
         Just: ({ value: assets }) => {
-          let baseAsset = assets.pop() as Asset;
+          const baseAsset = assets.pop() as Asset;
 
-          let pairsWithAssets = splitEvery(2, assets).map(
-            ([amountAsset, priceAsset]) => ({
-              amountAsset,
-              priceAsset,
-            })
-          );
+          const pairsWithAssets = splitEvery(2, assets).map(([amountAsset, priceAsset]) => ({
+            amountAsset,
+            priceAsset,
+          }));
 
-          let assetsMap: Record<string, Asset> = {};
+          const assetsMap: Record<string, Asset> = {};
           assetsMap[this.baseAssetId] = baseAsset;
           assets.forEach((asset) => {
             assetsMap[asset.id] = asset;
@@ -110,26 +93,26 @@ export default class RateEstimator
             pairsWithAssets,
             getCacheKey,
             shouldCache,
-            baseAsset
+            baseAsset,
           );
 
           return this.remoteGet
             .mget({
+              matcher,
               pairs: toBeRequested.map((pair) => ({
                 amountAsset: pair.amountAsset.id,
                 priceAsset: pair.priceAsset.id,
               })),
-              matcher,
               timestamp,
             })
             .chain((pairsWithRates) =>
               this.pairs
                 .mget({
-                  pairs: pairsWithRates,
                   matcher: request.matcher,
                   // NB: affect volumeWaves, that is compared with threshold in RateInfoLookup
                   // should be float mutually with mPairAcceptanceVolumeThreshold, passed to RateInfoLookup
                   moneyFormat: MoneyFormat.Float,
+                  pairs: pairsWithRates,
                 })
                 .map((foundPairs) =>
                   foundPairs.map((itm, idx) =>
@@ -137,22 +120,22 @@ export default class RateEstimator
                       .map((pair) => ({
                         amountAsset: assetsMap[pair.amountAsset],
                         priceAsset: assetsMap[pair.priceAsset],
-                        volumeWaves: pair.volumeWaves as BigNumber,
                         rate: pairsWithRates[idx].rate,
+                        volumeWaves: pair.volumeWaves as BigNumber,
                       }))
                       .getOrElse<VolumeAwareRateInfo>({
                         amountAsset: assetsMap[pairsWithRates[idx].amountAsset],
                         priceAsset: assetsMap[pairsWithRates[idx].priceAsset],
                         rate: pairsWithRates[idx].rate,
                         volumeWaves: new BigNumber(0),
-                      })
-                  )
-                )
+                      }),
+                  ),
+                ),
             )
             .map(
               tap((results: Array<VolumeAwareRateInfo>) => {
                 if (shouldCache) cacheAllUnlessCached(results);
-              })
+              }),
             )
             .chain((data: Array<VolumeAwareRateInfo>) =>
               this.thresholdAssetRateService.get().map(
@@ -161,12 +144,12 @@ export default class RateEstimator
                     data.concat(preComputed),
                     mThresholdAssetRate.map((thresholdAssetRate) =>
                       new BigNumber(this.pairAcceptanceVolumeThreshold).dividedBy(
-                        thresholdAssetRate
-                      )
+                        thresholdAssetRate,
+                      ),
                     ),
-                    baseAsset
-                  )
-              )
+                    baseAsset,
+                  ),
+              ),
             )
             .map((lookup) =>
               pairsWithAssets.map((pair) => ({
@@ -175,7 +158,7 @@ export default class RateEstimator
                   ...pair,
                   moneyFormat: MoneyFormat.Long,
                 }),
-              }))
+              })),
             )
             .map(
               tap((data) => {
@@ -185,10 +168,10 @@ export default class RateEstimator
                       if (shouldCache) {
                         cacheUnlessCached(res);
                       }
-                    })
-                  )
+                    }),
+                  ),
                 );
-              })
+              }),
             )
             .map((rs) =>
               rs.map((reqAndRes) => ({
@@ -198,10 +181,21 @@ export default class RateEstimator
                   amountAsset: res.amountAsset.id,
                   priceAsset: res.priceAsset.id,
                 })),
-              }))
+              })),
             );
         },
-      })
+        Nothing: () =>
+          rejected(
+            AppError.Validation(
+              'Some of the assets of specified pairs do not exist in the blockchain',
+              {
+                ids: collect<Maybe<Asset>, number>((m, idx) => (isEmpty(m) ? idx : undefined))(
+                  ms,
+                ).map((idx) => ids[idx]),
+              },
+            ),
+          ) as any,
+      }),
     );
   }
 }

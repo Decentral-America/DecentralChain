@@ -1,8 +1,8 @@
-import { Task } from 'folktale/concurrency/task';
+import { type Task } from 'folktale/concurrency/task';
 import { defaultTo, zipObj } from 'ramda';
-import { AppError } from '../../../errorHandling';
-import { AssetsService } from '../../assets';
-import { ExchangeTx, OrderPriceMode, OrderType } from './repo/types';
+import { type AppError } from '../../../errorHandling';
+import { type AssetsService } from '../../assets';
+import { type ExchangeTx, OrderPriceMode, OrderType } from './repo/types';
 
 const wavesByDefault = defaultTo('WAVES');
 
@@ -22,8 +22,8 @@ export const modifyDecimals =
           ]
             .map(wavesByDefault)
             .reduce((set, id) => set.add(id), assetIds),
-        new Set<string>()
-      )
+        new Set<string>(),
+      ),
     );
 
     return assetsService
@@ -41,9 +41,7 @@ export const modifyDecimals =
 
           // exchange v3 support
           const txPricePrecision =
-            !tx.version || tx.version < 3
-              ? 8 + priceAssetPrecision - amountAssetPrecision
-              : 8;
+            !tx.version || tx.version < 3 ? 8 + priceAssetPrecision - amountAssetPrecision : 8;
 
           const order1MatcherFeePrecision = p(tx.order1.matcherFeeAssetId);
           // order v4 price mode support
@@ -72,47 +70,47 @@ export const modifyDecimals =
           console.log(
             JSON.stringify({
               event: {
-                name: 'EXCHANGE_TRANSACTION_DECIMALS',
-                txId: tx.id,
-                txVersion: tx.version,
                 amountAssetPrecision,
-                priceAssetPrecision,
-                txPricePrecision: txPricePrecision,
-                txFeePrecision: feePrecision,
                 buyMatcherFeePrecision,
-                sellMatcherFeePrecision,
-                order1Version: tx.order1.version,
-                order1PriceMode: tx.order1.priceMode,
+                name: 'EXCHANGE_TRANSACTION_DECIMALS',
                 order1MatcherFeePrecision,
+                order1PriceMode: tx.order1.priceMode,
                 order1PricePrecision,
-                order2Version: tx.order2.version,
-                order2PriceMode: tx.order2.priceMode,
+                order1Version: tx.order1.version,
                 order2MatcherFeePrecision,
+                order2PriceMode: tx.order2.priceMode,
                 order2PricePrecision,
+                order2Version: tx.order2.version,
+                priceAssetPrecision,
+                sellMatcherFeePrecision,
+                txFeePrecision: feePrecision,
+                txId: tx.id,
+                txPricePrecision: txPricePrecision,
+                txVersion: tx.version,
               },
               timestamp: new Date().toISOString(),
-            })
+            }),
           );
 
           return {
             ...tx,
-            fee: tx.fee.shiftedBy(-feePrecision),
             amount: tx.amount.shiftedBy(-amountAssetPrecision),
-            price: tx.price.shiftedBy(-txPricePrecision),
             buyMatcherFee: tx.buyMatcherFee.shiftedBy(-buyMatcherFeePrecision),
-            sellMatcherFee: tx.sellMatcherFee.shiftedBy(-sellMatcherFeePrecision),
+            fee: tx.fee.shiftedBy(-feePrecision),
             order1: {
               ...tx.order1,
               amount: tx.order1.amount.shiftedBy(-amountAssetPrecision),
-              price: tx.order1.price.shiftedBy(-order1PricePrecision),
               matcherFee: tx.order1.matcherFee.shiftedBy(-order1MatcherFeePrecision),
+              price: tx.order1.price.shiftedBy(-order1PricePrecision),
             },
             order2: {
               ...tx.order2,
               amount: tx.order2.amount.shiftedBy(-amountAssetPrecision),
-              price: tx.order2.price.shiftedBy(-order2PricePrecision),
               matcherFee: tx.order2.matcherFee.shiftedBy(-order2MatcherFeePrecision),
+              price: tx.order2.price.shiftedBy(-order2PricePrecision),
             },
+            price: tx.price.shiftedBy(-txPricePrecision),
+            sellMatcherFee: tx.sellMatcherFee.shiftedBy(-sellMatcherFeePrecision),
           };
         });
       });

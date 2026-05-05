@@ -1,16 +1,14 @@
-import { Ok as ok, Error as error } from 'folktale/result';
+import { Error as error, Ok as ok } from 'folktale/result';
 import { isNil } from 'ramda';
 import { ParseError } from '../../errorHandling';
-import { Parser } from '../../http/_common/filters/types';
+import { type Parser } from '../../http/_common/filters/types';
 
-export const parseBool: Parser<boolean | undefined> = maybeBool => {
+export const parseBool: Parser<boolean | undefined> = (maybeBool) => {
   if (isNil(maybeBool)) {
     return ok(undefined);
   }
 
-  const err = error<ParseError, boolean>(
-    new ParseError(new Error('Invalid boolean value'))
-  );
+  const err = error<ParseError, boolean>(new ParseError(new Error('Invalid boolean value')));
 
   if (typeof maybeBool === 'string') {
     switch (true) {

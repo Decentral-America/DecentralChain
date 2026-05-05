@@ -1,21 +1,20 @@
 import { of as taskOf } from 'folktale/concurrency/task';
+import { type SchemaLike } from 'joi';
 import { always, identity, T } from 'ramda';
-import { SchemaLike } from 'joi';
-
+import { type PgDriver } from '../../../../../../db/driver';
 import { Joi } from '../../../../../../utils/validation';
-import { PgDriver } from '../../../../../../db/driver';
 
 import { getByIdPreset } from '../../getById';
 
 const createService = (resultSchema: SchemaLike) =>
   getByIdPreset<string, string, string>({
     name: 'some_name',
-    sql: identity,
     resultSchema,
+    sql: identity,
     transformResult: identity,
   })({
-    pg: { oneOrNone: (id: string) => taskOf(id) } as PgDriver,
     emitEvent: always(T),
+    pg: { oneOrNone: (id: string) => taskOf(id) } as PgDriver,
   });
 
 describe('getById', () => {
@@ -23,15 +22,15 @@ describe('getById', () => {
     // passing result validation
     const service = createService(Joi.any());
 
-    it('passes if id param is a string', done =>
+    it('passes if id param is a string', (done) =>
       service('someidgoeshere2942415')
         .run()
         .listen({
-          onResolved: x => {
+          onRejected: () => done.fail,
+          onResolved: (x) => {
             expect(x).toBeJust('someidgoeshere2942415');
             done();
           },
-          onRejected: () => done.fail,
         }));
   });
 
@@ -39,11 +38,11 @@ describe('getById', () => {
     // failing result validation
     const service = createService(Joi.any().valid('qweasd'));
 
-    it('applies schema correctly', done =>
+    it('applies schema correctly', (done) =>
       service('someidgoeshere2942415')
         .run()
         .listen({
-          onRejected: e => {
+          onRejected: (e) => {
             expect(e.type).toBe('Resolver');
             done();
           },

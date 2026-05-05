@@ -1,19 +1,17 @@
-import { fromNullable, Maybe } from 'folktale/maybe';
+import { fromNullable, type Maybe } from 'folktale/maybe';
 import { head, propEq } from 'ramda';
 
-import { PgDriver } from '../../../../../db/driver';
-import { matchRequestsResults } from '../../../../../utils/db';
-
+import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
-
-import { InvokeScriptTxsSearchRequest } from '../types';
+import { matchRequestsResults } from '../../../../../utils/db';
+import { type Cursor } from '../../../_common/cursor';
+import {
+  type RawInvokeScriptTx as DbRawInvokeScriptTx,
+  type InvokeScriptTxsSearchRequest,
+  type RawInvokeScriptTx,
+} from '../types';
 import sql from './sql';
 import { transformResult } from './transformResult';
-import {
-  RawInvokeScriptTx as DbRawInvokeScriptTx,
-  RawInvokeScriptTx,
-} from '../types';
-import { Cursor } from '../../../_common/cursor';
 
 export default {
   get: (pg: PgDriver) => (id: string) =>
@@ -24,9 +22,9 @@ export default {
       .map(fromNullable)
       .mapRejected(
         addMeta({
-          request: 'transactions.invokeScript.get',
           params: id,
-        })
+          request: 'transactions.invokeScript.get',
+        }),
       ),
 
   mget: (pg: PgDriver) => (ids: string[]) =>
@@ -36,9 +34,9 @@ export default {
       .map<Maybe<RawInvokeScriptTx>[]>(matchRequestsResults(propEq('id'), ids))
       .mapRejected(
         addMeta({
-          request: 'transactions.invokeScript.mget',
           params: ids,
-        })
+          request: 'transactions.invokeScript.mget',
+        }),
       ),
 
   search: (pg: PgDriver) => (filters: InvokeScriptTxsSearchRequest<Cursor>) =>
@@ -47,8 +45,8 @@ export default {
       .map(transformResult)
       .mapRejected(
         addMeta({
-          request: 'transactions.invokeScript.search',
           params: filters,
-        })
+          request: 'transactions.invokeScript.search',
+        }),
       ),
 };

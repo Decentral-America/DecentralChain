@@ -1,16 +1,16 @@
-import { Maybe } from 'folktale/maybe';
+import { type Maybe } from 'folktale/maybe';
 import {
-  Service,
-  SearchedItems,
-  ServiceGetRequest,
-  ServiceMgetRequest,
+  type SearchedItems,
+  type Service,
+  type ServiceGetRequest,
+  type ServiceMgetRequest,
 } from '../../../types';
-import { WithMoneyFormat } from '../../types';
+import { type WithMoneyFormat } from '../../types';
 import {
-  EthereumLikeTxsGetRequest,
-  EthereumLikeTxsMgetRequest,
-  EthereumLikeTxsSearchRequest,
-  EthereumLikeTx,
+  type EthereumLikeTx,
+  type EthereumLikeTxsGetRequest,
+  type EthereumLikeTxsMgetRequest,
+  type EthereumLikeTxsSearchRequest,
 } from './repo/types';
 
 type EthereumLikeTxsServiceGetRequest = ServiceGetRequest<EthereumLikeTxsGetRequest>;
@@ -19,10 +19,7 @@ type EthereumLikeTxsServiceSearchRequest = EthereumLikeTxsSearchRequest;
 
 export type EthereumLikeTxsService = {
   get: Service<EthereumLikeTxsServiceGetRequest & WithMoneyFormat, Maybe<EthereumLikeTx>>;
-  mget: Service<
-    EthereumLikeTxsServiceMgetRequest & WithMoneyFormat,
-    Maybe<EthereumLikeTx>[]
-  >;
+  mget: Service<EthereumLikeTxsServiceMgetRequest & WithMoneyFormat, Maybe<EthereumLikeTx>[]>;
   search: Service<
     EthereumLikeTxsServiceSearchRequest & WithMoneyFormat,
     SearchedItems<EthereumLikeTx>

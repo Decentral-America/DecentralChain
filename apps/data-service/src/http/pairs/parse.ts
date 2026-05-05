@@ -1,22 +1,19 @@
-import { Result, Error as error, Ok as ok } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { loadConfig } from '../../loadConfig';
-import { WithMatcher, WithSortOrder, WithLimit } from '../../services/_common';
-import {
-  PairsGetRequest,
-  PairsMgetRequest,
-} from '../../services/pairs/repo/types';
-import { PairsServiceSearchRequest } from '../../services/pairs';
+import { type WithLimit, type WithMatcher, type WithSortOrder } from '../../services/_common';
+import { type PairsServiceSearchRequest } from '../../services/pairs';
+import { type PairsGetRequest, type PairsMgetRequest } from '../../services/pairs/repo/types';
 import { parseFilterValues, withDefaults } from '../_common/filters';
 import commonFilters from '../_common/filters/filters';
-import { HttpRequest } from '../_common/types';
+import { type HttpRequest } from '../_common/types';
 import { withMatcher } from '../_common/utils';
 import {
   isMgetRequest,
-  isSearchCommonRequest,
   isSearchByAssetRequest,
   isSearchByAssetsRequest,
+  isSearchCommonRequest,
   mgetOrSearchParser,
 } from './utils';
 
@@ -25,10 +22,7 @@ const config = loadConfig();
 export const get = ({
   params,
   query,
-}: HttpRequest<['amountAsset', 'priceAsset']>): Result<
-  ParseError,
-  PairsGetRequest
-> => {
+}: HttpRequest<['amountAsset', 'priceAsset']>): Result<ParseError, PairsGetRequest> => {
   if (isNil(params)) {
     return error(new ParseError(new Error('Params is empty')));
   }
@@ -63,10 +57,7 @@ export const get = ({
 
 export const mgetOrSearch = ({
   query,
-}: HttpRequest): Result<
-  ParseError,
-  PairsMgetRequest | PairsServiceSearchRequest
-> => {
+}: HttpRequest): Result<ParseError, PairsMgetRequest | PairsServiceSearchRequest> => {
   if (!query) {
     return error(new ParseError(new Error('Query is empty')));
   }
@@ -93,9 +84,7 @@ export const mgetOrSearch = ({
           return ok(fValuesWithDefaults);
         }
       } else {
-        return error(
-          new ParseError(new Error('Invalid request data'), fValuesWithDefaults)
-        );
+        return error(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
       }
     }
   });

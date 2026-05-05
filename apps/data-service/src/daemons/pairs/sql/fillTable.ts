@@ -1,12 +1,11 @@
 import * as knex from 'knex';
+
 const pg = knex({ client: 'pg' });
 
 const selectExchanges = pg({ t: 'txs_7' })
   .select({
-    uid: 't.uid',
-    amount_asset_id: 't.amount_asset_id',
-    price_asset_id: 't.price_asset_id',
     amount: 't.amount',
+    amount_asset_id: 't.amount_asset_id',
     price: pg.raw(`
       CASE WHEN t.tx_version > 2
         THEN t.price::numeric
@@ -15,8 +14,10 @@ const selectExchanges = pg({ t: 'txs_7' })
         ELSE t.price::numeric
       END
     `),
-    time_stamp: 't.time_stamp',
+    price_asset_id: 't.price_asset_id',
     sender: 't.sender',
+    time_stamp: 't.time_stamp',
+    uid: 't.uid',
   })
   .whereRaw(`time_stamp >= now() - interval '1 day'`)
   .orderBy('t.uid', 'desc')
@@ -26,21 +27,21 @@ const selectPairsCTE = pg
   .with('pairs_cte', (qb) => {
     qb.select({
       amount_asset_id: 'amount_asset_id',
-      price_asset_id: 'price_asset_id',
-      last_price: pg.raw('(array_agg(e.price ORDER BY e.uid DESC)::numeric[])[1]'),
       first_price: pg.raw('(array_agg(e.price ORDER BY e.uid)::numeric[])[1]'),
-      volume: pg.raw('sum(e.amount)'),
-      quote_volume: pg.raw('sum(e.amount::numeric * e.price::numeric)'),
-      weighted_average_price: pg.raw(
-        'floor(sum(e.amount::numeric * e.price::numeric)/ sum(e.amount))'
-      ),
-      volume_waves: pg.raw(
-        `case when amount_asset_id='WAVES' then sum(e.amount) when price_asset_id='WAVES' then sum(e.amount::numeric * e.price::numeric) end`
-      ),
       high: pg.raw('max(e.price)'),
+      last_price: pg.raw('(array_agg(e.price ORDER BY e.uid DESC)::numeric[])[1]'),
       low: pg.raw('min(e.price)'),
-      txs_count: pg.raw('count(e.price)'),
       matcher_address: 'sender',
+      price_asset_id: 'price_asset_id',
+      quote_volume: pg.raw('sum(e.amount::numeric * e.price::numeric)'),
+      txs_count: pg.raw('count(e.price)'),
+      volume: pg.raw('sum(e.amount)'),
+      volume_waves: pg.raw(
+        `case when amount_asset_id='WAVES' then sum(e.amount) when price_asset_id='WAVES' then sum(e.amount::numeric * e.price::numeric) end`,
+      ),
+      weighted_average_price: pg.raw(
+        'floor(sum(e.amount::numeric * e.price::numeric)/ sum(e.amount))',
+      ),
     })
       .from(selectExchanges.clone().as('e'))
       .groupBy(['amount_asset_id', 'price_asset_id', 'sender']);
@@ -54,7 +55,7 @@ const selectPairsCTE = pg
     'p.volume',
     {
       volume_waves: pg.raw(
-        'COALESCE(p.volume_waves, floor(p.quote_volume / p1.weighted_average_price), p.quote_volume * p2.weighted_average_price)'
+        'COALESCE(p.volume_waves, floor(p.quote_volume / p1.weighted_average_price), p.quote_volume * p2.weighted_average_price)',
       ),
     },
     'p.quote_volume',
@@ -62,7 +63,7 @@ const selectPairsCTE = pg
     'p.low',
     'p.weighted_average_price',
     'p.txs_count',
-    'p.matcher_address'
+    'p.matcher_address',
   )
   .leftJoin({ p1: 'pairs_cte' }, function () {
     this.on(pg.raw(`p1.amount_asset_id='WAVES'`))

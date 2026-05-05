@@ -1,6 +1,6 @@
-import { propIs, prop } from 'ramda';
+import { prop, propIs } from 'ramda';
 
-let timeRepository: Record<string, Date> = {};
+const timeRepository: Record<string, Date> = {};
 
 export const timeStart = (name: string): void => {
   timeRepository[name] = new Date();

@@ -1,32 +1,22 @@
-import { Result, Ok as ok, Error as error } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../../errorHandling';
-import {
-  WithMatcher,
-  WithSortOrder,
-  WithLimit,
-} from '../../../services/_common';
-import {
-  PairsGetRequest,
-  PairsMgetRequest,
-} from '../../../services/pairs/repo/types';
-import { PairsServiceSearchRequest } from '../../../services/pairs';
+import { type WithLimit, type WithMatcher, type WithSortOrder } from '../../../services/_common';
+import { type PairsServiceSearchRequest } from '../../../services/pairs';
+import { type PairsGetRequest, type PairsMgetRequest } from '../../../services/pairs/repo/types';
 import { withDefaults } from '../../_common/filters';
-import { HttpRequest } from '../../_common/types';
+import { type HttpRequest } from '../../_common/types';
 import {
-  mgetOrSearchParser,
   isMgetRequest,
   isSearchByAssetRequest,
   isSearchByAssetsRequest,
   isSearchCommonRequest,
+  mgetOrSearchParser,
 } from '../../pairs/utils';
 
 export const get = ({
   params,
-}: HttpRequest<['matcher', 'amountAsset', 'priceAsset']>): Result<
-  ParseError,
-  PairsGetRequest
-> => {
+}: HttpRequest<['matcher', 'amountAsset', 'priceAsset']>): Result<ParseError, PairsGetRequest> => {
   if (isNil(params)) {
     return error(new ParseError(new Error('Params is empty')));
   }
@@ -40,19 +30,14 @@ export const get = ({
       },
     });
   } else {
-    return error(
-      new ParseError(new Error('AmountAssetId or PriceAssetId are not set'))
-    );
+    return error(new ParseError(new Error('AmountAssetId or PriceAssetId are not set')));
   }
 };
 
 export const mgetOrSearch = ({
   params,
   query,
-}: HttpRequest<['matcher']>): Result<
-  ParseError,
-  PairsMgetRequest | PairsServiceSearchRequest
-> => {
+}: HttpRequest<['matcher']>): Result<ParseError, PairsMgetRequest | PairsServiceSearchRequest> => {
   if (isNil(params)) {
     return error(new ParseError(new Error('Params is empty')));
   }
@@ -61,11 +46,11 @@ export const mgetOrSearch = ({
     return error(new ParseError(new Error('Query is empty')));
   }
 
-  return mgetOrSearchParser(query).chain(fValues => {
+  return mgetOrSearchParser(query).chain((fValues) => {
     if (isMgetRequest(fValues)) {
       return ok({
-        pairs: fValues.pairs,
         matcher: params.matcher,
+        pairs: fValues.pairs,
       });
     } else {
       const fValuesWithDefaults = mergeAll<
@@ -86,9 +71,7 @@ export const mgetOrSearch = ({
           return ok(fValuesWithDefaults);
         }
       } else {
-        return error(
-          new ParseError(new Error('Invalid request data'), fValuesWithDefaults)
-        );
+        return error(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
       }
     }
   });

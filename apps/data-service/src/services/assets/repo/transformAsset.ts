@@ -1,7 +1,7 @@
-import { renameKeys } from 'ramda-adjunct';
+import { Asset, type IAssetJSON } from '@decentralchain/data-entities';
 import { compose } from 'ramda';
-import { Asset, IAssetJSON } from '@waves/data-entities';
-import { AssetDbResponse } from './types';
+import { renameKeys } from 'ramda-adjunct';
+import { type AssetDbResponse } from './types';
 
 export const transformDbResponse = (raw: AssetDbResponse): Asset =>
   compose(
@@ -9,11 +9,11 @@ export const transformDbResponse = (raw: AssetDbResponse): Asset =>
     renameKeys<IAssetJSON>({
       asset_id: 'id',
       asset_name: 'name',
-      issue_height: 'height',
-      issue_timestamp: 'timestamp',
-      total_quantity: 'quantity',
       decimals: 'precision',
       has_script: 'hasScript',
+      issue_height: 'height',
+      issue_timestamp: 'timestamp',
       min_sponsored_asset_fee: 'minSponsoredFee',
-    })
+      total_quantity: 'quantity',
+    }),
   )(raw);

@@ -47,19 +47,18 @@ export const loadDefaultConfig = (): DefaultConfig => {
   checkEnv(commonEnvVariables);
 
   return {
+    logLevel: process.env.LOG_LEVEL || 'info',
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
-    postgresHost: process.env.PGHOST || '',
-    postgresPort: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
     postgresDatabase: process.env.PGDATABASE || 'mainnet',
-    postgresUser: process.env.PGUSER || 'postgres',
+    postgresHost: process.env.PGHOST || '',
     postgresPassword: process.env.PGPASSWORD || 'postgres',
     postgresPoolSize: process.env.PGPOOLSIZE ? parseInt(process.env.PGPOOLSIZE) : 20,
+    postgresPort: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
     postgresStatementTimeout:
-      isNil(process.env.PGSTATEMENTTIMEOUT) ||
-      isNaN(parseInt(process.env.PGSTATEMENTTIMEOUT))
+      isNil(process.env.PGSTATEMENTTIMEOUT) || isNaN(parseInt(process.env.PGSTATEMENTTIMEOUT))
         ? false
         : parseInt(process.env.PGSTATEMENTTIMEOUT),
-    logLevel: process.env.LOG_LEVEL || 'info',
+    postgresUser: process.env.PGUSER || 'postgres',
   };
 };
 
@@ -89,13 +88,13 @@ const load = (): DataServiceConfig => {
 
   const volumeThreshold = ensurePositiveNumber(
     parseInt(process.env.RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD as string),
-    'RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD environment variable should be a positive integer'
+    'RATE_PAIR_ACCEPTANCE_VOLUME_THRESHOLD environment variable should be a positive integer',
   );
 
   const rate: RatesConfig = {
     pairAcceptanceVolumeThreshold: volumeThreshold,
-    thresholdAssetId: process.env.RATE_THRESHOLD_ASSET_ID as string,
     rateBaseAssetId: (process.env.RATE_BASE_ASSET_ID as string) || 'WAVES',
+    thresholdAssetId: process.env.RATE_THRESHOLD_ASSET_ID as string,
   };
 
   if (

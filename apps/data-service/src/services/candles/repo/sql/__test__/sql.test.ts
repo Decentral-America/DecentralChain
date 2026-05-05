@@ -6,12 +6,12 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        priceAsset: '222',
-        timeStart: new Date('2017-04-03T00:00:00.000Z'),
-        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
         interval: intervalFromString('1h').unsafeGet(),
         matcher: '123',
-      })
+        priceAsset: '222',
+        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
+        timeStart: new Date('2017-04-03T00:00:00.000Z'),
+      }),
     ).toMatchSnapshot();
   });
 
@@ -19,12 +19,12 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        priceAsset: '222',
-        timeStart: new Date('2017-04-03T00:00:00.000Z'),
-        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
         interval: intervalFromString('1d').unsafeGet(),
         matcher: '123',
-      })
+        priceAsset: '222',
+        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
+        timeStart: new Date('2017-04-03T00:00:00.000Z'),
+      }),
     ).toMatchSnapshot();
   });
 
@@ -32,12 +32,12 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        priceAsset: '222',
-        timeStart: new Date('2017-04-03T00:00:00.000Z'),
-        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
         interval: intervalFromString('1m').unsafeGet(),
         matcher: '123',
-      })
+        priceAsset: '222',
+        timeEnd: new Date('2017-04-03T23:59:59.999Z'),
+        timeStart: new Date('2017-04-03T00:00:00.000Z'),
+      }),
     ).toMatchSnapshot();
   });
 });

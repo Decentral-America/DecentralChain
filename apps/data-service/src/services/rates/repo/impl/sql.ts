@@ -29,10 +29,7 @@ from (
   where
     c.interval = '${CandleInterval.Day1}'
     and c.matcher_address = ?
-    and (c.amount_asset_id, c.price_asset_id) in (${repeat(
-      '(?, ?)',
-      tuplesCount
-    )})
+    and (c.amount_asset_id, c.price_asset_id) in (${repeat('(?, ?)', tuplesCount)})
   order by c.amount_asset_id, c.price_asset_id, c.matcher_address
 ) as p;
 `;
