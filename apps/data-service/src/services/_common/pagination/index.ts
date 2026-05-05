@@ -1,5 +1,5 @@
-import { Result } from 'folktale/result';
-import { ValidationError } from '../../../errorHandling';
+import { type Result } from 'folktale/result';
+import { type ValidationError } from '../../../errorHandling';
 
 export type CursorSerialization<Cursor, Request, Response> = {
   serialize: (request: Request, response: Response) => string | undefined;

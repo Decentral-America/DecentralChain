@@ -1,11 +1,11 @@
-import { IncomingHttpHeaders } from 'http';
+import { type IncomingHttpHeaders } from 'http';
 import {
-  DEFAULT_INTERNAL_SERVER_ERROR_MESSAGE,
-  DEFAULT_TIMEOUT_OCCURRED_MESSAGE,
-  DEFAULT_NOT_FOUND_MESSAGE,
   DEFAULT_BAD_REQUEST_MESSAGE,
+  DEFAULT_INTERNAL_SERVER_ERROR_MESSAGE,
+  DEFAULT_NOT_FOUND_MESSAGE,
+  DEFAULT_TIMEOUT_OCCURRED_MESSAGE,
 } from '../../errorHandling';
-import { ValuesOf } from '../../types/generic';
+import { type ValuesOf } from '../../types/generic';
 import { defaultStringify } from './utils';
 
 export type HttpRequest<Params extends string[] = string[]> = {
@@ -15,18 +15,14 @@ export type HttpRequest<Params extends string[] = string[]> = {
 };
 
 const headersWithContentType = {
-  'Content-Type': 'application/json; charset=utf-8'
+  'Content-Type': 'application/json; charset=utf-8',
 };
 export class HttpResponse {
   readonly status: number;
   readonly body?: string;
   readonly headers?: Record<string, string>;
 
-  private constructor(
-    status: number,
-    body?: string,
-    headers?: Record<string, string>
-  ) {
+  private constructor(status: number, body?: string, headers?: Record<string, string>) {
     this.status = status;
     this.body = body;
     this.headers = headers;
@@ -36,10 +32,7 @@ export class HttpResponse {
     return new HttpResponse(200, body, headers);
   }
 
-  public static BadRequest(
-    meta?: { message: string }[],
-    headers?: Record<string, string>
-  ) {
+  public static BadRequest(meta?: { message: string }[], headers?: Record<string, string>) {
     return new HttpResponse(
       400,
       defaultStringify({
@@ -49,7 +42,7 @@ export class HttpResponse {
       {
         ...headersWithContentType,
         ...headers,
-      }
+      },
     );
   }
 
@@ -62,7 +55,7 @@ export class HttpResponse {
       {
         ...headersWithContentType,
         ...headers,
-      }
+      },
     );
   }
 
@@ -75,7 +68,7 @@ export class HttpResponse {
       {
         ...headersWithContentType,
         ...headers,
-      }
+      },
     );
   }
 
@@ -88,7 +81,7 @@ export class HttpResponse {
       {
         ...headersWithContentType,
         ...headers,
-      }
+      },
     );
   }
 

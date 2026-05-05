@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { memoizeWith, always } from 'ramda';
+import { always, memoizeWith } from 'ramda';
 
 const createEventBus = () => new EventEmitter();
 

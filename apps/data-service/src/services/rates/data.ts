@@ -1,12 +1,9 @@
-import { Asset } from '@waves/data-entities';
+import { type Asset } from '@decentralchain/data-entities';
 
-import { AssetPair } from './RateEstimator';
+import { type AssetPair } from './RateEstimator';
 import { isSymmetric } from './util';
 
-export const pairIsSymmetric = isSymmetric((p: AssetPair) => [
-  p.amountAsset,
-  p.priceAsset,
-]);
+export const pairIsSymmetric = isSymmetric((p: AssetPair) => [p.amountAsset, p.priceAsset]);
 
 export const createPairHasBaseAsset =
   (baseAssetId: string) =>
@@ -22,11 +19,10 @@ export function flip<T extends AssetPair>(pair: T): T {
 }
 
 export const pairsEq = (pair1: AssetPair, pair2: AssetPair): boolean =>
-  pair1.amountAsset.id === pair2.amountAsset.id &&
-  pair1.priceAsset.id === pair2.priceAsset.id;
+  pair1.amountAsset.id === pair2.amountAsset.id && pair1.priceAsset.id === pair2.priceAsset.id;
 
 export function createGeneratePossibleRequestItemsWithAsset(
-  baseAsset: Asset
+  baseAsset: Asset,
 ): (pair: AssetPair) => AssetPair[] {
   const pairHasBaseAsset = createPairHasBaseAsset(baseAsset.id);
   return (pair: AssetPair): AssetPair[] => {

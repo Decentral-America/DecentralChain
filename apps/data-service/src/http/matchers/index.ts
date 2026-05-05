@@ -1,10 +1,9 @@
-import * as Router from 'koa-router';
-import { PairsService } from '../../services/pairs'
-import { CandlesService } from '../../services/candles';
-import { RatesMgetService } from '../../services/rates';
-
-import createPairs from './pairs';
+import * as Router from '@koa/router';
+import { type CandlesService } from '../../services/candles';
+import { type PairsService } from '../../services/pairs';
+import { type RatesMgetService } from '../../services/rates';
 import createCandles from './candles';
+import createPairs from './pairs';
 import createRates from './rates';
 
 const subrouter = new Router({ prefix: '/matchers/:matcher' });

@@ -1,6 +1,6 @@
-import { BigNumber } from '@waves/data-entities';
+import { type BigNumber } from '@decentralchain/data-entities';
 
-import { RawTx } from '../../../_common/types';
+import { type RawTx } from '../../../_common/types';
 
 export type DbRawMassTransferTxTransfer = {
   recipient_alias: string | null;

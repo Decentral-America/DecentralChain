@@ -1,12 +1,9 @@
 import { Joi } from '../../../../../utils/validation';
-import { CursorSerialization } from '../../../pagination';
+import { type CursorSerialization } from '../../../pagination';
 
 export default <Cursor, Request, Response>(
-  deserialize: CursorSerialization<Cursor, Request, Response>['deserialize']
+  deserialize: CursorSerialization<Cursor, Request, Response>['deserialize'],
 ) => ({
-  limit: Joi.number()
-    .min(1)
-    .max(100)
-    .required(),
   after: Joi.cursor().valid(deserialize),
+  limit: Joi.number().min(1).max(100).required(),
 });

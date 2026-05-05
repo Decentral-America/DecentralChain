@@ -1,4 +1,4 @@
-import { AppError, ErrorMetaInfo } from './AppError';
+import { type AppError, type ErrorMetaInfo } from './AppError';
 import { toAppError } from './factories';
 
 export * from './AppError';

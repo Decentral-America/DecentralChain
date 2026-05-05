@@ -1,15 +1,10 @@
-import { BigNumber } from '@waves/data-entities';
-import { RawTx, Tx, CommonFilters } from '../../_common/types';
-import { RequestWithCursor } from '../../../_common/pagination';
-import { WithSortOrder, WithLimit } from '../../../_common';
-import { Repo } from '../../../../types';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { type Repo } from '../../../../types';
+import { type WithLimit, type WithSortOrder } from '../../../_common';
+import { type RequestWithCursor } from '../../../_common/pagination';
+import { type CommonFilters, type RawTx, type Tx } from '../../_common/types';
 
-export type InvokeScriptTxArgType =
-  | 'integer'
-  | 'boolean'
-  | 'binary'
-  | 'string'
-  | 'list';
+export type InvokeScriptTxArgType = 'integer' | 'boolean' | 'binary' | 'string' | 'list';
 
 export type RawInvokeScriptTxArgValue = {
   arg_value_integer: BigNumber | null;
@@ -68,9 +63,7 @@ export type InvokeScriptTx = Tx & {
 export type InvokeScriptTxsGetRequest = string;
 export type InvokeScriptTxsMgetRequest = string[];
 
-export type InvokeScriptTxsSearchRequest<
-  CursorType = string
-> = RequestWithCursor<
+export type InvokeScriptTxsSearchRequest<CursorType = string> = RequestWithCursor<
   CommonFilters &
     WithSortOrder &
     WithLimit &

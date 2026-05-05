@@ -1,4 +1,4 @@
-import { AppError, AppErrorPattern, ErrorInfo } from './AppError';
+import { AppError, type AppErrorPattern, type ErrorInfo } from './AppError';
 
 const errorTypes: (keyof AppErrorPattern<any>)[] = [
   'Init',
@@ -12,16 +12,16 @@ const throwFn = () => {
   throw new Error('Should not happen');
 };
 const throwPattern: AppErrorPattern<never> = {
-  Init: throwFn,
-  Resolver: throwFn,
-  Validation: throwFn,
   Db: throwFn,
-  Timeout: throwFn,
+  Init: throwFn,
   Parse: throwFn,
+  Resolver: throwFn,
+  Timeout: throwFn,
+  Validation: throwFn,
 };
 
 describe('AppError', () => {
-  errorTypes.forEach(type => {
+  errorTypes.forEach((type) => {
     it(`${type} should be created from message`, () => {
       AppError[type]('Error message', { info: 'some-info' }).matchWith({
         ...throwPattern,

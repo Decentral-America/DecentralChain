@@ -1,109 +1,100 @@
-import { Task, of as taskOf } from 'folktale/concurrency/task';
-
-import { AppError } from '../errorHandling';
-
-import createAliasesService, { AliasesService } from './aliases';
+import { type Task, of as taskOf } from 'folktale/concurrency/task';
+import { type PgDriver } from '../db/driver';
+import { type AppError } from '../errorHandling';
+import { type DataServiceConfig } from '../loadConfig';
+import { type AssetIdsPair } from '../types';
+import { type EmitEvent } from './_common/createResolver/types';
+import { validatePairs } from './_common/validation/pairs';
+import createAliasesService, { type AliasesService } from './aliases';
 import createAliasesRepo from './aliases/repo';
-
-import createAssetsService, { AssetsService } from './assets';
+import createAssetsService, { type AssetsService } from './assets';
 import createAssetsRepo, { createCache as createAssetsCache } from './assets/repo';
-
-import createCandlesService, { CandlesService } from './candles';
+import createCandlesService, { type CandlesService } from './candles';
 import createCandlesRepo from './candles/repo';
-import createPairsService, { PairsService } from './pairs';
+import { PairOrderingServiceImpl } from './PairOrderingService';
+import createPairsService, { type PairsService } from './pairs';
 import createPairsRepo, { createCache as createPairsCache } from './pairs/repo';
-import createAllTxsService, { AllTxsService } from './transactions/all';
-import createAllTxsRepo from './transactions/all/repo';
-
-// alias txs
-import createAliasTxsService from './transactions/alias';
-import { AliasTxsService } from './transactions/alias/types';
-import createAliasTxsRepo from './transactions/alias/repo';
-// burn txs
-import createBurnTxsService from './transactions/burn';
-import { BurnTxsService } from './transactions/burn/types';
-import createBurnTxsRepo from './transactions/burn/repo';
-// data txs
-import createDataTxsService from './transactions/data';
-import { DataTxsService } from './transactions/data/types';
-import createDataTxsRepo from './transactions/data/repo';
-// exchange txs
-import createExchangeTxsService from './transactions/exchange';
-import { ExchangeTxsService } from './transactions/exchange/types';
-import createExchangeTxsRepo from './transactions/exchange/repo';
-// genesis txs
-import createGenesisTxsService from './transactions/genesis';
-import { GenesisTxsService } from './transactions/genesis/types';
-import createGenesisTxsRepo from './transactions/genesis/repo';
-// invoke script txs
-import createInvokeScriptTxsService from './transactions/invokeScript';
-import { InvokeScriptTxsService } from './transactions/invokeScript/types';
-import createInvokeScriptTxsRepo from './transactions/invokeScript/repo';
-// issue txs
-import createIssueTxsService from './transactions/issue';
-import { IssueTxsService } from './transactions/issue/types';
-import createIssueTxsRepo from './transactions/issue/repo';
-// lease txs
-import createLeaseTxsService from './transactions/lease';
-import { LeaseTxsService } from './transactions/lease/types';
-import createLeaseTxsRepo from './transactions/lease/repo';
-// lease cancel txs
-import createLeaseCancelTxsService from './transactions/leaseCancel';
-import { LeaseCancelTxsService } from './transactions/leaseCancel/types';
-import createLeaseCancelTxsRepo from './transactions/leaseCancel/repo';
-// mass-transfer txs
-import createMassTransferTxsService from './transactions/massTransfer';
-import { MassTransferTxsService } from './transactions/massTransfer/types';
-import createMassTransferTxsRepo from './transactions/massTransfer/repo';
-// payment txs
-import createPaymentTxsService from './transactions/payment';
-import { PaymentTxsService } from './transactions/payment/types';
-import createPaymentTxsRepo from './transactions/payment/repo';
-// reissue txs
-import createReissueTxsService from './transactions/reissue';
-import { ReissueTxsService } from './transactions/reissue/types';
-import createReissueTxsRepo from './transactions/reissue/repo';
-// set asset script txs
-import createSetAssetScriptTxsService from './transactions/setAssetScript';
-import { SetAssetScriptTxsService } from './transactions/setAssetScript/types';
-import createSetAssetScriptTxsRepo from './transactions/setAssetScript/repo';
-// set script txs
-import createSetScriptTxsService from './transactions/setScript';
-import { SetScriptTxsService } from './transactions/setScript/types';
-import createSetScriptTxsRepo from './transactions/setScript/repo';
-// sponsorship txs
-import createSponsorshipTxsService from './transactions/sponsorship';
-import { SponsorshipTxsService } from './transactions/sponsorship/types';
-import createSponsorshipTxsRepo from './transactions/sponsorship/repo';
-// transfer txs
-import createTransferTxsService from './transactions/transfer';
-import { TransferTxsService } from './transactions/transfer/types';
-import createTransferTxsRepo from './transactions/transfer/repo';
-// update asset info txs
-import createUpdateAssetInfoTxsService from './transactions/updateAssetInfo';
-import { UpdateAssetInfoTxsService } from './transactions/updateAssetInfo/types';
-import createUpdateAssetInfoTxsRepo from './transactions/updateAssetInfo/repo';
-// ethereum-like txs
-import createEthereumLikeTxsService from './transactions/ethereumLike';
-import { EthereumLikeTxsService } from './transactions/ethereumLike/types';
-import createEthereumLikeTxsRepo from './transactions/ethereumLike/repo';
-
-import createRateService, { RateCacheImpl, RatesMgetService } from './rates';
-import { RateCache } from './rates/repo';
+import createRateService, { RateCacheImpl, type RatesMgetService } from './rates';
+import { type RateCache } from './rates/repo';
+import RemoteRateRepo from './rates/repo/impl/RemoteRateRepo';
 import {
-  IThresholdAssetRateService,
+  type IThresholdAssetRateService,
   ThresholdAssetRateService,
 } from './rates/ThresholdAssetRateService';
-import RemoteRateRepo from './rates/repo/impl/RemoteRateRepo';
-
-import { PairOrderingServiceImpl } from './PairOrderingService';
-
-import { DataServiceConfig } from '../loadConfig';
-import { PgDriver } from '../db/driver';
-import { AssetIdsPair } from '../types';
-
-import { EmitEvent } from './_common/createResolver/types';
-import { validatePairs } from './_common/validation/pairs';
+// alias txs
+import createAliasTxsService from './transactions/alias';
+import createAliasTxsRepo from './transactions/alias/repo';
+import { type AliasTxsService } from './transactions/alias/types';
+import createAllTxsService, { type AllTxsService } from './transactions/all';
+import createAllTxsRepo from './transactions/all/repo';
+// burn txs
+import createBurnTxsService from './transactions/burn';
+import createBurnTxsRepo from './transactions/burn/repo';
+import { type BurnTxsService } from './transactions/burn/types';
+// data txs
+import createDataTxsService from './transactions/data';
+import createDataTxsRepo from './transactions/data/repo';
+import { type DataTxsService } from './transactions/data/types';
+// ethereum-like txs
+import createEthereumLikeTxsService from './transactions/ethereumLike';
+import createEthereumLikeTxsRepo from './transactions/ethereumLike/repo';
+import { type EthereumLikeTxsService } from './transactions/ethereumLike/types';
+// exchange txs
+import createExchangeTxsService from './transactions/exchange';
+import createExchangeTxsRepo from './transactions/exchange/repo';
+import { type ExchangeTxsService } from './transactions/exchange/types';
+// genesis txs
+import createGenesisTxsService from './transactions/genesis';
+import createGenesisTxsRepo from './transactions/genesis/repo';
+import { type GenesisTxsService } from './transactions/genesis/types';
+// invoke script txs
+import createInvokeScriptTxsService from './transactions/invokeScript';
+import createInvokeScriptTxsRepo from './transactions/invokeScript/repo';
+import { type InvokeScriptTxsService } from './transactions/invokeScript/types';
+// issue txs
+import createIssueTxsService from './transactions/issue';
+import createIssueTxsRepo from './transactions/issue/repo';
+import { type IssueTxsService } from './transactions/issue/types';
+// lease txs
+import createLeaseTxsService from './transactions/lease';
+import createLeaseTxsRepo from './transactions/lease/repo';
+import { type LeaseTxsService } from './transactions/lease/types';
+// lease cancel txs
+import createLeaseCancelTxsService from './transactions/leaseCancel';
+import createLeaseCancelTxsRepo from './transactions/leaseCancel/repo';
+import { type LeaseCancelTxsService } from './transactions/leaseCancel/types';
+// mass-transfer txs
+import createMassTransferTxsService from './transactions/massTransfer';
+import createMassTransferTxsRepo from './transactions/massTransfer/repo';
+import { type MassTransferTxsService } from './transactions/massTransfer/types';
+// payment txs
+import createPaymentTxsService from './transactions/payment';
+import createPaymentTxsRepo from './transactions/payment/repo';
+import { type PaymentTxsService } from './transactions/payment/types';
+// reissue txs
+import createReissueTxsService from './transactions/reissue';
+import createReissueTxsRepo from './transactions/reissue/repo';
+import { type ReissueTxsService } from './transactions/reissue/types';
+// set asset script txs
+import createSetAssetScriptTxsService from './transactions/setAssetScript';
+import createSetAssetScriptTxsRepo from './transactions/setAssetScript/repo';
+import { type SetAssetScriptTxsService } from './transactions/setAssetScript/types';
+// set script txs
+import createSetScriptTxsService from './transactions/setScript';
+import createSetScriptTxsRepo from './transactions/setScript/repo';
+import { type SetScriptTxsService } from './transactions/setScript/types';
+// sponsorship txs
+import createSponsorshipTxsService from './transactions/sponsorship';
+import createSponsorshipTxsRepo from './transactions/sponsorship/repo';
+import { type SponsorshipTxsService } from './transactions/sponsorship/types';
+// transfer txs
+import createTransferTxsService from './transactions/transfer';
+import createTransferTxsRepo from './transactions/transfer/repo';
+import { type TransferTxsService } from './transactions/transfer/types';
+// update asset info txs
+import createUpdateAssetInfoTxsService from './transactions/updateAssetInfo';
+import createUpdateAssetInfoTxsRepo from './transactions/updateAssetInfo/repo';
+import { type UpdateAssetInfoTxsService } from './transactions/updateAssetInfo/types';
 
 type WithEventBus = {
   emitEvent: EmitEvent;
@@ -166,7 +157,7 @@ export default ({
   pgDriver: PgDriver;
   emitEvent: EmitEvent;
 }): Task<AppError, ServiceMesh> => {
-  let matcherConfig: Record<string, string> = {};
+  const matcherConfig: Record<string, string> = {};
 
   if (options.matcher.settingsURL) {
     matcherConfig[options.matcher.defaultMatcherAddress] = options.matcher.settingsURL;
@@ -197,23 +188,19 @@ export default ({
     const assets = createAssetsService(assetsRepo);
 
     const pairsRepo = createPairsRepo({ ...commonDeps, cache: pairsCache });
-    const pairsNoAsyncValidation = createPairsService(
-      pairsRepo,
-      () => taskOf(undefined),
-      assets
-    );
+    const pairsNoAsyncValidation = createPairsService(pairsRepo, () => taskOf(undefined), assets);
     const pairsWithAsyncValidation = createPairsService(
       pairsRepo,
       (matcher: string, pairs: AssetIdsPair[]) =>
         validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
-      assets
+      assets,
     );
 
     const thresholdAssetRateService = new ThresholdAssetRateService(
       options.thresholdAssetId,
       options.matcher.defaultMatcherAddress,
       pairsNoAsyncValidation,
-      emitEvent('log')
+      emitEvent('log'),
     );
 
     const aliasTxsRepo = createAliasTxsRepo(commonDeps);
@@ -241,10 +228,7 @@ export default ({
     const reissueTxsRepo = createReissueTxsRepo(commonDeps);
     const reissueTxs = createReissueTxsService(reissueTxsRepo, assets);
     const setAssetScriptTxsRepo = createSetAssetScriptTxsRepo(commonDeps);
-    const setAssetScriptTxs = createSetAssetScriptTxsService(
-      setAssetScriptTxsRepo,
-      assets
-    );
+    const setAssetScriptTxs = createSetAssetScriptTxsService(setAssetScriptTxsRepo, assets);
     const setScriptTxsRepo = createSetScriptTxsRepo(commonDeps);
     const setScriptTxs = createSetScriptTxsService(setScriptTxsRepo, assets);
     const sponsorshipTxsRepo = createSponsorshipTxsRepo(commonDeps);
@@ -252,10 +236,7 @@ export default ({
     const transferTxsRepo = createTransferTxsRepo(commonDeps);
     const transferTxs = createTransferTxsService(transferTxsRepo, assets);
     const updateAssetInfoRepo = createUpdateAssetInfoTxsRepo(commonDeps);
-    const updateAssetInfoTxs = createUpdateAssetInfoTxsService(
-      updateAssetInfoRepo,
-      assets
-    );
+    const updateAssetInfoTxs = createUpdateAssetInfoTxsService(updateAssetInfoRepo, assets);
     const ethereumLikeRepo = createEthereumLikeTxsRepo(commonDeps);
     const ethereumLikeTxs = createEthereumLikeTxsService(ethereumLikeRepo, assets);
 
@@ -263,26 +244,26 @@ export default ({
 
     const rates = createRateService({
       ...commonDeps,
-      repo: rateRepo,
-      cache: ratesCache,
       assets,
-      pairs: pairsNoAsyncValidation,
-      pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
-      thresholdAssetRateService: thresholdAssetRateService,
       baseAssetId: options.rateBaseAssetId,
+      cache: ratesCache,
+      pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
+      pairs: pairsNoAsyncValidation,
+      repo: rateRepo,
+      thresholdAssetRateService: thresholdAssetRateService,
     });
 
     const candlesRepo = createCandlesRepo(commonDeps);
     const candlesNoAsyncValidation = createCandlesService(
       candlesRepo,
       () => taskOf(undefined),
-      assets
+      assets,
     );
     const candlesWithAsyncValidation = createCandlesService(
       candlesRepo,
       (matcher: string, pairs: AssetIdsPair[]) =>
         validatePairs(assets.mget, pairOrderingService)(matcher, pairs),
-      assets
+      assets,
     );
 
     // specific init services
@@ -313,32 +294,32 @@ export default ({
       aliases,
       assets,
       candles: candlesNoAsyncValidation,
-      pairs: pairsNoAsyncValidation,
-      transactions: {
-        all: allTxs,
-        genesis: genesisTxs,
-        payment: paymentTxs,
-        issue: issueTxs,
-        transfer: transferTxs,
-        reissue: reissueTxs,
-        burn: burnTxs,
-        exchange: exchangeTxs,
-        lease: leaseTxs,
-        leaseCancel: leaseCancelTxs,
-        alias: aliasTxs,
-        massTransfer: massTransferTxs,
-        data: dataTxs,
-        setScript: setScriptTxs,
-        sponsorship: sponsorshipTxs,
-        setAssetScript: setAssetScriptTxs,
-        invokeScript: invokeScriptTxs,
-        updateAssetInfo: updateAssetInfoTxs,
-        ethereumLike: ethereumLikeTxs,
-      },
       matchers: {
-        rates,
         candles: candlesWithAsyncValidation,
         pairs: pairsWithAsyncValidation,
+        rates,
+      },
+      pairs: pairsNoAsyncValidation,
+      transactions: {
+        alias: aliasTxs,
+        all: allTxs,
+        burn: burnTxs,
+        data: dataTxs,
+        ethereumLike: ethereumLikeTxs,
+        exchange: exchangeTxs,
+        genesis: genesisTxs,
+        invokeScript: invokeScriptTxs,
+        issue: issueTxs,
+        lease: leaseTxs,
+        leaseCancel: leaseCancelTxs,
+        massTransfer: massTransferTxs,
+        payment: paymentTxs,
+        reissue: reissueTxs,
+        setAssetScript: setAssetScriptTxs,
+        setScript: setScriptTxs,
+        sponsorship: sponsorshipTxs,
+        transfer: transferTxs,
+        updateAssetInfo: updateAssetInfoTxs,
       },
     };
   });

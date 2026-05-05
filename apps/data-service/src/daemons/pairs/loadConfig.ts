@@ -1,9 +1,5 @@
-import { memoizeWith, always } from 'ramda';
-import {
-  PostgresConfig,
-  LoggerConfig,
-  loadDefaultConfig,
-} from '../../loadConfig';
+import { always, memoizeWith } from 'ramda';
+import { type LoggerConfig, loadDefaultConfig, type PostgresConfig } from '../../loadConfig';
 
 export type PairsConfig = PostgresConfig &
   LoggerConfig & {

@@ -1,14 +1,11 @@
-import { SearchedItems, CandleInfo, candle, Candle } from '../../types';
+import { type Candle, type CandleInfo, candle, type SearchedItems } from '../../types';
 import { stringify } from '../../utils/json';
 import { search as searchSerializer } from '../_common/serialize';
 import { HttpResponse } from '../_common/types';
 import { contentTypeWithLSN } from '../_common/utils';
-import { LSNFormat } from '../types';
+import { type LSNFormat } from '../types';
 
-export const serialize = (
-  data: SearchedItems<CandleInfo>,
-  lsnFormat: LSNFormat
-): HttpResponse => {
+export const serialize = (data: SearchedItems<CandleInfo>, lsnFormat: LSNFormat): HttpResponse => {
   if (data.items.length) {
     return searchSerializer<CandleInfo | null, Candle>(candle, lsnFormat)(data);
   } else {
@@ -18,12 +15,10 @@ export const serialize = (
 
 export const serializeCandleInfo = (
   data: CandleInfo | null,
-  lsnFormat: LSNFormat
+  lsnFormat: LSNFormat,
 ): HttpResponse => {
   if (data) {
-    return HttpResponse.Ok(
-      stringify(lsnFormat)(candle(data))
-    ).withHeaders({
+    return HttpResponse.Ok(stringify(lsnFormat)(candle(data))).withHeaders({
       'Content-Type': contentTypeWithLSN(lsnFormat),
     });
   } else {

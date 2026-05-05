@@ -1,16 +1,16 @@
-import { Task, of as taskOf } from 'folktale/concurrency/task';
-import { AppError } from '../../errorHandling';
-import { AssetIdsPair, PairInfo } from '../../types';
-import { AssetsService } from '../assets';
+import { type Task, of as taskOf } from 'folktale/concurrency/task';
+import { type AppError } from '../../errorHandling';
+import { type AssetIdsPair, type PairInfo } from '../../types';
+import { type AssetsService } from '../assets';
 
-export const modifyDecimals = <T extends PairInfo & AssetIdsPair>(
-  assetsService: AssetsService
-) => (pairs: T[]): Task<AppError, T[]> =>
+export const modifyDecimals =
+  <T extends PairInfo & AssetIdsPair>(assetsService: AssetsService) =>
+  (pairs: T[]): Task<AppError, T[]> =>
     assetsService
       .precisions({
         ids: pairs.reduce<string[]>(
           (acc, pair) => acc.concat([pair.amountAsset, pair.priceAsset]),
-          []
+          [],
         ),
       })
       .chain((precisions: number[]) => {
@@ -22,12 +22,12 @@ export const modifyDecimals = <T extends PairInfo & AssetIdsPair>(
 
             return {
               ...pair,
-              low: pair.low.shiftedBy(priceDecimals),
-              high: pair.high.shiftedBy(priceDecimals),
               firstPrice: pair.firstPrice.shiftedBy(priceDecimals),
+              high: pair.high.shiftedBy(priceDecimals),
               lastPrice: pair.lastPrice.shiftedBy(priceDecimals),
-              volume: pair.volume.shiftedBy(-amountAssetDecimals),
+              low: pair.low.shiftedBy(priceDecimals),
               quoteVolume: pair.quoteVolume.shiftedBy(priceDecimals - amountAssetDecimals),
+              volume: pair.volume.shiftedBy(-amountAssetDecimals),
               volumeWaves:
                 pair.volumeWaves === null
                   ? null
@@ -38,6 +38,6 @@ export const modifyDecimals = <T extends PairInfo & AssetIdsPair>(
                       : pair.volumeWaves.shiftedBy(priceDecimals - 8 - amountAssetDecimals),
               weightedAveragePrice: pair.weightedAveragePrice.shiftedBy(priceDecimals),
             };
-          })
+          }),
         );
       });

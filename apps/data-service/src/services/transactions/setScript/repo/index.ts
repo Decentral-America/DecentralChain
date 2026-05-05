@@ -1,65 +1,57 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
 import { result } from './schema';
 import * as sql from './sql';
 import {
-  SetScriptTxsRepo,
-  SetScriptTxDbResponse,
-  SetScriptTxsSearchRequest,
-  SetScriptTx,
+  type SetScriptTx,
+  type SetScriptTxDbResponse,
+  type SetScriptTxsRepo,
+  type SetScriptTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): SetScriptTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): SetScriptTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.setScript.get',
-      sql: sql.get,
       resultSchema: result,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.setScript.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.setScript.mget',
       resultSchema: result,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      SetScriptTxsSearchRequest,
-      SetScriptTxDbResponse,
-      SetScriptTx
-    >({
-      name: 'transactions.setScript.search',
-      sql: sql.search,
-      resultSchema: result,
-      transformResult: transformTxInfo,
+    search: searchPreset<Cursor, SetScriptTxsSearchRequest, SetScriptTxDbResponse, SetScriptTx>({
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.setScript.search',
+      resultSchema: result,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

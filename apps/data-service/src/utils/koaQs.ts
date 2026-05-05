@@ -1,4 +1,4 @@
-import * as Koa from 'koa';
+import type * as Koa from 'koa';
 
 const merge = require('merge-descriptors');
 const qs = require('qs');

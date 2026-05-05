@@ -1,5 +1,5 @@
-import { PairInfo, AssetIdsPair, Repo, XOR } from '../../../types';
-import { WithLimit, WithSortOrder, WithMatcher } from '../../_common';
+import { type AssetIdsPair, type PairInfo, type Repo, type XOR } from '../../../types';
+import { type WithLimit, type WithMatcher, type WithSortOrder } from '../../_common';
 
 export type PairsGetRequest = {
   pair: AssetIdsPair;

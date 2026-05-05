@@ -1,6 +1,6 @@
+import { empty as maybeEmpty, of as maybeOf } from 'folktale/maybe';
 import { fromMaybe } from '../';
-import { of as maybeOf, empty as maybeEmpty } from 'folktale/maybe';
-import { toSerializable, Serializable } from '../serializable';
+import { type Serializable, toSerializable } from '../serializable';
 
 type RawData = {
   id: string;
@@ -27,6 +27,5 @@ const transform = (raw?: RawData): Data => {
 
 describe('fromMaybe should construct type from', () => {
   it('Just', () => expect(fromMaybe(transform)(maybeOf(data))).toEqual(mock));
-  it('Nothing', () =>
-    expect(fromMaybe(transform)(maybeEmpty())).toEqual(mockWithNull));
+  it('Nothing', () => expect(fromMaybe(transform)(maybeEmpty())).toEqual(mockWithNull));
 });

@@ -1,17 +1,17 @@
 import * as Maybe from 'folktale/maybe';
 import { head, propEq } from 'ramda';
-import { PgDriver } from '../../../../../db/driver';
+import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 import { matchRequestsResults } from '../../../../../utils/db/index';
-import { Cursor } from '../../../_common/cursor';
+import { type Cursor } from '../../../_common/cursor';
 import {
-  DataTxsGetRequest,
-  DataTxsMgetRequest,
-  DataTxsSearchRequest,
-  DataTxDbResponse,
+  type DataTxDbResponse,
+  type DataTxsGetRequest,
+  type DataTxsMgetRequest,
+  type DataTxsSearchRequest,
 } from '../types';
-import * as transformResult from './transformResult';
 import sql from './sql';
+import * as transformResult from './transformResult';
 
 export const pg = {
   get: (pg: PgDriver) => (id: DataTxsGetRequest) =>
@@ -20,16 +20,14 @@ export const pg = {
       .map(transformResult)
       .map<DataTxDbResponse>(head)
       .map(Maybe.fromNullable)
-      .mapRejected(addMeta({ request: 'transactions.data.get', params: id })),
+      .mapRejected(addMeta({ params: id, request: 'transactions.data.get' })),
 
   mget: (pg: PgDriver) => (ids: DataTxsMgetRequest) =>
     pg
       .any(sql.mget(ids))
       .map(transformResult)
-      .map<Maybe.Maybe<DataTxDbResponse>[]>(
-        matchRequestsResults(propEq('id'), ids)
-      )
-      .mapRejected(addMeta({ request: 'transactions.data.mget', params: ids })),
+      .map<Maybe.Maybe<DataTxDbResponse>[]>(matchRequestsResults(propEq('id'), ids))
+      .mapRejected(addMeta({ params: ids, request: 'transactions.data.mget' })),
 
   search: (pg: PgDriver) => (filters: DataTxsSearchRequest<Cursor>) =>
     pg
@@ -37,8 +35,8 @@ export const pg = {
       .map<DataTxDbResponse[]>(transformResult)
       .mapRejected(
         addMeta({
-          request: 'transactions.data.search',
           params: filters,
-        })
+          request: 'transactions.data.search',
+        }),
       ),
 };
