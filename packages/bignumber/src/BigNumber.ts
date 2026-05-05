@@ -90,6 +90,60 @@ export class BigNumber {
     return new BigNumber(this.bn.div(divisor));
   }
 
+  /** Alias for {@link add}. Matches `bignumber.js` API. */
+  public plus(long: TLong): BigNumber {
+    return this.add(long);
+  }
+
+  /** Alias for {@link sub}. Matches `bignumber.js` API. */
+  public minus(long: TLong): BigNumber {
+    return this.sub(long);
+  }
+
+  /** Alias for {@link mul}. Matches `bignumber.js` API. */
+  public multipliedBy(long: TLong): BigNumber {
+    return this.mul(long);
+  }
+
+  /** Alias for {@link div}. Matches `bignumber.js` API. */
+  public dividedBy(long: TLong): BigNumber {
+    return this.div(long);
+  }
+
+  /**
+   * Returns a new BigNumber shifted by `n` decimal places (positive = multiply by 10^n, negative = divide by 10^n).
+   * Matches `bignumber.js` API.
+   */
+  public shiftedBy(n: number): BigNumber {
+    return new BigNumber(this.bn.shiftedBy(n));
+  }
+
+  /**
+   * Compares this to `other`. Returns -1, 0, or 1.
+   * Matches `bignumber.js` API.
+   * @throws {Error} If either operand is NaN — NaN comparisons are invalid in financial operations.
+   */
+  public comparedTo(other: TLong): number {
+    const result = this.bn.comparedTo(BigNumber.toBigNumberJs(other));
+    if (result === null) {
+      throw new Error('Cannot compare with a NaN value — invalid in financial operations');
+    }
+    return result;
+  }
+
+  /**
+   * Returns the number of decimal places, or rounds to `n` decimal places if provided.
+   * Matches `bignumber.js` API.
+   */
+  public decimalPlaces(): number;
+  public decimalPlaces(n: number, roundMode?: BigNumber.ROUND_MODE): BigNumber;
+  public decimalPlaces(n?: number, roundMode?: BigNumber.ROUND_MODE): number | BigNumber {
+    if (n === undefined) {
+      return this.bn.decimalPlaces() ?? 0;
+    }
+    return new BigNumber(this.bn.decimalPlaces(n, roundMode as BigNum.RoundingMode | undefined));
+  }
+
   /** Returns a new BigNumber equal to this raised to the power of `exp`. */
   public pow(exp: TLong): BigNumber {
     return new BigNumber(this.bn.pow(BigNumber.toBigNumberJs(exp)));

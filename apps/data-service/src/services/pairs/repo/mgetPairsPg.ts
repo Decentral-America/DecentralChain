@@ -13,7 +13,7 @@ export const mgetPairsPg =
   }: {
     name: string;
     sql: (request: Request) => string;
-    matchRequestResult: (req: Id[], res: ResponseRaw) => boolean;
+    matchRequestResult: (req: Id, res: ResponseRaw) => boolean;
     pg: PgDriver;
   }) =>
   (request: Request): Effect.Effect<Option.Option<ResponseRaw>[], DbError | Timeout> =>
