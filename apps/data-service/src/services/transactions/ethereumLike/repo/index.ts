@@ -1,46 +1,42 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
-import transformTxInfo from './transformTxInfo';
-
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
+import transformTxInfo from './transformTxInfo';
 import {
-  EthereumLikeTxsRepo,
-  EthereumLikeTxsSearchRequest,
-  EthereumLikeTxDbResponse,
-  EthereumLikeTx,
+  type EthereumLikeTx,
+  type EthereumLikeTxDbResponse,
+  type EthereumLikeTxsRepo,
+  type EthereumLikeTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): EthereumLikeTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): EthereumLikeTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.ethereumLike.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.ethereumLike.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.ethereumLike.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     search: searchPreset<
@@ -49,17 +45,17 @@ export default ({
       EthereumLikeTxDbResponse,
       EthereumLikeTx
     >({
-      name: 'transactions.ethereumLike.search',
-      sql: sql.search,
-      resultSchema,
-      transformResult: transformTxInfo,
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.ethereumLike.search',
+      resultSchema,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

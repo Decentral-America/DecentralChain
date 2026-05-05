@@ -1,11 +1,11 @@
-import { Result, Error as error, Ok as ok } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { isNil, mergeAll } from 'ramda';
 
 import { ParseError } from '../../../errorHandling';
-import { CandlesSearchRequest } from '../../../services/candles/repo';
+import { type CandlesSearchRequest } from '../../../services/candles/repo';
 import { interval as intervalFromString } from '../../../types/interval';
 import { parseFilterValues, withDefaults } from '../../_common/filters';
-import { HttpRequest } from '../../_common/types';
+import { type HttpRequest } from '../../_common/types';
 import { CandleIntervals, MAX_CANDLES_COUNT, parseInterval } from '../../candles/parse';
 
 export const parse = ({
@@ -28,10 +28,10 @@ export const parse = ({
 
   return parseFilterValues({
     interval: parseInterval({
-      min: minInterval,
-      max: maxInterval,
-      divisibleBy: minInterval,
       allowed: CandleIntervals,
+      divisibleBy: minInterval,
+      max: maxInterval,
+      min: minInterval,
     }),
   })(query).chain((fValues) => {
     const fValuesWithDefaults = mergeAll<CandlesSearchRequest>([
@@ -51,26 +51,24 @@ export const parse = ({
 
     const periodLength =
       fValuesWithDefaults.timeEnd.getTime() - fValuesWithDefaults.timeStart.getTime();
-    const expectedCandlesCount = Math.ceil(
-      periodLength / fValuesWithDefaults.interval.length
-    );
+    const expectedCandlesCount = Math.ceil(periodLength / fValuesWithDefaults.interval.length);
     if (expectedCandlesCount > MAX_CANDLES_COUNT) {
       return error(
         new ParseError(
           new Error(
-            `${expectedCandlesCount} of candles is more then allowed of ${MAX_CANDLES_COUNT}. Try to decrease requested period of time.`
-          )
-        )
+            `${expectedCandlesCount} of candles is more then allowed of ${MAX_CANDLES_COUNT}. Try to decrease requested period of time.`,
+          ),
+        ),
       );
     }
 
     return ok({
       amountAsset: params.amountAsset,
-      priceAsset: params.priceAsset,
-      matcher: params.matcher,
-      timeStart: fValuesWithDefaults.timeStart,
-      timeEnd: fValuesWithDefaults.timeEnd,
       interval: fValuesWithDefaults.interval,
+      matcher: params.matcher,
+      priceAsset: params.priceAsset,
+      timeEnd: fValuesWithDefaults.timeEnd,
+      timeStart: fValuesWithDefaults.timeStart,
     });
   });
 };

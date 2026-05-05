@@ -1,5 +1,5 @@
-import { interval } from '../interval';
 import { div, fromMilliseconds } from '../../utils/interval';
+import { interval } from '../interval';
 
 describe('Interval', () => {
   const i = interval('180s');
@@ -11,7 +11,7 @@ describe('Interval', () => {
         i.matchWith({
           Error: () => null,
           Ok: ({ value }) => value.length,
-        })
+        }),
       ).toBe(10000);
     });
 
@@ -42,7 +42,7 @@ describe('Interval', () => {
         i.matchWith({
           Error: () => null,
           Ok: ({ value }) => value.length,
-        })
+        }),
       ).toBe(900000);
     });
 
@@ -52,7 +52,7 @@ describe('Interval', () => {
         i.matchWith({
           Error: () => null,
           Ok: ({ value }) => value.length,
-        })
+        }),
       ).toBe(3196800000);
     });
 
@@ -62,7 +62,7 @@ describe('Interval', () => {
         i.matchWith({
           Error: () => null,
           Ok: ({ value }) => value.length,
-        })
+        }),
       ).toBe(1960588800000);
     });
 

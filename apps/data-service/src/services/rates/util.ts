@@ -1,5 +1,5 @@
-import { Maybe, of as maybeOf } from 'folktale/maybe';
-import { BigNumber } from '@waves/data-entities';
+import { BigNumber } from '@decentralchain/data-entities';
+import { type Maybe, of as maybeOf } from 'folktale/maybe';
 
 export function safeDivide(n1: BigNumber, n2: BigNumber): Maybe<BigNumber> {
   return maybeOf(n2)
@@ -14,10 +14,10 @@ export const invOnSatoshi = (n: BigNumber, precision: number) =>
 
 export type Deconstruct<T, Components> = (value: T) => Components;
 
-export const isSymmetric = <T, P>(byFn: Deconstruct<T, [P, P]>) => (
-  item: T
-) => {
-  const [p1, p2] = byFn(item);
+export const isSymmetric =
+  <T, P>(byFn: Deconstruct<T, [P, P]>) =>
+  (item: T) => {
+    const [p1, p2] = byFn(item);
 
-  return p1 === p2;
-};
+    return p1 === p2;
+  };

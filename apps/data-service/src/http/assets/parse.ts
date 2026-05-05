@@ -1,38 +1,31 @@
-import { Result, Ok as ok, Error as error } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { ParseError } from '../../errorHandling';
 import {
-  AssetsServiceGetRequest,
-  AssetsServiceMgetRequest,
-  AssetsServiceSearchRequest,
+  type AssetsServiceGetRequest,
+  type AssetsServiceMgetRequest,
+  type AssetsServiceSearchRequest,
 } from '../../services/assets';
+import { type FullTextSearch, type SearchByTicker } from '../../services/assets/repo/types';
 import { parseFilterValues, withDefaults } from '../_common/filters';
 import commonFilters from '../_common/filters/filters';
-import { HttpRequest } from '../_common/types';
-import {
-  SearchByTicker,
-  FullTextSearch,
-} from '../../services/assets/repo/types';
-import { ParsedFilterValues } from '../_common/filters/types';
+import { type ParsedFilterValues } from '../_common/filters/types';
+import { type HttpRequest } from '../_common/types';
 
 const mgetOrSearchParser = parseFilterValues({
-  ticker: commonFilters.query,
   search: commonFilters.query,
+  ticker: commonFilters.query,
 });
 
 type ParserFnType = typeof mgetOrSearchParser;
 
-const isMgetRequest = (
-  req: ParsedFilterValues<ParserFnType>
-): req is AssetsServiceMgetRequest =>
+const isMgetRequest = (req: ParsedFilterValues<ParserFnType>): req is AssetsServiceMgetRequest =>
   typeof req.ids !== 'undefined' && Array.isArray(req.ids);
 
-const isSearchByTickerRequest = (
-  req: ParsedFilterValues<ParserFnType>
-): req is SearchByTicker => typeof req.ticker !== 'undefined';
+const isSearchByTickerRequest = (req: ParsedFilterValues<ParserFnType>): req is SearchByTicker =>
+  typeof req.ticker !== 'undefined';
 
-const isFullTextSearchRequest = (
-  req: ParsedFilterValues<ParserFnType>
-): req is FullTextSearch => typeof req.search !== 'undefined';
+const isFullTextSearchRequest = (req: ParsedFilterValues<ParserFnType>): req is FullTextSearch =>
+  typeof req.search !== 'undefined';
 
 export const get = ({
   params,
@@ -46,15 +39,12 @@ export const get = ({
 
 export const mgetOrSearch = ({
   query,
-}: HttpRequest): Result<
-  ParseError,
-  AssetsServiceMgetRequest | AssetsServiceSearchRequest
-> => {
+}: HttpRequest): Result<ParseError, AssetsServiceMgetRequest | AssetsServiceSearchRequest> => {
   if (!query) {
     return error(new ParseError(new Error('Query is empty')));
   }
 
-  return mgetOrSearchParser(query).chain(fValues => {
+  return mgetOrSearchParser(query).chain((fValues) => {
     if (isMgetRequest(fValues)) {
       return ok(fValues);
     } else {
@@ -65,9 +55,7 @@ export const mgetOrSearch = ({
       } else if (isFullTextSearchRequest(fValuesWithDefaults)) {
         return ok(fValuesWithDefaults);
       } else {
-        return error(
-          new ParseError(new Error('There is neither ticker nor search query'))
-        );
+        return error(new ParseError(new Error('There is neither ticker nor search query')));
       }
     }
   });

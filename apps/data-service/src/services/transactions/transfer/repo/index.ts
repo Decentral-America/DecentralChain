@@ -1,65 +1,57 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result } from './schema';
 import * as sql from './sql';
 import * as transformTxInfo from './transformTxInfo';
 import {
-  TransferTxsRepo,
-  TransferTxsSearchRequest,
-  TransferTxDbResponse,
-  TransferTx,
+  type TransferTx,
+  type TransferTxDbResponse,
+  type TransferTxsRepo,
+  type TransferTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): TransferTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): TransferTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.transfer.get',
-      sql: sql.get,
       resultSchema: result,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.transfer.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.transfer.mget',
       resultSchema: result,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      TransferTxsSearchRequest,
-      TransferTxDbResponse,
-      TransferTx
-    >({
-      name: 'transactions.transfer.search',
-      sql: sql.search,
-      resultSchema: result,
-      transformResult: transformTxInfo,
+    search: searchPreset<Cursor, TransferTxsSearchRequest, TransferTxDbResponse, TransferTx>({
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.transfer.search',
+      resultSchema: result,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

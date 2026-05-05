@@ -11,7 +11,7 @@ export default createHttpHandler(() =>
     HttpResponse.Ok(
       defaultStringify({
         version,
-      })
-    )
-  )
+      }),
+    ),
+  ),
 );

@@ -7,8 +7,6 @@ declare global {
       toBeNothing: () => R;
     }
 
-    interface Expect {
-      <T>(actual: FolktaleMaybe<T>): FolktaleMaybeMatchers<T>;
-    }
+    type Expect = <T>(actual: FolktaleMaybe<T>) => FolktaleMaybeMatchers<T>;
   }
 }

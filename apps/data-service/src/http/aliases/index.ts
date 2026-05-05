@@ -1,8 +1,8 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import {
-  AliasesService,
-  AliasesServiceMgetRequest,
-  AliasesServiceSearchRequest,
+  type AliasesService,
+  type AliasesServiceMgetRequest,
+  type AliasesServiceSearchRequest,
 } from '../../services/aliases';
 import { alias } from '../../types';
 import { createHttpHandler } from '../_common';
@@ -17,27 +17,23 @@ import { get as parseGet, mgetOrSearch as parseMgetOrSearch } from './parse';
 const subrouter: Router = new Router();
 
 const isMgetRequest = (
-  req: AliasesServiceMgetRequest | AliasesServiceSearchRequest
-): req is AliasesServiceMgetRequest =>
-  'aliases' in req && Array.isArray(req.aliases);
+  req: AliasesServiceMgetRequest | AliasesServiceSearchRequest,
+): req is AliasesServiceMgetRequest => 'aliases' in req && Array.isArray(req.aliases);
 
 const mgetOrSearchHandler = (aliasesService: AliasesService) =>
   createHttpHandler(
-    req =>
+    (req) =>
       isMgetRequest(req)
         ? aliasesService.mget(req).map(mgetSerializer(alias))
         : aliasesService.search(req).map(searchSerializer(alias)),
-    parseMgetOrSearch
+    parseMgetOrSearch,
   );
 
 export default (aliasesService: AliasesService): Router => {
   return subrouter
     .get(
       '/aliases/:id',
-      createHttpHandler(
-        req => aliasesService.get(req).map(getSerializer(alias)),
-        parseGet
-      )
+      createHttpHandler((req) => aliasesService.get(req).map(getSerializer(alias)), parseGet),
     )
     .get('/aliases', mgetOrSearchHandler(aliasesService))
     .post('/aliases', postToGet(mgetOrSearchHandler(aliasesService)));

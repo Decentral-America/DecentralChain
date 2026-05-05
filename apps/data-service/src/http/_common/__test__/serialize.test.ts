@@ -1,5 +1,5 @@
+import { BigNumber } from '@decentralchain/data-entities';
 import { of as maybeOf } from 'folktale/maybe';
-import { BigNumber } from '@waves/data-entities';
 import { list } from '../../../types/list';
 import { stringify } from '../../../utils/json';
 import { LSNFormat } from '../../types';
@@ -19,9 +19,9 @@ const toSerializable = (test: TestItem | null) => ({
 
 const UNSAFE_NUMBER = '9007199254740993';
 const testItem = {
-  string: 'response',
-  number: new BigNumber(UNSAFE_NUMBER),
   boolean: true,
+  number: new BigNumber(UNSAFE_NUMBER),
+  string: 'response',
 };
 
 describe('Serializer', () => {
@@ -33,7 +33,7 @@ describe('Serializer', () => {
       expect(get(toSerializable, lsnFormat)(data)).toEqual(
         HttpResponse.Ok(stringify(lsnFormat)(toSerializable(testItem)), {
           'Content-Type': contentTypeWithLSN(lsnFormat),
-        })
+        }),
       );
     });
 
@@ -42,7 +42,7 @@ describe('Serializer', () => {
       expect(get(toSerializable, lsnFormat)(data)).toEqual(
         HttpResponse.Ok(stringify(lsnFormat)(toSerializable(testItem)), {
           'Content-Type': contentTypeWithLSN(lsnFormat),
-        })
+        }),
       );
     });
   });
@@ -55,12 +55,9 @@ describe('Serializer', () => {
       const response = mget(toSerializable, lsnFormat)(data);
 
       expect(response).toEqual(
-        HttpResponse.Ok(
-          stringify(lsnFormat)(list([testItem, testItem].map(toSerializable))),
-          {
-            'Content-Type': contentTypeWithLSN(lsnFormat),
-          }
-        )
+        HttpResponse.Ok(stringify(lsnFormat)(list([testItem, testItem].map(toSerializable))), {
+          'Content-Type': contentTypeWithLSN(lsnFormat),
+        }),
       );
     });
 
@@ -69,20 +66,17 @@ describe('Serializer', () => {
       const response = mget(toSerializable, lsnFormat)(data);
 
       expect(response).toEqual(
-        HttpResponse.Ok(
-          stringify(lsnFormat)(list([testItem, testItem].map(toSerializable))),
-          {
-            'Content-Type': contentTypeWithLSN(lsnFormat),
-          }
-        )
+        HttpResponse.Ok(stringify(lsnFormat)(list([testItem, testItem].map(toSerializable))), {
+          'Content-Type': contentTypeWithLSN(lsnFormat),
+        }),
       );
     });
   });
 
   describe('search', () => {
     const data = {
-      items: [testItem, testItem],
       isLastPage: true,
+      items: [testItem, testItem],
     };
 
     it('should correctly serialize data with Number LSN Format', () => {
@@ -94,12 +88,12 @@ describe('Serializer', () => {
           stringify(lsnFormat)(
             list(data.items.map(toSerializable), {
               isLastPage: data.isLastPage,
-            })
+            }),
           ),
           {
             'Content-Type': contentTypeWithLSN(lsnFormat),
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -112,12 +106,12 @@ describe('Serializer', () => {
           stringify(lsnFormat)(
             list(data.items.map(toSerializable), {
               isLastPage: data.isLastPage,
-            })
+            }),
           ),
           {
             'Content-Type': contentTypeWithLSN(lsnFormat),
-          }
-        )
+          },
+        ),
       );
     });
   });

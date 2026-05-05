@@ -1,11 +1,10 @@
+import { type BigNumber } from '@decentralchain/data-entities';
+import { type Task, of as taskOf } from 'folktale/concurrency/task';
+import { empty, type Maybe, of as maybeOf } from 'folktale/maybe';
 import * as LRU from 'lru-cache';
-import { BigNumber } from '@waves/data-entities';
-import { Task, of as taskOf } from 'folktale/concurrency/task';
-import { empty, of as maybeOf, Maybe } from 'folktale/maybe';
-
-import { AppError } from '../../errorHandling';
 import { WavesId } from '../..';
-import { PairsService } from '../pairs';
+import { type AppError } from '../../errorHandling';
+import { type PairsService } from '../pairs';
 import { MoneyFormat } from '../types';
 
 type LogRow = {
@@ -26,31 +25,31 @@ export class ThresholdAssetRateService implements IThresholdAssetRateService {
     private readonly thresholdAssetId: string,
     private readonly matcherAddress: string,
     private readonly pairsService: PairsService,
-    private readonly logger: Logger
+    private readonly logger: Logger,
   ) {
     this.cache = new LRU({ maxAge: 60000 });
   }
 
   get(): Task<AppError, Maybe<BigNumber>> {
-    let rate = this.cache.get(this.thresholdAssetId);
+    const rate = this.cache.get(this.thresholdAssetId);
     if (rate === undefined) {
       // rate was not set or is stale
       return this.pairsService
         .get({
+          matcher: this.matcherAddress,
+          moneyFormat: MoneyFormat.Long,
           pair: {
             amountAsset: WavesId,
             priceAsset: this.thresholdAssetId,
           },
-          matcher: this.matcherAddress,
-          moneyFormat: MoneyFormat.Long,
         })
         .chain((m) => {
           return m.matchWith({
             Just: ({ value }) => {
               if (value === null) {
                 this.logger({
-                  message: 'GET_THRESHOLD_RATE',
                   data: `Rate for pair WAVES/${this.thresholdAssetId} not found`,
+                  message: 'GET_THRESHOLD_RATE',
                 });
                 return taskOf(empty());
               }
@@ -59,8 +58,8 @@ export class ThresholdAssetRateService implements IThresholdAssetRateService {
             },
             Nothing: () => {
               this.logger({
-                message: 'GET_THRESHOLD_RATE',
                 data: `Pair WAVES/${this.thresholdAssetId} not found`,
+                message: 'GET_THRESHOLD_RATE',
               });
               return taskOf(empty());
             },

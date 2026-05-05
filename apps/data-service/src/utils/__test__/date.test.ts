@@ -1,26 +1,18 @@
-import { round, floor, ceil, add, subtract } from '../date';
 import { interval } from '../../types';
+import { add, ceil, floor, round, subtract } from '../date';
 
 describe('date helper functions', () => {
   describe('arithmetic functions', () => {
     const d = new Date('2018-11-22T17:55:46.045Z');
 
     it('add interval to date', () => {
-      expect(add(interval('3m').unsafeGet(), d)).toEqual(
-        new Date('2018-11-22T17:58:46.045Z')
-      );
-      expect(add(interval('3h').unsafeGet(), d)).toEqual(
-        new Date('2018-11-22T20:55:46.045Z')
-      );
+      expect(add(interval('3m').unsafeGet(), d)).toEqual(new Date('2018-11-22T17:58:46.045Z'));
+      expect(add(interval('3h').unsafeGet(), d)).toEqual(new Date('2018-11-22T20:55:46.045Z'));
     });
 
     it('subtract interval from date', () => {
-      expect(subtract(interval('3m').unsafeGet(), d)).toEqual(
-        new Date('2018-11-22T17:52:46.045Z')
-      );
-      expect(subtract(interval('3h').unsafeGet(), d)).toEqual(
-        new Date('2018-11-22T14:55:46.045Z')
-      );
+      expect(subtract(interval('3m').unsafeGet(), d)).toEqual(new Date('2018-11-22T17:52:46.045Z'));
+      expect(subtract(interval('3h').unsafeGet(), d)).toEqual(new Date('2018-11-22T14:55:46.045Z'));
     });
   });
 

@@ -1,6 +1,6 @@
 declare module 'ramda-adjunct' {
   import { Dictionary } from 'ramda';
-  
+
   var RA: RamdaAdjunct.Static;
 
   namespace RamdaAdjunct {

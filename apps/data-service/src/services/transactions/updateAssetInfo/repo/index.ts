@@ -1,46 +1,42 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
-import transformTxInfo from './transformTxInfo';
-
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
+import transformTxInfo from './transformTxInfo';
 import {
-  UpdateAssetInfoTxsRepo,
-  UpdateAssetInfoTxsSearchRequest,
-  UpdateAssetInfoTxDbResponse,
-  UpdateAssetInfoTx,
+  type UpdateAssetInfoTx,
+  type UpdateAssetInfoTxDbResponse,
+  type UpdateAssetInfoTxsRepo,
+  type UpdateAssetInfoTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): UpdateAssetInfoTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateAssetInfoTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.updateAssetInfo.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.updateAssetInfo.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.updateAssetInfo.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     search: searchPreset<
@@ -49,17 +45,17 @@ export default ({
       UpdateAssetInfoTxDbResponse,
       UpdateAssetInfoTx
     >({
-      name: 'transactions.updateAssetInfo.search',
-      sql: sql.search,
-      resultSchema,
-      transformResult: transformTxInfo,
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.updateAssetInfo.search',
+      resultSchema,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

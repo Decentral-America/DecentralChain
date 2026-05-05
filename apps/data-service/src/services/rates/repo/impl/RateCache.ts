@@ -2,8 +2,8 @@ import { fromNullable } from 'folktale/maybe';
 import * as LRU from 'lru-cache';
 
 import { flip } from '../../data';
-import { RateCache } from '../../repo';
-import { AssetPair, VolumeAwareRateInfo } from '../../RateEstimator';
+import { type AssetPair, type VolumeAwareRateInfo } from '../../RateEstimator';
+import { type RateCache } from '../../repo';
 
 export type RateCacheKey = {
   pair: AssetPair;
@@ -36,7 +36,7 @@ export default class RateCacheImpl implements RateCache {
     const getKey = keyFn(key.matcher);
 
     return fromNullable(this.lru.get(getKey(key.pair))).orElse(() =>
-      fromNullable(this.lru.get(getKey(flip(key.pair))))
+      fromNullable(this.lru.get(getKey(flip(key.pair)))),
     );
   }
 }

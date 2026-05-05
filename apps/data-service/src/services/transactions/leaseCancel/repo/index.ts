@@ -1,46 +1,43 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
 import * as transformTxInfo from './transformTxInfo';
 import {
-  LeaseCancelTxsRepo,
-  LeaseCancelTxsSearchRequest,
-  LeaseCancelTxDbResponse,
-  LeaseCancelTx,
+  type LeaseCancelTx,
+  type LeaseCancelTxDbResponse,
+  type LeaseCancelTxsRepo,
+  type LeaseCancelTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): LeaseCancelTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCancelTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.leaseCancel.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.leaseCancel.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.leaseCancel.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     search: searchPreset<
@@ -49,14 +46,14 @@ export default ({
       LeaseCancelTxDbResponse,
       LeaseCancelTx
     >({
+      cursorSerialization: { deserialize, serialize },
       name: 'transactions.leaseCancel.search',
-      sql: sql.search,
       resultSchema,
+      sql: sql.search,
       transformResult: transformTxInfo,
-      cursorSerialization: { serialize, deserialize },
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

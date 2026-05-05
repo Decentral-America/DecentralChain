@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/data-entities';
+import { type BigNumber } from '@decentralchain/data-entities';
 
 type CommonTxFields = {
   height: number;
@@ -37,5 +37,5 @@ export type CommonFilters = {
   blockTimeStart?: Date;
   blockTimeEnd?: Date;
   sender?: string;
-  senders?: string[]
+  senders?: string[];
 };

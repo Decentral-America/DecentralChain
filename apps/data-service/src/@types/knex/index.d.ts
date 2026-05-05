@@ -11,7 +11,5 @@ declare module 'knex' {
     (...aliases: ColumnName[]): QueryBuilder;
   }
 
-  interface Join {
-    (qb: QueryCallback): QueryBuilder;
-  }
+  type Join = (qb: QueryCallback) => QueryBuilder;
 }

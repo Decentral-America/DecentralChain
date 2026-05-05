@@ -1,5 +1,5 @@
 import { curry } from 'ramda';
-import { Interval, Unit } from '../../types';
+import { type Interval, Unit } from '../../types';
 import { units } from '../../types/interval';
 
 const precisions: Record<Unit, number> = {
@@ -22,15 +22,7 @@ const suffixes: Record<Unit, string> = {
   [Unit.Second]: 'Z',
 };
 
-const unitsAsc = [
-  Unit.Second,
-  Unit.Minute,
-  Unit.Hour,
-  Unit.Day,
-  Unit.Week,
-  Unit.Month,
-  Unit.Year,
-];
+const unitsAsc = [Unit.Second, Unit.Minute, Unit.Hour, Unit.Day, Unit.Week, Unit.Month, Unit.Year];
 
 enum Order {
   Less = -1,
@@ -42,8 +34,8 @@ const unitsOrder = (units: Unit[]) => (a: Unit, b: Unit) =>
   units.indexOf(a) < units.indexOf(b)
     ? Order.Less
     : units.indexOf(a) === units.indexOf(b)
-    ? Order.Equals
-    : Order.Bigger;
+      ? Order.Equals
+      : Order.Bigger;
 
 type RoundFunction = (a: number) => number;
 const roundUp = (x: number) => Math.ceil(x);
@@ -55,7 +47,7 @@ const roundTo = curry(
     ascOrderedUnits: Unit[],
     roundFn: RoundFunction,
     interval: Interval | null,
-    date: Date
+    date: Date,
   ): Date => {
     if (!interval) {
       throw new Error('Invalid Interval');
@@ -64,11 +56,7 @@ const roundTo = curry(
     const unitsAscOrder = unitsOrder(ascOrderedUnits);
 
     return ascOrderedUnits.reduce((date, currentUnit) => {
-      if (
-        [Order.Less, Order.Equals].includes(
-          unitsAscOrder(currentUnit, interval.unit)
-        )
-      ) {
+      if ([Order.Less, Order.Equals].includes(unitsAscOrder(currentUnit, interval.unit))) {
         // round week
         if (currentUnit === Unit.Week) {
           const newDate = new Date(date);
@@ -77,17 +65,14 @@ const roundTo = curry(
               newDate.getUTCDate() -
                 newDate.getUTCDay() +
                 roundFn((newDate.getUTCDay() - 1) / 7) * 7 +
-                1
+                1,
             );
           }
           return newDate;
         } else if (currentUnit === Unit.Month) {
           const newDate = new Date(date);
           // round month (not greater than 1 month)
-          const d = daysInMonth(
-            newDate.getUTCFullYear(),
-            newDate.getUTCMonth()
-          );
+          const d = daysInMonth(newDate.getUTCFullYear(), newDate.getUTCMonth());
           newDate.setUTCDate(roundFn((newDate.getUTCDate() - 1) / d) * d + 1);
           return newDate;
         } else if (currentUnit === Unit.Year) {
@@ -98,16 +83,14 @@ const roundTo = curry(
         } else {
           // round ms, seconds, minutes, hours
           const unitLength =
-            currentUnit === interval.unit
-              ? interval.length
-              : units[currentUnit] * 1000;
+            currentUnit === interval.unit ? interval.length : units[currentUnit] * 1000;
           return new Date(roundFn(date.getTime() / unitLength) * unitLength);
         }
       } else {
         return date;
       }
     }, new Date(date));
-  }
+  },
 );
 
 const roundToWithUnits = roundTo(unitsAsc);
@@ -120,9 +103,7 @@ export const trunc = curry((unit: Unit, date: Date): string => {
   const newDate = new Date(date);
   if (unit === Unit.Week) {
     return (
-      new Date(
-        newDate.setUTCDate(newDate.getUTCDate() - newDate.getUTCDay() + 1)
-      )
+      new Date(newDate.setUTCDate(newDate.getUTCDate() - newDate.getUTCDay() + 1))
         .toISOString()
         .substr(0, precisions[Unit.Day]) + suffixes[Unit.Day]
     );
@@ -132,13 +113,11 @@ export const trunc = curry((unit: Unit, date: Date): string => {
 });
 
 export const add = curry(
-  (interval: Interval, date: Date): Date =>
-    new Date(date.getTime() + interval.length)
+  (interval: Interval, date: Date): Date => new Date(date.getTime() + interval.length),
 );
 
 export const subtract = curry(
-  (interval: Interval, date: Date): Date =>
-    new Date(date.getTime() - interval.length)
+  (interval: Interval, date: Date): Date => new Date(date.getTime() - interval.length),
 );
 
 const daysInMonth = (year: number, month: number) =>

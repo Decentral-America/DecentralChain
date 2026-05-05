@@ -1,13 +1,11 @@
-import * as Router from 'koa-router';
-import { ServiceMesh } from '../../services';
+import * as Router from '@koa/router';
+import { type ServiceMesh } from '../../services';
 import commonFilters from '../_common/filters/filters';
-import { Parser } from '../_common/filters/types';
+import { type Parser } from '../_common/filters/types';
 import { createTransactionHttpHandlers, parseGet, parseMgetOrSearch } from './_common';
 import { parseDataMgetOrSearch } from './parseDataMgetOrSearch';
 
-const createParseRequest = <SearchRequest>(
-  customFilters: Record<string, Parser<any>> = {}
-) => ({
+const createParseRequest = <SearchRequest>(customFilters: Record<string, Parser<any>> = {}) => ({
   get: parseGet,
   mgetOrSearch: parseMgetOrSearch<SearchRequest>(customFilters),
 });
@@ -19,7 +17,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     new Router(),
     '/transactions/all',
     txsServices.all,
-    createParseRequest()
+    createParseRequest(),
   );
 
   const genesis = createTransactionHttpHandlers(
@@ -28,7 +26,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.genesis,
     createParseRequest({
       recipient: commonFilters.query,
-    })
+    }),
   );
 
   const payment = createTransactionHttpHandlers(
@@ -37,7 +35,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.payment,
     createParseRequest({
       recipient: commonFilters.query,
-    })
+    }),
   );
 
   const issue = createTransactionHttpHandlers(
@@ -47,7 +45,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     createParseRequest({
       assetId: commonFilters.query,
       script: commonFilters.query,
-    })
+    }),
   );
 
   const transfer = createTransactionHttpHandlers(
@@ -57,7 +55,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     createParseRequest({
       assetId: commonFilters.query,
       recipient: commonFilters.query,
-    })
+    }),
   );
 
   const reissue = createTransactionHttpHandlers(
@@ -66,7 +64,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.reissue,
     createParseRequest({
       assetId: commonFilters.query,
-    })
+    }),
   );
 
   const burn = createTransactionHttpHandlers(
@@ -75,7 +73,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.burn,
     createParseRequest({
       assetId: commonFilters.query,
-    })
+    }),
   );
 
   const exchange = createTransactionHttpHandlers(
@@ -87,7 +85,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
       matcher: commonFilters.query,
       orderId: commonFilters.query,
       priceAsset: commonFilters.query,
-    })
+    }),
   );
 
   const lease = createTransactionHttpHandlers(
@@ -96,7 +94,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.lease,
     createParseRequest({
       recipient: commonFilters.query,
-    })
+    }),
   );
 
   const leaseCancel = createTransactionHttpHandlers(
@@ -105,14 +103,14 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.leaseCancel,
     createParseRequest({
       recipient: commonFilters.query,
-    })
+    }),
   );
 
   const alias = createTransactionHttpHandlers(
     new Router(),
     '/transactions/alias',
     txsServices.alias,
-    createParseRequest()
+    createParseRequest(),
   );
 
   const massTransfer = createTransactionHttpHandlers(
@@ -122,18 +120,13 @@ export default (txsServices: ServiceMesh['transactions']) => {
     createParseRequest({
       assetId: commonFilters.query,
       recipient: commonFilters.query,
-    })
+    }),
   );
 
-  const data = createTransactionHttpHandlers(
-    new Router(),
-    '/transactions/data',
-    txsServices.data,
-    {
-      get: parseGet,
-      mgetOrSearch: parseDataMgetOrSearch,
-    }
-  );
+  const data = createTransactionHttpHandlers(new Router(), '/transactions/data', txsServices.data, {
+    get: parseGet,
+    mgetOrSearch: parseDataMgetOrSearch,
+  });
 
   const setScript = createTransactionHttpHandlers(
     new Router(),
@@ -141,7 +134,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.setScript,
     createParseRequest({
       script: commonFilters.query,
-    })
+    }),
   );
 
   const sponsorship = createTransactionHttpHandlers(
@@ -150,7 +143,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.sponsorship,
     createParseRequest({
       assetId: commonFilters.query,
-    })
+    }),
   );
 
   const setAssetScript = createTransactionHttpHandlers(
@@ -160,7 +153,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     createParseRequest({
       assetId: commonFilters.query,
       script: commonFilters.query,
-    })
+    }),
   );
 
   const invokeScript = createTransactionHttpHandlers(
@@ -170,7 +163,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     createParseRequest({
       dapp: commonFilters.query,
       function: commonFilters.query,
-    })
+    }),
   );
 
   const updateAssetInfo = createTransactionHttpHandlers(
@@ -179,7 +172,7 @@ export default (txsServices: ServiceMesh['transactions']) => {
     txsServices.updateAssetInfo,
     createParseRequest({
       assetId: commonFilters.query,
-    })
+    }),
   );
 
   const ethereumLike = createTransactionHttpHandlers(
@@ -187,9 +180,9 @@ export default (txsServices: ServiceMesh['transactions']) => {
     '/transactions/ethereum-like',
     txsServices['ethereumLike'],
     createParseRequest({
-      type: commonFilters.query,
       function: commonFilters.query,
-    })
+      type: commonFilters.query,
+    }),
   );
 
   return subrouter.use(
@@ -211,6 +204,6 @@ export default (txsServices: ServiceMesh['transactions']) => {
     sponsorship.routes(),
     transfer.routes(),
     updateAssetInfo.routes(),
-    ethereumLike.routes()
+    ethereumLike.routes(),
   );
 };

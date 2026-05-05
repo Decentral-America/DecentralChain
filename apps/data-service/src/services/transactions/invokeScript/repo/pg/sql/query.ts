@@ -1,4 +1,5 @@
 import * as knex from 'knex';
+
 const pg = knex({ client: 'pg' });
 
 const columns = [
@@ -37,8 +38,7 @@ const columns = [
 ];
 
 // in get/mget requests sort is tip for postgresql to use index
-export const select = (s: string) =>
-  pg({ t: 'txs_16 ' }).column('uid').orderBy('t.uid', s);
+export const select = (s: string) => pg({ t: 'txs_16 ' }).column('uid').orderBy('t.uid', s);
 
 export const selectFromFiltered = (filtered: knex.QueryBuilder) =>
   pg({ t: 'txs_16' })

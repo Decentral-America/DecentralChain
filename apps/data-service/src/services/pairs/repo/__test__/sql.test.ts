@@ -1,22 +1,23 @@
-import { get, mget, search } from '../sql';
 import { SortOrder } from '../../../_common';
+import { get, mget, search } from '../sql';
 
 describe('sql query from pairs', () => {
   it('should get one pair', () => {
     expect(
       get({
+        matcher: '333',
         pair: {
           amountAsset: '111',
           priceAsset: '222',
         },
-        matcher: '333',
-      })
+      }),
     ).toMatchSnapshot();
   });
 
   it('should get many pairs', () => {
     expect(
       mget({
+        matcher: '555',
         pairs: [
           {
             amountAsset: '111',
@@ -27,80 +28,79 @@ describe('sql query from pairs', () => {
             priceAsset: '444',
           },
         ],
-        matcher: '555',
-      })
+      }),
     ).toMatchSnapshot();
   });
 
   it('should search pairs for one asset', () => {
     expect(
       search({
-        search_by_asset: '7FJhS4wyEKqsp77VCMfCZWKLSMuy1TWskYAyZ28amWFj',
+        limit: 10,
         match_exactly: [false],
         matcher: '',
-        limit: 10,
-        sort: SortOrder.Descending,
-      })
-    ).toMatchSnapshot();
-  });
-
-  it('should search pairs for one asset exactly', () => {
-    expect(
-      search({
         search_by_asset: '7FJhS4wyEKqsp77VCMfCZWKLSMuy1TWskYAyZ28amWFj',
-        match_exactly: [true],
-        matcher: '',
-        limit: 10,
         sort: SortOrder.Descending,
-      })
+      }),
     ).toMatchSnapshot();
   });
 
   it('should search pairs for one asset exactly', () => {
     expect(
       search({
-        search_by_asset: '¯\\_(ツ)_/¯',
+        limit: 10,
         match_exactly: [true],
         matcher: '',
-        limit: 10,
+        search_by_asset: '7FJhS4wyEKqsp77VCMfCZWKLSMuy1TWskYAyZ28amWFj',
         sort: SortOrder.Descending,
-      })
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('should search pairs for one asset exactly', () => {
+    expect(
+      search({
+        limit: 10,
+        match_exactly: [true],
+        matcher: '',
+        search_by_asset: '¯\\_(ツ)_/¯',
+        sort: SortOrder.Descending,
+      }),
     ).toMatchSnapshot();
   });
 
   it('should search pairs for two assets (amount and price)', () => {
     expect(
       search({
-        search_by_assets: ['BTC', 'WAVES'],
+        limit: 10,
         match_exactly: [false, false],
         matcher: '',
-        limit: 10,
+        search_by_assets: ['BTC', 'WAVES'],
         sort: SortOrder.Descending,
-      })
+      }),
     ).toMatchSnapshot();
   });
 
   it('should search pairs for two assets (amount and price)', () => {
     expect(
       search({
-        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
+        limit: 10,
         match_exactly: [false],
         matcher: '',
-        limit: 10,
+        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
         sort: SortOrder.Descending,
-      })
+      }),
     ).toMatchSnapshot();
   });
 
   it('should search pairs for two assets (amount and price)', () => {
     expect(
       search({
-        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
+        limit: 10,
         match_exactly: [true, false],
         matcher: '',
-        limit: 10,
+        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
         sort: SortOrder.Descending,
-      })
+      }),
     ).toMatchSnapshot();
   });
 });

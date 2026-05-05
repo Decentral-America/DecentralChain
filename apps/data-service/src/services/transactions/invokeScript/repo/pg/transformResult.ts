@@ -18,19 +18,17 @@ const {
 } = require('ramda');
 
 import {
-  InvokeScriptTxArgType,
-  RawInvokeScriptTxArgValue,
-  RawInvokeScriptTx,
-  RawInvokeScriptTx as DbRawInvokeScriptTx,
-  InvokeScriptTxArg,
-  InvokeScriptTxPayment,
+  type RawInvokeScriptTx as DbRawInvokeScriptTx,
+  type InvokeScriptTxArg,
+  type InvokeScriptTxArgType,
+  type InvokeScriptTxPayment,
+  type RawInvokeScriptTx,
+  type RawInvokeScriptTxArgValue,
 } from '../types';
 
 const isNotNil = complement(isNil);
 
-const getArgFieldByType = (
-  type: InvokeScriptTxArgType
-): keyof RawInvokeScriptTxArgValue => {
+const getArgFieldByType = (type: InvokeScriptTxArgType): keyof RawInvokeScriptTxArgValue => {
   switch (type) {
     case 'integer':
       return 'arg_value_integer';
@@ -46,9 +44,9 @@ const getArgFieldByType = (
 };
 
 const getArg = (txRaw: DbRawInvokeScriptTx): InvokeScriptTxArg => ({
+  positionInArgs: txRaw.position_in_args, // for sorting later
   type: txRaw.arg_type,
   value: txRaw.arg_type ? txRaw[getArgFieldByType(txRaw.arg_type)] : null,
-  positionInArgs: txRaw.position_in_args, // for sorting later
 });
 
 const getPaymentItem = (txRaw: DbRawInvokeScriptTx): InvokeScriptTxPayment => ({
@@ -73,9 +71,7 @@ const removeUnnecessaryFromRaw = omit([
   'position_in_payment',
 ]);
 
-const buildTxFromTxs = (
-  txs: DbRawInvokeScriptTx[]
-): RawInvokeScriptTx | null => {
+const buildTxFromTxs = (txs: DbRawInvokeScriptTx[]): RawInvokeScriptTx | null => {
   if (!Array.isArray(txs) || !txs.length) {
     return null;
   }
@@ -89,26 +85,25 @@ const buildTxFromTxs = (
     sortBy(prop('positionInPayment')),
     uniqWith(
       (a: InvokeScriptTxPayment, b: InvokeScriptTxPayment) =>
-        a.positionInPayment === b.positionInPayment
+        a.positionInPayment === b.positionInPayment,
     ),
     map(getPaymentItem),
-    filter((tx: RawInvokeScriptTx) => isNotNil(prop('amount', tx)))
+    filter((tx: RawInvokeScriptTx) => isNotNil(prop('amount', tx))),
   )(txs);
 
   // fill tx.call
   if (!isNil(firstRaw.function_name)) {
     tx.call = {
-      function: firstRaw.function_name,
       args: compose(
         map(omit(['positionInArgs'])),
         sortBy(prop('positionInArgs')),
         uniqWith(
-          (a: InvokeScriptTxArg, b: InvokeScriptTxArg) =>
-            a.positionInArgs === b.positionInArgs
+          (a: InvokeScriptTxArg, b: InvokeScriptTxArg) => a.positionInArgs === b.positionInArgs,
         ),
         map(getArg),
-        filter((tx: RawInvokeScriptTx) => isNotNil(prop('arg_type', tx)))
+        filter((tx: RawInvokeScriptTx) => isNotNil(prop('arg_type', tx))),
       )(txs),
+      function: firstRaw.function_name,
     };
   }
 
@@ -122,9 +117,7 @@ const buildTxFromTxs = (
  * txAttributes and putting args and payment objects nested into the tx,
  * preserving args and payment order by sorting on `position_in_args` and on `position_in_payment`
  */
-export const transformResult = (
-  t: DbRawInvokeScriptTx[]
-): RawInvokeScriptTx[] =>
+export const transformResult = (t: DbRawInvokeScriptTx[]): RawInvokeScriptTx[] =>
   cond([
     [either(isNil, isEmpty), always([])],
     [T, compose(map(buildTxFromTxs), values, groupBy(prop('id')))],

@@ -1,8 +1,8 @@
-import { BigNumber } from '@waves/data-entities';
-import { Repo, DataEntryType } from '../../../../types';
-import { WithSortOrder, WithLimit } from '../../../_common';
-import { RequestWithCursor } from '../../../_common/pagination';
-import { CommonFilters, RawTx, Tx } from '../../_common/types';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { type DataEntryType, type Repo } from '../../../../types';
+import { type WithLimit, type WithSortOrder } from '../../../_common';
+import { type RequestWithCursor } from '../../../_common/pagination';
+import { type CommonFilters, type RawTx, type Tx } from '../../_common/types';
 
 type DataEntry = {
   key: string;
@@ -36,9 +36,4 @@ export type DataTxsSearchRequest<CursorType = string> = RequestWithCursor<
   CursorType
 >;
 
-export type DataTxsRepo = Repo<
-  DataTxsGetRequest,
-  DataTxsMgetRequest,
-  DataTxsSearchRequest,
-  DataTx
->;
+export type DataTxsRepo = Repo<DataTxsGetRequest, DataTxsMgetRequest, DataTxsSearchRequest, DataTx>;

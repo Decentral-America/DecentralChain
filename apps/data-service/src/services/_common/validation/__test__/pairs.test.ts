@@ -1,10 +1,9 @@
-import { of as maybeOf, empty as emptyOf } from 'folktale/maybe';
-import { validatePairs } from '../pairs';
-
-import { PairOrderingServiceImpl } from '../../../PairOrderingService';
-import { AssetInfo } from '../../../../types';
 import { of as taskOf } from 'folktale/concurrency/task';
-import { AssetsService } from '../../../assets';
+import { empty as emptyOf, of as maybeOf } from 'folktale/maybe';
+import { type AssetInfo } from '../../../../types';
+import { type AssetsService } from '../../../assets';
+import { PairOrderingServiceImpl } from '../../../PairOrderingService';
+import { validatePairs } from '../pairs';
 
 describe('Pairs validation', () => {
   const MATCHER = 'matcher';
@@ -17,7 +16,7 @@ describe('Pairs validation', () => {
 
   const assetsMget: AssetsService['mget'] = ({ ids }) =>
     taskOf(
-      ids.map(aid => {
+      ids.map((aid) => {
         switch (aid) {
           case BTC:
           case WAVES:
@@ -25,7 +24,7 @@ describe('Pairs validation', () => {
           default:
             return emptyOf();
         }
-      })
+      }),
     );
 
   const validate = validatePairs(assetsMget, pairOrderingService);
@@ -35,21 +34,21 @@ describe('Pairs validation', () => {
       expect(
         validate(MATCHER, [{ amountAsset: WAVES, priceAsset: BTC }])
           .run()
-          .promise()
+          .promise(),
       ).resolves.not.toThrow());
 
     it('unknown matcher, existing assets, pass', () =>
       expect(
         validate('', [{ amountAsset: WAVES, priceAsset: BTC }])
           .run()
-          .promise()
+          .promise(),
       ).resolves.not.toThrow());
 
     it('known matcher, wrong order, fail', () =>
       expect(
         validate(MATCHER, [{ amountAsset: BTC, priceAsset: WAVES }])
           .run()
-          .promise()
+          .promise(),
       ).rejects.toMatchSnapshot());
   });
 
@@ -58,14 +57,14 @@ describe('Pairs validation', () => {
       expect(
         validate(MATCHER, [{ amountAsset: 'ASSET1', priceAsset: BTC }])
           .run()
-          .promise()
+          .promise(),
       ).rejects.toMatchSnapshot());
 
     it('non-existing assets, wrong order, fail with ordering error', () =>
       expect(
         validate(MATCHER, [{ amountAsset: 'ASSET1', priceAsset: 'ASSET2' }])
           .run()
-          .promise()
+          .promise(),
       ).rejects.toMatchSnapshot());
   });
 });

@@ -1,65 +1,57 @@
 import { propEq } from 'ramda';
 
-import { CommonTransactionInfo } from '../../../../types';
-import { CommonRepoDependencies } from '../../..';
+import { type CommonTransactionInfo } from '../../../../types';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { serialize, deserialize, Cursor } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { result } from './schema';
 import sql from './sql';
 import { transformTxInfo } from './transformTxInfo';
 import {
-  AllTxsRepo,
-  AllTxsGetRequest,
-  AllTxsSearchRequest,
-  TxDbResponse,
+  type AllTxsGetRequest,
+  type AllTxsRepo,
+  type AllTxsSearchRequest,
+  type TxDbResponse,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): AllTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AllTxsRepo => {
   return {
     get: getByIdPreset<AllTxsGetRequest, TxDbResponse, CommonTransactionInfo>({
       name: 'transactions.all.commonData.get',
-      sql: sql.get,
       resultSchema: result,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset<string, TxDbResponse, CommonTransactionInfo>({
-      name: 'transactions.all.commonData.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.all.commonData.mget',
       resultSchema: result,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      AllTxsSearchRequest,
-      TxDbResponse,
-      CommonTransactionInfo
-    >({
-      name: 'transactions.all.commonData.search',
-      sql: sql.search,
-      resultSchema: result,
-      transformResult: transformTxInfo,
+    search: searchPreset<Cursor, AllTxsSearchRequest, TxDbResponse, CommonTransactionInfo>({
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.all.commonData.search',
+      resultSchema: result,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

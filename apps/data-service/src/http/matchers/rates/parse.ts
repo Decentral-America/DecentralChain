@@ -1,11 +1,11 @@
-import { isNil } from 'ramda';
 import { fromNullable } from 'folktale/maybe';
-import { Result, Error as error, Ok as ok } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { isNil } from 'ramda';
 import { ParseError } from '../../../errorHandling';
-import { RateMgetParams } from '../../../types';
+import { type RateMgetParams } from '../../../types';
 import { parseDate, parsePairs } from '../../../utils/parsers';
 import { parseFilterValues } from '../../_common/filters';
-import { HttpRequest } from '../../_common/types';
+import { type HttpRequest } from '../../_common/types';
 
 export const parse = ({
   params,
@@ -21,11 +21,9 @@ export const parse = ({
   return parseFilterValues({
     pairs: parsePairs,
     timestamp: parseDate,
-  })(query).chain(fValues => {
+  })(query).chain((fValues) => {
     if (isNil(fValues.pairs)) {
-      return error(
-        new ParseError(new Error('Pairs are incorrect or are not set'))
-      );
+      return error(new ParseError(new Error('Pairs are incorrect or are not set')));
     }
 
     return ok({

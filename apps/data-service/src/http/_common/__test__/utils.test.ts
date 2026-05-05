@@ -1,23 +1,23 @@
-import { Ok as ok, Error as error } from 'folktale/result';
-import { AppError } from '../../../errorHandling';
-import { MoneyFormat as MoneyFormat } from '../../../services/types';
-import { LSNFormat } from '../../types';
-import {
-  DEFAULT_LSN_FORMAT,
-  LSN_FORMAT_KEY,
-  DEFAULT_MONEY_FORMAT,
-  MONEY_FORMAT_KEY,
-  setHttpResponse,
-  contentTypeWithLSN,
-  parseMoneyFormat,
-  parseLSNFormat,
-  defaultStringify,
-  contentTypeWithMoneyFormat,
-} from '../utils';
-import * as Koa from 'koa';
-import { HttpResponse } from '../types';
+import { Error as error, Ok as ok } from 'folktale/result';
 import { IncomingMessage, ServerResponse } from 'http';
+import * as Koa from 'koa';
 import { Socket } from 'net';
+import { AppError } from '../../../errorHandling';
+import { MoneyFormat } from '../../../services/types';
+import { LSNFormat } from '../../types';
+import { HttpResponse } from '../types';
+import {
+  contentTypeWithLSN,
+  contentTypeWithMoneyFormat,
+  DEFAULT_LSN_FORMAT,
+  DEFAULT_MONEY_FORMAT,
+  defaultStringify,
+  LSN_FORMAT_KEY,
+  MONEY_FORMAT_KEY,
+  parseLSNFormat,
+  parseMoneyFormat,
+  setHttpResponse,
+} from '../utils';
 
 const app = new Koa();
 const socket = new Socket();
@@ -56,40 +56,33 @@ describe('setHttpResponse', () => {
     setHttpResponse(ctx)(
       HttpResponse.Ok(undefined, {
         customHeader: 'customHeaderResponse',
-      })
+      }),
     );
 
-    expect(ctx).toHaveProperty(
-      ['response', 'headers', 'customheader'],
-      'customHeaderResponse'
-    );
+    expect(ctx).toHaveProperty(['response', 'headers', 'customheader'], 'customHeaderResponse');
   });
 });
 
 describe('contentTypeWithLSN', () => {
   it('should return Content-Type with Number LSN Format', () => {
-    expect(contentTypeWithLSN(LSNFormat.Number)).toBe(
-      'application/json; charset=utf-8'
-    );
+    expect(contentTypeWithLSN(LSNFormat.Number)).toBe('application/json; charset=utf-8');
   });
 
   it('should return Content-Type with String LSN Format', () => {
     expect(contentTypeWithLSN(LSNFormat.String)).toBe(
-      `application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}`
+      `application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}`,
     );
   });
 });
 
 describe('contentTypeWithMoneyFormat', () => {
   it('should return Content-Type with Float Money Format', () => {
-    expect(contentTypeWithMoneyFormat(MoneyFormat.Float)).toBe(
-      'application/json; charset=utf-8'
-    );
+    expect(contentTypeWithMoneyFormat(MoneyFormat.Float)).toBe('application/json; charset=utf-8');
   });
 
   it('should return Content-Type with Long Money Format', () => {
     expect(contentTypeWithMoneyFormat(MoneyFormat.Long)).toBe(
-      `application/json; charset=utf-8; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`
+      `application/json; charset=utf-8; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`,
     );
   });
 });
@@ -97,43 +90,25 @@ describe('contentTypeWithMoneyFormat', () => {
 describe('contentTypeWithLSNWithMoneyFormat', () => {
   it('should return Content-Type with Number LSN Format and Float Money Format', () => {
     expect(
-      contentTypeWithMoneyFormat(
-        MoneyFormat.Float,
-        contentTypeWithLSN(LSNFormat.Number)
-      )
+      contentTypeWithMoneyFormat(MoneyFormat.Float, contentTypeWithLSN(LSNFormat.Number)),
     ).toBe('application/json; charset=utf-8');
   });
 
   it('should return Content-Type with Number LSN Format and Long Money Format', () => {
-    expect(
-      contentTypeWithMoneyFormat(
-        MoneyFormat.Long,
-        contentTypeWithLSN(LSNFormat.Number)
-      )
-    ).toBe(
-      `application/json; charset=utf-8; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`
+    expect(contentTypeWithMoneyFormat(MoneyFormat.Long, contentTypeWithLSN(LSNFormat.Number))).toBe(
+      `application/json; charset=utf-8; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`,
     );
   });
 
   it('should return Content-Type with String LSN Format and Float Money Format', () => {
     expect(
-      contentTypeWithMoneyFormat(
-        MoneyFormat.Float,
-        contentTypeWithLSN(LSNFormat.String)
-      )
-    ).toBe(
-      `application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}`
-    );
+      contentTypeWithMoneyFormat(MoneyFormat.Float, contentTypeWithLSN(LSNFormat.String)),
+    ).toBe(`application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}`);
   });
 
   it('should return Content-Type with String LSN Format and Long Money Format', () => {
-    expect(
-      contentTypeWithMoneyFormat(
-        MoneyFormat.Long,
-        contentTypeWithLSN(LSNFormat.String)
-      )
-    ).toBe(
-      `application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`
+    expect(contentTypeWithMoneyFormat(MoneyFormat.Long, contentTypeWithLSN(LSNFormat.String))).toBe(
+      `application/json; charset=utf-8; ${LSN_FORMAT_KEY}=${LSNFormat.String}; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`,
     );
   });
 });
@@ -147,13 +122,13 @@ describe('parseMoney', () => {
     expect(
       parseMoneyFormat({
         accept: `${MONEY_FORMAT_KEY}=${MoneyFormat.Float}`,
-      })
+      }),
     ).toEqual(ok(MoneyFormat.Float));
 
     expect(
       parseMoneyFormat({
         accept: `${MONEY_FORMAT_KEY}=${MoneyFormat.Long}`,
-      })
+      }),
     ).toEqual(ok(MoneyFormat.Long));
   });
 
@@ -161,7 +136,7 @@ describe('parseMoney', () => {
     expect(
       parseMoneyFormat({
         accept: `${MONEY_FORMAT_KEY}=wrong`,
-      })
+      }),
     ).toEqual(error(AppError.Parse('Invalid Money Format')));
   });
 });
@@ -175,13 +150,13 @@ describe('parseLSN', () => {
     expect(
       parseLSNFormat({
         accept: `${LSN_FORMAT_KEY}=${LSNFormat.Number}`,
-      })
+      }),
     ).toEqual(ok(LSNFormat.Number));
 
     expect(
       parseLSNFormat({
         accept: `${LSN_FORMAT_KEY}=${LSNFormat.String}`,
-      })
+      }),
     ).toEqual(ok(LSNFormat.String));
   });
 
@@ -189,7 +164,7 @@ describe('parseLSN', () => {
     expect(
       parseLSNFormat({
         accept: `${LSN_FORMAT_KEY}=bad lsn`,
-      })
+      }),
     ).toEqual(error(AppError.Parse('Invalid Large significand format')));
   });
 });
@@ -200,13 +175,13 @@ describe('parseLSN and parseMoneyFormat simultaneously', () => {
     expect(
       parseLSNFormat({
         accept: acceptHeaderValue,
-      })
+      }),
     ).toEqual(ok(LSNFormat.Number));
 
     expect(
       parseMoneyFormat({
         accept: acceptHeaderValue,
-      })
+      }),
     ).toEqual(ok(MoneyFormat.Long));
   });
 });

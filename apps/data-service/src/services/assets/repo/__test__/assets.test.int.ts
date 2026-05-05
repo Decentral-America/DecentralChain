@@ -1,14 +1,12 @@
 const http = require('http');
 
-import { parse } from '../../../../utils/json';
-
-import createRepo, { createCache } from '../';
-
+import { type EventEmitter } from 'events';
 // dependencies
 import { createPgDriver } from '../../../../db';
 import { loadConfig } from '../../../../loadConfig';
-import { EventEmitter } from 'events';
+import { parse } from '../../../../utils/json';
 import { SortOrder } from '../../../_common';
+import createRepo, { createCache } from '../';
 
 const options = loadConfig();
 const drivers = {
@@ -17,16 +15,16 @@ const drivers = {
 const cache = createCache(10, 10000);
 
 const repo = createRepo({
+  cache,
   drivers,
   emitEvent: () => () => null,
-  cache,
 });
 
 const assetId = 'G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH';
 
 describe('Assets repo', () => {
   describe('get', () => {
-    it('fetches a real asset', async done => {
+    it('fetches a real asset', async (done) => {
       repo
         .get(assetId)
         .run()
@@ -39,17 +37,14 @@ describe('Assets repo', () => {
     });
 
     it('returns null for unreal tx', async () => {
-      const tx = await repo
-        .get('UNREAL')
-        .run()
-        .promise();
+      const tx = await repo.get('UNREAL').run().promise();
 
       expect(tx).toBeNothing();
     });
   });
 
   describe('mget', () => {
-    it('fetches real assets with nulls for unreal', async done => {
+    it('fetches real assets with nulls for unreal', async (done) => {
       repo
         .mget([assetId, 'UNREAL'])
         .run()
@@ -63,9 +58,9 @@ describe('Assets repo', () => {
   });
 
   describe('search', () => {
-    it('fetches WAVES by ticker', async done => {
+    it('fetches WAVES by ticker', async (done) => {
       repo
-        .search({ ticker: 'WAVES', limit: 1, sort: SortOrder.Descending })
+        .search({ limit: 1, sort: SortOrder.Descending, ticker: 'WAVES' })
         .run()
         .promise()
         .then((xs) => {
@@ -84,26 +79,26 @@ describe('Assets repo', () => {
           res.on('end', () => {
             const assetInfoFromNode: any = parse(data);
             repo
-              .search({ ticker: 'BTC', limit: 1, sort: SortOrder.Descending })
+              .search({ limit: 1, sort: SortOrder.Descending, ticker: 'BTC' })
               .run()
               .promise()
-              .then(xs => {
+              .then((xs) => {
                 const assetInfo = xs.items[0];
                 if (assetInfo !== null) {
                   expect(assetInfo.description).toMatch(assetInfoFromNode.description);
                   expect(assetInfo.height.toString()).toMatch(
-                    assetInfoFromNode.issueHeight.toString()
+                    assetInfoFromNode.issueHeight.toString(),
                   );
                   expect(assetInfo.id).toMatch(assetInfoFromNode.assetId);
                   expect(assetInfo.name).toMatch(assetInfoFromNode.name);
                   expect(assetInfo.precision.toString()).toMatch(
-                    assetInfoFromNode.decimals.toString()
+                    assetInfoFromNode.decimals.toString(),
                   );
                   expect(assetInfo.quantity.toString()).toMatch(
-                    assetInfoFromNode.quantity.toString()
+                    assetInfoFromNode.quantity.toString(),
                   );
                   expect(assetInfo.reissuable.toString()).toMatch(
-                    assetInfoFromNode.reissuable.toString()
+                    assetInfoFromNode.reissuable.toString(),
                   );
                   expect(assetInfo.sender).toMatch(assetInfoFromNode.issuer);
                   expect(assetInfo.ticker).toMatch('BTC');
@@ -113,21 +108,19 @@ describe('Assets repo', () => {
                 }
               });
           });
-        }
+        },
       );
     });
 
     it('fetches all assets with tickers by ticker=*', () =>
       repo
-        .search({ ticker: '*', limit: 101, sort: SortOrder.Descending })
+        .search({ limit: 101, sort: SortOrder.Descending, ticker: '*' })
         .run()
         .promise()
-        .then(as => {
+        .then((as) => {
           expect(as.items.length).toBeGreaterThan(100);
           // make sure WAVES is included
-          expect(
-            as.items.find(a => a && a.ticker === 'WAVES')
-          ).not.toBeUndefined();
+          expect(as.items.find((a) => a && a.ticker === 'WAVES')).not.toBeUndefined();
         }));
   });
 });

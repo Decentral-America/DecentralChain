@@ -1,14 +1,14 @@
 import * as knex from 'knex';
 import { compose } from 'ramda';
+import { type AssetIdsPair } from '../../../types';
 import { escapeForTsQuery, prepareForLike } from '../../../utils/db';
 import {
-  PairsGetRequest,
-  PairsMgetRequest,
-  PairsSearchRequest,
-  SearchByAssetRequest,
-  SearchByAssetsRequest,
+  type PairsGetRequest,
+  type PairsMgetRequest,
+  type PairsSearchRequest,
+  type SearchByAssetRequest,
+  type SearchByAssetsRequest,
 } from './types';
-import { AssetIdsPair } from '../../../types';
 
 const pg = knex({ client: 'pg' });
 
@@ -26,15 +26,11 @@ const COLUMNS = [
   'price_asset_id',
 ];
 
-const isSearchByAssetRequest = (
-  req: PairsSearchRequest
-): req is SearchByAssetRequest => {
+const isSearchByAssetRequest = (req: PairsSearchRequest): req is SearchByAssetRequest => {
   return 'search_by_asset' in req && typeof req.search_by_asset === 'string';
 };
 
-const isSearchByAssetsRequest = (
-  req: PairsSearchRequest
-): req is SearchByAssetsRequest => {
+const isSearchByAssetsRequest = (req: PairsSearchRequest): req is SearchByAssetsRequest => {
   return (
     'search_by_assets' in req &&
     Array.isArray(req.search_by_assets) &&
@@ -61,7 +57,7 @@ const query = (pairs: AssetIdsPair[], matcher: string): string =>
     .select(COLUMNS)
     .whereIn(
       ['t.amount_asset_id', 't.price_asset_id'],
-      pairs.map((pair) => [pair.amountAsset, pair.priceAsset])
+      pairs.map((pair) => [pair.amountAsset, pair.priceAsset]),
     )
     .where('matcher_address', matcher)
     .toString();
@@ -70,7 +66,7 @@ const searchAssets = (
   qb: knex.QueryBuilder,
   query: string,
   matchExactly: boolean,
-  tableAlias: string = 't'
+  tableAlias: string = 't',
 ) => {
   // will be used on to_tsvector('simple', asset_name) search
   const cleanedQuery = escapeForTsQuery(query);
@@ -78,39 +74,26 @@ const searchAssets = (
     this.table({ [tableAlias]: 'assets' })
       .column({ asset_id: `${tableAlias}.asset_id` })
       .where(`${tableAlias}.asset_id`, query)
-      .orWhere(
-        `${tableAlias}.ticker`,
-        'ilike',
-        prepareForLike(query, { matchExactly })
-      )
+      .orWhere(`${tableAlias}.ticker`, 'ilike', prepareForLike(query, { matchExactly }))
       .unionAll((q) =>
         q
           .from({ [`${tableAlias}2`]: 'assets_metadata' })
           .column({ asset_id: `${tableAlias}2.asset_id` })
-          .where(
-            `${tableAlias}2.asset_name`,
-            'ilike',
-            prepareForLike(query, { matchExactly })
-          )
+          .where(`${tableAlias}2.asset_name`, 'ilike', prepareForLike(query, { matchExactly })),
       )
       .unionAll((q) =>
         compose((q: knex.QueryBuilder) =>
           cleanedQuery.length
-            ? q.orWhereRaw(
-              `to_tsvector('simple', ${tableAlias}3.asset_name) @@ to_tsquery(?)`,
-              [`${cleanedQuery}:*`]
-            )
-            : q
+            ? q.orWhereRaw(`to_tsvector('simple', ${tableAlias}3.asset_name) @@ to_tsquery(?)`, [
+                `${cleanedQuery}:*`,
+              ])
+            : q,
         )(
           q
             .from({ [`${tableAlias}3`]: 'assets' })
             .column({ asset_id: `${tableAlias}3.asset_id` })
-            .where(
-              `${tableAlias}3.asset_name`,
-              'ilike',
-              prepareForLike(query, { matchExactly })
-            )
-        )
+            .where(`${tableAlias}3.asset_name`, 'ilike', prepareForLike(query, { matchExactly })),
+        ),
       )
       .as('a');
   });
@@ -134,50 +117,36 @@ export const search = (req: PairsSearchRequest): string => {
     const { search_by_asset: amountAsset, match_exactly: matchExactly } = req;
     return q
       .with('assets_cte', (qb: knex.QueryBuilder) =>
-        searchAssets(qb, amountAsset, getMatchExactly(matchExactly)[0])
-      ).innerJoin(
-        { amount_cte: 'assets_cte' },
-        'amount_cte.asset_id',
-        't.amount_asset_id'
+        searchAssets(qb, amountAsset, getMatchExactly(matchExactly)[0]),
       )
-      .innerJoin(
-        { price_cte: 'assets_cte' },
-        'price_cte.asset_id',
-        't.amount_asset_id'
-      )
+      .innerJoin({ amount_cte: 'assets_cte' }, 'amount_cte.asset_id', 't.amount_asset_id')
+      .innerJoin({ price_cte: 'assets_cte' }, 'price_cte.asset_id', 't.amount_asset_id')
       .toString();
   } else if (isSearchByAssetsRequest(req)) {
     const [amountAsset, priceAsset] = req.search_by_assets;
 
-    const [amountAssetExactly, priceAssetExaclty] = getMatchExactly(
-      req.match_exactly
-    );
+    const [amountAssetExactly, priceAssetExaclty] = getMatchExactly(req.match_exactly);
 
     return q
       .with('assets_cte', (qb: knex.QueryBuilder) =>
         qb
           .from({
-            t1: searchAssets(
-              pg.queryBuilder(),
-              amountAsset,
-              amountAssetExactly,
-              'a'
-            ),
+            t1: searchAssets(pg.queryBuilder(), amountAsset, amountAssetExactly, 'a'),
           })
           .crossJoin((qb: knex.QueryBuilder) =>
-            searchAssets(qb, priceAsset, priceAssetExaclty, 'p').as('t2')
+            searchAssets(qb, priceAsset, priceAssetExaclty, 'p').as('t2'),
           )
           .columns({
             amount_asset_id: 't1.asset_id',
             price_asset_id: 't2.asset_id',
-          })
+          }),
       )
       .join(
         { direct_cte: 'assets_cte' },
         {
           'direct_cte.amount_asset_id': 't.amount_asset_id',
           'direct_cte.price_asset_id': 't.price_asset_id',
-        }
+        },
       )
       .unionAll((qb: knex.QueryBuilder) =>
         qb
@@ -188,9 +157,9 @@ export const search = (req: PairsSearchRequest): string => {
             {
               'reverse_cte.amount_asset_id': 't1.price_asset_id',
               'reverse_cte.price_asset_id': 't1.amount_asset_id',
-            }
+            },
           )
-          .where('matcher_address', matcher)
+          .where('matcher_address', matcher),
       )
       .toString();
   } else {

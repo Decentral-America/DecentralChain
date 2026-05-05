@@ -1,5 +1,5 @@
-import { Matchable } from 'folktale';
-import * as joi from 'joi';
+import { type Matchable } from 'folktale';
+import type * as joi from 'joi';
 
 export type ErrorMetaInfo = Record<string, unknown>;
 
@@ -37,24 +37,24 @@ function createErrorInfo(type: ErrorType, error: Error, meta?: ErrorMetaInfo): E
 function createErrorInfo(
   type: ErrorType,
   error: Error,
-  meta?: ErrorMetaInfo | joi.ValidationError
+  meta?: ErrorMetaInfo | joi.ValidationError,
 ): ErrorInfo | ValidationErrorInfo;
 function createErrorInfo(
   type: ErrorType,
   error: Error,
-  meta?: ErrorMetaInfo | joi.ValidationError
+  meta?: ErrorMetaInfo | joi.ValidationError,
 ): ErrorInfo | ValidationErrorInfo {
   if (isJoiError(meta)) {
     return {
       error,
-      type,
       meta,
+      type,
     };
   } else {
     return {
       error,
-      type,
       meta,
+      type,
     };
   }
 }
@@ -117,7 +117,7 @@ export class ResolverError extends AppError implements ErrorInfo {
     return pattern.Resolver(
       this.meta === undefined
         ? createErrorInfo(this.type, this.error)
-        : createErrorInfo(this.type, this.error, this.meta)
+        : createErrorInfo(this.type, this.error, this.meta),
     );
   }
 }
@@ -137,7 +137,7 @@ export class DbError extends AppError implements ErrorInfo {
     return pattern.Db(
       this.meta === undefined
         ? createErrorInfo(this.type, this.error)
-        : createErrorInfo(this.type, this.error, this.meta)
+        : createErrorInfo(this.type, this.error, this.meta),
     );
   }
 }
@@ -173,7 +173,7 @@ export class ParseError extends AppError implements ErrorInfo {
     return pattern.Parse(
       this.meta === undefined
         ? createErrorInfo(this.type, this.error)
-        : createErrorInfo(this.type, this.error, this.meta)
+        : createErrorInfo(this.type, this.error, this.meta),
     );
   }
 }
@@ -193,7 +193,7 @@ export class Timeout extends AppError implements ErrorInfo {
     return pattern.Timeout(
       this.meta === undefined
         ? createErrorInfo(this.type, this.error)
-        : createErrorInfo(this.type, this.error, this.meta)
+        : createErrorInfo(this.type, this.error, this.meta),
     );
   }
 }

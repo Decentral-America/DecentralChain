@@ -1,31 +1,28 @@
+import { BigNumber } from '@decentralchain/data-entities';
 import { of as taskOf } from 'folktale/concurrency/task';
 import { empty } from 'folktale/maybe';
-import { BigNumber } from '@waves/data-entities';
 
 // common
 import { createPgDriver } from '../../../db';
-import { loadConfig } from '../../../loadConfig';
 import createEventBus from '../../../eventBus';
-import { MoneyFormat } from '../../types';
+import { loadConfig } from '../../../loadConfig';
 import { isEmpty } from '../../../utils/fp/maybeOps';
 import { SortOrder } from '../../_common';
-
+import { type EmitEvent } from '../../_common/createResolver/types';
+import createAssetsService from '../../assets';
 // assets
 import { create as createAssetsCache } from '../../assets/repo/cache';
 import createAssetsRepo from '../../assets/repo/index';
-import createAssetsService from '../../assets';
-
+import createPairsService from '../../pairs';
+import createPairsRepo from '../../pairs/repo';
 // pairs
 import { create as createPairsCache } from '../../pairs/repo/cache';
-import createPairsRepo from '../../pairs/repo';
-import createPairsService from '../../pairs';
-
+import { MoneyFormat } from '../../types';
 // rates
 import createRateService from '..';
-import { ThresholdAssetRateService } from '../ThresholdAssetRateService';
 import RateCacheImpl from '../repo/impl/RateCache';
 import RemoteRateRepo from '../repo/impl/RemoteRateRepo';
-import { EmitEvent } from '../../_common/createResolver/types';
+import { ThresholdAssetRateService } from '../ThresholdAssetRateService';
 
 const options = loadConfig();
 const pgDriver = createPgDriver(options);
@@ -54,30 +51,26 @@ const assetsRepo = createAssetsRepo({
 const assets = createAssetsService(assetsRepo);
 
 const pairsRepo = createPairsRepo({ ...commonDeps, cache: pairsCache });
-const pairsNoAsyncValidation = createPairsService(
-  pairsRepo,
-  () => taskOf(undefined),
-  assets
-);
+const pairsNoAsyncValidation = createPairsService(pairsRepo, () => taskOf(undefined), assets);
 
 const thresholdAssetRateService = new ThresholdAssetRateService(
   options.thresholdAssetId,
   options.matcher.defaultMatcherAddress,
   pairsNoAsyncValidation,
-  emitEvent('log')
+  emitEvent('log'),
 );
 
 const rateRepo = new RemoteRateRepo(commonDeps.drivers.pg);
 
 const ratesService = createRateService({
-  emitEvent: commonDeps.emitEvent,
-  repo: rateRepo,
-  cache: ratesCache,
   assets,
-  pairs: pairsNoAsyncValidation,
-  pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
-  thresholdAssetRateService: thresholdAssetRateService,
   baseAssetId: options.rateBaseAssetId,
+  cache: ratesCache,
+  emitEvent: commonDeps.emitEvent,
+  pairAcceptanceVolumeThreshold: options.pairAcceptanceVolumeThreshold,
+  pairs: pairsNoAsyncValidation,
+  repo: rateRepo,
+  thresholdAssetRateService: thresholdAssetRateService,
 });
 
 describe('Rates', () => {
@@ -97,17 +90,15 @@ describe('Rates', () => {
         const rate = mRate.unsafeGet();
 
         // 1.
-        const thresholdWaves = new BigNumber(
-          options.pairAcceptanceVolumeThreshold
-        ).dividedBy(rate);
+        const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(rate);
 
         // 2.
         return pairsNoAsyncValidation
           .search({
             limit: 10,
-            sort: SortOrder.Descending,
             matcher: options.matcher.defaultMatcherAddress,
             moneyFormat: MoneyFormat.Float,
+            sort: SortOrder.Descending,
           })
           .map((pairs) => {
             return pairs.items
@@ -128,30 +119,26 @@ describe('Rates', () => {
 
         const t1 = rateRepo
           .mget({
-            pairs: [pair],
             matcher: options.matcher.defaultMatcherAddress,
+            pairs: [pair],
             timestamp: empty(),
           })
           .map((rates) => {
             if (rates.length === 0) {
-              throw new Error(
-                `Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`
-              );
+              throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
             }
 
             return rates[0].rate;
           });
 
         const t2 = ratesService({
-          pairs: [{ amountAsset: pair.amountAsset, priceAsset: pair.priceAsset }],
           matcher: options.matcher.defaultMatcherAddress,
-          timestamp: empty(),
           moneyFormat: MoneyFormat.Long,
+          pairs: [{ amountAsset: pair.amountAsset, priceAsset: pair.priceAsset }],
+          timestamp: empty(),
         }).map((rates) => {
           if (rates.length === 0) {
-            throw new Error(
-              `Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`
-            );
+            throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
           }
 
           return rates[0].rate;
@@ -182,17 +169,15 @@ describe('Rates', () => {
         const rate = mRate.unsafeGet();
 
         // 1.
-        const thresholdWaves = new BigNumber(
-          options.pairAcceptanceVolumeThreshold
-        ).dividedBy(rate);
+        const thresholdWaves = new BigNumber(options.pairAcceptanceVolumeThreshold).dividedBy(rate);
 
         // 2.
         return pairsNoAsyncValidation
           .search({
             limit: 10,
-            sort: SortOrder.Descending,
             matcher: options.matcher.defaultMatcherAddress,
             moneyFormat: MoneyFormat.Float,
+            sort: SortOrder.Descending,
           })
           .map((pairs) => {
             return pairs.items
@@ -214,15 +199,13 @@ describe('Rates', () => {
         // 3.
         const t1 = rateRepo
           .mget({
-            pairs: [pair],
             matcher: options.matcher.defaultMatcherAddress,
+            pairs: [pair],
             timestamp: empty(),
           })
           .map((rates) => {
             if (rates.length === 0) {
-              throw new Error(
-                `Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`
-              );
+              throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
             }
 
             return rates[0].rate;
@@ -230,15 +213,13 @@ describe('Rates', () => {
 
         // 4.
         const t2 = ratesService({
-          pairs: [pair],
           matcher: options.matcher.defaultMatcherAddress,
-          timestamp: empty(),
           moneyFormat: MoneyFormat.Long,
+          pairs: [pair],
+          timestamp: empty(),
         }).map((rates) => {
           if (rates.length === 0) {
-            throw new Error(
-              `Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`
-            );
+            throw new Error(`Rate for pair ${pair.amountAsset}/${pair.priceAsset} not found`);
           }
 
           return rates[0].rate;

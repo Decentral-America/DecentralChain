@@ -1,8 +1,8 @@
-import { BigNumber } from '@waves/data-entities';
-import { Repo, CommonTransactionInfo } from '../../../../types';
-import { WithSortOrder, WithLimit } from '../../../_common';
-import { RequestWithCursor } from '../../../_common/pagination';
-import { CommonFilters } from '../../_common/types';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { type CommonTransactionInfo, type Repo } from '../../../../types';
+import { type WithLimit, type WithSortOrder } from '../../../_common';
+import { type RequestWithCursor } from '../../../_common/pagination';
+import { type CommonFilters } from '../../_common/types';
 
 export type TxDbResponse = {
   uid: BigNumber;

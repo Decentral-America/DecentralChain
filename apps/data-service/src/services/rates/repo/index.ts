@@ -1,15 +1,11 @@
-import { Task } from 'folktale/concurrency/task';
-import { partition, chain, uniqWith } from 'ramda';
-import { Asset, BigNumber } from '@waves/data-entities';
+import { type Asset, BigNumber } from '@decentralchain/data-entities';
+import { type Task } from 'folktale/concurrency/task';
+import { chain, partition, uniqWith } from 'ramda';
 
-import { CacheSync } from '../../../types';
-import {
-  pairIsSymmetric,
-  pairsEq,
-  createGeneratePossibleRequestItemsWithAsset,
-} from '../data';
-import { RateCacheKey } from './impl/RateCache';
-import { AssetPair, VolumeAwareRateInfo } from '../RateEstimator';
+import { type CacheSync } from '../../../types';
+import { createGeneratePossibleRequestItemsWithAsset, pairIsSymmetric, pairsEq } from '../data';
+import { type AssetPair, type VolumeAwareRateInfo } from '../RateEstimator';
+import { type RateCacheKey } from './impl/RateCache';
 
 export type RateCache = CacheSync<RateCacheKey, VolumeAwareRateInfo>;
 
@@ -27,10 +23,9 @@ export const partitionByPreComputed = (
   pairs: AssetPair[],
   getCacheKey: (pair: AssetPair) => RateCacheKey,
   shouldCache: boolean,
-  baseAsset: Asset
+  baseAsset: Asset,
 ): PairsForRequest => {
-  const generatePossibleRequestItems =
-    createGeneratePossibleRequestItemsWithAsset(baseAsset);
+  const generatePossibleRequestItems = createGeneratePossibleRequestItemsWithAsset(baseAsset);
   // pair is symmetric if amountAsset == priceAsset
   // therefore rate = 1, volume = 0
   const [symmetric, asymmetric] = partition(pairIsSymmetric, pairs);
@@ -43,14 +38,11 @@ export const partitionByPreComputed = (
 
   const allPairsToRequest = uniqWith(
     pairsEq,
-    chain((it) => generatePossibleRequestItems(it), asymmetric)
+    chain((it) => generatePossibleRequestItems(it), asymmetric),
   );
 
   if (shouldCache) {
-    const [cached, uncached] = partition(
-      (it) => cache.has(getCacheKey(it)),
-      allPairsToRequest
-    );
+    const [cached, uncached] = partition((it) => cache.has(getCacheKey(it)), allPairsToRequest);
 
     const cachedRates = cached.map((pair) => cache.get(getCacheKey(pair)).unsafeGet());
     return {

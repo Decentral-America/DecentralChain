@@ -1,14 +1,13 @@
-import { Task } from 'folktale/concurrency/task';
-import { AppError } from '../../errorHandling';
-import { Service, SearchedItems, CandleInfo, AssetIdsPair } from '../../types';
+import { type Task } from 'folktale/concurrency/task';
+import { type AppError } from '../../errorHandling';
+import { type AssetIdsPair, type CandleInfo, type SearchedItems, type Service } from '../../types';
 import { searchWithDecimalsProcessing } from '../_common/transformation/withDecimalsProcessing';
-import { AssetsService } from '../assets';
-import { MoneyFormat, WithMoneyFormat } from '../types';
-import { CandlesSearchRequest, CandlesRepo } from './repo';
+import { type AssetsService } from '../assets';
+import { MoneyFormat, type WithMoneyFormat } from '../types';
 import { modifyDecimals } from './modifyDecimals';
+import { type CandlesRepo, type CandlesSearchRequest } from './repo';
 
-export type CandlesServiceSearchRequest = CandlesSearchRequest &
-  WithMoneyFormat;
+export type CandlesServiceSearchRequest = CandlesSearchRequest & WithMoneyFormat;
 export type CandlesService = {
   search: Service<CandlesServiceSearchRequest, SearchedItems<CandleInfo>>;
   searchLast: Service<CandlesServiceSearchRequest, CandleInfo | null>;
@@ -16,11 +15,8 @@ export type CandlesService = {
 
 export default (
   repo: CandlesRepo,
-  validatePairs: (
-    matcher: string,
-    pairs: AssetIdsPair[]
-  ) => Task<AppError, void>,
-  assetsService: AssetsService
+  validatePairs: (matcher: string, pairs: AssetIdsPair[]) => Task<AppError, void>,
+  assetsService: AssetsService,
 ): CandlesService => ({
   search: (req) =>
     validatePairs(req.matcher, [
@@ -39,15 +35,15 @@ export default (
         items:
           req.moneyFormat === MoneyFormat.Long
             ? result.items.map((candle) => ({
-              ...candle,
-              weightedAveragePrice:
-                candle.txsCount > 0
-                  ? candle.weightedAveragePrice.decimalPlaces(0)
-                  : // in fact it will be null
-                  candle.weightedAveragePrice,
-            }))
+                ...candle,
+                weightedAveragePrice:
+                  candle.txsCount > 0
+                    ? candle.weightedAveragePrice.decimalPlaces(0)
+                    : // in fact it will be null
+                      candle.weightedAveragePrice,
+              }))
             : result.items,
-      }))
+      })),
     ),
   searchLast: (req) =>
     validatePairs(req.matcher, [
@@ -58,13 +54,17 @@ export default (
     ]).chain(() =>
       searchWithDecimalsProcessing<CandlesServiceSearchRequest, CandleInfo>(
         modifyDecimals(assetsService, [req.amountAsset, req.priceAsset]),
-        repo.searchLast
-      )(req).map((result) => (
-        result && Array.isArray(result.items) && result.items[0] ? {
-          ...result.items[0],
-          weightedAveragePrice: result.items[0].txsCount > 0 ?
-            result.items[0].weightedAveragePrice.decimalPlaces(0) : result.items[0].weightedAveragePrice
-        } : null)
-    )
-    )
+        repo.searchLast,
+      )(req).map((result) =>
+        result && Array.isArray(result.items) && result.items[0]
+          ? {
+              ...result.items[0],
+              weightedAveragePrice:
+                result.items[0].txsCount > 0
+                  ? result.items[0].weightedAveragePrice.decimalPlaces(0)
+                  : result.items[0].weightedAveragePrice,
+            }
+          : null,
+      ),
+    ),
 });

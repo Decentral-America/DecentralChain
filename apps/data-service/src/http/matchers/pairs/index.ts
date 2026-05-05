@@ -1,16 +1,16 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 
-import { PairsService } from '../../../services/pairs';
-import { PairInfo, AssetIdsPair, Pair } from '../../../types';
+import { type PairsService } from '../../../services/pairs';
+import { type AssetIdsPair, type Pair, type PairInfo } from '../../../types';
 import { createHttpHandler } from '../../_common';
+import { postToGet } from '../../_common/postToGet';
 import {
   get as getSerializer,
   mget as mgetSerializer,
   search as searchSerializer,
 } from '../../_common/serialize';
-import { pairWithData, isMgetRequest } from '../../pairs';
+import { isMgetRequest, pairWithData } from '../../pairs';
 import { get as parseGet, mgetOrSearch as parseMgetOrSearch } from './parse';
-import { postToGet } from '../../_common/postToGet';
 
 const subrouter = new Router();
 
@@ -20,21 +20,13 @@ const mgetOrSearchHttpHandler = (pairsService: PairsService) =>
       isMgetRequest(req)
         ? pairsService
             .mget(req)
-            .map(
-              mgetSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(
-                pairWithData,
-                lsnFormat
-              )
-            )
+            .map(mgetSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat))
         : pairsService
             .search(req)
             .map(
-              searchSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(
-                pairWithData,
-                lsnFormat
-              )
+              searchSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
             ),
-    parseMgetOrSearch
+    parseMgetOrSearch,
   );
 
 export default (pairsService: PairsService) =>
@@ -45,14 +37,9 @@ export default (pairsService: PairsService) =>
         (req, lsnFormat) =>
           pairsService
             .get(req)
-            .map(
-              getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(
-                pairWithData,
-                lsnFormat
-              )
-            ),
-        parseGet
-      )
+            .map(getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat)),
+        parseGet,
+      ),
     )
     .get('/pairs', mgetOrSearchHttpHandler(pairsService))
     .post('/pairs', postToGet(mgetOrSearchHttpHandler(pairsService)));

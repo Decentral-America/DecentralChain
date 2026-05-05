@@ -8,7 +8,7 @@ export const result = Joi.object().keys({
   asset_id: Joi.string().assetId().required(),
   attachment: Joi.string().required().allow(''),
   transfers: Joi.array().items({
-    recipient: Joi.string().allow(null),
     amount: Joi.object().bignumber().required(),
+    recipient: Joi.string().allow(null),
   }),
 });

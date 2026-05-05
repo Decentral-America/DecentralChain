@@ -10,18 +10,14 @@ const searchById = (q: string) =>
     .columns({
       asset_id: `a.${columns.asset_id}`,
       asset_name: `a.${columns.asset_name}`,
-      ticker: `a.${columns.ticker}`,
       height: `a.${columns.issue_height}`,
       rank: pg.raw(
         `ts_rank(to_tsvector('simple', a.${columns.asset_id}), plainto_tsquery(?), 3) * case when a.${columns.ticker} is null then 128 else 256 end`,
-        [q]
+        [q],
       ),
+      ticker: `a.${columns.ticker}`,
     })
-    .where(
-      `a.${columns.asset_id}`,
-      'ilike',
-      prepareForLike(q, { matchExactly: true })
-    ); // ilike - hack for searching for waves in different cases
+    .where(`a.${columns.asset_id}`, 'ilike', prepareForLike(q, { matchExactly: true })); // ilike - hack for searching for waves in different cases
 
 const searchByNameInMeta = (qb: knex.QueryBuilder, q: string) =>
   qb
@@ -34,7 +30,7 @@ const searchByNameInMeta = (qb: knex.QueryBuilder, q: string) =>
       {
         rank: pg.raw(
           "ts_rank(to_tsvector('simple', asset_name), plainto_tsquery(?), 3) * case when ticker is null then 64 else 128 end",
-          [q]
+          [q],
         ),
       },
     ])
@@ -46,9 +42,9 @@ const searchByTicker = (qb: knex.QueryBuilder, q: string): knex.QueryBuilder =>
     .columns({
       asset_id: `a.${columns.asset_id}`,
       asset_name: `a.${columns.asset_name}`,
-      ticker: `a.${columns.ticker}`,
       height: `a.${columns.issue_height}`,
       rank: pg.raw('32'),
+      ticker: `a.${columns.ticker}`,
     })
     .where(`a.${columns.ticker}`, 'ilike', prepareForLike(q));
 
@@ -56,24 +52,22 @@ const searchByName = (qb: knex.QueryBuilder, q: string) => {
   const cleanedQuery = escapeForTsQuery(q);
   return compose((q: knex.QueryBuilder) =>
     cleanedQuery.length
-      ? q.orWhereRaw(`to_tsvector('simple', a.asset_name) @@ to_tsquery(?)`, [
-          `${cleanedQuery}:*`,
-        ])
-      : q
+      ? q.orWhereRaw(`to_tsvector('simple', a.asset_name) @@ to_tsquery(?)`, [`${cleanedQuery}:*`])
+      : q,
   )(
     qb
       .table({ a: 'assets' })
       .columns({
         asset_id: `a.${columns.asset_id}`,
         asset_name: `a.${columns.asset_name}`,
-        ticker: `a.${columns.ticker}`,
         height: `a.${columns.issue_height}`,
         rank: pg.raw(
           `ts_rank(to_tsvector('simple', a.${columns.asset_name}), plainto_tsquery(?), 3) * case when a.${columns.ticker} is null then 16 else 32 end`,
-          [q]
+          [q],
         ),
+        ticker: `a.${columns.ticker}`,
       })
-      .where(`a.${columns.asset_name}`, 'ilike', prepareForLike(q))
+      .where(`a.${columns.asset_name}`, 'ilike', prepareForLike(q)),
   );
 };
 
@@ -85,9 +79,7 @@ export const searchAssets = (query: string): knex.QueryBuilder =>
         'r.ticker',
         'r.asset_name',
         {
-          rn: pg.raw(
-            'row_number() over (order by r.rank desc, r.height asc, r.asset_id asc)'
-          ),
+          rn: pg.raw('row_number() over (order by r.rank desc, r.height asc, r.asset_id asc)'),
         },
       ])
         .from({

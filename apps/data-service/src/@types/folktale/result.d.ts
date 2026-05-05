@@ -14,9 +14,7 @@ declare module 'folktale/result' {
     mapError<C>(f: (a: A) => C): Result<C, B>;
     // checks if the current applicative contains an appropriate function
     // @todo consider using `never` instead
-    apply<C, D>(
-      f: Result<C, D>
-    ): B extends (d: D) => infer R ? Result<A | C, R> : unknown;
+    apply<C, D>(f: Result<C, D>): B extends (d: D) => infer R ? Result<A | C, R> : unknown;
     bimap<C, D>(lf: (a: A) => C, rf: (b: B) => D): Result<C, D>;
 
     // extracting values

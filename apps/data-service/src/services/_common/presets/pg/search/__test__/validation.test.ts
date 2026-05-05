@@ -1,18 +1,18 @@
 import { of as task } from 'folktale/concurrency/task';
-import { Result, Error as error, Ok as ok } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { always, identity, T } from 'ramda';
 
-import { PgDriver } from '../../../../../../db/driver';
-import { AppError, ValidationError } from './../../../../../../errorHandling';
-import { SearchedItems } from '../../../../../../types';
+import { type PgDriver } from '../../../../../../db/driver';
+import { type AppError, ValidationError } from './../../../../../../errorHandling';
+import { type SearchedItems } from '../../../../../../types';
 import { Joi } from '../../../../../../utils/validation';
-import { RequestWithCursor } from '../../../../../_common/pagination';
-import { WithLimit, WithSortOrder, SortOrder } from '../../../..';
+import { type RequestWithCursor } from '../../../../../_common/pagination';
+import { SortOrder, type WithLimit, type WithSortOrder } from '../../../..';
 import { searchPreset } from '../../search';
 
 const mockTxs: ResponseRaw[] = [
-  { uid: 1, id: 'q', timestamp: new Date() },
-  { uid: 2, id: 'w', timestamp: new Date() },
+  { id: 'q', timestamp: new Date(), uid: 1 },
+  { id: 'w', timestamp: new Date(), uid: 2 },
 ];
 
 type ResponseRaw = {
@@ -27,16 +27,12 @@ type Cursor = {
 
 const serialize = (
   request: RequestWithCursor<WithLimit, string>,
-  response: ResponseRaw
+  response: ResponseRaw,
 ): string | undefined =>
-  response === null
-    ? undefined
-    : Buffer.from(response.uid.toString()).toString('base64');
+  response === null ? undefined : Buffer.from(response.uid.toString()).toString('base64');
 
 const deserialize = (cursor: string): Result<ValidationError, Cursor> => {
-  const data = Buffer.from(cursor, 'base64')
-    .toString('utf8')
-    .split('::');
+  const data = Buffer.from(cursor, 'base64').toString('utf8').split('::');
 
   const err = (message?: string) =>
     new ValidationError('Cursor deserialization is failed', {
@@ -47,14 +43,12 @@ const deserialize = (cursor: string): Result<ValidationError, Cursor> => {
   return (
     ok<ValidationError, string[]>(data)
       // validate length
-      .chain(d =>
+      .chain((d) =>
         d.length === 1
           ? ok<ValidationError, number>(parseInt(d[0]))
-          : error<ValidationError, number>(
-              err('Cursor length is not equals to 1')
-            )
+          : error<ValidationError, number>(err('Cursor length is not equals to 1')),
       )
-      .map(uid => ({
+      .map((uid) => ({
         uid,
       }))
   );
@@ -66,34 +60,34 @@ const service = searchPreset<
   ResponseRaw,
   ResponseRaw
 >({
-  name: 'some_name',
-  sql: () => '',
-  resultSchema: Joi.any(),
-  transformResult: identity,
   cursorSerialization: {
-    serialize,
     deserialize,
+    serialize,
   },
+  name: 'some_name',
+  resultSchema: Joi.any(),
+  sql: () => '',
+  transformResult: identity,
 })({
-  pg: { any: filters => task(mockTxs) } as PgDriver,
   emitEvent: always(T),
+  pg: { any: (filters) => task(mockTxs) } as PgDriver,
 });
 
 describe('search preset validation', () => {
   describe('common filters', () => {
-    it('passes if correct object is provided', done =>
+    it('passes if correct object is provided', (done) =>
       service({
         limit: 1,
         sort: SortOrder.Descending,
       })
         .run()
         .listen({
+          onRejected: (e: AppError) => {
+            done(e.error.message);
+          },
           onResolved: (x: SearchedItems<any>) => {
             expect(x.items).toBeInstanceOf(Array);
             done();
-          },
-          onRejected: (e: AppError) => {
-            done(e.error.message);
           },
         }));
   });

@@ -15,16 +15,14 @@ describe('Db', () => {
         db.none('select pg_sleep($1);', timeout / 1000 + 1) // timeout (in ms) + 1s
           .run()
           .listen({
-            onResolved: () => done.fail('Error was not thrown'),
             onRejected: (e) =>
               isStatementTimeoutErrorMessage(e.error.message)
                 ? done()
-                : done.fail(
-                    `Error message ${e.error.message} does not satisfy determined`
-                  ),
+                : done.fail(`Error message ${e.error.message} does not satisfy determined`),
+            onResolved: () => done.fail('Error was not thrown'),
           });
       },
-      timeout + 1000
+      timeout + 1000,
     );
   }
 });

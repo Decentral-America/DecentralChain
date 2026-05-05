@@ -1,0 +1,27 @@
+import { createByTimeStamp, createByBlockTimeStamp } from '../../../../_common/sql';
+import commonFilters from '../../../../_common/sql/filters';
+import commonFiltersOrder from '../../../../_common/sql/filtersOrder';
+
+const byRecipient = (addressOrAlias) => (q) =>
+  q
+    .clone()
+    .whereRaw(
+      `tfs.recipient_address = coalesce((select sender from txs_10 where alias = '${addressOrAlias}' limit 1), '${addressOrAlias}')`,
+    );
+
+const byTimeStamp = createByTimeStamp('txs_11');
+
+const byBlockTimeStamp = createByBlockTimeStamp('txs_11');
+
+export default {
+  filters: {
+    ...commonFilters,
+    blockTimeEnd: byBlockTimeStamp('<='),
+    blockTimeStart: byBlockTimeStamp('>='),
+
+    recipient: byRecipient,
+    timeEnd: byTimeStamp('<='),
+    timeStart: byTimeStamp('>='),
+  },
+  filtersOrder: [...commonFiltersOrder, 'timeStart', 'timeEnd', 'assetId', 'recipient'],
+};

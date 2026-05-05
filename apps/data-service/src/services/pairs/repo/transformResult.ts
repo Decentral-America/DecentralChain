@@ -1,6 +1,6 @@
+import { type BigNumber } from '@decentralchain/data-entities';
 import { renameKeys } from 'ramda-adjunct';
-import { BigNumber } from '@waves/data-entities';
-import { PairInfo, AssetIdsPair } from '../../../types';
+import { type AssetIdsPair, type PairInfo } from '../../../types';
 
 export type PairDbResponse = {
   amount_asset_id: string;
@@ -19,13 +19,13 @@ export type PairDbResponse = {
 /** renamePairFields :: Object -> Object */
 const renamePairFields = renameKeys<PairInfo & AssetIdsPair>({
   amount_asset_id: 'amountAsset',
-  price_asset_id: 'priceAsset',
   first_price: 'firstPrice',
   last_price: 'lastPrice',
-  volume_waves: 'volumeWaves',
-  weighted_average_price: 'weightedAveragePrice',
+  price_asset_id: 'priceAsset',
   quote_volume: 'quoteVolume',
   txs_count: 'txsCount',
+  volume_waves: 'volumeWaves',
+  weighted_average_price: 'weightedAveragePrice',
 });
 
 /** transformResult :: Object -> Object */

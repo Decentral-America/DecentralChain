@@ -16,15 +16,15 @@ const {
   values,
 } = require('ramda');
 
-import { RawMassTransferTx, RawMassTransferTxTransfer } from '../types';
-import { DbRawMassTransferTx } from './types';
+import { type RawMassTransferTx, type RawMassTransferTxTransfer } from '../types';
+import { type DbRawMassTransferTx } from './types';
 
 const isNotNil = complement(isNil);
 
 const getTransferItem = (txRaw: DbRawMassTransferTx): RawMassTransferTxTransfer => ({
-  recipient: txRaw.recipient_alias || txRaw.recipient_address,
   amount: txRaw.amount,
   positionInTx: txRaw.position_in_tx, // for sorting later
+  recipient: txRaw.recipient_alias || txRaw.recipient_address,
 });
 
 const removeUnnecessaryFromRaw = omit([
@@ -47,7 +47,7 @@ const buildTxFromTxs = (txs: DbRawMassTransferTx[]): RawMassTransferTx | null =>
     map(omit(['positionInTx'])),
     sortBy(prop('positionInTx')),
     map(getTransferItem),
-    filter((tx: DbRawMassTransferTx) => isNotNil(prop('amount', tx)))
+    filter((tx: DbRawMassTransferTx) => isNotNil(prop('amount', tx))),
   )(txs);
 
   return tx;

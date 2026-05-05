@@ -1,15 +1,14 @@
-import { fromNullable, Maybe } from 'folktale/maybe';
+import { fromNullable, type Maybe } from 'folktale/maybe';
 import { head, propEq } from 'ramda';
-
+import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
-import { PgDriver } from '../../../../../db/driver';
 import { matchRequestsResults } from '../../../../../utils/db';
-import { Cursor } from '../../../_common/cursor';
+import { type Cursor } from '../../../_common/cursor';
 
-import { MassTransferTxsSearchRequest, RawMassTransferTx } from '../types';
+import { type MassTransferTxsSearchRequest, type RawMassTransferTx } from '../types';
 import sql from './sql';
 import { transformResult } from './transformResult';
-import { DbRawMassTransferTx } from './types';
+import { type DbRawMassTransferTx } from './types';
 
 export default {
   get: (pg: PgDriver) => (id: string) =>
@@ -20,9 +19,9 @@ export default {
       .map(fromNullable)
       .mapRejected(
         addMeta({
-          request: 'transactions.invokeScript.get',
           params: id,
-        })
+          request: 'transactions.invokeScript.get',
+        }),
       ),
 
   mget: (pg: PgDriver) => (ids: string[]) =>
@@ -32,9 +31,9 @@ export default {
       .map<Maybe<RawMassTransferTx>[]>(matchRequestsResults(propEq('id'), ids))
       .mapRejected(
         addMeta({
-          request: 'transactions.invokeScript.mget',
           params: ids,
-        })
+          request: 'transactions.invokeScript.mget',
+        }),
       ),
 
   search: (pg: PgDriver) => (filters: MassTransferTxsSearchRequest<Cursor>) =>
@@ -43,8 +42,8 @@ export default {
       .map(transformResult)
       .mapRejected(
         addMeta({
-          request: 'transactions.massTransfer.search',
           params: filters,
-        })
+          request: 'transactions.massTransfer.search',
+        }),
       ),
 };

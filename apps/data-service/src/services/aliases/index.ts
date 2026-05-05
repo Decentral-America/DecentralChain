@@ -1,14 +1,14 @@
-import { Maybe } from 'folktale/maybe';
+import { type Maybe } from 'folktale/maybe';
 
-import { AliasInfo, Service, SearchedItems } from '../../types';
-
+import { type AliasInfo, type SearchedItems, type Service } from '../../types';
+import { type WithMoneyFormat } from '../types';
 import {
-  AliasesGetRequest,
-  AliasesMgetRequest,
-  AliasesSearchRequest,
-  AliasesRepo,
+  type AliasesGetRequest,
+  type AliasesMgetRequest,
+  type AliasesRepo,
+  type AliasesSearchRequest,
 } from './repo';
-import { WithMoneyFormat } from '../types';
+
 export { WithAddress, WithAddresses, WithQueries } from './repo';
 
 export type AliasesServiceGetRequest = {
@@ -23,14 +23,8 @@ export type AliasesServiceSearchRequest = AliasesSearchRequest;
 
 export type AliasesService = {
   get: Service<AliasesServiceGetRequest & WithMoneyFormat, Maybe<AliasInfo>>;
-  mget: Service<
-    AliasesServiceMgetRequest & WithMoneyFormat,
-    Maybe<AliasInfo>[]
-  >;
-  search: Service<
-    AliasesServiceSearchRequest & WithMoneyFormat,
-    SearchedItems<AliasInfo>
-  >;
+  mget: Service<AliasesServiceMgetRequest & WithMoneyFormat, Maybe<AliasInfo>[]>;
+  search: Service<AliasesServiceSearchRequest & WithMoneyFormat, SearchedItems<AliasInfo>>;
 };
 
 export default (repo: AliasesRepo): AliasesService => ({

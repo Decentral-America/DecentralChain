@@ -1,8 +1,8 @@
-import { Repo } from '../../../../types';
-import { WithSortOrder, WithLimit } from '../../../_common';
-import { RequestWithCursor } from '../../../_common/pagination';
-import { CommonFilters, RawTx, Tx } from '../../_common/types';
-import { BigNumber } from '@waves/data-entities';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { type Repo } from '../../../../types';
+import { type WithLimit, type WithSortOrder } from '../../../_common';
+import { type RequestWithCursor } from '../../../_common/pagination';
+import { type CommonFilters, type RawTx, type Tx } from '../../_common/types';
 
 export type RawMassTransferTxTransfer = {
   recipient: string;

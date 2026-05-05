@@ -1,19 +1,15 @@
-import { Result, Ok as ok, Error as error } from 'folktale/result';
+import { Error as error, Ok as ok, type Result } from 'folktale/result';
 import { isNil } from 'ramda';
 
 import { ParseError } from '../../errorHandling';
-import { Parser } from '../../http/_common/filters/types';
+import { type Parser } from '../../http/_common/filters/types';
 
 export type ParseArrayQuery = Parser<string[], string | string[]>;
 
+export function parseArrayQuery(strOrArr: undefined): Result<ParseError, undefined>;
+export function parseArrayQuery(strOrArr: string | string[]): Result<ParseError, string[]>;
 export function parseArrayQuery(
-  strOrArr: undefined
-): Result<ParseError, undefined>;
-export function parseArrayQuery(
-  strOrArr: string | string[]
-): Result<ParseError, string[]>;
-export function parseArrayQuery(
-  strOrArr: string | string[] | undefined
+  strOrArr: string | string[] | undefined,
 ): Result<ParseError, string[] | undefined> {
   if (isNil(strOrArr)) {
     return ok(undefined);

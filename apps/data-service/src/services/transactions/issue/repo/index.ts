@@ -1,62 +1,54 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
 import transformTxInfo from './transformTxInfo';
 import {
-  IssueTxsRepo,
-  IssueTxsSearchRequest,
-  IssueTxDbResponse,
-  IssueTx,
+  type IssueTx,
+  type IssueTxDbResponse,
+  type IssueTxsRepo,
+  type IssueTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): IssueTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): IssueTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.issue.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.issue.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.issue.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      IssueTxsSearchRequest,
-      IssueTxDbResponse,
-      IssueTx
-    >({
+    search: searchPreset<Cursor, IssueTxsSearchRequest, IssueTxDbResponse, IssueTx>({
+      cursorSerialization: { deserialize, serialize },
       name: 'transactions.issue.search',
-      sql: sql.search,
       resultSchema,
+      sql: sql.search,
       transformResult: transformTxInfo,
-      cursorSerialization: { serialize, deserialize },
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

@@ -1,43 +1,43 @@
-import { waitAll, of as taskOf, Task } from 'folktale/concurrency/task';
-import { Maybe, empty as emptyOf } from 'folktale/maybe';
-import { pipe, groupBy, toPairs, flatten, sort, indexBy } from 'ramda';
+import { type Task, of as taskOf, waitAll } from 'folktale/concurrency/task';
+import { empty as emptyOf, type Maybe } from 'folktale/maybe';
+import { flatten, groupBy, indexBy, pipe, sort, toPairs } from 'ramda';
 
-import { AppError } from '../../../errorHandling';
+import { type AppError } from '../../../errorHandling';
 import {
-  TransactionInfo,
-  Service,
-  SearchedItems,
-  ServiceMgetRequest,
-  ServiceGetRequest,
-  CommonTransactionInfo,
+  type CommonTransactionInfo,
+  type SearchedItems,
+  type Service,
+  type ServiceGetRequest,
+  type ServiceMgetRequest,
+  type TransactionInfo,
 } from '../../../types';
-import { SortOrder } from '../../_common';
-import { GenesisTxsService } from '../genesis/types';
-import { PaymentTxsService } from '../payment/types';
-import { IssueTxsService } from '../issue/types';
-import { TransferTxsService } from '../transfer/types';
-import { ReissueTxsService } from '../reissue/types';
-import { BurnTxsService } from '../burn/types';
-import { ExchangeTxsService } from '../exchange/types';
-import { LeaseTxsService } from '../lease/types';
-import { LeaseCancelTxsService } from '../leaseCancel/types';
-import { AliasTxsService } from '../alias/types';
-import { MassTransferTxsService } from '../massTransfer/types';
-import { DataTxsService } from '../data/types';
-import { SetScriptTxsService } from '../setScript/types';
-import { SponsorshipTxsService } from '../sponsorship/types';
-import { SetAssetScriptTxsService } from '../setAssetScript/types';
-import { InvokeScriptTxsService } from '../invokeScript/types';
-import { UpdateAssetInfoTxsService } from '../updateAssetInfo/types';
-import { EthereumLikeTxsService } from '../ethereumLike/types';
-import {
-  AllTxsRepo,
-  AllTxsGetRequest,
-  AllTxsMgetRequest,
-  AllTxsSearchRequest,
-} from './repo/types';
-import { WithMoneyFormat } from '../../types';
 import { collect } from '../../../utils/collection';
+import { SortOrder } from '../../_common';
+import { type WithMoneyFormat } from '../../types';
+import { type AliasTxsService } from '../alias/types';
+import { type BurnTxsService } from '../burn/types';
+import { type DataTxsService } from '../data/types';
+import { type EthereumLikeTxsService } from '../ethereumLike/types';
+import { type ExchangeTxsService } from '../exchange/types';
+import { type GenesisTxsService } from '../genesis/types';
+import { type InvokeScriptTxsService } from '../invokeScript/types';
+import { type IssueTxsService } from '../issue/types';
+import { type LeaseTxsService } from '../lease/types';
+import { type LeaseCancelTxsService } from '../leaseCancel/types';
+import { type MassTransferTxsService } from '../massTransfer/types';
+import { type PaymentTxsService } from '../payment/types';
+import { type ReissueTxsService } from '../reissue/types';
+import { type SetAssetScriptTxsService } from '../setAssetScript/types';
+import { type SetScriptTxsService } from '../setScript/types';
+import { type SponsorshipTxsService } from '../sponsorship/types';
+import { type TransferTxsService } from '../transfer/types';
+import { type UpdateAssetInfoTxsService } from '../updateAssetInfo/types';
+import {
+  type AllTxsGetRequest,
+  type AllTxsMgetRequest,
+  type AllTxsRepo,
+  type AllTxsSearchRequest,
+} from './repo/types';
 
 type AllTxsServiceDep = {
   1: GenesisTxsService;
@@ -67,10 +67,7 @@ export type AllTxsServiceSearchRequest = AllTxsSearchRequest;
 export type AllTxsService = {
   get: Service<AllTxsServiceGetRequest & WithMoneyFormat, Maybe<TransactionInfo>>;
   mget: Service<AllTxsServiceMgetRequest & WithMoneyFormat, Maybe<TransactionInfo>[]>;
-  search: Service<
-    AllTxsServiceSearchRequest & WithMoneyFormat,
-    SearchedItems<TransactionInfo>
-  >;
+  search: Service<AllTxsServiceSearchRequest & WithMoneyFormat, SearchedItems<TransactionInfo>>;
 };
 
 // @todo
@@ -91,7 +88,7 @@ export default (repo: AllTxsRepo) =>
               });
             },
             Nothing: () => taskOf(emptyOf()),
-          })
+          }),
         ),
 
     mget: (req) =>
@@ -108,9 +105,9 @@ export default (repo: AllTxsRepo) =>
                   });
                 },
                 Nothing: () => taskOf(emptyOf()),
-              })
-            )
-          )
+              }),
+            ),
+          ),
         ),
 
     search: (req) =>
@@ -130,16 +127,13 @@ export default (repo: AllTxsRepo) =>
                   ids: txs.map((t) => t.id),
                   moneyFormat: req.moneyFormat,
                 });
-              })
-          )(txsList.items)
+              }),
+          )(txsList.items),
         )
           .map((mss) => flatten<Maybe<TransactionInfo>>(mss))
           .map(collect((m) => m.getOrElse(undefined)))
           .map((txs) => {
-            const s = indexBy(
-              (tx) => `${tx.id}:${tx.timestamp.valueOf()}`,
-              txsList.items
-            );
+            const s = indexBy((tx) => `${tx.id}:${tx.timestamp.valueOf()}`, txsList.items);
             return sort((a, b) => {
               const aTxUid = s[`${a.id}:${a.timestamp.valueOf()}`]['txUid'];
               const bTxUid = s[`${b.id}:${b.timestamp.valueOf()}`]['txUid'];
@@ -151,6 +145,6 @@ export default (repo: AllTxsRepo) =>
           .map((txs) => ({
             ...txsList,
             items: txs,
-          }))
+          })),
       ),
   });

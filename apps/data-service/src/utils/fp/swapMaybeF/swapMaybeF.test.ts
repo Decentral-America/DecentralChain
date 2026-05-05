@@ -1,6 +1,6 @@
+import { of as taskOf, waitAll } from 'folktale/concurrency/task';
 import { of as maybeOf } from 'folktale/maybe';
 import { of as resultOf } from 'folktale/result';
-import { of as taskOf, waitAll } from 'folktale/concurrency/task';
 import { swapMaybeF } from '.';
 
 test('swapMaybeF with Result as F', () => {
@@ -13,6 +13,6 @@ test('swapMaybeF with Task as F', () => {
   waitAll([swapMaybeF(taskOf, maybeOf(taskOf(1))), taskOf(maybeOf(1))])
     .run()
     .listen({
-      onResolved: xs => expect(xs[0]).toEqual(xs[1]),
+      onResolved: (xs) => expect(xs[0]).toEqual(xs[1]),
     });
 });
