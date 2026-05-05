@@ -10,10 +10,10 @@ export default createHttpHandler(() =>
   taskOf(
     HttpResponse.Ok(
       defaultStringify({
-        version,
-        github: 'https://github.com/wavesplatform/data-service',
         docsUrl: process.env.DOCS_URL ? process.env.DOCS_URL : undefined,
-      })
-    )
-  )
+        github: 'https://github.com/wavesplatform/data-service',
+        version,
+      }),
+    ),
+  ),
 );

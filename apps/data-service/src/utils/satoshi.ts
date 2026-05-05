@@ -1,12 +1,11 @@
-import { BigNumber } from '@waves/data-entities';
+import { type BigNumber } from '@decentralchain/data-entities';
 import { curry } from 'ramda';
 
 export const convertPrice = curry(
   (aDecimals: number, pDecimals: number, price: BigNumber): BigNumber =>
-    price.shiftedBy(-8 + aDecimals - pDecimals)
+    price.shiftedBy(-8 + aDecimals - pDecimals),
 );
 
 export const convertAmount = curry(
-  (decimals: number, amount: BigNumber): BigNumber =>
-    amount.shiftedBy(-decimals)
+  (decimals: number, amount: BigNumber): BigNumber => amount.shiftedBy(-decimals),
 );

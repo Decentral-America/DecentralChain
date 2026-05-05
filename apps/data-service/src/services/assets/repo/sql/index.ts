@@ -1,8 +1,8 @@
 import * as knex from 'knex';
 import { complement, compose, cond, isNil, map } from 'ramda';
+import { type AssetsSearchRequest } from '../types';
 import { columns } from './common';
 import { searchAssets } from './searchAssets';
-import { AssetsSearchRequest } from '../types';
 
 const pg = knex({ client: 'pg' });
 
@@ -40,21 +40,18 @@ export const search = (request: AssetsSearchRequest): string => {
           (request) => isNil(request.ticker),
           (request) =>
             compose(
+              (q: knex.QueryBuilder) => (request.limit ? q.clone().limit(request.limit) : q),
               (q: knex.QueryBuilder) =>
-                request.limit ? q.clone().limit(request.limit) : q,
-              (q: knex.QueryBuilder) =>
-                request.after
-                  ? q.clone().where('rn', '>', getAssetIndex(request.after))
-                  : q
+                request.after ? q.clone().where('rn', '>', getAssetIndex(request.after)) : q,
             )(searchAssets(request.search)),
         ],
         [
           complement(isNil),
           (request) =>
             compose(filter(request.ticker))(
-              pg({ a: 'assets' }).select(map((col) => `a.${col}`, columns))
+              pg({ a: 'assets' }).select(map((col) => `a.${col}`, columns)),
             ),
         ],
-      ])(request)
+      ])(request),
   )(request);
 };

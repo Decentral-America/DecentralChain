@@ -1,20 +1,15 @@
-import { BigNumber } from '@waves/data-entities';
-import { compose, tail, init, split } from 'ramda';
-import { IMain } from 'pg-promise';
+import { type BigNumber } from '@decentralchain/data-entities';
 import * as pgPromise from 'pg-promise';
+import { type IMain } from 'pg-promise';
+import { compose, init, split, tail } from 'ramda';
 
 import { toBigNumber } from '../../utils/bigNumber';
 
 const pgp: IMain = pgPromise();
 
-const parsePgArray = compose<string, string, string, string[]>(
-  split(','),
-  init,
-  tail
-);
+const parsePgArray = compose<string, string, string, string[]>(split(','), init, tail);
 
-const toBigNumberAll = (s: string): BigNumber[] =>
-  parsePgArray(s).map(toBigNumber);
+const toBigNumberAll = (s: string): BigNumber[] => parsePgArray(s).map(toBigNumber);
 
 const types = pgp.pg.types;
 

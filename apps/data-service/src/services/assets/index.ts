@@ -1,15 +1,15 @@
-import { Maybe } from 'folktale/maybe';
-import { of as taskOf, rejected, waitAll } from 'folktale/concurrency/task';
-import { Asset } from '@waves/data-entities';
+import { type Asset } from '@decentralchain/data-entities';
+import { rejected, of as taskOf, waitAll } from 'folktale/concurrency/task';
+import { type Maybe } from 'folktale/maybe';
 
 import { AppError } from '../../errorHandling';
-import { Service, SearchedItems } from '../../types';
+import { type SearchedItems, type Service } from '../../types';
 
 import {
-  AssetsGetRequest,
-  AssetsMgetRequest,
-  AssetsSearchRequest,
-  AssetsRepo,
+  type AssetsGetRequest,
+  type AssetsMgetRequest,
+  type AssetsRepo,
+  type AssetsSearchRequest,
 } from './repo/types';
 
 export type AssetsServiceGetRequest = {
@@ -33,7 +33,6 @@ export type AssetsService = {
 export default (repo: AssetsRepo): AssetsService => ({
   get: (req) => repo.get(req.id),
   mget: (req) => repo.mget(req.ids),
-  search: (req) => repo.search(req),
 
   precisions: (req) => {
     const assetIds = new Map<string, number>();
@@ -50,15 +49,14 @@ export default (repo: AssetsRepo): AssetsService => ({
           ma.matchWith({
             Just: ({ value: a }) => taskOf(a.precision),
             Nothing: () =>
-              rejected(
-                AppError.Resolver(`Asset ${req.ids[idx]} precision not found.`)
-              ),
-          })
-        )
-      ).map(precisions => {
+              rejected(AppError.Resolver(`Asset ${req.ids[idx]} precision not found.`)),
+          }),
+        ),
+      ).map((precisions) => {
         // asset id is guaranteed to exist
-        return req.ids.map(id => precisions[assetIds.get(id) as number])
-      })
+        return req.ids.map((id) => precisions[assetIds.get(id) as number]);
+      }),
     );
-  }
+  },
+  search: (req) => repo.search(req),
 });

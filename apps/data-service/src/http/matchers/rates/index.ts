@@ -1,5 +1,5 @@
-import * as Router from 'koa-router';
-import { RatesMgetService } from '../../../services/rates';
+import * as Router from '@koa/router';
+import { type RatesMgetService } from '../../../services/rates';
 import { postToGet } from '../../_common/postToGet';
 import getEstimateRateHandler from './estimate';
 

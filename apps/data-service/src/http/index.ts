@@ -1,18 +1,17 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
+
 const router = new Router();
 
-import { ServiceMesh } from '../services';
-
-import version from './version';
-import root from './root';
-
+import { type ServiceMesh } from '../services';
 import aliases from './aliases';
 import assets from './assets';
-import notFound from './notFound';
 import candles from './candles';
 import matchers from './matchers';
+import notFound from './notFound';
 import pairs from './pairs';
+import root from './root';
 import transactions from './transactions';
+import version from './version';
 
 export default (serviceMesh: ServiceMesh) =>
   router

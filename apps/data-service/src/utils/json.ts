@@ -1,21 +1,21 @@
-import * as createParser from '@waves/parse-json-bignumber';
-import { BigNumber } from '@waves/data-entities';
-import { toBigNumber } from './bigNumber';
+import { BigNumber } from '@decentralchain/data-entities';
+import * as createParser from '@decentralchain/parse-json-bignumber';
 import { LSNFormat } from '../http/types';
+import { toBigNumber } from './bigNumber';
 
 const parser = createParser<BigNumber>({
-  strict: false,
   isInstance: (bn: any): bn is BigNumber => BigNumber.isBigNumber(bn),
-  stringify: (bn: BigNumber) => bn.toFixed(),
   parse: toBigNumber,
+  strict: false,
+  stringify: (bn: BigNumber) => bn.toFixed(),
 });
 
 export const parse = parser.parse;
 export const stringify = (lsnFormat: LSNFormat) =>
   createParser<BigNumber>({
-    strict: false,
     isInstance: (bn: any): bn is BigNumber => BigNumber.isBigNumber(bn),
+    parse: toBigNumber,
+    strict: false,
     stringify: (bn: BigNumber) =>
       lsnFormat === LSNFormat.Number ? bn.toFixed() : `"${bn.toString()}"`,
-    parse: toBigNumber,
   }).stringify;

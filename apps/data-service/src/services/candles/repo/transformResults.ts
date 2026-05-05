@@ -1,10 +1,9 @@
-import { BigNumber } from '@waves/data-entities';
-import { compose, curry, groupBy, map, sort, toPairs, merge } from 'ramda';
-import { Interval, CandleInfo, SearchedItems } from '../../../types';
-import { Unit } from '../../../types';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { compose, curry, groupBy, map, merge, sort, toPairs } from 'ramda';
+import { type CandleInfo, type Interval, type SearchedItems, Unit } from '../../../types';
+import { add, ceil, floor, trunc } from '../../../utils/date';
 import { concatAll } from '../../../utils/fp/concatAll';
-import { floor, ceil, add, trunc } from '../../../utils/date';
-import { CandlesSearchRequest } from '../repo';
+import { type CandlesSearchRequest } from '../repo';
 import { candleMonoid } from './candleMonoid';
 
 const truncToMinutes = trunc(Unit.Minute);
@@ -45,13 +44,13 @@ export const transformCandle =
 
     return {
       ...map((v) => (c.txs_count === 0 ? null : v), {
-        maxHeight: c.max_height,
-        open: c.open,
+        close: c.close,
         high: c.high,
         low: c.low,
-        close: c.close,
-        volume: c.volume,
+        maxHeight: c.max_height,
+        open: c.open,
         quoteVolume: c.quote_volume,
+        volume: c.volume,
         weightedAveragePrice: c.weighted_average_price,
       }),
       time: new Date(time),
@@ -65,15 +64,11 @@ export const transformCandle =
 export const addMissingCandles = curry(
   (interval: Interval, timeStart: Date, timeEnd: Date) =>
     (
-      candlesGroupedByTime: Record<string, CandleDbResponse[]>
+      candlesGroupedByTime: Record<string, CandleDbResponse[]>,
     ): Record<string, CandleDbResponse[]> => {
       const end = timeEnd;
       const res = merge({}, candlesGroupedByTime);
-      for (
-        let it = ceil(interval, timeStart);
-        it <= end;
-        it = floor(interval, add(interval, it))
-      ) {
+      for (let it = ceil(interval, timeStart); it <= end; it = floor(interval, add(interval, it))) {
         const cur = truncToMinutes(it);
 
         if (!res[cur]) {
@@ -82,12 +77,12 @@ export const addMissingCandles = curry(
       }
 
       return res;
-    }
+    },
 );
 
 export const transformResults = (
   result: CandleDbResponse[],
-  request: CandlesSearchRequest
+  request: CandlesSearchRequest,
 ): SearchedItems<CandleInfo> =>
   compose<
     CandleDbResponse[],
@@ -100,21 +95,21 @@ export const transformResults = (
     SearchedItems<CandleInfo>
   >(
     (items) => ({
-      items: items,
       isLastPage: false,
+      items: items,
     }),
     map(transformCandle(request.interval)),
     sort((a, b): number => new Date(a[0]).valueOf() - new Date(b[0]).valueOf()),
     toPairs,
     map<Record<string, RawCandle[]>, Record<string, RawCandle>>(concatAll(candleMonoid)),
     addMissingCandles(request.interval, request.timeStart, request.timeEnd),
-    groupBy((candle) => truncToMinutes(floor(request.interval, candle.time_start)))
+    groupBy((candle) => truncToMinutes(floor(request.interval, candle.time_start))),
   )(result);
 
-  export const transformLastResult = (
-    result: CandleDbResponse[],
-    request: CandlesSearchRequest
-  ): SearchedItems<CandleInfo> =>
+export const transformLastResult = (
+  result: CandleDbResponse[],
+  request: CandlesSearchRequest,
+): SearchedItems<CandleInfo> =>
   compose<
     CandleDbResponse[],
     Record<string, RawCandle[]>,
@@ -124,11 +119,11 @@ export const transformResults = (
     SearchedItems<CandleInfo>
   >(
     (items) => ({
-      items: items,
       isLastPage: false,
+      items: items,
     }),
     map(transformCandle(request.interval)),
     toPairs,
     map<Record<string, RawCandle[]>, Record<string, RawCandle>>(concatAll(candleMonoid)),
-    groupBy((candle) => truncToMinutes(floor(request.interval, candle.time_start)))
+    groupBy((candle) => truncToMinutes(floor(request.interval, candle.time_start))),
   )(result);

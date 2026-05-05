@@ -1,62 +1,54 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
 import { result as resultSchema } from './schema';
 import * as sql from './sql';
 import {
-  LeaseTxsRepo,
-  LeaseTxsSearchRequest,
-  LeaseTxDbResponse,
-  LeaseTx,
+  type LeaseTx,
+  type LeaseTxDbResponse,
+  type LeaseTxsRepo,
+  type LeaseTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): LeaseTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.lease.get',
-      sql: sql.get,
       resultSchema,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.lease.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.lease.mget',
       resultSchema,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
-    search: searchPreset<
-      Cursor,
-      LeaseTxsSearchRequest,
-      LeaseTxDbResponse,
-      LeaseTx
-    >({
+    search: searchPreset<Cursor, LeaseTxsSearchRequest, LeaseTxDbResponse, LeaseTx>({
+      cursorSerialization: { deserialize, serialize },
       name: 'transactions.lease.search',
-      sql: sql.search,
       resultSchema,
+      sql: sql.search,
       transformResult: transformTxInfo,
-      cursorSerialization: { serialize, deserialize },
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

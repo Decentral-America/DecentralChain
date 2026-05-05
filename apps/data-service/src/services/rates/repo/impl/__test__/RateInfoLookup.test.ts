@@ -1,4 +1,4 @@
-import { Asset, BigNumber } from '@waves/data-entities';
+import { Asset, BigNumber } from '@decentralchain/data-entities';
 import { empty } from 'folktale/maybe';
 
 import { MoneyFormat } from '../../../../types';
@@ -8,30 +8,30 @@ describe('RateInfoLookup', () => {
   describe('get', () => {
     it('should get rate exactly for requested pair', () => {
       const amountAsset = new Asset({
-        id: 'WAVES',
-        name: 'Waves',
         description: '',
-        precision: 8,
+        hasScript: false,
         height: 0,
-        timestamp: new Date(),
-        sender: '',
+        id: 'WAVES',
+        minSponsoredFee: 0,
+        name: 'Waves',
+        precision: 8,
         quantity: 100,
         reissuable: false,
-        minSponsoredFee: 0,
-        hasScript: false,
+        sender: '',
+        timestamp: new Date(),
       });
       const baseAsset = new Asset({
-        id: 'USDN',
-        name: 'USDN',
         description: '',
-        precision: 6,
+        hasScript: false,
         height: 1,
-        timestamp: new Date(),
-        sender: '',
+        id: 'USDN',
+        minSponsoredFee: 0,
+        name: 'USDN',
+        precision: 6,
         quantity: 100,
         reissuable: false,
-        minSponsoredFee: 0,
-        hasScript: false,
+        sender: '',
+        timestamp: new Date(),
       });
 
       const data = [
@@ -47,8 +47,8 @@ describe('RateInfoLookup', () => {
 
       const request = {
         amountAsset: baseAsset,
-        priceAsset: amountAsset,
         moneyFormat: MoneyFormat.Long,
+        priceAsset: amountAsset,
       };
       const rate = lookup.get(request).getOrElse(undefined);
 

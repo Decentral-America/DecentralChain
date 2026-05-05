@@ -1,46 +1,43 @@
 import { propEq } from 'ramda';
 
-import { CommonRepoDependencies } from '../../..';
+import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
 import { searchPreset } from '../../../_common/presets/pg/search';
 
-import { Cursor, serialize, deserialize } from '../../_common/cursor';
+import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result } from './schema';
 import * as sql from './sql';
 import * as transformTxInfo from './transformTxInfo';
 import {
-  SetAssetScriptTxsRepo,
-  SetAssetScriptTxDbResponse,
-  SetAssetScriptTxsSearchRequest,
-  SetAssetScriptTx,
+  type SetAssetScriptTx,
+  type SetAssetScriptTxDbResponse,
+  type SetAssetScriptTxsRepo,
+  type SetAssetScriptTxsSearchRequest,
 } from './types';
 
-export default ({
-  drivers: { pg },
-  emitEvent,
-}: CommonRepoDependencies): SetAssetScriptTxsRepo => {
+export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): SetAssetScriptTxsRepo => {
   return {
     get: getByIdPreset({
       name: 'transactions.setAssetScript.get',
-      sql: sql.get,
       resultSchema: result,
+      sql: sql.get,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     mget: mgetByIdsPreset({
-      name: 'transactions.setAssetScript.mget',
       matchRequestResult: propEq('id'),
-      sql: sql.mget,
+      name: 'transactions.setAssetScript.mget',
       resultSchema: result,
+      sql: sql.mget,
       transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
 
     search: searchPreset<
@@ -49,17 +46,17 @@ export default ({
       SetAssetScriptTxDbResponse,
       SetAssetScriptTx
     >({
-      name: 'transactions.setAssetScript.search',
-      sql: sql.search,
-      resultSchema: result,
-      transformResult: transformTxInfo,
       cursorSerialization: {
-        serialize,
         deserialize,
+        serialize,
       },
+      name: 'transactions.setAssetScript.search',
+      resultSchema: result,
+      sql: sql.search,
+      transformResult: transformTxInfo,
     })({
-      pg,
       emitEvent,
+      pg,
     }),
   };
 };

@@ -1,6 +1,9 @@
 import { list } from '../list';
 
-const items = [{ id: 'qwe', f: 0 }, { id: 'asd', f: 1 }];
+const items = [
+  { f: 0, id: 'qwe' },
+  { f: 1, id: 'asd' },
+];
 
 describe('List type should be', () => {
   it('constructed from array', () => {

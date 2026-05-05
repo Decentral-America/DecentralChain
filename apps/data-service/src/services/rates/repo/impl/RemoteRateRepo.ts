@@ -1,12 +1,11 @@
+import { BigNumber } from '@decentralchain/data-entities';
+import { type Task, of as taskOf } from 'folktale/concurrency/task';
 import * as knex from 'knex';
 import { chain } from 'ramda';
-import { Task, of as taskOf } from 'folktale/concurrency/task';
-import { BigNumber } from '@waves/data-entities';
-
-import { DbError, Timeout } from '../../../../errorHandling';
-import { PgDriver } from '../../../../db/driver';
-import { RateMgetParams, RateWithPairIds } from '../../../../types';
-import { AsyncMget } from '../../repo';
+import { type PgDriver } from '../../../../db/driver';
+import { type DbError, type Timeout } from '../../../../errorHandling';
+import { type RateMgetParams, type RateWithPairIds } from '../../../../types';
+import { type AsyncMget } from '../../repo';
 import makeSql from './sql';
 
 const pg = knex({ client: 'pg' });
@@ -19,16 +18,12 @@ type CandleRate = {
 };
 
 export default class RemoteRateRepo
-  implements AsyncMget<RateMgetParams, RateWithPairIds, DbError | Timeout> {
+  implements AsyncMget<RateMgetParams, RateWithPairIds, DbError | Timeout>
+{
   constructor(private readonly dbDriver: PgDriver) {}
 
-  mget(
-    request: RateMgetParams
-  ): Task<DbError | Timeout, Array<RateWithPairIds>> {
-    const pairsSqlParams = chain(
-      (it) => [it.amountAsset, it.priceAsset],
-      request.pairs
-    );
+  mget(request: RateMgetParams): Task<DbError | Timeout, Array<RateWithPairIds>> {
+    const pairsSqlParams = chain((it) => [it.amountAsset, it.priceAsset], request.pairs);
 
     const sql = pg.raw(makeSql(request.pairs.length), [
       request.timestamp.getOrElse(new Date()),
@@ -37,16 +32,14 @@ export default class RemoteRateRepo
     ]);
 
     const dbTask: Task<DbError | Timeout, CandleRate[]> =
-      request.pairs.length === 0
-        ? taskOf([])
-        : this.dbDriver.any(sql.toString());
+      request.pairs.length === 0 ? taskOf([]) : this.dbDriver.any(sql.toString());
 
     return dbTask.map((result) =>
       result.map((it) => ({
         amountAsset: it.amount_asset_id,
         priceAsset: it.price_asset_id,
         rate: it.weighted_average_price || new BigNumber(0),
-      }))
+      })),
     );
   }
 }

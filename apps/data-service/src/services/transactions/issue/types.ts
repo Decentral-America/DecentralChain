@@ -1,16 +1,16 @@
-import { Maybe } from 'folktale/maybe';
+import { type Maybe } from 'folktale/maybe';
 import {
-  Service,
-  SearchedItems,
-  ServiceGetRequest,
-  ServiceMgetRequest,
+  type SearchedItems,
+  type Service,
+  type ServiceGetRequest,
+  type ServiceMgetRequest,
 } from '../../../types';
-import { WithMoneyFormat } from '../../types';
+import { type WithMoneyFormat } from '../../types';
 import {
-  IssueTx,
-  IssueTxsGetRequest,
-  IssueTxsMgetRequest,
-  IssueTxsSearchRequest,
+  type IssueTx,
+  type IssueTxsGetRequest,
+  type IssueTxsMgetRequest,
+  type IssueTxsSearchRequest,
 } from './repo/types';
 
 type IssueTxsServiceGetRequest = ServiceGetRequest<IssueTxsGetRequest>;
@@ -19,12 +19,6 @@ type IssueTxsServiceSearchRequest = IssueTxsSearchRequest;
 
 export type IssueTxsService = {
   get: Service<IssueTxsServiceGetRequest & WithMoneyFormat, Maybe<IssueTx>>;
-  mget: Service<
-    IssueTxsServiceMgetRequest & WithMoneyFormat,
-    Maybe<IssueTx>[]
-  >;
-  search: Service<
-    IssueTxsServiceSearchRequest & WithMoneyFormat,
-    SearchedItems<IssueTx>
-  >;
+  mget: Service<IssueTxsServiceMgetRequest & WithMoneyFormat, Maybe<IssueTx>[]>;
+  search: Service<IssueTxsServiceSearchRequest & WithMoneyFormat, SearchedItems<IssueTx>>;
 };

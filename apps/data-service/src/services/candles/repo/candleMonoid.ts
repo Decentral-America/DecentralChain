@@ -1,6 +1,6 @@
-import { BigNumber } from '@waves/data-entities';
-import { Monoid } from '../../../types/monoid';
-import { RawCandle } from './transformResults';
+import { BigNumber } from '@decentralchain/data-entities';
+import { type Monoid } from '../../../types/monoid';
+import { type RawCandle } from './transformResults';
 
 // common
 export const leftNotNullMonoid: Monoid<any> = {
@@ -29,14 +29,12 @@ export const maxMonoid: Monoid<number> = {
 };
 
 export const bigNumberMinMonoid: Monoid<BigNumber> = {
-  concat: (a: BigNumber, b: BigNumber): BigNumber =>
-    a.comparedTo(b) === 1 ? b : a,
+  concat: (a: BigNumber, b: BigNumber): BigNumber => (a.comparedTo(b) === 1 ? b : a),
   empty: new BigNumber(+Infinity),
 };
 
 export const bigNumberMaxMonoid = {
-  concat: (a: BigNumber, b: BigNumber): BigNumber =>
-    a.comparedTo(b) === 1 ? a : b,
+  concat: (a: BigNumber, b: BigNumber): BigNumber => (a.comparedTo(b) === 1 ? a : b),
   empty: new BigNumber(-Infinity),
 };
 
@@ -49,27 +47,27 @@ export const weightedAveragePriceMonoid: Monoid<any> = {
 
 export const candleMonoid: Monoid<RawCandle> = {
   concat: (a, b) => ({
-    time_start: leftNotNullMonoid.concat(a.time_start, b.time_start),
-    open: leftNotNullMonoid.concat(a.open, b.open),
     close: rightNotNullMonoid.concat(a.close, b.close),
     high: bigNumberMaxMonoid.concat(a.high, b.high),
     low: bigNumberMinMonoid.concat(a.low, b.low),
-    volume: bigNumberPlusMonoid.concat(a.volume, b.volume),
-    quote_volume: bigNumberPlusMonoid.concat(a.quote_volume, b.quote_volume),
-    weighted_average_price: weightedAveragePriceMonoid.concat(a, b),
     max_height: maxMonoid.concat(a.max_height, b.max_height),
+    open: leftNotNullMonoid.concat(a.open, b.open),
+    quote_volume: bigNumberPlusMonoid.concat(a.quote_volume, b.quote_volume),
+    time_start: leftNotNullMonoid.concat(a.time_start, b.time_start),
     txs_count: sumMonoid.concat(a.txs_count, b.txs_count),
+    volume: bigNumberPlusMonoid.concat(a.volume, b.volume),
+    weighted_average_price: weightedAveragePriceMonoid.concat(a, b),
   }),
   empty: {
-    time_start: leftNotNullMonoid.empty,
-    open: leftNotNullMonoid.empty,
     close: rightNotNullMonoid.empty,
     high: bigNumberMaxMonoid.empty,
     low: bigNumberMinMonoid.empty,
-    volume: bigNumberPlusMonoid.empty,
-    quote_volume: bigNumberPlusMonoid.empty,
-    weighted_average_price: weightedAveragePriceMonoid.empty,
     max_height: maxMonoid.empty,
+    open: leftNotNullMonoid.empty,
+    quote_volume: bigNumberPlusMonoid.empty,
+    time_start: leftNotNullMonoid.empty,
     txs_count: sumMonoid.empty,
+    volume: bigNumberPlusMonoid.empty,
+    weighted_average_price: weightedAveragePriceMonoid.empty,
   },
 };
