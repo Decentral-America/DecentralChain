@@ -1,5 +1,5 @@
-import * as Task from 'folktale/concurrency/task';
-import { get } from 'https';
+import { get } from 'node:https';
+import { Effect } from 'effect';
 import { InitError } from '../../errorHandling';
 
 type MatcherSettings = {
@@ -15,14 +15,18 @@ const err = (matcherSettingsURL: string, originalError?: Error) =>
 
 export const loadMatcherSettings = (
   matcherSettingsURL: string,
-): Task.Task<InitError, MatcherSettings> =>
-  Task.task(({ resolve, reject }) =>
+): Effect.Effect<MatcherSettings, InitError> =>
+  Effect.async<MatcherSettings, InitError>((resume) => {
     get(matcherSettingsURL, (res) => {
       let rawData = '';
       res.on('data', (chunk: any) => (rawData += chunk));
       res.on('end', () => {
-        const settings: MatcherSettings = JSON.parse(rawData);
-        resolve(settings);
+        try {
+          const settings: MatcherSettings = JSON.parse(rawData) as MatcherSettings;
+          resume(Effect.succeed(settings));
+        } catch (e) {
+          resume(Effect.fail(err(matcherSettingsURL, e instanceof Error ? e : undefined)));
+        }
       });
-    }).on('error', (error) => reject(err(matcherSettingsURL, error))),
-  );
+    }).on('error', (error) => resume(Effect.fail(err(matcherSettingsURL, error))));
+  });

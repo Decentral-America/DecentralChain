@@ -1,4 +1,4 @@
-import { type Maybe } from 'folktale/maybe';
+import { type Option } from 'effect';
 import {
   type SearchedItems,
   type Service,
@@ -18,8 +18,14 @@ type UpdateAssetInfoTxsServiceMgetRequest = ServiceMgetRequest<UpdateAssetInfoTx
 type UpdateAssetInfoTxsServiceSearchRequest = UpdateAssetInfoTxsSearchRequest;
 
 export type UpdateAssetInfoTxsService = {
-  get: Service<UpdateAssetInfoTxsServiceGetRequest & WithMoneyFormat, Maybe<UpdateAssetInfoTx>>;
-  mget: Service<UpdateAssetInfoTxsServiceMgetRequest & WithMoneyFormat, Maybe<UpdateAssetInfoTx>[]>;
+  get: Service<
+    UpdateAssetInfoTxsServiceGetRequest & WithMoneyFormat,
+    Option.Option<UpdateAssetInfoTx>
+  >;
+  mget: Service<
+    UpdateAssetInfoTxsServiceMgetRequest & WithMoneyFormat,
+    Option.Option<UpdateAssetInfoTx>[]
+  >;
   search: Service<
     UpdateAssetInfoTxsServiceSearchRequest & WithMoneyFormat,
     SearchedItems<UpdateAssetInfoTx>

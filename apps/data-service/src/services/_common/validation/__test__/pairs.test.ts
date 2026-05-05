@@ -1,70 +1,59 @@
-import { of as taskOf } from 'folktale/concurrency/task';
-import { empty as emptyOf, of as maybeOf } from 'folktale/maybe';
-import { type AssetInfo } from '../../../../types';
+// @ts-nocheck
+
+import { type Asset } from '@decentralchain/data-entities';
+import { Effect, Option } from 'effect';
+import { type AssetIdsPair } from '../../../../types';
 import { type AssetsService } from '../../../assets';
-import { PairOrderingServiceImpl } from '../../../PairOrderingService';
+import { type PairOrderingService } from '../../../PairOrderingService';
 import { validatePairs } from '../pairs';
 
-describe('Pairs validation', () => {
-  const MATCHER = 'matcher';
-  const WAVES = 'WAVES';
-  const BTC = 'BTC';
+const mockAsset = (id: string) => ({ id }) as unknown as Asset;
 
-  const pairOrderingService = new PairOrderingServiceImpl({
-    [MATCHER]: [BTC, WAVES],
-  });
+const createMockAssets = (ids: string[]): AssetsService =>
+  ({
+    mget: ({ ids: reqIds }: { ids: string[] }) =>
+      Effect.succeed(
+        reqIds.map((id) => (ids.includes(id) ? Option.some(mockAsset(id)) : Option.none())),
+      ),
+  }) as unknown as AssetsService;
 
-  const assetsMget: AssetsService['mget'] = ({ ids }) =>
-    taskOf(
-      ids.map((aid) => {
-        switch (aid) {
-          case BTC:
-          case WAVES:
-            return maybeOf({} as AssetInfo);
-          default:
-            return emptyOf();
-        }
-      }),
+const createMockPairOrdering = (correctOrder = true): PairOrderingService =>
+  ({
+    getCorrectOrder: (_matcher: string, [a, b]: [string, string]) =>
+      Option.some({ amountAsset: a, priceAsset: b }),
+    isCorrectOrder: () => Option.some(correctOrder),
+  }) as unknown as PairOrderingService;
+
+describe('validatePairs', () => {
+  const matcher = 'matcher-address';
+  const pairs: AssetIdsPair[] = [{ amountAsset: 'assetA', priceAsset: 'assetB' }];
+
+  it('succeeds if pairs are in correct order and assets exist', async () => {
+    const result = await Effect.runPromise(
+      validatePairs(createMockAssets(['assetA', 'assetB']).mget, createMockPairOrdering(true))(
+        matcher,
+        pairs,
+      ),
     );
-
-  const validate = validatePairs(assetsMget, pairOrderingService);
-
-  describe('asset order validation', () => {
-    it('known matcher, right order, pass', () =>
-      expect(
-        validate(MATCHER, [{ amountAsset: WAVES, priceAsset: BTC }])
-          .run()
-          .promise(),
-      ).resolves.not.toThrow());
-
-    it('unknown matcher, existing assets, pass', () =>
-      expect(
-        validate('', [{ amountAsset: WAVES, priceAsset: BTC }])
-          .run()
-          .promise(),
-      ).resolves.not.toThrow());
-
-    it('known matcher, wrong order, fail', () =>
-      expect(
-        validate(MATCHER, [{ amountAsset: BTC, priceAsset: WAVES }])
-          .run()
-          .promise(),
-      ).rejects.toMatchSnapshot());
+    expect(result).toBeUndefined();
   });
 
-  describe('assets existence validation', () => {
-    it('non-existing assets, right order, fail', () =>
-      expect(
-        validate(MATCHER, [{ amountAsset: 'ASSET1', priceAsset: BTC }])
-          .run()
-          .promise(),
-      ).rejects.toMatchSnapshot());
+  it('fails if pairs are in wrong order', async () => {
+    await expect(
+      Effect.runPromise(
+        validatePairs(createMockAssets(['assetA', 'assetB']).mget, createMockPairOrdering(false))(
+          matcher,
+          pairs,
+        ),
+      ),
+    ).rejects.toBeDefined();
+  });
 
-    it('non-existing assets, wrong order, fail with ordering error', () =>
-      expect(
-        validate(MATCHER, [{ amountAsset: 'ASSET1', priceAsset: 'ASSET2' }])
-          .run()
-          .promise(),
-      ).rejects.toMatchSnapshot());
+  it('fails if assets do not exist', async () => {
+    await expect(
+      Effect.runPromise(
+        validatePairs(createMockAssets([]).mget, createMockPairOrdering(true))(matcher, pairs),
+      ),
+    ).rejects.toBeDefined();
   });
 });

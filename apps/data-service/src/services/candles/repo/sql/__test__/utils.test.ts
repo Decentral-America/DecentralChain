@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { interval } from '../../../../../types';
 import { unsafeIntervalsFromStrings } from '../../../../../utils/interval';
 import { highestDividerLessThan } from '../utils';

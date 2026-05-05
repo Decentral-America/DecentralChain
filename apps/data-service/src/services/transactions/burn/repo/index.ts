@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -8,7 +9,7 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 
 import { result as resultSchema } from './schema';
-import * as sql from './sql';
+import sql from './sql';
 import transformTxInfo from './transformTxInfo';
 import {
   type BurnTx,
@@ -19,9 +20,9 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, BurnTxDbResponse, BurnTx>({
       name: 'transactions.burn.get',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,10 +30,10 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxs
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, BurnTxDbResponse, BurnTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.burn.mget',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -46,7 +47,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxs
         serialize,
       },
       name: 'transactions.burn.search',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

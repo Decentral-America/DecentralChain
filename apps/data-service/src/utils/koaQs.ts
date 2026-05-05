@@ -1,7 +1,9 @@
+import { createRequire } from 'node:module';
 import type * as Koa from 'koa';
 
-const merge = require('merge-descriptors');
-const qs = require('qs');
+const _require = createRequire(import.meta.url);
+const merge = _require('merge-descriptors');
+const qs = _require('qs');
 
 /**
  * Replicates logic from koa-qs module but with
@@ -19,11 +21,12 @@ export function unsafeKoaQs<A, B>(app: Koa<A, B>): Koa<A, B> {
      */
 
     get query() {
-      var str = this.querystring;
+      const str = this.querystring;
       if (!str) return {};
 
-      var c = (this._querycache = this._querycache || {});
-      var query = c[str];
+      if (!this._querycache) this._querycache = {};
+      const c = this._querycache;
+      let query = c[str];
       if (!query) {
         c[str] = query = qs.parse(str);
       }

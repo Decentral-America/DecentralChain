@@ -1,4 +1,5 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
+import { Effect, pipe } from 'effect';
 
 import { type PairsService } from '../../../services/pairs';
 import { type AssetIdsPair, type Pair, type PairInfo } from '../../../types';
@@ -18,14 +19,18 @@ const mgetOrSearchHttpHandler = (pairsService: PairsService) =>
   createHttpHandler(
     (req, lsnFormat) =>
       isMgetRequest(req)
-        ? pairsService
-            .mget(req)
-            .map(mgetSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat))
-        : pairsService
-            .search(req)
-            .map(
+        ? pipe(
+            pairsService.mget(req),
+            Effect.map(
+              mgetSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
+            ),
+          )
+        : pipe(
+            pairsService.search(req),
+            Effect.map(
               searchSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
             ),
+          ),
     parseMgetOrSearch,
   );
 
@@ -35,9 +40,12 @@ export default (pairsService: PairsService) =>
       '/pairs/:amountAsset/:priceAsset',
       createHttpHandler(
         (req, lsnFormat) =>
-          pairsService
-            .get(req)
-            .map(getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat)),
+          pipe(
+            pairsService.get(req),
+            Effect.map(
+              getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
+            ),
+          ),
         parseGet,
       ),
     )

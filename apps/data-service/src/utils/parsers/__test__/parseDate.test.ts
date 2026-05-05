@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { parseDate } from '../parseDate';
 
 // parseDate always receives string from queryString

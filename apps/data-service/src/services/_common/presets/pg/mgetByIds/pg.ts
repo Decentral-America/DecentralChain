@@ -1,5 +1,4 @@
-import { type Task, of as task } from 'folktale/concurrency/task';
-import { type Maybe } from 'folktale/maybe';
+import { Effect, type Option, pipe } from 'effect';
 import { isEmpty } from 'ramda';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta, type DbError, type Timeout } from '../../../../../errorHandling';
@@ -17,10 +16,18 @@ export const getData =
     matchRequestResult: (req: Id[], res: ResponseRaw) => boolean;
     pg: PgDriver;
   }) =>
-  (req: Id[]): Task<DbError | Timeout, Maybe<ResponseRaw>[]> =>
+  (req: Id[]): Effect.Effect<Option.Option<ResponseRaw>[], DbError | Timeout> =>
     isEmpty(req)
-      ? task([])
-      : pg
-          .any<ResponseRaw>(sql(req))
-          .map((responses) => matchRequestsResults(matchRequestResult, req, responses))
-          .mapRejected(addMeta({ params: req, request: name }));
+      ? Effect.succeed([])
+      : pipe(
+          pg.any<ResponseRaw>(sql(req)),
+          Effect.map(
+            (responses) =>
+              matchRequestsResults(
+                matchRequestResult,
+                req,
+                responses,
+              ) as Option.Option<ResponseRaw>[],
+          ),
+          Effect.mapError(addMeta({ params: req, request: name })),
+        );

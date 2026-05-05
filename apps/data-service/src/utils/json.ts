@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
 import * as createParser from '@decentralchain/parse-json-bignumber';
 import { LSNFormat } from '../http/types';

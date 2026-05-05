@@ -1,4 +1,4 @@
-import { type Result } from 'folktale/result';
+import { type Either } from 'effect';
 import { type ParseError } from '../../../errorHandling';
 import { type SortOrder } from '../../../services/_common';
 import { type ParseArrayQuery } from '../../../utils/parsers/parseArrayQuery';
@@ -15,7 +15,7 @@ export type CommonFilters = {
   query: Parser<string>;
 };
 
-export type Parser<Res, Raw = string> = (raw?: Raw) => Result<ParseError, Res | undefined>;
+export type Parser<Res, Raw = string> = (raw?: Raw) => Either.Either<Res | undefined, ParseError>;
 
 export type ParsedFilterValues<ParserFnType extends (...args: any[]) => any> =
-  ReturnType<ParserFnType> extends Result<ParseError, infer R> ? R : never;
+  ReturnType<ParserFnType> extends Either.Either<infer R, ParseError> ? R : never;

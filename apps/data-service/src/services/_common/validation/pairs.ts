@@ -1,5 +1,5 @@
-import { type Task, of as taskOf, rejected as taskRejected } from 'folktale/concurrency/task';
-import { F, T, zip } from 'ramda';
+import { Effect, Option, pipe } from 'effect';
+import { zip } from 'ramda';
 
 import { type AppError, ValidationError } from '../../../errorHandling';
 import { type AssetIdsPair } from '../../../types';
@@ -9,22 +9,18 @@ import { type PairOrderingService } from '../../PairOrderingService';
 
 export const validatePairs =
   (assetsMget: AssetsService['mget'], pairOrderingService: PairOrderingService) =>
-  (matcher: string, pairs: AssetIdsPair[]): Task<AppError, void> => {
+  (matcher: string, pairs: AssetIdsPair[]): Effect.Effect<void, AppError> => {
     // correct order
-    const incorrectPairs = pairs.filter(
-      (p) =>
-        !pairOrderingService.isCorrectOrder(matcher, p).matchWith({
-          Just: ({ value }) => value,
-          Nothing: () => true,
-        }),
-    );
+    const incorrectPairs = pairs.filter((p) => {
+      const order = pairOrderingService.isCorrectOrder(matcher, p);
+      return Option.isSome(order) ? !order.value : true;
+    });
 
-    if (incorrectPairs.length)
-      return taskRejected(
-        new ValidationError('Wrong assets order in provided pair(s)', {
-          pairs: incorrectPairs,
-        }),
+    if (incorrectPairs.length) {
+      return Effect.fail(
+        new ValidationError('Wrong assets order in provided pair(s)', { pairs: incorrectPairs }),
       );
+    }
 
     // all assets exist
     const assetIdsSet: Set<string> = new Set();
@@ -34,24 +30,22 @@ export const validatePairs =
     });
     const assetIds = Array.from(assetIdsSet);
 
-    return assetsMget({ ids: assetIds }).chain((assets) => {
-      const nonExistingIds = zip(assetIds, assets)
-        .filter((x) =>
-          x[1].matchWith({
-            Just: F,
-            Nothing: T,
-          }),
-        )
-        .map((x) => x[0]);
+    return pipe(
+      assetsMget({ ids: assetIds }),
+      Effect.flatMap((assets) => {
+        const nonExistingIds = zip(assetIds, assets)
+          .filter((x) => Option.isNone(x[1]))
+          .map((x) => x[0]);
 
-      if (!nonExistingIds.length) {
-        return taskOf(undefined);
-      } else {
-        return taskRejected(
-          new ValidationError(new Error('Assets do not exist in the blockchain'), {
-            assets: nonExistingIds,
-          }),
-        );
-      }
-    });
+        if (!nonExistingIds.length) {
+          return Effect.succeed(undefined as undefined);
+        } else {
+          return Effect.fail(
+            new ValidationError(new Error('Assets do not exist in the blockchain'), {
+              assets: nonExistingIds,
+            }),
+          );
+        }
+      }),
+    );
   };

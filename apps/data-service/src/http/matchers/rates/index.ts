@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 import { type RatesMgetService } from '../../../services/rates';
 import { postToGet } from '../../_common/postToGet';
 import getEstimateRateHandler from './estimate';

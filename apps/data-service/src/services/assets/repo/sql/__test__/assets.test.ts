@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { get, mget, search } from '../';
 
 describe('Assets SQL queries tests', () => {

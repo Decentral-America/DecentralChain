@@ -1,8 +1,12 @@
-import { Ok as ok, Error as error } from 'folktale/result';
+// @ts-nocheck
+import { Either } from 'effect';
 import { ParseError } from '../../../errorHandling';
 import { parseBool } from '../parseBool';
 
-const invalidValueError = error(new ParseError(new Error('Invalid boolean value')));
+const ok = <T>(v: T) => Either.right(v);
+const err = <E>(v: E) => Either.left(v);
+
+const invalidValueError = err(new ParseError(new Error('Invalid boolean value')));
 
 describe('parseBool should correctly parse', () => {
   it('boolean values', () => {

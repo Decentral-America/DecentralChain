@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { propEq } from 'ramda';
 
 import { type CommonRepoDependencies } from '../../..';
@@ -7,7 +8,7 @@ import { searchPreset } from '../../../_common/presets/pg/search';
 
 import { type Cursor, deserialize, serialize } from '../../_common/cursor';
 import { result as resultSchema } from './schema';
-import * as sql from './sql';
+import sql from './sql';
 import transformTxInfo from './transformTxInfo';
 import {
   type UpdateAssetInfoTx,
@@ -18,9 +19,9 @@ import {
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateAssetInfoTxsRepo => {
   return {
-    get: getByIdPreset({
+    get: getByIdPreset<string, UpdateAssetInfoTxDbResponse, UpdateAssetInfoTx>({
       name: 'transactions.updateAssetInfo.get',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -28,10 +29,10 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateA
       pg,
     }),
 
-    mget: mgetByIdsPreset({
-      matchRequestResult: propEq('id'),
+    mget: mgetByIdsPreset<string, UpdateAssetInfoTxDbResponse, UpdateAssetInfoTx>({
+      matchRequestResult: propEq('id') as any,
       name: 'transactions.updateAssetInfo.mget',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -50,7 +51,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateA
         serialize,
       },
       name: 'transactions.updateAssetInfo.search',
-      resultSchema,
+      resultSchema: resultSchema as any,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

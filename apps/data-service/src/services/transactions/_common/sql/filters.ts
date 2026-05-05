@@ -1,31 +1,31 @@
-import { where, whereIn, whereRaw, limit } from '../../../../utils/db/knex/index';
+import { limit, where, whereIn, whereRaw } from '../../../../utils/db/knex/index';
 import { md5 } from '../../../../utils/hash';
 
-const id = (id) => where('t.id', id);
+const id = (id: string) => where('t.id', id);
 
-const ids = (ids) => whereIn('t.id', ids);
+const ids = (ids: string[]) => whereIn('t.id', ids);
 
-const sender = (addr) => where('t.sender', addr);
+const sender = (addr: string) => where('t.sender', addr);
 
-const senders = (addrs) => whereIn('t.sender', addrs);
+const senders = (addrs: string[]) => whereIn('t.sender', addrs);
 
-const byAssetId = (assetId) => where('asset_id', assetId);
+const byAssetId = (assetId: string) => where('asset_id', assetId);
 
-const byRecipient = (addressOrAlias) =>
+const byRecipient = (addressOrAlias: string) =>
   whereRaw(
     `recipient_address = coalesce((select sender from txs_10 where alias = '${addressOrAlias}' limit 1), '${addressOrAlias}')`,
   );
 
-const byScript = (s) => whereRaw('md5(script) = ?', md5(s));
+const byScript = (s: string) => whereRaw('md5(script) = ?', md5(s));
 
-const sort = (s) => (q) => q.clone().orderBy('t.uid', s);
+const sort = (s: string) => (q: any) => q.clone().orderBy('t.uid', s);
 
 const after =
-  ({ uid, sort }) =>
-  (q) =>
+  ({ uid, sort }: { uid: { toString: () => string }; sort: string }) =>
+  (q: any) =>
     q.clone().whereRaw(`t.uid ${sort === 'desc' ? '<' : '>'} ${uid.toString()}`);
 
-export default {
+const commonFilters = {
   after,
   assetId: byAssetId,
   id,
@@ -37,3 +37,9 @@ export default {
   senders,
   sort,
 };
+
+export default commonFilters;
+export { after, id, ids, limit, sender, senders, sort };
+export const assetId = byAssetId;
+export const recipient = byRecipient;
+export const script = byScript;

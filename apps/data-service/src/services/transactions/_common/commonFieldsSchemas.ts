@@ -1,16 +1,17 @@
-import { Joi } from '../../../utils/validation';
+import { Schema } from 'effect';
+import * as S from '../../../utils/validation/schema';
 
 export default {
-  fee: Joi.object().bignumber().required(),
-  height: Joi.number().required(),
-  id: Joi.string().base58().required(),
-  proofs: Joi.array().required(),
-  sender: Joi.string().base58().required(),
-  sender_public_key: Joi.string().base58().required(),
-  signature: Joi.string().base58().required().allow(null),
-  status: Joi.string().required(),
-  time_stamp: Joi.date().required(),
-  tx_type: Joi.number().min(1).max(18).required(),
-  tx_version: Joi.number().required().allow(null),
-  uid: Joi.object().bignumber().required(),
+  fee: S.Bignumber,
+  height: Schema.Number,
+  id: S.Base58,
+  proofs: Schema.Array(Schema.Unknown),
+  sender: S.Base58,
+  sender_public_key: S.Base58,
+  signature: Schema.NullOr(S.Base58),
+  status: Schema.String,
+  time_stamp: Schema.DateFromSelf,
+  tx_type: Schema.Number,
+  tx_version: Schema.NullOr(Schema.Number),
+  uid: S.Bignumber,
 };

@@ -1,4 +1,4 @@
-import { type Maybe } from 'folktale/maybe';
+import { type Option } from 'effect';
 import {
   type SearchedItems,
   type Service,
@@ -18,8 +18,11 @@ type MassTransferTxsServiceMgetRequest = ServiceMgetRequest<MassTransferTxsMgetR
 type MassTransferTxsServiceSearchRequest = MassTransferTxsSearchRequest;
 
 export type MassTransferTxsService = {
-  get: Service<MassTransferTxsServiceGetRequest & WithMoneyFormat, Maybe<MassTransferTx>>;
-  mget: Service<MassTransferTxsServiceMgetRequest & WithMoneyFormat, Maybe<MassTransferTx>[]>;
+  get: Service<MassTransferTxsServiceGetRequest & WithMoneyFormat, Option.Option<MassTransferTx>>;
+  mget: Service<
+    MassTransferTxsServiceMgetRequest & WithMoneyFormat,
+    Option.Option<MassTransferTx>[]
+  >;
   search: Service<
     MassTransferTxsServiceSearchRequest & WithMoneyFormat,
     SearchedItems<MassTransferTx>

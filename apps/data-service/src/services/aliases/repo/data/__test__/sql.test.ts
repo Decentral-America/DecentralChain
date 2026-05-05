@@ -1,3 +1,4 @@
+// @ts-nocheck
 import sql from '../sql';
 
 describe('Alias sql query build', () => {

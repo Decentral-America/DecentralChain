@@ -1,10 +1,9 @@
-import type * as knex from 'knex';
-
+import { type Knex } from 'knex';
 import * as pointFreeKnex from '../../../../../../utils/db/knex';
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../../_common/sql';
 import * as commonFilters from '../../../../_common/sql/filters';
 
-const byDapp = (dappAddressOrAlias: string) => (q: knex.QueryBuilder) =>
+const byDapp = (dappAddressOrAlias: string) => (q: Knex.QueryBuilder) =>
   q
     .clone()
     .whereRaw(

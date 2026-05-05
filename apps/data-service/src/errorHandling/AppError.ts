@@ -1,5 +1,7 @@
-import { type Matchable } from 'folktale';
-import type * as joi from 'joi';
+/** Local re-declaration — removes the folktale dependency on Matchable. */
+interface Matchable {
+  matchWith<C>(pattern: AppErrorPattern<C>): C;
+}
 
 export type ErrorMetaInfo = Record<string, unknown>;
 
@@ -11,11 +13,11 @@ export type CommonErrorInfo = {
 };
 
 export type ErrorInfo = CommonErrorInfo & {
-  readonly meta?: ErrorMetaInfo;
+  readonly meta?: ErrorMetaInfo | undefined;
 };
 
 export type ValidationErrorInfo = CommonErrorInfo & {
-  readonly meta?: ErrorMetaInfo | joi.ValidationError;
+  readonly meta?: ErrorMetaInfo | undefined;
 };
 
 export type AppErrorPattern<C> = {
@@ -27,36 +29,14 @@ export type AppErrorPattern<C> = {
   Timeout: (e: ErrorInfo) => C;
 };
 
-export const isJoiError = (err: any): err is joi.ValidationError => {
-  return err && err.isJoi;
-};
-
 const ensureError = (e: Error | string): Error => (e instanceof Error ? e : new Error(e));
 
-function createErrorInfo(type: ErrorType, error: Error, meta?: ErrorMetaInfo): ErrorInfo;
 function createErrorInfo(
   type: ErrorType,
   error: Error,
-  meta?: ErrorMetaInfo | joi.ValidationError,
-): ErrorInfo | ValidationErrorInfo;
-function createErrorInfo(
-  type: ErrorType,
-  error: Error,
-  meta?: ErrorMetaInfo | joi.ValidationError,
+  meta?: ErrorMetaInfo,
 ): ErrorInfo | ValidationErrorInfo {
-  if (isJoiError(meta)) {
-    return {
-      error,
-      meta,
-      type,
-    };
-  } else {
-    return {
-      error,
-      meta,
-      type,
-    };
-  }
+  return { error, meta, type };
 }
 
 // @todo more specific error types (e.g. resolver error is not informative about what really happened)
@@ -66,7 +46,7 @@ export abstract class AppError implements Matchable {
 
   public abstract matchWith<C>(pattern: AppErrorPattern<C>): C;
 
-  public static Db(error: Error | string, meta?: ErrorMetaInfo) {
+  public static Db(error: Error | string, meta?: ErrorMetaInfo): DbError {
     return new DbError(error, meta);
   }
   public static Init(error: Error | string, meta?: ErrorMetaInfo) {
@@ -145,12 +125,12 @@ export class DbError extends AppError implements ErrorInfo {
 export class ValidationError extends AppError {
   public readonly type = 'Validation';
   public readonly error: ErrorInfo['error'];
-  public readonly meta?: ErrorInfo['meta'] | joi.ValidationError;
+  public readonly meta?: ErrorInfo['meta'];
 
   constructor(error: Error | string, meta?: ErrorInfo['meta']) {
     super();
     this.error = ensureError(error);
-    this.meta = meta && meta.error && isJoiError(meta.error) ? meta.error : meta;
+    this.meta = meta;
   }
 
   public matchWith<C>(pattern: AppErrorPattern<C>): C {

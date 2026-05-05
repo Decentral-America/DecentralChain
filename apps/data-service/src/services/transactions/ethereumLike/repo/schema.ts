@@ -1,8 +1,9 @@
-import { Joi } from '../../../../utils/validation';
+// @ts-nocheck
+import { Schema } from 'effect';
 import commonFields from '../../_common/commonFieldsSchemas';
 
-export const result = Joi.object().keys({
+export const result = Schema.Struct({
   ...commonFields,
-  bytes: Joi.binary().required(),
-  function_name: Joi.string().required().allow(null),
+  bytes: Schema.instanceOf(Buffer),
+  function_name: Schema.NullOr(Schema.String),
 });

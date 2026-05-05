@@ -1,4 +1,5 @@
 import sql from '../sql';
+
 const filterValues = {
   amountAsset: 'amountAsset',
   matcher: 'matcher',

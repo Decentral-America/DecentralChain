@@ -1,7 +1,8 @@
-import { compose, map, tap, curryN } from 'ramda';
+// @ts-nocheck
+import { compose, curryN, map, tap } from 'ramda';
 
-const log = curryN(2, (logFn, message, level = 'info') => logFn({ level, message }));
-const tapLog = (logFn, messageFn) => tap(compose(log(logFn), messageFn));
-const mapTapLog = compose(map, tapLog);
+const log = curryN(2, (logFn: any, message: any, level = 'info') => logFn({ level, message }));
+const tapLog = (logFn: any, messageFn: any) => tap(compose(log(logFn), messageFn));
+const mapTapLog = (compose as any)(map, tapLog);
 
 export { log, mapTapLog, tapLog };

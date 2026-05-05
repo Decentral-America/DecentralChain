@@ -1,6 +1,6 @@
-import { type Task, of as taskOf, waitAll } from 'folktale/concurrency/task';
-import { empty as emptyOf, type Maybe } from 'folktale/maybe';
-import { flatten, groupBy, indexBy, pipe, sort, toPairs } from 'ramda';
+import { type BigNumber } from '@decentralchain/data-entities';
+import { Effect, Option, pipe } from 'effect';
+import { flatten, groupBy, indexBy, pipe as rpipe, sort, toPairs } from 'ramda';
 
 import { type AppError } from '../../../errorHandling';
 import {
@@ -65,86 +65,78 @@ export type AllTxsServiceMgetRequest = ServiceMgetRequest<AllTxsMgetRequest>;
 export type AllTxsServiceSearchRequest = AllTxsSearchRequest;
 
 export type AllTxsService = {
-  get: Service<AllTxsServiceGetRequest & WithMoneyFormat, Maybe<TransactionInfo>>;
-  mget: Service<AllTxsServiceMgetRequest & WithMoneyFormat, Maybe<TransactionInfo>[]>;
+  get: Service<AllTxsServiceGetRequest & WithMoneyFormat, Option.Option<TransactionInfo>>;
+  mget: Service<AllTxsServiceMgetRequest & WithMoneyFormat, Option.Option<TransactionInfo>[]>;
   search: Service<AllTxsServiceSearchRequest & WithMoneyFormat, SearchedItems<TransactionInfo>>;
 };
 
-// @todo
-// request by (id, timestamp) instead of just id
-// to ensure correct tx response even if
-// id is duplicated (happens in payment, alias txs)
 export default (repo: AllTxsRepo) =>
   (txsServices: AllTxsServiceDep): AllTxsService => ({
     get: (req) =>
-      repo
-        .get(req.id) //Task tx
-        .chain((m) =>
-          m.matchWith({
-            Just: ({ value }) => {
-              return txsServices[value.type as keyof AllTxsServiceDep].get({
-                id: value.id,
+      pipe(
+        repo.get(req.id),
+        Effect.flatMap((m) =>
+          Option.isSome(m)
+            ? txsServices[m.value.type as keyof AllTxsServiceDep].get({
+                id: m.value.id,
                 moneyFormat: req.moneyFormat,
-              });
-            },
-            Nothing: () => taskOf(emptyOf()),
-          }),
+              })
+            : Effect.succeed(Option.none()),
         ),
+      ),
 
     mget: (req) =>
-      repo
-        .mget(req.ids) // Task tx[]. tx can have data: null
-        .chain((txsList: Maybe<TransactionInfo>[]) =>
-          waitAll(
+      pipe(
+        repo.mget(req.ids),
+        Effect.flatMap((txsList: Option.Option<TransactionInfo>[]) =>
+          Effect.all(
             txsList.map((m) =>
-              m.matchWith({
-                Just: ({ value }) => {
-                  return txsServices[value.type as keyof AllTxsServiceDep].get({
-                    id: value.id,
+              Option.isSome(m)
+                ? txsServices[m.value.type as keyof AllTxsServiceDep].get({
+                    id: m.value.id,
                     moneyFormat: req.moneyFormat,
-                  });
-                },
-                Nothing: () => taskOf(emptyOf()),
-              }),
+                  })
+                : Effect.succeed(Option.none<TransactionInfo>()),
             ),
           ),
         ),
+      ),
 
     search: (req) =>
-      repo.search(req).chain((txsList: SearchedItems<CommonTransactionInfo>) =>
-        waitAll<AppError, Maybe<TransactionInfo>[]>(
-          pipe<
-            CommonTransactionInfo[],
-            Record<string, CommonTransactionInfo[]>,
-            [string, CommonTransactionInfo[]][],
-            Task<AppError, Maybe<TransactionInfo>[]>[]
-          >(
-            groupBy((t) => String(t.type)),
-            toPairs,
-            (tuples) =>
-              tuples.map(([type, txs]) => {
-                return txsServices[type as unknown as keyof AllTxsServiceDep].mget({
-                  ids: txs.map((t) => t.id),
-                  moneyFormat: req.moneyFormat,
-                });
-              }),
-          )(txsList.items),
-        )
-          .map((mss) => flatten<Maybe<TransactionInfo>>(mss))
-          .map(collect((m) => m.getOrElse(undefined)))
-          .map((txs) => {
-            const s = indexBy((tx) => `${tx.id}:${tx.timestamp.valueOf()}`, txsList.items);
-            return sort((a, b) => {
-              const aTxUid = s[`${a.id}:${a.timestamp.valueOf()}`]['txUid'];
-              const bTxUid = s[`${b.id}:${b.timestamp.valueOf()}`]['txUid'];
-              return req.sort === SortOrder.Ascending
-                ? aTxUid.minus(bTxUid).toNumber()
-                : bTxUid.minus(aTxUid).toNumber();
-            }, txs);
-          })
-          .map((txs) => ({
-            ...txsList,
-            items: txs,
-          })),
-      ),
+      pipe(
+        repo.search(req),
+        Effect.flatMap((txsList: SearchedItems<CommonTransactionInfo>) =>
+          pipe(
+            Effect.all(
+              (rpipe as any)(
+                groupBy((t: any) => String(t.type)),
+                toPairs,
+                (tuples: any) =>
+                  tuples.map(([type, txs]: any) =>
+                    txsServices[type as unknown as keyof AllTxsServiceDep].mget({
+                      ids: txs.map((t: any) => t.id),
+                      moneyFormat: req.moneyFormat,
+                    }),
+                  ),
+              )(txsList.items) as any,
+            ),
+            Effect.map((mss: any) => {
+              const allOptions = (flatten as any)(mss) as Option.Option<TransactionInfo>[];
+              const txs = (collect as any)((m: Option.Option<TransactionInfo>) =>
+                Option.isSome(m) ? m.value : undefined,
+              )(allOptions) as TransactionInfo[];
+
+              const s = indexBy((tx) => `${tx.id}:${tx.timestamp.valueOf()}`, txsList.items);
+              return sort((a, b) => {
+                const aTxUid = s[`${a.id}:${a.timestamp.valueOf()}`]?.txUid;
+                const bTxUid = s[`${b.id}:${b.timestamp.valueOf()}`]?.txUid;
+                return req.sort === SortOrder.Ascending
+                  ? (aTxUid as BigNumber).minus(bTxUid as BigNumber).toNumber()
+                  : (bTxUid as BigNumber).minus(aTxUid as BigNumber).toNumber();
+              }, txs);
+            }),
+            Effect.map((txs) => ({ ...txsList, items: txs }) as SearchedItems<TransactionInfo>),
+          ),
+        ),
+      ) as Effect.Effect<SearchedItems<TransactionInfo>, AppError, never>,
   });

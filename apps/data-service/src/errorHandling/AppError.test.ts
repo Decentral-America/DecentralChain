@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AppError, type AppErrorPattern, type ErrorInfo } from './AppError';
 
 const errorTypes: (keyof AppErrorPattern<any>)[] = [

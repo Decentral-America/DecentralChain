@@ -1,10 +1,9 @@
+// @ts-nocheck
 import createDriver from './driver';
 
-import Task from 'folktale/concurrency/task';
-
-export default {
-  driver: {
-    create: createDriver,
-    createT: createDriver(Task.of),
-  },
+export const driver: any = {
+  create: createDriver,
 };
+
+const _default: any = { driver };
+export default _default;

@@ -1,4 +1,4 @@
-import { Error as error, Ok as ok, type Result } from 'folktale/result';
+import { Either } from 'effect';
 import { identity, mergeAll } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import {
@@ -21,7 +21,7 @@ const LIMIT = 1000;
 const mgetOrSearchParser = parseFilterValues({
   address: commonFilters.query,
   addresses: parseArrayQuery as ParseArrayQuery,
-  aliases: parseArrayQuery as ParseArrayQuery, // merge function type and overloads
+  aliases: parseArrayQuery as ParseArrayQuery,
   queries: parseArrayQuery as ParseArrayQuery,
   showBroken: parseBool,
 });
@@ -45,27 +45,31 @@ const isSearchWithQueriesRequest = (
 
 export const get = ({
   params,
-}: HttpRequest<['id']>): Result<ParseError, AliasesServiceGetRequest> => {
+}: HttpRequest<['id']>): Either.Either<AliasesServiceGetRequest, ParseError> => {
   if (params) {
-    return ok({ id: params.id });
+    return Either.right({ id: params.id });
   } else {
-    return error(new ParseError(new Error('AliasId is required')));
+    return Either.left(new ParseError(new Error('AliasId is required')));
   }
 };
 
 export const mgetOrSearch = ({
   query,
-}: HttpRequest): Result<ParseError, AliasesServiceMgetRequest | AliasesServiceSearchRequest> => {
+}: HttpRequest): Either.Either<
+  AliasesServiceMgetRequest | AliasesServiceSearchRequest,
+  ParseError
+> => {
   if (!query) {
-    return error(new ParseError(new Error('Query is empty')));
+    return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return mgetOrSearchParser(query).chain((fValues) => {
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
+  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
     if (isMgetRequest(fValues)) {
-      return ok(fValues);
+      return Either.right(fValues);
     } else {
       let fValuesWithDefaults = withDefaults(fValues);
-      fValuesWithDefaults = mergeAll<typeof fValuesWithDefaults>([
+      fValuesWithDefaults = mergeAll<any>([
         { showBroken: false },
         fValuesWithDefaults,
         { limit: LIMIT },
@@ -78,7 +82,7 @@ export const mgetOrSearch = ({
           isSearchWithQueriesRequest(fValuesWithDefaults),
         ].filter(identity).length > 1
       ) {
-        return error(
+        return Either.left(
           new ParseError(
             new Error(
               'Request contains a conflict between exclusive peers [address, addresses, queries]',
@@ -87,24 +91,27 @@ export const mgetOrSearch = ({
         );
       }
 
-      if (isSearchWithAddressRequest(fValuesWithDefaults)) {
-        if (!fValuesWithDefaults.address.length) {
-          return error(new ParseError(new Error('`address` is not allowed to be empty')));
+      if (isSearchWithAddressRequest(fValuesWithDefaults as any)) {
+        if (!((fValuesWithDefaults as any).address as string).length) {
+          return Either.left(new ParseError(new Error('`address` is not allowed to be empty')));
         } else {
-          return ok(fValuesWithDefaults);
+          return Either.right(fValuesWithDefaults as any);
         }
-      } else if (isSearchWithAddressesRequest(fValuesWithDefaults)) {
-        if (fValuesWithDefaults.addresses.filter((v) => v.length === 0).length > 0) {
-          return error(
+      } else if (isSearchWithAddressesRequest(fValuesWithDefaults as any)) {
+        if (
+          ((fValuesWithDefaults as any).addresses as string[]).filter((v) => v.length === 0)
+            .length > 0
+        ) {
+          return Either.left(
             new ParseError(new Error('`addresses` is not allowed to be has an empty value')),
           );
         } else {
-          return ok(fValuesWithDefaults);
+          return Either.right(fValuesWithDefaults as any);
         }
-      } else if (isSearchWithQueriesRequest(fValuesWithDefaults)) {
-        return ok(fValuesWithDefaults);
+      } else if (isSearchWithQueriesRequest(fValuesWithDefaults as any)) {
+        return Either.right(fValuesWithDefaults as any);
       } else {
-        return error(
+        return Either.left(
           new ParseError(
             new Error('Neither `address` nor `addresses` nor `queries` were not provided'),
           ),

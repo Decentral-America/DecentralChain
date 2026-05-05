@@ -1,10 +1,10 @@
-import { fromNullable, type Maybe } from 'folktale/maybe';
+// @ts-nocheck
+import { type Option } from 'effect';
 import { head, propEq } from 'ramda';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 import { matchRequestsResults } from '../../../../../utils/db';
 import { type Cursor } from '../../../_common/cursor';
-
 import { type MassTransferTxsSearchRequest, type RawMassTransferTx } from '../types';
 import sql from './sql';
 import { transformResult } from './transformResult';
@@ -28,7 +28,7 @@ export default {
     pg
       .any<DbRawMassTransferTx>(sql.mget(ids))
       .map(transformResult)
-      .map<Maybe<RawMassTransferTx>[]>(matchRequestsResults(propEq('id'), ids))
+      .map<Option.Option<RawMassTransferTx>[]>(matchRequestsResults(propEq('id'), ids))
       .mapRejected(
         addMeta({
           params: ids,

@@ -1,16 +1,17 @@
-import { type Task } from 'folktale/concurrency/task';
+// @ts-nocheck
+import { Effect, pipe } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
 import { type MassTransferTx } from './repo/types';
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
-  (txs: MassTransferTx[]): Task<AppError, MassTransferTx[]> =>
-    assetsService
-      .precisions({
+  (txs: MassTransferTx[]): Effect.Effect<MassTransferTx[], AppError> =>
+    pipe(
+      assetsService.precisions({
         ids: ['WAVES'].concat(txs.map((tx) => tx.assetId)),
-      })
-      .map((precisions) => {
+      }),
+      Effect.map((precisions) => {
         const feePrecision = precisions.splice(0, 1)[0];
         return txs.map((tx, idx) => ({
           ...tx,
@@ -20,4 +21,5 @@ export const modifyDecimals =
             amount: tr.amount.shiftedBy(-precisions[idx]),
           })),
         }));
-      });
+      }),
+    );
