@@ -76,10 +76,13 @@
   },
   "scripts": {
     "build": "tsdown",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
     "lint": "biome check .",
+    "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepack": "pnpm run build",
     "prepublishOnly": "pnpm run build",

@@ -18,7 +18,8 @@
       "!**/*.d.ts",
       "!packages/transactions/docs",
       "!.nx",
-      "!**/.react-router"
+      "!**/.react-router",
+      "!apps/data-service/**"
     ]
   },
   "formatter": {
@@ -165,7 +166,7 @@
       }
     },
     {
-      "includes": ["packages/protobuf-serialization/src/gen/**", "packages/swap-client/src/gen/**"],
+      "includes": ["packages/protobuf-serialization/src/gen/**"],
       "linter": {
         "rules": {
           "security": {

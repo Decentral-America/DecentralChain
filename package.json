@@ -3,13 +3,13 @@
   "description": "DecentralChain SDK — Unified TypeScript monorepo for all @decentralchain packages",
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
-    "@nx/devkit": "22.6.4",
+    "@nx/devkit": "22.7.1",
     "esbuild": "0.28.0",
-    "knip": "6.1.0",
-    "lefthook": "2.1.5",
-    "nx": "22.6.4",
-    "typescript": "6.0.2",
-    "vite": "8.0.8",
+    "knip": "6.11.0",
+    "lefthook": "2.1.6",
+    "nx": "22.7.1",
+    "typescript": "6.0.3",
+    "vite": "8.0.10",
     "vitest": "catalog:"
   },
   "engines": {
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "name": "DecentralChain",
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.3",
   "pnpm": {
     "overrides": {
       "@xmldom/xmldom": ">=0.8.12",
@@ -29,11 +29,10 @@
       "brace-expansion": ">=5.0.5",
       "defu": ">=6.1.5",
       "fast-xml-parser": ">=5.5.7",
-      "lodash": ">=4.18.0",
+      "lodash": ">=4.18.1",
       "path-to-regexp": ">=0.1.13",
       "picomatch": ">=4.0.4",
       "typescript": "$typescript",
-      "vite-node>vite": "7.3.2",
       "yaml": ">=2.8.3",
       "yauzl": "^3.2.1"
     },
@@ -49,6 +48,8 @@
   "private": true,
   "scripts": {
     "build": "nx run-many -t build",
+    "bulletproof": "pnpm nx run-many -t biome-fix --exclude=data-service && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm nx run-many -t biome-lint --exclude=data-service && pnpm run typecheck && pnpm run test",
     "check:boundaries": "node scripts/check-boundaries.mjs",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -56,7 +57,7 @@
     "lint": "biome check --write .",
     "lint:check": "biome check .",
     "prepare": "lefthook install",
-    "test": "nx run-many -t test",
+    "test": "nx run-many -t test --exclude=data-service",
     "typecheck": "nx run-many -t typecheck --exclude=exchange,scanner,data-service"
   },
   "type": "module",

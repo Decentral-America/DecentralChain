@@ -1,4 +1,4 @@
-min_version: 1.11.0
+min_version: 2.1.6
 
 output:
   - execution
