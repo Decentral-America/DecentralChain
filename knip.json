@@ -194,11 +194,6 @@
     "packages/ride-js": {
       "entry": ["src/index.js"],
       "project": ["src/**/*.{ts,js}"]
-    },
-    "packages/swap-client": {
-      "entry": ["src/index.ts"],
-      "ignore": ["src/gen/**"],
-      "project": ["src/**/*.ts"]
     }
   }
 }

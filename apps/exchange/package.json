@@ -97,7 +97,7 @@
     "electron-builder": "^26.8.1",
     "electron-updater": "^6.8.3",
     "jsdom": "catalog:",
-    "vite": "^8.0.8",
+    "vite": "^8.0.10",
     "vitest": "catalog:"
   },
   "engines": {
@@ -120,6 +120,8 @@
   },
   "scripts": {
     "build": "tsc -b && vite build",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
     "dev": "vite",
     "electron:build": "tsc -p electron && electron-builder",
     "electron:build:linux": "tsc -p electron && electron-builder --linux",
@@ -127,6 +129,7 @@
     "electron:build:win": "tsc -p electron && electron-builder --win",
     "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
     "lint": "biome check .",
+    "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "merge-locales": "node scripts/mergeLocales.js",
     "preview": "vite preview",

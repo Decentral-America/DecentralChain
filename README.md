@@ -39,7 +39,6 @@
 | `@decentralchain/money-like-to-node` | Money conversion |
 | `@decentralchain/node-api-js` | Node REST API client |
 | `@decentralchain/ride-js` | RIDE smart contract compiler |
-| `@decentralchain/swap-client` | Atomic swap client |
 | `@decentralchain/data-service-client-js` | Data service client |
 | `@decentralchain/transactions` | Transaction builders |
 | `@decentralchain/signature-adapter` | Signature adapters |

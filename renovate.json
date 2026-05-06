@@ -101,7 +101,7 @@
       "matchPackageNames": ["@ledgerhq/**"]
     },
     {
-      "description": "Group protobuf toolchain (protobuf-serialization, swap-client)",
+      "description": "Group protobuf toolchain (protobuf-serialization)",
       "groupName": "Protobuf",
       "matchPackageNames": ["protobufjs", "@bufbuild/**"]
     },

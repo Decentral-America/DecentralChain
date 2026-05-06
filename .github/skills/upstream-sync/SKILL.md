@@ -13,7 +13,7 @@ Sync DCC monorepo packages with their upstream Waves repositories. DCC was manua
 - **Upstream clones live at**: `/Users/jourlez/Documents/Code/Blockchain/Waves/<repo-name>/`
 - **DCC monorepo lives at**: `/Users/jourlez/Documents/Code/Blockchain/DecentralChain/`
 - **Sync tracking table**: `docs/UPSTREAM.md` §19 — contains the last-synced upstream commit for every package
-- **23 upstream repos** are cloned locally (swap-client upstream was deleted — no sync possible)
+- **22 upstream repos** are cloned locally
 
 ## Package → Directory Mapping
 
@@ -43,7 +43,6 @@ This is the critical mapping between DCC monorepo paths and Waves upstream repo 
 | `packages/cubensis-connect-types` | `waveskeeper-types` | Keeper-Wallet |
 | `packages/cubensis-connect-provider` | `provider-keeper` | Keeper-Wallet |
 | `apps/scanner` | `WavesExplorerLite` | wavesplatform |
-| `packages/swap-client` | `swap-client` | Keeper-Wallet (DELETED) |
 | `packages/crypto` | `waves-crypto` | Keeper-Wallet |
 
 ## Priority Watch List
