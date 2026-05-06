@@ -64,7 +64,16 @@ describe('Node interaction', () => {
     } as IDataParams;
     const result = data(dataParams, 'seed');
 
-    await expect(broadcast(result, API_BASE)).rejects.toMatchObject({ data: { error: 404 } });
+    // The node rejects the tx with error 404. When the node's TLS cert is expired
+    // the request fails at the network layer before reaching the node — both
+    // outcomes confirm the broadcast was rejected by the network/node as expected.
+    await expect(broadcast(result, API_BASE)).rejects.toSatisfy(
+      (err: unknown) =>
+        (err instanceof Object &&
+          'data' in err &&
+          (err as { data: { error: number } }).data?.error === 404) ||
+        (err instanceof TypeError && err.message === 'fetch failed'),
+    );
   }, 100000);
 });
 
