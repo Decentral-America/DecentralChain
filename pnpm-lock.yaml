@@ -697,8 +697,8 @@ importers:
   packages/bignumber:
     dependencies:
       bignumber.js:
-        specifier: ^10.0.2
-        version: 10.0.2
+        specifier: ^11.1.1
+        version: 11.1.1
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -5385,6 +5385,9 @@ packages:
 
   bignumber.js@10.0.2:
     resolution: {integrity: sha512-E8Wp9O06QA6lneJ4aRUXKYf/1GIomqUEmUMwtIOMtDxf1U52ffJY+y7JBk/8wRafA8qOIqLnXQGqonYXZdBnFQ==}
+
+  bignumber.js@11.1.1:
+    resolution: {integrity: sha512-LNkCYMieJqAts/Sj5094B92c5q+yRPlXWpABJnHMbUjB/F8AUjELmSmYX5mxbNiY/QnGnJvJIrnRuW5gUqbW5Q==}
 
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
@@ -13586,6 +13589,8 @@ snapshots:
       require-from-string: 2.0.2
 
   bignumber.js@10.0.2: {}
+
+  bignumber.js@11.1.1: {}
 
   bindings@1.5.0:
     dependencies:
