@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "bignumber.js": "^10.0.2"
+    "bignumber.js": "^11.1.1"
   },
   "description": "Official arbitrary-precision BigNumber library for the DecentralChain blockchain SDK — safe arithmetic and byte serialization for token amounts, transaction fees, and on-chain financial computations",
   "devDependencies": {
@@ -73,10 +73,13 @@
   },
   "scripts": {
     "build": "tsdown",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
     "check:exports": "attw --pack . --profile esm-only",
     "check:publint": "publint",
     "check:size": "size-limit",
     "lint": "biome check .",
+    "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
     "prepack": "pnpm run build",
     "test": "vitest run",
