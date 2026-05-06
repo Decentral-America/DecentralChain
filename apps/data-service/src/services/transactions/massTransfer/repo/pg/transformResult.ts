@@ -31,7 +31,6 @@ const buildTxFromTxs = (txs: DbRawMassTransferTx[]): RawMassTransferTx | null =>
   // Cast is safe: we've already checked txs.length > 0
   const firstRaw = txs[0] as DbRawMassTransferTx;
   // Omit transfer-specific columns; keep the base transaction columns.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {
     recipient_address: _ra,
     recipient_alias: _ral,
