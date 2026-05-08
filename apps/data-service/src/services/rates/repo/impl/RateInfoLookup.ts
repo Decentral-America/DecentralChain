@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { type Asset, BigNumber } from '@decentralchain/data-entities';
 import { Option, pipe } from 'effect';
 import { path } from 'ramda';
@@ -79,9 +78,10 @@ export default class RateInfoLookup
     moneyFormat: MoneyFormat,
   ): Option.Option<VolumeAwareRateInfo> {
     const lookupData = flipped ? flip(pair) : pair;
-    const foundValue = Option.fromNullable<VolumeAwareRateInfo>(
+    const foundValue = Option.fromNullable(
       path([lookupData.amountAsset.id, lookupData.priceAsset.id], this.lookupTable) as
         | VolumeAwareRateInfo
+        | null
         | undefined,
     );
 
@@ -108,7 +108,7 @@ export default class RateInfoLookup
     baseAsset: Asset,
     pair: AssetPairWithMoneyFormat,
   ): Option.Option<VolumeAwareRateInfo> {
-    return map2(
+    return map2<VolumeAwareRateInfo, VolumeAwareRateInfo, VolumeAwareRateInfo>(
       (info1, info2) => ({
         ...pair,
         rate: pipe(

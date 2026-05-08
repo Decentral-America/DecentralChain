@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { knex as _knex } from 'knex';
 import { curryN } from 'ramda';
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
@@ -24,7 +23,7 @@ const byOrder = curryN(2, (orderId, q) =>
   q.clone().whereRaw(`array[t.order1->>'id', t.order2->>'id'] @> array['${orderId}']`).limit(1),
 );
 
-const byAsset = (assetType) =>
+const byAsset = (assetType: string) =>
   curryN(2, (assetId, q) => q.clone().where(`t.${assetType}_asset_id`, assetId));
 
 const byTimeStamp = createByTimeStamp('txs_7');

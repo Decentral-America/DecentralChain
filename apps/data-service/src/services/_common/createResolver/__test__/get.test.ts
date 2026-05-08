@@ -1,14 +1,9 @@
-// @ts-nocheck
-import { Effect, Option } from 'effect';
+import { Effect, Either, Option } from 'effect';
 import { identity } from 'ramda';
 import { type PgDriver } from '../../../../db/driver';
-import { AppError } from '../../../../errorHandling';
 import { get } from '..';
 
 const assetId = 'G8VbM7B6Zu8cYMwpfRsaoKvuLVsy8p1kYP4VvSdwxWfH';
-
-const _resultOk = (s: string) => Effect.succeed(s);
-const _resultError = (s: string) => Effect.fail(AppError.Resolver(s));
 
 afterEach(() => vi.clearAllMocks());
 
@@ -20,28 +15,26 @@ describe('Resolver', () => {
   const commonConfig = {
     emitEvent: () => () => undefined,
     getData: (id: string) =>
-      Effect.map((mockPgDriver as any).oneOrNone<string>(id), (v: string | null) =>
-        Option.fromNullable(v),
-      ),
-    transformInput: (r) => Either.right(r),
-    transformResult: identity,
+      Effect.map((mockPgDriver as any).oneOrNone(id), (v: string | null) => Option.fromNullable(v)),
+    transformInput: (r: any) => Either.right(r),
+    transformResult: identity as any,
   };
 
   it('should return result if all validation pass', async () => {
-    const resolver = get<string, string, string, string>({
+    const resolver = get({
       ...commonConfig,
-      validateResult: () => Effect.succeed('placeholder'),
-    });
+      validateResult: (v: string) => Either.right(v),
+    } as any);
 
     const data = await Effect.runPromise(resolver(assetId));
     expect(Option.isSome(data) ? data.value : null).toEqual(assetId);
   });
 
   it('should take left branch if output validation fails', async () => {
-    const resolver = get<string, string, string, string>({
+    const resolver = get({
       ...commonConfig,
-      validateResult: () => Effect.fail(AppError.Resolver(assetId)),
-    });
+      validateResult: () => Either.left(new Error('bad') as any),
+    } as any);
 
     await expect(Effect.runPromise(resolver(assetId))).rejects.toBeDefined();
   });

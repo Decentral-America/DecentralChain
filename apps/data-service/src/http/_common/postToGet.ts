@@ -1,14 +1,18 @@
-import { type Middleware } from 'koa';
 import { stringify } from 'qs';
+import { type AppContext } from './types';
 
-type PostToGet = (routeMiddleWare: Middleware) => Middleware;
+type HonoHandler = (c: AppContext) => Promise<Response>;
 
-export const postToGet: PostToGet = (routeMiddleware) => async (ctx, next) => {
-  ctx.method = 'GET';
-  // @hack, can't rely on koa-qs in this one
-  // Need to explicitly call with { indices: false }
-  // Otherwise your array with >20 elems [0..21] will become { 0: 0, 1: 1, ... 21: 21 }
-  ctx.request.querystring = stringify(ctx.request.body, { indices: false });
-  await routeMiddleware(ctx, next);
-  next();
-};
+export const postToGet =
+  (routeHandler: HonoHandler): HonoHandler =>
+  async (c: AppContext): Promise<Response> => {
+    let body: Record<string, unknown> = {};
+    try {
+      body = await c.req.json<Record<string, unknown>>();
+    } catch {
+      // ignore parse errors — empty body is valid
+    }
+    // serialise body as query string and stash for createHttpHandler to pick up
+    c.set('postBodyQuery', stringify(body, { indices: false }));
+    return routeHandler(c);
+  };

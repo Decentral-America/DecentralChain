@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Effect/Schema validators replacing the custom Joi v13 extension.
  *
@@ -100,7 +99,7 @@ export const Bignumber = Schema.instanceOf(BigNumber);
 export const Bignumber64 = pipe(
   Schema.instanceOf(BigNumber),
   Schema.filter(
-    (n) => {
+    (n: BigNumber): boolean => {
       if (n.isNaN()) return false;
       // biome-ignore lint/security/noSecrets: false positive - these are Int64 range boundary constants, not secrets
       const LOWER = new BigNumber('-9223372036854775808');
@@ -110,7 +109,7 @@ export const Bignumber64 = pipe(
     },
     {
       identifier: 'Bignumber64',
-      message: 'is outside int64 range',
+      message: () => 'is outside int64 range',
     },
   ),
 );

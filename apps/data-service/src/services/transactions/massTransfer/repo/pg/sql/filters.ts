@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../../_common/sql';
 import commonFilters from '../../../../_common/sql/filters';
 import commonFiltersOrder from '../../../../_common/sql/filtersOrder';
 
-const byRecipient = (addressOrAlias) => (q) =>
+const byRecipient = (addressOrAlias: string) => (q: any) =>
   q
     .clone()
     .whereRaw(

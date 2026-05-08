@@ -1,4 +1,4 @@
-import { Either } from 'effect';
+import { Either, pipe } from 'effect';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { loadConfig } from '../../loadConfig';
@@ -16,12 +16,11 @@ import {
   mgetOrSearchParser,
 } from './utils';
 
-const config = loadConfig();
-
 export const get = ({
   params,
   query,
 }: HttpRequest<['amountAsset', 'priceAsset']>): Either.Either<PairsGetRequest, ParseError> => {
+  const config = loadConfig();
   if (isNil(params)) {
     return Either.left(new ParseError(new Error('Params is empty')));
   }
@@ -30,11 +29,11 @@ export const get = ({
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return (Either.flatMap as any)(
+  return pipe(
     parseFilterValues({
       matcher: commonFilters.query,
     })(query),
-    (fValues: any) => {
+    Either.flatMap((fValues): Either.Either<PairsGetRequest, ParseError> => {
       const fValuesWithDefaults: Partial<PairsGetRequest & WithMatcher> = mergeAll<any>([
         {
           matcher: config.matcher.defaultMatcherAddress,
@@ -53,42 +52,50 @@ export const get = ({
           priceAsset: params.priceAsset,
         },
       });
-    },
+    }),
   );
 };
 
 export const mgetOrSearch = ({
   query,
 }: HttpRequest): Either.Either<PairsMgetRequest | PairsServiceSearchRequest, ParseError> => {
+  const config = loadConfig();
   if (!query) {
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
-  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
-    if (isMgetRequest(fValues)) {
-      return Either.right(fValues);
-    } else {
-      const fValuesWithDefaults: Partial<
-        PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit
-      > = mergeAll<any>([
-        {
-          matcher: config.matcher.defaultMatcherAddress,
-        },
-        withDefaults(fValues),
-      ]);
-
-      if (isSearchCommonRequest(fValuesWithDefaults)) {
-        if (isSearchByAssetRequest(fValuesWithDefaults)) {
-          return Either.right(fValuesWithDefaults);
-        } else if (isSearchByAssetsRequest(fValuesWithDefaults)) {
-          return Either.right(fValuesWithDefaults);
+  return pipe(
+    mgetOrSearchParser(query),
+    Either.flatMap(
+      // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
+      (fValues): Either.Either<PairsMgetRequest | PairsServiceSearchRequest, ParseError> => {
+        if (isMgetRequest(fValues)) {
+          return Either.right(fValues);
         } else {
-          return Either.right(fValuesWithDefaults);
+          const fValuesWithDefaults: Partial<
+            PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit
+          > = mergeAll<any>([
+            {
+              matcher: config.matcher.defaultMatcherAddress,
+            },
+            withDefaults(fValues),
+          ]);
+
+          if (isSearchCommonRequest(fValuesWithDefaults)) {
+            if (isSearchByAssetRequest(fValuesWithDefaults)) {
+              return Either.right(fValuesWithDefaults);
+            } else if (isSearchByAssetsRequest(fValuesWithDefaults)) {
+              return Either.right(fValuesWithDefaults);
+            } else {
+              return Either.right(fValuesWithDefaults);
+            }
+          } else {
+            return Either.left(
+              new ParseError(new Error('Invalid request data'), fValuesWithDefaults),
+            );
+          }
         }
-      } else {
-        return Either.left(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
-      }
-    }
-  });
+      },
+    ),
+  );
 };

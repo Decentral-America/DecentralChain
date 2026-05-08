@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { type BigNumber } from '@decentralchain/data-entities';
 import { Effect, pipe } from 'effect';
 import { type AppError } from '../../../errorHandling';
@@ -9,7 +8,7 @@ export const modifyFeeDecimals =
   (txs: T[]): Effect.Effect<T[], AppError> =>
     pipe(
       assetsService.precisions({ ids: ['WAVES'] }),
-      Effect.map(([feeAssetPrecision]) =>
+      Effect.map(([feeAssetPrecision = 0]) =>
         txs.map((tx) => ({
           ...tx,
           fee: tx.fee.shiftedBy(-feeAssetPrecision),

@@ -1,12 +1,10 @@
-import { createRequire } from 'node:module';
+import { Effect } from 'effect';
 
 import { createPgDriver } from '../../db';
 import createLogger from '../../logger/winston';
+import runDaemon from '../presets/daemon';
+import createDaemon from './create';
 import { loadConfig } from './loadConfig';
-
-const _require = createRequire(import.meta.url);
-const { daemon: runDaemon } = _require('../presets/daemon');
-const createDaemon = _require('./create');
 
 const configuration = loadConfig();
 
@@ -16,17 +14,16 @@ const logger = createLogger({
 
 const pgDriver = createPgDriver(configuration);
 
-runDaemon(
-  createDaemon(
-    {
+Effect.runPromise(
+  runDaemon(
+    createDaemon({
       logger,
       pairsTableName: 'pairs',
       pg: pgDriver,
-    },
+    }),
     configuration,
+    configuration.pairsUpdateInterval,
+    configuration.pairsUpdateTimeout,
+    logger,
   ),
-  configuration,
-  configuration.pairsUpdateInterval,
-  configuration.pairsUpdateTimeout,
-  logger,
 );

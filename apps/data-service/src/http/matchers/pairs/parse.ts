@@ -1,4 +1,4 @@
-import { Either } from 'effect';
+import { Either, pipe } from 'effect';
 import { isNil, mergeAll } from 'ramda';
 import { ParseError } from '../../../errorHandling';
 import { type WithLimit, type WithMatcher, type WithSortOrder } from '../../../services/_common';
@@ -46,25 +46,32 @@ export const mgetOrSearch = ({
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
-    if (isMgetRequest(fValues)) {
-      return Either.right({
-        matcher: params.matcher,
-        pairs: fValues.pairs,
-      });
-    } else {
-      const fValuesWithDefaults = mergeAll<any>([
-        withDefaults(fValues),
-        {
-          matcher: params.matcher,
-        },
-      ]) as PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit;
+  return pipe(
+    mgetOrSearchParser(query),
+    Either.flatMap(
+      (fValues): Either.Either<PairsMgetRequest | PairsServiceSearchRequest, ParseError> => {
+        if (isMgetRequest(fValues)) {
+          return Either.right({
+            matcher: params.matcher,
+            pairs: fValues.pairs,
+          });
+        } else {
+          const fValuesWithDefaults = mergeAll<any>([
+            withDefaults(fValues),
+            {
+              matcher: params.matcher,
+            },
+          ]) as PairsServiceSearchRequest & WithMatcher & WithSortOrder & WithLimit;
 
-      if (isSearchCommonRequest(fValuesWithDefaults as any)) {
-        return Either.right(fValuesWithDefaults);
-      } else {
-        return Either.left(new ParseError(new Error('Invalid request data'), fValuesWithDefaults));
-      }
-    }
-  });
+          if (isSearchCommonRequest(fValuesWithDefaults)) {
+            return Either.right(fValuesWithDefaults);
+          } else {
+            return Either.left(
+              new ParseError(new Error('Invalid request data'), fValuesWithDefaults),
+            );
+          }
+        }
+      },
+    ),
+  );
 };

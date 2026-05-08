@@ -1,12 +1,11 @@
-import { compose, isNil, reject } from 'ramda';
-import { renameKeys } from 'ramda-adjunct';
+import { compose, isNil, reject, renameKeys } from 'ramda';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
-export default compose(
+export default (compose as any)(
   transformTxInfo,
-  renameKeys({
+  renameKeys<Record<string, unknown>>({
     dapp: 'dApp',
     fee_asset_id: 'feeAssetId',
   }),
   reject(isNil),
-);
+) as (obj: any) => any;

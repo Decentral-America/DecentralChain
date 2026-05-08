@@ -1,4 +1,4 @@
-// @ts-nocheck
+import { Either } from 'effect';
 import { interval } from '../../../../../types';
 import { unsafeIntervalsFromStrings } from '../../../../../utils/interval';
 import { highestDividerLessThan } from '../utils';
@@ -6,28 +6,36 @@ import { highestDividerLessThan } from '../utils';
 describe('candles sql helper functions', () => {
   it('highest divider less then', () => {
     expect(
-      highestDividerLessThan(
-        interval('1m').unsafeGet(),
-        unsafeIntervalsFromStrings(['1m', '1h', '1d']),
-      ).unsafeGet().length,
-    ).toBe(interval('1m').unsafeGet().length);
+      Either.getOrThrow(
+        highestDividerLessThan(
+          Either.getOrThrow(interval('1m')),
+          unsafeIntervalsFromStrings(['1m', '1h', '1d']),
+        ),
+      ).length,
+    ).toBe(Either.getOrThrow(interval('1m')).length);
     expect(
-      highestDividerLessThan(
-        interval('10m').unsafeGet(),
-        unsafeIntervalsFromStrings(['5m', '15m', '1h']),
-      ).unsafeGet().length,
-    ).toBe(interval('5m').unsafeGet().length);
+      Either.getOrThrow(
+        highestDividerLessThan(
+          Either.getOrThrow(interval('10m')),
+          unsafeIntervalsFromStrings(['5m', '15m', '1h']),
+        ),
+      ).length,
+    ).toBe(Either.getOrThrow(interval('5m')).length);
     expect(
-      highestDividerLessThan(
-        interval('15m').unsafeGet(),
-        unsafeIntervalsFromStrings(['5m', '15m', '1h']),
-      ).unsafeGet().length,
-    ).toBe(interval('15m').unsafeGet().length);
+      Either.getOrThrow(
+        highestDividerLessThan(
+          Either.getOrThrow(interval('15m')),
+          unsafeIntervalsFromStrings(['5m', '15m', '1h']),
+        ),
+      ).length,
+    ).toBe(Either.getOrThrow(interval('15m')).length);
     expect(
-      highestDividerLessThan(
-        interval('1h').unsafeGet(),
-        unsafeIntervalsFromStrings(['1m', '1h', '1d']),
-      ).unsafeGet().length,
-    ).toBe(interval('1h').unsafeGet().length);
+      Either.getOrThrow(
+        highestDividerLessThan(
+          Either.getOrThrow(interval('1h')),
+          unsafeIntervalsFromStrings(['1m', '1h', '1d']),
+        ),
+      ).length,
+    ).toBe(Either.getOrThrow(interval('1h')).length);
   });
 });

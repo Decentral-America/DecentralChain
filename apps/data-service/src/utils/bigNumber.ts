@@ -1,3 +1,2 @@
-// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
-export const toBigNumber = (x: BigNumber.Value): BigNumber => new BigNumber(x);
+export const toBigNumber = (x: string | number | BigNumber): BigNumber => new BigNumber(x);

@@ -1,3 +1,5 @@
+import type postgres from 'postgres';
+
 import getErrorMessage from '../../errorHandling/getErrorMessage';
 
 import logTaskProgress from '../utils/logTaskProgress';
@@ -31,9 +33,10 @@ const loop = ({
 
   return logTask(
     logMessages,
-    pg.tx((t: any) =>
-      t.batch([t.none(sql.truncateTable(pairsTableName)), t.none(sql.fillTable(pairsTableName))]),
-    ),
+    pg.tx(async (t: postgres.TransactionSql) => {
+      await t.unsafe(sql.truncateTable(pairsTableName));
+      await t.unsafe(sql.fillTable(pairsTableName));
+    }),
   );
 };
 

@@ -1,6 +1,7 @@
-import { compose } from 'ramda';
-import { renameKeys } from 'ramda-adjunct';
+import { compose, renameKeys } from 'ramda';
 
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
-export default compose(transformTxInfo, renameKeys({ lease_id: 'leaseId' }));
+export default (compose as any)(transformTxInfo, renameKeys({ lease_id: 'leaseId' })) as (
+  obj: any,
+) => any;

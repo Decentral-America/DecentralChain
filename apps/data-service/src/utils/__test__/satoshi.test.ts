@@ -15,10 +15,11 @@ test('convertPrice should multiply by 10^-8 + aDecimals - pDecimals', () => {
   expect(convertPrice(8, 0, new BigNumber(100))).toEqual(new BigNumber(100));
 });
 
-test('functions should not fail on corner cases', () => {
-  expect(convertAmount(0, new BigNumber(NaN))).toEqual(new BigNumber(NaN));
-  expect(convertAmount(0, new BigNumber(Infinity))).toEqual(new BigNumber(Infinity));
+test('functions throw on invalid corner cases', () => {
+  // DCC BigNumber intentionally rejects NaN and Infinity (financial safety)
+  expect(() => convertAmount(0, new BigNumber(NaN))).toThrow('Invalid BigNumber value');
+  expect(() => convertAmount(0, new BigNumber(Infinity))).toThrow('Infinite values');
 
-  expect(convertPrice(0, 0, new BigNumber(NaN))).toEqual(new BigNumber(NaN));
-  expect(convertPrice(0, 0, new BigNumber(Infinity))).toEqual(new BigNumber(Infinity));
+  expect(() => convertPrice(0, 0, new BigNumber(NaN))).toThrow('Invalid BigNumber value');
+  expect(() => convertPrice(0, 0, new BigNumber(Infinity))).toThrow('Infinite values');
 });

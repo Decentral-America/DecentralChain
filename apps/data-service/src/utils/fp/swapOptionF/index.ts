@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Effect, Either, Option, pipe } from 'effect';
 
 /**
@@ -11,9 +10,9 @@ export const swapOptionEither = <E, A>(
   optEither: Option.Option<Either.Either<E, A>>,
 ): Either.Either<E, Option.Option<A>> =>
   Option.match(optEither, {
-    onNone: () => Either.right(Option.none()),
+    onNone: () => Either.right(Option.none<A>()) as unknown as Either.Either<E, Option.Option<A>>,
     onSome: (either) => pipe(either, Either.map(Option.some)),
-  });
+  }) as unknown as Either.Either<E, Option.Option<A>>;
 
 /**
  * Swaps Option<Effect<A,E>> → Effect<Option<A>, E>.

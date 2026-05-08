@@ -1,4 +1,3 @@
-// @ts-nocheck
 import sql from '../sql';
 
 const filterValues = [
@@ -16,14 +15,14 @@ const filterValues = [
 
 describe('Sql search by type-specific filters', () => {
   it('supports script filter', () => {
-    expect(sql.search(filterValues[0])).toMatchSnapshot();
+    expect(sql.search(filterValues[0] as any)).toMatchSnapshot();
   });
 
   it('supports assetId filter', () => {
-    expect(sql.search(filterValues[1])).toMatchSnapshot();
+    expect(sql.search(filterValues[1] as any)).toMatchSnapshot();
   });
 
   it('supports assetId and script filters', () => {
-    expect(sql.search(filterValues[2])).toMatchSnapshot();
+    expect(sql.search(filterValues[2] as any)).toMatchSnapshot();
   });
 });

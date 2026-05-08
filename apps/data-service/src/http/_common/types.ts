@@ -1,4 +1,5 @@
 import { type IncomingHttpHeaders } from 'node:http';
+import { type Context, type Hono } from 'hono';
 import {
   DEFAULT_BAD_REQUEST_MESSAGE,
   DEFAULT_INTERNAL_SERVER_ERROR_MESSAGE,
@@ -10,9 +11,23 @@ import { defaultStringify } from './utils';
 
 export type HttpRequest<Params extends string[] = string[]> = {
   params?: Record<ValuesOf<Params>, string>;
-  query?: Record<string, string>;
+  query?: Record<string, string | string[]>;
   headers: IncomingHttpHeaders;
 };
+
+export type EventBus = {
+  emit: (name: string, data: unknown) => void;
+};
+
+export type AppVariables = {
+  eventBus: EventBus;
+  postBodyQuery?: string;
+  requestId?: string;
+};
+
+export type AppEnv = { Variables: AppVariables };
+export type AppContext = Context<AppEnv>;
+export type AppHono = Hono<AppEnv>;
 
 const headersWithContentType = {
   'Content-Type': 'application/json; charset=utf-8',

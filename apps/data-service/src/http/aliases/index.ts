@@ -1,5 +1,5 @@
-import Router from '@koa/router';
 import { Effect, pipe } from 'effect';
+import { Hono } from 'hono';
 import {
   type AliasesService,
   type AliasesServiceMgetRequest,
@@ -13,9 +13,8 @@ import {
   mget as mgetSerializer,
   search as searchSerializer,
 } from '../_common/serialize';
+import { type AppEnv } from '../_common/types';
 import { get as parseGet, mgetOrSearch as parseMgetOrSearch } from './parse';
-
-const subrouter: Router = new Router();
 
 const isMgetRequest = (
   req: AliasesServiceMgetRequest | AliasesServiceSearchRequest,
@@ -30,15 +29,16 @@ const mgetOrSearchHandler = (aliasesService: AliasesService) =>
     parseMgetOrSearch,
   );
 
-export default (aliasesService: AliasesService): Router => {
-  return subrouter
-    .get(
-      '/aliases/:id',
-      createHttpHandler(
-        (req) => pipe(aliasesService.get(req), Effect.map(getSerializer(alias))),
-        parseGet,
-      ),
-    )
-    .get('/aliases', mgetOrSearchHandler(aliasesService))
-    .post('/aliases', postToGet(mgetOrSearchHandler(aliasesService)));
+export default (aliasesService: AliasesService) => {
+  const app = new Hono<AppEnv>();
+  app.get(
+    '/aliases/:id',
+    createHttpHandler(
+      (req) => pipe(aliasesService.get(req), Effect.map(getSerializer(alias))),
+      parseGet,
+    ),
+  );
+  app.get('/aliases', mgetOrSearchHandler(aliasesService));
+  app.post('/aliases', postToGet(mgetOrSearchHandler(aliasesService)));
+  return app;
 };

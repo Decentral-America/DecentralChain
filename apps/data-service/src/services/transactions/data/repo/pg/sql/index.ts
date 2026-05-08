@@ -1,5 +1,4 @@
-// @ts-nocheck
-import * as createApi from './api';
-import * as filters from './filters';
+import createApi from './api';
+import filters from './filters';
 
 export default createApi({ filters });

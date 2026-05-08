@@ -1,4 +1,4 @@
-import { Either } from 'effect';
+import { Either, pipe } from 'effect';
 import { ParseError } from '../../errorHandling';
 import {
   type AssetsServiceGetRequest,
@@ -47,19 +47,28 @@ export const mgetOrSearch = ({
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
-    if (isMgetRequest(fValues)) {
-      return Either.right(fValues);
-    } else {
-      const fValuesWithDefaults = withDefaults(fValues);
+  return pipe(
+    mgetOrSearchParser(query),
+    Either.flatMap(
+      (
+        fValues,
+      ): Either.Either<AssetsServiceMgetRequest | AssetsServiceSearchRequest, ParseError> => {
+        if (isMgetRequest(fValues)) {
+          return Either.right(fValues);
+        } else {
+          const fValuesWithDefaults = withDefaults(fValues);
 
-      if (isSearchByTickerRequest(fValuesWithDefaults)) {
-        return Either.right(fValuesWithDefaults);
-      } else if (isFullTextSearchRequest(fValuesWithDefaults)) {
-        return Either.right(fValuesWithDefaults);
-      } else {
-        return Either.left(new ParseError(new Error('There is neither ticker nor search query')));
-      }
-    }
-  });
+          if (isSearchByTickerRequest(fValuesWithDefaults)) {
+            return Either.right(fValuesWithDefaults);
+          } else if (isFullTextSearchRequest(fValuesWithDefaults)) {
+            return Either.right(fValuesWithDefaults);
+          } else {
+            return Either.left(
+              new ParseError(new Error('There is neither ticker nor search query')),
+            );
+          }
+        }
+      },
+    ),
+  );
 };

@@ -1,3 +1,5 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pairs daemon sql test > truncate table 1`] = `"truncate "pairs" restart identity"`;
 
 exports[`pairs daemon sql test truncate table 1`] = `"truncate \\"pairs\\" restart identity"`;

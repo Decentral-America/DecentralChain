@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../errorHandling';
@@ -6,7 +5,9 @@ import { type Parser } from '../../http/_common/filters/types';
 
 export const parseBool: Parser<boolean | undefined> = (maybeBool) => {
   if (isNil(maybeBool)) return Either.right(undefined);
-  const err = Either.left<ParseError, boolean>(new ParseError(new Error('Invalid boolean value')));
+  const err = Either.left<ParseError>(
+    new ParseError(new Error('Invalid boolean value')),
+  ) as Either.Either<boolean, ParseError>;
   if (typeof maybeBool === 'string') {
     switch (maybeBool.toLowerCase()) {
       case 'false':

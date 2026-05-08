@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { type Monoid } from 'types/monoid';
+import { type Monoid } from '../../types/monoid';
 
 export const concatAll =
   <T>(monoid: Monoid<T>) =>

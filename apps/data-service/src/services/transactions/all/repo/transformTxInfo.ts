@@ -1,4 +1,4 @@
-import { renameKeys } from 'ramda-adjunct';
+import { renameKeys } from 'ramda';
 
 import { type CommonTransactionInfo } from '../../../../types';
 

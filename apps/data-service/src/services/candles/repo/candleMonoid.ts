@@ -30,12 +30,14 @@ export const maxMonoid: Monoid<number> = {
 
 export const bigNumberMinMonoid: Monoid<BigNumber> = {
   concat: (a: BigNumber, b: BigNumber): BigNumber => (a.comparedTo(b) === 1 ? b : a),
-  empty: new BigNumber(+Infinity),
+  // Identity for min: must be ≥ all possible values (DEX prices/volumes never exceed 10^19)
+  empty: new BigNumber('100000000000000000000'),
 };
 
 export const bigNumberMaxMonoid = {
   concat: (a: BigNumber, b: BigNumber): BigNumber => (a.comparedTo(b) === 1 ? a : b),
-  empty: new BigNumber(-Infinity),
+  // Identity for max: 0 is the minimum possible value for DEX prices/volumes
+  empty: new BigNumber(0),
 };
 
 // individual

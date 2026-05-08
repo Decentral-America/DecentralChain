@@ -1,5 +1,5 @@
 import { type BigNumber } from '@decentralchain/data-entities';
-import { renameKeys } from 'ramda-adjunct';
+import { renameKeys } from 'ramda';
 import { type AssetIdsPair, type PairInfo } from '../../../types';
 
 export type PairDbResponse = {
@@ -17,7 +17,7 @@ export type PairDbResponse = {
 };
 
 /** renamePairFields :: Object -> Object */
-const renamePairFields = renameKeys<PairInfo & AssetIdsPair>({
+const renamePairFields = renameKeys<PairInfo & AssetIdsPair, PairDbResponse>({
   amount_asset_id: 'amountAsset',
   first_price: 'firstPrice',
   last_price: 'lastPrice',

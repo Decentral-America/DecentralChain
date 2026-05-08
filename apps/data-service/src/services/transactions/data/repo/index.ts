@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either } from 'effect';
 import { type CommonRepoDependencies } from '../../..';
 import { get, mget, search } from '../../../_common/createResolver';
@@ -37,11 +36,11 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): DataTxs
 
     mget: mget({
       emitEvent,
-      getData: pgData.mget(pg),
+      getData: pgData.mget(pg) as any,
       transformInput: (r) => Either.right(r) as any,
       transformResult: transformResultMget<string[], DataTxDbResponse, DataTx>(
         transformTxInfo as any,
-      ),
+      ) as any,
       validateResult: validateResult(resultSchema, createServiceName('mget')) as any,
     }),
 

@@ -1,19 +1,20 @@
-import { curryN, pick } from 'ramda';
+import { type MiddlewareHandler } from 'hono';
+import { pick } from 'ramda';
+import { type AppEnv, type EventBus } from '../http/_common/types';
 
-const collectRequestData = (ctx: any) => ({
-  ...pick(['headers', 'httpVersion', 'method', 'url'])(ctx.request),
-  headers: Object.entries(ctx.request.headers)
-    .map((h) => h.join(':'))
-    .join(';'),
-  requestId: ctx.state.id,
+const collectRequestData = (c: Parameters<MiddlewareHandler<AppEnv>>[0]) => ({
+  ...pick(['method', 'url'])({ method: c.req.method, url: c.req.url }),
+  headers: [...c.req.raw.headers.entries()].map(([k, v]) => `${k}:${v}`).join(';'),
+  requestId: c.get('requestId') ?? '',
 });
 
-export default (eventBus: any) => async (ctx: any, next: any) => {
-  // Add request info to all logs
-  const request = collectRequestData(ctx);
-  const emit = curryN(2, (message: any, data: any) =>
-    eventBus.emit('log', { data, message, request }),
-  );
-  ctx.eventBus = { emit };
-  await next();
-};
+export default (rawEventBus: {
+  emit: (event: string, data: unknown) => void;
+}): MiddlewareHandler<AppEnv> =>
+  async (c, next) => {
+    const request = collectRequestData(c);
+    const emit = (message: string, data: unknown) =>
+      rawEventBus.emit('log', { data, message, request });
+    c.set('eventBus', { emit } as EventBus);
+    await next();
+  };

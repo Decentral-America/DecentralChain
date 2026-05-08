@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   always,
   append,
@@ -39,12 +38,12 @@ const removeDataEntryFromRow = omit([
 ]);
 
 const appendRowToTx = (tx: any, row: any) =>
-  compose(
-    ifElse(
+  (compose as any)(
+    (ifElse as any)(
       () => isNil(prop('data_key', row)),
       identity,
       assoc('data', append(getDataObject(row), tx.data)),
-    ) as any,
+    ),
     (b: any) => ({ ...removeDataEntryFromRow(row), ...b }),
   )(tx);
 
@@ -59,11 +58,14 @@ const dataEntriesToTxs: (rows: unknown) => unknown[] = cond([
   [either(isNil, isEmpty), always([])],
   [
     T,
-    compose(
+    (compose as any)(
       // sort by position in tx, then remove it
       map(
         evolve({
-          data: compose(map(omit(['positionInTx'])) as any, sortBy(prop('positionInTx') as any)),
+          data: (compose as any)(
+            map(omit(['positionInTx']) as any),
+            sortBy(prop('positionInTx') as any),
+          ),
         }) as any,
       ),
       map(reduce(appendRowToTx, { data: [] })) as any,

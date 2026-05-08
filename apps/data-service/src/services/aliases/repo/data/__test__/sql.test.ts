@@ -1,4 +1,3 @@
-// @ts-nocheck
 import sql from '../sql';
 
 describe('Alias sql query build', () => {
@@ -7,7 +6,7 @@ describe('Alias sql query build', () => {
   });
 
   it('`many` should build select by address with order by time and hide blocked by default', () => {
-    expect(sql.search({ address: '3PELiu6JuVMLJojenRkTPTzCRjAocrxXWJy' })).toMatchSnapshot();
+    expect(sql.search({ address: '3PELiu6JuVMLJojenRkTPTzCRjAocrxXWJy' } as any)).toMatchSnapshot();
   });
 
   it('`many` should build select by address with order by time and show blocked if flag is set', () => {
@@ -15,7 +14,7 @@ describe('Alias sql query build', () => {
       sql.search({
         address: '3PELiu6JuVMLJojenRkTPTzCRjAocrxXWJy',
         showBroken: true,
-      }),
+      } as any),
     ).toMatchSnapshot();
   });
 });
