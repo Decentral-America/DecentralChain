@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Effect, pipe } from 'effect';
 import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
@@ -11,7 +10,7 @@ export const modifyDecimals =
       assetsService.precisions({
         ids: ['WAVES'],
       }),
-      Effect.map(([assetPrecision]) =>
+      Effect.map(([assetPrecision = 0]) =>
         txs.map((tx) => ({
           ...tx,
           amount: tx.amount.shiftedBy(-assetPrecision),

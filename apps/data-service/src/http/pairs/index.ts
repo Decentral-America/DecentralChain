@@ -1,5 +1,5 @@
-import Router from '@koa/router';
 import { Effect, pipe } from 'effect';
+import { Hono } from 'hono';
 import { omit } from 'ramda';
 
 import {
@@ -15,9 +15,8 @@ import {
   mget as mgetSerializer,
   search as serachSerializer,
 } from '../_common/serialize';
+import { type AppEnv } from '../_common/types';
 import { get as parseGet, mgetOrSearch as parseMgetOrSearch } from './parse';
-
-const subrouter = new Router();
 
 export const isMgetRequest = (
   req: PairsServiceMgetRequest | PairsServiceSearchRequest,
@@ -50,20 +49,22 @@ const mgetOrSearchHttpHandler = (pairsService: PairsService) =>
     parseMgetOrSearch,
   );
 
-export default (pairsService: PairsService) =>
-  subrouter
-    .get(
-      '/pairs/:amountAsset/:priceAsset',
-      createHttpHandler(
-        (req, lsnFormat) =>
-          pipe(
-            pairsService.get(req),
-            Effect.map(
-              getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
-            ),
+export default (pairsService: PairsService) => {
+  const app = new Hono<AppEnv>();
+  app.get(
+    '/pairs/:amountAsset/:priceAsset',
+    createHttpHandler(
+      (req, lsnFormat) =>
+        pipe(
+          pairsService.get(req),
+          Effect.map(
+            getSerializer<PairInfo & AssetIdsPair, Pair, PairInfo>(pairWithData, lsnFormat),
           ),
-        parseGet,
-      ),
-    )
-    .get('/pairs', mgetOrSearchHttpHandler(pairsService))
-    .post('/pairs', postToGet(mgetOrSearchHttpHandler(pairsService)));
+        ),
+      parseGet,
+    ),
+  );
+  app.get('/pairs', mgetOrSearchHttpHandler(pairsService));
+  app.post('/pairs', postToGet(mgetOrSearchHttpHandler(pairsService)));
+  return app;
+};

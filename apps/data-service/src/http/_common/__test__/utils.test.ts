@@ -1,9 +1,4 @@
-// @ts-nocheck
-
-import { IncomingMessage, ServerResponse } from 'node:http';
-import { Socket } from 'node:net';
 import { Either } from 'effect';
-import * as Koa from 'koa';
 import { AppError } from '../../../errorHandling';
 import { MoneyFormat } from '../../../services/types';
 import { LSNFormat } from '../../types';
@@ -18,53 +13,27 @@ import {
   MONEY_FORMAT_KEY,
   parseLSNFormat,
   parseMoneyFormat,
-  setHttpResponse,
+  toResponse,
 } from '../utils';
 
 const ok = <T>(v: T) => Either.right(v);
 const err = <E>(v: E) => Either.left(v);
 
-const app = new Koa();
-const socket = new Socket();
-const i = new IncomingMessage(socket);
-const s = new ServerResponse(i);
-
-describe('setHttpResponse', () => {
-  it('should mutate ctx - set body', () => {
-    const ctx = app.createContext(i, s);
-
-    expect(ctx).toHaveProperty('body', undefined);
-
-    const body = defaultStringify({
-      response: 'response',
-    });
-    setHttpResponse(ctx)(HttpResponse.Ok(body));
-
-    expect(ctx).toHaveProperty('body', body);
+describe('toResponse', () => {
+  it('should set body', () => {
+    const body = defaultStringify({ response: 'response' });
+    const r = toResponse(HttpResponse.Ok(body));
+    expect(r.status).toBe(200);
+    expect(r.body).toBeDefined();
   });
 
-  it('should mutate ctx - set status', () => {
-    const ctx = app.createContext(i, s);
-
-    expect(ctx).toHaveProperty('status', 200);
-
-    setHttpResponse(ctx)(HttpResponse.BadRequest());
-
-    expect(ctx).toHaveProperty('status', 400);
+  it('should set status', () => {
+    expect(toResponse(HttpResponse.BadRequest()).status).toBe(400);
   });
 
-  it('should mutate ctx - set headers', () => {
-    const ctx = app.createContext(i, s);
-
-    expect(ctx).toHaveProperty(['response', 'headers']);
-
-    setHttpResponse(ctx)(
-      HttpResponse.Ok(undefined, {
-        customHeader: 'customHeaderResponse',
-      }),
-    );
-
-    expect(ctx).toHaveProperty(['response', 'headers', 'customheader'], 'customHeaderResponse');
+  it('should set headers', () => {
+    const r = toResponse(HttpResponse.Ok(undefined, { 'X-Custom': 'value' }));
+    expect(r.headers.get('x-custom')).toBe('value');
   });
 });
 

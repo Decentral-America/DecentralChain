@@ -1,6 +1,5 @@
 import { type IncomingHttpHeaders } from 'node:http';
 import { Either } from 'effect';
-import { type Context } from 'koa';
 import { ParseError } from '../../errorHandling';
 import { type WithMatcher } from '../../services/_common';
 import { MoneyFormat } from '../../services/types';
@@ -10,14 +9,11 @@ import { type HttpResponse } from './types';
 
 export const defaultStringify = stringify(LSNFormat.String);
 
-export const setHttpResponse = (ctx: Context) => (httpResponse: HttpResponse) => {
-  ctx.body = httpResponse.body;
-  ctx.status = httpResponse.status;
-
-  if (httpResponse.headers) {
-    ctx.set(httpResponse.headers);
-  }
-};
+export const toResponse = (httpResponse: HttpResponse): Response =>
+  new Response(httpResponse.body, {
+    status: httpResponse.status,
+    ...(httpResponse.headers !== undefined ? { headers: httpResponse.headers } : {}),
+  });
 
 export const LSN_FORMAT_KEY = 'large-significand-format';
 export const DEFAULT_LSN_FORMAT = LSNFormat.Number;
@@ -92,5 +88,8 @@ export const contentTypeWithMoneyFormat = (
     moneyFormat === MoneyFormat.Long ? `; ${MONEY_FORMAT_KEY}=${MoneyFormat.Long}` : ''
   }`;
 
-export const withMatcher = (req: any): req is WithMatcher =>
-  'matcher' in req && typeof req.matcher === 'string';
+export const withMatcher = (req: unknown): req is WithMatcher =>
+  typeof req === 'object' &&
+  req !== null &&
+  'matcher' in req &&
+  typeof (req as Record<string, unknown>)['matcher'] === 'string';

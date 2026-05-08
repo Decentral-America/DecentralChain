@@ -1,7 +1,5 @@
-// @ts-nocheck
 import { type BigNumber } from '@decentralchain/data-entities';
-import { compose, pick } from 'ramda';
-import { renameKeys } from 'ramda-adjunct';
+import { compose, pick, renameKeys } from 'ramda';
 
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
@@ -68,7 +66,7 @@ type ExchangeTxFields = {
 
 /** transformTx:: RawTxInfo -> TxInfo */
 export default (tx: ExchangeTxDbResponse): ExchangeTx => {
-  const commonFields = compose(
+  const commonFields: any = (compose as any)(
     transformTxInfo,
     pick([
       'id',
@@ -85,7 +83,7 @@ export default (tx: ExchangeTxDbResponse): ExchangeTx => {
     ]),
   )(tx);
 
-  const exchangeTxFields = compose(
+  const exchangeTxFields: any = (compose as any)(
     renameKeys<ExchangeTxFields>({
       buy_matcher_fee: 'buyMatcherFee',
       sell_matcher_fee: 'sellMatcherFee',

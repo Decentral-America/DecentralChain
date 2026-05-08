@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either } from 'effect';
 import { type CommonRepoDependencies } from '../../..';
 import { get, mget, search } from '../../../_common/createResolver';
@@ -50,7 +49,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): InvokeS
       emitEvent,
       getData: pgData.search(pg),
       transformInput: transformInputSearch(deserialize),
-      transformResult: transformResultSearch(transformTxInfo as any, serialize) as any,
+      transformResult: transformResultSearch(transformTxInfo as any, serialize as any) as any,
       validateResult: validateResult<RawInvokeScriptTx>(
         resultSchema as any,
         createServiceName('search'),

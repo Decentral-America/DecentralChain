@@ -1,10 +1,10 @@
-// @ts-nocheck
 import { concat, curryN, findIndex, slice, type } from 'ramda';
 
-const hasMethod = curryN(
-  2,
-  (method, x) => (x?.[method] && type(x[method]) === 'Function') || false,
-);
+const hasMethod: ((method: string, x: any) => boolean) & ((method: string) => (x: any) => boolean) =
+  curryN(
+    2,
+    (method: string, x: any): boolean => (x?.[method] && type(x[method]) === 'Function') || false,
+  ) as any;
 
 const createPointfree =
   (method: string) =>

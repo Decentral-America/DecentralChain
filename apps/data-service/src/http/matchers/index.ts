@@ -1,12 +1,11 @@
-import Router from '@koa/router';
+import { Hono } from 'hono';
 import { type CandlesService } from '../../services/candles';
 import { type PairsService } from '../../services/pairs';
 import { type RatesMgetService } from '../../services/rates';
+import { type AppEnv } from '../_common/types';
 import createCandles from './candles';
 import createPairs from './pairs';
 import createRates from './rates';
-
-const subrouter = new Router({ prefix: '/matchers/:matcher' });
 
 export default ({
   pairs,
@@ -16,8 +15,10 @@ export default ({
   pairs: PairsService;
   candles: CandlesService;
   rates: RatesMgetService;
-}) =>
-  subrouter
-    .use(createPairs(pairs).routes())
-    .use(createCandles(candles).routes())
-    .use(createRates(rates).routes());
+}) => {
+  const app = new Hono<AppEnv>();
+  app.route('/', createPairs(pairs));
+  app.route('/', createCandles(candles));
+  app.route('/', createRates(rates));
+  return app;
+};

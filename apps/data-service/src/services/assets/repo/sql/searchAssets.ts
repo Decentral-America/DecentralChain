@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { type Knex, knex } from 'knex';
-import { compose, map } from 'ramda';
+import { map } from 'ramda';
 import { escapeForTsQuery, prepareForLike } from '../../../../utils/db';
 import { columns } from './common';
 
@@ -51,25 +50,22 @@ const searchByTicker = (qb: Knex.QueryBuilder, q: string): Knex.QueryBuilder =>
 
 const searchByName = (qb: Knex.QueryBuilder, q: string) => {
   const cleanedQuery = escapeForTsQuery(q);
-  return compose((q: Knex.QueryBuilder) =>
-    cleanedQuery.length
-      ? q.orWhereRaw(`to_tsvector('simple', a.asset_name) @@ to_tsquery(?)`, [`${cleanedQuery}:*`])
-      : q,
-  )(
-    qb
-      .table({ a: 'assets' })
-      .columns({
-        asset_id: `a.${columns.asset_id}`,
-        asset_name: `a.${columns.asset_name}`,
-        height: `a.${columns.issue_height}`,
-        rank: pg.raw(
-          `ts_rank(to_tsvector('simple', a.${columns.asset_name}), plainto_tsquery(?), 3) * case when a.${columns.ticker} is null then 16 else 32 end`,
-          [q],
-        ),
-        ticker: `a.${columns.ticker}`,
-      })
-      .where(`a.${columns.asset_name}`, 'ilike', prepareForLike(q)),
-  );
+  const base = qb
+    .table({ a: 'assets' })
+    .columns({
+      asset_id: `a.${columns.asset_id}`,
+      asset_name: `a.${columns.asset_name}`,
+      height: `a.${columns.issue_height}`,
+      rank: pg.raw(
+        `ts_rank(to_tsvector('simple', a.${columns.asset_name}), plainto_tsquery(?), 3) * case when a.${columns.ticker} is null then 16 else 32 end`,
+        [q],
+      ),
+      ticker: `a.${columns.ticker}`,
+    })
+    .where(`a.${columns.asset_name}`, 'ilike', prepareForLike(q));
+  return cleanedQuery.length
+    ? base.orWhereRaw(`to_tsvector('simple', a.asset_name) @@ to_tsquery(?)`, [`${cleanedQuery}:*`])
+    : base;
 };
 
 export const searchAssets = (query: string): Knex.QueryBuilder =>
@@ -87,7 +83,7 @@ export const searchAssets = (query: string): Knex.QueryBuilder =>
           r: searchById(query)
             .unionAll((qb) => searchByNameInMeta(qb, query))
             .unionAll((qb) => searchByTicker(qb, query))
-            .unionAll((qb) => searchByName(qb, query)),
+            .unionAll((qb) => searchByName(qb, query)) as any,
         })
         .orderBy('r.asset_id')
         .orderBy('r.rank', 'desc');

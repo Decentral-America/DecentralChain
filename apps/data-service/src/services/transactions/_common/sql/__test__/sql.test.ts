@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { knex as _knex } from 'knex';
 
 const pg = _knex({ client: 'pg' });

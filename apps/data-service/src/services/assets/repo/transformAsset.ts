@@ -1,12 +1,11 @@
 import { Asset, type IAssetJSON } from '@decentralchain/data-entities';
-import { compose } from 'ramda';
-import { renameKeys } from 'ramda-adjunct';
+import { compose, renameKeys } from 'ramda';
 import { type AssetDbResponse } from './types';
 
 export const transformDbResponse = (raw: AssetDbResponse): Asset =>
   compose(
     (obj) => new Asset(obj),
-    renameKeys<IAssetJSON>({
+    renameKeys<IAssetJSON, AssetDbResponse>({
       asset_id: 'id',
       asset_name: 'name',
       decimals: 'precision',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either } from 'effect';
 import { div, fromMilliseconds } from '../../utils/interval';
 import { interval } from '../interval';

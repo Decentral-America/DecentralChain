@@ -1,6 +1,3 @@
-// @ts-nocheck
-import { propEq } from 'ramda';
-
 import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
 import { mgetByIdsPreset } from '../../../_common/presets/pg/mgetByIds';
@@ -31,7 +28,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): SetScri
     }),
 
     mget: mgetByIdsPreset<string, SetScriptTxDbResponse, SetScriptTx>({
-      matchRequestResult: propEq('id') as any,
+      matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.setScript.mget',
       resultSchema: result,
       sql: sql.mget,

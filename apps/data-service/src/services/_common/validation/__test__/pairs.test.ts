@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { type Asset } from '@decentralchain/data-entities';
 import { Effect, Option } from 'effect';
 import { type AssetIdsPair } from '../../../../types';

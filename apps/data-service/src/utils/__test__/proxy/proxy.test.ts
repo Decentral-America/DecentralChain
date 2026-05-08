@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { compose } from 'ramda';
 
 import P from './';
@@ -10,7 +9,7 @@ describe('Test proxy should', () => {
   });
 
   it('call provided function for fields', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create(spy);
 
     p.f1.f2.f3;
@@ -24,7 +23,7 @@ describe('Test proxy should', () => {
   });
 
   it('call provided function for methods', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create(spy);
 
     p.f1('f1_1', 'f1_2').f2('f2_1', 'f2_2');
@@ -38,7 +37,7 @@ describe('Test proxy should', () => {
   });
 
   it('call provided function for fields', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create(spy);
 
     p.f1.f2.f3;
@@ -47,7 +46,7 @@ describe('Test proxy should', () => {
   });
 
   it('gets constructed from object`', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create({ fn: spy });
 
     p.f1('f1_1', 'f1_2').f2('f2_1', 'f2_2');
@@ -69,7 +68,7 @@ describe('Test proxy should', () => {
   });
 
   it('not blow up on nested proxy in arguments', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p1 = P.create(spy);
     const p2 = P.create();
 
@@ -88,7 +87,7 @@ describe('Test proxy should', () => {
   });
 
   it('be composable', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create({
       fn: spy,
       reservedFields: {

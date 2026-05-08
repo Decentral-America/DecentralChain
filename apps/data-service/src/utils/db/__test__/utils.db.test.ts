@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Option } from 'effect';
 import { escapeForLike, escapeForTsQuery, matchRequestsResults, prepareForLike } from '../';
 
@@ -68,7 +67,7 @@ describe('Preparing for like', () => {
     expect(prepareForLike('some')).toBe('some%');
   });
   it('should correctly prepare simple word without params', () => {
-    expect(prepareForLike('some', {})).toBe('some%');
+    expect(prepareForLike('some', {} as any)).toBe('some%');
   });
   it('should correctly prepare simple word with matchExactly=true', () => {
     expect(prepareForLike('some', { matchExactly: true })).toBe('some');

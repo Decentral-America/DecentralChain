@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { create as createProxy } from '../../../__test__/proxy';
 import { hasMethod, limit, orWhere, where } from '../lib';
 
@@ -7,8 +5,8 @@ const knexMock = {
   clone() {
     return this;
   },
-  orWhere: (...args) => args.concat('orWhere'),
-  where: (...args) => args.concat('where'), // adding method name to make sure correct method is called
+  orWhere: (...args: any[]) => args.concat('orWhere'),
+  where: (...args: any[]) => args.concat('where'), // adding method name to make sure correct method is called
 };
 
 test('hasMethod should work for different types', () => {
@@ -31,7 +29,9 @@ describe('Knex pointfree `where` should', () => {
     expect(where('id', 1, knexMock)).toEqual(['id', 1, 'where']);
 
     const wArgs = ['id', 1, 'some', null, undefined];
-    expect(where(...wArgs.concat(knexMock))).toEqual(wArgs.concat('where'));
+    expect(where(...(wArgs.concat(knexMock as any) as [any, ...any[]]))).toEqual(
+      wArgs.concat('where'),
+    );
   });
 
   it('cover curried use', () => {
@@ -52,7 +52,9 @@ describe('Knex pointfree `orWhere` should', () => {
     expect(orWhere('id', 1, knexMock)).toEqual(['id', 1, 'orWhere']);
 
     const wArgs = ['id', 1, 'some', null, undefined];
-    expect(orWhere(...wArgs.concat(knexMock))).toEqual(wArgs.concat('orWhere'));
+    expect(orWhere(...(wArgs.concat(knexMock as any) as [any, ...any[]]))).toEqual(
+      wArgs.concat('orWhere'),
+    );
   });
 
   it('cover curried use', () => {
@@ -70,7 +72,7 @@ describe('Knex pointfree `orWhere` should', () => {
 
 describe('Knex pointfree `limit` should', () => {
   it('cover simple case without currying', () => {
-    const f = jest.fn();
+    const f = vi.fn();
     const p = createProxy(f);
     limit(100, p);
 
@@ -83,7 +85,7 @@ describe('Knex pointfree `limit` should', () => {
     const limit100 = limit(100);
     expect(typeof limit100).toBe('function');
 
-    const f = jest.fn();
+    const f = vi.fn();
     const p = createProxy(f);
     limit100(p);
     expect(f.mock.calls.slice(-2)).toEqual([[{ get: 'limit' }], [{ apply: [100] }]]);

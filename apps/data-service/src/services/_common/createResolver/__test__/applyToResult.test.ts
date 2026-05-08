@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { Either, Option } from 'effect';
 import { AppError } from '../../../../errorHandling';
 import { applyTransformation, applyValidation } from '../applyToResult';
 
 describe('Application of functions to db results', () => {
   describe('validation', () => {
-    const validate = (res: number): Either.Either<AppError, number> =>
+    const validate = (res: number): Either.Either<number, AppError> =>
       res === 2 ? Either.right(2) : Either.left(AppError.Validation('Bad value'));
 
     describe('Get', () => {

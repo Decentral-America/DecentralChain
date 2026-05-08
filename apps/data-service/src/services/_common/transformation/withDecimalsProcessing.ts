@@ -43,11 +43,11 @@ export const mgetWithDecimalsProcessing =
           modifyDecimals(somes),
           Effect.map((res) => {
             let idx = 0;
-            return ms.map((m) =>
-              Option.isSome(m)
-                ? Option.some(res[idx++] as NonNullable<(typeof res)[number]>)
-                : Option.none(),
-            );
+            return ms.map((m): Option.Option<Response> => {
+              if (!Option.isSome(m)) return Option.none();
+              const item = res[idx++];
+              return item !== undefined ? Option.some(item) : Option.none();
+            });
           }),
         );
       }),

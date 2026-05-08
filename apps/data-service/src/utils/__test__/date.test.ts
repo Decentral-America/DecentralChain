@@ -1,4 +1,4 @@
-// @ts-nocheck
+import { Either } from 'effect';
 import { interval } from '../../types';
 import { add, ceil, floor, round, subtract } from '../date';
 
@@ -7,19 +7,27 @@ describe('date helper functions', () => {
     const d = new Date('2018-11-22T17:55:46.045Z');
 
     it('add interval to date', () => {
-      expect(add(interval('3m').unsafeGet(), d)).toEqual(new Date('2018-11-22T17:58:46.045Z'));
-      expect(add(interval('3h').unsafeGet(), d)).toEqual(new Date('2018-11-22T20:55:46.045Z'));
+      expect(add(Either.getOrThrow(interval('3m')), d)).toEqual(
+        new Date('2018-11-22T17:58:46.045Z'),
+      );
+      expect(add(Either.getOrThrow(interval('3h')), d)).toEqual(
+        new Date('2018-11-22T20:55:46.045Z'),
+      );
     });
 
     it('subtract interval from date', () => {
-      expect(subtract(interval('3m').unsafeGet(), d)).toEqual(new Date('2018-11-22T17:52:46.045Z'));
-      expect(subtract(interval('3h').unsafeGet(), d)).toEqual(new Date('2018-11-22T14:55:46.045Z'));
+      expect(subtract(Either.getOrThrow(interval('3m')), d)).toEqual(
+        new Date('2018-11-22T17:52:46.045Z'),
+      );
+      expect(subtract(Either.getOrThrow(interval('3h')), d)).toEqual(
+        new Date('2018-11-22T14:55:46.045Z'),
+      );
     });
   });
 
   describe('round functions', () => {
     describe('should round down to a minute', () => {
-      const i = interval('1m').unsafeGet();
+      const i = Either.getOrThrow(interval('1m'));
       const d = new Date('2018-11-22T17:55:46.045Z');
 
       it('with floor/ceil', () => {
@@ -38,7 +46,7 @@ describe('date helper functions', () => {
     });
 
     describe('should round down to a hour', () => {
-      const i = interval('1h').unsafeGet();
+      const i = Either.getOrThrow(interval('1h'));
       const d = new Date('2018-11-22T23:55:46.045+00:00');
 
       it('with floor/ceil', () => {
@@ -57,7 +65,7 @@ describe('date helper functions', () => {
     });
 
     describe('should round down to a week', () => {
-      const i = interval('1w').unsafeGet();
+      const i = Either.getOrThrow(interval('1w'));
       const d = new Date('2018-11-20T23:55:46.045+00:00');
 
       it('with floor/ceil', () => {
@@ -76,7 +84,7 @@ describe('date helper functions', () => {
     });
 
     describe('should round down to a month', () => {
-      const i = interval('1M').unsafeGet();
+      const i = Either.getOrThrow(interval('1M'));
       const d = new Date('2018-11-22T23:55:46.045Z');
 
       it('with floor/ceil', () => {
@@ -95,7 +103,7 @@ describe('date helper functions', () => {
     });
 
     describe('should round down to a year', () => {
-      const i = interval('1Y').unsafeGet();
+      const i = Either.getOrThrow(interval('1Y'));
       const d = new Date('2018-11-22T23:55:46.045Z');
 
       it('with floor/ceil', () => {

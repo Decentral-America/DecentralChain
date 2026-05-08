@@ -1,5 +1,11 @@
-import checkEnv from 'check-env';
 import { always, isNil, memoizeWith } from 'ramda';
+
+const checkEnv = (vars: string[]): void => {
+  const missing = vars.filter((v) => !process.env[v]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variable(s): ${missing.join(', ')}`);
+  }
+};
 
 export type PostgresConfig = {
   postgresHost: string;

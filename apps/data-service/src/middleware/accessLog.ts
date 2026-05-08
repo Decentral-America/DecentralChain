@@ -1,15 +1,18 @@
 import { performance } from 'node:perf_hooks';
+import { type MiddlewareHandler } from 'hono';
+import { type AppEnv } from '../http/_common/types';
 
-const accessLogMiddleware = async (ctx: any, next: any) => {
+const accessLogMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   const start = performance.now();
-  ctx.eventBus.emit('REQUEST', { level: 'info' });
+  const eventBus = c.get('eventBus');
+  eventBus.emit('REQUEST', { level: 'info' });
 
   await next();
 
-  ctx.eventBus.emit('RESPONSE', {
+  eventBus.emit('RESPONSE', {
     level: 'info',
     responseTime: performance.now() - start,
-    statusCode: ctx.status,
+    statusCode: c.res.status,
   });
 };
 

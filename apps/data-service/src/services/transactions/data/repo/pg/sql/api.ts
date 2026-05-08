@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { assoc, compose, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../../utils/db';
@@ -60,13 +59,9 @@ export default ({ filters: F }: { filters: any }) => ({
       // filter by type+value or type
       withDefaults.value !== undefined ? fNames.filter((name) => name !== 'type') : fNames,
       withDefaults,
-    );
+    ) as unknown as any[];
 
-    return pipe(
-      ...(fs as [any, ...any[]]),
-      selectFromFiltered,
-      F.sort(withDefaults.sort),
-      String,
-    )(select);
+    const filtered: any = fs.reduce((q: any, f: any) => f(q), select);
+    return String(F.sort(withDefaults.sort)(selectFromFiltered(filtered)));
   },
 });

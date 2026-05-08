@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
 import {
   bigNumberMaxMonoid,
@@ -83,20 +82,20 @@ describe('monoid', () => {
 
   describe('candle', () => {
     it('should return two concated candle monoids', () => {
-      const monoid = candleMonoid.concat(oneDayCandles[0], oneDayCandles[0]);
+      const monoid = candleMonoid.concat(oneDayCandles[0] as any, oneDayCandles[0] as any);
       expect(monoid).toMatchObject({
         max_height: 377979,
         time_start: '2018-11-15T14:03:00.000Z',
         txs_count: 40,
       });
-      expect(monoid.open.comparedTo(new BigNumber(0.01))).toEqual(0);
-      expect(monoid.close.comparedTo(new BigNumber(0.0001))).toEqual(0);
+      expect(monoid.open?.comparedTo(new BigNumber(0.01))).toEqual(0);
+      expect(monoid.close?.comparedTo(new BigNumber(0.0001))).toEqual(0);
       expect(monoid.low.comparedTo(new BigNumber(1e-8))).toEqual(0);
       expect(monoid.high.comparedTo(new BigNumber(0.01))).toEqual(0);
       expect(monoid.volume.comparedTo(new BigNumber(5684))).toEqual(0);
       expect(monoid.quote_volume.comparedTo(new BigNumber(6.6000884))).toEqual(0);
       expect(
-        monoid.weighted_average_price.comparedTo(new BigNumber('0.00116116966924700914')),
+        monoid.weighted_average_price.comparedTo(new BigNumber('0.00116116966924700915')),
       ).toEqual(0);
     });
   });

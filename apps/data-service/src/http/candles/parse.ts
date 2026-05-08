@@ -11,8 +11,6 @@ import { parseFilterValues, withDefaults } from '../_common/filters';
 import commonFilters from '../_common/filters/filters';
 import { type HttpRequest } from '../_common/types';
 
-const config = loadConfig();
-
 export const MAX_CANDLES_COUNT = 1440;
 
 export const CandleIntervals = [
@@ -106,7 +104,7 @@ export const parse = ({
   const minInterval = Either.getOrThrow(intervalFromString('1m'));
   const maxInterval = Either.getOrThrow(intervalFromString('1M'));
 
-  return (Either.flatMap as any)(
+  return pipe(
     parseFilterValues({
       interval: parseInterval({
         allowed: CandleIntervals,
@@ -116,7 +114,8 @@ export const parse = ({
       }),
       matcher: commonFilters.query,
     })(query),
-    (fValues: any) => {
+    Either.flatMap((fValues): Either.Either<CandlesSearchRequest, ParseError> => {
+      const config = loadConfig();
       const fValuesWithDefaults: Partial<CandlesSearchRequest & WithMatcher> = mergeAll<any>([
         {
           matcher: config.matcher.defaultMatcherAddress,
@@ -163,6 +162,6 @@ export const parse = ({
         timeEnd: fValuesWithDefaults.timeEnd ?? new Date(),
         timeStart: fValuesWithDefaults.timeStart,
       } as CandlesSearchRequest);
-    },
+    }),
   );
 };

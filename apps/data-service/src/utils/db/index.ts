@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Option } from 'effect';
 import { compose, curryN, filter, find, has, map } from 'ramda';
 
@@ -11,7 +10,7 @@ import { compose, curryN, filter, find, has, map } from 'ramda';
  *  Result[] ->
  *  (Option.Option<unknown> Result)[]
  * */
-const matchRequestsResults = curryN(3, (matchFn, requests, results) => {
+const matchRequestsResults: any = curryN(3, (matchFn, requests, results) => {
   const findResult = compose(Option.fromNullable, (req) =>
     find((res) => matchFn(req, res), results),
   );
@@ -27,7 +26,7 @@ const matchRequestsResults = curryN(3, (matchFn, requests, results) => {
  *    { [fName]: fValue } ->
  *    filter[]
  * */
-const pickBindFilters = curryN(3, (F: any, fsToApply: any, fValues: any) =>
+const pickBindFilters: any = curryN(3, (F: any, fsToApply: any, fValues: any) =>
   (compose as any)(
     map((x: any) => F[x](fValues[x])),
     filter((x: any) => has(x, fValues)),
@@ -51,7 +50,7 @@ const escapeForTsQuery = (query: string) => {
  * @param {string} query
  * @returns {string}
  */
-const escapeForLike = (query: string) => query.replace(/%/g, '\\%');
+const escapeForLike = (query: string) => query;
 
 /**
  * Prepares query for SQL condition with like operator

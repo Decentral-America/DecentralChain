@@ -1,6 +1,7 @@
-import { Either } from 'effect';
+import { Either, pipe } from 'effect';
 import { identity, mergeAll } from 'ramda';
 import { ParseError } from '../../errorHandling';
+import { type WithLimit, type WithSortOrder } from '../../services/_common';
 import {
   type AliasesServiceGetRequest,
   type AliasesServiceMgetRequest,
@@ -63,60 +64,69 @@ export const mgetOrSearch = ({
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
-  return (Either.flatMap as any)(mgetOrSearchParser(query), (fValues: any) => {
-    if (isMgetRequest(fValues)) {
-      return Either.right(fValues);
-    } else {
-      let fValuesWithDefaults = withDefaults(fValues);
-      fValuesWithDefaults = mergeAll<any>([
-        { showBroken: false },
-        fValuesWithDefaults,
-        { limit: LIMIT },
-      ]);
-
-      if (
-        [
-          isSearchWithAddressRequest(fValuesWithDefaults),
-          isSearchWithAddressesRequest(fValuesWithDefaults),
-          isSearchWithQueriesRequest(fValuesWithDefaults),
-        ].filter(identity).length > 1
-      ) {
-        return Either.left(
-          new ParseError(
-            new Error(
-              'Request contains a conflict between exclusive peers [address, addresses, queries]',
-            ),
-          ),
-        );
-      }
-
-      if (isSearchWithAddressRequest(fValuesWithDefaults as any)) {
-        if (!((fValuesWithDefaults as any).address as string).length) {
-          return Either.left(new ParseError(new Error('`address` is not allowed to be empty')));
+  return pipe(
+    mgetOrSearchParser(query),
+    Either.flatMap(
+      (
+        fValues,
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex request parsing logic
+      ): Either.Either<AliasesServiceMgetRequest | AliasesServiceSearchRequest, ParseError> => {
+        if (isMgetRequest(fValues)) {
+          return Either.right(fValues);
         } else {
-          return Either.right(fValuesWithDefaults as any);
+          const fValuesWithDefaults = mergeAll<any>([
+            { showBroken: false },
+            withDefaults(fValues),
+            { limit: LIMIT },
+          ]) as ParsedFilterValues<ParserFnType> & WithLimit & WithSortOrder;
+
+          if (
+            [
+              isSearchWithAddressRequest(fValuesWithDefaults),
+              isSearchWithAddressesRequest(fValuesWithDefaults),
+              isSearchWithQueriesRequest(fValuesWithDefaults),
+            ].filter(identity).length > 1
+          ) {
+            return Either.left(
+              new ParseError(
+                new Error(
+                  'Request contains a conflict between exclusive peers [address, addresses, queries]',
+                ),
+              ),
+            );
+          }
+
+          if (isSearchWithAddressRequest(fValuesWithDefaults)) {
+            const withAddr = fValuesWithDefaults as unknown as AliasesServiceSearchRequest &
+              WithAddress;
+            if (!withAddr.address.length) {
+              return Either.left(new ParseError(new Error('`address` is not allowed to be empty')));
+            } else {
+              return Either.right(withAddr);
+            }
+          } else if (isSearchWithAddressesRequest(fValuesWithDefaults)) {
+            const withAddrs = fValuesWithDefaults as unknown as AliasesServiceSearchRequest &
+              WithAddresses;
+            if (withAddrs.addresses.filter((v: string) => v.length === 0).length > 0) {
+              return Either.left(
+                new ParseError(new Error('`addresses` is not allowed to be has an empty value')),
+              );
+            } else {
+              return Either.right(withAddrs);
+            }
+          } else if (isSearchWithQueriesRequest(fValuesWithDefaults)) {
+            return Either.right(
+              fValuesWithDefaults as unknown as AliasesServiceSearchRequest & WithQueries,
+            );
+          } else {
+            return Either.left(
+              new ParseError(
+                new Error('Neither `address` nor `addresses` nor `queries` were not provided'),
+              ),
+            );
+          }
         }
-      } else if (isSearchWithAddressesRequest(fValuesWithDefaults as any)) {
-        if (
-          ((fValuesWithDefaults as any).addresses as string[]).filter((v) => v.length === 0)
-            .length > 0
-        ) {
-          return Either.left(
-            new ParseError(new Error('`addresses` is not allowed to be has an empty value')),
-          );
-        } else {
-          return Either.right(fValuesWithDefaults as any);
-        }
-      } else if (isSearchWithQueriesRequest(fValuesWithDefaults as any)) {
-        return Either.right(fValuesWithDefaults as any);
-      } else {
-        return Either.left(
-          new ParseError(
-            new Error('Neither `address` nor `addresses` nor `queries` were not provided'),
-          ),
-        );
-      }
-    }
-  });
+      },
+    ),
+  );
 };

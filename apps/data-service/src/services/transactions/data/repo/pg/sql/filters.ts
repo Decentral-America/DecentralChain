@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { BigNumber } from '@decentralchain/data-entities';
 import { curryN } from 'ramda';
 

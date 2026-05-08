@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Effect, pipe } from 'effect';
 import { defaultTo, zipObj } from 'ramda';
 import { type AppError } from '../../../errorHandling';
@@ -32,7 +31,7 @@ export const modifyDecimals =
       Effect.map(zipObj(participatingAssetIds)),
       Effect.map((precisionsMap) => {
         const p = (assetId: string | null | undefined): number =>
-          precisionsMap[wavesByDefault(assetId)];
+          precisionsMap[wavesByDefault(assetId)] ?? 0;
 
         // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex decimal processing for exchange transactions
         return txs.map((tx) => {
