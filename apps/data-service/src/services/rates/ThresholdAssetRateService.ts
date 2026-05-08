@@ -1,7 +1,6 @@
 import { type BigNumber } from '@decentralchain/data-entities';
 import { Effect, Option, pipe } from 'effect';
 import { LRUCache } from 'lru-cache';
-import { WavesId } from '../..';
 import { type AppError } from '../../errorHandling';
 import { type PairsService } from '../pairs';
 import { MoneyFormat } from '../types';
@@ -43,7 +42,7 @@ export class ThresholdAssetRateService implements IThresholdAssetRateService {
       this.pairsService.get({
         matcher: this.matcherAddress,
         moneyFormat: MoneyFormat.Long,
-        pair: { amountAsset: WavesId, priceAsset: this.thresholdAssetId },
+        pair: { amountAsset: 'WAVES', priceAsset: this.thresholdAssetId },
       }),
       Effect.map((m) => {
         if (Option.isNone(m)) {

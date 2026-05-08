@@ -1,9 +1,8 @@
-// @ts-nocheck
 import P from './';
 
 describe('Selector', () => {
   it('lastCall should return result if really called', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const p = P.create(spy);
 
     p.m1().q.w.m2(1, 2, 3);
@@ -11,7 +10,7 @@ describe('Selector', () => {
   });
 
   it('lastCall should throw if not called', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const s = P.select(spy);
     const p = P.create(spy);
 
@@ -32,7 +31,7 @@ describe('Selector', () => {
   });
 
   it('lastField should correctly return last resolved field name', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const s = P.select(spy);
     const p = P.create(spy);
 
@@ -44,7 +43,7 @@ describe('Selector', () => {
   });
 
   it('lastField should throw if field resolve was not a last action', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const s = P.select(spy);
     const p = P.create(spy);
 
@@ -57,7 +56,7 @@ describe('Selector', () => {
   });
 
   it('callIndex should return first matching calln', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const { callIndex } = P.select(spy);
     const p = P.create(spy);
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import transformResult from '../transformResult';
 
 const before = [
@@ -67,7 +66,7 @@ describe('Data transactions db result transform', () => {
   });
 
   it('should return empty list for undefined, null or []', () => {
-    expect(transformResult()).toEqual([]);
+    expect(transformResult(undefined)).toEqual([]);
     expect(transformResult(null)).toEqual([]);
     expect(transformResult([])).toEqual([]);
   });

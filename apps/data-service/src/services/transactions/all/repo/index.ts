@@ -1,5 +1,3 @@
-import { propEq } from 'ramda';
-
 import { type CommonTransactionInfo } from '../../../../types';
 import { type CommonRepoDependencies } from '../../..';
 import { getByIdPreset } from '../../../_common/presets/pg/getById';
@@ -30,7 +28,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AllTxsR
     }),
 
     mget: mgetByIdsPreset<string, TxDbResponse, CommonTransactionInfo>({
-      matchRequestResult: propEq('id') as any,
+      matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.all.commonData.mget',
       resultSchema: result as any,
       sql: sql.mget,

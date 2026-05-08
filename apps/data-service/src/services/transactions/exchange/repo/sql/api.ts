@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { defaultTo, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../utils/db';
@@ -53,15 +52,10 @@ const createApi = ({ filters: F }: { filters: any }) => ({
 
     const sort = defaultTo(defaultValues.SORT, fValues.sort);
 
-    const fs: any[] = pickBindFilters(F, fNames, withDefaults);
+    const fs: any[] = pickBindFilters(F, fNames, withDefaults) as unknown as any[];
 
-    return pipe(
-      ...(fs as [any, ...any[]]),
-      selectFromFiltered,
-      F.limit(fValues.limit),
-      F.sort(sort),
-      String,
-    )(select);
+    const filtered: any = fs.reduce((q: any, f: any) => f(q), select);
+    return String(F.sort(sort)(F.limit(fValues.limit)(selectFromFiltered(filtered))));
   },
 });
 

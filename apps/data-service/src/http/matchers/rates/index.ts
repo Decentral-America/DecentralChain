@@ -1,11 +1,12 @@
-import Router from '@koa/router';
+import { Hono } from 'hono';
 import { type RatesMgetService } from '../../../services/rates';
 import { postToGet } from '../../_common/postToGet';
+import { type AppEnv } from '../../_common/types';
 import getEstimateRateHandler from './estimate';
 
-const subrouter: Router = new Router();
-
-export default (rateService: RatesMgetService): Router =>
-  subrouter
-    .get('/rates', getEstimateRateHandler(rateService))
-    .post('/rates', postToGet(getEstimateRateHandler(rateService)));
+export default (rateService: RatesMgetService) => {
+  const app = new Hono<AppEnv>();
+  app.get('/rates', getEstimateRateHandler(rateService));
+  app.post('/rates', postToGet(getEstimateRateHandler(rateService)));
+  return app;
+};

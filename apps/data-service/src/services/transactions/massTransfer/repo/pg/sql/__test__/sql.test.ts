@@ -1,4 +1,3 @@
-// @ts-nocheck
 import sql from '..';
 
 const filterValues = {
@@ -7,5 +6,5 @@ const filterValues = {
 };
 
 test('Sql search supports type-specific filters', () => {
-  expect(sql.default.search(filterValues)).toMatchSnapshot();
+  expect(sql.search(filterValues)).toMatchSnapshot();
 });

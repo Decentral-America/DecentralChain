@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/data-entities';
-import { Either } from 'effect';
+import { Either, pipe } from 'effect';
 import { isNil } from 'ramda';
 import { ParseError } from '../../errorHandling';
 import { type DataEntryValue } from '../../services/transactions/data/repo/types';
@@ -81,30 +81,33 @@ export const parseDataMgetOrSearch = ({
     return Either.left(new ParseError(new Error('Query is empty')));
   }
 
-  return (Either.flatMap as any)(
+  return pipe(
     parseFilterValues({
       key: commonFilters.query,
       type: parseDataEntryType,
       value: commonFilters.query,
     })(query),
-    (fValues: any) => {
-      if (isMgetRequest(fValues)) {
-        return Either.right(fValues);
-      } else {
-        const fValuesWithDefaults = withDefaults(fValues);
-        if (!isNil(fValuesWithDefaults.value) && isNil(fValuesWithDefaults.type)) {
-          return Either.left(
-            new ParseError(new Error('Type param has to be set with value param')),
+    Either.flatMap(
+      (fValues): Either.Either<ServiceMgetRequest | DataTxsServiceSearchRequest, ParseError> => {
+        if (isMgetRequest(fValues)) {
+          return Either.right(fValues);
+        } else {
+          const fValuesWithDefaults = withDefaults(fValues);
+          if (!isNil(fValuesWithDefaults.value) && isNil(fValuesWithDefaults.type)) {
+            return Either.left(
+              new ParseError(new Error('Type param has to be set with value param')),
+            );
+          }
+          return Either.map(
+            parseValue(fValuesWithDefaults.type, fValuesWithDefaults.value),
+            (value): DataTxsServiceSearchRequest =>
+              ({
+                ...fValuesWithDefaults,
+                ...(value ? { value } : {}),
+              }) as DataTxsServiceSearchRequest,
           );
         }
-        return Either.map(
-          parseValue(fValuesWithDefaults.type, fValuesWithDefaults.value),
-          (value) => ({
-            ...fValuesWithDefaults,
-            ...(value ? { value } : {}),
-          }),
-        );
-      }
-    },
+      },
+    ),
   );
 };

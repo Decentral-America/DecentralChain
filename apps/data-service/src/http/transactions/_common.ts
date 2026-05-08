@@ -1,5 +1,5 @@
-import type Router from '@koa/router';
 import { Effect, Either, pipe } from 'effect';
+import { Hono } from 'hono';
 import { ParseError } from '../../errorHandling';
 import { type ServiceMesh } from '../../services';
 import { type WithLimit, type WithSortOrder } from '../../services/_common';
@@ -19,7 +19,7 @@ import {
   mget as mgetSerializer,
   search as searchSerializer,
 } from '../_common/serialize';
-import { type HttpRequest } from '../_common/types';
+import { type AppEnv, type HttpRequest } from '../_common/types';
 
 export const isMgetRequest = (req: unknown): req is ServiceMgetRequest =>
   typeof req === 'object' && req !== null && 'ids' in req;
@@ -44,7 +44,7 @@ export const parseMgetOrSearch =
     }
 
     return pipe(
-      parseFilterValues(customFilters)(query),
+      parseFilterValues(customFilters)(query as Record<string, string | undefined>),
       Either.map((fValues) => {
         if (isMgetRequest(fValues)) {
           return fValues;
@@ -56,7 +56,6 @@ export const parseMgetOrSearch =
   };
 
 export const createTransactionHttpHandlers = <SearchRequest extends WithSortOrder & WithLimit>(
-  router: Router,
   prefix: string,
   service: ServiceMesh['transactions'][keyof ServiceMesh['transactions']],
   parseRequest: {
@@ -82,18 +81,19 @@ export const createTransactionHttpHandlers = <SearchRequest extends WithSortOrde
     parseRequest.mgetOrSearch,
   );
 
-  return router
-    .get(
-      `${prefix}/:id`,
-      createHttpHandler(
-        (req, lsnFormat) =>
-          pipe(
-            service.get(req),
-            Effect.map(getSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
-          ),
-        parseRequest.get,
-      ),
-    )
-    .get(prefix, mgetOrSearchHandler)
-    .post(prefix, postToGet(mgetOrSearchHandler));
+  const router = new Hono<AppEnv>();
+  router.get(
+    `${prefix}/:id`,
+    createHttpHandler(
+      (req, lsnFormat) =>
+        pipe(
+          service.get(req),
+          Effect.map(getSerializer<TransactionInfo | null, Transaction>(transaction, lsnFormat)),
+        ),
+      parseRequest.get,
+    ),
+  );
+  router.get(prefix, mgetOrSearchHandler);
+  router.post(prefix, postToGet(mgetOrSearchHandler));
+  return router;
 };

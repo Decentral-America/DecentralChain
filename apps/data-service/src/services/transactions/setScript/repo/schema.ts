@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Schema } from 'effect';
 import commonFields from '../../_common/commonFieldsSchemas';
 

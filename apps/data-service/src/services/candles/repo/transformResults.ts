@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { type BigNumber } from '@decentralchain/data-entities';
-import { compose, curry, groupBy, map, sort, toPairs } from 'ramda';
+import { groupBy, map, sort } from 'ramda';
 import { type CandleInfo, type Interval, type SearchedItems, Unit } from '../../../types';
 import { add, ceil, floor, trunc } from '../../../utils/date';
 import { concatAll } from '../../../utils/fp/concatAll';
@@ -60,76 +59,84 @@ export const transformCandle =
     } as CandleInfo;
   };
 
-/** addMissingCandles :: Interval -> Date -> Date
- * -> Map String CandleDbResponse[]-> Map String CandleDbResponse[] */
-export const addMissingCandles: any = curry(
-  (interval: Interval, timeStart: Date, timeEnd: Date) =>
-    (
-      candlesGroupedByTime: Record<string, CandleDbResponse[]>,
-    ): Record<string, CandleDbResponse[]> => {
-      const end = timeEnd;
-      const res = { ...candlesGroupedByTime };
-      for (
-        let it = ceil(interval, timeStart) as unknown as Date;
-        it <= end;
-        it = floor(interval, add(interval, it) as unknown as Date) as unknown as Date
-      ) {
-        const cur = truncToMinutes(it);
+type CandlesMap = Partial<Record<string, CandleDbResponse[]>>;
 
+/** addMissingCandles :: Interval -> Date -> Date -> CandlesMap -> CandlesMap */
+export function addMissingCandles(
+  interval: Interval,
+): (timeStart: Date, timeEnd: Date) => (grouped: CandlesMap) => CandlesMap;
+export function addMissingCandles(
+  interval: Interval,
+  timeStart: Date,
+  timeEnd: Date,
+): (grouped: CandlesMap) => CandlesMap;
+export function addMissingCandles(
+  interval: Interval,
+  timeStart?: Date,
+  timeEnd?: Date,
+):
+  | ((timeStart: Date, timeEnd: Date) => (grouped: CandlesMap) => CandlesMap)
+  | ((grouped: CandlesMap) => CandlesMap) {
+  const impl =
+    (ts: Date, te: Date) =>
+    (candlesGroupedByTime: CandlesMap): CandlesMap => {
+      const res = { ...candlesGroupedByTime };
+      for (let it = ceil(interval, ts); it <= te; it = floor(interval, add(interval, it))) {
+        const cur = truncToMinutes(it);
         if (!res[cur]) {
           res[cur] = [];
         }
       }
-
       return res;
-    },
-);
+    };
+  if (timeStart === undefined || timeEnd === undefined) {
+    return impl;
+  }
+  return impl(timeStart, timeEnd);
+}
 
 export const transformResults = (
   result: CandleDbResponse[],
   request: CandlesSearchRequest,
-): SearchedItems<CandleInfo> =>
-  (
-    compose(
-      (items: CandleInfo[]) => ({
-        isLastPage: false,
-        items: items,
-      }),
-      map(transformCandle(request.interval)),
-      sort(
-        (a: [string, RawCandle], b: [string, RawCandle]): number =>
-          new Date(a[0]).valueOf() - new Date(b[0]).valueOf(),
-      ),
-      toPairs,
-      map(concatAll(candleMonoid)),
-      addMissingCandles(request.interval, request.timeStart, request.timeEnd),
-      groupBy(
-        (candle: CandleDbResponse): string =>
-          truncToMinutes(
-            floor(request.interval, candle.time_start as Date) as unknown as Date,
-          ) as unknown as string,
-      ),
-    ) as any
-  )(result) as SearchedItems<CandleInfo>;
+): SearchedItems<CandleInfo> => {
+  const grouped = groupBy(
+    (candle: CandleDbResponse): string =>
+      truncToMinutes(floor(request.interval, candle.time_start)),
+    result,
+  );
+  const withMissing = addMissingCandles(
+    request.interval,
+    request.timeStart,
+    request.timeEnd,
+  )(grouped);
+  const pairs: [string, RawCandle][] = Object.entries(withMissing)
+    .filter((entry): entry is [string, CandleDbResponse[]] => entry[1] !== undefined)
+    .map(([key, candles]) => [key, concatAll(candleMonoid)(candles as RawCandle[])]);
+  const sorted = sort(
+    (a: [string, RawCandle], b: [string, RawCandle]): number =>
+      new Date(a[0]).valueOf() - new Date(b[0]).valueOf(),
+    pairs,
+  );
+  return {
+    isLastPage: false,
+    items: sorted.map(transformCandle(request.interval)),
+  };
+};
 
 export const transformLastResult = (
   result: CandleDbResponse[],
   request: CandlesSearchRequest,
-): SearchedItems<CandleInfo> =>
-  (
-    compose(
-      (items: CandleInfo[]) => ({
-        isLastPage: false,
-        items: items,
-      }),
-      map(transformCandle(request.interval)),
-      toPairs,
-      map(concatAll(candleMonoid)),
-      groupBy(
-        (candle: CandleDbResponse): string =>
-          truncToMinutes(
-            floor(request.interval, candle.time_start as Date) as unknown as Date,
-          ) as unknown as string,
-      ),
-    ) as any
-  )(result) as SearchedItems<CandleInfo>;
+): SearchedItems<CandleInfo> => {
+  const grouped = groupBy(
+    (candle: CandleDbResponse): string =>
+      truncToMinutes(floor(request.interval, candle.time_start)),
+    result,
+  );
+  const pairs: [string, RawCandle][] = Object.entries(grouped)
+    .filter((entry): entry is [string, CandleDbResponse[]] => entry[1] !== undefined)
+    .map(([key, candles]) => [key, concatAll(candleMonoid)(candles as RawCandle[])]);
+  return {
+    isLastPage: false,
+    items: pairs.map(transformCandle(request.interval)),
+  };
+};

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { omit, without } from 'ramda';
 
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
@@ -17,9 +16,7 @@ export const filters = omit(['sender'], {
 
   timeStart: byTimeStamp('>='),
 });
-export const filtersOrder = without('sender', [
-  ...commonFiltersOrder,
-  'timeStart',
-  'timeEnd',
-  'recipient',
-]);
+export const filtersOrder = without(
+  ['sender'],
+  [...commonFiltersOrder, 'timeStart', 'timeEnd', 'recipient'],
+);

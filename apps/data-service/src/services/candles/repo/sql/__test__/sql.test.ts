@@ -1,4 +1,4 @@
-// @ts-nocheck
+import { Either } from 'effect';
 import { interval as intervalFromString } from '../../../../../types/interval';
 import { sql } from '../sql';
 
@@ -7,7 +7,7 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        interval: intervalFromString('1h').unsafeGet(),
+        interval: Either.getOrThrow(intervalFromString('1h')),
         matcher: '123',
         priceAsset: '222',
         timeEnd: new Date('2017-04-03T23:59:59.999Z'),
@@ -20,7 +20,7 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        interval: intervalFromString('1d').unsafeGet(),
+        interval: Either.getOrThrow(intervalFromString('1d')),
         matcher: '123',
         priceAsset: '222',
         timeEnd: new Date('2017-04-03T23:59:59.999Z'),
@@ -33,7 +33,7 @@ describe('sql query from candles', () => {
     expect(
       sql.search({
         amountAsset: '111',
-        interval: intervalFromString('1m').unsafeGet(),
+        interval: Either.getOrThrow(intervalFromString('1m')),
         matcher: '123',
         priceAsset: '222',
         timeEnd: new Date('2017-04-03T23:59:59.999Z'),

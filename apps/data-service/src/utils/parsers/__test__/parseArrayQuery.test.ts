@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either } from 'effect';
 import { parseArrayQuery } from '../parseArrayQuery';
 
@@ -23,6 +22,6 @@ describe('parseArrayQuery should correctly parse', () => {
   });
 
   it('undefined to undefined', () => {
-    expect(parseArrayQuery()).toEqual(ok(undefined));
+    expect(parseArrayQuery(undefined)).toEqual(ok(undefined));
   });
 });
