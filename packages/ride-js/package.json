@@ -5,8 +5,8 @@
   },
   "dependencies": {
     "@decentralchain/ts-lib-crypto": "workspace:*",
-    "@waves/ride-lang": "1.6.1",
-    "@waves/ride-repl": "1.6.1"
+    "@waves/ride-lang": "1.6.2",
+    "@waves/ride-repl": "1.6.2"
   },
   "description": "JS compiler for Ride - the smart-contract language for DecentralChain",
   "devDependencies": {

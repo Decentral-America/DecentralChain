@@ -4,9 +4,9 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@noble/ciphers": "2.1.1",
-    "@noble/curves": "^2.0.1",
-    "@noble/hashes": "^2.0.1"
+    "@noble/ciphers": "2.2.0",
+    "@noble/curves": "^2.2.0",
+    "@noble/hashes": "^2.2.0"
   },
   "description": "Official TypeScript cryptographic library for the DecentralChain blockchain — key generation, digital signatures, hashing, encoding, and encryption primitives for building secure dApps and protocol integrations.",
   "devDependencies": {
@@ -15,7 +15,7 @@
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "fast-check": "4.6.0",
+    "fast-check": "4.7.0",
     "publint": "catalog:",
     "size-limit": "catalog:",
     "tsdown": "catalog:",
