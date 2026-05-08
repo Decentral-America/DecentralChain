@@ -35,7 +35,6 @@
     "@types/mocha",
     // scanner: used in vitest.config.ts + postcss.config.js / CSS @import
     "@vitejs/plugin-react",
-    "@tailwindcss/postcss",
     "tailwindcss",
     "tw-animate-css",
     // exchange: used in advanced transaction forms and wallet features not yet wired into routing
@@ -79,8 +78,18 @@
       ],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
+    "apps/data-service": {
+      "entry": [
+        "src/index.ts",
+        "src/daemons/pairs/index.ts",
+        "src/daemons/presets/daemon.ts",
+        "tsdown.config.ts",
+        "vitest.config.ts"
+      ],
+      "project": ["src/**/*.ts"]
+    },
     "apps/exchange": {
-      "entry": ["src/main.tsx", "src/pages/**/*.tsx", "test/setup.ts"],
+      "entry": ["src/pages/**/*.tsx", "test/setup.ts"],
       // Build-ahead directories: fully implemented but not yet wired to routing/pages.
       // These will be connected as features land in the routing layer.
       // Tracked in STATUS.md § "Active Work State".
@@ -155,12 +164,7 @@
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
     "apps/scanner": {
-      "entry": [
-        "src/entry.client.tsx",
-        "src/entry.server.tsx",
-        "src/pages/**/*.tsx",
-        "src/root.tsx"
-      ],
+      "entry": ["src/pages/**/*.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/*": {
@@ -179,11 +183,10 @@
       "project": ["src/**/*.ts"]
     },
     "packages/data-service-client-js": {
-      "entry": ["src/index.ts"],
       "project": ["src/**/*.ts"]
     },
     "packages/node-api-js": {
-      "entry": ["src/index.ts", "test/**/*.spec.ts"],
+      "entry": ["test/**/*.spec.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/protobuf-serialization": {
