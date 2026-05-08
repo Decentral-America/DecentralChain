@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { type Option } from 'effect';
-import { head, propEq } from 'ramda';
+import { Effect, Option, pipe } from 'effect';
+import { head } from 'ramda';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 import { matchRequestsResults } from '../../../../../utils/db';
@@ -15,38 +14,29 @@ import { transformResult } from './transformResult';
 
 export default {
   get: (pg: PgDriver) => (id: string) =>
-    pg
-      .any<DbRawInvokeScriptTx>(sql.get(id))
-      .map(transformResult)
-      .map<RawInvokeScriptTx>(head)
-      .map(fromNullable)
-      .mapRejected(
-        addMeta({
-          params: id,
-          request: 'transactions.invokeScript.get',
-        }),
-      ),
+    pipe(
+      pg.any<DbRawInvokeScriptTx>(sql.get(id)),
+      Effect.map((rows) => transformResult(rows)),
+      Effect.map((rows) => Option.fromNullable(head(rows as RawInvokeScriptTx[]))),
+      Effect.mapError(addMeta({ params: id, request: 'transactions.invokeScript.get' })),
+    ),
 
   mget: (pg: PgDriver) => (ids: string[]) =>
-    pg
-      .any<DbRawInvokeScriptTx>(sql.mget(ids))
-      .map(transformResult)
-      .map<Option.Option<RawInvokeScriptTx>[]>(matchRequestsResults(propEq('id'), ids))
-      .mapRejected(
-        addMeta({
-          params: ids,
-          request: 'transactions.invokeScript.mget',
-        }),
+    pipe(
+      pg.any<DbRawInvokeScriptTx>(sql.mget(ids)),
+      Effect.map((rows) => transformResult(rows)),
+      Effect.map(
+        matchRequestsResults((req: string, res: any) => res.id === req, ids) as unknown as (
+          rows: RawInvokeScriptTx[],
+        ) => Option.Option<RawInvokeScriptTx>[],
       ),
+      Effect.mapError(addMeta({ params: ids, request: 'transactions.invokeScript.mget' })),
+    ),
 
   search: (pg: PgDriver) => (filters: InvokeScriptTxsSearchRequest<Cursor>) =>
-    pg
-      .any<DbRawInvokeScriptTx>(sql.search(filters))
-      .map(transformResult)
-      .mapRejected(
-        addMeta({
-          params: filters,
-          request: 'transactions.invokeScript.search',
-        }),
-      ),
+    pipe(
+      pg.any<DbRawInvokeScriptTx>(sql.search(filters) as string),
+      Effect.map((rows) => transformResult(rows) as RawInvokeScriptTx[]),
+      Effect.mapError(addMeta({ params: filters, request: 'transactions.invokeScript.search' })),
+    ),
 };

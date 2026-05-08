@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { whereIn } from '../../../../../utils/db/knex';
 
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
@@ -7,8 +6,8 @@ import commonFiltersOrder from '../../../_common/sql/filtersOrder';
 
 // txs_9 do not contain recipient info directly
 // only txs_8 do
-const byRecipient = (addressOrAlias) =>
-  whereIn('lease_tx_uid', function () {
+const byRecipient = (addressOrAlias: string) =>
+  whereIn('lease_tx_uid', function (this: any) {
     this.select('uid')
       .from('txs_8')
       .whereRaw(

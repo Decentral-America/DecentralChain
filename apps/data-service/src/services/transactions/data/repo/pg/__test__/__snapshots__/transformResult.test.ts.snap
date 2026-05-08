@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Data transactions db result transform > should group raw results by transaction and put nested \`data\` inside     preserving order in position_in_tx field 1`] = `
+[
+  {
+    "data": [
+      {
+        "key": "testint",
+        "type": "integer",
+        "value": 11,
+      },
+      {
+        "key": "testbool",
+        "type": "boolean",
+        "value": false,
+      },
+    ],
+    "id": "qwe",
+  },
+  {
+    "data": [
+      {
+        "key": "teststring",
+        "type": "string",
+        "value": "some string",
+      },
+      {
+        "key": "testbinary",
+        "type": "binary",
+        "value": "base64:qwerqwer",
+      },
+    ],
+    "id": "asd",
+  },
+]
+`;
+
+exports[`Data transactions db result transform > should handle case when there is no data in tx (all nulls in a row) 1`] = `
+[
+  {
+    "data": [],
+    "id": "asd",
+  },
+]
+`;

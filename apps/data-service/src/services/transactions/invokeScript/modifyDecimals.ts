@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Effect, pipe } from 'effect';
 import { defaultTo } from 'ramda';
 import { type AppError } from '../../../errorHandling';
@@ -19,10 +18,10 @@ export const modifyDecimals =
           const currentTxValues = precisions.splice(0, 1 + tx.payment.length);
           return {
             ...tx,
-            fee: tx.fee.shiftedBy(-currentTxValues[0]),
+            fee: tx.fee.shiftedBy(-(currentTxValues[0] ?? 0)),
             payment: tx.payment.map((p, idx) => ({
               ...p,
-              amount: p.amount.shiftedBy(-currentTxValues[idx + 1]),
+              amount: p.amount.shiftedBy(-(currentTxValues[idx + 1] ?? 0)),
             })),
           };
         }),

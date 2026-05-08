@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { knex as _knex, type Knex } from 'knex';
-import { __, compose, filter, has, identity, map, pick, reverse } from 'ramda';
+import { compose, filter, has, identity, map, pick, reverse } from 'ramda';
 import * as defaultValues from './defaults';
 import commonFilters from './filters';
 import commonFiltersOrder from './filtersOrder';
@@ -14,7 +13,7 @@ const createSql = ({
   queryAfterFilters = {} as Record<string, unknown>,
 }: {
   query: any;
-  filters?: typeof commonFilters;
+  filters?: Partial<typeof commonFilters> & Record<string, any>;
   filtersOrder?: string[];
   queryAfterFilters?: Record<string, unknown>;
 }) => {
@@ -27,37 +26,37 @@ const createSql = ({
 
   return {
     get: (id: unknown) =>
-      compose(
+      (compose as any)(
         String,
-        (q: unknown) => queryAfterFiltersWithDefaults.get?.(q, id),
-        filters.limit(1),
-        filters.id(id as string),
+        (q: unknown) => queryAfterFiltersWithDefaults['get']?.(q, id),
+        (filters as any).limit(1),
+        (filters as any).id(id as string),
       )(query),
 
     mget: (ids: unknown[]) =>
-      compose(
+      (compose as any)(
         String,
-        (q: unknown) => queryAfterFiltersWithDefaults.mget?.(q, ids),
-        filters.sort(defaultValues.SORT),
-        filters.limit(ids.length),
-        filters.ids(ids as string[]),
+        (q: unknown) => queryAfterFiltersWithDefaults['mget']?.(q, ids),
+        (filters as any).sort(defaultValues.SORT),
+        (filters as any).limit(ids.length),
+        (filters as any).ids(ids as string[]),
       )(query),
 
     search: (fValues: Record<string, unknown>) => {
       const fValuesPicked = pick(filtersOrder, fValues);
-      const appliedFs = compose(
+      const appliedFs = (compose as any)(
         map((x: string) =>
           (filters as Record<string, (v: unknown) => (q: unknown) => unknown>)[x]?.(
             fValuesPicked[x],
           ),
         ),
-        filter(has(__, fValuesPicked)),
+        filter((x: string) => has(x, fValuesPicked)),
         reverse,
-      )(filtersOrder);
+      )(filtersOrder) as Array<(q: unknown) => unknown>;
 
       return (compose as any)(
         String,
-        (q: unknown) => queryAfterFiltersWithDefaults.search?.(q, fValuesPicked),
+        (q: unknown) => queryAfterFiltersWithDefaults['search']?.(q, fValuesPicked),
         ...(appliedFs as Array<(q: unknown) => unknown>),
         (q: { clone: () => unknown }) => q.clone(),
       )(query);

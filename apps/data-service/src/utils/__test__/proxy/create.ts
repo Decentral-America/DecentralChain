@@ -1,9 +1,8 @@
-// @ts-nocheck
-const createProxy = (fnOrObj = () => {}) => {
+const createProxy = (fnOrObj: ((...args: any[]) => any) | Record<string, any> = () => {}): any => {
   const defaults = {
     fn: () => {},
     name: '@proxy',
-    reservedFields: {},
+    reservedFields: {} as Record<string | symbol, any>,
   };
   let params;
   if (typeof fnOrObj === 'function') {
@@ -18,9 +17,9 @@ const createProxy = (fnOrObj = () => {}) => {
     };
   }
 
-  let toPrimitive;
+  let toPrimitive: any;
 
-  const p = new Proxy(params.fn, {
+  const p: any = new Proxy(params.fn, {
     apply: (_target, _thisArg, argumentsList) => {
       params.fn({ apply: argumentsList });
       return p;

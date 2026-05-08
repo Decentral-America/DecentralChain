@@ -1,12 +1,11 @@
-// @ts-nocheck
 import { equals } from 'ramda';
 
-const select = (jestSpy) => ({
-  callIndex(args) {
-    return jestSpy.mock.calls.findIndex((x) => equals(x[0].apply, args));
+const select = (jestSpy: any) => ({
+  callIndex(args: any) {
+    return jestSpy.mock.calls.findIndex((x: any) => equals(x[0].apply, args));
   },
   get events() {
-    return jestSpy.mock.calls.map((x) => x[0]);
+    return jestSpy.mock.calls.map((x: any) => x[0]);
   },
 
   get lastCall() {

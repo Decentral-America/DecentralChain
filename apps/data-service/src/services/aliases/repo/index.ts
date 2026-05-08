@@ -1,5 +1,3 @@
-import { propEq } from 'ramda';
-
 import { type AliasInfo, type Repo, type XOR } from '../../../types';
 
 import { type CommonRepoDependencies } from '../..';
@@ -52,7 +50,7 @@ export default ({ drivers, emitEvent }: CommonRepoDependencies): AliasesRepo => 
     }),
 
     mget: mgetByIdsPreset<string, AliasDbResponse, AliasInfo>({
-      matchRequestResult: propEq('alias') as any,
+      matchRequestResult: (req, res: any) => res.alias === req,
       name: 'aliases.mget',
       resultSchema: output as any,
       sql: sql.mget,

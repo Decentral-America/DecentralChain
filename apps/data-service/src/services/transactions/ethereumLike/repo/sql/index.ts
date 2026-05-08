@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createSql } from '../../../_common/sql';
 import { filters, filtersOrder } from './filters';
 import { select, selectFromFiltered } from './query';

@@ -1,6 +1,6 @@
-import Router from '@koa/router';
-
+import { Hono } from 'hono';
 import { type ServiceMesh } from '../services';
+import { type AppEnv } from './_common/types';
 import aliases from './aliases';
 import assets from './assets';
 import candles from './candles';
@@ -11,16 +11,18 @@ import root from './root';
 import transactions from './transactions';
 import version from './version';
 
-const router = new Router();
+export default (serviceMesh: ServiceMesh) => {
+  const app = new Hono<AppEnv>();
 
-export default (serviceMesh: ServiceMesh) =>
-  router
-    .use(aliases(serviceMesh.aliases).routes())
-    .use(assets(serviceMesh.assets).routes())
-    .use(candles(serviceMesh.candles).routes())
-    .use(matchers(serviceMesh.matchers).routes())
-    .use(pairs(serviceMesh.pairs).routes())
-    .use(transactions(serviceMesh.transactions).routes())
-    .get('/version', version)
-    .get('/', root)
-    .get('*', notFound);
+  app.route('/', aliases(serviceMesh.aliases));
+  app.route('/', assets(serviceMesh.assets));
+  app.route('/', candles(serviceMesh.candles));
+  app.route('/matchers/:matcher', matchers(serviceMesh.matchers));
+  app.route('/', pairs(serviceMesh.pairs));
+  app.route('/', transactions(serviceMesh.transactions));
+  app.get('/version', version);
+  app.get('/', root);
+  app.get('*', notFound);
+
+  return app;
+};

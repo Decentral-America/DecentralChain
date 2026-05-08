@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { AppError, type AppErrorPattern, type ErrorInfo } from './AppError';
 
 const errorTypes: (keyof AppErrorPattern<any>)[] = [
@@ -29,7 +28,7 @@ describe('AppError', () => {
         [type]: (err: ErrorInfo) => {
           expect(err.error.message).toEqual('Error message');
           expect(err.meta).not.toBeUndefined();
-          if (err.meta) expect(err.meta.info).toEqual('some-info');
+          if (err.meta) expect(err.meta['info']).toEqual('some-info');
         },
       });
     });
@@ -42,7 +41,7 @@ describe('AppError', () => {
         [type]: (err: ErrorInfo) => {
           expect(err.error.message).toEqual('Error message');
           expect(err.meta).not.toBeUndefined();
-          if (err.meta) expect(err.meta.info).toEqual('some-info');
+          if (err.meta) expect(err.meta['info']).toEqual('some-info');
         },
       });
     });

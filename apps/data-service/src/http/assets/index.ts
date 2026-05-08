@@ -1,5 +1,5 @@
-import Router from '@koa/router';
 import { Effect, pipe } from 'effect';
+import { Hono } from 'hono';
 import {
   type AssetsService,
   type AssetsServiceMgetRequest,
@@ -13,9 +13,8 @@ import {
   mget as serializeMget,
   search as serializeSearch,
 } from '../_common/serialize';
+import { type AppEnv } from '../_common/types';
 import { get as parseGet, mgetOrSearch as parseMgetOrSearch } from './parse';
-
-const subrouter: Router = new Router();
 
 const isMgetRequest = (
   req: AssetsServiceMgetRequest | AssetsServiceSearchRequest,
@@ -30,16 +29,16 @@ const mgetOrSearchHandler = (assetsService: AssetsService) =>
     parseMgetOrSearch,
   );
 
-export default (assetsService: AssetsService): Router => {
-  return subrouter
-    .get(
-      '/assets/:id',
-      createHttpHandler(
-        (req, lsnFormat) =>
-          pipe(assetsService.get(req), Effect.map(serializeGet(asset, lsnFormat))),
-        parseGet,
-      ),
-    )
-    .get('/assets', mgetOrSearchHandler(assetsService))
-    .post('/assets', postToGet(mgetOrSearchHandler(assetsService)));
+export default (assetsService: AssetsService) => {
+  const app = new Hono<AppEnv>();
+  app.get(
+    '/assets/:id',
+    createHttpHandler(
+      (req, lsnFormat) => pipe(assetsService.get(req), Effect.map(serializeGet(asset, lsnFormat))),
+      parseGet,
+    ),
+  );
+  app.get('/assets', mgetOrSearchHandler(assetsService));
+  app.post('/assets', postToGet(mgetOrSearchHandler(assetsService)));
+  return app;
 };

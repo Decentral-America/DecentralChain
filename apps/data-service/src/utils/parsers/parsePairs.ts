@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Either, pipe } from 'effect';
 import { compose, isNil, split } from 'ramda';
 import { type Parser } from '../../http/_common/filters/types';
@@ -14,7 +13,13 @@ export const parsePairs: ParsePairs = (pairsRaw?: string) =>
         parseArrayQuery(pairsRaw),
         Either.map((pairs) =>
           pairs.map(
-            compose(([amountAsset, priceAsset]) => ({ amountAsset, priceAsset }), split('/')),
+            compose(
+              ([amountAsset, priceAsset]: (string | undefined)[]) => ({
+                amountAsset: amountAsset ?? '',
+                priceAsset: priceAsset ?? '',
+              }),
+              split('/'),
+            ) as (p: string) => { amountAsset: string; priceAsset: string },
           ),
         ),
       );

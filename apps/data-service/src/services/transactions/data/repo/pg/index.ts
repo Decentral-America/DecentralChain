@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { Effect, Option, pipe } from 'effect';
-import { head, propEq } from 'ramda';
+import { head } from 'ramda';
 import { type PgDriver } from '../../../../../db/driver';
 import { addMeta } from '../../../../../errorHandling';
 import { matchRequestsResults } from '../../../../../utils/db/index';
@@ -18,7 +17,7 @@ export const pg = {
   get: (pg: PgDriver) => (id: DataTxsGetRequest) =>
     pipe(
       pg.any(sql.get(id)),
-      Effect.map(transformResult),
+      Effect.map(transformResult as (rows: unknown[]) => DataTxDbResponse[]),
       Effect.map((rows) => Option.fromNullable(head(rows) as DataTxDbResponse | undefined)),
       Effect.mapError(addMeta({ params: id, request: 'transactions.data.get' })),
     ),
@@ -26,9 +25,9 @@ export const pg = {
   mget: (pg: PgDriver) => (ids: DataTxsMgetRequest) =>
     pipe(
       pg.any(sql.mget(ids)),
-      Effect.map(transformResult),
+      Effect.map(transformResult as (rows: unknown[]) => DataTxDbResponse[]),
       Effect.map(
-        matchRequestsResults(propEq('id'), ids) as unknown as (
+        matchRequestsResults((req: string, res: any) => res.id === req, ids) as unknown as (
           rows: DataTxDbResponse[],
         ) => Option.Option<DataTxDbResponse>[],
       ),

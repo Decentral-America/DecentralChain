@@ -1,6 +1,5 @@
 import { type Asset } from '@decentralchain/data-entities';
 import { Effect, Either, Option, pipe } from 'effect';
-import { propEq } from 'ramda';
 import { type DbError, type Timeout } from '../../../errorHandling';
 import { type AssetInfo } from '../../../types';
 import { forEach, isEmpty } from '../../../utils/fp/maybeOps';
@@ -85,7 +84,7 @@ export default ({
 
         return pipe(
           (mgetByIdsPg as any)({
-            matchRequestResult: propEq('asset_id') as any,
+            matchRequestResult: (req: string, res: any) => res.asset_id === req,
             name: SERVICE_NAME.MGET,
             pg,
             sql: sql.mget,

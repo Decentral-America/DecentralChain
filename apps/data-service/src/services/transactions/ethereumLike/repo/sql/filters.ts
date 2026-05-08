@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { where, whereNotNull, whereNull } from '../../../../../utils/db/knex';
 
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
@@ -14,7 +13,7 @@ export const filters = {
   blockTimeEnd: byBlockTimeStamp('<='),
   blockTimeStart: byBlockTimeStamp('>='),
 
-  function: (functionName) => where('function_name', functionName),
+  function: (functionName: string) => where('function_name', functionName),
   id,
   ids,
   limit,
@@ -25,7 +24,7 @@ export const filters = {
 
   timeStart: byTimeStamp('>='),
 
-  type: (transferOrInvocation) =>
+  type: (transferOrInvocation: string) =>
     transferOrInvocation === 'transfer'
       ? whereNull('function_name')
       : whereNotNull('function_name'),
