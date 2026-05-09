@@ -1,17 +1,17 @@
-import { gcm } from '@noble/ciphers/aes.js';
+import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
 
 import { deriveKey } from './deriveKey.js';
 
 const SALT_LENGTH = 32;
-const NONCE_LENGTH = 12;
-/** 32 (salt) + 12 (nonce) + 16 (GCM tag) = 60-byte minimum. */
+const NONCE_LENGTH = 24;
+/** 32 (salt) + 24 (nonce) + 16 (Poly1305 tag) = 72-byte minimum. */
 const DECRYPT_SEED_MIN = SALT_LENGTH + NONCE_LENGTH + 16;
 
 /**
  * Decrypts a blob produced by `encryptSeed`.
  *
- * Expected format: [32-byte salt][12-byte nonce][ciphertext + 16-byte GCM tag]
- * Throws if the password is wrong or the pepper does not match (GCM auth tag mismatch).
+ * Expected format: [32-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
+ * Throws if the password is wrong or the pepper does not match (Poly1305 auth tag mismatch).
  *
  * @param pepper - Must be the same optional pepper passed to `encryptSeed`.
  */
@@ -29,5 +29,5 @@ export async function decryptSeed(
 
   const key = await deriveKey(password, salt, pepper);
 
-  return gcm(key, nonce).decrypt(ciphertext);
+  return xchacha20poly1305(key, nonce).decrypt(ciphertext);
 }
