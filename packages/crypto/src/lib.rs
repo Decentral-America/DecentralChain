@@ -4,11 +4,14 @@ use ed25519_compact::x25519;
 use wasm_bindgen::prelude::*;
 
 /// Derives an output key of `output_len` bytes from a password and salt using
-/// Argon2id (RFC 9106 v0x13) with OWASP interactive-minimum parameters:
-/// m = 19 456 KiB (19 MiB), t = 2 iterations, p = 1 lane.
+/// Argon2id (RFC 9106 v0x13) with high-security parameters:
+/// m = 65 536 KiB (64 MiB), t = 4 iterations, p = 4 lanes.
+///
+/// Matches node-go wallet (pkg/wallet/crypt.go) and node-scala (JsonFileStorage).
+/// All wallet encryption across the DCC ecosystem uses identical KDF parameters.
 #[wasm_bindgen]
 pub fn derive_key(password: &[u8], salt: &[u8], output_len: usize) -> Box<[u8]> {
-    let params = Params::new(19_456, 2, 1, Some(output_len)).expect("argon2 params are valid");
+    let params = Params::new(65_536, 4, 4, Some(output_len)).expect("argon2 params are valid");
     let argon2 = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
     let mut output = vec![0u8; output_len];
     argon2
