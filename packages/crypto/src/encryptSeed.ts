@@ -1,16 +1,19 @@
-import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
+import { gcm } from '@noble/ciphers/aes.js';
 import { randomBytes } from '@noble/ciphers/utils.js';
 import { concatBytes } from '@noble/hashes/utils.js';
 
 import { deriveKey } from './deriveKey.js';
 
+const SALT_LENGTH = 32;
+const NONCE_LENGTH = 12;
+
 /**
- * Encrypts `input` with an Argon2id-derived key and XChaCha20-Poly1305.
+ * Encrypts `input` with an Argon2id-derived key and AES-256-GCM.
  *
- * Output format: [16-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
+ * Output format: [32-byte salt][12-byte nonce][ciphertext + 16-byte GCM tag]
  *
- * RFC 9106 §3.1: 128-bit salt minimum.
- * XChaCha20 uses a 192-bit nonce — safe for random generation (no birthday bound).
+ * Matches node-go (pkg/wallet/crypt.go) and node-scala (JsonFileStorage).
+ * Consistent blob format across the entire DCC ecosystem.
  *
  * @param pepper - Optional 32-byte application secret stored separately from the vault
  *                 (see deriveKey for full pepper semantics). Must match the pepper used
@@ -21,11 +24,11 @@ export async function encryptSeed(
   password: Uint8Array,
   pepper?: Uint8Array,
 ): Promise<Uint8Array> {
-  const salt = randomBytes(16);
+  const salt = randomBytes(SALT_LENGTH);
   const key = await deriveKey(password, salt, pepper);
-  const nonce = randomBytes(24);
+  const nonce = randomBytes(NONCE_LENGTH);
 
-  const ciphertext = xchacha20poly1305(key, nonce).encrypt(input);
+  const ciphertext = gcm(key, nonce).encrypt(input);
 
   return concatBytes(salt, nonce, ciphertext);
 }

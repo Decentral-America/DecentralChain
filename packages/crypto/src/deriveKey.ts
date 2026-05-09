@@ -4,17 +4,15 @@ import { initWasm } from './initWasm.js';
 
 /**
  * Derives a 32-byte key from a password and salt using Argon2id (RFC 9106 v0x13)
- * with OWASP interactive-minimum parameters executed in WASM:
- *   m = 19 456 KiB (19 MiB), t = 2 iterations, p = 1 lane.
+ * with high-security parameters executed in WASM:
+ *   m = 65 536 KiB (64 MiB), t = 4 iterations, p = 4 lanes.
  *
- * Replaces PBKDF2-SHA-256 (deriveSeedEncryptionKey) — Argon2id is memory-hard
- * and GPU-resistant whereas PBKDF2 is purely time-hard.
+ * Matches node-go (pkg/wallet/crypt.go) and node-scala (JsonFileStorage).
+ * All wallet encryption across the DCC ecosystem uses identical KDF parameters.
  *
  * @param password - UTF-8 encoded password bytes
- * @param salt     - Random salt; RFC 9106 §3.1 minimum is 128-bit (16 bytes).
- *                   Recommended 32 bytes for 256-bit entropy.
- *                   encryptSeed() uses 16-byte salts (valid minimum);
- *                   WalletController uses 32-byte salts (recommended).
+ * @param salt     - Random 32-byte random salt (256-bit entropy).
+ *                   encryptSeed() generates 32-byte salts.
  * @param pepper   - Optional 32-byte application secret stored separately from the
  *                   vault. Prepended to password before hashing: Argon2id(pepper‖password, salt).
  *                   Eliminates offline cracking if the attacker obtains only the vault
