@@ -178,7 +178,6 @@ dependencies = [
  "envy",
  "hex",
  "itertools",
- "percent-encoding",
  "prost",
  "r2d2",
  "regex",

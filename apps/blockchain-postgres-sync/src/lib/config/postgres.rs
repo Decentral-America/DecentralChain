@@ -52,3 +52,54 @@ pub fn load() -> Result<Config, Error> {
         poolsize: config_flat.poolsize,
     })
 }
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+    use super::*;
+
+    fn sample_config(port: u16) -> Config {
+        Config {
+            host: "localhost".into(),
+            port,
+            database: "mydb".into(),
+            user: "admin".into(),
+            password: "secret".into(),
+            poolsize: 5,
+        }
+    }
+
+    #[test]
+    fn database_url_format() {
+        let cfg = sample_config(5432);
+        assert_eq!(
+            cfg.database_url(),
+            "postgres://admin:secret@localhost:5432/mydb"
+        );
+    }
+
+    #[test]
+    fn database_url_custom_port() {
+        let cfg = sample_config(9999);
+        assert!(cfg.database_url().contains(":9999/"));
+    }
+
+    #[test]
+    fn default_port_value() {
+        assert_eq!(default_port(), 5432);
+    }
+
+    #[test]
+    fn default_poolsize_value() {
+        assert_eq!(default_poolsize(), 1);
+    }
+
+    #[test]
+    fn database_url_contains_user_and_db() {
+        let cfg = sample_config(5432);
+        let url = cfg.database_url();
+        assert!(url.contains("admin"));
+        assert!(url.contains("mydb"));
+        assert!(url.starts_with("postgres://"));
+    }
+}

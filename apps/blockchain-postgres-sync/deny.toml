@@ -1,0 +1,76 @@
+# cargo-deny configuration — https://embarkstudios.github.io/cargo-deny/
+# Run: cargo deny check
+
+# ────────────────────────────────────────────────────────────────────────────
+# [advisories] — vulnerability & yanked crate policy
+# ────────────────────────────────────────────────────────────────────────────
+[advisories]
+# Fetch from the official RustSec advisory database (default).
+db-urls = ["https://github.com/RustSec/advisory-db"]
+
+# Yanked crates must be treated as errors.
+yanked = "deny"
+
+# Unmaintained advisories fail only when the crate is a direct workspace dep.
+unmaintained = "workspace"
+
+# Unsound advisories fail only when the crate is a direct workspace dep.
+unsound = "workspace"
+
+# ────────────────────────────────────────────────────────────────────────────
+# [licenses] — acceptable SPDX licenses
+# ────────────────────────────────────────────────────────────────────────────
+[licenses]
+# All licenses not in this list are denied by default.
+allow = [
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "CC0-1.0",
+    "Zlib",
+    "OpenSSL",
+]
+
+# Confidence threshold for license text matching.
+confidence-threshold = 0.8
+
+# Ignore the license of workspace-private crates (publish = false).
+[licenses.private]
+ignore = true
+
+# ────────────────────────────────────────────────────────────────────────────
+# [bans] — forbidden crates and duplicate version policy
+# ────────────────────────────────────────────────────────────────────────────
+[bans]
+# Warn on duplicate crate versions (common in large Rust dependency trees).
+multiple-versions = "warn"
+
+# Wildcard versions are forbidden in published deps.
+wildcards = "deny"
+
+# Banned crates: well-known insecure or deprecated alternatives.
+deny = [
+    # openssl has a long history of CVEs; rustls or native-tls preferred
+    { crate = "openssl", reason = "Use rustls or native-tls instead" },
+
+    # unmaintained alternatives
+    { crate = "failure", reason = "Use thiserror/anyhow instead" },
+    { crate = "error-chain", reason = "Use thiserror/anyhow instead" },
+
+    # outdated rand version (0.7 and earlier had RNG quality issues)
+    "rand:<=0.7",
+]
+
+# ────────────────────────────────────────────────────────────────────────────
+# [sources] — only allow crates from crates.io
+# ────────────────────────────────────────────────────────────────────────────
+[sources]
+# Deny crates from unknown registries or git sources.
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
