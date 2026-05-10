@@ -426,7 +426,7 @@ FROM asset_updates
 WHERE superseded_by = '9223372036854775806'::bigint
 UNION ALL
 SELECT
-    'WAVES'::character varying AS asset_id,
+    'DCC'::character varying AS asset_id,
     8 AS decimals;
 
 CREATE OR REPLACE VIEW tickers(
@@ -468,9 +468,9 @@ FROM asset_updates au
     LEFT JOIN asset_origins ao ON au.asset_id::text = ao.asset_id::text
 WHERE au.superseded_by = '9223372036854775806'::bigint
 UNION ALL
-SELECT 'WAVES'::character varying                         AS asset_id,
-       'WAVES'::text                                      AS ticker,
-       'Waves'::character varying                         AS asset_name,
+SELECT 'DCC'::character varying                         AS asset_id,
+       'DCC'::text                                      AS ticker,
+       'DecentralCoin'::character varying                AS asset_name,
        ''::character varying                              AS description,
        ''::character varying                              AS sender,
        0                                                  AS issue_height,

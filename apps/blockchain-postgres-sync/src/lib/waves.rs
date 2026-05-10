@@ -10,7 +10,7 @@ lazy_static! {
 
 pub type ChainId = u8;
 
-pub const WAVES_ID: &str = "WAVES";
+pub const DCC_ID: &str = "DCC";
 
 pub fn keccak256(message: &[u8]) -> [u8; 32] {
     use sha3::{Digest, Keccak256};
@@ -78,14 +78,14 @@ pub fn is_valid_base58(src: &str) -> bool {
 
 pub fn extract_asset_id(asset_id: impl AsRef<[u8]>) -> String {
     if asset_id.as_ref().is_empty() {
-        WAVES_ID.to_string()
+        DCC_ID.to_string()
     } else {
         into_base58(asset_id)
     }
 }
 
-pub fn is_waves_asset_id(input: impl AsRef<[u8]>) -> bool {
-    extract_asset_id(input) == WAVES_ID
+pub fn is_dcc_asset_id(input: impl AsRef<[u8]>) -> bool {
+    extract_asset_id(input) == DCC_ID
 }
 
 #[cfg(test)]

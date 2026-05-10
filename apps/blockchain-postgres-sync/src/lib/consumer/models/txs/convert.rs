@@ -4,7 +4,7 @@ use crate::models::{DataEntryTypeValue, Order, OrderMeta};
 use crate::utils::{
     epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
 };
-use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, WAVES_ID};
+use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
 use serde_json::json;
 use waves_protobuf_schemas::waves::{
     data_entry::Value as DataValue,
@@ -237,7 +237,7 @@ impl
             .fee
             .as_ref()
             .map(|f| (f.amount, extract_asset_id(&f.asset_id)))
-            .unwrap_or((0, WAVES_ID.to_string()));
+            .unwrap_or((0, DCC_ID.to_string()));
         let tx_version = Some(tx.version as i16);
         let sender_public_key = into_base58(&tx.sender_public_key);
 
@@ -300,7 +300,7 @@ impl
                 sender_public_key,
                 status,
                 asset_id: if id.is_empty() {
-                    WAVES_ID.to_string()
+                    DCC_ID.to_string()
                 } else {
                     id
                 },
