@@ -49,7 +49,7 @@ export function invokeScript(
 
   const tx: InvokeScriptTransaction & WithId & WithProofs = {
     call: callField(paramsOrTx) as InvokeScriptTransaction['call'],
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     dApp: paramsOrTx.dApp,
     fee: fee(paramsOrTx, 500000),
     feeAssetId: normalizeAssetId(paramsOrTx.feeAssetId ?? null),

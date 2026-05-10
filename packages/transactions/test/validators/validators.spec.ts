@@ -284,7 +284,7 @@ describe('Validators', () => {
         amount: 100000,
         assetId: 'DCC',
         attachment: null,
-        chainId: 76,
+        chainId: 63,
         fee: 100000,
         feeAssetId: 'DCC',
         recipient: 'alias:W:test',

@@ -4,6 +4,9 @@ export const aliasBinaryTx = {
       'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAkwAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzX3//////////AAABfeG6aK0=',
     Json: {
       alias: '_rich-account.with@30_symbols_',
+      // chainId 76 ('L') is baked into the Bytes binary reference — set explicitly
+      // so this test vector documents a chain-ID-76 alias, not the DCC default (63).
+      chainId: 76,
       fee: '9223372036854775807',
       feeAssetId: null,
       id: '9K3CW7EyoNrFg4ptE4WkN2HTK8emXYi4RkPciFGor5Jg',
@@ -22,6 +25,9 @@ export const aliasBinaryTx = {
       'CgKNj7KNwHV8CsVGLbpgRgDsF4sHe1SAkroj0YoxaGM3dAAiAkwAHl9yaWNoLWFjY291bnQud2l0aEAzMF9zeW1ib2xzXwAAAAAAAYagAAABfZ90YLg=',
     Json: {
       alias: '_rich-account.with@30_symbols_',
+      // chainId 76 ('L') is baked into the Bytes binary reference — set explicitly
+      // so this test vector documents a chain-ID-76 alias, not the DCC default (63).
+      chainId: 76,
       fee: 100000,
       feeAssetId: null,
       id: 'BrasfMP34YYDXvJsXgRq7XojyfNGpU4KDLoZ5BrQ93s9',

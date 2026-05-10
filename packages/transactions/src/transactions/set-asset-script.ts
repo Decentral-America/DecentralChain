@@ -46,7 +46,7 @@ export function setAssetScript(
 
   const tx: SetAssetScriptTransaction & WithId & WithProofs = {
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000000),
     id: '',
     proofs: paramsOrTx.proofs || [],

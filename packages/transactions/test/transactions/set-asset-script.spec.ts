@@ -87,7 +87,7 @@ describe('setAssetScript', () => {
     const txParams = { ...setAssetScriptMinimalParams };
     const signedTx = setAssetScript(txParams, seed);
 
-    expect(signedTx).toMatchObject({ ...setAssetScriptMinimalParams, chainId: 76, fee: 100000000 });
+    expect(signedTx).toMatchObject({ ...setAssetScriptMinimalParams, chainId: 63, fee: 100000000 });
   });
 
   it('Should add base64 prefix for script when create setAssetScript tz', () => {
