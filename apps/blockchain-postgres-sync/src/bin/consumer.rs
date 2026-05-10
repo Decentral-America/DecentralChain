@@ -1,22 +1,24 @@
 use anyhow::{Context, Result};
 use app_lib::{config, consumer, db};
-use std::time::Duration;
+use axum::{routing::get, Router};
+use std::net::SocketAddr;
 use tokio::select;
-use wavesexchange_liveness::channel;
-use wavesexchange_log::{error, info};
-use wavesexchange_warp::MetricsWarpBuilder;
-
-const LAST_TIMESTAMP_QUERY: &str = "SELECT (EXTRACT(EPOCH FROM time_stamp) * 1000)::BIGINT as time_stamp FROM blocks_microblocks WHERE time_stamp IS NOT NULL ORDER BY uid DESC LIMIT 1";
-const POLL_INTERVAL_SECS: u64 = 60;
-const MAX_BLOCK_AGE: Duration = Duration::from_secs(300);
+use tracing::{error, info};
+use tracing_subscriber::{EnvFilter, fmt};
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Initialise structured logging from RUST_LOG (default: info)
+    fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .json()
+        .init();
+
     let config = config::load_consumer_config()?;
 
     info!(
-        "Starting data-service consumer with config: {:?}",
-        config.consumer
+        config = ?config.consumer,
+        "starting blockchain-postgres-sync consumer",
     );
 
     let conn = db::async_pool(&config.postgres)
@@ -25,38 +27,53 @@ async fn main() -> Result<()> {
 
     let updates_src = consumer::updates::new(&config.consumer.blockchain_updates_url)
         .await
-        .context("Blockchain connection failed")?;
+        .context("Blockchain gRPC connection failed")?;
 
-    let pg_repo = consumer::repo::pg::new(conn);
+    let pg_repo = consumer::repo::pg::new(conn.clone());
 
-    let db_url = config.postgres.database_url();
-    let readiness_channel = channel(
-        db_url,
-        POLL_INTERVAL_SECS,
-        MAX_BLOCK_AGE,
-        Some(LAST_TIMESTAMP_QUERY.to_string()),
-    );
+    // Health / readiness HTTP server (replaces wavesexchange_warp + wavesexchange_liveness)
+    let metrics_port = config.consumer.metrics_port;
+    let health_conn = conn.clone();
+    let health_server = tokio::spawn(async move {
+        let app = Router::new()
+            .route("/health", get(|| async { "OK" }))
+            .route(
+                "/readiness",
+                get(move || {
+                    let c = health_conn.clone();
+                    async move {
+                        // Acquiring a connection proves the pool + DB are healthy.
+                        match c.get().await {
+                            Ok(_conn) => (axum::http::StatusCode::OK, "ready"),
+                            Err(_) => (axum::http::StatusCode::SERVICE_UNAVAILABLE, "not ready"),
+                        }
+                    }
+                }),
+            );
 
-    let metrics = tokio::spawn(async move {
-        MetricsWarpBuilder::new()
-            .with_metrics_port(config.consumer.metrics_port)
-            .with_readiness_channel(readiness_channel)
-            .run_async()
-            .await
+        let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
+        let listener = tokio::net::TcpListener::bind(addr).await.expect("health listener bind");
+        info!(%addr, "health server listening");
+        axum::serve(listener, app).await.expect("health server");
     });
 
     let consumer = consumer::start(updates_src, pg_repo, config.consumer);
 
     select! {
-        Err(err) = consumer => {
-            error!("{}", err);
-            return Err(err);
+        result = consumer => {
+            match result {
+                Err(err) => {
+                    error!(error = %err, "consumer stopped with error");
+                    return Err(err);
+                }
+                Ok(()) => info!("consumer finished"),
+            }
         },
-        result = metrics => {
+        result = health_server => {
             if let Err(err) = result {
-                error!("Metrics failed: {:?}", err);
+                error!(error = ?err, "health server panicked");
             } else {
-                error!("Metrics stopped");
+                error!("health server stopped unexpectedly");
             }
         }
     };

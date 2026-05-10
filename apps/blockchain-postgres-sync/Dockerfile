@@ -1,25 +1,50 @@
-FROM rust:1.89 AS builder
+# syntax=docker/dockerfile:1
+
+# ─── Stage 1: build ──────────────────────────────────────────────────────────
+FROM rust:1.95 AS builder
 WORKDIR /app
 
-RUN rustup component add rustfmt
-RUN apt-get update && apt-get install -y protobuf-compiler
+# Install build-time system deps (protoc for tonic-prost-build, libpq for diesel)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        protobuf-compiler \
+        libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY Cargo.* ./
-COPY ./src ./src
-COPY ./migrations ./migrations
+# Cache dependencies separately from source (layer invalidated only on Cargo.* change)
+COPY Cargo.toml Cargo.lock ./
+COPY build.rs ./
+COPY proto/ ./proto/
+# Create a stub lib so `cargo build` resolves deps without compiling our src
+RUN mkdir -p src/bin && \
+    echo 'fn main() {}' > src/bin/consumer.rs && \
+    echo 'fn main() {}' > src/bin/migration.rs && \
+    echo '' > src/lib/lib.rs && \
+    cargo build --release && \
+    rm -rf src
 
-RUN cargo build --release
+COPY src/ ./src/
+# Force re-compile of our crate (timestamps on stub artefacts are newer)
+RUN touch src/lib/lib.rs src/bin/consumer.rs src/bin/migration.rs && \
+    cargo build --release
 
-
-FROM debian:12 as runtime
+# ─── Stage 2: runtime ────────────────────────────────────────────────────────
+FROM debian:12-slim AS runtime
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl openssl libssl-dev libpq-dev postgresql-client
-RUN /usr/sbin/update-ca-certificates
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        libpq5 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Non-root user for security
+RUN useradd --system --no-create-home --uid 1001 --shell /bin/false app
 
 COPY --from=builder /app/target/release/consumer ./consumer
 COPY --from=builder /app/target/release/migration ./migration
 COPY --from=builder /app/migrations ./migrations/
 
+USER app
 
 CMD ["./consumer"]

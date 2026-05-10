@@ -3,7 +3,6 @@ pub mod pg;
 use std::num::NonZeroU32;
 
 use anyhow::Result;
-use async_trait::async_trait;
 use chrono::NaiveDateTime;
 
 use super::models::{
@@ -15,7 +14,7 @@ use super::models::{
 };
 use super::UidHeight;
 
-#[async_trait]
+#[allow(async_fn_in_trait)]
 pub trait Repo {
     type Operations<'c>: RepoOperations + 'c;
 

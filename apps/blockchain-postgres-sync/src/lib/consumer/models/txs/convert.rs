@@ -6,7 +6,7 @@ use crate::utils::{
 };
 use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
 use serde_json::json;
-use waves_protobuf_schemas::waves::{
+use crate::proto::waves::{
     data_entry::Value as DataValue,
     events::{
         transaction_metadata::{ethereum_metadata::Action as EthAction, *},
@@ -724,6 +724,7 @@ impl
                 block_uid,
             }),
             Data::InvokeExpression(_t) => unimplemented!(),
+            Data::CommitToGeneration(_t) => unimplemented!(),
         })
     }
 }
