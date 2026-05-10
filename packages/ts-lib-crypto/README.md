@@ -205,8 +205,8 @@ const addr = address(); // No seed needed — it's embedded
 | `PRIVATE_KEY_LENGTH` | 32       |
 | `SIGNATURE_LENGTH`   | 64       |
 | `ADDRESS_LENGTH`     | 26       |
-| `MAIN_NET_CHAIN_ID`  | 76 (`L`) |
-| `TEST_NET_CHAIN_ID`  | 84 (`T`) |
+| `MAIN_NET_CHAIN_ID`  | 63 (`?`) |
+| `TEST_NET_CHAIN_ID`  | 33 (`!`) |
 
 ## Browser
 

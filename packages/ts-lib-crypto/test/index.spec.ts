@@ -33,12 +33,12 @@ test('address from seed with nonce', () => {
   const n2 = address(seedWithNonce(s, 2));
   const n3 = address(seedWithNonce(s, 3));
 
-  expect(n1).toBe('3JvYrScL9521TsfUkqNPGn9x9xa6krudFFV');
-  expect(n2).toBe('3JbTafv5m8yc1kqHVdBaYGbYEvAUQdHR2RQ');
-  expect(n3).toBe('3JjohnGNn4W41ZX5B2gX2vPCzrgTwmttidB');
+  expect(n1).toBe('3DhA1eCTPqfz5F2fdWv48UXQvn1kVicWeQc');
+  expect(n2).toBe('3DN4jsWD1udad8CUNJjFPxy11jc89LuE5q5');
+  expect(n3).toBe('3DWQryrW2qA2cvtG3iEBtckfmg87gZgdqyC');
 });
 
-test('address', () => expect(address(s)).toBe('3Ju1zyJFBe9zrEcbatwmTjMKfEXSNuULG9q'));
+test('address', () => expect(address(s)).toBe('3DfdAAtNSQoyTbynTaVSKRinS3y67g7C3uq'));
 
 test('verify address', () => {
   const a = address(s, MAIN_NET_CHAIN_ID);

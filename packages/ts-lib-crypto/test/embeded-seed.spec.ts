@@ -7,5 +7,5 @@ const seed =
 const { address } = crypto({ output: 'Base58', seed });
 
 test('address from embeded seed', () => {
-  expect(address()).toBe('3JxsUjiKZxSjDxLa9m5rQ63ehFXoZNEkCtX');
+  expect(address()).toBe('3DjUdwJSpj6hqKhm2SdXFnR7U4yTJ48ZZ9S');
 });
