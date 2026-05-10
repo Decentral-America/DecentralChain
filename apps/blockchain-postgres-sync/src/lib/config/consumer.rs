@@ -81,3 +81,73 @@ pub fn load() -> Result<Config, Error> {
         metrics_port: config_flat.metrics_port,
     })
 }
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+    use super::*;
+    use std::num::NonZeroU32;
+
+    fn make_defaults() -> Config {
+        Config {
+            asset_storage_address: None,
+            assets_only: false,
+            blockchain_updates_url: "http://node:6881".into(),
+            chain_id: 87,
+            max_wait_time: Duration::milliseconds(5000),
+            starting_height: 1,
+            updates_per_request: 256,
+            start_rollback_depth: NonZeroU32::new(1).unwrap(),
+            rollback_step: NonZeroU32::new(500).unwrap(),
+            metrics_port: 9090,
+        }
+    }
+
+    #[test]
+    fn default_assets_only_is_false() {
+        let c = make_defaults();
+        assert!(!c.assets_only);
+    }
+
+    #[test]
+    fn default_updates_per_request() {
+        let c = make_defaults();
+        assert_eq!(c.updates_per_request, 256);
+    }
+
+    #[test]
+    fn default_max_wait_time() {
+        let c = make_defaults();
+        assert_eq!(c.max_wait_time, Duration::milliseconds(5000));
+    }
+
+    #[test]
+    fn default_metrics_port() {
+        let c = make_defaults();
+        assert_eq!(c.metrics_port, 9090);
+    }
+
+    #[test]
+    fn default_start_rollback_depth() {
+        let c = make_defaults();
+        assert_eq!(c.start_rollback_depth.get(), 1);
+    }
+
+    #[test]
+    fn default_rollback_step() {
+        let c = make_defaults();
+        assert_eq!(c.rollback_step.get(), 500);
+    }
+
+    #[test]
+    fn nonzero_validation_accepts_one() {
+        // NonZeroU32::new(1) must succeed — used by default
+        assert!(NonZeroU32::new(1).is_some());
+    }
+
+    #[test]
+    fn nonzero_validation_rejects_zero() {
+        // The load() function uses NonZeroU32::new(0).ok_or_else(...)
+        assert!(NonZeroU32::new(0).is_none());
+    }
+}

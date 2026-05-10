@@ -99,7 +99,9 @@ impl UpdatesSourceImpl {
         let mut start = Instant::now();
         let mut should_receive_more = true;
 
-        let batch_max_wait_time = batch_max_wait_time.to_std().unwrap();
+        let batch_max_wait_time = batch_max_wait_time
+            .to_std()
+            .unwrap_or(std::time::Duration::from_secs(5));
 
         loop {
             if let Some(SubscribeEventPB {
@@ -192,15 +194,30 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                         .into_iter()
                         .enumerate()
                         .map(|(idx, tx)| {
-                            let id = transaction_ids.get(idx).unwrap().clone();
-                            Tx {
+                            let id = transaction_ids
+                                .get(idx)
+                                .ok_or_else(|| AppError::InvalidMessage(format!(
+                                    "transaction_ids missing index {idx}"
+                                )))?
+                                .clone();
+                            Ok(Tx {
                                 id: bs58::encode(id).into_string(),
                                 data: tx,
-                                meta: transactions_metadata.get(idx).unwrap().clone(),
-                                state_update: transaction_state_updates.get(idx).unwrap().clone(),
-                            }
+                                meta: transactions_metadata
+                                    .get(idx)
+                                    .ok_or_else(|| AppError::InvalidMessage(format!(
+                                        "transactions_metadata missing index {idx}"
+                                    )))?
+                                    .clone(),
+                                state_update: transaction_state_updates
+                                    .get(idx)
+                                    .ok_or_else(|| AppError::InvalidMessage(format!(
+                                        "transaction_state_updates missing index {idx}"
+                                    )))?
+                                    .clone(),
+                            })
                         })
-                        .collect(),
+                        .collect::<Result<Vec<_>, AppError>>()?,
                     None => vec![],
                 };
 

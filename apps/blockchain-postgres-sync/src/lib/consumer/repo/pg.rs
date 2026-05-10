@@ -669,7 +669,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             Some(ts) => ts
                 .with_second(0)
                 .and_then(|ts| ts.with_nanosecond(0))
-                .unwrap(),
+                .expect("zeroing sub-minute components is always valid"),
             None => return Ok(()),
         };
 
@@ -782,7 +782,7 @@ impl RepoOperations for PgRepoOperations<'_> {
                         (since_timestamp.and_utc().timestamp() / interval_secs) * interval_secs,
                         0,
                     )
-                    .unwrap()
+                    .expect("interval-truncated timestamp is always valid")
                     .naive_utc()
                 } else {
                     match *interval_end {
@@ -791,14 +791,14 @@ impl RepoOperations for PgRepoOperations<'_> {
                             (since_timestamp - Duration::days(weekday))
                                 .date()
                                 .and_hms_opt(0, 0, 0)
-                                .unwrap()
+                                .expect("0:00:00 is always a valid time")
                         }
                         intervals::MONTH1 => since_timestamp
                             .with_day(1)
-                            .unwrap()
+                            .expect("day 1 is always valid")
                             .date()
                             .and_hms_opt(0, 0, 0)
-                            .unwrap(),
+                            .expect("0:00:00 is always a valid time"),
                         _ => bail!("unknown interval {interval_end}"),
                     }
                 };
@@ -827,7 +827,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             Some(ts) => ts
                 .with_second(0)
                 .and_then(|ts| ts.with_nanosecond(0))
-                .unwrap(),
+                .expect("zeroing sub-minute time components is always valid"),
             None => return Ok(()),
         };
 

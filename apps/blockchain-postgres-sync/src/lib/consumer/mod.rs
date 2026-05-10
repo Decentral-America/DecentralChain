@@ -202,7 +202,7 @@ fn handle_updates<R: RepoOperations>(
                 info!("Handle block {}, height = {}", b.id, b.height);
                 let len = acc.len();
                 if len > 0 {
-                    match acc.get_mut(len - 1).unwrap() {
+                    match acc.last_mut().expect("len > 0 but last_mut is None — invariant violated") {
                         UpdatesItem::Blocks(v) => {
                             v.push(b);
                             acc
@@ -237,7 +237,7 @@ fn handle_updates<R: RepoOperations>(
             UpdatesItem::Microblock(mba) => handle_appends(
                 repo,
                 chain_id,
-                &vec![mba.to_owned()],
+                std::slice::from_ref(mba),
                 assets_only,
                 asset_storage_address,
             ),
@@ -253,7 +253,7 @@ fn handle_updates<R: RepoOperations>(
 fn handle_appends<R>(
     repo: &mut R,
     chain_id: u8,
-    appends: &Vec<BlockMicroblockAppend>,
+    appends: &[BlockMicroblockAppend],
     assets_only: bool,
     asset_storage_address: Option<&str>,
 ) -> Result<()>
@@ -358,7 +358,7 @@ where
 
 fn handle_txs<R: RepoOperations>(
     repo: &mut R,
-    block_uid_data: &Vec<(i64, &BlockMicroblockAppend)>,
+    block_uid_data: &[(i64, &BlockMicroblockAppend)],
     chain_id: u8,
 ) -> Result<(), Error> {
     let mut txs_1 = vec![];
@@ -387,7 +387,9 @@ fn handle_txs<R: RepoOperations>(
 
     let mut first_block_with_tx7_uid = None::<i64>;
 
-    let mut ugen = UID_GENERATOR.lock().unwrap();
+    let mut ugen = UID_GENERATOR
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     for &(block_uid, bm) in block_uid_data {
         ugen.maybe_update_height(bm.height);
 
@@ -498,7 +500,13 @@ fn extract_base_asset_info_updates(
                                         let dt = epoch_ms_to_naivedatetime(meta.timestamp);
                                         DateTime::from_naive_utc_and_offset(dt, Utc)
                                     } else {
-                                        unreachable!("wrong meta variant")
+                                        // Protocol inconsistency: Ethereum tx with non-Ethereum metadata.
+                                        // Fall back to current time so the asset update is not lost.
+                                        tracing::warn!(
+                                            tx_id = %tx.id,
+                                            "Ethereum tx has non-Ethereum metadata; using current time"
+                                        );
+                                        Utc::now()
                                     }
                                 }
                             },
@@ -644,12 +652,10 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
 
     let assets_first_uids: Vec<AssetOverride> = assets_grouped_with_uids_superseded_by
         .iter()
-        .map(|(_, group)| {
-            let first = group.iter().next().unwrap().clone();
-            AssetOverride {
-                superseded_by: first.uid,
-                id: first.asset_id,
-            }
+        .filter_map(|(_, group)| group.first())
+        .map(|first| AssetOverride {
+            superseded_by: first.uid,
+            id: first.asset_id.clone(),
         })
         .collect();
 
@@ -739,12 +745,10 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
     let asset_tickers_first_uids: Vec<AssetTickerOverride> =
         asset_tickers_grouped_with_uids_superseded_by
             .iter()
-            .map(|(_, group)| {
-                let first = group.iter().next().unwrap().clone();
-                AssetTickerOverride {
-                    superseded_by: first.uid,
-                    asset_id: first.asset_id,
-                }
+            .filter_map(|(_, group)| group.first())
+            .map(|first| AssetTickerOverride {
+                superseded_by: first.uid,
+                asset_id: first.asset_id.clone(),
             })
             .collect();
 
