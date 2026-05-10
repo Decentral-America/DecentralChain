@@ -30,7 +30,7 @@ export function burn(
   const tx: BurnTransaction & WithId & WithProofs = {
     amount: paramsOrTx.amount,
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     proofs: paramsOrTx.proofs || [],

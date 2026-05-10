@@ -10,6 +10,11 @@ interface ImportMeta {
 
 declare global {
   interface Window {
+    __DCC_CONFIG__?: {
+      dataServiceUrl: string;
+      matcherUrl: string;
+      nodeUrl: string;
+    };
     __ERROR_LOGGER__?: (error: Error, errorInfo: { componentStack?: string }) => void;
   }
 }

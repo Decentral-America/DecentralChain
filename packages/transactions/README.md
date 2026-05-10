@@ -46,9 +46,9 @@ const seed = 'your twelve word seed phrase here';
 
 const tx = transfer(
   {
-    recipient: '3L...',
+    recipient: '3D...',
     amount: 100000000, // 1 DCC (8 decimals)
-    chainId: 'L', // DCC mainnet
+    chainId: '?', // DCC mainnet
   },
   seed,
 );
@@ -105,7 +105,7 @@ const signedTx = issue(
     quantity: 1000000,
     decimals: 2,
     reissuable: true,
-    chainId: 'L',
+    chainId: '?',
   },
   seed,
 );
@@ -127,7 +127,7 @@ const signedTx = data(
       { key: 'booleanVal', type: 'boolean', value: true },
       { key: 'stringVal', type: 'string', value: 'hello' },
     ],
-    chainId: 'L',
+    chainId: '?',
   },
   seed,
 );
@@ -164,9 +164,9 @@ Transactions can be signed using:
 
 > **`chainId` is required — always pass it explicitly.**
 >
-> Every builder function accepts `chainId` and defaults to `76` (`'L'`) via
-> the internal `networkByte(chainId, 76)` helper. This means **omitting `chainId`
-> silently produces a mainnet transaction** even when you intend to build a testnet
+> Every builder function accepts `chainId` and defaults to `63` (`'?'`) via
+> the internal `networkByte(chainId, 63)` helper. This means **omitting `chainId`
+> silently produces a DCC mainnet transaction** even when you intend to build a testnet
 > transaction. A mainnet-signed transaction broadcast to testnet will be rejected; the
 > reverse is worse — a testnet transaction broadcast to mainnet will be permanently
 > recorded on the real chain.
@@ -177,7 +177,7 @@ Transactions can be signed using:
 > transfer({ recipient, amount, chainId: '?' }, seed);  // DCC mainnet
 > transfer({ recipient, amount, chainId: '!' }, seed);  // DCC testnet
 >
-> // ❌ Implicit — defaults to chainId 76 ('L') silently
+> // ❌ Implicit — defaults to DCC mainnet (chainId 63, '?') silently
 > transfer({ recipient, amount }, seed);
 > ```
 

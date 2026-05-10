@@ -25,7 +25,7 @@ export function exchange(
   const tx: ExchangeTransaction & WithId & WithProofs = {
     amount: paramsOrTx.amount,
     buyMatcherFee: paramsOrTx.buyMatcherFee,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     order1: paramsOrTx.order1,

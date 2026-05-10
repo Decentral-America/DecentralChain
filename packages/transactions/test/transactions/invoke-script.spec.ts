@@ -17,7 +17,7 @@ describe('invokeScript', () => {
     const tx = invokeScript({ ...invokeScriptMinimalParams }, stringSeed);
     expect(tx).toMatchObject({
       ...invokeScriptMinimalParams,
-      chainId: 76,
+      chainId: 63,
       fee: 500000,
       version: 2,
     });

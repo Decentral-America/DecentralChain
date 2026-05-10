@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation, useRouteLoaderData } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -26,9 +26,40 @@ import {
 import { createPageUrl } from '@/utils';
 import { LanguageProvider, useLanguage } from './components/contexts/LanguageContext';
 import SearchBar from './components/shared/SearchBar';
+import { type loader as rootLoader } from './root';
 
 // Stub: wire up real analytics (e.g. Sentry breadcrumb) when ready
 const AnalyticsTracker = () => null;
+
+/** Derives the network name from the node URL for the badge. */
+function getNetworkLabel(nodeUrl: string): 'mainnet' | 'testnet' | 'stagenet' {
+  if (nodeUrl.includes('testnet')) return 'testnet';
+  if (nodeUrl.includes('stagenet')) return 'stagenet';
+  return 'mainnet';
+}
+
+/**
+ * Small pill badge shown in the header when the scanner is connected to
+ * a non-mainnet network. Mainnet deployments show nothing (clean UI).
+ */
+function NetworkBadge() {
+  const config = useRouteLoaderData<typeof rootLoader>('root');
+  if (!config) return null;
+
+  const network = getNetworkLabel(config.nodeUrl);
+  if (network === 'mainnet') return null;
+
+  const styles =
+    network === 'testnet'
+      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+      : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
+
+  return (
+    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${styles}`}>
+      {network === 'testnet' ? 'Testnet' : 'Stagenet'}
+    </span>
+  );
+}
 
 interface NavigationItem {
   title: string;
@@ -96,6 +127,7 @@ function LayoutContent() {
                 <h1 className="text-lg font-bold text-foreground">{t('appName')}</h1>
                 <p className="text-xs text-muted-foreground">{t('appSubtitle')}</p>
               </div>
+              <NetworkBadge />
             </Link>
 
             {/* Search Bar - Desktop */}

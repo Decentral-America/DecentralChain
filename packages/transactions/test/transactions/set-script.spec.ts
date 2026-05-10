@@ -77,7 +77,7 @@ describe('setScript', () => {
     const signedTx = setScript(txParams, seed);
 
     expect(signedTx.fee).toEqual(100000);
-    expect(signedTx.chainId).toEqual(76);
+    expect(signedTx.chainId).toEqual(63);
   });
 
   it('Should not create setScript transaction with zero fee', () => {

@@ -32,7 +32,7 @@ export function alias(
 
   const tx: AliasTransaction & WithId & WithProofs = {
     alias: paramsOrTx.alias,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     proofs: paramsOrTx.proofs || [],
