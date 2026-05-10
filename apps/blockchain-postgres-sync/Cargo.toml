@@ -1,38 +1,10 @@
 [package]
-name = "data-service-consumer"
-version = "1.0.2"
+name = "blockchain-postgres-sync"
+version = "2.0.0"
 edition = "2021"
-
-[dependencies]
-anyhow = "1"
-async-trait = "0.1"
-base64 = "0.21"
-bigdecimal = { version = "0.4", features = ["serde"] }
-blake2 = "0.10"
-bs58 = "0.5"
-bytes = "1.1"
-chrono = { version = "^0.4.27", features = ["serde"] }
-deadpool-diesel = "0.5"
-diesel = { version = "^2.1", default-features = false, features = ["chrono", "postgres", "r2d2", "32-column-tables", "serde_json", "numeric"] }
-diesel_migrations = { version = "2", features = ["postgres"] }
-envy = "0.4"
-fragstrings = { git = "https://github.com/waves-exchange/fragstrings", tag = "v0.2.0", default-features = false, features = ["parse"] }
-hex = "0.4.3"
-itertools = "0.12"
-lazy_static = "1.4"
-percent-encoding = "2.1"
-r2d2 = "0.8"
-regex = "1"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0.81"
-sha3 = "0.10"
-thiserror = "1.0"
-tokio = { version = "1.12", features = ["macros", "rt-multi-thread"] }
-wavesexchange_log = { git = "https://github.com/waves-exchange/wavesexchange-rs", tag = "wavesexchange_log/0.5.1" }
-waves-protobuf-schemas = { git = "https://github.com/wavesplatform/protobuf-schemas", tag = "rust_v1.5.2" }
-wavesexchange_liveness = { git = "https://github.com/waves-exchange/wavesexchange-rs", tag = "wavesexchange_liveness/0.3.1"}
-wavesexchange_warp = { git = "https://github.com/waves-exchange/wavesexchange-rs", tag = "wavesexchange_warp/0.14.10" }
-
+rust-version = "1.88"
+description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
+license = "Apache-2.0"
 
 [lib]
 name = "app_lib"
@@ -45,3 +17,56 @@ path = "src/bin/consumer.rs"
 [[bin]]
 name = "migration"
 path = "src/bin/migration.rs"
+
+[dependencies]
+# Error handling
+anyhow = "1.0.102"
+thiserror = "2.0.18"
+
+# Async runtime
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "sync", "time"] }
+
+# gRPC / Protobuf  (proto files bundled in proto/, compiled by build.rs)
+tonic = { version = "0.14.6", features = ["transport"] }
+tonic-prost = "0.14.6"
+prost = "0.14.3"
+
+# Database
+diesel = { version = "2.3.9", default-features = false, features = [
+    "chrono", "postgres", "r2d2", "32-column-tables", "serde_json", "numeric",
+] }
+diesel_migrations = { version = "2.3.0", features = ["postgres"] }
+deadpool-diesel = { version = "0.6.1", features = ["postgres", "rt_tokio_1"] }
+r2d2 = "0.8.10"
+
+# Configuration
+envy = "0.4.2"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bigdecimal = { version = "0.4.10", features = ["serde"] }
+base64 = "0.22.1"
+
+# Cryptography / encoding
+blake2 = "0.10"
+sha3 = "0.10"
+bs58 = "0.5.1"
+hex = "0.4.3"
+bytes = "1"
+percent-encoding = "2"
+regex = "1"
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+itertools = "0.14.0"
+
+# HTTP server (health / readiness endpoint)
+axum = { version = "0.8.9", features = ["tokio"] }
+
+# Observability
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
+
+[build-dependencies]
+tonic-prost-build = "0.14.6"

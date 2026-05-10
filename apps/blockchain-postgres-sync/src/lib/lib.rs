@@ -6,6 +6,7 @@ pub mod consumer;
 pub mod db;
 pub mod error;
 pub mod models;
+pub mod proto;
 pub mod schema;
 mod tuple_len;
 mod utils;

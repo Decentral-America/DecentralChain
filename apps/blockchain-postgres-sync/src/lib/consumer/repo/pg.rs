@@ -1,5 +1,4 @@
 use anyhow::{bail, Error, Result};
-use async_trait::async_trait;
 use chrono::{Datelike, Duration, NaiveDateTime, Timelike as _};
 use diesel::{
     dsl::sql,
@@ -44,7 +43,6 @@ pub struct PgRepoOperations<'c> {
     pub conn: &'c mut PgConnection,
 }
 
-#[async_trait]
 impl Repo for PgRepo {
     type Operations<'c> = PgRepoOperations<'c>;
 
@@ -778,11 +776,12 @@ impl RepoOperations for PgRepoOperations<'_> {
 
             let interval_start_time_stamp =
                 if let Some(interval_secs) = interval_in_seconds(&interval_end) {
-                    NaiveDateTime::from_timestamp_opt(
-                        (since_timestamp.timestamp() / interval_secs) * interval_secs,
+                    chrono::DateTime::<chrono::Utc>::from_timestamp(
+                        (since_timestamp.and_utc().timestamp() / interval_secs) * interval_secs,
                         0,
                     )
                     .unwrap()
+                    .naive_utc()
                 } else {
                     match *interval_end {
                         intervals::WEEK1 => {

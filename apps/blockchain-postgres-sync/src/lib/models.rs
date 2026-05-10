@@ -1,9 +1,10 @@
 use crate::utils::{escape_unicode_null, into_base58};
+use base64::prelude::*;
 use chrono::{DateTime, Utc};
 use serde::ser::{SerializeStruct, Serializer};
 use serde::Serialize;
 use serde_json::{json, Value};
-use waves_protobuf_schemas::waves::{
+use crate::proto::waves::{
     invoke_script_result::call::argument::{List as ListPb, Value as InvokeScriptArgValue},
     order::Sender as SenderPb,
     Order as OrderPb,
@@ -42,8 +43,7 @@ impl From<&InvokeScriptArgValue> for DataEntryTypeValue {
         match val {
             InvokeScriptArgValue::IntegerValue(v) => DataEntryTypeValue::Integer(*v),
             InvokeScriptArgValue::BinaryValue(v) => {
-                #[allow(deprecated)] // for base64::encode()
-                DataEntryTypeValue::Binary(format!("base64:{}", base64::encode(v)))
+                DataEntryTypeValue::Binary(format!("base64:{}", BASE64_STANDARD.encode(v)))
             }
             InvokeScriptArgValue::StringValue(v) => {
                 DataEntryTypeValue::String(escape_unicode_null(v))
@@ -219,7 +219,7 @@ impl From<i32> for OrderType {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use waves_protobuf_schemas::waves::invoke_script_result::call::Argument;
+    use crate::proto::waves::invoke_script_result::call::Argument;
 
     #[test]
     fn serialize_arg_list() {
