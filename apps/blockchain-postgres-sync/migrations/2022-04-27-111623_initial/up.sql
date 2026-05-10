@@ -488,7 +488,6 @@ CREATE OR REPLACE FUNCTION public.text_timestamp_cast(text) RETURNS timestamp wi
     LANGUAGE plpgsql
     AS $_$
 begin
---   raise notice $1;
   return to_timestamp($1 :: DOUBLE PRECISION / 1000);
 END
 $_$;

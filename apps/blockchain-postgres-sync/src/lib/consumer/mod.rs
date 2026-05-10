@@ -124,6 +124,10 @@ where
         ..
     } = config;
 
+    // SAFETY: Box::leak is intentional here. The address is read-only daemon configuration
+    // that is initialised once at startup and referenced from `'static` closures throughout
+    // the process lifetime. This is a single, bounded allocation (one short address string)
+    // that never grows and is never freed — acceptable for a long-running daemon process.
     let asset_storage_address: Option<&'static str> =
         asset_storage_address.map(|a| &*Box::leak(a.into_boxed_str()));
     let starting_from_height = {
