@@ -46,8 +46,8 @@ const DCC_CONFIG = {
   ADDRESS_LENGTH: 35,
   /** Default decimal precision for DCC token amounts. */
   DCC_PRECISION: 8,
-  /** Mainnet chain code (`'L'` = 76). */
-  MAIN_NET_CODE: 76,
+  /** Mainnet chain code (`'?'` = 63). */
+  MAIN_NET_CODE: 63,
   MAX_SIZE: 128,
   PUBLIC_KEY_LENGTH: 32,
   /**
@@ -94,7 +94,7 @@ export class DCC {
 
   /**
    * @param transport   - An opened Ledger transport instance.
-   * @param networkCode - Chain network code (default: `76` for mainnet).
+   * @param networkCode - Chain network code (default: `63` for mainnet).
    * @throws {RangeError} If `networkCode` is not a valid uint8 (0–255).
    */
   constructor(transport: LedgerTransport, networkCode: number = DCC_CONFIG.MAIN_NET_CODE) {
