@@ -5,7 +5,6 @@ DROP VIEW IF EXISTS tickers;
 DROP TABLE IF EXISTS asset_origins;
 DROP TABLE IF EXISTS asset_updates;
 DROP TABLE IF EXISTS asset_tickers;
-DROP TABLE IF EXISTS assets_names_map;
 DROP TABLE IF EXISTS assets_metadata;
 DROP TABLE IF EXISTS candles;
 DROP TABLE IF EXISTS pairs;
@@ -37,7 +36,6 @@ DROP TABLE IF EXISTS txs_18;
 DROP TABLE IF EXISTS txs;
 DROP TABLE IF EXISTS blocks_microblocks;
 DROP FUNCTION IF EXISTS public.text_timestamp_cast;
-DROP FUNCTION IF EXISTS calc_and_insert_candles_since_timestamp;
 DROP FUNCTION IF EXISTS _to_raw_timestamp;
 DROP FUNCTION IF EXISTS _trunc_ts_by_secs;
 
