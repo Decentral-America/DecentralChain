@@ -108,7 +108,7 @@ impl
             proofs,
         } = tx
         else {
-            return Err(Error::InconsistDataError(format!(
+            return Err(Error::InconsistentDataError(format!(
                 "No transaction data in id={id}, height={height}",
             )));
         };
@@ -142,7 +142,7 @@ impl
             Transaction::WavesTransaction(tx) => tx,
             Transaction::EthereumTransaction(tx) => {
                 let Some(Metadata::Ethereum(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 let mut eth_tx = Tx18 {
                     uid,
@@ -162,7 +162,7 @@ impl
                     function_name: None,
                 };
                 let result_tx = match meta.action.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("Ethereum metadata has no action".into())
+                    Error::InconsistentDataError("Ethereum metadata has no action".into())
                 })? {
                     EthAction::Transfer(_) => Tx18Combined {
                         tx: eth_tx,
@@ -241,7 +241,7 @@ impl
             }
         };
         let tx_data = tx.data.as_ref().ok_or_else(|| {
-            Error::InconsistDataError(format!(
+            Error::InconsistentDataError(format!(
                 "No inner transaction data in id={id}, height={height}",
             ))
         })?;
@@ -329,10 +329,10 @@ impl
             }),
             Data::Transfer(t) => {
                 let Some(Metadata::Transfer(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 let Amount { asset_id, amount } = t.amount.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("Transfer tx missing amount".into())
+                    Error::InconsistentDataError("Transfer tx missing amount".into())
                 })?;
                 Self::Transfer(Tx4 {
                     uid,
@@ -358,7 +358,7 @@ impl
             }
             Data::Reissue(t) => {
                 let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("Reissue tx missing asset_amount".into())
+                    Error::InconsistentDataError("Reissue tx missing asset_amount".into())
                 })?;
                 Self::Reissue(Tx5 {
                     uid,
@@ -381,7 +381,7 @@ impl
             }
             Data::Burn(t) => {
                 let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("Burn tx missing asset_amount".into())
+                    Error::InconsistentDataError("Burn tx missing asset_amount".into())
                 })?;
                 Self::Burn(Tx6 {
                     uid,
@@ -407,13 +407,13 @@ impl
                         .expect("Order serialization is infallible")
                 };
                 let Some(Metadata::Exchange(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 if t.orders.len() < 2 || meta.order_ids.len() < 2
                     || meta.order_sender_addresses.len() < 2
                     || meta.order_sender_public_keys.len() < 2
                 {
-                    return Err(Error::InconsistDataError(
+                    return Err(Error::InconsistentDataError(
                         "Exchange tx has fewer than 2 orders or missing metadata".into(),
                     ));
                 }
@@ -430,7 +430,7 @@ impl
                     sender_public_key: &meta.order_sender_public_keys[1],
                 };
                 let first_order_asset_pair = t.orders[0].asset_pair.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("Exchange order[0] missing asset_pair".into())
+                    Error::InconsistentDataError("Exchange order[0] missing asset_pair".into())
                 })?;
                 Self::Exchange(Tx7 {
                     uid,
@@ -459,7 +459,7 @@ impl
             }
             Data::Lease(t) => {
                 let Some(Metadata::Lease(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 Self::Lease(Tx8 {
                     uid,
@@ -518,7 +518,7 @@ impl
             }),
             Data::MassTransfer(t) => {
                 let Some(Metadata::MassTransfer(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 Self::MassTransfer(Tx11Combined {
                     tx: Tx11 {
@@ -624,7 +624,7 @@ impl
             }),
             Data::SponsorFee(t) => {
                 let min_fee = t.min_fee.as_ref().ok_or_else(|| {
-                    Error::InconsistDataError("SponsorFee tx missing min_fee".into())
+                    Error::InconsistentDataError("SponsorFee tx missing min_fee".into())
                 })?;
                 Self::SponsorFee(Tx14 {
                     uid,
@@ -663,7 +663,7 @@ impl
             }),
             Data::InvokeScript(t) => {
                 let Some(Metadata::InvokeScript(meta)) = &meta.metadata else {
-                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                    return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
                 };
                 let invoke_fee_asset_id = tx
                     .fee
@@ -768,12 +768,12 @@ impl
                 block_uid,
             }),
             Data::InvokeExpression(_t) => {
-                return Err(Error::InconsistDataError(
+                return Err(Error::InconsistentDataError(
                     "InvokeExpression tx type is not yet supported".into(),
                 ))
             }
             Data::CommitToGeneration(_t) => {
-                return Err(Error::InconsistDataError(
+                return Err(Error::InconsistentDataError(
                     "CommitToGeneration tx type is not yet supported".into(),
                 ))
             }
