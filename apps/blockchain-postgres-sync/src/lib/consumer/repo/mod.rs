@@ -44,7 +44,7 @@ pub trait RepoOperations {
 
     fn get_total_block_id(&mut self) -> Result<Option<String>>;
 
-    fn insert_blocks_or_microblocks(&mut self, blocks: &Vec<BlockMicroblock>) -> Result<Vec<i64>>;
+    fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>>;
 
     fn change_block_id(&mut self, block_uid: i64, new_block_id: &str) -> Result<()>;
 
@@ -52,7 +52,7 @@ pub trait RepoOperations {
 
     fn rollback_blocks_microblocks(&mut self, block_uid: i64) -> Result<()>;
 
-    fn insert_waves_data(&mut self, waves_data: &Vec<WavesData>) -> Result<()>;
+    fn insert_waves_data(&mut self, waves_data: &[WavesData]) -> Result<()>;
 
     //
     // ASSETS
@@ -60,15 +60,15 @@ pub trait RepoOperations {
 
     fn get_next_assets_uid(&mut self) -> Result<i64>;
 
-    fn insert_asset_updates(&mut self, updates: &Vec<AssetUpdate>) -> Result<()>;
+    fn insert_asset_updates(&mut self, updates: &[AssetUpdate]) -> Result<()>;
 
-    fn insert_asset_origins(&mut self, origins: &Vec<AssetOrigin>) -> Result<()>;
+    fn insert_asset_origins(&mut self, origins: &[AssetOrigin]) -> Result<()>;
 
     fn update_assets_block_references(&mut self, block_uid: i64) -> Result<()>;
 
-    fn close_assets_superseded_by(&mut self, updates: &Vec<AssetOverride>) -> Result<()>;
+    fn close_assets_superseded_by(&mut self, updates: &[AssetOverride]) -> Result<()>;
 
-    fn reopen_assets_superseded_by(&mut self, current_superseded_by: &Vec<i64>) -> Result<()>;
+    fn reopen_assets_superseded_by(&mut self, current_superseded_by: &[i64]) -> Result<()>;
 
     fn set_assets_next_update_uid(&mut self, new_uid: i64) -> Result<()>;
 
@@ -76,7 +76,7 @@ pub trait RepoOperations {
 
     fn assets_gt_block_uid(&mut self, block_uid: i64) -> Result<Vec<i64>>;
 
-    fn insert_asset_tickers(&mut self, tickers: &Vec<InsertableAssetTicker>) -> Result<()>;
+    fn insert_asset_tickers(&mut self, tickers: &[InsertableAssetTicker]) -> Result<()>;
 
     fn rollback_asset_tickers(&mut self, block_uid: &i64) -> Result<Vec<DeletedAssetTicker>>;
 
@@ -84,12 +84,12 @@ pub trait RepoOperations {
 
     fn reopen_asset_tickers_superseded_by(
         &mut self,
-        current_superseded_by: &Vec<i64>,
+        current_superseded_by: &[i64],
     ) -> Result<()>;
 
     fn close_asset_tickers_superseded_by(
         &mut self,
-        updates: &Vec<AssetTickerOverride>,
+        updates: &[AssetTickerOverride],
     ) -> Result<()>;
 
     fn set_asset_tickers_next_update_uid(&mut self, new_uid: i64) -> Result<()>;

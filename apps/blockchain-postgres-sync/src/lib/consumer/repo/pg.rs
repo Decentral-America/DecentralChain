@@ -27,7 +27,7 @@ use crate::error::Error as AppError;
 use crate::schema::*;
 use crate::tuple_len::TupleLen;
 
-const MAX_UID: i64 = std::i64::MAX - 1;
+const MAX_UID: i64 = i64::MAX - 1;
 const PG_MAX_INSERT_FIELDS_COUNT: usize = 65535;
 
 #[derive(Clone)]
@@ -71,7 +71,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .order(blocks_microblocks::height.desc())
             .first(self.conn)
             .optional()
-            .map_err(build_err_fn(format!("Cannot get current height")))
+            .map_err(build_err_fn("Cannot get current height"))
             .map(|height| height.unwrap_or(0))
     }
 
@@ -138,7 +138,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot get total block id"))
     }
 
-    fn insert_blocks_or_microblocks(&mut self, blocks: &Vec<BlockMicroblock>) -> Result<Vec<i64>> {
+    fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>> {
         diesel::insert_into(blocks_microblocks::table)
             .values(blocks)
             .returning(blocks_microblocks::uid)
@@ -171,7 +171,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot rollback blocks/microblocks"))
     }
 
-    fn insert_waves_data(&mut self, waves_data: &Vec<WavesData>) -> Result<()> {
+    fn insert_waves_data(&mut self, waves_data: &[WavesData]) -> Result<()> {
         diesel::insert_into(waves_data::table)
             .values(waves_data)
             .on_conflict(waves_data::quantity)
@@ -191,7 +191,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot get next assets update uid"))
     }
 
-    fn insert_asset_updates(&mut self, updates: &Vec<AssetUpdate>) -> Result<()> {
+    fn insert_asset_updates(&mut self, updates: &[AssetUpdate]) -> Result<()> {
         chunked(asset_updates::table, updates, |chunk| {
             diesel::insert_into(asset_updates::table)
                 .values(chunk)
@@ -200,7 +200,7 @@ impl RepoOperations for PgRepoOperations<'_> {
         .map_err(build_err_fn("Cannot insert new asset updates"))
     }
 
-    fn insert_asset_origins(&mut self, origins: &Vec<AssetOrigin>) -> Result<()> {
+    fn insert_asset_origins(&mut self, origins: &[AssetOrigin]) -> Result<()> {
         chunked(asset_origins::table, origins, |chunk| {
             diesel::insert_into(asset_origins::table)
                 .values(chunk)
@@ -220,7 +220,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot update assets block references"))
     }
 
-    fn close_assets_superseded_by(&mut self, updates: &Vec<AssetOverride>) -> Result<()> {
+    fn close_assets_superseded_by(&mut self, updates: &[AssetOverride]) -> Result<()> {
         let (ids, superseded_by_uids): (Vec<&String>, Vec<i64>) =
             updates.iter().map(|u| (&u.id, u.superseded_by)).unzip();
 
@@ -239,7 +239,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot close assets superseded_by"))
     }
 
-    fn reopen_assets_superseded_by(&mut self, current_superseded_by: &Vec<i64>) -> Result<()> {
+    fn reopen_assets_superseded_by(&mut self, current_superseded_by: &[i64]) -> Result<()> {
         sql_query(
             "UPDATE asset_updates
             SET superseded_by = $1
@@ -288,7 +288,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             )))
     }
 
-    fn insert_asset_tickers(&mut self, tickers: &Vec<InsertableAssetTicker>) -> Result<()> {
+    fn insert_asset_tickers(&mut self, tickers: &[InsertableAssetTicker]) -> Result<()> {
         chunked(asset_tickers::table, tickers, |chunk| {
             diesel::insert_into(asset_tickers::table)
                 .values(chunk)
@@ -321,7 +321,7 @@ impl RepoOperations for PgRepoOperations<'_> {
 
     fn reopen_asset_tickers_superseded_by(
         &mut self,
-        current_superseded_by: &Vec<i64>,
+        current_superseded_by: &[i64],
     ) -> Result<()> {
         sql_query(
             "UPDATE asset_tickers SET superseded_by = $1 FROM (SELECT UNNEST($2) AS superseded_by) AS current
@@ -335,7 +335,7 @@ impl RepoOperations for PgRepoOperations<'_> {
 
     fn close_asset_tickers_superseded_by(
         &mut self,
-        updates: &Vec<AssetTickerOverride>,
+        updates: &[AssetTickerOverride],
     ) -> Result<()> {
         let (ids, superseded_by_uids): (Vec<&String>, Vec<i64>) = updates
             .iter()
@@ -579,7 +579,8 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_txs_16(&mut self, txs: Vec<Tx16Combined>) -> Result<()> {
-        let (txs16, data): (Vec<Tx16>, Vec<(Vec<Tx16Args>, Vec<Tx16Payment>)>) = txs
+        type Tx16DataVec = Vec<(Vec<Tx16Args>, Vec<Tx16Payment>)>;
+        let (txs16, data): (Vec<Tx16>, Tx16DataVec) = txs
             .into_iter()
             .map(|t| (t.tx, (t.args, t.payments)))
             .unzip();
@@ -620,7 +621,8 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_txs_18(&mut self, txs: Vec<Tx18Combined>) -> Result<()> {
-        let (txs18, data): (Vec<Tx18>, Vec<(Vec<Tx18Args>, Vec<Tx18Payment>)>) = txs
+        type Tx18DataVec = Vec<(Vec<Tx18Args>, Vec<Tx18Payment>)>;
+        let (txs18, data): (Vec<Tx18>, Tx18DataVec) = txs
             .into_iter()
             .map(|t| (t.tx, (t.args, t.payments)))
             .unzip();
@@ -775,7 +777,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             let [interval_start, interval_end] = interval;
 
             let interval_start_time_stamp =
-                if let Some(interval_secs) = interval_in_seconds(&interval_end) {
+                if let Some(interval_secs) = interval_in_seconds(interval_end) {
                     chrono::DateTime::<chrono::Utc>::from_timestamp(
                         (since_timestamp.and_utc().timestamp() / interval_secs) * interval_secs,
                         0,
@@ -839,7 +841,7 @@ impl RepoOperations for PgRepoOperations<'_> {
 
 fn chunked_with_result<T, F, V, R>(
     _: T,
-    values: &Vec<V>,
+    values: &[V],
     mut query_fn: F,
 ) -> Result<Vec<R>, DslError>
 where
@@ -852,7 +854,6 @@ where
     let mut result = vec![];
     values
         .chunks(chunk_size)
-        .into_iter()
         .try_fold((), |_, chunk| {
             result.extend(query_fn(chunk)?);
             Ok::<_, DslError>(())
@@ -861,7 +862,7 @@ where
 }
 
 #[inline]
-fn chunked<T, F, V>(table: T, values: &Vec<V>, mut query_fn: F) -> Result<(), DslError>
+fn chunked<T, F, V>(table: T, values: &[V], mut query_fn: F) -> Result<(), DslError>
 where
     T: Table,
     T::AllColumns: TupleLen,
@@ -872,7 +873,7 @@ where
 
 fn build_err_fn(msg: impl AsRef<str>) -> impl Fn(DslError) -> Error {
     move |err| {
-        let ctx = format!("{}", msg.as_ref());
+        let ctx = msg.as_ref().to_string();
         Error::new(AppError::DbDieselError(err)).context(ctx)
     }
 }

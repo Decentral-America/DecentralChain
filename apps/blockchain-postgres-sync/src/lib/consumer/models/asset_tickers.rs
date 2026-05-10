@@ -15,7 +15,7 @@ pub struct InsertableAssetTicker {
 
 impl PartialEq for InsertableAssetTicker {
     fn eq(&self, other: &InsertableAssetTicker) -> bool {
-        (&self.asset_id) == (&other.asset_id)
+        self.asset_id == other.asset_id
     }
 }
 
@@ -41,7 +41,7 @@ pub struct DeletedAssetTicker {
 
 impl PartialEq for DeletedAssetTicker {
     fn eq(&self, other: &Self) -> bool {
-        (&self.asset_id) == (&other.asset_id)
+        self.asset_id == other.asset_id
     }
 }
 

@@ -136,7 +136,7 @@ impl UpdatesSourceImpl {
                 debug!("updating to height {}", last_height);
                 tx.send(BlockchainUpdatesWithLastHeight {
                     last_height,
-                    updates: result.drain(..).collect(),
+                    updates: std::mem::take(&mut result),
                 })
                     .await
                     .map_err(|e| AppError::StreamError(format!("Channel error: {}", e)))?;
