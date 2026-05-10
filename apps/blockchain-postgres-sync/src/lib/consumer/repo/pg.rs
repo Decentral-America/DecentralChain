@@ -33,7 +33,6 @@ use diesel::{
     sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
     Table,
 };
-use std::mem::drop;
 use std::{collections::HashMap, num::NonZeroU32};
 
 const MAX_UID: i64 = i64::MAX - 1;
@@ -264,13 +263,12 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn set_assets_next_update_uid(&mut self, new_uid: i64) -> Result<()> {
-        // 3rd param - is called; in case of true, value'll be incremented before returning
-        sql_query(format!(
-            "select setval('asset_updates_uid_seq', {new_uid}, false);"
-        ))
-        .execute(self.conn)
-        .map(drop)
-        .map_err(build_err_fn("Cannot set assets next update uid"))
+        // 3rd param is `is_called`; false means the next nextval() returns this exact uid.
+        sql_query("select setval('asset_updates_uid_seq', $1, false);")
+            .bind::<BigInt, _>(new_uid)
+            .execute(self.conn)
+            .map(|_| ())
+            .map_err(build_err_fn("Cannot set assets next update uid"))
     }
 
     fn rollback_assets(&mut self, block_uid: i64) -> Result<Vec<DeletedAsset>> {
@@ -360,13 +358,12 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn set_asset_tickers_next_update_uid(&mut self, new_uid: i64) -> Result<()> {
-        // 3rd param - is called; in case of true, value'll be incremented before returning
-        sql_query(format!(
-            "select setval('asset_tickers_uid_seq', {new_uid}, false);"
-        ))
-        .execute(self.conn)
-        .map(drop)
-        .map_err(build_err_fn("Cannot set asset_tickers next update uid"))
+        // 3rd param is `is_called`; false means the next nextval() returns this exact uid.
+        sql_query("select setval('asset_tickers_uid_seq', $1, false);")
+            .bind::<BigInt, _>(new_uid)
+            .execute(self.conn)
+            .map(|_| ())
+            .map_err(build_err_fn("Cannot set asset_tickers next update uid"))
     }
 
     fn get_next_asset_tickers_uid(&mut self) -> Result<i64> {

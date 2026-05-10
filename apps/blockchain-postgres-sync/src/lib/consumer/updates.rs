@@ -75,7 +75,7 @@ impl UpdatesSource for UpdatesSourceImpl {
 
         tokio::spawn(async move {
             let r = self
-                .run(stream, tx, from_height, batch_max_size, batch_max_wait_time)
+                .run(stream, tx, batch_max_size, batch_max_wait_time)
                 .await;
             if let Err(e) = r {
                 error!("updates source stopped with error: {:?}", e);
@@ -93,12 +93,12 @@ impl UpdatesSourceImpl {
         &self,
         mut stream: tonic::Streaming<SubscribeEventPB>,
         tx: Sender<BlockchainUpdatesWithLastHeight>,
-        from_height: u32,
         batch_max_size: usize,
         batch_max_wait_time: Duration,
     ) -> Result<(), AppError> {
         let mut result = vec![];
-        let mut last_height = from_height;
+        // Initialized from the first received update; always set before use.
+        let mut last_height: u32;
 
         let mut start = Instant::now();
         let mut should_receive_more = true;
@@ -107,37 +107,54 @@ impl UpdatesSourceImpl {
             .to_std()
             .unwrap_or(std::time::Duration::from_secs(5));
 
+        // 60-second idle timeout: if the gRPC server stops sending messages
+        // without closing the stream (hung connection), treat it as a fatal
+        // error so the spawned task exits and the process can be restarted.
+        const STREAM_IDLE_TIMEOUT: StdDuration = StdDuration::from_secs(60);
+
         loop {
-            if let Some(SubscribeEventPB {
-                update: Some(update),
-            }) = stream
-                .message()
+            let msg = time::timeout(STREAM_IDLE_TIMEOUT, stream.message())
                 .await
-                .map_err(|s| AppError::StreamError(format!("Updates stream error: {s}")))?
-            {
-                last_height =
-                    u32::try_from(update.height).expect("blockchain height is always non-negative");
-                match BlockchainUpdate::try_from(update) {
-                    Ok(upd) => {
-                        let current_batch_size = result.len() + 1;
-                        match &upd {
-                            BlockchainUpdate::Block(_) => {
-                                if current_batch_size >= batch_max_size
-                                    || start.elapsed().ge(&batch_max_wait_time)
-                                {
-                                    should_receive_more = false;
-                                }
-                            }
-                            BlockchainUpdate::Microblock(_) | BlockchainUpdate::Rollback(_) => {
+                .map_err(|_| {
+                    AppError::StreamError(
+                        "gRPC stream idle for 60 s; server may be hung".to_string(),
+                    )
+                })?
+                .map_err(|s| AppError::StreamError(format!("Updates stream error: {s}")))?;
+
+            let Some(SubscribeEventPB {
+                update: Some(update),
+            }) = msg
+            else {
+                // The server closed the stream cleanly — treat as a fatal
+                // error so the consumer process is restarted by its supervisor.
+                return Err(AppError::StreamError(
+                    "gRPC stream closed by server".to_string(),
+                ));
+            };
+
+            last_height =
+                u32::try_from(update.height).expect("blockchain height is always non-negative");
+            match BlockchainUpdate::try_from(update) {
+                Ok(upd) => {
+                    let current_batch_size = result.len() + 1;
+                    match &upd {
+                        BlockchainUpdate::Block(_) => {
+                            if current_batch_size >= batch_max_size
+                                || start.elapsed().ge(&batch_max_wait_time)
+                            {
                                 should_receive_more = false;
                             }
                         }
-                        result.push(upd);
-                        Ok(())
+                        BlockchainUpdate::Microblock(_) | BlockchainUpdate::Rollback(_) => {
+                            should_receive_more = false;
+                        }
                     }
-                    Err(err) => Err(err),
-                }?;
-            }
+                    result.push(upd);
+                    Ok(())
+                }
+                Err(err) => Err(err),
+            }?;
 
             if !should_receive_more {
                 debug!("updating to height {}", last_height);
@@ -150,8 +167,8 @@ impl UpdatesSourceImpl {
                 should_receive_more = true;
                 start = Instant::now();
             }
-
-            time::sleep(StdDuration::from_millis(1)).await;
+            // No explicit sleep here — stream.message() is the natural yield
+            // point; adding a sleep would introduce artificial per-message latency.
         }
     }
 }
