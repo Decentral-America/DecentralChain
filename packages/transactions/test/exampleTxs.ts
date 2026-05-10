@@ -32,7 +32,7 @@ const transferTx = {
 
 const reissueTx = {
   assetId: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn',
-  chainId: 76,
+  chainId: 63,
   fee: 100000000,
   id: '3b5sU6YiYS1B3NrSR3der4hwxN4nqc6xpmNPiKXgeAhm',
   proofs: [
@@ -49,7 +49,7 @@ const reissueTx = {
 const burnTx = {
   amount: '9223372036854775807',
   assetId: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn',
-  chainId: 76,
+  chainId: 63,
   fee: 100000,
   id: '6X7Fe82PcVeU9qMtscBA2fBzrSf96PtAwrynViR3zRjP',
   proofs: [
@@ -76,7 +76,7 @@ const leaseTx = {
 };
 
 const cancelLeaseTx = {
-  chainId: 76,
+  chainId: 63,
   fee: 100000,
   id: '656pBWMAPfVMu1gbSZ5dd5WTRQzWNo2phfJsD2rDBKfh',
   leaseId: '656pBWMAPfVMu1gbSZ5dd5WTRQzWNo2phfJsD2rDBKfh',
@@ -137,7 +137,7 @@ const dataTx = {
 };
 
 const setScriptTx = {
-  chainId: 76,
+  chainId: 63,
   fee: 1000000,
   id: 'J8SBGZzSLybdsgpFjDNxVwB8mixkZoEJkgHya3EiXXPc',
   proofs: [
@@ -152,7 +152,7 @@ const setScriptTx = {
 
 const setAssetScriptTx = {
   assetId: 'Cei6h7evZcdR5qdbdjAABWdnuyHrp43Yb6MxN6ZViqFR',
-  chainId: 76,
+  chainId: 63,
   fee: 1000000,
   id: '4ERUXALAziaWJ1Acsmpnfjgtv1ixHSWXRp5dBR837o4e',
   proofs: [
@@ -175,7 +175,7 @@ const invokeScriptTx = {
     ],
     function: 'bet',
   },
-  chainId: 76,
+  chainId: 63,
   dApp: '3P8M8XGF2uzDazV5fzdKNxrbC3YqCWScKxw',
   fee: 500000,
   id: 'E1fPNBHLTRrd1k1iZbnxjc2CjTcwYpuoBf5rBAVB6TMN',

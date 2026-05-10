@@ -38,7 +38,7 @@ export function sponsorship(
 
   const tx: SponsorshipTransaction & WithId & WithProofs = {
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 1e5),
     id: '',
     minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,

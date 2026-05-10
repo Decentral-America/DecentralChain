@@ -8,6 +8,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from 'react-router';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -15,6 +16,21 @@ import { Toaster } from '@/components/ui/toaster';
 import { logError } from '@/lib/error-logger';
 import { queryClientInstance } from '@/lib/query-client';
 import { type Route } from './+types/root';
+
+/**
+ * Root loader — runs server-side only.
+ *
+ * Reads runtime Docker env vars and returns them so the Layout
+ * can inject window.__DCC_CONFIG__ before client-side scripts load.
+ * This allows one Docker image to serve any network at `docker run` time.
+ */
+export function loader() {
+  return {
+    dataServiceUrl: process.env.DCC_DATA_SERVICE_URL ?? 'https://data-service.decentralchain.io/v0',
+    matcherUrl: process.env.DCC_MATCHER_URL ?? 'https://mainnet-matcher.decentralchain.io',
+    nodeUrl: process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io',
+  };
+}
 
 export const links: Route.LinksFunction = () => [{ href: '/manifest.json', rel: 'manifest' }];
 
@@ -46,6 +62,11 @@ export function meta(): Route.MetaDescriptors {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Read the config injected by the root loader to pass to the client bundle.
+  // useRouteLoaderData returns undefined during the static prerender pass — the
+  // inline script is simply omitted in that case (no runtime env vars at build time).
+  const config = useRouteLoaderData<typeof loader>('root');
+
   return (
     <html lang="en">
       <head>
@@ -53,6 +74,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {config && (
+          <script
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: controlled server data, not user input
+            dangerouslySetInnerHTML={{
+              __html: `window.__DCC_CONFIG__=${JSON.stringify(config)};`,
+            }}
+          />
+        )}
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <ErrorBoundary>

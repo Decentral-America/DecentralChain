@@ -16,7 +16,7 @@ describe('alias', () => {
 
   it('should build from minimal set of params', () => {
     const tx = alias({ ...aliasMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...aliasMinimalParams, chainId: 76, fee: 100000 });
+    expect(tx).toMatchObject({ ...aliasMinimalParams, chainId: 63, fee: 100000 });
   });
 
   it('Should get correct signature', () => {

@@ -15,7 +15,7 @@ describe('reissue', () => {
 
   it('should build from minimal set of params', () => {
     const tx = reissue({ ...reissueMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...reissueMinimalParams, chainId: 76, fee: 100000 });
+    expect(tx).toMatchObject({ ...reissueMinimalParams, chainId: 63, fee: 100000 });
   });
 
   it('Should get correct signature', () => {

@@ -107,8 +107,8 @@ export interface IBasicParams<LONG = string | number> {
   /**
    * Network byte. Could be set as number or as char.
    * If set as char(string), charCodeAt(0) will be used. E.g.,
-   * 'L' will be converted to '76'
-   * If not set, 76 ('L' for DecentralChain mainnet) will be used as default
+   * '?' will be converted to '63'
+   * If not set, 63 ('?' for DCC mainnet) will be used as default
    */
   chainId?: string | number;
   version?: number;

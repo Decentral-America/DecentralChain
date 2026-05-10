@@ -20,7 +20,7 @@ describe('issue', () => {
     const tx = issue({ ...issueMinimalParams }, stringSeed);
     expect(tx).toMatchObject({
       ...issueMinimalParams,
-      chainId: 76,
+      chainId: 63,
       decimals: 8,
       fee: 100000000,
       reissuable: false,

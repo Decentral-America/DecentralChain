@@ -15,7 +15,7 @@ describe('burn', () => {
 
   it('should build from minimal set of params', () => {
     const tx = burn({ ...burnMinimalParams } as any, stringSeed);
-    expect(tx).toMatchObject({ ...burnMinimalParams, chainId: 76, fee: 100000, version: 3 });
+    expect(tx).toMatchObject({ ...burnMinimalParams, chainId: 63, fee: 100000, version: 3 });
   });
 
   it('Should get correct signature', () => {

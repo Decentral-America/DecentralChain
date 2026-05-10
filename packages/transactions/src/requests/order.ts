@@ -70,7 +70,7 @@ function applyVersionedOrderFields(
   }
   if (ord.version === 4) {
     ord.priceMode = orderExt.priceMode || 'fixedDecimals';
-    Object.assign(ord, { chainId: networkByte(orderExt.chainId, 76) });
+    Object.assign(ord, { chainId: networkByte(orderExt.chainId, 63) });
     if (orderExt.eip712Signature) Object.assign(ord, { eip712Signature: orderExt.eip712Signature });
   }
 }

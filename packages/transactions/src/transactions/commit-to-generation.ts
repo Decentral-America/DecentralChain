@@ -110,7 +110,7 @@ export function commitToGeneration(
   const { endorserPublicKey, commitmentSignature } = resolveBlsSigningData(paramsOrTx, primarySeed);
 
   const tx: CommitToGenerationTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     commitmentSignature,
     endorserPublicKey,
     fee: fee(paramsOrTx, 10000000),
