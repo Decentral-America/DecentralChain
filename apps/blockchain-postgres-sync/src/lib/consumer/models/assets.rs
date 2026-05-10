@@ -1,4 +1,4 @@
-use crate::schema::*;
+use crate::schema::{asset_origins, asset_updates};
 use chrono::NaiveDateTime;
 use diesel::{Insertable, Queryable};
 use std::hash::{Hash, Hasher};
@@ -23,7 +23,7 @@ pub struct AssetUpdate {
 }
 
 impl PartialEq for AssetUpdate {
-    fn eq(&self, other: &AssetUpdate) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         self.asset_id == other.asset_id
     }
 }

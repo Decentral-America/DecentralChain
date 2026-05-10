@@ -11,6 +11,7 @@ pub type ChainId = u8;
 
 pub const DCC_ID: &str = "DCC";
 
+#[must_use]
 pub fn keccak256(message: &[u8]) -> [u8; 32] {
     use sha3::{Digest, Keccak256};
 
@@ -19,6 +20,7 @@ pub fn keccak256(message: &[u8]) -> [u8; 32] {
     hasher.finalize().into()
 }
 
+#[must_use]
 pub fn blake2b256(message: &[u8]) -> [u8; 32] {
     use blake2::{digest::consts::U32, Blake2b, Digest};
 
@@ -45,7 +47,7 @@ impl From<(&[u8], ChainId)> for Address {
 
         addr.put_slice(chks);
 
-        Address(into_base58(addr))
+        Self(into_base58(addr))
     }
 }
 
@@ -61,7 +63,7 @@ impl From<(PublicKeyHash<'_>, ChainId)> for Address {
 
         addr.put_slice(chks);
 
-        Address(into_base58(addr))
+        Self(into_base58(addr))
     }
 }
 
@@ -71,6 +73,7 @@ impl From<Address> for String {
     }
 }
 
+#[must_use]
 pub fn is_valid_base58(src: &str) -> bool {
     bs58::decode(src).into_vec().is_ok()
 }

@@ -40,7 +40,7 @@ pub enum Error {
 // impl done manually because InteractError is not Sync
 impl From<deadpool_diesel::InteractError> for Error {
     fn from(err: deadpool_diesel::InteractError) -> Self {
-        Error::DeadpoolError(err.to_string())
+        Self::DeadpoolError(err.to_string())
     }
 }
 

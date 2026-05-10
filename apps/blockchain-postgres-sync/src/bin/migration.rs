@@ -13,8 +13,9 @@ fn main() -> anyhow::Result<()> {
     run(action, conn).map_err(|e| anyhow::anyhow!(e))
 }
 
+#[allow(clippy::needless_pass_by_value)] // PgConnection is consumed (moved) in match body
 fn run(action: action::Action, mut conn: PgConnection) -> migration::Result<()> {
-    use action::Action::*;
+    use action::Action::{ListPending, MigrateDown, MigrateUp};
     match action {
         ListPending => {
             let list = conn.pending_migrations(MIGRATIONS)?;
@@ -22,7 +23,8 @@ fn run(action: action::Action, mut conn: PgConnection) -> migration::Result<()> 
                 println!("No pending migrations.");
             }
             for mig in list {
-                println!("Pending migration: {}", mig.name());
+                let name = mig.name();
+                println!("Pending migration: {name}");
             }
         }
         MigrateUp => {
@@ -31,12 +33,12 @@ fn run(action: action::Action, mut conn: PgConnection) -> migration::Result<()> 
                 println!("No pending migrations.");
             }
             for mig in list {
-                println!("Applied migration: {}", mig);
+                println!("Applied migration: {mig}");
             }
         }
         MigrateDown => {
             let mig = conn.revert_last_migration(MIGRATIONS)?;
-            println!("Reverted migration: {}", mig);
+            println!("Reverted migration: {mig}");
         }
     }
     Ok(())
@@ -54,9 +56,9 @@ mod action {
 
         fn try_from(value: &str) -> Result<Self, Self::Error> {
             match value {
-                "" | "list" => Ok(Action::ListPending),
-                "up" => Ok(Action::MigrateUp),
-                "down" => Ok(Action::MigrateDown),
+                "" | "list" => Ok(Self::ListPending),
+                "up" => Ok(Self::MigrateUp),
+                "down" => Ok(Self::MigrateDown),
                 _ => Err(()),
             }
         }
@@ -66,8 +68,7 @@ mod action {
         let action_str = std::env::args().nth(1).unwrap_or_default();
         let action = action_str.as_str().try_into().map_err(|()| {
             anyhow::anyhow!(
-                "unrecognized command line argument: {} (either 'up' or 'down' expected)",
-                action_str
+                "unrecognized command line argument: {action_str} (either 'up' or 'down' expected)"
             )
         })?;
         Ok(action)

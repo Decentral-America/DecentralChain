@@ -9,7 +9,10 @@ use super::models::{
     asset_tickers::{AssetTickerOverride, DeletedAssetTicker, InsertableAssetTicker},
     assets::{AssetOrigin, AssetOverride, AssetUpdate, DeletedAsset},
     block_microblock::BlockMicroblock,
-    txs::*,
+    txs::{
+        Tx1, Tx10, Tx11Combined, Tx12Combined, Tx13, Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined,
+        Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial,
+    },
     waves_data::WavesData,
 };
 use super::UidHeight;
@@ -20,11 +23,12 @@ pub trait Repo {
 
     async fn transaction<F, R>(&self, f: F) -> Result<R>
     where
-        F: for<'conn> FnOnce(&mut Self::Operations<'conn>) -> Result<R>,
-        F: Send + 'static,
+        F: for<'conn> FnOnce(&mut Self::Operations<'conn>) -> Result<R> + Send + 'static,
         R: Send + 'static;
 }
 
+/// All methods return [`anyhow::Error`] on database failure.
+#[allow(clippy::missing_errors_doc)]
 pub trait RepoOperations {
     //
     // COMMON

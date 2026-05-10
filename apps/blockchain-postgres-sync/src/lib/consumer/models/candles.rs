@@ -52,6 +52,7 @@ pub mod intervals {
     ];
 }
 
+#[must_use]
 pub fn interval_in_seconds(interval: &str) -> Option<i64> {
     match interval {
         intervals::MIN1 => Some(60),

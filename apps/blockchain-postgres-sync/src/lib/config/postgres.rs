@@ -1,11 +1,11 @@
 use crate::error::Error;
 use serde::Deserialize;
 
-fn default_port() -> u16 {
+const fn default_port() -> u16 {
     5432
 }
 
-fn default_poolsize() -> u32 {
+const fn default_poolsize() -> u32 {
     1
 }
 
@@ -32,6 +32,7 @@ pub struct Config {
 }
 
 impl Config {
+    #[must_use]
     pub fn database_url(&self) -> String {
         format!(
             "postgres://{}:{}@{}:{}/{}",
@@ -40,6 +41,9 @@ impl Config {
     }
 }
 
+/// # Errors
+///
+/// Returns an error if the `POSTGRES__*` environment variables are missing or unparsable.
 pub fn load() -> Result<Config, Error> {
     let config_flat = envy::prefixed("POSTGRES__").from_env::<ConfigFlat>()?;
 

@@ -29,11 +29,11 @@ pub fn epoch_ms_to_naivedatetime(ts: i64) -> NaiveDateTime {
 }
 
 pub fn escape_unicode_null(s: impl AsRef<str>) -> String {
-    s.as_ref().replace("\0", "\\0")
+    s.as_ref().replace('\0', "\\0")
 }
 
 #[cfg(test)]
-#[allow(clippy::unwrap_used)]
+#[allow(clippy::unwrap_used, clippy::items_after_statements)]
 mod tests {
     use super::*;
 
