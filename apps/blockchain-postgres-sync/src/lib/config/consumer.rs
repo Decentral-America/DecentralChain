@@ -105,7 +105,7 @@ mod tests {
             asset_storage_address: None,
             assets_only: false,
             blockchain_updates_url: "http://node:6881".into(),
-            chain_id: 76, // DCC mainnet — 'L' (byte 76)
+            chain_id: 63, // DCC mainnet — '?' (byte 63)
             max_wait_time: Duration::milliseconds(5000),
             starting_height: 1,
             updates_per_request: 256,
