@@ -79,14 +79,14 @@ const {
 // 1. CHAIN ID CONSTANTS
 // ═══════════════════════════════════════════════════════════════════════════
 describe('Chain ID Constants', () => {
-  test('MAIN_NET_CHAIN_ID is 76 (L)', () => {
-    expect(MAIN_NET_CHAIN_ID).toBe(76);
-    expect(String.fromCharCode(MAIN_NET_CHAIN_ID)).toBe('L');
+  test('MAIN_NET_CHAIN_ID is 63 (?)', () => {
+    expect(MAIN_NET_CHAIN_ID).toBe(63);
+    expect(String.fromCharCode(MAIN_NET_CHAIN_ID)).toBe('?');
   });
 
-  test('TEST_NET_CHAIN_ID is 84 (T)', () => {
-    expect(TEST_NET_CHAIN_ID).toBe(84);
-    expect(String.fromCharCode(TEST_NET_CHAIN_ID)).toBe('T');
+  test('TEST_NET_CHAIN_ID is 33 (!)', () => {
+    expect(TEST_NET_CHAIN_ID).toBe(33);
+    expect(String.fromCharCode(TEST_NET_CHAIN_ID)).toBe('!');
   });
 });
 
@@ -128,17 +128,17 @@ describe('Key Derivation Determinism', () => {
 describe('Address Generation', () => {
   const seed = SEEDS[0];
 
-  test('default address uses chain L', () => {
+  test('default address uses chain ? (DCC mainnet)', () => {
     const addrDefault = address(seed);
-    const addrL = address(seed, 'L');
-    expect(addrDefault).toBe(addrL);
+    const addrQ = address(seed, '?');
+    expect(addrDefault).toBe(addrQ);
   });
 
   const CHAIN_IDS = [
-    { code: 76, id: 'L' },
+    { code: 63, id: '?' }, // DCC mainnet
+    { code: 33, id: '!' }, // DCC testnet
     { code: 87, id: 'W' },
-    { code: 84, id: 'T' },
-    { code: 83, id: 'S' }, // custom staging
+    { code: 76, id: 'L' },
     { code: 68, id: 'D' }, // custom dev
   ];
 
@@ -170,20 +170,20 @@ describe('Address Verification (Negative)', () => {
   const seed = SEEDS[0];
 
   test('address verified with wrong chain ID fails', () => {
-    const addrL = address(seed, 'L');
-    expect(verifyAddress(addrL, { chainId: 'W' })).toBe(false);
-    expect(verifyAddress(addrL, { chainId: 'T' })).toBe(false);
+    const addrQ = address(seed, '?');
+    expect(verifyAddress(addrQ, { chainId: 'W' })).toBe(false);
+    expect(verifyAddress(addrQ, { chainId: '!' })).toBe(false);
   });
 
   test('address verified with wrong public key fails', () => {
-    const addrL = address(seed, 'L');
+    const addrQ = address(seed, '?');
     const wrongPk = publicKey(SEEDS[1]);
-    expect(verifyAddress(addrL, { publicKey: wrongPk })).toBe(false);
+    expect(verifyAddress(addrQ, { publicKey: wrongPk })).toBe(false);
   });
 
   test('address verified with correct public key succeeds', () => {
-    const addrL = address(seed, 'L');
-    expect(verifyAddress(addrL, { publicKey: publicKey(seed) })).toBe(true);
+    const addrQ = address(seed, '?');
+    expect(verifyAddress(addrQ, { publicKey: publicKey(seed) })).toBe(true);
   });
 
   test('gibberish address fails verification', () => {
@@ -530,9 +530,9 @@ describe('Seed Encrypt/Decrypt', () => {
     const seed = 'test seed'; // 9 UTF-8 bytes
     const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes('pass'));
     expect(encrypted).toBeInstanceOf(Uint8Array);
-    // Format: [16-byte salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
-    // 16 + 24 + 9 + 16 = 65 bytes for 'test seed'
-    expect(encrypted.byteLength).toBe(65);
+    // Format: [32-byte Argon2id salt][24-byte nonce][ciphertext + 16-byte Poly1305 tag]
+    // 32 + 24 + 9 + 16 = 81 bytes for 'test seed' (9 UTF-8 bytes)
+    expect(encrypted.byteLength).toBe(81);
   });
 
   test('different passwords produce different ciphertext', async () => {

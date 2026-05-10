@@ -7,10 +7,10 @@ export const SIGNATURE_LENGTH = 64 as const;
 /** Length in bytes of a DecentralChain address. */
 export const ADDRESS_LENGTH = 26 as const;
 
-/** Chain ID for DecentralChain mainnet (character 'L'). */
-export const MAIN_NET_CHAIN_ID = 76 as const;
-/** Chain ID for DecentralChain testnet (character 'T'). */
-export const TEST_NET_CHAIN_ID = 84 as const;
+/** Chain ID for DecentralChain mainnet (character '?'). */
+export const MAIN_NET_CHAIN_ID = 63 as const;
+/** Chain ID for DecentralChain testnet (character '!'). */
+export const TEST_NET_CHAIN_ID = 33 as const;
 
 /** A seed combined with a nonce for deterministic key derivation. */
 export interface INonceSeed {

@@ -91,7 +91,7 @@ export class DCCLedger {
     }
 
     this.ready = false;
-    this._networkCode = options.networkCode ?? 76;
+    this._networkCode = options.networkCode ?? 63;
     if (!Number.isInteger(this._networkCode) || this._networkCode < 0 || this._networkCode > 255) {
       throw new RangeError(
         `networkCode must be an integer in [0, 255], got ${String(this._networkCode)}`,

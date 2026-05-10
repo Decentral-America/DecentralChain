@@ -55,7 +55,7 @@ describe('DCCLedger', () => {
         debug: true,
         exchangeTimeout: 10000,
         listenTimeout: 5000,
-        networkCode: 84,
+        networkCode: 33, // DCC testnet
         openTimeout: 1000,
         transport: factory,
       });

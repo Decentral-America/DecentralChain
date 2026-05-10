@@ -2,8 +2,8 @@
 // Verifies that cryptographic operations are byte-for-byte identical between
 // the original library and the migrated @decentralchain/ts-lib-crypto version
 //
-// The ONLY expected difference: default addresses differ because MAIN_NET_CHAIN_ID
-// changed from 87 ('W') to 76 ('L'). When using the same chain ID, addresses match.
+// DCC mainnet chain ID = 63 ('?'), testnet = 33 ('!').
+// Verified from live blockchain: all genesis addresses decode to byte[1]=63.
 
 import { expect, test } from 'vitest';
 import * as migrated from '../src/index';
@@ -27,22 +27,22 @@ test('address with explicit chain ID W matches known-good value', () => {
   expect(migrated.verifyAddress(addrW, { chainId: 'W' })).toBe(true);
 });
 
-test('address with chain ID L matches known-good value', () => {
-  const addrL = migrated.address(seed, 'L');
-  expect(addrL).toBe('3JqeoTegfv4Tdvo6WXTedUtDUGqpzLxCAns');
-  expect(migrated.verifyAddress(addrL, { chainId: 'L' })).toBe(true);
+test('address with chain ID ? (DCC mainnet) matches known-good value', () => {
+  const addrQ = migrated.address(seed, '?');
+  expect(addrQ).toBe('3DcFxfEovgiSFJAHPD1KVBFgF6HUj5tCM93');
+  expect(migrated.verifyAddress(addrQ, { chainId: '?' })).toBe(true);
 });
 
-test('address with default chain ID uses L (DecentralChain mainnet)', () => {
+test('address with default chain ID uses ? (DCC mainnet)', () => {
   const addrDefault = migrated.address(seed);
-  const addrL = migrated.address(seed, 'L');
-  expect(addrDefault).toBe(addrL);
+  const addrQ = migrated.address(seed, '?');
+  expect(addrDefault).toBe(addrQ);
 });
 
-test('testnet addresses are identical (chain ID T unchanged)', () => {
-  const addrT = migrated.address(seed, 'T');
-  expect(addrT).toBeTruthy();
-  expect(migrated.verifyAddress(addrT, { chainId: 'T' })).toBe(true);
+test('testnet address uses ! (DCC testnet)', () => {
+  const addrBang = migrated.address(seed, '!');
+  expect(addrBang).toBeTruthy();
+  expect(migrated.verifyAddress(addrBang, { chainId: '!' })).toBe(true);
 });
 
 test('signing and verification roundtrip works', () => {
@@ -69,10 +69,10 @@ test('hashing functions produce consistent results', () => {
   expect(keccak1).toEqual(keccak2);
 });
 
-test('MAIN_NET_CHAIN_ID is 76 (L) for DecentralChain', () => {
-  expect(migrated.MAIN_NET_CHAIN_ID).toBe(76);
+test('MAIN_NET_CHAIN_ID is 63 (?) for DecentralChain', () => {
+  expect(migrated.MAIN_NET_CHAIN_ID).toBe(63);
 });
 
-test('TEST_NET_CHAIN_ID is 84 (T) unchanged', () => {
-  expect(migrated.TEST_NET_CHAIN_ID).toBe(84);
+test('TEST_NET_CHAIN_ID is 33 (!)', () => {
+  expect(migrated.TEST_NET_CHAIN_ID).toBe(33);
 });
