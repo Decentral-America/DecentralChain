@@ -210,7 +210,7 @@ mod tests {
     fn address_from_public_key_is_valid_base58() {
         // 32-byte dummy public key
         let pk = [0u8; 32];
-        let chain_id: ChainId = 84; // 'T' for testnet
+        let chain_id: ChainId = 84; // DCC testnet — 'T' (byte 84)
         let addr_str: String = Address::from((pk.as_ref(), chain_id)).into();
         assert!(is_valid_base58(&addr_str));
         // Waves/DCC addresses are 35 chars in base58
