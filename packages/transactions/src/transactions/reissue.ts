@@ -37,7 +37,7 @@ export function reissue(
 
   const tx: ReissueTransaction & WithId & WithProofs = {
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     proofs: paramsOrTx.proofs || [],

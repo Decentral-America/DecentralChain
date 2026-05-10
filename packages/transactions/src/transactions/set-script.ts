@@ -50,7 +50,7 @@ export function setScript(
     scriptBytes != null ? Math.max(100000, Math.ceil(scriptBytes.length / 1024) * 100000) : 500000;
 
   const tx: SetScriptTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, computedFee),
     id: '',
     proofs: paramsOrTx.proofs || [],

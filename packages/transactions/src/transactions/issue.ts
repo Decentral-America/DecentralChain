@@ -42,7 +42,7 @@ export function issue(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: IssueTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     decimals: (paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals) as AssetDecimals,
     description: paramsOrTx.description,
     fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),

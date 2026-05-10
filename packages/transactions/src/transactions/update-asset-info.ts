@@ -37,7 +37,7 @@ export function updateAssetInfo(
 
   const tx: UpdateAssetInfoTransaction & WithId & WithProofs = {
     assetId: paramsOrTx.assetId,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     description: paramsOrTx.description,
     fee: fee(paramsOrTx, 100000),
     id: '',

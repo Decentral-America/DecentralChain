@@ -62,9 +62,29 @@ export type {
 };
 
 // ── Constants ──────────────────────────────────────────────────────────
-const DEFAULT_NODE_URL = 'https://mainnet-node.decentralchain.io';
-const MATCHER_URL = 'https://mainnet-matcher.decentralchain.io';
-const DATA_SERVICE_URL = 'https://data-service.decentralchain.io/v0';
+// Runtime-configurable via DCC_NODE_URL / DCC_MATCHER_URL / DCC_DATA_SERVICE_URL
+// env vars set at `docker run` time.
+//
+// Server-side (SSR): process.env is populated from Docker env vars.
+// Client-side: window.__DCC_CONFIG__ is injected by the SSR HTML shell
+//              (see root.tsx loader + Layout inline script).
+//
+// This means one Docker image can serve mainnet, testnet, or stagenet
+// depending solely on the env vars passed at container startup.
+const DEFAULT_NODE_URL =
+  typeof window === 'undefined'
+    ? (process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io')
+    : (window.__DCC_CONFIG__?.nodeUrl ?? 'https://mainnet-node.decentralchain.io');
+
+const MATCHER_URL =
+  typeof window === 'undefined'
+    ? (process.env.DCC_MATCHER_URL ?? 'https://mainnet-matcher.decentralchain.io')
+    : (window.__DCC_CONFIG__?.matcherUrl ?? 'https://mainnet-matcher.decentralchain.io');
+
+const DATA_SERVICE_URL =
+  typeof window === 'undefined'
+    ? (process.env.DCC_DATA_SERVICE_URL ?? 'https://data-service.decentralchain.io/v0')
+    : (window.__DCC_CONFIG__?.dataServiceUrl ?? 'https://data-service.decentralchain.io/v0');
 const DISTRIBUTION_PAGE_LIMIT = 1000;
 
 // ── SDK Instance ───────────────────────────────────────────────────────

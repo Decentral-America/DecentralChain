@@ -32,7 +32,7 @@ export function lease(
 
   const tx: LeaseTransaction & WithId & WithProofs = {
     amount: paramsOrTx.amount,
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     proofs: paramsOrTx.proofs || [],

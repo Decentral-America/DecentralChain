@@ -37,7 +37,7 @@ export function cancelLease(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
 
   const tx: CancelLeaseTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 100000),
     id: '',
     leaseId: paramsOrTx.leaseId,

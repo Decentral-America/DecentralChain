@@ -134,7 +134,7 @@ export function data(
   }
 
   const tx: DataTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 76),
+    chainId: networkByte(paramsOrTx.chainId, 63),
     data: dataEntriesWithTypes as DataTransactionEntry[],
     fee: fee(paramsOrTx, computedFee),
     id: '',

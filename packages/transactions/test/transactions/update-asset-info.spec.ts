@@ -8,7 +8,7 @@ describe('updateAssetInfo', () => {
 
   it('Should create update asset info transaction with minimal params', () => {
     const tx = updateAssetInfo({ ...updateAssetInfoMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...updateAssetInfoMinimalParams, chainId: 76, fee: 100000 });
+    expect(tx).toMatchObject({ ...updateAssetInfoMinimalParams, chainId: 63, fee: 100000 });
   });
 
   it('Should not create update asset info transaction with name <3', () => {

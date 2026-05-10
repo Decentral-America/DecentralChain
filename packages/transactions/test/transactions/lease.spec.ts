@@ -15,7 +15,7 @@ describe('lease', () => {
 
   it('should build from minimal set of params', () => {
     const tx = lease({ ...leaseMinimalParams }, stringSeed);
-    expect(tx).toMatchObject({ ...leaseMinimalParams, chainId: 76, fee: 100000, version: 3 });
+    expect(tx).toMatchObject({ ...leaseMinimalParams, chainId: 63, fee: 100000, version: 3 });
   });
 
   it('Should get correct signature', () => {
