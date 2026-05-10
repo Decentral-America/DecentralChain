@@ -26,14 +26,9 @@ allow = [
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
     "MIT",
-    "BSD-2-Clause",
     "BSD-3-Clause",
-    "ISC",
     "Unicode-3.0",
-    "Unicode-DFS-2016",
-    "CC0-1.0",
     "Zlib",
-    "OpenSSL",
 ]
 
 # Confidence threshold for license text matching.
@@ -49,6 +44,17 @@ ignore = true
 [bans]
 # Warn on duplicate crate versions (common in large Rust dependency trees).
 multiple-versions = "warn"
+
+# blake2 0.10.6 requires digest 0.10/block-buffer 0.10/crypto-common 0.1;
+# sha3 0.11.0 requires digest 0.11/block-buffer 0.12/crypto-common 0.2.
+# These are both at their latest versions — the split is upstream-unavoidable.
+skip = [
+    { crate = "digest", reason = "blake2 0.10 and sha3 0.11 use different digest API generations" },
+    { crate = "block-buffer", reason = "digest 0.10 and 0.11 require different block-buffer versions" },
+    { crate = "crypto-common", reason = "digest 0.10 and 0.11 require different crypto-common versions" },
+    { crate = "windows-link", reason = "chrono/windows-core and tokio/windows-sys require different windows-link versions" },
+    { crate = "wit-bindgen", reason = "wasip3 and wasmtime-wasi use different wit-bindgen generations" },
+]
 
 # Wildcard versions are forbidden in published deps.
 wildcards = "deny"

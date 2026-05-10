@@ -101,10 +101,10 @@ mod tests {
             ("not-valid-string", false),
         ];
 
-        test_cases.into_iter().for_each(|(key, expected)| {
+        for (key, expected) in test_cases {
             let actual = is_valid_base58(key);
             assert_eq!(actual, expected);
-        });
+        }
     }
 
     #[test]
@@ -158,12 +158,11 @@ mod tests {
     fn keccak256_empty_input_known_vector() {
         // keccak256("") = c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470
         let result = keccak256(b"");
-        let expected: [u8; 32] = hex::decode(
-            "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
-        )
-        .unwrap()
-        .try_into()
-        .unwrap();
+        let expected: [u8; 32] =
+            hex::decode("c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470")
+                .unwrap()
+                .try_into()
+                .unwrap();
         assert_eq!(result, expected);
     }
 
@@ -238,4 +237,3 @@ mod tests {
         assert_eq!(from_pk, from_pkh);
     }
 }
-

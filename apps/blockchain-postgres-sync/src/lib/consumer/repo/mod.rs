@@ -82,15 +82,9 @@ pub trait RepoOperations {
 
     fn update_asset_tickers_block_references(&mut self, block_uid: i64) -> Result<()>;
 
-    fn reopen_asset_tickers_superseded_by(
-        &mut self,
-        current_superseded_by: &[i64],
-    ) -> Result<()>;
+    fn reopen_asset_tickers_superseded_by(&mut self, current_superseded_by: &[i64]) -> Result<()>;
 
-    fn close_asset_tickers_superseded_by(
-        &mut self,
-        updates: &[AssetTickerOverride],
-    ) -> Result<()>;
+    fn close_asset_tickers_superseded_by(&mut self, updates: &[AssetTickerOverride]) -> Result<()>;
 
     fn set_asset_tickers_next_update_uid(&mut self, new_uid: i64) -> Result<()>;
 
