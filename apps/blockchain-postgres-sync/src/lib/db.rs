@@ -11,25 +11,17 @@ use crate::error::Error as AppError;
 pub type PgPool = Pool<ConnectionManager<PgConnection>>;
 pub type PgAsyncPool = DPool<DManager<PgConnection>>;
 
-#[must_use]
-pub fn generate_postgres_url(config: &Config) -> String {
-    format!(
-        "postgres://{}:{}@{}:{}/{}",
-        config.user, config.password, config.host, config.port, config.database
-    )
-}
-
 /// # Errors
 ///
 /// Returns an error if the pool builder fails or the configuration is invalid.
 #[allow(clippy::unused_async)] // deadpool build() is sync; async signature needed by callers
 pub async fn async_pool(config: &Config) -> Result<PgAsyncPool> {
-    let db_url = generate_postgres_url(config);
+    let db_url = config.database_url();
 
     let manager = DManager::new(db_url, Runtime::Tokio1);
     let pool = DPool::builder(manager)
         .max_size(config.poolsize as usize)
-        .wait_timeout(Some(Duration::from_secs(10 * 60)))
+        .wait_timeout(Some(Duration::from_secs(30)))
         .build()?;
     Ok(pool)
 }
@@ -38,7 +30,7 @@ pub async fn async_pool(config: &Config) -> Result<PgAsyncPool> {
 ///
 /// Returns an error if the connection pool cannot be created.
 pub fn pool(config: &Config) -> Result<PgPool, AppError> {
-    let db_url = generate_postgres_url(config);
+    let db_url = config.database_url();
 
     let manager = ConnectionManager::<PgConnection>::new(db_url);
     Ok(Pool::builder()
@@ -53,7 +45,7 @@ pub fn pool(config: &Config) -> Result<PgPool, AppError> {
 ///
 /// Returns an error if the database connection cannot be established.
 pub fn unpooled(config: &Config) -> Result<PgConnection> {
-    let db_url = generate_postgres_url(config);
+    let db_url = config.database_url();
 
     PgConnection::establish(&db_url).map_err(|err| Error::new(AppError::ConnectionError(err)))
 }

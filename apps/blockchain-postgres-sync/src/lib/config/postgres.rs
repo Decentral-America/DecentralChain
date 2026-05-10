@@ -21,7 +21,7 @@ struct ConfigFlat {
     poolsize: u32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Config {
     pub host: String,
     pub port: u16,
@@ -29,6 +29,21 @@ pub struct Config {
     pub user: String,
     pub password: String,
     pub poolsize: u32,
+}
+
+// Manual Debug implementation to prevent the database password from appearing
+// in log output, panic messages, or error chains.
+impl std::fmt::Debug for Config {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Config")
+            .field("host", &self.host)
+            .field("port", &self.port)
+            .field("database", &self.database)
+            .field("user", &self.user)
+            .field("password", &"[REDACTED]")
+            .field("poolsize", &self.poolsize)
+            .finish()
+    }
 }
 
 impl Config {

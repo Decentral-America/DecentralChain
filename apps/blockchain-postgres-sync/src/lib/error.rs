@@ -33,8 +33,8 @@ pub enum Error {
     #[error("JoinError: {0}")]
     JoinError(#[from] tokio::task::JoinError),
 
-    #[error("InconsistDataError: {0}")]
-    InconsistDataError(String),
+    #[error("InconsistentDataError: {0}")]
+    InconsistentDataError(String),
 }
 
 // impl done manually because InteractError is not Sync
@@ -57,8 +57,8 @@ mod tests {
 
     #[test]
     fn inconsist_data_display() {
-        let e = Error::InconsistDataError("missing field".into());
-        assert_eq!(e.to_string(), "InconsistDataError: missing field");
+        let e = Error::InconsistentDataError("missing field".into());
+        assert_eq!(e.to_string(), "InconsistentDataError: missing field");
     }
 
     #[test]
