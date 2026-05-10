@@ -1,14 +1,14 @@
+use crate::proto::waves::{
+    invoke_script_result::call::argument::{List as ListPb, Value as InvokeScriptArgValue},
+    order::Sender as SenderPb,
+    Order as OrderPb,
+};
 use crate::utils::{escape_unicode_null, into_base58};
 use base64::prelude::*;
 use chrono::{DateTime, Utc};
 use serde::ser::{SerializeStruct, Serializer};
 use serde::Serialize;
 use serde_json::{json, Value};
-use crate::proto::waves::{
-    invoke_script_result::call::argument::{List as ListPb, Value as InvokeScriptArgValue},
-    order::Sender as SenderPb,
-    Order as OrderPb,
-};
 
 #[derive(Clone, Debug)]
 pub struct BaseAssetInfoUpdate {
@@ -435,8 +435,8 @@ mod tests {
 
     #[test]
     fn arg_list_skips_none_values() {
-        use crate::proto::waves::invoke_script_result::call::Argument;
         use crate::proto::waves::invoke_script_result::call::argument::List as ListPb;
+        use crate::proto::waves::invoke_script_result::call::Argument;
         let list = ListPb {
             items: vec![
                 Argument { value: None }, // should be skipped

@@ -89,8 +89,24 @@ unwrap_used = "warn"
 indexing_slicing = "allow"  # diesel QueryDsl uses [] indexing internally
 # Prefer slice refs over Vec refs in function signatures.
 ptr_arg = "deny"
+# Prevent silent data corruption from as-casts; all existing casts use try_from().expect().
+cast_possible_truncation = "warn"
+cast_sign_loss = "warn"
+cast_possible_wrap = "warn"
+# Prefer idiomatic for loops over for_each closures.
+needless_for_each = "warn"
+# Use .copied() for Copy types instead of .cloned().
+cloned_instead_of_copied = "warn"
 
 # prost and tonic-prost are used in code generated via include!() in proto.rs
 # and are therefore invisible to cargo-machete's static analysis.
 [package.metadata.cargo-machete]
 ignored = ["prost", "tonic-prost"]
+
+# Release profile hardening — reduces binary size and eliminates panicking branches.
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
+opt-level = 3
