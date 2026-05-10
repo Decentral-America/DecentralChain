@@ -36,7 +36,7 @@ pub fn pool(config: &Config) -> Result<PgPool, AppError> {
     Ok(Pool::builder()
         .min_idle(Some(1))
         .max_size(config.poolsize)
-        .idle_timeout(Some(Duration::from_secs(10 * 60)))
+        .idle_timeout(Some(Duration::from_secs(60)))
         .connection_timeout(Duration::from_secs(5))
         .build(manager)?)
 }
