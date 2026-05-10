@@ -38,13 +38,13 @@ describe('DCC', () => {
       );
     });
 
-    it('uses default mainnet network code 76', () => {
+    it('uses default mainnet network code 63', () => {
       // The networkCode is used in signing — test indirectly via signData
       expect(dcc).toBeDefined();
     });
 
     it('accepts custom network code', () => {
-      const customDcc = new DCC(transport, 84);
+      const customDcc = new DCC(transport, 33); // DCC testnet
       expect(customDcc).toBeDefined();
     });
 
@@ -190,7 +190,7 @@ describe('DCC', () => {
         0x80,
         0x04,
         0x80, // verify = true
-        76, // networkCode
+        63, // networkCode
         expect.any(Uint8Array),
       );
     });

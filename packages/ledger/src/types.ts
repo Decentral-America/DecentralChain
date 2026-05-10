@@ -120,7 +120,7 @@ export interface DCCLedgerOptions {
   /** Timeout in ms for exchange calls. */
   exchangeTimeout?: number | undefined;
 
-  /** DCC network code (default: `76` — mainnet). */
+  /** DCC network code (default: `63` — mainnet). */
   networkCode?: number | undefined;
 }
 
