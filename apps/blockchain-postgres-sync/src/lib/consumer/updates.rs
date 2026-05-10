@@ -36,6 +36,9 @@ pub struct UpdatesSourceImpl {
     grpc_client: BlockchainUpdatesApiClient<tonic::transport::Channel>,
 }
 
+/// # Errors
+///
+/// Returns an error if the gRPC channel cannot connect to `blockchain_updates_url`.
 pub async fn new(blockchain_updates_url: &str) -> Result<UpdatesSourceImpl> {
     Ok(UpdatesSourceImpl {
         grpc_client: {
@@ -65,7 +68,7 @@ impl UpdatesSource for UpdatesSourceImpl {
             .clone()
             .subscribe(request)
             .await
-            .map_err(|e| AppError::StreamError(format!("Subscribe Stream error: {}", e)))?
+            .map_err(|e| AppError::StreamError(format!("Subscribe Stream error: {e}")))?
             .into_inner();
 
         let (tx, rx) = channel::<BlockchainUpdatesWithLastHeight>(1);
@@ -77,7 +80,7 @@ impl UpdatesSource for UpdatesSourceImpl {
             if let Err(e) = r {
                 error!("updates source stopped with error: {:?}", e);
             } else {
-                error!("updates source stopped without an error")
+                error!("updates source stopped without an error");
             }
         });
 
@@ -110,7 +113,7 @@ impl UpdatesSourceImpl {
             }) = stream
                 .message()
                 .await
-                .map_err(|s| AppError::StreamError(format!("Updates stream error: {}", s)))?
+                .map_err(|s| AppError::StreamError(format!("Updates stream error: {s}")))?
             {
                 last_height =
                     u32::try_from(update.height).expect("blockchain height is always non-negative");
@@ -126,7 +129,7 @@ impl UpdatesSourceImpl {
                                 }
                             }
                             BlockchainUpdate::Microblock(_) | BlockchainUpdate::Rollback(_) => {
-                                should_receive_more = false
+                                should_receive_more = false;
                             }
                         }
                         result.push(upd);
@@ -143,12 +146,12 @@ impl UpdatesSourceImpl {
                     updates: std::mem::take(&mut result),
                 })
                 .await
-                .map_err(|e| AppError::StreamError(format!("Channel error: {}", e)))?;
+                .map_err(|e| AppError::StreamError(format!("Channel error: {e}")))?;
                 should_receive_more = true;
                 start = Instant::now();
             }
 
-            time::sleep(StdDuration::from_micros(1000)).await;
+            time::sleep(StdDuration::from_millis(1)).await;
         }
     }
 }
@@ -156,6 +159,7 @@ impl UpdatesSourceImpl {
 impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
     type Error = AppError;
 
+    #[allow(clippy::too_many_lines)]
     fn try_from(mut value: BlockchainUpdatedPB) -> Result<Self, Self::Error> {
         use BlockchainUpdate::{Block, Microblock, Rollback};
 

@@ -38,7 +38,7 @@ use crate::{
 };
 use base64::prelude::*;
 
-static UID_GENERATOR: Mutex<TxUidGenerator> = Mutex::new(TxUidGenerator::new(100000));
+static UID_GENERATOR: Mutex<TxUidGenerator> = Mutex::new(TxUidGenerator::new(100_000));
 
 #[derive(Clone, Debug)]
 pub enum BlockchainUpdate {
@@ -100,6 +100,13 @@ pub trait UpdatesSource {
 }
 
 // TODO: handle shutdown signals -> rollback current transaction
+/// # Errors
+///
+/// Returns an error if the updates source, database, or block-processing logic fails.
+///
+/// # Panics
+///
+/// Panics if `height.height` is negative (violates the blockchain protocol invariant).
 pub async fn start<T, R>(updates_src: T, repo: R, config: Config) -> Result<()>
 where
     T: UpdatesSource + Send + 'static,
@@ -124,13 +131,9 @@ where
             match ops.get_blocks_rollback_to(start_rollback_depth, rollback_step) {
                 Ok(Some(rollback_blocks)) => {
                     rollback(ops, &rollback_blocks, assets_only)?;
-                    Ok(rollback_blocks
-                        .last()
-                        .map(|height| {
-                            u32::try_from(height.height).expect("blockchain height is non-negative")
-                                + 1
-                        })
-                        .unwrap_or(starting_height))
+                    Ok(rollback_blocks.last().map_or(starting_height, |height| {
+                        u32::try_from(height.height).expect("blockchain height is non-negative") + 1
+                    }))
                 }
                 Ok(None) => Ok(starting_height),
                 Err(e) => Err(e),
@@ -235,7 +238,7 @@ fn handle_updates<R: RepoOperations>(
             }
         })
         .iter_mut()
-        .try_fold((), |_, update_item| match update_item {
+        .try_fold((), |(), update_item| match update_item {
             UpdatesItem::Blocks(ba) => {
                 squash_microblocks(repo, assets_only)?;
                 handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)
@@ -362,6 +365,7 @@ where
     Ok(())
 }
 
+#[allow(clippy::significant_drop_tightening)]
 fn handle_txs<R: RepoOperations>(
     repo: &mut R,
     block_uid_data: &[(i64, &BlockMicroblockAppend)],
@@ -432,6 +436,7 @@ fn handle_txs<R: RepoOperations>(
         }
     }
 
+    #[allow(clippy::items_after_statements)]
     #[inline]
     fn insert_txs<T, F>(txs: Vec<T>, mut inserter: F) -> Result<()>
     where
@@ -474,6 +479,7 @@ fn handle_txs<R: RepoOperations>(
     Ok(())
 }
 
+#[allow(clippy::option_if_let_else)]
 fn extract_base_asset_info_updates(
     chain_id: u8,
     append: &BlockMicroblockAppend,
@@ -552,6 +558,7 @@ fn extract_base_asset_info_updates(
     asset_updates
 }
 
+#[allow(clippy::option_if_let_else)]
 fn extract_asset_tickers_updates(tx: &Tx, asset_storage_address: &str) -> Vec<AssetTickerUpdate> {
     tx.state_update
         .data_entries
@@ -578,7 +585,7 @@ fn extract_asset_tickers_updates(tx: &Tx, asset_storage_address: &str) -> Vec<As
                             .strip_prefix("%s%s__assetId2ticker__")
                             .map(|asset_id| AssetTickerUpdate {
                                 asset_id: asset_id.to_owned(),
-                                ticker: "".into(),
+                                ticker: String::new(),
                             }),
                     }
                 } else {
@@ -765,14 +772,13 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
 
     repo.close_asset_tickers_superseded_by(&asset_tickers_first_uids)?;
 
-    let asset_tickers_with_uids_superseded_by = &asset_tickers_grouped_with_uids_superseded_by
-        .clone()
+    let asset_tickers_with_uids_superseded_by = asset_tickers_grouped_with_uids_superseded_by
         .into_iter()
         .flat_map(|(_, v)| v)
         .sorted_by_key(|asset_tickers| asset_tickers.uid)
         .collect_vec();
 
-    repo.insert_asset_tickers(asset_tickers_with_uids_superseded_by)?;
+    repo.insert_asset_tickers(&asset_tickers_with_uids_superseded_by)?;
 
     repo.set_asset_tickers_next_update_uid(
         asset_tickers_next_uid
@@ -805,6 +811,9 @@ fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Res
     Ok(())
 }
 
+/// # Errors
+///
+/// Returns an error if any database operation during the rollback fails.
 pub fn rollback<R: RepoOperations>(
     repo: &mut R,
     blocks: &[UidHeight],

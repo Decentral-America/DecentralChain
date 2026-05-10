@@ -1,4 +1,4 @@
-//! Generated protobuf / tonic types for the DecentralChain / Waves blockchain protocol.
+//! Generated protobuf / tonic types for the `DecentralChain` / Waves blockchain protocol.
 //!
 //! The .proto source files live in `proto/waves/` (bundled from
 //! wavesplatform/protobuf-schemas) and are compiled at build time by
@@ -8,13 +8,16 @@
 //! `use waves_protobuf_schemas::waves` import.
 
 pub mod waves {
+    // Generated code — suppress pedantic/nursery lints that don't apply.
+    #![allow(clippy::pedantic, clippy::nursery)]
     include!(concat!(env!("OUT_DIR"), "/waves.rs"));
 
     pub mod events {
-        #![allow(clippy::large_enum_variant)]
+        #![allow(clippy::pedantic, clippy::nursery, clippy::large_enum_variant)]
         include!(concat!(env!("OUT_DIR"), "/waves.events.rs"));
 
         pub mod grpc {
+            #![allow(clippy::pedantic, clippy::nursery)]
             include!(concat!(env!("OUT_DIR"), "/waves.events.grpc.rs"));
         }
     }

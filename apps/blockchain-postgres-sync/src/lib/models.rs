@@ -41,21 +41,19 @@ pub enum DataEntryTypeValue {
 impl From<&InvokeScriptArgValue> for DataEntryTypeValue {
     fn from(val: &InvokeScriptArgValue) -> Self {
         match val {
-            InvokeScriptArgValue::IntegerValue(v) => DataEntryTypeValue::Integer(*v),
+            InvokeScriptArgValue::IntegerValue(v) => Self::Integer(*v),
             InvokeScriptArgValue::BinaryValue(v) => {
-                DataEntryTypeValue::Binary(format!("base64:{}", BASE64_STANDARD.encode(v)))
+                Self::Binary(format!("base64:{}", BASE64_STANDARD.encode(v)))
             }
-            InvokeScriptArgValue::StringValue(v) => {
-                DataEntryTypeValue::String(escape_unicode_null(v))
-            }
-            InvokeScriptArgValue::BooleanValue(v) => DataEntryTypeValue::Boolean(*v),
+            InvokeScriptArgValue::StringValue(v) => Self::String(escape_unicode_null(v)),
+            InvokeScriptArgValue::BooleanValue(v) => Self::Boolean(*v),
             // deep conversion of List
-            InvokeScriptArgValue::List(v) => DataEntryTypeValue::List(json!(ArgList::from(v))),
+            InvokeScriptArgValue::List(v) => Self::List(json!(ArgList::from(v))),
             // CaseObj is a Ride union/ADT value — serialise as opaque null;
             // the Waves/DCC node never emits CaseObj in invoke-script results
             // exposed via the blockchain-updates gRPC stream, so this branch
             // exists only for forward-compatibility.
-            InvokeScriptArgValue::CaseObj(_) => DataEntryTypeValue::String(String::new()),
+            InvokeScriptArgValue::CaseObj(_) => Self::String(String::new()),
         }
     }
 }
@@ -65,7 +63,7 @@ pub struct ArgList(pub Vec<DataEntryTypeValue>);
 
 impl From<&ListPb> for ArgList {
     fn from(list: &ListPb) -> Self {
-        ArgList(
+        Self(
             list.items
                 .iter()
                 .filter_map(|i| i.value.as_ref().map(DataEntryTypeValue::from))
@@ -106,10 +104,9 @@ impl Serialize for Order {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let fields_count = match self.version {
             1..=2 => 15,
-            3 => 16,   // + matcher_fee_asset_id
-            4.. => 17, // + eip712_signature, price_mode
-            // Negative or zero version is a protocol invariant violation;
-            // treat as latest (v4) so we don't crash the daemon.
+            3 => 16, // + matcher_fee_asset_id
+            // 4+ includes eip712_signature and price_mode fields;
+            // negative/zero version is a protocol invariant violation — treat as v4.
             _ => 17,
         };
         let mut state = serializer.serialize_struct("Order", fields_count)?;
@@ -169,7 +166,7 @@ impl From<OrderMeta<'_>> for Order {
             price: order.price,
             timestamp: order.timestamp,
             expiration: order.expiration,
-            matcher_fee: order.matcher_fee.as_ref().map(|f| f.amount).unwrap_or(0),
+            matcher_fee: order.matcher_fee.as_ref().map_or(0, |f| f.amount),
             matcher_fee_asset_id: order
                 .matcher_fee
                 .as_ref()
@@ -188,10 +185,9 @@ impl From<OrderMeta<'_>> for Order {
                 _ => None,
             },
             price_mode: match order.price_mode {
-                0 => None,
                 1 => Some("fixedDecimals".to_string()),
                 2 => Some("assetDecimals".to_string()),
-                // Unknown future price_mode values — treat as no mode set
+                // 0 or unknown future price_mode values — treat as no mode set
                 _ => None,
             },
         }
@@ -216,11 +212,9 @@ pub enum OrderType {
 impl From<i32> for OrderType {
     fn from(n: i32) -> Self {
         match n {
-            0 => OrderType::Buy,
-            1 => OrderType::Sell,
-            // Unknown enum variants from future protocol versions — treat as Buy
-            // (the wire value is stored in JSON unchanged via the proofs field).
-            _ => OrderType::Buy,
+            1 => Self::Sell,
+            // 0 or unknown future protocol variants — treat as Buy
+            _ => Self::Buy,
         }
     }
 }
@@ -255,7 +249,7 @@ mod tests {
             ]);
             assert_eq!(serialized, serde_json::to_string(&expected).unwrap());
         } else {
-            panic!("Wrong variant: {:?}", src);
+            panic!("Wrong variant: {src:?}");
         }
     }
 
@@ -296,7 +290,7 @@ mod tests {
     fn case_obj_produces_empty_string_not_panic() {
         // Regression test: this previously panicked with todo!()
         use crate::proto::waves::invoke_script_result::call::argument::Value::CaseObj;
-        let src = CaseObj(Default::default());
+        let src = CaseObj(vec![]);
         let dv = DataEntryTypeValue::from(&src);
         assert!(matches!(dv, DataEntryTypeValue::String(s) if s.is_empty()));
     }

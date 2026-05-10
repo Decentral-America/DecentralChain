@@ -14,6 +14,9 @@ pub struct MigrationConfig {
     pub postgres: postgres::Config,
 }
 
+/// # Errors
+///
+/// Returns an error if any required environment variable is missing or unparsable.
 pub fn load_consumer_config() -> Result<Config, Error> {
     Ok(Config {
         postgres: postgres::load()?,
@@ -21,6 +24,9 @@ pub fn load_consumer_config() -> Result<Config, Error> {
     })
 }
 
+/// # Errors
+///
+/// Returns an error if any required environment variable is missing or unparsable.
 pub fn load_migration_config() -> Result<MigrationConfig, Error> {
     Ok(MigrationConfig {
         postgres: postgres::load()?,

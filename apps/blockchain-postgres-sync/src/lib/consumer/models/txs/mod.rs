@@ -1,6 +1,10 @@
 pub mod convert;
 
-use crate::schema::*;
+use crate::schema::{
+    txs_1, txs_10, txs_11, txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16,
+    txs_16_args, txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_2, txs_3, txs_4,
+    txs_5, txs_6, txs_7, txs_8, txs_9,
+};
 use chrono::NaiveDateTime;
 use diesel::Insertable;
 use serde_json::Value;
@@ -207,7 +211,7 @@ pub struct Tx8 {
     pub amount: i64,
 }
 
-/// LeaseCancel partial transaction.
+/// `LeaseCancel` partial transaction.
 ///
 /// `lease_id` field is used further to create an actual transaction
 #[derive(Clone, Debug)]
@@ -228,7 +232,7 @@ pub struct Tx9Partial {
     pub lease_id: Option<String>,
 }
 
-/// LeaseCancel transaction
+/// `LeaseCancel` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_9)]
 pub struct Tx9 {
@@ -270,7 +274,7 @@ impl From<(&Tx9Partial, Option<i64>)> for Tx9 {
     }
 }
 
-/// CreateAlias transaction
+/// `CreateAlias` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_10)]
 pub struct Tx10 {
@@ -290,7 +294,7 @@ pub struct Tx10 {
     pub alias: String,
 }
 
-/// MassTransfer transaction
+/// `MassTransfer` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_11)]
 pub struct Tx11 {
@@ -311,7 +315,7 @@ pub struct Tx11 {
     pub attachment: String,
 }
 
-/// MassTransfer transaction
+/// `MassTransfer` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_11_transfers)]
 pub struct Tx11Transfers {
@@ -323,14 +327,14 @@ pub struct Tx11Transfers {
     pub height: TxHeight,
 }
 
-/// MassTransfer transaction
+/// `MassTransfer` transaction
 #[derive(Clone, Debug)]
 pub struct Tx11Combined {
     pub tx: Tx11,
     pub transfers: Vec<Tx11Transfers>,
 }
 
-/// DataTransaction transaction
+/// `DataTransaction` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_12)]
 pub struct Tx12 {
@@ -349,7 +353,7 @@ pub struct Tx12 {
     pub status: TxStatus,
 }
 
-/// DataTransaction transaction
+/// `DataTransaction` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_12_data)]
 pub struct Tx12Data {
@@ -364,14 +368,14 @@ pub struct Tx12Data {
     pub height: TxHeight,
 }
 
-/// DataTransaction transaction
+/// `DataTransaction` transaction
 #[derive(Clone, Debug)]
 pub struct Tx12Combined {
     pub tx: Tx12,
     pub data: Vec<Tx12Data>,
 }
 
-/// SetScript transaction
+/// `SetScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_13)]
 pub struct Tx13 {
@@ -391,7 +395,7 @@ pub struct Tx13 {
     pub script: Option<String>,
 }
 
-/// SponsorFee transaction
+/// `SponsorFee` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_14)]
 pub struct Tx14 {
@@ -412,7 +416,7 @@ pub struct Tx14 {
     pub min_sponsored_asset_fee: Option<i64>,
 }
 
-/// SetAssetScript transaction
+/// `SetAssetScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_15)]
 pub struct Tx15 {
@@ -433,7 +437,7 @@ pub struct Tx15 {
     pub script: Option<String>,
 }
 
-/// InvokeScript transaction
+/// `InvokeScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_16)]
 pub struct Tx16 {
@@ -456,7 +460,7 @@ pub struct Tx16 {
     pub fee_asset_id: String,
 }
 
-/// InvokeScript transaction
+/// `InvokeScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_16_args)]
 pub struct Tx16Args {
@@ -471,7 +475,7 @@ pub struct Tx16Args {
     pub height: TxHeight,
 }
 
-/// InvokeScript transaction
+/// `InvokeScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_16_payment)]
 pub struct Tx16Payment {
@@ -482,7 +486,7 @@ pub struct Tx16Payment {
     pub asset_id: String,
 }
 
-/// InvokeScript transaction
+/// `InvokeScript` transaction
 #[derive(Clone, Debug)]
 pub struct Tx16Combined {
     pub tx: Tx16,
@@ -490,7 +494,7 @@ pub struct Tx16Combined {
     pub payments: Vec<Tx16Payment>,
 }
 
-/// UpdateAssetInfo transaction
+/// `UpdateAssetInfo` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_17)]
 pub struct Tx17 {
@@ -533,7 +537,7 @@ pub struct Tx18 {
     pub function_name: Option<String>,
 }
 
-/// Ethereum InvokeScript transaction
+/// Ethereum `InvokeScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_18_args)]
 pub struct Tx18Args {
@@ -548,7 +552,7 @@ pub struct Tx18Args {
     pub height: TxHeight,
 }
 
-/// Ethereum InvokeScript transaction
+/// Ethereum `InvokeScript` transaction
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_18_payment)]
 pub struct Tx18Payment {

@@ -6,12 +6,21 @@ use crate::consumer::models::{
     assets::{AssetOrigin, AssetOverride, AssetUpdate, DeletedAsset},
     block_microblock::BlockMicroblock,
     candles::intervals::{self, CANDLE_INTERVALS},
-    txs::*,
+    txs::{
+        Tx1, Tx10, Tx11, Tx11Combined, Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14,
+        Tx15, Tx16, Tx16Args, Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined,
+        Tx18Payment, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9, Tx9Partial,
+    },
     waves_data::WavesData,
 };
 use crate::db::PgAsyncPool;
 use crate::error::Error as AppError;
-use crate::schema::*;
+use crate::schema::{
+    asset_origins, asset_tickers, asset_updates, blocks_microblocks, candles, txs, txs_1, txs_10,
+    txs_11, txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args,
+    txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_2, txs_3, txs_4, txs_5, txs_6,
+    txs_7, txs_8, txs_9, waves_data,
+};
 use crate::tuple_len::TupleLen;
 use anyhow::{bail, Error, Result};
 use chrono::{Datelike, Duration, NaiveDateTime, Timelike as _};
@@ -35,7 +44,8 @@ pub struct PgRepo {
     pool: PgAsyncPool,
 }
 
-pub fn new(pool: PgAsyncPool) -> PgRepo {
+#[must_use]
+pub const fn new(pool: PgAsyncPool) -> PgRepo {
     PgRepo { pool }
 }
 
@@ -48,8 +58,7 @@ impl Repo for PgRepo {
 
     async fn transaction<F, R>(&self, f: F) -> Result<R>
     where
-        F: for<'conn> FnOnce(&mut Self::Operations<'conn>) -> Result<R>,
-        F: Send + 'static,
+        F: for<'conn> FnOnce(&mut Self::Operations<'conn>) -> Result<R> + Send + 'static,
         R: Send + 'static,
     {
         let connection = self.pool.get().await?;
@@ -117,8 +126,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .filter(blocks_microblocks::id.eq(block_id))
             .get_result(self.conn)
             .map_err(build_err_fn(format!(
-                "Cannot get block_uid by block id {}",
-                block_id
+                "Cannot get block_uid by block id {block_id}"
             )))
     }
 
@@ -258,8 +266,7 @@ impl RepoOperations for PgRepoOperations<'_> {
     fn set_assets_next_update_uid(&mut self, new_uid: i64) -> Result<()> {
         // 3rd param - is called; in case of true, value'll be incremented before returning
         sql_query(format!(
-            "select setval('asset_updates_uid_seq', {}, false);",
-            new_uid
+            "select setval('asset_updates_uid_seq', {new_uid}, false);"
         ))
         .execute(self.conn)
         .map(drop)
@@ -285,8 +292,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .filter(asset_updates::block_uid.gt(block_uid))
             .get_results(self.conn)
             .map_err(build_err_fn(format!(
-                "Cannot get assets greater then block_uid {}",
-                block_uid
+                "Cannot get assets greater then block_uid {block_uid}"
             )))
     }
 
@@ -356,8 +362,7 @@ impl RepoOperations for PgRepoOperations<'_> {
     fn set_asset_tickers_next_update_uid(&mut self, new_uid: i64) -> Result<()> {
         // 3rd param - is called; in case of true, value'll be incremented before returning
         sql_query(format!(
-            "select setval('asset_tickers_uid_seq', {}, false);",
-            new_uid
+            "select setval('asset_tickers_uid_seq', {new_uid}, false);"
         ))
         .execute(self.conn)
         .map(drop)
@@ -674,7 +679,7 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn calculate_minute_candles(&mut self, since_timestamp: NaiveDateTime) -> Result<()> {
-        let insert_candles_query = r#"
+        let insert_candles_query = r"
             INSERT INTO candles
                 SELECT
                     e.candle_time,
@@ -724,7 +729,7 @@ impl RepoOperations for PgRepoOperations<'_> {
                     txs_count = excluded.txs_count,
                     volume = excluded.volume,
                     weighted_average_price = excluded.weighted_average_price;
-        "#;
+        ";
 
         sql_query(insert_candles_query)
             .bind::<Timestamp, _>(since_timestamp)
@@ -734,7 +739,7 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn calculate_non_minute_candles(&mut self, since_timestamp: NaiveDateTime) -> Result<()> {
-        let insert_candles_query = r#"
+        let insert_candles_query = r"
             INSERT INTO candles
             SELECT
                 _to_raw_timestamp(time_start, $2) AS candle_time,
@@ -767,37 +772,38 @@ impl RepoOperations for PgRepoOperations<'_> {
                     txs_count = excluded.txs_count,
                     volume = excluded.volume,
                     weighted_average_price = excluded.weighted_average_price;
-        "#;
+        \";
 
         for interval in CANDLE_INTERVALS {
             let [interval_start, interval_end] = interval;
 
-            let interval_start_time_stamp =
-                if let Some(interval_secs) = interval_in_seconds(interval_end) {
-                    chrono::DateTime::<chrono::Utc>::from_timestamp(
-                        (since_timestamp.and_utc().timestamp() / interval_secs) * interval_secs,
-                        0,
-                    )
-                    .expect("interval-truncated timestamp is always valid")
-                    .naive_utc()
-                } else {
-                    match *interval_end {
-                        intervals::WEEK1 => {
-                            let weekday = since_timestamp.weekday().num_days_from_monday() as i64;
-                            (since_timestamp - Duration::days(weekday))
-                                .date()
-                                .and_hms_opt(0, 0, 0)
-                                .expect("0:00:00 is always a valid time")
-                        }
-                        intervals::MONTH1 => since_timestamp
-                            .with_day(1)
-                            .expect("day 1 is always valid")
+            let interval_start_time_stamp = if let Some(interval_secs) =
+                interval_in_seconds(interval_end)
+            {
+                chrono::DateTime::<chrono::Utc>::from_timestamp(
+                    (since_timestamp.and_utc().timestamp() / interval_secs) * interval_secs,
+                    0,
+                )
+                .expect("interval-truncated timestamp is always valid")
+                .naive_utc()
+            } else {
+                match *interval_end {
+                    intervals::WEEK1 => {
+                        let weekday = i64::from(since_timestamp.weekday().num_days_from_monday());
+                        (since_timestamp - Duration::days(weekday))
                             .date()
                             .and_hms_opt(0, 0, 0)
-                            .expect("0:00:00 is always a valid time"),
-                        _ => bail!("unknown interval {interval_end}"),
+                            .expect("0:00:00 is always a valid time")
                     }
-                };
+                    intervals::MONTH1 => since_timestamp
+                        .with_day(1)
+                        .expect("day 1 is always valid")
+                        .date()
+                        .and_hms_opt(0, 0, 0)
+                        .expect("0:00:00 is always a valid time"),
+                    _ => bail!("unknown interval {interval_end}"),
+                }
+            };
 
             sql_query(insert_candles_query)
                 .bind::<VarChar, _>(interval_start)
@@ -844,7 +850,7 @@ where
     let columns_count = T::all_columns().len();
     let chunk_size = (PG_MAX_INSERT_FIELDS_COUNT / columns_count) / 10 * 10;
     let mut result = vec![];
-    values.chunks(chunk_size).try_fold((), |_, chunk| {
+    values.chunks(chunk_size).try_fold((), |(), chunk| {
         result.extend(query_fn(chunk)?);
         Ok::<_, DslError>(())
     })?;
