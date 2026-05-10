@@ -202,7 +202,7 @@ fn handle_updates<R: RepoOperations>(
                 info!("Handle block {}, height = {}", b.id, b.height);
                 let len = acc.len();
                 if len > 0 {
-                    match acc.get_mut(len as usize - 1).unwrap() {
+                    match acc.get_mut(len - 1).unwrap() {
                         UpdatesItem::Blocks(v) => {
                             v.push(b);
                             acc
@@ -228,7 +228,7 @@ fn handle_updates<R: RepoOperations>(
                 acc
             }
         })
-        .into_iter()
+        .iter_mut()
         .try_fold((), |_, update_item| match update_item {
             UpdatesItem::Blocks(ba) => {
                 squash_microblocks(repo, assets_only)?;
@@ -262,10 +262,10 @@ where
 {
     let block_uids = repo.insert_blocks_or_microblocks(
         &appends
-            .into_iter()
+            .iter()
             .map(|append| BlockMicroblock {
                 id: append.id.clone(),
-                height: append.height as i32,
+                height: append.height,
                 time_stamp: append.time_stamp,
             })
             .collect_vec(),
@@ -316,7 +316,7 @@ where
         handle_txs(repo, &block_uids_with_appends, chain_id)?;
 
         let waves_data = appends
-            .into_iter()
+            .iter()
             .filter_map(|append| {
                 append.updated_waves_amount.map(|reward| WavesData {
                     height: append.height,
@@ -325,7 +325,7 @@ where
             })
             .collect_vec();
 
-        if waves_data.len() > 0 {
+        if !waves_data.is_empty() {
             repo.insert_waves_data(&waves_data)?;
         }
     }
@@ -392,7 +392,7 @@ fn handle_txs<R: RepoOperations>(
         ugen.maybe_update_height(bm.height);
 
         for tx in &bm.txs {
-            let tx_uid = ugen.next();
+            let tx_uid = ugen.next_uid();
             let result_tx = ConvertedTx::try_from((
                 &tx.data, &tx.id, bm.height, &tx.meta, tx_uid, block_uid, chain_id,
             ))?;
@@ -508,7 +508,7 @@ fn extract_base_asset_info_updates(
                         let issuer =
                             Address::from((asset_details.issuer.as_slice(), chain_id)).into();
                         Some(BaseAssetInfoUpdate {
-                            update_height: append.height as i32,
+                            update_height: append.height,
                             updated_at: time_stamp,
                             id: asset_id,
                             name: escape_unicode_null(&asset_details.name),
@@ -624,7 +624,7 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
                 .sorted_by_key(|item| item.uid)
                 .collect::<Vec<AssetUpdate>>();
 
-            let mut last_uid = std::i64::MAX - 1;
+            let mut last_uid = i64::MAX - 1;
             (
                 group_key,
                 updates
@@ -666,7 +666,7 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
 
     Ok(Some(
         assets_with_uids_superseded_by
-            .into_iter()
+            .iter()
             .map(|a| a.uid)
             .collect_vec(),
     ))
@@ -718,7 +718,7 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
                 .sorted_by_key(|item| item.uid)
                 .collect::<Vec<InsertableAssetTicker>>();
 
-            let mut last_uid = std::i64::MAX - 1;
+            let mut last_uid = i64::MAX - 1;
             (
                 group_key,
                 updates

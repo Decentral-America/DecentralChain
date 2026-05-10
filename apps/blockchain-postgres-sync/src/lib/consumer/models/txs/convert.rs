@@ -64,7 +64,7 @@ impl TxUidGenerator {
         }
     }
 
-    pub fn next(&mut self) -> TxUid {
+    pub fn next_uid(&mut self) -> TxUid {
         let result = self.last_height as i64 * self.multiplier + self.last_id;
         self.last_id += 1;
         result
@@ -106,9 +106,8 @@ impl
         let uid = tx_uid;
         let id = id.to_owned();
         let proofs = proofs.iter().map(into_base58).collect::<Vec<_>>();
-        let signature = proofs
-            .get(0)
-            .and_then(|p| (p.len() > 0).then_some(p.to_owned()));
+        let signature = proofs.first()
+            .and_then(|p| (!p.is_empty()).then_some(p.to_owned()));
         let proofs = Some(proofs);
         let mut status = String::from("succeeded");
 
@@ -121,7 +120,7 @@ impl
         ) = meta.metadata
         {
             if let Some(ref result) = m.result {
-                if let Some(_) = result.error_message {
+                if result.error_message.is_some() {
                     status = String::from("script_execution_failed");
                 }
             }
@@ -252,8 +251,8 @@ impl
                 fee,
                 proofs,
                 tx_version: None,
-                sender: (sender.len() > 0).then_some(sender),
-                sender_public_key: (sender_public_key.len() > 0).then_some(sender_public_key),
+                sender: (!sender.is_empty()).then_some(sender),
+                sender_public_key: (!sender_public_key.is_empty()).then_some(sender_public_key),
                 status,
                 recipient_address: Address::from((
                     PublicKeyHash(t.recipient_address.as_ref()),
@@ -731,8 +730,7 @@ impl
 
 fn extract_recipient_alias(rcpt: &Option<Recipient>) -> Option<String> {
     rcpt.as_ref()
-        .map(|r| r.recipient.as_ref())
-        .flatten()
+        .and_then(|r| r.recipient.as_ref())
         .and_then(|r| match r {
             InnerRecipient::Alias(alias) if !alias.is_empty() => Some(alias.clone()),
             _ => None,
