@@ -10,13 +10,13 @@ use std::collections::HashMap;
 use std::sync::Mutex;
 use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
-use waves_protobuf_schemas::waves::{
+use crate::proto::waves::{
     data_entry::Value,
     events::{transaction_metadata::Metadata, StateUpdate, TransactionMetadata},
     signed_transaction::Transaction,
     SignedTransaction, Transaction as WavesTx,
 };
-use wavesexchange_log::{debug, info, timer};
+use tracing::{debug, info};
 
 use self::models::{asset_tickers::InsertableAssetTicker, block_microblock::BlockMicroblock};
 use self::models::{
@@ -28,6 +28,7 @@ use crate::error::Error as AppError;
 use crate::models::BaseAssetInfoUpdate;
 use crate::waves::{extract_asset_id, Address};
 use crate::{config::consumer::Config, utils::into_base58};
+use base64::prelude::*;
 use crate::{
     consumer::models::{
         txs::convert::{Tx as ConvertedTx, TxUidGenerator},
@@ -36,7 +37,6 @@ use crate::{
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
     waves::DCC_ID,
 };
-use fragstrings::frag_parse;
 
 static UID_GENERATOR: Mutex<TxUidGenerator> = Mutex::new(TxUidGenerator::new(100000));
 
@@ -89,7 +89,7 @@ pub struct AssetTickerUpdate {
     pub ticker: String,
 }
 
-#[async_trait::async_trait]
+#[allow(async_fn_in_trait)]
 pub trait UpdatesSource {
     async fn stream(
         self,
@@ -273,7 +273,7 @@ where
 
     let block_uids_with_appends = block_uids.into_iter().zip(appends).collect_vec();
 
-    timer!("blockchain updates handling");
+    let _span_handling = tracing::debug_span!("blockchain updates handling").entered();
 
     let base_asset_info_updates_with_block_uids: Vec<(i64, BaseAssetInfoUpdate)> =
         block_uids_with_appends
@@ -331,7 +331,7 @@ where
     }
 
     if let Some(storage_addr) = asset_storage_address {
-        timer!("handling asset tickers updates");
+        let _span = tracing::debug_span!("handling asset tickers updates").entered();
         let asset_tickers_updates_with_block_uids: Vec<(&i64, AssetTickerUpdate)> =
             block_uids_with_appends
                 .iter()
@@ -458,7 +458,7 @@ fn handle_txs<R: RepoOperations>(
     info!("{} transactions handled", txs_count);
 
     if let Some(block_uid) = first_block_with_tx7_uid {
-        timer!("calculating candles");
+        let _span = tracing::debug_span!("calculating candles").entered();
 
         repo.calculate_candles_since_block_uid(block_uid)?;
     }
@@ -550,19 +550,23 @@ fn extract_asset_tickers_updates(tx: &Tx, asset_storage_address: &str) -> Vec<As
                     match de.value.as_ref() {
                         Some(value) => match value {
                             Value::StringValue(value) => {
-                                frag_parse!("%s%s", de.key).map(|(_, asset_id)| AssetTickerUpdate {
-                                    asset_id: asset_id,
-                                    ticker: value.clone(),
-                                })
+                                de.key
+                                    .strip_prefix("%s%s__assetId2ticker__")
+                                    .map(|asset_id| AssetTickerUpdate {
+                                        asset_id: asset_id.to_owned(),
+                                        ticker: value.clone(),
+                                    })
                             }
                             _ => None,
                         },
                         // key was deleted -> drop asset ticker
                         None => {
-                            frag_parse!("%s%s", de.key).map(|(_, asset_id)| AssetTickerUpdate {
-                                asset_id,
-                                ticker: "".into(),
-                            })
+                            de.key
+                                .strip_prefix("%s%s__assetId2ticker__")
+                                .map(|asset_id| AssetTickerUpdate {
+                                    asset_id: asset_id.to_owned(),
+                                    ticker: "".into(),
+                                })
                         }
                     }
                 } else {
@@ -584,7 +588,6 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
     let updates_count = updates.len();
     let assets_next_uid = repo.get_next_assets_uid()?;
 
-    #[allow(deprecated)] // for base64::encode()
     let asset_updates = updates
         .iter()
         .enumerate()
@@ -598,7 +601,7 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
             nft: update.nft,
             reissuable: update.reissuable,
             decimals: update.precision as i16,
-            script: update.script.clone().map(base64::encode),
+            script: update.script.clone().map(|s| BASE64_STANDARD.encode(s)),
             sponsorship: update.min_sponsored_fee,
             volume: update.quantity,
         })

@@ -1,13 +1,12 @@
 use anyhow::Result;
-use async_trait::async_trait;
 use bs58;
 use chrono::Duration;
 use std::str;
 use std::time::{Duration as StdDuration, Instant};
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 use tokio::time;
-use waves_protobuf_schemas::tonic;
-use waves_protobuf_schemas::waves::{
+use tonic;
+use crate::proto::waves::{
     block::Header as HeaderPB,
     events::{
         blockchain_updated::append::{
@@ -24,7 +23,7 @@ use waves_protobuf_schemas::waves::{
     Block as BlockPB, SignedMicroBlock as SignedMicroBlockPB,
     SignedTransaction as SignedTransactionPB,
 };
-use wavesexchange_log::{debug, error};
+use tracing::{debug, error};
 
 use super::{
     epoch_ms_to_naivedatetime, BlockMicroblockAppend, BlockchainUpdate,
@@ -48,7 +47,6 @@ pub async fn new(blockchain_updates_url: &str) -> Result<UpdatesSourceImpl> {
     })
 }
 
-#[async_trait]
 impl UpdatesSource for UpdatesSourceImpl {
     async fn stream(
         self,

@@ -1,12 +1,10 @@
 use crate::utils::into_base58;
 use bytes::{BufMut, BytesMut};
-use lazy_static::lazy_static;
 use regex::Regex;
+use std::sync::LazyLock;
 
-lazy_static! {
-    pub static ref ASSET_ORACLE_DATA_ENTRY_KEY_REGEX: Regex =
-        Regex::new(r"^(.*)_<([a-zA-Z\d]+)>$").unwrap();
-}
+pub static ASSET_ORACLE_DATA_ENTRY_KEY_REGEX: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^(.*)_<([a-zA-Z\d]+)>$").unwrap());
 
 pub type ChainId = u8;
 
