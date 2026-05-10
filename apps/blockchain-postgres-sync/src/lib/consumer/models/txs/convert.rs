@@ -1,10 +1,16 @@
-use super::*;
+use super::{
+    Tx1, Tx10, Tx11, Tx11Combined, Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15,
+    Tx16, Tx16Args, Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment,
+    Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, TxBlockUid, TxHeight, TxId, TxUid,
+};
 use crate::error::Error;
 use crate::models::{DataEntryTypeValue, Order, OrderMeta};
 use crate::proto::waves::{
     data_entry::Value as DataValue,
     events::{
-        transaction_metadata::{ethereum_metadata::Action as EthAction, *},
+        transaction_metadata::{
+            ethereum_metadata::Action as EthAction, EthereumMetadata, Metadata,
+        },
         TransactionMetadata,
     },
     invoke_script_result::call::argument::Value as InvokeScriptArgValue,
@@ -49,6 +55,7 @@ pub struct TxUidGenerator {
 }
 
 impl TxUidGenerator {
+    #[must_use]
     pub const fn new(multiplier: i64) -> Self {
         Self {
             multiplier,
@@ -57,7 +64,7 @@ impl TxUidGenerator {
         }
     }
 
-    pub fn maybe_update_height(&mut self, height: TxHeight) {
+    pub const fn maybe_update_height(&mut self, height: TxHeight) {
         if self.last_height < height {
             self.last_height = height;
             self.last_id = 0;
@@ -65,7 +72,7 @@ impl TxUidGenerator {
     }
 
     pub fn next_uid(&mut self) -> TxUid {
-        let result = self.last_height as i64 * self.multiplier + self.last_id;
+        let result = i64::from(self.last_height) * self.multiplier + self.last_id;
         self.last_id += 1;
         result
     }
@@ -84,6 +91,7 @@ impl
 {
     type Error = Error;
 
+    #[allow(clippy::too_many_lines)]
     fn try_from(
         (tx, id, height, meta, tx_uid, block_uid, chain_id): (
             &SignedTransaction,
@@ -229,7 +237,7 @@ impl
                         }
                     }
                 };
-                return Ok(Tx::Ethereum(result_tx));
+                return Ok(Self::Ethereum(result_tx));
             }
         };
         let tx_data = tx.data.as_ref().ok_or_else(|| {
@@ -238,18 +246,17 @@ impl
             ))
         })?;
         let time_stamp = epoch_ms_to_naivedatetime(tx.timestamp);
-        let (fee, fee_asset_id) = tx
-            .fee
-            .as_ref()
-            .map(|f| (f.amount, extract_asset_id(&f.asset_id)))
-            .unwrap_or((0, DCC_ID.to_string()));
+        let (fee, fee_asset_id) = tx.fee.as_ref().map_or_else(
+            || (0, DCC_ID.to_string()),
+            |f| (f.amount, extract_asset_id(&f.asset_id)),
+        );
         let tx_version = Some(
             i16::try_from(tx.version).expect("transaction version bounded to 1-4 << i16::MAX"),
         );
         let sender_public_key = into_base58(&tx.sender_public_key);
 
         Ok(match tx_data {
-            Data::Genesis(t) => Tx::Genesis(Tx1 {
+            Data::Genesis(t) => Self::Genesis(Tx1 {
                 uid,
                 height,
                 tx_type: 1,
@@ -271,7 +278,7 @@ impl
                 amount: t.amount,
                 block_uid,
             }),
-            Data::Payment(t) => Tx::Payment(Tx2 {
+            Data::Payment(t) => Self::Payment(Tx2 {
                 uid,
                 height,
                 tx_type: 2,
@@ -293,7 +300,7 @@ impl
                 amount: t.amount,
                 block_uid,
             }),
-            Data::Issue(t) => Tx::Issue(Tx3 {
+            Data::Issue(t) => Self::Issue(Tx3 {
                 uid,
                 height,
                 tx_type: 3,
@@ -327,7 +334,7 @@ impl
                 let Amount { asset_id, amount } = t.amount.as_ref().ok_or_else(|| {
                     Error::InconsistDataError("Transfer tx missing amount".into())
                 })?;
-                Tx::Transfer(Tx4 {
+                Self::Transfer(Tx4 {
                     uid,
                     height,
                     tx_type: 4,
@@ -345,7 +352,7 @@ impl
                     amount: *amount,
                     attachment: into_base58(&t.attachment),
                     recipient_address: into_base58(&meta.recipient_address),
-                    recipient_alias: extract_recipient_alias(&t.recipient),
+                    recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
                     block_uid,
                 })
             }
@@ -353,7 +360,7 @@ impl
                 let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
                     Error::InconsistDataError("Reissue tx missing asset_amount".into())
                 })?;
-                Tx::Reissue(Tx5 {
+                Self::Reissue(Tx5 {
                     uid,
                     height,
                     tx_type: 5,
@@ -376,7 +383,7 @@ impl
                 let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
                     Error::InconsistDataError("Burn tx missing asset_amount".into())
                 })?;
-                Tx::Burn(Tx6 {
+                Self::Burn(Tx6 {
                     uid,
                     height,
                     tx_type: 6,
@@ -425,7 +432,7 @@ impl
                 let first_order_asset_pair = t.orders[0].asset_pair.as_ref().ok_or_else(|| {
                     Error::InconsistDataError("Exchange order[0] missing asset_pair".into())
                 })?;
-                Tx::Exchange(Tx7 {
+                Self::Exchange(Tx7 {
                     uid,
                     height,
                     tx_type: 7,
@@ -454,7 +461,7 @@ impl
                 let Some(Metadata::Lease(meta)) = &meta.metadata else {
                     return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
-                Tx::Lease(Tx8 {
+                Self::Lease(Tx8 {
                     uid,
                     height,
                     tx_type: 8,
@@ -469,11 +476,11 @@ impl
                     status,
                     amount: t.amount,
                     recipient_address: into_base58(&meta.recipient_address),
-                    recipient_alias: extract_recipient_alias(&t.recipient),
+                    recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
                     block_uid,
                 })
             }
-            Data::LeaseCancel(t) => Tx::LeaseCancel(Tx9Partial {
+            Data::LeaseCancel(t) => Self::LeaseCancel(Tx9Partial {
                 uid,
                 height,
                 tx_type: 9,
@@ -486,14 +493,14 @@ impl
                 sender,
                 sender_public_key,
                 status,
-                lease_id: if !t.lease_id.is_empty() {
-                    Some(into_base58(&t.lease_id))
-                } else {
+                lease_id: if t.lease_id.is_empty() {
                     None
+                } else {
+                    Some(into_base58(&t.lease_id))
                 },
                 block_uid,
             }),
-            Data::CreateAlias(t) => Tx::CreateAlias(Tx10 {
+            Data::CreateAlias(t) => Self::CreateAlias(Tx10 {
                 uid,
                 height,
                 tx_type: 10,
@@ -513,7 +520,7 @@ impl
                 let Some(Metadata::MassTransfer(meta)) = &meta.metadata else {
                     return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
-                Tx::MassTransfer(Tx11Combined {
+                Self::MassTransfer(Tx11Combined {
                     tx: Tx11 {
                         uid,
                         height,
@@ -539,7 +546,7 @@ impl
                         .map(|(i, (t, rcpt_addr))| Tx11Transfers {
                             tx_uid,
                             recipient_address: into_base58(rcpt_addr),
-                            recipient_alias: extract_recipient_alias(&t.recipient),
+                            recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
                             amount: t.amount,
                             position_in_tx: i16::try_from(i)
                                 .expect("mass transfer recipient index is protocol-bounded (<=100) << i16::MAX"),
@@ -548,7 +555,7 @@ impl
                         .collect(),
                 })
             }
-            Data::DataTransaction(t) => Tx::DataTransaction(Tx12Combined {
+            Data::DataTransaction(t) => Self::DataTransaction(Tx12Combined {
                 tx: Tx12 {
                     uid,
                     height,
@@ -599,7 +606,7 @@ impl
                     })
                     .collect(),
             }),
-            Data::SetScript(t) => Tx::SetScript(Tx13 {
+            Data::SetScript(t) => Self::SetScript(Tx13 {
                 uid,
                 height,
                 tx_type: 13,
@@ -619,7 +626,7 @@ impl
                 let min_fee = t.min_fee.as_ref().ok_or_else(|| {
                     Error::InconsistDataError("SponsorFee tx missing min_fee".into())
                 })?;
-                Tx::SponsorFee(Tx14 {
+                Self::SponsorFee(Tx14 {
                     uid,
                     height,
                     tx_type: 14,
@@ -637,7 +644,7 @@ impl
                     block_uid,
                 })
             }
-            Data::SetAssetScript(t) => Tx::SetAssetScript(Tx15 {
+            Data::SetAssetScript(t) => Self::SetAssetScript(Tx15 {
                 uid,
                 height,
                 tx_type: 15,
@@ -661,9 +668,8 @@ impl
                 let invoke_fee_asset_id = tx
                     .fee
                     .as_ref()
-                    .map(|f| extract_asset_id(&f.asset_id))
-                    .unwrap_or_else(|| DCC_ID.to_string());
-                Tx::InvokeScript(Tx16Combined {
+                    .map_or_else(|| DCC_ID.to_string(), |f| extract_asset_id(&f.asset_id));
+                Self::InvokeScript(Tx16Combined {
                     tx: Tx16 {
                         uid,
                         height,
@@ -680,7 +686,7 @@ impl
                         function_name: Some(meta.function_name.clone()),
                         fee_asset_id: invoke_fee_asset_id,
                         dapp_address: into_base58(&meta.d_app_address),
-                        dapp_alias: extract_recipient_alias(&t.d_app),
+                        dapp_alias: extract_recipient_alias(t.d_app.as_ref()),
                         block_uid,
                     },
                     args: meta
@@ -743,7 +749,7 @@ impl
                         .collect(),
                 })
             }
-            Data::UpdateAssetInfo(t) => Tx::UpdateAssetInfo(Tx17 {
+            Data::UpdateAssetInfo(t) => Self::UpdateAssetInfo(Tx17 {
                 uid,
                 height,
                 tx_type: 17,
@@ -775,9 +781,8 @@ impl
     }
 }
 
-fn extract_recipient_alias(rcpt: &Option<Recipient>) -> Option<String> {
-    rcpt.as_ref()
-        .and_then(|r| r.recipient.as_ref())
+fn extract_recipient_alias(rcpt: Option<&Recipient>) -> Option<String> {
+    rcpt.and_then(|r| r.recipient.as_ref())
         .and_then(|r| match r {
             InnerRecipient::Alias(alias) if !alias.is_empty() => Some(alias.clone()),
             _ => None,
@@ -785,10 +790,10 @@ fn extract_recipient_alias(rcpt: &Option<Recipient>) -> Option<String> {
 }
 
 fn extract_script(script: &Vec<u8>) -> Option<String> {
-    if !script.is_empty() {
-        Some(into_prefixed_base64(script))
-    } else {
+    if script.is_empty() {
         None
+    } else {
+        Some(into_prefixed_base64(script))
     }
 }
 
@@ -866,7 +871,7 @@ mod tests {
 
     #[test]
     fn extract_recipient_alias_returns_none_for_empty() {
-        assert!(extract_recipient_alias(&None).is_none());
+        assert!(extract_recipient_alias(None).is_none());
     }
 
     #[test]
@@ -874,7 +879,10 @@ mod tests {
         let rcpt = Some(Recipient {
             recipient: Some(InnerRecipient::Alias("myalias".to_string())),
         });
-        assert_eq!(extract_recipient_alias(&rcpt), Some("myalias".to_string()));
+        assert_eq!(
+            extract_recipient_alias(rcpt.as_ref()),
+            Some("myalias".to_string())
+        );
     }
 
     #[test]
@@ -882,7 +890,7 @@ mod tests {
         let rcpt = Some(Recipient {
             recipient: Some(InnerRecipient::Alias(String::new())),
         });
-        assert!(extract_recipient_alias(&rcpt).is_none());
+        assert!(extract_recipient_alias(rcpt.as_ref()).is_none());
     }
 
     // ── extract_script ───────────────────────────────────────────────────────

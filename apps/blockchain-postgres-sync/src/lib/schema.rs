@@ -1,4 +1,5 @@
 // @generated automatically by Diesel CLI.
+#![allow(clippy::wildcard_imports)]
 
 diesel::table! {
     use diesel::sql_types::*;

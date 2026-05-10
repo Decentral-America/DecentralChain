@@ -1,5 +1,5 @@
 use crate::consumer::BlockMicroblockAppend;
-use crate::schema::*;
+use crate::schema::blocks_microblocks;
 use chrono::NaiveDateTime;
 use diesel::Insertable;
 

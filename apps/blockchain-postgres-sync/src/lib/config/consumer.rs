@@ -3,27 +3,27 @@ use chrono::Duration;
 use serde::Deserialize;
 use std::num::NonZeroU32;
 
-fn default_assets_only() -> bool {
+const fn default_assets_only() -> bool {
     false
 }
 
-fn default_updates_per_request() -> usize {
+const fn default_updates_per_request() -> usize {
     256
 }
 
-fn default_max_wait_time_in_msecs() -> u64 {
+const fn default_max_wait_time_in_msecs() -> u64 {
     5000
 }
 
-fn default_start_rollback_depth() -> u32 {
+const fn default_start_rollback_depth() -> u32 {
     1
 }
 
-fn default_rollback_step() -> u32 {
+const fn default_rollback_step() -> u32 {
     500
 }
 
-fn default_metrics_port() -> u16 {
+const fn default_metrics_port() -> u16 {
     9090
 }
 
@@ -61,6 +61,15 @@ pub struct Config {
     pub metrics_port: u16,
 }
 
+/// # Errors
+///
+/// Returns an error if required environment variables are missing or unparsable.
+///
+/// # Panics
+///
+/// Panics if `max_wait_time_in_msecs` does not fit in `i64` or if
+/// `start_rollback_depth`/`rollback_step` are zero (which violates their
+/// env-default invariant).
 pub fn load() -> Result<Config, Error> {
     let config_flat = envy::from_env::<ConfigFlat>()?;
     let nonzero_err =

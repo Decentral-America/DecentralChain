@@ -43,10 +43,10 @@ async fn main() -> Result<()> {
                     let c = health_conn.clone();
                     async move {
                         // Acquiring a connection proves the pool + DB are healthy.
-                        match c.get().await {
-                            Ok(_conn) => (axum::http::StatusCode::OK, "ready"),
-                            Err(_) => (axum::http::StatusCode::SERVICE_UNAVAILABLE, "not ready"),
-                        }
+                        c.get().await.map_or(
+                            (axum::http::StatusCode::SERVICE_UNAVAILABLE, "not ready"),
+                            |_conn| (axum::http::StatusCode::OK, "ready"),
+                        )
                     }
                 }),
             );
@@ -63,13 +63,11 @@ async fn main() -> Result<()> {
 
     select! {
         result = consumer => {
-            match result {
-                Err(err) => {
-                    error!(error = %err, "consumer stopped with error");
-                    return Err(err);
-                }
-                Ok(()) => info!("consumer finished"),
+            if let Err(err) = result {
+                error!(error = %err, "consumer stopped with error");
+                return Err(err);
             }
+            info!("consumer finished");
         },
         result = health_server => {
             if let Err(err) = result {
