@@ -3,6 +3,7 @@ use bytes::{BufMut, BytesMut};
 use regex::Regex;
 use std::sync::LazyLock;
 
+#[allow(clippy::unwrap_used)] // constant regex literal — failure is a code bug, not runtime input
 pub static ASSET_ORACLE_DATA_ENTRY_KEY_REGEX: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^(.*)_<([a-zA-Z\d]+)>$").unwrap());
 
@@ -87,6 +88,7 @@ pub fn is_dcc_asset_id(input: impl AsRef<[u8]>) -> bool {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
 

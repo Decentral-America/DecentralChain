@@ -16,7 +16,10 @@ pub fn into_prefixed_base64(b: impl AsRef<[u8]>) -> String {
 
 pub fn epoch_ms_to_naivedatetime(ts: i64) -> NaiveDateTime {
     DateTime::<Utc>::from_timestamp(ts / 1000, (ts % 1000) as u32 * 1_000_000)
-        .unwrap_or_else(|| panic!("invalid timestamp {ts}"))
+        .unwrap_or_else(|| {
+            tracing::warn!(ts, "invalid timestamp; falling back to Unix epoch");
+            DateTime::<Utc>::from_timestamp(0, 0).expect("epoch is always valid")
+        })
         .naive_utc()
 }
 
@@ -25,6 +28,7 @@ pub fn escape_unicode_null(s: impl AsRef<str>) -> String {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
 

@@ -5,6 +5,10 @@ edition = "2021"
 rust-version = "1.88"
 description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
 license = "Apache-2.0"
+repository = "https://github.com/Decentral-America/blockchain-postgres-sync"
+homepage = "https://decentral-chain.com"
+keywords = ["blockchain", "postgresql", "decentralchain", "sync", "grpc"]
+categories = ["database", "cryptography::cryptocurrencies"]
 
 [lib]
 name = "app_lib"
@@ -55,7 +59,6 @@ bs58 = "0.5.1"
 hex = "0.4.3"
 # Pin bytes >= 1.11.1 — RUSTSEC-2026-0007: integer overflow in BytesMut::reserve
 bytes = "1.11.1"
-percent-encoding = "2"
 regex = "1"
 
 # Utilities
@@ -71,3 +74,23 @@ tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
 
 [build-dependencies]
 tonic-prost-build = "0.14.6"
+
+# ─── Lint configuration ──────────────────────────────────────────────────────
+# These lints enforce coding standards across the codebase.  Any new `unwrap()`
+# in production (non-test) code will be caught at compile time.
+[lints.rust]
+# Unsafe code is not needed in this project.
+unsafe_code = "forbid"
+
+[lints.clippy]
+# Prevent accidental .unwrap() in production paths.
+unwrap_used = "warn"
+# Prefer expect() with a message over indexing (already fixed in codebase).
+indexing_slicing = "allow"  # diesel QueryDsl uses [] indexing internally
+# Prefer slice refs over Vec refs in function signatures.
+ptr_arg = "deny"
+
+# prost and tonic-prost are used in code generated via include!() in proto.rs
+# and are therefore invisible to cargo-machete's static analysis.
+[package.metadata.cargo-machete]
+ignored = ["prost", "tonic-prost"]

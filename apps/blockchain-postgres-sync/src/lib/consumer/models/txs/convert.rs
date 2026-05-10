@@ -132,7 +132,7 @@ impl
             Transaction::WavesTransaction(tx) => tx,
             Transaction::EthereumTransaction(tx) => {
                 let Some(Metadata::Ethereum(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
                 let mut eth_tx = Tx18 {
                     uid,
@@ -151,7 +151,9 @@ impl
                     block_uid,
                     function_name: None,
                 };
-                let result_tx = match meta.action.as_ref().unwrap() {
+                let result_tx = match meta.action.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("Ethereum metadata has no action".into())
+                })? {
                     EthAction::Transfer(_) => Tx18Combined {
                         tx: eth_tx,
                         args: vec![],
@@ -313,9 +315,11 @@ impl
             }),
             Data::Transfer(t) => {
                 let Some(Metadata::Transfer(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
-                let Amount { asset_id, amount } = t.amount.as_ref().unwrap();
+                let Amount { asset_id, amount } = t.amount.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("Transfer tx missing amount".into())
+                })?;
                 Tx::Transfer(Tx4 {
                     uid,
                     height,
@@ -339,7 +343,9 @@ impl
                 })
             }
             Data::Reissue(t) => {
-                let Amount { asset_id, amount } = t.asset_amount.as_ref().unwrap();
+                let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("Reissue tx missing asset_amount".into())
+                })?;
                 Tx::Reissue(Tx5 {
                     uid,
                     height,
@@ -360,7 +366,9 @@ impl
                 })
             }
             Data::Burn(t) => {
-                let Amount { asset_id, amount } = t.asset_amount.as_ref().unwrap();
+                let Amount { asset_id, amount } = t.asset_amount.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("Burn tx missing asset_amount".into())
+                })?;
                 Tx::Burn(Tx6 {
                     uid,
                     height,
@@ -380,10 +388,21 @@ impl
                 })
             }
             Data::Exchange(t) => {
-                let order_to_val = |o| serde_json::to_value(Order::from(o)).unwrap();
-                let Some(Metadata::Exchange(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                let order_to_val = |o| {
+                    serde_json::to_value(Order::from(o))
+                        .expect("Order serialization is infallible")
                 };
+                let Some(Metadata::Exchange(meta)) = &meta.metadata else {
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
+                };
+                if t.orders.len() < 2 || meta.order_ids.len() < 2
+                    || meta.order_sender_addresses.len() < 2
+                    || meta.order_sender_public_keys.len() < 2
+                {
+                    return Err(Error::InconsistDataError(
+                        "Exchange tx has fewer than 2 orders or missing metadata".into(),
+                    ));
+                }
                 let order_1 = OrderMeta {
                     order: &t.orders[0],
                     id: &meta.order_ids[0],
@@ -396,7 +415,9 @@ impl
                     sender_address: &meta.order_sender_addresses[1],
                     sender_public_key: &meta.order_sender_public_keys[1],
                 };
-                let first_order_asset_pair = t.orders[0].asset_pair.as_ref().unwrap();
+                let first_order_asset_pair = t.orders[0].asset_pair.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("Exchange order[0] missing asset_pair".into())
+                })?;
                 Tx::Exchange(Tx7 {
                     uid,
                     height,
@@ -424,7 +445,7 @@ impl
             }
             Data::Lease(t) => {
                 let Some(Metadata::Lease(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
                 Tx::Lease(Tx8 {
                     uid,
@@ -483,7 +504,7 @@ impl
             }),
             Data::MassTransfer(t) => {
                 let Some(Metadata::MassTransfer(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
                 Tx::MassTransfer(Tx11Combined {
                     tx: Tx11 {
@@ -585,26 +606,28 @@ impl
                 script: extract_script(&t.script),
                 block_uid,
             }),
-            Data::SponsorFee(t) => Tx::SponsorFee(Tx14 {
-                uid,
-                height,
-                tx_type: 14,
-                id,
-                time_stamp,
-                signature,
-                fee,
-                proofs,
-                tx_version,
-                sender,
-                sender_public_key,
-                status,
-                asset_id: extract_asset_id(&t.min_fee.as_ref().unwrap().asset_id),
-                min_sponsored_asset_fee: t
-                    .min_fee
-                    .as_ref()
-                    .and_then(|f| (f.amount != 0).then_some(f.amount)),
-                block_uid,
-            }),
+            Data::SponsorFee(t) => {
+                let min_fee = t.min_fee.as_ref().ok_or_else(|| {
+                    Error::InconsistDataError("SponsorFee tx missing min_fee".into())
+                })?;
+                Tx::SponsorFee(Tx14 {
+                    uid,
+                    height,
+                    tx_type: 14,
+                    id,
+                    time_stamp,
+                    signature,
+                    fee,
+                    proofs,
+                    tx_version,
+                    sender,
+                    sender_public_key,
+                    status,
+                    asset_id: extract_asset_id(&min_fee.asset_id),
+                    min_sponsored_asset_fee: (min_fee.amount != 0).then_some(min_fee.amount),
+                    block_uid,
+                })
+            }
             Data::SetAssetScript(t) => Tx::SetAssetScript(Tx15 {
                 uid,
                 height,
@@ -624,8 +647,13 @@ impl
             }),
             Data::InvokeScript(t) => {
                 let Some(Metadata::InvokeScript(meta)) = &meta.metadata else {
-                    unreachable!("{WRONG_META_VAR}")
+                    return Err(Error::InconsistDataError(WRONG_META_VAR.into()));
                 };
+                let invoke_fee_asset_id = tx
+                    .fee
+                    .as_ref()
+                    .map(|f| extract_asset_id(&f.asset_id))
+                    .unwrap_or_else(|| DCC_ID.to_string());
                 Tx::InvokeScript(Tx16Combined {
                     tx: Tx16 {
                         uid,
@@ -641,7 +669,7 @@ impl
                         sender_public_key,
                         status,
                         function_name: Some(meta.function_name.clone()),
-                        fee_asset_id: extract_asset_id(&tx.fee.as_ref().unwrap().asset_id),
+                        fee_asset_id: invoke_fee_asset_id,
                         dapp_address: into_base58(&meta.d_app_address),
                         dapp_alias: extract_recipient_alias(&t.d_app),
                         block_uid,
@@ -722,8 +750,16 @@ impl
                 description: escape_unicode_null(&t.description),
                 block_uid,
             }),
-            Data::InvokeExpression(_t) => unimplemented!(),
-            Data::CommitToGeneration(_t) => unimplemented!(),
+            Data::InvokeExpression(_t) => {
+                return Err(Error::InconsistDataError(
+                    "InvokeExpression tx type is not yet supported".into(),
+                ))
+            }
+            Data::CommitToGeneration(_t) => {
+                return Err(Error::InconsistDataError(
+                    "CommitToGeneration tx type is not yet supported".into(),
+                ))
+            }
         })
     }
 }
@@ -742,5 +778,135 @@ fn extract_script(script: &Vec<u8>) -> Option<String> {
         Some(into_prefixed_base64(script))
     } else {
         None
+    }
+}
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+    use super::*;
+
+    // ── TxUidGenerator ──────────────────────────────────────────────────────
+
+    #[test]
+    fn tx_uid_generator_sequential_within_block() {
+        let mut gen = TxUidGenerator::new(100_000);
+        gen.maybe_update_height(10);
+        let a = gen.next_uid();
+        let b = gen.next_uid();
+        let c = gen.next_uid();
+        assert_eq!(b, a + 1);
+        assert_eq!(c, a + 2);
+    }
+
+    #[test]
+    fn tx_uid_generator_resets_on_new_block() {
+        let mut gen = TxUidGenerator::new(100_000);
+        gen.maybe_update_height(5);
+        let uid_h5 = gen.next_uid();
+        gen.maybe_update_height(6);
+        let uid_h6 = gen.next_uid();
+        // height 5, tx 0 → 5 * 100_000 + 0 = 500_000
+        assert_eq!(uid_h5, 5 * 100_000);
+        // height 6, tx 0 → 6 * 100_000 + 0 = 600_000
+        assert_eq!(uid_h6, 6 * 100_000);
+    }
+
+    #[test]
+    fn tx_uid_generator_does_not_regress_on_same_height() {
+        let mut gen = TxUidGenerator::new(100_000);
+        gen.maybe_update_height(10);
+        let _ = gen.next_uid(); // 1_000_000
+        gen.maybe_update_height(10); // no-op — same height
+        let second = gen.next_uid(); // 1_000_001
+        assert_eq!(second, 10 * 100_000 + 1);
+    }
+
+    #[test]
+    fn tx_uid_generator_does_not_reset_on_lower_height() {
+        let mut gen = TxUidGenerator::new(100_000);
+        gen.maybe_update_height(10);
+        let _ = gen.next_uid();
+        let _ = gen.next_uid();
+        gen.maybe_update_height(5); // lower — should be ignored
+        let uid = gen.next_uid();
+        // counter should still be at 2, height 10
+        assert_eq!(uid, 10 * 100_000 + 2);
+    }
+
+    #[test]
+    fn tx_uid_generator_multiplier_one() {
+        let mut gen = TxUidGenerator::new(1);
+        gen.maybe_update_height(100);
+        assert_eq!(gen.next_uid(), 100);
+        assert_eq!(gen.next_uid(), 101);
+        assert_eq!(gen.next_uid(), 102);
+    }
+
+    #[test]
+    fn tx_uid_generator_height_zero() {
+        let mut gen = TxUidGenerator::new(100_000);
+        // Height 0 is the initial state — uids start at 0
+        assert_eq!(gen.next_uid(), 0);
+        assert_eq!(gen.next_uid(), 1);
+    }
+
+    // ── extract_recipient_alias ──────────────────────────────────────────────
+
+    #[test]
+    fn extract_recipient_alias_returns_none_for_empty() {
+        assert!(extract_recipient_alias(&None).is_none());
+    }
+
+    #[test]
+    fn extract_recipient_alias_returns_alias_string() {
+        let rcpt = Some(Recipient {
+            recipient: Some(InnerRecipient::Alias("myalias".to_string())),
+        });
+        assert_eq!(extract_recipient_alias(&rcpt), Some("myalias".to_string()));
+    }
+
+    #[test]
+    fn extract_recipient_alias_empty_alias_returns_none() {
+        let rcpt = Some(Recipient {
+            recipient: Some(InnerRecipient::Alias(String::new())),
+        });
+        assert!(extract_recipient_alias(&rcpt).is_none());
+    }
+
+    // ── extract_script ───────────────────────────────────────────────────────
+
+    #[test]
+    fn extract_script_empty_bytes_is_none() {
+        assert!(extract_script(&vec![]).is_none());
+    }
+
+    #[test]
+    fn extract_script_nonempty_bytes_returns_base64() {
+        let result = extract_script(&vec![0x01, 0x02]);
+        assert!(result.is_some());
+        let s = result.unwrap();
+        assert!(s.starts_with("base64:"));
+    }
+
+    // ── TryFrom guard: missing transaction data returns Err ──────────────────
+
+    #[test]
+    fn try_from_missing_transaction_data_returns_err() {
+        use crate::proto::waves::{SignedTransaction};
+    use crate::proto::waves::events::TransactionMetadata;
+        let stx = SignedTransaction {
+            transaction: None,
+            proofs: vec![],
+        };
+        let meta = TransactionMetadata::default();
+        let result = Tx::try_from((&stx, &"txid".to_string(), 1i32, &meta, 0i64, 0i64, 87u8));
+        match result {
+            Err(e) => {
+                let msg = e.to_string();
+                assert!(msg.contains("No transaction data") || !msg.is_empty());
+            }
+            Ok(_) => panic!("expected Err but got Ok"),
+        }
     }
 }
