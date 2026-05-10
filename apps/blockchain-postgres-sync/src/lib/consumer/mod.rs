@@ -34,7 +34,7 @@ use crate::{
         waves_data::WavesData,
     },
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
-    waves::WAVES_ID,
+    waves::DCC_ID,
 };
 use fragstrings::frag_parse;
 
@@ -483,7 +483,7 @@ fn extract_base_asset_info_updates(
                     if let Some(asset_details) = &asset_update.after {
                         let asset_id = extract_asset_id(&asset_details.asset_id);
 
-                        if asset_id == WAVES_ID {
+                        if asset_id == DCC_ID {
                             return None;
                         }
 
