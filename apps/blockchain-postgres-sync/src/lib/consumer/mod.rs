@@ -2,6 +2,12 @@ pub mod models;
 pub mod repo;
 pub mod updates;
 
+use crate::proto::waves::{
+    data_entry::Value,
+    events::{transaction_metadata::Metadata, StateUpdate, TransactionMetadata},
+    signed_transaction::Transaction,
+    SignedTransaction, Transaction as WavesTx,
+};
 use anyhow::{Error, Result};
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
@@ -10,12 +16,6 @@ use std::collections::HashMap;
 use std::sync::Mutex;
 use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
-use crate::proto::waves::{
-    data_entry::Value,
-    events::{transaction_metadata::Metadata, StateUpdate, TransactionMetadata},
-    signed_transaction::Transaction,
-    SignedTransaction, Transaction as WavesTx,
-};
 use tracing::{debug, info};
 
 use self::models::{asset_tickers::InsertableAssetTicker, block_microblock::BlockMicroblock};
@@ -28,7 +28,6 @@ use crate::error::Error as AppError;
 use crate::models::BaseAssetInfoUpdate;
 use crate::waves::{extract_asset_id, Address};
 use crate::{config::consumer::Config, utils::into_base58};
-use base64::prelude::*;
 use crate::{
     consumer::models::{
         txs::convert::{Tx as ConvertedTx, TxUidGenerator},
@@ -37,6 +36,7 @@ use crate::{
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
     waves::DCC_ID,
 };
+use base64::prelude::*;
 
 static UID_GENERATOR: Mutex<TxUidGenerator> = Mutex::new(TxUidGenerator::new(100000));
 
@@ -126,7 +126,10 @@ where
                     rollback(ops, &rollback_blocks, assets_only)?;
                     Ok(rollback_blocks
                         .last()
-                        .map(|height| height.height as u32 + 1)
+                        .map(|height| {
+                            u32::try_from(height.height).expect("blockchain height is non-negative")
+                                + 1
+                        })
                         .unwrap_or(starting_height))
                 }
                 Ok(None) => Ok(starting_height),
@@ -202,7 +205,10 @@ fn handle_updates<R: RepoOperations>(
                 info!("Handle block {}, height = {}", b.id, b.height);
                 let len = acc.len();
                 if len > 0 {
-                    match acc.last_mut().expect("len > 0 but last_mut is None — invariant violated") {
+                    match acc
+                        .last_mut()
+                        .expect("len > 0 but last_mut is None — invariant violated")
+                    {
                         UpdatesItem::Blocks(v) => {
                             v.push(b);
                             acc
@@ -557,25 +563,23 @@ fn extract_asset_tickers_updates(tx: &Tx, asset_storage_address: &str) -> Vec<As
                 {
                     match de.value.as_ref() {
                         Some(value) => match value {
-                            Value::StringValue(value) => {
-                                de.key
-                                    .strip_prefix("%s%s__assetId2ticker__")
-                                    .map(|asset_id| AssetTickerUpdate {
-                                        asset_id: asset_id.to_owned(),
-                                        ticker: value.clone(),
-                                    })
-                            }
-                            _ => None,
-                        },
-                        // key was deleted -> drop asset ticker
-                        None => {
-                            de.key
+                            Value::StringValue(value) => de
+                                .key
                                 .strip_prefix("%s%s__assetId2ticker__")
                                 .map(|asset_id| AssetTickerUpdate {
                                     asset_id: asset_id.to_owned(),
-                                    ticker: "".into(),
-                                })
-                        }
+                                    ticker: value.clone(),
+                                }),
+                            _ => None,
+                        },
+                        // key was deleted -> drop asset ticker
+                        None => de
+                            .key
+                            .strip_prefix("%s%s__assetId2ticker__")
+                            .map(|asset_id| AssetTickerUpdate {
+                                asset_id: asset_id.to_owned(),
+                                ticker: "".into(),
+                            }),
                     }
                 } else {
                     None
@@ -600,7 +604,8 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
         .iter()
         .enumerate()
         .map(|(update_idx, (block_uid, update))| AssetUpdate {
-            uid: assets_next_uid + update_idx as i64,
+            uid: assets_next_uid
+                + i64::try_from(update_idx).expect("update batch index bounded by config"),
             superseded_by: -1,
             block_uid: *block_uid,
             asset_id: update.id.clone(),
@@ -608,7 +613,8 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
             description: update.description.clone(),
             nft: update.nft,
             reissuable: update.reissuable,
-            decimals: update.precision as i16,
+            decimals: i16::try_from(update.precision)
+                .expect("asset decimals bounded to 0-8 << i16::MAX"),
             script: update.script.clone().map(|s| BASE64_STANDARD.encode(s)),
             sponsorship: update.min_sponsored_fee,
             volume: update.quantity,
@@ -617,10 +623,10 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
 
     let mut assets_grouped: HashMap<AssetUpdate, Vec<AssetUpdate>> = HashMap::new();
 
-    asset_updates.into_iter().for_each(|update| {
+    for update in asset_updates {
         let group = assets_grouped.entry(update.clone()).or_insert(vec![]);
         group.push(update);
-    });
+    }
 
     let assets_grouped = assets_grouped.into_iter().collect_vec();
 
@@ -668,7 +674,10 @@ fn handle_base_asset_info_updates<R: RepoOperations>(
         .collect_vec();
 
     repo.insert_asset_updates(assets_with_uids_superseded_by)?;
-    repo.set_assets_next_update_uid(assets_next_uid + updates_count as i64)?;
+    repo.set_assets_next_update_uid(
+        assets_next_uid
+            + i64::try_from(updates_count).expect("asset update batch size bounded by config"),
+    )?;
 
     Ok(Some(
         assets_with_uids_superseded_by
@@ -695,7 +704,9 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
         .enumerate()
         .map(
             |(update_idx, (block_uid, tickers_update))| InsertableAssetTicker {
-                uid: asset_tickers_next_uid + update_idx as i64,
+                uid: asset_tickers_next_uid
+                    + i64::try_from(update_idx)
+                        .expect("ticker update batch index bounded by config"),
                 superseded_by: -1,
                 block_uid: **block_uid,
                 asset_id: tickers_update.asset_id.clone(),
@@ -707,12 +718,12 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
     let mut asset_tickers_grouped: HashMap<InsertableAssetTicker, Vec<InsertableAssetTicker>> =
         HashMap::new();
 
-    asset_tickers_updates.into_iter().for_each(|update| {
+    for update in asset_tickers_updates {
         let group = asset_tickers_grouped
             .entry(update.clone())
             .or_insert(vec![]);
         group.push(update);
-    });
+    }
 
     let asset_tickers_grouped = asset_tickers_grouped.into_iter().collect_vec();
 
@@ -763,7 +774,10 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
 
     repo.insert_asset_tickers(asset_tickers_with_uids_superseded_by)?;
 
-    repo.set_asset_tickers_next_update_uid(asset_tickers_next_uid + updates_count as i64)
+    repo.set_asset_tickers_next_update_uid(
+        asset_tickers_next_uid
+            + i64::try_from(updates_count).expect("ticker update batch size bounded by config"),
+    )
 }
 
 fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Result<()> {
@@ -826,14 +840,14 @@ fn rollback_assets<R: RepoOperations>(repo: &mut R, block_uid: i64) -> Result<()
 
     let mut grouped_deleted: HashMap<DeletedAsset, Vec<DeletedAsset>> = HashMap::new();
 
-    deleted.into_iter().for_each(|item| {
+    for item in deleted {
         let group = grouped_deleted.entry(item.clone()).or_insert(vec![]);
         group.push(item);
-    });
+    }
 
     let lowest_deleted_uids: Vec<i64> = grouped_deleted
-        .into_iter()
-        .filter_map(|(_, group)| group.into_iter().min_by_key(|i| i.uid).map(|i| i.uid))
+        .into_values()
+        .filter_map(|group| group.into_iter().min_by_key(|i| i.uid).map(|i| i.uid))
         .collect();
 
     repo.reopen_assets_superseded_by(&lowest_deleted_uids)
@@ -844,14 +858,14 @@ fn rollback_asset_tickers<R: RepoOperations>(repo: &mut R, block_uid: i64) -> Re
 
     let mut grouped_deleted: HashMap<DeletedAssetTicker, Vec<DeletedAssetTicker>> = HashMap::new();
 
-    deleted.into_iter().for_each(|item| {
+    for item in deleted {
         let group = grouped_deleted.entry(item.clone()).or_insert(vec![]);
         group.push(item);
-    });
+    }
 
     let lowest_deleted_uids: Vec<i64> = grouped_deleted
-        .into_iter()
-        .filter_map(|(_, group)| group.into_iter().min_by_key(|i| i.uid).map(|i| i.uid))
+        .into_values()
+        .filter_map(|group| group.into_iter().min_by_key(|i| i.uid).map(|i| i.uid))
         .collect();
 
     repo.reopen_asset_tickers_superseded_by(&lowest_deleted_uids)

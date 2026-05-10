@@ -1,11 +1,6 @@
 use super::*;
 use crate::error::Error;
 use crate::models::{DataEntryTypeValue, Order, OrderMeta};
-use crate::utils::{
-    epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
-};
-use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
-use serde_json::json;
 use crate::proto::waves::{
     data_entry::Value as DataValue,
     events::{
@@ -18,6 +13,11 @@ use crate::proto::waves::{
     transaction::Data,
     Amount, Recipient, SignedTransaction,
 };
+use crate::utils::{
+    epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
+};
+use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
+use serde_json::json;
 
 const WRONG_META_VAR: &str = "wrong meta variant";
 
@@ -98,15 +98,17 @@ impl
         let SignedTransaction {
             transaction: Some(tx),
             proofs,
-        } = tx else {
+        } = tx
+        else {
             return Err(Error::InconsistDataError(format!(
                 "No transaction data in id={id}, height={height}",
-            )))
+            )));
         };
         let uid = tx_uid;
         let id = id.to_owned();
         let proofs = proofs.iter().map(into_base58).collect::<Vec<_>>();
-        let signature = proofs.first()
+        let signature = proofs
+            .first()
             .and_then(|p| (!p.is_empty()).then_some(p.to_owned()));
         let proofs = Some(proofs);
         let mut status = String::from("succeeded");
@@ -205,7 +207,8 @@ impl
                                         arg_value_binary: v_bin.map(into_prefixed_base64),
                                         arg_value_string: v_str.map(escape_unicode_null),
                                         arg_value_list: v_list,
-                                        position_in_args: i as i16,
+                                        position_in_args: i16::try_from(i)
+                                            .expect("Ethereum InvokeScript arg index is protocol-bounded (<=22) << i16::MAX"),
                                         height,
                                     }
                                 })
@@ -217,7 +220,8 @@ impl
                                 .map(|(i, p)| Tx18Payment {
                                     tx_uid,
                                     amount: p.amount,
-                                    position_in_payment: i as i16,
+                                    position_in_payment: i16::try_from(i)
+                                        .expect("Ethereum InvokeScript payment index is protocol-bounded (<=10) << i16::MAX"),
                                     height,
                                     asset_id: extract_asset_id(&p.asset_id),
                                 })
@@ -239,7 +243,9 @@ impl
             .as_ref()
             .map(|f| (f.amount, extract_asset_id(&f.asset_id)))
             .unwrap_or((0, DCC_ID.to_string()));
-        let tx_version = Some(tx.version as i16);
+        let tx_version = Some(
+            i16::try_from(tx.version).expect("transaction version bounded to 1-4 << i16::MAX"),
+        );
         let sender_public_key = into_base58(&tx.sender_public_key);
 
         Ok(match tx_data {
@@ -308,7 +314,8 @@ impl
                 asset_name: escape_unicode_null(&t.name),
                 description: escape_unicode_null(&t.description),
                 quantity: t.amount,
-                decimals: t.decimals as i16,
+                decimals: i16::try_from(t.decimals)
+                    .expect("token decimals bounded to 0-8 << i16::MAX"),
                 reissuable: t.reissuable,
                 script: extract_script(&t.script),
                 block_uid,
@@ -534,7 +541,8 @@ impl
                             recipient_address: into_base58(rcpt_addr),
                             recipient_alias: extract_recipient_alias(&t.recipient),
                             amount: t.amount,
-                            position_in_tx: i as i16,
+                            position_in_tx: i16::try_from(i)
+                                .expect("mass transfer recipient index is protocol-bounded (<=100) << i16::MAX"),
                             height,
                         })
                         .collect(),
@@ -584,7 +592,8 @@ impl
                             data_value_boolean: v_bool,
                             data_value_binary: v_bin.map(into_prefixed_base64),
                             data_value_string: v_str.map(escape_unicode_null),
-                            position_in_tx: i as i16,
+                            position_in_tx: i16::try_from(i)
+                                .expect("data transaction entry index is protocol-bounded (<=100) << i16::MAX"),
                             height,
                         }
                     })
@@ -713,7 +722,8 @@ impl
                                 arg_value_binary: v_bin.map(into_prefixed_base64),
                                 arg_value_string: v_str.map(escape_unicode_null),
                                 arg_value_list: v_list,
-                                position_in_args: i as i16,
+                                position_in_args: i16::try_from(i)
+                                    .expect("InvokeScript arg index is protocol-bounded (<=22) << i16::MAX"),
                                 height,
                             }
                         })
@@ -725,7 +735,8 @@ impl
                         .map(|(i, p)| Tx16Payment {
                             tx_uid,
                             amount: p.amount,
-                            position_in_payment: i as i16,
+                            position_in_payment: i16::try_from(i)
+                                .expect("InvokeScript payment index is protocol-bounded (<=10) << i16::MAX"),
                             height,
                             asset_id: extract_asset_id(&p.asset_id),
                         })
@@ -893,8 +904,8 @@ mod tests {
 
     #[test]
     fn try_from_missing_transaction_data_returns_err() {
-        use crate::proto::waves::{SignedTransaction};
-    use crate::proto::waves::events::TransactionMetadata;
+        use crate::proto::waves::events::TransactionMetadata;
+        use crate::proto::waves::SignedTransaction;
         let stx = SignedTransaction {
             transaction: None,
             proofs: vec![],

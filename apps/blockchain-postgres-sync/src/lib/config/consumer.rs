@@ -71,7 +71,10 @@ pub fn load() -> Result<Config, Error> {
         assets_only: config_flat.assets_only,
         blockchain_updates_url: config_flat.blockchain_updates_url,
         chain_id: config_flat.chain_id,
-        max_wait_time: Duration::milliseconds(config_flat.max_wait_time_in_msecs as i64),
+        max_wait_time: Duration::milliseconds(
+            i64::try_from(config_flat.max_wait_time_in_msecs)
+                .expect("max_wait_time_in_msecs always fits in i64"),
+        ),
         starting_height: config_flat.starting_height,
         updates_per_request: config_flat.updates_per_request,
         start_rollback_depth: NonZeroU32::new(config_flat.start_rollback_depth)

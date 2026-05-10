@@ -1,16 +1,3 @@
-use anyhow::{bail, Error, Result};
-use chrono::{Datelike, Duration, NaiveDateTime, Timelike as _};
-use diesel::{
-    dsl::sql,
-    pg::PgConnection,
-    prelude::*,
-    result::Error as DslError,
-    sql_query,
-    sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
-    Table,
-};
-use std::mem::drop;
-use std::{collections::HashMap, num::NonZeroU32};
 use super::super::UidHeight;
 use super::{Repo, RepoOperations};
 use crate::consumer::models::candles::interval_in_seconds;
@@ -26,6 +13,19 @@ use crate::db::PgAsyncPool;
 use crate::error::Error as AppError;
 use crate::schema::*;
 use crate::tuple_len::TupleLen;
+use anyhow::{bail, Error, Result};
+use chrono::{Datelike, Duration, NaiveDateTime, Timelike as _};
+use diesel::{
+    dsl::sql,
+    pg::PgConnection,
+    prelude::*,
+    result::Error as DslError,
+    sql_query,
+    sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
+    Table,
+};
+use std::mem::drop;
+use std::{collections::HashMap, num::NonZeroU32};
 
 const MAX_UID: i64 = i64::MAX - 1;
 const PG_MAX_INSERT_FIELDS_COUNT: usize = 65535;
@@ -81,7 +81,8 @@ impl RepoOperations for PgRepoOperations<'_> {
         seq_step: NonZeroU32,
     ) -> Result<Option<Vec<UidHeight>>> {
         let depth = depth.into();
-        let current_height = self.get_current_height()? as u32;
+        let current_height = u32::try_from(self.get_current_height()?)
+            .expect("current blockchain height is non-negative");
         let rollback_step = u32::min(seq_step.into(), depth);
         let starting_height = current_height.saturating_sub(rollback_step);
         let final_height = current_height.saturating_sub(depth);
@@ -91,10 +92,11 @@ impl RepoOperations for PgRepoOperations<'_> {
         let mut heights_rollback_to = ((final_height + 1)..=starting_height)
             .rev()
             .step_by(rollback_step as usize)
-            .map(|h| h as i32)
+            .map(|h| i32::try_from(h).expect("blockchain height fits in i32"))
             .collect::<Vec<_>>();
 
-        heights_rollback_to.push(final_height as i32);
+        heights_rollback_to
+            .push(i32::try_from(final_height).expect("blockchain height fits in i32"));
 
         chunked_with_result(blocks_microblocks::table, &heights_rollback_to, |heights| {
             blocks_microblocks::table
@@ -319,10 +321,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot update asset tickers block references"))
     }
 
-    fn reopen_asset_tickers_superseded_by(
-        &mut self,
-        current_superseded_by: &[i64],
-    ) -> Result<()> {
+    fn reopen_asset_tickers_superseded_by(&mut self, current_superseded_by: &[i64]) -> Result<()> {
         sql_query(
             "UPDATE asset_tickers SET superseded_by = $1 FROM (SELECT UNNEST($2) AS superseded_by) AS current
             WHERE asset_tickers.superseded_by = current.superseded_by;")
@@ -333,10 +332,7 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot reopen asset_tickers superseded_by"))
     }
 
-    fn close_asset_tickers_superseded_by(
-        &mut self,
-        updates: &[AssetTickerOverride],
-    ) -> Result<()> {
+    fn close_asset_tickers_superseded_by(&mut self, updates: &[AssetTickerOverride]) -> Result<()> {
         let (ids, superseded_by_uids): (Vec<&String>, Vec<i64>) = updates
             .iter()
             .map(|u| (&u.asset_id, u.superseded_by))
@@ -489,7 +485,7 @@ impl RepoOperations for PgRepoOperations<'_> {
                     tx.lease_id
                         .as_ref()
                         .and_then(|lease_id| tx_id_uid_map.get(lease_id))
-                        .cloned(),
+                        .copied(),
                 ))
             })
             .collect::<Vec<_>>();
@@ -839,11 +835,7 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 }
 
-fn chunked_with_result<T, F, V, R>(
-    _: T,
-    values: &[V],
-    mut query_fn: F,
-) -> Result<Vec<R>, DslError>
+fn chunked_with_result<T, F, V, R>(_: T, values: &[V], mut query_fn: F) -> Result<Vec<R>, DslError>
 where
     T: Table,
     T::AllColumns: TupleLen,
@@ -852,12 +844,10 @@ where
     let columns_count = T::all_columns().len();
     let chunk_size = (PG_MAX_INSERT_FIELDS_COUNT / columns_count) / 10 * 10;
     let mut result = vec![];
-    values
-        .chunks(chunk_size)
-        .try_fold((), |_, chunk| {
-            result.extend(query_fn(chunk)?);
-            Ok::<_, DslError>(())
-        })?;
+    values.chunks(chunk_size).try_fold((), |_, chunk| {
+        result.extend(query_fn(chunk)?);
+        Ok::<_, DslError>(())
+    })?;
     Ok(result)
 }
 

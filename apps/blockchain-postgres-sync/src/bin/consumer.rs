@@ -4,7 +4,7 @@ use axum::{routing::get, Router};
 use std::net::SocketAddr;
 use tokio::select;
 use tracing::{error, info};
-use tracing_subscriber::{EnvFilter, fmt};
+use tracing_subscriber::{fmt, EnvFilter};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -52,7 +52,9 @@ async fn main() -> Result<()> {
             );
 
         let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
-        let listener = tokio::net::TcpListener::bind(addr).await.expect("health listener bind");
+        let listener = tokio::net::TcpListener::bind(addr)
+            .await
+            .expect("health listener bind");
         info!(%addr, "health server listening");
         axum::serve(listener, app).await.expect("health server");
     });

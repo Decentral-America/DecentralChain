@@ -32,9 +32,15 @@ RUN touch src/lib/lib.rs src/bin/consumer.rs src/bin/migration.rs && \
 FROM debian:12-slim AS runtime
 WORKDIR /app
 
+LABEL org.opencontainers.image.source="https://github.com/Decentral-America/blockchain-postgres-sync" \
+      org.opencontainers.image.description="Blockchain-to-PostgreSQL sync daemon for DecentralChain" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="Decentral America"
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
+        curl \
         libpq5 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -46,5 +52,8 @@ COPY --from=builder /app/target/release/migration ./migration
 COPY --from=builder /app/migrations ./migrations/
 
 USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD curl -fsS "http://localhost:${METRICS_PORT:-9090}/health" || exit 1
 
 CMD ["./consumer"]
