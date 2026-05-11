@@ -1,0 +1,357 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Manual dispatch: deploy to stagenet or testnet on demand.
+  # Auto-deploy to mainnet happens on push to main (deploy-mainnet job).
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy (stagenet or testnet)'
+        required: true
+        default: 'stagenet'
+        type: choice
+        options:
+          - stagenet
+          - testnet
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build-and-test:
+    name: Build, test & lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9  # stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            protobuf-compiler \
+            libpq-dev
+
+      - name: Cache Cargo registry + build artefacts
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Build
+        run: cargo build --all-targets
+
+      - name: Clippy (deny warnings)
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --all-targets
+
+      - name: Check documentation
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
+
+      - name: Cache cargo tools
+        id: cargo-tools-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: ~/.cargo/bin/
+          key: ${{ runner.os }}-cargo-tools-audit-deny-machete-v1
+
+      - name: Install cargo-audit
+        if: steps.cargo-tools-cache.outputs.cache-hit != 'true'
+        run: cargo install cargo-audit --locked
+
+      - name: Security audit
+        run: cargo audit --deny warnings
+
+      - name: Install cargo-deny
+        if: steps.cargo-tools-cache.outputs.cache-hit != 'true'
+        run: cargo install cargo-deny --locked
+
+      - name: Dependency policy check (cargo deny)
+        run: cargo deny check
+
+      - name: Install cargo-machete
+        if: steps.cargo-tools-cache.outputs.cache-hit != 'true'
+        run: cargo install cargo-machete --locked
+
+      - name: Unused dependency check (cargo machete)
+        run: cargo machete
+
+  docker:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      sha: ${{ github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd  # v4.0.0
+
+      - name: Log in to GitHub Container Registry
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121  # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf  # v6.0.0
+        with:
+          images: ghcr.io/decentral-america/blockchain-postgres-sync
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.title=DCC blockchain-postgres-sync
+            org.opencontainers.image.description=Blockchain-to-PostgreSQL sync daemon for DecentralChain
+            org.opencontainers.image.vendor=Decentral-America
+
+      - name: Build and push image
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
+        with:
+          context: .
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
+
+  # ── Deploy to Linode ──────────────────────────────────────────────────────────
+  # Required GitHub Secrets (set per environment — mainnet / stagenet / testnet):
+  #   DEPLOY_HOST             — IP or hostname of the Linode server
+  #   DEPLOY_USER             — SSH user (e.g. deploy)
+  #   DEPLOY_SSH_KEY          — Ed25519 private key (base64 encoded)
+  #   DEPLOY_HOST_FINGERPRINT — SSH host fingerprint to prevent MITM
+  #
+  # Required runtime secrets (PostgreSQL — set per environment):
+  #   PGHOST        — PostgreSQL host
+  #   PGDATABASE    — PostgreSQL database name
+  #   PGUSER        — PostgreSQL user
+  #   PGPASSWORD    — PostgreSQL password
+  #
+  # Required runtime secrets (node gRPC — set per environment):
+  #   BLOCKCHAIN_UPDATES_URL — gRPC endpoint, e.g. grpc://mainnet-node.decentralchain.io:6887
+  #
+  # Chain IDs: mainnet=63 ('?'), stagenet=83 ('S'), testnet=33 ('!')
+  #
+  # SSH key generation:
+  #   ssh-keygen -t ed25519 -C "github-actions-deploy" -f deploy_key
+  #   cat deploy_key | base64 -w0  →  DEPLOY_SSH_KEY secret
+  #   ssh-keyscan <host> | grep ed25519  →  DEPLOY_HOST_FINGERPRINT secret
+  #   cat deploy_key.pub >> ~/.ssh/authorized_keys  (on the server)
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-mainnet:
+    name: Deploy (mainnet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: docker
+    if: github.ref == 'refs/heads/main'
+
+    environment:
+      name: mainnet
+
+    steps:
+      - name: Deploy to Linode
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host:        ${{ secrets.DEPLOY_HOST }}
+          username:    ${{ secrets.DEPLOY_USER }}
+          key:         ${{ secrets.DEPLOY_SSH_KEY }}
+          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
+          script: |
+            set -euo pipefail
+            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
+            CONTAINER="blockchain-postgres-sync-mainnet"
+
+            echo "Pulling $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "Stopping existing container (if running)"
+            docker stop "$CONTAINER" 2>/dev/null || true
+            docker rm   "$CONTAINER" 2>/dev/null || true
+
+            echo "Starting new container"
+            docker run -d \
+              --name "$CONTAINER" \
+              --restart unless-stopped \
+              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
+              -e CHAIN_ID="63" \
+              -e HOST="${{ secrets.PGHOST }}" \
+              -e DATABASE="${{ secrets.PGDATABASE }}" \
+              -e USER="${{ secrets.PGUSER }}" \
+              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
+              -e STARTING_HEIGHT="0" \
+              "$IMAGE"
+
+            echo "Waiting for health check"
+            for i in $(seq 1 12); do
+              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
+                echo "Container healthy after $((i * 5))s"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then
+                echo "::error::Health check failed after 60s — rolling back"
+                docker stop "$CONTAINER" && docker rm "$CONTAINER"
+                exit 1
+              fi
+              sleep 5
+            done
+
+            echo "Removing old images (keep last 3)"
+            docker images "ghcr.io/decentral-america/blockchain-postgres-sync" --format "{{.ID}}" | tail -n +4 | xargs -r docker rmi || true
+
+            echo "Deploy complete: $IMAGE → mainnet"
+
+  # ── Deploy stagenet (manual only) ────────────────────────────────────────────
+  deploy-stagenet:
+    name: Deploy (stagenet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: docker
+    if: github.event_name == 'workflow_dispatch' && inputs.network == 'stagenet'
+
+    environment:
+      name: stagenet
+
+    steps:
+      - name: Deploy to Linode
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host:        ${{ secrets.DEPLOY_HOST }}
+          username:    ${{ secrets.DEPLOY_USER }}
+          key:         ${{ secrets.DEPLOY_SSH_KEY }}
+          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
+          script: |
+            set -euo pipefail
+            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
+            CONTAINER="blockchain-postgres-sync-stagenet"
+
+            echo "Pulling $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "Stopping existing container (if running)"
+            docker stop "$CONTAINER" 2>/dev/null || true
+            docker rm   "$CONTAINER" 2>/dev/null || true
+
+            echo "Starting new container"
+            docker run -d \
+              --name "$CONTAINER" \
+              --restart unless-stopped \
+              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
+              -e CHAIN_ID="83" \
+              -e HOST="${{ secrets.PGHOST }}" \
+              -e DATABASE="${{ secrets.PGDATABASE }}" \
+              -e USER="${{ secrets.PGUSER }}" \
+              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
+              -e STARTING_HEIGHT="0" \
+              "$IMAGE"
+
+            echo "Waiting for health check"
+            for i in $(seq 1 12); do
+              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
+                echo "Container healthy after $((i * 5))s"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then
+                echo "::error::Health check failed after 60s — rolling back"
+                docker stop "$CONTAINER" && docker rm "$CONTAINER"
+                exit 1
+              fi
+              sleep 5
+            done
+
+            echo "Deploy complete: $IMAGE → stagenet"
+
+  # ── Deploy testnet (manual only) ─────────────────────────────────────────────
+  deploy-testnet:
+    name: Deploy (testnet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: docker
+    if: github.event_name == 'workflow_dispatch' && inputs.network == 'testnet'
+
+    environment:
+      name: testnet
+
+    steps:
+      - name: Deploy to Linode
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host:        ${{ secrets.DEPLOY_HOST }}
+          username:    ${{ secrets.DEPLOY_USER }}
+          key:         ${{ secrets.DEPLOY_SSH_KEY }}
+          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
+          script: |
+            set -euo pipefail
+            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
+            CONTAINER="blockchain-postgres-sync-testnet"
+
+            echo "Pulling $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "Stopping existing container (if running)"
+            docker stop "$CONTAINER" 2>/dev/null || true
+            docker rm   "$CONTAINER" 2>/dev/null || true
+
+            echo "Starting new container"
+            docker run -d \
+              --name "$CONTAINER" \
+              --restart unless-stopped \
+              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
+              -e CHAIN_ID="33" \
+              -e HOST="${{ secrets.PGHOST }}" \
+              -e DATABASE="${{ secrets.PGDATABASE }}" \
+              -e USER="${{ secrets.PGUSER }}" \
+              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
+              -e STARTING_HEIGHT="0" \
+              "$IMAGE"
+
+            echo "Waiting for health check"
+            for i in $(seq 1 12); do
+              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
+                echo "Container healthy after $((i * 5))s"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then
+                echo "::error::Health check failed after 60s — rolling back"
+                docker stop "$CONTAINER" && docker rm "$CONTAINER"
+                exit 1
+              fi
+              sleep 5
+            done
+
+            echo "Deploy complete: $IMAGE → testnet"

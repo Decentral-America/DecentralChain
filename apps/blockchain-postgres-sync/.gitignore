@@ -2,3 +2,7 @@ target/
 .idea/
 *.env
 *.yml
+# Allow GitHub Actions workflows (negation must come after the *.yml rule)
+!.github/
+!.github/**
+!.github/**/*.yml
