@@ -1,4 +1,4 @@
-# Keeper Wallet Extension Tests
+# Cubensis Connect Extension Tests
 
 ## Setup test environment
 
@@ -9,14 +9,14 @@ achieve that.
 Then, you need to start test environment using docker compose:
 
 ```sh
-docker compose up waves-private-node chrome --wait
+docker compose up dcc-private-node chrome --wait
 ```
 
 Or, if you're developing on an arm-based CPU, like Apple M1/M2, use this command
 instead:
 
 ```sh
-docker compose -f docker-compose.yml -f docker-compose.arm.yml up waves-private-node chrome --wait
+docker compose -f docker-compose.yml -f docker-compose.arm.yml up dcc-private-node chrome --wait
 ```
 
 ## Start test runner

@@ -75,7 +75,7 @@ export default defineConfig({
         "worker-src 'self' blob:",
         "style-src 'self' 'unsafe-inline' https://s3.tradingview.com https://*.tradingview.com",
         "img-src 'self' data: https:",
-        "connect-src 'self' https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://raw.githubusercontent.com https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io ws://localhost:* wss://localhost:*",
+        "connect-src 'self' https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://testnet-data-service.decentralchain.io https://stagenet-data-service.decentralchain.io https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io ws://localhost:* wss://localhost:*",
         "font-src 'self' data:",
         "object-src 'none'",
         "base-uri 'self'",

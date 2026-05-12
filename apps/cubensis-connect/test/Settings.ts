@@ -287,8 +287,8 @@ describe('Settings', () => {
 
         it('After deletion, requests generate permission request', async () => {
           const originToDelete =
-            // TODO: Update test origin when DCC test infrastructure replaces waves.tech
-            await PermissionControlSettingsScreen.getPermissionByOrigin('waves.tech');
+            // TODO: Update test origin when DCC test infrastructure replaces decentralchain.io
+            await PermissionControlSettingsScreen.getPermissionByOrigin('decentralchain.io');
           const origin = await originToDelete.origin.getText();
           await originToDelete.detailsIcon.click();
           await PermissionControlSettingsScreen.permissionDetailsModal.deleteButton.click();

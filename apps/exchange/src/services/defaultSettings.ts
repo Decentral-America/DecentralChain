@@ -29,8 +29,6 @@ export interface CommonSettings {
   needReadNewTerms: boolean;
   closedNotification: string[];
   withScam: boolean;
-  scamListUrl: string;
-  tokensNameListUrl: string;
   tradeWithScriptAssets: boolean;
   baseAssetId: string;
   events: Record<string, unknown>;
@@ -114,10 +112,8 @@ export class DefaultSettings {
     needReadNewTerms: false,
     network: NetworkConfig.code,
     oracleDCC: NetworkConfig.oracleDCC,
-    scamListUrl: NetworkConfig.scamListUrl,
     termsAccepted: true,
     theme: 'default',
-    tokensNameListUrl: NetworkConfig.tokensNameListUrl,
     tradeWithScriptAssets: false,
     whatsNewList: [],
     withScam: false,
