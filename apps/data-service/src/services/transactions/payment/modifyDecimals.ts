@@ -9,7 +9,7 @@ export const modifyDecimals =
   (txs: PaymentTx[]): Effect.Effect<PaymentTx[], AppError> =>
     pipe(
       assetsService.precisions({
-        ids: ['WAVES'],
+        ids: ['DCC'],
       }),
       EffectLib.map(([assetPrecision]) =>
         txs.map((tx) => ({

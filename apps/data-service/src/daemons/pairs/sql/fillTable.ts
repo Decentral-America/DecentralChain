@@ -37,7 +37,7 @@ const selectPairsCTE = pg
       txs_count: pg.raw('count(e.price)'),
       volume: pg.raw('sum(e.amount)'),
       volume_waves: pg.raw(
-        `case when amount_asset_id='WAVES' then sum(e.amount) when price_asset_id='WAVES' then sum(e.amount::numeric * e.price::numeric) end`,
+        `case when amount_asset_id='DCC' then sum(e.amount) when price_asset_id='DCC' then sum(e.amount::numeric * e.price::numeric) end`,
       ),
       weighted_average_price: pg.raw(
         'floor(sum(e.amount::numeric * e.price::numeric)/ sum(e.amount))',
@@ -66,13 +66,13 @@ const selectPairsCTE = pg
     'p.matcher_address',
   )
   .leftJoin({ p1: 'pairs_cte' }, function () {
-    this.on(pg.raw(`p1.amount_asset_id='WAVES'`))
+    this.on(pg.raw(`p1.amount_asset_id='DCC'`))
       .andOn('p1.price_asset_id', 'p.price_asset_id')
       .andOn('p1.matcher_address', 'p.matcher_address');
   })
   .leftJoin({ p2: 'pairs_cte' }, function () {
     this.on('p2.amount_asset_id', 'p.price_asset_id')
-      .andOn(pg.raw(`p2.price_asset_id='WAVES'`))
+      .andOn(pg.raw(`p2.price_asset_id='DCC'`))
       .andOn('p2.matcher_address', 'p.matcher_address');
   });
 

@@ -1,117 +1,134 @@
-# Waves data service API
+# DecentralChain Data Service
 
-**⚠️ This service is currently in /v0. Breaking changes are coming in /v1 (also possible, but not likely, within /v0 releases). Please use with caution.**
+A high-performance read API for the DecentralChain blockchain. Provides HTTP endpoints for querying transactions, candles, pairs, rates, and market data — backed by a PostgreSQL database synchronised via [blockchain-postgres-sync](../../blockchain-postgres-sync).
 
-This is an API aimed at retrieving data from blockchain quickly and conveniently. We support public APIs for:
+## API base URLs
 
-- Mainnet
-  - [https://api.wavesplatform.com/v0/](https://api.wavesplatform.com/v0/)
-- Testnet
-  - [https://api.testnet.wavesplatform.com/v0/](https://api.testnet.wavesplatform.com/v0/)
+| Network | URL |
+|---------|-----|
+| Mainnet | `https://api.decentral.exchange` |
+| Testnet | `https://api.testnet.decentral.exchange` |
 
-Visit `/docs` for Swagger documentation.
+## Local development
 
-## Data service on-premise
+### Prerequisites
 
-It is possible to create your own instance of this service. To do so, follow the guide below.
+- Node.js ≥ 24
+- pnpm ≥ 10
+- PostgreSQL 15+
 
-#### Requirements
+### Setup
 
-1. PostgreSQL 11 database with a table stricture found in [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync)
-2. Downloaded and continuously updated blockchain data in the database
-3. NodeJS or Docker for either running the service directly, or in a container
+```sh
+# Install dependencies from the monorepo root
+pnpm install
 
-#### Installation and start
+# Build SDK packages the service depends on
+pnpm --filter @decentralchain/data-service... build
 
-The service uses following environment variables:
-
-| Env variable           | Default | Required | Description                                                                                                                                         |
-| ---------------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`                 | 3000    | NO       | HTTP service port                                                                                                                                   |
-| `PGHOST`               |         | YES      | Postgres host address                                                                                                                               |
-| `PGPORT`               | `5432`  | NO       | Postgres port                                                                                                                                       |
-| `PGDATABASE`           |         | YES      | Postgres database name                                                                                                                              |
-| `PGUSER`               |         | YES      | Postgres user name                                                                                                                                  |
-| `PGPASSWORD`           |         | YES      | Postgres password                                                                                                                                   |
-| `PGPOOLSIZE`           | `20`    | NO       | Postgres pool size                                                                                                                                  |
-| `PGSTATEMENTTIMEOUT`   | false   | NO       | Postgres `statement_timeout` number in ms. 0 disables timeout, false — use server settings; at this moment used only as default `STATEMENT_TIMEOUT` |
-| `LOG_LEVEL`            | `info`  | NO       | Log level `['info','warn','error']`                                                                                                                 |
-| `DEFAULT_MATCHER`      |         | YES      | Default matcher public address                                                                                                                      |
-| `MATCHER_SETTINGS_URL` |         | NO       | Default matcher URL for getting settings                                                                                                            |
-| `DEFAULT_TIMEOUT`      | 30000   | NO       | Default timeout in ms; at this moment used only as `PG STATEMENT_TIMEOUT`                                                                           |
-
-`PGPOOLSIZE` is used by the `pg-pool` library to determine Postgres connection pool size per NodeJS process instance. A good value depends on your server and db configuration and can be found empirically. You can leave it at the default value to start with.
-
-Set those variables to a `variables.env` file in the root of the project for convenience. In the next steps we will assume this file exists.
-
-If you would like to use some other way of setting environment variables, just replace relevant commands below with custom alternatives.
-
-##### Docker
-
-If you wish to build data-service image locally, run this command from the project root
-
-```bash
-docker build -t wavesplatform/data-service .
+# Copy and edit environment variables
+cp apps/data-service/variables.env.example apps/data-service/variables.env
+# Edit variables.env with your local PostgreSQL connection details
 ```
 
-Otherwise you can use our public image from https://hub.docker.com/r/wavesplatform/data-service
+### Run
 
-Run the container using this command:
+```sh
+# Start the API server
+cd apps/data-service
+pnpm start
 
-```bash
-docker run -p=<port>:3000 --env-file=variables.env wavesplatform/data-service
+# Start the pairs daemon (optional — needed for /matchers/*/pairs endpoints)
+pnpm pairs
 ```
 
-A server will start at `localhost:<port>` (used in the `docker run` command). Logs will be handled by Docker. Use any other Docker options if necessary.
+The API server listens on `http://localhost:3000` by default. Override via `PORT` env var.
 
-When using the container in production, we recommend establishing a Docker logging and restart policy.
+### Tests
 
-##### NodeJS
+```sh
+cd apps/data-service
 
-1. Install dependencies
-   ```bash
-   npm install    # or `yarn install`, if you prefer
-   ```
-2. Build the server
-   ```bash
-   npm run build
-   ```
-3. Start the server
-   ```bash
-   export $(cat variables.env | xargs) && NODE_ENV=production node dist/index.js
-   ```
+# Unit tests (no database required)
+pnpm test
 
-Server will start at `localhost:PORT` (defaults to 3000). Logs will be directed to stdout.
+# Integration tests (requires a live PostgreSQL database)
+# Set up variables.env with DB connection details first
+pnpm test:i
+```
 
-If you decide to use NodeJS directly (without Docker), we recommend using a process manager, such as `pm2`.
+## Environment variables
 
-#### Daemons
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `PGHOST` | ✅ | PostgreSQL host |
+| `PGPORT` | ✅ | PostgreSQL port (default 5432) |
+| `PGDATABASE` | ✅ | Database name |
+| `PGUSER` | ✅ | Database user |
+| `PGPASSWORD` | ✅ | Database password |
+| `PORT` | — | HTTP listen port (default 3000) |
+| `LOG_LEVEL` | — | Log verbosity: `error`, `warn`, `info`, `debug` (default `info`) |
+| `DOCS_URL` | — | Custom docs URL returned by `GET /` |
+| `NODE_ENV` | — | Set to `production` in production deployments |
 
-To add and pairs functionality the following Docker daemons must be used:
+## Docker
 
-- Pairs — calculate last pairs for 24h exchange transactions (see [description](https://hub.docker.com/r/wavesplatform/data-service-pairs/))
+Build and run from the monorepo root:
 
-#### Documentation
+```sh
+# Build the production image
+docker build -f apps/data-service/Dockerfile -t decentralchain/data-service:latest .
 
-You can run your own instance of Swagger online documentation.
-To do this, you have to:
+# Run the API server
+docker run -d \
+  --name dcc-data-service \
+  -p 3000:3000 \
+  -e PGHOST=<host> \
+  -e PGPORT=5432 \
+  -e PGDATABASE=dcc \
+  -e PGUSER=dcc \
+  -e PGPASSWORD=<password> \
+  decentralchain/data-service:latest
 
-1. Build Docker image from docs/ directory:
-   ```bash
-   docker build -t wavesplatform/data-service-docs docs/
-   ```
-2. Run the container
-   ```bash
-   docker run --rm -d -p 8080:8080 -e SWAGGER_JSON=/app/openapi.json wavesplatform/data-service-docs
-   ```
+# Run the pairs daemon
+docker run -d \
+  --name dcc-pairs-daemon \
+  -e PGHOST=<host> \
+  -e PGPORT=5432 \
+  -e PGDATABASE=dcc \
+  -e PGUSER=dcc \
+  -e PGPASSWORD=<password> \
+  decentralchain/data-service:latest \
+  node dist/daemons/pairs/index.mjs
+```
 
-Its will start the documentation server at `localhost:8080`. Enjoy!
+## API overview
 
-#### General recommendations
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | Service version and metadata |
+| `GET` | `/transactions/exchange` | Exchange transactions |
+| `GET` | `/candles/{amountAsset}/{priceAsset}` | OHLCV candle data |
+| `GET` | `/pairs` | Active trading pairs |
+| `GET` | `/matchers` | Known matchers |
+| `GET` | `/matchers/{address}/pairs` | Pairs for a specific matcher |
+| `GET` | `/matchers/{address}/tickers` | Tickers for a specific matcher |
+| `GET` | `/rates` | Asset exchange rates |
 
-- Set up a dedicated web server such as Nginx in front of data-service backends (for ssl/caching/balancing);
-- Implement a caching strategy. Different endpoints may need different cache time (or no cache at all);
-- Run several process instances behind a load balancer per machine. `docker-compose --scale` can help with that, or it can be done manually. A good rule of thumb is to use as many instances as CPU cores available;
-- Use several machines in different data centers and a balancer to minimize downtime;
-- Experiment with PostgreSQL settings to find out what works best for your configuration. Tweaking `PGPOOLSIZE` also can help performance;
-- Run the sql from `mainnet.sql` to increase exchange-transactions service performance.
+Full OpenAPI specification: see `docs/swagger.json` or run the service and visit `/docs`.
+
+## Architecture
+
+```
+PostgreSQL ← blockchain-postgres-sync ← DecentralChain node
+                      ↑
+           apps/data-service (this service)
+                      ↑
+                 HTTP clients
+```
+
+The data service is read-only. It never writes to PostgreSQL. The `blockchain-postgres-sync` service handles all writes.
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) in the monorepo root.

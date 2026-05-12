@@ -10,7 +10,7 @@ export const modifyDecimals =
   (txs: ReissueTx[]): Effect.Effect<ReissueTx[], AppError> =>
     pipe(
       assetsService.precisions({
-        ids: ['WAVES'].concat(txs.map((tx) => tx.assetId)),
+        ids: ['DCC'].concat(txs.map((tx) => tx.assetId)),
       }),
       EffectLib.map((precisions) => {
         const feePrecision = precisions.splice(0, 1)[0] ?? 0;

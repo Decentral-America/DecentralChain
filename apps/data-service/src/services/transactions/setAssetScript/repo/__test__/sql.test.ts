@@ -5,10 +5,10 @@ const filterValues = [
     script: 'base64:somescript',
   },
   {
-    assetId: 'WAVES',
+    assetId: 'DCC',
   },
   {
-    assetId: 'WAVES',
+    assetId: 'DCC',
     script: 'base64:somescript',
   },
 ];

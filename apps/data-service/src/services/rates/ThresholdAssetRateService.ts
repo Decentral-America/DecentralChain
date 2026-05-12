@@ -42,12 +42,12 @@ export class ThresholdAssetRateService implements IThresholdAssetRateService {
       this.pairsService.get({
         matcher: this.matcherAddress,
         moneyFormat: MoneyFormat.Long,
-        pair: { amountAsset: 'WAVES', priceAsset: this.thresholdAssetId },
+        pair: { amountAsset: 'DCC', priceAsset: this.thresholdAssetId },
       }),
       Effect.map((m) => {
         if (Option.isNone(m)) {
           this.logger({
-            data: `Pair WAVES/${this.thresholdAssetId} not found`,
+            data: `Pair DCC/${this.thresholdAssetId} not found`,
             message: 'GET_THRESHOLD_RATE',
           });
           return Option.none<BigNumber>();
@@ -55,7 +55,7 @@ export class ThresholdAssetRateService implements IThresholdAssetRateService {
         const value = m.value;
         if (value === null) {
           this.logger({
-            data: `Rate for pair WAVES/${this.thresholdAssetId} not found`,
+            data: `Rate for pair DCC/${this.thresholdAssetId} not found`,
             message: 'GET_THRESHOLD_RATE',
           });
           return Option.none<BigNumber>();

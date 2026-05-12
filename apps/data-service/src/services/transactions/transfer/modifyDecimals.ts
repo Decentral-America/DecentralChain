@@ -11,7 +11,7 @@ export const modifyDecimals =
     pipe(
       assetsService.precisions({
         ids: txs
-          .map((tx) => [defaultTo('WAVES', tx.feeAsset), tx.assetId])
+          .map((tx) => [defaultTo('DCC', tx.feeAsset), tx.assetId])
           .reduce((acc, cur) => acc.concat(cur), []),
       }),
       EffectLib.map((v) =>

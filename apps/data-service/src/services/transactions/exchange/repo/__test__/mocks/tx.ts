@@ -31,7 +31,7 @@ const txExchange = {
   o2_time_stamp: new Date('2017-12-26T09:32:28.000Z'),
   o2_type: 'sell',
   price: new BigNumber('1'),
-  price_asset: 'WAVES',
+  price_asset: 'DCC',
   proofs: [],
 
   sell_matcher_fee: new BigNumber('1'),
