@@ -2,8 +2,6 @@ import { Adapter } from '@decentralchain/signature-adapter';
 import {
   address as buildAddress,
   keyPair as buildKeyPair,
-  decryptSeed,
-  encryptSeed,
   randomSeed,
 } from '@decentralchain/ts-lib-crypto';
 
@@ -69,30 +67,5 @@ export class Seed {
    */
   static fromExistingPhrase(phrase: string, chainId?: number): Seed {
     return new Seed(phrase, chainId ?? networkCode);
-  }
-
-  /**
-   * Encrypt seed phrase with password
-   * @param password - Password to encrypt with
-   * @param encryptionRounds - Number of encryption rounds (default: 5000)
-   * @returns Encrypted seed phrase
-   */
-  encrypt(password: string, encryptionRounds: number = 5000): string {
-    return encryptSeed(this.phrase, password, encryptionRounds);
-  }
-
-  /**
-   * Decrypt encrypted seed phrase with password
-   * @param encryptedPhrase - Encrypted seed phrase
-   * @param password - Password to decrypt with
-   * @param encryptionRounds - Number of encryption rounds (default: 5000)
-   * @returns Decrypted seed phrase
-   */
-  static decrypt(
-    encryptedPhrase: string,
-    password: string,
-    encryptionRounds: number = 5000,
-  ): string {
-    return decryptSeed(encryptedPhrase, password, encryptionRounds);
   }
 }
