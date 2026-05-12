@@ -47,56 +47,50 @@ const StyledTextField = styled(TextField, {
   },
 }));
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      label,
-      error,
-      helperText,
-      fullWidth = false,
-      inputSize = 'medium',
-      leftIcon,
-      rightIcon,
-      id,
-      'aria-required': ariaRequired,
-      'aria-label': ariaLabel,
-      required,
-      ...props
-    },
-    ref,
-  ) => {
-    const generatedId = React.useId();
-    const inputId = id || `input-${generatedId}`;
+export function Input({
+  ref,
+  label,
+  error,
+  helperText,
+  fullWidth = false,
+  inputSize = 'medium',
+  leftIcon,
+  rightIcon,
+  id,
+  'aria-required': ariaRequired,
+  'aria-label': ariaLabel,
+  required,
+  ...props
+}: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
+  const generatedId = React.useId();
+  const inputId = id || `input-${generatedId}`;
 
-    return (
-      <StyledTextField
-        id={inputId}
-        inputRef={ref}
-        label={label}
-        error={!!error}
-        helperText={error || helperText}
-        fullWidth={fullWidth}
-        inputSize={inputSize}
-        size={inputSize === 'large' ? 'medium' : inputSize}
-        variant="outlined"
-        required={required}
-        InputProps={{
-          endAdornment: rightIcon ? (
-            <InputAdornment position="end">{rightIcon}</InputAdornment>
-          ) : undefined,
-          startAdornment: leftIcon ? (
-            <InputAdornment position="start">{leftIcon}</InputAdornment>
-          ) : undefined,
-        }}
-        inputProps={{
-          'aria-invalid': !!error,
-          'aria-label': ariaLabel,
-          'aria-required': ariaRequired || required,
-        }}
-        {...props}
-      />
-    );
-  },
-);
-
-Input.displayName = 'Input';
+  return (
+    <StyledTextField
+      id={inputId}
+      inputRef={ref}
+      label={label}
+      error={!!error}
+      helperText={error || helperText}
+      fullWidth={fullWidth}
+      inputSize={inputSize}
+      size={inputSize === 'large' ? 'medium' : inputSize}
+      variant="outlined"
+      required={required}
+      InputProps={{
+        endAdornment: rightIcon ? (
+          <InputAdornment position="end">{rightIcon}</InputAdornment>
+        ) : undefined,
+        startAdornment: leftIcon ? (
+          <InputAdornment position="start">{leftIcon}</InputAdornment>
+        ) : undefined,
+      }}
+      inputProps={{
+        'aria-invalid': !!error,
+        'aria-label': ariaLabel,
+        'aria-required': ariaRequired || required,
+      }}
+      {...props}
+    />
+  );
+}

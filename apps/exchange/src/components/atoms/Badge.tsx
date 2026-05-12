@@ -6,7 +6,7 @@
 
 import MuiChip, { type ChipProps as MuiChipProps } from '@mui/material/Chip';
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import type React from 'react';
 
 export interface BadgeProps extends Omit<MuiChipProps, 'variant' | 'size'> {
   variant?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
@@ -64,23 +64,25 @@ const StyledBadge = styled(MuiChip, {
   },
 );
 
-export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ size, variant, children, ...props }, ref) => {
-    // MUI Chip only supports 'small' | 'medium', map 'large' to 'medium'
-    const chipSize = size === 'large' ? 'medium' : (size as 'small' | 'medium' | undefined);
-    // Pass our custom variant as a style prop, not MUI's variant
-    return (
-      <StyledBadge
-        ref={ref}
-        size={chipSize}
-        variant="filled"
-        label={children}
-        {...(props as Omit<MuiChipProps, 'variant' | 'size'>)}
-        badgeVariant={variant}
-        badgeSize={size}
-      />
-    );
-  },
-);
-
-Badge.displayName = 'Badge';
+export function Badge({
+  ref,
+  size,
+  variant,
+  children,
+  ...props
+}: BadgeProps & { ref?: React.Ref<HTMLDivElement> }) {
+  // MUI Chip only supports 'small' | 'medium', map 'large' to 'medium'
+  const chipSize = size === 'large' ? 'medium' : (size as 'small' | 'medium' | undefined);
+  // Pass our custom variant as a style prop, not MUI's variant
+  return (
+    <StyledBadge
+      ref={ref}
+      size={chipSize}
+      variant="filled"
+      label={children}
+      {...(props as Omit<MuiChipProps, 'variant' | 'size'>)}
+      badgeVariant={variant}
+      badgeSize={size}
+    />
+  );
+}
