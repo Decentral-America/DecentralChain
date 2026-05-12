@@ -51,6 +51,7 @@ const buildSqlOptions = (options: PgDriverOptions): postgres.Options<AnyTypes> =
     max: options.postgresPoolSize,
     password: options.postgresPassword,
     port: options.postgresPort,
+    ssl: true,
     types: {
       bigint: bigNumberType(20, [20]), // int8
       float8: bigNumberType(701, [701]), // float8 / double precision

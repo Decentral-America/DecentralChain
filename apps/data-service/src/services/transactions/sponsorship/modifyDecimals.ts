@@ -13,7 +13,7 @@ export const modifyDecimals =
         ids: txs
           .map((tx) =>
             compose((a: string[]) => (isNil(tx.minSponsoredAssetFee) ? a : a.concat(tx.assetId)))([
-              'WAVES',
+              'DCC',
             ]),
           )
           .reduce((acc, cur) => acc.concat(cur), []),

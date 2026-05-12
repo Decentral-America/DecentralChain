@@ -74,7 +74,7 @@ describe('sql query from pairs', () => {
         limit: 10,
         match_exactly: [false, false],
         matcher: '',
-        search_by_assets: ['BTC', 'WAVES'],
+        search_by_assets: ['BTC', 'DCC'],
         sort: SortOrder.Descending,
       }),
     ).toMatchSnapshot();
@@ -86,7 +86,7 @@ describe('sql query from pairs', () => {
         limit: 10,
         match_exactly: [false],
         matcher: '',
-        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
+        search_by_assets: ['¯\\_(ツ)_/¯', 'DCC'],
         sort: SortOrder.Descending,
       }),
     ).toMatchSnapshot();
@@ -98,7 +98,7 @@ describe('sql query from pairs', () => {
         limit: 10,
         match_exactly: [true, false],
         matcher: '',
-        search_by_assets: ['¯\\_(ツ)_/¯', 'WAVES'],
+        search_by_assets: ['¯\\_(ツ)_/¯', 'DCC'],
         sort: SortOrder.Descending,
       }),
     ).toMatchSnapshot();

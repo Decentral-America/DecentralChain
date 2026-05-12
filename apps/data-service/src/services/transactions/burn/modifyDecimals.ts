@@ -8,7 +8,7 @@ export const modifyDecimals =
   (txs: BurnTx[]): Effect.Effect<BurnTx[], AppError> =>
     pipe(
       assetsService.precisions({
-        ids: ['WAVES'].concat(txs.map((tx) => tx.assetId)),
+        ids: ['DCC'].concat(txs.map((tx) => tx.assetId)),
       }),
       Effect.map((precisions) => {
         const [feePrecision = 0, ...assetPrecisions] = precisions;
