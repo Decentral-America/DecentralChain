@@ -114,7 +114,7 @@ DCC is byte-compatible with Waves at the protocol level, except for chain IDs.
 | **Stagenet matcher** | `matcher-stagenet.waves.exchange` | `stagenet-matcher.decentralchain.io` | ✅ |
 | **Data service API** | `api.wavesplatform.com` | `api.decentralchain.io` | ✅ |
 | **Swap API** | `swap-api.keeper-wallet.app` | `swap-api.decentralchain.io` | ⏸️ DEFERRED |
-| **Identity API** | `id.waves.exchange/api` | `id.decentralchain.io/api` | ✅ |
+| **Identity API** | `id.waves.exchange/api` | `id.decentralchain.io/api` | ❌ REMOVED — Cognito fully removed (DCC-117/DCC-118); zero app consumers |
 | **Explorer** | `wavesexplorer.com` | `explorer.decentralchain.io` | ✅ |
 
 ### GitHub Organizations
@@ -396,12 +396,14 @@ These exist in the `Decentral-America` org with **no Waves upstream equivalent**
 | Repo | Purpose | Status |
 |------|---------|--------|
 | **exchange** | DCC trading interface (Vite + Electron) | Active — in monorepo `apps/` |
-| **dcc-configs** | Shared runtime configuration files | Active |
+| ~~**dcc-configs**~~ | Shared runtime configuration files | **Eliminated** — content inlined into `constants.ts`; repo was 404 |
 | **DCC-ERC20-Gateway** | Cross-chain ERC-20 ↔ DCC gateway (Python) | Active |
 | **dcc-ride-templates** | Ride smart contract templates | Active |
-| **dcc-token-filters** | Token filtering/curation lists | Active |
+| ~~**dcc-token-filters**~~ | Token filtering/curation lists | **Eliminated** — scam list and names inlined as static data |
+| ~~**dcc-community**~~ | Community repo | **Eliminated** — 404, all references removed |
+| ~~**dcc-client-config**~~ | Client configuration service | **Eliminated** — `ConfigService` dead code removed |
 | **DecentralScan2.0** | Next-gen block explorer | Active |
-| **k8s-manifests** | Kubernetes deployment manifests | Infrastructure |
+| ~~**k8s-manifests**~~ | Kubernetes deployment manifests | **Eliminated** from scope — IPFS deploy requires no server |
 | **passport** | Identity/auth service (Python) | Active |
 
 These represent DCC's **differentiation** — features Waves either never built or that DCC is building better.
@@ -476,7 +478,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 |---------|-------------|------------------|-----|
 | Create wallet (seed phrase) | ✅ | ✅ | — |
 | Import seed / keystore / Ledger | ✅ | ✅ | — |
-| Import via email (Cognito) | ✅ | ✅ | See [Cognito caveat](STATUS.md#7-remediation-priority-matrix) |
+| Import via email (Cognito) | ✅ | ❌ REMOVED | Fully removed (DCC-117, DCC-118) — 1-of-1 seed model, no custodial component |
 | Multi-account, multi-network | ✅ | ✅ | — |
 | Send/sign all 18 transaction types | ✅ | ✅ | — |
 | Sign arbitrary data | ✅ | ✅ | — |
@@ -492,7 +494,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `CubensisConnect` global API | `WavesKeeper` | ✅ | Deprecated `KeeperWallet`/`WavesKeeper` aliases maintained |
 | Sentry error reporting | ✅ | ⚠️ | No DSN configured — errors are silently dropped |
 | Extension store listing | ✅ | ❌ | Not published to Chrome Web Store or Firefox AMO |
-| Remote config updates | ✅ | ✅ | Uses `dcc-configs` repo |
+| Remote config updates | ✅ | ✅ | Inlined into `constants.ts` — no external CDN dependency |
 
 ### NFT Vendor System
 
@@ -519,11 +521,11 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 | Service | URL | Function |
 |---------|-----|----------|
 | Data Service API | `api.decentralchain.io` | Asset info, ticker data |
-| Swap API | `swap-api.decentralchain.io` | Token swap routing & execution | ⏸️ DEFERRED |
-| Identity API | `id.decentralchain.io/api` | Email-based account management |
-| Cognito Proxy | `decentralchain.io/cognito` | AWS Cognito auth proxy |
-| Remote Config | `raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json` | Runtime config |
-| Suspicious Token List | `raw.githubusercontent.com/Decentral-America/waves-community/master/...` | Scam token CSV (⚠️ repo still named `waves-community`) |
+| Swap API | `swap-api.decentralchain.io` | Token swap routing & execution — ⏸️ DEFERRED |
+| ~~Identity API~~ | ~~`id.decentralchain.io/api`~~ | ~~Email-based account management~~ — **REMOVED** (DCC-117/DCC-118) |
+| ~~Cognito Proxy~~ | ~~`decentralchain.io/cognito`~~ | ~~AWS Cognito auth proxy~~ — **REMOVED** (DCC-117/DCC-118) |
+| ~~Remote Config CDN~~ | ~~`raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json`~~ | ~~Runtime config~~ — **REMOVED**; inlined into `constants.ts` |
+| ~~Suspicious Token List~~ | ~~`raw.githubusercontent.com/Decentral-America/waves-community/master/...`~~ | ~~Scam token CSV~~ — **REMOVED**; inlined as static data |
 
 ### Third-Party Services (Not DCC-Controlled)
 
@@ -602,15 +604,14 @@ Reference mapping between the upstream `@keeper-wallet/waves-crypto` and the for
 
 Actionable items where Waves references remain and should be cleaned up:
 
-| Reference | File | Action |
-|-----------|------|--------|
-| `waves-community` repo name in URL | `controllers/assetInfo.ts:34` | Rename GitHub repo → `dcc-community` |
+*None outstanding.*
 
 ### Resolved Branding Items
 
 - ~~`support.waves.exchange` in error message~~ → Cleaned up
 - ~~`web.keeper-wallet.app` in whitelist~~ → Removed
 - ~~`swap.keeper-wallet.app` in whitelist~~ → Removed
+- ~~`waves-community` repo name in URL (`controllers/assetInfo.ts:34`)~~ → Feature removed entirely (`05d55efd2`): scam-token CSV was never fetchable (repo 404 since fork); all 3 layers removed (fetch/store, `isSuspicious` flag, Settings UI toggle). Moot.
 
 ### UX Regressions vs Upstream
 

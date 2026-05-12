@@ -19,7 +19,7 @@
       "!packages/transactions/docs",
       "!.nx",
       "!**/.react-router",
-      "!apps/data-service/**"
+      "!apps/data-service"
     ]
   },
   "formatter": {
