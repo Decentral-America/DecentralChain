@@ -26,7 +26,7 @@ export const AssetId = pipe(
   Schema.String,
   Schema.filter((s) => R.assetId.test(s), {
     identifier: 'AssetId',
-    message: () => 'must be a valid base58 string or "WAVES"',
+    message: () => 'must be a valid base58 string or "DCC"',
   }),
 );
 

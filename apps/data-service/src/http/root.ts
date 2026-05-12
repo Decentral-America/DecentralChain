@@ -12,7 +12,7 @@ export default createHttpHandler(() =>
     HttpResponse.Ok(
       defaultStringify({
         docsUrl: process.env['DOCS_URL'] ? process.env['DOCS_URL'] : undefined,
-        github: 'https://github.com/wavesplatform/data-service',
+        github: 'https://github.com/Decentral-America/DecentralChain',
         version,
       }),
     ),

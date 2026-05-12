@@ -14,7 +14,7 @@ import accessLogMiddleware from './middleware/accessLog';
 import injectEventBus from './middleware/injectEventBus';
 import createServices from './services';
 
-export const WavesId: string = 'WAVES';
+export const WavesId: string = 'DCC';
 
 const options = loadConfig();
 const eventBus = createEventBus();
