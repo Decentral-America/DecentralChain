@@ -3,7 +3,7 @@
  * Visual separator for content sections
  */
 
-import React from 'react';
+import type React from 'react';
 import styled from 'styled-components';
 
 export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
@@ -61,47 +61,48 @@ const DividerLabel = styled.span`
   flex-shrink: 0;
 `;
 
-export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
-  (
-    { orientation = 'horizontal', spacing, thickness = '1px', variant = 'solid', label, ...props },
-    ref,
-  ) => {
-    if (label) {
-      return (
-        <DividerContainer orientation={orientation}>
-          <DividerLine
-            ref={ref}
-            orientation={orientation}
-            spacing={spacing}
-            thickness={thickness}
-            variant={variant}
-            hasLabel={true}
-            {...(props as Record<string, unknown>)}
-          />
-          <DividerLabel>{label}</DividerLabel>
-          <DividerLine
-            orientation={orientation}
-            spacing={spacing}
-            thickness={thickness}
-            variant={variant}
-            hasLabel={true}
-          />
-        </DividerContainer>
-      );
-    }
-
+export function Divider({
+  ref,
+  orientation = 'horizontal',
+  spacing,
+  thickness = '1px',
+  variant = 'solid',
+  label,
+  ...props
+}: DividerProps & { ref?: React.Ref<HTMLHRElement> }) {
+  if (label) {
     return (
-      <DividerLine
-        ref={ref}
-        orientation={orientation}
-        spacing={spacing}
-        thickness={thickness}
-        variant={variant}
-        hasLabel={false}
-        {...(props as Record<string, unknown>)}
-      />
+      <DividerContainer orientation={orientation}>
+        <DividerLine
+          ref={ref}
+          orientation={orientation}
+          spacing={spacing}
+          thickness={thickness}
+          variant={variant}
+          hasLabel={true}
+          {...(props as Record<string, unknown>)}
+        />
+        <DividerLabel>{label}</DividerLabel>
+        <DividerLine
+          orientation={orientation}
+          spacing={spacing}
+          thickness={thickness}
+          variant={variant}
+          hasLabel={true}
+        />
+      </DividerContainer>
     );
-  },
-);
+  }
 
-Divider.displayName = 'Divider';
+  return (
+    <DividerLine
+      ref={ref}
+      orientation={orientation}
+      spacing={spacing}
+      thickness={thickness}
+      variant={variant}
+      hasLabel={false}
+      {...(props as Record<string, unknown>)}
+    />
+  );
+}

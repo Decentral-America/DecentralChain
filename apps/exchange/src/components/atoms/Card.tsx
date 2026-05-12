@@ -11,7 +11,7 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import type React from 'react';
 
 export interface CardProps extends Omit<MuiCardProps, 'elevation'> {
   elevation?: 'none' | 'sm' | 'md' | 'lg';
@@ -85,13 +85,11 @@ export const CardDescription = styled(Typography)(({ theme }) => ({
   margin: `${theme.spacing(0.5)} 0 0 0`,
 }));
 
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ elevation = 'md', ...props }, ref) => {
-    const muiElevation = getElevation(elevation);
-    return (
-      <StyledCard ref={ref} elevation={muiElevation} {...(props as Record<string, unknown>)} />
-    );
-  },
-);
-
-Card.displayName = 'Card';
+export function Card({
+  ref,
+  elevation = 'md',
+  ...props
+}: CardProps & { ref?: React.Ref<HTMLDivElement> }) {
+  const muiElevation = getElevation(elevation);
+  return <StyledCard ref={ref} elevation={muiElevation} {...(props as Record<string, unknown>)} />;
+}

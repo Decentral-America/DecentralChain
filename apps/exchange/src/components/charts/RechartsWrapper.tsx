@@ -1,99 +1,75 @@
 /**
- * RechartsWrapper - Fixes Recharts v3 infinite loop with React 18
+ * RechartsWrapper - Fixes Recharts v3 infinite loop with React 18+
  *
  * The issue: Recharts v3 uses an internal Redux-style subscription system
  * that calls setState during render when data updates. Combined with React
  * Query's refetchInterval, this creates an infinite re-render loop.
  *
- * The fix: Isolate Recharts in a separate component boundary with error
- * recovery, and use a key-based remounting strategy to break the cycle.
+ * The fix: Isolate Recharts in a separate ErrorBoundary with auto-recovery.
+ * Non-Recharts errors propagate to the parent boundary.
  */
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
+import { ErrorBoundary, type FallbackProps, getErrorMessage } from 'react-error-boundary';
 import { logger } from '@/lib/logger';
 
-interface RechartsWrapperProps {
+export interface RechartsWrapperProps {
   children: ReactNode;
   /** Unique key to force remount when data changes */
   dataKey?: string | number;
 }
 
-interface RechartsWrapperState {
-  hasError: boolean;
-  errorCount: number;
-}
+const recoveryStyle = {
+  alignItems: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+  minHeight: '300px',
+} as const;
 
 /**
- * Error boundary wrapper that catches Recharts infinite loop errors
- * and recovers by remounting the component tree
+ * Fallback rendered while Recharts recovers from an infinite loop.
+ * Throws non-Recharts errors so they propagate to the parent boundary.
  */
-export class RechartsWrapper extends Component<RechartsWrapperProps, RechartsWrapperState> {
-  private resetTimer: NodeJS.Timeout | null = null;
+function RechartsRecoveryFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const message = getErrorMessage(error);
 
-  constructor(props: RechartsWrapperProps) {
-    super(props);
-    this.state = {
-      errorCount: 0,
-      hasError: false,
-    };
-  }
-
-  static getDerivedStateFromError(error: Error): Partial<RechartsWrapperState> | null {
-    // Only catch "Maximum update depth exceeded" errors from Recharts
-    if (error.message.includes('Maximum update depth exceeded')) {
-      return { hasError: true };
-    }
-    // Re-throw other errors
+  // Non-Recharts errors must propagate — parent boundary handles them
+  if (!message?.includes('Maximum update depth exceeded')) {
     throw error;
   }
 
-  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (error.message.includes('Maximum update depth exceeded')) {
-      logger.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
-        componentStack: errorInfo.componentStack,
-        error: error.message,
-      });
+  // Auto-recover after a single tick to break the render cycle
+  useEffect(() => {
+    const timer = setTimeout(resetErrorBoundary, 50);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [resetErrorBoundary]);
 
-      // Increment error count
-      this.setState((prev) => ({ errorCount: prev.errorCount + 1 }));
+  return <div style={recoveryStyle}>Refreshing chart...</div>;
+}
 
-      // Auto-recover after a short delay
-      this.resetTimer = setTimeout(() => {
-        this.setState({ hasError: false });
-      }, 50);
-    }
+function handleRechartsError(error: unknown) {
+  const message = getErrorMessage(error);
+  if (message?.includes('Maximum update depth exceeded')) {
+    logger.warn('[RechartsWrapper] Caught Recharts infinite loop, recovering...', {
+      error: message,
+    });
   }
+}
 
-  override componentDidUpdate(prevProps: RechartsWrapperProps) {
-    // Reset error state when data changes (via dataKey prop)
-    if (prevProps.dataKey !== this.props.dataKey && this.state.hasError) {
-      this.setState({ errorCount: 0, hasError: false });
-    }
-  }
-
-  override componentWillUnmount() {
-    if (this.resetTimer) {
-      clearTimeout(this.resetTimer);
-    }
-  }
-
-  override render() {
-    if (this.state.hasError) {
-      // Show loading state during recovery
-      return (
-        <div
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            minHeight: '300px',
-          }}
-        >
-          Refreshing chart...
-        </div>
-      );
-    }
-
-    // Use key prop to force remount when data changes
-    return <div key={this.props.dataKey}>{this.props.children}</div>;
-  }
+/**
+ * Wraps Recharts charts to prevent infinite re-render loops from propagating.
+ * Automatically remounts when `dataKey` changes.
+ */
+export function RechartsWrapper({ children, dataKey }: RechartsWrapperProps) {
+  return (
+    <ErrorBoundary
+      FallbackComponent={RechartsRecoveryFallback}
+      resetKeys={[dataKey]}
+      onError={handleRechartsError}
+    >
+      {/* key forces remount when dataKey changes, breaking stale render cycles */}
+      <div key={dataKey}>{children}</div>
+    </ErrorBoundary>
+  );
 }
