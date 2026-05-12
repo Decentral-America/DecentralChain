@@ -1,0 +1,150 @@
+name: Deploy Scanner
+
+on:
+  # Auto-trigger on push to main whenever scanner or its deps change.
+  push:
+    branches: [main]
+    paths:
+      - 'apps/scanner/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig.base.json'
+
+  # Manual trigger: deploy to any network on demand.
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy'
+        required: true
+        default: 'mainnet'
+        type: choice
+        options:
+          - mainnet
+          - stagenet
+          - testnet
+
+concurrency:
+  # One deploy per network at a time.
+  group: deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write  # Required to push to ghcr.io
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/decentral-america/scanner
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # ── Resolve build parameters ──────────────────────────────────────────────────
+  # Scanner uses runtime env vars baked into the server /opt/dcc/secrets/<network>.env
+  # file by the infra bootstrap.sh. This job just resolves which network to deploy to.
+  resolve:
+    name: Resolve parameters
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      network: ${{ steps.params.outputs.network }}
+
+    steps:
+      - name: Compute network
+        id: params
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            NETWORK="${{ inputs.network }}"
+          else
+            NETWORK="mainnet"
+          fi
+
+          case "$NETWORK" in
+            mainnet|stagenet|testnet) ;;
+            *)
+              echo "::error::Unknown network: $NETWORK"
+              exit 1
+              ;;
+          esac
+
+          echo "network=$NETWORK" >> "$GITHUB_OUTPUT"
+
+          echo "### Build parameters" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Parameter | Value |"        >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----------|-------|"        >> "$GITHUB_STEP_SUMMARY"
+          echo "| Network   | \`$NETWORK\` |" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Build and push Docker image ───────────────────────────────────────────────
+  # One image serves all networks — network config is injected at container start.
+  build-and-push:
+    name: Build and push
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: resolve
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title=DCC Scanner
+            org.opencontainers.image.description=DecentralChain blockchain explorer (SSR)
+            org.opencontainers.image.vendor=Decentral-America
+
+      - name: Build and push image
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
+        with:
+          context: .
+          file: apps/scanner/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to:   type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Write image summary
+        run: |
+          echo "### Image pushed" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Deploy via infra reusable workflow ───────────────────────────────────────
+  # Calls Decentral-America/infra/.github/workflows/deploy-container.yml.
+  # That workflow reads DEPLOY_* secrets from the infra repo's environments
+  # (mainnet/stagenet/testnet) — this repo needs zero environment secrets.
+  # Network-specific URLs (DCC_NODE_URL etc.) are written to the server's
+  # /opt/dcc/secrets/<network>.env by the infra bootstrap.sh at provision time.
+  # ─────────────────────────────────────────────────────────────────────────────
+  call-deploy:
+    name: Deploy (${{ needs.resolve.outputs.network }})
+    needs: [resolve, build-and-push]
+    # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
+    if: >-
+      needs.resolve.outputs.network == 'mainnet' ||
+      github.event_name == 'workflow_dispatch'
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@main
+    with:
+      network: ${{ needs.resolve.outputs.network }}
+      image:   ghcr.io/decentral-america/scanner:${{ github.sha }}
+      service: scanner
+    secrets: inherit

@@ -1,0 +1,246 @@
+name: Publish Cubensis Connect
+
+# Triggered by version tags: cubensis/v1.2.3
+# Or manually with an explicit version for re-publishing a specific release.
+#
+# Tag convention:
+#   git tag cubensis/v1.2.3
+#   git push origin cubensis/v1.2.3
+#
+# Required secrets (set at org level or in DecentralChain repo settings):
+#   CHROME_EXTENSION_ID     — Chrome Web Store extension ID
+#   CHROME_CLIENT_ID        — Google OAuth client ID
+#   CHROME_CLIENT_SECRET    — Google OAuth client secret
+#   CHROME_REFRESH_TOKEN    — Google OAuth refresh token
+#   FIREFOX_ADDON_GUID      — Firefox AMO addon GUID (e.g. {abc123...})
+#   FIREFOX_JWT_ISSUER      — AMO API key issuer
+#   FIREFOX_JWT_SECRET      — AMO API key secret
+#   EDGE_PRODUCT_ID         — Microsoft Edge addon product ID
+#   EDGE_API_KEY            — Microsoft Edge Addons API key
+#   EDGE_CLIENT_ID          — Microsoft Edge Addons client ID
+#
+# Opera: No CI publish API exists. Opera 15+ installs Chrome Web Store extensions
+# directly. A cubensis-opera-<version>.zip is produced as a release artifact for
+# manual submission to the Opera Addons store if desired.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    tags:
+      - 'cubensis/v*.*.*'
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.2.3 — no "v" prefix)'
+        required: true
+
+concurrency:
+  group: publish-cubensis
+  cancel-in-progress: false  # Never cancel a store submission in-flight
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # ── Resolve version ───────────────────────────────────────────────────────────
+  resolve:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+
+    steps:
+      - name: Extract version from tag or input
+        id: ver
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            # Tag format: cubensis/v1.2.3 → strip "cubensis/v" prefix
+            VERSION="${GITHUB_REF_NAME#cubensis/v}"
+          fi
+
+          # Validate semver format
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version format: '$VERSION'. Expected x.y.z"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          echo "### Publishing Cubensis Connect v$VERSION" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Build extension ───────────────────────────────────────────────────────────
+  # Produces per-platform zip files at:
+  #   apps/cubensis-connect/dist/cubensis-connect-<version>-<platform>.zip
+  # Platforms: chrome, firefox, edge, opera (opera zip kept but not submitted)
+  build:
+    name: Build extension bundles
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: resolve
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@8912a9102ac27614460f54aedde9e1e7f9aec20d # v6.0.5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          cache: pnpm
+          node-version-file: .node-version
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Build workspace SDK packages first — cubensis-connect depends on them
+      - name: Build SDK packages
+        run: pnpm --filter './packages/**' run build
+
+      # Build the extension: produces dist/build/ and per-platform dist/<platform>/
+      - name: Build extension
+        run: pnpm --filter ./apps/cubensis-connect run build
+
+      # Zip each platform dir → dist/cubensis-connect-<version>-<platform>.zip
+      - name: Zip platform builds
+        run: pnpm --filter ./apps/cubensis-connect run zip
+        env:
+          CUBENSIS_VERSION: ${{ needs.resolve.outputs.version }}
+
+      - name: Verify zip files exist
+        run: |
+          VERSION="${{ needs.resolve.outputs.version }}"
+          DIST="apps/cubensis-connect/dist"
+          for platform in chrome firefox edge opera; do
+            ZIP="$DIST/cubensis-connect-${VERSION}-${platform}.zip"
+            if [[ ! -f "$ZIP" ]]; then
+              echo "::error::Expected zip not found: $ZIP"
+              exit 1
+            fi
+            echo "✓ $ZIP ($(du -sh "$ZIP" | cut -f1))"
+          done
+
+      # Upload all zips as workflow artifacts — used by publish jobs below
+      - name: Upload extension zips
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cubensis-zips-${{ needs.resolve.outputs.version }}
+          path: apps/cubensis-connect/dist/cubensis-connect-*.zip
+          retention-days: 7
+
+  # ── Publish to Chrome Web Store ───────────────────────────────────────────────
+  # Uses mnao305/chrome-extension-upload@v6.0.0 (verified Mar 2026, Node 24).
+  # Replaces the dead nicowillis action (404) and archived trmcnvn action.
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish-chrome:
+    name: Publish → Chrome Web Store
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [resolve, build]
+
+    steps:
+      - name: Download extension zips
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: cubensis-zips-${{ needs.resolve.outputs.version }}
+          path: dist/
+
+      - name: Publish to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@fdfe79400af990f5145a319e834aee64907ccff4 # v6.0.0
+        with:
+          file-path: dist/cubensis-connect-${{ needs.resolve.outputs.version }}-chrome.zip
+          extension-id:   ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id:      ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret:  ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token:  ${{ secrets.CHROME_REFRESH_TOKEN }}
+
+      - name: Summarize
+        run: |
+          echo "✅ Chrome Web Store — v${{ needs.resolve.outputs.version }} submitted" \
+            >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Publish to Firefox AMO ────────────────────────────────────────────────────
+  # Uses wdzeng/firefox-addon@v1.2.0 (verified Apr 2025). AMO API v5, JWT auth.
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish-firefox:
+    name: Publish → Firefox AMO
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [resolve, build]
+
+    steps:
+      - name: Download extension zips
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: cubensis-zips-${{ needs.resolve.outputs.version }}
+          path: dist/
+
+      - name: Publish to Firefox AMO
+        uses: wdzeng/firefox-addon@b78a4d0148897b072ef18aff65a6bd793e8109be # v1.2.0
+        with:
+          addon-guid: ${{ secrets.FIREFOX_ADDON_GUID }}
+          xpi-path:   dist/cubensis-connect-${{ needs.resolve.outputs.version }}-firefox.zip
+          jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+
+      - name: Summarize
+        run: |
+          echo "✅ Firefox AMO — v${{ needs.resolve.outputs.version }} submitted" \
+            >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Publish to Microsoft Edge Add-ons ────────────────────────────────────────
+  # Uses wdzeng/edge-addon@v2.1.0 (verified Nov 2024). MS Edge Add-ons API v1.1.
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish-edge:
+    name: Publish → Microsoft Edge Add-ons
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [resolve, build]
+
+    steps:
+      - name: Download extension zips
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: cubensis-zips-${{ needs.resolve.outputs.version }}
+          path: dist/
+
+      - name: Publish to Edge Add-ons
+        uses: wdzeng/edge-addon@d4db1eea77297a24d799394dec87e8912e0902f9 # v2.1.0
+        with:
+          product-id: ${{ secrets.EDGE_PRODUCT_ID }}
+          zip-path:   dist/cubensis-connect-${{ needs.resolve.outputs.version }}-edge.zip
+          api-key:    ${{ secrets.EDGE_API_KEY }}
+          client-id:  ${{ secrets.EDGE_CLIENT_ID }}
+
+      - name: Summarize
+        run: |
+          echo "✅ Microsoft Edge Add-ons — v${{ needs.resolve.outputs.version }} submitted" \
+            >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Opera: artifact only, no automated submission ─────────────────────────────
+  # Opera's Addons store has no public CI API. Opera 15+ supports Chrome Web
+  # Store extensions directly — most Opera users install via Chrome CWS.
+  # The opera.zip is retained as a workflow artifact for manual submission.
+  # ─────────────────────────────────────────────────────────────────────────────
+  note-opera:
+    name: Opera (artifact only — no submit API)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [resolve, build]
+
+    steps:
+      - name: Summarize
+        run: |
+          echo "ℹ️ Opera — zip artifact produced (manual submission required)." \
+            >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Download: \`cubensis-zips-${{ needs.resolve.outputs.version }}\` artifact → \`cubensis-connect-${{ needs.resolve.outputs.version }}-opera.zip\`" \
+            >> "$GITHUB_STEP_SUMMARY"
