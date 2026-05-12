@@ -2,23 +2,69 @@
  * Icon Component System
  * Wrapper for react-icons with consistent styling
  * Compatible with Material-UI
+ *
+ * IMPORTANT: Only import the specific icons used in `CommonIcons`. Do NOT use
+ * wildcard `* as MdIcons` — that bundles all 3,000+ icons and adds 3.3 MB to the
+ * lazy chunks that include this component.
  */
 
 import { styled } from '@mui/material/styles';
 import type React from 'react';
-import * as FaIcons from 'react-icons/fa'; // Font Awesome
-import * as FiIcons from 'react-icons/fi'; // Feather Icons
-import * as MdIcons from 'react-icons/md'; // Material Design
+// Named imports only — tree-shakeable (one file per icon ~200 B each)
+import {
+  MdAccountBalanceWallet,
+  MdAdd,
+  MdArrowBack,
+  MdArrowForward,
+  MdCheck,
+  MdClose,
+  MdDelete,
+  MdEdit,
+  MdError,
+  MdHome,
+  MdInfo,
+  MdMenu,
+  MdPerson,
+  MdRemove,
+  MdSave,
+  MdSearch,
+  MdSend,
+  MdSettings,
+  MdWarning,
+} from 'react-icons/md';
 import { logger } from '@/lib/logger';
 
-type MaterialIcons = keyof typeof MdIcons;
-type FontAwesomeIcons = keyof typeof FaIcons;
-type FeatherIcons = keyof typeof FiIcons;
+// Static map of all icons referenced by CommonIcons. Add new entries here
+// when extending CommonIcons — never use a wildcard import.
+const ICON_MAP = {
+  MdAccountBalanceWallet,
+  MdAdd,
+  MdArrowBack,
+  MdArrowForward,
+  MdCheck,
+  MdClose,
+  MdDelete,
+  MdEdit,
+  MdError,
+  MdHome,
+  MdInfo,
+  MdMenu,
+  MdPerson,
+  MdRemove,
+  MdSave,
+  MdSearch,
+  MdSend,
+  MdSettings,
+  MdWarning,
+} as const;
+
+type IconName = keyof typeof ICON_MAP;
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  name: MaterialIcons | FontAwesomeIcons | FeatherIcons;
+  name: IconName;
   size?: number | string;
   color?: string;
+  /** @deprecated library selection is no longer needed — all icons are MD. */
   library?: 'md' | 'fa' | 'fi';
 }
 
@@ -38,32 +84,18 @@ const IconWrapper = styled('span', {
   lineHeight: 1,
 }));
 
-const getIconLibrary = (library: 'md' | 'fa' | 'fi') => {
-  switch (library) {
-    case 'md':
-      return MdIcons;
-    case 'fa':
-      return FaIcons;
-    case 'fi':
-      return FiIcons;
-    default:
-      return MdIcons;
-  }
-};
-
 export function Icon({
   ref,
   name,
   size = 24,
   color,
-  library = 'md',
+  library: _library,
   ...props
 }: IconProps & { ref?: React.Ref<HTMLSpanElement> }) {
-  const icons = getIconLibrary(library);
-  const IconComponent = icons[name as keyof typeof icons] as React.ComponentType;
+  const IconComponent = ICON_MAP[name] as React.ComponentType | undefined;
 
   if (!IconComponent) {
-    logger.warn(`Icon "${name}" not found in library "${library}"`);
+    logger.warn(`Icon "${name}" not found`);
     return null;
   }
 
@@ -79,27 +111,27 @@ export function Icon({
 // Common icon name exports for convenience
 export const CommonIcons = {
   // Wallet
-  AccountBalanceWallet: 'MdAccountBalanceWallet' as MaterialIcons,
+  AccountBalanceWallet: 'MdAccountBalanceWallet' as IconName,
   // Actions
-  Add: 'MdAdd' as MaterialIcons,
-  ArrowBack: 'MdArrowBack' as MaterialIcons,
-  ArrowForward: 'MdArrowForward' as MaterialIcons,
+  Add: 'MdAdd' as IconName,
+  ArrowBack: 'MdArrowBack' as IconName,
+  ArrowForward: 'MdArrowForward' as IconName,
   // Status
-  Check: 'MdCheck' as MaterialIcons,
-  Close: 'MdClose' as MaterialIcons,
-  Delete: 'MdDelete' as MaterialIcons,
-  Edit: 'MdEdit' as MaterialIcons,
-  Error: 'MdError' as MaterialIcons,
+  Check: 'MdCheck' as IconName,
+  Close: 'MdClose' as IconName,
+  Delete: 'MdDelete' as IconName,
+  Edit: 'MdEdit' as IconName,
+  Error: 'MdError' as IconName,
   // Navigation
-  Home: 'MdHome' as MaterialIcons,
-  Info: 'MdInfo' as MaterialIcons,
-  Menu: 'MdMenu' as MaterialIcons,
+  Home: 'MdHome' as IconName,
+  Info: 'MdInfo' as IconName,
+  Menu: 'MdMenu' as IconName,
   // User
-  Person: 'MdPerson' as MaterialIcons,
-  Remove: 'MdRemove' as MaterialIcons,
-  Save: 'MdSave' as MaterialIcons,
-  Search: 'MdSearch' as MaterialIcons,
-  Send: 'MdSend' as MaterialIcons,
-  Settings: 'MdSettings' as MaterialIcons,
-  Warning: 'MdWarning' as MaterialIcons,
-};
+  Person: 'MdPerson' as IconName,
+  Remove: 'MdRemove' as IconName,
+  Save: 'MdSave' as IconName,
+  Search: 'MdSearch' as IconName,
+  Send: 'MdSend' as IconName,
+  Settings: 'MdSettings' as IconName,
+  Warning: 'MdWarning' as IconName,
+} as const;

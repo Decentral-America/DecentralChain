@@ -1,54 +1,46 @@
 /**
  * i18next Configuration
  * Multi-language support with 17 languages
+ *
+ * Locales are served from /public/locales/ via i18next-http-backend v4.
+ * NO static JSON imports — translations are fetched at runtime for the
+ * user's language only, removing ~2.2 MB / 640 kB gz from the initial bundle.
+ * React.Suspense in main.tsx gates rendering until the first locale loads.
+ *
+ * i18next-http-backend v4 (2025): requires native fetch — available in all
+ * modern browsers, Node ≥ 18, Deno, Bun. Dropped cross-fetch polyfill.
  */
 import i18n from 'i18next';
+import Backend, { type HttpBackendOptions } from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
-// Import all translation files
-import de from './locales/de/translation.json';
-import en from './locales/en/translation.json';
-import es from './locales/es/translation.json';
-import et_EE from './locales/et_EE/translation.json';
-import fr from './locales/fr/translation.json';
-import hi_IN from './locales/hi_IN/translation.json';
-import id from './locales/id/translation.json';
-import it from './locales/it/translation.json';
-import ja from './locales/ja/translation.json';
-import ko from './locales/ko/translation.json';
-import nl_NL from './locales/nl_NL/translation.json';
-import pl from './locales/pl/translation.json';
-import pt_BR from './locales/pt_BR/translation.json';
-import pt_PT from './locales/pt_PT/translation.json';
-import ru from './locales/ru/translation.json';
-import tr from './locales/tr/translation.json';
-import zh_CN from './locales/zh_CN/translation.json';
+// App version is injected by vite.config.ts define block as VITE_APP_VERSION.
+// Used as a cache-buster query param on locale fetch URLs (public/ files are
+// NOT content-hashed by Vite, so stale translations survive deploys without this).
+const APP_VERSION = (import.meta.env.VITE_APP_VERSION as string | undefined) ?? '0.0.0';
+
+const SUPPORTED_CODES = [
+  'de',
+  'en',
+  'es',
+  'et_EE',
+  'fr',
+  'hi_IN',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'nl_NL',
+  'pl',
+  'pt_BR',
+  'pt_PT',
+  'ru',
+  'tr',
+  'zh_CN',
+] as const;
 
 /**
- * Language resources
- */
-const resources = {
-  de: { translation: de },
-  en: { translation: en },
-  es: { translation: es },
-  et_EE: { translation: et_EE },
-  fr: { translation: fr },
-  hi_IN: { translation: hi_IN },
-  id: { translation: id },
-  it: { translation: it },
-  ja: { translation: ja },
-  ko: { translation: ko },
-  nl_NL: { translation: nl_NL },
-  pl: { translation: pl },
-  pt_BR: { translation: pt_BR },
-  pt_PT: { translation: pt_PT },
-  ru: { translation: ru },
-  tr: { translation: tr },
-  zh_CN: { translation: zh_CN },
-};
-
-/**
- * Supported language codes
+ * Supported language codes and display names.
  */
 export const SUPPORTED_LANGUAGES = [
   { code: 'de', name: 'Deutsch' },
@@ -68,55 +60,85 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'ru', name: 'Русский' },
   { code: 'tr', name: 'Türkçe' },
   { code: 'zh_CN', name: '简体中文' },
-];
+] as const;
+
+type SupportedCode = (typeof SUPPORTED_CODES)[number];
+
+function isSupportedCode(code: string): code is SupportedCode {
+  return (SUPPORTED_CODES as readonly string[]).includes(code);
+}
 
 /**
- * Get browser language or default to English
+ * Normalise a BCP-47 language tag to our underscore-separated locale format.
+ * navigator.language uses hyphens (e.g. 'et-EE', 'zh-CN').
+ * Our locale file paths use underscores (e.g. 'et_EE', 'zh_CN').
+ * Only the first hyphen is replaced — subtag separator, not part of the code.
+ */
+function normalizeCode(code: string): string {
+  return code.replace('-', '_');
+}
+
+/**
+ * Resolve the user's preferred language, validated against our supported list.
+ * Priority: localStorage → navigator.language (normalised) → language-only fallback → 'en'.
  */
 function getDefaultLanguage(): string {
-  // Try to get from localStorage
   const stored = localStorage.getItem('language');
-  if (stored && resources[stored as keyof typeof resources]) {
-    return stored;
+  if (stored && isSupportedCode(stored)) return stored;
+
+  const nav = navigator as Navigator & { userLanguage?: string };
+  const browserLang = navigator.language || nav.userLanguage;
+
+  if (browserLang) {
+    const normalized = normalizeCode(browserLang);
+    if (isSupportedCode(normalized)) return normalized;
+
+    // Language-only part: 'en' from 'en-US', 'de' from 'de-AT', etc.
+    const langOnly = browserLang.split('-')[0] ?? '';
+    if (isSupportedCode(langOnly)) return langOnly;
   }
 
-  // Try to get from browser
-  const browserLang =
-    navigator.language || (navigator as Navigator & { userLanguage?: string }).userLanguage;
-
-  // Check for exact match
-  if (browserLang && resources[browserLang as keyof typeof resources]) {
-    return browserLang;
-  }
-
-  // Check for language code only (e.g., 'en' from 'en-US')
-  const langCode = browserLang?.split('-')[0];
-  if (langCode && resources[langCode as keyof typeof resources]) {
-    return langCode;
-  }
-
-  // Default to English
   return 'en';
 }
 
 /**
- * Initialize i18next
+ * Initialize i18next with HTTP backend.
+ *
+ * Key options:
+ *   load: 'currentOnly' — load ONLY the resolved language code; prevents i18next
+ *     from requesting regional variants that would 404 (e.g. 'et' when we have 'et_EE').
+ *   queryStringParams.v — app version cache-buster for public/locales/ files.
+ *   react.useSuspense — React.Suspense gates rendering until the first locale loads.
  */
-i18n
-  .use(initReactI18next) // Passes i18n down to react-i18next
-  .init({
-    // Debug mode (disable in production)
-    debug: false,
-    fallbackLng: 'en', // Fallback language
-    interpolation: {
-      escapeValue: false, // React already escapes values
+void i18n
+  .use(Backend)
+  .use(initReactI18next)
+  .init<HttpBackendOptions>({
+    backend: {
+      // Vite dev server and production static hosting both serve files from public/ at root.
+      loadPath: '/locales/{{lng}}/translation.json',
+      // Append app version so each release invalidates cached translation files.
+      queryStringParams: { v: APP_VERSION },
     },
-    // Enable nested keys (e.g., 'app.ui.active')
+    debug: false,
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
     keySeparator: '.',
-    lng: getDefaultLanguage(), // Language to use
-    // Namespace separator (not used, but set for clarity)
+    lng: getDefaultLanguage(),
+    load: 'currentOnly',
     nsSeparator: false,
-    resources,
+    react: {
+      useSuspense: true,
+    },
+  })
+  .catch((err: unknown) => {
+    // Surface init failures in development. In production the ErrorBoundary catches
+    // any downstream rendering errors; the i18n instance falls back to 'en' keys.
+    if (import.meta.env.DEV) {
+      console.error('[i18n] Initialization failed:', err);
+    }
   });
 
 export default i18n;

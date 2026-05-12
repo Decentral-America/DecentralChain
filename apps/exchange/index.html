@@ -22,10 +22,26 @@
     <meta name="twitter:description" content="Trade on the native DEX — powered by DecentralChain." />
     <meta name="twitter:image" content="/og-image.png" />
     <!-- CSP is configured via Vite server headers in vite.config.ts -->
+    <!-- Preload English translations so i18next-http-backend finds them already
+         in the browser cache by the time React initialises i18n. -->
+    <link rel="preload" as="fetch" href="/locales/en/translation.json" crossorigin />
     <title>Decentral Exchange</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Loading shell — visible before React mounts and the LandingPage chunk loads.
+      React's createRoot().render() replaces this content on first commit.
+      No JS required: pure HTML + inline CSS, renders in < 1ms.
+    -->
+    <div id="root">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#1e1e2d;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-label="Loading" role="img">
+          <circle cx="24" cy="24" r="20" stroke="#6c63ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="31.4 94.2">
+            <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="0.9s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
