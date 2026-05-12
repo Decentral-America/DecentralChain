@@ -1166,7 +1166,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    */
   const refreshTokenFilters = useCallback(async (): Promise<void> => {
     try {
-      await tokenFilterService.refresh();
+      // Token filters are static — re-initialize the singleton to reset state
+      await tokenFilterService.initialize();
       logger.debug('[Auth] Token filters refreshed');
     } catch (error) {
       logger.error('[Auth] Token filter refresh failed:', error);

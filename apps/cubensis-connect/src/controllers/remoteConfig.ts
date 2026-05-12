@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
-import type { IgnoreErrorsContext, MainConfig } from '../constants';
+import type { IgnoreErrorsContext } from '../constants';
 import { DEFAULT_MAIN_CONFIG, STATUS } from '../constants';
 import type { ExtensionStorage } from '../storage/storage';
 
@@ -130,25 +130,9 @@ export class RemoteConfigController extends EventEmitter {
   }
 
   async #updateMainConfig() {
-    try {
-      const response = await fetch(
-        'https://raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json',
-      );
-
-      if (response.ok) {
-        const config: MainConfig = await response.json();
-        const { ignoreErrorsConfig } = this.store.getState();
-
-        this.store.updateState({
-          assetsConfig: config.assets,
-          ignoreErrorsConfig: { ...ignoreErrorsConfig, ...config.ignoreErrors },
-          nftConfig: config.nfts,
-        });
-      }
-    } catch {
-      // ignore errors
-    }
-
-    Browser.alarms.create('updateMainConfig', { delayInMinutes: 1 });
+    // Remote config fetch removed — config is now inlined in DEFAULT_MAIN_CONFIG
+    // in constants.ts. Whitelist and error patterns are updated at deploy time.
+    // Re-schedule alarm to keep the alarm pattern intact for future use.
+    Browser.alarms.create('updateMainConfig', { delayInMinutes: 60 });
   }
 }

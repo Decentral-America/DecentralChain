@@ -1,13 +1,17 @@
 /**
  * NetworkConfig Service
  *
- * Centralized configuration access service that provides type-safe access to mainnet.json
- * This replaces Angular's window.DCCApp.network global pattern with a clean service interface
+ * Build-time network-aware configuration singleton. Reads from the correct
+ * per-network JSON (mainnet/testnet/stagenet) based on the VITE_NETWORK env var,
+ * which is statically replaced by Vite at build time. Dead branches are tree-shaken.
  *
- * All accessors are read-only as mainnet.json is immutable runtime configuration
+ * All accessors are read-only. Use this for non-React code (token filters, data-service
+ * init, etc.). React components should use ConfigContext for runtime network switching.
  */
 
 import mainnetConfigJson from '../configs/mainnet.json';
+import stagenetConfigJson from '../configs/stagenet.json';
+import testnetConfigJson from '../configs/testnet.json';
 import {
   type GatewayAssetConfig,
   type MainnetConfig,
@@ -16,17 +20,29 @@ import {
   type TradingPair,
 } from './types';
 
-// `satisfies MainnetConfig` validates the full config shape at compile time.
-// Three fields require explicit widening from their JSON-inferred narrow types:
-//   · assets   → { BTC:string, ... } is a Record<string,string> — safe widening
-//   · gateway  → same pattern for gateway asset map
-//   · tradingPairs → JSON infers string[][] (no tuple guarantee); cast to TradingPair[]
-// If mainnet.json ever drops a required field, `satisfies` will error here.
+// Select config at build time from VITE_NETWORK (statically replaced by Vite).
+// Testnet and stagenet have a subset of mainnet fields — cast gateway to the
+// typed map shape since those networks use a placeholder string URL at build time.
+const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'mainnet';
+
+const rawJson =
+  VITE_NETWORK === 'testnet'
+    ? testnetConfigJson
+    : VITE_NETWORK === 'stagenet'
+      ? stagenetConfigJson
+      : mainnetConfigJson;
+
 const _config = {
-  ...mainnetConfigJson,
-  assets: mainnetConfigJson.assets as Record<string, string>,
-  gateway: mainnetConfigJson.gateway as Record<string, GatewayAssetConfig>,
-  tradingPairs: mainnetConfigJson.tradingPairs as TradingPair[],
+  ...rawJson,
+  assets: rawJson.assets as Record<string, string>,
+  // gateway is a full map on mainnet, a string URL on testnet/stagenet.
+  // Cast to the typed shape — gateway lookups return undefined on non-mainnet builds.
+  gateway: (typeof rawJson.gateway === 'object' && rawJson.gateway !== null
+    ? rawJson.gateway
+    : {}) as Record<string, GatewayAssetConfig>,
+  tradingPairs: (rawJson.tradingPairs as unknown as TradingPair[] | string[]).filter(
+    (p): p is TradingPair => Array.isArray(p),
+  ),
 } satisfies MainnetConfig;
 
 const NetworkConfig = {
@@ -48,14 +64,6 @@ const NetworkConfig = {
 
   get explorer(): string {
     return _config.explorer;
-  },
-
-  get featuresConfigUrl(): string {
-    return _config.featuresConfigUrl;
-  },
-
-  get feeConfigUrl(): string {
-    return _config.feeConfigUrl;
   },
 
   get(key: string): unknown {
@@ -146,20 +154,12 @@ const NetworkConfig = {
     return _config.privacyPolicy;
   },
 
-  get scamListUrl(): string {
-    return _config.scamListUrl;
-  },
-
   get support(): string {
     return _config.support;
   },
 
   get termsAndConditions(): string {
     return _config.termsAndConditions;
-  },
-
-  get tokensNameListUrl(): string {
-    return _config.tokensNameListUrl;
   },
 };
 

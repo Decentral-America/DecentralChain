@@ -1,7 +1,9 @@
 services:
   dcc-private-node:
-    image: wavesplatform/waves-private-node
-    # TODO(DCC-59): Replace with DCC private node image when available
+    image: ghcr.io/decentral-america/node-scala-private:latest
+    build:
+      context: ../../../../node-scala/docker/private
+      dockerfile: Dockerfile
     platform: linux/amd64
     ports:
       - '6869:6869'

@@ -66,10 +66,6 @@ export interface ConfigContextType {
   privacyUrl: string;
   originUrl: string;
   nodeListUrl: string;
-  featuresConfigUrl: string;
-  feeConfigUrl: string;
-  tokensNameListUrl: string;
-  scamListUrl: string;
   tokenRatingUrl: string;
 
   // Assets and trading
