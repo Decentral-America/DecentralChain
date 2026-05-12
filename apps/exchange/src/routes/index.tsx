@@ -1,121 +1,147 @@
 /**
  * Application Router Configuration
- * Defines all routes using React Router v7 createBrowserRouter with route-level
- * code splitting. Auth pages (LandingPage, SignUp, SignIn, ImportAccountPage, SaveSeedPage)
- * are eagerly loaded. All other pages use the `lazy` property for code splitting.
+ * Defines all routes using React Router v7 createBrowserRouter.
+ *
+ * Code-splitting strategy:
+ *   - '/'              → LandingPage lazy (no auth context required)
+ *   - All other routes → wrapped in AuthBoundaryLayout (lazy), which mounts
+ *                        LedgerProvider + AuthProvider + SettingsProvider only when
+ *                        the user navigates away from the landing page.
+ *   - '/desktop/*'     → ProtectedRoute (lazy) + MainLayout (lazy)
+ *
+ * index.html provides an HTML/CSS loading shell so the user sees a spinner
+ * before React mounts and the LandingPage chunk loads.
  */
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from '@/components/layout';
-import { MainLayout } from '@/layouts/MainLayout';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
-// Auth pages — eager (critical path, user lands here first)
-import { ImportAccountPage } from '@/pages/ImportAccountPage';
-import LandingPage from '@/pages/LandingPage';
-import { SaveSeedPage } from '@/pages/SaveSeed';
-import { SignIn } from '@/pages/SignIn';
-import { SignUp } from '@/pages/SignUp';
 import { dexRoutes } from './dexRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { walletRoutes } from './walletRoutes';
 
 /**
- * Application router with nested routes and route-level code splitting.
- * Auth pages are eager; all other pages lazy-loaded via React Router v7 `lazy`.
+ * Application router. See JSDoc above for full code-splitting strategy.
  */
 export const router = createBrowserRouter([
   {
     children: [
       {
-        element: <LandingPage />,
+        // '/' is lazy: LandingPage chunk (~400 kB) only loads for the landing route.
+        // index.html contains an inline shell so the user sees content before JS parses.
+        lazy: () => import('@/pages/LandingPage').then((m) => ({ Component: m.default })),
         path: '/',
       },
       {
-        lazy: () => import('@/pages/Welcome').then((m) => ({ Component: m.Welcome })),
-        path: '/welcome',
-      },
-      {
-        element: <SignUp />,
-        path: '/signup',
-      },
-      {
-        element: <SignUp />,
-        path: '/create-account',
-      },
-      {
-        element: <SignIn />,
-        path: '/signin',
-      },
-      {
-        element: <SignIn />,
-        path: '/sign-in',
-      },
-      {
-        element: <ImportAccountPage />,
-        path: '/import-account',
-      },
-      {
-        element: <SaveSeedPage />,
-        path: '/save-seed',
-      },
-      {
-        lazy: () =>
-          import('@/pages/RestoreFromBackup').then((m) => ({
-            Component: m.RestoreFromBackupPage,
-          })),
-        path: '/restore-backup',
-      },
-      {
-        lazy: () => import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
-        path: '/import/ledger',
-      },
-      {
+        // AuthBoundaryLayout — lazy intermediate route that mounts
+        // LedgerProvider + AuthProvider + SettingsProvider + GlobalKeyboardShortcuts.
+        // Only loaded when the user navigates away from '/'.
+        // Defers ~315 kB of auth/ledger/settings context from the critical path.
         children: [
+          {
+            lazy: () => import('@/pages/Welcome').then((m) => ({ Component: m.Welcome })),
+            path: '/welcome',
+          },
+          {
+            lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
+            path: '/signup',
+          },
+          {
+            lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
+            path: '/create-account',
+          },
+          {
+            lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
+            path: '/signin',
+          },
+          {
+            lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
+            path: '/sign-in',
+          },
+          {
+            lazy: () =>
+              import('@/pages/ImportAccountPage').then((m) => ({
+                Component: m.ImportAccountPage,
+              })),
+            path: '/import-account',
+          },
+          {
+            lazy: () => import('@/pages/SaveSeed').then((m) => ({ Component: m.SaveSeedPage })),
+            path: '/save-seed',
+          },
+          {
+            lazy: () =>
+              import('@/pages/RestoreFromBackup').then((m) => ({
+                Component: m.RestoreFromBackupPage,
+              })),
+            path: '/restore-backup',
+          },
+          {
+            lazy: () => import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
+            path: '/import/ledger',
+          },
           {
             children: [
               {
-                element: <Navigate to="/desktop/wallet" replace />,
-                index: true,
-              },
-              walletRoutes,
-              dexRoutes,
-              settingsRoutes,
-              {
-                lazy: () => import('@/pages/Bridge').then((m) => ({ Component: m.Bridge })),
-                path: 'bridge',
-              },
-              {
-                lazy: () => import('@/pages/Markets').then((m) => ({ Component: m.Markets })),
-                path: 'markets',
-              },
-              {
-                lazy: () => import('@/pages/OrderBook').then((m) => ({ Component: m.OrderBook })),
-                path: 'orderbook',
-              },
-              {
-                lazy: () => import('@/pages/Analytics').then((m) => ({ Component: m.Analytics })),
-                path: 'analytics',
-              },
-              {
-                lazy: () => import('@/pages/Messages').then((m) => ({ Component: m.Messages })),
-                path: 'messages',
-              },
-              {
+                // MainLayout is lazy — defers ~25 MUI icon imports + the full sidebar
+                // from the initial bundle. Only loaded when user reaches /desktop/*.
+                children: [
+                  {
+                    element: <Navigate to="/desktop/wallet" replace />,
+                    index: true,
+                  },
+                  walletRoutes,
+                  dexRoutes,
+                  settingsRoutes,
+                  {
+                    lazy: () => import('@/pages/Bridge').then((m) => ({ Component: m.Bridge })),
+                    path: 'bridge',
+                  },
+                  {
+                    lazy: () => import('@/pages/Markets').then((m) => ({ Component: m.Markets })),
+                    path: 'markets',
+                  },
+                  {
+                    lazy: () =>
+                      import('@/pages/OrderBook').then((m) => ({ Component: m.OrderBook })),
+                    path: 'orderbook',
+                  },
+                  {
+                    lazy: () =>
+                      import('@/pages/Analytics').then((m) => ({ Component: m.Analytics })),
+                    path: 'analytics',
+                  },
+                  {
+                    lazy: () => import('@/pages/Messages').then((m) => ({ Component: m.Messages })),
+                    path: 'messages',
+                  },
+                  {
+                    lazy: () =>
+                      import('@/pages/CreateToken').then((m) => ({ Component: m.CreateToken })),
+                    path: 'create-token',
+                  },
+                ],
                 lazy: () =>
-                  import('@/pages/CreateToken').then((m) => ({ Component: m.CreateToken })),
-                path: 'create-token',
+                  import('@/layouts/MainLayout').then((m) => ({ Component: m.MainLayout })),
               },
             ],
-            element: <MainLayout />,
+            // ProtectedRoute is lazy: it imports useAuth → AuthContext → data-service.
+            // Deferring it keeps the entire auth/data chain off the critical path.
+            lazy: () =>
+              import('@/components/layout/ProtectedRoute').then((m) => ({
+                Component: m.ProtectedRoute,
+              })),
+            path: '/desktop',
+          },
+          {
+            lazy: () =>
+              import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
+            path: '/dccadmin',
           },
         ],
-        element: <ProtectedRoute />,
-        path: '/desktop',
-      },
-      {
         lazy: () =>
-          import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
-        path: '/dccadmin',
+          import('@/layouts/AuthBoundaryLayout').then((m) => ({
+            Component: m.AuthBoundaryLayout,
+          })),
       },
       {
         element: <Navigate to="/" replace />,

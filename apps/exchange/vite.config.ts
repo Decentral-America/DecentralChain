@@ -1,9 +1,32 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
 
 const { NODE_ENV, VITE_API_URL } = process.env;
+
+/**
+ * Injects VITE_APP_VERSION into i18n preload hints in index.html at build time.
+ *
+ * The i18next-http-backend appends `?v=APP_VERSION` to every locale fetch URL
+ * (e.g. `/locales/en/translation.json?v=1.0.0`).  A preload hint without the
+ * same query string is a URL mismatch — the browser downloads the file into the
+ * preload cache but i18next never uses that cached response, wasting bandwidth.
+ *
+ * This plugin rewrites the static href so it exactly matches the runtime fetch URL.
+ */
+const i18nPreloadVersionPlugin: Plugin = {
+  // Build-only: this optimization is irrelevant during dev (dev server ignores query strings
+  // on static files). apply:'build' avoids running a string replacement on every dev request.
+  apply: 'build',
+  name: 'i18n-preload-version',
+  transformIndexHtml(html) {
+    return html.replace(
+      'href="/locales/en/translation.json"',
+      `href="/locales/en/translation.json?v=${pkg.version}"`,
+    );
+  },
+};
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -18,8 +41,18 @@ export default defineConfig({
           groups: [
             { name: 'vendor', priority: 80, test: /node_modules\/(react|react-dom)\// },
             { name: 'router', priority: 70, test: /node_modules\/react-router/ },
+            // React Query: isolate @tanstack/* so it's not bundled inside index.js.
+            // query-core is ~250 kB minified; splitting it enables independent caching.
+            { name: 'tanstack-query', priority: 65, test: /node_modules\/@tanstack\// },
             { name: 'ui', priority: 60, test: /node_modules\/styled-components/ },
-            { name: 'mui-core', priority: 50, test: /node_modules\/(@mui|@emotion)\// },
+            // @mui/icons-material is intentionally EXCLUDED from this group.
+            // Including it would bundle all 3,000+ icons into a shared chunk and defeat
+            // Rolldown's tree-shaking. Let it be naturally included/tree-shaken per lazy chunk.
+            {
+              name: 'mui-core',
+              priority: 50,
+              test: /node_modules\/(@mui\/(material|system|lab|base|styled-engine)|@emotion)\//,
+            },
             // Sentry must be in its own chunk, not co-located with feature routes (e.g. Leasing).
             // Without this, Vite may defer Sentry until a lazy route loads, delaying error capture.
             { name: 'sentry', priority: 40, test: /node_modules\/@sentry\// },
@@ -29,11 +62,27 @@ export default defineConfig({
               priority: 30,
               test: /node_modules\/(charting_library|tradingview)/,
             },
-            // Crypto + serialization libs — only needed for transaction signing
+            // ALL @decentralchain SDK packages + crypto primitives
+            // Covers signature-adapter, data-entities, node-api-js etc. that the
+            // data-service layer pulls in — keeps them out of both index and lazy chunks.
             {
-              name: 'crypto',
-              priority: 20,
-              test: /node_modules\/(@decentralchain\/(ts-lib-crypto|crypto|transactions|protobuf-serialization|marshall)|@noble\/|@scure\/)/,
+              name: 'dcc-sdk',
+              priority: 25,
+              test: /node_modules\/@decentralchain\//,
+            },
+            // Crypto primitives — @noble/* + @scure/* + @bufbuild/*
+            {
+              name: 'crypto-primitives',
+              priority: 22,
+              test: /node_modules\/(@noble\/|@scure\/|@bufbuild\/)/,
+            },
+            // Utility libs shared across data-service + features
+            // ramda (3.3 MB src), bignumber.js, date-fns — isolate so they're
+            // not duplicated across lazy chunks.
+            {
+              name: 'utils',
+              priority: 18,
+              test: /node_modules\/(ramda|bignumber\.js|date-fns)\//,
             },
             // i18n — loaded at app init but doesn't need to block initial render
             { name: 'i18n', priority: 10, test: /node_modules\/(i18next|react-i18next)\// },
@@ -47,6 +96,15 @@ export default defineConfig({
     sourcemap: NODE_ENV === 'production' ? 'hidden' : true,
   },
   define: {
+    // Sentry tree-shaking flags (docs: https://docs.sentry.io/platforms/javascript/guides/react/configuration/tree-shaking/)
+    // Raw booleans: Vite auto-converts via JSON.stringify → JS expressions 'false'/'true' in output.
+    // '__SENTRY_DEBUG__: false'       — eliminates all Sentry debug logging code (~1.5 kB)
+    // Replay rrweb flags safe: replayIntegration is not used in this app.
+    // '__SENTRY_TRACING__' intentionally NOT set — tracesSampleRate: 0.1 is active.
+    __RRWEB_EXCLUDE_IFRAME__: true,
+    __RRWEB_EXCLUDE_SHADOW_DOM__: true,
+    __SENTRY_DEBUG__: false,
+    __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
   },
   optimizeDeps: {
@@ -54,12 +112,13 @@ export default defineConfig({
     include: [
       '@mui/material',
       '@mui/material/styles',
-      '@mui/icons-material',
+      // '@mui/icons-material' intentionally omitted — pre-bundling the entire icons package
+      // prevents Rolldown from tree-shaking it in lazy chunks (3,000+ icons → 3.3 MB).
       '@emotion/react',
       '@emotion/styled',
     ],
   },
-  plugins: [react()],
+  plugins: [react(), i18nPreloadVersionPlugin],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),

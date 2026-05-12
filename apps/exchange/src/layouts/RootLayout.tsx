@@ -1,15 +1,8 @@
 /**
  * Root Layout
- * Wrapper for all routes that includes global components requiring router context
+ * Wrapper for all routes that provides a router Outlet with error boundary scope.
+ * GlobalKeyboardShortcuts lives in AuthBoundaryLayout (requires useAuth).
  */
 import { Outlet } from 'react-router-dom';
-import { GlobalKeyboardShortcuts } from '@/components';
 
-export const RootLayout = () => {
-  return (
-    <>
-      <GlobalKeyboardShortcuts />
-      <Outlet />
-    </>
-  );
-};
+export const RootLayout = () => <Outlet />;

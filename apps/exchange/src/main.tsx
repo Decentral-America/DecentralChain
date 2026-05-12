@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { config, devLog } from '@/config';
-import { initializeDataService } from '@/config/dataServiceConfig';
 import i18n from '@/i18n/i18n';
 import tokenFilterService from '@/services/tokenFilters';
 import { stringifyJSON } from '@/utils/formatters';
@@ -24,9 +23,6 @@ import { logger } from '@/lib/logger';
 if (import.meta.env.PROD && location.protocol !== 'https:' && location.hostname !== 'localhost') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
-
-// Initialize data-service BEFORE anything else (matches Angular AppConfig)
-initializeDataService();
 
 // Initialize token filters (scam list and token names)
 tokenFilterService.initialize().catch((error) => {
@@ -63,9 +59,13 @@ if (!rootElement) throw new Error('Root element not found');
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <I18nextProvider i18n={i18n}>
-        <App />
-      </I18nextProvider>
+      {/* Suspense gates rendering until i18next-http-backend fetches the active locale.
+          fallback=null keeps the HTML loading shell (index.html spinner) visible. */}
+      <Suspense fallback={null}>
+        <I18nextProvider i18n={i18n}>
+          <App />
+        </I18nextProvider>
+      </Suspense>
     </ErrorBoundary>
   </React.StrictMode>,
 );
