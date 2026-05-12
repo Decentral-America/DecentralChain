@@ -4,7 +4,7 @@ import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
 import { type ExchangeTx, OrderPriceMode, OrderType } from './repo/types';
 
-const wavesByDefault = defaultTo('WAVES');
+const wavesByDefault = defaultTo('DCC');
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>

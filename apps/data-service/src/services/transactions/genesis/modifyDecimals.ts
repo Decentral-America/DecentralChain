@@ -8,7 +8,7 @@ export const modifyDecimals =
   (txs: GenesisTx[]): Effect.Effect<GenesisTx[], AppError> =>
     pipe(
       assetsService.precisions({
-        ids: ['WAVES'],
+        ids: ['DCC'],
       }),
       Effect.map(([assetPrecision = 0]) =>
         txs.map((tx) => ({

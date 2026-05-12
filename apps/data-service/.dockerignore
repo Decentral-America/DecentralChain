@@ -1,10 +1,59 @@
+# When building with context = monorepo root, exclude files that are
+# not needed in the image to keep the build context small and secure.
+
+# IDE / editor
 .vscode
 .idea
-.eslintrc
+*.swp
+*.swo
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI / tooling config (not needed at runtime)
+.github
+.lefthook
+lefthook.yml
+biome.json
+knip.json
+renovate.json
+*.md
+!apps/data-service/README.md
+
+# Node
 node_modules
+**/node_modules
 
-error.log
-yarn-error.log
+# Build outputs in packages not needed at runtime
+packages/**/src
+packages/**/test
+packages/**/__tests__
+packages/**/coverage
 
-README.md
+# Data-service: exclude dev/test artefacts
+apps/data-service/src
+apps/data-service/test
+apps/data-service/__tests__
+apps/data-service/coverage
+apps/data-service/variables.env
+apps/data-service/variables.testnet.env
+apps/data-service/*.config.ts
+apps/data-service/*.config.js
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets / local config (never include)
+.env
+.env.*
+!.env.example
 variables.env

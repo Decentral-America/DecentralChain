@@ -18,7 +18,7 @@ describe('Assets SQL queries tests', () => {
   });
 
   it('should build correct search sql query', () => {
-    expect(search({ search: 'WAVES' } as any)).toMatchSnapshot();
+    expect(search({ search: 'DCC' } as any)).toMatchSnapshot();
   });
 
   it('should build correct search sql query', () => {

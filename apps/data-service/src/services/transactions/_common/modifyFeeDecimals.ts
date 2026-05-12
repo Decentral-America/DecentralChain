@@ -7,7 +7,7 @@ export const modifyFeeDecimals =
   <T extends { fee: BigNumber; feeAsset?: string }>(assetsService: AssetsService) =>
   (txs: T[]): Effect.Effect<T[], AppError> =>
     pipe(
-      assetsService.precisions({ ids: ['WAVES'] }),
+      assetsService.precisions({ ids: ['DCC'] }),
       Effect.map(([feeAssetPrecision = 0]) =>
         txs.map((tx) => ({
           ...tx,

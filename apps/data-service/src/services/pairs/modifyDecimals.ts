@@ -29,9 +29,9 @@ export const modifyDecimals =
             volumeWaves:
               pair.volumeWaves === null
                 ? null
-                : pair.amountAsset === 'WAVES'
+                : pair.amountAsset === 'DCC'
                   ? pair.volumeWaves.shiftedBy(-amountAssetDecimals)
-                  : pair.priceAsset === 'WAVES'
+                  : pair.priceAsset === 'DCC'
                     ? pair.volumeWaves.shiftedBy(priceDecimals - amountAssetDecimals)
                     : pair.volumeWaves.shiftedBy(priceDecimals - 8 - amountAssetDecimals),
             weightedAveragePrice: pair.weightedAveragePrice.shiftedBy(priceDecimals),

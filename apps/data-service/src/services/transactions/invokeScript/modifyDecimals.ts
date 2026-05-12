@@ -10,7 +10,7 @@ export const modifyDecimals =
     pipe(
       assetsService.precisions({
         ids: txs
-          .map((tx) => [defaultTo('WAVES', tx.feeAssetId)].concat(tx.payment.map((p) => p.assetId)))
+          .map((tx) => [defaultTo('DCC', tx.feeAssetId)].concat(tx.payment.map((p) => p.assetId)))
           .reduce((acc, cur) => acc.concat(cur), []),
       }),
       Effect.map((precisions: number[]) =>

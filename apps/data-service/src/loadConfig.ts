@@ -100,7 +100,7 @@ const load = (): DataServiceConfig => {
 
   const rate: RatesConfig = {
     pairAcceptanceVolumeThreshold: volumeThreshold,
-    rateBaseAssetId: (process.env['RATE_BASE_ASSET_ID'] as string) || 'WAVES',
+    rateBaseAssetId: (process.env['RATE_BASE_ASSET_ID'] as string) || 'DCC',
     thresholdAssetId: process.env['RATE_THRESHOLD_ASSET_ID'] as string,
   };
 
