@@ -26,6 +26,16 @@
          in the browser cache by the time React initialises i18n. -->
     <link rel="preload" as="fetch" href="/locales/en/translation.json" crossorigin />
     <title>Decentral Exchange</title>
+    <style>
+      /* Loading shell — visible before React mounts. Replaced on first render. */
+      #app-loading-shell {
+        align-items: center;
+        background: #1e1e2d;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+    </style>
   </head>
   <body>
     <!--
@@ -34,7 +44,7 @@
       No JS required: pure HTML + inline CSS, renders in < 1ms.
     -->
     <div id="root">
-      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#1e1e2d;">
+      <div id="app-loading-shell">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-label="Loading" role="img">
           <circle cx="24" cy="24" r="20" stroke="#6c63ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="31.4 94.2">
             <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="0.9s" repeatCount="indefinite"/>
