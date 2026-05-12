@@ -53,8 +53,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       enableDebug: config.enableDebug,
       enableMocks: config.enableMocks,
       explorerUrl: networkConfig.explorer,
-      featuresConfigUrl: networkConfig.featuresConfigUrl,
-      feeConfigUrl: networkConfig.feeConfigUrl,
 
       // DCC Gateway configuration from network config
       gateway: networkConfig.gateway || {},
@@ -78,7 +76,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       oracles: networkConfig.oracles,
       originUrl: networkConfig.origin,
       privacyUrl: networkConfig.privacyPolicy,
-      scamListUrl: networkConfig.scamListUrl,
 
       // Network switching function
       setNetwork: handleSetNetwork,
@@ -87,7 +84,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
       supportUrl: networkConfig.support,
       termsUrl: networkConfig.termsAndConditions,
       tokenRatingUrl: networkConfig.tokenrating || '',
-      tokensNameListUrl: networkConfig.tokensNameListUrl,
 
       // Trading pairs from network config
       tradingPairs: (networkConfig.tradingPairs || []) as [string, string][],

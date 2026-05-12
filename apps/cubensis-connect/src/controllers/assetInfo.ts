@@ -27,7 +27,7 @@ const NATIVE_ASSET: AssetDetail = {
 
 const MAX_AGE = 60 * 60 * 1000;
 
-const DATA_SERVICE_URL = 'https://api.decentralchain.io';
+const DATA_SERVICE_URL = 'https://data-service.decentralchain.io';
 
 const INFO_PERIOD_IN_MINUTES = 60;
 

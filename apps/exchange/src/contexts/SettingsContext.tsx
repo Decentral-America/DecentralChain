@@ -36,6 +36,7 @@ interface CommonSettings {
   dontShowSpam: boolean;
   tradeWithScriptAssets: boolean;
   baseAssetId: string;
+  oracleDCC: string;
   events: Record<string, unknown>;
 
   // Network configuration
@@ -46,15 +47,9 @@ interface CommonSettings {
     api: string;
     coinomat: string;
     nodeList: string;
-    dataServicesVersions: string;
     support: string;
-    scamListUrl: string;
-    tokensNameListUrl: string;
     blockHeight: string;
   };
-  oracleDCC: string;
-  scamListUrl: string;
-  tokensNameListUrl: string;
 }
 
 /**
@@ -161,19 +156,14 @@ const getDefaultCommonSettings = (): CommonSettings => {
       blockHeight: '', // This would be fetched dynamically
       code: (NetworkConfig.get('code') as string) || '?',
       coinomat: (NetworkConfig.get('coinomat') as string) || '',
-      dataServicesVersions: (NetworkConfig.get('featuresConfigUrl') as string) || '',
       matcher: NetworkConfig.matcher,
       nodeList: (NetworkConfig.get('nodeList') as string) || '',
-      scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
       server: NetworkConfig.node,
       support: (NetworkConfig.get('support') as string) || '',
-      tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
     },
     oracleDCC: NetworkConfig.oracleDCC,
-    scamListUrl: (NetworkConfig.get('scamListUrl') as string) || '',
     termsAccepted: true,
     theme: 'default',
-    tokensNameListUrl: (NetworkConfig.get('tokensNameListUrl') as string) || '',
     tradeWithScriptAssets: false,
     whatsNewList: [],
     withScam: false,
@@ -263,9 +253,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           break;
 
         case 'network':
-        case 'oracleDCC':
-        case 'scamListUrl':
-        case 'tokensNameListUrl': {
+        case 'oracleDCC': {
           // Update data-service config
 
           const setConfig = ds.config.setConfig as
