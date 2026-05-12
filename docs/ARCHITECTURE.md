@@ -55,16 +55,28 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 | Category | Location | Count | Examples |
 |----------|----------|-------|---------|
 | SDK libraries | `packages/*` | 22 | All `@decentralchain/*` npm-published packages |
-| Apps consuming SDK | `apps/*` | 3 | cubensis-connect (9 SDK deps), exchange (8), scanner (3) |
+| Apps and services | `apps/*` | 4 | cubensis-connect (9 SDK deps), exchange (8), scanner (3), data-service (REST API + daemons) |
 
 ### What's Out
 
 | Repository | Reason |
 |-----------|--------|
-| `node-scala` | Scala/JVM — different toolchain |
+| `node-scala` | Scala/JVM — different toolchain; Stream G migration planned |
+| `node-go` | Go — different toolchain; Stream H chain ID migration planned |
+| `blockchain-postgres-sync` | Node.js sync daemon — outside monorepo; Stream F migration planned |
+| ~~`data-service`~~ | Migrated ✅ — lives at `apps/data-service` (DCC-221, DCC-233); Nx, Biome, Vitest, tsdown all wired |
+| `matcher` | Java binary (`decentralchain-dex v2.3.2.9`) — closed-source DEX engine; not a migration target |
+| `DCC` | Scala — release packaging repo for the node-scala binary (`.deb`, Docker) |
+| `DCCGUI` | Legacy production exchange (2019-era Waves fork) — superseded by `apps/exchange` |
+| `DCCExplorerLite` | Legacy block explorer — superseded by `apps/scanner` |
+| ~~`dcc-configs`~~ | Deleted — remote config JSON was 404; all content inlined into `apps/cubensis-connect/src/constants.ts` |
+| ~~`dcc-token-filters`~~ | Deleted — scam list and token names inlined as static data |
+| ~~`dcc-client-config`~~ | Deleted — `ConfigService` dead code removed |
+| ~~`dcc-community`~~ | Deleted — 404, all references removed |
+| ~~`k8s-manifests`~~ | Removed from scope — IPFS deploy requires no server |
 | `passport`, `DCC-ERC20-Gateway` | Python — different runtime |
-| `k8s-manifests`, `dcc-configs`, `dcc-token-filters` | YAML/JSON config — no npm publishing |
 | `dcc-ride-templates` | Ride smart contracts — different toolchain |
+| All `v0-*` repos + legacy archives | Superseded upstream Waves packages — no active DCC consumers |
 
 ---
 
@@ -89,6 +101,7 @@ DecentralChain/
 │   └── agents/                     CI monitor subagent for OpenCode
 ├── apps/
 │   ├── cubensis-connect/           Browser wallet extension
+│   ├── data-service/               REST API + candles/pairs daemons (migrated from wavesplatform/data-service → apps/data-service)
 │   ├── exchange/                   Electron DEX trading app
 │   └── scanner/                    Block explorer web app
 ├── packages/
