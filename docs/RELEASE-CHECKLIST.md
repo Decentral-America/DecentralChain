@@ -34,7 +34,7 @@ Approvers:  Engineering Lead — [ ]
 Decision:   [ ] GO   [x] NO-GO
 Notes:
   BLOCKED — backend infrastructure not yet deployed.
-  DNS does not resolve for nodes.decentralchain.io, nodes-testnet.decentralchain.io,
+  DNS does not resolve for mainnet-node.decentralchain.io, testnet-node.decentralchain.io,
   api.decentralchain.io, mainnet-matcher.decentralchain.io (all return NXDOMAIN).
   Gate 5 (Backend Services Health) cannot be cleared until node deployment is complete.
 
@@ -130,12 +130,12 @@ Run all checks from a production-equivalent environment immediately before sign-
 
 | Network | URL | Verification |
 |---------|-----|--------------|
-| Mainnet | `https://nodes.decentralchain.io` | `curl -sf .../blocks/height \| jq .height` → positive int |
-| Testnet | `https://nodes-testnet.decentralchain.io` | same |
+| Mainnet | `https://mainnet-node.decentralchain.io` | `curl -sf .../blocks/height \| jq .height` → positive int |
+| Testnet | `https://testnet-node.decentralchain.io` | same |
 
 ```bash
-curl -sf https://nodes.decentralchain.io/blocks/height | jq .height
-curl -sf https://nodes-testnet.decentralchain.io/blocks/height | jq .height
+curl -sf https://mainnet-node.decentralchain.io/blocks/height | jq .height
+curl -sf https://testnet-node.decentralchain.io/blocks/height | jq .height
 ```
 
 | | Mainnet | Testnet |
@@ -155,13 +155,6 @@ Status: ☐ PASS / ☐ FAIL
 ```bash
 curl -sf https://mainnet-matcher.decentralchain.io/matcher
 # Expected: Base58-encoded public key string
-```
-Status: ☐ PASS / ☐ FAIL
-
-### Remote Config CDN
-
-```bash
-curl -sf https://raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json | jq .version
 ```
 Status: ☐ PASS / ☐ FAIL
 

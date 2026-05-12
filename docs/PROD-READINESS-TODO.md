@@ -404,8 +404,8 @@
 These block the release gate. No code changes will unblock them.
 
 - [ ] **Deploy DecentralChain node infrastructure** — DNS returns `NXDOMAIN` for all production domains:
-  - `nodes.decentralchain.io`
-  - `nodes-testnet.decentralchain.io`
+  - `mainnet-node.decentralchain.io`
+  - `testnet-node.decentralchain.io`
   - `api.decentralchain.io`
   - `mainnet-matcher.decentralchain.io`
   
