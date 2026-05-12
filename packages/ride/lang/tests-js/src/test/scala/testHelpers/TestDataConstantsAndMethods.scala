@@ -1,6 +1,6 @@
 package testHelpers
 
-import com.wavesplatform.lang.directives.values.{StdLibVersion, V3, V4, V5, V6}
+import com.decentralchain.lang.directives.values.{StdLibVersion, V3, V4, V5, V6}
 import testHelpers.RandomDataGenerator.entryMap
 
 object TestDataConstantsAndMethods {

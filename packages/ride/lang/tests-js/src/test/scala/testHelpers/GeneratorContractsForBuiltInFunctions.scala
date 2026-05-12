@@ -1,6 +1,6 @@
 package testHelpers
 
-import com.wavesplatform.lang.directives.values.{StdLibVersion, V3}
+import com.decentralchain.lang.directives.values.{StdLibVersion, V3}
 
 class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: StdLibVersion) {
 

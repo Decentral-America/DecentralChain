@@ -1,2 +1,2 @@
 # RIDE Compiler & Runtime
-See RIDE [docs](https://docs.waves.tech/en/ride/) or [sources](https://github.com/wavesplatform/Waves/tree/version-1.5.x/lang).
+See RIDE [docs](https://docs.decentralchain.io/en/ride/) or [sources](https://github.com/Decentral-America/node-scala/tree/main/lang).
