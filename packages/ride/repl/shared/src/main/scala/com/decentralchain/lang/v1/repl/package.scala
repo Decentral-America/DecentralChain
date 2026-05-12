@@ -1,0 +1,32 @@
+package com.decentralchain.lang.v1
+
+import cats.implicits.*
+import com.decentralchain.common.utils.EitherExt2.*
+import com.decentralchain.lang.directives.DirectiveSet
+import com.decentralchain.lang.directives.values.*
+import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, PureContext}
+import com.decentralchain.lang.v1.repl.node.ErrorMessageEnvironment
+import com.decentralchain.lang.v1.repl.node.http.{NodeClient, NodeClientImpl, NodeConnectionSettings, WebEnvironment}
+import com.decentralchain.lang.v1.traits.Environment
+
+import scala.concurrent.Future
+
+package object repl {
+  val global: BaseGlobal             = com.decentralchain.lang.Global
+  val internalVarPrefixes: Set[Char] = Set('@', '$')
+  val internalFuncPrefix: String     = "_"
+
+  val version                  = StdLibVersion.VersionDic.latest
+  val directives: DirectiveSet = DirectiveSet(version, Account, DApp).explicitGet()
+
+  val initialCtx: CTX[Environment] =
+    CryptoContext.build(global, version, fixEcrecover = true).withEnvironment[Environment] |+|
+      PureContext.build(version, useNewPowPrecision = true).withEnvironment[Environment] |+|
+      WavesContext.build(global, directives, fixBigScriptField = true)
+
+  def buildEnvironment(settings: Option[NodeConnectionSettings], customHttpClient: Option[NodeClient]): Environment[Future] =
+    settings.fold(
+      ErrorMessageEnvironment[Future]("Blockchain state is unavailable from REPL"): Environment[Future]
+    )(s => WebEnvironment(s, customHttpClient.getOrElse(NodeClientImpl(s.normalizedUrl))))
+}
