@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 concurrency:
   cancel-in-progress: true
@@ -29,7 +29,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@8912a9102ac27614460f54aedde9e1e7f9aec20d # v6.0.5
+        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -39,7 +39,7 @@ jobs:
 
       # ── Rust / WASM toolchain (required by packages/crypto wasm-pack build) ──────
       - name: Setup Rust stable
-        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9 # stable
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
         with:
           toolchain: stable
           targets: wasm32-unknown-unknown
@@ -50,14 +50,14 @@ jobs:
           workspaces: packages/crypto
           cache-on-failure: true
 
-      - name: Install wasm-pack v0.14.0
+      - name: Install wasm-pack v0.14.2
         run: |
           curl -fsSL \
-            https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.14.0/wasm-pack-v0.14.0-x86_64-unknown-linux-musl.tar.gz \
+            https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.14.2/wasm-pack-v0.14.2-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
-          echo "278a8d668085821f4d1a637bd864f1713f872b0ae3a118c77562a308c0abfe8d  /tmp/wasm-pack.tar.gz" | sha256sum --check
+          echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /tmp/wasm-pack.tar.gz" | sha256sum --check
           tar -xzf /tmp/wasm-pack.tar.gz -C /tmp
-          mv /tmp/wasm-pack-v0.14.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
+          mv /tmp/wasm-pack-v0.14.2-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
           wasm-pack --version
       # ─────────────────────────────────────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Derive NX SHAs
-        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
+        uses: nrwl/nx-set-shas@38457b511e60ee4e1da09255b658e480748a1af4 # v5.0.1
 
       - name: Security audit
         run: pnpm audit --audit-level=high
@@ -128,7 +128,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           comment-summary-in-pr: always
           fail-on-severity: high
