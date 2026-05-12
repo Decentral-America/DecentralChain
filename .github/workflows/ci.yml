@@ -29,7 +29,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
+        uses: pnpm/action-setup@d15e628ca66d93ee5f352c71671a7bc6a97af5c9 # v6.0.8
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -50,14 +50,14 @@ jobs:
           workspaces: packages/crypto
           cache-on-failure: true
 
-      - name: Install wasm-pack v0.14.2
+      - name: Install wasm-pack v0.14.0
         run: |
           curl -fsSL \
-            https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.14.2/wasm-pack-v0.14.2-x86_64-unknown-linux-musl.tar.gz \
+            https://github.com/rustwasm/wasm-pack/releases/download/v0.14.0/wasm-pack-v0.14.0-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
-          echo "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5  /tmp/wasm-pack.tar.gz" | sha256sum --check
+          echo "278a8d668085821f4d1a637bd864f1713f872b0ae3a118c77562a308c0abfe8d  /tmp/wasm-pack.tar.gz" | sha256sum --check
           tar -xzf /tmp/wasm-pack.tar.gz -C /tmp
-          mv /tmp/wasm-pack-v0.14.2-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
+          mv /tmp/wasm-pack-v0.14.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
           wasm-pack --version
       # ─────────────────────────────────────────────────────────────────────────────
 
