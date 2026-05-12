@@ -4,8 +4,6 @@ import { DCC_ID } from '@decentralchain/signature-adapter';
 import { get as configGet, timeDiff } from '../config';
 import { type IAssetPair, type IHash } from '../interface';
 
-export * from './ConfigService';
-
 export function normalizeTime(time: number): number;
 export function normalizeTime(time: Date): Date;
 export function normalizeTime(time: number | Date): number | Date {

@@ -65,9 +65,20 @@ export const DEFAULT_MAIN_CONFIG = {
       'The operation was aborted',
     ],
     beforeSendAccounts: [] as string[],
-    beforeSendBackground: [] as string[],
-    beforeSendPopup: [] as string[],
-    contentScriptApprove: [] as string[],
+    beforeSendBackground: ['Failed to fetch'] as string[],
+    beforeSendPopup: ['Failed to fetch'] as string[],
+    contentScriptApprove: [
+      'Accounts balance errors',
+      'Alias already claimed',
+      'Attempt to transfer unavailable funds',
+      'Cannot lease more than own',
+      'Error while executing (account|token)-script',
+      'failed to parse json message',
+      'Lease with id=.* not found',
+      'non-positive amount',
+      'Transaction is not allowed by (account|token)-script',
+      'Transaction sent from smart account. Requires \\d+ extra fee',
+    ] as string[],
     ignoreAll: false,
     popupApprove: [] as string[],
   },
@@ -86,7 +97,13 @@ export const DEFAULT_MAIN_CONFIG = {
     allow_tx: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     max: 7,
   },
-  whitelist: ['decentralchain.io', 'explorer.decentralchain.io'],
+  whitelist: [
+    'decentralchain.io',
+    'decentral.exchange',
+    'explorer.decentralchain.io',
+    'testnet.decentralchain.io',
+    'stagenet.decentralchain.io',
+  ],
 };
 
 export type MainConfig = typeof DEFAULT_MAIN_CONFIG;

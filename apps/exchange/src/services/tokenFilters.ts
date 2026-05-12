@@ -5,10 +5,11 @@
  * 1. Scam list - prevents display of known scam tokens
  * 2. Token names - provides verified names/tickers for assets
  *
- * Matches Angular's token filtering functionality.
+ * Data is inlined at build time — no remote fetches, no GitHub CDN dependency.
+ * Per-network data is selected via VITE_NETWORK (baked in by Vite at build time).
+ * To update: edit the STATIC_* constants below and redeploy.
  */
 
-import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 
 export interface TokenInfo {
@@ -18,132 +19,99 @@ export interface TokenInfo {
   verified?: boolean | undefined;
 }
 
+// ── Static token data — edit here, not in a remote repo ──────────────────────
+
+const MAINNET_SCAM_LIST: readonly string[] = ['74jKuX6unv6yQcVosoSfKbvmQmi5A4H42crnVWAZ9wh8'];
+
+const MAINNET_TOKEN_NAMES: readonly TokenInfo[] = [
+  { assetId: 'DCC', name: 'DecentralCoin', ticker: 'DCC', verified: true },
+  {
+    assetId: '25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK',
+    name: 'Bitcoin',
+    ticker: 'BTC',
+    verified: true,
+  },
+  {
+    assetId: 'G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo',
+    name: 'CR Coin',
+    ticker: 'CRC',
+    verified: true,
+  },
+  {
+    assetId: 'CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb',
+    name: 'DGFTHR',
+    ticker: 'DGFTHR',
+    verified: true,
+  },
+];
+
+const TESTNET_SCAM_LIST: readonly string[] = [];
+const TESTNET_TOKEN_NAMES: readonly TokenInfo[] = [
+  { assetId: 'DCC', name: 'DecentralCoin', ticker: 'DCC', verified: true },
+];
+
+const STAGENET_SCAM_LIST: readonly string[] = [];
+const STAGENET_TOKEN_NAMES: readonly TokenInfo[] = [
+  { assetId: 'DCC', name: 'DecentralCoin', ticker: 'DCC', verified: true },
+  {
+    assetId: 'yrdwwJJqTKoCt63krHFVZxJvNbUPgHcDeuJXPEGsJCx',
+    name: 'Bitcoin',
+    ticker: 'BTC',
+    verified: true,
+  },
+  {
+    assetId: 'HETgTyfn5grcHWGRKHi7p3hvMB4QxWVrPD8Fnfi9tfD9',
+    name: 'USD',
+    ticker: 'USD',
+    verified: true,
+  },
+  {
+    // biome-ignore lint/security/noSecrets: blockchain asset ID (base58 public key), not a secret
+    assetId: 'EqZfxiqYKkByP42hqNsvuPdXxVYMHaQDwfKgFnAz5D1x',
+    name: 'EUR',
+    ticker: 'EUR',
+    verified: true,
+  },
+];
+
+// Select data set at build time from VITE_NETWORK (statically replaced by Vite).
+const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'mainnet';
+const INITIAL_SCAM_LIST =
+  VITE_NETWORK === 'testnet'
+    ? TESTNET_SCAM_LIST
+    : VITE_NETWORK === 'stagenet'
+      ? STAGENET_SCAM_LIST
+      : MAINNET_SCAM_LIST;
+const INITIAL_TOKEN_NAMES =
+  VITE_NETWORK === 'testnet'
+    ? TESTNET_TOKEN_NAMES
+    : VITE_NETWORK === 'stagenet'
+      ? STAGENET_TOKEN_NAMES
+      : MAINNET_TOKEN_NAMES;
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 class TokenFilterService {
-  private scamList: Set<string> = new Set();
-  private tokenNames: Map<string, TokenInfo> = new Map();
+  private scamList: Set<string>;
+  private tokenNames: Map<string, TokenInfo>;
   private initialized = false;
-  private initPromise: Promise<void> | null = null;
+
+  constructor() {
+    this.scamList = new Set(INITIAL_SCAM_LIST);
+    this.tokenNames = new Map(INITIAL_TOKEN_NAMES.map((t) => [t.assetId, t]));
+    this.initialized = true;
+    logger.debug('[TokenFilter] Initialized from static data:', {
+      namedTokens: this.tokenNames.size,
+      network: VITE_NETWORK,
+      scamTokens: this.scamList.size,
+    });
+  }
 
   /**
-   * Initialize the service by fetching scam list and token names
-   * Safe to call multiple times - will only initialize once
+   * No-op — kept for API compatibility. Data is loaded synchronously in constructor.
    */
   async initialize(): Promise<void> {
-    // Return existing initialization if in progress
-    if (this.initPromise !== null) {
-      return this.initPromise;
-    }
-
-    // Skip if already initialized
-    if (this.initialized) {
-      return Promise.resolve();
-    }
-
-    this.initPromise = this._performInitialization();
-    return this.initPromise;
-  }
-
-  private async _performInitialization(): Promise<void> {
-    try {
-      logger.debug('[TokenFilter] Initializing token filters...');
-
-      // Fetch both lists in parallel
-      const [scamResponse, namesResponse] = await Promise.all([
-        this._fetchScamList(),
-        this._fetchTokenNames(),
-      ]);
-
-      // Process scam list
-      if (scamResponse) {
-        scamResponse.forEach((id) => {
-          this.scamList.add(id);
-        });
-      }
-
-      // Process token names
-      if (namesResponse) {
-        namesResponse.forEach((token) => {
-          this.tokenNames.set(token.assetId, token);
-        });
-      }
-
-      this.initialized = true;
-      logger.debug('[TokenFilter] Initialized:', {
-        namedTokens: this.tokenNames.size,
-        scamTokens: this.scamList.size,
-      });
-    } catch (error) {
-      logger.error('[TokenFilter] Initialization failed:', error);
-      // Don't throw - allow app to function without filters
-      // Mark as initialized anyway to prevent repeated failures
-      this.initialized = true;
-    } finally {
-      this.initPromise = null;
-    }
-  }
-
-  private async _fetchScamList(): Promise<string[] | null> {
-    try {
-      const scamUrl = NetworkConfig.scamListUrl;
-      if (!scamUrl) {
-        logger.warn('[TokenFilter] scamListUrl not configured');
-        return null;
-      }
-
-      const response = await fetch(scamUrl, {
-        signal: AbortSignal.timeout(10000),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      // Parse CSV - each line is an asset ID
-      const lines = (await response.text())
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-      return lines;
-    } catch (error) {
-      logger.error('[TokenFilter] Failed to fetch scam list:', error);
-      return null;
-    }
-  }
-
-  private async _fetchTokenNames(): Promise<TokenInfo[] | null> {
-    try {
-      const namesUrl = NetworkConfig.tokensNameListUrl;
-      if (!namesUrl) {
-        logger.warn('[TokenFilter] tokensNameListUrl not configured');
-        return null;
-      }
-
-      const response = await fetch(namesUrl, {
-        signal: AbortSignal.timeout(10000),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      // Parse CSV - format: assetId,name,ticker
-      const lines = (await response.text())
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-      const tokens: TokenInfo[] = [];
-
-      for (const line of lines) {
-        const parts = line.split(',').map((p) => p.trim());
-        if (parts.length >= 2) {
-          tokens.push({
-            assetId: parts[0] ?? '',
-            name: parts[1] ?? '',
-            ticker: parts[2] || undefined,
-            verified: true,
-          });
-        }
-      }
-
-      return tokens;
-    } catch (error) {
-      logger.error('[TokenFilter] Failed to fetch token names:', error);
-      return null;
-    }
+    return Promise.resolve();
   }
 
   /**
@@ -174,10 +142,8 @@ class TokenFilterService {
    */
   getDisplayName(assetId: string, fallback: string = 'Unknown'): string {
     if (!assetId) return fallback;
-
     const info = this.getTokenInfo(assetId);
     if (!info) return fallback;
-
     // biome-ignore lint/nursery/useNullishCoalescing: ticker/name may be '' (empty = no display name) — || fallback chain is intentional
     return info.ticker || info.name || fallback;
   }
@@ -195,17 +161,6 @@ class TokenFilterService {
    */
   isInitialized(): boolean {
     return this.initialized;
-  }
-
-  /**
-   * Refresh token data (for periodic updates)
-   */
-  async refresh(): Promise<void> {
-    this.initialized = false;
-    this.initPromise = null;
-    this.scamList.clear();
-    this.tokenNames.clear();
-    return this.initialize();
   }
 }
 

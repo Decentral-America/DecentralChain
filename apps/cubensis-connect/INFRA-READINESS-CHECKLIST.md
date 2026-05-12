@@ -45,7 +45,7 @@
 ### Needed from infra
 
 - Canonical allowlisted origins for E2E (mainnet/testnet/stagenet where relevant)
-- Canonical test origins replacing legacy `waves.tech` assumptions
+- Canonical test origins replacing legacy `decentralchain.io` assumptions
 - DNS/TLS readiness for those origins
 
 ### Unblock criteria
@@ -61,24 +61,9 @@
 
 ---
 
-## 3) Suspicious Asset Source Ownership
+## 3) ~~Suspicious Asset Source Ownership~~ — ✅ CLOSED (moot)
 
-**Owner:** Data platform + Security
-
-### Needed from infra
-
-- DCC-owned canonical suspicious-token source URL (CSV/JSON)
-- Ownership and update process for that feed
-- SLA expectations (update frequency + availability)
-
-### Unblock criteria
-
-- `src/controllers/assetInfo.ts` points only to DCC-owned source
-- Data schema and update behavior validated in one integration test
-
-### Affected TODOs
-
-- `src/controllers/assetInfo.ts` (waves-community path migration)
+**Resolved (`05d55efd2`):** The suspicious-token CSV fetch was never functional (Decentral-America/waves-community 404s since fork). Feature removed entirely — all 3 layers deleted: fetch/store logic, `isSuspicious` flag, and Settings UI toggle. Static token name data inlined from the prior dcc-token-filters repo. No infra dependency remains.
 
 ---
 
@@ -96,28 +81,7 @@
 
 ---
 
-## 5) Legacy Global Alias Sunset Plan
-
-**Owner:** Wallet team + Ecosystem/devrel
-
-### Needed from product/ecosystem
-
-- Sunset date for legacy globals: `WavesKeeper`, `Waves`, `KeeperWallet`
-- Migration communication plan to dApp integrators
-- Version where aliases switch from enabled → deprecated warning → removed
-
-### Unblock criteria
-
-- Published deprecation policy with date
-- No critical integrator still depending on aliases
-
-### Affected TODOs
-
-- `src/inpage.ts` (alias removal timing)
-
----
-
-## 6) Test Architecture Cleanup (No Infra Dependency)
+## 5) Test Architecture Cleanup (No Infra Dependency)
 
 **Owner:** Wallet frontend/test engineering
 

@@ -28,7 +28,6 @@ declare global {
   interface KeeperApi extends Omit<__BackgroundPageApiDirect, 'subscribeToPublicState'> {
     on(event: 'update', cb: (publicState: PublicState) => void): void;
     initialPromise: Promise<typeof CubensisConnect>;
-    wavesAuth: __BackgroundPageApiDirect['dccAuth'];
   }
 
   var CubensisConnect: KeeperApi;
@@ -118,23 +117,4 @@ globalThis.CubensisConnect = {
   signTransaction: proxy.signTransaction,
   signTransactionPackage: proxy.signTransactionPackage,
   verifyCustomData: proxy.verifyCustomData,
-  // Backward-compatible alias for existing dApps still calling wavesAuth
-  wavesAuth: proxy.dccAuth,
 };
-
-function defineDeprecatedName(name: string) {
-  Object.defineProperty(window, name, {
-    configurable: true,
-    get() {
-      console.warn(
-        `${name} global variable is deprecated and will be removed in future releases, please update to use CubensisConnect instead`,
-      );
-      return CubensisConnect;
-    },
-  });
-}
-
-// TODO: Remove legacy global aliases once all known dApps have migrated to CubensisConnect
-defineDeprecatedName('WavesKeeper');
-defineDeprecatedName('Waves');
-defineDeprecatedName('KeeperWallet');

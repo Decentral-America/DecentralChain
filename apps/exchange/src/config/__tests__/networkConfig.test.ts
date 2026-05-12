@@ -48,19 +48,6 @@ describe('NetworkConfig', () => {
     it('nodeList is an HTTPS URL', () => {
       expect(NetworkConfig.nodeList).toMatch(/^https:\/\//);
     });
-
-    it('featuresConfigUrl and feeConfigUrl are HTTPS URLs', () => {
-      expect(NetworkConfig.featuresConfigUrl).toMatch(/^https:\/\//);
-      expect(NetworkConfig.feeConfigUrl).toMatch(/^https:\/\//);
-    });
-
-    it('scamListUrl is an HTTPS URL', () => {
-      expect(NetworkConfig.scamListUrl).toMatch(/^https:\/\//);
-    });
-
-    it('tokensNameListUrl is an HTTPS URL', () => {
-      expect(NetworkConfig.tokensNameListUrl).toMatch(/^https:\/\//);
-    });
   });
 
   describe('chain identity', () => {

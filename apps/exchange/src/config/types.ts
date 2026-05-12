@@ -95,20 +95,8 @@ export interface MainnetConfig {
   /** Network peers list URL */
   nodeList: string;
 
-  /** URL for prominent token names CSV (used for asset naming) */
-  tokensNameListUrl: string;
-
-  /** URL for scam asset list CSV (used for spam filtering) */
-  scamListUrl: string;
-
   /** Origin URL for the application */
   origin: string;
-
-  /** Features configuration URL (feature flags, enabled/disabled features) */
-  featuresConfigUrl: string;
-
-  /** Fee configuration URL (transaction fee tables) */
-  feeConfigUrl: string;
 
   /** Token rating service URL (optional, may be empty) */
   tokenrating: string;

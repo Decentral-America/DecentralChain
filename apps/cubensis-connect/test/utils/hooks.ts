@@ -10,7 +10,7 @@ import { afterAll, beforeAll } from 'vitest';
 import { remote } from 'webdriverio';
 
 /** Node URL as seen from inside the Selenium Docker container */
-export const BROWSER_NODE_URL = 'http://waves-private-node:6869';
+export const BROWSER_NODE_URL = 'http://dcc-private-node:6869';
 
 /**
  * Resolved version of {@link WebdriverIOQueriesChainable} that avoids the

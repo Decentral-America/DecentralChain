@@ -10,8 +10,6 @@
   "code": "?",
   "coinomat": "",
   "explorer": "https://decentralscan.com",
-  "featuresConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/config.json",
-  "feeConfigUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-client-config/master/fee.json",
   "gateway": {
     "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK": {
       "isThirdParty": false,
@@ -33,11 +31,9 @@
   },
   "origin": "https://decentral.exchange",
   "privacyPolicy": "https://decentralchain.io/privacy-policy",
-  "scamListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/scam-v1.csv",
   "support": "https://decentralchain.io/soporte",
   "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
   "tokenrating": "",
-  "tokensNameListUrl": "https://raw.githubusercontent.com/Decentral-America/dcc-token-filters/main/Prominent%20token%20name%20list.csv",
   "tradingPairs": [
     ["DCC", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
     ["DCC", "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo"],
