@@ -28,40 +28,44 @@ const ErrorText = styled(FormHelperText)(({ theme }) => ({
   marginLeft: theme.spacing(4),
 }));
 
-export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
-  ({ label, error, indeterminate = false, disabled, id, ...props }, ref) => {
-    const generatedId = React.useId();
-    const checkboxId = id || `checkbox-${generatedId}`;
+export function Checkbox({
+  ref,
+  label,
+  error,
+  indeterminate = false,
+  disabled,
+  id,
+  ...props
+}: CheckboxProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const generatedId = React.useId();
+  const checkboxId = id || `checkbox-${generatedId}`;
 
-    const checkboxElement = (
-      <MuiCheckbox
-        id={checkboxId}
-        ref={ref}
-        indeterminate={indeterminate}
-        disabled={disabled}
-        inputProps={{
-          'aria-describedby': error ? `${checkboxId}-error` : undefined,
-          'aria-invalid': !!error,
-        }}
-        {...props}
-      />
-    );
+  const checkboxElement = (
+    <MuiCheckbox
+      id={checkboxId}
+      ref={ref}
+      indeterminate={indeterminate}
+      disabled={disabled}
+      inputProps={{
+        'aria-describedby': error ? `${checkboxId}-error` : undefined,
+        'aria-invalid': !!error,
+      }}
+      {...props}
+    />
+  );
 
-    return (
-      <CheckboxContainer>
-        {label ? (
-          <FormControlLabel control={checkboxElement} label={label} disabled={disabled} />
-        ) : (
-          checkboxElement
-        )}
-        {error && (
-          <ErrorText id={`${checkboxId}-error`} role="alert">
-            {error}
-          </ErrorText>
-        )}
-      </CheckboxContainer>
-    );
-  },
-);
-
-Checkbox.displayName = 'Checkbox';
+  return (
+    <CheckboxContainer>
+      {label ? (
+        <FormControlLabel control={checkboxElement} label={label} disabled={disabled} />
+      ) : (
+        checkboxElement
+      )}
+      {error && (
+        <ErrorText id={`${checkboxId}-error`} role="alert">
+          {error}
+        </ErrorText>
+      )}
+    </CheckboxContainer>
+  );
+}

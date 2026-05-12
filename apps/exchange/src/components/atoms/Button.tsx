@@ -8,7 +8,7 @@
 import MuiButton, { type ButtonProps as MuiButtonProps } from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import type React from 'react';
 
 export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
   variant?: 'primary' | 'secondary' | 'text' | 'danger' | 'success';
@@ -88,55 +88,49 @@ const getButtonProps = (variant?: string) => {
   }
 };
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      variant = 'primary',
-      size = 'medium',
-      fullWidth = false,
-      isLoading = false,
-      loadingText,
-      leftIcon,
-      rightIcon,
-      disabled,
-      'aria-label': ariaLabel,
-      'aria-controls': ariaControls,
-      'aria-expanded': ariaExpanded,
-      'aria-haspopup': ariaHaspopup,
-      'aria-pressed': ariaPressed,
-      ...props
-    },
-    ref,
-  ) => {
-    const buttonProps = getButtonProps(variant);
+export function Button({
+  ref,
+  children,
+  variant = 'primary',
+  size = 'medium',
+  fullWidth = false,
+  isLoading = false,
+  loadingText,
+  leftIcon,
+  rightIcon,
+  disabled,
+  'aria-label': ariaLabel,
+  'aria-controls': ariaControls,
+  'aria-expanded': ariaExpanded,
+  'aria-haspopup': ariaHaspopup,
+  'aria-pressed': ariaPressed,
+  ...props
+}: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const buttonProps = getButtonProps(variant);
 
-    return (
-      <StyledButton
-        ref={ref}
-        {...buttonProps}
-        size={size}
-        fullWidth={fullWidth}
-        isLoading={isLoading}
-        disabled={disabled || isLoading}
-        startIcon={leftIcon}
-        endIcon={rightIcon}
-        aria-label={ariaLabel}
-        aria-controls={ariaControls}
-        aria-expanded={ariaExpanded}
-        aria-haspopup={ariaHaspopup}
-        aria-pressed={ariaPressed}
-        aria-busy={isLoading}
-        aria-disabled={disabled || isLoading}
-        {...props}
-      >
-        <ButtonContent isLoading={isLoading}>
-          {(isLoading && loadingText ? loadingText : children) as React.ReactNode}
-        </ButtonContent>
-        {isLoading && <LoadingSpinner size={20} color="inherit" />}
-      </StyledButton>
-    );
-  },
-);
-
-Button.displayName = 'Button';
+  return (
+    <StyledButton
+      ref={ref}
+      {...buttonProps}
+      size={size}
+      fullWidth={fullWidth}
+      isLoading={isLoading}
+      disabled={disabled || isLoading}
+      startIcon={leftIcon}
+      endIcon={rightIcon}
+      aria-label={ariaLabel}
+      aria-controls={ariaControls}
+      aria-expanded={ariaExpanded}
+      aria-haspopup={ariaHaspopup}
+      aria-pressed={ariaPressed}
+      aria-busy={isLoading}
+      aria-disabled={disabled || isLoading}
+      {...props}
+    >
+      <ButtonContent isLoading={isLoading}>
+        {(isLoading && loadingText ? loadingText : children) as React.ReactNode}
+      </ButtonContent>
+      {isLoading && <LoadingSpinner size={20} color="inherit" />}
+    </StyledButton>
+  );
+}

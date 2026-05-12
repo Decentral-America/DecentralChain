@@ -145,62 +145,56 @@ const HelperText = styled.span`
   font-size: ${(p) => p.theme.fontSizes.sm};
 `;
 
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  (
-    {
-      label,
-      error,
-      helperText,
-      fullWidth = false,
-      selectSize = 'medium',
-      options,
-      placeholder,
-      id,
-      ...props
-    },
-    ref,
-  ) => {
-    const generatedId = React.useId();
-    const selectId = id || `select-${generatedId}`;
+export function Select({
+  ref,
+  label,
+  error,
+  helperText,
+  fullWidth = false,
+  selectSize = 'medium',
+  options,
+  placeholder,
+  id,
+  ...props
+}: SelectProps & { ref?: React.Ref<HTMLSelectElement> }) {
+  const generatedId = React.useId();
+  const selectId = id || `select-${generatedId}`;
 
-    return (
-      <SelectWrapper $fullWidth={fullWidth}>
-        {label && <Label htmlFor={selectId}>{label}</Label>}
-        <SelectContainer>
-          <StyledSelect
-            id={selectId}
-            ref={ref}
-            $hasError={!!error}
-            $selectSize={selectSize}
-            aria-invalid={!!error}
-            aria-describedby={
-              error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
-            }
-            required={placeholder ? true : undefined}
-            {...(props as Record<string, unknown>)}
-          >
-            {placeholder && (
-              <option value="" disabled selected>
-                {placeholder}
-              </option>
-            )}
-            {options.map((opt) => (
-              <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-                {opt.label}
-              </option>
-            ))}
-          </StyledSelect>
-          <ChevronIcon />
-        </SelectContainer>
-        {error && (
-          <ErrorText id={`${selectId}-error`} role="alert">
-            {error}
-          </ErrorText>
-        )}
-        {!error && helperText && <HelperText id={`${selectId}-helper`}>{helperText}</HelperText>}
-      </SelectWrapper>
-    );
-  },
-);
-
-Select.displayName = 'Select';
+  return (
+    <SelectWrapper $fullWidth={fullWidth}>
+      {label && <Label htmlFor={selectId}>{label}</Label>}
+      <SelectContainer>
+        <StyledSelect
+          id={selectId}
+          ref={ref}
+          $hasError={!!error}
+          $selectSize={selectSize}
+          aria-invalid={!!error}
+          aria-describedby={
+            error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
+          }
+          required={placeholder ? true : undefined}
+          {...(props as Record<string, unknown>)}
+        >
+          {placeholder && (
+            <option value="" disabled selected>
+              {placeholder}
+            </option>
+          )}
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+              {opt.label}
+            </option>
+          ))}
+        </StyledSelect>
+        <ChevronIcon />
+      </SelectContainer>
+      {error && (
+        <ErrorText id={`${selectId}-error`} role="alert">
+          {error}
+        </ErrorText>
+      )}
+      {!error && helperText && <HelperText id={`${selectId}-helper`}>{helperText}</HelperText>}
+    </SelectWrapper>
+  );
+}

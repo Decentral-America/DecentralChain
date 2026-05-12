@@ -6,7 +6,7 @@
 
 import MuiAvatar, { type AvatarProps as MuiAvatarProps } from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import type React from 'react';
 
 export interface AvatarProps extends Omit<MuiAvatarProps, 'variant'> {
   src?: string;
@@ -60,16 +60,21 @@ const getInitials = (name?: string): string => {
   return ((parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '')).toUpperCase();
 };
 
-export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  ({ src, alt, size = 'md', name, shape = 'circle', children, ...props }, ref) => {
-    const initials = name ? getInitials(name) : undefined;
+export function Avatar({
+  ref,
+  src,
+  alt,
+  size = 'md',
+  name,
+  shape = 'circle',
+  children,
+  ...props
+}: AvatarProps & { ref?: React.Ref<HTMLDivElement> }) {
+  const initials = name ? getInitials(name) : undefined;
 
-    return (
-      <StyledAvatar ref={ref} src={src} alt={alt || name} size={size} shape={shape} {...props}>
-        {!src && (children || initials)}
-      </StyledAvatar>
-    );
-  },
-);
-
-Avatar.displayName = 'Avatar';
+  return (
+    <StyledAvatar ref={ref} src={src} alt={alt || name} size={size} shape={shape} {...props}>
+      {!src && (children || initials)}
+    </StyledAvatar>
+  );
+}

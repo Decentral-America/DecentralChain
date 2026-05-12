@@ -27,41 +27,44 @@ const ErrorText = styled(FormHelperText)(({ theme }) => ({
   marginLeft: theme.spacing(4),
 }));
 
-export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
-  ({ label, error, disabled, id, ...props }, ref) => {
-    const generatedId = React.useId();
-    const radioId = id || `radio-${generatedId}`;
+export function Radio({
+  ref,
+  label,
+  error,
+  disabled,
+  id,
+  ...props
+}: RadioProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const generatedId = React.useId();
+  const radioId = id || `radio-${generatedId}`;
 
-    const radioElement = (
-      <MuiRadio
-        id={radioId}
-        ref={ref}
-        disabled={disabled}
-        inputProps={{
-          'aria-describedby': error ? `${radioId}-error` : undefined,
-          'aria-invalid': !!error,
-        }}
-        {...props}
-      />
-    );
+  const radioElement = (
+    <MuiRadio
+      id={radioId}
+      ref={ref}
+      disabled={disabled}
+      inputProps={{
+        'aria-describedby': error ? `${radioId}-error` : undefined,
+        'aria-invalid': !!error,
+      }}
+      {...props}
+    />
+  );
 
-    return (
-      <RadioContainer>
-        {label ? (
-          <FormControlLabel control={radioElement} label={label} disabled={disabled} />
-        ) : (
-          radioElement
-        )}
-        {error && (
-          <ErrorText id={`${radioId}-error`} role="alert">
-            {error}
-          </ErrorText>
-        )}
-      </RadioContainer>
-    );
-  },
-);
-
-Radio.displayName = 'Radio';
+  return (
+    <RadioContainer>
+      {label ? (
+        <FormControlLabel control={radioElement} label={label} disabled={disabled} />
+      ) : (
+        radioElement
+      )}
+      {error && (
+        <ErrorText id={`${radioId}-error`} role="alert">
+          {error}
+        </ErrorText>
+      )}
+    </RadioContainer>
+  );
+}
 
 export { RadioGroup };

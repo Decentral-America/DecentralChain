@@ -125,65 +125,59 @@ const ErrorListItem = styled.li`
   }
 `;
 
-export const ValidationError = React.forwardRef<HTMLDivElement, ValidationErrorProps>(
-  (
-    {
-      message,
-      messages,
-      showIcon = true,
-      size = 'medium',
-      animate = true,
-      className,
-      testId = 'validation-error',
-    },
-    ref,
-  ) => {
-    // Determine which errors to display
-    const errorMessages = React.useMemo(() => {
-      if (messages && messages.length > 0) {
-        return messages;
-      }
-      if (message) {
-        return [message];
-      }
-      return [];
-    }, [message, messages]);
-
-    // Don't render if no errors
-    if (errorMessages.length === 0) {
-      return null;
+export function ValidationError({
+  ref,
+  message,
+  messages,
+  showIcon = true,
+  size = 'medium',
+  animate = true,
+  className,
+  testId = 'validation-error',
+}: ValidationErrorProps & { ref?: React.Ref<HTMLDivElement> }) {
+  // Determine which errors to display
+  const errorMessages = React.useMemo(() => {
+    if (messages && messages.length > 0) {
+      return messages;
     }
-
-    // Single error
-    if (errorMessages.length === 1) {
-      return (
-        <ErrorWrapper ref={ref} className={className} animate={animate} data-testid={testId}>
-          <ErrorMessage size={size} animate={animate} role="alert" aria-live="polite">
-            {showIcon && <ErrorIcon aria-hidden="true" />}
-            <ErrorText>{errorMessages[0]}</ErrorText>
-          </ErrorMessage>
-        </ErrorWrapper>
-      );
+    if (message) {
+      return [message];
     }
+    return [];
+  }, [message, messages]);
 
-    // Multiple errors
+  // Don't render if no errors
+  if (errorMessages.length === 0) {
+    return null;
+  }
+
+  // Single error
+  if (errorMessages.length === 1) {
     return (
       <ErrorWrapper ref={ref} className={className} animate={animate} data-testid={testId}>
-        <ErrorMessage size={size} animate={false} role="alert" aria-live="polite">
+        <ErrorMessage size={size} animate={animate} role="alert" aria-live="polite">
           {showIcon && <ErrorIcon aria-hidden="true" />}
-          <ErrorText>Please fix the following errors:</ErrorText>
+          <ErrorText>{errorMessages[0]}</ErrorText>
         </ErrorMessage>
-        <ErrorList>
-          {errorMessages.map((msg) => (
-            <ErrorListItem key={msg}>{msg}</ErrorListItem>
-          ))}
-        </ErrorList>
       </ErrorWrapper>
     );
-  },
-);
+  }
 
-ValidationError.displayName = 'ValidationError';
+  // Multiple errors
+  return (
+    <ErrorWrapper ref={ref} className={className} animate={animate} data-testid={testId}>
+      <ErrorMessage size={size} animate={false} role="alert" aria-live="polite">
+        {showIcon && <ErrorIcon aria-hidden="true" />}
+        <ErrorText>Please fix the following errors:</ErrorText>
+      </ErrorMessage>
+      <ErrorList>
+        {errorMessages.map((msg) => (
+          <ErrorListItem key={msg}>{msg}</ErrorListItem>
+        ))}
+      </ErrorList>
+    </ErrorWrapper>
+  );
+}
 
 /**
  * Hook to collect all form errors for display
