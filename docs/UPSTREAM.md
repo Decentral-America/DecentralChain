@@ -337,7 +337,7 @@ Ranked by strategic value to DCC:
 |----------|-----------|-----|--------|
 | 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
 | 🟢 **Tier 1** | `blockchain-postgres-sync` (16★) | Analytics backbone for block explorers and data APIs | Medium |
-| 🟢 **Tier 1** | `gowaves` (255★) | Lighter Go node alternative for validators | High |
+| ✅ **Adopted** | `gowaves` (255★) | Forked as `Ecosystem/node-go`. v0.11.1 evaluated (Mar 2026): adds Features 22–25 (LightNode, BoostBlockReward, ecrecoverFix, DeterministicFinality/RideV9), all 3 missing proto files, CommitToGeneration field 120. Node still pre-release; proto submodule upgrade recommended; full node upgrade deferred until stable release. `InvokeExpression` renumbered 22→26 — document before any governance activity. | High |
 | ✅ **Done** | `data-service` | Imported as `apps/data-service` — full 395-commit history via `git subtree` (DCC-221, DCC-233) | — |
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
@@ -379,6 +379,7 @@ Ranked by strategic value to DCC:
 - [ ] Fork & rebrand `ride-vscode` → DCC Ride VS Code extension
 - [ ] Fork & rebrand `ride-examples` → `dcc-ride-examples`
 - [ ] Fork `surfboard` → `@decentralchain/surfboard` CLI
+- [ ] Upgrade `node-go` proto submodule to gowaves v0.11.1 (closes 4 DCC-171 proto gaps)
 - [ ] Evaluate `blockchain-postgres-sync` for DecentralScan 2.0
 
 ### Future
