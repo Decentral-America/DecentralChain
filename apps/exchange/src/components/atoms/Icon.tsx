@@ -5,7 +5,7 @@
  */
 
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import type React from 'react';
 import * as FaIcons from 'react-icons/fa'; // Font Awesome
 import * as FiIcons from 'react-icons/fi'; // Feather Icons
 import * as MdIcons from 'react-icons/md'; // Material Design
@@ -51,27 +51,30 @@ const getIconLibrary = (library: 'md' | 'fa' | 'fi') => {
   }
 };
 
-export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
-  ({ name, size = 24, color, library = 'md', ...props }, ref) => {
-    const icons = getIconLibrary(library);
-    const IconComponent = icons[name as keyof typeof icons] as React.ComponentType;
+export function Icon({
+  ref,
+  name,
+  size = 24,
+  color,
+  library = 'md',
+  ...props
+}: IconProps & { ref?: React.Ref<HTMLSpanElement> }) {
+  const icons = getIconLibrary(library);
+  const IconComponent = icons[name as keyof typeof icons] as React.ComponentType;
 
-    if (!IconComponent) {
-      logger.warn(`Icon "${name}" not found in library "${library}"`);
-      return null;
-    }
+  if (!IconComponent) {
+    logger.warn(`Icon "${name}" not found in library "${library}"`);
+    return null;
+  }
 
-    const sizeValue = typeof size === 'number' ? `${size}px` : size;
+  const sizeValue = typeof size === 'number' ? `${size}px` : size;
 
-    return (
-      <IconWrapper ref={ref} size={sizeValue} color={color} {...props}>
-        <IconComponent />
-      </IconWrapper>
-    );
-  },
-);
-
-Icon.displayName = 'Icon';
+  return (
+    <IconWrapper ref={ref} size={sizeValue} color={color} {...props}>
+      <IconComponent />
+    </IconWrapper>
+  );
+}
 
 // Common icon name exports for convenience
 export const CommonIcons = {
