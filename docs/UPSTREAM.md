@@ -343,7 +343,7 @@ Ranked by strategic value to DCC:
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
 | 🟡 **Tier 2** | `node-api-grpc-js` (0★) | gRPC client — faster than REST | Low |
-| ⚪ **Tier 3** | `WavesJ` (47★) | Java SDK — fork when Java dev community appears | On demand |
+| ✅ **Forked** | `WavesJ` (47★) | Forked as [`Ecosystem/java-sdk`](https://github.com/Decentral-America/java-sdk) — `io.decentralchain:java-sdk:1.6.4-SNAPSHOT` (DCC-240, May 2026). Standalone repo, not in monorepo. Upstream at `wavesplatform/WavesJ` commit `2f78fd3`. Java 11, Maven Central publish, JaCoCo/SpotBugs/Checkstyle quality gates. | Done |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
 
 ### What's Not Worth Forking
@@ -633,6 +633,16 @@ Actionable items where Waves references remain and should be cleaned up:
 >
 > **AI agents**: The complete sync procedure is documented as a skill at `.github/skills/upstream-sync/SKILL.md`. Use the `/upstream-sync` prompt to invoke it. The skill contains the full workflow: fetch, diff, evaluate, port, validate, commit, and update this table.
 
+### Standalone Ecosystem Repos → Upstream Map
+
+These repos are **outside the monorepo** but also track upstream Waves sources.
+
+| Repo | Upstream | Upstream Commit | DCC Commit | Date | Activity |
+|------|----------|----------------|------------|------|----------|
+| [`Ecosystem/java-sdk`](https://github.com/Decentral-America/java-sdk) | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` | `4c251d8` | 2026-05-14 | 🟢 Active |
+
+> **java-sdk sync procedure:** `cd Ecosystem/java-sdk && git fetch upstream && git log upstream/master --oneline` to see new upstream commits. Port relevant bugfixes manually; adapt to DCC Maven coords (`io.decentralchain:java-sdk`). Do NOT port Waves-specific branding, endpoint URLs, or test node Docker images.
+
 ### Monorepo → Upstream Map
 
 Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is the last Waves commit we've incorporated. **DCC Commit** is where that sync lives in our monorepo history.
@@ -708,6 +718,7 @@ git diff <last-synced-commit>..HEAD -- src/
 | data-service | Now in monorepo — watch for upstream bugfixes and new endpoint features to port | Monthly |
 | waves-transactions | New transaction type support | Monthly |
 | node-api-js | New API endpoints | Monthly |
+| WavesJ | Java SDK (`Ecosystem/java-sdk`) — watch for bugfixes and new API endpoint support | Monthly |
 
 ---
 
@@ -715,13 +726,13 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### By Category (134 repos total)
 
-**Already Forked to DCC (25):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**.
+**Already Forked to DCC (26):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**, **WavesJ** (as standalone `Ecosystem/java-sdk`).
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
 **Infrastructure (~20):** Waves/node (1171★ Scala), gowaves (255★ Go), matcher (18★ Scala), ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, blockchain-postgres-sync (16★ Rust), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
-**Multi-Language SDKs (~20):** Java (WavesJ 47★, waves-transactions-java, waves-crypto-java), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
+**Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, waves-transactions-java, waves-crypto-java), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
 
 **Mobile (4):** WavesWallet-iOS (47★), WavesWallet-android (52★), WavesSDK-iOS (17★), WavesSDK-android (15★).
 
