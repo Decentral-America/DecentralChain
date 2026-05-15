@@ -87,25 +87,25 @@ importers:
     dependencies:
       '@decentralchain/bignumber':
         specifier: workspace:*
-        version: link:../../packages/bignumber
+        version: link:../../packages/ts/bignumber
       '@decentralchain/crypto':
         specifier: workspace:*
-        version: link:../../packages/crypto
+        version: link:../../packages/ts/crypto
       '@decentralchain/data-entities':
         specifier: workspace:*
-        version: link:../../packages/data-entities
+        version: link:../../packages/ts/data-entities
       '@decentralchain/marshall':
         specifier: workspace:*
-        version: link:../../packages/marshall
+        version: link:../../packages/ts/marshall
       '@decentralchain/parse-json-bignumber':
         specifier: workspace:*
-        version: link:../../packages/parse-json-bignumber
+        version: link:../../packages/ts/parse-json-bignumber
       '@decentralchain/protobuf-serialization':
         specifier: workspace:*
-        version: link:../../packages/protobuf-serialization
+        version: link:../../packages/ts/protobuf-serialization
       '@decentralchain/ts-types':
         specifier: workspace:*
-        version: link:../../packages/ts-types
+        version: link:../../packages/ts/ts-types
       '@ethereumjs/util':
         specifier: ^10.1.1
         version: 10.1.1
@@ -211,7 +211,7 @@ importers:
         version: 7.29.0
       '@decentralchain/ledger':
         specifier: workspace:*
-        version: link:../../packages/ledger
+        version: link:../../packages/ts/ledger
       '@ledgerhq/hw-transport-webusb':
         specifier: ^6.34.2
         version: 6.34.2
@@ -310,13 +310,13 @@ importers:
     dependencies:
       '@decentralchain/assets-pairs-order':
         specifier: workspace:*
-        version: link:../../packages/assets-pairs-order
+        version: link:../../packages/ts/assets-pairs-order
       '@decentralchain/data-entities':
         specifier: workspace:*
-        version: link:../../packages/data-entities
+        version: link:../../packages/ts/data-entities
       '@decentralchain/parse-json-bignumber':
         specifier: workspace:*
-        version: link:../../packages/parse-json-bignumber
+        version: link:../../packages/ts/parse-json-bignumber
       '@hono/node-server':
         specifier: ^2.0.1
         version: 2.0.1(hono@4.12.18)
@@ -368,34 +368,34 @@ importers:
     dependencies:
       '@decentralchain/assets-pairs-order':
         specifier: workspace:*
-        version: link:../../packages/assets-pairs-order
+        version: link:../../packages/ts/assets-pairs-order
       '@decentralchain/bignumber':
         specifier: workspace:*
-        version: link:../../packages/bignumber
+        version: link:../../packages/ts/bignumber
       '@decentralchain/browser-bus':
         specifier: workspace:*
-        version: link:../../packages/browser-bus
+        version: link:../../packages/ts/browser-bus
       '@decentralchain/data-entities':
         specifier: workspace:*
-        version: link:../../packages/data-entities
+        version: link:../../packages/ts/data-entities
       '@decentralchain/data-service-client-js':
         specifier: workspace:*
-        version: link:../../packages/data-service-client-js
+        version: link:../../packages/ts/data-service-client-js
       '@decentralchain/node-api-js':
         specifier: workspace:*
-        version: link:../../packages/node-api-js
+        version: link:../../packages/ts/node-api-js
       '@decentralchain/oracle-data':
         specifier: workspace:*
-        version: link:../../packages/oracle-data
+        version: link:../../packages/ts/oracle-data
       '@decentralchain/signature-adapter':
         specifier: workspace:*
-        version: link:../../packages/signature-adapter
+        version: link:../../packages/ts/signature-adapter
       '@decentralchain/transactions':
         specifier: workspace:*
-        version: link:../../packages/transactions
+        version: link:../../packages/ts/transactions
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
-        version: link:../../packages/ts-lib-crypto
+        version: link:../../packages/ts/ts-lib-crypto
       '@emotion/react':
         specifier: ^11.14.0
         version: 11.14.0(@types/react@19.2.14)(react@19.2.6)
@@ -528,7 +528,7 @@ importers:
     dependencies:
       '@decentralchain/node-api-js':
         specifier: workspace:*
-        version: link:../../packages/node-api-js
+        version: link:../../packages/ts/node-api-js
       '@react-router/node':
         specifier: 7.15.0
         version: 7.15.0(react-router@7.15.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(typescript@6.0.3)
@@ -639,7 +639,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/assets-pairs-order:
+  packages/ts/assets-pairs-order:
     dependencies:
       bs58:
         specifier: ^6.0.0
@@ -667,7 +667,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/bignumber:
+  packages/ts/bignumber:
     dependencies:
       bignumber.js:
         specifier: ^11.1.1
@@ -698,7 +698,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/browser-bus:
+  packages/ts/browser-bus:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -728,7 +728,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/crypto:
+  packages/ts/crypto:
     dependencies:
       '@noble/ciphers':
         specifier: ^2.2.0
@@ -765,7 +765,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/cubensis-connect-provider:
+  packages/ts/cubensis-connect-provider:
     dependencies:
       '@decentralchain/cubensis-connect-types':
         specifier: workspace:*
@@ -805,7 +805,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/cubensis-connect-types:
+  packages/ts/cubensis-connect-types:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -829,7 +829,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/data-entities:
+  packages/ts/data-entities:
     dependencies:
       '@decentralchain/bignumber':
         specifier: workspace:*
@@ -857,7 +857,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/data-service-client-js:
+  packages/ts/data-service-client-js:
     dependencies:
       '@decentralchain/bignumber':
         specifier: workspace:*
@@ -891,7 +891,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/ledger:
+  packages/ts/ledger:
     dependencies:
       '@ledgerhq/logs':
         specifier: 6.17.0
@@ -919,7 +919,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/marshall:
+  packages/ts/marshall:
     dependencies:
       base64-js:
         specifier: ^1.5.1
@@ -956,7 +956,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/money-like-to-node:
+  packages/ts/money-like-to-node:
     dependencies:
       '@decentralchain/ts-types':
         specifier: workspace:*
@@ -990,7 +990,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/node-api-js:
+  packages/ts/node-api-js:
     dependencies:
       '@decentralchain/bignumber':
         specifier: workspace:*
@@ -1036,7 +1036,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/oracle-data:
+  packages/ts/oracle-data:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -1063,7 +1063,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/parse-json-bignumber:
+  packages/ts/parse-json-bignumber:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -1090,7 +1090,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/protobuf-serialization:
+  packages/ts/protobuf-serialization:
     dependencies:
       '@bufbuild/protobuf':
         specifier: ^2.12.0
@@ -1124,7 +1124,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/ride-js:
+  packages/ts/ride-js:
     dependencies:
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
@@ -1161,7 +1161,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/signature-adapter:
+  packages/ts/signature-adapter:
     dependencies:
       '@decentralchain/bignumber':
         specifier: workspace:*
@@ -1204,7 +1204,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/signer:
+  packages/ts/signer:
     dependencies:
       '@decentralchain/node-api-js':
         specifier: workspace:*
@@ -1247,7 +1247,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/transactions:
+  packages/ts/transactions:
     dependencies:
       '@decentralchain/marshall':
         specifier: workspace:*
@@ -1290,7 +1290,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/ts-lib-crypto:
+  packages/ts/ts-lib-crypto:
     dependencies:
       '@noble/ciphers':
         specifier: 2.2.0
@@ -1333,7 +1333,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.5(@types/node@25.6.0)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.11(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
 
-  packages/ts-types:
+  packages/ts/ts-types:
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'

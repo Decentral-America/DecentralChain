@@ -1,0 +1,54 @@
+name: Publish — protobuf-serialization (Maven Central)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Build and verify without publishing to Maven Central
+        type: boolean
+        default: false
+
+concurrency:
+  cancel-in-progress: false
+  group: publish-protobuf-serialization
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Java 11 + Maven settings
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          java-version: '11'
+          distribution: temurin
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Build + verify (dry run)
+        if: ${{ inputs.dry-run }}
+        working-directory: packages/ts/protobuf-serialization
+        run: mvn --batch-mode --no-transfer-progress verify -Dgpg.skip=true
+
+      - name: Deploy to Maven Central
+        if: ${{ !inputs.dry-run }}
+        working-directory: packages/ts/protobuf-serialization
+        run: mvn --batch-mode --no-transfer-progress deploy -Dgpg.pinentry-mode=loopback
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
