@@ -33,7 +33,7 @@
         "file": "CHANGELOG.md"
       }
     },
-    "projects": ["packages/*"],
+    "projects": ["packages/ts/*"],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true,
