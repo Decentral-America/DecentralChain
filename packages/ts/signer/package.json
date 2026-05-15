@@ -39,7 +39,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/signer",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/signer",
   "keywords": [
     "decentralchain",
     "dcc",

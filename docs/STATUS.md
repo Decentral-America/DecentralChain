@@ -103,9 +103,9 @@ All 25 projects imported into single monorepo via `nx import` with full git hist
 - **ErrorBoundary unit tests**: Created `apps/cubensis-connect/src/ui/components/ErrorBoundary.test.tsx` — 4 tests covering `getDerivedStateFromError` (static method) and `componentDidCatch` (Sentry reporting). Updated `vitest.unit.config.ts` to include `@vitejs/plugin-react` plugin and `.tsx` glob so React component tests run in the unit suite. All 4 pass.
 - **Tooling format compliance**: Auto-fixed trailing whitespace and formatting in 7 skill scripts (`tools/nx-plugins/biome-inferred/index.js`, 3× `.agents/`, 2× `.github/skills/`, 2× `.opencode/skills/`) and `opencode.json`. `biome format .` → 1,716 files, 0 errors.
 - **`noDeprecatedImports` audit**: Eliminated all 5 violations flagged by Biome 2.4's `suspicious/noDeprecatedImports` rule:
-  - `packages/transactions/src/transactions/data.ts` — replaced `DataFiledType` (typo alias) with the canonical `DataFieldType` in 3 places.
-  - `packages/cubensis-connect-types/src/index.ts` — re-export changed from deprecated `TCubensisConnectApi` to canonical `ICubensisConnectApi` (same export alias, backward-compatible).
-  - `packages/cubensis-connect-types/test/types.spec.ts` — added `biome-ignore` with rationale (the test exists specifically to verify the deprecated alias remains resolvable).
+  - `packages/ts/transactions/src/transactions/data.ts` — replaced `DataFiledType` (typo alias) with the canonical `DataFieldType` in 3 places.
+  - `packages/ts/cubensis-connect-types/src/index.ts` — re-export changed from deprecated `TCubensisConnectApi` to canonical `ICubensisConnectApi` (same export alias, backward-compatible).
+  - `packages/ts/cubensis-connect-types/test/types.spec.ts` — added `biome-ignore` with rationale (the test exists specifically to verify the deprecated alias remains resolvable).
   - `apps/scanner/src/pages/Asset.tsx` and `Sustainability.tsx` — added `biome-ignore` with rationale for recharts `Cell` (internal `CellReader` context annotation, not a removed public API).
 - **Gate results post-Round 5**: `biome-lint` 25/25 ✅ · `typecheck` 23/23 ✅ · `test` 25/25 ✅ · `biome format` 1,716 files clean ✅ · `noDeprecatedImports` 0 warnings ✅
 
@@ -167,13 +167,13 @@ Full codebase audit against official changelogs for all tools. Security CVE reso
 - **`knip: "6.0.6"` added to root `devDependencies`**: `knip.json` schema referenced `@6` but the tool was only globally installed at `5.85.0`. CI clean-install environments would have run the wrong version.
 - **Biome `types` domain enabled**: Added `"types": "recommended"` to `biome.json` `linter.domains`. The `types` domain was introduced in Biome 2.4.0 and was entirely absent — activates type-aware rules: `useArraySortCompare`, `useAwaitThenable`, `useFind`, `useRegexpExec`, `noUnnecessaryConditions`.
 - **`knip.json` hardened for monorepo reality**:
-  - `packages/crypto` workspace added with `"ignoreBinaries": ["wasm-pack"]` — wasm-pack is a Rust binary, not an npm package.
+  - `packages/ts/crypto` workspace added with `"ignoreBinaries": ["wasm-pack"]` — wasm-pack is a Rust binary, not an npm package.
   - Root-level `"exclude": ["exports", "types"]` added — SDK packages have zero unused exports (verified); app workspaces have features being developed ahead of routing wiring.
   - Ambient `.d.ts` files added to ignore list: `styled.d.ts`, `charting_library.d.ts`, `react19-compat.d.ts` — required by TypeScript type inference but not `import`-able.
   - `"charting_library"` added to `ignoreDependencies` — TradingView is a proprietary binary distribution, not an npm package.
 
 **Bugs fixed:**
-- **`normalizeAssetId('')` silent invalid transaction bug**: `??` operator only catches `null`/`undefined`, not `''`. `normalizeAssetId('')` returned `''`, which passed `isRequired(true)` (because `'' != null`) but failed `isBase58` — creating invalid transaction state sent to the node. Fixed in `packages/transactions/src/generic.ts`: changed to `if (assetId == null || assetId === '') return null`. Four regression tests added to `packages/transactions/test/general.spec.ts`.
+- **`normalizeAssetId('')` silent invalid transaction bug**: `??` operator only catches `null`/`undefined`, not `''`. `normalizeAssetId('')` returned `''`, which passed `isRequired(true)` (because `'' != null`) but failed `isBase58` — creating invalid transaction state sent to the node. Fixed in `packages/ts/transactions/src/generic.ts`: changed to `if (assetId == null || assetId === '') return null`. Four regression tests added to `packages/ts/transactions/test/general.spec.ts`.
 - **`assetInfo.precision || 8` precision-zero bug**: In `apps/exchange/src/features/bridge/BridgeAssetSelector.tsx`, `||` would incorrectly substitute `8` when `precision === 0` (a valid on-chain value). Changed to `?? 8`.
 - **`info as never` cast eliminated**: In `apps/cubensis-connect/src/nfts/nfts.ts`, replaced `as never` type-erasure cast with an explicit `switch (info.vendor)` discriminated union dispatch. TypeScript now correctly narrows `info` in each vendor branch. Zero `as never` casts remain in the codebase.
 
@@ -212,7 +212,7 @@ Researched all tools before use (Biome 2.4.9 CLI/changelog, knip 6.0.6, TypeScri
 **`nx configure-ai-agents` — updated:**
 - Selected: copilot, opencode, claude, gemini. All four configured successfully. AGENTS.md and CLAUDE.md now reflect current Nx MCP setup.
 
-**`as unknown as` reduced in `packages/signature-adapter/src/Signable.ts`:**
+**`as unknown as` reduced in `packages/ts/signature-adapter/src/Signable.ts`:**
 - 8 double assertions → 5 sites:
   - Line 161 (`getDataForApi()` returns `Promise<unknown>`): removed redundant intermediate `as unknown` — direct cast from `unknown` is valid.
   - Lines 386, 395, 401 (three identical `this._forSign.data as unknown as IPrecisionData`): consolidated into a new private getter `_precisionData` — single assertion site replacing three.
@@ -220,10 +220,10 @@ Researched all tools before use (Biome 2.4.9 CLI/changelog, knip 6.0.6, TypeScri
 - typecheck ✅, biome-lint ✅.
 
 **`noExplicitAny` legacy suppressions — 3 occurrences cleaned:**
-- `packages/money-like-to-node/src/converters/index.ts`:
+- `packages/ts/money-like-to-node/src/converters/index.ts`:
   - `TConvertMap<TO, T extends SignableTransaction<any>>` → `SignableTransaction<unknown>` (constraint-only, body does key mapping; `BigNumber extends unknown` ✅).
   - `defaultConvert<FROM, TO, T extends Transaction<any>>` → `Transaction<FROM>` (properly typed: `T`'s `fee` field is now `FROM`, so `factory(data.fee)` compiles without assertion). Two `biome-ignore` suppressions removed entirely.
-- `packages/node-api-js/src/create.ts`:
+- `packages/ts/node-api-js/src/create.ts`:
   - `type ApiFunction = (base: string, ...args: any[]) => any`: `any` is structurally necessary here — `unknown[]` breaks assignability via contravariant parameter typing (concrete module functions with specific arg types are not assignable to `(args: unknown[]) => unknown` under strict mode). Updated `biome-ignore` comment from "legacy untyped code" to a precise technical explanation.
 
 **MV3 CSP security fix — `apps/cubensis-connect`:**
@@ -321,7 +321,7 @@ Deep verification pass run same day as Round 13. All gate assertions from prior 
 2. **`noInlineStyles` scope corrected**: 75 warnings spanning exchange (18), cubensis-connect (13), scanner (1). Overrides added to `apps/cubensis-connect/biome.json` (13 files) and `apps/scanner/biome.json` (`TransactionMap.tsx`). Workspace warnings reduced to **53** (18 exchange files remain as tracked tech debt).
 
 3. **P3 stale items closed**:
-   - `packages/browser-bus` wildcard `targetOrigin` — **already fixed**: `WindowProtocol` throws when `type === DISPATCH && targetOrigin === '*'`. Marked done.
+   - `packages/ts/browser-bus` wildcard `targetOrigin` — **already fixed**: `WindowProtocol` throws when `type === DISPATCH && targetOrigin === '*'`. Marked done.
    - `noImportCycles` evaluation — **already done**: `suspicious.noImportCycles: "error"` active in root `biome.json` since Round 6; exchange has 0 violations. Marked done.
 
 **Architecture clarifications:**
@@ -355,7 +355,7 @@ All 5 are intentionally held at `@next` pending node infrastructure deployment. 
 | `noInlineStyles` warnings | 53 warnings → **0**. 18 exchange files converted from `style={{}}` to `styled-components` or MUI `sx`. Architecturally-required cases added to `biome.json` overrides. |
 | `--stableTypeOrdering` | Flag does not exist in TS 6.0.2. Confirmed via `tsc --all`. Tracked for TS 7.0. |
 | `ride-js` RSA verify skip | Root cause (Scala.js WASM no RSA provider) + unblock path (`@noble/rsa`) documented in `compiler.spec.ts`. |
-| `chainId` documentation | "chainId is required" warning added to `packages/transactions/README.md` with network byte table and examples. |
+| `chainId` documentation | "chainId is required" warning added to `packages/ts/transactions/README.md` with network byte table and examples. |
 
 - **Gate results post-Round 15**: `biome-lint` 25/25 ✅ · `typecheck` 25/25 ✅ · `test` **4,439 / 244 files** 25/25 ✅ · workspace Biome warnings: **0**
 
@@ -465,8 +465,8 @@ Continued systematic elimination of `any` types from `apps/data-service` product
 | Removed `@tailwindcss/postcss` from `ignoreDependencies` | knip 6.11.0 auto-detects it; the ignore was stale |
 | Removed redundant `src/main.tsx` from `apps/exchange` entry | knip infers it from `package.json` exports |
 | Removed redundant scanner entries (`src/entry.client.tsx`, `src/entry.server.tsx`, `src/root.tsx`) | knip infers from vite/router config |
-| Removed redundant `src/index.ts` from `packages/data-service-client-js` | covered by `packages/*` wildcard |
-| Removed redundant `src/index.ts` + `test/**/*.spec.ts` from `packages/node-api-js` (kept spec.ts entry) | covered by wildcard |
+| Removed redundant `src/index.ts` from `packages/ts/data-service-client-js` | covered by `packages/*` wildcard |
+| Removed redundant `src/index.ts` + `test/**/*.spec.ts` from `packages/ts/node-api-js` (kept spec.ts entry) | covered by wildcard |
 | Deleted 14 legacy `.test.int.ts` + `utils/__test__/index.ts` | Dead code: excluded from TS compilation, use pre-Effect Waves API (`all/commonData` was deleted), broken imports, never ran in this codebase |
 
 **`knip` result: "✂️ Excellent, Knip found no issues." (exit 0)**
@@ -504,15 +504,15 @@ Research-first dependency sweep: all 22 affected changelogs reviewed before appl
 
 | Package | Old | New | Files | Notes |
 |---------|-----|-----|-------|-------|
-| `@bufbuild/buf` (dev) | 1.67.0 | 1.69.0 | `packages/protobuf-serialization` | LSP improvements, WASM memory limit increase |
-| `@bufbuild/protobuf` | ^2.11.0 | ^2.12.0 | `packages/protobuf-serialization` | **Adds `exactOptionalPropertyTypes` support** — aligns with DCC tsconfig strict mode; fixes UTF-8 validation + Any JSON encoding |
-| `@bufbuild/protoc-gen-es` (dev) | 2.11.0 | 2.12.0 | `packages/protobuf-serialization` | Paired with `@bufbuild/protobuf` |
+| `@bufbuild/buf` (dev) | 1.67.0 | 1.69.0 | `packages/ts/protobuf-serialization` | LSP improvements, WASM memory limit increase |
+| `@bufbuild/protobuf` | ^2.11.0 | ^2.12.0 | `packages/ts/protobuf-serialization` | **Adds `exactOptionalPropertyTypes` support** — aligns with DCC tsconfig strict mode; fixes UTF-8 validation + Any JSON encoding |
+| `@bufbuild/protoc-gen-es` (dev) | 2.11.0 | 2.12.0 | `packages/ts/protobuf-serialization` | Paired with `@bufbuild/protobuf` |
 | `@evilmartians/lefthook` (dev) | ^2.1.5 | ^2.1.6 | `apps/scanner` | Patch |
 | `@ledgerhq/hw-transport-webusb` (dev) | ^6.33.0 | ^6.34.2 | `apps/cubensis-connect` | Minor — WebUSB transport patch |
 | `@tailwindcss/postcss` (dev) | ^4.2.2 | ^4.2.4 | `apps/scanner` | Patch |
 | `@types/qs` (dev) | ^6.9.18 | ^6.15.1 | `apps/data-service` | Types update to match qs ^6.15.1 |
-| `@waves/ride-lang` | 1.6.1 | 1.6.2 | `packages/ride-js` | Patch — Scala.js compiler |
-| `@waves/ride-repl` | 1.6.1 | 1.6.2 | `packages/ride-js` | Paired with `@waves/ride-lang` |
+| `@waves/ride-lang` | 1.6.1 | 1.6.2 | `packages/ts/ride-js` | Patch — Scala.js compiler |
+| `@waves/ride-repl` | 1.6.1 | 1.6.2 | `packages/ts/ride-js` | Paired with `@waves/ride-lang` |
 | `cytoscape` | 3.33.2 | 3.33.3 | `apps/scanner` | Patch |
 | `i18next` | ^26.0.4 | ^26.0.9 | `apps/cubensis-connect`, `apps/exchange` | ⚠️ **SECURITY** — 26.0.6 was a dedicated security release fixing: ReDoS via unescaped `unescapePrefix`/`unescapeSuffix` regex metacharacters; log injection via CR/LF/NUL in user-controlled log args (CWE-117); nesting-options XSS when `escapeValue: false` + interpolated variables in `$t(key, {...})`. 26.0.7–26.0.9 add type fixes and `@babel/runtime` removal. **Never deploy below 26.0.6.** |
 | `isbot` | ^5.1.37 | ^5.1.40 | `apps/scanner` | Bot detection signatures update |
@@ -576,11 +576,11 @@ Research-first dependency audit: official changelogs reviewed for every outdated
 | Package | Old | New | Files | Notes |
 |---------|-----|-----|-------|-------|
 | `vite` | `8.0.10` | `8.0.11` | `package.json`, `apps/exchange`, `apps/scanner`, `apps/cubensis-connect` | Rolldown rc.18, HMR glob matcher fix, environment object isolation fix, transitive npm audit fixes. **No breaking changes 8.0.10 → 8.0.11.** |
-| `@noble/ciphers` | `^2.1.1` | `^2.2.0` | `packages/crypto`, `packages/ts-lib-crypto`, `apps/cubensis-connect` | **TypeScript 5.6/5.9+/6.0 Uint8Array compat fixes** (CRITICAL for DCC's TS6 codebase). MAC: no longer corrupts oversized outputs (security). CTR: wrong counter wrapping fixed. Zeroization improvements. No breaking API changes. |
-| `@noble/curves` | `^2.0.1` | `^2.2.0` | `packages/ts-lib-crypto` | **TS6 Uint8Array compat fix** (same as above). Ed25519: zip215 stricter verification. FROST threshold signatures added. No breaking changes within 2.x. |
-| `@noble/hashes` | `^2.0.1` | `^2.2.0` | `packages/crypto`, `packages/ts-lib-crypto` | **TS6 Uint8Array compat fix**. sha3 50% speedup. `digestInto` no longer returns a value (not used anywhere in DCC code — verified). No breaking changes for DCC usage. |
-| `@noble/post-quantum` | `^0.6.0` | `^0.6.1` | `packages/crypto` | Patch — ML-KEM/ML-DSA improvements. |
-| `@scure/base` | `^2.0.0` | `^2.2.0` | `packages/crypto` | **TS5.6/5.9+/6.0 compilation fix** (v2.1 skipped to align with noble family). UTF-8 strict decoder, bech32 overloads, tree-shaking improvements. No breaking changes. |
+| `@noble/ciphers` | `^2.1.1` | `^2.2.0` | `packages/ts/crypto`, `packages/ts/ts-lib-crypto`, `apps/cubensis-connect` | **TypeScript 5.6/5.9+/6.0 Uint8Array compat fixes** (CRITICAL for DCC's TS6 codebase). MAC: no longer corrupts oversized outputs (security). CTR: wrong counter wrapping fixed. Zeroization improvements. No breaking API changes. |
+| `@noble/curves` | `^2.0.1` | `^2.2.0` | `packages/ts/ts-lib-crypto` | **TS6 Uint8Array compat fix** (same as above). Ed25519: zip215 stricter verification. FROST threshold signatures added. No breaking changes within 2.x. |
+| `@noble/hashes` | `^2.0.1` | `^2.2.0` | `packages/ts/crypto`, `packages/ts/ts-lib-crypto` | **TS6 Uint8Array compat fix**. sha3 50% speedup. `digestInto` no longer returns a value (not used anywhere in DCC code — verified). No breaking changes for DCC usage. |
+| `@noble/post-quantum` | `^0.6.0` | `^0.6.1` | `packages/ts/crypto` | Patch — ML-KEM/ML-DSA improvements. |
+| `@scure/base` | `^2.0.0` | `^2.2.0` | `packages/ts/crypto` | **TS5.6/5.9+/6.0 compilation fix** (v2.1 skipped to align with noble family). UTF-8 strict decoder, bech32 overloads, tree-shaking improvements. No breaking changes. |
 | `@sentry/browser` | `^10.47.0` | `^10.51.0` | `apps/cubensis-connect` | 4 minor releases — new features + bug fixes. No breaking changes. |
 | `@sentry/react` | `^10.47.0` | `^10.51.0` | `apps/exchange`, `apps/scanner` | Same as above. |
 | `@tanstack/react-query` | `^5.97.0` | `^5.100.9` | `apps/exchange`, `apps/scanner` | Patch releases only — Suspense fix, environmentManager feature. No breaking changes. |
@@ -596,9 +596,9 @@ Research-first dependency audit: official changelogs reviewed for every outdated
 | `lucide-react` | `^1.8.0` | `^1.14.0` | `apps/scanner` | Minor releases — icons added, none removed in range. |
 | `styled-components` | `^6.3.12` | `^6.4.1` | `apps/exchange` | Minor — no breaking changes. |
 | `zod` | `^4.3.6` | `^4.4.3` | `apps/exchange` | Minor — no breaking changes. |
-| `fast-check` | `4.6.0` | `4.7.0` | `packages/ts-lib-crypto` | Minor dev dep — new arbitraries. |
-| `@ledgerhq/logs` | `6.16.0` | `6.17.0` | `packages/ledger` | Minor — log transport patch. |
-| `undici-types` | `8.0.2` | `8.2.0` | `packages/node-api-js` | Minor dev dep — TypeScript type updates for undici. |
+| `fast-check` | `4.6.0` | `4.7.0` | `packages/ts/ts-lib-crypto` | Minor dev dep — new arbitraries. |
+| `@ledgerhq/logs` | `6.16.0` | `6.17.0` | `packages/ts/ledger` | Minor — log transport patch. |
+| `undici-types` | `8.0.2` | `8.2.0` | `packages/ts/node-api-js` | Minor dev dep — TypeScript type updates for undici. |
 
 **MAJOR upgrades explicitly deferred (breaking changes documented):**
 
