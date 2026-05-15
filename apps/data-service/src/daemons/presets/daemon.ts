@@ -77,7 +77,7 @@ const main = (
     initEffect,
     Effect.flatMap(() =>
       Effect.sync(() => {
-        loop(
+        void loop(
           (cfg) =>
             logTaskProgress(logger)(
               {

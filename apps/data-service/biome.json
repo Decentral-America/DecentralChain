@@ -38,7 +38,8 @@
           "level": "warn",
           "options": { "allow": ["warn", "error", "info"] }
         },
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noImportCycles": "off"
       }
     }
   },
