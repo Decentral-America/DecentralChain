@@ -57,7 +57,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/parse-json-bignumber",
+    "directory": "packages/ts/parse-json-bignumber",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

@@ -92,7 +92,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts-lib-crypto",
+    "directory": "packages/ts/ts-lib-crypto",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

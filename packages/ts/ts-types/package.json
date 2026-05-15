@@ -54,7 +54,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts-types",
+    "directory": "packages/ts/ts-types",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
