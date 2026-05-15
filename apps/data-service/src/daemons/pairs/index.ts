@@ -14,7 +14,7 @@ const logger = createLogger({
 
 const pgDriver = createPgDriver(configuration);
 
-Effect.runPromise(
+void Effect.runPromise(
   runDaemon(
     createDaemon({
       logger,

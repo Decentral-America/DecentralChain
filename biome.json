@@ -18,8 +18,7 @@
       "!**/*.d.ts",
       "!packages/ts/transactions/docs",
       "!.nx",
-      "!**/.react-router",
-      "!apps/data-service"
+      "!**/.react-router"
     ]
   },
   "formatter": {
