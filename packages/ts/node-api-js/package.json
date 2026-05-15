@@ -108,7 +108,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/node-api-js",
+    "directory": "packages/ts/node-api-js",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

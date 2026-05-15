@@ -69,7 +69,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/assets-pairs-order",
+    "directory": "packages/ts/assets-pairs-order",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
