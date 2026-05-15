@@ -64,7 +64,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ride-js",
+    "directory": "packages/ts/ride-js",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

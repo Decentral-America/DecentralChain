@@ -70,7 +70,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/protobuf-serialization",
+    "directory": "packages/ts/protobuf-serialization",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

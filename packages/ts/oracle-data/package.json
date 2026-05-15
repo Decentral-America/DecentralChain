@@ -60,7 +60,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/oracle-data",
+    "directory": "packages/ts/oracle-data",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

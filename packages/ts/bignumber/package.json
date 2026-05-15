@@ -67,7 +67,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/bignumber",
+    "directory": "packages/ts/bignumber",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

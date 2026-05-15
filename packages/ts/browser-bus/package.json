@@ -58,7 +58,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/browser-bus",
+    "directory": "packages/ts/browser-bus",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

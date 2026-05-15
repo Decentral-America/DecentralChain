@@ -65,7 +65,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/signature-adapter",
+    "directory": "packages/ts/signature-adapter",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

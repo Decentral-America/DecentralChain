@@ -59,7 +59,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/data-service-client-js",
+    "directory": "packages/ts/data-service-client-js",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

@@ -60,7 +60,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/data-entities",
+    "directory": "packages/ts/data-entities",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

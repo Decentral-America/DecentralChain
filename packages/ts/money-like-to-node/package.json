@@ -60,7 +60,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/money-like-to-node",
+    "directory": "packages/ts/money-like-to-node",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
