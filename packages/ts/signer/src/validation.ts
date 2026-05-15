@@ -343,7 +343,7 @@ const validator: ValidatorFn = (scheme, method) => (transaction) => {
 
 /**
  * Per-transaction-type allowed version numbers, aligned with
- * packages/transactions/src/validators/*. Transactions that only gained
+ * packages/ts/transactions/src/validators/*. Transactions that only gained
  * protobuf support in version 2 or 3 do NOT support v1; sending a v1 tx of
  * those types would fail at the node with an invalid transaction error.
  * Keeping this map in sync with the transactions validators prevents the

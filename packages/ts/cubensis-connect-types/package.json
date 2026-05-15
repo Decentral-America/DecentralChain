@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/cubensis-connect-types",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/cubensis-connect-types",
   "keywords": [
     "types",
     "typescript",

@@ -33,7 +33,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/browser-bus",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/browser-bus",
   "keywords": [
     "decentralchain",
     "dcc",
