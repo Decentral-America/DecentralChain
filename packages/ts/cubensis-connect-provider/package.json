@@ -38,7 +38,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/cubensis-connect-provider",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/cubensis-connect-provider",
   "keywords": [
     "decentralchain",
     "dcc",

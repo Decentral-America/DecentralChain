@@ -21,29 +21,29 @@ This is the critical mapping between DCC monorepo paths and Waves upstream repo 
 
 | Monorepo Path | Waves Repo Name | GitHub Org |
 |--------------|----------------|------------|
-| `packages/ts-types` | `ts-types` | wavesplatform |
-| `packages/bignumber` | `bignumber` | wavesplatform |
-| `packages/ts-lib-crypto` | `ts-lib-crypto` | wavesplatform |
-| `packages/parse-json-bignumber` | `parse-json-bignumber` | wavesplatform |
-| `packages/marshall` | `marshall` | wavesplatform |
-| `packages/protobuf-serialization` | `protobuf-schemas` | wavesplatform |
-| `packages/data-entities` | `waves-data-entities` | wavesplatform |
-| `packages/assets-pairs-order` | `assets-pairs-order` | wavesplatform |
-| `packages/oracle-data` | `oracle-data` | wavesplatform |
-| `packages/node-api-js` | `node-api-js` | wavesplatform |
-| `packages/transactions` | `waves-transactions` | wavesplatform |
-| `packages/money-like-to-node` | `money-like-to-node` | wavesplatform |
-| `packages/data-service-client-js` | `data-service-client-js` | wavesplatform |
-| `packages/browser-bus` | `waves-browser-bus` | wavesplatform |
-| `packages/ledger` | `waves-ledger-js` | wavesplatform |
-| `packages/signature-adapter` | `waves-signature-adapter` | wavesplatform |
-| `packages/signer` | `signer` | wavesplatform |
-| `packages/ride-js` | `ride-js` | wavesplatform |
+| `packages/ts/ts-types` | `ts-types` | wavesplatform |
+| `packages/ts/bignumber` | `bignumber` | wavesplatform |
+| `packages/ts/ts-lib-crypto` | `ts-lib-crypto` | wavesplatform |
+| `packages/ts/parse-json-bignumber` | `parse-json-bignumber` | wavesplatform |
+| `packages/ts/marshall` | `marshall` | wavesplatform |
+| `packages/ts/protobuf-serialization` | `protobuf-schemas` | wavesplatform |
+| `packages/ts/data-entities` | `waves-data-entities` | wavesplatform |
+| `packages/ts/assets-pairs-order` | `assets-pairs-order` | wavesplatform |
+| `packages/ts/oracle-data` | `oracle-data` | wavesplatform |
+| `packages/ts/node-api-js` | `node-api-js` | wavesplatform |
+| `packages/ts/transactions` | `waves-transactions` | wavesplatform |
+| `packages/ts/money-like-to-node` | `money-like-to-node` | wavesplatform |
+| `packages/ts/data-service-client-js` | `data-service-client-js` | wavesplatform |
+| `packages/ts/browser-bus` | `waves-browser-bus` | wavesplatform |
+| `packages/ts/ledger` | `waves-ledger-js` | wavesplatform |
+| `packages/ts/signature-adapter` | `waves-signature-adapter` | wavesplatform |
+| `packages/ts/signer` | `signer` | wavesplatform |
+| `packages/ts/ride-js` | `ride-js` | wavesplatform |
 | `apps/cubensis-connect` | `Keeper-Wallet-Extension` | Keeper-Wallet |
-| `packages/cubensis-connect-types` | `waveskeeper-types` | Keeper-Wallet |
-| `packages/cubensis-connect-provider` | `provider-keeper` | Keeper-Wallet |
+| `packages/ts/cubensis-connect-types` | `waveskeeper-types` | Keeper-Wallet |
+| `packages/ts/cubensis-connect-provider` | `provider-keeper` | Keeper-Wallet |
 | `apps/scanner` | `WavesExplorerLite` | wavesplatform |
-| `packages/crypto` | `waves-crypto` | Keeper-Wallet |
+| `packages/ts/crypto` | `waves-crypto` | Keeper-Wallet |
 
 ## Priority Watch List
 

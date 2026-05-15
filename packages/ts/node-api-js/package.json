@@ -84,7 +84,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/node-api-js",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/node-api-js",
   "keywords": [
     "decentralchain",
     "dcc",
