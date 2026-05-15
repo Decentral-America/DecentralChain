@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/parse-json-bignumber",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/parse-json-bignumber",
   "keywords": [
     "decentralchain",
     "dcc",

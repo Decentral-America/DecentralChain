@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/oracle-data",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/oracle-data",
   "keywords": [
     "decentralchain",
     "dcc",

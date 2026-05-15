@@ -63,7 +63,7 @@ Release config lives in `nx.json` under the `release` key:
 ```json
 {
   "release": {
-    "projects": ["packages/*"],
+    "projects": ["packages/ts/*"],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true,

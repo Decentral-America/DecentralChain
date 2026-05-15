@@ -267,7 +267,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 | Reference | Reason | Locations |
 |-----------|--------|-----------|
 | `'WAVES'` asset ID | Client sentinel for native asset | All SDK packages |
-| `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/transactions/src/requests/auth.ts`, `packages/signature-adapter/src/prepareTx/constants.ts` |
+| `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/ts/transactions/src/requests/auth.ts`, `packages/ts/signature-adapter/src/prepareTx/constants.ts` |
 | Protobuf `waves` namespace | Wire-format package name | `protobuf-serialization/proto/waves/**` |
 | `@waves/ride-lang` + `@waves/ride-repl` | Chain-agnostic Scala.js binaries — same bytecode works on any Waves-protocol chain | `ride-js/package.json` |
 | Third-party NFT URLs | External services (wavesducks.com, puzzlemarket.org, sign-art.app) — community projects | `cubensis-connect` NFT vendor files |
@@ -649,30 +649,30 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` | `309a179` | 2026-03-25 | 🟢 Active |
-| 2 | `packages/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
-| 3 | `packages/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `1c0f106` | `3c6bd7c` | 2026-03-25 | 🟢 Active |
-| 4 | `packages/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
-| 5 | `packages/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
-| 6 | `packages/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `2404b95` | `c6ca904` | 2026-03-25 | 🟡 Moderate |
-| 7 | `packages/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
-| 8 | `packages/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
-| 9 | `packages/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `3756189` | `93dad4b` | 2026-03-25 | 🟢 Active |
-| 11 | `packages/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
-| 12 | `packages/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
-| 13 | `packages/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
-| 14 | `packages/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
-| 15 | `packages/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
-| 16 | `packages/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
-| 17 | `packages/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
-| 18 | `packages/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
+| 1 | `packages/ts/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` | `309a179` | 2026-03-25 | 🟢 Active |
+| 2 | `packages/ts/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
+| 3 | `packages/ts/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `1c0f106` | `3c6bd7c` | 2026-03-25 | 🟢 Active |
+| 4 | `packages/ts/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
+| 5 | `packages/ts/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
+| 6 | `packages/ts/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `2404b95` | `c6ca904` | 2026-03-25 | 🟡 Moderate |
+| 7 | `packages/ts/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
+| 8 | `packages/ts/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
+| 9 | `packages/ts/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
+| 10 | `packages/ts/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `3756189` | `93dad4b` | 2026-03-25 | 🟢 Active |
+| 11 | `packages/ts/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
+| 12 | `packages/ts/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
+| 13 | `packages/ts/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
+| 14 | `packages/ts/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
+| 15 | `packages/ts/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
+| 16 | `packages/ts/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
+| 17 | `packages/ts/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
+| 18 | `packages/ts/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
 | 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` | `a46ae18` | 2025-05-28 | 🟢 Active |
-| 20 | `packages/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
-| 21 | `packages/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
+| 20 | `packages/ts/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
+| 21 | `packages/ts/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
 | 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` | `b473e02` | 2026-03-25 | 🟢 Active |
-| 23 | `packages/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
-| 24 | `packages/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
+| 23 | `packages/ts/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
+| 24 | `packages/ts/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
 | 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` | `7d40c14f` | 2026-04-07 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
