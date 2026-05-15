@@ -67,7 +67,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/marshall",
+    "directory": "packages/ts/marshall",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

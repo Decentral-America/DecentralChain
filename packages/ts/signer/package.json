@@ -70,7 +70,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/signer",
+    "directory": "packages/ts/signer",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

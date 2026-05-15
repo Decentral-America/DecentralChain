@@ -59,7 +59,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ledger",
+    "directory": "packages/ts/ledger",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

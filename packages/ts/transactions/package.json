@@ -70,7 +70,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/transactions",
+    "directory": "packages/ts/transactions",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

@@ -55,7 +55,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/cubensis-connect-types",
+    "directory": "packages/ts/cubensis-connect-types",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
