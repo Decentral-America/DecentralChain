@@ -20,6 +20,7 @@
     "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/biome.json"]
   },
   "nxCloudAccessToken": "",
+  "nxCloudId": "6a07a03e8a73063a9eda9bf3",
   "plugins": [
     {
       "plugin": "./tools/nx-plugins/biome-inferred"
