@@ -46,7 +46,7 @@ overrides:
   path-to-regexp: '>=0.1.13'
   picomatch: '>=4.0.4'
   postcss: '>=8.5.10'
-  typescript: '$typescript'
+  typescript: '6.0.3'
   yaml: '>=2.8.3'
   yauzl: '^3.2.1'
 
