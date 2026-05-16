@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "abandonmentThreshold": 730,
+  "abandonmentThreshold": "2 years",
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": [
     "@testing-library/webdriverio",
