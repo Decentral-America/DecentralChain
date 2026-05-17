@@ -1,6 +1,7 @@
 package org.whispersystems.curve25519.java;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 import static org.whispersystems.curve25519.java.gen_x.POINTLEN;
@@ -29,14 +30,14 @@ public class veddsa {
 
     private static byte[] labelset_new(String protocol_name,
                                        byte[] customization_label, byte label) {
-        if (LABELSETMAXLEN < 3 + protocol_name.length() + customization_label.length + 2)
+        byte[] protocol_name_bytes = protocol_name.getBytes(StandardCharsets.UTF_8);
+
+        if (LABELSETMAXLEN < 3 + protocol_name_bytes.length + customization_label.length + 2)
             return null;
-        if (protocol_name.length() > LABELMAXLEN)
+        if (protocol_name_bytes.length > LABELMAXLEN)
             return null;
         if (customization_label.length > LABELMAXLEN)
             return null;
-
-        byte[] protocol_name_bytes = protocol_name.getBytes();
 
         ByteBuffer bb = ByteBuffer.allocate(3 + protocol_name_bytes.length + customization_label.length + 2);
         bb.put((byte) 3);
@@ -44,11 +45,15 @@ public class veddsa {
         bb.put(protocol_name_bytes);
         bb.put((byte) customization_label.length);
         bb.put(customization_label);
-        assert bb.position() == 3 + protocol_name.length() + customization_label.length;
+        if (bb.position() != 3 + protocol_name_bytes.length + customization_label.length) {
+            throw new AssertionError("Unexpected labelset buffer position: " + bb.position());
+        }
         bb.put((byte) 1);
         bb.put(label);
 
-        assert bb.position() < LABELSETMAXLEN;
+        if (bb.position() >= LABELSETMAXLEN) {
+            throw new AssertionError("Labelset too large: " + bb.position());
+        }
 
         return bb.array();
 
