@@ -130,7 +130,7 @@ func bar() = WriteSet([])`;
     expect(res.result).toEqual('res1: Boolean = true');
   });
 
-  // RSA verify is not supported in the Scala.js WASM build shipped by @waves/ride-lang.
+  // RSA verify is not supported in the Scala.js WASM build shipped by @decentralchain/ride-lang.
   // The RIDE REPL's crypto layer throws "Failed to read asymmetric key" / "Last unit does
   // not have enough valid bits" for every RSA algorithm (NOALG..SHA3512).
   //
@@ -138,8 +138,8 @@ func bar() = WriteSet([])`;
   // async RSA operations require Web Crypto or a JVM RSA implementation, neither of which
   // is available in the WASM sandbox.
   //
-  // Upstream tracking: https://github.com/wavesplatform/ride-js (no open issue as of 2026-03)
-  // Unblock path: either @waves/ride-lang ships a WASM-compatible RSA shim, or DCC forks
+  // Upstream tracking: https://github.com/Decentral-America/node-scala (no open issue as of 2026-03)
+  // Unblock path: either @decentralchain/ride-lang ships a WASM-compatible RSA shim, or DCC forks
   // ride-js and substitutes a JS RSA implementation (e.g. node:crypto or @noble/rsa).
   //
   // Do NOT re-enable without a local proof-of-concept that `rsaVerify(SHA256,...)` returns
