@@ -1,20 +1,4 @@
-# ──────────────────────────────────────────────────────────────────────────────
-# wavesj — Publish to Maven Central (manual dispatch)
-#
-# Prerequisite secrets (set in repo/org settings):
-#   MAVEN_CENTRAL_USERNAME   — Central Portal token username
-#   MAVEN_CENTRAL_PASSWORD   — Central Portal token password
-#   MAVEN_GPG_PRIVATE_KEY    — ASCII-armored GPG private key (no passphrase lines)
-#   MAVEN_GPG_PASSPHRASE     — GPG key passphrase
-#   MAVEN_GPG_KEY_ID         — GPG key ID (last 16 hex chars of fingerprint)
-#   NVD_API_KEY              — NVD API key for OWASP dependency-check (optional)
-#
-# This workflow GPG-signs all artifacts and uploads them to the Central Portal
-# (central-publishing-maven-plugin 0.10.0, autoPublish=false).
-# A human must manually approve the release at central.sonatype.com.
-# ──────────────────────────────────────────────────────────────────────────────
-
-name: Publish to Maven Central
+name: publish-wavesj
 
 on:
   workflow_dispatch:
@@ -37,7 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      # setup-java imports the GPG key and configures Maven server credentials
       - name: Set up Java 25 (Temurin) + Maven Central credentials
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
         with:
@@ -80,4 +63,4 @@ jobs:
         with:
           name: wavesj-${{ inputs.version }}-staged
           path: packages/jvm/wavesj/target/*.jar
-          retention-days: 14
+          retention-days: 30
