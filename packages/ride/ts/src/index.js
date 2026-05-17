@@ -6,9 +6,9 @@
  */
 
 import './interop.js';
+import * as scalaJsCompiler from '@decentralchain/ride-lang';
+import * as replJs from '@decentralchain/ride-repl';
 import * as crypto from '@decentralchain/ts-lib-crypto';
-import * as scalaJsCompiler from '@waves/ride-lang';
-import * as replJs from '@waves/ride-repl';
 
 /**
  * Compile Ride source code to binary.
