@@ -150,7 +150,7 @@ public class PrivateKey extends Base58String {
      * @return signature
      */
     public byte[] sign(byte[] message) {
-        return Crypto.sign(this.bytes, message);
+        return Crypto.sign(this.bytes.clone(), message);
     }
 
     /**
@@ -183,7 +183,10 @@ public class PrivateKey extends Base58String {
 
     @Override
     public String toString() {
-        return encoded();
+        // Never expose private key material in toString().
+        // PrivateKey objects may appear in exception messages, log statements, or
+        // debug output — returning the actual bytes here would be a key-exposure bug.
+        return "[private key]";
     }
 
 }

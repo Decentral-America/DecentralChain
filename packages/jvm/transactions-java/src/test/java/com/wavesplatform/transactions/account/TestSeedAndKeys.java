@@ -20,7 +20,9 @@ class TestSeedAndKeys {
         WavesConfig.chainId('T');
         PrivateKey pk = PrivateKey.fromSeed(Bytes.fromUtf8(phrase), 0);
 
-        assertThat(pk.toString()).isEqualTo(privateKey);
+        // Use .encoded() to get the base58 representation; toString() is redacted for security
+        assertThat(pk.encoded()).isEqualTo(privateKey);
+        assertThat(pk.toString()).isEqualTo("[private key]");
         assertThat(pk.publicKey().toString()).isEqualTo(publicKey);
         assertThat(pk.address(chainId).toString()).isEqualTo(address);
         assertThat(pk.address().toString()).isEqualTo(address);
