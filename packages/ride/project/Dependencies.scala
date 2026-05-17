@@ -26,7 +26,7 @@ object Dependencies {
   def monixModule(module: String): Def.Initialize[ModuleID] =
     Def.setting("io.monix" %%% s"monix-$module" % "3.4.1")
 
-  val googleGuava = "com.google.guava" % "guava"           % "33.5.0-jre"
+  val googleGuava = "com.google.guava" % "guava"           % "33.6.0-jre"
   val logback     = "ch.qos.logback"   % "logback-classic" % "1.5.32"
   val curve25519  = "io.decentralchain" % "curve25519-java" % "1.0.0"
 
@@ -82,7 +82,7 @@ object Dependencies {
     "org.scalatestplus" %% "scalacheck-1-18" % "3.2.19.0",
     "org.scalacheck"    %% "scalacheck"      % "1.19.0",
     "org.mockito"        % "mockito-core"    % "5.23.0",
-    "org.scalamock"     %% "scalamock"       % "6.2.0"
+    "org.scalamock"     %% "scalamock"       % "7.5.5"
   ).map(_ % Test)
 
   lazy val logDeps: Seq[ModuleID] = Seq(logback % Runtime)
