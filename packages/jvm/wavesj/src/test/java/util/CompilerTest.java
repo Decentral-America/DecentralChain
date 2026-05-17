@@ -1,9 +1,9 @@
 package util;
 
 import com.wavesplatform.transactions.common.Base64String;
-import com.wavesplatform.wavesj.ScriptInfo;
-import com.wavesplatform.wavesj.exceptions.CompilationException;
-import com.wavesplatform.wavesj.util.CompilationUtil;
+import com.decentralchain.sdk.ScriptInfo;
+import com.decentralchain.sdk.exceptions.CompilationException;
+import com.decentralchain.sdk.util.CompilationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

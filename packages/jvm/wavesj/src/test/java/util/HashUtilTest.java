@@ -1,6 +1,6 @@
 package util;
 
-import com.wavesplatform.wavesj.util.HashUtil;
+import com.decentralchain.sdk.util.HashUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
