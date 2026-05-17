@@ -1,0 +1,56 @@
+{
+  "name": "ride",
+  "projectType": "library",
+  "tags": ["scope:ride", "layer:0", "lang:scala"],
+  "targets": {
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt compile"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt test"
+      }
+    },
+    "fullLinkJS": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt fullLinkJS"
+      }
+    },
+    "coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt coverage test coverageReport"
+      }
+    },
+    "fmt": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt scalafmtAll scalafmtSbt"
+      }
+    },
+    "fmt:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt scalafmtCheckAll scalafmtSbtCheck"
+      }
+    },
+    "fix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ride",
+        "command": "sbt scalafixAll"
+      }
+    }
+  }
+}

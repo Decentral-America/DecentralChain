@@ -1,5 +1,8 @@
 packages:
   - 'packages/sdk/*'
+  - 'packages/ride/lang/js'
+  - 'packages/ride/repl/js'
+  - 'packages/ride/ts'
   - 'packages/jvm/*'
   - 'apps/*'
 
