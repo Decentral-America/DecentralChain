@@ -22,6 +22,6 @@ Seq(
 
 // Build-time dependencies for Tasks.scala
 libraryDependencies ++= Seq(
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.0",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.3",
   "org.hjson"                     % "hjson"                % "3.1.0"
 )
