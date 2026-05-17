@@ -17,8 +17,8 @@ public class Curve25519KeyPair {
     private final byte[] privateKey;
 
     Curve25519KeyPair(byte[] publicKey, byte[] privateKey) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
+        this.publicKey = publicKey.clone();
+        this.privateKey = privateKey.clone();
     }
 
     /**

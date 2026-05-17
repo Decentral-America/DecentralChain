@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<ruleset name="DCC curve25519-java Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom PMD ruleset for curve25519-java.
+        Inherits security, error-prone, and best-practices categories.
+        Excludes rules that conflict with intentional design patterns from the
+        upstream WhisperSystems / Signal curve25519-java implementation.
+
+        Security priority: this is a cryptographic primitive library.
+        Array exposure (MethodReturnsInternalArray, ArrayIsStoredDirectly)
+        is the primary concern — key material must never be shared by reference.
+    </description>
+
+    <!-- ALL security rules: no exclusions -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Error-prone rules: excluding upstream design choices -->
+    <rule ref="category/java/errorprone.xml">
+        <!--
+          Elliptic curve field arithmetic uses repeated literal constants intentionally.
+          e.g. field element ops: if (h1 == 0), if (carry < 0).
+          These are mathematical invariants, not magic numbers to extract.
+        -->
+        <exclude name="AvoidLiteralsInIfCondition"/>
+
+        <!--
+          Field arithmetic constants (e.g. 25519, 32, 64, specific byte masks)
+          appear across many files by design. The values ARE the algorithm —
+          extracting them to named constants would obscure the mathematical spec.
+        -->
+        <exclude name="AvoidDuplicateLiterals"/>
+
+        <!--
+          Blockchain model classes are not designed for Java serialization.
+          Curve25519KeyPair, OpaqueCurve25519Provider etc. carry raw key bytes;
+          Java Serializable would expose key material through uncontrolled streams.
+        -->
+        <exclude name="MissingSerialVersionUID"/>
+
+        <!--
+          The optional native provider uses null to signal "native library not loaded"
+          and falls back to the pure-Java provider. This is intentional defensive
+          programming, not a null-assignment bug.
+        -->
+        <exclude name="NullAssignment"/>
+
+        <!--
+          This codebase is a direct Java translation of the ref10 C implementation
+          of Curve25519/Ed25519. Each C function becomes a Java class with a static
+          method of the same name: class fe_add { static void fe_add(...) }.
+          This naming convention is intentional — it preserves 1:1 correspondence
+          with the cryptographic specification and the upstream C source.
+        -->
+        <exclude name="MethodWithSameNameAsEnclosingClass"/>
+
+        <!--
+          Crypto algorithms use null as a structured sentinel to signal invalid/
+          non-canonical inputs (e.g. fe_isreduced returns null for non-reduced field
+          elements; veddsa.labelset_new returns null for oversized labels).
+          Returning new byte[0] / new int[0] would be semantically wrong — callers
+          check for null to distinguish "computation not possible" from "empty result".
+        -->
+        <exclude name="ReturnEmptyCollectionRatherThanNull"/>
+
+        <!--
+          Curve25519.getInstance() intentionally creates a fresh provider instance
+          each call for cryptographic isolation — it is NOT a GoF singleton.
+          The factory method pattern happens to share the getInstance() name.
+        -->
+        <exclude name="SingleMethodSingleton"/>
+        <exclude name="SingletonClassReturningNewInstance"/>
+    </rule>
+
+    <!-- Best practices: excluding upstream design choices -->
+    <rule ref="category/java/bestpractices.xml">
+        <!--
+          Concrete return types are used intentionally in the provider hierarchy
+          to preserve the exact type across the JNA native/pure-Java dispatch path.
+        -->
+        <exclude name="LooseCoupling"/>
+
+        <!--
+          Single-method interfaces (Curve25519Provider) are domain contracts,
+          not accidentally functional. They are not intended as @FunctionalInterface.
+        -->
+        <exclude name="ImplicitFunctionalInterface"/>
+
+        <!--
+          All cryptographic byte[] parameters are fixed-size inputs (32, 64, 96 bytes).
+          Varargs would be semantically wrong and would obscure the crypto API contract.
+          Callers must pass exactly-sized arrays; varargs would allow accidental
+          multi-array calls that the crypto math cannot handle.
+        -->
+        <exclude name="UseVarargs"/>
+
+        <!--
+          Constant-time conditional move operations (fe_cmov, fe_cswap, sc_cmov)
+          deliberately reassign the parameter `b` to its bitwise negation `-b` as
+          part of the bitmask computation. This is the algorithm — not an accident.
+          Introducing a new variable would not improve clarity and may confuse JIT
+          optimizations for constant-time guarantees.
+        -->
+        <exclude name="AvoidReassigningParameters"/>
+
+        <!--
+          java.Arrays.constant_time_is_equal uses two loop variables (i, diff)
+          intentionally for the constant-time XOR accumulation pattern.
+          This is the standard NIST/IETF recommended constant-time compare idiom.
+        -->
+        <exclude name="ForLoopVariableCount"/>
+
+        <!--
+          Mathematical intermediate values in field/group arithmetic
+          (elligator, fe_mont_rhs, ge_scalarmult, etc.) are declared compactly
+          in groups because they are conceptually a single mathematical object
+          (e.g., u, v from a curve equation). Single-line-per-declaration would
+          fragment related math into disconnected lines and obscure the algorithm.
+        -->
+        <exclude name="OneDeclarationPerLine"/>
+    </rule>
+
+</ruleset>

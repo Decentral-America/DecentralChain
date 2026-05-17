@@ -22,12 +22,15 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         this.secureRandomProvider = secureRandomProvider;
     }
 
+    @Override
     public abstract boolean isNative();
 
+    @Override
     public void setRandomProvider(SecureRandomProvider secureRandomProvider) {
         this.secureRandomProvider = secureRandomProvider;
     }
 
+    @Override
     public byte[] calculateAgreement(byte[] ourPrivate, byte[] theirPublic) {
         byte[] agreement = new byte[32];
         scalarmult.crypto_scalarmult(agreement, ourPrivate, theirPublic);
@@ -35,6 +38,7 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         return agreement;
     }
 
+    @Override
     public byte[] generatePublicKey(byte[] privateKey) {
         byte[] publicKey = new byte[32];
         curve_sigs.curve25519_keygen(publicKey, privateKey);
@@ -42,11 +46,13 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         return publicKey;
     }
 
+    @Override
     public byte[] generatePrivateKey() {
         byte[] random = getRandom(PRIVATE_KEY_LEN);
         return generatePrivateKey(random);
     }
 
+    @Override
     public byte[] generatePrivateKey(byte[] random) {
         byte[] privateKey = new byte[32];
 
@@ -59,6 +65,7 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         return privateKey;
     }
 
+    @Override
     public byte[] calculateSignature(byte[] random, byte[] privateKey, byte[] message) {
         byte[] result = new byte[64];
 
@@ -69,10 +76,12 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         return result;
     }
 
+    @Override
     public boolean verifySignature(byte[] publicKey, byte[] message, byte[] signature) {
         return curve_sigs.curve25519_verify(sha512provider, signature, publicKey, message, message.length) == 0;
     }
 
+    @Override
     public byte[] calculateVrfSignature(byte[] random, byte[] privateKey, byte[] message) {
         byte[] result = new byte[96];
         byte[] random32 = new byte[32];
@@ -86,6 +95,7 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         }
     }
 
+    @Override
     public byte[] verifyVrfSignature(byte[] publicKey, byte[] message, byte[] signature)
             throws VrfSignatureVerificationFailedException {
         byte[] result = new byte[32];
@@ -95,6 +105,7 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         return result;
     }
 
+    @Override
     public byte[] getRandom(int length) {
         byte[] result = new byte[length];
         secureRandomProvider.nextBytes(result);
