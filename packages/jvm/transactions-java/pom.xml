@@ -118,7 +118,36 @@
     <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     <!-- Reproducible builds — set to release date on each release -->
     <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
+    <!-- protobuf-java 4.34.1 — latest; used in dependencyManagement to override
+         the 4.33.2 that protobuf-schemas:1.6.0 pulls transitively. -->
+    <protobuf-java.version>4.34.1</protobuf-java.version>
+    <!-- jna 5.18.1 — latest; used in dependencyManagement to override
+         the 5.13.0 that waves-crypto:2.0.7 pulls transitively. -->
+    <jna.version>5.18.1</jna.version>
   </properties>
+
+  <!-- ── Dependency management (transitive version overrides) ────────── -->
+  <!-- These entries pin transitive deps to latest safe versions without    -->
+  <!-- adding them to the compile classpath.                                -->
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Force protobuf-java to 4.34.1 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf-java.version}</version>
+      </dependency>
+
+      <!-- Force JNA to 5.18.1 (waves-crypto:2.0.7 pulls 5.13.0) -->
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>${jna.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 
   <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
   <dependencies>
@@ -222,10 +251,17 @@
       </plugin>
 
       <!-- Surefire 3.5.5: JUnit Platform auto-detected, no extra config -->
+      <!-- Surefire: JUnit Platform auto-detected -->
+      <!-- enable-native-access: waves-crypto uses JNA (System.load) and protobuf  -->
+      <!-- uses Unsafe. Without ALL-UNNAMED, tests will fail in a future Java     -->
+      <!-- release when restricted native access is blocked by default.            -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+        </configuration>
       </plugin>
 
       <!-- JAR manifest: implementation entries for version tracking -->
@@ -240,6 +276,8 @@
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
             <manifestEntries>
+              <!-- Automatic-Module-Name: stable JPMS module name (Java 9+, JEP 261) -->
+              <Automatic-Module-Name>io.decentralchain.transactions</Automatic-Module-Name>
               <Specification-Title>${project.name}</Specification-Title>
               <Specification-Version>${project.version}</Specification-Version>
               <Implementation-Title>${project.groupId}.${project.artifactId}</Implementation-Title>
@@ -328,6 +366,13 @@
 
     </plugins>
   </build>
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
+    <!-- Activate with: ./mvnw deploy -P release                        -->
+    <profile>
       <id>release</id>
       <build>
         <plugins>

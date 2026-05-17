@@ -172,11 +172,29 @@
         </configuration>
       </plugin>
 
-      <!-- Surefire 3.5.5: JUnit Platform auto-detected, no extra config needed -->
+      <!-- Surefire: JUnit Platform auto-detected -->
+      <!-- enable-native-access=ALL-UNNAMED required for JNA System.load in Java 25+ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- JAR manifest: Automatic-Module-Name for Java 9+ module system compatibility (JEP 261) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>io.decentralchain.curve25519</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
 
       <!-- Sources JAR (required for Maven Central) -->
