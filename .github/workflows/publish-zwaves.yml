@@ -1,20 +1,4 @@
-# ──────────────────────────────────────────────────────────────────────────────
-# zwaves — Publish to Maven Central (manual dispatch)
-#
-# Prerequisite secrets (set in repo/org settings):
-#   MAVEN_CENTRAL_USERNAME   — Central Portal token username
-#   MAVEN_CENTRAL_PASSWORD   — Central Portal token password
-#   MAVEN_GPG_PRIVATE_KEY    — ASCII-armored GPG private key
-#   MAVEN_GPG_PASSPHRASE     — GPG key passphrase
-#   MAVEN_GPG_KEY_ID         — GPG key ID (last 8 hex chars)
-#   NVD_API_KEY              — NVD API key for OWASP dep-check (optional)
-#
-# This workflow builds all native libraries, runs the full audit gate, then
-# GPG-signs and uploads to Maven Central Portal (autoPublish=false).
-# A human must manually approve the release at central.sonatype.com.
-# ──────────────────────────────────────────────────────────────────────────────
-
-name: Publish zwaves to Maven Central
+name: publish-zwaves
 
 on:
   workflow_dispatch:
@@ -109,7 +93,7 @@ jobs:
       - name: Cache Rust build
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  # v2.9.1
         with:
-          workspaces: packages/jvm/zwaves
+          workspaces: packages/jvm/zwaves/zwaves_jni
 
       - name: Build native library
         working-directory: packages/jvm/zwaves/zwaves_jni
@@ -121,7 +105,7 @@ jobs:
           DEST="${{ env.NATIVE_DIR }}/${{ matrix.resource-path }}"
           mkdir -p "$DEST"
           rm -f "$DEST/.gitkeep"
-          cp "packages/jvm/zwaves/target/${{ matrix.rust-target }}/release/${{ matrix.artifact }}" "$DEST/"
+          cp "packages/jvm/zwaves/zwaves_jni/target/${{ matrix.rust-target }}/release/${{ matrix.artifact }}" "$DEST/"
 
       - name: Upload native library
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
@@ -192,3 +176,4 @@ jobs:
         with:
           name: zwaves-${{ inputs.version }}-staged
           path: packages/jvm/zwaves/target/*.jar
+          retention-days: 30
