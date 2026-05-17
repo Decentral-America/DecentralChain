@@ -10,15 +10,27 @@ import com.decentralchain.lang.v1.parser.Parser.GenericMethod.{As, ExactAs}
 
 object TypeCast {
 
-  def apply(p: Pos, name: String, expr: CompilationStepResultExpr, targetType: FINAL, provideRuntimeTypeOnError: Boolean): CompilationStepResultExpr =
+  def apply(
+      p: Pos,
+      name: String,
+      expr: CompilationStepResultExpr,
+      targetType: FINAL,
+      provideRuntimeTypeOnError: Boolean
+  ): CompilationStepResultExpr =
     name match {
       case ExactAs => exactAs(p, targetType, expr, provideRuntimeTypeOnError)
       case As      => as(p, targetType, expr)
       case other   => expr.copy(errors = Seq(GenericFunctionNotFound(p.start, p.end, other)))
     }
 
-  private def exactAs(p: Pos, targetType: FINAL, expr: CompilationStepResultExpr, provideRuntimeTypeOnError: Boolean): CompilationStepResultExpr = {
-    val message = if (provideRuntimeTypeOnError) runtimeErrorMessage(targetType) else compileTimeErrorMessage(targetType, expr)
+  private def exactAs(
+      p: Pos,
+      targetType: FINAL,
+      expr: CompilationStepResultExpr,
+      provideRuntimeTypeOnError: Boolean
+  ): CompilationStepResultExpr = {
+    val message =
+      if (provideRuntimeTypeOnError) runtimeErrorMessage(targetType) else compileTimeErrorMessage(targetType, expr)
     cast(
       p,
       targetType,
@@ -43,7 +55,13 @@ object TypeCast {
   private def as(p: Pos, targetType: FINAL, expr: CompilationStepResultExpr): CompilationStepResultExpr =
     cast(p, targetType, UNION(targetType, UNIT), expr, REF(GlobalValNames.Unit))
 
-  private def cast(p: Pos, targetType: FINAL, resultExprType: FINAL, expr: CompilationStepResultExpr, onError: EXPR): CompilationStepResultExpr = {
+  private def cast(
+      p: Pos,
+      targetType: FINAL,
+      resultExprType: FINAL,
+      expr: CompilationStepResultExpr,
+      onError: EXPR
+  ): CompilationStepResultExpr =
     targetType match {
       case LIST(t) if t != ANY =>
         expr.copy(errors = Seq(TypeCastAllowedOnlyForGenericList(p.start, p.end)))
@@ -59,5 +77,4 @@ object TypeCast {
           )
         expr.copy(t = resultExprType, expr = r)
     }
-  }
 }

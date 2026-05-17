@@ -9,8 +9,8 @@ import testHelpers.RandomDataGenerator.{
   randomInt,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{versionsSupportingTheNewFeatures, CANT_FIND_A_FUNCTION_OVERLOAD}
+import utest.{test, Tests}
 
 object ToBigInt extends JsTestBase {
   private val toBigInt                        = "toBigInt(callerTestData)"

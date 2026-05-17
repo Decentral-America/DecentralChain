@@ -2,7 +2,7 @@ package com.decentralchain.lang.v1.repl.impl
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobalScope
-import scala.scalajs.js.{Object, Promise, native}
+import scala.scalajs.js.{native, Object, Promise}
 
 @native
 @JSGlobalScope

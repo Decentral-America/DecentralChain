@@ -104,8 +104,13 @@ object WavesContext {
       getStringFromStateSelfF
     ) ++ extractedStateSelfFuncs(v)
 
-  private def variableFuncs(global: BaseGlobal, ds: DirectiveSet, typeDefs: Map[String, FINAL], proofsEnabled: Boolean) = {
-    val version = ds.stdLibVersion
+  private def variableFuncs(
+      global: BaseGlobal,
+      ds: DirectiveSet,
+      typeDefs: Map[String, FINAL],
+      proofsEnabled: Boolean
+  ) = {
+    val version     = ds.stdLibVersion
     val commonFuncs =
       Array(
         getIntegerFromArrayF(version),
@@ -142,7 +147,7 @@ object WavesContext {
     version match {
       case V1 => Map(txVal)
       case V2 => Map(sell, buy, txVal)
-      case _ =>
+      case _  =>
         val `this` = if (isTokenContext) assetThis(version) else accountThis
         val txO    = if (contentType == Expression) Map(txVal) else Map()
         val common = Map(sell, buy, lastBlock(version), `this`)

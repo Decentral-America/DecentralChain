@@ -3,9 +3,18 @@ package com.decentralchain.test.builtInFunctions.verification
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, actualVersionsWithoutV3, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  nonMatchingTypes,
+  CANT_FIND_FUNCTION
+}
+import utest.{test, Tests}
 
 object Ecrecover extends JsTestBase {
   private val ecrecover                     = "ecrecover(callerTestData, callerTestData)"

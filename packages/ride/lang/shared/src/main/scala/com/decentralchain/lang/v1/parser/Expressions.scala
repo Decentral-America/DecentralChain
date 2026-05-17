@@ -14,9 +14,10 @@ object Expressions {
   }
 
   object Pos {
-    def apply(start: Int, end: Int)(implicit offset: LibrariesOffset): Pos = RealPos(offset.shiftStart(start), offset.shiftEnd(end))
-    def apply(pos: Pos): Pos                                               = RealPos(pos.start, pos.end)
-    def fromShifted(start: Int, end: Int): Pos                             = RealPos(start, end)
+    def apply(start: Int, end: Int)(implicit offset: LibrariesOffset): Pos =
+      RealPos(offset.shiftStart(start), offset.shiftEnd(end))
+    def apply(pos: Pos): Pos                   = RealPos(pos.start, pos.end)
+    def fromShifted(start: Int, end: Int): Pos = RealPos(start, end)
 
     override def equals(obj: scala.Any): Boolean = super.equals(obj)
 
@@ -119,7 +120,7 @@ object Expressions {
   }
 
   case class ANNOTATION(position: Pos, name: PART[String], args: Seq[PART[String]]) extends Positioned
-  case class ANNOTATEDFUNC(position: Pos, anns: Seq[ANNOTATION], f: FUNC) extends Positioned {
+  case class ANNOTATEDFUNC(position: Pos, anns: Seq[ANNOTATION], f: FUNC)           extends Positioned {
     def name: PART[String] = f.name
   }
 
@@ -145,17 +146,38 @@ object Expressions {
   case class CONST_STRING(position: Pos, value: PART[String], ctxOpt: CtxOpt = None) extends EXPR {
     val resultType: Option[FINAL] = Some(STRING)
   }
-  case class BINARY_OP(position: Pos, a: EXPR, kind: BinaryOperation, b: EXPR, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
-  case class BLOCK(position: Pos, let: Declaration, body: EXPR, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None)                extends EXPR
-  case class IF(position: Pos, cond: EXPR, ifTrue: EXPR, ifFalse: EXPR, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None)        extends EXPR
-  case class REF(position: Pos, key: PART[String], resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None)                             extends EXPR
+  case class BINARY_OP(
+      position: Pos,
+      a: EXPR,
+      kind: BinaryOperation,
+      b: EXPR,
+      resultType: Option[FINAL] = None,
+      ctxOpt: CtxOpt = None
+  ) extends EXPR
+  case class BLOCK(position: Pos, let: Declaration, body: EXPR, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None)
+      extends EXPR
+  case class IF(
+      position: Pos,
+      cond: EXPR,
+      ifTrue: EXPR,
+      ifFalse: EXPR,
+      resultType: Option[FINAL] = None,
+      ctxOpt: CtxOpt = None
+  ) extends EXPR
+  case class REF(position: Pos, key: PART[String], resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
   case class TRUE(position: Pos, ctxOpt: CtxOpt = None) extends EXPR {
     val resultType: Option[FINAL] = Some(BOOLEAN)
   }
   case class FALSE(position: Pos, ctxOpt: CtxOpt = None) extends EXPR {
     val resultType: Option[FINAL] = Some(BOOLEAN)
   }
-  case class FUNCTION_CALL(position: Pos, name: PART[String], args: List[EXPR], resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
+  case class FUNCTION_CALL(
+      position: Pos,
+      name: PART[String],
+      args: List[EXPR],
+      resultType: Option[FINAL] = None,
+      ctxOpt: CtxOpt = None
+  ) extends EXPR
 
   case class GENERIC_FUNCTION_CALL(
       position: Pos,
@@ -166,7 +188,15 @@ object Expressions {
       ctxOpt: CtxOpt = None
   ) extends EXPR
 
-  case class FOLD(position: Pos, limit: Int, list: EXPR, acc: EXPR, func: REF, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
+  case class FOLD(
+      position: Pos,
+      limit: Int,
+      list: EXPR,
+      acc: EXPR,
+      func: REF,
+      resultType: Option[FINAL] = None,
+      ctxOpt: CtxOpt = None
+  ) extends EXPR
 
   sealed trait Pattern {
     def isRest: Boolean = false
@@ -225,9 +255,16 @@ object Expressions {
       MATCH_CASE(position, TypedVar(newVarName, Union(types.map(Single(_, None)))), expr)
   }
 
-  case class MATCH(position: Pos, expr: EXPR, cases: Seq[MATCH_CASE], resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
+  case class MATCH(
+      position: Pos,
+      expr: EXPR,
+      cases: Seq[MATCH_CASE],
+      resultType: Option[FINAL] = None,
+      ctxOpt: CtxOpt = None
+  ) extends EXPR
 
-  case class INVALID(position: Pos, message: String, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None) extends EXPR
+  case class INVALID(position: Pos, message: String, resultType: Option[FINAL] = None, ctxOpt: CtxOpt = None)
+      extends EXPR
 
   case class DAPP(position: Pos, decs: List[Declaration], fs: List[ANNOTATEDFUNC])
 
@@ -236,7 +273,8 @@ object Expressions {
   implicit class PartOps[T](val self: PART[T]) extends AnyVal {
     def toEither: Either[String, T] = self match {
       case Expressions.PART.VALID(_, x)         => Right(x)
-      case Expressions.PART.INVALID(p, message) => Left(s"Can't compile an invalid instruction: $message in ${p.start}-${p.end}")
+      case Expressions.PART.INVALID(p, message) =>
+        Left(s"Can't compile an invalid instruction: $message in ${p.start}-${p.end}")
     }
   }
 

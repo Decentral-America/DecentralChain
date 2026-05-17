@@ -21,7 +21,7 @@ case class Repl(
     lastContext: (CompilerContext, EvaluationContext[Environment, Future]) =
       (CTX.empty.compilerContext, Monoid[EvaluationContext[Environment, Future]].empty)
 ) {
-  private val environment = buildEnvironment(settings, customHttpClient)
+  private val environment  = buildEnvironment(settings, customHttpClient)
   private val initialState = state(
     (
       lastContext._1 |+| initialCtx.compilerContext,
@@ -62,7 +62,9 @@ case class Repl(
       (
         initialCtx.compilerContext,
         initialCtx.evaluationContext(
-          ErrorMessageEnvironment[Id]("Blockchain interaction using lets from libraries is prohibited, use functions instead")
+          ErrorMessageEnvironment[Id](
+            "Blockchain interaction using lets from libraries is prohibited, use functions instead"
+          )
         )
       ),
       view

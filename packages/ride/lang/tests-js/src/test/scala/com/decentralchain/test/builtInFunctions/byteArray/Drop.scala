@@ -1,10 +1,20 @@
 package com.decentralchain.test.builtInFunctions.byteArray
 
 import com.decentralchain.JsTestBase
-import _root_.testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomInt, randomUnionArrayElement}
+import _root_.testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomInt,
+  randomUnionArrayElement
+}
 import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, GreaterV3ResultBinaryEntry, actualVersions, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  rideV3Result,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  GreaterV3ResultBinaryEntry
+}
+import utest.{test, Tests}
 
 object Drop extends JsTestBase {
   private val drop                     = s"drop(callerTestData, $randomInt)"

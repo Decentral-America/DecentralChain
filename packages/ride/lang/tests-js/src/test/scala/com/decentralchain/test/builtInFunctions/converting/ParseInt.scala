@@ -3,8 +3,14 @@ package com.decentralchain.test.builtInFunctions.converting
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultIntegerEntry, actualVersions, invalidFunctionError, nonMatchingTypes, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  invalidFunctionError,
+  nonMatchingTypes,
+  rideV3Result,
+  GreaterV3ResultIntegerEntry
+}
+import utest.{test, Tests}
 
 object ParseInt extends JsTestBase {
   // parseInt

@@ -30,7 +30,12 @@ object ExprScript {
   }
   def apply(x: EXPR): Either[String, Script] = apply(V1, x)
 
-  def apply(version: StdLibVersion, x: EXPR, isFreeCall: Boolean = false, checkSize: Boolean = true): Either[String, ExprScript] =
+  def apply(
+      version: StdLibVersion,
+      x: EXPR,
+      isFreeCall: Boolean = false,
+      checkSize: Boolean = true
+  ): Either[String, ExprScript] =
     ExprScriptImpl(version, isFreeCall, x)
       .asRight[String]
       .flatTap(s => if (checkSize) validateBytes(s.bytes().arr, isFreeCall) else Right(()))
@@ -47,7 +52,8 @@ object ExprScript {
     } else {
       BLOCK(LET(ContractCompiler.FreeCallInvocationArg, TRUE), expr)
     }
-    val resultVarNames = if (withCombinedContext) combinedVarNames(version, Expression) else varNames(version, Expression)
+    val resultVarNames =
+      if (withCombinedContext) combinedVarNames(version, Expression) else varNames(version, Expression)
     estimator(
       resultVarNames,
       functionCosts(version, Expression, if (isFreeCall) Call else Account, withCombinedContext = withCombinedContext),
@@ -68,7 +74,12 @@ object ExprScript {
       _          <- checkComplexity(version, complexity, useContractVerifierLimit, isFreeCall)
     } yield complexity
 
-  def checkComplexity(version: StdLibVersion, complexity: Long, useContractVerifierLimit: Boolean, isFreeCall: Boolean): Either[String, Unit] = {
+  def checkComplexity(
+      version: StdLibVersion,
+      complexity: Long,
+      useContractVerifierLimit: Boolean,
+      isFreeCall: Boolean
+  ): Either[String, Unit] = {
     val limit =
       if (isFreeCall)
         MaxCallableComplexityByVersion(version)
@@ -86,9 +97,10 @@ object ExprScript {
 
   final case class ExprScriptImpl(stdLibVersion: StdLibVersion, isFreeCall: Boolean, expr: EXPR) extends ExprScript {
     override type Expr = EXPR
-    override val bytes: Coeval[ByteStr]           = Coeval.evalOnce(ByteStr(Global.serializeExpression(expr, stdLibVersion)))
-    override val containsBlockV2: Coeval[Boolean] = Coeval.evalOnce(com.decentralchain.lang.v1.compiler.containsBlockV2(expr))
-    override val containsArray: Boolean           = com.decentralchain.lang.v1.compiler.containsArray(expr)
+    override val bytes: Coeval[ByteStr] = Coeval.evalOnce(ByteStr(Global.serializeExpression(expr, stdLibVersion)))
+    override val containsBlockV2: Coeval[Boolean] =
+      Coeval.evalOnce(com.decentralchain.lang.v1.compiler.containsBlockV2(expr))
+    override val containsArray: Boolean = com.decentralchain.lang.v1.compiler.containsArray(expr)
   }
 }
 

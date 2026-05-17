@@ -5,14 +5,14 @@ import com.decentralchain.lang.directives.values.V4
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomDigestAlgorithmTypeArrayElement, randomInt, randomUnionArrayElement}
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
   actualVersionsWithoutV3,
   intList,
   invalidFunctionError,
   nonMatchingTypes,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Max extends JsTestBase {
   private val max                       = "max(callerTestData)"
@@ -25,7 +25,7 @@ object Max extends JsTestBase {
 
   val tests: Tests = Tests {
     test("RIDE-162. Function Max should compile with a list") {
-      for (version <- actualVersionsWithoutV3) {
+      for (version <- actualVersionsWithoutV3)
         for (
           (data, function, dataType) <- Seq(
             (intList, max, "Int"),
@@ -36,11 +36,10 @@ object Max extends JsTestBase {
           val script       = precondition.onlyMatcherContract(data, function)
           assertCompileSuccessDApp(script, version)
         }
-      }
     }
 
     test("RIDE-163. Function Max should compile with a BigInt") {
-      for (version <- versionsSupportingTheNewFeatures) {
+      for (version <- versionsSupportingTheNewFeatures)
         for (
           (data, function, dataType) <- Seq(
             (s"toBigInt($randomInt)", maxForBigInt, "BigInt"),
@@ -51,11 +50,10 @@ object Max extends JsTestBase {
           val script       = precondition.onlyMatcherContract(data, function)
           assertCompileSuccessDApp(script, version)
         }
-      }
     }
 
     test("RIDE-164. Function Max should throw an error for invalid data or type") {
-      for (version <- actualVersionsWithoutV3) {
+      for (version <- actualVersionsWithoutV3)
         for (
           (data, function, dataType, error) <- Seq(
             (randomUnionArrayElement, max, "Int", nonMatchingTypes("List[Int]")),
@@ -73,7 +71,6 @@ object Max extends JsTestBase {
             assertCompileErrorDApp(script, version, CANT_FIND_A_FUNCTION_OVERLOAD)
           }
         }
-      }
     }
   }
 }

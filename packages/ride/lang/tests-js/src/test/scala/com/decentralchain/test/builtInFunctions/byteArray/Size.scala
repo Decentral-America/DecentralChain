@@ -2,9 +2,18 @@ package com.decentralchain.test.builtInFunctions.byteArray
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, GreaterV3ResultIntegerEntry, actualVersions, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  rideV3Result,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  GreaterV3ResultIntegerEntry
+}
+import utest.{test, Tests}
 
 object Size extends JsTestBase {
   private val size                     = s"size(callerTestData)"

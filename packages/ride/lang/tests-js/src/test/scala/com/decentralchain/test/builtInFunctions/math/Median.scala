@@ -3,14 +3,19 @@ package com.decentralchain.test.builtInFunctions.math
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V5
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomAliasDataArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
   actualVersionsWithoutV3,
   nonMatchingTypes,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Median extends JsTestBase {
   private val medianInt                 = s"median([callerTestData, $randomInt, $randomInt])"

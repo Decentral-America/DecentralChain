@@ -33,7 +33,8 @@ object CompilerMacro {
       )
     )
 
-    val callChain        = (0 until limit).foldLeft(REF("$acc0"): EXPR)((acc, i) => callUser(funcName, List(acc, CONST_LONG(i))))
+    val callChain =
+      (0 until limit).foldLeft(REF("$acc0"): EXPR)((acc, i) => callUser(funcName, List(acc, CONST_LONG(i))))
     val callChainWithEnd = callUser(lastFuncName, List(callChain, CONST_LONG(limit)))
     List(
       LET("$l", list),

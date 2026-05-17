@@ -9,11 +9,13 @@ import testHelpers.RandomDataGenerator.{
   randomUnionArrayElement
 }
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object RsaVerify extends JsTestBase {
-  private val rsaVerify                     = s"rsaVerify($randomDigestAlgorithmTypeArrayElement, callerTestData, callerTestData, callerTestData)"
-  private val rsaVerifyArgBeforeFunc        = s"$randomDigestAlgorithmTypeArrayElement.rsaVerify(callerTestData, callerTestData, callerTestData)"
+  private val rsaVerify =
+    s"rsaVerify($randomDigestAlgorithmTypeArrayElement, callerTestData, callerTestData, callerTestData)"
+  private val rsaVerifyArgBeforeFunc =
+    s"$randomDigestAlgorithmTypeArrayElement.rsaVerify(callerTestData, callerTestData, callerTestData)"
   private val invalidRsaVerify              = s"rsaVerify()"
   private val invalidRsaVerifyArgBeforeFunc = s"callerTestData.rsaVerify(callerTestData)"
   private val invalidErrorRsaVerify         = invalidFunctionError("rsaVerify", 4)

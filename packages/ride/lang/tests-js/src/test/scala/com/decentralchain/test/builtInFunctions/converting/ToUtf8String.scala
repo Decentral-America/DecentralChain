@@ -2,9 +2,19 @@ package com.decentralchain.test.builtInFunctions.converting
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultStringEntry, actualVersions, invalidFunctionError, nonMatchingTypes, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  invalidFunctionError,
+  nonMatchingTypes,
+  rideV3Result,
+  GreaterV3ResultStringEntry
+}
+import utest.{test, Tests}
 
 object ToUtf8String extends JsTestBase {
   private val toUtf8String                     = "toUtf8String(callerTestData)"

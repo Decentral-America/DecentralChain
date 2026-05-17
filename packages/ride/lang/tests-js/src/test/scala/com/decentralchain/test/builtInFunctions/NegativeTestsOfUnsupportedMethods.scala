@@ -3,22 +3,28 @@ package com.decentralchain.test.builtInFunctions
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomInt, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_FUNCTION,
-  GreaterV3ResultBinaryEntry,
-  UNDEFINED_TYPE,
   intList,
   oldVersions,
   rideV3Result,
-  stringList
+  stringList,
+  CANT_FIND_FUNCTION,
+  GreaterV3ResultBinaryEntry,
+  UNDEFINED_TYPE
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object NegativeTestsOfUnsupportedMethods extends JsTestBase {
   private val toBigInt              = "toBigInt(callerTestData)"
   private val toBigIntArgBeforeFunc = "callerTestData.toBigInt()"
-  private val invokeArgBeforeFunc   = "addressFromStringValue(dapp2).invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val invokeArgBeforeFunc   =
+    "addressFromStringValue(dapp2).invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
 
   private val blake2b256_16Kb  = "blake2b256_16Kb(callerTestData)"
   private val blake2b256_32Kb  = "blake2b256_32Kb(callerTestData)"
@@ -57,7 +63,11 @@ object NegativeTestsOfUnsupportedMethods extends JsTestBase {
     ) {
       for (version <- oldVersions) {
         val precondition = new GeneratorContractsForBuiltInFunctions("", version)
-        val script       = precondition.codeForDAppInvocation(randomByteVectorArrayElement, randomAddressDataArrayElement, invokeArgBeforeFunc)
+        val script       = precondition.codeForDAppInvocation(
+          randomByteVectorArrayElement,
+          randomAddressDataArrayElement,
+          invokeArgBeforeFunc
+        )
         assertCompileErrorDApp(script, version, CANT_FIND_FUNCTION)
       }
     }

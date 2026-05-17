@@ -2,9 +2,18 @@ package com.decentralchain.test.builtInFunctions.hashing.sha256
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultBinaryEntry, actualVersions, nonMatchingTypes, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  nonMatchingTypes,
+  rideV3Result,
+  GreaterV3ResultBinaryEntry
+}
+import utest.{test, Tests}
 
 object Sha256 extends JsTestBase {
   private val sha256                     = "sha256(callerTestData)"

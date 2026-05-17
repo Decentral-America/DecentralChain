@@ -5,7 +5,12 @@ import cats.syntax.either.*
 import cats.syntax.option.*
 import cats.syntax.traverse.*
 import com.decentralchain.lang.contract.DApp
-import com.decentralchain.lang.contract.DApp.{CallableAnnotation, CallableFunction, VerifierAnnotation, VerifierFunction}
+import com.decentralchain.lang.contract.DApp.{
+  CallableAnnotation,
+  CallableFunction,
+  VerifierAnnotation,
+  VerifierFunction
+}
 import com.decentralchain.lang.v1.compiler.Terms.{DECLARATION, FUNC}
 import com.decentralchain.lang.utils.Serialize.*
 import com.decentralchain.lang.v1.ContractLimits
@@ -39,7 +44,7 @@ object ContractSerDeV1 extends ContractSerDe {
         c.callableFuncs.foreach(cFunc => serializeAnnotatedFunction(out, cFunc.u, cFunc.annotation.invocationArgName))
 
         c.verifierFuncOpt match {
-          case None => out.writeInt(0)
+          case None     => out.writeInt(0)
           case Some(vf) =>
             out.writeInt(1)
             serializeAnnotatedFunction(out, vf.u, vf.annotation.invocationArgName)
@@ -69,20 +74,22 @@ object ContractSerDeV1 extends ContractSerDe {
       }
     } yield meta
 
-  private[lang] def serializeDeclaration(out: ByteArrayOutputStream, dec: DECLARATION): Unit = {
+  private[lang] def serializeDeclaration(out: ByteArrayOutputStream, dec: DECLARATION): Unit =
     SerdeV1.serializeDeclaration(out, dec, SerdeV1.serAux(out, Coeval.now(()), _)).value()
-  }
 
   private[lang] def deserializeDeclaration(bb: ByteBuffer): Either[String, DECLARATION] = {
     val decType = bb.get()
     SerdeV1.deserializeDeclaration(bb, SerdeV1.desAux(bb), decType).attempt.value().leftMap(_.getMessage)
   }
 
-  private[lang] def serializeAnnotation(out: ByteArrayOutputStream, invocationName: String): Unit = {
+  private[lang] def serializeAnnotation(out: ByteArrayOutputStream, invocationName: String): Unit =
     out.writeString(invocationName)
-  }
 
-  private[lang] def serializeAnnotatedFunction(out: ByteArrayOutputStream, func: FUNC, annotationInvocName: String): Unit = {
+  private[lang] def serializeAnnotatedFunction(
+      out: ByteArrayOutputStream,
+      func: FUNC,
+      annotationInvocName: String
+  ): Unit = {
     serializeAnnotation(out, annotationInvocName)
     serializeDeclaration(out, func)
   }
@@ -90,7 +97,7 @@ object ContractSerDeV1 extends ContractSerDe {
   private[lang] def deserializeCallableAnnotation(bb: ByteBuffer): Either[String, CallableAnnotation] =
     tryEi(CallableAnnotation(bb.getString))
 
-  private[lang] def deserializeCallableFunction(bb: ByteBuffer): Either[String, CallableFunction] = {
+  private[lang] def deserializeCallableFunction(bb: ByteBuffer): Either[String, CallableFunction] =
     for {
       ca <- deserializeCallableAnnotation(bb)
       cf <- deserializeDeclaration(bb).map(_.asInstanceOf[FUNC])
@@ -101,17 +108,15 @@ object ContractSerDeV1 extends ContractSerDe {
         s"Callable function name (${cf.name}) size = $nameSize bytes exceeds ${ContractLimits.MaxDeclarationNameInBytes}"
       )
     } yield CallableFunction(ca, cf)
-  }
 
   private[lang] def deserializeVerifiableAnnotation(bb: ByteBuffer): Either[String, VerifierAnnotation] =
     tryEi(VerifierAnnotation(bb.getString))
 
-  private def deserializeVerifierFunction(bb: ByteBuffer): Either[String, VerifierFunction] = {
+  private def deserializeVerifierFunction(bb: ByteBuffer): Either[String, VerifierFunction] =
     for {
       a <- deserializeVerifiableAnnotation(bb)
       f <- deserializeDeclaration(bb).map(_.asInstanceOf[FUNC])
     } yield VerifierFunction(a, f)
-  }
 
   private[lang] def deserializeList[A](bb: ByteBuffer, df: ByteBuffer => Either[String, A]): Either[String, List[A]] = {
     val len = bb.getInt
@@ -123,11 +128,13 @@ object ContractSerDeV1 extends ContractSerDe {
     }
   }
 
-  private[lang] def deserializeOption[A](bb: ByteBuffer, df: ByteBuffer => Either[String, A]): Either[String, Option[A]] = {
+  private[lang] def deserializeOption[A](
+      bb: ByteBuffer,
+      df: ByteBuffer => Either[String, A]
+  ): Either[String, Option[A]] =
     tryEi(bb.getInt > 0)
       .flatMap {
         case true  => df(bb).map(_.some)
         case false => Right(None)
       }
-  }
 }

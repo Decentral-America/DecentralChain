@@ -10,7 +10,8 @@ import java.math.RoundingMode.*
 sealed abstract class Rounding(typeName: String, val mode: RoundingMode) {
   val `type`: CASETYPEREF                                           = CASETYPEREF(typeName, Nil, hideConstructor = true)
   val value: CaseObj                                                = CaseObj(`type`, Map())
-  val definition: (String, (CASETYPEREF, ContextfulVal[NoContext])) = (typeName.toUpperCase, (`type`, ContextfulVal.pure(value)))
+  val definition: (String, (CASETYPEREF, ContextfulVal[NoContext])) =
+    (typeName.toUpperCase, (`type`, ContextfulVal.pure(value)))
 }
 
 case object Rounding {

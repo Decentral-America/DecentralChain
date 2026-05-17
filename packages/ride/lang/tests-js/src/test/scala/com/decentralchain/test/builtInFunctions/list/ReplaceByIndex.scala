@@ -4,16 +4,21 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.DirectiveDictionary
 import com.decentralchain.lang.directives.values.{StdLibVersion, V8}
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomInt,
+  randomIssuesArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object ReplaceByIndex extends JsTestBase {
   private val replaceByIndex                     = "replaceByIndex(bar, 1, foo)"
   private val replaceByIndexArgBeforeFunc        = "bar.replaceByIndex(1, foo)"
   private val invalidReplaceByIndex              = "replaceByIndex(1, foo)"
   private val invalidReplaceByIndexArgBeforeFunc = "foo.replaceByIndex(bar, 1, foo)"
-  private val invalidErrorReplaceByIndex         = testData.invalidFunctionError("replaceByIndex", numberOfArguments = 3)
+  private val invalidErrorReplaceByIndex = testData.invalidFunctionError("replaceByIndex", numberOfArguments = 3)
 
   val tests: Tests = Tests {
     test("replaceByIndex functions compiles with a list") {

@@ -36,7 +36,7 @@ case class EnabledLogEvaluationContext[C[_[_]], F[_]: Monad](l: LetLogCallback[F
   val loggedLets: util.IdentityHashMap[LET, Unit]          = new util.IdentityHashMap()
   val loggedErrors: collection.mutable.Set[ExecutionError] = collection.mutable.Set()
 
-  override def log(let: LET, result: LetExecResult[F]): Unit = {
+  override def log(let: LET, result: LetExecResult[F]): Unit =
     result.map {
       case Left(err) if !loggedErrors.contains(err) =>
         loggedErrors.addOne(err)
@@ -44,13 +44,13 @@ case class EnabledLogEvaluationContext[C[_[_]], F[_]: Monad](l: LetLogCallback[F
       case Left(_) => ()
       case _       => add(let, result)
     }
-  }
 
   private def add(let: LET, result: LetExecResult[F]): Unit =
     loggedLets.computeIfAbsent(let, _ => l(let.name)(result))
 }
 
-case class DisabledLogEvaluationContext[C[_[_]], F[_]](ec: EvaluationContext[C, F]) extends LoggedEvaluationContext[C, F] {
+case class DisabledLogEvaluationContext[C[_[_]], F[_]](ec: EvaluationContext[C, F])
+    extends LoggedEvaluationContext[C, F] {
   override def log(let: LET, result: LetExecResult[F]): Unit = ()
 }
 

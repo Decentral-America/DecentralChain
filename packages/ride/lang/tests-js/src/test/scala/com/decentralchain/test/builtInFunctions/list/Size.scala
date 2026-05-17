@@ -3,8 +3,8 @@ package com.decentralchain.test.builtInFunctions.list
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, actualVersions, intList}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{actualVersions, intList, CANT_FIND_A_FUNCTION_OVERLOAD}
+import utest.{test, Tests}
 
 object Size extends JsTestBase {
   private val size                     = "size(callerTestData)"

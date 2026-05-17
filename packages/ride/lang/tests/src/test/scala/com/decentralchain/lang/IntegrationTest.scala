@@ -111,7 +111,8 @@ class IntegrationTest extends PropSpec with Inside {
     )
   }
 
-  private val v5Ctx = WavesContext.build(Global, DirectiveSet(V5, Account, DApp).explicitGet(), fixBigScriptField = true)
+  private val v5Ctx =
+    WavesContext.build(Global, DirectiveSet(V5, Account, DApp).explicitGet(), fixBigScriptField = true)
 
   property("simple let") {
     val src =
@@ -267,7 +268,9 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("equals works on primitive types") {
-    eval[EVALUATED]("base58'3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8' == base58'3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8'") shouldBe evaluated(true)
+    eval[EVALUATED](
+      "base58'3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8' == base58'3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8'"
+    ) shouldBe evaluated(true)
     eval[EVALUATED]("1 == 2") shouldBe evaluated(false)
     eval[EVALUATED]("3 == 3") shouldBe evaluated(true)
     eval[EVALUATED]("false == false") shouldBe evaluated(true)
@@ -282,7 +285,9 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("equals some lang structure") {
-    eval[EVALUATED]("let x = (-7763390488025868909>-1171895536391400041); let v = false; (v&&true)") shouldBe evaluated(false)
+    eval[EVALUATED]("let x = (-7763390488025868909>-1171895536391400041); let v = false; (v&&true)") shouldBe evaluated(
+      false
+    )
     eval[EVALUATED]("let mshUmcl = (if(true) then true else true); true || mshUmcl") shouldBe evaluated(true)
     eval[EVALUATED]("""if(((1+-1)==-1)) then 1 else (1+1)""") shouldBe evaluated(2)
     eval[EVALUATED]("""((((if(true) then 1 else 1)==2)||((if(true)
@@ -445,7 +450,10 @@ class IntegrationTest extends PropSpec with Inside {
       )
     )
 
-    val expr = FUNCTION_CALL(PureContext.sumLong.header, List(FUNCTION_CALL(doubleFst.header, List(CONST_LONG(1000L))), REF("x")))
+    val expr = FUNCTION_CALL(
+      PureContext.sumLong.header,
+      List(FUNCTION_CALL(doubleFst.header, List(CONST_LONG(1000L))), REF("x"))
+    )
     ev[CONST_LONG](context, expr) shouldBe evaluated(2003L)
   }
 
@@ -503,14 +511,13 @@ class IntegrationTest extends PropSpec with Inside {
       """.stripMargin
     eval(src) should produce("Index 1 out of bounds for length 1")
 
-    def testListAccessError(length: Int, index: Int): Unit = {
+    def testListAccessError(length: Int, index: Int): Unit =
       eval(
         s"""
            | let a = ${List.fill(length)(1).mkString("[", ", ", "]")}
            | a[$index]
          """.stripMargin
       ) should produce(s"Index $index out of bounds for length $length")
-    }
 
     testListAccessError(length = 3, index = 3)
     testListAccessError(length = 3, index = -1)
@@ -627,7 +634,8 @@ class IntegrationTest extends PropSpec with Inside {
     for (i <- 65528 to 65535) array(i) = 1
     val src =
       s""" arr.toInt(65528) """
-    val arrVal = ContextfulVal.pure[NoContext](CONST_BYTESTR(ByteStr(array), limit = CONST_BYTESTR.DataTxSize).explicitGet())
+    val arrVal =
+      ContextfulVal.pure[NoContext](CONST_BYTESTR(ByteStr(array), limit = CONST_BYTESTR.DataTxSize).explicitGet())
     eval[EVALUATED](
       src,
       ctxt = CTX[NoContext](
@@ -849,11 +857,11 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("big let assignment chain") {
-    val count = 5000
+    val count  = 5000
     val script =
       s"""
          | let a0 = 1
-         | ${1 to count map (i => s"let a$i = a${i - 1}") mkString "\n"}
+         | ${(1 to count).map(i => s"let a$i = a${i - 1}").mkString("\n")}
          | a$count == a$count
       """.stripMargin
 
@@ -861,13 +869,13 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("big function assignment chain") {
-    val count = 2000
+    val count  = 2000
     val script =
       s"""
          | func a0() = {
          |   1 + 1
          | }
-         | ${1 to count map (i => s"func a$i() = a${i - 1}()") mkString "\n"}
+         | ${(1 to count).map(i => s"func a$i() = a${i - 1}()").mkString("\n")}
          | a$count() == a$count()
       """.stripMargin
 
@@ -875,11 +883,11 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("big let assignment chain with function") {
-    val count = 5000
+    val count  = 5000
     val script =
       s"""
          | let a0 = 1
-         | ${1 to count map (i => s"let a$i = a${i - 1} + 1") mkString "\n"}
+         | ${(1 to count).map(i => s"let a$i = a${i - 1} + 1").mkString("\n")}
          | a$count == a$count
       """.stripMargin
 
@@ -917,7 +925,9 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("HalfUp is type") {
-    eval("let r = if true then HALFUP else HALFDOWN ; match r { case _:HalfUp => 1 case _ => 0 }") shouldBe Right(CONST_LONG(1))
+    eval("let r = if true then HALFUP else HALFDOWN ; match r { case _:HalfUp => 1 case _ => 0 }") shouldBe Right(
+      CONST_LONG(1)
+    )
   }
 
   property("HalfUp type have no constructor") {
@@ -972,7 +982,7 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("extract functions with message") {
-    val message = "Custom error message"
+    val message                        = "Custom error message"
     def script(error: Boolean): String =
       s"""
          |
@@ -1061,7 +1071,7 @@ class IntegrationTest extends PropSpec with Inside {
 
   property("list result size limit") {
     val maxLongList = "[1" + ",1" * (PureContext.MaxListLengthV4 - 1) + "]"
-    val consScript =
+    val consScript  =
       s"""
          | let list1 = $maxLongList
          | let list2 = 1 :: list1
@@ -1128,7 +1138,7 @@ class IntegrationTest extends PropSpec with Inside {
   property("List[Int] median - 100 elements") {
     val arr       = (1 to 100).map(_ => Random.nextLong())
     val arrSorted = arr.sorted
-    val src =
+    val src       =
       s"[${arr.mkString(",")}].median()"
     eval(src, version = V4) shouldBe Right(CONST_LONG(Math.floorDiv(arrSorted(49) + arrSorted(50), 2)))
   }
@@ -1136,7 +1146,7 @@ class IntegrationTest extends PropSpec with Inside {
   property("List[Int] median - 99 elements") {
     val arr       = (1 to 99).map(_ => Random.nextLong())
     val arrSorted = arr.sorted
-    val src =
+    val src       =
       s"[${arr.mkString(",")}].median()"
     eval(src, version = V4) shouldBe Right(CONST_LONG(arrSorted(49)))
   }
@@ -1170,7 +1180,9 @@ class IntegrationTest extends PropSpec with Inside {
   property("List[Int] median - list with non int elements - error") {
     val src =
       s"""["1", "2"].median()"""
-    eval(src, version = V4) should produce("Compilation failed: [Non-matching types: expected: List[Int], actual: List[String]")
+    eval(src, version = V4) should produce(
+      "Compilation failed: [Non-matching types: expected: List[Int], actual: List[String]"
+    )
   }
 
   property("List[Int] median - list with big elements - error") {
@@ -1313,7 +1325,9 @@ class IntegrationTest extends PropSpec with Inside {
                          } else {
                            "groth16Verify(vk, proof, inputs)"
                          })
-      eval(src, version = V4) shouldBe Left(s"Invalid inputs size ${i * 32} bytes, must be not greater than ${i * 32 - 32} bytes")
+      eval(src, version = V4) shouldBe Left(
+        s"Invalid inputs size ${i * 32} bytes, must be not greater than ${i * 32 - 32} bytes"
+      )
     }
   }
 
@@ -1338,7 +1352,9 @@ class IntegrationTest extends PropSpec with Inside {
                          } else {
                            "groth16Verify(vk, proof, inputs)"
                          })
-      eval(src, version = V4) shouldBe Left(s"Invalid vk size ${n} bytes, must be equal to ${(8 + ii) * 48} bytes for ${ii} inputs")
+      eval(src, version = V4) shouldBe Left(
+        s"Invalid vk size ${n} bytes, must be equal to ${(8 + ii) * 48} bytes for ${ii} inputs"
+      )
     }
   }
 
@@ -1393,7 +1409,8 @@ class IntegrationTest extends PropSpec with Inside {
     val name         = "name"
     val quantity     = 1234567
     val nonce        = 1
-    val issue        = Issue.create(compiledScript = None, decimals, description, isReissuable, name, quantity, nonce, ByteStr.empty)
+    val issue        =
+      Issue.create(compiledScript = None, decimals, description, isReissuable, name, quantity, nonce, ByteStr.empty)
     val script =
       s"""
          | let issue = Issue("$name", "$description", $quantity, $decimals, $isReissuable, unit, $nonce)
@@ -1427,7 +1444,9 @@ class IntegrationTest extends PropSpec with Inside {
     eval[EVALUATED](script(base16String8Kb), version = V4) shouldBe CONST_STRING(base16String8Kb)
 
     eval[EVALUATED](script(base16String8Kb + "aa"), version = V3) shouldBe CONST_STRING(base16String8Kb + "aa")
-    eval(script(base16String8Kb + "aa"), version = V4) shouldBe Left("Base16 encode input length=8193 should not exceed 8192")
+    eval(script(base16String8Kb + "aa"), version = V4) shouldBe Left(
+      "Base16 encode input length=8193 should not exceed 8192"
+    )
   }
 
   property("fromBase16String supports mixed case input") {
@@ -1453,7 +1472,7 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("bytes limit") {
-    val bytes = ByteStr(("a" * (Terms.DataEntryValueMax / 4)).getBytes(StandardCharsets.UTF_8))
+    val bytes                = ByteStr(("a" * (Terms.DataEntryValueMax / 4)).getBytes(StandardCharsets.UTF_8))
     val constructingMaxBytes =
       s""" base64'${bytes.base64Raw}' +
          | base64'${bytes.base64Raw}' +
@@ -1483,13 +1502,19 @@ class IntegrationTest extends PropSpec with Inside {
     eval(""" [-1,2,3,4].indexOf(4) """, version = V4) shouldBe Right(CONST_LONG(3))
     eval(""" [true, false].indexOf(true) """, version = V4) shouldBe Right(CONST_LONG(0))
     eval(""" [true, false].indexOf(false) """, version = V4) shouldBe Right(CONST_LONG(1))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].indexOf(base58'a') """, version = V4) shouldBe Right(CONST_LONG(0))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].indexOf(base58'd') """, version = V4) shouldBe Right(CONST_LONG(3))
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].indexOf(base58'a') """, version = V4) shouldBe Right(
+      CONST_LONG(0)
+    )
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].indexOf(base58'd') """, version = V4) shouldBe Right(
+      CONST_LONG(3)
+    )
     eval(""" ["a","b","c","d"].indexOf("e") """, version = V4) shouldBe Right(unit)
 
     eval(""" [true, false].indexOf(0) """, version = V4) should produce("Can't find a function overload")
     eval(""" [true, false].indexOf() """, version = V4) should produce("Can't find a function overload")
-    eval(""" ["a","b","c","d"].indexOf("a") """, version = V3) should produce("Can't find a function overload 'indexOf'")
+    eval(""" ["a","b","c","d"].indexOf("a") """, version = V3) should produce(
+      "Can't find a function overload 'indexOf'"
+    )
   }
 
   property("list lastIndexOf") {
@@ -1499,20 +1524,27 @@ class IntegrationTest extends PropSpec with Inside {
     eval(""" [4,-1,2,3].lastIndexOf(4) """, version = V4) shouldBe Right(CONST_LONG(0))
     eval(""" [true, false].lastIndexOf(true) """, version = V4) shouldBe Right(CONST_LONG(0))
     eval(""" [true, false].lastIndexOf(false) """, version = V4) shouldBe Right(CONST_LONG(1))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].lastIndexOf(base58'a') """, version = V4) shouldBe Right(CONST_LONG(0))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].lastIndexOf(base58'd') """, version = V4) shouldBe Right(CONST_LONG(3))
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].lastIndexOf(base58'a') """, version = V4) shouldBe Right(
+      CONST_LONG(0)
+    )
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].lastIndexOf(base58'd') """, version = V4) shouldBe Right(
+      CONST_LONG(3)
+    )
     eval(""" ["a","b","c","d"].lastIndexOf("e") """, version = V4) shouldBe Right(unit)
 
     eval(""" [true, false].lastIndexOf(0) """, version = V4) should produce("Can't find a function overload")
     eval(""" [true, false].lastIndexOf() """, version = V4) should produce("Can't find a function overload")
-    eval(""" ["a","b","c","d"].lastIndexOf("a") """, version = V3) should produce("Can't find a function overload 'lastIndexOf'")
+    eval(""" ["a","b","c","d"].lastIndexOf("a") """, version = V3) should produce(
+      "Can't find a function overload 'lastIndexOf'"
+    )
   }
 
   property("list indexOf compare Limits") {
     val maxCmpWeightElement          = "a" * ContractLimits.MaxCmpWeight.toInt
     val maxSizeElementToFound        = "a" * Short.MaxValue
-    val listWithMaxCmpWeightElements = List.fill(20)("b" * ContractLimits.MaxCmpWeight.toInt).map(s => s""""$s"""").mkString("[", ",", "]")
-    val listWithMaxSizeElements      = List.fill(2)("b" * Short.MaxValue).map(s => s""""$s"""").mkString("[", ",", "]")
+    val listWithMaxCmpWeightElements =
+      List.fill(20)("b" * ContractLimits.MaxCmpWeight.toInt).map(s => s""""$s"""").mkString("[", ",", "]")
+    val listWithMaxSizeElements = List.fill(2)("b" * Short.MaxValue).map(s => s""""$s"""").mkString("[", ",", "]")
 
     val tooHeavyCmpElement         = maxCmpWeightElement + "a"
     val listWithTooHeavyCmpElement = s""" ("$tooHeavyCmpElement" :: $listWithMaxCmpWeightElements) """
@@ -1521,8 +1553,12 @@ class IntegrationTest extends PropSpec with Inside {
       eval(s""" $listWithMaxSizeElements.$func("$maxCmpWeightElement") """, version = V4) shouldBe Right(unit)
       eval(s""" $listWithMaxCmpWeightElements.$func("$maxSizeElementToFound") """, version = V4) shouldBe Right(unit)
 
-      eval(s""" $listWithMaxSizeElements.$func("$tooHeavyCmpElement") """, version = V4) should produce("are too heavy to compare")
-      eval(s""" $listWithTooHeavyCmpElement.$func("$maxSizeElementToFound") """, version = V4) should produce("are too heavy to compare")
+      eval(s""" $listWithMaxSizeElements.$func("$tooHeavyCmpElement") """, version = V4) should produce(
+        "are too heavy to compare"
+      )
+      eval(s""" $listWithTooHeavyCmpElement.$func("$maxSizeElementToFound") """, version = V4) should produce(
+        "are too heavy to compare"
+      )
     }
   }
 
@@ -1533,13 +1569,21 @@ class IntegrationTest extends PropSpec with Inside {
     eval(""" [-1,2,3,4].containsElement(4) """, version = V4) shouldBe Right(CONST_BOOLEAN(true))
     eval(""" [true, false].containsElement(true) """, version = V4) shouldBe Right(CONST_BOOLEAN(true))
     eval(""" [true, false].containsElement(false) """, version = V4) shouldBe Right(CONST_BOOLEAN(true))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].containsElement(base58'a') """, version = V4) shouldBe Right(CONST_BOOLEAN(true))
-    eval("""  [base58'a', base58'b', base58'c', base58'd'].containsElement(base58'd') """, version = V4) shouldBe Right(CONST_BOOLEAN(true))
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].containsElement(base58'a') """, version = V4) shouldBe Right(
+      CONST_BOOLEAN(true)
+    )
+    eval("""  [base58'a', base58'b', base58'c', base58'd'].containsElement(base58'd') """, version = V4) shouldBe Right(
+      CONST_BOOLEAN(true)
+    )
     eval(""" ["a","b","c","d"].containsElement("e") """, version = V4) shouldBe Right(CONST_BOOLEAN(false))
 
     eval(""" [true, false].containsElement(0) """, version = V4) should produce("Can't match inferred types")
-    eval(""" [true, false].containsElement() """, version = V4) should produce("Function 'containsElement' requires 2 arguments")
-    eval(""" ["a","b","c","d"].containsElement("a") """, version = V3) should produce("Can't find a function 'containsElement'")
+    eval(""" [true, false].containsElement() """, version = V4) should produce(
+      "Function 'containsElement' requires 2 arguments"
+    )
+    eval(""" ["a","b","c","d"].containsElement("a") """, version = V3) should produce(
+      "Can't find a function 'containsElement'"
+    )
   }
 
   property("list min") {
@@ -1583,7 +1627,10 @@ class IntegrationTest extends PropSpec with Inside {
     val message1         = "what's up jim"
     val expectedAddress1 = "85db9634489b76e238368e4a075cc6e5a56a714c"
 
-    Keys.getAddress(recoverPublicKey(message1, signature1)) shouldBe BaseEncoding.base16().lowerCase().decode(expectedAddress1)
+    Keys.getAddress(recoverPublicKey(message1, signature1)) shouldBe BaseEncoding
+      .base16()
+      .lowerCase()
+      .decode(expectedAddress1)
 
     // source: https://etherscan.io/verifySig/2007
     val signature2 =
@@ -1593,7 +1640,10 @@ class IntegrationTest extends PropSpec with Inside {
     val message2         = "i am the owner"
     val expectedAddress2 = "73f32c743e5928ff800ab8b05a52c73cd485f9c3"
 
-    Keys.getAddress(recoverPublicKey(message2, signature2)) shouldBe BaseEncoding.base16().lowerCase().decode(expectedAddress2)
+    Keys.getAddress(recoverPublicKey(message2, signature2)) shouldBe BaseEncoding
+      .base16()
+      .lowerCase()
+      .decode(expectedAddress2)
   }
 
   property("ecrecover negative cases") {
@@ -1626,7 +1676,11 @@ class IntegrationTest extends PropSpec with Inside {
       fixEcrecover = true
     ).shouldBe(
       Right(
-        CONST_BYTESTR(ByteStr.decodeBase58("Fco3a9D9kvzVR5gbnTciJX46f3jLLDEqSmGcah7dNB6Py3NPqcv1iiNgCnAwvnaf4RJyD1mJjLtrgihwyCEV2AJ").get)
+        CONST_BYTESTR(
+          ByteStr
+            .decodeBase58("Fco3a9D9kvzVR5gbnTciJX46f3jLLDEqSmGcah7dNB6Py3NPqcv1iiNgCnAwvnaf4RJyD1mJjLtrgihwyCEV2AJ")
+            .get
+        )
           .explicitGet()
       )
     )
@@ -1655,7 +1709,7 @@ class IntegrationTest extends PropSpec with Inside {
     def check(size: Int) = {
       val valueDefinition = (1 to size).map(i => getElement(i)._1).mkString("(", ", ", ")")
       val typeDefinition  = (1 to size).map(i => getElement(i)._2).mkString("(", ", ", ")")
-      val script =
+      val script          =
         s"""
            | let a = $valueDefinition
            | func f(x: $typeDefinition) = x
@@ -1670,7 +1724,7 @@ class IntegrationTest extends PropSpec with Inside {
       eval(script, version = V4) shouldBe Right(CONST_BOOLEAN(true))
     }
 
-    ContractLimits.MinTupleSize to ContractLimits.MaxTupleSize foreach check
+    (ContractLimits.MinTupleSize to ContractLimits.MaxTupleSize).foreach(check)
   }
 
   property("tuple match") {
@@ -1859,7 +1913,9 @@ class IntegrationTest extends PropSpec with Inside {
                          } else {
                            "bn256Groth16Verify(vk, proof, inputs)"
                          })
-      eval(src, version = V4) shouldBe Left(s"Invalid inputs size ${i * 32} bytes, must be not greater than ${i * 32 - 32} bytes")
+      eval(src, version = V4) shouldBe Left(
+        s"Invalid inputs size ${i * 32} bytes, must be not greater than ${i * 32 - 32} bytes"
+      )
     }
   }
 
@@ -1884,7 +1940,9 @@ class IntegrationTest extends PropSpec with Inside {
                          } else {
                            "bn256Groth16Verify(vk, proof, inputs)"
                          })
-      eval(src, version = V4) shouldBe Left(s"Invalid vk size ${n} bytes, must be equal to ${(8 + ii) * 32} bytes for ${ii} inputs")
+      eval(src, version = V4) shouldBe Left(
+        s"Invalid vk size ${n} bytes, must be equal to ${(8 + ii) * 32} bytes for ${ii} inputs"
+      )
     }
   }
 
@@ -1960,11 +2018,16 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("Union with single List") {
-    eval("""match (if false then 2 else [3]) { case n: Int => n case a => a[0] }""", version = V4) shouldBe Right(CONST_LONG(3))
+    eval("""match (if false then 2 else [3]) { case n: Int => n case a => a[0] }""", version = V4) shouldBe Right(
+      CONST_LONG(3)
+    )
   }
 
   property("Union with multiple List") {
-    eval("""match (if false then 2 else if true then [3] else ["qqq"]) { case n: Int => n case a => a[0] }""", version = V4) shouldBe Right(
+    eval(
+      """match (if false then 2 else if true then [3] else ["qqq"]) { case n: Int => n case a => a[0] }""",
+      version = V4
+    ) shouldBe Right(
       CONST_LONG(3)
     )
   }
@@ -2062,9 +2125,9 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   property("calculateLeaseId") {
-    val txId = ByteStr.decodeBase58("aaaa").get
-    val id1  = Lease.calculateId(Lease(Address(ByteStr.decodeBase58("bbbb").get), 1234567, 123), txId)
-    val id2  = Lease.calculateId(Lease(Alias("alias"), 9876, 100), txId)
+    val txId   = ByteStr.decodeBase58("aaaa").get
+    val id1    = Lease.calculateId(Lease(Address(ByteStr.decodeBase58("bbbb").get), 1234567, 123), txId)
+    val id2    = Lease.calculateId(Lease(Alias("alias"), 9876, 100), txId)
     val script =
       s"""
          | calculateLeaseId(Lease(Address(base58'bbbb'), 1234567, 123)) == base58'$id1' &&

@@ -4,8 +4,13 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.RandomDataGenerator.{randomDigestAlgorithmTypeArrayElement, randomIssuesArrayElement}
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, actualVersionsWithoutV3, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  nonMatchingTypes,
+  CANT_FIND_FUNCTION
+}
+import utest.{test, Tests}
 
 object CalculateAssetId extends JsTestBase {
   private val calculateAssetId              = "calculateAssetId(issue)"
@@ -35,7 +40,11 @@ object CalculateAssetId extends JsTestBase {
           (data, function, error) <- Seq(
             (randomDigestAlgorithmTypeArrayElement, calculateAssetId, nonMatchingTypes("Issue")),
             (randomDigestAlgorithmTypeArrayElement, calculateAssetIdArgBeforeFunc, nonMatchingTypes("Issue")),
-            (randomDigestAlgorithmTypeArrayElement, invalidCalculateAssetId, invalidFunctionError("calculateAssetId", 1))
+            (
+              randomDigestAlgorithmTypeArrayElement,
+              invalidCalculateAssetId,
+              invalidFunctionError("calculateAssetId", 1)
+            )
           )
         ) {
           val script = precondition.codeForCalculateAssetId(data, function)

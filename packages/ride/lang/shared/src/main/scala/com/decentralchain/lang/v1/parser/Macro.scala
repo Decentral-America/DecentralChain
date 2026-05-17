@@ -14,9 +14,17 @@ object Macro {
       strictLetDec,
       IF(
         blockPos,
-        FUNCTION_CALL(strictPos, VALID(strictPos, "=="), List(REF(strictPos, strictLetName), REF(strictPos, strictLetName))),
+        FUNCTION_CALL(
+          strictPos,
+          VALID(strictPos, "=="),
+          List(REF(strictPos, strictLetName), REF(strictPos, strictLetName))
+        ),
         otherLets.foldLeft(strictBody)((r, let) => BLOCK(let.position, let, r)),
-        FUNCTION_CALL(strictPos, VALID(strictPos, "throw"), List(CONST_STRING(strictPos, VALID(strictPos, "Strict value is not equal to itself."))))
+        FUNCTION_CALL(
+          strictPos,
+          VALID(strictPos, "throw"),
+          List(CONST_STRING(strictPos, VALID(strictPos, "Strict value is not equal to itself.")))
+        )
       )
     )
   }

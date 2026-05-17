@@ -16,7 +16,7 @@ import scala.concurrent.duration.*
 import scala.concurrent.{Await, Future}
 
 class ReplTest extends AnyPropSpec with Matchers {
-  def await[A](f: Future[A]): A = Await.result(f, 2 hour)
+  def await[A](f: Future[A]): A = Await.result(f, 2.hour)
 
   property("variable memorization") {
     val repl = Repl()
@@ -51,8 +51,12 @@ class ReplTest extends AnyPropSpec with Matchers {
 
   property("logic errors") {
     val repl = Repl()
-    await(repl.execute(""" let a = base64'12345' """)) shouldBe Left("Compilation failed: can't parse Base64 string in 17-21")
-    await(repl.execute(""" let b = "abc" + 1 """)) shouldBe Left("Compilation failed: [Can't find a function overload '+'(String, Int) in 9-18]")
+    await(repl.execute(""" let a = base64'12345' """)) shouldBe Left(
+      "Compilation failed: can't parse Base64 string in 17-21"
+    )
+    await(repl.execute(""" let b = "abc" + 1 """)) shouldBe Left(
+      "Compilation failed: [Can't find a function overload '+'(String, Int) in 9-18]"
+    )
   }
 
   property("exceptions") {
@@ -66,7 +70,9 @@ class ReplTest extends AnyPropSpec with Matchers {
   property("waves context funcs absent") {
     val repl = Repl()
 
-    await(repl.execute(s""" transferTransactionById(base58'fdg') """)) should produce("Blockchain state is unavailable from REPL")
+    await(repl.execute(s""" transferTransactionById(base58'fdg') """)) should produce(
+      "Blockchain state is unavailable from REPL"
+    )
 
     await(repl.execute(s""" let a = 1 """))
     await(repl.execute(s""" a """)) shouldBe Right("res1: Int = 1")
@@ -181,7 +187,9 @@ class ReplTest extends AnyPropSpec with Matchers {
 
   property("bytevector format display") {
     val repl = Repl()
-    await(repl.execute("sha256(base58'')")) shouldBe Right("res1: ByteVector = base58'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'")
+    await(repl.execute("sha256(base58'')")) shouldBe Right(
+      "res1: ByteVector = base58'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'"
+    )
   }
 
   property("reconfigure") {
@@ -222,7 +230,7 @@ class ReplTest extends AnyPropSpec with Matchers {
   property("libraries") {
     val address  = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
     val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address)
-    val repl = Repl(
+    val repl     = Repl(
       Some(settings),
       libraries = List(
         """
@@ -248,7 +256,7 @@ class ReplTest extends AnyPropSpec with Matchers {
   property("blockchain interaction using lets from libraries is prohibited") {
     val address  = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
     val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address)
-    val repl = Repl(
+    val repl     = Repl(
       Some(settings),
       libraries = List("let a = this")
     )
@@ -264,7 +272,9 @@ class ReplTest extends AnyPropSpec with Matchers {
       "res1: Address = Address(\n\tbytes = base58'3N7rGHurxjXCPDhJLvLxWQ1YKq1tiUDRKUL'\n)"
     )
     await(
-      repl.execute("addressFromPublicKey(base58'1ejb7sZqEyRLXjqukkZLmwP7KCJqbdw74oQQJRnAeir66zFQ56ZC3qP76yBLaW4hZY9NXtZ6LqnUDztZdAmCNqU')")
+      repl.execute(
+        "addressFromPublicKey(base58'1ejb7sZqEyRLXjqukkZLmwP7KCJqbdw74oQQJRnAeir66zFQ56ZC3qP76yBLaW4hZY9NXtZ6LqnUDztZdAmCNqU')"
+      )
     ) shouldBe Right(
       "res2: Address = Address(\n\tbytes = base58'3N8tAA42HCeoea6jqF5k3twBYCms5irDqmN'\n)"
     )
@@ -272,13 +282,12 @@ class ReplTest extends AnyPropSpec with Matchers {
 
   property("transactionHeightById for failed transaction") {
     val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, "")
-    val client = new NodeClient {
-      def get[F[_]: Functor, R: Decoder](path: String)(using ResponseWrapper[F]): Future[F[R]] = {
+    val client   = new NodeClient {
+      def get[F[_]: Functor, R: Decoder](path: String)(using ResponseWrapper[F]): Future[F[R]] =
         if (path == "/transactions/info/abcd")
           Future.successful(Some(HeightResponse(1, succeed = false)).asInstanceOf[F[R]])
         else
           ???
-      }
     }
     val repl = Repl(Some(settings), Some(client))
     await(repl.execute("transactionHeightById(base58'abcd')")) shouldBe Right("res1: Int|Unit = Unit")

@@ -2,9 +2,14 @@ package com.decentralchain.test.builtInFunctions.decoding
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomBoolean, randomStringArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomBoolean,
+  randomStringArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object AddressFromString extends JsTestBase {
   private val addressFromString                             = "addressFromString(callerTestData)"

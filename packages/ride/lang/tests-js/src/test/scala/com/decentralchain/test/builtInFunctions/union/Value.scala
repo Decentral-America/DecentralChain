@@ -3,8 +3,8 @@ package com.decentralchain.test.builtInFunctions.union
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomInt, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{MATCHING_NOT_EXHAUSTIVE, actualVersions, invalidFunctionError}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, MATCHING_NOT_EXHAUSTIVE}
+import utest.{test, Tests}
 
 object Value extends JsTestBase {
   private val value                     = "value(callerTestData)"

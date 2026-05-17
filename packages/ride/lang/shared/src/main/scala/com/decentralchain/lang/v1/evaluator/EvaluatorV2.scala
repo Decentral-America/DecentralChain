@@ -94,8 +94,13 @@ class EvaluatorV2(
             doEvaluateNativeFunction(fc, function.asInstanceOf[NativeFunction[Environment]], limit, cost)
       } yield result
 
-    def doEvaluateNativeFunction(fc: FUNCTION_CALL, function: NativeFunction[Environment], limit: Int, cost: Int): EvaluationResult[Int] = {
-      val args = fc.args.asInstanceOf[List[EVALUATED]]
+    def doEvaluateNativeFunction(
+        fc: FUNCTION_CALL,
+        function: NativeFunction[Environment],
+        limit: Int,
+        cost: Int
+    ): EvaluationResult[Int] = {
+      val args       = fc.args.asInstanceOf[List[EVALUATED]]
       val evaluation = function.ev match {
         case f: Extended[Environment] =>
           f.evaluate[Id](ctx.ec.environment, args, limit - cost).map { case (result, unusedComplexity) =>
@@ -113,9 +118,10 @@ class EvaluatorV2(
             .map { case (result, evaluatedComplexity) =>
               result.bimap(
                 {
-                  case e: ThrownError if !fixedThrownError && function.ev.isInstanceOf[Extended[Environment]] => (e, this.limit)
-                  case e: ThrownError if !fixedThrownError                                                    => (e, 0)
-                  case e                                                                                      => (e, evaluatedComplexity)
+                  case e: ThrownError if !fixedThrownError && function.ev.isInstanceOf[Extended[Environment]] =>
+                    (e, this.limit)
+                  case e: ThrownError if !fixedThrownError => (e, 0)
+                  case e                                   => (e, evaluatedComplexity)
                 },
                 (_, evaluatedComplexity)
               )
@@ -135,12 +141,17 @@ class EvaluatorV2(
       } yield unusedComplexity
     }
 
-    def evaluateUserFunction(fc: FUNCTION_CALL, limit: Int, name: String, startArgs: List[EXPR]): Option[EvaluationResult[Int]] =
+    def evaluateUserFunction(
+        fc: FUNCTION_CALL,
+        limit: Int,
+        name: String,
+        startArgs: List[EXPR]
+    ): Option[EvaluationResult[Int]] =
       ctx.ec.functions
         .get(fc.function)
         .map(_.asInstanceOf[UserFunction[Environment]])
         .map { f =>
-          val func = FUNC(f.name, f.args.toList, f.ev[Id](ctx.ec.environment, startArgs))
+          val func               = FUNC(f.name, f.args.toList, f.ev[Id](ctx.ec.environment, startArgs))
           val precalculatedLimit =
             if (newMode) {
               val cost = f.costByLibVersion(stdLibVersion).toInt
@@ -151,7 +162,8 @@ class EvaluatorV2(
         .orElse(findUserFunction(name, parentBlocks).map { case (func, blocks) => (func, None, blocks) })
         .map { case (signature, precalculatedLimitOpt, functionScopeBlocks) =>
           val argsWithExpr =
-            (signature.args zip fc.args)
+            (signature.args
+              .zip(fc.args))
               .foldRight(signature.body.deepCopy.value) { case ((argName, argValue), argsWithExpr) =>
                 BLOCK(LET(argName, argValue), argsWithExpr)
               }
@@ -170,21 +182,33 @@ class EvaluatorV2(
           case _                           => EvaluationResult(s"Function or type '$name' not found", limit)
         }
         passedArgs = fc.args.asInstanceOf[List[EVALUATED]]
-        _ <- if (checkConstructorArgsTypes) doCheckConstructorArgsTypes(objectType, passedArgs, limit) else EvaluationResult(())
-        fields = objectType.fields.map(_._1) zip passedArgs
+        _ <-
+          if (checkConstructorArgsTypes) doCheckConstructorArgsTypes(objectType, passedArgs, limit)
+          else EvaluationResult(())
+        fields = objectType.fields.map(_._1).zip(passedArgs)
         r <- root(CaseObj(objectType, fields.toMap), update, limit, parentBlocks)
       } yield r
 
-    def doCheckConstructorArgsTypes(objectType: CASETYPEREF, passedArgs: List[EVALUATED], limit: Int): EvaluationResult[Unit] = {
+    def doCheckConstructorArgsTypes(
+        objectType: CASETYPEREF,
+        passedArgs: List[EVALUATED],
+        limit: Int
+    ): EvaluationResult[Unit] = {
       def str[T](l: List[T]) = l.mkString("(", ", ", ")")
 
       if (objectType.fields.size != passedArgs.size)
-        EvaluationResult(s"Constructor ${objectType.name} expected ${objectType.fields.size} args, but ${str(passedArgs)} was passed", limit)
+        EvaluationResult(
+          s"Constructor ${objectType.name} expected ${objectType.fields.size} args, but ${str(passedArgs)} was passed",
+          limit
+        )
       else {
         val fieldTypes      = objectType.fields.map(_._2)
         val passedArgsTypes = passedArgs.map(_.getType)
-        if (!(fieldTypes zip passedArgsTypes).forall { case (fieldType, passedType) => fieldType >= passedType })
-          EvaluationResult(s"Passed args ${str(passedArgs)} are unsuitable for constructor ${objectType.name}${str(fieldTypes)}", limit)
+        if (!(fieldTypes.zip(passedArgsTypes)).forall { case (fieldType, passedType) => fieldType >= passedType })
+          EvaluationResult(
+            s"Passed args ${str(passedArgs)} are unsuitable for constructor ${objectType.name}${str(fieldTypes)}",
+            limit
+          )
         else
           EvaluationResult(())
       }
@@ -214,8 +238,8 @@ class EvaluatorV2(
             g.expr match {
               case co: CaseObj if unused > 0 => update(co.fields(g.field)).map(_ => unused - overheadCost)
               case _: CaseObj                => EvaluationResult(unused)
-              case ev: EVALUATED             => EvaluationResult(s"GETTER of non-case-object $ev with field '${g.field}", unused)
-              case _                         => EvaluationResult(unused)
+              case ev: EVALUATED => EvaluationResult(s"GETTER of non-case-object $ev with field '${g.field}", unused)
+              case _             => EvaluationResult(unused)
             }
           }
         }
@@ -329,7 +353,11 @@ class EvaluatorV2(
         })
     )
 
-  private def findGlobalVar(key: String, update: EVALUATED => EvaluationResult[Unit], limit: Int): Option[EvaluationResult[Int]] =
+  private def findGlobalVar(
+      key: String,
+      update: EVALUATED => EvaluationResult[Unit],
+      limit: Int
+  ): Option[EvaluationResult[Int]] =
     ctx.ec.letDefs
       .get(key)
       .map(
@@ -458,13 +486,12 @@ object EvaluatorV2 {
       enableExecutionLog: Boolean
   ): Unit = {
     @tailrec
-    def findInvArgLet(expr: EXPR, let: LET): Option[LET] = {
+    def findInvArgLet(expr: EXPR, let: LET): Option[LET] =
       expr match {
         case BLOCK(res @ LET(let.name, value), _) if value == let.value => Some(res)
         case BLOCK(_, body)                                             => findInvArgLet(body, let)
         case _                                                          => None
       }
-    }
 
     if (enableExecutionLog) {
       logExtraInfo.dAppAddress.foreach { addr =>
@@ -490,7 +517,7 @@ object EvaluatorV2 {
       stdLibVersion: StdLibVersion,
       limit: Int,
       enableExecutionLog: Boolean
-  ): Unit = {
+  ): Unit =
     if (enableExecutionLog) {
       val func     = ctx.ec.functions.get(fc.function)
       val funcName = func.map(_.name).getOrElse(fc.function.funcName)
@@ -506,7 +533,6 @@ object EvaluatorV2 {
           logFuncArgs(fc, funcName, ctx)
       }
     }
-  }
 
   private def logFuncArgs(fc: FUNCTION_CALL, name: String, ctx: LoggedEvaluationContext[Environment, Id]): Unit = {
     val argsArr = ARR(fc.args.collect { case arg: EVALUATED => arg }.toIndexedSeq, false)

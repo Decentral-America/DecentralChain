@@ -11,7 +11,7 @@ import com.decentralchain.common.state.ByteStr
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.contract.DApp.VerifierFunction
 import com.decentralchain.lang.contract.meta.MetaMapper
-import com.decentralchain.lang.directives.values.{StdLibVersion, V6, DApp as DAppType}
+import com.decentralchain.lang.directives.values.{DApp as DAppType, StdLibVersion, V6}
 import com.decentralchain.lang.utils.*
 import com.decentralchain.lang.v1.ContractLimits.*
 import com.decentralchain.lang.v1.compiler.Terms
@@ -39,7 +39,7 @@ object ContractScript {
 
   case class ContractScriptImpl(stdLibVersion: StdLibVersion, expr: DApp) extends Script {
     override type Expr = DApp
-    override val isFreeCall: Boolean = false
+    override val isFreeCall: Boolean    = false
     override val bytes: Coeval[ByteStr] = Coeval.fromTry(
       Global
         .serializeContract(expr, stdLibVersion)
@@ -108,16 +108,20 @@ object ContractScript {
       estimator: ScriptEstimator,
       fixEstimateOfVerifier: Boolean,
       verifier: VerifierFunction
-  ): Either[String, (String, Long)] = {
+  ): Either[String, (String, Long)] =
     if (dApp.verifierContainsSyncCall)
       Left("DApp-to-dApp invocations are not allowed from verifier")
     else
       estimator(
         varNames(version, DAppType),
         functionCosts(version, DAppType, isDAppVerifier = !fixEstimateOfVerifier),
-        constructExprFromDeclAndContext(dApp.decs, Some(verifier.annotation.invocationArgName), verifier.u, preserveDefinition = true)
+        constructExprFromDeclAndContext(
+          dApp.decs,
+          Some(verifier.annotation.invocationArgName),
+          verifier.u,
+          preserveDefinition = true
+        )
       ).map((verifier.u.name, _))
-  }
 
   private[script] def constructExprFromDeclAndContext(
       dec: List[DECLARATION],
@@ -154,7 +158,7 @@ object ContractScript {
   ): Either[String, (Long, Map[String, Long])] =
     for {
       (maxComplexity, complexities) <- estimateComplexityExact(version, dApp, estimator, fixEstimateOfVerifier)
-      _                             <- checkComplexity(version, dApp, maxComplexity, complexities, useReducedVerifierLimit)
+      _ <- checkComplexity(version, dApp, maxComplexity, complexities, useReducedVerifierLimit)
     } yield (maxComplexity._2, complexities)
 
   def checkComplexity(
@@ -200,7 +204,7 @@ object ContractScript {
       max = annotatedFunctionComplexities.toList.maximumOption(using _._2 `compareTo` _._2).getOrElse(("", 0L))
     } yield (max, annotatedFunctionComplexities.toMap)
 
-  def estimateFully(version: StdLibVersion, dApp: DApp, estimator: ScriptEstimator): Either[String, DAppEstimation] = {
+  def estimateFully(version: StdLibVersion, dApp: DApp, estimator: ScriptEstimator): Either[String, DAppEstimation] =
     estimator match {
       case estimatorV3: ScriptEstimatorV3 =>
         val allDecs   = dApp.decs ++ dApp.callableFuncs.map(_.u) ++ dApp.verifierFuncOpt.map(_.u)
@@ -218,15 +222,34 @@ object ContractScript {
           functionsCosts        <- oldGlobalFunctionsCosts(version, dApp, oldEstimator)
         } yield DAppEstimation(annotatedComplexities.toMap, letsCosts, functionsCosts)
     }
-  }
 
-  def oldGlobalFunctionsCosts(version: StdLibVersion, dApp: DApp, estimator: ScriptEstimator): Either[String, Map[String, Long]] =
+  def oldGlobalFunctionsCosts(
+      version: StdLibVersion,
+      dApp: DApp,
+      estimator: ScriptEstimator
+  ): Either[String, Map[String, Long]] =
     ContractScript
-      .estimateDeclarations(version, dApp, estimator, dApp.decs.collect { case f: FUNC => (None, f) }, preserveDefinition = false)
+      .estimateDeclarations(
+        version,
+        dApp,
+        estimator,
+        dApp.decs.collect { case f: FUNC => (None, f) },
+        preserveDefinition = false
+      )
       .map(_.toMap)
 
-  def oldGlobalLetsCosts(version: StdLibVersion, dApp: DApp, estimator: ScriptEstimator): Either[String, Map[String, Long]] =
+  def oldGlobalLetsCosts(
+      version: StdLibVersion,
+      dApp: DApp,
+      estimator: ScriptEstimator
+  ): Either[String, Map[String, Long]] =
     ContractScript
-      .estimateDeclarations(version, dApp, estimator, dApp.decs.collect { case l: LET => (None, l) }, preserveDefinition = false)
+      .estimateDeclarations(
+        version,
+        dApp,
+        estimator,
+        dApp.decs.collect { case l: LET => (None, l) },
+        preserveDefinition = false
+      )
       .map(_.toMap)
 }

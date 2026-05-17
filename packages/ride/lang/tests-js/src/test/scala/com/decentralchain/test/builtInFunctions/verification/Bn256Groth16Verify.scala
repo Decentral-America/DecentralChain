@@ -3,14 +3,18 @@ package com.decentralchain.test.builtInFunctions.verification
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Bn256Groth16Verify extends JsTestBase {
-  private val bn256Groth16Verify                     = s"bn256Groth16Verify(callerTestData, callerTestData, callerTestData)"
-  private val bn256Groth16VerifyArgBeforeFunc        = s"callerTestData.bn256Groth16Verify(callerTestData, callerTestData)"
-  private val invalidBn256Groth16Verify              = "bn256Groth16Verify()"
+  private val bn256Groth16Verify              = s"bn256Groth16Verify(callerTestData, callerTestData, callerTestData)"
+  private val bn256Groth16VerifyArgBeforeFunc = s"callerTestData.bn256Groth16Verify(callerTestData, callerTestData)"
+  private val invalidBn256Groth16Verify       = "bn256Groth16Verify()"
   private val invalidBn256Groth16VerifyArgBeforeFunc = "callerTestData.bn256Groth16Verify(callerTestData)"
   private val invalidErrorBn256Groth16Verify         = testData.invalidFunctionError("bn256Groth16Verify", 3)
 

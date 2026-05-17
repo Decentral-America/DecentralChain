@@ -10,14 +10,17 @@ import testHelpers.RandomDataGenerator.{
   randomStringArrayElement
 }
 import testHelpers.TestDataConstantsAndMethods.{nonMatchingTypes, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object ReentrantInvoke extends JsTestBase {
-  private val reentrantInvoke                = "reentrantInvoke(addressFromStringValue(dapp2),\"bar\",[a],[AttachedPayment(byteVector, payment)])"
-  private val reentrantInvokeArgBeforeFunc   = "addressFromStringValue(dapp2).reentrantInvoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val reentrantInvoke =
+    "reentrantInvoke(addressFromStringValue(dapp2),\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val reentrantInvokeArgBeforeFunc =
+    "addressFromStringValue(dapp2).reentrantInvoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
   private val invalidReentrantInvokeFunction = "reentrantInvoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
-  private val invalidReentrantInvokeArgBeforeFunc = "addressFromStringValue(dapp2).reentrantInvoke([AttachedPayment(byteVector, payment)])"
-  private val invalidFunctionErrorResult: String  = testData.invalidFunctionError("reentrantInvoke", 4)
+  private val invalidReentrantInvokeArgBeforeFunc =
+    "addressFromStringValue(dapp2).reentrantInvoke([AttachedPayment(byteVector, payment)])"
+  private val invalidFunctionErrorResult: String = testData.invalidFunctionError("reentrantInvoke", 4)
 
   val tests: Tests = Tests {
     test("RIDE-90. ReentrantInvoke function should compile for Issue RIDE V5 and more") {
@@ -41,11 +44,31 @@ object ReentrantInvoke extends JsTestBase {
         for (
           (byteVector, data, function, error) <- Seq(
             (randomByteVectorArrayElement, randomAddressDataArrayElement, reentrantInvoke, nonMatchingTypes("Int")),
-            (randomByteVectorArrayElement, randomDigestAlgorithmTypeArrayElement, reentrantInvokeArgBeforeFunc, nonMatchingTypes("Int")),
+            (
+              randomByteVectorArrayElement,
+              randomDigestAlgorithmTypeArrayElement,
+              reentrantInvokeArgBeforeFunc,
+              nonMatchingTypes("Int")
+            ),
             (randomStringArrayElement, randomInt.toString, reentrantInvoke, nonMatchingTypes("ByteVector|Unit")),
-            (randomStringArrayElement, randomInt.toString, reentrantInvokeArgBeforeFunc, nonMatchingTypes("ByteVector|Unit")),
-            (randomByteVectorArrayElement, randomInt.toString, invalidReentrantInvokeFunction, invalidFunctionErrorResult),
-            (randomByteVectorArrayElement, randomInt.toString, invalidReentrantInvokeArgBeforeFunc, invalidFunctionErrorResult)
+            (
+              randomStringArrayElement,
+              randomInt.toString,
+              reentrantInvokeArgBeforeFunc,
+              nonMatchingTypes("ByteVector|Unit")
+            ),
+            (
+              randomByteVectorArrayElement,
+              randomInt.toString,
+              invalidReentrantInvokeFunction,
+              invalidFunctionErrorResult
+            ),
+            (
+              randomByteVectorArrayElement,
+              randomInt.toString,
+              invalidReentrantInvokeArgBeforeFunc,
+              invalidFunctionErrorResult
+            )
           )
         ) {
           val script = precondition.codeForDAppInvocation(byteVector, data, function)

@@ -55,7 +55,7 @@ class ScriptEstimatorV2Test extends ScriptEstimatorTestBase(ScriptEstimatorV2) {
   }
 
   property("interrupting") {
-    val count = 30
+    val count         = 30
     val hangingScript =
       s"""
          | func f0() = 0
@@ -65,7 +65,7 @@ class ScriptEstimatorV2Test extends ScriptEstimatorTestBase(ScriptEstimatorV2) {
 
     @volatile var r: Either[String, Long] = Right(0)
     val s                                 = new Semaphore(0)
-    val run: Runnable = { () =>
+    val run: Runnable                     = { () =>
       s.release()
       r = estimate(functionCosts(V3), compile(hangingScript))
     }

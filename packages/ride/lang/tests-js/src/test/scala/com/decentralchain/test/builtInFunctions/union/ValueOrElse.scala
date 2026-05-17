@@ -11,8 +11,13 @@ import testHelpers.RandomDataGenerator.{
   randomInt,
   randomStringArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, CANT_MATCH_INFERRED_TYPE, actualVersionsWithoutV3, invalidFunctionError}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  CANT_FIND_FUNCTION,
+  CANT_MATCH_INFERRED_TYPE
+}
+import utest.{test, Tests}
 
 object ValueOrElse extends JsTestBase {
   private val valueOrElse                     = "valueOrElse(bar, foo)"
@@ -49,7 +54,12 @@ object ValueOrElse extends JsTestBase {
             (randomInt.toString, randomByteVectorArrayElement, valueOrElse, CANT_MATCH_INFERRED_TYPE),
             (randomInt.toString, randomStringArrayElement, valueOrElseArgBeforeFunc, CANT_MATCH_INFERRED_TYPE),
             (randomStringArrayElement, randomStringArrayElement, invalidValueOrElse, invalidErrorValueOrElse),
-            (randomByteVectorArrayElement, randomByteVectorArrayElement, invalidValueOrElseArgBeforeFunc, invalidErrorValueOrElse)
+            (
+              randomByteVectorArrayElement,
+              randomByteVectorArrayElement,
+              invalidValueOrElseArgBeforeFunc,
+              invalidErrorValueOrElse
+            )
           )
         ) {
           val script = precondition.simpleRideCode(firstData, secondData, function)

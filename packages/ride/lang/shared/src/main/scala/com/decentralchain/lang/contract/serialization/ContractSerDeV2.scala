@@ -6,7 +6,12 @@ import cats.syntax.option.*
 import cats.syntax.traverse.*
 import com.google.protobuf.{CodedInputStream, CodedOutputStream}
 import com.decentralchain.lang.contract.DApp
-import com.decentralchain.lang.contract.DApp.{CallableAnnotation, CallableFunction, VerifierAnnotation, VerifierFunction}
+import com.decentralchain.lang.contract.DApp.{
+  CallableAnnotation,
+  CallableFunction,
+  VerifierAnnotation,
+  VerifierFunction
+}
 import com.decentralchain.lang.v1.ContractLimits
 import com.decentralchain.lang.v1.compiler.Terms.{DECLARATION, FUNC}
 import com.decentralchain.lang.v1.serialization.Serde.DEC_FUNC
@@ -36,7 +41,7 @@ object ContractSerDeV2 extends ContractSerDe {
         c.callableFuncs.foreach(cFunc => serializeAnnotatedFunction(out, cFunc.u, cFunc.annotation.invocationArgName))
 
         c.verifierFuncOpt match {
-          case None => out.writeRawByte(0)
+          case None     => out.writeRawByte(0)
           case Some(vf) =>
             out.writeRawByte(1)
             serializeAnnotatedFunction(out, vf.u, vf.annotation.invocationArgName)
@@ -60,9 +65,8 @@ object ContractSerDeV2 extends ContractSerDe {
   private[lang] def deserializeMeta(in: CodedInputStream): Either[String, DAppMeta] =
     tryEi(DAppMeta.parseFrom(in.readByteArray()))
 
-  private[lang] def serializeDeclaration(out: CodedOutputStream, dec: DECLARATION): Unit = {
+  private[lang] def serializeDeclaration(out: CodedOutputStream, dec: DECLARATION): Unit =
     SerdeV2.serializeDeclaration(out, dec, SerdeV2.serAux(out, Coeval.now(()), _)).value()
-  }
 
   private[lang] def deserializeDeclaration(in: CodedInputStream): Either[String, DECLARATION] = {
     val decType = in.readRawByte()
@@ -78,11 +82,14 @@ object ContractSerDeV2 extends ContractSerDe {
     }
   }
 
-  private[lang] def serializeAnnotation(out: CodedOutputStream, invocationName: String): Unit = {
+  private[lang] def serializeAnnotation(out: CodedOutputStream, invocationName: String): Unit =
     out.writeStringNoTag(invocationName)
-  }
 
-  private[lang] def serializeAnnotatedFunction(out: CodedOutputStream, func: FUNC, annotationInvocName: String): Unit = {
+  private[lang] def serializeAnnotatedFunction(
+      out: CodedOutputStream,
+      func: FUNC,
+      annotationInvocName: String
+  ): Unit = {
     serializeAnnotation(out, annotationInvocName)
     serializeDeclaration(out, func)
   }
@@ -90,7 +97,7 @@ object ContractSerDeV2 extends ContractSerDe {
   private[lang] def deserializeCallableAnnotation(in: CodedInputStream): Either[String, CallableAnnotation] =
     tryEi(CallableAnnotation(in.readString()))
 
-  private[lang] def deserializeCallableFunction(in: CodedInputStream): Either[String, CallableFunction] = {
+  private[lang] def deserializeCallableFunction(in: CodedInputStream): Either[String, CallableFunction] =
     for {
       ca <- deserializeCallableAnnotation(in)
       cf <- deserializeFunction(in)
@@ -101,7 +108,6 @@ object ContractSerDeV2 extends ContractSerDe {
         s"Callable function name (${cf.name}) size = $nameSize bytes exceeds ${ContractLimits.MaxDeclarationNameInBytes}"
       )
     } yield CallableFunction(ca, cf)
-  }
 
   private[lang] def deserializeVerifiableAnnotation(in: CodedInputStream): Either[String, VerifierAnnotation] =
     tryEi(VerifierAnnotation(in.readString()))
@@ -112,7 +118,10 @@ object ContractSerDeV2 extends ContractSerDe {
       f <- deserializeFunction(in)
     } yield VerifierFunction(a, f)
 
-  private[lang] def deserializeList[A](in: CodedInputStream, df: CodedInputStream => Either[String, A]): Either[String, List[A]] = {
+  private[lang] def deserializeList[A](
+      in: CodedInputStream,
+      df: CodedInputStream => Either[String, A]
+  ): Either[String, List[A]] = {
     val len = in.readUInt32()
     if (len <= in.getBytesUntilLimit && len >= 0) {
       (1 to len).toList.traverse(_ => df(in))
@@ -121,12 +130,14 @@ object ContractSerDeV2 extends ContractSerDe {
     }
   }
 
-  private[lang] def deserializeOption[A](in: CodedInputStream, df: CodedInputStream => Either[String, A]): Either[String, Option[A]] = {
+  private[lang] def deserializeOption[A](
+      in: CodedInputStream,
+      df: CodedInputStream => Either[String, A]
+  ): Either[String, Option[A]] =
     tryEi(in.readRawByte())
       .flatMap {
         case 0 => Right(None)
         case 1 => df(in).map(_.some)
         case _ => Left(s"At position ${in.getTotalBytesRead()} unknown option flag value")
       }
-  }
 }

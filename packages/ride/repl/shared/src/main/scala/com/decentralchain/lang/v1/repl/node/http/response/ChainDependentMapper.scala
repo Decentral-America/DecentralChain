@@ -81,7 +81,7 @@ private[node] class ChainDependentMapper(chainId: Byte) {
       rewards = List.empty // TODO: fill with correct value
     )
 
-  def pkToAddress(publicKey: ByteString): ByteStr = {
+  def pkToAddress(publicKey: ByteString): ByteStr =
     publicKey.bytes.length match {
       case KeyLength =>
         val withoutChecksum =
@@ -112,7 +112,6 @@ private[node] class ChainDependentMapper(chainId: Byte) {
 
       case other => throw new IllegalArgumentException(s"Unexpected public key length: $other")
     }
-  }
 
   def addressFromString(addressStr: String): Either[String, Address] = {
     val base58String = if (addressStr.startsWith(AddressPrefix)) addressStr.drop(AddressPrefix.length) else addressStr
@@ -122,8 +121,12 @@ private[node] class ChainDependentMapper(chainId: Byte) {
         (),
         s"Wrong address string length: max=$AddressStringLength, actual: ${base58String.length}"
       )
-      byteArray <- Base58.tryDecodeWithLimit(base58String).toEither.left.map(ex => s"Unable to decode base58: ${ex.getMessage}")
-      address   <- addressFromBytes(byteArray)
+      byteArray <- Base58
+        .tryDecodeWithLimit(base58String)
+        .toEither
+        .left
+        .map(ex => s"Unable to decode base58: ${ex.getMessage}")
+      address <- addressFromBytes(byteArray)
     } yield address
   }
 

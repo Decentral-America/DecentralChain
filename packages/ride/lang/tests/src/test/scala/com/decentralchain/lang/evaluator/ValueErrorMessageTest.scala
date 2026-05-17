@@ -21,11 +21,15 @@ class ValueErrorMessageTest extends EvaluatorSpec {
   }
 
   property("after condition") {
-    eval("(if (true) then unit else 7).value()") should produce("value() called on unit value after condition evaluation")
+    eval("(if (true) then unit else 7).value()") should produce(
+      "value() called on unit value after condition evaluation"
+    )
   }
 
   property("after let block") {
-    eval("(let a = 1; if (true) then unit else 7).value()") should produce("value() called on unit value after let block evaluation")
+    eval("(let a = 1; if (true) then unit else 7).value()") should produce(
+      "value() called on unit value after let block evaluation"
+    )
   }
 
   property("user defined function") {
@@ -43,7 +47,9 @@ class ValueErrorMessageTest extends EvaluatorSpec {
         eval(s"""Address(base58'abc').$f("data")""") shouldBe Left(
           s"value by key 'data' not found for the address base58'abc' on function '$f' call"
         )
-        eval(s"""$f("data")""")(using V5) shouldBe Left(s"value by key 'data' not found for the contract address on function '$f' call")
+        eval(s"""$f("data")""")(using V5) shouldBe Left(
+          s"value by key 'data' not found for the contract address on function '$f' call"
+        )
         eval(s"""[].$f("data")""") shouldBe Left(s"value by key 'data' not found in the list on function '$f' call")
 
         val unsuitable = if (f == "getIntegerValue") """BooleanEntry("data", true)""" else """IntegerEntry("data", 1)"""

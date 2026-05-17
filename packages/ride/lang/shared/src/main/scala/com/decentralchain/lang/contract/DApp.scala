@@ -42,7 +42,7 @@ case class DApp(
         case ExprWithCtx(FUNCTION_CALL(Native(CALLDAPP), _), _) :: _          => true
         case ExprWithCtx(FUNCTION_CALL(Native(CALLDAPPREENTRANT), _), _) :: _ => true
         case ewc :: l if checked.contains(ewc)                                => checkLoop(l, checked)
-        case (ewc @ ExprWithCtx(GETTER(expr, _), ctx)) :: l =>
+        case (ewc @ ExprWithCtx(GETTER(expr, _), ctx)) :: l                   =>
           checkLoop(ExprWithCtx(expr, ctx) :: l, checked + ewc)
         case (ewc @ ExprWithCtx(LET_BLOCK(LET(name, value), body), ctx)) :: l =>
           checkLoop(ExprWithCtx(value, ctx) :: ExprWithCtx(body, ctx + name) :: l, checked + ewc)
@@ -80,23 +80,23 @@ object DApp {
     def dic(version: StdLibVersion): Map[String, FINAL]
   }
   object Annotation {
-    def parse(name: String, args: List[String]): Either[CompilationError, Annotation] = {
+    def parse(name: String, args: List[String]): Either[CompilationError, Annotation] =
       (name, args) match {
         case ("Verifier", s :: Nil) => Right(VerifierAnnotation(s))
-        case ("Verifier", _)        => Left(Generic(0, 0, "Incorrect amount of bound args in Verifier, should be one, e.g. @Verifier(tx)"))
+        case ("Verifier", _)        =>
+          Left(Generic(0, 0, "Incorrect amount of bound args in Verifier, should be one, e.g. @Verifier(tx)"))
         case ("Callable", s :: Nil) => Right(CallableAnnotation(s))
-        case ("Callable", _)        => Left(Generic(0, 0, "Incorrect amount of bound args in Callable, should be one, e.g. @Callable(inv)"))
-        case _                      => Left(Generic(0, 0, "Annotation not recognized"))
+        case ("Callable", _)        =>
+          Left(Generic(0, 0, "Incorrect amount of bound args in Callable, should be one, e.g. @Callable(inv)"))
+        case _ => Left(Generic(0, 0, "Annotation not recognized"))
       }
-    }
 
-    def validateAnnotationSet(l: List[Annotation]): Either[CompilationError, Unit] = {
+    def validateAnnotationSet(l: List[Annotation]): Either[CompilationError, Unit] =
       l match {
         case (_: VerifierAnnotation) :: Nil => Right(())
         case (_: CallableAnnotation) :: Nil => Right(())
         case _                              => Left(Generic(0, 0, "Unsupported annotation set"))
       }
-    }
   }
   case class CallableAnnotation(invocationArgName: String) extends Annotation {
     override def dic(version: StdLibVersion): Map[String, FINAL] =
@@ -112,8 +112,10 @@ object DApp {
     def annotation: Annotation
     def u: Terms.FUNC
   }
-  case class CallableFunction(override val annotation: CallableAnnotation, override val u: Terms.FUNC) extends AnnotatedFunction
-  case class VerifierFunction(override val annotation: VerifierAnnotation, override val u: Terms.FUNC) extends AnnotatedFunction
+  case class CallableFunction(override val annotation: CallableAnnotation, override val u: Terms.FUNC)
+      extends AnnotatedFunction
+  case class VerifierFunction(override val annotation: VerifierAnnotation, override val u: Terms.FUNC)
+      extends AnnotatedFunction
 
   case class ExprWithCtx(expr: EXPR, ctx: Set[String])
 }

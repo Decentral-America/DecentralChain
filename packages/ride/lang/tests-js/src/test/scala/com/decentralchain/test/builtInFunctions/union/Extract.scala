@@ -4,8 +4,13 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomInt, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, MATCHING_NOT_EXHAUSTIVE, actualVersionsWithoutV3, invalidFunctionError}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  CANT_FIND_FUNCTION,
+  MATCHING_NOT_EXHAUSTIVE
+}
+import utest.{test, Tests}
 
 object Extract extends JsTestBase {
   private val extract                     = "extract(callerTestData)"

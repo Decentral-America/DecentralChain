@@ -18,7 +18,7 @@ import scala.util.Try
 
 object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
 
-  def serializeDeclaration(out: ByteArrayOutputStream, dec: DECLARATION, aux: EXPR => Coeval[Unit]): Coeval[Unit] = {
+  def serializeDeclaration(out: ByteArrayOutputStream, dec: DECLARATION, aux: EXPR => Coeval[Unit]): Coeval[Unit] =
     dec match {
       case LET(name, value) =>
         Coeval.now {
@@ -35,9 +35,8 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
       case _: FAILED_DEC =>
         Coeval.raiseError(new Exception("Attempt to serialize failed declaration."))
     }
-  }
 
-  def deserializeDeclaration(bb: ByteBuffer, aux: => Coeval[EXPR], decType: Byte): Coeval[DECLARATION] = {
+  def deserializeDeclaration(bb: ByteBuffer, aux: => Coeval[EXPR], decType: Byte): Coeval[DECLARATION] =
     (decType: @unchecked) match {
       case DEC_LET =>
         for {
@@ -58,7 +57,6 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
           body <- aux
         } yield FUNC(name, args.toList, body)
     }
-  }
 
   def desAux(bb: ByteBuffer, allowObjects: Boolean = false, acc: Coeval[Unit] = Coeval.now(())): Coeval[EXPR] =
     desAuxR(bb, allowObjects, acc)
@@ -68,7 +66,8 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
       case E_LONG   => Coeval.now(CONST_LONG(bb.getLong))
       case E_BYTES  => Coeval.now(CONST_BYTESTR(ByteStr(bb.getBytes)).explicitGet())
       case E_STRING => Coeval.now(CONST_STRING(bb.getString).explicitGet())
-      case E_IF     => (desAuxR(bb, allowObjects, acc), desAuxR(bb, allowObjects, acc), desAuxR(bb, allowObjects, acc)).mapN(IF.apply)
+      case E_IF     =>
+        (desAuxR(bb, allowObjects, acc), desAuxR(bb, allowObjects, acc), desAuxR(bb, allowObjects, acc)).mapN(IF.apply)
       case E_BLOCK =>
         for {
           name     <- Coeval.now(bb.getString)
@@ -84,10 +83,10 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
           dec     <- deserializeDeclaration(bb, desAuxR(bb, allowObjects, acc), decType)
           body    <- desAuxR(bb, allowObjects, acc)
         } yield BLOCK(dec, body)
-      case E_REF    => Coeval.now(REF(bb.getString))
-      case E_TRUE   => Coeval.now(TRUE)
-      case E_FALSE  => Coeval.now(FALSE)
-      case E_GETTER => desAuxR(bb, allowObjects, acc).map(GETTER(_, field = bb.getString))
+      case E_REF     => Coeval.now(REF(bb.getString))
+      case E_TRUE    => Coeval.now(TRUE)
+      case E_FALSE   => Coeval.now(FALSE)
+      case E_GETTER  => desAuxR(bb, allowObjects, acc).map(GETTER(_, field = bb.getString))
       case E_FUNCALL =>
         Coeval
           .now((bb.getFunctionHeader, bb.getInt))
@@ -114,7 +113,7 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
       case E_CASE_OBJ if allowObjects =>
         for {
           (typeName, fieldsNumber) <- Coeval((bb.getString, bb.getInt))
-          fields <- (1 to fieldsNumber)
+          fields                   <- (1 to fieldsNumber)
             .to(LazyList)
             .traverse(_ =>
               for {
@@ -126,12 +125,15 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
     }
   }
 
-  private def tooBigArray(bb: ByteBuffer) = {
+  private def tooBigArray(bb: ByteBuffer) =
     Coeval.raiseError(new Exception(s"At position ${bb.position()} array of arguments too big."))
-  }
 
-  def deserialize(bytes: Array[Byte], all: Boolean = true, allowObjects: Boolean = false): Either[String, (EXPR, Int)] = {
-    val bb = ByteBuffer.wrap(bytes)
+  def deserialize(
+      bytes: Array[Byte],
+      all: Boolean = true,
+      allowObjects: Boolean = false
+  ): Either[String, (EXPR, Int)] = {
+    val bb  = ByteBuffer.wrap(bytes)
     val res = Try(desAux(bb, allowObjects).value()).toEither.left
       .map(_.getMessage)
     (if (all)
@@ -155,86 +157,89 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
   def deserializeFunctionCall(bb: Array[Byte]): Either[Throwable, FUNCTION_CALL] =
     deserializeFunctionCall(ByteBuffer.wrap(bb))
 
-  def serAux(out: ByteArrayOutputStream, acc: Coeval[Unit], expr: EXPR, allowObjects: Boolean = false): Coeval[Unit] = acc.flatMap { _ =>
-    expr match {
-      case CONST_LONG(n) =>
-        Coeval.now {
-          out.write(E_LONG)
-          out.writeLong(n)
-        }
-      case CONST_BYTESTR(bs) =>
-        Coeval.now {
-          out.write(E_BYTES)
-          out.writeInt(Math.toIntExact(bs.arr.length)).write(bs.arr)
-        }
-      case CONST_STRING(s) =>
-        Coeval.now {
-          out.write(E_STRING)
-          out.writeString(s)
-        }
-      case IF(cond, ifTrue, ifFalse) =>
-        List(cond, ifTrue, ifFalse).foldLeft(Coeval.now(out.write(E_IF)))((acc, expr) => serAux(out, acc, expr, allowObjects))
-      case LET_BLOCK(LET(name, value), body) =>
-        val n = Coeval.now[Unit] {
-          out.write(E_BLOCK)
-          out.writeString(name)
-        }
-        List(value, body).foldLeft(n)((acc, expr) => serAux(out, acc, expr, allowObjects))
-      case BLOCK(dec, body) =>
-        val n = Coeval.now[Unit] {
-          out.write(E_BLOCK_V2)
-        }
-        serAux(out, serializeDeclaration(out, dec, serAux(out, n, _, allowObjects)), body, allowObjects)
-      case REF(key) =>
-        Coeval.now {
-          out.write(E_REF)
-          out.writeString(key)
-        }
-      case CONST_BOOLEAN(b) =>
-        Coeval.now(
-          out.write(
-            if (b)
-              E_TRUE
-            else
-              E_FALSE
+  def serAux(out: ByteArrayOutputStream, acc: Coeval[Unit], expr: EXPR, allowObjects: Boolean = false): Coeval[Unit] =
+    acc.flatMap { _ =>
+      expr match {
+        case CONST_LONG(n) =>
+          Coeval.now {
+            out.write(E_LONG)
+            out.writeLong(n)
+          }
+        case CONST_BYTESTR(bs) =>
+          Coeval.now {
+            out.write(E_BYTES)
+            out.writeInt(Math.toIntExact(bs.arr.length)).write(bs.arr)
+          }
+        case CONST_STRING(s) =>
+          Coeval.now {
+            out.write(E_STRING)
+            out.writeString(s)
+          }
+        case IF(cond, ifTrue, ifFalse) =>
+          List(cond, ifTrue, ifFalse).foldLeft(Coeval.now(out.write(E_IF)))((acc, expr) =>
+            serAux(out, acc, expr, allowObjects)
           )
-        )
-      case GETTER(obj, field) =>
-        serAux(out, Coeval.now[Unit](out.write(E_GETTER)), obj, allowObjects).map { _ =>
-          out.writeString(field)
-        }
-      case FUNCTION_CALL(header, args) =>
-        val n = Coeval.now[Unit] {
-          out.write(E_FUNCALL)
-          out.writeFunctionHeader(header)
-          out.writeInt(args.size)
-        }
-        args.foldLeft(n)((acc, arg) => serAux(out, acc, arg, allowObjects))
+        case LET_BLOCK(LET(name, value), body) =>
+          val n = Coeval.now[Unit] {
+            out.write(E_BLOCK)
+            out.writeString(name)
+          }
+          List(value, body).foldLeft(n)((acc, expr) => serAux(out, acc, expr, allowObjects))
+        case BLOCK(dec, body) =>
+          val n = Coeval.now[Unit] {
+            out.write(E_BLOCK_V2)
+          }
+          serAux(out, serializeDeclaration(out, dec, serAux(out, n, _, allowObjects)), body, allowObjects)
+        case REF(key) =>
+          Coeval.now {
+            out.write(E_REF)
+            out.writeString(key)
+          }
+        case CONST_BOOLEAN(b) =>
+          Coeval.now(
+            out.write(
+              if (b)
+                E_TRUE
+              else
+                E_FALSE
+            )
+          )
+        case GETTER(obj, field) =>
+          serAux(out, Coeval.now[Unit](out.write(E_GETTER)), obj, allowObjects).map { _ =>
+            out.writeString(field)
+          }
+        case FUNCTION_CALL(header, args) =>
+          val n = Coeval.now[Unit] {
+            out.write(E_FUNCALL)
+            out.writeFunctionHeader(header)
+            out.writeInt(args.size)
+          }
+          args.foldLeft(n)((acc, arg) => serAux(out, acc, arg, allowObjects))
 
-      case ARR(elements) =>
-        val dataInfo = Coeval.now[Unit] {
-          out.write(E_ARR)
-          out.writeInt(elements.size)
-        }
-        elements.foldLeft(dataInfo)((acc, element) => serAux(out, acc, element, allowObjects))
+        case ARR(elements) =>
+          val dataInfo = Coeval.now[Unit] {
+            out.write(E_ARR)
+            out.writeInt(elements.size)
+          }
+          elements.foldLeft(dataInfo)((acc, element) => serAux(out, acc, element, allowObjects))
 
-      case CaseObj(caseType, fields) if allowObjects =>
-        val dataInfo = Coeval.now[Unit] {
-          out.write(E_CASE_OBJ)
-          out.writeString(caseType.name)
-          out.writeInt(fields.size)
-        }
-        fields.foldLeft(dataInfo) { case (acc, (fieldName, fieldValue)) =>
-          for {
-            _ <- Coeval.now(out.writeString(fieldName))
-            r <- serAux(out, acc, fieldValue, allowObjects)
-          } yield r
-        }
+        case CaseObj(caseType, fields) if allowObjects =>
+          val dataInfo = Coeval.now[Unit] {
+            out.write(E_CASE_OBJ)
+            out.writeString(caseType.name)
+            out.writeInt(fields.size)
+          }
+          fields.foldLeft(dataInfo) { case (acc, (fieldName, fieldValue)) =>
+            for {
+              _ <- Coeval.now(out.writeString(fieldName))
+              r <- serAux(out, acc, fieldValue, allowObjects)
+            } yield r
+          }
 
-      case x =>
-        Coeval.raiseError(new Exception(s"Serialization of value $x is unsupported"))
+        case x =>
+          Coeval.raiseError(new Exception(s"Serialization of value $x is unsupported"))
+      }
     }
-  }
 
   def serialize(expr: EXPR, allowObjects: Boolean = false): Array[Byte] = {
     val out = new ByteArrayOutputStream()

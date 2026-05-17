@@ -25,7 +25,10 @@ package object repl {
       PureContext.build(version, useNewPowPrecision = true).withEnvironment[Environment] |+|
       WavesContext.build(global, directives, fixBigScriptField = true)
 
-  def buildEnvironment(settings: Option[NodeConnectionSettings], customHttpClient: Option[NodeClient]): Environment[Future] =
+  def buildEnvironment(
+      settings: Option[NodeConnectionSettings],
+      customHttpClient: Option[NodeClient]
+  ): Environment[Future] =
     settings.fold(
       ErrorMessageEnvironment[Future]("Blockchain state is unavailable from REPL"): Environment[Future]
     )(s => WebEnvironment(s, customHttpClient.getOrElse(NodeClientImpl(s.normalizedUrl))))

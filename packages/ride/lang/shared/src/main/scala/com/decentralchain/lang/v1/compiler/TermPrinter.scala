@@ -4,10 +4,10 @@ import com.decentralchain.common.utils.{Base58, Base64}
 import com.decentralchain.lang.v1.compiler.Terms.{ARR, CONST_BYTESTR, CONST_STRING, CaseObj, EVALUATED}
 
 case class TermPrinter(fixArrIndentation: Boolean = false) {
-  def prettyString(e: EVALUATED, depth: Int): String = {
+  def prettyString(e: EVALUATED, depth: Int): String =
     e match {
-      case obj: CaseObj => indentObjString(obj, depth)
-      case arr: ARR     => indentArrString(arr, depth)
+      case obj: CaseObj      => indentObjString(obj, depth)
+      case arr: ARR          => indentArrString(arr, depth)
       case CONST_BYTESTR(bs) =>
         if (bs.size > 1024) {
           "base64'" ++ Base64.encode(bs.arr) ++ "'"
@@ -18,7 +18,6 @@ case class TermPrinter(fixArrIndentation: Boolean = false) {
         "\"" ++ escape(s) ++ "\""
       case other => other.toString
     }
-  }
 
   def string(e: EVALUATED): String = {
     val sb = new StringBuilder()
@@ -107,7 +106,7 @@ case class TermPrinter(fixArrIndentation: Boolean = false) {
     }
   }
 
-  private def escape(s: String): String = {
+  private def escape(s: String): String =
     // Simple and very naive implementation based on
     // https://github.com/linkedin/dustjs/blob/3fc12efd153433a21fd79ac81e8c5f5d6f273a1c/dist/dust-core.js#L1099
 
@@ -123,5 +122,4 @@ case class TermPrinter(fixArrIndentation: Boolean = false) {
       .replace("\f", "\\f")
       .replace("\u2028", "\\u2028")
       .replace("\u2029", "\\u2029")
-  }
 }

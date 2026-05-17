@@ -220,7 +220,9 @@ object Types {
   }
 
   private val callableV5ReturnType = {
-    val actions = LIST(UNION.create(commonDataEntryType(V5) :: scriptTransfer :: callableV4Actions ::: callableV5Actions))
+    val actions = LIST(
+      UNION.create(commonDataEntryType(V5) :: scriptTransfer :: callableV4Actions ::: callableV5Actions)
+    )
     UNION(actions, TUPLE(List(actions, ANY)))
   }
 
@@ -278,10 +280,9 @@ object Types {
       )
     )
 
-  def addProofsIfNeeded(commonFields: List[(String, FINAL)], proofsEnabled: Boolean): List[(String, FINAL)] = {
+  def addProofsIfNeeded(commonFields: List[(String, FINAL)], proofsEnabled: Boolean): List[(String, FINAL)] =
     if (proofsEnabled) commonFields :+ proofs
     else commonFields
-  }
 
   def buildIssueTransactionType(proofsEnabled: Boolean, version: StdLibVersion): CASETYPEREF = CASETYPEREF(
     "IssueTransaction",
@@ -314,7 +315,7 @@ object Types {
     )
   }
 
-  def buildInvokeExpressionTransactionType(proofsEnabled: Boolean): CASETYPEREF = {
+  def buildInvokeExpressionTransactionType(proofsEnabled: Boolean): CASETYPEREF =
     CASETYPEREF(
       "InvokeExpressionTransaction",
       addProofsIfNeeded(
@@ -325,7 +326,6 @@ object Types {
         proofsEnabled
       )
     )
-  }
 
   def buildReissueTransactionType(proofsEnabled: Boolean): CASETYPEREF = CASETYPEREF(
     "ReissueTransaction",
@@ -392,7 +392,7 @@ object Types {
     )
   )
 
-  def buildPaymentTransactionType(proofsEnabled: Boolean): CASETYPEREF = {
+  def buildPaymentTransactionType(proofsEnabled: Boolean): CASETYPEREF =
     CASETYPEREF(
       "PaymentTransaction",
       addProofsIfNeeded(
@@ -403,7 +403,6 @@ object Types {
         proofsEnabled
       )
     )
-  }
 
   def buildSponsorFeeTransactionType(proofsEnabled: Boolean): CASETYPEREF = CASETYPEREF(
     "SponsorFeeTransaction",
@@ -421,9 +420,10 @@ object Types {
 
   val ordTypeType: UNIONLIKE = UNION(buyType, sellType)
 
-  val assetPairType: CASETYPEREF = CASETYPEREF("AssetPair", List("amountAsset" -> optionByteVector, "priceAsset" -> optionByteVector))
+  val assetPairType: CASETYPEREF =
+    CASETYPEREF("AssetPair", List("amountAsset" -> optionByteVector, "priceAsset" -> optionByteVector))
 
-  def buildOrderType(proofsEnabled: Boolean, version: StdLibVersion): CASETYPEREF = {
+  def buildOrderType(proofsEnabled: Boolean, version: StdLibVersion): CASETYPEREF =
     CASETYPEREF(
       "Order",
       addProofsIfNeeded(
@@ -442,7 +442,6 @@ object Types {
         proofsEnabled
       )
     )
-  }
 
   def buildExchangeTransactionType(proofsEnabled: Boolean, version: StdLibVersion): CASETYPEREF = CASETYPEREF(
     "ExchangeTransaction",

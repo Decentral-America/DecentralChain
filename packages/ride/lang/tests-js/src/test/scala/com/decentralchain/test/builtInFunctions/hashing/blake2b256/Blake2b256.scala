@@ -2,9 +2,19 @@ package com.decentralchain.test.builtInFunctions.hashing.blake2b256
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultBinaryEntry, actualVersions, invalidFunctionError, nonMatchingTypes, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  invalidFunctionError,
+  nonMatchingTypes,
+  rideV3Result,
+  GreaterV3ResultBinaryEntry
+}
+import utest.{test, Tests}
 
 object Blake2b256 extends JsTestBase {
   private val blake2b256                     = "blake2b256(callerTestData)"

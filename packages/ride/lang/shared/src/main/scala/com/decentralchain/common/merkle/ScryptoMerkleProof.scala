@@ -48,14 +48,13 @@ object ScryptoMerkleProof {
         )
     }
 
-    def parseLevels(arr: Array[Byte], acc: List[(Digest, Byte)]): Either[String, List[(Digest, Byte)]] = {
+    def parseLevels(arr: Array[Byte], acc: List[(Digest, Byte)]): Either[String, List[(Digest, Byte)]] =
       if (arr.nonEmpty) {
         parseHashAndSide(arr)
           .flatMap { case (side, hash, rest) =>
             parseLevels(rest, (hash, side) :: acc)
           }
       } else Right(acc.reverse)
-    }
 
     Try(parseLevels(arr, Nil))
       .getOrElse(Left("Can't parse proof bytes"))

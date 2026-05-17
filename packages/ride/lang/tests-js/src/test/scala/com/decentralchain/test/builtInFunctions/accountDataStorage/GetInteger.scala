@@ -2,16 +2,21 @@ package com.decentralchain.test.builtInFunctions.accountDataStorage
 
 import com.decentralchain.JsTestBase
 import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
-import _root_.testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt, randomStringArrayElement}
+import _root_.testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomAliasDataArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{
-  GreaterV3ResultIntegerEntry,
   actualVersions,
   oldVersions,
   rideV3Result,
   thisVariable,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  GreaterV3ResultIntegerEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetInteger extends JsTestBase {
   // getInteger
@@ -49,7 +54,8 @@ object GetInteger extends JsTestBase {
             (thisVariable, getIntegerValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -58,7 +64,9 @@ object GetInteger extends JsTestBase {
     test("RIDE-13. Compile own data getInteger functions for address, alias, and 'this'") {
       for (version <- versionsSupportingTheNewFeatures) {
         val precondition = new GeneratorContractsForBuiltInFunctions("Int", version)
-        for (ownData <- Seq(ownDataGetInt, ownDataGetIntArgBeforeFunc, ownDataGetIntValueArgBeforeFunc, ownDataGetIntValue)) {
+        for (
+          ownData <- Seq(ownDataGetInt, ownDataGetIntArgBeforeFunc, ownDataGetIntValueArgBeforeFunc, ownDataGetIntValue)
+        ) {
           val script = precondition.codeOwnData(ownData, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileSuccessDApp(script, version)
         }
@@ -80,7 +88,8 @@ object GetInteger extends JsTestBase {
             (randomInt.toString, invalidArgBeforeFunction)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }
@@ -95,7 +104,8 @@ object GetInteger extends JsTestBase {
             (randomAliasDataArrayElement, ownDataGetIntValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, intData, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }

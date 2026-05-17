@@ -10,8 +10,8 @@ import testHelpers.RandomDataGenerator.{
   randomStringArrayElement,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, actualVersions, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{actualVersions, nonMatchingTypes, CANT_FIND_A_FUNCTION_OVERLOAD}
+import utest.{test, Tests}
 
 object Log extends JsTestBase {
   private val union: String              = randomUnionArrayElement

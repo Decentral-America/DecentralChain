@@ -2,7 +2,8 @@ package com.decentralchain.lang.estimator
 
 import com.decentralchain.lang.v1.estimator.v3.ScriptEstimatorV3
 
-class FoldEstimationTest extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = true, letFixes = true)) {
+class FoldEstimationTest
+    extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = true, letFixes = true)) {
   property("unique names are used for different folds") {
     estimate(
       """

@@ -5,16 +5,16 @@ import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{dataEntryForTests, randomBoolean, randomInt, randomStringArrayElement}
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
-  GreaterV3ResultStringEntry,
   actualVersionsWithoutV3,
   binaryEntryForTests,
   booleanEntryForTests,
   integerEntryForTests,
   rideV3Result,
-  stringEntryForTests
+  stringEntryForTests,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  GreaterV3ResultStringEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetString extends JsTestBase {
   // getStringKey

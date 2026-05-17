@@ -8,7 +8,11 @@ import monix.eval.Coeval
 object ScriptEstimatorV1 extends ScriptEstimator {
   override val version: Int = 1
 
-  override def apply(declaredVals: Set[String], functionCosts: Map[FunctionHeader, Coeval[Long]], t: EXPR): Either[String, Long] = {
+  override def apply(
+      declaredVals: Set[String],
+      functionCosts: Map[FunctionHeader, Coeval[Long]],
+      t: EXPR
+  ): Either[String, Long] = {
     type Result[T] = EitherT[Coeval, String, T]
 
     def aux(
@@ -28,7 +32,7 @@ object ScriptEstimatorV1 extends ScriptEstimator {
         aux(EitherT.pure(body), syms + ((let.name, (let.value, false))), funcs)
           .map { case (comp, out) => (comp + 5, out) }
 
-      case BLOCK(f: FUNC, body) => {
+      case BLOCK(f: FUNC, body) =>
         aux(EitherT.pure(f.body), syms ++ f.args.map(arg => (arg, (TRUE, false))).toMap, funcs)
           .flatMap { case (funcComplexity, _) =>
             aux(
@@ -37,7 +41,6 @@ object ScriptEstimatorV1 extends ScriptEstimator {
               funcs + (FunctionHeader.User(f.name) -> Coeval.evalOnce(funcComplexity + f.args.size * 5))
             ).map { case (comp, out) => (comp + 5, out) }
           }
-      }
 
       case REF(key) =>
         val ei: EitherT[Coeval, String, (Long, Map[String, (EXPR, Boolean)])] = syms.get(key) match {
@@ -59,7 +62,10 @@ object ScriptEstimatorV1 extends ScriptEstimator {
       case t: FUNCTION_CALL =>
         for {
           callCost <- EitherT
-            .fromOption[Coeval](functionCosts.get(t.function).orElse(funcs.get(t.function)), s"ScriptValidator: Unknown function '${t.function}'")
+            .fromOption[Coeval](
+              functionCosts.get(t.function).orElse(funcs.get(t.function)),
+              s"ScriptValidator: Unknown function '${t.function}'"
+            )
           args <- t.args.foldLeft(EitherT.pure[Coeval, String]((0L, syms))) { case (accEi, arg) =>
             for {
               acc <- accEi

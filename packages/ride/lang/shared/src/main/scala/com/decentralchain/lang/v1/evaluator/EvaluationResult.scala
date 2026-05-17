@@ -15,7 +15,9 @@ case class EvaluationResult[+A](value: Coeval[Either[(ExecutionError, Int), A]])
 
 object EvaluationResult {
   def apply[A](value: A): EvaluationResult[A]                  = EvaluationResult(Coeval.now(Right(value)))
-  def apply[A](error: String, limit: Int): EvaluationResult[A] = EvaluationResult(Coeval.now(Left((CommonError(error), limit))))
+  def apply[A](error: String, limit: Int): EvaluationResult[A] = EvaluationResult(
+    Coeval.now(Left((CommonError(error), limit)))
+  )
 
   implicit val monad: Monad[EvaluationResult] = new StackSafeMonad[EvaluationResult] {
     override def pure[A](a: A): EvaluationResult[A] =

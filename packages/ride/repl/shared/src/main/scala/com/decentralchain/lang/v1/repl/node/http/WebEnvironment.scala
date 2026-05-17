@@ -23,7 +23,8 @@ import monix.eval.Coeval
 import scala.concurrent.{ExecutionContext, Future}
 
 //noinspection NotImplementedCode
-private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client: NodeClient) extends Environment[Future] {
+private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client: NodeClient)
+    extends Environment[Future] {
   import WebEnvironment.executionContext
 
   private val mappings = ImplicitMappings(settings.chainId)
@@ -37,7 +38,9 @@ private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client
 
   override def transferTransactionById(id: Array[Byte]): Future[Option[Tx.Transfer]] = {
     given ec: ExecutionContext = executionContext
-    getEntity[Option, TransferTransaction, Option[Tx.Transfer]](s"/transactions/info/${Base58.encode(id)}?bodyBytes=true").map(_.flatten)
+    getEntity[Option, TransferTransaction, Option[Tx.Transfer]](
+      s"/transactions/info/${Base58.encode(id)}?bodyBytes=true"
+    ).map(_.flatten)
   }
 
   override def transactionHeightById(id: Array[Byte]): Future[Option[Long]] = {
@@ -77,7 +80,7 @@ private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client
     given ec: ExecutionContext = executionContext
     for {
       address <- extractAddress(recipient)
-      entity <- getEntity[[X] =>> Either[String, X], BalanceResponse, Long](assetId match {
+      entity  <- getEntity[[X] =>> Either[String, X], BalanceResponse, Long](assetId match {
         case Some(assetId) => s"/assets/balance/$address/${Base58.encode(assetId)}"
         case None          => s"/address/balance/$address"
       })
@@ -91,8 +94,8 @@ private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client
     for {
       address <- extractAddress(recipient)
       entity  <- getEntity[[X] =>> Either[String, X], Environment.BalanceDetails, Environment.BalanceDetails](
-                   s"/addresses/balance/details/$address"
-                 )
+        s"/addresses/balance/details/$address"
+      )
     } yield entity
   }
 
@@ -119,8 +122,8 @@ private[repl] case class WebEnvironment(settings: NodeConnectionSettings, client
 
   private given Decoder[BalanceDetails] = WebEnvironment.BalanceDetailsDecoder
 
-  private def getEntity[F[_], A, B](url: String)(
-      using functor: Functor[F],
+  private def getEntity[F[_], A, B](url: String)(using
+      functor: Functor[F],
       wrapper: ResponseWrapper[F],
       decoder: Decoder[A],
       ev: A => B

@@ -12,7 +12,7 @@ import testHelpers.RandomDataGenerator.{
   randomUnionArrayElement
 }
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object ToBaseString extends JsTestBase {
   private val toBase16String                         = "toBase16String(callerTestData)"

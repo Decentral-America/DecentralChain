@@ -3,8 +3,14 @@ package com.decentralchain.test.builtInFunctions.list
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomBoolean, randomInt, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{actualVersions, intList, invalidFunctionError, nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  intList,
+  invalidFunctionError,
+  nonMatchingTypes,
+  stringList
+}
+import utest.{test, Tests}
 
 object Cons extends JsTestBase {
   private val cons                     = "cons(foo, bar)"

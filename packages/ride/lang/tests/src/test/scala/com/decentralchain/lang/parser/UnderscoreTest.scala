@@ -29,7 +29,11 @@ class UnderscoreTest extends PropSpec {
       LET_BLOCK(
         LET("_aa_a_a_", CONST_LONG(2)),
         BLOCK(
-          FUNC("_ff_f_f_", List("_xx_x_x_"), FUNCTION_CALL(PureContext.mulLong.header, List(REF("_xx_x_x_"), REF("_xx_x_x_")))),
+          FUNC(
+            "_ff_f_f_",
+            List("_xx_x_x_"),
+            FUNCTION_CALL(PureContext.mulLong.header, List(REF("_xx_x_x_"), REF("_xx_x_x_")))
+          ),
           FUNCTION_CALL(User("_ff_f_f_"), List(REF("_aa_a_a_")))
         )
       )
@@ -71,7 +75,10 @@ class UnderscoreTest extends PropSpec {
       LET_BLOCK(
         LET(s"$$match0", CONST_LONG(1)),
         IF(
-          FUNCTION_CALL(Native(1), List(REF(s"$$match0"), CONST_STRING("Int").explicitGet())), // Native(1) is isInstanceOf
+          FUNCTION_CALL(
+            Native(1),
+            List(REF(s"$$match0"), CONST_STRING("Int").explicitGet())
+          ), // Native(1) is isInstanceOf
           CONST_BOOLEAN(true),
           FUNCTION_CALL(Native(2), List(CONST_STRING("Match error").explicitGet()))
         )
@@ -104,7 +111,10 @@ class UnderscoreTest extends PropSpec {
                       Native(1100),
                       List(
                         CONST_LONG(3),
-                        FUNCTION_CALL(Native(1100), List(CONST_LONG(4), FUNCTION_CALL(Native(1100), List(CONST_LONG(5), REF(GlobalValNames.Nil)))))
+                        FUNCTION_CALL(
+                          Native(1100),
+                          List(CONST_LONG(4), FUNCTION_CALL(Native(1100), List(CONST_LONG(5), REF(GlobalValNames.Nil))))
+                        )
                       )
                     )
                   )
@@ -125,7 +135,10 @@ class UnderscoreTest extends PropSpec {
                     IF(
                       FUNCTION_CALL(Native(103), List(REF(s"$$i"), REF(s"$$s"))),
                       REF(s"$$a"),
-                      FUNCTION_CALL(User("_s_u_m_"), List(REF(s"$$a"), FUNCTION_CALL(Native(401), List(REF(s"$$l"), REF(s"$$i")))))
+                      FUNCTION_CALL(
+                        User("_s_u_m_"),
+                        List(REF(s"$$a"), FUNCTION_CALL(Native(401), List(REF(s"$$l"), REF(s"$$i"))))
+                      )
                     )
                   ),
                   BLOCK(
@@ -138,7 +151,10 @@ class UnderscoreTest extends PropSpec {
                         FUNCTION_CALL(Native(2), List(CONST_STRING("List size exceeds 1").explicitGet()))
                       )
                     ),
-                    FUNCTION_CALL(User(s"$$f0_2"), List(FUNCTION_CALL(User(s"$$f0_1"), List(REF(s"$$acc0"), CONST_LONG(0))), CONST_LONG(1)))
+                    FUNCTION_CALL(
+                      User(s"$$f0_2"),
+                      List(FUNCTION_CALL(User(s"$$f0_1"), List(REF(s"$$acc0"), CONST_LONG(0))), CONST_LONG(1))
+                    )
                   )
                 )
               )

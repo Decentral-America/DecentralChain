@@ -4,7 +4,7 @@ import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement}
 import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object RemoveByIndex extends JsTestBase {
   private val removeByIndex                     = "removeByIndex(bar, foo)"

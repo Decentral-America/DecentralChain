@@ -54,7 +54,11 @@ object NativeFunction {
     new NativeFunction(
       name = name,
       costByLibVersionMap = TreeMap.from(DirectiveDictionary[StdLibVersion].all.map(_ -> cost)),
-      signature = FunctionTypeSignature(result = resultType, args = args.map(a => (a._1, a._2)), header = FunctionHeader.Native(internalName)),
+      signature = FunctionTypeSignature(
+        result = resultType,
+        args = args.map(a => (a._1, a._2)),
+        header = FunctionHeader.Native(internalName)
+      ),
       ev = ev /*ev.orElse { case _ => "Passed argument with wrong type".asLeft[EVALUATED].pure[F] }(_, _)*/,
       args = args.map(_._1)
     )
@@ -69,7 +73,11 @@ object NativeFunction {
     new NativeFunction(
       name = name,
       TreeMap.from(costByLibVersion),
-      signature = FunctionTypeSignature(result = resultType, args = args.map(a => (a._1, a._2)), header = FunctionHeader.Native(internalName)),
+      signature = FunctionTypeSignature(
+        result = resultType,
+        args = args.map(a => (a._1, a._2)),
+        header = FunctionHeader.Native(internalName)
+      ),
       ev = ev,
       args = args.map(_._1)
     )
@@ -77,18 +85,28 @@ object NativeFunction {
   def apply[C[_[_]]](name: String, cost: Long, internalName: Short, resultType: TYPE, args: (String, TYPE)*)(
       evl: List[EVALUATED] => Either[ExecutionError, EVALUATED]
   ): NativeFunction[C] =
-    withEnvironment[C](name, cost, internalName, resultType, args*)(new ContextfulNativeFunction.Simple[C](name, resultType, args.toSeq) {
-      override def evaluate[F[_]: Monad](env: C[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
-        evl(args).pure[F]
-    })
+    withEnvironment[C](name, cost, internalName, resultType, args*)(
+      new ContextfulNativeFunction.Simple[C](name, resultType, args.toSeq) {
+        override def evaluate[F[_]: Monad](env: C[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+          evl(args).pure[F]
+      }
+    )
 
-  def apply[C[_[_]]](name: String, costByLibVersion: Map[StdLibVersion, Long], internalName: Short, resultType: TYPE, args: (String, TYPE)*)(
+  def apply[C[_[_]]](
+      name: String,
+      costByLibVersion: Map[StdLibVersion, Long],
+      internalName: Short,
+      resultType: TYPE,
+      args: (String, TYPE)*
+  )(
       evl: List[EVALUATED] => Either[ExecutionError, EVALUATED]
   ): NativeFunction[C] =
-    withEnvironment[C](name, costByLibVersion, internalName, resultType, args*)(new ContextfulNativeFunction.Simple[C](name, resultType, args.toSeq) {
-      override def evaluate[F[_]: Monad](env: C[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
-        evl(args).pure[F]
-    })
+    withEnvironment[C](name, costByLibVersion, internalName, resultType, args*)(
+      new ContextfulNativeFunction.Simple[C](name, resultType, args.toSeq) {
+        override def evaluate[F[_]: Monad](env: C[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+          evl(args).pure[F]
+      }
+    )
 }
 
 @JSExportTopLevel("UserFunction")
@@ -102,7 +120,9 @@ case class UserFunction[C[_[_]]](
 ) extends BaseFunction[C]
 
 object UserFunction {
-  def withEnvironment[C[_[_]]](name: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(ev: ContextfulUserFunction[C]): UserFunction[C] =
+  def withEnvironment[C[_[_]]](name: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(
+      ev: ContextfulUserFunction[C]
+  ): UserFunction[C] =
     UserFunction.withEnvironment(
       name = name,
       internalName = name,
@@ -116,14 +136,32 @@ object UserFunction {
       override def apply[F[_]: Monad](context: C[F], startArgs: List[EXPR]): EXPR = ev
     })
 
-  def deprecated[C[_[_]]](name: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(ev: EXPR): UserFunction[C] =
-    UserFunction.deprecated(name, name, TreeMap.from(DirectiveDictionary[StdLibVersion].all.map(_ -> cost)), resultType, args*)(ev)
+  def deprecated[C[_[_]]](name: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(
+      ev: EXPR
+  ): UserFunction[C] =
+    UserFunction.deprecated(
+      name,
+      name,
+      TreeMap.from(DirectiveDictionary[StdLibVersion].all.map(_ -> cost)),
+      resultType,
+      args*
+    )(ev)
 
-  def apply[C[_[_]]](name: String, costByLibVersion: Map[StdLibVersion, Long], resultType: TYPE, args: (String, TYPE)*)(ev: EXPR): UserFunction[C] =
+  def apply[C[_[_]]](name: String, costByLibVersion: Map[StdLibVersion, Long], resultType: TYPE, args: (String, TYPE)*)(
+      ev: EXPR
+  ): UserFunction[C] =
     UserFunction(name, name, TreeMap.from(costByLibVersion), resultType, args*)(ev)
 
-  def apply[C[_[_]]](name: String, internalName: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(ev: EXPR): UserFunction[C] =
-    UserFunction.withEnvironment[C](name, internalName, DirectiveDictionary[StdLibVersion].all.map(_ -> cost).toMap, resultType, args*)(
+  def apply[C[_[_]]](name: String, internalName: String, cost: Long, resultType: TYPE, args: (String, TYPE)*)(
+      ev: EXPR
+  ): UserFunction[C] =
+    UserFunction.withEnvironment[C](
+      name,
+      internalName,
+      DirectiveDictionary[StdLibVersion].all.map(_ -> cost).toMap,
+      resultType,
+      args*
+    )(
       ContextfulUserFunction.pure[C](ev)
     )
 
@@ -138,7 +176,11 @@ object UserFunction {
       name = name,
       internalName = internalName,
       costByLibVersionMap = TreeMap.from(costByLibVersion),
-      signature = FunctionTypeSignature(result = resultType, args = args.map(a => (a._1, a._2)), header = FunctionHeader.User(internalName, name)),
+      signature = FunctionTypeSignature(
+        result = resultType,
+        args = args.map(a => (a._1, a._2)),
+        header = FunctionHeader.User(internalName, name)
+      ),
       ev = ev,
       args = args.map(_._1)
     )
@@ -165,7 +207,11 @@ object UserFunction {
       name = name,
       internalName = internalName,
       costByLibVersionMap = TreeMap.from(costByLibVersion),
-      signature = FunctionTypeSignature(result = resultType, args = args.map(a => (a._1, a._2)), header = FunctionHeader.User(internalName, name)),
+      signature = FunctionTypeSignature(
+        result = resultType,
+        args = args.map(a => (a._1, a._2)),
+        header = FunctionHeader.User(internalName, name)
+      ),
       ContextfulUserFunction.pure[C](ev),
       args = args.map(_._1)
     ) {

@@ -2,9 +2,9 @@ package com.decentralchain
 
 import com.decentralchain.lang.directives.values.{StdLibVersion, V6}
 import testHelpers.TestDataConstantsAndMethods
-import utest.{TestSuite, assert}
+import utest.{assert, TestSuite}
 
-import scala.scalajs.js.{Dictionary, isUndefined}
+import scala.scalajs.js.{isUndefined, Dictionary}
 
 abstract class JsTestBase extends TestSuite {
 
@@ -14,12 +14,22 @@ abstract class JsTestBase extends TestSuite {
     assert(error.toString.contains(expectingError))
   }
 
-  protected def assertCompileErrorDApp(code: String, version: StdLibVersion, expectingError: String, estimator: Int = 3): Unit = {
+  protected def assertCompileErrorDApp(
+      code: String,
+      version: StdLibVersion,
+      expectingError: String,
+      estimator: Int = 3
+  ): Unit = {
     val error = JsAPI.compile(dApp(code, version), estimator).error
     assert(error.toString.contains(expectingError))
   }
 
-  protected def assertCompileErrorExpression(code: String, version: StdLibVersion, expectingError: String, estimator: Int = 3): Unit = {
+  protected def assertCompileErrorExpression(
+      code: String,
+      version: StdLibVersion,
+      expectingError: String,
+      estimator: Int = 3
+  ): Unit = {
     val error = JsAPI.compile(expression(code, version), estimator).error
     assert(error.toString.contains(expectingError))
   }

@@ -2,16 +2,21 @@ package com.decentralchain.test.builtInFunctions.accountDataStorage
 
 import com.decentralchain.JsTestBase
 import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
-import _root_.testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt, randomStringArrayElement}
+import _root_.testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomAliasDataArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{
-  GreaterV3ResultBooleanEntry,
   actualVersions,
   oldVersions,
   rideV3Result,
   thisVariable,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  GreaterV3ResultBooleanEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetBoolean extends JsTestBase {
   // getBoolean
@@ -49,7 +54,8 @@ object GetBoolean extends JsTestBase {
             (thisVariable, getBooleanValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -58,7 +64,14 @@ object GetBoolean extends JsTestBase {
     test("RIDE-9. Compile own data getBoolean functions for address, alias, and 'this'") {
       for (version <- versionsSupportingTheNewFeatures) {
         val precondition = new GeneratorContractsForBuiltInFunctions("Boolean", version)
-        for (ownData <- Seq(ownDataGetBoolean, ownDataGetBooleanArgBeforeFunc, ownDataGetBooleanValueArgBeforeFunc, ownDataGetBooleanValue)) {
+        for (
+          ownData <- Seq(
+            ownDataGetBoolean,
+            ownDataGetBooleanArgBeforeFunc,
+            ownDataGetBooleanValueArgBeforeFunc,
+            ownDataGetBooleanValue
+          )
+        ) {
           val script = precondition.codeOwnData(ownData, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileSuccessDApp(script, version)
         }
@@ -80,7 +93,8 @@ object GetBoolean extends JsTestBase {
             (randomInt.toString, invalidArgBeforeFunction)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }
@@ -95,7 +109,8 @@ object GetBoolean extends JsTestBase {
             (randomAliasDataArrayElement, ownDataGetBooleanValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, booleanData, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }

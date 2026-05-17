@@ -62,7 +62,10 @@ object TransferTxSerializer {
   private def toBytes(recipient: LangRecipient, chainId: Byte): Array[Byte] =
     recipient match {
       case Address(bytes) => bytes.arr
-      case Alias(name)    => Array(EnvironmentFunctions.AliasVersion, chainId) ++ serializeArrayWithLength(name.getBytes(StandardCharsets.UTF_8))
+      case Alias(name)    =>
+        Array(EnvironmentFunctions.AliasVersion, chainId) ++ serializeArrayWithLength(
+          name.getBytes(StandardCharsets.UTF_8)
+        )
     }
 
   private def toProtobufRecipient(recipient: LangRecipient): Recipient =
@@ -87,14 +90,17 @@ object TransferTxSerializer {
       attachment: ByteString,
       recipient: LangRecipient
   ): Array[Byte] = {
-    val pbAmount       = Amount().withAmount(amount)
-    val assetAmount    = assetId.fold(pbAmount)(pbAmount.withAssetId)
-    val data           = Data.Transfer(TransferTransactionData(Some(toProtobufRecipient(recipient)), Some(assetAmount), attachment))
+    val pbAmount    = Amount().withAmount(amount)
+    val assetAmount = assetId.fold(pbAmount)(pbAmount.withAssetId)
+    val data        =
+      Data.Transfer(TransferTransactionData(Some(toProtobufRecipient(recipient)), Some(assetAmount), attachment))
     val feeAmount      = Amount().withAmount(fee)
     val feeAssetAmount = feeAssetId.fold(feeAmount)(feeAmount.withAssetId)
-    val transaction =
+    val transaction    =
       new SignedTransaction(
-        SignedTransaction.Transaction.WavesTransaction(Transaction(chainId, sender, Some(feeAssetAmount), timestamp, version, data)),
+        SignedTransaction.Transaction.WavesTransaction(
+          Transaction(chainId, sender, Some(feeAssetAmount), timestamp, version, data)
+        ),
         proofs
       )
     transaction.getWavesTransaction.toByteArray
@@ -105,6 +111,8 @@ object TransferTxSerializer {
     if (length.isValidShort)
       ByteBuffer.allocate(2).putShort(length.toShort).array ++ b
     else
-      throw new IllegalArgumentException(s"Attempting to serialize array with size, but the size($length) exceeds MaxShort(${Short.MaxValue})")
+      throw new IllegalArgumentException(
+        s"Attempting to serialize array with size, but the size($length) exceeds MaxShort(${Short.MaxValue})"
+      )
   }
 }

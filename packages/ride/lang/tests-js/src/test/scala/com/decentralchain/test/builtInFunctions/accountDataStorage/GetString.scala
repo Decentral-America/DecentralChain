@@ -1,17 +1,22 @@
 package com.decentralchain.test.builtInFunctions.accountDataStorage
 
 import com.decentralchain.JsTestBase
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomAliasDataArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.TestDataConstantsAndMethods.{
-  GreaterV3ResultStringEntry,
   actualVersions,
   oldVersions,
   rideV3Result,
   thisVariable,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  GreaterV3ResultStringEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetString extends JsTestBase {
   // getString
@@ -49,7 +54,8 @@ object GetString extends JsTestBase {
             (thisVariable, getStringValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -58,7 +64,14 @@ object GetString extends JsTestBase {
     test("RIDE-17. Compile own data getString functions for address, alias, and 'this'") {
       for (version <- versionsSupportingTheNewFeatures) {
         val precondition = new GeneratorContractsForBuiltInFunctions("String", version)
-        for (ownData <- Seq(ownDataGetString, ownDataGetStringArgBeforeFunc, ownDataGetStringValueArgBeforeFunc, ownDataGetStringValue)) {
+        for (
+          ownData <- Seq(
+            ownDataGetString,
+            ownDataGetStringArgBeforeFunc,
+            ownDataGetStringValueArgBeforeFunc,
+            ownDataGetStringValue
+          )
+        ) {
           val script = precondition.codeOwnData(ownData, rideV3Result, GreaterV3ResultStringEntry)
           assertCompileSuccessDApp(script, version)
         }
@@ -80,7 +93,8 @@ object GetString extends JsTestBase {
             (randomInt.toString, invalidArgBeforeFunction)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }
@@ -95,7 +109,8 @@ object GetString extends JsTestBase {
             (randomAliasDataArrayElement, ownDataGetStringValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, stringData, rideV3Result, GreaterV3ResultStringEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }

@@ -2,7 +2,12 @@ package com.decentralchain.lang.estimator.dapp
 
 import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.contract.DApp
-import com.decentralchain.lang.contract.DApp.{CallableAnnotation, CallableFunction, VerifierAnnotation, VerifierFunction}
+import com.decentralchain.lang.contract.DApp.{
+  CallableAnnotation,
+  CallableFunction,
+  VerifierAnnotation,
+  VerifierFunction
+}
 import com.decentralchain.lang.directives.values.V3
 import com.decentralchain.lang.script.ContractScript
 import com.decentralchain.lang.v1.compiler.Terms
@@ -72,8 +77,14 @@ class ContractScriptComplexityV1V2Test extends PropSpec {
     val contract = DApp(
       DAppMeta(),
       List(
-        LET("y", FUNCTION_CALL(sumString.header, List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet()))),
-        LET("z", FUNCTION_CALL(sumString.header, List(CONST_STRING("c").explicitGet(), CONST_STRING("d").explicitGet())))
+        LET(
+          "y",
+          FUNCTION_CALL(sumString.header, List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet()))
+        ),
+        LET(
+          "z",
+          FUNCTION_CALL(sumString.header, List(CONST_STRING("c").explicitGet(), CONST_STRING("d").explicitGet()))
+        )
       ),
       List(
         CallableFunction(
@@ -127,8 +138,14 @@ class ContractScriptComplexityV1V2Test extends PropSpec {
     val contract = DApp(
       DAppMeta(),
       List(
-        LET("y", FUNCTION_CALL(sumString.header, List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet()))),
-        LET("z", FUNCTION_CALL(sumString.header, List(CONST_STRING("c").explicitGet(), CONST_STRING("d").explicitGet())))
+        LET(
+          "y",
+          FUNCTION_CALL(sumString.header, List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet()))
+        ),
+        LET(
+          "z",
+          FUNCTION_CALL(sumString.header, List(CONST_STRING("c").explicitGet(), CONST_STRING("d").explicitGet()))
+        )
       ),
       List(
         CallableFunction(

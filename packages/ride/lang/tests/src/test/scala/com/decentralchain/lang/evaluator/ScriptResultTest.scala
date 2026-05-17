@@ -73,18 +73,28 @@ class ScriptResultTest extends PropSpec {
   )
 
   val scriptResultObj =
-    CaseObj(CASETYPEREF("ScriptResult", el), Map(FieldNames.ScriptWriteSet -> writeSetObj, FieldNames.ScriptTransferSet -> transferSetObj))
+    CaseObj(
+      CASETYPEREF("ScriptResult", el),
+      Map(FieldNames.ScriptWriteSet -> writeSetObj, FieldNames.ScriptTransferSet -> transferSetObj)
+    )
 
-  val writeResult = List(DataItem.Lng("xxx", 42))
+  val writeResult    = List(DataItem.Lng("xxx", 42))
   val transferResult =
-    List(AssetTransfer(Address(address1), Address(address1), 41L, Some(asset)), AssetTransfer(Address(address2), Address(address2), 42L, None))
+    List(
+      AssetTransfer(Address(address1), Address(address1), 41L, Some(asset)),
+      AssetTransfer(Address(address2), Address(address2), 42L, None)
+    )
 
   property("ScriptResult from WriteSet") {
-    ScriptResult.fromObj(pureEvalContext, asset, writeSetObj, V3, 0) shouldBe Right(ScriptResultV3(writeResult, List.empty, 0))
+    ScriptResult.fromObj(pureEvalContext, asset, writeSetObj, V3, 0) shouldBe Right(
+      ScriptResultV3(writeResult, List.empty, 0)
+    )
   }
 
   property("ScriptResult from TransferSet") {
-    ScriptResult.fromObj(pureEvalContext, asset, transferSetObj, V3, 0) shouldBe Right(ScriptResultV3(List.empty, transferResult, 0))
+    ScriptResult.fromObj(pureEvalContext, asset, transferSetObj, V3, 0) shouldBe Right(
+      ScriptResultV3(List.empty, transferResult, 0)
+    )
   }
 
   property("ScriptResult from ScriptResult") {
@@ -93,6 +103,8 @@ class ScriptResultTest extends PropSpec {
   }
 
   property("ScriptResult from bad object") {
-    ScriptResult.fromObj(pureEvalContext, asset, CaseObj(CASETYPEREF("Foo", el), Map.empty), V3, 0) should produce("CallableFunction needs to return")
+    ScriptResult.fromObj(pureEvalContext, asset, CaseObj(CASETYPEREF("Foo", el), Map.empty), V3, 0) should produce(
+      "CallableFunction needs to return"
+    )
   }
 }

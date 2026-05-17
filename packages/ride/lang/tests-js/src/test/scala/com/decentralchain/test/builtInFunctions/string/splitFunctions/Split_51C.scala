@@ -4,8 +4,8 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V6
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomInt, randomIssuesArrayElement, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{nonMatchingTypes, CANT_FIND_FUNCTION}
+import utest.{test, Tests}
 
 object Split_51C extends JsTestBase {
   private val split_51C              = s"split_51C(bar, foo)"

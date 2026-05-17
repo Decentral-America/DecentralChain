@@ -11,13 +11,18 @@ import com.decentralchain.test.PropSpec
 
 class ContractCompilerWithParserV2Test extends PropSpec {
 
-  def compile(script: String, saveExprContext: Boolean = false): Either[String, (Option[DApp], Expressions.DAPP, Iterable[CompilationError])] = {
+  def compile(
+      script: String,
+      saveExprContext: Boolean = false
+  ): Either[String, (Option[DApp], Expressions.DAPP, Iterable[CompilationError])] = {
 
     val result = for {
       directives <- DirectiveParser(script)
       ds         <- Directive.extractDirectives(directives)
       ctx = utils.compilerContext(ds)
-      compResult <- ContractCompiler.compileWithParseResult(script, NoLibraries, ctx, ds.stdLibVersion, saveExprContext).leftMap(_._1)
+      compResult <- ContractCompiler
+        .compileWithParseResult(script, NoLibraries, ctx, ds.stdLibVersion, saveExprContext)
+        .leftMap(_._1)
     } yield compResult
 
     result

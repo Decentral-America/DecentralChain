@@ -3,20 +3,26 @@ package com.decentralchain.test.builtInFunctions.converting
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomBoolean, randomInt, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{UNDEFINED_TYPE, nonMatchingTypes, oldVersions, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  nonMatchingTypes,
+  oldVersions,
+  versionsSupportingTheNewFeatures,
+  UNDEFINED_TYPE
+}
+import utest.{test, Tests}
 
 object ParseBigInt extends JsTestBase {
-  private val parseBigInt                                   = "parseBigInt(callerTestData)"
-  private val parseBigIntArgBeforeFunc                      = "callerTestData.parseBigInt()"
-  private val invalidFunctionParseBigInt                    = "parseBigInt()"
-  private val invalidValueParseBigIntArgBeforeFunc          = "callerTestData.parseBigInt(callerTestData, callerTestData)"
+  private val parseBigInt                          = "parseBigInt(callerTestData)"
+  private val parseBigIntArgBeforeFunc             = "callerTestData.parseBigInt()"
+  private val invalidFunctionParseBigInt           = "parseBigInt()"
+  private val invalidValueParseBigIntArgBeforeFunc = "callerTestData.parseBigInt(callerTestData, callerTestData)"
   private val invalidFunctionErrorResultParseBigInt: String = testData.invalidFunctionError("parseBigInt", 1)
 
   private val parseBigIntValue                          = "parseBigIntValue(callerTestData)"
   private val parseBigIntValueArgBeforeFunc             = "callerTestData.parseBigIntValue()"
   private val invalidFunctionParseBigIntValue           = "parseBigIntValue()"
-  private val invalidValueParseBigIntValueArgBeforeFunc = "callerTestData.parseBigIntValue(callerTestData,callerTestData)"
+  private val invalidValueParseBigIntValueArgBeforeFunc =
+    "callerTestData.parseBigIntValue(callerTestData,callerTestData)"
 
   private val invalidFunctionErrorResultParseBigIntValue: String = testData.invalidFunctionError("parseBigIntValue", 1)
 
@@ -106,7 +112,11 @@ object ParseBigInt extends JsTestBase {
             (randomInt.toString, parseBigIntValue, nonMatchingTypes("String")),
             (randomBoolean.toString, parseBigIntValueArgBeforeFunc, nonMatchingTypes("String")),
             (randomStringArrayElement, invalidFunctionParseBigIntValue, invalidFunctionErrorResultParseBigIntValue),
-            (randomStringArrayElement, invalidValueParseBigIntValueArgBeforeFunc, invalidFunctionErrorResultParseBigIntValue)
+            (
+              randomStringArrayElement,
+              invalidValueParseBigIntValueArgBeforeFunc,
+              invalidFunctionErrorResultParseBigIntValue
+            )
           )
         ) {
           val script = precondition.onlyMatcherContract(data, function)

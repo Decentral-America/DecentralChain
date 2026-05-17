@@ -114,7 +114,8 @@ class SerdeTest extends FreeSpec {
   }
 
   "spec input" in serializers.foreach { ser =>
-    val byteArr   = Array[Byte](1, 113, -1, 63, 0, -1, 127, 0, -1, 39, -1, 87, -41, 50, -111, -38, 12, 1, 0, -19, 101, -128, -1, 54)
+    val byteArr =
+      Array[Byte](1, 113, -1, 63, 0, -1, 127, 0, -1, 39, -1, 87, -41, 50, -111, -38, 12, 1, 0, -19, 101, -128, -1, 54)
     val (r, time) = measureTime(ser.deserialize(byteArr).map(_._1))
 
     r shouldBe an[Either[?, ?]]
@@ -177,11 +178,15 @@ class SerdeTest extends FreeSpec {
   }
 
   private def roundTripTest(untypedExpr: Expressions.EXPR): Unit = {
-    val typedExpr = ExpressionCompiler(PureContext.build(V1, useNewPowPrecision = true).compilerContext, V1, untypedExpr).map(_._1).explicitGet()
+    val typedExpr = ExpressionCompiler(
+      PureContext.build(V1, useNewPowPrecision = true).compilerContext,
+      V1,
+      untypedExpr
+    ).map(_._1).explicitGet()
     roundTripTest(typedExpr)
   }
 
-  private def roundTripTest(typedExpr: EXPR, allowObjects: Boolean = false): Unit = {
+  private def roundTripTest(typedExpr: EXPR, allowObjects: Boolean = false): Unit =
     serializers.foreach { ser =>
       val encoded = ser.serialize(typedExpr, allowObjects)
       encoded.nonEmpty shouldBe true
@@ -191,5 +196,4 @@ class SerdeTest extends FreeSpec {
         decoded shouldEqual typedExpr
       }
     }
-  }
 }

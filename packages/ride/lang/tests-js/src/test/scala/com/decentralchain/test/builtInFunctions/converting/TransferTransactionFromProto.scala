@@ -4,8 +4,13 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomByteVectorArrayElement, randomDigestAlgorithmTypeArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, actualVersionsWithoutV3, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  nonMatchingTypes,
+  CANT_FIND_FUNCTION
+}
+import utest.{test, Tests}
 
 object TransferTransactionFromProto extends JsTestBase {
   private val transferTransactionFromProto                         = "transferTransactionFromProto(callerTestData)"
@@ -35,8 +40,16 @@ object TransferTransactionFromProto extends JsTestBase {
         for (
           (data, function, error) <- Seq(
             (randomDigestAlgorithmTypeArrayElement, transferTransactionFromProto, nonMatchingTypes("ByteVector")),
-            (randomDigestAlgorithmTypeArrayElement, transferTransactionFromProtoArgBeforeFunc, nonMatchingTypes("ByteVector")),
-            (randomByteVectorArrayElement, invalidTransferTransactionFromProto, invalidFunctionError("transferTransactionFromProto", 1)),
+            (
+              randomDigestAlgorithmTypeArrayElement,
+              transferTransactionFromProtoArgBeforeFunc,
+              nonMatchingTypes("ByteVector")
+            ),
+            (
+              randomByteVectorArrayElement,
+              invalidTransferTransactionFromProto,
+              invalidFunctionError("transferTransactionFromProto", 1)
+            ),
             (
               randomByteVectorArrayElement,
               invalidTransferTransactionFromProtoArgBeforeFunction,

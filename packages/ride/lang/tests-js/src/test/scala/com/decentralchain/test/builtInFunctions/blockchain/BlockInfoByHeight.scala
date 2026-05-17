@@ -4,7 +4,7 @@ import com.decentralchain.JsTestBase
 import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomBoolean, randomInt}
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object BlockInfoByHeight extends JsTestBase {
   private val blockInfoByHeight              = "blockInfoByHeight(callerTestData)"

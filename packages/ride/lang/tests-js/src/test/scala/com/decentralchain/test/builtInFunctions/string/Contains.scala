@@ -3,9 +3,14 @@ package com.decentralchain.test.builtInFunctions.string
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomInt,
+  randomIssuesArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Contains extends JsTestBase {
   private val contains                     = "contains(bar, foo)"

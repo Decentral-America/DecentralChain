@@ -16,7 +16,15 @@ trait ScriptGen {
   def CONST_LONGgen: Gen[(EXPR, Long)] = Gen.choose(Long.MinValue, Long.MaxValue).map(v => (CONST_LONG(AnyPos, v), v))
 
   def BOOLgen(gas: Int): Gen[(EXPR, Boolean)] =
-    if (gas > 0) Gen.oneOf(GEgen(gas - 1), GTgen(gas - 1), EQ_INTgen(gas - 1), ANDgen(gas - 1), ORgen(gas - 1), IF_BOOLgen(gas - 1))
+    if (gas > 0)
+      Gen.oneOf(
+        GEgen(gas - 1),
+        GTgen(gas - 1),
+        EQ_INTgen(gas - 1),
+        ANDgen(gas - 1),
+        ORgen(gas - 1),
+        IF_BOOLgen(gas - 1)
+      )
     else Gen.const((TRUE(AnyPos), true))
 
   def SUMgen(gas: Int): Gen[(EXPR, Long)] =
@@ -48,7 +56,9 @@ trait ScriptGen {
         SUMgen(gas - 1),
         SUBgen(gas - 1),
         IF_INTgen(gas - 1),
-        INTGen(gas - 1).filter(v => (-BigInt(v._2)).isValidLong).map(e => (FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "-"), List(e._1)), -e._2))
+        INTGen(gas - 1)
+          .filter(v => (-BigInt(v._2)).isValidLong)
+          .map(e => (FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "-"), List(e._1)), -e._2))
       )
     else CONST_LONGgen
 
@@ -119,13 +129,16 @@ trait ScriptGen {
   def BLOCKgen(gas: Int): Gen[EXPR] =
     for {
       let  <- LETgen((gas - 3) / 3)
-      body <- Gen.oneOf(BOOLgen((gas - 3) / 3).map(_._1), BLOCKgen((gas - 3) / 3)) // BLOCKGen wasn't add to BOOLGen since issue: NODE-700
+      body <- Gen.oneOf(
+        BOOLgen((gas - 3) / 3).map(_._1),
+        BLOCKgen((gas - 3) / 3)
+      ) // BLOCKGen wasn't add to BOOLGen since issue: NODE-700
     } yield BLOCK(AnyPos, let, body)
 
   private val spaceChars: Seq[Char] = " \t\n\r"
 
   val whitespaceChar: Gen[Char] = Gen.oneOf(spaceChars)
-  val whitespaces: Gen[String] = for {
+  val whitespaces: Gen[String]  = for {
     n  <- Gen.choose(1, 5)
     xs <- Gen.listOfN(n, whitespaceChar)
   } yield xs.mkString
@@ -143,12 +156,12 @@ trait ScriptGen {
   }
 
   def toString(expr: EXPR): Gen[String] = expr match {
-    case CONST_LONG(_, x, _)    => withWhitespaces(s"$x")
-    case REF(_, x, _, _)        => withWhitespaces(toString(x))
-    case CONST_STRING(_, x, _)  => withWhitespaces(s"""\"${toString(x)}\"""")
-    case CONST_BYTESTR(_, x, _) => withWhitespaces(s"""base58'${toString(x)}'""")
-    case _: TRUE                => withWhitespaces("true")
-    case _: FALSE               => withWhitespaces("false")
+    case CONST_LONG(_, x, _)                           => withWhitespaces(s"$x")
+    case REF(_, x, _, _)                               => withWhitespaces(toString(x))
+    case CONST_STRING(_, x, _)                         => withWhitespaces(s"""\"${toString(x)}\"""")
+    case CONST_BYTESTR(_, x, _)                        => withWhitespaces(s"""base58'${toString(x)}'""")
+    case _: TRUE                                       => withWhitespaces("true")
+    case _: FALSE                                      => withWhitespaces("false")
     case BINARY_OP(_, x, op: BinaryOperation, y, _, _) =>
       for {
         arg1 <- toString(x)
@@ -177,12 +190,20 @@ trait ScriptGen {
 }
 
 trait ScriptGenParser extends ScriptGen {
-  override def BOOLgen(gas: Int): Gen[(EXPR, Boolean)] = {
+  override def BOOLgen(gas: Int): Gen[(EXPR, Boolean)] =
     if (gas > 0)
-      Gen.oneOf(GEgen(gas - 1), GTgen(gas - 1), EQ_INTgen(gas - 1), ANDgen(gas - 1), ORgen(gas - 1), IF_BOOLgen(gas - 1), REFgen.map(r => (r, false)))
+      Gen.oneOf(
+        GEgen(gas - 1),
+        GTgen(gas - 1),
+        EQ_INTgen(gas - 1),
+        ANDgen(gas - 1),
+        ORgen(gas - 1),
+        IF_BOOLgen(gas - 1),
+        REFgen.map(r => (r, false))
+      )
     else Gen.const((TRUE(AnyPos), true))
-  }
 
   override def INTGen(gas: Int): Gen[(EXPR, Long)] =
-    if (gas > 0) Gen.oneOf(CONST_LONGgen, SUMgen(gas - 1), IF_INTgen(gas - 1), REFgen.map(r => (r, 0L))) else CONST_LONGgen
+    if (gas > 0) Gen.oneOf(CONST_LONGgen, SUMgen(gas - 1), IF_INTgen(gas - 1), REFgen.map(r => (r, 0L)))
+    else CONST_LONGgen
 }
