@@ -7,6 +7,8 @@ import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.invocation.Function;
 import com.wavesplatform.wavesj.StateChanges;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +27,7 @@ public class InvokeAction {
             @JsonProperty("stateChanges") StateChanges stateChanges) {
         this.dApp = dApp;
         this.function = function;
-        this.payments = payments;
+        this.payments = Collections.unmodifiableList(new ArrayList<>(payments == null ? Collections.emptyList() : payments));
         this.stateChanges = stateChanges;
     }
 

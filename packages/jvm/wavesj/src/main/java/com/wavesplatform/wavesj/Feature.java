@@ -28,23 +28,23 @@ public class Feature {
         this.activationHeight = activationHeight;
     }
 
-    public int getId() {
+    public int id() {
         return id;
     }
 
-    public String getDescription() {
+    public String description() {
         return description;
     }
 
-    public String getBlockchainStatus() {
+    public String blockchainStatus() {
         return blockchainStatus;
     }
 
-    public String getNodeStatus() {
+    public String nodeStatus() {
         return nodeStatus;
     }
 
-    public int getActivationHeight() {
+    public int activationHeight() {
         return activationHeight;
     }
 

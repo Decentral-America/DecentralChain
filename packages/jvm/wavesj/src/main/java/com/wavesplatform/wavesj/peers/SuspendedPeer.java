@@ -1,5 +1,6 @@
 package com.wavesplatform.wavesj.peers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class SuspendedPeer {
     private final String hostname;
     private final long timestamp;
 
+    @JsonCreator
     public SuspendedPeer(
             @JsonProperty("hostname") String hostname,
             @JsonProperty("timestamp") long timestamp
