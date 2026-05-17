@@ -1,0 +1,10 @@
+target/
+project/target/
+project/project/
+.bsp/
+.metals/
+.bloop/
+*.class
+*.jar
+!lang/js/dist/
+!repl/js/dist/
