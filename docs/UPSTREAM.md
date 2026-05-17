@@ -276,12 +276,11 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 
 ## 8. Remaining Upstream Dependencies
 
-| Package | Used By | Risk | Status |
-|---------|---------|------|--------|
-| `@waves/ride-lang` 1.6.1 | ride-js | **LOW** — chain-agnostic Scala.js compiler | No action needed |
-| `@waves/ride-repl` 1.6.1 | ride-js | **LOW** — chain-agnostic Scala.js REPL | No action needed |
+All upstream Waves npm dependencies have been forked. **Zero unresolved upstream deps.**
 
-**Resolved upstream dependencies:**
+**All resolved:**
+- ~~`@waves/ride-lang` 1.6.1~~ → Forked as `@decentralchain/ride-lang@1.6.2` (DCC-252 ✅). Full git history (1,991 commits) in `packages/ride/lang/js` (workspace:*).
+- ~~`@waves/ride-repl` 1.6.1~~ → Forked as `@decentralchain/ride-repl@1.6.2` (DCC-252 ✅). Full git history in `packages/ride/repl/js` (workspace:*).
 - ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69); subsequently removed from `main` for clean launch — preserved in `feat/swap` branch
 - ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 22 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
 
@@ -540,7 +539,7 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 
 ## 16. Supply-Chain Dependency Chain
 
-The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). Only `@waves/ride-lang` + `@waves/ride-repl` remain unforked (low risk — chain-agnostic). `swap-client` was forked (DCC-69) but subsequently removed from `main` for clean launch — preserved in `feat/swap` branch.
+The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). `@waves/ride-lang` + `@waves/ride-repl` forked as `@decentralchain/ride-lang` + `@decentralchain/ride-repl` (DCC-252 ✅). Zero unforked upstream Waves npm dependencies remain. `swap-client` was forked (DCC-69) but subsequently removed from `main` for clean launch — preserved in `feat/swap` branch.
 
 ```
 @decentralchain/crypto  ← FORKED (DCC-70) ✅  [was @keeper-wallet/waves-crypto]
@@ -564,7 +563,7 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
 @decentralchain/swap-client  ← FORKED (DCC-69) ✅
   └── cubensis-connect (swap feature only)
 
-@waves/ride-lang + @waves/ride-repl  ← NOT FORKED (RIDE compiler)
+@decentralchain/ride-lang + @decentralchain/ride-repl  ← FORKED (DCC-252) ✅
   └── @decentralchain/ride-js
 ```
 
