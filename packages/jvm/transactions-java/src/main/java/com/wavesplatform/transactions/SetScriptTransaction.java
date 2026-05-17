@@ -68,6 +68,7 @@ public class SetScriptTransaction extends Transaction {
             this.script = compiledScript == null ? Base64String.empty() : compiledScript;
         }
 
+        @Override
         protected SetScriptTransaction _build() {
             return new SetScriptTransaction(
                     sender, script, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

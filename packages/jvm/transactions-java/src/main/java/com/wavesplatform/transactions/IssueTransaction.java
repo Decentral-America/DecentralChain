@@ -80,7 +80,7 @@ public class IssueTransaction extends Transaction {
     }
 
     public byte[] nameBytes() {
-        return name;
+        return name.clone();
     }
 
     public String description() {
@@ -88,7 +88,7 @@ public class IssueTransaction extends Transaction {
     }
 
     public byte[] descriptionBytes() {
-        return description;
+        return description.clone();
     }
 
     public long quantity() {
@@ -160,6 +160,7 @@ public class IssueTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, quantity, decimals, isReissuable, script,
                     chainId, fee, timestamp, version, Proof.emptyList());
@@ -193,6 +194,7 @@ public class IssueTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected IssueTransaction _build() {
             return new IssueTransaction(sender, name, description, SINGLE_TOKEN, NO_DECIMALS, NON_REISSUABLE, script,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
