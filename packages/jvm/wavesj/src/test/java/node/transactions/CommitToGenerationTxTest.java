@@ -2,15 +2,15 @@ package node.transactions;
 
 import com.wavesplatform.transactions.CommitToGenerationTransaction;
 import com.wavesplatform.transactions.common.Id;
-import com.wavesplatform.wavesj.Node;
-import com.wavesplatform.wavesj.Profile;
-import com.wavesplatform.wavesj.exceptions.NodeException;
-import com.wavesplatform.wavesj.info.CommitToGenerationTransactionInfo;
+import com.decentralchain.sdk.Node;
+import com.decentralchain.sdk.Profile;
+import com.decentralchain.sdk.exceptions.NodeException;
+import com.decentralchain.sdk.info.CommitToGenerationTransactionInfo;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.wavesplatform.wavesj.ApplicationStatus.SUCCEEDED;
+import static com.decentralchain.sdk.ApplicationStatus.SUCCEEDED;
 import static node.mock.util.MockHttpRsUtil.mockHttpClient;
 import static node.mock.util.MockHttpRsUtil.mockTransactionInfoRs;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,6 +1,6 @@
 package node.mock.util;
 
-import com.wavesplatform.wavesj.Node;
+import com.decentralchain.sdk.Node;
 import org.mockito.Mockito;
 
 import java.io.IOException;

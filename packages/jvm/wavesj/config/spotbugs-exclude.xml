@@ -21,15 +21,15 @@
   -->
   <Match>
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
-    <Package name="com.wavesplatform.wavesj"/>
+    <Package name="com.decentralchain.sdk"/>
   </Match>
   <Match>
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
-    <Package name="com.wavesplatform.wavesj.actions"/>
+    <Package name="com.decentralchain.sdk.actions"/>
   </Match>
   <Match>
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
-    <Package name="com.wavesplatform.wavesj.info"/>
+    <Package name="com.decentralchain.sdk.info"/>
   </Match>
 
   <!--
@@ -39,7 +39,7 @@
   -->
   <Match>
     <Bug pattern="SE_BAD_FIELD"/>
-    <Package name="com.wavesplatform.wavesj"/>
+    <Package name="com.decentralchain.sdk"/>
   </Match>
 
   <!--
@@ -49,7 +49,7 @@
   -->
   <Match>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
-    <Class name="com.wavesplatform.wavesj.Node"/>
+    <Class name="com.decentralchain.sdk.Node"/>
   </Match>
 
   <!--
@@ -60,7 +60,7 @@
   -->
   <Match>
     <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE,PREDICTABLE_RANDOM"/>
-    <Class name="com.wavesplatform.wavesj.DccEthConverter"/>
+    <Class name="com.decentralchain.sdk.util.DccEthConverter"/>
   </Match>
 
 </FindBugsFilter>

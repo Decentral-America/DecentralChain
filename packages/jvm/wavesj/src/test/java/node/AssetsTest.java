@@ -9,9 +9,9 @@ import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.common.AssetId;
 import com.wavesplatform.transactions.common.Id;
 import com.wavesplatform.transactions.mass.Transfer;
-import com.wavesplatform.wavesj.AssetBalance;
-import com.wavesplatform.wavesj.AssetDistribution;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.AssetBalance;
+import com.decentralchain.sdk.AssetDistribution;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

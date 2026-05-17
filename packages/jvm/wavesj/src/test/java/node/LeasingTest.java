@@ -10,11 +10,11 @@ import com.wavesplatform.transactions.common.Base64String;
 import com.wavesplatform.transactions.invocation.Function;
 import com.wavesplatform.transactions.invocation.IntegerArg;
 import com.wavesplatform.transactions.invocation.StringArg;
-import com.wavesplatform.wavesj.LeaseStatus;
-import com.wavesplatform.wavesj.LeaseInfo;
-import com.wavesplatform.wavesj.info.InvokeScriptTransactionInfo;
-import com.wavesplatform.wavesj.info.TransactionInfo;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.LeaseStatus;
+import com.decentralchain.sdk.LeaseInfo;
+import com.decentralchain.sdk.info.InvokeScriptTransactionInfo;
+import com.decentralchain.sdk.info.TransactionInfo;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

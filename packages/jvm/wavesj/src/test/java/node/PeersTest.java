@@ -1,7 +1,7 @@
 package node;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

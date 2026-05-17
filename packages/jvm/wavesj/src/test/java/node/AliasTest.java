@@ -4,7 +4,7 @@ import base.BaseTestWithNodeInDocker;
 import com.wavesplatform.transactions.CreateAliasTransaction;
 import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.common.Alias;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
