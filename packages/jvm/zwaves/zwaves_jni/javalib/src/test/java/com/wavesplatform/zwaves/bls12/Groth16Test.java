@@ -1,10 +1,10 @@
 package com.wavesplatform.zwaves.bls12;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Base64;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Groth16Test {
     @Test
@@ -16,8 +16,9 @@ public class Groth16Test {
         byte[] inputs2 = Base64.getDecoder().decode("cmzVCcRVnckw3QUPhmG4Bkppeg4K50oDQwQ9EH+Fq1s=");
         byte[] inputs3 = {};
 
-        assertTrue("Result should be true", Groth16.verify(vk, proof, inputs));
-        assertFalse("Result should be false", Groth16.verify(vk, proof, inputs2));
-        assertFalse("Result should be false", Groth16.verify(vk, proof, inputs3));
+        // JUnit 5: condition first, message second
+        assertTrue(Groth16.verify(vk, proof, inputs), "Result should be true");
+        assertFalse(Groth16.verify(vk, proof, inputs2), "Result should be false");
+        assertFalse(Groth16.verify(vk, proof, inputs3), "Result should be false");
     }
 }
