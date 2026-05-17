@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+Cargo.lock
+bin/
+pkg/
+wasm-pack.log
+.vscode
+.idea
+!zwaves_jni/src/bn256/bin
+!zwaves_setup/src/bin
