@@ -1,8 +1,14 @@
+# Build outputs
 target/
-.idea/
-*.iml
 obj/
 build/
+
+# Maven wrapper cache (downloaded at runtime)
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+
+# Gradle (legacy — no longer used)
 .gradle/
-local.properties
-gradle.properties

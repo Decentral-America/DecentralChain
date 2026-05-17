@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- ── Coordinates ──────────────────────────────────────────────────── -->
+  <groupId>io.decentralchain</groupId>
+  <artifactId>curve25519-java</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <!-- ── Project metadata (required for Maven Central) ───────────────── -->
+  <name>curve25519-java</name>
+  <description>
+    Pure-Java (+ optional JNA-native) Curve25519 / ed25519 / VRF implementation
+    used by the DecentralChain node for key agreement, digital signatures, and
+    Verifiable Random Function (VRF) based block-generation consensus
+    (RFC 9381 / VEdDSA ciphersuite).
+    Forked from wavesplatform/curve25519-java with full upstream history.
+  </description>
+  <url>https://github.com/Decentral-America/DCC</url>
+  <inceptionYear>2014</inceptionYear>
+
+  <licenses>
+    <!-- GPL v3 — MUST be kept; cannot be relicensed. Upstream: WhisperSystems -->
+    <license>
+      <name>GNU General Public License v3.0 only</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Decentral America</name>
+    <url>https://decentralchain.io</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>josue</id>
+      <name>Josué</name>
+      <organization>Decentral America</organization>
+      <organizationUrl>https://decentralchain.io</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/Decentral-America/DCC.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Decentral-America/DCC.git</developerConnection>
+    <url>https://github.com/Decentral-America/DCC/tree/main/packages/jvm/curve25519-java</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://decentralchain.atlassian.net</url>
+  </issueManagement>
+
+  <!-- ── Global properties ────────────────────────────────────────────── -->
+  <properties>
+    <!-- Java 25 — matches DecentralChain JVM ecosystem standard -->
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Dependency versions — pinned and audited -->
+    <jna.version>5.18.1</jna.version>
+    <junit.version>5.14.4</junit.version>
+    <assertj.version>3.27.3</assertj.version>
+
+    <!-- Plugin versions — pinned and audited -->
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+    <central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
+  </properties>
+
+  <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
+  <dependencies>
+
+    <!-- JNA — required by NativeCurve25519Provider (optional C-native path) -->
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>${jna.version}</version>
+    </dependency>
+
+    <!-- JUnit Jupiter (API + Engine + Params) — test only -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- AssertJ — fluent assertions, drop-in replacement for fest-assert -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <!-- ── Build plugins ────────────────────────────────────────────────── -->
+  <build>
+    <plugins>
+
+      <!-- Enforcer: gate Java + Maven minimums before any compilation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-minimums</id>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[25,)</version>
+                  <message>Java 25 or later is required.</message>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>[3.9,)</version>
+                  <message>Maven 3.9 or later is required.</message>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler: release 25, fail on warnings for new code -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>25</release>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire 3.5.5: JUnit Platform auto-detected, no extra config needed -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+
+      <!-- Sources JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar-no-fork</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <release>25</release>
+          <!-- Upstream code has no Javadoc; suppress missing warnings -->
+          <doclint>all,-missing</doclint>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
+    <!-- Activate with: ./mvnw deploy -P release                        -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
+                <configuration>
+                  <!-- GPG key ID set via CI secret: GPG_KEY_ID -->
+                  <keyname>${gpg.keyname}</keyname>
+                  <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                  <!-- Use loopback pinentry in CI (non-interactive) -->
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central-publishing-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+</project>

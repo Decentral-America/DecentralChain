@@ -176,7 +176,9 @@ public class Curve25519 {
 
     private static Curve25519Provider constructClass(String name, SecureRandomProvider random) throws NoSuchProviderException {
         try {
-            Curve25519Provider provider = (Curve25519Provider) Class.forName("org.whispersystems.curve25519." + name).newInstance();
+            Curve25519Provider provider = (Curve25519Provider) Class.forName("org.whispersystems.curve25519." + name)
+                    .getDeclaredConstructor()
+                    .newInstance();
 
             if (random != null) {
                 provider.setRandomProvider(random);
@@ -188,6 +190,10 @@ public class Curve25519 {
         } catch (IllegalAccessException e) {
             throw new NoSuchProviderException(e);
         } catch (ClassNotFoundException e) {
+            throw new NoSuchProviderException(e);
+        } catch (java.lang.reflect.InvocationTargetException e) {
+            throw new NoSuchProviderException(e.getCause() != null ? e.getCause() : e);
+        } catch (java.lang.NoSuchMethodException e) {
             throw new NoSuchProviderException(e);
         }
     }
