@@ -28,7 +28,9 @@ class ReplEngine[F[_]: Monad] {
     val r =
       for {
         parsed                              <- EitherT.fromEither[F](parse(expr))
-        (newCompileCtx, compiled, exprType) <- EitherT.fromEither[F](ExpressionCompiler.applyWithCtx(compileCtx, version, parsed))
+        (newCompileCtx, compiled, exprType) <- EitherT.fromEither[F](
+          ExpressionCompiler.applyWithCtx(compileCtx, version, parsed)
+        )
         evaluated <- EitherT(evaluator.applyWithCtx(evalCtx, compiled)).leftMap(error =>
           if (error.message.isEmpty) "Evaluation error" else error.message
         )
@@ -55,7 +57,7 @@ class ReplEngine[F[_]: Monad] {
     val filteredCompileCtx   = excludeInternalDecls(newCompileCtx)
     val resultO              = assignedResult(exprType, result, filteredCompileCtx)
     val output               = mkOutput(resultO, compileCtx, filteredCompileCtx)
-    val newCtx               = resultO.fold((filteredCompileCtx, newEvalCtx))(addResultToCtx(_, filteredCompileCtx, newEvalCtx))
+    val newCtx = resultO.fold((filteredCompileCtx, newEvalCtx))(addResultToCtx(_, filteredCompileCtx, newEvalCtx))
     (output, newCtx)
   }
 
@@ -114,11 +116,13 @@ class ReplEngine[F[_]: Monad] {
       newCompileCtx: CompilerContext
   ): (Set[(String, FINAL)], Set[(String, List[FunctionTypeSignature])]) = {
     val newLets =
-      (newCompileCtx.varDefs.keySet diff compileCtx.varDefs.keySet)
+      (newCompileCtx.varDefs.keySet
+        .diff(compileCtx.varDefs.keySet))
         .map(n => (n, newCompileCtx.varDefs(n).vType))
 
     val newFuncs =
-      (newCompileCtx.functionDefs.keySet diff compileCtx.functionDefs.keySet)
+      (newCompileCtx.functionDefs.keySet
+        .diff(compileCtx.functionDefs.keySet))
         .map(n => (n, newCompileCtx.functionDefs(n).fSigList))
 
     (newLets, newFuncs)

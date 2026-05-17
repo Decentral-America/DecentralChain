@@ -19,9 +19,9 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
 import com.decentralchain.lang.v1.parser.BinaryOperation.NE_OP
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.{CTX, FunctionHeader, compiler}
+import com.decentralchain.lang.v1.{compiler, CTX, FunctionHeader}
 import com.wavesplatform.protobuf.dapp.DAppMeta
-import com.decentralchain.test.{PropSpec, produce}
+import com.decentralchain.test.{produce, PropSpec}
 import org.scalatest.Assertion
 
 class DecompilerTest extends PropSpec {
@@ -48,7 +48,10 @@ class DecompilerTest extends PropSpec {
   }
 
   property("simple let") {
-    val expr = Terms.LET_BLOCK(LET("a", CONST_LONG(1)), Terms.LET_BLOCK(LET("b", CONST_LONG(2)), Terms.LET_BLOCK(LET("c", CONST_LONG(3)), TRUE)))
+    val expr = Terms.LET_BLOCK(
+      LET("a", CONST_LONG(1)),
+      Terms.LET_BLOCK(LET("b", CONST_LONG(2)), Terms.LET_BLOCK(LET("c", CONST_LONG(3)), TRUE))
+    )
     Decompiler(expr, decompilerContextV3) `shouldEq`
       """let a = 1
         |let b = 2
@@ -58,7 +61,10 @@ class DecompilerTest extends PropSpec {
 
   property("let in let") {
     val expr =
-      Terms.LET_BLOCK(LET("a", Terms.LET_BLOCK(LET("x", CONST_LONG(0)), TRUE)), Terms.LET_BLOCK(LET("c", CONST_LONG(3)), TRUE))
+      Terms.LET_BLOCK(
+        LET("a", Terms.LET_BLOCK(LET("x", CONST_LONG(0)), TRUE)),
+        Terms.LET_BLOCK(LET("c", CONST_LONG(3)), TRUE)
+      )
     Decompiler(expr, decompilerContextV3) `shouldEq`
       """let a = {
         |    let x = 0
@@ -84,7 +90,10 @@ class DecompilerTest extends PropSpec {
   }
 
   property("nested binary operations") {
-    val expr = FUNCTION_CALL(Native(105), List(FUNCTION_CALL(Native(101), List(REF("height"), REF("startHeight"))), REF("interval")))
+    val expr = FUNCTION_CALL(
+      Native(105),
+      List(FUNCTION_CALL(Native(101), List(REF("height"), REF("startHeight"))), REF("interval"))
+    )
     Decompiler(expr, decompilerContextV3) `shouldEq` "((height - startHeight) / interval)"
   }
 
@@ -117,7 +126,7 @@ class DecompilerTest extends PropSpec {
       LET("vari", REF("p")),
       TRUE
     )
-    val actual = Decompiler(expr, decompilerContextV3)
+    val actual   = Decompiler(expr, decompilerContextV3)
     val expected = """|let vari = p
                       |true""".stripMargin
     actual `shouldEq` expected
@@ -178,7 +187,10 @@ class DecompilerTest extends PropSpec {
     val expr = Terms.BLOCK(
       Terms.LET(
         "p",
-        Terms.BLOCK(Terms.LET("v", CONST_LONG(1)), Terms.FUNCTION_CALL(function = FunctionHeader.Native(100), args = List(REF("v"), CONST_LONG(2))))
+        Terms.BLOCK(
+          Terms.LET("v", CONST_LONG(1)),
+          Terms.FUNCTION_CALL(function = FunctionHeader.Native(100), args = List(REF("v"), CONST_LONG(2)))
+        )
       ),
       Terms.FUNCTION_CALL(function = FunctionHeader.Native(100), args = List(REF("p"), CONST_LONG(3)))
     )
@@ -253,7 +265,10 @@ class DecompilerTest extends PropSpec {
                         FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("b").explicitGet(), CONST_LONG(1))),
                         FUNCTION_CALL(
                           Native(1100),
-                          List(FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("x"))), REF(GlobalValNames.Nil))
+                          List(
+                            FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("x"))),
+                            REF(GlobalValNames.Nil)
+                          )
                         )
                       )
                     )
@@ -268,7 +283,10 @@ class DecompilerTest extends PropSpec {
                         FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("a").explicitGet(), REF("a"))),
                         FUNCTION_CALL(
                           Native(1100),
-                          List(FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("x"))), REF(GlobalValNames.Nil))
+                          List(
+                            FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("x"))),
+                            REF(GlobalValNames.Nil)
+                          )
                         )
                       )
                     )
@@ -373,7 +391,8 @@ class DecompilerTest extends PropSpec {
   property("bytestring") {
     val test = Base58.encode("abc".getBytes("UTF-8"))
     // ([REVIEW]: may be i`am make a mistake here)
-    val expr = Terms.BLOCK(Terms.LET("param", CONST_BYTESTR(ByteStr(test.getBytes("UTF-8"))).explicitGet()), REF("param"))
+    val expr =
+      Terms.BLOCK(Terms.LET("param", CONST_BYTESTR(ByteStr(test.getBytes("UTF-8"))).explicitGet()), REF("param"))
     Decompiler(expr, decompilerContextV3) `shouldEq`
       """let param = base58'3K3F4C'
         |param""".stripMargin
@@ -416,7 +435,8 @@ class DecompilerTest extends PropSpec {
         |    then 1
         |    else 2
         |    ).foo""".stripMargin
-    val expr4 = FUNCTION_CALL(Native(401), List(IF(TRUE, REF(GlobalValNames.Nil), REF(GlobalValNames.Nil)), CONST_LONG(0)))
+    val expr4 =
+      FUNCTION_CALL(Native(401), List(IF(TRUE, REF(GlobalValNames.Nil), REF(GlobalValNames.Nil)), CONST_LONG(0)))
     Decompiler(expr4, decompilerContextV3) `shouldEq`
       """(if (true)
         |    then nil
@@ -463,7 +483,13 @@ class DecompilerTest extends PropSpec {
         BLOCK(
           LET("interval", FUNCTION_CALL(Native(104), List(CONST_LONG(24), CONST_LONG(60)))),
           BLOCK(
-            LET("exp", FUNCTION_CALL(Native(104), List(FUNCTION_CALL(Native(104), List(CONST_LONG(100), CONST_LONG(60))), CONST_LONG(1000)))),
+            LET(
+              "exp",
+              FUNCTION_CALL(
+                Native(104),
+                List(FUNCTION_CALL(Native(104), List(CONST_LONG(100), CONST_LONG(60))), CONST_LONG(1000))
+              )
+            ),
             BLOCK(
               LET("$match0", REF("tx")),
               IF(
@@ -473,7 +499,10 @@ class DecompilerTest extends PropSpec {
                   BLOCK(
                     LET(
                       "days",
-                      FUNCTION_CALL(Native(105), List(FUNCTION_CALL(Native(101), List(REF("height"), REF("startHeight"))), REF("interval")))
+                      FUNCTION_CALL(
+                        Native(105),
+                        List(FUNCTION_CALL(Native(101), List(REF("height"), REF("startHeight"))), REF("interval"))
+                      )
                     ),
                     IF(
                       IF(
@@ -486,14 +515,22 @@ class DecompilerTest extends PropSpec {
                                 Native(104),
                                 List(
                                   REF("startPrice"),
-                                  FUNCTION_CALL(Native(100), List(CONST_LONG(1), FUNCTION_CALL(Native(104), List(REF("days"), REF("days")))))
+                                  FUNCTION_CALL(
+                                    Native(100),
+                                    List(CONST_LONG(1), FUNCTION_CALL(Native(104), List(REF("days"), REF("days"))))
+                                  )
                                 )
                               )
                             )
                           ),
                           FUNCTION_CALL(
                             User("!"),
-                            List(FUNCTION_CALL(User("isDefined"), List(GETTER(GETTER(GETTER(REF("e"), "sellOrder"), "assetPair"), "priceAsset"))))
+                            List(
+                              FUNCTION_CALL(
+                                User("isDefined"),
+                                List(GETTER(GETTER(GETTER(REF("e"), "sellOrder"), "assetPair"), "priceAsset"))
+                              )
+                            )
                           ),
                           FALSE
                         ),
@@ -503,7 +540,10 @@ class DecompilerTest extends PropSpec {
                             REF("exp"),
                             FUNCTION_CALL(
                               Native(101),
-                              List(GETTER(GETTER(REF("e"), "sellOrder"), "expiration"), GETTER(GETTER(REF("e"), "sellOrder"), "timestamp"))
+                              List(
+                                GETTER(GETTER(REF("e"), "sellOrder"), "expiration"),
+                                GETTER(GETTER(REF("e"), "sellOrder"), "timestamp")
+                              )
                             )
                           )
                         ),
@@ -515,7 +555,10 @@ class DecompilerTest extends PropSpec {
                           REF("exp"),
                           FUNCTION_CALL(
                             Native(101),
-                            List(GETTER(GETTER(REF("e"), "buyOrder"), "expiration"), GETTER(GETTER(REF("e"), "buyOrder"), "timestamp"))
+                            List(
+                              GETTER(GETTER(REF("e"), "buyOrder"), "expiration"),
+                              GETTER(GETTER(REF("e"), "buyOrder"), "timestamp")
+                            )
                           )
                         )
                       ),
@@ -663,7 +706,7 @@ class DecompilerTest extends PropSpec {
     val script =
       """let arr = [1, 2, 3]
         |arr[1]""".stripMargin
-    val expr = compileExpr(script).explicitGet()._1
+    val expr  = compileExpr(script).explicitGet()._1
     val expr2 = compileExpr(
       """let arr = [1, 2, 3]
         |arr.getElement(1)""".stripMargin
@@ -825,8 +868,8 @@ class DecompilerTest extends PropSpec {
   )
 
   property("V4 - new functions") {
-    val sizes  = Seq(16, 32, 64, 128)
-    val hashes = Seq("blake2b", "keccak", "sha")
+    val sizes      = Seq(16, 32, 64, 128)
+    val hashes     = Seq("blake2b", "keccak", "sha")
     val directives =
       """
         | {-# STDLIB_VERSION 4    #-}
@@ -839,10 +882,16 @@ class DecompilerTest extends PropSpec {
          |   let v1 = transferTransactionFromProto(base58'')
          |   let v2 = groth16Verify(base58'', base58'', base58'')
          |   let v3 = createMerkleRoot(nil, base58'', 0)
-         |   let v4 = [${(for { s <- sizes; h <- hashes } yield h ++ "256_" ++ s.toString ++ "Kb(base58'')").mkString(", ")}]
-         |   let v5 = [${(for { s <- sizes } yield "sigVerify_" ++ s.toString ++ "Kb(base58'', base58'', base58'')").mkString(", ")}]
-         |   let v6 = [${(for { s <- sizes } yield "rsaVerify_" ++ s.toString ++ "Kb(SHA256, base58'', base58'', base58'')").mkString(", ")}]
-         |   let v7 = [${(for { s <- 1 to 15 } yield "groth16Verify_" ++ s.toString ++ "inputs( base58'', base58'', base58'')").mkString(", ")}]
+         |   let v4 = [${(for { s <- sizes; h <- hashes } yield h ++ "256_" ++ s.toString ++ "Kb(base58'')")
+          .mkString(", ")}]
+         |   let v5 = [${(for { s <- sizes } yield "sigVerify_" ++ s.toString ++ "Kb(base58'', base58'', base58'')")
+          .mkString(", ")}]
+         |   let v6 = [${(for {
+          s <- sizes
+        } yield "rsaVerify_" ++ s.toString ++ "Kb(SHA256, base58'', base58'', base58'')").mkString(", ")}]
+         |   let v7 = [${(for {
+          s <- 1 to 15
+        } yield "groth16Verify_" ++ s.toString ++ "inputs( base58'', base58'', base58'')").mkString(", ")}]
          |   let v8 = value(1)
          |   let v9 = valueOrErrorMessage(1,"")
          |   let v10 = toUtf8String(base58'')

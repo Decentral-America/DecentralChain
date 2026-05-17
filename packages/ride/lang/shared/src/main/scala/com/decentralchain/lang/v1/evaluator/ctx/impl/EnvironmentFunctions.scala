@@ -2,7 +2,7 @@ package com.decentralchain.lang.v1.evaluator.ctx.impl
 
 import cats.Monad
 import cats.implicits.*
-import com.decentralchain.lang.{ExecutionError, CommonError}
+import com.decentralchain.lang.{CommonError, ExecutionError}
 import com.decentralchain.lang.v1.compiler.Terms.{CONST_BYTESTR, CONST_STRING, CaseObj}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types
 import com.decentralchain.lang.v1.traits.domain.Recipient
@@ -30,13 +30,11 @@ class EnvironmentFunctions[F[_]: Monad](environment: Environment[F]) {
     }
   }
 
-  def getData(addressOrAlias: CaseObj, key: String, dataType: DataType): F[Either[ExecutionError, Option[Any]]] = {
+  def getData(addressOrAlias: CaseObj, key: String, dataType: DataType): F[Either[ExecutionError, Option[Any]]] =
     toScala(addressOrAlias).leftMap(CommonError(_)).traverse(environment.data(_, key, dataType))
-  }
 
-  def hasData(addressOrAlias: CaseObj): F[Either[ExecutionError, Boolean]] = {
+  def hasData(addressOrAlias: CaseObj): F[Either[ExecutionError, Boolean]] =
     toScala(addressOrAlias).leftMap(CommonError(_)).traverse(environment.hasData)
-  }
 
   def addressFromAlias(name: String): F[Either[ExecutionError, Recipient.Address]] =
     environment.resolveAlias(name).map(_.leftMap(CommonError(_)))

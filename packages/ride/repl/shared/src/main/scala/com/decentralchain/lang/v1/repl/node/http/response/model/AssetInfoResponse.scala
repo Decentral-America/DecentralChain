@@ -28,5 +28,16 @@ private[node] object AssetInfoResponse {
       reissuable           <- c.downField("reissuable").as[Boolean]
       scripted             <- c.downField("scripted").as[Boolean]
       minSponsoredAssetFee <- c.downField("minSponsoredAssetFee").as[Option[Long]]
-    } yield AssetInfoResponse(assetId, name, description, quantity, decimals, issuer, issuerPublicKey, reissuable, scripted, minSponsoredAssetFee)
+    } yield AssetInfoResponse(
+      assetId,
+      name,
+      description,
+      quantity,
+      decimals,
+      issuer,
+      issuerPublicKey,
+      reissuable,
+      scripted,
+      minSponsoredAssetFee
+    )
 }

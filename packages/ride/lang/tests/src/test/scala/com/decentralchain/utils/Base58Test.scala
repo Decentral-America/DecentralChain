@@ -20,7 +20,7 @@ class Base58Test extends PropSpec {
   val nonBase58Gen: Gen[String] =
     for {
       length <- Gen.chooseNum(20, 100)
-      chars <- Gen
+      chars  <- Gen
         .listOfN(length, Gen.oneOf(Base58Chars ++ IllegalChars))
         .filter(_.toSet.intersect(IllegalChars.toSet).nonEmpty)
     } yield chars.mkString

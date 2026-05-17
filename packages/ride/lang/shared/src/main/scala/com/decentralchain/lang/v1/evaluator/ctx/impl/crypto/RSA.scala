@@ -22,7 +22,7 @@ object RSA {
   case object SHA3384 extends DigestAlgorithm
   case object SHA3512 extends DigestAlgorithm
 
-  def digestAlgorithmPrefix(alg: DigestAlgorithm): String = {
+  def digestAlgorithmPrefix(alg: DigestAlgorithm): String =
     alg match {
       case NONE    => "NONE"
       case MD5     => "MD5"
@@ -36,9 +36,13 @@ object RSA {
       case SHA3384 => "SHA3-384"
       case SHA3512 => "SHA3-512"
     }
-  }
 
-  def verify(digestAlgorithm: DigestAlgorithm, message: Array[Byte], signature: Array[Byte], publicKey: Array[Byte]): Boolean = {
+  def verify(
+      digestAlgorithm: DigestAlgorithm,
+      message: Array[Byte],
+      signature: Array[Byte],
+      publicKey: Array[Byte]
+  ): Boolean = {
     val algorithm = {
       val digestPrefix = digestAlgorithmPrefix(digestAlgorithm)
       s"${digestPrefix}withRSA"

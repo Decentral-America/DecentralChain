@@ -4,8 +4,8 @@ import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V6
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomInt, randomIssuesArrayElement, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{nonMatchingTypes, stringList, CANT_FIND_FUNCTION}
+import utest.{test, Tests}
 
 object MakeString_11C extends JsTestBase {
   private val makeString_11C                = s"makeString_11C(bar, foo)"

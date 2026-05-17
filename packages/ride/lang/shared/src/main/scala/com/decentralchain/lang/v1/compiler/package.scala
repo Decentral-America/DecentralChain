@@ -27,7 +27,7 @@ package object compiler {
 
   def containsBlockV2(e: EXPR): Boolean = {
     @tailrec
-    def horTraversal(queue: Queue[EXPR]): Boolean = {
+    def horTraversal(queue: Queue[EXPR]): Boolean =
       queue.headOption match {
         case Some(expr) =>
           expr match {
@@ -40,13 +40,12 @@ package object compiler {
           }
         case None => false
       }
-    }
     horTraversal(Queue(e))
   }
 
   def containsArray(e: EXPR): Boolean = {
     @tailrec
-    def horTraversal(queue: Queue[EXPR]): Boolean = {
+    def horTraversal(queue: Queue[EXPR]): Boolean =
       queue.headOption match {
         case Some(expr) =>
           expr match {
@@ -61,7 +60,6 @@ package object compiler {
           }
         case None => false
       }
-    }
     horTraversal(Queue(e))
   }
 

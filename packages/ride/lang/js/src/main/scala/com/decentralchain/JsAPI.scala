@@ -16,14 +16,22 @@ import scala.scalajs.js.{Any, Dictionary}
 object JsAPI {
 
   @JSExportTopLevel("getTypes")
-  def getTypes(ver: Int = 2, isTokenContext: Boolean = false, isContract: Boolean = false): js.Array[js.Object & js.Dynamic] =
+  def getTypes(
+      ver: Int = 2,
+      isTokenContext: Boolean = false,
+      isContract: Boolean = false
+  ): js.Array[js.Object & js.Dynamic] =
     API
       .allTypes(ver, isTokenContext, isContract)
       .map(v => js.Dynamic.literal("name" -> v.name, "type" -> typeRepr(v)))
       .toJSArray
 
   @JSExportTopLevel("getVarsDoc")
-  def getVarsDoc(ver: Int = 2, isTokenContext: Boolean = false, isContract: Boolean = false): js.Array[js.Object & js.Dynamic] =
+  def getVarsDoc(
+      ver: Int = 2,
+      isTokenContext: Boolean = false,
+      isContract: Boolean = false
+  ): js.Array[js.Object & js.Dynamic] =
     API
       .allVars(ver, isTokenContext, isContract)
       .map { case (name, ft) =>
@@ -36,7 +44,11 @@ object JsAPI {
       .toJSArray
 
   @JSExportTopLevel("getFunctionsDoc")
-  def getFunctionsDoc(ver: Int = 2, isTokenContext: Boolean = false, isContract: Boolean = false): js.Array[js.Object & js.Dynamic] =
+  def getFunctionsDoc(
+      ver: Int = 2,
+      isTokenContext: Boolean = false,
+      isContract: Boolean = false
+  ): js.Array[js.Object & js.Dynamic] =
     API
       .allFunctions(ver, isTokenContext, isContract)
       .map { case (name, args, signature) =>
@@ -46,9 +58,13 @@ object JsAPI {
           "name"       -> name,
           "doc"        -> funcDoc,
           "resultType" -> typeRepr(signature.result),
-          "args" -> (args zip signature.args zip paramsDoc).map { arg =>
-            js.Dynamic.literal("name" -> arg._1._1, "type" -> typeRepr(arg._1._2._2), "doc" -> arg._2)
-          }.toJSArray
+          "args"       -> (args
+            .zip(signature.args)
+            .zip(paramsDoc))
+            .map { arg =>
+              js.Dynamic.literal("name" -> arg._1._1, "type" -> typeRepr(arg._1._2._2), "doc" -> arg._2)
+            }
+            .toJSArray
         )
       }
       .toJSArray
@@ -57,17 +73,23 @@ object JsAPI {
   def contractLimits(): js.Dynamic = {
     import ContractLimits.*
     js.Dynamic.literal(
-      "MaxComplexityByVersion"                -> ((ver: Int) => MaxComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))),
-      "MaxAssetVerifierComplexityByVersion"   -> ((ver: Int) => MaxComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))),
-      "MaxAccountVerifierComplexityByVersion" -> ((ver: Int) => MaxAccountVerifierComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))),
-      "MaxCallableComplexityByVersion"        -> ((ver: Int) => MaxCallableComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))),
-      "MaxExprSizeInBytes"                    -> MaxExprSizeInBytes,
-      "MaxContractSizeInBytes"                -> MaxContractSizeInBytesV6,
-      "MaxInvokeScriptArgs"                   -> MaxInvokeScriptArgs,
-      "MaxInvokeScriptSizeInBytes"            -> MaxInvokeScriptSizeInBytes,
-      "MaxWriteSetSizeInBytes"                -> MaxWriteSetSizeInBytes,
-      "MaxPaymentAmount"                      -> MaxCallableActionsAmountBeforeV6(V4),
-      "MaxAttachedPaymentAmount"              -> MaxAttachedPaymentAmount
+      "MaxComplexityByVersion" -> ((ver: Int) => MaxComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))),
+      "MaxAssetVerifierComplexityByVersion" -> ((ver: Int) =>
+        MaxComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))
+      ),
+      "MaxAccountVerifierComplexityByVersion" -> ((ver: Int) =>
+        MaxAccountVerifierComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))
+      ),
+      "MaxCallableComplexityByVersion" -> ((ver: Int) =>
+        MaxCallableComplexityByVersion(DirectiveDictionary[StdLibVersion].idMap(ver))
+      ),
+      "MaxExprSizeInBytes"         -> MaxExprSizeInBytes,
+      "MaxContractSizeInBytes"     -> MaxContractSizeInBytesV6,
+      "MaxInvokeScriptArgs"        -> MaxInvokeScriptArgs,
+      "MaxInvokeScriptSizeInBytes" -> MaxInvokeScriptSizeInBytes,
+      "MaxWriteSetSizeInBytes"     -> MaxWriteSetSizeInBytes,
+      "MaxPaymentAmount"           -> MaxCallableActionsAmountBeforeV6(V4),
+      "MaxAttachedPaymentAmount"   -> MaxAttachedPaymentAmount
     )
   }
 
@@ -170,12 +192,12 @@ object JsAPI {
               di.dApp.meta.compactNameAndOriginalNamePairList.map(pair => pair.compactName -> pair.originalName).toMap
 
             val resultFields: Seq[(String, Any)] = Seq(
-              "result"               -> Global.toBuffer(di.bytes),
-              "ast"                  -> toJs(),
-              "meta"                 -> mappedMeta,
-              "complexity"           -> di.maxComplexity._2.toDouble,
-              "verifierComplexity"   -> di.verifierComplexity.toDouble,
-              "callableComplexities" -> di.callableComplexities.view.mapValues(_.toDouble).toMap.toJSDictionary,
+              "result"                   -> Global.toBuffer(di.bytes),
+              "ast"                      -> toJs(),
+              "meta"                     -> mappedMeta,
+              "complexity"               -> di.maxComplexity._2.toDouble,
+              "verifierComplexity"       -> di.verifierComplexity.toDouble,
+              "callableComplexities"     -> di.callableComplexities.view.mapValues(_.toDouble).toMap.toJSDictionary,
               "userFunctionComplexities" -> di.userFunctionComplexities.map { case (name, complexity) =>
                 compactNameToOriginalName.getOrElse(name, name) -> complexity.toDouble
               }.toJSDictionary,

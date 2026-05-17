@@ -32,14 +32,13 @@ trait TaskMT[F[_], S, E, R] {
       case Left(err) => Left(err)
     }))
 
-  def flatMap[B](f: R => TaskMT[F, S, E, B])(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, B] = {
+  def flatMap[B](f: R => TaskMT[F, S, E, B])(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, B] =
     TaskMT.fromEvalRef[F, S, E, B] { s =>
       m.flatMap(inner.run(s)) {
         case Right(v)  => f(v).inner.run(s)
         case Left(err) => m.pure(err.asLeft[B])
       }
     }
-  }
 
   def handleErrorWith(f: E => TaskMT[F, S, E, R])(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, R] =
     TaskMT.fromEvalRef[F, S, E, R] { s =>
@@ -49,14 +48,13 @@ trait TaskMT[F[_], S, E, R] {
       }
     }
 
-  def handleError()(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, (Option[R], List[E])] = {
+  def handleError()(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, (Option[R], List[E])] =
     TaskMT.fromEvalRef[F, S, E, (Option[R], List[E])] { s =>
       m.flatMap(inner.run(s)) {
         case Right(v)  => m.pure((Some(v), List.empty).asRight[E])
         case Left(err) => m.pure((None, List(err)).asRight[E])
       }
     }
-  }
 }
 
 object TaskMT {
@@ -66,7 +64,7 @@ object TaskMT {
     }
 
   def apply[F[_], S, E, R](f: S => Eval[F[Either[E, R]]]): TaskMT[F, S, E, R] =
-    fromEvalRef(_.read flatMap f)
+    fromEvalRef(_.read.flatMap(f))
 
   private def fromEvalRef[F[_], S, E, R](f: EvalRef[S] => Eval[F[Either[E, R]]]): TaskMT[F, S, E, R] =
     new TaskMT[F, S, E, R] {

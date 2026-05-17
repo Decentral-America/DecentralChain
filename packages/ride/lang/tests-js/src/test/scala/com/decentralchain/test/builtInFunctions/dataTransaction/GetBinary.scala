@@ -5,7 +5,7 @@ import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{dataEntryForTests, randomBoolean, randomInt, randomStringArrayElement}
 import testHelpers.TestDataConstantsAndMethods.*
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetBinary extends JsTestBase {
   // getBinaryKey

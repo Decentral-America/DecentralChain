@@ -16,11 +16,12 @@ trait ArbitraryDirectiveKey extends DirectiveKey {
 }
 
 object DirectiveKey {
-  def predefined[V <: DirectiveValue](value: String)(implicit dic: DirectiveDictionary[V]) = new PredefinedDirectiveKey {
-    override val text: String = value
-    override type Value = V
-    override val valueDic: DirectiveDictionary[V] = dic
-  }
+  def predefined[V <: DirectiveValue](value: String)(implicit dic: DirectiveDictionary[V]) =
+    new PredefinedDirectiveKey {
+      override val text: String = value
+      override type Value = V
+      override val valueDic: DirectiveDictionary[V] = dic
+    }
 
   def arbitrary[V <: DirectiveValue](value: String)(implicit mapper: String => V) = new ArbitraryDirectiveKey {
     override val text: String = value

@@ -2,16 +2,21 @@ package com.decentralchain.test.builtInFunctions.converting
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object AddressFromPublicKey extends JsTestBase {
   private val addressFromPublicKey                     = s"addressFromPublicKey(callerTestData)"
   private val addressFromPublicKeyArgBeforeFunction    = s"callerTestData.addressFromPublicKey()"
   private val invalidAddressFromPublicKey              = s"addressFromPublicKey()"
-  private val invalidAddressFromPublicKeyArgBeforeFunc = s"callerTestData.addressFromPublicKey(callerTestData, callerTestData)"
-  private val invalidAddressFromPublicKeyData          = s"addressFromPublicKey(callerTestData, $randomUnionArrayElement)"
+  private val invalidAddressFromPublicKeyArgBeforeFunc =
+    s"callerTestData.addressFromPublicKey(callerTestData, callerTestData)"
+  private val invalidAddressFromPublicKeyData = s"addressFromPublicKey(callerTestData, $randomUnionArrayElement)"
 
   val tests: Tests = Tests {
     test("RIDE-60. AddressFromPublicKey function should compile for valid values") {
@@ -36,9 +41,21 @@ object AddressFromPublicKey extends JsTestBase {
           (data, function, error) <- Seq(
             (randomAddressDataArrayElement, addressFromPublicKey, nonMatchingTypes("ByteVector")),
             (randomAddressDataArrayElement, addressFromPublicKeyArgBeforeFunction, nonMatchingTypes("ByteVector")),
-            (randomByteVectorArrayElement, invalidAddressFromPublicKey, invalidFunctionError("addressFromPublicKey", 1)),
-            (randomAddressDataArrayElement, invalidAddressFromPublicKeyArgBeforeFunc, invalidFunctionError("addressFromPublicKey", 1)),
-            (randomAddressDataArrayElement, invalidAddressFromPublicKeyData, invalidFunctionError("addressFromPublicKey", 1))
+            (
+              randomByteVectorArrayElement,
+              invalidAddressFromPublicKey,
+              invalidFunctionError("addressFromPublicKey", 1)
+            ),
+            (
+              randomAddressDataArrayElement,
+              invalidAddressFromPublicKeyArgBeforeFunc,
+              invalidFunctionError("addressFromPublicKey", 1)
+            ),
+            (
+              randomAddressDataArrayElement,
+              invalidAddressFromPublicKeyData,
+              invalidFunctionError("addressFromPublicKey", 1)
+            )
           )
         ) {
           val script = precondition.onlyMatcherContract(data, function)

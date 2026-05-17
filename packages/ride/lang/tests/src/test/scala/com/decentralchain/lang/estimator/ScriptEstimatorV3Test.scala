@@ -20,7 +20,11 @@ class ScriptEstimatorV3Test
       ScriptEstimatorV3(fixOverflow = false, overhead = true, letFixes = true)
     ) {
   private def estimateNoOverhead(script: String): Either[String, Long] =
-    ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)(lets, functionCosts(V6), compile(script)(using V6))
+    ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)(
+      lets,
+      functionCosts(V6),
+      compile(script)(using V6)
+    )
 
   property("multiple func calls") {
     val script =
@@ -117,7 +121,7 @@ class ScriptEstimatorV3Test
   }
 
   property("big function call tree") {
-    val n = 750
+    val n      = 750
     val script =
       s"""
          | func f0() = 0
@@ -253,7 +257,7 @@ class ScriptEstimatorV3Test
   }
 
   property("overflow on sum of function args costs") {
-    val n = 62
+    val n      = 62
     val script =
       s"""
          | func f0() = true
@@ -263,6 +267,8 @@ class ScriptEstimatorV3Test
          |
          | g(f$n(), f$n(), true)
        """.stripMargin
-    estimate(functionCosts(V3), compile(script)) shouldBe Left(s"Estimators discrepancy: ${ArraySeq(Left("Illegal script"), Right(0), Right(0))}")
+    estimate(functionCosts(V3), compile(script)) shouldBe Left(
+      s"Estimators discrepancy: ${ArraySeq(Left("Illegal script"), Right(0), Right(0))}"
+    )
   }
 }

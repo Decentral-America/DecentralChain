@@ -18,13 +18,11 @@ object TestDataConstantsAndMethods {
   val intList                                                   = "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
   val thisVariable                                              = "this"
 
-  def nonMatchingTypes(expectType: String): String = {
+  def nonMatchingTypes(expectType: String): String =
     s"Non-matching types: expected: $expectType"
-  }
 
-  def invalidFunctionError(functionName: String, numberOfArguments: Integer): String = {
+  def invalidFunctionError(functionName: String, numberOfArguments: Integer): String =
     s"Function '$functionName' requires $numberOfArguments arguments"
-  }
 
   val binaryEntryForTests: String  = entryMap("BinaryEntry")
   val integerEntryForTests: String = entryMap("IntegerEntry")

@@ -17,17 +17,22 @@ import scala.jdk.CollectionConverters.SeqHasAsJava
 import scala.util.control.NonFatal
 
 object P256Curve extends StrictLogging {
-  private val signaturePool         = ThreadLocal.withInitial(() => Signature.getInstance("SHA256withECDSA", Provider.name))
+  private val signaturePool = ThreadLocal.withInitial(() => Signature.getInstance("SHA256withECDSA", Provider.name))
   private val certPathValidatorPool = ThreadLocal.withInitial(() => CertPathValidator.getInstance("PKIX"))
   private val certificateFactory    = CertificateFactory.getInstance("X.509")
   private val keyFactory            = KeyFactory.getInstance("EC")
-  private val ecSpec = {
+  private val ecSpec                = {
     val params = AlgorithmParameters.getInstance("EC")
     params.init(new ECGenParameterSpec("secp256r1"))
     params.getParameterSpec(classOf[ECParameterSpec])
   }
 
-  private def validateCertChain(root: X509Certificate, certPath: CertPath, crls: Seq[X509CRL], verificationDate: Date): Unit = {
+  private def validateCertChain(
+      root: X509Certificate,
+      certPath: CertPath,
+      crls: Seq[X509CRL],
+      verificationDate: Date
+  ): Unit = {
     val params = new PKIXParameters(Collections.singleton(new TrustAnchor(root, null)))
     params.setDate(verificationDate)
     params.addCertStore(CertStore.getInstance("Collection", new CollectionCertStoreParameters(crls.asJava)))
@@ -36,8 +41,14 @@ object P256Curve extends StrictLogging {
     certPathValidatorPool.get().validate(certPath, params)
   }
 
-  def validateCertChain(certificateChain: Seq[Array[Byte]], crls: Seq[Array[Byte]], timestamp: Long): Either[String, Array[Byte]] = try {
-    val certs = certificateChain.map(bs => certificateFactory.generateCertificate(new ByteArrayInputStream(bs)).asInstanceOf[X509Certificate])
+  def validateCertChain(
+      certificateChain: Seq[Array[Byte]],
+      crls: Seq[Array[Byte]],
+      timestamp: Long
+  ): Either[String, Array[Byte]] = try {
+    val certs = certificateChain.map(bs =>
+      certificateFactory.generateCertificate(new ByteArrayInputStream(bs)).asInstanceOf[X509Certificate]
+    )
 
     validateCertChain(
       certs.last,

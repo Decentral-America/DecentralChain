@@ -12,7 +12,7 @@ object Merkle {
   def hash(input: Message): Digest = com.decentralchain.lang.Global.blake2b256(input)
 
   /** Makes levels of merkle tree (from top to bottom) */
-  def mkLevels(data: Seq[Message]): Seq[Level] = {
+  def mkLevels(data: Seq[Message]): Seq[Level] =
     if (data.isEmpty) emptyLevels
     else {
       @tailrec
@@ -29,7 +29,6 @@ object Merkle {
       val bottom = data.map(hash)
       loop(bottom, Seq(bottom))
     }
-  }
 
   /** Makes proofs for data (from top to bottom)
     *
@@ -72,16 +71,14 @@ object Merkle {
     * @param root
     *   merkle root
     */
-  def verify(digest: Digest, index: Int, proofs: Seq[Digest], root: Digest): Boolean = {
-    (1 << proofs.length) > index && index >= 0 && (createRoot(digest, index, proofs) sameElements root)
-  }
+  def verify(digest: Digest, index: Int, proofs: Seq[Digest], root: Digest): Boolean =
+    (1 << proofs.length) > index && index >= 0 && (createRoot(digest, index, proofs).sameElements(root))
 
-  def verify(rootBytes: Array[Byte], proofBytes: Array[Byte], valueBytes: Array[Byte]): Boolean = {
+  def verify(rootBytes: Array[Byte], proofBytes: Array[Byte], valueBytes: Array[Byte]): Boolean =
     (for {
       rootDigest  <- parseRoot(rootBytes)
       merkleProof <- ScryptoMerkleProof.parse(proofBytes, valueBytes)
     } yield merkleProof.valid(rootDigest)).getOrElse(false)
-  }
 
   def parseRoot(bytes: Array[Byte]): Option[Digest] = if (bytes.length == 32) Some(bytes) else None
 }

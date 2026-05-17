@@ -5,7 +5,7 @@ import org.scalatest.*
 
 class ByteStrTest extends wordspec.AnyWordSpec with matchers.should.Matchers {
 
-  private def getSeqBytesArr(size: Int, from: Int = 1): Array[Byte] = (from until (from + size) map (_.toByte)).toArray
+  private def getSeqBytesArr(size: Int, from: Int = 1): Array[Byte] = ((from until (from + size)).map(_.toByte)).toArray
 
   "ByteStr" should {
 
@@ -16,10 +16,13 @@ class ByteStrTest extends wordspec.AnyWordSpec with matchers.should.Matchers {
     }
 
     "correctly serialize long values" in {
-      ByteStr.fromLong(0x0102030405060708L).arr shouldBe Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)        // ByteVector.fromLong(0x0102030405060708L)
-      ByteStr.fromLong(33L).arr shouldBe Array[Byte](0, 0, 0, 0, 0, 0, 0, 33)                       // ByteVector.fromLong(33L)
-      ByteStr.fromLong(Int.MaxValue.toLong).arr shouldBe Array[Byte](0, 0, 0, 0, 127, -1, -1, -1)   // ByteVector.fromLong(Int.MaxValue.toLong)
-      ByteStr.fromLong(Int.MinValue.toLong).arr shouldBe Array[Byte](-1, -1, -1, -1, -128, 0, 0, 0) // ByteVector.fromLong(Int.MaxValue.toLong)
+      ByteStr.fromLong(0x0102030405060708L).arr shouldBe Array[Byte](1, 2, 3, 4, 5, 6, 7,
+        8) // ByteVector.fromLong(0x0102030405060708L)
+      ByteStr.fromLong(33L).arr shouldBe Array[Byte](0, 0, 0, 0, 0, 0, 0, 33) // ByteVector.fromLong(33L)
+      ByteStr.fromLong(Int.MaxValue.toLong).arr shouldBe Array[Byte](0, 0, 0, 0, 127, -1, -1,
+        -1) // ByteVector.fromLong(Int.MaxValue.toLong)
+      ByteStr.fromLong(Int.MinValue.toLong).arr shouldBe Array[Byte](-1, -1, -1, -1, -128, 0, 0,
+        0) // ByteVector.fromLong(Int.MaxValue.toLong)
     }
 
     "be correctly created via fill method" in {

@@ -15,7 +15,9 @@ class FractionIntRoundsTest extends EvaluatorSpec {
 
   property("fraction with long limits") {
     val limitError = "-85070591730234615856620279821087277056 out of integers range"
-    eval(s"fraction($max, $min, 1, HALFEVEN)")(using V5, checkNext = false) should produce("toInt: BigInt " + limitError)
+    eval(s"fraction($max, $min, 1, HALFEVEN)")(using V5, checkNext = false) should produce(
+      "toInt: BigInt " + limitError
+    )
     eval(s"fraction($max, $min, 1, HALFEVEN)")(using V6) should produce("Fraction result " + limitError)
 
     eval(s"fraction($max, $min, $min, HALFEVEN)") shouldBe Right(CONST_LONG(max))

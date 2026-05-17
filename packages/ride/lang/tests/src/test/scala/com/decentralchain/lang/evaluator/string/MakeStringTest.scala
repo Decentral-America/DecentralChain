@@ -5,7 +5,15 @@ import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.directives.values.{StdLibVersion, V4, V5, V6}
 import com.decentralchain.lang.evaluator.EvaluatorSpec
 import com.decentralchain.lang.v1.FunctionHeader.Native
-import com.decentralchain.lang.v1.compiler.Terms.{CONST_BOOLEAN, CONST_BYTESTR, CONST_LONG, CONST_STRING, EXPR, FUNCTION_CALL, REF}
+import com.decentralchain.lang.v1.compiler.Terms.{
+  CONST_BOOLEAN,
+  CONST_BYTESTR,
+  CONST_LONG,
+  CONST_STRING,
+  EXPR,
+  FUNCTION_CALL,
+  REF
+}
 import com.decentralchain.lang.v1.evaluator.FunctionIds
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{GlobalValNames, PureContext}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.MaxListLengthV4
@@ -15,7 +23,14 @@ class MakeStringTest extends EvaluatorSpec {
   implicit val v: StdLibVersion = V6
 
   property("correct results") {
-    for (f <- List(PureContext.makeString, PureContext.makeString_V6, PureContext.makeString_V6_2C, PureContext.makeString_V6_11C)) {
+    for (
+      f <- List(
+        PureContext.makeString,
+        PureContext.makeString_V6,
+        PureContext.makeString_V6_2C,
+        PureContext.makeString_V6_11C
+      )
+    ) {
       eval(s""" ${f.name}(["cat", "dog", "pig"], ", ") """) shouldBe CONST_STRING("cat, dog, pig")
       eval(s""" ${f.name}([], ", ") """) shouldBe CONST_STRING("")
       eval(s""" ${f.name}(["abc"], ", ") == "abc" """) shouldBe Right(CONST_BOOLEAN(true))
@@ -37,12 +52,21 @@ class MakeStringTest extends EvaluatorSpec {
     def script(funcId: Short): FUNCTION_CALL = FUNCTION_CALL(
       Native(funcId),
       List(
-        mkConsList(List(CONST_STRING("test").explicitGet(), CONST_LONG(123), CONST_BOOLEAN(true), CONST_BYTESTR(ByteStr.empty).explicitGet())),
+        mkConsList(
+          List(
+            CONST_STRING("test").explicitGet(),
+            CONST_LONG(123),
+            CONST_BOOLEAN(true),
+            CONST_BYTESTR(ByteStr.empty).explicitGet()
+          )
+        ),
         CONST_STRING(",").explicitGet()
       )
     )
 
-    evalExpr(script(FunctionIds.MAKESTRING), V4, V5, checkOldPowVersion = true) shouldBe Right(CONST_STRING("test,123,true,").explicitGet())
+    evalExpr(script(FunctionIds.MAKESTRING), V4, V5, checkOldPowVersion = true) shouldBe Right(
+      CONST_STRING("test,123,true,").explicitGet()
+    )
     evalExpr(script(FunctionIds.MAKESTRING), V6, V6) should produce("makeString only accepts strings")
     evalExpr(script(FunctionIds.MAKESTRING2C), V6, V6) should produce("makeString only accepts strings")
     evalExpr(script(FunctionIds.MAKESTRING11C), V6, V6) should produce("makeString only accepts strings")
@@ -67,7 +91,9 @@ class MakeStringTest extends EvaluatorSpec {
   property("makeString output limit") {
     Seq(V4, V5).foreach { version =>
       val script = s""" [${s""" "${"a" * 1000}", """ * 32} "${"a" * 704}"].${PureContext.makeString.name}(", ") """
-      eval(script)(using version, checkNext = false) should produce("Constructing string size = 32768 bytes will exceed 32767")
+      eval(script)(using version, checkNext = false) should produce(
+        "Constructing string size = 32768 bytes will exceed 32767"
+      )
       // 1000 * 32 + 704 + 2 * 32 = 32768
 
       val script2 = s""" [${s""" "${"a" * 1000}", """ * 32} "${"a" * 703}"].${PureContext.makeString.name}(", ") """
@@ -84,15 +110,19 @@ class MakeStringTest extends EvaluatorSpec {
 
   property("makeString function family input limit") {
     val script = s""" ${PureContext.makeString_V6_2C.name}([${s""" "${"a" * 5}", """ * 100} "a"], ", ") """
-    eval(script)(using V6) should produce(s"Input list size = 101 for ${PureContext.makeString_V6_2C.name} should not exceed 100")
+    eval(script)(using V6) should produce(
+      s"Input list size = 101 for ${PureContext.makeString_V6_2C.name} should not exceed 100"
+    )
 
     val script2 = s""" ${PureContext.makeString_V6_2C.name}([${s""" "${"a" * 5}", """ * 99} "a"], ", ") """
     eval(script2)(using V6) shouldBe a[Right[?, ?]]
 
-    val script3 = s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 5}", """ * MaxListLengthV4} "a"], ", ") """
+    val script3 =
+      s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 5}", """ * MaxListLengthV4} "a"], ", ") """
     eval(script3)(using V6) should produce("List size should not exceed 1000")
 
-    val script4 = s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 5}", """ * (MaxListLengthV4 - 1)} "a"], ", ") """
+    val script4 =
+      s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 5}", """ * (MaxListLengthV4 - 1)} "a"], ", ") """
     eval(script4)(using V6) shouldBe a[Right[?, ?]]
   }
 
@@ -104,11 +134,13 @@ class MakeStringTest extends EvaluatorSpec {
     val script2 = s""" ${PureContext.makeString_V6_2C.name}([${s""" "${"a" * 250}", """ * 20} "${"a" * 960}"], ", ") """
     eval(script2)(using V6).explicitGet().asInstanceOf[CONST_STRING].s.length shouldBe 6000
 
-    val script3 = s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 1000}", """ * 32} "${"a" * 704}"], ", ") """
+    val script3 =
+      s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 1000}", """ * 32} "${"a" * 704}"], ", ") """
     eval(script3)(using V6) should produce("Constructing string size = 32768 bytes will exceed 32767")
     // 10 * 42 + 1 + 2 * 42 = 505
 
-    val script4 = s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 1000}", """ * 32} "${"a" * 703}"], ", ") """
+    val script4 =
+      s""" ${PureContext.makeString_V6_11C.name}([${s""" "${"a" * 1000}", """ * 32} "${"a" * 703}"], ", ") """
     eval(script4)(using V6).explicitGet().asInstanceOf[CONST_STRING].s.length shouldBe 32767
   }
 }

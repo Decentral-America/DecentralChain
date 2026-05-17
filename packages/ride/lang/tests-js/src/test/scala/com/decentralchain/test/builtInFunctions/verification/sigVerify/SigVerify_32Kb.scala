@@ -3,9 +3,13 @@ package com.decentralchain.test.builtInFunctions.verification.sigVerify
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, actualVersionsWithoutV3, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, nonMatchingTypes, CANT_FIND_FUNCTION}
+import utest.{test, Tests}
 
 object SigVerify_32Kb extends JsTestBase {
   private val sigVerify_32Kb                     = s"sigVerify_32Kb(callerTestData, callerTestData, callerTestData)"

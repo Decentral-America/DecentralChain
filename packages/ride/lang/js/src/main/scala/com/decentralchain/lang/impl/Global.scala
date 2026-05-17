@@ -5,7 +5,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.crypto.RSA.DigestAlgorithm
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobalScope
 import scala.scalajs.js.typedarray.ArrayBuffer
-import scala.scalajs.js.{Object, Promise, native}
+import scala.scalajs.js.{native, Object, Promise}
 
 @native
 @JSGlobalScope

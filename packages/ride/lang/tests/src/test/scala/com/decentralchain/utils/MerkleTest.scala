@@ -26,7 +26,7 @@ import scala.util.Random
 class MerkleTest extends PropSpec {
   private val EmptyNodeHash = hash(Array[Byte](0))
 
-  private def mkScryptoLevels(data: Seq[Message]): Seq[Level] = {
+  private def mkScryptoLevels(data: Seq[Message]): Seq[Level] =
     if (data.isEmpty) Seq(Seq.empty)
     else {
       @tailrec
@@ -35,7 +35,7 @@ class MerkleTest extends PropSpec {
           .grouped(2)
           .collect {
             case Seq(l, r) => hash(ScryptoMerkleProof.InternalNodePrefix +: (l ++ r))
-            case Seq(l) =>
+            case Seq(l)    =>
               hash(ScryptoMerkleProof.InternalNodePrefix +: (l ++ EmptyNodeHash))
           }
           .toSeq
@@ -44,7 +44,6 @@ class MerkleTest extends PropSpec {
       val bottom = data.map(ld => hash(ScryptoMerkleProof.LeafPrefix +: ld))
       loop(bottom, Seq(bottom))
     }
-  }
 
   private def testData() =
     List
@@ -73,7 +72,9 @@ class MerkleTest extends PropSpec {
       val (_, i1)  = tl(0)
       val (l2, i2) = tl(1)
 
-      eval(scriptSrc(tree.head.head, proofBytes(i2, Merkle.mkProofs(i1, tree)), l2)) shouldBe Right(CONST_BOOLEAN(false))
+      eval(scriptSrc(tree.head.head, proofBytes(i2, Merkle.mkProofs(i1, tree)), l2)) shouldBe Right(
+        CONST_BOOLEAN(false)
+      )
     }
   }
 
@@ -84,7 +85,9 @@ class MerkleTest extends PropSpec {
     val tree2 = mkScryptoLevels(testData())
 
     forAll(Gen.oneOf(leaves.zipWithIndex)) { case (leaf, index) =>
-      eval(scriptSrc(tree2.head.head, proofBytes(index, Merkle.mkProofs(index, tree1)), leaf)) shouldBe Right(CONST_BOOLEAN(false))
+      eval(scriptSrc(tree2.head.head, proofBytes(index, Merkle.mkProofs(index, tree1)), leaf)) shouldBe Right(
+        CONST_BOOLEAN(false)
+      )
     }
   }
 
@@ -101,8 +104,11 @@ class MerkleTest extends PropSpec {
     val leaves = testData()
     val tree   = mkScryptoLevels(leaves)
 
-    forAll(Gen.oneOf(leaves.zipWithIndex), Gen.containerOf[Array, Byte](Arbitrary.arbitrary[Byte])) { case ((leaf, index), bytes) =>
-      eval(scriptSrc(bytes, proofBytes(index, Merkle.mkProofs(index, tree)), leaf)) shouldBe Right(CONST_BOOLEAN(false))
+    forAll(Gen.oneOf(leaves.zipWithIndex), Gen.containerOf[Array, Byte](Arbitrary.arbitrary[Byte])) {
+      case ((leaf, index), bytes) =>
+        eval(scriptSrc(bytes, proofBytes(index, Merkle.mkProofs(index, tree)), leaf)) shouldBe Right(
+          CONST_BOOLEAN(false)
+        )
     }
   }
 
@@ -111,10 +117,12 @@ class MerkleTest extends PropSpec {
     val ctx     = lazyContexts((DirectiveSet(version, Account, Expression).explicitGet(), true, true, true))()
     val evalCtx = ctx.evaluationContext[Id](Common.emptyBlockchainEnvironment())
     val typed   = ExpressionCompiler(ctx.compilerContext, V3, untyped)
-    typed.flatMap(v => EvaluatorV2.applyCompleted(evalCtx, v._1, LogExtraInfo(), version, true, true, false, true)._3.leftMap(_.toString))
+    typed.flatMap(v =>
+      EvaluatorV2.applyCompleted(evalCtx, v._1, LogExtraInfo(), version, true, true, false, true)._3.leftMap(_.toString)
+    )
   }
 
-  private def scriptSrc(root: Array[Byte], proof: Array[Byte], value: Array[Byte]): String = {
+  private def scriptSrc(root: Array[Byte], proof: Array[Byte], value: Array[Byte]): String =
     s"""
        |let rootHash = base64'${Base64.encode(root)}'
        |let leafData = base64'${Base64.encode(value)}'
@@ -122,16 +130,14 @@ class MerkleTest extends PropSpec {
        |
        |checkMerkleProof(rootHash, merkleProof, leafData)
      """.stripMargin
-  }
 
-  private def scriptCreateRootSrc(proof: Seq[Array[Byte]], value: Array[Byte], index: Int): String = {
+  private def scriptCreateRootSrc(proof: Seq[Array[Byte]], value: Array[Byte], index: Int): String =
     s"""
        |let leafData = base64'${Base64.encode(value)}'
        |let merkleProof = [base64'${proof.map(Base64.encode).mkString("', base64'")}']
        |
        |createMerkleRoot(merkleProof, leafData, $index)
      """.stripMargin
-  }
 
   property("Create root from proof") {
     val leaves = testData()
@@ -141,7 +147,9 @@ class MerkleTest extends PropSpec {
       val proofs = mkProofs(index, levels).reverse
 
       eval(scriptCreateRootSrc(proofs, hash(leaf), index), V4) shouldBe CONST_BYTESTR(ByteStr(levels.head.head))
-      eval(scriptCreateRootSrc(proofs, hash(leaf), index + (1 << proofs.length)), V4) should produce("out of range allowed by proof list length")
+      eval(scriptCreateRootSrc(proofs, hash(leaf), index + (1 << proofs.length)), V4) should produce(
+        "out of range allowed by proof list length"
+      )
     }
   }
 

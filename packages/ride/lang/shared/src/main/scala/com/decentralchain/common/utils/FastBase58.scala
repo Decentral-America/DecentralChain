@@ -4,12 +4,13 @@ import java.nio.charset.StandardCharsets.US_ASCII
 import scala.annotation.tailrec
 
 object FastBase58 extends BaseXXEncDec {
-  private val Alphabet: Array[Byte] = Base58Alphabet.getBytes(US_ASCII)
+  private val Alphabet: Array[Byte]    = Base58Alphabet.getBytes(US_ASCII)
   private val DecodeTable: Array[Byte] = Array(
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, -1, -1, -1, -1, -1, -1, -1, 9, 10, 11, 12, 13, 14, 15, 16, -1, 17,
-    18, 19, 20, 21, -1, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, -1, -1, -1, -1, -1, -1, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, -1, 44, 45,
-    46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, -1, -1,
+    -1, -1, -1, -1, -1, 9, 10, 11, 12, 13, 14, 15, 16, -1, 17, 18, 19, 20, 21, -1, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    31, 32, -1, -1, -1, -1, -1, -1, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, -1, 44, 45, 46, 47, 48, 49, 50, 51, 52,
+    53, 54, 55, 56, 57
   )
 
   override def defaultDecodeLimit: Int = 192
@@ -65,7 +66,8 @@ object FastBase58 extends BaseXXEncDec {
     val outArrayLength = (b58Chars.length + 3) / 4
     val outArray       = new Array[Long](outArrayLength)
     for (b58Char <- b58Chars) {
-      if (b58Char >= DecodeTable.length || DecodeTable(b58Char) == -1) throw new IllegalArgumentException(s"Invalid base58 digit $b58Char")
+      if (b58Char >= DecodeTable.length || DecodeTable(b58Char) == -1)
+        throw new IllegalArgumentException(s"Invalid base58 digit $b58Char")
       var base58EncMask = ByteOps.toUnsignedLong(DecodeTable(b58Char))
       for (outIndex <- (outArrayLength - 1) until 0 by -1) {
         val longValue = outArray(outIndex) * 58 + base58EncMask
@@ -75,7 +77,8 @@ object FastBase58 extends BaseXXEncDec {
 
       // called only from Try structure, see BaseXXEncDec.tryDecode(str: String)
       if (base58EncMask > 0) throw new IllegalArgumentException("Output number too big (carry to the next int32)")
-      if ((outArray(0) & zeroMask) != 0) throw new IllegalArgumentException("Output number too big (last int32 filled too far)")
+      if ((outArray(0) & zeroMask) != 0)
+        throw new IllegalArgumentException("Output number too big (last int32 filled too far)")
     }
 
     val outBytes      = new Array[Byte]((b58Chars.length + 3) * 3)
@@ -99,7 +102,7 @@ object FastBase58 extends BaseXXEncDec {
       def findStart(start: Int = 0): Int = {
         if (start >= outBytes.length) return 0
         val element = outBytes(start)
-        if (element != 0) (start - zeroCount) max 0
+        if (element != 0) (start - zeroCount).max(0)
         else findStart(start + 1)
       }
 

@@ -16,7 +16,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, PureContext
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{CTX, FunctionHeader}
-import com.decentralchain.lang.{Common, Global, utils}
+import com.decentralchain.lang.{utils, Common, Global}
 import com.decentralchain.test.*
 import monix.eval.Coeval
 
@@ -51,7 +51,7 @@ class ScriptEstimatorTestBase(estimators: ScriptEstimator*) extends PropSpec {
       )
   }
 
-  private val env = Common.emptyBlockchainEnvironment()
+  private val env                 = Common.emptyBlockchainEnvironment()
   protected val lets: Set[String] =
     ctx.evaluationContext(env).letDefs.keySet
 

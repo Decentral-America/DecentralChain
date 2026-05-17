@@ -9,14 +9,20 @@ import testHelpers.RandomDataGenerator.{
   randomInt,
   randomStringArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{invalidFunctionError, nonMatchingTypes, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  invalidFunctionError,
+  nonMatchingTypes,
+  versionsSupportingTheNewFeatures
+}
+import utest.{test, Tests}
 
 object Invoke extends JsTestBase {
-  private val invoke                             = "invoke(addressFromStringValue(dapp2),\"bar\",[a],[AttachedPayment(byteVector, payment)])"
-  private val invokeArgBeforeFunc                = "addressFromStringValue(dapp2).invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
-  private val invalidInvokeFunction              = "invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
-  private val invalidInvokeArgBeforeFunc         = "addressFromStringValue(dapp2).invoke([AttachedPayment(byteVector, payment)])"
+  private val invoke = "invoke(addressFromStringValue(dapp2),\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val invokeArgBeforeFunc =
+    "addressFromStringValue(dapp2).invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val invalidInvokeFunction      = "invoke(\"bar\",[a],[AttachedPayment(byteVector, payment)])"
+  private val invalidInvokeArgBeforeFunc =
+    "addressFromStringValue(dapp2).invoke([AttachedPayment(byteVector, payment)])"
   private val invalidFunctionErrorResult: String = invalidFunctionError("invoke", 4)
 
   val tests: Tests = Tests {
@@ -41,7 +47,12 @@ object Invoke extends JsTestBase {
         for (
           (byteVector, data, function, error) <- Seq(
             (randomByteVectorArrayElement, randomAddressDataArrayElement, invoke, nonMatchingTypes("Int")),
-            (randomByteVectorArrayElement, randomDigestAlgorithmTypeArrayElement, invokeArgBeforeFunc, nonMatchingTypes("Int")),
+            (
+              randomByteVectorArrayElement,
+              randomDigestAlgorithmTypeArrayElement,
+              invokeArgBeforeFunc,
+              nonMatchingTypes("Int")
+            ),
             (randomStringArrayElement, randomInt.toString, invoke, nonMatchingTypes("ByteVector|Unit")),
             (randomStringArrayElement, randomInt.toString, invokeArgBeforeFunc, nonMatchingTypes("ByteVector|Unit")),
             (randomByteVectorArrayElement, randomInt.toString, invalidInvokeFunction, invalidFunctionErrorResult),

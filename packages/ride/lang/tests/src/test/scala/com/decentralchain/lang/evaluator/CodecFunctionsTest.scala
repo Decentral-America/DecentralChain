@@ -25,7 +25,9 @@ class CodecFunctionsTest extends FreeSpec, EvaluatorSpecBase {
   "fromBase16String_1С" - {
     "input string size is checked" in {
       evalWithCost(s"fromBase16String_1C(\"${"FF" * 1024}\")")(using V9) shouldBe (decodedKilobyte, 1)
-      eval(s"fromBase16String_1C(\"${"FF" * 1025}\")")(using V9) shouldBe Left("Base16 decode input length=2050 should not exceed 2048")
+      eval(s"fromBase16String_1C(\"${"FF" * 1025}\")")(using V9) shouldBe Left(
+        "Base16 decode input length=2050 should not exceed 2048"
+      )
     }
     "mixed case is supported" in {
       evalWithCost(s"fromBase16String_1C(\"${"fF" * 1024}\")")(using V9) shouldBe (decodedKilobyte, 1)
@@ -38,17 +40,24 @@ class CodecFunctionsTest extends FreeSpec, EvaluatorSpecBase {
 
   "toBase16String_1С" - {
     "encoding is lowercase" in {
-      evalWithCost(s"toBase16String_1C(base16'${"FF" * 1024}')")(using V9) shouldBe (CONST_STRING("ff" * 1024).explicitGet(), 1)
+      evalWithCost(s"toBase16String_1C(base16'${"FF" * 1024}')")(using V9) shouldBe (
+        CONST_STRING("ff" * 1024).explicitGet(),
+        1
+      )
     }
     "input byte vector size is checked" in {
-      eval(s"toBase16String_1C(base16'${"FF" * 1025}')")(using V9) shouldBe Left("Base16 encode input length=1025 should not exceed 1024")
+      eval(s"toBase16String_1C(base16'${"FF" * 1025}')")(using V9) shouldBe Left(
+        "Base16 encode input length=1025 should not exceed 1024"
+      )
     }
   }
 
   "fromBase64String_1C" - {
     "input string size is checked" in {
       evalWithCost(s"fromBase64String_1C(\"$base64Kilobyte\")")(using V9) shouldBe (decodedKilobyte, 1)
-      eval(s"fromBase64String_1C(\"base64:${Base64.encode(new Array[Byte](1027))}\")")(using V9) shouldBe Left("base64Decode input exceeds 1375")
+      eval(s"fromBase64String_1C(\"base64:${Base64.encode(new Array[Byte](1027))}\")")(using V9) shouldBe Left(
+        "base64Decode input exceeds 1375"
+      )
     }
     "result byte vector size is checked" in {
       eval(s"fromBase64String_1C(\"${Base64.encode(new Array[Byte](1026))}\")")(using V9) shouldBe Left(
@@ -62,14 +71,20 @@ class CodecFunctionsTest extends FreeSpec, EvaluatorSpecBase {
 
   "toBase64String_1C" - {
     "input byte vector size is checked" in {
-      evalWithCost(s"toBase64String_1C(base64'$base64Kilobyte')")(using V9) shouldBe (CONST_STRING(base64Kilobyte).explicitGet(), 1)
-      eval(s"toBase64String_1C(base64'${Base64.encode(new Array[Byte](1025))}')")(using V9) shouldBe Left("base64Encode input exceeds 1024")
+      evalWithCost(s"toBase64String_1C(base64'$base64Kilobyte')")(using V9) shouldBe (
+        CONST_STRING(base64Kilobyte).explicitGet(),
+        1
+      )
+      eval(s"toBase64String_1C(base64'${Base64.encode(new Array[Byte](1025))}')")(using V9) shouldBe Left(
+        "base64Encode input exceeds 1024"
+      )
     }
   }
 
   "fromBase58String" - {
     "input string size is checked" in {
-      eval(s"fromBase58String(\"${"1" * 100}\")").explicitGet() shouldBe CONST_BYTESTR(ByteStr(new Array[Byte](100))).explicitGet()
+      eval(s"fromBase58String(\"${"1" * 100}\")").explicitGet() shouldBe CONST_BYTESTR(ByteStr(new Array[Byte](100)))
+        .explicitGet()
       eval(s"fromBase58String(\"${"A" * 101}\")") shouldBe Left("base58Decode input exceeds 100")
     }
 
@@ -80,8 +95,12 @@ class CodecFunctionsTest extends FreeSpec, EvaluatorSpecBase {
 
   "toBase58String" - {
     "input byte vector size is checked" in {
-      eval(s"toBase58String(base64'${Base64.encode(new Array[Byte](64))}')").explicitGet() shouldBe CONST_STRING("1" * 64).explicitGet()
-      eval(s"toBase58String(base64'${Base64.encode(new Array[Byte](65))}')") shouldBe Left("base58Encode input exceeds 64")
+      eval(s"toBase58String(base64'${Base64.encode(new Array[Byte](64))}')").explicitGet() shouldBe CONST_STRING(
+        "1" * 64
+      ).explicitGet()
+      eval(s"toBase58String(base64'${Base64.encode(new Array[Byte](65))}')") shouldBe Left(
+        "base58Encode input exceeds 64"
+      )
     }
   }
 
@@ -142,10 +161,13 @@ class CodecFunctionsTest extends FreeSpec, EvaluatorSpecBase {
 
   "toBase16String" - {
     "encoding is lowercase" in {
-      eval(s"toBase16String(base16'${"FF" * 1024}')")(using V3).explicitGet() shouldBe CONST_STRING("ff" * 1024).explicitGet()
+      eval(s"toBase16String(base16'${"FF" * 1024}')")(using V3).explicitGet() shouldBe CONST_STRING("ff" * 1024)
+        .explicitGet()
     }
     "input byte vector size is checked" in {
-      eval(s"toBase16String($eightKb + $eightKb + $eightKb)")(using V4) shouldBe Left("Base16 encode input length=24576 should not exceed 8192")
+      eval(s"toBase16String($eightKb + $eightKb + $eightKb)")(using V4) shouldBe Left(
+        "Base16 encode input length=24576 should not exceed 8192"
+      )
     }
   }
 }

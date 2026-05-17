@@ -5,7 +5,8 @@ import org.scalacheck.ShrinkLowPriority
 import org.scalatest.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-trait BaseSuite extends matchers.should.Matchers, ScalaCheckPropertyChecks, ScriptGen, ShrinkLowPriority { this: Suite =>
+trait BaseSuite extends matchers.should.Matchers, ScalaCheckPropertyChecks, ScriptGen, ShrinkLowPriority {
+  this: Suite =>
 
 }
 
