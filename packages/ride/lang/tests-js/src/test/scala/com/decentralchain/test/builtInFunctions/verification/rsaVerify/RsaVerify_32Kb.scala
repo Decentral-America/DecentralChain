@@ -9,13 +9,15 @@ import testHelpers.RandomDataGenerator.{
   randomDigestAlgorithmTypeArrayElement,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, actualVersionsWithoutV3, nonMatchingTypes}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, nonMatchingTypes, CANT_FIND_FUNCTION}
+import utest.{test, Tests}
 
 object RsaVerify_32Kb extends JsTestBase {
-  private val rsaVerify_32Kb              = s"rsaVerify_32Kb($randomDigestAlgorithmTypeArrayElement, callerTestData, callerTestData, callerTestData)"
-  private val rsaVerify_32KbArgBeforeFunc = s"$randomDigestAlgorithmTypeArrayElement.rsaVerify_32Kb(callerTestData, callerTestData, callerTestData)"
-  private val invalidRsaVerify_32Kb       = "rsaVerify_32Kb()"
+  private val rsaVerify_32Kb =
+    s"rsaVerify_32Kb($randomDigestAlgorithmTypeArrayElement, callerTestData, callerTestData, callerTestData)"
+  private val rsaVerify_32KbArgBeforeFunc =
+    s"$randomDigestAlgorithmTypeArrayElement.rsaVerify_32Kb(callerTestData, callerTestData, callerTestData)"
+  private val invalidRsaVerify_32Kb              = "rsaVerify_32Kb()"
   private val invalidRsaVerify_32KbArgBeforeFunc = "callerTestData.rsaVerify_32Kb(callerTestData)"
   private val invalidErrorRsaVerify_32Kb         = testData.invalidFunctionError("rsaVerify_32Kb", 4)
 

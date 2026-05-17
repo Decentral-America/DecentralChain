@@ -2,9 +2,13 @@ package com.decentralchain.test.builtInFunctions.blockchain
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomByteVectorArrayElement, randomDigestAlgorithmTypeArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomByteVectorArrayElement,
+  randomDigestAlgorithmTypeArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object TransactionHeightById extends JsTestBase {
   private val transactionHeightById              = "transactionHeightById(callerTestData)"
@@ -36,8 +40,16 @@ object TransactionHeightById extends JsTestBase {
           (data, function, error) <- Seq(
             (randomDigestAlgorithmTypeArrayElement, transactionHeightById, nonMatchingTypes("ByteVector")),
             (randomStringArrayElement, transactionHeightByIdArgBeforeFunc, nonMatchingTypes("ByteVector")),
-            (randomByteVectorArrayElement, invalidTransactionHeightById, invalidFunctionError("transactionHeightById", 1)),
-            (randomByteVectorArrayElement, invalidTransactionHeightByIdArg, invalidFunctionError("transactionHeightById", 1))
+            (
+              randomByteVectorArrayElement,
+              invalidTransactionHeightById,
+              invalidFunctionError("transactionHeightById", 1)
+            ),
+            (
+              randomByteVectorArrayElement,
+              invalidTransactionHeightByIdArg,
+              invalidFunctionError("transactionHeightById", 1)
+            )
           )
         ) {
           val script = precondition.onlyMatcherContract(data, function)

@@ -11,12 +11,12 @@ import testHelpers.RandomDataGenerator.{
   randomUnionArrayElement
 }
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
   actualVersionsWithoutV3,
   nonMatchingTypes,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Pow extends JsTestBase {
   private val union                  = randomUnionArrayElement

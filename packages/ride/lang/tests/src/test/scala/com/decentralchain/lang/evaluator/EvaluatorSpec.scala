@@ -22,7 +22,11 @@ trait EvaluatorSpecBase extends ScriptGen, Inside {
 
   def eval(
       code: String
-  )(implicit startVersion: StdLibVersion = V1, checkNext: Boolean = true, checkOldPowVersion: Boolean = false): Either[String, EVALUATED] =
+  )(implicit
+      startVersion: StdLibVersion = V1,
+      checkNext: Boolean = true,
+      checkOldPowVersion: Boolean = false
+  ): Either[String, EVALUATED] =
     evalVerRange(code, startVersion, if (checkNext) lastVersion else startVersion, checkOldPowVersion)
 
   def evalVerRange(
@@ -33,11 +37,17 @@ trait EvaluatorSpecBase extends ScriptGen, Inside {
   ): Either[String, EVALUATED] =
     evalInternal(compile(code, _), startVersion, endVersion, checkOldPowVersion).map(_._1)
 
-  def evalExpr(expr: EXPR, startVersion: StdLibVersion, endVersion: StdLibVersion, checkOldPowVersion: Boolean = false): Either[String, EVALUATED] =
+  def evalExpr(
+      expr: EXPR,
+      startVersion: StdLibVersion,
+      endVersion: StdLibVersion,
+      checkOldPowVersion: Boolean = false
+  ): Either[String, EVALUATED] =
     evalInternal(_ => Right(expr), startVersion, endVersion, checkOldPowVersion).map(_._1)
 
   def evalWithCost(code: String)(implicit startVersion: StdLibVersion = V1): (EVALUATED, Int) = {
-    val (result, unused) = evalInternal(compile(code, _), startVersion, lastVersion, checkOldPowVersion = false).explicitGet()
+    val (result, unused) =
+      evalInternal(compile(code, _), startVersion, lastVersion, checkOldPowVersion = false).explicitGet()
     (result, Int.MaxValue - unused)
   }
 
@@ -59,7 +69,7 @@ trait EvaluatorSpecBase extends ScriptGen, Inside {
       } yield (evaluated, cost)
 
     val results = (for {
-      version            <- DirectiveDictionary[StdLibVersion].all if version.id >= startVersion.id && version.id <= endVersion.id
+      version <- DirectiveDictionary[StdLibVersion].all if version.id >= startVersion.id && version.id <= endVersion.id
       useNewPowPrecision <- if (checkOldPowVersion) Seq(false, true) else Seq(true)
       result = doEval(toExpr, version, useNewPowPrecision)
     } yield ((version, useNewPowPrecision), result)).toSeq.sortBy(_._1)
@@ -72,8 +82,13 @@ trait EvaluatorSpecBase extends ScriptGen, Inside {
       throw new TestFailedException(s"Evaluation results are not the same: $results", 0)
   }
 
-  private def evalExpr(expr: EXPR, version: StdLibVersion, useNewPowPrecision: Boolean): (Log[Id], Int, Either[ExecutionError, EVALUATED]) = {
-    val ctx     = lazyContexts((DirectiveSet(version, Account, Expression).explicitGet(), useNewPowPrecision, true, true)).value()
+  private def evalExpr(
+      expr: EXPR,
+      version: StdLibVersion,
+      useNewPowPrecision: Boolean
+  ): (Log[Id], Int, Either[ExecutionError, EVALUATED]) = {
+    val ctx =
+      lazyContexts((DirectiveSet(version, Account, Expression).explicitGet(), useNewPowPrecision, true, true)).value()
     val evalCtx = ctx.evaluationContext(Common.emptyBlockchainEnvironment())
     EvaluatorV2.applyCompleted(
       evalCtx,

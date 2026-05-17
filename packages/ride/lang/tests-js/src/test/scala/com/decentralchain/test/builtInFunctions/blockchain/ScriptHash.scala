@@ -9,16 +9,16 @@ import testHelpers.RandomDataGenerator.{
 }
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_FUNCTION,
-  GreaterV3ResultBinaryEntry,
   invalidFunctionError,
   nonMatchingTypes,
   oldVersions,
   rideV3Result,
   thisVariable,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_FUNCTION,
+  GreaterV3ResultBinaryEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object ScriptHash extends JsTestBase {
   private val scriptHash                     = "scriptHash(callerTestData)"

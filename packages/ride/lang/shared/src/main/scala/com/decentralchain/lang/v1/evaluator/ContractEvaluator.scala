@@ -34,11 +34,15 @@ object ContractEvaluator {
 
   // Class for passing invocation argument object in error log during script execution
   case class ExprWithInvArg(expr: EXPR, invArg: Option[LET])
-  case class LogExtraInfo(invokedFuncName: Option[String] = None, invArg: Option[LET] = None, dAppAddress: Option[Address] = None)
+  case class LogExtraInfo(
+      invokedFuncName: Option[String] = None,
+      invArg: Option[LET] = None,
+      dAppAddress: Option[Address] = None
+  )
 
   def buildSyntheticCall(contract: DApp, call: EXPR, callerAddress: ByteStr, callerPk: ByteStr): EXPR = {
     val callables = contract.callableFuncs.flatMap { cf =>
-      val argName = cf.annotation.invocationArgName
+      val argName    = cf.annotation.invocationArgName
       val invocation = Invocation(
         null,
         Recipient.Address(callerAddress),
@@ -55,7 +59,11 @@ object ContractEvaluator {
     foldDeclarations(contract.decs ++ callables, call)
   }
 
-  def buildExprFromInvocation(c: DApp, i: Invocation, version: StdLibVersion): Either[ExecutionError, ExprWithInvArg] = {
+  def buildExprFromInvocation(
+      c: DApp,
+      i: Invocation,
+      version: StdLibVersion
+  ): Either[ExecutionError, ExprWithInvArg] = {
     val functionName = i.funcCall.function.funcName
 
     val contractFuncAndCallOpt = c.callableFuncs.find(_.u.name == functionName).map((_, i.funcCall))
@@ -63,7 +71,7 @@ object ContractEvaluator {
     contractFuncAndCallOpt match {
       case None =>
         val otherFuncs = c.decs.filter(_.isInstanceOf[FUNC]).map(_.asInstanceOf[FUNC].name)
-        val message =
+        val message    =
           if (otherFuncs contains functionName)
             s"function '$functionName exists in the script but is not marked as @Callable, therefore cannot not be invoked"
           else s"@Callable function '$functionName' doesn't exist in the script"
@@ -101,13 +109,16 @@ object ContractEvaluator {
       entity: CaseObj
   ): (Log[Id], Int, Either[ExecutionError, EVALUATED]) = {
     val invocationArgLet = LET(v.annotation.invocationArgName, entity)
-    val verifierBlock =
+    val verifierBlock    =
       BLOCK(
         invocationArgLet,
         BLOCK(v.u, FUNCTION_CALL(FunctionHeader.User(v.u.name), List(entity)))
       )
 
-    evaluate(foldDeclarations(decls, verifierBlock), LogExtraInfo(invokedFuncName = Some(v.u.name), invArg = Some(invocationArgLet)))
+    evaluate(
+      foldDeclarations(decls, verifierBlock),
+      LogExtraInfo(invokedFuncName = Some(v.u.name), invArg = Some(invocationArgLet))
+    )
   }
 
   def applyV2Coeval(
@@ -129,7 +140,11 @@ object ContractEvaluator {
           applyV2Coeval(
             ctx,
             value.expr,
-            LogExtraInfo(invokedFuncName = Some(i.funcCall.function.funcName), invArg = value.invArg, dAppAddress = Some(Address(dAppAddress))),
+            LogExtraInfo(
+              invokedFuncName = Some(i.funcCall.function.funcName),
+              invArg = value.invArg,
+              dAppAddress = Some(Address(dAppAddress))
+            ),
             version,
             i.transactionId,
             limit,

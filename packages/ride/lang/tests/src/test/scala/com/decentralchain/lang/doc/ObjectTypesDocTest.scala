@@ -23,7 +23,7 @@ class ObjectTypesDocTest extends PropSpec {
       ctx().types
         .collect { case CASETYPEREF(name, fields, _) =>
           val codeFields = fields.map { case (name, t) => (name, t.toString) }
-          val docFields =
+          val docFields  =
             if (ds.scriptType == Asset)
               getDocFields(name, ds.stdLibVersion).filter(_._1 != "proofs")
             else

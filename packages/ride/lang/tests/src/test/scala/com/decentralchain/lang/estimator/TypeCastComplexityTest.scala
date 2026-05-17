@@ -2,7 +2,8 @@ package com.decentralchain.lang.estimator
 
 import com.decentralchain.lang.v1.estimator.v3.ScriptEstimatorV3
 
-class TypeCastComplexityTest extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)) {
+class TypeCastComplexityTest
+    extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)) {
   property("type cast complexity") {
     estimate("1") shouldBe Right(0)
     estimate("1.as[Int]") shouldBe Right(1)

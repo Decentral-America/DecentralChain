@@ -19,7 +19,7 @@ package object estimator {
     PureContext.build(V3, useNewPowPrecision = true).withEnvironment[Environment] |+|
       WavesContext.build(Global, DirectiveSet.contractDirectiveSet, fixBigScriptField = true)
 
-  private val environment = Common.emptyBlockchainEnvironment()
+  private val environment                              = Common.emptyBlockchainEnvironment()
   private def evaluator(overhead: Boolean, expr: EXPR) =
     EvaluatorV2.applyCompleted(
       ctx.evaluationContext(environment),
@@ -35,7 +35,11 @@ package object estimator {
   def evaluatorV2AsEstimator(overhead: Boolean): ScriptEstimator = new ScriptEstimator {
     override val version: Int = 0
 
-    override def apply(declaredVals: Set[String], functionCosts: Map[FunctionHeader, Coeval[Long]], expr: Terms.EXPR): Either[String, Long] =
+    override def apply(
+        declaredVals: Set[String],
+        functionCosts: Map[FunctionHeader, Coeval[Long]],
+        expr: Terms.EXPR
+    ): Either[String, Long] =
       Right(evaluator(overhead, expr)._2)
   }
 }

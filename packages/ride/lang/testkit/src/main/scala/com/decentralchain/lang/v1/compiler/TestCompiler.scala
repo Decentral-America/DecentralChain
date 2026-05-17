@@ -5,7 +5,7 @@ import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.Global
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.directives.DirectiveSet
-import com.decentralchain.lang.directives.values.{Account, Asset, Expression, StdLibVersion, DApp as DAppType}
+import com.decentralchain.lang.directives.values.{Account, Asset, DApp as DAppType, Expression, StdLibVersion}
 import com.decentralchain.lang.script.ContractScript.ContractScriptImpl
 import com.decentralchain.lang.script.v1.ExprScript
 import com.decentralchain.lang.script.{ContractScript, Script}
@@ -25,7 +25,11 @@ class TestCompiler(version: StdLibVersion) {
 
   private lazy val compilerContext =
     (baseCompilerContext |+|
-      WavesContext.build(Global, DirectiveSet(version, Account, DAppType).explicitGet(), fixBigScriptField = true)).compilerContext
+      WavesContext.build(
+        Global,
+        DirectiveSet(version, Account, DAppType).explicitGet(),
+        fixBigScriptField = true
+      )).compilerContext
 
   private lazy val expressionContext: CTX[Environment] =
     WavesContext.build(Global, DirectiveSet(version, Account, Expression).explicitGet(), fixBigScriptField = true)
@@ -36,7 +40,11 @@ class TestCompiler(version: StdLibVersion) {
 
   private lazy val assetCompilerContext =
     (baseCompilerContext |+|
-      WavesContext.build(Global, DirectiveSet(version, Asset, Expression).explicitGet(), fixBigScriptField = true)).compilerContext
+      WavesContext.build(
+        Global,
+        DirectiveSet(version, Asset, Expression).explicitGet(),
+        fixBigScriptField = true
+      )).compilerContext
 
   def compile(
       script: String,
@@ -71,7 +79,10 @@ class TestCompiler(version: StdLibVersion) {
   ): ExprScript =
     ExprScript(
       version,
-      ExpressionCompiler.compile(script, offset, expressionCompilerContext, version, allowIllFormedStrings).explicitGet()._1,
+      ExpressionCompiler
+        .compile(script, offset, expressionCompilerContext, version, allowIllFormedStrings)
+        .explicitGet()
+        ._1,
       checkSize = checkSize
     ).explicitGet()
 
@@ -86,7 +97,8 @@ class TestCompiler(version: StdLibVersion) {
       .map(s => ExprScript(version, s._1, checkSize = checkSize).explicitGet())
 
   def compileAsset(script: String, offset: LibrariesOffset = NoLibraries): Script =
-    ExprScript(version, ExpressionCompiler.compile(script, offset, assetCompilerContext, version).explicitGet()._1).explicitGet()
+    ExprScript(version, ExpressionCompiler.compile(script, offset, assetCompilerContext, version).explicitGet()._1)
+      .explicitGet()
 
   def compileFreeCall(script: String, offset: LibrariesOffset = NoLibraries): ExprScript = {
     val expr = ContractCompiler.compileFreeCall(script, offset, compilerContext, version).explicitGet()
@@ -95,8 +107,8 @@ class TestCompiler(version: StdLibVersion) {
 }
 
 object TestCompiler {
-  private val compilerByVersion         = mutable.HashMap.empty[StdLibVersion, TestCompiler]
-  lazy val DefaultVersion: TestCompiler = TestCompiler(StdLibVersion.VersionDic.default)
+  private val compilerByVersion                   = mutable.HashMap.empty[StdLibVersion, TestCompiler]
+  lazy val DefaultVersion: TestCompiler           = TestCompiler(StdLibVersion.VersionDic.default)
   def apply(version: StdLibVersion): TestCompiler =
     compilerByVersion.getOrElse(
       version,

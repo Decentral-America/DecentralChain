@@ -4,7 +4,7 @@ import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.directives.values.{StdLibVersion, V5, V6}
 import com.decentralchain.lang.evaluator.EvaluatorSpec
 import com.decentralchain.lang.v1.compiler.Terms.{CONST_BIGINT, CONST_BOOLEAN, CONST_LONG, CONST_STRING}
-import com.decentralchain.lang.v1.evaluator.ctx.impl.{PureContext, unit}
+import com.decentralchain.lang.v1.evaluator.ctx.impl.{unit, PureContext}
 import com.decentralchain.test.produce
 
 import scala.math.BigDecimal.RoundingMode.*
@@ -17,7 +17,9 @@ class BigIntTest extends EvaluatorSpec {
   private val min = s"""parseBigIntValue("${PureContext.BigIntMin}")"""
 
   property("BigInt") {
-    eval("toBigInt(fraction(9223372036854775807, -2, -4)) == (toBigInt(9223372036854775807) * toBigInt(-2)) / toBigInt(-4)") shouldBe Right(
+    eval(
+      "toBigInt(fraction(9223372036854775807, -2, -4)) == (toBigInt(9223372036854775807) * toBigInt(-2)) / toBigInt(-4)"
+    ) shouldBe Right(
       CONST_BOOLEAN(true)
     )
     eval(s"""
@@ -31,17 +33,23 @@ class BigIntTest extends EvaluatorSpec {
       f8(2.toBigInt())
       """) should produce("is out of range")
     eval(s"""-toBigInt(1)""") shouldBe Right(CONST_BIGINT(BigInt(-1)))
-    eval("toBigInt(base58'2Ana1pUpv2ZbMVkwF5FXapYeBEjdxDatLn7nvJkhgTSXbs59SyZSx866bXirPgj8QQVB57uxHJBG1YFvkRbFj4T').toString()") shouldBe Right(
+    eval(
+      "toBigInt(base58'2Ana1pUpv2ZbMVkwF5FXapYeBEjdxDatLn7nvJkhgTSXbs59SyZSx866bXirPgj8QQVB57uxHJBG1YFvkRbFj4T').toString()"
+    ) shouldBe Right(
       CONST_STRING(
         "52785833603464895924505196455835395749861094195642486808108138863402869537852026544579466671752822414281401856143643660416162921950916138504990605852480"
       ).explicitGet()
     )
-    eval("toBigInt(base58'3ZRuyAbxDY78aZf8nGASFCZKPhJ5LuDAuALLdoAqCqaFuAjqgmZ47WsE11LKt2JuF5Pasqx65bzvjWMzHB2b4vuC').toString()") shouldBe Right(
+    eval(
+      "toBigInt(base58'3ZRuyAbxDY78aZf8nGASFCZKPhJ5LuDAuALLdoAqCqaFuAjqgmZ47WsE11LKt2JuF5Pasqx65bzvjWMzHB2b4vuC').toString()"
+    ) shouldBe Right(
       CONST_STRING(
         "6703903964971298549787012499102923063739682910296196688861780721860882015036773488400937149083451713845015929093243025426876941405973284973216824503042047"
       ).explicitGet()
     )
-    eval("toBigInt(base58'3ZRuyAbxDY78aZf8nGASFCZKPhJ5LuDAuALLdoAqCqaFuAjqgmZ47WsE11LKt2JuF5Pasqx65bzvjWMzHB2b4vuCa').toString()") should produce(
+    eval(
+      "toBigInt(base58'3ZRuyAbxDY78aZf8nGASFCZKPhJ5LuDAuALLdoAqCqaFuAjqgmZ47WsE11LKt2JuF5Pasqx65bzvjWMzHB2b4vuCa').toString()"
+    ) should produce(
       "Too big ByteVector for BigInt (65 > 64 bytes)"
     )
     eval(
@@ -125,28 +133,38 @@ class BigIntTest extends EvaluatorSpec {
   }
 
   property("BigInt math functions") {
-    eval("pow(toBigInt(2), 0, toBigInt(510), 0, 0, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(2) pow 510))
-    eval("pow(toBigInt(2), 0, toBigInt(511), 0, 0, DOWN)") should produce("Result out of 512-bit range on BigInt pow calculation")
-    eval("pow(toBigInt(-2), 0, toBigInt(511), 0, 0, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(-2) pow 511))
-    eval("pow(toBigInt(-2), 0, toBigInt(512), 0, 0, DOWN)") should produce("Result out of 512-bit range on BigInt pow calculation")
+    eval("pow(toBigInt(2), 0, toBigInt(510), 0, 0, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(2).pow(510)))
+    eval("pow(toBigInt(2), 0, toBigInt(511), 0, 0, DOWN)") should produce(
+      "Result out of 512-bit range on BigInt pow calculation"
+    )
+    eval("pow(toBigInt(-2), 0, toBigInt(511), 0, 0, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(-2).pow(511)))
+    eval("pow(toBigInt(-2), 0, toBigInt(512), 0, 0, DOWN)") should produce(
+      "Result out of 512-bit range on BigInt pow calculation"
+    )
     eval("pow(toBigInt(12), 1, toBigInt(3456), 3, 2, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(187)))
     eval("pow(toBigInt(0), 1, toBigInt(3456), 3, 2, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(0)))
     eval("pow(toBigInt(20), 1, toBigInt(-1), 0, 4, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(5000)))
     eval("pow(toBigInt(-20), 1, toBigInt(-1), 0, 4, DOWN)") shouldBe Right(CONST_BIGINT(BigInt(-5000)))
     eval("pow(toBigInt(0), 1, toBigInt(-1), 0, 4, DOWN)") should produce("Division by zero on BigInt pow calculation")
-    eval("pow(toBigInt(2), 0, toBigInt(512), 0, 0, DOWN)") should produce("Result out of 512-bit range on BigInt pow calculation")
+    eval("pow(toBigInt(2), 0, toBigInt(512), 0, 0, DOWN)") should produce(
+      "Result out of 512-bit range on BigInt pow calculation"
+    )
     eval("log(toBigInt(16), 0, toBigInt(2), 0, 0, CEILING)") shouldBe Right(CONST_BIGINT(BigInt(4)))
     eval("log(toBigInt(1), 4, toBigInt(1), 1, 0, HALFEVEN)") shouldBe Right(CONST_BIGINT(BigInt(4)))
-    eval("log(toBigInt(16), 0, toBigInt(-2), 0, 0, CEILING)") should produce("Illegal log(x) for x <= 0: x = -2 on BigInt log calculation")
-    eval("log(toBigInt(-16), 0, toBigInt(2), 0, 0, CEILING)") should produce("Illegal log(x) for x <= 0: x = -16 on BigInt log calculation")
+    eval("log(toBigInt(16), 0, toBigInt(-2), 0, 0, CEILING)") should produce(
+      "Illegal log(x) for x <= 0: x = -2 on BigInt log calculation"
+    )
+    eval("log(toBigInt(-16), 0, toBigInt(2), 0, 0, CEILING)") should produce(
+      "Illegal log(x) for x <= 0: x = -16 on BigInt log calculation"
+    )
     eval("""log(toBigInt(1), 16, parseBigIntValue("10"), 0, 0, CEILING)""") shouldBe Right(CONST_BIGINT(BigInt(-16)))
   }
 
   property("BigInt plus") {
-    eval(s"$min + toBigInt(1)") shouldBe Right(CONST_BIGINT((BigInt(-2) pow 511) + 1))
+    eval(s"$min + toBigInt(1)") shouldBe Right(CONST_BIGINT((BigInt(-2).pow(511)) + 1))
     eval(s"$max + toBigInt(1)") should produce("is out of range")
     eval(s"$min + toBigInt(-1)") should produce("is out of range")
-    eval(s"$max + toBigInt(-1)") shouldBe Right(CONST_BIGINT((BigInt(2) pow 511) - 2))
+    eval(s"$max + toBigInt(-1)") shouldBe Right(CONST_BIGINT((BigInt(2).pow(511)) - 2))
     eval(s"$max + toBigInt(0)") shouldBe eval(max)
     eval(s"$min + toBigInt(0)") shouldBe eval(min)
     eval(s"toBigInt(0) + $max") shouldBe eval(max)
@@ -156,8 +174,8 @@ class BigIntTest extends EvaluatorSpec {
 
   property("BigInt minus") {
     eval(s"$min - toBigInt(1)") should produce("is out of range")
-    eval(s"$max - toBigInt(1)") shouldBe Right(CONST_BIGINT((BigInt(2) pow 511) - 2))
-    eval(s"$min - toBigInt(-1)") shouldBe Right(CONST_BIGINT((BigInt(-2) pow 511) + 1))
+    eval(s"$max - toBigInt(1)") shouldBe Right(CONST_BIGINT((BigInt(2).pow(511)) - 2))
+    eval(s"$min - toBigInt(-1)") shouldBe Right(CONST_BIGINT((BigInt(-2).pow(511)) + 1))
     eval(s"$max - toBigInt(-1)") should produce("is out of range")
     eval(s"$min - toBigInt(0)") shouldBe eval(min)
     eval(s"$max - toBigInt(0)") shouldBe eval(max)
@@ -166,8 +184,8 @@ class BigIntTest extends EvaluatorSpec {
   }
 
   property("BigInt multiplication") {
-    val maxValueHalf = s"""parseBigIntValue("${BigInt(2) pow 510}")"""
-    val minValueHalf = s"""parseBigIntValue("${-(BigInt(2) pow 510)}")"""
+    val maxValueHalf = s"""parseBigIntValue("${BigInt(2).pow(510)}")"""
+    val minValueHalf = s"""parseBigIntValue("${-(BigInt(2).pow(510))}")"""
     eval(s"($maxValueHalf - toBigInt(1)) * toBigInt(2) + toBigInt(1)") shouldBe eval(max)
     eval(s"$maxValueHalf * toBigInt(2)") should produce("is out of range")
     eval(s"$maxValueHalf * toBigInt(-2)") shouldBe eval(min)
@@ -180,8 +198,8 @@ class BigIntTest extends EvaluatorSpec {
   }
 
   property("BigInt division") {
-    eval(s"$max / toBigInt(2)") shouldBe Right(CONST_BIGINT((BigInt(2) pow 510) - 1))
-    eval(s"$min / toBigInt(2)") shouldBe Right(CONST_BIGINT(-(BigInt(2) pow 510)))
+    eval(s"$max / toBigInt(2)") shouldBe Right(CONST_BIGINT((BigInt(2).pow(510)) - 1))
+    eval(s"$min / toBigInt(2)") shouldBe Right(CONST_BIGINT(-(BigInt(2).pow(510))))
     eval(s"$min / toBigInt(0)") should produce("BigInteger divide by zero")
     eval(s"$max / toBigInt(0)") should produce("BigInteger divide by zero")
     eval(s"$max / $max") shouldBe Right(CONST_BIGINT(1))
@@ -215,7 +233,9 @@ class BigIntTest extends EvaluatorSpec {
   property("List[BigInt] median - 100 elements") {
     val arr       = (1 to 100).map(_ => Random.nextLong())
     val arrSorted = arr.sorted
-    eval(s"[toBigInt(${arr.mkString("),toBigInt(")})].median()") shouldBe Right(CONST_BIGINT(BigInt(Math.floorDiv(arrSorted(49) + arrSorted(50), 2))))
+    eval(s"[toBigInt(${arr.mkString("),toBigInt(")})].median()") shouldBe Right(
+      CONST_BIGINT(BigInt(Math.floorDiv(arrSorted(49) + arrSorted(50), 2)))
+    )
   }
 
   property("List[BigInt] median - 99 elements") {
@@ -231,8 +251,12 @@ class BigIntTest extends EvaluatorSpec {
   }
 
   property("List[BigInt] median - 1000 elements - success") {
-    eval(s"""[${(1 to 1000).map(_ => max).mkString(",")}].median()""") shouldBe Right(CONST_BIGINT(PureContext.BigIntMax))
-    eval(s"""[${(1 to 1000).map(_ => min).mkString(",")}].median()""") shouldBe Right(CONST_BIGINT(PureContext.BigIntMin))
+    eval(s"""[${(1 to 1000).map(_ => max).mkString(",")}].median()""") shouldBe Right(
+      CONST_BIGINT(PureContext.BigIntMax)
+    )
+    eval(s"""[${(1 to 1000).map(_ => min).mkString(",")}].median()""") shouldBe Right(
+      CONST_BIGINT(PureContext.BigIntMin)
+    )
   }
 
   property("List[BigInt] median - negative rounding down") {
@@ -270,13 +294,17 @@ class BigIntTest extends EvaluatorSpec {
 
   property("sqrt") {
     eval(s"pow($max, 0, toBigInt(5), 1, 18, DOWN)") shouldBe Right(
-      CONST_BIGINT(BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524036944801"))
+      CONST_BIGINT(
+        BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524036944801")
+      )
     )
     eval(s"pow($max, 18, toBigInt(5), 1, 18, DOWN)") shouldBe Right(
       CONST_BIGINT(BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524"))
     )
     eval(s"sqrt($max, 0, 18, DOWN)")(using V6) shouldBe Right(
-      CONST_BIGINT(BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524036944801"))
+      CONST_BIGINT(
+        BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524036944801")
+      )
     )
     eval(s"sqrt($max, 18, 18, DOWN)")(using V6) shouldBe Right(
       CONST_BIGINT(BigInt("81877371507464127617551201542979628307507432471243237061821853600756754782485292915524"))

@@ -30,28 +30,28 @@ package object utils {
   val environment: Environment[Id] = buildEnvironment(ByteStr.empty)
 
   def buildEnvironment(txIdParam: ByteStr): Environment[Id] = new Environment[Id] {
-    override def height: Long                                                                                    = 0
-    override def chainId: Byte                                                                                   = 1: Byte
-    override def inputEntity: Environment.InputEntity                                                            = null
-    override val txId: ByteStr                                                                                   = txIdParam
-    override def transactionById(id: Array[Byte]): Option[Tx]                                                    = ???
-    override def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer]                                   = ???
-    override def transactionHeightById(id: Array[Byte]): Option[Long]                                            = ???
-    override def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo]                                         = ???
-    override def lastBlockOpt(): Option[BlockInfo]                                                               = ???
-    override def blockInfoByHeight(height: Int): Option[BlockInfo]                                               = ???
-    override def data(addressOrAlias: Recipient, key: String, dataType: DataType): Option[Any]                   = None
-    override def hasData(addressOrAlias: Recipient): Boolean                                                     = ???
+    override def height: Long                                                                  = 0
+    override def chainId: Byte                                                                 = 1: Byte
+    override def inputEntity: Environment.InputEntity                                          = null
+    override val txId: ByteStr                                                                 = txIdParam
+    override def transactionById(id: Array[Byte]): Option[Tx]                                  = ???
+    override def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer]                 = ???
+    override def transactionHeightById(id: Array[Byte]): Option[Long]                          = ???
+    override def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo]                       = ???
+    override def lastBlockOpt(): Option[BlockInfo]                                             = ???
+    override def blockInfoByHeight(height: Int): Option[BlockInfo]                             = ???
+    override def data(addressOrAlias: Recipient, key: String, dataType: DataType): Option[Any] = None
+    override def hasData(addressOrAlias: Recipient): Boolean                                   = ???
     override def accountBalanceOf(addressOrAlias: Recipient, assetId: Option[Array[Byte]]): Either[String, Long] = ???
     override def accountWavesBalanceOf(addressOrAlias: Recipient): Either[String, Environment.BalanceDetails]    = ???
     override def resolveAlias(name: String): Either[String, Recipient.Address]                                   = ???
-    override def tthis: Environment.Tthis                                                                        = Recipient.Address(ByteStr.empty)
-    override def multiPaymentAllowed: Boolean                                                                    = true
-    override def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer]                               = ???
-    override def addressFromString(address: String): Either[String, Recipient.Address]                           = ???
-    override def addressFromPublicKey(publicKey: ByteStr): Either[String, Address]                               = ???
-    override def accountScript(addressOrAlias: Recipient): Option[Script]                                        = ???
-    override def calculateDelay(gt: ByteStr, b: Long): Long                                                      = ???
+    override def tthis: Environment.Tthis                                          = Recipient.Address(ByteStr.empty)
+    override def multiPaymentAllowed: Boolean                                      = true
+    override def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer] = ???
+    override def addressFromString(address: String): Either[String, Recipient.Address] = ???
+    override def addressFromPublicKey(publicKey: ByteStr): Either[String, Address]     = ???
+    override def accountScript(addressOrAlias: Recipient): Option[Script]              = ???
+    override def calculateDelay(gt: ByteStr, b: Long): Long                            = ???
     override def callScript(
         dApp: Address,
         func: String,
@@ -66,12 +66,13 @@ package object utils {
     (for {
       version     <- DirectiveDictionary[StdLibVersion].all
       scriptType  <- DirectiveDictionary[ScriptType].all
-      contentType <- DirectiveDictionary[ContentType].all if contentType != DApp || (contentType == DApp && version >= V3 && scriptType == Account)
+      contentType <- DirectiveDictionary[ContentType].all
+      if contentType != DApp || (contentType == DApp && version >= V3 && scriptType == Account)
       useNewPowPrecision <- Seq(false, true)
       fixBigScriptField  <- Seq(false, true)
       fixEcRecover       <- Seq(false, true)
     } yield {
-      val ds = DirectiveSet(version, scriptType, contentType).explicitGet()
+      val ds  = DirectiveSet(version, scriptType, contentType).explicitGet()
       val ctx = Coeval.evalOnce(
         PureContext.build(version, useNewPowPrecision).withEnvironment[Environment] |+|
           CryptoContext.build(Global, version, fixEcRecover).withEnvironment[Environment] |+|
@@ -81,11 +82,15 @@ package object utils {
     }).toMap
 
   private val lazyFunctionCosts: Map[DirectiveSet, Coeval[Map[FunctionHeader, Coeval[Long]]]] =
-    lazyContexts.map(el => (el._1._1, el._2.map(ctx => estimate(el._1._1.stdLibVersion, ctx.evaluationContext[Id](environment)))))
+    lazyContexts.map(el =>
+      (el._1._1, el._2.map(ctx => estimate(el._1._1.stdLibVersion, ctx.evaluationContext[Id](environment))))
+    )
 
   private val dAppVerifierProhibitedFunctions: Map[Native, Coeval[Long]] =
     List(Native(FunctionIds.CALLDAPP), Native(FunctionIds.CALLDAPPREENTRANT))
-      .map(f => (f, Coeval.raiseError[Long](new RuntimeException("DApp-to-dApp invocations are not allowed from verifier"))))
+      .map(f =>
+        (f, Coeval.raiseError[Long](new RuntimeException("DApp-to-dApp invocations are not allowed from verifier")))
+      )
       .toMap
 
   private val dAppVerifierFunctionCosts: Map[StdLibVersion, Map[FunctionHeader, Coeval[Long]]] =
@@ -139,7 +144,8 @@ package object utils {
 
   def estimate(version: StdLibVersion, ctx: EvaluationContext[Environment, Id]): Map[FunctionHeader, Coeval[Long]] = {
     val costs: mutable.Map[FunctionHeader, Coeval[Long]] = mutable.Map.from(ctx.typeDefs.collect {
-      case (typeName, CASETYPEREF(_, fields, hidden)) if (!hidden || version < V4) => FunctionHeader.User(typeName) -> Coeval.now(fields.size.toLong)
+      case (typeName, CASETYPEREF(_, fields, hidden)) if (!hidden || version < V4) =>
+        FunctionHeader.User(typeName) -> Coeval.now(fields.size.toLong)
     })
 
     ctx.functions.values.foreach { func =>

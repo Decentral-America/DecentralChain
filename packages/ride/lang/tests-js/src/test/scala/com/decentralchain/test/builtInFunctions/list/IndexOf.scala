@@ -3,8 +3,13 @@ package com.decentralchain.test.builtInFunctions.list
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.RandomDataGenerator.{randomByteVectorArrayElement, randomInt, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, actualVersionsWithoutV3, intList, stringList}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  intList,
+  stringList,
+  CANT_FIND_A_FUNCTION_OVERLOAD
+}
+import utest.{test, Tests}
 
 object IndexOf extends JsTestBase {
   private val indexOf                     = "indexOf(bar, foo)"

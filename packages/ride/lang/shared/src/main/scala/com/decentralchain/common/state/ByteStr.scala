@@ -8,7 +8,7 @@ case class ByteStr(arr: Array[Byte]) {
   private lazy val base58: String = Base58.encode(arr)
   lazy val base64Raw: String      = Base64.encode(arr)
   lazy val base64: String         = "base64:" + base64Raw
-  lazy val trim: String = (if (arr.length < 1024) {
+  lazy val trim: String           = (if (arr.length < 1024) {
                              base58.take(7)
                            } else {
                              base64Raw
@@ -30,7 +30,7 @@ case class ByteStr(arr: Array[Byte]) {
     if (this.isEmpty) other else ByteStr(this.arr ++ other.arr)
 
   def take(n: Int): ByteStr = {
-    val n1 = n min arr.length max 0
+    val n1 = n.min(arr.length).max(0)
 
     if (n1 == arr.length) this
     else if (n1 == 0) ByteStr.empty
@@ -38,7 +38,7 @@ case class ByteStr(arr: Array[Byte]) {
   }
 
   def drop(n: Int): ByteStr = {
-    val n1 = n min arr.length max 0
+    val n1 = n.min(arr.length).max(0)
 
     if (n1 == arr.length) ByteStr.empty
     else if (n1 == 0) this

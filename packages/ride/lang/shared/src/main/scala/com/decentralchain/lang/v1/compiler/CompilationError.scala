@@ -17,9 +17,7 @@ sealed trait CompilationError {
 
 object CompilationError {
 
-  implicit val show: Show[CompilationError] = (ce: CompilationError) => {
-    s"${ce.message} in ${ce.start}-${ce.end}"
-  }
+  implicit val show: Show[CompilationError] = (ce: CompilationError) => s"${ce.message} in ${ce.start}-${ce.end}"
 
   case object TooManyExpressions extends CompilationError {
 
@@ -37,7 +35,8 @@ object CompilationError {
     val message = "No expressions"
   }
 
-  final case class MatchNotExhaustive(start: Int, end: Int, possible: List[TYPE], matched: List[TYPE]) extends CompilationError {
+  final case class MatchNotExhaustive(start: Int, end: Int, possible: List[TYPE], matched: List[TYPE])
+      extends CompilationError {
     val message = s"Matching not exhaustive: " +
       s"possibleTypes are ${possible.mkString(", ")}, " +
       s"while matched are ${matched.mkString(", ")}"
@@ -73,15 +72,18 @@ object CompilationError {
     val message = s"$declType '$name' size = $size bytes exceeds ${ContractLimits.MaxDeclarationNameInBytes}"
   }
 
-  final case class FunctionNotFound(start: Int, end: Int, name: String, argTypes: List[String]) extends CompilationError {
+  final case class FunctionNotFound(start: Int, end: Int, name: String, argTypes: List[String])
+      extends CompilationError {
     val message = s"Can't find a function '$name'(${argTypes.mkString(", ")}) or it is @Callable"
   }
 
-  final case class OverloadNotFound(start: Int, end: Int, name: String, argTypes: List[String]) extends CompilationError {
+  final case class OverloadNotFound(start: Int, end: Int, name: String, argTypes: List[String])
+      extends CompilationError {
     val message = s"Can't find a function overload '$name'(${argTypes.mkString(", ")})"
   }
 
-  final case class AmbiguousOverloading(start: Int, end: Int, name: String, candidates: List[FunctionTypeSignature]) extends CompilationError {
+  final case class AmbiguousOverloading(start: Int, end: Int, name: String, candidates: List[FunctionTypeSignature])
+      extends CompilationError {
     val message = {
       val stringRepr = candidates.map(sig => s"'$name'(${sig.args.mkString(", ")})").mkString("; ")
       s"Can't choose an overloaded function. Candidates: $stringRepr"
@@ -90,11 +92,19 @@ object CompilationError {
   final case class DefNotFound(start: Int, end: Int, key: String) extends CompilationError {
     val message = s"A definition of '$key' is not found"
   }
-  final case class WrongArgumentsNumber(start: Int, end: Int, name: String, required: Int, found: Int) extends CompilationError {
+  final case class WrongArgumentsNumber(start: Int, end: Int, name: String, required: Int, found: Int)
+      extends CompilationError {
     val message = s"Function '$name' requires $required arguments, but $found are provided"
   }
-  final case class WrongArgumentType(start: Int, end: Int, funcName: String, typeName: String, required: Iterable[String]) extends CompilationError {
-    val message = s"Unexpected argument type in function '$funcName', required: (${required.mkString(", ")}), but $typeName type found"
+  final case class WrongArgumentType(
+      start: Int,
+      end: Int,
+      funcName: String,
+      typeName: String,
+      required: Iterable[String]
+  ) extends CompilationError {
+    val message =
+      s"Unexpected argument type in function '$funcName', required: (${required.mkString(", ")}), but $typeName type found"
   }
   final case class UnexpectedType(start: Int, end: Int, required: String, found: String) extends CompilationError {
     val message = s"Unexpected type, required: $required, but $found found"
@@ -107,7 +117,7 @@ object CompilationError {
       varName: Option[String]
   ) extends CompilationError {
     val message = {
-      val varStr = varName.fold("")(v => s" of variable `$v`")
+      val varStr           = varName.fold("")(v => s" of variable `$v`")
       val expectedTypesStr =
         if (expectedTypes.nonEmpty) s", expected: ${expectedTypes.mkString(", ")}"
         else ""

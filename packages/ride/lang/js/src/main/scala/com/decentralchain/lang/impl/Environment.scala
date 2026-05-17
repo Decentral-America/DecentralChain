@@ -4,7 +4,7 @@ import com.decentralchain.lang.v1.traits.DataType
 import com.decentralchain.lang.v1.traits.domain.{Recipient, Tx}
 
 import scala.scalajs.js.annotation.JSGlobalScope
-import scala.scalajs.{js as platform}
+import scala.scalajs.js as platform
 
 @platform.native
 @JSGlobalScope

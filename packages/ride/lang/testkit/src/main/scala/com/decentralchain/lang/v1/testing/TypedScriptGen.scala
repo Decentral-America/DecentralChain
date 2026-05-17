@@ -13,7 +13,7 @@ import org.scalacheck.*
 
 trait TypedScriptGen {
 
-  def exprGen = BOOLEANgen(100)
+  def exprGen        = BOOLEANgen(100)
   private def letGen =
     for {
       name <- Gen.alphaStr
@@ -21,7 +21,8 @@ trait TypedScriptGen {
     } yield Terms.LET(name, expr)
 
   private def funcGen(
-      nameGen: Gen[String] = Gen.alphaStr.filter(_.getBytes("UTF-8").length <= ContractLimits.MaxDeclarationNameInBytes),
+      nameGen: Gen[String] =
+        Gen.alphaStr.filter(_.getBytes("UTF-8").length <= ContractLimits.MaxDeclarationNameInBytes),
       withArgs: Boolean = true
   ) =
     for {
@@ -85,7 +86,8 @@ trait TypedScriptGen {
     } yield IF(cnd, t, f)
 
   private def LONGgen(gas: Int): Gen[EXPR] =
-    if (gas > 0) Gen.oneOf(CONST_LONGgen, BLOCK_LONGgen(gas - 1), IF_LONGgen(gas - 1), FUNCTION_CALLgen()) else CONST_LONGgen
+    if (gas > 0) Gen.oneOf(CONST_LONGgen, BLOCK_LONGgen(gas - 1), IF_LONGgen(gas - 1), FUNCTION_CALLgen())
+    else CONST_LONGgen
 
   private def CONST_LONGgen: Gen[EXPR] = Gen.choose(Long.MinValue, Long.MaxValue).map(CONST_LONG.apply)
 

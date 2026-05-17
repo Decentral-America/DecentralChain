@@ -21,7 +21,10 @@ case class CompilerContext(
     predefTypes
       .collect { case (_, CASETYPEREF(typeName, fields, false)) =>
         typeName ->
-          FunctionInfo(AnyPos, List(FunctionTypeSignature(CASETYPEREF(typeName, fields), fields, FunctionHeader.User(typeName))))
+          FunctionInfo(
+            AnyPos,
+            List(FunctionTypeSignature(CASETYPEREF(typeName, fields), fields, FunctionHeader.User(typeName)))
+          )
       } ++ functionDefs
 
   private def resolveFunction(name: String, args: Int): FunctionInfo =

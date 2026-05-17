@@ -24,7 +24,10 @@ class RecursiveFunctionTest
   property("recursive func block") {
     val expr = BLOCK(
       FUNC("x", List.empty, FUNCTION_CALL(FunctionHeader.User("y"), List.empty)),
-      BLOCK(FUNC("y", List.empty, FUNCTION_CALL(FunctionHeader.User("x"), List.empty)), FUNCTION_CALL(FunctionHeader.User("y"), List.empty))
+      BLOCK(
+        FUNC("y", List.empty, FUNCTION_CALL(FunctionHeader.User("x"), List.empty)),
+        FUNCTION_CALL(FunctionHeader.User("y"), List.empty)
+      )
     )
     estimate(customFunctionCosts, expr) shouldBe Symbol("left")
   }
@@ -66,12 +69,18 @@ class RecursiveFunctionTest
     val expr = BLOCK(
       FUNC("a1", Nil, CONST_BOOLEAN(true)),
       BLOCK(
-        FUNC("a1", Nil, IF(FUNCTION_CALL(User("a1"), Nil), FUNCTION_CALL(User("a1"), Nil), FUNCTION_CALL(User("a1"), Nil))),
+        FUNC(
+          "a1",
+          Nil,
+          IF(FUNCTION_CALL(User("a1"), Nil), FUNCTION_CALL(User("a1"), Nil), FUNCTION_CALL(User("a1"), Nil))
+        ),
         FUNCTION_CALL(User("a1"), Nil)
       )
     )
 
     ScriptEstimatorV3(fixOverflow = false, overhead = true, letFixes = false)(Set(), Map(), expr) shouldBe Right(3)
-    ScriptEstimatorV3(fixOverflow = true, overhead = true, letFixes = false)(Set(), Map(), expr) should produce("shadows preceding declaration")
+    ScriptEstimatorV3(fixOverflow = true, overhead = true, letFixes = false)(Set(), Map(), expr) should produce(
+      "shadows preceding declaration"
+    )
   }
 }

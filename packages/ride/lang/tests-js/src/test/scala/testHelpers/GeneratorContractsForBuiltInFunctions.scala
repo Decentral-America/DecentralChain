@@ -4,7 +4,12 @@ import com.decentralchain.lang.directives.values.{StdLibVersion, V3}
 
 class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: StdLibVersion) {
 
-  def codeFromMatchingAndCase(testData: String, function: String, testDataForV3: String, testDataForGreaterV3: String): String = {
+  def codeFromMatchingAndCase(
+      testData: String,
+      function: String,
+      testDataForV3: String,
+      testDataForGreaterV3: String
+  ): String = {
     val caseForVersion = caseForVersions(testDataForV3, testDataForGreaterV3)
     s"""\n
        |@Callable(i)
@@ -36,7 +41,12 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |""".stripMargin
   }
 
-  def codeWithoutMatcher(testData: String, function: String, testDataForV3: String, testDataForGreaterV3: String): String = {
+  def codeWithoutMatcher(
+      testData: String,
+      function: String,
+      testDataForV3: String,
+      testDataForGreaterV3: String
+  ): String = {
     val caseForVersion = caseForVersions(testDataForV3, testDataForGreaterV3)
     s"""\n
        |@Callable(i)
@@ -48,7 +58,7 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |""".stripMargin
   }
 
-  def codeOwnDataWithoutMatcher(ownDataFunction: String, caseForVersions: String): String = {
+  def codeOwnDataWithoutMatcher(ownDataFunction: String, caseForVersions: String): String =
     s"""\n
        | @Callable(i)
        |        func expression() = {
@@ -56,9 +66,8 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |            $caseForVersions
        |        }
        |""".stripMargin
-  }
 
-  def onlyMatcherContract(testData: String, function: String): String = {
+  def onlyMatcherContract(testData: String, function: String): String =
     s"""\n
        | let callerTestData = $testData
        |        let x = match $function {
@@ -66,17 +75,15 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |            case _ => throw("not $dataType")
        |        }
        |""".stripMargin
-  }
 
-  def simpleRideCode(foo: String, bar: String, testFunction: String): String = {
+  def simpleRideCode(foo: String, bar: String, testFunction: String): String =
     s"""\n
        |let foo = $foo
        |let bar = $bar
        |let callerTestData = $testFunction
        |""".stripMargin
-  }
 
-  def codeForDAppInvocation(byteVector: String, payment: String, func: String): String = {
+  def codeForDAppInvocation(byteVector: String, payment: String, func: String): String =
     s"""\n
        |func foo(dapp2: String, a: Int, key1: String, key2: String) = {
        |        let byteVector = $byteVector
@@ -105,9 +112,8 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |            )
        |        }
        |""".stripMargin
-  }
 
-  def codeForAddressFromRecipient(addressOrAlias: String, func: String, address: String): String = {
+  def codeForAddressFromRecipient(addressOrAlias: String, func: String, address: String): String =
     s"""
        |let addressOrAlias = $addressOrAlias;
        |        match (tx) {
@@ -115,9 +121,8 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |            case _ => false
        |        }
        |""".stripMargin
-  }
 
-  def codeForCalculateAssetId(testData: String, function: String): String = {
+  def codeForCalculateAssetId(testData: String, function: String): String =
     s"""
        |@Callable(inv)
        |    func issueAndId() = {
@@ -125,9 +130,8 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |      let id = $function
        |        ([issue])}
        |""".stripMargin
-  }
 
-  def codeForCalculateLeaseId(testData: String, function: String): String = {
+  def codeForCalculateLeaseId(testData: String, function: String): String =
     s"""
        |@Callable(i)
        |  func foo() = {
@@ -139,13 +143,11 @@ class GeneratorContractsForBuiltInFunctions(val dataType: String, libVersion: St
        |      ], unit)
        |  }
        |""".stripMargin
-  }
 
-  private def caseForVersions(testDataForV3: String, testDataForGreaterV3: String): String = {
+  private def caseForVersions(testDataForV3: String, testDataForGreaterV3: String): String =
     if (libVersion.id > V3.id) {
       testDataForGreaterV3
     } else {
       testDataForV3
     }
-  }
 }

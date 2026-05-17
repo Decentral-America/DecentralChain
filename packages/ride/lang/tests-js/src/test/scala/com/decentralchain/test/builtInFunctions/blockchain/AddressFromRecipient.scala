@@ -4,7 +4,7 @@ import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
 import _root_.testHelpers.RandomDataGenerator.*
 import com.decentralchain.JsTestBase
 import testHelpers.TestDataConstantsAndMethods.thisVariable
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object AddressFromRecipient extends JsTestBase {
   private val addressFromRecipient              = "addressFromRecipient(addressOrAlias)"
@@ -49,7 +49,7 @@ object AddressFromRecipient extends JsTestBase {
     test("RIDE-26. Function 'addressFromRecipient' requires 1 arguments") {
       for (version <- testData.actualVersions) {
         val precondition = new GeneratorContractsForBuiltInFunctions("", version)
-        val script = precondition.codeForAddressFromRecipient(
+        val script       = precondition.codeForAddressFromRecipient(
           randomAddressDataArrayElement,
           invalidFunc,
           randomAddressDataArrayElement

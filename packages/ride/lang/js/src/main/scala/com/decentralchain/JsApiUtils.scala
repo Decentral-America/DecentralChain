@@ -37,7 +37,7 @@ object JsApiUtils {
 
     def serAnnFunc(annFunc: Expressions.ANNOTATEDFUNC): js.Object = {
 
-      def serAnnotation(ann: Expressions.ANNOTATION): js.Object = {
+      def serAnnotation(ann: Expressions.ANNOTATION): js.Object =
         jObj(
           "type"     -> "ANNOTATION",
           "posStart" -> annFunc.position.start,
@@ -45,7 +45,6 @@ object JsApiUtils {
           "name"     -> serPartStr(ann.name),
           "argList"  -> ann.args.toJSArray.map(serPartStr)
         )
-      }
 
       jObj(
         "type"     -> "ANNOTATEDFUNC",
@@ -75,7 +74,7 @@ object JsApiUtils {
 
   def serExpr(expr: Expressions.EXPR): js.Object = {
 
-    def serType(t: FINAL): js.Object = {
+    def serType(t: FINAL): js.Object =
       t match {
         case ut: UNION =>
           jObj(
@@ -90,7 +89,6 @@ object JsApiUtils {
             "type" -> someT.toString()
           )
       }
-    }
 
     val commonDataObj = jObj(
       "type"       -> expr.getName,
@@ -175,7 +173,7 @@ object JsApiUtils {
   }
 
   def serCtx(ctx: CompilerContext): js.Object = {
-    val r = js.Array[js.Dynamic]()
+    val r                                                             = js.Array[js.Dynamic]()
     def addInfo(decl: (String, CompilerContext.PositionedInfo)): Unit =
       if (decl._2.pos.start != -1)
         r += jObj(
@@ -239,18 +237,17 @@ object JsApiUtils {
     }
   }
 
-  def compilationErrToJs(err: CompilationError): js.Object = {
+  def compilationErrToJs(err: CompilationError): js.Object =
     jObj("posStart" -> err.start, "posEnd" -> err.end, "msg" -> err.message)
-  }
 
   @nowarn("cat=deprecation")
   def toJs(ast: EXPR): js.Object = {
-    def r(expr: EXPR): js.Object = {
+    def r(expr: EXPR): js.Object =
       expr match {
-        case CONST_LONG(t)      => jObj("type" -> "LONG", "value" -> t.toDouble)
-        case GETTER(ref, field) => jObj("type" -> "GETTER", "ref" -> r(ref), "field" -> field)
-        case CONST_BYTESTR(bs)  => jObj("type" -> "BYTESTR", "value" -> bs.arr.toJSArray)
-        case CONST_STRING(s)    => jObj("type" -> "STRING", "value" -> s)
+        case CONST_LONG(t)        => jObj("type" -> "LONG", "value" -> t.toDouble)
+        case GETTER(ref, field)   => jObj("type" -> "GETTER", "ref" -> r(ref), "field" -> field)
+        case CONST_BYTESTR(bs)    => jObj("type" -> "BYTESTR", "value" -> bs.arr.toJSArray)
+        case CONST_STRING(s)      => jObj("type" -> "STRING", "value" -> s)
         case LET_BLOCK(let, body) =>
           jObj("type" -> "BLOCK", "let" -> jObj("name" -> let.name, "value" -> r(let.value)), "body" -> r(body))
         case BLOCK(LET(name, value), body) =>
@@ -263,8 +260,8 @@ object JsApiUtils {
           )
         case IF(cond, ifTrue, ifFalse) =>
           jObj("type" -> "IF", "condition" -> r(cond), "true" -> r(ifTrue), "false" -> r(ifFalse))
-        case REF(key)         => jObj("type" -> "REF", "key" -> key)
-        case CONST_BOOLEAN(b) => jObj("type" -> "BOOL", "value" -> b)
+        case REF(key)                      => jObj("type" -> "REF", "key" -> key)
+        case CONST_BOOLEAN(b)              => jObj("type" -> "BOOL", "value" -> b)
         case FUNCTION_CALL(function, args) =>
           jObj(
             "type" -> "CALL",
@@ -276,17 +273,15 @@ object JsApiUtils {
           )
         case t => jObj("[not_supported]stringRepr" -> t.toString)
       }
-    }
 
     r(ast)
   }
 
-  def toJs(): js.Object = {
+  def toJs(): js.Object =
     toJs(TRUE) // later
-  }
 
   def typeRepr(t: TYPE): js.Any = t match {
-    case UNION(l, _) => l.toJSArray.map(typeRepr)
+    case UNION(l, _)                      => l.toJSArray.map(typeRepr)
     case CASETYPEREF(name, fields, false) =>
       jObj("typeName" -> name, "fields" -> fields.toJSArray.map(f => jObj("name" -> f._1, "type" -> typeRepr(f._2))))
     case LIST(t) => jObj("listOf" -> typeRepr(t))

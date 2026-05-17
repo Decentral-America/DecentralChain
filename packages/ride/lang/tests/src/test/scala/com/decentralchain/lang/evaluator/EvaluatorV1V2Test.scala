@@ -30,7 +30,7 @@ import com.decentralchain.lang.v1.evaluator.{Contextful, ContextfulVal, Evaluato
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{CTX, ContractLimits, FunctionHeader}
-import com.decentralchain.lang.{Common, ExecutionError, Global, toError}
+import com.decentralchain.lang.{toError, Common, ExecutionError, Global}
 import com.decentralchain.test.*
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.EitherValues
@@ -65,7 +65,10 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   private val defaultEvaluator = new EvaluatorV1[Id, Environment]()
 
-  private def evalV1[T <: EVALUATED](context: EvaluationContext[Environment, Id], expr: EXPR): Either[ExecutionError, T] =
+  private def evalV1[T <: EVALUATED](
+      context: EvaluationContext[Environment, Id],
+      expr: EXPR
+  ): Either[ExecutionError, T] =
     defaultEvaluator[T](context, expr)
 
   private def evalV2[T <: EVALUATED](context: EvaluationContext[Environment, Id], expr: EXPR)(using
@@ -101,8 +104,11 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   ): Either[ExecutionError, T] =
     eval[T](context.asInstanceOf[EvaluationContext[Environment, Id]], expr)
 
-  private def evalWithLogging(context: EvaluationContext[Environment, Id], expr: EXPR): Either[(ExecutionError, Log[Id]), (EVALUATED, Log[Id])] = {
-    val evaluatorV1Result = defaultEvaluator.applyWithLogging[EVALUATED](context, expr)
+  private def evalWithLogging(
+      context: EvaluationContext[Environment, Id],
+      expr: EXPR
+  ): Either[(ExecutionError, Log[Id]), (EVALUATED, Log[Id])] = {
+    val evaluatorV1Result                      = defaultEvaluator.applyWithLogging[EVALUATED](context, expr)
     val (evaluatorV2Log, _, evaluatorV2Result) =
       EvaluatorV2.applyCompleted(
         context,
@@ -120,10 +126,12 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     evaluatorV1Result
   }
 
-  private def simpleDeclarationAndUsage(i: Int, blockBuilder: (LET, EXPR) => EXPR) = blockBuilder(LET("x", CONST_LONG(i)), REF("x"))
+  private def simpleDeclarationAndUsage(i: Int, blockBuilder: (LET, EXPR) => EXPR) =
+    blockBuilder(LET("x", CONST_LONG(i)), REF("x"))
 
   property("successful on very deep expressions (stack overflow check)") {
-    val term = (1 to 100000).foldLeft[EXPR](CONST_LONG(0))((acc, _) => FUNCTION_CALL(sumLong.header, List(acc, CONST_LONG(1))))
+    val term =
+      (1 to 100000).foldLeft[EXPR](CONST_LONG(0))((acc, _) => FUNCTION_CALL(sumLong.header, List(acc, CONST_LONG(1))))
 
     evalPure(expr = term) shouldBe evaluated(100000)
   }
@@ -216,7 +224,11 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   property("successful on deep type resolution") {
     forAll(blockBuilder) { block =>
       evalPure[EVALUATED](
-        expr = IF(FUNCTION_CALL(PureContext.eq.header, List(CONST_LONG(1), CONST_LONG(2))), simpleDeclarationAndUsage(3, block), CONST_LONG(4))
+        expr = IF(
+          FUNCTION_CALL(PureContext.eq.header, List(CONST_LONG(1), CONST_LONG(2))),
+          simpleDeclarationAndUsage(3, block),
+          CONST_LONG(4)
+        )
       ) shouldBe evaluated(4)
     }
   }
@@ -234,7 +246,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   }
 
   property("fails if definition not found") {
-    evalPure[EVALUATED](expr = FUNCTION_CALL(sumLong.header, List(REF("x"), CONST_LONG(2)))) should produce("A definition of 'x' not found")
+    evalPure[EVALUATED](expr = FUNCTION_CALL(sumLong.header, List(REF("x"), CONST_LONG(2)))) should produce(
+      "A definition of 'x' not found"
+    )
   }
 
   property("custom type field access") {
@@ -267,7 +281,7 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   property("lazy let evaluation doesn't throw if not used") {
     val pointType     = CASETYPEREF("Point", List(("X", LONG), ("Y", LONG)))
     val pointInstance = CaseObj(pointType, Map("X" -> 3L, "Y" -> 4L))
-    val context = Monoid.combine(
+    val context       = Monoid.combine(
       pureEvalContext,
       EvaluationContext[NoContext, Id](
         Contextful.empty[Id],
@@ -308,7 +322,10 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
         )
         .asInstanceOf[EvaluationContext[Environment, Id]]
 
-      val expr = block(LET("X", FUNCTION_CALL(f.header, List(CONST_LONG(1000)))), FUNCTION_CALL(sumLong.header, List(REF("X"), REF("X"))))
+      val expr = block(
+        LET("X", FUNCTION_CALL(f.header, List(CONST_LONG(1000)))),
+        FUNCTION_CALL(sumLong.header, List(REF("X"), REF("X")))
+      )
 
       evalV1[EVALUATED](context, expr) shouldBe evaluated(2L)
       functionEvaluated shouldBe 1
@@ -366,8 +383,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     }
     val fooTransform =
       NativeFunction[NoContext]("transformFoo", 1: Long, 260: Short, fooType, ("foo", fooType)) {
-        case (fooObj: CaseObj) :: Nil => evaluated(CaseObj(fooObj.caseType, fooObj.fields.updated("bar", "TRANSFORMED_BAR")))
-        case _                        => ???
+        case (fooObj: CaseObj) :: Nil =>
+          evaluated(CaseObj(fooObj.caseType, fooObj.fields.updated("bar", "TRANSFORMED_BAR")))
+        case _ => ???
       }
 
     val context = EvaluationContext.build(
@@ -477,7 +495,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("drop(ByteStr, Long) works as the native one") {
     forAll(genBytesAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(Native(FunctionIds.DROP_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(Native(FunctionIds.DROP_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureEvalContext, expr)
       actual shouldBe evaluated(xs.drop(number))
     }
@@ -485,7 +504,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("take(ByteStr, Long) works as the native one") {
     forAll(genBytesAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(FunctionHeader.Native(TAKE_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(FunctionHeader.Native(TAKE_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureEvalContext, expr)
       actual shouldBe evaluated(xs.take(number))
     }
@@ -493,7 +513,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("dropRightBytes(ByteStr, Long) works as the native one") {
     forAll(genBytesAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(Native(FunctionIds.DROP_RIGHT_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(Native(FunctionIds.DROP_RIGHT_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureContext(using V6).evaluationContext, expr)(using V6).leftMap(_.message)
       val limit  = 165947
       actual shouldBe (
@@ -509,7 +530,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("takeRightBytes(ByteStr, Long) works as the native one") {
     forAll(genBytesAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(Native(FunctionIds.TAKE_RIGHT_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(Native(FunctionIds.TAKE_RIGHT_BYTES), List(CONST_BYTESTR(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureContext(using V6).evaluationContext, expr)(using V6).leftMap(_.message)
       val limit  = 165947
       actual shouldBe (
@@ -530,7 +552,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("drop(String, Long) works as the native one") {
     forAll(genStringAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(FunctionHeader.Native(DROP_STRING), List(CONST_STRING(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(FunctionHeader.Native(DROP_STRING), List(CONST_STRING(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureEvalContext, expr)
       actual shouldBe evaluated(xs.drop(number))
     }
@@ -538,7 +561,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
   property("take(String, Long) works as the native one") {
     forAll(genStringAndNumber) { case (xs, number) =>
-      val expr   = FUNCTION_CALL(FunctionHeader.Native(TAKE_STRING), List(CONST_STRING(xs).explicitGet(), CONST_LONG(number)))
+      val expr =
+        FUNCTION_CALL(FunctionHeader.Native(TAKE_STRING), List(CONST_STRING(xs).explicitGet(), CONST_LONG(number)))
       val actual = evalPure[EVALUATED](pureEvalContext, expr)
       actual shouldBe evaluated(xs.take(number))
     }
@@ -668,8 +692,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     }
 
     forAll(gen) { addrStr =>
-      val expr                                   = FUNCTION_CALL(FunctionHeader.User("addressFromString"), List(CONST_STRING(addrStr).explicitGet()))
-      val actual                                 = eval[CaseObj](ctx.evaluationContext(environment), expr)
+      val expr   = FUNCTION_CALL(FunctionHeader.User("addressFromString"), List(CONST_STRING(addrStr).explicitGet()))
+      val actual = eval[CaseObj](ctx.evaluationContext(environment), expr)
       val a: Either[ExecutionError, EVALUATED]   = actual.map(_.fields("bytes"))
       val e: Either[String, Option[Array[Byte]]] = addressFromString(environment.chainId, addrStr)
       a shouldBe CONST_BYTESTR(ByteStr(e.explicitGet().get))
@@ -762,7 +786,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
       checkSum = bytes.takeRight(EnvironmentFunctions.ChecksumLength)
       wrongCheckSum <- Gen.containerOfN[Array, Byte](EnvironmentFunctions.ChecksumLength, Arbitrary.arbByte.arbitrary)
       if !checkSum.sameElements(wrongCheckSum)
-    } yield EnvironmentFunctions.AddressPrefix + Base58.encode(bytes.dropRight(EnvironmentFunctions.ChecksumLength) ++ wrongCheckSum)
+    } yield EnvironmentFunctions.AddressPrefix + Base58.encode(
+      bytes.dropRight(EnvironmentFunctions.ChecksumLength) ++ wrongCheckSum
+    )
 
     forAll(gen) { addrStr =>
       val expr   = FUNCTION_CALL(FunctionHeader.User("addressFromString"), List(CONST_STRING(addrStr).explicitGet()))
@@ -771,9 +797,19 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     }
   }
 
-  private def hashTest(bodyBytes: Array[Byte], hash: String, lim: Int)(implicit version: StdLibVersion): Either[ExecutionError, ByteStr] = {
+  private def hashTest(bodyBytes: Array[Byte], hash: String, lim: Int)(implicit
+      version: StdLibVersion
+  ): Either[ExecutionError, ByteStr] = {
     val vars: Map[String, (FINAL, ContextfulVal[NoContext])] = Map(
-      ("b", (BYTESTR, ContextfulVal.pure[NoContext](CONST_BYTESTR(ByteStr(bodyBytes), limit = CONST_BYTESTR.DataTxSize).explicitGet())))
+      (
+        "b",
+        (
+          BYTESTR,
+          ContextfulVal.pure[NoContext](
+            CONST_BYTESTR(ByteStr(bodyBytes), limit = CONST_BYTESTR.DataTxSize).explicitGet()
+          )
+        )
+      )
     )
 
     val context: CTX[NoContext] = Monoid.combineAll(
@@ -828,7 +864,12 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     }
   }
 
-  private def sigVerifyTest(bodyBytes: Array[Byte], publicKey: Array[Byte], signature: Array[Byte], lim_n: Option[Short] = None)(implicit
+  private def sigVerifyTest(
+      bodyBytes: Array[Byte],
+      publicKey: Array[Byte],
+      signature: Array[Byte],
+      lim_n: Option[Short] = None
+  )(implicit
       version: StdLibVersion
   ): Either[ExecutionError, Boolean] = {
     val txType = CASETYPEREF(
@@ -963,13 +1004,12 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     xs(0).weight shouldBe xs(1).weight
   }
 
-  private def genRCO(cnt: Int) = {
+  private def genRCO(cnt: Int) =
     (0 to cnt).foldLeft[EXPR](CONST_STRING("qqqq").explicitGet()) { (acc, i) =>
       val n = s"x$i"
       val r = REF(n)
       LET_BLOCK(LET(n, acc), FUNCTION_CALL(FunctionHeader.User("ScriptTransfer"), List(r, r, r)))
     }
-  }
 
   property("recursive caseobject") {
     val environment = emptyBlockchainEnvironment()
@@ -1069,7 +1109,8 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     val bodyBytes     = bodyText.getBytes("UTF-8")
     val hashFunctions = Map(SHA256 -> Sha256.hash, BLAKE256 -> Blake2b256.hash, KECCAK256 -> Keccak256.hash)
 
-    for ((funcName, funcClass) <- hashFunctions) hashFuncTest(bodyBytes, funcName) shouldBe Right(ByteStr(funcClass(bodyBytes)))
+    for ((funcName, funcClass) <- hashFunctions)
+      hashFuncTest(bodyBytes, funcName) shouldBe Right(ByteStr(funcClass(bodyBytes)))
   }
 
   private def hashFuncTest(bodyBytes: Array[Byte], funcName: Short): Either[ExecutionError, ByteStr] = {
@@ -1085,21 +1126,34 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   }
 
   property("math functions") {
-    val sum   = FUNCTION_CALL(sumLong.header, List(CONST_LONG(5), CONST_LONG(5)))
-    val mul   = FUNCTION_CALL(mulLong.header, List(CONST_LONG(5), CONST_LONG(5)))
-    val div   = FUNCTION_CALL(divLong.header, List(CONST_LONG(10), CONST_LONG(3)))
-    val mod   = FUNCTION_CALL(modLong.header, List(CONST_LONG(10), CONST_LONG(3)))
-    val frac  = FUNCTION_CALL(fraction(fixLimitCheck = false).header, List(CONST_LONG(Long.MaxValue), CONST_LONG(2), CONST_LONG(4)))
-    val frac2 = FUNCTION_CALL(fraction(fixLimitCheck = false).header, List(CONST_LONG(Long.MaxValue), CONST_LONG(3), CONST_LONG(2)))
-    val frac3 = FUNCTION_CALL(fraction(fixLimitCheck = false).header, List(CONST_LONG(-Long.MaxValue), CONST_LONG(3), CONST_LONG(2)))
+    val sum  = FUNCTION_CALL(sumLong.header, List(CONST_LONG(5), CONST_LONG(5)))
+    val mul  = FUNCTION_CALL(mulLong.header, List(CONST_LONG(5), CONST_LONG(5)))
+    val div  = FUNCTION_CALL(divLong.header, List(CONST_LONG(10), CONST_LONG(3)))
+    val mod  = FUNCTION_CALL(modLong.header, List(CONST_LONG(10), CONST_LONG(3)))
+    val frac = FUNCTION_CALL(
+      fraction(fixLimitCheck = false).header,
+      List(CONST_LONG(Long.MaxValue), CONST_LONG(2), CONST_LONG(4))
+    )
+    val frac2 = FUNCTION_CALL(
+      fraction(fixLimitCheck = false).header,
+      List(CONST_LONG(Long.MaxValue), CONST_LONG(3), CONST_LONG(2))
+    )
+    val frac3 = FUNCTION_CALL(
+      fraction(fixLimitCheck = false).header,
+      List(CONST_LONG(-Long.MaxValue), CONST_LONG(3), CONST_LONG(2))
+    )
 
     evalPure[EVALUATED](expr = sum) shouldBe evaluated(10)
     evalPure[EVALUATED](expr = mul) shouldBe evaluated(25)
     evalPure[EVALUATED](expr = div) shouldBe evaluated(3)
     evalPure[EVALUATED](expr = mod) shouldBe evaluated(1)
     evalPure[EVALUATED](expr = frac) shouldBe evaluated(Long.MaxValue / 2)
-    evalPure[EVALUATED](expr = frac2) should produce(s"Long overflow: value `${BigInt(Long.MaxValue) * 3 / 2}` greater than 2^63-1")
-    evalPure[EVALUATED](expr = frac3) should produce(s"Long overflow: value `${-BigInt(Long.MaxValue) * 3 / 2}` less than -2^63-1")
+    evalPure[EVALUATED](expr = frac2) should produce(
+      s"Long overflow: value `${BigInt(Long.MaxValue) * 3 / 2}` greater than 2^63-1"
+    )
+    evalPure[EVALUATED](expr = frac3) should produce(
+      s"Long overflow: value `${-BigInt(Long.MaxValue) * 3 / 2}` less than -2^63-1"
+    )
   }
 
   property("data constructors") {
@@ -1122,8 +1176,12 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
     forAll(Gen.choose(Long.MinValue, Long.MaxValue)) { n =>
       evalToString(toStringLong, CONST_LONG(n)) shouldBe evaluated(n.toString)
-      evalToString(toStringLong, CONST_STRING("").explicitGet()) should produce("Can't apply (CONST_STRING) to 'toString(u: Int)'")
-      evalToString(toStringBoolean, CONST_STRING("").explicitGet()) should produce("Can't apply (CONST_STRING) to 'toString(b: Boolean)'")
+      evalToString(toStringLong, CONST_STRING("").explicitGet()) should produce(
+        "Can't apply (CONST_STRING) to 'toString(u: Int)'"
+      )
+      evalToString(toStringBoolean, CONST_STRING("").explicitGet()) should produce(
+        "Can't apply (CONST_STRING) to 'toString(b: Boolean)'"
+      )
     }
   }
 
@@ -1133,7 +1191,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
     evalToBytes(toBytesBoolean, TRUE) shouldBe evaluated(ByteStr.fromBytes(1))
     evalToBytes(toBytesBoolean, FALSE) shouldBe evaluated(ByteStr.fromBytes(0))
-    evalToBytes(toStringBoolean, REF(GlobalValNames.Unit)) should produce("Can't apply (CaseObj) to 'toString(b: Boolean)'")
+    evalToBytes(toStringBoolean, REF(GlobalValNames.Unit)) should produce(
+      "Can't apply (CaseObj) to 'toString(b: Boolean)'"
+    )
 
     forAll(Gen.choose(Long.MinValue, Long.MaxValue), Gen.alphaNumStr) { (n, s) =>
       evalToBytes(toBytesLong, CONST_LONG(n)) shouldBe evaluated(ByteStr(ByteBuffer.allocate(8).putLong(n).array))
@@ -1213,7 +1273,7 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
   }
 
   property("fromBase16String limit 32768 digits from V4") {
-    val string32Kb = ("fedcba9876543210" * (32 * 1024 / 16))
+    val string32Kb                   = ("fedcba9876543210" * (32 * 1024 / 16))
     def script(base16String: String) =
       FUNCTION_CALL(
         Native(FunctionIds.FROMBASE16),
@@ -1230,7 +1290,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     eval[EVALUATED](v4Ctx, script(string32Kb)) shouldBe CONST_BYTESTR(bytes(string32Kb))
 
     eval[EVALUATED](v3Ctx, script(string32Kb + "aa")) shouldBe CONST_BYTESTR(bytes(string32Kb + "aa"))
-    eval[EVALUATED](v4Ctx, script(string32Kb + "aa")) should produce("Base16 decode input length=32770 should not exceed 32768")
+    eval[EVALUATED](v4Ctx, script(string32Kb + "aa")) should produce(
+      "Base16 decode input length=32770 should not exceed 32768"
+    )
   }
 
   property("tuple size limit") {
@@ -1239,7 +1301,10 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
 
     val v4Ctx = defaultFullContext(using V4).evaluationContext(emptyBlockchainEnvironment())
 
-    eval[CaseObj](v4Ctx, createTuple(ContractLimits.MaxTupleSize)).explicitGet().fields.size shouldBe ContractLimits.MaxTupleSize
+    eval[CaseObj](v4Ctx, createTuple(ContractLimits.MaxTupleSize))
+      .explicitGet()
+      .fields
+      .size shouldBe ContractLimits.MaxTupleSize
     eval[CaseObj](v4Ctx, createTuple(ContractLimits.MaxTupleSize + 1)) should produce("not found")
   }
 
@@ -1256,7 +1321,9 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
     DirectiveDictionary[StdLibVersion].all
       .foreach(version =>
         Rounding.fromV5.foreach { rounding =>
-          evalPure(pureContext(using version).evaluationContext, REF(rounding.`type`.name.toUpperCase)) shouldBe Right(rounding.value)
+          evalPure(pureContext(using version).evaluationContext, REF(rounding.`type`.name.toUpperCase)) shouldBe Right(
+            rounding.value
+          )
         }
       )
   }

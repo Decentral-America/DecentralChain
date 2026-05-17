@@ -43,7 +43,9 @@ class TypeInferrerTest extends FreeSpec {
     }
 
     "one simple same type" in {
-      TypeInferrer(Seq((LONG, typeparamT), (LONG, typeparamT), (LONG, typeparamT))) shouldBe Right(Map(typeparamT -> LONG))
+      TypeInferrer(Seq((LONG, typeparamT), (LONG, typeparamT), (LONG, typeparamT))) shouldBe Right(
+        Map(typeparamT -> LONG)
+      )
     }
 
     "option" - {
@@ -56,23 +58,35 @@ class TypeInferrerTest extends FreeSpec {
       }
 
       "containing same inner type" in {
-        TypeInferrer(Seq((LIST(LONG), PARAMETERIZEDLIST(typeparamT)), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))) shouldBe Right(
+        TypeInferrer(
+          Seq((LIST(LONG), PARAMETERIZEDLIST(typeparamT)), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))
+        ) shouldBe Right(
           Map(typeparamT -> LONG)
         )
       }
 
       "containing inner and separate type" in {
-        TypeInferrer(Seq((LONG, typeparamT), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))) shouldBe Right(Map(typeparamT -> LONG))
+        TypeInferrer(Seq((LONG, typeparamT), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))) shouldBe Right(
+          Map(typeparamT -> LONG)
+        )
       }
 
       "containing best common type" in {
-        TypeInferrer(Seq((LONG, typeparamT), (LIST(NOTHING), PARAMETERIZEDLIST(typeparamT)))) shouldBe Right(Map(typeparamT -> LONG))
+        TypeInferrer(Seq((LONG, typeparamT), (LIST(NOTHING), PARAMETERIZEDLIST(typeparamT)))) shouldBe Right(
+          Map(typeparamT -> LONG)
+        )
       }
 
       "fails if no common type" in {
-        TypeInferrer(Seq((BYTESTR, typeparamT), (BYTESTR, PARAMETERIZEDLIST(typeparamT)))) should produce("Non-matching types")
-        TypeInferrer(Seq((LONG, typeparamT), (LIST(LIST(NOTHING)), PARAMETERIZEDLIST(typeparamT)))) should produce("Can't match inferred types")
-        TypeInferrer(Seq((BYTESTR, typeparamT), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))) should produce("Can't match inferred types")
+        TypeInferrer(Seq((BYTESTR, typeparamT), (BYTESTR, PARAMETERIZEDLIST(typeparamT)))) should produce(
+          "Non-matching types"
+        )
+        TypeInferrer(Seq((LONG, typeparamT), (LIST(LIST(NOTHING)), PARAMETERIZEDLIST(typeparamT)))) should produce(
+          "Can't match inferred types"
+        )
+        TypeInferrer(Seq((BYTESTR, typeparamT), (LIST(LONG), PARAMETERIZEDLIST(typeparamT)))) should produce(
+          "Can't match inferred types"
+        )
       }
     }
 
@@ -125,7 +139,9 @@ class TypeInferrerTest extends FreeSpec {
         }
 
         "ambiguous inference" in {
-          TypeInferrer(Seq((LONG, PARAMETERIZEDUNION(List(typeparamT, typeparamG))))) should produce("Can't resolve correct type")
+          TypeInferrer(Seq((LONG, PARAMETERIZEDUNION(List(typeparamT, typeparamG))))) should produce(
+            "Can't resolve correct type"
+          )
         }
       }
 

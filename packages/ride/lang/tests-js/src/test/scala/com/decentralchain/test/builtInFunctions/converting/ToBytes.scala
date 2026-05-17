@@ -2,15 +2,21 @@ package com.decentralchain.test.builtInFunctions.converting
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomBoolean, randomInt, randomStringArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomBoolean,
+  randomInt,
+  randomStringArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
-  GreaterV3ResultBinaryEntry,
   actualVersions,
   rideV3Result,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  GreaterV3ResultBinaryEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object ToBytes extends JsTestBase {
   // toBytes

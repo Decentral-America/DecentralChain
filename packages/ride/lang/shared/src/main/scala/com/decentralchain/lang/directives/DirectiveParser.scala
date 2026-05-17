@@ -25,17 +25,16 @@ object DirectiveParser {
 
   private def parser[A: P]: P[Either[String, Directive]] =
     P(space ~ start ~ directiveKeyP ~ directiveValueP ~ end ~ space)
-      .map {
-        case (parsedKey, parsedValue) => {
-          val valueRaw = parsedValue.replace(" ", "")
-          for {
-            key <- DirectiveKey.textMap.get(parsedKey).toRight(s"Illegal directive key $parsedKey")
-            value <- key match {
-              case k: PredefinedDirectiveKey => k.valueDic.textMap.get(valueRaw).toRight(s"Illegal directive value $valueRaw for key $parsedKey")
-              case k: ArbitraryDirectiveKey  => Right(k.valueMapper(valueRaw))
-            }
-          } yield Directive(key, value)
-        }
+      .map { case (parsedKey, parsedValue) =>
+        val valueRaw = parsedValue.replace(" ", "")
+        for {
+          key   <- DirectiveKey.textMap.get(parsedKey).toRight(s"Illegal directive key $parsedKey")
+          value <- key match {
+            case k: PredefinedDirectiveKey =>
+              k.valueDic.textMap.get(valueRaw).toRight(s"Illegal directive value $valueRaw for key $parsedKey")
+            case k: ArbitraryDirectiveKey => Right(k.valueMapper(valueRaw))
+          }
+        } yield Directive(key, value)
       }
 
   def apply(input: String): Either[String, List[Directive]] =
@@ -47,8 +46,9 @@ object DirectiveParser {
         case (err: Left[?, ?], _)                                      => err
         case (_, _: Failure)                                           => Left(s"Directive $input has illegal format")
         case (_, Success(Left(err), _))                                => Left(err)
-        case (Right(acc), Success(Right(d), _)) if acc.contains(d.key) => Left(s"Directive key ${d.key.text} is used more than once")
-        case (Right(acc), Success(Right(d), _))                        => Right(acc + (d.key -> d))
+        case (Right(acc), Success(Right(d), _)) if acc.contains(d.key) =>
+          Left(s"Directive key ${d.key.text} is used more than once")
+        case (Right(acc), Success(Right(d), _)) => Right(acc + (d.key -> d))
       }
       .map(_.values.toList)
 

@@ -19,7 +19,11 @@ class ContractParserTest extends PropSpec with ScriptGenParser {
   }
 
   private def cleanOffsets(l: LET): LET =
-    l.copy(Pos(0, 0), name = cleanOffsets(l.name), value = cleanOffsets(l.value)) // , types = l.types.map(cleanOffsets(_))
+    l.copy(
+      Pos(0, 0),
+      name = cleanOffsets(l.name),
+      value = cleanOffsets(l.value)
+    ) // , types = l.types.map(cleanOffsets(_))
 
   private def cleanOffsets[T](p: PART[T]): PART[T] = p match {
     case PART.VALID(_, x)   => PART.VALID(AnyPos, x)
@@ -34,10 +38,18 @@ class ContractParserTest extends PropSpec with ScriptGenParser {
     case x: TRUE          => x.copy(position = Pos(0, 0))
     case x: FALSE         => x.copy(position = Pos(0, 0))
     case x: BINARY_OP     => x.copy(position = Pos(0, 0), a = cleanOffsets(x.a), b = cleanOffsets(x.b))
-    case x: IF => x.copy(position = Pos(0, 0), cond = cleanOffsets(x.cond), ifTrue = cleanOffsets(x.ifTrue), ifFalse = cleanOffsets(x.ifFalse))
-    case x @ BLOCK(_, l: Expressions.LET, _, _, _) => x.copy(position = Pos(0, 0), let = cleanOffsets(l), body = cleanOffsets(x.body))
-    case x: FUNCTION_CALL                          => x.copy(position = Pos(0, 0), name = cleanOffsets(x.name), args = x.args.map(cleanOffsets(_)))
-    case _                                         => throw new NotImplementedError(s"toString for ${expr.getClass.getSimpleName}")
+    case x: IF            =>
+      x.copy(
+        position = Pos(0, 0),
+        cond = cleanOffsets(x.cond),
+        ifTrue = cleanOffsets(x.ifTrue),
+        ifFalse = cleanOffsets(x.ifFalse)
+      )
+    case x @ BLOCK(_, l: Expressions.LET, _, _, _) =>
+      x.copy(position = Pos(0, 0), let = cleanOffsets(l), body = cleanOffsets(x.body))
+    case x: FUNCTION_CALL =>
+      x.copy(position = Pos(0, 0), name = cleanOffsets(x.name), args = x.args.map(cleanOffsets(_)))
+    case _ => throw new NotImplementedError(s"toString for ${expr.getClass.getSimpleName}")
   }
 
   property("simple 1-annotated function") {
@@ -99,7 +111,11 @@ class ContractParserTest extends PropSpec with ScriptGenParser {
           AnyPos,
           List(
             Expressions.ANNOTATION(AnyPos, PART.VALID(AnyPos, "Ann"), List(PART.VALID(AnyPos, "foo"))),
-            Expressions.ANNOTATION(AnyPos, PART.VALID(AnyPos, "Ioann"), List(PART.VALID(AnyPos, "zoo"), PART.VALID(AnyPos, "shazoo")))
+            Expressions.ANNOTATION(
+              AnyPos,
+              PART.VALID(AnyPos, "Ioann"),
+              List(PART.VALID(AnyPos, "zoo"), PART.VALID(AnyPos, "shazoo"))
+            )
           ),
           Expressions.FUNC(
             AnyPos,

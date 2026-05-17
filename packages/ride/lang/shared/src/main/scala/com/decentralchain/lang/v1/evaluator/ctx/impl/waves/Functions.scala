@@ -23,13 +23,18 @@ import com.decentralchain.lang.v1.evaluator.{ContextfulNativeFunction, Contextfu
 import com.decentralchain.lang.v1.traits.domain.{Issue, Lease, Recipient}
 import com.decentralchain.lang.v1.traits.{DataType, Environment}
 import com.decentralchain.lang.v1.{BaseGlobal, FunctionHeader}
-import com.decentralchain.lang.{CoevalF, CommonError, ExecutionError, FailOrRejectError, ThrownError, toError}
+import com.decentralchain.lang.{toError, CoevalF, CommonError, ExecutionError, FailOrRejectError, ThrownError}
 import monix.eval.Coeval
 
 object Functions {
-  private def getDataFromStateF(name: String, internalName: Short, dataType: DataType, selfCall: Boolean): BaseFunction[Environment] = {
+  private def getDataFromStateF(
+      name: String,
+      internalName: Short,
+      dataType: DataType,
+      selfCall: Boolean
+  ): BaseFunction[Environment] = {
     val resultType = UNION(dataType.innerType, UNIT)
-    val args =
+    val args       =
       if (selfCall)
         Seq(("key", STRING))
       else
@@ -47,7 +52,7 @@ object Functions {
         environmentFunctions
           .getData(addressOrAlias, key, dataType)
           .map(_.flatMap {
-            case None => Right(unit)
+            case None    => Right(unit)
             case Some(a) =>
               (a: @unchecked) match {
                 case b: ByteStr => CONST_BYTESTR(b)
@@ -59,7 +64,10 @@ object Functions {
       }
 
       new ContextfulNativeFunction.Simple[Environment](name, resultType, args) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] = {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           (env.tthis, args) match {
             case (address: Recipient.Address, CONST_STRING(key) :: Nil) if selfCall =>
               getData(env, Bindings.senderObject(address), key)
@@ -68,17 +76,21 @@ object Functions {
             case (_, xs) =>
               notImplemented[F, EVALUATED](s"${this.name}(s: String)", xs)
           }
-        }
       }
     }
   }
 
-  val getIntegerFromStateF: BaseFunction[Environment] = getDataFromStateF("getInteger", DATA_LONG_FROM_STATE, DataType.Long, selfCall = false)
-  val getBooleanFromStateF: BaseFunction[Environment] = getDataFromStateF("getBoolean", DATA_BOOLEAN_FROM_STATE, DataType.Boolean, selfCall = false)
-  val getBinaryFromStateF: BaseFunction[Environment]  = getDataFromStateF("getBinary", DATA_BYTES_FROM_STATE, DataType.ByteArray, selfCall = false)
-  val getStringFromStateF: BaseFunction[Environment]  = getDataFromStateF("getString", DATA_STRING_FROM_STATE, DataType.String, selfCall = false)
+  val getIntegerFromStateF: BaseFunction[Environment] =
+    getDataFromStateF("getInteger", DATA_LONG_FROM_STATE, DataType.Long, selfCall = false)
+  val getBooleanFromStateF: BaseFunction[Environment] =
+    getDataFromStateF("getBoolean", DATA_BOOLEAN_FROM_STATE, DataType.Boolean, selfCall = false)
+  val getBinaryFromStateF: BaseFunction[Environment] =
+    getDataFromStateF("getBinary", DATA_BYTES_FROM_STATE, DataType.ByteArray, selfCall = false)
+  val getStringFromStateF: BaseFunction[Environment] =
+    getDataFromStateF("getString", DATA_STRING_FROM_STATE, DataType.String, selfCall = false)
 
-  val getIntegerFromStateSelfF: BaseFunction[Environment] = getDataFromStateF("getInteger", DATA_LONG_FROM_STATE_SELF, DataType.Long, selfCall = true)
+  val getIntegerFromStateSelfF: BaseFunction[Environment] =
+    getDataFromStateF("getInteger", DATA_LONG_FROM_STATE_SELF, DataType.Long, selfCall = true)
   val getBooleanFromStateSelfF: BaseFunction[Environment] =
     getDataFromStateF("getBoolean", DATA_BOOLEAN_FROM_STATE_SELF, DataType.Boolean, selfCall = true)
   val getBinaryFromStateSelfF: BaseFunction[Environment] =
@@ -98,7 +110,10 @@ object Functions {
       arg
     ) {
       new ContextfulNativeFunction.Simple[Environment](name, resultType, List(arg)) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case (addressOrAlias: CaseObj) :: Nil =>
               val environmentFunctions = new EnvironmentFunctions[F](env)
@@ -112,7 +127,12 @@ object Functions {
     }
   }
 
-  private def getDataFromArrayF(name: String, internalName: Short, dataType: DataType, version: StdLibVersion): BaseFunction[Environment] =
+  private def getDataFromArrayF(
+      name: String,
+      internalName: Short,
+      dataType: DataType,
+      version: StdLibVersion
+  ): BaseFunction[Environment] =
     NativeFunction(
       name,
       10,
@@ -136,11 +156,14 @@ object Functions {
       case xs => notImplemented[Id, EVALUATED](s"$name(s: String)", xs)
     }
 
-  def getIntegerFromArrayF(v: StdLibVersion): BaseFunction[Environment] = getDataFromArrayF("getInteger", DATA_LONG_FROM_ARRAY, DataType.Long, v)
+  def getIntegerFromArrayF(v: StdLibVersion): BaseFunction[Environment] =
+    getDataFromArrayF("getInteger", DATA_LONG_FROM_ARRAY, DataType.Long, v)
   def getBooleanFromArrayF(v: StdLibVersion): BaseFunction[Environment] =
     getDataFromArrayF("getBoolean", DATA_BOOLEAN_FROM_ARRAY, DataType.Boolean, v)
-  def getBinaryFromArrayF(v: StdLibVersion): BaseFunction[Environment] = getDataFromArrayF("getBinary", DATA_BYTES_FROM_ARRAY, DataType.ByteArray, v)
-  def getStringFromArrayF(v: StdLibVersion): BaseFunction[Environment] = getDataFromArrayF("getString", DATA_STRING_FROM_ARRAY, DataType.String, v)
+  def getBinaryFromArrayF(v: StdLibVersion): BaseFunction[Environment] =
+    getDataFromArrayF("getBinary", DATA_BYTES_FROM_ARRAY, DataType.ByteArray, v)
+  def getStringFromArrayF(v: StdLibVersion): BaseFunction[Environment] =
+    getDataFromArrayF("getString", DATA_STRING_FROM_ARRAY, DataType.String, v)
 
   private def getDataByIndexF(name: String, dataType: DataType, version: StdLibVersion): BaseFunction[Environment] =
     UserFunction(
@@ -164,9 +187,11 @@ object Functions {
     }
 
   def getIntegerByIndexF(v: StdLibVersion): BaseFunction[Environment] = getDataByIndexF("getInteger", DataType.Long, v)
-  def getBooleanByIndexF(v: StdLibVersion): BaseFunction[Environment] = getDataByIndexF("getBoolean", DataType.Boolean, v)
-  def getBinaryByIndexF(v: StdLibVersion): BaseFunction[Environment]  = getDataByIndexF("getBinary", DataType.ByteArray, v)
-  def getStringByIndexF(v: StdLibVersion): BaseFunction[Environment]  = getDataByIndexF("getString", DataType.String, v)
+  def getBooleanByIndexF(v: StdLibVersion): BaseFunction[Environment] =
+    getDataByIndexF("getBoolean", DataType.Boolean, v)
+  def getBinaryByIndexF(v: StdLibVersion): BaseFunction[Environment] =
+    getDataByIndexF("getBinary", DataType.ByteArray, v)
+  def getStringByIndexF(v: StdLibVersion): BaseFunction[Environment] = getDataByIndexF("getString", DataType.String, v)
 
   private def secureHashExpr(xs: EXPR, version: StdLibVersion): EXPR =
     FUNCTION_CALL(
@@ -238,8 +263,15 @@ object Functions {
       addressType,
       ("publicKey", BYTESTR)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("addressFromPublicKey", addressType, Seq(("AddressOrAlias", addressOrAliasType))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] = {
+      new ContextfulNativeFunction.Simple[Environment](
+        "addressFromPublicKey",
+        addressType,
+        Seq(("AddressOrAlias", addressOrAliasType))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           (env, args) match {
             case (env, CONST_BYTESTR(publicKey) :: Nil) =>
               env
@@ -251,7 +283,6 @@ object Functions {
                 .pure[F]
             case (_, xs) => notImplemented[F, EVALUATED](s"addressFromPublicKey(publicKey: ByteVector)", xs)
           }
-        }
       }
     }
 
@@ -299,7 +330,10 @@ object Functions {
           LET_BLOCK(
             LET(
               "@afs_addrBytes",
-              FUNCTION_CALL(FunctionHeader.Native(FROMBASE58), List(removePrefixExpr(REF("@string"), EnvironmentFunctions.AddressPrefix)))
+              FUNCTION_CALL(
+                FunctionHeader.Native(FROMBASE58),
+                List(removePrefixExpr(REF("@string"), EnvironmentFunctions.AddressPrefix))
+              )
             ),
             IF(
               FUNCTION_CALL(
@@ -357,7 +391,10 @@ object Functions {
       ("@string", STRING)
     ) {
       new ContextfulNativeFunction.Simple[Environment]("addressFromString", optionAddress, Seq(("@string", STRING))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_STRING(address) :: Nil =>
               env
@@ -382,19 +419,27 @@ object Functions {
       addressType,
       ("AddressOrAlias", addressOrAliasType)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("addressFromRecipient", addressType, Seq(("AddressOrAlias", addressOrAliasType))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] = {
+      new ContextfulNativeFunction.Simple[Environment](
+        "addressFromRecipient",
+        addressType,
+        Seq(("AddressOrAlias", addressOrAliasType))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case (c @ CaseObj(`addressType`, _)) :: Nil =>
               (c: EVALUATED).asRight[ExecutionError].pure[F]
             case CaseObj(`aliasType`, fields) :: Nil =>
               new EnvironmentFunctions(env)
                 .addressFromAlias(fields("alias").asInstanceOf[CONST_STRING].s)
-                .map(_.map(resolved => CaseObj(addressType, Map("bytes" -> CONST_BYTESTR(resolved.bytes).explicitGet()))))
+                .map(
+                  _.map(resolved => CaseObj(addressType, Map("bytes" -> CONST_BYTESTR(resolved.bytes).explicitGet())))
+                )
             case xs =>
               notImplemented[F, EVALUATED](s"addressFromRecipient(a: AddressOrAlias)", xs)
           }
-        }
       }
     }
 
@@ -433,7 +478,10 @@ object Functions {
         LONG,
         Seq(("addressOrAlias", addressOrAliasType), ("assetId", UNION(UNIT, BYTESTR)))
       ) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case (c: CaseObj) :: u :: Nil if u == unit =>
               caseObjToRecipient(c)
@@ -462,8 +510,15 @@ object Functions {
       ("addressOrAlias", addressOrAliasType),
       ("assetId", BYTESTR)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("assetBalance", LONG, Seq(("addressOrAlias", addressOrAliasType), ("assetId", BYTESTR))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+      new ContextfulNativeFunction.Simple[Environment](
+        "assetBalance",
+        LONG,
+        Seq(("addressOrAlias", addressOrAliasType), ("assetId", BYTESTR))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case (c: CaseObj) :: CONST_BYTESTR(assetId: ByteStr) :: Nil =>
               caseObjToRecipient(c)
@@ -485,8 +540,15 @@ object Functions {
       balanceDetailsType,
       ("addressOrAlias", addressOrAliasType)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("wavesBalance", LONG, Seq(("addressOrAlias", addressOrAliasType))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+      new ContextfulNativeFunction.Simple[Environment](
+        "wavesBalance",
+        LONG,
+        Seq(("addressOrAlias", addressOrAliasType))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case (c: CaseObj) :: Nil =>
               caseObjToRecipient(c)
@@ -525,7 +587,10 @@ object Functions {
       ("id", BYTESTR)
     ) {
       new ContextfulNativeFunction.Simple[Environment]("assetInfo", optionAssetType, Seq(("id", BYTESTR))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_BYTESTR(id: ByteStr) :: Nil =>
               env
@@ -555,7 +620,10 @@ object Functions {
       ("id", BYTESTR)
     ) {
       new ContextfulNativeFunction.Simple[Environment]("transactionHeightById", optionLong, Seq(("id", BYTESTR))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_BYTESTR(id: ByteStr) :: Nil =>
               env
@@ -577,8 +645,15 @@ object Functions {
       optionBlockInfoType,
       ("height", LONG)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("blockInfoByHeight", optionBlockInfoType, Seq(("height", LONG))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+      new ContextfulNativeFunction.Simple[Environment](
+        "blockInfoByHeight",
+        optionBlockInfoType,
+        Seq(("height", LONG))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_LONG(height: Long) :: Nil =>
               env
@@ -653,7 +728,7 @@ object Functions {
                         List("assetId", "amount").flatMap(p.fields.get) match {
                           case CONST_BYTESTR(a) :: CONST_LONG(v) :: Nil => Right((Some(a.arr), v))
                           case CaseObj(UNIT, _) :: CONST_LONG(v) :: Nil => Right((None, v))
-                          case args                                     => Left(ThrownError(s"Unexpected payment args $args"): ExecutionError)
+                          case args => Left(ThrownError(s"Unexpected payment args $args"): ExecutionError)
                         }
                       case arg =>
                         Left(ThrownError(s"Unexpected payment arg $arg"): ExecutionError)
@@ -680,7 +755,7 @@ object Functions {
                     .map(_.map { case (result, spentComplexity) =>
                       val mappedError = result.leftMap {
                         case reject: FailOrRejectError => reject
-                        case other                     => CommonError("Nested invoke error", Some(other)): ExecutionError
+                        case other => CommonError("Nested invoke error", Some(other)): ExecutionError
                       }
                       (mappedError, availableComplexity - spentComplexity)
                     })
@@ -746,8 +821,15 @@ object Functions {
       txByIdReturnType(proofsEnabled, version),
       ("id", BYTESTR)
     ) {
-      new ContextfulNativeFunction.Simple[Environment]("transactionById", txByIdReturnType(proofsEnabled, version), Seq(("id", BYTESTR))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+      new ContextfulNativeFunction.Simple[Environment](
+        "transactionById",
+        txByIdReturnType(proofsEnabled, version),
+        Seq(("id", BYTESTR))
+      ) {
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_BYTESTR(id: ByteStr) :: Nil =>
               env
@@ -761,7 +843,11 @@ object Functions {
       }
     }
 
-  def transferTxByIdF(proofsEnabled: Boolean, version: StdLibVersion, typeDefs: Map[String, FINAL]): BaseFunction[Environment] = {
+  def transferTxByIdF(
+      proofsEnabled: Boolean,
+      version: StdLibVersion,
+      typeDefs: Map[String, FINAL]
+  ): BaseFunction[Environment] = {
     val optionTransferTxType = UNION(typeDefs("TransferTransaction"), UNIT)
     NativeFunction.withEnvironment[Environment](
       "transferTransactionById",
@@ -775,12 +861,18 @@ object Functions {
         optionTransferTxType,
         Seq(("id", BYTESTR))
       ) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CONST_BYTESTR(id: ByteStr) :: Nil =>
               env
                 .transferTransactionById(id.arr)
-                .map(_.filter(version >= V6 || _.p.h.version > 0).map(transactionObject(_, proofsEnabled, version, fixBigScriptField = false)))
+                .map(
+                  _.filter(version >= V6 || _.p.h.version > 0)
+                    .map(transactionObject(_, proofsEnabled, version, fixBigScriptField = false))
+                )
                 .map(fromOptionCO)
                 .map(_.asRight[ExecutionError])
             case xs =>
@@ -799,7 +891,10 @@ object Functions {
       ("issue", issueActionType)
     ) {
       new ContextfulNativeFunction.Simple[Environment]("calculateAssetId", BYTESTR, Seq(("issue", issueActionType))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CaseObj(`issueActionType`, fields) :: Nil =>
               val MaxAssetNameLength        = 16
@@ -832,7 +927,11 @@ object Functions {
       }
     }
 
-  def transactionFromProtoBytesF(proofsEnabled: Boolean, version: StdLibVersion, typeDefs: Map[String, FINAL]): BaseFunction[Environment] = {
+  def transactionFromProtoBytesF(
+      proofsEnabled: Boolean,
+      version: StdLibVersion,
+      typeDefs: Map[String, FINAL]
+  ): BaseFunction[Environment] = {
     val optionTransferTxType = UNION(typeDefs("TransferTransaction"), UNIT)
     NativeFunction.withEnvironment[Environment](
       "transferTransactionFromProto",
@@ -846,7 +945,10 @@ object Functions {
         optionTransferTxType,
         Seq(("bytes", BYTESTR))
       ) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case List(CONST_BYTESTR(bytes)) =>
               env
@@ -874,7 +976,7 @@ object Functions {
       FieldNames.IssueDecimals     -> LONG,
       FieldNames.IssueIsReissuable -> BOOLEAN
     ) { args =>
-      val typedArgs = (issueActionType.fields.map(_._1) zip (args ::: List(unit, CONST_LONG(0)))).toMap
+      val typedArgs = (issueActionType.fields.map(_._1).zip(args ::: List(unit, CONST_LONG(0)))).toMap
       Right(CaseObj(issueActionType, typedArgs))
     }
 
@@ -892,7 +994,7 @@ object Functions {
       FieldNames.IssueScriptField  -> UNION(issueScriptType, UNIT),
       FieldNames.IssueNonce        -> LONG
     ) { args =>
-      val typedArgs = (issueActionType.fields.map(_._1) zip args).toMap
+      val typedArgs = (issueActionType.fields.map(_._1).zip(args)).toMap
       Right(CaseObj(issueActionType, typedArgs))
     }
 
@@ -905,7 +1007,7 @@ object Functions {
       FieldNames.LeaseRecipient -> addressOrAliasType,
       FieldNames.LeaseAmount    -> LONG
     ) { args =>
-      val typedArgs = (leaseActionType.fields.map(_._1) zip args ::: List(CONST_LONG(0))).toMap
+      val typedArgs = (leaseActionType.fields.map(_._1).zip(args ::: List(CONST_LONG(0)))).toMap
       Right(CaseObj(leaseActionType, typedArgs))
     }
 
@@ -919,7 +1021,7 @@ object Functions {
       FieldNames.LeaseAmount    -> LONG,
       FieldNames.LeaseNonce     -> LONG
     ) { args =>
-      val typedArgs = (leaseActionType.fields.map(_._1) zip args).toMap
+      val typedArgs = (leaseActionType.fields.map(_._1).zip(args)).toMap
       Right(CaseObj(leaseActionType, typedArgs))
     }
 
@@ -933,13 +1035,20 @@ object Functions {
     ) {
       val MaxAliasLength = 30
       new ContextfulNativeFunction.Simple[Environment]("calculateLeaseId", BYTESTR, Seq(("lease", leaseActionType))) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CaseObj(`leaseActionType`, fields) :: Nil =>
               caseObjToRecipient(fields(FieldNames.LeaseRecipient).asInstanceOf[CaseObj])
                 .flatMap {
                   case Recipient.Address(bytes) if bytes.arr.length > AddressLength =>
-                    Left(CommonError(s"Address bytes length=${bytes.arr.length} exceeds limit=$AddressLength"): ExecutionError)
+                    Left(
+                      CommonError(
+                        s"Address bytes length=${bytes.arr.length} exceeds limit=$AddressLength"
+                      ): ExecutionError
+                    )
                   case Recipient.Alias(name) if name.length > MaxAliasLength =>
                     Left(CommonError(s"Alias name length=${name.length} exceeds limit=$MaxAliasLength"): ExecutionError)
                   case recipient =>
@@ -977,7 +1086,10 @@ object Functions {
         resType,
         Seq(arg)
       ) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case List(addr: CaseObj) =>
               caseObjToRecipient(addr)
@@ -1012,7 +1124,10 @@ object Functions {
       args*
     ) {
       new ContextfulNativeFunction.Simple[Environment]("calculateDelay", LONG, args) {
-        override def evaluate[F[_]: Monad](env: Environment[F], args: List[EVALUATED]): F[Either[ExecutionError, EVALUATED]] =
+        override def evaluate[F[_]: Monad](
+            env: Environment[F],
+            args: List[EVALUATED]
+        ): F[Either[ExecutionError, EVALUATED]] =
           args match {
             case CaseObj(`addressType`, fields) :: CONST_LONG(balance) :: Nil =>
               val addressBytes = fields("bytes").asInstanceOf[CONST_BYTESTR].bs

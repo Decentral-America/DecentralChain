@@ -1,10 +1,15 @@
 package com.decentralchain.test.builtInFunctions.accountDataStorage
 
 import com.decentralchain.JsTestBase
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomAliasDataArrayElement,
+  randomInt,
+  randomStringArrayElement
+}
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultBinaryEntry, rideV3Result, thisVariable}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{rideV3Result, thisVariable, GreaterV3ResultBinaryEntry}
+import utest.{test, Tests}
 
 object GetBinary extends JsTestBase {
   // getBinary
@@ -42,7 +47,8 @@ object GetBinary extends JsTestBase {
             (thisVariable, getBinaryValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -51,7 +57,14 @@ object GetBinary extends JsTestBase {
     test("RIDE-5. Compile own data getBinary functions for address, alias, and 'this'") {
       for (version <- testData.versionsSupportingTheNewFeatures) {
         val precondition = new GeneratorContractsForBuiltInFunctions("ByteVector", version)
-        for (ownData <- Seq(ownDataGetBinary, ownDataGetBinaryArgBeforeFunc, ownDataGetBinaryValueArgBeforeFunc, ownDataGetBinaryValue)) {
+        for (
+          ownData <- Seq(
+            ownDataGetBinary,
+            ownDataGetBinaryArgBeforeFunc,
+            ownDataGetBinaryValueArgBeforeFunc,
+            ownDataGetBinaryValue
+          )
+        ) {
           val script = precondition.codeOwnData(ownData, rideV3Result, GreaterV3ResultBinaryEntry)
           assertCompileSuccessDApp(script, version)
         }
@@ -73,7 +86,8 @@ object GetBinary extends JsTestBase {
             (randomInt.toString, invalidArgBeforeFunction)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }
@@ -88,7 +102,8 @@ object GetBinary extends JsTestBase {
             (randomAliasDataArrayElement, ownDataGetBinaryValueArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, binary, rideV3Result, GreaterV3ResultBinaryEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_A_FUNCTION_OVERLOAD)
         }
       }

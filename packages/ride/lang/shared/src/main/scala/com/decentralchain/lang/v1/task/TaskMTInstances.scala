@@ -33,6 +33,6 @@ trait TaskMTInstances {
 
       override def inspect[A](f: S => A): TaskMT[F, S, E, A] = monad.map(get)(f)
 
-      override def modify(f: S => S): TaskMT[F, S, E, Unit] = monad.flatMap(get)(f andThen set)
+      override def modify(f: S => S): TaskMT[F, S, E, Unit] = monad.flatMap(get)(f.andThen(set))
     }
 }

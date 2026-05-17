@@ -4,15 +4,15 @@ import com.decentralchain.JsTestBase
 import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
 import _root_.testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomAliasDataArrayElement, randomInt}
 import testHelpers.TestDataConstantsAndMethods.{
-  GreaterV3ResultBooleanEntry,
   invalidFunctionError,
   nonMatchingTypes,
   oldVersions,
   rideV3Result,
   thisVariable,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  GreaterV3ResultBooleanEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object IsDataStorageUntouched extends JsTestBase {
   private val isDataStorageUntouched              = "isDataStorageUntouched(callerTestData)"
@@ -34,7 +34,8 @@ object IsDataStorageUntouched extends JsTestBase {
             (thisVariable, isDataStorageUntouchedArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -49,7 +50,8 @@ object IsDataStorageUntouched extends JsTestBase {
             (randomInt.toString, isDataStorageUntouchedArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileErrorDApp(script, version, nonMatchingTypes("Address|Alias"))
         }
       }
@@ -65,7 +67,8 @@ object IsDataStorageUntouched extends JsTestBase {
             (thisVariable, invalidFunction)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileErrorDApp(script, version, invalidFunctionErrorResult)
         }
       }
@@ -81,7 +84,8 @@ object IsDataStorageUntouched extends JsTestBase {
             (randomAliasDataArrayElement, isDataStorageUntouched)
           )
         ) {
-          val script = precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
+          val script =
+            precondition.codeFromMatchingAndCase(addressOrAlias, dataStorage, rideV3Result, GreaterV3ResultBooleanEntry)
           assertCompileErrorDApp(script, version, testData.CANT_FIND_FUNCTION)
         }
       }

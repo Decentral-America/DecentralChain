@@ -9,14 +9,14 @@ import testHelpers.RandomDataGenerator.{
   randomUnionArrayElement
 }
 import testHelpers.TestDataConstantsAndMethods.{
-  GreaterV3ResultIntegerEntry,
   actualVersions,
   invalidFunctionError,
   nonMatchingTypes,
   rideV3Result,
-  thisVariable
+  thisVariable,
+  GreaterV3ResultIntegerEntry
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object AssetBalance extends JsTestBase {
   private val address: String    = randomAddressDataArrayElement
@@ -41,7 +41,8 @@ object AssetBalance extends JsTestBase {
             (thisVariable, assetBalanceArgBeforeFunc)
           )
         ) {
-          val script = precondition.codeWithoutMatcher(addressOrAlias, function, rideV3Result, GreaterV3ResultIntegerEntry)
+          val script =
+            precondition.codeWithoutMatcher(addressOrAlias, function, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileSuccessDApp(script, version)
         }
       }
@@ -59,7 +60,8 @@ object AssetBalance extends JsTestBase {
             (randomByteVectorArrayElement, assetBalanceArgBeforeFunc, nonMatchingTypes("Address|Alias"))
           )
         ) {
-          val script = precondition.codeWithoutMatcher(addressOrAlias, function, rideV3Result, GreaterV3ResultIntegerEntry)
+          val script =
+            precondition.codeWithoutMatcher(addressOrAlias, function, rideV3Result, GreaterV3ResultIntegerEntry)
           assertCompileErrorDApp(script, version, error)
         }
       }

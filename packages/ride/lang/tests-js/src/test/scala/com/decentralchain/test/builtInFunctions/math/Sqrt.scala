@@ -3,9 +3,14 @@ package com.decentralchain.test.builtInFunctions.math
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V6
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomByteVectorArrayElement, randomInt, randomStringArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomByteVectorArrayElement,
+  randomInt,
+  randomStringArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, CANT_FIND_FUNCTION}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Sqrt extends JsTestBase {
   private val union                        = randomUnionArrayElement

@@ -2,7 +2,18 @@ package com.decentralchain.lang.v1.compiler
 
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.v1.FunctionHeader.{Native, User}
-import com.decentralchain.lang.v1.compiler.Terms.{BLOCK, DECLARATION, EXPR, FUNC, FUNCTION_CALL, GETTER, IF, LET, LET_BLOCK, REF}
+import com.decentralchain.lang.v1.compiler.Terms.{
+  BLOCK,
+  DECLARATION,
+  EXPR,
+  FUNC,
+  FUNCTION_CALL,
+  GETTER,
+  IF,
+  LET,
+  LET_BLOCK,
+  REF
+}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.GlobalValNames
 
 import scala.annotation.tailrec
@@ -20,7 +31,8 @@ object ContractScriptCompactor {
     if (dApp.meta.originalNames.nonEmpty) {
       decompact(dApp, dApp.meta.originalNames.toVector)
     } else if (dApp.meta.compactNameAndOriginalNamePairList.nonEmpty) {
-      val compactNameToOriginalNameMap = dApp.meta.compactNameAndOriginalNamePairList.map(pair => pair.compactName -> pair.originalName).toMap
+      val compactNameToOriginalNameMap =
+        dApp.meta.compactNameAndOriginalNamePairList.map(pair => pair.compactName -> pair.originalName).toMap
       decompactOld(dApp, compactNameToOriginalNameMap)
     } else {
       dApp
@@ -28,7 +40,7 @@ object ContractScriptCompactor {
 
   def removeUnusedCode(dApp: DApp): DApp = {
 
-    def getUsedNames(expr: EXPR): Seq[String] = {
+    def getUsedNames(expr: EXPR): Seq[String] =
       expr match {
         case BLOCK(let: LET, body)   => getUsedNames(let.value) ++ getUsedNames(body)
         case BLOCK(func: FUNC, body) => getUsedNames(func.body) ++ getUsedNames(body)
@@ -39,7 +51,6 @@ object ContractScriptCompactor {
         case REF(key)                => List(key)
         case _                       => List.empty
       }
-    }
 
     @tailrec
     def getUsedNamesFromList(exprList: Seq[EXPR], prevNamesList: Seq[String]): Seq[String] = {
@@ -67,13 +78,16 @@ object ContractScriptCompactor {
   private def createCompName(oldName: String, state: State, dApp: DApp): CompactionResult[String] =
     state.originalNames.get(oldName) match {
       case Some(compName) => CompactionResult(compName, state)
-      case None =>
+      case None           =>
         val compactName = idxToName(state.counter)
         if (hasConflict(compactName, dApp)) {
           createCompName(oldName, State(state.counter + 1, state.originalNames, state.knownDecs), dApp)
         } else {
           assert(!hasConflict(compactName, dApp))
-          CompactionResult(compactName, State(state.counter + 1, state.originalNames.updated(oldName, compactName), state.knownDecs))
+          CompactionResult(
+            compactName,
+            State(state.counter + 1, state.originalNames.updated(oldName, compactName), state.knownDecs)
+          )
         }
     }
 
@@ -104,7 +118,7 @@ object ContractScriptCompactor {
   }
 
   private def compact(dApp: DApp, state: State): DApp = {
-    val compDAppRes = processDappWithoutMeta(dApp, state, createCompName(_, _, dApp))
+    val compDAppRes  = processDappWithoutMeta(dApp, state, createCompName(_, _, dApp))
     val oldNameToIdx = compDAppRes.state.originalNames.map { case (oldName, compName) =>
       oldName -> nameToIdx(compName)
     }
@@ -145,26 +159,31 @@ object ContractScriptCompactor {
     )
   }
 
-  private def processDec(dec: DECLARATION, state: State, replaceNameF: ReplaceNameF): CompactionResult[DECLARATION] = {
+  private def processDec(dec: DECLARATION, state: State, replaceNameF: ReplaceNameF): CompactionResult[DECLARATION] =
     dec match {
       case l: LET  => processLet(l, state, replaceNameF)
       case f: FUNC => processFunc(f, state, replaceNameF)
       case other   => CompactionResult(other, state)
     }
-  }
 
-  private def processExpr(expr: EXPR, state: State, replaceNameF: ReplaceNameF): CompactionResult[EXPR] = {
+  private def processExpr(expr: EXPR, state: State, replaceNameF: ReplaceNameF): CompactionResult[EXPR] =
     expr match {
       case b: BLOCK =>
         val compDecRes  = processDec(b.dec, state, replaceNameF)
         val compBodyRes = processExpr(b.body, compDecRes.state, replaceNameF)
 
-        CompactionResult(b.copy(dec = compDecRes.value, body = compBodyRes.value), compBodyRes.state.copy(knownDecs = state.knownDecs))
+        CompactionResult(
+          b.copy(dec = compDecRes.value, body = compBodyRes.value),
+          compBodyRes.state.copy(knownDecs = state.knownDecs)
+        )
       case lb: LET_BLOCK =>
         val compLetRes  = processLet(lb.let, state, replaceNameF)
         val compBodyRes = processExpr(lb.body, compLetRes.state, replaceNameF)
 
-        CompactionResult(lb.copy(let = compLetRes.value, body = compBodyRes.value), compBodyRes.state.copy(knownDecs = state.knownDecs))
+        CompactionResult(
+          lb.copy(let = compLetRes.value, body = compBodyRes.value),
+          compBodyRes.state.copy(knownDecs = state.knownDecs)
+        )
       case fc: FUNCTION_CALL =>
         val newFunction = fc.function match {
           case User(internalName, _) if state.knownDecs.contains(internalName) =>
@@ -192,36 +211,48 @@ object ContractScriptCompactor {
         val compIfTrueRes  = processExpr(iff.ifTrue, compCondRes.state, replaceNameF)
         val compIfFalseRes = processExpr(iff.ifFalse, compIfTrueRes.state, replaceNameF)
 
-        CompactionResult(iff.copy(cond = compCondRes.value, ifTrue = compIfTrueRes.value, ifFalse = compIfFalseRes.value), compIfFalseRes.state)
+        CompactionResult(
+          iff.copy(cond = compCondRes.value, ifTrue = compIfTrueRes.value, ifFalse = compIfFalseRes.value),
+          compIfFalseRes.state
+        )
       case other =>
         CompactionResult(other, state)
     }
-  }
 
   private def processDappWithoutMeta(dApp: DApp, state: State, replaceNameF: ReplaceNameF): CompactionResult[DApp] = {
-    val compDecsRes = processList[DECLARATION](dApp.decs, state, processDec(_, _, replaceNameF))
-    val compCallableFuncsRes = dApp.callableFuncs.foldLeft(CompactionResult(Vector.empty[DApp.CallableFunction], compDecsRes.state)) {
-      case (CompactionResult(compFuncs, state), func) =>
-        val compInvArgNameRes = replaceNameF(func.annotation.invocationArgName, state)
-        val compArgsRes       = processList(func.u.args, compInvArgNameRes.state, replaceNameF)
-        val compBodyRes = processExpr(func.u.body, compArgsRes.state.addKnownDecs(func.annotation.invocationArgName +: func.u.args), replaceNameF)
-        val compFunc = func.copy(
-          annotation = func.annotation.copy(invocationArgName = compInvArgNameRes.value),
-          u = func.u.copy(args = compArgsRes.value, body = compBodyRes.value)
-        )
+    val compDecsRes          = processList[DECLARATION](dApp.decs, state, processDec(_, _, replaceNameF))
+    val compCallableFuncsRes =
+      dApp.callableFuncs.foldLeft(CompactionResult(Vector.empty[DApp.CallableFunction], compDecsRes.state)) {
+        case (CompactionResult(compFuncs, state), func) =>
+          val compInvArgNameRes = replaceNameF(func.annotation.invocationArgName, state)
+          val compArgsRes       = processList(func.u.args, compInvArgNameRes.state, replaceNameF)
+          val compBodyRes       = processExpr(
+            func.u.body,
+            compArgsRes.state.addKnownDecs(func.annotation.invocationArgName +: func.u.args),
+            replaceNameF
+          )
+          val compFunc = func.copy(
+            annotation = func.annotation.copy(invocationArgName = compInvArgNameRes.value),
+            u = func.u.copy(args = compArgsRes.value, body = compBodyRes.value)
+          )
 
-        CompactionResult(compFuncs :+ compFunc, compBodyRes.state.copy(knownDecs = state.knownDecs))
-    }
+          CompactionResult(compFuncs :+ compFunc, compBodyRes.state.copy(knownDecs = state.knownDecs))
+      }
 
     val compVerifierFuncOptRes = dApp.verifierFuncOpt
-      .fold[CompactionResult[Option[DApp.VerifierFunction]]](CompactionResult(None, compCallableFuncsRes.state)) { vFunc =>
-        val compInvArgNameRes = replaceNameF(vFunc.annotation.invocationArgName, compCallableFuncsRes.state)
-        val compFuncRes       = processFunc(vFunc.u, compInvArgNameRes.state.addKnownDecs(Seq(vFunc.annotation.invocationArgName)), replaceNameF)
-        val newVFunc = vFunc.copy(
-          annotation = vFunc.annotation.copy(invocationArgName = compInvArgNameRes.value),
-          u = compFuncRes.value
-        )
-        CompactionResult(Some(newVFunc), compFuncRes.state.copy(knownDecs = compInvArgNameRes.state.knownDecs))
+      .fold[CompactionResult[Option[DApp.VerifierFunction]]](CompactionResult(None, compCallableFuncsRes.state)) {
+        vFunc =>
+          val compInvArgNameRes = replaceNameF(vFunc.annotation.invocationArgName, compCallableFuncsRes.state)
+          val compFuncRes       = processFunc(
+            vFunc.u,
+            compInvArgNameRes.state.addKnownDecs(Seq(vFunc.annotation.invocationArgName)),
+            replaceNameF
+          )
+          val newVFunc = vFunc.copy(
+            annotation = vFunc.annotation.copy(invocationArgName = compInvArgNameRes.value),
+            u = compFuncRes.value
+          )
+          CompactionResult(Some(newVFunc), compFuncRes.state.copy(knownDecs = compInvArgNameRes.state.knownDecs))
       }
 
     CompactionResult(
@@ -235,29 +266,34 @@ object ContractScriptCompactor {
   }
 
   @tailrec
-  private final def idxToName(n: Int, seed: String = ""): String = {
+  private final def idxToName(n: Int, seed: String = ""): String =
     if (n < CharRange.length) String.valueOf(CharRange(n)) + seed
     else idxToName(n / CharRange.length - 1, String.valueOf(CharRange(n % CharRange.length)) + seed)
-  }
 
   @tailrec
-  private final def nameToIdx(name: String, acc: Int = 0): Int = {
+  private final def nameToIdx(name: String, acc: Int = 0): Int =
     name.headOption match {
       case Some(v) => nameToIdx(name.drop(1), acc * CharRange.length + CharRange.indexOf(v) + 1)
       case None    => acc - 1
     }
-  }
 
-  private def processList[A](list: List[A], state: State, compF: (A, State) => CompactionResult[A]): CompactionResult[List[A]] = {
+  private def processList[A](
+      list: List[A],
+      state: State,
+      compF: (A, State) => CompactionResult[A]
+  ): CompactionResult[List[A]] = {
     @tailrec
-    def loop(list: List[A], compF: (A, State) => CompactionResult[A], acc: CompactionResult[Vector[A]]): CompactionResult[List[A]] = {
+    def loop(
+        list: List[A],
+        compF: (A, State) => CompactionResult[A],
+        acc: CompactionResult[Vector[A]]
+    ): CompactionResult[List[A]] =
       list match {
-        case Nil => acc.copy(value = acc.value.toList)
+        case Nil          => acc.copy(value = acc.value.toList)
         case head :: tail =>
           val compArgRes = compF(head, acc.state)
           loop(tail, compF, CompactionResult(acc.value :+ compArgRes.value, compArgRes.state))
       }
-    }
 
     loop(list, compF, CompactionResult(Vector.empty[A], state))
   }

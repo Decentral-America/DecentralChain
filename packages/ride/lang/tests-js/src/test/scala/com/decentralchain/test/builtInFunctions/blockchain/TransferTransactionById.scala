@@ -1,10 +1,14 @@
 package com.decentralchain.test.builtInFunctions.blockchain
 
 import com.decentralchain.JsTestBase
-import testHelpers.RandomDataGenerator.{randomByteVectorArrayElement, randomDigestAlgorithmTypeArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomByteVectorArrayElement,
+  randomDigestAlgorithmTypeArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object TransferTransactionById extends JsTestBase {
   private val transferTransactionById              = "transferTransactionById(callerTestData)"
@@ -36,8 +40,16 @@ object TransferTransactionById extends JsTestBase {
           (data, function, error) <- Seq(
             (randomDigestAlgorithmTypeArrayElement, transferTransactionById, nonMatchingTypes("ByteVector")),
             (randomStringArrayElement, transferTransactionByIdArgBeforeFunc, nonMatchingTypes("ByteVector")),
-            (randomByteVectorArrayElement, invalidTransferTransactionById, invalidFunctionError("transferTransactionById", 1)),
-            (randomByteVectorArrayElement, invalidTransferTransactionByIdArg, invalidFunctionError("transferTransactionById", 1))
+            (
+              randomByteVectorArrayElement,
+              invalidTransferTransactionById,
+              invalidFunctionError("transferTransactionById", 1)
+            ),
+            (
+              randomByteVectorArrayElement,
+              invalidTransferTransactionByIdArg,
+              invalidFunctionError("transferTransactionById", 1)
+            )
           )
         ) {
           val script = precondition.onlyMatcherContract(data, function)

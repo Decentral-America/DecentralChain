@@ -242,20 +242,20 @@ object Terms {
   }
 
   case class CONST_LONG(t: Long) extends EVALUATED {
-    override def toString: String = t.toString
-    override val weight: Long     = 8L
-    override val getType: REAL    = LONG
-    override def hashCode(): Int  = t.hashCode()
+    override def toString: String          = t.toString
+    override val weight: Long              = 8L
+    override val getType: REAL             = LONG
+    override def hashCode(): Int           = t.hashCode()
     override def equals(obj: Any): Boolean = obj match {
       case CONST_LONG(`t`) => true
       case _               => false
     }
   }
   case class CONST_BIGINT(t: BigInt) extends EVALUATED {
-    override def toString: String = t.toString
-    override val weight: Long     = 64L
-    override val getType: REAL    = BIGINT
-    override def hashCode(): Int  = t.hashCode()
+    override def toString: String          = t.toString
+    override val weight: Long              = 64L
+    override val getType: REAL             = BIGINT
+    override def hashCode(): Int           = t.hashCode()
     override def equals(obj: Any): Boolean = obj match {
       case CONST_BIGINT(`t`) => true
       case _                 => false
@@ -311,7 +311,11 @@ object Terms {
   }
 
   object CONST_STRING {
-    def apply(s: String, reduceLimit: Boolean = true, bytesLength: Option[Int] = None): Either[CommonError, CONST_STRING] = {
+    def apply(
+        s: String,
+        reduceLimit: Boolean = true,
+        bytesLength: Option[Int] = None
+    ): Either[CommonError, CONST_STRING] = {
       val limit =
         if (reduceLimit) DataEntryValueMax
         else DataTxMaxBytes
@@ -370,7 +374,9 @@ object Terms {
     def apply(caseType: CASETYPEREF, fields: Map[String, EVALUATED]): CaseObj = {
       val obj = new CaseObj(caseType, fields)
       if (obj.weight > MaxWeight) {
-        throw new Exception(s"the object ${caseType.name} is too heavy. Actual weight: ${obj.weight}, limit: $MaxWeight")
+        throw new Exception(
+          s"the object ${caseType.name} is too heavy. Actual weight: ${obj.weight}, limit: $MaxWeight"
+        )
       } else {
         obj
       }
@@ -408,7 +414,7 @@ object Terms {
 
     def apply(xs: IndexedSeq[EVALUATED], limited: Boolean): Either[ExecutionError, ARR] = {
       var measuredWeight = EMPTYARR_WEIGHT + ELEM_WEIGHT * xs.size
-      xs.foreach { ev => measuredWeight += ev.weight }
+      xs.foreach(ev => measuredWeight += ev.weight)
       ARR(xs, measuredWeight, limited)
     }
   }
@@ -429,8 +435,8 @@ object Terms {
   val runtimeTupleType: CASETYPEREF = CASETYPEREF("Tuple", Nil)
 
   implicit val orderingConstLong: Ordering[CONST_LONG] =
-    (a, b) => a.t compare b.t
+    (a, b) => a.t.compare(b.t)
 
   implicit val orderingConstBigInt: Ordering[CONST_BIGINT] =
-    (a, b) => a.t compare b.t
+    (a, b) => a.t.compare(b.t)
 }

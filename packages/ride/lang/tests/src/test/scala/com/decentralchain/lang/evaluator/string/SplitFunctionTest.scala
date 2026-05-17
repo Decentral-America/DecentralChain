@@ -10,11 +10,17 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.MaxListLengthV4
 import com.decentralchain.test.produce
 
 class SplitFunctionTest extends EvaluatorSpec {
-  private implicit val version: StdLibVersion = V6
+  private implicit val version: StdLibVersion               = V6
   private def assertSuccess(script: String => String): Unit =
-    for ((f, v) <- Seq((PureContext.splitStrFixed, V3), (PureContext.splitStrV6, V6), (PureContext.splitStr4C, V6), (PureContext.splitStr51C, V6))) {
+    for (
+      (f, v) <- Seq(
+        (PureContext.splitStrFixed, V3),
+        (PureContext.splitStrV6, V6),
+        (PureContext.splitStr4C, V6),
+        (PureContext.splitStr51C, V6)
+      )
+    )
       eval(script(f.name))(using v) shouldBe Right(CONST_BOOLEAN(true))
-    }
 
   property("split string containing separators") {
     assertSuccess(f => s"""
@@ -128,7 +134,8 @@ class SplitFunctionTest extends EvaluatorSpec {
     val strContainingRegex = "aaa1bbb2ccc"
     val regex              = "[12]+"
     strContainingRegex.split(regex) shouldBe Array("aaa", "bbb", "ccc")
-    assertSuccess(f => s"""
+    assertSuccess(f =>
+      s"""
                           |   let regex = "$regex"
                           |
                           |   let strContainingRegex = "$strContainingRegex"
@@ -143,7 +150,8 @@ class SplitFunctionTest extends EvaluatorSpec {
                           |                   splitted2[1] == "bbb"
                           |
                           |   result1 && result2
-         """.stripMargin)
+         """.stripMargin
+    )
   }
 
   property("split function input limit") {
@@ -182,7 +190,9 @@ class SplitFunctionTest extends EvaluatorSpec {
 
   property("function family input limits") {
     val script = s""" ${PureContext.splitStr4C.name}("${s"""${"a" * 250}, """ * 20}${"a" * 961}", ",") """
-    eval(script) should produce(s"Input string size = 6001 bytes exceeds limit = 6000 for ${PureContext.splitStrV6.name}")
+    eval(script) should produce(
+      s"Input string size = 6001 bytes exceeds limit = 6000 for ${PureContext.splitStrV6.name}"
+    )
 
     val script2 = s""" ${PureContext.splitStr4C.name}("${s"""${"a" * 250}, """ * 20}${"a" * 960}", ",") """
     eval(script2) shouldBe a[Right[?, ?]]

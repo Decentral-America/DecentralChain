@@ -52,10 +52,10 @@ case class CTX[C[_[_]]](
   )
 
   val opsNames = BinaryOperation.opsByPriority
-    .flatMap({
+    .flatMap {
       case Left(l)  => l
       case Right(l) => l
-    })
+    }
     .map(x => BinaryOperation.opsToFunctions(x))
     .toSet
 

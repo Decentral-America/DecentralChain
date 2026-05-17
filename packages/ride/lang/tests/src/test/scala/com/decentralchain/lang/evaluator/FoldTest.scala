@@ -53,7 +53,9 @@ class FoldTest extends EvaluatorSpec {
       """.stripMargin
 
     val index = script.indexOf("1001")
-    eval(script) shouldBe Left(s"Compilation failed: [List size limit in FOLD is too big, 1001 must be less or equal 1000 in $index-${index + 4}]")
+    eval(script) shouldBe Left(
+      s"Compilation failed: [List size limit in FOLD is too big, 1001 must be less or equal 1000 in $index-${index + 4}]"
+    )
   }
 
   property("Maximum limit") {

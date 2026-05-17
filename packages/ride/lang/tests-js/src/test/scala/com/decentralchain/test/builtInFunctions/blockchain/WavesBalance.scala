@@ -9,8 +9,13 @@ import testHelpers.RandomDataGenerator.{
   randomDigestAlgorithmTypeArrayElement,
   randomStringArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, invalidFunctionError, nonMatchingTypes, thisVariable}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  nonMatchingTypes,
+  thisVariable
+}
+import utest.{test, Tests}
 
 object WavesBalance extends JsTestBase {
   private val wavesBalance              = "wavesBalance(callerTestData)"

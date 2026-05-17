@@ -45,7 +45,7 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
 
   private def evalFuncBlock(func: FUNC, inner: EXPR): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] = {
     val funcHeader = FunctionHeader.User(func.name)
-    val function = UserFunction(func.name, 0, NOTHING, func.args.map(n => (n, NOTHING))*)(func.body)
+    val function   = UserFunction(func.name, 0, NOTHING, func.args.map(n => (n, NOTHING))*)(func.body)
       .asInstanceOf[UserFunction[C]]
     local {
       modify[F, EnabledLogEvaluationContext[C, F], ExecutionError](ctx =>
@@ -58,14 +58,17 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
   private def evalRef(key: String): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
     for {
       ctx <- get[F, EnabledLogEvaluationContext[C, F], ExecutionError]
-      r <- ctx.ec.letDefs.get(key) match {
+      r   <- ctx.ec.letDefs.get(key) match {
         case Some(lzy) => liftTER[F, C, EVALUATED](lzy.value)
-        case None      => raiseError[F, EnabledLogEvaluationContext[C, F], ExecutionError, EVALUATED](s"A definition of '$key' not found")
+        case None      =>
+          raiseError[F, EnabledLogEvaluationContext[C, F], ExecutionError, EVALUATED](
+            s"A definition of '$key' not found"
+          )
       }
     } yield (ctx.ec, r)
 
   private def evalIF(cond: EXPR, ifTrue: EXPR, ifFalse: EXPR): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
-    evalExpr(cond) flatMap {
+    evalExpr(cond).flatMap {
       case TRUE  => evalExprWithCtx(ifTrue)
       case FALSE => evalExprWithCtx(ifFalse)
       case _     => ???
@@ -80,20 +83,26 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
       }
     }
 
-  private def evalFunctionCall(header: FunctionHeader, args: List[EXPR]): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
+  private def evalFunctionCall(
+      header: FunctionHeader,
+      args: List[EXPR]
+  ): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
     for {
-      ctx <- get[F, EnabledLogEvaluationContext[C, F], ExecutionError]
+      ctx    <- get[F, EnabledLogEvaluationContext[C, F], ExecutionError]
       result <- ctx.ec.functions
         .get(header)
         .map {
           case func: UserFunction[C] =>
             Monad[[X] =>> EvalM[F, C, X]].flatMap(args.traverse(evalExpr)) { args =>
-              val letDefsWithArgs = args.zip(func.signature.args).foldLeft(ctx.ec.letDefs) { case (r, (argValue, (argName, _))) =>
-                r + (argName -> LazyVal.fromEvaluated(argValue, ctx.l(s"$argName")))
-              }
+              val letDefsWithArgs =
+                args.zip(func.signature.args).foldLeft(ctx.ec.letDefs) { case (r, (argValue, (argName, _))) =>
+                  r + (argName -> LazyVal.fromEvaluated(argValue, ctx.l(s"$argName")))
+                }
               local {
                 val newState: EvalM[F, C, Unit] =
-                  set[F, EnabledLogEvaluationContext[C, F], ExecutionError](ctx.copy(ec = ctx.ec.copy(letDefs = letDefsWithArgs))).map(_.pure[F])
+                  set[F, EnabledLogEvaluationContext[C, F], ExecutionError](
+                    ctx.copy(ec = ctx.ec.copy(letDefs = letDefsWithArgs))
+                  ).map(_.pure[F])
                 Monad[[X] =>> EvalM[F, C, X]].flatMap(newState)(_ => evalExpr(func.ev(ctx.ec.environment, args)))
               }
             }: EvalM[F, C, EVALUATED]
@@ -125,22 +134,24 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
             case _ => None
           }
         )
-        .getOrElse(raiseError[F, EnabledLogEvaluationContext[C, F], ExecutionError, EVALUATED](s"function '$header' not found"))
+        .getOrElse(
+          raiseError[F, EnabledLogEvaluationContext[C, F], ExecutionError, EVALUATED](s"function '$header' not found")
+        )
     } yield (ctx.ec, result)
 
   private def evalExprWithCtx(t: EXPR): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
     t match {
       case LET_BLOCK(let, inner) => evalLetBlock(let, inner)
-      case BLOCK(dec, inner) =>
+      case BLOCK(dec, inner)     =>
         dec match {
           case l: LET        => evalLetBlock(l, inner)
           case f: FUNC       => evalFuncBlock(f, inner)
           case _: FAILED_DEC => raiseError("Attempt to evaluate failed declaration.")
         }
-      case REF(str)                    => evalRef(str)
-      case c: EVALUATED                => get[F, EnabledLogEvaluationContext[C, F], ExecutionError].map(ctx => (ctx.ec, c))
-      case IF(cond, t1, t2)            => evalIF(cond, t1, t2)
-      case GETTER(expr, field)         => evalGetter(expr, field)
+      case REF(str)            => evalRef(str)
+      case c: EVALUATED        => get[F, EnabledLogEvaluationContext[C, F], ExecutionError].map(ctx => (ctx.ec, c))
+      case IF(cond, t1, t2)    => evalIF(cond, t1, t2)
+      case GETTER(expr, field) => evalGetter(expr, field)
       case FUNCTION_CALL(header, args) => evalFunctionCall(header, args)
       case _: FAILED_EXPR              => raiseError("Attempt to evaluate failed expression.")
     }
@@ -148,7 +159,10 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
   private def evalExpr(t: EXPR): EvalM[F, C, EVALUATED] =
     evalExprWithCtx(t).map(_._2)
 
-  def applyWithLogging[A <: EVALUATED](c: EvaluationContext[C, F], expr: EXPR): F[Either[(ExecutionError, Log[F]), (A, Log[F])]] = {
+  def applyWithLogging[A <: EVALUATED](
+      c: EvaluationContext[C, F],
+      expr: EXPR
+  ): F[Either[(ExecutionError, Log[F]), (A, Log[F])]] = {
     val log = ListBuffer[LogItem[F]]()
     val lec = EnabledLogEvaluationContext[C, F]((str: String) => (v: LetExecResult[F]) => log.append((str, v)), c)
     val r   = evalExpr(expr).map(_.asInstanceOf[A]).run(lec).value._2
@@ -158,7 +172,10 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
   def apply[A <: EVALUATED](c: EvaluationContext[C, F], expr: EXPR): F[Either[ExecutionError, A]] =
     applyWithLogging[A](c, expr).map(_.bimap(_._1, _._1))
 
-  def applyWithCtx(c: EvaluationContext[C, F], expr: EXPR): F[Either[ExecutionError, (EvaluationContext[C, F], EVALUATED)]] =
+  def applyWithCtx(
+      c: EvaluationContext[C, F],
+      expr: EXPR
+  ): F[Either[ExecutionError, (EvaluationContext[C, F], EVALUATED)]] =
     evalExprWithCtx(expr)
       .run(EnabledLogEvaluationContext(_ => _ => (), c))
       .value

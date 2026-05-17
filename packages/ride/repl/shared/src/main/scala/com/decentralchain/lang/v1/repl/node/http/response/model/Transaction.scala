@@ -31,11 +31,11 @@ object Transaction {
       version <- c.downField("version").as[Int]
       height  <- c.downField("height").as[Option[Int]]
       typeId  <- c.downField("type").as[Int]
-      proofs <- version match {
+      proofs  <- version match {
         case 1 => c.downField("signature").as[ByteString].map(v => List.apply(v))
         case _ => c.downField("proofs").as[List[ByteString]]
       }
-      id <- c.downField("id").as[ByteString]
+      id        <- c.downField("id").as[ByteString]
       recipient <- c.downField("recipient").as[String].flatMap {
         case aliasPattern(alias) => Right(Alias(alias))
         case _                   => c.downField("recipient").as[ByteString].map(b => Address(b.byteStr))

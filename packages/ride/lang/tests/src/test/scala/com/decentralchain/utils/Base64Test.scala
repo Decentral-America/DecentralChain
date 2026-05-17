@@ -12,7 +12,7 @@ class Base64Test extends PropSpec {
   val illegalGen: Gen[String] =
     for {
       length <- Gen.chooseNum(100, 1024)
-      chars <- Gen
+      chars  <- Gen
         .listOfN(length, Gen.oneOf(Base64Chars ++ IllegalChars))
         .filter(_.toSet.intersect(IllegalChars.toSet).nonEmpty)
     } yield chars.mkString

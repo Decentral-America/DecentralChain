@@ -8,8 +8,9 @@ import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.estimator.v3.ScriptEstimatorV3
 import com.decentralchain.lang.v1.evaluator.FunctionIds.BLS12_GROTH16_VERIFY
 
-class EstimatorGlobalVarTest extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = false)) {
-  private val fixedEstimator                                      = ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)
+class EstimatorGlobalVarTest
+    extends ScriptEstimatorTestBase(ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = false)) {
+  private val fixedEstimator = ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)
   private def estimateFixed(expr: EXPR): Either[String, Long]     = fixedEstimator(lets, functionCosts(V6), expr)
   private def estimateFixed(script: String): Either[String, Long] = estimateFixed(compile(script)(using V6))
 

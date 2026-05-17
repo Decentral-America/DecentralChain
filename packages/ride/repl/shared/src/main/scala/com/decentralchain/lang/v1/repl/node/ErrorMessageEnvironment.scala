@@ -12,12 +12,12 @@ import com.decentralchain.lang.v1.traits.{DataType, Environment}
 import monix.eval.Coeval
 
 case class ErrorMessageEnvironment[F[_]](message: String) extends Environment[F] {
-  lazy val unavailable                                                                               = throw BlockchainUnavailableException(message)
-  override def chainId: Byte                                                                         = 0
-  override def height: F[Long]                                                                       = unavailable
-  override def inputEntity: InputEntity                                                              = unavailable
-  override def tthis: Environment.Tthis                                                              = unavailable
-  override def transactionById(id: Array[Byte]): F[Option[Tx]]                                       = unavailable
+  lazy val unavailable                                         = throw BlockchainUnavailableException(message)
+  override def chainId: Byte                                   = 0
+  override def height: F[Long]                                 = unavailable
+  override def inputEntity: InputEntity                        = unavailable
+  override def tthis: Environment.Tthis                        = unavailable
+  override def transactionById(id: Array[Byte]): F[Option[Tx]] = unavailable
   override def transferTransactionById(id: Array[Byte]): F[Option[Tx.Transfer]]                      = unavailable
   override def transactionHeightById(id: Array[Byte]): F[Option[Long]]                               = unavailable
   override def assetInfoById(d: Array[Byte]): F[Option[ScriptAssetInfo]]                             = unavailable

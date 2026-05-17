@@ -76,10 +76,10 @@ object ScriptEstimatorV2 extends ScriptEstimator {
   private def evalRef(key: String): EvalM[Long] =
     for {
       ctx <- get[Id, EstimatorContext, EstimationError]
-      r <- ctx.letDefs.get(key) match {
+      r   <- ctx.letDefs.get(key) match {
         case Some((false, lzy)) => setRefEvaluated(key, lzy)
         case Some((true, _))    => const(0)
-        case None               => raiseError[Id, EstimatorContext, EstimationError, Long](s"A definition of '$key' not found")
+        case None => raiseError[Id, EstimatorContext, EstimationError, Long](s"A definition of '$key' not found")
       }
     } yield r + 2
 
@@ -92,7 +92,7 @@ object ScriptEstimatorV2 extends ScriptEstimator {
 
   private def evalFuncCall(header: FunctionHeader, args: List[EXPR]): EvalM[Long] =
     for {
-      ctx <- get[Id, EstimatorContext, EstimationError]
+      ctx            <- get[Id, EstimatorContext, EstimationError]
       bodyComplexity <- ctx.predefFuncs
         .get(header)
         .map(bodyComplexity => evalFuncArgs(args).map(_ + bodyComplexity))
@@ -116,7 +116,9 @@ object ScriptEstimatorV2 extends ScriptEstimator {
 
       bodyComplexity <- evalExpr(func.body).map(_ + func.args.size * 5)
       evaluatedCtx   <- get[Id, EstimatorContext, EstimationError]
-      overlappedChanges = overlapped.map { case ref @ (name, _) => evaluatedCtx.letDefs.get(name).map((name, _)).getOrElse(ref) }
+      overlappedChanges = overlapped.map { case ref @ (name, _) =>
+        evaluatedCtx.letDefs.get(name).map((name, _)).getOrElse(ref)
+      }
       _ <- update(ctx1 =>
         ctx1.copy(
           letDefs = ctx1.letDefs -- ctxArgs.keys ++ overlapped,

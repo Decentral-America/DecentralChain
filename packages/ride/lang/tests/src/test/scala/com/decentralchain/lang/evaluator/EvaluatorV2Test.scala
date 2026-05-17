@@ -861,11 +861,11 @@ class EvaluatorV2Test extends PropSpec with Inside {
   }
 
   property("big function assignment chain") {
-    val count = 5000
+    val count  = 5000
     val script =
       s"""
          | func a0() = 1 + 1
-         | ${1 to count map (i => s"func a$i() = a${i - 1}()") mkString "\n"}
+         | ${(1 to count).map(i => s"func a$i() = a${i - 1}()").mkString("\n")}
          | a$count() == a$count()
       """.stripMargin
 
@@ -875,11 +875,11 @@ class EvaluatorV2Test extends PropSpec with Inside {
   }
 
   property("big let assignment chain with function") {
-    val count = 5000
+    val count  = 5000
     val script =
       s"""
          | let a0 = 1
-         | ${1 to count map (i => s"let a$i = a${i - 1} + 1") mkString "\n"}
+         | ${(1 to count).map(i => s"let a$i = a${i - 1} + 1").mkString("\n")}
          | a$count == a$count
       """.stripMargin
 
@@ -1048,7 +1048,7 @@ class EvaluatorV2Test extends PropSpec with Inside {
     ).foreach { eval =>
       val (evaluated, _, precalculatedComplexity) = eval(expr, 1500)
 
-      val pieces = randomPieces(precalculatedComplexity, Random.nextInt(99) + 2)
+      val pieces                       = randomPieces(precalculatedComplexity, Random.nextInt(99) + 2)
       val (resultExpr, summarizedCost) =
         pieces.foldLeft((expr, startCost)) { case ((currentExpr, costSum), nextCostLimit) =>
           currentExpr should not be an[EVALUATED]

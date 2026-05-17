@@ -12,8 +12,8 @@ import testHelpers.RandomDataGenerator.{
   randomStringArrayElement,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{MATCHING_NOT_EXHAUSTIVE, actualVersions, invalidFunctionError}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, MATCHING_NOT_EXHAUSTIVE}
+import utest.{test, Tests}
 
 object IsDefined extends JsTestBase {
   private val isDefined                     = "isDefined(callerTestData)"

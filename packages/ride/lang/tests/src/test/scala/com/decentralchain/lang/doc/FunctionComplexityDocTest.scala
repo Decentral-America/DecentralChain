@@ -37,14 +37,15 @@ class FunctionComplexityDocTest extends PropSpec {
   private def check(functions: Array[BaseFunction[Environment]], ds: DirectiveSet): Unit = {
     val docCosts =
       DocSource.funcData.collect {
-        case ((name, signature, version), (_, _, complexity)) if version == ds.stdLibVersion.id => ((name, signature), complexity)
+        case ((name, signature, version), (_, _, complexity)) if version == ds.stdLibVersion.id =>
+          ((name, signature), complexity)
       }
     val unusedDocCosts =
       functions
         .filterNot(_.name.startsWith(UtilityFunctionPrefix))
         .foldLeft(docCosts) { case (remainingDocCosts, function) =>
-          val arg  = CONST_STRING("throw").explicitGet()
-          val expr = FUNCTION_CALL(function.header, List.fill(function.args.size)(arg))
+          val arg           = CONST_STRING("throw").explicitGet()
+          val expr          = FUNCTION_CALL(function.header, List.fill(function.args.size)(arg))
           val estimatedCost =
             ScriptEstimatorV3(fixOverflow = true, overhead = false, letFixes = true)(
               varNames(ds.stdLibVersion, ds.contentType),
@@ -52,12 +53,15 @@ class FunctionComplexityDocTest extends PropSpec {
               expr
             ).explicitGet()
 
-          val name = function.name
-          val args = function.signature.args.map(_._2.toString).toList
+          val name         = function.name
+          val args         = function.signature.args.map(_._2.toString).toList
           val expectedCost =
             remainingDocCosts.getOrElse(
               (name, args),
-              throw new TestFailedException(s"Function $name(${args.mkString(", ")}) not found for RIDE ${ds.stdLibVersion}", 0)
+              throw new TestFailedException(
+                s"Function $name(${args.mkString(", ")}) not found for RIDE ${ds.stdLibVersion}",
+                0
+              )
             )
 
           if (estimatedCost != expectedCost)
