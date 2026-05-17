@@ -2,7 +2,33 @@
 
 All notable changes to `packages/ride` are documented here.
 
-## [Unreleased] — Round 8 enterprise audit
+## [Unreleased] — Round 9 enterprise audit
+
+### Changed
+- `plugins.sbt`: `jackson-module-scala_3` upgraded `2.21.0` → `2.21.3`
+  (build-time dependency; Maven Central artifact confirmed via direct HTTP check;
+  aligns with `jackson-databind 2.21.3` used in JVM packages).
+
+### Verified (no changes required)
+Version freshness sweep via GitHub API + Maven Central direct artifact checks:
+- `scala-logging_3 3.9.6`: latest (MC solrsearch stale at 3.9.5; 3.9.6 confirmed
+  on repo1.maven.org — HTTP 200).
+- `sbt-scalajs-crossproject 1.3.2`: latest (MC solrsearch stale at 1.3.1; 1.3.2
+  confirmed on repo1.maven.org).
+- `scalapb compilerplugin 1.0.0-alpha.3`: confirmed latest alpha via GitHub tag
+  `scalapb/ScalaPB`; stable `0.11.20` exists but requires downgrading sbt-protoc.
+- `scalajs-stubs 1.1.0`, `scala-js-macrotask-executor 1.1.1`, `big-math 2.3.2`,
+  `hjson 3.1.0`: all at latest (Maven Central confirmed).
+- All sbt plugins at latest: `sbt-scalafmt 2.6.1`, `sbt-scalafix 0.14.6`,
+  `sbt-assembly 2.3.1`, `sbt-explicit-dependencies 0.3.1`, `sbt-scoverage 2.4.4`,
+  `sbt-git 2.1.0`, `sbt-scalajs 1.21.0`.
+
+### Documented
+- KNOWN_ISSUES KNOWN-7: `scalapb compilerplugin 1.0.0-alpha.3` + `sbt-protoc 1.0.8`
+  pairing is intentional. Alpha designation reflects API surface stability for
+  library users, not production safety. Latest alpha on the 1.0.x track.
+
+## [Unreleased-R8] — Round 8 enterprise audit
 
 ### Fixed
 - `FileCompiler.scala`: replaced `println(...)` with SLF4J `logger.info(...)` — eliminates

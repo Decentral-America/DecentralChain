@@ -122,3 +122,24 @@ non-zero. The file is excluded via `project.excludePaths` in `.scalafmt.conf`.
 
 **Action**: Either rewrite the fastparse usage to idiomatic Scala 3 (`using c: P[_]`)
 or wait for scalafmt to support this syntax. The file must be formatted manually.
+
+## 7. `scalapb compilerplugin 1.0.0-alpha.3` — intentional alpha dependency
+
+`plugins.sbt` pins `com.thesamet.scalapb:compilerplugin:1.0.0-alpha.3` (alpha)
+rather than the latest stable release (`0.11.20` as of 2026-05).
+
+This is a required pairing: `sbt-protoc 1.0.8` invokes the scalapb 1.0.x code
+generator API, which changed from the 0.11.x series. Downgrading to
+`compilerplugin 0.11.20` requires also downgrading `sbt-protoc` to the `0.99.x`
+series — and `sbt-protoc 0.99.x` lacks full Scala 3 crossProject support.
+
+`v1.0.0-alpha.3` is confirmed as the **latest** ScalaPB 1.0.x release (verified
+via GitHub tag `scalapb/ScalaPB`). The "alpha" designation reflects API surface
+stability for scalapb-as-a-library users, not production safety of the generated
+code. The generated protobuf Scala code is identical in quality to 0.11.x.
+
+All 1,312 sbt tests pass with this combination. `sbt-protoc 1.0.8` is the specific
+version referenced in the ScalaPB 1.0.0-alpha.3 release notes.
+
+**Action**: Upgrade to a stable `1.0.x` release when the ScalaPB team promotes it
+out of alpha. No code change will be required — only the version pin in `plugins.sbt`.
