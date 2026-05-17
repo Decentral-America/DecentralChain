@@ -1,0 +1,75 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# wavesj CI
+#
+# Runs on every push/PR touching packages/jvm/wavesj/.
+# Integration tests that use Testcontainers require Docker — ubuntu-latest
+# runners have Docker pre-installed, so no extra setup is needed.
+#
+# Steps:
+#   1. Compile + unit + integration tests (Java 25, Docker available)
+#   2. SpotBugs + FindSecBugs + PMD security audit
+#   3. Upload JaCoCo HTML coverage report
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - 'packages/jvm/wavesj/**'
+      - '.github/workflows/wavesj-ci.yml'
+  pull_request:
+    paths:
+      - 'packages/jvm/wavesj/**'
+      - '.github/workflows/wavesj-ci.yml'
+
+defaults:
+  run:
+    working-directory: packages/jvm/wavesj
+
+jobs:
+  verify:
+    name: Compile · Test · Audit (Java 25)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Set up Java 25 (Temurin)
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      # ── Compile + unit + integration tests ──────────────────────────────────
+      # Testcontainers integration tests spin up Docker containers; Docker is
+      # pre-installed on ubuntu-latest GHA runners.
+      - name: Compile and run tests
+        run: ./mvnw --batch-mode verify
+
+      # ── Security audit ──────────────────────────────────────────────────────
+      # SpotBugs + FindSecBugs + PMD run unconditionally.
+      # OWASP dependency-check requires an NVD API key to avoid rate limits;
+      # skipped on fork PRs that lack the org secret.
+      - name: Security audit
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [ -n "$NVD_API_KEY" ]; then
+            ./mvnw --batch-mode verify -P audit -DnvdApiKey="$NVD_API_KEY"
+          else
+            echo "NVD_API_KEY not set — skipping OWASP dependency-check"
+            ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true
+          fi
+
+      # ── Artifacts ───────────────────────────────────────────────────────────
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: wavesj-jacoco-report
+          path: packages/jvm/wavesj/target/site/jacoco/
+          retention-days: 14
