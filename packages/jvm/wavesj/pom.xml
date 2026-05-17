@@ -131,6 +131,20 @@
         </configuration>
       </plugin>
 
+      <!-- JAR manifest: Automatic-Module-Name for Java 9+ module system compatibility (JEP 261) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>io.decentralchain.wavesj</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
       <!-- Sources jar (required for Maven Central) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -150,7 +164,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.5</version>
         <configuration>
-          <argLine>${jacoco.agent.argLine}</argLine>
+          <!-- JaCoCo agent + native access for JNA/JNI System.load in Java 25+ -->
+          <argLine>${jacoco.agent.argLine} --enable-native-access=ALL-UNNAMED</argLine>
           <!-- Exclude Docker-requiring integration tests from default verify -->
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
