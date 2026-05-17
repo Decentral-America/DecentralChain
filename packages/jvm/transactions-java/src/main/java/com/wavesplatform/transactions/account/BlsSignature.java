@@ -41,4 +41,9 @@ public class BlsSignature extends Base58String {
         BlsSignature blsSig = (BlsSignature) o;
         return Arrays.equals(bytes, blsSig.bytes);
     }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bytes);
+    }
 }

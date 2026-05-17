@@ -325,6 +325,8 @@ public abstract class ProtobufConverter {
                 case LIST:
                     args.add(ListArg.as(fromPbArgument(arg.getList().getItemsList())));
                     break;
+                default:
+                    throw new IllegalArgumentException("Unknown argument value type: " + arg.getValueCase());
             }
         }
         return args;

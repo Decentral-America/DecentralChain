@@ -44,4 +44,9 @@ public class BinaryEntry extends DataEntry {
                 && Objects.equals(this.value(), that.value());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(key(), type(), value());
+    }
+
 }

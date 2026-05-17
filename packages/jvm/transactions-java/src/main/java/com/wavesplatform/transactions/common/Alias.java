@@ -54,10 +54,12 @@ public class Alias implements Recipient {
         return new Alias(chainId, value);
     }
 
+    @Override
     public byte type() {
         return TYPE;
     }
 
+    @Override
     public byte chainId() {
         return bytes[1];
     }
@@ -66,8 +68,9 @@ public class Alias implements Recipient {
         return name;
     }
 
+    @Override
     public byte[] bytes() {
-        return bytes;
+        return bytes.clone();
     }
 
     @Override

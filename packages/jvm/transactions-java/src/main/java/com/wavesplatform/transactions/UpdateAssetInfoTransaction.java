@@ -88,6 +88,7 @@ public class UpdateAssetInfoTransaction extends Transaction {
             this.description = description;
         }
 
+        @Override
         protected UpdateAssetInfoTransaction _build() {
             return new UpdateAssetInfoTransaction(
                     sender, assetId, name, description, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

@@ -80,6 +80,7 @@ public class SetAssetScriptTransaction extends Transaction {
             this.script = compiledScript == null ? Base64String.empty() : compiledScript;
         }
 
+        @Override
         protected SetAssetScriptTransaction _build() {
             return new SetAssetScriptTransaction(
                     sender, assetId, script, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

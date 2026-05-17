@@ -68,7 +68,7 @@ public abstract class TransactionOrOrder {
     public byte[] bodyBytes() {
         if (this.bodyBytes == null)
             this.bodyBytes = BinarySerializer.bodyBytes(this);
-        return this.bodyBytes;
+        return this.bodyBytes.clone();
     }
 
     public Id id() {

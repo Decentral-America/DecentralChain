@@ -109,6 +109,7 @@ public class PrivateKey extends Base58String {
      *
      * @return bytes of the private key
      */
+    @Override
     public byte[] bytes() {
         return this.bytes.clone();
     }
