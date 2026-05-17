@@ -15,9 +15,9 @@ public class ge_precomp {
 
     public ge_precomp(int[] new_yplusx, int[] new_yminusx,
                       int[] new_xy2d) {
-        yplusx = new_yplusx;
-        yminusx = new_yminusx;
-        xy2d = new_xy2d;
+        yplusx = new_yplusx.clone();
+        yminusx = new_yminusx.clone();
+        xy2d = new_xy2d.clone();
     }
 }
 
