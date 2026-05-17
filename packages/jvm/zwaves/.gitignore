@@ -1,6 +1,5 @@
 /target
 **/*.rs.bk
-Cargo.lock
 bin/
 pkg/
 wasm-pack.log
@@ -8,3 +7,19 @@ wasm-pack.log
 .idea
 !zwaves_jni/src/bn256/bin
 !zwaves_setup/src/bin
+
+# Maven build output and wrapper binary
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE (Eclipse)
+.project
+.classpath
+

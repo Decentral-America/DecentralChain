@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset name="DCC zwaves Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom PMD ruleset for zwaves.
+        This module contains:
+          - Hand-written JNI bridge classes (Groth16.java for BLS12 and BN256)
+          - ZWavesJNILibrary.java — native library loader entry point
+          - JNILibrary.java — hawtjni utility class (3rd-party, EPL-1.0)
+
+        Patterns intentionally excluded:
+          - JNILibrary.java uses duplicate string literals (internal hawtjni idiom)
+          - JNILibrary.java stores `null` as an initial sentinel for File building
+          - JNILibrary.java uses ArrayList&lt;Throwable&gt; in its error-collection API
+          - JNILibrary.java methods take byte[] and int[] directly (JNI contract)
+    </description>
+
+    <!-- ALL security rules: no exclusions — ZK-SNARK library must be airtight -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Error-prone rules: excluding JNI-specific idioms -->
+    <rule ref="category/java/errorprone.xml">
+        <!--
+          ZK-SNARK and JNI glue classes are not designed for Java serialization.
+          The Groth16 classes hold no state — they are pure-static method holders.
+        -->
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+
+    <!-- Best practices: excluding JNI-specific idioms -->
+    <rule ref="category/java/bestpractices.xml">
+        <!--
+          JNI methods take byte[] with fixed sizes matching the ZK-SNARK wire
+          format (vk/proof/inputs). Varargs would be semantically incorrect
+          for fixed-size cryptographic data structures.
+        -->
+        <exclude name="UseVarargs"/>
+    </rule>
+
+</ruleset>
