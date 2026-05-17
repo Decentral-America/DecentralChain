@@ -1,0 +1,42 @@
+{
+  "name": "blst-java",
+  "projectType": "library",
+  "tags": ["scope:jvm", "layer:0", "lang:java"],
+  "targets": {
+    "audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true",
+        "cwd": "packages/jvm/blst-java"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests",
+        "cwd": "packages/jvm/blst-java"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean",
+        "cwd": "packages/jvm/blst-java"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test",
+        "cwd": "packages/jvm/blst-java"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify",
+        "cwd": "packages/jvm/blst-java"
+      }
+    }
+  }
+}
