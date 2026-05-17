@@ -10,12 +10,12 @@ import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Base58String;
 import com.wavesplatform.transactions.data.StringEntry;
-import com.wavesplatform.wavesj.ApplicationStatus;
-import com.wavesplatform.wavesj.Block;
-import com.wavesplatform.wavesj.BlockHeaders;
-import com.wavesplatform.wavesj.exceptions.NodeException;
-import com.wavesplatform.wavesj.info.TransactionInfo;
-import com.wavesplatform.wavesj.info.TransactionWithStatus;
+import com.decentralchain.sdk.ApplicationStatus;
+import com.decentralchain.sdk.Block;
+import com.decentralchain.sdk.BlockHeaders;
+import com.decentralchain.sdk.exceptions.NodeException;
+import com.decentralchain.sdk.info.TransactionInfo;
+import com.decentralchain.sdk.info.TransactionWithStatus;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

@@ -8,7 +8,7 @@
   <!-- ── Coordinates ──────────────────────────────────────────────────── -->
   <groupId>io.decentralchain</groupId>
   <artifactId>wavesj</artifactId>
-  <version>1.6.4.0</version>
+  <version>1.6.5.0</version>
   <packaging>jar</packaging>
 
 
