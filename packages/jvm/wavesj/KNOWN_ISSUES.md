@@ -6,24 +6,17 @@
 
 ---
 
-## KNOWN-1: Java source packages retain `com.wavesplatform.wavesj.*` naming
+## ~~KNOWN-1~~ RESOLVED: Java source packages renamed to `com.decentralchain.sdk.*`
 
-**Risk:** LOW (branding only — no security or functionality impact)
+**Status:** RESOLVED in DCC-249 (2026-05)
 
 **Description:** All Java source packages under `src/main/java/` and `src/test/java/`
-retain the upstream package namespace `com.wavesplatform.wavesj.*`. Renaming would
-be a breaking API change for any consumers who import from the existing coordinates.
+have been renamed from `com.wavesplatform.wavesj.*` to `com.decentralchain.sdk.*`.
+The rename was completed as part of the DCC-249 namespace migration sprint.
 
-**Why not fixed now:** Breaking change requires a major version bump and migration
-guide. Deferred to a dedicated sprint.
-
-**Resolution path:**
-- Bump to `2.0.0`
-- Rename all source packages to `io.decentralchain.wavesj.*`
-- Publish migration guide with automated refactor instructions
-- Tracked in: **DCC-249**
-
-**Affected files:** All `.java` files under `src/`
+**Verification:** Every `.java` file in `src/main/java/` and `src/test/java/`
+declares a package in the `com.decentralchain.sdk.*` hierarchy. No
+`com.wavesplatform.wavesj.*` package declarations remain.
 
 ---
 

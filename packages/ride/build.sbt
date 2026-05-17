@@ -209,3 +209,18 @@ ThisBuild / coverageEnabled            := false // enable per-run: sbt coverage 
 ThisBuild / coverageMinimumStmtTotal   := 60
 ThisBuild / coverageFailOnMinimum      := true
 ThisBuild / coverageExcludedPackages   := "<empty>;.*\\.protobuf\\..*"
+
+// ── Bulletproof quality gate ──────────────────────────────────────────────────
+// Run all checks in sequence: formatting → scalafix → undeclared/unused deps
+// → instrumented test suite → coverage report.
+// Fails fast on the first violation. All checks must pass before publishing.
+addCommandAlias(
+  "bulletproof",
+  "; scalafmtCheckAll" +
+  "; scalafixAll --check" +
+  "; undeclaredCompileDependencies" +
+  "; unusedCompileDependencies" +
+  "; coverage" +
+  "; test" +
+  "; coverageReport"
+)
