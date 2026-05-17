@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclusion filter for zwaves.
+
+  JNILibrary.java is a 3rd-party utility class (hawtjni, EPL-1.0, FuseSource Corp).
+  It uses SHA-1 exclusively for file integrity checking (content-addressed
+  extraction cache), NOT for any security-sensitive purpose such as
+  authentication, signing, or key derivation.
+
+  All application-level ZK-SNARK verification code (Groth16.java for BLS12
+  and BN256, and ZWavesJNILibrary.java) is fully analyzed without exclusions.
+-->
+<FindBugsFilter>
+  <Match>
+    <Class name="com.wavesplatform.zwaves.JNILibrary"/>
+    <Bug pattern="WEAK_MESSAGE_DIGEST_SHA1"/>
+  </Match>
+</FindBugsFilter>
