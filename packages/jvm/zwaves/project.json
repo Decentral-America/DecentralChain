@@ -1,0 +1,42 @@
+{
+  "name": "zwaves",
+  "projectType": "library",
+  "tags": ["lang:java", "layer:0", "scope:jvm"],
+  "targets": {
+    "audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true",
+        "cwd": "packages/jvm/zwaves"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests",
+        "cwd": "packages/jvm/zwaves"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean",
+        "cwd": "packages/jvm/zwaves"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test",
+        "cwd": "packages/jvm/zwaves"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify",
+        "cwd": "packages/jvm/zwaves"
+      }
+    }
+  }
+}
