@@ -154,7 +154,8 @@ public abstract class LegacyBinarySerializer {
             transaction = new BurnTransaction(
                     sender, Amount.of(amount, assetId), chainId, Amount.of(fee), timestamp, version, proofs);
         } else if (type == ExchangeTransaction.TYPE) {
-            Order order1, order2;
+            Order order1;
+            Order order2;
             int order1Length = reader.readInt();
             if (scheme == WITH_PROOFS) {
                 byte order1Version = reader.readByte();

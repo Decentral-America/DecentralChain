@@ -68,6 +68,7 @@ public class BurnTransaction extends Transaction {
             this.amount = amount;
         }
 
+        @Override
         protected BurnTransaction _build() {
             return new BurnTransaction(sender, amount, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
         }

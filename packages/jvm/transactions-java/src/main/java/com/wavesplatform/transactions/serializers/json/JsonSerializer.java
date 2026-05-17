@@ -208,7 +208,7 @@ public abstract class JsonSerializer {
             AssetId assetId = assetIdFromJson(json.get("assetId"));
             Base58String attachment = json.hasNonNull("attachment")
                     ? new Base58String(json.get("attachment").asText()) : Base58String.empty();
-            if (version == 1 && transfers.size() > 0)
+            if (version == 1 && !transfers.isEmpty())
                 chainId = transfers.get(0).recipient().chainId();
 
             if (version == 1 && json.has("signature"))
@@ -343,7 +343,7 @@ public abstract class JsonSerializer {
                     .put("matcherFeeAssetId", assetIdToJson(order.fee().assetId()))
                     .put("timestamp", order.timestamp())
                     .put("expiration", order.expiration());
-            if (order.proofs().size() > 0)
+            if (!order.proofs().isEmpty())
                 jsObject.put("signature", order.proofs().get(0).toString());
 
             if (order.version() < 3)
@@ -582,7 +582,7 @@ public abstract class JsonSerializer {
             JsonNode call = json.get("call");
             List<Arg> args = call.hasNonNull("args") ? argsFromJson(call.get("args")) : new ArrayList<>();
             String functionName = call.get("function").asText();
-            if (!functionName.equals(DEFAULT_NAME)) {
+            if (!DEFAULT_NAME.equals(functionName)) {
                 function = Function.as(functionName, args);
             }
         }
@@ -603,15 +603,15 @@ public abstract class JsonSerializer {
         for (int i = 0; i < json.size(); i++) {
             JsonNode arg = json.get(i);
             String argType = arg.get("type").asText();
-            if (argType.equals("binary"))
+            if ("binary".equals(argType))
                 args.add(BinaryArg.as(arg.get("value").asText()));
-            else if (argType.equals("boolean"))
+            else if ("boolean".equals(argType))
                 args.add(BooleanArg.as(arg.get("value").asBoolean()));
-            else if (argType.equals("integer"))
+            else if ("integer".equals(argType))
                 args.add(IntegerArg.as(arg.get("value").asLong()));
-            else if (argType.equals("string"))
+            else if ("string".equals(argType))
                 args.add(StringArg.as(arg.get("value").asText()));
-            else if (argType.equals("list"))
+            else if ("list".equals(argType))
                 args.add(ListArg.as(argsFromJson(arg.get("value"))));
             else throw new IOException("Unknown arg type " + argType);
         }

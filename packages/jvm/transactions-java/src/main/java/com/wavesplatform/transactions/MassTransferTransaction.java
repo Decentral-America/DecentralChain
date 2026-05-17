@@ -116,6 +116,7 @@ public class MassTransferTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected MassTransferTransaction _build() {
             Amount calculatedFee = calculateFee(transfers, fee);
             Amount calculatedFeeWithExtra = Amount.of(calculatedFee.value() + extraFee, calculatedFee.assetId());

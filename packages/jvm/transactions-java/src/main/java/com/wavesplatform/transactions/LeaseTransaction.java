@@ -75,6 +75,7 @@ public class LeaseTransaction extends Transaction {
             this.amount = amount;
         }
 
+        @Override
         protected LeaseTransaction _build() {
             return new LeaseTransaction(sender, recipient, amount,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

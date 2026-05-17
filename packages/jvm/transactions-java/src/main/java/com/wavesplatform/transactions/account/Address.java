@@ -173,6 +173,7 @@ public class Address extends Base58String implements Recipient {
             ));
     }
 
+    @Override
     public byte type() {
         return TYPE;
     }
@@ -182,6 +183,7 @@ public class Address extends Base58String implements Recipient {
      *
      * @return network id
      */
+    @Override
     public byte chainId() {
         return this.bytes[1];
     }
@@ -209,8 +211,9 @@ public class Address extends Base58String implements Recipient {
      *
      * @return bytes of the address
      */
+    @Override
     public byte[] bytes() {
-        return this.bytes;
+        return this.bytes.clone();
     }
 
     @Override
