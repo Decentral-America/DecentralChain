@@ -193,6 +193,22 @@
           -->
           <forkCount>1</forkCount>
           <reuseForks>true</reuseForks>
+          <!-- enable-native-access=ALL-UNNAMED: required for JNI System.load in Java 25+ -->
+          <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- JAR manifest: Automatic-Module-Name for Java 9+ module system compatibility (JEP 261) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>io.decentralchain.zwaves</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
 
@@ -275,6 +291,15 @@
 
     </plugins>
   </build>
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
+    <!-- Activate with: ./mvnw deploy -P release                        -->
+    <profile>
+      <id>release</id>
+      <build>
         <plugins>
 
           <plugin>
