@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<ruleset name="DCC Transactions Java Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom PMD ruleset for transactions-java.
+        Inherits security, error-prone, and best-practices categories.
+        Excludes rules that conflict with intentional design patterns from the
+        upstream Waves Platform transactions library.
+    </description>
+
+    <!-- ALL security rules: no exclusions -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Error-prone rules: excluding upstream design choices -->
+    <rule ref="category/java/errorprone.xml">
+        <!--
+          Waves fluent API convention: field name matches getter method name.
+          e.g. private final Amount amount; public Amount amount() { return amount; }
+          This is intentional throughout the entire library for ergonomic API design.
+        -->
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+
+        <!--
+          Blockchain protocol binary parsers use literal constants in conditions
+          intentionally (e.g. if (type == 0x01)), not magic numbers to be extracted.
+        -->
+        <exclude name="AvoidLiteralsInIfCondition"/>
+
+        <!--
+          Protocol constants (type bytes, version numbers, field names) appear
+          multiple times across serialization code. Extraction to constants would
+          reduce readability in the binary format context.
+        -->
+        <exclude name="AvoidDuplicateLiterals"/>
+
+        <!--
+          Two patterns in this codebase:
+          1. Jackson SimpleModule: addDeserializer/addSerializer calls in constructor
+             are the standard Jackson pattern and cannot be moved outside the constructor.
+          2. TransactionBuilder: chainId() called in constructor delegates to a setter
+             on an already-constructed base; no risk of subclass-initialization issue.
+        -->
+        <exclude name="ConstructorCallsOverridableMethod"/>
+
+        <!--
+          Type-safe equals methods (e.g. equals(BlsPublicKey other)) are intentional
+          Waves SDK convention for ergonomic equality checks. The Object.equals contract
+          is separately fulfilled via @Override equals(Object o).
+        -->
+        <exclude name="SuspiciousEqualsMethodName"/>
+
+        <!--
+          Builder constructors explicitly initialize optional fields to null to
+          distinguish "not set" from "set to empty". This is an intentional pattern.
+        -->
+        <exclude name="NullAssignment"/>
+
+        <!--
+          Blockchain model/data classes are not designed for Java serialization.
+          Implementing Serializable is not part of this library's contract.
+        -->
+        <exclude name="MissingSerialVersionUID"/>
+
+        <!--
+          Binary serialization loop pattern: reader.read() returns -1 on EOF,
+          assignment-in-condition is used intentionally for compact parsing loops.
+        -->
+        <exclude name="AssignmentInOperand"/>
+    </rule>
+
+    <!-- Best practices: excluding upstream design choices -->
+    <rule ref="category/java/bestpractices.xml">
+        <!--
+          Abstract base classes without abstract methods are used as template/mixin
+          classes (TransactionBuilder, etc.). This is an intentional inheritance pattern.
+        -->
+        <exclude name="AbstractClassWithoutAbstractMethod"/>
+
+        <!--
+          Concrete return types (e.g. ArrayList instead of List) are intentional
+          in some public API methods for explicit type clarity.
+        -->
+        <exclude name="LooseCoupling"/>
+
+        <!--
+          Single-method interfaces are not accidentally functional; they are
+          domain contracts (e.g. Recipient) that do not benefit from @FunctionalInterface.
+        -->
+        <exclude name="ImplicitFunctionalInterface"/>
+    </rule>
+
+</ruleset>

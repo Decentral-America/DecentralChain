@@ -96,6 +96,7 @@ public class CommitToGenerationTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected CommitToGenerationTransaction _build() {
             return new CommitToGenerationTransaction(sender, generationPeriodStart, endorserPublicKey, commitmentSignature, feeWithExtra(), version, chainId,  timestamp, Proof.emptyList());
         }

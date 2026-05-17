@@ -21,7 +21,7 @@ public class BytesReader {
     private int index;
 
     public BytesReader(byte[] bytes) {
-        this.bytes = bytes;
+        this.bytes = bytes.clone();
         this.length = this.bytes.length;
         this.index = 0;
     }
@@ -92,7 +92,7 @@ public class BytesReader {
         if (recipientType == Address.TYPE)
             return Address.as(concat(of(recipientType), readBytes(Address.BYTES_LENGTH - 1)));
         else if (recipientType == Alias.TYPE) {
-            return Alias.as(readByte(), new String(readArrayWithLength()));
+            return Alias.as(readByte(), new String(readArrayWithLength(), UTF_8));
         } else throw new IllegalArgumentException("Unknown recipient type");
     }
 

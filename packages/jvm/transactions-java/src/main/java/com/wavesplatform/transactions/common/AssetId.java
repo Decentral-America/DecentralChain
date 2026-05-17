@@ -24,7 +24,7 @@ public class AssetId extends Id {
     }
 
     public static AssetId as(String id) {
-        return new AssetId(id == null || id.toUpperCase(Locale.ENGLISH).equals(WAVES_STRING) ? "" : id);
+        return new AssetId(id == null || WAVES_STRING.equals(id.toUpperCase(Locale.ENGLISH)) ? "" : id);
     }
 
     public boolean isWaves() {

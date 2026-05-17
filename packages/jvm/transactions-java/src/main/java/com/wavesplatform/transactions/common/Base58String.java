@@ -27,7 +27,7 @@ public class Base58String implements ByteString {
 
     @Override
     public byte[] bytes() {
-        return bytes;
+        return bytes.clone();
     }
 
     @Override

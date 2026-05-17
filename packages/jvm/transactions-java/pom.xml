@@ -102,6 +102,14 @@
     <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
     <!-- dependency-check-maven 12.2.2 — same as curve25519-java standard -->
     <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+    <!-- spotbugs-maven-plugin 4.9.8.3 — latest (Mar 28, 2026); SpotBugs 4.9.8 -->
+    <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
+    <!-- findsecbugs-plugin 1.14.0 — latest (Jun 16, 2025; OWASP) -->
+    <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
+    <!-- jacoco-maven-plugin 0.8.14 — latest (Oct 11, 2025); Java 25 officially supported -->
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <!-- maven-pmd-plugin 3.28.0 — latest -->
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
   </properties>
 
   <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
@@ -265,6 +273,24 @@
         </executions>
       </plugin>
 
+      <!-- JaCoCo 0.8.14: line/branch coverage; Java 25 officially supported (GitHub #1950) -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
@@ -316,15 +342,22 @@
       </build>
     </profile>
 
-    <!-- 'audit' profile: OWASP dependency-check (CVE scan against NVD).   -->
+    <!-- 'audit' profile: full security analysis suite.                     -->
     <!-- Activate with: ./mvnw verify -P audit                              -->
-    <!-- Requires NVD API key for full scan speed:                          -->
-    <!--   -DnvdApiKey=$NVD_API_KEY  (or set env var NVD_API_KEY)           -->
-    <!-- Without a key the scan still works but rate-limits to ~1 req/6 s.  -->
+    <!--                                                                    -->
+    <!-- Included tools:                                                    -->
+    <!--   1. OWASP dependency-check 12.2.2  — CVE scan (NVD)              -->
+    <!--      Requires NVD API key: -DnvdApiKey=$NVD_API_KEY                -->
+    <!--      Without key: works but rate-limits to ~1 req/6 s              -->
+    <!--   2. SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 (OWASP)               -->
+    <!--      Bytecode security analysis (CWE-326, CWE-327, CWE-330, etc.) -->
+    <!--   3. PMD 3.28.0 — source-level security + error-prone rules        -->
     <profile>
       <id>audit</id>
       <build>
         <plugins>
+
+          <!-- OWASP dependency-check: CVE vulnerability scan against NVD -->
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
@@ -345,6 +378,72 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- SpotBugs 4.9.8.3 + FindSecBugs 1.14.0: security-focused bytecode analysis -->
+          <!-- Detects: weak crypto, predictable random, hard-coded secrets, -->
+          <!-- path traversal, injection, timing attacks, unsafe deserialization -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <dependencies>
+              <!-- FindSecBugs: OWASP-backed security bug patterns -->
+              <dependency>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>${findsecbugs-plugin.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <!-- Max effort = deep inter-procedural analysis -->
+              <effort>Max</effort>
+              <!-- High threshold: only Priority-1 (HIGH) bugs fail the build;
+                   Medium and Low findings appear in report for manual review -->
+              <threshold>High</threshold>
+              <!-- Analyze only production code, not test fixtures -->
+              <includeTests>false</includeTests>
+              <!-- Fail build when bugs ≥ threshold are found -->
+              <failOnError>true</failOnError>
+              <!-- Generate both machine-readable and human-readable reports -->
+              <xmlOutput>true</xmlOutput>
+              <htmlOutput>true</htmlOutput>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- PMD 3.28.0: source-level security and error-prone analysis -->
+          <!-- Detects: unsafe reflection, hardcoded IVs, insecure random,  -->
+          <!-- null dereference, resource leaks, integer overflow            -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <configuration>
+              <rulesets>
+                <ruleset>config/pmd-ruleset.xml</ruleset>
+              </rulesets>
+              <targetJdk>25</targetJdk>
+              <!-- Skip test code from analysis -->
+              <includeTests>false</includeTests>
+              <!-- Enforce: all violations in custom ruleset must be fixed -->
+              <failOnViolation>true</failOnViolation>
+              <printFailingErrors>true</printFailingErrors>
+            </configuration>
+            <executions>
+              <execution>
+                <id>pmd-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
         </plugins>
       </build>
     </profile>

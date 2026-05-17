@@ -2,6 +2,7 @@ package com.wavesplatform.transactions.invocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 
@@ -34,6 +35,11 @@ public class ListArg extends Arg {
         ListArg that = (ListArg) o;
         return this.type().equals(that.type())
                 && this.value().equals(that.value());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type(), value());
     }
 
 }

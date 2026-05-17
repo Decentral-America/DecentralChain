@@ -89,6 +89,7 @@ public class DataTransaction extends Transaction {
             this.data = data;
         }
 
+        @Override
         protected DataTransaction _build() {
             Amount calculatedFee = calculateFee(data, fee, version);
             Amount calculatedFeeWithExtra = Amount.of(calculatedFee.value() + extraFee, calculatedFee.assetId());

@@ -83,6 +83,7 @@ public class ReissueTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected ReissueTransaction _build() {
             return new ReissueTransaction(
                     sender, amount, reissuable, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

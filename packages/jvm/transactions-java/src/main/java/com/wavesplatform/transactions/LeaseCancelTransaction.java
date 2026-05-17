@@ -67,6 +67,7 @@ public class LeaseCancelTransaction extends Transaction {
             this.leaseId = leaseId;
         }
 
+        @Override
         protected LeaseCancelTransaction _build() {
             return new LeaseCancelTransaction(sender, leaseId,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

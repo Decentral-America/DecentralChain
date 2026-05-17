@@ -26,7 +26,7 @@ public class Function {
     }
 
     public static Function as(String name, List<Arg> args) {
-        return Objects.equals(name, DEFAULT_NAME) && args.size() == 0 ? new Function(null, args) : new Function(name, args);
+        return Objects.equals(name, DEFAULT_NAME) && args.isEmpty() ? new Function(null, args) : new Function(name, args);
     }
 
     public String name() {
@@ -38,7 +38,7 @@ public class Function {
     }
 
     public boolean isDefault() {
-        return (name == null || name.equals(DEFAULT_NAME)) && args.size() == 0;
+        return (name == null || DEFAULT_NAME.equals(name)) && args.isEmpty();
     }
 
     @Override

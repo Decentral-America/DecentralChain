@@ -98,6 +98,7 @@ public class InvokeScriptTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected InvokeScriptTransaction _build() {
             return new InvokeScriptTransaction(sender, dApp, function, payments, chainId, feeWithExtra(),
                     timestamp, version, Proof.emptyList());

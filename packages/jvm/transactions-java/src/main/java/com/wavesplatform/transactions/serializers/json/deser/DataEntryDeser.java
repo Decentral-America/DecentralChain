@@ -19,13 +19,13 @@ public class DataEntryDeser extends JsonDeserializer<DataEntry> {
         String key = json.get("key").asText();
         if (json.hasNonNull("type")) {
             String type = json.get("type").asText();
-            if (type.equals("binary"))
+            if ("binary".equals(type))
                 return new BinaryEntry(key, json.get("value").asText());
-            if (type.equals("boolean"))
+            if ("boolean".equals(type))
                 return new BooleanEntry(key, json.get("value").asBoolean());
-            if (type.equals("integer"))
+            if ("integer".equals(type))
                 return new IntegerEntry(key, json.get("value").asLong());
-            if (type.equals("string"))
+            if ("string".equals(type))
                 return new StringEntry(key, json.get("value").asText());
         } else if (!json.hasNonNull("value"))
             return new DeleteEntry(key);

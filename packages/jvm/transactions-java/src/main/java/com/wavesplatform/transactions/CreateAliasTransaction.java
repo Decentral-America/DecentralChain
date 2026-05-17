@@ -83,6 +83,7 @@ public class CreateAliasTransaction extends Transaction {
             this.alias = alias;
         }
 
+        @Override
         protected CreateAliasTransaction _build() {
             return new CreateAliasTransaction(sender, alias,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());
