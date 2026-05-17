@@ -10,13 +10,20 @@ import java.security.SecureRandom;
 
 public class JCESecureRandomProvider implements SecureRandomProvider {
 
+    /**
+     * Single shared instance. {@link SecureRandom} is thread-safe; creating a
+     * new instance on every call is expensive (OS entropy drain, seeding cost)
+     * and may produce weaker output when entropy is scarce.
+     */
+    private static final SecureRandom INSTANCE = new SecureRandom();
+
     @Override
     public void nextBytes(byte[] output) {
-        new SecureRandom().nextBytes(output);
+        INSTANCE.nextBytes(output);
     }
 
     @Override
     public int nextInt(int maxValue) {
-        return new SecureRandom().nextInt(maxValue);
+        return INSTANCE.nextInt(maxValue);
     }
 }

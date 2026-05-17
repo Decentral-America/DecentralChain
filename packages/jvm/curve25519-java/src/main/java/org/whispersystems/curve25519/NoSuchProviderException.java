@@ -11,6 +11,7 @@ public class NoSuchProviderException extends RuntimeException {
     private final Throwable nested;
 
     public NoSuchProviderException(Throwable e) {
+        super(e);
         this.nested = e;
     }
 

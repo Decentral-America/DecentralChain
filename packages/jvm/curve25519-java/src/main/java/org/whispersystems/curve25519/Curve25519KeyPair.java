@@ -22,16 +22,23 @@ public class Curve25519KeyPair {
     }
 
     /**
-     * @return The Curve25519 public key.
+     * Returns a defensive copy of the Curve25519 public key.
+     * Callers cannot mutate the internal key material through the returned array.
+     *
+     * @return A copy of the Curve25519 public key.
      */
     public byte[] getPublicKey() {
-        return publicKey;
+        return java.util.Arrays.copyOf(publicKey, publicKey.length);
     }
 
     /**
-     * @return The Curve25519 private key.
+     * Returns a defensive copy of the Curve25519 private key.
+     * Callers cannot mutate the internal key material through the returned array.
+     * Callers are responsible for zeroing the returned copy when done.
+     *
+     * @return A copy of the Curve25519 private key.
      */
     public byte[] getPrivateKey() {
-        return privateKey;
+        return java.util.Arrays.copyOf(privateKey, privateKey.length);
     }
 }
