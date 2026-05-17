@@ -3,53 +3,65 @@
   "projectType": "library",
   "tags": ["scope:ride", "layer:0", "lang:scala"],
   "targets": {
+    "bulletproof": {
+      "configurations": {
+        "ci": {
+          "command": "sbt --no-colors bulletproof"
+        }
+      },
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sbt bulletproof",
+        "cwd": "packages/ride"
+      }
+    },
     "compile": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/ride",
-        "command": "sbt compile"
-      }
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/ride",
-        "command": "sbt test"
-      }
-    },
-    "fullLinkJS": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/ride",
-        "command": "sbt fullLinkJS"
+        "command": "sbt compile",
+        "cwd": "packages/ride"
       }
     },
     "coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/ride",
-        "command": "sbt coverage test coverageReport"
-      }
-    },
-    "fmt": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/ride",
-        "command": "sbt scalafmtAll scalafmtSbt"
-      }
-    },
-    "fmt:check": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/ride",
-        "command": "sbt scalafmtCheckAll scalafmtSbtCheck"
+        "command": "sbt coverage test coverageReport",
+        "cwd": "packages/ride"
       }
     },
     "fix": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/ride",
-        "command": "sbt scalafixAll"
+        "command": "sbt scalafixAll",
+        "cwd": "packages/ride"
+      }
+    },
+    "fmt": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sbt scalafmtAll scalafmtSbt",
+        "cwd": "packages/ride"
+      }
+    },
+    "fmt:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sbt scalafmtCheckAll scalafmtSbtCheck",
+        "cwd": "packages/ride"
+      }
+    },
+    "fullLinkJS": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sbt fullLinkJS",
+        "cwd": "packages/ride"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sbt test",
+        "cwd": "packages/ride"
       }
     }
   }

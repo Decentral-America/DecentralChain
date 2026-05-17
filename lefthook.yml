@@ -12,6 +12,15 @@ pre-commit:
       skip:
         - merge
         - rebase
+    # DCC-252: Scala format gate — runs only when packages/ride Scala/sbt files are staged.
+    # Full quality gate (scalafix + compile + coverage) runs via `sbt bulletproof` in CI.
+    ride-fmt:
+      glob: 'packages/ride/**/*.{scala,sbt}'
+      run: cd packages/ride && sbt --no-colors scalafmtAll scalafmtSbt
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
 
 commit-msg:
   commands:

@@ -11,8 +11,8 @@ All notable changes to `packages/ride` are documented here.
 - `packages/ride/ts/` — TypeScript wrapper (`@decentralchain/ride-js`)
 - `@decentralchain/ride-lang` npm package (rebranded from `@waves/ride-lang`)
 - `@decentralchain/ride-repl` npm package (rebranded from `@waves/ride-repl`)
-- sbt quality gates: scalafmt, scalafix, scoverage ≥ 60%
-- Nx targets: compile, test, fullLinkJS, coverage, fmt, fix
+- sbt quality gates: scalafmt, scalafix, scoverage ≥ 40% per JVM sub-project (DCC-252 AC)
+- Nx targets: compile, test, fullLinkJS, coverage, fmt, fix, bulletproof
 
 ### Changed
 - Namespace rebrand applied (DCC-147): `com.wavesplatform.lang` → `com.decentralchain.lang`
