@@ -1,13 +1,11 @@
 # ──────────────────────────────────────────────────────────────────────────────
-# wavesj — Publish to Maven Central (manual dispatch)
+# transactions-java — Publish to Maven Central (manual dispatch)
 #
 # Prerequisite secrets (set in repo/org settings):
 #   MAVEN_CENTRAL_USERNAME   — Central Portal token username
 #   MAVEN_CENTRAL_PASSWORD   — Central Portal token password
 #   MAVEN_GPG_PRIVATE_KEY    — ASCII-armored GPG private key (no passphrase lines)
 #   MAVEN_GPG_PASSPHRASE     — GPG key passphrase
-#   MAVEN_GPG_KEY_ID         — GPG key ID (last 16 hex chars of fingerprint)
-#   NVD_API_KEY              — NVD API key for OWASP dependency-check (optional)
 #
 # This workflow GPG-signs all artifacts and uploads them to the Central Portal
 # (central-publishing-maven-plugin 0.10.0, autoPublish=false).
@@ -20,13 +18,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g. 1.6.5.0)'
+        description: 'Release version (e.g. 1.0.0)'
         required: true
-        default: '1.6.5.0'
+        default: '1.0.0'
 
 defaults:
   run:
-    working-directory: packages/jvm/wavesj
+    working-directory: packages/jvm/transactions-java
 
 jobs:
   publish:
@@ -78,6 +76,6 @@ jobs:
       - name: Upload staging artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: wavesj-${{ inputs.version }}-staged
-          path: packages/jvm/wavesj/target/*.jar
-          retention-days: 14
+          name: transactions-java-${{ inputs.version }}-staged
+          path: packages/jvm/transactions-java/target/*.jar
+          retention-days: 30
