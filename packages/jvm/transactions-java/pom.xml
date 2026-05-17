@@ -114,6 +114,10 @@
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <!-- maven-pmd-plugin 3.28.0 — latest -->
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+    <!-- cyclonedx-maven-plugin 2.9.1 — latest; supply-chain SBOM (CycloneDX 1.6) -->
+    <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
+    <!-- Reproducible builds — set to release date on each release -->
+    <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
@@ -295,15 +299,35 @@
         </executions>
       </plugin>
 
+      <!-- CycloneDX SBOM: supply-chain transparency (CycloneDX 1.6 format) -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${cyclonedx-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>make-bom</id>
+            <phase>package</phase>
+            <goals><goal>makeBom</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skipNotDeployed>false</skipNotDeployed>
+          <skip>false</skip>
+          <projectType>library</projectType>
+          <schemaVersion>1.6</schemaVersion>
+          <includeBomSerialNumber>true</includeBomSerialNumber>
+          <includeCompileScope>true</includeCompileScope>
+          <includeTestScope>false</includeTestScope>
+          <includeRuntimeScope>true</includeRuntimeScope>
+          <includeSystemScope>false</includeSystemScope>
+          <includeProvidedScope>false</includeProvidedScope>
+          <outputName>bom</outputName>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
-
-  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
-  <profiles>
-
-    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
-    <!-- Activate with: ./mvnw deploy -P release                        -->
-    <profile>
       <id>release</id>
       <build>
         <plugins>
