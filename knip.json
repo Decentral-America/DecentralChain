@@ -167,34 +167,34 @@
       "entry": ["src/pages/**/*.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
     },
-    "packages/ts/*": {
+    "packages/sdk/*": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     // tests are co-located in src/__tests__/ not test/
-    "packages/ts/assets-pairs-order": {
+    "packages/sdk/assets-pairs-order": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts"]
     },
-    "packages/ts/crypto": {
+    "packages/sdk/crypto": {
       "entry": ["src/index.ts"],
       // wasm-pack is a Rust binary tool (not an npm package) invoked via `wasm-pack build` in package scripts
       "ignoreBinaries": ["wasm-pack"],
       "project": ["src/**/*.ts"]
     },
-    "packages/ts/data-service-client-js": {
+    "packages/sdk/data-service-client-js": {
       "project": ["src/**/*.ts"]
     },
-    "packages/ts/node-api-js": {
+    "packages/sdk/node-api-js": {
       "entry": ["test/**/*.spec.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
-    "packages/ts/protobuf-serialization": {
+    "packages/sdk/protobuf-serialization": {
       "entry": ["src/index.ts"],
       "ignore": ["src/gen/**"],
       "project": ["src/**/*.ts"]
     },
-    "packages/ts/ride-js": {
+    "packages/ride/ts": {
       "entry": ["src/index.js"],
       "project": ["src/**/*.{ts,js}"]
     }

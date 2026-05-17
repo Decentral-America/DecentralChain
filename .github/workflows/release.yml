@@ -62,25 +62,25 @@ jobs:
         run: npx biome format .
 
       - name: Biome lint
-        run: npx nx run-many -t biome-lint --projects='packages/ts/*'
+        run: npx nx run-many -t biome-lint --projects='packages/sdk/*'
 
       - name: Typecheck
-        run: npx nx run-many -t typecheck --projects='packages/ts/*'
+        run: npx nx run-many -t typecheck --projects='packages/sdk/*'
 
       - name: Build
-        run: npx nx run-many -t build --projects='packages/ts/*'
+        run: npx nx run-many -t build --projects='packages/sdk/*'
 
       - name: Test
-        run: npx nx run-many -t test --projects='packages/ts/*'
+        run: npx nx run-many -t test --projects='packages/sdk/*'
 
       - name: Verify package exports
-        run: npx nx run-many -t check:exports --projects='packages/ts/*'
+        run: npx nx run-many -t check:exports --projects='packages/sdk/*'
 
       - name: Verify package publishing
-        run: npx nx run-many -t check:publint --projects='packages/ts/*' --exclude=ts-types
+        run: npx nx run-many -t check:publint --projects='packages/sdk/*' --exclude=ts-types
 
       - name: Verify bundle size
-        run: npx nx run-many -t check:size --projects='packages/ts/*'
+        run: npx nx run-many -t check:size --projects='packages/sdk/*'
 
       - name: Version
         run: npx nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
