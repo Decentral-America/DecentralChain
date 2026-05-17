@@ -24,8 +24,12 @@ class BytesDropTakeTest extends EvaluatorSpec {
     eval(s""" take($b, $limit) """) shouldBe bytes(1, 2, 3, 4, 5)
 
     evalVerRange(s""" take($b, $max) """, V1, V5) shouldBe bytes()
-    eval(s""" take($b, $max) """)(using V6) shouldBe Left(s"Number = $max passed to take() exceeds ByteVector limit = $limit")
-    eval(s""" take($b, ${limit + 1}) """)(using V6) shouldBe Left(s"Number = ${limit + 1} passed to take() exceeds ByteVector limit = $limit")
+    eval(s""" take($b, $max) """)(using V6) shouldBe Left(
+      s"Number = $max passed to take() exceeds ByteVector limit = $limit"
+    )
+    eval(s""" take($b, ${limit + 1}) """)(using V6) shouldBe Left(
+      s"Number = ${limit + 1} passed to take() exceeds ByteVector limit = $limit"
+    )
 
     evalVerRange(s""" take($b, -1) """, V1, V5) shouldBe bytes()
     eval(s""" take($b, -1) """)(using V6) shouldBe Left("Unexpected negative number = -1 passed to take()")
@@ -39,7 +43,9 @@ class BytesDropTakeTest extends EvaluatorSpec {
     eval(s""" takeRight($b, $limit) """) shouldBe bytes(1, 2, 3, 4, 5)
 
     evalVerRange(s""" takeRight($b, $max) """, V1, V5) shouldBe bytes()
-    eval(s""" takeRight($b, $max) """)(using V6) shouldBe Left(s"Number = $max passed to takeRight() exceeds ByteVector limit = $limit")
+    eval(s""" takeRight($b, $max) """)(using V6) shouldBe Left(
+      s"Number = $max passed to takeRight() exceeds ByteVector limit = $limit"
+    )
     eval(s""" takeRight($b, ${limit + 1}) """)(using V6) shouldBe Left(
       s"Number = ${limit + 1} passed to takeRight() exceeds ByteVector limit = $limit"
     )
@@ -47,7 +53,9 @@ class BytesDropTakeTest extends EvaluatorSpec {
     evalVerRange(s""" takeRight($b, -1) """, V1, V5) shouldBe bytes()
     eval(s""" takeRight($b, -1) """)(using V6) shouldBe Left("Unexpected negative number = -1 passed to takeRight()")
     evalVerRange(s""" takeRight($b, $min) """, V1, V5) shouldBe Left("long overflow")
-    eval(s""" takeRight($b, $min) """)(using V6) shouldBe Left(s"Unexpected negative number = $min passed to takeRight()")
+    eval(s""" takeRight($b, $min) """)(using V6) shouldBe Left(
+      s"Unexpected negative number = $min passed to takeRight()"
+    )
   }
 
   property("drop") {
@@ -56,8 +64,12 @@ class BytesDropTakeTest extends EvaluatorSpec {
     eval(s""" drop($b, $limit) """) shouldBe bytes()
 
     evalVerRange(s""" drop($b, $max) """, V1, V5) shouldBe bytes(1, 2, 3, 4, 5)
-    eval(s""" drop($b, $max) """)(using V6) shouldBe Left(s"Number = $max passed to drop() exceeds ByteVector limit = $limit")
-    eval(s""" drop($b, ${limit + 1}) """)(using V6) shouldBe Left(s"Number = ${limit + 1} passed to drop() exceeds ByteVector limit = $limit")
+    eval(s""" drop($b, $max) """)(using V6) shouldBe Left(
+      s"Number = $max passed to drop() exceeds ByteVector limit = $limit"
+    )
+    eval(s""" drop($b, ${limit + 1}) """)(using V6) shouldBe Left(
+      s"Number = ${limit + 1} passed to drop() exceeds ByteVector limit = $limit"
+    )
 
     evalVerRange(s""" drop($b, -1) """, V1, V5) shouldBe bytes(1, 2, 3, 4, 5)
     eval(s""" drop($b, -1) """)(using V6) shouldBe Left("Unexpected negative number = -1 passed to drop()")
@@ -71,7 +83,9 @@ class BytesDropTakeTest extends EvaluatorSpec {
     eval(s""" dropRight($b, $limit) """) shouldBe bytes()
 
     evalVerRange(s""" dropRight($b, $max) """, V1, V5) shouldBe bytes(1, 2, 3, 4, 5)
-    eval(s""" dropRight($b, $max) """)(using V6) shouldBe Left(s"Number = $max passed to dropRight() exceeds ByteVector limit = $limit")
+    eval(s""" dropRight($b, $max) """)(using V6) shouldBe Left(
+      s"Number = $max passed to dropRight() exceeds ByteVector limit = $limit"
+    )
     eval(s""" dropRight($b, ${limit + 1}) """)(using V6) shouldBe Left(
       s"Number = ${limit + 1} passed to dropRight() exceeds ByteVector limit = $limit"
     )
@@ -79,7 +93,9 @@ class BytesDropTakeTest extends EvaluatorSpec {
     evalVerRange(s""" dropRight($b, -1) """, V1, V5) shouldBe bytes(1, 2, 3, 4, 5)
     eval(s""" dropRight($b, -1) """)(using V6) shouldBe Left("Unexpected negative number = -1 passed to dropRight()")
     evalVerRange(s""" dropRight($b, $min) """, V1, V5) should produce("long overflow")
-    eval(s""" dropRight($b, $min) """)(using V6) shouldBe Left(s"Unexpected negative number = $min passed to dropRight()")
+    eval(s""" dropRight($b, $min) """)(using V6) shouldBe Left(
+      s"Unexpected negative number = $min passed to dropRight()"
+    )
   }
 
   property("max size bytes") {

@@ -24,7 +24,7 @@ import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.parser.{Expressions, Parser}
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.{ContractLimits, FunctionHeader, compiler}
+import com.decentralchain.lang.v1.{compiler, ContractLimits, FunctionHeader}
 import com.decentralchain.lang.{Common, Global}
 import com.decentralchain.test.*
 
@@ -35,7 +35,11 @@ class ExpressionCompilerV1Test extends PropSpec {
 
   property("should infer generic function return type") {
     import com.decentralchain.lang.v1.parser.Expressions.*
-    val v = ExpressionCompiler(compilerContext, V3, FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, idT.name), List(CONST_LONG(AnyPos, 1)))).explicitGet()
+    val v = ExpressionCompiler(
+      compilerContext,
+      V3,
+      FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, idT.name), List(CONST_LONG(AnyPos, 1)))
+    ).explicitGet()
     v._2 shouldBe LONG
   }
 
@@ -79,7 +83,7 @@ class ExpressionCompilerV1Test extends PropSpec {
 
   property("expression compilation fails if function name length is longer than 255 bytes") {
     val tooLongName = "a" * (ContractLimits.MaxDeclarationNameInBytes + 1)
-    val funcExpr = {
+    val funcExpr    = {
       val script =
         s"""
            |func $tooLongName() = 1
@@ -95,13 +99,15 @@ class ExpressionCompilerV1Test extends PropSpec {
         """.stripMargin
       Parser.parseExpr(script).get.value
     }
-    ExpressionCompiler(compilerContext, V3, funcExpr) should produce(s"Function '$tooLongName' size = 256 bytes exceeds 255")
+    ExpressionCompiler(compilerContext, V3, funcExpr) should produce(
+      s"Function '$tooLongName' size = 256 bytes exceeds 255"
+    )
     ExpressionCompiler(compilerContext, V3, letExpr) should produce(s"Let '$tooLongName' size = 256 bytes exceeds 255")
 
   }
 
   property("expression compiles if declaration name length is equal to 255 bytes") {
-    val maxName = "a" * ContractLimits.MaxDeclarationNameInBytes
+    val maxName  = "a" * ContractLimits.MaxDeclarationNameInBytes
     val funcExpr = {
       val script =
         s"""
@@ -309,7 +315,7 @@ class ExpressionCompilerV1Test extends PropSpec {
 
   property("JS API compile limit exceeding error") {
     val expr = s" ${"sigVerify(base58'', base58'', base58'') &&" * 350} true "
-    val ctx = Monoid
+    val ctx  = Monoid
       .combineAll(
         Seq(
           PureContext.build(V4, useNewPowPrecision = true).withEnvironment[Environment],
@@ -324,7 +330,9 @@ class ExpressionCompilerV1Test extends PropSpec {
       .compilerContext
 
     val e = ScriptEstimatorV3(fixOverflow = true, overhead = true, letFixes = true)
-    Global.compileExpression(expr, NoLibraries, ctx, V4, Account, e) should produce("Script is too large: 8756 bytes > 8192 bytes")
+    Global.compileExpression(expr, NoLibraries, ctx, V4, Account, e) should produce(
+      "Script is too large: 8756 bytes > 8192 bytes"
+    )
   }
 
   property("extract() removed from V4") {
@@ -360,7 +368,8 @@ class ExpressionCompilerV1Test extends PropSpec {
 
     DirectiveDictionary[StdLibVersion].all
       .foreach { version =>
-        val result = ExpressionCompiler(getTestContext(version).compilerContext, version, Parser.parseExpr(expr).get.value)
+        val result =
+          ExpressionCompiler(getTestContext(version).compilerContext, version, Parser.parseExpr(expr).get.value)
         if (version >= V4)
           result shouldBe Symbol("right")
         else
@@ -392,7 +401,8 @@ class ExpressionCompilerV1Test extends PropSpec {
       version    <- DirectiveDictionary[StdLibVersion].all
       scriptType <- DirectiveDictionary[ScriptType].all
     } {
-      val result = ExpressionCompiler(getTestContext(version, scriptType).compilerContext, version, expr(version, scriptType))
+      val result =
+        ExpressionCompiler(getTestContext(version, scriptType).compilerContext, version, expr(version, scriptType))
       if (version < V5 || scriptType != Account)
         result.swap.getOrElse(???).split("Can't find a function").length shouldBe 9
       else
@@ -587,7 +597,12 @@ class ExpressionCompilerV1Test extends PropSpec {
         |t._2[ind] == 3
         |""".stripMargin
 
-    ExpressionCompiler.compile(script, NoLibraries, compilerContextV4, StdLibVersion.VersionDic.all.last) shouldBe Right(
+    ExpressionCompiler.compile(
+      script,
+      NoLibraries,
+      compilerContextV4,
+      StdLibVersion.VersionDic.all.last
+    ) shouldBe Right(
       (
         LET_BLOCK(
           LET(
@@ -600,7 +615,10 @@ class ExpressionCompilerV1Test extends PropSpec {
                   Native(1100),
                   List(
                     CONST_LONG(2),
-                    FUNCTION_CALL(Native(1100), List(CONST_LONG(3), FUNCTION_CALL(Native(1100), List(CONST_LONG(4), REF(GlobalValNames.Nil)))))
+                    FUNCTION_CALL(
+                      Native(1100),
+                      List(CONST_LONG(3), FUNCTION_CALL(Native(1100), List(CONST_LONG(4), REF(GlobalValNames.Nil))))
+                    )
                   )
                 ),
                 CONST_LONG(5)
@@ -609,7 +627,10 @@ class ExpressionCompilerV1Test extends PropSpec {
           ),
           LET_BLOCK(
             LET("ind", CONST_LONG(1)),
-            FUNCTION_CALL(Native(0), List(FUNCTION_CALL(Native(401), List(GETTER(REF("t"), "_2"), REF("ind"))), CONST_LONG(3)))
+            FUNCTION_CALL(
+              Native(0),
+              List(FUNCTION_CALL(Native(401), List(GETTER(REF("t"), "_2"), REF("ind"))), CONST_LONG(3))
+            )
           )
         ),
         Types.BOOLEAN
@@ -625,7 +646,12 @@ class ExpressionCompilerV1Test extends PropSpec {
         |t.some[ind] == 3
         |""".stripMargin
 
-    ExpressionCompiler.compile(script, NoLibraries, compilerContextV4, StdLibVersion.VersionDic.all.last) should produce(
+    ExpressionCompiler.compile(
+      script,
+      NoLibraries,
+      compilerContextV4,
+      StdLibVersion.VersionDic.all.last
+    ) should produce(
       "Compilation failed: [Non-matching types: expected: List[T], actual: Nothing in 39-50; Undefined field `some` of variable of type `(Int, List[Int], Int)` in 39-45]"
     )
   }
@@ -1001,8 +1027,11 @@ class ExpressionCompilerV1Test extends PropSpec {
 
   treeTypeTest("Invalid GETTER")(
     ctx = compilerContext,
-    expr =
-      Expressions.GETTER(AnyPos, Expressions.REF(AnyPos, Expressions.PART.VALID(AnyPos, "x")), Expressions.PART.INVALID(Pos(2, 3), "can't parse")),
+    expr = Expressions.GETTER(
+      AnyPos,
+      Expressions.REF(AnyPos, Expressions.PART.VALID(AnyPos, "x")),
+      Expressions.PART.INVALID(Pos(2, 3), "can't parse")
+    ),
     expectedResult = { (res: Either[String, (EXPR, TYPE)]) =>
       res should produce("can't parse in 2-3")
     }
@@ -1053,7 +1082,10 @@ class ExpressionCompilerV1Test extends PropSpec {
     expr = Expressions.FUNCTION_CALL(
       AnyPos,
       Expressions.PART.VALID(AnyPos, "dropRight"),
-      List(Expressions.CONST_BYTESTR(AnyPos, Expressions.PART.VALID(AnyPos, ByteStr.empty)), Expressions.CONST_LONG(AnyPos, 1))
+      List(
+        Expressions.CONST_BYTESTR(AnyPos, Expressions.PART.VALID(AnyPos, ByteStr.empty)),
+        Expressions.CONST_LONG(AnyPos, 1)
+      )
     ),
     expectedResult = { (res: Either[String, (EXPR, TYPE)]) =>
       res shouldBe Right(
@@ -1149,7 +1181,11 @@ class ExpressionCompilerV1Test extends PropSpec {
 
   private def treeTypeTest(
       propertyName: String
-  )(expr: Expressions.EXPR, expectedResult: Either[String, (EXPR, TYPE)] => org.scalatest.compatible.Assertion, ctx: CompilerContext): Unit =
+  )(
+      expr: Expressions.EXPR,
+      expectedResult: Either[String, (EXPR, TYPE)] => org.scalatest.compatible.Assertion,
+      ctx: CompilerContext
+  ): Unit =
     property(propertyName) {
       val res = compiler.ExpressionCompiler(ctx, V3, expr)
       expectedResult(res)

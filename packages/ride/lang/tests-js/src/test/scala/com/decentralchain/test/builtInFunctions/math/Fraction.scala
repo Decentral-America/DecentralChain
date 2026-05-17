@@ -11,8 +11,13 @@ import testHelpers.RandomDataGenerator.{
   randomStringArrayElement,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, actualVersions, nonMatchingTypes, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  nonMatchingTypes,
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD
+}
+import utest.{test, Tests}
 
 object Fraction extends JsTestBase {
   private var union: String                    = randomUnionArrayElement
@@ -48,7 +53,7 @@ object Fraction extends JsTestBase {
     }
 
     test("RIDE-173. Fraction should compile with the Int and Union types - Ride V5, V6") {
-      for (version <- versionsSupportingTheNewFeatures) {
+      for (version <- versionsSupportingTheNewFeatures)
         for (
           (data, function, dataType) <- Seq(
             (randomInt.toString, fractionIntAndUnion, "Int"),
@@ -63,11 +68,10 @@ object Fraction extends JsTestBase {
           val script       = precondition.onlyMatcherContract(data, function)
           assertCompileSuccessDApp(script, version)
         }
-      }
     }
 
     test("RIDE-174. Fraction should throw an error for invalid data") {
-      for (version <- actualVersions) {
+      for (version <- actualVersions)
         for (
           (data, function, dataType, error) <- Seq(
             (randomInt.toString, invalidFractionFunction, "Int", fractionError),
@@ -84,11 +88,10 @@ object Fraction extends JsTestBase {
             assertCompileErrorDApp(script, version, CANT_FIND_A_FUNCTION_OVERLOAD)
           }
         }
-      }
     }
 
     test("RIDE-175. Fraction should raise a compilation error for BigInt - Ride V5, V6") {
-      for (version <- versionsSupportingTheNewFeatures) {
+      for (version <- versionsSupportingTheNewFeatures)
         for (
           (data, function, dataType, error) <- Seq(
             (randomStringArrayElement, fractionBigInt, "BigInt", CANT_FIND_A_FUNCTION_OVERLOAD),
@@ -103,7 +106,6 @@ object Fraction extends JsTestBase {
           val script       = precondition.onlyMatcherContract(data, function)
           assertCompileErrorDApp(script, version, error)
         }
-      }
     }
 
     test("RIDE-176. Fraction should raise an error for versions V3 and V4 with incorrect argument count") {

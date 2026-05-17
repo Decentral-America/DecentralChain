@@ -10,13 +10,13 @@ import testHelpers.RandomDataGenerator.{
 }
 import testHelpers.GeneratorContractsForBuiltInFunctions
 import testHelpers.TestDataConstantsAndMethods.{
-  CANT_FIND_A_FUNCTION_OVERLOAD,
-  CANT_FIND_FUNCTION,
   invalidFunctionError,
   oldVersions,
-  versionsSupportingTheNewFeatures
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  CANT_FIND_FUNCTION
 }
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object CalculateLeaseId extends JsTestBase {
   private val calculateLeaseId              = "calculateLeaseId(lease)"

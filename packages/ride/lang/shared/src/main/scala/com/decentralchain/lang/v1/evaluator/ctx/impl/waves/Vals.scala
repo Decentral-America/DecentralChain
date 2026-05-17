@@ -9,11 +9,22 @@ import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.*
 import com.decentralchain.lang.v1.evaluator.ContextfulVal
 import com.decentralchain.lang.v1.evaluator.ctx.impl.GlobalValNames
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Bindings.{buildAssetInfo, ordType, orderObject, transactionObject}
+import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Bindings.{
+  buildAssetInfo,
+  ordType,
+  orderObject,
+  transactionObject
+}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types.*
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.traits.domain.{OrdType, Ord, Tx, PseudoTx, Recipient}
-import com.decentralchain.lang.v1.traits.domain.Tx.{BurnPseudoTx, InvokePseudoTx, ReissuePseudoTx, ScriptTransfer, SponsorFeePseudoTx}
+import com.decentralchain.lang.v1.traits.domain.{Ord, OrdType, PseudoTx, Recipient, Tx}
+import com.decentralchain.lang.v1.traits.domain.Tx.{
+  BurnPseudoTx,
+  InvokePseudoTx,
+  ReissuePseudoTx,
+  ScriptTransfer,
+  SponsorFeePseudoTx
+}
 
 object Vals {
   def tx(
@@ -22,7 +33,13 @@ object Vals {
       proofsEnabled: Boolean,
       fixBigScriptField: Boolean
   ): (String, (UNION, ContextfulVal[Environment])) =
-    (GlobalValNames.Tx, (scriptInputType(isTokenContext, version, proofsEnabled), inputEntityVal(version, proofsEnabled, fixBigScriptField)))
+    (
+      GlobalValNames.Tx,
+      (
+        scriptInputType(isTokenContext, version, proofsEnabled),
+        inputEntityVal(version, proofsEnabled, fixBigScriptField)
+      )
+    )
 
   private def scriptInputType(isTokenContext: Boolean, version: StdLibVersion, proofsEnabled: Boolean) =
     if (isTokenContext)
@@ -30,7 +47,11 @@ object Vals {
     else
       UNION(buildOrderType(proofsEnabled, version) :: buildActiveTransactionTypes(proofsEnabled, version))
 
-  private def inputEntityVal(version: StdLibVersion, proofsEnabled: Boolean, fixBigScriptField: Boolean): ContextfulVal[Environment] =
+  private def inputEntityVal(
+      version: StdLibVersion,
+      proofsEnabled: Boolean,
+      fixBigScriptField: Boolean
+  ): ContextfulVal[Environment] =
     new ContextfulVal.Lifted[Environment] {
       override def liftF[F[_]: Monad](env: Environment[F]): Eval[Either[ExecutionError, EVALUATED]] =
         Eval.later(
@@ -85,7 +106,7 @@ object Vals {
           env
             .assetInfoById(
               env.tthis match {
-                case _: Recipient.Address     => throw new Exception("In the account's script value 'this` must be Address")
+                case _: Recipient.Address => throw new Exception("In the account's script value 'this` must be Address")
                 case aid: Environment.AssetId => aid.id
               }
             )
@@ -115,7 +136,8 @@ object Vals {
 
   val height: (String, (LONG.type, ContextfulVal[Environment])) = (GlobalValNames.Height, (LONG, heightVal))
 
-  val accountThis: (String, (CASETYPEREF, ContextfulVal[Environment])) = (GlobalValNames.This, (addressType, accountThisVal))
+  val accountThis: (String, (CASETYPEREF, ContextfulVal[Environment])) =
+    (GlobalValNames.This, (addressType, accountThisVal))
   def assetThis(version: StdLibVersion): (String, (CASETYPEREF, ContextfulVal[Environment])) =
     (GlobalValNames.This, (assetType(version), assetThisVal(version)))
 

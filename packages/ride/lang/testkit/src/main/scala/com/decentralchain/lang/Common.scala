@@ -37,8 +37,9 @@ object Common {
 
   val multiplierFunction: NativeFunction[NoContext] =
     NativeFunction("MULTIPLY", 1L, 10005.toShort, LONG, ("x1", LONG), ("x2", LONG)) {
-      case CONST_LONG(x1: Long) :: CONST_LONG(x2: Long) :: Nil => Try(x1 * x2).map(CONST_LONG.apply).toEither.left.map(_.toString)
-      case _                                                   => ??? // suppress pattern match warning
+      case CONST_LONG(x1: Long) :: CONST_LONG(x2: Long) :: Nil =>
+        Try(x1 * x2).map(CONST_LONG.apply).toEither.left.map(_.toString)
+      case _ => ??? // suppress pattern match warning
     }
 
   val pointTypeA = CASETYPEREF("PointA", List("X" -> LONG, "YA" -> LONG))
@@ -71,7 +72,11 @@ object Common {
       Seq.empty[BaseFunction[NoContext]]
     )
 
-  def emptyBlockchainEnvironment(h: Int = 1, in: Coeval[Environment.InputEntity] = Coeval(???), nByte: Byte = 'T'): Environment[Id] =
+  def emptyBlockchainEnvironment(
+      h: Int = 1,
+      in: Coeval[Environment.InputEntity] = Coeval(???),
+      nByte: Byte = 'T'
+  ): Environment[Id] =
     new Environment[Id] {
       def height: Long  = h
       def chainId: Byte = nByte
@@ -106,24 +111,32 @@ object Common {
       ): Coeval[(Either[ValidationError, (EVALUATED, Log[Id])], Int)] = ???
     }
 
-  def addressFromPublicKey(chainId: Byte, pk: Array[Byte], addressVersion: Byte = EnvironmentFunctions.AddressVersion): Array[Byte] = {
+  def addressFromPublicKey(
+      chainId: Byte,
+      pk: Array[Byte],
+      addressVersion: Byte = EnvironmentFunctions.AddressVersion
+  ): Array[Byte] = {
     val publicKeyHash   = Global.secureHash(pk).take(EnvironmentFunctions.HashLength)
     val withoutChecksum = addressVersion +: chainId +: publicKeyHash
     withoutChecksum ++ Global.secureHash(withoutChecksum).take(EnvironmentFunctions.ChecksumLength)
   }
 
   def addressFromString(chainId: Byte, str: String): Either[String, Option[Array[Byte]]] = {
-    val base58String = if (str.startsWith(EnvironmentFunctions.AddressPrefix)) str.drop(EnvironmentFunctions.AddressPrefix.length) else str
+    val base58String =
+      if (str.startsWith(EnvironmentFunctions.AddressPrefix)) str.drop(EnvironmentFunctions.AddressPrefix.length)
+      else str
     Global.base58Decode(base58String, Global.MaxAddressLength) match {
-      case Left(e) => Left(e)
+      case Left(e)             => Left(e)
       case Right(addressBytes) =>
-        val version = addressBytes.head
-        val network = addressBytes.tail.head
+        val version              = addressBytes.head
+        val network              = addressBytes.tail.head
         lazy val checksumCorrect = {
-          val checkSum = addressBytes.takeRight(EnvironmentFunctions.ChecksumLength)
+          val checkSum          = addressBytes.takeRight(EnvironmentFunctions.ChecksumLength)
           val checkSumGenerated =
-            Global.secureHash(addressBytes.dropRight(EnvironmentFunctions.ChecksumLength)).take(EnvironmentFunctions.ChecksumLength)
-          checkSum sameElements checkSumGenerated
+            Global
+              .secureHash(addressBytes.dropRight(EnvironmentFunctions.ChecksumLength))
+              .take(EnvironmentFunctions.ChecksumLength)
+          checkSum.sameElements(checkSumGenerated)
         }
 
         if (

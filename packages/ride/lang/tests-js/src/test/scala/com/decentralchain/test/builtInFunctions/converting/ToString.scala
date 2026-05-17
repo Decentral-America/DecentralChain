@@ -9,8 +9,12 @@ import testHelpers.RandomDataGenerator.{
   randomInt,
   randomUnionArrayElement
 }
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, actualVersions, versionsSupportingTheNewFeatures}
-import utest.{Tests, test}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  versionsSupportingTheNewFeatures,
+  CANT_FIND_A_FUNCTION_OVERLOAD
+}
+import utest.{test, Tests}
 
 object ToString extends JsTestBase {
   private val toStr                     = "toString(callerTestData)"

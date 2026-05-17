@@ -2,9 +2,18 @@ package com.decentralchain.test.builtInFunctions.hashing.keccak256
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{GreaterV3ResultBinaryEntry, actualVersionsWithoutV3, nonMatchingTypes, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  nonMatchingTypes,
+  rideV3Result,
+  GreaterV3ResultBinaryEntry
+}
+import utest.{test, Tests}
 
 object Keccak256_128Kb extends JsTestBase {
   private val keccak256_128Kb                     = "keccak256_128Kb(callerTestData)"

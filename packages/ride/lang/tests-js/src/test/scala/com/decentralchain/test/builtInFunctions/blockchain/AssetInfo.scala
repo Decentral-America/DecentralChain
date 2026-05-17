@@ -1,10 +1,15 @@
 package com.decentralchain.test.builtInFunctions.blockchain
 
 import _root_.testHelpers.GeneratorContractsForBuiltInFunctions
-import _root_.testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomBoolean, randomByteVectorArrayElement, randomInt}
+import _root_.testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomBoolean,
+  randomByteVectorArrayElement,
+  randomInt
+}
 import com.decentralchain.JsTestBase
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, invalidFunctionError, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object AssetInfo extends JsTestBase {
 

@@ -2,9 +2,19 @@ package com.decentralchain.test.builtInFunctions.string
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomInt, randomStringArrayElement, randomUnionArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_A_FUNCTION_OVERLOAD, GreaterV3ResultStringEntry, actualVersions, rideV3Result}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomInt,
+  randomStringArrayElement,
+  randomUnionArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersions,
+  rideV3Result,
+  CANT_FIND_A_FUNCTION_OVERLOAD,
+  GreaterV3ResultStringEntry
+}
+import utest.{test, Tests}
 
 object Take extends JsTestBase {
   private val take                     = s"take(callerTestData, $randomInt)"

@@ -2,9 +2,14 @@ package com.decentralchain.test.builtInFunctions.list
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomInt,
+  randomIssuesArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, intList, nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object GetElement extends JsTestBase {
   private val getElement                     = "getElement(bar, foo)"

@@ -2,9 +2,13 @@ package com.decentralchain.test.builtInFunctions.verification.sigVerify
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object SigVerify extends JsTestBase {
   private val sigVerify                     = s"sigVerify(callerTestData, callerTestData, callerTestData)"

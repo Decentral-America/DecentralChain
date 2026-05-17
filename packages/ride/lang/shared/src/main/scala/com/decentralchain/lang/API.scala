@@ -3,7 +3,7 @@ package com.decentralchain.lang
 import cats.implicits.toBifunctorOps
 import com.decentralchain.lang.contract.meta.FunctionSignatures
 import com.decentralchain.lang.directives.Directive.extractDirectives
-import com.decentralchain.lang.directives.values.{Call, Expression, Library, StdLibVersion, DApp as DAppType}
+import com.decentralchain.lang.directives.values.{Call, DApp as DAppType, Expression, Library, StdLibVersion}
 import com.decentralchain.lang.directives.{DirectiveParser, DirectiveSet}
 import com.decentralchain.lang.script.ScriptPreprocessor
 import com.decentralchain.lang.v1.BaseGlobal
@@ -19,7 +19,8 @@ sealed trait CompileAndParseResult
 
 object CompileAndParseResult {
 
-  case class Expression(bytes: Array[Byte], complexity: Long, expr: Expressions.SCRIPT, errors: Seq[CompilationError]) extends CompileAndParseResult
+  case class Expression(bytes: Array[Byte], complexity: Long, expr: Expressions.SCRIPT, errors: Seq[CompilationError])
+      extends CompileAndParseResult
 
   case class Library(bytes: Array[Byte], complexity: Long, expr: EXPR) extends CompileAndParseResult
 
@@ -40,8 +41,14 @@ sealed trait CompileResult {
   def maxComplexity: Long
 }
 object CompileResult {
-  case class Expression(version: StdLibVersion, bytes: Array[Byte], maxComplexity: Long, expr: EXPR, error: Either[String, Unit], isFreeCall: Boolean)
-      extends CompileResult {
+  case class Expression(
+      version: StdLibVersion,
+      bytes: Array[Byte],
+      maxComplexity: Long,
+      expr: EXPR,
+      error: Either[String, Unit],
+      isFreeCall: Boolean
+  ) extends CompileResult {
     override val callableComplexities: Map[String, Long] = Map.empty
     override val verifierComplexity: Long                = if (isFreeCall) 0 else maxComplexity
   }
@@ -52,11 +59,13 @@ object CompileResult {
     override val maxComplexity: Long                     = complexity
   }
 
-  case class DApp(version: StdLibVersion, dAppInfo: DAppInfo, meta: FunctionSignatures, error: Either[String, Unit]) extends CompileResult {
+  case class DApp(version: StdLibVersion, dAppInfo: DAppInfo, meta: FunctionSignatures, error: Either[String, Unit])
+      extends CompileResult {
     override def bytes: Array[Byte]                      = dAppInfo.bytes
     override def verifierComplexity: Long                = dAppInfo.verifierComplexity
     override def callableComplexities: Map[String, Long] = dAppInfo.callableComplexities
-    override val maxComplexity: Long                     = callableComplexities.values.maxOption.fold(verifierComplexity)(_.max(verifierComplexity))
+    override val maxComplexity: Long                     =
+      callableComplexities.values.maxOption.fold(verifierComplexity)(_.max(verifierComplexity))
   }
 }
 
@@ -76,7 +85,11 @@ object API {
       .map { case (name, (t, _)) => (name, t) }
       .toSeq
 
-  def allFunctions(ver: Int = 2, isTokenContext: Boolean = false, isContract: Boolean = false): Seq[(String, Seq[String], FunctionTypeSignature)] =
+  def allFunctions(
+      ver: Int = 2,
+      isTokenContext: Boolean = false,
+      isContract: Boolean = false
+  ): Seq[(String, Seq[String], FunctionTypeSignature)] =
     utils
       .ctx(ver, isTokenContext, isContract)
       .functions
@@ -101,7 +114,14 @@ object API {
       directives            <- DirectiveParser(input)
       ds                    <- extractDirectives(directives)
       (linkedInput, offset) <- ScriptPreprocessor(input, libraries, ds.imports)
-      compiled <- parseAndCompileScript(ds, linkedInput, offset, API.allEstimators.toIndexedSeq(estimatorVer - 1), needCompaction, removeUnusedCode)
+      compiled              <- parseAndCompileScript(
+        ds,
+        linkedInput,
+        offset,
+        API.allEstimators.toIndexedSeq(estimatorVer - 1),
+        needCompaction,
+        removeUnusedCode
+      )
     } yield compiled
 
   private def parseAndCompileScript(
@@ -164,7 +184,7 @@ object API {
       directives            <- DirectiveParser(input)
       ds                    <- extractDirectives(directives, defaultStdLib)
       (linkedInput, offset) <- ScriptPreprocessor(input, libraries, ds.imports)
-      compiled              <- compileScript(ds, linkedInput, offset, estimator, needCompaction, removeUnusedCode, allowFreeCall)
+      compiled <- compileScript(ds, linkedInput, offset, estimator, needCompaction, removeUnusedCode, allowFreeCall)
     } yield compiled
 
   def estimatorByVersion(version: Int): Either[String, ScriptEstimator] =

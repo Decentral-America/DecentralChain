@@ -178,7 +178,7 @@ object JsAPITest extends JsTestBase {
           | func f() = 1
         """.stripMargin
 
-      val result = JsAPI.parseAndCompile(library, 3)
+      val result   = JsAPI.parseAndCompile(library, 3)
       val expected = """
                        |{
                        |  "dec": {
@@ -225,7 +225,7 @@ object JsAPITest extends JsTestBase {
 
     test("ill-formed characters") {
       val invalidChar = '\ud87e'
-      val script =
+      val script      =
         s"""
            |{-# STDLIB_VERSION 6 #-}
            |{-# CONTENT_TYPE DAPP #-}

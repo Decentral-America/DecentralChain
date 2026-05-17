@@ -21,10 +21,11 @@ import java.lang
 class ScriptParserTest extends PropSpec with ScriptGenParser {
   implicit val offset: LibrariesOffset = NoLibraries
 
-  private def parse(x: String, version: StdLibVersion = StdLibVersion.VersionDic.all.last): EXPR = Parser.parseExpr(x, version) match {
-    case Success(r, _) => r
-    case f: Failure    => throw new TestFailedException(f.msg, 0)
-  }
+  private def parse(x: String, version: StdLibVersion = StdLibVersion.VersionDic.all.last): EXPR =
+    Parser.parseExpr(x, version) match {
+      case Success(r, _) => r
+      case f: Failure    => throw new TestFailedException(f.msg, 0)
+    }
 
   private def parseE(x: String, version: StdLibVersion = StdLibVersion.VersionDic.all.last): Either[String, EXPR] =
     Parser.parseExpr(x, version) match {
@@ -33,7 +34,11 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
     }
 
   private def cleanOffsets(l: LET): LET =
-    l.copy(Pos(0, 0), name = cleanOffsets(l.name), value = cleanOffsets(l.value)) // , types = l.types.map(cleanOffsets(_))
+    l.copy(
+      Pos(0, 0),
+      name = cleanOffsets(l.name),
+      value = cleanOffsets(l.value)
+    ) // , types = l.types.map(cleanOffsets(_))
 
   private def cleanOffsets[T](p: PART[T]): PART[T] = p match {
     case PART.VALID(_, x)   => PART.VALID(AnyPos, x)
@@ -48,10 +53,18 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
     case x: TRUE          => x.copy(position = Pos(0, 0))
     case x: FALSE         => x.copy(position = Pos(0, 0))
     case x: BINARY_OP     => x.copy(position = Pos(0, 0), a = cleanOffsets(x.a), b = cleanOffsets(x.b))
-    case x: IF => x.copy(position = Pos(0, 0), cond = cleanOffsets(x.cond), ifTrue = cleanOffsets(x.ifTrue), ifFalse = cleanOffsets(x.ifFalse))
-    case x @ BLOCK(_, l: Expressions.LET, _, _, _) => x.copy(position = Pos(0, 0), let = cleanOffsets(l), body = cleanOffsets(x.body))
-    case x: FUNCTION_CALL                          => x.copy(position = Pos(0, 0), name = cleanOffsets(x.name), args = x.args.map(cleanOffsets(_)))
-    case _                                         => throw new NotImplementedError(s"toString for ${expr.getClass.getSimpleName}")
+    case x: IF            =>
+      x.copy(
+        position = Pos(0, 0),
+        cond = cleanOffsets(x.cond),
+        ifTrue = cleanOffsets(x.ifTrue),
+        ifFalse = cleanOffsets(x.ifFalse)
+      )
+    case x @ BLOCK(_, l: Expressions.LET, _, _, _) =>
+      x.copy(position = Pos(0, 0), let = cleanOffsets(l), body = cleanOffsets(x.body))
+    case x: FUNCTION_CALL =>
+      x.copy(position = Pos(0, 0), name = cleanOffsets(x.name), args = x.args.map(cleanOffsets(_)))
+    case _ => throw new NotImplementedError(s"toString for ${expr.getClass.getSimpleName}")
   }
 
   private def genElementCheck(gen: Gen[EXPR]): Unit = {
@@ -162,15 +175,19 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
         PART.VALID(
           AnyPos,
           ByteStr(
-            Array[Short](0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0xab, 0xcd, 0xef, 0xfa, 0xbc,
-              0xde).map(_.toByte)
+            Array[Short](0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+              0xab, 0xcd, 0xef, 0xfa, 0xbc, 0xde).map(_.toByte)
           )
         )
       )
   }
 
   property("invalid base16 definition") {
-    parse("base16'mid-size'") shouldBe CONST_BYTESTR(Pos(0, 16), PART.INVALID(Pos(8, 15), "Unrecognized character: m"), None)
+    parse("base16'mid-size'") shouldBe CONST_BYTESTR(
+      Pos(0, 16),
+      PART.INVALID(Pos(8, 15), "Unrecognized character: m"),
+      None
+    )
     parse("base16'123'") shouldBe CONST_BYTESTR(Pos(0, 11), PART.INVALID(Pos(8, 10), "Invalid input length 3"))
   }
 
@@ -209,7 +226,10 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
   }
 
   property("should parse incomplete unicode symbol definition") {
-    parse("\"\\u12 test\"") shouldBe CONST_STRING(AnyPos, PART.INVALID(AnyPos, "incomplete UTF-8 symbol definition: '\\u12'"))
+    parse("\"\\u12 test\"") shouldBe CONST_STRING(
+      AnyPos,
+      PART.INVALID(AnyPos, "incomplete UTF-8 symbol definition: '\\u12'")
+    )
     parse("\"\\u\"") shouldBe CONST_STRING(AnyPos, PART.INVALID(AnyPos, "incomplete UTF-8 symbol definition: '\\u'"))
   }
 
@@ -218,7 +238,10 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
   }
 
   property("should parse invalid special symbols") {
-    parse("\"\\ test\"") shouldBe CONST_STRING(AnyPos, PART.INVALID(AnyPos, "unknown escaped symbol: '\\ '. The valid are \b, \f, \n, \r, \t"))
+    parse("\"\\ test\"") shouldBe CONST_STRING(
+      AnyPos,
+      PART.INVALID(AnyPos, "unknown escaped symbol: '\\ '. The valid are \b, \f, \n, \r, \t")
+    )
   }
 
   property("block: multiline without ;") {
@@ -261,7 +284,12 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
         AnyPos,
         CONST_LONG(AnyPos, 42),
         PART.VALID(AnyPos, "q"),
-        Seq((PART.VALID(AnyPos, "x"), Union(Seq(Single(PART.VALID(AnyPos, "Int"), None), Single(PART.VALID(AnyPos, "String"), None)))))
+        Seq(
+          (
+            PART.VALID(AnyPos, "x"),
+            Union(Seq(Single(PART.VALID(AnyPos, "Int"), None), Single(PART.VALID(AnyPos, "String"), None)))
+          )
+        )
       ),
       REF(AnyPos, PART.VALID(AnyPos, "c"))
     )
@@ -376,7 +404,12 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
       val script = "if + 1"
       parse(script, version) shouldBe BINARY_OP(
         AnyPos,
-        IF(AnyPos, INVALID(AnyPos, "expected a condition"), INVALID(AnyPos, "expected a true branch"), INVALID(AnyPos, "expected a false branch")),
+        IF(
+          AnyPos,
+          INVALID(AnyPos, "expected a condition"),
+          INVALID(AnyPos, "expected a true branch"),
+          INVALID(AnyPos, "expected a false branch")
+        ),
         BinaryOperation.SUM_OP,
         CONST_LONG(AnyPos, 1)
       )
@@ -432,12 +465,24 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
   }
 
   property("function call") {
-    parse("FOO(1,2)".stripMargin) shouldBe FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "FOO"), List(CONST_LONG(AnyPos, 1), CONST_LONG(AnyPos, 2)))
-    parse("FOO(X)".stripMargin) shouldBe FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "FOO"), List(REF(AnyPos, PART.VALID(AnyPos, "X"))))
+    parse("FOO(1,2)".stripMargin) shouldBe FUNCTION_CALL(
+      AnyPos,
+      PART.VALID(AnyPos, "FOO"),
+      List(CONST_LONG(AnyPos, 1), CONST_LONG(AnyPos, 2))
+    )
+    parse("FOO(X)".stripMargin) shouldBe FUNCTION_CALL(
+      AnyPos,
+      PART.VALID(AnyPos, "FOO"),
+      List(REF(AnyPos, PART.VALID(AnyPos, "X")))
+    )
   }
 
   property("isDefined") {
-    parse("isDefined(X)") shouldBe FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "isDefined"), List(REF(AnyPos, PART.VALID(AnyPos, "X"))))
+    parse("isDefined(X)") shouldBe FUNCTION_CALL(
+      AnyPos,
+      PART.VALID(AnyPos, "isDefined"),
+      List(REF(AnyPos, PART.VALID(AnyPos, "X")))
+    )
   }
 
   property("extract") {
@@ -507,11 +552,19 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
   }
 
   property("multiple getters") {
-    parse("x.y.z") shouldBe GETTER(AnyPos, GETTER(AnyPos, REF(AnyPos, PART.VALID(AnyPos, "x")), PART.VALID(AnyPos, "y")), PART.VALID(AnyPos, "z"))
+    parse("x.y.z") shouldBe GETTER(
+      AnyPos,
+      GETTER(AnyPos, REF(AnyPos, PART.VALID(AnyPos, "x")), PART.VALID(AnyPos, "y")),
+      PART.VALID(AnyPos, "z")
+    )
   }
 
   property("array accessor with constant index") {
-    parse("x[0]") shouldBe FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "getElement"), List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0)))
+    parse("x[0]") shouldBe FUNCTION_CALL(
+      AnyPos,
+      PART.VALID(AnyPos, "getElement"),
+      List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0))
+    )
   }
 
   property("array accessor with index from variable") {
@@ -540,7 +593,11 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
       AnyPos,
       PART.VALID(AnyPos, "getElement"),
       List(
-        FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "getElement"), List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0))),
+        FUNCTION_CALL(
+          AnyPos,
+          PART.VALID(AnyPos, "getElement"),
+          List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0))
+        ),
         CONST_LONG(AnyPos, 1)
       )
     )
@@ -549,7 +606,11 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
   property("accessor and getter") {
     parse("x[0].y") shouldBe GETTER(
       AnyPos,
-      FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "getElement"), List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0))),
+      FUNCTION_CALL(
+        AnyPos,
+        PART.VALID(AnyPos, "getElement"),
+        List(REF(AnyPos, PART.VALID(AnyPos, "x")), CONST_LONG(AnyPos, 0))
+      ),
       PART.VALID(AnyPos, "y")
     )
   }
@@ -626,7 +687,11 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
     val encodedText = Base58.encode(text.getBytes("UTF-8"))
 
     parse(s"blake2b256(base58'$encodedText')".stripMargin) shouldBe
-      FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "blake2b256"), List(CONST_BYTESTR(AnyPos, PART.VALID(AnyPos, ByteStr(text.getBytes("UTF-8"))))))
+      FUNCTION_CALL(
+        AnyPos,
+        PART.VALID(AnyPos, "blake2b256"),
+        List(CONST_BYTESTR(AnyPos, PART.VALID(AnyPos, ByteStr(text.getBytes("UTF-8")))))
+      )
   }
 
   property("crypto functions: keccak256") {
@@ -634,7 +699,11 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
     val encodedText = Base58.encode(text.getBytes("UTF-8"))
 
     parse(s"keccak256(base58'$encodedText')".stripMargin) shouldBe
-      FUNCTION_CALL(AnyPos, PART.VALID(AnyPos, "keccak256"), List(CONST_BYTESTR(AnyPos, PART.VALID(AnyPos, ByteStr(text.getBytes("UTF-8"))))))
+      FUNCTION_CALL(
+        AnyPos,
+        PART.VALID(AnyPos, "keccak256"),
+        List(CONST_BYTESTR(AnyPos, PART.VALID(AnyPos, ByteStr(text.getBytes("UTF-8")))))
+      )
   }
 
   property("should parse a binary operation without a second operand") {
@@ -700,7 +769,12 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
       ),
       List(
         MATCH_CASE(AnyPos, Some(PART.VALID(AnyPos, "x")), List(PART.VALID(AnyPos, "TypeA")), CONST_LONG(AnyPos, 0)),
-        MATCH_CASE(AnyPos, Some(PART.VALID(AnyPos, "y")), List(PART.VALID(AnyPos, "TypeB"), PART.VALID(AnyPos, "TypeC")), CONST_LONG(AnyPos, 1))
+        MATCH_CASE(
+          AnyPos,
+          Some(PART.VALID(AnyPos, "y")),
+          List(PART.VALID(AnyPos, "TypeB"), PART.VALID(AnyPos, "TypeC")),
+          CONST_LONG(AnyPos, 1)
+        )
       )
     )
   }
@@ -842,7 +916,10 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
       List(
         MATCH_CASE(
           AnyPos,
-          TypedVar(None, Single(PART.INVALID(AnyPos, "the type for variable should be specified: `case varName: Type => expr`"))),
+          TypedVar(
+            None,
+            Single(PART.INVALID(AnyPos, "the type for variable should be specified: `case varName: Type => expr`"))
+          ),
           CONST_LONG(AnyPos, 1)
         )
       )
@@ -856,7 +933,10 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
       List(
         MATCH_CASE(
           AnyPos,
-          TypedVar(None, Single(PART.INVALID(AnyPos, "the type for variable should be specified: `case varName: Type => expr`"))),
+          TypedVar(
+            None,
+            Single(PART.INVALID(AnyPos, "the type for variable should be specified: `case varName: Type => expr`"))
+          ),
           CONST_LONG(AnyPos, 1)
         )
       )
@@ -904,7 +984,12 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
           BLOCK(
             AnyPos,
             LET(AnyPos, PART.VALID(AnyPos, "x"), TRUE(AnyPos)),
-            BINARY_OP(AnyPos, REF(AnyPos, PART.VALID(AnyPos, "x")), AND_OP, INVALID(AnyPos, "expected a second operator"))
+            BINARY_OP(
+              AnyPos,
+              REF(AnyPos, PART.VALID(AnyPos, "x")),
+              AND_OP,
+              INVALID(AnyPos, "expected a second operator")
+            )
           )
         ),
         MATCH_CASE(AnyPos, TypedVar(Some(PART.VALID(AnyPos, "b")), Union(List.empty)), CONST_LONG(AnyPos, 1))

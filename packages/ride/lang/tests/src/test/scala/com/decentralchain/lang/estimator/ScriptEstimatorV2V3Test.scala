@@ -36,7 +36,7 @@ class ScriptEstimatorV2V3Test
 
   private def scriptWithOverlapping(param: String, refExpr: String) = {
     val firstCallCount = 6
-    val script =
+    val script         =
       s"""
          |  let me = $refExpr
          |  func third(p: Int) = me

@@ -64,7 +64,10 @@ class ExpressionCompilerWithParserV2Test extends PropSpec {
                 FUNCTION_CALL(
                   AnyPos,
                   PART.VALID(AnyPos, "+"),
-                  List(REF(AnyPos, PART.VALID(AnyPos, "foo"), Some(LONG), None), REF(AnyPos, PART.VALID(AnyPos, "bar"), Some(LONG), None)),
+                  List(
+                    REF(AnyPos, PART.VALID(AnyPos, "foo"), Some(LONG), None),
+                    REF(AnyPos, PART.VALID(AnyPos, "bar"), Some(LONG), None)
+                  ),
                   Some(LONG),
                   None
                 ),

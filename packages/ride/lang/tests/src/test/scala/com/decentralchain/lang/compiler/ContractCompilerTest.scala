@@ -20,7 +20,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, GlobalValNa
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.{ContractLimits, compiler}
+import com.decentralchain.lang.v1.{compiler, ContractLimits}
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CallableFuncSignature
 import com.decentralchain.test.*
@@ -32,7 +32,9 @@ class ContractCompilerTest extends PropSpec {
       .combineAll(
         Seq(
           PureContext.build(version, useNewPowPrecision = true).withEnvironment[Environment],
-          CryptoContext.build(com.decentralchain.lang.Global, version, fixEcrecover = true).withEnvironment[Environment],
+          CryptoContext
+            .build(com.decentralchain.lang.Global, version, fixEcrecover = true)
+            .withEnvironment[Environment],
           WavesContext.build(
             Global,
             DirectiveSet(version, Account, DAppType).explicitGet(),
@@ -109,7 +111,13 @@ class ContractCompilerTest extends PropSpec {
                         FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("a").explicitGet(), REF("a"))),
                         FUNCTION_CALL(
                           Native(1100),
-                          List(FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("sender0"))), REF(GlobalValNames.Nil))
+                          List(
+                            FUNCTION_CALL(
+                              User("DataEntry"),
+                              List(CONST_STRING("sender").explicitGet(), REF("sender0"))
+                            ),
+                            REF(GlobalValNames.Nil)
+                          )
                         )
                       )
                     )
@@ -131,10 +139,19 @@ class ContractCompilerTest extends PropSpec {
                     FUNCTION_CALL(
                       Native(1100),
                       List(
-                        FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet())),
+                        FUNCTION_CALL(
+                          User("DataEntry"),
+                          List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet())
+                        ),
                         FUNCTION_CALL(
                           Native(1100),
-                          List(FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("sender0"))), REF(GlobalValNames.Nil))
+                          List(
+                            FUNCTION_CALL(
+                              User("DataEntry"),
+                              List(CONST_STRING("sender").explicitGet(), REF("sender0"))
+                            ),
+                            REF(GlobalValNames.Nil)
+                          )
                         )
                       )
                     )
@@ -150,7 +167,10 @@ class ContractCompilerTest extends PropSpec {
             FUNC(
               "verify",
               List.empty,
-              FUNCTION_CALL(Native(FunctionIds.EQ), List(GETTER(REF("t"), "id"), CONST_BYTESTR(ByteStr.empty).explicitGet()))
+              FUNCTION_CALL(
+                Native(FunctionIds.EQ),
+                List(GETTER(REF("t"), "id"), CONST_BYTESTR(ByteStr.empty).explicitGet())
+              )
             )
           )
         )
@@ -202,10 +222,19 @@ class ContractCompilerTest extends PropSpec {
                     FUNCTION_CALL(
                       Native(1100),
                       List(
-                        FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet())),
+                        FUNCTION_CALL(
+                          User("DataEntry"),
+                          List(CONST_STRING("a").explicitGet(), CONST_STRING("b").explicitGet())
+                        ),
                         FUNCTION_CALL(
                           Native(1100),
-                          List(FUNCTION_CALL(User("DataEntry"), List(CONST_STRING("sender").explicitGet(), REF("sender0"))), REF(GlobalValNames.Nil))
+                          List(
+                            FUNCTION_CALL(
+                              User("DataEntry"),
+                              List(CONST_STRING("sender").explicitGet(), REF("sender0"))
+                            ),
+                            REF(GlobalValNames.Nil)
+                          )
                         )
                       )
                     )
@@ -268,7 +297,7 @@ class ContractCompilerTest extends PropSpec {
   property("contract compiles fails when incorrect return type") {
     import com.decentralchain.lang.v1.evaluator.ctx.impl.*
 
-    val ctx = compilerContext
+    val ctx  = compilerContext
     val expr = {
       val script =
         """
@@ -293,7 +322,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("annotation binding can have the same name as annotated function") {
-    val ctx = compilerContext
+    val ctx  = compilerContext
     val expr = {
       val script =
         """
@@ -311,7 +340,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("contract compiles fails if has more than one verifier function") {
-    val ctx = compilerContext
+    val ctx  = compilerContext
     val expr = {
       val script =
         """
@@ -334,7 +363,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("contract compiles fails if has unknown annotation") {
-    val ctx = compilerContext
+    val ctx  = compilerContext
     val expr = {
       val script =
         """
@@ -349,7 +378,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("verifier function must have 0 arguments") {
-    val ctx = compilerContext
+    val ctx  = compilerContext
     val expr = {
       val script =
         """
@@ -364,7 +393,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("hodlContract") {
-    val ctx = dAppV3Ctx
+    val ctx  = dAppV3Ctx
     val expr = {
       val script =
         """
@@ -445,7 +474,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("wavesBalanceV4 have type BalanceDetails with fields") {
-    val ctx = dAppV4Ctx
+    val ctx  = dAppV4Ctx
     val expr = {
       val script =
         """
@@ -465,7 +494,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("assetBalanceV4 allow issued assets only") {
-    val ctx = dAppV4Ctx
+    val ctx  = dAppV4Ctx
     val expr = {
       val script =
         """
@@ -480,7 +509,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("assetBalanceV3 allow issued assets and waves") {
-    val ctx = dAppV3Ctx
+    val ctx  = dAppV3Ctx
     val expr = {
       val script =
         """
@@ -638,7 +667,9 @@ class ContractCompilerTest extends PropSpec {
     ) should produce(verifierTypes.mkString(", "))
   }
 
-  property("matching case with union type containing non-existing type should produce error message with suitable types") {
+  property(
+    "matching case with union type containing non-existing type should produce error message with suitable types"
+  ) {
     val verifierTypes = Types.verifierInput(V3).typeList.map(_.name)
     TestCompiler(V3).compile(
       s"""
@@ -797,7 +828,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("Asset has no name") {
-    val ctx = dAppV3Ctx
+    val ctx  = dAppV3Ctx
     val expr = {
       val script =
         """
@@ -812,7 +843,7 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("Asset has some name") {
-    val ctx = dAppV4Ctx
+    val ctx  = dAppV4Ctx
     val expr = {
       val script =
         """
@@ -827,9 +858,8 @@ class ContractCompilerTest extends PropSpec {
   }
 
   property("JS API compile limit exceeding error") {
-    def byteVectorsList(size: Int) = {
+    def byteVectorsList(size: Int) =
       (1 to size).map(_ => s"base64'${ByteStr(new Array[Byte](1000)).base64Raw}'").mkString("[", ", ", "]")
-    }
 
     val dApp =
       s"""

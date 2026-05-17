@@ -43,7 +43,12 @@ object Lang {
   def parseAndCompile(input: String, needCompaction: Boolean, removeUnusedCode: Boolean): CompileAndParseResult =
     parseAndCompile(input, API.latestEstimatorVersion, needCompaction, removeUnusedCode)
 
-  def parseAndCompile(input: String, estimatorVersion: Int, needCompaction: Boolean, removeUnusedCode: Boolean): CompileAndParseResult =
+  def parseAndCompile(
+      input: String,
+      estimatorVersion: Int,
+      needCompaction: Boolean,
+      removeUnusedCode: Boolean
+  ): CompileAndParseResult =
     API
       .parseAndCompile(input, estimatorVersion, needCompaction, removeUnusedCode, Map.empty)
       .fold(
