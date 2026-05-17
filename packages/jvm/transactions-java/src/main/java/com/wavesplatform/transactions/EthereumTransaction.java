@@ -22,8 +22,6 @@ import org.web3j.crypto.*;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static com.wavesplatform.transactions.invocation.Function.DEFAULT_NAME;
 import static com.wavesplatform.transactions.serializers.eth.EthFunctionEncoder.encodeWavesFunctionInEthFmt;
-import static java.util.Objects.requireNonNull;
 
 public class EthereumTransaction extends Transaction {
     public static final BigInteger AMOUNT_MULTIPLIER = BigInteger.valueOf(10_000_000_000L);
@@ -45,17 +42,6 @@ public class EthereumTransaction extends Transaction {
     private final BigInteger gasPrice;
     private final Payload payload;
     private final Sign.SignatureData signatureData;
-
-    private static Method encodeMethod;
-
-    static {
-        try {
-            encodeMethod = TransactionEncoder.class.getDeclaredMethod("encode", RawTransaction.class, Sign.SignatureData.class);
-            encodeMethod.setAccessible(true);
-        } catch (NoSuchMethodException nsme) {
-            encodeMethod = null;
-        }
-    }
 
     public EthereumTransaction(byte chainId, long timestamp, BigInteger gasPrice, long fee, Payload payload, Sign.SignatureData signatureData, PublicKey sender) {
         super(TYPE_TAG, 1, chainId, sender, Amount.of(fee), timestamp, Collections.emptyList());
@@ -152,12 +138,9 @@ public class EthereumTransaction extends Transaction {
     }
 
     public static byte[] encode(RawTransaction transaction, Sign.SignatureData signatureData) {
-        requireNonNull(encodeMethod, "encode is not available");
-        try {
-            return (byte[]) encodeMethod.invoke(null, transaction, signatureData);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Reflective error while encoding transaction", e);
-        }
+        // TransactionEncoder.encode(RawTransaction, SignatureData) became public in web3j 5.x.
+        // No reflection needed.
+        return TransactionEncoder.encode(transaction, signatureData);
     }
 
     public static class Transfer implements Payload {
