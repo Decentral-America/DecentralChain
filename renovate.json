@@ -4,8 +4,8 @@
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": [
     "@testing-library/webdriverio",
-    "@waves/ride-lang",
-    "@waves/ride-repl",
+    "@decentralchain/ride-lang",
+    "@decentralchain/ride-repl",
     "babel-plugin-prismjs",
     "base64-js",
     "buffer",

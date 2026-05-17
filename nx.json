@@ -34,7 +34,7 @@
         "file": "CHANGELOG.md"
       }
     },
-    "projects": ["packages/sdk/*"],
+    "projects": ["packages/sdk/*", "packages/ride/ts", "packages/ride/lang/js", "packages/ride/repl/js"],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true,

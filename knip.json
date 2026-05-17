@@ -197,6 +197,14 @@
     "packages/ride/ts": {
       "entry": ["src/index.js"],
       "project": ["src/**/*.{ts,js}"]
+    },
+    "packages/ride/lang/js": {
+      "entry": ["dist/lang.js"],
+      "project": ["dist/**/*.js"]
+    },
+    "packages/ride/repl/js": {
+      "entry": ["dist/repl.js"],
+      "project": ["dist/**/*.js"]
     }
   }
 }

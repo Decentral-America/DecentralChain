@@ -1,14 +1,19 @@
 {
-  "name": "@waves/ride-lang",
-  "version": "0.1.0",
-  "description": "RIDE Compiler and Evaluator",
+  "name": "@decentralchain/ride-lang",
+  "version": "1.6.2",
+  "description": "RIDE Compiler and Evaluator — Scala.js compiled binary",
   "main": "dist/lang.js",
   "module": "dist/lang.js",
   "browser": "dist/lang.js",
   "files": ["dist/"],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Decentral-America/node-scala"
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git",
+    "directory": "packages/ride/lang/js"
   }
 }
