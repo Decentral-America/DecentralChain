@@ -7,14 +7,14 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ---
 
-## [1.6.4.0] — 2026-05-16
+## [1.6.5.0] — 2026-05-16
 
 Initial DCC release — fork of [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ)
 at commit `2f78fd3f6`.
 
 ### Changed
 - Maven coordinates: `com.wavesplatform:wavesj` → `io.decentralchain:wavesj`
-- Version: `1.6.4-SNAPSHOT` → `1.6.4.0` (DCC convention: upstream + `.0`)
+- Version: `1.6.5-SNAPSHOT` → `1.6.5.0` (DCC convention: upstream + `.0`)
 - Java: upgraded 11 → 25 (`<release>25</release>`)
 - HTTP client: replaced Apache `httpclient 4.5.14` with JDK `java.net.http.HttpClient`
   (zero external HTTP dependency; `HttpClient.Redirect.NEVER`; `InterruptedException`
