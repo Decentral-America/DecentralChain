@@ -1,0 +1,20 @@
+package com.decentralchain.lang.directives.values
+
+import com.decentralchain.lang.directives.{DirectiveDictionary, DirectiveKey}
+
+sealed abstract class ContentType(text: String, id: Int) extends DirectiveValue(text, id) {
+  override val value: Any        = text
+  override def key: DirectiveKey = DirectiveKey.CONTENT_TYPE
+}
+case object Expression extends ContentType("EXPRESSION", 1)
+case object DApp       extends ContentType("DAPP", 2)
+case object Library    extends ContentType("LIBRARY", 3)
+
+object ContentType {
+  implicit object ContentDic extends DirectiveDictionary[ContentType] {
+    override val default: ContentType       = Expression
+    override val all: Iterable[ContentType] = Seq(Expression, DApp, Library)
+  }
+
+  def isDApp(isDApp: Boolean): ContentType = if (isDApp) DApp else Expression
+}
