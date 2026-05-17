@@ -37,7 +37,7 @@ jobs:
           cache: pnpm
           node-version-file: .node-version
 
-      # ── Rust / WASM toolchain (required by packages/ts/crypto wasm-pack build) ──────
+      # ── Rust / WASM toolchain (required by packages/sdk/crypto wasm-pack build) ──────
       - name: Setup Rust stable
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
         with:
@@ -47,7 +47,7 @@ jobs:
       - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
-          workspaces: packages/ts/crypto
+          workspaces: packages/sdk/crypto
           cache-on-failure: true
 
       - name: Install wasm-pack v0.14.0
