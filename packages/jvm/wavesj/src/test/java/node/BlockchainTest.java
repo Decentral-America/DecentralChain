@@ -1,8 +1,8 @@
 package node;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.wavesj.BlockchainRewards;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.BlockchainRewards;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

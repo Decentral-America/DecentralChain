@@ -1,16 +1,16 @@
 package util;
 
 import com.wavesplatform.transactions.common.ChainId;
-import com.wavesplatform.wavesj.Node;
-import com.wavesplatform.wavesj.Profile;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.Node;
+import com.decentralchain.sdk.Profile;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.wavesplatform.wavesj.util.DccEthConverter.*;
+import static com.decentralchain.sdk.util.DccEthConverter.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
