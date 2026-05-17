@@ -34,3 +34,31 @@ Affected algorithms: `NOALG`, `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA384`,
 **Workaround**: Use the JVM build (`repl-jvm`) for RSA operations.
 
 **Tracking**: https://github.com/Decentral-America/node-scala (upstream lang/repl)
+
+## 3. sbt-scoverage 2.4.4 + Scala 3.8.3 — evaluator tree excluded from instrumentation
+
+`sbt-scoverage 2.4.4` miscompiles context-passing closures when instrumenting the
+RIDE evaluator package under **Scala 3.8.3**. All files under `lang/v1/evaluator/`
+(including `ctx/` and `ctx/impl/`) are affected: scoverage transforms native-function
+call sites so that the closure returns `scala.runtime.BoxedUnit` instead of the
+declared return type. At runtime this produces:
+
+```
+An error during run <+(a: Int, b: Int): Int>:
+  class java.lang.ClassCastException: class scala.runtime.BoxedUnit
+  cannot be cast to class com.decentralchain.lang.v1.traits.Environment
+```
+
+Resolved approaches that did **not** work:
+- `ClassLoaderLayeringStrategy.Flat` — same error
+- `Test / fork := true` — same error (bytecode transformation, not classloader issue)
+- Surgical exclusion of 6 entry-point files — `ctx/impl/` still triggers the bug
+
+**Current fix**: `coverageExcludedFiles` excludes the entire `evaluator` tree
+(`.*/lang/v1/evaluator/.*`). Evaluator **correctness** is still fully verified by
+Phase 1 of the `bulletproof` alias (`sbt test`, no instrumentation).
+Per-project coverage minimums are 40 % (lang) and 40 % (repl) — measured over
+parser, compiler, estimator, and repl logic only.
+
+**Tracking**: sbt-scoverage issue tracker — upgrade to a future version of
+sbt-scoverage that fixes Scala 3 closure instrumentation.
