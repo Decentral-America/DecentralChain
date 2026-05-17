@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class BlockchainRewards {
+public final class BlockchainRewards {
 
     private final int height;
     private final long totalWavesAmount;

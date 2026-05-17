@@ -3,6 +3,8 @@ package com.wavesplatform.wavesj;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,26 +29,26 @@ public class ActivationStatus {
         this.votingInterval = votingInterval;
         this.votingThreshold = votingThreshold;
         this.nextCheck = nextCheck;
-        this.features = features;
+        this.features = Collections.unmodifiableList(new ArrayList<>(features == null ? Collections.emptyList() : features));
     }
 
-    public int getHeight() {
+    public int height() {
         return height;
     }
 
-    public int getVotingInterval() {
+    public int votingInterval() {
         return votingInterval;
     }
 
-    public int getVotingThreshold() {
+    public int votingThreshold() {
         return votingThreshold;
     }
 
-    public int getNextCheck() {
+    public int nextCheck() {
         return nextCheck;
     }
 
-    public List<Feature> getFeatures() {
+    public List<Feature> features() {
         return features;
     }
 

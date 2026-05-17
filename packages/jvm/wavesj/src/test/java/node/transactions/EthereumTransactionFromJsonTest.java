@@ -36,11 +36,11 @@ public class EthereumTransactionFromJsonTest {
 
     private static final byte PRIVATE_NODE_CHAIN_ID = 'R';
 
-    public EthereumTransactionFromJsonTest() throws NodeException, IOException {
+    public EthereumTransactionFromJsonTest() throws NodeException, IOException, InterruptedException {
     }
 
     @Test
-    void readEthereumTransferTransactionByIdTest() throws NodeException, IOException {
+    void readEthereumTransferTransactionByIdTest() throws NodeException, IOException, InterruptedException {
         mockTransactionInfoRs(node,
                 "Ba4pFx78Ueg3j6CZqjhuBdg5cjxTwTzJJSS6GPpH3Cn4",
                 "src/test/resources/stub/txs/eth/eth_transfer_tx_info.json"
@@ -61,7 +61,7 @@ public class EthereumTransactionFromJsonTest {
         assertEquals(1634966428189L, ethTransferTx.timestamp());
         assertEquals(1, ethTransferTx.version());
         assertEquals(PRIVATE_NODE_CHAIN_ID, ethTransferTx.chainId());
-        assertEquals(transferBytes, ethTransferTxInfo.getBytes());
+        assertEquals(transferBytes, ethTransferTxInfo.bytes());
         assertEquals("3M86rqkCp9hYim1cEbRC8MiajcktM16ogVx", ethTransferTx.sender().address(PRIVATE_NODE_CHAIN_ID).encoded());
         assertEquals("4WcqqW7mkz7AaBgpWQXbewk3wPSHZGqGj38d8HQZe1Umud2HXFswbGhZyoHZWd3thLjz4KW22JM5SB4yyzGiWjNx",
                 ethTransferTx.sender().encoded());
@@ -74,7 +74,7 @@ public class EthereumTransactionFromJsonTest {
     }
 
     @Test
-    public void readEthereumTransferTransactionFromBlockTest() throws NodeException, IOException {
+    public void readEthereumTransferTransactionFromBlockTest() throws NodeException, IOException, InterruptedException {
         mockGetBlockRs(
                 node,
                 1043438,
@@ -100,7 +100,7 @@ public class EthereumTransactionFromJsonTest {
     }
 
     @Test
-    void readEthereumInvokeTransactionByIdTest() throws NodeException, IOException {
+    void readEthereumInvokeTransactionByIdTest() throws NodeException, IOException, InterruptedException {
         mockTransactionInfoRs(node,
                 "CWuFY42te67sLmc5gwt4NxwHmFjVfJdHkKuLyshTwEct",
                 "src/test/resources/stub/txs/eth/eth_invoke_tx_info.json"
@@ -121,7 +121,7 @@ public class EthereumTransactionFromJsonTest {
         assertEquals(1634983329302L, ethInvokeTx.timestamp());
         assertEquals(1, ethInvokeTx.version());
         assertEquals(PRIVATE_NODE_CHAIN_ID, ethInvokeTx.chainId());
-        assertEquals(invokeBytes, ethInvokeTxInfo.getBytes());
+        assertEquals(invokeBytes, ethInvokeTxInfo.bytes());
         assertEquals("3MCMsdDqmhoz4wFHus4XKD1xJ8SAsimgBTW", ethInvokeTx.sender().address(PRIVATE_NODE_CHAIN_ID).encoded());
         assertEquals("2HAk5dPx7Jx7fwbehqA9JRM9de9E7ZXtxVA2u92vYAp9ttZQiVgChPwBdoJ7ck2wcXmgfGxiAK9a6PPmmtEZmhvd",
                 ethInvokeTx.sender().encoded());
@@ -134,14 +134,14 @@ public class EthereumTransactionFromJsonTest {
         assertEquals(ArgType.STRING, args.get(0).type());
         assertEquals("test metamask2", ((StringArg) args.get(0)).value());
 
-        DataEntry dataEntry = ethInvokeTxInfo.getStateChanges().data().get(0);
+        DataEntry dataEntry = ethInvokeTxInfo.stateChanges().data().get(0);
         assertEquals("str_1043725", dataEntry.key());
         assertEquals(EntryType.STRING, dataEntry.type());
         assertEquals("test metamask2", ((StringEntry) dataEntry).value());
     }
 
     @Test
-    void readEthereumInvokeTransactionFromBlockTest() throws NodeException, IOException {
+    void readEthereumInvokeTransactionFromBlockTest() throws NodeException, IOException, InterruptedException {
         mockGetBlockRs(
                 node,
                 1043725,
@@ -165,7 +165,7 @@ public class EthereumTransactionFromJsonTest {
     }
 
     @Test
-    void readExchangeTransactionInfoWithEthereumSignatureTest() throws IOException, NodeException {
+    void readExchangeTransactionInfoWithEthereumSignatureTest() throws IOException, NodeException, InterruptedException {
         mockTransactionInfoRs(node,
                 "3ZPyxs4p7abkj5cf43pUkaHaMPRuBaWC89RX93d2AB6R",
                 "src/test/resources/stub/txs/eth/exchange_tx_info_with_eth_sign.json"
@@ -244,7 +244,7 @@ public class EthereumTransactionFromJsonTest {
     }
 
     @Test
-    void readExchangeTransactionWithEthereumSignatureFormBlockTest() throws IOException, NodeException {
+    void readExchangeTransactionWithEthereumSignatureFormBlockTest() throws IOException, NodeException, InterruptedException {
         mockGetBlockRs(
                 node,
                 1099637,

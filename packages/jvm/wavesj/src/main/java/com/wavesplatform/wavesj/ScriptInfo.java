@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wavesplatform.transactions.common.Base64String;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,7 +28,7 @@ public class ScriptInfo {
         this.script = script == null ? Base64String.empty() : script;
         this.complexity = complexity;
         this.verifierComplexity = verifierComplexity;
-        this.callableComplexities = Common.notNull(callableComplexities, "CallableComplexities");
+        this.callableComplexities = Collections.unmodifiableMap(new HashMap<>(Common.notNull(callableComplexities, "CallableComplexities")));
         this.extraFee = extraFee;
     }
 

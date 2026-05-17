@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class Votes {
+public final class Votes {
 
     private final int increase;
     private final int decrease;

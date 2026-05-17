@@ -7,7 +7,7 @@ import java.util.List;
 
 public class EthRpcRequest {
 
-    public static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+    static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private String jsonrpc;
     private String method;

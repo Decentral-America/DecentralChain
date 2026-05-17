@@ -3,9 +3,12 @@ package com.wavesplatform.wavesj;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class ScriptMeta {
@@ -17,7 +20,11 @@ public class ScriptMeta {
     public ScriptMeta(@JsonProperty("version") int metaVersion,
                       @JsonProperty("callableFuncTypes") Map<String, List<ArgMeta>> callableFunctions) {
         this.metaVersion = metaVersion;
-        this.callableFunctions = Common.notNull(callableFunctions, "FuncTypes");
+        this.callableFunctions = Common.notNull(callableFunctions, "FuncTypes").entrySet().stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        Map.Entry::getKey,
+                        e -> Collections.unmodifiableList(new ArrayList<>(e.getValue()))
+                ));
     }
 
     public int metaVersion() {

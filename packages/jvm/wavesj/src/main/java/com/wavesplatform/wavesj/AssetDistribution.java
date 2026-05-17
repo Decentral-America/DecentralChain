@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wavesplatform.transactions.account.Address;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class AssetDistribution {
     public AssetDistribution(@JsonProperty("items") Map<Address, Long> items,
                              @JsonProperty("lastItem") Address lastItem,
                              @JsonProperty("hasNext") boolean hasNext) {
-        this.items = Common.notNull(items, "Items");
+        this.items = Collections.unmodifiableMap(new HashMap<>(Common.notNull(items, "Items")));
         this.lastItem = lastItem;
         this.hasNext = hasNext;
     }

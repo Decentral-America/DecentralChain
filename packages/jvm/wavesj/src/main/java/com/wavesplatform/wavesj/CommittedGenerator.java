@@ -46,15 +46,15 @@ public class CommittedGenerator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CommittedGenerator that = (CommittedGenerator) o;
-        return address == that.address &&
+        return Objects.equals(address, that.address) &&
                 balance == that.balance &&
-                transactionId == that.transactionId &&
+                Objects.equals(transactionId, that.transactionId) &&
                 Objects.equals(conflictHeight, that.conflictHeight);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(address, balance, transactionId);
+        return Objects.hash(address, balance, transactionId, conflictHeight);
     }
 
     @Override

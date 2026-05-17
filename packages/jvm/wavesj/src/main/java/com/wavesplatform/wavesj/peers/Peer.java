@@ -1,5 +1,6 @@
 package com.wavesplatform.wavesj.peers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Peer {
     private final String address;
     private final long lastSeen;
 
+    @JsonCreator
     public Peer(
             @JsonProperty("address") String address,
             @JsonProperty("lastSeen") long lastSeen

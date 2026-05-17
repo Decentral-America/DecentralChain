@@ -17,11 +17,11 @@ public class Balance {
         this.balance = balance;
     }
 
-    public Address getAddress() {
+    public Address address() {
         return address;
     }
 
-    public long getBalance() {
+    public long balance() {
         return balance;
     }
 
@@ -30,13 +30,13 @@ public class Balance {
         if (this == o) return true;
         if (!(o instanceof Balance)) return false;
         Balance balance1 = (Balance) o;
-        return getBalance() == balance1.getBalance() &&
-                Objects.equals(getAddress(), balance1.getAddress());
+        return balance == balance1.balance &&
+                Objects.equals(address, balance1.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAddress(), getBalance());
+        return Objects.hash(address, balance);
     }
 
     @Override
