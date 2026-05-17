@@ -5,8 +5,8 @@
   },
   "dependencies": {
     "@decentralchain/ts-lib-crypto": "workspace:*",
-    "@waves/ride-lang": "1.6.2",
-    "@waves/ride-repl": "1.6.2"
+    "@decentralchain/ride-lang": "workspace:*",
+    "@decentralchain/ride-repl": "workspace:*"
   },
   "description": "JS compiler for Ride - the smart-contract language for DecentralChain",
   "devDependencies": {
@@ -37,7 +37,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/ride-js",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ride/ts",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -55,7 +55,7 @@
   "name": "@decentralchain/ride-js",
   "nx": {
     "tags": [
-      "scope:sdk",
+      "scope:ride",
       "layer:1"
     ]
   },
@@ -64,12 +64,13 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/ride-js",
+    "directory": "packages/ride/ts",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
     "build": "tsdown && cp src/index.d.ts dist/index.d.mts",
+    "dev:build-js": "cd .. && sbt fullLinkJS",
     "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
     "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
     "check:exports": "attw --pack . --profile esm-only",

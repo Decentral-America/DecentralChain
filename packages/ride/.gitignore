@@ -6,5 +6,5 @@ project/project/
 .bloop/
 *.class
 *.jar
-!lang/js/dist/
-!repl/js/dist/
+lang/js/dist/
+repl/js/dist/
