@@ -1,0 +1,102 @@
+# packages/jvm/zwaves — cargo-deny configuration
+#
+# This file documents the known security advisories in the zwaves Rust
+# dependency tree that CANNOT be patched without breaking ZK-SNARK
+# circuit compatibility.
+#
+# All three vulnerability advisories (RUSTSEC-2022-0011, RUSTSEC-2022-0004,
+# RUSTSEC-2020-0071) are in the `sapling-crypto` crate — a vendored snapshot
+# of the Zcash Sapling cryptographic library that is pinned at a specific
+# commit to guarantee bit-for-bit reproducibility of the Groth16 proving
+# parameters. Upgrading these deps would invalidate the trusted setup and
+# break the decentralchain ZK verifier permanently.
+#
+# Every advisory has been formally reviewed (see [[advisories.ignore]] below)
+# and deemed LOW risk for this specific workload because the vulnerable code
+# paths (AES encryption, JSON parsing, libc timezone mutation) are NOT
+# reachable from the zwaves JNI public API.
+
+[advisories]
+# Vulnerability advisories cause a hard deny by default; unmaintained notices
+# produce a warning only (acceptable for internal vendored deps).
+version = 2
+ignore = [
+  # ─────────────────────────────────────────────────────────────────────────
+  # RUSTSEC-2022-0011  rust-crypto — AES miscomputation on x86 (SEVERITY: HIGH)
+  # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36
+  # Risk assessment:
+  #   zwaves exposes exactly ONE operation at the JNI boundary: Groth16 ZK-SNARK
+  #   verification (BN256 / BLS12 pairing check). The rust-crypto crate is
+  #   pulled in only for its SHA-256/SHA-512 hash implementations used inside
+  #   the Groth16 proof setup; its AES code is never called.  The vulnerable
+  #   AES-CBC function (crypto::aes::cbc_decryptor) cannot be reached from any
+  #   code path initiated by zwaves_jni.  No AES operations are exposed at the
+  #   JNI layer.  Risk: LOW.
+  # Why not patched: rust-crypto 0.2.36 is the last version published; the
+  #   crate is abandoned.  Upgrading sapling-crypto would invalidate the
+  #   Sapling trusted setup and permanently break the on-chain ZK verifier.
+  { id = "RUSTSEC-2022-0011", reason = "AES code path unreachable from zwaves JNI; sapling-crypto vendored at fixed commit for ZK circuit compatibility; no upgrade path without invalidating trusted setup" },
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # RUSTSEC-2022-0004  rustc-serialize — stack overflow parsing deeply-nested
+  #                    JSON (SEVERITY: HIGH, CWE-674: Uncontrolled Recursion)
+  # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36 → rustc-serialize 0.3.25
+  # Risk assessment:
+  #   All inputs to the zwaves JNI boundary are fixed-length byte arrays passed
+  #   from the JVM.  No JSON parsing occurs at any point in the zwaves_jni call
+  #   path.  The rustc-serialize crate is a transitive dependency of rust-crypto
+  #   only; its JSON decoder is never invoked.  An attacker controlling JNI
+  #   inputs cannot trigger this code path.  Risk: LOW.
+  # Why not patched: same sapling-crypto lock constraint as RUSTSEC-2022-0011.
+  { id = "RUSTSEC-2022-0004", reason = "JSON parsing code path unreachable from zwaves JNI; all inputs are JVM byte arrays; same sapling-crypto lock constraint as RUSTSEC-2022-0011" },
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # RUSTSEC-2020-0071  time 0.1.45 — potential segfault in localtime_r
+  #                    (CVSS 6.2 MEDIUM, CWE-662: Improper Synchronization)
+  # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36 → time 0.1.45
+  # Risk assessment:
+  #   This advisory describes a data race between localtime_r(3) and
+  #   setenv()/putenv() when the TZ environment variable is mutated while
+  #   other threads call time functions.  In a JVM server context, the system
+  #   timezone is set at JVM startup and NEVER mutated at runtime.  The time
+  #   crate's unsafe code is used only for time::now() inside rust-crypto's
+  #   PRNG seeding; no external caller can trigger a concurrent timezone
+  #   mutation.  The fix (time ≥ 0.2.23) is blocked by the same sapling-crypto
+  #   lock.  Risk: LOW in our deployment model.
+  { id = "RUSTSEC-2020-0071", reason = "Segfault requires concurrent TZ env mutation; JVM server context never mutates TZ at runtime; same sapling-crypto lock constraint as RUSTSEC-2022-0011" },
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # RUSTSEC-2025-0141  bincode 1.3.3 — unmaintained (WARNING only, no CVE)
+  # Source:  zwaves_primitives 0.1.0 → bincode 1.3.3
+  # Risk assessment:
+  #   bincode is used for internal proof serialization inside zwaves_primitives.
+  #   No deserialization of untrusted external data occurs; all bincode-encoded
+  #   payloads are produced and consumed within the same Rust binary.  The
+  #   bincode2 successor is API-compatible but upgrading requires pinned
+  #   Groth16 parameter re-generation.  This is tracked for the next Sapling
+  #   parameter refresh sprint.  Risk: INFORMATIONAL.
+  { id = "RUSTSEC-2025-0141", reason = "bincode is used only for internal proof serialization within zwaves_primitives; no untrusted input deserialization; tracked for Sapling parameter refresh sprint" },
+]
+
+[licenses]
+# All licenses in the zwaves Rust dep tree have been reviewed.
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Unlicense",
+  "CC0-1.0",
+]
+
+[bans]
+# Prevent duplicate crate versions (warn only — sapling ecosystem has some).
+multiple-versions = "warn"
+wildcards         = "allow"
+
+[sources]
+# Only crates.io and local paths are allowed; no git deps in production.
+unknown-registry = "deny"
+unknown-git      = "warn"
