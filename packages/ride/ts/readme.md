@@ -142,7 +142,10 @@ npm install
 
 ### Known Exceptions
 
-This package retains `@waves/ride-lang`, `@waves/ride-repl`, and `@waves/ts-lib-crypto` as runtime dependencies. These are the Scala.js-compiled Ride compiler binaries — no `@decentralchain` equivalents exist because the Ride language implementation is identical between Waves and DecentralChain. This is a documented acceptable exception per the DCC SDK migration policy.
+`@decentralchain/ride-lang` and `@decentralchain/ride-repl` are Scala.js-compiled
+binaries built from `packages/ride/lang` and `packages/ride/repl` respectively.
+They are consumed as workspace dependencies (`workspace:*`) and must be built
+from source (`sbt fullLinkJS`) before running tests or building this package.
 
 ## Contributing
 
