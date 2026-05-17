@@ -82,7 +82,7 @@ abstract class BaseJavaCurve25519Provider implements Curve25519Provider {
         if (gen_x.generalized_xveddsa_25519_sign(sha512provider, result, privateKey, message, random32)) {
             return result;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("VRF signing failed: invalid key or random input");
         }
     }
 

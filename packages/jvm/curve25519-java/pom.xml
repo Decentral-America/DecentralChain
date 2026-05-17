@@ -65,7 +65,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <!-- Dependency versions — pinned and audited -->
+    <!-- Dependency version properties — pinned and audited -->
     <jna.version>5.18.1</jna.version>
     <junit.version>5.14.4</junit.version>
     <assertj.version>3.27.3</assertj.version>
@@ -78,6 +78,7 @@
     <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
     <central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
+    <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
   </properties>
 
   <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
@@ -234,6 +235,41 @@
             </configuration>
           </plugin>
 
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- 'audit' profile: OWASP dependency-check (CVE scan against NVD).   -->
+    <!-- Activate with: ./mvnw verify -P audit                              -->
+    <!-- Requires NVD API key for full scan speed:                          -->
+    <!--   -DnvdApiKey=$NVD_API_KEY  (or set env var NVD_API_KEY)           -->
+    <!-- Without a key the scan still works but rate-limits to ~1 req/6 s.  -->
+    <profile>
+      <id>audit</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <!-- Fail build on CVSS score ≥ 7 (HIGH or CRITICAL) -->
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <!-- Suppress false positives via suppression file if needed -->
+              <!-- <suppressionFile>dependency-check-suppressions.xml</suppressionFile> -->
+              <formats>
+                <format>HTML</format>
+                <format>JSON</format>
+              </formats>
+              <!-- Scan compile + runtime scope; skip test-only artifacts -->
+              <skipTestScope>true</skipTestScope>
+            </configuration>
+            <executions>
+              <execution>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>

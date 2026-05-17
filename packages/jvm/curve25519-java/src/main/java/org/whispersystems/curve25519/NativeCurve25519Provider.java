@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2014-2016 Open Whisper Systems
+ *
+ * Licensed according to the LICENSE file in this repository.
+ */
+
 package org.whispersystems.curve25519;
 
 import com.sun.jna.Library;
@@ -66,7 +72,6 @@ public class NativeCurve25519Provider implements Curve25519Provider {
         byte[] signature = new byte[64];
         int result = library.calculateSignature(signature, random, privateKey, message, message.length);
         if (result != 0) {
-            System.out.println("Failed");
             throw new AssertionError("Signature failed!");
         }
         return signature;
