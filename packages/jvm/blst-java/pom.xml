@@ -1,150 +1,379 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <!-- ── Coordinates ──────────────────────────────────────────────────── -->
+  <groupId>io.decentralchain</groupId>
+  <artifactId>blst-java</artifactId>
+  <!--
+    Version scheme: <upstream-blst-version>.<dcc-patch>
+    upstream 0.3.15 + DCC patch 0 → 0.3.15.0
+  -->
+  <version>0.3.15.0</version>
+  <packaging>jar</packaging>
 
-    <groupId>com.wavesplatform</groupId>
-    <artifactId>blst-java</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+  <!-- ── Project metadata (required for Maven Central) ───────────────── -->
+  <name>blst-java</name>
+  <description>
+    Java JNI bindings for supranational/blst — a BLS12-381 signature library
+    that is fast, secure, and has no external dependencies. Used by the
+    DecentralChain node for BLS-based threshold signatures and zkSNARK
+    verifier operations.
+    Forked from wavesplatform/blst-java (upstream supranational/blst v0.3.15)
+    with full upstream history and DCC production hardening.
+  </description>
+  <url>https://github.com/Decentral-America/DCC</url>
+  <inceptionYear>2021</inceptionYear>
 
-    <name>BLST-JAVA</name>
-    <description>Java bindings for BLST</description>
-    <url>https://github.com/wavesplatform/blst-java</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <organization>
+    <name>Decentral America</name>
+    <url>https://decentralchain.io</url>
+  </organization>
 
-    <scm>
-        <url>https://github.com/wavesplatform/blst-java</url>
-    </scm>
+  <developers>
+    <developer>
+      <id>josue</id>
+      <name>Josué</name>
+      <organization>Decentral America</organization>
+      <organizationUrl>https://decentralchain.io</organizationUrl>
+    </developer>
+  </developers>
 
-    <developers>
-        <developer>
-            <id>snazarov</id>
-            <name>Sergey Nazarov</name>
-            <email>snazarov@units.network</email>
-            <organization>Waves</organization>
-            <organizationUrl>https://wavesplatform.com</organizationUrl>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>+3</timezone>
-        </developer>
-    </developers>
+  <scm>
+    <connection>scm:git:https://github.com/Decentral-America/DCC.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Decentral-America/DCC.git</developerConnection>
+    <url>https://github.com/Decentral-America/DCC/tree/main/packages/jvm/blst-java</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://decentralchain.atlassian.net</url>
+  </issueManagement>
 
-    <build>
+  <!-- ── Global properties ────────────────────────────────────────────── -->
+  <properties>
+    <!-- Java 25 — matches DecentralChain JVM ecosystem standard -->
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Dependency version properties — pinned and audited 2026-05 -->
+    <!-- junit-jupiter 5.14.4 — latest -->
+    <junit.version>5.14.4</junit.version>
+    <!-- assertj-core 3.27.3 — latest -->
+    <assertj.version>3.27.3</assertj.version>
+
+    <!-- Plugin versions — pinned and audited 2026-05 -->
+    <!-- maven-compiler-plugin 3.15.0 — latest (Feb 2026) -->
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <!-- maven-surefire-plugin 3.5.5 — latest -->
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <!-- maven-source-plugin 3.3.1 — latest -->
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <!-- maven-javadoc-plugin 3.12.0 — latest -->
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <!-- maven-gpg-plugin 3.2.8 — latest -->
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+    <!-- maven-enforcer-plugin 3.6.2 — latest -->
+    <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+    <!-- central-publishing-maven-plugin 0.10.0 — latest (Jan 2026) -->
+    <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+    <!-- dependency-check-maven 12.2.2 — latest -->
+    <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+    <!-- spotbugs-maven-plugin 4.9.8.3 — latest (Mar 28, 2026); SpotBugs 4.9.8 -->
+    <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
+    <!-- findsecbugs-plugin 1.14.0 — latest (Jun 16, 2025; OWASP) -->
+    <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
+    <!-- jacoco-maven-plugin 0.8.14 — latest; Java 25 officially supported -->
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <!-- maven-pmd-plugin 3.28.0 — latest; bundles PMD 7.17.0 -->
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+  </properties>
+
+  <!-- ── Dependencies ────────────────────────────────────────────────── -->
+  <dependencies>
+
+    <!-- JUnit Jupiter — test only -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- AssertJ — fluent assertions, test only -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <!-- ── Build plugins ────────────────────────────────────────────────── -->
+  <build>
+    <plugins>
+
+      <!-- Enforcer: gate Java + Maven minimums before any compilation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-minimums</id>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[25,)</version>
+                  <message>Java 25 or later is required.</message>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>[3.9,)</version>
+                  <message>Maven 3.9 or later is required.</message>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler: release 25 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>25</release>
+          <encoding>UTF-8</encoding>
+          <!--
+            SWIG-generated code uses raw types and unchecked ops in the
+            JNI glue (blstJNI). Suppress these known-safe compiler warnings.
+          -->
+          <compilerArgs>
+            <arg>-Xlint:-rawtypes</arg>
+            <arg>-Xlint:-unchecked</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire: JUnit Platform auto-detected -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <!--
+            The JNI dylib embedded in resources is unpacked at runtime by the
+            blstJNI static initializer. Fork the JVM so the extraction works.
+          -->
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
+        </configuration>
+      </plugin>
+
+      <!-- Sources JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar-no-fork</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <release>25</release>
+          <!-- SWIG-generated code has no Javadoc; suppress missing warnings -->
+          <doclint>all,-missing</doclint>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- JaCoCo 0.8.14: line/branch coverage; always-on -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
+    <profile>
+      <id>release</id>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6.3</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
-                <extensions>true</extensions>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
                 <configuration>
-                    <autoPublish>true</autoPublish>
-                    <waitUntil>published</waitUntil>
+                  <keyname>${gpg.keyname}</keyname>
+                  <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <showWarnings>true</showWarnings>
-                    <compilerArgs>
-                        <arg>-Xlint:-options</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.7</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Prevent `gpg` from using pinentry programs -->
-                    <gpgArguments>
-                        <arg>--pinentry-mode</arg>
-                        <arg>loopback</arg>
-                    </gpgArguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                </configuration>
-                <version>3.11.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central-publishing-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+
         </plugins>
-    </build>
+      </build>
+    </profile>
+
+    <!-- 'audit' profile: full security analysis suite.                     -->
+    <!-- Activate with: ./mvnw verify -P audit                              -->
+    <!--                                                                    -->
+    <!-- Included tools:                                                    -->
+    <!--   1. OWASP dependency-check 12.2.2  — CVE scan (NVD)              -->
+    <!--      Requires NVD API key: -DnvdApiKey=$NVD_API_KEY                -->
+    <!--   2. SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 (OWASP)               -->
+    <!--      Bytecode security analysis (JNI-specific patterns)            -->
+    <!--   3. PMD 3.28.0 — source-level security + error-prone rules        -->
+    <profile>
+      <id>audit</id>
+      <build>
+        <plugins>
+
+          <!-- OWASP dependency-check: CVE vulnerability scan against NVD -->
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <formats>
+                <format>HTML</format>
+                <format>JSON</format>
+              </formats>
+              <skipTestScope>true</skipTestScope>
+            </configuration>
+            <executions>
+              <execution>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>${findsecbugs-plugin.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>High</threshold>
+              <includeTests>false</includeTests>
+              <failOnError>true</failOnError>
+              <xmlOutput>true</xmlOutput>
+              <htmlOutput>true</htmlOutput>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- PMD 3.28.0 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <configuration>
+              <rulesets>
+                <ruleset>config/pmd-ruleset.xml</ruleset>
+              </rulesets>
+              <targetJdk>25</targetJdk>
+              <includeTests>false</includeTests>
+              <failOnViolation>true</failOnViolation>
+              <printFailingErrors>true</printFailingErrors>
+            </configuration>
+            <executions>
+              <execution>
+                <id>pmd-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
 </project>
