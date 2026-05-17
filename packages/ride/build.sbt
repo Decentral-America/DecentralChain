@@ -21,6 +21,19 @@ enablePlugins(GitVersioning)
 
 git.uncommittedSignifier       := Some("DIRTY")
 ThisBuild / git.useGitDescribe := true
+// Reject tags containing '/' (e.g. upstream-node-scala/v1.2.18) — only plain
+// semver tags like v1.6.2 should drive the version number.
+ThisBuild / git.gitTagToVersionNumber := { ver =>
+  if (ver.contains('/')) None
+  else if (ver.startsWith("v")) Some(ver.drop(1))
+  else None
+}
+// Suppress gitDescribedVersion entirely for all subprojects: the monorepo
+// contains upstream tags like upstream-node-scala/v1.2.18 whose '/' makes
+// them invalid Ivy version strings. Fall back to git.formattedShaVersion.
+ThisBuild / git.gitDescribedVersion := None
+// Include ~/.m2/repository so locally-installed io.decentralchain JARs resolve.
+ThisBuild / resolvers += Resolver.mavenLocal
 ThisBuild / PB.protocVersion   := Dependencies.gProtoVersion
 
 ThisBuild / dependencyOverrides ++= Dependencies.overrides.value
@@ -145,7 +158,7 @@ lazy val repl = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("repl"))
   .settings(
-    libraryDependencies ++= Dependencies.scalapbRuntimeJS.value ++ Seq(
+    libraryDependencies ++= Dependencies.scalapbRuntimeJS.value ++ Dependencies.circe.value ++ Seq(
       Dependencies.protoSchemasLib % "protobuf"
     ),
     inConfig(Compile)(
