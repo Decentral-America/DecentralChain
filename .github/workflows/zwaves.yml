@@ -122,6 +122,46 @@ jobs:
           path: ${{ env.NATIVE_DIR }}/**
           retention-days: 1
 
+  # ── Step 1b: Rust security audit (ubuntu-amd64 only) ────────────────────────
+  # cargo audit checks all advisories against the RustSec advisory DB.
+  # Advisories that cannot be patched (embedded sapling-crypto legacy chain)
+  # are formally documented with risk assessment in deny.toml and suppressed
+  # here via --ignore flags.  See deny.toml for the full rationale.
+  cargo-audit:
+    name: Rust Security Audit (cargo audit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9  # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  # v2.9.1
+        with:
+          workspaces: packages/jvm/zwaves/zwaves_jni
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked --quiet
+
+      - name: Run cargo audit (ignore documented unfixable advisories)
+        working-directory: packages/jvm/zwaves/zwaves_jni
+        run: |
+          cargo audit \
+            --ignore RUSTSEC-2022-0011 \
+            --ignore RUSTSEC-2022-0004 \
+            --ignore RUSTSEC-2020-0071
+          # Suppressed advisories are formally documented with risk assessment
+          # in packages/jvm/zwaves/deny.toml.  All three originate in the
+          # sapling-crypto embedded dep chain that is pinned for ZK-SNARK
+          # circuit compatibility; upgrading would invalidate the trusted setup.
+          # RUSTSEC-2025-0141 (bincode unmaintained) is a warning only and does
+          # not cause a non-zero exit.
+
   # ── Step 2: Java compile + test ─────────────────────────────────────────────
   build:
     name: Java 25 · Compile · Test
