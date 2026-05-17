@@ -299,6 +299,9 @@
         <plugins>
 
           <!-- OWASP dependency-check: CVE vulnerability scan against NVD -->
+          <!-- Pass API key to avoid NVD rate limits:                    -->
+          <!--   -DnvdApiKey=$NVD_API_KEY   (free key: nvd.nist.gov)    -->
+          <!-- Skip entirely with -Ddependency-check.skip=true for local -->
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
@@ -310,6 +313,9 @@
                 <format>JSON</format>
               </formats>
               <skipTestScope>true</skipTestScope>
+              <!-- nvdApiKey is passed via -DnvdApiKey=... on the command line;
+                   falls back to unauthenticated (rate-limited) if not set    -->
+              <nvdApiKey>${nvdApiKey}</nvdApiKey>
             </configuration>
             <executions>
               <execution>
