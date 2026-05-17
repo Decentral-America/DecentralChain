@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Decentral-America/ride-js/actions/workflows/ci.yml"><img src="https://github.com/Decentral-America/ride-js/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/Decentral-America/DecentralChain/actions/workflows/ci.yml"><img src="https://github.com/Decentral-America/DecentralChain/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/npm/v/@decentralchain/ride-js?color=blue" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/ride-js" alt="license" /></a>
   <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/ride-js" alt="node" /></a>
-  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" alt="TypeScript" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-6.0-blue.svg" alt="TypeScript" /></a>
   <a href="https://bundlephobia.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/ride-js" alt="bundle size" /></a>
 </p>
 

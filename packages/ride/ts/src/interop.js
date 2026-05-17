@@ -40,6 +40,22 @@ globalThis.rsaVerify = (digest, msg, sig, key) => {
 };
 globalThis.httpGet = async (data) => {
   if (!data.url) return { ...data, body: 'url is undefined', status: 404 };
+  // HTTPS enforcement: warn when a non-HTTPS URL is used with a non-local host.
+  // Local development (localhost / 127.0.0.1 / ::1) is explicitly allowed over HTTP.
+  if (data.url.startsWith('http://')) {
+    try {
+      const { hostname } = new URL(data.url);
+      const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+      if (!isLocal) {
+        console.warn(
+          '[ride-js] httpGet: insecure HTTP request to non-local host. Use HTTPS for production node connections.',
+          data.url,
+        );
+      }
+    } catch {
+      /* unparseable URL — fetch will reject it */
+    }
+  }
   const resp = await fetch(data.url, { signal: AbortSignal.timeout(30_000) });
   const status = resp.status;
   const body = await resp.text();
