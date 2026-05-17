@@ -1,9 +1,11 @@
 package org.whispersystems.curve25519;
 
-import javax.xml.bind.DatatypeConverter;
+import java.util.HexFormat;
 
 public class HexBin {
+    private static final HexFormat HEX = HexFormat.of();
+
     public static byte[] decode(String hexString) {
-        return DatatypeConverter.parseHexBinary(hexString);
+        return HEX.parseHex(hexString);
     }
 }
