@@ -89,6 +89,7 @@ public class TransferTransaction extends Transaction {
             return this;
         }
 
+        @Override
         protected TransferTransaction _build() {
             return new TransferTransaction(sender, recipient, amount, attachment,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

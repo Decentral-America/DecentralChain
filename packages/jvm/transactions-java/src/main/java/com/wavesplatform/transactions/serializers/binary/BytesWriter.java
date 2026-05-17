@@ -27,7 +27,7 @@ public class BytesWriter {
     }
 
     public byte[] getBytes() {
-        return buf;
+        return buf.clone();
     }
 
     public BytesWriter write(byte... value) {

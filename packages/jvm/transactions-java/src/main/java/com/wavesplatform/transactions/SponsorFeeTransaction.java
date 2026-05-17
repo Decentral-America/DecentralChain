@@ -79,6 +79,7 @@ public class SponsorFeeTransaction extends Transaction {
             this.minSponsoredFee = minSponsoredFee;
         }
 
+        @Override
         protected SponsorFeeTransaction _build() {
             return new SponsorFeeTransaction(
                     sender, assetId, minSponsoredFee, chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

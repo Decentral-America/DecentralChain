@@ -150,6 +150,7 @@ public class ExchangeTransaction extends Transaction {
             this.sellMatcherFee = sellMatcherFee;
         }
 
+        @Override
         protected ExchangeTransaction _build() {
             return new ExchangeTransaction(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee,
                     chainId, feeWithExtra(), timestamp, version, Proof.emptyList());

@@ -42,4 +42,9 @@ public class BlsPublicKey extends Base58String {
         BlsPublicKey bls = (BlsPublicKey) o;
         return Arrays.equals(bytes, bls.bytes);
     }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bytes);
+    }
 }

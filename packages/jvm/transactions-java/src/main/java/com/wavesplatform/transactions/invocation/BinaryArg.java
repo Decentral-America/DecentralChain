@@ -43,4 +43,9 @@ public class BinaryArg extends Arg {
                 && Objects.equals(this.value(), that.value());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(type(), value());
+    }
+
 }
