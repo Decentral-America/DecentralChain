@@ -11,8 +11,8 @@ import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Base64String;
 import com.wavesplatform.transactions.data.*;
-import com.wavesplatform.wavesj.*;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.*;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 

@@ -10,9 +10,9 @@ import com.wavesplatform.transactions.exchange.Order;
 import com.wavesplatform.transactions.exchange.OrderType;
 import com.wavesplatform.transactions.invocation.*;
 import com.wavesplatform.transactions.mass.Transfer;
-import com.wavesplatform.wavesj.LeaseStatus;
-import com.wavesplatform.wavesj.exceptions.NodeException;
-import com.wavesplatform.wavesj.info.*;
+import com.decentralchain.sdk.LeaseStatus;
+import com.decentralchain.sdk.exceptions.NodeException;
+import com.decentralchain.sdk.info.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -440,7 +440,7 @@ public class TransactionsInfoTest extends BaseTestWithNodeInDocker {
 
         assertThrows(ClassCastException.class, () ->
                 node.getTransactionsInfo(asList(aliasTxId1, issueTxId), CreateAliasTransactionInfo.class),
-                "Cannot cast com.wavesplatform.wavesj.info.IssueTransactionInfo to com.wavesplatform.wavesj.info.CreateAliasTransactionInfo");
+                "Cannot cast com.decentralchain.sdk.info.IssueTransactionInfo to com.decentralchain.sdk.info.CreateAliasTransactionInfo");
     }
 
 }

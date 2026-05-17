@@ -1,7 +1,7 @@
 package node;
 
-import com.wavesplatform.wavesj.*;
-import com.wavesplatform.wavesj.exceptions.NodeException;
+import com.decentralchain.sdk.*;
+import com.decentralchain.sdk.exceptions.NodeException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

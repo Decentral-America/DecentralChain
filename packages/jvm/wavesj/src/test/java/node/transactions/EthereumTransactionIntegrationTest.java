@@ -9,11 +9,11 @@ import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.AssetId;
 import com.wavesplatform.transactions.common.Base64String;
 import com.wavesplatform.transactions.invocation.*;
-import com.wavesplatform.wavesj.actions.EthRpcResponse;
-import com.wavesplatform.wavesj.exceptions.NodeException;
-import com.wavesplatform.wavesj.info.EthereumTransactionInfo;
-import com.wavesplatform.wavesj.info.IssueTransactionInfo;
-import com.wavesplatform.wavesj.util.DccEthConverter;
+import com.decentralchain.sdk.actions.EthRpcResponse;
+import com.decentralchain.sdk.exceptions.NodeException;
+import com.decentralchain.sdk.info.EthereumTransactionInfo;
+import com.decentralchain.sdk.info.IssueTransactionInfo;
+import com.decentralchain.sdk.util.DccEthConverter;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Credentials;
 
