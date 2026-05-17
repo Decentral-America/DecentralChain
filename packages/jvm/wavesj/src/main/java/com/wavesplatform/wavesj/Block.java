@@ -7,6 +7,8 @@ import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Base58String;
 import com.wavesplatform.wavesj.info.TransactionWithStatus;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,7 +51,8 @@ public class Block extends BlockHeaders {
                 size, transactionsCount, height, totalFee, reward, vrf,
                 challengedHeader, finalizationVoting);
         this.fee = fee;
-        this.transactions = Common.notNull(transactions, "Transactions");
+        this.transactions = Collections.unmodifiableList(
+                new ArrayList<>(Common.notNull(transactions, "Transactions")));
     }
 
     public long fee() {

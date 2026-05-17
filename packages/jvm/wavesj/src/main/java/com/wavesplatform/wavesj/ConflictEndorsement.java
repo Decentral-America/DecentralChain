@@ -28,19 +28,19 @@ public class ConflictEndorsement {
         this.signature = signature;
     }
 
-    public int getEndorserIndex() {
+    public int endorserIndex() {
         return endorserIndex;
     }
 
-    public Base58String getFinalizedBlockId() {
+    public Base58String finalizedBlockId() {
         return finalizedBlockId;
     }
 
-    public int getFinalizedHeight() {
+    public int finalizedHeight() {
         return finalizedHeight;
     }
 
-    public BlsSignature getSignature() {
+    public BlsSignature signature() {
         return signature;
     }
 
@@ -61,7 +61,7 @@ public class ConflictEndorsement {
         ConflictEndorsement that = (ConflictEndorsement) o;
         return endorserIndex == that.endorserIndex &&
                 Objects.equals(finalizedBlockId, that.finalizedBlockId) &&
-                Objects.equals(finalizedHeight, that.finalizedHeight) &&
+                finalizedHeight == that.finalizedHeight &&
                 Objects.equals(signature, that.signature);
     }
 

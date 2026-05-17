@@ -7,6 +7,7 @@ import com.wavesplatform.wavesj.actions.Error;
 import com.wavesplatform.wavesj.actions.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,15 +37,15 @@ public class StateChanges {
                  @JsonProperty("leaseCancels") List<LeaseInfo> leaseCancels,
                  @JsonProperty("invokes") List<InvokeAction> invokes,
                  @JsonProperty("error") Error error) {
-        this.data = data != null ? data : new ArrayList<>();
-        this.transfers = transfers != null ? transfers : new ArrayList<>();
-        this.issues = issues != null ? issues : new ArrayList<>();
-        this.reissues = reissues != null ? reissues : new ArrayList<>();
-        this.burns = burns != null ? burns : new ArrayList<>();
-        this.sponsorFees = sponsorFees != null ? sponsorFees : new ArrayList<>();
-        this.leases = leases != null ? leases : new ArrayList<>();
-        this.leaseCancels = leaseCancels != null ? leaseCancels : new ArrayList<>();
-        this.invokes = invokes != null ? invokes : new ArrayList<>();
+        this.data = Collections.unmodifiableList(data != null ? new ArrayList<>(data) : new ArrayList<>());
+        this.transfers = Collections.unmodifiableList(transfers != null ? new ArrayList<>(transfers) : new ArrayList<>());
+        this.issues = Collections.unmodifiableList(issues != null ? new ArrayList<>(issues) : new ArrayList<>());
+        this.reissues = Collections.unmodifiableList(reissues != null ? new ArrayList<>(reissues) : new ArrayList<>());
+        this.burns = Collections.unmodifiableList(burns != null ? new ArrayList<>(burns) : new ArrayList<>());
+        this.sponsorFees = Collections.unmodifiableList(sponsorFees != null ? new ArrayList<>(sponsorFees) : new ArrayList<>());
+        this.leases = Collections.unmodifiableList(leases != null ? new ArrayList<>(leases) : new ArrayList<>());
+        this.leaseCancels = Collections.unmodifiableList(leaseCancels != null ? new ArrayList<>(leaseCancels) : new ArrayList<>());
+        this.invokes = Collections.unmodifiableList(invokes != null ? new ArrayList<>(invokes) : new ArrayList<>());
         this.error = error;
     }
 

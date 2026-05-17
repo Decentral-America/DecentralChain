@@ -1,4 +1,64 @@
-## 1.0.0
+# Changelog
+
+All notable changes to `io.decentralchain:wavesj` are documented here.
+
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).  
+Versioning: [DecentralChain version conventions](https://github.com/Decentral-America/DecentralChain/blob/dev/CONTRIBUTING.md).
+
+---
+
+## [1.6.4.0] — 2026-05-16
+
+Initial DCC release — fork of [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ)
+at commit `2f78fd3f6`.
+
+### Changed
+- Maven coordinates: `com.wavesplatform:wavesj` → `io.decentralchain:wavesj`
+- Version: `1.6.4-SNAPSHOT` → `1.6.4.0` (DCC convention: upstream + `.0`)
+- Java: upgraded 11 → 25 (`<release>25</release>`)
+- HTTP client: replaced Apache `httpclient 4.5.14` with JDK `java.net.http.HttpClient`
+  (zero external HTTP dependency; `HttpClient.Redirect.NEVER`; `InterruptedException`
+  restores interrupt flag; private `NodeRequest` inner class)
+- Removed `commons-lang3:3.20.0` runtime dependency; replaced `ArrayUtils.addAll()` with
+  private `concat(byte[], byte[])` via `System.arraycopy` in `DccEthConverter`
+- `logback-classic`: demoted to `test` scope (was `compile` — not shipped to consumers)
+- `waves-transactions:1.2.7` → `io.decentralchain:transactions-java:1.0.0` (DCC-240)
+- `DccEthConverter.java` (renamed from `WavesEthConverter.java`)
+- `DccModule.java` (renamed from `WavesJModule.java`)
+- `DccMapper.java` (renamed from `WavesJMapper.java`)
+- `Profile.java`: updated node endpoints to DecentralChain mainnet + testnet URLs
+- Testcontainers: `2.0.3` → `2.0.5`; removed dropped `junit-jupiter` TC module
+  (container lifecycle via static initializer in `BaseTestWithNodeInDocker`)
+- mockito-core: `5.21.0` → `5.23.0`
+- junit-jupiter: `5.14.1` → `5.14.4`
+- `DccEthConverterTest.java` (renamed from `WavesEthConverterTest.java`)
+- `EthereumTransactionIntegrationTest.java`: updated imports + `DccEthConverter` calls
+
+### Added
+- Enterprise Maven build: enforcer (Java 25 gate), JaCoCo coverage, SpotBugs + FindSecBugs,
+  CycloneDX SBOM, maven-source-plugin, maven-javadoc-plugin
+- `config/pmd-ruleset.xml` — PMD source analysis (audit profile)
+- `config/spotbugs-exclude.xml` — SpotBugs false-positive exclusions
+- `config/owasp-suppressions.xml` — OWASP dependency-check suppressions
+- `KNOWN_ISSUES.md`, `CONTRIBUTING.md`, `SECURITY.md`
+- `.github/workflows/wavesj-ci.yml` — CI on push/PR
+- `.github/workflows/wavesj-publish.yml` — manual publish to Maven Central
+- `project.json` — Nx project descriptor
+- Maven wrapper for reproducible builds
+
+### Security
+- `protobuf-java` → `4.34.1` (latest stable via `dependencyManagement`)
+- `commons-codec` → `1.22.0` (via `dependencyManagement`)
+- `jackson-databind` → `2.21.3` (via `dependencyManagement`)
+- `logback-classic 1.5.32`: CVE-2026-1225 (ACE) fix (requires 1.5.25+)
+- Removed `dev.sigstore:sigstore-maven-plugin` (upstream default; DCC uses GPG only)
+- `autoPublish=false`: Maven Central releases require human review
+
+---
+
+## Upstream history (wavesplatform/WavesJ)
+
+
 - significantly redesigned interface
 - based on [Waves Crypto](https://github.com/wavesplatform/waves-crypto-java) and [Waves transactions](https://github.com/wavesplatform/waves-transactions-java) libraries
 - supported most of Waves Node API
