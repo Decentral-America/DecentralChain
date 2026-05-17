@@ -29,6 +29,9 @@ public class FunctionDeser extends JsonDeserializer<Function> {
 
     public static List<Arg> parseArgsList(JsonNode list) {
         List<Arg> args = new ArrayList<>();
+        if (list == null || list.isNull() || !list.isArray()) {
+            return args;
+        }
         for (int i = 0; i < list.size(); i++) {
             JsonNode arg = list.get(i);
             if ("String".equals(arg.get("type").asText()))

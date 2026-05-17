@@ -1,4 +1,17 @@
-.idea
-target
+.gradle/
+build/
+out/
+target/
+
+.idea/
 *.iml
+*.ipr
+*.iws
+
+# Maven build artifacts
 .flattened-pom.xml
+
+# Generated audit/coverage reports (committed separately if needed)
+dependency-check-report*
+audit_output.log
+

@@ -4,6 +4,8 @@ import com.wavesplatform.transactions.EthereumTransaction;
 import com.wavesplatform.wavesj.ApplicationStatus;
 import com.wavesplatform.wavesj.StateChanges;
 
+import java.util.Objects;
+
 public class EthereumTransactionInfo extends TransactionInfo {
 
     private final StateChanges stateChanges;
@@ -20,25 +22,43 @@ public class EthereumTransactionInfo extends TransactionInfo {
         return (EthereumTransaction) super.tx();
     }
 
-    public Boolean isTransferTransaction() {
+    public boolean isTransferTransaction() {
         return tx().payload() instanceof EthereumTransaction.Transfer;
     }
 
-    public Boolean isInvokeTransaction() {
+    public boolean isInvokeTransaction() {
         return tx().payload() instanceof EthereumTransaction.Invocation;
     }
 
-    public StateChanges getStateChanges() {
+    public StateChanges stateChanges() {
         return stateChanges;
     }
 
-    public String getBytes() {
+    public String bytes() {
         return bytes;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        EthereumTransactionInfo that = (EthereumTransactionInfo) o;
+        return Objects.equals(stateChanges, that.stateChanges) &&
+                Objects.equals(bytes, that.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), stateChanges, bytes);
+    }
+
+    @Override
     public String toString() {
-        return "EthereumTransaction{} " + super.toString();
+        return "EthereumTransactionInfo{" +
+                "stateChanges=" + stateChanges +
+                ", bytes='" + bytes + '\'' +
+                "} " + super.toString();
     }
 
 }

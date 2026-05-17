@@ -25,19 +25,19 @@ public class NodeStatus {
         this.updatedDate = updatedDate;
     }
 
-    public int getBlockchainHeight() {
+    public int blockchainHeight() {
         return blockchainHeight;
     }
 
-    public int getStateHeight() {
+    public int stateHeight() {
         return stateHeight;
     }
 
-    public long getUpdatedTimestamp() {
+    public long updatedTimestamp() {
         return updatedTimestamp;
     }
 
-    public String getUpdatedDate() {
+    public String updatedDate() {
         return updatedDate;
     }
 

@@ -1,6 +1,8 @@
 package com.wavesplatform.wavesj;
 
-public class Common {
+public final class Common {
+
+    private Common() {}
 
     public static <T> T notNull(final T value, final String name) {
         if (value == null)

@@ -1,5 +1,6 @@
 package com.wavesplatform.wavesj.peers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,6 +11,7 @@ public class BlacklistedPeer {
     private final int timestamp;
     private final String reason;
 
+    @JsonCreator
     public BlacklistedPeer(
             @JsonProperty("hostname") String hostname,
             @JsonProperty("timestamp") int timestamp,

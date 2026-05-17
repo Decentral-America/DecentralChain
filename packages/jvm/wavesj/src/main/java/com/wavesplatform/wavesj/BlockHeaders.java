@@ -7,6 +7,8 @@ import com.wavesplatform.transactions.account.PublicKey;
 import com.wavesplatform.transactions.common.Base58String;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +22,7 @@ public class BlockHeaders {
     private final long timestamp;
     private final Base58String reference;
     private long baseTarget;
-    private Base58String generationSignature;
+    private Base58String generationSignature = Base58String.empty();
     private final Base58String transactionsRoot;
     private final Base58String id;
     private final List<Integer> features;
@@ -68,7 +70,7 @@ public class BlockHeaders {
         this.generator = Common.notNull(generator, "Generator");
         this.generatorPublicKey = generatorPublicKey;
         this.stateHash = stateHash == null ? Base58String.empty() : stateHash;
-        this.rewardShares = rewardShares == null ? Map.of() : rewardShares;
+        this.rewardShares = rewardShares == null ? Map.of() : Collections.unmodifiableMap(new HashMap<>(rewardShares));
         this.signature = Common.notNull(signature, "Signature");
         this.id = id == null ? this.signature : id;
         this.vrf = vrf == null ? Base58String.empty() : vrf;
@@ -78,16 +80,21 @@ public class BlockHeaders {
         this.totalFee = totalFee;
         this.reward = reward;
         this.desiredReward = desiredReward;
-        this.features = features == null ? new ArrayList<>() : features;
+        this.features = Collections.unmodifiableList(features == null ? new ArrayList<>() : new ArrayList<>(features));
         this.challengedHeader = challengedHeader;
         this.finalizationVoting = finalizationVoting;
     }
 
     @JsonProperty("nxt-consensus")
     private void nxtConsensus(Map<String, Object> nxtConsensus) {
-        Object baseTargetObj = nxtConsensus.get("base-target");
-        this.baseTarget = ((Number) nxtConsensus.get("base-target")).longValue();
-        this.generationSignature = new Base58String((String) nxtConsensus.get("generation-signature"));
+        if (nxtConsensus == null) return;
+        Object bt = nxtConsensus.get("base-target");
+        if (bt instanceof Number) {
+            this.baseTarget = ((Number) bt).longValue();
+        }
+        Object gs = nxtConsensus.get("generation-signature");
+        this.generationSignature = gs instanceof String
+                ? new Base58String((String) gs) : Base58String.empty();
     }
 
     public ChallengedHeader challengedHeader() {

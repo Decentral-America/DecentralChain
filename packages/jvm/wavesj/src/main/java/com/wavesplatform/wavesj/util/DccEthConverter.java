@@ -1,10 +1,8 @@
 package com.wavesplatform.wavesj.util;
 
 import com.wavesplatform.crypto.base.Base58;
-import com.wavesplatform.transactions.common.ChainId;
 import com.wavesplatform.wavesj.Node;
 import com.wavesplatform.wavesj.exceptions.NodeException;
-import org.apache.http.client.HttpClient;
 import org.bouncycastle.util.encoders.Hex;
 import org.web3j.utils.Numeric;
 
@@ -14,10 +12,19 @@ import static com.wavesplatform.crypto.Hash.blake;
 import static com.wavesplatform.crypto.Hash.keccak;
 import static com.wavesplatform.crypto.base.Base58.encode;
 import static java.util.Arrays.copyOfRange;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.bouncycastle.util.encoders.Hex.decode;
 
-public class WavesEthConverter {
+public final class DccEthConverter {
+
+    private DccEthConverter() {}
+
+    /** Concatenates two byte arrays without any external dependency. */
+    private static byte[] concat(byte[] a, byte[] b) {
+        byte[] result = new byte[a.length + b.length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
 
     public static String wavesToEthAddress(String address) {
         byte[] wavesAddress = Base58.decode(address);
@@ -28,10 +35,10 @@ public class WavesEthConverter {
     public static String ethToWavesAddress(String address, byte chainId) {
         byte[] pkHash = copyOfRange(decode(address.substring(2)), 0, 20);
         byte[] prefixBytes = new byte[]{0x01, chainId};
-        byte[] checkSumBytes = addAll(prefixBytes, pkHash);
+        byte[] checkSumBytes = concat(prefixBytes, pkHash);
         byte[] checkSum = keccak(blake(checkSumBytes));
-        byte[] wavesBytes = addAll(
-                addAll(prefixBytes, pkHash),
+        byte[] wavesBytes = concat(
+                concat(prefixBytes, pkHash),
                 copyOfRange(checkSum, 0, 4)
         );
         return encode(wavesBytes);

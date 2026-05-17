@@ -21,11 +21,11 @@ public class CommitToGenerationTxTest {
 
     private static final byte CHAIN_ID = 'D';
 
-    public CommitToGenerationTxTest() throws NodeException, IOException {
+    public CommitToGenerationTxTest() throws NodeException, IOException, InterruptedException {
     }
 
     @Test
-    void readCommitToGenerationTransactionByIdTest() throws NodeException, IOException {
+    void readCommitToGenerationTransactionByIdTest() throws NodeException, IOException, InterruptedException {
         mockTransactionInfoRs(node,
                 "2r6kpnJbGqNTmLxi9cPuavgxqumGufnisnN8vhuSCpaX",
                 "src/test/resources/stub/txs/commit_to_generation_tx.json"

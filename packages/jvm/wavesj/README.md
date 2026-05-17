@@ -1,202 +1,148 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.wavesplatform/wavesj.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.wavesplatform/wavesj)
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/79326247?s=80" width="80" alt="DecentralChain logo" />
 
-# WavesJ
-A Java library for interacting with the Waves blockchain.
+  ### wavesj
 
-Supports node interaction, offline transaction signing and creating addresses and keys.
+  Java library to interact with the DecentralChain blockchain
 
-## Using WavesJ in your project
-Use the codes below to add WavesJ as a dependency for your project.
+  [![Maven Central](https://img.shields.io/maven-central/v/io.decentralchain/wavesj?label=Maven%20Central)](https://central.sonatype.com/artifact/io.decentralchain/wavesj)
+  [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+  [![Java 25](https://img.shields.io/badge/Java-25-orange)](https://openjdk.org/projects/jdk/25/)
+  [![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/wavesj.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/wavesj.yml)
+</div>
 
-##### Requirements:
-- JDK 1.8 or above
+---
 
-##### Maven:
-```
+## Overview
+
+`wavesj` is the DecentralChain fork of [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ),
+published as `io.decentralchain:wavesj:1.6.4.0`.
+
+It provides a complete Java library for interacting with the DecentralChain / Waves blockchain:
+
+- **Node HTTP client** — full coverage of the [DCC Node REST API](https://nodes.decentralchain.io/api-docs/index.html)
+  via JDK built-in `java.net.http.HttpClient` (no external HTTP dependencies)
+- **Transaction building + signing** — all transaction types via the sibling `transactions-java` library
+- **EVM/Ethereum support** — `DccEthConverter` for Ethereum-compatible transaction signing
+- **Ride script compiler** — compile + estimate scripts against a live node
+- **Account primitives** — `PrivateKey`, `PublicKey`, `Address`, `Proof`, `Id`
+- **Jackson JSON integration** — `DccMapper` and `DccModule` for node API serialization
+- **DCC node profiles** — preconfigured mainnet + testnet endpoints
+
+### Upstream reference
+
+| Item          | Value                                                          |
+|---------------|----------------------------------------------------------------|
+| Upstream repo | `wavesplatform/WavesJ`                                         |
+| Fork base     | commit `2f78fd3f6` (WavesJ 1.6.4-SNAPSHOT, May 2026)          |
+| DCC version   | `1.6.4.0`                                                      |
+| License       | Apache 2.0 (inherited from upstream)                           |
+
+---
+
+## Installation
+
+### Maven
+
+```xml
 <dependency>
-    <groupId>com.wavesplatform</groupId>
-    <artifactId>wavesj</artifactId>
-    <version>1.3.0</version>
+  <groupId>io.decentralchain</groupId>
+  <artifactId>wavesj</artifactId>
+  <version>1.6.4.0</version>
 </dependency>
 ```
 
-##### Gradle:
-```
-compile group: 'com.wavesplatform', name: 'wavesj', version: '1.3.0'
+### Gradle (Kotlin DSL)
+
+```kotlin
+implementation("io.decentralchain:wavesj:1.6.4.0")
 ```
 
-##### SBT:
-```
-libraryDependencies += "com.wavesplatform" % "wavesj" % "1.3.0"
+### SBT
+
+```scala
+libraryDependencies += "io.decentralchain" % "wavesj" % "1.6.4.0"
 ```
 
-[This library's page at Maven Central](https://mvnrepository.com/artifact/com.wavesplatform/wavesj)
+---
 
-### Getting started
-Create an account from a private key ('T' for testnet) from random seed phrase:
+## Quick Start
+
 ```java
+// Connect to the DCC mainnet node
+Node node = new Node(Profile.MAINNET);
+System.out.println("Current height: " + node.getHeight());
+
+// Create a keypair from a seed phrase
 String seed = Crypto.getRandomSeedPhrase();
 PrivateKey privateKey = PrivateKey.fromSeed(seed);
-PublicKey publicKey = PublicKey.from(privateKey);
-Address address = Address.from(publicKey);
+PublicKey publicKey  = PublicKey.from(privateKey);
+Address  address     = Address.from(publicKey);
+
+System.out.println("My balance: " + node.getBalance(address));
+
+// Broadcast a transfer
+Address recipient = new Address("3PEkTn69hcVFtcN7K4ZcbxVzxJFAHpfYM41");
+node.broadcast(
+    TransferTransaction.builder(recipient, Amount.of(1_00000000, Asset.WAVES))
+        .getSignedWith(privateKey)
+);
 ```
 
-Create a Node and learn a few things about blockchain:
-```java
-Node node = new Node(Profile.MAINNET);
-System.out.println("Current height is " + node.getHeight());
-System.out.println("My balance is " + node.getBalance(address));
-System.out.println("With 100 confirmations: " + node.getBalance(address, 100));
+See the upstream [WavesJ examples](https://github.com/wavesplatform/WavesJ) for
+detailed usage of Exchange, InvokeScript, SetScript, and more.
+
+---
+
+## DCC-specific classes
+
+| Class | Purpose |
+|---|---|
+| `Profile.MAINNET` | DCC mainnet node URL |
+| `Profile.TESTNET` | DCC testnet node URL |
+| `DccEthConverter` | Ethereum-compatible transaction signing (EVM support) |
+| `DccModule` | Jackson module for DCC-specific JSON types |
+| `DccMapper` | Pre-configured `ObjectMapper` with `DccModule` registered |
+
+---
+
+## Building locally
+
+```bash
+cd packages/jvm/wavesj
+export JAVA_HOME="$(brew --prefix openjdk)"
+./mvnw verify                                    # unit tests + SpotBugs + JaCoCo
+./mvnw verify -P audit -Ddependency-check.skip   # add PMD analysis
+./mvnw verify -P integration-test                # requires Docker + DCC node image
 ```
 
-Send some money to a buddy:
-```java
-Address buddy = new Address("3N9gDFq8tKFhBDBTQxR3zqvtpXjw5wW3syA");
-node.broadcast(TransferTransaction.builder(buddy, Amount.of(1_00000000, Asset.WAVES)).getSignedWith(privateKey));
-```
+---
 
-Set a script on an account. Be careful with the script you pass here, as it may lock the account forever!
-```java
-Base64String script = node
-    .compile("{-# CONTENT_TYPE EXPRESSION #-} sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)")
-    .script();
-node.broadcast(new SetScriptTransaction(publicKey, script).addProof(privateKey));
-```
+## Relation to sibling packages
 
-### Reading transaction info
-[Same transaction from REST API](https://nodes-stagenet.wavesnodes.com/transactions/info/CWuFY42te67sLmc5gwt4NxwHmFjVfJdHkKuLyshTwEct)
+| Package | Purpose |
+|---|---|
+| `transactions-java` | Binary + JSON serialization for all transaction types |
+| **`wavesj`** | HTTP Node client + high-level API (depends on `transactions-java`) |
+| `curve25519-java` | Native curve25519 cryptography |
+| `blst-java` | Native BLS12-381 cryptography |
+| `zwaves` | ZK-SNARK proof utilities |
 
-```java
-Id ethTxId = new Id("CWuFY42te67sLmc5gwt4NxwHmFjVfJdHkKuLyshTwEct");
-EthereumTransactionInfo ethInvokeTxInfo = node.getTransactionInfo(ethTxId, EthereumTransactionInfo.class);
+---
 
-EthereumTransaction ethInvokeTx = ethInvokeTxInfo.tx();
-EthereumTransaction.Invocation payload = (EthereumTransaction.Invocation) ethInvokeTx.payload();
+## Known issues
 
-System.out.println("is ethereum invoke transaction: " + ethInvokeTxInfo.isInvokeTransaction());
+See [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
-System.out.println("type: " + ethInvokeTx.type());
-System.out.println("id: " + ethInvokeTx.id().encoded());
-System.out.println("fee: " + ethInvokeTx.fee().value());
-System.out.println("feeAssetId: " + ethInvokeTx.fee().assetId().encoded());
-System.out.println("timestamp: " + ethInvokeTx.timestamp());
-System.out.println("version: " + ethInvokeTx.version());
-System.out.println("chainId: " + ethInvokeTx.chainId());
-System.out.println("bytes: " + ethInvokeTxInfo.getBytes());
-System.out.println("sender: " + ethInvokeTx.sender().address().encoded());
-System.out.println("senderPublicKey: " + ethInvokeTx.sender().encoded());
-System.out.println("height: " + ethInvokeTxInfo.height());
-System.out.println("applicationStatus: " + ethInvokeTxInfo.applicationStatus());
-System.out.println("payload dApp: " + payload.dApp().encoded());
-System.out.println("payload call function: " + payload.function().name());
-List<Arg> args = payload.function().args();
-System.out.println("payload call function arguments type: " + args.get(0).type());
-System.out.println("payload call function arguments value: " + ((StringArg) args.get(0)).value());
-DataEntry dataEntry = ethInvokeTxInfo.getStateChanges().data().get(0);
-System.out.println("state changes data key: " + dataEntry.key());
-System.out.println("state changes data type: " + dataEntry.type().name());
-System.out.println("state changes data value: " + ((StringEntry) dataEntry).value());
-```
+## Security
 
-### Broadcasting transactions
-#### Creating accounts (see Getting started for more info about account creation)
-```java
-PrivateKey alice = createAccountWithBalance(10_00000000);
-PrivateKey bob = createAccountWithBalance(10_00000000);
-```
-#### Broadcasting exchange transaction
-```java
-AssetId assetId = node.waitForTransaction(node.broadcast(
-        IssueTransaction.builder("Asset", 1000, 2).getSignedWith(alice)).id(),
-        IssueTransactionInfo.class).tx().assetId();
+See [SECURITY.md](SECURITY.md).
 
-Amount amount = Amount.of(1);
-Amount price = Amount.of(100, assetId);
-long matcherFee = 300000;
-Order buy = Order.builder(OrderType.BUY, amount, price, alice.publicKey()).getSignedWith(alice);
-Order sell = Order.builder(OrderType.SELL, amount, price, alice.publicKey()).getSignedWith(bob);
+## Contributing
 
-ExchangeTransaction tx = ExchangeTransaction
-        .builder(buy, sell, amount.value(), price.value(), matcherFee, matcherFee).getSignedWith(alice);
-node.waitForTransaction(node.broadcast(tx).id());
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-TransactionInfo commonInfo = node.getTransactionInfo(tx.id());
-ExchangeTransactionInfo txInfo = node.getTransactionInfo(tx.id(), ExchangeTransactionInfo.class);
-```
+## License
 
-### Working with dApp
-#### Creating accounts (see Getting started for more info about account creation)
-```java
-PrivateKey alice = createAccountWithBalance(10_00000000);
-PrivateKey bob = createAccountWithBalance(10_00000000);
-```
-#### Broadcasting issue transaction
-```java
-AssetId assetId = node.waitForTransaction(node.broadcast(
-        IssueTransaction.builder("Asset", 1000, 2).getSignedWith(alice)).id(),
-        IssueTransactionInfo.class).tx().assetId();
-```
+Apache License, Version 2.0 — see [LICENSE](LICENSE).
 
-#### Compiling and broadcasting RIDE script
-```java
-Base64String script = node.compileScript(
-        "{-# STDLIB_VERSION 5 #-}\n" +
-        "{-# CONTENT_TYPE DAPP #-}\n" +
-        "{-# SCRIPT_TYPE ACCOUNT #-}\n" +
-        "@Callable(inv)\n" +
-        "func call(bv: ByteVector, b: Boolean, int: Int, str: String, list: List[Int]) = {\n" +
-        "  let asset = Issue(\"Asset\", \"\", 1, 0, true)\n" +
-        "  let assetId = asset.calculateAssetId()\n" +
-        "  let lease = Lease(inv.caller, 7)\n" +
-        "  let leaseId = lease.calculateLeaseId()\n" +
-        "  [\n" +
-        "    BinaryEntry(\"bin\", assetId),\n" +
-        "    BooleanEntry(\"bool\", true),\n" +
-        "    IntegerEntry(\"int\", 100500),\n" +
-        "    StringEntry(\"assetId\", assetId.toBase58String()),\n" +
-        "    StringEntry(\"leaseId\", leaseId.toBase58String()),\n" +
-        "    StringEntry(\"del\", \"\"),\n" +
-        "    DeleteEntry(\"del\"),\n" +
-        "    asset,\n" +
-        "    SponsorFee(assetId, 1),\n" +
-        "    Reissue(assetId, 4, false),\n" +
-        "    Burn(assetId, 3),\n" +
-        "    ScriptTransfer(inv.caller, 2, assetId),\n" +
-        "    lease,\n" +
-        "    LeaseCancel(lease.calculateLeaseId())\n" +
-        "  ]\n" +
-        "}").script();
-node.waitForTransaction(node.broadcast(
-        SetScriptTransaction.builder(script).getSignedWith(bob)).id());
-```
-
-#### Calling dApp
-```java
-InvokeScriptTransaction tx = InvokeScriptTransaction
-        .builder(bob.address(), Function.as("call",
-                BinaryArg.as(alice.address().bytes()),
-                BooleanArg.as(true),
-                IntegerArg.as(100500),
-                StringArg.as(alice.address().toString()),
-                ListArg.as(IntegerArg.as(100500))
-        )).payments(
-                Amount.of(1, assetId),
-                Amount.of(2, assetId),
-                Amount.of(3, assetId),
-                Amount.of(4, assetId),
-                Amount.of(5, assetId),
-                Amount.of(6, assetId),
-                Amount.of(7, assetId),
-                Amount.of(8, assetId),
-                Amount.of(9, assetId),
-                Amount.of(10, assetId)
-        ).extraFee(1_00000000)
-        .getSignedWith(alice);
-node.waitForTransaction(node.broadcast(tx).id());
-```
-
-#### Receiving invoke script transaction info
-```java
-TransactionInfo commonInfo = node.getTransactionInfo(tx.id());
-InvokeScriptTransactionInfo txInfo = node.getTransactionInfo(tx.id(), InvokeScriptTransactionInfo.class);
-```

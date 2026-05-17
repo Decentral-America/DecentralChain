@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wavesplatform.transactions.account.BlsSignature;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -22,25 +23,25 @@ public class FinalizationVoting {
             @JsonProperty("conflictEndorsements") List<ConflictEndorsement> conflictEndorsements,
             @JsonProperty("finalizedHeight") int finalizedHeight
     ) {
-        this.endorserIndexes = endorserIndexes == null ? Collections.emptyList() : endorserIndexes;
+        this.endorserIndexes = endorserIndexes == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(endorserIndexes));
         this.aggregatedEndorsementSignature = aggregatedEndorsementSignature;
         this.finalizedHeight = finalizedHeight;
-        this.conflictEndorsements = conflictEndorsements == null ? Collections.emptyList() : conflictEndorsements;
+        this.conflictEndorsements = conflictEndorsements == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(conflictEndorsements));
     }
 
-    public List<Integer> getEndorserIndexes() {
+    public List<Integer> endorserIndexes() {
         return endorserIndexes;
     }
 
-    public BlsSignature getAggregatedEndorsementSignature() {
+    public BlsSignature aggregatedEndorsementSignature() {
         return aggregatedEndorsementSignature;
     }
 
-    public int getFinalizedHeight() {
+    public int finalizedHeight() {
         return finalizedHeight;
     }
 
-    public List<ConflictEndorsement> getConflictEndorsements() {
+    public List<ConflictEndorsement> conflictEndorsements() {
         return conflictEndorsements;
     }
 
@@ -61,7 +62,7 @@ public class FinalizationVoting {
         FinalizationVoting that = (FinalizationVoting) o;
         return Objects.equals(endorserIndexes, that.endorserIndexes) &&
                 Objects.equals(aggregatedEndorsementSignature, that.aggregatedEndorsementSignature) &&
-                Objects.equals(finalizedHeight, that.finalizedHeight) &&
+                finalizedHeight == that.finalizedHeight &&
                 Objects.equals(conflictEndorsements, that.conflictEndorsements);
     }
 

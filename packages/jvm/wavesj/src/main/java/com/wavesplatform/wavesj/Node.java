@@ -17,28 +17,23 @@ import com.wavesplatform.wavesj.actions.EthRpcResponse;
 import com.wavesplatform.wavesj.exceptions.NodeException;
 import com.wavesplatform.wavesj.info.TransactionInfo;
 import com.wavesplatform.wavesj.json.TypeRef;
-import com.wavesplatform.wavesj.json.WavesJMapper;
+import com.wavesplatform.wavesj.json.DccMapper;
 import com.wavesplatform.wavesj.peers.BlacklistedPeer;
 import com.wavesplatform.wavesj.peers.ConnectedPeer;
 import com.wavesplatform.wavesj.peers.Peer;
 import com.wavesplatform.wavesj.peers.SuspendedPeer;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,20 +48,23 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unused")
-public class Node {
+public class Node implements Closeable {
 
     private final byte chainId;
     private final HttpClient client;
     private final URI uri;
-    private final WavesJMapper mapper;
+    private final DccMapper mapper;
     private final int blockInterval = 60;
 
     public Node(URI uri, HttpClient httpClient) throws IOException, NodeException {
         this.uri = uri;
         this.client = httpClient;
-        this.mapper = new WavesJMapper();
-        this.chainId = getAddresses().get(0).chainId();
-        WavesConfig.chainId(this.chainId);
+        this.mapper = new DccMapper();
+        List<Address> addresses = getAddresses();
+        if (addresses.isEmpty()) {
+            throw new NodeException(-1, "Node returned empty address list — verify connectivity at: " + uri);
+        }
+        this.chainId = addresses.get(0).chainId();
     }
 
     public Node(String url, HttpClient httpClient) throws URISyntaxException, IOException, NodeException {
@@ -79,19 +77,18 @@ public class Node {
 
     public Node(URI uri) throws IOException, NodeException {
         this.uri = uri;
-        this.client = HttpClients
-                .custom()
-                .setDefaultRequestConfig(
-                        RequestConfig.custom()
-                                .setSocketTimeout(60000)
-                                .setConnectTimeout(60000)
-                                .setConnectionRequestTimeout(60000)
-                                .setCookieSpec(CookieSpecs.STANDARD)
-                                .build())
+        this.client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(60))
+                // Disable automatic redirect following: callers configure their own node endpoints,
+                // and following a cross-origin redirect could leak state or cause SSRF.
+                .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
-        this.mapper = new WavesJMapper();
-        this.chainId = getAddresses().get(0).chainId();
-        WavesConfig.chainId(this.chainId);
+        this.mapper = new DccMapper();
+        List<Address> addresses = getAddresses();
+        if (addresses.isEmpty()) {
+            throw new NodeException(-1, "Node returned empty address list — verify connectivity at: " + uri);
+        }
+        this.chainId = addresses.get(0).chainId();
     }
 
     public Node(String url) throws URISyntaxException, IOException, NodeException {
@@ -112,6 +109,12 @@ public class Node {
 
     public URI uri() {
         return uri;
+    }
+
+    @Override
+    public void close() {
+        // java.net.http.HttpClient manages its own connection pool.
+        // On Java 21+ HttpClient implements AutoCloseable; on Java 11–20 no explicit close is required.
     }
 
     //===============
@@ -149,11 +152,8 @@ public class Node {
         ArrayNode jsonAddresses = jsonBody.putArray("addresses");
         addresses.forEach(address -> jsonAddresses.add(address.toString()));
 
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
-
         return asType(post("/addresses/balance")
-                .addHeader("Content-Type", "application/json")
-                .setEntity(body), TypeRef.BALANCES);
+                .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json"), TypeRef.BALANCES);
     }
 
     public List<Balance> getBalances(List<Address> addresses, int height) throws IOException, NodeException {
@@ -162,11 +162,9 @@ public class Node {
         addresses.forEach(address -> jsonAddresses.add(address.toString()));
 
         jsonBody.put("height", height);
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
 
         return asType(post("/addresses/balance")
-                .addHeader("Content-Type", "application/json")
-                .setEntity(body), TypeRef.BALANCES);
+                .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json"), TypeRef.BALANCES);
     }
 
     public BalanceDetails getBalanceDetails(Address address) throws IOException, NodeException {
@@ -181,11 +179,9 @@ public class Node {
         ObjectNode jsonBody = JSON_MAPPER.createObjectNode();
         ArrayNode jsonKeys = jsonBody.putArray("keys");
         keys.forEach(jsonKeys::add);
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
 
         return asType(post("/addresses/data/" + address.toString())
-                .addHeader("Content-Type", "application/json")
-                .setEntity(body), TypeRef.DATA_ENTRIES);
+                .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json"), TypeRef.DATA_ENTRIES);
     }
 
     /*
@@ -197,7 +193,10 @@ public class Node {
     }
 
     public DataEntry getData(Address address, String key) throws IOException, NodeException {
-        return asType(get("/addresses/data/" + address.toString() + "/" + key), TypeRef.DATA_ENTRY);
+        // URL-encode the key so that keys containing '/', '?', '#', etc. are transmitted correctly
+        // and cannot cause path traversal to a different API endpoint.
+        String encodedKey = URLEncoder.encode(key, StandardCharsets.UTF_8).replace("+", "%20");
+        return asType(get("/addresses/data/" + address.toString() + "/" + encodedKey), TypeRef.DATA_ENTRY);
     }
 
     @Deprecated
@@ -249,7 +248,7 @@ public class Node {
     }
 
     public AssetDistribution getAssetDistribution(AssetId assetId, int height, int limit, Address after) throws IOException, NodeException {
-        RequestBuilder request = get("/assets/" + assetId.toString() + "/distribution/" + height + "/limit/" + limit);
+        NodeRequest request = get("/assets/" + assetId.toString() + "/distribution/" + height + "/limit/" + limit);
         if (after != null)
             request.addParameter("after", after.toString());
         return asType(request, TypeRef.ASSET_DISTRIBUTION);
@@ -264,14 +263,12 @@ public class Node {
         ObjectNode jsonBody = JSON_MAPPER.createObjectNode();
         ArrayNode jsonAssetIds = jsonBody.putArray("ids");
         assetIds.forEach(id -> jsonAssetIds.add(id.toString()));
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
 
         return mapper.readerFor(TypeRef.ASSET_BALANCES)
                 .readValue(
                         asJson(
                                 post("/assets/balance/" + address.toString())
-                                        .setEntity(body)
-                                        .addHeader("Content-Type", "application/json")
+                                        .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json")
                         ).get("balances"));
     }
 
@@ -285,9 +282,8 @@ public class Node {
                 TypeRef.ASSET_DETAILS);
     }
 
-    //todo what if some asset doesn't exist? (error json with code and message) Either in java?
     public List<AssetDetails> getAssetsDetails(List<AssetId> assetIds) throws IOException, NodeException {
-        RequestBuilder request = get("/assets/details").addParameter("full", "true");
+        NodeRequest request = get("/assets/details").addParameter("full", "true");
         assetIds.forEach(id -> request.addParameter("id", id.toString()));
 
         return asType(request, TypeRef.ASSETS_DETAILS);
@@ -302,7 +298,7 @@ public class Node {
     }
 
     public List<AssetDetails> getNft(Address address, int limit, AssetId after) throws IOException, NodeException {
-        RequestBuilder request = get("/assets/nft/" + address.toString() + "/limit/" + limit);
+        NodeRequest request = get("/assets/nft/" + address.toString() + "/limit/" + limit);
         if (after != null)
             request.addParameter("after", after.toString());
 
@@ -517,7 +513,7 @@ public class Node {
 
     public <T extends Transaction> Validation validateTransaction(T transaction) throws IOException, NodeException {
         return asType(post("/debug/validate")
-                .setEntity(new StringEntity(transaction.toJson(), ContentType.APPLICATION_JSON)), TypeRef.VALIDATION);
+                .setEntity(transaction.toJson(), "application/json"), TypeRef.VALIDATION);
     }
 
     //===============
@@ -536,11 +532,9 @@ public class Node {
         ObjectNode jsonBody = JSON_MAPPER.createObjectNode();
         ArrayNode jsonIds = jsonBody.putArray("ids");
         leaseIds.forEach(id -> jsonIds.add(id.toString()));
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
 
         return asType(post("/leasing/info")
-                .addHeader("Content-Type", "application/json")
-                .setEntity(body), TypeRef.LEASES_INFO);
+                .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json"), TypeRef.LEASES_INFO);
     }
 
     public List<LeaseInfo> getLeasesInfo(Id... leaseIds) throws IOException, NodeException {
@@ -552,7 +546,8 @@ public class Node {
     //===============
 
     public <T extends Transaction> Amount calculateTransactionFee(T transaction) throws IOException, NodeException {
-        JsonNode json = asJson(post("/transactions/calculateFee").setEntity(new StringEntity(transaction.toJson(), ContentType.APPLICATION_JSON)));
+        JsonNode json = asJson(post("/transactions/calculateFee")
+                .setEntity(transaction.toJson(), "application/json"));
         return Amount.of(json.get("feeAmount").asLong(), JsonSerializer.assetIdFromJson(json.get("feeAssetId")));
     }
 
@@ -562,12 +557,12 @@ public class Node {
     public <T extends Transaction> T broadcast(T transaction) throws IOException, NodeException {
         //noinspection unchecked
         return (T) asType(post("/transactions/broadcast")
-                        .setEntity(new StringEntity(transaction.toJson(), ContentType.APPLICATION_JSON)),
+                        .setEntity(transaction.toJson(), "application/json"),
                 TypeRef.TRANSACTION);
     }
 
     public EthRpcResponse broadcastEthTransaction(EthereumTransaction ethTransaction) throws IOException, NodeException {
-        HttpUriRequest rq = buildSendRawTransactionRq(ethTransaction.toRawHexString());
+        NodeRequest rq = buildSendRawTransactionRq(ethTransaction.toRawHexString());
         ObjectNode rs = sendEthRequest(rq);
         return handleEthResponse(rs);
     }
@@ -602,12 +597,9 @@ public class Node {
      * @throws NodeException
      */
     public List<TransactionInfo> getTransactionsInfo(List<Id> txIds) throws IOException, NodeException {
-        BasicNameValuePair[] params = txIds
-                .stream()
-                .map(id -> new BasicNameValuePair("id", id.toString()))
-                .toArray(BasicNameValuePair[]::new);
-
-        return asType(get("/transactions/info").addParameters(params), TypeRef.TRANSACTIONS_INFO);
+        NodeRequest request = get("/transactions/info");
+        txIds.forEach(id -> request.addParameter("id", id.toString()));
+        return asType(request, TypeRef.TRANSACTIONS_INFO);
     }
 
     /**
@@ -657,15 +649,23 @@ public class Node {
      * @throws IOException if something going wrong
      */
     public List<TransactionInfo> getTransactionsByAddress(Address address, int limit, Id afterTxId) throws IOException, NodeException {
-        RequestBuilder request = get("/transactions/address/" + address.toString() + "/limit/" + limit);
+        NodeRequest request = get("/transactions/address/" + address.toString() + "/limit/" + limit);
         if (afterTxId != null)
             request.addParameter("after", afterTxId.toString());
 
         //because there is a bug in the Node api: the array of transactions is nested in another array:
         // [ [ {}, {}, ... ] ]
+        JsonNode outer = asJson(request);
+        JsonNode inner;
+        if (!outer.isArray() || outer.isEmpty()) {
+            inner = mapper.createArrayNode();
+        } else {
+            inner = outer.get(0);
+            if (inner == null) inner = mapper.createArrayNode();
+        }
         return mapper
                 .readerFor(TypeRef.TRANSACTIONS_INFO)
-                .readValue(asJson(request).get(0));
+                .readValue(inner);
     }
 
     public TransactionStatus getTransactionStatus(Id txId) throws IOException, NodeException {
@@ -677,11 +677,9 @@ public class Node {
         ObjectNode jsonBody = JSON_MAPPER.createObjectNode();
         ArrayNode jsonIds = jsonBody.putArray("ids");
         txIds.forEach(id -> jsonIds.add(id.toString()));
-        StringEntity body = new StringEntity(JSON_MAPPER.writeValueAsString(jsonBody), StandardCharsets.UTF_8);
 
         return asType(post("/transactions/status")
-                .addHeader("Content-Type", "application/json")
-                .setEntity(body), TypeRef.TRANSACTIONS_STATUS);
+                .setEntity(JSON_MAPPER.writeValueAsString(jsonBody), "application/json"), TypeRef.TRANSACTIONS_STATUS);
     }
 
     public List<TransactionStatus> getTransactionsStatus(Id... txIds) throws IOException, NodeException {
@@ -716,16 +714,14 @@ public class Node {
      */
     public ScriptInfo compileScript(String source, boolean enableCompaction) throws IOException, NodeException {
         return asType(post("/utils/script/compileCode")
-                        .addHeader("Content-Type", "text/plain")
                         .addParameter("compact", enableCompaction ? "true" : "false")
-                        .setEntity(new StringEntity(source, StandardCharsets.UTF_8)),
+                        .setEntity(source, "text/plain; charset=utf-8"),
                 TypeRef.SCRIPT_INFO);
     }
 
     public String decompileScript(Base64String compiledScript) throws IOException, NodeException {
         return asJson(post("/utils/script/decompile")
-                .addHeader("Content-Type", "application/json")
-                .setEntity(new StringEntity(compiledScript.toString(), StandardCharsets.UTF_8)))
+                .setEntity(compiledScript.toString(), "text/plain; charset=utf-8"))
                 .get("script")
                 .asText();
     }
@@ -753,10 +749,14 @@ public class Node {
                 if (this.getTransactionStatus(id).status() == CONFIRMED) return this.getTransactionInfo(id);
                 else Thread.sleep(pollingIntervalInMillis);
             } catch (Exception e) {
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
                 lastException = e;
                 try {
                     Thread.sleep(pollingIntervalInMillis);
-                } catch (InterruptedException ignored) {
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -792,13 +792,13 @@ public class Node {
                 if (statuses.stream().allMatch(s -> CONFIRMED.equals(s.status())))
                     return;
             } catch (Exception e) {
+                // Transient network/node error — record and continue polling until timeout.
                 lastException = e;
-                break;
-            } finally {
-                try {
-                    Thread.sleep(pollingIntervalInMillis);
-                } catch (InterruptedException ignored) {
-                }
+            }
+            try {
+                Thread.sleep(pollingIntervalInMillis);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -837,7 +837,8 @@ public class Node {
 
             try {
                 Thread.sleep(pollingIntervalInMillis);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
             }
         }
         throw new IllegalStateException("Could not wait for the height to rise from " + start + " to " + target +
@@ -862,57 +863,115 @@ public class Node {
     // HTTP REQUESTS
     //===============
 
-    protected RequestBuilder get(String path) {
-        return RequestBuilder.get(uri.resolve(path));
+    /**
+     * Lightweight internal HTTP request builder. Accumulates path, query parameters, headers, and
+     * an optional body, then converts to a {@link HttpRequest} at execution time. This type is an
+     * implementation detail and is never exposed in the public API.
+     */
+    private final class NodeRequest {
+        private final String method;
+        private final String path;
+        private final StringBuilder queryParams = new StringBuilder();
+        private final HashMap<String, String> headers = new HashMap<>();
+        private HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.noBody();
+
+        NodeRequest(String method, String path) {
+            this.method = method;
+            this.path = path;
+        }
+
+        NodeRequest addParameter(String name, String value) {
+            if (queryParams.length() > 0) queryParams.append('&');
+            queryParams.append(URLEncoder.encode(name, StandardCharsets.UTF_8).replace("+", "%20"))
+                    .append('=')
+                    .append(URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20"));
+            return this;
+        }
+
+        NodeRequest addHeader(String name, String value) {
+            headers.put(name, value);
+            return this;
+        }
+
+        NodeRequest setEntity(String content, String contentType) {
+            headers.put("Content-Type", contentType);
+            this.bodyPublisher = HttpRequest.BodyPublishers.ofString(content, StandardCharsets.UTF_8);
+            return this;
+        }
+
+        HttpRequest build() throws IOException {
+            try {
+                URI resolved = uri.resolve(path);
+                URI requestUri = queryParams.length() > 0
+                        ? new URI(resolved.getScheme(), resolved.getAuthority(), resolved.getPath(),
+                                queryParams.toString(), null)
+                        : resolved;
+                HttpRequest.Builder builder = HttpRequest.newBuilder(requestUri)
+                        .method(method, bodyPublisher)
+                        .timeout(Duration.ofSeconds(60));
+                headers.forEach(builder::header);
+                return builder.build();
+            } catch (URISyntaxException e) {
+                throw new IOException("Invalid request URI: " + path, e);
+            }
+        }
     }
 
-    protected RequestBuilder post(String path) {
-        return RequestBuilder.post(uri.resolve(path));
+    protected NodeRequest get(String path) {
+        return new NodeRequest("GET", path);
     }
 
-    protected HttpResponse exec(HttpUriRequest request) throws IOException, NodeException {
-        HttpResponse r = client.execute(request);
-        if (r.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
-            throw mapper.readValue(r.getEntity().getContent(), NodeException.class);
-        return r;
+    protected NodeRequest post(String path) {
+        return new NodeRequest("POST", path);
     }
 
-    protected InputStream asInputStream(RequestBuilder request) throws IOException, NodeException {
-        return exec(request.build()).getEntity().getContent();
+    protected HttpResponse<byte[]> exec(NodeRequest request) throws IOException, NodeException {
+        try {
+            HttpResponse<byte[]> response = client.send(request.build(),
+                    HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() != 200) {
+                throw mapper.readValue(response.body(), NodeException.class);
+            }
+            return response;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("HTTP request interrupted", e);
+        }
     }
 
-    protected <T> T asType(RequestBuilder request, TypeReference<T> reference) throws IOException, NodeException {
+    protected InputStream asInputStream(NodeRequest request) throws IOException, NodeException {
+        return new ByteArrayInputStream(exec(request).body());
+    }
+
+    protected <T> T asType(NodeRequest request, TypeReference<T> reference) throws IOException, NodeException {
         return mapper.readValue(asInputStream(request), reference);
     }
 
-    protected JsonNode asJson(RequestBuilder request) throws IOException, NodeException {
+    protected JsonNode asJson(NodeRequest request) throws IOException, NodeException {
         return JSON_MAPPER.readTree(asInputStream(request));
     }
 
-    protected HttpUriRequest buildSendRawTransactionRq(String rawData) throws JsonProcessingException {
+    protected NodeRequest buildSendRawTransactionRq(String rawData) throws JsonProcessingException {
         return post("/eth")
                 .setEntity(
-                        new StringEntity(
-                                new EthRpcRequest(
-                                        "2.0",
-                                        "eth_sendRawTransaction",
-                                        Collections.singletonList(rawData),
-                                        0
-                                ).toJsonString(),
-                                ContentType.APPLICATION_JSON)
-                )
-                .build();
+                        new EthRpcRequest(
+                                "2.0",
+                                "eth_sendRawTransaction",
+                                Collections.singletonList(rawData),
+                                0
+                        ).toJsonString(),
+                        "application/json");
     }
 
-    protected ObjectNode sendEthRequest(HttpUriRequest rq) throws IOException {
-        return mapper.readValue(
-                client.execute(rq).getEntity().getContent(),
-                ObjectNode.class
-        );
+    protected ObjectNode sendEthRequest(NodeRequest rq) throws IOException, NodeException {
+        return mapper.readValue(exec(rq).body(), ObjectNode.class);
     }
 
     protected EthRpcResponse handleEthResponse(ObjectNode rs) throws NodeException, JsonProcessingException {
         JsonNode result = rs.get("result");
+        if (result == null || !result.isObject()) {
+            throw new NodeException(-1, "Unexpected Ethereum RPC response: " + rs);
+        }
         if (result.hasNonNull("error")) {
             throw new NodeException(
                     result.get("error").intValue(),

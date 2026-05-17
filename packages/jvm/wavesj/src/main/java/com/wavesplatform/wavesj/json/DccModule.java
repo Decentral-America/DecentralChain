@@ -10,8 +10,8 @@ import com.wavesplatform.wavesj.json.deser.RecipientDeser;
 import com.wavesplatform.wavesj.json.deser.TransactionInfoDeser;
 import com.wavesplatform.wavesj.json.deser.TransactionWithStatusDeser;
 
-public class WavesJModule extends WavesTransactionsModule {
-    public WavesJModule() {
+public class DccModule extends WavesTransactionsModule {
+    public DccModule() {
         super();
         addDeserializer(Function.class, new FunctionDeser());
         addDeserializer(Recipient.class, new RecipientDeser());

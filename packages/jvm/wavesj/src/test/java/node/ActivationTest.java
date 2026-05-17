@@ -12,7 +12,7 @@ public class ActivationTest extends BaseTestWithNodeInDocker {
 
     @Test
     void activationStatus() throws NodeException, IOException {
-        assertFalse(node.getActivationStatus().getFeatures().isEmpty());
+        assertFalse(node.getActivationStatus().features().isEmpty());
     }
 
 }

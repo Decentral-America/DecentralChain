@@ -73,8 +73,8 @@ public class AssetBalance {
                 minSponsoredAssetFee == that.minSponsoredAssetFee &&
                 sponsorBalance == that.sponsorBalance &&
                 quantity == that.quantity &&
-                assetId.equals(that.assetId) &&
-                issueTransaction.equals(that.issueTransaction);
+                Objects.equals(assetId, that.assetId) &&
+                Objects.equals(issueTransaction, that.issueTransaction);
     }
 
     @Override

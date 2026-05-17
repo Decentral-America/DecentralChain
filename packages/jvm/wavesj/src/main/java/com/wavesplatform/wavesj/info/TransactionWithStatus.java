@@ -25,7 +25,7 @@ public class TransactionWithStatus {
     }
 
     public <T extends Transaction> T tx(Class<T> clazz) {
-        return (T) tx;
+        return clazz.cast(tx);
     }
 
     @Override

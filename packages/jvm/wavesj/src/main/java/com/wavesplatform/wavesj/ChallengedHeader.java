@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.common.Base58String;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +31,7 @@ public class ChallengedHeader {
             @JsonProperty("finalizationVoting") FinalizationVoting finalizationVoting
     ) {
         this.headerSignature = headerSignature;
-        this.features = features == null ? List.of() : features;
+        this.features = features == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(features));
         this.generator = generator;
         this.generatorPublicKey = generatorPublicKey;
         this.desiredReward = desiredReward;
@@ -37,31 +39,31 @@ public class ChallengedHeader {
         this.finalizationVoting = finalizationVoting;
     }
 
-    public Base58String getHeaderSignature() {
+    public Base58String headerSignature() {
         return headerSignature;
     }
 
-    public List<Integer> getFeatures() {
+    public List<Integer> features() {
         return features;
     }
 
-    public Address getGenerator() {
+    public Address generator() {
         return generator;
     }
 
-    public Base58String getGeneratorPublicKey() {
+    public Base58String generatorPublicKey() {
         return generatorPublicKey;
     }
 
-    public long getDesiredReward() {
+    public long desiredReward() {
         return desiredReward;
     }
 
-    public Base58String getStateHash() {
+    public Base58String stateHash() {
         return stateHash;
     }
 
-    public FinalizationVoting getFinalizationVoting() {
+    public FinalizationVoting finalizationVoting() {
         return finalizationVoting;
     }
 

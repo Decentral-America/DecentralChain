@@ -13,7 +13,7 @@ import com.wavesplatform.wavesj.actions.EthRpcResponse;
 import com.wavesplatform.wavesj.exceptions.NodeException;
 import com.wavesplatform.wavesj.info.EthereumTransactionInfo;
 import com.wavesplatform.wavesj.info.IssueTransactionInfo;
-import com.wavesplatform.wavesj.util.WavesEthConverter;
+import com.wavesplatform.wavesj.util.DccEthConverter;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Credentials;
 
@@ -33,7 +33,7 @@ public class EthereumTransactionIntegrationTest extends BaseTestWithNodeInDocker
         PrivateKey alice = createAccountWithBalance(10_00000000);
 
         Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
-        String bobAddress = WavesEthConverter.ethToWavesAddress(bob.getAddress(), WavesConfig.chainId());
+        String bobAddress = DccEthConverter.ethToWavesAddress(bob.getAddress(), WavesConfig.chainId());
 
         transferBalance(alice, new Address(bobAddress), Amount.of(1_00_000_000));
 
@@ -70,7 +70,7 @@ public class EthereumTransactionIntegrationTest extends BaseTestWithNodeInDocker
         PrivateKey alice = createAccountWithBalance(10_00000000);
 
         Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
-        String bobAddress = WavesEthConverter.ethToWavesAddress(bob.getAddress(), WavesConfig.chainId());
+        String bobAddress = DccEthConverter.ethToWavesAddress(bob.getAddress(), WavesConfig.chainId());
 
         AssetId assetId = createAsset(alice);
         transferBalance(alice, new Address(bobAddress), Amount.of(100, assetId));

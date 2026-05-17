@@ -16,11 +16,11 @@ public class BlockMockTest {
 
     private static final byte CHAIN_ID = 'D';
 
-    public BlockMockTest() throws NodeException, IOException {
+    public BlockMockTest() throws NodeException, IOException, InterruptedException {
     }
 
     @Test
-    void readBlocksHeadersWithFinalizationVoting() throws NodeException, IOException {
+    void readBlocksHeadersWithFinalizationVoting() throws NodeException, IOException, InterruptedException {
         mockGBlockHeadersRs(node,
                 16,
                 "src/test/resources/stub/blocks/block_with_voting.json"
@@ -62,24 +62,24 @@ public class BlockMockTest {
         );
 
         FinalizationVoting fv = bh.finalizationVoting();
-        assertEquals(14, fv.getFinalizedHeight());
-        assertEquals(List.of(1, 3), fv.getEndorserIndexes());
+        assertEquals(14, fv.finalizedHeight());
+        assertEquals(List.of(1, 3), fv.endorserIndexes());
         assertEquals(
                 "xgHXeGVftVtfxEZhRrfC5Q3pb8DajoGnFed7PxDBC9JegLuW7e1jYjh9QXzU9AeDSB4dShS8id9oThaKwgG4wddevXbiBwenuVFdRXUM3hyqbkcgMCnDLexhZtWhxfrs7AU",
-                fv.getAggregatedEndorsementSignature().encoded()
+                fv.aggregatedEndorsementSignature().encoded()
         );
 
-        assertEquals(1, fv.getConflictEndorsements().size());
-        ConflictEndorsement ce = fv.getConflictEndorsements().get(0);
-        assertEquals(2, ce.getEndorserIndex());
+        assertEquals(1, fv.conflictEndorsements().size());
+        ConflictEndorsement ce = fv.conflictEndorsements().get(0);
+        assertEquals(2, ce.endorserIndex());
         assertEquals(
                 "3LKirJGRvMcdaachGNEuWVSyGbpzWKcagrjsQQuaYXwq",
-                ce.getFinalizedBlockId().encoded()
+                ce.finalizedBlockId().encoded()
         );
-        assertEquals(13, ce.getFinalizedHeight());
+        assertEquals(13, ce.finalizedHeight());
         assertEquals(
                 "omjkPiJX473jCxnScb5XXwi7MRf8Sb4Wom18X68eFodkMuSv3ztNK8fW3886cSqEDJ9PwWV9goJ4H6EPMSkoZmFNSkfnbZzRwrbrCdYFrjDgWzxw91tyWLtX7F2xKAcHsQq",
-                ce.getSignature().encoded()
+                ce.signature().encoded()
         );
 
         assertEquals("BCuRAvrPqngYBKvJ3HKERz3nZZQRKEUMY81FJCEQPfNV",
@@ -90,7 +90,7 @@ public class BlockMockTest {
     }
 
     @Test
-    public void readChallengedBlocksHeaders() throws IOException, NodeException {
+    public void readChallengedBlocksHeaders() throws IOException, NodeException, InterruptedException {
         mockGBlockHeadersRs(node,
                 42,
                 "src/test/resources/stub/blocks/challenged_block.json"
@@ -108,31 +108,31 @@ public class BlockMockTest {
         assertNotNull(ch);
         assertEquals(
                 "52SXMJphW45QdshxfYUxH7w6FhXmGXU2zTmW6mDLvcaWVigKjtufQT7gTJ3gimKFx8mwKyGuTtzoMDf6CYWymjLE",
-                ch.getHeaderSignature().encoded()
+                ch.headerSignature().encoded()
         );
 
-        assertNotNull(ch.getFeatures());
-        assertTrue(ch.getFeatures().isEmpty());
+        assertNotNull(ch.features());
+        assertTrue(ch.features().isEmpty());
         assertEquals(
                 "3Fgtiv5L5q4CXFfwuAfbkjy9ppehkNzjbEG",
-                ch.getGenerator().encoded()
+                ch.generator().encoded()
         );
         assertEquals(
                 "5FUsFwB6b8mE61VMbSB6X7m23NTy4yN8f1fApXo8tZs7",
-                ch.getGeneratorPublicKey().encoded()
+                ch.generatorPublicKey().encoded()
         );
-        assertEquals(-1L, ch.getDesiredReward());
+        assertEquals(-1L, ch.desiredReward());
         assertEquals(
                 "11111111111111111111111111111111",
-                ch.getStateHash().encoded()
+                ch.stateHash().encoded()
         );
-        FinalizationVoting fv = ch.getFinalizationVoting();
+        FinalizationVoting fv = ch.finalizationVoting();
         assertNotNull(fv);
-        assertEquals(List.of(2, 1), fv.getEndorserIndexes());
+        assertEquals(List.of(2, 1), fv.endorserIndexes());
         assertEquals(
                 "yEuHinUSJCG8LdNtvtstKp7edVGrwMmGQQ8qf6ghWc8BB9oiJryCMVmsBQrAJQZX7i8cC1d5mqH2jYLJT2QeJ7QSbMGBAWueVcYhUzpoPtwvtG5NxZUcvTsRUjiZEWPT7uD",
-                fv.getAggregatedEndorsementSignature().encoded()
+                fv.aggregatedEndorsementSignature().encoded()
         );
-        assertEquals(40, fv.getFinalizedHeight());
+        assertEquals(40, fv.finalizedHeight());
     }
 }

@@ -7,7 +7,6 @@ import com.wavesplatform.transactions.account.Address;
 import com.wavesplatform.transactions.common.Alias;
 import com.wavesplatform.transactions.data.DataEntry;
 import com.wavesplatform.wavesj.*;
-import com.wavesplatform.wavesj.LeaseInfo;
 import com.wavesplatform.wavesj.actions.EthRpcResponse;
 import com.wavesplatform.wavesj.info.TransactionInfo;
 import com.wavesplatform.wavesj.peers.BlacklistedPeer;
@@ -17,7 +16,9 @@ import com.wavesplatform.wavesj.peers.SuspendedPeer;
 
 import java.util.List;
 
-public class TypeRef {
+public final class TypeRef {
+
+    private TypeRef() {}
 
     public static final TypeReference<List<Address>> ADDRESSES = new TypeReference<List<Address>>() {};
 
