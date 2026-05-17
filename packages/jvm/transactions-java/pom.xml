@@ -68,7 +68,10 @@
     <!-- Dependency version properties — pinned and audited 2026-05 -->
     <!-- waves-crypto 2.0.7 — latest (Feb 11, 2026); upstream unchanged -->
     <waves-crypto.version>2.0.7</waves-crypto.version>
-    <!-- protobuf-schemas 1.6.0 — latest on Maven Central; upstream unchanged -->
+    <!-- protobuf-schemas 1.6.0 — latest on Maven Central; upstream unchanged
+         NOTE: io.decentralchain:protobuf-schemas only exists as protobuf-src classifier
+         (for code generation). Runtime JAR must remain com.wavesplatform until DCC
+         publishes a full JAR artifact. -->
     <protobuf-schemas.version>1.6.0</protobuf-schemas.version>
     <!-- jackson-databind 2.21.3 — latest (Apr 28, 2026); upgraded from 2.16.1 -->
     <jackson-databind.version>2.21.3</jackson-databind.version>
@@ -90,7 +93,8 @@
     <!-- maven-surefire-plugin 3.5.5 — latest; upgraded from upstream's 3.5.4 -->
     <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
     <!-- maven-source-plugin 3.3.1 — same as upstream -->
-    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <!-- maven-source-plugin 3.4.0 — latest -->
+    <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <!-- maven-javadoc-plugin 3.12.0 — same as upstream -->
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <!-- maven-jar-plugin 3.5.0 — same as upstream (Nov 15, 2025) -->
