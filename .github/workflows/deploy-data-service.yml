@@ -6,9 +6,9 @@ on:
     branches: [main]
     paths:
       - 'apps/data-service/**'
-      - 'packages/ts/assets-pairs-order/**'
-      - 'packages/ts/data-entities/**'
-      - 'packages/ts/parse-json-bignumber/**'
+      - 'packages/sdk/assets-pairs-order/**'
+      - 'packages/sdk/data-entities/**'
+      - 'packages/sdk/parse-json-bignumber/**'
       - 'pnpm-lock.yaml'
       - 'tsconfig.base.json'
 

@@ -41,12 +41,12 @@ jobs:
 
       - name: Build + verify (dry run)
         if: ${{ inputs.dry-run }}
-        working-directory: packages/ts/protobuf-serialization
+        working-directory: packages/sdk/protobuf-serialization
         run: mvn --batch-mode --no-transfer-progress verify -Dgpg.skip=true
 
       - name: Deploy to Maven Central
         if: ${{ !inputs.dry-run }}
-        working-directory: packages/ts/protobuf-serialization
+        working-directory: packages/sdk/protobuf-serialization
         run: mvn --batch-mode --no-transfer-progress deploy -Dgpg.pinentry-mode=loopback
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
