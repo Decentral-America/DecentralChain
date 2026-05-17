@@ -27,7 +27,7 @@
 
 ### SDK (22 libraries)
 
-All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 6.0.2 strict throughout. Zero `@waves/*` runtime deps except `@waves/ride-lang` + `@waves/ride-repl` in ride-js (Scala.js compiler — chain-agnostic, low risk). Zero npm audit vulnerabilities. 5 packages still tagged `@next` on npm (need dist-tag promotion). All 22 packages at latest dependencies (Round 20 sweep, May 6 2026).
+All publish-ready. ESM-only, Vitest, tsdown, Biome, TS 6.0.2 strict throughout. Zero `@waves/*` runtime deps — `@waves/ride-lang` + `@waves/ride-repl` forked as `@decentralchain/ride-lang` + `@decentralchain/ride-repl` (DCC-252 ✅, `packages/ride/`). Zero npm audit vulnerabilities. 5 packages still tagged `@next` on npm (need dist-tag promotion). All 22 packages at latest dependencies (Round 20 sweep, May 6 2026).
 
 ### Apps — current reality
 
@@ -720,7 +720,7 @@ git commit → lefthook pre-commit →
 All 22 SDK libraries have:
 - ✅ biome.json, vitest.config.ts, lefthook.yml, strict TypeScript
 - ✅ Test suites passing, coverage thresholds enforced
-- ✅ Zero `@waves/*` deps (except ride-js: `@waves/ride-lang`, `@waves/ride-repl`)
+- ✅ Zero `@waves/*` deps — `@decentralchain/ride-lang` + `@decentralchain/ride-repl` workspace packages (DCC-252 ✅)
 - ✅ Zero `Math.random()`, `eval()`, `dangerouslySetInnerHTML` in `src/`
 - ✅ Zero hardcoded secrets, zero insecure transport
 
@@ -732,7 +732,7 @@ All 22 SDK libraries have:
 | ~~**transactions ↔ node-api-js**~~ | ~~`transactions` (L2) imports `request()` and `stringify()` from `node-api-js` (L2) — used in `general.ts` for matcher order placement/cancellation HTTP calls.~~ **Fixed:** self-contained `src/tools/request.ts` + `src/tools/stringify.ts` added to `transactions`; phantom `node-api-js` runtime dep eliminated. | ~~Info~~ ✅ |
 | **browser-bus** | Wildcard `'*'` targetOrigin still allowed (warned) | Low |
 | ~~**signature-adapter**~~ | ~~`ramda` adds bundle weight~~ **Fixed:** `ramda` removed; `path()` replaced with native optional chaining, `equals()` replaced with `deepEqual()` in `utils.ts`. | ~~Low~~ ✅ |
-| **ride-js** | Depends on unforked `@waves/ride-lang` + `@waves/ride-repl` | Low |
+| **ride-js** | ~~Depends on `@waves/ride-lang` + `@waves/ride-repl`~~ — **DCC-252 ✅** forked into `packages/ride/`; now `workspace:*` `@decentralchain/ride-lang` + `@decentralchain/ride-repl` | ✅ Resolved |
 | **ledger** | `SECRET = 'WAVES'` in APDU — firmware constraint | Info |
 
 ### Applications
@@ -859,16 +859,16 @@ ride-js (manual workflow_dispatch), scanner, exchange (private apps), cubensis-c
 
 The former supply-chain risk (Waves-controlled package with access to seed crypto operations) no longer exists. `@decentralchain/crypto` is maintained in this monorepo, published under the `@decentralchain` npm org, and subject to the same audit standards as all SDK packages. See [UPSTREAM.md §9](UPSTREAM.md#9-crypto-library-architecture) for the two-library architecture (`crypto` + `ts-lib-crypto`).
 
-### `@waves/ride-lang` + `@waves/ride-repl` Chain
+### ~~`@waves/ride-lang` + `@waves/ride-repl` Chain~~ — CLOSED ✅ (DCC-252)
 
 ```
-@waves/ride-lang (Waves npm package — Scala.js compiled)
-@waves/ride-repl (Waves npm package — Scala.js compiled)
-  └─ ride-js (DCC wrapper)
+@decentralchain/ride-lang (DCC fork — packages/ride/lang/js) ✅ DCC-252
+@decentralchain/ride-repl (DCC fork — packages/ride/repl/js) ✅ DCC-252
+  └─ ride-js (DCC wrapper — packages/ride/ts)
        └─ No downstream DCC consumers (isolated)
 ```
 
-**Risk**: LOW. These are language compiler packages, not security-sensitive. They are chain-agnostic (RIDE compiles the same regardless of chain ID). If unpublished, ride-js stops working but no funds are at risk. No viable fork exists — the Scala.js source is in the Waves monorepo.
+**Risk**: CLOSED. Supply chain risk eliminated. Both packages forked with full git history (1,991 commits from node-scala) into the monorepo as `workspace:*` deps. Dist requires `sbt fullLinkJS` — see `packages/ride/KNOWN_ISSUES.md`.
 
 ### ~~AWS Cognito~~ — CLOSED ✅
 
@@ -966,4 +966,4 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P3~~ | ~~`WavesWalletAuthentication` dual prefix~~ | All three divergent spellings unified to `DccWalletAuthentication`: cubensis-connect `makeAuthBytes` + stored `prefix` (utils.ts, message.ts), `signature-adapter` `constants.ts` + `schemas.ts` (was `DCCWalletAuthentication` — wrong capitalisation). `verifyAuthData()` in `@decentralchain/transactions` now produces the same bytes as cubensis-connect signing, making cross-tool signature verification functional for the first time since the fork. 7 files updated; 9 unit tests pass; both packages typecheck clean. | ✅ Completed (Mar 24, 2026) |
 | **N/A** | `'WAVES'` asset ID | Do not rename — wire format | — |
 | **N/A** | Protobuf `waves` namespace | Do not rename — wire format | — |
-| **N/A** | `@waves/ride-lang` + `ride-repl` | No action unless RIDE language modified | — |
+| ~~N/A~~ | ~~`@waves/ride-lang` + `ride-repl`~~ | ~~No action unless RIDE language modified~~ | ✅ Forked (DCC-252) |
