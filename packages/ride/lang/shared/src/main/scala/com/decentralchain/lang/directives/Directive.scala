@@ -6,7 +6,9 @@ import com.decentralchain.lang.directives.DirectiveKey.*
 case class Directive(key: DirectiveKey, value: DirectiveValue)
 
 object Directive {
-  def extractValue(directives: Iterable[Directive], key: DirectiveKey)(implicit default: => Option[key.Value] = None): key.Value =
+  def extractValue(directives: Iterable[Directive], key: DirectiveKey)(implicit
+      default: => Option[key.Value] = None
+  ): key.Value =
     directives
       .find(_.key == key)
       .map(_.value)

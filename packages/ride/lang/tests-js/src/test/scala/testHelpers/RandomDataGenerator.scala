@@ -74,7 +74,9 @@ object RandomDataGenerator {
   def randomStringArrayElement: String              = stringArray(rnd.nextInt(stringArray.length))
   def randomIssuesArrayElement: String              = issuesArray(rnd.nextInt(issuesArray.length))
   def randomUnionArrayElement: String               = unionArray(rnd.nextInt(unionArray.length))
-  def randomDigestAlgorithmTypeArrayElement: String = digestAlgorithmTypeArray(rnd.nextInt(digestAlgorithmTypeArray.length))
-  def randomInt: Integer                            = rnd.nextInt(90000000)
-  def randomBoolean: Boolean                        = randomInt % 2 == 0
+  def randomDigestAlgorithmTypeArrayElement: String = digestAlgorithmTypeArray(
+    rnd.nextInt(digestAlgorithmTypeArray.length)
+  )
+  def randomInt: Integer     = rnd.nextInt(90000000)
+  def randomBoolean: Boolean = randomInt % 2 == 0
 }

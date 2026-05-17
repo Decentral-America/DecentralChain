@@ -20,7 +20,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.*
 import com.decentralchain.lang.v1.evaluator.{ContextfulUserFunction, ContextfulVal}
 import com.decentralchain.lang.v1.parser.BinaryOperation
 import com.decentralchain.lang.v1.parser.BinaryOperation.*
-import com.decentralchain.lang.v1.{BaseGlobal, CTX, FunctionHeader, compiler}
+import com.decentralchain.lang.v1.{compiler, BaseGlobal, CTX, FunctionHeader}
 
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.charset.{MalformedInputException, StandardCharsets}
@@ -105,7 +105,11 @@ object PureContext {
   lazy val eq: BaseFunction[NoContext] =
     NativeFunction(EQ_OP.func, 1, EQ, BOOLEAN, ("a", TYPEPARAM('T')), ("b", TYPEPARAM('T'))) {
       case a :: b :: Nil =>
-        Either.cond(b.weight <= MaxCmpWeight || a.weight <= MaxCmpWeight, CONST_BOOLEAN(a == b), "Comparable value too heavy.")
+        Either.cond(
+          b.weight <= MaxCmpWeight || a.weight <= MaxCmpWeight,
+          CONST_BOOLEAN(a == b),
+          "Comparable value too heavy."
+        )
       case xs => notImplemented[Id, EVALUATED](s"${EQ_OP.func}(a: T, b: T)", xs)
     }
 
@@ -129,7 +133,11 @@ object PureContext {
   lazy val bigIntToInt: BaseFunction[NoContext] =
     NativeFunction("toInt", 1, BIGINT_TO_INT, LONG, ("n", BIGINT)) {
       case CONST_BIGINT(n) :: Nil =>
-        Either.cond(Long.MaxValue >= n && n >= Long.MinValue, CONST_LONG(n.toLong), s"toInt: BigInt $n out of integers range")
+        Either.cond(
+          Long.MaxValue >= n && n >= Long.MinValue,
+          CONST_LONG(n.toLong),
+          s"toInt: BigInt $n out of integers range"
+        )
       case xs => notImplemented[Id, EVALUATED]("toBigInt(n: Int)", xs)
     }
 
@@ -204,7 +212,7 @@ object PureContext {
 
   def bigIntArithmeticOp(op: BinaryOperation, func: Short, complexity: Map[StdLibVersion, Long])(
       body: (BigInt, BigInt) => BigInt
-  ): BaseFunction[NoContext] = {
+  ): BaseFunction[NoContext] =
     createRawOp(
       op,
       BIGINT,
@@ -224,18 +232,17 @@ object PureContext {
       case args =>
         Left(s"Unexpected args $args for BigInt operator '${op.func}'")
     }
-  }
 
   lazy val sumToBigInt: BaseFunction[NoContext] =
-    bigIntArithmeticOp(SUM_OP, SUM_BIGINT, Map(V5 -> 8L, V8 -> 1L)) { _ + _ }
+    bigIntArithmeticOp(SUM_OP, SUM_BIGINT, Map(V5 -> 8L, V8 -> 1L))(_ + _)
   lazy val subToBigInt: BaseFunction[NoContext] =
-    bigIntArithmeticOp(SUB_OP, SUB_BIGINT, Map(V5 -> 8L, V8 -> 1L)) { _ - _ }
+    bigIntArithmeticOp(SUB_OP, SUB_BIGINT, Map(V5 -> 8L, V8 -> 1L))(_ - _)
   lazy val mulToBigInt: BaseFunction[NoContext] =
-    bigIntArithmeticOp(MUL_OP, MUL_BIGINT, Map(V5 -> 64L, V8 -> 1L)) { _ * _ }
+    bigIntArithmeticOp(MUL_OP, MUL_BIGINT, Map(V5 -> 64L, V8 -> 1L))(_ * _)
   lazy val divToBigInt: BaseFunction[NoContext] =
-    bigIntArithmeticOp(DIV_OP, DIV_BIGINT, Map(V5 -> 64L, V8 -> 1L)) { _ / _ }
+    bigIntArithmeticOp(DIV_OP, DIV_BIGINT, Map(V5 -> 64L, V8 -> 1L))(_ / _)
   lazy val modToBigInt: BaseFunction[NoContext] =
-    bigIntArithmeticOp(MOD_OP, MOD_BIGINT, Map(V5 -> 64L, V8 -> 1L)) { _ % _ }
+    bigIntArithmeticOp(MOD_OP, MOD_BIGINT, Map(V5 -> 64L, V8 -> 1L))(_ % _)
 
   lazy val negativeBigInt: BaseFunction[NoContext] =
     NativeFunction("-", Map(V5 -> 8L, V6 -> 8L, V7 -> 8L, V8 -> 1L), UMINUS_BIGINT, BIGINT, ("n", BIGINT)) {
@@ -290,18 +297,22 @@ object PureContext {
             s"on function '$name${if (postfix) "Value" else ""}' call"
           }
           def address(args: List[EXPR]) = s"base58'${args.head.asInstanceOf[CaseObj].fields.head._2}'"
-          val errorMessage = startArgs.head match {
-            case FUNCTION_CALL(h, args) if stateDataHeaders(h) => s"value by key '${args(1)}' not found for the address ${address(args)} ${call(h)}"
-            case FUNCTION_CALL(h, args) if stateDataSelfHeaders(h)    => s"value by key '${args(0)}' not found for the contract address ${call(h)}"
-            case FUNCTION_CALL(h, args) if arrayDataByKeyHeaders(h)   => s"value by key '${args(1)}' not found in the list ${call(h)}"
-            case FUNCTION_CALL(h, args) if arrayDataByIndexHeaders(h) => s"value by index ${args(1)} not found in the list ${call(h)}"
-            case FUNCTION_CALL(h, _)                                  => s"$base ${call(h, postfix = false)}"
-            case GETTER(_, field)                                     => s"$base while accessing field '$field'"
-            case REF(key)                                             => s"$base by reference '$key'"
-            case LET_BLOCK(_, _)                                      => s"$base after let block evaluation"
-            case BLOCK(_, _)                                          => s"$base after block evaluation"
-            case IF(_, _, _)                                          => s"$base after condition evaluation"
-            case _                                                    => base
+          val errorMessage              = startArgs.head match {
+            case FUNCTION_CALL(h, args) if stateDataHeaders(h) =>
+              s"value by key '${args(1)}' not found for the address ${address(args)} ${call(h)}"
+            case FUNCTION_CALL(h, args) if stateDataSelfHeaders(h) =>
+              s"value by key '${args(0)}' not found for the contract address ${call(h)}"
+            case FUNCTION_CALL(h, args) if arrayDataByKeyHeaders(h) =>
+              s"value by key '${args(1)}' not found in the list ${call(h)}"
+            case FUNCTION_CALL(h, args) if arrayDataByIndexHeaders(h) =>
+              s"value by index ${args(1)} not found in the list ${call(h)}"
+            case FUNCTION_CALL(h, _) => s"$base ${call(h, postfix = false)}"
+            case GETTER(_, field)    => s"$base while accessing field '$field'"
+            case REF(key)            => s"$base by reference '$key'"
+            case LET_BLOCK(_, _)     => s"$base after let block evaluation"
+            case BLOCK(_, _)         => s"$base after block evaluation"
+            case IF(_, _, _)         => s"$base after condition evaluation"
+            case _                   => base
           }
           IF(
             FUNCTION_CALL(PureContext.eq, List(REF("@a"), REF(GlobalValNames.Unit))),
@@ -692,7 +703,7 @@ object PureContext {
       ("number", LONG)
     ) {
       case CONST_STRING(xs) :: CONST_LONG(number) :: Nil => CONST_STRING(xs.take(trimLongToInt(number)))
-      case xs                                            => notImplemented[Id, EVALUATED]("take(xs: String, number: Int)", xs)
+      case xs => notImplemented[Id, EVALUATED]("take(xs: String, number: Int)", xs)
     }
 
   private def takeStringFixed(checkLimits: Boolean): BaseFunction[NoContext] =
@@ -749,7 +760,7 @@ object PureContext {
       ("element", TYPEPARAM('B'))
     ) {
       case (a @ ARR(list)) :: element :: Nil => ARR(list :+ element, a.weight + element.weight + ELEM_WEIGHT, true)
-      case xs                                => notImplemented[Id, EVALUATED](s"list: List[T] ${LIST_APPEND_OP.func} value: T", xs)
+      case xs => notImplemented[Id, EVALUATED](s"list: List[T] ${LIST_APPEND_OP.func} value: T", xs)
     }
 
   lazy val listConcat: NativeFunction[NoContext] =
@@ -762,7 +773,7 @@ object PureContext {
       ("list2", PARAMETERIZEDLIST(TYPEPARAM('B')))
     ) {
       case (a1 @ ARR(l1)) :: (a2 @ ARR(l2)) :: Nil => ARR(l1 ++ l2, a1.weight + a2.weight - EMPTYARR_WEIGHT, true)
-      case xs                                      => notImplemented[Id, EVALUATED](s"list1: List[T] ${LIST_CONCAT_OP.func} list2: List[T]", xs)
+      case xs => notImplemented[Id, EVALUATED](s"list1: List[T] ${LIST_CONCAT_OP.func} list2: List[T]", xs)
     }
 
   private val dropStringBeforeV6: BaseFunction[NoContext] =
@@ -775,7 +786,7 @@ object PureContext {
       ("number", LONG)
     ) {
       case CONST_STRING(xs) :: CONST_LONG(number) :: Nil => CONST_STRING(xs.drop(trimLongToInt(number)))
-      case xs                                            => notImplemented[Id, EVALUATED]("drop(xs: String, number: Int)", xs)
+      case xs => notImplemented[Id, EVALUATED]("drop(xs: String, number: Int)", xs)
     }
 
   private def dropStringFixed(checkLimits: Boolean): BaseFunction[NoContext] =
@@ -1011,14 +1022,14 @@ object PureContext {
       ("substr", STRING)
     ) {
       case CONST_STRING(m) :: CONST_STRING(sub) :: Nil =>
-        Right({
+        Right {
           val i = m.indexOf(sub)
           if (i != -1) {
             CONST_LONG(i.toLong)
           } else {
             unit
           }
-        })
+        }
       case xs => notImplemented[Id, EVALUATED]("indexOf(str: String, substr: String)", xs)
     }
 
@@ -1101,14 +1112,14 @@ object PureContext {
       ("substr", STRING)
     ) {
       case CONST_STRING(m) :: CONST_STRING(sub) :: Nil =>
-        Right({
+        Right {
           val i = m.lastIndexOf(sub)
           if (i != -1) {
             CONST_LONG(i.toLong)
           } else {
             unit
           }
-        })
+        }
       case xs => notImplemented[Id, EVALUATED]("lastIndexOf(str: String, substr: String)", xs)
     }
 
@@ -1122,14 +1133,14 @@ object PureContext {
       ("substr", STRING)
     ) {
       case CONST_STRING(m) :: CONST_STRING(sub) :: Nil =>
-        Right({
+        Right {
           val i = m.lastIndexOf(sub)
           if (sub.isWellFormed && i != -1) {
             CONST_LONG(m.codePointCount(0, i).toLong)
           } else {
             unit
           }
-        })
+        }
       case xs => notImplemented[Id, EVALUATED]("lastIndexOf(str: String, substr: String)", xs)
     }
 
@@ -1184,7 +1195,14 @@ object PureContext {
     }
 
   lazy val splitStr: BaseFunction[NoContext] =
-    NativeFunction("split", Map(V3 -> 100L, V4 -> 75L, V6 -> 51L), SPLIT, listString, ("str", STRING), ("separator", STRING)) {
+    NativeFunction(
+      "split",
+      Map(V3 -> 100L, V4 -> 75L, V6 -> 51L),
+      SPLIT,
+      listString,
+      ("str", STRING),
+      ("separator", STRING)
+    ) {
       case CONST_STRING(str) :: CONST_STRING(sep) :: Nil =>
         ARR(split(str, sep, unicode = false).toIndexedSeq, limited = true)
       case xs =>
@@ -1193,7 +1211,14 @@ object PureContext {
 
   def splitStrFixedF(id: Short, inputLimit: Int, outputLimit: Int, v6Complexity: Long): BaseFunction[NoContext] = {
     val name = if (id == SPLIT) "split" else s"split_${v6Complexity}C"
-    NativeFunction(name, Map(V3 -> 100L, V4 -> 75L, V6 -> v6Complexity), id, listString, ("str", STRING), ("separator", STRING)) {
+    NativeFunction(
+      name,
+      Map(V3 -> 100L, V4 -> 75L, V6 -> v6Complexity),
+      id,
+      listString,
+      ("str", STRING),
+      ("separator", STRING)
+    ) {
       case (s @ CONST_STRING(str)) :: CONST_STRING(sep) :: Nil =>
         if (s.weight > inputLimit)
           Left(s"Input string size = ${s.weight} bytes exceeds limit = $inputLimit for $name")
@@ -1214,19 +1239,20 @@ object PureContext {
   val splitStr4C    = splitStrFixedF(SPLIT4C, 6000, 100, 4)
   val splitStr51C   = splitStrFixedF(SPLIT51C, DataEntryValueMax, MaxListLengthV4, 51)
 
-  private def split(str: String, sep: String, unicode: Boolean): Iterable[CONST_STRING] = {
+  private def split(str: String, sep: String, unicode: Boolean): Iterable[CONST_STRING] =
     if (str == "") listWithEmptyStr
     else if (unicode && !sep.isWellFormed) List(CONST_STRING(str).explicitGet())
     else if (sep == "")
       if (unicode) {
         (1 to str.codePointCount(0, str.length))
-          .map(i => CONST_STRING(str.substring(str.offsetByCodePoints(0, i - 1), str.offsetByCodePoints(0, i))).explicitGet())
+          .map(i =>
+            CONST_STRING(str.substring(str.offsetByCodePoints(0, i - 1), str.offsetByCodePoints(0, i))).explicitGet()
+          )
       } else {
         (1 to str.length)
           .map(i => CONST_STRING(String.valueOf(str.charAt(i - 1))).explicitGet())
       }
     else splitRec(str, sep)
-  }
 
   private val listWithEmptyStr = List(CONST_STRING("").explicitGet())
 
@@ -1247,9 +1273,22 @@ object PureContext {
       )
   }
 
-  def makeStringF(id: Short, complexityV6: Long, inputLimit: Int, outputLimit: Int, rejectNonStrings: Boolean): BaseFunction[NoContext] = {
+  def makeStringF(
+      id: Short,
+      complexityV6: Long,
+      inputLimit: Int,
+      outputLimit: Int,
+      rejectNonStrings: Boolean
+  ): BaseFunction[NoContext] = {
     val name = if (id == MAKESTRING) "makeString" else s"makeString_${complexityV6}C"
-    NativeFunction(name, Map(V4 -> 30L, V5 -> 30L, V6 -> complexityV6), id, STRING, ("list", LIST(STRING)), ("separator", STRING)) {
+    NativeFunction(
+      name,
+      Map(V4 -> 30L, V5 -> 30L, V6 -> complexityV6),
+      id,
+      STRING,
+      ("list", LIST(STRING)),
+      ("separator", STRING)
+    ) {
       case (arr: ARR) :: CONST_STRING(separator) :: Nil =>
         if (arr.xs.length > inputLimit)
           Left(s"Input list size = ${arr.xs.length} for $name should not exceed $inputLimit")
@@ -1270,10 +1309,12 @@ object PureContext {
     }
   }
 
-  val makeString: BaseFunction[NoContext]        = makeStringF(MAKESTRING, 11, MaxListLengthV4, DataEntryValueMax, rejectNonStrings = false)
+  val makeString: BaseFunction[NoContext] =
+    makeStringF(MAKESTRING, 11, MaxListLengthV4, DataEntryValueMax, rejectNonStrings = false)
   val makeString_V6: BaseFunction[NoContext]     = makeStringF(MAKESTRING, 1, 70, 500, rejectNonStrings = true)
   val makeString_V6_2C: BaseFunction[NoContext]  = makeStringF(MAKESTRING2C, 2, 100, 6000, rejectNonStrings = true)
-  val makeString_V6_11C: BaseFunction[NoContext] = makeStringF(MAKESTRING11C, 11, MaxListLengthV4, DataEntryValueMax, rejectNonStrings = true)
+  val makeString_V6_11C: BaseFunction[NoContext] =
+    makeStringF(MAKESTRING11C, 11, MaxListLengthV4, DataEntryValueMax, rejectNonStrings = true)
 
   lazy val contains: BaseFunction[NoContext] =
     UserFunction(
@@ -1327,7 +1368,9 @@ object PureContext {
       case (src @ CONST_STRING(str)) :: CONST_STRING(target) :: CONST_STRING(replacement) :: Nil =>
         val i = str.indexOf(target)
         if (i >= 0) {
-          CONST_STRING(new StringBuilder(str.take(i)).append(replacement).append(str.drop(i + target.length)).toString())
+          CONST_STRING(
+            new StringBuilder(str.take(i)).append(replacement).append(str.drop(i + target.length)).toString()
+          )
         } else Right(src)
       case xs => notImplemented[Id, EVALUATED]("replaceFirst(str: String, target: String, replacement: String)", xs)
     }
@@ -1372,7 +1415,7 @@ object PureContext {
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), complexity, func, r, ("a", t), ("b", t)) {
       case a :: b :: Nil => body(a, b)
-      case xs            => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
+      case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
     }
 
   def createRawOp(op: BinaryOperation, t: TYPE, r: TYPE, func: Short, complexity: Map[StdLibVersion, Long])(
@@ -1380,7 +1423,7 @@ object PureContext {
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), complexity, func, r, ("a", t), ("b", t)) {
       case a :: b :: Nil => body(a, b)
-      case xs            => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
+      case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
     }
 
   def createOp(op: BinaryOperation, t: TYPE, r: TYPE, func: Short, complexity: Int = 1)(
@@ -1388,7 +1431,7 @@ object PureContext {
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), complexity, func, r, ("a", t), ("b", t)) {
       case CONST_LONG(a) :: CONST_LONG(b) :: Nil => Right(CONST_BOOLEAN(body(a, b)))
-      case xs                                    => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
+      case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
     }
 
   def createTryOp(op: BinaryOperation, t: TYPE, r: TYPE, func: Short, complicity: Int = 1)(
@@ -1396,9 +1439,9 @@ object PureContext {
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), complicity, func, r, ("a", t), ("b", t)) {
       case CONST_LONG(a) :: CONST_LONG(b) :: Nil =>
-        try {
+        try
           Right(CONST_LONG(body(a, b)))
-        } catch {
+        catch {
           case e: Throwable => Left(e.getMessage)
         }
       case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
@@ -1408,8 +1451,9 @@ object PureContext {
       body: (BigInt, BigInt) => Boolean
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), Map(V5 -> 8L, V8 -> 1L), func, BOOLEAN, ("a", BIGINT), ("b", BIGINT)) {
-      case CONST_BIGINT(a) :: CONST_BIGINT(b) :: Nil => Try(body(a, b)).toEither.bimap(_.getMessage, CONST_BOOLEAN.apply)
-      case xs                                        => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: BIGINT, b: BIGINT)", xs)
+      case CONST_BIGINT(a) :: CONST_BIGINT(b) :: Nil =>
+        Try(body(a, b)).toEither.bimap(_.getMessage, CONST_BOOLEAN.apply)
+      case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: BIGINT, b: BIGINT)", xs)
     }
 
   lazy val getElement: BaseFunction[NoContext] =
@@ -1422,10 +1466,10 @@ object PureContext {
       ("pos", LONG)
     ) {
       case ARR(arr) :: CONST_LONG(pos) :: Nil =>
-        Try(arr(pos.toInt)).toEither.left.map({
+        Try(arr(pos.toInt)).toEither.left.map {
           case _: java.lang.IndexOutOfBoundsException => s"Index $pos out of bounds for length ${arr.size}"
           case e: Throwable                           => e.toString
-        })
+        }
       case xs => notImplemented[Id, EVALUATED](s"getElement(arr: Array, pos: Int)", xs)
     }
 
@@ -1472,7 +1516,13 @@ object PureContext {
     }
 
   lazy val listBigIntMin: BaseFunction[NoContext] =
-    NativeFunction("min", Map(V5 -> 192L, V6 -> 192L, V7 -> 192L, V8 -> 6L), MIN_LIST_BIGINT, BIGINT, ("list", PARAMETERIZEDLIST(BIGINT))) {
+    NativeFunction(
+      "min",
+      Map(V5 -> 192L, V6 -> 192L, V7 -> 192L, V8 -> 6L),
+      MIN_LIST_BIGINT,
+      BIGINT,
+      ("list", PARAMETERIZEDLIST(BIGINT))
+    ) {
       case ARR(list) :: Nil =>
         Either.cond(
           list.nonEmpty,
@@ -1626,7 +1676,7 @@ object PureContext {
       IF(REF("@p"), FALSE, TRUE)
     }
 
-  def pow(roundTypes: UNION, useNewPrecision: Boolean): BaseFunction[NoContext] = {
+  def pow(roundTypes: UNION, useNewPrecision: Boolean): BaseFunction[NoContext] =
     NativeFunction(
       "pow",
       Map(V3 -> 100L, V6 -> 28L),
@@ -1650,14 +1700,25 @@ object PureContext {
         ) {
           Left("pow: scale out of range 0-8")
         } else {
-          global.pow(b, bp.toInt, e, ep.toInt, rp.toInt, Rounding.byValue(round), useNewPrecision).map(CONST_LONG.apply).leftMap(CommonError(_))
+          global
+            .pow(b, bp.toInt, e, ep.toInt, rp.toInt, Rounding.byValue(round), useNewPrecision)
+            .map(CONST_LONG.apply)
+            .leftMap(CommonError(_))
         }
-      case xs => notImplemented[Id, EVALUATED]("pow(base: Int, bp: Int, exponent: Int, ep: Int, rp: Int, round: Rounds)", xs)
+      case xs =>
+        notImplemented[Id, EVALUATED]("pow(base: Int, bp: Int, exponent: Int, ep: Int, rp: Int, round: Rounds)", xs)
     }
-  }
 
   val sqrtInt: BaseFunction[NoContext] =
-    UserFunction("sqrt", 2, LONG, ("@number", LONG), ("@precision", LONG), ("@resultPrecision", LONG), ("@round", UNION(fromV5RoundTypes))) {
+    UserFunction(
+      "sqrt",
+      2,
+      LONG,
+      ("@number", LONG),
+      ("@precision", LONG),
+      ("@resultPrecision", LONG),
+      ("@round", UNION(fromV5RoundTypes))
+    ) {
       FUNCTION_CALL(
         Native(POW),
         List(
@@ -1671,8 +1732,19 @@ object PureContext {
       )
     }
 
-  def log(roundTypes: UNION): BaseFunction[NoContext] = {
-    NativeFunction("log", 100, LOG, LONG, ("base", LONG), ("bp", LONG), ("exponent", LONG), ("ep", LONG), ("rp", LONG), ("round", roundTypes)) {
+  def log(roundTypes: UNION): BaseFunction[NoContext] =
+    NativeFunction(
+      "log",
+      100,
+      LOG,
+      LONG,
+      ("base", LONG),
+      ("bp", LONG),
+      ("exponent", LONG),
+      ("ep", LONG),
+      ("rp", LONG),
+      ("round", roundTypes)
+    ) {
       case CONST_LONG(b) :: CONST_LONG(bp) :: CONST_LONG(e) :: CONST_LONG(ep) :: CONST_LONG(rp) :: round :: Nil =>
         if (
           bp < 0
@@ -1686,9 +1758,9 @@ object PureContext {
         } else {
           global.log(b, bp, e, ep, rp, Rounding.byValue(round)).map(CONST_LONG.apply).leftMap(CommonError(_))
         }
-      case xs => notImplemented[Id, EVALUATED]("log(exponent: Int, ep: Int, base: Int, bp: Int, rp: Int, round: Rounds)", xs)
+      case xs =>
+        notImplemented[Id, EVALUATED]("log(exponent: Int, ep: Int, base: Int, bp: Int, rp: Int, round: Rounds)", xs)
     }
-  }
 
   def powBigInt(roundTypes: UNION, useNewPrecision: Boolean): BaseFunction[NoContext] =
     NativeFunction(
@@ -1719,7 +1791,11 @@ object PureContext {
             .filterOrElse(v => v <= BigIntMax && v >= BigIntMin, "Result out of 512-bit range")
             .bimap(e => s"$e on BigInt pow calculation", CONST_BIGINT.apply)
         }
-      case xs => notImplemented[Id, EVALUATED]("pow(base: BigInt, bp: Int, exponent:Big Int, ep: Int, rp: Int, round: Rounds)", xs)
+      case xs =>
+        notImplemented[Id, EVALUATED](
+          "pow(base: BigInt, bp: Int, exponent:Big Int, ep: Int, rp: Int, round: Rounds)",
+          xs
+        )
     }
 
   val sqrtBigInt: BaseFunction[NoContext] =
@@ -1774,7 +1850,11 @@ object PureContext {
             global.logBigInt(b, bp, e, ep, rp, Rounding.byValue(round)).map(CONST_BIGINT.apply)
           }
         r.leftMap(e => s"$e on BigInt log calculation")
-      case xs => notImplemented[Id, EVALUATED]("log(exponent: BigInt, ep: Int, base:Big Int, bp: Int, rp: Int, round: Rounds)", xs)
+      case xs =>
+        notImplemented[Id, EVALUATED](
+          "log(exponent: BigInt, ep: Int, base:Big Int, bp: Int, rp: Int, round: Rounds)",
+          xs
+        )
     }
 
   val getListMedian: BaseFunction[NoContext] =
@@ -1826,7 +1906,10 @@ object PureContext {
   private val nil: (String, (LIST, ContextfulVal[NoContext])) =
     (
       GlobalValNames.Nil,
-      (LIST(NOTHING), ContextfulVal.pure[NoContext](ARR(IndexedSeq.empty[EVALUATED], EMPTYARR_WEIGHT, limited = false).explicitGet()))
+      (
+        LIST(NOTHING),
+        ContextfulVal.pure[NoContext](ARR(IndexedSeq.empty[EVALUATED], EMPTYARR_WEIGHT, limited = false).explicitGet())
+      )
     )
 
   private val commonVars: Map[String, (FINAL, ContextfulVal[NoContext])] =
@@ -1836,7 +1919,8 @@ object PureContext {
 
   private val v1V2Vars: Map[String, (FINAL, ContextfulVal[NoContext])] = commonVars ++ Rounding.all.map(_.definition)
   private val v3V4Vars: Map[String, (FINAL, ContextfulVal[NoContext])] = v1V2Vars + nil
-  private val v5Vars: Map[String, (FINAL, ContextfulVal[NoContext])]   = commonVars ++ Rounding.fromV5.map(_.definition) + nil
+  private val v5Vars: Map[String, (FINAL, ContextfulVal[NoContext])]   =
+    commonVars ++ Rounding.fromV5.map(_.definition) + nil
 
   private val commonTypes: Seq[REAL] =
     Seq(

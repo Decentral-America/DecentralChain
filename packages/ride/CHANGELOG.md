@@ -2,6 +2,23 @@
 
 All notable changes to `packages/ride` are documented here.
 
+## [Unreleased] — Round 8 enterprise audit
+
+### Fixed
+- `FileCompiler.scala`: replaced `println(...)` with SLF4J `logger.info(...)` — eliminates
+  bare `println` in production code (DCC-252 AC: zero `println` in production).
+  SLF4J is available via `logback-classic` which is already a `lang-jvm` dependency.
+- `Dependencies.scala`: `curve25519-java` dependency version updated to `0.6.6`
+  (previously `1.0.0`; corrected to match upstream DCC-260 ticket AC and the
+  fork version scheme `<upstream>.<dcc-increment>`, i.e. upstream 0.6.5 + DCC = 0.6.6).
+
+### Documented
+- KNOWN_ISSUES KNOWN-4: `com.wavesplatform.protobuf.*` and `com.wavesplatform.zwaves.*`
+  imports are wire-compat / JNI bindings and are intentionally retained. Zero
+  `com.wavesplatform.lang.*` occurrences exist — the DCC-252 AC is satisfied.
+- KNOWN_ISSUES KNOWN-5: `scalatestplus:scalacheck-1-18` + ScalaCheck 1.19.0 combination
+  documented; upgrade path noted for when `scalacheck-1-19` module is published.
+
 ## [1.6.2] — 2026-05-16
 
 ### Added

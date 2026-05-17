@@ -18,19 +18,31 @@ class ApiCompilerTest extends PropSpec {
     checkCompile(dAppWithParseError, smallLib, "Parse error: illegal expression in 104-107")
     checkCompile(dAppWithCompileError, smallLib, "Compilation failed: [A definition of 'abc' is not found in 140-143]")
     checkCompile(verifierWithParseError, smallLib, "Parse error: expected variable name in 110-113")
-    checkCompile(verifierWithCompileError, smallLib, "Compilation failed: [A definition of 'abc' is not found in 110-113]")
+    checkCompile(
+      verifierWithCompileError,
+      smallLib,
+      "Compilation failed: [A definition of 'abc' is not found in 110-113]"
+    )
 
     // length of lib code > lib import statement
     checkCompile(dAppWithParseError, bigLib, "Parse error: illegal expression in 104-107")
     checkCompile(dAppWithCompileError, bigLib, "Compilation failed: [A definition of 'abc' is not found in 140-143]")
     checkCompile(verifierWithParseError, bigLib, "Parse error: expected variable name in 110-113")
-    checkCompile(verifierWithCompileError, bigLib, "Compilation failed: [A definition of 'abc' is not found in 110-113]")
+    checkCompile(
+      verifierWithCompileError,
+      bigLib,
+      "Compilation failed: [A definition of 'abc' is not found in 110-113]"
+    )
 
     // errors with positions of library code should have resulting position of import statement
     checkCompile(correctDapp, libWithParseError1, "Parse error: illegal expression in 79-102")
     checkCompile(correctDapp, libWithCompileError, "Compilation failed: [A definition of 'abc' is not found in 79-102]")
     checkCompile(correctVerifier, libWithParseError2, "Parse error: expected variable name in 85-108")
-    checkCompile(correctVerifier, libWithCompileError, "Compilation failed: [A definition of 'abc' is not found in 85-108]")
+    checkCompile(
+      correctVerifier,
+      libWithCompileError,
+      "Compilation failed: [A definition of 'abc' is not found in 85-108]"
+    )
   }
 
   property("parseAndCompile should return correct error positions in script with libraries") {
@@ -167,23 +179,43 @@ class ApiCompilerTest extends PropSpec {
         |func foo() = []
         |""".stripMargin
 
-    API.compile(script1, estimator, libraries = Map.empty).explicitGet().asInstanceOf[DApp].dAppInfo.globalVariableComplexities shouldBe Map(
+    API
+      .compile(script1, estimator, libraries = Map.empty)
+      .explicitGet()
+      .asInstanceOf[DApp]
+      .dAppInfo
+      .globalVariableComplexities shouldBe Map(
       "a" -> 1,
       "b" -> 2
     )
-    API.compile(script2, estimator, libraries = Map.empty).explicitGet().asInstanceOf[DApp].dAppInfo.globalVariableComplexities shouldBe Map(
+    API
+      .compile(script2, estimator, libraries = Map.empty)
+      .explicitGet()
+      .asInstanceOf[DApp]
+      .dAppInfo
+      .globalVariableComplexities shouldBe Map(
       "a" -> 1,
       "b" -> 4,
       "e" -> 5
     )
 
-    API.compile(script3, estimator, libraries = Map.empty).explicitGet().asInstanceOf[DApp].dAppInfo.globalVariableComplexities shouldBe Map(
+    API
+      .compile(script3, estimator, libraries = Map.empty)
+      .explicitGet()
+      .asInstanceOf[DApp]
+      .dAppInfo
+      .globalVariableComplexities shouldBe Map(
       "l" -> 0,
       "a" -> 8,
       "b" -> 16
     )
 
-    API.compile(script4, estimator, libraries = Map.empty).explicitGet().asInstanceOf[DApp].dAppInfo.globalVariableComplexities shouldBe Map(
+    API
+      .compile(script4, estimator, libraries = Map.empty)
+      .explicitGet()
+      .asInstanceOf[DApp]
+      .dAppInfo
+      .globalVariableComplexities shouldBe Map(
       "a" -> 2,
       "b" -> 4,
       "c" -> 6
@@ -196,12 +228,24 @@ class ApiCompilerTest extends PropSpec {
   }
 
   private def checkParseAndCompileDapp(dApp: String, lib: String, expectedErrors: Seq[CompilationError]): Assertion =
-    API.parseAndCompile(dApp, libraries = Map(libName -> lib)).explicitGet().asInstanceOf[Contract].errors shouldBe expectedErrors
+    API
+      .parseAndCompile(dApp, libraries = Map(libName -> lib))
+      .explicitGet()
+      .asInstanceOf[Contract]
+      .errors shouldBe expectedErrors
 
-  private def checkParseAndCompileVerifier(verifier: String, lib: String, expectedErrors: Seq[CompilationError]): Assertion =
-    API.parseAndCompile(verifier, libraries = Map(libName -> lib)).explicitGet().asInstanceOf[Expression].errors shouldBe expectedErrors
+  private def checkParseAndCompileVerifier(
+      verifier: String,
+      lib: String,
+      expectedErrors: Seq[CompilationError]
+  ): Assertion =
+    API
+      .parseAndCompile(verifier, libraries = Map(libName -> lib))
+      .explicitGet()
+      .asInstanceOf[Expression]
+      .errors shouldBe expectedErrors
 
-  private def libName = "lib.ride"
+  private def libName                    = "lib.ride"
   private def dAppWithParseError: String =
     s"""{-# STDLIB_VERSION 6 #-}
        |{-# CONTENT_TYPE DAPP #-}

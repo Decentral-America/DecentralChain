@@ -3,9 +3,13 @@ package com.decentralchain.test.builtInFunctions.verification
 import com.decentralchain.JsTestBase
 import com.decentralchain.lang.directives.values.V3
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAddressDataArrayElement, randomByteVectorArrayElement, randomUnionArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAddressDataArrayElement,
+  randomByteVectorArrayElement,
+  randomUnionArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{CANT_FIND_FUNCTION, MATCHING_NOT_EXHAUSTIVE}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object CheckMerkleProof extends JsTestBase {
   private val checkMerkleProof                     = "checkMerkleProof(callerTestData, callerTestData, callerTestData)"

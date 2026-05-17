@@ -21,16 +21,13 @@ trait TaskMTFunctions {
     TaskMT(s => Eval.now(s.asRight[E].pure[F]))
 
   def set[F[_]: Monad, S, E](s: S): TaskMT[F, S, E, Unit] =
-    TaskMT.fromKleisli(Kleisli(ref => {
-      ref.write(s).map(_.asRight[E].pure[F])
-    }))
+    TaskMT.fromKleisli(Kleisli(ref => ref.write(s).map(_.asRight[E].pure[F])))
 
-  def local[F[_], S, E, A](fa: TaskMT[F, S, E, A]): TaskMT[F, S, E, A] = {
-    TaskMT.fromKleisli(Kleisli((ref: EvalRef[S]) => {
+  def local[F[_], S, E, A](fa: TaskMT[F, S, E, A]): TaskMT[F, S, E, A] =
+    TaskMT.fromKleisli(Kleisli { (ref: EvalRef[S]) =>
       val newRef = ref.copy()
       fa.inner.run(newRef)
-    }))
-  }
+    })
 
   def id[F[_], S, E, A](fa: TaskMT[F, S, E, A]): TaskMT[F, S, E, A] = fa
 
@@ -41,5 +38,5 @@ trait TaskMTFunctions {
     get[F, S, E].flatMap(f)
 
   def modify[F[_]: Monad, S, E](f: S => S)(implicit m: Monad[EvalF[F]]): TaskMT[F, S, E, Unit] =
-    get[F, S, E].flatMap(f andThen set[F, S, E])
+    get[F, S, E].flatMap(f.andThen(set[F, S, E]))
 }

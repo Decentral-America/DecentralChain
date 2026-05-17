@@ -40,7 +40,11 @@ object Script {
 
   def fromBase64String(str: String): Either[ScriptParseError, Script] =
     for {
-      bytes  <- Base64.tryDecode(str).toEither.left.map(ex => ScriptParseError(s"Unable to decode base64: ${ex.getMessage}"))
+      bytes <- Base64
+        .tryDecode(str)
+        .toEither
+        .left
+        .map(ex => ScriptParseError(s"Unable to decode base64: ${ex.getMessage}"))
       script <- ScriptReader.fromBytes(bytes)
     } yield script
 
@@ -51,7 +55,7 @@ object Script {
       case _: ExprScript => Expression
       case _             => DAppType
     }
-    val ctx = getDecompilerContext(s.stdLibVersion, cType)
+    val ctx                      = getDecompilerContext(s.stdLibVersion, cType)
     val (scriptText, directives) = (s: @unchecked) match {
       case e: ExprScript                   => (Decompiler(e.expr, ctx), List(s.stdLibVersion, Expression))
       case ContractScriptImpl(_, contract) => (Decompiler(contract, ctx), List(s.stdLibVersion, Account, DAppType))
@@ -74,7 +78,14 @@ object Script {
     (script: @unchecked) match {
       case script: ExprScript =>
         ExprScript
-          .estimate(script.expr, script.stdLibVersion, script.isFreeCall, estimator, useContractVerifierLimit, withCombinedContext)
+          .estimate(
+            script.expr,
+            script.stdLibVersion,
+            script.isFreeCall,
+            estimator,
+            useContractVerifierLimit,
+            withCombinedContext
+          )
           .map { complexity =>
             val verifierComplexity = if (script.isFreeCall) 0 else complexity
             ComplexityInfo(verifierComplexity, Map(), complexity)
@@ -94,7 +105,12 @@ object Script {
         } yield complexityInfo
     }
 
-  def estimate(script: Script, estimator: ScriptEstimator, fixEstimateOfVerifier: Boolean, useContractVerifierLimit: Boolean): Either[String, Long] =
+  def estimate(
+      script: Script,
+      estimator: ScriptEstimator,
+      fixEstimateOfVerifier: Boolean,
+      useContractVerifierLimit: Boolean
+  ): Either[String, Long] =
     complexityInfo(script, estimator, fixEstimateOfVerifier, useContractVerifierLimit)
       .map(_.maxComplexity)
 

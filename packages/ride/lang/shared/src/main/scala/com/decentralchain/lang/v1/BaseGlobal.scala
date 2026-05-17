@@ -5,7 +5,17 @@ import com.decentralchain.lang.ValidationError.ScriptParseError
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.contract.meta.{FunctionSignatures, MetaMapper, ParsedMeta}
 import com.decentralchain.lang.contract.serialization.{ContractSerDeV1, ContractSerDeV2}
-import com.decentralchain.lang.directives.values.{Account, Call, Expression, ScriptType, StdLibVersion, V1, V2, V6, DApp as DAppType}
+import com.decentralchain.lang.directives.values.{
+  Account,
+  Call,
+  DApp as DAppType,
+  Expression,
+  ScriptType,
+  StdLibVersion,
+  V1,
+  V2,
+  V6
+}
 import com.decentralchain.lang.script.ContractScript.ContractScriptImpl
 import com.decentralchain.lang.script.v1.ExprScript
 import com.decentralchain.lang.script.{ContractScript, Script}
@@ -30,7 +40,8 @@ import com.decentralchain.lang.v1.serialization.{SerdeV1, SerdeV2}
 import scala.annotation.tailrec
 import scala.util.Random
 
-/** This is a hack class for IDEA. The Global class is in JS/JVM modules. And IDEA can't find the Global class in the "shared" module, but it should!
+/** This is a hack class for IDEA. The Global class is in JS/JVM modules. And IDEA can't find the Global class in the
+  * "shared" module, but it should!
   */
 trait BaseGlobal {
   val MaxBase16Bytes: Int               = 8 * 1024
@@ -53,15 +64,17 @@ trait BaseGlobal {
   def base64Encode(input: Array[Byte], limit: Int = MaxBase64Bytes): Either[String, String]
   def base64Decode(input: String, limit: Int = MaxLiteralLength): Either[String, Array[Byte]]
 
-  def base16Encode(input: Array[Byte], limit: Option[Int] = Some(MaxBase16Bytes)): Either[String, String] = limit match {
-    case Some(lim) if input.length > lim => Left(s"Base16 encode input length=${input.length} should not exceed $lim")
-    case _                               => base16EncodeImpl(input)
-  }
+  def base16Encode(input: Array[Byte], limit: Option[Int] = Some(MaxBase16Bytes)): Either[String, String] =
+    limit match {
+      case Some(lim) if input.length > lim => Left(s"Base16 encode input length=${input.length} should not exceed $lim")
+      case _                               => base16EncodeImpl(input)
+    }
 
-  def base16Decode(input: String, limit: Option[Int] = Some(MaxBase16String)): Either[String, Array[Byte]] = limit match {
-    case Some(lim) if input.length > lim => Left(s"Base16 decode input length=${input.length} should not exceed $lim")
-    case _                               => base16DecodeImpl(input)
-  }
+  def base16Decode(input: String, limit: Option[Int] = Some(MaxBase16String)): Either[String, Array[Byte]] =
+    limit match {
+      case Some(lim) if input.length > lim => Left(s"Base16 decode input length=${input.length} should not exceed $lim")
+      case _                               => base16DecodeImpl(input)
+    }
 
   protected def base16EncodeImpl(input: Array[Byte]): Either[String, String]
 
@@ -110,12 +123,14 @@ trait BaseGlobal {
       letBlockOnly: Boolean,
       stdLibVersion: StdLibVersion,
       estimator: ScriptEstimator
-  ): Either[String, (Array[Byte], Long, Expressions.SCRIPT, Iterable[CompilationError])] = {
+  ): Either[String, (Array[Byte], Long, Expressions.SCRIPT, Iterable[CompilationError])] =
     (for {
       compRes <- ExpressionCompiler.compileWithParseResult(input, offset, context, stdLibVersion)
       (compExpr, exprScript, compErrorList) = compRes
-      illegalBlockVersionUsage              = letBlockOnly && com.decentralchain.lang.v1.compiler.containsBlockV2(compExpr)
-      _ <- Either.cond(!illegalBlockVersionUsage, (), "UserFunctions are only enabled in STDLIB_VERSION >= 3").leftMap((_, 0, 0))
+      illegalBlockVersionUsage = letBlockOnly && com.decentralchain.lang.v1.compiler.containsBlockV2(compExpr)
+      _ <- Either
+        .cond(!illegalBlockVersionUsage, (), "UserFunctions are only enabled in STDLIB_VERSION >= 3")
+        .leftMap((_, 0, 0))
       bytes = if (compErrorList.isEmpty) serializeExpression(compExpr, stdLibVersion) else Array.empty[Byte]
 
       vars  = utils.varNames(stdLibVersion, Expression)
@@ -123,10 +138,14 @@ trait BaseGlobal {
       complexity <- if (compErrorList.isEmpty) estimator(vars, costs, compExpr).leftMap((_, 0, 0)) else Either.right(0L)
     } yield (bytes, complexity, exprScript, compErrorList))
       .recover { case (e, start, end) =>
-        (Array.empty[Byte], 0L, Expressions.SCRIPT(AnyPos, Expressions.INVALID(AnyPos, "Unknown error.")), List(Generic(start, end, e)))
+        (
+          Array.empty[Byte],
+          0L,
+          Expressions.SCRIPT(AnyPos, Expressions.INVALID(AnyPos, "Unknown error.")),
+          List(Generic(start, end, e))
+        )
       }
       .leftMap(_._1)
-  }
 
   def parseAndCompileContract(
       input: String,
@@ -138,7 +157,14 @@ trait BaseGlobal {
       removeUnusedCode: Boolean
   ): Either[String, (Array[Byte], (Long, Map[String, Long]), Expressions.DAPP, Iterable[CompilationError])] = {
     val result = for {
-      compRes <- ContractCompiler.compileWithParseResult(input, offset, ctx, stdLibVersion, needCompaction, removeUnusedCode)
+      compRes <- ContractCompiler.compileWithParseResult(
+        input,
+        offset,
+        ctx,
+        stdLibVersion,
+        needCompaction,
+        removeUnusedCode
+      )
       (compDAppOpt, exprDApp, compErrorList) = compRes
       complexityWithMap <-
         if (compDAppOpt.nonEmpty && compErrorList.isEmpty)
@@ -148,27 +174,40 @@ trait BaseGlobal {
             .leftMap((_, 0, 0))
         else Right((0L, Map.empty[String, Long]))
       bytes <-
-        if (compDAppOpt.nonEmpty && compErrorList.isEmpty) serializeContract(compDAppOpt.get, stdLibVersion).leftMap((_, 0, 0))
+        if (compDAppOpt.nonEmpty && compErrorList.isEmpty)
+          serializeContract(compDAppOpt.get, stdLibVersion).leftMap((_, 0, 0))
         else Right(Array.empty[Byte])
     } yield (bytes, complexityWithMap, exprDApp, compErrorList)
     result
       .recover { case (e, start, end) =>
-        (Array.empty[Byte], (0L, Map.empty[String, Long]), Expressions.DAPP(AnyPos, List.empty, List.empty), List(Generic(start, end, e)))
+        (
+          Array.empty[Byte],
+          (0L, Map.empty[String, Long]),
+          Expressions.DAPP(AnyPos, List.empty, List.empty),
+          List(Generic(start, end, e))
+        )
       }
       .leftMap(_._1)
   }
 
   val compileExpression
-      : (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[String, (Array[Byte], EXPR, Long)] =
+      : (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[
+        String,
+        (Array[Byte], EXPR, Long)
+      ] =
     compile(_, _, _, _, _, _, ExpressionCompiler.compileBoolean)
 
-  val compileFreeCall
-      : (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[String, (Array[Byte], EXPR, Long)] =
+  val compileFreeCall: (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[
+    String,
+    (Array[Byte], EXPR, Long)
+  ] =
     (input, offset, ctx, version, scriptType, estimator) =>
       compile(input, offset, ctx, version, scriptType, estimator, ContractCompiler.compileFreeCall)
 
-  val compileDecls
-      : (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[String, (Array[Byte], EXPR, Long)] =
+  val compileDecls: (String, LibrariesOffset, CompilerContext, StdLibVersion, ScriptType, ScriptEstimator) => Either[
+    String,
+    (Array[Byte], EXPR, Long)
+  ] =
     compile(_, _, _, _, _, _, ExpressionCompiler.compileDecls)
 
   private def compile(
@@ -182,7 +221,9 @@ trait BaseGlobal {
   ): Either[String, (Array[Byte], EXPR, Long)] = {
     val isFreeCall = scriptType == Call
     for {
-      expr <- if (isFreeCall) ContractCompiler.compileFreeCall(input, offset, context, version) else compiler(input, offset, context, version)
+      expr <-
+        if (isFreeCall) ContractCompiler.compileFreeCall(input, offset, context, version)
+        else compiler(input, offset, context, version)
       bytes = serializeExpression(expr, version)
       _          <- ExprScript.validateBytes(bytes, isFreeCall)
       complexity <- ExprScript.estimate(expr, version, isFreeCall, estimator, scriptType == Account)
@@ -225,8 +266,18 @@ trait BaseGlobal {
       dApp  <- ContractCompiler.compile(input, offset, ctx, version, CallableFunction, needCompaction, removeUnusedCode)
       bytes <- serializeContract(dApp, version)
       _     <- ContractScript.validateBytes(bytes)
-      de @ DAppEstimation(annotatedComplexities, globalLetsCosts, globalFunctionsCosts) <- ContractScript.estimateFully(version, dApp, estimator)
-      _ <- ContractScript.checkComplexity(version, dApp, de.maxAnnotatedComplexity, annotatedComplexities, useReducedVerifierLimit = true)
+      de @ DAppEstimation(annotatedComplexities, globalLetsCosts, globalFunctionsCosts) <- ContractScript.estimateFully(
+        version,
+        dApp,
+        estimator
+      )
+      _ <- ContractScript.checkComplexity(
+        version,
+        dApp,
+        de.maxAnnotatedComplexity,
+        annotatedComplexities,
+        useReducedVerifierLimit = true
+      )
       (verifierComplexity, callableComplexities) = dApp.verifierFuncOpt.fold(
         (0L, annotatedComplexities)
       )(v => (annotatedComplexities(v.u.name), annotatedComplexities - v.u.name))
@@ -274,9 +325,10 @@ trait BaseGlobal {
   private def combineMetaWithDApp(meta: ParsedMeta, dApp: DApp): FunctionSignatures = {
     val argTypesWithFuncName =
       meta.callableFuncTypes.fold(List.empty[(String, List[(String, FINAL)])])(types =>
-        (types zip dApp.callableFuncs)
+        (types
+          .zip(dApp.callableFuncs))
           .map { case (argTypes, func) =>
-            func.u.name -> (func.u.args zip argTypes)
+            func.u.name -> (func.u.args.zip(argTypes))
           }
       )
     FunctionSignatures(meta.version, argTypesWithFuncName.toMap)
@@ -288,15 +340,23 @@ trait BaseGlobal {
 
   def pow(b: Long, bp: Int, e: Long, ep: Int, rp: Int, round: Rounding, useNewPrecision: Boolean): Either[String, Long]
   def log(b: Long, bp: Long, e: Long, ep: Long, rp: Long, round: Rounding): Either[String, Long]
-  def powBigInt(b: BigInt, bp: Long, e: BigInt, ep: Long, rp: Long, round: Rounding, useNewPrecision: Boolean): Either[String, BigInt]
+  def powBigInt(
+      b: BigInt,
+      bp: Long,
+      e: BigInt,
+      ep: Long,
+      rp: Long,
+      round: Rounding,
+      useNewPrecision: Boolean
+  ): Either[String, BigInt]
   def logBigInt(b: BigInt, bp: Long, e: BigInt, ep: Long, rp: Long, round: Rounding): Either[String, BigInt]
 
   def divide(a: BigInt, b: BigInt, rounding: Rounding): Either[String, BigInt] = {
     val sign                  = a.sign * b.sign
     val (division, remainder) = a.abs /% b.abs
     rounding match {
-      case Down => Right(division * sign)
-      case Up   => Right((division + remainder.sign) * sign)
+      case Down   => Right(division * sign)
+      case Up     => Right((division + remainder.sign) * sign)
       case HalfUp =>
         val x = b.abs - remainder * 2
         if (x <= 0) {
@@ -358,11 +418,11 @@ trait BaseGlobal {
     @tailrec
     def findKMedianInPlace(arr: ArrayView[T], k: Int)(implicit choosePivot: ArrayView[T] => T): T = {
       val a      = choosePivot(arr)
-      val (s, b) = arr `partitionInPlace` (a > _)
+      val (s, b) = arr.`partitionInPlace`(a > _)
       if (s.size == k) a
       // The following test is used to avoid infinite repetition
       else if (s.isEmpty) {
-        val (s, b) = arr `partitionInPlace` (a == _)
+        val (s, b) = arr.`partitionInPlace`(a == _)
         if (s.size > k) a
         else findKMedianInPlace(b, k - s.size)
       } else if (s.size < k) findKMedianInPlace(b, k - s.size)

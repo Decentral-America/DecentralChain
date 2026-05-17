@@ -297,7 +297,9 @@ class FuncDefParseErrorTest extends ParseErrorTest {
         if (version >= V8) {
           assertError(keyword, version)
         } else {
-          TestCompiler(version).compile(script(keyword)).map(_.decs) shouldBe Right(List(FUNC(keyword, List("a"), REF("nil"))))
+          TestCompiler(version).compile(script(keyword)).map(_.decs) shouldBe Right(
+            List(FUNC(keyword, List("a"), REF("nil")))
+          )
           TestCompiler(version).compileExpressionE(script(keyword, isDApp = false)) shouldBe Right(
             ExprScriptImpl(version, false, BLOCK(FUNC(keyword, List("a"), REF("nil")), TRUE))
           )

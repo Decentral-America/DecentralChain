@@ -2,9 +2,14 @@ package com.decentralchain.test.builtInFunctions.string.splitFunctions
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement, randomStringArrayElement}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomInt,
+  randomIssuesArrayElement,
+  randomStringArrayElement
+}
 import testHelpers.TestDataConstantsAndMethods.{actualVersions, nonMatchingTypes}
-import utest.{Tests, test}
+import utest.{test, Tests}
 
 object Split extends JsTestBase {
   private val split                     = "split(bar, foo)"

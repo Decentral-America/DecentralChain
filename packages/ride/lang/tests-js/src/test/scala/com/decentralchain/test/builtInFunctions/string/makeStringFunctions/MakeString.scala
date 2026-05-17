@@ -2,9 +2,19 @@ package com.decentralchain.test.builtInFunctions.string.makeStringFunctions
 
 import com.decentralchain.JsTestBase
 import testHelpers.GeneratorContractsForBuiltInFunctions
-import testHelpers.RandomDataGenerator.{randomAliasDataArrayElement, randomInt, randomIssuesArrayElement, randomStringArrayElement}
-import testHelpers.TestDataConstantsAndMethods.{actualVersionsWithoutV3, invalidFunctionError, nonMatchingTypes, stringList}
-import utest.{Tests, test}
+import testHelpers.RandomDataGenerator.{
+  randomAliasDataArrayElement,
+  randomInt,
+  randomIssuesArrayElement,
+  randomStringArrayElement
+}
+import testHelpers.TestDataConstantsAndMethods.{
+  actualVersionsWithoutV3,
+  invalidFunctionError,
+  nonMatchingTypes,
+  stringList
+}
+import utest.{test, Tests}
 
 object MakeString extends JsTestBase {
   private val makeString                     = "makeString(bar, foo)"
@@ -34,7 +44,12 @@ object MakeString extends JsTestBase {
         val precondition = new GeneratorContractsForBuiltInFunctions("", version)
         for (
           (data, list, function, error) <- Seq(
-            (randomInt.toString, randomAliasDataArrayElement, makeStringArgBeforeFunc, nonMatchingTypes("List[String]")),
+            (
+              randomInt.toString,
+              randomAliasDataArrayElement,
+              makeStringArgBeforeFunc,
+              nonMatchingTypes("List[String]")
+            ),
             (randomInt.toString, randomIssuesArrayElement, makeStringArgBeforeFunc, nonMatchingTypes("List[String]")),
             (randomStringArrayElement, stringList, invalidMakeString, invalidErrorMakeString),
             (randomStringArrayElement, stringList, invalidMakeStringArgBeforeFunc, invalidErrorMakeString)

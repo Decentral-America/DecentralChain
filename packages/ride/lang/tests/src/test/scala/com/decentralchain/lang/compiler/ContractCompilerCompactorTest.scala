@@ -10,7 +10,17 @@ import com.decentralchain.lang.script.ContractScript.ContractScriptImpl
 import com.decentralchain.lang.script.{Script, ScriptPreprocessor}
 import com.decentralchain.lang.v1.FunctionHeader.User
 import com.decentralchain.lang.v1.compiler.Terms.{CONST_LONG, CaseObj, FUNC}
-import com.decentralchain.lang.v1.compiler.Types.{ANY, BIGINT, BOOLEAN, LIST, LONG, PARAMETERIZED, PARAMETERIZEDLIST, STRING, UNION}
+import com.decentralchain.lang.v1.compiler.Types.{
+  ANY,
+  BIGINT,
+  BOOLEAN,
+  LIST,
+  LONG,
+  PARAMETERIZED,
+  PARAMETERIZEDLIST,
+  STRING,
+  UNION
+}
 import com.decentralchain.lang.v1.compiler.{ContractScriptCompactor, TestCompiler}
 import com.decentralchain.lang.v1.evaluator.Contextful.NoContext
 import com.decentralchain.lang.v1.evaluator.ContextfulVal
@@ -19,7 +29,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.{Types, WavesContext}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, GlobalValNames, PureContext}
 import com.decentralchain.lang.v1.parser.{Expressions, Parser}
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.{CTX, compiler}
+import com.decentralchain.lang.v1.{compiler, CTX}
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CompactNameAndOriginalNamePair
 import com.decentralchain.test.*
@@ -121,7 +131,10 @@ class ContractCompilerCompactorTest extends PropSpec {
     }
 
     val compilationResult =
-      compiler.ContractCompiler(ctxForV(V3).compilerContext, expr, V3, needCompaction = true).explicitGet().compactedSource(V3)
+      compiler
+        .ContractCompiler(ctxForV(V3).compilerContext, expr, V3, needCompaction = true)
+        .explicitGet()
+        .compactedSource(V3)
     compilationResult shouldBe """{-# STDLIB_VERSION 3 #-}
                                  |{-# SCRIPT_TYPE ACCOUNT #-}
                                  |{-# CONTENT_TYPE DAPP #-}
@@ -262,11 +275,13 @@ class ContractCompilerCompactorTest extends PropSpec {
     }
 
     def checkForV(version: StdLibVersion): Assertion = {
-      val compilationCompactedResult = compiler.ContractCompiler(ctxForV(version).compilerContext, exprForV(version), version, needCompaction = true)
-      val decompactedResult          = ContractScriptCompactor.decompact(compilationCompactedResult.explicitGet())
+      val compilationCompactedResult =
+        compiler.ContractCompiler(ctxForV(version).compilerContext, exprForV(version), version, needCompaction = true)
+      val decompactedResult = ContractScriptCompactor.decompact(compilationCompactedResult.explicitGet())
 
       // noinspection RedundantDefaultArgument
-      val compilationResult = compiler.ContractCompiler(ctxForV(version).compilerContext, exprForV(version), version, needCompaction = false)
+      val compilationResult =
+        compiler.ContractCompiler(ctxForV(version).compilerContext, exprForV(version), version, needCompaction = false)
 
       decompactedResult shouldBe compilationResult.explicitGet()
     }
@@ -275,7 +290,9 @@ class ContractCompilerCompactorTest extends PropSpec {
     checkForV(V6)
   }
 
-  property("contract script decompaction - ContractScriptCompactor must decompact scripts compacted by old compaction algorithm") {
+  property(
+    "contract script decompaction - ContractScriptCompactor must decompact scripts compacted by old compaction algorithm"
+  ) {
     def expr: Expressions.DAPP = {
       val script =
         s"""
@@ -332,8 +349,9 @@ class ContractCompilerCompactorTest extends PropSpec {
       "g" -> "result"
     ).map(p => CompactNameAndOriginalNamePair(p._1, p._2))
 
-    val compilationNotCompactedResult    = compiler.ContractCompiler(ctxForV(V5).compilerContext, expr, V5).explicitGet()
-    val compilationCompactedResultNoMeta = compiler.ContractCompiler(ctxForV(V5).compilerContext, compactedExpr, V5).explicitGet()
+    val compilationNotCompactedResult = compiler.ContractCompiler(ctxForV(V5).compilerContext, expr, V5).explicitGet()
+    val compilationCompactedResultNoMeta =
+      compiler.ContractCompiler(ctxForV(V5).compilerContext, compactedExpr, V5).explicitGet()
     val oldCompactedResult = compilationCompactedResultNoMeta.copy(
       meta = compilationCompactedResultNoMeta.meta
         .withCompactNameAndOriginalNamePairList(oldCompOriginalNames)
@@ -376,7 +394,13 @@ class ContractCompilerCompactorTest extends PropSpec {
 
     def checkForV(version: StdLibVersion): Assertion = {
       val result = compiler
-        .ContractCompiler(ctxForV(version).compilerContext, exprForV(version), version, needCompaction = true, removeUnusedCode = true)
+        .ContractCompiler(
+          ctxForV(version).compilerContext,
+          exprForV(version),
+          version,
+          needCompaction = true,
+          removeUnusedCode = true
+        )
         .explicitGet()
         .compactedSource(version)
       result shouldBe s"""{-# STDLIB_VERSION ${version.id} #-}
@@ -864,7 +888,8 @@ class ContractCompilerCompactorTest extends PropSpec {
 
     GlobalValNames.All.foreach { globalName =>
       val expr = Parser.parseContract(script(globalName)).get.value
-      val dApp = compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6, needCompaction = true).explicitGet()
+      val dApp =
+        compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6, needCompaction = true).explicitGet()
       dApp.compactedSource(V6) shouldBe
         s"""{-# STDLIB_VERSION 6 #-}
            |{-# SCRIPT_TYPE ACCOUNT #-}
@@ -877,7 +902,8 @@ class ContractCompilerCompactorTest extends PropSpec {
            |
            |""".stripMargin
 
-      ContractScriptCompactor.decompact(dApp) shouldBe compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6).explicitGet()
+      ContractScriptCompactor
+        .decompact(dApp) shouldBe compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6).explicitGet()
     }
   }
 
@@ -915,7 +941,8 @@ class ContractCompilerCompactorTest extends PropSpec {
 
     globalUserFunctions.foreach { case (funcName, args) =>
       val expr = Parser.parseContract(script(funcName, args)).get.value
-      val dApp = compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6, needCompaction = true).explicitGet()
+      val dApp =
+        compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6, needCompaction = true).explicitGet()
       dApp.compactedSource(V6) shouldBe
         s"""{-# STDLIB_VERSION 6 #-}
            |{-# SCRIPT_TYPE ACCOUNT #-}
@@ -928,7 +955,8 @@ class ContractCompilerCompactorTest extends PropSpec {
            |
            |""".stripMargin
 
-      ContractScriptCompactor.decompact(dApp) shouldBe compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6).explicitGet()
+      ContractScriptCompactor
+        .decompact(dApp) shouldBe compiler.ContractCompiler(fullCtxForV(V6).compilerContext, expr, V6).explicitGet()
     }
   }
 }
