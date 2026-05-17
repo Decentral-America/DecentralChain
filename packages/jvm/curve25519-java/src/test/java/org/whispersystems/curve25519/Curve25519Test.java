@@ -1,19 +1,21 @@
 package org.whispersystems.curve25519;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+public abstract class Curve25519Test {
 
-public abstract class Curve25519Test extends TestCase {
-
+  @Test
   public abstract void testCheckProvider() throws NoSuchProviderException;
   public abstract String getProviderName();
 
+  @Test
   public void testAgreement() throws NoSuchProviderException {
 
     byte[] alicePublic  = {(byte) 0x1b, (byte) 0xb7, (byte) 0x59, (byte) 0x66,
@@ -63,6 +65,7 @@ public abstract class Curve25519Test extends TestCase {
     assertThat(sharedTwo).isEqualTo(shared);
   }
 
+  @Test
   public void testRandomAgreements() throws NoSuchAlgorithmException, NoSuchProviderException {
     for (int i=0;i<50;i++) {
       Curve25519KeyPair alice = getInstance().generateKeyPair();
@@ -75,6 +78,7 @@ public abstract class Curve25519Test extends TestCase {
     }
   }
 
+  @Test
   public void testSignature() throws NoSuchProviderException {
     byte[] aliceIdentityPrivate = {(byte)0xc0, (byte)0x97, (byte)0x24, (byte)0x84, (byte)0x12,
                                    (byte)0xe5, (byte)0x8b, (byte)0xf0, (byte)0x5d, (byte)0xf4,
@@ -130,6 +134,7 @@ public abstract class Curve25519Test extends TestCase {
     }
   }
 
+  @Test
   public void testLargeSignatures() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
     Curve25519KeyPair keys      = getInstance().generateKeyPair();
     byte[]            message   = new byte[1024 * 1024];

@@ -1,17 +1,21 @@
 package org.whispersystems.curve25519;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.whispersystems.curve25519.java.fe_isequal;
 
 import java.util.Arrays;
 import java.util.Random;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public abstract class Curve25519ProviderTest extends TestCase {
+public abstract class Curve25519ProviderTest {
 
   protected abstract Curve25519Provider createProvider() throws NoSuchProviderException;
 
+  @Test
   public void testKeyGen() throws NoSuchProviderException {
     Curve25519Provider provider = createProvider();
 
@@ -36,6 +40,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertThat(out).isEqualTo(result2);
   }
 
+  @Test
   public void testEcDh() throws NoSuchProviderException {
     Curve25519Provider provider = createProvider();
 
@@ -67,8 +72,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertThat(q).isEqualTo(result);
   }
 
-  // FIXME: There's no actual vector here.  If verifySignature is broken and always returns true,
-  // this test will pass.
+  @Test
   public void testSignVerify() throws NoSuchProviderException {
     Curve25519Provider provider = createProvider();
 
@@ -91,6 +95,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     }
   }
 
+  @Test
   public void testVRFSign() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -102,6 +107,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertTrue(Arrays.equals(signature, sig_out));
   }
 
+  @Test
   public void testVRFVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -114,6 +120,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertTrue(Arrays.equals(vrf, calc_vrf));
   }
 
+  @Test
   public void testVRFSignVerify() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -128,6 +135,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     assertTrue(Arrays.equals(calc_vrf, vrf));
   }
 
+  @Test
   public void testVRFFailedVerifyByMessage() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -143,6 +151,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
+  @Test
   public void testVRFFailedVerifyByPublicKey() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -158,6 +167,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
+  @Test
   public void testVRFFailedVerifyBySignature() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
 
@@ -173,6 +183,7 @@ public abstract class Curve25519ProviderTest extends TestCase {
     } catch(VrfSignatureVerificationFailedException ignored) {}
   }
 
+  @Test
   public void testVRFIntegrationTest() throws NoSuchProviderException, VrfSignatureVerificationFailedException {
     Curve25519Provider provider = createProvider();
     Random r = new Random(1244);
@@ -226,23 +237,27 @@ public abstract class Curve25519ProviderTest extends TestCase {
     }
   }
 
+  @Test
   public void testFeIsequal1() {
     int[] one = new int[] {0,0,0,0,0,0,0,0,0,1};
     int[] zero = new int[] {0,0,0,0,0,0,0,0,0,0};
     assertTrue(fe_isequal.fe_isequal(one, zero) == 0);
   }
+  @Test
   public void testFeIsequal2() {
     int[] one = new int[] {0,0,0,0,0,0,0,0,0,1};
     int[] zero = new int[] {0,0,0,0,0,0,0,0,0,1};
     assertTrue(fe_isequal.fe_isequal(one, zero) == 1);
   }
 
+  @Test
   public void testFeIsequal3() {
     int[] one = new int[] {0,0,0,0,0,0,0,0,0,0};
     int[] zero = new int[] {0,0,0,0,0,0,0,0,0,0};
     assertTrue(fe_isequal.fe_isequal(one, zero) == 1);
   }
 
+  @Test
   public void testFeIsequal4() {
     int[] one = new int[] {0,0,0,0,0,0,0,0,0,0};
     int[] zero = new int[] {0,0,0,0,0,0,0,0,0,1};
