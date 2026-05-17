@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CompilationUtil {
+public final class CompilationUtil {
+
+    private CompilationUtil() {}
 
     public static ScriptInfo compile(String source) throws CompilationException {
         return compile(source, false, false);
@@ -22,7 +24,7 @@ public class CompilationUtil {
         try {
             result = Lang.parseAndCompile(source, needCompaction, removeUnusedCode);
         } catch (IllegalArgumentException e) {
-            throw new CompilationException(e.getMessage());
+            throw new CompilationException(e.getMessage(), e);
         }
 
         if (result instanceof CompileAndParseResult.Contract) {

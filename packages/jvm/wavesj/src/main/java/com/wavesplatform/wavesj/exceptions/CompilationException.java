@@ -3,15 +3,13 @@ package com.wavesplatform.wavesj.exceptions;
 import java.util.Objects;
 
 public class CompilationException extends Exception {
-    private final String message;
 
     public CompilationException(String message) {
-        this.message = message;
+        super(message);
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public CompilationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     @Override
@@ -19,18 +17,18 @@ public class CompilationException extends Exception {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CompilationException that = (CompilationException) o;
-        return Objects.equals(message, that.message);
+        return Objects.equals(getMessage(), that.getMessage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message);
+        return Objects.hash(getMessage());
     }
 
     @Override
     public String toString() {
         return "CompilationException{" +
-                "message='" + message + '\'' +
+                "message='" + getMessage() + '\'' +
                 '}';
     }
 }
