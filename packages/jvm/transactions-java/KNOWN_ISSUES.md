@@ -13,12 +13,12 @@
 **Description:** Running `mvn dependency:analyze` may report certain
 transitive dependencies as "Non-test scoped test only" warnings. These
 dependencies are resolved at compile scope because their direct parents
-(e.g., `wavesj`) declare them as compile dependencies. The production source
+(e.g., `java-sdk`) declare them as compile dependencies. The production source
 does not call their APIs directly, but they must remain on the classpath at
 runtime.
 
 Examples:
-- `org.web3j:crypto` — via `wavesj`; used by EVM transaction support
+- `org.web3j:crypto` — via `java-sdk`; used by EVM transaction support
 - `com.google.protobuf:protobuf-java` — pinned in `<dependencyManagement>`
   for version alignment; runtime-required by protobuf codegen
 

@@ -15,7 +15,7 @@ transaction types.
 
 ### Changed
 - Maven coordinates: `com.wavesplatform:waves-transactions` → `io.decentralchain:transactions-java`
-  (DCC-251 — replaced by `wavesj` consumers as part of the DCC supply-chain migration)
+  (DCC-251 — replaced by `java-sdk` consumers as part of the DCC supply-chain migration)
 - Java: upgraded to target Java 25 (`<release>25</release>`)
 - protobuf-java: pinned to `4.34.1` (latest stable; security floor)
 - License: MIT retained (inherits from upstream wavesplatform)

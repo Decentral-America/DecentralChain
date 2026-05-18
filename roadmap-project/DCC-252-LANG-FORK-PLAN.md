@@ -563,14 +563,14 @@ Update `packages/ride/ts/package.json`:
 
 ```yaml
 packages:
-  - packages/ts/*             # current name (packages/sdk/* after DCC-248 ships)
+  - packages/sdk/*             # current name (packages/sdk/* after DCC-248 ships)
   - packages/ride/lang/js     # @decentralchain/ride-lang
   - packages/ride/repl/js     # @decentralchain/ride-repl
   - packages/ride/ts          # @decentralchain/ride-js
   # ... (existing entries)
 ```
 
-> **Note:** if DCC-248 (the `packages/ts/` → `packages/sdk/` rename) has already landed when this PR merges, replace `packages/ts/*` with `packages/sdk/*` above.
+> **Note:** if DCC-248 (the `packages/sdk/` → `packages/sdk/` rename) has already landed when this PR merges, replace `packages/sdk/*` with `packages/sdk/*` above.
 
 This resolves the last `@waves/` reference in the DCC monorepo — previously marked "unavoidable: no fork available" in the production audit.
 

@@ -22,7 +22,7 @@
 > - `networkConfig.ts`: `as unknown as MainnetConfig` → `satisfies MainnetConfig` (+ 3 narrow-type widenings)
 > - 18 exchange `noInlineStyles` files converted to `styled-components`; `ErrorPage.tsx` and cubensis-connect HTML loading screens added to `biome.json` overrides (architecturally required)
 > - `ride-js RSA verify` skip: root cause (Scala.js WASM has no RSA provider) + unblock path (`@noble/rsa`) documented in test file
-> - `packages/ts/transactions/README.md`: "chainId is required" callout added (`76='L'` silent default, DCC mainnet/testnet byte table)
+> - `packages/sdk/transactions/README.md`: "chainId is required" callout added (`76='L'` silent default, DCC mainnet/testnet byte table)
 > - **Workspace Biome**: 0 errors, **0 warnings** (down from 53 in Round 14)
 >
 > ### What has been done (Round 16 — Deep Enterprise Audit — Mar 27, 2026)
@@ -86,7 +86,7 @@
 > | **P3** | `@react-router/dev` emits deprecation warning: `"esbuild" option deprecated, use "oxc"` — upstream react-router@7.13.2 issue, not in our vite.config.ts | Upstream |
 > | **P3** | Nx AI agents: run `nx configure-ai-agents` in IDE (interactive — requires editor selection; cannot be scripted) | Engineering |
 > | **P3** | TypeScript 7.0 prep — monitor TS 7 beta (Go port, H2 2026); `--stableTypeOrdering` | Upstream TS |
-> | **P3** | ~~2 `it.todo` in `packages/ts/transactions/test/`~~ **FULLY DONE** — invoke default function: `tx.call === null` promoted to passing test (Round 18); exchange v2+order v3 (ver2-1-3/ver2-2-3): promoted in prior session. Transfer byte attachment: promoted with 2 offline tests (Round 19). **346 passing, 0 todos.** | Engineering |
+> | **P3** | ~~2 `it.todo` in `packages/sdk/transactions/test/`~~ **FULLY DONE** — invoke default function: `tx.call === null` promoted to passing test (Round 18); exchange v2+order v3 (ver2-1-3/ver2-2-3): promoted in prior session. Transfer byte attachment: promoted with 2 offline tests (Round 19). **346 passing, 0 todos.** | Engineering |
 > | **P3** | ~~Transfer byte attachment binary fixture~~ **FULLY DONE (Round 19)** — `proto-serialize.spec.ts` `it.todo` replaced with passing test; 2 offline tests added to `transfer.spec.ts` (`describe('proto round-trip')`) so coverage runs in CI. **4,445 passing, 0 todos.** | Engineering |
 > | **P3** | `ride-js` RSA verify `test.skip` — Scala.js WASM has no RSA provider; unblock via `@noble/rsa` shim | Upstream |
 >
@@ -121,7 +121,7 @@
 > - Removed `wasm-pack` and `@testing-library/jest-dom` from `ignoreDependencies` (knip 6 now detects them natively)
 > - Fixed stale entry: `src/notification.tsx` in apps/cubensis-connect (file deleted) → removed
 > - Fixed stale entry: `src/main.tsx` in apps/scanner → replaced with `src/entry.client.tsx`, `src/root.tsx` (React Router 7 SSR structure)
-> - Removed empty `"ignore": []` from packages/ts/node-api-js workspace config
+> - Removed empty `"ignore": []` from packages/sdk/node-api-js workspace config
 > - Knip hints reduced: **41 → 29** (remaining 29 are "Remove redundant entry pattern" for explicit per-package `src/index.ts` entries — kept for documentation clarity)
 >
 > **react-i18next 16.6.6 → 17.0.0** — **APPLIED** ✅
@@ -159,7 +159,7 @@
 >   already returns `null` for missing/null `call`; no live node or fixture update required.
 > - Replaced `it.todo('Should create invoke tx for default function — needs fixture update')` with
 >   a passing test asserting `tx.call === null`, `tx.dApp`, and `tx.type === 16`.
-> - **`packages/ts/transactions`: 344 tests passing, 0 todos** (up from 343/1 in Round 17)
+> - **`packages/sdk/transactions`: 344 tests passing, 0 todos** (up from 343/1 in Round 17)
 >
 > **Suppression deep audit** — full re-scan of packages + apps:
 > - Total suppressions (biome-ignore + @ts-expect-error + as unknown as + eslint-disable): **221**
@@ -561,7 +561,7 @@ The remaining large chunks are:
 
 ## P3 — Future / Optional
 
-- [x] ~~**`packages/ts/browser-bus` wildcard `targetOrigin`**~~ **ALREADY DONE** — `WindowProtocol`
+- [x] ~~**`packages/sdk/browser-bus` wildcard `targetOrigin`**~~ **ALREADY DONE** — `WindowProtocol`
   already throws `Error` when `type === DISPATCH && targetOrigin === '*'`. Callers must
   pass an explicit origin. The P3 item was stale. Verified in `src/protocols/WindowProtocol.ts`.
 
@@ -573,8 +573,8 @@ The remaining large chunks are:
   (MUI 7.3.9, qrcode.react 4.2.0, react-icons 5.6.0) now declare React 19 JSX natively.
   Recharts removal eliminated the last consumer of the old `@types/recharts` JSX namespace.
 
-- [x] ~~**`packages/ts/transactions` chainId documentation**~~ **DONE** — Added "chainId is required"
-  callout section to `packages/ts/transactions/README.md` with network byte table (DCC mainnet `?`/63,
+- [x] ~~**`packages/sdk/transactions` chainId documentation**~~ **DONE** — Added "chainId is required"
+  callout section to `packages/sdk/transactions/README.md` with network byte table (DCC mainnet `?`/63,
   testnet `!`/33), explicit vs implicit examples, and warning about the silent `76='L'` default.
 
 - [ ] **TypeScript 7.0** — Monitor the TS 7.0 beta (Go port, expected H2 2026). Key changes
@@ -657,7 +657,7 @@ The remaining large chunks are:
 
 | Item | File | Fix Applied |
 |------|------|-------------|
-| `it.todo` invoke default-function (stale "needs fixture update" comment) | `packages/ts/transactions/test/transactions/invoke-script.spec.ts` | Replaced `it.todo` with passing test asserting `tx.call === null`, `tx.dApp`, `tx.type === 16`; 344 tests, 0 todos |
+| `it.todo` invoke default-function (stale "needs fixture update" comment) | `packages/sdk/transactions/test/transactions/invoke-script.spec.ts` | Replaced `it.todo` with passing test asserting `tx.call === null`, `tx.dApp`, `tx.type === 16`; 344 tests, 0 todos |
 
 ---
 
@@ -700,8 +700,8 @@ The remaining large chunks are:
 | react19-compat.d.ts | `apps/exchange/src/types/react19-compat.d.ts` | Deleted — all deps React 19 JSX native |
 | networkConfig.ts type safety | `apps/exchange/src/config/networkConfig.ts` | `satisfies MainnetConfig` + 3 narrow-type widenings |
 | noInlineStyles (18 files) | `apps/exchange/src/**` | All converted to `styled-components`; 2 overrides in `biome.json` |
-| RSA verify skip comment | `packages/ts/ride-js/test/compiler.spec.ts` | Root cause + unblock path documented |
-| chainId documentation | `packages/ts/transactions/README.md` | "chainId is required" callout + network byte table |
+| RSA verify skip comment | `packages/sdk/ride-js/test/compiler.spec.ts` | Root cause + unblock path documented |
+| chainId documentation | `packages/sdk/transactions/README.md` | "chainId is required" callout + network byte table |
 
 ---
 

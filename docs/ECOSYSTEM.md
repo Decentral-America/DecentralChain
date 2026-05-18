@@ -9,10 +9,10 @@
 
 | Diagram | What it answers |
 |---------|----------------|
-| [0. Master Diagram](#0-master-diagram--complete-ecosystem) | **Everything in one view** — all 22 packages, 3 apps, 4 services, full pipeline |
+| [0. Master Diagram](#0-master-diagram--complete-ecosystem) | **Everything in one view** — all 20 TypeScript SDK packages, JVM libraries, RIDE build, 3 apps, 4 services, full pipeline |
 | [1. System Context](#1-system-context) | Who are the users and what systems exist? |
 | [2. Runtime Topology](#2-runtime-topology--the-big-picture) | What talks to what over the network? |
-| [3. SDK Package Architecture](#3-sdk-package-architecture) | How do the 22 library packages depend on each other? |
+| [3. SDK Package Architecture](#3-sdk-package-architecture) | How do the 20 TypeScript library packages depend on each other? |
 | [4. Flow: Send Transaction](#4-flow--send-a-transaction) | Step-by-step: user → wallet → node |
 | [5. Flow: Place DEX Order](#5-flow--place-a-dex-order) | Step-by-step: user → exchange → matcher |
 | [6. Flow: Browse the Explorer](#6-flow--browse-the-block-explorer) | Step-by-step: user → scanner → node |
@@ -59,7 +59,7 @@ flowchart LR
         CUBENSIS["🔐 Cubensis Connect\nWallet Extension\nChrome MV3 · Firefox MV2"]
     end
 
-    subgraph SDK["📦  @decentralchain/* — 22 packages"]
+    subgraph SDK["📦  @decentralchain/* — 20 TypeScript SDK packages"]
         direction TB
 
         subgraph T4["Tier 4 · Providers"]

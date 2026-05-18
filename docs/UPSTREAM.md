@@ -267,7 +267,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 | Reference | Reason | Locations |
 |-----------|--------|-----------|
 | `'WAVES'` asset ID | Client sentinel for native asset | All SDK packages |
-| `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/ts/transactions/src/requests/auth.ts`, `packages/ts/signature-adapter/src/prepareTx/constants.ts` |
+| `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/sdk/transactions/src/requests/auth.ts`, `packages/sdk/signature-adapter/src/prepareTx/constants.ts` |
 | Protobuf `waves` namespace | Wire-format package name | `protobuf-serialization/proto/waves/**` |
 | `@waves/ride-lang` + `@waves/ride-repl` | Chain-agnostic Scala.js binaries — same bytecode works on any Waves-protocol chain | `ride-js/package.json` |
 | Third-party NFT URLs | External services (wavesducks.com, puzzlemarket.org, sign-art.app) — community projects | `cubensis-connect` NFT vendor files |
@@ -342,7 +342,7 @@ Ranked by strategic value to DCC:
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
 | 🟡 **Tier 2** | `node-api-grpc-js` (0★) | gRPC client — faster than REST | Low |
-| ✅ **Forked** | `WavesJ` (47★) | Forked as [`Ecosystem/java-sdk`](https://github.com/Decentral-America/java-sdk) — `io.decentralchain:java-sdk:1.6.4-SNAPSHOT` (DCC-240, May 2026). Standalone repo, not in monorepo. Upstream at `wavesplatform/WavesJ` commit `2f78fd3`. Java 11, Maven Central publish, JaCoCo/SpotBugs/Checkstyle quality gates. | Done |
+| ✅ **Forked** | `WavesJ` (47★) | Forked as [`packages/jvm/java-sdk`](https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk) — `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-251, DCC-249, May 2026). In monorepo, not standalone. Upstream at `wavesplatform/WavesJ` commit `2f78fd3`. Java 25, Maven Central publish, JaCoCo/SpotBugs/PMD/Checkstyle quality gates. Namespace: `io.decentralchain.sdk.*` | Done |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
 
 ### What's Not Worth Forking
@@ -638,9 +638,9 @@ These repos are **outside the monorepo** but also track upstream Waves sources.
 
 | Repo | Upstream | Upstream Commit | DCC Commit | Date | Activity |
 |------|----------|----------------|------------|------|----------|
-| [`Ecosystem/java-sdk`](https://github.com/Decentral-America/java-sdk) | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` | `4c251d8` | 2026-05-14 | 🟢 Active |
 
-> **java-sdk sync procedure:** `cd Ecosystem/java-sdk && git fetch upstream && git log upstream/master --oneline` to see new upstream commits. Port relevant bugfixes manually; adapt to DCC Maven coords (`io.decentralchain:java-sdk`). Do NOT port Waves-specific branding, endpoint URLs, or test node Docker images.
+> **java-sdk** is now inside the monorepo at `packages/jvm/java-sdk/` — no longer a standalone repo. Sync upstream WavesJ bugfixes via:
+> `cd packages/jvm/java-sdk && git log` then manually port relevant fixes. Adapt to DCC Maven coords (`io.decentralchain:java-sdk`). Do NOT port Waves-specific branding, endpoint URLs, or test node Docker images.
 
 ### Monorepo → Upstream Map
 
@@ -648,30 +648,30 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/ts/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` | `309a179` | 2026-03-25 | 🟢 Active |
-| 2 | `packages/ts/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
-| 3 | `packages/ts/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `1c0f106` | `3c6bd7c` | 2026-03-25 | 🟢 Active |
-| 4 | `packages/ts/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
-| 5 | `packages/ts/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
-| 6 | `packages/ts/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `2404b95` | `c6ca904` | 2026-03-25 | 🟡 Moderate |
-| 7 | `packages/ts/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
-| 8 | `packages/ts/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
-| 9 | `packages/ts/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/ts/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `3756189` | `93dad4b` | 2026-03-25 | 🟢 Active |
-| 11 | `packages/ts/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
-| 12 | `packages/ts/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
-| 13 | `packages/ts/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
-| 14 | `packages/ts/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
-| 15 | `packages/ts/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
-| 16 | `packages/ts/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
-| 17 | `packages/ts/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
-| 18 | `packages/ts/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
+| 1 | `packages/sdk/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` | `309a179` | 2026-03-25 | 🟢 Active |
+| 2 | `packages/sdk/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
+| 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `1c0f106` | `3c6bd7c` | 2026-03-25 | 🟢 Active |
+| 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
+| 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
+| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `2404b95` | `c6ca904` | 2026-03-25 | 🟡 Moderate |
+| 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
+| 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
+| 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
+| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `3756189` | `93dad4b` | 2026-03-25 | 🟢 Active |
+| 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
+| 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
+| 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
+| 14 | `packages/sdk/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
+| 15 | `packages/sdk/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
+| 16 | `packages/sdk/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
+| 17 | `packages/sdk/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
+| 18 | `packages/sdk/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
 | 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` | `a46ae18` | 2025-05-28 | 🟢 Active |
-| 20 | `packages/ts/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
-| 21 | `packages/ts/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
+| 20 | `packages/sdk/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
+| 21 | `packages/sdk/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
 | 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` | `b473e02` | 2026-03-25 | 🟢 Active |
-| 23 | `packages/ts/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
-| 24 | `packages/ts/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
+| 23 | `packages/sdk/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
+| 24 | `packages/sdk/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
 | 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` | `7d40c14f` | 2026-04-07 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
@@ -717,7 +717,7 @@ git diff <last-synced-commit>..HEAD -- src/
 | data-service | Now in monorepo — watch for upstream bugfixes and new endpoint features to port | Monthly |
 | waves-transactions | New transaction type support | Monthly |
 | node-api-js | New API endpoints | Monthly |
-| WavesJ | Java SDK (`Ecosystem/java-sdk`) — watch for bugfixes and new API endpoint support | Monthly |
+| WavesJ | Java SDK (`packages/jvm/java-sdk`) — watch for bugfixes and new API endpoint support | Monthly |
 
 ---
 
@@ -725,7 +725,7 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### By Category (134 repos total)
 
-**Already Forked to DCC (26):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**, **WavesJ** (as standalone `Ecosystem/java-sdk`).
+**Already Forked to DCC (26):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**, **WavesJ** (as `packages/jvm/java-sdk` in monorepo — `io.decentralchain:java-sdk`). 
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
