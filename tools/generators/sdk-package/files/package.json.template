@@ -31,7 +31,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/decentralchain-sdk/tree/main/packages/ts/<%= name %>",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/<%= name %>",
   "keywords": [
     "decentralchain",
     "sdk",
@@ -51,7 +51,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/<%= name %>",
+    "directory": "packages/sdk/<%= name %>",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/decentralchain-sdk.git"
   },
