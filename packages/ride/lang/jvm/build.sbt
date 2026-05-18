@@ -1,5 +1,4 @@
-homepage       := Some(url("https://docs.decentralchain.io/en/ride/"))
-
+homepage := Some(url("https://docs.decentralchain.io/en/ride/"))
 
 lazy val listComplexFunctions = inputKey[File]("List functions with complexity > 1")
 
@@ -7,8 +6,8 @@ listComplexFunctions := Tasks.listComplexFunctions.evaluated
 
 inTask(assembly)(
   Seq(
-    test            := {},
-    assemblyJarName := s"file-compiler.jar",
+    test                  := {},
+    assemblyJarName       := s"file-compiler.jar",
     assemblyMergeStrategy := {
       case p if p.endsWith(".proto") || p.endsWith("module-info.class") || p.endsWith("io.netty.versions.properties") =>
         MergeStrategy.discard
