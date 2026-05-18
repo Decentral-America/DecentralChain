@@ -94,3 +94,23 @@ These are resolved at compile scope because `waves-transactions` (a runtime comp
 **Why not fixed now:** Moving them to `test` scope would break `waves-transactions` at runtime (it needs them on the classpath). Fixing this properly requires forking `waves-transactions` (see KNOWN-2).
 
 **Resolution path:** Resolved automatically when KNOWN-2 is addressed (fork of `waves-transactions` → full control over the dependency tree).
+
+---
+
+## ~~KNOWN-7: `WavesConfig.chainId()` not set from connected node in Docker tests~~ — RESOLVED
+
+**Status: RESOLVED** (Round 11 — 2026-05-17)
+
+`BaseTestWithNodeInDocker` created a `Node` object (which discovers the chain-id from the live node)
+but never propagated it into `WavesConfig.chainId()`. All `PrivateKey.fromSeed()` and address
+construction used the static default (`87` = Waves mainnet 'W'), while the DCC private node
+uses chain-id `82`. Every broadcasted transaction was rejected with "Wrong chain-id. Expected - 82,
+provided - 87".
+
+Fixed by adding `WavesConfig.chainId(node.chainId())` in `BaseTestWithNodeInDocker` static
+initializer immediately after `node = new Node(NODE_API_URL)`, before `faucet` is constructed.
+All 71 Docker integration tests now pass.
+
+**Note:** `WavesConfig.chainId()` is a global static — safe for single-threaded test execution
+but would cause problems under parallel test classes each connecting to nodes on different chain-ids.
+This is a known limitation of the upstream `com.wavesplatform:waves-transactions` design.
