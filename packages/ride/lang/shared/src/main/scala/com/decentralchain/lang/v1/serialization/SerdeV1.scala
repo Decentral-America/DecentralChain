@@ -6,10 +6,10 @@ import cats.syntax.apply.*
 import cats.syntax.traverse.*
 import com.decentralchain.common.state.ByteStr
 import com.decentralchain.common.utils.EitherExt2.*
+import com.decentralchain.lang.utils.Serialize.*
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.CASETYPEREF
 import com.decentralchain.lang.v1.serialization.Serde.*
-import com.decentralchain.lang.utils.Serialize.*
 import monix.eval.Coeval
 
 import java.io.ByteArrayOutputStream

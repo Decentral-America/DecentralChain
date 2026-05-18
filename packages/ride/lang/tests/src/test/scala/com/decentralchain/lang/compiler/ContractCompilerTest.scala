@@ -2,7 +2,6 @@ package com.decentralchain.lang.compiler
 
 import cats.kernel.Monoid
 import cats.syntax.semigroup.*
-import com.google.protobuf.ByteString
 import com.decentralchain.common.state.ByteStr
 import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.Global
@@ -21,9 +20,10 @@ import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{compiler, ContractLimits}
+import com.decentralchain.test.*
+import com.google.protobuf.ByteString
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CallableFuncSignature
-import com.decentralchain.test.*
 import org.scalatest.Assertion
 
 class ContractCompilerTest extends PropSpec {

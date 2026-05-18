@@ -15,8 +15,8 @@ import com.decentralchain.lang.v1.compiler.Terms.{
   REF
 }
 import com.decentralchain.lang.v1.evaluator.FunctionIds
-import com.decentralchain.lang.v1.evaluator.ctx.impl.{GlobalValNames, PureContext}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.MaxListLengthV4
+import com.decentralchain.lang.v1.evaluator.ctx.impl.{GlobalValNames, PureContext}
 import com.decentralchain.test.produce
 
 class MakeStringTest extends EvaluatorSpec {

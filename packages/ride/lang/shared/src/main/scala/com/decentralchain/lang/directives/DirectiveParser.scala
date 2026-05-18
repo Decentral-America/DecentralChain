@@ -1,9 +1,9 @@
 package com.decentralchain.lang.directives
 
 import cats.syntax.either.*
+import fastparse.*
 import fastparse.MultiLineWhitespace.*
 import fastparse.Parsed.{Failure, Success}
-import fastparse.*
 
 object DirectiveParser {
 

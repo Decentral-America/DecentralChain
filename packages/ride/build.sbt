@@ -36,6 +36,13 @@ ThisBuild / git.gitDescribedVersion := None
 ThisBuild / resolvers += Resolver.mavenLocal
 ThisBuild / PB.protocVersion   := Dependencies.gProtoVersion
 
+// ── scalafix / semanticdb ─────────────────────────────────────────────────────
+// semanticdb is built into the Scala 3 compiler; enabling it lets scalafix run
+// semantic rules (OrganizeImports, RemoveUnused) on JVM subprojects.
+// Scala.js subprojects use .scalafix-js.conf (syntactic rules only) via jsSettings.
+ThisBuild / semanticdbEnabled  := true
+ThisBuild / semanticdbVersion  := scalafixSemanticdb.revision
+
 ThisBuild / dependencyOverrides ++= Dependencies.overrides.value
 
 ThisBuild / pomIncludeRepository := { _ => false }
@@ -89,7 +96,13 @@ lazy val lang =
     .withoutSuffixFor(JVMPlatform)
     .crossType(CrossType.Full)
     .in(file("lang"))
+    // Semantic scalafix rules require semanticdb which Scala.js cannot produce.
+    // JS platform uses .scalafix-js.conf (syntactic rules only).
+    .jsSettings(scalafixConfig := Some(file(".scalafix-js.conf")))
     .settings(
+      // Parser.scala uses `{ implicit (c: P[Any]) => }` syntax that scalameta
+      // (scalafix's parser) cannot handle — exclude it from scalafix processing.
+      Compile / scalafix / unmanagedSources ~= { _.filterNot(_.getName == "Parser.scala") },
       assembly / test := {},
       libraryDependencies ++= Dependencies.lang.value ++ Dependencies.test,
       inConfig(Compile)(
@@ -153,7 +166,9 @@ lazy val `lang-tests-js` = project
   .dependsOn(`lang-js`)
   .settings(
     libraryDependencies += Dependencies.scalaJsTest.value,
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    testFrameworks += new TestFramework("utest.runner.Framework"),
+    // Semantic scalafix rules require semanticdb which Scala.js cannot produce.
+    scalafixConfig := Some(file(".scalafix-js.conf"))
   )
 
 // ── repl ─────────────────────────────────────────────────────────────────────
@@ -162,6 +177,9 @@ lazy val repl = crossProject(JSPlatform, JVMPlatform)
   .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("repl"))
+  // Semantic scalafix rules require semanticdb which Scala.js cannot produce.
+  // JS platform uses .scalafix-js.conf (syntactic rules only).
+  .jsSettings(scalafixConfig := Some(file(".scalafix-js.conf")))
   .settings(
     libraryDependencies ++= Dependencies.scalapbRuntimeJS.value ++ Dependencies.circe.value ++ Seq(
       Dependencies.protoSchemasLib % "protobuf"

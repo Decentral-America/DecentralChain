@@ -1,13 +1,13 @@
 package com.decentralchain.lang.utils
 
+import com.decentralchain.lang.v1.FunctionHeader
+import com.decentralchain.lang.v1.FunctionHeader.{Native, User}
+import com.decentralchain.lang.v1.serialization.Serde.{FH_NATIVE, FH_USER}
 import com.google.protobuf.{CodedInputStream, CodedOutputStream}
 
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-import com.decentralchain.lang.v1.FunctionHeader
-import com.decentralchain.lang.v1.FunctionHeader.{Native, User}
-import com.decentralchain.lang.v1.serialization.Serde.{FH_NATIVE, FH_USER}
 
 object Serialize {
   implicit class ByteBufferOps(val self: ByteBuffer) extends AnyVal {

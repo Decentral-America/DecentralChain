@@ -3,7 +3,6 @@ package com.decentralchain.lang.v1.compiler
 import cats.implicits.*
 import cats.{Id, Show}
 import com.decentralchain.common.state.ByteStr
-import com.decentralchain.lang.{CommonError, StringOps}
 import com.decentralchain.lang.directives.values.{StdLibVersion, V8}
 import com.decentralchain.lang.v1.compiler.CompilationError.*
 import com.decentralchain.lang.v1.compiler.CompilerContext.*
@@ -31,6 +30,7 @@ import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset
 import com.decentralchain.lang.v1.parser.{BinaryOperation, Expressions, Parser}
 import com.decentralchain.lang.v1.task.imports.*
 import com.decentralchain.lang.v1.{ContractLimits, FunctionHeader}
+import com.decentralchain.lang.{CommonError, StringOps}
 
 import java.nio.charset.StandardCharsets
 import scala.util.Try

@@ -30,9 +30,9 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, GlobalValNa
 import com.decentralchain.lang.v1.parser.{Expressions, Parser}
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{compiler, CTX}
+import com.decentralchain.test.*
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CompactNameAndOriginalNamePair
-import com.decentralchain.test.*
 import org.scalatest.Assertion
 
 class ContractCompilerCompactorTest extends PropSpec {
