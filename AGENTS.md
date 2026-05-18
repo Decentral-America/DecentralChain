@@ -22,7 +22,7 @@ This is the **DecentralChain SDK monorepo** — a multi-language workspace publi
 - **pnpm 10.32.x** — `workspace:*` protocol, corepack-managed
 - **TypeScript 6.0.2** — maximum strictness, ES2024, bundler moduleResolution, verbatimModuleSyntax
 - **Biome 2.4.x** — linting + formatting (replaces ESLint/Prettier). Root config + per-package `"extends": "//"`.
-- **tsdown 0.21.x** — build tool for 21/22 packages (ESM-only `.mjs` + `.d.mts`). crypto uses tsc + wasm-pack.
+- **tsdown 0.21.x** — build tool for 19/20 TypeScript SDK packages (ESM-only `.mjs` + `.d.mts`). crypto uses tsc + wasm-pack.
 - **Vite 8.x** — app bundler (exchange, scanner, cubensis-connect). Rolldown built-in.
 - **Vitest 4.x** — testing with v8 coverage
 - **Node.js >= 24** required

@@ -5,7 +5,7 @@
 <h3 align="center">DecentralChain SDK</h3>
 
 <p align="center">
-  Unified TypeScript monorepo for all <code>@decentralchain</code> packages
+  Multi-language monorepo for all <code>@decentralchain</code> packages — TypeScript SDK, RIDE lang/repl, JVM libraries
 </p>
 
 <p align="center">
