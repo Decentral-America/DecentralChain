@@ -1,9 +1,9 @@
 package com.decentralchain.lang.contract.meta
 
+import cats.instances.either.*
+import cats.instances.list.*
 import cats.syntax.either.*
 import cats.syntax.traverse.*
-import cats.instances.list.*
-import cats.instances.either.*
 import com.decentralchain.lang.v1.compiler.Types.{FINAL, LIST, UNION}
 
 import scala.util.Try

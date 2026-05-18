@@ -3,12 +3,12 @@ package com.decentralchain.lang.v1.repl.node.http
 import cats.Functor
 import cats.implicits.*
 import com.decentralchain.common.utils.EitherExt2.*
+import com.decentralchain.lang.v1.repl.Global
 import com.decentralchain.lang.v1.repl.node.http.NodeClient.ResponseWrapper
-import com.decentralchain.lang.v1.repl.node.http.response.model.NodeResponse
 import com.decentralchain.lang.v1.repl.node.http.WebEnvironment.executionContext
+import com.decentralchain.lang.v1.repl.node.http.response.model.NodeResponse
 import io.circe.Decoder
 import io.circe.parser.decode
-import com.decentralchain.lang.v1.repl.Global
 
 import scala.concurrent.Future
 

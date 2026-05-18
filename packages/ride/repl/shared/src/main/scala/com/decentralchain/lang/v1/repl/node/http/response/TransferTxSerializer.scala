@@ -1,15 +1,15 @@
 package com.decentralchain.lang.v1.repl.node.http.response
 
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
-
-import com.google.protobuf.ByteString
 import com.decentralchain.lang.v1.evaluator.ctx.impl.EnvironmentFunctions
-import com.decentralchain.lang.v1.traits.domain.Recipient.{Address, Alias}
 import com.decentralchain.lang.v1.traits.domain.Recipient as LangRecipient
+import com.decentralchain.lang.v1.traits.domain.Recipient.{Address, Alias}
+import com.google.protobuf.ByteString
 import com.wavesplatform.protobuf.Amount
 import com.wavesplatform.protobuf.transaction.*
 import com.wavesplatform.protobuf.transaction.Transaction.Data
+
+import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 
 object TransferTxSerializer {
   import ByteString.copyFrom as bs

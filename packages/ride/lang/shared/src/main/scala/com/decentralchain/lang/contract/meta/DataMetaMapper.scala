@@ -1,11 +1,10 @@
 package com.decentralchain.lang.contract.meta
 
 import cats.implicits.*
-import com.google.protobuf.ByteString
 import com.decentralchain.lang.v1.compiler.Types.FINAL
+import com.google.protobuf.ByteString
 import com.wavesplatform.protobuf.dapp.DAppMeta
-import com.wavesplatform.protobuf.dapp.DAppMeta.CallableFuncSignature
-import com.wavesplatform.protobuf.dapp.DAppMeta.CompactNameAndOriginalNamePair
+import com.wavesplatform.protobuf.dapp.DAppMeta.{CallableFuncSignature, CompactNameAndOriginalNamePair}
 
 class DataMetaMapper(mapper: TypeBitMapper, version: MetaVersion) {
   def toProto(

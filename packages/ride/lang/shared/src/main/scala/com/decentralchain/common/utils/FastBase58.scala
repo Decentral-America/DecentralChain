@@ -1,6 +1,5 @@
 package com.decentralchain.common.utils
 import java.nio.charset.StandardCharsets.US_ASCII
-
 import scala.annotation.tailrec
 
 object FastBase58 extends BaseXXEncDec {

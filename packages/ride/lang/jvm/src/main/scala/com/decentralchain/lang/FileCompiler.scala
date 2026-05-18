@@ -1,7 +1,7 @@
 package com.decentralchain.lang
 
-import com.google.common.io
 import com.decentralchain.lang.v1.estimator.v3.ScriptEstimatorV3
+import com.google.common.io
 import org.slf4j.LoggerFactory
 
 import java.io.File

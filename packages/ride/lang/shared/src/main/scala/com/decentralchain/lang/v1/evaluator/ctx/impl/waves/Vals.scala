@@ -17,7 +17,6 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Bindings.{
 }
 import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types.*
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.traits.domain.{Ord, OrdType, PseudoTx, Recipient, Tx}
 import com.decentralchain.lang.v1.traits.domain.Tx.{
   BurnPseudoTx,
   InvokePseudoTx,
@@ -25,6 +24,7 @@ import com.decentralchain.lang.v1.traits.domain.Tx.{
   ScriptTransfer,
   SponsorFeePseudoTx
 }
+import com.decentralchain.lang.v1.traits.domain.{Ord, OrdType, PseudoTx, Recipient, Tx}
 
 object Vals {
   def tx(
