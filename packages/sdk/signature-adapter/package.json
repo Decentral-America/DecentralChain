@@ -39,7 +39,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/signature-adapter",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/signature-adapter",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -65,7 +65,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/signature-adapter",
+    "directory": "packages/sdk/signature-adapter",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
