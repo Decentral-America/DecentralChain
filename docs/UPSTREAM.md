@@ -35,7 +35,14 @@
 
 DecentralChain (DCC) is an independent blockchain that forked the Waves protocol. The `@decentralchain/*` SDK packages published from this monorepo were migrated from the upstream `@waves/*` npm packages maintained across two GitHub organizations: [`wavesplatform`](https://github.com/wavesplatform) (124 repos) and [`Keeper-Wallet`](https://github.com/Keeper-Wallet) (10 repos).
 
-**Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked or imported **25 upstream repositories** — the **24 TypeScript packages** composing the complete SDK core (every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain) plus the **`data-service` REST API application** (DCC-221, DCC-233). The remaining ~109 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
+**Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked or adopted **35+ repositories** across four dimensions:
+
+- **24 TypeScript SDK packages** — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
+- **`data-service` REST API application** (DCC-221, DCC-233) — Koa.js API at `api.decentralchain.io`
+- **5 standalone infrastructure repos** (`Ecosystem/`): node-scala (Waves protocol node, Scala), node-go (Go alternative node), matcher (DEX order matching engine), blockchain-postgres-sync (Rust block ingestion), docs
+- **7 JVM + RIDE Maven packages** — 5 JVM libraries (`packages/jvm/`) and the RIDE lang+repl sbt build (`packages/ride/`), all published to Maven Central as `io.decentralchain:*`
+
+The remaining ~99 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
 
 Every forked package has been:
 
@@ -334,15 +341,22 @@ Ranked by strategic value to DCC:
 
 | Priority | Waves Repo | Why | Effort |
 |----------|-----------|-----|--------|
-| 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
-| 🟢 **Tier 1** | `blockchain-postgres-sync` (16★) | Analytics backbone for block explorers and data APIs | Medium |
-| ✅ **Adopted** | `gowaves` (255★) | Forked as `Ecosystem/node-go`. v0.11.1 evaluated (Mar 2026): adds Features 22–25 (LightNode, BoostBlockReward, ecrecoverFix, DeterministicFinality/RideV9), all 3 missing proto files, CommitToGeneration field 120. Node still pre-release; proto submodule upgrade recommended; full node upgrade deferred until stable release. `InvokeExpression` renumbered 22→26 — document before any governance activity. | High |
+| ✅ **Adopted** | `Waves` node (1171★) | Forked as `Ecosystem/node-scala` — DCC protocol patches (chain IDs, namespace rename `com.wavesplatform→com.decentralchain`, CI pipelines, security hardening). Upstream base: commit `5c347100` (v1.6.1, Feb 2026). | Done |
+| ✅ **Adopted** | `gowaves` (255★) | Forked as `Ecosystem/node-go` — upstream base: commit `df50e74c`. DCC module rename, branding, CI overhaul. v0.11.1 evaluated (Mar 2026): adds Features 22–25, all 3 missing proto files, CommitToGeneration field 120. Full upgrade deferred until stable release. | Done |
+| ✅ **Adopted** | `dex` / matcher (18★) | Forked as `Ecosystem/matcher` — shares node-scala base `5c347100`. Wired to `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-263). | Done |
+| ✅ **Adopted** | `blockchain-postgres-sync` (16★) | Forked as `Ecosystem/blockchain-postgres-sync` — upstream base: `4f1181c` (v1.0.0). DCC branding, full audit (4 rounds), all panics eliminated, 84+ tests added (DCC-213/214). | Done |
+| ✅ **Adopted** | `WavesJ` (47★) | Forked as [`packages/jvm/java-sdk`](https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk) — `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-251/263). Upstream: `2f78fd3` (v1.6.4-SNAPSHOT, 2026-02-20). Java 25, Maven Central, JaCoCo/SpotBugs/PMD quality gates. | Done |
+| ✅ **Adopted** | `curve25519-java` | Forked as `packages/jvm/curve25519-java` — upstream: `80b0a5de` (Oct 2023, last upstream release). Maven + Java 25 migration (DCC-260). | Done |
+| ✅ **Adopted** | `waves-transactions-java` | Forked as `packages/jvm/transactions-java` — upstream: `e6afed3a` (v1.2.7). Maven + Java 25 (DCC-240). | Done |
+| ✅ **Adopted** | `blst-java` | Forked as `packages/jvm/blst-java` — upstream: `a7d3e39a`. BLS12-381 JNI bindings, Java 25 (DCC-242). | Done |
+| ✅ **Adopted** | `zwaves` | Forked as `packages/jvm/zwaves` — upstream: `d4546dbb`. ZK-SNARK (Groth16) JNI bindings (DCC-261). | Done |
+| ✅ **Adopted** | `Waves/lang` + `Waves/repl` | Forked as `packages/ride/` — RIDE VM (lang/) + REPL (repl/) extracted from node-scala via `git filter-repo`, 1,991 upstream commits preserved. Upstream base: `5c347100` (v1.6.1). DCC-252. | Done |
 | ✅ **Done** | `data-service` | Imported as `apps/data-service` — full 395-commit history via `git subtree` (DCC-221, DCC-233) | — |
+| 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
 | 🟡 **Tier 2** | `node-api-grpc-js` (0★) | gRPC client — faster than REST | Low |
-| ✅ **Forked** | `WavesJ` (47★) | Forked as [`packages/jvm/java-sdk`](https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk) — `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-251, DCC-249, May 2026). In monorepo, not standalone. Upstream at `wavesplatform/WavesJ` commit `2f78fd3`. Java 25, Maven Central publish, JaCoCo/SpotBugs/PMD/Checkstyle quality gates. Namespace: `io.decentralchain.sdk.*` | Done |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
 
 ### What's Not Worth Forking
@@ -354,7 +368,8 @@ Ranked by strategic value to DCC:
 | Mobile wallets (iOS/Android) | $500K+ commitment each; browser extension covers wallet for now |
 | WavesGUI (399★) | Legacy Angular wallet; DCC has modern exchange + cubensis-connect |
 | Rust microservices cluster (10 repos) | Tightly coupled to wx.network infrastructure |
-| ZK cryptography (zwaves, groth16verify) | Only relevant if DCC protocol adds ZK features |
+| ~~ZK cryptography (zwaves)~~ | ✅ Forked as `packages/jvm/zwaves` — required as node-scala native dep |
+| `groth16verify` | Only relevant if DCC adds new ZK transaction types |
 
 ---
 
@@ -368,6 +383,16 @@ Ranked by strategic value to DCC:
 - [x] Fork `@keeper-wallet/swap-client` → `@decentralchain/swap-client` (DCC-69)
 - [x] Fork `@keeper-wallet/waves-crypto` → `@decentralchain/crypto` (DCC-70)
 - [x] Import `wavesplatform/data-service` → `apps/data-service` (DCC-221, DCC-233)
+- [x] Fork `wavesplatform/Waves` node → `Ecosystem/node-scala` — DCC protocol patches, CI, security hardening (DCC-146/147/148/149/150)
+- [x] Fork `wavesplatform/gowaves` → `Ecosystem/node-go` — module rename, branding, CI overhaul (DCC-165)
+- [x] Fork `wavesplatform/dex` matcher → `Ecosystem/matcher` — wired to DCC Java SDK (DCC-263)
+- [x] Fork `wavesplatform/blockchain-postgres-sync` → `Ecosystem/blockchain-postgres-sync` — DCC branding + full audit (DCC-213/214)
+- [x] Extract `wavesplatform/Waves` lang+repl → `packages/ride/` — 1,991-commit history, Maven + npm dual publish (DCC-252)
+- [x] Fork `wavesplatform/WavesJ` → `packages/jvm/java-sdk` — Java 25, DCC namespace, Maven Central (DCC-251/263)
+- [x] Fork `wavesplatform/curve25519-java` → `packages/jvm/curve25519-java` — Maven + Java 25 (DCC-260)
+- [x] Fork `wavesplatform/waves-transactions-java` → `packages/jvm/transactions-java` — Maven + Java 25 (DCC-240)
+- [x] Fork `wavesplatform/blst-java` → `packages/jvm/blst-java` — BLS12-381 JNI, Java 25 (DCC-242)
+- [x] Fork `wavesplatform/zwaves` → `packages/jvm/zwaves` — ZK-SNARK JNI, Java 25 (DCC-261)
 
 ### In Progress
 
@@ -379,12 +404,10 @@ Ranked by strategic value to DCC:
 - [ ] Fork & rebrand `ride-examples` → `dcc-ride-examples`
 - [ ] Fork `surfboard` → `@decentralchain/surfboard` CLI
 - [ ] Upgrade `node-go` proto submodule to gowaves v0.11.1 (closes 4 DCC-171 proto gaps)
-- [ ] Evaluate `blockchain-postgres-sync` for DecentralScan 2.0
 
 ### Future
 
-- [ ] Evaluate `gowaves` Go node for lighter validator infrastructure
-- [ ] Fork language SDKs (Java, Python, Go, Rust) on community demand
+- [ ] Fork language SDKs (Python, Go, Rust, C#) on community demand
 - [ ] Mobile wallet initiative (dedicated team required)
 
 ---
@@ -634,15 +657,17 @@ Actionable items where Waves references remain and should be cleaned up:
 
 ### Standalone Ecosystem Repos → Upstream Map
 
-These repos are **outside the monorepo** but also track upstream Waves sources.
+These repos live **outside the monorepo** under `Ecosystem/` and track upstream Waves sources independently.
 
-| Repo | Upstream | Upstream Commit | DCC Commit | Date | Activity |
-|------|----------|----------------|------------|------|----------|
+| Repo | DCC Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
+|------|----------|---------------|----------------|------------|------|----------|
+| node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `5c347100` (v1.6.1) | `595060ea` | 2026-02 | 🟢 Active |
+| node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `df50e74c` | `35d43501` | 2025 | 🟢 Active |
+| matcher | `Ecosystem/matcher` | [wavesplatform/dex](https://github.com/wavesplatform/dex) | `5c347100` (shared with node-scala) | `1cd62e59` | 2026-02 | 🟡 Moderate |
+| blockchain-postgres-sync | `Ecosystem/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `4f1181c` (v1.0.0) | `1c867c4` | 2024 | 🟡 Moderate |
+| docs | `Ecosystem/docs` | [wavesplatform/waves-documentation](https://github.com/wavesplatform/waves-documentation) | — (no tracked SHA; initial import was manual) | `673cc90` | 2023 | 💤 Dormant |
 
-> **java-sdk** is now inside the monorepo at `packages/jvm/java-sdk/` — no longer a standalone repo. Sync upstream WavesJ bugfixes via:
-> `cd packages/jvm/java-sdk && git log` then manually port relevant fixes. Adapt to DCC Maven coords (`io.decentralchain:java-sdk`). Do NOT port Waves-specific branding, endpoint URLs, or test node Docker images.
-
-### Monorepo → Upstream Map
+### TypeScript SDK Packages → Upstream Map
 
 Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is the last Waves commit we've incorporated. **DCC Commit** is where that sync lives in our monorepo history.
 
@@ -665,7 +690,7 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 15 | `packages/sdk/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` | `9ca16a2` | 2022-12-15 | 💤 Dormant |
 | 16 | `packages/sdk/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` | `0d6ff1c` | 2023-10-13 | 💤 Dormant |
 | 17 | `packages/sdk/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` | `1cb57c2` | 2026-02-25 | 🟢 Active |
-| 18 | `packages/sdk/ride-js` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
+| 18 | `packages/ride/ts` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
 | 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` | `a46ae18` | 2025-05-28 | 🟢 Active |
 | 20 | `packages/sdk/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
 | 21 | `packages/sdk/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
@@ -677,6 +702,34 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
 
 > **`apps/data-service` import notes:** Imported via `git subtree add` from the local `Legacy/Waves/data-service` upstream clone (wavesplatform v0.38.0 — commit `4820824d`). Full 395-commit history is preserved in the monorepo. Import method: `git subtree` (not fork). DCC-specific identity layer (endpoint URLs, chain IDs, env var names, branding) is applied separately in **DCC-234**. Toolchain modernization (Biome replacing ESLint/Prettier, strict tsconfig, ESM imports) is tracked in **DCC-219**, **DCC-220**, **DCC-222**. Vitest migration from Jest is **DCC-223**.
+
+### RIDE Packages (packages/ride/) → Upstream Map
+
+`packages/ride/lang/` and `packages/ride/repl/` were extracted from `Ecosystem/node-scala` (itself a fork of `wavesplatform/Waves`) via `git filter-repo`, preserving 1,991 upstream commits from the Waves history that touched `lang/` and `repl/`. `packages/ride/ts/` is the standalone TypeScript wrapper, tracked separately (row 18 above).
+
+| # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
+|---|--------------|---------------|----------------|------------|------|----------|
+| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `5c347100` (v1.6.1) | `17626cc7` | 2026-02 | 🟢 Active |
+| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `5c347100` (v1.6.1) | `17626cc7` | 2026-02 | 🟡 Moderate |
+| 3 | `packages/ride/ts/` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
+
+> Import commit `17626cc7` message: "feat(DCC-252): import lang and repl from node-scala with full upstream history — Extracted lang/ and repl/ from Ecosystem/node-scala preserving 1,991 commits from the upstream Waves history plus all 5 DCC patches (namespace rename, chain identity, security hardening, test fixes)."
+
+### JVM Libraries (packages/jvm/) → Upstream Map
+
+Each library was imported into the monorepo via `git subtree add` or `git filter-repo`, preserving full upstream commit history. All are published to Maven Central as `io.decentralchain:*`.
+
+| # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
+|---|--------------|---------------|----------------|------------|------|----------|
+| 1 | `packages/jvm/java-sdk` | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` (v1.6.4-SNAPSHOT) | `390fc984` | 2026-02-20 | 🟢 Active |
+| 2 | `packages/jvm/curve25519-java` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` | `e6f21dea` | 2023-10-12 | 💤 Dormant |
+| 3 | `packages/jvm/transactions-java` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (v1.2.7) | `eff2d5e5` | 2025 | 💤 Dormant |
+| 4 | `packages/jvm/blst-java` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` | `7c11f306` | 2024 | 💤 Dormant |
+| 5 | `packages/jvm/zwaves` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` | `3df6a576` | 2024 | 💤 Dormant |
+
+> **Sync strategy for JVM packages:** Port upstream bugfixes manually. Do NOT port Waves endpoint URLs, chain IDs, or branding. Adapt Maven coordinates to `io.decentralchain:*` and group to `io.decentralchain`. Check each upstream repo monthly for security patches.
+>
+> **java-sdk graft details:** Established proper upstream traceability via commit `390fc9847` — "feat(DCC-263): graft upstream WavesJ history + re-apply DCC fork". Upstream baseline `bb63c0bc` squash commit at `wavesplatform/WavesJ@2f78fd3`. Future cherry-picks: `git subtree pull --prefix packages/jvm/java-sdk upstream-wavesj master --squash` (remote has been removed; re-add if needed).
 
 ### How to Check for New Upstream Changes
 
@@ -706,18 +759,21 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### Priority Watch List
 
-| Upstream Repo | Why | Check |
-|--------------|-----|-------|
-| ts-types | Foundation types — affects entire SDK | Weekly |
-| ts-lib-crypto | Crypto primitives — security-critical | Weekly |
-| ride-js | RIDE compiler = new language features | Weekly |
-| signer | Signing flow changes | Bi-weekly |
-| protobuf-schemas | Wire format = protocol updates | Bi-weekly |
-| Keeper-Wallet-Extension | Wallet features we may want | Monthly |
-| data-service | Now in monorepo — watch for upstream bugfixes and new endpoint features to port | Monthly |
-| waves-transactions | New transaction type support | Monthly |
-| node-api-js | New API endpoints | Monthly |
-| WavesJ | Java SDK (`packages/jvm/java-sdk`) — watch for bugfixes and new API endpoint support | Monthly |
+| Upstream Repo | DCC Location | Why | Check |
+|--------------|-------------|-----|-------|
+| ts-types | `packages/sdk/ts-types` | Foundation types — affects entire SDK | Weekly |
+| ts-lib-crypto | `packages/sdk/ts-lib-crypto` | Crypto primitives — security-critical | Weekly |
+| wavesplatform/Waves (`lang/`) | `packages/ride/lang/` | RIDE VM — new language features, stdLib versions | Weekly |
+| ride-js | `packages/ride/ts/` | RIDE TS wrapper — new compiler output format | Weekly |
+| signer | `packages/sdk/signer` | Signing flow changes | Bi-weekly |
+| protobuf-schemas | `packages/sdk/protobuf-serialization` | Wire format = protocol updates | Bi-weekly |
+| gowaves | `Ecosystem/node-go` | New proto fields, consensus changes | Bi-weekly |
+| Keeper-Wallet-Extension | `apps/cubensis-connect` | Wallet features we may want | Monthly |
+| data-service | `apps/data-service` | Now in monorepo — watch for upstream bugfixes and new endpoint features | Monthly |
+| waves-transactions | `packages/sdk/transactions` | New transaction type support | Monthly |
+| node-api-js | `packages/sdk/node-api-js` | New API endpoints | Monthly |
+| WavesJ | `packages/jvm/java-sdk` | Java SDK — watch for bugfixes and new API endpoint support | Monthly |
+| wavesplatform/Waves (`node/`) | `Ecosystem/node-scala` | Protocol changes, feature flags, security patches | Monthly |
 
 ---
 
@@ -725,21 +781,26 @@ git diff <last-synced-commit>..HEAD -- src/
 
 ### By Category (134 repos total)
 
-**Already Forked to DCC (26):** ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js, Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client, waves-crypto, **data-service**, **WavesJ** (as `packages/jvm/java-sdk` in monorepo — `io.decentralchain:java-sdk`). 
+**Already Forked to DCC (35+):**
+- *TypeScript SDK (24):* ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js (`packages/ride/ts/`), Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client (in `feat/swap`), waves-crypto
+- *Application (1):* **data-service** → `apps/data-service`
+- *Standalone infrastructure (4):* **Waves** node → `Ecosystem/node-scala` · **gowaves** → `Ecosystem/node-go` · **dex** matcher → `Ecosystem/matcher` · **blockchain-postgres-sync** → `Ecosystem/blockchain-postgres-sync`
+- *JVM libraries (5 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519-java` · **waves-transactions-java** → `packages/jvm/transactions-java` · **blst-java** → `packages/jvm/blst-java` · **zwaves** → `packages/jvm/zwaves`
+- *RIDE packages (2 in monorepo, from wavesplatform/Waves):* `packages/ride/lang/` · `packages/ride/repl/` 
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
-**Infrastructure (~20):** Waves/node (1171★ Scala), gowaves (255★ Go), matcher (18★ Scala), ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, blockchain-postgres-sync (16★ Rust), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
+**Infrastructure (~20):** ~~Waves/node (1171★ Scala)~~ ✅ forked as `Ecosystem/node-scala`, ~~gowaves (255★ Go)~~ ✅ forked as `Ecosystem/node-go`, ~~matcher (18★ Scala)~~ ✅ forked as `Ecosystem/matcher`, ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, ~~blockchain-postgres-sync (16★ Rust)~~ ✅ forked as `Ecosystem/blockchain-postgres-sync`, nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
-**Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, waves-transactions-java, waves-crypto-java), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
+**Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, ~~waves-transactions-java~~ ✅ forked as `transactions-java`, ~~waves-crypto-java~~ not forked), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
+
+**Cryptography (4):** curve25519-js (36★), ~~zwaves (4★ ZK)~~ ✅ forked as `packages/jvm/zwaves`, ~~groth16verify~~ (only needed if DCC adds ZK tx types), ~~blst-java~~ ✅ forked as `packages/jvm/blst-java`.
 
 **Mobile (4):** WavesWallet-iOS (47★), WavesWallet-android (52★), WavesSDK-iOS (17★), WavesSDK-android (15★).
 
 **Archived/Deprecated (7):** WavesCS, private-node-docker-image, waves-signature-generator, node-docker-image, WavesClientLite, wavespp, how-to-connect-keeper-to-mobile-apps.
 
 **Applications (~10):** WavesGUI (399★), waves-games, waves-items-webapp, waves-dao-ui, mpt-staking-ui, wavesdappcom, web3course.
-
-**Cryptography (4):** curve25519-js (36★), zwaves (4★ ZK), groth16verify, blst-java.
 
 **Internal/CI/Misc (~25):** configs, jira-action, vault-decryptor, provider-seed, provider-metamask, provider-ledger, unified-declarations, blocks-json-parser-js, tx-json-schemas, ts-contract, waves-rest, waves-data-oracle, and others.
 
