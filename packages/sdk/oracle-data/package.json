@@ -32,7 +32,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/oracle-data",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/oracle-data",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -60,7 +60,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/oracle-data",
+    "directory": "packages/sdk/oracle-data",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

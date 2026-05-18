@@ -8,7 +8,7 @@ dist/
 # Rust/Wasm (crypto)
 Cargo.lock
 target/
-packages/ts/crypto/pkg/
+packages/sdk/crypto/pkg/
 
 # pnpm
 .pnpm-debug.log

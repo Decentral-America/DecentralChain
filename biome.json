@@ -16,7 +16,7 @@
       "!dist",
       "!coverage",
       "!**/*.d.ts",
-      "!packages/ts/transactions/docs",
+      "!packages/sdk/transactions/docs",
       "!.nx",
       "!**/.react-router"
     ]
@@ -152,9 +152,9 @@
     },
     {
       "includes": [
-        "packages/ts/crypto/src/aesCommon.ts",
-        "packages/ts/crypto/src/decryptAesEcb.ts",
-        "packages/ts/crypto/src/encryptAesEcb.ts"
+        "packages/sdk/crypto/src/aesCommon.ts",
+        "packages/sdk/crypto/src/decryptAesEcb.ts",
+        "packages/sdk/crypto/src/encryptAesEcb.ts"
       ],
       "linter": {
         "rules": {
@@ -165,7 +165,7 @@
       }
     },
     {
-      "includes": ["packages/ts/protobuf-serialization/src/gen/**"],
+      "includes": ["packages/sdk/protobuf-serialization/src/gen/**"],
       "linter": {
         "rules": {
           "security": {
@@ -176,8 +176,8 @@
     },
     {
       "includes": [
-        "packages/ts/marshall/src/libs/parseJsonBigNumber.ts",
-        "packages/ts/parse-json-bignumber/src/**"
+        "packages/sdk/marshall/src/libs/parseJsonBigNumber.ts",
+        "packages/sdk/parse-json-bignumber/src/**"
       ],
       "linter": {
         "rules": {
@@ -188,7 +188,7 @@
       }
     },
     {
-      "includes": ["packages/ts/ts-lib-crypto/examples/**"],
+      "includes": ["packages/sdk/ts-lib-crypto/examples/**"],
       "linter": {
         "rules": {
           "security": {

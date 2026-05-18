@@ -38,7 +38,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/transactions",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/transactions",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -70,7 +70,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/transactions",
+    "directory": "packages/sdk/transactions",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

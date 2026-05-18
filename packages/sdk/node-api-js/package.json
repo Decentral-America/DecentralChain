@@ -84,7 +84,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/node-api-js",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/node-api-js",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -108,7 +108,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/node-api-js",
+    "directory": "packages/sdk/node-api-js",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
