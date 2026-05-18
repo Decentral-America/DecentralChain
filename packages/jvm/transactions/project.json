@@ -1,0 +1,35 @@
+{
+  "name": "transactions",
+  "projectType": "library",
+  "tags": ["scope:jvm", "layer:0", "lang:java"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/jvm/transactions",
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/jvm/transactions",
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/jvm/transactions",
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/jvm/transactions",
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean"
+      }
+    }
+  }
+}
