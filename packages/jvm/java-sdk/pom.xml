@@ -4,18 +4,39 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wavesplatform</groupId>
-    <artifactId>wavesj</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <groupId>io.decentralchain</groupId>
+    <artifactId>java-sdk</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Reproducible builds: set to release date on each release, kept as
+             baseline date for SNAPSHOT. `mvn artifact:check-buildplan` verifies. -->
+        <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
+        <jacoco.version>0.8.14</jacoco.version>
+        <spotbugs.version>4.9.8.3</spotbugs.version>
+        <checkstyle.version>3.6.0</checkstyle.version>
+        <spotless.version>3.5.0</spotless.version>
+        <!-- Coverage thresholds — unit-test-only baseline.
+             Docker integration tests bring this to ~70%+.
+             Override in CI: -Djacoco.line.ratio=0.70 -Djacoco.branch.ratio=0.60 -->
+        <jacoco.line.ratio>0.20</jacoco.line.ratio>
+        <jacoco.branch.ratio>0.07</jacoco.branch.ratio>
+        <!-- Signing plugins: skip locally; CI overrides to false.
+             GPG:      -Dgpg.skip=false (maven-gpg-plugin respects this natively)
+             Sigstore: -Dsigstore.skip=false (keyless OIDC, requires GitHub Actions) -->
+        <sigstore.skip>true</sigstore.skip>
     </properties>
 
-    <name>WavesJ</name>
-    <description>Java library to interact with the Waves blockchain</description>
-    <url>https://github.com/wavesplatform/WavesJ</url>
+    <name>DecentralChain Java SDK</name>
+    <description>Java SDK for the DecentralChain blockchain</description>
+    <url>https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk</url>
+
+    <organization>
+        <name>DecentralChain / Blockchain Costa Rica</name>
+        <url>https://decentralchain.io</url>
+    </organization>
 
     <licenses>
         <license>
@@ -26,20 +47,21 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/wavesplatform/WavesJ</url>
+        <connection>scm:git:git://github.com/Decentral-America/DecentralChain.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/Decentral-America/DecentralChain.git</developerConnection>
+        <url>https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk</url>
     </scm>
 
     <developers>
         <developer>
-            <id>petermz</id>
-            <name>Peter Zhelezniakov</name>
-            <email>peterz@rambler.ru</email>
-            <organization>Waves</organization>
-            <organizationUrl>https://waves.tech/</organizationUrl>
+            <id>decentralchain</id>
+            <name>DecentralChain Team</name>
+            <email>dev@decentralchain.io</email>
+            <organization>DecentralChain</organization>
+            <organizationUrl>https://decentralchain.io</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
-            <timezone>+3</timezone>
         </developer>
     </developers>
 
@@ -80,6 +102,10 @@
                                 <requireMavenVersion>
                                     <version>3.9.2</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>25</version>
+                                </requireJavaVersion>
+                                <banDuplicatePomDependencyVersions/>
                             </rules>
                         </configuration>
                     </execution>
@@ -88,7 +114,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
+                <version>0.10.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <autoPublish>true</autoPublish>
@@ -106,15 +132,28 @@
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
+                <version>3.15.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>25</release>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xlint:-serial</arg>
+                        <arg>-Xlint:-processing</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -133,14 +172,155 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.5.5</version>
+                <configuration>
+                    <argLine>${jacoco.agent.argLine}</argLine>
+                </configuration>
+            </plugin>
+            <!-- Coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                        <configuration>
+                            <propertyName>jacoco.agent.argLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.line.ratio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.branch.ratio}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Static analysis -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>High</threshold>
+                    <failOnError>true</failOnError>
+                    <!-- FindSecBugs: OWASP security detector plugin (1.14.0, Jun 2025) -->
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>1.14.0</version>
+                        </plugin>
+                    </plugins>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Static analysis: PMD — report-only; enable failOnViolation in a
+                 dedicated PR once upstream debt is baselined. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.28.0</version>
+                <configuration>
+                    <targetJdk>25</targetJdk>
+                    <failOnViolation>false</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pmd-check</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Code style: google-java-format (via Spotless) + Checkstyle enforced.
+                 Remaining suppressions in checkstyle-suppressions.xml cover upstream
+                 WavesJ debt (NeedBraces, MissingJavadoc) and two domain-specific
+                 identifiers (dApp in InvokeAction, TI in Node). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                    <suppressionsLocation>${project.basedir}/checkstyle-suppressions.xml</suppressionsLocation>
+                    <consoleOutput>false</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <violationSeverity>warning</violationSeverity>
+                    <excludes>**/module-info.java</excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle-report</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Code formatter: google-java-format enforced via Spotless.
+                 Fix locally: ./mvnw spotless:apply
+                 CI enforcement: spotless:check bound to verify phase. -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.35.0</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <source>11</source>
+                    <source>25</source>
                 </configuration>
                 <executions>
                     <execution>
@@ -155,6 +335,9 @@
                 <groupId>dev.sigstore</groupId>
                 <artifactId>sigstore-maven-plugin</artifactId>
                 <version>2.0.0</version>
+                <configuration>
+                    <skip>${sigstore.skip}</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign</id>
@@ -164,6 +347,37 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- SBOM generation for supply-chain transparency -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>make-bom</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- central-publishing-maven-plugin sets maven.deploy.skip=true,
+                         which triggers CycloneDX's skipNotDeployed guard. Force-enable
+                         BOM generation regardless of the deploy lifecycle state. -->
+                    <skipNotDeployed>false</skipNotDeployed>
+                    <skip>false</skip>
+                    <projectType>library</projectType>
+                    <schemaVersion>1.6</schemaVersion>
+                    <includeBomSerialNumber>true</includeBomSerialNumber>
+                    <includeCompileScope>true</includeCompileScope>
+                    <includeTestScope>false</includeTestScope>
+                    <includeRuntimeScope>true</includeRuntimeScope>
+                    <includeSystemScope>false</includeSystemScope>
+                    <includeProvidedScope>false</includeProvidedScope>
+                    <outputName>bom</outputName>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -172,12 +386,12 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.33.2</version>
+                <version>4.34.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.20.0</version>
+                <version>1.22.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -187,7 +401,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.20.1</version>
+                <version>2.21.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.21.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -207,32 +426,19 @@
             <version>1.6.1</version>
         </dependency>
 
-        <!-- http client -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
-        </dependency>
-
-        <!-- logging -->
+        <!-- logging (runtime / test only) -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.29</version>
-        </dependency>
-
-        <!-- util -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.20.0</version>
+            <version>1.5.32</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.14.1</version>
+            <version>5.14.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -241,22 +447,18 @@
             <version>3.27.7</version>
             <scope>test</scope>
         </dependency>
+        <!-- testcontainers 2.x — junit-jupiter module dropped; container lifecycle
+             handled via static initializer in BaseTestWithNodeInDocker -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>2.0.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>1.21.4</version>
+            <version>2.0.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.21.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
