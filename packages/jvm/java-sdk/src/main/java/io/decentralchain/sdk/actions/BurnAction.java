@@ -2,7 +2,7 @@ package io.decentralchain.sdk.actions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.common.AssetId;
+import com.decentralchain.transactions.common.AssetId;
 import java.util.Objects;
 
 public class BurnAction {

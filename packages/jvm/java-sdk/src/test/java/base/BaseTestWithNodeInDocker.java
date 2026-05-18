@@ -4,11 +4,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.wavesplatform.crypto.Crypto;
-import com.wavesplatform.transactions.TransferTransaction;
-import com.wavesplatform.transactions.WavesConfig;
-import com.wavesplatform.transactions.account.PrivateKey;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.common.Id;
+import com.decentralchain.transactions.TransferTransaction;
+import com.decentralchain.transactions.WavesConfig;
+import com.decentralchain.transactions.account.PrivateKey;
+import com.decentralchain.transactions.common.Amount;
+import com.decentralchain.transactions.common.Id;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.Profile;
 import io.decentralchain.sdk.exceptions.NodeException;

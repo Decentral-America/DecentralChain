@@ -10,9 +10,9 @@ import com.wavesplatform.events.protobuf.Events.TransactionMetadata.EthereumMeta
 import com.wavesplatform.protobuf.AmountOuterClass.Amount;
 import com.wavesplatform.protobuf.transaction.InvokeScriptResultOuterClass.InvokeScriptResult.Call.Argument;
 import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
-import com.wavesplatform.transactions.EthereumTransaction;
-import com.wavesplatform.transactions.EthereumTransaction.Invocation;
-import com.wavesplatform.transactions.common.ChainId;
+import com.decentralchain.transactions.EthereumTransaction;
+import com.decentralchain.transactions.EthereumTransaction.Invocation;
+import com.decentralchain.transactions.common.ChainId;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 

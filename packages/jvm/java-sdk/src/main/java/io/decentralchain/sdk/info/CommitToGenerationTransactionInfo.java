@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.CommitToGenerationTransaction;
-import com.wavesplatform.transactions.Transaction;
+import com.decentralchain.transactions.CommitToGenerationTransaction;
+import com.decentralchain.transactions.Transaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class CommitToGenerationTransactionInfo extends TransactionInfo {

@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.LeaseCancelTransaction;
+import com.decentralchain.transactions.LeaseCancelTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.LeaseInfo;
 

@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.GenesisTransaction;
+import com.decentralchain.transactions.GenesisTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class GenesisTransactionInfo extends TransactionInfo {

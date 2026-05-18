@@ -1,17 +1,17 @@
 package node.transactions;
 
-import static com.wavesplatform.transactions.EthereumTransaction.DEFAULT_GAS_PRICE;
+import static com.decentralchain.transactions.EthereumTransaction.DEFAULT_GAS_PRICE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.transactions.*;
-import com.wavesplatform.transactions.EthereumTransaction.Invocation;
-import com.wavesplatform.transactions.account.Address;
-import com.wavesplatform.transactions.account.PrivateKey;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.common.AssetId;
-import com.wavesplatform.transactions.common.Base64String;
-import com.wavesplatform.transactions.invocation.*;
+import com.decentralchain.transactions.*;
+import com.decentralchain.transactions.EthereumTransaction.Invocation;
+import com.decentralchain.transactions.account.Address;
+import com.decentralchain.transactions.account.PrivateKey;
+import com.decentralchain.transactions.common.Amount;
+import com.decentralchain.transactions.common.AssetId;
+import com.decentralchain.transactions.common.Base64String;
+import com.decentralchain.transactions.invocation.*;
 import io.decentralchain.sdk.actions.EthRpcResponse;
 import io.decentralchain.sdk.exceptions.NodeException;
 import io.decentralchain.sdk.info.EthereumTransactionInfo;

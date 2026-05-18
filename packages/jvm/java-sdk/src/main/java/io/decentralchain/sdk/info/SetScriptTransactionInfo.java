@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.SetScriptTransaction;
+import com.decentralchain.transactions.SetScriptTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class SetScriptTransactionInfo extends TransactionInfo {

@@ -2,9 +2,9 @@ package io.decentralchain.sdk.actions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.common.AssetId;
-import com.wavesplatform.transactions.common.Recipient;
+import com.decentralchain.transactions.common.Amount;
+import com.decentralchain.transactions.common.AssetId;
+import com.decentralchain.transactions.common.Recipient;
 import io.decentralchain.sdk.Common;
 import java.util.Objects;
 

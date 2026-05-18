@@ -2,7 +2,7 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.account.Address;
+import com.decentralchain.transactions.account.Address;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

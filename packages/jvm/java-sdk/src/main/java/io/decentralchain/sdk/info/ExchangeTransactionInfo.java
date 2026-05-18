@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.ExchangeTransaction;
+import com.decentralchain.transactions.ExchangeTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class ExchangeTransactionInfo extends TransactionInfo {

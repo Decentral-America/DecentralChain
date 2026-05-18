@@ -2,10 +2,10 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.account.Address;
-import com.wavesplatform.transactions.account.PublicKey;
-import com.wavesplatform.transactions.common.AssetId;
-import com.wavesplatform.transactions.common.Id;
+import com.decentralchain.transactions.account.Address;
+import com.decentralchain.transactions.account.PublicKey;
+import com.decentralchain.transactions.common.AssetId;
+import com.decentralchain.transactions.common.Id;
 import java.util.Objects;
 
 @SuppressWarnings("unused")

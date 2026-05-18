@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.LeaseTransaction;
+import com.decentralchain.transactions.LeaseTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.LeaseStatus;
 import java.util.Objects;
