@@ -37,7 +37,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/marshall",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/marshall",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -67,7 +67,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/marshall",
+    "directory": "packages/sdk/marshall",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

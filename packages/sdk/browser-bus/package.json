@@ -33,7 +33,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/browser-bus",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/browser-bus",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -58,7 +58,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/browser-bus",
+    "directory": "packages/sdk/browser-bus",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },

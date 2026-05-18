@@ -36,7 +36,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/money-like-to-node",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/money-like-to-node",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -60,7 +60,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/money-like-to-node",
+    "directory": "packages/sdk/money-like-to-node",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
