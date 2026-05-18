@@ -29,7 +29,7 @@ These cannot be easily forked because `lang` is the Ride compiler — a large, c
 **Why not fixed now:** Forking the Ride compiler is a multi-sprint effort tracked as part of the broader node-scala migration.
 
 **Resolution path:**
-- Fork `waves-transactions-java` as `io.decentralchain:transactions-java`
+- Fork `waves-transactions-java` as `io.decentralchain:transactions`
 - Long-term: build a standalone `io.decentralchain:lang` (Ride compiler) from `node-scala/lang`
 
 **Affected file:** `pom.xml` lines with `com.wavesplatform` dependencies
