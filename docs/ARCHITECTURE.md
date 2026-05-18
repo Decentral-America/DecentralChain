@@ -56,7 +56,7 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 |----------|----------|-------|----------|
 | TypeScript SDK libraries | `packages/sdk/*` | 20 | All `@decentralchain/*` npm-published packages |
 | RIDE lang + repl | `packages/ride/` | 1 sbt root | `io.decentralchain:lang_3`, `io.decentralchain:lang-testkit_3`, `@decentralchain/ride-lang`, `@decentralchain/ride-repl` |
-| JVM libraries | `packages/jvm/*` | 7 | `io.decentralchain:java-sdk`, `io.decentralchain:curve25519-java`, `io.decentralchain:transactions-java`, etc. |
+| JVM libraries | `packages/jvm/*` | 7 | `io.decentralchain:java-sdk`, `io.decentralchain:curve25519`, `io.decentralchain:transactions`, etc. |
 | Apps and services | `apps/*` | 4 | cubensis-connect (9 SDK deps), exchange (8), scanner (3), data-service (REST API + daemons) |
 
 ### What's Out
@@ -121,9 +121,9 @@ DecentralChain/
 │   │   └── repl/                   RIDE REPL (JVM + Scala.js)
 │   └── jvm/                        JVM libraries → Maven Central (io.decentralchain:*)
 │       ├── java-sdk/               Java SDK (io.decentralchain:java-sdk)
-│       ├── curve25519-java/        Curve25519 cryptography
-│       ├── transactions-java/      Transaction types
-│       ├── blst-java/              BLS12-381 pairing (native)
+│       ├── curve25519/        Curve25519 cryptography
+│       ├── transactions/      Transaction types
+│       ├── blst/              BLS12-381 pairing (native)
 │       └── zwaves/                 ZK-SNARK integration (native)
 ├── docs/
 │   ├── ARCHITECTURE.md             This file
