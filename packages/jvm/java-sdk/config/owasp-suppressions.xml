@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OWASP Dependency-Check suppressions for packages/jvm/java-sdk.
+
+  Each suppression is documented with the reason and expiry date.
+  Suppressions without <until> expire after 1 year from date added
+  and must be reviewed during the next audit cycle.
+
+  Run audit: ./mvnw verify -P audit [-Dnvd.api.key=<key>]
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+  <!--
+    KNOWN-2: com.wavesplatform:lang:1.6.1
+    The Waves lang compiler is a transitive supply-chain risk until
+    DCC-252 (lang fork) is published to Maven Central. Once published,
+    replace with io.decentralchain:lang_3 and remove this suppression.
+
+    Tracked in: packages/jvm/wavesj/KNOWN_ISSUES.md → KNOWN-2
+    Owner: DCC Platform team
+    Review by: when DCC-252 merges to main
+  -->
+  <!-- No CVE suppressions for lang:1.6.1 at this time — add as needed. -->
+
+</suppressions>

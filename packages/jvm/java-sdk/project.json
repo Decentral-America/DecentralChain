@@ -1,0 +1,42 @@
+{
+  "name": "java-sdk",
+  "projectType": "library",
+  "tags": ["lang:java", "layer:0", "scope:jvm"],
+  "targets": {
+    "audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    }
+  }
+}
