@@ -150,7 +150,7 @@ DecentralChain/
 
 | Layer | Tool | Version | Why This Tool |
 |-------|------|---------|---------------|
-| **Package Manager** | pnpm | 10.x | **Strict isolation** prevents phantom dependencies (unlike npm's flat hoisting). `workspace:*` protocol auto-resolves at publish. `catalog:` centralizes shared versions. 3x faster installs than npm via content-addressable store. |
+| **Package Manager** | pnpm | 11.x | **Strict isolation** prevents phantom dependencies (unlike npm's flat hoisting). `workspace:*` protocol auto-resolves at publish. `catalog:` centralizes shared versions. 3x faster installs than npm via content-addressable store. |
 | **Task Runner** | Nx | 22.x | **Only monorepo tool with native MCP server** — AI agents can query the project graph, run tasks, and monitor builds via 15+ MCP tools. Computation caching replays unchanged tasks in <100ms. `nx affected` detects which packages changed and only rebuilds those, cutting CI from minutes to seconds. See [§15 Decision Log](#15-decision-log) for Nx vs Turborepo. |
 | **SDK Bundler** | tsdown | 0.21.x | **Understands `workspace:*` natively** — no config needed to resolve monorepo deps. Uses Rolldown (Rust) under the hood for speed. ESM-only output with `.mjs` + `.d.mts` matches our ESM-only policy. Successor to tsup with better monorepo support; tsup required workarounds for workspace deps. |
 | **App Bundler** | Vite | 8.x | **Rolldown built-in** (enabled by default in Vite 8) — Rust-native bundler with native ESM output. Replaces the old esbuild/Rollup combo. All three apps (exchange, scanner, cubensis-connect) use Vite 8. |
