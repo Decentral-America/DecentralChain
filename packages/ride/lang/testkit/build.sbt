@@ -1,2 +1,1 @@
-homepage       := Some(url("https://docs.decentralchain.io/en/ride/"))
-
+homepage := Some(url("https://docs.decentralchain.io/en/ride/"))

@@ -14,12 +14,12 @@ object Tasks {
   mapper.registerModule(DefaultScalaModule)
 
   lazy val listComplexFunctions = Def.inputTask {
-    val version    = (' ' ~> NatBasic).parsed
+    val version     = (' ' ~> NatBasic).parsed
     val baseLangDir = baseDirectory.value.getParentFile.getAbsolutePath
 
     val complexFuncs = for {
       path <- Files.list(Paths.get(s"$baseLangDir/doc/v$version/funcs")).iterator().asScala
-      json  = JsonValue.readHjson(Files.newBufferedReader(path)).asObject().toString
+      json = JsonValue.readHjson(Files.newBufferedReader(path)).asObject().toString
       func <- mapper.readValue[Map[String, List[FuncSourceData]]](json).head._2
       if func.complexity > 1
     } yield s"${func.name};${func.complexity};${func.params.mkString(",")}"
@@ -44,7 +44,7 @@ object Tasks {
         )
         .mapValues(_.head)
 
-    def str(s: String): String = "\"" + s + "\""
+    def str(s: String): String           = "\"" + s + "\""
     def tupleStr(l: Seq[String]): String = l.mkString("(", ", ", ")")
     def listStr(l: Seq[String]): String  = "List" + tupleStr(l)
 
@@ -90,42 +90,48 @@ object Tasks {
     def readV1V2Data(): (String, String) =
       Seq(1, 2)
         .map { version =>
-          val DocSourceData(vars, funcs) = mapper.readValue[DocSourceData](new File(s"$baseLangDir/doc/v$version/data.json"))
+          val DocSourceData(vars, funcs) =
+            mapper.readValue[DocSourceData](new File(s"$baseLangDir/doc/v$version/data.json"))
           (buildVarsStr(vars, version), buildFuncsStr(funcs, version))
         }
-        .reduce { (a, b) => (sumMapStr(a._1, b._1), sumMapStr(a._2, b._2)) }
+        .reduce((a, b) => (sumMapStr(a._1, b._1), sumMapStr(a._2, b._2)))
 
     def buildCategorizedFuncsStr(funcs: Seq[(FuncSourceData, String)], version: Int): String =
       kvStr[(String, List[String]), (FuncSourceData, String)](
         funcs,
         f => (f._1.name, f._1.params),
         f => Seq(str(f._1.name), listStr(f._1.params.map(str)), version.toString),
-        f => Seq(
-          str(f._1.doc.replace("\n", "\\n")),
-          listStr(f._1.paramsDoc.map(str).map(_.replace("\n", "\\n"))),
-          str(f._2),
-          f._1.complexity.toString
-        )
+        f =>
+          Seq(
+            str(f._1.doc.replace("\n", "\\n")),
+            listStr(f._1.paramsDoc.map(str).map(_.replace("\n", "\\n"))),
+            str(f._2),
+            f._1.complexity.toString
+          )
       )
 
     def readFuncs(version: Int): String = {
       val funcs = for {
-        path     <- Files.list(Paths.get(s"$baseLangDir/doc/v$version/funcs")).iterator.asScala
-        json      = JsonValue.readHjson(Files.newBufferedReader(path)).asObject().toString
-        funcs    <- mapper.readValue[Map[String, List[FuncSourceData]]](json).head._2
-        category  = path.getName(path.getNameCount - 1).toString.split('.').head
+        path <- Files.list(Paths.get(s"$baseLangDir/doc/v$version/funcs")).iterator.asScala
+        json = JsonValue.readHjson(Files.newBufferedReader(path)).asObject().toString
+        funcs <- mapper.readValue[Map[String, List[FuncSourceData]]](json).head._2
+        category = path.getName(path.getNameCount - 1).toString.split('.').head
       } yield (funcs, category)
       buildCategorizedFuncsStr(funcs.toSeq, version)
     }
 
     def readVars(version: Int): String = {
-      val vars = mapper.readValue[Map[String, List[VarSourceData]]](new File(s"$baseLangDir/doc/v$version/vars.json")).head._2
+      val vars =
+        mapper.readValue[Map[String, List[VarSourceData]]](new File(s"$baseLangDir/doc/v$version/vars.json")).head._2
       buildVarsStr(vars, version)
     }
 
     def readTypeData(ver: String): String = {
-      val typesJson = JsonValue.readHjson(Files.newBufferedReader(Paths.get(s"$baseLangDir/doc/v$ver/types.hjson"))).asObject().toString
-      val types     = mapper.readValue[Map[String, List[TypeSourceData]]](typesJson).head._2
+      val typesJson = JsonValue
+        .readHjson(Files.newBufferedReader(Paths.get(s"$baseLangDir/doc/v$ver/types.hjson")))
+        .asObject()
+        .toString
+      val types = mapper.readValue[Map[String, List[TypeSourceData]]](typesJson).head._2
       buildTypesStr(types, ver)
     }
 
@@ -138,11 +144,11 @@ object Tasks {
         .max
 
     val (v1V2Vars, v1V2Funcs) = readV1V2Data()
-    val fromV3FuncDefs        = (3 to currentRideVersion).map(v => s"lazy val funcsV$v = ${readFuncs(v)}").mkString("\n")
-    val fromV3VarDefs         = (3 to currentRideVersion).map(v => s"lazy val varsV$v = ${readVars(v)}").mkString("\n")
-    val fromV3Vars            = (3 to currentRideVersion).map(v => s"varsV$v").mkString(" ++ ")
-    val fromV3Funcs           = (3 to currentRideVersion).map(v => s"funcsV$v").mkString(" ++ ")
-    val types                 = (1 to currentRideVersion).map(v => readTypeData(v.toString)).mkString(" ++ ")
+    val fromV3FuncDefs = (3 to currentRideVersion).map(v => s"lazy val funcsV$v = ${readFuncs(v)}").mkString("\n")
+    val fromV3VarDefs  = (3 to currentRideVersion).map(v => s"lazy val varsV$v = ${readVars(v)}").mkString("\n")
+    val fromV3Vars     = (3 to currentRideVersion).map(v => s"varsV$v").mkString(" ++ ")
+    val fromV3Funcs    = (3 to currentRideVersion).map(v => s"funcsV$v").mkString(" ++ ")
+    val types          = (1 to currentRideVersion).map(v => readTypeData(v.toString)).mkString(" ++ ")
 
     val sourceStr =
       s"""
