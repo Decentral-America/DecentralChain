@@ -346,10 +346,10 @@ Ranked by strategic value to DCC:
 | ✅ **Adopted** | `dex` / matcher (18★) | Forked as `Ecosystem/matcher` — shares node-scala base `5c347100`. Wired to `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-263). | Done |
 | ✅ **Adopted** | `blockchain-postgres-sync` (16★) | Forked as `Ecosystem/blockchain-postgres-sync` — upstream base: `4f1181c` (v1.0.0). DCC branding, full audit (4 rounds), all panics eliminated, 84+ tests added (DCC-213/214). | Done |
 | ✅ **Adopted** | `WavesJ` (47★) | Forked as [`packages/jvm/java-sdk`](https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk) — `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-251/263). Upstream: `2f78fd3` (v1.6.4-SNAPSHOT, 2026-02-20). Java 25, Maven Central, JaCoCo/SpotBugs/PMD quality gates. | Done |
-| ✅ **Adopted** | `curve25519-java` | Forked as `packages/jvm/curve25519-java` — upstream: `80b0a5de` (Oct 2023, last upstream release). Maven + Java 25 migration (DCC-260). | Done |
-| ✅ **Adopted** | `waves-transactions-java` | Forked as `packages/jvm/transactions-java` — upstream: `e6afed3a` (v1.2.7). Maven + Java 25 (DCC-240). | Done |
-| ✅ **Adopted** | `blst-java` | Forked as `packages/jvm/blst-java` — upstream: `a7d3e39a`. BLS12-381 JNI bindings, Java 25 (DCC-242). | Done |
-| ✅ **Adopted** | `zwaves` | Forked as `packages/jvm/groth16-java` — upstream: `d4546dbb`. ZK-SNARK (Groth16) JNI bindings (DCC-261). | Done |
+| ✅ **Adopted** | `curve25519-java` | Forked as `packages/jvm/curve25519` — upstream: `80b0a5de` (Oct 2023, last upstream release). Maven + Java 25 migration (DCC-260). | Done |
+| ✅ **Adopted** | `waves-transactions-java` | Forked as `packages/jvm/transactions` — upstream: `e6afed3a` (v1.2.7). Maven + Java 25 (DCC-240). | Done |
+| ✅ **Adopted** | `blst-java` | Forked as `packages/jvm/blst` — upstream: `a7d3e39a`. BLS12-381 JNI bindings, Java 25 (DCC-242). | Done |
+| ✅ **Adopted** | `zwaves` | Forked as `packages/jvm/groth16` — upstream: `d4546dbb`. ZK-SNARK (Groth16) JNI bindings (DCC-261). | Done |
 | ✅ **Adopted** | `Waves/lang` + `Waves/repl` | Forked as `packages/ride/` — RIDE VM (lang/) + REPL (repl/) extracted from node-scala via `git filter-repo`, 1,991 upstream commits preserved. Upstream base: `5c347100` (v1.6.1). DCC-252. | Done |
 | ✅ **Done** | `data-service` | Imported as `apps/data-service` — full 395-commit history via `git subtree` (DCC-221, DCC-233) | — |
 | 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
@@ -368,7 +368,7 @@ Ranked by strategic value to DCC:
 | Mobile wallets (iOS/Android) | $500K+ commitment each; browser extension covers wallet for now |
 | WavesGUI (399★) | Legacy Angular wallet; DCC has modern exchange + cubensis-connect |
 | Rust microservices cluster (10 repos) | Tightly coupled to wx.network infrastructure |
-| ~~ZK cryptography (zwaves)~~ | ✅ Forked as `packages/jvm/groth16-java` — required as node-scala native dep |
+| ~~ZK cryptography (zwaves)~~ | ✅ Forked as `packages/jvm/groth16` — required as node-scala native dep |
 | `groth16verify` | Only relevant if DCC adds new ZK transaction types |
 
 ---
@@ -389,10 +389,10 @@ Ranked by strategic value to DCC:
 - [x] Fork `wavesplatform/blockchain-postgres-sync` → `Ecosystem/blockchain-postgres-sync` — DCC branding + full audit (DCC-213/214)
 - [x] Extract `wavesplatform/Waves` lang+repl → `packages/ride/` — 1,991-commit history, Maven + npm dual publish (DCC-252)
 - [x] Fork `wavesplatform/WavesJ` → `packages/jvm/java-sdk` — Java 25, DCC namespace, Maven Central (DCC-251/263)
-- [x] Fork `wavesplatform/curve25519-java` → `packages/jvm/curve25519-java` — Maven + Java 25 (DCC-260)
-- [x] Fork `wavesplatform/waves-transactions-java` → `packages/jvm/transactions-java` — Maven + Java 25 (DCC-240)
-- [x] Fork `wavesplatform/blst-java` → `packages/jvm/blst-java` — BLS12-381 JNI, Java 25 (DCC-242)
-- [x] Fork `wavesplatform/zwaves` → `packages/jvm/groth16-java` — ZK-SNARK JNI, Java 25 (DCC-261)
+- [x] Fork `wavesplatform/curve25519-java` → `packages/jvm/curve25519` — Maven + Java 25 (DCC-260)
+- [x] Fork `wavesplatform/waves-transactions-java` → `packages/jvm/transactions` — Maven + Java 25 (DCC-240)
+- [x] Fork `wavesplatform/blst-java` → `packages/jvm/blst` — BLS12-381 JNI, Java 25 (DCC-242)
+- [x] Fork `wavesplatform/zwaves` → `packages/jvm/groth16` — ZK-SNARK JNI, Java 25 (DCC-261)
 
 ### In Progress
 
@@ -722,10 +722,10 @@ Each library was imported into the monorepo via `git subtree add` or `git filter
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
 | 1 | `packages/jvm/java-sdk` | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` (v1.6.4-SNAPSHOT) | `390fc984` | 2026-02-20 | 🟢 Active |
-| 2 | `packages/jvm/curve25519-java` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` | `e6f21dea` | 2023-10-12 | 💤 Dormant |
-| 3 | `packages/jvm/transactions-java` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (v1.2.7) | `eff2d5e5` | 2025 | 💤 Dormant |
-| 4 | `packages/jvm/blst-java` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` | `7c11f306` | 2024 | 💤 Dormant |
-| 5 | `packages/jvm/groth16-java` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` | `3df6a576` | 2024 | 💤 Dormant |
+| 2 | `packages/jvm/curve25519` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` | `e6f21dea` | 2023-10-12 | 💤 Dormant |
+| 3 | `packages/jvm/transactions` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (v1.2.7) | `eff2d5e5` | 2025 | 💤 Dormant |
+| 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` | `7c11f306` | 2024 | 💤 Dormant |
+| 5 | `packages/jvm/groth16` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` | `3df6a576` | 2024 | 💤 Dormant |
 
 > **Sync strategy for JVM packages:** Port upstream bugfixes manually. Do NOT port Waves endpoint URLs, chain IDs, or branding. Adapt Maven coordinates to `io.decentralchain:*` and group to `io.decentralchain`. Check each upstream repo monthly for security patches.
 >
@@ -785,16 +785,16 @@ git diff <last-synced-commit>..HEAD -- src/
 - *TypeScript SDK (24):* ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js (`packages/ride/ts/`), Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client (in `feat/swap`), waves-crypto
 - *Application (1):* **data-service** → `apps/data-service`
 - *Standalone infrastructure (4):* **Waves** node → `Ecosystem/node-scala` · **gowaves** → `Ecosystem/node-go` · **dex** matcher → `Ecosystem/matcher` · **blockchain-postgres-sync** → `Ecosystem/blockchain-postgres-sync`
-- *JVM libraries (5 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519-java` · **waves-transactions-java** → `packages/jvm/transactions-java` · **blst-java** → `packages/jvm/blst-java` · **zwaves** → `packages/jvm/groth16-java`
+- *JVM libraries (5 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519` · **waves-transactions-java** → `packages/jvm/transactions` · **blst-java** → `packages/jvm/blst` · **zwaves** → `packages/jvm/groth16`
 - *RIDE packages (2 in monorepo, from wavesplatform/Waves):* `packages/ride/lang/` · `packages/ride/repl/` 
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
 **Infrastructure (~20):** ~~Waves/node (1171★ Scala)~~ ✅ forked as `Ecosystem/node-scala`, ~~gowaves (255★ Go)~~ ✅ forked as `Ecosystem/node-go`, ~~matcher (18★ Scala)~~ ✅ forked as `Ecosystem/matcher`, ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, ~~blockchain-postgres-sync (16★ Rust)~~ ✅ forked as `Ecosystem/blockchain-postgres-sync`, nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
-**Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, ~~waves-transactions-java~~ ✅ forked as `transactions-java`, ~~waves-crypto-java~~ not forked), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
+**Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, ~~waves-transactions-java~~ ✅ forked as `transactions`, ~~waves-crypto-java~~ not forked), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
 
-**Cryptography (4):** curve25519-js (36★), ~~zwaves (4★ ZK)~~ ✅ forked as `packages/jvm/groth16-java`, ~~groth16verify~~ (only needed if DCC adds ZK tx types), ~~blst-java~~ ✅ forked as `packages/jvm/blst-java`.
+**Cryptography (4):** curve25519-js (36★), ~~zwaves (4★ ZK)~~ ✅ forked as `packages/jvm/groth16`, ~~groth16verify~~ (only needed if DCC adds ZK tx types), ~~blst-java~~ ✅ forked as `packages/jvm/blst`.
 
 **Mobile (4):** WavesWallet-iOS (47★), WavesWallet-android (52★), WavesSDK-iOS (17★), WavesSDK-android (15★).
 

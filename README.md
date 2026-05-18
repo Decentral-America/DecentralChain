@@ -59,9 +59,9 @@
 | Artifact | Description |
 |---------|-------------|
 | `io.decentralchain:java-sdk` | Waves Java SDK |
-| `io.decentralchain:curve25519-java` | Ed25519/Curve25519 cryptography |
-| `io.decentralchain:transactions-java` | Transaction wire-format library |
-| `io.decentralchain:blst-java` | BLS12-381 pairing cryptography |
+| `io.decentralchain:curve25519` | Ed25519/Curve25519 cryptography |
+| `io.decentralchain:transactions` | Transaction wire-format library |
+| `io.decentralchain:blst` | BLS12-381 pairing cryptography |
 | `io.decentralchain:zwaves` | ZK-SNARK (Groth16) |
 
 ## Apps
