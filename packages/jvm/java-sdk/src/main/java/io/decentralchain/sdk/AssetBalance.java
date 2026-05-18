@@ -2,8 +2,8 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.Transaction;
-import com.wavesplatform.transactions.common.AssetId;
+import com.decentralchain.transactions.Transaction;
+import com.decentralchain.transactions.common.AssetId;
 import java.util.Objects;
 
 @SuppressWarnings("unused")

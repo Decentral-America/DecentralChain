@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.PaymentTransaction;
+import com.decentralchain.transactions.PaymentTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class PaymentTransactionInfo extends TransactionInfo {

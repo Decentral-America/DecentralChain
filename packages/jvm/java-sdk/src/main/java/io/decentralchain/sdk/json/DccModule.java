@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.json;
 
-import com.wavesplatform.transactions.common.Recipient;
-import com.wavesplatform.transactions.invocation.Function;
-import com.wavesplatform.transactions.serializers.json.WavesTransactionsModule;
+import com.decentralchain.transactions.common.Recipient;
+import com.decentralchain.transactions.invocation.Function;
+import com.decentralchain.transactions.serializers.json.WavesTransactionsModule;
 import io.decentralchain.sdk.info.TransactionInfo;
 import io.decentralchain.sdk.info.TransactionWithStatus;
 import io.decentralchain.sdk.json.deser.FunctionDeser;
