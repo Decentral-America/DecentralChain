@@ -2,7 +2,7 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wavesplatform.transactions.account.BlsSignature;
+import com.decentralchain.transactions.account.BlsSignature;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

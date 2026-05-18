@@ -1,6 +1,6 @@
 package io.decentralchain.sdk;
 
-import static com.wavesplatform.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
+import static com.decentralchain.transactions.serializers.json.JsonSerializer.JSON_MAPPER;
 import static io.decentralchain.sdk.Status.CONFIRMED;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toCollection;
@@ -11,12 +11,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.wavesplatform.transactions.EthereumTransaction;
-import com.wavesplatform.transactions.Transaction;
-import com.wavesplatform.transactions.account.Address;
-import com.wavesplatform.transactions.common.*;
-import com.wavesplatform.transactions.data.DataEntry;
-import com.wavesplatform.transactions.serializers.json.JsonSerializer;
+import com.decentralchain.transactions.EthereumTransaction;
+import com.decentralchain.transactions.Transaction;
+import com.decentralchain.transactions.account.Address;
+import com.decentralchain.transactions.common.*;
+import com.decentralchain.transactions.data.DataEntry;
+import com.decentralchain.transactions.serializers.json.JsonSerializer;
 import io.decentralchain.sdk.actions.EthRpcRequest;
 import io.decentralchain.sdk.actions.EthRpcResponse;
 import io.decentralchain.sdk.exceptions.NodeException;

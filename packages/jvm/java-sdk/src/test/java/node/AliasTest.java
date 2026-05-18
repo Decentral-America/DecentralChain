@@ -3,9 +3,9 @@ package node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.transactions.CreateAliasTransaction;
-import com.wavesplatform.transactions.account.PrivateKey;
-import com.wavesplatform.transactions.common.Alias;
+import com.decentralchain.transactions.CreateAliasTransaction;
+import com.decentralchain.transactions.account.PrivateKey;
+import com.decentralchain.transactions.common.Alias;
 import io.decentralchain.sdk.exceptions.NodeException;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;

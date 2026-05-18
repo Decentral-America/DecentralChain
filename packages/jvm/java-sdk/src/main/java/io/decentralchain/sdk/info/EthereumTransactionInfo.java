@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.wavesplatform.transactions.EthereumTransaction;
+import com.decentralchain.transactions.EthereumTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.StateChanges;
 import java.util.Objects;
