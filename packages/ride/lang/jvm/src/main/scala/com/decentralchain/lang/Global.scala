@@ -2,7 +2,6 @@ package com.decentralchain.lang
 
 import cats.syntax.either.*
 import ch.obermuhlner.math.big.BigDecimalMath
-import com.google.common.io.BaseEncoding
 import com.decentralchain.common.merkle.Merkle
 import com.decentralchain.common.utils.{Base58, Base64}
 import com.decentralchain.crypto.{Blake2b256, Curve25519, Keccak256, P256Curve, Sha256}
@@ -10,6 +9,7 @@ import com.decentralchain.lang.v1.BaseGlobal
 import com.decentralchain.lang.v1.evaluator.ctx.impl.Rounding
 import com.decentralchain.lang.v1.evaluator.ctx.impl.crypto.RSA
 import com.decentralchain.lang.v1.evaluator.ctx.impl.crypto.RSA.DigestAlgorithm
+import com.google.common.io.BaseEncoding
 import com.wavesplatform.zwaves.bls12.Groth16 as Bls12Groth16
 import com.wavesplatform.zwaves.bn256.Groth16 as Bn256Groth16
 import org.web3j.crypto.Sign

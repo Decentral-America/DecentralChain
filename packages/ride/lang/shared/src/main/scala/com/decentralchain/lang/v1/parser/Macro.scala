@@ -1,7 +1,7 @@
 package com.decentralchain.lang.v1.parser
 
-import com.decentralchain.lang.v1.parser.Expressions.PART.VALID
 import com.decentralchain.lang.v1.parser.Expressions.*
+import com.decentralchain.lang.v1.parser.Expressions.PART.VALID
 
 object Macro {
   def unwrapStrict(blockPos: Pos, strictLetDecs: Seq[LET], strictBody: EXPR): EXPR = {
