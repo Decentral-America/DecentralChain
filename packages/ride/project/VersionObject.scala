@@ -5,8 +5,10 @@ import sbt._
 object VersionObject extends AutoPlugin {
   object autoImport {
     object V {
-      val scalaPackage = SettingKey[String]("version-scala-package", "Scala package name where Version object is created")
-      val fallback     = SettingKey[(Int, Int, Int)]("version-fallback", "Version tuple to use when Git version is not available")
+      val scalaPackage =
+        SettingKey[String]("version-scala-package", "Scala package name where Version object is created")
+      val fallback =
+        SettingKey[(Int, Int, Int)]("version-fallback", "Version tuple to use when Git version is not available")
     }
   }
 
@@ -22,7 +24,7 @@ object VersionObject extends AutoPlugin {
       val packageName = V.scalaPackage.value
       val versionFile = (Compile / sourceManaged).value / s"${packageName.replace('.', '/')}/Version.scala"
 
-      val versionExtractor = """(\d+)\.(\d+)\.(\d+).*""".r
+      val versionExtractor      = """(\d+)\.(\d+)\.(\d+).*""".r
       val (major, minor, patch) = version.value match {
         case versionExtractor(ma, mi, pa) => (ma.toInt, mi.toInt, pa.toInt)
         case _                            => V.fallback.value
