@@ -1287,7 +1287,7 @@ val wavesJ = "com.wavesplatform" % "wavesj" % "1.6.3"
 // TODO: fork to com.decentralchain:wavesj
 ```
 
-`com.wavesplatform:wavesj` is the Waves Java SDK — separate from `Ecosystem/java-sdk/`. The matcher uses it for direct blockchain interactions (signing transactions, querying state). The upstream source is `github.com/wavesplatform/WavesJ`.
+`com.wavesplatform:wavesj` is the Waves Java SDK — separate from our fork at `packages/jvm/java-sdk/`. The matcher uses it for direct blockchain interactions (signing transactions, querying state). The upstream source is `github.com/wavesplatform/WavesJ`.
 
 **Ticket created: [DCC-263](https://decentralchain.atlassian.net/browse/DCC-263)**
 
