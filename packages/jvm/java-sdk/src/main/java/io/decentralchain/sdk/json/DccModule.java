@@ -11,11 +11,11 @@ import io.decentralchain.sdk.json.deser.TransactionInfoDeser;
 import io.decentralchain.sdk.json.deser.TransactionWithStatusDeser;
 
 public class DccModule extends WavesTransactionsModule {
-    public DccModule() {
-        super();
-        addDeserializer(Function.class, new FunctionDeser());
-        addDeserializer(Recipient.class, new RecipientDeser());
-        addDeserializer(TransactionWithStatus.class, new TransactionWithStatusDeser());
-        addDeserializer(TransactionInfo.class, new TransactionInfoDeser());
-    }
+  public DccModule() {
+    super();
+    addDeserializer(Function.class, new FunctionDeser());
+    addDeserializer(Recipient.class, new RecipientDeser());
+    addDeserializer(TransactionWithStatus.class, new TransactionWithStatusDeser());
+    addDeserializer(TransactionInfo.class, new TransactionInfoDeser());
+  }
 }
