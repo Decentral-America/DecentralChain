@@ -5,17 +5,17 @@ import io.decentralchain.sdk.ApplicationStatus;
 
 public class CreateAliasTransactionInfo extends TransactionInfo {
 
-    public CreateAliasTransactionInfo(CreateAliasTransaction tx, ApplicationStatus applicationStatus, int height) {
-        super(tx, applicationStatus, height);
-    }
+  public CreateAliasTransactionInfo(
+      CreateAliasTransaction tx, ApplicationStatus applicationStatus, int height) {
+    super(tx, applicationStatus, height);
+  }
 
-    public CreateAliasTransaction tx() {
-        return (CreateAliasTransaction) super.tx();
-    }
+  public CreateAliasTransaction tx() {
+    return (CreateAliasTransaction) super.tx();
+  }
 
-    @Override
-    public String toString() {
-        return "CreateAliasTransactionInfo{} " + super.toString();
-    }
-
+  @Override
+  public String toString() {
+    return "CreateAliasTransactionInfo{} " + super.toString();
+  }
 }

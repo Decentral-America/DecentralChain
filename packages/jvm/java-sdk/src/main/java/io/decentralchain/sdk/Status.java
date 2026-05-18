@@ -5,15 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings("unused")
 public enum Status {
+  @JsonEnumDefaultValue
+  @JsonProperty("not_found")
+  NOT_FOUND,
 
-    @JsonEnumDefaultValue
-    @JsonProperty("not_found")
-    NOT_FOUND,
+  @JsonProperty("unconfirmed")
+  UNCONFIRMED,
 
-    @JsonProperty("unconfirmed")
-    UNCONFIRMED,
-
-    @JsonProperty("confirmed")
-    CONFIRMED
-
+  @JsonProperty("confirmed")
+  CONFIRMED
 }
