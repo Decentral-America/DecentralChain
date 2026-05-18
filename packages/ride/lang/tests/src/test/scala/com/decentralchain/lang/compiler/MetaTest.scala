@@ -1,13 +1,13 @@
 package com.decentralchain.lang.compiler
 
-import com.google.protobuf.ByteString
 import com.decentralchain.lang.contract.meta.{MetaMapper, ParsedMeta}
 import com.decentralchain.lang.directives.values.{V3, V4}
 import com.decentralchain.lang.v1.compiler.TestCompiler
 import com.decentralchain.lang.v1.compiler.Types.*
+import com.decentralchain.test.*
+import com.google.protobuf.ByteString
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CallableFuncSignature
-import com.decentralchain.test.*
 import org.scalatest.Inside
 
 class MetaTest extends PropSpec with Inside {

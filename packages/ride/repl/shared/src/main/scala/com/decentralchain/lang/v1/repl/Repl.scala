@@ -2,17 +2,17 @@ package com.decentralchain.lang.v1.repl
 
 import cats.arrow.FunctionK
 import cats.implicits.*
-
-import scala.concurrent.Future
 import cats.{Functor, Id, Monoid}
 import com.decentralchain.lang.v1.CTX
 import com.decentralchain.lang.v1.compiler.CompilerContext
 import com.decentralchain.lang.v1.evaluator.ctx.EvaluationContext
 import com.decentralchain.lang.v1.repl.node.ErrorMessageEnvironment
-import com.decentralchain.lang.v1.repl.node.http.{NodeClient, NodeConnectionSettings}
 import com.decentralchain.lang.v1.repl.node.http.WebEnvironment.executionContext
+import com.decentralchain.lang.v1.repl.node.http.{NodeClient, NodeConnectionSettings}
 import com.decentralchain.lang.v1.traits.Environment
 import monix.execution.atomic.Atomic
+
+import scala.concurrent.Future
 
 case class Repl(
     settings: Option[NodeConnectionSettings] = None,

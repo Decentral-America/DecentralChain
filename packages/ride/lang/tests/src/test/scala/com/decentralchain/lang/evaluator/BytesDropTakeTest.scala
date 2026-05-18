@@ -1,13 +1,13 @@
 package com.decentralchain.lang.evaluator
 
 import com.decentralchain.common.state.ByteStr
+import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.directives.values.{V1, V5, V6}
 import com.decentralchain.lang.v1.FunctionHeader.Native
+import com.decentralchain.lang.v1.compiler.Terms.CONST_BYTESTR.NoLimit
 import com.decentralchain.lang.v1.compiler.Terms.{CONST_BYTESTR, CONST_LONG, FUNCTION_CALL}
 import com.decentralchain.lang.v1.evaluator.FunctionIds.*
 import com.decentralchain.test.*
-import com.decentralchain.common.utils.EitherExt2.*
-import com.decentralchain.lang.v1.compiler.Terms.CONST_BYTESTR.NoLimit
 
 class BytesDropTakeTest extends EvaluatorSpec {
   private val min   = Long.MinValue
