@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- ── Coordinates ──────────────────────────────────────────────────── -->
+  <groupId>io.decentralchain</groupId>
+  <artifactId>curve25519</artifactId>
+  <!--
+    Version scheme: <upstream-fork-base>.<dcc-increment>
+    Upstream wavesplatform/curve25519-java was at 0.6.5 (WhisperSystems fork).
+    DCC adds Java 25 + JNA bounds validation: 0.6.5 → 0.6.6 (DCC increment).
+  -->
+  <version>0.6.6</version>
+  <packaging>jar</packaging>
+
+  <!-- ── Project metadata (required for Maven Central) ───────────────── -->
+  <name>curve25519</name>
+  <description>
+    Pure-Java (+ optional JNA-native) Curve25519 / ed25519 / VRF implementation
+    used by the DecentralChain node for key agreement, digital signatures, and
+    Verifiable Random Function (VRF) based block-generation consensus
+    (RFC 9381 / VEdDSA ciphersuite).
+    Forked from wavesplatform/curve25519-java with full upstream history.
+  </description>
+  <url>https://github.com/Decentral-America/DCC</url>
+  <inceptionYear>2014</inceptionYear>
+
+  <licenses>
+    <!-- GPL v3 — MUST be kept; cannot be relicensed. Upstream: WhisperSystems -->
+    <license>
+      <name>GNU General Public License v3.0 only</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Decentral America</name>
+    <url>https://decentralchain.io</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>josue</id>
+      <name>Josué</name>
+      <organization>Decentral America</organization>
+      <organizationUrl>https://decentralchain.io</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/Decentral-America/DCC.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Decentral-America/DCC.git</developerConnection>
+    <url>https://github.com/Decentral-America/DCC/tree/main/packages/jvm/curve25519</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://decentralchain.atlassian.net</url>
+  </issueManagement>
+
+  <!-- ── Global properties ────────────────────────────────────────────── -->
+  <properties>
+    <!-- Java 25 — matches DecentralChain JVM ecosystem standard -->
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Dependency version properties — pinned and audited 2026-05 -->
+    <!-- jna 5.18.1 — latest stable (Apr 2026) -->
+    <jna.version>5.18.1</jna.version>
+    <!-- junit-jupiter 5.14.4 — latest -->
+    <junit.version>5.14.4</junit.version>
+    <!-- assertj-core 3.27.7 — latest -->
+    <assertj.version>3.27.7</assertj.version>
+
+    <!-- Plugin versions — pinned and audited 2026-05 -->
+    <!-- maven-compiler-plugin 3.15.0 — latest (Feb 2026) -->
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <!-- maven-surefire-plugin 3.5.5 — latest -->
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <!-- maven-source-plugin 3.4.0 — latest -->
+    <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+    <!-- maven-javadoc-plugin 3.12.0 — latest -->
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <!-- maven-gpg-plugin 3.2.8 — latest -->
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+    <!-- maven-enforcer-plugin 3.6.2 — latest -->
+    <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+    <!-- central-publishing-maven-plugin 0.10.0 — latest (Jan 2026) -->
+    <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+    <!-- dependency-check-maven 12.2.2 — latest -->
+    <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+    <!-- spotbugs-maven-plugin 4.9.8.3 — latest (Mar 28, 2026); SpotBugs 4.9.8 -->
+    <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
+    <!-- findsecbugs-plugin 1.14.0 — latest (Jun 16, 2025; OWASP) -->
+    <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
+    <!-- jacoco-maven-plugin 0.8.14 — latest (Oct 11, 2025); Java 25 officially supported -->
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <!-- maven-pmd-plugin 3.28.0 — latest; bundles PMD 7.17.0 -->
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+    <!-- cyclonedx-maven-plugin 2.9.1 — latest; supply-chain SBOM (CycloneDX 1.6) -->
+    <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
+    <!-- Reproducible builds — set to release date on each release -->
+    <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
+  </properties>
+
+  <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
+  <dependencies>
+
+    <!-- JNA — required by NativeCurve25519Provider (optional C-native path) -->
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>${jna.version}</version>
+    </dependency>
+
+    <!-- JUnit Jupiter (API + Engine + Params) — test only -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- AssertJ — fluent assertions, drop-in replacement for fest-assert -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <!-- ── Build plugins ────────────────────────────────────────────────── -->
+  <build>
+    <plugins>
+
+      <!-- Enforcer: gate Java + Maven minimums before any compilation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-minimums</id>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[25,)</version>
+                  <message>Java 25 or later is required.</message>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>[3.9,)</version>
+                  <message>Maven 3.9 or later is required.</message>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler: release 25, fail on warnings for new code -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>25</release>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire: JUnit Platform auto-detected -->
+      <!-- enable-native-access=ALL-UNNAMED required for JNA System.load in Java 25+ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- JAR manifest: Automatic-Module-Name for Java 9+ module system compatibility (JEP 261) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>io.decentralchain.curve25519</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Sources JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar-no-fork</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc JAR (required for Maven Central) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <release>25</release>
+          <!-- Upstream code has no Javadoc; suppress missing warnings -->
+          <doclint>all,-missing</doclint>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- JaCoCo 0.8.14: line/branch coverage; Java 25 officially supported (GitHub #1950) -->
+      <!-- Always-on: runs with every 'mvn verify', not gated to audit profile -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- CycloneDX SBOM: supply-chain transparency (CycloneDX 1.6 format) -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${cyclonedx-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>make-bom</id>
+            <phase>package</phase>
+            <goals><goal>makeBom</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- central-publishing-maven-plugin sets maven.deploy.skip=true which
+               triggers CycloneDX's skipNotDeployed guard. Force-enable always. -->
+          <skipNotDeployed>false</skipNotDeployed>
+          <skip>false</skip>
+          <projectType>library</projectType>
+          <schemaVersion>1.6</schemaVersion>
+          <includeBomSerialNumber>true</includeBomSerialNumber>
+          <includeCompileScope>true</includeCompileScope>
+          <includeTestScope>false</includeTestScope>
+          <includeRuntimeScope>true</includeRuntimeScope>
+          <includeSystemScope>false</includeSystemScope>
+          <includeProvidedScope>false</includeProvidedScope>
+          <outputName>bom</outputName>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
+    <!-- Activate with: ./mvnw deploy -P release                        -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
+                <configuration>
+                  <!-- GPG key ID set via CI secret: GPG_KEY_ID -->
+                  <keyname>${gpg.keyname}</keyname>
+                  <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                  <!-- Use loopback pinentry in CI (non-interactive) -->
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central-publishing-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- 'audit' profile: full security analysis suite.                     -->
+    <!-- Activate with: ./mvnw verify -P audit                              -->
+    <!--                                                                    -->
+    <!-- Included tools:                                                    -->
+    <!--   1. OWASP dependency-check 12.2.2  — CVE scan (NVD)              -->
+    <!--      Requires NVD API key: -DnvdApiKey=$NVD_API_KEY                -->
+    <!--      Without key: works but rate-limits to ~1 req/6 s              -->
+    <!--   2. SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 (OWASP)               -->
+    <!--      Bytecode security analysis (CWE-326, CWE-327, CWE-330, etc.) -->
+    <!--      Critical for crypto libs: timing attacks, predictable random, -->
+    <!--      array exposure, unsafe key comparison, JNA misuse             -->
+    <!--   3. PMD 3.28.0 — source-level security + error-prone rules        -->
+    <profile>
+      <id>audit</id>
+      <build>
+        <plugins>
+
+          <!-- OWASP dependency-check: CVE vulnerability scan against NVD -->
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <!-- Fail build on CVSS score ≥ 7 (HIGH or CRITICAL) -->
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <formats>
+                <format>HTML</format>
+                <format>JSON</format>
+              </formats>
+              <!-- Scan compile + runtime scope; skip test-only artifacts -->
+              <skipTestScope>true</skipTestScope>
+            </configuration>
+            <executions>
+              <execution>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- SpotBugs 4.9.8.3 + FindSecBugs 1.14.0: security-focused bytecode analysis -->
+          <!-- Detects: predictable random, timing-unsafe comparisons, array exposure,    -->
+          <!-- weak crypto, hard-coded key material, JNA unsafe allocation               -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <dependencies>
+              <!-- FindSecBugs: OWASP-backed security bug patterns -->
+              <dependency>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>${findsecbugs-plugin.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <!-- Max effort = deep inter-procedural analysis -->
+              <effort>Max</effort>
+              <!-- High threshold: only Priority-1 (HIGH) bugs fail the build -->
+              <threshold>High</threshold>
+              <!-- Analyze only production code, not test fixtures -->
+              <includeTests>false</includeTests>
+              <!-- Fail build when bugs ≥ threshold are found -->
+              <failOnError>true</failOnError>
+              <xmlOutput>true</xmlOutput>
+              <htmlOutput>true</htmlOutput>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- PMD 3.28.0: source-level security and error-prone analysis -->
+          <!-- Detects: array exposure, null deref, literal comparisons,   -->
+          <!-- resource leaks, integer overflow, missing @Override          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <configuration>
+              <rulesets>
+                <ruleset>config/pmd-ruleset.xml</ruleset>
+              </rulesets>
+              <targetJdk>25</targetJdk>
+              <!-- Skip test code from analysis -->
+              <includeTests>false</includeTests>
+              <!-- Enforce: all violations in custom ruleset must be fixed -->
+              <failOnViolation>true</failOnViolation>
+              <printFailingErrors>true</printFailingErrors>
+            </configuration>
+            <executions>
+              <execution>
+                <id>pmd-security-check</id>
+                <phase>verify</phase>
+                <goals><goal>check</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+</project>
