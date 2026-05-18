@@ -6,8 +6,8 @@ import com.decentralchain.lang.v1.compiler.CompilerContext.{FunctionInfo, Variab
 import com.decentralchain.lang.v1.compiler.Types.FINAL
 import com.decentralchain.lang.v1.compiler.{CompilerContext, DecompilerContext}
 import com.decentralchain.lang.v1.evaluator.Contextful.NoContext
-import com.decentralchain.lang.v1.evaluator.ctx.{BaseFunction, EvaluationContext, LazyVal}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext
+import com.decentralchain.lang.v1.evaluator.ctx.{BaseFunction, EvaluationContext, LazyVal}
 import com.decentralchain.lang.v1.evaluator.{Contextful, ContextfulVal}
 import com.decentralchain.lang.v1.parser.BinaryOperation
 import com.decentralchain.lang.v1.parser.Expressions.Pos.AnyPos

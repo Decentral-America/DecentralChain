@@ -4,7 +4,6 @@ import cats.data.EitherT
 import cats.kernel.Monoid
 import cats.syntax.bifunctor.*
 import cats.{Eval, Id}
-import com.google.common.io.BaseEncoding
 import com.decentralchain.common.state.ByteStr
 import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.common.utils.{Base58, Base64}
@@ -32,6 +31,7 @@ import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{CTX, ContractLimits, FunctionHeader}
 import com.decentralchain.lang.{toError, Common, ExecutionError, Global}
 import com.decentralchain.test.*
+import com.google.common.io.BaseEncoding
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.EitherValues
 

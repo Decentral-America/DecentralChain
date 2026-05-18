@@ -1,7 +1,7 @@
 package com.decentralchain.lang.directives
 
-import com.decentralchain.lang.directives.values.*
 import com.decentralchain.lang.directives.DirectiveKey.*
+import com.decentralchain.lang.directives.values.*
 
 case class Directive(key: DirectiveKey, value: DirectiveValue)
 

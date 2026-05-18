@@ -2,7 +2,6 @@ package com.decentralchain.utils
 
 import cats.Id
 import cats.implicits.*
-import com.google.common.primitives.Ints
 import com.decentralchain.common.merkle.*
 import com.decentralchain.common.merkle.Merkle.*
 import com.decentralchain.common.state.ByteStr
@@ -18,6 +17,7 @@ import com.decentralchain.lang.v1.evaluator.ContractEvaluator.LogExtraInfo
 import com.decentralchain.lang.v1.evaluator.EvaluatorV2
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.test.*
+import com.google.common.primitives.Ints
 import org.scalacheck.{Arbitrary, Gen}
 
 import scala.annotation.tailrec

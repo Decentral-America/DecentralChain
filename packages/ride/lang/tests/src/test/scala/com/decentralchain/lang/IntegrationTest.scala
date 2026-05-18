@@ -3,7 +3,6 @@ package com.decentralchain.lang
 import cats.Id
 import cats.kernel.Monoid
 import cats.syntax.either.*
-import com.google.common.io.BaseEncoding
 import com.decentralchain.common.state.ByteStr
 import com.decentralchain.common.utils.Base64
 import com.decentralchain.common.utils.EitherExt2.*
@@ -28,6 +27,7 @@ import com.decentralchain.lang.v1.traits.domain.Recipient.{Address, Alias}
 import com.decentralchain.lang.v1.traits.domain.{Issue, Lease}
 import com.decentralchain.lang.v1.{CTX, ContractLimits}
 import com.decentralchain.test.*
+import com.google.common.io.BaseEncoding
 import org.scalatest.Inside
 import org.web3j.crypto.Keys
 

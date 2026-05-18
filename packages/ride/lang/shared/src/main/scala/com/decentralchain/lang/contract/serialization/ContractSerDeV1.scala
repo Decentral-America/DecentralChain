@@ -11,9 +11,9 @@ import com.decentralchain.lang.contract.DApp.{
   VerifierAnnotation,
   VerifierFunction
 }
-import com.decentralchain.lang.v1.compiler.Terms.{DECLARATION, FUNC}
 import com.decentralchain.lang.utils.Serialize.*
 import com.decentralchain.lang.v1.ContractLimits
+import com.decentralchain.lang.v1.compiler.Terms.{DECLARATION, FUNC}
 import com.decentralchain.lang.v1.serialization.SerdeV1
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import monix.eval.Coeval

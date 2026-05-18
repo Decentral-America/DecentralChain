@@ -1,15 +1,15 @@
 package com.decentralchain.lang.serde
 
-import com.google.protobuf.ByteString
 import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.contract.DApp.*
 import com.decentralchain.lang.contract.serialization.{ContractSerDe, ContractSerDeV1, ContractSerDeV2}
 import com.decentralchain.lang.v1.ContractLimits
 import com.decentralchain.lang.v1.compiler.Terms.*
+import com.decentralchain.test.*
+import com.google.protobuf.ByteString
 import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.wavesplatform.protobuf.dapp.DAppMeta.CallableFuncSignature
-import com.decentralchain.test.*
 import org.scalatest.Assertion
 
 class ContractSerdeTest extends FreeSpec {

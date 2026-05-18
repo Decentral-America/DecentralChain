@@ -5,8 +5,8 @@ import com.decentralchain.lang.ValidationError
 import com.decentralchain.lang.script.Script
 import com.decentralchain.lang.v1.compiler.Terms.EVALUATED
 import com.decentralchain.lang.v1.evaluator.Log
-import com.decentralchain.lang.v1.traits.domain.Recipient.Address
 import com.decentralchain.lang.v1.traits.domain.*
+import com.decentralchain.lang.v1.traits.domain.Recipient.Address
 import monix.eval.Coeval
 
 object Environment {

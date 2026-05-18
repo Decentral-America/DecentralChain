@@ -15,8 +15,8 @@ import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.estimator.ScriptEstimatorV1
 import com.decentralchain.lang.v1.estimator.v2.ScriptEstimatorV2
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.*
-import com.wavesplatform.protobuf.dapp.DAppMeta
 import com.decentralchain.test.PropSpec
+import com.wavesplatform.protobuf.dapp.DAppMeta
 
 class ContractScriptComplexityV1V2Test extends PropSpec {
   private val estimators = Seq(ScriptEstimatorV1, ScriptEstimatorV2)

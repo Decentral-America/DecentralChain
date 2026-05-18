@@ -1,9 +1,9 @@
 package com.decentralchain.lang.v1.evaluator.ctx.impl.crypto
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+
 import java.security.spec.X509EncodedKeySpec
 import java.security.{KeyFactory, Signature}
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider
 
 object RSA {
 
