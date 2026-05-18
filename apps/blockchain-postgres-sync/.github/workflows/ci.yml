@@ -150,208 +150,40 @@ jobs:
           provenance: true
           sbom: true
 
-  # ── Deploy to Linode ──────────────────────────────────────────────────────────
-  # Required GitHub Secrets (set per environment — mainnet / stagenet / testnet):
-  #   DEPLOY_HOST             — IP or hostname of the Linode server
-  #   DEPLOY_USER             — SSH user (e.g. deploy)
-  #   DEPLOY_SSH_KEY          — Ed25519 private key (base64 encoded)
-  #   DEPLOY_HOST_FINGERPRINT — SSH host fingerprint to prevent MITM
-  #
-  # Required runtime secrets (PostgreSQL — set per environment):
-  #   PGHOST        — PostgreSQL host
-  #   PGDATABASE    — PostgreSQL database name
-  #   PGUSER        — PostgreSQL user
-  #   PGPASSWORD    — PostgreSQL password
-  #
-  # Required runtime secrets (node gRPC — set per environment):
-  #   BLOCKCHAIN_UPDATES_URL — gRPC endpoint, e.g. grpc://mainnet-node.decentralchain.io:6887
+  # ── Resolve deploy network ────────────────────────────────────────────────────
+  resolve:
+    name: Resolve network
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    outputs:
+      network: ${{ steps.network.outputs.network }}
+    steps:
+      - name: Determine target network
+        id: network
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "network=${{ inputs.network }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "network=mainnet" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── Deploy via infra reusable workflow ────────────────────────────────────────
+  # Calls Decentral-America/infra/.github/workflows/deploy-container.yml.
+  # That workflow reads DEPLOY_* secrets from the infra repo's environments
+  # (mainnet/stagenet/testnet) — this repo needs zero environment secrets.
+  # Runtime config (BLOCKCHAIN_UPDATES_URL, CHAIN_ID, PGHOST, PGDATABASE,
+  # PGUSER, PGPASSWORD) lives in /opt/dcc/secrets/<network>.env on the server,
+  # written at provision time by infra. Never stored in GitHub.
   #
   # Chain IDs: mainnet=63 ('?'), stagenet=83 ('S'), testnet=33 ('!')
-  #
-  # SSH key generation:
-  #   ssh-keygen -t ed25519 -C "github-actions-deploy" -f deploy_key
-  #   cat deploy_key | base64 -w0  →  DEPLOY_SSH_KEY secret
-  #   ssh-keyscan <host> | grep ed25519  →  DEPLOY_HOST_FINGERPRINT secret
-  #   cat deploy_key.pub >> ~/.ssh/authorized_keys  (on the server)
   # ─────────────────────────────────────────────────────────────────────────────
-  deploy-mainnet:
-    name: Deploy (mainnet)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: docker
-    if: github.ref == 'refs/heads/main'
-
-    environment:
-      name: mainnet
-
-    steps:
-      - name: Deploy to Linode
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
-        with:
-          host:        ${{ secrets.DEPLOY_HOST }}
-          username:    ${{ secrets.DEPLOY_USER }}
-          key:         ${{ secrets.DEPLOY_SSH_KEY }}
-          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
-          script: |
-            set -euo pipefail
-            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
-            CONTAINER="blockchain-postgres-sync-mainnet"
-
-            echo "Pulling $IMAGE"
-            docker pull "$IMAGE"
-
-            echo "Stopping existing container (if running)"
-            docker stop "$CONTAINER" 2>/dev/null || true
-            docker rm   "$CONTAINER" 2>/dev/null || true
-
-            echo "Starting new container"
-            docker run -d \
-              --name "$CONTAINER" \
-              --restart unless-stopped \
-              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
-              -e CHAIN_ID="63" \
-              -e HOST="${{ secrets.PGHOST }}" \
-              -e DATABASE="${{ secrets.PGDATABASE }}" \
-              -e USER="${{ secrets.PGUSER }}" \
-              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
-              -e STARTING_HEIGHT="0" \
-              "$IMAGE"
-
-            echo "Waiting for health check"
-            for i in $(seq 1 12); do
-              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
-                echo "Container healthy after $((i * 5))s"
-                break
-              fi
-              if [ "$i" -eq 12 ]; then
-                echo "::error::Health check failed after 60s — rolling back"
-                docker stop "$CONTAINER" && docker rm "$CONTAINER"
-                exit 1
-              fi
-              sleep 5
-            done
-
-            echo "Removing old images (keep last 3)"
-            docker images "ghcr.io/decentral-america/blockchain-postgres-sync" --format "{{.ID}}" | tail -n +4 | xargs -r docker rmi || true
-
-            echo "Deploy complete: $IMAGE → mainnet"
-
-  # ── Deploy stagenet (manual only) ────────────────────────────────────────────
-  deploy-stagenet:
-    name: Deploy (stagenet)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: docker
-    if: github.event_name == 'workflow_dispatch' && inputs.network == 'stagenet'
-
-    environment:
-      name: stagenet
-
-    steps:
-      - name: Deploy to Linode
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
-        with:
-          host:        ${{ secrets.DEPLOY_HOST }}
-          username:    ${{ secrets.DEPLOY_USER }}
-          key:         ${{ secrets.DEPLOY_SSH_KEY }}
-          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
-          script: |
-            set -euo pipefail
-            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
-            CONTAINER="blockchain-postgres-sync-stagenet"
-
-            echo "Pulling $IMAGE"
-            docker pull "$IMAGE"
-
-            echo "Stopping existing container (if running)"
-            docker stop "$CONTAINER" 2>/dev/null || true
-            docker rm   "$CONTAINER" 2>/dev/null || true
-
-            echo "Starting new container"
-            docker run -d \
-              --name "$CONTAINER" \
-              --restart unless-stopped \
-              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
-              -e CHAIN_ID="83" \
-              -e HOST="${{ secrets.PGHOST }}" \
-              -e DATABASE="${{ secrets.PGDATABASE }}" \
-              -e USER="${{ secrets.PGUSER }}" \
-              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
-              -e STARTING_HEIGHT="0" \
-              "$IMAGE"
-
-            echo "Waiting for health check"
-            for i in $(seq 1 12); do
-              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
-                echo "Container healthy after $((i * 5))s"
-                break
-              fi
-              if [ "$i" -eq 12 ]; then
-                echo "::error::Health check failed after 60s — rolling back"
-                docker stop "$CONTAINER" && docker rm "$CONTAINER"
-                exit 1
-              fi
-              sleep 5
-            done
-
-            echo "Deploy complete: $IMAGE → stagenet"
-
-  # ── Deploy testnet (manual only) ─────────────────────────────────────────────
-  deploy-testnet:
-    name: Deploy (testnet)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: docker
-    if: github.event_name == 'workflow_dispatch' && inputs.network == 'testnet'
-
-    environment:
-      name: testnet
-
-    steps:
-      - name: Deploy to Linode
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
-        with:
-          host:        ${{ secrets.DEPLOY_HOST }}
-          username:    ${{ secrets.DEPLOY_USER }}
-          key:         ${{ secrets.DEPLOY_SSH_KEY }}
-          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
-          script: |
-            set -euo pipefail
-            IMAGE="ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}"
-            CONTAINER="blockchain-postgres-sync-testnet"
-
-            echo "Pulling $IMAGE"
-            docker pull "$IMAGE"
-
-            echo "Stopping existing container (if running)"
-            docker stop "$CONTAINER" 2>/dev/null || true
-            docker rm   "$CONTAINER" 2>/dev/null || true
-
-            echo "Starting new container"
-            docker run -d \
-              --name "$CONTAINER" \
-              --restart unless-stopped \
-              -e BLOCKCHAIN_UPDATES_URL="${{ secrets.BLOCKCHAIN_UPDATES_URL }}" \
-              -e CHAIN_ID="33" \
-              -e HOST="${{ secrets.PGHOST }}" \
-              -e DATABASE="${{ secrets.PGDATABASE }}" \
-              -e USER="${{ secrets.PGUSER }}" \
-              -e PASSWORD="${{ secrets.PGPASSWORD }}" \
-              -e STARTING_HEIGHT="0" \
-              "$IMAGE"
-
-            echo "Waiting for health check"
-            for i in $(seq 1 12); do
-              if docker exec "$CONTAINER" curl -fsS http://localhost:9090/health > /dev/null 2>&1; then
-                echo "Container healthy after $((i * 5))s"
-                break
-              fi
-              if [ "$i" -eq 12 ]; then
-                echo "::error::Health check failed after 60s — rolling back"
-                docker stop "$CONTAINER" && docker rm "$CONTAINER"
-                exit 1
-              fi
-              sleep 5
-            done
-
-            echo "Deploy complete: $IMAGE → testnet"
+  call-deploy:
+    name: Deploy (${{ needs.resolve.outputs.network }})
+    needs: [resolve, docker]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@main
+    with:
+      network: ${{ needs.resolve.outputs.network }}
+      image:   ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}
+      service: blockchain-postgres-sync
+    secrets: inherit
