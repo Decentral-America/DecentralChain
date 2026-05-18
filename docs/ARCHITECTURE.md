@@ -558,7 +558,7 @@ bulletproof → dependsOn: [lint:fix, typecheck, test]
 Internal dependencies use `workspace:*` — pnpm resolves them to local source during development and replaces with real versions at publish time:
 
 ```jsonc
-// In packages/ts/transactions/package.json
+// In packages/sdk/transactions/package.json
 {
   "dependencies": {
     "@decentralchain/ts-types": "workspace:*",    // → ^2.0.1 at publish
@@ -600,7 +600,7 @@ One place to update a shared dependency version → all packages get it.
 Each package's `tsconfig.json` extends the root `tsconfig.base.json` and declares `references` to its `@decentralchain/*` dependencies:
 
 ```jsonc
-// packages/ts/transactions/tsconfig.json
+// packages/sdk/transactions/tsconfig.json
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "outDir": "./dist", "rootDir": "./src" },
@@ -740,7 +740,7 @@ Every significant architectural choice is documented here with the reasoning tha
 | D-8 | **Exclude `node-scala` (the node program), include RIDE libraries** | `node-scala` is a large Scala runtime *program* with its own CI pipeline, Docker build, and DCC patch stream — it belongs as an `Ecosystem/` sibling. This is distinct from the RIDE language libraries (`packages/ride/`), which are extracted, published packages managed by sbt inside the monorepo. The rule: publishable packages → monorepo; runtime programs → `Ecosystem/` siblings. |
 | D-9 | **Include all DCC-owned publishable packages and apps** | The inclusion rule is: any DCC-owned publishable package or application belongs in the monorepo — regardless of language. TypeScript (pnpm/Nx), JVM libraries (Maven/`@nx/maven`), and the RIDE cross-build (sbt/Nx) all co-exist here. When a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. The key distinction: **publishable packages → monorepo**, **runtime programs → `Ecosystem/` siblings**. |
 | D-10 | **`workspace:*` protocol** | In the polyrepo era, `fix-cross-deps.mjs` had to manually update 22 cross-dependency versions before every publish. `workspace:*` tells pnpm "use the local source in dev, replace with the real published version at publish time." Zero manual version management, zero version drift, zero publish-order bugs. |
-| D-11 | **`nx import`** for history | Every package was imported with full git history preserved. This means `git log packages/ts/transactions/` shows the complete commit history from the original polyrepo. Essential for: security audits ("when was this crypto code last touched?"), blame ("who wrote this signing logic?"), and bisect ("which commit broke serialization?"). The alternative — fresh `git init` — would have destroyed the audit trail for financial infrastructure code. |
+| D-11 | **`nx import`** for history | Every package was imported with full git history preserved. This means `git log packages/sdk/transactions/` shows the complete commit history from the original polyrepo. Essential for: security audits ("when was this crypto code last touched?"), blame ("who wrote this signing logic?"), and bisect ("which commit broke serialization?"). The alternative — fresh `git init` — would have destroyed the audit trail for financial infrastructure code. |
 | D-12 | **`@vitejs/plugin-react`** over `@vitejs/plugin-react-swc` | In Vite 8 + Rolldown, `@vitejs/plugin-react` is the correct choice. When `@vitejs/plugin-react-swc` was tested, Vite 8 itself printed: _"We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown"_. This is because Vite 8's Rolldown bundler uses OXC (Rust, built into Rolldown) for JSX/TSX transformation — OXC is faster than SWC in this context. `@vitejs/plugin-react-swc` only outperforms when you use SWC-specific plugins (e.g., custom transforms). Since the three DCC apps use no SWC plugins, `@vitejs/plugin-react` + OXC is the faster path. `@swc/core` remains present as an optional peer of `nx@22.6.1`, enabling SWC-based transforms in the Nx task pipeline — a separate concern from the Vite JSX pipeline. |
 
 ### Nx vs Turborepo — Why Nx
