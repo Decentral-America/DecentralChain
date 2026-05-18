@@ -6,19 +6,22 @@ import io.decentralchain.sdk.LeaseInfo;
 
 public class LeaseCancelTransactionInfo extends TransactionInfo {
 
-    private final LeaseInfo leaseInfo;
+  private final LeaseInfo leaseInfo;
 
-    public LeaseCancelTransactionInfo(LeaseCancelTransaction tx, ApplicationStatus applicationStatus, int height, LeaseInfo leaseInfo) {
-        super(tx, applicationStatus, height);
-        this.leaseInfo = leaseInfo;
-    }
+  public LeaseCancelTransactionInfo(
+      LeaseCancelTransaction tx,
+      ApplicationStatus applicationStatus,
+      int height,
+      LeaseInfo leaseInfo) {
+    super(tx, applicationStatus, height);
+    this.leaseInfo = leaseInfo;
+  }
 
-    public LeaseCancelTransaction tx() {
-        return (LeaseCancelTransaction) super.tx();
-    }
+  public LeaseCancelTransaction tx() {
+    return (LeaseCancelTransaction) super.tx();
+  }
 
-    public LeaseInfo leaseInfo() {
-        return leaseInfo;
-    }
-
+  public LeaseInfo leaseInfo() {
+    return leaseInfo;
+  }
 }
