@@ -2,11 +2,12 @@
 
 ## Project Context
 
-This is the **DecentralChain SDK monorepo** — a unified TypeScript workspace publishing `@decentralchain/*` npm packages. DecentralChain is a Waves-protocol blockchain fork using Liquid Proof-of-Stake (LPoS) consensus and the Ride smart contract language.
+This is the **DecentralChain SDK monorepo** — a multi-language workspace publishing `@decentralchain/*` npm packages, `io.decentralchain:*` Maven packages, and the RIDE VM/REPL. DecentralChain is a Waves-protocol blockchain fork using Liquid Proof-of-Stake (LPoS) consensus and the Ride smart contract language.
 
 ## Architecture
 
-- **25 Nx projects**: 22 SDK packages (in `packages/`) + 3 apps (in `apps/`)
+- **Nx projects**: 20 TypeScript SDK packages (`packages/sdk/`) + 4 apps (`apps/`) + RIDE sbt build (`packages/ride/`) + 7 JVM libraries (`packages/jvm/`)
+- **Inclusion rule**: publishable packages → monorepo (any language); runtime programs (`node-scala`, `node-go`) → `Ecosystem/` siblings
 - **5 dependency layers** (0–4) enforced by `scripts/check-boundaries.mjs` — packages may only depend on same or lower layers
 - **Layer 0 (Primitives)**: ts-types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization
 - **Layer 1 (Domain)**: data-entities, money-like-to-node, ride-js
