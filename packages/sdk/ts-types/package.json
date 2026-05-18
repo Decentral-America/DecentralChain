@@ -31,7 +31,7 @@
     "type": "github",
     "url": "https://github.com/sponsors/Decentral-America"
   },
-  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/ts/ts-types",
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/ts-types",
   "keywords": [
     "decentralchain",
     "dcc",
@@ -54,7 +54,7 @@
     "provenance": true
   },
   "repository": {
-    "directory": "packages/ts/ts-types",
+    "directory": "packages/sdk/ts-types",
     "type": "git",
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
