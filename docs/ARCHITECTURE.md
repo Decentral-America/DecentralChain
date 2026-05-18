@@ -46,25 +46,28 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 
 ## 2. Inclusion Rule
 
-> **If it's TypeScript and it imports `@decentralchain/*` — it belongs in the monorepo.**
+> **All DCC-owned publishable packages and apps belong in the monorepo — regardless of language.**
 >
-> Libraries go in `packages/`. Apps go in `apps/`. Everything else stays in its own repo.
+> TypeScript SDK packages → `packages/sdk/`. TypeScript apps → `apps/`. RIDE lang + repl (sbt cross-build) → `packages/ride/`. JVM libraries → `packages/jvm/`. Runtime programs (`node-scala`, `node-go`) and infrastructure daemons (`blockchain-postgres-sync`) remain as `Ecosystem/` siblings.
 
 ### What's In
 
 | Category | Location | Count | Examples |
-|----------|----------|-------|---------|
-| SDK libraries | `packages/*` | 22 | All `@decentralchain/*` npm-published packages |
+|----------|----------|-------|----------|
+| TypeScript SDK libraries | `packages/sdk/*` | 20 | All `@decentralchain/*` npm-published packages |
+| RIDE lang + repl | `packages/ride/` | 1 sbt root | `io.decentralchain:lang_3`, `io.decentralchain:lang-testkit_3`, `@decentralchain/ride-lang`, `@decentralchain/ride-repl` |
+| JVM libraries | `packages/jvm/*` | 7 | `io.decentralchain:java-sdk`, `io.decentralchain:curve25519-java`, `io.decentralchain:transactions-java`, etc. |
 | Apps and services | `apps/*` | 4 | cubensis-connect (9 SDK deps), exchange (8), scanner (3), data-service (REST API + daemons) |
 
 ### What's Out
 
 | Repository | Reason |
 |-----------|--------|
-| `node-scala` | Scala/JVM — different toolchain; Stream G migration planned |
+| `node-scala` (program) | Scala/JVM blockchain node binary — large program with its own CI/deploy pipeline; DCC patches in progress (Stream G). Note: the RIDE language libraries are a different concern — they are extracted as `packages/ride/` and published to Maven + npm. |
 | `node-go` | Go — different toolchain; Stream H chain ID migration planned |
 | `blockchain-postgres-sync` | Node.js sync daemon — outside monorepo; Stream F migration planned |
 | ~~`data-service`~~ | Migrated ✅ — lives at `apps/data-service` (DCC-221, DCC-233); Nx, Biome, Vitest, tsdown all wired |
+| ~~`java-sdk` (was `Ecosystem/java-sdk/`)~~ | Migrated ✅ — lives at `packages/jvm/java-sdk/` (DCC-251, DCC-249); published as `io.decentralchain:java-sdk` |
 | `matcher` | Java binary (`decentralchain-dex v2.3.2.9`) — closed-source DEX engine; not a migration target |
 | `DCC` | Scala — release packaging repo for the node-scala binary (`.deb`, Docker) |
 | `DCCGUI` | Legacy production exchange (2019-era Waves fork) — superseded by `apps/exchange` |
@@ -105,13 +108,23 @@ DecentralChain/
 │   ├── exchange/                   Electron DEX trading app
 │   └── scanner/                    Block explorer web app
 ├── packages/
-│   ├── ts-types/                   Core TypeScript types
-│   ├── bignumber/                  Arbitrary precision math
-│   ├── ts-lib-crypto/              Cryptographic primitives
-│   ├── marshall/                   Binary serialization
-│   ├── transactions/               Transaction builders
-│   ├── ...                         (22 packages total)
-│   └── cubensis-connect-provider/  Wallet provider
+│   ├── sdk/                        TypeScript SDK packages → npm (@decentralchain/*)
+│   │   ├── ts-types/               Core TypeScript types
+│   │   ├── bignumber/              Arbitrary precision math
+│   │   ├── ts-lib-crypto/          Cryptographic primitives
+│   │   ├── marshall/               Binary serialization
+│   │   ├── transactions/           Transaction builders
+│   │   ├── ...                     (20 packages total)
+│   │   └── cubensis-connect-provider/ Wallet provider
+│   ├── ride/                       RIDE lang + repl (sbt build → Maven Central + npm)
+│   │   ├── lang/                   RIDE VM (JVM + Scala.js cross-build)
+│   │   └── repl/                   RIDE REPL (JVM + Scala.js)
+│   └── jvm/                        JVM libraries → Maven Central (io.decentralchain:*)
+│       ├── java-sdk/               Java SDK (io.decentralchain:java-sdk)
+│       ├── curve25519-java/        Curve25519 cryptography
+│       ├── transactions-java/      Transaction types
+│       ├── blst-java/              BLS12-381 pairing (native)
+│       └── zwaves/                 ZK-SNARK integration (native)
 ├── docs/
 │   ├── ARCHITECTURE.md             This file
 │   ├── UPSTREAM.md                 Waves provenance & ecosystem
@@ -720,12 +733,12 @@ Every significant architectural choice is documented here with the reasoning tha
 | D-1 | **pnpm** over npm/yarn | npm's flat `node_modules` allows phantom dependencies (importing packages you didn't declare). pnpm's content-addressable store + symlinks prevent this. `workspace:*` protocol resolves to local source in dev and real versions at publish — eliminates the entire `fix-cross-deps.mjs` workflow. `catalog:` centralizes 15+ shared devDep versions in one place. Yarn v4 was considered but pnpm's workspace protocol is more mature and Corepack support is better. |
 | D-2 | **Nx** over Turborepo | Turborepo is simpler (~35 lines config vs ~60), but Nx wins on three dimensions that matter most for this project: **(1) AI-first**: native MCP server with 15+ tools lets AI agents query workspace structure, run tasks, and monitor builds — Turborepo has no equivalent. **(2) Migration**: `nx import` preserves full git history per package during monorepo consolidation — critical for audit trail. **(3) Project graph**: interactive web UI + dependency-aware task ordering vs Turborepo's static Graphviz. See [full comparison below](#nx-vs-turborepo--why-nx). |
 | D-3 | **Nx Release** for publishing | Independent versioning per-package driven by conventional commits. `nx release` handles version bumps, changelog generation, and npm publish with provenance in one command. Works with the project graph to only version packages with actual changes. |
-| D-4 | **`packages/` + `apps/`** layout | npm-published SDK libraries live in `packages/`, private applications in `apps/`. This makes the publish boundary explicit — everything in `packages/` ships to npm, nothing in `apps/` does. Nx tags (`scope:sdk` vs `scope:app`) enforce the boundary: SDK packages cannot depend on apps. |
+| D-4 | **`packages/sdk/` + `packages/jvm/` + `packages/ride/` + `apps/`** layout | Published packages live in `packages/sdk/` (npm, `@decentralchain/*`), `packages/jvm/` (Maven Central, `io.decentralchain:*`), and `packages/ride/` (both registries — the only cross-language package). Private applications live in `apps/`. The publish boundary is explicit: everything under `packages/` ships to a registry, nothing in `apps/` does. Nx tags (`scope:sdk` vs `scope:app`) enforce the boundary: SDK packages cannot depend on apps. |
 | D-5 | **TypeScript project references** | Without project references, `tsc` typechecks the entire monorepo as one unit — slow and error-prone. With references, each package is a `composite` project that builds independently. The editor only loads types for the current package + its declared dependencies, keeping IntelliSense fast even at 25 projects. Incremental builds skip unchanged packages. |
 | D-6 | **Per-package Vitest configs** | Each package has its own `vitest.config.ts` extending a shared base. This allows per-package coverage thresholds (crypto at 95%, new packages at 80%), per-package test include patterns, and proper Nx caching — Nx caches test results per-project, so a shared config would invalidate all caches on any test config change. |
 | D-7 | **Root Biome v2** with `extends: "//"` | One `biome.json` at root defines all lint/format rules for the entire monorepo. Packages inherit with `"extends": "//"` (Biome's monorepo resolution syntax). Only packages with genuine overrides need their own `biome.json` (e.g., `protobuf-serialization` disables lint for generated protobuf code). This eliminated 20+ near-identical config files. |
-| D-8 | **Exclude node-scala** | Scala/sbt — fundamentally different toolchain |
-| D-9 | **Include all TS apps importing `@decentralchain/*`** | The inclusion rule is intentionally simple: "if it's TypeScript and imports `@decentralchain/*`, it belongs here." This ensures that when a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. |
+| D-8 | **Exclude `node-scala` (the node program), include RIDE libraries** | `node-scala` is a large Scala runtime *program* with its own CI pipeline, Docker build, and DCC patch stream — it belongs as an `Ecosystem/` sibling. This is distinct from the RIDE language libraries (`packages/ride/`), which are extracted, published packages managed by sbt inside the monorepo. The rule: publishable packages → monorepo; runtime programs → `Ecosystem/` siblings. |
+| D-9 | **Include all DCC-owned publishable packages and apps** | The inclusion rule is: any DCC-owned publishable package or application belongs in the monorepo — regardless of language. TypeScript (pnpm/Nx), JVM libraries (Maven/`@nx/maven`), and the RIDE cross-build (sbt/Nx) all co-exist here. When a library changes, all consumers are tested atomically in the same PR — no publish-install-wait-test-find-bug-fix cycle. Exchange and explorer were initially separate repos; moving them into the monorepo caught 3 integration issues that would have reached production. The key distinction: **publishable packages → monorepo**, **runtime programs → `Ecosystem/` siblings**. |
 | D-10 | **`workspace:*` protocol** | In the polyrepo era, `fix-cross-deps.mjs` had to manually update 22 cross-dependency versions before every publish. `workspace:*` tells pnpm "use the local source in dev, replace with the real published version at publish time." Zero manual version management, zero version drift, zero publish-order bugs. |
 | D-11 | **`nx import`** for history | Every package was imported with full git history preserved. This means `git log packages/ts/transactions/` shows the complete commit history from the original polyrepo. Essential for: security audits ("when was this crypto code last touched?"), blame ("who wrote this signing logic?"), and bisect ("which commit broke serialization?"). The alternative — fresh `git init` — would have destroyed the audit trail for financial infrastructure code. |
 | D-12 | **`@vitejs/plugin-react`** over `@vitejs/plugin-react-swc` | In Vite 8 + Rolldown, `@vitejs/plugin-react` is the correct choice. When `@vitejs/plugin-react-swc` was tested, Vite 8 itself printed: _"We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown"_. This is because Vite 8's Rolldown bundler uses OXC (Rust, built into Rolldown) for JSX/TSX transformation — OXC is faster than SWC in this context. `@vitejs/plugin-react-swc` only outperforms when you use SWC-specific plugins (e.g., custom transforms). Since the three DCC apps use no SWC plugins, `@vitejs/plugin-react` + OXC is the faster path. `@swc/core` remains present as an optional peer of `nx@22.6.1`, enabling SWC-based transforms in the Nx task pipeline — a separate concern from the Vite JSX pipeline. |
