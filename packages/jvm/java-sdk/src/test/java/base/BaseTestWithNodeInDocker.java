@@ -2,6 +2,7 @@ package base;
 
 import com.wavesplatform.crypto.Crypto;
 import com.wavesplatform.transactions.TransferTransaction;
+import com.wavesplatform.transactions.WavesConfig;
 import com.wavesplatform.transactions.account.PrivateKey;
 import com.wavesplatform.transactions.common.Amount;
 import com.wavesplatform.transactions.common.Id;
@@ -59,6 +60,12 @@ public abstract class BaseTestWithNodeInDocker {
         if (DOCKER_AVAILABLE) {
             try {
                 node = new Node(NODE_API_URL);
+                // Propagate the node's chain-id (e.g. 82 for DCC private node)
+                // into WavesConfig so that all subsequent PrivateKey.fromSeed()
+                // and Address construction uses the correct chain-id byte.
+                // Without this, WavesConfig stays at its default (87 = Waves
+                // mainnet 'W'), and the node rejects every address as wrong chain.
+                WavesConfig.chainId(node.chainId());
             } catch (URISyntaxException | NodeException | IOException e) {
                 throw new RuntimeException(e);
             }

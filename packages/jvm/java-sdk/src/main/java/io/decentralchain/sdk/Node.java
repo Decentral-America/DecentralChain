@@ -902,9 +902,11 @@ public class Node implements Closeable {
         HttpRequest build() throws IOException {
             try {
                 URI resolved = uri.resolve(path);
+                // Use raw-string URI construction to avoid the multi-arg URI(...)
+                // constructor re-encoding already-percent-encoded query parameters
+                // (e.g. %2B becoming %252B for regex patterns containing '+').
                 URI requestUri = queryParams.length() > 0
-                        ? new URI(resolved.getScheme(), resolved.getAuthority(), resolved.getPath(),
-                                queryParams.toString(), null)
+                        ? new URI(resolved.toASCIIString() + "?" + queryParams)
                         : resolved;
                 HttpRequest.Builder builder = HttpRequest.newBuilder(requestUri)
                         .method(method, bodyPublisher)
@@ -968,15 +970,19 @@ public class Node implements Closeable {
     }
 
     protected EthRpcResponse handleEthResponse(ObjectNode rs) throws NodeException, JsonProcessingException {
-        JsonNode result = rs.get("result");
-        if (result == null || !result.isObject()) {
-            throw new NodeException(-1, "Unexpected Ethereum RPC response: " + rs);
-        }
-        if (result.hasNonNull("error")) {
+        // Standard JSON-RPC 2.0: errors are at the top level, not inside result.
+        if (rs.hasNonNull("error")) {
+            JsonNode error = rs.get("error");
             throw new NodeException(
-                    result.get("error").intValue(),
-                    result.get("message").textValue()
+                    error.path("code").asInt(-1),
+                    error.path("message").asText("Ethereum RPC error")
             );
+        }
+        // result may be a string (e.g. eth_sendRawTransaction returns a tx hash "0x...")
+        // or null for methods that return nothing on success.
+        // EthRpcResponse.result is String — Jackson handles all scalar result values.
+        if (!rs.has("result")) {
+            throw new NodeException(-1, "Unexpected Ethereum RPC response (missing result): " + rs);
         }
         return mapper.treeToValue(rs, EthRpcResponse.class);
     }
