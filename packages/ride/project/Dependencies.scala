@@ -19,15 +19,15 @@ object Dependencies {
 
   // DecentralChain protobuf schemas (wire-format compatibility with Waves protocol)
   lazy val protoSchemasLib =
-    "io.decentralchain" % "protobuf-schemas" % "1.6.1" classifier "protobuf-src" intransitive ()
+    ("io.decentralchain" % "protobuf-schemas" % "1.6.1").classifier("protobuf-src").intransitive(())
 
   private def web3jModule(module: String) = "org.web3j" % module % "5.0.2"
 
   def monixModule(module: String): Def.Initialize[ModuleID] =
     Def.setting("io.monix" %%% s"monix-$module" % "3.4.1")
 
-  val googleGuava = "com.google.guava" % "guava"           % "33.6.0-jre"
-  val logback     = "ch.qos.logback"   % "logback-classic" % "1.5.32"
+  val googleGuava = "com.google.guava"  % "guava"           % "33.6.0-jre"
+  val logback     = "ch.qos.logback"    % "logback-classic" % "1.5.32"
   val curve25519  = "io.decentralchain" % "curve25519-java" % "0.6.6"
 
   val scalaLogging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.6"
@@ -36,7 +36,7 @@ object Dependencies {
   val scalaJsTest = Def.setting("com.lihaoyi" %%% "utest" % "0.9.5" % Test)
 
   private def sttp3Module(module: String) = "com.softwaremill.sttp.client3" %% module % "3.11.0"
-  val sttp3 = sttp3Module("core")
+  val sttp3                               = sttp3Module("core")
 
   lazy val circe: Def.Initialize[Seq[ModuleID]] = Def.setting {
     val circeVersion = "0.14.15"
@@ -47,10 +47,10 @@ object Dependencies {
   }
 
   def amazonCorretto(c: String): ModuleID =
-    "software.amazon.cryptools" % "AmazonCorrettoCryptoProvider" % "2.5.0" classifier c
+    ("software.amazon.cryptools" % "AmazonCorrettoCryptoProvider" % "2.5.0").classifier(c)
 
   val cryptoProviders = Seq(
-    "org.conscrypt"  % "conscrypt-openjdk-uber" % "2.5.2",
+    "org.conscrypt" % "conscrypt-openjdk-uber" % "2.5.2",
     amazonCorretto("osx-aarch_64"),
     "org.bouncycastle" % "bcprov-jdk18on" % "1.84"
   )
@@ -58,10 +58,10 @@ object Dependencies {
   val lang = Def.setting(
     Seq(
       monixModule("eval").value,
-      "org.typelevel" %%% "cats-core"  % "2.13.0",
-      "com.lihaoyi"   %%% "fastparse"  % "3.1.1",
-      "org.typelevel" %%% "cats-mtl"   % "1.6.0",
-      "ch.obermuhlner"  % "big-math"   % "2.3.2",
+      "org.typelevel" %%% "cats-core" % "2.13.0",
+      "com.lihaoyi"   %%% "fastparse" % "3.1.1",
+      "org.typelevel" %%% "cats-mtl"  % "1.6.0",
+      "ch.obermuhlner"  % "big-math"  % "2.3.2",
       googleGuava,
       curve25519,
       "io.decentralchain" % "zwaves" % "0.2.1.0",

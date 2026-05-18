@@ -34,22 +34,22 @@ ThisBuild / git.gitTagToVersionNumber := { ver =>
 ThisBuild / git.gitDescribedVersion := None
 // Include ~/.m2/repository so locally-installed io.decentralchain JARs resolve.
 ThisBuild / resolvers += Resolver.mavenLocal
-ThisBuild / PB.protocVersion   := Dependencies.gProtoVersion
+ThisBuild / PB.protocVersion := Dependencies.gProtoVersion
 
 // ── scalafix / semanticdb ─────────────────────────────────────────────────────
 // semanticdb is built into the Scala 3 compiler; enabling it lets scalafix run
 // semantic rules (OrganizeImports, RemoveUnused) on JVM subprojects.
 // Scala.js subprojects use .scalafix-js.conf (syntactic rules only) via jsSettings.
-ThisBuild / semanticdbEnabled  := true
-ThisBuild / semanticdbVersion  := scalafixSemanticdb.revision
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 ThisBuild / dependencyOverrides ++= Dependencies.overrides.value
 
 ThisBuild / pomIncludeRepository := { _ => false }
 ThisBuild / publishMavenStyle    := true
-ThisBuild / publishTo := {
+ThisBuild / publishTo            := {
   val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
-  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  if (isSnapshot.value) Some("central-snapshots".at(centralSnapshots))
   else localStaging.value
 }
 
@@ -59,14 +59,16 @@ inScope(Global)(
     organization         := "io.decentralchain",
     organizationName     := "DecentralChain",
     organizationHomepage := Some(url("https://decentralchain.io")),
-    scmInfo := Some(
+    scmInfo              := Some(
       ScmInfo(
         url("https://github.com/Decentral-America/DecentralChain"),
         "scm:git:https://github.com/Decentral-America/DecentralChain.git"
       )
     ),
-    licenses        := Seq(("MIT", url("https://github.com/Decentral-America/DecentralChain/blob/main/packages/ride/LICENSE"))),
-    publish / skip  := true,
+    licenses := Seq(
+      ("MIT", url("https://github.com/Decentral-America/DecentralChain/blob/main/packages/ride/LICENSE"))
+    ),
+    publish / skip := true,
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",
@@ -74,7 +76,8 @@ inScope(Global)(
       "-language:higherKinds",
       "-language:implicitConversions",
       "-language:postfixOps",
-      "-Xmax-inlines", "50",
+      "-Xmax-inlines",
+      "50",
       "-Wunused:all",
       "-Wconf:cat=deprecation&origin=com.wavesplatform.protobuf.transaction.InvokeScriptResult.*:s",
       "-Wconf:cat=deprecation&origin=com.decentralchain.state.InvokeScriptResult.*:s",
@@ -233,13 +236,13 @@ lazy val `dcc-ride` = (project in file("."))
 
 // ── coverage ─────────────────────────────────────────────────────────────────
 
-ThisBuild / coverageEnabled            := false // enable per-run: sbt coverage test
+ThisBuild / coverageEnabled := false // enable per-run: sbt coverage test
 // Default global minimum is 0; each production JVM sub-project sets its own floor.
 // lang-jvm: 40 % (evaluator tree excluded — see KNOWN_ISSUES KNOWN-3)
 // repl-jvm: 40 % (blockchain eval paths untestable in isolation — see KNOWN_ISSUES KNOWN-3)
 // Scala.js builds and test-only projects: coverageEnabled := false / no floor
-ThisBuild / coverageMinimumStmtTotal   := 0
-ThisBuild / coverageFailOnMinimum      := true
+ThisBuild / coverageMinimumStmtTotal := 0
+ThisBuild / coverageFailOnMinimum    := true
 // Exclude generated protobuf sources and the ENTIRE evaluator tree.
 // sbt-scoverage 2.4.4 miscompiles context-passing closures under Scala 3.8.3:
 // ALL files in the evaluator package (including ctx/, ctx/impl/) are affected.
@@ -247,10 +250,10 @@ ThisBuild / coverageFailOnMinimum      := true
 // instead of their declared type, producing ClassCastExceptions at runtime.
 // Correctness of the evaluator is verified by the un-instrumented Phase-1 `test`.
 // ctx/impl coverage would ideally be measured; tracked in KNOWN_ISSUES KNOWN-3.
-ThisBuild / coverageExcludedFiles      :=
+ThisBuild / coverageExcludedFiles :=
   ".*/src_managed/.*" +
-  ";.*/lang/v1/evaluator/.*"
-ThisBuild / coverageExcludedPackages   := "<empty>;.*\\.protobuf\\..*"
+    ";.*/lang/v1/evaluator/.*"
+ThisBuild / coverageExcludedPackages := "<empty>;.*\\.protobuf\\..*"
 
 // ── Bulletproof quality gate ──────────────────────────────────────────────────
 // Two-phase gate: (1) full correctness — ALL tests must pass; (2) coverage — JVM
@@ -265,17 +268,17 @@ ThisBuild / coverageExcludedPackages   := "<empty>;.*\\.protobuf\\..*"
 addCommandAlias(
   "bulletproof",
   "; scalafmtCheckAll" +
-  "; scalafixAll --check" +
-  "; undeclaredCompileDependencies" +
-  "; unusedCompileDependencies" +
-  // Phase 1: full correctness gate (all platforms, no instrumentation)
-  "; test" +
-  // Phase 2: coverage gate — JVM only, evaluator tree excluded from instrumentation
-  // Per-project thresholds: lang ≥ 40 %, repl ≥ 40 %  (JS builds excluded entirely)
-  "; coverage" +
-  "; lang-tests/test" +
-  "; repl/test" +
-  "; lang/coverageReport" +
-  "; repl/coverageReport" +
-  "; set ThisBuild/coverageEnabled := false"
+    "; scalafixAll --check" +
+    "; undeclaredCompileDependencies" +
+    "; unusedCompileDependencies" +
+    // Phase 1: full correctness gate (all platforms, no instrumentation)
+    "; test" +
+    // Phase 2: coverage gate — JVM only, evaluator tree excluded from instrumentation
+    // Per-project thresholds: lang ≥ 40 %, repl ≥ 40 %  (JS builds excluded entirely)
+    "; coverage" +
+    "; lang-tests/test" +
+    "; repl/test" +
+    "; lang/coverageReport" +
+    "; repl/coverageReport" +
+    "; set ThisBuild/coverageEnabled := false"
 )
