@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/license/Decentral-America/DecentralChain" alt="License" />
   </a>
   <img src="https://img.shields.io/badge/node-%3E%3D24-brightgreen" alt="Node >=24" />
-  <img src="https://img.shields.io/badge/pnpm-10-orange" alt="pnpm 10" />
+  <img src="https://img.shields.io/badge/pnpm-11-orange" alt="pnpm 11" />
   <img src="https://img.shields.io/badge/Nx-22-blue" alt="Nx 22" />
 </p>
 
@@ -44,6 +44,25 @@
 | `@decentralchain/signature-adapter` | Signature adapters |
 | `@decentralchain/signer` | Transaction signing |
 | `@decentralchain/cubensis-connect-provider` | Wallet provider |
+
+### RIDE (`packages/ride/`)
+
+| Artifact | Description |
+|---------|-------------|
+| `@decentralchain/ride-lang` | RIDE VM/compiler — npm (Scala.js) |
+| `@decentralchain/ride-repl` | RIDE REPL — npm (Scala.js) |
+| `io.decentralchain:lang_3` | RIDE VM — Maven Central (JVM) |
+| `io.decentralchain:lang-testkit_3` | RIDE test utilities — Maven Central (JVM) |
+
+### JVM Libraries (`packages/jvm/`)
+
+| Artifact | Description |
+|---------|-------------|
+| `io.decentralchain:java-sdk` | Waves Java SDK |
+| `io.decentralchain:curve25519-java` | Ed25519/Curve25519 cryptography |
+| `io.decentralchain:transactions-java` | Transaction wire-format library |
+| `io.decentralchain:blst-java` | BLS12-381 pairing cryptography |
+| `io.decentralchain:zwaves` | ZK-SNARK (Groth16) |
 
 ## Apps
 
