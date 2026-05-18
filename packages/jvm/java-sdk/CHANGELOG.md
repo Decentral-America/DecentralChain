@@ -4,7 +4,36 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Changed
+### Fixed (Round 11 — 2026-05-17, Docker integration test suite now passes 71/71)
+- **`BaseTestWithNodeInDocker` chain-id mismatch** — the Docker test base class
+  created `Node` but never propagated the node's chain-id into `WavesConfig`. All
+  `PrivateKey.fromSeed()` and address construction therefore used the default
+  `WavesConfig.chainId()` = 87 (Waves mainnet 'W'), while the DCC private node
+  runs on chain-id 82. Every broadcasted transaction was rejected by the node
+  with "Wrong chain-id. Expected - 82, provided - 87". Fixed by calling
+  `WavesConfig.chainId(node.chainId())` immediately after the `Node` object is
+  constructed in the static initializer, before `faucet` is initialized. This
+  ensures all static key and address construction uses the node's actual chain-id.
+- **`handleEthResponse` rejected valid `eth_sendRawTransaction` responses** — the
+  Round 9 NPE guard added `!result.isObject()` to `handleEthResponse`, which
+  rejected valid responses where `result` is a string (e.g. `eth_sendRawTransaction`
+  returns a transaction hash `"0x..."`). Standard JSON-RPC 2.0 places errors at the
+  top-level `error` field, not inside `result`. Rewrote to check `rs.hasNonNull("error")`
+  at the top level (using `asInt(-1)` / `asText(...)` for safe field access), then
+  validate that `result` exists, then delegate to Jackson. Both `EthereumTransactionIntegrationTest`
+  tests now pass.
+- **`NodeRequest.build()` double-encoded query parameters containing `%XX` sequences** —
+  the multi-argument `URI(scheme, authority, path, query, fragment)` constructor
+  re-encodes its `query` argument, turning already-percent-encoded values like
+  `%2B` (for `+` in regex patterns) into `%252B`. `getData(Address, Pattern)`
+  used `addParameter("matches", "int.+")` which encoded `+` as `%2B`, then the
+  URI constructor double-encoded it to `%252B`, causing the node to receive the
+  literal string `%2B` as the regex instead of `+`. The node matched nothing and
+  returned an empty list. Fixed by switching to raw-string URI construction:
+  `new URI(resolved.toASCIIString() + "?" + queryParams)`, which treats the
+  already-encoded query string as opaque. `AddressesTest.data` (regex branch)
+  now passes.
+
 - **`codeql-action` upgraded** from `v4.35.4` to `v4.35.5` (SHA `9e0d7b8d25671d64c341c19c0152d693099fb5ba`) in `.github/workflows/ci.yml`.
 - **Maven wrapper upgraded** from `3.9.15` to `3.9.16` in `.mvn/wrapper/maven-wrapper.properties` (latest 3.9.x stable; `3.9.16` includes dependency resolution fixes and security backports).
 - **CI invokes `./mvnw`** instead of bare `mvn` in both `ci.yml` and `publish-java-sdk.yml` — ensures the build always uses the Maven version pinned in `.mvn/wrapper/maven-wrapper.properties` regardless of the system-installed Maven on CI runners.
