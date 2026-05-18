@@ -153,7 +153,7 @@ Full dependency, security, and infrastructure sweep against official changelogs.
 
 - **Scanner nginx.conf `proxy_cache_valid` dead directive**: `/api/geo/` and `/api/greencheck/` proxy locations contained `proxy_cache_valid 200 24h;` with no corresponding `proxy_cache_path` or `proxy_cache <zone>` — the directive had zero effect and was misleading. Removed. Both locations now correctly pass through to ipinfo.io and thegreenwebfoundation.org.
 - **Exchange `electron` pinned to 41.0.4**: `apps/exchange/package.json` bumped from `^41.0.3` → `^41.0.4` (released 2026-03-25), picking up the latest Chromium security patches for the desktop distribution.
-- **All workspace tools verified at latest**: Nx 22.6.1 ✅ · Biome 2.4.9 ✅ · TypeScript 6.0.2 ✅ · Vitest 4.1.1 ✅ · tsdown 0.21.5 ✅ · pnpm 10.33.0 ✅ · `pnpm outdated` → empty.
+- **All workspace tools verified at latest**: Nx 22.7.1 ✅ · Biome 2.4.10 ✅ · TypeScript 6.0.3 ✅ · Vitest 4.1.5 ✅ · tsdown 0.21.10 ✅ · pnpm 11.1.1 ✅ · `pnpm outdated` → empty.
 - **Gate results post-Round 9**: `boundaries` 25/25 ✅ · `biome-lint` 25/25 ✅ · `typecheck` 25/25 ✅ · `audit` 0 CVEs ✅
 
 ### Audit Round 10 — Deep Hardening & Bug Fixes (Mar 26, 2026)
