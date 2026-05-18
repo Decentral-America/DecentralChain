@@ -1,0 +1,35 @@
+package com.decentralchain.transactions.serializers.json.deser;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.decentralchain.transactions.data.*;
+
+import java.io.IOException;
+
+public class DataEntryDeser extends JsonDeserializer<DataEntry> {
+
+    @Override
+    public DataEntry deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        ObjectCodec codec = p.getCodec();
+        JsonNode json = codec.readTree(p);
+
+        String key = json.get("key").asText();
+        if (json.hasNonNull("type")) {
+            String type = json.get("type").asText();
+            if ("binary".equals(type))
+                return new BinaryEntry(key, json.get("value").asText());
+            if ("boolean".equals(type))
+                return new BooleanEntry(key, json.get("value").asBoolean());
+            if ("integer".equals(type))
+                return new IntegerEntry(key, json.get("value").asLong());
+            if ("string".equals(type))
+                return new StringEntry(key, json.get("value").asText());
+        } else if (!json.hasNonNull("value"))
+            return new DeleteEntry(key);
+
+        throw new IOException("Can't parse entry \"" + p.getValueAsString() + "\"");
+    }
+}
