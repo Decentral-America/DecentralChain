@@ -50,7 +50,7 @@ These cannot be easily forked because `lang` is the Ride compiler — a large, c
 3. Bump `packages/protobuf-serialization/pom.xml` to `1.6.2-SNAPSHOT` for next development cycle
 
 **Affected files:**
-- `Ecosystem/DecentralChain/packages/protobuf-serialization/pom.xml`
+- `Ecosystem/DecentralChain/packages/sdk/protobuf-serialization/pom.xml`
 - `Ecosystem/node-scala/project/Dependencies.scala`
 
 ---
@@ -61,7 +61,7 @@ These cannot be easily forked because `lang` is the Ride compiler — a large, c
 
 **Description:** The upstream WavesJ codebase was not written against Google Java Style. Checkstyle is configured as report-only (`failOnViolation=false`) to avoid blocking CI immediately.
 
-**Why not fixed now:** 3,273 violations require systematic formatting work — a dedicated PR.
+**Why not fixed now:** 3,374 violations require systematic formatting work — a dedicated PR.
 
 **Resolution path:**
 - Apply Google Java formatter to all source files in a single formatting commit
@@ -85,7 +85,7 @@ These cannot be easily forked because `lang` is the Ride compiler — a large, c
 **Risk:** INFO
 
 **Description:** `mvn dependency:analyze` reports three dependencies as "Non-test scoped test only":
-- `org.web3j:crypto` — transitive from `waves-transactions`; used internally by `WavesEthConverter.java` through the upstream library's own API
+- `org.web3j:crypto` — transitive from `waves-transactions`; used internally by `DccEthConverter.java` through the upstream library's own API
 - `com.wavesplatform:protobuf-schemas` — transitive from `waves-transactions`
 - `com.google.protobuf:protobuf-java` — transitive from `waves-transactions`; pinned in `<dependencyManagement>` for version alignment only
 
