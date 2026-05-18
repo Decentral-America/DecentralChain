@@ -2,49 +2,43 @@ package io.decentralchain.sdk.peers;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class SuspendedPeer {
 
-    private final String hostname;
-    private final long timestamp;
+  private final String hostname;
+  private final long timestamp;
 
-    @JsonCreator
-    public SuspendedPeer(
-            @JsonProperty("hostname") String hostname,
-            @JsonProperty("timestamp") long timestamp
-    ) {
-        this.hostname = hostname;
-        this.timestamp = timestamp;
-    }
+  @JsonCreator
+  public SuspendedPeer(
+      @JsonProperty("hostname") String hostname, @JsonProperty("timestamp") long timestamp) {
+    this.hostname = hostname;
+    this.timestamp = timestamp;
+  }
 
-    public String getHostname() {
-        return hostname;
-    }
+  public String getHostname() {
+    return hostname;
+  }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
+  public long getTimestamp() {
+    return timestamp;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SuspendedPeer that = (SuspendedPeer) o;
-        return timestamp == that.timestamp && Objects.equals(hostname, that.hostname);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SuspendedPeer that = (SuspendedPeer) o;
+    return timestamp == that.timestamp && Objects.equals(hostname, that.hostname);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(hostname, timestamp);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(hostname, timestamp);
+  }
 
-    @Override
-    public String toString() {
-        return "SuspendedPeer{" +
-                "hostname='" + hostname + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "SuspendedPeer{" + "hostname='" + hostname + '\'' + ", timestamp=" + timestamp + '}';
+  }
 }

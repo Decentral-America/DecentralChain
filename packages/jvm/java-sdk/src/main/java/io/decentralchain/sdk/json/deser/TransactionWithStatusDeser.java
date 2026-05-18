@@ -8,23 +8,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.wavesplatform.transactions.*;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.info.*;
-
 import java.io.IOException;
 
 public class TransactionWithStatusDeser extends JsonDeserializer<TransactionWithStatus> {
 
-    @Override
-    public TransactionWithStatus deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        ObjectCodec codec = p.getCodec();
-        JsonNode json = codec.readTree(p);
+  @Override
+  public TransactionWithStatus deserialize(JsonParser p, DeserializationContext ctxt)
+      throws IOException {
+    ObjectCodec codec = p.getCodec();
+    JsonNode json = codec.readTree(p);
 
-        //transaction fields and info fields are on the same level
-        Transaction tx = Transaction.fromJson(json.toString());
-        ApplicationStatus status =
-                json.has("applicationStatus")
-                        ? codec.treeToValue(json.get("applicationStatus"), ApplicationStatus.class)
-                        : ApplicationStatus.SUCCEEDED;
+    // transaction fields and info fields are on the same level
+    Transaction tx = Transaction.fromJson(json.toString());
+    ApplicationStatus status =
+        json.has("applicationStatus")
+            ? codec.treeToValue(json.get("applicationStatus"), ApplicationStatus.class)
+            : ApplicationStatus.SUCCEEDED;
 
-        return new TransactionWithStatus(tx, status);
-    }
+    return new TransactionWithStatus(tx, status);
+  }
 }

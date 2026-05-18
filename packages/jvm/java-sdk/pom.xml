@@ -17,6 +17,7 @@
         <jacoco.version>0.8.14</jacoco.version>
         <spotbugs.version>4.9.8.3</spotbugs.version>
         <checkstyle.version>3.6.0</checkstyle.version>
+        <spotless.version>3.5.0</spotless.version>
         <!-- Coverage thresholds — unit-test-only baseline.
              Docker integration tests bring this to ~70%+.
              Override in CI: -Djacoco.line.ratio=0.70 -Djacoco.branch.ratio=0.60 -->
@@ -242,24 +243,50 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Code style: report-only on initial fork — violations are upstream
-                 debt. Enforce (failOnViolation=true) once cleaned up in a
-                 dedicated DCC-241 PR. -->
+            <!-- Code style: google-java-format (via Spotless) + Checkstyle enforced.
+                 Remaining suppressions in checkstyle-suppressions.xml cover upstream
+                 WavesJ debt (NeedBraces, MissingJavadoc) and two domain-specific
+                 identifiers (dApp in InvokeAction, TI in Node). -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
                 <configuration>
                     <configLocation>google_checks.xml</configLocation>
+                    <suppressionsLocation>${project.basedir}/checkstyle-suppressions.xml</suppressionsLocation>
                     <consoleOutput>false</consoleOutput>
-                    <failOnViolation>false</failOnViolation>
-                    <logViolationsToConsole>false</logViolationsToConsole>
+                    <failOnViolation>true</failOnViolation>
+                    <logViolationsToConsole>true</logViolationsToConsole>
                     <violationSeverity>warning</violationSeverity>
                     <excludes>**/module-info.java</excludes>
                 </configuration>
                 <executions>
                     <execution>
                         <id>checkstyle-report</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Code formatter: google-java-format enforced via Spotless.
+                 Fix locally: ./mvnw spotless:apply
+                 CI enforcement: spotless:check bound to verify phase. -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.35.0</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
                         <phase>verify</phase>
                         <goals><goal>check</goal></goals>
                     </execution>
