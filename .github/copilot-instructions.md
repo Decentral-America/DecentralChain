@@ -2,7 +2,7 @@
 
 ## Project
 
-TypeScript monorepo — 22 `@decentralchain/*` SDK packages + 3 apps (exchange, scanner, cubensis-connect). Blockchain is a Waves-protocol fork (LPoS, Ride smart contracts).
+Multi-language monorepo — 20 `@decentralchain/*` TypeScript SDK packages + 4 apps (exchange, scanner, cubensis-connect, data-service) + RIDE lang/repl (`packages/ride/`, sbt) + 7 JVM libraries (`packages/jvm/`, Maven). Blockchain is a Waves-protocol fork (LPoS, Ride smart contracts).
 
 ## Dependency Layers
 
