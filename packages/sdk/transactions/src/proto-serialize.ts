@@ -143,6 +143,9 @@ interface ProtoTxFields {
   dApp?: unknown;
   call?: unknown;
   payment?: unknown;
+  generationPeriodStart?: unknown;
+  endorserPublicKey?: unknown;
+  commitmentSignature?: unknown;
   [key: string]: unknown;
 }
 
@@ -322,15 +325,12 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
     }
     case 'commitToGeneration': {
       const d = t.data.value;
-      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
-      res['generationPeriodStart'] = d.generationPeriodStart;
-      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
-      res['endorserPublicKey'] =
+      res.generationPeriodStart = d.generationPeriodStart;
+      res.endorserPublicKey =
         d.endorserPublicKey == null || d.endorserPublicKey.length === 0
           ? null
           : base58Encode(d.endorserPublicKey);
-      // biome-ignore lint/complexity/useLiteralKeys: TS4111 — index-signature property requires bracket notation
-      res['commitmentSignature'] =
+      res.commitmentSignature =
         d.commitmentSignature == null || d.commitmentSignature.length === 0
           ? null
           : base58Encode(d.commitmentSignature);
