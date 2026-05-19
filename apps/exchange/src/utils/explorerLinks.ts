@@ -294,6 +294,7 @@ export const parseExplorerUrl = (
     if (pathParts.length < 2) return null;
 
     const [type, id] = pathParts;
+    /* v8 ignore next -- TypeScript noUncheckedIndexedAccess safety check; filter(Boolean) + length guard make this unreachable at runtime */
     if (!type || !id) return null;
 
     return { id, network, type };

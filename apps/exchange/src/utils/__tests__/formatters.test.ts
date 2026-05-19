@@ -72,7 +72,7 @@ describe('formatDcc', () => {
   });
 
   it('respects a custom decimals parameter', () => {
-    expect(formatDcc(3.14159, 2)).toBe('3.14');
+    expect(formatDcc(42.9876543, 2)).toBe('42.99');
   });
 });
 
