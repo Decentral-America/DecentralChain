@@ -419,6 +419,16 @@
             <version>1.2.7</version>
         </dependency>
 
+        <!-- DCC crypto primitives (Curve25519, key derivation, hashing, Base58, RSA)
+             Direct dep needed for io.decentralchain.crypto.* imports in util classes.
+             Replaces the transitive com.wavesplatform:waves-crypto pulled via waves-transactions.
+             See DCC-264. -->
+        <dependency>
+            <groupId>io.decentralchain</groupId>
+            <artifactId>crypto</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+
         <!-- Compiler -->
         <dependency>
             <groupId>com.wavesplatform</groupId>

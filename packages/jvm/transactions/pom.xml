@@ -66,8 +66,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Dependency version properties — pinned and audited 2026-05 -->
-    <!-- waves-crypto 2.0.7 — latest (Feb 11, 2026); upstream unchanged -->
-    <waves-crypto.version>2.0.7</waves-crypto.version>
+    <!-- io.decentralchain:crypto 2.0.7 — DCC fork of wavesplatform/waves-crypto-java v2.0.7 (DCC-264) -->
+    <dcc-crypto.version>2.0.7</dcc-crypto.version>
     <!-- protobuf-schemas 1.6.0 — latest on Maven Central; upstream unchanged
          NOTE: io.decentralchain:protobuf-schemas only exists as protobuf-src classifier
          (for code generation). Runtime JAR must remain com.wavesplatform until DCC
@@ -122,7 +122,8 @@
          the 4.33.2 that protobuf-schemas:1.6.0 pulls transitively. -->
     <protobuf-java.version>4.34.1</protobuf-java.version>
     <!-- jna 5.18.1 — latest; used in dependencyManagement to override
-         the 5.13.0 that waves-crypto:2.0.7 pulls transitively. -->
+         the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
+         via curve25519-java. -->
     <jna.version>5.18.1</jna.version>
   </properties>
 
@@ -139,7 +140,7 @@
         <version>${protobuf-java.version}</version>
       </dependency>
 
-      <!-- Force JNA to 5.18.1 (waves-crypto:2.0.7 pulls 5.13.0) -->
+      <!-- Force JNA to 5.18.1 (io.decentralchain:curve25519-java:0.6.6 pulls 5.13.0 transitively) -->
       <dependency>
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
@@ -152,11 +153,11 @@
   <!-- ── Runtime + test dependencies ─────────────────────────────────── -->
   <dependencies>
 
-    <!-- Waves crypto primitives (Curve25519, key derivation, hashing) -->
+    <!-- DCC crypto primitives (Curve25519, key derivation, hashing, Base58, RSA) -->
     <dependency>
-      <groupId>com.wavesplatform</groupId>
-      <artifactId>waves-crypto</artifactId>
-      <version>${waves-crypto.version}</version>
+      <groupId>io.decentralchain</groupId>
+      <artifactId>crypto</artifactId>
+      <version>${dcc-crypto.version}</version>
     </dependency>
 
     <!-- Waves / DecentralChain protobuf schema definitions -->
@@ -174,7 +175,7 @@
     </dependency>
 
     <!-- Ethereum-compatible transaction encoding (ABI, RLP, ECDSA secp256k1) -->
-    <!-- bcprov-jdk15on excluded: waves-crypto ships its own Bouncy Castle  -->
+    <!-- bcprov-jdk15on excluded: io.decentralchain:crypto ships its own Bouncy Castle  -->
     <dependency>
       <groupId>org.web3j</groupId>
       <artifactId>crypto</artifactId>
@@ -252,7 +253,7 @@
 
       <!-- Surefire 3.5.5: JUnit Platform auto-detected, no extra config -->
       <!-- Surefire: JUnit Platform auto-detected -->
-      <!-- enable-native-access: waves-crypto uses JNA (System.load) and protobuf  -->
+      <!-- enable-native-access: io.decentralchain:crypto uses JNA (System.load) and protobuf  -->
       <!-- uses Unsafe. Without ALL-UNNAMED, tests will fail in a future Java     -->
       <!-- release when restricted native access is blocked by default.            -->
       <plugin>

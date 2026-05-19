@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.crypto.Bytes;
+import io.decentralchain.crypto.Bytes;
 import com.decentralchain.transactions.DataTransaction;
 import com.decentralchain.transactions.LeaseTransaction;
 import com.decentralchain.transactions.SetScriptTransaction;
