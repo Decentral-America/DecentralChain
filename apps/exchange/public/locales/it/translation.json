@@ -2727,41 +2727,5 @@
       "windows": "Windows",
       "windowsDescription": "Scarica l'applicazione Windows"
     }
-  },
-  "electron": {
-    "menu": {
-      "copy": "Copia",
-      "cut": "Taglia",
-      "dev_tools": "Strumenti sviluppatore",
-      "paste": "Incolla",
-      "quit": "Esci",
-      "title": {
-        "application": "Applicazione",
-        "edit": "Modifica",
-        "god_mode": "God Mode"
-      }
-    },
-    "modal": {
-      "set_protocol_error": {
-        "close": "Chiudi",
-        "message": "Non è stato possibile impostare il protocollo predefinito per avviare il client decentralchain. Link dal browser temporaneamente non supportati!",
-        "report": "Segnala",
-        "title": "Imposta errore protocollo aperto"
-      }
-    },
-    "storage": {
-      "backup": {
-        "error": {
-          "body": "Impossibile ottenere gli account. Contattare il servizio di supporto per ripristinare la frase di backup (frase SEED).",
-          "title": "Qualcosa è andato storto!"
-        }
-      },
-      "read": {
-        "error": {
-          "body": "Errore durante il caricamento delle tue chiavi. Abbiamo ripristinato i tuoi account dallo storage di backup.",
-          "title": "Account ripristinato dal backup con successo"
-        }
-      }
-    }
   }
 }

@@ -28,8 +28,6 @@ allowBuilds:
   '@swc/core': true
   core-js-pure: true
   edgedriver: true
-  electron: false
-  electron-winstaller: true
   esbuild: false
   geckodriver: true
   lefthook: false

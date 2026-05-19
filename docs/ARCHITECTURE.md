@@ -105,7 +105,7 @@ DecentralChain/
 ├── apps/
 │   ├── cubensis-connect/           Browser wallet extension
 │   ├── data-service/               REST API + candles/pairs daemons (migrated from wavesplatform/data-service → apps/data-service)
-│   ├── exchange/                   Electron DEX trading app
+│   ├── exchange/                   DEX trading web app (React + Vite)
 │   └── scanner/                    Block explorer web app
 ├── packages/
 │   ├── sdk/                        TypeScript SDK packages → npm (@decentralchain/*)
@@ -670,7 +670,7 @@ On PRs, use `nx affected -t test` to only test packages whose source changed —
 | Deduplication | `pnpmDedupe` runs after every update |
 | Ignored | `@waves/ride-lang`, `@waves/ride-repl` — unforked upstream deps that must not be auto-updated |
 
-22 `packageRules` group related dependencies (Nx, Biome, TypeScript, Vitest, Vite, React, Radix UI, Sentry, TanStack, Tailwind, Electron, MUI, Ledger, Protobuf, Noble crypto, i18next, etc.) to minimize PR count and lock file conflicts. High-impact updates (Nx, TypeScript, Electron, all majors) require Dependency Dashboard approval before a PR is created.
+22 `packageRules` group related dependencies (Nx, Biome, TypeScript, Vitest, Vite, React, Radix UI, Sentry, TanStack, Tailwind, MUI, Ledger, Protobuf, Noble crypto, i18next, etc.) to minimize PR count and lock file conflicts. High-impact updates (Nx, TypeScript, all majors) require Dependency Dashboard approval before a PR is created.
 
 See [CONVENTIONS.md — Automated Dependency Updates](CONVENTIONS.md#automated-dependency-updates-renovate) for the full merge strategy and supply-chain protection details.
 
