@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import base.BaseTestWithNodeInDocker;
-import com.wavesplatform.crypto.Crypto;
+import io.decentralchain.crypto.Crypto;
 import com.decentralchain.transactions.IssueTransaction;
 import com.decentralchain.transactions.MassTransferTransaction;
 import com.decentralchain.transactions.account.Address;

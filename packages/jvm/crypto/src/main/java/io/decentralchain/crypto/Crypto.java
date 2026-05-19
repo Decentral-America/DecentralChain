@@ -1,6 +1,6 @@
-package com.wavesplatform.crypto;
+package io.decentralchain.crypto;
 
-import com.wavesplatform.crypto.internal.Dictionary;
+import io.decentralchain.crypto.internal.Dictionary;
 import org.whispersystems.curve25519.Curve25519;
 import org.whispersystems.curve25519.java.curve_sigs;
 
