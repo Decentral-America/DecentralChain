@@ -47,6 +47,8 @@
     "@decentralchain/data-entities",
     "@decentralchain/data-service-client-js",
     "@decentralchain/oracle-data",
+    // used only in data-service layer which is excluded from TS compilation
+    "bignumber.js",
     "ramda",
     "ts-utils",
     // exchange: TradingView charting library is a proprietary binary distribution — not on npm
@@ -89,54 +91,92 @@
       "project": ["src/**/*.ts"]
     },
     "apps/exchange": {
-      "entry": ["src/pages/**/*.tsx", "test/setup.ts"],
-      // Build-ahead directories: fully implemented but not yet wired to routing/pages.
-      // These will be connected as features land in the routing layer.
-      // Tracked in STATUS.md § "Active Work State".
+      // True app entry: main.tsx bootstraps tokenFilters + formatters + logger + i18n + App.
+      // App.tsx pulls in styles, contexts, and the router which lazy-loads all pages.
+      // pages/**/*.tsx is kept as secondary entry so knip can trace each page directly.
+      "entry": ["src/main.tsx", "src/pages/**/*.tsx", "test/setup.ts"],
       "ignore": [
-        // lib: all internal library modules (data-service, forms, api, secure storage, auth, etc.)
-        "src/lib/**",
-        // api: build-ahead REST client layer
-        "src/api/**",
-        // features: build-ahead feature modules not yet routed
-        "src/features/advanced/**",
-        "src/features/assets/**",
-        "src/features/auth/**",
-        "src/features/sessions/**",
-        "src/features/settings/**",
-        "src/features/dex/useDexWebSocket.ts",
-        "src/features/dex/useMarketData.ts",
-        "src/features/dex/index.ts",
-        "src/features/wallet/AssetInfoModal.tsx",
-        "src/features/wallet/BurnAssetModal.tsx",
-        "src/features/wallet/DepositAssetModal.tsx",
-        "src/features/wallet/ReissueAssetModal.tsx",
-        "src/features/wallet/SepaAssetModal.tsx",
-        // components: build-ahead UI atoms and display components
-        "src/components/display/**",
+        // ── DATA-SERVICE LAYER ────────────────────────────────────────────────
+        // Excluded from TypeScript compilation (tsconfig.app.json `exclude`).
+        // Accessed at runtime only via the Vite path alias:
+        //   data-service → src/lib/data-service
+        // TypeScript resolves `import … from 'data-service'` to src/types/data-service.d.ts.
+        // Never import src/lib/data-service files directly — use the module alias.
+        "src/lib/data-service/**",
+
+        // ── BLOCKED ON DCC-178 (backend deployment) ───────────────────────────
+        // These modules call api.decentralchain.io which is not yet live.
+        // Wire once DCC-178 (infra deployment) is complete.
+        "src/api/**",                               // REST client layer (axios + auth interceptors)
+        "src/lib/api.ts",                           // low-level fetch wrapper consumed by api/
+        "src/services/api/**",                      // service factories wrapping the REST client
+        "src/services/auth/**",                     // auth API (login, refresh, logout)
+        "src/services/gateways/**",                 // exchange gateway integrations (DCC, SEPA)
+        "src/services/index.ts",                    // services barrel (aggregates above)
+        "src/services/storage/**",                  // encrypted remote-storage service
+        "src/services/websocket/**",                // WebSocket client for price/order feeds
+        "src/features/dex/useDexWebSocket.ts",      // DEX WS hook (depends on websocket/)
+        "src/features/dex/useMarketData.ts",        // DEX market-data hook (depends on api/)
+
+        // ── BUILD-AHEAD: UI features not yet wired to routing ─────────────────
+        // Fully implemented but no page or component imports them yet.
+        // Wire in subsequent sprints as the routing layer expands.
+        "src/features/advanced/**",                 // advanced tx forms: alias, mass-transfer, set-script, data-tx
+        "src/features/assets/**",                   // token management: issue, burn, reissue, asset-info
+        "src/features/auth/AccountSelectScreen.tsx",// account-selection screen shown after password entry
+        "src/features/auth/AccountSwitcher.tsx",    // quick account-switch widget (header/sidebar)
+        "src/features/auth/index.ts",               // features/auth barrel (re-export only)
+        "src/features/auth/PasswordProtection.tsx", // encrypt-seed-with-password step in onboarding
+        "src/features/dex/index.ts",                // features/dex barrel (re-export only)
+        "src/features/sessions/**",                 // session context: auto-lock, cross-tab sync
+        "src/features/settings/index.ts",           // features/settings barrel (re-export only)
+        "src/features/wallet/AssetInfoModal.tsx",   // asset detail drawer
+        "src/features/wallet/BurnAssetModal.tsx",   // burn-token action modal
+        "src/features/wallet/DepositAssetModal.tsx",// deposit-asset modal
+        "src/features/wallet/ReissueAssetModal.tsx",// reissue-token modal
+        "src/features/wallet/SepaAssetModal.tsx",   // SEPA fiat on-ramp modal
+
+        // ── BUILD-AHEAD: UI component library ────────────────────────────────
+        // Atoms, organisms, display, and chart components built ahead of the pages
+        // that will consume them. Add imports as pages are fleshed out.
+        "src/components/AssetName.tsx",
+        "src/components/Breadcrumbs.tsx",
+        "src/components/EmptyState.tsx",
+        "src/components/LazyImage.tsx",
+        "src/components/RouteLoadingFallback.tsx",
+        "src/components/VirtualList.tsx",
         "src/components/atoms/Avatar.tsx",
         "src/components/atoms/Box.tsx",
-        "src/components/atoms/Button.stories.tsx",
-        "src/components/atoms/Card.stories.tsx",
         "src/components/atoms/Divider.tsx",
         "src/components/atoms/GlassCard.tsx",
         "src/components/atoms/Grid.tsx",
         "src/components/atoms/index.ts",
-        "src/components/atoms/Input.stories.tsx",
         "src/components/atoms/Radio.tsx",
         "src/components/atoms/Tooltip.tsx",
-        "src/components/AssetName.tsx",
-        "src/components/Breadcrumbs.tsx",
-        "src/components/charts/RechartsWrapper.tsx",
+        "src/components/charts/**",
+        "src/components/data/index.ts",
+        "src/components/display/**",
+        "src/components/forms/**",
+        "src/components/index.ts",
         "src/components/landing/TestimonialsStrip.tsx",
-        "src/components/modals/**",
+        "src/components/layout/Header.tsx",         // alternative header (MainLayout has its own built-in)
+        "src/components/layout/Sidebar.tsx",        // alternative sidebar (MainLayout has its own built-in)
+        "src/components/layout/index.ts",
+        "src/components/modals/AlertModal.tsx",
+        "src/components/modals/index.ts",
+        "src/components/modals/LedgerConnectModal.tsx",
+        "src/components/modals/LedgerErrorModal.tsx",
+        "src/components/modals/LedgerSignModal.tsx",
+        "src/components/modals/NoAccountModal.tsx",
         "src/components/notifications/index.ts",
         "src/components/organisms/index.ts",
         "src/components/organisms/LanguageSwitcher.tsx",
+        "src/components/skeletons/**",
+        "src/components/ui/**",
         "src/components/wallet/**",
-        // contexts: build-ahead context providers
-        "src/contexts/EventContext.tsx",
-        // hooks: build-ahead React hooks
+
+        // ── BUILD-AHEAD: React hooks ──────────────────────────────────────────
+        // Implemented and tested; awaiting the feature pages that consume them.
         "src/hooks/useAssetName.ts",
         "src/hooks/useAuthEvents.ts",
         "src/hooks/useExplorerLinks.ts",
@@ -148,18 +188,51 @@
         "src/hooks/useStorage.ts",
         "src/hooks/useTimeline.ts",
         "src/hooks/useTradingPairs.ts",
-        // pages: build-ahead page modules not yet in router
-        "src/pages/AccountManager/**",
-        // services: all build-ahead service implementations
-        "src/services/**",
-        // stores: build-ahead state stores
-        "src/stores/**",
-        // styles: build-ahead style tokens and theming system
-        "src/styles/**",
-        // types: build-ahead type definitions and declarations
-        "src/types/**",
-        // utils: build-ahead utility modules
-        "src/utils/**"
+
+        // ── BUILD-AHEAD: contexts, lib utilities, stores ──────────────────────
+        "src/contexts/EventContext.tsx",            // event-bus context (provider not yet mounted)
+        "src/lib/errorHandler.ts",                  // global unhandled-error util
+        "src/lib/index.ts",                         // lib barrel (aggregates forms + react-query + sanitize)
+        "src/lib/memoUtils.ts",                     // memoization helpers
+        "src/lib/secureStorage.ts",                 // encrypted localStorage wrapper
+        "src/stores/**",                            // Zustand stores (DEX order book, etc.)
+
+        // ── BUILD-AHEAD: style sub-modules ────────────────────────────────────
+        // GlobalStyles.ts and themes.ts are already connected via styles/index.ts → App.tsx.
+        // These sub-modules are not yet re-exported and are awaiting component adoption.
+        "src/styles/mixins.ts",
+        "src/styles/modernTheme.ts",
+        "src/styles/responsive.ts",
+        "src/styles/tokens.ts",
+
+        // ── AMBIENT TYPE DECLARATIONS ─────────────────────────────────────────
+        // .d.ts files augment the global TypeScript environment; they are never imported.
+        "src/styles/styled.d.ts",
+        "src/types/charting_library.d.ts",
+        "src/types/data-service.d.ts",
+
+        // ── BUILD-AHEAD: type definitions ─────────────────────────────────────
+        "src/types/api.ts",
+        "src/types/common.ts",
+        "src/types/components.ts",
+        "src/types/index.ts",
+
+        // ── BUILD-AHEAD: utility modules ──────────────────────────────────────
+        "src/utils/componentList.ts",
+        "src/utils/constants.ts",
+        "src/utils/helpers.ts",
+        "src/utils/index.ts",
+        "src/utils/network.ts",
+        "src/utils/seed.ts",
+        "src/utils/storageExporter.ts",
+        "src/utils/styleManager.ts",
+        "src/utils/validators.ts",
+
+        // ── STORYBOOK ─────────────────────────────────────────────────────────
+        // Component story files — only consumed by Storybook, never by the app.
+        "src/components/atoms/Button.stories.tsx",
+        "src/components/atoms/Card.stories.tsx",
+        "src/components/atoms/Input.stories.tsx"
       ],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
