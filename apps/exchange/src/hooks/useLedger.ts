@@ -151,8 +151,10 @@ export const useLedger = (): UseLedgerReturn => {
       setError(null);
 
       try {
-        // LedgerAdapter.getSignature() communicates with device and returns signature
-        // Note: This is a placeholder - actual method name may differ in @decentralchain/signature-adapter
+        // LedgerAdapter.getSignature() is a static proxy method delegating to the
+        // LedgerAdapter instance's signTransaction / signRequest / signData methods
+        // via the DCCLedger transport (see packages/sdk/signature-adapter/LedgerAdapter.ts).
+        // Full Electron integration is gated on DCC-200 (Electron target decision).
         const signature = (await withTimeout(
           (
             adapterRef.current as unknown as {

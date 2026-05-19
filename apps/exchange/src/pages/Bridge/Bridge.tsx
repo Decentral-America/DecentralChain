@@ -4,7 +4,7 @@
  * Enables deposits (external → DecentralChain) and withdrawals (DecentralChain → external)
  */
 
-import { type BigNumber } from '@decentralchain/bignumber';
+import { BigNumber } from '@decentralchain/bignumber';
 import { CheckCircle, InfoOutlined, Login } from '@mui/icons-material';
 import {
   Alert,
@@ -26,11 +26,12 @@ import bnbIcon from 'cryptocurrency-icons/svg/color/bnb.svg';
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
 import ethIcon from 'cryptocurrency-icons/svg/color/eth.svg';
 import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { BridgeAssetSelector } from '@/features/bridge/BridgeAssetSelector';
 import { DepositAsset } from '@/features/bridge/DepositAsset';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
+import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
 import { landingTheme } from '@/theme/landingTheme';
 
@@ -103,8 +104,22 @@ export const Bridge: React.FC = () => {
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
 
-  // Balances - TODO: integrate with actual balance hook when available
-  const balances: Record<string, BigNumber> = {};
+  // Live wallet balances — polled every 5 s while page is open
+  const { balances: rawBalances } = useBalanceWatcher({
+    enabled: !!user?.address,
+    interval: 5000,
+  });
+
+  // Convert number → BigNumber for BridgeAssetSelector
+  const balances = useMemo((): Record<string, BigNumber> => {
+    if (!rawBalances?.assets) return {};
+    return Object.fromEntries(
+      Object.entries(rawBalances.assets).map(([assetId, amount]) => [
+        assetId,
+        new BigNumber(amount),
+      ]),
+    );
+  }, [rawBalances]);
 
   /**
    * Handle deposit button click

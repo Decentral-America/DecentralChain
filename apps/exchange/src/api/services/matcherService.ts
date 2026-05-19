@@ -218,9 +218,10 @@ export const useUserOrders = (
     // Disable by default until authentication is implemented
     enabled: false, // was: !!address && options?.enabled !== false,
     queryFn: async () => {
-      // For now, return empty array as this requires proper matcher authentication
-      // TODO: Implement proper matcher signature authentication
-      logger.warn('User orders require matcher authentication - not yet implemented');
+      // Stub: matcher request signing requires backend go-live (DCC-198, blocked by DCC-178).
+      // Matcher API /orderbook/:address returns HTTP 400 without HMAC/EdDSA auth header.
+      // When Gate 3 is live: uncomment the implementation below and set enabled: !!address.
+      logger.warn('[useUserOrders] Skipped: matcher authentication not yet wired (DCC-198)');
       return [];
 
       // Original implementation (requires authentication):
@@ -287,9 +288,10 @@ export const useTradeHistory = (
   return useQuery({
     enabled: false, // Disable until data-service integration is complete
     queryFn: async () => {
-      // TODO: Implement using data-service getExchangeTxs
-      // For now, return empty array as the matcher doesn't have a trades endpoint
-      logger.warn('Trade history requires data-service integration - returning empty array');
+      // Stub: trade history requires data-service /transactions/exchange endpoint (DCC-196, blocked by DCC-178).
+      // The matcher API has no /trades endpoint — exchange transactions live on-chain and are
+      // indexed by data-service. When Gate 3 is live: replace with data-service.getExchangeTxs call.
+      logger.warn('[useTradeHistory] Skipped: data-service not yet deployed (DCC-196)');
       return [];
 
       // Original implementation (incorrect - matcher doesn't have /trades endpoint):
