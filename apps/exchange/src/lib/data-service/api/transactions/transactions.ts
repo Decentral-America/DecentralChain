@@ -1,7 +1,6 @@
 import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client-js';
 import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
 import { pipe, prop, uniqBy } from 'ramda';
-import { contains } from 'ts-utils';
 import { get as configGet, getDataService } from '../../config';
 import { request } from '../../utils/request';
 import {
@@ -92,7 +91,7 @@ export function getUTX(id: string): Promise<T_TX> {
 
 export function filterByAddress(transactions: Array<T_API_TX>, address?: string): Array<T_API_TX> {
   if (address) {
-    return transactions.filter(contains({ sender: address }));
+    return transactions.filter((tx) => tx.sender === address);
   }
   return transactions;
 }

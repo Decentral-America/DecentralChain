@@ -1,4 +1,3 @@
-import * as Base64 from 'base64-js';
 import Long from 'long';
 import base58 from './libs/base58';
 
@@ -106,7 +105,11 @@ export const P_BASE64 =
   (lenParser: TParser<number>) =>
   (bytes: Uint8Array, start: number = 0) => {
     const lengthInfo = lenParser(bytes, start);
-    const value = `base64:${Base64.fromByteArray(bytes.slice(start + lengthInfo.shift, start + lengthInfo.shift + lengthInfo.value))}`;
+    const slice = bytes.slice(
+      start + lengthInfo.shift,
+      start + lengthInfo.shift + lengthInfo.value,
+    );
+    const value = `base64:${btoa(Array.from(slice, (b) => String.fromCharCode(b)).join(''))}`;
     return { shift: lengthInfo.value + lengthInfo.shift, value };
   };
 
@@ -154,7 +157,7 @@ export const byteToScript = (bytes: Uint8Array, start: number = 0) => {
   const lengthInfo = P_SHORT(bytes, start + VERSION_LENGTH);
   const from = start + VERSION_LENGTH + lengthInfo.shift;
   const to = start + VERSION_LENGTH + lengthInfo.shift + lengthInfo.value;
-  const value = `base64:${Base64.fromByteArray(bytes.slice(from, to))}`;
+  const value = `base64:${btoa(Array.from(bytes.slice(from, to), (b) => String.fromCharCode(b)).join(''))}`;
 
   return { shift: to - start, value };
 };

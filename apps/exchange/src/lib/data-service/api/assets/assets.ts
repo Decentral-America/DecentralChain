@@ -1,7 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { DCC_ID } from '@decentralchain/signature-adapter';
-import { isEmpty } from 'ts-utils';
 import { get as configGet, getDataService } from '../../config';
 import { type IHash } from '../../interface';
 import { assetStorage } from '../../utils/AssetStorage';
@@ -156,12 +155,14 @@ export function remapAssetsBalance(
       const regular = new Money(new BigNumber(assetData.balance), asset);
       const available = regular.sub(inOrders);
       const empty = new Money(new BigNumber('0'), asset);
-      const balance = isEmpty(assetData.sponsorBalance)
-        ? null
-        : new Money(assetData.sponsorBalance as string, assetsHash[DCC_ID]);
-      const fee = isEmpty(assetData.minSponsoredAssetFee)
-        ? null
-        : new Money(assetData.minSponsoredAssetFee as string, asset);
+      const balance =
+        assetData.sponsorBalance == null
+          ? null
+          : new Money(assetData.sponsorBalance as string, assetsHash[DCC_ID]);
+      const fee =
+        assetData.minSponsoredAssetFee == null
+          ? null
+          : new Money(assetData.minSponsoredAssetFee as string, asset);
       const { issueTransaction } = assetData;
       const { sender } = issueTransaction;
       const isMy = sender === data.address;

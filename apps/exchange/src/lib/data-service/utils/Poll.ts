@@ -1,4 +1,4 @@
-import { Signal } from 'ts-utils';
+import { Signal } from './Signal';
 
 export class Poll<T> {
   public signals: ISignals<T> = {
