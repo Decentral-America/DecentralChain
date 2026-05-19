@@ -4,7 +4,7 @@ import cats.data.OptionT
 import cats.instances.either.*
 import com.decentralchain.lang.contract.DApp
 import com.decentralchain.lang.v1.compiler.Types.FINAL
-import com.wavesplatform.protobuf.dapp.DAppMeta
+import io.decentralchain.protobuf.dapp.DAppMeta
 
 object MetaMapper {
   def toProto[V <: MetaVersion](version: V)(data: List[List[FINAL]]): Either[String, DAppMeta] =

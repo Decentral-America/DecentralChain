@@ -9,7 +9,7 @@ import com.decentralchain.lang.v1.compiler.Types.*
 import com.decentralchain.lang.v1.compiler.{CompilationError, Terms}
 import com.decentralchain.lang.v1.evaluator.FunctionIds.{CALLDAPP, CALLDAPPREENTRANT}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types
-import com.wavesplatform.protobuf.dapp.DAppMeta
+import io.decentralchain.protobuf.dapp.DAppMeta
 
 import scala.annotation.tailrec
 

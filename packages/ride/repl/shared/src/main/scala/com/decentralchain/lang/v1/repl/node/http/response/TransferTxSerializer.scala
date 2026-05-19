@@ -4,9 +4,9 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.EnvironmentFunctions
 import com.decentralchain.lang.v1.traits.domain.Recipient as LangRecipient
 import com.decentralchain.lang.v1.traits.domain.Recipient.{Address, Alias}
 import com.google.protobuf.ByteString
-import com.wavesplatform.protobuf.Amount
-import com.wavesplatform.protobuf.transaction.*
-import com.wavesplatform.protobuf.transaction.Transaction.Data
+import io.decentralchain.protobuf.Amount
+import io.decentralchain.protobuf.transaction.*
+import io.decentralchain.protobuf.transaction.Transaction.Data
 
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets

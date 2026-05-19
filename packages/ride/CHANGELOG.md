@@ -39,9 +39,12 @@ Version freshness sweep via GitHub API + Maven Central direct artifact checks:
   fork version scheme `<upstream>.<dcc-increment>`, i.e. upstream 0.6.5 + DCC = 0.6.6).
 
 ### Documented
-- KNOWN_ISSUES KNOWN-4: `com.wavesplatform.protobuf.*` and `com.wavesplatform.zwaves.*`
-  imports are wire-compat / JNI bindings and are intentionally retained. Zero
-  `com.wavesplatform.lang.*` occurrences exist — the DCC-252 AC is satisfied.
+- KNOWN_ISSUES KNOWN-4: `com.wavesplatform.protobuf.*` imports are from a stale artifact
+  (`protobuf-schemas:1.6.1` predates the java_package rename; not a wire-format constraint).
+  `com.wavesplatform.zwaves.*` in `Global.scala` is from a locally-installed jar whose Rust
+  native library has not yet been rebuilt under the new `com.decentralchain.groth16.*` namespace.
+  Both are publish-gap issues, not permanent constraints. See KNOWN_ISSUES.md for fix paths.
+  Zero `com.wavesplatform.lang.*` occurrences exist — the DCC-252 AC is satisfied.
 - KNOWN_ISSUES KNOWN-5: `scalatestplus:scalacheck-1-18` + ScalaCheck 1.19.0 combination
   documented; upgrade path noted for when `scalacheck-1-19` module is published.
 
@@ -65,6 +68,7 @@ Version freshness sweep via GitHub API + Maven Central direct artifact checks:
 - scalafmt upgraded: 3.9.4 → 3.11.1
 
 ### Notes
-- `com.wavesplatform.protobuf.*` imports are intentional: they reference wire-compatible
-  protobuf-generated code for Waves protocol compatibility. Do not rename.
-- `com.wavesplatform.zwaves.*` is an external library — external artifact, not our namespace.
+- `com.wavesplatform.protobuf.*` imports are from the `protobuf-schemas:1.6.1` artifact
+  which predates the java_package rename. Not a wire-format constraint — see KNOWN_ISSUES.md.
+- `com.wavesplatform.zwaves.*` is from the locally-installed `zwaves:0.2.1.0` jar. The
+  `groth16` package in the monorepo has been rebranded; awaiting Rust rebuild + re-install.

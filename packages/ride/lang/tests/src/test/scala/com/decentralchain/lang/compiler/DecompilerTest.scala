@@ -21,7 +21,7 @@ import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{compiler, CTX, FunctionHeader}
 import com.decentralchain.test.{produce, PropSpec}
-import com.wavesplatform.protobuf.dapp.DAppMeta
+import io.decentralchain.protobuf.dapp.DAppMeta
 import org.scalatest.Assertion
 
 class DecompilerTest extends PropSpec {
