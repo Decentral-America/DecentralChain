@@ -1,6 +1,6 @@
-package com.wavesplatform.crypto;
+package io.decentralchain.crypto;
 
-import com.wavesplatform.crypto.base.Base58;
+import io.decentralchain.crypto.base.Base58;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
