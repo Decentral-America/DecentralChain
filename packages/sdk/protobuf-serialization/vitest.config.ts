@@ -1,15 +1,6 @@
 import { mergeConfig } from 'vitest/config';
 import baseConfig from '../../../vitest.base.config';
 
-export default mergeConfig(baseConfig, {
-  test: {
-    coverage: {
-      thresholds: {
-        branches: 15,
-        functions: 15,
-        lines: 15,
-        statements: 15,
-      },
-    },
-  },
-});
+// All 17 generated protobuf files are at 100% coverage (150 tests).
+// Threshold inherits from vitest.base.config (90%) — no per-package override needed.
+export default mergeConfig(baseConfig, {});
