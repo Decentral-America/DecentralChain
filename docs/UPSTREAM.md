@@ -418,7 +418,7 @@ These exist in the `Decentral-America` org with **no Waves upstream equivalent**
 
 | Repo | Purpose | Status |
 |------|---------|--------|
-| **exchange** | DCC trading interface (Vite + Electron) | Active — in monorepo `apps/` |
+| **exchange** | DCC trading interface (Vite + React) | Active — in monorepo `apps/` |
 | ~~**dcc-configs**~~ | Shared runtime configuration files | **Eliminated** — content inlined into `constants.ts`; repo was 404 |
 | **DCC-ERC20-Gateway** | Cross-chain ERC-20 ↔ DCC gateway (Python) | Active |
 | **dcc-ride-templates** | Ride smart contract templates | Active |

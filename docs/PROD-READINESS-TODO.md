@@ -36,7 +36,6 @@
 > **Dependency freshness (all safe patch/minor bumps)**
 > - `nx` + `@nx/devkit`: `22.6.2 → 22.6.3`
 > - `i18next`: `^25.10.9 → ^25.10.10` — exchange + cubensis-connect
-> - `electron`: `^41.0.4 → ^41.1.0` — Chromium security patches
 > - `@ledgerhq/hw-transport-webusb`: `^6.32.0 → ^6.33.0` — cubensis-connect
 >
 > **Dead config removed**
@@ -82,7 +81,7 @@
 > | **P2** | `matcherService.ts`: `useUserOrders()` + `useTradeHistory()` return `[]` with `enabled: false` (stubs pending matcher auth + data-service) | Node deployment |
 > | **P2** | Wire Sentry DSN in `apps/exchange/.env.production` (no code change — just a DSN value) | sentry.io project |
 > | **P2** | Profile `AuthContext-*.js` (467 kB) — confirm whether Sentry is the cause | — |
-> | **P2** | Electron target decision — ship desktop build or remove `electron/` dir and deps | Product decision |
+> | ~~**P2**~~ | ~~Electron target decision — ship desktop build or remove `electron/` dir and deps~~ | **RESOLVED (DCC-200)** — Electron deleted; `apps/exchange/electron/` removed, all deps stripped |
 > | **P3** | `@react-router/dev` emits deprecation warning: `"esbuild" option deprecated, use "oxc"` — upstream react-router@7.13.2 issue, not in our vite.config.ts | Upstream |
 > | **P3** | Nx AI agents: run `nx configure-ai-agents` in IDE (interactive — requires editor selection; cannot be scripted) | Engineering |
 > | **P3** | TypeScript 7.0 prep — monitor TS 7 beta (Go port, H2 2026); `--stableTypeOrdering` | Upstream TS |
@@ -537,19 +536,11 @@ The remaining large chunks are:
   files (popup/accounts/notification) added to per-app `biome.json` overrides with justification
   (outside MUI context / pre-boot HTML loading screens, architecturally required).
 
-### Electron Target Clarification
+### ~~Electron Target Clarification~~ ✅ RESOLVED (DCC-200)
 
-- [ ] **`apps/exchange/electron/` — production-ready scaffold, build not wired into Nx** — The
-  directory is fully implemented (not a stub): `main.ts`, `preload.ts`, `entitlements.mac.plist`,
-  `electron:build` / `electron:build:mac` / `electron:build:win` / `electron:build:linux` scripts
-  in `package.json`, and `electron-builder` configured with appId `com.decentralchain.exchange`.
-  Pre-built compiled `.js` artifacts are committed alongside the TypeScript sources.
-  
-  What's missing: an Nx project target (`exchange:electron:build`) and a CI workflow for the desktop
-  distribution. Decision needed: ship electron desktop or remove? If ship — add
-  `electron:build` as an Nx target and a `release-desktop.yml` workflow. If not — remove the
-  `electron/` directory and `electron`/`electron-builder`/`electron-updater` deps to reduce attack
-  surface and clean up `package.json`.
+~~- [ ] `apps/exchange/electron/` — production-ready scaffold, build not wired into Nx~~
+
+Decision: **deleted**. The entire `apps/exchange/electron/` directory, all Electron-related deps (`electron`, `electron-builder`, `electron-updater`), build scripts, `main` entry point, and electron-builder config were removed in commit `5d16c2cf3`. Ledger support now requires WebHID (Chrome/Edge 89+) only.
 
 ### Test Coverage Gap
 
@@ -668,7 +659,7 @@ The remaining large chunks are:
 | HIGH CVE `path-to-regexp@0.1.12` (GHSA-37ch-88jc-xwx2 ReDoS) | root `package.json` | Added `"path-to-regexp": ">=0.1.13"` to `pnpm.overrides`; `pnpm audit` → 0 vulnerabilities |
 | nx + @nx/devkit 22.6.2 → 22.6.3 | root `package.json` | Patch bump |
 | i18next 25.10.9 → 25.10.10 | exchange + cubensis-connect `package.json` | Prerequisite for react-i18next 17.0.0 migration |
-| electron 41.0.4 → 41.1.0 | `apps/exchange/package.json` | Chromium security patches |
+| ~~electron 41.0.4 → 41.1.0~~ | ~~`apps/exchange/package.json`~~ | ~~Chromium security patches~~ — **dep removed (DCC-200)** |
 | @ledgerhq/hw-transport-webusb 6.32.0 → 6.33.0 | `apps/cubensis-connect/package.json` | Patch bump |
 | Stale `noExplicitAny: off` for VaultController.ts | `apps/cubensis-connect/biome.json` | Removed — file has 0 actual `any` annotations; rule now active |
 | Stale `react19-compat.d.ts` knip ignore | `knip.json` | Removed — file was deleted in Round 15 |

@@ -55,7 +55,7 @@ flowchart LR
     subgraph APPS["🖥  Applications  (3)"]
         direction TB
         SCANNER["📊 Scanner\nBlock Explorer\nReact Router 7 · SSR"]
-        EXCHANGE["💱 Exchange\nDEX Platform\nVite · React · Electron"]
+        EXCHANGE["💱 Exchange\nDEX Platform\nVite · React"]
         CUBENSIS["🔐 Cubensis Connect\nWallet Extension\nChrome MV3 · Firefox MV2"]
     end
 
@@ -232,7 +232,7 @@ C4Context
 
     Enterprise_Boundary(products, "DecentralChain Products") {
         System(scanner, "Scanner", "Block and transaction explorer (SSR web app)")
-        System(exchange, "Exchange", "Decentralized exchange — Web + Electron")
+        System(exchange, "Exchange", "Decentralized exchange — Web app")
         System(cubensis, "Cubensis Connect", "Browser wallet extension — Chrome MV3 / Firefox MV2")
     }
 
@@ -279,7 +279,7 @@ flowchart TD
 
     subgraph APPS["🖥  Applications"]
         SCANNER["📊 Scanner<br/>Block Explorer<br/>React Router 7 · Tailwind v4 · SSR"]
-        EXCHANGE["💱 Exchange<br/>DEX Trading Platform<br/>Vite · React · Electron"]
+        EXCHANGE["💱 Exchange<br/>DEX Trading Platform<br/>Vite · React"]
         CUBENSIS["🔐 Cubensis Connect<br/>Browser Wallet Extension<br/>Chrome MV3 · Firefox MV2"]
     end
 

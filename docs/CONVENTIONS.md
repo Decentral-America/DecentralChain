@@ -402,10 +402,10 @@ Dependency updates are automated via the [Renovate](https://docs.renovatebot.com
 | dependencies (patch) | Automerge after CI passes |
 | Lock file maintenance | Automerge after CI passes |
 | Major updates (all packages) | Requires Dependency Dashboard approval |
-| Nx, TypeScript, Electron | Requires Dependency Dashboard approval + manual review |
+| Nx, TypeScript | Requires Dependency Dashboard approval + manual review |
 | Biome | Manual review (no automerge) |
 
-**Grouping**: Related packages are grouped into single PRs to reduce noise and lock file conflicts. The 22 package rules cover the full tech stack — see `renovate.json` for the complete list. Key groups: Nx, Biome, TypeScript, Vitest, Vite, tsdown, React, Radix UI, Sentry, TanStack, Testing Library, Tailwind, Electron, MUI, Ledger, Protobuf, Noble crypto, i18next, and package quality tools.
+**Grouping**: Related packages are grouped into single PRs to reduce noise and lock file conflicts. The 22 package rules cover the full tech stack — see `renovate.json` for the complete list. Key groups: Nx, Biome, TypeScript, Vitest, Vite, tsdown, React, Radix UI, Sentry, TanStack, Testing Library, Tailwind, MUI, Ledger, Protobuf, Noble crypto, i18next, and package quality tools.
 
 **Supply-chain protection**:
 - `@waves/ride-lang` and `@waves/ride-repl` are in `ignoreDeps` — Renovate will never propose updates for these unforked Waves dependencies
