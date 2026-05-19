@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `io.decentralchain:zwaves` are documented here.
+All notable changes to `io.decentralchain:groth16` are documented here.
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).  
 Versioning: [DecentralChain version conventions](https://github.com/Decentral-America/DecentralChain/blob/dev/CONTRIBUTING.md).
@@ -14,7 +14,9 @@ a Java JNI wrapper around a Rust Groth16 ZK-SNARK verifier for the
 Sapling (BN256) and BLS12-381 pairing curves.
 
 ### Changed
-- Maven coordinates: `com.wavesplatform:zwaves` → `io.decentralchain:zwaves`
+- Maven coordinates: `com.wavesplatform:zwaves` → `io.decentralchain:groth16`
+- Java package: `com.wavesplatform.zwaves.*` → `com.decentralchain.groth16.*`
+- JNI symbol prefix: `Java_com_wavesplatform_zwaves_*` → `Java_com_decentralchain_groth16_*`
 - Version: `0.2.1` → `0.2.1.0` (DCC convention: upstream + `.0`)
 - Java: upgraded to target Java 25 (`<release>25</release>`)
 - CI: comprehensive multi-platform native build matrix (7 targets: Linux
@@ -31,8 +33,8 @@ Sapling (BN256) and BLS12-381 pairing curves.
   RUSTSEC-2020-0071, RUSTSEC-2025-0141)
 - `config/pmd-ruleset.xml`, `config/spotbugs-exclude.xml`, `config/owasp-suppressions.xml`
 - `KNOWN_ISSUES.md`, `CONTRIBUTING.md`, `SECURITY.md`
-- `.github/workflows/zwaves.yml` — CI with 7-platform native build matrix + cargo audit
-- `.github/workflows/publish-zwaves.yml` — manual publish to Maven Central
+- `.github/workflows/groth16.yml` — CI with 7-platform native build matrix + cargo audit
+- `.github/workflows/publish-groth16.yml` — manual publish to Maven Central
 - `project.json` — Nx project descriptor
 - Maven wrapper for reproducible builds
 - Reproducible build timestamp (`project.build.outputTimestamp`)

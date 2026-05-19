@@ -10,8 +10,8 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.Rounding
 import com.decentralchain.lang.v1.evaluator.ctx.impl.crypto.RSA
 import com.decentralchain.lang.v1.evaluator.ctx.impl.crypto.RSA.DigestAlgorithm
 import com.google.common.io.BaseEncoding
-import com.wavesplatform.zwaves.bls12.Groth16 as Bls12Groth16
-import com.wavesplatform.zwaves.bn256.Groth16 as Bn256Groth16
+import com.decentralchain.groth16.bls12.Groth16 as Bls12Groth16
+import com.decentralchain.groth16.bn256.Groth16 as Bn256Groth16
 import org.web3j.crypto.Sign
 import org.web3j.crypto.Sign.SignatureData
 
