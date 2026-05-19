@@ -5,7 +5,11 @@
 // Keep in sync with the 'size-limit' entries in package.json devDependencies.
 export default [
   {
-    ignore: ['@decentralchain/ride-lang', '@decentralchain/ride-repl', '@decentralchain/ts-lib-crypto'],
+    ignore: [
+      '@decentralchain/ride-lang',
+      '@decentralchain/ride-repl',
+      '@decentralchain/ts-lib-crypto',
+    ],
     limit: '10 kB',
     modifyEsbuildConfig(config) {
       // biome-ignore lint/security/noSecrets: tsconfigRaw is not a secret
