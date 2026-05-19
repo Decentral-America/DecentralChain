@@ -1,6 +1,7 @@
 /**
  * Wallet Module Routes
- * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases
+ * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases,
+ * and account management
  */
 import { type RouteObject } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ import { type RouteObject } from 'react-router-dom';
  *   - /desktop/wallet/assets/:assetId : Individual asset details
  *   - /desktop/wallet/leasing : Leasing management (stake/lease DCC)
  *   - /desktop/wallet/aliases : Alias management (create and view aliases)
+ *   - /desktop/wallet/account-manager : Multi-account management (add, switch, remove accounts)
  *
  * Uses React Router v7 `lazy` for code splitting — all wallet page components
  * are excluded from the main bundle and loaded on first navigation to that route.
@@ -53,6 +55,13 @@ export const walletRoutes: RouteObject = {
         return { Component: AliasManagement };
       },
       path: 'aliases',
+    },
+    {
+      lazy: async () => {
+        const { AccountManagerPage } = await import('@/pages/AccountManager');
+        return { Component: AccountManagerPage };
+      },
+      path: 'account-manager',
     },
     // Future child routes:
     // {
