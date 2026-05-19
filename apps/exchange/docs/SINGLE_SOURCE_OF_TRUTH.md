@@ -63,7 +63,7 @@ Merged root-source groups (now consolidated into this SSOT):
 - One owner and update date
 
 ### 2) Evergreen technical references
-Keep detailed implementation guides in `docs/` and subsystem READMEs (e.g., Electron, i18n).
+Keep detailed implementation guides in `docs/` and subsystem READMEs (e.g., i18n).
 
 ### 3) Historical source set
 Root historical source docs were consolidated and removed. Future updates happen here first.
@@ -310,7 +310,7 @@ Status updates in this file must include:
 - Confirmed runtime/build stack on latest target baseline for this app cycle: `vite@8`, `@vitejs/plugin-react`, `vitest@4.1.x`, `@biomejs/biome@2.4.7`.
 - Removed unused direct dependencies and fixed one unlisted runtime import by adding explicit `bignumber.js` declaration.
 - Eliminated Biome lint crash by correcting recursive declaration-file exclusion in `biome.json` (`!**/*.d.ts`).
-- Captured remaining risk posture: no high/critical audit findings; residual moderate advisories are Electron transitive (`extract-zip`/`yauzl`) with no safe non-breaking auto-fix path.
+- Captured remaining risk posture: no high/critical audit findings; residual moderate advisories were Electron transitive (`extract-zip`/`yauzl`) — **resolved by Electron removal (DCC-200)**.
 - Captured remaining quality blockers to production-confidence claims: high noise from `lint/security/noSecrets` false positives and large architectural unused-file/export surface from `knip` output.
 
 ### 2026-03-13 (Enterprise enablement governance controls)
@@ -370,7 +370,7 @@ Systematic elimination of all 23 Biome warnings (16 cognitive complexity, 5 non-
 5. **`INEFFECTIVE_DYNAMIC_IMPORT` build warning** — `src/lib/data-service/index.ts` is both dynamically and statically imported, defeating code-splitting intent.
 
 **LOW — Tech debt backlog (3):**
-1. **3 moderate npm audit advisories** — all in Electron transitive chain (`yauzl` off-by-one via `extract-zip`). No safe auto-fix path; only affects desktop build.
+1. ~~**3 moderate npm audit advisories** — all in Electron transitive chain (`yauzl` off-by-one via `extract-zip`). No safe auto-fix path; only affects desktop build.~~ **RESOLVED (DCC-200)** — Electron removed; `pnpm audit` now reports 0 moderate advisories.
 2. **Biome `noSecrets` false positives** — ~50 warnings from hex color codes, crypto test vectors, and base58 strings. Noise, not risk. Already `warn` level.
 3. **GatewayService hardcoded `'BTC'` ticker** at 3 call sites (`src/services/gateway/GatewayService.ts:80,157,260`) — TODO comments note it should come from asset config.
 
