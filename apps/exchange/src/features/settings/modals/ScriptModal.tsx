@@ -1,7 +1,7 @@
 /**
  * Script Modal
  * Manage smart contract scripts for advanced users
- * Simplified placeholder - full implementation would match Angular ScriptModalCtrl
+ * Set Script (tx type 13) for account scripts, Set Asset Script (tx type 15) for asset scripts.
  */
 
 import * as ds from 'data-service';
