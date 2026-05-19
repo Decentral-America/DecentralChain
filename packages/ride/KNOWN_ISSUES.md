@@ -63,37 +63,21 @@ parser, compiler, estimator, and repl logic only.
 **Tracking**: sbt-scoverage issue tracker — upgrade to a future version of
 sbt-scoverage that fixes Scala 3 closure instrumentation.
 
-## 4. `com.wavesplatform.*` imports are wire-compat / JNI — not namespace violations
+## 4. `com.wavesplatform.*` imports — RESOLVED (2026-05-19)
 
 The DCC-252 AC "zero `com.wavesplatform.lang` in .scala files" is satisfied:
-**zero** occurrences of `com.wavesplatform.lang.*` exist in the production
-source tree.
+**zero** occurrences of `com.wavesplatform.lang.*` exist in the production source tree.
 
-The 13 remaining `com.wavesplatform.*` imports fall into two categories that
-**cannot** be renamed without breaking binary or wire-format compatibility:
+All remaining `com.wavesplatform.*` imports in this package have been eliminated:
 
-### 4a. `com.wavesplatform.protobuf.*` (8 occurrences)
-These import Protobuf-generated classes from `io.decentralchain:protobuf-schemas`.
-The `.proto` files in that artifact define the Waves/DCC blockchain wire format
-(block, transaction, dApp meta-descriptors). The `java_package` option in those
-`.proto` files is `com.wavesplatform.protobuf.*` — changing it would break
-the binary protobuf encoding used by every node and client in the ecosystem.
+### 4a. `com.wavesplatform.protobuf.*` — resolved
+`protobuf-schemas` bumped to `1.6.2` (built with `io.decentralchain.*` java_package
+options from updated proto files). All 14 affected Scala source files renamed.
 
-Affected files: `ContractSerDeV1.scala`, `ContractSerDeV2.scala`,
-`MetaMapper.scala`, `DataMetaMapper.scala`, `MetaMapperStrategy.scala`,
-`DApp.scala`, `TransferTxSerializer.scala`.
-
-### 4b. `com.wavesplatform.zwaves.*` (2 occurrences)
-These import JNI binding classes from `io.decentralchain:zwaves`. The Rust crate
-compiles the JNI glue with the `com.wavesplatform.zwaves` Java package namespace
-baked into the JNI function symbol names (e.g. `Java_com_wavesplatform_zwaves_bls12_Groth16_...`).
-Changing this would require recompiling and releasing a new zwaves native library.
-
-Affected files: `Global.scala` (imports `Groth16` from bls12 and bn256 sub-packages).
-
-**Action**: These are tracked in the respective library tickets (DCC-261 for zwaves,
-protobuf-schemas ticket TBD) to eventually publish under the `io.decentralchain`
-Java package. Until then, the imports are intentional and correct.
+### 4b. `com.wavesplatform.zwaves.*` — resolved
+`zwaves_jni` Rust rebuilt with `Java_com_decentralchain_groth16_*` JNI symbol names.
+Dependency renamed to `io.decentralchain:groth16:0.2.1.0`. `Global.scala` imports
+updated to `com.decentralchain.groth16.{bls12,bn256}.Groth16`.
 
 ## 5. ScalaTestPlus `scalacheck-1-18` used with ScalaCheck 1.19.0
 
