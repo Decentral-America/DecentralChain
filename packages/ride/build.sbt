@@ -79,7 +79,7 @@ inScope(Global)(
       "-Xmax-inlines",
       "50",
       "-Wunused:all",
-      "-Wconf:cat=deprecation&origin=com.wavesplatform.protobuf.transaction.InvokeScriptResult.*:s",
+      "-Wconf:cat=deprecation&origin=io.decentralchain.protobuf.transaction.InvokeScriptResult.*:s",
       "-Wconf:cat=deprecation&origin=com.decentralchain.state.InvokeScriptResult.*:s",
       "-Wconf:cat=deprecation&origin=com\\.decentralchain\\.(lang\\..*|JsApiUtils)&origin=com\\.decentralchain\\.lang\\.v1\\.compiler\\.Terms\\.LET_BLOCK:s",
       "-Wconf:src=src_managed/.*:s"

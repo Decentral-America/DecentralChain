@@ -17,9 +17,8 @@ object Dependencies {
     )
   )
 
-  // DecentralChain protobuf schemas (wire-format compatibility with Waves protocol)
   lazy val protoSchemasLib =
-    ("io.decentralchain" % "protobuf-schemas" % "1.6.1").classifier("protobuf-src").intransitive(())
+    ("io.decentralchain" % "protobuf-schemas" % "1.6.2").classifier("protobuf-src").intransitive(())
 
   private def web3jModule(module: String) = "org.web3j" % module % "5.0.2"
 
@@ -64,7 +63,7 @@ object Dependencies {
       "ch.obermuhlner"  % "big-math"  % "2.3.2",
       googleGuava,
       curve25519,
-      "io.decentralchain" % "zwaves" % "0.2.1.0",
+      "io.decentralchain" % "groth16" % "0.2.1.0",
       web3jModule("crypto").excludeAll(ExclusionRule("org.bouncycastle", "bcprov-jdk15on")),
       protoSchemasLib % "protobuf"
     ) ++ cryptoProviders
