@@ -273,11 +273,8 @@ export const CreateAccount = () => {
   const { isCopied, copyToClipboard } = useClipboard();
   const navigate = useNavigate();
 
-  // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported =
-    (typeof window !== 'undefined' &&
-      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
-    (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
+  // Check if Ledger is supported (modern browser with WebHID)
+  const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator; // WebHID (Chrome/Edge)
 
   const words = seedPhrase.phrase.split(' ');
 

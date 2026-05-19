@@ -64,11 +64,11 @@ const nullOrSum =
   };
 
 const valOrNullClose = (v1: number | null, v2: number | null): number | null => {
-  return v2 === null ? v1 : v2;
+  return v2 ?? v1;
 };
 
 const valOrNullOpen = (v1: number | null, v2: number | null): number | null => {
-  return v1 === null ? v2 : v1;
+  return v1 ?? v2;
 };
 
 const nullOrCb =

@@ -1029,7 +1029,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const pinnedList = (user.settings?.pinnedAssetIdList as string[]) || [];
       const index = pinnedList.indexOf(assetId);
-      const shouldPin = state !== undefined ? state : index === -1;
+      const shouldPin = state ?? index === -1;
 
       const newList = [...pinnedList];
 
@@ -1077,7 +1077,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const spamList = (user.settings?.['wallet.portfolio.spam'] as string[]) || [];
       const index = spamList.indexOf(assetId);
-      const shouldSpam = state !== undefined ? state : index === -1;
+      const shouldSpam = state ?? index === -1;
 
       const newList = [...spamList];
 

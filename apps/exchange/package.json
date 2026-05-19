@@ -2,50 +2,6 @@
   "bugs": {
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
-  "build": {
-    "appId": "com.decentralchain.exchange",
-    "directories": {
-      "buildResources": "public",
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "package.json"
-    ],
-    "linux": {
-      "category": "Finance",
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    },
-    "mac": {
-      "category": "public.app-category.finance",
-      "entitlements": "electron/entitlements.mac.plist",
-      "entitlementsInherit": "electron/entitlements.mac.plist",
-      "gatekeeperAssess": false,
-      "hardenedRuntime": true,
-      "target": [
-        "dmg",
-        "zip"
-      ]
-    },
-    "productName": "DecentralExchange",
-    "publish": {
-      "owner": "decentralchain",
-      "provider": "github",
-      "repo": "dcc-exchange"
-    },
-    "win": {
-      "certificateFile": null,
-      "certificatePassword": null,
-      "target": [
-        "nsis",
-        "portable"
-      ]
-    }
-  },
   "dependencies": {
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/bignumber": "workspace:*",
@@ -96,9 +52,6 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "catalog:",
-    "electron": "^41.2.0",
-    "electron-builder": "^26.8.1",
-    "electron-updater": "^6.8.3",
     "jsdom": "catalog:",
     "vite": "^8.0.13",
     "vitest": "catalog:"
@@ -107,7 +60,6 @@
     "node": ">=24"
   },
   "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/apps/exchange",
-  "main": "electron/main.js",
   "name": "exchange",
   "nx": {
     "tags": [
@@ -126,11 +78,6 @@
     "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
     "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
     "dev": "vite",
-    "electron:build": "tsc -p electron && electron-builder",
-    "electron:build:linux": "tsc -p electron && electron-builder --linux",
-    "electron:build:mac": "tsc -p electron && electron-builder --mac",
-    "electron:build:win": "tsc -p electron && electron-builder --win",
-    "electron:dev": "tsc -p electron && NODE_ENV=development electron .",
     "lint": "biome check .",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write .",
