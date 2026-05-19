@@ -1,12 +1,12 @@
-package com.wavesplatform.crypto;
+package io.decentralchain.crypto;
 
-import com.wavesplatform.crypto.rsa.RsaKeyPair;
-import com.wavesplatform.crypto.rsa.RsaPublicKey;
+import io.decentralchain.crypto.rsa.RsaKeyPair;
+import io.decentralchain.crypto.rsa.RsaPublicKey;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static com.wavesplatform.crypto.rsa.HashAlg.*;
+import static io.decentralchain.crypto.rsa.HashAlg.*;;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

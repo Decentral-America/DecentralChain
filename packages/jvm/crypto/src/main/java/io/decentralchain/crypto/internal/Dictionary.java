@@ -1,4 +1,4 @@
-package com.wavesplatform.crypto.internal;
+package io.decentralchain.crypto.internal;
 
 public abstract class Dictionary {
 

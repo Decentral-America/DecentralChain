@@ -24,13 +24,19 @@ Remaining `com.wavesplatform.*` references are **upstream library imports only**
 - `com.wavesplatform:waves-transactions:1.2.7`
 - `com.wavesplatform:lang:1.6.1`
 
-These cannot be easily forked because `lang` is the Ride compiler — a large, complex Scala project (`node-scala/lang`).
+~~`com.wavesplatform:waves-crypto`~~ — **RESOLVED (2026-05-19, DCC-264)**: Forked as
+`io.decentralchain:crypto:2.0.7`. `java-sdk` now declares it as a direct dependency and all
+`com.wavesplatform.crypto.*` imports in source have been updated to `io.decentralchain.crypto.*`.
 
-**Why not fixed now:** Forking the Ride compiler is a multi-sprint effort tracked as part of the broader node-scala migration.
+**Why not fixed now:** `waves-transactions` requires updating to `io.decentralchain:transactions`
+(DCC-240 follow-up). `lang` is the Ride compiler — a large, complex Scala project.
 
 **Resolution path:**
-- Fork `waves-transactions-java` as `io.decentralchain:transactions`
-- Long-term: build a standalone `io.decentralchain:lang` (Ride compiler) from `node-scala/lang`
+- ~~Fork `waves-transactions-java` as `io.decentralchain:transactions`~~ ✅ Done (DCC-240) — java-sdk
+  still references the OLD upstream `com.wavesplatform:waves-transactions`; update pom.xml to use
+  `io.decentralchain:transactions:1.0.0`
+- Long-term: replace `com.wavesplatform:lang:1.6.1` with `io.decentralchain:lang` (DCC-252 ✅ done,
+  pending java-sdk wiring)
 
 **Affected file:** `pom.xml` lines with `com.wavesplatform` dependencies
 

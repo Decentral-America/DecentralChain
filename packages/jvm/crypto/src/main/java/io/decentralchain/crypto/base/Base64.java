@@ -1,4 +1,4 @@
-package com.wavesplatform.crypto.base;
+package io.decentralchain.crypto.base;
 
 /**
  * Base64 is used to represent byte arrays as a readable string.

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclusion filter for io.decentralchain:crypto.
+
+  All classes are pure Java with no JNI, no native loading, and no
+  SWIG-generated code. No blanket exclusions are needed.
+
+  Intentional suppressions (document here if added in future sprints):
+    None.
+-->
+<FindBugsFilter>
+</FindBugsFilter>

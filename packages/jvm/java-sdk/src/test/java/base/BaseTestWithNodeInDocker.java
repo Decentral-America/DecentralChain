@@ -3,7 +3,7 @@ package base;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import com.wavesplatform.crypto.Crypto;
+import io.decentralchain.crypto.Crypto;
 import com.decentralchain.transactions.TransferTransaction;
 import com.decentralchain.transactions.WavesConfig;
 import com.decentralchain.transactions.account.PrivateKey;

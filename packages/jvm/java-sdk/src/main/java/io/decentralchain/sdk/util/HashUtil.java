@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.util;
 
-import com.wavesplatform.crypto.Hash;
-import com.wavesplatform.crypto.base.Base58;
+import io.decentralchain.crypto.Hash;
+import io.decentralchain.crypto.base.Base58;
 import java.nio.charset.StandardCharsets;
 
 public class HashUtil {

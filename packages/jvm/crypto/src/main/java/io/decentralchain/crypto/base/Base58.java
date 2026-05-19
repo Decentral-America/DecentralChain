@@ -1,6 +1,6 @@
-package com.wavesplatform.crypto.base;
+package io.decentralchain.crypto.base;
 
-import com.wavesplatform.crypto.Bytes;
+import io.decentralchain.crypto.Bytes;
 
 import java.util.Arrays;
 

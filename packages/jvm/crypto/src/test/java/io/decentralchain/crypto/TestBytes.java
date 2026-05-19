@@ -1,4 +1,4 @@
-package com.wavesplatform.crypto;
+package io.decentralchain.crypto;
 
 import org.junit.jupiter.api.Test;
 

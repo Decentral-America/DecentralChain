@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<ruleset name="DCC crypto Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom PMD ruleset for io.decentralchain:crypto.
+        Pure Java cryptographic primitives:
+          - Hash.java — Blake2b256 / Keccak256 / SHA256 via BouncyCastle
+          - Crypto.java — Curve25519 key generation / signing
+          - BlsUtils.java — BLS12-381 operations via blst-java
+          - MerkleTree.java — Merkle root construction
+          - Bytes.java — byte array utilities
+          - base/Base16/58/64.java — encoding / decoding
+          - rsa/RsaKeyPair/PublicKey.java — RSA sign / verify
+          - internal/Dictionary.java — BIP-39 word list
+
+        Patterns intentionally excluded:
+          - Crypto methods take byte[] with fixed sizes (crypto wire format).
+            UseVarargs would be semantically incorrect.
+          - Abstract utility classes are not designed for serialization.
+    </description>
+
+    <!-- ALL security rules: no exclusions — crypto library must be airtight -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Error-prone rules: excluding serialization rule for utility classes -->
+    <rule ref="category/java/errorprone.xml">
+        <!-- Pure utility / abstract classes are not serializable by design -->
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+
+    <!-- Best practices: excluding varargs for fixed-size crypto params -->
+    <rule ref="category/java/bestpractices.xml">
+        <!--
+          All crypto methods take byte[] with fixed sizes (key length, hash
+          output, block size). Varargs would be semantically incorrect for
+          fixed-size cryptographic data structures.
+        -->
+        <exclude name="UseVarargs"/>
+    </rule>
+
+</ruleset>

@@ -1,6 +1,6 @@
-package com.wavesplatform.crypto;
+package io.decentralchain.crypto;
 
-import com.wavesplatform.crypto.base.Base58;
+import io.decentralchain.crypto.base.Base58;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

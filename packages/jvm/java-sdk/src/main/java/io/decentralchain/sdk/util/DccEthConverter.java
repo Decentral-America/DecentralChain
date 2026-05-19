@@ -1,12 +1,12 @@
 package io.decentralchain.sdk.util;
 
-import static com.wavesplatform.crypto.Hash.blake;
-import static com.wavesplatform.crypto.Hash.keccak;
-import static com.wavesplatform.crypto.base.Base58.encode;
+import static io.decentralchain.crypto.Hash.blake;
+import static io.decentralchain.crypto.Hash.keccak;
+import static io.decentralchain.crypto.base.Base58.encode;
 import static java.util.Arrays.copyOfRange;
 import static org.bouncycastle.util.encoders.Hex.decode;
 
-import com.wavesplatform.crypto.base.Base58;
+import io.decentralchain.crypto.base.Base58;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.exceptions.NodeException;
 import java.io.IOException;
