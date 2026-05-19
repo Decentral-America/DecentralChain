@@ -16,6 +16,9 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public class RsaPublicKey {
 
+    /** Shared BouncyCastle provider — stateless algorithm registry, safe to share. */
+    private static final BouncyCastleProvider BCP = new BouncyCastleProvider();
+
     /**
      * Get public key from the known RSA key pair.
      *
@@ -36,7 +39,6 @@ public class RsaPublicKey {
         return new RsaPublicKey(publicKeyBytes);
     }
 
-    private final BouncyCastleProvider bcp;
     private final PublicKey key;
 
     /**
@@ -54,7 +56,6 @@ public class RsaPublicKey {
      * @param publicKeyBytes bytes of the public key
      */
     public RsaPublicKey(byte[] publicKeyBytes) {
-        this.bcp = new BouncyCastleProvider();
         X509EncodedKeySpec ks = new X509EncodedKeySpec(publicKeyBytes);
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -85,7 +86,7 @@ public class RsaPublicKey {
      */
     public boolean isSignatureValid(HashAlg alg, byte[] message, byte[] signature) {
         try {
-            Signature sig = Signature.getInstance(alg.value() + "withRSA", bcp);
+            Signature sig = Signature.getInstance(alg.value() + "withRSA", BCP);
             sig.initVerify(this.key);
             sig.update(message);
             return sig.verify(signature);
