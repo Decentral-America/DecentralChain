@@ -147,6 +147,7 @@ const navSections: NavSection[] = [
       { icon: <ReceiptLong />, label: 'Transactions', path: '/desktop/wallet/transactions' },
       { icon: <Timeline />, label: 'Leasing', path: '/desktop/wallet/leasing' },
       { icon: <Badge />, label: 'Aliases', path: '/desktop/wallet/aliases' },
+      { icon: <AccountCircle />, label: 'Accounts', path: '/desktop/wallet/account-manager' },
     ],
     label: 'Main Menu',
   },

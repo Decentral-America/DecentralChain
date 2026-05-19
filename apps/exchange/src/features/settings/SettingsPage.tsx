@@ -1,16 +1,19 @@
 /**
  * Settings Page
  * Main settings interface with tabbed navigation matching Angular's structure
- * General, Security, Network, and Info tabs
+ * General, Security, Backup, Network, Language, Theme, and Info tabs
  */
 import type React from 'react';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 import { type Tab, Tabs } from '@/components/atoms/Tabs';
+import { BackupSettings } from './BackupSettings';
 import { GeneralSettings } from './GeneralSettings';
 import { InfoSettings } from './InfoSettings';
+import { LanguageSettings } from './LanguageSettings';
 import { NetworkSettings } from './NetworkSettings';
 import { SecuritySettings } from './SecuritySettings';
+import { ThemeSettings } from './ThemeSettings';
 
 /**
  * Styled Components
@@ -45,7 +48,8 @@ const TabContent = styled(Card as React.ComponentType<Record<string, unknown>>)`
 
 /**
  * Settings Page Component
- * Matches Angular's 4-tab structure: General, Security, Network, Info
+ * Extends Angular's 4-tab structure with Backup, Language, and Theme tabs:
+ * General, Security, Backup, Network, Language, Theme, Info
  *
  * @example
  * ```tsx
@@ -75,11 +79,38 @@ export const SettingsPage: React.FC = () => {
     {
       content: (
         <TabContent elevation="md">
+          <BackupSettings />
+        </TabContent>
+      ),
+      id: 'backup',
+      label: 'Backup',
+    },
+    {
+      content: (
+        <TabContent elevation="md">
           <NetworkSettings />
         </TabContent>
       ),
       id: 'network',
       label: 'Network',
+    },
+    {
+      content: (
+        <TabContent elevation="md">
+          <LanguageSettings />
+        </TabContent>
+      ),
+      id: 'language',
+      label: 'Language',
+    },
+    {
+      content: (
+        <TabContent elevation="md">
+          <ThemeSettings />
+        </TabContent>
+      ),
+      id: 'theme',
+      label: 'Theme',
     },
     {
       content: (
