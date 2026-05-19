@@ -1,4 +1,3 @@
-import { isEmpty } from 'ts-utils';
 import { get, parse } from '../config';
 import { normalizeUrl } from './utils';
 
@@ -53,7 +52,7 @@ function addDefaultRequestParams(
   url: string,
   options: IFetchOptions = Object.create(null),
 ): IFetchOptions {
-  if (url.indexOf(get('node')) === 0 && isEmpty(options.credentials)) {
+  if (url.indexOf(get('node')) === 0 && options.credentials == null) {
     options.credentials = 'include';
   }
   return options;

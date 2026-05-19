@@ -471,9 +471,6 @@ importers:
       styled-components:
         specifier: ^6.4.1
         version: 6.4.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      ts-utils:
-        specifier: ^6.1.0
-        version: 6.1.0
       web-vitals:
         specifier: ^5.1.0
         version: 5.2.0
@@ -962,9 +959,6 @@ importers:
 
   packages/sdk/marshall:
     dependencies:
-      base64-js:
-        specifier: ^1.5.1
-        version: 1.5.1
       long:
         specifier: ^5.3.2
         version: 5.3.2
