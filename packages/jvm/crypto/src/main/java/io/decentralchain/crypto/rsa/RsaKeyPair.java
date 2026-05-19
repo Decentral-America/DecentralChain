@@ -18,6 +18,9 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public class RsaKeyPair {
 
+    /** Shared BouncyCastle provider — stateless algorithm registry, safe to share. */
+    private static final BouncyCastleProvider BCP = new BouncyCastleProvider();
+
     /**
      * Create key pair from the known RSA private key.
      *
@@ -37,7 +40,6 @@ public class RsaKeyPair {
         return new RsaKeyPair();
     }
 
-    private final BouncyCastleProvider bcp;
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
 
@@ -47,7 +49,6 @@ public class RsaKeyPair {
      * @param privateKeyBytes bytes of the private key
      */
     public RsaKeyPair(byte[] privateKeyBytes) {
-        this.bcp = new BouncyCastleProvider();
         PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(privateKeyBytes);
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -64,8 +65,6 @@ public class RsaKeyPair {
      * Create pair of random RSA private and public keys.
      */
     public RsaKeyPair() {
-        this.bcp = new BouncyCastleProvider();
-
         KeyPairGenerator gen;
         try {
             gen = KeyPairGenerator.getInstance("RSA");
@@ -137,7 +136,7 @@ public class RsaKeyPair {
     }
 
     private Signature initJSignature(HashAlg alg) throws NoSuchAlgorithmException {
-        return Signature.getInstance(alg.value() + "withRSA", bcp);
+        return Signature.getInstance(alg.value() + "withRSA", BCP);
     }
 
     @Override
