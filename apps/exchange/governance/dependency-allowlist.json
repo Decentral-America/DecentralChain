@@ -45,9 +45,7 @@
     "@types/react-dom",
     "@vitejs/plugin-react",
     "@vitest/coverage-v8",
-    "electron",
-    "electron-builder",
-    "electron-updater",
+
     "jsdom",
     "knip",
     "typescript",

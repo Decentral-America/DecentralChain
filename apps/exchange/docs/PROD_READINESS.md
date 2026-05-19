@@ -13,7 +13,7 @@
 |------|--------|--------|
 | Dependency allowlist | **PASS** | `governance/dependency-allowlist.json` enforced |
 | Feature-flag policy | **PASS** | `governance/feature-flags.json` enforced |
-| npm audit (high/critical) | **PASS** | 0 high/critical. 3 moderate (Electron transitive `yauzl` — no safe fix) |
+| npm audit (high/critical) | **PASS** | 0 high/critical, 0 moderate. Electron transitive `yauzl` advisories resolved by removing Electron (DCC-200) |
 | Biome lint | **PASS** | 0 errors, 0 warnings. 4 info-level `useLiteralKeys` (required by TS strict) |
 | TypeScript strict mode | **PASS** | 0 errors. `exactOptionalPropertyTypes`, `verbatimModuleSyntax` enabled |
 | Unit tests | **PASS** | 67/67 (6 suites: API client, crypto, sanitize, logger, password, secure transfer) |
@@ -591,7 +591,6 @@ These files are superseded, scaffolding, obsolete, or duplicated. No migration p
 | **Superseded styles** | `styles/mixins.ts`, `styles/modernTheme.ts`, `styles/responsive.ts`, `styles/tokens.ts` | MUI theme in `theme/mui-theme.ts` replaced these |
 | **Superseded types** | `types/api.ts`, `types/common.ts`, `types/components.ts`, `types/data-service.d.ts` | Type definitions co-located with actual modules now |
 | **Superseded services** | `services/defaultSettings.ts` | Settings context replaced it |
-| **Electron type defs** | `electron/main.d.ts`, `electron/preload.d.ts` | Generated declarations — `.js` files are the build output |
 | **Camera hook** | `hooks/useMediaStream.ts` (602 lines) | Camera/microphone access — no QR scanning feature in scope |
 | **Forms lib** | `lib/forms.ts` | react-hook-form replaced it (has `biome-ignore any`) |
 | **Broadcast types** | `lib/data-service/broadcast/interface.d.ts` | Legacy data-service types — unused even within data-service |
@@ -802,7 +801,6 @@ Depends on backend services, DNS, CI/CD pipeline, or hardware.
 | Encryption | AES-256-GCM, PBKDF2, Web Crypto API (268 refs) |
 | Input sanitization | `@/lib/sanitize` with 31 unit tests |
 | Session security | Idle auto-logout timer, auto-lock, inactivity detection |
-| Electron hardening | `contextIsolation: true`, `nodeIntegration: false`, `sandbox: true` |
 | Logging discipline | Zero `console.log`; all via `@/lib/logger` with sensitive field redaction |
 | Scam/phishing protection | Scam asset list fetching, address validation, suspicious asset warnings |
 | i18n coverage | 17 locales, 647 `useTranslation` calls across app |

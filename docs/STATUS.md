@@ -152,7 +152,7 @@ Comprehensive production readiness audit: researched Biome 2.4.8, TypeScript 5.9
 Full dependency, security, and infrastructure sweep against official changelogs. All tools confirmed at absolute latest. Two targeted fixes applied:
 
 - **Scanner nginx.conf `proxy_cache_valid` dead directive**: `/api/geo/` and `/api/greencheck/` proxy locations contained `proxy_cache_valid 200 24h;` with no corresponding `proxy_cache_path` or `proxy_cache <zone>` — the directive had zero effect and was misleading. Removed. Both locations now correctly pass through to ipinfo.io and thegreenwebfoundation.org.
-- **Exchange `electron` pinned to 41.0.4**: `apps/exchange/package.json` bumped from `^41.0.3` → `^41.0.4` (released 2026-03-25), picking up the latest Chromium security patches for the desktop distribution.
+- **Exchange `electron` removed (DCC-200)**: The entire Electron desktop target was deleted from `apps/exchange` — `electron/` directory, all Electron deps, build scripts, and locale keys removed. Ledger support is now WebHID-only.
 - **All workspace tools verified at latest**: Nx 22.7.1 ✅ · Biome 2.4.10 ✅ · TypeScript 6.0.3 ✅ · Vitest 4.1.5 ✅ · tsdown 0.21.10 ✅ · pnpm 11.1.1 ✅ · `pnpm outdated` → empty.
 - **Gate results post-Round 9**: `boundaries` 25/25 ✅ · `biome-lint` 25/25 ✅ · `typecheck` 25/25 ✅ · `audit` 0 CVEs ✅
 
@@ -325,7 +325,7 @@ Deep verification pass run same day as Round 13. All gate assertions from prior 
    - `noImportCycles` evaluation — **already done**: `suspicious.noImportCycles: "error"` active in root `biome.json` since Round 6; exchange has 0 violations. Marked done.
 
 **Architecture clarifications:**
-- **Electron is fully implemented**, not a scaffold: `main.ts`, `preload.ts`, `electron:build` scripts in `package.json`, `electron-builder` config with `appId com.decentralchain.exchange`, macOS entitlements, platform targets (NSIS, AppImage, deb). What's missing is an Nx target and CI workflow — decision needed: ship desktop or remove deps.
+- **Electron target decision (DCC-200)**: Deleted. The `apps/exchange/electron/` directory, `electron`/`electron-builder`/`electron-updater` deps, and all related build scripts were removed. Ledger support continues via WebHID (Chrome/Edge 89+).
 - **Sentry exchange gap**: `@sentry/react@^10.45.0` already installed; `initErrorMonitoring({...})` already called in `App.tsx`; `apps/exchange/.env.production` has `VITE_SENTRY_ENABLED=true` and `VITE_SENTRY_DSN=` (empty). Only missing: a real DSN value from sentry.io.
 - **`noImportCycles: "error"` is active** on all 25 projects including exchange (~0 violations — all cycles were fixed in Round 6). The P3 evaluation item was already complete.
 
@@ -604,7 +604,6 @@ Research-first dependency audit: official changelogs reviewed for every outdated
 
 | Package | Current | Available | Hold reason |
 |---------|---------|-----------|-------------|
-| `electron` | `^41.2.0` | `42.0.0` | **MAJOR** — macOS notifications now require `UNNotification` API with code-signing; `ELECTRON_SKIP_BINARY_DOWNLOAD` env var removed; offscreen rendering DPI default changed to 1.0; binary no longer self-installs via postinstall. Exchange Electron build needs migration work before upgrading. |
 | `@mui/material` / `@mui/icons-material` | `^7.3.9` | `9.0.1` | **TWO MAJOR VERSIONS** — v8 skipped (deliberate MUI/MUI X alignment); v9 (Apr 7, 2026) removes deprecated props and CSS classes from most components, changes theme API. Exchange has extensive MUI usage across 50+ components; full migration sprint required. |
 | `bignumber.js` | `^10.0.2` | `11.x` | **MAJOR** — API breaking changes. Used across 8+ SDK packages. Requires coordinated SDK-wide migration with test verification for financial precision. |
 | `copy-to-clipboard` | `^3.3.3` | `4.0.2` | **MAJOR** — in `apps/cubensis-connect`. API changes in v4.0.0 not fully documented in changelog; v4 fixes execCommand modal/fullscreen fallback. Defer until API compat verified. |
@@ -636,7 +635,6 @@ The 5 recently edited parse files (`http/pairs/parse.ts`, `http/aliases/parse.ts
 - `@sentry/*`: Sentry npm registry — 10.51.0 latest, no breaking changes from 10.47
 - `@tanstack/react-query`: [TanStack/query CHANGELOG.md](https://github.com/TanStack/query/blob/main/packages/react-query/CHANGELOG.md) — 5.97→5.100.9 are all patch/minor
 - `react-router` 7.15: GitHub Releases — only `unstable_` API stabilizations
-- `electron` 42: [Electron Breaking Changes](https://www.electronjs.org/docs/latest/breaking-changes) — UNNotification + ELECTRON_SKIP_BINARY_DOWNLOAD changes documented
 - `@mui/material` 9.0.1: [MUI v9 Migration Guide](https://mui.com/material-ui/migration/migration-v8/) — extensive breaking prop removals verified
 
 ---
@@ -678,7 +676,7 @@ git commit → lefthook pre-commit →
 | crypto | wasm-pack build | Rust/WASM hybrid |
 | cubensis-connect | Custom build script (`scripts/build.mjs`) | Vite 8 (upgraded Mar 2026), MV3 on Chrome/Edge already implemented. `@sentry/browser` v10.43.0 already installed. CSP includes `wasm-unsafe-eval` (for `@decentralchain/crypto` WASM). Phase 2-3 complete. |
 | scanner | SSR application | React Router 7 SSR app with dedicated runbook and production Docker image |
-| exchange | `target: ES2020` | Broader browser support for Electron |
+| exchange | `target: ES2020` | Broader browser support |
 
 ---
 
@@ -958,7 +956,7 @@ Cubensis Connect has **never launched and has zero production users**. The entir
 | ~~P2~~ | ~~`noDeprecatedImports` audit~~ | 5 violations fixed: `DataFiledType` typo, `TCubensisConnectApi` re-export, `biome-ignore` for recharts `Cell` (false positive). 0 warnings across 1,741 files. | ✅ Completed (Mar 23, 2026) |
 | ~~P2~~ | ~~ErrorBoundary unit test~~ | `ErrorBoundary.test.tsx` created — 4 tests for `getDerivedStateFromError` + `componentDidCatch`. `vitest.unit.config.ts` extended to cover `.tsx` with React plugin. | ✅ Completed (Mar 23, 2026) |
 | **P3** | Extension store listings | Chrome Web Store + Firefox AMO submission | ⬜ Pending |
-| **P3** | Upgrade `electron` 41 → 42 | Breaking: macOS `UNNotification` API (code-signing required), `ELECTRON_SKIP_BINARY_DOWNLOAD` removed, offscreen DPI default changed. Requires exchange Electron migration sprint. | ⬜ Pending |
+| ~~**P3**~~ | ~~Upgrade `electron` 41 → 42~~ | **VOIDED (DCC-200)** — Electron removed from `apps/exchange`. | ✅ Resolved |
 | **P3** | Upgrade `@mui/material` 7 → 9 | Two major versions. v9 removes deprecated props/CSS from 50+ exchange components. Requires dedicated migration sprint. | ⬜ Pending |
 | **P3** | Upgrade `bignumber.js` 10 → 11 | MAJOR across 8+ SDK packages. Requires coordinated precision-correctness test verification. | ⬜ Pending |
 | **P3** | Upgrade `copy-to-clipboard` 3 → 4 | MAJOR in cubensis-connect. Verify API compat before applying. | ⬜ Pending |
