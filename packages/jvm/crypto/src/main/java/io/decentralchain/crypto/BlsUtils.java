@@ -20,7 +20,7 @@ public class BlsUtils {
 
     public static byte[] sign(SecretKey sk, byte[] message) {
         return new P2()
-                .hash_to(message, DST)
+                .hash_to(message, DST, new byte[0])
                 .sign_with(sk)
                 .compress();
     }
@@ -30,7 +30,7 @@ public class BlsUtils {
         P1_Affine pk  = new P1_Affine(pkBytes);
 
         Pairing ctx = new Pairing(true, DST);
-        ctx.aggregate(pk, sig, message);
+        ctx.aggregate(pk, sig, message, new byte[0]);
         ctx.commit();
         return ctx.finalverify();
     }
