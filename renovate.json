@@ -111,13 +111,6 @@
       "matchPackageNames": ["tailwindcss", "@tailwindcss/**", "tailwind-merge", "tw-animate-css"]
     },
     {
-      "automerge": false,
-      "dependencyDashboardApproval": true,
-      "description": "Group Electron (exchange desktop app)",
-      "groupName": "Electron",
-      "matchPackageNames": ["electron", "electron-builder", "electron-updater"]
-    },
-    {
       "description": "Group MUI (exchange)",
       "groupName": "MUI",
       "matchPackageNames": ["@mui/**", "@emotion/**"]

@@ -1,7 +1,7 @@
 /**
  * ImportLedger Component
  * Imports wallet from Ledger hardware device
- * Desktop-only feature - requires Electron's Node.js integration
+ * Requires WebHID browser API (Chrome/Edge 89+)
  */
 
 import { type FormEvent, useEffect, useState } from 'react';

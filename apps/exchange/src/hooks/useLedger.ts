@@ -35,7 +35,7 @@ const TIMEOUT_MS = 25000;
 
 /**
  * Hook for managing Ledger hardware wallet operations
- * Desktop-only feature - requires Electron's Node.js integration
+ * Requires WebHID browser API (Chrome/Edge 89+)
  */
 export const useLedger = (): UseLedgerReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -154,7 +154,6 @@ export const useLedger = (): UseLedgerReturn => {
         // LedgerAdapter.getSignature() is a static proxy method delegating to the
         // LedgerAdapter instance's signTransaction / signRequest / signData methods
         // via the DCCLedger transport (see packages/sdk/signature-adapter/LedgerAdapter.ts).
-        // Full Electron integration is gated on DCC-200 (Electron target decision).
         const signature = (await withTimeout(
           (
             adapterRef.current as unknown as {
