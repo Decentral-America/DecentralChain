@@ -112,6 +112,10 @@
         "src/services/api/**",                      // service factories wrapping the REST client
         "src/services/auth/**",                     // auth API (login, refresh, logout)
         "src/services/gateways/**",                 // exchange gateway integrations (DCC, SEPA)
+        // NOTE: services/index.ts re-exports multiAccount — but AccountManagerPage imports
+        // multiAccount DIRECTLY from @/services/multiAccount (not via barrel), so knip
+        // traces multiAccount.ts through the direct path regardless of this ignore.
+        // Always import services directly (never via barrel) to preserve tree-shaking.
         "src/services/index.ts",                    // services barrel (aggregates above)
         "src/services/storage/**",                  // encrypted remote-storage service
         "src/services/websocket/**",                // WebSocket client for price/order feeds
