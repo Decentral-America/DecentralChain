@@ -1,4 +1,4 @@
-package com.wavesplatform.crypto.rsa;
+package io.decentralchain.crypto.rsa;
 
 /**
  * Contains names of all hashing algorithms for RSA signatures supported in Ride language.

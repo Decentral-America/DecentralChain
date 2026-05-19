@@ -1,6 +1,6 @@
-package com.wavesplatform.crypto.rsa;
+package io.decentralchain.crypto.rsa;
 
-import com.wavesplatform.crypto.base.Base58;
+import io.decentralchain.crypto.base.Base58;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.*;

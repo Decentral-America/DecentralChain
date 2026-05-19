@@ -3,8 +3,8 @@ package node.transactions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.protobuf.ByteString;
-import com.wavesplatform.crypto.base.Base58;
-import com.wavesplatform.crypto.base.Base64;
+import io.decentralchain.crypto.base.Base58;
+import io.decentralchain.crypto.base.Base64;
 import com.wavesplatform.events.protobuf.Events.TransactionMetadata;
 import com.wavesplatform.events.protobuf.Events.TransactionMetadata.EthereumMetadata;
 import com.wavesplatform.protobuf.AmountOuterClass.Amount;
