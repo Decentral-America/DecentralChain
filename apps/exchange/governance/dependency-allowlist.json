@@ -30,7 +30,6 @@
     "react-icons",
     "react-router-dom",
     "styled-components",
-    "ts-utils",
     "victory",
     "web-vitals",
     "zod",
