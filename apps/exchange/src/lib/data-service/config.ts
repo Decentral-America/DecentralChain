@@ -1,8 +1,8 @@
 import { MAINNET_DATA } from '@decentralchain/assets-pairs-order';
 import { type IAssetInfo } from '@decentralchain/data-entities';
 import { DataServiceClient } from '@decentralchain/data-service-client-js';
-import { Signal } from 'ts-utils';
 import { type IHash } from './interface';
+import { Signal } from './utils/Signal';
 
 const config: IConfigParams = Object.create(null);
 let dataService = null;

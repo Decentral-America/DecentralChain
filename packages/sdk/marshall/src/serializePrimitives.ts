@@ -1,4 +1,3 @@
-import * as Base64 from 'base64-js';
 import Long from 'long';
 import base58 from './libs/base58';
 import { concat } from './libs/utils';
@@ -17,7 +16,7 @@ export const one: Uint8Array = new Uint8Array([1]);
 export const BASE58_STRING: TSerializer<string> = (value: string) => base58.decode(value);
 
 export const BASE64_STRING: TSerializer<string> = (value: string) =>
-  Base64.toByteArray(value.replace('base64:', ''));
+  Uint8Array.from(atob(value.replace('base64:', '')), (c) => c.charCodeAt(0));
 
 export const STRING: TSerializer<Option<string>> = (value: Option<string>) =>
   value ? stringToUint8Array(value) : empty;

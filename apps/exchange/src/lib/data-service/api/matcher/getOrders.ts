@@ -1,9 +1,9 @@
 import { type Asset, AssetPair, Money } from '@decentralchain/data-entities';
 import { DCC_ID } from '@decentralchain/signature-adapter';
-import { Signal } from 'ts-utils';
 import { get as configGet } from '../../config';
 import { type IHash, type IMoneyFactory, type IPriceMoneyFactory } from '../../interface';
 import { request } from '../../utils/request';
+import { Signal } from '../../utils/Signal';
 import { coinsMoneyFactory, normalizeAssetId, priceMoneyFactory, toHash } from '../../utils/utils';
 import { get as getAsset } from '../assets/assets';
 import { type api, type IOrder } from './interface';
