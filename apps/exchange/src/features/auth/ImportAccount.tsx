@@ -174,11 +174,8 @@ export const ImportAccount = () => {
   const navigate = useNavigate();
   const navigationTarget = useRef<string>('/desktop/wallet');
 
-  // Check if Ledger is supported (Electron desktop OR modern browser with WebHID)
-  const isLedgerSupported =
-    (typeof window !== 'undefined' &&
-      (window as Window & { isDesktop?: boolean }).isDesktop === true) || // Electron
-    (typeof navigator !== 'undefined' && 'hid' in navigator); // WebHID (Chrome/Edge)
+  // Check if Ledger is supported (modern browser with WebHID)
+  const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator; // WebHID (Chrome/Edge)
 
   // Check if this is the first account on mount
   useEffect(() => {
