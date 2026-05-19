@@ -9,7 +9,7 @@
   <groupId>io.decentralchain</groupId>
   <artifactId>groth16</artifactId>
   <!--
-    Version scheme: <upstream-zwaves-version>.<dcc-patch>
+    Version scheme: <upstream-groth16-version>.<dcc-patch>
     upstream 0.2.1 + DCC patch 0 → 0.2.1.0
   -->
   <version>0.2.1.0</version>
