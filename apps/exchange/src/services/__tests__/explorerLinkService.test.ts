@@ -28,6 +28,7 @@ vi.mock('@/config/networkConfig', () => ({
   },
 }));
 
+import { NetworkConfig } from '@/config/networkConfig';
 import { ExplorerLinkService } from '@/services/explorerLinks';
 
 describe('ExplorerLinkService', () => {
@@ -46,6 +47,23 @@ describe('ExplorerLinkService', () => {
   describe('isConfigured', () => {
     it('returns true when explorer URL is available', () => {
       expect(ExplorerLinkService.isConfigured()).toBe(true);
+    });
+
+    it('returns false when the explorer property throws', () => {
+      const originalDescriptor = Object.getOwnPropertyDescriptor(NetworkConfig, 'explorer');
+      Object.defineProperty(NetworkConfig, 'explorer', {
+        configurable: true,
+        get: () => {
+          throw new Error('no config');
+        },
+      });
+      try {
+        expect(ExplorerLinkService.isConfigured()).toBe(false);
+      } finally {
+        if (originalDescriptor) {
+          Object.defineProperty(NetworkConfig, 'explorer', originalDescriptor);
+        }
+      }
     });
   });
 

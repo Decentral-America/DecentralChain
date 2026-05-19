@@ -232,6 +232,22 @@ describe('massTransferSchema', () => {
   it('rejects empty recipients array', () => {
     expect(() => massTransferSchema.parse({ recipients: [] })).toThrow();
   });
+
+  it('accepts an alias as recipient in a mass transfer', () => {
+    expect(() =>
+      massTransferSchema.parse({
+        recipients: [{ amount: 5, recipient: 'myalias' }],
+      }),
+    ).not.toThrow();
+  });
+
+  it('rejects an invalid recipient in a mass transfer', () => {
+    expect(() =>
+      massTransferSchema.parse({
+        recipients: [{ amount: 1, recipient: '!!invalid!!' }],
+      }),
+    ).toThrow();
+  });
 });
 
 // ─── leaseSchema ─────────────────────────────────────────────────────────────

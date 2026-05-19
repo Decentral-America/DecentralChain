@@ -4,7 +4,7 @@
  * TokenFilterService — pure class logic, no DOM/network.
  * The singleton is seeded with static mainnet data.
  */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Suppress logger output during tests
 vi.mock('@/lib/logger', () => ({
@@ -127,6 +127,35 @@ describe('TokenFilterService', () => {
       const tokens = tokenFilterService.getVerifiedTokens();
       const dcc = tokens.find((t) => t.assetId === 'DCC');
       expect(dcc).toBeDefined();
+    });
+  });
+
+  // ── network-specific initialization ──────────────────────────────────────
+
+  describe('network-specific initialization', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    });
+
+    it('uses testnet data when VITE_NETWORK is testnet', async () => {
+      vi.stubEnv('VITE_NETWORK', 'testnet');
+      vi.resetModules();
+      const { default: svc } = await import('@/services/tokenFilters');
+      // DGFTHR token is mainnet-only — absent in testnet list
+      expect(svc.getTokenInfo('CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb')).toBeUndefined();
+      // Mainnet scam asset is not in the testnet scam list
+      expect(svc.isScam('74jKuX6unv6yQcVosoSfKbvmQmi5A4H42crnVWAZ9wh8')).toBe(false);
+    });
+
+    it('uses stagenet data when VITE_NETWORK is stagenet', async () => {
+      vi.stubEnv('VITE_NETWORK', 'stagenet');
+      vi.resetModules();
+      const { default: svc } = await import('@/services/tokenFilters');
+      // DGFTHR token is mainnet-only — absent in stagenet list
+      expect(svc.getTokenInfo('CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb')).toBeUndefined();
+      // Stagenet has a stagenet-specific BTC token
+      expect(svc.getTokenInfo('yrdwwJJqTKoCt63krHFVZxJvNbUPgHcDeuJXPEGsJCx')?.ticker).toBe('BTC');
     });
   });
 });

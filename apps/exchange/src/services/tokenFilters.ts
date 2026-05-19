@@ -144,6 +144,7 @@ class TokenFilterService {
     if (!assetId) return fallback;
     const info = this.getTokenInfo(assetId);
     if (!info) return fallback;
+    /* istanbul ignore next -- || fallback only reachable when both ticker and name are empty string; all current static lists have non-empty names */
     // biome-ignore lint/nursery/useNullishCoalescing: ticker/name may be '' (empty = no display name) — || fallback chain is intentional
     return info.ticker || info.name || fallback;
   }

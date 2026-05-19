@@ -40,9 +40,11 @@ vi.mock('@/config/networkConfig', () => ({
 
 import { logger } from '@/lib/logger';
 import {
+  type CommonSettings,
   createDefaultSettings,
   DefaultSettings,
   getDefaultSettings,
+  type UserSettings,
 } from '@/services/defaultSettings';
 
 describe('DefaultSettings', () => {
@@ -130,7 +132,7 @@ describe('DefaultSettings', () => {
       expect(s.get('lng')).toBe('fr');
       // Reset to default — should be removed from stored overrides
       s.set('lng', 'en');
-      expect(s.getSettings().common['lng']).toBeUndefined();
+      expect(s.getSettings().common.lng).toBeUndefined();
       // But get() still returns 'en' from commonDefaults
       expect(s.get('lng')).toBe('en');
     });
@@ -138,7 +140,7 @@ describe('DefaultSettings', () => {
     it('removes a user setting when value matches default', () => {
       const s = new DefaultSettings();
       s.set('encryptionRounds', 5000);
-      expect(s.getSettings().settings['encryptionRounds']).toBeUndefined();
+      expect(s.getSettings().settings.encryptionRounds).toBeUndefined();
       expect(s.get<number>('encryptionRounds')).toBe(5000);
     });
 
@@ -147,8 +149,8 @@ describe('DefaultSettings', () => {
       s.set('lng', 'de');
       const stored = localStorage.getItem('commonSettings');
       expect(stored).not.toBeNull();
-      const parsed = JSON.parse(stored ?? '{}') as Record<string, unknown>;
-      expect(parsed['lng']).toBe('de');
+      const parsed = JSON.parse(stored ?? '{}') as Partial<CommonSettings>;
+      expect(parsed.lng).toBe('de');
     });
 
     it('persists a user setting to localStorage', () => {
@@ -156,8 +158,8 @@ describe('DefaultSettings', () => {
       s.set('encryptionRounds', 8000);
       const stored = localStorage.getItem('userSettings');
       expect(stored).not.toBeNull();
-      const parsed = JSON.parse(stored ?? '{}') as Record<string, unknown>;
-      expect(parsed['encryptionRounds']).toBe(8000);
+      const parsed = JSON.parse(stored ?? '{}') as Partial<UserSettings>;
+      expect(parsed.encryptionRounds).toBe(8000);
     });
   });
 
@@ -197,7 +199,7 @@ describe('DefaultSettings', () => {
     it('reflects an override in common', () => {
       const s = new DefaultSettings();
       s.set('lng', 'zh');
-      expect(s.getSettings().common['lng']).toBe('zh');
+      expect(s.getSettings().common.lng).toBe('zh');
     });
   });
 
