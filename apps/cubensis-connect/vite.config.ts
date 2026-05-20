@@ -69,9 +69,6 @@ export default defineConfig({
   resolve: {
     alias: {
       ...srcAliases,
-      // Node.js polyfills for browser
-      stream: 'stream-browserify',
-      util: 'util',
     },
   },
   root: __dirname,
@@ -80,10 +77,11 @@ export default defineConfig({
 /**
  * Injects `import { Buffer } from 'buffer'` into source files that reference
  * `Buffer` — replaces webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }).
- */
-/**
- * Injects `import { Buffer } from 'buffer'` into source files that reference
- * `Buffer` — replaces webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }).
+ *
+ * Intentionally retained even after the events/stream/util polyfills were
+ * removed (DCC-254) because \@ledgerhq/devices and \@ledgerhq/hw-transport-webusb
+ * ESM files use `Buffer` as an undeclared global and \@ledgerhq/devices does NOT
+ * declare `buffer` as its own dependency — the app is the provider.
  *
  * Applied to both project source files (.ts/.tsx) and ESM files inside
  * node_modules that use `Buffer` as an undeclared global (e.g. \@ledgerhq/*).
