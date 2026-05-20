@@ -104,7 +104,7 @@
     <!-- cyclonedx-maven-plugin 2.9.1 — latest; supply-chain SBOM (CycloneDX 1.6) -->
     <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     <!-- Reproducible builds — set to release date on each release -->
-    <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-05-20T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <!-- ── Dependencies ────────────────────────────────────────────────── -->
