@@ -1,12 +1,7 @@
-import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
+import type { StoreApi } from 'zustand/vanilla';
 
-import type { reducer } from './reducer';
+import type { AccountsState } from './accountsStore';
 
-export type AccountsState = ReturnType<typeof reducer>;
+export type { AccountsState } from './accountsStore';
 
-export type AccountsDispatch = ThunkDispatch<AccountsState, undefined, UnknownAction>;
-
-export type AccountsStore = {
-  dispatch: AccountsDispatch;
-  getState: () => AccountsState;
-};
+export type AccountsStore = StoreApi<AccountsState>;

@@ -1,9 +1,8 @@
 import { captureException } from '@sentry/browser';
 import { deepEqual } from 'fast-equals';
-import type ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
-import { make, pipe, subscribe } from 'wonka';
+import type { StoreApi } from 'zustand/vanilla';
 import type { AssetsRecord } from '#assets/types';
 import type { TrashItem } from '#controllers/trash';
 import type { Message } from '#messages/types';
@@ -12,7 +11,7 @@ import type { NftInfo } from '#nfts/nfts';
 import type { NotificationsStoreItem } from '#notifications/types';
 import type { PermissionValue } from '#permissions/types';
 import type { IdleOptions, PreferencesAccount } from '#preferences/types';
-import type { UiState } from '#store/reducers/updateState';
+import type { UiState } from '#store/reducers/stateTypes';
 
 import type {
   AssetsConfig,
@@ -165,36 +164,27 @@ export class ExtensionStorage {
     await Browser.storage.local.remove(keysToRemove);
   }
 
-  subscribe<T extends Record<string, unknown>>(store: ObservableStore<T>) {
-    pipe(
-      make<T>((observer) => {
-        store.subscribe(observer.next);
+  subscribe<T extends Record<string, unknown>>(store: StoreApi<T>) {
+    store.subscribe((updatedState) => {
+      void (async () => {
+        const currentState = await Browser.storage.local.get(Object.keys(updatedState));
 
-        return () => {
-          store.unsubscribe(observer.next);
-        };
-      }),
-      subscribe((updatedState) => {
-        void (async () => {
-          const currentState = await Browser.storage.local.get(Object.keys(updatedState));
+        const changedState = Object.fromEntries(
+          Object.entries(updatedState)
+            .map(([key, value]) => [key, value ?? null] as const)
+            .filter(([key, value]) => !deepEqual(currentState[key], value)),
+        );
 
-          const changedState = Object.fromEntries(
-            Object.entries(updatedState)
-              .map(([key, value]) => [key, value === undefined ? null : value] as const)
-              .filter(([key, value]) => !deepEqual(currentState[key], value)),
-          );
+        const changedKeys = Object.keys(changedState);
 
-          const changedKeys = Object.keys(changedState);
+        if (changedKeys.length === 0) {
+          return;
+        }
 
-          if (changedKeys.length === 0) {
-            return;
-          }
-
-          this.#state = { ...this.#state, ...changedState };
-          await Browser.storage.local.set(changedState);
-        })();
-      }),
-    );
+        this.#state = { ...this.#state, ...changedState };
+        await Browser.storage.local.set(changedState);
+      })();
+    });
   }
 
   getState<K extends keyof StorageLocalState>(keys?: K | K[]): Pick<StorageLocalState, K> {

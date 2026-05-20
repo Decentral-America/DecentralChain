@@ -3,14 +3,14 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PermissionObject, PermissionValue } from '#permissions/types';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { setShowNotification } from '#store/actions/notifications';
 import {
   allowOrigin,
   deleteOrigin,
   disableOrigin,
   setAutoOrigin,
-} from '#store/actions/permissions';
+  setShowNotification,
+} from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { Loader, Modal } from '#ui/components/ui';
 import type { TAutoAuth, TPermission } from './components';
 import { List, OriginSettings, Tabs } from './components';
@@ -18,7 +18,6 @@ import * as styles from './permissionsSettings.module.styl';
 
 export function PermissionsSettings() {
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const origins = usePopupSelector((s) => s.origins);
   const { pending, allowed, disallowed, deleted } = usePopupSelector((s) => s.permissionsUiState);
 
@@ -30,7 +29,7 @@ export function PermissionsSettings() {
   const [originalAutoSign, setOriginalAutoSign] = useState<TAutoAuth | null>(null);
 
   function handleDelete(originName: string) {
-    dispatch(deleteOrigin(originName));
+    deleteOrigin(originName);
     handleCloseSettings();
   }
 
@@ -62,9 +61,9 @@ export function PermissionsSettings() {
 
   function handleToggleApprove(originName: string, enable: boolean) {
     if (enable) {
-      dispatch(allowOrigin(originName));
+      allowOrigin(originName);
     } else {
-      dispatch(disableOrigin(originName));
+      disableOrigin(originName);
     }
   }
 
@@ -77,20 +76,18 @@ export function PermissionsSettings() {
     originName: string,
     canShowNotifications: boolean | null,
   ) {
-    dispatch(
-      setAutoOrigin({
-        origin: originName,
-        // Strip undefined values to satisfy exactOptionalPropertyTypes: params are
-        // always a defined subset (interval + totalAmount), never approved: undefined.
-        params: Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as {
-          type?: 'allowAutoSign';
-          totalAmount?: string | null;
-          interval?: number | null;
-          approved?: unknown[];
-        },
-      }),
-    );
-    dispatch(setShowNotification({ canUse: canShowNotifications, origin: originName }));
+    setAutoOrigin({
+      origin: originName,
+      // Strip undefined values to satisfy exactOptionalPropertyTypes: params are
+      // always a defined subset (interval + totalAmount), never approved: undefined.
+      params: Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)) as {
+        type?: 'allowAutoSign';
+        totalAmount?: string | null;
+        interval?: number | null;
+        approved?: unknown[];
+      },
+    });
+    setShowNotification({ canUse: canShowNotifications, origin: originName });
     handleCloseSettings();
   }
 

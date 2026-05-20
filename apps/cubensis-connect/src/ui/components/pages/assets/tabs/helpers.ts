@@ -5,15 +5,13 @@ import { useState } from 'react';
 import type { AssetsRecord } from '#assets/types';
 import type { Nft } from '#nfts/types';
 import { NftVendorId } from '#nfts/types';
-
-import { usePopupDispatch, usePopupSelector } from '../../../../../popup/store/react';
-import { setUiState } from '../../../../../store/actions/uiState';
-import type { UiState } from '../../../../../store/reducers/updateState';
+import { mergeUiState } from '../../../../../popup/store/actions';
+import { usePopupSelector } from '../../../../../popup/store/react';
+import type { UiState } from '../../../../../store/reducers/stateTypes';
 
 export function useUiState<T extends keyof UiState>(
   key: T,
 ): [UiState[T] | null, (newState: UiState[T] | null) => void] {
-  const dispatch = usePopupDispatch();
   const initialValue = usePopupSelector((state) => state.uiState[key]);
   const [state, setState] = useState<UiState[T] | null>(initialValue);
   return [
@@ -22,7 +20,7 @@ export function useUiState<T extends keyof UiState>(
       setState(newState);
 
       if (!deepEqual(newState, state)) {
-        dispatch(setUiState({ [key]: newState }));
+        mergeUiState({ [key]: newState });
       }
     },
   ];

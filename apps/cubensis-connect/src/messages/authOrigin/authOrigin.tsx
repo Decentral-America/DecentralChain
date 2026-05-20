@@ -6,10 +6,8 @@ import invariant from 'tiny-invariant';
 import { MessageFinal } from '#messages/_common/final';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageIcon } from '#messages/_common/icon';
-import { usePopupDispatch } from '#popup/store/react';
+import { setAutoOrigin, setShowNotification } from '#popup/store/actions';
 import type { PreferencesAccount } from '#preferences/types';
-import { setShowNotification } from '#store/actions/notifications';
-import { setAutoOrigin } from '#store/actions/permissions';
 import Background from '#ui/services/Background';
 
 import * as transactionsStyles from '../../ui/components/pages/styles/transactions.module.css';
@@ -68,7 +66,6 @@ export function AuthOriginScreen({
   selectedAccount: PreferencesAccount;
 }) {
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
 
   const initialState: {
     interval: number | null;
@@ -252,25 +249,21 @@ export function AuthOriginScreen({
               setIsPending(true);
 
               if (interval && totalAmount) {
-                dispatch(
-                  setAutoOrigin({
-                    origin: message.origin,
-                    params: {
-                      interval,
-                      totalAmount: new BigNumber(totalAmount).mul(10 ** 8).toFixed(8),
-                      type: 'allowAutoSign',
-                    },
-                  }),
-                );
+                setAutoOrigin({
+                  origin: message.origin,
+                  params: {
+                    interval,
+                    totalAmount: new BigNumber(totalAmount).mul(10 ** 8).toFixed(8),
+                    type: 'allowAutoSign',
+                  },
+                });
               }
 
               if (showNotify) {
-                dispatch(
-                  setShowNotification({
-                    canUse: showNotify,
-                    origin: message.origin,
-                  }),
-                );
+                setShowNotification({
+                  canUse: showNotify,
+                  origin: message.origin,
+                });
               }
 
               await Background.approve(message.id);

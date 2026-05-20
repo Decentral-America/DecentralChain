@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AssetDetail } from '#assets/types';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { getBalances } from '#store/actions/balances';
+import { refreshBalances } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { useUiState } from '#ui/components/pages/assets/tabs/helpers';
 import { Modal, Tab, TabList, TabPanels, Tabs } from '#ui/components/ui';
 
@@ -20,8 +20,6 @@ import * as styles from './styles/assets.module.styl';
 export function PopupHome() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
-
   const activeAccount = usePopupSelector((state) =>
     state.accounts.find(({ address }) => address === state.selectedAccount?.address),
   );
@@ -40,9 +38,9 @@ export function PopupHome() {
 
   useEffect(() => {
     if (!balances[activeAccount?.address ?? '']) {
-      dispatch(getBalances());
+      refreshBalances();
     }
-  }, [dispatch, activeAccount?.address, balances]);
+  }, [activeAccount?.address, balances]);
 
   if (!activeAccount) {
     return <ImportPopup />;

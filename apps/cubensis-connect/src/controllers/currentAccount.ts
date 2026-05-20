@@ -1,7 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import type { TransactionFromNode } from '@decentralchain/ts-types';
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import { isNotNull } from '#_core/isNotNull';
 import type { AssetBalance, BalancesItem } from '#balances/types';
 import { collectBalances } from '#balances/utils';
@@ -62,7 +62,7 @@ export class CurrentAccountController {
       delete initState[key];
     });
 
-    this.store = new ObservableStore(initState);
+    this.store = createStore(() => initState);
 
     extensionStorage.subscribe(this.store);
 
@@ -305,7 +305,7 @@ export class CurrentAccountController {
       txHistory,
     };
 
-    this.store.updateState({
+    this.store.setState({
       [`balance_${address}`]: balance,
     });
   }
@@ -348,7 +348,7 @@ export class CurrentAccountController {
         }),
       );
 
-      this.store.updateState(balances);
+      this.store.setState(balances);
     }
   }
 }

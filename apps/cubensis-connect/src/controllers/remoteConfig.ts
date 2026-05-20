@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import type { IgnoreErrorsContext } from '../constants';
 import { DEFAULT_MAIN_CONFIG, STATUS } from '../constants';
 import { TypedEventEmitter } from '../lib/TypedEventEmitter';
@@ -42,7 +42,7 @@ export class RemoteConfigController extends TypedEventEmitter {
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
     super();
 
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         assetsConfig: DEFAULT_MAIN_CONFIG.assets,
         config: {

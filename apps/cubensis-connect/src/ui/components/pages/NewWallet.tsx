@@ -10,10 +10,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import type { NewAccountState } from '#store/reducers/localState';
+import { usePopupSelector } from '#popup/store/react';
+import type { NewAccountState } from '#store/reducers/stateTypes';
 
-import { newAccountSelect } from '../../../store/actions/localState';
+import { newAccountSelect } from '../../../popup/store/actions';
 import { AvatarList, Button } from '../ui';
 import * as styles from './styles/newwallet.module.styl';
 
@@ -49,7 +49,6 @@ export async function generateNewWalletItems(networkCode: string) {
 export function NewWallet() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const account = usePopupSelector(
     (state) => state.localState.newAccount as Extract<NewAccountState, { type: 'seed' }>,
   );
@@ -63,27 +62,23 @@ export function NewWallet() {
       'NewWallet: generateNewWalletItems must be called before NewWallet renders',
     );
 
-    dispatch(
-      newAccountSelect({
-        name: '',
-        ...selected,
-        hasBackup: false,
-        type: 'seed',
-      }),
-    );
+    newAccountSelect({
+      name: '',
+      ...selected,
+      hasBackup: false,
+      type: 'seed',
+    });
 
     return generatedWalletItems;
   });
 
   function handleSelect(item: NewWalletItem) {
-    dispatch(
-      newAccountSelect({
-        name: '',
-        ...item,
-        hasBackup: false,
-        type: 'seed',
-      }),
-    );
+    newAccountSelect({
+      name: '',
+      ...item,
+      hasBackup: false,
+      type: 'seed',
+    });
   }
 
   return (

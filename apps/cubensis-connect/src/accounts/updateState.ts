@@ -1,20 +1,9 @@
 import { deepEqual } from 'fast-equals';
 import type { StorageLocalState } from '#storage/storage';
 
-import {
-  updateAddresses,
-  updateAllNetworksAccounts,
-  updateAppState,
-  updateCodes,
-  updateCurrentNetwork,
-  updateCurrentNetworkAccounts,
-  updateIdleOptions,
-  updateLocale,
-  updateNodes,
-  updateSelectedAccount,
-  updateUiState,
-} from '../store/reducers/updateState';
-import type { AccountsStore } from './store/types';
+import type { NetworkName } from '../networks/types';
+import { accountsStore } from './store/accountsStore';
+import { syncLocale } from './store/actions';
 
 function getParam<S, D>(param: S, defaultParam: D) {
   if (param) {
@@ -24,47 +13,53 @@ function getParam<S, D>(param: S, defaultParam: D) {
   return param === null ? defaultParam : undefined;
 }
 
-export function createUpdateState(store: AccountsStore) {
+export function createUpdateState() {
   return (stateChanges: Partial<StorageLocalState>) => {
-    const currentState = store.getState();
+    const currentState = accountsStore.getState();
 
     const idleOptions = getParam(stateChanges.idleOptions, {});
     if (idleOptions && !deepEqual(currentState.idleOptions, idleOptions)) {
-      store.dispatch(updateIdleOptions(idleOptions));
+      accountsStore.setState({ idleOptions });
     }
 
     const customNodes = getParam(stateChanges.customNodes, {});
     if (customNodes && !deepEqual(currentState.customNodes, customNodes)) {
-      store.dispatch(updateNodes(customNodes));
+      accountsStore.setState({ customNodes });
     }
 
     const customCodes = getParam(stateChanges.customCodes, {});
     if (customCodes && !deepEqual(currentState.customCodes, customCodes)) {
-      store.dispatch(updateCodes(customCodes));
+      accountsStore.setState({ customCodes });
+    }
+
+    const customMatchers = getParam(stateChanges.customMatchers, {});
+    if (customMatchers && !deepEqual(currentState.customMatcher, customMatchers)) {
+      accountsStore.setState({ customMatcher: customMatchers });
     }
 
     if (stateChanges.currentLocale && stateChanges.currentLocale !== currentState.currentLocale) {
-      store.dispatch(updateLocale(stateChanges.currentLocale));
+      accountsStore.setState({ currentLocale: stateChanges.currentLocale });
+      syncLocale(stateChanges.currentLocale);
     }
 
     const uiState = getParam(stateChanges.uiState, {});
     if (uiState && !deepEqual(uiState, currentState.uiState)) {
-      store.dispatch(updateUiState(uiState));
+      accountsStore.setState({ uiState });
     }
 
     const currentNetwork = getParam(stateChanges.currentNetwork, '');
     if (currentNetwork && currentNetwork !== currentState.currentNetwork) {
-      store.dispatch(updateCurrentNetwork(currentNetwork));
+      accountsStore.setState({ currentNetwork: currentNetwork as NetworkName });
     }
 
     const newSelectedAccount = getParam(stateChanges.selectedAccount, undefined);
     if (newSelectedAccount && !deepEqual(newSelectedAccount, currentState.selectedAccount)) {
-      store.dispatch(updateSelectedAccount(newSelectedAccount));
+      accountsStore.setState({ selectedAccount: newSelectedAccount });
     }
 
     const accounts = getParam(stateChanges.accounts, []);
     if (accounts && !deepEqual(accounts, currentState.allNetworksAccounts)) {
-      store.dispatch(updateAllNetworksAccounts(accounts));
+      accountsStore.setState({ allNetworksAccounts: accounts });
     }
 
     if (
@@ -73,12 +68,11 @@ export function createUpdateState(store: AccountsStore) {
       (stateChanges.currentNetwork != null &&
         stateChanges.currentNetwork !== currentState.currentNetwork)
     ) {
-      const accs = stateChanges.accounts || currentState.allNetworksAccounts;
-      const network = stateChanges.currentNetwork || currentState.currentNetwork;
-
-      store.dispatch(
-        updateCurrentNetworkAccounts(accs.filter((account) => account.network === network)),
-      );
+      const accs = stateChanges.accounts ?? currentState.allNetworksAccounts;
+      const network = (stateChanges.currentNetwork ?? currentState.currentNetwork) as NetworkName;
+      accountsStore.setState({
+        accounts: accs.filter((account) => account.network === network),
+      });
     }
 
     if (
@@ -87,17 +81,17 @@ export function createUpdateState(store: AccountsStore) {
         stateChanges.initialized !== currentState.state.initialized) ||
       ('locked' in stateChanges && stateChanges.locked !== currentState.state.locked)
     ) {
-      store.dispatch(
-        updateAppState({
+      accountsStore.setState({
+        state: {
           initialized: stateChanges.initialized ?? currentState.state?.initialized,
           locked: stateChanges.locked ?? currentState.state?.locked,
-        }),
-      );
+        },
+      });
     }
 
     const addresses = getParam(stateChanges.addresses, {});
     if (addresses && !deepEqual(currentState.addresses, addresses)) {
-      store.dispatch(updateAddresses(addresses));
+      accountsStore.setState({ addresses });
     }
   };
 }
