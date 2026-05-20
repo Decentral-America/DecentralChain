@@ -1,0 +1,326 @@
+# build-native.yml — Cross-platform native library compilation for io.decentralchain:blst
+#
+# Builds libblst.so / libblst.dylib / blst.dll for all 6 bundled platforms from
+# the supranational/blst C source at the upstream tag configured below.
+#
+# Trigger:
+#   workflow_dispatch: manual — run when upgrading blst upstream version.
+#   After successful run, commit the updated native binaries and bump pom.xml.
+#
+# Output:
+#   Compiled native libraries committed back to:
+#     src/main/resources/supranational/blst/<OS>/<arch>/<libname>
+#
+# Platforms:
+#   Linux   amd64    (libblst.so)
+#   Linux   aarch64  (libblst.so)
+#   Linux   x86      (libblst.so)
+#   macOS   aarch64  (libblst.dylib)
+#   macOS   x86_64   (libblst.dylib)
+#   Windows amd64    (blst.dll)
+
+name: Build Native blst Libraries
+
+on:
+  workflow_dispatch:
+    inputs:
+      blst_tag:
+        description: "supranational/blst git tag to build from"
+        required: true
+        default: "v0.3.16"
+      commit_result:
+        description: "Commit compiled libraries back to repo"
+        required: true
+        type: boolean
+        default: true
+
+env:
+  BLST_TAG: ${{ github.event.inputs.blst_tag }}
+  JAVA_VERSION: "25"
+
+jobs:
+  # ── Linux (amd64 + aarch64 + x86) via Docker cross-compile ───────────────────
+  build-linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            cc: gcc
+            cxx: g++
+            extra_cflags: ""
+            resource_dir: Linux/amd64
+          - arch: aarch64
+            cc: aarch64-linux-gnu-gcc
+            cxx: aarch64-linux-gnu-g++
+            extra_cflags: ""
+            resource_dir: Linux/aarch64
+          - arch: x86
+            cc: gcc
+            cxx: g++
+            extra_cflags: "-m32"
+            resource_dir: Linux/x86
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cross-compile toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            swig \
+            gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
+            gcc-multilib g++-multilib
+        if: matrix.arch != 'amd64'
+
+      - name: Install tools (amd64)
+        run: sudo apt-get update -qq && sudo apt-get install -y swig
+        if: matrix.arch == 'amd64'
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Clone blst ${{ env.BLST_TAG }}
+        run: |
+          git clone --depth 1 --branch "$BLST_TAG" \
+            https://github.com/supranational/blst.git /tmp/blst-src
+
+      - name: Build libblst.a
+        run: |
+          cd /tmp/blst-src
+          CC=${{ matrix.cc }} CFLAGS="-fPIC -fvisibility=hidden ${{ matrix.extra_cflags }}" \
+            ./build.sh -fvisibility=hidden ${{ matrix.extra_cflags }}
+        env:
+          CC: ${{ matrix.cc }}
+
+      - name: Generate SWIG wrapper
+        run: |
+          mkdir -p /tmp/blst-swig-out/supranational/blst
+          cd /tmp/blst-src
+          swig -c++ -java -package supranational.blst \
+               -outdir /tmp/blst-swig-out/supranational/blst \
+               -o /tmp/blst-swig-out/blst_wrap.cpp \
+               "$GITHUB_WORKSPACE/blst-dcc.swg"
+
+      - name: Compile libblst.so
+        run: |
+          JNI_MD=$(ls "$JAVA_HOME/include/linux/jni_md.h" | xargs dirname)
+          ${{ matrix.cxx }} -shared \
+              -o /tmp/libblst.so \
+              -fPIC -fvisibility=hidden \
+              ${{ matrix.extra_cflags }} \
+              -I"$JAVA_HOME/include" \
+              -I"$JNI_MD" \
+              -I/tmp/blst-src \
+              -I/tmp/blst-src/bindings \
+              -O -Wall -Wno-unused-function \
+              -Wl,-Bsymbolic \
+              /tmp/blst-swig-out/blst_wrap.cpp \
+              /tmp/blst-src/libblst.a
+          file /tmp/libblst.so
+
+      - name: Install native library
+        run: |
+          cp /tmp/libblst.so \
+             "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-linux-${{ matrix.arch }}
+          path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so
+
+  # ── macOS (aarch64 + x86_64) ─────────────────────────────────────────────────
+  build-macos:
+    name: macOS ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64
+            runner: macos-15          # Apple Silicon (M-series)
+            clang_arch: arm64
+            resource_dir: Mac/aarch64
+          - arch: x86_64
+            runner: macos-13          # Intel
+            clang_arch: x86_64
+            resource_dir: Mac/x86_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SWIG
+        run: brew install swig
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Clone blst ${{ env.BLST_TAG }}
+        run: |
+          git clone --depth 1 --branch "$BLST_TAG" \
+            https://github.com/supranational/blst.git /tmp/blst-src
+
+      - name: Build libblst.a
+        run: |
+          cd /tmp/blst-src
+          CFLAGS="-fPIC -fvisibility=hidden" ./build.sh -fvisibility=hidden
+
+      - name: Generate SWIG wrapper
+        run: |
+          mkdir -p /tmp/blst-swig-out/supranational/blst
+          cd /tmp/blst-src
+          swig -c++ -java -package supranational.blst \
+               -outdir /tmp/blst-swig-out/supranational/blst \
+               -o /tmp/blst-swig-out/blst_wrap.cpp \
+               "$GITHUB_WORKSPACE/blst-dcc.swg"
+
+      - name: Compile libblst.dylib
+        run: |
+          JNI_MD="$JAVA_HOME/include/darwin"
+          c++ -dynamiclib \
+              -o /tmp/libblst.dylib \
+              -fPIC -fvisibility=hidden \
+              -arch ${{ matrix.clang_arch }} \
+              -I"$JAVA_HOME/include" \
+              -I"$JNI_MD" \
+              -I/tmp/blst-src \
+              -I/tmp/blst-src/bindings \
+              -O -Wall -Wno-unused-function \
+              /tmp/blst-swig-out/blst_wrap.cpp \
+              /tmp/blst-src/libblst.a
+          file /tmp/libblst.dylib
+
+      - name: Install native library
+        run: |
+          cp /tmp/libblst.dylib \
+             "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-macos-${{ matrix.arch }}
+          path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib
+
+  # ── Windows amd64 ─────────────────────────────────────────────────────────────
+  build-windows:
+    name: Windows amd64
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SWIG
+        run: choco install swig --yes --no-progress
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Clone blst ${{ env.BLST_TAG }}
+        run: |
+          git clone --depth 1 --branch "$env:BLST_TAG" `
+            https://github.com/supranational/blst.git C:\blst-src
+        shell: pwsh
+
+      - name: Build blst static library
+        run: |
+          cd C:\blst-src
+          cl /O2 /nologo /W3 /Zi /MT /I src `
+             /c src\server.c /Foserver.obj
+          cl /O2 /nologo /W3 /Zi /MT /I src `
+             /c build\assembly.S /Foassembly.obj
+          lib /nologo /out:blst.lib server.obj assembly.obj
+        shell: pwsh
+
+      - name: Generate SWIG wrapper
+        run: |
+          New-Item -ItemType Directory -Force -Path C:\blst-swig-out\supranational\blst
+          Set-Location C:\blst-src
+          swig -c++ -java -package supranational.blst `
+               -outdir C:\blst-swig-out\supranational\blst `
+               -o C:\blst-swig-out\blst_wrap.cpp `
+               "$env:GITHUB_WORKSPACE\blst-dcc.swg"
+        shell: pwsh
+
+      - name: Compile blst.dll
+        run: |
+          $JNI_INCLUDE = "$env:JAVA_HOME\include"
+          $JNI_WIN = "$env:JAVA_HOME\include\win32"
+          cl /O2 /nologo /W3 /Zi /LD /EHsc `
+             /I"$JNI_INCLUDE" /I"$JNI_WIN" `
+             /IC:\blst-src /IC:\blst-src\bindings `
+             C:\blst-swig-out\blst_wrap.cpp `
+             C:\blst-src\blst.lib `
+             /link /DLL /OUT:C:\blst.dll
+          echo "Exit code: $LASTEXITCODE"
+        shell: pwsh
+
+      - name: Install native library
+        run: |
+          Copy-Item C:\blst.dll `
+            "$env:GITHUB_WORKSPACE\src\main\resources\supranational\blst\Windows\amd64\blst.dll"
+        shell: pwsh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-windows-amd64
+          path: src/main/resources/supranational/blst/Windows/amd64/blst.dll
+
+  # ── Commit all compiled libraries back to the repo ───────────────────────────
+  commit-natives:
+    name: Commit native libraries
+    needs: [build-linux, build-macos, build-windows]
+    runs-on: ubuntu-24.04
+    if: ${{ github.event.inputs.commit_result == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/native-artifacts
+
+      - name: Install native libraries
+        run: |
+          BASE="src/main/resources/supranational/blst"
+
+          cp /tmp/native-artifacts/native-linux-amd64/libblst.so    "$BASE/Linux/amd64/libblst.so"
+          cp /tmp/native-artifacts/native-linux-aarch64/libblst.so  "$BASE/Linux/aarch64/libblst.so"
+          cp /tmp/native-artifacts/native-linux-x86/libblst.so      "$BASE/Linux/x86/libblst.so"
+          cp /tmp/native-artifacts/native-macos-aarch64/libblst.dylib "$BASE/Mac/aarch64/libblst.dylib"
+          cp /tmp/native-artifacts/native-macos-x86_64/libblst.dylib  "$BASE/Mac/x86_64/libblst.dylib"
+          cp /tmp/native-artifacts/native-windows-amd64/blst.dll    "$BASE/Windows/amd64/blst.dll"
+
+      - name: Verify all 6 libraries updated
+        run: |
+          echo "=== Native library inventory ==="
+          find src/main/resources/supranational/blst -type f | sort | while read f; do
+            echo "$f: $(file "$f")"
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/main/resources/supranational/blst/
+          git diff --staged --stat
+          git commit -m "chore(DCC-265): build native blst libraries from $BLST_TAG
+
+  Compiled by build-native.yml workflow on $(date -u +%Y-%m-%dT%H:%M:%SZ).
+  Platforms: Linux amd64/aarch64/x86, macOS ARM64/x86_64, Windows amd64."
+          git push
+        env:
+          BLST_TAG: ${{ env.BLST_TAG }}

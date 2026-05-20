@@ -10,9 +10,9 @@
   <artifactId>blst</artifactId>
   <!--
     Version scheme: <upstream-blst-version>.<dcc-patch>
-    upstream 0.3.15 + DCC patch 0 → 0.3.15.0
+    upstream 0.3.16 + DCC patch 0 → 0.3.16.0
   -->
-  <version>0.3.15.0</version>
+  <version>0.3.16.0</version>
   <packaging>jar</packaging>
 
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->
@@ -22,7 +22,7 @@
     that is fast, secure, and has no external dependencies. Used by the
     DecentralChain node for BLS-based threshold signatures and zkSNARK
     verifier operations.
-    Forked from wavesplatform/blst-java (upstream supranational/blst v0.3.15)
+    Forked from wavesplatform/blst-java (upstream supranational/blst v0.3.16)
     with full upstream history and DCC production hardening.
   </description>
   <url>https://github.com/Decentral-America/DecentralChain</url>

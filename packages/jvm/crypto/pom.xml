@@ -46,7 +46,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <bouncycastle.version>1.84</bouncycastle.version>
     <curve25519-java.version>0.6.6</curve25519-java.version>
-    <blst.version>0.3.15.0</blst.version>
+    <blst.version>0.3.16.0</blst.version>
     <junit.version>5.14.4</junit.version>
     <assertj.version>3.27.7</assertj.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
