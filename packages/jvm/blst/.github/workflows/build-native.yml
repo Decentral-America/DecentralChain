@@ -119,9 +119,9 @@ jobs:
               -I"$JNI_MD" \
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
-              -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=2 \
+              -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=3 \
               -Wall -Wno-unused-function \
-              -Wl,-Bsymbolic \
+              -Wl,-Bsymbolic,-z,relro,-z,now,-z,noexecstack \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
           strip --strip-unneeded /tmp/libblst.so
@@ -198,7 +198,7 @@ jobs:
               -I"$JNI_MD" \
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
-              -O2 -Wall -Wno-unused-function \
+              -O2 -fstack-protector-strong -Wall -Wno-unused-function \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
           strip -x /tmp/libblst.dylib
@@ -277,6 +277,7 @@ jobs:
               -I/tmp/blst-src/bindings \
               -O2 -Wall -Wno-unused-function \
               -static-libstdc++ -static-libgcc \
+              -Wl,--dynamicbase,--nxcompat,--high-entropy-va \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
           x86_64-w64-mingw32-strip --strip-debug /tmp/blst.dll

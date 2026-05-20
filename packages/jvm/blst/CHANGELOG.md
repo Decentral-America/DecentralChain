@@ -46,10 +46,30 @@ genuine correctness fixes alongside the stated hardening. Tracked as DCC-265.
   - Windows amd64 — MinGW-w64 cross-compile (x86_64-w64-mingw32-g++),
     statically links libstdc++ + libgcc (no MSVC runtime dependency)
 - All production binaries stripped of non-essential symbols:
-  - Linux: `strip --strip-unneeded` (removes `.symtab` / `.strtab`; ~10–13% smaller)
-  - macOS: `strip -x` (removes local symbols; ~7% smaller)
+  - Linux: `strip --strip-unneeded` (removes `.symtab` / `.strtab`)
+  - macOS: `strip -x` (removes local symbols)
+  - Windows: `x86_64-w64-mingw32-strip --strip-debug`
 - `.github/workflows/build-native.yml` added: reproducible multi-platform native
   library build workflow (Linux amd64/aarch64/x86, macOS ARM64/x86_64, Windows amd64)
+
+### Security hardening (native binaries — second audit)
+Recompiled all 6 native libraries with production-grade hardening flags:
+
+- **Linux (amd64, aarch64, x86)**: upgraded to `-D_FORTIFY_SOURCE=3` (GCC 13 +
+  glibc 2.39 dynamic size checks, vs. the static-only level 2); added
+  `-Wl,-z,relro,-z,now` (Full RELRO — GOT marked read-only after dynamic linking,
+  preventing GOT-overwrite attacks) and `-Wl,-z,noexecstack` (NX stack — prevents
+  stack-based code injection). All three ELF security attributes confirmed via
+  `readelf`: `FLAGS: SYMBOLIC BIND_NOW`, `PT_GNU_STACK`, `PT_GNU_RELRO`.
+- **macOS (ARM64, x86_64)**: added `-fstack-protector-strong` (stack canary guards
+  on all functions with local buffers/arrays). Apple Clang 21.0.0 (Xcode 16).
+  x86_64 built via Apple Silicon cross-compile (`clang -arch x86_64` + conditional
+  CPP assembly: `assembly.S #if defined(__x86_64__) ... mach-o/`).
+- **Windows amd64 (DLL)**: added `-Wl,--dynamicbase,--nxcompat,--high-entropy-va`
+  (ASLR, DEP/NX, 64-bit high-entropy ASLR). PE DllCharacteristics confirmed:
+  `DYNAMIC_BASE | NX_COMPAT | HIGH_ENTROPY_VA`. MinGW-w64 GCC 13 (Ubuntu 24.04).
+- All binaries compiled with GCC 13.3.0 / Apple Clang 21.0.0 / MinGW GCC 13,
+  all from blst v0.3.16 source, all pass `mvn verify` (blst 6/6, crypto 33/33).
 
 ### Notes
 - Java API: no changes — `BlsUtils.java` usage of `P1`, `P2`, `P1_Affine`, `P2_Affine`,
