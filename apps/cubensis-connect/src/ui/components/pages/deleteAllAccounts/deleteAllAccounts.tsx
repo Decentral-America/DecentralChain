@@ -2,8 +2,7 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePopupDispatch } from '#popup/store/react';
-import { deleteAllAccounts } from '#store/actions/user';
+import { deleteAllAccounts } from '#popup/store/actions';
 import { Button, ErrorMessage, Input } from '#ui/components/ui';
 
 import * as styles from './deleteAccounts.module.css';
@@ -11,8 +10,6 @@ import * as styles from './deleteAccounts.module.css';
 export function DeleteAllAccounts() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
-
   const [phrase, setPhrase] = useState<string | null>(null);
   const [isBlur, setBlur] = useState(false);
 
@@ -80,7 +77,7 @@ export function DeleteAllAccounts() {
           view="warning"
           disabled={hasError}
           onClick={async () => {
-            await dispatch(deleteAllAccounts());
+            await deleteAllAccounts();
             void navigate('/', { replace: true });
           }}
           data-testid="resetConfirm"

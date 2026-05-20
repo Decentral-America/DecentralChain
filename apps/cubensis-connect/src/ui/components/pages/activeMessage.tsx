@@ -3,14 +3,12 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
+import { MessageHeader } from '#messages/_common/header';
 import { MessageStatus } from '#messages/types';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { setActiveMessage } from '#store/actions/notifications';
+import { clearMessagesStatus, setActiveMessage } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import Background from '#ui/services/Background';
-
-import { MessageHeader } from '../../../messages/_common/header';
 import { getMessageConfig } from '../../../messages/getMessageConfig';
-import { clearMessagesStatus } from '../../../store/actions/localState';
 import { Button } from '../ui/buttons/Button';
 import * as styles from './activeMessage.module.css';
 import { LoadingScreen } from './loadingScreen';
@@ -19,8 +17,6 @@ import * as transactionsStyles from './styles/transactions.module.css';
 export function ActiveMessagePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
-
   const activeMessage = usePopupSelector((state) => state.activePopup?.msg);
 
   const balance = usePopupSelector(
@@ -42,9 +38,9 @@ export function ActiveMessagePage() {
       activeMessage.status !== MessageStatus.UnApproved &&
       otherMessagesCount + notificationsCount > 0
     ) {
-      dispatch(clearMessagesStatus());
+      clearMessagesStatus();
     }
-  }, [activeMessage, dispatch, notificationsCount, otherMessagesCount]);
+  }, [activeMessage, notificationsCount, otherMessagesCount]);
 
   if (!activeMessage || !balance) {
     return <LoadingScreen />;
@@ -145,7 +141,7 @@ export function ActiveMessagePage() {
           <Button
             type="button"
             onClick={() => {
-              dispatch(setActiveMessage(undefined));
+              setActiveMessage(undefined);
             }}
           >
             {t('sign.pendingList')}
@@ -157,7 +153,7 @@ export function ActiveMessagePage() {
             type="button"
             view="submit"
             onClick={() => {
-              dispatch(clearMessagesStatus());
+              clearMessagesStatus();
             }}
           >
             {t('sign.nextTransaction')}
@@ -173,7 +169,7 @@ export function ActiveMessagePage() {
               if (window.location.pathname === '/notification.html') {
                 Background.closeNotificationWindow();
               } else {
-                dispatch(setActiveMessage(undefined));
+                setActiveMessage(undefined);
                 void navigate('/');
               }
             }}

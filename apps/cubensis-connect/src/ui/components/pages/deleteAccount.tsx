@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { usePopupDispatch } from '#popup/store/react';
-
-import { deleteAccount } from '../../../store/actions/localState';
+import { deleteAccount } from '../../../popup/store/actions';
 import { Button } from '../ui';
 import * as styles from './deleteAccount.module.css';
 
@@ -12,8 +10,6 @@ export function DeleteAccount() {
   const navigate = useNavigate();
   const params = useParams<{ address: string }>();
 
-  const dispatch = usePopupDispatch();
-
   return (
     <div className={styles.content}>
       <h2 className="title1 margin2">{t('deleteAccount.attention')}</h2>
@@ -22,7 +18,7 @@ export function DeleteAccount() {
         <Button
           id="deleteAccount"
           onClick={async () => {
-            await dispatch(deleteAccount(params.address ?? ''));
+            await deleteAccount(params.address ?? '');
             void navigate('/', { replace: true });
           }}
           type="button"

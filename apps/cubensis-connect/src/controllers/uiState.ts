@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store';
-import type { UiState } from '#store/reducers/updateState';
+import { createStore } from 'zustand/vanilla';
+import type { UiState } from '#store/reducers/stateTypes';
 
 import type { ExtensionStorage } from '../storage/storage';
 
@@ -7,7 +7,7 @@ export class UiStateController {
   private store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         uiState: {},
       }),
@@ -20,7 +20,7 @@ export class UiStateController {
   }
 
   setUiState(uiState: UiState) {
-    this.store.updateState({ uiState });
+    this.store.setState({ uiState });
     return this.getUiState();
   }
 }
