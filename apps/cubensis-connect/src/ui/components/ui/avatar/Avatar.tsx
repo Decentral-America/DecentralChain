@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import * as avatar from 'identity-img';
 import { useMemo } from 'react';
+import { createIdenticon } from '#lib/createIdenticon';
 import type { PreferencesAccount } from '#preferences/types';
 
 import * as styles from './avatar.module.styl';
@@ -17,8 +17,7 @@ interface Props {
 export function Avatar({ address, className, size = SIZE, type = 'seed' }: Props) {
   const src = useMemo(() => {
     if (!address) return '';
-    avatar.config({ cells: 8, rows: 8 });
-    return avatar.create(address, { size: size * 3 });
+    return createIdenticon(address, size * 3);
   }, [address, size]);
 
   const style = { height: size, width: size };
