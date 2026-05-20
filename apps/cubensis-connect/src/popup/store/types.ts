@@ -1,29 +1,7 @@
-import type {
-  Dispatch,
-  MiddlewareAPI,
-  ThunkAction,
-  ThunkDispatch,
-  UnknownAction,
-} from '@reduxjs/toolkit';
+import type { StoreApi } from 'zustand/vanilla';
 
-import type { reducer } from './reducer';
+import type { PopupState } from './popupStore';
 
-export type PopupState = ReturnType<typeof reducer>;
+export type { PopupState } from './popupStore';
 
-export type PopupDispatch = ThunkDispatch<PopupState, undefined, UnknownAction>;
-
-export type PopupStore = {
-  dispatch: PopupDispatch;
-  getState: () => PopupState;
-};
-
-export type PopupThunkAction<ReturnType> = ThunkAction<
-  ReturnType,
-  PopupState,
-  undefined,
-  UnknownAction
->;
-
-export type AppMiddleware = (
-  api: MiddlewareAPI<Dispatch<UnknownAction>, PopupState>,
-) => (next: Dispatch<UnknownAction>) => (action: UnknownAction) => unknown;
+export type PopupStore = StoreApi<PopupState>;

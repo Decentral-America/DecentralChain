@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { usePopupDispatch } from '#popup/store/react';
-import { removeAddress } from '#store/actions/addresses';
+import { removeAddress } from '#popup/store/actions';
 
 import { Button, Modal } from '..';
 import * as styles from './DeleteModal.module.css';
@@ -13,8 +12,6 @@ interface Props {
 
 export function DeleteModal({ address, showModal, setShowModal }: Props) {
   const { t } = useTranslation();
-
-  const dispatch = usePopupDispatch();
 
   return (
     <Modal animation={Modal.ANIMATION.FLASH} showModal={showModal}>
@@ -42,7 +39,7 @@ export function DeleteModal({ address, showModal, setShowModal }: Props) {
           <Button
             className={styles.button}
             onClick={() => {
-              dispatch(removeAddress({ address }));
+              removeAddress({ address });
               setShowModal(false);
             }}
           >

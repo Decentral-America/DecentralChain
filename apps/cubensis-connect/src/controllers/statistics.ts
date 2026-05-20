@@ -1,7 +1,7 @@
 import { setUser } from '@sentry/browser';
 import { nanoid } from 'nanoid';
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import { detectBrowser } from '#lib/detectBrowser';
 import type { WalletTypes } from '#wallets/types';
 import type { Message, MessageTx } from '../messages/types';
@@ -96,7 +96,7 @@ export class StatisticsController {
 
     const userId = initState.userId || nanoid();
     setUser({ id: userId });
-    this.#store = new ObservableStore({ ...initState, userId });
+    this.#store = createStore(() => ({ ...initState, userId }));
     extensionStorage.subscribe(this.#store);
 
     this.#networkController = networkController;
@@ -266,7 +266,7 @@ export class StatisticsController {
 
       if (lastTrackedMs == null || now >= lastTrackedMs + 12 * 60 * 60 * 1000) {
         void track();
-        this.#store.updateState({ ...state, [stateKey]: now });
+        this.#store.setState({ ...state, [stateKey]: now });
       }
     } else {
       void track();

@@ -2,8 +2,8 @@ import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralcha
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { setAddresses } from '#store/actions/addresses';
+import { setAddresses } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { fromEthereumToDccAddress, isEthereumAddress } from '#ui/utils/ethereum';
 
 import { ImportKeystoreChooseFile } from './chooseFile';
@@ -77,7 +77,6 @@ function getFormattedAddresses(
 
 export function ImportAddressBook() {
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const addresses = usePopupSelector((state) => state.addresses);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -112,7 +111,7 @@ export function ImportAddressBook() {
             return;
           }
 
-          dispatch(setAddresses(getFormattedAddresses(addresses, keystoreAddresses)));
+          setAddresses(getFormattedAddresses(addresses, keystoreAddresses));
           void navigate('/import-address-book/success');
         } catch (_err) {
           setError(t('importKeystore.errorUnexpected'));

@@ -3,9 +3,9 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { selectAccount } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { compareAccountsByLastUsed } from '#preferences/utils';
-import { selectAccount } from '#store/actions/localState';
 import { SearchInput } from '#ui/components/ui/searchInput/searchInput';
 import background from '#ui/services/Background';
 
@@ -17,7 +17,6 @@ import * as styles from './otherAccounts.module.css';
 export function OtherAccountsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const accounts = usePopupSelector((state) => state.accounts);
   const activeAccount = usePopupSelector((state) =>
     state.accounts.find(({ address }) => address === state.selectedAccount?.address),
@@ -93,7 +92,7 @@ export function OtherAccountsPage() {
               account={account}
               balance={balancesMoney[account.address]}
               onClick={(clickedAccount) => {
-                dispatch(selectAccount(clickedAccount));
+                selectAccount(clickedAccount);
                 void navigate('/', { replace: true });
               }}
               onInfoClick={(clickedAccount) => {

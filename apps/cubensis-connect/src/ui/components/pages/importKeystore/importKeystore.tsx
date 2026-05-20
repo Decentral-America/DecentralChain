@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 import type { KeystoreProfiles } from '#keystore/types';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { batchAddAccounts } from '#store/actions/user';
+import { batchAddAccounts } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { getNetworkByNetworkCode } from '#ui/utils/network';
 import { WalletTypes } from '../../../services/Background';
 import { ImportKeystoreChooseAccounts } from './chooseAccounts';
@@ -55,7 +55,6 @@ const suffixRe = /\((\d+)\)$/;
 
 export function ImportKeystore() {
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const allNetworksAccounts = usePopupSelector((state) => state.allNetworksAccounts);
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
@@ -147,16 +146,14 @@ export function ImportKeystore() {
       onSubmit={async (selectedAccounts) => {
         invariant(walletType);
 
-        await dispatch(
-          batchAddAccounts({
-            accounts: selectedAccounts.map((acc) => ({
-              type: 'seed',
-              ...acc,
-              network: getNetworkByNetworkCode(acc.networkCode),
-            })),
-            type: walletType,
-          }),
-        );
+        await batchAddAccounts({
+          accounts: selectedAccounts.map((acc) => ({
+            type: 'seed',
+            ...acc,
+            network: getNetworkByNetworkCode(acc.networkCode),
+          })),
+          type: walletType,
+        });
 
         void navigate('/import-keystore/success');
       }}

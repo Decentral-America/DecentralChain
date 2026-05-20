@@ -2,8 +2,8 @@ import { captureException } from '@sentry/browser';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { deleteNotifications } from '#store/actions/notifications';
+import { deleteNotifications } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { ExportButton, ResetButton } from '#ui/components/ui';
 import Background from '#ui/services/Background';
 
@@ -16,7 +16,6 @@ export function ErrorPage() {
 
   const { t } = useTranslation();
 
-  const dispatch = usePopupDispatch();
   const activePopup = usePopupSelector((state) => state.activePopup);
 
   useEffect(() => {
@@ -34,12 +33,12 @@ export function ErrorPage() {
       }
 
       if (activePopup.notify) {
-        dispatch(deleteNotifications(activePopup.notify.map((x) => x.id))).then(() => {
+        deleteNotifications(activePopup.notify.map((x) => x.id)).then(() => {
           void navigate('/messages-and-notifications');
         });
       }
     }
-  }, [activePopup, dispatch, error, navigate]);
+  }, [activePopup, error, navigate]);
 
   return (
     <div className={styles.wrapper}>

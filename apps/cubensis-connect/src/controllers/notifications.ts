@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import type { NotificationsStoreItem } from '#notifications/types';
 import type { PreferencesAccount } from '#preferences/types';
 import { ERRORS } from '../lib/keeperError';
@@ -28,7 +28,7 @@ export class NotificationsController extends TypedEventEmitter {
   }) {
     super();
 
-    this.#store = new ObservableStore(
+    this.#store = createStore(() =>
       extensionStorage.getInitState({
         notifications: [],
       }),
@@ -66,7 +66,7 @@ export class NotificationsController extends TypedEventEmitter {
   }
 
   #updateNotifications(notifications: NotificationsStoreItem[]) {
-    this.#store.updateState({ ...this.#store.getState(), notifications });
+    this.#store.setState({ ...this.#store.getState(), notifications });
     this.emit('Update badge');
   }
 

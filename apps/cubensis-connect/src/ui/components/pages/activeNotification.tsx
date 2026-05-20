@@ -2,19 +2,16 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { deleteNotifications, setShowNotification } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { Button, DateFormat, Input } from '#ui/components/ui';
 import Background from '#ui/services/Background';
-
 import { MessageWallet } from '../../../messages/_common/wallet';
-import { deleteNotifications, setShowNotification } from '../../../store/actions/notifications';
 import * as styles from './activeNotification.module.css';
 
 export function ActiveNotificationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
-
   const activeNotification = usePopupSelector((state) => state.activePopup?.notify);
   invariant(activeNotification);
 
@@ -74,12 +71,10 @@ export function ActiveNotificationPage() {
             }
             type="checkbox"
             onChange={(event) => {
-              dispatch(
-                setShowNotification({
-                  canUse: event.target.checked,
-                  origin: firstNotification.origin,
-                }),
-              );
+              setShowNotification({
+                canUse: event.target.checked,
+                origin: firstNotification.origin,
+              });
             }}
           />
 
@@ -93,7 +88,7 @@ export function ActiveNotificationPage() {
           <Button
             type="button"
             onClick={() => {
-              dispatch(deleteNotifications(activeNotification.map((x) => x.id))).then(() =>
+              deleteNotifications(activeNotification.map((x) => x.id)).then(() =>
                 navigate('/messages-and-notifications'),
               );
             }}
@@ -107,7 +102,7 @@ export function ActiveNotificationPage() {
             id="closeNotification"
             type="button"
             onClick={() => {
-              dispatch(deleteNotifications(activeNotification.map(({ id }) => id)));
+              deleteNotifications(activeNotification.map(({ id }) => id));
 
               Background.closeNotificationWindow();
             }}
@@ -119,12 +114,10 @@ export function ActiveNotificationPage() {
             type="submit"
             view="submit"
             onClick={() => {
-              dispatch(
-                deleteNotifications(
-                  activeNotification.map(({ id }) => id),
-                  notifications.find(
-                    ([item]) => item != null && item.origin !== firstNotification.origin,
-                  ),
+              deleteNotifications(
+                activeNotification.map(({ id }) => id),
+                notifications.find(
+                  ([item]) => item != null && item.origin !== firstNotification.origin,
                 ),
               );
             }}

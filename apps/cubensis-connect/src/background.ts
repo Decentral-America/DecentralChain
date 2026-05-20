@@ -40,7 +40,7 @@ import { PERMISSIONS } from '#permissions/constants';
 import type { PermissionObject } from '#permissions/types';
 import type { IdleOptions, PreferencesAccount } from '#preferences/types';
 import { initSentry } from '#sentry/init';
-import type { UiState } from '#store/reducers/updateState';
+import type { UiState } from '#store/reducers/stateTypes';
 import { fromWebExtensionEvent } from './_core/wonka';
 import type { IgnoreErrorsContext } from './constants';
 import { AddressBookController } from './controllers/AddressBookController';

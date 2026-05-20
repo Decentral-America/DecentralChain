@@ -19,9 +19,9 @@ import type { LeaseTransactionFromNode } from '@decentralchain/ts-types';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
 import { nanoid } from 'nanoid';
-import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import { JSONbn } from '#_core/jsonBn';
 import type { AssetsRecord } from '#assets/types';
 import {
@@ -145,7 +145,7 @@ export class MessageController extends TypedEventEmitter {
   }) {
     super();
 
-    this.store = new ObservableStore(extensionStorage.getInitState({ messages: [] }));
+    this.store = createStore(() => extensionStorage.getInitState({ messages: [] }));
     extensionStorage.subscribe(this.store);
 
     this.assetInfoController = assetInfoController;
@@ -552,7 +552,7 @@ export class MessageController extends TypedEventEmitter {
   }
 
   #updateStore(messages: Message[]) {
-    this.store.updateState({ ...this.store.getState(), messages });
+    this.store.setState({ ...this.store.getState(), messages });
     this.#updateBadge();
   }
 

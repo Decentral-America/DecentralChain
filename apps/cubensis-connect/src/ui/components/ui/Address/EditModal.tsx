@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isAddressString, isAlias } from '#messages/utils';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { removeAddress, setAddress } from '#store/actions/addresses';
+import { removeAddress, setAddress } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 
 import { Button, ErrorMessage, Input, Modal } from '..';
 import * as styles from './EditModal.module.css';
@@ -19,7 +19,6 @@ interface Props {
 export function EditModal({ name, address, showModal, setShowModal, setShowDeleteModal }: Props) {
   const { t } = useTranslation();
 
-  const dispatch = usePopupDispatch();
   const addresses = usePopupSelector((state) => state.addresses);
 
   const [loading, setLoading] = useState(false);
@@ -91,9 +90,9 @@ export function EditModal({ name, address, showModal, setShowModal, setShowDelet
                 if (nameError || addressError) return;
 
                 if (address !== addressValue) {
-                  dispatch(removeAddress({ address }));
+                  removeAddress({ address });
                 }
-                dispatch(setAddress({ address: addressValue, name: nameValue }));
+                setAddress({ address: addressValue, name: nameValue });
                 setLoading(true);
               }}
             >
