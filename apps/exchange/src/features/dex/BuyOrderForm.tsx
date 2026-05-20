@@ -8,7 +8,11 @@ import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useAssetBalance } from '@/api/services/assetsService';
-import { useMatcherSettings, usePlaceOrder } from '@/api/services/matcherService';
+import {
+  getMatcherBaseFee,
+  useMatcherSettings,
+  usePlaceOrder,
+} from '@/api/services/matcherService';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -328,7 +332,7 @@ export const BuyOrderForm: React.FC = () => {
 
     try {
       const ts = Date.now();
-      const matcherFee = matcherSettings.orderFee.dynamic.baseFee;
+      const matcherFee = getMatcherBaseFee(matcherSettings.orderFee);
 
       // Sign the order using the user's seed — produces a valid signed order with proofs
       // signOrder returns Promise<SignedOrderResult> — no cast needed
@@ -363,11 +367,12 @@ export const BuyOrderForm: React.FC = () => {
       });
 
       // Success handling
-      if (result?.id) {
+      // result.message.id: the matcher wraps the accepted order in { success, message: Order, status }
+      if (result.message.id) {
         addUserOrder({
           amount: amount,
           filled: '0',
-          id: result.id,
+          id: result.message.id,
           price: price,
           status: 'pending',
           timestamp: Date.now(),
