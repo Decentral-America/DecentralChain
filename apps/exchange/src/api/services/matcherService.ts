@@ -45,10 +45,15 @@ export interface OrderBook {
 
 /**
  * Order Interface
+ * Matches the order shape in both history responses and the place-order response `message` field.
+ * `assetPair.amountAsset / priceAsset` are `string | null`: null means native DCC (per Waves matcher docs
+ * "WAVES, or null, or omitted field means WAVES/DCC").
  */
 export interface Order {
   id: string;
+  /** Direction: "buy" or "sell" */
   type: OrderSide;
+  /** Execution style: "limit" or "market" (returned by history endpoints) */
   orderType: 'limit' | 'market';
   amount: number;
   price: number;
@@ -57,8 +62,8 @@ export interface Order {
   matcherFee: number;
   status: OrderStatus;
   assetPair: {
-    amountAsset: string;
-    priceAsset: string;
+    amountAsset: string | null;
+    priceAsset: string | null;
   };
   filled: number;
   filledFee?: number;
@@ -108,16 +113,66 @@ export interface CreateOrderData {
 
 /**
  * Matcher Settings
+ * `orderFee` supports multiple fee modes depending on the matcher configuration.
+ * The DCC and Waves matchers support: dynamic, percent, fixed, and composite (which
+ * nests the above under `composite.default`). Always use `getMatcherBaseFee()` to extract
+ * the base fee — never access `orderFee.dynamic` directly.
  */
 export interface MatcherSettings {
   matcherPublicKey: string;
   matcherVersion: string;
   priceAssets: string[];
-  orderFee: {
-    dynamic: {
-      baseFee: number;
-    };
+  orderFee: MatcherOrderFee;
+}
+
+/**
+ * All fee modes supported by the Waves/DCC matcher.
+ * At most one of the top-level keys will be present in a given response.
+ */
+export interface MatcherOrderFee {
+  /** Simple dynamic mode: fee scales with order size. */
+  dynamic?: { baseFee: number };
+  /** Fixed fee in a specific asset. */
+  fixed?: { assetId: string | null; minFee: number };
+  /** Percent fee based on order amount. */
+  percent?: {
+    type: 'amount' | 'price' | 'spending' | 'receiving';
+    minFee: number;
+    minFeeInWaves: number;
   };
+  /**
+   * Composite mode (used in production): wraps dynamic/percent/fixed under a `default` key,
+   * with optional per-pair overrides in `custom` and a discount asset in `discount`.
+   */
+  composite?: {
+    default: MatcherOrderFee;
+    custom?: Record<string, MatcherOrderFee>;
+    discount?: { assetId: string; value: number };
+  };
+}
+
+/**
+ * Extract the base fee (in wavelets) from any matcher fee configuration.
+ * Walks composite nesting and falls back to 300 000 wavelets (0.003 DCC — the
+ * protocol default) when the mode is unrecognised or the field is missing.
+ *
+ * @param fee - The `orderFee` object from `GET /matcher/settings`.
+ */
+export function getMatcherBaseFee(fee: MatcherOrderFee): number {
+  if (fee.dynamic?.baseFee != null) {
+    return fee.dynamic.baseFee;
+  }
+  if (fee.composite?.default != null) {
+    return getMatcherBaseFee(fee.composite.default);
+  }
+  if (fee.fixed?.minFee != null) {
+    return fee.fixed.minFee;
+  }
+  if (fee.percent?.minFeeInWaves != null) {
+    return fee.percent.minFeeInWaves;
+  }
+  // Default DCC/Waves matcher fee: 0.003 DCC = 300 000 wavelets.
+  return 300_000;
 }
 
 /**
@@ -243,7 +298,6 @@ export const useUserOrders = (
     refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
     refetchOnWindowFocus: false,
     retry: 0, // Don't retry since it's not implemented
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5000,
   });
 };
@@ -259,7 +313,6 @@ export const useUserOrders = (
 export const useOrderHistory = (
   address: string,
   activeOnly = false,
-  // biome-ignore lint/correctness/noUnusedFunctionParameters: will be used when DCC-198 is unblocked
   _options?: {
     enabled?: boolean;
   },
@@ -280,7 +333,7 @@ export const useOrderHistory = (
     },
     queryKey: ['orders', 'history', address, activeOnly],
     retry: 0,
-    staleTime: 30000, // 30 seconds
+    staleTime: 30_000, // 30 seconds
   });
 };
 
@@ -323,7 +376,6 @@ export const useTradeHistory = (
     refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
     refetchOnWindowFocus: false,
     retry: 0, // Don't retry
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5000,
   });
 };
@@ -370,13 +422,30 @@ export const useTradingPairs = (options?: {
 };
 
 /**
- * Place Order Mutation
- * Creates a new order on the matcher
+ * Response envelope from `POST /matcher/orderbook` (place-limit-order) and
+ * `POST /matcher/orderbook/market` (place-market-order).
+ *
+ * Per the official Waves Matcher API docs, the response is always wrapped:
+ * ```json
+ * { "success": true, "message": { ...full signed order... }, "status": "OrderAccepted" }
+ * ```
+ * The `id` lives inside `message`, not at the top level.
  */
-export const usePlaceOrder = (): UseMutationResult<Order, Error, CreateOrderData> => {
+export interface PlaceOrderResponse {
+  success: boolean;
+  message: Order;
+  status: 'OrderAccepted';
+}
+
+/**
+ * Place Order Mutation
+ * Creates a new order on the matcher.
+ * Returns `PlaceOrderResponse`; access the order ID via `result.message.id`.
+ */
+export const usePlaceOrder = (): UseMutationResult<PlaceOrderResponse, Error, CreateOrderData> => {
   return useMutation({
     mutationFn: async (orderData: CreateOrderData) => {
-      const { data } = await matcherClient.post<Order>('/orderbook', orderData);
+      const { data } = await matcherClient.post<PlaceOrderResponse>('/orderbook', orderData);
       return data;
     },
   });
