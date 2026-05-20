@@ -110,6 +110,12 @@ importers:
       '@ethereumjs/util':
         specifier: ^10.1.1
         version: 10.1.1
+      '@floating-ui/react-dom':
+        specifier: 2.1.8
+        version: 2.1.8(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@noble/ciphers':
+        specifier: 2.2.0
+        version: 2.2.0
       '@sentry/browser':
         specifier: ^10.51.0
         version: 10.51.0
