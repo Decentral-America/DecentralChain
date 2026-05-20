@@ -167,10 +167,10 @@ async function setupBackgroundService() {
   const tabsManager = new TabsManager({ extensionStorage });
   backgroundService.on('Show tab', (url, name) => {
     backgroundService.emit('closePopupWindow');
-    void tabsManager.getOrCreate(url, name);
+    void tabsManager.getOrCreate(url, name).catch(captureException);
   });
   backgroundService.on('Close current tab', () => {
-    void tabsManager.closeCurrentTab();
+    void tabsManager.closeCurrentTab().catch(captureException);
   });
 
   backgroundService.messageController.clearMessages();
