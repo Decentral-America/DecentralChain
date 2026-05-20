@@ -18,7 +18,6 @@ import {
 import type { LeaseTransactionFromNode } from '@decentralchain/ts-types';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
-import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
@@ -39,7 +38,6 @@ import {
   stringifyOrder,
   stringifyTransaction,
 } from '#messages/utils';
-
 import {
   getExtraFee,
   getFeeOptions,
@@ -47,6 +45,7 @@ import {
   isEnoughBalanceForFeeAndSpendingAmounts,
 } from '../fee/utils';
 import { ERRORS, KeeperError } from '../lib/keeperError';
+import { TypedEventEmitter } from '../lib/TypedEventEmitter';
 import type {
   Message,
   MessageInput,
@@ -118,7 +117,7 @@ function moneyLikeToMoney(amount: MoneyLike, assets: AssetsRecord) {
   return new Money(amount.amount ?? 0, asset);
 }
 
-export class MessageController extends EventEmitter {
+export class MessageController extends TypedEventEmitter {
   private store;
   private networkController;
   private assetInfoController;
