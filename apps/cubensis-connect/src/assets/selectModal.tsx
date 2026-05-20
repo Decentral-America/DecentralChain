@@ -1,10 +1,10 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import clsx from 'clsx';
-import ColorHash from 'color-hash';
 import { cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BalanceAssets } from '#balances/types';
+import { colorFromString } from '#lib/colorFromString';
 import type { NetworkName } from '#networks/types';
 import { Button } from '#ui/components/ui/buttons/Button';
 import { Input } from '#ui/components/ui/input';
@@ -53,7 +53,7 @@ function AssetSelectItem({ className, network, asset, balance, onSelect }: ItemP
           <div
             className={styles.logoPlaceholder}
             style={{
-              backgroundColor: new ColorHash().hex(asset.id),
+              backgroundColor: colorFromString(asset.id),
             }}
           >
             {(asset.displayName[0] ?? '').toUpperCase()}
