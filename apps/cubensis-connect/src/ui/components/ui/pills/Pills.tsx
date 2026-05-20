@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from '../modal/CSSTransition';
+import { TransitionGroup } from '../modal/TransitionGroup';
 
 import { Pill } from './Pill';
 import * as styles from './pills.module.styl';

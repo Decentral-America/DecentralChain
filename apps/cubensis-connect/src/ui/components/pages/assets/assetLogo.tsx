@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import ColorHash from 'color-hash';
+import { colorFromString } from '#lib/colorFromString';
 
 import { useAssetLogo } from '../../../../assets/utils';
 import { usePopupSelector } from '../../../../popup/store/react';
@@ -15,7 +15,7 @@ interface Props {
 
 export function AssetLogo({ className, assetId, name, hasSponsorship, hasScript }: Props) {
   const style = {
-    backgroundColor: new ColorHash().hex(assetId),
+    backgroundColor: colorFromString(assetId),
   };
 
   const network = usePopupSelector((state) => state.currentNetwork);
