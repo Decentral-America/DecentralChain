@@ -39,15 +39,23 @@ genuine correctness fixes alongside the stated hardening. Tracked as DCC-265.
 
 ### Changed
 - Version: `0.3.15.0` → `0.3.16.0` (upstream `0.3.16` + DCC patch `0`)
-- macOS ARM64 native library recompiled from v0.3.16 source with Apple clang 21.0.0
+- All 6 native libraries compiled from v0.3.16 source and committed:
+  - Linux amd64, aarch64, x86 — Ubuntu 24.04 / GCC (native + multilib)
+  - macOS ARM64 — Apple clang 21.0.0 on macOS 15 (macos-15 runner)
+  - macOS x86_64 — Apple clang on macOS 13 (macos-13 runner)
+  - Windows amd64 — MinGW-w64 cross-compile (x86_64-w64-mingw32-g++),
+    statically links libstdc++ + libgcc (no MSVC runtime dependency)
+- All production binaries stripped of non-essential symbols:
+  - Linux: `strip --strip-unneeded` (removes `.symtab` / `.strtab`; ~10–13% smaller)
+  - macOS: `strip -x` (removes local symbols; ~7% smaller)
 - `.github/workflows/build-native.yml` added: reproducible multi-platform native
   library build workflow (Linux amd64/aarch64/x86, macOS ARM64/x86_64, Windows amd64)
 
 ### Notes
 - Java API: no changes — `BlsUtils.java` usage of `P1`, `P2`, `P1_Affine`, `P2_Affine`,
   `SecretKey`, `Pairing` is identical; only the native C implementation changed.
-- Other 5 native platforms (Linux ×3, macOS x86_64, Windows amd64): require
-  cross-compiled binaries via the `build-native.yml` workflow dispatch.
+- All 6 native libraries are available on the classpath for their respective
+  platforms. No additional build step is required at runtime.
 
 ---
 
