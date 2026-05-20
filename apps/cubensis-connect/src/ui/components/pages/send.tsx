@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isAddressString, isAlias } from '#messages/utils';
 import { createNft } from '#nfts/nfts';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { getBalances } from '#store/actions/balances';
+import { refreshBalances } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import Background from '#ui/services/Background';
 
 import { AssetAmountInput } from '../../../assets/amountInput';
@@ -21,7 +21,6 @@ export function Send() {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const chainId = usePopupSelector((state) => state.selectedAccount?.networkCode?.charCodeAt(0));
   const accountBalance = usePopupSelector(
     (state) => state.balances[state.selectedAccount?.address ?? ''],
@@ -59,9 +58,9 @@ export function Send() {
 
   useEffect(() => {
     if (!assetBalances) {
-      dispatch(getBalances());
+      refreshBalances();
     }
-  }, [assetBalances, dispatch]);
+  }, [assetBalances]);
 
   const currentBalance = asset
     ? Money.fromCoins(!isNft ? (assetBalances?.[asset.id]?.balance ?? 0) : 1, new Asset(asset))

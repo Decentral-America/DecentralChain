@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isAddressString, isAlias } from '#messages/utils';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { setAddress } from '#store/actions/addresses';
+import { setAddress } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 
 import { Button, ErrorMessage, Input, Modal } from '../';
 import * as styles from './AddModal.module.css';
@@ -17,7 +17,6 @@ interface Props {
 export function AddModal({ showModal, setShowModal, address }: Props) {
   const { t } = useTranslation();
 
-  const dispatch = usePopupDispatch();
   const addresses = usePopupSelector((state) => state.addresses);
 
   const [loading, setLoading] = useState(false);
@@ -88,7 +87,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                 }
 
                 if (address) {
-                  dispatch(setAddress({ address, name }));
+                  setAddress({ address, name });
                   setLoading(true);
                   return;
                 }
@@ -103,7 +102,7 @@ export function AddModal({ showModal, setShowModal, address }: Props) {
                   return;
                 }
 
-                dispatch(setAddress({ address: addressValue, name }));
+                setAddress({ address: addressValue, name });
                 setLoading(true);
               }}
             >

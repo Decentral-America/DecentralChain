@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 import { usePopupSelector } from '#popup/store/react';
-import type { NewAccountState } from '#store/reducers/localState';
+import type { NewAccountState } from '#store/reducers/stateTypes';
 import type { PillsListItem } from '../ui';
 import { Button, ErrorMessage, Pills } from '../ui';
 import * as styles from './styles/confirmBackup.module.styl';

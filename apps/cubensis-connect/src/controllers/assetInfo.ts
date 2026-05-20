@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import { isNotNull } from '#_core/isNotNull';
 import type { AssetDetail } from '#assets/types';
 import { NetworkName } from '#networks/types';
@@ -82,7 +82,7 @@ export class AssetInfoController {
       assetTickers: defaultAssetTickers,
       usdPrices: {},
     });
-    this.store = new ObservableStore(initState);
+    this.store = createStore(() => initState);
     extensionStorage.subscribe(this.store);
 
     this.#remoteConfig = remoteConfig;
@@ -126,7 +126,7 @@ export class AssetInfoController {
         asset.displayName = asset.ticker = ticker;
       });
 
-      this.store.updateState({ assets });
+      this.store.setState({ assets });
     }
   }
 
@@ -173,7 +173,7 @@ export class AssetInfoController {
             ...assets[network][assetId],
             ...this.toAssetDetails(assetInfo),
           };
-          this.store.updateState({ assets });
+          this.store.setState({ assets });
           break;
         }
         case 400: {
@@ -225,7 +225,7 @@ export class AssetInfoController {
     }
 
     asset.isFavorite = !asset.isFavorite;
-    this.store.updateState({ assets });
+    this.store.setState({ assets });
   }
 
   async #fetchAssetsBatch(nodeUrl: string, assetIds: string[]) {
@@ -286,7 +286,7 @@ export class AssetInfoController {
         };
       });
 
-      this.store.updateState({ assets });
+      this.store.setState({ assets });
     }
   }
 
@@ -313,7 +313,7 @@ export class AssetInfoController {
 
     const updatedUsdPrices: Record<string, string> = await response.json();
 
-    this.store.updateState({
+    this.store.setState({
       usdPrices: {
         ...usdPrices,
         ...updatedUsdPrices,
@@ -334,7 +334,7 @@ export class AssetInfoController {
           url: string;
         }>;
 
-        this.store.updateState(
+        this.store.setState(
           assets.reduce(
             (acc, { id, ticker, url }) => ({
               assetLogos: {

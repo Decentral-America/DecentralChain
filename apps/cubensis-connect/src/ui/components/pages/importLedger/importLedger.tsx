@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { LedgerServiceStatus, ledgerService } from '#ledger/service';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { newAccountSelect } from '#store/actions/localState';
+import { newAccountSelect } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { Button } from '#ui/components/ui/buttons/Button';
 import { ErrorMessage } from '#ui/components/ui/error';
 import { Input } from '#ui/components/ui/input';
@@ -51,7 +51,6 @@ interface LedgerUser {
 export function ImportLedger() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const accounts = usePopupSelector((state) => state.accounts);
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const customCodes = usePopupSelector((state) => state.customCodes);
@@ -288,16 +287,14 @@ export function ImportLedger() {
                   return;
                 }
 
-                dispatch(
-                  newAccountSelect({
-                    address: selectedUser.address,
-                    hasBackup: true,
-                    id: selectedUser.id,
-                    name: '',
-                    publicKey: selectedUser.publicKey,
-                    type: 'ledger',
-                  }),
-                );
+                newAccountSelect({
+                  address: selectedUser.address,
+                  hasBackup: true,
+                  id: selectedUser.id,
+                  name: '',
+                  publicKey: selectedUser.publicKey,
+                  type: 'ledger',
+                });
 
                 void navigate('/account-name');
               }}
