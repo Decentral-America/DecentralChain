@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import ColorHash from 'color-hash';
 import { useState } from 'react';
 import type { BalanceAssets } from '#balances/types';
+import { colorFromString } from '#lib/colorFromString';
 import type { NetworkName } from '#networks/types';
 import { Modal } from '#ui/components/ui/modal/Modal';
 
@@ -42,7 +42,7 @@ export function AssetSelect({ assetBalances, network, options, value, onChange }
           <div
             className={clsx(styles.logo, styles.logo_placeholder)}
             style={{
-              backgroundColor: new ColorHash().hex(value),
+              backgroundColor: colorFromString(value),
             }}
           >
             {asset.displayName[0]?.toUpperCase()}

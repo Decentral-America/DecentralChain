@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { CSSTransition } from 'react-transition-group';
 import invariant from 'tiny-invariant';
+import { CSSTransition } from './CSSTransition';
 
 import * as styles from './modal.module.styl';
 
