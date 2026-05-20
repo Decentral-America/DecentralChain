@@ -4,15 +4,16 @@
  * Allows users to specify price, amount, and automatically calculates total
  */
 
-import { useMutation } from '@tanstack/react-query';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useAssetBalance } from '@/api/services/assetsService';
+import { useMatcherSettings, usePlaceOrder } from '@/api/services/matcherService';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useDexStore } from '@/stores/dexStore';
 
 /**
@@ -296,60 +297,86 @@ export const SellOrderForm: React.FC = () => {
     return true;
   };
 
-  /**
-   * Create sell order mutation
-   */
-  const sellMutation = useMutation({
-    mutationFn: async () => {
-      if (!validate()) {
-        throw new Error('Validation failed');
-      }
+  // Matcher settings + signing
+  const { data: matcherSettings, isError: isMatcherSettingsError } = useMatcherSettings();
+  const placeOrderMutation = usePlaceOrder();
+  const { signOrder, isSigning, error: signingError, clearError } = useTransactionSigning();
 
-      // In production, this would use @decentralchain/transactions order() function
-      // For now, create a mock order transaction
-      const orderTx = {
-        amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
-        assetPair: {
-          amountAsset: selectedPair?.amountAsset || null,
-          priceAsset: selectedPair?.priceAsset || null,
-        },
-        expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
-        matcherFee: 300000, // 0.003 DCC
-        matcherPublicKey: '', // Would be fetched from matcher
+  // Show signing error alongside form-level error; both clear on next submission attempt
+  const displayError = error || signingError?.message || null;
+
+  /**
+   * Handle sell order submission
+   */
+  const handleSellOrder = async () => {
+    clearError();
+    if (!validate()) {
+      return;
+    }
+
+    if (!matcherSettings?.matcherPublicKey) {
+      setError(
+        isMatcherSettingsError
+          ? 'Unable to fetch matcher settings — check your network connection'
+          : 'Matcher settings not loaded. Please wait and try again.',
+      );
+      return;
+    }
+
+    try {
+      const ts = Date.now();
+      const matcherFee = matcherSettings.orderFee.dynamic.baseFee;
+
+      // Sign the order using the user's seed — produces a valid signed order with proofs
+      const signedOrder = (await signOrder({
+        amount: Math.round(parseFloat(amount) * 100000000),
+        amountAsset: selectedPair?.amountAsset || null,
+        expiration: ts + 29 * 24 * 60 * 60 * 1000,
+        matcherFee,
+        matcherPublicKey: matcherSettings.matcherPublicKey,
         orderType: 'sell',
-        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
-        senderPublicKey: user?.publicKey || '',
-        timestamp: Date.now(),
-        type: 7, // Order transaction type
+        price: Math.round(parseFloat(price) * 100000000),
+        priceAsset: selectedPair?.priceAsset || null,
+        timestamp: ts,
         version: 3,
+      })) as {
+        id: string;
+        orderType: 'buy' | 'sell';
+        assetPair: { amountAsset: string | null; priceAsset: string | null };
+        amount: number;
+        price: number;
+        timestamp: number;
+        expiration: number;
+        matcherFee: number;
+        matcherFeeAssetId?: string | null;
+        matcherPublicKey: string;
+        senderPublicKey: string;
+        proofs: string[];
+        version: number;
       };
 
-      // Send to matcher
-      const response = await fetch('/api/matcher/orderbook', {
-        body: JSON.stringify(orderTx),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
+      const result = await placeOrderMutation.mutateAsync({
+        amount: signedOrder.amount,
+        assetPair: signedOrder.assetPair,
+        expiration: signedOrder.expiration,
+        id: signedOrder.id,
+        matcherFee: signedOrder.matcherFee,
+        matcherFeeAssetId: signedOrder.matcherFeeAssetId ?? null,
+        matcherPublicKey: signedOrder.matcherPublicKey,
+        orderType: signedOrder.orderType,
+        price: signedOrder.price,
+        proofs: signedOrder.proofs,
+        senderPublicKey: signedOrder.senderPublicKey,
+        timestamp: signedOrder.timestamp,
+        version: signedOrder.version,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to place order');
-      }
-
-      return response.json();
-    },
-    onError: (err: Error) => {
-      setError(err.message || 'Failed to place sell order');
-    },
-    onSuccess: (data) => {
       // Add order to local state for immediate UI update
-      if (data.orderId) {
+      if (result?.id) {
         addUserOrder({
           amount: amount,
           filled: '0',
-          id: data.orderId,
+          id: result.id,
           price: price,
           status: 'pending',
           timestamp: Date.now(),
@@ -362,8 +389,16 @@ export const SellOrderForm: React.FC = () => {
       setAmount('');
       setSelectedPercentage(null);
       setError('');
-    },
-  });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to place sell order';
+      setError(errorMessage);
+    }
+  };
+
+  const sellMutation = {
+    isPending: placeOrderMutation.isPending || isSigning,
+    mutate: handleSellOrder,
+  };
 
   /**
    * Handle percentage button click
@@ -391,9 +426,7 @@ export const SellOrderForm: React.FC = () => {
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      sellMutation.mutate();
-    }
+    void sellMutation.mutate();
   };
 
   if (!selectedPair) {
@@ -493,7 +526,7 @@ export const SellOrderForm: React.FC = () => {
         </InfoRow>
 
         {/* Error Message */}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {displayError && <ErrorMessage>{displayError}</ErrorMessage>}
 
         {/* Submit Button */}
         <Button

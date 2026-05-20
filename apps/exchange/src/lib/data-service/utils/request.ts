@@ -9,8 +9,7 @@ export function request<T>(params: IRequestParams<T>): Promise<T> {
       normalizeUrl(params.url),
       params.fetchOptions ?? (Object.create(null) as RequestInit),
     ).then(async (response) => {
-      const isJSON = response.headers
-        .get('Content-Type')
+      const isJSON = (response.headers.get('Content-Type') ?? '')
         .toLowerCase()
         .includes('application/json');
       if (response.ok) {

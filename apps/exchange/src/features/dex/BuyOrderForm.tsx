@@ -13,6 +13,7 @@ import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useDexStore } from '@/stores/dexStore';
 
 /**
@@ -303,43 +304,76 @@ export const BuyOrderForm: React.FC = () => {
   };
 
   // Get matcher settings for public key and fees
-  const { data: matcherSettings } = useMatcherSettings();
+  const { data: matcherSettings, isError: isMatcherSettingsError } = useMatcherSettings();
   const placeOrderMutation = usePlaceOrder();
+  const { signOrder, isSigning, error: signingError, clearError } = useTransactionSigning();
 
   /**
    * Handle buy order submission
    */
   const handleBuyOrder = async () => {
+    clearError();
     if (!validate()) {
       return;
     }
 
     if (!matcherSettings?.matcherPublicKey) {
-      setError('Matcher settings not loaded');
+      setError(
+        isMatcherSettingsError
+          ? 'Unable to fetch matcher settings — check your network connection'
+          : 'Matcher settings not loaded. Please wait and try again.',
+      );
       return;
     }
 
     try {
-      // Create order parameters for the matcher
-      const orderData = {
-        amount: Math.round(parseFloat(amount) * 100000000), // Convert to satoshi
-        assetPair: {
-          amountAsset: selectedPair?.amountAsset || '',
-          priceAsset: selectedPair?.priceAsset || '',
-        },
-        expiration: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
-        matcherFee: matcherSettings.orderFee.dynamic.baseFee,
+      const ts = Date.now();
+      const matcherFee = matcherSettings.orderFee.dynamic.baseFee;
+
+      // Sign the order using the user's seed — produces a valid signed order with proofs
+      const signedOrder = (await signOrder({
+        amount: Math.round(parseFloat(amount) * 100000000),
+        amountAsset: selectedPair?.amountAsset || null,
+        expiration: ts + 29 * 24 * 60 * 60 * 1000,
+        matcherFee,
         matcherPublicKey: matcherSettings.matcherPublicKey,
-        orderType: 'limit' as const, // Use 'limit' for buy orders
-        price: Math.round(parseFloat(price) * 100000000), // Convert to satoshi
-        proofs: [], // Will be signed by user's wallet
-        senderPublicKey: user?.publicKey || '',
-        timestamp: Date.now(),
+        orderType: 'buy',
+        price: Math.round(parseFloat(price) * 100000000),
+        priceAsset: selectedPair?.priceAsset || null,
+        timestamp: ts,
         version: 3,
+      })) as {
+        id: string;
+        orderType: 'buy' | 'sell';
+        assetPair: { amountAsset: string | null; priceAsset: string | null };
+        amount: number;
+        price: number;
+        timestamp: number;
+        expiration: number;
+        matcherFee: number;
+        matcherFeeAssetId?: string | null;
+        matcherPublicKey: string;
+        senderPublicKey: string;
+        proofs: string[];
+        version: number;
       };
 
-      // Place order via matcher API
-      const result = await placeOrderMutation.mutateAsync(orderData);
+      // Place signed order via matcher API
+      const result = await placeOrderMutation.mutateAsync({
+        amount: signedOrder.amount,
+        assetPair: signedOrder.assetPair,
+        expiration: signedOrder.expiration,
+        id: signedOrder.id,
+        matcherFee: signedOrder.matcherFee,
+        matcherFeeAssetId: signedOrder.matcherFeeAssetId ?? null,
+        matcherPublicKey: signedOrder.matcherPublicKey,
+        orderType: signedOrder.orderType,
+        price: signedOrder.price,
+        proofs: signedOrder.proofs,
+        senderPublicKey: signedOrder.senderPublicKey,
+        timestamp: signedOrder.timestamp,
+        version: signedOrder.version,
+      });
 
       // Success handling
       if (result?.id) {
@@ -367,9 +401,12 @@ export const BuyOrderForm: React.FC = () => {
 
   // Create a mutation-like object for consistency with the component's API
   const buyMutation = {
-    isPending: placeOrderMutation.isPending,
+    isPending: placeOrderMutation.isPending || isSigning,
     mutate: handleBuyOrder,
   };
+
+  // Show signing error if present (user can retry — button is re-enabled on completion)
+  const displayError = error || signingError?.message || null;
 
   /**
    * Handle percentage button click - calculates amount based on available balance
@@ -507,7 +544,7 @@ export const BuyOrderForm: React.FC = () => {
         </InfoRow>
 
         {/* Error Message */}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {displayError && <ErrorMessage>{displayError}</ErrorMessage>}
 
         {/* Submit Button */}
         <Button

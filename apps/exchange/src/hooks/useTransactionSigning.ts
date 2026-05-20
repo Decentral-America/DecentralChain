@@ -16,6 +16,7 @@ import {
   type IIssueParams,
   type ILeaseParams,
   type IMassTransferParams,
+  type IOrderParams,
   type IReissueParams,
   type ISetAssetScriptParams,
   type ISetScriptParams,
@@ -25,6 +26,7 @@ import {
   issue,
   lease,
   massTransfer,
+  order,
   reissue,
   setAssetScript,
   setScript,
@@ -85,6 +87,9 @@ export interface UseTransactionSigningReturn {
   signInvokeScript: (
     params: Omit<IInvokeScriptParams, 'chainId' | 'senderPublicKey'>,
   ) => Promise<unknown>;
+
+  // DEX Orders
+  signOrder: (params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
 
   // State
   isSigning: boolean;
@@ -293,6 +298,15 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
     [withSigning, getSeed, networkByte],
   );
 
+  const signOrder = useCallback(
+    (params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>) =>
+      withSigning(
+        () => order({ ...params, chainId: networkByte } as IOrderParams, getSeed()),
+        'Order',
+      ),
+    [withSigning, getSeed, networkByte],
+  );
+
   return {
     clearError,
     error,
@@ -305,6 +319,7 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
     signIssue,
     signLease,
     signMassTransfer,
+    signOrder,
     signReissue,
     signSetAssetScript,
     signSetScript,
