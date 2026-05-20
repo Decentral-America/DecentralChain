@@ -87,8 +87,10 @@ export interface CreateOrderData {
   id?: string;
   /** Order side: 'buy' or 'sell' — NOT the limit/market distinction. */
   orderType: 'buy' | 'sell';
-  amount: number;
-  price: number;
+  /** LONG: string for amounts that may exceed Number.MAX_SAFE_INTEGER, number for typical amounts. */
+  amount: number | string;
+  /** LONG: string for prices that may exceed Number.MAX_SAFE_INTEGER, number for typical prices. */
+  price: number | string;
   matcherFee: number;
   matcherFeeAssetId?: string | null;
   matcherPublicKey: string;
@@ -257,18 +259,27 @@ export const useUserOrders = (
 export const useOrderHistory = (
   address: string,
   activeOnly = false,
-  options?: {
+  // biome-ignore lint/correctness/noUnusedFunctionParameters: will be used when DCC-198 is unblocked
+  _options?: {
     enabled?: boolean;
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    enabled: !!address && options?.enabled !== false,
+    // Disable until matcher authentication is implemented — same blocker as useUserOrders.
+    // /orderbook/:address requires EdDSA/HMAC auth header; returns HTTP 400 without it.
+    // When Gate 3 is live: re-enable and add authentication header (DCC-198).
+    enabled: false, // was: !!address && options?.enabled !== false,
     queryFn: async () => {
-      const status = activeOnly ? '/activeOnly' : '';
-      const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}${status}`);
-      return data;
+      logger.warn('[useOrderHistory] Skipped: matcher authentication not yet wired (DCC-198)');
+      return [];
+
+      // Original implementation (requires authentication):
+      // const status = activeOnly ? '/activeOnly' : '';
+      // const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}${status}`);
+      // return data;
     },
     queryKey: ['orders', 'history', address, activeOnly],
+    retry: 0,
     staleTime: 30000, // 30 seconds
   });
 };
