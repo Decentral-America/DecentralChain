@@ -68,6 +68,36 @@ Recompiled all 6 native libraries with production-grade hardening flags:
 - **Windows amd64 (DLL)**: added `-Wl,--dynamicbase,--nxcompat,--high-entropy-va`
   (ASLR, DEP/NX, 64-bit high-entropy ASLR). PE DllCharacteristics confirmed:
   `DYNAMIC_BASE | NX_COMPAT | HIGH_ENTROPY_VA`. MinGW-w64 GCC 13 (Ubuntu 24.04).
+
+### Security hardening (native binaries — third audit)
+Third pass: control-flow integrity, stack-clash prevention, zero-initialization,
+and supply-chain source pinning. Recompiled all 6 libraries.
+
+- **Linux amd64 + x86 — Intel CET (`-fcf-protection=full`)**: enables Control-flow
+  Enforcement Technology — IBT (Indirect Branch Tracking, `ENDBR64`/`ENDBR32`
+  instructions at valid indirect-call targets) and SHSTK (Shadow Stack, hardware
+  return address protection). Confirmed via `readelf -n`:
+  `NT_GNU_PROPERTY_TYPE_0: x86 feature: IBT, SHSTK`.
+- **Linux aarch64 — ARM BTI + PAC-RET (`-mbranch-protection=standard`)**: enables
+  Branch Target Identification (BTI landing pads at indirect-call targets) and
+  Pointer Authentication Code for return addresses (PAC-RET). Standard profile =
+  `bti+pac-ret` per GCC documentation. Supported since GCC 9 / Linux 5.8.
+- **Linux + Windows — stack-clash protection (`-fstack-clash-protection`)**: inserts
+  stack page probes when allocating large stack frames, preventing stack-clash attacks
+  (adjacent-segment heap-to-stack or mmap-to-stack collisions). GCC 8.1+. Not added
+  to macOS: Apple Clang 21 does not implement this flag (compiler warning confirmed).
+- **Linux + Windows — libstdc++ bounds checks (`-D_GLIBCXX_ASSERTIONS`)**: enables
+  runtime bounds checking in libstdc++ containers (e.g., `std::vector::operator[]`,
+  iterator validity). No-op on macOS (uses libc++ which has separate hardening modes).
+- **All platforms — zero-init locals (`-ftrivial-auto-var-init=zero`)**: zero-initializes
+  all uninitialized local variables before first use, eliminating stack data leakage
+  from uninitialized memory. GCC 12+ / Clang 8+. Verified supported on Apple Clang 21.
+- **Supply-chain pinning (`build-native.yml`)**: all three build jobs now verify the
+  blst commit hash after clone. For v0.3.16, expected SHA `e7f90de551e8df682f3cc99067d204d8b90d27ad`
+  (lightweight tag, confirmed via `git ls-remote`). Fails CI on tag-poisoning attacks.
+  Unknown tags emit a warning and skip the check (extendable per-tag in the `case` block).
+- **`build-native.yml` Linux matrix**: added `extra_security_flags` per arch —
+  amd64 + x86: `-fcf-protection=full`; aarch64: `-mbranch-protection=standard`.
 - All binaries compiled with GCC 13.3.0 / Apple Clang 21.0.0 / MinGW GCC 13,
   all from blst v0.3.16 source, all pass `mvn verify` (blst 6/6, crypto 33/33).
 

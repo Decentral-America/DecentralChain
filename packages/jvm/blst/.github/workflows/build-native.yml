@@ -56,18 +56,21 @@ jobs:
             cc: gcc
             cxx: g++
             extra_cflags: ""
+            extra_security_flags: "-fcf-protection=full"    # Intel CET: IBT + shadow stack (x86_64)
             resource_dir: Linux/amd64
           - arch: aarch64
             runner: ubuntu-24.04-arm      # Native ARM64 — no cross-compile needed.
             cc: gcc                       # uname -m = aarch64 → build.sh selects ARM64 asm.
             cxx: g++
             extra_cflags: ""
+            extra_security_flags: "-mbranch-protection=standard"  # ARM64 BTI + PAC-RET
             resource_dir: Linux/aarch64
           - arch: x86
             runner: ubuntu-24.04
             cc: gcc
             cxx: g++
             extra_cflags: "-m32"
+            extra_security_flags: "-fcf-protection=full"    # Intel CET: IBT + shadow stack (i686+)
             resource_dir: Linux/x86
 
     steps:
@@ -90,6 +93,21 @@ jobs:
         run: |
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
+
+      - name: Verify blst ${{ env.BLST_TAG }} source integrity
+        run: |
+          ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
+          case "${BLST_TAG}" in
+            "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
+            *) echo "WARNING: no pinned SHA for ${BLST_TAG} — update workflow on tag upgrade" && exit 0 ;;
+          esac
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "FATAL: blst ${BLST_TAG} commit hash mismatch — possible supply-chain attack"
+            echo "  expected: $EXPECTED"
+            echo "  actual:   $ACTUAL"
+            exit 1
+          fi
+          echo "OK blst ${BLST_TAG}: $ACTUAL"
 
       - name: Build libblst.a
         run: |
@@ -120,6 +138,9 @@ jobs:
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
               -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=3 \
+              -fstack-clash-protection -D_GLIBCXX_ASSERTIONS \
+              -ftrivial-auto-var-init=zero \
+              ${{ matrix.extra_security_flags }} \
               -Wall -Wno-unused-function \
               -Wl,-Bsymbolic,-z,relro,-z,now,-z,noexecstack \
               /tmp/blst-swig-out/blst_wrap.cpp \
@@ -173,6 +194,21 @@ jobs:
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
 
+      - name: Verify blst ${{ env.BLST_TAG }} source integrity
+        run: |
+          ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
+          case "${BLST_TAG}" in
+            "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
+            *) echo "WARNING: no pinned SHA for ${BLST_TAG} — update workflow on tag upgrade" && exit 0 ;;
+          esac
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "FATAL: blst ${BLST_TAG} commit hash mismatch — possible supply-chain attack"
+            echo "  expected: $EXPECTED"
+            echo "  actual:   $ACTUAL"
+            exit 1
+          fi
+          echo "OK blst ${BLST_TAG}: $ACTUAL"
+
       - name: Build libblst.a
         run: |
           cd /tmp/blst-src
@@ -198,7 +234,7 @@ jobs:
               -I"$JNI_MD" \
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
-              -O2 -fstack-protector-strong -Wall -Wno-unused-function \
+              -O2 -fstack-protector-strong -ftrivial-auto-var-init=zero -Wall -Wno-unused-function \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
           strip -x /tmp/libblst.dylib
@@ -248,6 +284,21 @@ jobs:
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
 
+      - name: Verify blst ${{ env.BLST_TAG }} source integrity
+        run: |
+          ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
+          case "${BLST_TAG}" in
+            "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
+            *) echo "WARNING: no pinned SHA for ${BLST_TAG} — update workflow on tag upgrade" && exit 0 ;;
+          esac
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "FATAL: blst ${BLST_TAG} commit hash mismatch — possible supply-chain attack"
+            echo "  expected: $EXPECTED"
+            echo "  actual:   $ACTUAL"
+            exit 1
+          fi
+          echo "OK blst ${BLST_TAG}: $ACTUAL"
+
       - name: Build libblst.a (MinGW)
         run: |
           cd /tmp/blst-src
@@ -276,6 +327,8 @@ jobs:
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
               -O2 -Wall -Wno-unused-function \
+              -fstack-clash-protection -D_GLIBCXX_ASSERTIONS \
+              -ftrivial-auto-var-init=zero \
               -static-libstdc++ -static-libgcc \
               -Wl,--dynamicbase,--nxcompat,--high-entropy-va \
               /tmp/blst-swig-out/blst_wrap.cpp \
