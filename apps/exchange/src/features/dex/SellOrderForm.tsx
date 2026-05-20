@@ -13,7 +13,7 @@ import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { useTransactionSigning } from '@/hooks/useTransactionSigning';
+import { type SignedOrderResult, useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useDexStore } from '@/stores/dexStore';
 
 /**
@@ -328,7 +328,8 @@ export const SellOrderForm: React.FC = () => {
       const matcherFee = matcherSettings.orderFee.dynamic.baseFee;
 
       // Sign the order using the user's seed — produces a valid signed order with proofs
-      const signedOrder = (await signOrder({
+      // signOrder returns Promise<SignedOrderResult> — no cast needed
+      const signedOrder: SignedOrderResult = await signOrder({
         amount: Math.round(parseFloat(amount) * 100000000),
         amountAsset: selectedPair?.amountAsset || null,
         expiration: ts + 29 * 24 * 60 * 60 * 1000,
@@ -339,21 +340,7 @@ export const SellOrderForm: React.FC = () => {
         priceAsset: selectedPair?.priceAsset || null,
         timestamp: ts,
         version: 3,
-      })) as {
-        id: string;
-        orderType: 'buy' | 'sell';
-        assetPair: { amountAsset: string | null; priceAsset: string | null };
-        amount: number;
-        price: number;
-        timestamp: number;
-        expiration: number;
-        matcherFee: number;
-        matcherFeeAssetId?: string | null;
-        matcherPublicKey: string;
-        senderPublicKey: string;
-        proofs: string[];
-        version: number;
-      };
+      });
 
       const result = await placeOrderMutation.mutateAsync({
         amount: signedOrder.amount,
@@ -390,6 +377,16 @@ export const SellOrderForm: React.FC = () => {
       setSelectedPercentage(null);
       setError('');
     } catch (err) {
+      // SigningError (thrown by withSigning) is already captured in signingError state.
+      // Only set form-level error for non-signing failures (e.g. network error on placeOrder).
+      if (
+        err != null &&
+        typeof err === 'object' &&
+        'code' in err &&
+        (err as { code: string }).code === 'SIGNING_FAILED'
+      ) {
+        return;
+      }
       const errorMessage = err instanceof Error ? err.message : 'Failed to place sell order';
       setError(errorMessage);
     }
@@ -397,7 +394,6 @@ export const SellOrderForm: React.FC = () => {
 
   const sellMutation = {
     isPending: placeOrderMutation.isPending || isSigning,
-    mutate: handleSellOrder,
   };
 
   /**
@@ -426,7 +422,7 @@ export const SellOrderForm: React.FC = () => {
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void sellMutation.mutate();
+    void handleSellOrder();
   };
 
   if (!selectedPair) {

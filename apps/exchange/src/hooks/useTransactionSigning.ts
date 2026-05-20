@@ -50,6 +50,35 @@ export interface SigningError {
 }
 
 /**
+ * Shape of the signed order produced by @decentralchain/transactions order() after
+ * cryptographic signing. Fields are set deterministically by the builder.
+ *
+ * - `amount`/`price` are LONG (string | number) per the library's generic — we pass
+ *   numbers from the form so the runtime value is always `number` for typical trade
+ *   amounts (safe up to 90,071,992 DCC; string should be used for larger values).
+ * - `id` is the base58-encoded blake2b hash of the serialised order bytes.
+ */
+export interface SignedOrderResult {
+  /** Base58-encoded order id (blake2b hash of serialised order bytes). */
+  id: string;
+  orderType: 'buy' | 'sell';
+  assetPair: {
+    amountAsset: string | null;
+    priceAsset: string | null;
+  };
+  amount: number | string;
+  price: number | string;
+  timestamp: number;
+  expiration: number;
+  matcherFee: number;
+  matcherFeeAssetId?: string | null;
+  matcherPublicKey: string;
+  senderPublicKey: string;
+  proofs: string[];
+  version: number;
+}
+
+/**
  * Hook return type
  */
 export interface UseTransactionSigningReturn {
@@ -89,7 +118,9 @@ export interface UseTransactionSigningReturn {
   ) => Promise<unknown>;
 
   // DEX Orders
-  signOrder: (params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>) => Promise<unknown>;
+  signOrder: (
+    params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>,
+  ) => Promise<SignedOrderResult>;
 
   // State
   isSigning: boolean;
@@ -138,10 +169,15 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
       );
     }
 
-    const storedUsers = JSON.parse(localStorage.getItem(MULTI_ACCOUNT_USERS_KEY) ?? '{}') as Record<
-      string,
-      Record<string, unknown>
-    >;
+    let storedUsers: Record<string, Record<string, unknown>>;
+    try {
+      storedUsers = JSON.parse(localStorage.getItem(MULTI_ACCOUNT_USERS_KEY) ?? '{}') as Record<
+        string,
+        Record<string, unknown>
+      >;
+    } catch {
+      throw new Error('Account data corrupted — please re-authenticate');
+    }
 
     const entry = multiAccount.toList(storedUsers).find((u) => u.publicKey === user.publicKey);
 
@@ -158,18 +194,25 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
    * Error-handling wrapper. Calls fn() directly (no type params) so each
    * builder is invoked at its own call-site, letting TypeScript pick the
    * correct first overload rather than the wider last-overload fallback.
+   *
+   * Uses `await fn()` so that async signers (e.g. Ledger hardware wallet)
+   * have their rejections caught by this try/catch rather than propagating
+   * as unhandled promise rejections.
    */
   const withSigning = useCallback(
     async (fn: () => unknown, transactionType: string): Promise<unknown> => {
       setIsSigning(true);
       setError(null);
       try {
-        return fn();
+        return await fn();
       } catch (err) {
+        // Surface the actual error message so users see actionable copy, not a generic fallback.
+        const message =
+          err instanceof Error ? err.message : `Failed to sign ${transactionType} transaction`;
         const signingError: SigningError = {
           code: 'SIGNING_FAILED',
           details: err,
-          message: `Failed to sign ${transactionType} transaction`,
+          message,
         };
         setError(signingError);
         throw signingError;
@@ -299,11 +342,11 @@ export const useTransactionSigning = (): UseTransactionSigningReturn => {
   );
 
   const signOrder = useCallback(
-    (params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>) =>
+    (params: Omit<IOrderParams, 'chainId' | 'senderPublicKey'>): Promise<SignedOrderResult> =>
       withSigning(
         () => order({ ...params, chainId: networkByte } as IOrderParams, getSeed()),
         'Order',
-      ),
+      ) as Promise<SignedOrderResult>,
     [withSigning, getSeed, networkByte],
   );
 
