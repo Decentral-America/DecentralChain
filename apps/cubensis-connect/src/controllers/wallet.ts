@@ -8,7 +8,6 @@ import {
 } from '@decentralchain/crypto';
 import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
 import { randomBytes } from '@noble/ciphers/utils.js';
-import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
 import type { NetworkName } from '#networks/types';
@@ -20,8 +19,8 @@ import { PrivateKeyWallet } from '#wallets/privateKey';
 import { SeedWallet } from '#wallets/seed';
 import type { CreateWalletInput, WalletPrivateData } from '#wallets/types';
 import type { Wallet } from '#wallets/wallet';
-
 import { NETWORK_CONFIG } from '../constants';
+import { TypedEventEmitter } from '../lib/TypedEventEmitter';
 import type { ExtensionStorage } from '../storage/storage';
 import { CONFIG } from '../ui/appConfig';
 import type { AssetInfoController } from './assetInfo';
@@ -58,7 +57,7 @@ function decryptVault(vault: string, key: Uint8Array): WalletPrivateData[] {
   }
 }
 
-export class WalletController extends EventEmitter {
+export class WalletController extends TypedEventEmitter {
   #assetInfo;
   #ledger;
   /** Derived Argon2id vault key (32-byte raw). Never the password. */

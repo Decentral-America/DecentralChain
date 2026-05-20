@@ -1,8 +1,8 @@
-import { EventEmitter } from 'events';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
 import type { IgnoreErrorsContext } from '../constants';
 import { DEFAULT_MAIN_CONFIG, STATUS } from '../constants';
+import { TypedEventEmitter } from '../lib/TypedEventEmitter';
 import type { ExtensionStorage } from '../storage/storage';
 
 // biome-ignore lint/suspicious/noExplicitAny: extendValues merges heterogeneous config objects — Record<string,unknown> is the structural minimum but any preserves mutable index signatures
@@ -36,7 +36,7 @@ const escapeRegExp = (value: string): string => {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
-export class RemoteConfigController extends EventEmitter {
+export class RemoteConfigController extends TypedEventEmitter {
   store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
