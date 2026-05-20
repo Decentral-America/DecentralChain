@@ -4,7 +4,7 @@ import type { MessageInputOfType, MessageTx, MoneyLike } from '#messages/types';
 import type { NetworkName } from '#networks/types';
 import type { PermissionObject } from '#permissions/types';
 import type { PreferencesAccount } from '#preferences/types';
-import type { UiState } from '#store/reducers/updateState';
+import type { UiState } from '#store/reducers/stateTypes';
 import type { CreateWalletInput } from '#wallets/types';
 
 import type { IgnoreErrorsContext } from '../../constants';

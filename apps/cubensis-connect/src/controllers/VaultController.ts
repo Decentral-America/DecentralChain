@@ -1,4 +1,4 @@
-import ObservableStore from 'obs-store';
+import { createStore } from 'zustand/vanilla';
 
 import type { ExtensionStorage } from '../storage/storage';
 import type { WalletController } from './wallet';
@@ -15,7 +15,7 @@ export class VaultController {
     extensionStorage: ExtensionStorage;
     wallet: WalletController;
   }) {
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({ initialized: false, locked: false }),
     );
 
@@ -23,7 +23,7 @@ export class VaultController {
 
     this.#wallet = wallet;
 
-    this.store.updateState({
+    this.store.setState({
       initialized: Boolean(wallet.store.getState().WalletController.vault),
       locked: !extensionStorage.getInitSession().vaultKeyBytes,
     });
@@ -31,17 +31,17 @@ export class VaultController {
 
   async init(password: string) {
     await this.#wallet.initVault(password);
-    this.store.updateState({ initialized: true, locked: false });
+    this.store.setState({ initialized: true, locked: false });
   }
 
   lock() {
     this.#wallet.lock();
-    this.store.updateState({ locked: true });
+    this.store.setState({ locked: true });
   }
 
   async unlock(password: string) {
     await this.#wallet.unlock(password);
-    this.store.updateState({ locked: false });
+    this.store.setState({ locked: false });
   }
 
   async update(oldPassword: string, newPassword: string) {
@@ -50,7 +50,7 @@ export class VaultController {
 
   async clear() {
     await this.#wallet.deleteVault();
-    this.store.updateState({ initialized: false, locked: true });
+    this.store.setState({ initialized: false, locked: true });
   }
 
   isLocked() {
@@ -71,15 +71,18 @@ export class VaultController {
     const state = this.#wallet.store.getState().WalletController as LegacyWalletState;
 
     if (state.initialized != null) {
-      this.store.updateState({ initialized: state.initialized });
+      this.store.setState({ initialized: state.initialized });
       delete state.locked;
       delete state.initialized;
-      this.#wallet.store.putState({
-        WalletController: {
-          vaultPepper: undefined as string | undefined,
-          ...state,
+      this.#wallet.store.setState(
+        {
+          WalletController: {
+            vaultPepper: undefined as string | undefined,
+            ...state,
+          },
         },
-      });
+        true,
+      );
     }
   }
 }

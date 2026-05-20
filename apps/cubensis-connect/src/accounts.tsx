@@ -6,12 +6,11 @@ import { setTag, setUser } from '@sentry/browser';
 import i18next from 'i18next';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import { onEnd, pipe, publish } from 'wonka';
-
-import { createAccountsStore } from './accounts/store/create';
+import { accountsStore } from './accounts/store/accountsStore';
+import { setLoading } from './accounts/store/actions';
 import { createUpdateState } from './accounts/updateState';
 import { AccountsRoot } from './accountsRoot';
 import type { UiApi } from './background';
@@ -20,7 +19,6 @@ import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } fr
 import { ledgerService } from './ledger/service';
 import type { LedgerSignRequest } from './ledger/types';
 import { initSentry } from './sentry/init';
-import { setLoading } from './store/actions/localState';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { RootWrapper } from './ui/components/RootWrapper';
 import Background, { type BackgroundUiApi } from './ui/services/Background';
@@ -37,8 +35,6 @@ initSentry({
   source: 'accounts',
 });
 
-const store = createAccountsStore();
-
 void Promise.all([
   Browser.storage.local
     .get('currentLocale')
@@ -52,16 +48,14 @@ void Promise.all([
   createRoot(rootEl).render(
     <StrictMode>
       <ErrorBoundary>
-        <Provider store={store}>
-          <RootWrapper>
-            <AccountsRoot />
-          </RootWrapper>
-        </Provider>
+        <RootWrapper>
+          <AccountsRoot />
+        </RootWrapper>
       </ErrorBoundary>
     </StrictMode>,
   );
 
-  const updateState = createUpdateState(store);
+  const updateState = createUpdateState();
 
   Browser.storage.onChanged.addListener(async (changes, area) => {
     if (area !== 'local') {
@@ -83,7 +77,7 @@ void Promise.all([
         }
       },
       ledgerSignRequest: async (request: LedgerSignRequest) => {
-        const { selectedAccount } = store.getState();
+        const { selectedAccount } = accountsStore.getState();
         invariant(selectedAccount);
         await ledgerService.queueSignRequest(selectedAccount, request);
       },
@@ -115,7 +109,7 @@ void Promise.all([
     setUser(state.userId ? { id: state.userId } : null);
     setTag('network', state.currentNetwork);
     updateState(state);
-    store.dispatch(setLoading(false));
+    setLoading(false);
 
     Background.init(background);
 

@@ -1,16 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 import Background from '#ui/services/Background';
 
-import { setUiState } from '../../../store/actions/uiState';
+import { mergeUiState } from '../../../popup/store/actions';
 import { Button, PowerButton } from '../ui';
 import { Tooltip } from '../ui/tooltip';
 import * as styles from './styles/settings.module.styl';
 
 export function Settings() {
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
   const autoClickProtection = usePopupSelector((state) => state.uiState.autoClickProtection);
@@ -109,11 +108,9 @@ export function Settings() {
         <div className={`${styles.clickProtection} tag1`} data-testid="clickProtection">
           <PowerButton
             onClick={() => {
-              dispatch(
-                setUiState({
-                  autoClickProtection: !autoClickProtection,
-                }),
-              );
+              mergeUiState({
+                autoClickProtection: !autoClickProtection,
+              });
             }}
             enabled={autoClickProtection}
             data-testid="clickProtectionBtn"

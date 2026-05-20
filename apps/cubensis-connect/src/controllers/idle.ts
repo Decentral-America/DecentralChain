@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 import type { IdleOptions } from '#preferences/types';
 
 import type { ExtensionStorage } from '../storage/storage';
@@ -32,7 +32,7 @@ export class IdleController {
     };
     this.preferencesController = preferencesController;
     this.vaultController = vaultController;
-    this.store = new ObservableStore(extensionStorage.getInitState({ lastUpdateIdle: Date.now() }));
+    this.store = createStore(() => extensionStorage.getInitState({ lastUpdateIdle: Date.now() }));
     this.lastUpdateIdle = this.store.getState().lastUpdateIdle;
     extensionStorage.subscribe(this.store);
     this.start();
@@ -57,7 +57,7 @@ export class IdleController {
 
   update() {
     this.lastUpdateIdle = Date.now();
-    this.store.updateState({ lastUpdateIdle: this.lastUpdateIdle });
+    this.store.setState({ lastUpdateIdle: this.lastUpdateIdle });
     this.start();
   }
 

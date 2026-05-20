@@ -8,8 +8,8 @@ import {
 } from '@decentralchain/crypto';
 import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
 import { randomBytes } from '@noble/ciphers/utils.js';
-import ObservableStore from 'obs-store';
 import invariant from 'tiny-invariant';
+import { createStore } from 'zustand/vanilla';
 import type { NetworkName } from '#networks/types';
 import { DebugWallet } from '#wallets/debug';
 import { EncodedSeedWallet } from '#wallets/encodedSeed';
@@ -81,7 +81,7 @@ export class WalletController extends TypedEventEmitter {
   }) {
     super();
 
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         WalletController: {
           vault: undefined as string | undefined,
@@ -171,7 +171,7 @@ export class WalletController extends TypedEventEmitter {
     );
     // Shallow-merge: preserve vaultSalt alongside vault.
     const current = this.store.getState().WalletController;
-    this.store.updateState({ WalletController: { ...current, vault } });
+    this.store.setState({ WalletController: { ...current, vault } });
   }
 
   async #restoreWallets(): Promise<void> {
@@ -303,7 +303,7 @@ export class WalletController extends TypedEventEmitter {
     // against attacks that compromise only the vault blob (e.g., via a backup file or
     // a partial storage leak). This limitation is inherent to the browser extension model.
     const current = this.store.getState().WalletController;
-    this.store.updateState({
+    this.store.setState({
       WalletController: {
         ...current,
         vaultPepper: base64Encode(pepper),
@@ -325,7 +325,7 @@ export class WalletController extends TypedEventEmitter {
     this.#setVaultKey(null);
     this.#wallets = [];
     this.emit('updateWallets');
-    this.store.updateState({
+    this.store.setState({
       WalletController: { vault: undefined, vaultPepper: undefined, vaultSalt: undefined },
     });
   }
@@ -356,7 +356,7 @@ export class WalletController extends TypedEventEmitter {
     const newKey = await deriveKey(utf8Encode(newPassword), newSalt, newPepper);
 
     const current = this.store.getState().WalletController;
-    this.store.updateState({
+    this.store.setState({
       WalletController: {
         ...current,
         vaultPepper: base64Encode(newPepper),

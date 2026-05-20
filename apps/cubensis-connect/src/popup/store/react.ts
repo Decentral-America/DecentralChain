@@ -1,6 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useStore } from 'zustand';
 
-import type { PopupDispatch, PopupState } from './types';
+import type { PopupState } from './popupStore';
+import { popupStore } from './popupStore';
 
-export const usePopupSelector = useSelector.withTypes<PopupState>();
-export const usePopupDispatch = useDispatch.withTypes<PopupDispatch>();
+export type { PopupState };
+
+export const usePopupSelector = <T>(selector: (state: PopupState) => T): T =>
+  useStore(popupStore, selector);

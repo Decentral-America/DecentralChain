@@ -1,15 +1,14 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 
-import { setIdle } from '../../../store/actions/localState';
+import { setIdle } from '../../../popup/store/actions';
 import { Button, Select } from '../ui';
 import * as styles from './styles/settings.module.styl';
 
 export function SettingsGeneral() {
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const { t } = useTranslation();
 
   const idle = usePopupSelector((state) => (state.config?.idle ?? {}) as Record<string, number>);
@@ -35,7 +34,7 @@ export function SettingsGeneral() {
             fill
             selectList={selectList}
             selected={idleOptions.type ?? ''}
-            onSelectItem={(id: string | number) => dispatch(setIdle(id as string))}
+            onSelectItem={(id: string | number) => setIdle(id as string)}
           />
         </div>
 

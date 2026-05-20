@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { isAddressString } from '#messages/utils';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { createAccount } from '#store/actions/user';
+import { createAccount } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import * as styles from '#ui/components/pages/importDebug.module.css';
 import { Button, ErrorMessage, Input } from '#ui/components/ui';
 import { WalletTypes } from '#ui/services/Background';
@@ -13,7 +13,6 @@ import { NETWORK_CONFIG } from '../../../constants';
 export function ImportDebug() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const accounts = usePopupSelector((state) => state.accounts);
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const customCodes = usePopupSelector((state) => state.customCodes);
@@ -69,16 +68,14 @@ export function ImportDebug() {
             return;
           }
 
-          await dispatch(
-            createAccount({
-              account: {
-                address,
-                name,
-                type: 'debug',
-              },
-              type: WalletTypes.Debug,
-            }),
-          );
+          await createAccount({
+            account: {
+              address,
+              name,
+              type: 'debug',
+            },
+            type: WalletTypes.Debug,
+          });
 
           void navigate('/import-success');
         }}

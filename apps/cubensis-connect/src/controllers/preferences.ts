@@ -1,5 +1,5 @@
 import { addBreadcrumb } from '@sentry/browser';
-import ObservableStore from 'obs-store';
+import { createStore } from 'zustand/vanilla';
 import type { NetworkName } from '#networks/types';
 import type { IdleOptions } from '#preferences/types';
 import { compareAccountsByLastUsed } from '#preferences/utils';
@@ -24,7 +24,7 @@ export class PreferencesController extends TypedEventEmitter {
   }) {
     super();
 
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         accounts: [],
         currentLocale: initLangCode ?? 'en',
@@ -49,11 +49,11 @@ export class PreferencesController extends TypedEventEmitter {
   }
 
   setCurrentLocale(key: string) {
-    this.store.updateState({ currentLocale: key });
+    this.store.setState({ currentLocale: key });
   }
 
   setIdleOptions(options: IdleOptions) {
-    this.store.updateState({ idleOptions: options });
+    this.store.setState({ idleOptions: options });
   }
 
   syncAccounts(fromKeyrings: WalletAccount[]) {
@@ -67,7 +67,7 @@ export class PreferencesController extends TypedEventEmitter {
         ),
       );
     });
-    this.store.updateState({ accounts });
+    this.store.setState({ accounts });
 
     this.ensureSelectedAccountInCurrentNetwork();
   }
@@ -110,7 +110,7 @@ export class PreferencesController extends TypedEventEmitter {
 
     account.name = label;
 
-    this.store.updateState({
+    this.store.setState({
       accounts,
 
       // selectedAccount can point to a separate object, not an accounts array
@@ -143,7 +143,7 @@ export class PreferencesController extends TypedEventEmitter {
         });
       }
 
-      this.store.updateState({
+      this.store.setState({
         accounts,
         selectedAccount: accounts.find(
           (account) => account.address === address && account.network === network,

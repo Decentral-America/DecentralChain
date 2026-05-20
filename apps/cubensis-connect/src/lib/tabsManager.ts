@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { createStore } from 'zustand/vanilla';
 
 import type { ExtensionStorage } from '../storage/storage';
 
@@ -7,7 +7,7 @@ export class TabsManager {
   #store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.#store = new ObservableStore(extensionStorage.getInitState({ tabs: {} }));
+    this.#store = createStore(() => extensionStorage.getInitState({ tabs: {} }));
 
     extensionStorage.subscribe(this.#store);
   }
@@ -36,7 +36,7 @@ export class TabsManager {
       await Browser.tabs.update(existingTab.id, updateProperties);
     } else {
       const newTab = await Browser.tabs.create({ url });
-      this.#store.updateState({ tabs: { ...tabs, [key]: { ...newTab, url } } });
+      this.#store.setState({ tabs: { ...tabs, [key]: { ...newTab, url } } });
     }
   }
 

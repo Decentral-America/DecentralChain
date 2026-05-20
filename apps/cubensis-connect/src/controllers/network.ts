@@ -1,6 +1,6 @@
 import type { TransactionFromNode } from '@decentralchain/ts-types';
 import { addBreadcrumb, setTag } from '@sentry/browser';
-import ObservableStore from 'obs-store';
+import { createStore } from 'zustand/vanilla';
 import { JSONbn } from '#_core/jsonBn';
 import type { MessageOrder, MessageTx } from '#messages/types';
 import { stringifyOrder, stringifyTransaction } from '#messages/utils';
@@ -13,7 +13,7 @@ export class NetworkController {
   store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         currentNetwork: NetworkName.Mainnet,
         customCodes: {
@@ -52,7 +52,7 @@ export class NetworkController {
       type: 'user',
     });
 
-    this.store.updateState({ currentNetwork: network });
+    this.store.setState({ currentNetwork: network });
   }
 
   getNetwork() {
@@ -62,19 +62,19 @@ export class NetworkController {
   setCustomNode(url: string | null, network: NetworkName = NetworkName.Mainnet) {
     const { customNodes } = this.store.getState();
     customNodes[network] = url;
-    this.store.updateState({ customNodes });
+    this.store.setState({ customNodes });
   }
 
   setCustomMatcher(url: string | null, network: NetworkName) {
     const { customMatchers } = this.store.getState();
     customMatchers[network] = url;
-    this.store.updateState({ customMatchers });
+    this.store.setState({ customMatchers });
   }
 
   setCustomCode(code: string | null, network: NetworkName) {
     const { customCodes } = this.store.getState();
     customCodes[network] = code;
-    this.store.updateState({ customCodes });
+    this.store.setState({ customCodes });
   }
 
   getCustomCodes() {

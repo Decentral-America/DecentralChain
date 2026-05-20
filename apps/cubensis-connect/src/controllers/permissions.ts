@@ -1,6 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import ObservableStore from 'obs-store';
+import { createStore } from 'zustand/vanilla';
 import { isNotNull } from '#_core/isNotNull';
 import type { MessageTx } from '#messages/types';
 import { PERMISSIONS } from '#permissions/constants';
@@ -32,7 +32,7 @@ export class PermissionsController {
     extensionStorage: ExtensionStorage;
     remoteConfig: RemoteConfigController;
   }) {
-    this.store = new ObservableStore(
+    this.store = createStore(() =>
       extensionStorage.getInitState({
         inPending: {},
         origins: {},
@@ -52,7 +52,7 @@ export class PermissionsController {
   }
 
   setMessageIdAccess(origin: string, messageId: string | null) {
-    this.updateState({ inPending: { [origin]: messageId } });
+    this.store.setState({ inPending: { [origin]: messageId } });
   }
 
   getPermissions(origin: string) {
@@ -103,12 +103,12 @@ export class PermissionsController {
       delete origins[origin];
     }
 
-    this.store.updateState({ ...other, origins });
+    this.store.setState({ ...other, origins });
   }
 
   setPermissions(origin: string, permissions: PermissionValue[]) {
     this.setMessageIdAccess(origin, null);
-    this.updateState({ origins: { [origin]: permissions } });
+    this.store.setState({ origins: { [origin]: permissions } });
   }
 
   setPermission(origin: string, permission: PermissionValue) {
@@ -297,7 +297,7 @@ export class PermissionsController {
       whitelist,
     };
 
-    this.store.updateState(newState);
+    this.store.setState(newState);
   }
 
   _updateBlackWhitelist() {
@@ -322,14 +322,14 @@ export class PermissionsController {
       { ...origins },
     );
 
-    this.updateState({ origins: newOrigins });
+    this.store.setState({ origins: newOrigins });
   }
 
   _updateByConfig() {
     const { whitelist } = this.remoteConfig.store.getState();
-    this.updateState({ whitelist });
+    this.store.setState({ whitelist });
     this.remoteConfig.store.subscribe(({ whitelist }) => {
-      this.updateState({ whitelist });
+      this.store.setState({ whitelist });
       this._updateBlackWhitelist();
     });
   }

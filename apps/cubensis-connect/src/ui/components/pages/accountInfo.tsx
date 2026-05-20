@@ -2,8 +2,8 @@ import { Asset, Money } from '@decentralchain/data-entities';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { notificationChangeName } from '#store/actions/localState';
+import { notificationChangeName } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 
 import Background from '../../services/Background';
 import { getAccountLink } from '../../urls';
@@ -16,7 +16,6 @@ export function AccountInfo() {
   const navigate = useNavigate();
   const params = useParams<{ address: string }>();
 
-  const dispatch = usePopupDispatch();
   const assets = usePopupSelector((state) => state.assets);
   const balances = usePopupSelector((state) => state.balances);
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
@@ -28,8 +27,8 @@ export function AccountInfo() {
   useEffect(() => {
     if (!showChangeNameNotification) return;
 
-    setTimeout(() => dispatch(notificationChangeName(false)), 1000);
-  }, [dispatch, showChangeNameNotification]);
+    setTimeout(() => notificationChangeName(false), 1000);
+  }, [showChangeNameNotification]);
 
   const account = usePopupSelector((state) =>
     state.accounts.find((x) => x.address === params.address),

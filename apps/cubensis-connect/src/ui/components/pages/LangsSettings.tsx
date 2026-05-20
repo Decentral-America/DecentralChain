@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '#i18n/constants';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { usePopupSelector } from '#popup/store/react';
 
-import { setLocale } from '../../../store/actions/user';
+import { setLocale } from '../../../popup/store/actions';
 import { Button } from '../ui';
 import * as styles from './LangsSettings.module.css';
 
@@ -40,7 +40,6 @@ const Lang = ({ id, name, setSelected, selected }: LangProps) => {
 export const LangsSettings = () => {
   const { t } = useTranslation();
 
-  const dispatch = usePopupDispatch();
   const currentLocale = usePopupSelector((state) => state.currentLocale);
 
   const [selected, setSelected] = useState(currentLocale);
@@ -69,7 +68,7 @@ export const LangsSettings = () => {
                 return;
               }
 
-              dispatch(setLocale(selected));
+              setLocale(selected);
             }}
             type="submit"
             view="submit"

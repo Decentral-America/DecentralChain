@@ -2,11 +2,10 @@ import './global.css';
 import './ui/styles/app.module.styl';
 import './ui/styles/icons.module.styl';
 
-import { setTag, setUser } from '@sentry/browser';
+import { addBreadcrumb, setTag, setUser } from '@sentry/browser';
 import i18next from 'i18next';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
 import { onEnd, pipe, publish } from 'wonka';
@@ -18,11 +17,11 @@ import { i18nextInit } from './i18n/init';
 import { createIpcCallProxy, fromWebExtensionPort, handleMethodCallRequests } from './ipc/ipc';
 import { ledgerService } from './ledger/service';
 import type { LedgerSignRequest } from './ledger/types';
-import { createPopupStore } from './popup/store/create';
+import { setLoading } from './popup/store/actions';
+import { popupStore } from './popup/store/popupStore';
 import { createUpdateState } from './popup/updateState';
 import { PopupRoot } from './popupRoot';
 import { initSentry } from './sentry/init';
-import { setLoading } from './store/actions/localState';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { RootWrapper } from './ui/components/RootWrapper';
 import Background, { type BackgroundUiApi } from './ui/services/Background';
@@ -39,7 +38,32 @@ initSentry({
   source: 'popup',
 });
 
-const store = createPopupStore();
+// Subscribe Sentry breadcrumbs to store changes (replaces sentry.ts middleware)
+popupStore.subscribe((state, prevState) => {
+  addBreadcrumb({
+    category: 'store.change',
+    type: 'info',
+  });
+
+  if (state.currentNetwork !== prevState.currentNetwork) {
+    setTag('network', state.currentNetwork);
+    addBreadcrumb({
+      category: 'network-change',
+      level: 'info',
+      message: `Change network to ${state.currentNetwork}`,
+      type: 'user',
+    });
+  }
+
+  if (state.selectedAccount !== prevState.selectedAccount) {
+    addBreadcrumb({
+      category: 'account-change',
+      level: 'info',
+      message: 'Change active account',
+      type: 'user',
+    });
+  }
+});
 
 void Promise.all([
   Browser.storage.local
@@ -54,20 +78,18 @@ void Promise.all([
   createRoot(rootEl).render(
     <StrictMode>
       <ErrorBoundary>
-        <Provider store={store}>
-          <RootWrapper>
-            <UsdPricesProvider>
-              <SignProvider>
-                <PopupRoot />
-              </SignProvider>
-            </UsdPricesProvider>
-          </RootWrapper>
-        </Provider>
+        <RootWrapper>
+          <UsdPricesProvider>
+            <SignProvider>
+              <PopupRoot />
+            </SignProvider>
+          </UsdPricesProvider>
+        </RootWrapper>
       </ErrorBoundary>
     </StrictMode>,
   );
 
-  const updateState = createUpdateState(store);
+  const updateState = createUpdateState();
 
   Browser.storage.onChanged.addListener(async (changes, area) => {
     if (area !== 'local') {
@@ -99,7 +121,7 @@ void Promise.all([
         }
       },
       ledgerSignRequest: async (request: LedgerSignRequest) => {
-        const { selectedAccount } = store.getState();
+        const { selectedAccount } = popupStore.getState();
         invariant(selectedAccount);
         await ledgerService.queueSignRequest(selectedAccount, request);
       },
@@ -141,7 +163,7 @@ void Promise.all([
     setUser(state.userId ? { id: state.userId } : null);
     setTag('network', state.currentNetwork);
     updateState(state);
-    store.dispatch(setLoading(false));
+    setLoading(false);
 
     Background.init(background);
 

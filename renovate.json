@@ -17,10 +17,7 @@
     "i18next-resources-to-backend",
     "identity-img",
     "normalize.css",
-    "obs-store",
     "react-transition-group",
-    "redux",
-    "redux-logger",
     "tiny-invariant",
     "ts-utils",
     "webextension-polyfill"

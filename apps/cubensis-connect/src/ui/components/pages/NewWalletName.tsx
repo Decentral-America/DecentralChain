@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useAccountsDispatch, useAccountsSelector } from '#accounts/store/react';
-import { newAccountName, selectAccount } from '#store/actions/localState';
-import { createAccount } from '#store/actions/user';
+import { createAccount, selectAccount, setNewAccountName } from '#accounts/store/actions';
+import { useAccountsSelector } from '#accounts/store/react';
 import { CONFIG } from '#ui/appConfig';
 import { Button, ErrorMessage, Input } from '#ui/components/ui';
 import { WalletTypes } from '#ui/services/Background';
@@ -13,8 +12,6 @@ import * as styles from './newWalletName.module.css';
 export function NewWalletName() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const dispatch = useAccountsDispatch();
-
   const account = useAccountsSelector((state) => state.localState.newAccount);
   const accounts = useAccountsSelector((state) => state.accounts);
   const [accountName, setAccountName] = useState('');
@@ -24,7 +21,7 @@ export function NewWalletName() {
   const existingAccount = accounts.find(({ address }) => address === account.address);
 
   useEffect(() => {
-    dispatch(newAccountName(accountName));
+    setNewAccountName(accountName);
 
     setError(null);
 
@@ -43,7 +40,7 @@ export function NewWalletName() {
         }),
       );
     }
-  }, [accountName, accounts, existingAccount, dispatch, t]);
+  }, [accountName, accounts, existingAccount, t]);
 
   return (
     <div data-testid="newWalletNameForm" className={styles.content}>
@@ -56,7 +53,7 @@ export function NewWalletName() {
           setPending(true);
 
           if (existingAccount) {
-            dispatch(selectAccount(existingAccount));
+            selectAccount(existingAccount);
             void navigate('/import-success');
             return;
           }
@@ -72,7 +69,7 @@ export function NewWalletName() {
             seed: WalletTypes.Seed,
           };
 
-          await dispatch(createAccount({ account, type: accountTypeToWalletType[account.type] }));
+          await createAccount({ account, type: accountTypeToWalletType[account.type] });
 
           void navigate('/import-success');
         }}

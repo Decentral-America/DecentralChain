@@ -101,9 +101,12 @@ describe('WalletController vault cryptography', () => {
     // Flip the last character in the base64 string (safe ASCII manipulation).
     const corrupted = vault!.slice(0, -1) + (vault!.at(-1) === 'A' ? 'B' : 'A');
     // Manually overwrite the vault in the store to simulate storage corruption.
-    controller.store.updateState({
-      WalletController: { ...vaultState, vault: corrupted },
-    });
+    controller.store.setState(
+      {
+        WalletController: { ...vaultState, vault: corrupted },
+      },
+      true,
+    );
 
     await expect(controller.assertPasswordIsValid('test-password')).rejects.toThrow(
       'Invalid password',

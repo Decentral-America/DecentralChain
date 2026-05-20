@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
+import { notificationChangeName } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import type { PreferencesAccount } from '#preferences/types';
-import { notificationChangeName } from '#store/actions/localState';
 import Background from '#ui/services/Background';
 
 import { CONFIG } from '../../appConfig';
@@ -39,7 +39,6 @@ export function ChangeAccountName() {
   const navigate = useNavigate();
   const params = useParams<{ address: string }>();
 
-  const dispatch = usePopupDispatch();
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const accounts = usePopupSelector((state) => state.accounts);
 
@@ -71,7 +70,7 @@ export function ChangeAccountName() {
 
           await Background.editWalletName(account?.address ?? '', newName, currentNetwork);
 
-          dispatch(notificationChangeName(true));
+          notificationChangeName(true);
 
           void navigate(-1);
         }}

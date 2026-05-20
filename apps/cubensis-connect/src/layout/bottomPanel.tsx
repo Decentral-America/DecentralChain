@@ -6,14 +6,14 @@ import Browser from 'webextension-polyfill';
 
 import { NETWORK_CONFIG } from '../constants';
 import { NetworkName } from '../networks/types';
-import { usePopupDispatch, usePopupSelector } from '../popup/store/react';
-import { setLoading } from '../store/actions/localState';
 import {
   setCustomCode,
   setCustomMatcher,
   setCustomNode,
+  setLoading,
   setNetwork,
-} from '../store/actions/network';
+} from '../popup/store/actions';
+import { usePopupSelector } from '../popup/store/react';
 import { Modal } from '../ui/components/ui';
 import { Tooltip } from '../ui/components/ui/tooltip';
 import * as styles from './bottomPanel.module.css';
@@ -25,16 +25,14 @@ interface Props {
 
 export function BottomPanel({ allowChangingNetwork }: Props) {
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
-
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
   const customMatcher = usePopupSelector((state) => state.customMatcher);
   const customNodes = usePopupSelector((state) => state.customNodes);
 
   const setNewNetwork = async (network: NetworkName) => {
-    dispatch(setLoading(true));
-    await dispatch(setNetwork(network));
-    setTimeout(() => dispatch(setLoading(false)), 1000);
+    setLoading(true);
+    await setNetwork(network);
+    setTimeout(() => setLoading(false), 1000);
   };
 
   const [isDropdownShown, setIsDropdownShown] = useState(false);
@@ -172,27 +170,21 @@ export function BottomPanel({ allowChangingNetwork }: Props) {
                   setIsCustomNetworkModalShown(false);
                 }}
                 onSave={({ matcher, networkCode, node }) => {
-                  dispatch(
-                    setCustomCode({
-                      code: networkCode,
-                      network: NetworkName.Custom,
-                    }),
-                  );
+                  setCustomCode({
+                    code: networkCode,
+                    network: NetworkName.Custom,
+                  });
 
-                  dispatch(
-                    setCustomNode({
-                      network: NetworkName.Custom,
-                      node,
-                    }),
-                  );
+                  setCustomNode({
+                    network: NetworkName.Custom,
+                    node,
+                  });
 
                   if (matcher) {
-                    dispatch(
-                      setCustomMatcher({
-                        matcher,
-                        network: NetworkName.Custom,
-                      }),
-                    );
+                    setCustomMatcher({
+                      matcher,
+                      network: NetworkName.Custom,
+                    });
                   }
 
                   setIsCustomNetworkModalShown(false);

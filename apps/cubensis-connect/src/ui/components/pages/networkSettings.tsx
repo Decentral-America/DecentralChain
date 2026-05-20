@@ -4,16 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { NETWORK_CONFIG } from '../../../constants';
 import { NetworkName } from '../../../networks/types';
-import { usePopupDispatch, usePopupSelector } from '../../../popup/store/react';
-import { setCustomCode, setCustomMatcher, setCustomNode } from '../../../store/actions/network';
+import { setCustomCode, setCustomMatcher, setCustomNode } from '../../../popup/store/actions';
+import { usePopupSelector } from '../../../popup/store/react';
 import { getMatcherPublicKey, getNetworkCode } from '../../utils/network';
 import { Button, Copy, ErrorMessage, Input, Modal } from '../ui';
 import * as styles from './styles/settings.module.styl';
 
 export function NetworkSettings() {
   const { t } = useTranslation();
-
-  const dispatch = usePopupDispatch();
 
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
 
@@ -83,17 +81,15 @@ export function NetworkSettings() {
           getNetworkCode(nodeValue).then(
             (networkCode) => {
               if (currentNetwork === NetworkName.Custom) {
-                dispatch(setCustomCode({ code: networkCode, network: currentNetwork }));
+                setCustomCode({ code: networkCode, network: currentNetwork });
               } else if (networkCode !== defaultNetworkConfig.networkCode) {
                 return false;
               }
 
-              dispatch(
-                setCustomNode({
-                  network: currentNetwork,
-                  node: nodeValue === defaultNetworkConfig.nodeBaseUrl ? null : nodeValue,
-                }),
-              );
+              setCustomNode({
+                network: currentNetwork,
+                node: nodeValue === defaultNetworkConfig.nodeBaseUrl ? null : nodeValue,
+              });
 
               return true;
             },
@@ -102,13 +98,10 @@ export function NetworkSettings() {
 
           getMatcherPublicKey(matcherValue).then(
             () => {
-              dispatch(
-                setCustomMatcher({
-                  matcher:
-                    matcherValue === defaultNetworkConfig.matcherBaseUrl ? null : matcherValue,
-                  network: currentNetwork,
-                }),
-              );
+              setCustomMatcher({
+                matcher: matcherValue === defaultNetworkConfig.matcherBaseUrl ? null : matcherValue,
+                network: currentNetwork,
+              });
 
               return true;
             },
@@ -207,9 +200,9 @@ export function NetworkSettings() {
           }
           id="setDefault"
           onClick={() => {
-            dispatch(setCustomNode({ network: currentNetwork, node: null }));
+            setCustomNode({ network: currentNetwork, node: null });
 
-            dispatch(setCustomMatcher({ matcher: null, network: currentNetwork }));
+            setCustomMatcher({ matcher: null, network: currentNetwork });
 
             setNodeValue(defaultNetworkConfig.nodeBaseUrl);
             setNodeError(false);

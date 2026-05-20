@@ -1,4 +1,4 @@
-import ObservableStore from 'obs-store';
+import { createStore } from 'zustand/vanilla';
 
 import type { ExtensionStorage } from '../storage/storage';
 
@@ -13,7 +13,7 @@ export class TrashController {
   #store;
 
   constructor({ extensionStorage }: { extensionStorage: ExtensionStorage }) {
-    this.#store = new ObservableStore(extensionStorage.getInitState({ data: [] }));
+    this.#store = createStore(() => extensionStorage.getInitState({ data: [] }));
 
     extensionStorage.subscribe(this.#store);
   }
@@ -26,6 +26,6 @@ export class TrashController {
       newData.splice(0, newData.length - MAX_ITEMS);
     }
 
-    this.#store.updateState({ data: newData });
+    this.#store.setState({ data: newData });
   }
 }

@@ -1,22 +1,16 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-
+import { deleteNotifications, setActiveMessage, setActiveNotification } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 import { MessageWallet } from '../../../messages/_common/wallet';
 import { getMessageConfig } from '../../../messages/getMessageConfig';
-import {
-  deleteNotifications,
-  setActiveMessage,
-  setActiveNotification,
-} from '../../../store/actions/notifications';
 import { Button } from '../ui/buttons/Button';
 import * as styles from './messagesAndNotifications.module.css';
 import * as transactionsStyles from './styles/transactions.module.css';
 
 export function MessagesAndNotificationsPage() {
   const { t } = useTranslation();
-  const dispatch = usePopupDispatch();
   const messages = usePopupSelector((state) => state.messages);
   const notifications = usePopupSelector((state) => state.notifications);
   const selectedAccount = usePopupSelector((state) => state.selectedAccount);
@@ -46,9 +40,7 @@ export function MessagesAndNotificationsPage() {
                 type="button"
                 view="transparent"
                 onClick={() => {
-                  dispatch(
-                    deleteNotifications(notifications.flatMap((item) => item.map((x) => x.id))),
-                  );
+                  deleteNotifications(notifications.flatMap((item) => item.map((x) => x.id)));
                 }}
               >
                 {t('messageList.clearAllMessages')}
@@ -80,7 +72,7 @@ export function MessagesAndNotificationsPage() {
                           type="button"
                           className={transactionsStyles.cardHeader}
                           onClick={() => {
-                            dispatch(setActiveNotification(group));
+                            setActiveNotification(group);
                           }}
                         >
                           <div className={styles.messageTransactionIcon} />
@@ -111,7 +103,7 @@ export function MessagesAndNotificationsPage() {
                             type="button"
                             view="transparent"
                             onClick={() => {
-                              dispatch(deleteNotifications(group.map((x) => x.id)));
+                              deleteNotifications(group.map((x) => x.id));
                             }}
                           />
                         </button>
@@ -138,7 +130,7 @@ export function MessagesAndNotificationsPage() {
                     key={message.id}
                     className={styles.cardItem}
                     onClick={() => {
-                      dispatch(setActiveMessage(message));
+                      setActiveMessage(message);
                     }}
                   >
                     <Card collapsed message={message} />

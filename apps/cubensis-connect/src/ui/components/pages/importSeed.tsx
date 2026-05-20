@@ -12,8 +12,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 import { isAddressString, isBase58 } from '#messages/utils';
-import { usePopupDispatch, usePopupSelector } from '#popup/store/react';
-import { newAccountSelect, selectAccount } from '#store/actions/localState';
+import { newAccountSelect, selectAccount } from '#popup/store/actions';
+import { usePopupSelector } from '#popup/store/react';
 
 import { NETWORK_CONFIG } from '../../../constants';
 import { Button, ErrorMessage, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from '../ui';
@@ -33,7 +33,6 @@ function stripBase58Prefix(str: string) {
 
 export function ImportSeed() {
   const navigate = useNavigate();
-  const dispatch = usePopupDispatch();
   const { t } = useTranslation();
   const accounts = usePopupSelector((state) => state.accounts);
   const currentNetwork = usePopupSelector((state) => state.currentNetwork);
@@ -248,7 +247,7 @@ export function ImportSeed() {
           }
 
           if (showValidationError && existingAccount) {
-            dispatch(selectAccount(existingAccount));
+            selectAccount(existingAccount);
             void navigate('/import-success');
             return;
           }
@@ -262,35 +261,29 @@ export function ImportSeed() {
           invariant(address);
 
           if (activeTab === SEED_TAB_INDEX) {
-            dispatch(
-              newAccountSelect({
-                address,
-                hasBackup: true,
-                name: '',
-                seed: seedValue,
-                type: 'seed',
-              }),
-            );
+            newAccountSelect({
+              address,
+              hasBackup: true,
+              name: '',
+              seed: seedValue,
+              type: 'seed',
+            });
           } else if (activeTab === ENCODED_SEED_TAB_INDEX) {
-            dispatch(
-              newAccountSelect({
-                address,
-                encodedSeed: encodedSeedValue,
-                hasBackup: true,
-                name: '',
-                type: 'encodedSeed',
-              }),
-            );
+            newAccountSelect({
+              address,
+              encodedSeed: encodedSeedValue,
+              hasBackup: true,
+              name: '',
+              type: 'encodedSeed',
+            });
           } else {
-            dispatch(
-              newAccountSelect({
-                address,
-                hasBackup: true,
-                name: '',
-                privateKey: privateKeyValue,
-                type: 'privateKey',
-              }),
-            );
+            newAccountSelect({
+              address,
+              hasBackup: true,
+              name: '',
+              privateKey: privateKeyValue,
+              type: 'privateKey',
+            });
           }
 
           void navigate('/account-name');
