@@ -1,7 +1,6 @@
 import { base58Decode, base58Encode, verifySignature } from '@decentralchain/crypto';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
 import { captureException } from '@sentry/browser';
-import EventEmitter from 'events';
 import { deepEqual } from 'fast-equals';
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';
@@ -42,7 +41,6 @@ import type { PermissionObject } from '#permissions/types';
 import type { IdleOptions, PreferencesAccount } from '#preferences/types';
 import { initSentry } from '#sentry/init';
 import type { UiState } from '#store/reducers/updateState';
-
 import { fromWebExtensionEvent } from './_core/wonka';
 import type { IgnoreErrorsContext } from './constants';
 import { AddressBookController } from './controllers/AddressBookController';
@@ -62,6 +60,7 @@ import { TrashController } from './controllers/trash';
 import { UiStateController } from './controllers/uiState';
 import { VaultController } from './controllers/VaultController';
 import { WalletController } from './controllers/wallet';
+import { TypedEventEmitter } from './lib/TypedEventEmitter';
 import { WindowManager } from './lib/windowManager';
 import type { ExtensionStorage, StorageLocalState } from './storage/storage';
 import { backupStorage, createExtensionStorage } from './storage/storage';
@@ -166,12 +165,12 @@ async function setupBackgroundService() {
   });
   // Tabs manager
   const tabsManager = new TabsManager({ extensionStorage });
-  backgroundService.on('Show tab', async (url, name) => {
+  backgroundService.on('Show tab', (url, name) => {
     backgroundService.emit('closePopupWindow');
-    await tabsManager.getOrCreate(url, name);
+    void tabsManager.getOrCreate(url, name);
   });
-  backgroundService.on('Close current tab', async () => {
-    await tabsManager.closeCurrentTab();
+  backgroundService.on('Close current tab', () => {
+    void tabsManager.closeCurrentTab();
   });
 
   backgroundService.messageController.clearMessages();
@@ -180,7 +179,7 @@ async function setupBackgroundService() {
   return backgroundService;
 }
 
-class BackgroundService extends EventEmitter {
+class BackgroundService extends TypedEventEmitter {
   extensionStorage;
 
   addressBookController;
