@@ -19,6 +19,11 @@
  *    is collected; calling `off` before the event fires also works correctly.
  *  - `emit` returns the boolean from `dispatchEvent` (false only if a listener
  *    called `preventDefault()`; no DCC code inspects this return value).
+ *  - Exception semantics differ from Node.js EventEmitter: per the HTML spec
+ *    (MDN: EventTarget.dispatchEvent), exceptions thrown inside event listeners
+ *    are reported as uncaught exceptions and do NOT propagate back to the
+ *    `emit()` caller. This is transparent for DCC because no `emit()` call-site
+ *    is wrapped in try-catch.
  *
  * Browser / platform support:
  *  - Subclassing EventTarget: Chrome 64 · Firefox 59 · Safari 14
@@ -31,6 +36,14 @@ export class TypedEventEmitter extends EventTarget {
    *   original listener → per-event-type → wrapped EventListener
    *
    * Allows the same function to be registered for multiple event types.
+   *
+   * Known limitation: calling `on(type, fn)` / `once(type, fn)` twice with the
+   * same `type` and `fn` overwrites the Map entry — the first wrapped listener
+   * stays registered in EventTarget but becomes unremovable via `off()`. This
+   * pattern does not occur in any DCC controller.
+   *
+   * `once` auto-removal: after a once-listener fires, EventTarget removes the
+   * wrapper but the Map entry persists until `fn` is GC-collected via WeakMap.
    */
   // biome-ignore lint/suspicious/noExplicitAny: listener map must accept any function signature to match EventEmitter API
   readonly #wrappers = new WeakMap<(...args: any[]) => void, Map<string, EventListener>>();
