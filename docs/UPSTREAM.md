@@ -40,7 +40,7 @@ DecentralChain (DCC) is an independent blockchain that forked the Waves protocol
 - **24 TypeScript SDK packages** — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
 - **`data-service` REST API application** (DCC-221, DCC-233) — Koa.js API at `api.decentralchain.io`
 - **5 standalone infrastructure repos** (`Ecosystem/`): node-scala (Waves protocol node, Scala), node-go (Go alternative node), matcher (DEX order matching engine), blockchain-postgres-sync (Rust block ingestion), docs
-- **7 JVM + RIDE Maven packages** — 5 JVM libraries (`packages/jvm/`) and the RIDE lang+repl sbt build (`packages/ride/`), all published to Maven Central as `io.decentralchain:*`
+- **8 JVM + RIDE Maven packages** — 6 JVM libraries (`packages/jvm/`) and the RIDE lang+repl sbt build (`packages/ride/`), all published to Maven Central as `io.decentralchain:*`
 
 The remaining ~99 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
 
