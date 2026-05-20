@@ -15,9 +15,10 @@ type Phase = 'enter' | 'enter-active' | 'entered' | 'exit' | 'exit-active';
  * Drop-in replacement for react-transition-group's CSSTransition component.
  *
  * react-transition-group v4 has been abandoned (last release Aug 2022) and carries
- * the deprecated ReactDOM.findDOMNode API. This zero-dependency implementation
- * replicates the exact CSS class sequence the existing :global Stylus animations
- * (.flash_modal-*, .flash_scale_modal-*) depend on:
+ * the deprecated ReactDOM.findDOMNode API — which React 19 removed entirely (throws
+ * TypeError on every in-prop change). This zero-dependency implementation avoids
+ * that crash and replicates the CSS class sequence the existing :global Stylus
+ * animations (.flash_modal-*, .flash_scale_modal-*) depend on:
  *
  *   entering:  `{classNames}-enter`  (1 frame)  →  `{classNames}-enter {classNames}-enter-active`  (timeout ms)
  *   exiting:   `{classNames}-exit`   (1 frame)  →  `{classNames}-exit  {classNames}-exit-active`   (timeout ms)
@@ -29,6 +30,12 @@ type Phase = 'enter' | 'enter-active' | 'entered' | 'exit' | 'exit-active';
  * Classes are applied via React.cloneElement so they land directly on the child
  * element's DOM node rather than an extra wrapper, preserving the position:absolute
  * context required by the top-based flash_scale_modal animation.
+ *
+ * NOTE: React component children that do not accept/forward a `className` prop will
+ * not receive the animation class and will appear/disappear without a transition.
+ * This is a pre-existing limitation — react-transition-group v4 relied on the now-
+ * removed ReactDOM.findDOMNode to bypass this. flash_scale_modal (plain <div>
+ * children) and Pills (.animated-* children via <Pill className=…>) work correctly.
  */
 export function CSSTransition({
   in: inProp = true,

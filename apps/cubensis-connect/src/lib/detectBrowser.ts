@@ -40,11 +40,17 @@ export function detectBrowser(): BrowserInfo {
     );
 
     const rawBrand = significant?.brand ?? 'Chrome';
-    const name = rawBrand.toLowerCase().includes('edge')
+    const brandLower = rawBrand.toLowerCase();
+    // Normalise to the same names detect-browser returned so analytics dimensions
+    // stay consistent.  "Google Chrome" → "chrome", "Microsoft Edge" → "edge-chromium",
+    // "Opera" / "OPR" → "opera".  Everything else: lowercase + spaces → hyphens.
+    const name = brandLower.includes('edge')
       ? 'edge-chromium'
-      : rawBrand.toLowerCase().includes('opera') || rawBrand.toLowerCase().includes('opr')
+      : brandLower.includes('opera') || brandLower.includes('opr')
         ? 'opera'
-        : rawBrand.toLowerCase().replace(/\s+/g, '-');
+        : brandLower.includes('chrome')
+          ? 'chrome'
+          : brandLower.replace(/\s+/g, '-');
 
     return {
       name,
