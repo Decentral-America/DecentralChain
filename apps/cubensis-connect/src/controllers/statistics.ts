@@ -1,15 +1,15 @@
 import { setUser } from '@sentry/browser';
-import { detect } from 'detect-browser';
 import { nanoid } from 'nanoid';
 import ObservableStore from 'obs-store';
 import Browser from 'webextension-polyfill';
+import { detectBrowser } from '#lib/detectBrowser';
 import type { WalletTypes } from '#wallets/types';
 import type { Message, MessageTx } from '../messages/types';
 import type { NetworkName } from '../networks/types';
 import type { ExtensionStorage } from '../storage/storage';
 import type { NetworkController } from './network';
 
-const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detect() ?? {};
+const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detectBrowser();
 
 const BROWSER_VERSION_MAJOR = BROWSER_VERSION?.split('.')[0];
 const KEEPER_VERSION = Browser.runtime.getManifest().version;

@@ -65,24 +65,7 @@ export default defineConfig({
     __SENTRY_RELEASE__: JSON.stringify(process.env.SENTRY_RELEASE ?? ''),
     'process.env.NODE_DEBUG': JSON.stringify(undefined),
   },
-  plugins: [
-    bufferPolyfill(),
-    fixCommonJSMinOrdering(),
-    react({
-      babel: {
-        plugins: [
-          [
-            'prismjs',
-            {
-              css: true,
-              languages: ['json'],
-              theme: 'solarizedlight',
-            },
-          ],
-        ],
-      },
-    }),
-  ],
+  plugins: [bufferPolyfill(), fixCommonJSMinOrdering(), react()],
   resolve: {
     alias: {
       ...srcAliases,
