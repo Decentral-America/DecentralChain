@@ -34,6 +34,10 @@ on:
         type: boolean
         default: true
 
+# Principle of least privilege: all jobs are read-only by default.
+# The commit-natives job explicitly elevates to contents: write.
+permissions: read-all
+
 env:
   BLST_TAG: ${{ github.event.inputs.blst_tag }}
   JAVA_VERSION: "25"
@@ -42,45 +46,42 @@ jobs:
   # ── Linux (amd64 + aarch64 + x86) via Docker cross-compile ───────────────────
   build-linux:
     name: Linux ${{ matrix.arch }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: amd64
+            runner: ubuntu-24.04          # Native x86_64
             cc: gcc
             cxx: g++
             extra_cflags: ""
             resource_dir: Linux/amd64
           - arch: aarch64
-            cc: aarch64-linux-gnu-gcc
-            cxx: aarch64-linux-gnu-g++
+            runner: ubuntu-24.04-arm      # Native ARM64 — no cross-compile needed.
+            cc: gcc                       # uname -m = aarch64 → build.sh selects ARM64 asm.
+            cxx: g++
             extra_cflags: ""
             resource_dir: Linux/aarch64
           - arch: x86
+            runner: ubuntu-24.04
             cc: gcc
             cxx: g++
             extra_cflags: "-m32"
             resource_dir: Linux/x86
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Install cross-compile toolchain
+      - name: Install build tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            swig \
-            gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
-            gcc-multilib g++-multilib
-        if: matrix.arch != 'amd64'
-
-      - name: Install tools (amd64)
-        run: sudo apt-get update -qq && sudo apt-get install -y swig
-        if: matrix.arch == 'amd64'
+          PKGS="swig"
+          [[ "${{ matrix.arch }}" == "x86" ]] && PKGS="$PKGS gcc-multilib g++-multilib"
+          sudo apt-get install -y --no-install-recommends $PKGS
 
       - name: Set up Java ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
@@ -109,7 +110,7 @@ jobs:
 
       - name: Compile libblst.so
         run: |
-          JNI_MD=$(ls "$JAVA_HOME/include/linux/jni_md.h" | xargs dirname)
+          JNI_MD="$JAVA_HOME/include/linux"
           ${{ matrix.cxx }} -shared \
               -o /tmp/libblst.so \
               -fPIC -fvisibility=hidden \
@@ -118,11 +119,14 @@ jobs:
               -I"$JNI_MD" \
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
-              -O -Wall -Wno-unused-function \
+              -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=2 \
+              -Wall -Wno-unused-function \
               -Wl,-Bsymbolic \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
+          strip --strip-unneeded /tmp/libblst.so
           file /tmp/libblst.so
+          ls -la /tmp/libblst.so
 
       - name: Install native library
         run: |
@@ -130,7 +134,7 @@ jobs:
              "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-linux-${{ matrix.arch }}
           path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so
@@ -153,13 +157,13 @@ jobs:
             resource_dir: Mac/x86_64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install SWIG
         run: brew install swig
 
       - name: Set up Java ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
@@ -194,10 +198,12 @@ jobs:
               -I"$JNI_MD" \
               -I/tmp/blst-src \
               -I/tmp/blst-src/bindings \
-              -O -Wall -Wno-unused-function \
+              -O2 -Wall -Wno-unused-function \
               /tmp/blst-swig-out/blst_wrap.cpp \
               /tmp/blst-src/libblst.a
+          strip -x /tmp/libblst.dylib
           file /tmp/libblst.dylib
+          ls -la /tmp/libblst.dylib
 
       - name: Install native library
         run: |
@@ -205,74 +211,85 @@ jobs:
              "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-macos-${{ matrix.arch }}
           path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib
 
-  # ── Windows amd64 ─────────────────────────────────────────────────────────────
+  # ── Windows amd64 (MinGW cross-compile from Linux) ────────────────────────────
+  #
+  # Using Linux + MinGW instead of windows-2022 + MSVC because blst's build.sh
+  # produces GAS-syntax assembly (build/assembly.S) which MSVC cl.exe cannot
+  # assemble.  The MSVC path (build/win64/*.asm, ml64.exe) requires assembling
+  # ~20 individual MASM files, while MinGW handles build.sh identically to Linux.
+  # The resulting DLL is statically linked (no MSVC/MinGW runtime dependency).
+  # On x86-64 Windows, JNICALL (stdcall) == cdecl — Linux JNI headers are safe.
   build-windows:
     name: Windows amd64
-    runs-on: windows-2022
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Install SWIG
-        run: choco install swig --yes --no-progress
+      - name: Install MinGW cross-compiler and SWIG
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+            binutils-mingw-w64-x86-64 swig
 
       - name: Set up Java ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Clone blst ${{ env.BLST_TAG }}
         run: |
-          git clone --depth 1 --branch "$env:BLST_TAG" `
-            https://github.com/supranational/blst.git C:\blst-src
-        shell: pwsh
+          git clone --depth 1 --branch "$BLST_TAG" \
+            https://github.com/supranational/blst.git /tmp/blst-src
 
-      - name: Build blst static library
+      - name: Build libblst.a (MinGW)
         run: |
-          cd C:\blst-src
-          cl /O2 /nologo /W3 /Zi /MT /I src `
-             /c src\server.c /Foserver.obj
-          cl /O2 /nologo /W3 /Zi /MT /I src `
-             /c build\assembly.S /Foassembly.obj
-          lib /nologo /out:blst.lib server.obj assembly.obj
-        shell: pwsh
+          cd /tmp/blst-src
+          CC=x86_64-w64-mingw32-gcc \
+            CFLAGS="-fPIC -fvisibility=hidden" \
+            ./build.sh -fvisibility=hidden
 
       - name: Generate SWIG wrapper
         run: |
-          New-Item -ItemType Directory -Force -Path C:\blst-swig-out\supranational\blst
-          Set-Location C:\blst-src
-          swig -c++ -java -package supranational.blst `
-               -outdir C:\blst-swig-out\supranational\blst `
-               -o C:\blst-swig-out\blst_wrap.cpp `
-               "$env:GITHUB_WORKSPACE\blst-dcc.swg"
-        shell: pwsh
+          mkdir -p /tmp/blst-swig-out/supranational/blst
+          cd /tmp/blst-src
+          swig -c++ -java -package supranational.blst \
+               -outdir /tmp/blst-swig-out/supranational/blst \
+               -o /tmp/blst-swig-out/blst_wrap.cpp \
+               "$GITHUB_WORKSPACE/blst-dcc.swg"
 
       - name: Compile blst.dll
         run: |
-          $JNI_INCLUDE = "$env:JAVA_HOME\include"
-          $JNI_WIN = "$env:JAVA_HOME\include\win32"
-          cl /O2 /nologo /W3 /Zi /LD /EHsc `
-             /I"$JNI_INCLUDE" /I"$JNI_WIN" `
-             /IC:\blst-src /IC:\blst-src\bindings `
-             C:\blst-swig-out\blst_wrap.cpp `
-             C:\blst-src\blst.lib `
-             /link /DLL /OUT:C:\blst.dll
-          echo "Exit code: $LASTEXITCODE"
-        shell: pwsh
+          # Use Linux JNI headers — on x86-64 Windows, JNICALL (stdcall) == cdecl.
+          # No ABI difference on 64-bit; the Linux jni_md.h (JNICALL = empty) is correct.
+          x86_64-w64-mingw32-g++ -shared \
+              -o /tmp/blst.dll \
+              -fPIC -fvisibility=hidden \
+              -I"$JAVA_HOME/include" \
+              -I"$JAVA_HOME/include/linux" \
+              -I/tmp/blst-src \
+              -I/tmp/blst-src/bindings \
+              -O2 -Wall -Wno-unused-function \
+              -static-libstdc++ -static-libgcc \
+              /tmp/blst-swig-out/blst_wrap.cpp \
+              /tmp/blst-src/libblst.a
+          x86_64-w64-mingw32-strip --strip-debug /tmp/blst.dll
+          file /tmp/blst.dll
+          ls -la /tmp/blst.dll
 
       - name: Install native library
         run: |
-          Copy-Item C:\blst.dll `
-            "$env:GITHUB_WORKSPACE\src\main\resources\supranational\blst\Windows\amd64\blst.dll"
-        shell: pwsh
+          cp /tmp/blst.dll \
+             "src/main/resources/supranational/blst/Windows/amd64/blst.dll"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-windows-amd64
           path: src/main/resources/supranational/blst/Windows/amd64/blst.dll
@@ -283,13 +300,15 @@ jobs:
     needs: [build-linux, build-macos, build-windows]
     runs-on: ubuntu-24.04
     if: ${{ github.event.inputs.commit_result == 'true' }}
+    permissions:
+      contents: write   # required to push committed native libraries back to the repo
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: /tmp/native-artifacts
 
@@ -317,10 +336,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/main/resources/supranational/blst/
           git diff --staged --stat
-          git commit -m "chore(DCC-265): build native blst libraries from $BLST_TAG
-
-  Compiled by build-native.yml workflow on $(date -u +%Y-%m-%dT%H:%M:%SZ).
-  Platforms: Linux amd64/aarch64/x86, macOS ARM64/x86_64, Windows amd64."
+          git commit -m "chore(DCC-265): compile native blst $BLST_TAG for 6 platforms [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
           git push
         env:
           BLST_TAG: ${{ env.BLST_TAG }}
