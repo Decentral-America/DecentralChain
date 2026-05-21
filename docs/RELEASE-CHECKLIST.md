@@ -197,7 +197,7 @@ curl -sf https://testnet-node.decentralchain.io/blocks/height | jq .height
 ### Data Service API
 
 ```bash
-curl -sf https://api.decentralchain.io/ | jq .version
+curl -sf https://data-service.decentralchain.io/ | jq .version
 ```
 Status: ☐ PASS / ☐ FAIL
 
