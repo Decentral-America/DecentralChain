@@ -9,7 +9,7 @@
     "lefthook": "2.1.8",
     "nx": "22.7.2",
     "typescript": "6.0.3",
-    "vite": "8.0.13",
+    "vite": "8.0.14",
     "vitest": "catalog:"
   },
   "engines": {
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "name": "DecentralChain",
-  "packageManager": "pnpm@11.2.1",
+  "packageManager": "pnpm@11.2.2",
   "private": true,
   "scripts": {
     "build": "nx run-many -t build",
