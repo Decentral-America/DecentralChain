@@ -65,7 +65,7 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 |-----------|--------|
 | `node-scala` (program) | Scala/JVM blockchain node binary — large program with its own CI/deploy pipeline; DCC patches in progress (Stream G). Note: the RIDE language libraries are a different concern — they are extracted as `packages/ride/` and published to Maven + npm. |
 | `node-go` | Go — different toolchain; Stream H chain ID migration planned |
-| `blockchain-postgres-sync` | Node.js sync daemon — outside monorepo; Stream F migration planned |
+| ~~`blockchain-postgres-sync`~~ | Migrated ✅ — lives at `apps/blockchain-postgres-sync`; Rust 2021 edition, MSRV 1.88, full Nx targets + dedicated CI pipeline (`bps.yml`) |
 | ~~`data-service`~~ | Migrated ✅ — lives at `apps/data-service` (DCC-221, DCC-233); Nx, Biome, Vitest, tsdown all wired |
 | ~~`java-sdk` (was `Ecosystem/java-sdk/`)~~ | Migrated ✅ — lives at `packages/jvm/java-sdk/` (DCC-251, DCC-249); published as `io.decentralchain:java-sdk` |
 | `matcher` | Java binary (`decentralchain-dex v2.3.2.9`) — closed-source DEX engine; not a migration target |
