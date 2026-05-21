@@ -1,0 +1,9 @@
+# Cargo configuration for blockchain-postgres-sync
+
+[env]
+# Homebrew libpq (keg-only — not linked into system) is the PostgreSQL client
+# library required by diesel's postgres feature and pq-sys.
+# This is set for local macOS development; in Docker/CI, libpq is installed
+# system-wide by the Dockerfile and the path is unnecessary.
+LIBRARY_PATH = { value = "/opt/homebrew/opt/libpq/lib", force = false, relative = false }
+PKG_CONFIG_PATH = { value = "/opt/homebrew/opt/libpq/lib/pkgconfig", force = false, relative = false }
