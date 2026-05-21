@@ -83,11 +83,22 @@ jobs:
         working-directory: apps/blockchain-postgres-sync
         run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
 
-      # ── Security & dependency policy (cargo deny covers advisories + licenses + bans) ──
-      - name: Dependency policy check (cargo deny)
-        uses: EmbarkStudios/cargo-deny-action@6c8f9facfa5047ec02d8485b6bf52b587b7777d1 # v2.0.18
+      # ── Security & dependency policy ──────────────────────────────────────────
+      # cargo-deny 0.19.6: fixes env-var interference with advisory DB path
+      # resolution in CI (PR#854). cargo-machete: detects unused dependencies.
+      # taiki-e/install-action downloads pre-built binaries — no compilation.
+      - name: Install cargo-deny and cargo-machete
+        uses: taiki-e/install-action@65851e10cd6c377f11a60e600abc07cb08643468 # v2.79.3
         with:
-          manifest-path: apps/blockchain-postgres-sync/Cargo.toml
+          tool: cargo-deny@0.19.6,cargo-machete
+
+      - name: Dependency policy check (cargo deny)
+        working-directory: apps/blockchain-postgres-sync
+        run: cargo deny check
+
+      - name: Unused dependency check (cargo machete)
+        working-directory: apps/blockchain-postgres-sync
+        run: cargo machete
 
   docker:
     name: Build and push Docker image
