@@ -9,6 +9,10 @@ const __dirname = path.dirname(__filename);
 
 const DIST_FOLDER = path.resolve(__dirname, '..', 'dist');
 
+// Source maps are generated with `sourcemap: 'hidden'` for Sentry/DevTools use,
+// but must NOT be shipped inside the extension package (security: source exposure).
+const ZIP_EXCLUDE = ['**/*.map'];
+
 readFile(path.resolve(__dirname, './platforms.json'), 'utf8')
   .then(JSON.parse)
   .then((platforms) => {
@@ -19,6 +23,7 @@ readFile(path.resolve(__dirname, './platforms.json'), 'utf8')
           DIST_FOLDER,
           `cubensis-connect-${process.env.CUBENSIS_VERSION}-${platformName}.zip`,
         ),
+        { exclude: ZIP_EXCLUDE },
       );
     });
   });
