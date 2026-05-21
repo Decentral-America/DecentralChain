@@ -81,8 +81,22 @@ const platformValues = {
   opera: manifestV2,
 };
 
-export default (buffer, platformName) => ({
-  ...JSON.parse(buffer.toString('utf-8')),
-  version: process.env.CUBENSIS_VERSION,
-  ...platformValues[platformName],
-});
+export default (buffer, platformName) => {
+  const base = JSON.parse(buffer.toString('utf-8'));
+  const platform = platformValues[platformName];
+  const result = {
+    ...base,
+    version: process.env.CUBENSIS_VERSION ?? '0.0.0',
+    ...platform,
+  };
+
+  // MV2 (Firefox, Opera): host access uses permissions array — no separate
+  // host_permissions field. Content scripts already declare matches in the base
+  // manifest; the background script also needs these URL patterns to reach DCC
+  // nodes over HTTP/HTTPS.
+  if (result.manifest_version === 2) {
+    result.permissions = [...(base.permissions ?? []), 'http://*/*', 'https://*/*'];
+  }
+
+  return result;
+};

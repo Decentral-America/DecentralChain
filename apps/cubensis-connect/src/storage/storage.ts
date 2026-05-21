@@ -66,8 +66,8 @@ export interface StorageLocalState {
   initialized: boolean;
   inPending: Record<string, string | null>;
   inShowMode: boolean | undefined;
-  lastIdleKeeper: number | undefined;
-  lastOpenKeeper: number | undefined;
+  lastIdleCubensis: number | undefined;
+  lastOpenCubensis: number | undefined;
   lastUpdateIdle: number;
   locked: boolean;
   messages: Message[];

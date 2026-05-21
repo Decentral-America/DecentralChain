@@ -10,9 +10,9 @@ const SAFE_FIELDS = new Set([
   'accounts',
   'addresses',
   'backup',
-  'lastIdleKeeper',
+  'lastIdleCubensis',
   'lastInstallKeeper',
-  'lastOpenKeeper',
+  'lastOpenCubensis',
   'userId',
 ]);
 
