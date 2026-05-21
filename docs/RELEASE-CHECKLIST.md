@@ -132,10 +132,11 @@ bash scripts/run-with-required-node.sh pnpm nx run cubensis-connect:ci:check
 |-------|----------|-------|
 | MV3 Chrome | Built `dist/chrome/manifest.json` contains `"manifest_version": 3` and `host_permissions` | Engineering |
 | MV3 Edge | Built `dist/edge/manifest.json` contains `"manifest_version": 3` and `host_permissions` | Engineering |
-| MV2 Firefox | Built `dist/firefox/manifest.json` contains `"manifest_version": 2` | Engineering |
+| MV2 Firefox | Built `dist/firefox/manifest.json` contains `"manifest_version": 2` and `http://*/*`, `https://*/*` in `permissions` | Engineering |
+| MV2 Opera | Built `dist/opera/manifest.json` contains `"manifest_version": 2` and `http://*/*`, `https://*/*` in `permissions` | Engineering |
 | CSP no-eval | `content_security_policy` contains `script-src 'self' 'wasm-unsafe-eval'` — no `unsafe-eval`, no `unsafe-inline` | Security |
-| Permissions minimal | `permissions` array contains only: `alarms`, `clipboardWrite`, `idle`, `storage`, `unlimitedStorage`, `tabs` | Security |
-| No unreviewed analytics | Build output contains no calls to unreviewed analytics endpoints. Analytics (`statistics.ts`) is **gated behind `AMPLITUDE_API_KEY`/`MIXPANEL_TOKEN` env vars** — both empty in CI. Amplitude URL tree-shaken from bundle when key is `""`. Mixpanel drain present but events never queued. **Do not set these env vars until: (a) event names are rebranded from Keeper, (b) user opt-in consent flow is added.** | Security |
+| Permissions minimal | MV3: `permissions` contains only `alarms`, `clipboardWrite`, `idle`, `storage`, `unlimitedStorage`, `tabs` (URL patterns go in `host_permissions`). MV2: same API permissions plus `http://*/*`, `https://*/*` (required — no separate `host_permissions` in MV2). | Security |
+| No unreviewed analytics | Analytics (`statistics.ts`) is **gated behind `AMPLITUDE_API_KEY`/`MIXPANEL_TOKEN` env vars** — both empty in CI. Amplitude URL tree-shaken from bundle when key is `""`. Mixpanel drain present but events never queued. Event names rebranded from Keeper → Cubensis (`installCubensis`, `openCubensis`, `idleCubensis`). Mixpanel `?ip=1` (server-side IP collection) removed. **Do not set these env vars until: user opt-in consent flow is added.** | Security |
 | Source maps excluded | Extension zip must not contain `.map` files (`zip.js` excludes `**/*.map` since 2026-05-20) | Security |
 | Manifest validator | `node apps/cubensis-connect/scripts/validate-manifest.mjs` — all platforms pass | Engineering |
 
@@ -155,6 +156,8 @@ EOF
 ```
 
 > **2026-05-20 results:** 18/18 checks pass (`node apps/cubensis-connect/scripts/validate-manifest.mjs`). Chrome/Edge MV3, Firefox/Opera MV2, CSP clean, `use_dynamic_url: true` on MV3 platforms. Permissions exactly `[alarms, clipboardWrite, idle, storage, unlimitedStorage, tabs]` on all platforms. Source maps excluded from zip. ✅
+
+> **2026-05-20 deep audit:** Firefox/Opera MV2 manifests were missing `http://*/*` and `https://*/*` — extension could not reach DCC nodes on those platforms. **Fixed** in `adaptManifestToPlatform.js` (now adds URL patterns to MV2 `permissions`). MV3 `host_permissions` verified correct. `CUBENSIS_VERSION` fallback (`?? '0.0.0'`) added to prevent `undefined` in manifest version and zip filename. Zip filename fallback: `?? 'local'` for local builds. 20/20 checks pass after audit. ✅
 
 ---
 
@@ -281,4 +284,5 @@ Any gate that cannot be fully satisfied at release time must be:
 | Date | Author | Change |
 |------|--------|--------|
 | 2026-05-20 | DCC-230 | Full gate execution run — Gates 1-4 all PASS. Fix: zip.js excludes .map files (source security). Gate 2 limit updated to 20 MB (CJK fonts). Gate 3 analytics row updated with complete status. Gate 4 results added. Gate 5 still BLOCKED (DNS). |
+| 2026-05-20 | DEEP-AUDIT | Enterprise-grade deep audit: (1) Firefox/Opera MV2 missing `http://*/*`/`https://*/*` in permissions — wallets could not reach DCC nodes — **FIXED** in `adaptManifestToPlatform.js`. (2) `CUBENSIS_VERSION` env-var used without fallback — manifest version and zip filenames would be `undefined` in local builds — **FIXED** with `?? '0.0.0'` / `?? 'local'`. (3) `statistics.ts` Keeper branding: `KEEPER_VERSION` renamed → `CUBENSIS_VERSION`; event types `installKeeper`/`openKeeper`/`idleKeeper` renamed → `installCubensis`/`openCubensis`/`idleCubensis`; storage keys `lastIdleKeeper`/`lastOpenKeeper` renamed; `?ip=1` (Mixpanel server-side IP) removed (GDPR). (4) `zip-a-folder@6.1.1` confirmed latest; `anchore/sbom-action@v0.24.0` SHA confirmed. Gate 3 checklist updated with MV2 Opera row and correct criteria. |
 | 2026-03 | Josué Rojas | Merged RELEASE-GATES, GO-NO-GO-INFRA, BACKEND-DEPS-READINESS into single doc |

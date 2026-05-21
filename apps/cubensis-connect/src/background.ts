@@ -103,7 +103,7 @@ Browser.runtime.onInstalled.addListener(async (details) => {
 
   switch (details.reason) {
     case 'install':
-      bgService.statisticsController.track({ eventType: 'installKeeper' });
+      bgService.statisticsController.track({ eventType: 'installCubensis' });
       break;
     case 'update':
       bgService.assetInfoController.addTickersForExistingAssets();
@@ -1081,7 +1081,7 @@ class BackgroundService extends TypedEventEmitter {
     this.on('ledger:signRequest', ui.ledgerSignRequest);
     this.on('closePopupWindow', ui.closePopupWindow);
 
-    this.statisticsController.track({ eventType: 'openKeeper' });
+    this.statisticsController.track({ eventType: 'openCubensis' });
   }
 
   async getPublicState(origin: string, connectionId: string) {
