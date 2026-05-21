@@ -105,6 +105,35 @@ for (const platform of PLATFORMS) {
       }
     }
   }
+
+  // 5. MV3: host_permissions must include URL patterns so background can reach DCC nodes.
+  if (manifest.manifest_version === 3) {
+    const hp = manifest.host_permissions ?? [];
+    const hasUrl = hp.some((p) => p.startsWith('http') || p === '<all_urls>');
+    if (hasUrl) {
+      pass(platform, `MV3 host_permissions: URL patterns present`);
+    } else {
+      fail(
+        platform,
+        'MV3 host_permissions is empty or missing URL patterns — background service worker cannot reach DCC nodes',
+      );
+    }
+  }
+
+  // 6. MV2: permissions must include URL host patterns (replaces host_permissions which
+  //    does not exist in MV2). Required so the background script can fetch DCC nodes.
+  if (manifest.manifest_version === 2) {
+    const perms = manifest.permissions ?? [];
+    if (perms.includes('http://*/*') && perms.includes('https://*/*')) {
+      pass(platform, 'MV2 permissions: URL host patterns present (http://*/* https://*/*)');
+    } else {
+      fail(
+        platform,
+        'MV2 manifest missing URL host patterns in permissions — background cannot reach DCC nodes. ' +
+          'Ensure adaptManifestToPlatform.js merges http://*/* and https://*/* for MV2.',
+      );
+    }
+  }
 }
 
 if (failures > 0) {
