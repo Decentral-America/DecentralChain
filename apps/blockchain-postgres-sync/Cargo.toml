@@ -1,0 +1,158 @@
+[package]
+name = "blockchain-postgres-sync"
+version = "2.0.0"
+edition = "2021"
+rust-version = "1.88"
+description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
+license = "Apache-2.0"
+repository = "https://github.com/Decentral-America/blockchain-postgres-sync"
+homepage = "https://decentral-chain.com"
+keywords = ["blockchain", "postgresql", "decentralchain", "sync", "grpc"]
+categories = ["database", "cryptography::cryptocurrencies"]
+
+[lib]
+name = "app_lib"
+path = "src/lib/lib.rs"
+
+[[bin]]
+name = "consumer"
+path = "src/bin/consumer.rs"
+
+[[bin]]
+name = "migration"
+path = "src/bin/migration.rs"
+
+[dependencies]
+# Error handling
+anyhow = "1.0.102"
+thiserror = "2.0.18"
+
+# Async runtime
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "sync", "time"] }
+
+# gRPC / Protobuf  (proto files bundled in proto/, compiled by build.rs)
+tonic = { version = "0.14.6", features = ["transport"] }
+tonic-prost = "0.14.6"
+prost = "0.14.3"
+
+# Database
+diesel = { version = "2.3.9", default-features = false, features = [
+    "chrono", "postgres", "r2d2", "32-column-tables", "serde_json", "numeric",
+] }
+diesel_migrations = { version = "2.3.0", features = ["postgres"] }
+deadpool-diesel = { version = "0.6.1", features = ["postgres", "rt_tokio_1"] }
+r2d2 = "0.8.10"
+
+# Configuration
+envy = "0.4.2"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bigdecimal = { version = "0.4.10", features = ["serde"] }
+base64 = "0.22.1"
+
+# Cryptography / encoding
+blake2 = "0.10.6"
+sha3 = "0.11.0"
+bs58 = "0.5.1"
+hex = "0.4.3"
+# Pin bytes >= 1.11.1 — RUSTSEC-2026-0007: integer overflow in BytesMut::reserve
+bytes = "1.11.1"
+regex = "1"
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+itertools = "0.14.0"
+
+# HTTP server (health / readiness endpoint)
+axum = { version = "0.8.9", features = ["tokio"] }
+
+# Observability
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
+
+[build-dependencies]
+tonic-prost-build = "0.14.6"
+
+# ─── Lint configuration ──────────────────────────────────────────────────────
+# These lints enforce coding standards across the codebase.  Any new `unwrap()`
+# in production (non-test) code will be caught at compile time.
+[lints.rust]
+# Unsafe code is not needed in this project.
+unsafe_code = "forbid"
+
+[lints.clippy]
+# Prevent accidental .unwrap() in production paths.
+unwrap_used = "warn"
+# Prefer expect() with a message over indexing (already fixed in codebase).
+indexing_slicing = "allow"  # diesel QueryDsl uses [] indexing internally
+# Prefer slice refs over Vec refs in function signatures.
+ptr_arg = "deny"
+# Prevent silent data corruption from as-casts; all existing casts use try_from().expect().
+cast_possible_truncation = "warn"
+cast_sign_loss = "warn"
+cast_possible_wrap = "warn"
+# Prefer idiomatic for loops over for_each closures.
+needless_for_each = "warn"
+# Use .copied() for Copy types instead of .cloned().
+cloned_instead_of_copied = "warn"
+
+# ── Pedantic quality gates (added after full pedantic audit) ─────────────────
+# Use Self:: instead of TypeName:: inside impl blocks.
+use_self = "warn"
+# Use inline format args: format!("{x}") not format!("{}", x).
+uninlined_format_args = "warn"
+# Explicit imports only — wildcard imports hide what is actually used.
+wildcard_imports = "warn"
+# Public API must document error variants.
+missing_errors_doc = "warn"
+# Public API must document panic conditions.
+missing_panics_doc = "warn"
+# Rust compound type names in doc comments need backtick fences.
+doc_markdown = "warn"
+# Use map_or / map_or_else instead of map().unwrap_or().
+map_unwrap_or = "warn"
+# Prefer if a { b } else { c } over if !a { c } else { b }.
+if_not_else = "warn"
+# Prefer Option<&T> over &Option<T> in function arguments.
+ref_option = "warn"
+# Use matching over () explicitly: |()| not |_|.
+ignored_unit_patterns = "warn"
+# Eliminate redundant numeric separators omissions — use 100_000 not 100000.
+unreadable_literal = "warn"
+# Use #[must_use] on functions whose return values should not be silently dropped.
+must_use_candidate = "warn"
+# Use lossless numeric conversions: i64::from(u32) not u32 as i64.
+cast_lossless = "warn"
+# Match arms with identical bodies should be merged.
+match_same_arms = "warn"
+# Use String::new() over "".into() or "".to_string() for empty strings.
+manual_string_new = "warn"
+# from_millis(1) is clearer than from_micros(1000).
+duration_suboptimal_units = "warn"
+
+# ── Nursery quality gates ────────────────────────────────────────────────────
+# Hoist functions to const fn when the body is const-evaluable.
+missing_const_for_fn = "warn"
+# Remove r# raw-string hashes when not needed.
+needless_raw_string_hashes = "warn"
+# Remove unnecessary clone() calls.
+redundant_clone = "warn"
+# Merge duplicate trait bounds: F: A + B not F: A; F: B.
+type_repetition_in_bounds = "warn"
+# Drop guards early when they are no longer needed.
+significant_drop_tightening = "warn"
+
+# prost and tonic-prost are used in code generated via include!() in proto.rs
+# and are therefore invisible to cargo-machete's static analysis.
+[package.metadata.cargo-machete]
+ignored = ["prost", "tonic-prost"]
+
+# Release profile hardening — reduces binary size and eliminates panicking branches.
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
+opt-level = 3
