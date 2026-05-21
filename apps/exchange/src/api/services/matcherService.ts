@@ -262,17 +262,20 @@ export const useOrderBook = (
 
 /**
  * Fetch User Orders
- * Returns all active orders for a specific address
- * Note: This requires proper authentication with the matcher
- * The endpoint expects public key, not address
+ * Returns order history for a specific asset pair and public key.
+ * Requires matcher authentication via Timestamp + Signature headers.
+ * The signature is generated at login and stored in user.matcherSign (1-day validity).
+ * @see GET /matcher/orderbook/{amountAsset}/{priceAsset}/publicKey/{publicKey}
  *
  * @param publicKey - User's base58-encoded public key
+ * @param matcherSign - Pre-generated matcher auth { timestamp (ms, future), signature (base58) }
  * @param amountAsset - Optional: filter by amount asset
  * @param priceAsset - Optional: filter by price asset
  * @param options - React Query options
  */
 export const useUserOrders = (
   publicKey: string,
+  matcherSign: { timestamp: number; signature: string } | undefined,
   amountAsset?: string,
   priceAsset?: string,
   options?: {
@@ -281,14 +284,26 @@ export const useUserOrders = (
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    enabled: !!publicKey && !!amountAsset && !!priceAsset && options?.enabled !== false,
+    enabled:
+      !!publicKey &&
+      !!matcherSign?.signature &&
+      !!amountAsset &&
+      !!priceAsset &&
+      options?.enabled !== false,
     queryFn: async () => {
+      if (!matcherSign) throw new Error('Matcher sign required');
       const { data } = await matcherClient.get<Order[]>(
         `/orderbook/${amountAsset}/${priceAsset}/publicKey/${publicKey}`,
+        {
+          headers: {
+            Signature: matcherSign.signature,
+            Timestamp: String(matcherSign.timestamp),
+          },
+        },
       );
       return data;
     },
-    queryKey: ['orders', publicKey, amountAsset, priceAsset],
+    queryKey: ['orders', publicKey, amountAsset, priceAsset, matcherSign?.timestamp],
     refetchInterval: options?.refetchInterval ?? 10000,
     refetchOnWindowFocus: false,
     retry: 2,
