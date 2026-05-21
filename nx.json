@@ -1,5 +1,5 @@
 {
-  "$schema": "https://cdn.jsdelivr.net/npm/nx@22.6.3/schemas/nx-schema.json",
+  "$schema": "https://cdn.jsdelivr.net/npm/nx@22.7.2/schemas/nx-schema.json",
   "analytics": false,
   "defaultBase": "main",
   "generators": {
@@ -34,7 +34,12 @@
         "file": "CHANGELOG.md"
       }
     },
-    "projects": ["packages/sdk/*", "packages/ride/ts", "packages/ride/lang/js", "packages/ride/repl/js"],
+    "projects": [
+      "packages/sdk/*",
+      "packages/ride/ts",
+      "packages/ride/lang/js",
+      "packages/ride/repl/js"
+    ],
     "projectsRelationship": "independent",
     "version": {
       "conventionalCommits": true,
