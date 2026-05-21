@@ -10,12 +10,12 @@ catalog:
   '@arethetypeswrong/cli': 0.18.2
   '@size-limit/preset-small-lib': 12.1.0
   '@types/node': 25.9.0
-  '@vitest/coverage-v8': 4.1.6
+  '@vitest/coverage-v8': 4.1.7
   jsdom: 29.1.1
   publint: 0.3.19
   size-limit: 12.1.0
   tsdown: 0.22.0
-  vitest: 4.1.6
+  vitest: 4.1.7
 
 # pnpm v11: non-auth .npmrc settings are ignored; declare them here instead.
 engineStrict: true
@@ -57,3 +57,14 @@ overrides:
 # node-api-js lists transactions in devDependencies for test fixtures only.
 # This is intentional – the cycle is test-only and causes no runtime issues.
 ignoreWorkspaceCycles: true
+
+minimumReleaseAgeExclude:
+  - '@vitest/coverage-v8@4.1.7'
+  - '@vitest/expect@4.1.7'
+  - '@vitest/mocker@4.1.7'
+  - '@vitest/pretty-format@4.1.7'
+  - '@vitest/runner@4.1.7'
+  - '@vitest/snapshot@4.1.7'
+  - '@vitest/spy@4.1.7'
+  - '@vitest/utils@4.1.7'
+  - vitest@4.1.7
