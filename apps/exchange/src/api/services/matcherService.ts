@@ -9,6 +9,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import * as ds from 'data-service';
+import { getExchangeTxList } from '@/lib/data-service/api/transactions/transactions';
 import { logger } from '@/lib/logger';
 import { matcherClient } from '../client';
 
@@ -265,13 +266,13 @@ export const useOrderBook = (
  * Note: This requires proper authentication with the matcher
  * The endpoint expects public key, not address
  *
- * @param address - User address (or public key)
+ * @param publicKey - User's base58-encoded public key
  * @param amountAsset - Optional: filter by amount asset
  * @param priceAsset - Optional: filter by price asset
  * @param options - React Query options
  */
 export const useUserOrders = (
-  address: string,
+  publicKey: string,
   amountAsset?: string,
   priceAsset?: string,
   options?: {
@@ -280,24 +281,18 @@ export const useUserOrders = (
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    // Disable by default until authentication is implemented
-    enabled: false, // was: !!address && options?.enabled !== false,
+    enabled: !!publicKey && !!amountAsset && !!priceAsset && options?.enabled !== false,
     queryFn: async () => {
-      // Stub: matcher request signing requires backend go-live (DCC-198, blocked by DCC-178).
-      // Matcher API /orderbook/:address returns HTTP 400 without HMAC/EdDSA auth header.
-      // When Gate 3 is live: uncomment the implementation below and set enabled: !!address.
-      logger.warn('[useUserOrders] Skipped: matcher authentication not yet wired (DCC-198)');
-      return [];
-
-      // Original implementation (requires authentication):
-      // const activeOnly = true;
-      // const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}?activeOnly=${activeOnly}`);
-      // return data;
+      const { data } = await matcherClient.get<Order[]>(
+        `/orderbook/${amountAsset}/${priceAsset}/publicKey/${publicKey}`,
+      );
+      return data;
     },
-    queryKey: ['orders', address, amountAsset, priceAsset],
-    refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
+    queryKey: ['orders', publicKey, amountAsset, priceAsset],
+    refetchInterval: options?.refetchInterval ?? 10000,
     refetchOnWindowFocus: false,
-    retry: 0, // Don't retry since it's not implemented
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5000,
   });
 };
@@ -358,24 +353,31 @@ export const useTradeHistory = (
   },
 ): UseQueryResult<Trade[], Error> => {
   return useQuery({
-    enabled: false, // Disable until data-service integration is complete
+    enabled: !!amountAsset && !!priceAsset && options?.enabled !== false,
     queryFn: async () => {
-      // Stub: trade history requires data-service /transactions/exchange endpoint (DCC-196, blocked by DCC-178).
-      // The matcher API has no /trades endpoint — exchange transactions live on-chain and are
-      // indexed by data-service. When Gate 3 is live: replace with data-service.getExchangeTxs call.
-      logger.warn('[useTradeHistory] Skipped: data-service not yet deployed (DCC-196)');
-      return [];
-
-      // Original implementation (incorrect - matcher doesn't have /trades endpoint):
-      // const { data } = await matcherClient.get<Trade[]>(
-      //   `/trades/${amountAsset}/${priceAsset}?limit=${limit}`
-      // );
-      // return data;
+      type RawExchangeTx = {
+        id: string;
+        timestamp: number;
+        price: number;
+        amount: number;
+        order1?: { orderType: string };
+      };
+      const result = await getExchangeTxList({ amountAsset, limit, priceAsset });
+      const txs = (result.data ?? []) as unknown as RawExchangeTx[];
+      return txs.map((tx) => ({
+        amount: tx.amount,
+        id: tx.id,
+        pair: `${amountAsset}/${priceAsset}`,
+        price: tx.price,
+        timestamp: tx.timestamp,
+        type: (tx.order1?.orderType === 'sell' ? 'sell' : 'buy') as OrderSide,
+      }));
     },
     queryKey: ['trades', amountAsset, priceAsset, limit],
-    refetchInterval: options?.refetchInterval ?? 10000, // 10 seconds
+    refetchInterval: options?.refetchInterval ?? 10000,
     refetchOnWindowFocus: false,
-    retry: 0, // Don't retry
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5000,
   });
 };
