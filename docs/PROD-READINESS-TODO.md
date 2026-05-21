@@ -906,7 +906,7 @@ All remaining actions (`checkout`, `setup-go`, `setup-buildx`, `login`, `metadat
 | `aquasecurity/trivy-action` | v0.35.0 | `57a97c7` | ✅ |
 | `anchore/sbom-action` | v0.24.0 | `e22c389` | ✅ |
 | `codecov/codecov-action` | v6.0.0 | `57e3a13` | ✅ |
-| `softprops/action-gh-release` | v2.6.1 | `153bb8e` | ✅ |
+| `softprops/action-gh-release` | v3.0.0 | `b4309332` | ✅ |
 | `docker/build-push-action` | v7.0.0 | `d08e5c3` | ✅ |
 | `docker/login-action` | v4.0.0 | `b45d80f` | ✅ |
 | `docker/metadata-action` | v6.0.0 | `030e881` | ✅ |
