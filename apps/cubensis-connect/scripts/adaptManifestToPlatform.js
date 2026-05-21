@@ -86,7 +86,7 @@ export default (buffer, platformName) => {
   const platform = platformValues[platformName];
   const result = {
     ...base,
-    version: process.env.CUBENSIS_VERSION ?? '0.0.0',
+    version: process.env.CUBENSIS_VERSION || '0.0.0',
     ...platform,
   };
 
