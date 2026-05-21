@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "name": "DecentralChain",
-  "packageManager": "pnpm@11.1.1",
+  "packageManager": "pnpm@11.2.1",
   "private": true,
   "scripts": {
     "build": "nx run-many -t build",
