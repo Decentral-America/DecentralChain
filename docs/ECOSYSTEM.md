@@ -638,15 +638,15 @@ Services that exist in the Decentral-America GitHub org but have **zero live con
 | **Identity API** (`id.decentralchain.io/api`) | Cognito + `amazon-cognito-identity-js` were fully removed (DCC-117/DCC-118). Zero identity API calls remain. |
 | **BTC Gateway** (`btc.decentralchain.io`) | Referenced in `mainnet.json` gateway config but no active code path in the current exchange reaches it. |
 
-### URL Discrepancy — Requires Resolution Before Gate 5
+### Data Service URL — Resolved (DCC-197)
 
-Two different data-service subdomains appear in the codebase. Both must route to the same backend:
+All apps use `data-service.decentralchain.io`. The earlier `api.decentralchain.io` reference in Cubensis Connect was from the Legacy/PolyRepo; the monorepo version uses the canonical hostname:
 
 | App | Data service URL in source |
 |-----|---------------------------|
 | Exchange | `https://data-service.decentralchain.io` (via `.env.production`) |
 | Scanner | `https://data-service.decentralchain.io/v0` (via `src/lib/api.ts`) |
-| **Cubensis Connect** | **`https://api.decentralchain.io`** (via `src/controllers/assetInfo.ts`) |
+| Cubensis Connect | `https://data-service.decentralchain.io` (via `src/controllers/assetInfo.ts`) |
 
 ---
 

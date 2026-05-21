@@ -119,7 +119,7 @@ DCC is byte-compatible with Waves at the protocol level, except for chain IDs.
 | **Mainnet matcher** | `matcher.waves.exchange` | `mainnet-matcher.decentralchain.io` | ✅ |
 | **Testnet matcher** | `matcher-testnet.waves.exchange` | `matcher.decentralchain.io` | ✅ |
 | **Stagenet matcher** | `matcher-stagenet.waves.exchange` | `stagenet-matcher.decentralchain.io` | ✅ |
-| **Data service API** | `api.wavesplatform.com` | `api.decentralchain.io` | ✅ |
+| **Data service API** | `api.wavesplatform.com` | `data-service.decentralchain.io` | ✅ |
 | **Swap API** | `swap-api.keeper-wallet.app` | `swap-api.decentralchain.io` | ⏸️ DEFERRED |
 | **Identity API** | `id.waves.exchange/api` | `id.decentralchain.io/api` | ❌ REMOVED — Cognito fully removed (DCC-117/DCC-118); zero app consumers |
 | **Explorer** | `wavesexplorer.com` | `explorer.decentralchain.io` | ✅ |
