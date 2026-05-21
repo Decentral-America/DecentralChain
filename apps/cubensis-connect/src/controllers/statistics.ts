@@ -12,12 +12,12 @@ import type { NetworkController } from './network';
 const { name: BROWSER_NAME, os: PLATFORM, version: BROWSER_VERSION } = detectBrowser();
 
 const BROWSER_VERSION_MAJOR = BROWSER_VERSION?.split('.')[0];
-const KEEPER_VERSION = Browser.runtime.getManifest().version;
+const CUBENSIS_VERSION = Browser.runtime.getManifest().version;
 
 export type AnalyticsEvent =
-  | { eventType: 'installKeeper' }
-  | { eventType: 'idleKeeper' }
-  | { eventType: 'openKeeper' }
+  | { eventType: 'installCubensis' }
+  | { eventType: 'idleCubensis' }
+  | { eventType: 'openCubensis' }
   | { eventType: 'initVault' }
   | {
       eventType: 'addWallet';
@@ -89,8 +89,8 @@ export class StatisticsController {
     networkController: NetworkController;
   }) {
     const initState = extensionStorage.getInitState({
-      lastIdleKeeper: undefined,
-      lastOpenKeeper: undefined,
+      lastIdleCubensis: undefined,
+      lastOpenCubensis: undefined,
       userId: undefined,
     });
 
@@ -101,7 +101,7 @@ export class StatisticsController {
 
     this.#networkController = networkController;
 
-    this.track({ eventType: 'idleKeeper' });
+    this.track({ eventType: 'idleCubensis' });
 
     Browser.alarms.create('idleEvent', {
       periodInMinutes: 1,
@@ -110,7 +110,7 @@ export class StatisticsController {
     Browser.alarms.onAlarm.addListener(({ name }) => {
       switch (name) {
         case 'idleEvent':
-          this.track({ eventType: 'idleKeeper' });
+          this.track({ eventType: 'idleCubensis' });
           break;
         case 'drainEventQueues':
           void this.#drainAmplitudeEventQueue();
@@ -169,7 +169,7 @@ export class StatisticsController {
 
     if (events.length === 0) return;
 
-    const response = await fetch('https://api-js.mixpanel.com/track/?ip=1', {
+    const response = await fetch('https://api-js.mixpanel.com/track/', {
       body: new URLSearchParams({
         data: JSON.stringify(events),
       }),
@@ -212,7 +212,7 @@ export class StatisticsController {
     const track = async () => {
       const sanitized = await sanitizeProperties(eventProperties);
       this.#amplitudeEventQueue.push({
-        app_version: KEEPER_VERSION,
+        app_version: CUBENSIS_VERSION,
         chainId,
         event_properties: sanitized,
         event_type: eventType,
@@ -244,7 +244,7 @@ export class StatisticsController {
             network,
             time,
             token: __MIXPANEL_TOKEN__,
-            version: KEEPER_VERSION,
+            version: CUBENSIS_VERSION,
             ...sanitized,
           },
         });
@@ -253,11 +253,11 @@ export class StatisticsController {
       void this.#scheduleDrainEventQueues();
     };
 
-    if (eventType === 'idleKeeper' || eventType === 'openKeeper') {
+    if (eventType === 'idleCubensis' || eventType === 'openCubensis') {
       const stateKey = (
         {
-          idleKeeper: 'lastIdleKeeper',
-          openKeeper: 'lastOpenKeeper',
+          idleCubensis: 'lastIdleCubensis',
+          openCubensis: 'lastOpenCubensis',
         } as const
       )[eventType];
 

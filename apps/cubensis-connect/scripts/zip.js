@@ -21,7 +21,7 @@ readFile(path.resolve(__dirname, './platforms.json'), 'utf8')
         path.resolve(DIST_FOLDER, platformName),
         path.resolve(
           DIST_FOLDER,
-          `cubensis-connect-${process.env.CUBENSIS_VERSION}-${platformName}.zip`,
+          `cubensis-connect-${process.env.CUBENSIS_VERSION ?? 'local'}-${platformName}.zip`,
         ),
         { exclude: ZIP_EXCLUDE },
       );
