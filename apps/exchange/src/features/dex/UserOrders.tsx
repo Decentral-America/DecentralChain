@@ -227,10 +227,16 @@ export const UserOrders: React.FC = () => {
     data: apiOrders,
     isLoading,
     error,
-  } = useUserOrders(user?.publicKey || '', selectedPair?.amountAsset, selectedPair?.priceAsset, {
-    enabled: isAuthenticated && !!user?.publicKey,
-    refetchInterval: 10000,
-  });
+  } = useUserOrders(
+    user?.publicKey || '',
+    user?.matcherSign,
+    selectedPair?.amountAsset,
+    selectedPair?.priceAsset,
+    {
+      enabled: isAuthenticated && !!user?.publicKey && !!user?.matcherSign?.signature,
+      refetchInterval: 10000,
+    },
+  );
 
   /**
    * Transform API orders to component format
