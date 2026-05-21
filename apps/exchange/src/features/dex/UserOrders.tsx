@@ -227,8 +227,8 @@ export const UserOrders: React.FC = () => {
     data: apiOrders,
     isLoading,
     error,
-  } = useUserOrders(user?.address || '', selectedPair?.amountAsset, selectedPair?.priceAsset, {
-    enabled: isAuthenticated && !!user?.address,
+  } = useUserOrders(user?.publicKey || '', selectedPair?.amountAsset, selectedPair?.priceAsset, {
+    enabled: isAuthenticated && !!user?.publicKey,
     refetchInterval: 10000,
   });
 
