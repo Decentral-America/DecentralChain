@@ -1,0 +1,70 @@
+{
+  "name": "blockchain-postgres-sync",
+  "projectType": "application",
+  "tags": ["lang:rust", "layer:infra", "scope:backend"],
+  "targets": {
+    "audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo deny check",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo build --release",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "build:dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo build",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo clean",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "doc": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "RUSTDOCFLAGS='-D warnings' cargo doc --no-deps --all-features",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "fmt": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo fmt --all",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "fmt:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo fmt --all -- --check",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo clippy --all-targets -- -D warnings",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --all-targets",
+        "cwd": "apps/blockchain-postgres-sync"
+      }
+    }
+  }
+}
