@@ -286,7 +286,7 @@ export const useMediaStream = (options: UseMediaStreamOptions = {}): UseMediaStr
     }
 
     const devices = await navigator.mediaDevices.enumerateDevices();
-    return devices as unknown as MediaDeviceInfo[];
+    return devices;
   }, []);
 
   const startStream = useCallback(async (): Promise<MediaStream | null> => {

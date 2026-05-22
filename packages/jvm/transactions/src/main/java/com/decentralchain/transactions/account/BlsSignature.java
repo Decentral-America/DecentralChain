@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.account;
+package io.decentralchain.transactions.account;
 
-import com.decentralchain.transactions.common.Base58String;
+import io.decentralchain.transactions.common.Base58String;
 
 import java.util.Arrays;
 

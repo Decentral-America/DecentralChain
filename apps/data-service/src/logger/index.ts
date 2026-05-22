@@ -1,12 +1,15 @@
-import { always, complement, compose, cond, isNil, omit, path, pathSatisfies, T } from 'ramda';
+import { compose, omit } from 'ramda';
 import { stringifyMetaInProd } from './utils';
 import createLogger from './winston';
 
-const isNotNil = complement(isNil);
-const isPathNotNil = pathSatisfies(isNotNil);
-const pathIfNotNil = (p: string[]) => [isPathNotNil(p), path(p)];
-const getLevelOrDefault = (def: string) =>
-  (cond as any)([pathIfNotNil(['level']), pathIfNotNil(['meta.level']), [T, always(def)]]);
+const getLevelOrDefault =
+  (def: string) =>
+  (data: unknown): string => {
+    const d = data as Record<string, unknown>;
+    if (d != null && d['level'] != null) return String(d['level']);
+    if (d != null && d['meta.level'] != null) return String(d['meta.level']);
+    return def;
+  };
 
 const createEvent = ({
   message,
@@ -18,7 +21,7 @@ const createEvent = ({
   data: any;
 }) => {
   // safe get response time
-  const responseTime = (path as any)(['responseTime'], data) ?? null;
+  const responseTime = (data as Record<string, unknown>)?.['responseTime'] ?? null;
 
   if (message === 'ERROR') {
     return {
@@ -52,8 +55,10 @@ const createAndSubscribeLogger = ({ options, eventBus }: { options: any; eventBu
 
   eventBus.on(
     'log',
-    compose((x) => (logger.log as any)(x), createEvent),
+    compose((x) => (logger.log as unknown as (x: object) => void)(x), createEvent),
   );
+
+  return logger;
 };
 
 export default createAndSubscribeLogger;

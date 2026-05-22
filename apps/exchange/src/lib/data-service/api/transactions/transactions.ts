@@ -1,6 +1,6 @@
 import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client-js';
 import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
-import { pipe, prop, uniqBy } from 'ramda';
+import { prop, uniqBy } from 'ramda';
 import { get as configGet, getDataService } from '../../config';
 import { request } from '../../utils/request';
 import {
@@ -29,7 +29,7 @@ export function list(address: string, limit = 100, after: string): Promise<Array
   return request({
     url: `${configGet('node')}/transactions/address/${address}/limit/${limit}${after ? `?after=${after}` : ''}`,
   })
-    .then(pipe(prop('0'), uniqBy(prop('id')) as (list: T_API_TX[]) => T_API_TX[]))
+    .then((data) => uniqBy(prop('id'), (data as T_API_TX[][])[0] ?? []) as T_API_TX[])
     .then((transactions) => parseTx(transactions as T_API_TX[], false));
 }
 
@@ -37,32 +37,38 @@ export function getExchangeTxList(
   requestParams: IExchangeTxFilters = Object.create(null),
   options?: IGetExchangeOptions,
 ): Promise<Array<IExchange>> {
-  options = Object.assign(Object.create(null), DEFAULT_GET_TRANSACTIONS_OPTIONS, options);
+  const resolvedOptions = Object.assign(
+    Object.create(null),
+    DEFAULT_GET_TRANSACTIONS_OPTIONS,
+    options,
+  ) as Required<IGetExchangeOptions>;
 
-  const getData = (
-    response: {
-      data: ITransaction[];
-      fetchMore?: () => Promise<{ data: ITransaction[]; fetchMore?: () => Promise<unknown> }>;
-    },
-    result: Array<ITransaction[]>,
-  ) => {
-    result = result.concat(response.data);
-    if (!options.getAll) {
-      return result;
+  type FetchResponse = {
+    data: ITransaction[];
+    fetchMore?: () => Promise<FetchResponse>;
+  };
+
+  const getData = async (
+    response: FetchResponse,
+    result: ITransaction[],
+  ): Promise<ITransaction[]> => {
+    const merged = result.concat(response.data);
+    if (!resolvedOptions.getAll) {
+      return merged;
     } else if (response.data.length && response.fetchMore) {
-      if (options.limit && options.limit <= result.length) {
-        return result;
+      if (resolvedOptions.limit && resolvedOptions.limit <= merged.length) {
+        return merged;
       }
-      return response.fetchMore().then((r) => getData(r, result));
+      return getData(await response.fetchMore(), merged);
     } else {
-      return result;
+      return merged;
     }
   };
 
-  return request({
+  return request<ITransaction[]>({
     method: async () => {
       const r = await getDataService().getExchangeTxs(requestParams);
-      return getData(r, []);
+      return getData(r as FetchResponse, []);
     },
   }).then(
     (transactions: ITransaction[]) =>
@@ -80,13 +86,13 @@ export function listUTX(address?: string): Promise<Array<T_TX>> {
 export function get(id: string): Promise<T_TX> {
   return request<T_API_TX>({ url: `${configGet('node')}/transactions/info/${id}` })
     .then((tx) => parseTx([tx], false))
-    .then((list: Array<T_TX>) => list[0]);
+    .then((list: Array<T_TX>) => list[0] as T_TX);
 }
 
 export function getUTX(id: string): Promise<T_TX> {
   return request<T_API_TX>({ url: `${configGet('node')}/transactions/unconfirmed/info/${id}` })
     .then((tx) => parseTx([tx], true))
-    .then((list: Array<T_TX>) => list[0]);
+    .then((list: Array<T_TX>) => list[0] as T_TX);
 }
 
 export function filterByAddress(transactions: Array<T_API_TX>, address?: string): Array<T_API_TX> {

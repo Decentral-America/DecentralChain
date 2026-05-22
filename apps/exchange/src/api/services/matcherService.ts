@@ -10,8 +10,19 @@ import {
 } from '@tanstack/react-query';
 import * as ds from 'data-service';
 import { getExchangeTxList } from '@/lib/data-service/api/transactions/transactions';
-import { logger } from '@/lib/logger';
 import { matcherClient } from '../client';
+
+/**
+ * Raw exchange transaction shape returned by the data-service exchange tx list endpoint.
+ * Declared at module scope so the queryFn can reference it without a local type alias.
+ */
+interface RawExchangeTx {
+  id: string;
+  timestamp: number;
+  price: number;
+  amount: number;
+  order1?: { orderType: string };
+}
 
 /**
  * Order Side Enum
@@ -314,36 +325,44 @@ export const useUserOrders = (
 
 /**
  * Fetch Order History
- * Returns historical orders for a user
+ * Returns all historical orders for a user address.
+ * Requires matcher authentication via Timestamp + Signature headers.
+ * The signature is generated at login and stored in user.matcherSign (1-day validity).
+ * @see GET /matcher/orderbook/{address} and GET /matcher/orderbook/{address}/activeOnly
  *
  * @param address - User address
+ * @param matcherSign - Pre-generated matcher auth { timestamp (ms, future), signature (base58) }
  * @param activeOnly - Filter to active orders only
  * @param options - React Query options
  */
 export const useOrderHistory = (
   address: string,
+  matcherSign: { timestamp: number; signature: string } | undefined,
   activeOnly = false,
-  _options?: {
+  options?: {
     enabled?: boolean;
+    refetchInterval?: number;
   },
 ): UseQueryResult<Order[], Error> => {
   return useQuery({
-    // Disable until matcher authentication is implemented — same blocker as useUserOrders.
-    // /orderbook/:address requires EdDSA/HMAC auth header; returns HTTP 400 without it.
-    // When Gate 3 is live: re-enable and add authentication header (DCC-198).
-    enabled: false, // was: !!address && options?.enabled !== false,
+    enabled: !!address && !!matcherSign?.signature && options?.enabled !== false,
     queryFn: async () => {
-      logger.warn('[useOrderHistory] Skipped: matcher authentication not yet wired (DCC-198)');
-      return [];
-
-      // Original implementation (requires authentication):
-      // const status = activeOnly ? '/activeOnly' : '';
-      // const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}${status}`);
-      // return data;
+      if (!matcherSign) throw new Error('Matcher sign required');
+      const status = activeOnly ? '/activeOnly' : '';
+      const { data } = await matcherClient.get<Order[]>(`/orderbook/${address}${status}`, {
+        headers: {
+          Signature: matcherSign.signature,
+          Timestamp: String(matcherSign.timestamp),
+        },
+      });
+      return data;
     },
-    queryKey: ['orders', 'history', address, activeOnly],
-    retry: 0,
-    staleTime: 30_000, // 30 seconds
+    queryKey: ['orders', 'history', address, activeOnly, matcherSign?.timestamp],
+    refetchInterval: options?.refetchInterval ?? 30_000,
+    refetchOnWindowFocus: false,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 30_000,
   });
 };
 
@@ -370,15 +389,8 @@ export const useTradeHistory = (
   return useQuery({
     enabled: !!amountAsset && !!priceAsset && options?.enabled !== false,
     queryFn: async () => {
-      type RawExchangeTx = {
-        id: string;
-        timestamp: number;
-        price: number;
-        amount: number;
-        order1?: { orderType: string };
-      };
       const result = await getExchangeTxList({ amountAsset, limit, priceAsset });
-      const txs = (result.data ?? []) as unknown as RawExchangeTx[];
+      const txs = (result ?? []) as unknown as RawExchangeTx[];
       return txs.map((tx) => ({
         amount: tx.amount,
         id: tx.id,

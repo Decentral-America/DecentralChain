@@ -51,15 +51,15 @@ export function CopyText({
     event.preventDefault();
 
     if (getText) {
-      getText((t) => performCopy(t));
+      getText((t) => void performCopy(t));
       return;
     }
 
-    performCopy(text ?? '');
+    void performCopy(text ?? '');
   }
 
-  function performCopy(t: string) {
-    const result = copy(t, copyOptions as Parameters<typeof copy>[1]);
+  async function performCopy(t: string) {
+    const result = await copy(t, copyOptions as Parameters<typeof copy>[1]);
     if (onCopy) {
       onCopy(t, result);
     }

@@ -123,7 +123,7 @@ export const useLedger = (): UseLedgerReturn => {
       try {
         const userList = (await withTimeout(
           adapterRef.current.getUserList(offset, count),
-        )) as unknown as LedgerUser[];
+        )) as LedgerUser[];
 
         setUsers(userList);
         return userList;
@@ -151,16 +151,9 @@ export const useLedger = (): UseLedgerReturn => {
       setError(null);
 
       try {
-        // LedgerAdapter.getSignature() is a static proxy method delegating to the
-        // LedgerAdapter instance's signTransaction / signRequest / signData methods
-        // via the DCCLedger transport (see packages/sdk/signature-adapter/LedgerAdapter.ts).
-        const signature = (await withTimeout(
-          (
-            adapterRef.current as unknown as {
-              getSignature: (data: Record<string, unknown>) => Promise<string>;
-            }
-          ).getSignature(txData),
-        )) as string;
+        // LedgerAdapter.getSignature() is a static proxy method that constructs a
+        // LedgerAdapter instance from txData.user and delegates to signTransaction.
+        const signature = (await withTimeout(adapterRef.current.getSignature(txData))) as string;
 
         return signature;
       } catch (err) {

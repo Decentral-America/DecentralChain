@@ -69,7 +69,7 @@
     "url": "git+https://github.com/Decentral-America/DecentralChain.git"
   },
   "scripts": {
-    "build": "tsdown && cp src/index.d.ts dist/index.d.mts",
+    "build": "tsdown",
     "dev:build-js": "cd .. && sbt fullLinkJS",
     "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
     "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",

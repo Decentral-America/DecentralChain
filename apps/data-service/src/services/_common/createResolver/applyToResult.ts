@@ -15,12 +15,12 @@ export const applyValidation = {
   get:
     <A, E>(fn: (a: A) => Either.Either<A, E>) =>
     (m: Option.Option<A>): Either.Either<Option.Option<A>, E> =>
-      liftInnerOption(fn as any, m) as any,
+      liftInnerOption(fn, m),
 
   mget:
     <A, E>(fn: (a: A) => Either.Either<A, E>) =>
     (ms: Option.Option<A>[]): Either.Either<Option.Option<A>[], E> =>
-      sequenceEither(ms.map((m) => liftInnerOption(fn as any, m) as any)) as any,
+      sequenceEither(ms.map((m) => liftInnerOption(fn, m))),
 
   search:
     <A, E>(fn: (a: A) => Either.Either<A, E>) =>

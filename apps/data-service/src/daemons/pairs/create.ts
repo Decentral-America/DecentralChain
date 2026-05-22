@@ -1,9 +1,11 @@
 import type postgres from 'postgres';
-
+import { type PgDriver } from '../../db/driver';
 import getErrorMessage from '../../errorHandling/getErrorMessage';
 
 import logTaskProgress from '../utils/logTaskProgress';
 import * as sql from './sql';
+
+type Logger = { info: (msg: unknown) => void; error: (msg: unknown) => void };
 
 /** loop :: Object -> Task a b */
 const loop = ({
@@ -11,8 +13,8 @@ const loop = ({
   pg,
   pairsTableName,
 }: {
-  logTask: any;
-  pg: any;
+  logTask: ReturnType<typeof logTaskProgress>;
+  pg: PgDriver;
   pairsTableName: string;
 }) => {
   const logMessages = {
@@ -45,8 +47,8 @@ export default ({
   pg,
   pairsTableName,
 }: {
-  logger: any;
-  pg: any;
+  logger: Logger;
+  pg: PgDriver;
   pairsTableName: string;
 }) => {
   const unsafeLogTaskProgress = logTaskProgress(logger);

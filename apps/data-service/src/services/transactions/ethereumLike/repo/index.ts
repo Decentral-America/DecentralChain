@@ -18,7 +18,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Ethereu
   return {
     get: getByIdPreset<string, EthereumLikeTxDbResponse, EthereumLikeTx>({
       name: 'transactions.ethereumLike.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,7 +29,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Ethereu
     mget: mgetByIdsPreset<string, EthereumLikeTxDbResponse, EthereumLikeTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.ethereumLike.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -48,7 +48,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Ethereu
         serialize,
       },
       name: 'transactions.ethereumLike.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

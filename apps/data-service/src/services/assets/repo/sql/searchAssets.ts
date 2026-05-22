@@ -83,8 +83,8 @@ export const searchAssets = (query: string): Knex.QueryBuilder =>
           r: searchById(query)
             .unionAll((qb) => searchByNameInMeta(qb, query))
             .unionAll((qb) => searchByTicker(qb, query))
-            .unionAll((qb) => searchByName(qb, query)) as any,
-        })
+            .unionAll((qb) => searchByName(qb, query)),
+        } as unknown as string)
         .orderBy('r.asset_id')
         .orderBy('r.rank', 'desc');
     })

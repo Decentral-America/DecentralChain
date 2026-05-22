@@ -1,17 +1,17 @@
-package com.decentralchain.transactions.serializers.binary;
+package io.decentralchain.transactions.serializers.binary;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.decentralchain.protobuf.order.OrderOuterClass;
-import com.decentralchain.protobuf.transaction.TransactionOuterClass;
-import com.decentralchain.transactions.Transaction;
-import com.decentralchain.transactions.TransactionOrOrder;
-import com.decentralchain.transactions.exchange.Order;
-import com.decentralchain.transactions.serializers.ProtobufConverter;
-import com.decentralchain.transactions.serializers.Scheme;
+import com.wavesplatform.protobuf.order.OrderOuterClass;
+import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import io.decentralchain.transactions.Transaction;
+import io.decentralchain.transactions.TransactionOrOrder;
+import io.decentralchain.transactions.exchange.Order;
+import io.decentralchain.transactions.serializers.ProtobufConverter;
+import io.decentralchain.transactions.serializers.Scheme;
 
 import java.io.IOException;
 
-import static com.decentralchain.transactions.serializers.Scheme.PROTOBUF;
+import static io.decentralchain.transactions.serializers.Scheme.PROTOBUF;
 
 public abstract class BinarySerializer {
 

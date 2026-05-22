@@ -47,12 +47,12 @@ interface SessionData {
 }
 
 /**
- * Convert MultiAccountUser to User via type assertion.
- * Safe because multiAccount.toList() merges metadata (name, settings, matcherSign)
- * with encrypted data (publicKey, address, seed) into objects matching the User shape.
+ * Convert MultiAccountUser to User.
+ * Safe: MultiAccountUser now shares the same discriminated union for userType,
+ * and merges metadata (name, settings, matcherSign) with decrypted fields
+ * (publicKey, address, seed) into objects matching the User shape exactly.
  */
-const toUser = (mau: import('@/services/multiAccount').MultiAccountUser): User =>
-  mau as unknown as User;
+const toUser = (mau: import('@/services/multiAccount').MultiAccountUser): User => mau as User;
 const toUsers = (maus: import('@/services/multiAccount').MultiAccountUser[]): User[] =>
   maus.map(toUser);
 

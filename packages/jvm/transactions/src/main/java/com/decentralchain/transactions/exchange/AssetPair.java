@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.exchange;
+package io.decentralchain.transactions.exchange;
 
-import com.decentralchain.transactions.common.AssetId;
+import io.decentralchain.transactions.common.AssetId;
 
 import java.util.Objects;
 

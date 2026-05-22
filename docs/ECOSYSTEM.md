@@ -612,7 +612,7 @@ flowchart TD
     S3["③ blockchain-postgres-sync<br/>Seed: npm run download 1 height<br/>Live: npm run updateComposite  (daemon)"]
     S4["④ data-service<br/>Start API server + candles daemon + pairs daemon<br/>Verify: GET /v0/pairs returns 200 OK"]
     S5["⑤ DEX Matcher<br/>Install DEX + grpc-server extensions on the node<br/>Deploy decentralchain-dex v2.3.2.9<br/>Verify: GET /matcher returns Base58 public key"]
-    S6["⑥ DNS + TLS<br/>Route all *.decentralchain.io subdomains<br/>Run all Gate 5 checks in RELEASE-CHECKLIST.md"]
+    S6["⑥ DNS + TLS<br/>Route all *.decentralchain.io subdomains<br/>Run all Gate 5 checks in STATUS.md"]
     S7["⑦ npm dist-tag — promote @next to @latest<br/>assets-pairs-order · marshall · node-api-js<br/>signer · signature-adapter<br/>Unblocks external SDK consumers"]
 
     S1 --> S2
@@ -702,8 +702,7 @@ Browser wallet extension. Key management, signing UI, swap UI, Ledger hardware w
 | Per-package health and remediation status | [STATUS.md](STATUS.md) |
 | Monorepo toolchain (Nx, pnpm, tier conventions) | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Coding standards and quality pipeline | [CONVENTIONS.md](CONVENTIONS.md) |
-| Release gate checklist and Go/No-Go criteria | [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) |
-| Open production work items | [PROD-READINESS-TODO.md](PROD-READINESS-TODO.md) |
+| Release gates, Go/No-Go criteria, project tracker, audit log | [STATUS.md](STATUS.md) |
 | node-go status and 20-audit history | [node-go README](../../../node-go/README.md) |
 
 ---

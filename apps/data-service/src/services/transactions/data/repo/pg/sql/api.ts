@@ -1,4 +1,4 @@
-import { assoc, compose, pick, pipe } from 'ramda';
+import { assoc, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../../utils/db';
 import * as defaultValues from '../../../../_common/sql/defaults';
@@ -46,22 +46,19 @@ export default ({ filters: F }: { filters: any }) => ({
     ];
 
     // { [fName]: fValue }
-    const withDefaults: any = compose(pick(fNames) as any, (v: any) => ({
-      ...defaultValues,
-      ...v,
-    }))(fValues);
+    const withDefaults = pick(fNames, { ...defaultValues, ...fValues }) as Record<string, unknown>;
 
     const withValueF =
-      withDefaults.value !== undefined ? assoc('value', F.value(withDefaults.type), F) : F;
+      withDefaults['value'] !== undefined ? assoc('value', F.value(withDefaults['type']), F) : F;
 
     const fs: any[] = pickBindFilters(
       withValueF,
       // filter by type+value or type
-      withDefaults.value !== undefined ? fNames.filter((name) => name !== 'type') : fNames,
+      withDefaults['value'] !== undefined ? fNames.filter((name) => name !== 'type') : fNames,
       withDefaults,
-    ) as unknown as any[];
+    );
 
     const filtered: any = fs.reduce((q: any, f: any) => f(q), select);
-    return String(F.sort(withDefaults.sort)(selectFromFiltered(filtered)));
+    return String(F.sort(withDefaults['sort'])(selectFromFiltered(filtered)));
   },
 });

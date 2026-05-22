@@ -1,16 +1,16 @@
-package com.decentralchain.transactions.exchange;
+package io.decentralchain.transactions.exchange;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.protobuf.order.OrderOuterClass;
-import com.decentralchain.transactions.TransactionOrOrder;
-import com.decentralchain.transactions.WavesConfig;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.common.Id;
-import com.decentralchain.transactions.common.Proof;
-import com.decentralchain.transactions.serializers.ProtobufConverter;
-import com.decentralchain.transactions.serializers.binary.BinarySerializer;
-import com.decentralchain.transactions.serializers.json.JsonSerializer;
+import io.decentralchain.crypto.Bytes;
+import com.wavesplatform.protobuf.order.OrderOuterClass;
+import io.decentralchain.transactions.TransactionOrOrder;
+import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.common.Proof;
+import io.decentralchain.transactions.serializers.ProtobufConverter;
+import io.decentralchain.transactions.serializers.binary.BinarySerializer;
+import io.decentralchain.transactions.serializers.json.JsonSerializer;
 
 import java.io.IOException;
 import java.util.Arrays;

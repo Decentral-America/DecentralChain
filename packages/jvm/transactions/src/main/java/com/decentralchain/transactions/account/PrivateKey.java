@@ -1,10 +1,10 @@
-package com.decentralchain.transactions.account;
+package io.decentralchain.transactions.account;
 
 import com.google.common.base.Suppliers;
-import com.decentralchain.crypto.Crypto;
-import com.decentralchain.crypto.base.Base58;
-import com.decentralchain.transactions.WavesConfig;
-import com.decentralchain.transactions.common.Base58String;
+import io.decentralchain.crypto.Crypto;
+import io.decentralchain.crypto.base.Base58;
+import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.common.Base58String;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

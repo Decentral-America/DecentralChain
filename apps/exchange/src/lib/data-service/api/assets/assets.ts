@@ -24,24 +24,25 @@ export function get(assets: string | Array<string>): Promise<Asset | Asset[]> {
     .getAssets(toArray(assets), getAssetRequestCb)
     .then((list) => {
       if (typeof assets === 'string') {
-        return list[0];
+        return list[0] as Asset;
       } else {
         return list;
       }
     })
-    .then((list: Array<Asset>) => {
+    .then((list: Asset | Asset[]) => {
       const rewriteAssets = configGet('rewriteAssets') || {};
-      if (!rewriteAssets || !list?.map) {
+      if (!rewriteAssets || !Array.isArray(list)) {
         return list;
       }
 
       return list.map((asset) => {
-        if (!rewriteAssets[asset.id]) {
+        const rewrites = rewriteAssets[asset.id];
+        if (!rewrites) {
           return asset;
         }
 
-        Object.entries(rewriteAssets[asset.id]).forEach(([key, value]) => {
-          asset[key] = value;
+        Object.entries(rewrites).forEach(([key, value]) => {
+          (asset as unknown as Record<string, unknown>)[key] = value;
         });
 
         return asset;
@@ -113,17 +114,17 @@ export function dccBalance(address: string): Promise<IBalanceItem> {
 }
 
 export function assetsBalance(address: string): Promise<Array<IBalanceItem>> {
-  return request({ url: `${configGet('node')}/assets/balance/${address}` }).then(
-    (data: assetsApi.IBalanceList) => {
-      data.balances.forEach((asset) => {
-        assetStorage.updateAsset(asset.assetId, new BigNumber(asset.quantity), asset.reissuable);
-      });
-      return getAssetsByBalanceList(data).then((assets) => {
-        const hash = toHash(assets, 'id');
-        return remapAssetsBalance(data, hash);
-      });
-    },
-  );
+  return request<assetsApi.IBalanceList>({
+    url: `${configGet('node')}/assets/balance/${address}`,
+  }).then((data) => {
+    data.balances.forEach((asset) => {
+      assetStorage.updateAsset(asset.assetId, new BigNumber(asset.quantity), asset.reissuable);
+    });
+    return getAssetsByBalanceList(data).then((assets) => {
+      const hash = toHash(assets, 'id');
+      return remapAssetsBalance(data, hash);
+    });
+  });
 }
 
 export function remapDCCBalance(dcc: Asset, data: assetsApi.IDCCBalance): IBalanceItem {
@@ -150,7 +151,7 @@ export function remapAssetsBalance(
   clearTransferFee();
   return data.balances
     .map((assetData) => {
-      const asset = assetsHash[assetData.assetId];
+      const asset = assetsHash[assetData.assetId] as Asset;
       const inOrders = new Money(new BigNumber('0'), asset);
       const regular = new Money(new BigNumber(assetData.balance), asset);
       const available = regular.sub(inOrders);
@@ -158,7 +159,7 @@ export function remapAssetsBalance(
       const balance =
         assetData.sponsorBalance == null
           ? null
-          : new Money(assetData.sponsorBalance as string, assetsHash[DCC_ID]);
+          : new Money(assetData.sponsorBalance as string, assetsHash[DCC_ID] as Asset);
       const fee =
         assetData.minSponsoredAssetFee == null
           ? null
@@ -198,26 +199,28 @@ export function applyTxAndOrdersDif(
   ordersHash?: IHash<Money>,
 ): IBalanceItem | Array<IBalanceItem> {
   const list = toArray(balance);
-  txHash = txHash ?? Object.create(null);
-  ordersHash = ordersHash ?? Object.create(null);
+  const safeTxHash: IHash<Money> = txHash ?? {};
+  const safeOrdersHash: IHash<Money> = ordersHash ?? {};
   list.forEach((balance) => {
-    balance.regular = moneyDif(balance.regular, txHash[balance.asset.id]);
+    balance.regular = moneyDif(balance.regular, safeTxHash[balance.asset.id]);
     balance.available = moneyDif(
       balance.available,
-      txHash[balance.asset.id],
-      ordersHash[balance.asset.id],
+      safeTxHash[balance.asset.id],
+      safeOrdersHash[balance.asset.id],
     );
-    balance.inOrders = ordersHash[balance.asset.id] || new Money(new BigNumber(0), balance.asset);
+    balance.inOrders =
+      safeOrdersHash[balance.asset.id] ?? new Money(new BigNumber(0), balance.asset);
   });
   if (Array.isArray(balance)) {
     return list;
   }
-  return list[0];
+  return list[0] as IBalanceItem;
 }
 
-export function moneyDif(target: Money, ...toDif: Array<Money>): Money {
-  const result = toDif.filter(Boolean).reduce((result, toSub) => {
-    return result.sub(toSub);
+export function moneyDif(target: Money, ...toDif: Array<Money | undefined>): Money {
+  const result = toDif.reduce<Money>((acc, toSub) => {
+    if (!toSub) return acc;
+    return acc.sub(toSub);
   }, target);
   if (result.getTokens().lt(0)) {
     return result.cloneWithCoins('0');
@@ -230,9 +233,12 @@ export function getAssetsByBalanceList(data: assetsApi.IBalanceList): Promise<Ar
   return get([DCC_ID, ...data.balances.map((balance) => normalizeAssetId(balance.assetId))]);
 }
 
-const splitRequest = (list: string[], getData) => {
+const splitRequest = (
+  list: string[],
+  getData: (ids: string[]) => Promise<{ data: Array<Asset | null> }>,
+) => {
   const newList = [...list];
-  const requests = [];
+  const requests: Promise<{ data: Array<Asset | null> }>[] = [];
 
   while (newList.length) {
     const listPart = newList.splice(0, MAX_ASSETS_IN_REQUEST);
@@ -243,7 +249,7 @@ const splitRequest = (list: string[], getData) => {
 
   return Promise.all(requests)
     .then((results) => {
-      let data = [];
+      let data: Array<Asset | null> = [];
       for (const items of results) {
         data = [...data, ...items.data];
       }
@@ -260,7 +266,7 @@ const getAssetRequestCb = (list: Array<string>): Promise<Array<Asset>> => {
   ) // Cast needed until data-service-client-js tightens getAssets return type
     .then((response) => {
       const assets = response.data;
-      const fails = [];
+      const fails: string[] = [];
 
       list.forEach((id, index) => {
         if (!assets[index]) {
@@ -272,9 +278,9 @@ const getAssetRequestCb = (list: Array<string>): Promise<Array<Asset>> => {
         let failCount = 0;
         return list.map((_id, index) => {
           if (assets[index]) {
-            return assets[index];
+            return assets[index] as Asset;
           } else {
-            return reloadedAssets[failCount++];
+            return reloadedAssets[failCount++] as Asset;
           }
         });
       });
@@ -290,7 +296,7 @@ export async function queueRequest(list: Array<string>) {
   return result;
 }
 
-export const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
+export const wait = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
 
 export interface INodeAssetData {
   assetId: string;

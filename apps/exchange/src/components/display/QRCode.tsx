@@ -2,10 +2,15 @@ import { QRCodeCanvas as QRCodeCanvasBase, QRCodeSVG as QRCodeSVGBase } from 'qr
 import React from 'react';
 import styled from 'styled-components';
 
-// React 19 type compatibility casts — single source of truth; import from here rather than casting in consumers
-export const QRCodeSVG = QRCodeSVGBase as unknown as React.ComponentType<Record<string, unknown>>;
-export const QRCodeCanvas = QRCodeCanvasBase as unknown as React.ComponentType<
-  Record<string, unknown>
+// qrcode.react exports ForwardRefExoticComponents; MUI's `component` prop expects
+// ComponentType. Both are callable with the same props — a single cast (no unknown
+// intermediary) is sufficient to bridge the gap.
+// Consumers should import from here to avoid repeating the cast at every usage site.
+export const QRCodeSVG = QRCodeSVGBase as React.ComponentType<
+  React.ComponentPropsWithoutRef<typeof QRCodeSVGBase>
+>;
+export const QRCodeCanvas = QRCodeCanvasBase as React.ComponentType<
+  React.ComponentPropsWithoutRef<typeof QRCodeCanvasBase>
 >;
 
 /**
@@ -170,11 +175,11 @@ export const QRCode: React.FC<QRCodeProps> = ({
   const qrProps = {
     bgColor,
     fgColor,
-    imageSettings,
     includeMargin,
     level,
     size,
     value,
+    ...(imageSettings !== undefined ? { imageSettings } : {}),
   };
 
   const qrElement =

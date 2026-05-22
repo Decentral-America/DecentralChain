@@ -1,11 +1,11 @@
-package com.decentralchain.transactions.serializers.json.deser;
+package io.decentralchain.transactions.serializers.json.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.decentralchain.transactions.data.*;
+import io.decentralchain.transactions.data.*;
 
 import java.io.IOException;
 

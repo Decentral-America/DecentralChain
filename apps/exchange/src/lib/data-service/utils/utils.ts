@@ -1,6 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { type Asset, type AssetPair, Money, OrderPrice } from '@decentralchain/data-entities';
 import { DCC_ID } from '@decentralchain/signature-adapter';
+import { dccApp } from '@/lib/dccApp';
 import { get as configGet, timeDiff } from '../config';
 import { type IAssetPair, type IHash } from '../interface';
 
@@ -60,10 +61,8 @@ export function toHash<T, K extends keyof T>(list: Array<T>, property: K): IHash
   }, Object.create(null));
 }
 
-export function proxyArrayArgs(cb) {
-  return function (args) {
-    return cb.apply(this, args);
-  };
+export function proxyArrayArgs(cb: (...args: unknown[]) => unknown) {
+  return (args: unknown[]) => cb.apply(null, args);
 }
 
 export function addParam<T, K, R>(cb: (data: T, param: K) => R, param: K): (data: T) => R {
@@ -102,7 +101,7 @@ export function addTime(date: Date | number, count: number, timeType: TTimeType)
   return new Date(dateTime(date) + getTime(count, timeType).getTime());
 }
 
-export function getTime(count, timeType: TTimeType): Date {
+export function getTime(count: number, timeType: TTimeType): Date {
   switch (timeType) {
     case 'second':
       return new Date(count * 1000);
@@ -152,7 +151,7 @@ export type TDefer<T> = {
 };
 
 export function defer<T>(): TDefer<T> {
-  let resolve: (data: T) => void, reject: (data: unknown) => void;
+  let resolve!: (data: T) => void, reject!: (data: unknown) => void;
   const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
@@ -161,9 +160,7 @@ export function defer<T>(): TDefer<T> {
 }
 
 export function stringifyJSON(data: unknown): string {
-  return (
-    window as unknown as { DCCApp: { stringifyJSON: (d: unknown) => string } }
-  ).DCCApp.stringifyJSON(data);
+  return dccApp.stringifyJSON(data);
 }
 
 export interface ITramsferFee {
@@ -234,7 +231,11 @@ export const isNativeFunction = (() => {
 })();
 
 export const isNativeNotBound = (value: unknown) => {
-  if (!value || typeof value.name !== 'string') {
+  if (
+    !value ||
+    typeof value !== 'function' ||
+    typeof (value as { name?: unknown }).name !== 'string'
+  ) {
     return false;
   }
 
@@ -242,5 +243,5 @@ export const isNativeNotBound = (value: unknown) => {
     return false;
   }
 
-  return value.name.indexOf('bound') === -1;
+  return (value as { name: string }).name.indexOf('bound') === -1;
 };

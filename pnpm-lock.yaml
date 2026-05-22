@@ -269,19 +269,19 @@ importers:
         version: link:../../packages/sdk/parse-json-bignumber
       '@hono/node-server':
         specifier: ^2.0.3
-        version: 2.0.3(hono@4.12.21)
+        version: 2.0.3(hono@4.12.22)
       effect:
         specifier: ^3.21.2
         version: 3.21.2
       hono:
-        specifier: ^4.12.21
-        version: 4.12.21
+        specifier: ^4.12.22
+        version: 4.12.22
       knex:
         specifier: ^3.2.10
         version: 3.2.10
       lru-cache:
-        specifier: ^11.3.6
-        version: 11.3.6
+        specifier: ^11.5.0
+        version: 11.5.0
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
@@ -5744,8 +5744,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.12.21:
-    resolution: {integrity: sha512-uV63apnb0kyPtAUwoWgaGh9HyIFcv8lgmzPZSiTBQAFOFGIzka5EZ1dZocmGnn0XdX0+XTqJ6Tqv7selMuGLRQ==}
+  hono@4.12.22:
+    resolution: {integrity: sha512-7fvVPbB92zNRsQke+uiRGwtTuef0tB2Dg4hWxYfFNvkQhIltWoyi0ONReM5LWA+jJWS3nfT5lTq+qbsIpX0IQw==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.1.1:
@@ -6307,6 +6307,10 @@ packages:
 
   lru-cache@11.3.6:
     resolution: {integrity: sha512-Gf/KoL3C/MlI7Bt0PGI9I+TeTC/I6r/csU58N4BSNc4lppLBeKsOdFYkK+dX0ABDUMJNfCHTyPpzwwO21Awd3A==}
+    engines: {node: 20 || >=22}
+
+  lru-cache@11.5.0:
+    resolution: {integrity: sha512-5YgH9UJd7wVb9hIouI2adWpgqrrICkt070Dnj8EUY1+B4B2P9eRLPAkAAo6NICA7CEhOIeBHl46u9zSNpNu7zA==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -9152,9 +9156,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@hono/node-server@2.0.3(hono@4.12.21)':
+  '@hono/node-server@2.0.3(hono@4.12.22)':
     dependencies:
-      hono: 4.12.21
+      hono: 4.12.22
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.75.0(react@19.2.6))':
     dependencies:
@@ -12418,7 +12422,7 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.12.21: {}
+  hono@4.12.22: {}
 
   hookable@6.1.1: {}
 
@@ -12938,6 +12942,8 @@ snapshots:
   lru-cache@10.4.3: {}
 
   lru-cache@11.3.6: {}
+
+  lru-cache@11.5.0: {}
 
   lru-cache@5.1.1:
     dependencies:

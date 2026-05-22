@@ -1,6 +1,6 @@
 import { createOrderPair, type TOrderPair } from '@decentralchain/assets-pairs-order';
 import { Effect, Option, pipe } from 'effect';
-import { map, zipObj } from 'ramda';
+import { zipObj } from 'ramda';
 import { type InitError } from '../../errorHandling';
 import { type AssetIdsPair } from '../../types';
 import { loadMatcherSettings } from './loadMatcherSettings';
@@ -14,7 +14,9 @@ export class PairOrderingServiceImpl implements PairOrderingService {
   private orderPair: Record<string, TOrderPair>;
 
   constructor(matchersSettings: Record<string, string[]>) {
-    this.orderPair = (map as any)(createOrderPair, matchersSettings) as Record<string, TOrderPair>;
+    this.orderPair = Object.fromEntries(
+      Object.entries(matchersSettings).map(([k, v]) => [k, createOrderPair(v)]),
+    ) as Record<string, TOrderPair>;
   }
 
   public static create(
@@ -30,8 +32,8 @@ export class PairOrderingServiceImpl implements PairOrderingService {
 
     return pipe(
       Effect.all(matcherSettingsTasks),
-      Effect.map((settings) => zipObj(matcherAddresses, settings as any)),
-      Effect.map((s) => new PairOrderingServiceImpl(s as any)),
+      Effect.map((settings) => zipObj(matcherAddresses, settings) as Record<string, string[]>),
+      Effect.map((s) => new PairOrderingServiceImpl(s)),
     ) as Effect.Effect<PairOrderingService, InitError, never>;
   }
 

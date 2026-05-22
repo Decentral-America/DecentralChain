@@ -1,18 +1,18 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.Hash;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Alias;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.common.Id;
-import com.decentralchain.transactions.common.Proof;
+import io.decentralchain.crypto.Hash;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Alias;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.common.Proof;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import static com.decentralchain.crypto.Bytes.concat;
-import static com.decentralchain.crypto.Bytes.of;
+import static io.decentralchain.crypto.Bytes.concat;
+import static io.decentralchain.crypto.Bytes.of;
 
 public class CreateAliasTransaction extends Transaction {
 

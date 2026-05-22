@@ -5,10 +5,10 @@ import { type IHash } from './interface';
 import { Signal } from './utils/Signal';
 
 const config: IConfigParams = Object.create(null);
-let dataService = null;
+let dataService: DataServiceClient | null = null;
 
 export let timeDiff = 0;
-export let matcherSettingsPromise: Promise<Array<string>> = Promise.resolve(MAINNET_DATA);
+export let matcherSettingsPromise: Promise<Array<string>> = Promise.resolve([...MAINNET_DATA]);
 
 // JSON parser - replaces Angular's window.DCCApp.parseJSON
 export const parse: <T>(str: string) => Promise<T> = (str) => {
@@ -44,7 +44,7 @@ export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[
     matcherSettingsPromise = fetch(`${String(value)}/settings`)
       .then((r) => r.json() as Promise<{ priceAssets: Array<string> }>)
       .then((data) => data.priceAssets)
-      .catch(() => MAINNET_DATA);
+      .catch(() => [...MAINNET_DATA]);
   }
   if (key === 'api' || key === 'apiVersion') {
     if (config.api && config.apiVersion) {
@@ -55,12 +55,14 @@ export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[
 }
 
 export function setConfig(props: Partial<IConfigParams>): void {
-  Object.keys(props).forEach((key: keyof IConfigParams) => {
-    set(key, props[key]);
-  });
+  for (const key of Object.keys(props) as (keyof IConfigParams)[]) {
+    const value = props[key];
+    if (value !== undefined) set(key, value as never);
+  }
 }
 
 export function getDataService(): DataServiceClient {
+  if (!dataService) throw new Error('DataService not initialized — call setConfig first');
   return dataService;
 }
 

@@ -1,4 +1,4 @@
-import { compose, defaultTo, pick, pipe } from 'ramda';
+import { defaultTo, pick, pipe } from 'ramda';
 
 import { pickBindFilters } from '../../../../../../utils/db';
 import * as defaultValues from '../../../../_common/sql/defaults';
@@ -43,14 +43,11 @@ const createApi = ({ filters: F }: { filters: any }) => ({
     ];
 
     // { [fName]: fValue }
-    const withDefaults: any = compose(pick(fNames) as any, (v: any) => ({
-      ...defaultValues,
-      ...v,
-    }))(fValues);
+    const withDefaults = pick(fNames, { ...defaultValues, ...fValues }) as Record<string, unknown>;
 
     const sort = defaultTo(defaultValues.SORT, fValues.sort);
 
-    const fs: any[] = pickBindFilters(F, fNames, withDefaults) as unknown as any[];
+    const fs: any[] = pickBindFilters(F, fNames, withDefaults);
 
     const filtered: any = fs.reduce((q: any, f: any) => f(q), select(sort));
     return String(F.sort(sort)(selectFromFiltered(filtered)));

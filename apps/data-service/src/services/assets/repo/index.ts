@@ -58,9 +58,9 @@ export default ({
           Effect.map(tap((maybeResp) => forEach((x) => cache.set(req, x), maybeResp))),
         );
       },
-      transformInput: (r) => Either.right(r) as any,
+      transformInput: (r) => Either.right(r),
       transformResult: (res) => Option.map(res, transformDbResponse),
-      validateResult: validateResult(resultSchema, SERVICE_NAME.GET) as any,
+      validateResult: validateResult(resultSchema, SERVICE_NAME.GET),
     }),
 
     mget: createMgetResolver<AssetsMgetRequest, AssetsMgetRequest, AssetDbResponse, Asset>({
@@ -83,8 +83,8 @@ export default ({
         });
 
         return pipe(
-          (mgetByIdsPg as any)({
-            matchRequestResult: (req: string, res: any) => res.asset_id === req,
+          mgetByIdsPg({
+            matchRequestResult: (req: string, res: AssetDbResponse) => res.asset_id === req,
             name: SERVICE_NAME.MGET,
             pg,
             sql: sql.mget,
@@ -102,17 +102,17 @@ export default ({
                   },
                 );
                 cache.set(value.asset_id, value);
-              }, assetInfo as any);
+              }, assetInfo);
             });
             return results;
           }),
         );
       },
-      transformInput: (r) => Either.right(r) as any,
-      transformResult: transformMgetResults<string[], AssetDbResponse, AssetInfo>(
+      transformInput: (r) => Either.right(r),
+      transformResult: transformMgetResults<string, AssetDbResponse, AssetInfo>(
         transformDbResponse,
-      ) as any,
-      validateResult: validateResult(resultSchema, SERVICE_NAME.MGET) as any,
+      ),
+      validateResult: validateResult(resultSchema, SERVICE_NAME.MGET),
     }),
 
     search: searchPreset<Cursor, AssetsSearchRequest, AssetDbResponse, AssetInfo>({
@@ -121,7 +121,7 @@ export default ({
         serialize,
       },
       name: SERVICE_NAME.SEARCH,
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformDbResponse,
     })({

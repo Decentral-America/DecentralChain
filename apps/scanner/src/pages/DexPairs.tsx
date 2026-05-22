@@ -73,7 +73,13 @@ export default function DexPairs() {
             if (pairInfo?.data) {
               marketPairInfo.push({ data: pairInfo.data, market });
             }
-          } catch (_error) {}
+          } catch (pairError) {
+            logError(pairError, {
+              amountAsset: market.amountAsset,
+              context: 'DexPairs.fetchPairInfo',
+              priceAsset: market.priceAsset,
+            });
+          }
         }
 
         // Phase 2: Batch-fetch all unique asset details in one HTTP request

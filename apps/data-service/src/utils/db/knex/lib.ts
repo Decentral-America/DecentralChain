@@ -4,7 +4,7 @@ const hasMethod: ((method: string, x: any) => boolean) & ((method: string) => (x
   curryN(
     2,
     (method: string, x: any): boolean => (x?.[method] && type(x[method]) === 'Function') || false,
-  ) as any;
+  ) as unknown as ((method: string, x: any) => boolean) & ((method: string) => (x: any) => boolean);
 
 const createPointfree =
   (method: string) =>

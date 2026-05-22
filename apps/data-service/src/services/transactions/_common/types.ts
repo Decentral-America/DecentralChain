@@ -19,6 +19,7 @@ export type RawTx = CommonTxFields &
     time_stamp: Date;
     tx_version: number | null;
     sender_public_key: string;
+    status?: string | null;
   };
 
 export type Tx = CommonTxFields & {

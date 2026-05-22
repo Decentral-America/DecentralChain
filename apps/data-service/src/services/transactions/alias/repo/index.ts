@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTx
   return {
     get: getByIdPreset<string, AliasTxDbResponse, AliasTx>({
       name: 'transactions.alias.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTx
     mget: mgetByIdsPreset<string, AliasTxDbResponse, AliasTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.alias.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -44,7 +44,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): AliasTx
         serialize,
       },
       name: 'transactions.alias.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

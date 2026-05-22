@@ -1,4 +1,3 @@
-import { curryN } from 'ramda';
 import {
   AppError,
   type DbError,
@@ -11,28 +10,27 @@ import {
   type ValidationError,
 } from './AppError';
 
-type CurryFn2<A, B, R> = ((a: A) => (b: B) => R) & ((a: A, b: B) => R);
-type CurryFn3<A, B, C, R> = ((a: A) => (b: B) => (c: C) => R) &
-  ((a: A, b: B) => (c: C) => R) &
-  ((a: A, b: B, c: C) => R);
+/**
+ * Three-stage curried factory — used by `addMeta` for re-wrapping errors:
+ *   toAppError(e.type)(meta)(e.error)
+ */
+export const toAppError =
+  (type: ErrorType) =>
+  (meta: ErrorMetaInfo) =>
+  (err: Error): AppError =>
+    AppError[type](err, meta);
 
-export const toAppError: CurryFn3<ErrorType, ErrorMetaInfo, Error, AppError> = curryN(
-  3,
-  (type: ErrorType, meta: ErrorMetaInfo, err: Error) => AppError[type](err, meta),
-) as CurryFn3<ErrorType, ErrorMetaInfo, Error, AppError>;
+export const toInitError = (meta: ErrorMetaInfo, err: Error): InitError => AppError.Init(err, meta);
 
-export const toInitError: CurryFn2<ErrorMetaInfo, Error, InitError> = toAppError('Init') as any;
+export const toResolverError = (meta: ErrorMetaInfo, err: Error): ResolverError =>
+  AppError.Resolver(err, meta);
 
-export const toResolverError: CurryFn2<ErrorMetaInfo, Error, ResolverError> = toAppError(
-  'Resolver',
-) as any;
+export const toDbError = (meta: ErrorMetaInfo, err: Error): DbError => AppError.Db(err, meta);
 
-export const toDbError: CurryFn2<ErrorMetaInfo, Error, DbError> = toAppError('Db') as any;
+export const toValidationError = (meta: ErrorMetaInfo, err: Error): ValidationError =>
+  AppError.Validation(err, meta);
 
-export const toValidationError: CurryFn2<ErrorMetaInfo, Error, ValidationError> = toAppError(
-  'Validation',
-) as any;
+export const toParseError = (meta: ErrorMetaInfo, err: Error): ParseError =>
+  AppError.Parse(err, meta);
 
-export const toParseError: CurryFn2<ErrorMetaInfo, Error, ParseError> = toAppError('Parse') as any;
-
-export const toTimeout: CurryFn2<ErrorMetaInfo, Error, Timeout> = toAppError('Timeout') as any;
+export const toTimeout = (meta: ErrorMetaInfo, err: Error): Timeout => AppError.Timeout(err, meta);

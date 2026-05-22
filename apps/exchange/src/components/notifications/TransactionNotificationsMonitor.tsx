@@ -12,6 +12,10 @@ import {
 import { useAssetDetails } from '@/hooks/useAssetDetails';
 import { logger } from '@/lib/logger';
 
+// Module-level deduplication set — avoids showing the same notification twice
+// per page lifetime without polluting window or using localStorage.
+const shownNotifications = new Set<string>();
+
 /**
  * Format amount for notification display
  */
@@ -109,16 +113,14 @@ export const TransactionNotificationsMonitor: React.FC = () => {
         const notificationKey = `tx-${tx.id}`;
 
         // Check if we've already shown this notification (simple deduplication)
-        const shownKey = `__shown_${notificationKey}`;
-        const windowWithFlags = window as unknown as Window & { [key: string]: boolean };
-        if (windowWithFlags[shownKey]) {
+        if (shownNotifications.has(notificationKey)) {
           return;
         }
-        windowWithFlags[shownKey] = true;
+        shownNotifications.add(notificationKey);
 
         // Show toast notification
         toast.showSuccess(
-          (<TransactionNotificationItem transaction={tx} />) as unknown as string,
+          <TransactionNotificationItem transaction={tx} />,
           8000, // Show for 8 seconds
         );
 

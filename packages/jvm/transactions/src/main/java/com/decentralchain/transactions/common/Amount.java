@@ -1,4 +1,4 @@
-package com.decentralchain.transactions.common;
+package io.decentralchain.transactions.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,9 +1,9 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.common.Proof;
-import com.decentralchain.transactions.common.Recipient;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.Proof;
+import io.decentralchain.transactions.common.Recipient;
 
 import java.io.IOException;
 import java.util.List;

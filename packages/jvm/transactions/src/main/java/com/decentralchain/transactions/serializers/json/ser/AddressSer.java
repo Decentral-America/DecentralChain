@@ -1,9 +1,9 @@
-package com.decentralchain.transactions.serializers.json.ser;
+package io.decentralchain.transactions.serializers.json.ser;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.Address;
 
 import java.io.IOException;
 

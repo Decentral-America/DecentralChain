@@ -65,15 +65,20 @@ export function parseTx(
   return Promise.all([
     get(Object.keys(hash)).then((assets) => toHash(assets, 'id')),
     api?.getPublicKey() || Promise.resolve(null),
-    api?.getSignVersions() || Promise.resolve({}),
+    api?.getSignVersions() || Promise.resolve({} as Record<number, number[]>),
   ]).then(([hash, sender, versions]) => {
     return transactions.map((transaction) => {
-      if ('version' in transaction && versions[transaction.type] !== null) {
-        const versionList = versions[transaction.type];
-        const version = versionList.includes(transaction.version)
-          ? transaction.version
-          : versionList[versionList.lenght - 1];
-        transaction.version = version;
+      if (
+        'version' in transaction &&
+        (versions as Record<number, number[]>)[transaction.type as number] != null
+      ) {
+        const versionList = (versions as Record<number, number[]>)[transaction.type as number];
+        if (versionList && versionList.length > 0) {
+          const version = versionList.includes(transaction.version)
+            ? transaction.version
+            : (versionList[versionList.length - 1] as number);
+          transaction.version = version;
+        }
       }
 
       switch (transaction.type) {
@@ -88,7 +93,7 @@ export function parseTx(
         case TRANSACTION_TYPE_NUMBER.BURN:
           return parseBurnTx(transaction, hash, isUTX);
         case TRANSACTION_TYPE_NUMBER.EXCHANGE:
-          return parseExchangeTx(transaction, hash, isUTX, isTokens, sender);
+          return parseExchangeTx(transaction, hash, isUTX, isTokens ?? false, sender ?? '');
         case TRANSACTION_TYPE_NUMBER.LEASE:
           return parseLeasingTx(transaction, hash, isUTX);
         case TRANSACTION_TYPE_NUMBER.CANCEL_LEASING:
@@ -137,8 +142,8 @@ export function getAssetsHashFromTx(
       hash[normalizeAssetId(transaction.order2.matcherFeeAssetId)] = true;
       break;
     case SCRIPT_INVOCATION_NUMBER:
-      transaction.payment.forEach((payment) => {
-        hash[normalizeAssetId(payment.assetId)] = true;
+      transaction.payment.forEach((payment: { assetId: string | null }) => {
+        hash[normalizeAssetId(payment.assetId ?? undefined)] = true;
       });
       break;
   }
@@ -153,7 +158,7 @@ export function remapOldTransfer(tx: txApi.IOldTransferTx): txApi.ITransfer {
 
 export function parseIssueTx(tx: txApi.IIssue, assetsHash: IHash<Asset>, isUTX: boolean): IIssue {
   const quantity = new BigNumber(tx.quantity);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   return { ...tx, fee, isUTX, precision: tx.decimals, quantity } as IIssue;
 }
 
@@ -164,8 +169,8 @@ export function parseTransferTx(
 ): ITransfer {
   const attachment = parseAttachment(tx.attachment);
   const recipient = normalizeRecipient(tx.recipient);
-  const amount = new Money(tx.amount, assetsHash[normalizeAssetId(tx.assetId)]);
-  const fee = new Money(tx.fee, assetsHash[normalizeAssetId(tx.feeAssetId)]);
+  const amount = new Money(tx.amount, assetsHash[normalizeAssetId(tx.assetId)] as Asset);
+  const fee = new Money(tx.fee, assetsHash[normalizeAssetId(tx.feeAssetId)] as Asset);
   const assetId = normalizeAssetId(tx.assetId);
   return { ...tx, amount, assetId, attachment, fee, isUTX, recipient };
 }
@@ -175,14 +180,14 @@ export function parseReissueTx(
   assetsHash: IHash<Asset>,
   isUTX: boolean,
 ): IReissue {
-  const quantity = new Money(tx.quantity, assetsHash[normalizeAssetId(tx.assetId)]);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const quantity = new Money(tx.quantity, assetsHash[normalizeAssetId(tx.assetId)] as Asset);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   return { ...tx, fee, isUTX, quantity };
 }
 
 export function parseBurnTx(tx: txApi.IBurn, assetsHash: IHash<Asset>, isUTX: boolean): IBurn {
-  const amount = new Money(tx.amount, assetsHash[normalizeAssetId(tx.assetId)]);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const amount = new Money(tx.amount, assetsHash[normalizeAssetId(tx.assetId)] as Asset);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   return { ...tx, amount, fee, isUTX };
 }
 
@@ -201,13 +206,15 @@ export function parseExchangeTx(
     [order1.orderType]: order1,
     [order2.orderType]: order2,
   };
-  const buyOrder = orderHash.buy;
-  const sellOrder = orderHash.sell;
+  // biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
+  const buyOrder = orderHash['buy'] as IExchangeOrder;
+  // biome-ignore lint/complexity/useLiteralKeys: noPropertyAccessFromIndexSignature requires bracket notation
+  const sellOrder = orderHash['sell'] as IExchangeOrder;
   const exchangeType = getExchangeType(order1, order2, sender);
   const { price, amount, total } = getExchangeTxMoneys(factory, tx, assetsHash);
   const buyMatcherFee = factory.money(tx.buyMatcherFee, buyOrder.matcherFee.asset);
   const sellMatcherFee = factory.money(tx.sellMatcherFee, sellOrder.matcherFee.asset);
-  const fee = factory.money(tx.fee, assetsHash[DCC_ID]);
+  const fee = factory.money(tx.fee, assetsHash[DCC_ID] as Asset);
   return {
     ...tx,
     amount,
@@ -230,9 +237,9 @@ export function parseScriptTx(
   assetsHash: IHash<Asset>,
   isUTX?: boolean,
 ): ISetScript {
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   const script = tx.script || '';
-  return { ...tx, fee, isUTX, script };
+  return { ...tx, fee, isUTX: isUTX ?? false, script };
 }
 
 export function parseAssetScript(
@@ -240,9 +247,9 @@ export function parseAssetScript(
   assetsHash: IHash<Asset>,
   isUTX?: boolean,
 ): ISetAssetScript {
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   const script = tx.script || '';
-  return { ...tx, fee, isUTX, script };
+  return { ...tx, fee, isUTX: isUTX ?? false, script };
 }
 
 export function getExchangeTxMoneys(
@@ -252,8 +259,8 @@ export function getExchangeTxMoneys(
 ) {
   const assetIdPair = normalizeAssetPair(tx.order2.assetPair);
   const pair = new AssetPair(
-    assetsHash[assetIdPair.amountAsset],
-    assetsHash[assetIdPair.priceAsset],
+    assetsHash[assetIdPair.amountAsset] as Asset,
+    assetsHash[assetIdPair.priceAsset] as Asset,
   );
   const price = factory.price(tx.price, pair);
   const amount = factory.money(tx.amount, pair.amountAsset);
@@ -263,8 +270,8 @@ export function getExchangeTxMoneys(
 }
 
 export function parseLeasingTx(tx: txApi.ILease, assetsHash: IHash<Asset>, isUTX: boolean): ILease {
-  const amount = new Money(tx.amount, assetsHash[DCC_ID]);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const amount = new Money(tx.amount, assetsHash[DCC_ID] as Asset);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   const recipient = normalizeRecipient(tx.recipient);
   const isActive = tx.status === 'active';
   return { ...tx, amount, fee, isActive, isUTX, recipient };
@@ -276,7 +283,7 @@ export function parseCancelLeasingTx(
   isUTX: boolean,
 ): ICancelLeasing {
   const lease = (tx.lease && parseLeasingTx(tx.lease, assetsHash, false)) || null;
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   return { ...tx, fee, isUTX, lease };
 }
 
@@ -285,7 +292,7 @@ export function parseCreateAliasTx(
   assetsHash: IHash<Asset>,
   isUTX: boolean,
 ): ICreateAlias {
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   return { ...tx, fee, isUTX };
 }
 
@@ -295,11 +302,11 @@ export function parseMassTransferTx(
   isUTX: boolean,
 ): IMassTransfer {
   const attachment = parseAttachment(tx.attachment);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
-  const asset = assetsHash[normalizeAssetId(tx.assetId)];
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
+  const asset = assetsHash[normalizeAssetId(tx.assetId)] as Asset;
 
   const transfers = tx.transfers.map((transfer) => ({
-    amount: new Money(transfer.amount, assetsHash[normalizeAssetId(tx.assetId)]),
+    amount: new Money(transfer.amount, assetsHash[normalizeAssetId(tx.assetId)] as Asset),
     recipient: normalizeRecipient(transfer.recipient),
   }));
 
@@ -317,19 +324,22 @@ export function parseExchangeOrder(
   assetsHash: IHash<Asset>,
 ): IExchangeOrder {
   const assetPair = normalizeAssetPair(order.assetPair);
-  const pair = new AssetPair(assetsHash[assetPair.amountAsset], assetsHash[assetPair.priceAsset]);
+  const pair = new AssetPair(
+    assetsHash[assetPair.amountAsset] as Asset,
+    assetsHash[assetPair.priceAsset] as Asset,
+  );
   const price = factory.price(order.price, pair);
-  const amount = factory.money(order.amount, assetsHash[assetPair.amountAsset]);
+  const amount = factory.money(order.amount, assetsHash[assetPair.amountAsset] as Asset);
   const total = Money.fromTokens(amount.getTokens().mul(price.getTokens()), price.asset);
   const matcherFee = factory.money(
     order.matcherFee,
-    assetsHash[normalizeAssetId(order.matcherFeeAssetId)],
+    assetsHash[normalizeAssetId(order.matcherFeeAssetId)] as Asset,
   );
   return { ...order, amount, assetPair, matcherFee, price, total };
 }
 
 export function parseDataTx(tx: txApi.IData, assetsHash: IHash<Asset>, isUTX: boolean): IData {
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   const data = tx.data.map((dataItem) => {
     if (dataItem.type === 'integer') {
       return { ...dataItem, value: new BigNumber(dataItem.value) };
@@ -347,10 +357,10 @@ export function parseInvocationTx(
   assetsHash: IHash<Asset>,
   isUTX: boolean,
 ): IScriptInvocation {
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
   const dApp = normalizeRecipient(tx.dApp);
-  const payment = tx.payment.map(
-    (payment) => new Money(payment.amount, assetsHash[normalizeAssetId(payment.assetId)]),
+  const payment = (tx.payment ?? []).map(
+    (payment) => new Money(payment.amount, assetsHash[normalizeAssetId(payment.assetId)] as Asset),
   );
   return { ...tx, dApp, fee, isUTX, payment };
 }
@@ -360,8 +370,11 @@ function parseSponsorshipTx(
   assetsHash: IHash<Asset>,
   isUTX: boolean,
 ): ISponsorship {
-  const minSponsoredAssetFee = new Money(tx.minSponsoredAssetFee || 0, assetsHash[tx.assetId]);
-  const fee = new Money(tx.fee, assetsHash[DCC_ID]);
+  const minSponsoredAssetFee = new Money(
+    tx.minSponsoredAssetFee || 0,
+    assetsHash[tx.assetId] as Asset,
+  );
+  const fee = new Money(tx.fee, assetsHash[DCC_ID] as Asset);
 
   return { ...tx, fee, isUTX, minSponsoredAssetFee };
 }

@@ -33,8 +33,8 @@ export function useZodForm<TFieldValues extends FieldValues = FieldValues>(
 ) {
   return useForm<TFieldValues>({
     mode: 'onChange', // Validate on change for better UX
-    // biome-ignore lint/suspicious/noExplicitAny: ZodSchema lacks the FieldValues generic required by zodResolver overloads; as any bridges the version boundary, then as unknown as restores the correct Resolver<TFieldValues> type
-    resolver: zodResolver(schema as any) as unknown as Resolver<TFieldValues>,
+    // biome-ignore lint/suspicious/noExplicitAny: zodResolver's overloads don't accept ZodSchema under exactOptionalPropertyTypes=true; `as any` is the input bridge, then `as Resolver<TFieldValues>` is a valid single narrowing cast — no `unknown` intermediary
+    resolver: zodResolver(schema as any) as Resolver<TFieldValues>,
     reValidateMode: 'onChange', // Revalidate on every change
     ...options,
   });

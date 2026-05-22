@@ -51,7 +51,7 @@ Types: `feat` · `fix` · `docs` · `style` · `refactor` · `perf` · `test` ·
 
 ## Java Source Packages
 
-The Java source packages use the `io.decentralchain.sdk.*` namespace, matching the Maven groupId `io.decentralchain`. This was renamed from the upstream `com.wavesplatform.wavesj.*` as part of the DCC rebrand (DCC-249). See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for migration notes.
+The Java source packages use the `io.decentralchain.sdk.*` namespace, matching the Maven groupId `io.decentralchain`. This was renamed from the upstream `com.wavesplatform.wavesj.*` as part of the DCC rebrand (DCC-249). See [Per-Package Known Issues](../../../docs/STATUS.md#per-package-known-issues) for migration notes.
 
 ## Upstream
 

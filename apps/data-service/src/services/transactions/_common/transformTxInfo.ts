@@ -1,25 +1,33 @@
-import { compose, identity, ifElse, omit, pathEq, propEq, renameKeys } from 'ramda';
+import { omit, renameKeys } from 'ramda';
 
-const hasNullSig = (propEq as any)(null, 'signature');
-const hasZeroProofs = (pathEq as any)(0, ['proofs', 'length']);
+type TxRow = Record<string, unknown>;
 
-const processProofsAndSignature = (ifElse as any)(
-  hasNullSig,
-  omit(['signature']),
-  (ifElse as any)(hasZeroProofs, omit(['proofs']), identity),
-);
+const hasNullSig = (row: TxRow): boolean => row['signature'] === null;
+const hasZeroProofs = (row: TxRow): boolean =>
+  ((row['proofs'] as unknown[] | undefined)?.length ?? -1) === 0;
 
-/** transformTxInfo:: RawTxInfo -> TxInfo */
-export const transformTxInfo = (compose as any)(
-  processProofsAndSignature,
+const processProofsAndSignature = (row: TxRow): TxRow => {
+  if (hasNullSig(row)) return omit(['signature'], row);
+  if (hasZeroProofs(row)) return omit(['proofs'], row);
+  return row;
+};
+
+const _transformTxInfo = (obj: TxRow): TxRow => {
+  const renamed: TxRow = renameKeys<TxRow>(
+    {
+      sender_public_key: 'senderPublicKey',
+      status: 'applicationStatus',
+      time_stamp: 'timestamp',
+      tx_type: 'type',
+      tx_version: 'version',
+    },
+    omit(['uid'], obj),
+  );
   // remove version if it is null
-  (ifElse as any)((propEq as any)(null, 'version'), omit(['version']), identity),
-  renameKeys({
-    sender_public_key: 'senderPublicKey',
-    status: 'applicationStatus',
-    time_stamp: 'timestamp',
-    tx_type: 'type',
-    tx_version: 'version',
-  }),
-  omit(['uid']),
-) as (obj: any) => any;
+  const withVersion = renamed['version'] === null ? omit(['version'], renamed) : renamed;
+  return processProofsAndSignature(withVersion);
+};
+
+/** transformTxInfo:: RawTxInfo -> TxInfo
+ * Dynamic DB row transform — output shape is determined by the caller's generic type context. */
+export const transformTxInfo: (obj: TxRow) => any = _transformTxInfo;

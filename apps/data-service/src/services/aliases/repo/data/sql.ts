@@ -1,5 +1,5 @@
 import { type Knex, knex } from 'knex';
-import { complement, compose } from 'ramda';
+import { complement } from 'ramda';
 import {
   type AliasesSearchRequest,
   type WithAddress,
@@ -19,16 +19,17 @@ const isAddress = (addressOrAlias: string) => addressOrAlias.length >= minAddres
 
 const getAliasRowNumber = (after: string) => pg('aliases_cte').select('rn').where('alias', after);
 
-const baseQuery = (qb: Knex.QueryBuilder) => (qb.from({ t: 'txs_10' }) as any).select('t.uid');
+const baseQuery = (qb: Knex.QueryBuilder) =>
+  qb.from({ t: 'txs_10' } as unknown as string).select('t.uid');
 
 const selectAfterFilters = (filtered: Knex.QueryBuilder) =>
-  (pg.select(columns) as any).from({ a: filtered });
+  pg.select(columns).from({ a: filtered } as unknown as string);
 
 const filterByAliases = (qb: Knex.QueryBuilder, aliasSet: string[]) =>
   qb.whereIn('t.alias', aliasSet);
 
 const selectFilteredAliases = (filtered: Knex.QueryBuilder) =>
-  (pg as any).from({
+  pg.queryBuilder().from({
     counted_aliases: pg({ t: 'txs_10' })
       .select('t.alias')
       .min({ address: 't.sender' }) // first sender
@@ -36,7 +37,7 @@ const selectFilteredAliases = (filtered: Knex.QueryBuilder) =>
       .column({ rn: pg.raw('row_number() over (order by min(t.uid))') }) // rn for pagination
       .whereIn('t.uid', filtered)
       .groupBy('t.alias'),
-  });
+  } as unknown as string);
 
 const withAddress = (req: AliasesSearchRequest): req is AliasesSearchRequest & WithAddress =>
   typeof req.address === 'string';
@@ -84,11 +85,10 @@ export default {
       .orderBy('rn', 'asc')
       .limit(req.limit);
 
-    return (compose as any)(
-      // aliases are considered broken if 'duplicates' not equal to 1
-      (q: Knex.QueryBuilder) =>
-        req.showBroken ? q.toString() : q.clone().where('duplicates', 1).toString(),
-      (q: Knex.QueryBuilder) => (req.after ? q.where('rn', '>', getAliasRowNumber(req.after)) : q),
-    )(q);
+    const withAfter = req.after ? q.where('rn', '>', getAliasRowNumber(req.after)) : q;
+    // aliases are considered broken if 'duplicates' not equal to 1
+    return req.showBroken
+      ? withAfter.toString()
+      : withAfter.clone().where('duplicates', 1).toString();
   },
 };

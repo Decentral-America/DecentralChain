@@ -1,6 +1,6 @@
 import { type BigNumber } from '@decentralchain/data-entities';
 import { Effect, Option, pipe } from 'effect';
-import { flatten, groupBy, indexBy, pipe as rpipe, sort, toPairs } from 'ramda';
+import { groupBy, indexBy, sort, toPairs } from 'ramda';
 
 import { type AppError } from '../../../errorHandling';
 import {
@@ -105,26 +105,22 @@ export default (repo: AllTxsRepo) =>
     search: (req) =>
       pipe(
         repo.search(req),
-        Effect.flatMap((txsList: SearchedItems<CommonTransactionInfo>) =>
-          pipe(
-            Effect.all(
-              (rpipe as any)(
-                groupBy((t: any) => String(t.type)),
-                toPairs,
-                (tuples: any) =>
-                  tuples.map(([type, txs]: any) =>
-                    txsServices[type as unknown as keyof AllTxsServiceDep].mget({
-                      ids: txs.map((t: any) => t.id),
-                      moneyFormat: req.moneyFormat,
-                    }),
-                  ),
-              )(txsList.items) as any,
-            ),
-            Effect.map((mss: any) => {
-              const allOptions = (flatten as any)(mss) as Option.Option<TransactionInfo>[];
-              const txs = (collect as any)((m: Option.Option<TransactionInfo>) =>
+        Effect.flatMap((txsList: SearchedItems<CommonTransactionInfo>) => {
+          const grouped = groupBy((t: CommonTransactionInfo) => String(t.type), txsList.items);
+          const tuples = toPairs(grouped);
+          const tasks = tuples.map(([type, txs]) =>
+            txsServices[type as unknown as keyof AllTxsServiceDep].mget({
+              ids: (txs as CommonTransactionInfo[]).map((t) => t.id),
+              moneyFormat: req.moneyFormat,
+            }),
+          );
+          return pipe(
+            Effect.all(tasks),
+            Effect.map((mss: Option.Option<TransactionInfo>[][]) => {
+              const allOptions = mss.flat();
+              const txs = collect((m: Option.Option<TransactionInfo>) =>
                 Option.isSome(m) ? m.value : undefined,
-              )(allOptions) as TransactionInfo[];
+              )(allOptions);
 
               const s = indexBy((tx) => `${tx.id}:${tx.timestamp.valueOf()}`, txsList.items);
               return sort((a, b) => {
@@ -136,7 +132,7 @@ export default (repo: AllTxsRepo) =>
               }, txs);
             }),
             Effect.map((txs) => ({ ...txsList, items: txs }) as SearchedItems<TransactionInfo>),
-          ),
-        ),
+          );
+        }),
       ) as Effect.Effect<SearchedItems<TransactionInfo>, AppError, never>,
   });

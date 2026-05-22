@@ -412,11 +412,11 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Waves -->
+        <!-- DCC transactions (fork of com.wavesplatform:waves-transactions; see KNOWN-2 resolution) -->
         <dependency>
-            <groupId>com.wavesplatform</groupId>
-            <artifactId>waves-transactions</artifactId>
-            <version>1.2.7</version>
+            <groupId>io.decentralchain</groupId>
+            <artifactId>transactions</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- DCC crypto primitives (Curve25519, key derivation, hashing, Base58, RSA)

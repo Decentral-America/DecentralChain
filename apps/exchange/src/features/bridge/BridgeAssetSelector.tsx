@@ -42,38 +42,20 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
 
   // Build list of gateway assets with their details
   const gatewayAssets: GatewayAsset[] = Object.keys(gateway ?? {}).map((assetId) => {
-    const assetInfo: {
-      displayName?: string;
-      name?: string;
-      ticker?: string;
-      precision?: number;
-      icon?: string;
-      [key: string]: unknown;
-    } =
-      (
-        assets as unknown as Record<
-          string,
-          {
-            displayName?: string;
-            name?: string;
-            ticker?: string;
-            precision?: number;
-            icon?: string;
-            [key: string]: unknown;
-          }
-        >
-      )[assetId] ?? {};
+    // `assets` maps ticker → assetId; reverse-lookup to find the ticker for this assetId
+    const ticker =
+      Object.entries(assets).find(([, id]) => id === assetId)?.[0] ?? assetId.substring(0, 8);
     const balance = balances[assetId] ?? new BigNumber(0);
 
     return {
       assetId,
       balance,
-      decimals: Number(assetInfo.precision ?? 8),
+      decimals: 8, // DCC-standard 8 decimal places; precision not in network config
       hasDeposit: true, // All gateway assets support deposit
       hasWithdraw: true, // All gateway assets support withdraw
-      icon: assetInfo.icon,
-      name: String(assetInfo.displayName ?? assetInfo.name ?? 'Unknown Asset'),
-      ticker: String(assetInfo.ticker ?? assetId.substring(0, 8)),
+      icon: undefined,
+      name: ticker,
+      ticker,
     };
   });
 

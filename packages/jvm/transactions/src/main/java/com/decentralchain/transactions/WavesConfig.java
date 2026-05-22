@@ -1,6 +1,6 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.transactions.common.ChainId;
+import io.decentralchain.transactions.common.ChainId;
 
 public abstract class WavesConfig {
 

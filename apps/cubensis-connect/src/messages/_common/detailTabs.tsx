@@ -35,7 +35,7 @@ export function TxDetailTabs({ children, json }: Props) {
                 type="button"
                 className={clsx(styles.copyBtn, copyFeedback && styles.copyBtn_feedback)}
                 onClick={() => {
-                  copy(json, { format: 'text/plain' });
+                  void copy(json, { format: 'text/plain' });
                   setCopyFeedback(true);
 
                   setTimeout(() => {

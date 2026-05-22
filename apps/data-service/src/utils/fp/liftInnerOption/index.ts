@@ -7,7 +7,7 @@ import { swapOptionEither } from '../swapOptionF';
  *   Some(a), fn(a)=Right(b) → Right(Some(b))
  *   Some(a), fn(a)=Left(e)  → Left(e)
  */
-export const liftInnerOption = <E, A>(
-  fn: (a: A) => Either.Either<E, A>,
+export const liftInnerOption = <A, E>(
+  fn: (a: A) => Either.Either<A, E>,
   option: Option.Option<A>,
-): Either.Either<E, Option.Option<A>> => swapOptionEither(pipe(option, Option.map(fn)));
+): Either.Either<Option.Option<A>, E> => swapOptionEither(pipe(option, Option.map(fn)));

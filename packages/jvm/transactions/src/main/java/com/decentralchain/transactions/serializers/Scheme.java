@@ -1,7 +1,7 @@
-package com.decentralchain.transactions.serializers;
+package io.decentralchain.transactions.serializers;
 
-import com.decentralchain.transactions.*;
-import com.decentralchain.transactions.exchange.Order;
+import io.decentralchain.transactions.*;
+import io.decentralchain.transactions.exchange.Order;
 
 public enum Scheme {
 

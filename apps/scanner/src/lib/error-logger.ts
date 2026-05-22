@@ -7,6 +7,13 @@
 
 import * as Sentry from '@sentry/react';
 
+// Augment Window so __ERROR_LOGGER__ is a known, typed property.
+declare global {
+  interface Window {
+    __ERROR_LOGGER__?: (error: unknown, errorInfo: { componentStack?: string }) => void;
+  }
+}
+
 const SENTRY_DSN = import.meta.env?.VITE_SENTRY_DSN;
 
 if (SENTRY_DSN) {
@@ -105,10 +112,7 @@ if (typeof window !== 'undefined') {
   });
 
   // Expose logger for ErrorBoundary
-  (window as unknown as Record<string, unknown>).__ERROR_LOGGER__ = (
-    error: unknown,
-    errorInfo: { componentStack?: string },
-  ) => {
+  window.__ERROR_LOGGER__ = (error: unknown, errorInfo: { componentStack?: string }) => {
     logError(error, { componentStack: errorInfo?.componentStack, type: 'react_error_boundary' });
   };
 }

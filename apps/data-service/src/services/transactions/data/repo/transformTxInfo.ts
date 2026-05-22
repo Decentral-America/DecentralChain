@@ -1,5 +1,12 @@
-import { compose, isNil, reject } from 'ramda';
+import { isNil, reject } from 'ramda';
 
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
-export default (compose as any)(transformTxInfo, reject(isNil)) as (obj: any) => any;
+type TxRow = Record<string, unknown>;
+
+const _transform = (obj: TxRow): TxRow => {
+  const step1 = reject(isNil, obj) as TxRow;
+  return transformTxInfo(step1);
+};
+
+export default _transform as (obj: TxRow) => any;

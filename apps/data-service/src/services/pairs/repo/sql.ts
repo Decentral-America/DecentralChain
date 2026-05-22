@@ -70,8 +70,10 @@ const searchAssets = (
 ) => {
   // will be used on to_tsvector('simple', asset_name) search
   const cleanedQuery = escapeForTsQuery(query);
-  return (qb.distinct('asset_id') as any).from(function (this: Knex.QueryBuilder) {
-    (this as any)
+  return (qb.distinct('asset_id') as unknown as Knex.QueryBuilder).from(function (
+    this: Knex.QueryBuilder,
+  ) {
+    return (this as unknown as Knex.QueryBuilder)
       .table({ [tableAlias]: 'assets' })
       .column({ asset_id: `${tableAlias}.asset_id` })
       .where(`${tableAlias}.asset_id`, query)
@@ -130,13 +132,11 @@ export const search = (req: PairsSearchRequest): string => {
 
     return q
       .with('assets_cte', (qb: Knex.QueryBuilder) =>
-        (qb as any)
+        (qb as unknown as Knex.QueryBuilder)
           .from({
-            t1: searchAssets(pg.queryBuilder(), amountAsset, amountAssetExactly, 'a') as any,
-          })
-          .crossJoin((qb: Knex.QueryBuilder) =>
-            (searchAssets(qb, priceAsset, priceAssetExaclty, 'p') as any).as('t2'),
-          )
+            t1: searchAssets(pg.queryBuilder(), amountAsset, amountAssetExactly, 'a'),
+            t2: searchAssets(pg.queryBuilder(), priceAsset, priceAssetExaclty, 'p'),
+          } as unknown as string)
           .columns({
             amount_asset_id: 't1.asset_id',
             price_asset_id: 't2.asset_id',

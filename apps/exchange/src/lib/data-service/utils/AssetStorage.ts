@@ -30,14 +30,14 @@ export class AssetStorage {
       const newRequestPromise = this._getNewRequestPromise(noCachedList, getMethod);
 
       promiseList.push(newRequestPromise);
-      return Promise.all(promiseList).then(() => idList.map((id) => this._hash[id]));
+      return Promise.all(promiseList).then(() => idList.map((id) => this._hash[id]) as Asset[]);
     } else {
       if (noCachedList.length) {
         const newRequestPromise = this._getNewRequestPromise(noCachedList, getMethod);
 
-        return newRequestPromise.then(() => idList.map((id) => this._hash[id]));
+        return newRequestPromise.then(() => idList.map((id) => this._hash[id]) as Asset[]);
       } else {
-        return Promise.resolve(idList.map((id) => this._hash[id]));
+        return Promise.resolve(idList.map((id) => this._hash[id]) as Asset[]);
       }
     }
   }

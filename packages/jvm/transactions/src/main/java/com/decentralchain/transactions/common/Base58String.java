@@ -1,8 +1,8 @@
-package com.decentralchain.transactions.common;
+package io.decentralchain.transactions.common;
 
 import com.google.common.base.Suppliers;
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.crypto.base.Base58;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.crypto.base.Base58;
 
 import java.util.Arrays;
 import java.util.function.Supplier;

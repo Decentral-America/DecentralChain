@@ -34,7 +34,16 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+
+// MUI's `component` prop requires a ComponentType that accepts the host element's
+// own props. NavLink's `to` prop sits outside MUI's type knowledge, so we declare
+// a properly typed bridge component instead of casting through `unknown`.
+const NavLinkItem = React.forwardRef<HTMLAnchorElement, React.ComponentProps<typeof NavLink>>(
+  (props, ref) => <NavLink {...props} ref={ref} />,
+);
+NavLinkItem.displayName = 'NavLinkItem';
 
 // Logo component (Decentral Exchange branding)
 const Logo = () => (
@@ -102,7 +111,7 @@ interface NavItemProps {
 const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
   <ListItem disablePadding sx={{ mb: 0.5 }}>
     <ListItemButton
-      component={NavLink as unknown as React.ComponentType<Record<string, unknown>>}
+      component={NavLinkItem}
       to={to}
       sx={{
         borderRadius: 1.75,

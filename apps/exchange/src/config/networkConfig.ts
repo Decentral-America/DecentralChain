@@ -40,8 +40,9 @@ const _config = {
   gateway: (typeof rawJson.gateway === 'object' && rawJson.gateway !== null
     ? rawJson.gateway
     : {}) as Record<string, GatewayAssetConfig>,
-  tradingPairs: (rawJson.tradingPairs as unknown as TradingPair[] | string[]).filter(
-    (p): p is TradingPair => Array.isArray(p),
+  tradingPairs: (rawJson.tradingPairs as readonly unknown[]).filter(
+    (p): p is TradingPair =>
+      Array.isArray(p) && p.length === 2 && typeof p[0] === 'string' && typeof p[1] === 'string',
   ),
 } satisfies MainnetConfig;
 

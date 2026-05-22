@@ -34,7 +34,7 @@ export const transformResults =
     serialize: CursorSerialization<Cursor, Request, ResponseRaw>['serialize'],
   ) =>
   (responses: ResponseRaw[], request: Request): SearchedItems<ResponseTransformed> => {
-    const limited = (take as any)(request.limit)(responses) as ResponseRaw[];
+    const limited = take(request.limit, responses);
     const transformedData = limited.map((r) => transformDbResponse(r, request));
 
     return {

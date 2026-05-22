@@ -1,10 +1,13 @@
 import { knex as _knex, type Knex } from 'knex';
-import { compose, filter, has, identity, map, pick, reverse } from 'ramda';
+import { has, identity, pick } from 'ramda';
 import * as defaultValues from './defaults';
 import commonFilters from './filters';
 import commonFiltersOrder from './filtersOrder';
 
 const pg = _knex({ client: 'pg' });
+
+type FilterFn = (v: unknown) => (q: unknown) => unknown;
+type FiltersMap = Record<string, FilterFn>;
 
 const createSql = ({
   query,
@@ -17,6 +20,7 @@ const createSql = ({
   filtersOrder?: string[];
   queryAfterFilters?: Record<string, unknown>;
 }) => {
+  const f = filters as FiltersMap;
   const queryAfterFiltersWithDefaults: Record<string, (q: unknown, params?: unknown) => unknown> = {
     get: identity as (q: unknown) => unknown,
     mget: identity as (q: unknown) => unknown,
@@ -25,41 +29,33 @@ const createSql = ({
   };
 
   return {
-    get: (id: unknown) =>
-      (compose as any)(
-        String,
-        (q: unknown) => queryAfterFiltersWithDefaults['get']?.(q, id),
-        (filters as any).limit(1),
-        (filters as any).id(id as string),
-      )(query),
+    get: (id: unknown) => {
+      let q: unknown = f['id']?.(id as string)(query) ?? query;
+      q = f['limit']?.(1)(q) ?? q;
+      q = queryAfterFiltersWithDefaults['get']?.(q, id) ?? q;
+      return String(q);
+    },
 
-    mget: (ids: unknown[]) =>
-      (compose as any)(
-        String,
-        (q: unknown) => queryAfterFiltersWithDefaults['mget']?.(q, ids),
-        (filters as any).sort(defaultValues.SORT),
-        (filters as any).limit(ids.length),
-        (filters as any).ids(ids as string[]),
-      )(query),
+    mget: (ids: unknown[]) => {
+      let q: unknown = f['ids']?.(ids as string[])(query) ?? query;
+      q = f['limit']?.(ids.length)(q) ?? q;
+      q = f['sort']?.(defaultValues.SORT)(q) ?? q;
+      q = queryAfterFiltersWithDefaults['mget']?.(q, ids) ?? q;
+      return String(q);
+    },
 
     search: (fValues: Record<string, unknown>) => {
       const fValuesPicked = pick(filtersOrder, fValues);
-      const appliedFs = (compose as any)(
-        map((x: string) =>
-          (filters as Record<string, (v: unknown) => (q: unknown) => unknown>)[x]?.(
-            fValuesPicked[x],
-          ),
-        ),
-        filter((x: string) => has(x, fValuesPicked)),
-        reverse,
-      )(filtersOrder) as Array<(q: unknown) => unknown>;
+      const appliedFs: Array<(q: unknown) => unknown> = filtersOrder
+        .filter((x) => has(x, fValuesPicked))
+        .map((x) => f[x]?.(fValuesPicked[x]) ?? identity);
 
-      return (compose as any)(
-        String,
-        (q: unknown) => queryAfterFiltersWithDefaults['search']?.(q, fValuesPicked),
-        ...(appliedFs as Array<(q: unknown) => unknown>),
-        (q: { clone: () => unknown }) => q.clone(),
-      )(query);
+      let q: unknown = (query as { clone: () => unknown }).clone();
+      for (const fn of appliedFs) {
+        q = fn(q);
+      }
+      q = queryAfterFiltersWithDefaults['search']?.(q, fValuesPicked) ?? q;
+      return String(q);
     },
   };
 };

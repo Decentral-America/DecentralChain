@@ -160,7 +160,7 @@ All versions researched from official GitHub releases pages as of 2026-05-16.
 | `scala-js-macrotask-executor 1.1.1` | JS async executor |
 | `lang-jvm` / `lang-js` | local source dep → replaced by `io.decentralchain:lang` post-extraction |
 
-> **CRITICAL CORRECTION:** `com.wavesplatform:blst-java` (DCC-242) is a **`node` dependency only** — NOT a dependency of `lang` or `repl`. Confirmed by examining `Dependencies.scala` where blst-java appears exclusively in the `node` dep block. Do NOT list it in lang's KNOWN_ISSUES.md.
+> **CRITICAL CORRECTION:** `com.wavesplatform:blst-java` (DCC-242) is a **`node` dependency only** — NOT a dependency of `lang` or `repl`. Confirmed by examining `Dependencies.scala` where blst-java appears exclusively in the `node` dep block. Do NOT add it to the Per-Package Known Issues section in `docs/STATUS.md`.
 
 ---
 
@@ -338,7 +338,6 @@ DecentralChain/
         │   └── vitest.config.ts
         │
         ├── CHANGELOG.md
-        ├── KNOWN_ISSUES.md
         └── README.md
 ```
 
@@ -447,7 +446,7 @@ grep -rn "com\.wavesplatform" . --include="*.scala"
 
 ### 5.5 Acceptable Wire-Format Exceptions
 
-Document in `KNOWN_ISSUES.md`:
+Document in `docs/STATUS.md` under Per-Package Known Issues:
 
 | Location | Pattern | Why Acceptable |
 |----------|---------|---------------|
@@ -588,12 +587,7 @@ ThisBuild / git.baseVersion := "1.6.2"
 
 ### 5.11 Community Files
 
-**`KNOWN_ISSUES.md`** — documents remaining `com.wavesplatform` deps (lang runtime only):
-
-```markdown
-# Known Issues
-
-## Remaining com.wavesplatform Maven Dependencies (lang runtime deps)
+Document in `docs/STATUS.md` under **Per-Package Known Issues** → add a `### ride (lang)` subsection:
 
 | Dependency | Version | Fork Ticket | Used By |
 |-----------|---------|------------|---------|
@@ -603,12 +597,9 @@ ThisBuild / git.baseVersion := "1.6.2"
 Note: com.wavesplatform:blst-java (DCC-242) is a node-scala/node dependency only.
 It is NOT a dependency of lang or repl and does NOT appear here.
 
-## Wire-Format Namespace Exceptions
-
-Proto files in lang/jvm/src/main/protobuf/ use `package waves;` as a
+Wire-format exception: proto files in lang/jvm/src/main/protobuf/ use `package waves;` as a
 wire-format protocol identifier. Cannot be changed without breaking binary
 compatibility with every existing block on chain.
-```
 
 **`renovate-overrides.json`:**
 ```json
@@ -826,7 +817,7 @@ sbt "repl-jvm/dependencyTree"
 ```
 
 **Checklist:**
-- [ ] Zero `com.wavesplatform` deps not documented in KNOWN_ISSUES.md (only curve25519-java and zwaves acceptable)
+- [ ] Zero `com.wavesplatform` deps not documented in `docs/STATUS.md` Per-Package Known Issues (only curve25519-java and zwaves acceptable)
 - [ ] `com.wavesplatform:blst-java` is NOT present in lang or repl dependency trees (confirmed: it's node-only)
 - [ ] `protobuf-java 4.33.5` — MAX_MESSAGE_SIZE not disabled anywhere
 - [ ] `logback-classic ≥ 1.5.25` (CVE-2026-1225; current: 1.5.32 ✅)
@@ -922,7 +913,7 @@ grep -ri "wavesplatform\|waves\.exchange\|wavesnodes\.com" \
 - [ ] `organizationName := "Decentral America Inc."` in build.sbt
 - [ ] `licenses := List("Apache-2.0" → url("..."))` — copyright DecentralChain
 - [ ] npm `package.json`: `"license": "Apache-2.0"` in both ride-lang and ride-repl
-- [ ] KNOWN_ISSUES.md documents only curve25519-java and zwaves (not blst-java)
+- [ ] KNOWN_ISSUES section in `docs/STATUS.md` documents only curve25519-java and zwaves (not blst-java)
 
 ---
 
@@ -1274,8 +1265,8 @@ Standalone ecosystem repos:
 
 DCC-260 and DCC-261 MUST complete before lang can publish a fully clean artifact. Until they ship:
 - `io.decentralchain:lang_3` will depend on `com.wavesplatform:curve25519-java` and `com.wavesplatform:zwaves`
-- This is documented in KNOWN_ISSUES.md — acceptable for the 1.6.2 release
-- KNOWN_ISSUES cleared when DCC-260 and DCC-261 complete
+- This is documented in `docs/STATUS.md` Per-Package Known Issues — acceptable for the 1.6.2 release
+- Known Issues entry cleared when DCC-260 and DCC-261 complete
 
 ---
 
@@ -1342,7 +1333,7 @@ ls lang/js/dist/lang.js repl/js/dist/repl.js  # npm dist exists
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|-----------|
-| DCC-260 / DCC-261 not ready when DCC-252 ships | Medium | Medium | Ship with KNOWN_ISSUES.md — acceptable for 1.6.2 |
+| DCC-260 / DCC-261 not ready when DCC-252 ships | Medium | Medium | Document in `docs/STATUS.md` Per-Package Known Issues — acceptable for 1.6.2 |
 | ScalaPB alpha.3 breaks before release | Low | High | Pin exact; Renovate alerts on stable 1.0.0 |
 | Scala.js 1.21.0 different output than 1.20.2 | Low | Medium | Test ride-js against new output before merging |
 | Scalafmt 3.11.1 reformats Parser.scala | Low | Low | Verify `excludePaths` glob |
@@ -1363,8 +1354,8 @@ ls lang/js/dist/lang.js repl/js/dist/repl.js  # npm dist exists
 - [ ] `git filter-repo` extraction complete with full history (lang/ + repl/ together)
 - [ ] `feat/DCC-252-lang-fork-standalone` branch in `Decentral-America/DecentralChain`
 - [ ] Zero `com.wavesplatform.lang` in `.scala` files (verified by grep)
-- [ ] KNOWN_ISSUES.md lists ONLY curve25519-java and zwaves — NOT blst-java (blst-java is node-only)
-- [ ] Community files substantive: README, CHANGELOG, KNOWN_ISSUES
+- [ ] `docs/STATUS.md` Per-Package Known Issues section lists ONLY curve25519-java and zwaves for ride — NOT blst-java (blst-java is node-only)
+- [ ] Community files substantive: README, CHANGELOG
 - [ ] `lefthook.yml` installed and intercepting commits
 - [ ] `lang/js/package.json` and `repl/js/package.json` created (co-located with Scala.js source)
 - [ ] `lang/js/build.sbt` and `repl/js/build.sbt` configure `artifactPath` to write directly to `dist/`

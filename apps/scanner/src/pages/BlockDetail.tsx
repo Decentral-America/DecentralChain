@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
-import { fetchBlockById, fetchBlockHeadersSeq, type IBlock } from '@/lib/api';
+import { fetchBlockById, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
@@ -23,7 +23,7 @@ import { fromUnix, truncate } from '../components/utils/formatters';
  *   - No header-only endpoint exists — awaits the full block as before.
  */
 interface LoaderData {
-  block: IBlock | null;
+  block: IBlock | IBlockHeader | null;
 }
 
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
@@ -39,7 +39,7 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
     const headers = await fetchBlockHeadersSeq(heightNum, heightNum).catch(() => []);
     const header = headers[0] ?? null;
     if (!header) throw data('Block not found', { status: 404 });
-    return { block: header as unknown as IBlock };
+    return { block: header };
   }
 
   // ID path: no header-only endpoint — fetch full block.
@@ -60,7 +60,7 @@ export function ErrorBoundary() {
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.block) return [{ title: 'Block — DecentralScan' }];
   const height = data.block.height?.toLocaleString() ?? 'N/A';
-  const generator = (data.block as IBlock).generator ?? '';
+  const generator = data.block.generator ?? '';
   const txCount = data.block.transactionCount ?? 0;
   const title = `Block #${height} — DecentralScan`;
   const description = `Block at height ${height} on DecentralChain. Generator: ${generator || 'N/A'}, Transactions: ${txCount}.`;
@@ -75,6 +75,14 @@ export function meta({ data }: { data?: LoaderData }) {
     { content: title, name: 'twitter:title' },
     { content: description, name: 'twitter:description' },
   ];
+}
+
+/**
+ * Type guard — distinguishes a full IBlock (with transactions) from a lightweight
+ * IBlockHeader (header-only, returned by the fast headers endpoint).
+ */
+function isFullBlock(b: IBlock | IBlockHeader): b is IBlock {
+  return 'transactions' in b;
 }
 
 export default function BlockDetail() {
@@ -218,7 +226,7 @@ export default function BlockDetail() {
           </Card>
 
           {/* Transactions */}
-          {block.transactions && block.transactions.length > 0 && (
+          {isFullBlock(block) && block.transactions.length > 0 && (
             <Card className="border-none shadow-lg">
               <CardHeader>
                 <CardTitle>Transactions ({block.transactions.length})</CardTitle>

@@ -18,13 +18,13 @@ export function useTransaction(id: string | null): UseQueryResult<Transaction | 
       if (!id) return null;
       try {
         const confirmed = await fetchTransactionInfo(id);
-        if (confirmed) return confirmed as unknown as Transaction;
+        if (confirmed) return confirmed;
       } catch {
         /* fall through to unconfirmed */
       }
       try {
         const unconfirmed = await fetchUnconfirmedTransactionInfo(id);
-        if (unconfirmed) return unconfirmed as unknown as Transaction;
+        if (unconfirmed) return unconfirmed;
       } catch {
         /* not found in either pool */
       }

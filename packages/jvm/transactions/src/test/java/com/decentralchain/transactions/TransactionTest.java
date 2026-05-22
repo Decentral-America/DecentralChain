@@ -1,7 +1,7 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Alias;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Alias;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

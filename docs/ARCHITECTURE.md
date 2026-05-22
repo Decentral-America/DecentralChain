@@ -128,9 +128,8 @@ DecentralChain/
 ├── docs/
 │   ├── ARCHITECTURE.md             This file
 │   ├── UPSTREAM.md                 Waves provenance & ecosystem
-│   ├── STATUS.md                   Per-package health & timeline
+│   ├── STATUS.md                   Project dashboard: scoreboard · release gates · audit log
 │   ├── CONVENTIONS.md              Coding standards & quality pipeline
-│   ├── RELEASE-CHECKLIST.md        Pre-release gate checklist & Go/No-Go template
 │   └── ECOSYSTEM.md                Full runtime topology: repos, services, flows
 ├── scripts/                        Monorepo automation
 ├── tools/                          Nx plugins & custom tooling
@@ -486,9 +485,8 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 | `opencode.json` | OpenCode MCP config pointing to `npx nx mcp` | OpenCode |
 | `docs/ARCHITECTURE.md` | This file — architecture reference | Humans + AI agents |
 | `docs/CONVENTIONS.md` | Coding standards, quality pipeline | Humans + AI agents |
-| `docs/STATUS.md` | Per-package health, remediation matrix | Humans + AI agents |
+| `docs/STATUS.md` | Project dashboard: scoreboard, release gates (Go/No-Go), audit log | Humans + AI agents |
 | `docs/UPSTREAM.md` | Waves provenance, wire-format constraints | Humans + AI agents |
-| `docs/RELEASE-CHECKLIST.md` | Pre-release gate checklist & Go/No-Go template | Humans |
 | `docs/ECOSYSTEM.md` | Full runtime topology: all repos, services, SDK deps, data flows | Humans + AI agents |
 
 ---
