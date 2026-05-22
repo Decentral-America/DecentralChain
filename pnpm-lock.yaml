@@ -22,8 +22,8 @@ catalogs:
       specifier: 29.1.1
       version: 29.1.1
     publint:
-      specifier: 0.3.19
-      version: 0.3.19
+      specifier: 0.3.21
+      version: 0.3.21
     size-limit:
       specifier: 12.1.0
       version: 12.1.0
@@ -66,8 +66,8 @@ importers:
         specifier: 0.28.0
         version: 0.28.0
       knip:
-        specifier: 6.14.1
-        version: 6.14.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+        specifier: 6.14.2
+        version: 6.14.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       lefthook:
         specifier: 2.1.8
         version: 2.1.8
@@ -309,7 +309,7 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       tsdown:
         specifier: ^0.22.0
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: ^4.1.7
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -616,13 +616,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -644,13 +644,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -675,13 +675,13 @@ importers:
         version: 5.3.2
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -702,7 +702,7 @@ importers:
         version: 29.1.1(@noble/hashes@2.2.0)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
@@ -711,7 +711,7 @@ importers:
         version: 6.1.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -742,13 +742,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -782,13 +782,13 @@ importers:
         version: 29.1.1(@noble/hashes@2.2.0)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -806,13 +806,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -834,13 +834,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -868,13 +868,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -896,13 +896,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -930,13 +930,13 @@ importers:
         version: 11.1.1
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -964,13 +964,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1007,13 +1007,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       undici-types:
         specifier: 8.2.0
         version: 8.2.0
@@ -1037,13 +1037,13 @@ importers:
         version: 4.6.0
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1064,13 +1064,13 @@ importers:
         version: 11.1.1
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1098,13 +1098,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1141,13 +1141,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1181,13 +1181,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       typed-ts-events:
         specifier: ^3.0.1
         version: 3.0.1
@@ -1227,13 +1227,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1270,13 +1270,13 @@ importers:
         version: 4.7.0
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -1294,13 +1294,13 @@ importers:
         version: 4.1.7(vitest@4.1.7)
       publint:
         specifier: 'catalog:'
-        version: 0.3.19
+        version: 0.3.21
       size-limit:
         specifier: 'catalog:'
         version: 12.1.0(jiti@2.7.0)
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3)
+        version: 0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.8.3))
@@ -6015,10 +6015,6 @@ packages:
     resolution: {integrity: sha512-/jZDa00a3Sz7rdyu55NLrQCIrbyIkbBxareejQI315f/i8HjYN+ZWsDLLpoQSiUIEIyZF/R8fDg3BmB8AtHttg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
-    hasBin: true
-
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
@@ -6093,8 +6089,8 @@ packages:
       tedious:
         optional: true
 
-  knip@6.14.1:
-    resolution: {integrity: sha512-SN3Ly0ixzj5CQkY/rc4OPHpWrCC0XRIIjgdP76G9Cni5k72ur5jBYOyvJuF5oPTM14v8eHcMUgPbElHa+lnR0g==}
+  knip@6.14.2:
+    resolution: {integrity: sha512-Vg3JhIINjZew1I7qAFI4UHemW1mc4azP/BxJvsq9eGDfxpGO7oVCuD/bsWkog9TO/ZwwJeAeOMFZ1kd9jnY9+Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -6917,8 +6913,8 @@ packages:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
 
-  publint@0.3.19:
-    resolution: {integrity: sha512-J3p4GOocCRFyLLFRzGfIhAwWgk0Kkcdxj5iFspFvCYbyiJs5IhCM8gsIkcNeQL+tdpV671RtJQiTFSUKhl1Wjg==}
+  publint@0.3.21:
+    resolution: {integrity: sha512-OqejcnMV6E9zel2oCrUOJEiiFkGiAAni0A6ibfQNh1k9Gu5z4F+Yso8lllam7AzmV6Do0vp7u3UpZNRBwuXaHQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11121,7 +11117,7 @@ snapshots:
       deepmerge-ts: 7.1.5
       glob: 10.5.0
       import-meta-resolve: 4.2.0
-      jiti: 2.6.1
+      jiti: 2.7.0
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
@@ -12689,8 +12685,6 @@ snapshots:
       graceful-fs: 4.2.11
       picomatch: 4.0.4
 
-  jiti@2.6.1: {}
-
   jiti@2.7.0: {}
 
   js-tokens@10.0.0: {}
@@ -12759,7 +12753,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  knip@6.14.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+  knip@6.14.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       formatly: 0.3.0
@@ -13747,7 +13741,7 @@ snapshots:
 
   proxy-from-env@2.1.0: {}
 
-  publint@0.3.19:
+  publint@0.3.21:
     dependencies:
       '@publint/pack': 0.1.4
       package-manager-detector: 1.6.0
@@ -14596,7 +14590,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.19)(typescript@6.0.3):
+  tsdown@0.22.0(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(publint@0.3.21)(typescript@6.0.3):
     dependencies:
       ansis: 4.2.0
       cac: 7.0.0
@@ -14615,7 +14609,7 @@ snapshots:
       unconfig-core: 7.5.0
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.2
-      publint: 0.3.19
+      publint: 0.3.21
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
