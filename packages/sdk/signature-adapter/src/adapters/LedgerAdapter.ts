@@ -177,6 +177,38 @@ export class LedgerAdapter extends Adapter {
     return LedgerAdapter._ledger.getPaginationUsersData(from, to) as Promise<unknown[]>;
   }
 
+  /**
+   * Signs arbitrary transaction data using the currently selected Ledger user.
+   * The caller is responsible for encoding `txData` into the bytes/precision/signData
+   * tuple expected by `signTransaction` on the instance. This static entry point
+   * returns the raw Uint8Array-based signature as a hex string.
+   *
+   * @param txData - Raw transaction data map (must include `bytes`, `precision`, `signData`)
+   */
+  public static getSignature(txData: Record<string, unknown>): Promise<string> {
+    const { bytes, precision, signData, user } = txData as {
+      bytes: Uint8Array;
+      precision: LedgerPrecision;
+      signData: unknown;
+      user?: { id: number; address: string; publicKey: string };
+    };
+
+    if (!(bytes instanceof Uint8Array)) {
+      return Promise.reject(
+        new Error('LedgerAdapter.getSignature: txData.bytes must be a Uint8Array'),
+      );
+    }
+
+    if (!user) {
+      return Promise.reject(
+        new Error('LedgerAdapter.getSignature: txData.user is required for signing'),
+      );
+    }
+
+    const instance = new LedgerAdapter(user);
+    return instance.signTransaction(bytes, precision, signData);
+  }
+
   public static override initOptions(options: DCCLedgerOptions & { networkCode: number }) {
     Adapter.initOptions(options);
     LedgerAdapter._ledger = new DCCLedger(options);

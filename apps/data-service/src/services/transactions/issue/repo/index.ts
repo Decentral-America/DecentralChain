@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): IssueTx
   return {
     get: getByIdPreset<string, IssueTxDbResponse, IssueTx>({
       name: 'transactions.issue.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): IssueTx
     mget: mgetByIdsPreset<string, IssueTxDbResponse, IssueTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.issue.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -41,7 +41,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): IssueTx
     search: searchPreset<Cursor, IssueTxsSearchRequest, IssueTxDbResponse, IssueTx>({
       cursorSerialization: { deserialize, serialize },
       name: 'transactions.issue.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

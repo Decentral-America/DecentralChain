@@ -97,16 +97,17 @@ export const mgetOrSearch = ({
           }
 
           if (isSearchWithAddressRequest(fValuesWithDefaults)) {
-            const withAddr = fValuesWithDefaults as unknown as AliasesServiceSearchRequest &
-              WithAddress;
+            // The predicate already verifies address is a string at runtime.
+            // Single cast: ParsedFilterValues & WithLimit & WithSortOrder is narrowed
+            // to AliasesServiceSearchRequest & WithAddress by the predicate.
+            const withAddr = fValuesWithDefaults as AliasesServiceSearchRequest & WithAddress;
             if (!withAddr.address.length) {
               return Either.left(new ParseError(new Error('`address` is not allowed to be empty')));
             } else {
               return Either.right(withAddr);
             }
           } else if (isSearchWithAddressesRequest(fValuesWithDefaults)) {
-            const withAddrs = fValuesWithDefaults as unknown as AliasesServiceSearchRequest &
-              WithAddresses;
+            const withAddrs = fValuesWithDefaults as AliasesServiceSearchRequest & WithAddresses;
             if (withAddrs.addresses.filter((v: string) => v.length === 0).length > 0) {
               return Either.left(
                 new ParseError(new Error('`addresses` is not allowed to be has an empty value')),
@@ -115,9 +116,7 @@ export const mgetOrSearch = ({
               return Either.right(withAddrs);
             }
           } else if (isSearchWithQueriesRequest(fValuesWithDefaults)) {
-            return Either.right(
-              fValuesWithDefaults as unknown as AliasesServiceSearchRequest & WithQueries,
-            );
+            return Either.right(fValuesWithDefaults as AliasesServiceSearchRequest & WithQueries);
           } else {
             return Either.left(
               new ParseError(

@@ -6,17 +6,17 @@ export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface Toast {
   id: string;
-  message: string;
+  message: ReactNode;
   type: ToastType;
   duration?: number;
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: ToastType, duration?: number) => void;
-  showSuccess: (message: string, duration?: number) => void;
-  showError: (message: string, duration?: number) => void;
-  showInfo: (message: string, duration?: number) => void;
-  showWarning: (message: string, duration?: number) => void;
+  showToast: (message: ReactNode, type?: ToastType, duration?: number) => void;
+  showSuccess: (message: ReactNode, duration?: number) => void;
+  showError: (message: ReactNode, duration?: number) => void;
+  showInfo: (message: ReactNode, duration?: number) => void;
+  showWarning: (message: ReactNode, duration?: number) => void;
   removeToast: (id: string) => void;
 }
 
@@ -187,17 +187,18 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
   }, []);
 
   const showToast = useCallback(
-    (message: string, type: ToastType = 'info', duration: number = 5000) => {
+    (message: ReactNode, type: ToastType = 'info', duration: number = 5000) => {
       const id = `toast-${Date.now()}-${crypto.randomUUID()}`;
       const toast: Toast = { duration, id, message, type };
 
       setToasts((prev) => [...prev, toast]);
 
-      // Announce to screen readers
-      // Use assertive for errors, polite for everything else
+      // Announce to screen readers — stringify for the accessibility layer
+      // (ReactNode content is rendered visually; the a11y label uses a plain string)
       const politeness = type === 'error' ? 'assertive' : 'polite';
       const prefix = type.charAt(0).toUpperCase() + type.slice(1);
-      announce(`${prefix}: ${message}`, politeness);
+      const textContent = typeof message === 'string' ? message : `${prefix} notification`;
+      announce(`${prefix}: ${textContent}`, politeness);
 
       if (duration > 0) {
         setTimeout(() => {
@@ -209,28 +210,28 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
   );
 
   const showSuccess = useCallback(
-    (message: string, duration?: number) => {
+    (message: ReactNode, duration?: number) => {
       showToast(message, 'success', duration);
     },
     [showToast],
   );
 
   const showError = useCallback(
-    (message: string, duration?: number) => {
+    (message: ReactNode, duration?: number) => {
       showToast(message, 'error', duration);
     },
     [showToast],
   );
 
   const showInfo = useCallback(
-    (message: string, duration?: number) => {
+    (message: ReactNode, duration?: number) => {
       showToast(message, 'info', duration);
     },
     [showToast],
   );
 
   const showWarning = useCallback(
-    (message: string, duration?: number) => {
+    (message: ReactNode, duration?: number) => {
       showToast(message, 'warning', duration);
     },
     [showToast],

@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Genesis
   return {
     get: getByIdPreset<string, GenesisTxDbResponse, GenesisTx>({
       name: 'transactions.genesis.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Genesis
     mget: mgetByIdsPreset<string, GenesisTxDbResponse, GenesisTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.genesis.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -44,7 +44,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Genesis
         serialize,
       },
       name: 'transactions.genesis.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

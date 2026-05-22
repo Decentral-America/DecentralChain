@@ -3,16 +3,22 @@ import { Effect, Option, pipe } from 'effect';
 import getErrorMessage from '../../errorHandling/getErrorMessage';
 import logTaskProgress from '../utils/logTaskProgress';
 
+type DaemonLogger = {
+  info: (msg: unknown) => void;
+  warn: (msg: unknown) => void;
+  error: (msg: unknown) => void;
+};
+
 /** getSleepTime :: Date -> Number ms -> Number ms */
 const getSleepTime = (start: Date, interval: number): number => {
   const diff = interval - (Date.now() - +start);
   return diff < 0 ? 0 : diff;
 };
 
-/** loop :: (Object -> Effect) -> Object -> Number -> Number -> Promise */
-const loop = (
-  func: (cfg: any) => Effect.Effect<any, any>,
-  cfg: any,
+/** loop :: (Config -> Effect) -> Config -> Number -> Number -> Promise */
+const loop = <Config>(
+  func: (cfg: Config) => Effect.Effect<unknown, unknown>,
+  cfg: Config,
   interval: number,
   timeout: number,
 ): Promise<void> => {
@@ -38,13 +44,16 @@ const loop = (
     });
 };
 
-/** main :: Object { init, loop } -> Object -> Number ms -> Number ms -> Object { info, warn, error } -> Promise */
-const main = (
-  daemon: { init?: () => Effect.Effect<any, any>; loop: (cfg: any) => Effect.Effect<any, any> },
-  config: any,
+/** main :: Object { init, loop } -> Config -> Number ms -> Number ms -> DaemonLogger -> Effect */
+const main = <Config>(
+  daemon: {
+    init?: () => Effect.Effect<unknown, unknown>;
+    loop: (cfg: Config) => Effect.Effect<unknown, unknown>;
+  },
+  config: Config,
   interval: number,
   timeout: number,
-  logger: { info: (msg: any) => void; warn: (msg: any) => void; error: (msg: any) => void },
+  logger: DaemonLogger,
 ): Effect.Effect<void, never> => {
   const maybeInit = Option.fromNullable(daemon.init);
 
@@ -52,10 +61,10 @@ const main = (
     logger.warn({ message: '[DAEMON] init function not found' });
   }
 
-  const initEffect: Effect.Effect<any, any> = Option.isSome(maybeInit)
+  const initEffect: Effect.Effect<unknown, unknown> = Option.isSome(maybeInit)
     ? logTaskProgress(logger)(
         {
-          error: (e: any, timeTaken: number) => ({
+          error: (e: unknown, timeTaken: number) => ({
             error: e,
             message: '[DAEMON] initialization error',
             time: timeTaken,
@@ -64,7 +73,7 @@ const main = (
             message: '[DAEMON] initialization started',
             time: timeStart,
           }),
-          success: (_r: any, timeTaken: number) => ({
+          success: (_r: unknown, timeTaken: number) => ({
             message: '[DAEMON] initialization finished',
             time: timeTaken,
           }),
@@ -78,10 +87,10 @@ const main = (
     Effect.flatMap(() =>
       Effect.sync(() => {
         void loop(
-          (cfg) =>
+          (cfg: Config) =>
             logTaskProgress(logger)(
               {
-                error: (e: any, timeTaken: number) => ({
+                error: (e: unknown, timeTaken: number) => ({
                   error: getErrorMessage(e),
                   message: '[DAEMON] loop error',
                   time: timeTaken,
@@ -90,7 +99,7 @@ const main = (
                   message: '[DAEMON] loop started',
                   time: timeStart,
                 }),
-                success: (_r: any, timeTaken: number) => ({
+                success: (_r: unknown, timeTaken: number) => ({
                   message: '[DAEMON] loop finished',
                   time: timeTaken,
                 }),

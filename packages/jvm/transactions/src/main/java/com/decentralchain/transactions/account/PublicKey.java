@@ -1,10 +1,10 @@
-package com.decentralchain.transactions.account;
+package io.decentralchain.transactions.account;
 
-import com.decentralchain.crypto.Crypto;
-import com.decentralchain.crypto.Hash;
-import com.decentralchain.transactions.WavesConfig;
-import com.decentralchain.transactions.common.Base58String;
-import com.decentralchain.transactions.common.Proof;
+import io.decentralchain.crypto.Crypto;
+import io.decentralchain.crypto.Hash;
+import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.common.Base58String;
+import io.decentralchain.transactions.common.Proof;
 
 import java.util.Arrays;
 

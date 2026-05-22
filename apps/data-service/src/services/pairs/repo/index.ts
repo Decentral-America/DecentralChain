@@ -62,7 +62,7 @@ export default ({
     },
     transformInput: (r) => Either.right(r),
     transformResult: (res) => Option.map(res, transformResult),
-    validateResult: validateResult(resultSchema, SERVICE_NAME.GET) as any,
+    validateResult: validateResult(resultSchema, SERVICE_NAME.GET),
   });
 
   const mget = createMgetResolver<
@@ -116,7 +116,7 @@ export default ({
     },
     transformInput: (r) => Either.right(r),
     transformResult: (res) => res.map((m) => Option.map(m, transformResult)),
-    validateResult: validateResult(resultSchema, SERVICE_NAME.MGET) as any,
+    validateResult: validateResult(resultSchema, SERVICE_NAME.MGET),
   });
 
   const search = searchPreset<Cursor, PairsSearchRequest, PairDbResponse, PairInfo & AssetIdsPair>({
@@ -125,7 +125,7 @@ export default ({
       serialize,
     },
     name: SERVICE_NAME.SEARCH,
-    resultSchema: resultSchema as any,
+    resultSchema: resultSchema,
     sql: sql.search,
     transformResult,
   })({

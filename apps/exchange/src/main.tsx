@@ -5,15 +5,9 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { config, devLog } from '@/config';
 import i18n from '@/i18n/i18n';
 import tokenFilterService from '@/services/tokenFilters';
-import { stringifyJSON } from '@/utils/formatters';
 import App from './App';
 import './index.css';
 import { logger } from '@/lib/logger';
-
-// Provide DCCApp.stringifyJSON for data-service compatibility
-(window as Window & { DCCApp?: { stringifyJSON: typeof stringifyJSON } }).DCCApp = {
-  stringifyJSON,
-};
 
 /**
  * HTTPS Enforcement

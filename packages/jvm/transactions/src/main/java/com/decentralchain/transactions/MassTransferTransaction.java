@@ -1,8 +1,8 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.*;
-import com.decentralchain.transactions.mass.Transfer;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.*;
+import io.decentralchain.transactions.mass.Transfer;
 
 import java.io.IOException;
 import java.util.ArrayList;

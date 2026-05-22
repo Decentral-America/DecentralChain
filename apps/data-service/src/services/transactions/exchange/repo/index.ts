@@ -45,7 +45,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Exchang
       },
       name: 'transactions.exchange.search',
       resultSchema: result,
-      sql: sql.search as any,
+      sql: sql.search,
       transformResult: transformTxInfo,
     })({
       emitEvent,

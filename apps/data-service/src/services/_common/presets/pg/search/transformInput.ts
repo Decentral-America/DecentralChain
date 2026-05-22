@@ -1,5 +1,5 @@
 import { Either, pipe } from 'effect';
-import { compose, evolve, inc, omit } from 'ramda';
+import { inc, omit } from 'ramda';
 import { type ValidationError } from '../../../../../errorHandling';
 import { type WithLimit } from '../../../../_common';
 import { type CursorSerialization, type RequestWithCursor } from '../../../pagination';
@@ -11,10 +11,10 @@ export const transformInput =
   (
     request: RequestWithCursor<Request, string>,
   ): Either.Either<RequestWithCursor<Request, Cursor>, ValidationError> => {
-    const requestWithoutAfter = (compose as any)(
-      omit(['after']),
-      evolve({ limit: inc }),
-    )(request) as Request;
+    const requestWithoutAfter = {
+      ...omit(['after'], request),
+      limit: inc(request.limit),
+    } as Request;
 
     if (!request.after) {
       return Either.right(requestWithoutAfter as RequestWithCursor<Request, Cursor>);
@@ -23,10 +23,7 @@ export const transformInput =
         deserialize(request.after),
         Either.map(
           (cursor) =>
-            ({ ...(requestWithoutAfter as any), after: cursor }) as RequestWithCursor<
-              Request,
-              Cursor
-            >,
+            ({ ...requestWithoutAfter, after: cursor }) as RequestWithCursor<Request, Cursor>,
         ),
       );
     }

@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.serializers.binary;
+package io.decentralchain.transactions.serializers.binary;
 
-import com.decentralchain.transactions.invocation.StringArg;
+import io.decentralchain.transactions.invocation.StringArg;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

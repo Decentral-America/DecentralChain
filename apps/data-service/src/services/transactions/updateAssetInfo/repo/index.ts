@@ -18,7 +18,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateA
   return {
     get: getByIdPreset<string, UpdateAssetInfoTxDbResponse, UpdateAssetInfoTx>({
       name: 'transactions.updateAssetInfo.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -29,7 +29,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateA
     mget: mgetByIdsPreset<string, UpdateAssetInfoTxDbResponse, UpdateAssetInfoTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.updateAssetInfo.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -48,7 +48,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): UpdateA
         serialize,
       },
       name: 'transactions.updateAssetInfo.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

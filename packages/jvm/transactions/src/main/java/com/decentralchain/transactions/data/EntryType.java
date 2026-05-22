@@ -1,4 +1,4 @@
-package com.decentralchain.transactions.data;
+package io.decentralchain.transactions.data;
 
 public enum EntryType {
 

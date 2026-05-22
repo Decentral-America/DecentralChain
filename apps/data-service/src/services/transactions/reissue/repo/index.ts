@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Reissue
   return {
     get: getByIdPreset<string, ReissueTxDbResponse, ReissueTx>({
       name: 'transactions.reissue.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Reissue
     mget: mgetByIdsPreset<string, ReissueTxDbResponse, ReissueTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.reissue.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -44,7 +44,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Reissue
         serialize,
       },
       name: 'transactions.reissue.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

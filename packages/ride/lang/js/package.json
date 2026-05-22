@@ -5,7 +5,18 @@
   "main": "dist/lang.js",
   "module": "dist/lang.js",
   "browser": "dist/lang.js",
-  "files": ["dist/"],
+  "exports": {
+    ".": {
+      "browser": "./dist/lang.js",
+      "import": "./dist/lang.js",
+      "require": "./dist/lang.js",
+      "default": "./dist/lang.js"
+    }
+  },
+  "types": "dist/lang.d.ts",
+  "files": [
+    "dist/"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public",
