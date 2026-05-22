@@ -68,7 +68,7 @@ jobs:
         uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - name: Security audit
-        run: pnpm audit --audit-level=high
+        run: pnpm audit --audit-level=moderate
 
       - name: Scan for secrets (Trivy)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
@@ -88,28 +88,28 @@ jobs:
         run: node scripts/check-boundaries.mjs
 
       - name: Biome lint (affected)
-        run: npx nx affected -t biome-lint
+        run: pnpm nx affected -t biome-lint
 
       - name: Typecheck (affected)
-        run: npx nx affected -t typecheck
+        run: pnpm nx affected -t typecheck
 
       - name: Build (affected)
-        run: npx nx affected -t build
+        run: pnpm nx affected -t build
 
       - name: Test (affected)
-        run: npx nx affected -t test
+        run: pnpm nx affected -t test
 
       - name: Verify package exports (affected)
-        run: npx nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
+        run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
 
       - name: Verify package publishing (affected)
-        run: npx nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,ts-types
+        run: pnpm nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,ts-types
 
       - name: Verify bundle size (affected)
-        run: npx nx affected -t check:size --exclude=cubensis-connect,exchange,scanner
+        run: pnpm nx affected -t check:size --exclude=cubensis-connect,exchange,scanner
 
       - name: Format check
-        run: npx biome format --reporter=github .
+        run: pnpm exec biome format --reporter=github .
 
       - name: License scan
         run: pnpm licenses list --prod 2>&1 | tee /tmp/licenses.txt && echo "License scan complete ($(wc -l < /tmp/licenses.txt) entries)"

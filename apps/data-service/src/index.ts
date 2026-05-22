@@ -19,9 +19,8 @@ export const WavesId: string = 'DCC';
 const options = loadConfig();
 const eventBus = createEventBus();
 
-createAndSubscribeLogger({ eventBus, options });
+const logger = createAndSubscribeLogger({ eventBus, options });
 
-// @todo add the test sql query for the db availability checking
 const pgDriver = createPgDriver(options);
 
 Effect.runPromise(
@@ -42,7 +41,7 @@ Effect.runPromise(
       app.use(accessLogMiddleware);
 
       // Mount all routes after middleware is registered.
-      app.route('/', router(services));
+      app.route('/', router(services, pgDriver));
 
       return app;
     }),
@@ -56,12 +55,14 @@ Effect.runPromise(
       },
       (info) => {
         if (process.env['NODE_ENV'] === 'development') {
-          console.info(`Server running on port ${info.port}`);
+          logger.info(`Server running on port ${info.port}`);
         }
       },
     );
     // Hono node-server manages keepAlive internally (defaults to 5s idle timeout)
   })
   .catch((e: unknown) => {
-    console.error(e);
+    logger.error('Server startup failed', {
+      error: e instanceof Error ? { message: e.message, stack: e.stack } : String(e),
+    });
   });

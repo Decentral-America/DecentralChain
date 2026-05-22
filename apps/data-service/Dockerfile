@@ -73,10 +73,13 @@ COPY --from=builder --chown=dcc:dcc /app/standalone .
 
 USER dcc
 
-# Health check — the API server returns 200 on GET /
+# Health check — GET /health returns {"status":"ok"} with HTTP 200.
+# Production deployments set PORT=8080 via the compose environment block.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD wget -qO- "http://localhost:${PORT:-3000}/" || exit 1
+  CMD wget -qO- "http://localhost:${PORT:-3000}/health" || exit 1
 
+# Production port is 8080 (set via PORT env var). 3000 is the default fallback
+# for local development without the compose PORT override.
 EXPOSE 3000
 
 ENV NODE_ENV=production
