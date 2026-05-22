@@ -1,6 +1,9 @@
 import { createPublicKey, createVerify } from 'node:crypto';
 import * as crypto from '@decentralchain/ts-lib-crypto';
-import { rsaVerify as _rsaVerify } from '@decentralchain/ts-lib-crypto/rsa';
+import {
+  rsaVerify as _rsaVerify,
+  type RSADigestAlgorithm,
+} from '@decentralchain/ts-lib-crypto/rsa';
 
 // ---------------------------------------------------------------------------
 // Global type declarations for the Scala.js @JSGlobalScope bridge.
@@ -43,10 +46,8 @@ globalThis.base64Decode = (data: string): ArrayBuffer =>
   crypto.base64Decode(data) as unknown as ArrayBuffer;
 globalThis.keccak256 = (bytes: ArrayBuffer): ArrayBuffer =>
   Uint8Array.from(crypto.keccak(new Uint8Array(bytes))).buffer as ArrayBuffer;
-globalThis.sha256 = (bytes: ArrayBuffer): ArrayBuffer => {
-  const hexStr: string = crypto.sha256(new Uint8Array(bytes));
-  return Buffer.from(hexStr, 'hex').buffer as ArrayBuffer;
-};
+globalThis.sha256 = (bytes: ArrayBuffer): ArrayBuffer =>
+  (crypto.sha256(new Uint8Array(bytes)) as Uint8Array).buffer as ArrayBuffer;
 globalThis.blake2b256 = (bytes: ArrayBuffer): ArrayBuffer =>
   (crypto.blake2b(new Uint8Array(bytes)) as Uint8Array).buffer as ArrayBuffer;
 globalThis.curve25519verify = (msg: ArrayBuffer, sig: ArrayBuffer, key: ArrayBuffer): boolean =>
@@ -107,7 +108,12 @@ globalThis.rsaVerify = (
       break;
     // 'NONE', 'SHA224', 'SHA256', 'SHA384', 'SHA512' pass through unchanged.
   }
-  return _rsaVerify(new Uint8Array(key), new Uint8Array(msg), new Uint8Array(sig), mappedAlg);
+  return _rsaVerify(
+    new Uint8Array(key),
+    new Uint8Array(msg),
+    new Uint8Array(sig),
+    mappedAlg as RSADigestAlgorithm,
+  );
 };
 globalThis.httpGet = async (data: {
   url?: string;

@@ -5,7 +5,7 @@
  * REPL, and script-info utilities for Ride v1–v6 contracts.
  */
 
-import './interop.ts';
+import './interop.js';
 import * as scalaJsCompiler from '@decentralchain/ride-lang';
 import * as replJs from '@decentralchain/ride-repl';
 import * as crypto from '@decentralchain/ts-lib-crypto';
@@ -319,14 +319,20 @@ function wrappedCompile(
         ast: ast as object,
         base64: crypto.base64Encode(bytes),
         bytes,
-        callableComplexities: callableComplexities as Record<string, number> | undefined,
+        ...(callableComplexities !== undefined && {
+          callableComplexities: callableComplexities as Record<string, number>,
+        }),
         complexity: complexity as number,
-        globalVariableComplexities: globalVariableComplexities as
-          | Record<string, number>
-          | undefined,
+        ...(globalVariableComplexities !== undefined && {
+          globalVariableComplexities: globalVariableComplexities as Record<string, number>,
+        }),
         size: bytes.byteLength,
-        userFunctionComplexities: userFunctionComplexities as Record<string, number> | undefined,
-        verifierComplexity: verifierComplexity as number | undefined,
+        ...(userFunctionComplexities !== undefined && {
+          userFunctionComplexities: userFunctionComplexities as Record<string, number>,
+        }),
+        ...(verifierComplexity !== undefined && {
+          verifierComplexity: verifierComplexity as number,
+        }),
       },
     };
   } catch (e: unknown) {
