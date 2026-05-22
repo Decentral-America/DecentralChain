@@ -336,7 +336,6 @@ function wrappedCompile(
       },
     };
   } catch (e: unknown) {
-    console.error(e);
     return e instanceof Error ? { error: e.message } : { error: String(e) };
   }
 }
