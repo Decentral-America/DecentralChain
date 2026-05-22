@@ -1,18 +1,18 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.base.Base58;
-import com.decentralchain.events.protobuf.Events.TransactionMetadata;
-import com.decentralchain.protobuf.transaction.TransactionOuterClass.SignedTransaction;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.account.PrivateKey;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.common.AssetId;
-import com.decentralchain.transactions.common.Id;
-import com.decentralchain.transactions.common.Proof;
-import com.decentralchain.transactions.invocation.Function;
-import com.decentralchain.transactions.invocation.*;
-import com.decentralchain.transactions.serializers.ProtobufConverter;
+import io.decentralchain.crypto.base.Base58;
+import com.wavesplatform.events.protobuf.Events.TransactionMetadata;
+import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.PrivateKey;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.AssetId;
+import io.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.common.Proof;
+import io.decentralchain.transactions.invocation.Function;
+import io.decentralchain.transactions.invocation.*;
+import io.decentralchain.transactions.serializers.ProtobufConverter;
 import org.web3j.abi.TypeEncoder;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Bytes32;
@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.decentralchain.transactions.invocation.Function.DEFAULT_NAME;
-import static com.decentralchain.transactions.serializers.eth.EthFunctionEncoder.encodeWavesFunctionInEthFmt;
+import static io.decentralchain.transactions.invocation.Function.DEFAULT_NAME;
+import static io.decentralchain.transactions.serializers.eth.EthFunctionEncoder.encodeWavesFunctionInEthFmt;
 
 public class EthereumTransaction extends Transaction {
     public static final BigInteger AMOUNT_MULTIPLIER = BigInteger.valueOf(10_000_000_000L);

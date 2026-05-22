@@ -1,11 +1,11 @@
-package com.decentralchain.transactions.account;
+package io.decentralchain.transactions.account;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.crypto.Crypto;
-import com.decentralchain.crypto.Hash;
-import com.decentralchain.crypto.base.Base58;
-import com.decentralchain.transactions.common.Base58String;
-import com.decentralchain.transactions.common.Recipient;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.crypto.Crypto;
+import io.decentralchain.crypto.Hash;
+import io.decentralchain.crypto.base.Base58;
+import io.decentralchain.transactions.common.Base58String;
+import io.decentralchain.transactions.common.Recipient;
 
 import java.util.Arrays;
 

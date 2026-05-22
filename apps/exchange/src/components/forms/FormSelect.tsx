@@ -91,15 +91,18 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
   // Handle value transformation
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      let value = e.target.value;
+      let value: string | undefined = e.target.value;
 
-      // Handle empty value
+      // Handle empty value — use setValue to propagate undefined through react-hook-form
+      // rather than coercing undefined into the string-typed DOM attribute.
       if (value === '' && !allowEmpty) {
-        value = undefined as unknown as string;
+        setValue(name, undefined as Parameters<typeof setValue>[1]);
+        onChange?.(e);
+        return;
       }
 
       // Apply input transformation
-      if (transform?.input) {
+      if (transform?.input && value !== undefined) {
         value = transform.input(value);
         e.target.value = value;
       }
@@ -110,7 +113,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
       // Call custom onChange if provided
       onChange?.(e);
     },
-    [registerOnChange, onChange, transform, allowEmpty],
+    [registerOnChange, onChange, transform, allowEmpty, setValue, name],
   );
 
   const handleBlur = React.useCallback(

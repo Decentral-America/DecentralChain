@@ -1,4 +1,4 @@
-import { compose, evolve, renameKeys } from 'ramda';
+import { renameKeys } from 'ramda';
 import { transformTxInfo } from '../../_common/transformTxInfo';
 import { type EthereumLikeTxPayload } from './types';
 
@@ -14,11 +14,16 @@ const functionNameToPayload = (functionName: string | null): EthereumLikeTxPaylo
 
 const bufferToETHHex = (b: Buffer) => `0x${b.toString('hex')}`;
 
-export default (compose as any)(
-  transformTxInfo,
-  evolve({
-    bytes: bufferToETHHex,
-    payload: functionNameToPayload,
-  }) as any,
-  renameKeys({ function_name: 'payload' }),
-) as (obj: any) => any;
+type TxRow = Record<string, unknown>;
+
+const _transform = (obj: TxRow): TxRow => {
+  const step1 = renameKeys({ function_name: 'payload' }, obj) as TxRow;
+  const step2: TxRow = {
+    ...step1,
+    bytes: bufferToETHHex(step1['bytes'] as Buffer),
+    payload: functionNameToPayload(step1['payload'] as string | null),
+  };
+  return transformTxInfo(step2);
+};
+
+export default _transform as (obj: TxRow) => any;

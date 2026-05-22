@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxs
   return {
     get: getByIdPreset<string, BurnTxDbResponse, BurnTx>({
       name: 'transactions.burn.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxs
     mget: mgetByIdsPreset<string, BurnTxDbResponse, BurnTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.burn.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -44,7 +44,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): BurnTxs
         serialize,
       },
       name: 'transactions.burn.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

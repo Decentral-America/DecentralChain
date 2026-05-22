@@ -1,14 +1,8 @@
 import {
-  always,
   append,
   assoc,
-  compose,
-  cond,
   either,
-  evolve,
   groupBy,
-  identity,
-  ifElse,
   isEmpty,
   isNil,
   map,
@@ -16,15 +10,16 @@ import {
   prop,
   reduce,
   sortBy,
-  T,
   values,
 } from 'ramda';
 
-const getDataObject = (txRow: any) => ({
-  key: txRow.data_key,
-  positionInTx: txRow.position_in_tx, // for sorting later
-  type: txRow.data_type,
-  value: txRow[`data_value_${txRow.data_type}`],
+type TxRow = Record<string, unknown>;
+
+const getDataObject = (txRow: TxRow) => ({
+  key: txRow['data_key'],
+  positionInTx: txRow['position_in_tx'], // for sorting later
+  type: txRow['data_type'],
+  value: txRow[`data_value_${txRow['data_type'] as string}`],
 });
 
 const removeDataEntryFromRow = omit([
@@ -37,15 +32,11 @@ const removeDataEntryFromRow = omit([
   'position_in_tx',
 ]);
 
-const appendRowToTx = (tx: any, row: any) =>
-  (compose as any)(
-    (ifElse as any)(
-      () => isNil(prop('data_key', row)),
-      identity,
-      assoc('data', append(getDataObject(row), tx.data)),
-    ),
-    (b: any) => ({ ...removeDataEntryFromRow(row), ...b }),
-  )(tx);
+const appendRowToTx = (tx: TxRow, row: TxRow): TxRow => {
+  const b: TxRow = { ...(removeDataEntryFromRow(row) as TxRow), ...tx };
+  if (isNil(prop('data_key', row))) return b;
+  return assoc('data', append(getDataObject(row), tx['data'] as unknown[]), b);
+};
 
 /**
  * Db returns list of object
@@ -54,25 +45,18 @@ const appendRowToTx = (tx: any, row: any) =>
  * txAttributes and putting data objects nested into the tx,
  * preserving data entries order by sorting on `position_in_tx`
  */
-const dataEntriesToTxs: (rows: unknown) => unknown[] = cond([
-  [either(isNil, isEmpty), always([])],
-  [
-    T,
-    (compose as any)(
-      // sort by position in tx, then remove it
-      map(
-        evolve({
-          data: (compose as any)(
-            map(omit(['positionInTx']) as any),
-            sortBy(prop('positionInTx') as any),
-          ),
-        }) as any,
-      ),
-      map(reduce(appendRowToTx, { data: [] })) as any,
-      values,
-      groupBy(prop('id') as any),
-    ),
-  ],
-]) as any;
+const dataEntriesToTxs: (rows: unknown) => unknown[] = (rows: unknown): unknown[] => {
+  if (either(isNil, isEmpty)(rows)) return [];
+  const grouped = groupBy(prop('id') as unknown as (obj: TxRow) => string, rows as TxRow[]);
+  const reduced = map(reduce(appendRowToTx, { data: [] }), grouped as Record<string, TxRow[]>);
+  const txList = values(reduced) as TxRow[];
+  return map((tx: TxRow): TxRow => {
+    const data = sortBy(
+      (entry) => (entry as TxRow)['positionInTx'] as number,
+      tx['data'] as TxRow[],
+    );
+    return { ...tx, data: data.map((entry) => omit(['positionInTx'], entry)) };
+  }, txList);
+};
 
 export default dataEntriesToTxs;

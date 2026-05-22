@@ -13,7 +13,7 @@ export const getData =
   }: {
     name: string;
     sql: (req: Id[]) => string;
-    matchRequestResult: (req: Id[], res: ResponseRaw) => boolean;
+    matchRequestResult: (req: Id, res: ResponseRaw) => boolean;
     pg: PgDriver;
   }) =>
   (req: Id[]): Effect.Effect<Option.Option<ResponseRaw>[], DbError | Timeout> =>

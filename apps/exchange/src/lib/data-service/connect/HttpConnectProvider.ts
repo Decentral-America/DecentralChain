@@ -3,6 +3,16 @@ import { request } from '../utils/request';
 import { delay } from '../utils/utils';
 import { type ConnectProvider } from './ConnectProvider';
 
+// Desktop integration API injected by the Electron shell or a local proxy.
+// Typed here so call sites do not need unsafe casts.
+declare global {
+  interface Window {
+    SimpleConnect?: {
+      listen: (port: number, cb: SimpleConnectCallback) => Server;
+    };
+  }
+}
+
 interface HttpConnectProviderOptions {
   port: number;
   url: string;
@@ -53,10 +63,11 @@ export class HttpConnectProvider implements ConnectProvider {
   public async listen(cb: SimpleConnectCallback): Promise<void> {
     this.checkActive();
     this.server = (
-      window as unknown as {
-        SimpleConnect: { listen: (port: number, cb: SimpleConnectCallback) => Server };
-      }
-    ).SimpleConnect.listen(this.options.port, cb);
+      window.SimpleConnect ??
+      (() => {
+        throw new Error('SimpleConnect desktop integration is not available');
+      })()
+    ).listen(this.options.port, cb);
 
     if (this.options.ttl) {
       await delay(this.options.ttl);

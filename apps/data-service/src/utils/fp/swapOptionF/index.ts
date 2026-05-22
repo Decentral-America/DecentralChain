@@ -1,18 +1,18 @@
 import { Effect, Either, Option, pipe } from 'effect';
 
 /**
- * Swaps Option<Either<E,A>> → Either<E, Option<A>>.
- * None  → Right(None)
- * Some(Right(a)) → Right(Some(a))
- * Some(Left(e))  → Left(e)
+ * Swaps Option<Either<A,E>> → Either<Option<A>, E>.
+ * None            → Right(None)
+ * Some(Right(a))  → Right(Some(a))
+ * Some(Left(e))   → Left(e)
  */
-export const swapOptionEither = <E, A>(
-  optEither: Option.Option<Either.Either<E, A>>,
-): Either.Either<E, Option.Option<A>> =>
+export const swapOptionEither = <A, E>(
+  optEither: Option.Option<Either.Either<A, E>>,
+): Either.Either<Option.Option<A>, E> =>
   Option.match(optEither, {
-    onNone: () => Either.right(Option.none<A>()) as unknown as Either.Either<E, Option.Option<A>>,
+    onNone: () => Either.right(Option.none<A>()),
     onSome: (either) => pipe(either, Either.map(Option.some)),
-  }) as unknown as Either.Either<E, Option.Option<A>>;
+  });
 
 /**
  * Swaps Option<Effect<A,E>> → Effect<Option<A>, E>.
