@@ -100,6 +100,13 @@ export class HttpResponse {
     );
   }
 
+  public static ServiceUnavailable(body?: string, headers?: Record<string, string>) {
+    return new HttpResponse(503, body, {
+      ...headersWithContentType,
+      ...headers,
+    });
+  }
+
   withHeaders(headers: Record<string, string>): HttpResponse {
     return new HttpResponse(this.status, this.body, headers);
   }
