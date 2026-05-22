@@ -43,7 +43,7 @@ globalThis.base58Decode = (data: string): ArrayBuffer =>
 globalThis.base64Encode = (bytes: ArrayBuffer): string =>
   crypto.base64Encode(new Uint8Array(bytes));
 globalThis.base64Decode = (data: string): ArrayBuffer =>
-  crypto.base64Decode(data) as unknown as ArrayBuffer;
+  (crypto.base64Decode(data) as Uint8Array).buffer as ArrayBuffer;
 globalThis.keccak256 = (bytes: ArrayBuffer): ArrayBuffer =>
   Uint8Array.from(crypto.keccak(new Uint8Array(bytes))).buffer as ArrayBuffer;
 globalThis.sha256 = (bytes: ArrayBuffer): ArrayBuffer =>
