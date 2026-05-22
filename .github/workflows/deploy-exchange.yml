@@ -25,10 +25,12 @@ on:
           - testnet
 
 concurrency:
-  # One deploy per network at a time. New runs cancel in-flight builds for the
-  # same network but do not cancel builds for other networks.
+  # One deploy per network at a time. New runs queue behind in-flight deploys
+  # for the same network rather than cancelling them.
   group: deploy-exchange-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
-  cancel-in-progress: true
+  # Never cancel an in-flight deploy — Cloudflare Pages deploys are atomic but
+  # interrupting mid-upload leaves an inconsistent deployment slot.
+  cancel-in-progress: false
 
 permissions:
   contents: read

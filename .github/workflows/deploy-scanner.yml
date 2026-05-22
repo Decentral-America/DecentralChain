@@ -26,7 +26,9 @@ on:
 concurrency:
   # One deploy per network at a time.
   group: deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
-  cancel-in-progress: true
+  # Never cancel an in-flight deploy — killing an SSH session mid-restart leaves
+  # the service in a broken state. Queue the new run instead.
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -89,7 +91,7 @@ jobs:
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -97,12 +99,12 @@ jobs:
 
       - name: Generate image metadata
         id: meta
-        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=${{ github.sha }}
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
           labels: |
             org.opencontainers.image.title=DCC Scanner
             org.opencontainers.image.description=DecentralChain blockchain explorer (SSR)
@@ -142,7 +144,7 @@ jobs:
     if: >-
       needs.resolve.outputs.network == 'mainnet' ||
       github.event_name == 'workflow_dispatch'
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@826b876d5f47f18bcee83fc6004ed1026340d239 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/scanner:${{ github.sha }}
