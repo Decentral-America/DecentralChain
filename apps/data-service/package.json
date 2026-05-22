@@ -37,13 +37,13 @@
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/data-entities": "workspace:*",
     "@decentralchain/parse-json-bignumber": "workspace:*",
-    "@hono/node-server": "^2.0.1",
+    "@hono/node-server": "^2.0.3",
     "effect": "^3.21.2",
-    "hono": "^4.12.18",
+    "hono": "^4.12.21",
     "knex": "^3.2.10",
     "lru-cache": "^11.3.6",
     "postgres": "^3.4.9",
-    "qs": "^6.15.1",
+    "qs": "^6.15.2",
     "ramda": "^0.32.0",
     "winston": "^3.19.0"
   }

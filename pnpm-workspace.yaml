@@ -9,7 +9,7 @@ packages:
 catalog:
   '@arethetypeswrong/cli': 0.18.2
   '@size-limit/preset-small-lib': 12.1.0
-  '@types/node': 25.9.0
+  '@types/node': 25.9.1
   '@vitest/coverage-v8': 4.1.7
   jsdom: 29.1.1
   publint: 0.3.19
