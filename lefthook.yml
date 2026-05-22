@@ -1,4 +1,4 @@
-min_version: 2.1.6
+min_version: 2.1.7
 
 pre-commit:
   parallel: true
