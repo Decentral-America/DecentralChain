@@ -1,18 +1,18 @@
-package com.decentralchain.transactions.serializers.binary;
+package io.decentralchain.transactions.serializers.binary;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.*;
-import com.decentralchain.transactions.exchange.OrderType;
-import com.decentralchain.transactions.invocation.*;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.*;
+import io.decentralchain.transactions.exchange.OrderType;
+import io.decentralchain.transactions.invocation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.decentralchain.crypto.Bytes.concat;
-import static com.decentralchain.crypto.Bytes.of;
+import static io.decentralchain.crypto.Bytes.concat;
+import static io.decentralchain.crypto.Bytes.of;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BytesReader {

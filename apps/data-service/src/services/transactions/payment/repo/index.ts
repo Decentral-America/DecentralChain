@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Payment
   return {
     get: getByIdPreset<string, PaymentTxDbResponse, PaymentTx>({
       name: 'transactions.payment.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Payment
     mget: mgetByIdsPreset<string, PaymentTxDbResponse, PaymentTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.payment.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -44,7 +44,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Payment
         serialize,
       },
       name: 'transactions.payment.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

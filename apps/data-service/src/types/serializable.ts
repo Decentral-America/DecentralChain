@@ -16,5 +16,5 @@ export const toSerializable = <T extends string, U>(
   data: U | null,
 ): Serializable<T, U> => ({
   __type: name,
-  data: data === null ? null : data,
+  data: data ?? null,
 });

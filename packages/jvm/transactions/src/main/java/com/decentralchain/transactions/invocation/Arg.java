@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.invocation;
+package io.decentralchain.transactions.invocation;
 
-import com.decentralchain.crypto.base.Base64;
+import io.decentralchain.crypto.base.Base64;
 
 import java.util.Objects;
 

@@ -9,7 +9,7 @@ const queryAfterFilters = {
 };
 
 export default createSql({
-  filters: filters as any,
+  filters,
   filtersOrder,
   query: select,
   queryAfterFilters,

@@ -1,7 +1,7 @@
-package com.decentralchain.transactions.common;
+package io.decentralchain.transactions.common;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.transactions.WavesConfig;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.transactions.WavesConfig;
 
 import java.util.Arrays;
 import java.util.Objects;

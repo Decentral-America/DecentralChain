@@ -214,7 +214,7 @@ export const Leasing = () => {
     const merged = [...filtered];
     activeLeases.forEach((tx) => {
       if (!idHash[tx.id]) {
-        merged.push(tx as unknown as Lease);
+        merged.push(tx);
       }
     });
 

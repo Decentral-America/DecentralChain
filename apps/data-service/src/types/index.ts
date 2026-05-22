@@ -145,6 +145,6 @@ export type RateWithPairIds = RateInfo & AssetIdsPair;
 
 export type Rate = Serializable<'rate', RateInfo | null> & AssetIdsPair;
 export const rate = (data: RateInfo | null, assetMeta: AssetIdsPair): Rate => ({
-  ...toSerializable('rate', data === null ? null : data),
+  ...toSerializable('rate', data ?? null),
   ...assetMeta,
 });

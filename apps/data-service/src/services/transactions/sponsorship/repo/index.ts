@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Sponsor
   return {
     get: getByIdPreset<string, SponsorshipTxDbResponse, SponsorshipTx>({
       name: 'transactions.sponsorship.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Sponsor
     mget: mgetByIdsPreset<string, SponsorshipTxDbResponse, SponsorshipTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.sponsorship.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -49,7 +49,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): Sponsor
         serialize,
       },
       name: 'transactions.sponsorship.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

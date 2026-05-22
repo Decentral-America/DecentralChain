@@ -1,4 +1,4 @@
-package com.decentralchain.transactions.common;
+package io.decentralchain.transactions.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;

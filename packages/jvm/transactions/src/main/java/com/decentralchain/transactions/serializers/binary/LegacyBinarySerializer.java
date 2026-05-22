@@ -1,23 +1,23 @@
-package com.decentralchain.transactions.serializers.binary;
+package io.decentralchain.transactions.serializers.binary;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.transactions.*;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.*;
-import com.decentralchain.transactions.data.*;
-import com.decentralchain.transactions.exchange.Order;
-import com.decentralchain.transactions.exchange.OrderType;
-import com.decentralchain.transactions.invocation.Function;
-import com.decentralchain.transactions.mass.Transfer;
-import com.decentralchain.transactions.serializers.Scheme;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.transactions.*;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.*;
+import io.decentralchain.transactions.data.*;
+import io.decentralchain.transactions.exchange.Order;
+import io.decentralchain.transactions.exchange.OrderType;
+import io.decentralchain.transactions.invocation.Function;
+import io.decentralchain.transactions.mass.Transfer;
+import io.decentralchain.transactions.serializers.Scheme;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.decentralchain.crypto.Bytes.concat;
-import static com.decentralchain.transactions.serializers.Scheme.WITH_PROOFS;
-import static com.decentralchain.transactions.serializers.Scheme.WITH_SIGNATURE;
+import static io.decentralchain.crypto.Bytes.concat;
+import static io.decentralchain.transactions.serializers.Scheme.WITH_PROOFS;
+import static io.decentralchain.transactions.serializers.Scheme.WITH_SIGNATURE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class LegacyBinarySerializer {

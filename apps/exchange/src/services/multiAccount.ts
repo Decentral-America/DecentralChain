@@ -102,7 +102,7 @@ interface UserData {
 }
 
 interface EncryptedUser {
-  userType: string;
+  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
   networkByte: number;
   seed?: string | undefined;
   id?: string | undefined;
@@ -117,7 +117,7 @@ interface EncryptedUser {
  * User object returned by toList() - merges encrypted user data with metadata
  */
 export interface MultiAccountUser {
-  userType: string;
+  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
   networkByte: number;
   id: string | undefined;
   seed: string | undefined;

@@ -16,6 +16,7 @@ import {
   type DataTx,
   type DataTxDbResponse,
   type DataTxsGetRequest,
+  type DataTxsMgetRequest,
   type DataTxsRepo,
   type DataTxsSearchRequest,
 } from './types';
@@ -24,32 +25,35 @@ const createServiceName = (type: string): string => `transactions.data.${type}`;
 
 export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): DataTxsRepo => {
   return {
-    get: get({
+    get: get<DataTxsGetRequest, DataTxsGetRequest, DataTxDbResponse, DataTx>({
       emitEvent,
       getData: pgData.get(pg),
-      transformInput: (r) => Either.right(r) as any,
+      transformInput: (r) => Either.right(r),
       transformResult: transformResultGet<DataTxsGetRequest, DataTxDbResponse, DataTx>(
-        transformTxInfo as any,
+        transformTxInfo,
       ),
-      validateResult: validateResult(resultSchema, createServiceName('get')) as any,
+      validateResult: validateResult(resultSchema, createServiceName('get')),
     }),
 
-    mget: mget({
+    mget: mget<DataTxsMgetRequest, DataTxsMgetRequest, DataTxDbResponse, DataTx>({
       emitEvent,
-      getData: pgData.mget(pg) as any,
-      transformInput: (r) => Either.right(r) as any,
-      transformResult: transformResultMget<string[], DataTxDbResponse, DataTx>(
-        transformTxInfo as any,
-      ) as any,
-      validateResult: validateResult(resultSchema, createServiceName('mget')) as any,
+      getData: pgData.mget(pg),
+      transformInput: (r) => Either.right(r),
+      transformResult: transformResultMget<string, DataTxDbResponse, DataTx>(transformTxInfo),
+      validateResult: validateResult(resultSchema, createServiceName('mget')),
     }),
 
     search: search<DataTxsSearchRequest, DataTxsSearchRequest<Cursor>, DataTxDbResponse, DataTx>({
       emitEvent,
       getData: pgData.search(pg),
-      transformInput: transformInputSearch(deserialize) as any,
-      transformResult: transformResultSearch(transformTxInfo as any, serialize),
-      validateResult: validateResult(resultSchema, createServiceName('search')) as any,
+      transformInput: transformInputSearch(deserialize),
+      transformResult: transformResultSearch<
+        Cursor,
+        DataTxsSearchRequest,
+        DataTxDbResponse,
+        DataTx
+      >(transformTxInfo, serialize),
+      validateResult: validateResult(resultSchema, createServiceName('search')),
     }),
   };
 };

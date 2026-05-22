@@ -18,7 +18,7 @@ object Dependencies {
   )
 
   lazy val protoSchemasLib =
-    ("io.decentralchain" % "protobuf-schemas" % "1.6.2").classifier("protobuf-src").intransitive(())
+    ("io.decentralchain" % "protobuf-schemas" % "1.6.2").classifier("protobuf-src").intransitive()
 
   private def web3jModule(module: String) = "org.web3j" % module % "5.0.2"
 
@@ -27,7 +27,7 @@ object Dependencies {
 
   val googleGuava = "com.google.guava"  % "guava"           % "33.6.0-jre"
   val logback     = "ch.qos.logback"    % "logback-classic" % "1.5.32"
-  val curve25519  = "% "curve25519" % "0.6.6"
+  val curve25519  = "io.decentralchain" % "curve25519-java" % "0.6.6"
 
   val scalaLogging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.6"
 

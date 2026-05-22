@@ -19,7 +19,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCa
   return {
     get: getByIdPreset<string, LeaseCancelTxDbResponse, LeaseCancelTx>({
       name: 'transactions.leaseCancel.get',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.get,
       transformResult: transformTxInfo,
     })({
@@ -30,7 +30,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCa
     mget: mgetByIdsPreset<string, LeaseCancelTxDbResponse, LeaseCancelTx>({
       matchRequestResult: (req, res: any) => res.id === req,
       name: 'transactions.leaseCancel.mget',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.mget,
       transformResult: transformTxInfo,
     })({
@@ -46,7 +46,7 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): LeaseCa
     >({
       cursorSerialization: { deserialize, serialize },
       name: 'transactions.leaseCancel.search',
-      resultSchema: resultSchema as any,
+      resultSchema: resultSchema,
       sql: sql.search,
       transformResult: transformTxInfo,
     })({

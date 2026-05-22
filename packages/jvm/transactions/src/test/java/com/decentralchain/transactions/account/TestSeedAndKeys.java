@@ -1,7 +1,7 @@
-package com.decentralchain.transactions.account;
+package io.decentralchain.transactions.account;
 
 import com.decentralchain.crypto.Bytes;
-import com.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.WavesConfig;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
