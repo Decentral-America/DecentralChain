@@ -9,7 +9,6 @@
     "cryptocurrency-icons",
     "cytoscape-fcose",
     "dotenv-flow",
-    "ed25519-axolotl",
     "i18next-resources-to-backend",
     "normalize.css",
     "tiny-invariant",
@@ -161,6 +160,11 @@
       "description": "Pin Dockerfile and Docker Compose base images to SHA256 digests — Renovate keeps them current",
       "matchManagers": ["dockerfile", "docker-compose"],
       "pinDigests": true
+    },
+    {
+      "description": "ed25519-axolotl is a Rust crate (packages/sdk/crypto/Cargo.toml) compiled into WASM — it is not an npm package. Update manually via Cargo.lock when the crypto package needs a rebuild.",
+      "enabled": false,
+      "matchPackageNames": ["ed25519-axolotl"]
     }
   ],
   "platformAutomerge": true,
