@@ -1,6 +1,6 @@
 import { type Knex, knex } from 'knex';
-import { complement, compose, cond, isNil, map } from 'ramda';
-import { type AssetsSearchRequest } from '../types';
+import { isNil, map } from 'ramda';
+import { type AssetsSearchRequest, type FullTextSearch, type SearchByTicker } from '../types';
 import { columns } from './common';
 import { searchAssets } from './searchAssets';
 
@@ -27,31 +27,23 @@ export const search = (request: AssetsSearchRequest): string => {
     else return q.where('ticker', ticker);
   };
 
-  return compose(
-    (q: Knex.QueryBuilder) => q.toString(),
-    (q: Knex.QueryBuilder) =>
-      q.select({
-        issue_height: pg.raw('a.issue_height'),
-        sender: pg.raw(`a.sender`),
-      }),
-    (request: AssetsSearchRequest) =>
-      (cond as any)([
-        [
-          (r: AssetsSearchRequest) => isNil((r as any).ticker),
-          (r: AssetsSearchRequest) =>
-            compose(
-              (q: Knex.QueryBuilder) => (r.limit ? q.clone().limit(r.limit) : q),
-              (q: Knex.QueryBuilder) =>
-                r.after ? q.clone().where('rn', '>', getAssetIndex(r.after)) : q,
-            )(searchAssets((r as any).search)),
-        ],
-        [
-          complement(isNil),
-          (r: AssetsSearchRequest) =>
-            filter((r as any).ticker)(
-              pg({ a: 'assets' }).select(map((col: any) => `a.${col}`, columns)),
-            ),
-        ],
-      ])(request),
-  )(request);
+  const ticker = (request as Partial<SearchByTicker>).ticker;
+  const searchText = (request as Partial<FullTextSearch>).search;
+
+  let baseQuery: Knex.QueryBuilder;
+  if (isNil(ticker)) {
+    let q = searchAssets(searchText ?? '');
+    if (request.after) q = q.clone().where('rn', '>', getAssetIndex(request.after));
+    if (request.limit) q = q.clone().limit(request.limit);
+    baseQuery = q;
+  } else {
+    baseQuery = filter(ticker)(pg({ a: 'assets' }).select(map((col) => `a.${col}`, columns)));
+  }
+
+  return baseQuery
+    .select({
+      issue_height: pg.raw('a.issue_height'),
+      sender: pg.raw(`a.sender`),
+    })
+    .toString();
 };

@@ -1,5 +1,5 @@
 import { type BigNumber } from '@decentralchain/data-entities';
-import { compose, pick, renameKeys } from 'ramda';
+import { pick, renameKeys } from 'ramda';
 
 import { transformTxInfo } from '../../_common/transformTxInfo';
 
@@ -66,35 +66,37 @@ type ExchangeTxFields = {
 
 /** transformTx:: RawTxInfo -> TxInfo */
 export default (tx: ExchangeTxDbResponse): ExchangeTx => {
-  const commonFields: any = (compose as any)(
-    transformTxInfo,
-    pick([
-      'id',
-      'time_stamp',
-      'height',
-      'tx_type',
-      'tx_version',
-      'signature',
-      'proofs',
-      'fee',
-      'status',
-      'sender',
-      'sender_public_key',
-    ]),
-  )(tx);
+  const commonFields = transformTxInfo(
+    pick(
+      [
+        'id',
+        'time_stamp',
+        'height',
+        'tx_type',
+        'tx_version',
+        'signature',
+        'proofs',
+        'fee',
+        'status',
+        'sender',
+        'sender_public_key',
+      ],
+      tx,
+    ) as Record<string, unknown>,
+  );
 
-  const exchangeTxFields: any = (compose as any)(
-    renameKeys<ExchangeTxFields>({
+  const exchangeTxFields = renameKeys<ExchangeTxFields>(
+    {
       buy_matcher_fee: 'buyMatcherFee',
       sell_matcher_fee: 'sellMatcherFee',
-    }),
-    pick(['buy_matcher_fee', 'sell_matcher_fee', 'price', 'amount']),
-  )(tx);
+    },
+    pick(['buy_matcher_fee', 'sell_matcher_fee', 'price', 'amount'], tx),
+  ) as unknown as ExchangeTxFields;
 
   return {
     ...commonFields,
     ...exchangeTxFields,
     order1: createOrder('o1')(tx),
     order2: createOrder('o2')(tx),
-  };
+  } as unknown as ExchangeTx;
 };

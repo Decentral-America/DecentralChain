@@ -1,10 +1,10 @@
-import { identity, ifElse, pathEq } from 'ramda';
+import { identity, ifElse } from 'ramda';
 
 const colorize = (s: string): string => s; // was json-colorizer
 
 const bindedStringify = JSON.stringify.bind(JSON);
 
-const isDev = (pathEq as any)(['env', 'NODE_ENV'], 'development');
+const isDev = (obj: NodeJS.Process): boolean => obj.env['NODE_ENV'] === 'development';
 const stringifyMetaInProd = ifElse(
   isDev,
   () => identity,

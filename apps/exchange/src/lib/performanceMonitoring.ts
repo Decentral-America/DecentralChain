@@ -36,6 +36,18 @@ import { trackEvent } from '@/lib/analytics';
 import { captureMessage, ErrorSeverity } from '@/lib/errorMonitoring';
 import { logger } from '@/lib/logger';
 
+// Chrome-only non-standard memory API — not in the W3C Performance spec.
+// Typed here so callers do not need @ts-expect-error or unsafe casts.
+declare global {
+  interface Performance {
+    readonly memory?: {
+      readonly usedJSHeapSize: number;
+      readonly totalJSHeapSize: number;
+      readonly jsHeapSizeLimit: number;
+    };
+  }
+}
+
 /**
  * Performance monitoring configuration
  */
@@ -454,12 +466,10 @@ export const getMemoryUsage = (): {
   totalJSHeapSize: number;
   jsHeapSizeLimit: number;
 } | null => {
-  //@ts-expect-error - memory API is not standard
   if (!window.performance?.memory) {
     return null;
   }
 
-  //@ts-expect-error - memory API is not standard
   const memory = window.performance.memory;
 
   return {

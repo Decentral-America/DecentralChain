@@ -1,5 +1,5 @@
 import { Either, pipe } from 'effect';
-import { isNil, mapObjIndexed, reject } from 'ramda';
+import { isNil, reject } from 'ramda';
 import { type ParseError } from '../../../errorHandling';
 import { SortOrder, type WithLimit, type WithSortOrder } from '../../../services/_common';
 import commonFilters from './filters';
@@ -38,15 +38,19 @@ export const parseFilterValues =
     >,
   ): Either.Either<ParsedFilterValues, ParseError> => {
     const allFilters = { ...commonFilters, ...filters };
-    const parsed = (mapObjIndexed as any)(
-      (val: any, key: string) => val((values as any)[key]),
-      allFilters,
+    const parsed = Object.fromEntries(
+      Object.entries(allFilters).map(([key, parser]) => [
+        key,
+        parser((values as Record<string, any>)[key]),
+      ]),
     ) as AllParsedFilterValues;
 
     const reduced = Object.keys(parsed).reduce(
       (acc: Either.Either<ParsedFilterValues, ParseError>, cur) => {
         return Either.flatMap(acc, (a) => {
-          const result: Either.Either<any, ParseError> | undefined = (parsed as any)[cur];
+          const result = (parsed as Record<string, Either.Either<unknown, ParseError> | undefined>)[
+            cur
+          ];
           if (result === undefined) return Either.right(a);
           if (Either.isLeft(result)) return result as Either.Either<ParsedFilterValues, ParseError>;
           return Either.right({ ...a, [cur]: result.right });

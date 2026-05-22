@@ -1,11 +1,11 @@
-package com.decentralchain.transactions;
+package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.common.AssetId;
-import com.decentralchain.transactions.common.Base64String;
-import com.decentralchain.transactions.common.Proof;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.AssetId;
+import io.decentralchain.transactions.common.Base64String;
+import io.decentralchain.transactions.common.Proof;
 
 import java.io.IOException;
 import java.util.List;

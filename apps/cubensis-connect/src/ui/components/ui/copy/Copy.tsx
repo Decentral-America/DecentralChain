@@ -22,11 +22,11 @@ export function Copy({
 }: Props) {
   const elem = Children.only(children);
 
-  function handleClick(event: { stopPropagation: () => void; preventDefault: () => void }) {
+  async function handleClick(event: { stopPropagation: () => void; preventDefault: () => void }) {
     event.stopPropagation();
     event.preventDefault();
 
-    const result = copy(text ?? '', options as Parameters<typeof copy>[1]);
+    const result = await copy(text ?? '', options as Parameters<typeof copy>[1]);
 
     if (onCopy) {
       onCopy(text, result);

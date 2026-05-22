@@ -1,13 +1,13 @@
-package com.decentralchain.transactions.serializers.json;
+package io.decentralchain.transactions.serializers.json;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.decentralchain.transactions.Transaction;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.*;
-import com.decentralchain.transactions.data.DataEntry;
-import com.decentralchain.transactions.serializers.json.deser.*;
-import com.decentralchain.transactions.serializers.json.ser.*;
+import io.decentralchain.transactions.Transaction;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.*;
+import io.decentralchain.transactions.data.DataEntry;
+import io.decentralchain.transactions.serializers.json.deser.*;
+import io.decentralchain.transactions.serializers.json.ser.*;
 
 public class WavesTransactionsModule extends SimpleModule {
 

@@ -17,7 +17,7 @@ export const mgetByIdsPreset =
     resultSchema: any;
     transformResult: (response: ResponseRaw, request?: Id[]) => ResponseTransformed;
     sql: (r: Id[]) => string;
-    matchRequestResult: (req: Id[], res: ResponseRaw) => boolean;
+    matchRequestResult: (req: Id, res: ResponseRaw) => boolean;
   }) =>
   ({ pg, emitEvent }: RepoPresetInitOptions) =>
     mget<Id[], Id[], ResponseRaw, ResponseTransformed>({

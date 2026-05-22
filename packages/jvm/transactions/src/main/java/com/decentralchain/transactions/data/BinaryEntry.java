@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.data;
+package io.decentralchain.transactions.data;
 
-import com.decentralchain.transactions.common.Base64String;
+import io.decentralchain.transactions.common.Base64String;
 
 import java.util.Objects;
 

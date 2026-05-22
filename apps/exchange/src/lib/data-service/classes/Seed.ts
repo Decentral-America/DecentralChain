@@ -5,15 +5,12 @@ import {
   randomSeed,
 } from '@decentralchain/ts-lib-crypto';
 
-// Use DCC network code (87 = 'W')
-// In Angular app, this was: window.DCCApp.network.code.charCodeAt(0)
-// For React app, we use the DCC mainnet default
-const networkCode =
-  (typeof window !== 'undefined' &&
-    (
-      window as Window & { DCCApp?: { network?: { code?: string } } }
-    ).DCCApp?.network?.code?.charCodeAt(0)) ||
-  63;
+// DCC mainnet network code byte (63 = '?'). Testnet = 33 ('!'), Stagenet = 83 ('S').
+// The Angular app read this from window.DCCApp.network.code at runtime, but since
+// network switching is handled by ConfigContext in the React app, we default to
+// mainnet and allow callers to override via Adapter.initOptions when the active
+// network changes.
+const networkCode = 63;
 
 Adapter.initOptions({ networkCode });
 

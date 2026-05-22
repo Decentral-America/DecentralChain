@@ -1,6 +1,6 @@
-package com.decentralchain.transactions.mass;
+package io.decentralchain.transactions.mass;
 
-import com.decentralchain.transactions.common.Recipient;
+import io.decentralchain.transactions.common.Recipient;
 
 import java.util.Objects;
 

@@ -52,7 +52,7 @@ const createApi = ({ filters: F }: { filters: any }) => ({
 
     const sort = defaultTo(defaultValues.SORT, fValues.sort);
 
-    const fs: any[] = pickBindFilters(F, fNames, withDefaults) as unknown as any[];
+    const fs: any[] = pickBindFilters(F, fNames, withDefaults);
 
     const filtered: any = fs.reduce((q: any, f: any) => f(q), select);
     return String(F.sort(sort)(F.limit(fValues.limit)(selectFromFiltered(filtered))));

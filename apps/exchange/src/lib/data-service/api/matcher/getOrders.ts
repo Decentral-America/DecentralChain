@@ -8,8 +8,8 @@ import { coinsMoneyFactory, normalizeAssetId, priceMoneyFactory, toHash } from '
 import { get as getAsset } from '../assets/assets';
 import { type api, type IOrder } from './interface';
 
-let signatureData: ISignatureData;
-let timer = null;
+let signatureData: ISignatureData | undefined;
+let timer: ReturnType<typeof setTimeout> | null = null;
 let matcherAuthFailed = false; // Track if matcher authentication has failed
 
 export const factory = {
@@ -21,8 +21,8 @@ export const remapOrder =
   (factory: IFactory) =>
   (assets: IHash<Asset>) =>
   (order: api.IOrder): IOrder => {
-    const amountAsset = assets[normalizeAssetId(order.assetPair.amountAsset)];
-    const priceAsset = assets[normalizeAssetId(order.assetPair.priceAsset)];
+    const amountAsset = assets[normalizeAssetId(order.assetPair.amountAsset)] as Asset;
+    const priceAsset = assets[normalizeAssetId(order.assetPair.priceAsset)] as Asset;
     const assetPair = new AssetPair(amountAsset, priceAsset);
     const amount = factory.money(order.amount, amountAsset);
     const price = factory.price(order.price, assetPair);
@@ -50,7 +50,7 @@ export function hasSignature(): boolean {
 }
 
 export function clearSignature() {
-  signatureData = null;
+  signatureData = undefined;
   if (timer) {
     clearTimeout(timer);
     timer = null;
@@ -60,11 +60,13 @@ export function clearSignature() {
 export const signatureTimeout: Signal<Record<string, never>> = new Signal();
 
 const fetch = <T>(url: string): Promise<T> => {
+  const sig = signatureData;
+  if (!sig) return Promise.reject(new Error('No active signature data')) as Promise<T>;
   return request<T>({
     fetchOptions: {
       headers: {
-        Signature: signatureData.signature,
-        Timestamp: signatureData.timestamp,
+        Signature: sig.signature,
+        Timestamp: sig.timestamp,
       },
     },
     url: `${configGet('matcher')}/${url}`,
@@ -75,7 +77,7 @@ const fetch = <T>(url: string): Promise<T> => {
   });
 };
 
-export const parse = (list) => {
+export const parse = (list: api.IOrder[]) => {
   const assets = getAssetsFromOrderList(list);
   return getAsset(assets).then((assets) => {
     const hash = toHash(assets, 'id');
@@ -84,24 +86,26 @@ export const parse = (list) => {
 };
 
 export function getOrders(options?: IGetOrdersOptions): Promise<Array<IOrder>> {
-  if (!signatureData) {
+  const sig = signatureData;
+  if (!sig) {
     throw new Error('Get orders without signature! Call method "addSignature"!');
   }
 
   options = options ? options : { isActive: true };
   const activeOnly = options.isActive;
 
-  return fetch<Array<api.IOrder>>(
-    `orderbook/${signatureData.publicKey}?activeOnly=${activeOnly}`,
-  ).then(parse);
+  return fetch<Array<api.IOrder>>(`orderbook/${sig.publicKey}?activeOnly=${activeOnly}`).then(
+    parse,
+  );
 }
 
 export function getOrdersByPair(pair: AssetPair): Promise<Array<IOrder>> {
-  if (!signatureData) {
+  const sig = signatureData;
+  if (!sig) {
     throw new Error('Get orders without signature! Call method "addSignature"!');
   }
   return fetch<Array<api.IOrder>>(
-    `orderbook/${pair.amountAsset.id}/${pair.priceAsset.id}/publicKey/${signatureData.publicKey}`,
+    `orderbook/${pair.amountAsset.id}/${pair.priceAsset.id}/publicKey/${sig.publicKey}`,
   ).then(parse);
 }
 
@@ -111,20 +115,19 @@ export function getReservedBalance(): Promise<IHash<Money>> {
     return Promise.resolve(Object.create(null));
   }
 
-  if (!signatureData) {
-    // Return empty object - user hasn't authenticated with matcher
-    return Promise.resolve(Object.create(null));
-  }
-
   // Check if signature is too old (older than 1 minute means it's likely invalid)
   const now = Date.now();
-  const signatureAge = now - signatureData.timestamp;
+  const sig = signatureData;
+  if (!sig) {
+    return Promise.resolve(Object.create(null));
+  }
+  const signatureAge = now - sig.timestamp;
   if (signatureAge > 60000) {
     // Signature is stale, don't attempt the request
     return Promise.resolve(Object.create(null));
   }
 
-  return fetch<IReservedBalanceApi>(`/balance/reserved/${signatureData.publicKey}`)
+  return fetch<IReservedBalanceApi>(`/balance/reserved/${sig.publicKey}`)
     .then(prepareReservedBalance)
     .catch((_error) => {
       // Mark matcher auth as failed to prevent repeated requests
@@ -143,7 +146,7 @@ export function prepareReservedBalance(data: IReservedBalanceApi): Promise<IHash
   const assetIdList = Object.keys(data);
   return getAsset(assetIdList).then((assets) => {
     return assets.reduce((acc, asset) => {
-      const count = data[asset.id];
+      const count = data[asset.id] as string | number;
       acc[asset.id] = new Money(count, asset);
       return acc;
     }, Object.create(null));
@@ -165,7 +168,7 @@ function getAssetsFromOrder(assets: IHash<boolean>, order: api.IOrder) {
 function addTimer(sign: ISignatureData): void {
   clearSignature();
   timer = setTimeout(() => {
-    signatureData = null;
+    signatureData = undefined;
     signatureTimeout.dispatch({});
   }, sign.timestamp - Date.now());
   signatureData = sign;

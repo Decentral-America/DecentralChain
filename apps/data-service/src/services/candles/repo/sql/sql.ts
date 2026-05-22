@@ -93,8 +93,8 @@ export const search = ({
         priceAsset,
         timeEnd,
         timeStart,
-      }) as any,
-    })
+      }),
+    } as unknown as string)
     .orderBy('c.time_start', 'asc')
     .toString();
 
@@ -142,8 +142,8 @@ export const searchLast = ({
         priceAsset,
         timeEnd,
         timeStart,
-      }) as any,
-    })
+      }),
+    } as unknown as string)
     .orderBy('c.time_start', 'desc')
     .limit(1)
     .toString();

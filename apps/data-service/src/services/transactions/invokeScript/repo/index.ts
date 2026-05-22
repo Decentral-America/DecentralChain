@@ -25,19 +25,16 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): InvokeS
       emitEvent,
       getData: pgData.get(pg),
       transformInput: (r) => Either.right(r),
-      transformResult: transformResultGet(transformTxInfo) as any,
-      validateResult: validateResult<RawInvokeScriptTx>(
-        resultSchema as any,
-        createServiceName('get'),
-      ),
+      transformResult: transformResultGet(transformTxInfo),
+      validateResult: validateResult<RawInvokeScriptTx>(resultSchema, createServiceName('get')),
     }),
 
     mget: mget({
       emitEvent,
       getData: pgData.mget(pg),
       transformInput: (r) => Either.right(r),
-      transformResult: transformResultMget(transformTxInfo) as any,
-      validateResult: validateResult(resultSchema as any, createServiceName('mget')),
+      transformResult: transformResultMget(transformTxInfo),
+      validateResult: validateResult(resultSchema, createServiceName('mget')),
     }),
 
     search: search<
@@ -49,11 +46,13 @@ export default ({ drivers: { pg }, emitEvent }: CommonRepoDependencies): InvokeS
       emitEvent,
       getData: pgData.search(pg),
       transformInput: transformInputSearch(deserialize),
-      transformResult: transformResultSearch(transformTxInfo as any, serialize as any) as any,
-      validateResult: validateResult<RawInvokeScriptTx>(
-        resultSchema as any,
-        createServiceName('search'),
-      ),
+      transformResult: transformResultSearch<
+        Cursor,
+        InvokeScriptTxsSearchRequest,
+        RawInvokeScriptTx,
+        InvokeScriptTx
+      >(transformTxInfo, serialize),
+      validateResult: validateResult<RawInvokeScriptTx>(resultSchema, createServiceName('search')),
     }),
   };
 };

@@ -1,4 +1,4 @@
-package com.decentralchain.transactions.invocation;
+package io.decentralchain.transactions.invocation;
 
 public class BooleanArg extends Arg {
 

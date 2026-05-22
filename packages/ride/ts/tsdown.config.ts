@@ -9,7 +9,7 @@ export default defineConfig({
     ],
   },
   dts: true,
-  entry: ['src/index.js'],
+  entry: ['src/index.ts'],
   format: ['esm'],
   shims: true,
   sourcemap: true,

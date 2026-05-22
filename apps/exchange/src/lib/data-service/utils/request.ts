@@ -14,11 +14,11 @@ export function request<T>(params: IRequestParams<T>): Promise<T> {
         .includes('application/json');
       if (response.ok) {
         const data = await response.text();
-        return isJSON ? parse(data) : data;
+        return isJSON ? await parse<T>(data) : (data as unknown as T);
       } else {
         const error = tryParseError(await response.text());
         if (response.status >= 500 && response.status <= 599) {
-          if (typeof error === 'object' && error.message) {
+          if (typeof error === 'object' && 'message' in error && error.message) {
             return Promise.reject(error);
           } else {
             return Promise.reject(
