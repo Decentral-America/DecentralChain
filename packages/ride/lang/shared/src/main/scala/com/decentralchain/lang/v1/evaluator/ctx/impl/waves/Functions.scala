@@ -23,7 +23,7 @@ import com.decentralchain.lang.v1.evaluator.{ContextfulNativeFunction, Contextfu
 import com.decentralchain.lang.v1.traits.domain.{Issue, Lease, Recipient}
 import com.decentralchain.lang.v1.traits.{DataType, Environment}
 import com.decentralchain.lang.v1.{BaseGlobal, FunctionHeader}
-import com.decentralchain.lang.{toError, CoevalF, CommonError, ExecutionError, FailOrRejectError, ThrownError}
+import com.decentralchain.lang.{CoevalF, CommonError, ExecutionError, FailOrRejectError, ThrownError, toError}
 import monix.eval.Coeval
 
 object Functions {
