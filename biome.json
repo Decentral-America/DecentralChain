@@ -18,7 +18,10 @@
       "!**/*.d.ts",
       "!packages/sdk/transactions/docs",
       "!.nx",
-      "!**/.react-router"
+      "!**/.react-router",
+      "!packages/jvm/*/src/test/resources/**",
+      "!packages/jvm/groth16/zwaves_demo/**",
+      "!packages/jvm/groth16/zwaves_node/**"
     ]
   },
   "formatter": {
