@@ -62,7 +62,8 @@ Effect.runPromise(
     // Hono node-server manages keepAlive internally (defaults to 5s idle timeout)
   })
   .catch((e: unknown) => {
-    logger.error('Server startup failed', {
-      error: e instanceof Error ? { message: e.message, stack: e.stack } : String(e),
-    });
+    logger.error(
+      { error: e instanceof Error ? { message: e.message, stack: e.stack } : String(e) },
+      'Server startup failed',
+    );
   });

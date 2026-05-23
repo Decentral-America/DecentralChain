@@ -1,3 +1,4 @@
+import type pino from 'pino';
 import { compose, omit } from 'ramda';
 import { stringifyMetaInProd } from './utils';
 import createLogger from './winston';
@@ -25,27 +26,31 @@ const createEvent = ({
 
   if (message === 'ERROR') {
     return {
-      event: {
-        meta: stringifyMetaInProd({
-          message: data.error.message,
-          stack: data.error.stack,
-          type: data.type,
-          ...data.meta,
-        }),
-        name: message,
-      },
       level: 'error',
-      request,
+      obj: {
+        event: {
+          meta: stringifyMetaInProd({
+            message: data.error.message,
+            stack: data.error.stack,
+            type: data.type,
+            ...data.meta,
+          }),
+          name: message,
+        },
+        request,
+      },
     };
   } else {
     return {
-      event: {
-        meta: stringifyMetaInProd(responseTime ? omit(['responseTime'], data) : data),
-        name: message,
-        ...(responseTime ? { responseTime } : {}),
-      },
       level: getLevelOrDefault('debug')(data),
-      request,
+      obj: {
+        event: {
+          meta: stringifyMetaInProd(responseTime ? omit(['responseTime'], data) : data),
+          name: message,
+          ...(responseTime ? { responseTime } : {}),
+        },
+        request,
+      },
     };
   }
 };
@@ -55,7 +60,10 @@ const createAndSubscribeLogger = ({ options, eventBus }: { options: any; eventBu
 
   eventBus.on(
     'log',
-    compose((x) => (logger.log as unknown as (x: object) => void)(x), createEvent),
+    compose((x: { level: string; obj: object }) => {
+      const level = x.level as pino.Level;
+      logger[level](x.obj);
+    }, createEvent),
   );
 
   return logger;
