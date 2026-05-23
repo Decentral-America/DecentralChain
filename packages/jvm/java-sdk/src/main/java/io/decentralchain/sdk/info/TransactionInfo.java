@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import com.decentralchain.transactions.GenesisTransaction;
-import com.decentralchain.transactions.Transaction;
+import io.decentralchain.transactions.GenesisTransaction;
+import io.decentralchain.transactions.Transaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import java.util.Objects;
 

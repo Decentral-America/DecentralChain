@@ -2,7 +2,7 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.common.Id;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
