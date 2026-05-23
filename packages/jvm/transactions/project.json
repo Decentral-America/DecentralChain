@@ -6,29 +6,29 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/jvm/transactions",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests"
-      }
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/jvm/transactions",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test"
-      }
-    },
-    "verify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/jvm/transactions",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify"
+        "command": "./mvnw --batch-mode package -DskipTests",
+        "cwd": "packages/jvm/transactions"
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/jvm/transactions",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean"
+        "command": "./mvnw --batch-mode clean",
+        "cwd": "packages/jvm/transactions"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw --batch-mode test",
+        "cwd": "packages/jvm/transactions"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw --batch-mode verify",
+        "cwd": "packages/jvm/transactions"
       }
     }
   }

@@ -64,6 +64,17 @@ jobs:
         working-directory: packages/sdk/protobuf-serialization
         run: ./mvnw install -DskipTests --no-transfer-progress
 
+      - name: Prune non-decentralchain artifacts from local Maven cache
+        # Keep only io.decentralchain artifacts installed above.
+        # sbt/Coursier then fetches all other deps from Maven Central via HTTP.
+        # Without this, Coursier may follow file:// paths from a restored cache
+        # pointing to ~/.m2 JARs that weren't installed in this run.
+        run: |
+          find ~/.m2/repository -mindepth 1 -maxdepth 1 -type d ! -name "io" -exec rm -rf {} +
+          if [ -d ~/.m2/repository/io ]; then
+            find ~/.m2/repository/io -mindepth 1 -maxdepth 1 -type d ! -name "decentralchain" -exec rm -rf {} +
+          fi
+
       - name: Compile all subprojects (JVM + Scala.js cross-build)
         working-directory: packages/ride
         run: sbt --no-colors compile
@@ -124,6 +135,13 @@ jobs:
       - name: Install protobuf-schemas to local Maven cache
         working-directory: packages/sdk/protobuf-serialization
         run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Prune non-decentralchain artifacts from local Maven cache
+        run: |
+          find ~/.m2/repository -mindepth 1 -maxdepth 1 -type d ! -name "io" -exec rm -rf {} +
+          if [ -d ~/.m2/repository/io ]; then
+            find ~/.m2/repository/io -mindepth 1 -maxdepth 1 -type d ! -name "decentralchain" -exec rm -rf {} +
+          fi
 
       - name: Run bulletproof quality gate
         working-directory: packages/ride
