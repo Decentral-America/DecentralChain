@@ -57,7 +57,7 @@ RUN pnpm --filter @decentralchain/assets-pairs-order build && \
 #   - Production node_modules (no devDependencies)
 #   - Workspace dependencies resolved and inlined
 #   - The package directory contents (including dist/)
-RUN pnpm --filter @decentralchain/data-service deploy --prod /app/standalone
+RUN pnpm --filter @decentralchain/data-service deploy --legacy --prod /app/standalone
 
 # -----------------------------------------------------------------------------
 # Stage 2: production
