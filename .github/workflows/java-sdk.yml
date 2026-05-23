@@ -41,7 +41,7 @@ jobs:
         run: |
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Enforce version gates + compile + test
@@ -76,7 +76,7 @@ jobs:
         run: |
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Run audit profile
@@ -116,7 +116,7 @@ jobs:
         run: |
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Build package + generate CycloneDX SBOM
