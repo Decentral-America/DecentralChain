@@ -5,10 +5,12 @@ on:
     branches: [main, dev]
     paths:
       - 'packages/jvm/transactions/**'
+      - 'packages/jvm/crypto/**'
       - '.github/workflows/transactions.yml'
   pull_request:
     paths:
       - 'packages/jvm/transactions/**'
+      - 'packages/jvm/crypto/**'
       - '.github/workflows/transactions.yml'
 
 defaults:
