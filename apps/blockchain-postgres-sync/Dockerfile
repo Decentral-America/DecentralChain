@@ -16,7 +16,7 @@ COPY Cargo.toml Cargo.lock ./
 COPY build.rs ./
 COPY proto/ ./proto/
 # Create a stub lib so `cargo build` resolves deps without compiling our src
-RUN mkdir -p src/bin && \
+RUN mkdir -p src/bin src/lib && \
     echo 'fn main() {}' > src/bin/consumer.rs && \
     echo 'fn main() {}' > src/bin/migration.rs && \
     echo '' > src/lib/lib.rs && \

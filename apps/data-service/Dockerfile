@@ -12,8 +12,9 @@
 # -----------------------------------------------------------------------------
 FROM node:24-alpine AS builder
 
-# Install system deps required for native build tools (e.g. node-gyp)
-RUN apk add --no-cache python3 make g++
+# Install system deps required for native build tools (e.g. node-gyp) and git
+# (git is required by pnpm lifecycle scripts during install)
+RUN apk add --no-cache python3 make g++ git
 
 WORKDIR /workspace
 
