@@ -4,7 +4,7 @@ import static io.decentralchain.sdk.util.DccEthConverter.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import com.decentralchain.transactions.common.ChainId;
+import io.decentralchain.transactions.common.ChainId;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.Profile;
 import io.decentralchain.sdk.exceptions.NodeException;

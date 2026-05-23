@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.decentralchain.transactions.ReissueTransaction;
+import io.decentralchain.transactions.ReissueTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class ReissueTransactionInfo extends TransactionInfo {

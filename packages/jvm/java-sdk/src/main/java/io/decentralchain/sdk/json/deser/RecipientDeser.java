@@ -3,9 +3,9 @@ package io.decentralchain.sdk.json.deser;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.common.Alias;
-import com.decentralchain.transactions.common.Recipient;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.common.Alias;
+import io.decentralchain.transactions.common.Recipient;
 import java.io.IOException;
 
 public class RecipientDeser extends JsonDeserializer<Recipient> {

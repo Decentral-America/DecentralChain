@@ -2,8 +2,8 @@ package io.decentralchain.sdk.actions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.common.AssetId;
-import com.decentralchain.transactions.common.Base64String;
+import io.decentralchain.transactions.common.AssetId;
+import io.decentralchain.transactions.common.Base64String;
 import java.util.Objects;
 
 public class IssueAction {
