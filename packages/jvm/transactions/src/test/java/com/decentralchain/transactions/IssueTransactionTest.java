@@ -1,7 +1,7 @@
 package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.Bytes;
-import com.decentralchain.crypto.base.Base64;
+import io.decentralchain.crypto.Bytes;
+import io.decentralchain.crypto.base.Base64;
 import io.decentralchain.transactions.account.PublicKey;
 import io.decentralchain.transactions.common.*;
 import io.decentralchain.transactions.serializers.json.JsonSerializer;

@@ -1,6 +1,6 @@
 package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.base.Base64;
+import io.decentralchain.crypto.base.Base64;
 import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.account.PublicKey;
 import io.decentralchain.transactions.common.Amount;

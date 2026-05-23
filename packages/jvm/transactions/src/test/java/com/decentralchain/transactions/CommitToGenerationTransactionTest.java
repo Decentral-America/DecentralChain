@@ -1,6 +1,6 @@
 package io.decentralchain.transactions;
 
-import com.decentralchain.crypto.base.Base64;
+import io.decentralchain.crypto.base.Base64;
 import io.decentralchain.transactions.account.BlsPublicKey;
 import io.decentralchain.transactions.account.BlsSignature;
 import io.decentralchain.transactions.account.PublicKey;
