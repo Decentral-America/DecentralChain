@@ -6,9 +6,10 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 FROM base AS build
-# git   — required by Nx for workspace operations (affected detection, hashing)
-# curl  — used by Rust toolchain installer and wasm-pack binary download
-RUN apk add --no-cache git curl
+# git        — required by Nx for workspace operations (affected detection, hashing)
+# curl       — used by Rust toolchain installer and wasm-pack binary download
+# build-base — provides cc/gcc linker required by Rust crate build scripts
+RUN apk add --no-cache git curl build-base
 
 # Install Rust toolchain (required by @decentralchain/crypto wasm build step)
 # --profile minimal skips rust-docs to keep image size down
