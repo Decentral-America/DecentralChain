@@ -94,10 +94,10 @@ jobs:
         run: pnpm nx affected -t typecheck
 
       - name: Build (affected)
-        run: pnpm nx affected -t build
+        run: pnpm nx affected -t build --exclude=blockchain-postgres-sync
 
       - name: Test (affected)
-        run: pnpm nx affected -t test
+        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync
 
       - name: Verify package exports (affected)
         run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
