@@ -41,12 +41,12 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Enforce version gates + compile + test
-        run: ./mvnw --batch-mode --no-transfer-progress verify -Dmaven.javadoc.skip=true
+        run: ./mvnw --batch-mode --no-transfer-progress verify -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
       - name: Upload Surefire reports on failure
         if: failure()
@@ -75,15 +75,15 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Run audit profile
         working-directory: packages/jvm/transactions
         run: |
           ./mvnw --batch-mode --no-transfer-progress verify -P audit \
-            -Ddependency-check.skip=true -Dmaven.javadoc.skip=true
+            -Ddependency-check.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
       - name: Upload SpotBugs report
         if: always()
@@ -112,13 +112,13 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Build package + generate CycloneDX SBOM
         working-directory: packages/jvm/transactions
-        run: ./mvnw --batch-mode --no-transfer-progress package -DskipTests -Dmaven.javadoc.skip=true
+        run: ./mvnw --batch-mode --no-transfer-progress package -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
