@@ -139,12 +139,12 @@ jobs:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve, build-and-push]
     # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
+    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
+    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
     if: >-
-      needs.resolve.outputs.network == 'mainnet' ||
-      github.event_name == 'workflow_dispatch'
-    # Infra secrets live in the infra repo's environments. Skip gracefully until
-    # servers and SSH keys are provisioned (they are checked by deploy-container).
-    continue-on-error: true
+      vars.INFRA_DEPLOY_ENABLED == 'true' &&
+      (needs.resolve.outputs.network == 'mainnet' ||
+       github.event_name == 'workflow_dispatch')
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@826b876d5f47f18bcee83fc6004ed1026340d239 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
