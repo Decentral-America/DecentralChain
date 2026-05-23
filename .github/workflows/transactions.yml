@@ -46,7 +46,7 @@ jobs:
           (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && mvn --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Enforce version gates + compile + test
-        run: ./mvnw --batch-mode --no-transfer-progress verify
+        run: ./mvnw --batch-mode --no-transfer-progress verify -Dmaven.javadoc.skip=true
 
       - name: Upload Surefire reports on failure
         if: failure()
@@ -83,7 +83,7 @@ jobs:
         working-directory: packages/jvm/transactions
         run: |
           ./mvnw --batch-mode --no-transfer-progress verify -P audit \
-            -Ddependency-check.skip=true
+            -Ddependency-check.skip=true -Dmaven.javadoc.skip=true
 
       - name: Upload SpotBugs report
         if: always()
@@ -118,7 +118,7 @@ jobs:
 
       - name: Build package + generate CycloneDX SBOM
         working-directory: packages/jvm/transactions
-        run: ./mvnw --batch-mode --no-transfer-progress package -DskipTests
+        run: ./mvnw --batch-mode --no-transfer-progress package -DskipTests -Dmaven.javadoc.skip=true
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
