@@ -14,10 +14,7 @@
   "generatorPublicKey": "BCuRAvrPqngYBKvJ3HKERz3nZZQRKEUMY81FJCEQPfNV",
   "stateHash": "HwLttQ7xwStDavkXbBtfaeUy3QoKJMbCbTkNEezivEL6",
   "finalizationVoting": {
-    "endorserIndexes": [
-      1,
-      3
-    ],
+    "endorserIndexes": [1, 3],
     "aggregatedEndorsementSignature": "xgHXeGVftVtfxEZhRrfC5Q3pb8DajoGnFed7PxDBC9JegLuW7e1jYjh9QXzU9AeDSB4dShS8id9oThaKwgG4wddevXbiBwenuVFdRXUM3hyqbkcgMCnDLexhZtWhxfrs7AU",
     "finalizedHeight": 14,
     "conflictEndorsements": [
