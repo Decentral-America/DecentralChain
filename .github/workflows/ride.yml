@@ -51,9 +51,13 @@ jobs:
 
       # ── Scala/sbt build ──────────────────────────────────────────────────
 
-      # Install curve25519 to local Maven cache (not yet published to Maven Central)
+      # Install local Maven artifacts not yet published to Maven Central
       - name: Install curve25519 to local Maven cache
         working-directory: packages/jvm/curve25519
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Install groth16 to local Maven cache
+        working-directory: packages/jvm/groth16
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Compile all subprojects (JVM + Scala.js cross-build)
@@ -107,6 +111,10 @@ jobs:
 
       - name: Install curve25519 to local Maven cache
         working-directory: packages/jvm/curve25519
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Install groth16 to local Maven cache
+        working-directory: packages/jvm/groth16
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Run bulletproof quality gate
