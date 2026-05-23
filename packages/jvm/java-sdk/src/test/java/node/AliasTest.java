@@ -3,10 +3,10 @@ package node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import base.BaseTestWithNodeInDocker;
+import io.decentralchain.sdk.exceptions.NodeException;
 import io.decentralchain.transactions.CreateAliasTransaction;
 import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.common.Alias;
-import io.decentralchain.sdk.exceptions.NodeException;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
