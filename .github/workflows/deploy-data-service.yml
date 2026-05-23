@@ -1,16 +1,12 @@
 name: Deploy Data Service
 
 on:
-  # Auto-trigger on push to main whenever the data-service or its deps change.
+  # Tag-based release trigger: deploy fires only when you explicitly push a
+  # versioned tag — never on branch merges. Ship when you're ready.
+  # Usage: git tag data-service/v1.2.3 && git push origin data-service/v1.2.3
   push:
-    branches: [main]
-    paths:
-      - 'apps/data-service/**'
-      - 'packages/sdk/assets-pairs-order/**'
-      - 'packages/sdk/data-entities/**'
-      - 'packages/sdk/parse-json-bignumber/**'
-      - 'pnpm-lock.yaml'
-      - 'tsconfig.base.json'
+    tags:
+      - 'data-service/v*.*.*'
 
   # Manual trigger: deploy to any network on demand.
   workflow_dispatch:
