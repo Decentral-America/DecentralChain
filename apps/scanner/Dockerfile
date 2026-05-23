@@ -6,8 +6,27 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 FROM base AS build
-# git is required by Nx for workspace operations (affected detection, hashing)
-RUN apk add --no-cache git
+# git   — required by Nx for workspace operations (affected detection, hashing)
+# curl  — used by Rust toolchain installer and wasm-pack binary download
+RUN apk add --no-cache git curl
+
+# Install Rust toolchain (required by @decentralchain/crypto wasm build step)
+# --profile minimal skips rust-docs to keep image size down
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+    | sh -s -- -y --profile minimal --no-modify-path
+ENV PATH="/root/.cargo/bin:$PATH"
+RUN rustup target add wasm32-unknown-unknown
+
+# Install wasm-pack v0.15.0 — pre-built musl binary (no cargo compile needed)
+# SHA-256 verified for x86_64-unknown-linux-musl build
+RUN curl -fsSL \
+    https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+    -o /tmp/wasm-pack.tar.gz && \
+    echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  /tmp/wasm-pack.tar.gz" | sha256sum --check && \
+    tar -xzf /tmp/wasm-pack.tar.gz -C /tmp && \
+    mv /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack && \
+    rm -rf /tmp/wasm-pack.tar.gz /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl
+
 WORKDIR /workspace
 
 # Copy only the workspace files needed to build scanner and its workspace deps.
