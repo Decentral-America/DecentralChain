@@ -29,6 +29,7 @@ COPY nx.json ./
 
 # Copy only the package.json files needed for workspace resolution first.
 # This lets pnpm install run before copying source, maximising cache hits.
+COPY packages/sdk/bignumber/package.json            packages/sdk/bignumber/
 COPY packages/sdk/assets-pairs-order/package.json packages/sdk/assets-pairs-order/
 COPY packages/sdk/data-entities/package.json       packages/sdk/data-entities/
 COPY packages/sdk/parse-json-bignumber/package.json packages/sdk/parse-json-bignumber/
@@ -39,6 +40,7 @@ COPY apps/data-service/package.json                apps/data-service/
 RUN git init && pnpm install --frozen-lockfile
 
 # --- Layer: source files ---
+COPY packages/sdk/bignumber/            packages/sdk/bignumber/
 COPY packages/sdk/assets-pairs-order/ packages/sdk/assets-pairs-order/
 COPY packages/sdk/data-entities/      packages/sdk/data-entities/
 COPY packages/sdk/parse-json-bignumber/ packages/sdk/parse-json-bignumber/
@@ -47,7 +49,8 @@ COPY apps/data-service/               apps/data-service/
 # --- Layer: build ---
 # Build workspace SDK packages first (data-service depends on them),
 # then build the data-service itself.
-RUN pnpm --filter @decentralchain/assets-pairs-order build && \
+RUN pnpm --filter @decentralchain/bignumber           build && \
+    pnpm --filter @decentralchain/assets-pairs-order build && \
     pnpm --filter @decentralchain/data-entities       build && \
     pnpm --filter @decentralchain/parse-json-bignumber build && \
     pnpm --filter @decentralchain/data-service        build
