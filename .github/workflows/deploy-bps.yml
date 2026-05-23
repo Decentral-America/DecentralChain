@@ -111,9 +111,9 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve, docker]
-    # Infra secrets live in the infra repo's environments. Skip gracefully until
-    # servers and SSH keys are provisioned (they are checked by deploy-container).
-    continue-on-error: true
+    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
+    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
+    if: vars.INFRA_DEPLOY_ENABLED == 'true'
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@826b876d5f47f18bcee83fc6004ed1026340d239 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
