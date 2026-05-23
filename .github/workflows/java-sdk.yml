@@ -43,10 +43,10 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
 
       - name: Enforce version gates + compile + test
         run: ./mvnw --batch-mode --no-transfer-progress verify -Dmaven.javadoc.skip=true
@@ -78,10 +78,10 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
 
       - name: Run audit profile
         working-directory: packages/jvm/java-sdk
@@ -118,10 +118,10 @@ jobs:
 
       - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true)
 
       - name: Build package + generate CycloneDX SBOM
         working-directory: packages/jvm/java-sdk
