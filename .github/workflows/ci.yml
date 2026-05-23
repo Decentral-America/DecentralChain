@@ -94,7 +94,8 @@ jobs:
         # blockchain-postgres-sync: needs protoc (not installed here; tested by bps.yml)
         # JVM packages (blst,crypto,curve25519,groth16,java-sdk,transactions): need
         # Java setup; each has a dedicated workflow (blst.yml, curve25519.yml, etc.)
-        run: pnpm nx affected -t build --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,transactions
+        # ride: needs sbt; has a dedicated ride.yml
+        run: pnpm nx affected -t build --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,ride,transactions
 
       - name: Typecheck (affected)
         # Build runs first so node-api-js dist/ files are on disk before typecheck.
@@ -102,7 +103,9 @@ jobs:
         run: pnpm nx affected -t typecheck --exclude=blst,crypto,curve25519,groth16,java-sdk,transactions
 
       - name: Test (affected)
-        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,transactions
+        # ride:test runs sbt test (needs Java/sbt — tested by ride.yml)
+        # @decentralchain/ride-js:test requires Scala.js fullLinkJS output (produced by ride.yml)
+        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride-js,ride,transactions
 
       - name: Verify package exports (affected)
         run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner

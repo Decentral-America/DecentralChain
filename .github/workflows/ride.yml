@@ -51,6 +51,32 @@ jobs:
 
       # ── Scala/sbt build ──────────────────────────────────────────────────
 
+      # ── Rust JNI native library (required by lang-tests/groth16 JVM tests) ──
+      # The groth16 JAR bundles libzwaves_jni.so at META-INF/native/linux64/amd64/.
+      # The placeholder .gitkeep is empty; the .so must be compiled and staged
+      # before ./mvnw install or the JAR won't contain it and sbt test will fail
+      # with UnsatisfiedLinkError.
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  # v2.9.1
+        with:
+          workspaces: packages/jvm/groth16
+
+      - name: Build zwaves_jni native library (linux/amd64)
+        working-directory: packages/jvm/groth16/zwaves_jni
+        run: cargo build --release --target x86_64-unknown-linux-gnu
+
+      - name: Stage native library into groth16 resources
+        run: |
+          rm -f packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
+          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzwaves_jni.so \
+             packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
+      # ─────────────────────────────────────────────────────────────────────────
+
       # Install local Maven artifacts not yet published to Maven Central
       - name: Install curve25519 to local Maven cache
         working-directory: packages/jvm/curve25519
@@ -123,6 +149,28 @@ jobs:
 
       - name: Install sbt launcher
         uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d  # v1.1.24
+
+      # ── Rust JNI native library (required by bulletproof → test → lang-tests) ─
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  # v2.9.1
+        with:
+          workspaces: packages/jvm/groth16
+
+      - name: Build zwaves_jni native library (linux/amd64)
+        working-directory: packages/jvm/groth16/zwaves_jni
+        run: cargo build --release --target x86_64-unknown-linux-gnu
+
+      - name: Stage native library into groth16 resources
+        run: |
+          rm -f packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
+          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzwaves_jni.so \
+             packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
+      # ─────────────────────────────────────────────────────────────────────────
 
       - name: Install curve25519 to local Maven cache
         working-directory: packages/jvm/curve25519
