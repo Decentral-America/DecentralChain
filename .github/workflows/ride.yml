@@ -60,6 +60,10 @@ jobs:
         working-directory: packages/jvm/groth16
         run: ./mvnw install -DskipTests --no-transfer-progress
 
+      - name: Install protobuf-schemas to local Maven cache
+        working-directory: packages/sdk/protobuf-serialization
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
       - name: Compile all subprojects (JVM + Scala.js cross-build)
         working-directory: packages/ride
         run: sbt --no-colors compile
@@ -115,6 +119,10 @@ jobs:
 
       - name: Install groth16 to local Maven cache
         working-directory: packages/jvm/groth16
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Install protobuf-schemas to local Maven cache
+        working-directory: packages/sdk/protobuf-serialization
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Run bulletproof quality gate
