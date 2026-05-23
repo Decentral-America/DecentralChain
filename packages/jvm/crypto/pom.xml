@@ -72,7 +72,7 @@
     </dependency>
     <dependency>
       <groupId>io.decentralchain</groupId>
-      <artifactId>curve25519-java</artifactId>
+      <artifactId>curve25519</artifactId>
       <version>${curve25519-java.version}</version>
     </dependency>
     <dependency>
