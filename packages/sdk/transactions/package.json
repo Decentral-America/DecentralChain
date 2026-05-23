@@ -12,6 +12,7 @@
   "description": "Build and sign (multi-sign) transactions for the DecentralChain blockchain.",
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
+    "@decentralchain/node-api-js": "workspace:*",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
