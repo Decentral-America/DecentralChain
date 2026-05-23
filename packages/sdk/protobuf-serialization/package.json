@@ -60,6 +60,37 @@
   "main": "./dist/index.mjs",
   "name": "@decentralchain/protobuf-serialization",
   "nx": {
+    "namedInputs": {
+      "tsInputs": [
+        "{projectRoot}/**/*",
+        "!{projectRoot}/pom.xml",
+        "!{projectRoot}/mvnw",
+        "!{projectRoot}/.mvn/**",
+        "!{projectRoot}/target/**",
+        "!{projectRoot}/src/main/java/**",
+        "!{projectRoot}/src/main/proto/**",
+        "!{projectRoot}/src/test/**"
+      ]
+    },
+    "targets": {
+      "build": {
+        "inputs": [
+          "tsInputs",
+          "^tsInputs"
+        ]
+      },
+      "typecheck": {
+        "inputs": [
+          "tsInputs",
+          "^tsInputs"
+        ]
+      },
+      "biome-lint": {
+        "inputs": [
+          "tsInputs"
+        ]
+      }
+    },
     "tags": [
       "scope:sdk",
       "layer:0"

@@ -6,29 +6,29 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/jvm/curve25519",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests"
-      }
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/jvm/curve25519",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test"
-      }
-    },
-    "verify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "packages/jvm/curve25519",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify"
+        "command": "./mvnw --batch-mode package -DskipTests",
+        "cwd": "packages/jvm/curve25519"
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/jvm/curve25519",
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean"
+        "command": "./mvnw --batch-mode clean",
+        "cwd": "packages/jvm/curve25519"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw --batch-mode test",
+        "cwd": "packages/jvm/curve25519"
+      }
+    },
+    "verify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw --batch-mode verify",
+        "cwd": "packages/jvm/curve25519"
       }
     }
   }
