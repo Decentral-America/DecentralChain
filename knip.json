@@ -107,38 +107,38 @@
         // ── BLOCKED ON DCC-178 (backend deployment) ───────────────────────────
         // These modules call api.decentralchain.io which is not yet live.
         // Wire once DCC-178 (infra deployment) is complete.
-        "src/api/**",                               // REST client layer (axios + auth interceptors)
-        "src/lib/api.ts",                           // low-level fetch wrapper consumed by api/
-        "src/services/api/**",                      // service factories wrapping the REST client
-        "src/services/auth/**",                     // auth API (login, refresh, logout)
-        "src/services/gateways/**",                 // exchange gateway integrations (DCC, SEPA)
+        "src/api/**", // REST client layer (axios + auth interceptors)
+        "src/lib/api.ts", // low-level fetch wrapper consumed by api/
+        "src/services/api/**", // service factories wrapping the REST client
+        "src/services/auth/**", // auth API (login, refresh, logout)
+        "src/services/gateways/**", // exchange gateway integrations (DCC, SEPA)
         // NOTE: services/index.ts re-exports multiAccount — but AccountManagerPage imports
         // multiAccount DIRECTLY from @/services/multiAccount (not via barrel), so knip
         // traces multiAccount.ts through the direct path regardless of this ignore.
         // Always import services directly (never via barrel) to preserve tree-shaking.
-        "src/services/index.ts",                    // services barrel (aggregates above)
-        "src/services/storage/**",                  // encrypted remote-storage service
-        "src/services/websocket/**",                // WebSocket client for price/order feeds
-        "src/features/dex/useDexWebSocket.ts",      // DEX WS hook (depends on websocket/)
-        "src/features/dex/useMarketData.ts",        // DEX market-data hook (depends on api/)
+        "src/services/index.ts", // services barrel (aggregates above)
+        "src/services/storage/**", // encrypted remote-storage service
+        "src/services/websocket/**", // WebSocket client for price/order feeds
+        "src/features/dex/useDexWebSocket.ts", // DEX WS hook (depends on websocket/)
+        "src/features/dex/useMarketData.ts", // DEX market-data hook (depends on api/)
 
         // ── BUILD-AHEAD: UI features not yet wired to routing ─────────────────
         // Fully implemented but no page or component imports them yet.
         // Wire in subsequent sprints as the routing layer expands.
-        "src/features/advanced/**",                 // advanced tx forms: alias, mass-transfer, set-script, data-tx
-        "src/features/assets/**",                   // token management: issue, burn, reissue, asset-info
-        "src/features/auth/AccountSelectScreen.tsx",// account-selection screen shown after password entry
-        "src/features/auth/AccountSwitcher.tsx",    // quick account-switch widget (header/sidebar)
-        "src/features/auth/index.ts",               // features/auth barrel (re-export only)
+        "src/features/advanced/**", // advanced tx forms: alias, mass-transfer, set-script, data-tx
+        "src/features/assets/**", // token management: issue, burn, reissue, asset-info
+        "src/features/auth/AccountSelectScreen.tsx", // account-selection screen shown after password entry
+        "src/features/auth/AccountSwitcher.tsx", // quick account-switch widget (header/sidebar)
+        "src/features/auth/index.ts", // features/auth barrel (re-export only)
         "src/features/auth/PasswordProtection.tsx", // encrypt-seed-with-password step in onboarding
-        "src/features/dex/index.ts",                // features/dex barrel (re-export only)
-        "src/features/sessions/**",                 // session context: auto-lock, cross-tab sync
-        "src/features/settings/index.ts",           // features/settings barrel (re-export only)
-        "src/features/wallet/AssetInfoModal.tsx",   // asset detail drawer
-        "src/features/wallet/BurnAssetModal.tsx",   // burn-token action modal
-        "src/features/wallet/DepositAssetModal.tsx",// deposit-asset modal
-        "src/features/wallet/ReissueAssetModal.tsx",// reissue-token modal
-        "src/features/wallet/SepaAssetModal.tsx",   // SEPA fiat on-ramp modal
+        "src/features/dex/index.ts", // features/dex barrel (re-export only)
+        "src/features/sessions/**", // session context: auto-lock, cross-tab sync
+        "src/features/settings/index.ts", // features/settings barrel (re-export only)
+        "src/features/wallet/AssetInfoModal.tsx", // asset detail drawer
+        "src/features/wallet/BurnAssetModal.tsx", // burn-token action modal
+        "src/features/wallet/DepositAssetModal.tsx", // deposit-asset modal
+        "src/features/wallet/ReissueAssetModal.tsx", // reissue-token modal
+        "src/features/wallet/SepaAssetModal.tsx", // SEPA fiat on-ramp modal
 
         // ── BUILD-AHEAD: UI component library ────────────────────────────────
         // Atoms, organisms, display, and chart components built ahead of the pages
@@ -163,8 +163,8 @@
         "src/components/forms/**",
         "src/components/index.ts",
         "src/components/landing/TestimonialsStrip.tsx",
-        "src/components/layout/Header.tsx",         // alternative header (MainLayout has its own built-in)
-        "src/components/layout/Sidebar.tsx",        // alternative sidebar (MainLayout has its own built-in)
+        "src/components/layout/Header.tsx", // alternative header (MainLayout has its own built-in)
+        "src/components/layout/Sidebar.tsx", // alternative sidebar (MainLayout has its own built-in)
         "src/components/layout/index.ts",
         "src/components/modals/AlertModal.tsx",
         "src/components/modals/index.ts",
@@ -194,12 +194,12 @@
         "src/hooks/useTradingPairs.ts",
 
         // ── BUILD-AHEAD: contexts, lib utilities, stores ──────────────────────
-        "src/contexts/EventContext.tsx",            // event-bus context (provider not yet mounted)
-        "src/lib/errorHandler.ts",                  // global unhandled-error util
-        "src/lib/index.ts",                         // lib barrel (aggregates forms + react-query + sanitize)
-        "src/lib/memoUtils.ts",                     // memoization helpers
-        "src/lib/secureStorage.ts",                 // encrypted localStorage wrapper
-        "src/stores/**",                            // Zustand stores (DEX order book, etc.)
+        "src/contexts/EventContext.tsx", // event-bus context (provider not yet mounted)
+        "src/lib/errorHandler.ts", // global unhandled-error util
+        "src/lib/index.ts", // lib barrel (aggregates forms + react-query + sanitize)
+        "src/lib/memoUtils.ts", // memoization helpers
+        "src/lib/secureStorage.ts", // encrypted localStorage wrapper
+        "src/stores/**", // Zustand stores (DEX order book, etc.)
 
         // ── BUILD-AHEAD: style sub-modules ────────────────────────────────────
         // GlobalStyles.ts and themes.ts are already connected via styles/index.ts → App.tsx.
