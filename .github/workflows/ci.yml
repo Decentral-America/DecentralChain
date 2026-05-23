@@ -90,14 +90,19 @@ jobs:
       - name: Biome lint (affected)
         run: pnpm nx affected -t biome-lint
 
-      - name: Typecheck (affected)
-        run: pnpm nx affected -t typecheck
-
       - name: Build (affected)
-        run: pnpm nx affected -t build --exclude=blockchain-postgres-sync
+        # blockchain-postgres-sync: needs protoc (not installed here; tested by bps.yml)
+        # JVM packages (blst,crypto,curve25519,groth16,java-sdk,transactions): need
+        # Java setup; each has a dedicated workflow (blst.yml, curve25519.yml, etc.)
+        run: pnpm nx affected -t build --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,transactions
+
+      - name: Typecheck (affected)
+        # Build runs first so node-api-js dist/ files are on disk before typecheck.
+        # Same JVM exclusions: no typecheck targets defined for those packages.
+        run: pnpm nx affected -t typecheck --exclude=blst,crypto,curve25519,groth16,java-sdk,transactions
 
       - name: Test (affected)
-        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync
+        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,transactions
 
       - name: Verify package exports (affected)
         run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner

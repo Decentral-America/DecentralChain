@@ -6,35 +6,35 @@
     "audit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java mvn --batch-mode verify -P audit -Ddependency-check.skip=true",
+        "command": "mvn --batch-mode verify -P audit -Ddependency-check.skip=true",
         "cwd": "packages/jvm/crypto"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java mvn --batch-mode package -DskipTests",
+        "command": "mvn --batch-mode package -DskipTests",
         "cwd": "packages/jvm/crypto"
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java mvn --batch-mode clean",
+        "command": "mvn --batch-mode clean",
         "cwd": "packages/jvm/crypto"
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java mvn --batch-mode test",
+        "command": "mvn --batch-mode test",
         "cwd": "packages/jvm/crypto"
       }
     },
     "verify": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java mvn --batch-mode verify",
+        "command": "mvn --batch-mode verify",
         "cwd": "packages/jvm/crypto"
       }
     }
