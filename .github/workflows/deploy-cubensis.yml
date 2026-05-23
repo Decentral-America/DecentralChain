@@ -101,6 +101,29 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # ── Rust / WASM toolchain (required by packages/sdk/crypto wasm-pack build) ──
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        with:
+          workspaces: packages/sdk/crypto
+          cache-on-failure: true
+
+      - name: Install wasm-pack v0.15.0
+        run: |
+          curl -fsSL \
+            https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+            -o /tmp/wasm-pack.tar.gz
+          echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  /tmp/wasm-pack.tar.gz" | sha256sum --check
+          tar -xzf /tmp/wasm-pack.tar.gz -C /tmp
+          mv /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
+          wasm-pack --version
+
       # Build workspace SDK packages first — cubensis-connect depends on them
       - name: Build SDK packages
         run: pnpm --filter './packages/**' run build
