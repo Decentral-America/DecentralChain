@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.info;
 
+import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.transactions.CommitToGenerationTransaction;
 import io.decentralchain.transactions.Transaction;
-import io.decentralchain.sdk.ApplicationStatus;
 
 public class CommitToGenerationTransactionInfo extends TransactionInfo {
   public CommitToGenerationTransactionInfo(

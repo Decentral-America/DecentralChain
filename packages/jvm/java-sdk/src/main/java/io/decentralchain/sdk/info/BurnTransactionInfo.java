@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.BurnTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
+import io.decentralchain.transactions.BurnTransaction;
 
 public class BurnTransactionInfo extends TransactionInfo {
 
