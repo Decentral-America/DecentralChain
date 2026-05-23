@@ -1,6 +1,6 @@
 package io.decentralchain.transactions.account;
 
-import com.decentralchain.crypto.Bytes;
+import io.decentralchain.crypto.Bytes;
 import io.decentralchain.transactions.WavesConfig;
 import org.junit.jupiter.api.Test;
 
