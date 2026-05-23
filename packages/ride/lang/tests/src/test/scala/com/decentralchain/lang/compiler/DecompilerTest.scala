@@ -19,8 +19,8 @@ import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
 import com.decentralchain.lang.v1.parser.BinaryOperation.NE_OP
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
-import com.decentralchain.lang.v1.{CTX, FunctionHeader, compiler}
-import com.decentralchain.test.{PropSpec, produce}
+import com.decentralchain.lang.v1.{compiler, CTX, FunctionHeader}
+import com.decentralchain.test.{produce, PropSpec}
 import io.decentralchain.protobuf.dapp.DAppMeta
 import org.scalatest.Assertion
 

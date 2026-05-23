@@ -3,7 +3,7 @@ package com.decentralchain.lang.v1.evaluator.ctx
 import cats.instances.either.*
 import cats.syntax.applicative.*
 import cats.syntax.flatMap.*
-import cats.{Eval, Monad, ~>}
+import cats.{~>, Eval, Monad}
 import com.decentralchain.lang.v1.compiler.Terms.EVALUATED
 import com.decentralchain.lang.v1.evaluator.LogCallback
 import com.decentralchain.lang.{ExecutionError, TrampolinedExecResult}

@@ -20,7 +20,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.*
 import com.decentralchain.lang.v1.evaluator.{ContextfulUserFunction, ContextfulVal}
 import com.decentralchain.lang.v1.parser.BinaryOperation
 import com.decentralchain.lang.v1.parser.BinaryOperation.*
-import com.decentralchain.lang.v1.{BaseGlobal, CTX, FunctionHeader, compiler}
+import com.decentralchain.lang.v1.{compiler, BaseGlobal, CTX, FunctionHeader}
 
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.charset.{MalformedInputException, StandardCharsets}
