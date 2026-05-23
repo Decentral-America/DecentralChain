@@ -37,6 +37,12 @@ jobs:
           distribution: temurin
           cache: maven
 
+      - name: Install JVM prerequisites (curve25519, blst, crypto)
+        run: |
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+
       - name: Enforce version gates + compile + test
         run: ./mvnw --batch-mode --no-transfer-progress verify
 
@@ -64,6 +70,12 @@ jobs:
           java-version: '25'
           distribution: temurin
           cache: maven
+
+      - name: Install JVM prerequisites (curve25519, blst, crypto)
+        run: |
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Run audit profile
         working-directory: packages/jvm/transactions
@@ -95,6 +107,12 @@ jobs:
           java-version: '25'
           distribution: temurin
           cache: maven
+
+      - name: Install JVM prerequisites (curve25519, blst, crypto)
+        run: |
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519 && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst        && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto      && ./mvnw --batch-mode --no-transfer-progress install -DskipTests)
 
       - name: Build package + generate CycloneDX SBOM
         working-directory: packages/jvm/transactions
