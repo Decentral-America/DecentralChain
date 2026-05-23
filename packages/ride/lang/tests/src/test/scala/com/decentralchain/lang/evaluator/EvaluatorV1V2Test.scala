@@ -29,7 +29,7 @@ import com.decentralchain.lang.v1.evaluator.{Contextful, ContextfulVal, Evaluato
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.{CTX, ContractLimits, FunctionHeader}
-import com.decentralchain.lang.{toError, Common, ExecutionError, Global}
+import com.decentralchain.lang.{Common, ExecutionError, Global, toError}
 import com.decentralchain.test.*
 import com.google.common.io.BaseEncoding
 import org.scalacheck.{Arbitrary, Gen}
