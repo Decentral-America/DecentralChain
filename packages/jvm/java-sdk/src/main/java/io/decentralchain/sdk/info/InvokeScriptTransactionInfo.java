@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.InvokeScriptTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.StateChanges;
+import io.decentralchain.transactions.InvokeScriptTransaction;
 import java.util.Objects;
 
 public class InvokeScriptTransactionInfo extends TransactionInfo {
