@@ -112,7 +112,7 @@ jobs:
       # Produces packages/ride/lang/js/dist/lang.js + packages/ride/repl/js/dist/repl.js
       - name: Build Scala.js full-link bundles
         working-directory: packages/ride
-        run: sbt --no-colors 'project lang-js; fullLinkJS; project repl-js; fullLinkJS'
+        run: sbt --no-colors 'project langJS; fullLinkJS; project replJS; fullLinkJS'
 
       # ── TypeScript wrapper (@decentralchain/ride-js) ─────────────────────
 
