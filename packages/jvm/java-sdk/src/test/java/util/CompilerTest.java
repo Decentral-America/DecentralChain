@@ -1,6 +1,6 @@
 package util;
 
-import com.decentralchain.transactions.common.Base64String;
+import io.decentralchain.transactions.common.Base64String;
 import io.decentralchain.sdk.ScriptInfo;
 import io.decentralchain.sdk.exceptions.CompilationException;
 import io.decentralchain.sdk.util.CompilationUtil;

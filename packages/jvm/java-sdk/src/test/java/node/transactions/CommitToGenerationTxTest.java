@@ -5,8 +5,8 @@ import static node.mock.util.MockHttpRsUtil.mockHttpClient;
 import static node.mock.util.MockHttpRsUtil.mockTransactionInfoRs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.decentralchain.transactions.CommitToGenerationTransaction;
-import com.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.CommitToGenerationTransaction;
+import io.decentralchain.transactions.common.Id;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.Profile;
 import io.decentralchain.sdk.exceptions.NodeException;

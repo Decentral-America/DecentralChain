@@ -2,9 +2,9 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.account.BlsSignature;
-import com.decentralchain.transactions.common.Base58String;
-import com.decentralchain.transactions.common.Id;
+import io.decentralchain.transactions.account.BlsSignature;
+import io.decentralchain.transactions.common.Base58String;
+import io.decentralchain.transactions.common.Id;
 import java.util.Objects;
 
 public class ConflictEndorsement {

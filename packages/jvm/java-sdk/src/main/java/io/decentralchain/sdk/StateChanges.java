@@ -2,7 +2,7 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.data.DataEntry;
+import io.decentralchain.transactions.data.DataEntry;
 import io.decentralchain.sdk.actions.*;
 import io.decentralchain.sdk.actions.Error;
 import java.util.ArrayList;

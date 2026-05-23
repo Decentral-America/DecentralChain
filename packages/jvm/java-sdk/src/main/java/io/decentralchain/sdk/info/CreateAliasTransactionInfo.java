@@ -1,6 +1,6 @@
 package io.decentralchain.sdk.info;
 
-import com.decentralchain.transactions.CreateAliasTransaction;
+import io.decentralchain.transactions.CreateAliasTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 
 public class CreateAliasTransactionInfo extends TransactionInfo {

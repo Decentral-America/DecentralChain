@@ -1,10 +1,10 @@
 package io.decentralchain.sdk.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.decentralchain.transactions.Transaction;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.common.Alias;
-import com.decentralchain.transactions.data.DataEntry;
+import io.decentralchain.transactions.Transaction;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.common.Alias;
+import io.decentralchain.transactions.data.DataEntry;
 import io.decentralchain.sdk.*;
 import io.decentralchain.sdk.actions.EthRpcResponse;
 import io.decentralchain.sdk.info.TransactionInfo;

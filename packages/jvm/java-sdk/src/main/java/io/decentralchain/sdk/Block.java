@@ -2,9 +2,9 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.account.Address;
-import com.decentralchain.transactions.account.PublicKey;
-import com.decentralchain.transactions.common.Base58String;
+import io.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.PublicKey;
+import io.decentralchain.transactions.common.Base58String;
 import io.decentralchain.sdk.info.TransactionWithStatus;
 import java.util.ArrayList;
 import java.util.Collections;
