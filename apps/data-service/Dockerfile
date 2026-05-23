@@ -21,45 +21,27 @@ WORKDIR /workspace
 # Enable Corepack so pnpm version is driven by package.json#packageManager
 RUN corepack enable
 
-# --- Layer: workspace manifests (changes rarely → cached layer) ---
+# Copy workspace manifests and all package sources.
+# Copying all packages (not just direct deps) avoids fragile enumeration of
+# transitive workspace dependencies and mirrors the scanner Dockerfile pattern.
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY tsconfig.base.json ./
-COPY biome.json ./
-COPY nx.json ./
+COPY tsconfig.base.json biome.json nx.json .node-version ./
+COPY scripts ./scripts
+COPY tools ./tools
+COPY packages ./packages
+COPY apps/data-service ./apps/data-service
 
-# Copy only the package.json files needed for workspace resolution first.
-# This lets pnpm install run before copying source, maximising cache hits.
-COPY packages/sdk/bignumber/package.json            packages/sdk/bignumber/
-COPY packages/sdk/assets-pairs-order/package.json packages/sdk/assets-pairs-order/
-COPY packages/sdk/data-entities/package.json       packages/sdk/data-entities/
-COPY packages/sdk/parse-json-bignumber/package.json packages/sdk/parse-json-bignumber/
-COPY apps/data-service/package.json                apps/data-service/
-
-# --- Layer: dependency install ---
 # git init is required because pnpm prepare scripts (lefthook) call git rev-parse
-RUN git init && pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
 
-# --- Layer: source files ---
-COPY packages/sdk/bignumber/            packages/sdk/bignumber/
-COPY packages/sdk/assets-pairs-order/ packages/sdk/assets-pairs-order/
-COPY packages/sdk/data-entities/      packages/sdk/data-entities/
-COPY packages/sdk/parse-json-bignumber/ packages/sdk/parse-json-bignumber/
-COPY apps/data-service/               apps/data-service/
+# Build the data-service and all its workspace dependencies via Nx task graph
+RUN pnpm nx run @decentralchain/data-service:build --skip-nx-cache
 
-# --- Layer: build ---
-# Build workspace SDK packages first (data-service depends on them),
-# then build the data-service itself.
-RUN pnpm --filter @decentralchain/bignumber           build && \
-    pnpm --filter @decentralchain/assets-pairs-order build && \
-    pnpm --filter @decentralchain/data-entities       build && \
-    pnpm --filter @decentralchain/parse-json-bignumber build && \
-    pnpm --filter @decentralchain/data-service        build
-
-# --- Layer: deploy ---
 # `pnpm deploy --prod` creates a self-contained directory with:
 #   - Production node_modules (no devDependencies)
 #   - Workspace dependencies resolved and inlined
 #   - The package directory contents (including dist/)
+# --legacy bypasses ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE (pnpm v10+ requirement)
 RUN pnpm --filter @decentralchain/data-service deploy --legacy --prod /app/standalone
 
 # -----------------------------------------------------------------------------
