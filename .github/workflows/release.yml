@@ -56,41 +56,41 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Security audit
-        run: pnpm audit --audit-level=high
+        run: pnpm audit --audit-level=moderate
 
       - name: Biome format
-        run: npx biome format .
+        run: pnpm exec biome format .
 
       - name: Biome lint
-        run: npx nx run-many -t biome-lint --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t biome-lint --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Typecheck
-        run: npx nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Build
-        run: npx nx run-many -t build --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t build --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Test
-        run: npx nx run-many -t test --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t test --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Verify package exports
-        run: npx nx run-many -t check:exports --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t check:exports --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Verify package publishing
-        run: npx nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts' --exclude=ts-types
+        run: pnpm nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts' --exclude=ts-types
 
       - name: Verify bundle size
-        run: npx nx run-many -t check:size --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t check:size --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Version
-        run: npx nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+        run: pnpm nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
 
       - name: Changelog
-        run: npx nx release changelog --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+        run: pnpm nx release changelog --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
 
       - name: Publish
         if: ${{ !inputs.dry-run }}
-        run: npx nx release publish
+        run: pnpm nx release publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
