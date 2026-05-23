@@ -5,10 +5,14 @@ on:
     branches: [main, dev]
     paths:
       - 'packages/jvm/java-sdk/**'
+      - 'packages/jvm/transactions/**'
+      - 'packages/jvm/crypto/**'
       - '.github/workflows/java-sdk.yml'
   pull_request:
     paths:
       - 'packages/jvm/java-sdk/**'
+      - 'packages/jvm/transactions/**'
+      - 'packages/jvm/crypto/**'
       - '.github/workflows/java-sdk.yml'
 
 defaults:
