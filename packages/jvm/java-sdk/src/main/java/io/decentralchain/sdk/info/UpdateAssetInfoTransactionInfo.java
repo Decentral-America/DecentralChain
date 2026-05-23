@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.UpdateAssetInfoTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
+import io.decentralchain.transactions.UpdateAssetInfoTransaction;
 
 public class UpdateAssetInfoTransactionInfo extends TransactionInfo {
 

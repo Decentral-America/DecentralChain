@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.LeaseTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.LeaseStatus;
+import io.decentralchain.transactions.LeaseTransaction;
 import java.util.Objects;
 
 public class LeaseTransactionInfo extends TransactionInfo {

@@ -2,10 +2,10 @@ package io.decentralchain.sdk.actions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.decentralchain.sdk.Common;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.AssetId;
 import io.decentralchain.transactions.common.Recipient;
-import io.decentralchain.sdk.Common;
 import java.util.Objects;
 
 public class ScriptTransfer {

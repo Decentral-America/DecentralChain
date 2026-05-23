@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.SetScriptTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
+import io.decentralchain.transactions.SetScriptTransaction;
 
 public class SetScriptTransactionInfo extends TransactionInfo {
 

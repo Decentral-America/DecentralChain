@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.info;
 
+import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.transactions.GenesisTransaction;
 import io.decentralchain.transactions.Transaction;
-import io.decentralchain.sdk.ApplicationStatus;
 import java.util.Objects;
 
 public abstract class TransactionInfo extends TransactionWithStatus {

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.decentralchain.transactions.*;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.info.*;
+import io.decentralchain.transactions.*;
 import java.io.IOException;
 
 public class TransactionWithStatusDeser extends JsonDeserializer<TransactionWithStatus> {

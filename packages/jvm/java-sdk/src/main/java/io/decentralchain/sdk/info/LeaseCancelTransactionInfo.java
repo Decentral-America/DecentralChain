@@ -1,8 +1,8 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.LeaseCancelTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
 import io.decentralchain.sdk.LeaseInfo;
+import io.decentralchain.transactions.LeaseCancelTransaction;
 
 public class LeaseCancelTransactionInfo extends TransactionInfo {
 
