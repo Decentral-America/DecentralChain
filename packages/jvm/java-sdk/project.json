@@ -6,35 +6,35 @@
     "audit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true",
+        "command": "./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true",
         "cwd": "packages/jvm/java-sdk"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode package -DskipTests",
+        "command": "./mvnw --batch-mode package -DskipTests",
         "cwd": "packages/jvm/java-sdk"
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode clean",
+        "command": "./mvnw --batch-mode clean",
         "cwd": "packages/jvm/java-sdk"
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode test",
+        "command": "./mvnw --batch-mode test",
         "cwd": "packages/jvm/java-sdk"
       }
     },
     "verify": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=/opt/homebrew/opt/java ./mvnw --batch-mode verify",
+        "command": "./mvnw --batch-mode verify",
         "cwd": "packages/jvm/java-sdk"
       }
     }
