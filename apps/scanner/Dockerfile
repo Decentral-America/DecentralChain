@@ -35,6 +35,9 @@ COPY packages ./packages
 COPY apps/scanner ./apps/scanner
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
+# React Router v7 generates +types/ virtual modules into .react-router/types/ (gitignored).
+# Run typegen before the build so Rolldown can resolve ./+types/* imports.
+RUN cd apps/scanner && pnpm react-router typegen
 RUN pnpm nx run scanner:build --skip-nx-cache
 RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
     && cp -R apps/scanner/build /prod/scanner/build
