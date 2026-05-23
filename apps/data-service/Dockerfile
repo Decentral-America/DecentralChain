@@ -35,7 +35,7 @@ COPY apps/data-service ./apps/data-service
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
 
 # Build the data-service and all its workspace dependencies via Nx task graph
-RUN pnpm nx run @decentralchain/data-service:build --skip-nx-cache
+RUN pnpm nx run data-service:build --skip-nx-cache
 
 # `pnpm deploy --prod` creates a self-contained directory with:
 #   - Production node_modules (no devDependencies)
