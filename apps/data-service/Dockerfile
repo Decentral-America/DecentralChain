@@ -35,7 +35,8 @@ COPY packages/sdk/parse-json-bignumber/package.json packages/sdk/parse-json-bign
 COPY apps/data-service/package.json                apps/data-service/
 
 # --- Layer: dependency install ---
-RUN pnpm install --frozen-lockfile
+# git init is required because pnpm prepare scripts (lefthook) call git rev-parse
+RUN git init && pnpm install --frozen-lockfile
 
 # --- Layer: source files ---
 COPY packages/sdk/assets-pairs-order/ packages/sdk/assets-pairs-order/

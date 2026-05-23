@@ -15,6 +15,7 @@ RUN apt-get update && \
 COPY Cargo.toml Cargo.lock ./
 COPY build.rs ./
 COPY proto/ ./proto/
+COPY migrations/ ./migrations/
 # Create a stub lib so `cargo build` resolves deps without compiling our src
 RUN mkdir -p src/bin src/lib && \
     echo 'fn main() {}' > src/bin/consumer.rs && \
