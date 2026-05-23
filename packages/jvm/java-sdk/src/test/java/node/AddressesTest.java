@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import base.BaseTestWithNodeInDocker;
 import io.decentralchain.crypto.Bytes;
+import io.decentralchain.sdk.*;
+import io.decentralchain.sdk.exceptions.NodeException;
 import io.decentralchain.transactions.DataTransaction;
 import io.decentralchain.transactions.LeaseTransaction;
 import io.decentralchain.transactions.SetScriptTransaction;
@@ -15,8 +17,6 @@ import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.Base64String;
 import io.decentralchain.transactions.data.*;
-import io.decentralchain.sdk.*;
-import io.decentralchain.sdk.exceptions.NodeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
