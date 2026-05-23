@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.info;
 
-import io.decentralchain.transactions.SponsorFeeTransaction;
 import io.decentralchain.sdk.ApplicationStatus;
+import io.decentralchain.transactions.SponsorFeeTransaction;
 
 public class SponsorFeeTransactionInfo extends TransactionInfo {
 
