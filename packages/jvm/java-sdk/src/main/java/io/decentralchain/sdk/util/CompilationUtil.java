@@ -2,9 +2,9 @@ package io.decentralchain.sdk.util;
 
 import com.wavesplatform.lang.CompileAndParseResult;
 import com.wavesplatform.lang.Lang;
-import io.decentralchain.transactions.common.Base64String;
 import io.decentralchain.sdk.ScriptInfo;
 import io.decentralchain.sdk.exceptions.CompilationException;
+import io.decentralchain.transactions.common.Base64String;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
