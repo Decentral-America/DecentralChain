@@ -2,7 +2,7 @@ package io.decentralchain.sdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.decentralchain.transactions.account.Address;
+import io.decentralchain.transactions.account.Address;
 import java.util.Objects;
 
 public class Balance {
