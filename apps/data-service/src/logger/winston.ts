@@ -1,22 +1,16 @@
-import winston from 'winston';
-import { stringify } from './utils';
+import pino from 'pino';
 
-const {
-  format: { combine, timestamp, printf },
-} = winston;
+const isDev = process.env['NODE_ENV'] === 'development';
 
-const myFormat = printf(stringify);
-const JSONFormat = combine(timestamp(), myFormat);
-
-const consoleTransport = new winston.transports.Console({
-  format: JSONFormat,
-});
-
-// Initialization
-const createLogger = (options: any) =>
-  winston.createLogger({
-    level: options.logLevel,
-    transports: [consoleTransport],
+const createLogger = (options: { logLevel: string }) =>
+  pino({
+    level: options.logLevel ?? 'info',
+    ...(isDev && {
+      transport: {
+        options: { colorize: true, translateTime: 'SYS:iso' },
+        target: 'pino-pretty',
+      },
+    }),
   });
 
 export default createLogger;
