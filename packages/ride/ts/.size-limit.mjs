@@ -13,11 +13,7 @@ export default [
     limit: '10 kB',
     modifyEsbuildConfig(config) {
       // biome-ignore lint/security/noSecrets: tsconfigRaw is not a secret
-      return {
-        ...config,
-        platform: 'node',
-        tsconfigRaw: '{"compilerOptions":{"target":"ES2024"}}',
-      };
+      return { ...config, platform: 'node', tsconfigRaw: '{"compilerOptions":{"target":"ES2024"}}' };
     },
     path: './dist/index.mjs',
   },
