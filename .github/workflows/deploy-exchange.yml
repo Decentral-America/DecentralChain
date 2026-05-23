@@ -196,6 +196,10 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Pre-install Wrangler (pnpm 11 requires -w flag for workspace-root installs)
+        if: steps.cf-check.outputs.configured == 'true'
+        run: pnpm add -w wrangler@4.93.1
+
       - name: Deploy to Cloudflare Pages
         if: steps.cf-check.outputs.configured == 'true'
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
