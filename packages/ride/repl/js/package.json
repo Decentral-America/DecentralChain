@@ -5,7 +5,9 @@
   "main": "dist/repl.js",
   "module": "dist/repl.js",
   "browser": "dist/repl.js",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public",
