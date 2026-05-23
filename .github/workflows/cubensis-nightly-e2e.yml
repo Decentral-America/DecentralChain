@@ -1,9 +1,13 @@
-name: Cubensis Connect — Nightly E2E
+name: Cubensis Connect — E2E
 
 on:
-  schedule:
-    # 02:00 UTC every day — runs against main so failures always map to a committed state.
-    - cron: '0 2 * * *'
+  # Tag-based release gate: E2E runs on every Cubensis release tag before the
+  # extension reaches the store. Consistent with all other deploy workflows.
+  # Usage: git tag cubensis/v1.2.3 && git push origin cubensis/v1.2.3
+  push:
+    tags:
+      - 'cubensis/v*.*.*'
+
   workflow_dispatch:
     # Allow manual triggering from the Actions UI for on-demand E2E runs.
 
