@@ -1,11 +1,12 @@
 name: Deploy BPS
 
 on:
-  # Auto-trigger on push to main whenever bps changes.
+  # Tag-based release trigger: deploy fires only when you explicitly push a
+  # versioned tag — never on branch merges. Ship when you're ready.
+  # Usage: git tag bps/v1.2.3 && git push origin bps/v1.2.3
   push:
-    branches: [main]
-    paths:
-      - 'apps/blockchain-postgres-sync/**'
+    tags:
+      - 'bps/v*.*.*'
 
   # Manual dispatch: deploy to stagenet or testnet on demand.
   workflow_dispatch:

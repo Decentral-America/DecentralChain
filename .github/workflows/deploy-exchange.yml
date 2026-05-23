@@ -1,14 +1,12 @@
 name: Deploy Exchange
 
 on:
-  # Auto-trigger on push to main: builds and deploys the mainnet SPA.
+  # Tag-based release trigger: deploy fires only when you explicitly push a
+  # versioned tag — never on branch merges. Ship when you're ready.
+  # Usage: git tag exchange/v1.2.3 && git push origin exchange/v1.2.3
   push:
-    branches: [main]
-    paths:
-      - 'apps/exchange/**'
-      - 'packages/**'
-      - 'pnpm-lock.yaml'
-      - 'tsconfig.base.json'
+    tags:
+      - 'exchange/v*.*.*'
 
   # Manual trigger: build and deploy any network on demand.
   # Use this for staging/testnet releases and production hotfixes.

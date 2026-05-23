@@ -1,14 +1,12 @@
 name: Deploy Scanner
 
 on:
-  # Auto-trigger on push to main whenever scanner or its deps change.
+  # Tag-based release trigger: deploy fires only when you explicitly push a
+  # versioned tag — never on branch merges. Ship when you're ready.
+  # Usage: git tag scanner/v1.2.3 && git push origin scanner/v1.2.3
   push:
-    branches: [main]
-    paths:
-      - 'apps/scanner/**'
-      - 'packages/**'
-      - 'pnpm-lock.yaml'
-      - 'tsconfig.base.json'
+    tags:
+      - 'scanner/v*.*.*'
 
   # Manual trigger: deploy to any network on demand.
   workflow_dispatch:
