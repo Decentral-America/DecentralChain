@@ -4,14 +4,14 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import io.decentralchain.crypto.Crypto;
+import io.decentralchain.sdk.Node;
+import io.decentralchain.sdk.Profile;
+import io.decentralchain.sdk.exceptions.NodeException;
 import io.decentralchain.transactions.TransferTransaction;
 import io.decentralchain.transactions.WavesConfig;
 import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.Id;
-import io.decentralchain.sdk.Node;
-import io.decentralchain.sdk.Profile;
-import io.decentralchain.sdk.exceptions.NodeException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Duration;

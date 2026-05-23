@@ -4,10 +4,10 @@ import static io.decentralchain.sdk.util.DccEthConverter.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import io.decentralchain.transactions.common.ChainId;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.Profile;
 import io.decentralchain.sdk.exceptions.NodeException;
+import io.decentralchain.transactions.common.ChainId;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
