@@ -17,9 +17,12 @@
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/vitest.config.ts"
     ],
-    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/biome.json"]
+    "sharedGlobals": [
+      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/biome.json",
+      "{workspaceRoot}/vitest.base.config.ts"
+    ]
   },
-  "nxCloudAccessToken": "",
   "nxCloudId": "6a07a03e8a73063a9eda9bf3",
   "plugins": [
     {
@@ -71,17 +74,17 @@
     "check:exports": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production", { "externalDependencies": ["@arethetypeswrong/cli"] }]
     },
     "check:publint": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production", { "externalDependencies": ["publint"] }]
     },
     "check:size": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production", { "externalDependencies": ["size-limit"] }]
     },
     "nx-release-publish": {
       "dependsOn": ["build"],
@@ -91,7 +94,8 @@
     },
     "test": {
       "cache": true,
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "outputs": ["{projectRoot}/coverage", "{projectRoot}/test-results"]
     },
     "typecheck": {
       "cache": true,
