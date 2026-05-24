@@ -4,8 +4,6 @@
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": [
     "@testing-library/webdriverio",
-    "@decentralchain/ride-lang",
-    "@decentralchain/ride-repl",
     "cryptocurrency-icons",
     "cytoscape-fcose",
     "dotenv-flow",
@@ -165,6 +163,11 @@
       "description": "ed25519-axolotl is a Rust crate (packages/sdk/crypto/Cargo.toml) compiled into WASM — it is not an npm package. Update manually via Cargo.lock when the crypto package needs a rebuild.",
       "enabled": false,
       "matchPackageNames": ["ed25519-axolotl"]
+    },
+    {
+      "description": "@decentralchain/ride-lang and ride-repl are Scala.js-compiled binaries published by our own packages/ride sbt build pipeline. They must not be auto-updated by Renovate — bump them manually after a successful sbt fullLinkJS build and npm publish.",
+      "enabled": false,
+      "matchPackageNames": ["@decentralchain/ride-lang", "@decentralchain/ride-repl"]
     }
   ],
   "platformAutomerge": true,
