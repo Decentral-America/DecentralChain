@@ -131,16 +131,16 @@
   <build>
     <!--
       The upstream Decentral-America/DecentralChain (packages/jvm/groth16) Gradle project nests the Java library
-      inside zwaves_jni/javalib/. We keep this layout verbatim (git subtree)
+      inside groth16_jni/javalib/. We keep this layout verbatim (git subtree)
       and point Maven at the correct source/resource/test directories.
     -->
-    <sourceDirectory>${project.basedir}/zwaves_jni/javalib/src/main/java</sourceDirectory>
+    <sourceDirectory>${project.basedir}/groth16_jni/javalib/src/main/java</sourceDirectory>
     <resources>
       <resource>
-        <directory>${project.basedir}/zwaves_jni/javalib/src/main/resources</directory>
+        <directory>${project.basedir}/groth16_jni/javalib/src/main/resources</directory>
       </resource>
     </resources>
-    <testSourceDirectory>${project.basedir}/zwaves_jni/javalib/src/test/java</testSourceDirectory>
+    <testSourceDirectory>${project.basedir}/groth16_jni/javalib/src/test/java</testSourceDirectory>
 
     <plugins>
 

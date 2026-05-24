@@ -1,3 +1,0 @@
-# zwaves_node
-
-

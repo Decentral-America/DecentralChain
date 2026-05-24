@@ -32,7 +32,7 @@ ZK proof on the DecentralChain network.
 
 - **RUSTSEC-2022-0011** (AES miscomputation): zwaves never calls any AES
   function. The vulnerable `crypto::aes` module is compiled into the binary
-  but its code path is unreachable from `zwaves_jni`'s `Java_com_wavesplatform_zwaves_*`
+  but its code path is unreachable from `groth16_jni`'s `Java_com_decentralchain_groth16_*`
   JNI entry points. The only operations zwaves exposes are Groth16 BN256/BLS12
   pairing checks using SHA-256/SHA-512 from rust-crypto. **Risk: LOW.**
 
@@ -58,35 +58,19 @@ suppression.
 
 ---
 
-## KNOWN-2: JNI function names retain `com.wavesplatform.zwaves` namespace
+## ~~KNOWN-2~~: JNI function names — **RESOLVED**
 
-**Risk:** INFO (binary compatibility constraint — intentional and permanent)
-
-**Description:** All JNI entry points in `zwaves_jni/src/lib.rs` use the
-`com_wavesplatform_zwaves` namespace in their symbol names:
+**Resolution:** JNI symbols already use `com.decentralchain.groth16` namespace.
+Both the Rust entry points (`groth16_jni/src/lib.rs`) and the Java class
+(`com.decentralchain.groth16.{bls12,bn256}.Groth16`) are fully migrated.
+Verified JNI exports:
 
 ```
-Java_com_wavesplatform_zwaves_Groth16_verify
-Java_com_wavesplatform_zwaves_Groth16_verifyBls12
+Java_com_decentralchain_groth16_bls12_Groth16_verify
+Java_com_decentralchain_groth16_bn256_Groth16_verify
 ```
 
-These symbol names are derived from the Java class names in
-`zwaves_jni/javalib/src/main/java/com/wavesplatform/zwaves/Groth16.java`
-via the standard JNI naming convention. The `node-scala` Waves node loads
-the zwaves native library and calls these exact symbols.
-
-**Why not renamed:** Renaming the JNI symbols would require simultaneously
-updating `node-scala` to use the new symbol names (a coordinated multi-repo
-change) and would break binary compatibility with all deployed node versions
-that still link the old symbol names. This would require a hard fork or
-coordinated upgrade.
-
-**Resolution path:**
-- When a full DCC namespace migration for node-scala is planned, rename
-  the Java class to `com.decentralchain.zwaves.Groth16`, regenerate the
-  JNI symbols, and ship a new major version.
-- For now, the `com.wavesplatform.zwaves` namespace is intentionally retained
-  for binary compatibility and is NOT a sign of incomplete migration.
+No `com.wavesplatform.zwaves` symbols remain. This issue is closed.
 
 ---
 
@@ -94,7 +78,7 @@ coordinated upgrade.
 
 **Risk:** LOW (no known CVEs in these specific versions; locked for ZK compat)
 
-**Description:** The `zwaves_jni` Cargo.toml uses very old Rust crate versions:
+**Description:** The `groth16_jni` Cargo.toml uses very old Rust crate versions:
 `bellman = "0.1.0"`, `pairing = "0.14"`, `ff = "=0.7"` (ff_ce). These
 predate the modern `bls12_381` / `ark-ff` ecosystem.
 
