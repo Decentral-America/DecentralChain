@@ -355,7 +355,7 @@ This project enforces strict quality standards to ensure reliability for product
 
 | Category | Technology |
 | --- | --- |
-| Language | TypeScript 5.9 (strict mode) |
+| Language | TypeScript 6.0.3 (strict mode) |
 | Runtime | Node.js >= 24 |
 | Module Format | Pure ESM |
 | Build Tool | [tsdown](https://tsdown.dev/) |

@@ -50,7 +50,28 @@ devLog('Configuration loaded:', {
  */
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
-ReactDOM.createRoot(rootElement).render(
+
+// Wire React 19's native error propagation hooks to the error monitoring service.
+// Using a dynamic import keeps @sentry/react out of the initial modulepreload list
+// (lazy init in App.tsx is the intentional perf pattern). In practice Sentry is
+// initialized within the first frame; errors before that fall back to the ErrorBoundary.
+const reactErrorHandler = (
+  error: unknown,
+  errorInfo?: { componentStack?: string | null },
+): void => {
+  void import('@/lib/errorMonitoring').then(({ captureError }) => {
+    captureError(error instanceof Error ? error : new Error(String(error)), {
+      componentStack: errorInfo?.componentStack,
+      type: 'react_root_error',
+    });
+  });
+};
+
+ReactDOM.createRoot(rootElement, {
+  onCaughtError: (error, errorInfo) => reactErrorHandler(error, errorInfo),
+  onRecoverableError: (error, errorInfo) => reactErrorHandler(error, errorInfo),
+  onUncaughtError: (error, errorInfo) => reactErrorHandler(error, errorInfo),
+}).render(
   <React.StrictMode>
     <ErrorBoundary>
       {/* Suspense gates rendering until i18next-http-backend fetches the active locale.

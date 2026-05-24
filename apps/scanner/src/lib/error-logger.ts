@@ -20,6 +20,9 @@ if (SENTRY_DSN) {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: import.meta.env?.MODE || 'production',
+    // Injected at build time by CI (git tag) or .env.production for local builds.
+    // Without this, source maps cannot be associated with a specific release.
+    release: import.meta.env?.VITE_APP_VERSION,
     replaysOnErrorSampleRate: 1.0,
     replaysSessionSampleRate: 0,
     tracesSampleRate: 0.2,

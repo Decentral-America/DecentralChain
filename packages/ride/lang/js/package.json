@@ -2,6 +2,7 @@
   "name": "@decentralchain/ride-lang",
   "version": "1.6.2",
   "description": "RIDE Compiler and Evaluator — Scala.js compiled binary",
+  "type": "module",
   "main": "dist/lang.js",
   "module": "dist/lang.js",
   "browser": "dist/lang.js",
@@ -9,7 +10,6 @@
     ".": {
       "browser": "./dist/lang.js",
       "import": "./dist/lang.js",
-      "require": "./dist/lang.js",
       "default": "./dist/lang.js"
     }
   },
