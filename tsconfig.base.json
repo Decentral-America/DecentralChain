@@ -7,7 +7,7 @@
     "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2025"],
+    "lib": ["ESNext"],
     "module": "ESNext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
@@ -22,7 +22,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2025",
+    "target": "ESNext",
     // TS 6.0: default changed from enumerate-all-@types to []. Explicit for clarity.
     // Per-package tsconfigs add what they need (e.g. ["node"], ["vitest/globals"]).
     "types": [],

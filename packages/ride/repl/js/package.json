@@ -2,9 +2,17 @@
   "name": "@decentralchain/ride-repl",
   "version": "1.6.2",
   "description": "RIDE REPL — Scala.js compiled binary",
+  "type": "module",
   "main": "dist/repl.js",
   "module": "dist/repl.js",
   "browser": "dist/repl.js",
+  "exports": {
+    ".": {
+      "browser": "./dist/repl.js",
+      "import": "./dist/repl.js",
+      "default": "./dist/repl.js"
+    }
+  },
   "files": [
     "dist/"
   ],

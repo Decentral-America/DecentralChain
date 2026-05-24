@@ -28,7 +28,7 @@ These documents are governance-critical and must remain standalone and maintaine
 - `CODE_OF_CONDUCT.md`
 - `CONTRIBUTING.md`
 - `CHANGELOG.md`
-- `DEPLOYMENT.md`
+- `../../../../DEPLOY.md`
 - `PRODUCTION_CHECKLIST.md`
 - `DEVCONTAINER_SETUP_GUIDELINES.md`
 
