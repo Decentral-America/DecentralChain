@@ -37,9 +37,9 @@ DecentralChain (DCC) is an independent blockchain that forked the Waves protocol
 
 **Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked or adopted **35+ repositories** across four dimensions:
 
-- **24 TypeScript SDK packages** — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
+- **25 TypeScript SDK packages** (24 fully committed + 1 WIP: `node-api-grpc`) — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
 - **`data-service` REST API application** (DCC-221, DCC-233) — Koa.js API at `api.decentralchain.io`
-- **5 standalone infrastructure repos** (`Ecosystem/`): node-scala (Waves protocol node, Scala), node-go (Go alternative node), matcher (DEX order matching engine), blockchain-postgres-sync (Rust block ingestion), docs
+- **5 standalone/monorepo infrastructure repos**: node-scala (`Ecosystem/`), node-go (`Ecosystem/`), matcher (`Ecosystem/`), docs (`Ecosystem/`), blockchain-postgres-sync (Rust block ingestion — imported into monorepo as `apps/blockchain-postgres-sync` via `nx import` 2026-05-20)
 - **8 JVM + RIDE Maven packages** — 6 JVM libraries (`packages/jvm/`) and the RIDE lang+repl sbt build (`packages/ride/`), all published to Maven Central as `io.decentralchain:*`
 
 The remaining ~99 repos are multi-language SDKs, mobile wallets, infrastructure services, developer tooling, and experiments. This document maps what was forked, what was skipped, and what may be pursued in the future.
@@ -79,7 +79,7 @@ The migration philosophy: **fork the protocol-critical core, modernize beyond up
 | **Inter-Chain Gateway** | Decentralized bridge for cross-chain asset transfers (ERC-20 ↔ DCC) |
 | **Proof of Incentivized Sustainability** | Carbon credit generation per transaction; eco-friendly node hosting rewards |
 | **Carbon Sequestration** | Tokenized carbon credits via Costa Rica's FONAFIFO program |
-| **Native Swap** | AMM-powered on-chain token swap (constant product formula) — **DEFERRED: removed from v1 launch scope; preserved in `feat/swap` branch** |
+| **Native Swap** | AMM-powered on-chain token swap (constant product formula) — **DEFERRED: fully deleted; no files, no branch** |
 | **CR Coin** | Social currency for Costa Rica built on DCC |
 | **Cubensis Connect** | Browser wallet extension (replaces Keeper Wallet) |
 
@@ -169,9 +169,10 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 20 | cubensis-connect-types | waveskeeper-types | Keeper-Wallet | Wallet Types | 🔗 | 1.0.1 |
 | 21 | cubensis-connect-provider | provider-keeper | Keeper-Wallet | Signing | 🔗 | 1.0.1 |
 | 22 | scanner | WavesExplorerLite | wavesplatform | Application | — | — |
-| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | 2.0.0 | ⚠️ Removed from `main` for clean launch; preserved in `feat/swap` branch |
+| 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | — | ⚫ Fully deleted — no files on disk, no git history, no `feat/swap` branch |
 | 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.2 |
 | 25 | data-service | data-service | wavesplatform | Application | 🔗 | — |
+| 26 | node-api-grpc | node-api-grpc-js | wavesplatform | API Client | — | 1.0.0 | 🔄 WIP — built from scratch with `@connectrpc/connect`; `packages/sdk/node-api-grpc/` not yet committed to `dev` |
 
 **🔗 Grafted** = full upstream Waves git history preserved via `git filter-repo` or subtree merge.
 
@@ -179,7 +180,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 - **cubensis-connect-provider**: All 412 upstream commits analyzed individually. ~260 Renovate noise, ~30 CI/tooling, 2 genuine bugs cherry-picked. DCC architecture intentionally diverged (7 modular src files / 126 tests vs Waves' 2 monolithic files / 32 tests).
 - **cubensis-connect**: 1,305 upstream commits brought in via full rebase onto `waves/master`. Branding re-applied: 86 files covering dep renames, network codes, URLs, manifest, i18n (10 locales), global API (KeeperWallet→CubensisConnect).
-- **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible. **Subsequently removed from `main` for clean launch (no DEX contracts on DCC mainnet); full implementation preserved in `feat/swap` branch.**
+- **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible. **Fully deleted from the repository — no files on disk, no git history, no `feat/swap` branch.**
 - **crypto**: 234-commit Waves history preserved. Rust/WASM + TypeScript hybrid. Timing-safe HMAC comparison added (security fix). 44 tests, 99% coverage.
 - **data-service**: 395-commit Waves history preserved via `git subtree add` (DCC-221, DCC-233). Koa.js REST API serving candles, pairs, and trades at `api.decentralchain.io`. DCC identity layer (chain IDs, endpoint branding) applied in **DCC-234**. Toolchain modernization (Biome, strict tsconfig, ESM) in **DCC-219/220/222**. Vitest migration in **DCC-223**.
 
@@ -288,7 +289,7 @@ All upstream Waves npm dependencies have been forked. **Zero unresolved upstream
 **All resolved:**
 - ~~`@waves/ride-lang` 1.6.1~~ → Forked as `@decentralchain/ride-lang@1.6.2` (DCC-252 ✅). Full git history (1,991 commits) in `packages/ride/lang/js` (workspace:*).
 - ~~`@waves/ride-repl` 1.6.1~~ → Forked as `@decentralchain/ride-repl@1.6.2` (DCC-252 ✅). Full git history in `packages/ride/repl/js` (workspace:*).
-- ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69); subsequently removed from `main` for clean launch — preserved in `feat/swap` branch
+- ~~`@keeper-wallet/swap-client`~~ → Forked as `@decentralchain/swap-client@1.0.0` (DCC-69); fully deleted — no files on disk, no git history
 - ~~`@keeper-wallet/waves-crypto`~~ → Forked as `@decentralchain/crypto@1.0.0` (DCC-70). All 22 cubensis-connect import sites migrated (DCC-59). See [§9](#9-crypto-library-architecture) for the two-library architecture.
 
 ---
@@ -344,7 +345,7 @@ Ranked by strategic value to DCC:
 | ✅ **Adopted** | `Waves` node (1171★) | Forked as `Ecosystem/node-scala` — DCC protocol patches (chain IDs, namespace rename `com.wavesplatform→com.decentralchain`, CI pipelines, security hardening). Upstream base: commit `5c347100` (v1.6.1, Feb 2026). | Done |
 | ✅ **Adopted** | `gowaves` (255★) | Forked as `Ecosystem/node-go` — upstream base: commit `df50e74c`. DCC module rename, branding, CI overhaul. v0.11.1 evaluated (Mar 2026): adds Features 22–25, all 3 missing proto files, CommitToGeneration field 120. Full upgrade deferred until stable release. | Done |
 | ✅ **Adopted** | `dex` / matcher (18★) | Forked as `Ecosystem/matcher` — shares node-scala base `5c347100`. Wired to `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-263). | Done |
-| ✅ **Adopted** | `blockchain-postgres-sync` (16★) | Forked as `Ecosystem/blockchain-postgres-sync` — upstream base: `4f1181c` (v1.0.0). DCC branding, full audit (4 rounds), all panics eliminated, 84+ tests added (DCC-213/214). | Done |
+| ✅ **Adopted** | `blockchain-postgres-sync` (16★) | Forked at `b80b81b` (v1.0.2, Sep 2025); imported into monorepo as `apps/blockchain-postgres-sync` via `nx import` (2026-05-20). DCC branding, full audit (4 rounds), all panics eliminated, 84+ tests added (DCC-213/214). | Done |
 | ✅ **Adopted** | `WavesJ` (47★) | Forked as [`packages/jvm/java-sdk`](https://github.com/Decentral-America/DecentralChain/tree/dev/packages/jvm/java-sdk) — `io.decentralchain:java-sdk:2.0.0-SNAPSHOT` (DCC-251/263). Upstream: `2f78fd3` (v1.6.4-SNAPSHOT, 2026-02-20). Java 25, Maven Central, JaCoCo/SpotBugs/PMD quality gates. | Done |
 | ✅ **Adopted** | `curve25519-java` | Forked as `packages/jvm/curve25519` — upstream: `80b0a5de` (Oct 2023, last upstream release). Maven + Java 25 migration (DCC-260). | Done |
 | ✅ **Adopted** | `waves-transactions-java` | Forked as `packages/jvm/transactions` — upstream: `e6afed3a` (v1.2.7). Maven + Java 25 (DCC-240). | Done |
@@ -356,7 +357,7 @@ Ranked by strategic value to DCC:
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
 | 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
-| 🟡 **Tier 2** | `node-api-grpc-js` (0★) | gRPC client — faster than REST | Low |
+| � **In Progress** | `node-api-grpc-js` (0★) | DCC built `@decentralchain/node-api-grpc v1.0.0` from scratch using `@connectrpc/connect` (HTTP/2) in `packages/sdk/node-api-grpc/`. WIP — untracked on `dev` branch, not yet committed. Upstream: `wavesplatform/node-api-grpc-js` at `2a6202f` (v0.0.4, Nov 2024). | Low |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
 
 ### What's Not Worth Forking
@@ -380,13 +381,13 @@ Ranked by strategic value to DCC:
 - [x] Fork and modernize entire TypeScript SDK core (24 packages)
 - [x] Publish all packages to npm under `@decentralchain/*`
 - [x] Consolidate into monorepo with Nx + pnpm
-- [x] Fork `@keeper-wallet/swap-client` → `@decentralchain/swap-client` (DCC-69)
+- [x] Fork `@keeper-wallet/swap-client` → `@decentralchain/swap-client` (DCC-69) — subsequently fully deleted
 - [x] Fork `@keeper-wallet/waves-crypto` → `@decentralchain/crypto` (DCC-70)
 - [x] Import `wavesplatform/data-service` → `apps/data-service` (DCC-221, DCC-233)
 - [x] Fork `wavesplatform/Waves` node → `Ecosystem/node-scala` — DCC protocol patches, CI, security hardening (DCC-146/147/148/149/150)
 - [x] Fork `wavesplatform/gowaves` → `Ecosystem/node-go` — module rename, branding, CI overhaul (DCC-165)
 - [x] Fork `wavesplatform/dex` matcher → `Ecosystem/matcher` — wired to DCC Java SDK (DCC-263)
-- [x] Fork `wavesplatform/blockchain-postgres-sync` → `Ecosystem/blockchain-postgres-sync` — DCC branding + full audit (DCC-213/214)
+- [x] Fork `wavesplatform/blockchain-postgres-sync` → `apps/blockchain-postgres-sync` (in monorepo via `nx import` 2026-05-20) — DCC branding, full audit (DCC-213/214), 84+ tests
 - [x] Extract `wavesplatform/Waves` lang+repl → `packages/ride/` — 1,991-commit history, Maven + npm dual publish (DCC-252)
 - [x] Fork `wavesplatform/WavesJ` → `packages/jvm/java-sdk` — Java 25, DCC namespace, Maven Central (DCC-251/263)
 - [x] Fork `wavesplatform/curve25519-java` → `packages/jvm/curve25519` — Maven + Java 25 (DCC-260)
@@ -398,6 +399,7 @@ Ranked by strategic value to DCC:
 ### In Progress
 
 - [ ] Promote npm packages from `next` → `latest` dist-tag
+- [ ] Commit `packages/sdk/node-api-grpc/` — `@decentralchain/node-api-grpc v1.0.0` gRPC client built on `@connectrpc/connect`; WIP on `dev`, currently untracked
 
 ### Next
 
@@ -488,7 +490,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
 | `@waves/ride-js` | `@decentralchain/ride-js` |
 | `@keeper-wallet/waves-crypto` | `@decentralchain/crypto` |
-| `@keeper-wallet/swap-client` | `@decentralchain/swap-client` (⚠️ removed from `main`; in `feat/swap`) |
+| `@keeper-wallet/swap-client` | `@decentralchain/swap-client` (⚫ fully deleted) |
 | `@keeper-wallet/waveskeeper-types` | `@decentralchain/cubensis-connect-types` |
 | `@keeper-wallet/provider-keeper` | `@decentralchain/cubensis-connect-provider` |
 | Keeper-Wallet-Extension | `cubensis-connect` (app) |
@@ -563,7 +565,7 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 
 ## 16. Supply-Chain Dependency Chain
 
-The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). `@waves/ride-lang` + `@waves/ride-repl` forked as `@decentralchain/ride-lang` + `@decentralchain/ride-repl` (DCC-252 ✅). Zero unforked upstream Waves npm dependencies remain. `swap-client` was forked (DCC-69) but subsequently removed from `main` for clean launch — preserved in `feat/swap` branch.
+The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **independent** libraries (see [§9](#9-crypto-library-architecture)). `@waves/ride-lang` + `@waves/ride-repl` forked as `@decentralchain/ride-lang` + `@decentralchain/ride-repl` (DCC-252 ✅). Zero unforked upstream Waves npm dependencies remain. `swap-client` was forked (DCC-69) but subsequently fully deleted — no files on disk, no git history.
 
 ```
 @decentralchain/crypto  ← FORKED (DCC-70) ✅  [was @keeper-wallet/waves-crypto]
@@ -584,8 +586,8 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
   └── @decentralchain/protobuf-serialization (proto namespace: waves)
   └── @decentralchain/cubensis-connect-provider
 
-@decentralchain/swap-client  ← FORKED (DCC-69) ✅
-  └── cubensis-connect (swap feature only)
+@decentralchain/swap-client  ← FORKED (DCC-69) then DELETED ✅
+  └── cubensis-connect (swap feature only — removed)
 
 @decentralchain/ride-lang + @decentralchain/ride-repl  ← FORKED (DCC-252) ✅
   └── @decentralchain/ride-js
@@ -658,14 +660,14 @@ Actionable items where Waves references remain and should be cleaned up:
 
 ### Standalone Ecosystem Repos → Upstream Map
 
-These repos live **outside the monorepo** under `Ecosystem/` and track upstream Waves sources independently.
+These repos live under `Ecosystem/` (standalone) or `apps/` (imported into monorepo) and track upstream Waves sources independently.
 
 | Repo | DCC Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |------|----------|---------------|----------------|------------|------|----------|
 | node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `5c347100` (v1.6.1) | `595060ea` | 2026-02 | 🟢 Active |
 | node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `df50e74c` | `35d43501` | 2025 | 🟢 Active |
 | matcher | `Ecosystem/matcher` | [wavesplatform/dex](https://github.com/wavesplatform/dex) | `5c347100` (shared with node-scala) | `1cd62e59` | 2026-02 | 🟡 Moderate |
-| blockchain-postgres-sync | `Ecosystem/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `4f1181c` (v1.0.0) | `1c867c4` | 2024 | 🟡 Moderate |
+| blockchain-postgres-sync | `apps/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `b80b81b` (v1.0.2) | `d0d212296` | 2026-05 | 🟢 Active |
 | docs | `Ecosystem/docs` | [wavesplatform/waves-documentation](https://github.com/wavesplatform/waves-documentation) | — (no tracked SHA; initial import was manual) | `673cc90` | 2023 | 💤 Dormant |
 
 ### TypeScript SDK Packages → Upstream Map
@@ -683,7 +685,7 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
 | 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
 | 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `3756189` | `93dad4b` | 2026-03-25 | 🟢 Active |
+| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `e4eed5a` | `9dad5f749` | 2026-05-24 | 🟢 Active | Remaining ↓1 = upstream CI workflow commit — N/A |
 | 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
 | 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
 | 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
@@ -695,10 +697,11 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` | `a46ae18` | 2025-05-28 | 🟢 Active |
 | 20 | `packages/sdk/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` | `ca84920` | 2022-08-25 | 💤 Dormant |
 | 21 | `packages/sdk/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` | `fd5aa58` | 2025-05-29 | 🟡 Moderate |
-| 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` | `b473e02` | 2026-03-25 | 🟢 Active |
+| 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` | `b473e02` | 2026-03-25 | 🟢 Active | ⬜ Remaining upstream commits N/A — DCC scanner is a full TypeScript/Vite/React Router v7 rewrite; no webpack, no lodash |
 | 23 | `packages/sdk/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
 | 24 | `packages/sdk/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` | `bd092dd` | 2025-05-28 | 🟡 Moderate |
 | 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` | `7d40c14f` | 2026-04-07 | 🟢 Active |
+| 26 | `packages/sdk/node-api-grpc` | [wavesplatform/node-api-grpc-js](https://github.com/wavesplatform/node-api-grpc-js) | `2a6202f` (v0.0.4) | `1fac317` | 2026-05-24 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
 
@@ -725,7 +728,7 @@ Each library was imported into the monorepo via `git subtree add` or `git filter
 | 1 | `packages/jvm/java-sdk` | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` (v1.6.4-SNAPSHOT) | `390fc984` | 2026-02-20 | 🟢 Active |
 | 2 | `packages/jvm/curve25519` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` | `e6f21dea` | 2023-10-12 | 💤 Dormant |
 | 3 | `packages/jvm/transactions` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (v1.2.7) | `eff2d5e5` | 2025 | 💤 Dormant |
-| 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` | `7c11f306` | 2024 | 💤 Dormant |
+| 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` | `7c11f306` | 2026-04-15 | 💤 Dormant |
 | 5 | `packages/jvm/groth16` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` | `3df6a576` | 2024 | 💤 Dormant |
 | 6 | `packages/jvm/crypto` | [wavesplatform/waves-crypto-java](https://github.com/wavesplatform/waves-crypto-java) | `0f1fc0c91` (v2.0.7) | `790fd4ec8` | 2026-05-19 | 💤 Dormant |
 
@@ -784,15 +787,15 @@ git diff <last-synced-commit>..HEAD -- src/
 ### By Category (134 repos total)
 
 **Already Forked to DCC (35+):**
-- *TypeScript SDK (24):* ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js (`packages/ride/ts/`), Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client (in `feat/swap`), waves-crypto
+- *TypeScript SDK (24):* ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js (`packages/ride/ts/`), Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client (⚫ fully deleted), waves-crypto
 - *Application (1):* **data-service** → `apps/data-service`
-- *Standalone infrastructure (4):* **Waves** node → `Ecosystem/node-scala` · **gowaves** → `Ecosystem/node-go` · **dex** matcher → `Ecosystem/matcher` · **blockchain-postgres-sync** → `Ecosystem/blockchain-postgres-sync`
+- *Standalone infrastructure (4):* **Waves** node → `Ecosystem/node-scala` · **gowaves** → `Ecosystem/node-go` · **dex** matcher → `Ecosystem/matcher` · **blockchain-postgres-sync** → `apps/blockchain-postgres-sync` (in monorepo via `nx import`)
 - *JVM libraries (6 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519` · **waves-transactions-java** → `packages/jvm/transactions` · **blst-java** → `packages/jvm/blst` · **zwaves** → `packages/jvm/groth16` · **waves-crypto-java** → `packages/jvm/crypto`
 - *RIDE packages (2 in monorepo, from wavesplatform/Waves):* `packages/ride/lang/` · `packages/ride/repl/` 
 
 **Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
 
-**Infrastructure (~20):** ~~Waves/node (1171★ Scala)~~ ✅ forked as `Ecosystem/node-scala`, ~~gowaves (255★ Go)~~ ✅ forked as `Ecosystem/node-go`, ~~matcher (18★ Scala)~~ ✅ forked as `Ecosystem/matcher`, ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, ~~blockchain-postgres-sync (16★ Rust)~~ ✅ forked as `Ecosystem/blockchain-postgres-sync`, nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
+**Infrastructure (~20):** ~~Waves/node (1171★ Scala)~~ ✅ forked as `Ecosystem/node-scala`, ~~gowaves (255★ Go)~~ ✅ forked as `Ecosystem/node-go`, ~~matcher (18★ Scala)~~ ✅ forked as `Ecosystem/matcher`, ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, ~~blockchain-postgres-sync (16★ Rust)~~ ✅ imported as `apps/blockchain-postgres-sync` (monorepo, via `nx import`), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
 **Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, ~~waves-transactions-java~~ ✅ forked as `transactions`, ~~waves-crypto-java~~ ✅ forked as `packages/jvm/crypto` (DCC-264)), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
 
