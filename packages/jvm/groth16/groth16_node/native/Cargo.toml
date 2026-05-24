@@ -1,0 +1,28 @@
+[package]
+name = "groth16_node"
+version = "0.1.0"
+authors = ["Igor Gulamov <igor.gulamov@gmail.com>"]
+license = "MIT"
+build = "build.rs"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "groth16_node"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+neon-build = "0.3.3"
+
+[dependencies]
+neon = "0.3.3"
+
+rand = "0.4"
+bellman = { version = "0.1.0"}
+sapling-crypto = { path = "../../sapling-crypto" }
+groth16_primitives = {path = "../../groth16_primitives"}
+groth16_circuit = {path = "../../groth16_circuit"}
+
+pairing = "0.14"
+phase2 = "0.2.2"
+lazy_static = "1.4.0"
+arrayvec = "0.5.1"

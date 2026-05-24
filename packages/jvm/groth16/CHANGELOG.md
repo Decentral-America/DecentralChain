@@ -22,7 +22,7 @@ Sapling (BN256) and BLS12-381 pairing curves.
 - CI: comprehensive multi-platform native build matrix (7 targets: Linux
   amd64/aarch64/x86, macOS aarch64/x86_64, Windows amd64/x86)
 - Rust: native libraries built with Rust stable (1.85+, MSRV ≥ 1.80)
-- Corrected native resource path in zwaves_jni: `META-INF/native/<os>/<arch>/`
+- Corrected native resource path in groth16_jni: `META-INF/native/<os>/<arch>/`
   (was referencing wrong path in earlier build configurations)
 
 ### Added

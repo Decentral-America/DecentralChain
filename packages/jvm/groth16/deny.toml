@@ -1,4 +1,4 @@
-# packages/jvm/zwaves — cargo-deny configuration
+# packages/jvm/groth16 — cargo-deny configuration
 #
 # This file documents the known security advisories in the zwaves Rust
 # dependency tree that CANNOT be patched without breaking ZK-SNARK
@@ -30,7 +30,7 @@ ignore = [
   #   pulled in only for its SHA-256/SHA-512 hash implementations used inside
   #   the Groth16 proof setup; its AES code is never called.  The vulnerable
   #   AES-CBC function (crypto::aes::cbc_decryptor) cannot be reached from any
-  #   code path initiated by zwaves_jni.  No AES operations are exposed at the
+  #   code path initiated by groth16_jni.  No AES operations are exposed at the
   #   JNI layer.  Risk: LOW.
   # Why not patched: rust-crypto 0.2.36 is the last version published; the
   #   crate is abandoned.  Upgrading sapling-crypto would invalidate the
@@ -43,7 +43,7 @@ ignore = [
   # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36 → rustc-serialize 0.3.25
   # Risk assessment:
   #   All inputs to the zwaves JNI boundary are fixed-length byte arrays passed
-  #   from the JVM.  No JSON parsing occurs at any point in the zwaves_jni call
+  #   from the JVM.  No JSON parsing occurs at any point in the groth16_jni call
   #   path.  The rustc-serialize crate is a transitive dependency of rust-crypto
   #   only; its JSON decoder is never invoked.  An attacker controlling JNI
   #   inputs cannot trigger this code path.  Risk: LOW.
@@ -67,15 +67,15 @@ ignore = [
 
   # ─────────────────────────────────────────────────────────────────────────
   # RUSTSEC-2025-0141  bincode 1.3.3 — unmaintained (WARNING only, no CVE)
-  # Source:  zwaves_primitives 0.1.0 → bincode 1.3.3
+  # Source:  groth16_primitives 0.1.0 → bincode 1.3.3
   # Risk assessment:
-  #   bincode is used for internal proof serialization inside zwaves_primitives.
+  #   bincode is used for internal proof serialization inside groth16_primitives.
   #   No deserialization of untrusted external data occurs; all bincode-encoded
   #   payloads are produced and consumed within the same Rust binary.  The
   #   bincode2 successor is API-compatible but upgrading requires pinned
   #   Groth16 parameter re-generation.  This is tracked for the next Sapling
   #   parameter refresh sprint.  Risk: INFORMATIONAL.
-  { id = "RUSTSEC-2025-0141", reason = "bincode is used only for internal proof serialization within zwaves_primitives; no untrusted input deserialization; tracked for Sapling parameter refresh sprint" },
+  { id = "RUSTSEC-2025-0141", reason = "bincode is used only for internal proof serialization within groth16_primitives; no untrusted input deserialization; tracked for Sapling parameter refresh sprint" },
 ]
 
 [licenses]

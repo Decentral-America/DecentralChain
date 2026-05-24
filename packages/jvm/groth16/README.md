@@ -1,7 +1,7 @@
-# zwaves — ZK-SNARK Groth16 Verifier for DecentralChain
+# groth16 — ZK-SNARK Groth16 Verifier for DecentralChain
 
-[![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/zwaves-ci.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/zwaves-ci.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/io.decentralchain/zwaves.svg)](https://central.sonatype.com/artifact/io.decentralchain/zwaves)
+[![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/groth16.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/groth16.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.decentralchain/groth16.svg)](https://central.sonatype.com/artifact/io.decentralchain/groth16)
 
 Java JNI bindings for [wavesplatform/zwaves (upstream)](https://github.com/wavesplatform/zwaves (upstream)) —
 a ZK-SNARK Groth16 proof verifier for **BLS12-381** (Zcash Sapling) and **BN256**
@@ -10,7 +10,7 @@ a ZK-SNARK Groth16 proof verifier for **BLS12-381** (Zcash Sapling) and **BN256*
 [pairing](https://github.com/zkcrypto/pairing) crates.
 
 Forked from `wavesplatform/zwaves (upstream)` at commit `d4546dbb` with full upstream history.
-Published as `io.decentralchain:zwaves` under the DCC JVM ecosystem standard.
+Published as `io.decentralchain:groth16` under the DCC JVM ecosystem standard.
 
 ---
 
@@ -41,13 +41,13 @@ Pre-built native libraries are bundled in the JAR for all supported platforms:
 
 | OS | Architecture | Library |
 |----|-------------|---------|
-| Linux | amd64 | `libzwaves_jni.so` |
-| Linux | aarch64 | `libzwaves_jni.so` |
-| Linux | x86 (32-bit) | `libzwaves_jni.so` |
-| macOS | aarch64 (Apple Silicon) | `libzwaves_jni.dylib` |
-| macOS | x86_64 (Intel) | `libzwaves_jni.dylib` |
-| Windows | amd64 | `zwaves_jni.dll` |
-| Windows | x86 (32-bit) | `zwaves_jni.dll` |
+| Linux | amd64 | `libgroth16_jni.so` |
+| Linux | aarch64 | `libgroth16_jni.so` |
+| Linux | x86 (32-bit) | `libgroth16_jni.so` |
+| macOS | aarch64 (Apple Silicon) | `libgroth16_jni.dylib` |
+| macOS | x86_64 (Intel) | `libgroth16_jni.dylib` |
+| Windows | amd64 | `groth16_jni.dll` |
+| Windows | x86 (32-bit) | `groth16_jni.dll` |
 
 The library is loaded automatically at class initialization via the embedded
 `JNILibrary` loader (extracted to a temp directory on first use).
@@ -60,14 +60,14 @@ The library is loaded automatically at class initialization via the embedded
 ```xml
 <dependency>
   <groupId>io.decentralchain</groupId>
-  <artifactId>zwaves</artifactId>
+  <artifactId>groth16</artifactId>
   <version>0.2.1.0</version>
 </dependency>
 ```
 
 ### Gradle (Kotlin DSL)
 ```kotlin
-implementation("io.decentralchain:zwaves:0.2.1.0")
+implementation("io.decentralchain:groth16:0.2.1.0")
 ```
 
 ---
@@ -82,9 +82,9 @@ implementation("io.decentralchain:zwaves:0.2.1.0")
 ### Build native library (macOS aarch64)
 
 ```bash
-cd zwaves_jni
+cd groth16_jni
 cargo build --release --target aarch64-apple-darwin
-cp ../target/aarch64-apple-darwin/release/libzwaves_jni.dylib \
+cp ../target/aarch64-apple-darwin/release/libgroth16_jni.dylib \
    javalib/src/main/resources/META-INF/native/osx64/aarch64/
 ```
 
@@ -111,20 +111,20 @@ packages/jvm/groth16/
 ├── config/
 │   ├── pmd-ruleset.xml           # PMD security rules
 │   └── spotbugs-exclude.xml      # SpotBugs exclusions (JNILibrary.java)
-├── zwaves_jni/
-│   ├── Cargo.toml                # Rust JNI crate (zwaves_jni)
+├── groth16_jni/
+│   ├── Cargo.toml                # Rust JNI crate (groth16_jni)
 │   ├── src/                      # Rust source (bls12/, bn256/, lib.rs)
 │   └── javalib/src/main/
-│       ├── java/com/wavesplatform/zwaves (upstream)/
+│       ├── java/com/decentralchain/groth16/
 │       │   ├── bls12/Groth16.java
 │       │   ├── bn256/Groth16.java
 │       │   ├── JNILibrary.java   # hawtjni loader (EPL-1.0)
 │       │   └── Groth16JNILibrary.java
 │       └── resources/META-INF/native/
-│           ├── osx64/aarch64/libzwaves_jni.dylib   (prebuilt)
+│           ├── osx64/aarch64/libgroth16_jni.dylib   (prebuilt)
 │           └── …other platforms (built in CI)
 ├── sapling-crypto/               # Rust workspace member (Zcash Sapling)
-└── zwaves_primitives/            # Rust workspace member
+└── groth16_primitives/            # Rust workspace member
 ```
 
 ---
@@ -136,7 +136,7 @@ This package tracks `wavesplatform/zwaves (upstream)` via `git subtree`:
 ```bash
 # Pull upstream updates:
 git subtree pull --prefix=packages/jvm/groth16 \
-  upstream-zwaves master --squash
+  upstream-groth16 master --squash
 ```
 
 Last upstream sync: `d4546dbb5094dd4389207cafd61d0c1a285b6f2b`
