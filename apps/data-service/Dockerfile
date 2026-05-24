@@ -10,7 +10,8 @@
 # Installs all workspace dependencies, builds SDK packages and the data-service,
 # then uses `pnpm deploy` to produce a fully self-contained deployment directory.
 # -----------------------------------------------------------------------------
-FROM node:24-alpine AS builder
+# renovate: image=node tag=24-alpine
+FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS builder
 
 # Install system deps required for native build tools (e.g. node-gyp) and git
 # (git is required by pnpm lifecycle scripts during install)
@@ -48,7 +49,8 @@ RUN pnpm --filter @decentralchain/data-service deploy --legacy --prod /app/stand
 # Stage 2: production
 # Minimal runtime image — no build tools, no source, no dev dependencies.
 # -----------------------------------------------------------------------------
-FROM node:24-alpine AS production
+# renovate: image=node tag=24-alpine
+FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS production
 
 # Security: run as non-root
 RUN addgroup -S dcc && adduser -S -G dcc -u 1001 dcc

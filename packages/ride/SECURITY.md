@@ -72,6 +72,6 @@ or memory addresses are surfaced to script authors.
 - `com.wavesplatform.zwaves.*` (BLS12/BN256 Groth16) is an external library.
   Monitor the [zwaves](https://github.com/wavesplatform/zwaves) repository for advisories.
 - The Scala.js build does NOT bundle native RSA — RSA operations are unavailable
-  in the browser build (see [Per-Package Known Issues](../../../docs/STATUS.md#per-package-known-issues)).
+  in the browser build (see the workspace root `STATUS.md` Per-Package Known Issues section).
 - Protocol-level security (transaction signing, key derivation) is handled by
   `packages/sdk/crypto`, not this package.

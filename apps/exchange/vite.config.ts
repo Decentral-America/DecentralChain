@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
@@ -118,7 +119,21 @@ export default defineConfig({
       '@emotion/styled',
     ],
   },
-  plugins: [react(), i18nPreloadVersionPlugin],
+  plugins: [
+    react(),
+    i18nPreloadVersionPlugin,
+    // sentryVitePlugin must be last — source maps must be finalized before upload.
+    // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
+    sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      disable: !process.env.SENTRY_AUTH_TOKEN,
+      org: 'decentral-america',
+      project: 'dcc-exchange',
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['./dist/**/*.map'],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),

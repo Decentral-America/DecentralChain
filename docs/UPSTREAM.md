@@ -47,7 +47,7 @@ The remaining ~99 repos are multi-language SDKs, mobile wallets, infrastructure 
 Every forked package has been:
 
 - Rebranded from `@waves/*` and `@keeper-wallet/*` to `@decentralchain/*`
-- Modernized beyond upstream (ESM-only, TypeScript 5.9 strict, Biome, Vitest, tsdown)
+- Modernized beyond upstream (ESM-only, TypeScript 6.0.3 strict, Biome, Vitest, tsdown)
 - Audited (3,747+ tests, 0 failures, 0 npm vulnerabilities)
 - Published to npm under `@decentralchain/*`
 
