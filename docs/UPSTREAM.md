@@ -664,7 +664,7 @@ These repos live under `Ecosystem/` (standalone) or `apps/` (imported into monor
 
 | Repo | DCC Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |------|----------|---------------|----------------|------------|------|----------|
-| node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `5c347100` (v1.6.1) | `595060ea` | 2026-02 | 🟢 Active |
+| node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `4edf693b` | `595060ea` | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: single dep bump; superseded by DCC dep audit |
 | node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `df50e74c` | `35d43501` | 2025 | 🟢 Active |
 | matcher | `Ecosystem/matcher` | [wavesplatform/dex](https://github.com/wavesplatform/dex) | `5c347100` (shared with node-scala) | `1cd62e59` | 2026-02 | 🟡 Moderate |
 | blockchain-postgres-sync | `apps/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `b80b81b` (v1.0.2) | `d0d212296` | 2026-05 | 🟢 Active |
@@ -678,15 +678,15 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 |---|--------------|---------------|----------------|------------|------|----------|
 | 1 | `packages/sdk/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` | `309a179` | 2026-03-25 | 🟢 Active |
 | 2 | `packages/sdk/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` | `3c509b0` | 2024-07-05 | 💤 Dormant |
-| 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `1c0f106` | `3c6bd7c` | 2026-03-25 | 🟢 Active |
+| 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `e2fc231` | `3c6bd7c` | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: upstream bumps `node-forge`; DCC rebuilt on `@noble/curves` (no `node-forge` dep) |
 | 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` | `6fa6456` | 2020-06-02 | 💤 Dormant |
-| 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `25b3527` | `15ebc15` | 2020-09-04 | 💤 Dormant |
-| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `2404b95` | `c6ca904` | 2026-03-25 | 🟡 Moderate |
+| 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `85e4312` | `15ebc15` | 2026-05-24 | 🟢 Active | ⬜ ↓3 reviewed — N/A: two dep bumps + order-v3 re-add (order v3 was never removed from DCC) |
+| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `003f2ce` | `c6ca904` | 2026-05-24 | 🟡 Moderate | ⬜ ↓2 reviewed — N/A: `protobufjs` v8 upgrade + npm build fix; DCC uses `@bufbuild/protobuf` |
 | 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` | `417b379` | 2021-08-30 | 💤 Dormant |
 | 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` | `f243c68` | 2018-07-06 | 💤 Dormant |
 | 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` | `db01908` | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `e4eed5a` | `9dad5f749` | 2026-05-24 | 🟢 Active | Remaining ↓1 = upstream CI workflow commit — N/A |
-| 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `767ecf6` | `4e137b9` | 2026-03-25 | 🟢 Active |
+| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `5cf508e` | `9dad5f749` | 2026-05-24 | 🟢 Active | ✅ ↓1 reviewed — N/A: CI workflow only; functional code fully ported in `9dad5f749` |
+| 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `7f16b6e` | `4e137b9` | 2026-05-24 | 🟢 Active | ⬜ ↓7 reviewed — N/A: 4× docs/comments, 2× dep bumps, 1× `protobufjs` v8 build fix; DCC uses `@bufbuild/protobuf` |
 | 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` | `6e99fae` | 2022-11-17 | 💤 Dormant |
 | 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` | `42d83cf` | 2020-04-07 | 💤 Dormant |
 | 14 | `packages/sdk/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` | `f0f40d7` | 2022-03-14 | 💤 Dormant |
@@ -713,8 +713,8 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `5c347100` (v1.6.1) | `17626cc7` | 2026-02 | 🟢 Active |
-| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `5c347100` (v1.6.1) | `17626cc7` | 2026-02 | 🟡 Moderate |
+| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `4edf693b` | `17626cc7` | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no RIDE language change |
+| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `4edf693b` | `17626cc7` | 2026-05-24 | 🟡 Moderate | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no REPL change |
 | 3 | `packages/ride/ts/` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` | `b98a091` | 2026-03-25 | 🟢 Active |
 
 > Import commit `17626cc7` message: "feat(DCC-252): import lang and repl from node-scala with full upstream history — Extracted lang/ and repl/ from Ecosystem/node-scala preserving 1,991 commits from the upstream Waves history plus all 5 DCC patches (namespace rename, chain identity, security hardening, test fixes)."
