@@ -1,6 +1,6 @@
-import { captureException } from '@sentry/browser';
 import type { ErrorInfo, ReactNode } from 'react';
 import { Component } from 'react';
+import { captureException } from '../../sentry/init';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -26,7 +26,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    captureException(error, { extra: { componentStack: errorInfo.componentStack } });
+    captureException(error, {
+      captureContext: { extra: { componentStack: errorInfo.componentStack } },
+    });
   }
 
   override render(): ReactNode {
