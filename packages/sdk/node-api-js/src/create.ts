@@ -7,7 +7,7 @@ import * as blocksModule from './api-node/blocks';
 import * as consensusModule from './api-node/consensus';
 import * as debugModule from './api-node/debug';
 import * as ethModule from './api-node/eth';
-import * as finalizationModule from './api-node/finalization';
+import * as finalityModule from './api-node/finality';
 import * as leasingModule from './api-node/leasing';
 import * as nodeModule from './api-node/node';
 import * as peersModule from './api-node/peers';
@@ -71,7 +71,7 @@ export function create(base: string) {
   const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
   const consensus: TWrapRecord<typeof consensusModule> = wrapRecord(base, consensusModule);
   const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
-  const finalization: TWrapRecord<typeof finalizationModule> = wrapRecord(base, finalizationModule);
+  const finality: TWrapRecord<typeof finalityModule> = wrapRecord(base, finalityModule);
   const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
   const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
   const eth: TWrapRecord<typeof ethModule> = wrapRecord(base, ethModule);
@@ -111,7 +111,7 @@ export function create(base: string) {
     consensus,
     debug,
     eth,
-    finalization,
+    finality,
     leasing,
     node,
     peers,
