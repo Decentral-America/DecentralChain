@@ -25,6 +25,7 @@ allowBuilds:
   '@bufbuild/buf': false
   '@evilmartians/lefthook': false
   '@parcel/watcher': true
+  '@sentry/cli': true
   '@swc/core': true
   core-js-pure: true
   edgedriver: true

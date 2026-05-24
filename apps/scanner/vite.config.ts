@@ -1,5 +1,13 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { reactRouter } from '@react-router/dev/vite';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig, type Plugin } from 'vite';
+
+// Explicit project root — ensures React Router's config loader finds
+// react-router.config.ts from the correct directory even when this file
+// is evaluated by Nx (which runs resolveConfig from the workspace root).
+const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Stubs browser-only packages for the SSR build environment.
@@ -73,19 +81,42 @@ function withoutEsbuildConfig(plugins: Plugin | Plugin[]): Plugin[] {
   });
 }
 
+const { NODE_ENV } = process.env;
+
 export default defineConfig({
+  build: {
+    // Generate hidden source maps for Sentry symbolication.
+    // 'hidden' maps are not referenced from bundled JS so they are never served to users,
+    // but the @sentry/vite-plugin uploads them at build time and deletes them from dist.
+    sourcemap: NODE_ENV === 'production' ? 'hidden' : true,
+  },
   // Vite 8 uses oxc for JavaScript transforms. Configure jsx here explicitly.
   oxc: {
     jsx: {
       runtime: 'automatic',
     },
   },
-  plugins: [ssrBrowserOnlyStub(), ...withoutEsbuildConfig(reactRouter())],
+  plugins: [
+    ssrBrowserOnlyStub(),
+    ...withoutEsbuildConfig(reactRouter()),
+    // sentryVitePlugin must be last — source maps must be finalized before upload.
+    // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
+    sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      disable: !process.env.SENTRY_AUTH_TOKEN,
+      org: 'decentral-america',
+      project: 'dcc-scanner',
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['./build/**/*.map'],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@/': '/src/',
     },
   },
+  root: projectRoot,
   server: {
     proxy: {
       '/api/geo': {
