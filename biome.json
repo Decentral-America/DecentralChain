@@ -20,8 +20,8 @@
       "!.nx",
       "!**/.react-router",
       "!packages/jvm/*/src/test/resources/**",
-      "!packages/jvm/groth16/zwaves_demo/**",
-      "!packages/jvm/groth16/zwaves_node/**"
+      "!packages/jvm/groth16/groth16_demo/**",
+      "!packages/jvm/groth16/groth16_node/**"
     ]
   },
   "formatter": {
