@@ -1,22 +1,53 @@
-# CODEOWNERS — Default code reviewers for pull requests
-# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# CODEOWNERS
+# ─────────────────────────────────────────────────────────────────────────────
+# Defines who is automatically requested for review when PRs touch these paths.
+# Syntax: <pattern> <owner> [<owner> ...]
 #
-# These owners are automatically requested for review on PRs that modify
-# matching paths. Order matters — last match wins.
+# Rules are matched top-to-bottom; the LAST matching rule wins for a given path.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Default: all PRs require review from the maintainer
-* @jourlez
+# ── Global fallback ───────────────────────────────────────────────────────────
+# Every file requires review unless a more specific rule below also matches.
+*                                   @jourlez
 
-# CI / Release infrastructure
-.github/                  @jourlez
-nx.json                   @jourlez
-pnpm-workspace.yaml       @jourlez
+# ── CI/CD workflows ───────────────────────────────────────────────────────────
+# Workflow changes can exfiltrate secrets or silently disable security gates.
+.github/                            @jourlez
+.github/workflows/                  @jourlez
 
-# Build and tooling configuration
-tools/                    @jourlez
-tsconfig.base.json        @jourlez
-vitest.base.config.ts     @jourlez
-biome.json                @jourlez
+# ── Workspace-wide tooling ────────────────────────────────────────────────────
+# Changes here affect every package in the monorepo.
+nx.json                             @jourlez
+pnpm-workspace.yaml                 @jourlez
+package.json                        @jourlez
+tsconfig.base.json                  @jourlez
+biome.json                          @jourlez
+lefthook.yml                        @jourlez
+knip.json                           @jourlez
+renovate.json                       @jourlez
+vitest.base.config.ts               @jourlez
 
-# Module boundary enforcement
-scripts/                  @jourlez
+# ── Module boundary enforcement ───────────────────────────────────────────────
+scripts/                            @jourlez
+tools/                              @jourlez
+
+# ── Container definitions ─────────────────────────────────────────────────────
+# Dockerfile changes affect the production attack surface and supply chain.
+**/Dockerfile                       @jourlez
+**/Dockerfile.*                     @jourlez
+
+# ── Cryptographic packages ────────────────────────────────────────────────────
+# Subtle changes here can introduce vulnerabilities without obvious build failures.
+packages/jvm/blst/                  @jourlez
+packages/jvm/curve25519/            @jourlez
+packages/jvm/groth16/               @jourlez
+packages/sdk/crypto/                @jourlez
+
+# ── SDK public API surface ────────────────────────────────────────────────────
+# Breaking changes affect downstream consumers — external integrators and all apps.
+packages/sdk/                       @jourlez
+packages/ride/                      @jourlez
+
+# ── Security policy ───────────────────────────────────────────────────────────
+SECURITY.md                         @jourlez
+CODE_OF_CONDUCT.md                  @jourlez

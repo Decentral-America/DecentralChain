@@ -17,7 +17,6 @@ import {
 } from '@decentralchain/protobuf-serialization';
 import type { LeaseTransactionFromNode } from '@decentralchain/ts-types';
 import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
-import { captureException } from '@sentry/browser';
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
@@ -60,6 +59,7 @@ import type {
 import { MessageStatus } from '../messages/types';
 import { PERMISSIONS } from '../permissions/constants';
 import type { PreferencesAccount } from '../preferences/types';
+import { captureException } from '../sentry/init';
 import type { ExtensionStorage } from '../storage/storage';
 import { getTxVersions } from '../wallets/getTxVersions';
 import type { AssetInfoController } from './assetInfo';

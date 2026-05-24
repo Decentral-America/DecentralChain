@@ -10,7 +10,7 @@ Diagnose and fix build/typecheck/lint failures in the monorepo.
 
 - Build pipeline: `biome-lint → typecheck → test → build → publint → attw`
 - Biome 2.4.x handles lint + format (root `biome.json`, per-package `"extends": "//"`)
-- TypeScript 5.9.x with maximum strictness (strict + noUncheckedIndexedAccess + exactOptionalPropertyTypes)
+- TypeScript 6.0.3 with maximum strictness (strict + noUncheckedIndexedAccess + exactOptionalPropertyTypes)
 - tsdown produces ESM-only output (`.mjs` + `.d.mts`) for SDK packages
 - Builds are dependency-ordered via Nx (`dependsOn: [^build]`)
 

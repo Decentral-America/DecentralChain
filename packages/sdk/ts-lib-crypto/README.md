@@ -210,12 +210,11 @@ const addr = address(); // No seed needed — it's embedded
 
 ## Browser
 
-A UMD bundle is built at `dist/index.umd.min.js` exposing `DCCCrypto` globally:
+The package ships as pure ESM. Use a `<script type="module">` tag or a bundler:
 
 ```html
-<script src="https://unpkg.com/@decentralchain/ts-lib-crypto/dist/index.umd.min.js"></script>
-<script>
-  const { address, randomSeed } = DCCCrypto;
+<script type="module">
+  import { address, randomSeed } from 'https://unpkg.com/@decentralchain/ts-lib-crypto/dist/index.mjs';
   console.log(address(randomSeed()));
 </script>
 ```
@@ -239,7 +238,7 @@ npm install
 
 | Command                 | Description                          |
 | ----------------------- | ------------------------------------ |
-| `npm run build`         | Build ESM + CJS + UMD via tsdown       |
+| `npm run build`         | Build ESM-only output (`.mjs` + `.d.mts`) via tsdown |
 | `npm test`              | Run tests                            |
 | `npm run test:watch`    | Tests in watch mode                  |
 | `npm run test:coverage` | Tests with V8 coverage               |

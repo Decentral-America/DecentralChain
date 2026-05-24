@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Path Mappings */
     "jsx": "react-jsx",
-    "lib": ["es2025", "dom"],
+    "lib": ["ESNext", "dom"],
     "noUnusedParameters": false,
     "paths": {
       "@/*": ["./src/*"],

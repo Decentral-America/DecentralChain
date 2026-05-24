@@ -164,6 +164,13 @@ jobs:
       # tsc -b validates TypeScript project references; vite build produces
       # apps/exchange/dist/ with the network baked in via .env.<mode>.
       - name: Build exchange (${{ needs.resolve.outputs.build_mode }})
+        env:
+          # SENTRY_AUTH_TOKEN: @sentry/vite-plugin uses this to upload source maps
+          # and create the release in Sentry. The plugin no-ops when absent.
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          # SENTRY_RELEASE: the git tag (e.g. exchange/v1.2.3). The plugin
+          # associates uploaded source maps with this release name in Sentry.
+          SENTRY_RELEASE: ${{ github.ref_name }}
         run: |
           pnpm --filter ./apps/exchange exec tsc -b
           pnpm --filter ./apps/exchange exec vite build --mode "${{ needs.resolve.outputs.build_mode }}"

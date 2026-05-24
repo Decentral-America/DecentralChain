@@ -43,6 +43,6 @@ Use the Nx MCP tools for AI-assisted exploration:
 ## Key Documentation
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Monorepo design, dependency tiers, Nx config
-- [docs/STATUS.md](docs/STATUS.md) — Per-package health, open issues
+- Workspace root `STATUS.md` — Canonical project dashboard, release gates, audit log, package health
 - [docs/UPSTREAM.md](docs/UPSTREAM.md) — Waves provenance, wire-format constraints
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — Coding standards, naming conventions

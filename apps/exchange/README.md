@@ -80,7 +80,7 @@ Root migration/status/plan/report sprawl has been consolidated into `SINGLE_SOUR
 
 - **React 19.1.1** - Latest React with concurrent features    },
 
-- **TypeScript 5.x** - Type-safe development  },
+- **TypeScript 6.0.3** - Type-safe development  },
 
 - **Vite 7.1.10** - Lightning-fast build tool (3-10s builds)])
 

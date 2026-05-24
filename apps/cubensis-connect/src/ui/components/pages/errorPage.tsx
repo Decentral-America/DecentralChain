@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/browser';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { deleteNotifications } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';
 import { ExportButton, ResetButton } from '#ui/components/ui';
 import Background from '#ui/services/Background';
+import { captureException } from '../../../sentry/init';
 
 import { HeadLogo } from '../head';
 import * as styles from './errorPage.module.css';

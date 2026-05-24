@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ES2025", "DOM"],
+    "lib": ["ESNext", "DOM"],
     "outDir": "./dist",
     "rootDir": "./src"
   },
