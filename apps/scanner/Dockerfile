@@ -1,6 +1,6 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS base
+FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -38,7 +38,18 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --fro
 # React Router v7 generates +types/ virtual modules into .react-router/types/ (gitignored).
 # Run typegen before the build so Rolldown can resolve ./+types/* imports.
 RUN cd apps/scanner && pnpm react-router typegen
-RUN pnpm nx run scanner:build --skip-nx-cache
+
+# SENTRY_RELEASE is the git tag (e.g. scanner/v1.2.3) passed as a build arg from
+# deploy-scanner.yml. It becomes VITE_APP_VERSION so the Sentry release name
+# matches the tag, and SENTRY_RELEASE so @sentry/vite-plugin associates source
+# maps with the correct release. SENTRY_AUTH_TOKEN is mounted as a Docker secret
+# so it never appears in any image layer or build cache.
+ARG SENTRY_RELEASE
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true) \
+    SENTRY_RELEASE="${SENTRY_RELEASE}" \
+    VITE_APP_VERSION="${SENTRY_RELEASE}" \
+    pnpm nx run scanner:build --skip-nx-cache
 RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
     && cp -R apps/scanner/build /prod/scanner/build
 

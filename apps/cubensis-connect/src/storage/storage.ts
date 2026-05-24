@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/browser';
 import { deepEqual } from 'fast-equals';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';
@@ -12,13 +11,13 @@ import type { NotificationsStoreItem } from '#notifications/types';
 import type { PermissionValue } from '#permissions/types';
 import type { IdleOptions, PreferencesAccount } from '#preferences/types';
 import type { UiState } from '#store/reducers/stateTypes';
-
 import type {
   AssetsConfig,
   DEFAULT_MAIN_CONFIG,
   IgnoreErrorsConfig,
   NftConfig,
 } from '../constants';
+import { captureException } from '../sentry/init';
 import { MIGRATIONS } from './migrations';
 
 const CURRENT_MIGRATION_VERSION = 3;

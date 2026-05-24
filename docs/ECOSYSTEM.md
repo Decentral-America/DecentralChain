@@ -237,7 +237,7 @@ C4Context
     }
 
     Enterprise_Boundary(infra, "DecentralChain Infrastructure") {
-        System(node, "DCC Node", "Blockchain node (node-go primary, node-scala fallback)")
+        System(node, "DCC Node", "Blockchain node (target launch topology: node-go primary, node-scala fallback)")
         System(matcher, "DEX Matcher", "Order matching engine — decentralchain-dex v2.3.2.9")
         System(datasvc, "Data Service", "Historical blockchain data API — Node.js / Koa v0.30.0")
     }
@@ -607,7 +607,7 @@ flowchart TD
     classDef step fill:#1E40AF,stroke:#1E3A8A,color:#fff,font-weight:bold
     classDef final fill:#065F46,stroke:#064E3B,color:#fff,font-weight:bold
 
-    S1["① DCC Node<br/>Deploy node-go — mainnet + testnet + stagenet<br/>Verify: GET /blocks/height returns 200 OK"]
+    S1["① DCC Node<br/>Ratify launch node (current target: node-go), then deploy across mainnet + testnet + stagenet<br/>Verify: GET /blocks/height returns 200 OK"]
     S2["② PostgreSQL 11<br/>Internal-only database — no public endpoint<br/>Required by blockchain-postgres-sync and data-service"]
     S3["③ blockchain-postgres-sync<br/>Seed: npm run download 1 height<br/>Live: npm run updateComposite  (daemon)"]
     S4["④ data-service<br/>Start API server + candles daemon + pairs daemon<br/>Verify: GET /v0/pairs returns 200 OK"]
@@ -698,11 +698,12 @@ Browser wallet extension. Key management, signing UI, swap UI, Ledger hardware w
 
 | Topic | Document |
 |-------|---------|
+| Ecosystem deploy runbook, secrets inventory, network rollout order | [../../DEPLOY.md](../../DEPLOY.md) |
 | SDK package inventory + upstream Waves provenance | [UPSTREAM.md](UPSTREAM.md) |
-| Per-package health and remediation status | [STATUS.md](STATUS.md) |
+| Per-package health, remediation status, release gates, and audit log | Workspace root `STATUS.md` |
 | Monorepo toolchain (Nx, pnpm, tier conventions) | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Coding standards and quality pipeline | [CONVENTIONS.md](CONVENTIONS.md) |
-| Release gates, Go/No-Go criteria, project tracker, audit log | [STATUS.md](STATUS.md) |
+| Project tracker, Go/No-Go criteria, and release gates | Workspace root `STATUS.md` |
 | node-go status and 20-audit history | [node-go README](../../../node-go/README.md) |
 
 ---

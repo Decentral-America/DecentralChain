@@ -24,7 +24,7 @@ Apps (`scope:app`) may depend on any package. SDK packages must never depend on 
 |------|---------|---------|
 | **Nx** | 22.6.x | Workspace orchestration, task caching, affected detection, release |
 | **pnpm** | 10.32.x | Package manager with `workspace:*` protocol |
-| **TypeScript** | 5.9.x | Maximum strictness (strict + all extra flags), ES2024, bundler moduleResolution |
+| **TypeScript** | 6.0.3 | Maximum strictness (strict + all extra flags), ESNext target+lib, bundler moduleResolution |
 | **Biome** | 2.4.x | Linting + formatting (replaces ESLint/Prettier entirely) |
 | **tsdown** | 0.21.x | Build tool for 21/22 packages (ESM-only `.mjs` + `.d.mts`) |
 | **Vite** | 8.x | App bundler (exchange, scanner, cubensis-connect) — Rolldown built-in |
@@ -111,7 +111,7 @@ Always respect the layer system. Before adding a dependency:
 - **Exchange signing is fully implemented** — all 13 functions in `useTransactionSigning.ts` are wired using `@decentralchain/transactions` + seed-based signing via `multiAccount`. Exchange is feature-complete pending the new node implementation.
 - **TradingView datafeed is implemented** — `subscribeBars` uses 15-second polling with dedup and immediate first tick. `matcherUrl` is wired from `networkConfig` — no hardcoded URLs remain.
 
-For current status and open work, see `docs/STATUS.md`.
+For current status and open work, see the workspace root `STATUS.md`.
 
 ---
 
@@ -134,7 +134,7 @@ Key abstractions across packages:
 Refer to these docs for deep context:
 - **`docs/UPSTREAM.md`** — Waves provenance, ecosystem mapping, gap analysis, wire-format constraints
 - **`docs/ARCHITECTURE.md`** — Monorepo design, dependency tiers, Nx config, build pipeline, decision log
-- **`docs/STATUS.md`** — Per-package health, timeline, open issues, remediation priority matrix
+- **workspace root `STATUS.md`** — Canonical project dashboard, release gates, audit log, package health, open work
 - **`docs/SECURITY-AUDIT.md`** — 6-phase security audit playbook with severity definitions and checklists
 - **`docs/CONVENTIONS.md`** — Coding standards, TypeScript strictness, testing standards, file templates, naming conventions
 

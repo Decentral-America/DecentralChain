@@ -9,7 +9,7 @@ on:
         default: '0.2.1.0'
 
 env:
-  NATIVE_DIR: packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native
+  NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 
 jobs:
   # ── Step 1: Build all native libraries ──────────────────────────────────────
@@ -27,14 +27,14 @@ jobs:
             arch: amd64
             os: ubuntu-latest
             rust-target: x86_64-unknown-linux-gnu
-            artifact: libzwaves_jni.so
+            artifact: libgroth16_jni.so
             resource-path: linux64/amd64
 
           - platform: linux
             arch: aarch64
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-gnu
-            artifact: libzwaves_jni.so
+            artifact: libgroth16_jni.so
             resource-path: linux64/aarch64
             extra-packages: gcc-aarch64-linux-gnu
 
@@ -42,7 +42,7 @@ jobs:
             arch: x86
             os: ubuntu-latest
             rust-target: i686-unknown-linux-gnu
-            artifact: libzwaves_jni.so
+            artifact: libgroth16_jni.so
             resource-path: linux32/x86
             extra-packages: gcc-multilib
 
@@ -50,28 +50,28 @@ jobs:
             arch: aarch64
             os: macos-latest
             rust-target: aarch64-apple-darwin
-            artifact: libzwaves_jni.dylib
+            artifact: libgroth16_jni.dylib
             resource-path: osx64/aarch64
 
           - platform: osx
             arch: x86_64
             os: macos-latest
             rust-target: x86_64-apple-darwin
-            artifact: libzwaves_jni.dylib
+            artifact: libgroth16_jni.dylib
             resource-path: osx64/x86_64
 
           - platform: windows
             arch: amd64
             os: windows-latest
             rust-target: x86_64-pc-windows-msvc
-            artifact: zwaves_jni.dll
+            artifact: groth16_jni.dll
             resource-path: windows64/amd64
 
           - platform: windows
             arch: x86
             os: windows-latest
             rust-target: i686-pc-windows-msvc
-            artifact: zwaves_jni.dll
+            artifact: groth16_jni.dll
             resource-path: windows32/x86
 
     steps:
@@ -93,10 +93,10 @@ jobs:
       - name: Cache Rust build
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  # v2.9.1
         with:
-          workspaces: packages/jvm/groth16/zwaves_jni
+          workspaces: packages/jvm/groth16/groth16_jni
 
       - name: Build native library
-        working-directory: packages/jvm/groth16/zwaves_jni
+        working-directory: packages/jvm/groth16/groth16_jni
         run: cargo build --release --target ${{ matrix.rust-target }}
 
       - name: Stage artifact
@@ -105,7 +105,7 @@ jobs:
           DEST="${{ env.NATIVE_DIR }}/${{ matrix.resource-path }}"
           mkdir -p "$DEST"
           rm -f "$DEST/.gitkeep"
-          cp "packages/jvm/groth16/zwaves_jni/target/${{ matrix.rust-target }}/release/${{ matrix.artifact }}" "$DEST/"
+          cp "packages/jvm/groth16/groth16_jni/target/${{ matrix.rust-target }}/release/${{ matrix.artifact }}" "$DEST/"
 
       - name: Upload native library
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1

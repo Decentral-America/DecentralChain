@@ -166,10 +166,12 @@ All packages must enable `"strict": true`, which includes:
     "exactOptionalPropertyTypes": true,   // Distinguishes missing vs undefined
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,     // ESM-only: enforces import type, no CJS re-exports (supersedes isolatedModules)
+    "erasableSyntaxOnly": true,       // TS 6.0: prevents enum/namespace (no transpilation needed)
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "target": "ES2024",
+    "target": "ESNext",
+    "lib": ["ESNext"],         // browser packages add "DOM"
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

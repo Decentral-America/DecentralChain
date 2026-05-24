@@ -117,7 +117,7 @@ npm install
 
 | Command                     | Description                              |
 | --------------------------- | ---------------------------------------- |
-| `npm run build`             | Build distribution files (ESM + CJS)     |
+| `npm run build`             | Build distribution files (ESM-only, `.mjs` + `.d.mts`) |
 | `npm test`                  | Run tests with Vitest                    |
 | `npm run test:watch`        | Tests in watch mode                      |
 | `npm run test:coverage`     | Tests with V8 coverage                   |
