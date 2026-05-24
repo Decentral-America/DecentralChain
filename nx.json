@@ -27,6 +27,14 @@
   "plugins": [
     {
       "plugin": "./tools/nx-plugins/biome-inferred"
+    },
+    {
+      "options": {
+        "ciTargetName": "test-ci",
+        "coverageTargetName": "test-coverage",
+        "testTargetName": "test"
+      },
+      "plugin": "@nx/vitest"
     }
   ],
   "release": {
