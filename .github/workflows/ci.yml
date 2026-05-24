@@ -7,7 +7,9 @@ on:
     branches: [main, dev]
 
 concurrency:
-  cancel-in-progress: true
+  # Cancel in-progress runs on feature branches/PRs to save minutes.
+  # Never cancel main or dev: interrupting would corrupt nx-set-shas lastSuccessfulRunId.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
   group: ci-${{ github.ref }}
 
 permissions:
@@ -16,6 +18,8 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Skip Prettier formatting in generators/migrations — Biome handles all formatting.
+  NX_SKIP_FORMAT: 'true'
 
 jobs:
   ci:
@@ -107,6 +111,17 @@ jobs:
         # @decentralchain/ride-js:test requires Scala.js fullLinkJS output (produced by ride.yml)
         run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride-js,ride,transactions
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        # continue-on-error: coverage upload failure must not block CI — tests already passed above.
+        continue-on-error: true
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # lcov.info is written by vitest v8 provider to <projectRoot>/coverage/
+          # nx affected only runs tests for changed packages, so only those dirs exist.
+          files: '**/coverage/lcov.info'
+          fail_ci_if_error: false
+
       - name: Verify package exports (affected)
         run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
 
@@ -121,6 +136,12 @@ jobs:
 
       - name: License scan
         run: pnpm licenses list --prod 2>&1 | tee /tmp/licenses.txt && echo "License scan complete ($(wc -l < /tmp/licenses.txt) entries)"
+
+      - name: Self-healing CI
+        # Report task failures to Nx Cloud and surface fix suggestions.
+        # Must run even when earlier steps fail so failed tasks are reported.
+        if: always()
+        run: npx nx fix-ci
 
   dependency-review:
     name: Dependency Review
