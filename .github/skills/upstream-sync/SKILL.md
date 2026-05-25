@@ -21,7 +21,7 @@ This is the critical mapping between DCC monorepo paths and Waves upstream repo 
 
 | Monorepo Path | Waves Repo Name | GitHub Org |
 |--------------|----------------|------------|
-| `packages/sdk/ts-types` | `ts-types` | wavesplatform |
+| `packages/sdk/types` | `ts-types` | wavesplatform |
 | `packages/sdk/bignumber` | `bignumber` | wavesplatform |
 | `packages/sdk/ts-lib-crypto` | `ts-lib-crypto` | wavesplatform |
 | `packages/sdk/parse-json-bignumber` | `parse-json-bignumber` | wavesplatform |
@@ -30,10 +30,10 @@ This is the critical mapping between DCC monorepo paths and Waves upstream repo 
 | `packages/sdk/data-entities` | `waves-data-entities` | wavesplatform |
 | `packages/sdk/assets-pairs-order` | `assets-pairs-order` | wavesplatform |
 | `packages/sdk/oracle-data` | `oracle-data` | wavesplatform |
-| `packages/sdk/node-api-js` | `node-api-js` | wavesplatform |
+| `packages/sdk/node-api` | `node-api-js` | wavesplatform |
 | `packages/sdk/transactions` | `waves-transactions` | wavesplatform |
 | `packages/sdk/money-like-to-node` | `money-like-to-node` | wavesplatform |
-| `packages/sdk/data-service-client-js` | `data-service-client-js` | wavesplatform |
+| `packages/sdk/data-service-client` | `data-service-client-js` | wavesplatform |
 | `packages/sdk/browser-bus` | `waves-browser-bus` | wavesplatform |
 | `packages/sdk/ledger` | `waves-ledger-js` | wavesplatform |
 | `packages/sdk/signature-adapter` | `waves-signature-adapter` | wavesplatform |

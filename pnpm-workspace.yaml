@@ -57,8 +57,8 @@ overrides:
   yauzl: '^3.2.1'
 
 # Suppress the cyclic workspace dependency warning.
-# node-api-js ↔ transactions: transactions lists node-api-js as a peerDependency;
-# node-api-js lists transactions in devDependencies for test fixtures only.
+# node-api ↔ transactions: transactions lists node-api as a peerDependency;
+# node-api lists transactions in devDependencies for test fixtures only.
 # This is intentional – the cycle is test-only and causes no runtime issues.
 ignoreWorkspaceCycles: true
 
