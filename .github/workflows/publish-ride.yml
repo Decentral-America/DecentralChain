@@ -113,14 +113,14 @@ jobs:
             --tag ${{ inputs.npm_tag }} \
             --no-git-checks
 
-      # ── npm publish: ride-js TypeScript wrapper ───────────────────────────
+      # ── npm publish: ride TypeScript wrapper ───────────────────────────
       # Build first (tsdown + type declarations) then publish.
       # pnpm replaces workspace:* refs with the just-published version.
 
-      - name: Build TypeScript wrapper (@decentralchain/ride-js)
-        run: pnpm -F @decentralchain/ride-js build
+      - name: Build TypeScript wrapper (@decentralchain/ride)
+        run: pnpm -F @decentralchain/ride build
 
-      - name: Publish @decentralchain/ride-js to npm
+      - name: Publish @decentralchain/ride to npm
         working-directory: packages/ride/ts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

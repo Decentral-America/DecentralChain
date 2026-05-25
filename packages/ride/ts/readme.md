@@ -122,8 +122,8 @@ Parse and compile with additional AST information.
 ## Development
 
 ```bash
-git clone https://github.com/Decentral-America/ride-js.git
-cd ride-js
+git clone https://github.com/Decentral-America/ride.git
+cd ride
 npm install
 ```
 

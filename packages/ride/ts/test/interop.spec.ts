@@ -77,7 +77,7 @@ describe('Interop: rsaVerify', () => {
     // Sign with NONE via ts-lib-crypto
     const sig = rsaSign(pair.rsaPrivate, msg, 'NONE');
 
-    // Verify through the globalThis.rsaVerify interop (the code path ride-js uses)
+    // Verify through the globalThis.rsaVerify interop (the code path ride uses)
     const result = globalThis.rsaVerify('NONE', msg, sig, pair.rsaPublic);
     expect(result).toBe(true);
   });

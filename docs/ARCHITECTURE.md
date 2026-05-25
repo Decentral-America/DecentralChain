@@ -35,7 +35,7 @@ The `DecentralChain` monorepo consolidates all `@decentralchain/*` SDK libraries
 | Before | After |
 |--------|-------|
 | 25 separate `npm ci` runs in CI | 1 `pnpm install` with shared cache |
-| Change in `ts-types` → manual bump in 6+ downstream repos | Change in `ts-types` → all consumers automatically use latest |
+| Change in `types` → manual bump in 6+ downstream repos | Change in `types` → all consumers automatically use latest |
 | 25 identical `biome.json` files to maintain | 1 root `biome.json` + per-package overrides |
 | Cross-package refactor = 6+ PRs across repos | Cross-package refactor = 1 atomic PR |
 | `fix-cross-deps.mjs` to sync versions | Workspace protocol `"workspace:*"` |
@@ -109,7 +109,7 @@ DecentralChain/
 │   └── scanner/                    Block explorer web app
 ├── packages/
 │   ├── sdk/                        TypeScript SDK packages → npm (@decentralchain/*)
-│   │   ├── ts-types/               Core TypeScript types
+│   │   ├── types/               Core TypeScript types
 │   │   ├── bignumber/              Arbitrary precision math
 │   │   ├── ts-lib-crypto/          Cryptographic primitives
 │   │   ├── marshall/               Binary serialization
@@ -211,7 +211,7 @@ The MCP server exposes pre-computed metadata that would otherwise require parsin
 
 | MCP Tool | What It Returns | Use Case |
 |----------|----------------|----------|
-| `nx_workspace` | All 25 projects with names, tags, types, relationships | "What projects exist? What depends on `ts-types`?" |
+| `nx_workspace` | All 25 projects with names, tags, types, relationships | "What projects exist? What depends on `types`?" |
 | `nx_project_details` | Targets, config, dependencies, tags for one project | "What targets can I run for `transactions`?" |
 | `nx_visualize_graph` | Interactive dependency graph (opens in browser) | "Show me how packages are connected" |
 | `nx_generators` | All available generators (official + custom `sdk-package`) | "What generators can scaffold a new package?" |
@@ -497,15 +497,15 @@ Every layer references the others: prompts use the same Nx commands as tasks, sk
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ TIER 0 — Foundation (0 internal deps)                          │
-│ ts-types · bignumber · marshall · ts-lib-crypto · oracle-data  │
+│ types · bignumber · marshall · ts-lib-crypto · oracle-data  │
 │ browser-bus · parse-json-bignumber · assets-pairs-order         │
 │ protobuf-serialization · ledger · crypto · cubensis-connect-types│
 ├─────────────────────────────────────────────────────────────────┤
 │ TIER 1 — Core (depends on Tier 0)                              │
-│ data-entities · money-like-to-node · node-api-js · ride-js     │
+│ data-entities · money-like-to-node · node-api · ride     │
 ├─────────────────────────────────────────────────────────────────┤
 │ TIER 2 — Integration (depends on Tier 0+1)                     │
-│ data-service-client-js · transactions                           │
+│ data-service-client · transactions                           │
 ├─────────────────────────────────────────────────────────────────┤
 │ TIER 3 — Adapters (depends on Tier 0+1+2)                      │
 │ signature-adapter · signer                                      │
@@ -607,7 +607,7 @@ Each package's `tsconfig.json` extends the root `tsconfig.base.json` and declare
     { "path": "../marshall" },
     { "path": "../protobuf-serialization" },
     { "path": "../ts-lib-crypto" },
-    { "path": "../ts-types" }
+    { "path": "../types" }
   ]
 }
 ```
