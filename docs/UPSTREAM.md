@@ -676,32 +676,32 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/sdk/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` (#112) | `309a179` (2 DCC) | 2026-03-25 | 🟢 Active |
-| 2 | `packages/sdk/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` (#33) | `3c509b0` (3 DCC) | 2024-07-05 | 💤 Dormant |
-| 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `e2fc231` (#160) | `3c6bd7c` (4 DCC) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: upstream bumps `node-forge`; DCC rebuilt on `@noble/curves` (no `node-forge` dep) |
-| 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` (#34) | `6fa6456` (3 DCC) | 2020-06-02 | 💤 Dormant |
-| 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `85e4312` (#101) | `15ebc15` (4 DCC) | 2026-05-24 | 🟢 Active | ⬜ ↓3 reviewed — N/A: two dep bumps + order-v3 re-add (order v3 was never removed from DCC) |
-| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `003f2ce` (#141) | `c6ca904` (5 DCC) | 2026-05-24 | 🟡 Moderate | ⬜ ↓2 reviewed — N/A: `protobufjs` v8 upgrade + npm build fix; DCC uses `@bufbuild/protobuf` |
-| 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` (#113) | `417b379` (2 DCC) | 2021-08-30 | 💤 Dormant |
-| 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` (#63) | `f243c68` (2 DCC) | 2018-07-06 | 💤 Dormant |
-| 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` (#13) | `db01908` (4 DCC) | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `5cf508e` (#163) | `9dad5f749` (4 DCC) | 2026-05-24 | 🟢 Active | ✅ ↓1 reviewed — N/A: CI workflow only; functional code fully ported in `9dad5f749` |
-| 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `7f16b6e` (#526) | `4e137b9` (4 DCC) | 2026-05-24 | 🟢 Active | ⬜ ↓7 reviewed — N/A: 4× docs/comments, 2× dep bumps, 1× `protobufjs` v8 build fix; DCC uses `@bufbuild/protobuf` |
-| 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` (#61) | `6e99fae` (2 DCC) | 2022-11-17 | 💤 Dormant |
-| 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` (#153) | `42d83cf` (3 DCC) | 2020-04-07 | 💤 Dormant |
-| 14 | `packages/sdk/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` (#109) | `f0f40d7` (3 DCC) | 2022-03-14 | 💤 Dormant |
-| 15 | `packages/sdk/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` (#115) | `9ca16a2` (3 DCC) | 2022-12-15 | 💤 Dormant |
-| 16 | `packages/sdk/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` (#602) | `0d6ff1c` (4 DCC) | 2023-10-13 | 💤 Dormant |
-| 17 | `packages/sdk/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` (#127) | `1cb57c2` (3 DCC) | 2026-02-25 | 🟢 Active |
-| 18 | `packages/ride/ts` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` (#303) | `b98a091` (13 DCC) | 2026-03-25 | 🟢 Active |
-| 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` (#2,585) | `a46ae18` (2,647 DCC) | 2025-05-28 | 🟢 Active |
-| 20 | `packages/sdk/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` (#52) | `ca84920` (2 DCC) | 2022-08-25 | 💤 Dormant |
-| 21 | `packages/sdk/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` (#477) | `fd5aa58` (3 DCC) | 2025-05-29 | 🟡 Moderate |
-| 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` (#846) | `b473e02` (64 DCC) | 2026-03-25 | 🟢 Active | ⬜ Remaining upstream commits N/A — DCC scanner is a full TypeScript/Vite/React Router v7 rewrite; no webpack, no lodash |
+| 1 | `packages/sdk/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` (#112) | `309a179` (#114) | 2026-03-25 | 🟢 Active |
+| 2 | `packages/sdk/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` (#33) | `3c509b0` (#36) | 2024-07-05 | 💤 Dormant |
+| 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `e2fc231` (#160) | `3c6bd7c` (#164) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: upstream bumps `node-forge`; DCC rebuilt on `@noble/curves` (no `node-forge` dep) |
+| 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` (#34) | `6fa6456` (#37) | 2020-06-02 | 💤 Dormant |
+| 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `85e4312` (#101) | `15ebc15` (#105) | 2026-05-24 | 🟢 Active | ⬜ ↓3 reviewed — N/A: two dep bumps + order-v3 re-add (order v3 was never removed from DCC) |
+| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `003f2ce` (#141) | `c6ca904` (#146) | 2026-05-24 | 🟡 Moderate | ⬜ ↓2 reviewed — N/A: `protobufjs` v8 upgrade + npm build fix; DCC uses `@bufbuild/protobuf` |
+| 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` (#113) | `417b379` (#115) | 2021-08-30 | 💤 Dormant |
+| 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` (#63) | `f243c68` (#65) | 2018-07-06 | 💤 Dormant |
+| 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` (#13) | `db01908` (#17) | 2019-09-05 | 💤 Dormant |
+| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `5cf508e` (#163) | `9dad5f749` (#167) | 2026-05-24 | 🟢 Active | ✅ ↓1 reviewed — N/A: CI workflow only; functional code fully ported in `9dad5f749` |
+| 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `7f16b6e` (#526) | `4e137b9` (#530) | 2026-05-24 | 🟢 Active | ⬜ ↓7 reviewed — N/A: 4× docs/comments, 2× dep bumps, 1× `protobufjs` v8 build fix; DCC uses `@bufbuild/protobuf` |
+| 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` (#61) | `6e99fae` (#63) | 2022-11-17 | 💤 Dormant |
+| 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` (#153) | `42d83cf` (#156) | 2020-04-07 | 💤 Dormant |
+| 14 | `packages/sdk/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` (#109) | `f0f40d7` (#112) | 2022-03-14 | 💤 Dormant |
+| 15 | `packages/sdk/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` (#115) | `9ca16a2` (#118) | 2022-12-15 | 💤 Dormant |
+| 16 | `packages/sdk/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` (#602) | `0d6ff1c` (#606) | 2023-10-13 | 💤 Dormant |
+| 17 | `packages/sdk/signer` | [wavesplatform/signer](https://github.com/wavesplatform/signer) | `16ea3bc` (#127) | `1cb57c2` (#130) | 2026-02-25 | 🟢 Active |
+| 18 | `packages/ride/ts` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` (#303) | `b98a091` (#316) | 2026-03-25 | 🟢 Active |
+| 19 | `apps/cubensis-connect` | [Keeper-Wallet/Keeper-Wallet-Extension](https://github.com/Keeper-Wallet/Keeper-Wallet-Extension) | `6ef57b32` (#2,585) | `a46ae18` (#2,647) | 2025-05-28 | 🟢 Active |
+| 20 | `packages/sdk/cubensis-connect-types` | [Keeper-Wallet/waveskeeper-types](https://github.com/Keeper-Wallet/waveskeeper-types) | `b9eafdf` (#52) | `ca84920` (#54) | 2022-08-25 | 💤 Dormant |
+| 21 | `packages/sdk/cubensis-connect-provider` | [Keeper-Wallet/provider-keeper](https://github.com/Keeper-Wallet/provider-keeper) | `24e3bc9` (#477) | `fd5aa58` (#480) | 2025-05-29 | 🟡 Moderate |
+| 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` (#846) | `b473e02` (#910) | 2026-03-25 | 🟢 Active | ⬜ Remaining upstream commits N/A — DCC scanner is a full TypeScript/Vite/React Router v7 rewrite; no webpack, no lodash |
 | 23 | `packages/sdk/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
-| 24 | `packages/sdk/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` (#234) | `bd092dd` (4 DCC) | 2025-05-28 | 🟡 Moderate |
-| 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` (#1,392) | `7d40c14f` (28 DCC) | 2026-04-07 | 🟢 Active |
-| 26 | `packages/sdk/node-api-grpc` | [wavesplatform/node-api-grpc-js](https://github.com/wavesplatform/node-api-grpc-js) | `2a6202f` (#10) | `1fac317` (1 DCC) | 2026-05-24 | 🟢 Active |
+| 24 | `packages/sdk/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` (#234) | `bd092dd` (#238) | 2025-05-28 | 🟡 Moderate |
+| 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` (#1,392) | `7d40c14f` (#1,420) | 2026-04-07 | 🟢 Active |
+| 26 | `packages/sdk/node-api-grpc` | [wavesplatform/node-api-grpc-js](https://github.com/wavesplatform/node-api-grpc-js) | `2a6202f` (#10) | `1fac317` (#11) | 2026-05-24 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
 
@@ -713,9 +713,9 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (1,773 DCC) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no RIDE language change |
-| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (43 DCC) | 2026-05-24 | 🟡 Moderate | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no REPL change |
-| 3 | `packages/ride/ts/` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` (#303) | `b98a091` (13 DCC) | 2026-03-25 | 🟢 Active |
+| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (#14,987) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no RIDE language change |
+| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (#13,257) | 2026-05-24 | 🟡 Moderate | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no REPL change |
+| 3 | `packages/ride/ts/` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` (#303) | `b98a091` (#316) | 2026-03-25 | 🟢 Active |
 
 > Import commit `17626cc7` message: "feat(DCC-252): import lang and repl from node-scala with full upstream history — Extracted lang/ and repl/ from Ecosystem/node-scala preserving 1,991 commits from the upstream Waves history plus all 5 DCC patches (namespace rename, chain identity, security hardening, test fixes)."
 
@@ -725,12 +725,12 @@ Each library was imported into the monorepo via `git subtree add` or `git filter
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/jvm/java-sdk` | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` (#245 / 245↑) | `390fc984` (19 DCC) | 2026-02-20 | 🟢 Active |
-| 2 | `packages/jvm/curve25519` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` (#174 / 174↑) | `e6f21dea` (2 DCC) | 2023-10-12 | 💤 Dormant |
-| 3 | `packages/jvm/transactions` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (#107 / 107↑) | `eff2d5e5` (5 DCC) | 2025 | 💤 Dormant |
-| 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` (#4 / 4↑) | `7c11f306` (7 DCC) | 2026-04-15 | 💤 Dormant |
-| 5 | `packages/jvm/groth16` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` (#104 / 104↑) | `3df6a576` (7 DCC) | 2024 | 💤 Dormant |
-| 6 | `packages/jvm/crypto` | [wavesplatform/waves-crypto-java](https://github.com/wavesplatform/waves-crypto-java) | `0f1fc0c91` (#68 / 68↑) | `790fd4ec8` (7 DCC) | 2026-05-19 | 💤 Dormant |
+| 1 | `packages/jvm/java-sdk` | [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) | `2f78fd3` (#245 / 245↑) | `390fc984` (#264) | 2026-02-20 | 🟢 Active |
+| 2 | `packages/jvm/curve25519` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` (#174 / 174↑) | `e6f21dea` (#176) | 2023-10-12 | 💤 Dormant |
+| 3 | `packages/jvm/transactions` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (#107 / 107↑) | `eff2d5e5` (#112) | 2025 | 💤 Dormant |
+| 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` (#4 / 4↑) | `7c11f306` (#11) | 2026-04-15 | 💤 Dormant |
+| 5 | `packages/jvm/groth16` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` (#104 / 104↑) | `3df6a576` (#111) | 2024 | 💤 Dormant |
+| 6 | `packages/jvm/crypto` | [wavesplatform/waves-crypto-java](https://github.com/wavesplatform/waves-crypto-java) | `0f1fc0c91` (#68 / 68↑) | `790fd4ec8` (#75) | 2026-05-19 | 💤 Dormant |
 
 > **Sync strategy for JVM packages:** Port upstream bugfixes manually. Do NOT port Waves endpoint URLs, chain IDs, or branding. Adapt Maven coordinates to `io.decentralchain:*` and group to `io.decentralchain`. Check each upstream repo monthly for security patches.
 >
