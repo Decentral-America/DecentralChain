@@ -75,19 +75,22 @@ minimumReleaseAgeExclude:
   - vite@8.0.14
   - knip@6.14.2
   - hono@4.12.23
-  - nx@22.7.3
-  - '@nx/devkit@22.7.3'
+  - nx@22.7.4
+  - '@nx/devkit@22.7.4'
+  - '@nx/vitest@22.7.4'
   - '@hookform/resolvers@5.4.0'
-  - '@nx/nx-darwin-arm64@22.7.3'
-  - '@nx/nx-darwin-x64@22.7.3'
-  - '@nx/nx-freebsd-x64@22.7.3'
-  - '@nx/nx-linux-arm-gnueabihf@22.7.3'
-  - '@nx/nx-linux-arm64-gnu@22.7.3'
-  - '@nx/nx-linux-arm64-musl@22.7.3'
-  - '@nx/nx-linux-x64-gnu@22.7.3'
-  - '@nx/nx-linux-x64-musl@22.7.3'
-  - '@nx/nx-win32-arm64-msvc@22.7.3'
-  - '@nx/nx-win32-x64-msvc@22.7.3'
+  - '@nx/nx-darwin-arm64@22.7.4'
+  - '@nx/nx-darwin-x64@22.7.4'
+  - '@nx/nx-freebsd-x64@22.7.4'
+  - '@nx/nx-linux-arm-gnueabihf@22.7.4'
+  - '@nx/nx-linux-arm64-gnu@22.7.4'
+  - '@nx/nx-linux-arm64-musl@22.7.4'
+  - '@nx/nx-linux-x64-gnu@22.7.4'
+  - '@nx/nx-linux-x64-musl@22.7.4'
+  - '@nx/nx-win32-arm64-msvc@22.7.4'
+  - '@nx/nx-win32-x64-msvc@22.7.4'
+  - '@nx/js@22.7.4'
+  - '@nx/workspace@22.7.4'
 
 # @visx 3.12.0 (latest stable) declares react peerDep as "^16||^17||^18".
 # The packages work correctly with React 19 — the peerDeps declaration just
