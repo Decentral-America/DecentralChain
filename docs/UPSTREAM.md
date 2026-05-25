@@ -665,7 +665,7 @@ These repos live under `Ecosystem/` (standalone) or `apps/` (imported into monor
 | Repo | DCC Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |------|----------|---------------|----------------|------------|------|----------|
 | node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `4edf693b` (#13,214 / 13,224↑) | `595060ea` (#13,240) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: single dep bump; superseded by DCC dep audit |
-| node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `df50e74c` (#987 / 1,746↑) | `35d43501` (#988) | 2025 | 🟢 Active |
+| node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `b5feb364` (#1,746 / 1,746↑) | `c17f3894` (#1,838) | 2026-05-24 | 🟢 Active |
 | matcher | `Ecosystem/matcher` | [wavesplatform/dex](https://github.com/wavesplatform/dex) | `5c347100` (#13,224 / 13,224↑) | `1cd62e59` (#12,560) | 2026-02 | 🟡 Moderate |
 | blockchain-postgres-sync | `apps/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `b80b81b` (#351 / 351↑) | `d0d212296` (345 DCC) | 2026-05 | 🟢 Active |
 | docs | `Ecosystem/docs` | [wavesplatform/waves-documentation](https://github.com/wavesplatform/waves-documentation) | — (no tracked SHA; initial import was manual) | `673cc90` (#122) | 2023 | 💤 Dormant |
