@@ -1,13 +1,13 @@
-import { broadcastTx, getNetworkByte, waitForTx } from '@decentralchain/node-api-js';
-import { fetchBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
-import { fetchAssetsBalance } from '@decentralchain/node-api-js/api-node/assets';
+import { broadcastTx, getNetworkByte, waitForTx } from '@decentralchain/node-api';
+import { fetchBalanceDetails } from '@decentralchain/node-api/api-node/addresses';
+import { fetchAssetsBalance } from '@decentralchain/node-api/api-node/assets';
 import {
   type SignedTransaction,
   TRANSACTION_TYPE,
   type Transaction,
   type TransactionType,
   type WithApiMixin,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { DEFAULT_OPTIONS } from './constants.js';
 import {
   catchProviderError,

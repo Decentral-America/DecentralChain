@@ -14,7 +14,7 @@ import {
   type DataTransaction,
   type DataTransactionEntry,
   TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
 import { dataEntryToProto, txToProtoBytes } from '../proto-serialize';

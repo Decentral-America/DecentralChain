@@ -1,5 +1,5 @@
 import { libs, order, signTx } from '@decentralchain/transactions';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { EventEmitter } from 'typed-ts-events';
 import {
   type AuthEvents,

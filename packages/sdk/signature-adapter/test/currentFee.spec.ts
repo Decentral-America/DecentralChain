@@ -1,7 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { libs, seedUtils } from '@decentralchain/transactions';
-import { type IExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { type IExchangeTransactionOrder } from '@decentralchain/types';
 import {
   currentCreateOrderFactory,
   SeedAdapter,

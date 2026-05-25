@@ -511,7 +511,7 @@ sequenceDiagram
 
     loop Every 15 seconds — price chart polling
         EX->>+DS: GET /v0/candles/{amountAsset}/{priceAsset}
-        Note over EX,DS: via @decentralchain/data-service-client-js
+        Note over EX,DS: via @decentralchain/data-service-client
         DS-->>-EX: OHLCV candle data
         EX->>EX: Update TradingView chart
     end

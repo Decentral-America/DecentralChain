@@ -140,7 +140,7 @@ All of the following must pass before merge:
 
 | Package | Description |
 | --- | --- |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types) | Core TypeScript type definitions |
 | [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities) | Asset, Money, and OrderPrice models |
 | [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter) | Multi-provider signing adapter |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |

@@ -164,10 +164,10 @@ All of the following must pass before merge:
 | Package                                                                                                          | Description                         |
 | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber)                           | Arbitrary-precision arithmetic      |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                             | Core TypeScript type definitions    |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types)                             | Core TypeScript type definitions    |
 | [`@decentralchain/money-like-to-node`](https://www.npmjs.com/package/@decentralchain/money-like-to-node)         | Money-like to node format converter |
 | [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter)           | Multi-provider signing adapter      |
-| [`@decentralchain/data-service-client-js`](https://www.npmjs.com/package/@decentralchain/data-service-client-js) | Data service API client             |
+| [`@decentralchain/data-service-client`](https://www.npmjs.com/package/@decentralchain/data-service-client) | Data service API client             |
 
 ## Contributing
 

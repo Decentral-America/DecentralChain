@@ -1,4 +1,4 @@
-import { type SetScriptTransaction } from '@decentralchain/ts-types';
+import { type SetScriptTransaction } from '@decentralchain/types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type TWithPartialFee } from '../types/index.js';

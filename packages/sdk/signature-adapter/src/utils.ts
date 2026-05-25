@@ -5,7 +5,7 @@ import {
   type IssueTransaction,
   type MassTransferTransaction,
   type SignableTransaction,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { DCC_ID } from './prepareTx';
 
 export function find<T>(some: Partial<T>, list: T[]) {

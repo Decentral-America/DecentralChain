@@ -23,7 +23,7 @@ import {
   type UpdateAssetInfoTransactionFields,
   type WithApiMixin,
   type WithId,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 
 export interface TypedData {
   /** Field type */
@@ -234,7 +234,7 @@ export interface BroadcastOptions {
   confirmations?: number;
 }
 
-// Maps a signer tx to a signed transaction from @decentralchain/ts-types
+// Maps a signer tx to a signed transaction from @decentralchain/types
 export type SignerTxToSignedTx<T> = T extends SignerTx
   ? T['type'] extends keyof TransactionMap
     ? SignedTransaction<TransactionMap[T['type']]> & WithId
