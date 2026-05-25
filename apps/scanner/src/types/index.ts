@@ -1,8 +1,8 @@
-import { type ILeaseInfo } from '@decentralchain/node-api-js/api-node/leasing';
+import { type ILeaseInfo } from '@decentralchain/node-api/api-node/leasing';
 import {
   type IPeerAllResponse,
   type IPeerConnectedResponse,
-} from '@decentralchain/node-api-js/api-node/peers';
+} from '@decentralchain/node-api/api-node/peers';
 
 // ─── Transaction ─────────────────────────────────────────────────
 // Flat convenience interface for node-API transaction responses.

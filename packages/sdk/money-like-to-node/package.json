@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@decentralchain/ts-types": "workspace:*"
+    "@decentralchain/types": "workspace:*"
   },
   "description": "Converts human-readable money-like objects to DecentralChain blockchain node API format",
   "devDependencies": {

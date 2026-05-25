@@ -1,7 +1,7 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { convert } from '@decentralchain/money-like-to-node';
 import { libs } from '@decentralchain/transactions';
-import { type ExchangeTransactionOrder, type SignableTransaction } from '@decentralchain/ts-types';
+import { type ExchangeTransactionOrder, type SignableTransaction } from '@decentralchain/types';
 import { ERRORS } from './constants';
 import {
   DCC_ID,

@@ -1,4 +1,4 @@
-import { type AliasTransaction } from '@decentralchain/ts-types';
+import { type AliasTransaction } from '@decentralchain/types';
 import { ALIAS, type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { gte, length, lte, pipe, prop } from '../utils/index.js';

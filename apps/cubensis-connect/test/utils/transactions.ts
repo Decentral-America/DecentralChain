@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 
 export const ISSUE = {
   data: {

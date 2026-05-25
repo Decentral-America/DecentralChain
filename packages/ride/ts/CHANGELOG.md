@@ -45,7 +45,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced Jest with Vitest.
 - Replaced Webpack with tsup.
 - Upgraded all dependencies to latest stable versions.
-- Rebranded from `@waves/ride-js` to `@decentralchain/ride-js`.
+- Rebranded from `@waves/ride-js` to `@decentralchain/ride`.
 
 ### Added
 

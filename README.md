@@ -23,7 +23,7 @@
 
 | Package | Description |
 |---------|-------------|
-| `@decentralchain/ts-types` | Core TypeScript type definitions |
+| `@decentralchain/types` | Core TypeScript type definitions |
 | `@decentralchain/bignumber` | BigNumber utilities |
 | `@decentralchain/ts-lib-crypto` | Cryptographic primitives |
 | `@decentralchain/marshall` | Binary serialization |
@@ -37,9 +37,9 @@
 | `@decentralchain/parse-json-bignumber` | JSON parsing with BigNumber |
 | `@decentralchain/data-entities` | Data entity models |
 | `@decentralchain/money-like-to-node` | Money conversion |
-| `@decentralchain/node-api-js` | Node REST API client |
-| `@decentralchain/ride-js` | RIDE smart contract compiler |
-| `@decentralchain/data-service-client-js` | Data service client |
+| `@decentralchain/node-api` | Node REST API client |
+| `@decentralchain/ride` | RIDE smart contract compiler |
+| `@decentralchain/data-service-client` | Data service client |
 | `@decentralchain/transactions` | Transaction builders |
 | `@decentralchain/signature-adapter` | Signature adapters |
 | `@decentralchain/signer` | Transaction signing |
@@ -108,7 +108,7 @@ pnpm graph
 
 ```bash
 # Build a single package
-npx nx build @decentralchain/ts-types
+npx nx build @decentralchain/types
 
 # Run affected tests only
 npx nx affected -t test

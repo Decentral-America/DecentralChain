@@ -1,5 +1,5 @@
 import { base58Encode, blake2b } from '@decentralchain/ts-lib-crypto';
-import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
+import { DATA_FIELD_TYPE } from '@decentralchain/types';
 import { verifyCustomData } from '../../src/general';
 import { customData, serializeCustomData } from '../../src/requests/custom-data';
 

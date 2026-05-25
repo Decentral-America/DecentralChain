@@ -5,7 +5,7 @@
     "@decentralchain/bignumber",
     "@decentralchain/browser-bus",
     "@decentralchain/data-entities",
-    "@decentralchain/data-service-client-js",
+    "@decentralchain/data-service-client",
     "@decentralchain/oracle-data",
     "@decentralchain/signature-adapter",
     "@decentralchain/ts-lib-crypto",

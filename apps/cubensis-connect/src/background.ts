@@ -1,5 +1,5 @@
 import { base58Decode, base58Encode, verifySignature } from '@decentralchain/crypto';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { deepEqual } from 'fast-equals';
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';

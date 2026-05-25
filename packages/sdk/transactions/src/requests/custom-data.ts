@@ -14,7 +14,7 @@ import {
 import {
   type DataTransactionDeleteRequest,
   type DataTransactionEntry,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { type TPrivateKey } from '../types';
 import { validate } from '../validators';
 

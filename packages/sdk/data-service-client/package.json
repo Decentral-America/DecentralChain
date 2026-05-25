@@ -1,0 +1,86 @@
+{
+  "author": "DecentralChain",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
+  },
+  "dependencies": {
+    "@decentralchain/bignumber": "workspace:*",
+    "@decentralchain/data-entities": "workspace:*"
+  },
+  "description": "Data service client for DecentralChain blockchain",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:",
+    "@decentralchain/parse-json-bignumber": "workspace:*",
+    "@size-limit/preset-small-lib": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "publint": "catalog:",
+    "size-limit": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/data-service-client",
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "blockchain",
+    "data-service",
+    "client",
+    "sdk"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.mjs",
+  "name": "@decentralchain/data-service-client",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:2"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "directory": "packages/sdk/data-service-client",
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "lint": "biome check .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "4.2.1"
+}

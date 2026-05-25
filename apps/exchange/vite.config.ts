@@ -125,8 +125,8 @@ export default defineConfig({
     // sentryVitePlugin must be last — source maps must be finalized before upload.
     // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
     sentryVitePlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      disable: !process.env.SENTRY_AUTH_TOKEN,
+      authToken: process.env['SENTRY_AUTH_TOKEN'],
+      disable: !process.env['SENTRY_AUTH_TOKEN'],
       org: 'decentral-america',
       project: 'dcc-exchange',
       sourcemaps: {

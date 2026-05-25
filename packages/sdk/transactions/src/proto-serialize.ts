@@ -55,7 +55,7 @@ import {
   type TransactionType,
   type TransferTransaction,
   type UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { base64Prefix, chainIdFromRecipient } from './generic';
 import { type TTransaction, type TTx, type WithChainId } from './transactions';
 

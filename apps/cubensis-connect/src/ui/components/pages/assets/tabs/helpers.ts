@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { deepEqual } from 'fast-equals';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';

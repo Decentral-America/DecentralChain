@@ -1,8 +1,11 @@
 import { serve } from '@hono/node-server';
 import { Effect, pipe } from 'effect';
 import { Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
 import { requestId } from 'hono/request-id';
+import { secureHeaders } from 'hono/secure-headers';
+import { timeout } from 'hono/timeout';
 
 import { createPgDriver } from './db';
 import createEventBus from './eventBus/';
@@ -37,7 +40,28 @@ Effect.runPromise(
       // order is execution order. All handlers need eventBus, requestId, etc.
       app.use(requestId());
       app.use(injectEventBus(eventBus));
-      app.use(cors());
+
+      // Security response headers — defense-in-depth for browser and proxy
+      // clients. crossOriginResourcePolicy is set to 'cross-origin' because
+      // this is a public read API with cors() allowing all origins.
+      app.use(
+        secureHeaders({
+          crossOriginResourcePolicy: 'cross-origin',
+        }),
+      );
+
+      // Wide-open CORS is intentional: this is a public read-only blockchain
+      // data API consumed by third-party dapps and browsers.
+      app.use(cors({ origin: '*' }));
+
+      // Abort handlers that take longer than 30 s — prevents slow DB queries
+      // from holding connections open indefinitely.
+      app.use(timeout(30_000));
+
+      // Limit POST body size to 100 KB — sufficient for alias/asset mget
+      // batches and guards against request-body DoS.
+      app.use(bodyLimit({ maxSize: 100 * 1024 }));
+
       app.use(accessLogMiddleware);
 
       // Mount all routes after middleware is registered.

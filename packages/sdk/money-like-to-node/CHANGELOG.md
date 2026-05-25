@@ -34,4 +34,4 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Note
 
-- Production dependency `@decentralchain/ts-types` currently resolves via npm alias to `@waves/ts-types@0.3.3`. A native `@decentralchain/ts-types` package will replace this in a future release.
+- Production dependency `@decentralchain/types` currently resolves via npm alias to `@waves/ts-types@0.3.3`. A native `@decentralchain/types` package will replace this in a future release.

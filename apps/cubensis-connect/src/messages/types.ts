@@ -9,7 +9,7 @@ import type {
   InvokeScriptPayment,
   LeaseTransactionFromNode,
   TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import type { PreferencesAccount } from '#preferences/types';
 
 interface MessageInputAuth {

@@ -1,7 +1,7 @@
 import { createOrderPair } from '@decentralchain/assets-pairs-order';
 import { BigNumber } from '@decentralchain/bignumber';
 import { type Asset, AssetPair, Money, type TMoneyInput } from '@decentralchain/data-entities';
-import { type TPairJSON } from '@decentralchain/data-service-client-js';
+import { type TPairJSON } from '@decentralchain/data-service-client';
 import { DCC_ID } from '@decentralchain/signature-adapter';
 import { getDataService, matcherSettingsPromise } from '../../config';
 import { request } from '../../utils/request';

@@ -148,8 +148,8 @@ All of the following must pass before merge:
 | --- | --- |
 | [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber) | Arbitrary-precision arithmetic |
 | [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall) | Binary serialization/deserialization |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
-| [`@decentralchain/data-service-client-js`](https://www.npmjs.com/package/@decentralchain/data-service-client-js) | Data service API client |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api) | Node REST API client |
+| [`@decentralchain/data-service-client`](https://www.npmjs.com/package/@decentralchain/data-service-client) | Data service API client |
 
 ## Contributing
 

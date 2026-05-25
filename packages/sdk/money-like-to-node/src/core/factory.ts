@@ -1,7 +1,7 @@
 /**
  * Build an object of type `R` from input `T` by applying a per-key transform.
  *
- * Many transaction types in `@decentralchain/ts-types` are unions of versioned
+ * Many transaction types in `@decentralchain/types` are unions of versioned
  * variants (e.g. `AliasTransaction = V1 | V2 | V3`). When `R` is such a union,
  * TypeScript distributes the mapped-type constraint across members — demanding
  * that e.g. `version` returns literal `1` for V1, `2` for V2, etc. — which no

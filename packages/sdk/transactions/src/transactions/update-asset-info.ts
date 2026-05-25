@@ -3,7 +3,7 @@
  */
 
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import { TRANSACTION_TYPE, type UpdateAssetInfoTransaction } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE, type UpdateAssetInfoTransaction } from '@decentralchain/types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
 import { txToProtoBytes } from '../proto-serialize';

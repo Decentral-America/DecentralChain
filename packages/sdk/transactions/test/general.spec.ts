@@ -1,5 +1,5 @@
 import { publicKey, verifySignature } from '@decentralchain/ts-lib-crypto';
-import { type Transaction } from '@decentralchain/ts-types';
+import { type Transaction } from '@decentralchain/types';
 import { broadcast, burn, data, type IDataParams, reissue, signTx } from '../src';
 import { serialize, verify } from '../src/general';
 import { normalizeAssetId } from '../src/generic';

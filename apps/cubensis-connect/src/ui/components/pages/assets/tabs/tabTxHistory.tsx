@@ -1,5 +1,5 @@
-import type { TransactionFromNode } from '@decentralchain/ts-types';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import clsx from 'clsx';
 import { Trans, useTranslation } from 'react-i18next';
 import { AutoSizer } from 'react-virtualized-auto-sizer';

@@ -2,7 +2,7 @@ import {
   type ExchangeTransaction,
   type ExchangeTransactionOrder,
   type SignedIExchangeTransactionOrder,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { type TYPES } from '../constants/index.js';
 import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
 import { getAssetId, getCoins } from '../utils/index.js';

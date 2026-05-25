@@ -26,6 +26,10 @@
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     },
+    "./grpc": {
+      "types": "./dist/grpc.d.mts",
+      "default": "./dist/grpc.mjs"
+    },
     "./proto/*": "./proto/*"
   },
   "files": [

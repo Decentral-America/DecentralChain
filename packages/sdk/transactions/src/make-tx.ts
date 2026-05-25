@@ -17,7 +17,7 @@ import {
   TRANSACTION_TYPE,
   type TransferTransaction,
   type UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { txToProtoBytes } from './proto-serialize';
 import {
   type IAliasParams,

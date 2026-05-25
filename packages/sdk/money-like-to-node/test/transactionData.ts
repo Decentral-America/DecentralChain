@@ -1,6 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { type TTransaction } from '@decentralchain/ts-types';
+import { type TTransaction } from '@decentralchain/types';
 import { TYPES } from '../src/constants/index.js';
 import { type TClientEntity } from '../src/toNodeEntities/index.js';
 import { type TWithPartialFee } from '../src/types/index.js';

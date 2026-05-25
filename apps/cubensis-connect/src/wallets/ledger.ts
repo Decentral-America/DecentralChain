@@ -1,6 +1,6 @@
 import { base58Decode } from '@decentralchain/crypto';
 import type { SignData, SignOrderData, SignTxData } from '@decentralchain/ledger';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import type { AssetInfoController } from '#controllers/assetInfo';
 import type { MessageTx } from '#messages/types';
 import type { NetworkName } from '#networks/types';

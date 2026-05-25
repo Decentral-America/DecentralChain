@@ -244,8 +244,8 @@ npm run check:size      # Within size budget
 | -------------------------------------------------------------------------------------------- | ------------------------------------ |
 | [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall)         | Binary serialization/deserialization |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers     |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)         | Core TypeScript type definitions     |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js)   | Node REST API client                 |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types)         | Core TypeScript type definitions     |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api)   | Node REST API client                 |
 
 ## Contributing
 

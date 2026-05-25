@@ -560,7 +560,7 @@ Internal dependencies use `workspace:*` — pnpm resolves them to local source d
 // In packages/sdk/transactions/package.json
 {
   "dependencies": {
-    "@decentralchain/ts-types": "workspace:*",    // → ^2.0.1 at publish
+    "@decentralchain/types": "workspace:*",    // → ^2.0.1 at publish
     "@decentralchain/marshall": "workspace:*"      // → ^1.0.1 at publish
   }
 }
@@ -681,7 +681,7 @@ See [CONVENTIONS.md — Automated Dependency Updates](CONVENTIONS.md#automated-d
 
 | In Monorepo | Published to npm |
 |-------------|------------------|
-| `"@decentralchain/ts-types": "workspace:*"` | `"@decentralchain/ts-types": "^2.0.1"` |
+| `"@decentralchain/types": "workspace:*"` | `"@decentralchain/types": "^2.0.1"` |
 
 ### npm Provenance
 

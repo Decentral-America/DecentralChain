@@ -45,7 +45,7 @@
     "@decentralchain/assets-pairs-order",
     "@decentralchain/browser-bus",
     "@decentralchain/data-entities",
-    "@decentralchain/data-service-client-js",
+    "@decentralchain/data-service-client",
     "@decentralchain/oracle-data",
     // used only in data-service layer which is excluded from TS compilation
     "bignumber.js",
@@ -244,6 +244,18 @@
       "entry": ["src/pages/**/*.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
     },
+    "packages/ride/lang/js": {
+      "entry": ["dist/lang.js"],
+      "project": ["dist/**/*.js"]
+    },
+    "packages/ride/repl/js": {
+      "entry": ["dist/repl.js"],
+      "project": ["dist/**/*.js"]
+    },
+    "packages/ride/ts": {
+      "entry": ["src/index.js"],
+      "project": ["src/**/*.{ts,js}"]
+    },
     "packages/sdk/*": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
@@ -259,10 +271,10 @@
       "ignoreBinaries": ["wasm-pack"],
       "project": ["src/**/*.ts"]
     },
-    "packages/sdk/data-service-client-js": {
+    "packages/sdk/data-service-client": {
       "project": ["src/**/*.ts"]
     },
-    "packages/sdk/node-api-js": {
+    "packages/sdk/node-api": {
       "entry": ["test/**/*.spec.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
@@ -270,18 +282,6 @@
       "entry": ["src/index.ts"],
       "ignore": ["src/gen/**"],
       "project": ["src/**/*.ts"]
-    },
-    "packages/ride/ts": {
-      "entry": ["src/index.js"],
-      "project": ["src/**/*.{ts,js}"]
-    },
-    "packages/ride/lang/js": {
-      "entry": ["dist/lang.js"],
-      "project": ["dist/**/*.js"]
-    },
-    "packages/ride/repl/js": {
-      "entry": ["dist/repl.js"],
-      "project": ["dist/**/*.js"]
     }
   }
 }

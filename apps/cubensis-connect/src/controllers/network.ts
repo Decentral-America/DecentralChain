@@ -1,4 +1,4 @@
-import type { TransactionFromNode } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/types';
 import { addBreadcrumb, setTag } from '@sentry/browser';
 import { createStore } from 'zustand/vanilla';
 import { JSONbn } from '#_core/jsonBn';

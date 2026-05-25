@@ -1,6 +1,6 @@
 import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

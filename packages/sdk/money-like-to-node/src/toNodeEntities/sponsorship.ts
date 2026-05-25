@@ -1,4 +1,4 @@
-import { type SponsorshipTransaction } from '@decentralchain/ts-types';
+import { type SponsorshipTransaction } from '@decentralchain/types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type TMoney, type TWithPartialFee } from '../types/index.js';

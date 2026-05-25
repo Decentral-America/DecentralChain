@@ -10,7 +10,7 @@ RIDE language compiler and REPL — standalone sbt package extracted from [node-
 | `io.decentralchain:lang-testkit` | Test helpers | Maven Central |
 | `@decentralchain/ride-lang` | RIDE compiler (npm Scala.js binary) | npm |
 | `@decentralchain/ride-repl` | RIDE REPL (npm Scala.js binary) | npm |
-| `@decentralchain/ride-js` | TypeScript wrapper | npm |
+| `@decentralchain/ride` | TypeScript wrapper | npm |
 
 ## Building
 

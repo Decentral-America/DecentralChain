@@ -13,7 +13,7 @@ binaries that are NOT committed to git (dist/ is gitignored).
 sbt fullLinkJS
 
 # Then from monorepo root
-pnpm --filter @decentralchain/ride-js test
+pnpm --filter @decentralchain/ride test
 ```
 
 Or use the Nx target:

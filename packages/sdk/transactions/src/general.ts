@@ -22,7 +22,7 @@ import {
   type Transaction,
   type TransferTransaction,
   type UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { isOrder } from './generic';
 import { serializeAuthData } from './requests/auth';
 import { serializeCustomData, type TSignedData } from './requests/custom-data';

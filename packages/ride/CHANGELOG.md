@@ -54,7 +54,7 @@ Version freshness sweep via GitHub API + Maven Central direct artifact checks:
 - Standalone sbt build extracted from `node-scala` with full upstream git history
 - `packages/ride/lang/` — RIDE compiler (JVM + Scala.js), 1,991 commits of history
 - `packages/ride/repl/` — RIDE REPL (JVM + Scala.js)
-- `packages/ride/ts/` — TypeScript wrapper (`@decentralchain/ride-js`)
+- `packages/ride/ts/` — TypeScript wrapper (`@decentralchain/ride`)
 - `@decentralchain/ride-lang` npm package (rebranded from `@waves/ride-lang`)
 - `@decentralchain/ride-repl` npm package (rebranded from `@waves/ride-repl`)
 - sbt quality gates: scalafmt, scalafix, scoverage ≥ 40% per JVM sub-project (DCC-252 AC)

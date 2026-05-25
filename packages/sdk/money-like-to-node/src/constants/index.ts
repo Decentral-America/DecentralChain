@@ -1,4 +1,4 @@
-import { type TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { type TRANSACTION_TYPE } from '@decentralchain/types';
 
 export const TYPES: typeof TRANSACTION_TYPE = Object.freeze({
   ALIAS: 10 as const,

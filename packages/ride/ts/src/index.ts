@@ -1,5 +1,5 @@
 /**
- * @module @decentralchain/ride-js
+ * @module @decentralchain/ride
  * @description JS compiler for Ride — the smart-contract language for DecentralChain.
  * Wraps the Scala.js-compiled Ride compiler to provide compile, decompile,
  * REPL, and script-info utilities for Ride v1–v6 contracts.

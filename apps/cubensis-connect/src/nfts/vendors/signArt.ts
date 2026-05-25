@@ -1,4 +1,4 @@
-import type { DataTransactionEntryString } from '@decentralchain/ts-types';
+import type { DataTransactionEntryString } from '@decentralchain/types';
 
 import { dataEntriesToRecord, fetchDataEntries } from '../../nodeApi/dataEntries';
 import type { CreateParams, FetchInfoParams, NftAssetDetail, NftVendor } from '../types';

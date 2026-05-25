@@ -522,7 +522,7 @@ All errors extend `SignerError` which includes `code`, `type`, and a detailed me
 | --- | --- |
 | [`@decentralchain/cubensis-connect-provider`](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider) | CubensisConnect wallet provider |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api) | Node REST API client |
 | [`@decentralchain/ts-lib-crypto`](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
 | [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter) | Multi-provider signing adapter |
 

@@ -9,7 +9,7 @@
  *  - logger levels (logger.ts)
  */
 
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { describe, expect, it, vi } from 'vitest';
 import { makeConsole, makeOptions } from '../src/logger';
 import { Signer } from '../src/Signer';
