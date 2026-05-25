@@ -205,7 +205,7 @@ jobs:
 
       - name: Pre-install Wrangler (pnpm 11 requires -w flag for workspace-root installs)
         if: steps.cf-check.outputs.configured == 'true'
-        run: pnpm add -w wrangler@4.93.1
+        run: pnpm add -w wrangler@4.94.0
 
       - name: Deploy to Cloudflare Pages
         if: steps.cf-check.outputs.configured == 'true'
@@ -214,7 +214,7 @@ jobs:
           apiToken:       ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId:      ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken:    ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: '4.93.1'
+          wranglerVersion: '4.94.0'
           command: >-
             pages deploy apps/exchange/dist
             --project-name=${{ needs.resolve.outputs.cf_project }}
