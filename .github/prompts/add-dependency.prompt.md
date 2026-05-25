@@ -17,9 +17,9 @@ Add a workspace dependency between `@decentralchain/*` packages with automatic l
 
 | Layer | Packages |
 |-------|----------|
-| **0** | ts-types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
-| **1** | data-entities, money-like-to-node, ride-js |
-| **2** | transactions, node-api-js, data-service-client-js |
+| **0** | types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
+| **1** | data-entities, money-like-to-node, ride |
+| **2** | transactions, node-api, data-service-client |
 | **3** | signer |
 | **4** | signature-adapter, cubensis-connect-provider |
 

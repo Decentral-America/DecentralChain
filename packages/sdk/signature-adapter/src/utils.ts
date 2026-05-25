@@ -42,7 +42,7 @@ export const TRANSACTION_TYPE = {
   DATA: 12 as const,
   EXCHANGE: 7 as const,
   // GENESIS is included here for completeness with the Waves protocol transaction set.
-  // ts-types already exports TRANSACTION_TYPE.GENESIS; this local constant mirrors it
+  // types already exports TRANSACTION_TYPE.GENESIS; this local constant mirrors it
   // for consumers that depend on this package directly.
   GENESIS: 1 as const,
   ISSUE: 3 as const,

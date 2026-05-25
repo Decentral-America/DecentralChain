@@ -195,7 +195,7 @@ All packages must enable `"strict": true`, which includes:
 
 | Package | Flag Disabled | Reason |
 |---------|---------------|--------|
-| ride-js | `strict: false` | JS source wrapping Scala.js |
+| ride | `strict: false` | JS source wrapping Scala.js |
 | protobuf-serialization | `exactOptionalPropertyTypes: false` | protobufjs codegen nullability |
 
 ---

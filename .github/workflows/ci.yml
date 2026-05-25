@@ -102,14 +102,14 @@ jobs:
         run: pnpm nx affected -t build --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,ride,transactions
 
       - name: Typecheck (affected)
-        # Build runs first so node-api-js dist/ files are on disk before typecheck.
+        # Build runs first so node-api dist/ files are on disk before typecheck.
         # Same JVM exclusions: no typecheck targets defined for those packages.
         run: pnpm nx affected -t typecheck --exclude=blst,crypto,curve25519,groth16,java-sdk,transactions
 
       - name: Test (affected)
         # ride:test runs sbt test (needs Java/sbt — tested by ride.yml)
-        # @decentralchain/ride-js:test requires Scala.js fullLinkJS output (produced by ride.yml)
-        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride-js,ride,transactions
+        # @decentralchain/ride:test requires Scala.js fullLinkJS output (produced by ride.yml)
+        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride,ride,transactions
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
@@ -126,7 +126,7 @@ jobs:
         run: pnpm nx affected -t check:exports --exclude=cubensis-connect,exchange,scanner
 
       - name: Verify package publishing (affected)
-        run: pnpm nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,ts-types
+        run: pnpm nx affected -t check:publint --exclude=cubensis-connect,exchange,scanner,types
 
       - name: Verify bundle size (affected)
         run: pnpm nx affected -t check:size --exclude=cubensis-connect,exchange,scanner

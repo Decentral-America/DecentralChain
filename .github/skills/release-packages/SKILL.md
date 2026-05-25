@@ -13,7 +13,7 @@ Version and publish `@decentralchain/*` packages using Nx Release with independe
 - **Conventional commits drive versions:**
   - `fix(crypto): ...` → patch bump for `@decentralchain/crypto`
   - `feat(signer): ...` → minor bump for `@decentralchain/signer`
-  - `feat(ts-types)!: ...` or `BREAKING CHANGE:` → major bump
+  - `feat(types)!: ...` or `BREAKING CHANGE:` → major bump
 - Only packages with relevant commits since their last release get bumped.
 
 ## Release Commands
@@ -45,7 +45,7 @@ This runs three stages:
 ### Release Specific Packages
 
 ```bash
-pnpm nx release --projects=@decentralchain/crypto,@decentralchain/ts-types
+pnpm nx release --projects=@decentralchain/crypto,@decentralchain/types
 ```
 
 ### First Release (no previous tags)

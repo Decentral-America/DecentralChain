@@ -633,7 +633,7 @@ export class Signer {
           // isSignAndBroadcastByProvider: the provider signs AND broadcasts atomically.
           // Its sign() returns BroadcastedTx<SignedTx<T>> at runtime — a contract not
           // expressible in Provider.sign's declared type. See _broadcastWire for the
-          // same pattern isolated at the node-api-js boundary.
+          // same pattern isolated at the node-api boundary.
           return _this.currentProvider.sign(txs as T[]) as Promise<BroadcastedTx<SignedTx<T>>>;
         }
 
@@ -732,7 +732,7 @@ export class Signer {
 
   /**
    * Isolated escape hatch for the cross-package type boundary between
-   * SignedTx<T> (signer-internal) and SignedTransaction<Transaction> (node-api-js).
+   * SignedTx<T> (signer-internal) and SignedTransaction<Transaction> (node-api).
    *
    * SignedTx<T> = SignedTransaction<TransactionMap[T['type']]> & WithId, which is
    * structurally a SignedTransaction<Transaction> in every concrete case.

@@ -77,7 +77,7 @@ jobs:
         run: pnpm nx run-many -t check:exports --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Verify package publishing
-        run: pnpm nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts' --exclude=ts-types
+        run: pnpm nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts' --exclude=types
 
       - name: Verify bundle size
         run: pnpm nx run-many -t check:size --projects='packages/sdk/*,packages/ride/ts'

@@ -114,15 +114,15 @@ jobs:
         working-directory: packages/ride
         run: sbt --no-colors 'project langJS; fullLinkJS; project replJS; fullLinkJS'
 
-      # ── TypeScript wrapper (@decentralchain/ride-js) ─────────────────────
+      # ── TypeScript wrapper (@decentralchain/ride) ─────────────────────
 
       - name: Build TypeScript wrapper
-        run: pnpm -F @decentralchain/ride-js build
+        run: pnpm -F @decentralchain/ride build
 
       - name: Upload Scala.js bundles (lang + repl)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: ride-js-bundles
+          name: ride-bundles
           path: |
             packages/ride/lang/js/dist/
             packages/ride/repl/js/dist/

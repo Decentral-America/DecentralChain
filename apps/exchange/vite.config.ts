@@ -64,7 +64,7 @@ export default defineConfig({
               test: /node_modules\/(charting_library|tradingview)/,
             },
             // ALL @decentralchain SDK packages + crypto primitives
-            // Covers signature-adapter, data-entities, node-api-js etc. that the
+            // Covers signature-adapter, data-entities, node-api etc. that the
             // data-service layer pulls in — keeps them out of both index and lazy chunks.
             {
               name: 'dcc-sdk',

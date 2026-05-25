@@ -2,7 +2,7 @@
  * DCC-111 — api.ts smoke tests.
  *
  * All network calls are mocked with vi.mock so tests run fully offline,
- * deterministically, and without any node-api-js side-effects.
+ * deterministically, and without any node-api side-effects.
  *
  * Strategy: verify that each exported wrapper function
  *   1. calls the correct SDK / fetch path

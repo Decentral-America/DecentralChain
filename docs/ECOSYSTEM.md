@@ -75,20 +75,20 @@ flowchart LR
         subgraph T2["Tier 2 · Integration"]
             direction LR
             TRANSACTIONS["transactions"]
-            DS_CLI["data-service-client-js"]
+            DS_CLI["data-service-client"]
         end
 
         subgraph T1["Tier 1 · Core"]
             direction LR
             DATA_ENT["data-entities"]
             M2N["money-like-to-node"]
-            NODE_API["node-api-js"]
-            RIDE["ride-js ⚠ orphan"]
+            NODE_API["node-api"]
+            RIDE["ride ⚠ orphan"]
         end
 
         subgraph T0["Tier 0 · Foundation  (zero internal deps)"]
             direction LR
-            TS_TYPES["ts-types"]
+            TS_TYPES["types"]
             BIGNUMBER["bignumber"]
             TS_CRYPTO["ts-lib-crypto"]
             MARSHALL["marshall"]
@@ -216,7 +216,7 @@ flowchart LR
     class P2P net
 ```
 
-> **Color legend:** 🔵 Blue = Apps · 🔴 Crimson = Tier 4 · 🟠 Amber = Tier 3 · 🟣 Purple = Tier 2 · 🔷 Steel = Tier 1 · 🟢 Teal = Tier 0 foundation · 🟡 Orange = Services · 💜 Violet = Database · 🔹 Sky = Ops tooling · ⬛ Grey = P2P Network · ◾ Dim = Orphaned package (`ride-js` — no app consumer)
+> **Color legend:** 🔵 Blue = Apps · 🔴 Crimson = Tier 4 · 🟠 Amber = Tier 3 · 🟣 Purple = Tier 2 · 🔷 Steel = Tier 1 · 🟢 Teal = Tier 0 foundation · 🟡 Orange = Services · 💜 Violet = Database · 🔹 Sky = Ops tooling · ⬛ Grey = P2P Network · ◾ Dim = Orphaned package (`ride` — no app consumer)
 
 ---
 
@@ -284,8 +284,8 @@ flowchart TD
     end
 
     subgraph BRIDGES["📦  SDK Service Clients  (@decentralchain/*)"]
-        NODE_API(["node-api-js<br/>Typed HTTP client for the Node REST API"])
-        DS_CLIENT(["data-service-client-js<br/>Typed HTTP client for the Data Service"])
+        NODE_API(["node-api<br/>Typed HTTP client for the Node REST API"])
+        DS_CLIENT(["data-service-client<br/>Typed HTTP client for the Data Service"])
     end
 
     subgraph SERVICES["🌐  Infrastructure Services  ⚠ not yet deployed"]
@@ -355,18 +355,18 @@ flowchart TD
 
     subgraph T2["Tier 2 — Integration"]
         TRANSACTIONS["transactions<br/>Builds and serializes all 18 DCC transaction types"]
-        DS_CLIENT["data-service-client-js<br/>HTTP client for historical data API"]
+        DS_CLIENT["data-service-client<br/>HTTP client for historical data API"]
     end
 
     subgraph T1["Tier 1 — Core"]
         DATA_ENT["data-entities<br/>Money · Asset · OrderPair domain model"]
         M2N["money-like-to-node<br/>Converts domain objects to node API format"]
-        NODE_API["node-api-js<br/>HTTP client for node REST API"]
-        RIDE["ride-js<br/>RIDE smart contract compiler"]
+        NODE_API["node-api<br/>HTTP client for node REST API"]
+        RIDE["ride<br/>RIDE smart contract compiler"]
     end
 
     subgraph T0["Tier 0 — Foundation  (zero internal dependencies)"]
-        TS_TYPES["ts-types<br/>Core interfaces"]
+        TS_TYPES["types<br/>Core interfaces"]
         BIGNUMBER["bignumber<br/>Arbitrary-precision math"]
         TS_CRYPTO["ts-lib-crypto<br/>Ed25519 · Blake2b · SHA256"]
         MARSHALL["marshall<br/>Binary serialization"]
@@ -442,7 +442,7 @@ sequenceDiagram
     participant NODE as DCC Node
 
     User->>CC: Fill recipient + amount
-    CC->>CC: Validate address (ts-types interfaces)
+    CC->>CC: Validate address (types interfaces)
     CC->>CC: Calculate amount (bignumber)
 
     User->>+CC: Confirm send
@@ -528,7 +528,7 @@ sequenceDiagram
     autonumber
     actor User
     participant SSR as Scanner (Node.js SSR)
-    participant NA as node-api-js
+    participant NA as node-api
     participant NODE as DCC Node
 
     User->>+SSR: GET /blocks/1234567
@@ -575,7 +575,7 @@ flowchart LR
     BPS["blockchain-postgres-sync<br/>npm run download 1 N<br/>npm run updateComposite"]
     PG[("PostgreSQL 11<br/>Raw txs · Candles<br/>Pairs · Assets")]
     DS["data-service<br/>API server :3000<br/>+ candles daemon<br/>+ pairs daemon"]
-    EX["💱 Exchange<br/>data-service-client-js"]
+    EX["💱 Exchange<br/>data-service-client"]
     SC["📊 Scanner<br/>raw fetch"]
     CC["🔐 Cubensis Connect<br/>raw fetch"]
 
@@ -613,7 +613,7 @@ flowchart TD
     S4["④ data-service<br/>Start API server + candles daemon + pairs daemon<br/>Verify: GET /v0/pairs returns 200 OK"]
     S5["⑤ DEX Matcher<br/>Install DEX + grpc-server extensions on the node<br/>Deploy decentralchain-dex v2.3.2.9<br/>Verify: GET /matcher returns Base58 public key"]
     S6["⑥ DNS + TLS<br/>Route all *.decentralchain.io subdomains<br/>Run all Gate 5 checks in STATUS.md"]
-    S7["⑦ npm dist-tag — promote @next to @latest<br/>assets-pairs-order · marshall · node-api-js<br/>signer · signature-adapter<br/>Unblocks external SDK consumers"]
+    S7["⑦ npm dist-tag — promote @next to @latest<br/>assets-pairs-order · marshall · node-api<br/>signer · signature-adapter<br/>Unblocks external SDK consumers"]
 
     S1 --> S2
     S2 --> S3
@@ -634,7 +634,7 @@ Services that exist in the Decentral-America GitHub org but have **zero live con
 
 | Service | Status |
 |---------|--------|
-| **DCCDataFeed** | No TypeScript app imports or fetches it. The Exchange TradingView chart polls the **data-service** directly via `data-service-client-js`, not DCCDataFeed. Not on the critical launch path. |
+| **DCCDataFeed** | No TypeScript app imports or fetches it. The Exchange TradingView chart polls the **data-service** directly via `data-service-client`, not DCCDataFeed. Not on the critical launch path. |
 | **Identity API** (`id.decentralchain.io/api`) | Cognito + `amazon-cognito-identity-js` were fully removed (DCC-117/DCC-118). Zero identity API calls remain. |
 | **BTC Gateway** (`btc.decentralchain.io`) | Referenced in `mainnet.json` gateway config but no active code path in the current exchange reaches it. |
 
@@ -658,7 +658,7 @@ Block explorer. Read-only. No signing. One SDK dependency.
 
 | Package | Why |
 |---------|-----|
-| `node-api-js` | Sole SDK dependency. All blockchain data — blocks, txs, addresses, assets, peers, rewards — comes through this typed HTTP client. |
+| `node-api` | Sole SDK dependency. All blockchain data — blocks, txs, addresses, assets, peers, rewards — comes through this typed HTTP client. |
 
 ### Exchange (`apps/exchange`)
 
@@ -666,8 +666,8 @@ DEX trading interface. Requires signing, order placement, price data, and asset 
 
 | Package | Why |
 |---------|-----|
-| `node-api-js` | Balance queries, transaction broadcast to node |
-| `data-service-client-js` | OHLCV candles (TradingView chart), exchange tx history, asset pairs, asset metadata |
+| `node-api` | Balance queries, transaction broadcast to node |
+| `data-service-client` | OHLCV candles (TradingView chart), exchange tx history, asset pairs, asset metadata |
 | `transactions` | Builds ExchangeTransaction, InvokeScriptTransaction, TransferTransaction |
 | `signature-adapter` | Signs with whichever provider is active: seed phrase, Ledger, or wallet extension |
 | `data-entities` | Money and Asset domain model — price display, amount formatting |
@@ -683,7 +683,7 @@ Browser wallet extension. Key management, signing UI, swap UI, Ledger hardware w
 
 | Package | Kind | Why |
 |---------|------|-----|
-| `ts-types` | Runtime | Core domain type interfaces used throughout |
+| `types` | Runtime | Core domain type interfaces used throughout |
 | `bignumber` | Runtime | Amount arithmetic |
 | `crypto` (WASM) | Runtime | Rust/WASM key derivation, timing-safe HMAC, Ed25519 signing |
 | `data-entities` | Runtime | Money/Asset model for balance display |
