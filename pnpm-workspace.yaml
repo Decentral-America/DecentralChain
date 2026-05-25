@@ -23,6 +23,8 @@ saveExact: true
 
 allowBuilds:
   '@bufbuild/buf': false
+  '@connectrpc/connect': false
+  '@connectrpc/connect-node': false
   '@evilmartians/lefthook': false
   '@parcel/watcher': true
   '@sentry/cli': true
@@ -72,7 +74,7 @@ minimumReleaseAgeExclude:
   - vitest@4.1.7
   - vite@8.0.14
   - knip@6.14.2
-  - hono@4.12.22
+  - hono@4.12.23
   - nx@22.7.3
   - '@nx/devkit@22.7.3'
   - '@hookform/resolvers@5.4.0'
