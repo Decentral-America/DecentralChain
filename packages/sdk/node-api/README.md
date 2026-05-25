@@ -118,8 +118,8 @@ import {
 ### Setup
 
 ```bash
-git clone https://github.com/Decentral-America/node-api-js.git
-cd node-api-js
+git clone https://github.com/Decentral-America/node-api.git
+cd node-api
 npm install
 ```
 
