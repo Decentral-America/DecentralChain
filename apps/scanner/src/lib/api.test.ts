@@ -9,7 +9,7 @@
  *   2. returns the expected shape
  *   3. throws on error responses
  */
-import { create } from '@decentralchain/node-api-js';
+import { create } from '@decentralchain/node-api';
 import { describe, expect, it, vi } from 'vitest';
 import {
   fetchAddressTransactions,
@@ -64,9 +64,9 @@ const { mockBlock, mockHeader } = vi.hoisted(() => {
   return { mockBlock, mockHeader };
 });
 
-// ── mock @decentralchain/node-api-js ────────────────────────────────────────
+// ── mock @decentralchain/node-api ────────────────────────────────────────
 
-vi.mock('@decentralchain/node-api-js', async () => ({
+vi.mock('@decentralchain/node-api', async () => ({
   create: vi.fn(() => ({
     addresses: {
       fetchBalanceDetails: vi.fn().mockResolvedValue({ available: '1000', regular: '1000' }),

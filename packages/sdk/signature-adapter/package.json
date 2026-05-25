@@ -9,7 +9,7 @@
     "@decentralchain/ledger": "workspace:*",
     "@decentralchain/money-like-to-node": "workspace:*",
     "@decentralchain/transactions": "workspace:*",
-    "@decentralchain/ts-types": "workspace:*"
+    "@decentralchain/types": "workspace:*"
   },
   "description": "Multi-provider transaction signing adapter for DecentralChain blockchain",
   "devDependencies": {

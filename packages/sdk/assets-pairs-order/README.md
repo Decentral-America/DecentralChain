@@ -207,13 +207,13 @@ This package is part of the official **DecentralChain SDK** — a suite of open-
 
 | Package                                                                                                     | Description                         |
 | ----------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                        | Core TypeScript type definitions    |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types)                        | Core TypeScript type definitions    |
 | [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber)                      | Arbitrary-precision arithmetic      |
 | [`@decentralchain/data-entities`](https://www.npmjs.com/package/@decentralchain/data-entities)              | Asset, Money, and OrderPrice models |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions)                | Transaction builders and signers    |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js)                  | Node REST API client                |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api)                  | Node REST API client                |
 
-> **Tip:** Combine `@decentralchain/assets-pairs-order` with `@decentralchain/transactions` and `@decentralchain/node-api-js` for a complete DEX trading pipeline — from order construction to submission to the matcher.
+> **Tip:** Combine `@decentralchain/assets-pairs-order` with `@decentralchain/transactions` and `@decentralchain/node-api` for a complete DEX trading pipeline — from order construction to submission to the matcher.
 
 ## FAQ
 

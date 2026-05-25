@@ -24,7 +24,7 @@ import {
   type Transaction,
   type TransferTransaction,
   type UpdateAssetInfoTransaction,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { TYPES } from '../constants/index.js';
 
 const convertArg = <FROM, TO>(

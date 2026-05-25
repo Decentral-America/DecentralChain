@@ -1,7 +1,7 @@
 import { Money } from '@decentralchain/data-entities';
 import { toNode as mlToNode, type TClientEntity } from '@decentralchain/money-like-to-node';
 import { libs, protoSerialize, type TTransaction, validators } from '@decentralchain/transactions';
-import { type ExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { type ExchangeTransactionOrder } from '@decentralchain/types';
 import { type IAdapterSignMethods } from './interfaces';
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './signType';

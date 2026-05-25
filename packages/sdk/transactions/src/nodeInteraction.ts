@@ -1,17 +1,17 @@
-import * as addresses_route from '@decentralchain/node-api-js/api-node/addresses';
-import * as assets_route from '@decentralchain/node-api-js/api-node/assets';
-import * as blocks_route from '@decentralchain/node-api-js/api-node/blocks';
-import * as debug_route from '@decentralchain/node-api-js/api-node/debug';
-import { type TStateChanges } from '@decentralchain/node-api-js/api-node/debug';
-import * as rewards_route from '@decentralchain/node-api-js/api-node/rewards';
-import * as tx_route from '@decentralchain/node-api-js/api-node/transactions';
+import * as addresses_route from '@decentralchain/node-api/api-node/addresses';
+import * as assets_route from '@decentralchain/node-api/api-node/assets';
+import * as blocks_route from '@decentralchain/node-api/api-node/blocks';
+import * as debug_route from '@decentralchain/node-api/api-node/debug';
+import { type TStateChanges } from '@decentralchain/node-api/api-node/debug';
+import * as rewards_route from '@decentralchain/node-api/api-node/rewards';
+import * as tx_route from '@decentralchain/node-api/api-node/transactions';
 import {
   type DataTransactionEntry,
   type Long,
   type SignedTransaction,
   type Transaction,
   type WithApiMixin,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 
 export type CancellablePromise<T> = Promise<T> & { cancel: () => void };
 

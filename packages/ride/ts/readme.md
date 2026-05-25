@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h3 align="center">@decentralchain/ride-js</h3>
+<h3 align="center">@decentralchain/ride</h3>
 
 <p align="center">
   JS compiler for Ride – the smart-contract language for DecentralChain
@@ -12,11 +12,11 @@
 
 <p align="center">
   <a href="https://github.com/Decentral-America/DecentralChain/actions/workflows/ci.yml"><img src="https://github.com/Decentral-America/DecentralChain/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://www.npmjs.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/npm/v/@decentralchain/ride-js?color=blue" alt="npm" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/ride-js" alt="license" /></a>
-  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/ride-js" alt="node" /></a>
+  <a href="https://www.npmjs.com/package/@decentralchain/ride"><img src="https://img.shields.io/npm/v/@decentralchain/ride?color=blue" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@decentralchain/ride" alt="license" /></a>
+  <a href="./package.json"><img src="https://img.shields.io/node/v/@decentralchain/ride" alt="node" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-6.0-blue.svg" alt="TypeScript" /></a>
-  <a href="https://bundlephobia.com/package/@decentralchain/ride-js"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/ride-js" alt="bundle size" /></a>
+  <a href="https://bundlephobia.com/package/@decentralchain/ride"><img src="https://img.shields.io/bundlephobia/minzip/@decentralchain/ride" alt="bundle size" /></a>
 </p>
 
 ---
@@ -30,7 +30,7 @@ JavaScript wrapper around the [Ride](https://docs.decentralchain.io/en/master/03
 ## Installation
 
 ```bash
-npm install @decentralchain/ride-js
+npm install @decentralchain/ride
 ```
 
 > Requires **Node.js >= 24** and an ESM environment (`"type": "module"`).
@@ -38,7 +38,7 @@ npm install @decentralchain/ride-js
 ## Quick Start
 
 ```javascript
-import { compile, decompile, contractLimits } from '@decentralchain/ride-js';
+import { compile, decompile, contractLimits } from '@decentralchain/ride';
 
 // Compile a Ride script
 const result = compile('{-# STDLIB_VERSION 6 #-}\ntrue');
@@ -116,8 +116,8 @@ Parse and compile with additional AST information.
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions)   | Transaction building, signing, broadcasting |
 | [`@decentralchain/ts-lib-crypto`](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives                    |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)           | Core TypeScript type definitions            |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js)     | Node REST API client                        |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types)           | Core TypeScript type definitions            |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api)     | Node REST API client                        |
 
 ## Development
 

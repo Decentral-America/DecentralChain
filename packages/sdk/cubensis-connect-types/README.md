@@ -157,7 +157,7 @@ const state = await api.publicState();
 | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | [`@decentralchain/cubensis-connect-provider`](https://www.npmjs.com/package/@decentralchain/cubensis-connect-provider) | CubensisConnect wallet provider  |
 | [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer)                                       | Transaction signing orchestrator |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types)                                   | Core TypeScript type definitions |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types)                                   | Core TypeScript type definitions |
 
 ## Requirements
 

@@ -1,5 +1,5 @@
 import { base58Decode, publicKey } from '@decentralchain/ts-lib-crypto';
-import { type ExchangeTransactionOrder } from '@decentralchain/ts-types';
+import { type ExchangeTransactionOrder } from '@decentralchain/types';
 import { type IBasicParams, type WithProofs, type WithSender } from './transactions';
 import { type TPrivateKey, type TSeedTypes } from './types';
 

@@ -4,7 +4,7 @@ import {
   type SignedIExchangeTransactionOrder,
   type SponsorshipTransaction,
   type TransactionMap,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { TYPES } from '../constants/index.js';
 import { type TWithPartialFee } from '../types/index.js';
 import { alias, type IClientAlias } from './alias.js';

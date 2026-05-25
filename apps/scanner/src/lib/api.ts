@@ -1,31 +1,31 @@
 /**
  * SDK-backed API layer for DecentralChain scanner.
  *
- * Replaces the hand-rolled BlockchainAPI class with @decentralchain/node-api-js.
+ * Replaces the hand-rolled BlockchainAPI class with @decentralchain/node-api.
  * Keeps raw fetch for: matcher orderbook and data-service pair info
  * (served by separate non-node services without SDK equivalents).
  */
-import { create } from '@decentralchain/node-api-js';
-import { type IBalanceDetails } from '@decentralchain/node-api-js/api-node/addresses';
+import { create } from '@decentralchain/node-api';
+import { type IBalanceDetails } from '@decentralchain/node-api/api-node/addresses';
 import {
   type IAssetDistribution,
   type TAssetBalance,
   type TAssetDetails,
   type TAssetsBalance,
   type TErrorResponse,
-} from '@decentralchain/node-api-js/api-node/assets';
-import { type IBlock, type IBlockHeader } from '@decentralchain/node-api-js/api-node/blocks';
+} from '@decentralchain/node-api/api-node/assets';
+import { type IBlock, type IBlockHeader } from '@decentralchain/node-api/api-node/blocks';
 import {
   type INodeStatus as INodeStatusBase,
   type INodeVersion,
-} from '@decentralchain/node-api-js/api-node/node';
+} from '@decentralchain/node-api/api-node/node';
 import {
   type IAllConnectedResponse,
   type IAllResponse,
   type IBlackPeer,
   type ISuspendedPeer,
-} from '@decentralchain/node-api-js/api-node/peers';
-import { type TRewards } from '@decentralchain/node-api-js/api-node/rewards';
+} from '@decentralchain/node-api/api-node/peers';
+import { type TRewards } from '@decentralchain/node-api/api-node/rewards';
 import { type Lease, type Transaction } from '@/types';
 
 /** Augmented node status – the real API returns extra fields the SDK omits. */

@@ -1,7 +1,7 @@
 /**
  * Self-contained HTTP client for matcher API calls (submitOrder / cancelSubmittedOrder).
  *
- * Extracted from @decentralchain/node-api-js to break the phantom L2→L2 dependency:
+ * Extracted from @decentralchain/node-api to break the phantom L2→L2 dependency:
  * `transactions` (builder package) no longer depends on `node-api-js` (service package)
  * at runtime.  The implementation is intentionally kept identical to the source in
  * node-api-js/src/tools/{request,resolve,parse}.ts — security properties are preserved:

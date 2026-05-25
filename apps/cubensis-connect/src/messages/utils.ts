@@ -21,8 +21,8 @@ import {
   TransactionSchema,
   toBinary,
 } from '@decentralchain/protobuf-serialization';
-import type { InvokeScriptCallArgument } from '@decentralchain/ts-types';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import type { InvokeScriptCallArgument } from '@decentralchain/types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 
 import { JSONbn } from '../_core/jsonBn';
 import type {
