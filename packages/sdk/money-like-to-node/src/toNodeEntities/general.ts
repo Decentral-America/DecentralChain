@@ -1,4 +1,4 @@
-import { type TransactionType } from '@decentralchain/ts-types';
+import { type TransactionType } from '@decentralchain/types';
 import { type TLong, type TMoney } from '../types/index.js';
 import { getCoins, pipe, prop } from '../utils/index.js';
 import { requiredValidator, validate } from '../validators/index.js';

@@ -7,7 +7,7 @@ import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto'
 import {
   type ExchangeTransactionOrder,
   type SignedIExchangeTransactionOrder,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { addProof, convertToPairs, getSenderPublicKey, isOrder, networkByte } from '../generic';
 import { orderToProtoBytes } from '../proto-serialize';
 import { type IOrderParams, type WithId, type WithProofs, type WithSender } from '../transactions';

@@ -147,7 +147,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 | # | DCC Package | Waves Source | Org | Layer | Grafted | Published |
 |---|------------|-------------|-----|-------|---------|-----------|
-| 1 | ts-types | ts-types | wavesplatform | Foundation | 🔗 | 2.0.1 |
+| 1 | types | ts-types | wavesplatform | Foundation | 🔗 | 2.0.1 |
 | 2 | bignumber | bignumber | wavesplatform | Foundation | — | 1.2.1 |
 | 3 | ts-lib-crypto | ts-lib-crypto | wavesplatform | Foundation | 🔗 | 2.0.1 |
 | 4 | parse-json-bignumber | parse-json-bignumber | wavesplatform | Foundation | 🔗 | 2.0.1 |
@@ -156,15 +156,15 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 7 | data-entities | waves-data-entities | wavesplatform | Domain Model | — | 3.0.1 |
 | 8 | assets-pairs-order | assets-pairs-order | wavesplatform | Domain Model | — | 5.0.2 |
 | 9 | oracle-data | oracle-data | wavesplatform | Domain Model | — | 1.0.1 |
-| 10 | node-api-js | node-api-js | wavesplatform | API Client | 🔗 | 2.0.1 |
+| 10 | node-api | node-api-js | wavesplatform | API Client | 🔗 | 2.0.1 |
 | 11 | transactions | waves-transactions | wavesplatform | Transaction Building | 🔗 | 5.0.1 |
 | 12 | money-like-to-node | money-like-to-node | wavesplatform | Transaction Building | — | 1.0.1 |
-| 13 | data-service-client-js | data-service-client-js | wavesplatform | API Client | 🔗 | 4.2.1 |
+| 13 | data-service-client | data-service-client-js | wavesplatform | API Client | 🔗 | 4.2.1 |
 | 14 | browser-bus | waves-browser-bus | wavesplatform | Communication | 🔗 | 1.0.1 |
 | 15 | ledger | waves-ledger-js | wavesplatform | Hardware Wallet | 🔗 | 5.1.1 |
 | 16 | signature-adapter | waves-signature-adapter | wavesplatform | Signing | 🔗 | 7.0.1 |
 | 17 | signer | signer | wavesplatform | Signing | — | 2.0.1 |
-| 18 | ride-js | ride-js | wavesplatform | Smart Contracts | — | 2.3.1 |
+| 18 | ride | ride-js | wavesplatform | Smart Contracts | — | 2.3.1 |
 | 19 | cubensis-connect | Keeper-Wallet-Extension | Keeper-Wallet | Application | 🔗 | — |
 | 20 | cubensis-connect-types | waveskeeper-types | Keeper-Wallet | Wallet Types | 🔗 | 1.0.1 |
 | 21 | cubensis-connect-provider | provider-keeper | Keeper-Wallet | Signing | 🔗 | 1.0.1 |
@@ -192,34 +192,34 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 | Layer | Packages | Role |
 |-------|----------|------|
-| **0 — Foundation** | ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, crypto, cubensis-connect-types | Core types, math, crypto, JSON parsing |
+| **0 — Foundation** | types, bignumber, ts-lib-crypto, parse-json-bignumber, crypto, cubensis-connect-types | Core types, math, crypto, JSON parsing |
 | **1 — Serialization** | marshall, protobuf-serialization | Binary/protobuf encode/decode for wire format |
 | **2 — Domain Model** | data-entities, assets-pairs-order, oracle-data | Business objects (Money, Asset, OrderPrice, Oracle) |
 | **3 — Transaction Building** | transactions, money-like-to-node | Construct, sign, and validate blockchain transactions |
-| **4 — API Client** | node-api-js, data-service-client-js | HTTP clients for node REST API and data service |
+| **4 — API Client** | node-api, data-service-client | HTTP clients for node REST API and data service |
 | **5 — Communication** | browser-bus | Cross-window postMessage for browser apps |
 | **6 — Hardware Wallet** | ledger | Ledger device integration via WebUSB |
 | **7 — Signing** | signature-adapter, signer, cubensis-connect-provider | Multi-provider signing (seed, Ledger, wallet extension) |
-| **8 — Smart Contracts** | ride-js | RIDE language compiler (wraps `@waves/ride-lang`) |
+| **8 — Smart Contracts** | ride | RIDE language compiler (wraps `@waves/ride-lang`) |
 | **9 — Applications** | scanner, exchange, cubensis-connect, data-service | End-user apps |
 
 ### Dependency Graph
 
 ```
-  ts-types  (zero @decentralchain deps — pure types)
+  types  (zero @decentralchain deps — pure types)
     ├── transactions (+ ts-lib-crypto, marshall, protobuf-serialization)
-    ├── node-api-js (+ bignumber, ts-lib-crypto)
+    ├── node-api (+ bignumber, ts-lib-crypto)
     └── signature-adapter (+ bignumber, data-entities, ledger, money-like-to-node, transactions)
 
   ts-lib-crypto  (zero @decentralchain deps — @noble/curves + @noble/hashes)
     ├── transactions
-    ├── node-api-js
-    ├── signer (+ node-api-js, ts-types)
-    └── ride-js (+ @waves/ride-lang, @waves/ride-repl)
+    ├── node-api
+    ├── signer (+ node-api, types)
+    └── ride (+ @waves/ride-lang, @waves/ride-repl)
 
   bignumber  (zero @decentralchain deps — bignumber.js)
     ├── data-entities
-    ├── node-api-js
+    ├── node-api
     └── signature-adapter
 
   marshall  (zero @decentralchain deps — base64-js, long)
@@ -235,21 +235,21 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
   data-entities  (← bignumber)
     └── signature-adapter
 
-  transactions  (← ts-types, ts-lib-crypto, marshall, protobuf-serialization)
+  transactions  (← types, ts-lib-crypto, marshall, protobuf-serialization)
     └── signature-adapter
 
-  node-api-js  (← ts-types, bignumber, ts-lib-crypto)
+  node-api  (← types, bignumber, ts-lib-crypto)
     └── signer
 
-  signature-adapter  (← ts-types, bignumber, data-entities, ledger, money-like-to-node, transactions)
+  signature-adapter  (← types, bignumber, data-entities, ledger, money-like-to-node, transactions)
 
-  signer  (← ts-types, ts-lib-crypto, node-api-js)
+  signer  (← types, ts-lib-crypto, node-api)
 
   cubensis-connect-provider  (← cubensis-connect-types, marshall)
 
   Independent (no @decentralchain deps):
     parse-json-bignumber, assets-pairs-order, browser-bus,
-    data-service-client-js, oracle-data, money-like-to-node,
+    data-service-client, oracle-data, money-like-to-node,
     cubensis-connect-types, crypto
 
   Applications (consume SDK packages):
@@ -471,15 +471,15 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 
 | Waves Package | DecentralChain Package |
 |:-------------|:----------------------|
-| `@waves/ts-types` | `@decentralchain/ts-types` |
+| `@waves/ts-types` | `@decentralchain/types` |
 | `@waves/bignumber` | `@decentralchain/bignumber` |
 | `@waves/ts-lib-crypto` | `@decentralchain/ts-lib-crypto` |
 | `@waves/marshall` | `@decentralchain/marshall` |
 | `@waves/waves-transactions` | `@decentralchain/transactions` |
 | `@waves/signature-adapter` | `@decentralchain/signature-adapter` |
 | `@waves/signer` | `@decentralchain/signer` |
-| `@waves/node-api-js` | `@decentralchain/node-api-js` |
-| `@waves/data-service-client-js` | `@decentralchain/data-service-client-js` |
+| `@waves/node-api-js` | `@decentralchain/node-api` |
+| `@waves/data-service-client-js` | `@decentralchain/data-service-client` |
 | `@waves/waves-browser-bus` | `@decentralchain/browser-bus` |
 | `@waves/parse-json-bignumber` | `@decentralchain/parse-json-bignumber` |
 | `@waves/data-entities` | `@decentralchain/data-entities` |
@@ -488,7 +488,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `@waves/assets-pairs-order` | `@decentralchain/assets-pairs-order` |
 | `@waves/protobuf-serialization` | `@decentralchain/protobuf-serialization` |
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
-| `@waves/ride-js` | `@decentralchain/ride-js` |
+| `@waves/ride-js` | `@decentralchain/ride` |
 | `@keeper-wallet/waves-crypto` | `@decentralchain/crypto` |
 | `@keeper-wallet/swap-client` | `@decentralchain/swap-client` (⚫ fully deleted) |
 | `@keeper-wallet/waveskeeper-types` | `@decentralchain/cubensis-connect-types` |
@@ -575,10 +575,10 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
   └── @decentralchain/transactions
         └── @decentralchain/signature-adapter
               └── @decentralchain/signer
-        └── @decentralchain/node-api-js
+        └── @decentralchain/node-api
   └── @decentralchain/signer
-  └── @decentralchain/ride-js
-  └── @decentralchain/node-api-js
+  └── @decentralchain/ride
+  └── @decentralchain/node-api
 
 @decentralchain/marshall
   └── @decentralchain/transactions
@@ -590,7 +590,7 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
   └── cubensis-connect (swap feature only — removed)
 
 @decentralchain/ride-lang + @decentralchain/ride-repl  ← FORKED (DCC-252) ✅
-  └── @decentralchain/ride-js
+  └── @decentralchain/ride
 ```
 
 ---
@@ -676,7 +676,7 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/sdk/ts-types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` (#112) | `309a179` (#114) | 2026-03-25 | 🟢 Active |
+| 1 | `packages/sdk/types` | [wavesplatform/ts-types](https://github.com/wavesplatform/ts-types) | `ee4a014` (#112) | `309a179` (#114) | 2026-03-25 | 🟢 Active |
 | 2 | `packages/sdk/bignumber` | [wavesplatform/bignumber](https://github.com/wavesplatform/bignumber) | `ee66601` (#33) | `3c509b0` (#36) | 2024-07-05 | 💤 Dormant |
 | 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `e2fc231` (#160) | `3c6bd7c` (#164) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: upstream bumps `node-forge`; DCC rebuilt on `@noble/curves` (no `node-forge` dep) |
 | 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` (#34) | `6fa6456` (#37) | 2020-06-02 | 💤 Dormant |
@@ -685,10 +685,10 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` (#113) | `417b379` (#115) | 2021-08-30 | 💤 Dormant |
 | 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` (#63) | `f243c68` (#65) | 2018-07-06 | 💤 Dormant |
 | 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` (#13) | `db01908` (#17) | 2019-09-05 | 💤 Dormant |
-| 10 | `packages/sdk/node-api-js` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `5cf508e` (#163) | `9dad5f749` (#167) | 2026-05-24 | 🟢 Active | ✅ ↓1 reviewed — N/A: CI workflow only; functional code fully ported in `9dad5f749` |
+| 10 | `packages/sdk/node-api` | [wavesplatform/node-api-js](https://github.com/wavesplatform/node-api-js) | `5cf508e` (#163) | `9dad5f749` (#167) | 2026-05-24 | 🟢 Active | ✅ ↓1 reviewed — N/A: CI workflow only; functional code fully ported in `9dad5f749` |
 | 11 | `packages/sdk/transactions` | [wavesplatform/waves-transactions](https://github.com/wavesplatform/waves-transactions) | `7f16b6e` (#526) | `4e137b9` (#530) | 2026-05-24 | 🟢 Active | ⬜ ↓7 reviewed — N/A: 4× docs/comments, 2× dep bumps, 1× `protobufjs` v8 build fix; DCC uses `@bufbuild/protobuf` |
 | 12 | `packages/sdk/money-like-to-node` | [wavesplatform/money-like-to-node](https://github.com/wavesplatform/money-like-to-node) | `ec4a2a8` (#61) | `6e99fae` (#63) | 2022-11-17 | 💤 Dormant |
-| 13 | `packages/sdk/data-service-client-js` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` (#153) | `42d83cf` (#156) | 2020-04-07 | 💤 Dormant |
+| 13 | `packages/sdk/data-service-client` | [wavesplatform/data-service-client-js](https://github.com/wavesplatform/data-service-client-js) | `ba1cc38` (#153) | `42d83cf` (#156) | 2020-04-07 | 💤 Dormant |
 | 14 | `packages/sdk/browser-bus` | [wavesplatform/waves-browser-bus](https://github.com/wavesplatform/waves-browser-bus) | `d6c2b57` (#109) | `f0f40d7` (#112) | 2022-03-14 | 💤 Dormant |
 | 15 | `packages/sdk/ledger` | [wavesplatform/waves-ledger-js](https://github.com/wavesplatform/waves-ledger-js) | `f0d197c` (#115) | `9ca16a2` (#118) | 2022-12-15 | 💤 Dormant |
 | 16 | `packages/sdk/signature-adapter` | [wavesplatform/waves-signature-adapter](https://github.com/wavesplatform/waves-signature-adapter) | `6a303b9` (#602) | `0d6ff1c` (#606) | 2023-10-13 | 💤 Dormant |
@@ -766,7 +766,7 @@ git diff <last-synced-commit>..HEAD -- src/
 
 | Upstream Repo | DCC Location | Why | Check |
 |--------------|-------------|-----|-------|
-| ts-types | `packages/sdk/ts-types` | Foundation types — affects entire SDK | Weekly |
+| ts-types | `packages/sdk/types` | Foundation types — affects entire SDK | Weekly |
 | ts-lib-crypto | `packages/sdk/ts-lib-crypto` | Crypto primitives — security-critical | Weekly |
 | wavesplatform/Waves (`lang/`) | `packages/ride/lang/` | RIDE VM — new language features, stdLib versions | Weekly |
 | ride-js | `packages/ride/ts/` | RIDE TS wrapper — new compiler output format | Weekly |
@@ -776,7 +776,7 @@ git diff <last-synced-commit>..HEAD -- src/
 | Keeper-Wallet-Extension | `apps/cubensis-connect` | Wallet features we may want | Monthly |
 | data-service | `apps/data-service` | Now in monorepo — watch for upstream bugfixes and new endpoint features | Monthly |
 | waves-transactions | `packages/sdk/transactions` | New transaction type support | Monthly |
-| node-api-js | `packages/sdk/node-api-js` | New API endpoints | Monthly |
+| node-api-js | `packages/sdk/node-api` | New API endpoints | Monthly |
 | WavesJ | `packages/jvm/java-sdk` | Java SDK — watch for bugfixes and new API endpoint support | Monthly |
 | wavesplatform/Waves (`node/`) | `Ecosystem/node-scala` | Protocol changes, feature flags, security patches | Monthly |
 

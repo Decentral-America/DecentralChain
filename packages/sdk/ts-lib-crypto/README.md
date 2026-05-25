@@ -269,7 +269,7 @@ npm run check:size      # Within size budget
 | --- | --- |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
 | [`@decentralchain/signer`](https://www.npmjs.com/package/@decentralchain/signer) | Transaction signing orchestrator |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types) | Core TypeScript type definitions |
 | [`@decentralchain/signature-adapter`](https://www.npmjs.com/package/@decentralchain/signature-adapter) | Multi-provider signing adapter |
 
 ## Contributing

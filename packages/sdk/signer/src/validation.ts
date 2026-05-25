@@ -1,5 +1,5 @@
 import { base58Decode, verifyAddress } from '@decentralchain/ts-lib-crypto';
-import { TRANSACTION_TYPE, type TransactionType } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE, type TransactionType } from '@decentralchain/types';
 import { type SignerOptions } from './types/index.js';
 
 // ── Protocol Constants ───────────────────────────────────────────

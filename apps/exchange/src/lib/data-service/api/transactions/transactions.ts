@@ -1,4 +1,4 @@
-import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client-js';
+import { type IExchangeTxFilters, type ITransaction } from '@decentralchain/data-service-client';
 import { TRANSACTION_TYPE_NUMBER } from '@decentralchain/signature-adapter';
 import { prop, uniqBy } from 'ramda';
 import { get as configGet, getDataService } from '../../config';

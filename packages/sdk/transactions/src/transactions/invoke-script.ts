@@ -8,7 +8,7 @@ import {
   type InvokeScriptPayment,
   type InvokeScriptTransaction,
   TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,

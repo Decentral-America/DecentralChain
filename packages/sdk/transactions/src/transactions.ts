@@ -9,7 +9,7 @@ import {
   type TRANSACTION_TYPE,
   type Transaction,
   type TransactionType,
-} from '@decentralchain/ts-types';
+} from '@decentralchain/types';
 
 export interface WithId {
   /**

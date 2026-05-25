@@ -1,0 +1,136 @@
+{
+  "author": "DecentralChain",
+  "bugs": {
+    "url": "https://github.com/Decentral-America/DecentralChain/issues"
+  },
+  "dependencies": {
+    "@decentralchain/bignumber": "workspace:*",
+    "@decentralchain/ts-lib-crypto": "workspace:*",
+    "@decentralchain/types": "workspace:*",
+    "typed-ts-events": "^3.0.1"
+  },
+  "description": "TypeScript/JavaScript HTTP client for the DecentralChain node REST API",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:",
+    "@decentralchain/transactions": "workspace:*",
+    "@size-limit/preset-small-lib": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "publint": "catalog:",
+    "size-limit": "catalog:",
+    "tsdown": "catalog:",
+    "undici-types": "8.3.0",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./api-node/addresses": {
+      "types": "./dist/api-node/addresses/index.d.mts",
+      "default": "./dist/api-node/addresses/index.mjs"
+    },
+    "./api-node/alias": {
+      "types": "./dist/api-node/alias/index.d.mts",
+      "default": "./dist/api-node/alias/index.mjs"
+    },
+    "./api-node/assets": {
+      "types": "./dist/api-node/assets/index.d.mts",
+      "default": "./dist/api-node/assets/index.mjs"
+    },
+    "./api-node/blocks": {
+      "types": "./dist/api-node/blocks/index.d.mts",
+      "default": "./dist/api-node/blocks/index.mjs"
+    },
+    "./api-node/debug": {
+      "types": "./dist/api-node/debug/index.d.mts",
+      "default": "./dist/api-node/debug/index.mjs"
+    },
+    "./api-node/eth": {
+      "types": "./dist/api-node/eth/index.d.mts",
+      "default": "./dist/api-node/eth/index.mjs"
+    },
+    "./api-node/leasing": {
+      "types": "./dist/api-node/leasing/index.d.mts",
+      "default": "./dist/api-node/leasing/index.mjs"
+    },
+    "./api-node/node": {
+      "types": "./dist/api-node/node/index.d.mts",
+      "default": "./dist/api-node/node/index.mjs"
+    },
+    "./api-node/peers": {
+      "types": "./dist/api-node/peers/index.d.mts",
+      "default": "./dist/api-node/peers/index.mjs"
+    },
+    "./api-node/rewards": {
+      "types": "./dist/api-node/rewards/index.d.mts",
+      "default": "./dist/api-node/rewards/index.mjs"
+    },
+    "./api-node/transactions": {
+      "types": "./dist/api-node/transactions/index.d.mts",
+      "default": "./dist/api-node/transactions/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Decentral-America"
+  },
+  "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/node-api",
+  "keywords": [
+    "decentralchain",
+    "dcc",
+    "node-api",
+    "blockchain",
+    "rest-api",
+    "sdk",
+    "typescript"
+  ],
+  "license": "MIT",
+  "module": "./dist/index.mjs",
+  "name": "@decentralchain/node-api",
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:2"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "directory": "packages/sdk/node-api",
+    "type": "git",
+    "url": "git+https://github.com/Decentral-America/DecentralChain.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
+    "check:exports": "attw --pack . --profile esm-only",
+    "check:publint": "publint",
+    "check:size": "size-limit",
+    "lint": "biome check .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.mts",
+  "version": "2.0.1"
+}

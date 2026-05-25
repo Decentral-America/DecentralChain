@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import type { TransactionFromNode } from '@decentralchain/ts-types';
+import type { TransactionFromNode } from '@decentralchain/types';
 import Browser from 'webextension-polyfill';
 import { createStore } from 'zustand/vanilla';
 import { isNotNull } from '#_core/isNotNull';

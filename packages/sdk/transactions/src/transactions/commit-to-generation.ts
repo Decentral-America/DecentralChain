@@ -12,7 +12,7 @@ import {
   privateKey,
   signBytes,
 } from '@decentralchain/ts-lib-crypto';
-import { type CommitToGenerationTransaction, TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { type CommitToGenerationTransaction, TRANSACTION_TYPE } from '@decentralchain/types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import { addProof, convertToPairs, fee, getSenderPublicKey, networkByte } from '../generic';
 import { txToProtoBytes } from '../proto-serialize';
