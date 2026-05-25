@@ -128,7 +128,7 @@ globalThis.httpGet = async (data: {
       const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
       if (!isLocal) {
         console.warn(
-          '[ride-js] httpGet: insecure HTTP request to non-local host. Use HTTPS for production node connections.',
+          '[ride] httpGet: insecure HTTP request to non-local host. Use HTTPS for production node connections.',
           data.url,
         );
       }

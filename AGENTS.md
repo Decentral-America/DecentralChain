@@ -9,9 +9,9 @@ This is the **DecentralChain SDK monorepo** — a multi-language workspace publi
 - **Nx projects**: 20 TypeScript SDK packages (`packages/sdk/`) + 4 apps (`apps/`) + RIDE sbt build (`packages/ride/`) + 7 JVM libraries (`packages/jvm/`)
 - **Inclusion rule**: publishable packages → monorepo (any language); runtime programs (`node-scala`, `node-go`) → `Ecosystem/` siblings
 - **5 dependency layers** (0–4) enforced by `scripts/check-boundaries.mjs` — packages may only depend on same or lower layers
-- **Layer 0 (Primitives)**: ts-types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization
-- **Layer 1 (Domain)**: data-entities, money-like-to-node, ride-js
-- **Layer 2 (Services)**: transactions, node-api-js, data-service-client-js
+- **Layer 0 (Primitives)**: types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization
+- **Layer 1 (Domain)**: data-entities, money-like-to-node, ride
+- **Layer 2 (Services)**: transactions, node-api, data-service-client
 - **Layer 3 (Integration)**: signer
 - **Layer 4 (Adapter)**: signature-adapter, cubensis-connect-provider
 - **Apps**: exchange (DEX), scanner (explorer), cubensis-connect (wallet extension)

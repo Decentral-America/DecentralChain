@@ -37,9 +37,9 @@ The `scripts/check-boundaries.mjs` script enforces:
 
 | Layer | Packages |
 |-------|----------|
-| 0 | ts-types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
-| 1 | data-entities, money-like-to-node, ride-js |
-| 2 | transactions, node-api-js, data-service-client-js |
+| 0 | types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
+| 1 | data-entities, money-like-to-node, ride |
+| 2 | transactions, node-api, data-service-client |
 | 3 | signer |
 | 4 | signature-adapter, cubensis-connect-provider |
 
@@ -60,7 +60,7 @@ Packages with justified lower thresholds:
 | Package | Threshold | Reason |
 |---------|-----------|--------|
 | protobuf-serialization | 15% | Generated code, minimal testable surface |
-| ride-js | 65/74/85/84 | Legacy compiler, mixed per-metric |
+| ride | 65/74/85/84 | Legacy compiler, mixed per-metric |
 | signer | 70% | Integration-heavy, depends on external wallet |
 | transactions | 70% | Integration-heavy, excludes integration tests |
 | cubensis-connect-types | 0% | Type-only package, zero executable code |

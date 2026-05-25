@@ -174,8 +174,8 @@ The pipeline is: **fetch** → **parse** → **transform**
 ### Setup
 
 ```bash
-git clone https://github.com/Decentral-America/data-service-client-js.git
-cd data-service-client-js
+git clone https://github.com/Decentral-America/data-service-client.git
+cd data-service-client
 npm install
 ```
 
