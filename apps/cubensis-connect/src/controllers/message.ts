@@ -15,8 +15,8 @@ import {
   DataTransactionDataSchema,
   toBinary,
 } from '@decentralchain/protobuf-serialization';
-import type { LeaseTransactionFromNode } from '@decentralchain/ts-types';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import type { LeaseTransactionFromNode } from '@decentralchain/types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { nanoid } from 'nanoid';
 import invariant from 'tiny-invariant';
 import Browser from 'webextension-polyfill';

@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@decentralchain/node-api-js": "workspace:*",
+    "@decentralchain/node-api": "workspace:*",
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
     "@sentry/react": "^10.53.1",

@@ -57,7 +57,7 @@ if (!rootElement) throw new Error('Root element not found');
 // initialized within the first frame; errors before that fall back to the ErrorBoundary.
 const reactErrorHandler = (
   error: unknown,
-  errorInfo?: { componentStack?: string | null },
+  errorInfo?: { componentStack?: string | null | undefined },
 ): void => {
   void import('@/lib/errorMonitoring').then(({ captureError }) => {
     captureError(error instanceof Error ? error : new Error(String(error)), {

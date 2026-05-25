@@ -1,5 +1,5 @@
 import { BigNumber } from '@decentralchain/bignumber';
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { createStore } from 'zustand/vanilla';
 import { isNotNull } from '#_core/isNotNull';
 import type { MessageTx } from '#messages/types';

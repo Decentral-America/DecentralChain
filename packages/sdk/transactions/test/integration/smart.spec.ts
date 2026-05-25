@@ -1,5 +1,5 @@
 import { address, publicKey } from '@decentralchain/ts-lib-crypto';
-import { DATA_FIELD_TYPE } from '@decentralchain/ts-types';
+import { DATA_FIELD_TYPE } from '@decentralchain/types';
 import {
   broadcast,
   data,

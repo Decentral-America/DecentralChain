@@ -368,7 +368,7 @@ This project enforces strict quality standards to ensure reliability for product
 
 | Package | Description |
 | --- | --- |
-| [@decentralchain/ts-types](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [@decentralchain/types](https://www.npmjs.com/package/@decentralchain/types) | Core TypeScript type definitions |
 | [@decentralchain/marshall](https://www.npmjs.com/package/@decentralchain/marshall) | Binary serialization for blockchain data |
 | [@decentralchain/ts-lib-crypto](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
 | [@decentralchain/transactions](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builder |

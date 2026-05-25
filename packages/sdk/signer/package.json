@@ -4,9 +4,9 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@decentralchain/node-api-js": "workspace:*",
+    "@decentralchain/node-api": "workspace:*",
     "@decentralchain/ts-lib-crypto": "workspace:*",
-    "@decentralchain/ts-types": "workspace:*"
+    "@decentralchain/types": "workspace:*"
   },
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "devDependencies": {

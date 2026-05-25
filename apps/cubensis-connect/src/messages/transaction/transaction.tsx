@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '@decentralchain/ts-types';
+import { TRANSACTION_TYPE } from '@decentralchain/types';
 import type { PreferencesAccount } from '#preferences/types';
 
 import type { MessageOfType } from '../types';

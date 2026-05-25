@@ -4,11 +4,7 @@
 
 import { binary } from '@decentralchain/marshall';
 import { base58Encode, blake2b, signBytes } from '@decentralchain/ts-lib-crypto';
-import {
-  type AssetDecimals,
-  type IssueTransaction,
-  TRANSACTION_TYPE,
-} from '@decentralchain/ts-types';
+import { type AssetDecimals, type IssueTransaction, TRANSACTION_TYPE } from '@decentralchain/types';
 import { DEFAULT_VERSIONS } from '../defaultVersions';
 import {
   addProof,

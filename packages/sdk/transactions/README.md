@@ -192,8 +192,8 @@ Transactions can be signed using:
 ## Dependencies
 
 - `@decentralchain/ts-lib-crypto` — cryptographic operations
-- `@decentralchain/ts-types` — shared type definitions
-- `@decentralchain/node-api-js` — node REST API client
+- `@decentralchain/types` — shared type definitions
+- `@decentralchain/node-api` — node REST API client
 - `@decentralchain/protobuf-serialization` — protobuf encoding
 - `@decentralchain/marshall` — binary serialization
 
@@ -253,9 +253,9 @@ function waitForTx(txId: string, options: { apiBase: string; timeout?: number })
 | Package | Description |
 | --- | --- |
 | [`@decentralchain/ts-lib-crypto`](https://www.npmjs.com/package/@decentralchain/ts-lib-crypto) | Cryptographic primitives |
-| [`@decentralchain/ts-types`](https://www.npmjs.com/package/@decentralchain/ts-types) | Core TypeScript type definitions |
+| [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types) | Core TypeScript type definitions |
 | [`@decentralchain/marshall`](https://www.npmjs.com/package/@decentralchain/marshall) | Binary serialization/deserialization |
-| [`@decentralchain/node-api-js`](https://www.npmjs.com/package/@decentralchain/node-api-js) | Node REST API client |
+| [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api) | Node REST API client |
 | [`@decentralchain/protobuf-serialization`](https://www.npmjs.com/package/@decentralchain/protobuf-serialization) | Protocol Buffers serialization |
 
 ## Contributing

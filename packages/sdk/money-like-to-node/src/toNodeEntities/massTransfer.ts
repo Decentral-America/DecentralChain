@@ -1,4 +1,4 @@
-import { type MassTransferItem, type MassTransferTransaction } from '@decentralchain/ts-types';
+import { type MassTransferItem, type MassTransferTransaction } from '@decentralchain/types';
 import { type TYPES } from '../constants/index.js';
 import { factory } from '../core/factory.js';
 import { type TLong, type TMoney, type TWithPartialFee } from '../types/index.js';
