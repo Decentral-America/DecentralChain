@@ -80,6 +80,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: resolve
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout
@@ -118,6 +123,7 @@ jobs:
             org.opencontainers.image.vendor=Decentral-America
 
       - name: Build and push image
+        id: push
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
@@ -137,6 +143,13 @@ jobs:
           cache-to:   type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
           provenance: true
           sbom: true
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-name: ${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
 
       - name: Write image summary
         run: |
