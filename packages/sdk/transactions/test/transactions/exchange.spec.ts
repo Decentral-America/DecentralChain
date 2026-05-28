@@ -1,12 +1,11 @@
-//const seed1 = 'alter bar cycle pioneer library eye calm soft swing motion limit taste supreme afford caution' //complex account
-
 import { exchange, order } from '../../src';
 
-const seed1 =
-  'shoe used festival regular fancy electric powder symptom stool physical cabbage need accuse silly ring'; //plain acc
+// Seeds loaded from environment — never hardcode mnemonic phrases in source.
+const seed1 = process.env.DCC_TEST_EXCHANGE_SEED_1;
+if (!seed1) throw new Error('DCC_TEST_EXCHANGE_SEED_1 env var is required');
 
-const seed2 =
-  'next one puppy history bag vanish conduct lion royal dentist reject usual story invite leader';
+const seed2 = process.env.DCC_TEST_EXCHANGE_SEED_2;
+if (!seed2) throw new Error('DCC_TEST_EXCHANGE_SEED_2 env var is required');
 
 // scripted asset: "DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK",
 

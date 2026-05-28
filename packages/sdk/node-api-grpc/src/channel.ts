@@ -3,7 +3,7 @@ import { createGrpcTransport, type GrpcTransportOptions } from '@connectrpc/conn
 
 /**
  * Semantic alias: a Connect Transport used as a gRPC channel.
- * Matches the @waves/node-api-grpc conceptual model while using the modern
+ * Matches the @decentralchain/node-api-grpc conceptual model while using the modern
  * Connect stack instead of the legacy @grpc/grpc-js channel approach.
  */
 export type Channel = Transport;

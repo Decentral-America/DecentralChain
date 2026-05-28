@@ -1,7 +1,7 @@
 package io.decentralchain.transactions.exchange;
 
 import io.decentralchain.crypto.Bytes;
-import com.wavesplatform.protobuf.order.OrderOuterClass;
+import io.decentralchain.protobuf.order.OrderOuterClass;
 import io.decentralchain.transactions.TransactionOrOrder;
 import io.decentralchain.transactions.WavesConfig;
 import io.decentralchain.transactions.account.PublicKey;

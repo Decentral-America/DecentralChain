@@ -69,14 +69,14 @@ const createGetMassTransferTxs: TCreateGetFn<IGetMassTransferTxs> = (libOptions)
     validate: validateFilters,
   });
 
-  const getMassTransferTxs: IGetMassTransferTxs = (
-    idOrFilters?: string | IMassTransferTxFilters,
-  ) =>
-    typeof idOrFilters === 'string'
-      ? getMassTransferTxsOne(idOrFilters)
-      : getMassTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+  const getMassTransferTxs = (idOrFilters?: string | IMassTransferTxFilters) =>
+    idOrFilters === null
+      ? Promise.reject(new Error('ArgumentsError: invalid filters object'))
+      : typeof idOrFilters === 'string'
+        ? getMassTransferTxsOne(idOrFilters)
+        : getMassTransferTxsMany(idOrFilters ?? {});
 
-  return getMassTransferTxs;
+  return getMassTransferTxs as IGetMassTransferTxs;
 };
 
 export default createGetMassTransferTxs;

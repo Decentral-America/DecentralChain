@@ -658,14 +658,20 @@ Actionable items where Waves references remain and should be cleaned up:
 >
 > **AI agents**: The complete sync procedure is documented as a skill at `.github/skills/upstream-sync/SKILL.md`. Use the `/upstream-sync` prompt to invoke it. The skill contains the full workflow: fetch, diff, evaluate, port, validate, commit, and update this table.
 
+> **Commit count notation** — three different methods are used; they are NOT directly comparable across rows:
+> - `(#N)` = total commit count in that standalone package's git history (`git rev-list --count HEAD` inside the upstream or DCC standalone repo). Used for TypeScript SDK packages, JVM libs, standalone forks (node-go, node-scala).
+> - `(lang↑ N)` / `(repl↑ N)` = per-path commit count: `git log --oneline [commit] -- [path] | wc -l`. Used for packages extracted from a sub-directory of a larger repo.
+> - `(squash↑N)` upstream / `(overlay↑N)` DCC = squash-import method: upstream N = total upstream commits collapsed to one squash merge; DCC N = commits added per-path after the squash import.
+> - **Delta meaning**: DCC `#` − upstream `#` = DCC-originated commits added on top of the sync point. Valid only when both sides use the same counting method.
+
 ### Standalone Ecosystem Repos → Upstream Map
 
 These repos live under `Ecosystem/` (standalone) or `apps/` (imported into monorepo) and track upstream Waves sources independently.
 
 | Repo | DCC Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |------|----------|---------------|----------------|------------|------|----------|
-| node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `4edf693b` (#13,214 / 13,224↑) | `595060ea` (#13,240) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: single dep bump; superseded by DCC dep audit |
-| node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `b5feb364` (#1,746 / 1,746↑) | `c17f3894` (#1,838) | 2026-05-24 | 🟢 Active |
+| node-scala | `Ecosystem/node-scala` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) | `03ee8553` (#13,228 / 13,228↑) | `595060ea` (#13,240) | 2026-05-26 | 🟢 Active | ⬜ ↓4 reviewed — `693484d4` (#4034): BLS finalization + CommitToGeneration + NgState refactor + new REST endpoints (122 files, +3438/−2431) = **DEFERRED** (major protocol upgrade, requires dedicated epic); `52acd9d2` (#4037): BLST tests + CI SHA pinning = N/A (depends on #4034; CI managed separately); `23c40416` (#4041): dep bumps (Scala 3.8.3, netty 4.2.12, pekko 1.5.0, grpc 1.80.0) = N/A; `03ee8553` (#4042): version 1.6.2 = N/A |
+| node-go | `Ecosystem/node-go` | [wavesplatform/gowaves](https://github.com/wavesplatform/gowaves) | `043334eb` (#1,798 / 1,798↑) | `bce40264` (#1,841) | 2026-05-26 | 🟢 Active | ✅ ↓52 reviewed — shared history; 7 functional commits (Unicode digit normalization, Split→Cut modernize, slices.Backward, gomodguard v2, TestEmptyBlockJSONRoundTrip, comment typos, importer CLI fix) all present in DCC; 45 dep bumps = N/A |
 | matcher | `Ecosystem/matcher` | [wavesplatform/dex](https://github.com/wavesplatform/dex) | `5c347100` (#13,224 / 13,224↑) | `1cd62e59` (#12,560) | 2026-02 | 🟡 Moderate |
 | blockchain-postgres-sync | `apps/blockchain-postgres-sync` | [wavesplatform/blockchain-postgres-sync](https://github.com/wavesplatform/blockchain-postgres-sync) | `b80b81b` (#351 / 351↑) | `d0d212296` (345 DCC) | 2026-05 | 🟢 Active |
 | docs | `Ecosystem/docs` | [wavesplatform/waves-documentation](https://github.com/wavesplatform/waves-documentation) | — (no tracked SHA; initial import was manual) | `673cc90` (#122) | 2023 | 💤 Dormant |
@@ -700,12 +706,12 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 22 | `apps/scanner` | [wavesplatform/WavesExplorerLite](https://github.com/wavesplatform/WavesExplorerLite) | `f9f889c` (#846) | `b473e02` (#910) | 2026-03-25 | 🟢 Active | ⬜ Remaining upstream commits N/A — DCC scanner is a full TypeScript/Vite/React Router v7 rewrite; no webpack, no lodash |
 | 23 | `packages/sdk/swap-client` | [Keeper-Wallet/swap-client](https://github.com/Keeper-Wallet/swap-client) | — | `16949ef` | — | ⚫ Deleted |
 | 24 | `packages/sdk/crypto` | [Keeper-Wallet/waves-crypto](https://github.com/Keeper-Wallet/waves-crypto) | `f6e4fbb` (#234) | `bd092dd` (#238) | 2025-05-28 | 🟡 Moderate |
-| 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` (#1,392) | `7d40c14f` (#1,420) | 2026-04-07 | 🟢 Active |
+| 25 | `apps/data-service` | [wavesplatform/data-service](https://github.com/wavesplatform/data-service) | `4820824d` (squash↑1,392) | `96eb64e1b` (overlay↑27) | 2026-05-26 | 🟢 Active |
 | 26 | `packages/sdk/node-api-grpc` | [wavesplatform/node-api-grpc-js](https://github.com/wavesplatform/node-api-grpc-js) | `2a6202f` (#10) | `1fac317` (#11) | 2026-05-24 | 🟢 Active |
 
 **Activity:** 🟢 Active (last 6 months) · 🟡 Moderate (last 2 years) · 💤 Dormant (2+ years, frozen) · ⚫ Deleted
 
-> **`apps/data-service` import notes:** Imported via `git subtree add` from the local `Legacy/Waves/data-service` upstream clone (wavesplatform v0.38.0 — commit `4820824d`). Full 395-commit history is preserved in the monorepo. Import method: `git subtree` (not fork). DCC-specific identity layer (endpoint URLs, chain IDs, env var names, branding) is applied separately in **DCC-234**. Toolchain modernization (Biome replacing ESLint/Prettier, strict tsconfig, ESM imports) is tracked in **DCC-219**, **DCC-220**, **DCC-222**. Vitest migration from Jest is **DCC-223**.
+> **`apps/data-service` import notes:** Imported via `git subtree add --squash` from the local `Legacy/Waves/data-service` upstream clone (wavesplatform v0.38.0 — commit `4820824d`). The `--squash` flag collapses upstream history into a single merge commit; per-path `git log` shows the squash commit + 27 DCC overlay commits (total: 29 per-path). Import method: `git subtree --squash` (not fork; upstream history is NOT individually traversable per-path). DCC-specific identity layer (endpoint URLs, chain IDs, env var names, branding) is applied separately in **DCC-234**. Toolchain modernization (Biome replacing ESLint/Prettier, strict tsconfig, ESM imports) is tracked in **DCC-219**, **DCC-220**, **DCC-222**. Vitest migration from Jest is **DCC-223**.
 
 ### RIDE Packages (packages/ride/) → Upstream Map
 
@@ -713,8 +719,8 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 
 | # | Monorepo Path | Upstream Repo | Upstream Commit | DCC Commit | Date | Activity |
 |---|--------------|---------------|----------------|------------|------|----------|
-| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (#14,987) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no RIDE language change |
-| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `4edf693b` (#13,214 / 13,224↑) | `17626cc7` (#13,257) | 2026-05-24 | 🟡 Moderate | ⬜ ↓1 reviewed — N/A: same dep bump as node-scala ↓1; no REPL change |
+| 1 | `packages/ride/lang/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`lang/` subdir) | `03ee8553` (lang↑ 1,761) | `17626cc7` (lang↑ 1,773) | 2026-05-26 | 🟢 Active | ⬜ ↓4 reviewed — `23c40416` removes `lang/jvm` file-compiler assembly config (build-only, N/A for DCC); remaining 3 commits (BLS finalization, BLST tests, version bump) don't touch `lang/` |
+| 2 | `packages/ride/repl/` | [wavesplatform/Waves](https://github.com/wavesplatform/Waves) (`repl/` subdir) | `03ee8553` (repl↑ 34) | `17626cc7` (repl↑ 43) | 2026-05-26 | 🟡 Moderate | ✅ ↓4 reviewed — none of the 4 new upstream commits touch `repl/` |
 | 3 | `packages/ride/ts/` | [wavesplatform/ride-js](https://github.com/wavesplatform/ride-js) | `a92fe32` (#303) | `b98a091` (#316) | 2026-03-25 | 🟢 Active |
 
 > Import commit `17626cc7` message: "feat(DCC-252): import lang and repl from node-scala with full upstream history — Extracted lang/ and repl/ from Ecosystem/node-scala preserving 1,991 commits from the upstream Waves history plus all 5 DCC patches (namespace rename, chain identity, security hardening, test fixes)."

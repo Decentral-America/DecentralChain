@@ -1,7 +1,7 @@
 # Known Issues
 
 > Tracked items in the transactions-java package (DCC fork of
-> wavesplatform/waves-transactions-java). Each item includes its risk level,
+> Decentral-America/transactions-java). Each item includes its risk level,
 > reason it is not resolved immediately, and the recommended resolution path.
 
 ---

@@ -25,4 +25,4 @@ You will receive a response within 5 business days. We aim to release a patch wi
 
 ## Scope
 
-This policy covers the `io.decentralchain:java-sdk` library itself. Vulnerabilities in upstream dependencies (`com.wavesplatform:waves-transactions`, `com.wavesplatform:lang`) should be reported to [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ).
+This policy covers the `io.decentralchain:java-sdk` library itself. Vulnerabilities in upstream dependencies (`io.decentralchain:transactions`, `io.decentralchain:lang`) should be reported to [Decentral-America/java-sdk](https://github.com/Decentral-America/java-sdk).
