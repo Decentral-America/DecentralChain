@@ -1,8 +1,9 @@
 # Use Node.js 24 LTS on Debian Trixie (glibc 2.41 for smart-tree compatibility)
-FROM node:24-trixie
+# renovate: image=node tag=24-trixie
+FROM node:24-trixie@sha256:f072159a6b98a624e09f2c4815fe473217fc019a97524fd593059c8a4ad5a05d
 
 # Install additional tools
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     vim \
@@ -38,7 +39,7 @@ RUN mkdir -p /opt/mcp-tools \
     && chown -R node:node /opt/mcp-tools
 
 # Install Chromium for chrome-devtools MCP (works on both amd64 and arm64)
-RUN apt-get update && apt-get install -y chromium \
+RUN apt-get update && apt-get install -y --no-install-recommends chromium \
     && rm -rf /var/lib/apt/lists/*
 
 # Set Chromium as the default Chrome for chrome-devtools MCP
