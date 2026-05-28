@@ -108,7 +108,7 @@ export function order(
   const orderExt = paramsOrOrder as IOrderParams & WithSender;
 
   // Use old versionless order only if it is set to null explicitly
-  const version = orderExt.version === null ? undefined : orderExt.version;
+  const version = orderExt.version ?? undefined;
   const ord = {
     amount,
     assetPair: {

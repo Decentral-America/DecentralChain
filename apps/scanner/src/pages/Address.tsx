@@ -49,6 +49,10 @@ interface LoaderData {
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
   const addr = new URL(request.url).searchParams.get('addr');
   if (!addr) return { address: null, balances: null };
+  // DCC addresses are 35-char base58 strings starting with '3'
+  if (!/^3[1-9A-HJ-NP-Za-km-z]{34}$/.test(addr)) {
+    throw data('Invalid address format', { status: 400 });
+  }
   const balances = await fetchAssetsBalance(addr).catch(() => null);
   if (!balances) {
     throw data('Address not found', { status: 404 });

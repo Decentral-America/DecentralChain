@@ -510,9 +510,7 @@ const getCommitToGenerationData = (t: CommitToGenerationTransaction) => ({
   generationPeriodStart: t.generationPeriodStart,
 });
 
-const getTxData = (
-  t: Exclude<TTransaction, GenesisTransaction>,
-): unknown /*dccProto.waves.ITransaction*/ => {
+const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): unknown => {
   let txData: unknown;
 
   switch (t.type) {

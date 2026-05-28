@@ -1,8 +1,8 @@
 package io.decentralchain.transactions;
 
 import io.decentralchain.crypto.base.Base58;
-import com.wavesplatform.events.protobuf.Events.TransactionMetadata;
-import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
+import io.decentralchain.events.protobuf.Events.TransactionMetadata;
+import io.decentralchain.protobuf.transaction.TransactionOuterClass.SignedTransaction;
 import io.decentralchain.transactions.account.Address;
 import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.account.PublicKey;

@@ -22,14 +22,14 @@
     that is fast, secure, and has no external dependencies. Used by the
     DecentralChain node for BLS-based threshold signatures and zkSNARK
     verifier operations.
-    Forked from wavesplatform/blst-java (upstream supranational/blst v0.3.16)
+    Forked from Decentral-America/blst (upstream supranational/blst v0.3.16)
     with full upstream history and DCC production hardening.
   </description>
   <url>https://github.com/Decentral-America/DecentralChain</url>
   <inceptionYear>2021</inceptionYear>
 
   <licenses>
-    <!-- MIT — inherited from upstream supranational/blst (MIT) and wavesplatform/blst-java fork -->
+    <!-- MIT — inherited from upstream supranational/blst (MIT) and Decentral-America/blst fork -->
     <license>
       <name>MIT License</name>
       <url>https://opensource.org/licenses/MIT</url>

@@ -25,7 +25,7 @@ ext {
     }
 }
 
-group = "com.wavesplatform"
+group = "io.decentralchain"
 archivesBaseName = "zwaves"
 version = artifactVersion()
 
@@ -80,7 +80,7 @@ publishing {
                 name = 'zwaves'
                 description = 'groth16verify (bls12, bn256) for Java'
                 packaging = 'jar'
-                url = 'https://github.com/wavesplatform/zwaves'
+                url = 'https://github.com/Decentral-America/zwaves'
                 licenses {
                     license {
                         name.set("MIT License")
@@ -95,9 +95,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/wavesplatform/zwaves.git")
-                    developerConnection.set("scm:git:git@github.com:wavesplatform/zwaves.git")
-                    url.set("https://github.com/wavesplatform/zwaves")
+                    connection.set("scm:git:git://github.com/Decentral-America/zwaves.git")
+                    developerConnection.set("scm:git:git@github.com:Decentral-America/zwaves.git")
+                    url.set("https://github.com/Decentral-America/zwaves")
                 }
             }
         }

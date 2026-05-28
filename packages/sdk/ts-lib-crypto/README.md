@@ -65,7 +65,7 @@ console.log({ addr, isValid }); // { addr: '3P...', isValid: true }
 ```ts
 import { address, publicKey, signBytes } from '@decentralchain/ts-lib-crypto';
 
-const addr = address('my secret seed'); // Base58 string
+const addr = address(process.env.MY_SEED!); // Base58 string
 ```
 
 ### Bytes output
@@ -73,7 +73,7 @@ const addr = address('my secret seed'); // Base58 string
 ```ts
 import { address, publicKey } from '@decentralchain/ts-lib-crypto/bytes';
 
-const addr = address('my secret seed'); // Uint8Array
+const addr = address(process.env.MY_SEED!); // Uint8Array
 ```
 
 ### Factory function
@@ -89,7 +89,7 @@ const { address, keyPair } = crypto({ output: 'Bytes' });
 ```ts
 import { crypto } from '@decentralchain/ts-lib-crypto';
 
-const { address, signBytes } = crypto({ output: 'Base58', seed: 'my secret seed' });
+const { address, signBytes } = crypto({ output: 'Base58', seed: process.env.MY_SEED! });
 const addr = address(); // No seed needed — it's embedded
 ```
 

@@ -9,7 +9,7 @@
   <version>2.0.7</version>
   <packaging>jar</packaging>
   <name>DecentralChain Crypto for Java</name>
-  <description>Cryptographic primitives for the DecentralChain blockchain — Curve25519 key generation and signing, Blake2b256 / Keccak256 / SHA256 hashing, Base16 / Base58 / Base64 encoding, RSA verify, BLS utilities, and Merkle tree construction. Forked from wavesplatform/waves-crypto-java v2.0.7 with full upstream history and DCC production hardening.</description>
+  <description>Cryptographic primitives for the DecentralChain blockchain — Curve25519 key generation and signing, Blake2b256 / Keccak256 / SHA256 hashing, Base16 / Base58 / Base64 encoding, RSA verify, BLS utilities, and Merkle tree construction. Forked from Decentral-America/crypto v2.0.7 with full upstream history and DCC production hardening.</description>
   <url>https://github.com/Decentral-America/DecentralChain</url>
   <inceptionYear>2020</inceptionYear>
   <licenses>

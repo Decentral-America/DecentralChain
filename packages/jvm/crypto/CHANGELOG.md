@@ -8,7 +8,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [2.0.7] — 2026-05-19
 
 ### Added
-- Full upstream history from `wavesplatform/waves-crypto-java v2.0.7` grafted via
+- Full upstream history from `Decentral-America/crypto v2.0.7` grafted via
   `git subtree add` — complete provenance preserved.
 - DCC production toolchain applied:
   - Java 25 compiler target (`maven.compiler.release=25`)
@@ -37,6 +37,6 @@ All cryptographic behavior is identical to upstream. No protocol changes.
 
 ## Upstream history
 
-Complete upstream commit history from `wavesplatform/waves-crypto-java` is
+Complete upstream commit history from `Decentral-America/crypto` is
 preserved in this repository via `git subtree`. See:
 `git log --follow packages/jvm/crypto/src`
