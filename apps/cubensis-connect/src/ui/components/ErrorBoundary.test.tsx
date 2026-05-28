@@ -1,11 +1,12 @@
-import * as Sentry from '@sentry/browser';
 import type { ErrorInfo } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ErrorBoundary } from './ErrorBoundary';
 
-vi.mock('@sentry/browser', () => ({
-  captureException: vi.fn(),
+const mockCaptureException = vi.fn();
+
+vi.mock('../../sentry/init', () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
 describe('ErrorBoundary', () => {
@@ -33,9 +34,9 @@ describe('ErrorBoundary', () => {
 
       instance.componentDidCatch(error, errorInfo);
 
-      expect(Sentry.captureException).toHaveBeenCalledOnce();
-      expect(Sentry.captureException).toHaveBeenCalledWith(error, {
-        extra: { componentStack: errorInfo.componentStack },
+      expect(mockCaptureException).toHaveBeenCalledOnce();
+      expect(mockCaptureException).toHaveBeenCalledWith(error, {
+        captureContext: { extra: { componentStack: errorInfo.componentStack } },
       });
     });
 

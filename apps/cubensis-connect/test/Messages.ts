@@ -13,7 +13,7 @@ import { PermissionControlSettingsScreen } from './helpers/settings/PermissionCo
 import { SettingsMenuScreen } from './helpers/settings/SettingsMenuScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
-import { CUSTOMLIST, WHITELIST } from './utils/constants';
+import { CUSTOMLIST, DEFAULT_MINER_SEED, WHITELIST } from './utils/constants';
 
 describe('Messages', () => {
   let tabOrigin: string;
@@ -46,8 +46,7 @@ describe('Messages', () => {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
-    // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+    await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
 
     tabOrigin = (await browser.createWindow('tab')).handle;
 
@@ -204,7 +203,6 @@ describe('Messages', () => {
     await browser.switchToWindow(tabOrigin);
   });
 
-  // TODO looks like these units need to be checked in unittests
   it('You cannot send messages from one resource more often than once every 30 seconds');
   it('The message title cannot be longer than 20 characters');
   it('The message text cannot be longer than 250 characters');

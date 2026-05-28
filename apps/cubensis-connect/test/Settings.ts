@@ -18,7 +18,14 @@ import { PermissionControlSettingsScreen } from './helpers/settings/PermissionCo
 import { SettingsMenuScreen } from './helpers/settings/SettingsMenuScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
-import { CUSTOMLIST, DEFAULT_PASSWORD, WHITELIST } from './utils/constants';
+import {
+  CUSTOMLIST,
+  DEFAULT_MINER_SEED,
+  DEFAULT_PASSWORD,
+  TEST_ACCOUNT_3_SEED,
+  TEST_ACCOUNT_SEED,
+  WHITELIST,
+} from './utils/constants';
 
 const SPENDING_LIMIT = '1';
 
@@ -41,16 +48,9 @@ describe('Settings', () => {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
-    // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
-    await AccountsHome.importAccount(
-      'test',
-      'side angry perfect sight capital absurd stuff pulp climb jealous onion address speed portion category',
-    );
-    await AccountsHome.importAccount(
-      'test3',
-      'defy credit shoe expect pair gun future slender escape visa test book tone patient vibrant',
-    );
+    await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
+    await AccountsHome.importAccount('test', TEST_ACCOUNT_SEED);
+    await AccountsHome.importAccount('test3', TEST_ACCOUNT_3_SEED);
     await browser.closeWindow();
     await browser.switchToWindow(tabKeeper);
 
@@ -287,7 +287,6 @@ describe('Settings', () => {
 
         it('After deletion, requests generate permission request', async () => {
           const originToDelete =
-            // TODO: Update test origin when DCC test infrastructure replaces decentralchain.io
             await PermissionControlSettingsScreen.getPermissionByOrigin('decentralchain.io');
           const origin = await originToDelete.origin.getText();
           await originToDelete.detailsIcon.click();

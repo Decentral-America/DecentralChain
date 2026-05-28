@@ -39,7 +39,6 @@ function createErrorInfo(
   return { error, meta, type };
 }
 
-// @todo more specific error types (e.g. resolver error is not informative about what really happened)
 export abstract class AppError implements Matchable {
   public abstract readonly type: ErrorInfo['type'];
   public abstract readonly error: ErrorInfo['error'];

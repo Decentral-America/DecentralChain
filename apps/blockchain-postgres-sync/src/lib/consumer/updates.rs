@@ -180,9 +180,9 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
     fn try_from(mut value: BlockchainUpdatedPB) -> Result<Self, Self::Error> {
         use BlockchainUpdate::{Block, Microblock, Rollback};
 
-        match value.update {
+        match &mut value.update {
             Some(UpdatePB::Append(AppendPB {
-                ref mut body,
+                body,
                 transaction_ids,
                 transactions_metadata,
                 transaction_state_updates,
@@ -191,7 +191,7 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                 let height = value.height;
 
                 let txs: Option<(Vec<SignedTransactionPB>, Option<i64>)> = match body {
-                    Some(BodyPB::Block(BlockAppendPB { ref mut block, .. })) => {
+                    Some(BodyPB::Block(BlockAppendPB { block, .. })) => {
                         Ok(block.as_mut().map(|it| {
                             (
                                 it.transactions.drain(..).collect(),
@@ -200,7 +200,7 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                         }))
                     }
                     Some(BodyPB::MicroBlock(MicroBlockAppendPB {
-                        ref mut micro_block,
+                        micro_block,
                         ..
                     })) => Ok(micro_block.as_mut().and_then(|it| {
                         it.micro_block

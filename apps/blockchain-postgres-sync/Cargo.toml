@@ -1,7 +1,7 @@
 [package]
 name = "blockchain-postgres-sync"
 version = "2.0.0"
-edition = "2021"
+edition = "2024"
 rust-version = "1.88"
 description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
 license = "Apache-2.0"
@@ -28,7 +28,7 @@ anyhow = "1.0.102"
 thiserror = "2.0.18"
 
 # Async runtime
-tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "sync", "time"] }
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
 
 # gRPC / Protobuf  (proto files bundled in proto/, compiled by build.rs)
 tonic = { version = "0.14.6", features = ["transport"] }
@@ -143,6 +143,12 @@ redundant_clone = "warn"
 type_repetition_in_bounds = "warn"
 # Drop guards early when they are no longer needed.
 significant_drop_tightening = "warn"
+
+[dev-dependencies]
+# Property testing
+proptest = "1.11.0"
+# Tokio test runtime
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "test-util"] }
 
 # prost and tonic-prost are used in code generated via include!() in proto.rs
 # and are therefore invisible to cargo-machete's static analysis.

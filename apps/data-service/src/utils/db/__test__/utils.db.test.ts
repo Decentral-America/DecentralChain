@@ -49,16 +49,16 @@ describe('Escaping for like', () => {
     expect(escapeForLike('some')).toBe('some');
   });
   it('should correctly escape "%" symbol', () => {
-    expect(escapeForLike('%')).toBe('%');
+    expect(escapeForLike('%')).toBe('\\%');
   });
   it('should correctly escape two words', () => {
     expect(escapeForLike('some string')).toBe('some string');
   });
   it('should correctly escape two words started and ended with "%" symbol', () => {
-    expect(escapeForLike('%some string%')).toBe('%some string%');
+    expect(escapeForLike('%some string%')).toBe('\\%some string\\%');
   });
   it('should correctly escape two words with 3 "%" symbols (at start start, at the middle and in the end', () => {
-    expect(escapeForLike('%some string%')).toBe('%some string%');
+    expect(escapeForLike('%some%string%')).toBe('\\%some\\%string\\%');
   });
 });
 
@@ -73,15 +73,15 @@ describe('Preparing for like', () => {
     expect(prepareForLike('some', { matchExactly: true })).toBe('some');
   });
   it('should correctly prepare "%" symbol', () => {
-    expect(prepareForLike('%')).toBe('%%');
+    expect(prepareForLike('%')).toBe('\\%%');
   });
   it('should correctly prepare "%" symbol with matchExactly=true', () => {
-    expect(prepareForLike('%', { matchExactly: true })).toBe('%');
+    expect(prepareForLike('%', { matchExactly: true })).toBe('\\%');
   });
   it('should correctly prepare two words started and ended with "%"', () => {
-    expect(prepareForLike('%some string%')).toBe('%some string%%');
+    expect(prepareForLike('%some string%')).toBe('\\%some string\\%%');
   });
   it('should correctly prepare two words started and ended with "%" with matchExactly=true', () => {
-    expect(prepareForLike('%some string%', { matchExactly: true })).toBe('%some string%');
+    expect(prepareForLike('%some string%', { matchExactly: true })).toBe('\\%some string\\%');
   });
 });

@@ -1,0 +1,13 @@
+.git
+.github
+target
+*.md
+LICENSE
+# CI/CD and tooling config
+.gitignore
+renovate.json
+# Sensitive and local-env files
+*.env
+.envrc
+# Test output
+*.profraw

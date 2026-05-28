@@ -1,8 +1,8 @@
 syntax = "proto3";
 package waves;
-option java_package = "com.wavesplatform.protobuf.block";
+option java_package = "io.decentralchain.protobuf.block";
 option csharp_namespace = "Waves";
-option go_package = "github.com/wavesplatform/gowaves/pkg/grpc/generated/waves";
+option go_package = "github.com/Decentral-America/node-go/pkg/grpc/generated/waves";
 
 import "waves/transaction.proto";
 

@@ -10,6 +10,7 @@ import { HomeScreen } from './helpers/HomeScreen';
 import { NetworksMenu } from './helpers/NetworksMenu';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
+import { DEFAULT_MINER_SEED } from './utils/constants';
 import { BROWSER_NODE_URL } from './utils/hooks';
 
 describe('Network management', () => {
@@ -49,8 +50,7 @@ describe('Network management', () => {
         await browser.switchToWindow(tabAccounts);
         await browser.refresh();
 
-        // TODO: Update seed phrase when DCC test node genesis config is set up
-        await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+        await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
         await browser.switchToWindow(tabKeeper);
 
         await HomeScreen.activeAccountCard.click();

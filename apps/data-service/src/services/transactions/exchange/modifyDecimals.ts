@@ -4,7 +4,7 @@ import { type AppError } from '../../../errorHandling';
 import { type AssetsService } from '../../assets';
 import { type ExchangeTx, OrderPriceMode, OrderType } from './repo/types';
 
-const wavesByDefault = defaultTo('DCC');
+const dccByDefault = defaultTo('DCC');
 
 export const modifyDecimals =
   (assetsService: AssetsService) =>
@@ -20,7 +20,7 @@ export const modifyDecimals =
             tx.order1.matcherFeeAssetId,
             tx.order2.matcherFeeAssetId,
           ]
-            .map(wavesByDefault)
+            .map(dccByDefault)
             .reduce((set, id) => set.add(id), assetIds),
         new Set<string>(),
       ),
@@ -31,7 +31,7 @@ export const modifyDecimals =
       Effect.map(zipObj(participatingAssetIds)),
       Effect.map((precisionsMap) => {
         const p = (assetId: string | null | undefined): number =>
-          precisionsMap[wavesByDefault(assetId)] ?? 0;
+          precisionsMap[dccByDefault(assetId)] ?? 0;
 
         // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex decimal processing for exchange transactions
         return txs.map((tx) => {

@@ -54,9 +54,11 @@ async fn main() -> Result<()> {
         let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
         let listener = tokio::net::TcpListener::bind(addr)
             .await
-            .expect("health listener bind");
+            .context("health listener bind failed")?;
         info!(%addr, "health server listening");
-        axum::serve(listener, app).await.expect("health server");
+        axum::serve(listener, app)
+            .await
+            .context("health server failed")
     });
 
     let consumer = consumer::start(updates_src, pg_repo, config.consumer);
@@ -70,10 +72,17 @@ async fn main() -> Result<()> {
             info!("consumer finished");
         },
         result = health_server => {
-            if let Err(err) = result {
-                error!(error = ?err, "health server panicked");
-            } else {
-                error!("health server stopped unexpectedly");
+            match result {
+                Err(err) => {
+                    error!(error = ?err, "health server task panicked");
+                }
+                Ok(Err(err)) => {
+                    error!(error = %err, "health server failed");
+                    return Err(err);
+                }
+                Ok(Ok(())) => {
+                    error!("health server stopped unexpectedly");
+                }
             }
         }
     };

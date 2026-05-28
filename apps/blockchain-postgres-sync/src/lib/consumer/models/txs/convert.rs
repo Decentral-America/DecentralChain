@@ -128,12 +128,10 @@ impl
             })
             | Metadata::InvokeScript(ref m),
         ) = meta.metadata
+            && let Some(ref result) = m.result
+            && result.error_message.is_some()
         {
-            if let Some(ref result) = m.result {
-                if result.error_message.is_some() {
-                    status = String::from("script_execution_failed");
-                }
-            }
+            status = String::from("script_execution_failed");
         }
 
         let sender = into_base58(&meta.sender_address);
@@ -806,22 +804,22 @@ mod tests {
 
     #[test]
     fn tx_uid_generator_sequential_within_block() {
-        let mut gen = TxUidGenerator::new(100_000);
-        gen.maybe_update_height(10);
-        let a = gen.next_uid();
-        let b = gen.next_uid();
-        let c = gen.next_uid();
+        let mut uid_gen = TxUidGenerator::new(100_000);
+        uid_gen.maybe_update_height(10);
+        let a = uid_gen.next_uid();
+        let b = uid_gen.next_uid();
+        let c = uid_gen.next_uid();
         assert_eq!(b, a + 1);
         assert_eq!(c, a + 2);
     }
 
     #[test]
     fn tx_uid_generator_resets_on_new_block() {
-        let mut gen = TxUidGenerator::new(100_000);
-        gen.maybe_update_height(5);
-        let uid_h5 = gen.next_uid();
-        gen.maybe_update_height(6);
-        let uid_h6 = gen.next_uid();
+        let mut uid_gen = TxUidGenerator::new(100_000);
+        uid_gen.maybe_update_height(5);
+        let uid_h5 = uid_gen.next_uid();
+        uid_gen.maybe_update_height(6);
+        let uid_h6 = uid_gen.next_uid();
         // height 5, tx 0 → 5 * 100_000 + 0 = 500_000
         assert_eq!(uid_h5, 5 * 100_000);
         // height 6, tx 0 → 6 * 100_000 + 0 = 600_000
@@ -830,41 +828,41 @@ mod tests {
 
     #[test]
     fn tx_uid_generator_does_not_regress_on_same_height() {
-        let mut gen = TxUidGenerator::new(100_000);
-        gen.maybe_update_height(10);
-        let _ = gen.next_uid(); // 1_000_000
-        gen.maybe_update_height(10); // no-op — same height
-        let second = gen.next_uid(); // 1_000_001
+        let mut uid_gen = TxUidGenerator::new(100_000);
+        uid_gen.maybe_update_height(10);
+        let _ = uid_gen.next_uid(); // 1_000_000
+        uid_gen.maybe_update_height(10); // no-op — same height
+        let second = uid_gen.next_uid(); // 1_000_001
         assert_eq!(second, 10 * 100_000 + 1);
     }
 
     #[test]
     fn tx_uid_generator_does_not_reset_on_lower_height() {
-        let mut gen = TxUidGenerator::new(100_000);
-        gen.maybe_update_height(10);
-        let _ = gen.next_uid();
-        let _ = gen.next_uid();
-        gen.maybe_update_height(5); // lower — should be ignored
-        let uid = gen.next_uid();
+        let mut uid_gen = TxUidGenerator::new(100_000);
+        uid_gen.maybe_update_height(10);
+        let _ = uid_gen.next_uid();
+        let _ = uid_gen.next_uid();
+        uid_gen.maybe_update_height(5); // lower — should be ignored
+        let uid = uid_gen.next_uid();
         // counter should still be at 2, height 10
         assert_eq!(uid, 10 * 100_000 + 2);
     }
 
     #[test]
     fn tx_uid_generator_multiplier_one() {
-        let mut gen = TxUidGenerator::new(1);
-        gen.maybe_update_height(100);
-        assert_eq!(gen.next_uid(), 100);
-        assert_eq!(gen.next_uid(), 101);
-        assert_eq!(gen.next_uid(), 102);
+        let mut uid_gen = TxUidGenerator::new(1);
+        uid_gen.maybe_update_height(100);
+        assert_eq!(uid_gen.next_uid(), 100);
+        assert_eq!(uid_gen.next_uid(), 101);
+        assert_eq!(uid_gen.next_uid(), 102);
     }
 
     #[test]
     fn tx_uid_generator_height_zero() {
-        let mut gen = TxUidGenerator::new(100_000);
+        let mut uid_gen = TxUidGenerator::new(100_000);
         // Height 0 is the initial state — uids start at 0
-        assert_eq!(gen.next_uid(), 0);
-        assert_eq!(gen.next_uid(), 1);
+        assert_eq!(uid_gen.next_uid(), 0);
+        assert_eq!(uid_gen.next_uid(), 1);
     }
 
     // ── extract_recipient_alias ──────────────────────────────────────────────

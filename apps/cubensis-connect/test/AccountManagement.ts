@@ -9,6 +9,7 @@ import { HomeScreen } from './helpers/HomeScreen';
 import { OtherAccountsScreen } from './helpers/OtherAccountsScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
+import { DEFAULT_MINER_SEED, POOR_ACCOUNT_SEED } from './utils/constants';
 
 describe('Account management', () => {
   let tabKeeper: string, tabAccounts: string;
@@ -23,11 +24,9 @@ describe('Account management', () => {
     await browser.switchToWindow(tabAccounts);
     await browser.refresh();
 
-    // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
-    await AccountsHome.importAccount('poor', 'waves private node seed without waves tokens');
+    await AccountsHome.importAccount('poor', POOR_ACCOUNT_SEED);
 
-    // TODO: Update seed phrases when test node genesis config is reconfigured for DCC
-    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+    await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
 
     await browser.switchToWindow(tabKeeper);
     await browser.openKeeperPopup();

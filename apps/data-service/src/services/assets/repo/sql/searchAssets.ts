@@ -17,7 +17,7 @@ const searchById = (q: string) =>
       ),
       ticker: `a.${columns.ticker}`,
     })
-    .where(`a.${columns.asset_id}`, 'ilike', prepareForLike(q, { matchExactly: true })); // ilike - hack for searching for waves in different cases
+    .where(`a.${columns.asset_id}`, 'ilike', prepareForLike(q, { matchExactly: true })); // case-insensitive match for asset IDs
 
 const searchByNameInMeta = (qb: Knex.QueryBuilder, q: string) =>
   qb

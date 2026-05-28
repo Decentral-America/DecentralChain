@@ -100,7 +100,6 @@ export const pair = (data: PairInfo | null, pairData: AssetIdsPair | null): Pair
   ...pairData,
 });
 
-// @todo TransactionInfo
 export const DataEntryType = {
   Binary: 'binary',
   Boolean: 'boolean',

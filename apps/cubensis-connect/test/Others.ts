@@ -10,6 +10,7 @@ import { FinalTransactionScreen } from './helpers/messages/FinalTransactionScree
 import { TransferTransactionScreen } from './helpers/messages/TransferTransactionScreen';
 import { SendAssetScreen } from './helpers/SendAssetScreen';
 import { Windows } from './helpers/Windows';
+import { DEFAULT_MINER_SEED } from './utils/constants';
 
 describe('Others', () => {
   beforeAll(async () => {
@@ -25,8 +26,7 @@ describe('Others', () => {
 
     await Network.switchToAndCheck('Testnet');
 
-    // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+    await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
 
     const newTab = (await browser.createWindow('tab')).handle;
     await browser.switchToWindow(tabAccounts);

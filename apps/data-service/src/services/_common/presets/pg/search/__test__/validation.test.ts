@@ -1,8 +1,24 @@
-import { describe, it } from 'vitest';
+import { Either, Schema } from 'effect';
+import { describe, expect, it } from 'vitest';
+import { validateResult } from '../../../validation';
 
-// Stub: full validation tests require Effect/Schema migration of the search preset layer.
-// These cases will be written once the pg/search preset adopts @effect/schema validators.
-describe('search preset validation (stub)', () => {
-  it.todo('passes if correct object is provided');
-  it.todo('applies schema correctly');
+describe('search preset validation', () => {
+  it('passes if correct object is provided', () => {
+    const schema = Schema.String;
+    const validate = validateResult<string>(schema, 'test_search');
+
+    const result = validate('hello');
+    expect(Either.isRight(result)).toBe(true);
+    if (Either.isRight(result)) {
+      expect(result.right).toBe('hello');
+    }
+  });
+
+  it('applies schema correctly — rejects invalid values', () => {
+    const strictSchema = Schema.Literal('allowed');
+    const validate = validateResult<string>(strictSchema, 'test_search');
+
+    const result = validate('not-allowed');
+    expect(Either.isLeft(result)).toBe(true);
+  });
 });

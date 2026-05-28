@@ -244,7 +244,45 @@ describe('Account creation', () => {
         });
       });
 
-      it.todo('When you already have 2 accounts');
+      it('When you already have 2 accounts', async () => {
+        // Create a second account, then verify we can add a third
+        await browser.switchToWindow(tabAccounts);
+        await ImportFormScreen.createNewAccountButton.click();
+        await NewWalletScreen.continueButton.click();
+        const seed2 = await BackupSeedScreen.seed.getText();
+        await BackupSeedScreen.continueButton.click();
+
+        for (const word of seed2.split(' ')) {
+          const pill = await ConfirmBackupScreen.suggestedPillsContainer.getPillByText(word);
+          await pill.click();
+          await pill.waitForDisplayed({ reverse: true });
+        }
+        await ConfirmBackupScreen.confirmButton.click();
+        await NewWalletNameScreen.nameInput.setValue('second_account');
+        await NewWalletNameScreen.continueButton.click();
+        await ImportSuccessScreen.addAnotherAccountButton.click();
+
+        // Now create a third while having 2
+        await ImportFormScreen.createNewAccountButton.click();
+        await NewWalletScreen.continueButton.click();
+        const seed3 = await BackupSeedScreen.seed.getText();
+        await BackupSeedScreen.continueButton.click();
+
+        for (const word of seed3.split(' ')) {
+          const pill = await ConfirmBackupScreen.suggestedPillsContainer.getPillByText(word);
+          await pill.click();
+          await pill.waitForDisplayed({ reverse: true });
+        }
+        await ConfirmBackupScreen.confirmButton.click();
+        await NewWalletNameScreen.nameInput.setValue('third_account');
+        await NewWalletNameScreen.continueButton.click();
+
+        await ImportSuccessScreen.addAnotherAccountButton.click();
+
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+        expect(await PopupHome.getActiveAccountName()).toBe('third_account');
+      });
 
       it.todo('When you already have 10 accounts');
     });
@@ -355,16 +393,60 @@ describe('Account creation', () => {
         });
       });
 
-      it.todo('When you already have 2 accounts');
+      it('When you already have 2 accounts', async () => {
+        // Import a second seed account, then a third
+        await browser.switchToWindow(tabAccounts);
+        const secondSeed = 'this is second account seed for multi-account test';
+        await ImportFormScreen.importViaSeedButton.click();
+        await ImportViaSeedScreen.seedInput.setValue(secondSeed);
+        await ImportViaSeedScreen.importAccountButton.click();
+        await NewWalletNameScreen.nameInput.setValue('seed_second');
+        await NewWalletNameScreen.continueButton.click();
+        await ImportSuccessScreen.addAnotherAccountButton.click();
+
+        // Now import a third
+        const thirdSeed = 'this is third account seed for multi-account test';
+        await ImportFormScreen.importViaSeedButton.click();
+        await ImportViaSeedScreen.seedInput.setValue(thirdSeed);
+        await ImportViaSeedScreen.importAccountButton.click();
+        await NewWalletNameScreen.nameInput.setValue('seed_third');
+        await NewWalletNameScreen.continueButton.click();
+        await ImportSuccessScreen.addAnotherAccountButton.click();
+
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+        expect(await PopupHome.getActiveAccountName()).toBe('seed_third');
+      });
+
       it.todo('When you already have 10 accounts');
     });
   });
 
   describe('Import via keystore file', () => {
     describe('validation', () => {
-      it.todo(
-        'keeps "Continue" button disabled until both keystore file is selected and password is entered',
-      );
+      it('keeps "Continue" button disabled until both keystore file is selected and password is entered', async () => {
+        await ImportFormScreen.importByKeystoreFileButton.click();
+
+        // No file selected, no password — Continue should be disabled
+        await expect(ImportKeystoreFileScreen.continueButton).toBeDisabled();
+
+        // Select a file, but no password yet
+        await ImportKeystoreFileScreen.fileInput.addValue(
+          '/app/test/fixtures/keystore-keeper.json',
+        );
+        // Password field should appear; Continue still disabled without password
+        await expect(ImportKeystoreFileScreen.continueButton).toBeDisabled();
+
+        // Enter a password — Continue should become enabled
+        await ImportKeystoreFileScreen.passwordInput.setValue('somepassword');
+        await expect(ImportKeystoreFileScreen.continueButton).toBeEnabled();
+
+        // Clear the password — Continue should be disabled again
+        await ImportKeystoreFileScreen.passwordInput.clearValue();
+        await expect(ImportKeystoreFileScreen.continueButton).toBeDisabled();
+
+        await TopMenu.backButton.click();
+      });
     });
 
     describe('file parsing and decryption', () => {
@@ -438,8 +520,32 @@ describe('Account creation', () => {
         ]);
       });
 
-      it.todo('shows an error if the file format is not recognized');
-      it.todo('shows an error if the password is wrong');
+      it('shows an error if the file format is not recognized', async () => {
+        // Upload a non-keystore file — the component triggers errorFormat on parse failure
+        await ImportKeystoreFileScreen.fileInput.addValue(
+          '/app/test/fixtures/../helpers/TopMenu.ts',
+        );
+        await ImportKeystoreFileScreen.passwordInput.setValue('anypassword');
+        await ImportKeystoreFileScreen.continueButton.click();
+
+        await expect(
+          ImportKeystoreFileScreen.root.findByText$('File format is not supported'),
+        ).toBeDisplayed();
+      });
+
+      it('shows an error if the password is wrong', async () => {
+        await ImportKeystoreFileScreen.fileInput.addValue(
+          '/app/test/fixtures/keystore-keeper.json',
+        );
+        await ImportKeystoreFileScreen.passwordInput.setValue('wrong_password_123');
+        await ImportKeystoreFileScreen.continueButton.click();
+
+        await expect(
+          ImportKeystoreFileScreen.root.findByText$(
+            'Could not decrypt the Keystore file with the given password',
+          ),
+        ).toBeDisplayed();
+      });
     });
 
     describe('actual import', () => {

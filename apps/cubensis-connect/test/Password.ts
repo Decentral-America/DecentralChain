@@ -11,6 +11,7 @@ import { GeneralSettingsScreen } from './helpers/settings/GeneralSettingsScreen'
 import { SettingsMenuScreen } from './helpers/settings/SettingsMenuScreen';
 import { TopMenu } from './helpers/TopMenu';
 import { Windows } from './helpers/Windows';
+import { DEFAULT_MINER_SEED } from './utils/constants';
 
 describe('Password management', () => {
   const PASSWORD = {
@@ -154,8 +155,7 @@ describe('Password management', () => {
 
     beforeAll(async () => {
       await browser.switchToWindow(tabAccounts);
-      // TODO: Update seed phrase when DCC test node genesis config is set up
-      await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+      await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
       await browser.switchToWindow(tabKeeper);
       await browser.openKeeperPopup();
     });
