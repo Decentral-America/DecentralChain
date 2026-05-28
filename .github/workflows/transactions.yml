@@ -13,6 +13,9 @@ on:
       - 'packages/jvm/crypto/**'
       - '.github/workflows/transactions.yml'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/transactions

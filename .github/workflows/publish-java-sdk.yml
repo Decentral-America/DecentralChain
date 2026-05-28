@@ -8,6 +8,9 @@ on:
         required: true
         default: '1.6.5.0'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/java-sdk

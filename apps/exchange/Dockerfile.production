@@ -13,12 +13,12 @@
 # Stage 1: Build the React application for all networks
 # ================================================================
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS builder
+FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS builder
 
 # Install git (required for lefthook install prepare script) and enable pnpm via corepack
 RUN apk add --no-cache git \
     && corepack enable \
-    && corepack prepare pnpm@10.33.0 --activate
+    && corepack prepare pnpm@11.3.0 --activate
 
 # Monorepo root is the build context
 WORKDIR /monorepo
@@ -66,14 +66,14 @@ RUN VITE_NETWORK=stagenet \
 # Stage 2: Serve with Nginx (Production)
 # ================================================================
 # renovate: image=nginx tag=stable-alpine
-FROM nginx:stable-alpine@sha256:5b4900b042ccfa8b0a73df622c3a60f2322faeb2be800cbee5aa7b44d241649e
+FROM nginx:stable-alpine@sha256:5f979dcfed4ce6461873f087e8c980d6e29b084b9e8776d9704a7e989b5f4898
 
 # Environment variables for runtime configuration
 ARG web_environment=mainnet
 ENV WEB_ENVIRONMENT=$web_environment
 
 # Install gettext for envsubst
-RUN apk update && apk add gettext libintl && \
+RUN apk add --no-cache gettext libintl && \
     mkdir -p /etc/nginx/sites-enabled
 
 # Set working directory

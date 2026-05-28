@@ -12,6 +12,12 @@ on:
         required: false
         default: 'latest'
 
+# Least-privilege token permissions (OWASP CI/CD A09).
+# This workflow reads source code, publishes to Maven Central and npm.
+# No GitHub write access needed beyond the implicit read for checkout.
+permissions:
+  contents: read
+
 jobs:
   publish:
     name: Sign · Publish · Release (JVM + npm)
@@ -38,7 +44,7 @@ jobs:
           server-password: MAVEN_CENTRAL_PASSWORD
 
       - name: Install sbt launcher
-        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d  # v1.1.24
+        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
 
       # ── Node / pnpm: npm auth + TypeScript wrapper ───────────────────────
 

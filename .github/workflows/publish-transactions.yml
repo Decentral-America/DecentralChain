@@ -8,6 +8,13 @@ on:
         required: true
         default: '1.0.0'
 
+# Least-privilege token permissions (OWASP CI/CD A09).
+# This workflow reads source code and publishes to Maven Central.
+# It does not need write access to repository contents, PRs, issues,
+# packages, or any other GitHub resource.
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/transactions

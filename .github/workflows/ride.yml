@@ -11,6 +11,9 @@ on:
       - 'packages/ride/**'
       - '.github/workflows/ride.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build & Test (Scala 3 · JVM + Scala.js · Node 24)
@@ -32,7 +35,7 @@ jobs:
 
       # sbt 1.12.11 launcher — version resolved from packages/ride/project/build.properties
       - name: Install sbt launcher
-        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d  # v1.1.24
+        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
 
       # Node 24 — required by scalajs-env for Scala.js test execution
       - name: Set up Node.js 24
@@ -148,7 +151,7 @@ jobs:
           cache: sbt
 
       - name: Install sbt launcher
-        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d  # v1.1.24
+        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
 
       # ── Rust JNI native library (required by bulletproof → test → lang-tests) ─
       - name: Install Rust stable
@@ -224,7 +227,7 @@ jobs:
           cache: sbt
 
       - name: Install sbt launcher
-        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d  # v1.1.24
+        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
 
       - name: Generate dependency list (lang-jvm + lang-testkit)
         working-directory: packages/ride

@@ -11,6 +11,9 @@ on:
       - 'packages/jvm/groth16/**'
       - '.github/workflows/groth16.yml'
 
+permissions:
+  contents: read
+
 env:
   NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 

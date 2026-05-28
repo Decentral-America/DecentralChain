@@ -15,6 +15,9 @@ on:
       - 'packages/jvm/crypto/**'
       - '.github/workflows/java-sdk.yml'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/java-sdk
