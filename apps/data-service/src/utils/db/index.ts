@@ -46,11 +46,13 @@ const escapeForTsQuery = (query: string) => {
 };
 
 /**
- * Escapes query for SQL condition with like operator
+ * Escapes query for SQL condition with like operator.
+ * Escapes the LIKE meta-characters %, _, and \ so user input
+ * cannot inject wildcard patterns.
  * @param {string} query
  * @returns {string}
  */
-const escapeForLike = (query: string) => query;
+const escapeForLike = (query: string) => query.replace(/[%_\\]/g, '\\$&');
 
 /**
  * Prepares query for SQL condition with like operator

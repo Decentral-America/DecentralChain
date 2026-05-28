@@ -27,6 +27,15 @@ export default function handleRequest(
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
           responseHeaders.set('Content-Type', 'text/html; charset=utf-8');
+          responseHeaders.set('X-Content-Type-Options', 'nosniff');
+          responseHeaders.set('X-Frame-Options', 'DENY');
+          responseHeaders.set('X-XSS-Protection', '0');
+          responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+          responseHeaders.set(
+            'Permissions-Policy',
+            'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          );
+          responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
           resolve(
             new Response(stream, {
               headers: responseHeaders,
