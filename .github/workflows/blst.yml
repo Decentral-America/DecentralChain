@@ -11,6 +11,9 @@ on:
       - 'packages/jvm/blst/**'
       - '.github/workflows/blst.yml'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/blst

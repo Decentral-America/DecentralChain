@@ -11,6 +11,9 @@ on:
       - 'packages/jvm/curve25519/**'
       - '.github/workflows/curve25519.yml'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/jvm/curve25519

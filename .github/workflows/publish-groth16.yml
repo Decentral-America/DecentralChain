@@ -8,6 +8,9 @@ on:
         required: true
         default: '0.2.1.0'
 
+permissions:
+  contents: read
+
 env:
   NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 
