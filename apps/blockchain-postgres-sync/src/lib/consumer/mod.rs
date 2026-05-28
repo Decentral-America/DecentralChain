@@ -16,7 +16,7 @@ use std::collections::HashMap;
 use std::sync::Mutex;
 use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
-use tracing::{debug, info};
+use tracing::{debug, info, warn};
 
 use self::models::{asset_tickers::InsertableAssetTicker, block_microblock::BlockMicroblock};
 use self::models::{
@@ -99,7 +99,8 @@ pub trait UpdatesSource {
     ) -> Result<Receiver<BlockchainUpdatesWithLastHeight>, AppError>;
 }
 
-// TODO: handle shutdown signals -> rollback current transaction
+// Graceful shutdown: the loop waits for both stream data and termination signals.
+// On SIGTERM/SIGINT, the current batch completes its transaction before exiting.
 /// # Errors
 ///
 /// Returns an error if the updates source, database, or block-processing logic fails.
@@ -155,14 +156,29 @@ where
         .stream(starting_from_height, updates_per_request, max_wait_time)
         .await?;
 
+    let mut shutdown = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
+
     loop {
         let mut start = Instant::now();
 
-        let updates_with_height = rx.recv().await.ok_or_else(|| {
-            Error::new(AppError::StreamClosed(
-                "GRPC Stream was closed by the server".to_string(),
-            ))
-        })?;
+        let updates_with_height = tokio::select! {
+            biased;
+            _ = shutdown.recv() => {
+                warn!("Received SIGTERM, shutting down gracefully");
+                break Ok(());
+            }
+            _ = tokio::signal::ctrl_c() => {
+                warn!("Received SIGINT, shutting down gracefully");
+                break Ok(());
+            }
+            msg = rx.recv() => {
+                msg.ok_or_else(|| {
+                    Error::new(AppError::StreamClosed(
+                        "GRPC Stream was closed by the server".to_string(),
+                    ))
+                })?
+            }
+        };
 
         let updates_count = updates_with_height.updates.len();
         info!(

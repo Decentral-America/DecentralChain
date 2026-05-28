@@ -9,5 +9,5 @@ pub mod models;
 pub mod proto;
 pub mod schema;
 mod tuple_len;
-mod utils;
+pub mod utils;
 pub mod waves;

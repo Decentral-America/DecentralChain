@@ -46,9 +46,12 @@ type AnyTypes = Record<string, postgres.PostgresType>;
 
 const buildSqlOptions = (options: PgDriverOptions): postgres.Options<AnyTypes> => {
   const base: postgres.Options<AnyTypes> = {
+    connect_timeout: 10,
     database: options.postgresDatabase,
     host: options.postgresHost,
+    idle_timeout: 30,
     max: options.postgresPoolSize,
+    max_lifetime: 3600,
     password: options.postgresPassword,
     port: options.postgresPort,
     ssl: true,
