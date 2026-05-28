@@ -14,6 +14,16 @@ pub fn into_prefixed_base64(b: impl AsRef<[u8]>) -> String {
     }
 }
 
+/// Converts a Unix epoch timestamp in milliseconds to a [`NaiveDateTime`].
+///
+/// Invalid timestamps (outside the representable range) fall back to the Unix
+/// epoch with a warning logged.
+///
+/// # Panics
+///
+/// Panics only if `DateTime::from_timestamp(0, 0)` returns `None`, which cannot
+/// happen because the Unix epoch is always representable.
+#[must_use]
 pub fn epoch_ms_to_naivedatetime(ts: i64) -> NaiveDateTime {
     // ts % 1000 is always 0-999 for blockchain timestamps (post-2009, always positive);
     // multiplied by 1_000_000 gives 0-999_000_000 which fits in u32. Sign loss is impossible

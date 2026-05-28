@@ -44,7 +44,7 @@ import { SponsorshipTransactionScreen } from './helpers/messages/SponsorshipTran
 import { TransferTransactionScreen } from './helpers/messages/TransferTransactionScreen';
 import { UpdateAssetInfoTransactionScreen } from './helpers/messages/UpdateAssetInfoTransactionScreen';
 import { Windows } from './helpers/Windows';
-import { CUSTOMLIST, WHITELIST } from './utils/constants';
+import { CUSTOMLIST, DEFAULT_MINER_SEED, WHITELIST } from './utils/constants';
 import { CUSTOM_DATA_V1, CUSTOM_DATA_V2 } from './utils/customData';
 import {
   ALIAS,
@@ -97,8 +97,7 @@ describe('Signature', () => {
     await browser.switchToWindow(tabAccounts!);
     await browser.refresh();
 
-    // TODO: Update seed phrase when DCC test node genesis config is set up
-    await AccountsHome.importAccount('rich', 'waves private node seed with waves tokens');
+    await AccountsHome.importAccount('rich', DEFAULT_MINER_SEED);
 
     tabOrigin = tabAccounts!;
     await browser.navigateTo(`https://${WHITELIST[3]!}`);
@@ -286,9 +285,8 @@ describe('Signature', () => {
       });
       expect(result.network).toMatchObject({
         code: 'T',
-        matcher: 'https://matcher-testnet.waves.exchange/',
-        // TODO: Update test network URLs to DCC endpoints
-        server: 'https://nodes-testnet.wavesnodes.com/',
+        matcher: 'https://matcher.decentralchain.io/',
+        server: 'https://testnet-node.decentralchain.io/',
       });
       expect(result.txVersion).toMatchObject({
         '3': [3, 2],
@@ -684,7 +682,6 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      // TODO this checks should be into unittests
       it.todo('Address');
       it.todo('Alias');
       it.todo('Waves / asset / smart asset');
@@ -1435,9 +1432,29 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      // TODO this checks should be into unittests
-      it.todo('Minimum alias length');
-      it.todo('Maximum alias length');
+      it('Minimum alias length', async () => {
+        // RIDE alias minimum length is 4 characters
+        const shortAlias = { ...ALIAS, data: { ...ALIAS.data, alias: 'abcd' } };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(shortAlias);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('abcd');
+        await rejectTransaction();
+      });
+
+      it('Maximum alias length', async () => {
+        // RIDE alias maximum length is 30 characters
+        const longAlias = { ...ALIAS, data: { ...ALIAS.data, alias: 'a'.repeat(30) } };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(longAlias);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('a'.repeat(30));
+        await rejectTransaction();
+      });
       describe('with legacy serialization', () => {
         it('Rejected', async () => {
           await browser.switchToWindow(tabOrigin);
@@ -2358,15 +2375,132 @@ describe('Signature', () => {
         ).toBe(true);
       });
 
-      // TODO this checks should be into unittests
       it.todo('dApp: address / alias');
-      it.todo('Function name at max length');
-      it.todo('Default function call');
-      it.todo('Maximum number of arguments');
-      it.todo('Arguments of all types (primitives and List of unions)');
+
+      it('Function name at max length', async () => {
+        // Maximum function name length in RIDE is 255 characters
+        const longFuncName = 'f'.repeat(255);
+        const tx = {
+          ...INVOKE_SCRIPT,
+          data: {
+            ...INVOKE_SCRIPT.data,
+            call: { ...INVOKE_SCRIPT.data.call, function: longFuncName },
+          },
+        };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(tx);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        await expect(InvokeScriptTransactionScreen.function).toHaveText(longFuncName);
+        await rejectTransaction();
+      });
+
+      it('Default function call', async () => {
+        // When call.function is 'default', it should display as 'default'
+        const tx = {
+          ...INVOKE_SCRIPT,
+          data: {
+            ...INVOKE_SCRIPT.data,
+            call: { ...INVOKE_SCRIPT.data.call, args: [], function: 'default' },
+          },
+        };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(tx);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        await expect(InvokeScriptTransactionScreen.function).toHaveText('default');
+        await rejectTransaction();
+      });
+
+      it('Maximum number of arguments', async () => {
+        // RIDE supports up to 22 arguments for InvokeScript
+        const maxArgs = Array.from({ length: 22 }, (_, i) => ({
+          type: 'integer' as const,
+          value: i,
+        }));
+        const tx = {
+          ...INVOKE_SCRIPT,
+          data: {
+            ...INVOKE_SCRIPT.data,
+            call: { ...INVOKE_SCRIPT.data.call, args: maxArgs },
+          },
+        };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(tx);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        const invokeArgs = await InvokeScriptTransactionScreen.getArguments();
+        expect(invokeArgs).toHaveLength(22);
+        await rejectTransaction();
+      });
+
+      it('Arguments of all types (primitives and List of unions)', async () => {
+        const allTypeArgs = [
+          { type: 'integer' as const, value: 42 },
+          { type: 'boolean' as const, value: true },
+          { type: 'string' as const, value: 'hello' },
+          { type: 'binary' as const, value: 'base64:BQbtKNoM' },
+          {
+            type: 'list' as const,
+            value: [
+              { type: 'integer' as const, value: 1 },
+              { type: 'string' as const, value: 'nested' },
+            ],
+          },
+        ];
+        const tx = {
+          ...INVOKE_SCRIPT,
+          data: {
+            ...INVOKE_SCRIPT.data,
+            call: { ...INVOKE_SCRIPT.data.call, args: allTypeArgs },
+          },
+        };
+        await browser.switchToWindow(tabOrigin);
+        await browser.navigateTo(`https://${WHITELIST[3]!}`);
+        await performSignTransaction(tx);
+        await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+        const invokeArgs = await InvokeScriptTransactionScreen.getArguments();
+        expect(invokeArgs.length).toBeGreaterThanOrEqual(4);
+        await rejectTransaction();
+      });
       describe('Payment', () => {
-        it.todo('Zero count');
-        it.todo('Maximum count');
+        it('Zero count', async () => {
+          const tx = {
+            ...INVOKE_SCRIPT,
+            data: { ...INVOKE_SCRIPT.data, payment: [] },
+          };
+          await browser.switchToWindow(tabOrigin);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
+          await performSignTransaction(tx);
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('No Payments');
+          await rejectTransaction();
+        });
+
+        it('Maximum count', async () => {
+          // RIDE supports up to 10 payments for InvokeScript
+          const maxPayments = Array.from({ length: 10 }, () => ({
+            amount: 1,
+            assetId: null,
+          }));
+          const tx = {
+            ...INVOKE_SCRIPT,
+            data: { ...INVOKE_SCRIPT.data, payment: maxPayments },
+          };
+          await browser.switchToWindow(tabOrigin);
+          await browser.navigateTo(`https://${WHITELIST[3]!}`);
+          await performSignTransaction(tx);
+          await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
+
+          await expect(InvokeScriptTransactionScreen.paymentsTitle).toHaveText('10 Payments');
+          await rejectTransaction();
+        });
+
         it.todo('Waves / asset / smart asset');
       });
 

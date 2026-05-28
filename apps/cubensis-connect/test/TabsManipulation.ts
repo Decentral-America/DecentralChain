@@ -10,7 +10,7 @@ import { ImportViaSeedScreen } from './helpers/ImportViaSeedScreen';
 import { NewAccountScreen } from './helpers/NewAccountScreen';
 import { NewWalletNameScreen } from './helpers/NewWalletNameScreen';
 import { Windows } from './helpers/Windows';
-import { DEFAULT_PASSWORD } from './utils/constants';
+import { DEFAULT_MINER_SEED, DEFAULT_PASSWORD, POOR_ACCOUNT_SEED } from './utils/constants';
 
 describe('Tabs manipulation', () => {
   let tabKeeper: string, tabAccounts: string;
@@ -97,8 +97,7 @@ describe('Tabs manipulation', () => {
       await browser.switchToWindow(tabAccounts);
       await browser.refresh();
 
-      // TODO: Update seed phrase when DCC test node genesis config is set up
-      await importAccountUntilSuccess('rich', 'waves private node seed with waves tokens');
+      await importAccountUntilSuccess('rich', DEFAULT_MINER_SEED);
 
       await expect(ImportSuccessScreen.root).toBeDisplayed();
     });
@@ -109,8 +108,7 @@ describe('Tabs manipulation', () => {
     });
 
     it('"finish" button closes "accounts" tab', async () => {
-      // TODO: Update seed phrase when DCC test node genesis config is set up
-      await importAccountUntilSuccess('poor', 'waves private node seed without waves tokens');
+      await importAccountUntilSuccess('poor', POOR_ACCOUNT_SEED);
 
       await ImportSuccessScreen.finishButton.click();
       await waitForExpect(async () => {
