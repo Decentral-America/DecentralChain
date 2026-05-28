@@ -412,7 +412,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- DCC transactions (fork of com.wavesplatform:waves-transactions; see KNOWN-2 resolution) -->
+        <!-- DCC transactions (fork of io.decentralchain:transactions; see KNOWN-2 resolution) -->
         <dependency>
             <groupId>io.decentralchain</groupId>
             <artifactId>transactions</artifactId>
@@ -421,7 +421,7 @@
 
         <!-- DCC crypto primitives (Curve25519, key derivation, hashing, Base58, RSA)
              Direct dep needed for io.decentralchain.crypto.* imports in util classes.
-             Replaces the transitive com.wavesplatform:waves-crypto pulled via waves-transactions.
+             Replaces the transitive io.decentralchain:crypto pulled via waves-transactions.
              See DCC-264. -->
         <dependency>
             <groupId>io.decentralchain</groupId>
@@ -429,11 +429,11 @@
             <version>2.0.7</version>
         </dependency>
 
-        <!-- Compiler -->
+        <!-- RIDE Compiler (DCC local build from packages/ride) -->
         <dependency>
-            <groupId>com.wavesplatform</groupId>
+            <groupId>io.decentralchain</groupId>
             <artifactId>lang</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
         </dependency>
 
         <!-- logging (runtime / test only) -->
@@ -441,6 +441,16 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.32</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- protobuf-serialization: io.decentralchain.protobuf.* and
+             io.decentralchain.events.protobuf.* generated classes.
+             Required for EthereumTransactionFromProtobufTest. -->
+        <dependency>
+            <groupId>io.decentralchain</groupId>
+            <artifactId>protobuf-schemas</artifactId>
+            <version>1.6.2</version>
             <scope>test</scope>
         </dependency>
 

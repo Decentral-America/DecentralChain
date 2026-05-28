@@ -44,7 +44,7 @@ describe('logger', () => {
       mnemonic: 'word1 word2',
       password: 'hunter2',
       privateKey: 'key-data',
-      seed: 'my secret seed phrase',
+      seed: 'c2VlZC1yZWRhY3Rpb24tdGVzdA',
     };
 
     logger.debug(sensitiveObj);

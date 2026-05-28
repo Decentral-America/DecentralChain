@@ -311,6 +311,10 @@ export async function fetchPairInfo(
   amountAsset: string,
   priceAsset: string,
 ): Promise<PairInfoResponse | null> {
+  // Guard against path traversal — asset IDs must be alphanumeric base58
+  if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(amountAsset) || !/^[1-9A-HJ-NP-Za-km-z]+$/.test(priceAsset)) {
+    throw new Error('Invalid asset ID');
+  }
   const response = await fetch(`${DATA_SERVICE_URL}/pairs/${amountAsset}/${priceAsset}`);
   if (!response.ok) {
     if (response.status === 404) return null;

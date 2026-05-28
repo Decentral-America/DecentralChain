@@ -146,7 +146,7 @@ All notable changes to this project will be documented in this file.
 - **Publish workflow: `mvn deploy -DskipTests` failed JaCoCo check** — The deploy step now passes `-Djacoco.skip=true -Dspotbugs.skip=true -Dcheckstyle.skip=true`. The separate `verify` step already ran all quality gates; re-running them during `deploy` with no coverage data caused the JaCoCo coverage check to fail (0% vs 20% minimum).
 
 ### Changed
-- Forked from [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) v1.6.4
+- Forked from [Decentral-America/java-sdk](https://github.com/Decentral-America/java-sdk) v1.6.4
 - Rebranded to **DecentralChain Java SDK** (`io.decentralchain:java-sdk`)
 - JaCoCo code coverage enforcement (70% line/branch minimum)
 - SpotBugs static analysis (High threshold, Max effort)
@@ -216,7 +216,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.0
 - significantly redesigned interface
-- based on [Waves Crypto](https://github.com/wavesplatform/waves-crypto-java) and [Waves transactions](https://github.com/wavesplatform/waves-transactions-java) libraries
+- based on [Waves Crypto](https://github.com/Decentral-America/crypto) and [Waves transactions](https://github.com/Decentral-America/transactions-java) libraries
 - supported most of Waves Node API
 - feature #15 of Waves Node 1.2 Malibu release is now supported
 

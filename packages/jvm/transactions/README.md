@@ -16,7 +16,7 @@
 ## Overview
 
 `transactions` is the DecentralChain fork of
-[wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java),
+[Decentral-America/transactions-java](https://github.com/Decentral-America/transactions-java),
 published as `io.decentralchain:transactions:1.0.0`.
 
 It provides the complete serialization layer for **all** transaction types used in
@@ -36,7 +36,7 @@ the DecentralChain / Waves blockchain:
 
 | Item          | Value                                                                      |
 |---------------|----------------------------------------------------------------------------|
-| Upstream repo | `wavesplatform/waves-transactions-java`                                    |
+| Upstream repo | `Decentral-America/transactions-java`                                    |
 | Fork base     | commit `e6afed3` — Version 1.2.7 (Feb 11, 2026)                           |
 | DCC version   | `1.0.0`                                                                    |
 | License       | MIT (inherited from upstream)                                              |
@@ -68,10 +68,10 @@ implementation("io.decentralchain:transactions:1.0.0")
 ### Build a signed Transfer transaction
 
 ```java
-import com.wavesplatform.transactions.TransferTransaction;
-import com.wavesplatform.transactions.account.PrivateKey;
-import com.wavesplatform.transactions.common.Amount;
-import com.wavesplatform.transactions.WavesConfig;
+import com.decentralchain.transactions.TransferTransaction;
+import com.decentralchain.transactions.account.PrivateKey;
+import com.decentralchain.transactions.common.Amount;
+import com.decentralchain.transactions.WavesConfig;
 
 WavesConfig.chainId('W'); // mainnet
 
@@ -86,7 +86,7 @@ System.out.println(tx.toJson());
 ### Build an Ethereum-compatible transaction
 
 ```java
-import com.wavesplatform.transactions.EthereumTransaction;
+import com.decentralchain.transactions.EthereumTransaction;
 import org.web3j.crypto.ECKeyPair;
 import java.math.BigInteger;
 
@@ -100,7 +100,7 @@ EthereumTransaction tx = EthereumTransaction.transfer(
 ### Parse a raw transaction
 
 ```java
-import com.wavesplatform.transactions.Transaction;
+import com.decentralchain.transactions.Transaction;
 
 Transaction tx = Transaction.fromJson(jsonString);
 Transaction txFromBytes = Transaction.fromBytes(rawBytes);
@@ -142,8 +142,8 @@ JAVA_HOME=/opt/homebrew/opt/java ./mvnw verify -P audit -DnvdApiKey=$NVD_API_KEY
 
 | Artifact                              | Version | License |
 |---------------------------------------|---------|---------|
-| `com.wavesplatform:waves-crypto`      | 2.0.7   | MIT     |
-| `com.wavesplatform:protobuf-schemas`  | 1.6.0   | MIT     |
+| `io.decentralchain:crypto`             | 2.0.7   | MIT     |
+| `io.decentralchain:protobuf-schemas`   | 1.6.2   | MIT     |
 | `com.fasterxml.jackson.core:jackson-databind` | 2.21.3 | Apache 2.0 |
 | `org.web3j:crypto`                    | 5.0.2   | Apache 2.0 |
 

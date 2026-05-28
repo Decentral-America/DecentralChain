@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
 
     <description>
-        Custom PMD ruleset for java-sdk — DCC Java SDK (fork of wavesplatform/WavesJ).
+        Custom PMD ruleset for java-sdk — DCC Java SDK (fork of Decentral-America/java-sdk).
         Categories: security (all), errorprone, bestpractices, design, performance.
         Excludes rules that conflict with intentional patterns from the upstream SDK.
     </description>

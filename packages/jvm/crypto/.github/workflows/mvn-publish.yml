@@ -11,7 +11,7 @@ on:
 
 jobs:
   publish:
-    uses: wavesplatform/protobuf-schemas/.github/workflows/mvn-publish.yml@1f62e31863f5b8a72f37b57594d8ad776d16bfc0
+    uses: Decentral-America/protobuf-schemas/.github/workflows/mvn-publish.yml@1f62e31863f5b8a72f37b57594d8ad776d16bfc0
     with:
       github-ref-name: ${{ github.ref_name }}
       github-event-number: ${{ github.event.number }}

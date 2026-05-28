@@ -69,12 +69,14 @@ const createGetTransferTxs: TCreateGetFn<IGetTransferTxs> = (libOptions) => {
     validate: validateFilters,
   });
 
-  const getTransferTxs: IGetTransferTxs = (idOrFilters?: string | ITransferTxFilters) =>
-    typeof idOrFilters === 'string'
-      ? getTransferTxsOne(idOrFilters)
-      : getTransferTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+  const getTransferTxs = (idOrFilters?: string | ITransferTxFilters) =>
+    idOrFilters === null
+      ? Promise.reject(new Error('ArgumentsError: invalid filters object'))
+      : typeof idOrFilters === 'string'
+        ? getTransferTxsOne(idOrFilters)
+        : getTransferTxsMany(idOrFilters ?? {});
 
-  return getTransferTxs;
+  return getTransferTxs as IGetTransferTxs;
 };
 
 export default createGetTransferTxs;
