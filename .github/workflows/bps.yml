@@ -37,7 +37,7 @@ jobs:
         uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
         with:
           toolchain: stable
-          components: rustfmt, clippy
+          components: rustfmt, clippy, llvm-tools-preview
 
       - name: Install system dependencies
         run: |
@@ -45,6 +45,11 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             protobuf-compiler \
             libpq-dev
+
+      - name: Install cargo-nextest, cargo-llvm-cov, cargo-deny, cargo-machete
+        uses: taiki-e/install-action@6ed6112eb9893c58dd600eebccdf6e77ab7bfa9c # v2.79.12
+        with:
+          tool: cargo-nextest,cargo-llvm-cov,cargo-deny@0.19.7,cargo-machete
 
       - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
@@ -64,23 +69,28 @@ jobs:
         working-directory: apps/blockchain-postgres-sync
         run: cargo clippy --all-targets -- -D warnings
 
-      - name: Test
+      - name: Test with coverage (cargo-nextest + cargo-llvm-cov)
         working-directory: apps/blockchain-postgres-sync
-        run: cargo test --all-targets
+        run: |
+          cargo llvm-cov nextest \
+            --all-targets \
+            --codecov \
+            --output-path codecov.json
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          files: apps/blockchain-postgres-sync/codecov.json
+          flags: bps
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
       - name: Check documentation
         working-directory: apps/blockchain-postgres-sync
         run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
 
       # ── Security & dependency policy ──────────────────────────────────────────
-      # cargo-deny 0.19.6: fixes env-var interference with advisory DB path
-      # resolution in CI (PR#854). cargo-machete: detects unused dependencies.
-      # taiki-e/install-action downloads pre-built binaries — no compilation.
-      - name: Install cargo-deny and cargo-machete
-        uses: taiki-e/install-action@d9be7d8cda89035c9c843f78bd44d4f72d8403d4 # v2.79.7
-        with:
-          tool: cargo-deny@0.19.6,cargo-machete
-
       - name: Dependency policy check (cargo deny)
         working-directory: apps/blockchain-postgres-sync
         run: cargo deny check
