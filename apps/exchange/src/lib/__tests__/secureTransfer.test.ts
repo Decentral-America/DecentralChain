@@ -19,13 +19,13 @@ describe('secureTransfer', () => {
   });
 
   it('stores and returns seed on first consume', () => {
-    const seed = 'test seed phrase for wallet recovery';
+    const seed = 'dGVzdC1zZWVkLXRyYW5zZmVyLWRhdGE';
     setSeedTransfer(seed);
     expect(consumeSeedTransfer()).toBe(seed);
   });
 
   it('returns null on second consume (one-time read)', () => {
-    const seed = 'test seed phrase';
+    const seed = 'b25lLXRpbWUtcmVhZA';
     setSeedTransfer(seed);
     consumeSeedTransfer(); // first read
     expect(consumeSeedTransfer()).toBeNull();

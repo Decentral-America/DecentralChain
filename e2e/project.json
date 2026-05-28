@@ -1,0 +1,6 @@
+{
+  "implicitDependencies": ["exchange", "scanner"],
+  "name": "e2e",
+  "projectType": "application",
+  "tags": ["scope:e2e"]
+}

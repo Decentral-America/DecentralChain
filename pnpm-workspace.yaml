@@ -5,6 +5,7 @@ packages:
   - 'packages/ride/ts'
   - 'packages/jvm/*'
   - 'apps/*'
+  - 'e2e'
 
 catalog:
   '@arethetypeswrong/cli': 0.18.2
@@ -40,6 +41,7 @@ allowBuilds:
 overrides:
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
+  tmp: '>=0.2.6'
   basic-ftp: '>=5.3.1'
   brace-expansion: '>=5.0.6'
   defu: '>=6.1.5'
@@ -75,22 +77,25 @@ minimumReleaseAgeExclude:
   - vite@8.0.14
   - knip@6.14.2
   - hono@4.12.23
-  - nx@22.7.4
-  - '@nx/devkit@22.7.4'
-  - '@nx/vitest@22.7.4'
+  - nx@22.7.5
+  - '@nx/devkit@22.7.5'
+  - '@nx/vitest@22.7.5'
   - '@hookform/resolvers@5.4.0'
-  - '@nx/nx-darwin-arm64@22.7.4'
-  - '@nx/nx-darwin-x64@22.7.4'
-  - '@nx/nx-freebsd-x64@22.7.4'
-  - '@nx/nx-linux-arm-gnueabihf@22.7.4'
-  - '@nx/nx-linux-arm64-gnu@22.7.4'
-  - '@nx/nx-linux-arm64-musl@22.7.4'
-  - '@nx/nx-linux-x64-gnu@22.7.4'
-  - '@nx/nx-linux-x64-musl@22.7.4'
-  - '@nx/nx-win32-arm64-msvc@22.7.4'
-  - '@nx/nx-win32-x64-msvc@22.7.4'
-  - '@nx/js@22.7.4'
-  - '@nx/workspace@22.7.4'
+  - '@nx/nx-darwin-arm64@22.7.5'
+  - '@nx/nx-darwin-x64@22.7.5'
+  - '@nx/nx-freebsd-x64@22.7.5'
+  - '@nx/nx-linux-arm-gnueabihf@22.7.5'
+  - '@nx/nx-linux-arm64-gnu@22.7.5'
+  - '@nx/nx-linux-arm64-musl@22.7.5'
+  - '@nx/nx-linux-x64-gnu@22.7.5'
+  - '@nx/nx-linux-x64-musl@22.7.5'
+  - '@nx/nx-win32-arm64-msvc@22.7.5'
+  - '@nx/nx-win32-x64-msvc@22.7.5'
+  - '@nx/js@22.7.5'
+  - '@nx/workspace@22.7.5'
+  - tmp@0.2.6
+  - '@nx/eslint@22.7.5'
+  - '@nx/playwright@22.7.5'
 
 # @visx 3.12.0 (latest stable) declares react peerDep as "^16||^17||^18".
 # The packages work correctly with React 19 — the peerDeps declaration just

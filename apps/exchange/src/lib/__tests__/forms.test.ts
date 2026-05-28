@@ -173,7 +173,7 @@ describe('seedPhraseSchema', () => {
   });
 
   it('rejects fewer than 15 words', () => {
-    const seed = 'one two three four five six seven eight nine ten';
+    const seed = Array.from({ length: 10 }, (_, i) => `word${i}`).join(' ');
     expect(() => seedPhraseSchema.parse(seed)).toThrow();
   });
 

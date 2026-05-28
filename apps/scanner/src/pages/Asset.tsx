@@ -58,6 +58,10 @@ interface LoaderData {
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return { asset: null };
+  // Asset IDs are base58-encoded 32-byte hashes (44 chars) or 'WAVES'
+  if (!/^(WAVES|[1-9A-HJ-NP-Za-km-z]{43,44})$/.test(id)) {
+    throw data('Invalid asset ID format', { status: 400 });
+  }
   const asset = await fetchAssetDetailsById(id).catch(() => null);
   if (!asset) {
     throw data('Asset not found', { status: 404 });

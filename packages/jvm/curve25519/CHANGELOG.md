@@ -10,7 +10,7 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 ## [0.6.6] — 2026-05-17
 
 Initial DCC release — fork of [WhisperSystems/curve25519-java](https://github.com/whispersystems/curve25519-java)
-as adopted and maintained by [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java).
+as adopted and maintained by [Decentral-America/curve25519](https://github.com/Decentral-America/curve25519).
 
 ### Changed
 - Maven coordinates: `com.wavesplatform:curve25519-java` → `io.decentralchain:curve25519`

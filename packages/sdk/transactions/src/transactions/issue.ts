@@ -39,7 +39,7 @@ export function issue(
 
   const tx: IssueTransaction & WithId & WithProofs = {
     chainId: networkByte(paramsOrTx.chainId, 63),
-    decimals: (paramsOrTx.decimals == null ? 8 : paramsOrTx.decimals) as AssetDecimals,
+    decimals: (paramsOrTx.decimals ?? 8) as AssetDecimals,
     description: paramsOrTx.description,
     fee: checkForNFT(paramsOrTx) ? fee(paramsOrTx, 100000) : fee(paramsOrTx, 100000000),
     id: '',

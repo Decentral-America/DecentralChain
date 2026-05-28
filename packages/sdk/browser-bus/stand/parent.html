@@ -10,38 +10,38 @@
     <script>
       var { Bus, WindowAdapter, config } = bus;
 
-      config.console.logLevel = config.console.LOG_LEVEL.VERBOSE;
+                  config.console.logLevel = config.console.LOG_LEVEL.VERBOSE;
 
-      var PARENT_DATA = { key: 'parent test' };
+                  var PARENT_DATA = { key: 'parent test' };
 
-      var iframe = document.createElement('iframe');
+                  var iframe = document.createElement('iframe');
 
-      // connection with iframe
-      WindowAdapter.createSimpleWindowAdapter(iframe).then((adapter) => {
-        const bus = new Bus(adapter);
+                  // connection with iframe
+                  WindowAdapter.createSimpleWindowAdapter(iframe).then((adapter) => {
+                    const bus = new Bus(adapter);
 
-        bus.dispatchEvent('How are you?', PARENT_DATA);
+                    bus.dispatchEvent('How are you?', PARENT_DATA);
 
-        bus.once('hi-from-iframe', (_data) => {
-        });
-      });
+                    bus.once('hi-from-iframe', (_data) => {
+                    });
+                  });
 
-      iframe.src = './iframe.html';
-      document.body.appendChild(iframe);
+                  iframe.src = './iframe.html';
+                  document.body.appendChild(iframe);
 
-      // connection with window tab
-      document.addEventListener('click', () => {
-        const win = window.open('./iframe.html');
+                  // connection with window tab
+                  document.addEventListener('click', () => {
+                    const win = window.open('./iframe.html');
 
-        WindowAdapter.createSimpleWindowAdapter(win).then((adapter) => {
-          const bus = new Bus(adapter);
+                    WindowAdapter.createSimpleWindowAdapter(win).then((adapter) => {
+                      const bus = new Bus(adapter);
 
-          bus.dispatchEvent('How are your, window?', PARENT_DATA);
+                      bus.dispatchEvent('How are your, window?', PARENT_DATA);
 
-          bus.once('hi-from-window', (_data) => {
-          });
-        });
-      });
+                      bus.once('hi-from-window', (_data) => {
+                      });
+                    });
+                  });
     </script>
   </body>
 </html>
