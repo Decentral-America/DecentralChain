@@ -175,7 +175,7 @@ jobs:
       vars.INFRA_DEPLOY_ENABLED == 'true' &&
       (needs.resolve.outputs.network == 'mainnet' ||
        github.event_name == 'workflow_dispatch')
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@f1fcdc4dff35518439e418fa1cf3015ceb4a0415 # dev
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b182972e0c6e638c3990755525154c0e28e44fe9 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/scanner:${{ github.sha }}
