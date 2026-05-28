@@ -163,7 +163,6 @@ export default ({
     matcherConfig[options.matcher.defaultMatcherAddress] = options.matcher.settingsURL;
   }
 
-  // @todo async init whatever is necessary
   return pipe(
     PairOrderingServiceImpl.create(matcherConfig),
     Effect.map((pairOrderingService) => {

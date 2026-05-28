@@ -7,7 +7,7 @@ import background from '#ui/services/Background';
 
 import { NETWORK_CONFIG } from '../../../constants';
 import { usePopupSelector } from '../../../popup/store/react';
-import keeperWalletLock from '../../assets/img/cubensis-connect-lock.svg';
+import cubensisConnectLock from '../../assets/img/cubensis-connect-lock.svg';
 import { Button } from '../ui';
 import { generateNewWalletItems } from './NewWallet';
 import * as styles from './styles/import.module.styl';
@@ -18,7 +18,13 @@ export function ImportPopup() {
 
   return (
     <div data-testid="importForm" className={styles.root}>
-      <img className={styles.importIcon} src={keeperWalletLock} alt="" width={216} height={137} />
+      <img
+        className={styles.importIcon}
+        src={cubensisConnectLock}
+        alt=""
+        width={216}
+        height={137}
+      />
 
       <p className="body1 disabled500 font300 center margin-main-big-top margin-main-large">
         <Trans
@@ -58,7 +64,13 @@ export function AccountsHome() {
 
   return (
     <div data-testid="importForm" className={styles.root}>
-      <img className={styles.importIcon} src={keeperWalletLock} alt="" width={216} height={137} />
+      <img
+        className={styles.importIcon}
+        src={cubensisConnectLock}
+        alt=""
+        width={216}
+        height={137}
+      />
 
       <Button
         data-testid="createNewAccountBtn"

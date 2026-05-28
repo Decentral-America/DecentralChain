@@ -12,9 +12,10 @@ const senders = (addrs: string[]) => whereIn('t.sender', addrs);
 const byAssetId = (assetId: string) => where('asset_id', assetId);
 
 const byRecipient = (addressOrAlias: string) =>
-  whereRaw(
-    `recipient_address = coalesce((select sender from txs_10 where alias = '${addressOrAlias}' limit 1), '${addressOrAlias}')`,
-  );
+  whereRaw('recipient_address = coalesce((select sender from txs_10 where alias = ? limit 1), ?)', [
+    addressOrAlias,
+    addressOrAlias,
+  ]);
 
 const byScript = (s: string) => whereRaw('md5(script) = ?', md5(s));
 
@@ -23,7 +24,7 @@ const sort = (s: string) => (q: any) => q.clone().orderBy('t.uid', s);
 const after =
   ({ uid, sort }: { uid: { toString: () => string }; sort: string }) =>
   (q: any) =>
-    q.clone().whereRaw(`t.uid ${sort === 'desc' ? '<' : '>'} ${uid.toString()}`);
+    q.clone().whereRaw(`t.uid ${sort === 'desc' ? '<' : '>'} ?`, [uid.toString()]);
 
 const commonFilters = {
   after,

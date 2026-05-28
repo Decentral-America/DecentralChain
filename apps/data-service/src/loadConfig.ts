@@ -48,18 +48,39 @@ export type DataServiceConfig = PostgresConfig &
 
 const commonEnvVariables = ['PGHOST', 'PGDATABASE', 'PGUSER', 'PGPASSWORD'];
 
+const parsePort = (envVar: string, fallback: number): number => {
+  const raw = process.env[envVar];
+  if (!raw) return fallback;
+  const n = parseInt(raw, 10);
+  if (Number.isNaN(n) || n < 1 || n > 65535) {
+    throw new Error(`${envVar}=${raw} is not a valid port (1–65535)`);
+  }
+  return n;
+};
+
+const parsePositiveInt = (envVar: string, fallback: number): number => {
+  const raw = process.env[envVar];
+  if (!raw) return fallback;
+  const n = parseInt(raw, 10);
+  if (Number.isNaN(n) || n < 1) {
+    throw new Error(`${envVar}=${raw} is not a valid positive integer`);
+  }
+  return n;
+};
+
 export const loadDefaultConfig = (): DefaultConfig => {
   // assert common env vars are set
   checkEnv(commonEnvVariables);
 
   return {
     logLevel: process.env['LOG_LEVEL'] || 'info',
-    port: process.env['PORT'] ? parseInt(process.env['PORT'], 10) : 3000,
-    postgresDatabase: process.env['PGDATABASE'] || 'mainnet',
+    port: parsePort('PORT', 3000),
+    postgresDatabase: process.env['PGDATABASE'] || 'dcc',
     postgresHost: process.env['PGHOST'] || '',
-    postgresPassword: process.env['PGPASSWORD'] || 'postgres',
-    postgresPoolSize: process.env['PGPOOLSIZE'] ? parseInt(process.env['PGPOOLSIZE'], 10) : 20,
-    postgresPort: process.env['PGPORT'] ? parseInt(process.env['PGPORT'], 10) : 5432,
+    // PGPASSWORD is in commonEnvVariables — checkEnv() above guarantees it is set.
+    postgresPassword: process.env['PGPASSWORD'] ?? '',
+    postgresPoolSize: parsePositiveInt('PGPOOLSIZE', 20),
+    postgresPort: parsePort('PGPORT', 5432),
     postgresStatementTimeout:
       isNil(process.env['PGSTATEMENTTIMEOUT']) ||
       Number.isNaN(parseInt(process.env['PGSTATEMENTTIMEOUT'], 10))
