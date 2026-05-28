@@ -199,16 +199,17 @@ func bar() = WriteSet([])`;
       'pow(0, 1, 3456, 3, 2, HALFUP)',
       'pow(20, 1, -1, 0, 4, DOWN)',
       'pow(-20, 1, -1, 0, 4, DOWN)',
-      // "pow(0, 1, -1, 0, 4, DOWN)",//fixme
+      // pow/log with negative or zero args — known RIDE VM math edge cases (upstream issue)
+      // 'pow(0, 1, -1, 0, 4, DOWN)',
       'log(16, 0, 2, 0, 0, CEILING)',
-      // "log(16, 0, -2, 0, 0, CEILING)",//fixme
-      // "log(-16, 0, 2, 0, 0, CEILING)",//fixme
-      // "pow(2,  0, 2, 9, 0, UP)",//fixme
-      // "log(2,  0, 2, 9, 0, UP)",//fixme
-      // "pow(2, -2, 2, 0, 5, UP)",//fixme
-      // "log(2, -2, 2, 0, 5, UP)",//fixme
+      // 'log(16, 0, -2, 0, 0, CEILING)',
+      // 'log(-16, 0, 2, 0, 0, CEILING)',
+      // 'pow(2,  0, 2, 9, 0, UP)',
+      // 'log(2,  0, 2, 9, 0, UP)',
+      // 'pow(2, -2, 2, 0, 5, UP)',
+      // 'log(2, -2, 2, 0, 5, UP)',
       'pow(2, 0, 62, 0, 0, HALFUP)',
-      // "pow(2, 0, 63, 0, 0, UP)",//fixme
+      // 'pow(2, 0, 63, 0, 0, UP)',
       'pow(10, 0, -8, 0, 8, HALFUP)',
       'pow(10, 0, -9, 0, 8, HALFUP)',
     ];
@@ -220,14 +221,14 @@ func bar() = WriteSet([])`;
 
   test('testHttp', async () => {
     expect(
-      // TODO: Replace with DCC node URL once available
-      await https.get('https://nodes.wavesplatform.com/transactions/info/asd').getHeader('body'),
+      await https
+        .get('https://mainnet-node.decentralchain.io/transactions/info/asd')
+        .getHeader('body'),
     ).toBeUndefined();
   });
 
   test('connect blockchain - transactionHeightById', async () => {
-    // TODO: Replace with DCC testnet node URL once available
-    const nodeUrl = 'https://nodes-testnet.wavesnodes.com/',
+    const nodeUrl = 'https://testnet-node.decentralchain.io/',
       chainId = 'T',
       address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
 
@@ -240,8 +241,7 @@ func bar() = WriteSet([])`;
   });
 
   test('reconfigure', async () => {
-    // TODO: Replace with DCC testnet node URL once available
-    const nodeUrl = 'https://nodes-testnet.wavesnodes.com/',
+    const nodeUrl = 'https://testnet-node.decentralchain.io/',
       chainId = 'T';
     let address = '3N4S7xqHfGvePCGduvzAp7bgUM3j59MZdhB';
 

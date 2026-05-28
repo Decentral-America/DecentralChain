@@ -9,7 +9,7 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ## [1.0.0] — 2026-05-17
 
-Initial DCC release — fork of [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java)
+Initial DCC release — fork of [Decentral-America/transactions-java](https://github.com/Decentral-America/transactions-java)
 which provided binary and JSON serialization for all Waves/DecentralChain
 transaction types.
 

@@ -182,8 +182,9 @@ export class Bus<
     const bus = new Bus(adapter, this._timeout);
 
     Object.keys(this._eventHandlers).forEach((name) => {
-      // biome-ignore lint/style/noNonNullAssertion: asserted safe
-      this._eventHandlers[name]!.forEach((info) => {
+      const handlers = this._eventHandlers[name];
+      if (!handlers) return;
+      handlers.forEach((info) => {
         if (info.once) {
           bus.once(name, info.handler, info.context);
         } else {

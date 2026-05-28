@@ -18,13 +18,13 @@
     transaction types (transfers, exchanges, invocations, Ethereum-compatible
     transactions, and more). Provides protobuf + JSON codec, Ethereum ABI
     encoding, and full builder/factory API for constructing signed transactions.
-    Forked from wavesplatform/waves-transactions-java with full upstream history.
+    Forked from Decentral-America/transactions-java with full upstream history.
   </description>
   <url>https://github.com/Decentral-America/DCC</url>
   <inceptionYear>2021</inceptionYear>
 
   <licenses>
-    <!-- MIT — inherited from upstream wavesplatform/waves-transactions-java -->
+    <!-- MIT — inherited from upstream Decentral-America/transactions-java -->
     <license>
       <name>MIT License</name>
       <url>https://opensource.org/licenses/MIT</url>
@@ -66,13 +66,10 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Dependency version properties — pinned and audited 2026-05 -->
-    <!-- io.decentralchain:crypto 2.0.7 — DCC fork of wavesplatform/waves-crypto-java v2.0.7 (DCC-264) -->
+    <!-- io.decentralchain:crypto 2.0.7 — DCC fork of Decentral-America/crypto v2.0.7 (DCC-264) -->
     <dcc-crypto.version>2.0.7</dcc-crypto.version>
-    <!-- protobuf-schemas 1.6.0 — latest on Maven Central; upstream unchanged
-         NOTE: io.decentralchain:protobuf-schemas only exists as protobuf-src classifier
-         (for code generation). Runtime JAR must remain com.wavesplatform until DCC
-         publishes a full JAR artifact. -->
-    <protobuf-schemas.version>1.6.0</protobuf-schemas.version>
+    <!-- protobuf-schemas 1.6.2 — DCC local build (io.decentralchain namespace) -->
+    <protobuf-schemas.version>1.6.2</protobuf-schemas.version>
     <!-- jackson-databind 2.21.3 — latest (Apr 28, 2026); upgraded from 2.16.1 -->
     <jackson-databind.version>2.21.3</jackson-databind.version>
     <!-- web3j:crypto 5.0.2 — latest (Jan 21, 2026); MAJOR upgrade from 4.9.8.
@@ -125,6 +122,10 @@
          the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
          via curve25519-java. -->
     <jna.version>5.18.1</jna.version>
+    <!-- netty 4.1.134.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
+         4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
+         CONTINUATION flood DoS, DNS codec). -->
+    <netty.version>4.1.134.Final</netty.version>
   </properties>
 
   <!-- ── Dependency management (transitive version overrides) ────────── -->
@@ -132,6 +133,18 @@
   <!-- adding them to the compile classpath.                                -->
   <dependencyManagement>
     <dependencies>
+
+      <!-- Netty BOM 4.1.134.Final — SECURITY OVERRIDE.
+           web3j:crypto → tuweni-bytes → vertx-core pulls netty 4.1.115.Final
+           which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling, CONTINUATION
+           flood DoS, DNS codec vulnerabilities). -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
       <!-- Force protobuf-java to 4.34.1 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
       <dependency>
@@ -160,9 +173,9 @@
       <version>${dcc-crypto.version}</version>
     </dependency>
 
-    <!-- Waves / DecentralChain protobuf schema definitions -->
+    <!-- DecentralChain protobuf schema definitions -->
     <dependency>
-      <groupId>com.wavesplatform</groupId>
+      <groupId>io.decentralchain</groupId>
       <artifactId>protobuf-schemas</artifactId>
       <version>${protobuf-schemas.version}</version>
     </dependency>
@@ -309,6 +322,10 @@
         <configuration>
           <encoding>UTF-8</encoding>
           <release>25</release>
+          <!-- Non-JPMS project: run javadoc in legacy (classpath) mode to avoid
+               "Unable to derive module descriptor" errors from transitive deps
+               with invalid automatic module names (e.g. jc-kzg-4844) -->
+          <legacyMode>true</legacyMode>
           <!-- Upstream code has sparse Javadoc; suppress missing warnings -->
           <doclint>all,-missing</doclint>
         </configuration>

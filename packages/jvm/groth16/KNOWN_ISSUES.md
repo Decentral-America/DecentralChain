@@ -1,6 +1,6 @@
 # Known Issues
 
-> Tracked items in the zwaves package (DCC fork of wavesplatform/zwaves).
+> Tracked items in the zwaves package (DCC fork of Decentral-America/zwaves).
 > Each item includes its risk level, reason it is not resolved immediately,
 > and the recommended resolution path.
 

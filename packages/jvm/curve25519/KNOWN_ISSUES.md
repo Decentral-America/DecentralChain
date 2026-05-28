@@ -1,7 +1,7 @@
 # Known Issues
 
 > Tracked items in the curve25519-java package (DCC fork of
-> wavesplatform/curve25519-java, originally WhisperSystems/curve25519-java).
+> Decentral-America/curve25519, originally WhisperSystems/curve25519-java).
 > Each item includes its risk level, reason it is not resolved immediately,
 > and the recommended resolution path.
 

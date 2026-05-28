@@ -35,6 +35,13 @@
         "testTargetName": "test"
       },
       "plugin": "@nx/vitest"
+    },
+    {
+      "options": {
+        "ciTargetName": "e2e-ci",
+        "targetName": "e2e"
+      },
+      "plugin": "@nx/playwright/plugin"
     }
   ],
   "release": {

@@ -290,8 +290,7 @@ export class WindowAdapter extends Adapter {
 
     if (!(content instanceof HTMLIFrameElement)) {
       try {
-        // biome-ignore lint/style/noNonNullAssertion: asserted safe
-        return window.top!.origin;
+        return window.top?.origin ?? null;
       } catch (_e) {
         return null;
       }

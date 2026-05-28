@@ -36,7 +36,7 @@ public abstract class BaseTestWithNodeInDocker {
     } else {
       try {
         container =
-            new GenericContainer<>(DockerImageName.parse("wavesplatform/waves-private-node:v1.6.0"))
+            new GenericContainer<>(DockerImageName.parse("ghcr.io/decentral-america/node-scala-private:latest"))
                 .withExposedPorts(6869)
                 .withStartupTimeout(Duration.of(5, MINUTES));
         container.start();
@@ -77,8 +77,16 @@ public abstract class BaseTestWithNodeInDocker {
     assumeTrue(DOCKER_AVAILABLE, "Docker not available — skipping Docker integration test");
   }
 
+  private static String requireEnv(String name) {
+    String value = System.getenv(name);
+    if (value == null || value.isEmpty()) {
+      throw new IllegalStateException(name + " env var is required — see .env.example");
+    }
+    return value;
+  }
+
   protected static final PrivateKey faucet =
-      PrivateKey.fromSeed("waves private node seed with waves tokens");
+      PrivateKey.fromSeed(requireEnv("DCC_TEST_MINER_SEED"));
 
   protected static PrivateKey createAccountWithBalance() throws IOException, NodeException {
     return PrivateKey.fromSeed(Crypto.getRandomSeedBytes());

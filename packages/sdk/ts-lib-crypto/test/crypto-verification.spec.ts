@@ -10,9 +10,21 @@ import * as migrated from '../src/index';
 
 // Known-good values captured from the library to guard against regressions.
 // If these ever change, key derivation has silently broken — a critical failure.
-const seed = 'test seed phrase for verification only';
-const ORIGINAL_PUBLIC_KEY = 'FLESFXm7kvRCBrKN4JdSKPHkmmDfNgVQQxnPn8BAJqqR';
-const ORIGINAL_PRIVATE_KEY = 'Gf6xuZiLJgyDBD9RyME27hZg2zcFysRTjTqtKDuqbv1w';
+// Seed loaded from environment — NEVER store mnemonic phrases in source.
+const seed = process.env.DCC_TEST_CRYPTO_VERIFY_SEED;
+if (!seed) throw new Error('DCC_TEST_CRYPTO_VERIFY_SEED env var is required');
+
+const ORIGINAL_PUBLIC_KEY = process.env.DCC_TEST_CRYPTO_VERIFY_PUBKEY;
+if (!ORIGINAL_PUBLIC_KEY) throw new Error('DCC_TEST_CRYPTO_VERIFY_PUBKEY env var is required');
+
+const ORIGINAL_PRIVATE_KEY = process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY;
+if (!ORIGINAL_PRIVATE_KEY) throw new Error('DCC_TEST_CRYPTO_VERIFY_PRIVKEY env var is required');
+
+const EXPECTED_ADDR_W = process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W;
+if (!EXPECTED_ADDR_W) throw new Error('DCC_TEST_CRYPTO_VERIFY_ADDR_W env var is required');
+
+const EXPECTED_ADDR_Q = process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q;
+if (!EXPECTED_ADDR_Q) throw new Error('DCC_TEST_CRYPTO_VERIFY_ADDR_Q env var is required');
 
 test('key generation produces identical keys (chain-ID independent)', () => {
   // Keys don't depend on chain ID, so they must be identical to hardcoded originals
@@ -23,13 +35,13 @@ test('key generation produces identical keys (chain-ID independent)', () => {
 test('address with explicit chain ID W matches known-good value', () => {
   // Hardcoded address for chain W — regression anchor
   const addrW = migrated.address(seed, 'W');
-  expect(addrW).toBe('3PGNSHqxqj3ZGvZdTo5K8pGD8CPfNEq1ei7');
+  expect(addrW).toBe(EXPECTED_ADDR_W);
   expect(migrated.verifyAddress(addrW, { chainId: 'W' })).toBe(true);
 });
 
 test('address with chain ID ? (DCC mainnet) matches known-good value', () => {
   const addrQ = migrated.address(seed, '?');
-  expect(addrQ).toBe('3DcFxfEovgiSFJAHPD1KVBFgF6HUj5tCM93');
+  expect(addrQ).toBe(EXPECTED_ADDR_Q);
   expect(migrated.verifyAddress(addrQ, { chainId: '?' })).toBe(true);
 });
 

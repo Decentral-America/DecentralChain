@@ -1,8 +1,8 @@
 package io.decentralchain.transactions.serializers.binary;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.wavesplatform.protobuf.order.OrderOuterClass;
-import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import io.decentralchain.protobuf.order.OrderOuterClass;
+import io.decentralchain.protobuf.transaction.TransactionOuterClass;
 import io.decentralchain.transactions.Transaction;
 import io.decentralchain.transactions.TransactionOrOrder;
 import io.decentralchain.transactions.exchange.Order;

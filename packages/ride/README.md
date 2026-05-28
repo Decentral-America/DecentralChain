@@ -73,7 +73,7 @@ packages/ride/
 ## Git history
 
 `packages/ride/lang/` and `packages/ride/repl/` carry the full upstream
-wavesplatform/Waves history (1,991 commits touching these directories) extracted
+Decentral-America/node-scala history (1,991 commits touching these directories) extracted
 via `git filter-repo` from [Decentral-America/node-scala](https://github.com/Decentral-America/node-scala).
 
 All DCC patches from node-scala are included:

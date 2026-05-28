@@ -51,11 +51,11 @@ Types: `feat` · `fix` · `docs` · `style` · `refactor` · `perf` · `test` ·
 
 ## Java Source Packages
 
-The Java source packages use the `io.decentralchain.sdk.*` namespace, matching the Maven groupId `io.decentralchain`. This was renamed from the upstream `com.wavesplatform.wavesj.*` as part of the DCC rebrand (DCC-249). See the workspace root `STATUS.md` Per-Package Known Issues section for migration notes.
+The Java source packages use the `io.decentralchain.sdk.*` namespace, matching the Maven groupId `io.decentralchain`. This was renamed from the upstream `io.decentralchain.sdk.*` as part of the DCC rebrand (DCC-249). See the workspace root `STATUS.md` Per-Package Known Issues section for migration notes.
 
 ## Upstream
 
-This library tracks [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ) as the `upstream` remote. To incorporate upstream fixes:
+This library tracks [Decentral-America/java-sdk](https://github.com/Decentral-America/java-sdk) as the `upstream` remote. To incorporate upstream fixes:
 
 ```bash
 git fetch upstream

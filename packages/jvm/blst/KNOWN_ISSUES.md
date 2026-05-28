@@ -1,6 +1,6 @@
 # Known Issues
 
-> Tracked items in the blst-java package (DCC fork of wavesplatform/blst-java
+> Tracked items in the blst-java package (DCC fork of Decentral-America/blst
 > / supranational/blst v0.3.15). Each item includes its risk level, reason it
 > is not resolved immediately, and the recommended resolution path.
 
@@ -38,7 +38,7 @@ upstream and simplifies future upgrades.
 
 **Description:** The upstream supranational/blst repository has merged
 changes beyond v0.3.15, including optimized assembly for ARM and minor
-API additions. The wavesplatform/blst-java fork (our base) does not track
+API additions. The Decentral-America/blst fork (our base) does not track
 upstream HEAD continuously.
 
 **Why not fixed now:** Upgrading blst requires regenerating SWIG bindings,

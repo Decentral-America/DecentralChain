@@ -21,9 +21,10 @@ import { randomHexString, TIMEOUT } from './integration/config';
 import { issueMinimalParams } from './minimalParams';
 import { deleteProofsAndId } from './utils';
 
-const nodeUrl = 'https://testnet-node.decentralchain.io/';
-const masterSeed = 'dcc private node seed with DCC tokens';
-const CHAIN_ID = 33;
+const nodeUrl = process.env.DCC_TEST_NODE_URL ?? 'https://testnet-node.decentralchain.io/';
+const masterSeed = process.env.DCC_TEST_MINER_SEED ?? '';
+if (!masterSeed) throw new Error('DCC_TEST_MINER_SEED env var is required');
+const CHAIN_ID = Number(process.env.DCC_TEST_CHAIN_ID ?? '33');
 let SEED = 'abc';
 const wvs = 1e8;
 let assetId = '';

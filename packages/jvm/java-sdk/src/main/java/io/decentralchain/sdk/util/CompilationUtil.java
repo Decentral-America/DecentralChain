@@ -1,7 +1,7 @@
 package io.decentralchain.sdk.util;
 
-import com.wavesplatform.lang.CompileAndParseResult;
-import com.wavesplatform.lang.Lang;
+import com.decentralchain.lang.CompileAndParseResult;
+import com.decentralchain.lang.Lang;
 import io.decentralchain.sdk.ScriptInfo;
 import io.decentralchain.sdk.exceptions.CompilationException;
 import io.decentralchain.transactions.common.Base64String;

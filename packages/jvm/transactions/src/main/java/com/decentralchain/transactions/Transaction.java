@@ -1,6 +1,6 @@
 package io.decentralchain.transactions;
 
-import com.wavesplatform.protobuf.transaction.TransactionOuterClass;
+import io.decentralchain.protobuf.transaction.TransactionOuterClass;
 import io.decentralchain.transactions.account.PublicKey;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.Id;

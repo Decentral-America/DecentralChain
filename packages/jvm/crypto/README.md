@@ -2,7 +2,7 @@
 
 Cryptographic primitives for the DecentralChain blockchain.
 
-Forked from [`wavesplatform/waves-crypto-java`](https://github.com/wavesplatform/waves-crypto-java) v2.0.7 with full upstream commit history.
+Forked from [`Decentral-America/crypto`](https://github.com/Decentral-America/crypto) v2.0.7 with full upstream commit history.
 
 ## Features
 
@@ -64,7 +64,7 @@ mvn package -P release -Dgpg.skip=true  # local install without signing
 
 ## Upstream
 
-- **Source**: [wavesplatform/waves-crypto-java](https://github.com/wavesplatform/waves-crypto-java)
+- **Source**: [Decentral-America/crypto](https://github.com/Decentral-America/crypto)
 - **Upstream version**: v2.0.7 (Feb 11, 2026)
 - **License**: MIT
 

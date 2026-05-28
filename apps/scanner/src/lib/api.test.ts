@@ -370,7 +370,7 @@ describe('api — fetchPairInfo', () => {
   it('returns null on 404', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }));
     const { fetchPairInfo } = await import('./api');
-    const result = await fetchPairInfo('WAVES', 'MISSING');
+    const result = await fetchPairInfo('WAVES', 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p');
     expect(result).toBeNull();
     vi.unstubAllGlobals();
   });

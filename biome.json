@@ -19,9 +19,8 @@
       "!packages/sdk/transactions/docs",
       "!.nx",
       "!**/.react-router",
-      "!packages/jvm/*/src/test/resources/**",
-      "!packages/jvm/groth16/groth16_demo/**",
-      "!packages/jvm/groth16/groth16_node/**"
+      "!packages/jvm/*/src/test/resources",
+      "!packages/jvm/groth16/groth16_node"
     ]
   },
   "formatter": {

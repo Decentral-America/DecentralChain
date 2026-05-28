@@ -1,4 +1,5 @@
-import { dirname } from 'node:path';
+import { existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { reactRouter } from '@react-router/dev/vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
@@ -8,6 +9,28 @@ import { defineConfig, type Plugin } from 'vite';
 // react-router.config.ts from the correct directory even when this file
 // is evaluated by Nx (which runs resolveConfig from the workspace root).
 const projectRoot = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Resolve `./+types/*` imports to the generated types under `.react-router/types/`.
+ *
+ * React Router v7 generates type-safe route types into `.react-router/types/src/+types/`.
+ * TypeScript finds them via `rootDirs` in tsconfig, but Vite 8's module graph
+ * resolver doesn't honour `rootDirs`. This plugin bridges that gap so Vite can
+ * resolve (and then strip) the type-only imports during SSR/dev.
+ */
+function reactRouterTypesResolver(): Plugin {
+  return {
+    enforce: 'pre',
+    name: 'dcc:react-router-types-resolver',
+    resolveId(id, importer) {
+      if (!importer || !id.includes('+types')) return;
+      const importerDir = dirname(importer);
+      const relFromSrc = importerDir.replace(resolve(projectRoot, 'src'), '');
+      const typesPath = resolve(projectRoot, '.react-router/types/src', relFromSrc, `${id}.ts`);
+      if (existsSync(typesPath)) return typesPath;
+    },
+  };
+}
 
 /**
  * Stubs browser-only packages for the SSR build environment.
@@ -42,7 +65,10 @@ function ssrBrowserOnlyStub(): Plugin {
     },
     name: 'dcc:ssr-browser-only-stub',
     resolveId(id, _importer, opts) {
-      if (opts?.ssr && id in STUBS) {
+      // Vite 8 Environment API: check `this.environment?.name` or fall back to legacy `opts.ssr`
+      // biome-ignore lint/suspicious/noExplicitAny: Vite 8 Environment API not yet typed on PluginContext
+      const isSSR = opts?.ssr || (this as any).environment?.name === 'ssr';
+      if (isSSR && id in STUBS) {
         return `\0ssr-stub:${id}`;
       }
     },
@@ -97,6 +123,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    reactRouterTypesResolver(),
     ssrBrowserOnlyStub(),
     ...withoutEsbuildConfig(reactRouter()),
     // sentryVitePlugin must be last — source maps must be finalized before upload.
@@ -130,5 +157,12 @@ export default defineConfig({
         target: 'https://api.thegreenwebfoundation.org',
       },
     },
+  },
+  // Force Vite to process leaflet/react-leaflet through its transform pipeline
+  // in SSR mode so the ssrBrowserOnlyStub plugin can intercept them.
+  // Without this, they're externalized and loaded by Node.js directly (crashing
+  // because leaflet accesses `window` at the top level).
+  ssr: {
+    noExternal: ['leaflet', 'react-leaflet'],
   },
 });

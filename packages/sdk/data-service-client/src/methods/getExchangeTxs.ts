@@ -70,12 +70,14 @@ const createGetExchangeTxs: TCreateGetFn<IGetExchangeTxs> = (libOptions) => {
     validate: validateFilters,
   });
 
-  const getExchangeTxs: IGetExchangeTxs = (idOrFilters?: string | IExchangeTxFilters) =>
-    typeof idOrFilters === 'string'
-      ? getExchangeTxsOne(idOrFilters)
-      : getExchangeTxsMany(idOrFilters === undefined ? {} : idOrFilters);
+  const getExchangeTxs = (idOrFilters?: string | IExchangeTxFilters) =>
+    idOrFilters === null
+      ? Promise.reject(new Error('ArgumentsError: invalid filters object'))
+      : typeof idOrFilters === 'string'
+        ? getExchangeTxsOne(idOrFilters)
+        : getExchangeTxsMany(idOrFilters ?? {});
 
-  return getExchangeTxs;
+  return getExchangeTxs as IGetExchangeTxs;
 };
 
 export default createGetExchangeTxs;

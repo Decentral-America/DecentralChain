@@ -111,7 +111,7 @@ and supply-chain source pinning. Recompiled all 6 libraries.
 
 ## [0.3.15.0] — 2026-05-17
 
-Initial DCC release — fork of [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java)
+Initial DCC release — fork of [Decentral-America/blst](https://github.com/Decentral-America/blst)
 at upstream [supranational/blst](https://github.com/supranational/blst) v0.3.15.
 
 ### Changed

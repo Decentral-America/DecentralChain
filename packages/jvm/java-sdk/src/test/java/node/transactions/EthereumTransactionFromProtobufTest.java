@@ -3,11 +3,11 @@ package node.transactions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.protobuf.ByteString;
-import com.wavesplatform.events.protobuf.Events.TransactionMetadata;
-import com.wavesplatform.events.protobuf.Events.TransactionMetadata.EthereumMetadata;
-import com.wavesplatform.protobuf.AmountOuterClass.Amount;
-import com.wavesplatform.protobuf.transaction.InvokeScriptResultOuterClass.InvokeScriptResult.Call.Argument;
-import com.wavesplatform.protobuf.transaction.TransactionOuterClass.SignedTransaction;
+import io.decentralchain.events.protobuf.Events.TransactionMetadata;
+import io.decentralchain.events.protobuf.Events.TransactionMetadata.EthereumMetadata;
+import io.decentralchain.protobuf.AmountOuterClass.Amount;
+import io.decentralchain.protobuf.transaction.InvokeScriptResultOuterClass.InvokeScriptResult.Call.Argument;
+import io.decentralchain.protobuf.transaction.TransactionOuterClass.SignedTransaction;
 import io.decentralchain.crypto.base.Base58;
 import io.decentralchain.crypto.base.Base64;
 import io.decentralchain.transactions.EthereumTransaction;

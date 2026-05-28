@@ -2,7 +2,7 @@
 
 Java JNI bindings for [supranational/blst](https://github.com/supranational/blst) — a high-performance, constant-time BLS12-381 signature library with no external dependencies.
 
-Forked from [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) (upstream blst v0.3.16), rebranded and hardened to DecentralChain production standards.
+Forked from [Decentral-America/blst](https://github.com/Decentral-America/blst) (upstream blst v0.3.16), rebranded and hardened to DecentralChain production standards.
 
 Used by the [DecentralChain node](https://github.com/Decentral-America/DCC) for BLS-based threshold signatures and zkSNARK verifier operations.
 

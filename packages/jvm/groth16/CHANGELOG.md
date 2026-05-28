@@ -9,7 +9,7 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ## [0.2.1.0] — 2026-05-17
 
-Initial DCC release — fork of [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves),
+Initial DCC release — fork of [Decentral-America/zwaves](https://github.com/Decentral-America/zwaves),
 a Java JNI wrapper around a Rust Groth16 ZK-SNARK verifier for the
 Sapling (BN256) and BLS12-381 pairing curves.
 

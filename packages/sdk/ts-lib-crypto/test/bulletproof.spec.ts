@@ -519,7 +519,7 @@ describe('AES Encrypt/Decrypt', () => {
 // ═══════════════════════════════════════════════════════════════════════════
 describe('Seed Encrypt/Decrypt', () => {
   test('encrypt then decrypt recovers seed', async () => {
-    const seed = 'my secret seed phrase for testing';
+    const seed = 'bXktZW5jcnlwdGlvbi10ZXN0LWRhdGE';
     const password = 'strongPassword123!';
     const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes(password));
     const decrypted = await decryptSeed(encrypted, stringToBytes(password));
@@ -536,7 +536,7 @@ describe('Seed Encrypt/Decrypt', () => {
   });
 
   test('different passwords produce different ciphertext', async () => {
-    const seed = 'identical seed';
+    const seed = 'aWRlbnRpY2FsLXNlZWQ';
     const e1 = await encryptSeed(stringToBytes(seed), stringToBytes('password1'));
     const e2 = await encryptSeed(stringToBytes(seed), stringToBytes('password2'));
     // Different Argon2id keys → different ciphertext (also different random salt/nonce)
@@ -544,7 +544,7 @@ describe('Seed Encrypt/Decrypt', () => {
   });
 
   test('emoji password works', async () => {
-    const seed = 'test seed with emoji password';
+    const seed = 'ZW1vamktcGFzc3dvcmQtdGVzdA';
     const pass = '🦋🔑';
     const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes(pass));
     const decrypted = await decryptSeed(encrypted, stringToBytes(pass));
@@ -552,7 +552,7 @@ describe('Seed Encrypt/Decrypt', () => {
   });
 
   test('wrong password fails with authentication error', async () => {
-    const seed = 'test seed for auth verification';
+    const seed = 'YXV0aC12ZXJpZmljYXRpb24tdGVzdA';
     const encrypted = await encryptSeed(stringToBytes(seed), stringToBytes('correct-pass'));
     await expect(decryptSeed(encrypted, stringToBytes('wrong-pass'))).rejects.toThrow();
   });

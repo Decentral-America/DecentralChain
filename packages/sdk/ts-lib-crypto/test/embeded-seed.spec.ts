@@ -1,11 +1,15 @@
 import { expect, test } from 'vitest';
 import { crypto } from '../src';
 
-const seed =
-  'vast local exotic manage click stone boil analyst various truth swift decade cherry cram innocent';
+// Seed loaded from environment — NEVER store mnemonic phrases in source.
+const seed = process.env.DCC_TEST_EMBEDDED_SEED;
+if (!seed) throw new Error('DCC_TEST_EMBEDDED_SEED env var is required');
+
+const expectedAddress = process.env.DCC_TEST_EMBEDDED_ADDR;
+if (!expectedAddress) throw new Error('DCC_TEST_EMBEDDED_ADDR env var is required');
 
 const { address } = crypto({ output: 'Base58', seed });
 
-test('address from embeded seed', () => {
-  expect(address()).toBe('3DjUdwJSpj6hqKhm2SdXFnR7U4yTJ48ZZ9S');
+test('address from embedded seed', () => {
+  expect(address()).toBe(expectedAddress);
 });

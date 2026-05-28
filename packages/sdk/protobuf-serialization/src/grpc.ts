@@ -2,7 +2,7 @@
 // Use this subpath for building typed gRPC clients:
 //   import { TransactionsApi } from '@decentralchain/protobuf-serialization/grpc'
 
-// === BlockchainUpdatesApi (waves.events.grpc) ===
+// === BlockchainUpdatesApi ===
 export {
   BlockchainUpdatesApi,
   type GetBlockUpdateRequest,
@@ -18,7 +18,7 @@ export {
   type SubscribeRequest,
   SubscribeRequestSchema,
 } from './gen/waves/events/grpc/blockchain_updates_pb.js';
-// === AccountsApi (waves.node.grpc) ===
+// === AccountsApi ===
 export {
   type AccountRequest,
   AccountRequestSchema,
@@ -40,7 +40,7 @@ export {
   type ScriptResponse,
   ScriptResponseSchema,
 } from './gen/waves/node/grpc/accounts_api_pb.js';
-// === AssetsApi (waves.node.grpc) ===
+// === AssetsApi ===
 export {
   type AssetInfoResponse,
   AssetInfoResponseSchema,
@@ -52,7 +52,7 @@ export {
   type NFTResponse,
   NFTResponseSchema,
 } from './gen/waves/node/grpc/assets_api_pb.js';
-// === BlockchainApi (waves.node.grpc) ===
+// === BlockchainApi ===
 export {
   type ActivationStatusRequest,
   ActivationStatusRequestSchema,
@@ -70,7 +70,7 @@ export {
   type ScoreResponse,
   ScoreResponseSchema,
 } from './gen/waves/node/grpc/blockchain_api_pb.js';
-// === BlocksApi (waves.node.grpc) ===
+// === BlocksApi ===
 export {
   type BlockRangeRequest,
   BlockRangeRequestSchema,
@@ -80,9 +80,9 @@ export {
   type BlockWithHeight,
   BlockWithHeightSchema,
 } from './gen/waves/node/grpc/blocks_api_pb.js';
-// === TransactionsApi (waves.node.grpc) ===
-// Note: TransactionStatus here is the gRPC message (waves.node.grpc.TransactionStatus).
-// The enum waves.TransactionStatus is in @decentralchain/protobuf-serialization main export.
+// === TransactionsApi ===
+// Note: TransactionStatus here is the gRPC message type.
+// The enum TransactionStatus is in @decentralchain/protobuf-serialization main export.
 export {
   ApplicationStatus,
   ApplicationStatusSchema,

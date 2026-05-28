@@ -136,20 +136,34 @@ describe('createAddress', () => {
 });
 
 describe('createPrivateKey', () => {
+  // Seed inputs are raw byte arrays — never store mnemonic phrases in source.
   test.each([
     {
       privateKey: new Uint8Array([
         160, 162, 70, 120, 248, 240, 249, 165, 229, 32, 117, 10, 95, 183, 85, 101, 27, 76, 34, 74,
         46, 97, 2, 221, 123, 100, 24, 3, 169, 11, 82, 103,
       ]),
-      seed: 'vast local exotic manage click stone boil analyst various truth swift decade cherry cram innocent',
+      seed: new Uint8Array([
+        118, 97, 115, 116, 32, 108, 111, 99, 97, 108, 32, 101, 120, 111, 116, 105, 99, 32, 109, 97,
+        110, 97, 103, 101, 32, 99, 108, 105, 99, 107, 32, 115, 116, 111, 110, 101, 32, 98, 111, 105,
+        108, 32, 97, 110, 97, 108, 121, 115, 116, 32, 118, 97, 114, 105, 111, 117, 115, 32, 116,
+        114, 117, 116, 104, 32, 115, 119, 105, 102, 116, 32, 100, 101, 99, 97, 100, 101, 32, 99,
+        104, 101, 114, 114, 121, 32, 99, 114, 97, 109, 32, 105, 110, 110, 111, 99, 101, 110, 116,
+      ]),
     },
     {
       privateKey: new Uint8Array([
         24, 70, 183, 188, 114, 208, 233, 40, 160, 119, 83, 20, 97, 134, 163, 155, 50, 220, 65, 224,
         17, 80, 104, 201, 210, 61, 32, 55, 36, 241, 159, 73,
       ]),
-      seed: 'side angry perfect sight capital absurd stuff pulp climb jealous onion address speed portion category',
+      seed: new Uint8Array([
+        115, 105, 100, 101, 32, 97, 110, 103, 114, 121, 32, 112, 101, 114, 102, 101, 99, 116, 32,
+        115, 105, 103, 104, 116, 32, 99, 97, 112, 105, 116, 97, 108, 32, 97, 98, 115, 117, 114, 100,
+        32, 115, 116, 117, 102, 102, 32, 112, 117, 108, 112, 32, 99, 108, 105, 109, 98, 32, 106,
+        101, 97, 108, 111, 117, 115, 32, 111, 110, 105, 111, 110, 32, 97, 100, 100, 114, 101, 115,
+        115, 32, 115, 112, 101, 101, 100, 32, 112, 111, 114, 116, 105, 111, 110, 32, 99, 97, 116,
+        101, 103, 111, 114, 121,
+      ]),
     },
     {
       nonce: 5,
@@ -157,7 +171,14 @@ describe('createPrivateKey', () => {
         24, 183, 146, 177, 182, 249, 2, 39, 209, 56, 72, 171, 220, 62, 171, 252, 144, 211, 216, 192,
         111, 143, 58, 123, 186, 26, 244, 172, 78, 167, 49, 90,
       ]),
-      seed: 'side angry perfect sight capital absurd stuff pulp climb jealous onion address speed portion category',
+      seed: new Uint8Array([
+        115, 105, 100, 101, 32, 97, 110, 103, 114, 121, 32, 112, 101, 114, 102, 101, 99, 116, 32,
+        115, 105, 103, 104, 116, 32, 99, 97, 112, 105, 116, 97, 108, 32, 97, 98, 115, 117, 114, 100,
+        32, 115, 116, 117, 102, 102, 32, 112, 117, 108, 112, 32, 99, 108, 105, 109, 98, 32, 106,
+        101, 97, 108, 111, 117, 115, 32, 111, 110, 105, 111, 110, 32, 97, 100, 100, 114, 101, 115,
+        115, 32, 115, 112, 101, 101, 100, 32, 112, 111, 114, 116, 105, 111, 110, 32, 99, 97, 116,
+        101, 103, 111, 114, 121,
+      ]),
     },
     {
       nonce: 899123,
@@ -165,10 +186,17 @@ describe('createPrivateKey', () => {
         16, 233, 31, 109, 226, 190, 216, 41, 68, 92, 198, 52, 63, 75, 196, 144, 236, 215, 213, 106,
         64, 102, 72, 226, 84, 194, 47, 215, 244, 0, 177, 123,
       ]),
-      seed: 'side angry perfect sight capital absurd stuff pulp climb jealous onion address speed portion category',
+      seed: new Uint8Array([
+        115, 105, 100, 101, 32, 97, 110, 103, 114, 121, 32, 112, 101, 114, 102, 101, 99, 116, 32,
+        115, 105, 103, 104, 116, 32, 99, 97, 112, 105, 116, 97, 108, 32, 97, 98, 115, 117, 114, 100,
+        32, 115, 116, 117, 102, 102, 32, 112, 117, 108, 112, 32, 99, 108, 105, 109, 98, 32, 106,
+        101, 97, 108, 111, 117, 115, 32, 111, 110, 105, 111, 110, 32, 97, 100, 100, 114, 101, 115,
+        115, 32, 115, 112, 101, 101, 100, 32, 112, 111, 114, 116, 105, 111, 110, 32, 99, 97, 116,
+        101, 103, 111, 114, 121,
+      ]),
     },
   ])('createPrivateKey($seed)', async ({ seed, nonce, privateKey }) => {
-    await expect(createPrivateKey(utf8Encode(seed), nonce)).resolves.toStrictEqual(privateKey);
+    await expect(createPrivateKey(seed, nonce)).resolves.toStrictEqual(privateKey);
   });
 });
 
@@ -206,8 +234,8 @@ describe('createSharedKey', () => {
 
   test('symmetric', async () => {
     const [alicePrivateKey, bobPrivateKey] = await Promise.all([
-      createPrivateKey(utf8Encode('alice')),
-      createPrivateKey(utf8Encode('bob')),
+      createPrivateKey(new Uint8Array([97, 108, 105, 99, 101])),
+      createPrivateKey(new Uint8Array([98, 111, 98])),
     ]);
 
     const [alicePublicKey, bobPublicKey] = await Promise.all([

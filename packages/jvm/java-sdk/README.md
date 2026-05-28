@@ -8,7 +8,7 @@ A Java library for interacting with the [DecentralChain](https://decentralchain.
 
 Supports node interaction, offline transaction signing, and creating addresses and keys.
 
-> **Upstream:** This library is a maintained fork of [wavesplatform/WavesJ](https://github.com/wavesplatform/WavesJ),
+> **Upstream:** This library is a maintained fork of [Decentral-America/java-sdk](https://github.com/Decentral-America/java-sdk),
 > rebranded and extended for the DecentralChain ecosystem.
 
 ## Requirements
@@ -115,7 +115,7 @@ https://central.sonatype.com/repository/maven-snapshots/
 
 ## Upstream Tracking
 
-This repository tracks `wavesplatform/WavesJ` as the `upstream` remote:
+This repository tracks `Decentral-America/java-sdk` as the `upstream` remote:
 
 ```bash
 git fetch upstream
