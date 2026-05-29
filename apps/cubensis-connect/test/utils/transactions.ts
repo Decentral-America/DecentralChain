@@ -40,7 +40,7 @@ export const TRANSFER_WITHOUT_ATTACHMENT = {
   data: {
     amount: {
       amount: 123456790,
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
     recipient: 'alice',
   },
@@ -95,7 +95,7 @@ export const LEASE_WITH_ALIAS = {
 
 export const LEASE_WITH_MONEY_LIKE = {
   data: {
-    amount: { amount: 123456790, assetId: 'WAVES' },
+    amount: { amount: 123456790, assetId: 'DCC' },
     recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD',
   },
   type: TRANSACTION_TYPE.LEASE,
@@ -121,7 +121,7 @@ export const MASS_TRANSFER = {
     transfers: [
       { amount: 1, recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD' },
       {
-        amount: { assetId: 'WAVES', tokens: '0.00000001' },
+        amount: { assetId: 'DCC', tokens: '0.00000001' },
         recipient: 'merry',
       },
     ],
@@ -133,7 +133,7 @@ export const MASS_TRANSFER_WITHOUT_ATTACHMENT = {
   data: {
     totalAmount: {
       amount: 0,
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
     transfers: [
       { amount: 120, recipient: '3N5HNJz5otiUavvoPrxMBrXBVv5HhYLdhiD' },

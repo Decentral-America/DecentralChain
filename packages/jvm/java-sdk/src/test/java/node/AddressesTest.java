@@ -34,7 +34,7 @@ public class AddressesTest extends BaseTestWithNodeInDocker {
   }
 
   @Test
-  void wavesBalance() throws IOException, NodeException {
+  void dccBalance() throws IOException, NodeException {
     long initBalance = 1000000;
     long balanceAfterLeaseOutFee = initBalance - LeaseTransaction.MIN_FEE;
     long leasedIn = 30000;
@@ -80,7 +80,7 @@ public class AddressesTest extends BaseTestWithNodeInDocker {
   }
 
   @Test
-  void wavesBalanceHistory() throws IOException, NodeException {
+  void dccBalanceHistory() throws IOException, NodeException {
     long initBalance = 1000000;
     long transferAmount = 50000;
 
@@ -167,7 +167,7 @@ public class AddressesTest extends BaseTestWithNodeInDocker {
         .isEqualTo(new ScriptInfo(expectedScript, 202, 202, new HashMap<>(), 400000));
     assertThat(assertThrows(NodeException.class, () -> node.getScriptMeta(alice.address())))
         .hasMessage(
-            "ScriptParseError(Expected DApp)"); // TODO waiting fix in Node. The scenario should
+            "ScriptParseError(Expected DApp)"); // NOTE: Waiting for node fix (Waves-era). The scenario should
     // work
   }
 

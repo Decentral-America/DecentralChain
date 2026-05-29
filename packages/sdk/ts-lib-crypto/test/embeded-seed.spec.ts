@@ -1,12 +1,10 @@
 import { expect, test } from 'vitest';
 import { crypto } from '../src';
 
-// Seed loaded from environment — NEVER store mnemonic phrases in source.
-const seed = process.env.DCC_TEST_EMBEDDED_SEED;
-if (!seed) throw new Error('DCC_TEST_EMBEDDED_SEED env var is required');
+// Defaults use the well-known local private node seed; override via env vars in CI.
+const seed = process.env.DCC_TEST_EMBEDDED_SEED ?? 'dcc private node seed with dcc tokens';
 
-const expectedAddress = process.env.DCC_TEST_EMBEDDED_ADDR;
-if (!expectedAddress) throw new Error('DCC_TEST_EMBEDDED_ADDR env var is required');
+const expectedAddress = process.env.DCC_TEST_EMBEDDED_ADDR ?? '3DRRUWk6x6AVfoLKG4jcccwzsTAa9eyDXf5';
 
 const { address } = crypto({ output: 'Base58', seed });
 

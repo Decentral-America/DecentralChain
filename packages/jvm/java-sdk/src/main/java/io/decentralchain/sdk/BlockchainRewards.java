@@ -8,7 +8,7 @@ import java.util.Objects;
 public class BlockchainRewards {
 
   private final int height;
-  private final long totalWavesAmount;
+  private final long totalDccAmount;
   private final long currentReward;
   private final long minIncrement;
   private final int term;
@@ -22,7 +22,7 @@ public class BlockchainRewards {
   private BlockchainRewards(
       @JsonProperty("height") int height,
       @JsonProperty("currentReward") long currentReward,
-      @JsonProperty("totalWavesAmount") long totalWavesAmount,
+      @JsonProperty("totalWavesAmount") long totalDccAmount,
       @JsonProperty("minIncrement") long minIncrement,
       @JsonProperty("term") int term,
       @JsonProperty("nextCheck") int nextCheck,
@@ -32,7 +32,7 @@ public class BlockchainRewards {
       @JsonProperty("votes") Votes votes) {
     this.height = height;
     this.currentReward = currentReward;
-    this.totalWavesAmount = totalWavesAmount;
+    this.totalDccAmount = totalDccAmount;
     this.minIncrement = minIncrement;
     this.term = term;
     this.nextCheck = nextCheck;
@@ -46,8 +46,8 @@ public class BlockchainRewards {
     return height;
   }
 
-  public long totalWavesAmount() {
-    return totalWavesAmount;
+  public long totalDccAmount() {
+    return totalDccAmount;
   }
 
   public long currentReward() {
@@ -88,7 +88,7 @@ public class BlockchainRewards {
     if (o == null || getClass() != o.getClass()) return false;
     BlockchainRewards that = (BlockchainRewards) o;
     return height == that.height
-        && totalWavesAmount == that.totalWavesAmount
+        && totalDccAmount == that.totalDccAmount
         && currentReward == that.currentReward
         && minIncrement == that.minIncrement
         && term == that.term
@@ -103,7 +103,7 @@ public class BlockchainRewards {
   public int hashCode() {
     return Objects.hash(
         height,
-        totalWavesAmount,
+        totalDccAmount,
         currentReward,
         minIncrement,
         term,
@@ -119,8 +119,8 @@ public class BlockchainRewards {
     return "BlockchainRewards{"
         + "height="
         + height
-        + ", totalWavesAmount="
-        + totalWavesAmount
+        + ", totalDccAmount="
+        + totalDccAmount
         + ", currentReward="
         + currentReward
         + ", minIncrement="

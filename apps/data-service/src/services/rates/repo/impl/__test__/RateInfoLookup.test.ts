@@ -38,7 +38,7 @@ describe('RateInfoLookup', () => {
           amountAsset,
           priceAsset: baseAsset,
           rate: new BigNumber(10),
-          volumeWaves: new BigNumber(100),
+          volumeDcc: new BigNumber(100),
         },
       ];
 

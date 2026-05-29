@@ -11,6 +11,6 @@ export const result = Schema.Struct({
   quote_volume: S.Bignumber,
   txs_count: Schema.Number,
   volume: S.Bignumber,
-  volume_waves: Schema.NullOr(S.Bignumber),
+  volume_dcc: Schema.NullOr(S.Bignumber),
   weighted_average_price: S.Bignumber,
 });

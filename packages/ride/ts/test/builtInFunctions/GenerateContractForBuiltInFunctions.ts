@@ -135,7 +135,7 @@ export class GenerateContractForBuiltInFunctions {
             (
                 [
                     IntegerEntry(key1, r),
-                    IntegerEntry(key2, wavesBalance(addressFromStringValue(dapp2)).regular)
+                    IntegerEntry(key2, dccBalance(addressFromStringValue(dapp2)).regular)
                 ],
                 unit
             )

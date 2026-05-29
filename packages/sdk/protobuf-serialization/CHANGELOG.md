@@ -15,7 +15,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Moved `@types/long` from dependencies to removal (long v5 includes its own types).
 - Updated proto file language options (`java_package`, `csharp_namespace`, `go_package`) to DecentralChain branding.
 - Upgraded all dependencies to latest versions.
-- Rebranded from `@waves` to `@decentralchain`.
+- Rebranded from `@dcc` to `@decentralchain`.
 
 ### Added
 

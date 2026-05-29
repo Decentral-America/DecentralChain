@@ -15,7 +15,7 @@ import com.decentralchain.lang.v1.compiler.{CompilerContext, ExpressionCompiler,
 import com.decentralchain.lang.v1.estimator.v3.ScriptEstimatorV3
 import com.decentralchain.lang.v1.evaluator.FunctionIds
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, GlobalValNames, PureContext}
 import com.decentralchain.lang.v1.parser.BinaryOperation.SUM_OP
 import com.decentralchain.lang.v1.parser.Expressions.Pos
@@ -320,7 +320,7 @@ class ExpressionCompilerV1Test extends PropSpec {
         Seq(
           PureContext.build(V4, useNewPowPrecision = true).withEnvironment[Environment],
           CryptoContext.build(com.decentralchain.lang.Global, V4, fixEcrecover = true).withEnvironment[Environment],
-          WavesContext.build(
+          DccContext.build(
             Global,
             DirectiveSet(V4, Account, Expression).explicitGet(),
             fixBigScriptField = true

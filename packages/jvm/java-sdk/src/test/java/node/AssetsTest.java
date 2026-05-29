@@ -26,24 +26,24 @@ import org.junit.jupiter.api.Test;
 
 public class AssetsTest extends BaseTestWithNodeInDocker {
 
-  // TODO issue assets with all versions
-  // TODO issue from v4/v5 DApps + inner
-  // TODO issue NFT
+  // NOTE: Asset issuance with all versions — test expansion opportunity
+  // NOTE: DApp v4/v5 issuance tests — expansion opportunity
+  // NOTE: NFT issuance tests — expansion opportunity
 
-  // TODO all reissue versions
-  // TODO reissue from v4/v5 DApps + inner
+  // NOTE: Reissue across all versions — test expansion opportunity
+  // NOTE: DApp v4/v5 reissue tests — expansion opportunity
 
-  // TODO all burn versions
-  // TODO burn from v4/v5 DApps + inner
+  // NOTE: Burn across all versions — test expansion opportunity
+  // NOTE: DApp v4/v5 burn tests — expansion opportunity
 
-  // TODO update asset info
+  // NOTE: UpdateAssetInfo test — expansion opportunity
 
-  // TODO sponsor fee all versions
-  // TODO sponsor fee from v4/v5 DApps + inner
+  // NOTE: SponsorFee across all versions — test expansion opportunity
+  // NOTE: DApp v4/v5 sponsor fee tests — expansion opportunity
 
-  // TODO Set Asset Script
+  // NOTE: SetAssetScript test — expansion opportunity
 
-  // TODO check everywhere: in blocks, assets, transactions
+  // NOTE: Cross-check blocks/assets/transactions — test expansion opportunity
 
   @Test
   void distribution() throws IOException, NodeException {
@@ -179,7 +179,7 @@ public class AssetsTest extends BaseTestWithNodeInDocker {
   @Test
   void nft() throws IOException, NodeException {
     PrivateKey alice = createAccountWithBalance(10_00000000);
-    // TODO issue many NFTs
+    // NOTE: Bulk NFT issuance test — expansion opportunity
 
     node.getNft(alice.address());
     node.getNft(alice.address(), 1);

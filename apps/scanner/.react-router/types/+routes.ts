@@ -14,6 +14,9 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/dashboard": {
+    params: {};
+  };
   "/blocks": {
     params: {};
   };
@@ -73,15 +76,18 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/sitemap.xml";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/sitemap.xml";
   };
   "Layout.tsx": {
     id: "Layout";
-    page: "/" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
   };
   "pages/Dashboard.tsx": {
     id: "pages/Dashboard";
     page: "/";
+  } | {
+    id: "dashboard-alias";
+    page: "/dashboard";
   };
   "pages/Blocks.tsx": {
     id: "pages/Blocks";
@@ -161,6 +167,7 @@ type RouteModules = {
   "root": typeof import("./src/root.tsx");
   "Layout": typeof import("./src/Layout.tsx");
   "pages/Dashboard": typeof import("./src/pages/Dashboard.tsx");
+  "dashboard-alias": typeof import("./src/pages/Dashboard.tsx");
   "pages/Blocks": typeof import("./src/pages/Blocks.tsx");
   "pages/BlockDetail": typeof import("./src/pages/BlockDetail.tsx");
   "pages/Transaction": typeof import("./src/pages/Transaction.tsx");

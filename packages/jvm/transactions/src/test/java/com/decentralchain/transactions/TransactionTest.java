@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TransactionTest {
 
     @Test
-    void twoSubTypes__withSameFields_areNotEqual() { //todo standardize test naming
+    void twoSubTypes__withSameFields_areNotEqual() { // NOTE: Test naming could be standardized
         PublicKey sender = PublicKey.as("AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV");
         long timestamp = 1600000000000L;
 

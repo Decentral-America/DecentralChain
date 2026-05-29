@@ -21,13 +21,13 @@
 11. [Strategic Roadmap](#11-strategic-roadmap)
 12. [DCC-Original Projects](#12-dcc-original-projects)
 13. [Concept Mapping Reference](#13-concept-mapping-reference)
-14. [Feature Parity — Cubensis Connect vs Waves Keeper](#14-feature-parity--cubensis-connect-vs-waves-keeper)
+14. [Feature Parity — Cubensis Connect vs Waves Keeper](#14-feature-parity--cubensis-connect-vs-dcc-keeper)
 15. [External Services & Dependencies](#15-external-services--dependencies)
 16. [Supply-Chain Dependency Chain](#16-supply-chain-dependency-chain)
 17. [Crypto Function Name Mapping](#17-crypto-function-name-mapping)
 18. [Unfinished Branding Residuals](#18-unfinished-branding-residuals)
 19. [Upstream Sync Tracking](#19-upstream-sync-tracking)
-20. [Appendix A — Full Waves Inventory](#appendix-a--full-waves-inventory)
+20. [Appendix A — Full Waves Inventory](#appendix-a--full-dcc-inventory)
 
 ---
 
@@ -62,7 +62,7 @@ The migration philosophy: **fork the protocol-critical core, modernize beyond up
 | Property | Value |
 |:---------|:------|
 | **Consensus** | Leased Proof of Stake (LPoS) |
-| **Native Token** | DecentralCoin (DCC) — wire-format ID: `'WAVES'` (see [§7](#7-wire-format-constraints)) |
+| **Native Token** | DecentralCoin (DCC) — wire-format ID: `'DCC'` (see [§7](#7-wire-format-constraints)) |
 | **Smart Contract Language** | Ride (non-Turing-complete, functional, expression-based) |
 | **Block Time** | ~2 seconds (M5 microblocks) |
 | **Chain IDs** | `?` (Mainnet, byte 63), `!` (Testnet, byte 33), `S` (Stagenet, byte 83) |
@@ -94,9 +94,9 @@ DCC is byte-compatible with Waves at the protocol level, except for chain IDs.
 | Mainnet chain ID | `W` (byte 87) | `?` (byte 63) | Hard-coded in all tx signing |
 | Testnet chain ID | `T` (byte 84) | `!` (byte 33) | |
 | Stagenet chain ID | `S` (byte 83) | `S` (byte 83) | **Shared** |
-| Native asset ID | `WAVES` | `WAVES` | Wire-format string — cannot rename |
+| Native asset ID | `DCC` | `DCC` | Wire-format string — cannot rename |
 | Native asset display name | Waves | DecentralChain | User-facing only |
-| Native asset ticker | WAVES | DCC | UI display only |
+| Native asset ticker | DCC | DCC | UI display only |
 | Transaction types | 1–18 | 1–18 | Identical set |
 | Block structure | Identical | Identical | Same protobuf schemas |
 | Signature scheme | Ed25519 / Curve25519 | Ed25519 / Curve25519 | Same crypto primitives |
@@ -179,7 +179,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 ### Notable Migration Details
 
 - **cubensis-connect-provider**: All 412 upstream commits analyzed individually. ~260 Renovate noise, ~30 CI/tooling, 2 genuine bugs cherry-picked. DCC architecture intentionally diverged (7 modular src files / 126 tests vs Waves' 2 monolithic files / 32 tests).
-- **cubensis-connect**: 1,305 upstream commits brought in via full rebase onto `waves/master`. Branding re-applied: 86 files covering dep renames, network codes, URLs, manifest, i18n (10 locales), global API (KeeperWallet→CubensisConnect).
+- **cubensis-connect**: 1,305 upstream commits brought in via full rebase onto `dcc/master`. Branding re-applied: 86 files covering dep renames, network codes, URLs, manifest, i18n (10 locales), global API (KeeperWallet→CubensisConnect).
 - **swap-client**: Upstream was private/deleted. Source extracted from `npm pack @keeper-wallet/swap-client@0.3.0`. Protobuf schema reverse-engineered from compiled output and verified wire-compatible. **Fully deleted from the repository — no files on disk, no git history, no `feat/swap` branch.**
 - **crypto**: 234-commit Waves history preserved. Rust/WASM + TypeScript hybrid. Timing-safe HMAC comparison added (security fix). 44 tests, 99% coverage.
 - **data-service**: 395-commit Waves history preserved via `git subtree add` (DCC-221, DCC-233). Koa.js REST API serving candles, pairs, and trades at `api.decentralchain.io`. DCC identity layer (chain IDs, endpoint branding) applied in **DCC-234**. Toolchain modernization (Biome, strict tsconfig, ESM) in **DCC-219/220/222**. Vitest migration in **DCC-223**.
@@ -260,25 +260,24 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 ## 7. Wire-Format Constraints
 
-These values are embedded in the blockchain protocol itself. They **cannot** be renamed without a hard fork or breaking all existing clients, nodes, and signed data. They are **not bugs** — they are protocol constants that must remain Waves-branded.
+These values are embedded in the blockchain protocol itself. They **cannot** be renamed without a hard fork or breaking all existing clients, nodes, and signed data. They are **not bugs** — they are protocol constants.
 
 | Value | Used For | Why Immutable |
 |-------|----------|---------------|
-| `'WAVES'` | Native asset sentinel in API responses and transaction data | All nodes, SDKs, and DApps expect this string. Client-side sentinel — node returns `null` for native asset. 60+ references across 20+ files. Display name shows "DCC" in UIs. |
-| `package waves;` | Protobuf namespace in `.proto` files | Wire format for gRPC and `Any` types. Nodes expect `waves.Transaction` on the wire. Renaming breaks all gRPC clients and serialization. |
+| `'DCC'` | Native asset sentinel in API responses and transaction data | All nodes, SDKs, and DApps expect this string. Client-side sentinel — node returns `null` for native asset. 60+ references across 20+ files. Display name shows "DCC" in UIs. |
+| `package dcc;` | Protobuf namespace in `.proto` files | Wire format for gRPC and `Any` types. Nodes expect `dcc.Transaction` on the wire. Renaming breaks all gRPC clients and serialization. |
 | `'DccWalletAuthentication'` | Signing domain separator for message authentication | DCC canonical auth prefix. Unified across cubensis-connect, @decentralchain/transactions, and @decentralchain/signature-adapter in commit 86abbf880 (Mar 24, 2026). |
-| `'WAVES'` in Ledger APDU | Hardware wallet firmware constant | Burned into Ledger device app. Would require custom Ledger app submission. |
+| `'DCC'` in Ledger APDU | Hardware wallet firmware constant | Burned into Ledger device app. Would require custom Ledger app submission. |
 | BIP-44 coin type `5741564` | HD wallet derivation path | Intentional — DCC users keep their existing Waves-derived keys. |
 
-### Intentional Waves References (Will Not Fix)
+### Intentional Protocol References (Will Not Fix)
 
 | Reference | Reason | Locations |
 |-----------|--------|-----------|
-| `'WAVES'` asset ID | Client sentinel for native asset | All SDK packages |
+| `'DCC'` asset ID | Client sentinel for native asset | All SDK packages |
 | `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/sdk/transactions/src/requests/auth.ts`, `packages/sdk/signature-adapter/src/prepareTx/constants.ts` |
-| Protobuf `waves` namespace | Wire-format package name | `protobuf-serialization/proto/waves/**` |
+| Protobuf `dcc` namespace | Wire-format package name | `protobuf-serialization/proto/dcc/**` |
 | `@waves/ride-lang` + `@waves/ride-repl` | Chain-agnostic Scala.js binaries — same bytecode works on any Waves-protocol chain | `ride-js/package.json` |
-| Third-party NFT URLs | External services (wavesducks.com, puzzlemarket.org, sign-art.app) — community projects | `cubensis-connect` NFT vendor files |
 
 ---
 
@@ -350,12 +349,12 @@ Ranked by strategic value to DCC:
 | ✅ **Adopted** | `curve25519-java` | Forked as `packages/jvm/curve25519` — upstream: `80b0a5de` (Oct 2023, last upstream release). Maven + Java 25 migration (DCC-260). | Done |
 | ✅ **Adopted** | `waves-transactions-java` | Forked as `packages/jvm/transactions` — upstream: `e6afed3a` (v1.2.7). Maven + Java 25 (DCC-240). | Done |
 | ✅ **Adopted** | `blst-java` | Forked as `packages/jvm/blst` — upstream: `a7d3e39a`. BLS12-381 JNI bindings, Java 25 (DCC-242). | Done |
-| ✅ **Adopted** | `zwaves` | Forked as `packages/jvm/groth16` — upstream: `d4546dbb`. ZK-SNARK (Groth16) JNI bindings (DCC-261). | Done |
+| ✅ **Adopted** | `zdcc` | Forked as `packages/jvm/groth16` — upstream: `d4546dbb`. ZK-SNARK (Groth16) JNI bindings (DCC-261). | Done |
 | ✅ **Adopted** | `Waves/lang` + `Waves/repl` | Forked as `packages/ride/` — RIDE VM (lang/) + REPL (repl/) extracted from node-scala via `git filter-repo`, 1,991 upstream commits preserved. Upstream base: `5c347100` (v1.6.1). DCC-252. | Done |
 | ✅ **Done** | `data-service` | Imported as `apps/data-service` — full 395-commit history via `git subtree` (DCC-221, DCC-233) | — |
 | 🟢 **Tier 1** | `ride-vscode` (13★) | VS Code Ride extension = instant developer onboarding | Low |
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
-| 🟡 **Tier 2** | `waves-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
+| 🟡 **Tier 2** | `dcc-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
 | � **In Progress** | `node-api-grpc-js` (0★) | DCC built `@decentralchain/node-api-grpc v1.0.0` from scratch using `@connectrpc/connect` (HTTP/2) in `packages/sdk/node-api-grpc/`. WIP — untracked on `dev` branch, not yet committed. Upstream: `wavesplatform/node-api-grpc-js` at `2a6202f` (v0.0.4, Nov 2024). | Low |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
@@ -369,7 +368,7 @@ Ranked by strategic value to DCC:
 | Mobile wallets (iOS/Android) | $500K+ commitment each; browser extension covers wallet for now |
 | WavesGUI (399★) | Legacy Angular wallet; DCC has modern exchange + cubensis-connect |
 | Rust microservices cluster (10 repos) | Tightly coupled to wx.network infrastructure |
-| ~~ZK cryptography (zwaves)~~ | ✅ Forked as `packages/jvm/groth16` — required as node-scala native dep |
+| ~~ZK cryptography (zdcc)~~ | ✅ Forked as `packages/jvm/groth16` — required as node-scala native dep |
 | `groth16verify` | Only relevant if DCC adds new ZK transaction types |
 
 ---
@@ -393,7 +392,7 @@ Ranked by strategic value to DCC:
 - [x] Fork `wavesplatform/curve25519-java` → `packages/jvm/curve25519` — Maven + Java 25 (DCC-260)
 - [x] Fork `wavesplatform/waves-transactions-java` → `packages/jvm/transactions` — Maven + Java 25 (DCC-240)
 - [x] Fork `wavesplatform/blst-java` → `packages/jvm/blst` — BLS12-381 JNI, Java 25 (DCC-242)
-- [x] Fork `wavesplatform/zwaves` → `packages/jvm/groth16` — ZK-SNARK JNI, Java 25 (DCC-261)
+- [x] Fork `wavesplatform/zdcc` → `packages/jvm/groth16` — ZK-SNARK JNI, Java 25 (DCC-261)
 - [x] Fork `wavesplatform/waves-crypto-java` → `packages/jvm/crypto` — `io.decentralchain:crypto:2.0.7`, BouncyCastle 1.84, BLS12-381, 33 tests (DCC-264)
 
 ### In Progress
@@ -406,7 +405,7 @@ Ranked by strategic value to DCC:
 - [ ] Fork & rebrand `ride-vscode` → DCC Ride VS Code extension
 - [ ] Fork & rebrand `ride-examples` → `dcc-ride-examples`
 - [ ] Fork `surfboard` → `@decentralchain/surfboard` CLI
-- [ ] Upgrade `node-go` proto submodule to gowaves v0.11.1 (closes 4 DCC-171 proto gaps)
+- [x] ~~Upgrade `node-go` proto submodule to gowaves v0.11.1~~ — CANCELLED (node-go archived; node-scala is production node)
 
 ### Future
 
@@ -444,28 +443,28 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 
 | Topic | DecentralChain Docs | Waves Docs |
 |:------|:-------------------|:-----------|
-| Syntax Basics | [dcc/ride/syntax](https://docs.decentralchain.io/en/master/03_ride-language/01_syntax-basics.html) | [waves/ride/getting-started](https://docs.waves.tech/en/ride/getting-started) |
-| Data Types | [dcc/ride/data-types](https://docs.decentralchain.io/en/master/03_ride-language/02_data-types.html) | [waves/ride/data-types](https://docs.waves.tech/en/ride/data-types/) |
-| Functions | [dcc/ride/functions](https://docs.decentralchain.io/en/master/03_ride-language/03_functions.html) | [waves/ride/functions](https://docs.waves.tech/en/ride/functions/) |
-| Script Types | [dcc/ride/scripts](https://docs.decentralchain.io/en/master/03_ride-language/04_script-types.html) | [waves/ride/script](https://docs.waves.tech/en/ride/script/) |
-| Structures | [dcc/ride/structures](https://docs.decentralchain.io/en/master/03_ride-language/05_structures.html) | [waves/ride/structures](https://docs.waves.tech/en/ride/structures/) |
-| FOLD iterations | [dcc/ride/fold](https://docs.decentralchain.io/en/master/03_ride-language/06_iterations-with-fold.html) | [waves/ride/fold](https://docs.waves.tech/en/ride/functions/built-in-functions/) |
-| dApp-to-App | [dcc/ride/dapp-invocation](https://docs.decentralchain.io/en/master/03_ride-language/07_dapp-to-app-invocation.html) | [waves/ride/dapp-to-dapp](https://docs.waves.tech/en/ride/advanced/dapp-to-app/) |
+| Syntax Basics | [dcc/ride/syntax](https://docs.decentralchain.io/en/master/03_ride-language/01_syntax-basics.html) | [dcc/ride/getting-started](https://docs.dcc.tech/en/ride/getting-started) |
+| Data Types | [dcc/ride/data-types](https://docs.decentralchain.io/en/master/03_ride-language/02_data-types.html) | [dcc/ride/data-types](https://docs.dcc.tech/en/ride/data-types/) |
+| Functions | [dcc/ride/functions](https://docs.decentralchain.io/en/master/03_ride-language/03_functions.html) | [dcc/ride/functions](https://docs.dcc.tech/en/ride/functions/) |
+| Script Types | [dcc/ride/scripts](https://docs.decentralchain.io/en/master/03_ride-language/04_script-types.html) | [dcc/ride/script](https://docs.dcc.tech/en/ride/script/) |
+| Structures | [dcc/ride/structures](https://docs.decentralchain.io/en/master/03_ride-language/05_structures.html) | [dcc/ride/structures](https://docs.dcc.tech/en/ride/structures/) |
+| FOLD iterations | [dcc/ride/fold](https://docs.decentralchain.io/en/master/03_ride-language/06_iterations-with-fold.html) | [dcc/ride/fold](https://docs.dcc.tech/en/ride/functions/built-in-functions/) |
+| dApp-to-App | [dcc/ride/dapp-invocation](https://docs.decentralchain.io/en/master/03_ride-language/07_dapp-to-app-invocation.html) | [dcc/ride/dapp-to-dapp](https://docs.dcc.tech/en/ride/advanced/dapp-to-app/) |
 
 ### Waves → DecentralChain Concept Map
 
 | Concept | Waves Docs | DecentralChain Docs |
 |:--------|:-----------|:--------------------|
-| Account | [waves/account](https://docs.waves.tech/en/blockchain/account/) | [dcc/account](https://docs.decentralchain.io/en/master/02_decentralchain/01_account.html) |
-| Token (Asset) | [waves/token](https://docs.waves.tech/en/blockchain/token/) | [dcc/token](https://docs.decentralchain.io/en/master/02_decentralchain/02_token%28asset%29.html) |
-| Transaction | [waves/transaction](https://docs.waves.tech/en/blockchain/transaction/) | [dcc/transaction](https://docs.decentralchain.io/en/master/02_decentralchain/03_transaction.html) |
-| Block | [waves/block](https://docs.waves.tech/en/blockchain/block/) | [dcc/block](https://docs.decentralchain.io/en/master/02_decentralchain/04_block.html) |
-| Node | [waves/node](https://docs.waves.tech/en/blockchain/node/) | [dcc/node](https://docs.decentralchain.io/en/master/02_decentralchain/05_node.html) |
-| DEX Order | [waves/order](https://docs.waves.tech/en/blockchain/order/) | [dcc/order](https://docs.decentralchain.io/en/master/02_decentralchain/06_order.html) |
-| Oracle | [waves/oracle](https://docs.waves.tech/en/blockchain/oracle/) | [dcc/oracle](https://docs.decentralchain.io/en/master/02_decentralchain/07_oracle.html) |
-| Networks | [waves/networks](https://docs.waves.tech/en/blockchain/blockchain-network/) | [dcc/networks](https://docs.decentralchain.io/en/master/02_decentralchain/08_mainnet-testnet-stagenet.html) |
-| Binary Format | [waves/binary-format](https://docs.waves.tech/en/blockchain/binary-format/) | [dcc/binary-format](https://docs.decentralchain.io/en/master/02_decentralchain/10_binary-format.html) |
-| Ride Language | [waves/ride](https://docs.waves.tech/en/ride/) | [dcc/ride](https://docs.decentralchain.io/en/master/03_ride-language/index.html) |
+| Account | [dcc/account](https://docs.dcc.tech/en/blockchain/account/) | [dcc/account](https://docs.decentralchain.io/en/master/02_decentralchain/01_account.html) |
+| Token (Asset) | [dcc/token](https://docs.dcc.tech/en/blockchain/token/) | [dcc/token](https://docs.decentralchain.io/en/master/02_decentralchain/02_token%28asset%29.html) |
+| Transaction | [dcc/transaction](https://docs.dcc.tech/en/blockchain/transaction/) | [dcc/transaction](https://docs.decentralchain.io/en/master/02_decentralchain/03_transaction.html) |
+| Block | [dcc/block](https://docs.dcc.tech/en/blockchain/block/) | [dcc/block](https://docs.decentralchain.io/en/master/02_decentralchain/04_block.html) |
+| Node | [dcc/node](https://docs.dcc.tech/en/blockchain/node/) | [dcc/node](https://docs.decentralchain.io/en/master/02_decentralchain/05_node.html) |
+| DEX Order | [dcc/order](https://docs.dcc.tech/en/blockchain/order/) | [dcc/order](https://docs.decentralchain.io/en/master/02_decentralchain/06_order.html) |
+| Oracle | [dcc/oracle](https://docs.dcc.tech/en/blockchain/oracle/) | [dcc/oracle](https://docs.decentralchain.io/en/master/02_decentralchain/07_oracle.html) |
+| Networks | [dcc/networks](https://docs.dcc.tech/en/blockchain/blockchain-network/) | [dcc/networks](https://docs.decentralchain.io/en/master/02_decentralchain/08_mainnet-testnet-stagenet.html) |
+| Binary Format | [dcc/binary-format](https://docs.dcc.tech/en/blockchain/binary-format/) | [dcc/binary-format](https://docs.decentralchain.io/en/master/02_decentralchain/10_binary-format.html) |
+| Ride Language | [dcc/ride](https://docs.dcc.tech/en/ride/) | [dcc/ride](https://docs.decentralchain.io/en/master/03_ride-language/index.html) |
 
 ### SDK Package Name Mapping
 
@@ -509,34 +508,34 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | Send/sign all 18 transaction types | ✅ | ✅ | — |
 | Sign arbitrary data | ✅ | ✅ | — |
 | Transaction history | ✅ | ✅ | — |
-| NFT display (5 vendors) | ✅ | ✅ | — |
-| NFT display (WavesDomains) | ✅ | ❌ | **Removed** — no DCC domain service |
-| `.waves` address resolution | ✅ | ❌ | **Removed** — requires domain resolution API |
+| NFT display | ✅ (5 vendors) | ✅ (fallback only) | All upstream Waves vendors removed — hardcoded Waves mainnet addresses, dead on DCC |
+| NFT display (DccDomains) | ✅ | ❌ | **Removed** — no DCC domain service |
+| `.dcc` address resolution | ✅ | ❌ | **Removed** — requires domain resolution API |
 | In-wallet swap | ✅ | ⏸️ DEFERRED | Swap removed from launch scope; preserved in `feat/swap` branch |
 | DApp browser permissions | ✅ | ✅ | — |
 | Idle auto-lock | ✅ | ✅ | — |
 | Leasing | ✅ | ✅ | — |
-| dccAuth (message signing) | ✅ (wavesAuth) | ✅ | Renamed, functionally identical |
-| `CubensisConnect` global API | `WavesKeeper` | ✅ | Deprecated `KeeperWallet`/`WavesKeeper` aliases maintained |
+| dccAuth (message signing) | ✅ (dccAuth) | ✅ | Renamed, functionally identical |
+| `CubensisConnect` global API | `DccKeeper` | ✅ | Deprecated `KeeperWallet`/`DccKeeper` aliases maintained |
 | Sentry error reporting | ✅ | ⚠️ | No DSN configured — errors are silently dropped |
 | Extension store listing | ✅ | ❌ | Not published to Chrome Web Store or Firefox AMO |
 | Remote config updates | ✅ | ✅ | Inlined into `constants.ts` — no external CDN dependency |
 
 ### NFT Vendor System
 
-The wallet uses a vendor-based plugin pattern where each NFT project has a dedicated renderer.
+The wallet uses a vendor-based plugin pattern where each NFT project has a dedicated renderer. All upstream Waves vendors have been **removed** — they used hardcoded Waves mainnet DApp addresses (`3P...`) that cannot exist on DCC's chain (different chain ID). The `Unknown` fallback renders all NFTs as generic cards.
 
-| Vendor | Status | External Service |
-|--------|--------|------------------|
-| Ducks | ✅ | wavesducks.com |
-| Ducklings | ✅ | wavesducks.com |
-| DucksArtefacts | ✅ | wavesducks.com |
-| Puzzle | ✅ | puzzlemarket.org |
-| SignArt | ✅ | mainnet.sign-art.app |
-| **WavesDomains** | ❌ Removed | No DCC equivalent |
-| Unknown (fallback) | ✅ | — |
+| Vendor | Status | Reason |
+|--------|--------|--------|
+| ~~Ducks~~ | ❌ Removed | Waves-only (`dccducks.com`) — hardcoded address `3PDVuU45H7Eh5dmtNbnRNRStGwULA7NY6Hb` |
+| ~~Ducklings~~ | ❌ Removed | Waves-only (`dccducks.com`) — hardcoded address `3PKmLiGEfqLWMC1H9xhzqvAZKUXfFm8uoeg` |
+| ~~DucksArtefacts~~ | ❌ Removed | Waves-only (`dccducks.com`) — hardcoded address `3P5E9xamcWoymiqLx8ZdmR7o4fJSRMGp1WR` |
+| ~~Puzzle~~ | ❌ Removed | Waves-only (`puzzlemarket.org`) — hardcoded address `3PFQjjDMiZKQZdu5JqTHD7HwgSXyp9Rw9By` |
+| ~~SignArt~~ | ❌ Removed | Waves-only (`sign-art.app` — defunct) — hardcoded address `3PDBLdsUrcsiPxNbt8g2gQVoefKgzt3kJzV` |
+| ~~DccDomains~~ | ❌ Removed | No DCC domain service |
+| Unknown (fallback) | ✅ | Renders all NFTs as generic cards |
 
-**Impact of WavesDomains removal:** NFTs from that vendor render with the "Unknown" fallback — a generic card. No crash, no data loss. If DCC launches its own domain system (e.g., `.dcc`), the vendor can be re-implemented.
+**All NFTs now render with the "Unknown" fallback** — a generic card showing creator, name, and description. No crash, no data loss. When DCC-native NFT projects launch, new vendors can be implemented with DCC mainnet addresses.
 
 ---
 
@@ -551,15 +550,11 @@ The wallet uses a vendor-based plugin pattern where each NFT project has a dedic
 | ~~Identity API~~ | ~~`id.decentralchain.io/api`~~ | ~~Email-based account management~~ — **REMOVED** (DCC-117/DCC-118) |
 | ~~Cognito Proxy~~ | ~~`decentralchain.io/cognito`~~ | ~~AWS Cognito auth proxy~~ — **REMOVED** (DCC-117/DCC-118) |
 | ~~Remote Config CDN~~ | ~~`raw.githubusercontent.com/Decentral-America/dcc-configs/main/main.json`~~ | ~~Runtime config~~ — **REMOVED**; inlined into `constants.ts` |
-| ~~Suspicious Token List~~ | ~~`raw.githubusercontent.com/Decentral-America/waves-community/master/...`~~ | ~~Scam token CSV~~ — **REMOVED**; inlined as static data |
+| ~~Suspicious Token List~~ | ~~`raw.githubusercontent.com/Decentral-America/dcc-community/master/...`~~ | ~~Scam token CSV~~ — **REMOVED**; inlined as static data |
 
 ### Third-Party Services (Not DCC-Controlled)
 
-| Service | URL | Function | Risk |
-|---------|-----|----------|------|
-| Waves Ducks | `wavesducks.com/api/v1/` | Duck NFT images & metadata | May not serve DCC NFT data |
-| Puzzle Market | `puzzlemarket.org` | Puzzle NFT metadata | Independent project |
-| SignArt | `mainnet.sign-art.app` | Art NFT metadata & IPFS images | Uses Infura IPFS gateway |
+*None.* All upstream Waves third-party service integrations (Ducks/dccducks.com, Puzzle/puzzlemarket.org, SignArt/sign-art.app) have been removed. These were Waves ecosystem projects with hardcoded Waves mainnet addresses — dead code on DCC.
 
 ---
 
@@ -583,7 +578,7 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
 @decentralchain/marshall
   └── @decentralchain/transactions
         └── (see above)
-  └── @decentralchain/protobuf-serialization (proto namespace: waves)
+  └── @decentralchain/protobuf-serialization (proto namespace: dcc)
   └── @decentralchain/cubensis-connect-provider
 
 @decentralchain/swap-client  ← FORKED (DCC-69) then DELETED ✅
@@ -637,14 +632,14 @@ Actionable items where Waves references remain and should be cleaned up:
 - ~~`support.waves.exchange` in error message~~ → Cleaned up
 - ~~`web.keeper-wallet.app` in whitelist~~ → Removed
 - ~~`swap.keeper-wallet.app` in whitelist~~ → Removed
-- ~~`waves-community` repo name in URL (`controllers/assetInfo.ts:34`)~~ → Feature removed entirely (`05d55efd2`): scam-token CSV was never fetchable (repo 404 since fork); all 3 layers removed (fetch/store, `isSuspicious` flag, Settings UI toggle). Moot.
+- ~~`dcc-community` repo name in URL (`controllers/assetInfo.ts:34`)~~ → Feature removed entirely (`05d55efd2`): scam-token CSV was never fetchable (repo 404 since fork); all 3 layers removed (fetch/store, `isSuspicious` flag, Settings UI toggle). Moot.
 
 ### UX Regressions vs Upstream
 
 | Feature | Impact | Effort to Restore | Priority |
 |---------|--------|-------------------|----------|
-| WavesDomains NFT vendor | NFTs render as "Unknown" | Low (re-add vendor) — needs DCC domain service | Low |
-| `.waves` address resolution | Cannot type domain names | Medium — needs API | Medium |
+| ~~DccDomains NFT vendor~~ | ~~NFTs render as "Unknown"~~ | ~~Low (re-add vendor)~~ | ~~Low~~ — **Moot**: all Waves vendors removed; DCC-native vendors TBD |
+| `.dcc` address resolution | Cannot type domain names | Medium — needs API | Medium |
 | Sentry error reporting | No runtime error visibility | Low (create Sentry project, set DSN) | **High** |
 | Extension store listings | Users must side-load | Medium (store review process) | **High** |
 
@@ -735,12 +730,12 @@ Each library was imported into the monorepo via `git subtree add` or `git filter
 | 2 | `packages/jvm/curve25519` | [wavesplatform/curve25519-java](https://github.com/wavesplatform/curve25519-java) | `80b0a5de` (#174 / 174↑) | `e6f21dea` (#176) | 2023-10-12 | 💤 Dormant |
 | 3 | `packages/jvm/transactions` | [wavesplatform/waves-transactions-java](https://github.com/wavesplatform/waves-transactions-java) | `e6afed3a` (#107 / 107↑) | `eff2d5e5` (#112) | 2025 | 💤 Dormant |
 | 4 | `packages/jvm/blst` | [wavesplatform/blst-java](https://github.com/wavesplatform/blst-java) | `a7d3e39a` (#4 / 4↑) | `7c11f306` (#11) | 2026-04-15 | 💤 Dormant |
-| 5 | `packages/jvm/groth16` | [wavesplatform/zwaves](https://github.com/wavesplatform/zwaves) | `d4546dbb` (#104 / 104↑) | `3df6a576` (#111) | 2024 | 💤 Dormant |
+| 5 | `packages/jvm/groth16` | [wavesplatform/zdcc](https://github.com/wavesplatform/zdcc) | `d4546dbb` (#104 / 104↑) | `3df6a576` (#111) | 2024 | 💤 Dormant |
 | 6 | `packages/jvm/crypto` | [wavesplatform/waves-crypto-java](https://github.com/wavesplatform/waves-crypto-java) | `0f1fc0c91` (#68 / 68↑) | `790fd4ec8` (#75) | 2026-05-19 | 💤 Dormant |
 
 > **Sync strategy for JVM packages:** Port upstream bugfixes manually. Do NOT port Waves endpoint URLs, chain IDs, or branding. Adapt Maven coordinates to `io.decentralchain:*` and group to `io.decentralchain`. Check each upstream repo monthly for security patches.
 >
-> **java-sdk graft details:** Established proper upstream traceability via commit `390fc9847` — "feat(DCC-263): graft upstream WavesJ history + re-apply DCC fork". Upstream baseline `bb63c0bc` squash commit at `wavesplatform/WavesJ@2f78fd3`. Future cherry-picks: `git subtree pull --prefix packages/jvm/java-sdk upstream-wavesj master --squash` (remote has been removed; re-add if needed).
+> **java-sdk graft details:** Established proper upstream traceability via commit `390fc9847` — "feat(DCC-263): graft upstream WavesJ history + re-apply DCC fork". Upstream baseline `bb63c0bc` squash commit at `wavesplatform/WavesJ@2f78fd3`. Future cherry-picks: `git subtree pull --prefix packages/jvm/java-sdk upstream-dccj master --squash` (remote has been removed; re-add if needed).
 
 ### How to Check for New Upstream Changes
 
@@ -796,23 +791,23 @@ git diff <last-synced-commit>..HEAD -- src/
 - *TypeScript SDK (24):* ts-types, bignumber, ts-lib-crypto, parse-json-bignumber, marshall, protobuf-schemas, waves-data-entities, assets-pairs-order, oracle-data, node-api-js, waves-transactions, money-like-to-node, data-service-client-js, waves-browser-bus, waves-ledger-js, waves-signature-adapter, signer, ride-js (`packages/ride/ts/`), Keeper-Wallet-Extension, waveskeeper-types, provider-keeper, WavesExplorerLite, swap-client (⚫ fully deleted), waves-crypto
 - *Application (1):* **data-service** → `apps/data-service`
 - *Standalone infrastructure (4):* **Waves** node → `Ecosystem/node-scala` · **gowaves** → `Ecosystem/node-go` · **dex** matcher → `Ecosystem/matcher` · **blockchain-postgres-sync** → `apps/blockchain-postgres-sync` (in monorepo via `nx import`)
-- *JVM libraries (6 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519` · **waves-transactions-java** → `packages/jvm/transactions` · **blst-java** → `packages/jvm/blst` · **zwaves** → `packages/jvm/groth16` · **waves-crypto-java** → `packages/jvm/crypto`
+- *JVM libraries (6 in monorepo):* **WavesJ** → `packages/jvm/java-sdk` · **curve25519-java** → `packages/jvm/curve25519` · **waves-transactions-java** → `packages/jvm/transactions` · **blst-java** → `packages/jvm/blst` · **zdcc** → `packages/jvm/groth16` · **waves-crypto-java** → `packages/jvm/crypto`
 - *RIDE packages (2 in monorepo, from wavesplatform/Waves):* `packages/ride/lang/` · `packages/ride/repl/` 
 
-**Developer Tooling (~8):** waves-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), waves-repl (4★).
+**Developer Tooling (~8):** dcc-ide (22★), ride-vscode (13★), surfboard (10★), js-test-env (3★), ride-intellij-plugin (3★), ride-examples (31★), ride-introduction (19★), dcc-repl (4★).
 
 **Infrastructure (~20):** ~~Waves/node (1171★ Scala)~~ ✅ forked as `Ecosystem/node-scala`, ~~gowaves (255★ Go)~~ ✅ forked as `Ecosystem/node-go`, ~~matcher (18★ Scala)~~ ✅ forked as `Ecosystem/matcher`, ~~data-service (31★ TS)~~ ✅ imported as `apps/data-service`, ~~blockchain-postgres-sync (16★ Rust)~~ ✅ imported as `apps/blockchain-postgres-sync` (monorepo, via `nx import`), nodemon (8★ Go), plus Rust microservices cluster (10 repos: user-storage, mailbox-service, push-notifications-rs, balances-history, operations-service, updates-provider, state-service, state-consumer, exchanges, asset-search-rs, wx-websocket-api).
 
 **Multi-Language SDKs (~20):** Java (~~WavesJ 47★~~ ✅ forked as `java-sdk`, ~~waves-transactions-java~~ ✅ forked as `transactions`, ~~waves-crypto-java~~ ✅ forked as `packages/jvm/crypto` (DCC-264)), Python (waves-python 10★, demo-python-trading-bot 64★), Go (go-lib-crypto 5★), Kotlin (kotlin-lib-crypto, kotlin-lib-model), Swift (swift-lib-crypto), C (waves-c 8★, Base58, Blake2, Keccak), Rust (waves-rust 6★), C# (waves-csharp, csharp-lib-crypto, csharp-lib-transactions), PHP (waves-php, protobuf-php).
 
-**Cryptography (4):** curve25519-js (36★), ~~zwaves (4★ ZK)~~ ✅ forked as `packages/jvm/groth16`, ~~groth16verify~~ (only needed if DCC adds ZK tx types), ~~blst-java~~ ✅ forked as `packages/jvm/blst`.
+**Cryptography (4):** curve25519-js (36★), ~~zdcc (4★ ZK)~~ ✅ forked as `packages/jvm/groth16`, ~~groth16verify~~ (only needed if DCC adds ZK tx types), ~~blst-java~~ ✅ forked as `packages/jvm/blst`.
 
 **Mobile (4):** WavesWallet-iOS (47★), WavesWallet-android (52★), WavesSDK-iOS (17★), WavesSDK-android (15★).
 
-**Archived/Deprecated (7):** WavesCS, private-node-docker-image, waves-signature-generator, node-docker-image, WavesClientLite, wavespp, how-to-connect-keeper-to-mobile-apps.
+**Archived/Deprecated (7):** WavesCS, private-node-docker-image, dcc-signature-generator, node-docker-image, WavesClientLite, dccpp, how-to-connect-keeper-to-mobile-apps.
 
 **Applications (~10):** WavesGUI (399★), waves-games, waves-items-webapp, waves-dao-ui, mpt-staking-ui, wavesdappcom, web3course.
 
-**Internal/CI/Misc (~25):** configs, jira-action, vault-decryptor, provider-seed, provider-metamask, provider-ledger, unified-declarations, blocks-json-parser-js, tx-json-schemas, ts-contract, waves-rest, waves-data-oracle, and others.
+**Internal/CI/Misc (~25):** configs, jira-action, vault-decryptor, provider-seed, provider-metamask, provider-ledger, unified-declarations, blocks-json-parser-js, tx-json-schemas, ts-contract, dcc-rest, dcc-data-oracle, and others.
 
 **Bottom line:** We forked the 18% that represents 90% of the value. The remaining 82% is either archived, language-specific, infrastructure we'll build our own way, or experiments that didn't go anywhere.

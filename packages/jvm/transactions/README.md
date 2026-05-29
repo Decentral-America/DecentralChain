@@ -71,9 +71,9 @@ implementation("io.decentralchain:transactions:1.0.0")
 import com.decentralchain.transactions.TransferTransaction;
 import com.decentralchain.transactions.account.PrivateKey;
 import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.WavesConfig;
+import com.decentralchain.transactions.DccConfig;
 
-WavesConfig.chainId('W'); // mainnet
+DccConfig.chainId('W'); // mainnet
 
 PrivateKey sender = PrivateKey.fromSeed("your seed phrase");
 TransferTransaction tx = TransferTransaction.builder(recipient, Amount.of(100_000_000L))

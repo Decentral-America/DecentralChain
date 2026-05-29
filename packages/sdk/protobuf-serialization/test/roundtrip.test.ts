@@ -1,6 +1,6 @@
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { describe, expect, it } from 'vitest';
-import { DAppMetaSchema } from '../src/gen/waves/lang/dapp_meta_pb.js';
+import { DAppMetaSchema } from '../src/gen/dcc/lang/dapp_meta_pb.js';
 import {
   AmountSchema,
   Block_HeaderSchema,
@@ -908,14 +908,14 @@ describe('protobuf roundtrip encoding', () => {
 
       const signedTx = create(SignedTransactionSchema, {
         proofs: [new Uint8Array(64).fill(0xff)],
-        transaction: { case: 'wavesTransaction', value: tx },
+        transaction: { case: 'dccTransaction', value: tx },
       });
 
       const buffer = toBinary(SignedTransactionSchema, signedTx);
       const decoded = fromBinary(SignedTransactionSchema, buffer);
 
-      expect(decoded.transaction.case).toBe('wavesTransaction');
-      if (decoded.transaction.case === 'wavesTransaction') {
+      expect(decoded.transaction.case).toBe('dccTransaction');
+      if (decoded.transaction.case === 'dccTransaction') {
         expect(decoded.transaction.value.chainId).toBe(84);
       }
       expect(decoded.proofs).toHaveLength(1);
@@ -938,7 +938,7 @@ describe('protobuf roundtrip encoding', () => {
           new Uint8Array(64).fill(0xbb),
           new Uint8Array(64).fill(0xcc),
         ],
-        transaction: { case: 'wavesTransaction', value: tx },
+        transaction: { case: 'dccTransaction', value: tx },
       });
 
       const buffer = toBinary(SignedTransactionSchema, signedTx);
@@ -1757,13 +1757,13 @@ describe('financial safety edge cases', () => {
 
     const signedTx = create(SignedTransactionSchema, {
       proofs: [proof],
-      transaction: { case: 'wavesTransaction', value: tx },
+      transaction: { case: 'dccTransaction', value: tx },
     });
 
     const buffer = toBinary(SignedTransactionSchema, signedTx);
     const decoded = fromBinary(SignedTransactionSchema, buffer);
-    expect(decoded.transaction.case).toBe('wavesTransaction');
-    if (decoded.transaction.case === 'wavesTransaction') {
+    expect(decoded.transaction.case).toBe('dccTransaction');
+    if (decoded.transaction.case === 'dccTransaction') {
       expect(new Uint8Array(decoded.transaction.value.senderPublicKey)).toEqual(senderPk);
       expect(decoded.transaction.value.chainId).toBe(87);
     }

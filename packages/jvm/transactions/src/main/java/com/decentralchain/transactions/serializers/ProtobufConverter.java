@@ -67,7 +67,7 @@ public abstract class ProtobufConverter {
     }
 
     public static Transaction fromProtobuf(SignedTransaction pbSignedTx) throws IOException {
-        //todo eth tx support
+        // NOTE: Ethereum transaction support — to be implemented
         if (!pbSignedTx.getEthereumTransaction().isEmpty()) {
             throw new IllegalArgumentException("Ethereum transaction not supported from this method. " +
                     "Use ethTransferTxFromProtobuf or ethInvokeScriptTxFromProtobuf instead");

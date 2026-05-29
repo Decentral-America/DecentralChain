@@ -271,7 +271,7 @@ export class CurrentAccountController {
       aliases,
 
       assets: Object.fromEntries([
-        ['WAVES', nativeAssetBalance],
+        ['DCC', nativeAssetBalance],
         ...myAssets.balances.map((info) => {
           const assetBalance: AssetBalance = {
             balance: info.balance,

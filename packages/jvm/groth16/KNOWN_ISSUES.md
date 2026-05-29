@@ -1,6 +1,6 @@
 # Known Issues
 
-> Tracked items in the zwaves package (DCC fork of Decentral-America/zwaves).
+> Tracked items in the zdcc package (DCC fork of Decentral-America/zdcc).
 > Each item includes its risk level, reason it is not resolved immediately,
 > and the recommended resolution path.
 
@@ -9,7 +9,7 @@
 ## KNOWN-1: Rust dependency tree contains three un-upgradable cargo audit advisories
 
 **Risk:** LOW (see per-advisory rationale below — vulnerable code paths are
-NOT reachable from the zwaves JNI public API)
+NOT reachable from the zdcc JNI public API)
 
 **Description:** Three vulnerability advisories exist in the transitive Rust
 dependency chain rooted at `sapling-crypto 0.0.1`:
@@ -30,13 +30,13 @@ ZK proof on the DecentralChain network.
 
 **Risk assessment per advisory:**
 
-- **RUSTSEC-2022-0011** (AES miscomputation): zwaves never calls any AES
+- **RUSTSEC-2022-0011** (AES miscomputation): zdcc never calls any AES
   function. The vulnerable `crypto::aes` module is compiled into the binary
   but its code path is unreachable from `groth16_jni`'s `Java_com_decentralchain_groth16_*`
-  JNI entry points. The only operations zwaves exposes are Groth16 BN256/BLS12
+  JNI entry points. The only operations zdcc exposes are Groth16 BN256/BLS12
   pairing checks using SHA-256/SHA-512 from rust-crypto. **Risk: LOW.**
 
-- **RUSTSEC-2022-0004** (JSON stack overflow): zwaves accepts only fixed-length
+- **RUSTSEC-2022-0004** (JSON stack overflow): zdcc accepts only fixed-length
   byte array inputs from the JVM. No JSON parsing occurs anywhere in the call
   path. The `rustc-serialize` crate is pulled in transitively but its JSON
   decoder is never invoked. **Risk: LOW.**
@@ -70,7 +70,7 @@ Java_com_decentralchain_groth16_bls12_Groth16_verify
 Java_com_decentralchain_groth16_bn256_Groth16_verify
 ```
 
-No `com.wavesplatform.zwaves` symbols remain. This issue is closed.
+No `com.wavesplatform.zdcc` symbols remain. This issue is closed.
 
 ---
 

@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-// todo move bytes attribute to inner transaction
+// NOTE: bytes attribute could be moved to inner transaction
 public class EthereumTransactionFromJsonTest {
 
   private final Node node =

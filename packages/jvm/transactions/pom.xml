@@ -14,7 +14,7 @@
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->
   <name>transactions</name>
   <description>
-    Binary and JSON serialization library for all Waves / DecentralChain
+    Binary and JSON serialization library for all Dcc / DecentralChain
     transaction types (transfers, exchanges, invocations, Ethereum-compatible
     transactions, and more). Provides protobuf + JSON codec, Ethereum ABI
     encoding, and full builder/factory API for constructing signed transactions.

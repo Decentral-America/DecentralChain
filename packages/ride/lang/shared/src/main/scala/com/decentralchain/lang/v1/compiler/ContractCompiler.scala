@@ -24,7 +24,7 @@ import com.decentralchain.lang.v1.compiler.Terms.EXPR
 import com.decentralchain.lang.v1.compiler.Types.{BOOLEAN, BYTESTR, LONG, STRING}
 import com.decentralchain.lang.v1.evaluator.ctx.FunctionTypeSignature
 import com.decentralchain.lang.v1.evaluator.ctx.impl.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types.*
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.Types.*
 import com.decentralchain.lang.v1.parser.Expressions.Pos.AnyPos
 import com.decentralchain.lang.v1.parser.Expressions.{FUNC, PART, Type}
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset
