@@ -3,7 +3,7 @@ package io.decentralchain.transactions.account;
 import com.google.common.base.Suppliers;
 import io.decentralchain.crypto.Crypto;
 import io.decentralchain.crypto.base.Base58;
-import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.DccConfig;
 import io.decentralchain.transactions.common.Base58String;
 
 import java.nio.charset.StandardCharsets;
@@ -141,7 +141,7 @@ public class PrivateKey extends Base58String {
      * @return address
      */
     public Address address() {
-        return address(WavesConfig.chainId());
+        return address(DccConfig.chainId());
     }
 
     /**

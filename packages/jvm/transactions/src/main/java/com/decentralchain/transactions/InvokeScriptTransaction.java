@@ -22,7 +22,7 @@ public class InvokeScriptTransaction extends Transaction {
     private final List<Amount> payments;
 
     public InvokeScriptTransaction(PublicKey sender, Recipient dApp, Function function, List<Amount> payments) {
-        this(sender, dApp, function, payments, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
+        this(sender, dApp, function, payments, DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
                 LATEST_VERSION, Proof.emptyList());
     }
 

@@ -84,8 +84,8 @@ public class BytesWriter {
         return write(assetId.bytes());
     }
 
-    public BytesWriter writeAssetIdOrWaves(AssetId assetIdOrWaves) {
-        return assetIdOrWaves.isWaves() ? write((byte) 0) : write((byte) 1).write(assetIdOrWaves.bytes());
+    public BytesWriter writeAssetIdOrDcc(AssetId assetIdOrDcc) {
+        return assetIdOrDcc.isDcc() ? write((byte) 0) : write((byte) 1).write(assetIdOrDcc.bytes());
     }
 
     public BytesWriter writeTxId(Id id) {

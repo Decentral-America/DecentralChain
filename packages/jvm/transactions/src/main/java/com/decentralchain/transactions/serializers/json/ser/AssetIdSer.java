@@ -10,7 +10,7 @@ import java.io.IOException;
 public class AssetIdSer extends JsonSerializer<AssetId> {
     @Override
     public void serialize(AssetId assetId, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        if (assetId == null || assetId.isWaves())
+        if (assetId == null || assetId.isDcc())
             gen.writeNull();
         else
             gen.writeString(assetId.encoded());
