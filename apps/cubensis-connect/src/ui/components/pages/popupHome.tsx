@@ -70,8 +70,8 @@ export function PopupHome() {
         <ActiveAccountCard
           account={activeAccount}
           dccBalance={
-            assets.WAVES &&
-            new Money(balances[activeAccount.address]?.available || 0, new Asset(assets.WAVES))
+            assets.DCC &&
+            new Money(balances[activeAccount.address]?.available || 0, new Asset(assets.DCC))
           }
           amountInUsd={amountInUsd}
           onCopy={() => {

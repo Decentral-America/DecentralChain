@@ -21,7 +21,7 @@ import { Base58 } from './common/base58';
 export function TransferCard({ className, tx }: { className?: string; tx: MessageTxTransfer }) {
   const { t } = useTranslation();
   const assets = usePopupSelector((state) => state.assets);
-  const asset = assets[tx.assetId ?? 'WAVES'];
+  const asset = assets[tx.assetId ?? 'DCC'];
   invariant(asset);
 
   return (
