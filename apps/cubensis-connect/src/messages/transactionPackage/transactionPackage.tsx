@@ -36,26 +36,26 @@ function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
         ),
       ];
     case TRANSACTION_TYPE.TRANSFER: {
-      const asset = assets[tx.assetId ?? 'WAVES'];
+      const asset = assets[tx.assetId ?? 'DCC'];
       invariant(asset);
       return [new Money(new BigNumber(0).sub(tx.amount), new Asset(asset))];
     }
     case TRANSACTION_TYPE.REISSUE: {
-      const asset = assets[tx.assetId ?? 'WAVES'];
+      const asset = assets[tx.assetId ?? 'DCC'];
       invariant(asset);
       return [new Money(tx.quantity, new Asset(asset))];
     }
     case TRANSACTION_TYPE.BURN: {
-      const asset = assets[tx.assetId ?? 'WAVES'];
+      const asset = assets[tx.assetId ?? 'DCC'];
       invariant(asset);
       return [new Money(new BigNumber(0).sub(tx.amount), new Asset(asset))];
     }
     case TRANSACTION_TYPE.LEASE:
-      return [new Money(new BigNumber(0).sub(tx.amount), new Asset(assets.WAVES))];
+      return [new Money(new BigNumber(0).sub(tx.amount), new Asset(assets.DCC))];
     case TRANSACTION_TYPE.CANCEL_LEASE:
-      return [new Money(tx.lease.amount, new Asset(assets.WAVES))];
+      return [new Money(tx.lease.amount, new Asset(assets.DCC))];
     case TRANSACTION_TYPE.MASS_TRANSFER: {
-      const asset = assets[tx.assetId ?? 'WAVES'];
+      const asset = assets[tx.assetId ?? 'DCC'];
       invariant(asset);
 
       return [
@@ -67,7 +67,7 @@ function getBalanceChanges(tx: MessageTx, assets: AssetsRecord) {
     }
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
       return tx.payment.map((p) => {
-        const asset = assets[p.assetId ?? 'WAVES'];
+        const asset = assets[p.assetId ?? 'DCC'];
         invariant(asset);
         return new Money(new BigNumber(0).sub(p.amount), new Asset(asset));
       });
@@ -90,7 +90,7 @@ export function TransactionPackageCard({
 
   const fees = Object.values(
     message.data.reduce<Record<string, Money>>((acc, tx) => {
-      const assetId = ('feeAssetId' in tx ? tx.feeAssetId : null) ?? 'WAVES';
+      const assetId = ('feeAssetId' in tx ? tx.feeAssetId : null) ?? 'DCC';
       const asset = assets[assetId];
       invariant(asset);
 
