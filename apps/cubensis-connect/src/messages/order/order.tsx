@@ -26,13 +26,13 @@ export function OrderCard({
   const { t } = useTranslation();
 
   const amountAsset = usePopupSelector(
-    (state) => state.assets[message.data.assetPair.amountAsset ?? 'WAVES'],
+    (state) => state.assets[message.data.assetPair.amountAsset ?? 'DCC'],
   );
   invariant(amountAsset);
   const amount = new Money(message.data.amount, new Asset(amountAsset));
 
   const priceAsset = usePopupSelector(
-    (state) => state.assets[message.data.assetPair.priceAsset ?? 'WAVES'],
+    (state) => state.assets[message.data.assetPair.priceAsset ?? 'DCC'],
   );
   invariant(priceAsset);
 
@@ -139,7 +139,7 @@ export function OrderScreen({
   const { t } = useTranslation();
 
   const matcherFeeAsset = usePopupSelector(
-    (state) => state.assets[message.data.matcherFeeAssetId ?? 'WAVES'],
+    (state) => state.assets[message.data.matcherFeeAssetId ?? 'DCC'],
   );
   invariant(matcherFeeAsset);
 

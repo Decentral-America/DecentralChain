@@ -43,11 +43,9 @@ jobs:
         with:
           node-version: '24'
 
-      # pnpm 11.2.2 — workspace package manager; needed for TypeScript wrapper
+      # pnpm — workspace package manager; version read from package.json#packageManager
       - name: Set up pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093  # v6.0.8
-        with:
-          version: '11.2.2'
 
       - name: Install workspace dependencies (pnpm)
         run: pnpm install --frozen-lockfile

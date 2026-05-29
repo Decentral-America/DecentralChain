@@ -94,7 +94,7 @@ export function UpdateAssetInfoScreen({
 
               <div className={transactionsStyles.txValue}>
                 <Balance
-                  balance={new Money(tx.fee, new Asset(assets.WAVES))}
+                  balance={new Money(tx.fee, new Asset(assets.DCC))}
                   data-testid="updateAssetInfoFee"
                   isShortFormat
                   showAsset
