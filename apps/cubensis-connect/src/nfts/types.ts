@@ -1,7 +1,3 @@
-import type { AssetDetail } from '#assets/types';
-
-import type { NftConfig } from '../constants';
-
 export interface NftAssetDetail {
   assetId: string;
   decimals: 0;
@@ -19,11 +15,6 @@ export interface NftAssetDetail {
 }
 
 export const NftVendorId = {
-  Ducklings: 'ducklings',
-  Ducks: 'ducks',
-  DucksArtefact: 'ducks-artefact',
-  Puzzle: 'puzzle',
-  SignArt: 'sign-art',
   Unknown: 'unknown',
 } as const;
 export type NftVendorId = (typeof NftVendorId)[keyof typeof NftVendorId];
@@ -40,24 +31,6 @@ export interface Nft {
   marketplaceUrl?: string | undefined;
   name: string;
   vendor: NftVendorId;
-}
-
-export interface FetchInfoParams {
-  nfts: NftAssetDetail[];
-  nodeUrl: string;
-}
-
-export interface CreateParams<T extends { vendor: NftVendorId }> {
-  asset: AssetDetail;
-  config: NftConfig;
-  info: T;
-}
-
-export interface NftVendor<T extends { vendor: NftVendorId }> {
-  id: T['vendor'];
-  is(nft: NftAssetDetail): boolean;
-  fetchInfo(params: FetchInfoParams): T[] | Promise<T[]>;
-  create(params: CreateParams<T>): Nft;
 }
 
 export const DisplayMode = {

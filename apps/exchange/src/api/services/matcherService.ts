@@ -58,8 +58,8 @@ export interface OrderBook {
 /**
  * Order Interface
  * Matches the order shape in both history responses and the place-order response `message` field.
- * `assetPair.amountAsset / priceAsset` are `string | null`: null means native DCC (per Waves matcher docs
- * "WAVES, or null, or omitted field means WAVES/DCC").
+ * `assetPair.amountAsset / priceAsset` are `string | null`: null means native DCC (per Dcc matcher docs
+ * "DCC, or null, or omitted field means DCC/DCC").
  */
 export interface Order {
   id: string;
@@ -126,7 +126,7 @@ export interface CreateOrderData {
 /**
  * Matcher Settings
  * `orderFee` supports multiple fee modes depending on the matcher configuration.
- * The DCC and Waves matchers support: dynamic, percent, fixed, and composite (which
+ * The DCC and Dcc matchers support: dynamic, percent, fixed, and composite (which
  * nests the above under `composite.default`). Always use `getMatcherBaseFee()` to extract
  * the base fee — never access `orderFee.dynamic` directly.
  */
@@ -138,7 +138,7 @@ export interface MatcherSettings {
 }
 
 /**
- * All fee modes supported by the Waves/DCC matcher.
+ * All fee modes supported by the Dcc/DCC matcher.
  * At most one of the top-level keys will be present in a given response.
  */
 export interface MatcherOrderFee {
@@ -150,7 +150,7 @@ export interface MatcherOrderFee {
   percent?: {
     type: 'amount' | 'price' | 'spending' | 'receiving';
     minFee: number;
-    minFeeInWaves: number;
+    minFeeInDcc: number;
   };
   /**
    * Composite mode (used in production): wraps dynamic/percent/fixed under a `default` key,
@@ -180,10 +180,10 @@ export function getMatcherBaseFee(fee: MatcherOrderFee): number {
   if (fee.fixed?.minFee != null) {
     return fee.fixed.minFee;
   }
-  if (fee.percent?.minFeeInWaves != null) {
-    return fee.percent.minFeeInWaves;
+  if (fee.percent?.minFeeInDcc != null) {
+    return fee.percent.minFeeInDcc;
   }
-  // Default DCC/Waves matcher fee: 0.003 DCC = 300 000 wavelets.
+  // Default DCC/Dcc matcher fee: 0.003 DCC = 300 000 wavelets.
   return 300_000;
 }
 
@@ -454,7 +454,7 @@ export const useTradingPairs = (options?: {
  * Response envelope from `POST /matcher/orderbook` (place-limit-order) and
  * `POST /matcher/orderbook/market` (place-market-order).
  *
- * Per the official Waves Matcher API docs, the response is always wrapped:
+ * Per the official Dcc Matcher API docs, the response is always wrapped:
  * ```json
  * { "success": true, "message": { ...full signed order... }, "status": "OrderAccepted" }
  * ```

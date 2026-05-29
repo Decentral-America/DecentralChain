@@ -10,21 +10,20 @@ import * as migrated from '../src/index';
 
 // Known-good values captured from the library to guard against regressions.
 // If these ever change, key derivation has silently broken — a critical failure.
-// Seed loaded from environment — NEVER store mnemonic phrases in source.
-const seed = process.env.DCC_TEST_CRYPTO_VERIFY_SEED;
-if (!seed) throw new Error('DCC_TEST_CRYPTO_VERIFY_SEED env var is required');
+// Defaults use the well-known local private node seed; override via env vars in CI.
+const seed = process.env.DCC_TEST_CRYPTO_VERIFY_SEED ?? 'dcc private node seed with dcc tokens';
 
-const ORIGINAL_PUBLIC_KEY = process.env.DCC_TEST_CRYPTO_VERIFY_PUBKEY;
-if (!ORIGINAL_PUBLIC_KEY) throw new Error('DCC_TEST_CRYPTO_VERIFY_PUBKEY env var is required');
+const ORIGINAL_PUBLIC_KEY =
+  process.env.DCC_TEST_CRYPTO_VERIFY_PUBKEY ?? 'AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV';
 
-const ORIGINAL_PRIVATE_KEY = process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY;
-if (!ORIGINAL_PRIVATE_KEY) throw new Error('DCC_TEST_CRYPTO_VERIFY_PRIVKEY env var is required');
+const ORIGINAL_PRIVATE_KEY =
+  process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY ?? '83M4HnCQxrDMzUQqwmxfTVJPTE9WdE7zjAooZZm2jCyV';
 
-const EXPECTED_ADDR_W = process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W;
-if (!EXPECTED_ADDR_W) throw new Error('DCC_TEST_CRYPTO_VERIFY_ADDR_W env var is required');
+const EXPECTED_ADDR_W =
+  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W ?? '3P5Xx9MFs8VchRjfLeocGFxXkZGknm38oq1';
 
-const EXPECTED_ADDR_Q = process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q;
-if (!EXPECTED_ADDR_Q) throw new Error('DCC_TEST_CRYPTO_VERIFY_ADDR_Q env var is required');
+const EXPECTED_ADDR_Q =
+  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q ?? '3DRRUWk6x6AVfoLKG4jcccwzsTAa9eyDXf5';
 
 test('key generation produces identical keys (chain-ID independent)', () => {
   // Keys don't depend on chain ID, so they must be identical to hardcoded originals

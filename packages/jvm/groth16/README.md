@@ -3,13 +3,13 @@
 [![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/groth16.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/groth16.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.decentralchain/groth16.svg)](https://central.sonatype.com/artifact/io.decentralchain/groth16)
 
-Java JNI bindings for [Decentral-America/zwaves](https://github.com/Decentral-America/zwaves) —
+Java JNI bindings for [Decentral-America/zdcc](https://github.com/Decentral-America/zdcc) —
 a ZK-SNARK Groth16 proof verifier for **BLS12-381** (Zcash Sapling) and **BN256**
 (Ethereum/Zcash) elliptic curves, implemented in Rust via the
 [bellman](https://github.com/zkcrypto/bellman) and
 [pairing](https://github.com/zkcrypto/pairing) crates.
 
-Forked from `Decentral-America/zwaves` at commit `d4546dbb` with full upstream history.
+Forked from `Decentral-America/zdcc` at commit `d4546dbb` with full upstream history.
 Published as `io.decentralchain:groth16` under the DCC JVM ecosystem standard.
 
 ---
@@ -131,7 +131,7 @@ packages/jvm/groth16/
 
 ## Upstream tracking
 
-This package tracks `Decentral-America/zwaves` via `git subtree`:
+This package tracks `Decentral-America/zdcc` via `git subtree`:
 
 ```bash
 # Pull upstream updates:
@@ -151,4 +151,4 @@ Apache License 2.0 — see [LICENSE](LICENSE).
 project (FuseSource Corp / Eclipse Foundation) and is licensed under the
 Eclipse Public License v1.0.
 
-The upstream Rust codebase (`Decentral-America/zwaves`) is MIT-licensed.
+The upstream Rust codebase (`Decentral-America/zdcc`) is MIT-licensed.

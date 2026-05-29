@@ -1,11 +1,9 @@
 import { exchange, order } from '../../src';
 
-// Seeds loaded from environment — never hardcode mnemonic phrases in source.
-const seed1 = process.env.DCC_TEST_EXCHANGE_SEED_1;
-if (!seed1) throw new Error('DCC_TEST_EXCHANGE_SEED_1 env var is required');
-
-const seed2 = process.env.DCC_TEST_EXCHANGE_SEED_2;
-if (!seed2) throw new Error('DCC_TEST_EXCHANGE_SEED_2 env var is required');
+// Seeds used for deterministic key derivation in exchange order signing.
+// Any valid seed works — these accounts don't need to be funded.
+const seed1 = process.env.DCC_TEST_EXCHANGE_SEED_1 ?? 'exchange test seed one for signing';
+const seed2 = process.env.DCC_TEST_EXCHANGE_SEED_2 ?? 'exchange test seed two for signing';
 
 // scripted asset: "DvXjujyWbi7ARdExyayN42gcfBKGTBRgYYyPWMxy5grK",
 

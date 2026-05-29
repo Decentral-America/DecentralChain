@@ -3,7 +3,7 @@ package com.decentralchain.lang.v1.evaluator.ctx.impl
 import cats.Monad
 import cats.implicits.*
 import com.decentralchain.lang.v1.compiler.Terms.{CONST_BYTESTR, CONST_STRING, CaseObj}
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Types
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.Types
 import com.decentralchain.lang.v1.traits.domain.Recipient
 import com.decentralchain.lang.v1.traits.domain.Recipient.{Address, Alias}
 import com.decentralchain.lang.v1.traits.{DataType, Environment}

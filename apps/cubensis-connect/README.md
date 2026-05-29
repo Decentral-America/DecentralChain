@@ -355,7 +355,7 @@ authValidate(data, { host: data.host, data: '123' }); // true
 
 ```python
 import axolotl_curve25519 as curve
-import pywaves.crypto as crypto
+import pydcc.crypto as crypto
 import base58
 from urllib.parse import urlparse, parse_qs
 
@@ -483,11 +483,11 @@ const txData = {
   type: 4,
   data: {
     amount: {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       tokens: '1.567',
     },
     fee: {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       tokens: '0.001',
     },
     recipient: 'test',
@@ -541,11 +541,11 @@ const txData = {
   type: 4,
   data: {
     amount: {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       tokens: '1.567',
     },
     fee: {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       tokens: '0.001',
     },
     recipient: 'test',
@@ -581,11 +581,11 @@ const tx = [
     type: 4,
     data: {
       amount: {
-        assetId: 'WAVES',
+        assetId: 'DCC',
         tokens: '1.567',
       },
       fee: {
-        assetId: 'WAVES',
+        assetId: 'DCC',
         tokens: '0.001',
       },
       recipient: 'test',
@@ -595,11 +595,11 @@ const tx = [
     type: 4,
     data: {
       amount: {
-        assetId: 'WAVES',
+        assetId: 'DCC',
         tokens: '0.51',
       },
       fee: {
-        assetId: 'WAVES',
+        assetId: 'DCC',
         tokens: '0.001',
       },
       recipient: 'merry',
@@ -612,8 +612,8 @@ CubensisConnect.signTransactionPackage(tx, name);
 
 Sign two transaction:
 
-- Transfer 1.567 WAVES to the alias `test`.
-- Transfer 0.1 WAVES to the alias `merry`.
+- Transfer 1.567 DCC to the alias `test`.
+- Transfer 0.1 DCC to the alias `merry`.
 
 Response: a unit of two lines – transactions that are signed and ready to broadcast.
 
@@ -625,7 +625,7 @@ Same as in `signTransaction`.
 
 Every user of DecentralChain network has a state (balances, assets, data, scripts), and every past transaction changes this data. [More about transactions](https://docs.decentralchain.io/en/master/blockchain/transaction/)
 
-In Cubensis Connect API transaction format is different from [Node REST API](https://docs.decentralchain.io/en/master/waves-node/node-api/). `signTransaction`, `signAndPublishTransaction`, and `signTransactionPackage` accept transactions as follows:
+In Cubensis Connect API transaction format is different from [Node REST API](https://docs.decentralchain.io/en/master/dcc-node/node-api/). `signTransaction`, `signAndPublishTransaction`, and `signTransactionPackage` accept transactions as follows:
 
 ```js
 {
@@ -666,10 +666,10 @@ Legend keys:
 
 MoneyLike could look as:
 
-- `{ tokens: 1, assetId: "WAVES" }`
-- `{ coins: 100000000, assetId: "WAVES" }`;
+- `{ tokens: 1, assetId: "DCC" }`
+- `{ coins: 100000000, assetId: "DCC" }`;
 
-In both messages, the same price of 1 WAVES is indicated. You can easily convert `coins` into `tokens` and back, if you know in what asset the price is indicated, and you have received its precision: `tokens = coins / (10 ** precision)`.
+In both messages, the same price of 1 DCC is indicated. You can easily convert `coins` into `tokens` and back, if you know in what asset the price is indicated, and you have received its precision: `tokens = coins / (10 ** precision)`.
 
 If the field contains other types than MoneyLike, for instance, string/MoneyLike, the sum is indicated as a number in  `coins`.
 
@@ -706,7 +706,7 @@ CubensisConnect.signAndPublishTransaction({
     reissuable: true,
     fee: {
       tokens: '1',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -739,8 +739,8 @@ Example:
 CubensisConnect.signAndPublishTransaction({
   type: 4,
   data: {
-    amount: { tokens: '3.3333333', assetId: 'WAVES' },
-    fee: { tokens: '0.001', assetId: 'WAVES' },
+    amount: { tokens: '3.3333333', assetId: 'DCC' },
+    fee: { tokens: '0.001', assetId: 'DCC' },
     recipient: 'merry',
   },
 })
@@ -776,7 +776,7 @@ CubensisConnect.signAndPublishTransaction({
     reissuable: true,
     fee: {
       tokens: '1',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -812,7 +812,7 @@ CubensisConnect.signAndPublishTransaction({
     assetId: '4DZ1wnZAKr66kpPtYr8hH1kfViF7Z7vrALfUDDttSGzD',
     fee: {
       tokens: '0.001',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -848,7 +848,7 @@ CubensisConnect.signAndPublishTransaction({
     recipient: 'merry',
     fee: {
       tokens: '0.001',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -860,7 +860,7 @@ CubensisConnect.signAndPublishTransaction({
   });
 ```
 
-In case of success, 0.00001000 WAVES is leased.
+In case of success, 0.00001000 DCC is leased.
 
 ##### Lease Cancel transaction (type 9)
 
@@ -882,7 +882,7 @@ CubensisConnect.signAndPublishTransaction({
     leaseId: '6frvwF8uicAfyEfTfyC2sXqBJH7V5C8he5K4YH3BkNiS',
     fee: {
       tokens: '0.001',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -916,7 +916,7 @@ CubensisConnect.signAndPublishTransaction({
     alias: 'test_alias',
     fee: {
       tokens: '0.001',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -950,14 +950,14 @@ Example:
 CubensisConnect.signAndPublishTransaction({
   type: 11,
   data: {
-    totalAmount: { assetId: 'WAVES', coins: 0 },
+    totalAmount: { assetId: 'DCC', coins: 0 },
     transfers: [
       { recipient: 'alias1', amount: '200000' },
       { recipient: 'alias2', amount: '200000' },
     ],
     fee: {
       tokens: '0.002',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -969,7 +969,7 @@ CubensisConnect.signAndPublishTransaction({
   });
 ```
 
-In case of success, 0.00200000 WAVES will be sent to alias1 and alias2.
+In case of success, 0.00200000 DCC will be sent to alias1 and alias2.
 
 ##### Data transaction (type 12)
 
@@ -1008,7 +1008,7 @@ CubensisConnect.signAndPublishTransaction({
     ],
     fee: {
       tokens: '0.01',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1034,7 +1034,7 @@ CubensisConnect.signAndPublishTransaction({
     data: [{ key: 'binary', value: null }],
     fee: {
       tokens: '0.001',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1069,7 +1069,7 @@ CubensisConnect.signAndPublishTransaction({
       'base64:BQkACccAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAIBQAAAAJ0eAAAAA9zZW5kZXJQdWJsaWNLZXmfT++m',
     fee: {
       tokens: '0.01',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1094,7 +1094,7 @@ CubensisConnect.signAndPublishTransaction({
     script: '',
     fee: {
       tokens: '0.04',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1131,7 +1131,7 @@ CubensisConnect.signAndPublishTransaction({
     },
     fee: {
       tokens: '1',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1169,7 +1169,7 @@ CubensisConnect.signAndPublishTransaction({
     script: 'base64:BQbtKNoM',
     fee: {
       tokens: '0.01',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1209,7 +1209,7 @@ CubensisConnect.signAndPublishTransaction({
   data: {
     fee: {
       tokens: '0.05',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
     dApp: '3N27HUMt4ddx2X7foQwZRmpFzg5PSzLrUgU',
     call: {
@@ -1221,7 +1221,7 @@ CubensisConnect.signAndPublishTransaction({
         },
       ],
     },
-    payment: [{ assetId: 'WAVES', tokens: 2 }],
+    payment: [{ assetId: 'DCC', tokens: 2 }],
   },
 })
   .then(tx => {
@@ -1257,7 +1257,7 @@ CubensisConnect.signAndPublishTransaction({
     payment: [],
     fee: {
       tokens: '0.005',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 })
@@ -1291,7 +1291,7 @@ CubensisConnect.signAndPublishTransaction({
     description: 'New description',
     assetId: 'DS5fJKbhKDaFfcRpCd7hTcMqqxsfoF3iY9yEcmsTQV1T',
     fee: {
-      assetId: 'WAVES',
+      assetId: 'DCC',
       tokens: '0.001',
     },
   },
@@ -1342,7 +1342,7 @@ CubensisConnect.signOrder({
     expiration: Date.now() + 100000,
     amount: {
       tokens: '100',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
     price: {
       tokens: '0.01',
@@ -1350,7 +1350,7 @@ CubensisConnect.signOrder({
     },
     matcherFee: {
       tokens: '0.1',
-      assetId: 'WAVES',
+      assetId: 'DCC',
     },
   },
 });
@@ -1423,7 +1423,7 @@ Example:
 
 ```js
 CubensisConnect.signAndPublishCancelOrder({
-  priceAsset: 'WAVES',
+  priceAsset: 'DCC',
   amountAsset: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
   data: {
     id: '31EeVpTAronk95TjCHdyaveDukde4nDr9BfFpvhZ3Sap',

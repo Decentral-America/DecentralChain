@@ -9,7 +9,7 @@ import com.decentralchain.lang.v1.FunctionHeader.{Native, User}
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.evaluator.FunctionIds
 import com.decentralchain.lang.v1.evaluator.ctx.impl.GlobalValNames
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.{ExtractedFuncPostfix, ExtractedFuncPrefix}
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.{ExtractedFuncPostfix, ExtractedFuncPrefix}
 import monix.eval.Coeval
 
 import java.lang.StringBuilder

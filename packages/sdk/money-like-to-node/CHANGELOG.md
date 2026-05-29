@@ -12,7 +12,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced jest with Vitest.
 - Replaced tsc with tsup.
 - Upgraded all dependencies to latest versions.
-- Rebranded source imports from `@waves` to `@decentralchain`.
+- Rebranded source imports from `@dcc` to `@decentralchain`.
 
 ### Added
 

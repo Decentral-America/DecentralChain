@@ -35,8 +35,7 @@ export async function getExtraFee(address: string, node: string) {
 }
 
 export function convertFeeToAsset(fee: Money, asset: Asset) {
-  const minSponsoredFee = (asset: Asset) =>
-    asset.id === 'WAVES' ? 10_0000 : asset.minSponsoredFee;
+  const minSponsoredFee = (asset: Asset) => (asset.id === 'DCC' ? 10_0000 : asset.minSponsoredFee);
 
   const assetFee = minSponsoredFee(asset);
   const baseFee = minSponsoredFee(fee.asset);
@@ -69,7 +68,7 @@ export function getFeeOptions({
   txType: MessageTx['type'];
   usdPrices: Partial<Record<string, string>>;
 }) {
-  const feeInNative = convertFeeToAsset(initialFee, new Asset(assets.WAVES));
+  const feeInNative = convertFeeToAsset(initialFee, new Asset(assets.DCC));
 
   if (txType !== TRANSACTION_TYPE.TRANSFER && txType !== TRANSACTION_TYPE.INVOKE_SCRIPT) {
     return [];
@@ -146,13 +145,13 @@ export function getSpendingAmountsForSponsorableTx({
 }) {
   switch (messageTx.type) {
     case TRANSACTION_TYPE.TRANSFER: {
-      const asset = assets[messageTx.assetId ?? 'WAVES'];
+      const asset = assets[messageTx.assetId ?? 'DCC'];
       invariant(asset);
       return [new Money(messageTx.amount, new Asset(asset))];
     }
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
       return messageTx.payment.map(({ amount, assetId }) => {
-        const asset = assets[assetId ?? 'WAVES'];
+        const asset = assets[assetId ?? 'DCC'];
         invariant(asset);
         return new Money(amount, new Asset(asset));
       });

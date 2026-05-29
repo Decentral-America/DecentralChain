@@ -15,7 +15,7 @@ import com.decentralchain.lang.v1.compiler.*
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.parser.BinaryOperation.NE_OP
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
@@ -851,7 +851,7 @@ class DecompilerTest extends PropSpec {
     val ctx =
       Monoid.combine(
         PureContext.build(V4, useNewPowPrecision = true).withEnvironment[Environment],
-        WavesContext.build(Global, DirectiveSet(V4, Account, DAppType).explicitGet(), fixBigScriptField = true)
+        DccContext.build(Global, DirectiveSet(V4, Account, DAppType).explicitGet(), fixBigScriptField = true)
       )
 
     val dApp = compiler.ContractCompiler(ctx.compilerContext, parsedExpr, V4).explicitGet()
@@ -863,7 +863,7 @@ class DecompilerTest extends PropSpec {
     Seq(
       PureContext.build(stdLibVersion, useNewPowPrecision = true).withEnvironment[Environment],
       CryptoContext.build(Global, stdLibVersion, fixEcrecover = true).withEnvironment[Environment],
-      WavesContext.build(Global, DirectiveSet(stdLibVersion, Account, DAppType).explicitGet(), fixBigScriptField = true)
+      DccContext.build(Global, DirectiveSet(stdLibVersion, Account, DAppType).explicitGet(), fixBigScriptField = true)
     )
   )
 
@@ -1050,7 +1050,7 @@ class DecompilerTest extends PropSpec {
         Seq(
           PureContext.build(V5, useNewPowPrecision = true).withEnvironment[Environment],
           CryptoContext.build(Global, V5, fixEcrecover = true).withEnvironment[Environment],
-          WavesContext.build(Global, DirectiveSet(V5, Account, DAppType).explicitGet(), fixBigScriptField = true)
+          DccContext.build(Global, DirectiveSet(V5, Account, DAppType).explicitGet(), fixBigScriptField = true)
         )
       )
 

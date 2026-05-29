@@ -18,7 +18,7 @@ import injectEventBus from './middleware/injectEventBus';
 import { createRateLimiter } from './middleware/rateLimiter';
 import createServices from './services';
 
-export const WavesId: string = 'DCC';
+export const DccId: string = 'DCC';
 
 const options = loadConfig();
 const eventBus = createEventBus();
@@ -76,6 +76,10 @@ Effect.runPromise(
       app.use(accessLogMiddleware);
 
       // Mount all routes after middleware is registered.
+      // Data routes are served at /v0/* (matches public API URLs and consumer
+      // expectations from exchange, scanner, and docs). Health/readiness/root
+      // are also mounted at / for infrastructure probes (Docker, Caddy).
+      app.route('/v0', router(services, pgDriver));
       app.route('/', router(services, pgDriver));
 
       return app;

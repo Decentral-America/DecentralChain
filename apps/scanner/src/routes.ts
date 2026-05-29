@@ -12,6 +12,7 @@ export default [
   layout('Layout.tsx', [
     // ── Primary nav (7 items) ────────────────────────────────────────────
     index('pages/Dashboard.tsx'),
+    route('dashboard', 'pages/Dashboard.tsx', { id: 'dashboard-alias' }),
     route('blocks', 'pages/Blocks.tsx'),
     route('blockdetail', 'pages/BlockDetail.tsx'),
     route('transaction', 'pages/Transaction.tsx'),

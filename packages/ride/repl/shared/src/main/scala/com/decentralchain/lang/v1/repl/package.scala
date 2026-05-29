@@ -4,7 +4,7 @@ import cats.implicits.*
 import com.decentralchain.common.utils.EitherExt2.*
 import com.decentralchain.lang.directives.DirectiveSet
 import com.decentralchain.lang.directives.values.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, PureContext}
 import com.decentralchain.lang.v1.repl.node.ErrorMessageEnvironment
 import com.decentralchain.lang.v1.repl.node.http.{NodeClient, NodeClientImpl, NodeConnectionSettings, WebEnvironment}
@@ -23,7 +23,7 @@ package object repl {
   val initialCtx: CTX[Environment] =
     CryptoContext.build(global, version, fixEcrecover = true).withEnvironment[Environment] |+|
       PureContext.build(version, useNewPowPrecision = true).withEnvironment[Environment] |+|
-      WavesContext.build(global, directives, fixBigScriptField = true)
+      DccContext.build(global, directives, fixBigScriptField = true)
 
   def buildEnvironment(
       settings: Option[NodeConnectionSettings],

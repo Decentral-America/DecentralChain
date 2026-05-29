@@ -4,13 +4,13 @@
 
 ---
 
-## ~~KNOWN-1: Java source packages retain `com.wavesplatform.wavesj.*` naming~~ — RESOLVED
+## ~~KNOWN-1: Java source packages retain `com.wavesplatform.dccj.*` naming~~ — RESOLVED
 
 **Status: RESOLVED** (Round 11 — 2026-05-17)
 
-All 77 Java source files have been moved from `com.wavesplatform.wavesj.*` to `io.decentralchain.sdk.*`.
+All 77 Java source files have been moved from `com.wavesplatform.dccj.*` to `io.decentralchain.sdk.*`.
 The old `src/main/java/com/` directory tree has been deleted. Version bumped to `2.0.0-SNAPSHOT` (major — breaking API change).
-Consumers must update their imports from `com.wavesplatform.wavesj` → `io.decentralchain.sdk`.
+Consumers must update their imports from `com.wavesplatform.dccj` → `io.decentralchain.sdk`.
 
 Remaining `com.wavesplatform.*` references are **upstream library imports only** (see KNOWN-2) — not DCC-owned code.
 
@@ -21,19 +21,19 @@ Remaining `com.wavesplatform.*` references are **upstream library imports only**
 **Risk:** MEDIUM (supply chain — depends on upstream Waves Maven Central artifacts)
 
 **Description:** Two runtime dependencies are published by the Waves team:
-- `com.wavesplatform:waves-transactions:1.2.7`
+- `com.wavesplatform:dcc-transactions:1.2.7`
 - `com.wavesplatform:lang:1.6.1`
 
-~~`com.wavesplatform:waves-crypto`~~ — **RESOLVED (2026-05-19, DCC-264)**: Forked as
+~~`com.wavesplatform:dcc-crypto`~~ — **RESOLVED (2026-05-19, DCC-264)**: Forked as
 `io.decentralchain:crypto:2.0.7`. `java-sdk` now declares it as a direct dependency and all
 `com.wavesplatform.crypto.*` imports in source have been updated to `io.decentralchain.crypto.*`.
 
-**Why not fixed now:** `waves-transactions` requires updating to `io.decentralchain:transactions`
+**Why not fixed now:** `dcc-transactions` requires updating to `io.decentralchain:transactions`
 (DCC-240 follow-up). `lang` is the Ride compiler — a large, complex Scala project.
 
 **Resolution path:**
-- ~~Fork `waves-transactions-java` as `io.decentralchain:transactions`~~ ✅ Done (DCC-240) — java-sdk
-  still references the OLD upstream `com.wavesplatform:waves-transactions`; update pom.xml to use
+- ~~Fork `dcc-transactions-java` as `io.decentralchain:transactions`~~ ✅ Done (DCC-240) — java-sdk
+  still references the OLD upstream `com.wavesplatform:dcc-transactions`; update pom.xml to use
   `io.decentralchain:transactions:1.0.0`
 - Long-term: replace `com.wavesplatform:lang:1.6.1` with `io.decentralchain:lang` (DCC-252 ✅ done,
   pending java-sdk wiring)
@@ -92,32 +92,32 @@ Remaining `com.wavesplatform.*` references are **upstream library imports only**
 **Risk:** INFO
 
 **Description:** `mvn dependency:analyze` reports three dependencies as "Non-test scoped test only":
-- `org.web3j:crypto` — transitive from `waves-transactions`; used internally by `DccEthConverter.java` through the upstream library's own API
-- `com.wavesplatform:protobuf-schemas` — transitive from `waves-transactions`
-- `com.google.protobuf:protobuf-java` — transitive from `waves-transactions`; pinned in `<dependencyManagement>` for version alignment only
+- `org.web3j:crypto` — transitive from `dcc-transactions`; used internally by `DccEthConverter.java` through the upstream library's own API
+- `com.wavesplatform:protobuf-schemas` — transitive from `dcc-transactions`
+- `com.google.protobuf:protobuf-java` — transitive from `dcc-transactions`; pinned in `<dependencyManagement>` for version alignment only
 
-These are resolved at compile scope because `waves-transactions` (a runtime compile dep) declares them as compile dependencies. Our production source does not call their APIs directly — but they must remain on the compile classpath at runtime for `waves-transactions` to function.
+These are resolved at compile scope because `dcc-transactions` (a runtime compile dep) declares them as compile dependencies. Our production source does not call their APIs directly — but they must remain on the compile classpath at runtime for `dcc-transactions` to function.
 
-**Why not fixed now:** Moving them to `test` scope would break `waves-transactions` at runtime (it needs them on the classpath). Fixing this properly requires forking `waves-transactions` (see KNOWN-2).
+**Why not fixed now:** Moving them to `test` scope would break `dcc-transactions` at runtime (it needs them on the classpath). Fixing this properly requires forking `dcc-transactions` (see KNOWN-2).
 
-**Resolution path:** Resolved automatically when KNOWN-2 is addressed (fork of `waves-transactions` → full control over the dependency tree).
+**Resolution path:** Resolved automatically when KNOWN-2 is addressed (fork of `dcc-transactions` → full control over the dependency tree).
 
 ---
 
-## ~~KNOWN-7: `WavesConfig.chainId()` not set from connected node in Docker tests~~ — RESOLVED
+## ~~KNOWN-7: `DccConfig.chainId()` not set from connected node in Docker tests~~ — RESOLVED
 
 **Status: RESOLVED** (Round 11 — 2026-05-17)
 
 `BaseTestWithNodeInDocker` created a `Node` object (which discovers the chain-id from the live node)
-but never propagated it into `WavesConfig.chainId()`. All `PrivateKey.fromSeed()` and address
+but never propagated it into `DccConfig.chainId()`. All `PrivateKey.fromSeed()` and address
 construction used the static default (`87` = Waves mainnet 'W'), while the DCC private node
 uses chain-id `82`. Every broadcasted transaction was rejected with "Wrong chain-id. Expected - 82,
 provided - 87".
 
-Fixed by adding `WavesConfig.chainId(node.chainId())` in `BaseTestWithNodeInDocker` static
+Fixed by adding `DccConfig.chainId(node.chainId())` in `BaseTestWithNodeInDocker` static
 initializer immediately after `node = new Node(NODE_API_URL)`, before `faucet` is constructed.
 All 71 Docker integration tests now pass.
 
-**Note:** `WavesConfig.chainId()` is a global static — safe for single-threaded test execution
+**Note:** `DccConfig.chainId()` is a global static — safe for single-threaded test execution
 but would cause problems under parallel test classes each connecting to nodes on different chain-ids.
-This is a known limitation of the upstream `com.wavesplatform:waves-transactions` design.
+This is a known limitation of the upstream `com.wavesplatform:dcc-transactions` design.

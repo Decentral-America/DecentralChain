@@ -175,7 +175,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         allUsers = toUsers(multiAccount.toList(stored));
         if (!allUsers?.length) return null;
-      } catch {
+      } catch (error) {
+        logger.error('[Auth] Failed to parse stored accounts:', error);
         return null;
       }
 
@@ -201,8 +202,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
           clearSession();
         }
-      } catch {
-        logger.error('[Auth] Session restore failed');
+      } catch (error) {
+        logger.error('[Auth] Session restore failed:', error);
         clearSession();
       } finally {
         setSessionRestored(true);

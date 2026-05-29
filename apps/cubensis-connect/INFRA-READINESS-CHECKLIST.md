@@ -63,7 +63,7 @@
 
 ## 3) ~~Suspicious Asset Source Ownership~~ — ✅ CLOSED (moot)
 
-**Resolved (`05d55efd2`):** The suspicious-token CSV fetch was never functional (Decentral-America/waves-community 404s since fork). Feature removed entirely — all 3 layers deleted: fetch/store logic, `isSuspicious` flag, and Settings UI toggle. Static token name data inlined from the prior dcc-token-filters repo. No infra dependency remains.
+**Resolved (`05d55efd2`):** The suspicious-token CSV fetch was never functional (Decentral-America/dcc-community 404s since fork). Feature removed entirely — all 3 layers deleted: fetch/store logic, `isSuspicious` flag, and Settings UI toggle. Static token name data inlined from the prior dcc-token-filters repo. No infra dependency remains.
 
 ---
 

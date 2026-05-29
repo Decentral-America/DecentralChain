@@ -34,7 +34,7 @@ describe('DCC', () => {
       expect(transport.decorateAppAPIMethods).toHaveBeenCalledWith(
         dcc,
         ['getWalletPublicKey', '_signData', 'getVersion'],
-        'WAVES', // Ledger firmware app identifier
+        'DCC', // Ledger firmware app identifier
       );
     });
 

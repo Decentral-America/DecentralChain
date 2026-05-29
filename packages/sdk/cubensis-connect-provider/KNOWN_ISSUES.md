@@ -30,4 +30,4 @@ either:
 ### Tracking
 
 This issue will be resolved when `@decentralchain/marshall` is updated to remove
-the `@waves` transitive dependency.
+the `@dcc` transitive dependency.

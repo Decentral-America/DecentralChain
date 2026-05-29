@@ -33,7 +33,7 @@ trait Environment[F[_]] {
   def hasData(addressOrAlias: Recipient): F[Boolean]
   def resolveAlias(name: String): F[Either[String, Recipient.Address]]
   def accountBalanceOf(addressOrAlias: Recipient, assetId: Option[Array[Byte]]): F[Either[String, Long]]
-  def accountWavesBalanceOf(addressOrAlias: Recipient): F[Either[String, Environment.BalanceDetails]]
+  def accountDccBalanceOf(addressOrAlias: Recipient): F[Either[String, Environment.BalanceDetails]]
   def multiPaymentAllowed: Boolean
   def txId: ByteStr
   def transferTransactionFromProto(b: Array[Byte]): F[Option[Tx.Transfer]]

@@ -98,7 +98,7 @@ function pickDefaultTxVersion<T extends number>(versions: T[], txType: number | 
 }
 
 function moneyLikeToMoney(amount: MoneyLike, assets: AssetsRecord) {
-  const asset = new Asset(assets[amount.assetId ?? 'WAVES'] ?? assets.WAVES);
+  const asset = new Asset(assets[amount.assetId ?? 'DCC'] ?? assets.DCC);
 
   if (amount.tokens != null || amount.coins != null) {
     let result = new Money(0, asset);
@@ -632,7 +632,7 @@ export class MessageController extends TypedEventEmitter {
 
     const fee = feeOption.money.toCoins();
 
-    const feeAssetId = feeOption.money.asset.id === 'WAVES' ? null : feeOption.money.asset.id;
+    const feeAssetId = feeOption.money.asset.id === 'DCC' ? null : feeOption.money.asset.id;
 
     const { initialFee = fee, initialFeeAssetId = feeAssetId } = txParams;
 
@@ -767,7 +767,7 @@ export class MessageController extends TypedEventEmitter {
         const txParams = {
           amount: moneyLikeToMoney(messageInputTx.data.amount, assets).toCoins(),
           assetId:
-            messageInputTx.data.amount.assetId === 'WAVES'
+            messageInputTx.data.amount.assetId === 'DCC'
               ? null
               : messageInputTx.data.amount.assetId,
           attachment: Array.isArray(messageInputTx.data.attachment)
@@ -779,7 +779,7 @@ export class MessageController extends TypedEventEmitter {
           fee:
             messageInputTx.data.fee && moneyLikeToMoney(messageInputTx.data.fee, assets).toCoins(),
           feeAssetId:
-            messageInputTx.data.fee?.assetId === 'WAVES'
+            messageInputTx.data.fee?.assetId === 'DCC'
               ? null
               : (messageInputTx.data.fee?.assetId ?? null),
           initialFee:
@@ -787,7 +787,7 @@ export class MessageController extends TypedEventEmitter {
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
           initialFeeAssetId:
             messageInputTx.data.initialFee &&
-            (messageInputTx.data.initialFee.assetId === 'WAVES'
+            (messageInputTx.data.initialFee.assetId === 'DCC'
               ? null
               : (messageInputTx.data.initialFee.assetId ?? null)),
           proofs,
@@ -1005,7 +1005,7 @@ export class MessageController extends TypedEventEmitter {
         const amount = moneyLikeToMoney(
           typeof messageInputTx.data.amount === 'object'
             ? messageInputTx.data.amount
-            : { assetId: 'WAVES', coins: messageInputTx.data.amount },
+            : { assetId: 'DCC', coins: messageInputTx.data.amount },
           assets,
         ).toCoins();
 
@@ -1183,7 +1183,7 @@ export class MessageController extends TypedEventEmitter {
 
         const txParams = {
           assetId:
-            messageInputTx.data.totalAmount.assetId === 'WAVES'
+            messageInputTx.data.totalAmount.assetId === 'DCC'
               ? null
               : messageInputTx.data.totalAmount.assetId,
           attachment: Array.isArray(messageInputTx.data.attachment)
@@ -1525,7 +1525,7 @@ export class MessageController extends TypedEventEmitter {
           chainId,
           dApp: processAliasOrAddress(messageInputTx.data.dApp, chainId),
           feeAssetId:
-            messageInputTx.data.fee?.assetId === 'WAVES'
+            messageInputTx.data.fee?.assetId === 'DCC'
               ? null
               : (messageInputTx.data.fee?.assetId ?? null),
           initialFee:
@@ -1533,12 +1533,12 @@ export class MessageController extends TypedEventEmitter {
             moneyLikeToMoney(messageInputTx.data.initialFee, assets).toCoins(),
           initialFeeAssetId:
             messageInputTx.data.initialFee &&
-            (messageInputTx.data.initialFee.assetId === 'WAVES'
+            (messageInputTx.data.initialFee.assetId === 'DCC'
               ? null
               : messageInputTx.data.initialFee.assetId),
           payment: payment.map((p) => ({
             amount: moneyLikeToMoney(p, assets).toCoins(),
-            assetId: p.assetId === 'WAVES' ? null : p.assetId,
+            assetId: p.assetId === 'DCC' ? null : p.assetId,
           })),
           proofs,
           senderPublicKey,
@@ -1745,17 +1745,17 @@ export class MessageController extends TypedEventEmitter {
         }
 
         const amountAssetId =
-          messageInput.data.data.amount.assetId === 'WAVES'
+          messageInput.data.data.amount.assetId === 'DCC'
             ? null
             : messageInput.data.data.amount.assetId;
 
         const matcherFeeAssetId =
-          messageInput.data.data.matcherFee.assetId === 'WAVES'
+          messageInput.data.data.matcherFee.assetId === 'DCC'
             ? null
             : messageInput.data.data.matcherFee.assetId;
 
         const priceAssetId =
-          messageInput.data.data.price.assetId === 'WAVES'
+          messageInput.data.data.price.assetId === 'DCC'
             ? null
             : messageInput.data.data.price.assetId;
 
@@ -1767,10 +1767,10 @@ export class MessageController extends TypedEventEmitter {
 
         const assets = this.assetInfoController.getAssets();
 
-        const amountAsset = assets[amountAssetId ?? 'WAVES'];
+        const amountAsset = assets[amountAssetId ?? 'DCC'];
         invariant(amountAsset);
 
-        const priceAsset = assets[priceAssetId ?? 'WAVES'];
+        const priceAsset = assets[priceAssetId ?? 'DCC'];
         invariant(priceAsset);
 
         const version = messageInput.data.data.version ?? 3;
