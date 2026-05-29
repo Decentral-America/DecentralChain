@@ -29,7 +29,7 @@ export function MassTransferCard({
   tx: MessageTxMassTransfer;
 }) {
   const { t } = useTranslation();
-  const asset = usePopupSelector((state) => state.assets[tx.assetId ?? 'WAVES']);
+  const asset = usePopupSelector((state) => state.assets[tx.assetId ?? 'DCC']);
   invariant(asset);
 
   return (

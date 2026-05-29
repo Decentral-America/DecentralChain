@@ -34,7 +34,7 @@ export function TxInfo({ message }: Props) {
   const usdPrices = usePopupSelector((state) => state.usdPrices);
 
   const initailFeeAsset =
-    assets[('initialFeeAssetId' in message.data && message.data.initialFeeAssetId) || 'WAVES'];
+    assets[('initialFeeAssetId' in message.data && message.data.initialFeeAssetId) || 'DCC'];
   invariant(initailFeeAsset);
 
   let feeOptions: FeeOption[] = [];
@@ -59,7 +59,7 @@ export function TxInfo({ message }: Props) {
         )
       : [];
 
-  const feeAsset = assets[('feeAssetId' in message.data && message.data.feeAssetId) || 'WAVES'];
+  const feeAsset = assets[('feeAssetId' in message.data && message.data.feeAssetId) || 'DCC'];
   invariant(feeAsset);
 
   const fee = new Money(message.data.fee, new Asset(feeAsset));
