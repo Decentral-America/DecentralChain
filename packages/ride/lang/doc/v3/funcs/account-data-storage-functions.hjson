@@ -64,9 +64,9 @@
       complexity: 100
     }
     {
-      name: "wavesBalance"
+      name: "dccBalance"
       params: [ "Address|Alias" ]
-      doc: "Gets account balance in [WAVES](/blockchain/token/waves.md)."
+      doc: "Gets account balance in [DCC](/blockchain/token/dcc.md)."
       paramsDoc: [ "[Address](/blockchain/address.md) or [alias](/blockchain/alias.md) of the account." ]
       complexity: 109
     }

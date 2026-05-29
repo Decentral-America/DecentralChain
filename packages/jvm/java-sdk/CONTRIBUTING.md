@@ -61,7 +61,7 @@ This library tracks [Decentral-America/java-sdk](https://github.com/Decentral-Am
 git fetch upstream
 git log upstream/master --oneline | head -10   # review changes
 # cherry-pick or merge relevant commits
-git merge upstream/master --no-ff -m "chore: merge upstream WavesJ <commit>"
+git merge upstream/master --no-ff -m "chore: merge upstream DccJ <commit>"
 ```
 
 ## Secrets for Publishing

@@ -17,15 +17,15 @@ export {
   SubscribeEventSchema,
   type SubscribeRequest,
   SubscribeRequestSchema,
-} from './gen/waves/events/grpc/blockchain_updates_pb.js';
+} from './gen/dcc/events/grpc/blockchain_updates_pb.js';
 // === AccountsApi ===
 export {
   type AccountRequest,
   AccountRequestSchema,
   AccountsApi,
   type BalanceResponse,
-  type BalanceResponse_WavesBalances,
-  BalanceResponse_WavesBalancesSchema,
+  type BalanceResponse_DccBalances,
+  BalanceResponse_DccBalancesSchema,
   BalanceResponseSchema,
   type BalancesRequest,
   BalancesRequestSchema,
@@ -39,7 +39,7 @@ export {
   ScriptDataSchema,
   type ScriptResponse,
   ScriptResponseSchema,
-} from './gen/waves/node/grpc/accounts_api_pb.js';
+} from './gen/dcc/node/grpc/accounts_api_pb.js';
 // === AssetsApi ===
 export {
   type AssetInfoResponse,
@@ -51,7 +51,7 @@ export {
   NFTRequestSchema,
   type NFTResponse,
   NFTResponseSchema,
-} from './gen/waves/node/grpc/assets_api_pb.js';
+} from './gen/dcc/node/grpc/assets_api_pb.js';
 // === BlockchainApi ===
 export {
   type ActivationStatusRequest,
@@ -69,7 +69,7 @@ export {
   FeatureActivationStatusSchema,
   type ScoreResponse,
   ScoreResponseSchema,
-} from './gen/waves/node/grpc/blockchain_api_pb.js';
+} from './gen/dcc/node/grpc/blockchain_api_pb.js';
 // === BlocksApi ===
 export {
   type BlockRangeRequest,
@@ -79,7 +79,7 @@ export {
   BlocksApi,
   type BlockWithHeight,
   BlockWithHeightSchema,
-} from './gen/waves/node/grpc/blocks_api_pb.js';
+} from './gen/dcc/node/grpc/blocks_api_pb.js';
 // === TransactionsApi ===
 // Note: TransactionStatus here is the gRPC message type.
 // The enum TransactionStatus is in @decentralchain/protobuf-serialization main export.
@@ -107,4 +107,4 @@ export {
   TransactionsByIdRequestSchema,
   type TransactionsRequest,
   TransactionsRequestSchema,
-} from './gen/waves/node/grpc/transactions_api_pb.js';
+} from './gen/dcc/node/grpc/transactions_api_pb.js';

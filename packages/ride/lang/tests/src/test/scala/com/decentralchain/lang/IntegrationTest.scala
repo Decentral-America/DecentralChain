@@ -19,7 +19,7 @@ import com.decentralchain.lang.v1.evaluator.ContractEvaluator.LogExtraInfo
 import com.decentralchain.lang.v1.evaluator.ctx.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.MaxListLengthV4
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.evaluator.{Contextful, ContextfulVal, EvaluatorV2}
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
@@ -112,7 +112,7 @@ class IntegrationTest extends PropSpec with Inside {
   }
 
   private val v5Ctx =
-    WavesContext.build(Global, DirectiveSet(V5, Account, DApp).explicitGet(), fixBigScriptField = true)
+    DccContext.build(Global, DirectiveSet(V5, Account, DApp).explicitGet(), fixBigScriptField = true)
 
   property("simple let") {
     val src =
@@ -1111,7 +1111,7 @@ class IntegrationTest extends PropSpec with Inside {
          |
        """.stripMargin
 
-    val ctx = WavesContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
+    val ctx = DccContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
 
     genericEval[Environment, EVALUATED](
       writeSetScript,
@@ -1417,7 +1417,7 @@ class IntegrationTest extends PropSpec with Inside {
          | calculateAssetId(issue)
       """.stripMargin
 
-    val ctx = WavesContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
+    val ctx = DccContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
 
     genericEval[Environment, EVALUATED](script, ctxt = ctx, version = V4, env = utils.environment) shouldBe
       CONST_BYTESTR(issue.id)
@@ -1430,7 +1430,7 @@ class IntegrationTest extends PropSpec with Inside {
         | Issue("name", "description", 1234567, 100, true, unit, 0)
      """.stripMargin
 
-    val ctx = WavesContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
+    val ctx = DccContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
 
     genericEval[Environment, EVALUATED](script, ctxt = ctx, version = V4, env = utils.environment) shouldBe
       Right(CONST_BOOLEAN(true))
@@ -2077,7 +2077,7 @@ class IntegrationTest extends PropSpec with Inside {
         | entries[0] == deleteEntry
       """.stripMargin
 
-    val ctx = WavesContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
+    val ctx = DccContext.build(Global, DirectiveSet(V4, Account, DApp).explicitGet(), fixBigScriptField = true)
     genericEval(script, ctxt = ctx, version = V4, env = utils.environment) shouldBe Right(CONST_BOOLEAN(true))
   }
 

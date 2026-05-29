@@ -21,7 +21,7 @@ const COLUMNS = [
   'low',
   'weighted_average_price',
   'txs_count',
-  'volume_waves',
+  'volume_dcc',
   'amount_asset_id',
   'price_asset_id',
 ];
@@ -113,7 +113,7 @@ export const search = (req: PairsSearchRequest): string => {
   const { matcher, limit } = req;
   const q = pg({ t: 'pairs' })
     .select(COLUMNS.map((column) => `t.${column}`))
-    .orderByRaw('volume_waves desc NULLS LAST')
+    .orderByRaw('volume_dcc desc NULLS LAST')
     .where('matcher_address', matcher)
     .limit(limit);
   if (isSearchByAssetRequest(req)) {

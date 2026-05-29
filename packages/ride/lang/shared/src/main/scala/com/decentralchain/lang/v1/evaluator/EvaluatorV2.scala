@@ -14,7 +14,7 @@ import com.decentralchain.lang.v1.evaluator.ContractEvaluator.LogExtraInfo
 import com.decentralchain.lang.v1.evaluator.EvaluatorV2.LogKeys.*
 import com.decentralchain.lang.v1.evaluator.EvaluatorV2.logFunc
 import com.decentralchain.lang.v1.evaluator.ctx.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Bindings
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.Bindings
 import com.decentralchain.lang.v1.traits.Environment
 import monix.eval.Coeval
 

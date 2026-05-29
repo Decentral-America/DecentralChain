@@ -235,7 +235,7 @@ interface PairInfoResponse {
     firstPrice: number;
     lastPrice: number;
     volume: number;
-    volumeWaves?: number;
+    volumeDcc?: number;
     quoteVolume?: number;
     txsCount: number;
     weightedAveragePrice?: number;

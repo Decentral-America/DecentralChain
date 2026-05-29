@@ -21,6 +21,6 @@ export interface AssetDetail {
 }
 
 export interface AssetsRecord {
-  WAVES: AssetDetail;
+  DCC: AssetDetail;
   [key: string]: AssetDetail | undefined;
 }

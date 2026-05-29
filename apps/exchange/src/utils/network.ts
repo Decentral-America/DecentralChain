@@ -9,14 +9,14 @@ import { useConfig } from '@/contexts/ConfigContext';
  * Convert network code character to ASCII byte value
  * Used for seed generation and address validation
  *
- * @param code - Network code character ('?' for DCC mainnet, '!' for testnet, 'W' for legacy Waves compatibility)
+ * @param code - Network code character ('?' for DCC mainnet, '!' for testnet, 'W' for legacy Dcc compatibility)
  * @returns ASCII byte value (63 for '?', 33 for '!', 87 for 'W' legacy)
  *
  * @example
  * ```typescript
  * getNetworkByte('?') // Returns 63 (DCC mainnet)
  * getNetworkByte('!') // Returns 33 (DCC testnet)
- * getNetworkByte('W') // Returns 87 (legacy Waves compatibility)
+ * getNetworkByte('W') // Returns 87 (legacy Dcc compatibility)
  * ```
  */
 export const getNetworkByte = (code: string): number => {
@@ -34,7 +34,7 @@ export const getNetworkByte = (code: string): number => {
  * ```typescript
  * getNetworkChar(63) // Returns '?' (DCC mainnet)
  * getNetworkChar(33) // Returns '!' (DCC testnet)
- * getNetworkChar(87) // Returns 'W' (legacy Waves compatibility)
+ * getNetworkChar(87) // Returns 'W' (legacy Dcc compatibility)
  * ```
  */
 export const getNetworkChar = (byte: number): string => {

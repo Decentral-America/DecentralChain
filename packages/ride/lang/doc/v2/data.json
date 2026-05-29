@@ -222,13 +222,13 @@
       "name": "assetBalance",
       "params": ["Address|Alias", "ByteVector|Unit"],
       "doc": "get asset balance for account",
-      "paramsDoc": ["account", "assetId (WAVES if none)"],
+      "paramsDoc": ["account", "assetId (DCC if none)"],
       "complexity": 100
     },
     {
-      "name": "wavesBalance",
+      "name": "dccBalance",
       "params": ["Address|Alias"],
-      "doc": "get WAVES balance for account",
+      "doc": "get DCC balance for account",
       "paramsDoc": ["account"],
       "complexity": 109
     },

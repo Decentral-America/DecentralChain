@@ -48,7 +48,7 @@ describe('Account management', () => {
     });
 
     it.todo('Updating account balances on import');
-    it.todo('The balance reflects the leased WAVES');
+    it.todo('The balance reflects the leased DCC');
     it.todo('Copying the address of the active account on the accounts screen');
     describe('Show QR', () => {
       afterAll(async () => {

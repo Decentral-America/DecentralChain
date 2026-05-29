@@ -17,7 +17,7 @@ vi.mock('@/lib/api', () => ({
     .fn()
     .mockResolvedValue([{ hostname: '/5.5.5.5:6868', reason: 'flooding' }]),
   fetchConnectedPeers: vi.fn().mockResolvedValue({
-    peers: [{ address: '/1.2.3.4:6868', applicationName: 'waves' }],
+    peers: [{ address: '/1.2.3.4:6868', applicationName: 'dcc' }],
   }),
   fetchSuspendedPeers: vi
     .fn()

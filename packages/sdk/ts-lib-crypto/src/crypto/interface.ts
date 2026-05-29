@@ -26,7 +26,7 @@ export type AESMode = 'CBC' | 'CFB' | 'CTR' | 'OFB' | 'ECB' | 'GCM';
  *
  * `'NONE'` performs raw PKCS#1 v1.5 without hashing or DigestInfo wrapping —
  * the caller-supplied bytes are signed/verified as-is. This matches the
- * Waves/DecentralChain VM semantics for `rsaVerify(NOALG, …)`.
+ * Dcc/DecentralChain VM semantics for `rsaVerify(NOALG, …)`.
  */
 export type RSADigestAlgorithm =
   | 'NONE'

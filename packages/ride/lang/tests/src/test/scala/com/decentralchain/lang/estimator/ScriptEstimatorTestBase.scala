@@ -11,7 +11,7 @@ import com.decentralchain.lang.v1.estimator.ScriptEstimator
 import com.decentralchain.lang.v1.evaluator.Contextful.NoContext
 import com.decentralchain.lang.v1.evaluator.ContextfulVal
 import com.decentralchain.lang.v1.evaluator.FunctionIds.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.{Types, WavesContext}
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.{DccContext, Types}
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{CryptoContext, PureContext}
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
@@ -41,7 +41,7 @@ class ScriptEstimatorTestBase(estimators: ScriptEstimator*) extends PropSpec {
         Seq(
           PureContext.build(version, useNewPowPrecision = true).withEnvironment[Environment],
           CryptoContext.build(Global, version, fixEcrecover = true).withEnvironment[Environment],
-          WavesContext.build(Global, DirectiveSet(version, Account, DApp).explicitGet(), fixBigScriptField = true),
+          DccContext.build(Global, DirectiveSet(version, Account, DApp).explicitGet(), fixBigScriptField = true),
           CTX[NoContext](
             Seq(transactionType),
             Map(("tx", (transactionType, ContextfulVal.pure[NoContext](tx)))),

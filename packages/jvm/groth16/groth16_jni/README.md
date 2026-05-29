@@ -2,7 +2,7 @@
 
 ## Build
 
-To build `zwaves.jar` we need to cross compile the library for Linux, Windows and MacOS. 
+To build `zdcc.jar` we need to cross compile the library for Linux, Windows and MacOS. 
 This HOWTO is working for `rust 1.38+ stable` and Ubuntu 64bit.
 
 
@@ -41,4 +41,4 @@ rustup target add x86_64-unknown-linux-gnu
 ./build_all.sh 
 ```
 
-Get `zwaves.jar` from `javalib/build/libs/zwaves.jar`.
+Get `zdcc.jar` from `javalib/build/libs/zdcc.jar`.

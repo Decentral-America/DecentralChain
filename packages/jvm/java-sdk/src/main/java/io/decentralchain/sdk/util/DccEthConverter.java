@@ -25,27 +25,27 @@ public class DccEthConverter {
     return result;
   }
 
-  public static String wavesToEthAddress(String address) {
-    byte[] wavesAddress = Base58.decode(address);
-    byte[] ethAddress = copyOfRange(wavesAddress, 2, 22);
+  public static String dccToEthAddress(String address) {
+    byte[] dccAddress = Base58.decode(address);
+    byte[] ethAddress = copyOfRange(dccAddress, 2, 22);
     return Numeric.toHexString(ethAddress);
   }
 
-  public static String ethToWavesAddress(String address, byte chainId) {
+  public static String ethToDccAddress(String address, byte chainId) {
     byte[] pkHash = copyOfRange(decode(address.substring(2)), 0, 20);
     byte[] prefixBytes = new byte[] {0x01, chainId};
     byte[] checkSumBytes = concat(prefixBytes, pkHash);
     byte[] checkSum = keccak(blake(checkSumBytes));
-    byte[] wavesBytes = concat(concat(prefixBytes, pkHash), copyOfRange(checkSum, 0, 4));
-    return encode(wavesBytes);
+    byte[] dccBytes = concat(concat(prefixBytes, pkHash), copyOfRange(checkSum, 0, 4));
+    return encode(dccBytes);
   }
 
-  public static String wavesToEthAsset(String asset) {
+  public static String dccToEthAsset(String asset) {
     byte[] decode = copyOfRange(Base58.decode(asset), 0, 20);
     return "0x" + Hex.toHexString(decode);
   }
 
-  public static String ethToWavesAsset(Node node, String asset) throws NodeException, IOException {
-    return node.ethToWavesAsset(asset);
+  public static String ethToDccAsset(Node node, String asset) throws NodeException, IOException {
+    return node.ethToDccAsset(asset);
   }
 }

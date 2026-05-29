@@ -8,7 +8,7 @@
         Custom PMD ruleset for transactions.
         Inherits security, error-prone, and best-practices categories.
         Excludes rules that conflict with intentional design patterns from the
-        upstream Waves Platform transactions library.
+        upstream Dcc Platform transactions library.
     </description>
 
     <!-- ALL security rules: no exclusions -->
@@ -17,7 +17,7 @@
     <!-- Error-prone rules: excluding upstream design choices -->
     <rule ref="category/java/errorprone.xml">
         <!--
-          Waves fluent API convention: field name matches getter method name.
+          Dcc fluent API convention: field name matches getter method name.
           e.g. private final Amount amount; public Amount amount() { return amount; }
           This is intentional throughout the entire library for ergonomic API design.
         -->
@@ -47,7 +47,7 @@
 
         <!--
           Type-safe equals methods (e.g. equals(BlsPublicKey other)) are intentional
-          Waves SDK convention for ergonomic equality checks. The Object.equals contract
+          Dcc SDK convention for ergonomic equality checks. The Object.equals contract
           is separately fulfilled via @Override equals(Object o).
         -->
         <exclude name="SuspiciousEqualsMethodName"/>

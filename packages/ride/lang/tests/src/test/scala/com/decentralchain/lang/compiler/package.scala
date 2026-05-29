@@ -11,7 +11,7 @@ import com.decentralchain.lang.v1.compiler.Types.*
 import com.decentralchain.lang.v1.evaluator.Contextful.NoContext
 import com.decentralchain.lang.v1.evaluator.ContextfulVal
 import com.decentralchain.lang.v1.evaluator.ctx.NativeFunction
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.evaluator.ctx.impl.{PureContext, *}
 import com.decentralchain.lang.v1.traits.Environment
 
@@ -49,7 +49,7 @@ package object compiler {
         Seq(
           PureContext.build(v, useNewPowPrecision = true).withEnvironment[Environment],
           CryptoContext.build(Global, v, fixEcrecover = true).withEnvironment[Environment],
-          WavesContext.build(Global, DirectiveSet(v, t, Expression).explicitGet(), fixBigScriptField = true),
+          DccContext.build(Global, DirectiveSet(v, t, Expression).explicitGet(), fixBigScriptField = true),
           CTX[NoContext](
             Seq(pointType, Common.pointTypeA, Common.pointTypeB, Common.pointTypeC),
             Map(

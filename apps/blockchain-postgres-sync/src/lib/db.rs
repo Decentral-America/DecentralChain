@@ -21,8 +21,6 @@ pub async fn async_pool(config: &Config) -> Result<PgAsyncPool> {
     let manager = DManager::new(db_url, Runtime::Tokio1);
     let pool = DPool::builder(manager)
         .max_size(config.poolsize as usize)
-        .wait_timeout(Some(Duration::from_secs(30)))
-        .runtime(Runtime::Tokio1)
         .build()?;
     Ok(pool)
 }

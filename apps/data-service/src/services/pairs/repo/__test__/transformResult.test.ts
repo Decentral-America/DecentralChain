@@ -14,7 +14,7 @@ describe('sql query results transformation', () => {
         quote_volume: new BigNumber(50.0),
         txs_count: 42,
         volume: new BigNumber(100.1),
-        volume_waves: new BigNumber(10.2),
+        volume_dcc: new BigNumber(10.2),
         weighted_average_price: new BigNumber(1.5),
       }),
     ).toEqual({
@@ -27,7 +27,7 @@ describe('sql query results transformation', () => {
       quoteVolume: new BigNumber(50.0),
       txsCount: 42,
       volume: new BigNumber(100.1),
-      volumeWaves: new BigNumber(10.2),
+      volumeDcc: new BigNumber(10.2),
       weightedAveragePrice: new BigNumber(1.5),
     });
   });

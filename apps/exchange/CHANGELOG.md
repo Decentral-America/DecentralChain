@@ -10,7 +10,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Migrated to Biome for linting and formatting.
 - Upgraded to ESM-only module system.
 - Minimum Node.js version is now 24.
-- Rebranded from `@waves` to `@decentralchain`.
+- Rebranded from `@dcc` to `@decentralchain`.
 - Added Lefthook for git hooks.
 - Added Dependabot for automated dependency updates.
 

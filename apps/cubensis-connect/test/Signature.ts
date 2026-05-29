@@ -466,7 +466,7 @@ describe('Signature', () => {
         await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
         await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
         await expect(IssueTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
-        await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('1.004 DCC');
 
         await rejectTransaction();
         await validateRejectedResult();
@@ -525,7 +525,7 @@ describe('Signature', () => {
           await expect(IssueTransactionScreen.issueDescription).toHaveText(ISSUE.data.description);
           await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
           await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
-          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 DCC');
 
           await rejectTransaction();
           await validateRejectedResult();
@@ -586,7 +586,7 @@ describe('Signature', () => {
           await expect(IssueTransactionScreen.issueDecimals).toHaveText(`${ISSUE.data.precision}`);
           await expect(IssueTransactionScreen.issueReissuable).toHaveText('Reissuable');
           await expect(IssueTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
-          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 DCC');
 
           await rejectTransaction();
           await validateRejectedResult();
@@ -642,7 +642,7 @@ describe('Signature', () => {
         );
         await expect(TransferTransactionScreen.recipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
         await expect(TransferTransactionScreen.attachmentContent).toHaveText('base64:BQbtKNoM');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
         await rejectTransaction();
       });
 
@@ -684,7 +684,7 @@ describe('Signature', () => {
 
       it.todo('Address');
       it.todo('Alias');
-      it.todo('Waves / asset / smart asset');
+      it.todo('Dcc / asset / smart asset');
       it.todo('Attachment');
       it.todo('Transfers to Gateways');
       describe('without attachment', () => {
@@ -694,9 +694,9 @@ describe('Signature', () => {
           await performSignTransaction(TRANSFER_WITHOUT_ATTACHMENT);
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(TransferTransactionScreen.transferAmount).toHaveText('-1.23456790 WAVES');
+          await expect(TransferTransactionScreen.transferAmount).toHaveText('-1.23456790 DCC');
           await expect(TransferTransactionScreen.recipient).toHaveText('alias:T:alice');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -751,7 +751,7 @@ describe('Signature', () => {
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
           await expect(TransferTransactionScreen.attachmentContent).toHaveText('base64:BQbtKNoM');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -805,7 +805,7 @@ describe('Signature', () => {
           '+123456790 NonScriptToken',
         );
         await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -855,7 +855,7 @@ describe('Signature', () => {
             '+123456790 NonScriptToken',
           );
           await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -906,7 +906,7 @@ describe('Signature', () => {
             '+123456790 NonScriptToken',
           );
           await expect(ReissueTransactionScreen.reissuableType).toHaveText('Reissuable');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -955,7 +955,7 @@ describe('Signature', () => {
         await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1001,7 +1001,7 @@ describe('Signature', () => {
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1051,7 +1051,7 @@ describe('Signature', () => {
           await expect(CommonTransaction.accountName).toHaveText('rich');
           await expect(CommonTransaction.originNetwork).toHaveText('Testnet');
           await expect(BurnTransactionScreen.burnAmount).toHaveText('-123456790 NonScriptToken');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1098,11 +1098,11 @@ describe('Signature', () => {
         await performSignTransaction(LEASE);
         await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-        await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
+        await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 DCC');
         await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
           '3N5HNJz5otiU...BVv5HhYLdhiD',
         );
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1147,9 +1147,9 @@ describe('Signature', () => {
           await performSignTransaction(LEASE_WITH_ALIAS);
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 DCC');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText('alias:T:bobby');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1195,11 +1195,11 @@ describe('Signature', () => {
           await performSignTransaction(LEASE_WITH_MONEY_LIKE);
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 DCC');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1245,11 +1245,11 @@ describe('Signature', () => {
           await performSignTransaction(setTxVersion(LEASE, 2));
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 WAVES');
+          await expect(LeaseTransactionScreen.leaseAmount).toHaveText('1.23456790 DCC');
           await expect(LeaseTransactionScreen.leaseRecipient).toHaveText(
             '3N5HNJz5otiU...BVv5HhYLdhiD',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1296,9 +1296,9 @@ describe('Signature', () => {
         await performSignTransaction(CANCEL_LEASE);
         await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-        await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText('0.00000001 WAVES');
+        await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText('0.00000001 DCC');
         await expect(LeaseCancelTransactionScreen.cancelLeaseRecipient).toHaveText('alias:T:merry');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1342,13 +1342,11 @@ describe('Signature', () => {
           await performSignTransaction(setTxVersion(CANCEL_LEASE, 2));
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-          await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText(
-            '0.00000001 WAVES',
-          );
+          await expect(LeaseCancelTransactionScreen.cancelLeaseAmount).toHaveText('0.00000001 DCC');
           await expect(LeaseCancelTransactionScreen.cancelLeaseRecipient).toHaveText(
             'alias:T:merry',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1395,7 +1393,7 @@ describe('Signature', () => {
         await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
         await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1463,7 +1461,7 @@ describe('Signature', () => {
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(CreateAliasTransactionScreen.aliasValue).toHaveText('test_alias');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1541,7 +1539,7 @@ describe('Signature', () => {
         await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
           'base64:BQbtKNoM',
         );
-        await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.006 DCC');
 
         await rejectTransaction();
       });
@@ -1591,7 +1589,7 @@ describe('Signature', () => {
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(MassTransferTransactionScreen.massTransferAmount).toHaveText(
-            '-0.00000123 WAVES',
+            '-0.00000123 DCC',
           );
           await checkMassTransferItems([
             {
@@ -1603,7 +1601,7 @@ describe('Signature', () => {
               recipient: 'alias:T:merry',
             },
           ]);
-          await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.006 DCC');
 
           await rejectTransaction();
         });
@@ -1668,7 +1666,7 @@ describe('Signature', () => {
           await expect(MassTransferTransactionScreen.massTransferAttachment).toHaveText(
             'base64:BQbtKNoM',
           );
-          await expect(CommonTransaction.transactionFee).toHaveText('0.006 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.006 DCC');
 
           await rejectTransaction();
         });
@@ -1758,7 +1756,7 @@ describe('Signature', () => {
             value: 'base64:BQbtKNoM',
           },
         ]);
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1842,7 +1840,7 @@ describe('Signature', () => {
               value: 'base64:BQbtKNoM',
             },
           ]);
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -1908,7 +1906,7 @@ describe('Signature', () => {
 
         await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
         await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -1956,7 +1954,7 @@ describe('Signature', () => {
           await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
           await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Remove Account Script');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2004,7 +2002,7 @@ describe('Signature', () => {
 
           await expect(SetScriptTransactionScreen.scriptTitle).toHaveText('Set Script');
           await expect(SetScriptTransactionScreen.contentScript).toHaveText('base64:BQbtKNoM');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2052,7 +2050,7 @@ describe('Signature', () => {
 
         await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
         await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -2099,7 +2097,7 @@ describe('Signature', () => {
 
           await expect(SponsorshipTransactionScreen.title).toHaveText('Disable Sponsorship');
           await expect(SponsorshipTransactionScreen.asset).toHaveText('NonScriptToken');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2147,7 +2145,7 @@ describe('Signature', () => {
 
           await expect(SponsorshipTransactionScreen.title).toHaveText('Set Sponsorship');
           await expect(SponsorshipTransactionScreen.amount).toHaveText('123456790 NonScriptToken');
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2196,7 +2194,7 @@ describe('Signature', () => {
 
         await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
         await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
-        await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
+        await expect(CommonTransaction.transactionFee).toHaveText('1.004 DCC');
 
         await rejectTransaction();
       });
@@ -2244,7 +2242,7 @@ describe('Signature', () => {
 
           await expect(AssetScriptTransactionScreen.asset).toHaveText('NonScriptToken');
           await expect(AssetScriptTransactionScreen.script).toHaveText('base64:BQbtKNoM');
-          await expect(CommonTransaction.transactionFee).toHaveText('1.004 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('1.004 DCC');
 
           await rejectTransaction();
         });
@@ -2334,8 +2332,8 @@ describe('Signature', () => {
             value: 'hello',
           },
         ]);
-        await checkPayments(['0.00000001 WAVES', '1 NonScriptToken']);
-        await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+        await checkPayments(['0.00000001 DCC', '1 NonScriptToken']);
+        await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
         await rejectTransaction();
       });
@@ -2501,7 +2499,7 @@ describe('Signature', () => {
           await rejectTransaction();
         });
 
-        it.todo('Waves / asset / smart asset');
+        it.todo('Dcc / asset / smart asset');
       });
 
       describe('without call', () => {
@@ -2518,7 +2516,7 @@ describe('Signature', () => {
           await expect(InvokeScriptTransactionScreen.function).toHaveText('default');
           await checkArgs([]);
           await checkPayments([]);
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2587,8 +2585,8 @@ describe('Signature', () => {
               value: 'hello',
             },
           ]);
-          await checkPayments(['0.00000001 WAVES', '1 NonScriptToken']);
-          await expect(CommonTransaction.transactionFee).toHaveText('0.005 WAVES');
+          await checkPayments(['0.00000001 DCC', '1 NonScriptToken']);
+          await expect(CommonTransaction.transactionFee).toHaveText('0.005 DCC');
 
           await rejectTransaction();
         });
@@ -2646,7 +2644,7 @@ describe('Signature', () => {
         await expect(UpdateAssetInfoTransactionScreen.assetDescription).toHaveText(
           UPDATE_ASSET_INFO.data.description,
         );
-        await expect(UpdateAssetInfoTransactionScreen.fee).toHaveText('0.001 WAVES');
+        await expect(UpdateAssetInfoTransactionScreen.fee).toHaveText('0.001 DCC');
 
         await rejectTransaction();
       });
@@ -2740,12 +2738,12 @@ describe('Signature', () => {
           const INPUT = {
             data: {
               amount: {
-                assetId: 'WAVES',
+                assetId: 'DCC',
                 tokens: '100',
               },
               expiration: Date.now() + 100000,
               matcherFee: {
-                assetId: 'WAVES',
+                assetId: 'DCC',
                 tokens: '0.03',
               },
               matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
@@ -2763,14 +2761,14 @@ describe('Signature', () => {
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText('Sell: WAVES/NonScriptToken');
-            await expect(CreateOrderMessage.orderAmount).toHaveText('-100.00000000 WAVES');
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Sell: DCC/NonScriptToken');
+            await expect(CreateOrderMessage.orderAmount).toHaveText('-100.00000000 DCC');
             await expect(CreateOrderMessage.orderPriceTitle).toHaveText('+0 NonScriptToken');
             await expect(CreateOrderMessage.orderPrice).toHaveText('0 NonScriptToken');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
-            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.03 WAVES');
+            await expect(CreateOrderMessage.createOrderFee).toHaveText('0.03 DCC');
 
             await rejectTransaction();
           });
@@ -2905,7 +2903,7 @@ describe('Signature', () => {
               matcherPublicKey: '8QUAqtTckM5B8gvcuP7mMswat9SjKUuafJMusEoSn1Gy',
               orderType: 'buy',
               price: {
-                assetId: 'WAVES',
+                assetId: 'DCC',
                 coins: 121140511,
               },
             },
@@ -2917,10 +2915,10 @@ describe('Signature', () => {
             await performSignOrder(createOrder, INPUT);
             await validateCommonFields(WHITELIST[3]!, 'rich', 'Testnet');
 
-            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/WAVES');
+            await expect(CreateOrderMessage.orderTitle).toHaveText('Buy: Tether USD/DCC');
             await expect(CreateOrderMessage.orderAmount).toHaveText('+15.637504 Tether USD');
-            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-18.94335225 WAVES');
-            await expect(CreateOrderMessage.orderPrice).toHaveText('1.21140511 WAVES');
+            await expect(CreateOrderMessage.orderPriceTitle).toHaveText('-18.94335225 DCC');
+            await expect(CreateOrderMessage.orderPrice).toHaveText('1.21140511 DCC');
             await expect(CreateOrderMessage.orderMatcherPublicKey).toHaveText(
               INPUT.data.matcherPublicKey,
             );
@@ -3304,12 +3302,12 @@ describe('Signature', () => {
         '-123456790 NonScriptToken',
         '+123456790 NonScriptToken',
         '-123456790 NonScriptToken',
-        '-1.23456790 WAVES',
-        '+0.00000001 WAVES',
-        '-0.00000001 WAVES',
+        '-1.23456790 DCC',
+        '+0.00000001 DCC',
+        '-0.00000001 DCC',
         '-1 NonScriptToken',
       ]);
-      await checkPackageFees(['1.034 WAVES']);
+      await checkPackageFees(['1.034 DCC']);
       await PackageTransactionScreen.showTransactionsButton.click();
       expect(await PackageTransactionScreen.getPackageItems()).toHaveLength(7);
 
@@ -3322,26 +3320,26 @@ describe('Signature', () => {
       await expect(issue.decimals).toHaveText('8');
       await expect(issue.reissuable).toHaveText('Reissuable');
       await expect(issue.contentScript).toHaveText('base64:BQbtKNoM');
-      await expect(issue.fee).toHaveText('1.004 WAVES');
+      await expect(issue.fee).toHaveText('1.004 DCC');
 
       await expect(transfer.transferAmount).toHaveText('-123456790 NonScriptToken');
       await expect(transfer.recipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
       await expect(transfer.attachmentContent).toHaveText('base64:BQbtKNoM');
-      await expect(transfer.fee).toHaveText('0.005 WAVES');
+      await expect(transfer.fee).toHaveText('0.005 DCC');
 
       await expect(reissue.reissueAmount).toHaveText('+123456790 NonScriptToken');
-      await expect(reissue.fee).toHaveText('0.005 WAVES');
+      await expect(reissue.fee).toHaveText('0.005 DCC');
 
       await expect(burn.burnAmount).toHaveText('-123456790 NonScriptToken');
-      await expect(burn.fee).toHaveText('0.005 WAVES');
+      await expect(burn.fee).toHaveText('0.005 DCC');
 
-      await expect(lease.leaseAmount).toHaveText('1.23456790 WAVES');
+      await expect(lease.leaseAmount).toHaveText('1.23456790 DCC');
       await expect(lease.leaseRecipient).toHaveText('3N5HNJz5otiU...BVv5HhYLdhiD');
-      await expect(lease.fee).toHaveText('0.005 WAVES');
+      await expect(lease.fee).toHaveText('0.005 DCC');
 
-      await expect(cancelLease.cancelLeaseAmount).toHaveText('0.00000001 WAVES');
+      await expect(cancelLease.cancelLeaseAmount).toHaveText('0.00000001 DCC');
       await expect(cancelLease.cancelLeaseRecipient).toHaveText('alias:T:merry');
-      await expect(cancelLease.fee).toHaveText('0.005 WAVES');
+      await expect(cancelLease.fee).toHaveText('0.005 DCC');
 
       await expect(invokeScript.invokeScriptPaymentsTitle).toHaveText('2 Payments');
       await expect(invokeScript.invokeScriptDApp).toHaveText('3My2kBJaGfeM...3y8rAgfV2EAx');
@@ -3372,9 +3370,9 @@ describe('Signature', () => {
       const actualPayments = await Promise.all(
         await invokeScript.invokeScriptPaymentItems.map(async (it: any) => it.getText()),
       );
-      expect(actualPayments).toStrictEqual(['0.00000001 WAVES', '1 NonScriptToken']);
+      expect(actualPayments).toStrictEqual(['0.00000001 DCC', '1 NonScriptToken']);
 
-      await expect(invokeScript.fee).toHaveText('0.005 WAVES');
+      await expect(invokeScript.fee).toHaveText('0.005 DCC');
 
       await rejectTransaction();
     });

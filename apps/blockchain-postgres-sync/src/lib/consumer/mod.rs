@@ -31,7 +31,7 @@ use crate::{config::consumer::Config, utils::into_base58};
 use crate::{
     consumer::models::{
         txs::convert::{Tx as ConvertedTx, TxUidGenerator},
-        waves_data::WavesData,
+        dcc_data::DccData,
     },
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
     waves::DCC_ID,
@@ -344,18 +344,18 @@ where
     if !assets_only {
         handle_txs(repo, &block_uids_with_appends, chain_id)?;
 
-        let waves_data = appends
+        let dcc_data = appends
             .iter()
             .filter_map(|append| {
-                append.updated_waves_amount.map(|reward| WavesData {
+                append.updated_waves_amount.map(|reward| DccData {
                     height: append.height,
                     quantity: BigDecimal::from(reward),
                 })
             })
             .collect_vec();
 
-        if !waves_data.is_empty() {
-            repo.insert_waves_data(&waves_data)?;
+        if !dcc_data.is_empty() {
+            repo.insert_dcc_data(&dcc_data)?;
         }
     }
 

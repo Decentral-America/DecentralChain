@@ -25,23 +25,23 @@ The 3-way gap is not cosmetic. It produces **silent data loss** on two paths and
 
 ### node-scala (17 files)
 ```
-waves/amount.proto
-waves/block.proto
-waves/events/events.proto
-waves/events/grpc/blockchain_updates.proto
-waves/invoke_script_result.proto
-waves/lang/dapp_meta.proto
-waves/node/grpc/accounts_api.proto
-waves/node/grpc/assets_api.proto
-waves/node/grpc/blockchain_api.proto
-waves/node/grpc/blocks_api.proto
-waves/node/grpc/transactions_api.proto
-waves/order.proto
-waves/recipient.proto
-waves/reward_share.proto          ← node-go MISSING
-waves/state_snapshot.proto        ← node-go MISSING
-waves/transaction.proto
-waves/transaction_state_snapshot.proto  ← node-go MISSING
+dcc/amount.proto
+dcc/block.proto
+dcc/events/events.proto
+dcc/events/grpc/blockchain_updates.proto
+dcc/invoke_script_result.proto
+dcc/lang/dapp_meta.proto
+dcc/node/grpc/accounts_api.proto
+dcc/node/grpc/assets_api.proto
+dcc/node/grpc/blockchain_api.proto
+dcc/node/grpc/blocks_api.proto
+dcc/node/grpc/transactions_api.proto
+dcc/order.proto
+dcc/recipient.proto
+dcc/reward_share.proto          ← node-go MISSING
+dcc/state_snapshot.proto        ← node-go MISSING
+dcc/transaction.proto
+dcc/transaction_state_snapshot.proto  ← node-go MISSING
 ```
 
 ### node-go (14 files)
@@ -78,9 +78,9 @@ Missing: `dapp_meta.proto` and all 5 `node/grpc/*_api.proto` files (not needed �
 
 | # | File | Status | Impact |
 |---|------|--------|--------|
-| 10 | `waves/reward_share.proto` | node-go MISSING | `RewardShare` message not available — `events.proto` and `blocks_api.proto` can't import it |
-| 11 | `waves/state_snapshot.proto` | node-go MISSING | `BlockSnapshot` and `MicroBlockSnapshot` messages not available |
-| 12 | `waves/transaction_state_snapshot.proto` | node-go MISSING | `TransactionStateSnapshot` (15 nested messages, `TransactionStatus` enum) not available. This is the data structure returned by `GetTransactionSnapshots`. |
+| 10 | `dcc/reward_share.proto` | node-go MISSING | `RewardShare` message not available — `events.proto` and `blocks_api.proto` can't import it |
+| 11 | `dcc/state_snapshot.proto` | node-go MISSING | `BlockSnapshot` and `MicroBlockSnapshot` messages not available |
+| 12 | `dcc/transaction_state_snapshot.proto` | node-go MISSING | `TransactionStateSnapshot` (15 nested messages, `TransactionStatus` enum) not available. This is the data structure returned by `GetTransactionSnapshots`. |
 
 ### ✅ Non-issue — Code-gen artifact only
 
@@ -149,7 +149,7 @@ BPS uses a comment instead of `reserved`. node-go's older proto doesn't have it 
 | **DCC-170** (node-go mainnet sync + gRPC smoke) | The gRPC smoke test should explicitly verify that ELIDED transactions are received as raw integer 3 (not crash, not UNKNOWN/0 — Go open-enum preserves the integer) and CommitToGeneration txs decode as empty `data` oneof — document as known gaps, not test failures. |
 | **DCC-174** (verify tx types 17–19 in node-go) | tx types 17–19 are in the shared surface — no proto gap for those types specifically. |
 | **DCC-175** (verify DCC minimum PoS balance) | `reward_shares` is missing in node-go blocks_api — reward distribution verification must go through node-scala gRPC or REST. |
-| **DCC-183** (evaluate gowaves v0.11.0 pre-release) | **Confirmed**: gowaves v0.11.0 ("Feature 25 Tooling Pre-Release", Mar 24) and v0.11.1 ("Tooling Pre-Release 2", Mar 31) both ship CommitToGeneration transaction support. Both carry the explicit caveat "the node itself is still in an early testing phase and is not intended for production use." If the bundled proto submodule covers the missing fields, bumping it closes most of this audit's gaps. Do NOT promote 0.11.x to mainnet before it sheds the pre-release label. **Critical finding**: In v0.11.1's `features.go`, `InvokeExpression` is renumbered from 22 (our fork) to 26 — four new features (LightNode=22, BoostBlockReward=23, ecrecoverFix=24, DeterministicFinality=25) were inserted before it. This feature number must be reconciled in DCC governance before any upgrade. |
+| **DCC-183** (evaluate godcc v0.11.0 pre-release) | **Confirmed**: godcc v0.11.0 ("Feature 25 Tooling Pre-Release", Mar 24) and v0.11.1 ("Tooling Pre-Release 2", Mar 31) both ship CommitToGeneration transaction support. Both carry the explicit caveat "the node itself is still in an early testing phase and is not intended for production use." If the bundled proto submodule covers the missing fields, bumping it closes most of this audit's gaps. Do NOT promote 0.11.x to mainnet before it sheds the pre-release label. **Critical finding**: In v0.11.1's `features.go`, `InvokeExpression` is renumbered from 22 (our fork) to 26 — four new features (LightNode=22, BoostBlockReward=23, ecrecoverFix=24, DeterministicFinality=25) were inserted before it. This feature number must be reconciled in DCC governance before any upgrade. |
 | **DCC-215** (BPS block ingestion + aggregations) | BPS protos are at 1.6.x — aligned with node-scala. **BPS must connect to node-scala, not node-go.** |
 | **DCC-224** (deploy BPS against DCC mainnet) | Same — route BPS to node-scala's BlockchainUpdates endpoint. |
 
@@ -172,9 +172,9 @@ BPS uses a comment instead of `reserved`. node-go's older proto doesn't have it 
 
 ### Short-term (DCC-183 sprint)
 
-4. **Evaluate gowaves v0.11.0 / v0.11.1 pre-releases** — confirmed on GitHub: v0.11.0 is labeled "Feature 25 Tooling Pre-Release" and ships CommitToGeneration transaction support; v0.11.1 ("Tooling Pre-Release 2") adds signing/broadcasting. Both carry "not intended for production use." If the bundled proto submodule adds the missing fields, bumping it closes items #1, #2, #3, #10, #11, #12. Do NOT deploy to mainnet before the pre-release label is dropped.
+4. **Evaluate godcc v0.11.0 / v0.11.1 pre-releases** — confirmed on GitHub: v0.11.0 is labeled "Feature 25 Tooling Pre-Release" and ships CommitToGeneration transaction support; v0.11.1 ("Tooling Pre-Release 2") adds signing/broadcasting. Both carry "not intended for production use." If the bundled proto submodule adds the missing fields, bumping it closes items #1, #2, #3, #10, #11, #12. Do NOT deploy to mainnet before the pre-release label is dropped.
 
-5. **If gowaves 0.11.0 doesn't include them**: copy the 3 missing protos (`reward_share.proto`, `state_snapshot.proto`, `transaction_state_snapshot.proto`) into node-go's vendored proto tree and regenerate. This is the same approach node-scala uses via Maven and BPS uses by shipping the files directly.
+5. **If godcc 0.11.0 doesn't include them**: copy the 3 missing protos (`reward_share.proto`, `state_snapshot.proto`, `transaction_state_snapshot.proto`) into node-go's vendored proto tree and regenerate. This is the same approach node-scala uses via Maven and BPS uses by shipping the files directly.
 
 ### Long-term
 
@@ -187,13 +187,13 @@ BPS uses a comment instead of `reserved`. node-go's older proto doesn't have it 
 | Waves version | Key additions |
 |---------------|--------------|
 | 1.2 | RIDE v4, Ethereum tx |
-| 1.4 | Order price mode (gowaves v0.10.0 "Zegema Compatibility" — stable baseline) |
+| 1.4 | Order price mode (godcc v0.10.0 "Zegema Compatibility" — stable baseline) |
 | 1.4–1.5 | InvokeExpression (proto field 119) — present in node-go's vendored proto, so submodule was bumped to at least this point |
 | 1.5 | ELIDED application status (Challenge mechanism) — **absent in node-go proto**. In Go, proto3 enums are open (per [protobuf.dev/programming-guides/enum](https://protobuf.dev/programming-guides/enum/)), so integer 3 is stored, not coerced to 0 |
 | 1.5–1.6 | reward_shares, vrf, ScriptResponse.public_key, activated/deactivated features in events — **absent in node-go** |
-| 1.6 / Feature 25 | CommitToGeneration (proto field 120), FinalizationVoting, state_hash, GetTransactionSnapshots — **node-scala + BPS level**. gowaves v0.11.0 / v0.11.1 (pre-release, not production-ready) target this feature |
+| 1.6 / Feature 25 | CommitToGeneration (proto field 120), FinalizationVoting, state_hash, GetTransactionSnapshots — **node-scala + BPS level**. godcc v0.11.0 / v0.11.1 (pre-release, not production-ready) target this feature |
 
-### gowaves stable vs pre-release (verified 2026-05-11)
+### godcc stable vs pre-release (verified 2026-05-11)
 
 | Tag | Label | Status | Notes |
 |-----|-------|--------|-------|

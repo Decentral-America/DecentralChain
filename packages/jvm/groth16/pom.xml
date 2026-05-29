@@ -188,7 +188,7 @@
         <configuration>
           <!--
             The JNI dylib embedded in resources is unpacked at runtime by the
-            ZWavesJNILibrary static initializer. Fork the JVM so the extraction
+            ZDccJNILibrary static initializer. Fork the JVM so the extraction
             works correctly in CI and local builds alike.
           -->
           <forkCount>1</forkCount>
@@ -433,7 +433,7 @@
                 It predates modern Java idioms (try-with-resources, locale-aware
                 string ops, proper classloader usage) by design — it must work
                 on Java 6+ for maximum JNI compatibility.
-                All application-level code (Groth16, ZWavesJNILibrary) is fully
+                All application-level code (Groth16, ZDccJNILibrary) is fully
                 analyzed without exclusions.
               -->
               <excludes>

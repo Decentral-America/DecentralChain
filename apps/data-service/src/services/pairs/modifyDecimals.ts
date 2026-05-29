@@ -26,14 +26,14 @@ export const modifyDecimals =
             low: pair.low.shiftedBy(priceDecimals),
             quoteVolume: pair.quoteVolume.shiftedBy(priceDecimals - amountAssetDecimals),
             volume: pair.volume.shiftedBy(-amountAssetDecimals),
-            volumeWaves:
-              pair.volumeWaves === null
+            volumeDcc:
+              pair.volumeDcc === null
                 ? null
                 : pair.amountAsset === 'DCC'
-                  ? pair.volumeWaves.shiftedBy(-amountAssetDecimals)
+                  ? pair.volumeDcc.shiftedBy(-amountAssetDecimals)
                   : pair.priceAsset === 'DCC'
-                    ? pair.volumeWaves.shiftedBy(priceDecimals - amountAssetDecimals)
-                    : pair.volumeWaves.shiftedBy(priceDecimals - 8 - amountAssetDecimals),
+                    ? pair.volumeDcc.shiftedBy(priceDecimals - amountAssetDecimals)
+                    : pair.volumeDcc.shiftedBy(priceDecimals - 8 - amountAssetDecimals),
             weightedAveragePrice: pair.weightedAveragePrice.shiftedBy(priceDecimals),
           };
         }),

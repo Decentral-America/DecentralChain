@@ -239,7 +239,7 @@ class Background {
 
   async assetInfo(assetId: string) {
     const bg = await this.getBackground();
-    return bg.assetInfo(assetId || 'WAVES');
+    return bg.assetInfo(assetId || 'DCC');
   }
 
   async updateAssets(assetIds: string[], options: { ignoreCache?: boolean } = {}) {

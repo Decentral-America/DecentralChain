@@ -17,7 +17,7 @@ Sync DCC monorepo packages with their upstream Waves repositories. DCC was manua
 
 ## Package → Directory Mapping
 
-This is the critical mapping between DCC monorepo paths and Waves upstream repo names. The upstream repo name is also the folder name under `Waves/`.
+This is the critical mapping between DCC monorepo paths and Dcc upstream repo names. The upstream repo name is also the folder name under `Waves/`.
 
 | Monorepo Path | Waves Repo Name | GitHub Org |
 |--------------|----------------|------------|
@@ -193,7 +193,7 @@ git diff <last-synced>..HEAD -- src/
 4. Ensure ESM syntax (no `require()`, no `module.exports`)
 5. Follow Biome formatting rules (single quotes, semicolons, 2-space indent)
 6. Replace Jest assertions with Vitest equivalents (`jest.fn()` → `vi.fn()`, etc.)
-7. Replace `waves` branding in user-facing strings with `decentralchain`/`DCC` (but KEEP wire-format constants like `'WAVES'` asset ID)
+7. Replace `dcc` branding in user-facing strings with `decentralchain`/`DCC` (but KEEP wire-format constants like `'DCC'` asset ID)
 
 ### Step 6 — Validate
 
@@ -236,20 +236,20 @@ Then update `docs/UPSTREAM.md` §19:
 
 - **Do NOT cherry-pick** — the repos share history but have diverged in structure. Manual application is safer.
 - **Do NOT blindly port all changes** — evaluate each commit. Most Renovate bumps and tooling changes are noise.
-- **Do NOT rename wire-format constants** — `'WAVES'` asset ID, `waves` protobuf namespace, `'WAVES'` Ledger secret, BIP-44 path `44'/5741560'` must stay as-is. Note: `'DccWalletAuthentication'` is the DCC auth prefix (unified Mar 24, 2026) — do not revert to `'WavesWalletAuthentication'`.
+- **Do NOT rename wire-format constants** — `'DCC'` asset ID, `dcc` protobuf namespace, `'DCC'` Ledger secret, BIP-44 path `44'/5741560'` must stay as-is. Note: `'DccWalletAuthentication'` is the DCC auth prefix (unified Mar 24, 2026) — do not revert to `'DccWalletAuthentication'`.
 - **Do NOT port CJS additions** — DCC is ESM-only.
 - **Do NOT port `@keeper-wallet/waves-crypto` imports** — cubensis-connect uses `@decentralchain/crypto` now (DCC-59, DCC-70).
 
 ## Wire-Format Constants (Never Rename)
 
-These Waves-branded strings are protocol constants — renaming them breaks the blockchain:
+These DCC-branded strings are protocol constants — renaming them breaks the blockchain:
 
 | Constant | Where | Why |
 |----------|-------|-----|
-| `'WAVES'` | Asset ID everywhere | On-chain protocol identifier |
-| `package waves;` | `.proto` files | Binary wire format |
-| `'DccWalletAuthentication'` | Auth signing | DCC canonical auth domain separator (unified Mar 24, 2026). Do NOT revert to `'WavesWalletAuthentication'`. |
-| `'WAVES'` | Ledger APDU | Hardware wallet firmware |
+| `'DCC'` | Asset ID everywhere | On-chain protocol identifier |
+| `package dcc;` | `.proto` files | Binary wire format |
+| `'DccWalletAuthentication'` | Auth signing | DCC canonical auth domain separator (unified Mar 24, 2026). Do NOT revert to `'DccWalletAuthentication'`. |
+| `'DCC'` | Ledger APDU | Hardware wallet firmware |
 | `44'/5741560'` | HD derivation | BIP-44 standard path |
 
 ## Quick Reference: DCC Conventions to Apply

@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;general&quot; | waves-transactions</title>
-	<meta name="description" content="Documentation for waves-transactions">
+	<title>&quot;general&quot; | dcc-transactions</title>
+	<meta name="description" content="Documentation for dcc-transactions">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">waves-transactions</a>
+					<a href="../index.html" class="title">dcc-transactions</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -76,7 +76,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_general_.html#verify" class="tsd-kind-icon">verify</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_general_.html#verifyauthdata" class="tsd-kind-icon">verify<wbr>Auth<wbr>Data</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_general_.html#verifycustomdata" class="tsd-kind-icon">verify<wbr>Custom<wbr>Data</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_general_.html#verifywavesauthdata" class="tsd-kind-icon">verify<wbr>Waves<wbr>Auth<wbr>Data</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_general_.html#verifydccauthdata" class="tsd-kind-icon">verify<wbr>Dcc<wbr>Auth<wbr>Data</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -132,7 +132,7 @@
 								<li>
 									<h5>matcherUrl: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>matcher address to send order cancel to. E.g. <a href="https://matcher.waves.exchange/">https://matcher.waves.exchange/</a></p>
+										<p>matcher address to send order cancel to. E.g. <a href="https://matcher.dcc.exchange/">https://matcher.dcc.exchange/</a></p>
 									</div>
 								</li>
 							</ul>
@@ -234,7 +234,7 @@
 								<li>
 									<h5>options: <span class="tsd-signature-symbol">{ </span>market<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">; </span>matcherUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>matcher address to send order to. E.g. <a href="https://matcher.waves.exchange/">https://matcher.waves.exchange/</a>. Optional &#39;market&#39; flag to send market order</p>
+										<p>matcher address to send order to. E.g. <a href="https://matcher.dcc.exchange/">https://matcher.dcc.exchange/</a>. Optional &#39;market&#39; flag to send market order</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
@@ -270,7 +270,7 @@
 								<li>
 									<h5>matcherUrl: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>matcher address to send order to. E.g. <a href="https://matcher.waves.exchange/">https://matcher.waves.exchange/</a></p>
+										<p>matcher address to send order to. E.g. <a href="https://matcher.dcc.exchange/">https://matcher.dcc.exchange/</a></p>
 									</div>
 								</li>
 							</ul>
@@ -382,10 +382,10 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="verifywavesauthdata" class="tsd-anchor"></a>
-					<h3>verify<wbr>Waves<wbr>Auth<wbr>Data</h3>
+					<a name="verifydccauthdata" class="tsd-anchor"></a>
+					<h3>verify<wbr>Dcc<wbr>Auth<wbr>Data</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">verify<wbr>Waves<wbr>Auth<wbr>Data<span class="tsd-signature-symbol">(</span>authData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>timestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span>, params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>timestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span>, chainId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">verify<wbr>Dcc<wbr>Auth<wbr>Data<span class="tsd-signature-symbol">(</span>authData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>signature<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>timestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span>, params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>timestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span>, chainId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -630,7 +630,7 @@
 						<div class="tsd-signature tsd-kind-icon">[TRANSACTION_<wbr>TYPE.INVOKE_<wbr>EXPRESSION]<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Decentral-America/waves-transactions/blob/51d0c92/src/general.ts#L66">src/general.ts:66</a></li>
+								<li>Defined in <a href="https://github.com/Decentral-America/dcc-transactions/blob/51d0c92/src/general.ts#L66">src/general.ts:66</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
@@ -643,7 +643,7 @@
 								<li class="tsd-description">
 									<aside class="tsd-sources">
 										<ul>
-											<li>Defined in <a href="https://github.com/Decentral-America/waves-transactions/blob/51d0c92/src/general.ts#L66">src/general.ts:66</a></li>
+											<li>Defined in <a href="https://github.com/Decentral-America/dcc-transactions/blob/51d0c92/src/general.ts#L66">src/general.ts:66</a></li>
 										</ul>
 									</aside>
 									<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1061,7 +1061,7 @@
 						<a href="_general_.html#verifycustomdata" class="tsd-kind-icon">verify<wbr>Custom<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_general_.html#verifywavesauthdata" class="tsd-kind-icon">verify<wbr>Waves<wbr>Auth<wbr>Data</a>
+						<a href="_general_.html#verifydccauthdata" class="tsd-kind-icon">verify<wbr>Dcc<wbr>Auth<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
 						<a href="_general_.html#txtypemap" class="tsd-kind-icon">tx<wbr>Type<wbr>Map</a>

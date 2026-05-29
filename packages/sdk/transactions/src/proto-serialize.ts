@@ -90,7 +90,7 @@ export function signedTxToProtoBytes(obj: TTx): Uint8Array {
 
 export function protoBytesToSignedTx(bytes: Uint8Array): TTx {
   const txData = fromBinary(SignedTransactionSchema, bytes);
-  if (txData.transaction.case !== 'wavesTransaction' || !txData.transaction.value) {
+  if (txData.transaction.case !== 'dccTransaction' || !txData.transaction.value) {
     throw new Error('Unsupported signed transaction format');
   }
   const tx: TTransaction = protoTxDataToTx(txData.transaction.value);
@@ -587,7 +587,7 @@ export const signedTxToProto = (t: TTx): SignedTransaction => {
   const txData = getTxData(t);
   const dataCase = common.data as Transaction['data']['case'];
 
-  const wavesTransaction = create(TransactionSchema, {
+  const dccTransaction = create(TransactionSchema, {
     chainId: common.chainId,
     data: { case: dataCase, value: txData } as Transaction['data'],
     fee: common.fee as Amount,
@@ -599,8 +599,8 @@ export const signedTxToProto = (t: TTx): SignedTransaction => {
   return create(SignedTransactionSchema, {
     proofs: (t.proofs || []).map(proof2Uint8Array),
     transaction: {
-      case: 'wavesTransaction',
-      value: wavesTransaction,
+      case: 'dccTransaction',
+      value: dccTransaction,
     },
   });
 };

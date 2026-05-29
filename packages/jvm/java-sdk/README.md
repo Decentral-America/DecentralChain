@@ -63,7 +63,7 @@ System.out.println("Balance: " + node.getBalance(address));
 ```java
 Address recipient = new Address("3N9gDFq8tKFhBDBTQxR3zqvtpXjw5wW3syA");
 node.broadcast(
-    TransferTransaction.builder(recipient, Amount.of(1_00000000, Asset.WAVES))
+    TransferTransaction.builder(recipient, Amount.of(1_00000000, Asset.DCC))
         .getSignedWith(privateKey)
 );
 ```

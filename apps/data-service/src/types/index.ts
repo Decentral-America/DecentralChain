@@ -90,7 +90,7 @@ export type PairInfo = {
   weightedAveragePrice: BigNumber;
   volume: BigNumber;
   quoteVolume: BigNumber;
-  volumeWaves: BigNumber | null;
+  volumeDcc: BigNumber | null;
   txsCount: number;
 };
 

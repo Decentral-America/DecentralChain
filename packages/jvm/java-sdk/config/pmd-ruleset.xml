@@ -16,7 +16,7 @@
     <!-- ── Error-prone (category/java/errorprone.xml) ───────────────────── -->
     <rule ref="category/java/errorprone.xml">
         <!--
-          Waves fluent API convention: field name matches getter method name.
+          DCC fluent API convention: field name matches getter method name.
           e.g. private final Amount amount; public Amount amount() { ... }
           Intentional throughout the entire SDK for ergonomic API design.
         -->
@@ -24,7 +24,7 @@
 
         <!--
           Field name matching the type name (e.g. Balance balance in class Foo).
-          Intentional Waves SDK naming convention for DTO field access.
+          Intentional DCC SDK naming convention for DTO field access.
         -->
         <exclude name="AvoidFieldNameMatchingTypeName"/>
 

@@ -27,7 +27,7 @@ case class ErrorMessageEnvironment[F[_]](message: String) extends Environment[F]
   override def hasData(addressOrAlias: Recipient): F[Boolean]                                        = unavailable
   override def resolveAlias(name: String): F[Either[String, Recipient.Address]]                      = unavailable
   override def accountBalanceOf(r: Recipient, assetId: Option[Array[Byte]]): F[Either[String, Long]] = unavailable
-  override def accountWavesBalanceOf(addressOrAlias: Recipient): F[Either[String, BalanceDetails]]   = unavailable
+  override def accountDccBalanceOf(addressOrAlias: Recipient): F[Either[String, BalanceDetails]]     = unavailable
   override def multiPaymentAllowed: Boolean                                                          = unavailable
   override def txId: ByteStr                                                                         = unavailable
   override def transferTransactionFromProto(b: Array[Byte]): F[Option[Tx.Transfer]]                  = unavailable

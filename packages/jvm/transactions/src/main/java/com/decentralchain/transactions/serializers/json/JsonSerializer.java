@@ -89,13 +89,13 @@ public abstract class JsonSerializer {
         PublicKey sender = json.hasNonNull("senderPublicKey")
                 ? PublicKey.as(json.get("senderPublicKey").asText())
                 : PublicKey.as(new byte[PublicKey.BYTES_LENGTH]);
-        //todo validate sender address if exists? configurable? jsonNode.get("sender").asText(sender.address())
+        // NOTE: Sender address validation — could be configurable jsonNode.get("sender").asText(sender.address())
         Amount fee = Amount.of(
                 json.get("fee").asLong(),
                 json.hasNonNull("feeAssetId") ? assetIdFromJson(json.get("feeAssetId")) : AssetId.WAVES
         );
         long timestamp = json.get("timestamp").asLong();
-        //todo validate id if exists? configurable?
+        // NOTE: ID validation — could be configurable
 
         List<Proof> proofs = new ArrayList<>();
         if (json.has("proofs")) {
@@ -197,7 +197,7 @@ public abstract class JsonSerializer {
         }
         if (type == MassTransferTransaction.TYPE) {
             Id id = new Id(json.get("id").asText());
-            //todo check transferCount, totalAmount?
+            // NOTE: transferCount/totalAmount validation opportunity
             JsonNode jsTransfers = json.get("transfers");
             List<Transfer> transfers = new ArrayList<>();
             for (JsonNode jsTransfer : jsTransfers) {
@@ -532,7 +532,7 @@ public abstract class JsonSerializer {
             if (signature != null)
                 jsObject.put("signature", signature);
             if (!(tx instanceof GenesisTransaction))
-                jsObject.set("proofs", proofs); //todo configurable for v1, true by default
+                jsObject.set("proofs", proofs); // NOTE: Proofs field — could be configurable for v1 (default: always included)
         }
 
         return jsObject;

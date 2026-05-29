@@ -309,36 +309,7 @@ export function HistoryItem({ tx, className }: Props) {
       messageType = 'set-asset-script';
       break;
     case TRANSACTION_TYPE.INVOKE_SCRIPT:
-      if (
-        (tx.dApp === '3P8eoZF8RTpcrVXwYcDaNs7WBGMbrBR8d3u' && tx.call?.function === 'swap') ||
-        (tx.dApp === '3P5UKXpQbom7GB2WGdPG5yGQPeQQuM3hFmw' &&
-          tx.call &&
-          [
-            'testSeq',
-            'swap',
-            'swapWithRefferer',
-            'swopfiSwap',
-            'swopfiSwapWithReferrer',
-            'puzzleSwap',
-            'puzzleSwapWithReferrer',
-          ].includes(tx.call.function)) ||
-        (tx.dApp === '3PGFHzVGT4NTigwCKP1NcwoXkodVZwvBuuU' &&
-          tx.call?.function === 'swapWithReferral')
-      ) {
-        tooltip = t('historyCard.swap');
-
-        const payment = tx.payment?.[0];
-        const fromBalance = payment && fromCoins(payment.amount, payment.assetId);
-
-        const incomingTransfer = tx.stateChanges?.transfers.find((t) => t.address === tx.sender);
-
-        const toBalance =
-          incomingTransfer && fromCoins(incomingTransfer.amount, incomingTransfer.asset);
-
-        label = <Balance addSign="-" split showAsset balance={fromBalance} />;
-        info = <Balance addSign="+" split showAsset balance={toBalance} />;
-        messageType = 'swap';
-      } else {
+      {
         tooltip = t('historyCard.scriptInvocation');
         label = (
           <AddressRecipient

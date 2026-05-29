@@ -2,17 +2,18 @@
 // Live integration test: SDK → Node transaction flow
 // Tests: sign, broadcast, confirm, balance change
 
-import { broadcast, transfer, waitForTx } from '../packages/sdk/transactions/src/index.ts';
-import { address, publicKey } from '../packages/sdk/ts-lib-crypto/src/index.ts';
+import { broadcast, transfer, waitForTx } from '../packages/sdk/transactions/dist/index.mjs';
+import { address, publicKey } from '../packages/sdk/ts-lib-crypto/dist/index.mjs';
 
 const SEED = 'waves private node seed with waves tokens';
 const NODE_URL = 'http://localhost:6869';
 const CHAIN_ID = 82; // 'R' for local private node
+const FETCH_TIMEOUT_MS = 10_000;
 
 async function fetchJson(url) {
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`${url}: ${res.status} ${await res.text()}`);
-  return res.json();
+  return await res.json();
 }
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: integration test script with sequential steps
@@ -43,11 +44,11 @@ async function main() {
   }
 
   // 2. Key derivation
+  const senderAddr = address(SEED, String.fromCharCode(CHAIN_ID));
   try {
     const pubKey = publicKey(SEED);
-    const addr = address(SEED, String.fromCharCode(CHAIN_ID));
     // biome-ignore lint/suspicious/noConsole: CLI test runner output
-    console.log(`  Address: ${addr}`);
+    console.log(`  Address: ${senderAddr}`);
     // biome-ignore lint/suspicious/noConsole: CLI test runner output
     console.log(`  PublicKey: ${pubKey}`);
     ok('Key derivation');
@@ -56,7 +57,6 @@ async function main() {
   }
 
   // 3. Balance check (pre-transfer)
-  const senderAddr = address(SEED, String.fromCharCode(CHAIN_ID));
   let balanceBefore;
   try {
     const bal = await fetchJson(`${NODE_URL}/addresses/balance/${senderAddr}`);
@@ -95,21 +95,27 @@ async function main() {
     } catch (e) {
       fail('TX confirmation', e.message);
     }
+  } else {
+    fail('TX confirmation', 'skipped — no txId from broadcast');
   }
 
   // 6. Balance after (should decrease by fee only, since self-transfer)
-  try {
-    const bal = await fetchJson(`${NODE_URL}/addresses/balance/${senderAddr}`);
-    const balanceAfter = bal.balance;
-    const diff = balanceBefore - balanceAfter;
-    if (diff === 100000) {
-      ok(`Balance decreased by fee: -0.001 DCC (correct)`);
-    } else {
-      // May have received block rewards in the meantime
-      ok(`Balance delta: ${diff} (includes block rewards)`);
+  if (balanceBefore === undefined) {
+    fail('Post-transfer balance', 'skipped — pre-transfer balance unknown');
+  } else {
+    try {
+      const bal = await fetchJson(`${NODE_URL}/addresses/balance/${senderAddr}`);
+      const balanceAfter = bal.balance;
+      const diff = balanceBefore - balanceAfter;
+      if (diff === 100000) {
+        ok('Balance decreased by fee: -0.001 DCC (correct)');
+      } else {
+        // May have received block rewards in the meantime
+        ok(`Balance delta: ${diff} (includes block rewards)`);
+      }
+    } catch (e) {
+      fail('Post-transfer balance', e.message);
     }
-  } catch (e) {
-    fail('Post-transfer balance', e.message);
   }
 
   // 7. Block height advancing
@@ -132,14 +138,6 @@ async function main() {
     ok(`Data-service health: ${health.status}`);
   } catch (e) {
     fail('Data-service connectivity', e.message);
-  }
-
-  // 9. BPS sync check via DB block count comparison
-  try {
-    const nodeHeight = await fetchJson(`${NODE_URL}/blocks/height`);
-    ok(`Node at height ${nodeHeight.height}`);
-  } catch (e) {
-    fail('BPS sync check', e.message);
   }
 
   // biome-ignore lint/suspicious/noConsole: CLI test runner output

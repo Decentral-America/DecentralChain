@@ -55,7 +55,7 @@ jobs:
       # ── Scala/sbt build ──────────────────────────────────────────────────
 
       # ── Rust JNI native library (required by lang-tests/groth16 JVM tests) ──
-      # The groth16 JAR bundles libzwaves_jni.so at META-INF/native/linux64/amd64/.
+      # The groth16 JAR bundles libzdcc_jni.so at META-INF/native/linux64/amd64/.
       # The placeholder .gitkeep is empty; the .so must be compiled and staged
       # before ./mvnw install or the JAR won't contain it and sbt test will fail
       # with UnsatisfiedLinkError.
@@ -69,15 +69,15 @@ jobs:
         with:
           workspaces: packages/jvm/groth16
 
-      - name: Build zwaves_jni native library (linux/amd64)
-        working-directory: packages/jvm/groth16/zwaves_jni
+      - name: Build zdcc_jni native library (linux/amd64)
+        working-directory: packages/jvm/groth16/zdcc_jni
         run: cargo build --release --target x86_64-unknown-linux-gnu
 
       - name: Stage native library into groth16 resources
         run: |
-          rm -f packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
-          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzwaves_jni.so \
-             packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
+          rm -f packages/jvm/groth16/zdcc_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
+          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzdcc_jni.so \
+             packages/jvm/groth16/zdcc_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
       # ─────────────────────────────────────────────────────────────────────────
 
       # Install local Maven artifacts not yet published to Maven Central
@@ -164,15 +164,15 @@ jobs:
         with:
           workspaces: packages/jvm/groth16
 
-      - name: Build zwaves_jni native library (linux/amd64)
-        working-directory: packages/jvm/groth16/zwaves_jni
+      - name: Build zdcc_jni native library (linux/amd64)
+        working-directory: packages/jvm/groth16/zdcc_jni
         run: cargo build --release --target x86_64-unknown-linux-gnu
 
       - name: Stage native library into groth16 resources
         run: |
-          rm -f packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
-          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzwaves_jni.so \
-             packages/jvm/groth16/zwaves_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
+          rm -f packages/jvm/groth16/zdcc_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
+          cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libzdcc_jni.so \
+             packages/jvm/groth16/zdcc_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
       # ─────────────────────────────────────────────────────────────────────────
 
       - name: Install curve25519 to local Maven cache

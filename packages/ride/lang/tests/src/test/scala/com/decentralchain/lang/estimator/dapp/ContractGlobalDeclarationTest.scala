@@ -87,7 +87,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |let PAULI = 1000000
         |let PRICELET = 1000000 # 10^6
         |let DEFAULTSWAPFEE = 20000 # 0.02 * 1000000 or 2%
-        |let BRPROTECTED = 100000 # if BR <= 10% then use SURF during swap USDN->WAVES
+        |let BRPROTECTED = 100000 # if BR <= 10% then use SURF during swap USDN->DCC
         |
         |let IdxNetAmount = 0
         |let IdxFeeAmount = 1
@@ -135,13 +135,13 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |let RPDContractKey = "rpd_contract"
         |let ContolContractKey = "control_contract"
         |let MathContractKey = "math_contract"
-        |let BalanceWavesLockIntervalKey = "balance_waves_lock_interval"
+        |let BalanceDccLockIntervalKey = "balance_dcc_lock_interval"
         |let BalanceNeutrinoLockIntervalKey = "balance_neutrino_lock_interval"
-        |let MinWavesSwapAmountKey = "min_waves_swap_amount"
+        |let MinDccSwapAmountKey = "min_dcc_swap_amount"
         |let MinNeutrinoSwapAmountKey = "min_neutrino_swap_amount"
         |let NodeOracleProviderPubKeyKey = "node_oracle_provider"
         |let NeutrinoOutFeePartKey = "neutrinoOut_swap_feePart"
-        |let WavesOutFeePartKey = "wavesOut_swap_feePart"
+        |let DccOutFeePartKey = "dccOut_swap_feePart"
         |
         |#------Common----------------
         |
@@ -159,7 +159,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |func getStakingNodeAddressByIndex(idx: Int) = addressFromStringValue(getStakingNodeByIndex(idx))
         |
         |func getReservedAmountForSponsorship() =
-        |    getInteger(this, makeString(["%s%s", "lease", "sponsorshipWavesReserve"], SEP)).valueOrElse(1000 * WAVELET)
+        |    getInteger(this, makeString(["%s%s", "lease", "sponsorshipDccReserve"], SEP)).valueOrElse(1000 * WAVELET)
         |
         |#------This contract----------
         |#-------------------Keys-------------------
@@ -191,9 +191,9 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |func keyUserLastSwapHeight(userAddress: String) = ["%s%s", "userLastSwapHeight", userAddress].makeString(SEP)
         |
         |#-------------------Convert functions-------------------
-        |func convertNeutrinoToWaves(amount: Int, price: Int) = fraction(fraction(amount, PRICELET, price),WAVELET, PAULI)
-        |func convertWavesToNeutrino(amount: Int, price: Int) = fraction(fraction(amount, price, PRICELET), PAULI, WAVELET)
-        |func convertWavesToBond(amount: Int, price: Int) = convertWavesToNeutrino(amount, price) # it's here to be more explicit with convertation
+        |func convertNeutrinoToDcc(amount: Int, price: Int) = fraction(fraction(amount, PRICELET, price),WAVELET, PAULI)
+        |func convertDccToNeutrino(amount: Int, price: Int) = fraction(fraction(amount, price, PRICELET), PAULI, WAVELET)
+        |func convertDccToBond(amount: Int, price: Int) = convertDccToNeutrino(amount, price) # it's here to be more explicit with convertation
         |func convertJsonArrayToList(jsonArray: String) = {
         |   jsonArray.split(",")
         |}
@@ -226,7 +226,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |func checkIsValidMinSponsoredFee(tx: SponsorFeeTransaction) = {
         |    let MINTRANSFERFEE = 100000 #wavelets (to support smart assets)
         |    let SponsoredFeeUpperBound = 1000 # % of fee profits higther than real fee for transfer
-        |    let realNeutrinoFee = convertWavesToNeutrino(MINTRANSFERFEE, currentPrice) # in paulis
+        |    let realNeutrinoFee = convertDccToNeutrino(MINTRANSFERFEE, currentPrice) # in paulis
         |    let minNeutrinoFee = realNeutrinoFee * 2 # 100%
         |    let maxNeutrinoFee = fraction(realNeutrinoFee, SponsoredFeeUpperBound, 100)
         |
@@ -348,7 +348,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |func abs(x: Int) = if (x < 0) then -x else x
         |
         |func selectNode(unleaseAmount: Int) = {
-        |    let amountToLease = wavesBalance(neutrinoContract).available - unleaseAmount - getReservedAmountForSponsorship()
+        |    let amountToLease = dccBalance(neutrinoContract).available - unleaseAmount - getReservedAmountForSponsorship()
         |
         |    let oldLeased0 = getNumberByKey(getLeaseAmountKey(0))
         |    let oldLeased1 = getNumberByKey(getLeaseAmountKey(1))
@@ -370,9 +370,9 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  } else true
         |}
         |
-        |# prepare list of actions to lease available waves or cancel lease in case of usdn2waves swap
+        |# prepare list of actions to lease available dcc or cancel lease in case of usdn2dcc swap
         |func prepareUnleaseAndLease(unleaseAmount: Int) = {
-        |    let nodeTuple       = selectNode(unleaseAmount) # balancing waves by 2 nodes
+        |    let nodeTuple       = selectNode(unleaseAmount) # balancing dcc by 2 nodes
         |    let nodeIndex       = nodeTuple._1
         |    let newLeaseAmount  = nodeTuple._2
         |
@@ -406,7 +406,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |func commonSwap(swapType: String, pmtAmount: Int, userAddressStr: String, txId58: String, swapParamsByUserSYSREADONLY: (Int,Int,Int,Int,Int,Int,Int)) = {
         |  let swapLimitSpent    = swapParamsByUserSYSREADONLY._2
         |  let blcks2LmtReset    = swapParamsByUserSYSREADONLY._3
-        |  let wavesSwapLimitMax = swapParamsByUserSYSREADONLY._6
+        |  let dccSwapLimitMax = swapParamsByUserSYSREADONLY._6
         |  let usdnSwapLimitMax  = swapParamsByUserSYSREADONLY._7
         |
         |  let minSwapAmount         = minSwapAmountREAD(swapType)
@@ -418,15 +418,15 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |
         |  let balanceLockMaxInterval = if (isSwapByNode) then nodeBalanceLockIntervalREAD() else balanceLockIntervalREAD(swapType)
         |  let selfUnlockHeight       = height + balanceLockMaxInterval
-        |  let swapUsdnVolume         = if (swapType == "neutrino") then pmtAmount else pmtAmount.convertWavesToNeutrino(priceByIndex)
-        |  let swapLimitMax           = if (swapType == "neutrino") then usdnSwapLimitMax else wavesSwapLimitMax.convertWavesToNeutrino(priceByIndex)
+        |  let swapUsdnVolume         = if (swapType == "neutrino") then pmtAmount else pmtAmount.convertDccToNeutrino(priceByIndex)
+        |  let swapLimitMax           = if (swapType == "neutrino") then usdnSwapLimitMax else dccSwapLimitMax.convertDccToNeutrino(priceByIndex)
         |
         |  if (pmtAmount < minSwapAmount) then minSwapAmountFAIL(swapType, minSwapAmount) else
         |  if (!isSwapByNode && swapLimitSpent > 0) then throw("You have exceeded swap limit! Next allowed swap height is " + (height + blcks2LmtReset).toString()) else
         |  if (!isSwapByNode && swapUsdnVolume > swapLimitMax) then throw("You have exceeded your swap limit! Requested: "+ toString(swapUsdnVolume) + ", available: " + toString(swapLimitMax)) else
         |  if (isBlocked) then emergencyShutdownFAIL() else  # see control.ride
         |
-        |  let leasePart = if (swapType == "waves") then prepareUnleaseAndLease(0) else []
+        |  let leasePart = if (swapType == "dcc") then prepareUnleaseAndLease(0) else []
         |
         |  ([
         |      IntegerEntry(keySwapUserSpentInPeriod(userAddressStr), swapUsdnVolume),
@@ -444,7 +444,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |#indices for calcNeutinoMetricsREADONLY result array
         |let nMetricIdxPrice = 0
         |let nMetricIdxUsdnLockedBalance = 1
-        |let nMetricIdxWavesLockedBalance = 2
+        |let nMetricIdxDccLockedBalance = 2
         |let nMetricIdxReserve = 3
         |let nMetricIdxReserveInUsdn = 4
         |let nMetricIdxUsdnSupply = 5
@@ -457,7 +457,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |
         |# surfFunctionREADONLY result array indices
         |let bFuncIdxSurf = 0
-        |let bFuncIdxWaves = 1
+        |let bFuncIdxDcc = 1
         |let bFuncIdxUsdn = 2
         |let bFuncIdxReserveStart = 3
         |let bFuncIdxSupplyStart = 4
@@ -466,17 +466,17 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |let bFuncIdxSupplyEnd = 7
         |let bFuncIdxBREnd = 8
         |let bFuncIdxRest = 9
-        |let bFuncIdxWavesPrice = 10
+        |let bFuncIdxDccPrice = 10
         |
-        |func calcWithdrawW2U(wavesIn: Int, price: Int) = {
-        |  let outAmtGross = convertWavesToNeutrino(wavesIn, price)
+        |func calcWithdrawW2U(dccIn: Int, price: Int) = {
+        |  let outAmtGross = convertDccToNeutrino(dccIn, price)
         |  (
         |    outAmtGross,      # gross outAmount (fees are not applied yet)
         |    neutrinoAssetId,  # outAssetId is USDN
         |    0,                # part of inAmount that is converted into SURF to protect BR
-        |    unit,             # inAssetId is WAVES
+        |    unit,             # inAssetId is DCC
         |    0,                # amount to unlease
-        |    wavesIn,          # debug - part of inAmount that is swapped into out asset
+        |    dccIn,          # debug - part of inAmount that is swapped into out asset
         |    0,                # debug - max allowed usdn amount to reach BR protection level
         |    0,                # debug - part of inAmount that is used BEFORE reaching BR protection level
         |    0                 # debug - part of inAmount that is used AFTER reaching BR protection level
@@ -499,12 +499,12 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  let allowedUsdn = allowedUsdnBeforeMinBr + allowedUsdnAfterMinBr
         |  let usdn2SURF = usdnIn - allowedUsdn
         |
-        |  let outAmtGross = convertNeutrinoToWaves(allowedUsdn, price)
+        |  let outAmtGross = convertNeutrinoToDcc(allowedUsdn, price)
         |  (
         |    outAmtGross,                # gross outAmount (fees are not applied yet)
-        |    unit,                       # waves_id
+        |    unit,                       # dcc_id
         |    usdn2SURF,                  # part of inAmount that is converted into SURF to protect BR
-        |    neutrinoAssetId,            # inAssetId is WAVES
+        |    neutrinoAssetId,            # inAssetId is DCC
         |    outAmtGross,                # amount to unlease
         |    allowedUsdn,                # debug - part of inAmount that is swapped into out asset
         |    maxAllowedUsdnBeforeMinBr,  # debug - max allowed usdn amount to reach BR protection level
@@ -524,7 +524,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  let usdnSupply        = neutrinoMetrics[nMetricIdxUsdnSupply].asInt()
         |
         |  let outDataTuple =
-        |    if (swapType == "waves")    then calcWithdrawW2U(inAmount, price) else
+        |    if (swapType == "dcc")    then calcWithdrawW2U(inAmount, price) else
         |    if (swapType == "neutrino") then calcWithdrawU2W(inAmount, price, BR, reservesInUsdn, usdnSupply)
         |    else throw("Unsupported swap type " + swapType)
         |
@@ -637,12 +637,12 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  liquidationContractPrm: String,
         |  rpdContractPrm: String,
         |  nodeOracleProviderPubKeyPrm: String,
-        |  balanceWavesLockIntervalPrm: Int,
+        |  balanceDccLockIntervalPrm: Int,
         |  balanceNeutrinoLockIntervalPrm: Int,
-        |  minWavesSwapAmountPrm: Int,
+        |  minDccSwapAmountPrm: Int,
         |  minNeutrinoSwapAmountPrm: Int,
         |  neutrinoOutFeePartPrm: Int,
-        |  wavesOutFeePartPrm: Int) = {
+        |  dccOutFeePartPrm: Int) = {
         |
         |  strict checkCaller = i.thisOnly()
         |  if (i.payments.size() != 0) then throw("no payments allowed") else
@@ -654,12 +654,12 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |    StringEntry(LiquidationContractKey, liquidationContractPrm), # ignored
         |    StringEntry(RPDContractKey, rpdContractPrm), #ignored
         |    StringEntry(NodeOracleProviderPubKeyKey, nodeOracleProviderPubKeyPrm),
-        |    IntegerEntry(BalanceWavesLockIntervalKey, balanceWavesLockIntervalPrm),
+        |    IntegerEntry(BalanceDccLockIntervalKey, balanceDccLockIntervalPrm),
         |    IntegerEntry(BalanceNeutrinoLockIntervalKey, balanceNeutrinoLockIntervalPrm),
-        |    IntegerEntry(MinWavesSwapAmountKey, minWavesSwapAmountPrm),
+        |    IntegerEntry(MinDccSwapAmountKey, minDccSwapAmountPrm),
         |    IntegerEntry(MinNeutrinoSwapAmountKey, minNeutrinoSwapAmountPrm),
         |    IntegerEntry(NeutrinoOutFeePartKey, neutrinoOutFeePartPrm),
-        |    IntegerEntry(WavesOutFeePartKey, wavesOutFeePartPrm)
+        |    IntegerEntry(DccOutFeePartKey, dccOutFeePartPrm)
         |  ]
         |}
         |
@@ -674,29 +674,29 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  ]
         |}
         |
-        |# Instant swap of WAVES to Neutrino token at the current price on the smart contract
+        |# Instant swap of DCC to Neutrino token at the current price on the smart contract
         |# [called by user]
         |@Callable(i)
-        |func swapWavesToNeutrino() = {
-        |    if (i.payments.size() != 1) then throw("swapWavesToNeutrino require only one payment") else
+        |func swapDccToNeutrino() = {
+        |    if (i.payments.size() != 1) then throw("swapDccToNeutrino require only one payment") else
         |    let pmt = i.payments[0].value()
-        |    if (isDefined(pmt.assetId)) then throw("Only Waves token is allowed for swapping.") else
+        |    if (isDefined(pmt.assetId)) then throw("Only Dcc token is allowed for swapping.") else
         |
         |    let userAddress = i.caller.toString()
         |    let txId58 = i.transactionId.toBase58String()
         |
         |    let swapParamsSTRUCT = this.invoke("swapParamsByUserSYSREADONLY", [userAddress, 0], []).asSwapParamsSTRUCT()
         |
-        |    let commonSwapResult =  commonSwap("waves", pmt.amount, userAddress, txId58, swapParamsSTRUCT)
+        |    let commonSwapResult =  commonSwap("dcc", pmt.amount, userAddress, txId58, swapParamsSTRUCT)
         |    commonSwapResult
         |}
         |
-        |# Swap request of Neutrino to WAVES. After {balanceLockInterval} blocks, WAVES tokens will be available for withdrawal
+        |# Swap request of Neutrino to DCC. After {balanceLockInterval} blocks, DCC tokens will be available for withdrawal
         |# via {withdraw(account : String)} method at the price that is current at the time when {balanceLockInterval} is reached
         |# [called by user]
         |@Callable(i)
-        |func swapNeutrinoToWaves() = {
-        |    if (i.payments.size() != 1) then throw("swapNeutrinoToWaves require only one payment") else
+        |func swapNeutrinoToDcc() = {
+        |    if (i.payments.size() != 1) then throw("swapNeutrinoToDcc require only one payment") else
         |    let pmt = i.payments[0].value()
         |    if (pmt.assetId != neutrinoAssetId) then throw("Only appropriate Neutrino tokens are allowed for swapping.") else
         |
@@ -709,7 +709,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |    commonSwapResult
         |}
         |
-        |# Withdraw WAVES from smart contract after {swapNeutrinoToWaves()} request has reached {balanceLockInterval} height
+        |# Withdraw DCC from smart contract after {swapNeutrinoToDcc()} request has reached {balanceLockInterval} height
         |# at the price that is current at the time when {balanceLockInterval} is reached
         |# [called by user]
         |@Callable(i)
@@ -762,10 +762,10 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |    [ScriptTransfer(addressFromStringValue(addr), amount, neutrinoAssetId)]
         |}
         |
-        |# Accept waves from auction after buyNsbt/buySurf to lease them immediately
+        |# Accept dcc from auction after buyNsbt/buySurf to lease them immediately
         |# also from governance after creating new voting
         |@Callable(i)
-        |func acceptWaves() = {
+        |func acceptDcc() = {
         |    if (i.caller != auctionContract && i.caller != govContract)
         |        then throw("Currently only auction and governance contracts are allowed to call")
         |    else
@@ -864,8 +864,8 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  let gnsbtAmtTotal = gnsbtData[1].asInt() + gnsbtDiff
         |
         |  let swapLimitData = mathContract.invoke("calcSwapLimitREADONLY", [gnsbtAmt], []).asAnyList()
-        |  let wavesSwapLimitInUsdnMax = swapLimitData[0].asInt()
-        |  let wavesSwapLimitMax       = swapLimitData[1].asInt()
+        |  let dccSwapLimitInUsdnMax = swapLimitData[0].asInt()
+        |  let dccSwapLimitMax       = swapLimitData[1].asInt()
         |  let usdnSwapLimitMax        = swapLimitData[2].asInt()
         |
         |  let lastSwapHeight = this.getInteger(keyUserLastSwapHeight(userAddressStr)).valueOrElse(0)
@@ -876,7 +876,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |  let blcks2LmtReset = if (isSwapTimelifeNew) then 0 else swapLimitTimelifeBlocks - passedBlocksAfterLastSwap
         |
         |  # WARNING if you change returned value - MUST have to change "asSwapParamsSTRUCT" function
-        |  ([], (wavesSwapLimitInUsdnMax, swapLimitSpentInUsdn, blcks2LmtReset, gnsbtAmt, gnsbtAmtTotal, wavesSwapLimitMax, usdnSwapLimitMax))
+        |  ([], (dccSwapLimitInUsdnMax, swapLimitSpentInUsdn, blcks2LmtReset, gnsbtAmt, gnsbtAmtTotal, dccSwapLimitMax, usdnSwapLimitMax))
         |}
         |
         |@Callable(i)

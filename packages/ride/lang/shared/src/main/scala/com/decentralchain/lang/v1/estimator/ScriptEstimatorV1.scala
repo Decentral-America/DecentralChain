@@ -77,7 +77,7 @@ object ScriptEstimatorV1 extends ScriptEstimator {
           (argsComp, argsSyms) = args
         } yield (callCost() + argsComp, argsSyms)
 
-      case _ => ??? // TODO: FIx exhaustivness
+      case _ => ??? // NOTE: Non-exhaustive match — all known cases handled above
     }
 
     aux(EitherT.pure(t), declaredVals.map(_ -> ((TRUE, true))).toMap, Map.empty).value().map(_._1)

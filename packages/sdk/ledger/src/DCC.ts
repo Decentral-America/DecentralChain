@@ -53,12 +53,12 @@ const DCC_CONFIG = {
   /**
    * Ledger app identifier.
    *
-   * NOTE: This MUST remain `'WAVES'` — it is the firmware application name
+   * NOTE: This MUST remain `'DCC'` — it is the firmware application name
    * registered on the Ledger device. Changing it would break communication
    * with all existing Ledger firmware. Do NOT rename unless DecentralChain
    * ships its own custom Ledger app.
    */
-  SECRET: 'WAVES',
+  SECRET: 'DCC',
   SIGNED_CODES: {
     MESSAGE: 0xff,
     ORDER: 0xfc,

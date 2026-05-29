@@ -788,7 +788,7 @@
               "volume": {
                 "type": "number"
               },
-              "volumeWaves": {
+              "volumeDcc": {
                 "type": "number"
               },
               "weightedAveragePrice": {
@@ -2020,8 +2020,8 @@
     }
   },
   "info": {
-    "description": "This is a a public Waves Data Services API documentation. The goal of the API is to provide a simple and convenient way to get data from Waves blockchain.",
-    "title": "Waves Data Service",
+    "description": "This is a a public Dcc Data Services API documentation. The goal of the API is to provide a simple and convenient way to get data from Dcc blockchain.",
+    "title": "Dcc Data Service",
     "version": "0.36.0"
   },
   "openapi": "3.0.0",
@@ -2195,7 +2195,7 @@
             }
           },
           {
-            "description": "Examples: WAVES, BTC, \\*. A wildcard request **ticker=***  returns all assets with tickers.",
+            "description": "Examples: DCC, BTC, \\*. A wildcard request **ticker=***  returns all assets with tickers.",
             "example": "*",
             "in": "query",
             "name": "ticker",
@@ -2286,7 +2286,7 @@
                     "type": "string"
                   },
                   "ticker": {
-                    "description": "Examples: WAVES, BTC, \\*. A wildcard request **ticker=***  returns all assets with tickers.",
+                    "description": "Examples: DCC, BTC, \\*. A wildcard request **ticker=***  returns all assets with tickers.",
                     "example": "*",
                     "type": "string"
                   }
@@ -2629,7 +2629,7 @@
             "description": "If assets order in one of the pairs is incorrect or at least on of the assets does not exist"
           }
         },
-        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in WAVES)",
+        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in DCC)",
         "tags": ["matchers"]
       },
       "post": {
@@ -2706,7 +2706,7 @@
             "description": "If assets order in one of the pairs is incorrect or at least on of the assets does not exist"
           }
         },
-        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in WAVES)",
+        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in DCC)",
         "tags": ["matchers"]
       }
     },
@@ -2962,7 +2962,7 @@
             "description": "List of Pairs info"
           }
         },
-        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in WAVES)",
+        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in DCC)",
         "tags": ["pairs"]
       },
       "post": {
@@ -3029,7 +3029,7 @@
             "description": "List of Pairs info"
           }
         },
-        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in WAVES)",
+        "summary": "1) Get list of pairs info by serialized pairs list; 2) Get all list of pairs info by limit (sort by volume in DCC)",
         "tags": ["pairs"]
       }
     },

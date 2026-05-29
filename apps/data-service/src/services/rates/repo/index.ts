@@ -30,7 +30,7 @@ export const partitionByPreComputed = (
 
   const eqRates: Array<VolumeAwareRateInfo> = symmetric.map((pair) => ({
     rate: new BigNumber(1),
-    volumeWaves: new BigNumber(0),
+    volumeDcc: new BigNumber(0),
     ...pair,
   }));
 

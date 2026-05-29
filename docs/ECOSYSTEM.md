@@ -237,7 +237,7 @@ C4Context
     }
 
     Enterprise_Boundary(infra, "DecentralChain Infrastructure") {
-        System(node, "DCC Node", "Blockchain node (target launch topology: node-go primary, node-scala fallback)")
+        System(node, "DCC Node", "Blockchain protocol node — node-scala (Scala 3.8.3, production)")
         System(matcher, "DEX Matcher", "Order matching engine — decentralchain-dex v2.3.2.9")
         System(datasvc, "Data Service", "Historical blockchain data API — Node.js / Koa v0.30.0")
     }

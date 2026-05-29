@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,7 +30,14 @@ export default function Blocks() {
 
   const currentHeight = height?.height || 0;
   const [pageSize] = useState(50);
-  const [fromHeight, setFromHeight] = useState(Math.max(1, currentHeight - pageSize + 1));
+  const [fromHeight, setFromHeight] = useState(1);
+
+  // Sync fromHeight to the latest page once height loads for the first time
+  useEffect(() => {
+    if (currentHeight > 0) {
+      setFromHeight((prev) => (prev === 1 ? Math.max(1, currentHeight - pageSize + 1) : prev));
+    }
+  }, [currentHeight, pageSize]);
 
   const toHeight = Math.min(currentHeight, fromHeight + pageSize - 1);
 

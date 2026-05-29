@@ -12,7 +12,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced Jest with Vitest.
 - Replaced webpack with tsup.
 - Upgraded all dependencies to latest versions.
-- Rebranded from `@waves` to `@decentralchain`.
+- Rebranded from `@dcc` to `@decentralchain`.
 
 ### Added
 

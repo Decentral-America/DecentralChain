@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Migrated from `@keeper-wallet/waves-crypto` to `@decentralchain/crypto`
+- Migrated from `@keeper-wallet/dcc-crypto` to `@decentralchain/crypto`
 - Replaced legacy `tweetnacl` with `@noble/hashes` and `@scure/base`
 - Full ESM-only build with TypeScript strict mode
 - Added Biome linting and formatting

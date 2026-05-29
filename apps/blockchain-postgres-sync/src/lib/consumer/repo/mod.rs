@@ -13,7 +13,7 @@ use super::models::{
         Tx1, Tx10, Tx11Combined, Tx12Combined, Tx13, Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined,
         Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial,
     },
-    waves_data::WavesData,
+    dcc_data::DccData,
 };
 use super::UidHeight;
 
@@ -56,7 +56,7 @@ pub trait RepoOperations {
 
     fn rollback_blocks_microblocks(&mut self, block_uid: i64) -> Result<()>;
 
-    fn insert_waves_data(&mut self, waves_data: &[WavesData]) -> Result<()>;
+    fn insert_dcc_data(&mut self, dcc_data: &[DccData]) -> Result<()>;
 
     //
     // ASSETS

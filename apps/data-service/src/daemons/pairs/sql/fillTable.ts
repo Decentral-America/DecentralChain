@@ -36,7 +36,7 @@ const selectPairsCTE = pg
       quote_volume: pg.raw('sum(e.amount::numeric * e.price::numeric)'),
       txs_count: pg.raw('count(e.price)'),
       volume: pg.raw('sum(e.amount)'),
-      volume_waves: pg.raw(
+      volume_dcc: pg.raw(
         `case when amount_asset_id='DCC' then sum(e.amount) when price_asset_id='DCC' then sum(e.amount::numeric * e.price::numeric) end`,
       ),
       weighted_average_price: pg.raw(
@@ -54,8 +54,8 @@ const selectPairsCTE = pg
     'p.last_price',
     'p.volume',
     {
-      volume_waves: pg.raw(
-        'COALESCE(p.volume_waves, floor(p.quote_volume / p1.weighted_average_price), p.quote_volume * p2.weighted_average_price)',
+      volume_dcc: pg.raw(
+        'COALESCE(p.volume_dcc, floor(p.quote_volume / p1.weighted_average_price), p.quote_volume * p2.weighted_average_price)',
       ),
     },
     'p.quote_volume',

@@ -8,7 +8,7 @@
         Custom PMD ruleset for groth16.
         This module contains:
           - Hand-written JNI bridge classes (Groth16.java for BLS12 and BN256)
-          - ZWavesJNILibrary.java — native library loader entry point
+          - ZDccJNILibrary.java — native library loader entry point
           - JNILibrary.java — hawtjni utility class (3rd-party, EPL-1.0)
 
         Patterns intentionally excluded:

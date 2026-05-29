@@ -1,0 +1,10 @@
+syntax = "proto3";
+package dcc;
+option java_package = "io.decentralchain.protobuf";
+option csharp_namespace = "Dcc";
+option go_package = "github.com/Decentral-America/node-go/pkg/grpc/generated/dcc";
+
+message RewardShare {
+    bytes address = 1;
+    int64 reward = 2;
+}

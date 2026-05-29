@@ -4,11 +4,11 @@
  * These tests cover the five generated files that are NOT re-exported through
  * the public index.ts barrel but are still measured by coverage:
  *
- *   - waves/events/grpc/blockchain_updates_pb.ts
- *   - waves/node/grpc/accounts_api_pb.ts
- *   - waves/node/grpc/assets_api_pb.ts
- *   - waves/node/grpc/blockchain_api_pb.ts
- *   - waves/node/grpc/blocks_api_pb.ts
+ *   - dcc/events/grpc/blockchain_updates_pb.ts
+ *   - dcc/node/grpc/accounts_api_pb.ts
+ *   - dcc/node/grpc/assets_api_pb.ts
+ *   - dcc/node/grpc/blockchain_api_pb.ts
+ *   - dcc/node/grpc/blocks_api_pb.ts
  *
  * Strategy: create → toBinary → fromBinary roundtrips for every message schema,
  * verify enum constants, and assert service descriptor identity. Simply importing
@@ -27,13 +27,13 @@ import {
   GetBlockUpdatesRangeResponseSchema,
   SubscribeEventSchema,
   SubscribeRequestSchema,
-} from '../src/gen/waves/events/grpc/blockchain_updates_pb.js';
+} from '../src/gen/dcc/events/grpc/blockchain_updates_pb.js';
 
 // ─── Node accounts API ────────────────────────────────────────────────────────
 import {
   AccountRequestSchema,
   AccountsApi,
-  BalanceResponse_WavesBalancesSchema,
+  BalanceResponse_DccBalancesSchema,
   BalanceResponseSchema,
   BalancesRequestSchema,
   DataEntryResponseSchema,
@@ -41,7 +41,7 @@ import {
   LeaseResponseSchema,
   ScriptDataSchema,
   ScriptResponseSchema,
-} from '../src/gen/waves/node/grpc/accounts_api_pb.js';
+} from '../src/gen/dcc/node/grpc/accounts_api_pb.js';
 
 // ─── Node assets API ──────────────────────────────────────────────────────────
 import {
@@ -50,7 +50,7 @@ import {
   AssetsApi,
   NFTRequestSchema,
   NFTResponseSchema,
-} from '../src/gen/waves/node/grpc/assets_api_pb.js';
+} from '../src/gen/dcc/node/grpc/assets_api_pb.js';
 
 // ─── Node blockchain API ──────────────────────────────────────────────────────
 import {
@@ -64,7 +64,7 @@ import {
   FeatureActivationStatus_NodeFeatureStatusSchema,
   FeatureActivationStatusSchema,
   ScoreResponseSchema,
-} from '../src/gen/waves/node/grpc/blockchain_api_pb.js';
+} from '../src/gen/dcc/node/grpc/blockchain_api_pb.js';
 
 // ─── Node blocks API ──────────────────────────────────────────────────────────
 import {
@@ -72,7 +72,7 @@ import {
   BlockRequestSchema,
   BlocksApi,
   BlockWithHeightSchema,
-} from '../src/gen/waves/node/grpc/blocks_api_pb.js';
+} from '../src/gen/dcc/node/grpc/blocks_api_pb.js';
 
 // ─── Shared schemas (used in nested message fields) ───────────────────────────
 import { DataEntrySchema } from '../src/index.js';
@@ -224,7 +224,7 @@ describe('accounts_api_pb — gRPC accounts schemas', () => {
     expect(new Uint8Array(decoded.assets[1] ?? new Uint8Array())).toEqual(asset2);
   });
 
-  it('BalancesRequest: roundtrip with no assets (WAVES only)', () => {
+  it('BalancesRequest: roundtrip with no assets (DCC only)', () => {
     const original = create(BalancesRequestSchema, {
       address: new Uint8Array(26).fill(0x04),
       assets: [],
@@ -234,8 +234,8 @@ describe('accounts_api_pb — gRPC accounts schemas', () => {
     expect(decoded.assets).toEqual([]);
   });
 
-  it('BalanceResponse: roundtrip with WavesBalances', () => {
-    const waves = create(BalanceResponse_WavesBalancesSchema, {
+  it('BalanceResponse: roundtrip with DccBalances', () => {
+    const dcc = create(BalanceResponse_DccBalancesSchema, {
       available: 900_000_000n,
       effective: 1_000_000_000n,
       generating: 800_000_000n,
@@ -244,12 +244,12 @@ describe('accounts_api_pb — gRPC accounts schemas', () => {
       regular: 1_000_000_000n,
     });
     const original = create(BalanceResponseSchema, {
-      balance: { case: 'waves', value: waves },
+      balance: { case: 'dcc', value: dcc },
     });
     const buf = toBinary(BalanceResponseSchema, original);
     const decoded = fromBinary(BalanceResponseSchema, buf);
-    expect(decoded.balance.case).toBe('waves');
-    if (decoded.balance.case === 'waves') {
+    expect(decoded.balance.case).toBe('dcc');
+    if (decoded.balance.case === 'dcc') {
       const wb = decoded.balance.value;
       expect(wb.regular).toBe(1_000_000_000n);
       expect(wb.available).toBe(900_000_000n);
@@ -280,8 +280,8 @@ describe('accounts_api_pb — gRPC accounts schemas', () => {
     expect(decoded.balance.case).toBeUndefined();
   });
 
-  it('BalanceResponse_WavesBalances: roundtrip with all zeros', () => {
-    const original = create(BalanceResponse_WavesBalancesSchema, {
+  it('BalanceResponse_DccBalances: roundtrip with all zeros', () => {
+    const original = create(BalanceResponse_DccBalancesSchema, {
       available: 0n,
       effective: 0n,
       generating: 0n,
@@ -289,8 +289,8 @@ describe('accounts_api_pb — gRPC accounts schemas', () => {
       leaseOut: 0n,
       regular: 0n,
     });
-    const buf = toBinary(BalanceResponse_WavesBalancesSchema, original);
-    const decoded = fromBinary(BalanceResponse_WavesBalancesSchema, buf);
+    const buf = toBinary(BalanceResponse_DccBalancesSchema, original);
+    const decoded = fromBinary(BalanceResponse_DccBalancesSchema, buf);
     expect(decoded.regular).toBe(0n);
   });
 
@@ -818,7 +818,7 @@ describe('gRPC API schema registry integrity', () => {
       DataRequestSchema,
       BalancesRequestSchema,
       BalanceResponseSchema,
-      BalanceResponse_WavesBalancesSchema,
+      BalanceResponse_DccBalancesSchema,
       DataEntryResponseSchema,
       ScriptDataSchema,
       ScriptResponseSchema,

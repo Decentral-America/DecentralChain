@@ -295,7 +295,7 @@ export async function accountDataByKey(
   requestOptions?: RequestInit,
 ): Promise<DataTransactionEntry<Long> | null> {
   return addresses_route.fetchDataKey(nodeUrl, address, key, requestOptions).catch((e) => {
-    if (e.error === 304) return null;
+    if (e.data?.error === 304) return null;
     else throw e;
   });
 }

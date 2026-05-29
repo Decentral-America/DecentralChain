@@ -176,7 +176,7 @@ const invokeScriptTx = {
     function: 'bet',
   },
   chainId: 63,
-  dApp: '3P8M8XGF2uzDazV5fzdKNxrbC3YqCWScKxw',
+  dApp: '3DUEetf67sf6ZN5jbQZKjKr4JwSeZRwSHPY',
   fee: 500000,
   id: 'E1fPNBHLTRrd1k1iZbnxjc2CjTcwYpuoBf5rBAVB6TMN',
   payment: [

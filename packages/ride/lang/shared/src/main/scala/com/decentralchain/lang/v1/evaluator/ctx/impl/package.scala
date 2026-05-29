@@ -9,7 +9,7 @@ import com.decentralchain.lang.v1.compiler.ScriptResultSource
 import com.decentralchain.lang.v1.compiler.Terms.CaseObj
 import com.decentralchain.lang.v1.compiler.Types.UNIT
 import com.decentralchain.lang.v1.evaluator.FunctionIds.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Functions.*
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.Functions.*
 import com.decentralchain.lang.{CommonError, ExecutionError}
 
 package object impl {

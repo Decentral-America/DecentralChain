@@ -18,7 +18,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
-- Removed legacy `@waves` references from JSDoc comments.
+- Removed legacy `@dcc` references from JSDoc comments.
 - Removed stale `exclude` entry for deleted `ui.spec.ts` in vitest config.
 - Cleaned up redundant patterns in knip config.
 

@@ -9,7 +9,7 @@ import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.{CASETYPEREF, FINAL}
 import com.decentralchain.lang.v1.evaluator.ctx.EvaluationContext
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.FieldNames
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.FieldNames
 import com.decentralchain.lang.v1.evaluator.{ScriptResult, ScriptResultV3}
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.traits.domain.Recipient.Address

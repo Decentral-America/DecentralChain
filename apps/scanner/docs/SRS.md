@@ -168,7 +168,7 @@ The application consists of 17 lazy-loaded page components rendered inside a sha
 
 | Term | Definition |
 |---|---|
-| **DCC** | DecentralChain — the blockchain network (Waves-protocol fork, LPoS consensus) |
+| **DCC** | DecentralChain — the blockchain network (Dcc-protocol fork, LPoS consensus) |
 | **Block Height** | Sequential integer identifying each block in the chain (starts at 1) |
 | **Generator** | The address of the node that forged/mined a given block |
 | **TX** | Transaction — an atomic state change on the blockchain |

@@ -124,7 +124,7 @@ DecentralChain/
 │       ├── curve25519/        Curve25519 cryptography
 │       ├── transactions/      Transaction types
 │       ├── blst/              BLS12-381 pairing (native)
-│       └── zwaves/                 ZK-SNARK integration (native)
+│       └── zdcc/                 ZK-SNARK integration (native)
 ├── docs/
 │   ├── ARCHITECTURE.md             This file
 │   ├── UPSTREAM.md                 Waves provenance & ecosystem
@@ -667,7 +667,7 @@ On PRs, use `nx affected -t test` to only test packages whose source changed —
 | Catalog support | Renovate natively reads `pnpm-workspace.yaml` catalogs — shared versions (vitest, tsdown, etc.) update in one PR |
 | Lock file | Weekly `pnpm-lock.yaml` refresh with automerge |
 | Deduplication | `pnpmDedupe` runs after every update |
-| Ignored | `@waves/ride-lang`, `@waves/ride-repl` — unforked upstream deps that must not be auto-updated |
+| RIDE packages | `@decentralchain/ride-lang`, `@decentralchain/ride-repl` — forked as workspace packages (DCC-252), no longer external deps |
 
 22 `packageRules` group related dependencies (Nx, Biome, TypeScript, Vitest, Vite, React, Radix UI, Sentry, TanStack, Tailwind, MUI, Ledger, Protobuf, Noble crypto, i18next, etc.) to minimize PR count and lock file conflicts. High-impact updates (Nx, TypeScript, all majors) require Dependency Dashboard approval before a PR is created.
 

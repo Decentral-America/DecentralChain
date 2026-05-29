@@ -26,7 +26,7 @@ export function PerformanceDashboard() {
         type="button"
         onClick={() => setIsOpen(true)}
         style={{
-          backgroundColor: '#007bff',
+          backgroundColor: '#0056b3',
           border: 'none',
           borderRadius: '5px',
           bottom: '20px',
@@ -86,7 +86,7 @@ export function PerformanceDashboard() {
       <div
         style={{
           alignItems: 'center',
-          backgroundColor: '#007bff',
+          backgroundColor: '#0056b3',
           color: 'white',
           display: 'flex',
           justifyContent: 'space-between',

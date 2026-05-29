@@ -5,15 +5,15 @@ import { randomBytes } from '@decentralchain/ts-lib-crypto';
  * All values are read from environment — see .env.example at repo root.
  */
 
-export const CHAIN_ID = process.env.DCC_TEST_CHAIN_ID ?? '!';
-export const API_BASE = process.env.DCC_TEST_NODE_URL ?? 'https://testnet-node.decentralchain.io';
+export const CHAIN_ID = process.env.DCC_TEST_CHAIN_ID ?? 'R';
+export const API_BASE = process.env.DCC_TEST_NODE_URL ?? 'http://localhost:6869';
 
-export const MASTER_SEED = process.env.DCC_TEST_MINER_SEED ?? '';
-if (!MASTER_SEED) throw new Error('DCC_TEST_MINER_SEED env var is required');
+export const MASTER_SEED =
+  process.env.DCC_TEST_MINER_SEED || 'dcc private node seed with dcc tokens';
 
 export const MATCHER_PUBLIC_KEY =
   process.env.DCC_TEST_MATCHER_PUBLIC_KEY ?? 'DDMFGjv3rCULuVkFywAHebd9mjKZnoQgqPixsSsReqtY';
-export const MATCHER_URL = process.env.DCC_TEST_MATCHER_URL ?? 'https://matcher.decentralchain.io';
+export const MATCHER_URL = process.env.DCC_TEST_MATCHER_URL ?? 'http://localhost:6886';
 
 export const TIMEOUT = 60000;
 

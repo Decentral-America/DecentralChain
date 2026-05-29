@@ -101,7 +101,7 @@ diesel::table! {
         first_price -> Numeric,
         last_price -> Numeric,
         volume -> Numeric,
-        volume_waves -> Nullable<Numeric>,
+        volume_dcc -> Nullable<Numeric>,
         quote_volume -> Numeric,
         high -> Numeric,
         low -> Numeric,
@@ -634,7 +634,7 @@ diesel::table! {
 diesel::table! {
     use diesel::sql_types::*;
 
-    waves_data (quantity) {
+    dcc_data (quantity) {
         height -> Nullable<Int4>,
         quantity -> Numeric,
     }
@@ -680,5 +680,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     txs_7,
     txs_8,
     txs_9,
-    waves_data,
+    dcc_data,
 );

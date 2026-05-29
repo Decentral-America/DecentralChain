@@ -24,7 +24,7 @@ import com.decentralchain.lang.v1.evaluator.ctx.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext.*
 import com.decentralchain.lang.v1.evaluator.ctx.impl.converters.*
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.evaluator.{Contextful, ContextfulVal, EvaluatorV1, EvaluatorV2, FunctionIds, Log}
 import com.decentralchain.lang.v1.parser.Parser.LibrariesOffset.NoLibraries
 import com.decentralchain.lang.v1.traits.Environment
@@ -52,7 +52,7 @@ class EvaluatorV1V2Test extends PropSpec with EitherValues {
       Seq(
         defaultCryptoContext.withEnvironment[Environment],
         pureContext.withEnvironment[Environment],
-        WavesContext.build(
+        DccContext.build(
           Global,
           DirectiveSet(version, Account, Expression).explicitGet(),
           fixBigScriptField = true

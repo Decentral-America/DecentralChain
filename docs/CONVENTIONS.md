@@ -1,4 +1,4 @@
-# Coding Conventions & Standards
+ # Coding Conventions & Standards
 
 > **Purpose**: Canonical reference for coding standards, quality gates, toolchain configuration, file templates, and naming conventions across the DecentralChain SDK monorepo.
 >
@@ -326,7 +326,7 @@ After every build, verify with:
 
 - npm scope: `@decentralchain/`
 - Package names: kebab-case
-- No `waves`, `keeper`, or upstream branding in names
+- No `dcc`, `keeper`, or upstream branding in names
 
 ---
 
@@ -336,7 +336,7 @@ After every build, verify with:
 
 ### Mandatory for Every Source File
 
-- No `@waves` imports except documented wire-format constraints
+- No `@dcc` imports except documented wire-format constraints
 - No `Math.random()` in crypto/security contexts — use `crypto.getRandomValues()`
 - No `eval()`, `new Function()`, `document.write()`, `innerHTML =`
 - No hardcoded secrets, API keys, or private keys
@@ -410,7 +410,7 @@ Dependency updates are automated via the [Renovate](https://docs.renovatebot.com
 **Grouping**: Related packages are grouped into single PRs to reduce noise and lock file conflicts. The 22 package rules cover the full tech stack — see `renovate.json` for the complete list. Key groups: Nx, Biome, TypeScript, Vitest, Vite, tsdown, React, Radix UI, Sentry, TanStack, Testing Library, Tailwind, MUI, Ledger, Protobuf, Noble crypto, i18next, and package quality tools.
 
 **Supply-chain protection**:
-- `@waves/ride-lang` and `@waves/ride-repl` are in `ignoreDeps` — Renovate will never propose updates for these unforked Waves dependencies
+- `@decentralchain/ride-lang` and `@decentralchain/ride-repl` are forked workspace packages (`packages/ride/lang/js`, `packages/ride/repl/js`) — no upstream `@waves/*` npm dependencies remain (DCC-252)
 - `security:minimumReleaseAgeNpm` prevents updating to npm packages less than 3 days old (unpublish window protection)
 - `abandonments:recommended` flags packages without a release in 1 year
 

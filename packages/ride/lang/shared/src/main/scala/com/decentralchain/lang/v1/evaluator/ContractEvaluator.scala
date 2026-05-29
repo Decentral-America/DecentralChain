@@ -9,7 +9,7 @@ import com.decentralchain.lang.directives.values.StdLibVersion
 import com.decentralchain.lang.v1.FunctionHeader
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.evaluator.ctx.EvaluationContext
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.Bindings
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.Bindings
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.traits.domain.Recipient.Address
 import com.decentralchain.lang.v1.traits.domain.{AttachedPayments, Recipient}

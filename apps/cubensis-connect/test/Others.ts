@@ -46,14 +46,14 @@ describe('Others', () => {
   it.todo('Signature requests are automatically removed from pending requests after 30 minutes');
   it.todo('Switch account on confirmation screen');
   it.todo('Send more transactions for signature when different screens are open');
-  // NOTE: 'WAVES' here refers to the native protocol asset ticker, not branding
-  describe('Send WAVES', () => {
+  // NOTE: 'DCC' here refers to the native protocol asset ticker, not branding
+  describe('Send DCC', () => {
     beforeAll(async () => {
       await browser.openKeeperPopup();
     });
 
     beforeEach(async () => {
-      const assetCard = await HomeScreen.getAssetByName('WAVES');
+      const assetCard = await HomeScreen.getAssetByName('DCC');
       await assetCard.moreButton.moveTo();
       await assetCard.sendButton.click();
     });
@@ -63,7 +63,7 @@ describe('Others', () => {
       await FinalTransactionScreen.closeButton.click();
     });
 
-    it('Send WAVES to an address', async () => {
+    it('Send DCC to an address', async () => {
       await SendAssetScreen.recipientInput.setValue('3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW');
       await SendAssetScreen.amountInput.setValue('123123123.123');
 
@@ -76,7 +76,7 @@ describe('Others', () => {
 
       await SendAssetScreen.submitButton.click();
 
-      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.12300000 WAVES');
+      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.12300000 DCC');
       await expect(TransferTransactionScreen.recipient).toHaveText('rich\n3MsX9C2M...yxZMg4cW');
       await expect(TransferTransactionScreen.attachmentContent).toHaveText('This is an attachment');
     });
@@ -87,7 +87,7 @@ describe('Others', () => {
       await SendAssetScreen.attachmentInput.setValue('This is an attachment');
       await SendAssetScreen.submitButton.click();
 
-      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.87654321 WAVES');
+      await expect(TransferTransactionScreen.transferAmount).toHaveText('-0.87654321 DCC');
       await expect(TransferTransactionScreen.recipient).toHaveText('alias:T:an_alias');
       await expect(TransferTransactionScreen.attachmentContent).toHaveText('This is an attachment');
     });

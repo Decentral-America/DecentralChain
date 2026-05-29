@@ -10,14 +10,14 @@ import com.decentralchain.lang.v1.estimator.ScriptEstimator
 import com.decentralchain.lang.v1.evaluator.ContractEvaluator.LogExtraInfo
 import com.decentralchain.lang.v1.evaluator.EvaluatorV2
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.WavesContext
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.DccContext
 import com.decentralchain.lang.v1.traits.Environment
 import monix.eval.Coeval
 
 package object estimator {
   private val ctx =
     PureContext.build(V3, useNewPowPrecision = true).withEnvironment[Environment] |+|
-      WavesContext.build(Global, DirectiveSet.contractDirectiveSet, fixBigScriptField = true)
+      DccContext.build(Global, DirectiveSet.contractDirectiveSet, fixBigScriptField = true)
 
   private val environment                              = Common.emptyBlockchainEnvironment()
   private def evaluator(overhead: Boolean, expr: EXPR) =

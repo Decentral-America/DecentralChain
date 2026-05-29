@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  SpotBugs exclusion filter for packages/jvm/wavesj.
+  SpotBugs exclusion filter for packages/jvm/java-sdk.
 
-  This file excludes known false positives from the upstream WavesJ SDK
+  This file excludes known false positives from the upstream DCC SDK
   that are not genuine security issues in the DCC context.
   All entries are documented with the reason for exclusion.
 -->
@@ -14,7 +14,7 @@
 
   <!--
     EI_EXPOSE_REP / EI_EXPOSE_REP2: Mutable byte[] returns and assignments in
-    blockchain data objects. The Waves SDK uses byte arrays directly for
+    blockchain data objects. The DCC SDK uses byte arrays directly for
     on-chain binary data (e.g., script bytes, proof bytes). Defensive copying
     all byte arrays in a high-throughput SDK would degrade performance without
     meaningful security benefit, as callers own the lifecycle of these objects.

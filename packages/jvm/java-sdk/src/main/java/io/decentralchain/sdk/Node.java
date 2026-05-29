@@ -59,12 +59,7 @@ public class Node implements Closeable {
     this.uri = uri;
     this.client = httpClient;
     this.mapper = new DccMapper();
-    List<Address> addresses = getAddresses();
-    if (addresses.isEmpty()) {
-      throw new NodeException(
-          -1, "Node returned empty address list — verify connectivity at: " + uri);
-    }
-    this.chainId = addresses.get(0).chainId();
+    this.chainId = detectChainId();
   }
 
   public Node(String url, HttpClient httpClient)
@@ -86,12 +81,7 @@ public class Node implements Closeable {
             .followRedirects(HttpClient.Redirect.NEVER)
             .build();
     this.mapper = new DccMapper();
-    List<Address> addresses = getAddresses();
-    if (addresses.isEmpty()) {
-      throw new NodeException(
-          -1, "Node returned empty address list — verify connectivity at: " + uri);
-    }
-    this.chainId = addresses.get(0).chainId();
+    this.chainId = detectChainId();
   }
 
   public Node(String url) throws URISyntaxException, IOException, NodeException {
@@ -100,6 +90,20 @@ public class Node implements Closeable {
 
   public Node(Profile profile) throws IOException, NodeException {
     this(profile.uri());
+  }
+
+  /**
+   * Detect chain ID from the last block's generator address. Uses the public
+   * {@code /blocks/headers/last} endpoint which does not require an API key,
+   * unlike {@code /addresses} which is an admin-only wallet endpoint.
+   */
+  private byte detectChainId() throws IOException, NodeException {
+    JsonNode block = asJson(get("/blocks/headers/last"));
+    JsonNode generatorNode = block.get("generator");
+    if (generatorNode == null || generatorNode.isNull()) {
+      throw new IOException("/blocks/headers/last response missing 'generator' field");
+    }
+    return Address.as(generatorNode.asText()).chainId();
   }
 
   public byte chainId() {
@@ -780,7 +784,7 @@ public class Node implements Closeable {
         .asText();
   }
 
-  public String ethToWavesAsset(String asset) throws NodeException, IOException {
+  public String ethToDccAsset(String asset) throws NodeException, IOException {
     return asType(get("/eth/assets").addParameter("id", asset), TypeRef.ASSETS_DETAILS)
         .get(0)
         .assetId()

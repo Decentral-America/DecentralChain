@@ -16,26 +16,26 @@ import org.junit.jupiter.api.Test;
 public class DccEthConverterTest {
 
   @Test
-  public void convertWavesToEthAddressTest() {
-    String ethAddress = wavesToEthAddress("3Mi63XiwniEj6mTC557pxdRDddtpj7fZMMw");
+  public void convertDccToEthAddressTest() {
+    String ethAddress = dccToEthAddress("3Mi63XiwniEj6mTC557pxdRDddtpj7fZMMw");
     assertEquals("0xc01187f4ae820a0c956c48c06ee73f85c373cc03", ethAddress);
   }
 
   @Test
-  public void convertEthToWavesAddressTest() {
-    String wavesAddress =
-        ethToWavesAddress("0xc01187f4ae820a0c956c48c06ee73f85c373cc03", ChainId.STAGENET);
-    assertEquals("3Mi63XiwniEj6mTC557pxdRDddtpj7fZMMw", wavesAddress);
+  public void convertEthToDccAddressTest() {
+    String dccAddress =
+        ethToDccAddress("0xc01187f4ae820a0c956c48c06ee73f85c373cc03", ChainId.STAGENET);
+    assertEquals("3Mi63XiwniEj6mTC557pxdRDddtpj7fZMMw", dccAddress);
   }
 
   @Test
-  public void convertWavesToEthAssetTest() {
-    String wavesToEthAsset = wavesToEthAsset("9DNEvLFSSnSSaNCb5WEYMz64hsadDjx1THZw3z2hiyJe");
-    assertEquals("0x7a087b3384447a48393eda243e630b07db443597", wavesToEthAsset);
+  public void convertDccToEthAssetTest() {
+    String dccToEthAsset = dccToEthAsset("9DNEvLFSSnSSaNCb5WEYMz64hsadDjx1THZw3z2hiyJe");
+    assertEquals("0x7a087b3384447a48393eda243e630b07db443597", dccToEthAsset);
   }
 
   @Test
-  public void convertEthToWavesAssetTest() throws NodeException, IOException {
+  public void convertEthToDccAssetTest() throws NodeException, IOException {
     try {
       HttpURLConnection conn =
           (HttpURLConnection)
@@ -47,7 +47,7 @@ public class DccEthConverterTest {
       assumeTrue(false, "Stagenet node unreachable — skipping live network test");
     }
     Node node = new Node(Profile.STAGENET);
-    String wavesToEthAsset = ethToWavesAsset(node, "0x7a087b3384447a48393eda243e630b07db443597");
-    assertEquals("9DNEvLFSSnSSaNCb5WEYMz64hsadDjx1THZw3z2hiyJe", wavesToEthAsset);
+    String dccToEthAsset = ethToDccAsset(node, "0x7a087b3384447a48393eda243e630b07db443597");
+    assertEquals("9DNEvLFSSnSSaNCb5WEYMz64hsadDjx1THZw3z2hiyJe", dccToEthAsset);
   }
 }

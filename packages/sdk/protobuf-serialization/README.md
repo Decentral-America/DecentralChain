@@ -36,54 +36,54 @@ npm install @decentralchain/protobuf-serialization
 ## Quick Start
 
 ```javascript
-import { waves } from "@decentralchain/protobuf-serialization";
+import { dcc } from "@decentralchain/protobuf-serialization";
 import Long from "long";
 
 // Encode an Amount message
-const buffer = waves.Amount.encode({
+const buffer = dcc.Amount.encode({
   assetId: new Uint8Array([1, 2, 3, 4]),
   amount: Long.fromNumber(1_000_000),
 }).finish();
 
 // Decode it back
-const decoded = waves.Amount.decode(buffer);
+const decoded = dcc.Amount.decode(buffer);
 console.log(decoded.amount.toNumber()); // 1000000
 ```
 
-> **Note**: The `waves` namespace is the **protocol-level identifier** inherited from the blockchain's protobuf schema. It defines the wire format and must remain unchanged for serialization compatibility.
+> **Note**: The `dcc` namespace is the **protocol-level identifier** inherited from the blockchain's protobuf schema. It defines the wire format and must remain unchanged for serialization compatibility.
 
 ## API Reference
 
-The package exports a `waves` namespace containing all protobuf message types:
+The package exports a `dcc` namespace containing all protobuf message types:
 
 ### Core Messages
 
 | Message                   | Proto File                 | Description                      |
 | ------------------------- | -------------------------- | -------------------------------- |
-| `waves.Amount`            | `waves/amount.proto`       | Asset amount (asset_id + int64)  |
-| `waves.Block`             | `waves/block.proto`        | Block with header + transactions |
-| `waves.Transaction`       | `waves/transaction.proto`  | Transaction types                |
-| `waves.SignedTransaction` | `waves/transaction.proto`  | Signed transaction wrapper       |
-| `waves.Order`             | `waves/order.proto`        | Exchange order                   |
-| `waves.Recipient`         | `waves/recipient.proto`    | Address or alias recipient       |
-| `waves.RewardShare`       | `waves/reward_share.proto` | Block reward distribution        |
+| `dcc.Amount`            | `dcc/amount.proto`       | Asset amount (asset_id + int64)  |
+| `dcc.Block`             | `dcc/block.proto`        | Block with header + transactions |
+| `dcc.Transaction`       | `dcc/transaction.proto`  | Transaction types                |
+| `dcc.SignedTransaction` | `dcc/transaction.proto`  | Signed transaction wrapper       |
+| `dcc.Order`             | `dcc/order.proto`        | Exchange order                   |
+| `dcc.Recipient`         | `dcc/recipient.proto`    | Address or alias recipient       |
+| `dcc.RewardShare`       | `dcc/reward_share.proto` | Block reward distribution        |
 
 ### Events
 
 | Message                          | Proto File                                   |
 | -------------------------------- | -------------------------------------------- |
-| `waves.events.BlockchainUpdated` | `waves/events/events.proto`                  |
-| `waves.events.grpc.*`            | `waves/events/grpc/blockchain_updates.proto` |
+| `dcc.events.BlockchainUpdated` | `dcc/events/events.proto`                  |
+| `dcc.events.grpc.*`            | `dcc/events/grpc/blockchain_updates.proto` |
 
 ### Node gRPC APIs
 
 | Service                           | Proto File                               |
 | --------------------------------- | ---------------------------------------- |
-| `waves.node.grpc.AccountsApi`     | `waves/node/grpc/accounts_api.proto`     |
-| `waves.node.grpc.AssetsApi`       | `waves/node/grpc/assets_api.proto`       |
-| `waves.node.grpc.BlockchainApi`   | `waves/node/grpc/blockchain_api.proto`   |
-| `waves.node.grpc.BlocksApi`       | `waves/node/grpc/blocks_api.proto`       |
-| `waves.node.grpc.TransactionsApi` | `waves/node/grpc/transactions_api.proto` |
+| `dcc.node.grpc.AccountsApi`     | `dcc/node/grpc/accounts_api.proto`     |
+| `dcc.node.grpc.AssetsApi`       | `dcc/node/grpc/assets_api.proto`       |
+| `dcc.node.grpc.BlockchainApi`   | `dcc/node/grpc/blockchain_api.proto`   |
+| `dcc.node.grpc.BlocksApi`       | `dcc/node/grpc/blocks_api.proto`       |
+| `dcc.node.grpc.TransactionsApi` | `dcc/node/grpc/transactions_api.proto` |
 
 Each message type provides:
 
@@ -124,7 +124,7 @@ libraryDependencies += "io.decentralchain" % "protobuf-schemas" % "{version}" % 
 inConfig(Compile)(Seq(
    PB.protoSources in Compile := Seq(PB.externalIncludePath.value),
    includeFilter in PB.generate := new SimpleFileFilter(
-     (f: File) => f.getName.endsWith(".proto") && f.getParent.endsWith("waves")
+     (f: File) => f.getName.endsWith(".proto") && f.getParent.endsWith("dcc")
    ),
    PB.targets += scalapb.gen(flatPackage = true) -> sourceManaged.value
 ))
@@ -153,7 +153,7 @@ Requires [.NET 10 SDK](https://dotnet.microsoft.com/). Add a project reference o
 </ItemGroup>
 
 <ItemGroup>
-  <Protobuf Include="proto/waves/**/*.proto" ProtoRoot="proto" GrpcServices="Both" />
+  <Protobuf Include="proto/dcc/**/*.proto" ProtoRoot="proto" GrpcServices="Both" />
 </ItemGroup>
 ```
 

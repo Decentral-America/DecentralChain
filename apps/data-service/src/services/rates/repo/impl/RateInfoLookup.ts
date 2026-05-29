@@ -53,10 +53,10 @@ export default class RateInfoLookup
       Option.orElse(lookup(pairWithMoneyFormat, false), () => lookup(pairWithMoneyFormat, true)),
       Option.filter(
         (val) =>
-          (val.volumeWaves !== null &&
+          (val.volumeDcc !== null &&
             Option.match(this.mPairAcceptanceVolumeThreshold, {
               onNone: () => false,
-              onSome: (threshold) => val.volumeWaves.gte(threshold),
+              onSome: (threshold) => val.volumeDcc.gte(threshold),
             })) ||
           !hasPairWithBaseAsset,
       ),
@@ -118,7 +118,7 @@ export default class RateInfoLookup
           ),
           Option.getOrElse(() => new BigNumber(0)),
         ),
-        volumeWaves: BigNumber.max(info1.volumeWaves, info2.volumeWaves),
+        volumeDcc: BigNumber.max(info1.volumeDcc, info2.volumeDcc),
       }),
       this.get({
         amountAsset: pair.amountAsset,
