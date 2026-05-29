@@ -35,25 +35,25 @@ public abstract class LegacyBinarySerializer {
 
         PublicKey sender = reader.readPublicKey();
         PublicKey matcher = reader.readPublicKey();
-        AssetId amountAssetId = reader.readAssetIdOrWaves();
-        AssetId priceAssetId = reader.readAssetIdOrWaves();
+        AssetId amountAssetId = reader.readAssetIdOrDcc();
+        AssetId priceAssetId = reader.readAssetIdOrDcc();
         OrderType type = reader.readOrderType();
         long price = reader.readLong();
         long amount = reader.readLong();
         long timestamp = reader.readLong();
         long expiration = reader.readLong();
         long fee = reader.readLong();
-        AssetId feeAssetId = version == 3 ? reader.readAssetIdOrWaves() : AssetId.WAVES;
+        AssetId feeAssetId = version == 3 ? reader.readAssetIdOrDcc() : AssetId.DCC;
         List<Proof> proofs = scheme == WITH_PROOFS ? reader.readProofs() : reader.readSignature();
 
         return new Order(sender, type, Amount.of(amount, amountAssetId), Amount.of(price, priceAssetId), matcher,
-                WavesConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
+                DccConfig.chainId(), Amount.of(fee, feeAssetId), timestamp, expiration, version, proofs);
     }
 
     public static Transaction transactionFromBytes(byte[] bytes) {
         if (bytes.length < 2)
             throw new IllegalArgumentException("Byte array is too short to parse");
-        byte chainId = WavesConfig.chainId();
+        byte chainId = DccConfig.chainId();
         BytesReader reader = new BytesReader(bytes);
 
         byte maybeVersionFlag = reader.readByte();
@@ -113,8 +113,8 @@ public abstract class LegacyBinarySerializer {
                     chainId, Amount.of(fee), timestamp, version, proofs);
         } else if (type == TransferTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
-            AssetId assetId = reader.readAssetIdOrWaves();
-            AssetId feeAssetId = reader.readAssetIdOrWaves();
+            AssetId assetId = reader.readAssetIdOrDcc();
+            AssetId feeAssetId = reader.readAssetIdOrDcc();
             long timestamp = reader.readLong();
             long amount = reader.readLong();
             long fee = reader.readLong();
@@ -192,7 +192,7 @@ public abstract class LegacyBinarySerializer {
             transaction = new ExchangeTransaction(order1.matcher(), order1, order2, amount, price,
                     buyMatcherFee, sellMatcherFee, chainId, Amount.of(fee), timestamp, version, proofs);
         } else if (type == LeaseTransaction.TYPE) {
-            if (scheme == WITH_PROOFS && !reader.readAssetIdOrWaves().isWaves())
+            if (scheme == WITH_PROOFS && !reader.readAssetIdOrDcc().isDcc())
                 throw new IllegalArgumentException("Only Waves allowed to lease");
 
             PublicKey sender = reader.readPublicKey();
@@ -227,7 +227,7 @@ public abstract class LegacyBinarySerializer {
                     sender, alias.name(), alias.chainId(), Amount.of(fee), timestamp, version, proofs);
         } else if (type == MassTransferTransaction.TYPE) {
             PublicKey sender = reader.readPublicKey();
-            AssetId assetId = reader.readAssetIdOrWaves();
+            AssetId assetId = reader.readAssetIdOrDcc();
             short transfersCount = reader.readShort();
             List<Transfer> transfers = new ArrayList<>();
             for (int i = 0; i < transfersCount; i++)
@@ -310,14 +310,14 @@ public abstract class LegacyBinarySerializer {
             for (int i = 0; i < paymentsCount; i++) {
                 byte[] paymentBytes = reader.readArrayWithLength();
                 BytesReader paymentReader = new BytesReader(paymentBytes);
-                payments.add(Amount.of(paymentReader.readLong(), paymentReader.readAssetIdOrWaves()));
+                payments.add(Amount.of(paymentReader.readLong(), paymentReader.readAssetIdOrDcc()));
                 if (paymentReader.hasNext())
                     throw new IllegalArgumentException("The size of " + paymentBytes.length
                             + " bytes is " + (paymentBytes.length - paymentReader.rest())
                             + " greater than expected for the payment with index " + i + " of the parsed InvokeScriptTransaction");
             }
             long fee = reader.readLong();
-            AssetId feeAssetId = reader.readAssetIdOrWaves();
+            AssetId feeAssetId = reader.readAssetIdOrDcc();
             long timestamp = reader.readLong();
             proofs = reader.readProofs();
 
@@ -346,8 +346,8 @@ public abstract class LegacyBinarySerializer {
             Order order = (Order) txOrOrder;
             bwStream.writePublicKey(order.sender())
                     .writePublicKey(order.matcher())
-                    .writeAssetIdOrWaves(order.amount().assetId())
-                    .writeAssetIdOrWaves(order.price().assetId())
+                    .writeAssetIdOrDcc(order.amount().assetId())
+                    .writeAssetIdOrDcc(order.price().assetId())
                     .writeOrderType(order.type())
                     .writeLong(order.price().value())
                     .writeLong(order.amount().value())
@@ -356,7 +356,7 @@ public abstract class LegacyBinarySerializer {
                     .writeLong(order.fee().value());
 
             if (order.version() == 3)
-                bwStream.writeAssetIdOrWaves(order.fee().assetId());
+                bwStream.writeAssetIdOrDcc(order.fee().assetId());
         } else {
             Transaction tx = (Transaction) txOrOrder;
 
@@ -400,8 +400,8 @@ public abstract class LegacyBinarySerializer {
             } else if (tx instanceof TransferTransaction) {
                 TransferTransaction ttx = (TransferTransaction) tx;
                 bwStream.write(ttx.sender().bytes())
-                        .writeAssetIdOrWaves(ttx.amount().assetId())
-                        .writeAssetIdOrWaves(ttx.fee().assetId())
+                        .writeAssetIdOrDcc(ttx.amount().assetId())
+                        .writeAssetIdOrDcc(ttx.fee().assetId())
                         .writeLong(ttx.timestamp())
                         .writeLong(ttx.amount().value())
                         .writeLong(ttx.fee().value())
@@ -452,7 +452,7 @@ public abstract class LegacyBinarySerializer {
                         .writeLong(etx.timestamp());
             } else if (tx instanceof LeaseTransaction) {
                 if (scheme == WITH_PROOFS)
-                    bwStream.writeAssetIdOrWaves(AssetId.WAVES);
+                    bwStream.writeAssetIdOrDcc(AssetId.DCC);
                 LeaseTransaction ltx = (LeaseTransaction) tx;
                 bwStream.writePublicKey(ltx.sender())
                         .writeRecipient(ltx.recipient())
@@ -478,7 +478,7 @@ public abstract class LegacyBinarySerializer {
             } else if (tx instanceof MassTransferTransaction) {
                 MassTransferTransaction mtTx = (MassTransferTransaction) tx;
                 bwStream.writePublicKey(mtTx.sender())
-                        .writeAssetIdOrWaves(mtTx.assetId())
+                        .writeAssetIdOrDcc(mtTx.assetId())
                         .writeShort((short) mtTx.transfers().size());
                 mtTx.transfers().forEach(transfer -> bwStream
                         .writeRecipient(transfer.recipient())
@@ -541,10 +541,10 @@ public abstract class LegacyBinarySerializer {
                 isTx.payments().forEach(payment -> bwStream
                         .writeArrayWithLength(new BytesWriter()
                                 .writeLong(payment.value())
-                                .writeAssetIdOrWaves(payment.assetId())
+                                .writeAssetIdOrDcc(payment.assetId())
                                 .getBytes()));
                 bwStream.writeLong(isTx.fee().value())
-                        .writeAssetIdOrWaves(isTx.fee().assetId())
+                        .writeAssetIdOrDcc(isTx.fee().assetId())
                         .writeLong(isTx.timestamp());
             }
         }

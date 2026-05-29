@@ -27,7 +27,7 @@ public class SetScriptTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -65,7 +65,7 @@ public class SetScriptTransactionTest {
                               byte[] expectedBytes, String expectedJson) throws IOException {
         SetScriptTransaction builtTx = SetScriptTransaction
                 .builder(script)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -80,7 +80,7 @@ public class SetScriptTransactionTest {
         );
 
         SetScriptTransaction constructedTx = new SetScriptTransaction(
-                sender, script, WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                sender, script, DccConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -94,9 +94,9 @@ public class SetScriptTransactionTest {
                 () -> assertThat(deserTx.script()).isEqualTo(script),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 
