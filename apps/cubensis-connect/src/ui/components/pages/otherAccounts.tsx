@@ -37,7 +37,7 @@ export function OtherAccountsPage() {
     )
     .sort(compareAccountsByLastUsed);
 
-  const nativeAsset = new Asset(assets.WAVES);
+  const nativeAsset = new Asset(assets.DCC);
 
   const balancesMoney = Object.fromEntries(
     Object.entries(balances).map(([key, balance]) => [

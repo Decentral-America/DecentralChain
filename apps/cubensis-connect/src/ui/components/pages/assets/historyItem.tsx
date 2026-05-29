@@ -44,12 +44,12 @@ export function HistoryItem({ tx, className }: Props) {
     'applicationStatus' in tx && tx.applicationStatus && tx.applicationStatus !== 'succeeded';
 
   const fromCoins = (amount: Long | BigNumber, assetId?: string | null) => {
-    const asset = assets[assetId ?? 'WAVES'];
+    const asset = assets[assetId ?? 'DCC'];
     return asset && Money.fromCoins(amount, new Asset(asset));
   };
 
   const fromTokens = (amount: Long | BigNumber, assetId?: string | null) => {
-    const asset = assets[assetId ?? 'WAVES'];
+    const asset = assets[assetId ?? 'DCC'];
 
     return asset && Money.fromTokens(amount, new Asset(asset));
   };
@@ -57,7 +57,7 @@ export function HistoryItem({ tx, className }: Props) {
   switch (tx.type) {
     case TRANSACTION_TYPE.GENESIS:
       tooltip = label = t('historyCard.genesis');
-      info = <Balance split showAsset balance={fromCoins(tx.amount, 'WAVES')} />;
+      info = <Balance split showAsset balance={fromCoins(tx.amount, 'DCC')} />;
       messageType = 'receive';
       break;
     case TRANSACTION_TYPE.ISSUE: {
@@ -133,10 +133,7 @@ export function HistoryItem({ tx, className }: Props) {
           split
           showAsset
           addSign={addSign}
-          balance={fromCoins(
-            tx.amount,
-            tx.type === TRANSACTION_TYPE.TRANSFER ? tx.assetId : 'WAVES',
-          )}
+          balance={fromCoins(tx.amount, tx.type === TRANSACTION_TYPE.TRANSFER ? tx.assetId : 'DCC')}
         />
       );
       break;
@@ -151,10 +148,10 @@ export function HistoryItem({ tx, className }: Props) {
       messageType = 'burn';
       break;
     case TRANSACTION_TYPE.EXCHANGE: {
-      const priceAssetId = tx.order1?.assetPair?.priceAsset || 'WAVES';
+      const priceAssetId = tx.order1?.assetPair?.priceAsset || 'DCC';
       const priceAsset = assets[priceAssetId];
 
-      const assetAmount = fromCoins(tx.amount, tx.order1.assetPair.amountAsset || 'WAVES');
+      const assetAmount = fromCoins(tx.amount, tx.order1.assetPair.amountAsset || 'DCC');
 
       let priceAmount: Money | undefined;
       let totalPriceAmount: Money | undefined;
@@ -205,7 +202,7 @@ export function HistoryItem({ tx, className }: Props) {
         addSign = '+';
       }
 
-      info = <Balance split showAsset addSign={addSign} balance={fromCoins(tx.amount, 'WAVES')} />;
+      info = <Balance split showAsset addSign={addSign} balance={fromCoins(tx.amount, 'DCC')} />;
       messageType = 'lease';
       break;
     case TRANSACTION_TYPE.CANCEL_LEASE:
@@ -233,7 +230,7 @@ export function HistoryItem({ tx, className }: Props) {
       }
 
       info = (
-        <Balance split showAsset addSign={addSign} balance={fromCoins(tx.lease.amount, 'WAVES')} />
+        <Balance split showAsset addSign={addSign} balance={fromCoins(tx.lease.amount, 'DCC')} />
       );
       messageType = 'cancel-leasing';
       break;

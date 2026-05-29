@@ -44,8 +44,9 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions)
         run: |
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
@@ -79,8 +80,9 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions)
         run: |
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
@@ -119,8 +121,9 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Install JVM prerequisites (curve25519, blst, crypto, transactions)
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions)
         run: |
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)

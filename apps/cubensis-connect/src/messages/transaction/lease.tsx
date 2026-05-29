@@ -17,7 +17,7 @@ import type { MessageOfType, MessageTxLease } from '../types';
 
 export function LeaseCard({ className, tx }: { className?: string; tx: MessageTxLease }) {
   const { t } = useTranslation();
-  const asset = usePopupSelector((state) => state.assets.WAVES);
+  const asset = usePopupSelector((state) => state.assets.DCC);
 
   return (
     <div className={clsx(transactionsStyles.transactionCard, className)}>

@@ -49,7 +49,7 @@ export function AccountInfo() {
   const [showCopied, setShowCopied] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const nativeAsset = assets.WAVES;
+  const nativeAsset = assets.DCC;
 
   let balance: Money | undefined;
   let leaseBalance: Money | undefined;

@@ -108,11 +108,11 @@ export function InvokeScriptCard({
             <div className={transactionsStyles.txValue}>
               <div className={clsx('plate', 'break-all')}>
                 {tx.payment.map((item) => {
-                  const asset = assets[item.assetId ?? 'WAVES'];
+                  const asset = assets[item.assetId ?? 'DCC'];
                   invariant(asset);
 
                   return (
-                    <div key={item.assetId ?? 'WAVES'} className={styles.paymentItem}>
+                    <div key={item.assetId ?? 'DCC'} className={styles.paymentItem}>
                       <Balance
                         balance={new Money(item.amount, new Asset(asset))}
                         data-testid="invokeScriptPaymentItem"

@@ -62,7 +62,7 @@ export function AssetItem({ balance, assetId, className, onInfoClick, onSendClic
 
       {!isLoading && (
         <MoreActions>
-          {assetId !== 'WAVES' && (
+          {assetId !== 'DCC' && (
             <Tooltip content={t('assetInfo.infoTooltip')}>
               {(props) => (
                 <button
