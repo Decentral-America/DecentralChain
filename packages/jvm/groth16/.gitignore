@@ -5,8 +5,8 @@ pkg/
 wasm-pack.log
 .vscode
 .idea
-!zwaves_jni/src/bn256/bin
-!zwaves_setup/src/bin
+!groth16_jni/src/bn256/bin
+!groth16_setup/src/bin
 
 # Maven build output and wrapper binary
 pom.xml.tag
