@@ -31,7 +31,7 @@ public class ReissueTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -82,7 +82,7 @@ public class ReissueTransactionTest {
         ReissueTransaction builtTx = ReissueTransaction
                 .builder(Amount.of(amount, assetId))
                 .reissuable(reissuable)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -97,7 +97,7 @@ public class ReissueTransactionTest {
         );
 
         ReissueTransaction constructedTx = new ReissueTransaction(sender, Amount.of(amount, assetId), reissuable,
-                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                DccConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -112,9 +112,9 @@ public class ReissueTransactionTest {
                 () -> assertThat(deserTx.reissuable()).isEqualTo(reissuable),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> Assertions.assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
+                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> Assertions.assertThat(deserTx.proofs()).isEqualTo(proofs),
 

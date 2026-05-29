@@ -27,7 +27,7 @@ public class CommitToGenerationTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('D');
+        DccConfig.chainId('D');
     }
 
     private static final PublicKey sender = PublicKey.as("Bn21Eg8HbwZWZQMHXnTFnb64MhVjgH2HygDekQDbjjMq");
@@ -59,7 +59,7 @@ public class CommitToGenerationTransactionTest {
                 .builder(generationPeriodStart)
                 .endorserPublicKey(BlsPublicKey.as(endorserPublicKey))
                 .commitmentSignature(BlsSignature.as(commitmentSignature))
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -75,7 +75,7 @@ public class CommitToGenerationTransactionTest {
 
         CommitToGenerationTransaction constructedTx = new CommitToGenerationTransaction(sender, generationPeriodStart,
                 BlsPublicKey.as(endorserPublicKey), BlsSignature.as(commitmentSignature), Amount.of(fee),
-                version, WavesConfig.chainId(),  timestamp, proofs);
+                version, DccConfig.chainId(),  timestamp, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -91,9 +91,9 @@ public class CommitToGenerationTransactionTest {
                 () -> assertThat(deserTx.commitmentSignature()).isEqualTo(BlsSignature.as(commitmentSignature)),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

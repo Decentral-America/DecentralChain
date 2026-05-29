@@ -15,11 +15,11 @@ public class Amount {
             @JsonProperty("amount") long value,
             @JsonProperty("assetId") AssetId assetId) {
         this.value = value;
-        this.assetId = assetId == null ? AssetId.WAVES : assetId;
+        this.assetId = assetId == null ? AssetId.DCC : assetId;
     }
 
     public Amount(long value) {
-        this(value, AssetId.WAVES);
+        this(value, AssetId.DCC);
     }
 
     public static Amount of(long value, AssetId assetId) {

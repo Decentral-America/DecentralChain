@@ -30,7 +30,7 @@ public class UpdateAssetInfoTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     private static String string(int length) {
@@ -65,7 +65,7 @@ public class UpdateAssetInfoTransactionTest {
                                     byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         UpdateAssetInfoTransaction builtTx = UpdateAssetInfoTransaction
                 .builder(assetId, name, description)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -80,7 +80,7 @@ public class UpdateAssetInfoTransactionTest {
         );
 
         UpdateAssetInfoTransaction constructedTx = new UpdateAssetInfoTransaction(sender, assetId, name, description,
-                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                DccConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -95,9 +95,9 @@ public class UpdateAssetInfoTransactionTest {
                 () -> assertThat(deserTx.description()).isEqualTo(description),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

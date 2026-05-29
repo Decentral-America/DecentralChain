@@ -26,13 +26,13 @@ public class LeaseTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
         Recipient minAlias = Alias.as("rich");
         Recipient maxAlias = Alias.as("_rich-account.with@30_symbols_");
-        Recipient address = Address.from(WavesConfig.chainId(), sender);
+        Recipient address = Address.from(DccConfig.chainId(), sender);
         return Stream.of(
                 arguments(1, minAlias, 1, Id.as("4HcJAJJSmPVLw2kyZH1AUen1VDKaG3DHr8cgRJLpfNc6"),
                         Proof.list(Proof.as("5naDD2BUShvyrmfsz2EdSFnAMHaL9FkRSHLcMaJftjdRHVHN4xzkG3tmXVLUqQ1nwqmQgX3iqNyTRhkchsPapRRE")),
@@ -97,7 +97,7 @@ public class LeaseTransactionTest {
                           byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         LeaseTransaction builtTx = LeaseTransaction
                 .builder(recipient, amount)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(LeaseTransaction.MIN_FEE)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -111,7 +111,7 @@ public class LeaseTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        LeaseTransaction constructedTx = new LeaseTransaction(sender, recipient, amount, WavesConfig.chainId(),
+        LeaseTransaction constructedTx = new LeaseTransaction(sender, recipient, amount, DccConfig.chainId(),
                 Amount.of(LeaseTransaction.MIN_FEE), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
@@ -127,9 +127,9 @@ public class LeaseTransactionTest {
                 () -> assertThat(deserTx.amount()).isEqualTo(amount),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(LeaseTransaction.MIN_FEE, AssetId.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(LeaseTransaction.MIN_FEE, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

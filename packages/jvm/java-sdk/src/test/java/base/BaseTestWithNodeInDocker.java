@@ -7,8 +7,8 @@ import io.decentralchain.crypto.Crypto;
 import io.decentralchain.sdk.Node;
 import io.decentralchain.sdk.Profile;
 import io.decentralchain.sdk.exceptions.NodeException;
+import io.decentralchain.transactions.DccConfig;
 import io.decentralchain.transactions.TransferTransaction;
-import io.decentralchain.transactions.WavesConfig;
 import io.decentralchain.transactions.account.PrivateKey;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.Id;
@@ -37,12 +37,14 @@ public abstract class BaseTestWithNodeInDocker {
     } else {
       try {
         container =
-            new GenericContainer<>(DockerImageName.parse("ghcr.io/decentral-america/node-scala-private:latest"))
+            new GenericContainer<>(
+                    DockerImageName.parse("ghcr.io/decentral-america/node-scala-private:latest"))
                 .withExposedPorts(6869)
                 // Env vars consumed by the Docker image entrypoint script
                 // (/usr/share/waves/bin/entrypoint.sh) — names are upstream
                 // node-scala conventions that cannot be changed here.
-                .withEnv("WAVES_WALLET_SEED", "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4")
+                .withEnv(
+                    "WAVES_WALLET_SEED", "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4")
                 .withEnv("WAVES_WALLET_PASSWORD", "test")
                 .withEnv("WAVES_REST_API_BIND", "0.0.0.0")
                 .waitingFor(Wait.forHttp("/node/version").forPort(6869).forStatusCode(200))
@@ -67,12 +69,12 @@ public abstract class BaseTestWithNodeInDocker {
       try {
         node = new Node(NODE_API_URL);
         // Propagate the node's chain-id (e.g. 82 for DCC private node)
-        // into WavesConfig (upstream class name) so that all subsequent
+        // into DccConfig (upstream class name) so that all subsequent
         // PrivateKey.fromSeed() and Address construction uses the correct
-        // chain-id byte. Without this, WavesConfig stays at its default
+        // chain-id byte. Without this, DccConfig stays at its default
         // (87 = mainnet 'W'), and the node rejects every address as
         // wrong chain.
-        WavesConfig.chainId(node.chainId());
+        DccConfig.chainId(node.chainId());
       } catch (URISyntaxException | NodeException | IOException e) {
         throw new RuntimeException(e);
       }
@@ -94,8 +96,7 @@ public abstract class BaseTestWithNodeInDocker {
     return value;
   }
 
-  protected static final PrivateKey faucet =
-      PrivateKey.fromSeed(requireEnv("DCC_TEST_MINER_SEED"));
+  protected static final PrivateKey faucet = PrivateKey.fromSeed(requireEnv("DCC_TEST_MINER_SEED"));
 
   protected static PrivateKey createAccountWithBalance() throws IOException, NodeException {
     return PrivateKey.fromSeed(Crypto.getRandomSeedBytes());

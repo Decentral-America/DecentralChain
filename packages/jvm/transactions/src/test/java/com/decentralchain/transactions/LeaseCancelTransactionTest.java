@@ -28,7 +28,7 @@ public class LeaseCancelTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -73,7 +73,7 @@ public class LeaseCancelTransactionTest {
                                 byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         LeaseCancelTransaction builtTx = LeaseCancelTransaction
                 .builder(leaseId)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(LeaseCancelTransaction.MIN_FEE)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -87,7 +87,7 @@ public class LeaseCancelTransactionTest {
                 () -> assertThat(builtTx.toBytes()).isEqualTo(expectedBytes)
         );
 
-        LeaseCancelTransaction constructedTx = new LeaseCancelTransaction(sender, leaseId, WavesConfig.chainId(),
+        LeaseCancelTransaction constructedTx = new LeaseCancelTransaction(sender, leaseId, DccConfig.chainId(),
                 Amount.of(LeaseCancelTransaction.MIN_FEE), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
@@ -102,9 +102,9 @@ public class LeaseCancelTransactionTest {
                 () -> Assertions.assertThat(deserTx.leaseId()).isEqualTo(leaseId),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(LeaseCancelTransaction.MIN_FEE, AssetId.WAVES)),
+                () -> assertThat(deserTx.fee()).isEqualTo(Amount.of(LeaseCancelTransaction.MIN_FEE, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> assertThat(deserTx.proofs()).isEqualTo(proofs),
 

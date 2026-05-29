@@ -2,7 +2,7 @@ package io.decentralchain.transactions.account;
 
 import io.decentralchain.crypto.Crypto;
 import io.decentralchain.crypto.Hash;
-import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.DccConfig;
 import io.decentralchain.transactions.common.Base58String;
 import io.decentralchain.transactions.common.Proof;
 
@@ -100,7 +100,7 @@ public class PublicKey extends Base58String {
      * @return address
      */
     public Address address() {
-        return address(WavesConfig.chainId());
+        return address(DccConfig.chainId());
     }
 
     /**

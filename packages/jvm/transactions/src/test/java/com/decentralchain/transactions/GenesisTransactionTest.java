@@ -30,11 +30,11 @@ public class GenesisTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
-        Address address = Address.from(WavesConfig.chainId(), sender);
+        Address address = Address.from(DccConfig.chainId(), sender);
         return Stream.of(
                 arguments(address, Id.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
                         Proof.as("4KEjTYoGriY1THot4fSr7bgnRUxFn6Ug6mBr8kmXgmK4WqYF1xxJFS8Bhe9WcQpkqEQo746bC1UqQtyjdAzwD44c"),
@@ -65,9 +65,9 @@ public class GenesisTransactionTest {
                 () -> assertThat(deserTx.amount()).isEqualTo(amount),
 
                 () -> assertThat(deserTx.version()).isEqualTo(1),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> Assertions.assertThat(deserTx.sender()).isEqualTo(emptySender),
-                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(0, AssetId.WAVES)),
+                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(0, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> Assertions.assertThat(deserTx.proofs()).containsOnly(proof),
 

@@ -21,7 +21,7 @@ public class MassTransferTransaction extends Transaction {
     private final Base58String attachment;
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment) {
-        this(sender, assetId, transfers, attachment, WavesConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, assetId, transfers, attachment, DccConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public MassTransferTransaction(PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
@@ -31,7 +31,7 @@ public class MassTransferTransaction extends Transaction {
     public MassTransferTransaction(Id id, PublicKey sender, AssetId assetId, List<Transfer> transfers, Base58String attachment, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(id, TYPE, version, chainId, sender, calculateFee(transfers, fee), timestamp, proofs);
 
-        this.assetId = assetId == null ? AssetId.WAVES : assetId;
+        this.assetId = assetId == null ? AssetId.DCC : assetId;
         this.transfers = transfers == null ? new ArrayList<>() : transfers;
         this.attachment = attachment == null ? Base58String.empty() : attachment;
     }
@@ -102,7 +102,7 @@ public class MassTransferTransaction extends Transaction {
         protected MassTransferTransactionBuilder(List<Transfer> transfers) {
             super(LATEST_VERSION, 0);
             this.transfers = transfers;
-            this.assetId = AssetId.WAVES;
+            this.assetId = AssetId.DCC;
             this.attachment = Base58String.empty();
         }
 

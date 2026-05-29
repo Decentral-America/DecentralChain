@@ -1,7 +1,7 @@
 package io.decentralchain.transactions.account;
 
 import io.decentralchain.crypto.Bytes;
-import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.DccConfig;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,7 @@ class TestSeedAndKeys {
 
     @Test
     void seedAndKeys() {
-        WavesConfig.chainId('T');
+        DccConfig.chainId('T');
         PrivateKey pk = PrivateKey.fromSeed(Bytes.fromUtf8(phrase), 0);
 
         // Use .encoded() to get the base58 representation; toString() is redacted for security

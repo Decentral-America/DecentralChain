@@ -19,7 +19,7 @@ public class LeaseTransaction extends Transaction {
     private final long amount;
 
     public LeaseTransaction(PublicKey sender, Recipient recipient, long amount) {
-        this(sender, recipient, amount, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, recipient, amount, DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public LeaseTransaction(PublicKey sender, Recipient recipient, long amount, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {

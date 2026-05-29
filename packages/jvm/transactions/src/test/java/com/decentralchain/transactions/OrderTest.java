@@ -40,7 +40,7 @@ public class OrderTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> ordersProvider() {
@@ -115,7 +115,7 @@ public class OrderTest {
         Order builtOrder = Order
                 .builder(type, amount, price, matcher.publicKey())
                 .expiration(expiration)
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -130,7 +130,7 @@ public class OrderTest {
         );
 
         Order constructedOrder = new Order(sender, type, amount, price, matcher.publicKey(),
-                WavesConfig.chainId(), fee, timestamp, expiration, version, proofs);
+                DccConfig.chainId(), fee, timestamp, expiration, version, proofs);
 
         assertAll("Orders created via builder and constructor are equal",
                 () -> Assertions.assertThat(builtOrder.bodyBytes()).isEqualTo(constructedOrder.bodyBytes()),
@@ -148,7 +148,7 @@ public class OrderTest {
                 () -> assertThat(deserOrder.expiration()).isEqualTo(expiration),
 
                 () -> Assertions.assertThat(deserOrder.version()).isEqualTo(version),
-                () -> Assertions.assertThat(deserOrder.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> Assertions.assertThat(deserOrder.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> Assertions.assertThat(deserOrder.sender()).isEqualTo(sender),
                 () -> Assertions.assertThat(deserOrder.fee()).isEqualTo(fee),
                 () -> Assertions.assertThat(deserOrder.timestamp()).isEqualTo(timestamp),

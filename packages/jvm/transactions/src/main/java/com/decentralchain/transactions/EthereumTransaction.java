@@ -163,7 +163,7 @@ public class EthereumTransaction extends Transaction {
 
         @Override
         public RawTransaction toRawTransaction(long timestamp, BigInteger gasPrice, long fee) {
-            if (amount.assetId().isWaves()) {
+            if (amount.assetId().isDcc()) {
                 return RawTransaction.createEtherTransaction(
                         BigInteger.valueOf(timestamp),
                         gasPrice,
@@ -243,7 +243,7 @@ public class EthereumTransaction extends Transaction {
 
             List<StaticStruct> encodedPayments = payments.stream()
                     .map(a -> new StaticStruct(
-                            new Bytes32(a.assetId().isWaves() ? new byte[32] : Base58.decode(a.assetId().encoded())),
+                            new Bytes32(a.assetId().isDcc() ? new byte[32] : Base58.decode(a.assetId().encoded())),
                             new Int64(a.value())
                     )).collect(Collectors.toList());
 

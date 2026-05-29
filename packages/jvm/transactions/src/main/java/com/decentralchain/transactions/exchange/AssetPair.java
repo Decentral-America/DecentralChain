@@ -10,8 +10,8 @@ public class AssetPair {
     private final AssetId right;
 
     public AssetPair(AssetId left, AssetId right) {
-        this.left = left == null ? AssetId.WAVES : left;
-        this.right = right == null ? AssetId.WAVES : right;
+        this.left = left == null ? AssetId.DCC : left;
+        this.right = right == null ? AssetId.DCC : right;
     }
 
     public static AssetPair of(AssetId left, AssetId right) {

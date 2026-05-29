@@ -19,7 +19,7 @@ public class DataTransaction extends Transaction {
     private final List<DataEntry> data;
 
     public DataTransaction(PublicKey sender, List<DataEntry> data) {
-        this(sender, data, WavesConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, data, DccConfig.chainId(), Amount.of(0), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public DataTransaction(PublicKey sender, List<DataEntry> data, byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
@@ -49,10 +49,10 @@ public class DataTransaction extends Transaction {
             return fee;
 
         DataTransaction tempTx = new DataTransaction(PublicKey.ZERO, data,
-                WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
+                DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), version, Proof.emptyList());
         int payloadSize = tempTx.version() == 1
                 ? tempTx.bodyBytes().length
-                : tempTx.toProtobuf().getWavesTransaction().getDataTransaction().toByteArray().length;
+                : tempTx.toProtobuf().getDccTransaction().getDataTransaction().toByteArray().length;
 
         long payloadFee = MIN_FEE * (1 + (payloadSize - 1) / 1024);
         return Amount.of(payloadFee);

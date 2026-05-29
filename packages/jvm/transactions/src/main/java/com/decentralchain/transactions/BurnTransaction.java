@@ -17,14 +17,14 @@ public class BurnTransaction extends Transaction {
     private final Amount amount;
 
     public BurnTransaction(PublicKey sender, Amount amount) {
-        this(sender, amount, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
+        this(sender, amount, DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public BurnTransaction(PublicKey sender, Amount amount, byte chainId, Amount fee,
                            long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (amount.assetId().isWaves())
-            throw new IllegalArgumentException("Can't be Waves");
+        if (amount.assetId().isDcc())
+            throw new IllegalArgumentException("Can't be the native asset");
 
         this.amount = amount;
     }

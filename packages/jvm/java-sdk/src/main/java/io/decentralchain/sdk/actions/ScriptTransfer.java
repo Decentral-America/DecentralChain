@@ -21,7 +21,7 @@ public class ScriptTransfer {
       @JsonProperty("asset") AssetId assetId) {
     this.recipient = Common.notNull(recipient, "Recipient");
     this.amount = amount;
-    this.assetId = assetId == null ? AssetId.WAVES : assetId;
+    this.assetId = assetId == null ? AssetId.DCC : assetId;
   }
 
   public ScriptTransfer(Recipient recipient, Amount amount) {

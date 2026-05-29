@@ -19,15 +19,15 @@ public class SponsorFeeTransaction extends Transaction {
     private final long minSponsoredFee;
 
     public SponsorFeeTransaction(PublicKey sender, AssetId assetId, long minSponsoredFee) {
-        this(sender, assetId, minSponsoredFee, WavesConfig.chainId(), Amount.of(MIN_FEE),
+        this(sender, assetId, minSponsoredFee, DccConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public SponsorFeeTransaction(PublicKey sender, AssetId assetId, long minSponsoredFee, byte chainId, Amount fee,
                                  long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (assetId.isWaves())
-            throw new IllegalArgumentException("Can't be Waves");
+        if (assetId.isDcc())
+            throw new IllegalArgumentException("Can't be the native asset");
 
         this.assetId = assetId;
         this.minSponsoredFee = minSponsoredFee;

@@ -93,9 +93,9 @@ public class Node implements Closeable {
   }
 
   /**
-   * Detect chain ID from the last block's generator address. Uses the public
-   * {@code /blocks/headers/last} endpoint which does not require an API key,
-   * unlike {@code /addresses} which is an admin-only wallet endpoint.
+   * Detect chain ID from the last block's generator address. Uses the public {@code
+   * /blocks/headers/last} endpoint which does not require an API key, unlike {@code /addresses}
+   * which is an admin-only wallet endpoint.
    */
   private byte detectChainId() throws IOException, NodeException {
     JsonNode block = asJson(get("/blocks/headers/last"));
