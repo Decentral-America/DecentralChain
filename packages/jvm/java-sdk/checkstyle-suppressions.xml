@@ -4,17 +4,17 @@
     "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <!--
-  Checkstyle suppressions for upstream debt inherited from the WavesJ fork.
+  Checkstyle suppressions for upstream debt inherited from the DCC SDK fork.
 
   These are NOT permanent exemptions — each category has a tracking issue:
 
   NeedBracesCheck (135 violations):
-    Upstream WavesJ code uses single-statement if/for/while without braces
+    Upstream DCC SDK code uses single-statement if/for/while without braces
     throughout. Adding braces is a safe-but-voluminous change tracked as
     technical debt. Address in a dedicated formatting PR.
 
   MissingJavadocType / MissingJavadocMethod (156 violations):
-    The WavesJ codebase had no Javadoc on public types or methods. Writing
+    The DCC SDK codebase had no Javadoc on public types or methods. Writing
     meaningful Javadoc is a documentation sprint, not a formatting pass.
 
   NeedBracesCheck / naming checks for domain-specific identifiers:
@@ -30,7 +30,7 @@
   <!-- Upstream brace style: single-statement blocks without {} -->
   <suppress checks="NeedBracesCheck" files=".*\.java"/>
 
-  <!-- Upstream wildcard imports in production code (WavesJ style); expanding
+  <!-- Upstream wildcard imports in production code; expanding
        requires the javaparser symbol-solver dependency (network). Tracked debt. -->
   <suppress checks="AvoidStarImportCheck" files=".*\.java"/>
 

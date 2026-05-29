@@ -45,6 +45,11 @@ const bigNumberType = (to: number, from: number[]): postgres.PostgresType<BigNum
 type AnyTypes = Record<string, postgres.PostgresType>;
 
 const buildSqlOptions = (options: PgDriverOptions): postgres.Options<AnyTypes> => {
+  // Respect PGSSLMODE env var. Default to 'require' for production safety.
+  // Local dev sets PGSSLMODE=disable since Docker PostgreSQL has no TLS.
+  const sslMode = process.env['PGSSLMODE'] ?? 'require';
+  const ssl = sslMode !== 'disable' && sslMode !== 'false';
+
   const base: postgres.Options<AnyTypes> = {
     connect_timeout: 10,
     database: options.postgresDatabase,
@@ -54,7 +59,7 @@ const buildSqlOptions = (options: PgDriverOptions): postgres.Options<AnyTypes> =
     max_lifetime: 3600,
     password: options.postgresPassword,
     port: options.postgresPort,
-    ssl: true,
+    ssl,
     types: {
       bigint: bigNumberType(20, [20]), // int8
       float8: bigNumberType(701, [701]), // float8 / double precision

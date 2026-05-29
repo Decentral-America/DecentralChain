@@ -9,14 +9,14 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ## [0.2.1.0] — 2026-05-17
 
-Initial DCC release — fork of [Decentral-America/zwaves](https://github.com/Decentral-America/zwaves),
+Initial DCC release — fork of [Decentral-America/zdcc](https://github.com/Decentral-America/zdcc),
 a Java JNI wrapper around a Rust Groth16 ZK-SNARK verifier for the
 Sapling (BN256) and BLS12-381 pairing curves.
 
 ### Changed
-- Maven coordinates: `com.wavesplatform:zwaves` → `io.decentralchain:groth16`
-- Java package: `com.wavesplatform.zwaves.*` → `com.decentralchain.groth16.*`
-- JNI symbol prefix: `Java_com_wavesplatform_zwaves_*` → `Java_com_decentralchain_groth16_*`
+- Maven coordinates: `com.wavesplatform:zdcc` → `io.decentralchain:groth16`
+- Java package: `com.wavesplatform.zdcc.*` → `com.decentralchain.groth16.*`
+- JNI symbol prefix: `Java_com_wavesplatform_zdcc_*` → `Java_com_decentralchain_groth16_*`
 - Version: `0.2.1` → `0.2.1.0` (DCC convention: upstream + `.0`)
 - Java: upgraded to target Java 25 (`<release>25</release>`)
 - CI: comprehensive multi-platform native build matrix (7 targets: Linux

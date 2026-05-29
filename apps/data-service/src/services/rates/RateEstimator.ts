@@ -26,7 +26,7 @@ export type AssetPair = {
 };
 
 export type RateWithPair = RateInfo & AssetPair;
-export type VolumeAwareRateInfo = RateWithPair & { volumeWaves: BigNumber };
+export type VolumeAwareRateInfo = RateWithPair & { volumeDcc: BigNumber };
 
 export default class RateEstimator
   implements AsyncMget<RateMgetParams, ReqAndRes<AssetPair, RateWithPairIds>, AppError>
@@ -139,13 +139,13 @@ export default class RateEstimator
                         amountAsset: assetsMap[itm.value.amountAsset] as Asset,
                         priceAsset: assetsMap[itm.value.priceAsset] as Asset,
                         rate: pairsWithRates[idx]?.rate ?? new BigNumber(0),
-                        volumeWaves: itm.value.volumeWaves as BigNumber,
+                        volumeDcc: itm.value.volumeDcc as BigNumber,
                       }
                     : {
                         amountAsset: assetsMap[pairsWithRates[idx]?.amountAsset ?? ''] as Asset,
                         priceAsset: assetsMap[pairsWithRates[idx]?.priceAsset ?? ''] as Asset,
                         rate: pairsWithRates[idx]?.rate ?? new BigNumber(0),
-                        volumeWaves: new BigNumber(0),
+                        volumeDcc: new BigNumber(0),
                       },
                 ),
               ),

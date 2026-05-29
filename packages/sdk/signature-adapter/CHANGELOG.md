@@ -13,7 +13,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced browserify/uglifyjs with tsup.
 - Upgraded TypeScript from 3.2 to 5.9.
 - Upgraded all dependencies to latest versions.
-- Rebranded from `@waves` to `@decentralchain`.
+- Rebranded from `@dcc` to `@decentralchain`.
 - Broke circular dependency in adapter imports.
 
 ### Added

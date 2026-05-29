@@ -18,6 +18,15 @@ type Matches = [{
 }, {
   id: "pages/Dashboard";
   module: typeof import("../Dashboard.js");
+}] | [{
+  id: "root";
+  module: typeof import("../../root.js");
+}, {
+  id: "Layout";
+  module: typeof import("../../Layout.js");
+}, {
+  id: "dashboard-alias";
+  module: typeof import("../Dashboard.js");
 }];
 
 type Annotations = GetAnnotations<Info & { module: Module, matches: Matches }>;

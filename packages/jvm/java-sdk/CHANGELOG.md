@@ -6,12 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed (Round 11 — 2026-05-17, Docker integration test suite now passes 71/71)
 - **`BaseTestWithNodeInDocker` chain-id mismatch** — the Docker test base class
-  created `Node` but never propagated the node's chain-id into `WavesConfig`. All
+  created `Node` but never propagated the node's chain-id into `DccConfig`. All
   `PrivateKey.fromSeed()` and address construction therefore used the default
-  `WavesConfig.chainId()` = 87 (Waves mainnet 'W'), while the DCC private node
+  `DccConfig.chainId()` = 87 (Waves mainnet 'W'), while the DCC private node
   runs on chain-id 82. Every broadcasted transaction was rejected by the node
   with "Wrong chain-id. Expected - 82, provided - 87". Fixed by calling
-  `WavesConfig.chainId(node.chainId())` immediately after the `Node` object is
+  `DccConfig.chainId(node.chainId())` immediately after the `Node` object is
   constructed in the static initializer, before `faucet` is initialized. This
   ensures all static key and address construction uses the node's actual chain-id.
 - **`handleEthResponse` rejected valid `eth_sendRawTransaction` responses** — the
@@ -45,15 +45,15 @@ All notable changes to this project will be documented in this file.
 - Maven wrapper version verified: `3.9.16` confirmed latest 3.9.x on Maven Central (`repo.maven.apache.org` direct check; Maven 4.x series intentionally deferred for ecosystem stability).
 - All runtime/test dependency versions re-confirmed at latest:
   `com.wavesplatform:lang 1.6.1` ✅ (upstream latest; replacement by `io.decentralchain:lang_3` deferred per KNOWN-2),
-  `com.wavesplatform:waves-transactions 1.2.7` ✅ (upstream latest),
+  `com.wavesplatform:dcc-transactions 1.2.7` ✅ (upstream latest),
   `testcontainers 2.0.5` ✅, `mockito-core 5.23.0` ✅,
   `commons-codec 1.22.0` ✅, `commons-compress 1.28.0` ✅,
   `protobuf-java 4.34.1` ✅.
 
 ### Changed
-- **`WavesEthConverter` → `DccEthConverter`** — renamed class and file (`WavesEthConverter.java` → `DccEthConverter.java`). Logic unchanged: converts between DCC Base58 addresses and EVM hex addresses. Updated all references: `EthereumTransactionIntegrationTest.java` (import + 2 call sites), `WavesEthConverterTest.java` → `DccEthConverterTest.java` (file + class + static import).
-- **`WavesJModule` → `DccModule`** — renamed class and file (`WavesJModule.java` → `DccModule.java`). Still extends `WavesTransactionsModule` (upstream parent; name cannot change until DCC-240 is complete).
-- **`WavesJMapper` → `DccMapper`** — renamed class and file (`WavesJMapper.java` → `DccMapper.java`). Updated `Node.java`: field type, constructor calls, and import.
+- **`DccEthConverter` → `DccEthConverter`** — renamed class and file (`DccEthConverter.java` → `DccEthConverter.java`). Logic unchanged: converts between DCC Base58 addresses and EVM hex addresses. Updated all references: `EthereumTransactionIntegrationTest.java` (import + 2 call sites), `DccEthConverterTest.java` → `DccEthConverterTest.java` (file + class + static import).
+- **`DccJModule` → `DccModule`** — renamed class and file (`DccJModule.java` → `DccModule.java`). Still extends `DccTransactionsModule` (upstream parent; name cannot change until DCC-240 is complete).
+- **`DccJMapper` → `DccMapper`** — renamed class and file (`DccJMapper.java` → `DccMapper.java`). Updated `Node.java`: field type, constructor calls, and import.
 - **`codeql-action` upgraded** from `v3` to `v4.35.4` (SHA `68bde559dea0fdcac2102bfdf6230c5f70eb485e`) in `.github/workflows/ci.yml`.
 
 ### Security / Dependency Review (Session 12, 2026-05-14) — eliminates three external JAR dependencies (`httpclient5 5.6.1`, `httpcore5`, `httpcore5-h2`) from the compile and runtime classpaths. The SDK now has zero external HTTP dependencies. Concrete changes:
@@ -63,7 +63,7 @@ All notable changes to this project will be documented in this file.
   - SSRF protection preserved: `HttpClient.Redirect.NEVER` (was `disableRedirectHandling()`).
   - All 17 `StringEntity` / `BasicNameValuePair` / `ClassicRequestBuilder` call sites updated.
   - `MockHttpRsUtil` updated to mock `java.net.http.HttpClient` (abstract class → standard Mockito mock). Test helper signatures now declare `throws InterruptedException` to satisfy the `HttpClient.send()` checked-exception contract.
-- **`commons-lang3` removed** — `ArrayUtils.addAll(byte[], byte[])` was the sole usage, located in `WavesEthConverter.ethToWavesAddress()`. Replaced with a private `concat(byte[], byte[])` method backed by two `System.arraycopy` calls. The library was previously declared as a runtime dependency despite having zero callers in the main source tree.
+- **`commons-lang3` removed** — `ArrayUtils.addAll(byte[], byte[])` was the sole usage, located in `DccEthConverter.ethToDccAddress()`. Replaced with a private `concat(byte[], byte[])` method backed by two `System.arraycopy` calls. The library was previously declared as a runtime dependency despite having zero callers in the main source tree.
 
 ### Fixed
 - **`Node.waitForTransactions()` spurious 1-second sleep on successful confirmation** — the polling loop used a `finally` block for `Thread.sleep`, which executed unconditionally even when `return` was reached inside the `try` block. This caused a full `pollingIntervalInMillis` (1 000 ms) delay after all requested transactions were confirmed. Restructured: sleep moved outside the try/catch so it is only reached when the loop continues (i.e. transactions are not yet confirmed or a transient error occurred).
@@ -71,7 +71,7 @@ All notable changes to this project will be documented in this file.
 
 ### Security / Dependency Review (Session 11, 2026-05-14)
 - All dependency versions re-verified at latest stable after HC5 removal:
-  `jackson-databind 2.21.3` \u2705, `waves-transactions 1.2.7` (upstream-pinned) \u2705,
+  `jackson-databind 2.21.3` \u2705, `dcc-transactions 1.2.7` (upstream-pinned) \u2705,
   `logback-classic 1.5.32` \u2705, `junit-jupiter 5.14.4` \u2705,
   `mockito-core 5.23.0` \u2705, `testcontainers 2.0.5` \u2705, `assertj-core 3.27.7` \u2705.
   Dependency management overrides: `protobuf-java 4.34.1` \u2705 (`4.35.0-RC2` skipped \u2014 RC),
@@ -156,7 +156,7 @@ All notable changes to this project will be documented in this file.
 - `.editorconfig` for consistent editor settings
 - `jackson-databind` added to `<dependencyManagement>` at 2.21.3 to enforce security override across all transitive consumers
 - ~~KNOWN-6~~: Apache HttpClient 5.x migration plan — **completed in current release** (see `### Changed` below: HC5 → JDK `java.net.http.HttpClient`)
-- KNOWN-7: documented `WavesConfig.chainId()` global static mutation thread-safety risk
+- KNOWN-7: documented `DccConfig.chainId()` global static mutation thread-safety risk
 
 ### Fixed
 - **`CompilationException` message lost on serialization/reflection** — constructor now calls `super(message)` so `Throwable.detailMessage` is set correctly. Previously the private `message` field override meant stack traces and `Throwable.toString()` output was missing the message text.
@@ -168,7 +168,7 @@ All notable changes to this project will be documented in this file.
 - **HTTP connection leak in `Node.asInputStream()`** — response entity is now buffered to `ByteArrayInputStream` and the underlying `CloseableHttpResponse` is closed in a `finally` block. Previously the HTTP connection was held open until GC.
 - **HTTP connection leak in `Node.exec()` error path** — `CloseableHttpResponse` is now closed in a `finally` block when a non-200 status triggers `NodeException` deserialization.
 - **HTTP connection leak in `Node.sendEthRequest()`** — `CloseableHttpResponse` is now closed in a `finally` block after reading the Ethereum RPC response body.
-- **Utility classes instantiable** — `HashUtil`, `WavesEthConverter`, and `CompilationUtil` now declare `private` constructors, preventing accidental instantiation of pure-static utility classes.
+- **Utility classes instantiable** — `HashUtil`, `DccEthConverter`, and `CompilationUtil` now declare `private` constructors, preventing accidental instantiation of pure-static utility classes.
 - **`AssetBalance.equals()` NPE on null `issueTransaction` field** — `issueTransaction` is a nullable field (the Waves API omits it for non-issued assets). The `equals()` implementation called `issueTransaction.equals(that.issueTransaction)` directly, throwing `NullPointerException` whenever either instance had a null `issueTransaction`. Fixed to `Objects.equals(issueTransaction, that.issueTransaction)`.
 - **`ConflictEndorsement.equals()` and `FinalizationVoting.equals()` unnecessarily autoboxed `int` primitives** — both classes used `Objects.equals(finalizedHeight, that.finalizedHeight)` where `finalizedHeight` is `int`. `Objects.equals(Object, Object)` forces autoboxing to `Integer`, which allocates heap objects for every equality check. Fixed to direct primitive comparison `finalizedHeight == that.finalizedHeight`.
 - **`get`-prefix accessor naming inconsistency across 7 DTO classes** — the SDK convention is no-prefix accessors (e.g. `height()`, `status()`, `id()`). Seven model classes violated this by using JavaBean `getXxx()` style. Renamed for consistency:
@@ -185,12 +185,12 @@ All notable changes to this project will be documented in this file.
 - **`Node(URI, HttpClient)` → `Node(URI, CloseableHttpClient)`** — the `HttpClient` parameter type (HC4 `org.apache.http.client.HttpClient`) is replaced with `CloseableHttpClient` (`org.apache.hc.client5.http.impl.classic.CloseableHttpClient`). Update any custom client injection.
 - **`Node(String, HttpClient)` and `Node(Profile, HttpClient)`** — same type change.
 - **`Node.client()` returns `CloseableHttpClient`** instead of `HttpClient`.
-- **`Node` constructors no longer call `WavesConfig.chainId()`** — the previous behavior of auto-setting the JVM-global chain ID on every `Node` construction has been removed. It was a thread-safety hazard (the second `Node` targeting a different chain silently clobbered the first). Callers that relied on this side-effect must now call `WavesConfig.chainId(node.chainId())` explicitly after construction.
+- **`Node` constructors no longer call `DccConfig.chainId()`** — the previous behavior of auto-setting the JVM-global chain ID on every `Node` construction has been removed. It was a thread-safety hazard (the second `Node` targeting a different chain silently clobbered the first). Callers that relied on this side-effect must now call `DccConfig.chainId(node.chainId())` explicitly after construction.
 
 ### Changed
 - **CI: Trivy SARIF now uploaded to GitHub Security tab** — replaced `actions/upload-artifact` with `github/codeql-action/upload-sarif@7fd177fa...` (v3, SHA-pinned). SARIF findings are now visible under the repository's Security → Code scanning tab, not buried as a build artifact download.
 - `groupId`: `com.wavesplatform` → `io.decentralchain`
-- `artifactId`: `wavesj` → `java-sdk`
+- `artifactId`: `dccj` → `java-sdk`
 - `central-publishing-maven-plugin`: 0.9.0 → 0.10.0
 - `testcontainers`: 2.0.3 → 2.0.5
 - `jackson-core`: 2.20.1 → **2.21.3**

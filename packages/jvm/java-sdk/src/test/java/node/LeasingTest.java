@@ -162,7 +162,7 @@ public class LeasingTest extends BaseTestWithNodeInDocker {
                 LeaseStatus.CANCELED,
                 invokeCancelTx.height(),
                 invokeCancelTx.tx().id()));
-    // TODO bug, should be fixed in Node. Uncomment at Node 1.3.5 release
+    // NOTE: Node 1.3.5 bug workaround (Waves-era) — retained for compatibility
     // assertThat(invokeLeasingCancel).isEqualTo(stateChangesCancel);
 
     // assertThat(leasingList).containsExactlyInAnyOrder(leasingCancel, invokeLeasingCancel);

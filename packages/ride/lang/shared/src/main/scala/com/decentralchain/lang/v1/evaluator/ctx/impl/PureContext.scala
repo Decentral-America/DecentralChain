@@ -222,7 +222,7 @@ object PureContext {
     ) {
       case (CONST_BIGINT(a), CONST_BIGINT(b)) =>
         Try(body(a, b)).toEither
-          .leftMap(_.getMessage)
+          .leftMap(e => Option(e.getMessage).getOrElse(e.toString))
           .filterOrElse(
             r => r >= BigIntMin && r <= BigIntMax,
             s"$a ${op.func} $b is out of range."
@@ -1442,7 +1442,7 @@ object PureContext {
         try
           Right(CONST_LONG(body(a, b)))
         catch {
-          case e: Throwable => Left(e.getMessage)
+          case e: Throwable => Left(Option(e.getMessage).getOrElse(e.toString))
         }
       case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: ${t.toString}, b: ${t.toString})", xs)
     }
@@ -1452,7 +1452,7 @@ object PureContext {
   ): BaseFunction[NoContext] =
     NativeFunction(opsToFunctions(op), Map(V5 -> 8L, V8 -> 1L), func, BOOLEAN, ("a", BIGINT), ("b", BIGINT)) {
       case CONST_BIGINT(a) :: CONST_BIGINT(b) :: Nil =>
-        Try(body(a, b)).toEither.bimap(_.getMessage, CONST_BOOLEAN.apply)
+        Try(body(a, b)).toEither.bimap(e => Option(e.getMessage).getOrElse(e.toString), CONST_BOOLEAN.apply)
       case xs => notImplemented[Id, EVALUATED](s"${opsToFunctions(op)}(a: BIGINT, b: BIGINT)", xs)
     }
 
@@ -1631,7 +1631,7 @@ object PureContext {
         }
       }.toEither
         .bimap(
-          _.getMessage,
+          e => Option(e.getMessage).getOrElse(e.toString),
           index => if (index != -1) CONST_LONG(index.toLong) else unit
         )
 

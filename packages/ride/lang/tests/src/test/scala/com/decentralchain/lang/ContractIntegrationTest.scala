@@ -13,7 +13,7 @@ import com.decentralchain.lang.v1.compiler.{ContractCompiler, Terms}
 import com.decentralchain.lang.v1.evaluator.*
 import com.decentralchain.lang.v1.evaluator.ContractEvaluator.Invocation
 import com.decentralchain.lang.v1.evaluator.ctx.impl.PureContext
-import com.decentralchain.lang.v1.evaluator.ctx.impl.waves.{Bindings, WavesContext}
+import com.decentralchain.lang.v1.evaluator.ctx.impl.dcc.{Bindings, DccContext}
 import com.decentralchain.lang.v1.parser.Parser
 import com.decentralchain.lang.v1.traits.Environment
 import com.decentralchain.lang.v1.traits.domain.*
@@ -26,7 +26,7 @@ class ContractIntegrationTest extends PropSpec with Inside {
   private val ctx: CTX[Environment] =
     PureContext.build(V3, useNewPowPrecision = true).withEnvironment[Environment] |+|
       CTX[Environment](sampleTypes, Map.empty, Array.empty) |+|
-      WavesContext.build(
+      DccContext.build(
         Global,
         DirectiveSet(V3, Account, DApp).explicitGet(),
         fixBigScriptField = true

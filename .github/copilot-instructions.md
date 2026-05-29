@@ -2,7 +2,7 @@
 
 ## Project
 
-Multi-language monorepo — 20 `@decentralchain/*` TypeScript SDK packages + 4 apps (exchange, scanner, cubensis-connect, data-service) + RIDE lang/repl (`packages/ride/`, sbt) + 7 JVM libraries (`packages/jvm/`, Maven). Blockchain is a Waves-protocol fork (LPoS, Ride smart contracts).
+Multi-language monorepo — 20 `@decentralchain/*` TypeScript SDK packages + 4 apps (exchange, scanner, cubensis-connect, data-service) + RIDE lang/repl (`packages/ride/`, sbt) + 7 JVM libraries (`packages/jvm/`, Maven). Blockchain is a Dcc-protocol fork (LPoS, Ride smart contracts).
 
 ## Dependency Layers
 
@@ -117,7 +117,7 @@ For current status and open work, see the workspace root `STATUS.md`.
 
 ## Domain Context
 
-DecentralChain is a **Waves-protocol blockchain fork** with:
+DecentralChain is a **Dcc-protocol blockchain fork** with:
 - **Liquid Proof-of-Stake (LPoS)** consensus
 - **Ride** smart contract language (non-Turing-complete, predictable execution)
 - Native **DEX** (decentralized exchange) built into the protocol

@@ -4,7 +4,7 @@
 // Re-export @bufbuild/protobuf utilities for convenience
 export { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 // Core types
-export { type Amount, AmountSchema } from './gen/waves/amount_pb.js';
+export { type Amount, AmountSchema } from './gen/dcc/amount_pb.js';
 // Block types
 export {
   type Block,
@@ -21,7 +21,7 @@ export {
   MicroBlockSchema,
   type SignedMicroBlock,
   SignedMicroBlockSchema,
-} from './gen/waves/block_pb.js';
+} from './gen/dcc/block_pb.js';
 // Events
 export {
   type BlockchainUpdated,
@@ -36,7 +36,7 @@ export {
   type StateUpdate_BalanceUpdate,
   StateUpdate_BalanceUpdateSchema,
   StateUpdateSchema,
-} from './gen/waves/events/events_pb.js';
+} from './gen/dcc/events/events_pb.js';
 // Invoke script result
 export {
   type InvokeScriptResult,
@@ -63,19 +63,19 @@ export {
   type InvokeScriptResult_SponsorFee,
   InvokeScriptResult_SponsorFeeSchema,
   InvokeScriptResultSchema,
-} from './gen/waves/invoke_script_result_pb.js';
+} from './gen/dcc/invoke_script_result_pb.js';
 // DApp meta
-export type { DAppMeta } from './gen/waves/lang/dapp_meta_pb.js';
+export type { DAppMeta } from './gen/dcc/lang/dapp_meta_pb.js';
 export {
   type DAppMeta_CallableFuncSignature,
   DAppMeta_CallableFuncSignatureSchema,
   DAppMetaSchema,
-} from './gen/waves/lang/dapp_meta_pb.js';
+} from './gen/dcc/lang/dapp_meta_pb.js';
 // gRPC API types (transactions)
 export {
   TransactionStatus_Status,
   TransactionStatus_StatusSchema,
-} from './gen/waves/node/grpc/transactions_api_pb.js';
+} from './gen/dcc/node/grpc/transactions_api_pb.js';
 export {
   type AssetPair,
   AssetPairSchema,
@@ -85,16 +85,16 @@ export {
   Order_Side,
   Order_SideSchema,
   OrderSchema,
-} from './gen/waves/order_pb.js';
-export { type Recipient, RecipientSchema } from './gen/waves/recipient_pb.js';
+} from './gen/dcc/order_pb.js';
+export { type Recipient, RecipientSchema } from './gen/dcc/recipient_pb.js';
 // Reward
-export { type RewardShare, RewardShareSchema } from './gen/waves/reward_share_pb.js';
+export { type RewardShare, RewardShareSchema } from './gen/dcc/reward_share_pb.js';
 
 // Block snapshot (state_snapshot.proto)
 export {
   type BlockSnapshot,
   BlockSnapshotSchema,
-} from './gen/waves/state_snapshot_pb.js';
+} from './gen/dcc/state_snapshot_pb.js';
 // Transaction types
 export {
   type BurnTransactionData,
@@ -143,9 +143,9 @@ export {
   TransferTransactionDataSchema,
   type UpdateAssetInfoTransactionData,
   UpdateAssetInfoTransactionDataSchema,
-} from './gen/waves/transaction_pb.js';
+} from './gen/dcc/transaction_pb.js';
 // Transaction state snapshot
-export type { TransactionStateSnapshot } from './gen/waves/transaction_state_snapshot_pb.js';
+export type { TransactionStateSnapshot } from './gen/dcc/transaction_state_snapshot_pb.js';
 export {
   type TransactionStateSnapshot_AccountData,
   TransactionStateSnapshot_AccountDataSchema,
@@ -166,4 +166,4 @@ export {
   TransactionStateSnapshotSchema,
   TransactionStatus,
   TransactionStatusSchema,
-} from './gen/waves/transaction_state_snapshot_pb.js';
+} from './gen/dcc/transaction_state_snapshot_pb.js';

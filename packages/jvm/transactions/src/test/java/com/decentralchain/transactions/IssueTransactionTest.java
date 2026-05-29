@@ -154,7 +154,7 @@ public class IssueTransactionTest {
 
         Base64String script = new Base64String("BAbMtW/U");
 
-        return Stream.of( //todo add first arg as more descriptive test name (in all suites)
+        return Stream.of( // NOTE: Could add descriptive test names as first arg
                 arguments(1, minName, minDescription, 0, false, Base64String.empty(), Id.as("9XyxaGepzteh4QDBaRvNBCiNmjyNMSeEQpgu4vtJFCWJ"),
                         Proof.list(Proof.as("3EBrdH9voEN9jDzTv33CpiwFaTbvokUYy691f2bjuQbsivYtDFf3TLZkftMU2AMMYukd1ApmU9LxkoZTuiAsXR7M")),
                         Base64.decode("A42Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0AATq/SBqAAB//////////wAAAAAAAAX14QEAAAF0h26AAA=="),

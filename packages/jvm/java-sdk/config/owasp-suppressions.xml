@@ -12,11 +12,11 @@
 
   <!--
     KNOWN-2: io.decentralchain:lang:1.6.1
-    The Waves lang compiler is a transitive supply-chain risk until
+    The DCC lang compiler is a transitive supply-chain risk until
     DCC-252 (lang fork) is published to Maven Central. Once published,
     replace with io.decentralchain:lang_3 and remove this suppression.
 
-    Tracked in: packages/jvm/wavesj/KNOWN_ISSUES.md → KNOWN-2
+    Tracked in: packages/jvm/java-sdk/KNOWN_ISSUES.md → KNOWN-2
     Owner: DCC Platform team
     Review by: when DCC-252 merges to main
   -->

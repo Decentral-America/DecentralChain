@@ -41,7 +41,7 @@ Version freshness sweep via GitHub API + Maven Central direct artifact checks:
 ### Documented
 - KNOWN_ISSUES KNOWN-4: `com.wavesplatform.protobuf.*` imports are from a stale artifact
   (`protobuf-schemas:1.6.1` predates the java_package rename; not a wire-format constraint).
-  `com.wavesplatform.zwaves.*` in `Global.scala` is from a locally-installed jar whose Rust
+  `com.wavesplatform.zdcc.*` in `Global.scala` is from a locally-installed jar whose Rust
   native library has not yet been rebuilt under the new `com.decentralchain.groth16.*` namespace.
   Both are publish-gap issues, not permanent constraints. See KNOWN_ISSUES.md for fix paths.
   Zero `com.wavesplatform.lang.*` occurrences exist — the DCC-252 AC is satisfied.
@@ -70,5 +70,5 @@ Version freshness sweep via GitHub API + Maven Central direct artifact checks:
 ### Notes
 - `com.wavesplatform.protobuf.*` imports are from the `protobuf-schemas:1.6.1` artifact
   which predates the java_package rename. Not a wire-format constraint — see KNOWN_ISSUES.md.
-- `com.wavesplatform.zwaves.*` is from the locally-installed `zwaves:0.2.1.0` jar. The
+- `com.wavesplatform.zdcc.*` is from the locally-installed `zdcc:0.2.1.0` jar. The
   `groth16` package in the monorepo has been rebranded; awaiting Rust rebuild + re-install.

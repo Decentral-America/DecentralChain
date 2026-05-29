@@ -15,7 +15,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Replaced tsc + browserify + uglify-js with tsup (ESM + CJS dual output).
 - Replaced `||` with `??` for optional property defaults (fixes empty-string bug).
 - Upgraded TypeScript to 5.9 with all strict flags enabled.
-- Rebranded from `@waves` to `@decentralchain`.
+- Rebranded from `@dcc` to `@decentralchain`.
 
 ### Added
 

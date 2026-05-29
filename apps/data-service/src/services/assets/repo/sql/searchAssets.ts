@@ -25,7 +25,6 @@ const searchByNameInMeta = (qb: Knex.QueryBuilder, q: string) =>
     .columns([
       'asset_id',
       'asset_name',
-      'ticker',
       'height',
       {
         rank: pg.raw(
@@ -33,6 +32,7 @@ const searchByNameInMeta = (qb: Knex.QueryBuilder, q: string) =>
           [q],
         ),
       },
+      'ticker',
     ])
     .where('asset_name', 'ilike', prepareForLike(q));
 

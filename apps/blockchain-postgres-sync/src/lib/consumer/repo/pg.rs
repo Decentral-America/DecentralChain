@@ -11,7 +11,7 @@ use crate::consumer::models::{
         Tx15, Tx16, Tx16Args, Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined,
         Tx18Payment, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9, Tx9Partial,
     },
-    waves_data::WavesData,
+    dcc_data::DccData,
 };
 use crate::db::PgAsyncPool;
 use crate::error::Error as AppError;
@@ -19,7 +19,7 @@ use crate::schema::{
     asset_origins, asset_tickers, asset_updates, blocks_microblocks, candles, txs, txs_1, txs_10,
     txs_11, txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args,
     txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_2, txs_3, txs_4, txs_5, txs_6,
-    txs_7, txs_8, txs_9, waves_data,
+    txs_7, txs_8, txs_9, dcc_data,
 };
 use crate::tuple_len::TupleLen;
 use anyhow::{bail, Error, Result};
@@ -180,14 +180,14 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot rollback blocks/microblocks"))
     }
 
-    fn insert_waves_data(&mut self, waves_data: &[WavesData]) -> Result<()> {
-        diesel::insert_into(waves_data::table)
-            .values(waves_data)
-            .on_conflict(waves_data::quantity)
+    fn insert_dcc_data(&mut self, dcc_data: &[DccData]) -> Result<()> {
+        diesel::insert_into(dcc_data::table)
+            .values(dcc_data)
+            .on_conflict(dcc_data::quantity)
             .do_nothing() // its ok to skip same quantity on historical sync
             .execute(self.conn)
             .map(drop)
-            .map_err(build_err_fn("Cannot insert waves data"))
+            .map_err(build_err_fn("Cannot insert dcc data"))
     }
 
     //

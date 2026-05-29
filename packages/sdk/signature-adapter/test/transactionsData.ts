@@ -629,7 +629,7 @@ export const txs = {
         name: 'test app',
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
       },
-      // id and proof regenerated after prefix rename from WavesWalletAuthentication
+      // id and proof regenerated after prefix rename from DccWalletAuthentication
       // to DccWalletAuthentication. Generated with TEST_SEED (produces pubkey above).
       id: '3q1YCA9e25ndPDVW7ebzinsbE8EidvAHehMmKk2WMPZ9',
       name: 'auth request',

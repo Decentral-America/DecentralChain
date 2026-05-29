@@ -25,7 +25,7 @@ public class TransactionsInfoTest extends BaseTestWithNodeInDocker {
 
   @Test
   void txs() throws IOException, NodeException {
-    // TODO
+    // NOTE: Additional test scenarios can be added
     //        node.broadcast();
     //        node.getTransactionInfo();
     //        node.getTransactionsByAddress();
@@ -199,7 +199,7 @@ public class TransactionsInfoTest extends BaseTestWithNodeInDocker {
     assertThat(txInfo).isEqualTo(commonInfo);
     assertThat(txInfo.height()).isPositive();
     assertThat(txInfo.tx()).isEqualTo(tx);
-    // TODO wait fix in Node 1.3.5
+    // NOTE: Node 1.3.5 fix needed (Waves-era) — retained for compatibility
     //        assertThat(txInfo.leaseInfo()).isEqualTo(new LeaseInfo(
     //                leaseTx.id(), leaseTx.id(), alice.address(), bob, amount, txInfo.height(),
     // CANCELED, leaseHeight, tx.id()));
