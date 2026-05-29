@@ -130,7 +130,7 @@ public class EthereumTransactionTest {
         EthereumTransaction transferTx = EthereumTransaction.createAndSign(
                 new EthereumTransaction.Transfer(
                         new Address("3MoutSX6D5U8F8LD8GetA1b7o5SZNANpamk"),
-                        new Amount(1000, AssetId.WAVES)
+                        new Amount(1000, AssetId.DCC)
                 ),
                 DEFAULT_GAS_PRICE,
                 ChainId.STAGENET,

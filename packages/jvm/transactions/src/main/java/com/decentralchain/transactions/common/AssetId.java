@@ -7,9 +7,9 @@ import java.util.Locale;
 public class AssetId extends Id {
 
     public static final int BYTE_LENGTH = 32;
-    public static final AssetId WAVES = new AssetId("");
+    public static final AssetId DCC = new AssetId("");
 
-    private static final String WAVES_STRING = "WAVES";
+    private static final String DCC_STRING = "DCC";
 
     public AssetId(byte[] id) {
         super(id);
@@ -24,15 +24,15 @@ public class AssetId extends Id {
     }
 
     public static AssetId as(String id) {
-        return new AssetId(id == null || WAVES_STRING.equals(id.toUpperCase(Locale.ENGLISH)) ? "" : id);
+        return new AssetId(id == null || DCC_STRING.equals(id.toUpperCase(Locale.ENGLISH)) ? "" : id);
     }
 
-    public boolean isWaves() {
+    public boolean isDcc() {
         return Bytes.equal(this.bytes(), Bytes.empty());
     }
 
     @Override
     public String toString() {
-        return isWaves() ? WAVES_STRING : encoded();
+        return isDcc() ? DCC_STRING : encoded();
     }
 }

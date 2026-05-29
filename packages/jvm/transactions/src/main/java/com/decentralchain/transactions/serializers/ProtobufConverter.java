@@ -73,12 +73,12 @@ public abstract class ProtobufConverter {
                     "Use ethTransferTxFromProtobuf or ethInvokeScriptTxFromProtobuf instead");
         }
 
-        if (!pbSignedTx.hasWavesTransaction()) {
-            throw new InvalidProtocolBufferException("Waves transaction is missing");
+        if (!pbSignedTx.hasDccTransaction()) {
+            throw new InvalidProtocolBufferException("DCC transaction is missing");
         }
 
         Transaction tx;
-        TransactionOuterClass.Transaction pbTx = pbSignedTx.getWavesTransaction();
+        TransactionOuterClass.Transaction pbTx = pbSignedTx.getDccTransaction();
 
         if (pbTx.hasGenesis()) {
             TransactionOuterClass.GenesisTransactionData genesis = pbTx.getGenesis();
@@ -592,7 +592,7 @@ public abstract class ProtobufConverter {
 
     public static SignedTransaction toProtobuf(Transaction tx) {
         return SignedTransaction.newBuilder()
-                .setWavesTransaction(toUnsignedProtobuf(tx))
+                .setDccTransaction(toUnsignedProtobuf(tx))
                 .addAllProofs(tx.proofs()
                         .stream()
                         .map(p -> ByteString.copyFrom(p.bytes()))

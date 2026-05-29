@@ -100,9 +100,9 @@ public class BytesReader {
         return AssetId.as(readBytes(AssetId.BYTE_LENGTH));
     }
 
-    public AssetId readAssetIdOrWaves() {
+    public AssetId readAssetIdOrDcc() {
         boolean isAsset = readBoolean();
-        return isAsset ? readAssetId() : AssetId.WAVES;
+        return isAsset ? readAssetId() : AssetId.DCC;
     }
 
     public Id readTxId() {

@@ -18,7 +18,7 @@ public class LeaseCancelTransaction extends Transaction {
     private final Id leaseId;
 
     public LeaseCancelTransaction(PublicKey sender, Id leaseId) {
-        this(sender, leaseId, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION,
+        this(sender, leaseId, DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION,
                 Proof.emptyList());
     }
 

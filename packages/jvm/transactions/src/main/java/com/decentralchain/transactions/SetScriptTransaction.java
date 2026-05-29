@@ -18,7 +18,7 @@ public class SetScriptTransaction extends Transaction {
     private final Base64String script;
 
     public SetScriptTransaction(PublicKey sender, Base64String compiledScript) {
-        this(sender, compiledScript, WavesConfig.chainId(), Amount.of(MIN_FEE),
+        this(sender, compiledScript, DccConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

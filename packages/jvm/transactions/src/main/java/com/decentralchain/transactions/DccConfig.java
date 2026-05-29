@@ -2,7 +2,7 @@ package io.decentralchain.transactions;
 
 import io.decentralchain.transactions.common.ChainId;
 
-public abstract class WavesConfig {
+public abstract class DccConfig {
 
     private static byte chainId = ChainId.MAINNET;
 
@@ -11,7 +11,7 @@ public abstract class WavesConfig {
     }
 
     public static void chainId(byte chainId) {
-        WavesConfig.chainId = chainId;
+        DccConfig.chainId = chainId;
     }
 
     public static void chainId(char chainId) {

@@ -31,7 +31,7 @@ public class BurnTransactionTest {
 
     @BeforeAll
     static void beforeAll() {
-        WavesConfig.chainId('R');
+        DccConfig.chainId('R');
     }
 
     static Stream<Arguments> transactionsProvider() {
@@ -75,7 +75,7 @@ public class BurnTransactionTest {
                          byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
         BurnTransaction builtTx = BurnTransaction
                 .builder(Amount.of(amount, assetId))
-                .chainId(WavesConfig.chainId())
+                .chainId(DccConfig.chainId())
                 .fee(fee)
                 .timestamp(timestamp)
                 .sender(sender)
@@ -90,7 +90,7 @@ public class BurnTransactionTest {
         );
 
         BurnTransaction constructedTx = new BurnTransaction(sender, Amount.of(amount, assetId),
-                WavesConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
+                DccConfig.chainId(), Amount.of(fee), timestamp, version, proofs);
 
         assertAll("Txs created via builder and constructor are equal",
                 () -> assertThat(builtTx.bodyBytes()).isEqualTo(constructedTx.bodyBytes()),
@@ -104,9 +104,9 @@ public class BurnTransactionTest {
                 () -> Assertions.assertThat(deserTx.amount()).isEqualTo(Amount.of(amount, assetId)),
 
                 () -> assertThat(deserTx.version()).isEqualTo(version),
-                () -> assertThat(deserTx.chainId()).isEqualTo(WavesConfig.chainId()),
+                () -> assertThat(deserTx.chainId()).isEqualTo(DccConfig.chainId()),
                 () -> Assertions.assertThat(deserTx.sender()).isEqualTo(sender),
-                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.WAVES)),
+                () -> Assertions.assertThat(deserTx.fee()).isEqualTo(Amount.of(fee, AssetId.DCC)),
                 () -> assertThat(deserTx.timestamp()).isEqualTo(timestamp),
                 () -> Assertions.assertThat(deserTx.proofs()).isEqualTo(proofs),
 

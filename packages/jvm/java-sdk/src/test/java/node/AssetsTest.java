@@ -183,6 +183,6 @@ public class AssetsTest extends BaseTestWithNodeInDocker {
 
     node.getNft(alice.address());
     node.getNft(alice.address(), 1);
-    node.getNft(alice.address(), 1, AssetId.WAVES);
+    node.getNft(alice.address(), 1, AssetId.DCC);
   }
 }
