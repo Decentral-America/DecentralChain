@@ -20,15 +20,15 @@ public class UpdateAssetInfoTransaction extends Transaction {
     private final String description;
 
     public UpdateAssetInfoTransaction(PublicKey sender, AssetId assetId, String name, String description) {
-        this(sender, assetId, name, description, WavesConfig.chainId(), Amount.of(MIN_FEE),
+        this(sender, assetId, name, description, DccConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
     public UpdateAssetInfoTransaction(PublicKey sender, AssetId assetId, String name, String description,
                                       byte chainId, Amount fee, long timestamp, int version, List<Proof> proofs) {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
-        if (assetId.isWaves())
-            throw new IllegalArgumentException("Can't be Waves");
+        if (assetId.isDcc())
+            throw new IllegalArgumentException("Can't be the native asset");
 
         this.assetId = assetId;
         this.name = name == null ? "" : name;

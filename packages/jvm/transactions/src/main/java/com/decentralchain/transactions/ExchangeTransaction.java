@@ -26,7 +26,7 @@ public class ExchangeTransaction extends Transaction {
 
     public ExchangeTransaction(PublicKey sender, Order order1, Order order2,
                                long amount, long price, long buyMatcherFee, long sellMatcherFee) {
-        this(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, WavesConfig.chainId(),
+        this(sender, order1, order2, amount, price, buyMatcherFee, sellMatcherFee, DccConfig.chainId(),
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

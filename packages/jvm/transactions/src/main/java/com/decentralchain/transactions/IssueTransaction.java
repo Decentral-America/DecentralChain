@@ -29,7 +29,7 @@ public class IssueTransaction extends Transaction {
 
     public IssueTransaction(PublicKey sender, String name, String description, long quantity, int decimals,
                             boolean isReissuable, Base64String compiledScript) {
-        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, WavesConfig.chainId(),
+        this(sender, name, description, quantity, decimals, isReissuable, compiledScript, DccConfig.chainId(),
                 Amount.of(MIN_FEE), System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 

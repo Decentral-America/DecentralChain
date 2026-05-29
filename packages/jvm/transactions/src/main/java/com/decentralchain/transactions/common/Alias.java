@@ -1,7 +1,7 @@
 package io.decentralchain.transactions.common;
 
 import io.decentralchain.crypto.Bytes;
-import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.DccConfig;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -23,7 +23,7 @@ public class Alias implements Recipient {
     private final String fullAlias;
 
     public Alias(String name) {
-        this(WavesConfig.chainId(), name);
+        this(DccConfig.chainId(), name);
     }
 
     public Alias(byte chainId, String name) {
@@ -37,7 +37,7 @@ public class Alias implements Recipient {
     }
 
     public static boolean isValid(String alias) {
-        return isValid(WavesConfig.chainId(), alias);
+        return isValid(DccConfig.chainId(), alias);
     }
 
     public static boolean isValid(byte chainId, String alias) {

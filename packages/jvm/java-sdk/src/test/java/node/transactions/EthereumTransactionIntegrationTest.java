@@ -33,16 +33,16 @@ public class EthereumTransactionIntegrationTest extends BaseTestWithNodeInDocker
     PrivateKey alice = createAccountWithBalance(10_00000000);
 
     Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
-    String bobAddress = DccEthConverter.ethToDccAddress(bob.getAddress(), WavesConfig.chainId());
+    String bobAddress = DccEthConverter.ethToDccAddress(bob.getAddress(), DccConfig.chainId());
 
     transferBalance(alice, new Address(bobAddress), Amount.of(1_00_000_000));
 
     EthereumTransaction transferTx =
         EthereumTransaction.createAndSign(
             new EthereumTransaction.Transfer(
-                new Address(alice.address().encoded()), new Amount(1000, AssetId.WAVES)),
+                new Address(alice.address().encoded()), new Amount(1000, AssetId.DCC)),
             DEFAULT_GAS_PRICE,
-            WavesConfig.chainId(),
+            DccConfig.chainId(),
             100000L,
             Instant.now().toEpochMilli(),
             bob.getEcKeyPair());
@@ -71,7 +71,7 @@ public class EthereumTransactionIntegrationTest extends BaseTestWithNodeInDocker
     PrivateKey alice = createAccountWithBalance(10_00000000);
 
     Credentials bob = MetamaskHelper.generateCredentials(mnemonic);
-    String bobAddress = DccEthConverter.ethToDccAddress(bob.getAddress(), WavesConfig.chainId());
+    String bobAddress = DccEthConverter.ethToDccAddress(bob.getAddress(), DccConfig.chainId());
 
     AssetId assetId = createAsset(alice);
     transferBalance(alice, new Address(bobAddress), Amount.of(100, assetId));
@@ -103,7 +103,7 @@ public class EthereumTransactionIntegrationTest extends BaseTestWithNodeInDocker
                     ListArg.as(IntegerArg.as(100500))),
                 payments),
             DEFAULT_GAS_PRICE,
-            WavesConfig.chainId(),
+            DccConfig.chainId(),
             100500000L,
             Instant.now().toEpochMilli(),
             bob.getEcKeyPair());

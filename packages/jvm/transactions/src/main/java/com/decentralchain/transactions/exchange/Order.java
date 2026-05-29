@@ -3,7 +3,7 @@ package io.decentralchain.transactions.exchange;
 import io.decentralchain.crypto.Bytes;
 import io.decentralchain.protobuf.order.OrderOuterClass;
 import io.decentralchain.transactions.TransactionOrOrder;
-import io.decentralchain.transactions.WavesConfig;
+import io.decentralchain.transactions.DccConfig;
 import io.decentralchain.transactions.account.PublicKey;
 import io.decentralchain.transactions.common.Amount;
 import io.decentralchain.transactions.common.Id;
@@ -30,7 +30,7 @@ public class Order extends TransactionOrOrder {
     private final byte[] eip712Signature;
 
     public Order(PublicKey sender, OrderType type, Amount amount, Amount price, PublicKey matcher) {
-        this(sender, type, amount, price, matcher, WavesConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
+        this(sender, type, amount, price, matcher, DccConfig.chainId(), Amount.of(MIN_FEE), System.currentTimeMillis(),
                 System.currentTimeMillis() + (30 * 24 * 60 * 60 * 1000L), LATEST_VERSION);
     }
 

@@ -53,12 +53,14 @@ public class MockHttpRsUtil {
       throws IOException, InterruptedException {
     HttpClient mockHttpClient = Mockito.mock(HttpClient.class);
     // Read the address from the stub file to derive a consistent generator address
-    String addressContent = new String(Files.readAllBytes(Path.of(addressFilePath)), StandardCharsets.UTF_8);
+    String addressContent =
+        new String(Files.readAllBytes(Path.of(addressFilePath)), StandardCharsets.UTF_8);
     // Extract the first address from the JSON array, e.g. ["3M4qw..."] → 3M4qw...
     String address = addressContent.replaceAll("[\\[\\]\"]", "").trim();
     // Mock /blocks/headers/last — returns a minimal block header with the same address as generator
     byte[] blockHeaderJson =
-        ("{\"generator\":\"" + address + "\",\"height\":1,\"version\":5}").getBytes(StandardCharsets.UTF_8);
+        ("{\"generator\":\"" + address + "\",\"height\":1,\"version\":5}")
+            .getBytes(StandardCharsets.UTF_8);
     doReturn(createBasicRsFromBytes(blockHeaderJson))
         .when(mockHttpClient)
         .send(

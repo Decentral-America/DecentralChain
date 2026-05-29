@@ -18,7 +18,7 @@ public class TransferTransaction extends Transaction {
     private final Base58String attachment;
 
     public TransferTransaction(PublicKey sender, Recipient recipient, Amount amount, Base58String attachment) {
-        this(sender, recipient, amount, attachment, WavesConfig.chainId(), Amount.of(MIN_FEE),
+        this(sender, recipient, amount, attachment, DccConfig.chainId(), Amount.of(MIN_FEE),
                 System.currentTimeMillis(), LATEST_VERSION, Proof.emptyList());
     }
 
@@ -27,7 +27,7 @@ public class TransferTransaction extends Transaction {
         super(TYPE, version, chainId, sender, fee, timestamp, proofs);
 
         this.recipient = recipient;
-        this.amount = amount == null ? Amount.of(0, AssetId.WAVES) : amount;
+        this.amount = amount == null ? Amount.of(0, AssetId.DCC) : amount;
         this.attachment = attachment;
     }
 
