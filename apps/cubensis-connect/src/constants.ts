@@ -90,9 +90,7 @@ export const DEFAULT_MAIN_CONFIG = {
     update_messages_ms: 30 * 1000,
   },
   networks: ['mainnet', 'testnet', 'stagenet', 'custom'],
-  nfts: {
-    signArtImgUrl: 'https://signart.infura-ipfs.io/ipfs/{domain}/{filename}',
-  },
+  nfts: {} as Record<string, never>,
   pack_config: {
     allow_tx: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     max: 7,

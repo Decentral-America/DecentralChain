@@ -82,25 +82,25 @@ object Common {
       def chainId: Byte = nByte
       def inputEntity   = in()
 
-      def transactionById(id: Array[Byte]): Option[Tx]                                    = ???
-      def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer]                   = ???
-      def transactionHeightById(id: Array[Byte]): Option[Long]                            = ???
-      def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo]                         = ???
-      def lastBlockOpt(): Option[BlockInfo]                                               = ???
-      def blockInfoByHeight(height: Int): Option[BlockInfo]                               = ???
-      def data(recipient: Recipient, key: String, dataType: DataType): Option[Any]        = None
-      def hasData(recipient: Recipient): Boolean                                          = false
-      def resolveAlias(name: String): Either[String, Recipient.Address]                   = ???
-      def accountBalanceOf(a: Recipient, b: Option[Array[Byte]]): Either[String, Long]    = ???
-      def accountWavesBalanceOf(a: Recipient): Either[String, Environment.BalanceDetails] = ???
-      def tthis: Environment.Tthis                                                        = Address(ByteStr.empty)
-      def multiPaymentAllowed: Boolean                                                    = true
-      def txId: ByteStr                                                                   = ???
-      def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer]               = ???
-      def addressFromString(address: String): Either[String, Recipient.Address]           = ???
-      def addressFromPublicKey(publicKey: ByteStr): Either[String, Address]               = ???
-      def accountScript(addressOrAlias: Recipient): Option[Script]                        = ???
-      def calculateDelay(gt: ByteStr, b: Long): Long                                      = ???
+      def transactionById(id: Array[Byte]): Option[Tx]                                  = ???
+      def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer]                 = ???
+      def transactionHeightById(id: Array[Byte]): Option[Long]                          = ???
+      def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo]                       = ???
+      def lastBlockOpt(): Option[BlockInfo]                                             = ???
+      def blockInfoByHeight(height: Int): Option[BlockInfo]                             = ???
+      def data(recipient: Recipient, key: String, dataType: DataType): Option[Any]      = None
+      def hasData(recipient: Recipient): Boolean                                        = false
+      def resolveAlias(name: String): Either[String, Recipient.Address]                 = ???
+      def accountBalanceOf(a: Recipient, b: Option[Array[Byte]]): Either[String, Long]  = ???
+      def accountDccBalanceOf(a: Recipient): Either[String, Environment.BalanceDetails] = ???
+      def tthis: Environment.Tthis                                                      = Address(ByteStr.empty)
+      def multiPaymentAllowed: Boolean                                                  = true
+      def txId: ByteStr                                                                 = ???
+      def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer]             = ???
+      def addressFromString(address: String): Either[String, Recipient.Address]         = ???
+      def addressFromPublicKey(publicKey: ByteStr): Either[String, Address]             = ???
+      def accountScript(addressOrAlias: Recipient): Option[Script]                      = ???
+      def calculateDelay(gt: ByteStr, b: Long): Long                                    = ???
       def callScript(
           dApp: Address,
           func: String,

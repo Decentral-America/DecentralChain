@@ -23,7 +23,7 @@ export { validateTxSignature };
  * @param t
  */
 export const deleteProofsAndId = (t: any) => {
-  const tx: any = t;
+  const tx: any = { ...t };
   delete tx.id;
   delete tx.proofs;
   return tx;

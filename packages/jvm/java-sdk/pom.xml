@@ -268,7 +268,7 @@
             </plugin>
             <!-- Code style: google-java-format (via Spotless) + Checkstyle enforced.
                  Remaining suppressions in checkstyle-suppressions.xml cover upstream
-                 WavesJ debt (NeedBraces, MissingJavadoc) and two domain-specific
+                 SDK debt (NeedBraces, MissingJavadoc) and two domain-specific
                  identifiers (dApp in InvokeAction, TI in Node). -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -421,7 +421,7 @@
 
         <!-- DCC crypto primitives (Curve25519, key derivation, hashing, Base58, RSA)
              Direct dep needed for io.decentralchain.crypto.* imports in util classes.
-             Replaces the transitive io.decentralchain:crypto pulled via waves-transactions.
+             Replaces the transitive io.decentralchain:crypto pulled via transactions.
              See DCC-264. -->
         <dependency>
             <groupId>io.decentralchain</groupId>

@@ -29,7 +29,7 @@ describe('State changes by transaction Id', () => {
 
   it('throws on not found tx', async () => {
     const f = api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk');
-    expect(f).rejects.toMatchObject({ error: 311 });
+    await expect(f).rejects.toMatchObject({ data: { error: 311 } });
   });
 
   it('throws on not invoke script tx', async () => {
@@ -43,7 +43,7 @@ describe('State changes by transaction Id', () => {
     await broadcast(ttx, NODE_URL);
     await waitForTx(ttx.id, { apiBase: NODE_URL });
     const f = api.debug.fetchStateChangesByTxId(ttx.id);
-    expect(f).rejects.toMatchObject({ error: 312 });
+    await expect(f).rejects.toMatchObject({ data: { error: 312 } });
   });
 
   it('state schanges in stage', async () => {

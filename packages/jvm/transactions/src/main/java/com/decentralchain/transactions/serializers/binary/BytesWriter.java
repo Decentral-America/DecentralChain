@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-//todo inherit OutputStream
+// NOTE: Could inherit OutputStream for standard API compatibility
 public class BytesWriter {
 
     private byte[] buf;

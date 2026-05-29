@@ -1,10 +1,4 @@
-export const WHITELIST = [
-  'swop.fi',
-  'vires.finance',
-  'app.power.tech',
-  'wx.network',
-  'decentralchain.io',
-];
+export const WHITELIST = ['decentralchain.io'];
 
 export const CUSTOMLIST = ['docs.decentralchain.io', 'decentralchain.io'];
 

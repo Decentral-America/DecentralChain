@@ -77,8 +77,8 @@ vi.mock('@decentralchain/node-api', async () => ({
         .mockResolvedValue({ hasNext: false, items: { addr: 100 }, lastItem: null }),
       fetchAssetsAddressLimit: vi.fn().mockResolvedValue([]),
       fetchAssetsBalance: vi.fn().mockResolvedValue({ balances: [] }),
-      fetchAssetsDetails: vi.fn().mockResolvedValue([{ assetId: 'WAVES', name: 'DCC' }]),
-      fetchDetails: vi.fn().mockResolvedValue([{ assetId: 'WAVES', name: 'DCC' }]),
+      fetchAssetsDetails: vi.fn().mockResolvedValue([{ assetId: 'DCC', name: 'DCC' }]),
+      fetchDetails: vi.fn().mockResolvedValue([{ assetId: 'DCC', name: 'DCC' }]),
     },
     blocks: {
       fetchBlockAt: vi.fn().mockResolvedValue(mockBlock),
@@ -186,14 +186,14 @@ describe('api — transactions', () => {
 
 describe('api — assets', () => {
   it('fetchAssetDetailsById returns single asset', async () => {
-    const asset = await fetchAssetDetailsById('WAVES');
-    expect(asset.assetId).toBe('WAVES');
+    const asset = await fetchAssetDetailsById('DCC');
+    expect(asset.assetId).toBe('DCC');
   });
 
   it('fetchBatchAssetDetails returns map', async () => {
-    const map = await fetchBatchAssetDetails(['WAVES']);
+    const map = await fetchBatchAssetDetails(['DCC']);
     expect(map instanceof Map).toBe(true);
-    expect(map.get('WAVES')?.name).toBe('DCC');
+    expect(map.get('DCC')?.name).toBe('DCC');
   });
 
   it('fetchBatchAssetDetails returns empty map for empty input', async () => {
@@ -226,7 +226,7 @@ describe('api — peers', () => {
 
 describe('api — distribution (cursor-based pagination)', () => {
   it('fetches full distribution — single page, no next', async () => {
-    const result = await fetchFullAssetDistribution('WAVES', 100);
+    const result = await fetchFullAssetDistribution('DCC', 100);
     expect(typeof result.items).toBe('object');
     expect(result.totalHolders).toBeGreaterThanOrEqual(0);
     expect(result.totalPages).toBe(1);
@@ -301,7 +301,7 @@ describe('api — distribution pagination', () => {
       .mockResolvedValueOnce({ hasNext: true, items: { addr1: 100 }, lastItem: 'addr1' })
       .mockResolvedValueOnce({ hasNext: false, items: { addr2: 200 }, lastItem: null });
 
-    const result = await fetchFullAssetDistribution('WAVES', 100);
+    const result = await fetchFullAssetDistribution('DCC', 100);
     expect(result.totalPages).toBe(2);
     expect(result.totalHolders).toBe(2);
     expect(result.items).toMatchObject({ addr1: 100, addr2: 200 });
@@ -316,7 +316,7 @@ describe('api — distribution pagination', () => {
       .mockResolvedValueOnce({ hasNext: false, items: { y: 2 }, lastItem: null });
 
     const onProgress = vi.fn();
-    await fetchFullAssetDistribution('WAVES', 100, onProgress);
+    await fetchFullAssetDistribution('DCC', 100, onProgress);
     expect(onProgress).toHaveBeenCalledTimes(2);
     expect(onProgress).toHaveBeenNthCalledWith(1, 1, 1, true);
     expect(onProgress).toHaveBeenNthCalledWith(2, 2, 2, false);
@@ -362,7 +362,7 @@ describe('api — fetchPairInfo', () => {
       }),
     );
     const { fetchPairInfo } = await import('./api');
-    const result = await fetchPairInfo('WAVES', 'USDT');
+    const result = await fetchPairInfo('DCC', 'USDT');
     expect(result?.data?.lastPrice).toBe(2);
     vi.unstubAllGlobals();
   });
@@ -370,7 +370,7 @@ describe('api — fetchPairInfo', () => {
   it('returns null on 404', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }));
     const { fetchPairInfo } = await import('./api');
-    const result = await fetchPairInfo('WAVES', 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p');
+    const result = await fetchPairInfo('DCC', 'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p');
     expect(result).toBeNull();
     vi.unstubAllGlobals();
   });
@@ -378,7 +378,7 @@ describe('api — fetchPairInfo', () => {
   it('throws on non-404 error response', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
     const { fetchPairInfo } = await import('./api');
-    await expect(fetchPairInfo('WAVES', 'USDT')).rejects.toThrow('HTTP 500');
+    await expect(fetchPairInfo('DCC', 'USDT')).rejects.toThrow('HTTP 500');
     vi.unstubAllGlobals();
   });
 });

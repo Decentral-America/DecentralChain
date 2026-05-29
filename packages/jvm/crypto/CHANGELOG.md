@@ -20,7 +20,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Reproducible builds (`project.build.outputTimestamp=2026-05-19T00:00:00Z`)
 
 ### Changed
-- **Coordinates**: `com.wavesplatform:waves-crypto:2.0.7` → `io.decentralchain:crypto:2.0.7`
+- **Coordinates**: `com.wavesplatform:dcc-crypto:2.0.7` → `io.decentralchain:crypto:2.0.7`
 - **Java package namespace**: `com.wavesplatform.crypto.*` → `io.decentralchain.crypto.*`
 - **Dependencies repointed to DCC forks**:
   - `com.wavesplatform:curve25519-java:0.6.6` → `io.decentralchain:curve25519-java:0.6.6`

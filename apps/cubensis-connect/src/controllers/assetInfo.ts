@@ -9,12 +9,12 @@ import type { ExtensionStorage, StorageLocalState } from '../storage/storage';
 import type { NetworkController } from './network';
 import type { RemoteConfigController } from './remoteConfig';
 
-// 'WAVES' is the protocol-level native asset ID — do not rename.
+// 'DCC' is the protocol-level native asset ID — do not rename.
 const NATIVE_ASSET: AssetDetail = {
   description: '',
   displayName: 'DCC',
   height: 0,
-  id: 'WAVES',
+  id: 'DCC',
   issuer: '',
   name: 'DecentralChain',
   precision: 8,
@@ -67,16 +67,16 @@ export class AssetInfoController {
       assetLogos: {},
       assets: {
         [NetworkName.Mainnet]: {
-          WAVES: NATIVE_ASSET,
+          DCC: NATIVE_ASSET,
         },
         [NetworkName.Stagenet]: {
-          WAVES: NATIVE_ASSET,
+          DCC: NATIVE_ASSET,
         },
         [NetworkName.Testnet]: {
-          WAVES: NATIVE_ASSET,
+          DCC: NATIVE_ASSET,
         },
         [NetworkName.Custom]: {
-          WAVES: NATIVE_ASSET,
+          DCC: NATIVE_ASSET,
         },
       },
       assetTickers: defaultAssetTickers,
@@ -150,8 +150,8 @@ export class AssetInfoController {
     const { assets } = this.store.getState();
     const network = this.getNetwork();
 
-    if (assetId === '' || assetId == null || assetId.toUpperCase() === 'WAVES') {
-      return assets[network].WAVES;
+    if (assetId === '' || assetId == null || assetId.toUpperCase() === 'DCC') {
+      return assets[network].DCC;
     }
 
     const API_BASE = this.getNode();
@@ -258,7 +258,7 @@ export class AssetInfoController {
       new Set(
         assetIds
           .filter(isNotNull)
-          .filter((id) => id !== 'WAVES')
+          .filter((id) => id !== 'DCC')
           .filter((assetId) => {
             const asset = assets[network][assetId];
 

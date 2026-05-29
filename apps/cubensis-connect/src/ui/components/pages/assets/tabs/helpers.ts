@@ -35,8 +35,8 @@ export function sortAssetEntries<T>(
     const b = assets[bAssetId];
 
     return (
-      (aAssetId === 'WAVES' && -1) ||
-      (bAssetId === 'WAVES' && 1) ||
+      (aAssetId === 'DCC' && -1) ||
+      (bAssetId === 'DCC' && 1) ||
       (a && b
         ? +!!b.isFavorite - +!!a.isFavorite ||
           (a.displayName ?? '').localeCompare(b.displayName ?? '')

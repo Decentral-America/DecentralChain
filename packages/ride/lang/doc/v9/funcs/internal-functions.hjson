@@ -18,14 +18,14 @@
       name: "Lease"
       params: [ "Address|Alias", "Int", "Int" ]
       doc: "Lease action detailed constructor"
-      paramsDoc: [ "Recipient", "Amount of Waves", "Nonce to distinguish" ]
+      paramsDoc: [ "Recipient", "Amount of Dcc", "Nonce to distinguish" ]
       complexity: 1
     }
     {
       name: "Lease"
       params: [ "Address|Alias", "Int" ]
       doc: "Lease action simplified constructor"
-      paramsDoc: [ "Recipient", "Amount of Waves" ]
+      paramsDoc: [ "Recipient", "Amount of Dcc" ]
       complexity: 1
     }
     {

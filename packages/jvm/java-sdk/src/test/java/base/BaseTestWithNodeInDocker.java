@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 public abstract class BaseTestWithNodeInDocker {
@@ -38,6 +39,13 @@ public abstract class BaseTestWithNodeInDocker {
         container =
             new GenericContainer<>(DockerImageName.parse("ghcr.io/decentral-america/node-scala-private:latest"))
                 .withExposedPorts(6869)
+                // Env vars consumed by the Docker image entrypoint script
+                // (/usr/share/waves/bin/entrypoint.sh) — names are upstream
+                // node-scala conventions that cannot be changed here.
+                .withEnv("WAVES_WALLET_SEED", "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4")
+                .withEnv("WAVES_WALLET_PASSWORD", "test")
+                .withEnv("WAVES_REST_API_BIND", "0.0.0.0")
+                .waitingFor(Wait.forHttp("/node/version").forPort(6869).forStatusCode(200))
                 .withStartupTimeout(Duration.of(5, MINUTES));
         container.start();
         apiUrl = "http://" + container.getHost() + ":" + container.getFirstMappedPort();
@@ -59,10 +67,11 @@ public abstract class BaseTestWithNodeInDocker {
       try {
         node = new Node(NODE_API_URL);
         // Propagate the node's chain-id (e.g. 82 for DCC private node)
-        // into WavesConfig so that all subsequent PrivateKey.fromSeed()
-        // and Address construction uses the correct chain-id byte.
-        // Without this, WavesConfig stays at its default (87 = Waves
-        // mainnet 'W'), and the node rejects every address as wrong chain.
+        // into WavesConfig (upstream class name) so that all subsequent
+        // PrivateKey.fromSeed() and Address construction uses the correct
+        // chain-id byte. Without this, WavesConfig stays at its default
+        // (87 = mainnet 'W'), and the node rejects every address as
+        // wrong chain.
         WavesConfig.chainId(node.chainId());
       } catch (URISyntaxException | NodeException | IOException e) {
         throw new RuntimeException(e);
@@ -92,13 +101,13 @@ public abstract class BaseTestWithNodeInDocker {
     return PrivateKey.fromSeed(Crypto.getRandomSeedBytes());
   }
 
-  protected static PrivateKey createAccountWithBalance(long wavesAmount)
+  protected static PrivateKey createAccountWithBalance(long dccAmount)
       throws IOException, NodeException {
     PrivateKey account = createAccountWithBalance();
 
     Id transferTx =
         node.broadcast(
-                TransferTransaction.builder(account.address(), Amount.of(wavesAmount))
+                TransferTransaction.builder(account.address(), Amount.of(dccAmount))
                     .getSignedWith(faucet))
             .id();
     node.waitForTransaction(transferTx);

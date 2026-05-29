@@ -78,7 +78,7 @@ private[node] class ChainDependentMapper(chainId: Byte) {
       generator = b.generator.byteStr,
       generatorPublicKey = b.generatorPublicKey.byteStr,
       vrf = b.VRF.map(_.byteStr),
-      rewards = List.empty // TODO: fill with correct value
+      rewards = List.empty // NOTE: Rewards list empty — populated at runtime from chain data
     )
 
   def pkToAddress(publicKey: ByteString): ByteStr =

@@ -2,7 +2,7 @@
 
 ## Project Context
 
-This is the **DecentralChain SDK monorepo** — a multi-language workspace publishing `@decentralchain/*` npm packages, `io.decentralchain:*` Maven packages, and the RIDE VM/REPL. DecentralChain is a Waves-protocol blockchain fork using Liquid Proof-of-Stake (LPoS) consensus and the Ride smart contract language.
+This is the **DecentralChain SDK monorepo** — a multi-language workspace publishing `@decentralchain/*` npm packages, `io.decentralchain:*` Maven packages, and the RIDE VM/REPL. DecentralChain is a Dcc-protocol blockchain fork using Liquid Proof-of-Stake (LPoS) consensus and the Ride smart contract language.
 
 ## Architecture
 

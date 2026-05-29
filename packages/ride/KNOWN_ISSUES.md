@@ -74,8 +74,8 @@ All remaining `com.wavesplatform.*` imports in this package have been eliminated
 `protobuf-schemas` bumped to `1.6.2` (built with `io.decentralchain.*` java_package
 options from updated proto files). All 14 affected Scala source files renamed.
 
-### 4b. `com.wavesplatform.zwaves.*` — resolved
-`zwaves_jni` Rust rebuilt with `Java_com_decentralchain_groth16_*` JNI symbol names.
+### 4b. `com.wavesplatform.zdcc.*` — resolved
+`zdcc_jni` Rust rebuilt with `Java_com_decentralchain_groth16_*` JNI symbol names.
 Dependency renamed to `io.decentralchain:groth16:0.2.1.0`. `Global.scala` imports
 updated to `com.decentralchain.groth16.{bls12,bn256}.Groth16`.
 

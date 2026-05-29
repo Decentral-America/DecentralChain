@@ -83,7 +83,7 @@ export const Period = pipe(
   }),
 );
 
-/** Pair string like "WAVES/DCC" or "base58/base58". */
+/** Pair string like "DCC/DCC" or "base58/base58". */
 export const Pair = pipe(
   Schema.String,
   Schema.filter((s) => /^[A-Za-z0-9]+\/[A-Za-z0-9]+$/.test(s), {

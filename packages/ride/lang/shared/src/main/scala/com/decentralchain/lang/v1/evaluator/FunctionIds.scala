@@ -140,14 +140,14 @@ object FunctionIds {
   val BLAKE256_LIM: Short             = 2800 // Reserved n id for generated limited functions
   val SHA256_LIM: Short               = 2900 // Reserved n id for generated limited functions
 
-  // Waves
+  // Dcc
   val GETTRANSACTIONBYID: Short      = 1000
   val TRANSACTIONHEIGHTBYID: Short   = 1001
   val ACCOUNTASSETBALANCE: Short     = 1003
   val GETASSETINFOBYID: Short        = 1004
   val BLOCKINFOBYHEIGHT: Short       = 1005
   val TRANSFERTRANSACTIONBYID: Short = 1006
-  val ACCOUNTWAVESBALANCE: Short     = 1007
+  val ACCOUNTDCCBALANCE: Short       = 1007
   val ACCOUNTASSETONLYBALANCE: Short = 1008
   val ACCOUNTSCRIPTHASH: Short       = 1009
 

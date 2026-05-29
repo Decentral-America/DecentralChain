@@ -21,10 +21,9 @@ import { randomHexString, TIMEOUT } from './integration/config';
 import { issueMinimalParams } from './minimalParams';
 import { deleteProofsAndId } from './utils';
 
-const nodeUrl = process.env.DCC_TEST_NODE_URL ?? 'https://testnet-node.decentralchain.io/';
-const masterSeed = process.env.DCC_TEST_MINER_SEED ?? '';
-if (!masterSeed) throw new Error('DCC_TEST_MINER_SEED env var is required');
-const CHAIN_ID = Number(process.env.DCC_TEST_CHAIN_ID ?? '33');
+const nodeUrl = process.env.DCC_TEST_NODE_URL ?? 'http://localhost:6869/';
+const masterSeed = process.env.DCC_TEST_MINER_SEED || 'dcc private node seed with dcc tokens';
+const CHAIN_ID = Number(process.env.DCC_TEST_CHAIN_ID ?? '82');
 let SEED = 'abc';
 const wvs = 1e8;
 let assetId = '';
@@ -61,9 +60,10 @@ describe('serialize/deserialize', () => {
 });
 
 describe('transactions v3', () => {
+  vi.setConfig({ testTimeout: 60000 });
+
   beforeAll(async () => {
     const nonce = randomHexString(6);
-    vi.setConfig({ testTimeout: 60000 });
     SEED = `account1${nonce}`;
     const mtt = massTransfer(
       {
@@ -87,6 +87,7 @@ describe('transactions v3', () => {
     assetId = assetIssue.id;
 
     await broadcast(mtt, nodeUrl);
+    await waitForTx(assetIssue.id, { apiBase: nodeUrl, timeout: TIMEOUT });
     await waitForTx(mtt.id, { apiBase: nodeUrl, timeout: TIMEOUT });
   }, TIMEOUT);
 
@@ -181,37 +182,14 @@ describe('transactions v3', () => {
         },
         SEED,
       );
+      // TODO: Uncomment and enable remaining broadcasts once test infrastructure supports them
       // [ttx, itx, reitx, atx, btx, dtx, ltx, canltx, ssTx, sastx, spontx, istx].forEach(t => {
       //   it(`Broadcasts ${t.type}`, async () => {
-      //     try {
-      //       await broadcast(t, NODE_URL)
-      //
-      //     } catch (e) {
-      //       console.error(e)
-      //     }
+      //     await broadcast(t, nodeUrl);
       //   })
       // })
-      try {
-        // await broadcast(ttx, NODE_URL)
-        // console.log(itx.id)
-        // await broadcast(itx, NODE_URL)
-        // await broadcast(reitx, NODE_URL)
-        // await broadcast(atx, NODE_URL)
-        // await broadcast(btx, NODE_URL)
-        await broadcast(dtx, nodeUrl);
-        // await broadcast(dtx2delete, NODE_URL)
-        // await broadcast(ltx, NODE_URL); console.log(ltx.id)
-        // await broadcast(canltx, NODE_URL)
-        //   await broadcast(mttx, NODE_URL)
-        // await broadcast(ssTx, NODE_URL)
-        // console.log(libs.crypto.base64Encode(txToProtoBytes(sastx)))
-        // await broadcast(sastx, NODE_URL)
-        // await broadcast(spontx, NODE_URL)
-        // await broadcast(istx, NODE_URL)
-        // await broadcast(uaitx, NODE_URL)
-      } catch (e) {
-        console.error(e);
-      }
+      const result = await broadcast(dtx, nodeUrl);
+      expect(result.id).toBe(dtx.id);
     },
     TIMEOUT,
   );
