@@ -468,7 +468,11 @@ export const CreateAccount = () => {
           </InstructionsList>
 
           <form onSubmit={handleContinue}>
-            <Stack gap="16px">
+            <Stack
+              sx={{
+                gap: '16px',
+              }}
+            >
               {error && <ValidationError>{error}</ValidationError>}
 
               <Input

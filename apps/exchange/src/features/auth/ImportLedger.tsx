@@ -180,7 +180,6 @@ export const ImportLedger = () => {
     <FormContainer>
       <Title>Import from Ledger</Title>
       <Subtitle>Choose an address from your Ledger device</Subtitle>
-
       <AddressCarousel>
         <NavButton onClick={handlePageLeft} disabled={offset === 0 || isLoading} type="button">
           ←
@@ -205,9 +204,12 @@ export const ImportLedger = () => {
           →
         </NavButton>
       </AddressCarousel>
-
       <Form onSubmit={handleSubmit}>
-        <Stack gap="16px">
+        <Stack
+          sx={{
+            gap: '16px',
+          }}
+        >
           <FormGroup>
             <Label htmlFor="addressId">Address ID</Label>
             <Input

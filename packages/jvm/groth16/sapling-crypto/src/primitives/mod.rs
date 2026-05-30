@@ -181,9 +181,9 @@ impl<E: JubjubEngine> Note<E> {
     pub fn uncommitted() -> E::Fr {
         // The smallest u-coordinate that is not on the curve
         // is one.
-        // TODO: This should be relocated to JubjubEngine as
-        // it's specific to the curve we're using, not all
-        // twisted edwards curves.
+        // NOTE: Upstream Zcash considered relocating this to JubjubEngine
+        // since it's curve-specific, not general twisted edwards. Kept as-is
+        // for compatibility with the vendored sapling-crypto snapshot.
         E::Fr::one()
     }
 

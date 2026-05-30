@@ -32,7 +32,7 @@ import static org.bouncycastle.util.encoders.Hex.decode;
 
 public abstract class JsonSerializer {
 
-    public static final ObjectMapper JSON_MAPPER = new WavesTransactionsJsonMapper();
+    public static final ObjectMapper JSON_MAPPER = new DccTransactionsJsonMapper();
 
     public static Order orderFromJson(JsonNode json) throws IOException {
         int version = json.get("version").asInt();

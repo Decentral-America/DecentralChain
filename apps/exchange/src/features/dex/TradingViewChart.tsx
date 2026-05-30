@@ -228,23 +228,39 @@ export const TradingViewChart: React.FC = () => {
   return (
     <ChartContainer>
       {loadingState === 'loading' && (
-        <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           <CircularProgress size={40} />
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Loading chart...
           </Typography>
         </Box>
       )}
-
       {loadingState === 'error' && (
         <Alert severity="error" sx={{ maxWidth: 400, width: '100%' }}>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+          <Typography
+            variant="subtitle2"
+            gutterBottom
+            sx={{
+              fontWeight: 600,
+            }}
+          >
             Chart Load Failed
           </Typography>
           <Typography variant="body2">{errorMessage || 'Unable to load trading chart'}</Typography>
         </Alert>
       )}
-
       <Box
         id={elementIdRef.current}
         ref={containerRef}

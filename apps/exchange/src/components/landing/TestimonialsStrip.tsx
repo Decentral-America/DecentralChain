@@ -39,7 +39,13 @@ export default function TestimonialsStrip() {
                 xs: 12,
               }}
             >
-              <Stack spacing={2} alignItems="center" textAlign="center">
+              <Stack
+                spacing={2}
+                sx={{
+                  alignItems: 'center',
+                  textAlign: 'center',
+                }}
+              >
                 <Avatar
                   src={testimonial.avatar}
                   sx={{
@@ -51,13 +57,30 @@ export default function TestimonialsStrip() {
                   {testimonial.name[0]}
                 </Avatar>
                 <Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      mb: 1,
+                    }}
+                  >
                     {testimonial.quote}
                   </Typography>
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
                     {testimonial.name}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      display: 'block',
+                    }}
+                  >
                     {testimonial.role}
                   </Typography>
                 </Box>

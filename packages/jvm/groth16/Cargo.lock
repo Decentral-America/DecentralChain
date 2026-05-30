@@ -291,6 +291,90 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e629b9b98ef3dd8afe6ca2bd0f89306cec16d43d907889945bc5d6687f2f13c7"
 
 [[package]]
+name = "groth16_circuit"
+version = "0.1.0"
+dependencies = [
+ "arrayvec 0.5.2",
+ "bellman",
+ "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
+ "byteorder",
+ "groth16_primitives",
+ "itertools",
+ "pairing",
+ "rand 0.4.6",
+ "sapling-crypto",
+]
+
+[[package]]
+name = "groth16_jni"
+version = "0.2.0"
+dependencies = [
+ "base64",
+ "bellman",
+ "byteorder",
+ "ff_ce",
+ "groth16_primitives",
+ "jni",
+ "num",
+ "pairing",
+ "pairing_ce",
+ "rand 0.4.6",
+ "sapling-crypto",
+ "serde",
+ "test-case",
+]
+
+[[package]]
+name = "groth16_node"
+version = "0.1.0"
+dependencies = [
+ "arrayvec 0.5.2",
+ "bellman",
+ "groth16_circuit",
+ "groth16_primitives",
+ "lazy_static",
+ "neon",
+ "neon-build",
+ "pairing",
+ "phase2",
+ "rand 0.4.6",
+ "sapling-crypto",
+]
+
+[[package]]
+name = "groth16_primitives"
+version = "0.1.0"
+dependencies = [
+ "arrayvec 0.5.2",
+ "base64",
+ "bellman",
+ "bincode",
+ "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
+ "byteorder",
+ "itertools",
+ "lazy_static",
+ "num",
+ "pairing",
+ "rand 0.4.6",
+ "sapling-crypto",
+ "serde",
+]
+
+[[package]]
+name = "groth16_setup"
+version = "0.1.0"
+dependencies = [
+ "bellman",
+ "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
+ "groth16_circuit",
+ "hex",
+ "pairing",
+ "phase2",
+ "rand 0.4.6",
+ "sapling-crypto",
+]
+
+[[package]]
 name = "hermit-abi"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -975,88 +1059,4 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
-]
-
-[[package]]
-name = "zwaves_circuit"
-version = "0.1.0"
-dependencies = [
- "arrayvec 0.5.2",
- "bellman",
- "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
- "byteorder",
- "itertools",
- "pairing",
- "rand 0.4.6",
- "sapling-crypto",
- "zwaves_primitives",
-]
-
-[[package]]
-name = "zwaves_jni"
-version = "0.2.0"
-dependencies = [
- "base64",
- "bellman",
- "byteorder",
- "ff_ce",
- "jni",
- "num",
- "pairing",
- "pairing_ce",
- "rand 0.4.6",
- "sapling-crypto",
- "serde",
- "test-case",
- "zwaves_primitives",
-]
-
-[[package]]
-name = "zwaves_node"
-version = "0.1.0"
-dependencies = [
- "arrayvec 0.5.2",
- "bellman",
- "lazy_static",
- "neon",
- "neon-build",
- "pairing",
- "phase2",
- "rand 0.4.6",
- "sapling-crypto",
- "zwaves_circuit",
- "zwaves_primitives",
-]
-
-[[package]]
-name = "zwaves_primitives"
-version = "0.1.0"
-dependencies = [
- "arrayvec 0.5.2",
- "base64",
- "bellman",
- "bincode",
- "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
- "byteorder",
- "itertools",
- "lazy_static",
- "num",
- "pairing",
- "rand 0.4.6",
- "sapling-crypto",
- "serde",
-]
-
-[[package]]
-name = "zwaves_setup"
-version = "0.1.0"
-dependencies = [
- "bellman",
- "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
- "hex",
- "pairing",
- "phase2",
- "rand 0.4.6",
- "sapling-crypto",
- "zwaves_circuit",
 ]

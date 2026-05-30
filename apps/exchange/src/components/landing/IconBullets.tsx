@@ -53,7 +53,13 @@ export default function IconBullets() {
                 xs: 12,
               }}
             >
-              <Stack direction="row" spacing={2} alignItems="flex-start">
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: 'flex-start',
+                }}
+              >
                 <Avatar
                   variant="rounded"
                   sx={{
@@ -66,8 +72,19 @@ export default function IconBullets() {
                   {bullet.icon}
                 </Avatar>
                 <Box>
-                  <Typography fontWeight={600}>{bullet.title}</Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
+                    {bullet.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     {bullet.desc}
                   </Typography>
                 </Box>

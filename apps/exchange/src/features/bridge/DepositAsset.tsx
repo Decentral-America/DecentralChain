@@ -130,8 +130,8 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: { maxHeight: '90vh' },
+      slotProps={{
+        paper: { sx: { maxHeight: '90vh' } },
       }}
     >
       <DialogTitle>
@@ -143,11 +143,16 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
             <Chip label="Temporary" size="small" color="warning" icon={<AccessTime />} />
           )}
         </Box>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 0.5,
+          }}
+        >
           Bridge {asset.ticker} to DecentralChain
         </Typography>
       </DialogTitle>
-
       <DialogContent dividers>
         {/* Loading State */}
         {loading && (
@@ -162,7 +167,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
             }}
           >
             <CircularProgress />
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               Loading deposit details...
             </Typography>
           </Box>
@@ -191,7 +201,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Minimum:
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -200,7 +215,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Maximum:
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -209,7 +229,12 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Gateway Fee:
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -230,7 +255,13 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
                   This address expires in <strong>{formatTimeRemaining(timeRemaining)}</strong>
                 </Typography>
                 {timeRemaining < 300000 && (
-                  <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      display: 'block',
+                      mt: 0.5,
+                    }}
+                  >
                     Less than 5 minutes remaining. Complete your deposit soon!
                   </Typography>
                 )}
@@ -248,7 +279,13 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
             {/* Recovery Information */}
             {depositDetails.minRecoveryAmount && depositDetails.recoveryFee && (
               <Box sx={{ mb: 2 }}>
-                <Typography variant="caption" color="text.secondary" display="block">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                  }}
+                >
                   Recovery available for amounts above {depositDetails.minRecoveryAmount.toFixed()}{' '}
                   {asset.ticker} (fee: {depositDetails.recoveryFee.toFixed()} {asset.ticker})
                 </Typography>
@@ -257,7 +294,14 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
 
             {/* Support Contact */}
             {depositDetails.supportEmail && (
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  mb: 2,
+                }}
+              >
                 Need help? Contact{' '}
                 <Link href={`mailto:${depositDetails.supportEmail}`}>
                   {depositDetails.supportEmail}
@@ -267,7 +311,13 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
 
             {/* Gateway Terms */}
             {depositDetails.disclaimerLink && (
-              <Typography variant="caption" color="text.secondary" display="block">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                }}
+              >
                 By using this gateway, you agree to the{' '}
                 <Link
                   href={depositDetails.disclaimerLink}
@@ -281,7 +331,6 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
           </Box>
         )}
       </DialogContent>
-
       <DialogActions>
         <Button onClick={handleClose} variant="outlined">
           Close
