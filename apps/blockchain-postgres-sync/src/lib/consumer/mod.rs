@@ -3,10 +3,10 @@ pub mod repo;
 pub mod updates;
 
 use crate::proto::dcc::{
-    data_entry::Value,
-    events::{transaction_metadata::Metadata, StateUpdate, TransactionMetadata},
-    signed_transaction::Transaction,
     SignedTransaction, Transaction as DccTx,
+    data_entry::Value,
+    events::{StateUpdate, TransactionMetadata, transaction_metadata::Metadata},
+    signed_transaction::Transaction,
 };
 use anyhow::{Error, Result};
 use bigdecimal::BigDecimal;
@@ -24,18 +24,18 @@ use self::models::{
     assets::{AssetOrigin, AssetOverride, AssetUpdate, DeletedAsset},
 };
 use self::repo::RepoOperations;
+use crate::chain::{Address, extract_asset_id};
 use crate::error::Error as AppError;
 use crate::models::BaseAssetInfoUpdate;
-use crate::chain::{extract_asset_id, Address};
-use crate::{config::consumer::Config, utils::into_base58};
 use crate::{
+    chain::DCC_ID,
     consumer::models::{
-        txs::convert::{Tx as ConvertedTx, TxUidGenerator},
         dcc_data::DccData,
+        txs::convert::{Tx as ConvertedTx, TxUidGenerator},
     },
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
-    chain::DCC_ID,
 };
+use crate::{config::consumer::Config, utils::into_base58};
 use base64::prelude::*;
 
 static UID_GENERATOR: Mutex<TxUidGenerator> = Mutex::new(TxUidGenerator::new(100_000));

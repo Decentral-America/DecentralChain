@@ -1,8 +1,8 @@
 use anyhow::{Error, Result};
 use deadpool_diesel::{Manager as DManager, Pool as DPool, Runtime};
+use diesel::Connection;
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
-use diesel::Connection;
 use std::time::Duration;
 
 use crate::config::postgres::Config;

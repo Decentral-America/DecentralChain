@@ -1,6 +1,8 @@
 //! Property tests for utility functions.
 
-use app_lib::utils::{epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64};
+use app_lib::utils::{
+    epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
+};
 use proptest::prelude::*;
 
 // ─── into_base58 ────────────────────────────────────────────────────────────

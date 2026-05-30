@@ -1,6 +1,6 @@
 //! Property tests for cryptographic functions and address derivation.
 
-use app_lib::chain::{blake2b256, is_valid_base58, keccak256, Address, ChainId, PublicKeyHash};
+use app_lib::chain::{Address, ChainId, PublicKeyHash, blake2b256, is_valid_base58, keccak256};
 use proptest::prelude::*;
 
 // ─── keccak256 ──────────────────────────────────────────────────────────────

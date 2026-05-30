@@ -1,28 +1,28 @@
 use super::{
-    Tx1, Tx10, Tx11, Tx11Combined, Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15,
-    Tx16, Tx16Args, Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment,
-    Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, TxBlockUid, TxHeight, TxId, TxUid,
+    Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, Tx10, Tx11, Tx11Combined, Tx11Transfers,
+    Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15, Tx16, Tx16Args, Tx16Combined, Tx16Payment,
+    Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment, TxBlockUid, TxHeight, TxId, TxUid,
 };
+use crate::chain::{Address, ChainId, DCC_ID, PublicKeyHash, extract_asset_id};
 use crate::error::Error;
 use crate::models::{DataEntryTypeValue, Order, OrderMeta};
 use crate::proto::dcc::{
+    Amount, Recipient, SignedTransaction,
     data_entry::Value as DataValue,
     events::{
-        transaction_metadata::{
-            ethereum_metadata::Action as EthAction, EthereumMetadata, Metadata,
-        },
         TransactionMetadata,
+        transaction_metadata::{
+            EthereumMetadata, Metadata, ethereum_metadata::Action as EthAction,
+        },
     },
     invoke_script_result::call::argument::Value as InvokeScriptArgValue,
     recipient::Recipient as InnerRecipient,
     signed_transaction::Transaction,
     transaction::Data,
-    Amount, Recipient, SignedTransaction,
 };
 use crate::utils::{
     epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
 };
-use crate::chain::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
 use serde_json::json;
 
 const WRONG_META_VAR: &str = "wrong meta variant";
@@ -910,8 +910,8 @@ mod tests {
 
     #[test]
     fn try_from_missing_transaction_data_returns_err() {
-        use crate::proto::dcc::events::TransactionMetadata;
         use crate::proto::dcc::SignedTransaction;
+        use crate::proto::dcc::events::TransactionMetadata;
         let stx = SignedTransaction {
             transaction: None,
             proofs: vec![],
