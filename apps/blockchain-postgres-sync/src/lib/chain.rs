@@ -22,7 +22,7 @@ pub fn keccak256(message: &[u8]) -> [u8; 32] {
 
 #[must_use]
 pub fn blake2b256(message: &[u8]) -> [u8; 32] {
-    use blake2::{digest::consts::U32, Blake2b, Digest};
+    use blake2::{Blake2b, Digest, digest::consts::U32};
 
     let mut hasher = Blake2b::<U32>::new();
     hasher.update(message);
