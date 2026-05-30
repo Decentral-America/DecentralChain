@@ -39,7 +39,12 @@ const LedgerErrorModal: React.FC<LedgerErrorModalProps> = ({ error, onRetry, onC
           View troubleshooting guide →
         </SupportLink>
 
-        <Stack gap="12px" direction="row">
+        <Stack
+          direction="row"
+          sx={{
+            gap: '12px',
+          }}
+        >
           <Button variant="primary" onClick={onRetry} fullWidth>
             Retry Connection
           </Button>

@@ -438,7 +438,6 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
             />
           ))}
       </ChartSvg>
-
       {/* Tooltip */}
       {showTooltip && hoveredPoint !== null && (
         <Tooltip $x={tooltipPos.x} $y={tooltipPos.y} $visible={hoveredPoint !== null}>

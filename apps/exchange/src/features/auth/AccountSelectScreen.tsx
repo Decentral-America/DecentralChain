@@ -270,7 +270,6 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
         <Title>Select Account</Title>
         <Subtitle>Choose which wallet to access</Subtitle>
       </Header>
-
       <AccountList>
         {sortedAccounts.map((account) => (
           <AccountCard
@@ -299,9 +298,12 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
           </AccountCard>
         ))}
       </AccountList>
-
       {sortedAccounts.length === 0 && (
-        <Stack gap="16px">
+        <Stack
+          sx={{
+            gap: '16px',
+          }}
+        >
           <EmptyStateText>No accounts found in vault</EmptyStateText>
           {onBack && (
             <Button onClick={onBack} variant="secondary" fullWidth>
@@ -310,7 +312,6 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
           )}
         </Stack>
       )}
-
       <Footer>
         <HelpText>Can&apos;t find your account? Check your password or contact support.</HelpText>
       </Footer>

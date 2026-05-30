@@ -125,7 +125,9 @@ export default defineConfig({
     // sentryVitePlugin must be last — source maps must be finalized before upload.
     // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
     sentryVitePlugin({
+      // biome-ignore lint/complexity/useLiteralKeys: TS noPropertyAccessFromIndexSignature requires bracket notation for process.env
       authToken: process.env['SENTRY_AUTH_TOKEN'],
+      // biome-ignore lint/complexity/useLiteralKeys: TS noPropertyAccessFromIndexSignature requires bracket notation for process.env
       disable: !process.env['SENTRY_AUTH_TOKEN'],
       org: 'decentral-america',
       project: 'dcc-exchange',

@@ -1,3 +1,7 @@
+# nektos/act (local GitHub Actions)
+.secrets
+.artifacts/
+
 # Dependencies
 node_modules/
 

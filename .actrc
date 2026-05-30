@@ -1,0 +1,6 @@
+--artifact-server-path /tmp/act-artifacts
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+-P macos-latest=-self-hosted
+--pull=false
+--action-offline-mode
+--env FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true

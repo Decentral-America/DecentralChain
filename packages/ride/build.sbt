@@ -32,7 +32,10 @@ ThisBuild / git.gitTagToVersionNumber := { ver =>
 // contains upstream tags like upstream-node-scala/v1.2.18 whose '/' makes
 // them invalid Ivy version strings. Fall back to git.formattedShaVersion.
 ThisBuild / git.gitDescribedVersion := None
-// Include ~/.m2/repository so locally-installed io.decentralchain JARs resolve.
+// Include ~/.m2/repository so locally-built io.decentralchain JARs resolve.
+// REMOVE after DCC-269 Phase 3: once all io.decentralchain artifacts are
+// published to Maven Central, this resolver and the CI mvn install chain
+// become unnecessary.
 ThisBuild / resolvers += Resolver.mavenLocal
 ThisBuild / PB.protocVersion := Dependencies.gProtoVersion
 
@@ -45,13 +48,10 @@ ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 ThisBuild / dependencyOverrides ++= Dependencies.overrides.value
 
-ThisBuild / pomIncludeRepository := { _ => false }
-ThisBuild / publishMavenStyle    := true
-ThisBuild / publishTo            := {
-  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
-  if (isSnapshot.value) Some("central-snapshots".at(centralSnapshots))
-  else localStaging.value
-}
+ThisBuild / pomIncludeRepository   := { _ => false }
+ThisBuild / publishMavenStyle      := true
+ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
+ThisBuild / publishTo              := sonatypePublishToBundle.value
 
 inScope(Global)(
   Seq(
@@ -59,7 +59,16 @@ inScope(Global)(
     organization         := "io.decentralchain",
     organizationName     := "DecentralChain",
     organizationHomepage := Some(url("https://decentralchain.io")),
-    scmInfo              := Some(
+    homepage             := Some(url("https://github.com/Decentral-America/DecentralChain")),
+    developers           := List(
+      Developer(
+        "decentral-america",
+        "Decentral America",
+        "dev@decentralchain.io",
+        url("https://github.com/Decentral-America")
+      )
+    ),
+    scmInfo := Some(
       ScmInfo(
         url("https://github.com/Decentral-America/DecentralChain"),
         "scm:git:https://github.com/Decentral-America/DecentralChain.git"
