@@ -52,7 +52,13 @@ export default function Footer() {
                 width: 'auto',
               }}
             />
-            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                maxWidth: 300,
+              }}
+            >
               Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and
               manage your DCC tokens securely.
             </Typography>
@@ -68,7 +74,13 @@ export default function Footer() {
                 xs: 6,
               }}
             >
-              <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                }}
+              >
                 {title}
               </Typography>
               <Stack spacing={1}>
@@ -77,10 +89,12 @@ export default function Footer() {
                     key={link.label}
                     href={link.href}
                     underline="hover"
-                    color="text.secondary"
-                    sx={{ fontSize: 14 }}
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: 14,
+                    }}
                   >
                     {link.label}
                   </Link>
@@ -94,11 +108,18 @@ export default function Footer() {
 
         <Stack
           direction={{ sm: 'row', xs: 'column' }}
-          justifyContent="space-between"
-          alignItems="center"
           spacing={2}
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
         >
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             © {new Date().getFullYear()} Decentral Exchange. Built on DecentralChain.
           </Typography>
           <Stack direction="row" spacing={3}>
@@ -107,8 +128,10 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              color="text.secondary"
-              sx={{ fontSize: 12 }}
+              sx={{
+                color: 'text.secondary',
+                fontSize: 12,
+              }}
             >
               Privacy
             </Link>
@@ -117,8 +140,10 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              color="text.secondary"
-              sx={{ fontSize: 12 }}
+              sx={{
+                color: 'text.secondary',
+                fontSize: 12,
+              }}
             >
               Terms
             </Link>
@@ -127,8 +152,10 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              color="text.secondary"
-              sx={{ fontSize: 12 }}
+              sx={{
+                color: 'text.secondary',
+                fontSize: 12,
+              }}
             >
               Docs
             </Link>

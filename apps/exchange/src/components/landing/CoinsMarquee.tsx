@@ -303,7 +303,13 @@ export default function CoinsMarquee() {
                   <CardContent sx={{ p: 2 }}>
                     <Stack spacing={1.5}>
                       {/* Icon and Ticker */}
-                      <Stack direction="row" alignItems="center" spacing={1}>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          alignItems: 'center',
+                        }}
+                      >
                         <Box
                           sx={{
                             alignItems: 'center',
@@ -318,13 +324,21 @@ export default function CoinsMarquee() {
                           <IconComponent sx={{ color: coin.color, fontSize: 20 }} />
                         </Box>
                         <Box>
-                          <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 700,
+                              lineHeight: 1.2,
+                            }}
+                          >
                             {coin.ticker}
                           </Typography>
                           <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ fontSize: 10 }}
+                            sx={{
+                              color: 'text.secondary',
+                              fontSize: 10,
+                            }}
                           >
                             {coin.name}
                           </Typography>
@@ -338,10 +352,23 @@ export default function CoinsMarquee() {
 
                       {/* Price and Change */}
                       <Box>
-                        <Typography variant="body2" fontWeight={700} sx={{ fontSize: 15, mb: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            mb: 0.5,
+                          }}
+                        >
                           {coin.price}
                         </Typography>
-                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           {coin.positive ? (
                             <TrendingUpIcon sx={{ color: '#10B981', fontSize: 14 }} />
                           ) : (
@@ -349,8 +376,11 @@ export default function CoinsMarquee() {
                           )}
                           <Typography
                             variant="caption"
-                            fontWeight={600}
-                            sx={{ color: coin.positive ? '#10B981' : '#EF4444', fontSize: 12 }}
+                            sx={{
+                              color: coin.positive ? '#10B981' : '#EF4444',
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}
                           >
                             {coin.change}
                           </Typography>
@@ -386,7 +416,13 @@ export default function CoinsMarquee() {
                   <CardContent sx={{ p: 2 }}>
                     <Stack spacing={1.5}>
                       {/* Icon and Ticker */}
-                      <Stack direction="row" alignItems="center" spacing={1}>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          alignItems: 'center',
+                        }}
+                      >
                         <Box
                           sx={{
                             alignItems: 'center',
@@ -401,13 +437,21 @@ export default function CoinsMarquee() {
                           <IconComponent sx={{ color: coin.color, fontSize: 20 }} />
                         </Box>
                         <Box>
-                          <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 700,
+                              lineHeight: 1.2,
+                            }}
+                          >
                             {coin.ticker}
                           </Typography>
                           <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ fontSize: 10 }}
+                            sx={{
+                              color: 'text.secondary',
+                              fontSize: 10,
+                            }}
                           >
                             {coin.name}
                           </Typography>
@@ -421,10 +465,23 @@ export default function CoinsMarquee() {
 
                       {/* Price and Change */}
                       <Box>
-                        <Typography variant="body2" fontWeight={700} sx={{ fontSize: 15, mb: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            mb: 0.5,
+                          }}
+                        >
                           {coin.price}
                         </Typography>
-                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           {coin.positive ? (
                             <TrendingUpIcon sx={{ color: '#10B981', fontSize: 14 }} />
                           ) : (
@@ -432,8 +489,11 @@ export default function CoinsMarquee() {
                           )}
                           <Typography
                             variant="caption"
-                            fontWeight={600}
-                            sx={{ color: coin.positive ? '#10B981' : '#EF4444', fontSize: 12 }}
+                            sx={{
+                              color: coin.positive ? '#10B981' : '#EF4444',
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}
                           >
                             {coin.change}
                           </Typography>

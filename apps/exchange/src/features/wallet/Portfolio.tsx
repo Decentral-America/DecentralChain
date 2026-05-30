@@ -181,10 +181,22 @@ export const Portfolio = () => {
       <Stack spacing={4}>
         {/* Header */}
         <Box>
-          <Typography variant="h4" fontWeight={700} sx={{ color: 'text.primary', mb: 1 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              color: 'text.primary',
+              fontWeight: 700,
+              mb: 1,
+            }}
+          >
             My Portfolio
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             View and manage your crypto assets
           </Typography>
         </Box>
@@ -218,7 +230,13 @@ export const Portfolio = () => {
             >
               <CardContent sx={{ p: 3 }}>
                 <Stack spacing={2}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Stack
+                    direction="row"
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography
                       variant="overline"
                       sx={{ color: 'text.secondary', fontSize: 13, fontWeight: 700 }}
@@ -260,7 +278,12 @@ export const Portfolio = () => {
                       }}
                     />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     {secondaryAssetRows.length > 0
                       ? `+ ${secondaryAssetRows.length} other token${secondaryAssetRows.length === 1 ? '' : 's'}`
                       : 'Available funds in your wallet'}
@@ -295,7 +318,13 @@ export const Portfolio = () => {
             >
               <CardContent sx={{ p: 3 }}>
                 <Stack spacing={2}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Stack
+                    direction="row"
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography
                       variant="overline"
                       sx={{ color: 'text.secondary', fontSize: 13, fontWeight: 700 }}
@@ -337,7 +366,12 @@ export const Portfolio = () => {
                       }}
                     />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     For leasing and forging eligibility
                   </Typography>
                 </Stack>
@@ -370,7 +404,13 @@ export const Portfolio = () => {
             >
               <CardContent sx={{ p: 3 }}>
                 <Stack spacing={2}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Stack
+                    direction="row"
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography
                       variant="overline"
                       sx={{ color: 'text.secondary', fontSize: 13, fontWeight: 700 }}
@@ -412,7 +452,12 @@ export const Portfolio = () => {
                       }}
                     />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Total balance currently delegated
                   </Typography>
                 </Stack>
@@ -432,15 +477,28 @@ export const Portfolio = () => {
           <Box sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.08)', p: 3 }}>
             <Stack
               direction={{ sm: 'row', xs: 'column' }}
-              justifyContent="space-between"
-              alignItems={{ sm: 'center', xs: 'stretch' }}
               spacing={2}
+              sx={{
+                alignItems: { sm: 'center', xs: 'stretch' },
+                justifyContent: 'space-between',
+              }}
             >
               <Box>
-                <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 0.5,
+                  }}
+                >
                   Your Assets
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   {assetCount} {assetCount === 1 ? 'asset' : 'assets'} held in this wallet
                 </Typography>
               </Box>
@@ -449,9 +507,6 @@ export const Portfolio = () => {
                 placeholder="Search assets..."
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                InputProps={{
-                  startAdornment: <SearchOutlined sx={{ color: 'text.secondary', mr: 1 }} />,
-                }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -459,26 +514,58 @@ export const Portfolio = () => {
                   },
                   minWidth: { sm: 280, xs: '100%' },
                 }}
+                slotProps={{
+                  input: {
+                    startAdornment: <SearchOutlined sx={{ color: 'text.secondary', mr: 1 }} />,
+                  },
+                }}
               />
             </Stack>
           </Box>
           <CardContent sx={{ p: 0 }}>
             {isLoading ? (
-              <Stack alignItems="center" py={8}>
+              <Stack
+                sx={{
+                  alignItems: 'center',
+                  py: 8,
+                }}
+              >
                 <CircularProgress size={48} />
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 2,
+                  }}
+                >
                   Loading assets...
                 </Typography>
               </Stack>
             ) : combinedAssets.length === 0 ? (
-              <Box py={8} textAlign="center">
+              <Box
+                sx={{
+                  py: 8,
+                  textAlign: 'center',
+                }}
+              >
                 <AccountBalanceWalletOutlined
                   sx={{ color: 'text.disabled', fontSize: 64, mb: 2 }}
                 />
-                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 1,
+                  }}
+                >
                   No assets found
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   {search ? 'Try adjusting your search' : 'Your wallet is currently empty'}
                 </Typography>
               </Box>
@@ -499,7 +586,13 @@ export const Portfolio = () => {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <Grid container spacing={2} alignItems="center">
+                    <Grid
+                      container
+                      spacing={2}
+                      sx={{
+                        alignItems: 'center',
+                      }}
+                    >
                       <Grid
                         size={{
                           md: 5,
@@ -507,7 +600,13 @@ export const Portfolio = () => {
                           xs: 12,
                         }}
                       >
-                        <Stack direction="row" spacing={2} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           <Avatar
                             sx={{
                               bgcolor: asset.isBaseAsset
@@ -522,10 +621,21 @@ export const Portfolio = () => {
                             {asset.name.slice(0, 1).toUpperCase()}
                           </Avatar>
                           <Box>
-                            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.25 }}>
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                fontWeight: 700,
+                                mb: 0.25,
+                              }}
+                            >
                               {asset.name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {asset.isBaseAsset
                                 ? `${DCC_SYMBOL} (base asset)`
                                 : shortenId(asset.assetId)}
@@ -543,12 +653,20 @@ export const Portfolio = () => {
                         <Box>
                           <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ display: 'block', mb: 0.5 }}
+                            sx={{
+                              color: 'text.secondary',
+                              display: 'block',
+                              mb: 0.5,
+                            }}
                           >
                             Balance
                           </Typography>
-                          <Typography variant="h6" fontWeight={700}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontWeight: 700,
+                            }}
+                          >
                             {formatAmount(asset.amount, Math.min(asset.decimals, 8))}
                           </Typography>
                         </Box>
@@ -563,7 +681,9 @@ export const Portfolio = () => {
                         <Stack
                           direction="row"
                           spacing={1}
-                          justifyContent={{ sm: 'flex-end', xs: 'flex-start' }}
+                          sx={{
+                            justifyContent: { sm: 'flex-end', xs: 'flex-start' },
+                          }}
                         >
                           <Button
                             size="medium"
@@ -610,7 +730,13 @@ export const Portfolio = () => {
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Typography variant="h6" fontWeight={600} sx={{ mb: 3 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                mb: 3,
+              }}
+            >
               Balance History
             </Typography>
             <BalanceChart totalBalance={baseBalance} />

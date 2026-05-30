@@ -80,7 +80,7 @@ public class EthereumTransactionTest {
         Credentials credentials = MetamaskHelper.generateCredentials(MNEMONIC, index);
 
         assertThat(credentials.getAddress()).isEqualToIgnoringCase(expectedEthereumAddress);
-        Address expectedWavesSenderAddress = Address.fromPart(chainId, Numeric.hexStringToByteArray(expectedEthereumAddress));
+        Address expectedDccSenderAddress = Address.fromPart(chainId, Numeric.hexStringToByteArray(expectedEthereumAddress));
 
         EthereumTransaction transfer = EthereumTransaction.transfer(
                 Address.fromPart(chainId, new byte[20]),
@@ -92,7 +92,7 @@ public class EthereumTransactionTest {
                 credentials.getEcKeyPair()
         );
 
-        assertThat(transfer.sender().address(chainId)).isEqualTo(expectedWavesSenderAddress);
+        assertThat(transfer.sender().address(chainId)).isEqualTo(expectedDccSenderAddress);
     }
 
     @Test

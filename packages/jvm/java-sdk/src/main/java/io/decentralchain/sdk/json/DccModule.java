@@ -8,9 +8,9 @@ import io.decentralchain.sdk.json.deser.TransactionInfoDeser;
 import io.decentralchain.sdk.json.deser.TransactionWithStatusDeser;
 import io.decentralchain.transactions.common.Recipient;
 import io.decentralchain.transactions.invocation.Function;
-import io.decentralchain.transactions.serializers.json.WavesTransactionsModule;
+import io.decentralchain.transactions.serializers.json.DccTransactionsModule;
 
-public class DccModule extends WavesTransactionsModule {
+public class DccModule extends DccTransactionsModule {
   public DccModule() {
     super();
     addDeserializer(Function.class, new FunctionDeser());

@@ -25,7 +25,13 @@ export default function HeroSection() {
       {/* Hero Gradient Background */}
       <Box sx={heroGradientStyles} />
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} alignItems="center">
+        <Grid
+          container
+          spacing={6}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           {/* Left Column - Text Content */}
           <Grid
             size={{

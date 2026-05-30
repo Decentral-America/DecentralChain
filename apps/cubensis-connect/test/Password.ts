@@ -61,7 +61,19 @@ describe('Password management', () => {
       await expect(NewAccountScreen.passwordConfirmationError).toHaveText('');
     });
 
-    it.todo('The ability to paste the password from the clipboard');
+    it('The ability to paste the password from the clipboard', async () => {
+      const { writeClipboardText, clearClipboard } = await import('./utils/clipboard');
+      const pastedPassword = 'pasted-secure-password';
+      await writeClipboardText(pastedPassword);
+
+      await NewAccountScreen.passwordInput.click();
+      await browser.keys(['Control', 'v']);
+      const value = await NewAccountScreen.passwordInput.getValue();
+      expect(value).toBe(pastedPassword);
+
+      await NewAccountScreen.passwordInput.clearValue();
+      await clearClipboard();
+    });
 
     it('Successful password creation', async () => {
       await NewAccountScreen.passwordInput.setValue(PASSWORD.DEFAULT);
@@ -103,7 +115,19 @@ describe('Password management', () => {
       await ChangePasswordScreen.newPasswordInput.clearValue();
     });
 
-    it.todo('The ability to paste the password from the clipboard');
+    it('The ability to paste the password from the clipboard', async () => {
+      const { writeClipboardText, clearClipboard } = await import('./utils/clipboard');
+      const pastedPassword = 'pasted-new-password-value';
+      await writeClipboardText(pastedPassword);
+
+      await ChangePasswordScreen.newPasswordInput.click();
+      await browser.keys(['Control', 'v']);
+      const value = await ChangePasswordScreen.newPasswordInput.getValue();
+      expect(value).toBe(pastedPassword);
+
+      await ChangePasswordScreen.newPasswordInput.clearValue();
+      await clearClipboard();
+    });
 
     it('Passwords in both fields must match', async () => {
       await ChangePasswordScreen.newPasswordInput.setValue(PASSWORD.DEFAULT);

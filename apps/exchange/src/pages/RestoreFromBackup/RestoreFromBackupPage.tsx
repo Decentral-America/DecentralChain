@@ -381,7 +381,13 @@ export const RestoreFromBackupPage: React.FC = () => {
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
             Upload Backup File
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              mb: 4,
+            }}
+          >
             Select your wallet backup file (.json)
           </Typography>
 
@@ -411,7 +417,13 @@ export const RestoreFromBackupPage: React.FC = () => {
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                 {isDragActive ? 'Drop backup file here' : 'Drag & drop your backup file'}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  mb: 2,
+                }}
+              >
                 or click to browse files
               </Typography>
               <Button variant="secondary" component="span">
@@ -433,7 +445,13 @@ export const RestoreFromBackupPage: React.FC = () => {
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
             Enter Password
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              mb: 4,
+            }}
+          >
             Enter the password you used when creating this backup
           </Typography>
 
@@ -455,7 +473,13 @@ export const RestoreFromBackupPage: React.FC = () => {
                 p: 2.5,
               }}
             >
-              <Typography variant="caption" color="text.secondary" display="block">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                }}
+              >
                 Backup Information
               </Typography>
               <Typography variant="body2" sx={{ mt: 1 }}>
@@ -481,20 +505,22 @@ export const RestoreFromBackupPage: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter backup password"
             sx={{ mb: 3 }}
-            InputProps={{
-              endAdornment: (
-                <Box
-                  sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </Box>
-              ),
-            }}
             onKeyPress={(e) => {
               if (e.key === 'Enter' && password) {
                 void handleRestore();
               }
+            }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <Box
+                    sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </Box>
+                ),
+              },
             }}
           />
 
@@ -522,7 +548,13 @@ export const RestoreFromBackupPage: React.FC = () => {
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
             Wallet Restored Successfully!
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'text.secondary',
+              mb: 4,
+            }}
+          >
             {restoredAccounts} account{restoredAccounts !== 1 ? 's' : ''} restored from backup
           </Typography>
 
@@ -538,7 +570,14 @@ export const RestoreFromBackupPage: React.FC = () => {
                 textAlign: 'left',
               }}
             >
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  mb: 1,
+                }}
+              >
                 Restored Accounts:
               </Typography>
               <List dense>
@@ -551,7 +590,7 @@ export const RestoreFromBackupPage: React.FC = () => {
                       </ListItemIcon>
                       <ListItemText
                         primary={meta.name ?? 'Unnamed Account'}
-                        primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
+                        slotProps={{ primary: { sx: { fontWeight: 600 }, variant: 'body2' } }}
                       />
                     </ListItem>
                   ))}
@@ -559,7 +598,9 @@ export const RestoreFromBackupPage: React.FC = () => {
                   <ListItem>
                     <ListItemText
                       primary={`... and ${restoredAccounts - 5} more`}
-                      primaryTypographyProps={{ color: 'text.secondary', variant: 'caption' }}
+                      slotProps={{
+                        primary: { sx: { color: 'text.secondary' }, variant: 'caption' },
+                      }}
                     />
                   </ListItem>
                 )}
@@ -567,7 +608,13 @@ export const RestoreFromBackupPage: React.FC = () => {
             </Paper>
           )}
 
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              mb: 3,
+            }}
+          >
             Sign in with your wallet password to access your accounts.
           </Typography>
 
@@ -590,7 +637,6 @@ export const RestoreFromBackupPage: React.FC = () => {
       <FloatingShape delay={0} size={200} top="10%" left="5%" />
       <FloatingShape delay={1.5} size={150} top="65%" left="80%" />
       <FloatingShape delay={2.5} size={180} top="75%" left="10%" />
-
       <GlowOrb
         color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
         top="20%"
@@ -603,7 +649,6 @@ export const RestoreFromBackupPage: React.FC = () => {
         left="70%"
         size={400}
       />
-
       <Fade in={isVisible} timeout={600}>
         <Slide direction="up" in={isVisible} timeout={800}>
           <ContentWrapper>
@@ -620,7 +665,12 @@ export const RestoreFromBackupPage: React.FC = () => {
               >
                 Restore from Backup
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Import your wallet from an encrypted backup file
               </Typography>
             </Box>
@@ -643,7 +693,12 @@ export const RestoreFromBackupPage: React.FC = () => {
 
             {activeStep === 0 && (
               <Box sx={{ mt: 4, textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   Don&apos;t have a backup?{' '}
                   <Button
                     variant="text"

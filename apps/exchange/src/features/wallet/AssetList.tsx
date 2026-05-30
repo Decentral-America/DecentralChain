@@ -117,7 +117,11 @@ export const AssetList = () => {
   return (
     <AssetListContainer>
       <ListHeader>Your Assets ({assets.length})</ListHeader>
-      <Stack gap="0.5rem">
+      <Stack
+        sx={{
+          gap: '0.5rem',
+        }}
+      >
         {assets.map((asset) => (
           <AssetCard key={asset.id} asset={asset} />
         ))}

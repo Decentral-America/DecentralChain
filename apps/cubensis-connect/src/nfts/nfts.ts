@@ -5,9 +5,9 @@ import type { Nft, NftAssetDetail } from './types';
 import { NftVendorId } from './types';
 
 // No NFT vendors are registered for DCC mainnet.
-// All upstream Waves vendors (Ducks, Puzzle, SignArt) used hardcoded Waves
-// mainnet DApp addresses that cannot exist on DCC's chain. They were removed
-// as dead code. When DCC-native NFT projects launch, add vendors here.
+// All upstream NFT vendors (Ducks, Puzzle, SignArt) used hardcoded mainnet
+// DApp addresses that cannot exist on DCC's chain. They were removed as dead
+// code. When DCC-native NFT projects launch, add vendors here.
 
 export type NftInfo = Nft;
 

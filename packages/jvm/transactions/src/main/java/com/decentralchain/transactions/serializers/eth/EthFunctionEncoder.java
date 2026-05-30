@@ -16,7 +16,7 @@ import static org.web3j.abi.datatypes.Type.MAX_BYTE_LENGTH;
 
 public class EthFunctionEncoder extends DefaultFunctionEncoder {
 
-    public static String encodeWavesFunctionInEthFmt(Function function) {
+    public static String encodeDccFunctionInEthFmt(Function function) {
         List<Type> parameters = function.getInputParameters();
         String methodSignature = buildMethodSignature(function.getName(), parameters);
         String methodId = buildMethodId(methodSignature);

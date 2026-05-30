@@ -1,4 +1,4 @@
-use crate::proto::waves::{
+use crate::proto::dcc::{
     block::Header as HeaderPB,
     events::{
         blockchain_updated::append::{
@@ -257,14 +257,14 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                                 header: Some(HeaderPB { timestamp, .. }),
                                 ..
                             }),
-                        updated_waves_amount,
+                        updated_dcc_amount,
                         ..
                     })) => Ok(Block(BlockMicroblockAppend {
                         id: bs58::encode(&value.id).into_string(),
                         time_stamp: Some(epoch_ms_to_naivedatetime(*timestamp)),
                         height,
-                        updated_waves_amount: if *updated_waves_amount > 0 {
-                            Some(*updated_waves_amount)
+                        updated_dcc_amount: if *updated_dcc_amount > 0 {
+                            Some(*updated_dcc_amount)
                         } else {
                             None
                         },
@@ -277,7 +277,7 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                         id: bs58::encode(&total_block_id).into_string(),
                         time_stamp: None,
                         height,
-                        updated_waves_amount: None,
+                        updated_dcc_amount: None,
                         txs,
                     })),
                     _ => Err(AppError::InvalidMessage(

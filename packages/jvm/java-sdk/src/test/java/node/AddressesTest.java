@@ -167,7 +167,7 @@ public class AddressesTest extends BaseTestWithNodeInDocker {
         .isEqualTo(new ScriptInfo(expectedScript, 202, 202, new HashMap<>(), 400000));
     assertThat(assertThrows(NodeException.class, () -> node.getScriptMeta(alice.address())))
         .hasMessage(
-            "ScriptParseError(Expected DApp)"); // NOTE: Waiting for node fix (Waves-era). The
+            "ScriptParseError(Expected DApp)"); // NOTE: Waiting for node fix (DCC-era). The
     // scenario should
     // work
   }

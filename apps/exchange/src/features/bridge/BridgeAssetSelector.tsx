@@ -63,10 +63,21 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   if (gatewayAssets.length === 0) {
     return (
       <Box sx={{ py: 8, textAlign: 'center' }}>
-        <Typography variant="h6" color="text.secondary" gutterBottom>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           No Gateway Assets Available
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           Gateway assets are not configured for this network
         </Typography>
       </Box>
@@ -114,7 +125,12 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                   <Typography variant="h6" component="div">
                     {asset.ticker}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     {asset.name}
                   </Typography>
                 </Box>
@@ -129,7 +145,13 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                   p: 1.5,
                 }}
               >
-                <Typography variant="caption" color="text.secondary" display="block">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                  }}
+                >
                   Your Balance
                 </Typography>
                 <Typography variant="h6" component="div">
@@ -188,8 +210,12 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
               {asset.balance.lte(0) && (
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ display: 'block', mt: 1, textAlign: 'center' }}
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                    mt: 1,
+                    textAlign: 'center',
+                  }}
                 >
                   Deposit {asset.ticker} to enable withdrawals
                 </Typography>

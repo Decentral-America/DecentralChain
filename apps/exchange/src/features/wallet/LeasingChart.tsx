@@ -70,7 +70,12 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
 
   return (
     <Stack spacing={3} sx={{ height: '100%', position: 'relative' }}>
-      <Typography variant="subtitle1" fontWeight={600}>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontWeight: 600,
+        }}
+      >
         DCC Distribution
       </Typography>
       <Box sx={{ flex: 1, maxWidth: 360, mx: 'auto', position: 'relative', width: '100%' }}>
@@ -117,18 +122,31 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
         >
           <Typography
             variant="caption"
-            color="text.secondary"
-            sx={{ letterSpacing: 1, textTransform: 'uppercase' }}
+            sx={{
+              color: 'text.secondary',
+              letterSpacing: 1,
+              textTransform: 'uppercase',
+            }}
           >
             Total Balance
           </Typography>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             {totalDcc.toLocaleString(undefined, {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             })}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             DCC
           </Typography>
         </Box>
@@ -136,11 +154,20 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
       <Stack
         direction={{ sm: 'row', xs: 'column' }}
         spacing={3}
-        justifyContent="center"
-        alignItems="center"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
         {segments.map((segment) => (
-          <Stack direction="row" spacing={1} alignItems="center" key={segment.name}>
+          <Stack
+            direction="row"
+            spacing={1}
+            key={segment.name}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
             <Box
               sx={{
                 bgcolor: segment.fill,
@@ -149,7 +176,12 @@ export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartPro
                 width: 14,
               }}
             />
-            <Typography variant="caption" color="text.secondary">
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               {segment.name}
             </Typography>
           </Stack>

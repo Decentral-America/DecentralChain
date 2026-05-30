@@ -160,8 +160,8 @@ pub struct BatchEntry<'a, E: JubjubEngine> {
     sig: Signature,
 }
 
-// TODO: #82: This is a naive implementation currently,
-// and doesn't use multiexp.
+// NOTE: Upstream zcash-hackworks#82 — naive batch_verify without multiexp.
+// Sufficient for DCC's groth16 proof verification workload.
 pub fn batch_verify<'a, E: JubjubEngine, R: Rng>(
     rng: &mut R,
     batch: &[BatchEntry<'a, E>],
@@ -264,7 +264,7 @@ mod tests {
         let sk = PrivateKey::<Bls12>(rng.gen());
         let vk = PublicKey::from_private(&sk, p_g, params);
 
-        // TODO: This test will need to change when #77 is fixed
+        // NOTE: Upstream zcash-hackworks#77 — test assertion may change if cofactor handling is updated.
         let msg = b"Foo bar";
         let sig = sk.sign(msg, rng, p_g, params);
         assert!(vk.verify(msg, &sig, p_g, params));

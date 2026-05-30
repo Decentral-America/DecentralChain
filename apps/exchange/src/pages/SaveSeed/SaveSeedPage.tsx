@@ -287,7 +287,6 @@ export const SaveSeedPage: React.FC = () => {
         <FloatingShape delay={0} size={200} top="10%" left="5%" />
         <FloatingShape delay={1.5} size={150} top="60%" left="80%" />
         <FloatingShape delay={3} size={180} top="75%" left="10%" />
-
         <GlowOrb
           color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
           top="20%"
@@ -300,7 +299,6 @@ export const SaveSeedPage: React.FC = () => {
           left="75%"
           size={350}
         />
-
         <Fade in={isVisible} timeout={600}>
           <Slide direction="up" in={isVisible} timeout={800}>
             <ContentWrapper>
@@ -309,7 +307,13 @@ export const SaveSeedPage: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
                   No Accounts Found
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: 'text.secondary',
+                    mb: 4,
+                  }}
+                >
                   You don&apos;t have any accounts with seed phrases to backup. Please create or
                   import an account first.
                 </Typography>
@@ -358,7 +362,6 @@ export const SaveSeedPage: React.FC = () => {
       <FloatingShape delay={0} size={200} top="10%" left="5%" />
       <FloatingShape delay={1.5} size={150} top="60%" left="80%" />
       <FloatingShape delay={3} size={180} top="75%" left="10%" />
-
       <GlowOrb
         color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
         top="20%"
@@ -371,7 +374,6 @@ export const SaveSeedPage: React.FC = () => {
         left="75%"
         size={350}
       />
-
       <Fade in={isVisible} timeout={600}>
         <Slide direction="up" in={isVisible} timeout={800}>
           <ContentWrapper>
@@ -379,7 +381,13 @@ export const SaveSeedPage: React.FC = () => {
               <Typography variant="h4" sx={{ color: 'text.primary', fontWeight: 700, mb: 1 }}>
                 Backup Seed Phrase
               </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                  mb: 4,
+                }}
+              >
                 Select an account and enter your password to view and backup your seed phrase.
               </Typography>
 
@@ -393,7 +401,13 @@ export const SaveSeedPage: React.FC = () => {
               )}
 
               <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 1.5,
+                  }}
+                >
                   Select Account
                 </Typography>
                 <TextField
@@ -422,10 +436,20 @@ export const SaveSeedPage: React.FC = () => {
                           {user.name?.[0]?.toUpperCase() || user.address[0]?.toUpperCase()}
                         </Box>
                         <Box>
-                          <Typography variant="body2" fontWeight={600}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             {user.name || 'Account'}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
                             {`${user.address.slice(0, 8)}...${user.address.slice(-6)}`}
                           </Typography>
                         </Box>
@@ -442,13 +466,28 @@ export const SaveSeedPage: React.FC = () => {
                       selectedUser.address[0]?.toUpperCase()}
                   </AccountAvatar>
                   <Box sx={{ flex: 1 }}>
-                    <Typography variant="body1" fontWeight={600}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {selectedUser.name || 'Account'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       {`${selectedUser.address.slice(0, 12)}...${selectedUser.address.slice(-8)}`}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Type: {selectedUser.userType || 'seed'}
                     </Typography>
                   </Box>
@@ -457,7 +496,13 @@ export const SaveSeedPage: React.FC = () => {
 
               {needPassword && (
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      mb: 1.5,
+                    }}
+                  >
                     Password
                   </Typography>
                   <TextField
@@ -471,15 +516,17 @@ export const SaveSeedPage: React.FC = () => {
                         void handleShowSeed();
                       }
                     }}
-                    InputProps={{
-                      endAdornment: (
-                        <Box
-                          sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </Box>
-                      ),
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <Box
+                            sx={{ alignItems: 'center', cursor: 'pointer', display: 'flex' }}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </Box>
+                        ),
+                      },
                     }}
                   />
                 </Box>

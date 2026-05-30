@@ -9,7 +9,7 @@ import {
   ArrowForward,
   Badge,
   CurrencyBitcoin,
-  HelpOutline,
+  HelpOutlined,
   Inventory2Outlined,
   KeyboardArrowDown,
   Mail,
@@ -132,7 +132,10 @@ const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
       }}
     >
       <ListItemIcon sx={{ color: active ? '#fff' : '#374151', minWidth: 34 }}>{icon}</ListItemIcon>
-      <ListItemText primary={label} primaryTypographyProps={{ fontSize: 16, fontWeight: 600 }} />
+      <ListItemText
+        primary={label}
+        slotProps={{ primary: { sx: { fontSize: 16, fontWeight: 600 } } }}
+      />
       {endAdornment}
     </ListItemButton>
   </ListItem>
@@ -140,10 +143,29 @@ const NavItem = ({ label, icon, to, active, endAdornment }: NavItemProps) => (
 
 // Watchlist header
 const WatchlistHeader = () => (
-  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1, mt: 2.5 }}>
-    <Stack direction="row" spacing={1} alignItems="center">
+  <Stack
+    direction="row"
+    sx={{
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      mb: 1,
+      mt: 2.5,
+    }}
+  >
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: 'center',
+      }}
+    >
       <KeyboardArrowDown fontSize="small" sx={{ color: 'text.secondary' }} />
-      <Typography fontSize={14} fontWeight={700}>
+      <Typography
+        sx={{
+          fontSize: 14,
+          fontWeight: 700,
+        }}
+      >
         My Watchlist
       </Typography>
     </Stack>
@@ -164,7 +186,14 @@ interface WatchItemProps {
 }
 
 const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps) => (
-  <Stack direction="row" alignItems="center" spacing={1.5} sx={{ py: 1 }}>
+  <Stack
+    direction="row"
+    spacing={1.5}
+    sx={{
+      alignItems: 'center',
+      py: 1,
+    }}
+  >
     <Avatar sx={{ bgcolor: iconBg, height: 32, width: 32 }}>{icon}</Avatar>
     <Box sx={{ flexGrow: 1 }}>
       <Typography sx={{ color: 'text.primary', fontSize: 15, fontWeight: 600 }}>
@@ -174,7 +203,13 @@ const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps
         </Box>
         )
       </Typography>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: 'center',
+        }}
+      >
         <Typography sx={{ fontSize: 14, fontWeight: 700 }}>${price}</Typography>
         <Box
           sx={{
@@ -197,7 +232,13 @@ const WatchItem = ({ iconBg, icon, name, ticker, price, change }: WatchItemProps
 // Profile row
 const ProfileRow = () => (
   <Box sx={{ mb: 1, mt: 2.5 }}>
-    <Stack direction="row" alignItems="center" spacing={1.25}>
+    <Stack
+      direction="row"
+      spacing={1.25}
+      sx={{
+        alignItems: 'center',
+      }}
+    >
       <Avatar sx={{ bgcolor: '#16A34A', height: 36, width: 36 }}>U</Avatar>
       <Box sx={{ flexGrow: 1 }}>
         <Typography sx={{ fontSize: 14, fontWeight: 700 }}>DCC User</Typography>
@@ -215,9 +256,9 @@ const UpgradeProCard = () => (
   <Box sx={{ bottom: 16, position: 'sticky', pt: 2 }}>
     <Stack
       direction="row"
-      alignItems="center"
       spacing={1.5}
       sx={{
+        alignItems: 'center',
         background: 'linear-gradient(180deg, #424A57 0%, #1F2630 100%)',
         borderRadius: 2,
         boxShadow: '0 8px 20px rgba(2,6,23,.25), inset 0 1px 0 rgba(255,255,255,.16)',
@@ -261,14 +302,16 @@ export const Sidebar = () => {
   return (
     <Drawer
       variant="permanent"
-      PaperProps={{
-        sx: {
-          backgroundColor: '#fff',
-          borderRight: '1px solid #EEF2F7',
-          boxSizing: 'border-box',
-          overflow: 'auto',
-          p: 2.5,
-          width: 300,
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: '#fff',
+            borderRight: '1px solid #EEF2F7',
+            boxSizing: 'border-box',
+            overflow: 'auto',
+            p: 2.5,
+            width: 300,
+          },
         },
       }}
     >
@@ -380,7 +423,7 @@ export const Sidebar = () => {
           icon={<SettingsOutlined />}
           to="/desktop/settings"
         />
-        <NavItem label="Help Desk" icon={<HelpOutline />} to="/desktop/help" />
+        <NavItem label="Help Desk" icon={<HelpOutlined />} to="/desktop/help" />
       </List>
 
       <ProfileRow />
