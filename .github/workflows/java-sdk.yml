@@ -53,13 +53,15 @@ jobs:
           repository: Decentral-America/node-scala
           path: _node-scala
 
-      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions, lang)
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, groth16, crypto, transactions, lang)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/groth16      && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw $MVN_OPTS install)
           LANG_VERSION=$(awk -F'"' '/baseVersion/{print $2}' $GITHUB_WORKSPACE/_node-scala/version.sbt)
           (cd $GITHUB_WORKSPACE/_node-scala && sbt "set ThisBuild / version := \"$LANG_VERSION\"" lang/publishM2)
 
