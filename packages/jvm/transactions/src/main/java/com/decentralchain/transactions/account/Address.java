@@ -66,7 +66,7 @@ public class Address extends Base58String implements Recipient {
     }
 
     /**
-     * Check if the address is correct for specified Waves network.
+     * Check if the address is correct for specified DCC network.
      *
      * @param chainId blockchain network Id
      * @param address address as base58-encoded string
@@ -81,7 +81,7 @@ public class Address extends Base58String implements Recipient {
     }
 
     /**
-     * Check if the address is correct for any Waves network.
+     * Check if the address is correct for any DCC network.
      *
      * @param address address as base58-encoded string
      * @return true if the address is correct
@@ -95,7 +95,7 @@ public class Address extends Base58String implements Recipient {
     }
 
     /**
-     * Check if the address is correct for specified Waves network.
+     * Check if the address is correct for specified DCC network.
      *
      * @param chainId      blockchain network Id
      * @param addressBytes address bytes
@@ -106,7 +106,7 @@ public class Address extends Base58String implements Recipient {
     }
 
     /**
-     * Check if the address is correct for any Waves network.
+     * Check if the address is correct for any DCC network.
      *
      * @param addressBytes address bytes
      * @return true if the address is correct

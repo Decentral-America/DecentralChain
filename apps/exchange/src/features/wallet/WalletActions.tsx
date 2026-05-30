@@ -76,7 +76,12 @@ export const WalletActions: React.FC = () => {
   return (
     <>
       <ActionBar>
-        <Stack direction="row" gap="1rem">
+        <Stack
+          direction="row"
+          sx={{
+            gap: '1rem',
+          }}
+        >
           <Button
             variant="primary"
             onClick={handleSendClick}
@@ -107,7 +112,6 @@ export const WalletActions: React.FC = () => {
           </Button>
         </Stack>
       </ActionBar>
-
       {/* Send Modal */}
       {showSendModal && (
         <SendAssetModalModern
@@ -119,7 +123,6 @@ export const WalletActions: React.FC = () => {
           availableBalance="0"
         />
       )}
-
       {/* Receive Modal */}
       {showReceiveModal && (
         <ReceiveAssetModalModern

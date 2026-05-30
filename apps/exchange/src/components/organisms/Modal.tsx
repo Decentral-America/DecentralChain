@@ -126,9 +126,12 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <MuiModal
       open={isOpen}
-      onClose={closeOnOverlayClick ? onClose : undefined}
+      onClose={(_event, reason) => {
+        if (reason === 'escapeKeyDown' && !closeOnEscape) return;
+        if (reason === 'backdropClick' && !closeOnOverlayClick) return;
+        onClose?.();
+      }}
       closeAfterTransition
-      disableEscapeKeyDown={!closeOnEscape}
       slots={{ backdrop: Backdrop }}
       slotProps={{
         backdrop: {

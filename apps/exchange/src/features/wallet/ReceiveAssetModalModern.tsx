@@ -55,8 +55,20 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={1}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              gap: 1,
+            }}
+          >
             <Box
               sx={{
                 alignItems: 'center',
@@ -70,7 +82,12 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
             >
               <ReceiveIcon sx={{ color: 'white', fontSize: 20 }} />
             </Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               Receive {assetName}
             </Typography>
           </Box>
@@ -80,9 +97,21 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
         </Box>
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={3} alignItems="center" sx={{ mt: 2 }}>
+        <Stack
+          spacing={3}
+          sx={{
+            alignItems: 'center',
+            mt: 2,
+          }}
+        >
           {/* Info text */}
-          <Typography variant="body2" color="text.secondary" textAlign="center">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              textAlign: 'center',
+            }}
+          >
             Scan the QR code or copy the address below to receive {assetName.toLowerCase()}
           </Typography>
 
@@ -111,9 +140,11 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           >
             <Typography
               variant="body2"
-              fontFamily="monospace"
-              textAlign="center"
-              sx={{ wordBreak: 'break-all' }}
+              sx={{
+                fontFamily: 'monospace',
+                textAlign: 'center',
+                wordBreak: 'break-all',
+              }}
             >
               {user?.address || 'No address available'}
             </Typography>

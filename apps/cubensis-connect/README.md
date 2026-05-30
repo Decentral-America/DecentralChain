@@ -408,66 +408,12 @@ print('Fake signature verification:', verify(pub_key, fake_signature, message_by
 
 **PHP example code**
 
-```php
-<?php
+> **Note**: The upstream PHP verification library (`deemru/WavesKit`) is not
+> compatible with DCC chain IDs. For PHP server-side signature verification,
+> use the raw Ed25519 verify operation from `sodium_crypto_sign_verify_detached()`
+> with the message bytes prefixed by `'DccWalletAuthentication'` + host + data
+> (each length-prefixed as a 2-byte big-endian unsigned short).
 
-/*
- * Requires WavesKit by deemru
- * https://github.com/deemru/WavesKit
- */
-
-require_once __DIR__ . '/vendor/autoload.php';
-use deemru\WavesKit;
-
-function signed_data( $host, $data )
-{
-    $prefix = 'DccWalletAuthentication';
-    return str_with_length($prefix) . str_with_length($host) . str_with_length($data);
-}
-
-function str_with_length( $data )
-{
-    return pack('n', strlen($data)).$data;
-}
-
-$wk = new WavesKit("W");
-$address = '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj';
-$pub_key = '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr';
-$signature = '2w7QKSkxKEUwCVhx2VGrt5YiYVtAdoBZ8KQcxuNjGfN6n4fi1bn7PfPTnmdygZ6d87WhSXF1B9hW2pSmP7HucVbh';
-$data_string = '0123456789abc';
-$host_string = 'example.com';
-$message_bytes = signed_data($host_string, $data_string);
-
-$wk->log('i', 'Address: '. $address);
-$wk->log('i', 'Public key:' . $pub_key);
-$wk->log('i', 'Signed Data: ' . $message_bytes);
-$wk->log('i', 'Real signature: '. $signature);
-
-$wk->setPublicKey( $pub_key );
-$is_address_verified = $address === $wk->getAddress();
-
-if ( $is_address_verified === true)
-    $wk->log('s', "Address: Verified: TRUE");
-else
-    $wk->log('e', "Address: Verified: FALSE");
-
-$signature_verified = $wk->verify($wk->base58Decode($signature), $message_bytes);
-
-if ( $signature_verified === true)
-    $wk->log('s', "Signature Verified: TRUE");
-else
-    $wk->log('e', "Signature Verified: FALSE");
-
-$fake_signature = '29qWReHU9RXrQdQyXVXVciZarWXu7DXwekyV1zPivkrAzf4VSHb2Aq2FCKgRkKSozHFknKeq99dQaSmkhUDtZWsw';
-$wk->log('i', 'Fake Signature: '. $fake_signature);
-
-$signature_verified = $wk->verify($wk->base58Decode($fake_signature), $message_bytes);
-
-if ( $signature_verified === true)
-    $wk->log('e', "Fake Signature Verified: TRUE");
-else
-    $wk->log('s', "Fake Signature Verified: FALSE");
-?>
 ```
 
 </details>

@@ -297,12 +297,30 @@ export const DexPairAdmin = () => {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            mb: 3,
+          }}
+        >
           <Box>
-            <Typography variant="h4" fontWeight={700} gutterBottom>
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               DEX Trading Pairs Management
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               Configure trading pairs that will appear on the DEX trading page
             </Typography>
           </Box>
@@ -341,7 +359,13 @@ export const DexPairAdmin = () => {
               {pairs.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
-                    <Typography variant="body2" color="text.secondary" py={4}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                        py: 4,
+                      }}
+                    >
                       No trading pairs configured. Click &quot;Add Pair&quot; to create one.
                     </Typography>
                   </TableCell>
@@ -352,8 +376,19 @@ export const DexPairAdmin = () => {
                   .map((pair) => (
                     <TableRow key={pair.id} hover>
                       <TableCell>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             {pair.amountAsset.ticker}/{pair.priceAsset.ticker}
                           </Typography>
                           {pair.featured && <Chip label="Featured" size="small" color="primary" />}
@@ -412,7 +447,13 @@ export const DexPairAdmin = () => {
                         <Typography variant="body2">{pair.sortOrder}</Typography>
                       </TableCell>
                       <TableCell align="center">
-                        <Stack direction="row" spacing={1} justifyContent="center">
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            justifyContent: 'center',
+                          }}
+                        >
                           <IconButton
                             size="small"
                             color="primary"
@@ -436,7 +477,6 @@ export const DexPairAdmin = () => {
           </Table>
         </TableContainer>
       </Paper>
-
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>{editingPair ? 'Edit Trading Pair' : 'Add New Trading Pair'}</DialogTitle>
@@ -444,7 +484,13 @@ export const DexPairAdmin = () => {
           <Stack spacing={3} sx={{ mt: 2 }}>
             {/* Amount Asset Section */}
             <Box>
-              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 Amount Asset
               </Typography>
               <Stack spacing={2}>
@@ -483,7 +529,9 @@ export const DexPairAdmin = () => {
                         amountAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
-                    inputProps={{ max: 18, min: 0 }}
+                    slotProps={{
+                      htmlInput: { max: 18, min: 0 },
+                    }}
                   />
                 </Stack>
               </Stack>
@@ -491,7 +539,13 @@ export const DexPairAdmin = () => {
 
             {/* Price Asset Section */}
             <Box>
-              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 Price Asset
               </Typography>
               <Stack spacing={2}>
@@ -528,7 +582,9 @@ export const DexPairAdmin = () => {
                         priceAssetDecimals: parseInt(e.target.value, 10) || 8,
                       })
                     }
-                    inputProps={{ max: 18, min: 0 }}
+                    slotProps={{
+                      htmlInput: { max: 18, min: 0 },
+                    }}
                   />
                 </Stack>
               </Stack>
@@ -536,7 +592,13 @@ export const DexPairAdmin = () => {
 
             {/* Settings Section */}
             <Box>
-              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 Settings
               </Typography>
               <Stack spacing={2}>
@@ -583,7 +645,6 @@ export const DexPairAdmin = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
@@ -599,7 +660,6 @@ export const DexPairAdmin = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-
       <Dialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>Delete Trading Pair</DialogTitle>
         <DialogContent>

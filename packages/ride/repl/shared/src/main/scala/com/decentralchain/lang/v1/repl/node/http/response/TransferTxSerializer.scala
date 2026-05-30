@@ -98,12 +98,12 @@ object TransferTxSerializer {
     val feeAssetAmount = feeAssetId.fold(feeAmount)(feeAmount.withAssetId)
     val transaction    =
       new SignedTransaction(
-        SignedTransaction.Transaction.WavesTransaction(
+        SignedTransaction.Transaction.DccTransaction(
           Transaction(chainId, sender, Some(feeAssetAmount), timestamp, version, data)
         ),
         proofs
       )
-    transaction.getWavesTransaction.toByteArray
+    transaction.getDccTransaction.toByteArray
   }
 
   private def serializeArrayWithLength(b: Array[Byte]): Array[Byte] = {

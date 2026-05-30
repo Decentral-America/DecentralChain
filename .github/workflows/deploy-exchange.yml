@@ -97,9 +97,9 @@ jobs:
   # baked in at build time via the Vite --mode flag, exactly as before.
   #
   # Prerequisite: 3 CF Pages projects must exist before first deploy:
-  #   npx wrangler@4.93.1 pages project create dcc-exchange-mainnet --production-branch main
-  #   npx wrangler@4.93.1 pages project create dcc-exchange-stagenet --production-branch main
-  #   npx wrangler@4.93.1 pages project create dcc-exchange-testnet --production-branch main
+  #   npx wrangler@4.94.0 pages project create dcc-exchange-mainnet --production-branch main
+  #   npx wrangler@4.94.0 pages project create dcc-exchange-stagenet --production-branch main
+  #   npx wrangler@4.94.0 pages project create dcc-exchange-testnet --production-branch main
   # ─────────────────────────────────────────────────────────────────────────────
   build-and-deploy:
     name: Build and deploy (${{ needs.resolve.outputs.network }})

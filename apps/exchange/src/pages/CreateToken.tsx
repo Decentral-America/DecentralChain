@@ -5,12 +5,12 @@
  */
 
 import {
-  AddCircleOutline,
+  AddCircleOutlined,
   ArrowBack,
   ArrowForward,
   CheckCircle,
   CodeOutlined,
-  HelpOutline,
+  HelpOutlined,
   InfoOutlined,
   Palette,
   PreviewOutlined,
@@ -183,9 +183,9 @@ export const CreateToken = () => {
           <Box sx={{ mb: 4, textAlign: 'center' }}>
             <Typography
               variant="h3"
-              fontWeight={800}
               sx={{
                 background: 'linear-gradient(135deg, #5940d4 0%, #3d26be 100%)',
+                fontWeight: 800,
                 mb: 1,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -193,7 +193,13 @@ export const CreateToken = () => {
             >
               Create Your Token
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18 }}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'text.secondary',
+                fontSize: 18,
+              }}
+            >
               Follow the steps below to create your custom token on the blockchain
             </Typography>
           </Box>
@@ -244,7 +250,13 @@ export const CreateToken = () => {
                     {steps[activeStep]?.icon}
                   </Box>
 
-                  <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 2,
+                    }}
+                  >
                     {steps[activeStep]?.title}
                   </Typography>
 
@@ -283,10 +295,22 @@ export const CreateToken = () => {
                       p: 2,
                     }}
                   >
-                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <Stack
+                      direction="row"
+                      spacing={1.5}
+                      sx={{
+                        alignItems: 'flex-start',
+                      }}
+                    >
                       <InfoOutlined sx={{ fontSize: 20, mt: 0.2 }} />
                       <Box>
-                        <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                          }}
+                        >
                           {STEP_TIPS[activeStep]?.title}
                         </Typography>
                         <Typography variant="caption" sx={{ lineHeight: 1.6, opacity: 0.9 }}>
@@ -321,15 +345,30 @@ export const CreateToken = () => {
                   () => (
                     <Stack spacing={3}>
                       <Box>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                            mb: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Token Name *
                           </Typography>
                         </Stack>
                         <Typography
                           variant="caption"
-                          color="text.secondary"
-                          sx={{ display: 'block', mb: 1.5 }}
+                          sx={{
+                            color: 'text.secondary',
+                            display: 'block',
+                            mb: 1.5,
+                          }}
                         >
                           Choose a name for your token. Minimum 4 characters, maximum 16.
                         </Typography>
@@ -351,13 +390,22 @@ export const CreateToken = () => {
                       </Box>
 
                       <Box>
-                        <Typography variant="body1" fontWeight={600} sx={{ mb: 1 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 1,
+                          }}
+                        >
                           Description (Optional)
                         </Typography>
                         <Typography
                           variant="caption"
-                          color="text.secondary"
-                          sx={{ display: 'block', mb: 1.5 }}
+                          sx={{
+                            color: 'text.secondary',
+                            display: 'block',
+                            mb: 1.5,
+                          }}
                         >
                           Provide additional information about your token
                         </Typography>
@@ -368,12 +416,18 @@ export const CreateToken = () => {
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Describe your token's purpose, use case, or any other relevant information..."
-                          inputProps={{ maxLength: 1000 }}
+                          slotProps={{
+                            htmlInput: { maxLength: 1000 },
+                          }}
                         />
                         <Typography
                           variant="caption"
-                          color="text.secondary"
-                          sx={{ display: 'block', mt: 1, textAlign: 'right' }}
+                          sx={{
+                            color: 'text.secondary',
+                            display: 'block',
+                            mt: 1,
+                            textAlign: 'right',
+                          }}
                         >
                           {description.length}/1000 characters
                         </Typography>
@@ -384,12 +438,24 @@ export const CreateToken = () => {
                   () => (
                     <Stack spacing={3}>
                       <Box>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                            mb: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Quantity *
                           </Typography>
                           <Tooltip title="Total number of tokens to create. Can be increased later if reissuable.">
-                            <HelpOutline sx={{ color: 'text.secondary', fontSize: 18 }} />
+                            <HelpOutlined sx={{ color: 'text.secondary', fontSize: 18 }} />
                           </Tooltip>
                         </Stack>
                         <TextField
@@ -398,18 +464,32 @@ export const CreateToken = () => {
                           value={count}
                           onChange={(e) => setCount(e.target.value)}
                           placeholder="Enter total quantity"
-                          inputProps={{ min: 0, step: 'any' }}
                           sx={{ mb: 2 }}
+                          slotProps={{
+                            htmlInput: { min: 0, step: 'any' },
+                          }}
                         />
                       </Box>
 
                       <Box>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                            mb: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Reissuable
                           </Typography>
                           <Tooltip title="Reissuable: You can issue more tokens later. Not reissuable: The total number is fixed forever.">
-                            <HelpOutline sx={{ color: 'text.secondary', fontSize: 18 }} />
+                            <HelpOutlined sx={{ color: 'text.secondary', fontSize: 18 }} />
                           </Tooltip>
                         </Stack>
                         <FormControl fullWidth>
@@ -419,20 +499,40 @@ export const CreateToken = () => {
                           >
                             <MenuItem value="false">
                               <Box>
-                                <Typography variant="body2" fontWeight={600}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 600,
+                                  }}
+                                >
                                   Not Reissuable
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: 'text.secondary',
+                                  }}
+                                >
                                   Total supply is fixed permanently
                                 </Typography>
                               </Box>
                             </MenuItem>
                             <MenuItem value="true">
                               <Box>
-                                <Typography variant="body2" fontWeight={600}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 600,
+                                  }}
+                                >
                                   Reissuable
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: 'text.secondary',
+                                  }}
+                                >
                                   You can create more tokens later
                                 </Typography>
                               </Box>
@@ -442,12 +542,24 @@ export const CreateToken = () => {
                       </Box>
 
                       <Box>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                            mb: 2,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Decimals: {precision}
                           </Typography>
                           <Tooltip title="Number of decimal places for your token (0-8). Use 0 for NFTs, 8 for currencies.">
-                            <HelpOutline sx={{ color: 'text.secondary', fontSize: 18 }} />
+                            <HelpOutlined sx={{ color: 'text.secondary', fontSize: 18 }} />
                           </Tooltip>
                         </Stack>
                         <Box sx={{ px: 2 }}>
@@ -479,7 +591,13 @@ export const CreateToken = () => {
                             borderLeft: '4px solid #5940d4',
                           }}
                         >
-                          <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              mb: 0.5,
+                            }}
+                          >
                             NFT Detected
                           </Typography>
                           <Typography variant="caption">
@@ -494,8 +612,20 @@ export const CreateToken = () => {
                   () => (
                     <Stack spacing={3}>
                       <Box>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                          <Typography variant="body1" fontWeight={600}>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            alignItems: 'center',
+                            mb: 2,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Enable Smart Asset Script
                           </Typography>
                           <Tooltip
@@ -503,8 +633,11 @@ export const CreateToken = () => {
                               <Box>
                                 <Typography
                                   variant="caption"
-                                  fontWeight={600}
-                                  sx={{ display: 'block', mb: 0.5 }}
+                                  sx={{
+                                    display: 'block',
+                                    fontWeight: 600,
+                                    mb: 0.5,
+                                  }}
                                 >
                                   Smart Asset
                                 </Typography>
@@ -525,7 +658,7 @@ export const CreateToken = () => {
                               </Box>
                             }
                           >
-                            <HelpOutline sx={{ color: 'text.secondary', fontSize: 18 }} />
+                            <HelpOutlined sx={{ color: 'text.secondary', fontSize: 18 }} />
                           </Tooltip>
                         </Stack>
 
@@ -550,7 +683,13 @@ export const CreateToken = () => {
                       {hasAssetScript && (
                         <>
                           <Box>
-                            <Typography variant="body1" fontWeight={600} sx={{ mb: 1.5 }}>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                fontWeight: 600,
+                                mb: 1.5,
+                              }}
+                            >
                               Asset Script *
                             </Typography>
                             <TextField
@@ -575,15 +714,24 @@ export const CreateToken = () => {
                             />
                             <Typography
                               variant="caption"
-                              color="text.secondary"
-                              sx={{ display: 'block', mt: 1 }}
+                              sx={{
+                                color: 'text.secondary',
+                                display: 'block',
+                                mt: 1,
+                              }}
                             >
                               Use RIDE IDE to write and test your script before deploying
                             </Typography>
                           </Box>
 
                           <Alert severity="warning" sx={{ bgcolor: '#FFF7ED' }}>
-                            <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                                mb: 0.5,
+                              }}
+                            >
                               ⚠️ Permanent Change
                             </Typography>
                             <Typography variant="caption">
@@ -605,10 +753,21 @@ export const CreateToken = () => {
                           }}
                         >
                           <CodeOutlined sx={{ color: 'text.secondary', fontSize: 60, mb: 2 }} />
-                          <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontWeight: 600,
+                              mb: 1,
+                            }}
+                          >
                             No Script Required
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
                             Your token will be created as a standard asset without custom validation
                             rules. You can skip this step if you don&apos;t need smart asset
                             functionality.
@@ -622,7 +781,13 @@ export const CreateToken = () => {
                     <Stack spacing={3}>
                       {/* Preview Card */}
                       <Box>
-                        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 700,
+                            mb: 2,
+                          }}
+                        >
                           Token Preview
                         </Typography>
                         <Paper
@@ -664,11 +829,26 @@ export const CreateToken = () => {
                               </IconButton>
                             </Tooltip>
                           </Box>
-                          <Box flex={1}>
-                            <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
+                          <Box
+                            sx={{
+                              flex: 1,
+                            }}
+                          >
+                            <Typography
+                              variant="h5"
+                              sx={{
+                                fontWeight: 700,
+                                mb: 0.5,
+                              }}
+                            >
                               {name || 'Token Name'}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {count
                                 ? `${parseFloat(count).toLocaleString()} ${name || 'tokens'}`
                                 : 'Quantity not set'}
@@ -690,7 +870,13 @@ export const CreateToken = () => {
 
                       {/* Details Summary */}
                       <Box>
-                        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 700,
+                            mb: 2,
+                          }}
+                        >
                           Token Details
                         </Typography>
                         <Stack spacing={2}>
@@ -703,10 +889,20 @@ export const CreateToken = () => {
                               p: 2,
                             }}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               Name
                             </Typography>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {name || '-'}
                             </Typography>
                           </Box>
@@ -719,10 +915,20 @@ export const CreateToken = () => {
                               p: 2,
                             }}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               Quantity
                             </Typography>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {count ? parseFloat(count).toLocaleString() : '-'}
                             </Typography>
                           </Box>
@@ -735,10 +941,20 @@ export const CreateToken = () => {
                               p: 2,
                             }}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               Decimals
                             </Typography>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {precision}
                             </Typography>
                           </Box>
@@ -751,10 +967,20 @@ export const CreateToken = () => {
                               p: 2,
                             }}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               Reissuable
                             </Typography>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {reissuable ? 'Yes' : 'No'}
                             </Typography>
                           </Box>
@@ -767,10 +993,20 @@ export const CreateToken = () => {
                               p: 2,
                             }}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               Smart Asset
                             </Typography>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {hasAssetScript ? 'Yes' : 'No'}
                             </Typography>
                           </Box>
@@ -782,7 +1018,13 @@ export const CreateToken = () => {
                                 p: 2,
                               }}
                             >
-                              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: 'text.secondary',
+                                  mb: 1,
+                                }}
+                              >
                                 Description
                               </Typography>
                               <Typography variant="body2">{description}</Typography>
@@ -793,7 +1035,13 @@ export const CreateToken = () => {
 
                       {/* Warning */}
                       <Alert severity="warning" sx={{ bgcolor: '#FFF7ED' }}>
-                        <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                          }}
+                        >
                           ⚠️ Important Notice
                         </Typography>
                         <Typography variant="caption">
@@ -813,9 +1061,21 @@ export const CreateToken = () => {
                       >
                         <Stack spacing={2}>
                           {/* Header */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            sx={{
+                              alignItems: 'center',
+                            }}
+                          >
                             <InfoOutlined sx={{ color: 'primary.main', fontSize: 20 }} />
-                            <Typography variant="body2" fontWeight={700} color="primary">
+                            <Typography
+                              variant="body2"
+                              color="primary"
+                              sx={{
+                                fontWeight: 700,
+                              }}
+                            >
                               Transaction Fees
                             </Typography>
                           </Stack>
@@ -825,18 +1085,35 @@ export const CreateToken = () => {
                             {/* Token Creation Fee */}
                             <Stack
                               direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
+                              sx={{
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                              }}
                             >
                               <Stack>
-                                <Typography variant="body2" fontWeight={600}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 600,
+                                  }}
+                                >
                                   Token Creation (Issue)
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: 'text.secondary',
+                                  }}
+                                >
                                   One-time fee to register your token on the blockchain
                                 </Typography>
                               </Stack>
-                              <Typography variant="body1" fontWeight={700}>
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  fontWeight: 700,
+                                }}
+                              >
                                 {issueFeeInDCC.toFixed(8)} DCC
                               </Typography>
                             </Stack>
@@ -845,18 +1122,35 @@ export const CreateToken = () => {
                             {hasAssetScript && (
                               <Stack
                                 direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
+                                sx={{
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                }}
                               >
                                 <Stack>
-                                  <Typography variant="body2" fontWeight={600}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
                                     Smart Asset Script
                                   </Typography>
-                                  <Typography variant="caption" color="text.secondary">
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      color: 'text.secondary',
+                                    }}
+                                  >
                                     Fee for attaching a script to your token
                                   </Typography>
                                 </Stack>
-                                <Typography variant="body1" fontWeight={700}>
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    fontWeight: 700,
+                                  }}
+                                >
                                   +{scriptFeeInDCC.toFixed(8)} DCC
                                 </Typography>
                               </Stack>
@@ -867,13 +1161,26 @@ export const CreateToken = () => {
                             {/* Total Fee */}
                             <Stack
                               direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
+                              sx={{
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                              }}
                             >
-                              <Typography variant="body1" fontWeight={700}>
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  fontWeight: 700,
+                                }}
+                              >
                                 Total Cost
                               </Typography>
-                              <Typography variant="h6" fontWeight={700} color="primary">
+                              <Typography
+                                variant="h6"
+                                color="primary"
+                                sx={{
+                                  fontWeight: 700,
+                                }}
+                              >
                                 {totalFeeInDCC.toFixed(8)} DCC
                               </Typography>
                             </Stack>
@@ -882,17 +1189,26 @@ export const CreateToken = () => {
                             {user && (
                               <Stack
                                 direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                sx={{ pt: 1 }}
+                                sx={{
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  pt: 1,
+                                }}
                               >
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: 'text.secondary',
+                                  }}
+                                >
                                   Your Available Balance
                                 </Typography>
                                 <Typography
                                   variant="body2"
-                                  fontWeight={600}
                                   color={hasInsufficientBalance ? 'error.main' : 'success.main'}
+                                  sx={{
+                                    fontWeight: 600,
+                                  }}
                                 >
                                   {userBalanceInDCC.toFixed(8)} DCC
                                 </Typography>
@@ -909,7 +1225,13 @@ export const CreateToken = () => {
                           icon={<WarningAmber />}
                           sx={{ bgcolor: '#FEF2F2', border: '1px solid #FCA5A5' }}
                         >
-                          <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              mb: 0.5,
+                            }}
+                          >
                             Insufficient Balance
                           </Typography>
                           <Typography variant="caption">
@@ -982,7 +1304,7 @@ export const CreateToken = () => {
                       <Button
                         variant="contained"
                         size="large"
-                        startIcon={<AddCircleOutline />}
+                        startIcon={<AddCircleOutlined />}
                         onClick={handleSubmit}
                         disabled={true}
                         sx={{
