@@ -404,7 +404,7 @@
         <dependency>
             <groupId>io.decentralchain</groupId>
             <artifactId>lang</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.1</version>
         </dependency>
 
         <!-- logging (runtime / test only) -->
@@ -421,7 +421,7 @@
         <dependency>
             <groupId>io.decentralchain</groupId>
             <artifactId>protobuf-schemas</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
 
