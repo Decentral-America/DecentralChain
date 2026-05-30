@@ -1,33 +1,33 @@
 use crate::proto::dcc::{
+    Block as BlockPB, SignedMicroBlock as SignedMicroBlockPB,
+    SignedTransaction as SignedTransactionPB,
     block::Header as HeaderPB,
     events::{
+        BlockchainUpdated as BlockchainUpdatedPB,
+        blockchain_updated::Append as AppendPB,
+        blockchain_updated::Update as UpdatePB,
         blockchain_updated::append::{
             BlockAppend as BlockAppendPB, Body as BodyPB, MicroBlockAppend as MicroBlockAppendPB,
         },
-        blockchain_updated::Append as AppendPB,
-        blockchain_updated::Update as UpdatePB,
         grpc::{
-            blockchain_updates_api_client::BlockchainUpdatesApiClient,
             SubscribeEvent as SubscribeEventPB, SubscribeRequest as SubscribeRequestPB,
+            blockchain_updates_api_client::BlockchainUpdatesApiClient,
         },
-        BlockchainUpdated as BlockchainUpdatedPB,
     },
-    Block as BlockPB, SignedMicroBlock as SignedMicroBlockPB,
-    SignedTransaction as SignedTransactionPB,
 };
 use anyhow::Result;
 use bs58;
 use chrono::Duration;
 use std::str;
 use std::time::{Duration as StdDuration, Instant};
-use tokio::sync::mpsc::{channel, Receiver, Sender};
+use tokio::sync::mpsc::{Receiver, Sender, channel};
 use tokio::time;
 use tonic;
 use tracing::{debug, error};
 
 use super::{
-    epoch_ms_to_naivedatetime, BlockMicroblockAppend, BlockchainUpdate,
-    BlockchainUpdatesWithLastHeight, Tx, UpdatesSource,
+    BlockMicroblockAppend, BlockchainUpdate, BlockchainUpdatesWithLastHeight, Tx, UpdatesSource,
+    epoch_ms_to_naivedatetime,
 };
 use crate::error::Error as AppError;
 
@@ -199,14 +199,13 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                             )
                         }))
                     }
-                    Some(BodyPB::MicroBlock(MicroBlockAppendPB {
-                        micro_block,
-                        ..
-                    })) => Ok(micro_block.as_mut().and_then(|it| {
-                        it.micro_block
-                            .as_mut()
-                            .map(|it| (it.transactions.drain(..).collect(), None))
-                    })),
+                    Some(BodyPB::MicroBlock(MicroBlockAppendPB { micro_block, .. })) => {
+                        Ok(micro_block.as_mut().and_then(|it| {
+                            it.micro_block
+                                .as_mut()
+                                .map(|it| (it.transactions.drain(..).collect(), None))
+                        }))
+                    }
                     _ => Err(AppError::InvalidMessage(
                         "Append body is empty.".to_string(),
                     )),

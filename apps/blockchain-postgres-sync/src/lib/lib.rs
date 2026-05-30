@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate diesel;
 
+pub mod chain;
 pub mod config;
 pub mod consumer;
 pub mod db;
@@ -10,4 +11,3 @@ pub mod proto;
 pub mod schema;
 mod tuple_len;
 pub mod utils;
-pub mod chain;

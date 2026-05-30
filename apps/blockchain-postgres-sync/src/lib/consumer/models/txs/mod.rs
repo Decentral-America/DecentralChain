@@ -1,9 +1,9 @@
 pub mod convert;
 
 use crate::schema::{
-    txs_1, txs_10, txs_11, txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16,
-    txs_16_args, txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_2, txs_3, txs_4,
-    txs_5, txs_6, txs_7, txs_8, txs_9,
+    txs_1, txs_2, txs_3, txs_4, txs_5, txs_6, txs_7, txs_8, txs_9, txs_10, txs_11,
+    txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args,
+    txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment,
 };
 use chrono::NaiveDateTime;
 use diesel::Insertable;

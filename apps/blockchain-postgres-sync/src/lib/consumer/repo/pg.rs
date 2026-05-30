@@ -6,32 +6,32 @@ use crate::consumer::models::{
     assets::{AssetOrigin, AssetOverride, AssetUpdate, DeletedAsset},
     block_microblock::BlockMicroblock,
     candles::intervals::{self, CANDLE_INTERVALS},
-    txs::{
-        Tx1, Tx10, Tx11, Tx11Combined, Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14,
-        Tx15, Tx16, Tx16Args, Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined,
-        Tx18Payment, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9, Tx9Partial,
-    },
     dcc_data::DccData,
+    txs::{
+        Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9, Tx9Partial, Tx10, Tx11, Tx11Combined,
+        Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15, Tx16, Tx16Args,
+        Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment,
+    },
 };
 use crate::db::PgAsyncPool;
 use crate::error::Error as AppError;
 use crate::schema::{
-    asset_origins, asset_tickers, asset_updates, blocks_microblocks, candles, txs, txs_1, txs_10,
-    txs_11, txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args,
-    txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_2, txs_3, txs_4, txs_5, txs_6,
-    txs_7, txs_8, txs_9, dcc_data,
+    asset_origins, asset_tickers, asset_updates, blocks_microblocks, candles, dcc_data, txs, txs_1,
+    txs_2, txs_3, txs_4, txs_5, txs_6, txs_7, txs_8, txs_9, txs_10, txs_11, txs_11_transfers,
+    txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args, txs_16_payment, txs_17,
+    txs_18, txs_18_args, txs_18_payment,
 };
 use crate::tuple_len::TupleLen;
-use anyhow::{bail, Error, Result};
+use anyhow::{Error, Result, bail};
 use chrono::{Datelike, Duration, NaiveDateTime, Timelike as _};
 use diesel::{
+    Table,
     dsl::sql,
     pg::PgConnection,
     prelude::*,
     result::Error as DslError,
     sql_query,
     sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
-    Table,
 };
 use std::{collections::HashMap, num::NonZeroU32};
 
