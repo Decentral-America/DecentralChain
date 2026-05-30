@@ -187,13 +187,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter e2e exec playwright install --with-deps chromium
+        run: |
+          pnpm --filter e2e exec playwright install --with-deps chromium
+          pnpm --filter scanner exec playwright install --with-deps chromium
 
       - name: Derive NX SHAs
         uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - name: Run E2E tests (affected)
-        run: pnpm nx affected -t e2e --exclude scanner
+        run: pnpm nx affected -t e2e
         env:
           CI: 'true'
 
