@@ -12,19 +12,8 @@ export default defineConfig({
   },
   webServer: {
     command: 'pnpm run dev --port 5173',
-    env: {
-      // Stub external API endpoints in CI so SSR loaders resolve instantly
-      // instead of hanging on network requests to mainnet nodes.
-      ...(process.env.CI
-        ? {
-            DCC_DATA_SERVICE_URL: 'http://localhost:1',
-            DCC_MATCHER_URL: 'http://localhost:1',
-            DCC_NODE_URL: 'http://localhost:1',
-          }
-        : {}),
-    },
     port: 5173,
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
 });
