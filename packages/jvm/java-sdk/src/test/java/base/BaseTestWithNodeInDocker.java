@@ -41,12 +41,11 @@ public abstract class BaseTestWithNodeInDocker {
                     DockerImageName.parse("ghcr.io/decentral-america/node-scala-private:latest"))
                 .withExposedPorts(6869)
                 // Env vars consumed by the Docker image entrypoint script
-                // (/usr/share/waves/bin/entrypoint.sh) — names are upstream
-                // node-scala conventions that cannot be changed here.
+                // (docker/entrypoint.sh) — DCC node-scala conventions.
                 .withEnv(
-                    "WAVES_WALLET_SEED", "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4")
-                .withEnv("WAVES_WALLET_PASSWORD", "test")
-                .withEnv("WAVES_REST_API_BIND", "0.0.0.0")
+                    "DCC_WALLET_SEED", "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4")
+                .withEnv("DCC_WALLET_PASSWORD", "test")
+                .withEnv("DCC_REST_API_BIND", "0.0.0.0")
                 .waitingFor(Wait.forHttp("/node/version").forPort(6869).forStatusCode(200))
                 .withStartupTimeout(Duration.of(5, MINUTES));
         container.start();

@@ -46,9 +46,11 @@ export function Checkbox({
       ref={ref}
       indeterminate={indeterminate}
       disabled={disabled}
-      inputProps={{
-        'aria-describedby': error ? `${checkboxId}-error` : undefined,
-        'aria-invalid': !!error,
+      slotProps={{
+        input: {
+          'aria-describedby': error ? `${checkboxId}-error` : undefined,
+          'aria-invalid': !!error,
+        },
       }}
       {...props}
     />

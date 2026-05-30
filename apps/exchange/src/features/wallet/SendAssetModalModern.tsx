@@ -303,8 +303,20 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     return (
       <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box display="flex" alignItems="center" gap={1}>
+          <Box
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                gap: 1,
+              }}
+            >
               <Box
                 sx={{
                   alignItems: 'center',
@@ -318,7 +330,12 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               >
                 <SendIcon sx={{ color: 'white', fontSize: 20 }} />
               </Box>
-              <Typography variant="h6" fontWeight={600}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 Transaction Sent
               </Typography>
             </Box>
@@ -333,11 +350,23 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               Your transaction has been successfully broadcast to the network!
             </Alert>
             <Box>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Transaction ID
               </Typography>
               <Card sx={{ bgcolor: 'grey.50', p: 2 }}>
-                <Typography variant="body2" fontFamily="monospace" sx={{ wordBreak: 'break-all' }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: 'monospace',
+                    wordBreak: 'break-all',
+                  }}
+                >
                   {txId}
                 </Typography>
               </Card>
@@ -359,8 +388,20 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={1}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              gap: 1,
+            }}
+          >
             <Box
               sx={{
                 alignItems: 'center',
@@ -374,7 +415,12 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             >
               <SendIcon sx={{ color: 'white', fontSize: 20 }} />
             </Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               Send {assetName}
             </Typography>
           </Box>
@@ -404,26 +450,38 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                   ? 'You can send to a DecentralChain address or an alias'
                   : undefined
               }
-              InputProps={{
-                endAdornment: isResolvingAlias ? (
-                  <InputAdornment position="end">
-                    <CircularProgress size={20} />
-                  </InputAdornment>
-                ) : isAlias && resolvedAddress ? (
-                  <InputAdornment position="end">
-                    <CheckCircle color="success" />
-                  </InputAdornment>
-                ) : null,
+              slotProps={{
+                input: {
+                  endAdornment: isResolvingAlias ? (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ) : isAlias && resolvedAddress ? (
+                    <InputAdornment position="end">
+                      <CheckCircle color="success" />
+                    </InputAdornment>
+                  ) : null,
+                },
               }}
             />
             {/* Show resolved address for aliases */}
             {isAlias && resolvedAddress && (
               <Alert severity="success" icon={<CheckCircle fontSize="small" />} sx={{ mt: 1 }}>
                 <Stack spacing={0.5}>
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
                     Alias resolved to address:
                   </Typography>
-                  <Typography variant="caption" fontFamily="monospace">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontFamily: 'monospace',
+                    }}
+                  >
                     {resolvedAddress}
                   </Typography>
                 </Stack>
@@ -456,17 +514,26 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               }}
               error={!!validationErrors.amount}
               helperText={validationErrors.amount}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button size="small" onClick={handleMaxClick} sx={{ minWidth: 'auto' }}>
-                      MAX
-                    </Button>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button size="small" onClick={handleMaxClick} sx={{ minWidth: 'auto' }}>
+                        MAX
+                      </Button>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                display: 'block',
+                mt: 0.5,
+              }}
+            >
               Available: {parseFloat(availableBalance).toFixed(assetDecimals)} {assetName}
             </Typography>
           </Box>
@@ -478,8 +545,10 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             placeholder="Optional message"
             value={attachment}
             onChange={(e) => setAttachment(e.target.value)}
-            inputProps={{ maxLength: 140 }}
             helperText={`${attachment.length}/140 characters`}
+            slotProps={{
+              htmlInput: { maxLength: 140 },
+            }}
           />
 
           {/* Fee Display */}
@@ -492,11 +561,27 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               p: 2,
             }}
           >
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant="body2" color="text.secondary">
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Transaction Fee
               </Typography>
-              <Typography variant="body2" fontWeight={600}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 {fee} DCC (≈ ${(fee * 0.5).toFixed(4)})
               </Typography>
             </Box>

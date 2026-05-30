@@ -54,7 +54,13 @@ const SignInInner: React.FC = () => {
       }}
     >
       <Container maxWidth="xl" sx={{ py: 8 }}>
-        <Grid container spacing={6} alignItems="center">
+        <Grid
+          container
+          spacing={6}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           {/* Left Column - Branding & Features */}
           <Grid
             size={{
@@ -73,13 +79,24 @@ const SignInInner: React.FC = () => {
 
               <Typography
                 variant="h2"
-                fontWeight={800}
-                sx={{ fontSize: '2.5rem', lineHeight: 1.2, mb: 2 }}
+                sx={{
+                  fontSize: '2.5rem',
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  mb: 2,
+                }}
               >
                 Welcome back to the future of trading
               </Typography>
 
-              <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: 18,
+                  mb: 4,
+                }}
+              >
                 Sign in to access your decentralized exchange account and continue trading securely.
               </Typography>
 
@@ -135,7 +152,14 @@ const SignInInner: React.FC = () => {
                     title: 'Advanced Trading Tools',
                   },
                 ].map((f) => (
-                  <Stack key={f.title} direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    key={f.title}
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box
                       sx={{
                         alignItems: 'center',
@@ -152,10 +176,20 @@ const SignInInner: React.FC = () => {
                       {f.icon}
                     </Box>
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         {f.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         {f.desc}
                       </Typography>
                     </Box>

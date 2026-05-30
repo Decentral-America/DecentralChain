@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: publish-groth16
+  cancel-in-progress: false
+
 env:
   NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 
@@ -19,6 +23,7 @@ jobs:
   build-native:
     name: Native lib · ${{ matrix.platform }}/${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     env:
       RUST_BACKTRACE: 1
 
@@ -121,6 +126,7 @@ jobs:
   publish:
     name: Audit · Sign · Upload to Central Portal
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build-native
     defaults:
       run:

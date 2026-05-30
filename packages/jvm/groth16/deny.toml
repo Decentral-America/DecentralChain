@@ -1,6 +1,6 @@
 # packages/jvm/groth16 — cargo-deny configuration
 #
-# This file documents the known security advisories in the zwaves Rust
+# This file documents the known security advisories in the groth16 Rust
 # dependency tree that CANNOT be patched without breaking ZK-SNARK
 # circuit compatibility.
 #
@@ -14,7 +14,7 @@
 # Every advisory has been formally reviewed (see [[advisories.ignore]] below)
 # and deemed LOW risk for this specific workload because the vulnerable code
 # paths (AES encryption, JSON parsing, libc timezone mutation) are NOT
-# reachable from the zwaves JNI public API.
+# reachable from the groth16 JNI public API.
 
 [advisories]
 # Vulnerability advisories cause a hard deny by default; unmaintained notices
@@ -25,7 +25,7 @@ ignore = [
   # RUSTSEC-2022-0011  rust-crypto — AES miscomputation on x86 (SEVERITY: HIGH)
   # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36
   # Risk assessment:
-  #   zwaves exposes exactly ONE operation at the JNI boundary: Groth16 ZK-SNARK
+  #   groth16 exposes exactly ONE operation at the JNI boundary: Groth16 ZK-SNARK
   #   verification (BN256 / BLS12 pairing check). The rust-crypto crate is
   #   pulled in only for its SHA-256/SHA-512 hash implementations used inside
   #   the Groth16 proof setup; its AES code is never called.  The vulnerable
@@ -35,20 +35,20 @@ ignore = [
   # Why not patched: rust-crypto 0.2.36 is the last version published; the
   #   crate is abandoned.  Upgrading sapling-crypto would invalidate the
   #   Sapling trusted setup and permanently break the on-chain ZK verifier.
-  { id = "RUSTSEC-2022-0011", reason = "AES code path unreachable from zwaves JNI; sapling-crypto vendored at fixed commit for ZK circuit compatibility; no upgrade path without invalidating trusted setup" },
+  { id = "RUSTSEC-2022-0011", reason = "AES code path unreachable from groth16 JNI; sapling-crypto vendored at fixed commit for ZK circuit compatibility; no upgrade path without invalidating trusted setup" },
 
   # ─────────────────────────────────────────────────────────────────────────
   # RUSTSEC-2022-0004  rustc-serialize — stack overflow parsing deeply-nested
   #                    JSON (SEVERITY: HIGH, CWE-674: Uncontrolled Recursion)
   # Source:  sapling-crypto 0.0.1 → rust-crypto 0.2.36 → rustc-serialize 0.3.25
   # Risk assessment:
-  #   All inputs to the zwaves JNI boundary are fixed-length byte arrays passed
+  #   All inputs to the groth16 JNI boundary are fixed-length byte arrays passed
   #   from the JVM.  No JSON parsing occurs at any point in the groth16_jni call
   #   path.  The rustc-serialize crate is a transitive dependency of rust-crypto
   #   only; its JSON decoder is never invoked.  An attacker controlling JNI
   #   inputs cannot trigger this code path.  Risk: LOW.
   # Why not patched: same sapling-crypto lock constraint as RUSTSEC-2022-0011.
-  { id = "RUSTSEC-2022-0004", reason = "JSON parsing code path unreachable from zwaves JNI; all inputs are JVM byte arrays; same sapling-crypto lock constraint as RUSTSEC-2022-0011" },
+  { id = "RUSTSEC-2022-0004", reason = "JSON parsing code path unreachable from groth16 JNI; all inputs are JVM byte arrays; same sapling-crypto lock constraint as RUSTSEC-2022-0011" },
 
   # ─────────────────────────────────────────────────────────────────────────
   # RUSTSEC-2020-0071  time 0.1.45 — potential segfault in localtime_r
@@ -79,7 +79,7 @@ ignore = [
 ]
 
 [licenses]
-# All licenses in the zwaves Rust dep tree have been reviewed.
+# All licenses in the groth16 Rust dep tree have been reviewed.
 allow = [
   "MIT",
   "Apache-2.0",

@@ -271,7 +271,6 @@ export const Carousel: React.FC<CarouselProps> = ({
           ))}
         </Track>
       </CarouselWrapper>
-
       {showControls && items.length > itemsPerView && (
         <Controls>
           <NavButton onClick={prev} $disabled={!loop && currentIndex === 0}>
@@ -282,7 +281,6 @@ export const Carousel: React.FC<CarouselProps> = ({
           </NavButton>
         </Controls>
       )}
-
       {showIndicators && items.length > itemsPerView && (
         <Indicators>
           {Array.from({ length: maxIndex + 1 }, (_, i) => i).map((slideIndex) => (

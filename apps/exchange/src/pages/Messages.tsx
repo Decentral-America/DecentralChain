@@ -3,7 +3,7 @@
  * Internal messaging and notifications
  */
 
-import { Mail, MailOutline } from '@mui/icons-material';
+import { Mail, MailOutlined } from '@mui/icons-material';
 import { Avatar, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 
 export const Messages = () => {
@@ -36,13 +36,19 @@ export const Messages = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+      <Stack
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+        }}
+      >
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Messages
         </Typography>
         <Chip label="20 Unread" color="error" size="small" />
       </Stack>
-
       <Stack spacing={2}>
         {messages.map((message) => (
           <Paper
@@ -67,21 +73,49 @@ export const Messages = () => {
                   width: 48,
                 }}
               >
-                {message.unread ? <Mail /> : <MailOutline />}
+                {message.unread ? <Mail /> : <MailOutlined />}
               </Avatar>
               <Stack sx={{ flex: 1 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="subtitle1" fontWeight={700}>
+                <Stack
+                  direction="row"
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 700,
+                    }}
+                  >
                     {message.from}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     {message.time}
                   </Typography>
                 </Stack>
-                <Typography variant="body2" fontWeight={600} sx={{ mt: 0.5 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    mt: 0.5,
+                  }}
+                >
                   {message.subject}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 0.5,
+                  }}
+                >
                   {message.preview}
                 </Typography>
               </Stack>

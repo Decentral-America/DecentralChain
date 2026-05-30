@@ -5,7 +5,7 @@ use super::{
 };
 use crate::error::Error;
 use crate::models::{DataEntryTypeValue, Order, OrderMeta};
-use crate::proto::waves::{
+use crate::proto::dcc::{
     data_entry::Value as DataValue,
     events::{
         transaction_metadata::{
@@ -22,7 +22,7 @@ use crate::proto::waves::{
 use crate::utils::{
     epoch_ms_to_naivedatetime, escape_unicode_null, into_base58, into_prefixed_base64,
 };
-use crate::waves::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
+use crate::chain::{extract_asset_id, Address, ChainId, PublicKeyHash, DCC_ID};
 use serde_json::json;
 
 const WRONG_META_VAR: &str = "wrong meta variant";
@@ -137,7 +137,7 @@ impl
         let sender = into_base58(&meta.sender_address);
 
         let tx = match tx {
-            Transaction::WavesTransaction(tx) => tx,
+            Transaction::DccTransaction(tx) => tx,
             Transaction::EthereumTransaction(tx) => {
                 let Some(Metadata::Ethereum(meta)) = &meta.metadata else {
                     return Err(Error::InconsistentDataError(WRONG_META_VAR.into()));
@@ -910,8 +910,8 @@ mod tests {
 
     #[test]
     fn try_from_missing_transaction_data_returns_err() {
-        use crate::proto::waves::events::TransactionMetadata;
-        use crate::proto::waves::SignedTransaction;
+        use crate::proto::dcc::events::TransactionMetadata;
+        use crate::proto::dcc::SignedTransaction;
         let stx = SignedTransaction {
             transaction: None,
             proofs: vec![],

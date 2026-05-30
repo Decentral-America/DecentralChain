@@ -418,19 +418,38 @@ export const Leasing = () => {
       <Stack spacing={4}>
         <Stack
           direction={{ md: 'row', xs: 'column' }}
-          justifyContent="space-between"
-          alignItems={{ md: 'center', xs: 'flex-start' }}
           spacing={2}
+          sx={{
+            alignItems: { md: 'center', xs: 'flex-start' },
+            justifyContent: 'space-between',
+          }}
         >
           <div>
-            <Typography variant="h4" fontWeight={600} gutterBottom>
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               Leasing
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               Delegate your DCC to trusted nodes, monitor active leases, and cancel them any time.
             </Typography>
           </div>
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
             <Tooltip title="Refresh leasing data">
               <span>
                 <IconButton color="primary" onClick={handleRefresh} disabled={isRefreshing}>
@@ -457,7 +476,13 @@ export const Leasing = () => {
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -473,13 +498,28 @@ export const Leasing = () => {
                     <ShieldOutlined />
                   </Box>
                   <div>
-                    <Typography variant="overline" color="text.secondary">
+                    <Typography
+                      variant="overline"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Available Balance
                     </Typography>
-                    <Typography variant="h5" fontWeight={600}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {formatDcc(availableInDcc, 4)} DCC
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Ready for leasing
                     </Typography>
                   </div>
@@ -496,7 +536,13 @@ export const Leasing = () => {
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -512,13 +558,28 @@ export const Leasing = () => {
                     <TrendingUpOutlined />
                   </Box>
                   <div>
-                    <Typography variant="overline" color="text.secondary">
+                    <Typography
+                      variant="overline"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Currently Leased
                     </Typography>
-                    <Typography variant="h5" fontWeight={600}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {formatDcc(leasedInDcc, 4)} DCC
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Actively earning
                     </Typography>
                   </div>
@@ -535,7 +596,13 @@ export const Leasing = () => {
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -551,13 +618,28 @@ export const Leasing = () => {
                     <ShieldOutlined />
                   </Box>
                   <div>
-                    <Typography variant="overline" color="text.secondary">
+                    <Typography
+                      variant="overline"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Total Balance
                     </Typography>
-                    <Typography variant="h5" fontWeight={600}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {formatDcc(balanceInDcc + leasedInDcc, 4)} DCC
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Available + Leased
                     </Typography>
                   </div>
@@ -574,7 +656,13 @@ export const Leasing = () => {
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -590,10 +678,20 @@ export const Leasing = () => {
                     <HistoryOutlined />
                   </Box>
                   <div>
-                    <Typography variant="overline" color="text.secondary">
+                    <Typography
+                      variant="overline"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Leasing Records
                     </Typography>
-                    <Typography variant="h5" fontWeight={600}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {allCount}
                     </Typography>
                   </div>
@@ -659,8 +757,10 @@ export const Leasing = () => {
                     <Stack
                       direction="row"
                       spacing={1}
-                      alignItems="center"
-                      justifyContent="space-between"
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
                     >
                       <TextField
                         label="Amount (DCC)"
@@ -678,7 +778,9 @@ export const Leasing = () => {
                         helperText={amountError ?? 'Specify the amount you want to lease'}
                         fullWidth
                         disabled={leaseMutation.isPending || initialLoading}
-                        inputProps={{ min: 0, step: 0.00000001 }}
+                        slotProps={{
+                          htmlInput: { min: 0, step: 0.00000001 },
+                        }}
                       />
                       <Button
                         variant="outlined"
@@ -689,19 +791,35 @@ export const Leasing = () => {
                         MAX
                       </Button>
                     </Stack>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Available: {formatDcc(balanceInDcc, 8)} DCC · Network fee {LEASE_FEE_DCC} DCC
                     </Typography>
                   </Stack>
 
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      alignItems: 'center',
+                    }}
+                  >
                     <Chip
                       label="Fixed fee 0.001 DCC"
                       size="small"
                       color="primary"
                       variant="outlined"
                     />
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Funds remain in your control and can be unlocked anytime.
                     </Typography>
                   </Stack>
@@ -747,12 +865,27 @@ export const Leasing = () => {
           <Divider />
           <CardContent>
             {isHistoryLoading && !recentTxs ? (
-              <Stack alignItems="center" py={6}>
+              <Stack
+                sx={{
+                  alignItems: 'center',
+                  py: 6,
+                }}
+              >
                 <CircularProgress />
               </Stack>
             ) : tableRows.length === 0 ? (
-              <Box py={6} textAlign="center">
-                <Typography variant="body2" color="text.secondary">
+              <Box
+                sx={{
+                  py: 6,
+                  textAlign: 'center',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   No leasing activity yet. Start a lease to see it appear here.
                 </Typography>
               </Box>
@@ -781,24 +914,44 @@ export const Leasing = () => {
                     return (
                       <TableRow hover key={lease.id}>
                         <TableCell>
-                          <Typography variant="body2" fontWeight={600}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             {lease.type.replace('-', ' ')}
                           </Typography>
                         </TableCell>
                         <TableCell>
                           <Tooltip title={lease.recipient || 'Unknown'}>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {shortenAddress(lease.recipient)}
                             </Typography>
                           </Tooltip>
                         </TableCell>
                         <TableCell align="right">
-                          <Typography variant="body2" fontWeight={600}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             {formatDcc(lease.amount / DCC_DECIMALS, 4)} DCC
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
                             {new Date(lease.timestamp).toLocaleString(undefined, {
                               day: 'numeric',
                               hour: '2-digit',
@@ -834,7 +987,12 @@ export const Leasing = () => {
                               Cancel
                             </Button>
                           ) : (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               —
                             </Typography>
                           )}
@@ -848,7 +1006,6 @@ export const Leasing = () => {
           </CardContent>
         </Card>
       </Stack>
-
       <ConfirmDialog
         open={!!cancelLeaseId}
         onClose={() => setCancelLeaseId(null)}

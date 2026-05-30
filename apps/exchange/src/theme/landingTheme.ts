@@ -8,12 +8,6 @@ export const landingTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        containedPrimary: {
-          '&:hover': {
-            boxShadow: '0 6px 16px rgba(79, 70, 229, 0.35)',
-          },
-          boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)',
-        },
         root: {
           borderRadius: '10px',
           fontWeight: 500,
@@ -24,6 +18,17 @@ export const landingTheme = createTheme({
           padding: '12px 24px',
         },
       },
+      variants: [
+        {
+          props: { color: 'primary', variant: 'contained' },
+          style: {
+            '&:hover': {
+              boxShadow: '0 6px 16px rgba(79, 70, 229, 0.35)',
+            },
+            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)',
+          },
+        },
+      ],
     },
     MuiCard: {
       styleOverrides: {

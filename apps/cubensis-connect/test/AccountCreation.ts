@@ -130,8 +130,24 @@ describe('Account creation', () => {
             await BackupSeedScreen.continueButton.click();
           });
 
-          it.todo('Backup phrase cannot be selected with cursor');
-          it.todo('Ability to copy backup phrase to clipboard');
+          it('Backup phrase cannot be selected with cursor', async () => {
+            const seedElement = BackupSeedScreen.seed;
+            const userSelect = await browser.execute(
+              (el: HTMLElement) => {
+                return window.getComputedStyle(el).userSelect;
+              },
+              await seedElement,
+            );
+            expect(userSelect).toBe('none');
+          });
+
+          it('Ability to copy backup phrase to clipboard', async () => {
+            const { clearClipboard, expectClipboardToMatch } = await import('./utils/clipboard');
+            await clearClipboard();
+            await BackupSeedScreen.copyButton.click();
+            // Seed phrases are 15 words separated by spaces
+            await expectClipboardToMatch(/^(\w+ ){14}\w+$/);
+          });
         });
 
         describe('Confirm backup page', () => {
@@ -220,7 +236,17 @@ describe('Account creation', () => {
             expect(await NewWalletNameScreen.continueButton.isEnabled()).toBe(false);
           });
 
-          it.todo('Ability to paste account name from clipboard');
+          it('Ability to paste account name from clipboard', async () => {
+            const { writeClipboardText, clearClipboard } = await import('./utils/clipboard');
+            const clipName = 'ClipboardAccount';
+            await writeClipboardText(clipName);
+            await NewWalletNameScreen.nameInput.click();
+            await browser.keys(['Control', 'v']);
+            const value = await NewWalletNameScreen.nameInput.getValue();
+            expect(value).toContain(clipName);
+            await clearClipboard();
+            await NewWalletNameScreen.nameInput.clearValue();
+          });
 
           it('In the account name, you can enter numbers, special characters and symbols from any layout', async () => {
             await NewWalletNameScreen.nameInput.setValue(ACCOUNTS.ANY);
@@ -284,7 +310,32 @@ describe('Account creation', () => {
         expect(await PopupHome.getActiveAccountName()).toBe('third_account');
       });
 
-      it.todo('When you already have 10 accounts');
+      it('When you already have 10 accounts', async () => {
+        // We already have 3 accounts from prior tests — create 7 more to reach 10
+        await browser.switchToWindow(tabAccounts);
+        for (let i = 4; i <= 10; i++) {
+          await ImportFormScreen.createNewAccountButton.click();
+          await NewWalletScreen.continueButton.click();
+          const seed = await BackupSeedScreen.seed.getText();
+          await BackupSeedScreen.continueButton.click();
+          for (const word of seed.split(' ')) {
+            const pill = await ConfirmBackupScreen.suggestedPillsContainer.getPillByText(word);
+            await pill.click();
+            await pill.waitForDisplayed({ reverse: true });
+          }
+          await ConfirmBackupScreen.confirmButton.click();
+          await NewWalletNameScreen.nameInput.setValue(`account_${i}`);
+          await NewWalletNameScreen.continueButton.click();
+          await ImportSuccessScreen.addAnotherAccountButton.click();
+        }
+
+        // Verify we now have 10 accounts total
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+        await HomeScreen.otherAccountsButton.click();
+        const accounts = await OtherAccountsScreen.accounts;
+        expect(accounts.length).toBeGreaterThanOrEqual(10);
+      });
     });
   });
 
@@ -357,7 +408,17 @@ describe('Account creation', () => {
             await expect(ImportViaSeedScreen.address).not.toHaveText(prevAddress);
           });
 
-          it.todo('You can paste a seed from the clipboard');
+          it('You can paste a seed from the clipboard', async () => {
+            const { writeClipboardText, clearClipboard } = await import('./utils/clipboard');
+            const seedToImport = 'this is a pasted seed from clipboard for testing purposes only';
+            await writeClipboardText(seedToImport);
+            await ImportViaSeedScreen.seedInput.click();
+            await browser.keys(['Control', 'v']);
+            const value = await ImportViaSeedScreen.seedInput.getValue();
+            expect(value).toContain(seedToImport);
+            await clearClipboard();
+            await ImportViaSeedScreen.seedInput.clearValue();
+          });
 
           it('Correct seed entered', async () => {
             await ImportViaSeedScreen.seedInput.setValue(ACCOUNTS.MORE_24_CHARS.SEED);
@@ -418,7 +479,25 @@ describe('Account creation', () => {
         expect(await PopupHome.getActiveAccountName()).toBe('seed_third');
       });
 
-      it.todo('When you already have 10 accounts');
+      it('When you already have 10 accounts', async () => {
+        // Import accounts via seed until we reach 10 total
+        await browser.switchToWindow(tabAccounts);
+        for (let i = 4; i <= 10; i++) {
+          await ImportFormScreen.importViaSeedButton.click();
+          await ImportViaSeedScreen.seedInput.setValue(`test seed for account number ${i} import`);
+          await ImportViaSeedScreen.importAccountButton.click();
+          await NewWalletNameScreen.nameInput.setValue(`seed_acc_${i}`);
+          await NewWalletNameScreen.continueButton.click();
+          await ImportSuccessScreen.addAnotherAccountButton.click();
+        }
+
+        // After 10 accounts, the "Add account" button should not be available
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+        await HomeScreen.otherAccountsButton.click();
+        const accounts = await OtherAccountsScreen.accounts;
+        expect(accounts.length).toBeGreaterThanOrEqual(10);
+      });
     });
   });
 

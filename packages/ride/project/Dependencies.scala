@@ -7,7 +7,7 @@ import scalapb.compiler.Version.scalapbVersion
 // Only includes dependencies needed by lang/ and repl/ subprojects.
 object Dependencies {
 
-  val gProtoVersion = "4.34.1"
+  val gProtoVersion = "4.35.0"
   val gProto        = "com.google.protobuf" % "protobuf-java" % gProtoVersion
 
   val overrides = Def.setting(
@@ -27,11 +27,11 @@ object Dependencies {
 
   val googleGuava = "com.google.guava"  % "guava"           % "33.6.0-jre"
   val logback     = "ch.qos.logback"    % "logback-classic" % "1.5.32"
-  val curve25519  = "io.decentralchain" % "curve25519-java" % "0.6.6"
+  val curve25519  = "io.decentralchain" % "curve25519"      % "0.6.6"
 
   val scalaLogging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.6"
 
-  val scalaTest   = "org.scalatest" %% "scalatest" % "3.2.19" % Test
+  val scalaTest   = "org.scalatest" %% "scalatest" % "3.2.20" % Test
   val scalaJsTest = Def.setting("com.lihaoyi" %%% "utest" % "0.9.5" % Test)
 
   private def sttp3Module(module: String) = "com.softwaremill.sttp.client3" %% module % "3.11.0"
@@ -78,7 +78,7 @@ object Dependencies {
 
   lazy val test: Seq[ModuleID] = scalaTest +: Seq(
     logback,
-    "org.scalatestplus" %% "scalacheck-1-18" % "3.2.19.0",
+    "org.scalatestplus" %% "scalacheck-1-19" % "3.2.20.0",
     "org.scalacheck"    %% "scalacheck"      % "1.19.0",
     "org.mockito"        % "mockito-core"    % "5.23.0",
     "org.scalamock"     %% "scalamock"       % "7.5.5"

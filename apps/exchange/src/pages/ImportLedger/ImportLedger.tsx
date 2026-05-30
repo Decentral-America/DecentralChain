@@ -24,7 +24,13 @@ export const ImportLedger: React.FC = () => {
         }}
       >
         <Container maxWidth="xl" sx={{ py: 8 }}>
-          <Grid container spacing={6} alignItems="center">
+          <Grid
+            container
+            spacing={6}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
             {/* Left Column - Branding & Features */}
             <Grid
               size={{
@@ -49,9 +55,9 @@ export const ImportLedger: React.FC = () => {
                 {/* Headline */}
                 <Typography
                   variant="h2"
-                  fontWeight={800}
                   sx={{
                     fontSize: { md: '2.5rem', xs: '2rem' },
+                    fontWeight: 800,
                     lineHeight: 1.2,
                     mb: 2,
                   }}
@@ -59,14 +65,27 @@ export const ImportLedger: React.FC = () => {
                   Maximum security with Ledger
                 </Typography>
 
-                <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: 'text.secondary',
+                    fontSize: 18,
+                    mb: 4,
+                  }}
+                >
                   Import your wallet using a Ledger hardware device for bank-grade security. Your
                   private keys never leave the device.
                 </Typography>
 
                 {/* Feature highlights */}
                 <Stack spacing={2.5}>
-                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box
                       sx={{
                         alignItems: 'center',
@@ -83,17 +102,33 @@ export const ImportLedger: React.FC = () => {
                       <SecurityIcon sx={{ fontSize: 20 }} />
                     </Box>
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         Hardware Security
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         Private keys stored in secure element chip, never exposed to the internet or
                         your computer.
                       </Typography>
                     </Box>
                   </Stack>
 
-                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box
                       sx={{
                         alignItems: 'center',
@@ -110,17 +145,33 @@ export const ImportLedger: React.FC = () => {
                       <UsbIcon sx={{ fontSize: 20 }} />
                     </Box>
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         Easy Connection
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         Simply connect your Ledger device via USB and follow the on-screen
                         instructions.
                       </Typography>
                     </Box>
                   </Stack>
 
-                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box
                       sx={{
                         alignItems: 'center',
@@ -137,10 +188,20 @@ export const ImportLedger: React.FC = () => {
                       <VerifiedUserIcon sx={{ fontSize: 20 }} />
                     </Box>
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         Transaction Approval
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         Review and approve every transaction directly on your Ledger device for
                         complete control.
                       </Typography>
@@ -159,16 +220,39 @@ export const ImportLedger: React.FC = () => {
                     p: 2,
                   }}
                 >
-                  <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 1,
+                    }}
+                  >
                     Before you start:
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      mb: 0.5,
+                    }}
+                  >
                     • Connect your Ledger device via USB
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      mb: 0.5,
+                    }}
+                  >
                     • Unlock it with your PIN
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     • Open the DecentralChain app on your device
                   </Typography>
                 </Box>

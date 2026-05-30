@@ -32,6 +32,7 @@ const SPENDING_LIMIT = '1';
 describe('Settings', () => {
   let tabKeeper: string;
 
+  // biome-ignore lint/correctness/noUnusedVariables: used in nested describe blocks (Session Timeout)
   async function performLogin(password: string) {
     await LoginScreen.passwordInput.setValue(password);
     await LoginScreen.enterButton.click();
@@ -96,7 +97,15 @@ describe('Settings', () => {
         await NetworkSettingsScreen.nodeAddress.clearValue();
         await expect(NetworkSettingsScreen.nodeAddress).not.toHaveValue(nodeUrl);
       });
-      it.todo('Can be copied');
+      it('Can be copied', async () => {
+        const { clearClipboard, expectClipboardToMatch } = await import('./utils/clipboard');
+        await clearClipboard();
+        // Click the node URL field to copy it
+        await NetworkSettingsScreen.nodeAddress.click();
+        await browser.keys(['Control', 'a']);
+        await browser.keys(['Control', 'c']);
+        await expectClipboardToMatch(/^https?:\/\/.+/);
+      });
     });
 
     describe('Matcher URL', () => {
@@ -107,7 +116,14 @@ describe('Settings', () => {
         await NetworkSettingsScreen.matcherAddress.clearValue();
         expect(NetworkSettingsScreen.matcherAddress).not.toHaveValue(matcherUrl);
       });
-      it.todo('Can be copied');
+      it('Can be copied', async () => {
+        const { clearClipboard, expectClipboardToMatch } = await import('./utils/clipboard');
+        await clearClipboard();
+        await NetworkSettingsScreen.matcherAddress.click();
+        await browser.keys(['Control', 'a']);
+        await browser.keys(['Control', 'c']);
+        await expectClipboardToMatch(/^https?:\/\/.+/);
+      });
     });
 
     describe('Set default', () => {
@@ -125,6 +141,8 @@ describe('Settings', () => {
     });
 
     afterAll(async () => {
+      await browser.openKeeperPopup();
+      await Settings.clearCustomList();
       await TopMenu.backButton.click();
     });
 
@@ -176,248 +194,452 @@ describe('Settings', () => {
       checkChangingAutoLimitsInResourceSettings();
 
       describe('Verification of transactions with auto-limits', () => {
-        it.todo('Transfer');
-        it.todo('MassTransfer');
-        it.todo('Data');
-        it.todo('InvokeScript');
+        beforeAll(async () => {
+          // Enable auto-limits for the first whitelisted origin
+          await (await PermissionControlSettingsScreen.permissionItems)[0].detailsIcon.click();
+          await PermissionControlSettingsScreen.permissionDetailsModal.root.waitForDisplayed();
+          await PermissionControlSettingsScreen.permissionDetailsModal.setResolutionTime(
+            'For 1 hour',
+          );
+          await PermissionControlSettingsScreen.permissionDetailsModal.spendingLimitInput.setValue(
+            SPENDING_LIMIT,
+          );
+          await PermissionControlSettingsScreen.permissionDetailsModal.saveButton.click();
+        });
+
+        afterAll(async () => {
+          // Disable auto-limits
+          await (await PermissionControlSettingsScreen.permissionItems)[0].detailsIcon.click();
+          await PermissionControlSettingsScreen.permissionDetailsModal.root.waitForDisplayed();
+          await PermissionControlSettingsScreen.permissionDetailsModal.setResolutionTime(
+            "Don't automatically sign",
+          );
+          await PermissionControlSettingsScreen.permissionDetailsModal.saveButton.click();
+        });
+
+        it('Transfer', async () => {
+          const origin = WHITELIST[0];
+          await browser.navigateTo(`https://${origin}`);
+          await ContentScript.waitForCubensisConnect();
+
+          const result = await browser.executeAsync((done: (result: unknown) => void) => {
+            CubensisConnect.signAndPublishTransaction({
+              data: {
+                amount: { assetId: 'DCC', tokens: '0.001' },
+                fee: { assetId: 'DCC', tokens: '0.001' },
+                recipient: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
+              },
+              type: 4,
+            })
+              .then((tx: unknown) => done(tx))
+              .catch((err: Error) => done({ error: err.message }));
+          });
+
+          // Auto-signed: should return a transaction object (not trigger a popup)
+          expect(result).toHaveProperty('id');
+          await browser.openKeeperPopup();
+        });
+
+        it('MassTransfer', async () => {
+          const origin = WHITELIST[0];
+          await browser.navigateTo(`https://${origin}`);
+          await ContentScript.waitForCubensisConnect();
+
+          const result = await browser.executeAsync((done: (result: unknown) => void) => {
+            CubensisConnect.signAndPublishTransaction({
+              data: {
+                fee: { assetId: 'DCC', tokens: '0.002' },
+                totalAmount: { assetId: 'DCC' },
+                transfers: [{ amount: 1000, recipient: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW' }],
+              },
+              type: 11,
+            })
+              .then((tx: unknown) => done(tx))
+              .catch((err: Error) => done({ error: err.message }));
+          });
+
+          expect(result).toHaveProperty('id');
+          await browser.openKeeperPopup();
+        });
+
+        it('Data', async () => {
+          const origin = WHITELIST[0];
+          await browser.navigateTo(`https://${origin}`);
+          await ContentScript.waitForCubensisConnect();
+
+          const result = await browser.executeAsync((done: (result: unknown) => void) => {
+            CubensisConnect.signAndPublishTransaction({
+              data: {
+                data: [{ key: 'test', type: 'string', value: 'hello' }],
+                fee: { assetId: 'DCC', tokens: '0.001' },
+              },
+              type: 12,
+            })
+              .then((tx: unknown) => done(tx))
+              .catch((err: Error) => done({ error: err.message }));
+          });
+
+          expect(result).toHaveProperty('id');
+          await browser.openKeeperPopup();
+        });
+
+        it('InvokeScript', async () => {
+          const origin = WHITELIST[0];
+          await browser.navigateTo(`https://${origin}`);
+          await ContentScript.waitForCubensisConnect();
+
+          const result = await browser.executeAsync((done: (result: unknown) => void) => {
+            CubensisConnect.signAndPublishTransaction({
+              data: {
+                call: { args: [], function: 'test' },
+                dApp: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
+                fee: { assetId: 'DCC', tokens: '0.005' },
+                payment: [],
+              },
+              type: 16,
+            })
+              .then((tx: unknown) => done(tx))
+              .catch((err: Error) => done({ error: err.message }));
+          });
+
+          expect(result).toHaveProperty('id');
+          await browser.openKeeperPopup();
+        });
+      });
+    });
+    async function publicStateFromOrigin(origin: string) {
+      // this requests permission first
+      const permissionRequest = () => {
+        window.result = CubensisConnect.publicState();
+      };
+
+      await browser.navigateTo(`https://${origin}`);
+      await ContentScript.waitForCubensisConnect();
+      await browser.execute(permissionRequest);
+    }
+
+    describe('Adding', () => {
+      it('Origin added to custom list', async () => {
+        const origin = CUSTOMLIST[0]!;
+
+        const { waitForNewWindows } = await Windows.captureNewWindows();
+        await publicStateFromOrigin(origin);
+        const [messageWindow] = await waitForNewWindows(1);
+        await browser.switchToWindow(messageWindow);
+        await browser.refresh();
+
+        await AuthMessageScreen.authButton.click();
+        await expect(FinalTransactionScreen.root).toBeDisplayed();
+        await FinalTransactionScreen.closeButton.click();
+        await Windows.waitForWindowToClose(messageWindow);
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+
+        await TopMenu.settingsButton.click();
+        await SettingsMenuScreen.permissionsSectionLink.click();
+
+        expect(
+          (await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[0]!)).root,
+        ).toBeDisplayed();
+      });
+
+      it('Origin added to custom list with auto-limits', async () => {
+        const origin = CUSTOMLIST[1]!;
+
+        const { waitForNewWindows } = await Windows.captureNewWindows();
+        await publicStateFromOrigin(origin);
+        const [messageWindow] = await waitForNewWindows(1);
+        await browser.switchToWindow(messageWindow);
+        await browser.refresh();
+
+        await AuthMessageScreen.permissionDetailsButton.click();
+        await AuthMessageScreen.setResolutionTime('For 1 hour');
+        await AuthMessageScreen.spendingLimitInput.setValue(SPENDING_LIMIT);
+        await AuthMessageScreen.authButton.click();
+
+        await FinalTransactionScreen.closeButton.click();
+        await Windows.waitForWindowToClose(messageWindow);
+        await browser.switchToWindow(tabKeeper);
+        await browser.openKeeperPopup();
+
+        await TopMenu.settingsButton.click();
+        await SettingsMenuScreen.permissionsSectionLink.click();
+
+        await expect(
+          (await PermissionControlSettingsScreen.getPermissionByOrigin(origin)).status,
+        ).toHaveText('Approved+ Automatic signing');
       });
     });
 
-    describe('Custom list', () => {
-      async function publicStateFromOrigin(origin: string) {
-        // this requests permission first
-        const permissionRequest = () => {
-          window.result = CubensisConnect.publicState();
-        };
+    describe('Blocking', () => {
+      afterAll(async () => {
+        await browser.openKeeperPopup();
 
+        await TopMenu.settingsButton.click();
+        await SettingsMenuScreen.permissionsSectionLink.click();
+      });
+
+      it('Block all messages from origin in custom list', async () => {
+        const firstOrigin = (await PermissionControlSettingsScreen.permissionItems)[1];
+        const origin = await firstOrigin.origin.getText();
+        await firstOrigin.enableCheckbox.click();
+        await publicStateFromOrigin(origin);
+        const response = await browser.executeAsync((done: (result: unknown) => void) => {
+          (window.result as Promise<unknown>).then(done, done);
+        });
+        expect(response).toStrictEqual({
+          code: '12',
+          data: null,
+          message: 'Api rejected by user',
+        });
+      });
+    });
+
+    describe('Removing', () => {
+      afterAll(async () => {
+        await browser.openKeeperPopup();
+
+        await TopMenu.settingsButton.click();
+        await SettingsMenuScreen.permissionsSectionLink.click();
+      });
+
+      it('After deletion, requests generate permission request', async () => {
+        const originToDelete =
+          await PermissionControlSettingsScreen.getPermissionByOrigin('decentralchain.io');
+        const origin = await originToDelete.origin.getText();
+        await originToDelete.detailsIcon.click();
+        await PermissionControlSettingsScreen.permissionDetailsModal.deleteButton.click();
+        const { waitForNewWindows } = await Windows.captureNewWindows();
+        await publicStateFromOrigin(origin);
+        const [messageWindow] = await waitForNewWindows(1);
+        await browser.switchToWindow(messageWindow);
+        await browser.refresh();
+
+        await CommonTransaction.rejectButton.click();
+        await FinalTransactionScreen.closeButton.click();
+
+        await Windows.waitForWindowToClose(messageWindow);
+        await browser.switchToWindow(tabKeeper);
+      });
+    });
+
+    checkChangingAutoLimitsInResourceSettings();
+
+    describe('Verification of transactions with auto-limits', () => {
+      beforeAll(async () => {
+        // Enable auto-limits for the first custom list origin
+        await (await PermissionControlSettingsScreen.permissionItems)[0].detailsIcon.click();
+        await PermissionControlSettingsScreen.permissionDetailsModal.root.waitForDisplayed();
+        await PermissionControlSettingsScreen.permissionDetailsModal.setResolutionTime(
+          'For 1 hour',
+        );
+        await PermissionControlSettingsScreen.permissionDetailsModal.spendingLimitInput.setValue(
+          SPENDING_LIMIT,
+        );
+        await PermissionControlSettingsScreen.permissionDetailsModal.saveButton.click();
+      });
+
+      afterAll(async () => {
+        await (await PermissionControlSettingsScreen.permissionItems)[0].detailsIcon.click();
+        await PermissionControlSettingsScreen.permissionDetailsModal.root.waitForDisplayed();
+        await PermissionControlSettingsScreen.permissionDetailsModal.setResolutionTime(
+          "Don't automatically sign",
+        );
+        await PermissionControlSettingsScreen.permissionDetailsModal.saveButton.click();
+      });
+
+      it('Transfer', async () => {
+        const origin = CUSTOMLIST[0];
         await browser.navigateTo(`https://${origin}`);
         await ContentScript.waitForCubensisConnect();
-        await browser.execute(permissionRequest);
-      }
 
-      afterAll(async () => {
+        const result = await browser.executeAsync((done: (result: unknown) => void) => {
+          CubensisConnect.signAndPublishTransaction({
+            data: {
+              amount: { assetId: 'DCC', tokens: '0.001' },
+              fee: { assetId: 'DCC', tokens: '0.001' },
+              recipient: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
+            },
+            type: 4,
+          })
+            .then((tx: unknown) => done(tx))
+            .catch((err: Error) => done({ error: err.message }));
+        });
+
+        expect(result).toHaveProperty('id');
         await browser.openKeeperPopup();
-        await Settings.clearCustomList();
       });
 
-      describe('Adding', () => {
-        it('Origin added to custom list', async () => {
-          const origin = CUSTOMLIST[0]!;
+      it('MassTransfer', async () => {
+        const origin = CUSTOMLIST[0];
+        await browser.navigateTo(`https://${origin}`);
+        await ContentScript.waitForCubensisConnect();
 
-          const { waitForNewWindows } = await Windows.captureNewWindows();
-          await publicStateFromOrigin(origin);
-          const [messageWindow] = await waitForNewWindows(1);
-          await browser.switchToWindow(messageWindow);
-          await browser.refresh();
-
-          await AuthMessageScreen.authButton.click();
-          await expect(FinalTransactionScreen.root).toBeDisplayed();
-          await FinalTransactionScreen.closeButton.click();
-          await Windows.waitForWindowToClose(messageWindow);
-          await browser.switchToWindow(tabKeeper);
-          await browser.openKeeperPopup();
-
-          await TopMenu.settingsButton.click();
-          await SettingsMenuScreen.permissionsSectionLink.click();
-
-          expect(
-            (await PermissionControlSettingsScreen.getPermissionByOrigin(CUSTOMLIST[0]!)).root,
-          ).toBeDisplayed();
+        const result = await browser.executeAsync((done: (result: unknown) => void) => {
+          CubensisConnect.signAndPublishTransaction({
+            data: {
+              fee: { assetId: 'DCC', tokens: '0.002' },
+              totalAmount: { assetId: 'DCC' },
+              transfers: [{ amount: 1000, recipient: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW' }],
+            },
+            type: 11,
+          })
+            .then((tx: unknown) => done(tx))
+            .catch((err: Error) => done({ error: err.message }));
         });
 
-        it('Origin added to custom list with auto-limits', async () => {
-          const origin = CUSTOMLIST[1]!;
-
-          const { waitForNewWindows } = await Windows.captureNewWindows();
-          await publicStateFromOrigin(origin);
-          const [messageWindow] = await waitForNewWindows(1);
-          await browser.switchToWindow(messageWindow);
-          await browser.refresh();
-
-          await AuthMessageScreen.permissionDetailsButton.click();
-          await AuthMessageScreen.setResolutionTime('For 1 hour');
-          await AuthMessageScreen.spendingLimitInput.setValue(SPENDING_LIMIT);
-          await AuthMessageScreen.authButton.click();
-
-          await FinalTransactionScreen.closeButton.click();
-          await Windows.waitForWindowToClose(messageWindow);
-          await browser.switchToWindow(tabKeeper);
-          await browser.openKeeperPopup();
-
-          await TopMenu.settingsButton.click();
-          await SettingsMenuScreen.permissionsSectionLink.click();
-
-          await expect(
-            (await PermissionControlSettingsScreen.getPermissionByOrigin(origin)).status,
-          ).toHaveText('Approved+ Automatic signing');
-        });
+        expect(result).toHaveProperty('id');
+        await browser.openKeeperPopup();
       });
 
-      describe('Blocking', () => {
-        afterAll(async () => {
-          await browser.openKeeperPopup();
+      it('Data', async () => {
+        const origin = CUSTOMLIST[0];
+        await browser.navigateTo(`https://${origin}`);
+        await ContentScript.waitForCubensisConnect();
 
-          await TopMenu.settingsButton.click();
-          await SettingsMenuScreen.permissionsSectionLink.click();
+        const result = await browser.executeAsync((done: (result: unknown) => void) => {
+          CubensisConnect.signAndPublishTransaction({
+            data: {
+              data: [{ key: 'test', type: 'string', value: 'hello' }],
+              fee: { assetId: 'DCC', tokens: '0.001' },
+            },
+            type: 12,
+          })
+            .then((tx: unknown) => done(tx))
+            .catch((err: Error) => done({ error: err.message }));
         });
 
-        it('Block all messages from origin in custom list', async () => {
-          const firstOrigin = (await PermissionControlSettingsScreen.permissionItems)[1];
-          const origin = await firstOrigin.origin.getText();
-          await firstOrigin.enableCheckbox.click();
-          await publicStateFromOrigin(origin);
-          const response = await browser.executeAsync((done: (result: unknown) => void) => {
-            (window.result as Promise<unknown>).then(done, done);
-          });
-          expect(response).toStrictEqual({
-            code: '12',
-            data: null,
-            message: 'Api rejected by user',
-          });
-        });
+        expect(result).toHaveProperty('id');
+        await browser.openKeeperPopup();
       });
 
-      describe('Removing', () => {
-        afterAll(async () => {
-          await browser.openKeeperPopup();
+      it('InvokeScript', async () => {
+        const origin = CUSTOMLIST[0];
+        await browser.navigateTo(`https://${origin}`);
+        await ContentScript.waitForCubensisConnect();
 
-          await TopMenu.settingsButton.click();
-          await SettingsMenuScreen.permissionsSectionLink.click();
+        const result = await browser.executeAsync((done: (result: unknown) => void) => {
+          CubensisConnect.signAndPublishTransaction({
+            data: {
+              call: { args: [], function: 'test' },
+              dApp: '3MsX9C2MzzxE4ySF5aYcJoaiPfkyxZMg4cW',
+              fee: { assetId: 'DCC', tokens: '0.005' },
+              payment: [],
+            },
+            type: 16,
+          })
+            .then((tx: unknown) => done(tx))
+            .catch((err: Error) => done({ error: err.message }));
         });
 
-        it('After deletion, requests generate permission request', async () => {
-          const originToDelete =
-            await PermissionControlSettingsScreen.getPermissionByOrigin('decentralchain.io');
-          const origin = await originToDelete.origin.getText();
-          await originToDelete.detailsIcon.click();
-          await PermissionControlSettingsScreen.permissionDetailsModal.deleteButton.click();
-          const { waitForNewWindows } = await Windows.captureNewWindows();
-          await publicStateFromOrigin(origin);
-          const [messageWindow] = await waitForNewWindows(1);
-          await browser.switchToWindow(messageWindow);
-          await browser.refresh();
-
-          await CommonTransaction.rejectButton.click();
-          await FinalTransactionScreen.closeButton.click();
-
-          await Windows.waitForWindowToClose(messageWindow);
-          await browser.switchToWindow(tabKeeper);
-        });
-      });
-
-      checkChangingAutoLimitsInResourceSettings();
-
-      describe('Verification of transactions with auto-limits', () => {
-        it.todo('Transfer');
-        it.todo('MassTransfer');
-        it.todo('Data');
-        it.todo('InvokeScript');
+        expect(result).toHaveProperty('id');
+        await browser.openKeeperPopup();
       });
     });
   });
+});
 
-  describe('General', () => {
-    beforeAll(async () => {
-      await SettingsMenuScreen.generalSectionLink.click();
-    });
-
-    afterAll(async () => {
-      await TopMenu.backButton.click();
-    });
-
-    describe('Session Timeout', () => {
-      afterEach(async () => {
-        await performLogin(DEFAULT_PASSWORD);
-      });
-
-      it('Logout after "Browser timeout"', async () => {
-        await browser.openKeeperPopup();
-        await Settings.setSessionTimeout('Browser timeout');
-
-        await waitForExpect(async () => {
-          await expect(LoginScreen.root).toBeDisplayed();
-        }, 120 * 1000);
-      });
-    });
+describe('General', () => {
+  beforeAll(async () => {
+    await SettingsMenuScreen.generalSectionLink.click();
   });
 
-  describe('Root', () => {
-    describe('Auto-click protection', () => {
-      beforeAll(async () => {
-        await expect(SettingsMenuScreen.root).toBeDisplayed();
-      });
+  afterAll(async () => {
+    await TopMenu.backButton.click();
+  });
 
-      it('Can be enabled', async () => {
-        await SettingsMenuScreen.clickProtectionButton.click();
-        await expect(SettingsMenuScreen.clickProtectionButton).toHaveAttr('data-teston', 'true');
-        await expect(SettingsMenuScreen.clickProtectionStatus).toHaveText('Enabled');
-      });
-
-      it('Can be disabled', async () => {
-        await SettingsMenuScreen.clickProtectionButton.click();
-        await expect(SettingsMenuScreen.clickProtectionButton).toHaveAttr('data-teston', 'false');
-        await expect(SettingsMenuScreen.clickProtectionStatus).toHaveText('Disabled');
-      });
-
-      it('Display tooltip', async () => {
-        await SettingsMenuScreen.clickProtectionIcon.moveTo();
-        await expect(SettingsMenuScreen.helpTooltip).toHaveText(
-          'Protect yourself from Clicker Trojans threats',
-        );
-      });
+  describe('Session Timeout', () => {
+    afterEach(async () => {
+      await performLogin(DEFAULT_PASSWORD);
     });
 
-    describe('Logout', () => {
-      afterAll(async () => {
-        await performLogin(DEFAULT_PASSWORD);
-        await TopMenu.settingsButton.click();
-      });
+    it('Logout after "Browser timeout"', async () => {
+      await browser.openKeeperPopup();
+      await Settings.setSessionTimeout('Browser timeout');
 
-      it('Exit to the login screen', async () => {
-        await SettingsMenuScreen.logoutButton.click();
+      await waitForExpect(async () => {
         await expect(LoginScreen.root).toBeDisplayed();
-      });
+      }, 120 * 1000);
+    });
+  });
+});
+
+describe('Root', () => {
+  describe('Auto-click protection', () => {
+    beforeAll(async () => {
+      await expect(SettingsMenuScreen.root).toBeDisplayed();
     });
 
-    describe('Delete accounts', () => {
-      it('Account deletion warning displays', async () => {
-        await SettingsMenuScreen.deleteAccountsButton.click();
-        await expect(ConfirmDeleteAccountsScreen.root).toBeDisplayed();
-      });
+    it('Can be enabled', async () => {
+      await SettingsMenuScreen.clickProtectionButton.click();
+      await expect(SettingsMenuScreen.clickProtectionButton).toHaveAttr('data-teston', 'true');
+      await expect(SettingsMenuScreen.clickProtectionStatus).toHaveText('Enabled');
+    });
 
-      it('Clicking "Back" button cancels the deletion', async () => {
-        await TopMenu.backButton.click();
-        await expect(SettingsMenuScreen.root).toBeDisplayed();
-      });
+    it('Can be disabled', async () => {
+      await SettingsMenuScreen.clickProtectionButton.click();
+      await expect(SettingsMenuScreen.clickProtectionButton).toHaveAttr('data-teston', 'false');
+      await expect(SettingsMenuScreen.clickProtectionStatus).toHaveText('Disabled');
+    });
 
-      it('Clicking "Cancel" button cancels the deletion', async () => {
-        await SettingsMenuScreen.deleteAccountsButton.click();
-        await ConfirmDeleteAccountsScreen.cancelButton.click();
-        await expect(SettingsMenuScreen.root).toBeDisplayed();
-      });
+    it('Display tooltip', async () => {
+      await SettingsMenuScreen.clickProtectionIcon.moveTo();
+      await expect(SettingsMenuScreen.helpTooltip).toHaveText(
+        'Protect yourself from Clicker Trojans threats',
+      );
+    });
+  });
 
-      it('"Delete all" button is disabled', async () => {
-        await SettingsMenuScreen.deleteAccountsButton.click();
-        await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeDisabled();
-      });
+  describe('Logout', () => {
+    afterAll(async () => {
+      await performLogin(DEFAULT_PASSWORD);
+      await TopMenu.settingsButton.click();
+    });
 
-      it('Wrong confirmation phrase displays error', async () => {
-        await ConfirmDeleteAccountsScreen.confirmPhraseInput.setValue('delete all accounts');
-        await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeDisabled();
-        await expect(ConfirmDeleteAccountsScreen.confirmPhraseError).toHaveText(
-          'The phrase is entered incorrectly',
-        );
-      });
+    it('Exit to the login screen', async () => {
+      await SettingsMenuScreen.logoutButton.click();
+      await expect(LoginScreen.root).toBeDisplayed();
+    });
+  });
 
-      it('Correct confirmation phrase enables "Delete all" button', async () => {
-        await ConfirmDeleteAccountsScreen.confirmPhraseInput.setValue('DELETE ALL ACCOUNTS');
-        await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeEnabled();
-      });
+  describe('Delete accounts', () => {
+    it('Account deletion warning displays', async () => {
+      await SettingsMenuScreen.deleteAccountsButton.click();
+      await expect(ConfirmDeleteAccountsScreen.root).toBeDisplayed();
+    });
 
-      it('Clicking "Delete account" removes all accounts from current network', async () => {
-        await ConfirmDeleteAccountsScreen.deleteAllButton.click();
-        await expect(GetStartedScreen.root).toBeDisplayed();
-      });
+    it('Clicking "Back" button cancels the deletion', async () => {
+      await TopMenu.backButton.click();
+      await expect(SettingsMenuScreen.root).toBeDisplayed();
+    });
+
+    it('Clicking "Cancel" button cancels the deletion', async () => {
+      await SettingsMenuScreen.deleteAccountsButton.click();
+      await ConfirmDeleteAccountsScreen.cancelButton.click();
+      await expect(SettingsMenuScreen.root).toBeDisplayed();
+    });
+
+    it('"Delete all" button is disabled', async () => {
+      await SettingsMenuScreen.deleteAccountsButton.click();
+      await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeDisabled();
+    });
+
+    it('Wrong confirmation phrase displays error', async () => {
+      await ConfirmDeleteAccountsScreen.confirmPhraseInput.setValue('delete all accounts');
+      await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeDisabled();
+      await expect(ConfirmDeleteAccountsScreen.confirmPhraseError).toHaveText(
+        'The phrase is entered incorrectly',
+      );
+    });
+
+    it('Correct confirmation phrase enables "Delete all" button', async () => {
+      await ConfirmDeleteAccountsScreen.confirmPhraseInput.setValue('DELETE ALL ACCOUNTS');
+      await expect(ConfirmDeleteAccountsScreen.deleteAllButton).toBeEnabled();
+    });
+
+    it('Clicking "Delete account" removes all accounts from current network', async () => {
+      await ConfirmDeleteAccountsScreen.deleteAllButton.click();
+      await expect(GetStartedScreen.root).toBeDisplayed();
     });
   });
 });

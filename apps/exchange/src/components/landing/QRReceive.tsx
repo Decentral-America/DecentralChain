@@ -30,8 +30,20 @@ export default function QRReceive() {
   const renderContent = () => {
     if (tab === 0) {
       return (
-        <Stack spacing={3} alignItems="center">
-          <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 2 }}>
+        <Stack
+          spacing={3}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              mt: 2,
+              textAlign: 'center',
+            }}
+          >
             Send DCC or other assets to any address on the network
           </Typography>
           <Button
@@ -57,8 +69,20 @@ export default function QRReceive() {
     }
 
     return (
-      <Stack spacing={3} alignItems="center">
-        <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 2 }}>
+      <Stack
+        spacing={3}
+        sx={{
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 2,
+            textAlign: 'center',
+          }}
+        >
           Scan the QR code or copy your address to receive assets
         </Typography>
         <Alert severity="info" sx={{ width: '100%' }}>

@@ -193,7 +193,7 @@ public abstract class LegacyBinarySerializer {
                     buyMatcherFee, sellMatcherFee, chainId, Amount.of(fee), timestamp, version, proofs);
         } else if (type == LeaseTransaction.TYPE) {
             if (scheme == WITH_PROOFS && !reader.readAssetIdOrDcc().isDcc())
-                throw new IllegalArgumentException("Only Waves allowed to lease");
+                throw new IllegalArgumentException("Only DCC allowed to lease");
 
             PublicKey sender = reader.readPublicKey();
             Recipient recipient = reader.readRecipient();

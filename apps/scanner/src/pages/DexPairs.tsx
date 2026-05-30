@@ -83,7 +83,7 @@ export default function DexPairs() {
         }
 
         // Phase 2: Batch-fetch all unique asset details in one HTTP request
-        const DCC_IDS = new Set(['DCC', 'WAVES']);
+        const DCC_IDS = new Set(['DCC']);
         const assetIds = new Set<string>();
         for (const { market } of marketPairInfo) {
           if (!DCC_IDS.has(market.amountAsset)) assetIds.add(market.amountAsset);

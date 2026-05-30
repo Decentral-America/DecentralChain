@@ -207,10 +207,22 @@ export const Bridge: React.FC = () => {
               }}
             >
               <Login sx={{ color: 'primary.main', fontSize: 64, mb: 2 }} />
-              <Typography variant="h5" gutterBottom fontWeight={600}>
+              <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 Authentication Required
               </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                  mb: 3,
+                }}
+              >
                 Please log in to access the cross-chain bridge. You need an active wallet to
                 transfer assets between DecentralChain and external blockchains.
               </Typography>
@@ -236,10 +248,23 @@ export const Bridge: React.FC = () => {
         <Container maxWidth="xl">
           {/* Header */}
           <Box sx={{ mb: 4, textAlign: 'center' }}>
-            <Typography variant="h3" fontWeight={800} gutterBottom>
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{
+                fontWeight: 800,
+              }}
+            >
               Cross-Chain Bridge
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'text.secondary',
+                maxWidth: 600,
+                mx: 'auto',
+              }}
+            >
               Transfer assets between DecentralChain and external blockchains securely through our
               gateway infrastructure
             </Typography>
@@ -247,10 +272,23 @@ export const Bridge: React.FC = () => {
 
           {/* Network Selector */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" fontWeight={600} sx={{ mb: 2, textAlign: 'center' }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                mb: 2,
+                textAlign: 'center',
+              }}
+            >
               Select Network
             </Typography>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                justifyContent: 'center',
+              }}
+            >
               {SUPPORTED_NETWORKS.map((network) => (
                 <Grid
                   key={network.id}
@@ -290,10 +328,20 @@ export const Bridge: React.FC = () => {
                           width: 48,
                         }}
                       />
-                      <Typography variant="body1" fontWeight={600}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: 600,
+                        }}
+                      >
                         {network.name}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         {network.ticker}
                       </Typography>
                       {selectedNetwork === network.id && network.available && (

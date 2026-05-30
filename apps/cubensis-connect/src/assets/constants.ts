@@ -2,7 +2,7 @@ import type { NetworkName } from '#networks/types';
 
 // Asset IDs for each network. DCC mainnet has no pre-registered tokens yet —
 // third-party tokens will appear dynamically when users receive them.
-// The Waves mainnet token catalog (75+ hardcoded asset IDs) was removed as dead
+// The upstream token catalog (75+ hardcoded asset IDs) was removed as dead
 // code — none of those assets exist on DCC's chain.
 export const assetIds: Record<NetworkName, Record<string, string>> = {
   custom: {
@@ -20,7 +20,7 @@ export const assetIds: Record<NetworkName, Record<string, string>> = {
 };
 
 // Default ticker mappings for known assets. DCC-native tokens will be added
-// here as they are issued on the DCC chain. The Waves mainnet ticker catalog
+// here as they are issued on the DCC chain. The upstream ticker catalog
 // (~100 entries) was removed — those assets don't exist on DCC.
 export const defaultAssetTickers: Record<string, string> = {
   DCC: 'DCC',

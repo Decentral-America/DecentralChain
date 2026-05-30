@@ -19,9 +19,8 @@ use bellman::{
     SynthesisError
 };
 
-// TODO: This should probably be removed and we
-// should use existing helper methods on `Option`
-// for mapping with an error.
+// NOTE: Upstream sapling-crypto helper trait. Could be replaced with Option::ok_or()
+// but kept for compatibility with the vendored snapshot.
 /// This basically is just an extension to `Option`
 /// which allows for a convenient mapping to an
 /// error on `None`.

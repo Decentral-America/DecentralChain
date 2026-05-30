@@ -150,10 +150,21 @@ export const Analytics = () => {
                 >
                   {stat.icon}
                 </Box>
-                <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                  }}
+                >
                   {stat.label}
                 </Typography>
-                <Typography variant="h5" fontWeight={700}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   {stat.value}
                 </Typography>
                 <Typography
@@ -165,8 +176,12 @@ export const Analytics = () => {
                         ? 'error.main'
                         : 'text.secondary'
                   }
-                  fontWeight={600}
-                  sx={{ alignItems: 'center', display: 'flex', gap: 0.5 }}
+                  sx={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    fontWeight: 600,
+                    gap: 0.5,
+                  }}
                 >
                   {stat.trend === 'up' && <TrendingUp fontSize="small" />}
                   {stat.trend === 'down' && <TrendingDown fontSize="small" />}
@@ -185,7 +200,13 @@ export const Analytics = () => {
           p: 3,
         }}
       >
-        <Typography variant="h6" fontWeight={700} gutterBottom>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Recent Transaction Activity
         </Typography>
         {isLoadingTransactions ? (
@@ -195,12 +216,22 @@ export const Analytics = () => {
             <Skeleton variant="rectangular" height={40} />
           </Stack>
         ) : transactions && transactions.flat().length > 0 ? (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Showing {Math.min(10, transactions.flat().length)} of {transactions.flat().length} total
             transactions
           </Typography>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             No transaction history available
           </Typography>
         )}

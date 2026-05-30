@@ -69,7 +69,6 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
       <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
         Send {assetName} to this address
       </Typography>
-
       {/* QR Code */}
       {!qrError && address && (
         <Box
@@ -96,14 +95,12 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
           />
         </Box>
       )}
-
       {/* QR Code Error */}
       {qrError && (
         <Alert severity="warning" sx={{ mb: 2 }}>
           QR code generation failed. You can still copy the address below.
         </Alert>
       )}
-
       {/* Address Display with Copy Button */}
       <Box
         sx={{
@@ -144,9 +141,15 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
           </IconButton>
         </Tooltip>
       </Box>
-
       {/* Additional Information */}
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
+      <Typography
+        variant="caption"
+        sx={{
+          color: 'text.secondary',
+          display: 'block',
+          mt: 2,
+        }}
+      >
         Scan the QR code or copy the address above
       </Typography>
     </Box>

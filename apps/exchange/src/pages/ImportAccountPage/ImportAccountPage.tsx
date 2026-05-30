@@ -3,7 +3,7 @@
  * Full-screen mobile-app experience on mobile, 2-column layout on desktop.
  */
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 import ShieldIcon from '@mui/icons-material/Shield';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -50,7 +50,13 @@ const ImportAccountInner: React.FC = () => {
       }}
     >
       <Container maxWidth="xl" sx={{ py: 8 }}>
-        <Grid container spacing={6} alignItems="center">
+        <Grid
+          container
+          spacing={6}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           {/* Left Column - Branding & Features */}
           <Grid
             size={{
@@ -69,13 +75,24 @@ const ImportAccountInner: React.FC = () => {
 
               <Typography
                 variant="h2"
-                fontWeight={800}
-                sx={{ fontSize: '2.5rem', lineHeight: 1.2, mb: 2 }}
+                sx={{
+                  fontSize: '2.5rem',
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  mb: 2,
+                }}
               >
                 Welcome back to your wallet
               </Typography>
 
-              <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18, mb: 4 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: 18,
+                  mb: 4,
+                }}
+              >
                 Import your existing wallet using your 15-word seed phrase and regain access to your
                 assets.
               </Typography>
@@ -133,7 +150,14 @@ const ImportAccountInner: React.FC = () => {
                     title: 'Full Features',
                   },
                 ].map((f) => (
-                  <Stack key={f.title} direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    key={f.title}
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box
                       sx={{
                         alignItems: 'center',
@@ -150,10 +174,20 @@ const ImportAccountInner: React.FC = () => {
                       {f.icon}
                     </Box>
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         {f.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         {f.desc}
                       </Typography>
                     </Box>

@@ -7,7 +7,13 @@ export default function PricingFinder() {
   return (
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 12, xs: 10 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
+        <Grid
+          container
+          spacing={6}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           <Grid
             size={{
               md: 6,
@@ -23,7 +29,13 @@ export default function PricingFinder() {
             <Typography variant="h2" sx={{ fontWeight: 700, mb: 3, mt: 2 }}>
               Best rates, zero hassle
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'text.secondary',
+                mb: 4,
+              }}
+            >
               Our smart routing algorithm automatically finds the best prices across multiple
               liquidity pools to get you the optimal rate for every swap.
             </Typography>

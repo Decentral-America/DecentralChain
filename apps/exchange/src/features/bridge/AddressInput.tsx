@@ -105,17 +105,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         disabled={disabled}
         error={isValid === false}
         helperText={error}
-        InputProps={{
-          endAdornment: isValid !== null && value && (
-            <InputAdornment position="end">
-              {isValid ? (
-                <CheckCircle color="success" sx={{ fontSize: 24 }} />
-              ) : (
-                <ErrorIcon color="error" sx={{ fontSize: 24 }} />
-              )}
-            </InputAdornment>
-          ),
-        }}
         sx={{
           '& .MuiOutlinedInput-root': {
             '&.Mui-error': {
@@ -130,14 +119,30 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             },
           },
         }}
+        slotProps={{
+          input: {
+            endAdornment: isValid !== null && value && (
+              <InputAdornment position="end">
+                {isValid ? (
+                  <CheckCircle color="success" sx={{ fontSize: 24 }} />
+                ) : (
+                  <ErrorIcon color="error" sx={{ fontSize: 24 }} />
+                )}
+              </InputAdornment>
+            ),
+          },
+        }}
       />
-
       {/* Format Hint */}
       {formatHint && !error && (
         <Typography
           variant="caption"
-          color="text.secondary"
-          sx={{ display: 'block', ml: 1.5, mt: 0.5 }}
+          sx={{
+            color: 'text.secondary',
+            display: 'block',
+            ml: 1.5,
+            mt: 0.5,
+          }}
         >
           Expected format: {formatHint}
         </Typography>

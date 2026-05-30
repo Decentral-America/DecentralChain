@@ -43,13 +43,30 @@ export const Markets = () => {
               }}
             >
               <Stack spacing={1.5}>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                  }}
+                >
                   {market.pair}
                 </Typography>
-                <Typography variant="h5" fontWeight={700}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   ${market.price}
                 </Typography>
-                <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   {market.positive ? (
                     <TrendingUp sx={{ color: 'success.main', fontSize: 16 }} />
                   ) : (
@@ -57,13 +74,20 @@ export const Markets = () => {
                   )}
                   <Typography
                     variant="body2"
-                    fontWeight={600}
                     color={market.positive ? 'success.main' : 'error.main'}
+                    sx={{
+                      fontWeight: 600,
+                    }}
                   >
                     {market.change}
                   </Typography>
                 </Stack>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   Vol: {market.volume}
                 </Typography>
               </Stack>

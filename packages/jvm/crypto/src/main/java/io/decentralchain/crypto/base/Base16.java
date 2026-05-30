@@ -2,7 +2,7 @@ package io.decentralchain.crypto.base;
 
 /**
  * Base16 is used to represent byte arrays as a readable string.
- * Not used in Waves blockchain, but can be used in Ride smart contracts.
+ * Not used in DCC blockchain, but can be used in Ride smart contracts.
  */
 public abstract class Base16 {
 

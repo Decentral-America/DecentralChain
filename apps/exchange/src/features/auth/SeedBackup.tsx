@@ -228,7 +228,11 @@ For support, visit: https://decentralchain.io/support
   return (
     <BackupWrapper>
       <Card elevation="md">
-        <Stack gap="16px">
+        <Stack
+          sx={{
+            gap: '16px',
+          }}
+        >
           <div>
             <Title>Backup Your Seed Phrase</Title>
             <Description>

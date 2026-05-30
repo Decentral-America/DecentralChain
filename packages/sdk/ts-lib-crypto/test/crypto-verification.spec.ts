@@ -14,16 +14,16 @@ import * as migrated from '../src/index';
 const seed = process.env.DCC_TEST_CRYPTO_VERIFY_SEED ?? 'dcc private node seed with dcc tokens';
 
 const ORIGINAL_PUBLIC_KEY =
-  process.env.DCC_TEST_CRYPTO_VERIFY_PUBKEY ?? 'AXbaBkJNocyrVpwqTzD4TpUY8fQ6eeRto9k1m2bNCzXV';
+  process.env.DCC_TEST_CRYPTO_VERIFY_PUBKEY ?? 'BQ8y9Ed9vUB2dNG38xs6ig5q7NgaSnfVMNNFbtqeABZJ';
 
 const ORIGINAL_PRIVATE_KEY =
-  process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY ?? '83M4HnCQxrDMzUQqwmxfTVJPTE9WdE7zjAooZZm2jCyV';
+  process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY ?? '3DEnAUNRXsZC9f4KyF5PKLXh3kJQc3PtKTXe1eKtu3BY';
 
 const EXPECTED_ADDR_W =
-  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W ?? '3P5Xx9MFs8VchRjfLeocGFxXkZGknm38oq1';
+  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W ?? '3PPDwGkGaorhmpmmEmFU1h6oHMhpWw2AYSW';
 
 const EXPECTED_ADDR_Q =
-  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q ?? '3DRRUWk6x6AVfoLKG4jcccwzsTAa9eyDXf5';
+  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q ?? '3Dj7Te97fmXakCNRABBUN46GQFbdswEjr8k';
 
 test('key generation produces identical keys (chain-ID independent)', () => {
   // Keys don't depend on chain ID, so they must be identical to hardcoded originals

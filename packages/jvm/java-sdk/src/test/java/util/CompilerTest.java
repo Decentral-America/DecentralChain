@@ -134,7 +134,7 @@ public class CompilerTest {
           + "func pullTheLever() = {\n"
           + "    let amount = i.payments[0].amount.value()\n"
           + "    if (i.payments[0].assetId != unit) then\n"
-          + "        throw(\"Pay in waves\")\n"
+          + "        throw(\"Pay in DCC\")\n"
           + "    else {\n"
           + "        if (amount<correctPrice) then\n"
           + "            throw(\"Payment amount < \" + correctPrice.toString())\n"

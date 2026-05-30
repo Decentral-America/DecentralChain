@@ -10,4 +10,4 @@ pub mod proto;
 pub mod schema;
 mod tuple_len;
 pub mod utils;
-pub mod waves;
+pub mod chain;

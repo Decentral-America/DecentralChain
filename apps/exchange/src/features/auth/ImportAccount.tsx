@@ -255,7 +255,11 @@ export const ImportAccount = () => {
           </ModeToggle>
 
           <form onSubmit={handleSubmit}>
-            <Stack gap="16px">
+            <Stack
+              sx={{
+                gap: '16px',
+              }}
+            >
               {error && <ErrorMessage>{error}</ErrorMessage>}
 
               {isLedgerSupported && (

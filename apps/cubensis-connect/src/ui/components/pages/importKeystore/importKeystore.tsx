@@ -41,10 +41,10 @@ function parseKeystore(json: string): EncryptedKeystore | null {
       };
     }
 
-    // Note: The Waves Exchange keystore format ('data' key with encryptionRounds)
+    // Note: The legacy exchange keystore format ('data' key with encryptionRounds)
     // is not supported. It was encrypted with a legacy MD5/AES-CBC KDF that is
     // incompatible with the PBKDF2/AES-GCM vault now used by Cubensis Connect.
-    // Users migrating from Waves Exchange should export seed phrases directly.
+    // Users migrating from the legacy exchange should export seed phrases directly.
     return null;
   } catch {
     return null;

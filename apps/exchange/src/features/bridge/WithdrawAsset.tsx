@@ -211,19 +211,24 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: { maxHeight: '90vh' },
+      slotProps={{
+        paper: { sx: { maxHeight: '90vh' } },
       }}
     >
       <DialogTitle>
         <Typography variant="h6" component="div">
           Withdraw {asset.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 0.5,
+          }}
+        >
           Bridge {asset.ticker} from DecentralChain to external blockchain
         </Typography>
       </DialogTitle>
-
       <DialogContent dividers>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {/* Error Alert */}
@@ -258,7 +263,12 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
               }}
             >
               <CircularProgress size={20} />
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Loading withdrawal details...
               </Typography>
             </Box>
@@ -278,23 +288,25 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                   error={!!amountError}
                   helperText={amountError || `Available: ${balance.toFixed()} ${asset.ticker}`}
                   disabled={submitting}
-                  inputProps={{
-                    min: 0,
-                    step: 'any',
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          size="small"
-                          onClick={handleMaxClick}
-                          disabled={submitting}
-                          sx={{ minWidth: 'auto' }}
-                        >
-                          MAX
-                        </Button>
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    htmlInput: {
+                      min: 0,
+                      step: 'any',
+                    },
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            size="small"
+                            onClick={handleMaxClick}
+                            disabled={submitting}
+                            sx={{ minWidth: 'auto' }}
+                          >
+                            MAX
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    },
                   }}
                 />
               </Box>
@@ -309,7 +321,12 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Minimum:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -319,7 +336,12 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                   </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Maximum:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -329,7 +351,12 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
                   </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       Gateway Fee:
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -368,7 +395,6 @@ export const WithdrawAsset: React.FC<WithdrawAssetProps> = ({
           )}
         </Box>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} disabled={submitting}>
           Cancel

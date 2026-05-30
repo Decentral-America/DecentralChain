@@ -244,7 +244,11 @@ export const LoginForm = () => {
           <Description>Enter your password to access your wallet</Description>
 
           <form onSubmit={handleSubmit}>
-            <Stack gap="16px">
+            <Stack
+              sx={{
+                gap: '16px',
+              }}
+            >
               {error && <ErrorMessage>{error}</ErrorMessage>}
 
               <Input
@@ -294,7 +298,6 @@ export const LoginForm = () => {
           </form>
         </CardBody>
       </Card>
-
       <NoAccountModal
         open={showNoAccountModal}
         onClose={() => setShowNoAccountModal(false)}

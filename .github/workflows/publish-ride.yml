@@ -18,10 +18,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: publish-ride
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Sign · Publish · Release (JVM + npm)
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -44,7 +49,7 @@ jobs:
           server-password: MAVEN_CENTRAL_PASSWORD
 
       - name: Install sbt launcher
-        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
+        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b  # v1.2.1
 
       # ── Node / pnpm: npm auth + TypeScript wrapper ───────────────────────
 
@@ -71,20 +76,20 @@ jobs:
       - name: Sign and publish JVM artifacts to Central Portal staging
         working-directory: packages/ride
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
         run: |
           sbt --no-colors \
             -Dgpg.keyname="${{ secrets.MAVEN_GPG_KEY_ID }}" \
             publishSigned
 
-      - name: Release staged bundle to Maven Central (sonaRelease)
+      - name: Release staged bundle to Maven Central (sonatypeBundleRelease)
         working-directory: packages/ride
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-        run: sbt --no-colors sonaRelease
+          SONATYPE_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: sbt --no-colors sonatypeBundleRelease
 
       # ── Scala.js: build JS bundles ───────────────────────────────────────
       # fullLinkJS outputs:

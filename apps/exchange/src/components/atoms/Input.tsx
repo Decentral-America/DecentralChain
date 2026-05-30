@@ -77,18 +77,20 @@ export function Input({
       size={inputSize === 'large' ? 'medium' : inputSize}
       variant="outlined"
       required={required}
-      InputProps={{
-        endAdornment: rightIcon ? (
-          <InputAdornment position="end">{rightIcon}</InputAdornment>
-        ) : undefined,
-        startAdornment: leftIcon ? (
-          <InputAdornment position="start">{leftIcon}</InputAdornment>
-        ) : undefined,
-      }}
-      inputProps={{
-        'aria-invalid': !!error,
-        'aria-label': ariaLabel,
-        'aria-required': ariaRequired || required,
+      slotProps={{
+        htmlInput: {
+          'aria-invalid': !!error,
+          'aria-label': ariaLabel,
+          'aria-required': ariaRequired || required,
+        },
+        input: {
+          endAdornment: rightIcon ? (
+            <InputAdornment position="end">{rightIcon}</InputAdornment>
+          ) : undefined,
+          startAdornment: leftIcon ? (
+            <InputAdornment position="start">{leftIcon}</InputAdornment>
+          ) : undefined,
+        },
       }}
       {...props}
     />

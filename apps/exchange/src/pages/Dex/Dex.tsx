@@ -183,7 +183,13 @@ export const Dex = () => {
         <Box sx={{ mb: 2 }}>
           <TradingPanel elevation={0} sx={{ overflow: 'visible' }}>
             <Box sx={{ p: 2 }}>
-              <Grid container spacing={2} alignItems="center">
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
                 {/* Pair Selector */}
                 <Grid
                   sx={{ overflow: 'visible', zIndex: 1000 }}
@@ -203,7 +209,13 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 700,
+                      }}
+                    >
                       Last Price
                     </Typography>
                     <PriceDisplay
@@ -228,13 +240,21 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 700,
+                      }}
+                    >
                       24h Change
                     </Typography>
                     <Typography
                       variant="h6"
-                      fontWeight={700}
                       color={priceChange >= 0 ? 'success.main' : 'error.main'}
+                      sx={{
+                        fontWeight: 700,
+                      }}
                     >
                       {priceChange >= 0 ? '+' : ''}
                       {priceChange.toFixed(2)}%
@@ -251,10 +271,21 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 700,
+                      }}
+                    >
                       24h High
                     </Typography>
-                    <Typography variant="body1" fontWeight={600}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {marketData.high24h > 0
                         ? marketData.high24h.toLocaleString('en-US', {
                             maximumFractionDigits: 8,
@@ -274,10 +305,21 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 700,
+                      }}
+                    >
                       24h Low
                     </Typography>
-                    <Typography variant="body1" fontWeight={600}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {marketData.low24h > 0
                         ? marketData.low24h.toLocaleString('en-US', {
                             maximumFractionDigits: 8,
@@ -297,10 +339,21 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 700,
+                      }}
+                    >
                       24h Volume
                     </Typography>
-                    <Typography variant="body1" fontWeight={600}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
                       {marketData.volume24h > 0
                         ? marketData.volume24h.toLocaleString('en-US', {
                             maximumFractionDigits: 2,
@@ -333,7 +386,12 @@ export const Dex = () => {
                 <PanelHeader>
                   <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
                       Price Chart
                     </Typography>
                   </Box>
@@ -357,7 +415,12 @@ export const Dex = () => {
                 <PanelHeader>
                   <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     <Receipt sx={{ color: 'primary.main', fontSize: 24 }} />
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
                       Order Book
                     </Typography>
                   </Box>

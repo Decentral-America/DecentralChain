@@ -238,7 +238,11 @@ export const PasswordProtection = ({
   return (
     <ProtectionWrapper>
       <Card elevation="md">
-        <Stack gap="24px">
+        <Stack
+          sx={{
+            gap: '24px',
+          }}
+        >
           <div>
             <Title>Password Protection</Title>
             <Description>

@@ -6,7 +6,7 @@
 import {
   AccountBalanceWallet,
   AccountCircle,
-  AddCircleOutline,
+  AddCircleOutlined,
   Apps,
   Badge,
   ContentCopy,
@@ -160,7 +160,7 @@ const navSections: NavSection[] = [
   },
   {
     items: [
-      { icon: <AddCircleOutline />, label: 'Create Token', path: '/desktop/create-token' },
+      { icon: <AddCircleOutlined />, label: 'Create Token', path: '/desktop/create-token' },
       { icon: <QueryStats />, label: 'Analytics', path: '/desktop/analytics' },
     ],
     label: 'Tools',
@@ -380,10 +380,14 @@ export const MainLayout = () => {
                         </ListItemIcon>
                         <ListItemText
                           primary={item.label}
-                          primaryTypographyProps={{
-                            color: isActive ? 'white' : 'inherit',
-                            fontSize: '0.9rem',
-                            fontWeight: isActive ? 600 : 500,
+                          slotProps={{
+                            primary: {
+                              sx: {
+                                color: isActive ? 'white' : 'inherit',
+                                fontSize: '0.9rem',
+                                fontWeight: isActive ? 600 : 500,
+                              },
+                            },
                           }}
                         />
                         {item.badge && (
@@ -418,7 +422,6 @@ export const MainLayout = () => {
     <Box sx={{ display: 'flex' }}>
       {/* Transaction Notifications Monitor - listens for incoming transactions */}
       <TransactionNotificationsMonitor />
-
       {/* AppBar */}
       <StyledAppBar position="fixed" elevation={0}>
         <Toolbar sx={{ py: 1 }}>
@@ -521,19 +524,28 @@ export const MainLayout = () => {
                   horizontal: 'right',
                   vertical: 'top',
                 }}
-                PaperProps={{
-                  sx: { maxWidth: 320, mt: 1, width: { sm: 280, xs: 'calc(100vw - 32px)' } },
+                slotProps={{
+                  paper: {
+                    sx: { maxWidth: 320, mt: 1, width: { sm: 280, xs: 'calc(100vw - 32px)' } },
+                  },
                 }}
               >
                 {/* Address Info */}
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 1.5 }}>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Your Address
                   </Typography>
                   <Typography
                     variant="body2"
-                    fontFamily="monospace"
-                    sx={{ wordBreak: 'break-all' }}
+                    sx={{
+                      fontFamily: 'monospace',
+                      wordBreak: 'break-all',
+                    }}
                   >
                     {user.address}
                   </Typography>
@@ -562,7 +574,7 @@ export const MainLayout = () => {
 
                 <MenuItem onClick={handleCreateAlias}>
                   <ListItemIcon>
-                    <AddCircleOutline fontSize="small" />
+                    <AddCircleOutlined fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>Create Alias</ListItemText>
                 </MenuItem>
@@ -587,7 +599,6 @@ export const MainLayout = () => {
           )}
         </Toolbar>
       </StyledAppBar>
-
       {/* Navigation Drawer */}
       <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { md: DRAWER_WIDTH } }}>
         {/* Mobile drawer */}
@@ -615,12 +626,10 @@ export const MainLayout = () => {
           </StyledDrawer>
         )}
       </Box>
-
       {/* Main Content */}
       <MainContent component="main">
         <Outlet />
       </MainContent>
-
       {/* Create Alias Modal */}
       <CreateAliasModal
         open={createAliasOpen}
@@ -631,7 +640,6 @@ export const MainLayout = () => {
           logger.debug(`[MainLayout] Alias created successfully: ${newAlias}`);
         }}
       />
-
       {/* Copy Success Snackbar */}
       <Snackbar
         open={copySuccess}
@@ -643,7 +651,6 @@ export const MainLayout = () => {
           Address copied to clipboard!
         </Alert>
       </Snackbar>
-
       {/* Alias Success Snackbar */}
       <Snackbar
         open={aliasSuccess}

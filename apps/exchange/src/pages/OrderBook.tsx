@@ -23,28 +23,65 @@ export const OrderBook = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+      <Stack
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+        }}
+      >
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Order Book
         </Typography>
         <Chip label="DCC/USDT" color="primary" />
       </Stack>
-
       <Stack direction="row" spacing={2}>
         {/* Sell Orders */}
         <Paper sx={{ border: '1px solid #EEF2F7', borderRadius: 2, flex: 1, p: 2 }}>
-          <Typography variant="subtitle1" fontWeight={700} sx={{ color: 'error.main', mb: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: 'error.main',
+              fontWeight: 700,
+              mb: 2,
+            }}
+          >
             Sell Orders
           </Typography>
           <Stack spacing={0.5}>
-            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                mb: 1,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Price
               </Typography>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Amount
               </Typography>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Total
               </Typography>
             </Stack>
@@ -52,18 +89,29 @@ export const OrderBook = () => {
               <Stack
                 key={order.price}
                 direction="row"
-                justifyContent="space-between"
                 sx={{
                   '&:hover': { bgcolor: '#FEF2F2' },
                   borderRadius: 1,
+                  justifyContent: 'space-between',
                   p: 1,
                 }}
               >
-                <Typography variant="body2" color="error.main" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'error.main',
+                    fontWeight: 600,
+                  }}
+                >
                   {order.price}
                 </Typography>
                 <Typography variant="body2">{order.amount}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   {order.total}
                 </Typography>
               </Stack>
@@ -73,18 +121,49 @@ export const OrderBook = () => {
 
         {/* Buy Orders */}
         <Paper sx={{ border: '1px solid #EEF2F7', borderRadius: 2, flex: 1, p: 2 }}>
-          <Typography variant="subtitle1" fontWeight={700} sx={{ color: 'success.main', mb: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: 'success.main',
+              fontWeight: 700,
+              mb: 2,
+            }}
+          >
             Buy Orders
           </Typography>
           <Stack spacing={0.5}>
-            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                mb: 1,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Price
               </Typography>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Amount
               </Typography>
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
                 Total
               </Typography>
             </Stack>
@@ -92,18 +171,29 @@ export const OrderBook = () => {
               <Stack
                 key={order.price}
                 direction="row"
-                justifyContent="space-between"
                 sx={{
                   '&:hover': { bgcolor: '#F0FDF4' },
                   borderRadius: 1,
+                  justifyContent: 'space-between',
                   p: 1,
                 }}
               >
-                <Typography variant="body2" color="success.main" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'success.main',
+                    fontWeight: 600,
+                  }}
+                >
                   {order.price}
                 </Typography>
                 <Typography variant="body2">{order.amount}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   {order.total}
                 </Typography>
               </Stack>

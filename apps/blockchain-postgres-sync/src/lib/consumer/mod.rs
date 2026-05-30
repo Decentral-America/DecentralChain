@@ -2,11 +2,11 @@ pub mod models;
 pub mod repo;
 pub mod updates;
 
-use crate::proto::waves::{
+use crate::proto::dcc::{
     data_entry::Value,
     events::{transaction_metadata::Metadata, StateUpdate, TransactionMetadata},
     signed_transaction::Transaction,
-    SignedTransaction, Transaction as WavesTx,
+    SignedTransaction, Transaction as DccTx,
 };
 use anyhow::{Error, Result};
 use bigdecimal::BigDecimal;
@@ -26,7 +26,7 @@ use self::models::{
 use self::repo::RepoOperations;
 use crate::error::Error as AppError;
 use crate::models::BaseAssetInfoUpdate;
-use crate::waves::{extract_asset_id, Address};
+use crate::chain::{extract_asset_id, Address};
 use crate::{config::consumer::Config, utils::into_base58};
 use crate::{
     consumer::models::{
@@ -34,7 +34,7 @@ use crate::{
         dcc_data::DccData,
     },
     utils::{epoch_ms_to_naivedatetime, escape_unicode_null},
-    waves::DCC_ID,
+    chain::DCC_ID,
 };
 use base64::prelude::*;
 
@@ -52,7 +52,7 @@ pub struct BlockMicroblockAppend {
     id: String,
     time_stamp: Option<NaiveDateTime>,
     height: i32,
-    updated_waves_amount: Option<i64>,
+    updated_dcc_amount: Option<i64>,
     txs: Vec<Tx>,
 }
 
@@ -347,7 +347,7 @@ where
         let dcc_data = appends
             .iter()
             .filter_map(|append| {
-                append.updated_waves_amount.map(|reward| DccData {
+                append.updated_dcc_amount.map(|reward| DccData {
                     height: append.height,
                     quantity: BigDecimal::from(reward),
                 })
@@ -523,7 +523,7 @@ fn extract_base_asset_info_updates(
 
                         let time_stamp = match tx.data.transaction.as_ref() {
                             Some(stx) => match stx {
-                                Transaction::WavesTransaction(WavesTx { timestamp, .. }) => {
+                                Transaction::DccTransaction(DccTx { timestamp, .. }) => {
                                     let dt = epoch_ms_to_naivedatetime(*timestamp);
                                     DateTime::from_naive_utc_and_offset(dt, Utc)
                                 }

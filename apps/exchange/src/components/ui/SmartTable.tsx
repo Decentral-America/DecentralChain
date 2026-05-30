@@ -196,7 +196,12 @@ export const SmartTable = <T extends Record<string, unknown>>({
 
           {enablePagination && (
             <PaginationControls>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Showing {currentPage * currentPageSize + 1}-
                 {Math.min((currentPage + 1) * currentPageSize, sortedData.length)} of{' '}
                 {sortedData.length}
@@ -217,7 +222,6 @@ export const SmartTable = <T extends Record<string, unknown>>({
           )}
         </ControlsBar>
       )}
-
       <Table
         columns={columns}
         data={paginatedData}
@@ -228,7 +232,6 @@ export const SmartTable = <T extends Record<string, unknown>>({
         keyExtractor={keyExtractor}
         emptyMessage={emptyMessage}
       />
-
       {enablePagination && totalPages > 1 && (
         <PaginationControls>
           <PageButton onClick={() => handlePageChange(currentPage - 1)} disabled={!hasPrevPage}>

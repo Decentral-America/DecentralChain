@@ -14,7 +14,14 @@ export const LeasingModern = () => {
         <Stack spacing={5}>
           {/* Hero Section */}
           <Box>
-            <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                alignItems: 'center',
+                mb: 2,
+              }}
+            >
               <Box
                 sx={{
                   alignItems: 'center',
@@ -43,7 +50,13 @@ export const LeasingModern = () => {
                 >
                   Leasing & Staking
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: 'text.secondary',
+                    fontSize: 18,
+                  }}
+                >
                   Stake your DCC to earn rewards and support the network
                 </Typography>
               </Box>

@@ -43,9 +43,11 @@ export function Radio({
       id={radioId}
       ref={ref}
       disabled={disabled}
-      inputProps={{
-        'aria-describedby': error ? `${radioId}-error` : undefined,
-        'aria-invalid': !!error,
+      slotProps={{
+        input: {
+          'aria-describedby': error ? `${radioId}-error` : undefined,
+          'aria-invalid': !!error,
+        },
       }}
       {...props}
     />

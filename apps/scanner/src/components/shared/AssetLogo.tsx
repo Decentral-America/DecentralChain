@@ -53,7 +53,7 @@ export default function AssetLogo({
   });
 
   // Check if this is DCC token (hardcoded)
-  if (assetId === DCC_TOKEN_ASSET_ID || assetId === 'DCC' || assetId === 'WAVES') {
+  if (assetId === DCC_TOKEN_ASSET_ID || assetId === 'DCC') {
     return (
       <img
         src={DCC_TOKEN_LOGO}

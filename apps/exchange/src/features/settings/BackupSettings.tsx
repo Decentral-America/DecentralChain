@@ -213,29 +213,31 @@ export const BackupSettings: React.FC = () => {
       <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
         Export Wallet Backup
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          mb: 3,
+        }}
+      >
         Download an encrypted backup of your wallet accounts and settings
       </Typography>
-
       {success && (
         <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccess(false)}>
           <AlertTitle>Backup Created Successfully</AlertTitle>
           Your wallet backup has been downloaded. Store it in a secure location.
         </Alert>
       )}
-
       {error && (
         <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
           {error}
         </Alert>
       )}
-
       <Alert severity="warning" sx={{ mb: 3 }}>
         <AlertTitle>Security Warning</AlertTitle>
         Your backup file contains sensitive encrypted data. Store it securely and never share the
         backup password. Anyone with both the backup file and password can access your funds.
       </Alert>
-
       <Paper
         sx={{
           background: (theme) =>
@@ -245,7 +247,14 @@ export const BackupSettings: React.FC = () => {
           p: 2.5,
         }}
       >
-        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'text.secondary',
+            display: 'block',
+            mb: 1.5,
+          }}
+        >
           Accounts to be backed up:
         </Typography>
         {accounts.length > 0 ? (
@@ -257,22 +266,31 @@ export const BackupSettings: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText
                   primary={account.name}
-                  primaryTypographyProps={{ fontWeight: 600, variant: 'body2' }}
+                  slotProps={{ primary: { sx: { fontWeight: 600 }, variant: 'body2' } }}
                 />
               </ListItem>
             ))}
           </List>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             No accounts found
           </Typography>
         )}
       </Paper>
-
       <Divider sx={{ my: 3 }} />
-
       <Box sx={{ mb: 3 }}>
-        <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 600,
+            mb: 1.5,
+          }}
+        >
           Backup Password *
         </Typography>
         <TextField
@@ -285,7 +303,13 @@ export const BackupSettings: React.FC = () => {
           sx={{ mb: 2 }}
         />
 
-        <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 600,
+            mb: 1.5,
+          }}
+        >
           Confirm Password *
         </Typography>
         <TextField
@@ -302,7 +326,6 @@ export const BackupSettings: React.FC = () => {
           }
         />
       </Box>
-
       <Alert severity="info" icon={<CheckCircle />} sx={{ mb: 3 }}>
         <Typography variant="body2">
           <strong>Backup includes:</strong>
@@ -314,7 +337,6 @@ export const BackupSettings: React.FC = () => {
           <br />• Double-layered AES-256 encryption with your backup password
         </Typography>
       </Alert>
-
       <Button
         variant="primary"
         fullWidth
@@ -333,11 +355,13 @@ export const BackupSettings: React.FC = () => {
       >
         {isExporting ? 'Creating Backup...' : 'Download Encrypted Backup'}
       </Button>
-
       <Typography
         variant="caption"
-        color="text.secondary"
-        sx={{ display: 'block', textAlign: 'center' }}
+        sx={{
+          color: 'text.secondary',
+          display: 'block',
+          textAlign: 'center',
+        }}
       >
         File will be saved as: dcc-exchange-backup-{new Date().toISOString().split('T')[0]}.json
       </Typography>

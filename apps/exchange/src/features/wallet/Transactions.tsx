@@ -425,7 +425,11 @@ export const Transactions = () => {
 
   return (
     <TransactionsContainer>
-      <Stack gap="1rem">
+      <Stack
+        sx={{
+          gap: '1rem',
+        }}
+      >
         {/* Filters */}
         <FilterBar>
           <Select

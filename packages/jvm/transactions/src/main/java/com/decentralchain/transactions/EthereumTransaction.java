@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.decentralchain.transactions.invocation.Function.DEFAULT_NAME;
-import static io.decentralchain.transactions.serializers.eth.EthFunctionEncoder.encodeWavesFunctionInEthFmt;
+import static io.decentralchain.transactions.serializers.eth.EthFunctionEncoder.encodeDccFunctionInEthFmt;
 
 public class EthereumTransaction extends Transaction {
     public static final BigInteger AMOUNT_MULTIPLIER = BigInteger.valueOf(10_000_000_000L);
@@ -259,7 +259,7 @@ public class EthereumTransaction extends Transaction {
                     gasPrice,
                     BigInteger.valueOf(fee),
                     Numeric.toHexString(dapp.publicKeyHash()),
-                    encodeWavesFunctionInEthFmt(f)
+                    encodeDccFunctionInEthFmt(f)
             );
         }
     }

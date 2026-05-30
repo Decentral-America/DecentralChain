@@ -115,17 +115,17 @@
     <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     <!-- Reproducible builds — set to release date on each release -->
     <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
-    <!-- protobuf-java 4.34.1 — latest; used in dependencyManagement to override
-         the 4.33.2 that protobuf-schemas:1.6.0 pulls transitively. -->
-    <protobuf-java.version>4.34.1</protobuf-java.version>
+    <!-- protobuf-java 4.35.0 — latest stable (May 19, 2026); used in dependencyManagement
+         to override the 4.33.2 that protobuf-schemas:1.6.0 pulls transitively. -->
+    <protobuf-java.version>4.35.0</protobuf-java.version>
     <!-- jna 5.18.1 — latest; used in dependencyManagement to override
          the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
          via curve25519-java. -->
     <jna.version>5.18.1</jna.version>
-    <!-- netty 4.1.134.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
+    <!-- netty 4.2.14.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
          4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
-         CONTINUATION flood DoS, DNS codec). -->
-    <netty.version>4.1.134.Final</netty.version>
+         CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line. -->
+    <netty.version>4.2.14.Final</netty.version>
   </properties>
 
   <!-- ── Dependency management (transitive version overrides) ────────── -->
@@ -134,10 +134,10 @@
   <dependencyManagement>
     <dependencies>
 
-      <!-- Netty BOM 4.1.134.Final — SECURITY OVERRIDE.
+      <!-- Netty BOM 4.2.14.Final — SECURITY OVERRIDE.
            web3j:crypto → tuweni-bytes → vertx-core pulls netty 4.1.115.Final
            which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling, CONTINUATION
-           flood DoS, DNS codec vulnerabilities). -->
+           flood DoS, DNS codec vulnerabilities). Aligned to node-scala 4.2.x line. -->
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
@@ -146,7 +146,7 @@
         <scope>import</scope>
       </dependency>
 
-      <!-- Force protobuf-java to 4.34.1 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
+      <!-- Force protobuf-java to 4.35.0 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>

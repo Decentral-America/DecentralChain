@@ -49,7 +49,7 @@ jobs:
           (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Enforce version gates + compile + test
@@ -85,7 +85,7 @@ jobs:
           (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Run audit profile
@@ -126,7 +126,7 @@ jobs:
           (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && mvn --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
           (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
 
       - name: Build package + generate CycloneDX SBOM

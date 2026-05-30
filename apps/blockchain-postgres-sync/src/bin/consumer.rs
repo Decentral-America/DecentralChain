@@ -31,7 +31,7 @@ async fn main() -> Result<()> {
 
     let pg_repo = consumer::repo::pg::new(conn.clone());
 
-    // Health / readiness HTTP server (replaces wavesexchange_warp + wavesexchange_liveness)
+    // Health / readiness HTTP server
     let metrics_port = config.consumer.metrics_port;
     let health_conn = conn.clone();
     let health_server = tokio::spawn(async move {

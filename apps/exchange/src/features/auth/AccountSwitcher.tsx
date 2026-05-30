@@ -151,7 +151,11 @@ export const AccountSwitcher = () => {
   return (
     <AccountSwitcherWrapper>
       <Card elevation="md">
-        <Stack gap="24px">
+        <Stack
+          sx={{
+            gap: '24px',
+          }}
+        >
           <Title>Switch Account</Title>
 
           {accounts.length === 0 ? (
@@ -216,7 +220,6 @@ export const AccountSwitcher = () => {
           </ButtonGroup>
         </Stack>
       </Card>
-
       <ConfirmDialog
         open={!!confirmRemove}
         onClose={() => setConfirmRemove(null)}
@@ -226,7 +229,6 @@ export const AccountSwitcher = () => {
         confirmText="Remove"
         destructive
       />
-
       <ConfirmDialog
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}

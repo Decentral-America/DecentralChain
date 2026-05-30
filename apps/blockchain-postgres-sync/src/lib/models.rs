@@ -1,4 +1,4 @@
-use crate::proto::waves::{
+use crate::proto::dcc::{
     invoke_script_result::call::argument::{List as ListPb, Value as InvokeScriptArgValue},
     order::Sender as SenderPb,
     Order as OrderPb,
@@ -50,7 +50,7 @@ impl From<&InvokeScriptArgValue> for DataEntryTypeValue {
             // deep conversion of List
             InvokeScriptArgValue::List(v) => Self::List(json!(ArgList::from(v))),
             // CaseObj is a Ride union/ADT value — serialise as opaque null;
-            // the Waves/DCC node never emits CaseObj in invoke-script results
+            // the DCC node never emits CaseObj in invoke-script results
             // exposed via the blockchain-updates gRPC stream, so this branch
             // exists only for forward-compatibility.
             InvokeScriptArgValue::CaseObj(_) => Self::String(String::new()),
@@ -223,7 +223,7 @@ impl From<i32> for OrderType {
 #[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
-    use crate::proto::waves::invoke_script_result::call::Argument;
+    use crate::proto::dcc::invoke_script_result::call::Argument;
 
     // ── DataEntryTypeValue::from conversions ────────────────────────────────
 
@@ -289,7 +289,7 @@ mod tests {
     #[test]
     fn case_obj_produces_empty_string_not_panic() {
         // Regression test: this previously panicked with todo!()
-        use crate::proto::waves::invoke_script_result::call::argument::Value::CaseObj;
+        use crate::proto::dcc::invoke_script_result::call::argument::Value::CaseObj;
         let src = CaseObj(vec![]);
         let dv = DataEntryTypeValue::from(&src);
         assert!(matches!(dv, DataEntryTypeValue::String(s) if s.is_empty()));
@@ -421,7 +421,7 @@ mod tests {
 
     #[test]
     fn arg_list_from_empty_list() {
-        use crate::proto::waves::invoke_script_result::call::argument::List as ListPb;
+        use crate::proto::dcc::invoke_script_result::call::argument::List as ListPb;
         let list = ListPb { items: vec![] };
         let arg_list = ArgList::from(&list);
         assert!(arg_list.0.is_empty());
@@ -429,8 +429,8 @@ mod tests {
 
     #[test]
     fn arg_list_skips_none_values() {
-        use crate::proto::waves::invoke_script_result::call::argument::List as ListPb;
-        use crate::proto::waves::invoke_script_result::call::Argument;
+        use crate::proto::dcc::invoke_script_result::call::argument::List as ListPb;
+        use crate::proto::dcc::invoke_script_result::call::Argument;
         let list = ListPb {
             items: vec![
                 Argument { value: None }, // should be skipped

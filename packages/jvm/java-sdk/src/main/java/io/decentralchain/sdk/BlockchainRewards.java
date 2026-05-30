@@ -22,7 +22,7 @@ public class BlockchainRewards {
   private BlockchainRewards(
       @JsonProperty("height") int height,
       @JsonProperty("currentReward") long currentReward,
-      @JsonProperty("totalWavesAmount") long totalDccAmount,
+      @JsonProperty("totalDccAmount") long totalDccAmount,
       @JsonProperty("minIncrement") long minIncrement,
       @JsonProperty("term") int term,
       @JsonProperty("nextCheck") int nextCheck,

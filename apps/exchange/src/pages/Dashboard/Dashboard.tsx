@@ -292,10 +292,22 @@ export const Dashboard = () => {
       <Box sx={{ px: { md: 4, sm: 3, xs: 2 }, py: 3 }}>
         {/* Welcome Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight={700} sx={{ color: 'text.primary', mb: 1 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              color: 'text.primary',
+              fontWeight: 700,
+              mb: 1,
+            }}
+          >
             Welcome back, {user?.name || 'Trader'}! 👋
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Here&apos;s an overview of your portfolio and recent activity
           </Typography>
         </Box>
@@ -322,15 +334,29 @@ export const Dashboard = () => {
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  sx={{
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-between',
+                  }}
+                >
                   <Box sx={{ flex: 1 }}>
                     <Stack
                       direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      sx={{ mb: 2 }}
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        mb: 2,
+                      }}
                     >
-                      <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 500,
+                        }}
+                      >
                         Total Portfolio Value
                       </Typography>
                       <Select
@@ -351,10 +377,22 @@ export const Dashboard = () => {
                         ))}
                       </Select>
                     </Stack>
-                    <Typography variant="h3" fontWeight={700} color="text.primary">
+                    <Typography
+                      variant="h3"
+                      sx={{
+                        color: 'text.primary',
+                        fontWeight: 700,
+                      }}
+                    >
                       {isLoading ? '...' : formatAmount(portfolioValueInDCC, 8)}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                        mt: 0.5,
+                      }}
+                    >
                       {displayCurrency}
                     </Typography>
                   </Box>
@@ -362,7 +400,14 @@ export const Dashboard = () => {
                     sx={{ color: 'primary.main', fontSize: 40, opacity: 0.2 }}
                   />
                 </Stack>
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2 }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    alignItems: 'center',
+                    mt: 2,
+                  }}
+                >
                   <Chip
                     icon={<TrendingUpIcon />}
                     label={`${totalAssets} ${totalAssets === 1 ? 'asset' : 'assets'}`}
@@ -396,13 +441,32 @@ export const Dashboard = () => {
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} fontWeight={500}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 500,
+                    mb: 2,
+                  }}
+                >
                   Total Assets
                 </Typography>
-                <Typography variant="h3" fontWeight={700} color="primary">
+                <Typography
+                  variant="h3"
+                  color="primary"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   {totalAssets}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 1,
+                  }}
+                >
                   Different tokens in your wallet
                 </Typography>
                 <Button
@@ -435,13 +499,32 @@ export const Dashboard = () => {
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} fontWeight={500}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 500,
+                    mb: 2,
+                  }}
+                >
                   Recent Transactions
                 </Typography>
-                <Typography variant="h3" fontWeight={700} color="primary">
+                <Typography
+                  variant="h3"
+                  color="primary"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   {recentActivity.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 1,
+                  }}
+                >
                   In the last 24 hours
                 </Typography>
                 <Button
@@ -476,7 +559,14 @@ export const Dashboard = () => {
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" fontWeight={700} sx={{ color: 'text.primary', mb: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 700,
+                    mb: 3,
+                  }}
+                >
                   Quick Actions
                 </Typography>
                 <Grid container spacing={2}>
@@ -508,12 +598,19 @@ export const Dashboard = () => {
                           <Box sx={{ color: 'primary.main', mb: 1 }}>{action.icon}</Box>
                           <Typography
                             variant="subtitle2"
-                            fontWeight={600}
-                            sx={{ color: 'text.primary' }}
+                            sx={{
+                              color: 'text.primary',
+                              fontWeight: 600,
+                            }}
                           >
                             {action.title}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
                             {action.description}
                           </Typography>
                         </CardContent>
@@ -536,11 +633,19 @@ export const Dashboard = () => {
               <CardContent sx={{ p: 3 }}>
                 <Stack
                   direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 2 }}
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    mb: 2,
+                  }}
                 >
-                  <Typography variant="h6" fontWeight={700} color="text.primary">
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: 'text.primary',
+                      fontWeight: 700,
+                    }}
+                  >
                     My Assets
                   </Typography>
                   <Button
@@ -599,7 +704,14 @@ export const Dashboard = () => {
                           transition: 'all 0.2s',
                         }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={2} sx={{ flex: 1 }}>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: 'center',
+                            flex: 1,
+                          }}
+                        >
                           <Avatar
                             sx={{
                               bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
@@ -611,22 +723,48 @@ export const Dashboard = () => {
                             {asset.name.charAt(0)}
                           </Avatar>
                           <Box sx={{ flex: 1 }}>
-                            <Typography variant="subtitle2" fontWeight={700}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight: 700,
+                              }}
+                            >
                               {asset.name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {asset.isBaseAsset
                                 ? 'Native Token'
                                 : `${asset.assetId.substring(0, 8)}...`}
                             </Typography>
                           </Box>
                         </Stack>
-                        <Stack direction="row" alignItems="center" spacing={2}>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="subtitle2" fontWeight={700}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight: 700,
+                              }}
+                            >
                               {formatAmount(amount, 8)}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {asset.isBaseAsset ? 'DCC' : asset.name}
                             </Typography>
                           </Box>
@@ -652,7 +790,13 @@ export const Dashboard = () => {
                   })}
                   {allAssets.length === 0 && (
                     <Box sx={{ py: 4, textAlign: 'center' }}>
-                      <Typography color="text.secondary">No assets found</Typography>
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
+                        No assets found
+                      </Typography>
                       <Button
                         variant="contained"
                         sx={{ mt: 2 }}
@@ -683,7 +827,14 @@ export const Dashboard = () => {
               }}
             >
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" fontWeight={700} sx={{ color: 'text.primary', mb: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 700,
+                    mb: 3,
+                  }}
+                >
                   Recent Activity
                 </Typography>
                 <Stack spacing={2}>
@@ -698,19 +849,43 @@ export const Dashboard = () => {
                         p: 2,
                       }}
                     >
-                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack
+                        direction="row"
+                        sx={{
+                          alignItems: 'flex-start',
+                          justifyContent: 'space-between',
+                        }}
+                      >
                         <Box>
-                          <Typography variant="subtitle2" fontWeight={600} color="text.primary">
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: 'text.primary',
+                              fontWeight: 600,
+                            }}
+                          >
                             {activity.type}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'text.secondary',
+                              mt: 0.5,
+                            }}
+                          >
                             {activity.amount}{' '}
                             {activity.type === 'Received' || activity.type === 'Sent' ? (
                               <AssetNameDisplay assetId={activity.assetId} />
                             ) : null}
                           </Typography>
                         </Box>
-                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           {activity.type === 'Received' ? (
                             <TrendingUpIcon color="success" fontSize="small" />
                           ) : (
@@ -720,8 +895,11 @@ export const Dashboard = () => {
                       </Stack>
                       <Typography
                         variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mt: 1 }}
+                        sx={{
+                          color: 'text.secondary',
+                          display: 'block',
+                          mt: 1,
+                        }}
                       >
                         {activity.time}
                       </Typography>
@@ -750,7 +928,13 @@ export const Dashboard = () => {
             {/* Portfolio Breakdown Card */}
             <Card sx={{ mt: 3 }}>
               <CardContent>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 3,
+                  }}
+                >
                   Portfolio Breakdown
                 </Typography>
 
@@ -764,11 +948,22 @@ export const Dashboard = () => {
                     p: 2,
                   }}
                 >
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Stack
+                    direction="row"
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Total Value
                     </Typography>
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
                       {formatAmount(portfolioValueInDCC, 8)} {displayCurrency}
                     </Typography>
                   </Stack>
@@ -790,7 +985,13 @@ export const Dashboard = () => {
                           p: 1.5,
                         }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={1.5}>
+                        <Stack
+                          direction="row"
+                          spacing={1.5}
+                          sx={{
+                            alignItems: 'center',
+                          }}
+                        >
                           <Avatar
                             sx={{
                               bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
@@ -802,10 +1003,20 @@ export const Dashboard = () => {
                             {asset.name.charAt(0)}
                           </Avatar>
                           <Box>
-                            <Typography variant="body2" fontWeight={600}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
                               {asset.name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: 'text.secondary',
+                              }}
+                            >
                               {asset.isBaseAsset
                                 ? 'Native Token'
                                 : `${asset.assetId.substring(0, 6)}...`}
@@ -813,10 +1024,20 @@ export const Dashboard = () => {
                           </Box>
                         </Stack>
                         <Box sx={{ textAlign: 'right' }}>
-                          <Typography variant="body2" fontWeight={700}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 700,
+                            }}
+                          >
                             {formatAmount(amount, 8)}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
                             {asset.isBaseAsset ? 'DCC' : asset.name}
                           </Typography>
                         </Box>

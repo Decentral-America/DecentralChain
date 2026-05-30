@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "test:integration": {
+      "command": "vitest run --config vitest.integration.config.ts",
+      "metadata": {
+        "description": "Run integration tests (requires DCC private node)",
+        "technologies": ["vitest"]
+      },
+      "options": {
+        "cwd": "packages/sdk/transactions"
+      }
+    }
+  }
+}

@@ -43,7 +43,13 @@ export default function FeatureQuads() {
             >
               <Card sx={{ bgcolor: '#FBFCFE', border: '1px solid #EEF2F7', boxShadow: 1 }}>
                 <CardContent sx={{ p: 2.5 }}>
-                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Avatar
                       variant="rounded"
                       sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}
@@ -51,10 +57,20 @@ export default function FeatureQuads() {
                       {feature.icon}
                     </Avatar>
                     <Box>
-                      <Typography fontWeight={600} fontSize={14}>
+                      <Typography
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                      >
                         {feature.title}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
                         {feature.desc}
                       </Typography>
                     </Box>

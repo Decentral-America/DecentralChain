@@ -134,10 +134,21 @@ export const Header = () => {
                   <PersonIcon sx={{ fontSize: 18 }} />
                 </Avatar>
                 <Stack spacing={0}>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
                     {user.name || 'Account'}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" fontFamily="monospace">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      fontFamily: 'monospace',
+                    }}
+                  >
                     {formatAddress(user.address || '')}
                   </Typography>
                 </Stack>
@@ -155,19 +166,26 @@ export const Header = () => {
                   horizontal: 'right',
                   vertical: 'top',
                 }}
-                PaperProps={{
-                  sx: { mt: 1, width: 280 },
+                slotProps={{
+                  paper: { sx: { mt: 1, width: 280 } },
                 }}
               >
                 {/* Address Info */}
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, py: 1.5 }}>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     Your Address
                   </Typography>
                   <Typography
                     variant="body2"
-                    fontFamily="monospace"
-                    sx={{ wordBreak: 'break-all' }}
+                    sx={{
+                      fontFamily: 'monospace',
+                      wordBreak: 'break-all',
+                    }}
                   >
                     {user.address}
                   </Typography>
@@ -216,7 +234,6 @@ export const Header = () => {
           )}
         </HeaderRight>
       </HeaderContainer>
-
       {/* Create Alias Modal */}
       <CreateAliasModal open={createAliasOpen} onClose={() => setCreateAliasOpen(false)} />
     </>

@@ -25,7 +25,14 @@ export const ProtectedRoute = ({ redirectTo = '/', children }: ProtectedRoutePro
   // Wait for session restoration before deciding — prevents flash redirect
   if (!sessionRestored) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box
+        sx={{
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
         <CircularProgress />
       </Box>
     );

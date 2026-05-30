@@ -19,7 +19,13 @@ export default function BigCTA() {
             boxShadow: '0 30px 80px rgba(15,25,55,.20)',
           }}
         >
-          <Typography variant="h2" fontWeight={800} sx={{ mb: 3 }}>
+          <Typography
+            variant="h2"
+            sx={{
+              fontWeight: 800,
+              mb: 3,
+            }}
+          >
             Start trading on DecentralExchange
           </Typography>
           <Typography variant="body1" sx={{ maxWidth: 600, mb: 4, mx: 'auto', opacity: 0.95 }}>

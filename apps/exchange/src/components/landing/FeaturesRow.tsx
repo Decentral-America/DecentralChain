@@ -25,7 +25,14 @@ export default function FeaturesRow() {
   return (
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 4 } }}>
       <Container maxWidth="lg">
-        <Typography variant="h3" textAlign="center" sx={{ fontWeight: 700, mb: 5 }}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+            mb: 5,
+            textAlign: 'center',
+          }}
+        >
           Everything you need for DecentralChain
         </Typography>
 
@@ -49,10 +56,20 @@ export default function FeaturesRow() {
                 <CardContent sx={{ p: 3 }}>
                   <Stack spacing={2}>
                     <Box sx={{ color: 'primary.main' }}>{feature.icon}</Box>
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
                       {feature.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
                       {feature.desc}
                     </Typography>
                   </Stack>

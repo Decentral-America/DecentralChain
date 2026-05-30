@@ -63,12 +63,29 @@ export const AliasManagement = () => {
       <Container maxWidth="md">
         <Stack spacing={4}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight={700} gutterBottom>
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
+                  fontWeight: 700,
+                }}
+              >
                 Alias Management
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Create and manage aliases for your address
               </Typography>
             </Box>
@@ -84,15 +101,27 @@ export const AliasManagement = () => {
           {/* Address Info */}
           <Card>
             <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  color: 'text.secondary',
+                }}
+              >
                 Your Address
               </Typography>
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
                 <Typography
                   variant="body1"
-                  fontFamily="monospace"
                   sx={{
                     flex: 1,
+                    fontFamily: 'monospace',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                   }}
@@ -115,7 +144,13 @@ export const AliasManagement = () => {
 
           {/* Aliases List */}
           <Box>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               Your Aliases ({aliases.length})
             </Typography>
 
@@ -126,10 +161,22 @@ export const AliasManagement = () => {
             ) : aliases.length === 0 ? (
               <Card>
                 <CardContent sx={{ py: 8, textAlign: 'center' }}>
-                  <Typography variant="body1" color="text.secondary" gutterBottom>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     You don&apos;t have any aliases yet
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      mb: 3,
+                    }}
+                  >
                     Create an alias to make your address easier to share and remember
                   </Typography>
                   <Button
@@ -148,12 +195,26 @@ export const AliasManagement = () => {
                     <CardContent>
                       <Stack
                         direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
                         spacing={2}
+                        sx={{
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={2} sx={{ flex: 1 }}>
-                          <Typography variant="h6" fontFamily="monospace">
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: 'center',
+                            flex: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontFamily: 'monospace',
+                            }}
+                          >
                             {alias}
                           </Typography>
                           {copiedAlias === alias && (
@@ -170,9 +231,12 @@ export const AliasManagement = () => {
                       </Stack>
                       <Typography
                         variant="caption"
-                        color="text.secondary"
-                        fontFamily="monospace"
-                        sx={{ display: 'block', mt: 1 }}
+                        sx={{
+                          color: 'text.secondary',
+                          display: 'block',
+                          fontFamily: 'monospace',
+                          mt: 1,
+                        }}
                       >
                         alias:{networkCode}:{alias}
                       </Typography>
@@ -186,20 +250,46 @@ export const AliasManagement = () => {
           {/* Info Section */}
           <Card sx={{ bgcolor: 'action.hover' }}>
             <CardContent>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
                 About Aliases
               </Typography>
               <Stack spacing={1}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   • Aliases are permanent and cannot be changed or deleted
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   • Each alias costs 0.001 DCC to create
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   • Aliases must be 4-30 characters long
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   • Only lowercase letters, numbers, and the symbols -@_. are allowed
                 </Typography>
               </Stack>

@@ -1,0 +1,122 @@
+# ── DCC Integration Test Stack ─────────────────────────────────────────────────
+#
+# Single command to spin up everything needed for SDK integration tests:
+#
+#   docker compose -f docker-compose.test.yml up -d --wait
+#   pnpm nx run transactions:test:integration
+#   docker compose -f docker-compose.test.yml down
+#
+# Services:
+#   - dcc-node: Private chain (chain R) with pre-funded rich account
+#   - dcc-postgres: PostgreSQL for data-service/BPS
+#   - dcc-bps: blockchain-postgres-sync (streams blocks → Postgres)
+#   - dcc-data-service: REST API on :3001
+#
+# The node starts with a DETERMINISTIC genesis — same address, same tokens,
+# every time. No env vars needed for basic usage.
+#
+# ── Rich Account (genesis) ─────────────────────────────────────────────────────
+#   Seed:    dcc private node seed with dcc tokens
+#   Address: 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
+#   Balance: 100,000,000 DCC (10^16 wavelets)
+#   Chain:   R (byte 82)
+#
+# Override the seed via DCC_WALLET_SEED env var if needed.
+# ───────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Private DCC Node ─────────────────────────────────────────────────────────
+  dcc-node:
+    image: ghcr.io/decentral-america/node-scala-private:latest
+    container_name: dcc-test-node
+    environment:
+      # Default rich account — matches genesis recipient 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
+      DCC_WALLET_SEED: "dcc private node seed with dcc tokens"
+      DCC_WALLET_PASSWORD: "test"
+      DCC_REST_API_BIND: "0.0.0.0"
+    ports:
+      - "6869:6869"   # REST API
+      - "6881:6881"   # BlockchainUpdates gRPC
+      - "6860:6860"   # P2P (unused locally, but exposed for completeness)
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:6869/node/version"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    tmpfs:
+      - /tmp
+    networks:
+      - dcc-test
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+  dcc-postgres:
+    image: postgres:16-alpine
+    container_name: dcc-test-postgres
+    environment:
+      POSTGRES_DB: dcc
+      POSTGRES_USER: dcc
+      POSTGRES_PASSWORD: dcc_test
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dcc -d dcc"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks:
+      - dcc-test
+
+  # ── Blockchain Postgres Sync (BPS) ──────────────────────────────────────────
+  dcc-bps:
+    image: ghcr.io/decentral-america/blockchain-postgres-sync:latest
+    container_name: dcc-test-bps
+    depends_on:
+      dcc-node:
+        condition: service_healthy
+      dcc-postgres:
+        condition: service_healthy
+    environment:
+      BLOCKCHAIN_UPDATES_URL: "http://dcc-node:6881"
+      CHAIN_ID: "82"
+      STARTING_HEIGHT: "1"
+      POSTGRES__HOST: dcc-postgres
+      POSTGRES__PORT: "5432"
+      POSTGRES__DATABASE: dcc
+      POSTGRES__USER: dcc
+      POSTGRES__PASSWORD: dcc_test
+    networks:
+      - dcc-test
+
+  # ── Data Service ─────────────────────────────────────────────────────────────
+  dcc-data-service:
+    image: ghcr.io/decentral-america/data-service:latest
+    container_name: dcc-test-data-service
+    depends_on:
+      dcc-postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: dcc-postgres
+      PGPORT: "5432"
+      PGDATABASE: dcc
+      PGUSER: dcc
+      PGPASSWORD: dcc_test
+      PORT: "3001"
+      DEFAULT_MATCHER: "http://dcc-node:6886/matcher"
+      NODE_URL: "http://dcc-node:6869"
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/v0/version"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - dcc-test
+
+networks:
+  dcc-test:
+    driver: bridge

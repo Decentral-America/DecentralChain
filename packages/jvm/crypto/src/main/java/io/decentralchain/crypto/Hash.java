@@ -7,7 +7,7 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
 
 /**
  * Contains static methods to get cryptographic hashes.
- * Supports all algorithms used in the Waves blockchain protocol.
+ * Supports all algorithms used in the DCC blockchain protocol.
  */
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public abstract class Hash {

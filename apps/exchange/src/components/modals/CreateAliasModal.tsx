@@ -195,8 +195,19 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight={600}>
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+            }}
+          >
             Create Alias
           </Typography>
           <IconButton onClick={handleClose} disabled={isCreating} size="small">
@@ -204,11 +215,16 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
           </IconButton>
         </Stack>
       </DialogTitle>
-
       <DialogContent>
         <Stack spacing={3} sx={{ mt: 1 }}>
           <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                mb: 2,
+              }}
+            >
               Create a custom alias for your address. Aliases are shorter and easier to remember
               than full addresses.
             </Typography>
@@ -242,8 +258,10 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
               validationError ||
               `${alias.length}/${MAX_ALIAS_LENGTH} characters (minimum ${MIN_ALIAS_LENGTH})`
             }
-            InputProps={{
-              endAdornment: isValidating && <CircularProgress size={20} />,
+            slotProps={{
+              input: {
+                endAdornment: isValidating && <CircularProgress size={20} />,
+              },
             }}
           />
 
@@ -262,7 +280,6 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
           )}
         </Stack>
       </DialogContent>
-
       <DialogActions sx={{ pb: 3, px: 3 }}>
         <Button onClick={handleClose} disabled={isCreating}>
           Cancel
