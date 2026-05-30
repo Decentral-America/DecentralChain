@@ -5,17 +5,17 @@ use std::num::NonZeroU32;
 use anyhow::Result;
 use chrono::NaiveDateTime;
 
+use super::UidHeight;
 use super::models::{
     asset_tickers::{AssetTickerOverride, DeletedAssetTicker, InsertableAssetTicker},
     assets::{AssetOrigin, AssetOverride, AssetUpdate, DeletedAsset},
     block_microblock::BlockMicroblock,
-    txs::{
-        Tx1, Tx10, Tx11Combined, Tx12Combined, Tx13, Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined,
-        Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial,
-    },
     dcc_data::DccData,
+    txs::{
+        Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, Tx10, Tx11Combined, Tx12Combined, Tx13,
+        Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined,
+    },
 };
-use super::UidHeight;
 
 #[allow(async_fn_in_trait)]
 pub trait Repo {

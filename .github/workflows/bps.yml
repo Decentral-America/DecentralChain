@@ -70,6 +70,7 @@ jobs:
         run: cargo clippy --all-targets -- -D warnings
 
       - name: Test with coverage (cargo-nextest + cargo-llvm-cov)
+        id: test
         working-directory: apps/blockchain-postgres-sync
         run: |
           cargo llvm-cov nextest \
@@ -78,7 +79,7 @@ jobs:
             --output-path codecov.json
 
       - name: Upload coverage to Codecov
-        if: always()
+        if: steps.test.outcome == 'success'
         uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           files: apps/blockchain-postgres-sync/codecov.json

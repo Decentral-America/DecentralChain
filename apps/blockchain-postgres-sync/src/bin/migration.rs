@@ -1,6 +1,6 @@
 use diesel::migration::Migration;
-use diesel::{migration, pg::PgConnection, Connection};
-use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+use diesel::{Connection, migration, pg::PgConnection};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
 use app_lib::config;
 
