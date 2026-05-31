@@ -26,6 +26,8 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # Toggle from GitHub Settings > Variables > NX_NO_CLOUD (set to empty to re-enable).
+  NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD || 'true' }}
 
 jobs:
   integration:
@@ -89,7 +91,7 @@ jobs:
           docker run -d \
             --name dcc-test-node \
             --network host \
-            -e DCC_WALLET_SEED="dcc private node seed with dcc tokens" \
+            -e DCC_WALLET_SEED="TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4" \
             -e DCC_WALLET_PASSWORD="test" \
             -e DCC_REST_API_BIND="0.0.0.0" \
             dcc-private-node:local
@@ -136,19 +138,43 @@ jobs:
           cache: pnpm
           node-version-file: .node-version
 
+      # ── Rust / WASM toolchain (required by packages/sdk/crypto wasm-pack build) ──
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        with:
+          workspaces: packages/sdk/crypto
+          cache-on-failure: true
+
+      - name: Install wasm-pack v0.15.0
+        run: |
+          curl -fsSL \
+            https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+            -o /tmp/wasm-pack.tar.gz
+          echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  /tmp/wasm-pack.tar.gz" | sha256sum --check
+          tar -xzf /tmp/wasm-pack.tar.gz -C /tmp
+          mv /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
+          wasm-pack --version
+      # ────────────────────────────────────────────────────────────────────────────
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build SDK dependencies
-        run: pnpm nx run-many -t build --projects=types,ts-lib-crypto,bignumber,marshall,protobuf-serialization,node-api,transactions
+        run: pnpm nx run-many -t build --projects=types,ts-lib-crypto,bignumber,marshall,protobuf-serialization,node-api,@decentralchain/transactions
 
       - name: Run integration tests
         env:
           DCC_TEST_NODE_URL: http://localhost:6869
           DCC_TEST_CHAIN_ID: R
-          DCC_TEST_MINER_SEED: "dcc private node seed with dcc tokens"
+          DCC_TEST_MINER_SEED: "waves private node seed with waves tokens"
           DCC_TEST_MATCHER_URL: http://localhost:6886
-        run: pnpm --filter transactions test:integration
+        run: pnpm --filter @decentralchain/transactions test:integration
 
       - name: Node logs on failure
         if: failure()
