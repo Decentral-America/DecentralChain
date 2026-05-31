@@ -281,7 +281,7 @@ export const formatTransactionAmount = (
   if (!tx.amount) return '0';
 
   const direction = getTransactionDirection(tx, userAddress);
-  const amount = tx.amount / 100000000; // Convert from wavelets
+  const amount = tx.amount / 100000000; // Convert from dcclets
 
   switch (direction) {
     case 'incoming':
