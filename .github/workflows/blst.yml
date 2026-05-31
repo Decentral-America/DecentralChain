@@ -1,4 +1,4 @@
-name: BLST
+name: BLST CI
 
 on:
   push:
