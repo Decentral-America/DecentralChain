@@ -211,7 +211,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
       setErrorMessage('');
       setConfirmDialogOpen(false);
 
-      // Convert quantity to wavelets (smallest units)
+      // Convert quantity to dcclets (smallest units)
       const quantityInWavelets = pendingBurnData.quantity * 10 ** asset.decimals;
 
       // Prepare transaction parameters
@@ -344,7 +344,7 @@ export const BurnTokenForm: React.FC<BurnTokenFormProps> = ({ assetId, onSuccess
               {/* Fee Information */}
               <FeeInfo>
                 <FeeText>
-                  <strong>Transaction Fee:</strong> 0.001 DCC (100,000 wavelets)
+                  <strong>Transaction Fee:</strong> 0.001 DCC (100,000 dcclets)
                 </FeeText>
               </FeeInfo>
             </FormGrid>

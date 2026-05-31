@@ -55,8 +55,8 @@ export function ActiveMessagePage() {
   }
 
   const explorerUrls = new Map([
-    ['W', 'explorer.decentralchain.io'],
-    ['T', 'testnet.explorer.decentralchain.io'],
+    ['?', 'explorer.decentralchain.io'],
+    ['!', 'testnet.explorer.decentralchain.io'],
     ['S', 'stagenet.explorer.decentralchain.io'],
     ['custom', 'explorer.decentralchain.io/custom'],
   ]);

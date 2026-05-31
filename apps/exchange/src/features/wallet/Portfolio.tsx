@@ -21,7 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { waveletsToCoins } from '@/api/services/addressService';
+import { dccletsToCoins } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
@@ -92,10 +92,10 @@ export const Portfolio = () => {
   }, [assetDetails]);
 
   const baseBalanceWavelets = balances?.available ?? balances?.balance ?? 0;
-  const baseBalance = waveletsToCoins(baseBalanceWavelets);
-  const effectiveBalance = waveletsToCoins(balances?.effective ?? balances?.balance ?? 0);
-  const leasedOut = waveletsToCoins(balances?.leaseOut ?? 0);
-  const leasedIn = waveletsToCoins(balances?.leaseIn ?? 0);
+  const baseBalance = dccletsToCoins(baseBalanceWavelets);
+  const effectiveBalance = dccletsToCoins(balances?.effective ?? balances?.balance ?? 0);
+  const leasedOut = dccletsToCoins(balances?.leaseOut ?? 0);
+  const leasedIn = dccletsToCoins(balances?.leaseIn ?? 0);
   const leased = Math.max(leasedOut - leasedIn, 0);
 
   const baseAssetRow = useMemo<PortfolioAssetRow>(

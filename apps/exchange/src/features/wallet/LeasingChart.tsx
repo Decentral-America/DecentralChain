@@ -10,9 +10,9 @@ import { Pie } from '@visx/shape';
 import { useMemo } from 'react';
 
 interface LeasingChartProps {
-  available: number; // Available DCC balance in wavelets
-  leasedOut: number; // DCC leased out in wavelets
-  leasedIn: number; // DCC leased in (received) in wavelets
+  available: number; // Available DCC balance in dcclets
+  leasedOut: number; // DCC leased out in dcclets
+  leasedIn: number; // DCC leased in (received) in dcclets
 }
 
 const DCC_DECIMALS = 1e8;
@@ -20,7 +20,7 @@ const DCC_DECIMALS = 1e8;
 export function LeasingChart({ available, leasedOut, leasedIn }: LeasingChartProps) {
   const theme = useTheme();
 
-  // Convert wavelets to DCC (divide by 10^8)
+  // Convert dcclets to DCC (divide by 10^8)
   const availableDcc = available / DCC_DECIMALS;
   const leasedOutDcc = leasedOut / DCC_DECIMALS;
   const leasedInDcc = leasedIn / DCC_DECIMALS;

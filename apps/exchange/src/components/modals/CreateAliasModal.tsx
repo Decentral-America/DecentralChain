@@ -35,7 +35,7 @@ interface CreateAliasModalProps {
 const MIN_ALIAS_LENGTH = 4;
 const MAX_ALIAS_LENGTH = 30;
 const ALIAS_PATTERN = /^[a-z0-9-@_.]*$/;
-const ALIAS_FEE = 100000; // 0.001 DCC in wavelets
+const ALIAS_FEE = 100000; // 0.001 DCC in dcclets
 
 const ALIAS_ERROR_PATTERNS: Array<{ test: (msg: string) => boolean; message: string }> = [
   {
@@ -81,8 +81,8 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Check if user has enough balance
-  // DCC is the native token, stored in balances.regular or balances.available (in wavelets)
-  // Convert wavelets to DCC tokens: 1 DCC = 100,000,000 wavelets (10^8)
+  // DCC is the native token, stored in balances.regular or balances.available (in dcclets)
+  // Convert dcclets to DCC tokens: 1 DCC = 100,000,000 dcclets (10^8)
   // Debug logging
   useEffect(() => {
     if (balances) {
