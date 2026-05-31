@@ -45,7 +45,7 @@ public class GenesisTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void genesisTransaction(Address recipient, Id expectedId, Proof proof, byte[] expectedBody, byte[] expectedBytes,
                             String expectedJson) throws IOException {

@@ -224,7 +224,7 @@ class ContractGlobalDeclarationTest extends PropSpec {
         |
         |#-------------------Verifier Functions----------------------
         |func checkIsValidMinSponsoredFee(tx: SponsorFeeTransaction) = {
-        |    let MINTRANSFERFEE = 100000 #wavelets (to support smart assets)
+        |    let MINTRANSFERFEE = 100000 #dcclets (to support smart assets)
         |    let SponsoredFeeUpperBound = 1000 # % of fee profits higther than real fee for transfer
         |    let realNeutrinoFee = convertDccToNeutrino(MINTRANSFERFEE, currentPrice) # in paulis
         |    let minNeutrinoFee = realNeutrinoFee * 2 # 100%

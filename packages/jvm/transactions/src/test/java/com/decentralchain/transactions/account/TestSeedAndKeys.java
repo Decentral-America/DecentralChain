@@ -12,12 +12,12 @@ class TestSeedAndKeys {
     private final String phrase = "blame vacant regret company chase trip grant funny brisk innocent";
     private final String privateKey = "3j2aMHzh9azPphzuW7aF3cmUefGEQC9dcWYXYCyoPcJg";
     private final String publicKey = "8cj6YzvQPhSHGvnjupNTW8zrADTT8CMAAd2xTuej84gB";
-    private final String address = "3Ms87NGAAaPWZux233TB9A3TXps4LDkyJWN";
-    private final byte chainId = 'T';
+    private final String address = "3M4SuQ3ZbA2apH5jrzcWWBnuxZrYSknGW1C";
+    private final byte chainId = 'R';
 
     @Test
     void seedAndKeys() {
-        DccConfig.chainId('T');
+        DccConfig.chainId('R');
         PrivateKey pk = PrivateKey.fromSeed(Bytes.fromUtf8(phrase), 0);
 
         // Use .encoded() to get the base58 representation; toString() is redacted for security

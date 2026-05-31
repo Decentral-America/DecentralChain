@@ -50,7 +50,7 @@ public class CommitToGenerationTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void commitToGenerationTransaction(int version, int generationPeriodStart, String endorserPublicKey,
                                     String commitmentSignature, Id expectedId, List<Proof> proofs,
