@@ -18,6 +18,9 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Nx Cloud free plan quota exceeded — hard disable until upgraded or reset.
+  # Toggle from GitHub Settings > Variables > NX_NO_CLOUD (set to empty to re-enable).
+  NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD || 'true' }}
   # Skip Prettier formatting in generators/migrations — Biome handles all formatting.
   NX_SKIP_FORMAT: 'true'
 
