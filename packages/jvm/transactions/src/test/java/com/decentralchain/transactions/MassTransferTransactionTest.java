@@ -74,7 +74,7 @@ public class MassTransferTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void massTransferTransaction(int version, List<Transfer> transfers, AssetId assetId, Base58String attachment,
                                  Id expectedId, List<Proof> proofs, byte[] expectedBody, byte[] expectedBytes,

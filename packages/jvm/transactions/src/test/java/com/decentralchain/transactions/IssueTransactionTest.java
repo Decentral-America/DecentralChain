@@ -80,7 +80,7 @@ public class IssueTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void issueTransactionWithStringName(int version, String name, String description, int decimals, boolean reissuable,
                                         Base64String script, Id expectedId, List<Proof> proofs, byte[] expectedBody,
@@ -181,7 +181,7 @@ public class IssueTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("oldTransactionsProvider")
     void issueTransactionWithByteName(int version, byte[] name, byte[] description, int decimals, boolean reissuable,
                                       Base64String script, Id expectedId, List<Proof> proofs, byte[] expectedBody,

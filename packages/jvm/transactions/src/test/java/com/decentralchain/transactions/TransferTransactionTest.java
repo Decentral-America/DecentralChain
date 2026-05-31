@@ -78,7 +78,7 @@ public class TransferTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void transferTransaction(int version, Recipient recipient, AssetId assetId, Base58String attachment,
                              AssetId feeAssetId, long fee, Id expectedId, List<Proof> proofs,
