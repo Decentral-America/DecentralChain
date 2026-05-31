@@ -1,4 +1,4 @@
-name: curve25519
+name: Curve25519
 
 on:
   push:
