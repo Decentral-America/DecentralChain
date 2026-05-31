@@ -97,7 +97,7 @@ public class InvokeScriptTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void invokeScriptTransaction(int version, Recipient dApp, Function function, List<Amount> payments, Amount fee,
                                  Id expectedId, List<Proof> proofs, byte[] expectedBody, byte[] expectedBytes,
