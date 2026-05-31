@@ -92,7 +92,7 @@ class BytesDropTakeTest extends EvaluatorSpec {
 
     evalVerRange(s""" dropRight($b, -1) """, V1, V5) shouldBe bytes(1, 2, 3, 4, 5)
     eval(s""" dropRight($b, -1) """)(using V6) shouldBe Left("Unexpected negative number = -1 passed to dropRight()")
-    evalVerRange(s""" dropRight($b, $min) """, V1, V5) should produce("long overflow")
+    evalVerRange(s""" dropRight($b, $min) """, V1, V5) should produce("ArithmeticException")
     eval(s""" dropRight($b, $min) """)(using V6) shouldBe Left(
       s"Unexpected negative number = $min passed to dropRight()"
     )

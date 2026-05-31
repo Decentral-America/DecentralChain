@@ -95,7 +95,8 @@ public abstract class BaseTestWithNodeInDocker {
     return value;
   }
 
-  protected static final PrivateKey faucet = PrivateKey.fromSeed(requireEnv("DCC_TEST_MINER_SEED"));
+  protected static final PrivateKey faucet =
+      DOCKER_AVAILABLE ? PrivateKey.fromSeed(requireEnv("DCC_TEST_MINER_SEED")) : null;
 
   protected static PrivateKey createAccountWithBalance() throws IOException, NodeException {
     return PrivateKey.fromSeed(Crypto.getRandomSeedBytes());
