@@ -1,4 +1,4 @@
-name: Cubensis Connect — E2E
+name: Cubensis Connect E2E
 
 on:
   # Tag-based release gate: E2E runs on every Cubensis release tag before the

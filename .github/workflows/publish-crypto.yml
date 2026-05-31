@@ -1,4 +1,4 @@
-name: publish-crypto
+name: Publish Crypto
 
 on:
   workflow_dispatch:
