@@ -19,7 +19,8 @@ import { deleteProofsAndId } from './utils';
 
 const nodeUrl = process.env.DCC_TEST_NODE_URL ?? 'http://localhost:6869/';
 const masterSeed = process.env.DCC_TEST_MINER_SEED || 'dcc private node seed with dcc tokens';
-const CHAIN_ID = Number(process.env.DCC_TEST_CHAIN_ID ?? '82');
+const chainIdRaw = process.env.DCC_TEST_CHAIN_ID ?? 'R';
+const CHAIN_ID = chainIdRaw.length === 1 ? chainIdRaw.charCodeAt(0) : Number(chainIdRaw);
 let SEED = 'abc';
 const wvs = 1e8;
 
