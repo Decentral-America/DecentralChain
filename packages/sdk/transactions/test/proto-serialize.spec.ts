@@ -62,6 +62,7 @@ describe('transactions v3', () => {
     SEED = `account1${nonce}`;
     const mtt = massTransfer(
       {
+        chainId: CHAIN_ID,
         transfers: [{ amount: 2 * wvs, recipient: address(SEED, CHAIN_ID) }],
       },
       masterSeed,

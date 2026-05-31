@@ -41,7 +41,7 @@ export function sponsorship(
     chainId: networkByte(paramsOrTx.chainId, 63),
     fee: fee(paramsOrTx, 1e5),
     id: '',
-    minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee,
+    minSponsoredAssetFee: paramsOrTx.minSponsoredAssetFee ?? 0,
     proofs: paramsOrTx.proofs || [],
     senderPublicKey,
     timestamp: paramsOrTx.timestamp || Date.now(),

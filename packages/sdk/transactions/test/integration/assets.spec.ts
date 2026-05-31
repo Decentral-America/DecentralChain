@@ -258,12 +258,12 @@ describe('Assets', () => {
           const assetId = issueTx.id;
           await broadcast(issueTx, API_BASE);
           // GIVE DCC TO TEST ACC
-          // const transferTx = transfer({ recipient: address(account2, CHAIN_ID), amount: 100000000, chainId: CHAIN_ID }, MASTER_SEED)
-          // await broadcast(transferTx, API_BASE)
+          const transferTx = transfer({ recipient: address(account2, CHAIN_ID), amount: 100000000, chainId: CHAIN_ID }, MASTER_SEED);
+          await broadcast(transferTx, API_BASE);
 
           //WAIT BOTH TX TO COMPLETE
           await waitForTx(issueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
-          // await waitForTx(transferTx.id, { timeout: TIMEOUT, apiBase: API_BASE })
+          await waitForTx(transferTx.id, { timeout: TIMEOUT, apiBase: API_BASE });
           /////////////////////////
 
           //assetId = 'qmhEv7NeL39kDiWBVfzZh6aT1ZwzpD7y1CFxvmiH78U'
