@@ -45,7 +45,7 @@ jobs:
           cache: maven
 
       - name: Set up SBT
-        uses: sbt/setup-sbt@4ed7b7ec4bfa2074fe48554c09e341267397247c  # v1.2.0
+        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b  # v1.2.1
 
       - name: Checkout node-scala (lang dependency)
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
@@ -93,13 +93,25 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions)
+      - name: Set up SBT
+        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b  # v1.2.1
+
+      - name: Checkout node-scala (lang dependency)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: Decentral-America/node-scala
+          path: _node-scala
+
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions, lang)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw $MVN_OPTS install)
+          LANG_VERSION=$(awk -F'"' '/baseVersion/{print $2}' $GITHUB_WORKSPACE/_node-scala/version.sbt)
+          (cd $GITHUB_WORKSPACE/_node-scala && sbt "set ThisBuild / version := \"$LANG_VERSION\"" lang/publishM2)
 
       - name: Run audit profile
         working-directory: packages/jvm/java-sdk
@@ -134,13 +146,25 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions)
+      - name: Set up SBT
+        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b  # v1.2.1
+
+      - name: Checkout node-scala (lang dependency)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: Decentral-America/node-scala
+          path: _node-scala
+
+      - name: Install JVM prerequisites (protobuf-schemas, curve25519, blst, crypto, transactions, lang)
         run: |
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
-          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw --batch-mode --no-transfer-progress install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true)
+          MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/crypto       && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/jvm/transactions && ./mvnw $MVN_OPTS install)
+          LANG_VERSION=$(awk -F'"' '/baseVersion/{print $2}' $GITHUB_WORKSPACE/_node-scala/version.sbt)
+          (cd $GITHUB_WORKSPACE/_node-scala && sbt "set ThisBuild / version := \"$LANG_VERSION\"" lang/publishM2)
 
       - name: Build package + generate CycloneDX SBOM
         working-directory: packages/jvm/java-sdk
