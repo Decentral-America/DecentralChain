@@ -5,13 +5,13 @@
   },
   "description": "Safe JSON parser for large numbers — preserves precision for DecentralChain SDK",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "bignumber.js": "^11.1.1",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {

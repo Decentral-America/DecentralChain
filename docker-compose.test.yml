@@ -18,7 +18,7 @@
 # ── Rich Account (genesis) ─────────────────────────────────────────────────────
 #   Seed:    dcc private node seed with dcc tokens
 #   Address: 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
-#   Balance: 100,000,000 DCC (10^16 wavelets)
+#   Balance: 100,000,000 DCC (10^16 dcclets)
 #   Chain:   R (byte 82)
 #
 # Override the seed via DCC_WALLET_SEED env var if needed.

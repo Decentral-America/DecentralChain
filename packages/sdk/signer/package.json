@@ -10,14 +10,14 @@
   },
   "description": "Official DecentralChain transaction signing orchestrator — securely connect any provider to sign and broadcast blockchain transactions without exposing private keys",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@decentralchain/transactions": "workspace:*",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "typed-ts-events": "^3.0.1",
     "vitest": "catalog:"
   },
