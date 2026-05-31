@@ -8,12 +8,12 @@
   },
   "description": "Deterministic asset-pair ordering for the DecentralChain decentralized exchange (DEX). Resolves canonical amount/price asset direction using network priority lists.",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {

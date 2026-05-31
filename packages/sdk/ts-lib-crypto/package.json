@@ -10,15 +10,15 @@
   },
   "description": "Official TypeScript cryptographic library for the DecentralChain blockchain — key generation, digital signatures, hashing, encoding, and encryption primitives for building secure dApps and protocol integrations.",
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.3",
     "@decentralchain/crypto": "workspace:*",
-    "@arethetypeswrong/cli": "catalog:",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "fast-check": "4.8.0",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {
