@@ -17,10 +17,7 @@ describe('setSponsorship', () => {
   });
 
   it('Should create sponsorship transaction with zero sponsor fee (cancel)', () => {
-    const tx = sponsorship(
-      { ...sponsorshipMinimalParams, minSponsoredAssetFee: 0 },
-      stringSeed,
-    );
+    const tx = sponsorship({ ...sponsorshipMinimalParams, minSponsoredAssetFee: 0 }, stringSeed);
     expect(tx).toMatchObject({ ...sponsorshipMinimalParams, minSponsoredAssetFee: 0 });
   });
 
