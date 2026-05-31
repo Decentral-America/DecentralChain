@@ -10,14 +10,14 @@ import baseConfig from '../../../vitest.base.config';
  */
 export default mergeConfig(baseConfig, {
   test: {
+    exclude: [
+      // Requires a running matcher service (not available in integration CI)
+      'test/integration/matcher.spec.ts',
+    ],
     include: [
       'test/nodeInteraction.spec.ts',
       'test/proto-serialize.spec.ts',
       'test/integration/**/*.spec.ts',
-    ],
-    exclude: [
-      // Requires a running matcher service (not available in integration CI)
-      'test/integration/matcher.spec.ts',
     ],
     testTimeout: 120_000,
     typecheck: { enabled: false },
