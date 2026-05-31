@@ -164,7 +164,7 @@ describe('Assets', () => {
         };
         const burnTx = burn(burnParams, account1);
         const respPromise = broadcast(burnTx, API_BASE);
-        await expect(respPromise).rejects.toMatchObject({ data: { error: 112 } });
+        await expect(respPromise).rejects.toMatchObject({ data: { error: 308 } });
       },
       TIMEOUT + 20000,
     );
