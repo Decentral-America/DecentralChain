@@ -69,20 +69,18 @@ jobs:
           path: _node-scala
           sparse-checkout: docker/private
 
-      - name: Pull or build DCC private node image
+      - name: Build DCC private node image
         run: |
-          # Try pulling the pre-built image first (requires package to be public or accessible)
-          if docker pull ghcr.io/decentral-america/node-scala-private:latest 2>/dev/null; then
-            echo "Using pre-built private node image"
-            docker tag ghcr.io/decentral-america/node-scala-private:latest dcc-private-node:local
-          elif docker pull ghcr.io/decentral-america/node-scala:latest 2>/dev/null; then
-            echo "Building private node from base image"
+          # Always build locally from base image + latest config to ensure
+          # integration tests use current blockchain settings (e.g. pre-activated features)
+          if docker pull ghcr.io/decentral-america/node-scala:latest 2>/dev/null; then
+            echo "Building private node from base image + current config"
             docker build \
               --build-arg baseImage=ghcr.io/decentral-america/node-scala:latest \
               -t dcc-private-node:local \
               _node-scala/docker/private
           else
-            echo "::error::Cannot pull node images from GHCR. Make packages public at https://github.com/orgs/Decentral-America/packages"
+            echo "::error::Cannot pull node-scala base image from GHCR. Make package public at https://github.com/orgs/Decentral-America/packages"
             exit 1
           fi
 
