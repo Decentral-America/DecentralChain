@@ -1,4 +1,4 @@
-name: publish-protobuf-serialization
+name: Publish Protobuf Serialization
 
 on:
   workflow_dispatch:
