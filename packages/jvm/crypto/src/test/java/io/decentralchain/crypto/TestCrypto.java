@@ -14,8 +14,8 @@ class TestCrypto {
     private final byte[] expectedAccountSeedMaxNonce = Base58.decode("AkrbNh7X6yAt95mFeKsETkJcvX5Fg8JsDZDHTf8UpyR9");
     private final byte[] expectedPrivateKey = Base58.decode("3j2aMHzh9azPphzuW7aF3cmUefGEQC9dcWYXYCyoPcJg");
     private final byte[] expectedPublicKey = Base58.decode("8cj6YzvQPhSHGvnjupNTW8zrADTT8CMAAd2xTuej84gB");
-    private final byte[] expectedAddress = Base58.decode("3Ms87NGAAaPWZux233TB9A3TXps4LDkyJWN");
-    private final byte chainId = 'T';
+    private final byte[] expectedAddress = Base58.decode("3M4SuQ3ZbA2apH5jrzcWWBnuxZrYSknGW1C");
+    private final byte chainId = 'R';
 
     @Test
     void seedAndKeys() {

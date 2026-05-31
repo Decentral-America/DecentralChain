@@ -26,7 +26,7 @@ ext {
 }
 
 group = "io.decentralchain"
-archivesBaseName = "zwaves"
+archivesBaseName = "groth16"
 version = artifactVersion()
 
 dependencies {
@@ -77,10 +77,10 @@ publishing {
             artifact javadocJar
 
             pom {
-                name = 'zwaves'
+                name = 'groth16'
                 description = 'groth16verify (bls12, bn256) for Java'
                 packaging = 'jar'
-                url = 'https://github.com/Decentral-America/zwaves'
+                url = 'https://github.com/Decentral-America/DCC'
                 licenses {
                     license {
                         name.set("MIT License")
@@ -95,9 +95,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/Decentral-America/zwaves.git")
-                    developerConnection.set("scm:git:git@github.com:Decentral-America/zwaves.git")
-                    url.set("https://github.com/Decentral-America/zwaves")
+                    connection.set("scm:git:git://github.com/Decentral-America/DCC.git")
+                    developerConnection.set("scm:git:git@github.com:Decentral-America/DCC.git")
+                    url.set("https://github.com/Decentral-America/DCC")
                 }
             }
         }
