@@ -1,4 +1,4 @@
-name: Curve25519
+name: Curve25519 CI
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Transactions
+name: Transactions CI
 
 on:
   push:

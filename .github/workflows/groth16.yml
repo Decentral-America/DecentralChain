@@ -1,4 +1,4 @@
-name: Groth16
+name: Groth16 CI
 
 on:
   push:

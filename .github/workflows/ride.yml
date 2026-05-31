@@ -1,4 +1,4 @@
-name: RIDE
+name: RIDE CI
 
 on:
   push:
