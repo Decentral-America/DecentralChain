@@ -157,13 +157,14 @@ describe('Assets', () => {
         await waitForTx(assetId, { apiBase: API_BASE, timeout: TIMEOUT });
 
         const burnParams: IBurnParams = {
+          additionalFee: 400000,
           amount: 1000,
           assetId,
           chainId: CHAIN_ID,
         };
         const burnTx = burn(burnParams, account1);
         const respPromise = broadcast(burnTx, API_BASE);
-        await expect(respPromise).rejects.toMatchObject({ error: 112 });
+        await expect(respPromise).rejects.toMatchObject({ data: { error: 112 } });
       },
       TIMEOUT + 20000,
     );
