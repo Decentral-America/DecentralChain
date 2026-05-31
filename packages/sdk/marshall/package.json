@@ -8,14 +8,14 @@
   },
   "description": "Official binary serialization and data marshalling library for the DecentralChain blockchain — converts transactions and DEX orders between JavaScript objects, binary wire format, and JSON with safe 64-bit integer handling",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "bignumber.js": "^11.1.1",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {

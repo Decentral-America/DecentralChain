@@ -5,13 +5,13 @@
   },
   "description": "Official TypeScript SDK for parsing, encoding, validating, and diffing oracle data on the DecentralChain blockchain — provider identity, asset verification, and data transaction field utilities",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "fast-check": "4.8.0",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {

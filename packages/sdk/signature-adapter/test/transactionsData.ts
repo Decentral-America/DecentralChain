@@ -625,17 +625,17 @@ export const txs = {
     1: {
       data: {
         data: 'test random data',
-        host: 'chrome-ext.wvservices.com',
+        host: 'ext.decentralchain.io',
         name: 'test app',
         senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
       },
-      // id and proof regenerated after prefix rename from DccWalletAuthentication
-      // to DccWalletAuthentication. Generated with TEST_SEED (produces pubkey above).
-      id: '3q1YCA9e25ndPDVW7ebzinsbE8EidvAHehMmKk2WMPZ9',
+      // id and proof regenerated after host rename from wvservices.com →
+      // decentralchain.io and network W → ?. Generated with TEST_SEED.
+      id: 'FcAbEJSbQRa9mBg9r6TNzN7udgq7xPT9UuGC1P8QXAoh',
       name: 'auth request',
-      network: 'W',
+      network: '?',
       proof:
-        '41BT5R7yoK2bUobhAhLrQxk7e53sSgosge53y8faGDJYp4bbBpXq3p8CRY5zXqBQ1UsRQWPcQ2cZLVH8GP3F8HvL',
+        '3tHuZ7bc4kYMfCkr2iJADDRmxYohcVq6b938kkWEX2rwZKuo2YbgcXWqvZTN4bJqk63JhJ48QgMSBvh9Zk3cC7Hp',
     },
   },
 

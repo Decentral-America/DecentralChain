@@ -4,19 +4,19 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "@decentralchain/ts-lib-crypto": "workspace:*",
     "@decentralchain/ride-lang": "workspace:*",
-    "@decentralchain/ride-repl": "workspace:*"
+    "@decentralchain/ride-repl": "workspace:*",
+    "@decentralchain/ts-lib-crypto": "workspace:*"
   },
   "description": "JS compiler for Ride - the smart-contract language for DecentralChain",
   "devDependencies": {
-    "@arethetypeswrong/cli": "catalog:",
+    "@arethetypeswrong/cli": "0.18.3",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "catalog:",
+    "tsdown": "0.22.1",
     "vitest": "catalog:"
   },
   "engines": {
