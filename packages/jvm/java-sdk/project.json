@@ -27,6 +27,13 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
+        "command": "./mvnw --batch-mode test -Dtest='!node.ActivationTest,!node.AddressesTest,!node.AliasTest,!node.AssetsTest,!node.BlockchainTest,!node.BlocksTest,!node.LeasingTest,!node.PeersTest,!node.transactions.EthereumTransactionIntegrationTest,!node.transactions.TransactionsInfoTest'",
+        "cwd": "packages/jvm/java-sdk"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
         "command": "./mvnw --batch-mode test",
         "cwd": "packages/jvm/java-sdk"
       }
