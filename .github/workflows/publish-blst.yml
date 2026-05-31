@@ -1,4 +1,4 @@
-name: publish-blst
+name: Publish BLST
 
 on:
   workflow_dispatch:

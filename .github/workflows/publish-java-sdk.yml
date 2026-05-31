@@ -1,4 +1,4 @@
-name: publish-java-sdk
+name: Publish Java SDK
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: publish-groth16
+name: Publish Groth16
 
 on:
   workflow_dispatch:

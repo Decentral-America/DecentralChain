@@ -1,4 +1,4 @@
-name: publish-curve25519
+name: Publish Curve25519
 
 on:
   workflow_dispatch:
