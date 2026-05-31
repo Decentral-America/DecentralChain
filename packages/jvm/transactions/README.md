@@ -73,7 +73,7 @@ import com.decentralchain.transactions.account.PrivateKey;
 import com.decentralchain.transactions.common.Amount;
 import com.decentralchain.transactions.DccConfig;
 
-DccConfig.chainId('W'); // mainnet
+DccConfig.chainId('?'); // DCC mainnet (byte 63)
 
 PrivateKey sender = PrivateKey.fromSeed("your seed phrase");
 TransferTransaction tx = TransferTransaction.builder(recipient, Amount.of(100_000_000L))

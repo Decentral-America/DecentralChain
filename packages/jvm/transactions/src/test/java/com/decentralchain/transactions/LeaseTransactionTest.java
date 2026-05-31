@@ -91,7 +91,7 @@ public class LeaseTransactionTest {
         );
     }
 
-    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} wavelets")
+    @ParameterizedTest(name = "{index}: v{0} to {1} of {2} dcclets")
     @MethodSource("transactionsProvider")
     void leaseTransaction(int version, Recipient recipient, long amount, Id expectedId, List<Proof> proofs,
                           byte[] expectedBody, byte[] expectedBytes, String expectedJson) throws IOException {
