@@ -385,17 +385,17 @@ export function validateRecipient(value: string): 'address' | 'alias' | 'invalid
 }
 
 /**
- * Convert wavelets to DCC amount
- * 1 DCC = 100,000,000 wavelets (8 decimals)
+ * Convert dcclets to DCC amount
+ * 1 DCC = 100,000,000 dcclets (8 decimals)
  */
-export function waveletsToAmount(wavelets: number): number {
-  return wavelets / 100_000_000;
+export function dccletsToAmount(dcclets: number): number {
+  return dcclets / 100_000_000;
 }
 
 /**
- * Convert DCC amount to wavelets
- * 1 DCC = 100,000,000 wavelets (8 decimals)
+ * Convert DCC amount to dcclets
+ * 1 DCC = 100,000,000 dcclets (8 decimals)
  */
-export function amountToWavelets(amount: number): number {
+export function amountToDcclets(amount: number): number {
   return Math.floor(amount * 100_000_000);
 }
