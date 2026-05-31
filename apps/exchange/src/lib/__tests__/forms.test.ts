@@ -10,11 +10,12 @@ import {
   aliasRegistrationSchema,
   aliasSchema,
   amountSchema,
-  amountToWavelets,
+  amountToDcclets,
   assetBurnSchema,
   assetReissueSchema,
   attachmentSchema,
   dataTransactionSchema,
+  dccletsToAmount,
   dexOrderSchema,
   formatFormData,
   getFormError,
@@ -29,7 +30,6 @@ import {
   tokenIssuanceSchema,
   useZodForm,
   validateRecipient,
-  waveletsToAmount,
 } from '@/lib/forms';
 
 // ─── addressSchema ────────────────────────────────────────────────────────────
@@ -543,40 +543,40 @@ describe('validateRecipient', () => {
   });
 });
 
-// ─── waveletsToAmount ─────────────────────────────────────────────────────────
+// ─── dccletsToAmount ─────────────────────────────────────────────────────────
 
-describe('waveletsToAmount', () => {
-  it('converts 100,000,000 wavelets to 1 DCC', () => {
-    expect(waveletsToAmount(100_000_000)).toBe(1);
+describe('dccletsToAmount', () => {
+  it('converts 100,000,000 dcclets to 1 DCC', () => {
+    expect(dccletsToAmount(100_000_000)).toBe(1);
   });
 
-  it('converts 1 wavelet to 0.00000001 DCC', () => {
-    expect(waveletsToAmount(1)).toBe(0.00000001);
+  it('converts 1 dcclet to 0.00000001 DCC', () => {
+    expect(dccletsToAmount(1)).toBe(0.00000001);
   });
 
-  it('converts 0 wavelets to 0', () => {
-    expect(waveletsToAmount(0)).toBe(0);
+  it('converts 0 dcclets to 0', () => {
+    expect(dccletsToAmount(0)).toBe(0);
   });
 });
 
-// ─── amountToWavelets ─────────────────────────────────────────────────────────
+// ─── amountToDcclets ─────────────────────────────────────────────────────────
 
-describe('amountToWavelets', () => {
-  it('converts 1 DCC to 100,000,000 wavelets', () => {
-    expect(amountToWavelets(1)).toBe(100_000_000);
+describe('amountToDcclets', () => {
+  it('converts 1 DCC to 100,000,000 dcclets', () => {
+    expect(amountToDcclets(1)).toBe(100_000_000);
   });
 
-  it('converts 0.00000001 DCC to 1 wavelet', () => {
-    expect(amountToWavelets(0.00000001)).toBe(1);
+  it('converts 0.00000001 DCC to 1 dcclet', () => {
+    expect(amountToDcclets(0.00000001)).toBe(1);
   });
 
-  it('converts 0 DCC to 0 wavelets', () => {
-    expect(amountToWavelets(0)).toBe(0);
+  it('converts 0 DCC to 0 dcclets', () => {
+    expect(amountToDcclets(0)).toBe(0);
   });
 
-  it('floors fractional wavelets', () => {
-    // 1.5 DCC = 150,000,000 wavelets exactly; Math.floor is a no-op here
-    expect(amountToWavelets(1.5)).toBe(150_000_000);
+  it('floors fractional dcclets', () => {
+    // 1.5 DCC = 150,000,000 dcclets exactly; Math.floor is a no-op here
+    expect(amountToDcclets(1.5)).toBe(150_000_000);
   });
 });
 

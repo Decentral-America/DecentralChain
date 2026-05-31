@@ -254,7 +254,7 @@ export const MassTransferForm: React.FC = () => {
     try {
       // Convert form data to transaction format
       const transfersData = formData.transfers.map((transfer) => ({
-        amount: Math.round(parseFloat(transfer.amount) * 100000000), // Convert to wavelets
+        amount: Math.round(parseFloat(transfer.amount) * 100000000), // Convert to dcclets
         recipient: transfer.recipient,
       }));
 

@@ -125,8 +125,8 @@ export const CreateToken = () => {
 
   /**
    * Calculate total transaction fees
-   * - Token creation (Issue transaction): 100,000,000 wavelets = 1 DCC
-   * - Smart asset script (SetAssetScript): +100,000,000 wavelets = +1 DCC if hasAssetScript
+   * - Token creation (Issue transaction): 100,000,000 dcclets = 1 DCC
+   * - Smart asset script (SetAssetScript): +100,000,000 dcclets = +1 DCC if hasAssetScript
    */
   const totalFeeInWavelets = useMemo(() => {
     const issueFee = transactionService.calculateFee(TransactionType.Issue);
@@ -136,9 +136,9 @@ export const CreateToken = () => {
     return issueFee + scriptFee;
   }, [hasAssetScript]);
 
-  // Convert wavelets to DCC (1 DCC = 100,000,000 wavelets)
+  // Convert dcclets to DCC (1 DCC = 100,000,000 dcclets)
   const totalFeeInDCC = totalFeeInWavelets / 100000000;
-  const issueFeeInDCC = 1.0; // 100,000,000 wavelets
+  const issueFeeInDCC = 1.0; // 100,000,000 dcclets
   const scriptFeeInDCC = hasAssetScript ? 1.0 : 0;
 
   // Check if user has sufficient balance

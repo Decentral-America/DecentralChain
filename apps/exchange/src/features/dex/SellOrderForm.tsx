@@ -232,7 +232,7 @@ export const SellOrderForm: React.FC = () => {
   // Determine available balance based on asset type
   const availableBalance = useMemo(() => {
     if (isDccAmountAsset) {
-      // DCC balance is in wavelets, convert to DCC
+      // DCC balance is in dcclets, convert to DCC
       return (dccBalances?.available ?? 0) / 100000000;
     } else {
       // Custom token balance is already in minimal units

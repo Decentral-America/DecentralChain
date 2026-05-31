@@ -7,11 +7,11 @@ import type React from 'react';
 import styled from 'styled-components';
 import { Modal } from '@/components/modals/Modal';
 import {
+  dccletsToCoins,
   type Transaction,
   TransactionType,
   type TransferTransaction,
   transactionService,
-  waveletsToCoins,
 } from '@/services/transactionService';
 
 /**
@@ -154,8 +154,8 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
   // Format timestamp
   const formattedDate = new Date(transaction.timestamp).toLocaleString();
 
-  // Convert fee from wavelets to DCC
-  const feeInDCC = waveletsToCoins(transaction.fee);
+  // Convert fee from dcclets to DCC
+  const feeInDCC = dccletsToCoins(transaction.fee);
 
   return (
     <Modal open={open} onClose={onClose} title="Transaction Details" size="medium">
@@ -216,7 +216,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
           <DetailRow>
             <Label>Fee Amount</Label>
             <Value>
-              {feeInDCC} DCC ({transaction.fee.toLocaleString()} wavelets)
+              {feeInDCC} DCC ({transaction.fee.toLocaleString()} dcclets)
             </Value>
           </DetailRow>
           {transaction.feeAssetId && (
@@ -237,7 +237,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
             </DetailRow>
             <DetailRow>
               <Label>Amount</Label>
-              <Value>{waveletsToCoins((transaction as TransferTransaction).amount)} DCC</Value>
+              <Value>{dccletsToCoins((transaction as TransferTransaction).amount)} DCC</Value>
             </DetailRow>
             {(transaction as TransferTransaction).assetId && (
               <DetailRow>

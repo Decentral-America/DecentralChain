@@ -8,7 +8,7 @@ import { SIGN_TYPE } from '@decentralchain/signature-adapter';
 import * as ds from 'data-service';
 import { logger } from '@/lib/logger';
 
-// Standard transaction fees in wavelets (smallest unit)
+// Standard transaction fees in dcclets (smallest unit)
 const TRANSFER_FEE_WAVELETS = 100000; // 0.001 DCC
 
 /**
@@ -73,7 +73,7 @@ export const createTransferTransaction = async (
   // biome-ignore lint/nursery/useNullishCoalescing: assetId='' means native DCC asset — || fallback to 'DCC' string identifier is intentional
   const amountMoney = await ds.moneyFromTokens(params.amount.toString(), params.assetId || 'DCC');
 
-  // Get the fee as Money object using wavelets (smallest unit)
+  // Get the fee as Money object using dcclets (smallest unit)
   const feeMoney = await ds.moneyFromCoins(TRANSFER_FEE_WAVELETS, 'DCC');
 
   // Convert attachment string to bytes array using TextEncoder (standard browser API)

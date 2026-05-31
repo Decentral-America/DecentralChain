@@ -142,7 +142,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
       setIsSubmitting(true);
       setErrorMessage('');
 
-      // Convert quantity to wavelets (smallest units)
+      // Convert quantity to dcclets (smallest units)
       const quantityInWavelets = data.quantity * 10 ** data.decimals;
 
       // Prepare transaction parameters
@@ -274,7 +274,7 @@ export const IssueTokenForm: React.FC<IssueTokenFormProps> = ({ onSuccess, onCan
               {/* Fee Information */}
               <FeeInfo>
                 <FeeText>
-                  <strong>Transaction Fee:</strong> 1 DCC (100,000,000 wavelets)
+                  <strong>Transaction Fee:</strong> 1 DCC (100,000,000 dcclets)
                 </FeeText>
               </FeeInfo>
             </FormGrid>

@@ -30,7 +30,7 @@ export const Analytics = () => {
   // Calculate total portfolio value in DCC
   const portfolioValue = useMemo(() => {
     if (!balances || balances.available === undefined) return 0;
-    // Convert wavelets to DCC
+    // Convert dcclets to DCC
     return balances.available / 100000000;
   }, [balances]);
 

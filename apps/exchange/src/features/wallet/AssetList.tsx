@@ -4,7 +4,7 @@
  */
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { waveletsToCoins } from '@/api/services/addressService';
+import { dccletsToCoins } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { Spinner } from '@/components/atoms/Spinner';
 import { Stack } from '@/components/atoms/Stack';
@@ -63,7 +63,7 @@ export const AssetList = () => {
     const assetDetailMap = new Map((assetDetails ?? []).map((d) => [d.assetId, d]));
 
     const dccRow: Asset = {
-      balance: waveletsToCoins(balances?.available ?? balances?.balance ?? 0),
+      balance: dccletsToCoins(balances?.available ?? balances?.balance ?? 0),
       decimals: 8,
       id: 'DCC',
       name: 'DecentralChain',

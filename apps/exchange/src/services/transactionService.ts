@@ -134,7 +134,7 @@ export const transactionService = {
    * @param extraData - Additional data for fee calculation (e.g., data entries count)
    */
   calculateFee: (txType: TransactionType, extraData?: { dataEntries?: number }): number => {
-    // Base fees in wavelets (1 DCC = 100,000,000 wavelets)
+    // Base fees in dcclets (1 DCC = 100,000,000 dcclets)
     const baseFees: Record<TransactionType, number> = {
       [TransactionType.Genesis]: 0,
       [TransactionType.Payment]: 100000,
@@ -309,17 +309,17 @@ export const transactionService = {
 };
 
 /**
- * Utility: Convert wavelets to DCC coins
- * @param wavelets - Amount in wavelets (smallest unit)
+ * Utility: Convert dcclets to DCC coins
+ * @param dcclets - Amount in dcclets (smallest unit)
  */
-export const waveletsToCoins = (wavelets: number): number => {
-  return wavelets / 100000000;
+export const dccletsToCoins = (dcclets: number): number => {
+  return dcclets / 100000000;
 };
 
 /**
- * Utility: Convert DCC coins to wavelets
+ * Utility: Convert DCC coins to dcclets
  * @param coins - Amount in DCC
  */
-export const coinsToWavelets = (coins: number): number => {
+export const coinsToDcclets = (coins: number): number => {
   return Math.round(coins * 100000000);
 };

@@ -164,8 +164,8 @@ export interface MatcherOrderFee {
 }
 
 /**
- * Extract the base fee (in wavelets) from any matcher fee configuration.
- * Walks composite nesting and falls back to 300 000 wavelets (0.003 DCC — the
+ * Extract the base fee (in dcclets) from any matcher fee configuration.
+ * Walks composite nesting and falls back to 300 000 dcclets (0.003 DCC — the
  * protocol default) when the mode is unrecognised or the field is missing.
  *
  * @param fee - The `orderFee` object from `GET /matcher/settings`.
@@ -183,7 +183,7 @@ export function getMatcherBaseFee(fee: MatcherOrderFee): number {
   if (fee.percent?.minFeeInDcc != null) {
     return fee.percent.minFeeInDcc;
   }
-  // Default DCC/Dcc matcher fee: 0.003 DCC = 300 000 wavelets.
+  // Default DCC/Dcc matcher fee: 0.003 DCC = 300 000 dcclets.
   return 300_000;
 }
 

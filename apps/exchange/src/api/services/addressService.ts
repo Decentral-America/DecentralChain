@@ -11,27 +11,27 @@ import { nodeClient } from '../client';
 export interface AddressBalance {
   address: string;
   /**
-   * Regular balance in wavelets (10^8)
+   * Regular balance in dcclets (10^8)
    */
   regular?: number;
   /**
-   * Available balance in wavelets (10^8)
+   * Available balance in dcclets (10^8)
    */
   available?: number;
   /**
-   * Effective balance in wavelets (10^8)
+   * Effective balance in dcclets (10^8)
    */
   effective?: number;
   /**
-   * Generating balance in wavelets (10^8)
+   * Generating balance in dcclets (10^8)
    */
   generating?: number;
   /**
-   * Lease in amount in wavelets (10^8)
+   * Lease in amount in dcclets (10^8)
    */
   leaseIn?: number;
   /**
-   * Lease out amount in wavelets (10^8)
+   * Lease out amount in dcclets (10^8)
    */
   leaseOut?: number;
   /**
@@ -259,17 +259,17 @@ export const useAddressScript = (
 };
 
 /**
- * Utility function to convert wavelets to DCC coins
- * @param wavelets - Amount in wavelets (10^8)
+ * Utility function to convert dcclets to DCC coins
+ * @param dcclets - Amount in dcclets (10^8)
  */
-export const waveletsToCoins = (wavelets: number): number => {
-  return wavelets / 100000000;
+export const dccletsToCoins = (dcclets: number): number => {
+  return dcclets / 100000000;
 };
 
 /**
- * Utility function to convert DCC coins to wavelets
+ * Utility function to convert DCC coins to dcclets
  * @param coins - Amount in DCC
  */
-export const coinsToWavelets = (coins: number): number => {
+export const coinsToDcclets = (coins: number): number => {
   return Math.floor(coins * 100000000);
 };

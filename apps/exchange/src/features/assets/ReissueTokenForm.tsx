@@ -200,7 +200,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
       setIsSubmitting(true);
       setErrorMessage('');
 
-      // Convert quantity to wavelets (smallest units)
+      // Convert quantity to dcclets (smallest units)
       const quantityInWavelets = data.quantity * 10 ** asset.decimals;
 
       // Prepare transaction parameters
@@ -366,7 +366,7 @@ export const ReissueTokenForm: React.FC<ReissueTokenFormProps> = ({
               {/* Fee Information */}
               <FeeInfo>
                 <FeeText>
-                  <strong>Transaction Fee:</strong> 1 DCC (100,000,000 wavelets)
+                  <strong>Transaction Fee:</strong> 1 DCC (100,000,000 dcclets)
                 </FeeText>
               </FeeInfo>
             </FormGrid>
