@@ -187,7 +187,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build workspace packages
-        run: pnpm nx run-many -t build --exclude scanner --exclude exchange --exclude e2e
+        run: pnpm nx run @decentralchain/node-api:build
 
       - name: Install Playwright browsers
         run: |
