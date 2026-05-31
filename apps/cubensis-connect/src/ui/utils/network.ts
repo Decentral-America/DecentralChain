@@ -15,9 +15,9 @@ export function getNetworkByNetworkCode(networkCode: string): NetworkName {
   switch (networkCode) {
     case 'S':
       return NetworkName.Stagenet;
-    case 'T':
+    case '!':
       return NetworkName.Testnet;
-    case 'W':
+    case '?':
       return NetworkName.Mainnet;
     default:
       return NetworkName.Custom;

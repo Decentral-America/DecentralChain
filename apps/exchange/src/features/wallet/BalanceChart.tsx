@@ -13,7 +13,7 @@ import styled from 'styled-components';
 type ChartMode = 'hour' | 'day' | 'week' | 'month';
 
 interface BalanceChartProps {
-  totalBalance: number; // Total DCC balance in DCC (not wavelets)
+  totalBalance: number; // Total DCC balance in DCC (not dcclets)
 }
 
 export function BalanceChart({ totalBalance: _totalBalance }: BalanceChartProps) {
