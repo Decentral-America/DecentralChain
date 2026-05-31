@@ -1,4 +1,4 @@
-name: publish-transactions
+name: Publish Transactions
 
 on:
   workflow_dispatch:
