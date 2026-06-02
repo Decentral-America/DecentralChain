@@ -96,6 +96,13 @@ minimumReleaseAgeExclude:
   - tmp@0.2.6
   - '@nx/eslint@22.7.5'
   - '@nx/playwright@22.7.5'
+  - '@sentry-internal/browser-utils@10.56.0'
+  - '@sentry-internal/feedback@10.56.0'
+  - '@sentry-internal/replay-canvas@10.56.0'
+  - '@sentry-internal/replay@10.56.0'
+  - '@sentry/browser@10.56.0'
+  - '@sentry/core@10.56.0'
+  - '@sentry/react@10.56.0'
 
 # @visx 3.12.0 (latest stable) declares react peerDep as "^16||^17||^18".
 # The packages work correctly with React 19 — the peerDeps declaration just
