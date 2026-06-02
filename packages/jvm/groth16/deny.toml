@@ -66,7 +66,27 @@ ignore = [
   { id = "RUSTSEC-2020-0071", reason = "Segfault requires concurrent TZ env mutation; JVM server context never mutates TZ at runtime; same sapling-crypto lock constraint as RUSTSEC-2022-0011" },
 
   # ─────────────────────────────────────────────────────────────────────────
-  # RUSTSEC-2025-0141  bincode 1.3.3 — unmaintained (WARNING only, no CVE)
+  # GHSA-8gj8-hv75-gp94  crossbeam — SegQueue creates zero value of any type
+  #                       (SEVERITY: MEDIUM, no RUSTSEC alias)
+  # Source:  bellman 0.1.0 → crossbeam 0.3.2 (ZK-SNARK work-stealing scheduler)
+  #          phase2 0.2.2  → crossbeam 0.3.2 (MPC ceremony tool)
+  # Risk assessment:
+  #   The unsoundness allows `SegQueue<T>` to materialise a zero-value T if the
+  #   queue is erroneously popped when empty under some reordering.  In bellman
+  #   0.1.0, SegQueue is used as an internal work-stealing task queue during
+  #   Groth16 multi-exponentiation.  All queue items are `Arc<Scalar>`-like
+  #   proof-computation tasks; a zeroed Arc would dereference a null pointer.
+  #   However, bellman guards all pops with non-empty checks (its worker threads
+  #   only dequeue after being signalled that work is available), making the
+  #   erroneous empty-pop code path unreachable in normal operation.  The risk
+  #   is a crash (not data corruption or privilege escalation).  Risk: LOW.
+  # Why not patched: crossbeam 0.7+ completely rewrote SegQueue with a new API;
+  #   bellman 0.1.0 depends on the 0.3.x API and cannot be updated without
+  #   rewriting the sapling-crypto ZK-SNARK circuits and re-running the trusted
+  #   setup ceremony.
+  { id = "GHSA-8gj8-hv75-gp94", reason = "bellman guards all SegQueue pops with non-empty checks; unreachable empty-pop is a crash risk only, not data corruption; blocked by sapling-crypto trusted-setup pin" },
+
+  # ─────────────────────────────────────────────────────────────────────────
   # Source:  groth16_primitives 0.1.0 → bincode 1.3.3
   # Risk assessment:
   #   bincode is used for internal proof serialization inside groth16_primitives.

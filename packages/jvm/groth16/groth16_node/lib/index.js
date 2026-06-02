@@ -1,7 +1,12 @@
 const native = require('../native');
 const _ = require('lodash');
 const assert = require('assert');
-const { toBufferBE, toBigIntBE } = require('bigint-buffer');
+// Inline BigInt <-> Buffer conversions (replaces `bigint-buffer` which has no security fix)
+const toBufferBE = (bigint, length) => {
+  const hex = bigint.toString(16).padStart(length * 2, '0');
+  return Buffer.from(hex, 'hex');
+};
+const toBigIntBE = (buf) => BigInt('0x' + buf.toString('hex'));
 const crypto = require('crypto');
 const fr_order = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001n;
 const fs_order = 0xe7db4ea6533afa906673b0101343b00a6682093ccc81082d0970e5ed6f72cb7n;
