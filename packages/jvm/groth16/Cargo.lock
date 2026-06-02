@@ -334,7 +334,7 @@ dependencies = [
  "groth16_primitives",
  "lazy_static",
  "neon",
- "neon-build",
+ "neon-build 0.10.1",
  "pairing",
  "phase2",
  "rand 0.4.6",
@@ -496,7 +496,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "53b85accbbd250627f899a6fc1f220bbb4c8c2ff6dc71830dc6b752b39c2eb97"
 dependencies = [
  "cslice",
- "neon-build",
+ "neon-build 0.3.3",
  "neon-runtime",
  "semver",
 ]
@@ -510,6 +510,12 @@ dependencies = [
  "cfg-if 0.1.10",
  "neon-sys",
 ]
+
+[[package]]
+name = "neon-build"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8bac98a702e71804af3dacfde41edde4a16076a7bbe889ae61e56e18c5b1c811"
 
 [[package]]
 name = "neon-runtime"

@@ -11,7 +11,7 @@ name = "groth16_node"
 crate-type = ["cdylib"]
 
 [build-dependencies]
-neon-build = "0.3.3"
+neon-build = "0.10.1"
 
 [dependencies]
 neon = "0.3.3"
