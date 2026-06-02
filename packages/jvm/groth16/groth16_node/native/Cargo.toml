@@ -14,7 +14,7 @@ crate-type = ["cdylib"]
 neon-build = "0.10.1"
 
 [dependencies]
-neon = "0.3.3"
+neon = "1.1.1"
 
 rand = "0.4"
 bellman = { version = "0.1.0"}
