@@ -54,7 +54,7 @@ base64 = "0.22.1"
 
 # Cryptography / encoding
 blake2 = "0.10.6"
-sha3 = "0.11.0"
+sha3 = "0.12.0"
 bs58 = "0.5.1"
 hex = "0.4.3"
 # Pin bytes >= 1.11.1 — RUSTSEC-2026-0007: integer overflow in BytesMut::reserve
