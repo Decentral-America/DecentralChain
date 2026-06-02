@@ -3,15 +3,11 @@ name = "groth16_node"
 version = "0.1.0"
 authors = ["Igor Gulamov <igor.gulamov@gmail.com>"]
 license = "MIT"
-build = "build.rs"
 exclude = ["artifacts.json", "index.node"]
 
 [lib]
 name = "groth16_node"
 crate-type = ["cdylib"]
-
-[build-dependencies]
-neon-build = "0.10.1"
 
 [dependencies]
 neon = "1.1.1"
