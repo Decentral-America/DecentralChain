@@ -26,9 +26,14 @@
 
 services:
   # ── Private DCC Node ─────────────────────────────────────────────────────────
+  # Uses the standard node-scala image with private-chain configs mounted in.
+  # No separate "private" image — one image, configured via volumes + env vars.
   dcc-node:
-    image: ghcr.io/decentral-america/node-scala-private:latest
+    image: ghcr.io/decentral-america/node-scala:latest
     container_name: dcc-test-node
+    volumes:
+      - ./docker/private-node/decentralchain.custom.conf:/etc/dcc/dcc.conf:ro
+      - ./docker/private-node/local.conf:/etc/dcc/local.conf:ro
     environment:
       # Default rich account — matches genesis recipient 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
       DCC_WALLET_SEED: "dcc private node seed with dcc tokens"
