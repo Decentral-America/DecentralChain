@@ -4,7 +4,7 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
-    "bignumber.js": "^11.1.1"
+    "bignumber.js": "^11.1.2"
   },
   "description": "Official arbitrary-precision BigNumber library for the DecentralChain blockchain SDK — safe arithmetic and byte serialization for token amounts, transaction fees, and on-chain financial computations",
   "devDependencies": {
