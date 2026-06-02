@@ -1,10 +1,14 @@
 services:
   dcc-private-node:
-    image: ghcr.io/decentral-america/node-scala-private:latest
-    build:
-      context: ../../../../node-scala/docker/private
-      dockerfile: Dockerfile
+    image: ghcr.io/decentral-america/node-scala:latest
     platform: linux/amd64
+    volumes:
+      - ../../docker/private-node/decentralchain.custom.conf:/etc/dcc/dcc.conf:ro
+      - ../../docker/private-node/local.conf:/etc/dcc/local.conf:ro
+    environment:
+      DCC_WALLET_SEED: "TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4"
+      DCC_WALLET_PASSWORD: "test"
+      DCC_REST_API_BIND: "0.0.0.0"
     ports:
       - '6869:6869'
   hub:
