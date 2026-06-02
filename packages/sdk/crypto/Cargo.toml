@@ -21,5 +21,7 @@ wasm-opt = ['-Oz', '-c']
 argon2 = {version = "0.5.3", default-features = false, features = ["alloc"]}
 ed25519-axolotl = "1.7"
 ed25519-compact = {version = "2.0", features = ["opt_size", "traits", "x25519"]}
-getrandom = {version = "0.2", features = ["js"]}
+getrandom = {version = "0.4", features = ["wasm_js"]}
+# Also enable js feature for getrandom 0.2 transitive dependencies (argon2, rand_core, etc.)
+getrandom02 = {version = "0.2", features = ["js"], package = "getrandom"}
 wasm-bindgen = "0.2"
