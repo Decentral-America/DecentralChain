@@ -1,0 +1,52 @@
+name: CodeQL
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: '30 5 * * 1'  # Weekly on Monday at 05:30 UTC
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # TypeScript/JavaScript source — the primary language of this monorepo
+          - language: javascript-typescript
+            build-mode: none
+          # GitHub Actions workflow files
+          - language: actions
+            build-mode: none
+        # Intentionally excluded (detected by GitHub but not our source code):
+        #   c-cpp        — vendored in Node.js native deps only
+        #   java-kotlin  — no Java/Kotlin source in this repo
+        #   python        — no Python source in this repo
+        #   rust          — vendored in Rust native addons only
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa  # v4.36.0
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # security-extended adds more security queries on top of the default suite
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa  # v4.36.0
+        with:
+          category: "/language:${{ matrix.language }}"
