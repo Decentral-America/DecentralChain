@@ -1,0 +1,85 @@
+version: 2
+updates:
+  # ── npm (pnpm workspace root) ─────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      nx-platform:
+        patterns: ["nx", "@nx/*"]
+      build-tools:
+        patterns: ["@biomejs/*", "vite", "vitest", "esbuild", "typescript"]
+      testing:
+        patterns: ["@playwright/*", "@vitest/*"]
+    ignore:
+      # neon-cli 0.1.x is pinned for groth16_node native build compatibility
+      - dependency-name: "neon-cli"
+        versions: [">=0.2.0"]
+
+  # ── npm (groth16_node — legacy Neon native package) ───────────────────────
+  - package-ecosystem: "npm"
+    directory: "/packages/jvm/groth16/groth16_node"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+
+  # ── cargo (groth16 workspace) ─────────────────────────────────────────────
+  # The sapling-crypto ZK-SNARK dependencies (bellman, crossbeam 0.3,
+  # rust-crypto, time 0.1) are pinned at their current versions to guarantee
+  # bit-for-bit reproducibility of the Groth16 proving parameters.
+  # Upgrades to these crates would invalidate the trusted setup and permanently
+  # break the on-chain ZK verifier.  Their known advisories are documented and
+  # suppressed in packages/jvm/groth16/deny.toml.
+  - package-ecosystem: "cargo"
+    directory: "/packages/jvm/groth16"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "crossbeam"
+        versions: ["*"]
+      - dependency-name: "rust-crypto"
+        versions: ["*"]
+      - dependency-name: "time"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "bellman"
+        versions: ["*"]
+      - dependency-name: "openssl"
+        versions: ["*"]
+
+  # ── cargo (sdk/crypto) ────────────────────────────────────────────────────
+  - package-ecosystem: "cargo"
+    directory: "/packages/sdk/crypto"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+
+  # ── cargo (sdk/protobuf-serialization) ───────────────────────────────────
+  - package-ecosystem: "cargo"
+    directory: "/packages/sdk/protobuf-serialization"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+
+  # ── cargo (apps/blockchain-postgres-sync) ────────────────────────────────
+  - package-ecosystem: "cargo"
+    directory: "/apps/blockchain-postgres-sync"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+
+  # ── GitHub Actions ────────────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
