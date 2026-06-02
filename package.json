@@ -2,7 +2,7 @@
   "author": "DecentralChain",
   "description": "DecentralChain SDK — Multi-language monorepo for all @decentralchain packages (TypeScript SDK, RIDE lang/repl, JVM libraries)",
   "devDependencies": {
-    "@biomejs/biome": "2.4.11",
+    "@biomejs/biome": "2.4.16",
     "@nx/devkit": "22.7.5",
     "@nx/playwright": "22.7.5",
     "@nx/vitest": "22.7.5",
@@ -12,7 +12,7 @@
     "lefthook": "2.1.9",
     "nx": "22.7.5",
     "typescript": "6.0.3",
-    "vite": "8.0.14",
+    "vite": "8.0.16",
     "vitest": "catalog:"
   },
   "engines": {

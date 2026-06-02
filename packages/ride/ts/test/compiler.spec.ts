@@ -418,7 +418,7 @@ multiply(inc(a), dec(a)) == (5 + 1) * (5 - 1)
   test('compiler version', () => {
     expect(compiler.version).toBeDefined();
     expect(typeof compiler.version).toBe('string');
-    expect(compiler.version!.length).toBeGreaterThan(0);
+    expect(compiler.version?.length).toBeGreaterThan(0);
   });
 
   test('negative: invalid lib version', () => {
