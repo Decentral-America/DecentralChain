@@ -14,7 +14,7 @@
     "@ethereumjs/util": "^10.1.2",
     "@floating-ui/react-dom": "2.1.8",
     "@noble/ciphers": "2.2.0",
-    "@sentry/browser": "^10.55.0",
+    "@sentry/browser": "^10.56.0",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "copy-to-clipboard": "^4.0.2",
