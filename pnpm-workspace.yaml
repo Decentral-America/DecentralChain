@@ -64,38 +64,10 @@ overrides:
 # This is intentional – the cycle is test-only and causes no runtime issues.
 ignoreWorkspaceCycles: true
 
+# pnpm supply-chain policy: packages published within ~1 day fail the
+# minimumReleaseAge lockfile check. List only entries that are genuinely
+# within the cutoff window; remove them once the package has aged past it.
 minimumReleaseAgeExclude:
-  - '@vitest/coverage-v8@4.1.8'
-  - '@vitest/expect@4.1.8'
-  - '@vitest/mocker@4.1.8'
-  - '@vitest/pretty-format@4.1.8'
-  - '@vitest/runner@4.1.8'
-  - '@vitest/snapshot@4.1.8'
-  - '@vitest/spy@4.1.8'
-  - '@vitest/utils@4.1.8'
-  - vitest@4.1.8
-  - vite@8.0.16
-  - knip@6.14.2
-  - hono@4.12.23
-  - nx@22.7.5
-  - '@nx/devkit@22.7.5'
-  - '@nx/vitest@22.7.5'
-  - '@hookform/resolvers@5.4.0'
-  - '@nx/nx-darwin-arm64@22.7.5'
-  - '@nx/nx-darwin-x64@22.7.5'
-  - '@nx/nx-freebsd-x64@22.7.5'
-  - '@nx/nx-linux-arm-gnueabihf@22.7.5'
-  - '@nx/nx-linux-arm64-gnu@22.7.5'
-  - '@nx/nx-linux-arm64-musl@22.7.5'
-  - '@nx/nx-linux-x64-gnu@22.7.5'
-  - '@nx/nx-linux-x64-musl@22.7.5'
-  - '@nx/nx-win32-arm64-msvc@22.7.5'
-  - '@nx/nx-win32-x64-msvc@22.7.5'
-  - '@nx/js@22.7.5'
-  - '@nx/workspace@22.7.5'
-  - tmp@0.2.6
-  - '@nx/eslint@22.7.5'
-  - '@nx/playwright@22.7.5'
   - '@sentry-internal/browser-utils@10.56.0'
   - '@sentry-internal/feedback@10.56.0'
   - '@sentry-internal/replay-canvas@10.56.0'
