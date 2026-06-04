@@ -38,6 +38,7 @@ allowBuilds:
   libpq: true
   nx: false
   sharp: true
+  workerd: false
 
 overrides:
   '@xmldom/xmldom': '>=0.9.10'
