@@ -20,7 +20,7 @@ hex = "0.4"
 test-case = "3.2.1"
 # Needed to generate known-valid (vk, proof, inputs) triples for the verification tests.
 # Must match the exact ark versions fastcrypto-zkp depends on (ark 0.4.x).
-ark-bls12-381 = "0.4.0"
+ark-bls12-381 = "0.6.0"
 ark-groth16 = "0.4.0"
 ark-relations = "0.4.0"
 ark-ff = "0.4.2"
