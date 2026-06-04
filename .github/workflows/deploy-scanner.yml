@@ -35,7 +35,6 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/decentral-america/scanner
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ── Resolve build parameters ──────────────────────────────────────────────────
@@ -51,9 +50,12 @@ jobs:
     steps:
       - name: Compute network
         id: params
+        env:
+          INPUT_NETWORK: ${{ inputs.network }}
         run: |
+          set -euo pipefail
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            NETWORK="${{ inputs.network }}"
+            NETWORK="${INPUT_NETWORK}"
           else
             NETWORK="mainnet"
           fi
@@ -153,6 +155,7 @@ jobs:
 
       - name: Write image summary
         run: |
+          set -euo pipefail
           echo "### Image pushed" >> "$GITHUB_STEP_SUMMARY"
           echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
           echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
