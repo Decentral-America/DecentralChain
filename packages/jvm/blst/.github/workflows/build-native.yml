@@ -74,10 +74,14 @@ jobs:
             resource_dir: Linux/x86
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Install build tools
         run: |
+          set -euo pipefail
           sudo apt-get update -qq
           PKGS="swig"
           [[ "${{ matrix.arch }}" == "x86" ]] && PKGS="$PKGS gcc-multilib g++-multilib"
@@ -91,11 +95,13 @@ jobs:
 
       - name: Clone blst ${{ env.BLST_TAG }}
         run: |
+          set -euo pipefail
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
 
       - name: Verify blst ${{ env.BLST_TAG }} source integrity
         run: |
+          set -euo pipefail
           ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
           case "${BLST_TAG}" in
             "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
@@ -111,6 +117,7 @@ jobs:
 
       - name: Build libblst.a
         run: |
+          set -euo pipefail
           cd /tmp/blst-src
           CC=${{ matrix.cc }} CFLAGS="-fPIC -fvisibility=hidden ${{ matrix.extra_cflags }}" \
             ./build.sh -fvisibility=hidden ${{ matrix.extra_cflags }}
@@ -119,6 +126,7 @@ jobs:
 
       - name: Generate SWIG wrapper
         run: |
+          set -euo pipefail
           mkdir -p /tmp/blst-swig-out/supranational/blst
           cd /tmp/blst-src
           swig -c++ -java -package supranational.blst \
@@ -128,6 +136,7 @@ jobs:
 
       - name: Compile libblst.so
         run: |
+          set -euo pipefail
           JNI_MD="$JAVA_HOME/include/linux"
           ${{ matrix.cxx }} -shared \
               -o /tmp/libblst.so \
@@ -151,6 +160,7 @@ jobs:
 
       - name: Install native library
         run: |
+          set -euo pipefail
           cp /tmp/libblst.so \
              "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so"
 
@@ -159,6 +169,7 @@ jobs:
         with:
           name: native-linux-${{ matrix.arch }}
           path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so
+          retention-days: 1
 
   # ── macOS (aarch64 + x86_64) ─────────────────────────────────────────────────
   build-macos:
@@ -178,7 +189,10 @@ jobs:
             resource_dir: Mac/x86_64
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Install SWIG
         run: brew install swig
@@ -191,11 +205,13 @@ jobs:
 
       - name: Clone blst ${{ env.BLST_TAG }}
         run: |
+          set -euo pipefail
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
 
       - name: Verify blst ${{ env.BLST_TAG }} source integrity
         run: |
+          set -euo pipefail
           ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
           case "${BLST_TAG}" in
             "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
@@ -211,11 +227,13 @@ jobs:
 
       - name: Build libblst.a
         run: |
+          set -euo pipefail
           cd /tmp/blst-src
           CFLAGS="-fPIC -fvisibility=hidden" ./build.sh -fvisibility=hidden
 
       - name: Generate SWIG wrapper
         run: |
+          set -euo pipefail
           mkdir -p /tmp/blst-swig-out/supranational/blst
           cd /tmp/blst-src
           swig -c++ -java -package supranational.blst \
@@ -225,6 +243,7 @@ jobs:
 
       - name: Compile libblst.dylib
         run: |
+          set -euo pipefail
           JNI_MD="$JAVA_HOME/include/darwin"
           c++ -dynamiclib \
               -o /tmp/libblst.dylib \
@@ -243,6 +262,7 @@ jobs:
 
       - name: Install native library
         run: |
+          set -euo pipefail
           cp /tmp/libblst.dylib \
              "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib"
 
@@ -251,6 +271,7 @@ jobs:
         with:
           name: native-macos-${{ matrix.arch }}
           path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib
+          retention-days: 1
 
   # ── Windows amd64 (MinGW cross-compile from Linux) ────────────────────────────
   #
@@ -264,10 +285,14 @@ jobs:
     name: Windows amd64
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Install MinGW cross-compiler and SWIG
         run: |
+          set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
@@ -281,11 +306,13 @@ jobs:
 
       - name: Clone blst ${{ env.BLST_TAG }}
         run: |
+          set -euo pipefail
           git clone --depth 1 --branch "$BLST_TAG" \
             https://github.com/supranational/blst.git /tmp/blst-src
 
       - name: Verify blst ${{ env.BLST_TAG }} source integrity
         run: |
+          set -euo pipefail
           ACTUAL=$(git -C /tmp/blst-src rev-parse HEAD)
           case "${BLST_TAG}" in
             "v0.3.16") EXPECTED="e7f90de551e8df682f3cc99067d204d8b90d27ad" ;;
@@ -301,6 +328,7 @@ jobs:
 
       - name: Build libblst.a (MinGW)
         run: |
+          set -euo pipefail
           cd /tmp/blst-src
           CC=x86_64-w64-mingw32-gcc \
             CFLAGS="-fPIC -fvisibility=hidden" \
@@ -308,6 +336,7 @@ jobs:
 
       - name: Generate SWIG wrapper
         run: |
+          set -euo pipefail
           mkdir -p /tmp/blst-swig-out/supranational/blst
           cd /tmp/blst-src
           swig -c++ -java -package supranational.blst \
@@ -317,6 +346,7 @@ jobs:
 
       - name: Compile blst.dll
         run: |
+          set -euo pipefail
           # Use Linux JNI headers — on x86-64 Windows, JNICALL (stdcall) == cdecl.
           # No ABI difference on 64-bit; the Linux jni_md.h (JNICALL = empty) is correct.
           x86_64-w64-mingw32-g++ -shared \
@@ -339,6 +369,7 @@ jobs:
 
       - name: Install native library
         run: |
+          set -euo pipefail
           cp /tmp/blst.dll \
              "src/main/resources/supranational/blst/Windows/amd64/blst.dll"
 
@@ -347,6 +378,7 @@ jobs:
         with:
           name: native-windows-amd64
           path: src/main/resources/supranational/blst/Windows/amd64/blst.dll
+          retention-days: 1
 
   # ── Commit all compiled libraries back to the repo ───────────────────────────
   commit-natives:
@@ -357,7 +389,8 @@ jobs:
     permissions:
       contents: write   # required to push committed native libraries back to the repo
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -368,6 +401,7 @@ jobs:
 
       - name: Install native libraries
         run: |
+          set -euo pipefail
           BASE="src/main/resources/supranational/blst"
 
           cp /tmp/native-artifacts/native-linux-amd64/libblst.so    "$BASE/Linux/amd64/libblst.so"
@@ -379,6 +413,7 @@ jobs:
 
       - name: Verify all 6 libraries updated
         run: |
+          set -euo pipefail
           echo "=== Native library inventory ==="
           find src/main/resources/supranational/blst -type f | sort | while read f; do
             echo "$f: $(file "$f")"
@@ -386,6 +421,7 @@ jobs:
 
       - name: Commit and push
         run: |
+          set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/main/resources/supranational/blst/

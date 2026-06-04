@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -20,7 +20,7 @@
       "!.nx",
       "!**/.react-router",
       "!packages/jvm/*/src/test/resources",
-      "!packages/jvm/groth16/groth16_node"
+      "!packages/ride/lang/doc.template.html"
     ]
   },
   "formatter": {

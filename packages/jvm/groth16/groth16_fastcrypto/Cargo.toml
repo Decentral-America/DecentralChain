@@ -1,0 +1,29 @@
+[package]
+name = "groth16_fastcrypto"
+version = "0.1.0"
+authors = ["DecentralChain <dev@decentralchain.io>"]
+edition = "2021"
+license = "MIT"
+description = "Modern Groth16 BLS12-381 verifier backed by fastcrypto-zkp (Mysten Labs, audited). Activated via BlockchainFeature(28) — replaces bellman-0.1 for new blocks while preserving the legacy verifier for historical re-validation below the activation height."
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+# fastcrypto-zkp 0.1.4 — Mysten Labs audited Groth16 verifier.
+# Audit report: https://www.commonprefix.com/static/clients/mysten/mysten_fastcrypto_groth16_audit.pdf
+# Uses blst 0.3.16 for BLS12-381 (same version as packages/jvm/blst — deduplicated in build).
+fastcrypto-zkp = "0.1.4"
+
+[dev-dependencies]
+hex = "0.4"
+test-case = "3.2.1"
+# Needed to generate known-valid (vk, proof, inputs) triples for the verification tests.
+# Must match the exact ark versions fastcrypto-zkp depends on (ark 0.4.x).
+ark-bls12-381 = "0.4.0"
+ark-groth16 = "0.4.0"
+ark-relations = "0.4.0"
+ark-ff = "0.4.2"
+ark-serialize = "0.4.2"
+ark-snark = "0.4.0"
+ark-std = "0.4.0"

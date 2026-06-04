@@ -110,7 +110,7 @@ upstream blst version bump:
 
 ```bash
 # 1. Clone blst at the target version
-git clone --branch v0.3.15 https://github.com/supranational/blst /tmp/blst-build/blst
+git clone --branch v0.3.16 https://github.com/supranational/blst /tmp/blst-build/blst
 
 # 2. Run SWIG with the DCC wrapper (blst-dcc.swg patches duplicate Java signatures)
 cd /tmp/blst-build/blst/bindings/java
@@ -139,7 +139,7 @@ See `blst-dcc.swg` in this directory for the documented fix applied to upstream'
 <upstream-blst-version>.<dcc-patch>
 ```
 
-`0.3.15.0` — upstream blst 0.3.15 + DCC patch 0.
+`0.3.16.0` — upstream blst 0.3.16 + DCC patch 0.
 
 ---
 

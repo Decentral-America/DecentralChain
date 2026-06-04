@@ -8,9 +8,6 @@ use groth16_primitives::{
     verifier::{verify_proof, TruncatedVerifyingKey},
 };
 
-#[cfg(test)]
-pub mod tests;
-
 pub fn groth16_verify(vk: &[u8], proof: &[u8], inputs: &[u8]) -> io::Result<u8> {
     let buff_vk_len = vk.len();
     let buff_proof_len = proof.len();

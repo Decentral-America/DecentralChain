@@ -3,5 +3,7 @@ edition = "2018"
 max_width = 120
 hard_tabs = false
 newline_style = "Unix"
-
-imports_granularity = "Crate"
+# NOTE: `imports_granularity` / `group_imports` are nightly-only rustfmt options.
+# They were removed because they are silently ignored on the stable toolchain
+# (which this workspace and its CI use), so they enforced nothing and only
+# emitted "unstable features are only available in nightly" warnings.

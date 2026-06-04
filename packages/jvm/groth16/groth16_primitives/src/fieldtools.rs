@@ -1,6 +1,8 @@
-use pairing::{PrimeField, Field, PrimeFieldRepr};
+use pairing::{PrimeField, PrimeFieldRepr};
 use itertools::Itertools;
-use std::mem::transmute;
+
+#[cfg(test)]
+use pairing::Field;
 
 
 #[derive(Debug)]

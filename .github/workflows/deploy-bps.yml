@@ -33,7 +33,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   IMAGE_NAME: ghcr.io/decentral-america/blockchain-postgres-sync
 
 jobs:
@@ -114,9 +113,12 @@ jobs:
     steps:
       - name: Determine target network
         id: network
+        env:
+          INPUT_NETWORK: ${{ inputs.network }}
         run: |
+          set -euo pipefail
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "network=${{ inputs.network }}" >> "$GITHUB_OUTPUT"
+            echo "network=${INPUT_NETWORK}" >> "$GITHUB_OUTPUT"
           else
             echo "network=mainnet" >> "$GITHUB_OUTPUT"
           fi

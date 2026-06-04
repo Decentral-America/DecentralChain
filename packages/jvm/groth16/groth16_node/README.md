@@ -1,3 +1,0 @@
-# groth16_node
-
-

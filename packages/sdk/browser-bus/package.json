@@ -5,14 +5,14 @@
   },
   "description": "Cross-window browser communication library for DecentralChain DApps and wallet applications",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
+    "@arethetypeswrong/cli": "catalog:",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
     "ts-utils": "6.1.0",
-    "tsdown": "0.22.1",
+    "tsdown": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

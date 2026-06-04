@@ -13,6 +13,10 @@ on:
       - 'packages/jvm/groth16/**'
       - '.github/workflows/ride.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -20,11 +24,13 @@ jobs:
   build:
     name: Build & Test (Scala 3 · JVM + Scala.js · Node 24)
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       # JDK 25 (Temurin) — sbt and JVM subprojects
@@ -75,6 +81,7 @@ jobs:
 
       - name: Stage native library into groth16 resources
         run: |
+          set -euo pipefail
           rm -f packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
           cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libgroth16_jni.so \
              packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
@@ -99,6 +106,7 @@ jobs:
         # Without this, Coursier may follow file:// paths from a restored cache
         # pointing to ~/.m2 JARs that weren't installed in this run.
         run: |
+          set -euo pipefail
           find ~/.m2/repository -mindepth 1 -maxdepth 1 -type d ! -name "io" -exec rm -rf {} +
           if [ -d ~/.m2/repository/io ]; then
             find ~/.m2/repository/io -mindepth 1 -maxdepth 1 -type d ! -name "decentralchain" -exec rm -rf {} +
@@ -136,11 +144,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up JDK 25 (Temurin)
@@ -170,6 +180,7 @@ jobs:
 
       - name: Stage native library into groth16 resources
         run: |
+          set -euo pipefail
           rm -f packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/.gitkeep
           cp packages/jvm/groth16/target/x86_64-unknown-linux-gnu/release/libgroth16_jni.so \
              packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native/linux64/amd64/
@@ -189,6 +200,7 @@ jobs:
 
       - name: Prune non-decentralchain artifacts from local Maven cache
         run: |
+          set -euo pipefail
           find ~/.m2/repository -mindepth 1 -maxdepth 1 -type d ! -name "io" -exec rm -rf {} +
           if [ -d ~/.m2/repository/io ]; then
             find ~/.m2/repository/io -mindepth 1 -maxdepth 1 -type d ! -name "decentralchain" -exec rm -rf {} +
@@ -214,10 +226,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 25 (Temurin)
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
@@ -232,6 +247,7 @@ jobs:
       - name: Generate dependency list (lang-jvm + lang-testkit)
         working-directory: packages/ride
         run: |
+          set -euo pipefail
           sbt --no-colors "lang-jvm/dependencyList; lang-testkit/dependencyList" \
             > lang-deps.txt 2>&1 || true
           cat lang-deps.txt

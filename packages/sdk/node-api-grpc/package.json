@@ -10,11 +10,11 @@
   },
   "description": "TypeScript gRPC client for the DecentralChain node gRPC APIs — AccountsApi, AssetsApi, BlockchainApi, BlocksApi, TransactionsApi, BlockchainUpdatesApi",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
+    "@arethetypeswrong/cli": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
-    "tsdown": "0.22.1",
+    "tsdown": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {
