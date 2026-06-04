@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Set up Java 25 (Temurin) + Maven Central credentials
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
@@ -42,9 +44,12 @@ jobs:
           server-password: MAVEN_CENTRAL_PASSWORD
 
       - name: Set release version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
         run: |
+          set -euo pipefail
           ./mvnw --batch-mode versions:set \
-            -DnewVersion=${{ inputs.version }} \
+            -DnewVersion="${RELEASE_VERSION}" \
             -DgenerateBackupPoms=false
 
       - name: Build + verify
@@ -55,9 +60,11 @@ jobs:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
         run: |
+          set -euo pipefail
           ./mvnw --batch-mode deploy -P release -DskipTests \
-            -Dgpg.keyname="${{ secrets.MAVEN_GPG_KEY_ID }}"
+            -Dgpg.keyname="${MAVEN_GPG_KEY_ID}"
 
       - name: Upload staging artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1

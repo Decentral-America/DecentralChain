@@ -11,14 +11,14 @@
   },
   "description": "TypeScript/JavaScript HTTP client for the DecentralChain node REST API",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
+    "@arethetypeswrong/cli": "catalog:",
     "@decentralchain/transactions": "workspace:*",
     "@size-limit/preset-small-lib": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "0.22.1",
+    "tsdown": "catalog:",
     "undici-types": "8.3.0",
     "vitest": "catalog:"
   },

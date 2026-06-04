@@ -2,8 +2,8 @@ use pairing::{
     Engine,
     CurveProjective,
     CurveAffine,
-    PrimeField,
     Field,
+    PrimeField,
     EncodedPoint
 };
 

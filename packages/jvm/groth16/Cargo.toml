@@ -1,23 +1,29 @@
 [workspace]
+resolver = "2"
 members = [
   "groth16_primitives",
-  "groth16_circuit",
   "groth16_jni",
-  "sapling-crypto",
-  "groth16_setup",
-  "groth16_node/native"
+  "groth16_fastcrypto"
 ]
 
 [profile.release]
 lto = true
-panic = 'abort'
+# panic = 'unwind' (default) is required so that std::panic::catch_unwind in
+# groth16_jni/src/lib.rs can intercept Rust panics before they cross the FFI
+# boundary. Unwinding past an FFI boundary into the JVM is Undefined Behaviour;
+# catch_unwind stops it at the Rust side and returns false to Java instead.
+# The previous 'abort' setting was safe in a narrow sense (no UB) but killed the
+# entire JVM process on any panic — unacceptable availability for a blockchain node.
+panic = 'unwind'
 codegen-units = 1
 
 [profile.dev]
-lto = true
-panic = 'abort'
+# LTO is intentionally OFF for dev/test builds: with it on, every incremental
+# build (and `cargo clippy`/`cargo test`) performs link-time optimization, which
+# is needlessly slow. The release profile above keeps `lto = true`.
+lto = false
+panic = 'unwind'
 codegen-units = 8
 
 [patch.crates-io]
 bellman = { path = "vendor/bellman" }
-phase2 = { path = "vendor/phase2" }
