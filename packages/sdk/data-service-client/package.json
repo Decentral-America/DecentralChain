@@ -9,13 +9,13 @@
   },
   "description": "Data service client for DecentralChain blockchain",
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
+    "@arethetypeswrong/cli": "catalog:",
     "@decentralchain/parse-json-bignumber": "workspace:*",
     "@size-limit/preset-small-lib": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "publint": "catalog:",
     "size-limit": "catalog:",
-    "tsdown": "0.22.1",
+    "tsdown": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

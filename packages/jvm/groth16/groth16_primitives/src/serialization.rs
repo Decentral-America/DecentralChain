@@ -1,9 +1,6 @@
-use pairing::{Engine, PrimeField, Field, PrimeFieldRepr};
+use pairing::{PrimeField, PrimeFieldRepr};
 
-
-use std::{mem, io, iter};
-use std::io::{Read, Write};
-use byteorder::{BigEndian, ReadBytesExt};
+use std::{mem, io};
 
 
 
@@ -30,7 +27,7 @@ pub fn read_fr_vec<Fr:PrimeField>(data: &[u8]) -> io::Result<Vec<Fr>> {
         };
 
         offset+=fr_repr_sz;
-        let fr = Fr::from_repr(fr_repr).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, "not in field"))?;
+        let fr = Fr::from_repr(fr_repr).map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "not in field"))?;
         inputs.push(fr);
     }
 

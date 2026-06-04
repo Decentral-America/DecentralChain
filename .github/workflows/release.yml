@@ -16,9 +16,6 @@ permissions:
   contents: write
   id-token: write
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -28,6 +25,7 @@ jobs:
       - name: Guard — enforce main branch
         if: github.ref != 'refs/heads/main'
         run: |
+          set -euo pipefail
           echo "::error::Release workflow triggered from '${{ github.ref }}'. Only 'refs/heads/main' is allowed."
           exit 1
 
@@ -39,6 +37,7 @@ jobs:
 
       - name: Configure Git
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 

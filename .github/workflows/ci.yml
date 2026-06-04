@@ -16,7 +16,6 @@ permissions:
   contents: read
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   # Nx Cloud free plan quota exceeded — hard disable until upgraded or reset.
   # Toggle from GitHub Settings > Variables > NX_NO_CLOUD (set to empty to re-enable).
@@ -33,6 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup pnpm
@@ -59,6 +59,7 @@ jobs:
 
       - name: Install wasm-pack v0.15.0
         run: |
+          set -euo pipefail
           curl -fsSL \
             https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
@@ -87,7 +88,6 @@ jobs:
           severity: CRITICAL,HIGH
           scanners: secret
           # Disable cache to avoid trivy-action's internal setup-trivy calling
-          # actions/cache@0400d5f (Node20) which conflicts with FORCE_JAVASCRIPT_ACTIONS_TO_NODE24.
           # Secret scanning is fast and does not benefit from DB caching.
           cache: 'false'
 
@@ -158,6 +158,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Dependency Review
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
@@ -175,6 +177,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup pnpm
@@ -204,6 +207,7 @@ jobs:
 
       - name: Install wasm-pack v0.15.0
         run: |
+          set -euo pipefail
           curl -fsSL \
             https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
@@ -218,6 +222,7 @@ jobs:
 
       - name: Install Playwright browsers
         run: |
+          set -euo pipefail
           pnpm --filter e2e exec playwright install --with-deps chromium
           pnpm --filter scanner exec playwright install --with-deps chromium
 
