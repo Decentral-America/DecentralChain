@@ -37,6 +37,7 @@ allowBuilds:
   lefthook: false
   libpq: true
   nx: false
+  sharp: true
 
 overrides:
   '@xmldom/xmldom': '>=0.9.10'
