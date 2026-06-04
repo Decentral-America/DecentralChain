@@ -17,7 +17,7 @@ name="show_test_vectors"
 bellman = { version = "0.1.0" }
 groth16_primitives = { path = "../groth16_primitives"}
 groth16_fastcrypto = { path = "../groth16_fastcrypto" }
-pairing = "0.14"
+pairing = "0.23"
 pairing_ce = "0.28" # for bn256
 num = "0.2"
 base64 = "0.11.0"

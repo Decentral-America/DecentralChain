@@ -1312,7 +1312,7 @@ dependencies = [
  "groth16_primitives",
  "jni",
  "num",
- "pairing 0.14.2",
+ "pairing 0.23.0",
  "pairing_ce",
  "rand 0.4.6",
  "test-case",
@@ -1326,7 +1326,7 @@ dependencies = [
  "bellman",
  "itertools 0.14.0",
  "lazy_static",
- "pairing 0.14.2",
+ "pairing 0.23.0",
 ]
 
 [[package]]

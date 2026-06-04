@@ -10,7 +10,7 @@ crate-type = ["rlib"]
 
 [dependencies]
 bellman = { version = "0.1.0" }
-pairing = "0.14"
+pairing = "0.23"
 itertools = "0.14.0"
 arrayvec = "0.5.1"
 lazy_static = "1.4"
