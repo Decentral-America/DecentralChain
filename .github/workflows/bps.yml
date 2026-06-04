@@ -20,7 +20,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   RUST_BACKTRACE: 1
 
 jobs:
@@ -32,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Setup Rust stable
         uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
@@ -41,6 +42,7 @@ jobs:
 
       - name: Install system dependencies
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             protobuf-compiler \
@@ -73,6 +75,7 @@ jobs:
         id: test
         working-directory: apps/blockchain-postgres-sync
         run: |
+          set -euo pipefail
           cargo llvm-cov nextest \
             --all-targets \
             --codecov \

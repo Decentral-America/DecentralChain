@@ -42,9 +42,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   # ── Resolve version ───────────────────────────────────────────────────────────
   resolve:
@@ -57,9 +54,12 @@ jobs:
     steps:
       - name: Extract version from tag or input
         id: ver
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
+          set -euo pipefail
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            VERSION="${{ inputs.version }}"
+            VERSION="${INPUT_VERSION}"
           else
             # Tag format: cubensis/v1.2.3 → strip "cubensis/v" prefix
             VERSION="${GITHUB_REF_NAME#cubensis/v}"
@@ -116,6 +116,7 @@ jobs:
 
       - name: Install wasm-pack v0.15.0
         run: |
+          set -euo pipefail
           curl -fsSL \
             https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
@@ -152,6 +153,7 @@ jobs:
 
       - name: Verify zip files exist
         run: |
+          set -euo pipefail
           VERSION="${{ needs.resolve.outputs.version }}"
           DIST="apps/cubensis-connect/dist"
           for platform in chrome firefox edge opera; do
@@ -199,6 +201,7 @@ jobs:
 
       - name: Summarize
         run: |
+          set -euo pipefail
           echo "✅ Chrome Web Store — v${{ needs.resolve.outputs.version }} submitted" \
             >> "$GITHUB_STEP_SUMMARY"
 
@@ -228,6 +231,7 @@ jobs:
 
       - name: Summarize
         run: |
+          set -euo pipefail
           echo "✅ Firefox AMO — v${{ needs.resolve.outputs.version }} submitted" \
             >> "$GITHUB_STEP_SUMMARY"
 
@@ -257,6 +261,7 @@ jobs:
 
       - name: Summarize
         run: |
+          set -euo pipefail
           echo "✅ Microsoft Edge Add-ons — v${{ needs.resolve.outputs.version }} submitted" \
             >> "$GITHUB_STEP_SUMMARY"
 
@@ -274,6 +279,7 @@ jobs:
     steps:
       - name: Summarize
         run: |
+          set -euo pipefail
           echo "ℹ️ Opera — zip artifact produced (manual submission required)." \
             >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"

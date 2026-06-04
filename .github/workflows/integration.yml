@@ -25,7 +25,6 @@ permissions:
   packages: read
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   # Toggle from GitHub Settings > Variables > NX_NO_CLOUD (set to empty to re-enable).
   NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD || 'true' }}
 
@@ -54,6 +53,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Login to GHCR
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
@@ -63,7 +64,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start DCC private node
+        env:
+          DCC_WALLET_SEED: ${{ secrets.DCC_TEST_WALLET_SEED }}
+          DCC_WALLET_PASSWORD: ${{ secrets.DCC_TEST_WALLET_PASSWORD }}
         run: |
+          set -euo pipefail
           # Pull the standard node-scala image and run with private chain configs
           # mounted in — no separate "private" image needed.
           if ! docker pull ghcr.io/decentral-america/node-scala:latest 2>/dev/null; then
@@ -75,13 +80,14 @@ jobs:
             --network host \
             -v "${{ github.workspace }}/docker/private-node/decentralchain.custom.conf:/etc/dcc/dcc.conf:ro" \
             -v "${{ github.workspace }}/docker/private-node/local.conf:/etc/dcc/local.conf:ro" \
-            -e DCC_WALLET_SEED="TBXHUUcVx2n3Rgszpu5MCybRaR86JGmqCWp7XKh7czU57ox5dgjdX4K4" \
-            -e DCC_WALLET_PASSWORD="test" \
+            -e DCC_WALLET_SEED="${DCC_WALLET_SEED}" \
+            -e DCC_WALLET_PASSWORD="${DCC_WALLET_PASSWORD}" \
             -e DCC_REST_API_BIND="0.0.0.0" \
             ghcr.io/decentral-america/node-scala:latest
 
       - name: Wait for node to be ready
         run: |
+          set -euo pipefail
           echo "Waiting for DCC node REST API..."
           for i in $(seq 1 60); do
             if curl -sf http://localhost:6869/node/version > /dev/null 2>&1; then
@@ -99,6 +105,7 @@ jobs:
 
       - name: Wait for block generation
         run: |
+          set -euo pipefail
           echo "Waiting for at least 2 blocks..."
           for i in $(seq 1 30); do
             HEIGHT=$(curl -sf http://localhost:6869/blocks/height | jq .height)
@@ -137,6 +144,7 @@ jobs:
 
       - name: Install wasm-pack v0.15.0
         run: |
+          set -euo pipefail
           curl -fsSL \
             https://github.com/wasm-bindgen/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
             -o /tmp/wasm-pack.tar.gz
@@ -156,7 +164,7 @@ jobs:
         env:
           DCC_TEST_NODE_URL: http://localhost:6869
           DCC_TEST_CHAIN_ID: R
-          DCC_TEST_MINER_SEED: "waves private node seed with waves tokens"
+          DCC_TEST_MINER_SEED: ${{ secrets.DCC_TEST_MINER_SEED }}
           DCC_TEST_MATCHER_URL: http://localhost:6886
         run: pnpm --filter @decentralchain/transactions test:integration
 
