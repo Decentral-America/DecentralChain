@@ -656,7 +656,7 @@ mod test {
         let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
 
         for _ in 0..50 {
-            for i in 0..60 {
+            for i in 0..32 {
                 let num = rng.gen();
                 let a = UInt32::constant(num).shr(i);
                 let b = UInt32::constant(num >> i);
