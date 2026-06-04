@@ -151,19 +151,13 @@ jobs:
       - name: Install cargo-audit
         run: cargo install cargo-audit --locked --quiet
 
-      - name: Run cargo audit (ignore documented unfixable advisories)
+      - name: Run cargo audit
         working-directory: packages/jvm/groth16
         run: |
-          cargo audit \
-            --ignore RUSTSEC-2022-0011 \
-            --ignore RUSTSEC-2022-0004 \
-            --ignore RUSTSEC-2020-0071
-          # Suppressed advisories are formally documented with risk assessment
-          # in packages/jvm/groth16/deny.toml.  All three originate in the
-          # sapling-crypto embedded dep chain that is pinned for ZK-SNARK
-          # circuit compatibility; upgrading would invalidate the trusted setup.
-          # RUSTSEC-2025-0141 (bincode unmaintained) is a warning only and does
-          # not cause a non-zero exit.
+          cargo audit
+          # Any remaining warnings (crossbeam GHSA-8gj8-hv75-gp94, bincode
+          # RUSTSEC-2025-0141) are unmaintained/unsound notices documented in
+          # deny.toml; they do not cause a non-zero exit.
 
   # ── Step 2: Java compile + test ─────────────────────────────────────────────
   build:

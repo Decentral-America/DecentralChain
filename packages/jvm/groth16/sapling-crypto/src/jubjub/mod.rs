@@ -167,7 +167,7 @@ impl JubjubParams<Bls12> for JubjubBls12 {
         63
     }
     fn fixed_base_chunks_per_generator(&self) -> usize {
-        85
+        84
     }
     fn pedersen_circuit_generators(&self) -> &[Vec<Vec<(Fr, Fr)>>] {
         &self.pedersen_circuit_generators

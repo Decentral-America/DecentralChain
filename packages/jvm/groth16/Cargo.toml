@@ -17,3 +17,7 @@ codegen-units = 1
 lto = true
 panic = 'abort'
 codegen-units = 8
+
+[patch.crates-io]
+bellman = { path = "vendor/bellman" }
+phase2 = { path = "vendor/phase2" }
