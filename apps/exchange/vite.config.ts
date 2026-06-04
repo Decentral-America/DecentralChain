@@ -169,7 +169,6 @@ export default defineConfig({
       },
       '/matcher': {
         changeOrigin: true,
-        rewrite: (reqPath) => reqPath.replace(/^\/matcher/, '/matcher'),
         target: 'https://mainnet-matcher.decentralchain.io',
       },
       '/trading-view': {
