@@ -25,41 +25,14 @@
     <!-- ALL security rules: no exclusions — crypto library must be airtight -->
     <rule ref="category/java/security.xml"/>
 
-    <!-- Error-prone rules -->
-    <rule ref="category/java/errorprone.xml">
-        <!-- Utility classes are not serializable by design -->
-        <exclude name="MissingSerialVersionUID"/>
-        <!--
-          AssignmentInOperand and AvoidLiteralsInIfCondition are idiomatic in
-          Base58/Base16 encoding algorithms derived from upstream implementations.
-          AvoidFieldNameMatchingMethodName: Hash.SHA256, RsaKeyPair fields follow
-          the established API naming convention of this library.
-          OneDeclarationPerLine: existing style in MerkleTree — cosmetic only.
-        -->
-        <exclude name="AssignmentInOperand"/>
-        <exclude name="AvoidLiteralsInIfCondition"/>
-        <exclude name="AvoidFieldNameMatchingMethodName"/>
-        <exclude name="OneDeclarationPerLine"/>
-    </rule>
+    <!-- Error-prone rules: no exclusions -->
+    <rule ref="category/java/errorprone.xml"/>
 
-    <!-- Best practices -->
+    <!-- Best practices: UseVarargs excluded — crypto methods intentionally use fixed-size byte[]
+         parameters that must not be converted to varargs (caller code would silently wrap
+         the array in an Object[], breaking the wire format). -->
     <rule ref="category/java/bestpractices.xml">
-        <!--
-          All crypto methods take byte[] with fixed sizes (key length, hash
-          output, block size). Varargs would be semantically incorrect for
-          fixed-size cryptographic data structures.
-        -->
         <exclude name="UseVarargs"/>
-        <!--
-          Base58/Base16/Base64 are derived from well-known upstream implementations
-          (Bitcoin/Waves). Reassigning loop variables and parameters is idiomatic
-          in these algorithms and changing them would risk introducing bugs in
-          security-critical encoding code.
-        -->
-        <exclude name="AvoidReassigningLoopVariables"/>
-        <exclude name="AvoidReassigningParameters"/>
-        <!-- Utility classes use final + private constructor — no abstract methods needed -->
-        <exclude name="AbstractClassWithoutAbstractMethod"/>
     </rule>
 
 
