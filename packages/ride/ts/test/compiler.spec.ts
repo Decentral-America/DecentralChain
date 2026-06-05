@@ -236,7 +236,7 @@ func bar() = WriteSet([])`;
   test('connect blockchain - transactionHeightById', async () => {
     const nodeUrl = `${process.env.DCC_TEST_NODE_URL ?? 'http://localhost:6869'}/`,
       chainId = process.env.DCC_TEST_CHAIN_ID ?? 'R',
-      addr = process.env.DCC_TEST_REPL_ADDRESS ?? '3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF';
+      addr = process.env.DCC_TEST_REPL_ADDRESS ?? '3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr';
 
     const { evaluate } = compiler.repl({ address: addr, chainId, nodeUrl });
     // Query current blockchain height — works on any node without pre-existing state.
