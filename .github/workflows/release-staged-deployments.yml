@@ -18,58 +18,24 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         run: |
           set -euo pipefail
-
-          BASE="https://central.sonatype.com/api/v1"
           TOKEN=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)
+          BASE="https://central.sonatype.com/api/v1/publisher/deployment"
 
-          echo "=== Listing all deployments ==="
-          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/json" \
-            "${BASE}/publisher/deployments?size=20")
-          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d: -f2)
-          BODY=$(echo "$RESPONSE" | sed '/HTTP_STATUS:/d')
-          echo "Status: $HTTP_STATUS"
-          echo "Body: $BODY"
+          publish() {
+            local id=$1 name=$2
+            echo -n "Publishing $name ($id)... "
+            code=$(curl -s -o /tmp/pub_resp.txt -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              "${BASE}/${id}")
+            body=$(cat /tmp/pub_resp.txt)
+            if [ "$code" = "204" ] || [ "$code" = "200" ]; then
+              echo "✓ (HTTP $code)"
+            else
+              echo "✗ (HTTP $code): $body"
+              return 1
+            fi
+          }
 
-          if [ "$HTTP_STATUS" != "200" ]; then
-            echo "API call failed — check credentials or endpoint"
-            exit 1
-          fi
-
-          echo ""
-          echo "=== Publishing VALIDATED deployments ==="
-          echo "$BODY" | python3 - <<'PYEOF'
-          import sys, json, subprocess, os
-
-          body = sys.stdin.read()
-          data = json.loads(body)
-          deployments = data if isinstance(data, list) else data.get('deployments', [])
-          token = subprocess.check_output(
-              ['bash', '-c', 'printf "%s:%s" "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0'],
-              env=os.environ
-          ).decode().strip()
-
-          published = 0
-          for d in deployments:
-              did = d.get('deploymentId', d.get('id', ''))
-              name = d.get('deploymentName', d.get('name', ''))
-              state = d.get('deploymentState', d.get('state', ''))
-              print(f"  {name} [{state}] id={did}")
-              if state in ('VALIDATED',):
-                  r = subprocess.run(
-                      ['curl', '-s', '-w', '\nHTTP_STATUS:%{http_code}', '-X', 'POST',
-                       '-H', f'Authorization: Bearer {token}',
-                       f'https://central.sonatype.com/api/v1/publisher/deployment/{did}/publish'],
-                      capture_output=True, text=True
-                  )
-                  pub_status = [l for l in r.stdout.splitlines() if 'HTTP_STATUS:' in l]
-                  code = pub_status[0].split(':')[1] if pub_status else '?'
-                  if code in ('200', '201', '204'):
-                      print(f"    ✓ Published (HTTP {code})")
-                      published += 1
-                  else:
-                      body_out = '\n'.join(l for l in r.stdout.splitlines() if 'HTTP_STATUS:' not in l)
-                      print(f"    ✗ Failed (HTTP {code}): {body_out}")
-          print(f"\nDone — {published} deployment(s) published.")
-          PYEOF
+          publish "3e87ffa2-6c6c-4a02-86e5-2af99c9713f6" "curve25519-1.0.0"
+          publish "a1bea16b-334f-40ac-af76-f5fd323bca6d" "blst-0.3.16.0"
+          publish "76e0aab8-8c9c-4410-907d-bd8dcfbeaf52" "groth16-0.2.1.0"
