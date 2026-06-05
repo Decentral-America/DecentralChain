@@ -7,6 +7,10 @@ package io.decentralchain.crypto.base;
 public final class Base16 {
     private Base16() {}
 
+    private static final String PREFIX = "base16:";
+    private static final int PREFIX_LENGTH = PREFIX.length();
+    private static final int INVALID_DIGIT = -1;
+
     /**
      * Encodes the given bytes as a base16 string (no checksum is appended).
      *
@@ -20,7 +24,7 @@ public final class Base16 {
         for (byte b : input)
             sb.append(String.format("%02x", b));
 
-        String prefix = withPrefix ? "base16:" : "";
+        String prefix = withPrefix ? PREFIX : "";
         return prefix + sb.toString();
     }
 
@@ -43,13 +47,13 @@ public final class Base16 {
      */
     public static byte[] decode(String encodedString) throws IllegalArgumentException {
         if (encodedString == null) throw new IllegalArgumentException("Base16 string can't be null");
-        if (encodedString.startsWith("base16:")) encodedString = encodedString.substring(7);
-        if (encodedString.length() % 2 == 1)
-            throw new IllegalArgumentException("Invalid base16 string \"" + encodedString + "\"");
+        String input = encodedString.startsWith(PREFIX) ? encodedString.substring(PREFIX_LENGTH) : encodedString;
+        if (input.length() % 2 == 1)
+            throw new IllegalArgumentException("Invalid base16 string \"" + input + "\"");
 
-        byte[] bytes = new byte[encodedString.length() / 2];
-        for (int i = 0; i < encodedString.length(); i += 2)
-            bytes[i / 2] = hexToByte(encodedString.substring(i, i + 2));
+        byte[] bytes = new byte[input.length() / 2];
+        for (int i = 0; i < input.length(); i += 2)
+            bytes[i / 2] = hexToByte(input.substring(i, i + 2));
 
         return bytes;
     }
@@ -62,7 +66,7 @@ public final class Base16 {
 
     private static int toDigit(char hexChar) {
         int digit = Character.digit(hexChar, 16);
-        if (digit == -1)
+        if (digit == INVALID_DIGIT)
             throw new IllegalArgumentException("Invalid hexadecimal character \"" + hexChar + "\"");
         return digit;
     }

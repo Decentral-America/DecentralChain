@@ -17,13 +17,13 @@ public enum HashAlg {
     SHA3_384("SHA3-384"),
     SHA3_512("SHA3-512");
 
-    private final String value;
+    private final String algorithmName;
 
     HashAlg(String name) {
-        this.value = name;
+        this.algorithmName = name;
     }
 
     public String value() {
-        return value;
+        return algorithmName;
     }
 }
