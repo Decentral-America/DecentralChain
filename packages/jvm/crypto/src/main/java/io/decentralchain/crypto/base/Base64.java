@@ -39,8 +39,8 @@ public final class Base64 {
      */
     public static byte[] decode(String source) throws IllegalArgumentException {
         if (source == null) throw new IllegalArgumentException("Base64 string can't be null");
-        if (source.startsWith("base64:")) source = source.substring(7);
-        return java.util.Base64.getDecoder().decode(source);
+        String input = source.startsWith("base64:") ? source.substring(7) : source;
+        return java.util.Base64.getDecoder().decode(input);
     }
 
 }

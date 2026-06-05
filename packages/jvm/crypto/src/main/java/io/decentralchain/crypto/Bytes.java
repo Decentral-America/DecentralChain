@@ -12,6 +12,9 @@ import java.util.Arrays;
 public final class Bytes {
     private Bytes() {}
 
+    private static final byte BYTE_TRUE = (byte) 1;
+    private static final byte BYTE_FALSE = (byte) 0;
+
     /**
      * Creates an empty byte array.
      *
@@ -58,7 +61,7 @@ public final class Bytes {
      * @return 1 if true, 0 if false
      */
     public static byte fromBoolean(boolean bool) {
-        return (byte)(bool ? 1 : 0);
+        return bool ? BYTE_TRUE : BYTE_FALSE;
     }
 
     /**
@@ -105,9 +108,9 @@ public final class Bytes {
      * @throws IllegalArgumentException if byte is not 1 ot 0
      */
     public static boolean toBoolean(byte byt) {
-        if (byt == 1)
+        if (byt == BYTE_TRUE)
             return true;
-        else if (byt == 0)
+        else if (byt == BYTE_FALSE)
             return false;
         else throw new IllegalArgumentException("Can't convert byte " + byt + " to boolean. Must be 1 or 0");
     }

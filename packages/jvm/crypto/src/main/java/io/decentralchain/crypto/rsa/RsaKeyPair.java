@@ -40,8 +40,8 @@ public class RsaKeyPair {
         return new RsaKeyPair();
     }
 
-    private final PrivateKey privateKey;
-    private final PublicKey publicKey;
+    private final PrivateKey rsaPrivateKey;
+    private final PublicKey rsaPublicKey;
 
     /**
      * Create key pair from the known RSA private key.
@@ -52,10 +52,10 @@ public class RsaKeyPair {
         PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(privateKeyBytes);
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
-            this.privateKey = kf.generatePrivate(ks);
-            RSAPrivateCrtKey privateCrtKey = (RSAPrivateCrtKey) this.privateKey;
+            this.rsaPrivateKey = kf.generatePrivate(ks);
+            RSAPrivateCrtKey privateCrtKey = (RSAPrivateCrtKey) this.rsaPrivateKey;
             RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(privateCrtKey.getModulus(), privateCrtKey.getPublicExponent());
-            this.publicKey = kf.generatePublic(publicKeySpec);
+            this.rsaPublicKey = kf.generatePublic(publicKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
@@ -74,8 +74,8 @@ public class RsaKeyPair {
         gen.initialize(2048, new SecureRandom());
 
         KeyPair keys = gen.generateKeyPair();
-        this.privateKey = keys.getPrivate();
-        this.publicKey = keys.getPublic();
+        this.rsaPrivateKey = keys.getPrivate();
+        this.rsaPublicKey = keys.getPublic();
     }
 
     /**
@@ -84,7 +84,7 @@ public class RsaKeyPair {
      * @return the private key
      */
     public byte[] privateKey() {
-        return this.privateKey.getEncoded();
+        return this.rsaPrivateKey.getEncoded();
     }
 
     /**
@@ -93,7 +93,7 @@ public class RsaKeyPair {
      * @return the public key
      */
     public byte[] publicKey() {
-        return this.publicKey.getEncoded();
+        return this.rsaPublicKey.getEncoded();
     }
 
     /**
@@ -107,7 +107,7 @@ public class RsaKeyPair {
     public byte[] sign(HashAlg alg, byte[] message) {
         try {
             Signature sig = initJSignature(alg);
-            sig.initSign(this.privateKey);
+            sig.initSign(this.rsaPrivateKey);
             sig.update(message);
             return sig.sign();
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -127,7 +127,7 @@ public class RsaKeyPair {
     public boolean isSignatureValid(HashAlg alg, byte[] message, byte[] signature) {
         try {
             Signature sig = initJSignature(alg);
-            sig.initVerify(this.publicKey);
+            sig.initVerify(this.rsaPublicKey);
             sig.update(message);
             return sig.verify(signature);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {

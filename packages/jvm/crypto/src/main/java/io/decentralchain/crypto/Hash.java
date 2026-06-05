@@ -15,7 +15,7 @@ public final class Hash {
 
     private static final ThreadLocal<Digest> BLAKE2B256 = new ThreadLocal<>();
     private static final ThreadLocal<Digest> KECCAK256 = new ThreadLocal<>();
-    private static final ThreadLocal<Digest> SHA256 = new ThreadLocal<>();
+    private static final ThreadLocal<Digest> SHA256_DIGEST = new ThreadLocal<>();
 
     /**
      * Calculates Sha256 hash of source bytes.
@@ -24,7 +24,7 @@ public final class Hash {
      * @return Sha256 hash
      */
     public static byte[] sha256(byte[] source) {
-        return hash(source, 0, source.length, Hash.SHA256);
+        return hash(source, 0, source.length, Hash.SHA256_DIGEST);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class Hash {
                 digest = new Blake2bDigest(256);
             } else if (cache == KECCAK256) {
                 digest = new KeccakDigest(256);
-            } else if (cache == SHA256) {
+            } else if (cache == SHA256_DIGEST) {
                 digest = new SHA256Digest();
             }
             cache.set(digest);
