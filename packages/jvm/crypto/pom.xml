@@ -45,7 +45,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <bouncycastle.version>1.84</bouncycastle.version>
-    <curve25519.version>0.6.6</curve25519.version>
+    <curve25519.version>1.0.0</curve25519.version>
     <blst.version>0.3.16.0</blst.version>
     <junit.version>5.14.4</junit.version>
     <assertj.version>3.27.7</assertj.version>
