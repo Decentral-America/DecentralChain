@@ -46,17 +46,17 @@ Remaining `com.wavesplatform.*` references are **upstream library imports only**
 
 **Risk:** LOW (build infrastructure — no functionality impact)
 
-**Description:** `node-scala/project/Dependencies.scala` now references `io.decentralchain:protobuf-schemas:1.6.1`. The `packages/protobuf-serialization/pom.xml` is set to version `1.6.1` (release-ready). However, the artifact has not yet been published to Maven Central — the `publish-protobuf-serialization` GitHub Actions workflow must be triggered (via `workflow_dispatch` in the DCC monorepo) before `node-scala` CI builds can resolve this dependency.
+**Description:** `node-scala/project/Dependencies.scala` now references `io.decentralchain:protobuf-schemas:1.6.1`. The `packages/protobuf-schemas/pom.xml` is set to version `1.6.1` (release-ready). However, the artifact has not yet been published to Maven Central — the `publish-protobuf-schemas` GitHub Actions workflow must be triggered (via `workflow_dispatch` in the DCC monorepo) before `node-scala` CI builds can resolve this dependency.
 
 **Why not fixed now:** Publishing requires a manual workflow trigger by an engineer with the `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`, and `MAVEN_GPG_PASSPHRASE` secrets configured in the DCC repository.
 
 **Resolution path:**
-1. Trigger `.github/workflows/publish-protobuf-serialization.yml` (`workflow_dispatch`) in the Decentral-America/DecentralChain repo (dry-run first, then real publish)
+1. Trigger `.github/workflows/publish-protobuf-schemas.yml` (`workflow_dispatch`) in the Decentral-America/DecentralChain repo (dry-run first, then real publish)
 2. Verify `io.decentralchain:protobuf-schemas:1.6.1` appears on [Maven Central](https://central.sonatype.com/artifact/io.decentralchain/protobuf-schemas)
-3. Bump `packages/protobuf-serialization/pom.xml` to `1.6.2-SNAPSHOT` for next development cycle
+3. Bump `packages/protobuf-schemas/pom.xml` to `1.6.2-SNAPSHOT` for next development cycle
 
 **Affected files:**
-- `Ecosystem/DecentralChain/packages/sdk/protobuf-serialization/pom.xml`
+- `Ecosystem/DecentralChain/packages/sdk/protobuf-schemas/pom.xml`
 - `Ecosystem/node-scala/project/Dependencies.scala`
 
 ---

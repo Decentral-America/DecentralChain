@@ -167,7 +167,7 @@
       }
     },
     {
-      "includes": ["packages/sdk/protobuf-serialization/src/gen/**"],
+      "includes": ["packages/sdk/protobuf-schemas/src/gen/**"],
       "linter": {
         "rules": {
           "security": {
