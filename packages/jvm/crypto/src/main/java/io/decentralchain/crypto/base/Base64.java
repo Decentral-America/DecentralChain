@@ -5,7 +5,8 @@ package io.decentralchain.crypto.base;
  *
  * Mainly used to encode binary data entries of account and compiled Ride smart contracts.
  */
-public abstract class Base64 {
+public final class Base64 {
+    private Base64() {}
 
     /**
      * Encodes the given bytes as a base64 string (no checksum is appended).

@@ -10,7 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-public abstract class Crypto {
+public final class Crypto {
+    private Crypto() {}
 
     private static final Curve25519 cipher = Curve25519.getInstance(Curve25519.BEST);
 

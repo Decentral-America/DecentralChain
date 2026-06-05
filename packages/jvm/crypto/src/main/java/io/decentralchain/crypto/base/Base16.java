@@ -4,7 +4,8 @@ package io.decentralchain.crypto.base;
  * Base16 is used to represent byte arrays as a readable string.
  * Not used in DCC blockchain, but can be used in Ride smart contracts.
  */
-public abstract class Base16 {
+public final class Base16 {
+    private Base16() {}
 
     /**
      * Encodes the given bytes as a base16 string (no checksum is appended).

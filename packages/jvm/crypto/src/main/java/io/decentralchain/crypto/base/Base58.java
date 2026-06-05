@@ -10,7 +10,8 @@ import java.util.Arrays;
  * Most arrays of bytes in the project are encoded by Base58 algorithm with Bitcoin alphabet to make it ease human readable.
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class Base58 {
+public final class Base58 {
+    private Base58() {}
 
     public static final char[] ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray();
     private static final char ENCODED_ZERO = ALPHABET[0];

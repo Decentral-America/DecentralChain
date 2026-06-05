@@ -1,6 +1,7 @@
 package io.decentralchain.crypto.internal;
 
-public abstract class Dictionary {
+public final class Dictionary {
+    private Dictionary() {}
 
     private static final String[] BIP39_ENGLISH = {
             "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access",

@@ -10,7 +10,8 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
  * Supports all algorithms used in the DCC blockchain protocol.
  */
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
-public abstract class Hash {
+public final class Hash {
+    private Hash() {}
 
     private static final ThreadLocal<Digest> BLAKE2B256 = new ThreadLocal<>();
     private static final ThreadLocal<Digest> KECCAK256 = new ThreadLocal<>();
