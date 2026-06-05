@@ -36,4 +36,4 @@ jobs:
             fi
           }
 
-          publish "cf038aa4-2344-4136-a020-474b3aba4764" "blst-0.3.16.0"
+          publish "775548b8-a0cc-4aec-b59d-c1ba1882a2c4" "crypto-2.0.7"
