@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dcc/amount.proto.
  */
 export const file_dcc_amount: GenFile = /*@__PURE__*/
-  fileDesc("ChBkY2MvYW1vdW50LnByb3RvEgNkY2MiKgoGQW1vdW50EhAKCGFzc2V0X2lkGAEgASgMEg4KBmFtb3VudBgCIAEoA0J5Chppby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1ZlpKZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC9kY2OqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z");
+  fileDesc("ChBkY2MvYW1vdW50LnByb3RvEgNkY2MiKgoGQW1vdW50EhAKCGFzc2V0X2lkGAEgASgMEg4KBmFtb3VudBgCIAEoA0JzChppby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1ZlpEZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zY2hlbWFzL3BrZy9ncnBjL2dlbmVyYXRlZC9kY2OqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z");
 
 /**
  * @generated from message dcc.Amount
