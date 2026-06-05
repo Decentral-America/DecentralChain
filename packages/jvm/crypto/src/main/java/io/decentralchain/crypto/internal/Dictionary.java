@@ -2,7 +2,7 @@ package io.decentralchain.crypto.internal;
 
 public abstract class Dictionary {
 
-    public static final String[] BIP39_ENGLISH = {
+    private static final String[] BIP39_ENGLISH = {
             "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access",
             "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act", "action",
             "actor", "actress", "actual", "adapt", "add", "addict", "address", "adjust", "admit", "adult", "advance",
@@ -188,5 +188,9 @@ public abstract class Dictionary {
             "woman", "wonder", "wood", "wool", "word", "work", "world", "worry", "worth", "wrap", "wreck", "wrestle",
             "wrist", "write", "wrong", "yard", "year", "yellow", "you", "young", "youth", "zebra", "zero", "zone", "zoo",
     };
+
+    public static String[] english() {
+        return BIP39_ENGLISH.clone();
+    }
 
 }

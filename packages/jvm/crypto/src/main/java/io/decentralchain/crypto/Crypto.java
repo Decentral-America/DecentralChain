@@ -21,12 +21,13 @@ public abstract class Crypto {
      * @return String random seed phrase
      */
     public static String getRandomSeedPhrase(int wordsNumber) {
-        int dictSize = Dictionary.BIP39_ENGLISH.length;
+        String[] dict = Dictionary.english();
+        int dictSize = dict.length;
         String[] seedPhrase = new String[wordsNumber];
         try {
             SecureRandom random = SecureRandom.getInstanceStrong();
             for (int i = 0; i < wordsNumber; i++)
-                seedPhrase[i] = Dictionary.BIP39_ENGLISH[random.nextInt(dictSize)];
+                seedPhrase[i] = dict[random.nextInt(dictSize)];
             return String.join(" ", seedPhrase);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("Failed to get random number generator", e);
