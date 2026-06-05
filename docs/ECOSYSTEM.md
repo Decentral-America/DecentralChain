@@ -92,7 +92,7 @@ flowchart LR
             BIGNUMBER["bignumber"]
             TS_CRYPTO["ts-lib-crypto"]
             MARSHALL["marshall"]
-            PROTOBUF["protobuf-serialization"]
+            PROTOBUF["protobuf-schemas"]
             PARSE_BN["parse-json-bignumber"]
             BROWSER_BUS["browser-bus"]
             ORACLE["oracle-data"]
@@ -370,7 +370,7 @@ flowchart TD
         BIGNUMBER["bignumber<br/>Arbitrary-precision math"]
         TS_CRYPTO["ts-lib-crypto<br/>Ed25519 · Blake2b · SHA256"]
         MARSHALL["marshall<br/>Binary serialization"]
-        PROTOBUF["protobuf-serialization<br/>Protobuf wire format"]
+        PROTOBUF["protobuf-schemas<br/>Protobuf wire format"]
         PARSE_BN["parse-json-bignumber<br/>Precision-preserving JSON parse"]
         BROWSER_BUS["browser-bus<br/>Extension ↔ dApp postMessage IPC"]
         ORACLE["oracle-data<br/>Oracle price feed types"]
@@ -438,7 +438,7 @@ sequenceDiagram
     participant CC as Cubensis Connect
     participant CRYPTO as crypto (WASM)
     participant MARSHALL as marshall
-    participant PROTOBUF as protobuf-serialization
+    participant PROTOBUF as protobuf-schemas
     participant NODE as DCC Node
 
     User->>CC: Fill recipient + amount
@@ -689,7 +689,7 @@ Browser wallet extension. Key management, signing UI, swap UI, Ledger hardware w
 | `data-entities` | Runtime | Money/Asset model for balance display |
 | `marshall` | Runtime | Binary tx field serialization |
 | `parse-json-bignumber` | Runtime | Safe JSON parsing for node API responses |
-| `protobuf-serialization` | Runtime | Protobuf tx serialization for broadcast |
+| `protobuf-schemas` | Runtime | Protobuf tx serialization for broadcast |
 | `ledger` | Build (devDep) | Ledger hardware wallet support via WebUSB APDU — compiled into extension bundle |
 
 ---

@@ -2,8 +2,8 @@
 
 // Re-export all gRPC service schemas and request/response types for convenience.
 // Consumers can import types directly from this package without a separate
-// @decentralchain/protobuf-serialization/grpc import.
-export * from '@decentralchain/protobuf-serialization/grpc';
+// @decentralchain/protobuf-schemas/grpc import.
+export * from '@decentralchain/protobuf-schemas/grpc';
 // BlockchainUpdates API client factory
 export {
   type BlockchainUpdatesApiClient,

@@ -415,7 +415,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- protobuf-serialization: io.decentralchain.protobuf.* and
+        <!-- protobuf-schemas: io.decentralchain.protobuf.* and
              io.decentralchain.events.protobuf.* generated classes.
              Required for EthereumTransactionFromProtobufTest. -->
         <dependency>

@@ -26,7 +26,7 @@ This is the critical mapping between DCC monorepo paths and Dcc upstream repo na
 | `packages/sdk/ts-lib-crypto` | `ts-lib-crypto` | wavesplatform |
 | `packages/sdk/parse-json-bignumber` | `parse-json-bignumber` | wavesplatform |
 | `packages/sdk/marshall` | `marshall` | wavesplatform |
-| `packages/sdk/protobuf-serialization` | `protobuf-schemas` | wavesplatform |
+| `packages/sdk/protobuf-schemas` | `protobuf-schemas` | wavesplatform |
 | `packages/sdk/data-entities` | `waves-data-entities` | wavesplatform |
 | `packages/sdk/assets-pairs-order` | `assets-pairs-order` | wavesplatform |
 | `packages/sdk/oracle-data` | `oracle-data` | wavesplatform |

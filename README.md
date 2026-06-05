@@ -27,7 +27,7 @@
 | `@decentralchain/bignumber` | BigNumber utilities |
 | `@decentralchain/ts-lib-crypto` | Cryptographic primitives |
 | `@decentralchain/marshall` | Binary serialization |
-| `@decentralchain/protobuf-serialization` | Protobuf serialization |
+| `@decentralchain/protobuf-schemas` | Protobuf serialization |
 | `@decentralchain/crypto` | High-level crypto API |
 | `@decentralchain/assets-pairs-order` | Asset pair ordering |
 | `@decentralchain/oracle-data` | Oracle data utilities |

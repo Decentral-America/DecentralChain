@@ -9,7 +9,7 @@
     "@decentralchain/data-entities": "workspace:*",
     "@decentralchain/marshall": "workspace:*",
     "@decentralchain/parse-json-bignumber": "workspace:*",
-    "@decentralchain/protobuf-serialization": "workspace:*",
+    "@decentralchain/protobuf-schemas": "workspace:*",
     "@decentralchain/types": "workspace:*",
     "@ethereumjs/util": "^10.1.2",
     "@floating-ui/react-dom": "2.1.8",

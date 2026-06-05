@@ -359,7 +359,7 @@ npm run check:size      # Within size budget (< 11 kB)
 | --- | --- |
 | [`@decentralchain/types`](https://www.npmjs.com/package/@decentralchain/types) | Core TypeScript type definitions |
 | [`@decentralchain/transactions`](https://www.npmjs.com/package/@decentralchain/transactions) | Transaction builders and signers |
-| [`@decentralchain/protobuf-serialization`](https://www.npmjs.com/package/@decentralchain/protobuf-serialization) | Protocol Buffers serialization |
+| [`@decentralchain/protobuf-schemas`](https://www.npmjs.com/package/@decentralchain/protobuf-schemas) | Protocol Buffers serialization |
 | [`@decentralchain/node-api`](https://www.npmjs.com/package/@decentralchain/node-api) | Node REST API client |
 | [`@decentralchain/bignumber`](https://www.npmjs.com/package/@decentralchain/bignumber) | Arbitrary-precision arithmetic |
 

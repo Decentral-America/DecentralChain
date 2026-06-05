@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@decentralchain/marshall": "workspace:*",
-    "@decentralchain/protobuf-serialization": "workspace:*",
+    "@decentralchain/protobuf-schemas": "workspace:*",
     "@decentralchain/ts-lib-crypto": "workspace:*",
     "@decentralchain/types": "workspace:*"
   },

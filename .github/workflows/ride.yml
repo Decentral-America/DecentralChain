@@ -97,7 +97,7 @@ jobs:
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Install protobuf-schemas to local Maven cache
-        working-directory: packages/sdk/protobuf-serialization
+        working-directory: packages/sdk/protobuf-schemas
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Prune non-decentralchain artifacts from local Maven cache
@@ -195,7 +195,7 @@ jobs:
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Install protobuf-schemas to local Maven cache
-        working-directory: packages/sdk/protobuf-serialization
+        working-directory: packages/sdk/protobuf-schemas
         run: ./mvnw install -DskipTests --no-transfer-progress
 
       - name: Prune non-decentralchain artifacts from local Maven cache

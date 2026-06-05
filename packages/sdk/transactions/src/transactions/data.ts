@@ -3,11 +3,7 @@
  */
 
 import { binary, serializePrimitives } from '@decentralchain/marshall';
-import {
-  create,
-  DataTransactionDataSchema,
-  toBinary,
-} from '@decentralchain/protobuf-serialization';
+import { create, DataTransactionDataSchema, toBinary } from '@decentralchain/protobuf-schemas';
 import { base58Encode, blake2b, concat, signBytes } from '@decentralchain/ts-lib-crypto';
 import {
   type DataFieldType,

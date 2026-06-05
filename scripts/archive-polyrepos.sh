@@ -32,7 +32,7 @@ REPOS=(
   node-api-js
   oracle-data
   parse-json-bignumber
-  protobuf-serialization
+  protobuf-schemas
   ride-js
   signature-adapter
   signer

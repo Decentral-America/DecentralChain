@@ -37,7 +37,7 @@ The `scripts/check-boundaries.mjs` script enforces:
 
 | Layer | Packages |
 |-------|----------|
-| 0 | types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-serialization |
+| 0 | types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-schemas |
 | 1 | data-entities, money-like-to-node, ride |
 | 2 | transactions, node-api, data-service-client |
 | 3 | signer |
@@ -59,7 +59,7 @@ Packages with justified lower thresholds:
 
 | Package | Threshold | Reason |
 |---------|-----------|--------|
-| protobuf-serialization | 15% | Generated code, minimal testable surface |
+| protobuf-schemas | 15% | Generated code, minimal testable surface |
 | ride | 65/74/85/84 | Legacy compiler, mixed per-metric |
 | signer | 70% | Integration-heavy, depends on external wallet |
 | transactions | 70% | Integration-heavy, excludes integration tests |
@@ -107,4 +107,4 @@ cat pnpm-workspace.yaml
 
 - **`cubensis-connect`** (app): Tests are pre-existing failures (Playwright e2e tests not configured for unit test runner).
 - **`crypto`**: Uses `tsc` + `wasm-pack` instead of tsdown for its build.
-- **`protobuf-serialization`**: Contains generated protobuf code with low coverage.
+- **`protobuf-schemas`**: Contains generated protobuf code with low coverage.
