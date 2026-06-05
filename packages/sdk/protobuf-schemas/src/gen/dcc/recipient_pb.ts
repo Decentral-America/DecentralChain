@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dcc/recipient.proto.
  */
 export const file_dcc_recipient: GenFile = /*@__PURE__*/
-  fileDesc("ChNkY2MvcmVjaXBpZW50LnByb3RvEgNkY2MiRAoJUmVjaXBpZW50EhkKD3B1YmxpY19rZXlfaGFzaBgBIAEoDEgAEg8KBWFsaWFzGAIgASgJSABCCwoJcmVjaXBpZW50QoUBCiZpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi50cmFuc2FjdGlvblpKZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zZXJpYWxpemF0aW9uL3BrZy9ncnBjL2dlbmVyYXRlZC9kY2OqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z");
+  fileDesc("ChNkY2MvcmVjaXBpZW50LnByb3RvEgNkY2MiRAoJUmVjaXBpZW50EhkKD3B1YmxpY19rZXlfaGFzaBgBIAEoDEgAEg8KBWFsaWFzGAIgASgJSABCCwoJcmVjaXBpZW50Qn8KJmlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLnRyYW5zYWN0aW9uWkRnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNjaGVtYXMvcGtnL2dycGMvZ2VuZXJhdGVkL2RjY6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM");
 
 /**
  * @generated from message dcc.Recipient

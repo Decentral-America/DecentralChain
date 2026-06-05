@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dcc/reward_share.proto.
  */
 export const file_dcc_reward_share: GenFile = /*@__PURE__*/
-  fileDesc("ChZkY2MvcmV3YXJkX3NoYXJlLnByb3RvEgNkY2MiLgoLUmV3YXJkU2hhcmUSDwoHYWRkcmVzcxgBIAEoDBIOCgZyZXdhcmQYAiABKANCeQoaaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWZaSmdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2VyaWFsaXphdGlvbi9wa2cvZ3JwYy9nZW5lcmF0ZWQvZGNjqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw");
+  fileDesc("ChZkY2MvcmV3YXJkX3NoYXJlLnByb3RvEgNkY2MiLgoLUmV3YXJkU2hhcmUSDwoHYWRkcmVzcxgBIAEoDBIOCgZyZXdhcmQYAiABKANCcwoaaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWZaRGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2NoZW1hcy9wa2cvZ3JwYy9nZW5lcmF0ZWQvZGNjqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw");
 
 /**
  * @generated from message dcc.RewardShare
