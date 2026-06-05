@@ -1,0 +1,65 @@
+name: Release Staged Maven Deployments
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Publish all VALIDATED deployments to Maven Central
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch and publish VALIDATED deployments
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          BASE="https://central.sonatype.com/api/v1"
+          AUTH=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)
+
+          echo "Fetching deployments in VALIDATED state..."
+          RESPONSE=$(curl -sf \
+            -H "Authorization: Bearer $(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)" \
+            -H "Accept: application/json" \
+            "${BASE}/publisher/deployments?state=VALIDATED&size=20" 2>&1) || {
+              # Central Portal uses Bearer token format with base64(user:pass)
+              RESPONSE=$(curl -sf \
+                -u "${MAVEN_CENTRAL_USERNAME}:${MAVEN_CENTRAL_PASSWORD}" \
+                -H "Accept: application/json" \
+                "${BASE}/publisher/deployments?state=VALIDATED&size=20")
+            }
+
+          echo "Response: $RESPONSE"
+
+          IDS=$(echo "$RESPONSE" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          deployments = data.get('deployments', data) if isinstance(data, dict) else data
+          for d in deployments:
+              did = d.get('deploymentId') or d.get('id', '')
+              name = d.get('deploymentName', d.get('name', ''))
+              state = d.get('deploymentState', d.get('state', ''))
+              if state in ('VALIDATED', 'PENDING'):
+                  print(did)
+                  print(f'  → {name} [{state}]', file=sys.stderr)
+          ")
+
+          if [ -z "$IDS" ]; then
+            echo "No VALIDATED deployments found."
+            exit 0
+          fi
+
+          echo "$IDS" | while IFS= read -r ID; do
+            [ -z "$ID" ] && continue
+            echo "Publishing deployment: $ID"
+            curl -sf -X POST \
+              -u "${MAVEN_CENTRAL_USERNAME}:${MAVEN_CENTRAL_PASSWORD}" \
+              "${BASE}/publisher/deployment/${ID}/publish" \
+              && echo "  ✓ Published $ID" \
+              || echo "  ✗ Failed to publish $ID"
+          done
