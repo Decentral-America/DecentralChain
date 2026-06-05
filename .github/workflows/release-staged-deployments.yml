@@ -36,6 +36,4 @@ jobs:
             fi
           }
 
-          publish "3e87ffa2-6c6c-4a02-86e5-2af99c9713f6" "curve25519-1.0.0"
-          publish "a1bea16b-334f-40ac-af76-f5fd323bca6d" "blst-0.3.16.0"
-          publish "76e0aab8-8c9c-4410-907d-bd8dcfbeaf52" "groth16-0.2.1.0"
+          publish "2eb22e1e-00da-4803-afe5-a54b9b56f8b6" "protobuf-schemas-1.6.1"
