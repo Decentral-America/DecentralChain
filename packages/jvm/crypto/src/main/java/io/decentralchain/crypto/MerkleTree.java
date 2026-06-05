@@ -40,8 +40,10 @@ public class MerkleTree { // NOTE: Ride V4 createMerkleRoot() update opportunity
     private final List<byte[]> proofs;
     private final byte[] root;
 
-    private final byte LEFT = 0, RIGHT = 1;
-    private final byte[] LEAF = new byte[]{0}, NODE = new byte[]{1};
+    private final byte LEFT = 0;
+    private final byte RIGHT = 1;
+    private final byte[] LEAF = new byte[]{0};
+    private final byte[] NODE = new byte[]{1};
     private final byte[] EMPTY = new byte[]{};
     private final byte[] EMPTY_PROOF = new byte[]{LEFT, 0};
 
