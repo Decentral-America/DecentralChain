@@ -36,4 +36,4 @@ jobs:
             fi
           }
 
-          publish "2eb22e1e-00da-4803-afe5-a54b9b56f8b6" "protobuf-schemas-1.6.1"
+          publish "cf038aa4-2344-4136-a020-474b3aba4764" "blst-0.3.16.0"
