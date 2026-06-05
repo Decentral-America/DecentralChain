@@ -17,7 +17,7 @@
 #
 # ── Rich Account (genesis) ─────────────────────────────────────────────────────
 #   Seed:    dcc private node seed with dcc tokens
-#   Address: 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
+#   Address: 3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr
 #   Balance: 100,000,000 DCC (10^16 dcclets)
 #   Chain:   R (byte 82)
 #
@@ -35,7 +35,7 @@ services:
       - ./docker/private-node/decentralchain.custom.conf:/etc/dcc/dcc.conf:ro
       - ./docker/private-node/local.conf:/etc/dcc/local.conf:ro
     environment:
-      # Default rich account — matches genesis recipient 3M4qwDomRabJKLZxuXhwfqLApQkU592nWxF
+      # Default rich account — matches genesis recipient 3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr
       DCC_WALLET_SEED: "dcc private node seed with dcc tokens"
       DCC_WALLET_PASSWORD: "test"
       DCC_REST_API_BIND: "0.0.0.0"
