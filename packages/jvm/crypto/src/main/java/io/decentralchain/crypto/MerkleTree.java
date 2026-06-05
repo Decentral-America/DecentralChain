@@ -40,6 +40,8 @@ public class MerkleTree { // NOTE: Ride V4 createMerkleRoot() update opportunity
     private final List<byte[]> proofs;
     private final byte[] root;
 
+    private static final int ROOT_REACHED = 1;
+
     private final byte LEFT = 0;
     private final byte RIGHT = 1;
     private final byte[] LEAF = new byte[]{0};
@@ -179,7 +181,7 @@ public class MerkleTree { // NOTE: Ride V4 createMerkleRoot() update opportunity
                 fastHash(Bytes.concat(NODE, n.get(0), n.size() == 2 ? n.get(1) : EMPTY))
         ).collect(toList());
 
-        if (nextNodes.size() == 1)
+        if (nextNodes.size() == ROOT_REACHED)
             return nextNodes.get(0);
         else {
             increaseProofs(proofs, nextNodes);

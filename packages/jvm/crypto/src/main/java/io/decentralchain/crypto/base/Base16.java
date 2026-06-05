@@ -10,6 +10,7 @@ public final class Base16 {
     private static final String PREFIX = "base16:";
     private static final int PREFIX_LENGTH = PREFIX.length();
     private static final int INVALID_DIGIT = -1;
+    private static final int ODD_LENGTH = 1;
 
     /**
      * Encodes the given bytes as a base16 string (no checksum is appended).
@@ -48,7 +49,7 @@ public final class Base16 {
     public static byte[] decode(String encodedString) throws IllegalArgumentException {
         if (encodedString == null) throw new IllegalArgumentException("Base16 string can't be null");
         String input = encodedString.startsWith(PREFIX) ? encodedString.substring(PREFIX_LENGTH) : encodedString;
-        if (input.length() % 2 == 1)
+        if (input.length() % 2 == ODD_LENGTH)
             throw new IllegalArgumentException("Invalid base16 string \"" + input + "\"");
 
         byte[] bytes = new byte[input.length() / 2];
