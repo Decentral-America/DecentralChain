@@ -17,7 +17,7 @@ cannot change this license because the original author has not granted a
 separate license and the GPL-3.0 propagates to all derivative works.
 
 **Why not changed:** The upstream license is a hard constraint. All consumers
-of `io.decentralchain:curve25519-java` must be aware they are linking a
+of `io.decentralchain:curve25519` must be aware they are linking a
 GPL-3.0 library.
 
 **Resolution path:**
