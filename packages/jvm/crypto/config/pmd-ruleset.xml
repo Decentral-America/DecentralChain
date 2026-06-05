@@ -9,7 +9,7 @@
         Pure Java cryptographic primitives:
           - Hash.java — Blake2b256 / Keccak256 / SHA256 via BouncyCastle
           - Crypto.java — Curve25519 key generation / signing
-          - BlsUtils.java — BLS12-381 operations via blst-java
+          - BlsUtils.java — BLS12-381 operations via blst
           - MerkleTree.java — Merkle root construction
           - Bytes.java — byte array utilities
           - base/Base16/58/64.java — encoding / decoding

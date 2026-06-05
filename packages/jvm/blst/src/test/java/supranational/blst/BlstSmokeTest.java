@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
- * Smoke-tests for the blst-java JNI bindings.
+ * Smoke-tests for the blst JNI bindings.
  *
  * These tests verify that:
  *   1. The JNI native library loads correctly on the current platform.
