@@ -62,18 +62,5 @@
         <exclude name="AbstractClassWithoutAbstractMethod"/>
     </rule>
 
-    <!-- Code style: suppress cosmetic violations in upstream-derived classes -->
-    <rule ref="category/java/codestyle.xml">
-        <!-- MerkleTree uses compact multi-declaration style from upstream — cosmetic only -->
-        <exclude name="OneDeclarationPerLine"/>
-        <!-- Utility classes have private constructors — no need for AtLeastOneConstructor -->
-        <exclude name="AtLeastOneConstructor"/>
-        <!-- Short variable names are idiomatic in crypto/encoding algorithms -->
-        <exclude name="ShortVariable"/>
-        <!-- Avoid flagging style conventions in upstream-derived code -->
-        <exclude name="LocalVariableNamingConventions"/>
-        <exclude name="MethodArgumentCouldBeFinal"/>
-        <exclude name="LocalVariableCouldBeFinal"/>
-    </rule>
 
 </ruleset>
