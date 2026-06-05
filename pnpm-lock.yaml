@@ -88,9 +88,9 @@ importers:
       '@decentralchain/parse-json-bignumber':
         specifier: workspace:*
         version: link:../../packages/sdk/parse-json-bignumber
-      '@decentralchain/protobuf-serialization':
+      '@decentralchain/protobuf-schemas':
         specifier: workspace:*
-        version: link:../../packages/sdk/protobuf-serialization
+        version: link:../../packages/sdk/protobuf-schemas
       '@decentralchain/types':
         specifier: workspace:*
         version: link:../../packages/sdk/types
@@ -1034,9 +1034,9 @@ importers:
       '@connectrpc/connect-node':
         specifier: 2.1.1
         version: 2.1.1(@bufbuild/protobuf@2.12.0)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.12.0))
-      '@decentralchain/protobuf-serialization':
+      '@decentralchain/protobuf-schemas':
         specifier: workspace:*
-        version: link:../protobuf-serialization
+        version: link:../protobuf-schemas
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: 'catalog:'
@@ -1111,7 +1111,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0))
 
-  packages/sdk/protobuf-serialization:
+  packages/sdk/protobuf-schemas:
     dependencies:
       '@bufbuild/protobuf':
         specifier: ^2.12.0
@@ -1236,9 +1236,9 @@ importers:
       '@decentralchain/marshall':
         specifier: workspace:*
         version: link:../marshall
-      '@decentralchain/protobuf-serialization':
+      '@decentralchain/protobuf-schemas':
         specifier: workspace:*
-        version: link:../protobuf-serialization
+        version: link:../protobuf-schemas
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
         version: link:../ts-lib-crypto
