@@ -9,7 +9,8 @@ import java.util.Arrays;
  * Contains static methods to work with byte arrays.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class Bytes {
+public final class Bytes {
+    private Bytes() {}
 
     /**
      * Creates an empty byte array.
