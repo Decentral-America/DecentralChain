@@ -6,7 +6,7 @@
   "dependencies": {
     "@connectrpc/connect": "2.1.1",
     "@connectrpc/connect-node": "2.1.1",
-    "@decentralchain/protobuf-serialization": "workspace:*"
+    "@decentralchain/protobuf-schemas": "workspace:*"
   },
   "description": "TypeScript gRPC client for the DecentralChain node gRPC APIs — AccountsApi, AssetsApi, BlockchainApi, BlocksApi, TransactionsApi, BlockchainUpdatesApi",
   "devDependencies": {

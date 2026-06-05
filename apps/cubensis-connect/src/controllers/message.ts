@@ -14,7 +14,7 @@ import {
   DataEntrySchema,
   DataTransactionDataSchema,
   toBinary,
-} from '@decentralchain/protobuf-serialization';
+} from '@decentralchain/protobuf-schemas';
 import type { LeaseTransactionFromNode } from '@decentralchain/types';
 import { TRANSACTION_TYPE } from '@decentralchain/types';
 import { nanoid } from 'nanoid';

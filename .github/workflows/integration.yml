@@ -158,7 +158,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build SDK dependencies
-        run: pnpm nx run-many -t build --projects=types,ts-lib-crypto,bignumber,marshall,protobuf-serialization,node-api,@decentralchain/transactions
+        run: pnpm nx run-many -t build --projects=types,ts-lib-crypto,bignumber,marshall,protobuf-schemas,node-api,@decentralchain/transactions
 
       - name: Run integration tests
         env:

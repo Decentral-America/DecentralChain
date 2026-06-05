@@ -152,7 +152,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 3 | ts-lib-crypto | ts-lib-crypto | wavesplatform | Foundation | 🔗 | 2.0.1 |
 | 4 | parse-json-bignumber | parse-json-bignumber | wavesplatform | Foundation | 🔗 | 2.0.1 |
 | 5 | marshall | marshall | wavesplatform | Serialization | — | 1.0.1 |
-| 6 | protobuf-serialization | protobuf-schemas | wavesplatform | Serialization | — | 3.0.0 |
+| 6 | protobuf-schemas | protobuf-schemas | wavesplatform | Serialization | — | 3.0.0 |
 | 7 | data-entities | waves-data-entities | wavesplatform | Domain Model | — | 3.0.1 |
 | 8 | assets-pairs-order | assets-pairs-order | wavesplatform | Domain Model | — | 5.0.2 |
 | 9 | oracle-data | oracle-data | wavesplatform | Domain Model | — | 1.0.1 |
@@ -193,7 +193,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | Layer | Packages | Role |
 |-------|----------|------|
 | **0 — Foundation** | types, bignumber, ts-lib-crypto, parse-json-bignumber, crypto, cubensis-connect-types | Core types, math, crypto, JSON parsing |
-| **1 — Serialization** | marshall, protobuf-serialization | Binary/protobuf encode/decode for wire format |
+| **1 — Serialization** | marshall, protobuf-schemas | Binary/protobuf encode/decode for wire format |
 | **2 — Domain Model** | data-entities, assets-pairs-order, oracle-data | Business objects (Money, Asset, OrderPrice, Oracle) |
 | **3 — Transaction Building** | transactions, money-like-to-node | Construct, sign, and validate blockchain transactions |
 | **4 — API Client** | node-api, data-service-client | HTTP clients for node REST API and data service |
@@ -207,7 +207,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 
 ```
   types  (zero @decentralchain deps — pure types)
-    ├── transactions (+ ts-lib-crypto, marshall, protobuf-serialization)
+    ├── transactions (+ ts-lib-crypto, marshall, protobuf-schemas)
     ├── node-api (+ bignumber, ts-lib-crypto)
     └── signature-adapter (+ bignumber, data-entities, ledger, money-like-to-node, transactions)
 
@@ -226,7 +226,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
     ├── transactions
     └── cubensis-connect-provider (+ cubensis-connect-types)
 
-  protobuf-serialization  (zero @decentralchain deps — @bufbuild/protobuf)
+  protobuf-schemas  (zero @decentralchain deps — @bufbuild/protobuf)
     └── transactions
 
   ledger  (zero @decentralchain deps — @ledgerhq/logs)
@@ -235,7 +235,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
   data-entities  (← bignumber)
     └── signature-adapter
 
-  transactions  (← types, ts-lib-crypto, marshall, protobuf-serialization)
+  transactions  (← types, ts-lib-crypto, marshall, protobuf-schemas)
     └── signature-adapter
 
   node-api  (← types, bignumber, ts-lib-crypto)
@@ -276,7 +276,7 @@ These values are embedded in the blockchain protocol itself. They **cannot** be 
 |-----------|--------|-----------|
 | `'DCC'` asset ID | Client sentinel for native asset | All SDK packages |
 | `'DccWalletAuthentication'` prefix | Cryptographic domain separator | `cubensis-connect/src/messages/utils.ts`, `packages/sdk/transactions/src/requests/auth.ts`, `packages/sdk/signature-adapter/src/prepareTx/constants.ts` |
-| Protobuf `dcc` namespace | Wire-format package name | `protobuf-serialization/proto/dcc/**` |
+| Protobuf `dcc` namespace | Wire-format package name | `protobuf-schemas/proto/dcc/**` |
 | `@waves/ride-lang` + `@waves/ride-repl` | Chain-agnostic Scala.js binaries — same bytecode works on any Waves-protocol chain | `ride-js/package.json` |
 
 ---
@@ -485,7 +485,7 @@ Ride is the smart contract language used on both Waves and DecentralChain. It is
 | `@waves/oracle-data` | `@decentralchain/oracle-data` |
 | `@waves/ledger` | `@decentralchain/ledger` |
 | `@waves/assets-pairs-order` | `@decentralchain/assets-pairs-order` |
-| `@waves/protobuf-serialization` | `@decentralchain/protobuf-serialization` |
+| `@waves/protobuf-schemas` | `@decentralchain/protobuf-schemas` |
 | `@waves/money-like-to-node` | `@decentralchain/money-like-to-node` |
 | `@waves/ride-js` | `@decentralchain/ride` |
 | `@keeper-wallet/waves-crypto` | `@decentralchain/crypto` |
@@ -578,7 +578,7 @@ The dependency chains through DCC packages. `crypto` and `ts-lib-crypto` are **i
 @decentralchain/marshall
   └── @decentralchain/transactions
         └── (see above)
-  └── @decentralchain/protobuf-serialization (proto namespace: dcc)
+  └── @decentralchain/protobuf-schemas (proto namespace: dcc)
   └── @decentralchain/cubensis-connect-provider
 
 @decentralchain/swap-client  ← FORKED (DCC-69) then DELETED ✅
@@ -682,7 +682,7 @@ Each row maps a monorepo package to its Waves upstream. **Upstream Commit** is t
 | 3 | `packages/sdk/ts-lib-crypto` | [wavesplatform/ts-lib-crypto](https://github.com/wavesplatform/ts-lib-crypto) | `e2fc231` (#160) | `3c6bd7c` (#164) | 2026-05-24 | 🟢 Active | ⬜ ↓1 reviewed — N/A: upstream bumps `node-forge`; DCC rebuilt on `@noble/curves` (no `node-forge` dep) |
 | 4 | `packages/sdk/parse-json-bignumber` | [wavesplatform/parse-json-bignumber](https://github.com/wavesplatform/parse-json-bignumber) | `3ec759a` (#34) | `6fa6456` (#37) | 2020-06-02 | 💤 Dormant |
 | 5 | `packages/sdk/marshall` | [wavesplatform/marshall](https://github.com/wavesplatform/marshall) | `85e4312` (#101) | `15ebc15` (#105) | 2026-05-24 | 🟢 Active | ⬜ ↓3 reviewed — N/A: two dep bumps + order-v3 re-add (order v3 was never removed from DCC) |
-| 6 | `packages/sdk/protobuf-serialization` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `003f2ce` (#141) | `c6ca904` (#146) | 2026-05-24 | 🟡 Moderate | ⬜ ↓2 reviewed — N/A: `protobufjs` v8 upgrade + npm build fix; DCC uses `@bufbuild/protobuf` |
+| 6 | `packages/sdk/protobuf-schemas` | [wavesplatform/protobuf-schemas](https://github.com/wavesplatform/protobuf-schemas) | `003f2ce` (#141) | `c6ca904` (#146) | 2026-05-24 | 🟡 Moderate | ⬜ ↓2 reviewed — N/A: `protobufjs` v8 upgrade + npm build fix; DCC uses `@bufbuild/protobuf` |
 | 7 | `packages/sdk/data-entities` | [wavesplatform/waves-data-entities](https://github.com/wavesplatform/waves-data-entities) | `c611b1d` (#113) | `417b379` (#115) | 2021-08-30 | 💤 Dormant |
 | 8 | `packages/sdk/assets-pairs-order` | [wavesplatform/assets-pairs-order](https://github.com/wavesplatform/assets-pairs-order) | `2e16584` (#63) | `f243c68` (#65) | 2018-07-06 | 💤 Dormant |
 | 9 | `packages/sdk/oracle-data` | [wavesplatform/oracle-data](https://github.com/wavesplatform/oracle-data) | `7efebd1` (#13) | `db01908` (#17) | 2019-09-05 | 💤 Dormant |
@@ -772,7 +772,7 @@ git diff <last-synced-commit>..HEAD -- src/
 | wavesplatform/Waves (`lang/`) | `packages/ride/lang/` | RIDE VM — new language features, stdLib versions | Weekly |
 | ride-js | `packages/ride/ts/` | RIDE TS wrapper — new compiler output format | Weekly |
 | signer | `packages/sdk/signer` | Signing flow changes | Bi-weekly |
-| protobuf-schemas | `packages/sdk/protobuf-serialization` | Wire format = protocol updates | Bi-weekly |
+| protobuf-schemas | `packages/sdk/protobuf-schemas` | Wire format = protocol updates | Bi-weekly |
 | gowaves | `Ecosystem/node-go` | New proto fields, consensus changes | Bi-weekly |
 | Keeper-Wallet-Extension | `apps/cubensis-connect` | Wallet features we may want | Monthly |
 | data-service | `apps/data-service` | Now in monorepo — watch for upstream bugfixes and new endpoint features | Monthly |

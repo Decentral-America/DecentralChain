@@ -278,7 +278,7 @@
       "entry": ["test/**/*.spec.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
-    "packages/sdk/protobuf-serialization": {
+    "packages/sdk/protobuf-schemas": {
       "entry": ["src/index.ts"],
       "ignore": ["src/gen/**"],
       "project": ["src/**/*.ts"]

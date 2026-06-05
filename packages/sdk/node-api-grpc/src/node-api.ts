@@ -5,7 +5,7 @@ import {
   BlockchainApi,
   BlocksApi,
   TransactionsApi,
-} from '@decentralchain/protobuf-serialization/grpc';
+} from '@decentralchain/protobuf-schemas/grpc';
 import { type Channel } from './channel.js';
 
 /**

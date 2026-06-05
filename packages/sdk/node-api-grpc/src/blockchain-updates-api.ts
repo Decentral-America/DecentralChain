@@ -1,5 +1,5 @@
 import { type Client, createClient } from '@connectrpc/connect';
-import { BlockchainUpdatesApi } from '@decentralchain/protobuf-serialization/grpc';
+import { BlockchainUpdatesApi } from '@decentralchain/protobuf-schemas/grpc';
 import { type Channel } from './channel.js';
 
 /**

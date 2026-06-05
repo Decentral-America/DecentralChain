@@ -18,7 +18,7 @@ import {
   type Transaction,
   TransactionSchema,
   toBinary,
-} from '@decentralchain/protobuf-serialization';
+} from '@decentralchain/protobuf-schemas';
 import {
   address,
   base16Decode,
