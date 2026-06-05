@@ -20,46 +20,56 @@ jobs:
           set -euo pipefail
 
           BASE="https://central.sonatype.com/api/v1"
-          AUTH=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)
+          TOKEN=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)
 
-          echo "Fetching deployments in VALIDATED state..."
-          RESPONSE=$(curl -sf \
-            -H "Authorization: Bearer $(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)" \
+          echo "=== Listing all deployments ==="
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            -H "Authorization: Bearer ${TOKEN}" \
             -H "Accept: application/json" \
-            "${BASE}/publisher/deployments?state=VALIDATED&size=20" 2>&1) || {
-              # Central Portal uses Bearer token format with base64(user:pass)
-              RESPONSE=$(curl -sf \
-                -u "${MAVEN_CENTRAL_USERNAME}:${MAVEN_CENTRAL_PASSWORD}" \
-                -H "Accept: application/json" \
-                "${BASE}/publisher/deployments?state=VALIDATED&size=20")
-            }
+            "${BASE}/publisher/deployments?size=20")
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_STATUS:/d')
+          echo "Status: $HTTP_STATUS"
+          echo "Body: $BODY"
 
-          echo "Response: $RESPONSE"
-
-          IDS=$(echo "$RESPONSE" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          deployments = data.get('deployments', data) if isinstance(data, dict) else data
-          for d in deployments:
-              did = d.get('deploymentId') or d.get('id', '')
-              name = d.get('deploymentName', d.get('name', ''))
-              state = d.get('deploymentState', d.get('state', ''))
-              if state in ('VALIDATED', 'PENDING'):
-                  print(did)
-                  print(f'  → {name} [{state}]', file=sys.stderr)
-          ")
-
-          if [ -z "$IDS" ]; then
-            echo "No VALIDATED deployments found."
-            exit 0
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "API call failed — check credentials or endpoint"
+            exit 1
           fi
 
-          echo "$IDS" | while IFS= read -r ID; do
-            [ -z "$ID" ] && continue
-            echo "Publishing deployment: $ID"
-            curl -sf -X POST \
-              -u "${MAVEN_CENTRAL_USERNAME}:${MAVEN_CENTRAL_PASSWORD}" \
-              "${BASE}/publisher/deployment/${ID}/publish" \
-              && echo "  ✓ Published $ID" \
-              || echo "  ✗ Failed to publish $ID"
-          done
+          echo ""
+          echo "=== Publishing VALIDATED deployments ==="
+          echo "$BODY" | python3 - <<'PYEOF'
+          import sys, json, subprocess, os
+
+          body = sys.stdin.read()
+          data = json.loads(body)
+          deployments = data if isinstance(data, list) else data.get('deployments', [])
+          token = subprocess.check_output(
+              ['bash', '-c', 'printf "%s:%s" "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0'],
+              env=os.environ
+          ).decode().strip()
+
+          published = 0
+          for d in deployments:
+              did = d.get('deploymentId', d.get('id', ''))
+              name = d.get('deploymentName', d.get('name', ''))
+              state = d.get('deploymentState', d.get('state', ''))
+              print(f"  {name} [{state}] id={did}")
+              if state in ('VALIDATED',):
+                  r = subprocess.run(
+                      ['curl', '-s', '-w', '\nHTTP_STATUS:%{http_code}', '-X', 'POST',
+                       '-H', f'Authorization: Bearer {token}',
+                       f'https://central.sonatype.com/api/v1/publisher/deployment/{did}/publish'],
+                      capture_output=True, text=True
+                  )
+                  pub_status = [l for l in r.stdout.splitlines() if 'HTTP_STATUS:' in l]
+                  code = pub_status[0].split(':')[1] if pub_status else '?'
+                  if code in ('200', '201', '204'):
+                      print(f"    ✓ Published (HTTP {code})")
+                      published += 1
+                  else:
+                      body_out = '\n'.join(l for l in r.stdout.splitlines() if 'HTTP_STATUS:' not in l)
+                      print(f"    ✗ Failed (HTTP {code}): {body_out}")
+          print(f"\nDone — {published} deployment(s) published.")
+          PYEOF
