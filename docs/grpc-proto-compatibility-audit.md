@@ -15,7 +15,7 @@
 | node-scala | `com.wavesplatform:protobuf-schemas:1.6.0` | Maven dep `Dependencies.scala` |
 | node-go | ~1.4 (Waves Protocol 1.4) | Vendored submodule `pkg/grpc/protobuf-schemas/` |
 | blockchain-postgres-sync | 1.6.x | Vendored in `proto/` directory |
-| Legacy PolyRepo | 1.6.x (DCC-branded) | `protobuf-serialization/proto/` |
+| Legacy PolyRepo | 1.6.x (DCC-branded) | `protobuf-schemas/proto/` |
 
 The 3-way gap is not cosmetic. It produces **silent data loss** on two paths and **blocks the state hash comparison** required by DCC-151 / DCC-170.
 
@@ -94,7 +94,7 @@ Missing: `dapp_meta.proto` and all 5 `node/grpc/*_api.proto` files (not needed â
 
 ## Legacy PolyRepo Comparison
 
-The Legacy `DecentralChain-PolyRepo/protobuf-serialization/` protos are a **DCC-branded 1.6.x fork** of upstream (identical structure to node-scala, different Go/Java package namespaces: `io.decentralchain.*` vs `com.wavesplatform.*`).
+The Legacy `DecentralChain-PolyRepo/protobuf-schemas/` protos are a **DCC-branded 1.6.x fork** of upstream (identical structure to node-scala, different Go/Java package namespaces: `io.decentralchain.*` vs `com.wavesplatform.*`).
 
 Two additional DCC-specific safety annotations exist in the Legacy fork that are absent from both node-go and BPS:
 

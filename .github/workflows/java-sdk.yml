@@ -64,7 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-schemas && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/groth16      && ./mvnw $MVN_OPTS install)
@@ -118,7 +118,7 @@ jobs:
         run: |
           set -euo pipefail
           MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-schemas && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/groth16      && ./mvnw $MVN_OPTS install)
@@ -178,7 +178,7 @@ jobs:
         run: |
           set -euo pipefail
           MVN_OPTS="--batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true"
-          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-serialization && ./mvnw $MVN_OPTS install)
+          (cd $GITHUB_WORKSPACE/packages/sdk/protobuf-schemas && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/curve25519   && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/blst         && ./mvnw $MVN_OPTS install)
           (cd $GITHUB_WORKSPACE/packages/jvm/groth16      && ./mvnw $MVN_OPTS install)

@@ -9,7 +9,7 @@ import {
   verifyAddress,
 } from '@decentralchain/crypto';
 import { binary, schemas, serializePrimitives } from '@decentralchain/marshall';
-import type { Amount, Recipient } from '@decentralchain/protobuf-serialization';
+import type { Amount, Recipient } from '@decentralchain/protobuf-schemas';
 import {
   AmountSchema,
   create,
@@ -20,7 +20,7 @@ import {
   RecipientSchema,
   TransactionSchema,
   toBinary,
-} from '@decentralchain/protobuf-serialization';
+} from '@decentralchain/protobuf-schemas';
 import type { InvokeScriptCallArgument } from '@decentralchain/types';
 import { TRANSACTION_TYPE } from '@decentralchain/types';
 
