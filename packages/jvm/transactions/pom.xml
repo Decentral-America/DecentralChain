@@ -126,9 +126,10 @@
          4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
          CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line. -->
     <netty.version>4.2.14.Final</netty.version>
-    <!-- vertx-core 4.5.14 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
-         which has CVE-2026-6860, CVE-2025-11965, CVE-2025-11966. Fixed in 4.5.12+. -->
-    <vertx.version>4.5.14</vertx.version>
+    <!-- vertx-core 4.5.27 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
+         CVE-2025-11965, CVE-2025-11966: fixed in 4.5.22+
+         CVE-2026-6860 (SNI DoS, CVSS 7.5): fixed in 4.5.26+ -->
+    <vertx.version>4.5.27</vertx.version>
   </properties>
 
   <!-- ── Dependency management (transitive version overrides) ────────── -->
@@ -163,8 +164,8 @@
         <version>${jna.version}</version>
       </dependency>
 
-      <!-- Force vertx-core to 4.5.14 — SECURITY OVERRIDE (CVE-2026-6860, CVE-2025-11965,
-           CVE-2025-11966 in 4.5.11 pulled transitively by web3j). Fixed in 4.5.12+. -->
+      <!-- Force vertx-core to 4.5.27 — SECURITY OVERRIDE.
+           CVE-2025-11965/11966 fixed in 4.5.22+; CVE-2026-6860 (CVSS 7.5) fixed in 4.5.26+. -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-core</artifactId>
