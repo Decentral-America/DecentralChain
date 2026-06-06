@@ -11,6 +11,11 @@ on:
         description: 'npm dist-tag (latest | next | beta)'
         required: false
         default: 'latest'
+      skip_maven:
+        description: 'Skip JVM publish (Maven already at this version)'
+        required: false
+        type: boolean
+        default: false
 
 # Least-privilege token permissions (OWASP CI/CD A09).
 # This workflow reads source code, publishes to Maven Central and npm.
@@ -75,6 +80,7 @@ jobs:
       # ── JVM publish: GPG-sign + stage + release to Maven Central ────────
 
       - name: Sign and publish JVM artifacts to Central Portal staging
+        if: ${{ !inputs.skip_maven }}
         working-directory: packages/ride
         env:
           SONATYPE_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
@@ -102,6 +108,7 @@ jobs:
             publishSigned
 
       - name: Release staged bundle to Maven Central (sonatypeBundleRelease)
+        if: ${{ !inputs.skip_maven }}
         working-directory: packages/ride
         env:
           SONATYPE_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
