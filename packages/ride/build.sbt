@@ -53,7 +53,6 @@ ThisBuild / publishMavenStyle      := true
 ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
 ThisBuild / publishTo              := sonatypePublishToBundle.value
 ThisBuild / pgpPassphrase          := sys.env.get("MAVEN_GPG_PASSPHRASE").map(_.toCharArray)
-ThisBuild / sonatypeDeploymentName := s"ride-${(ThisBuild / version).value}"
 
 inScope(Global)(
   Seq(
