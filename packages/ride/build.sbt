@@ -21,10 +21,11 @@ enablePlugins(GitVersioning)
 
 git.uncommittedSignifier       := Some("DIRTY")
 ThisBuild / git.useGitDescribe := true
-// Reject tags containing '/' (e.g. upstream-node-scala/v1.2.18) — only plain
-// semver tags like v1.6.2 should drive the version number.
+// Accept ride-specific semver tags (ride-v1.6.2 → 1.6.2) and plain v-tags.
+// Reject slash-separated tags (e.g. upstream-node-scala/v1.2.18).
 ThisBuild / git.gitTagToVersionNumber := { ver =>
   if (ver.contains('/')) None
+  else if (ver.startsWith("ride-v")) Some(ver.drop(6))
   else if (ver.startsWith("v")) Some(ver.drop(1))
   else None
 }
