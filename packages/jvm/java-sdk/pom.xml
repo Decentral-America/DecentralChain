@@ -403,7 +403,7 @@
         <!-- RIDE Compiler (DCC local build from packages/ride) -->
         <dependency>
             <groupId>io.decentralchain</groupId>
-            <artifactId>lang</artifactId>
+            <artifactId>ride</artifactId>
             <version>1.6.1</version>
         </dependency>
 
