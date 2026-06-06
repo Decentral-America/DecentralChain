@@ -81,8 +81,11 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
+          RIDE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
+          # Override the git-computed version (sbt-git) with the explicit release version
+          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
           # Pre-cache the GPG passphrase in the agent so sbt's CommandLineGpgSigner
           # can sign without a TTY prompt.
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
@@ -101,7 +104,11 @@ jobs:
         env:
           SONATYPE_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-        run: sbt --no-colors sonatypeBundleRelease
+          RIDE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
+          sbt --no-colors sonatypeBundleRelease
 
       # ── Scala.js: build JS bundles ───────────────────────────────────────
       # fullLinkJS outputs:
@@ -110,7 +117,13 @@ jobs:
 
       - name: Build Scala.js full-link bundles
         working-directory: packages/ride
-        run: sbt --no-colors "lang-js/fullLinkJS; repl-js/fullLinkJS"
+        env:
+          RIDE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
+          sbt --no-colors 'lang-js/fullLinkJS'
+          sbt --no-colors 'repl-js/fullLinkJS'
 
       # ── npm publish: ride-lang ────────────────────────────────────────────
 
