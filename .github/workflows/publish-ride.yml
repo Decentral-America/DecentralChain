@@ -124,8 +124,17 @@ jobs:
           RIDE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          sbt --no-colors "set ThisBuild / version := \"${RIDE_VERSION}\"" 'lang-js/fullLinkJS'
-          sbt --no-colors "set ThisBuild / version := \"${RIDE_VERSION}\"" 'repl-js/fullLinkJS'
+          # lang-js and repl-js have hyphens which break sbt's projectId/task
+          # scoping syntax in batch mode. Switch context with `project` first,
+          # then run fullLinkJS in that project scope.
+          sbt --no-colors \
+            "set ThisBuild / version := \"${RIDE_VERSION}\"" \
+            "project lang-js" \
+            fullLinkJS
+          sbt --no-colors \
+            "set ThisBuild / version := \"${RIDE_VERSION}\"" \
+            "project repl-js" \
+            fullLinkJS
 
       # ── npm publish: ride-lang ────────────────────────────────────────────
 
