@@ -9,11 +9,10 @@
   <groupId>io.decentralchain</groupId>
   <artifactId>curve25519</artifactId>
   <!--
-    Version scheme: <upstream-fork-base>.<dcc-increment>
-    Upstream Decentral-America/curve25519 was at 0.6.5 (WhisperSystems fork).
-    DCC adds Java 25 + JNA bounds validation: 0.6.5 → 0.6.6 (DCC increment).
+    Version: 1.0.0 — DCC-branded release (first publication to io.decentralchain).
+    Based on upstream 0.6.6 (WhisperSystems fork via Decentral-America/curve25519).
   -->
-  <version>0.6.6</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->
