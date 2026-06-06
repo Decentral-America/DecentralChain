@@ -122,7 +122,7 @@ jobs:
             sonatypeBundleRelease
 
       # ── Scala.js: build JS bundles ───────────────────────────────────────
-      # fullLinkJS outputs:
+      # fullOptJS outputs (via artifactPath in lang/js/build.sbt and repl/js/build.sbt):
       #   packages/ride/lang/js/dist/lang.js   → @decentralchain/ride-lang
       #   packages/ride/repl/js/dist/repl.js   → @decentralchain/ride-repl
 
@@ -135,14 +135,17 @@ jobs:
           # lang-js and repl-js have hyphens which break sbt's projectId/task
           # scoping syntax in batch mode. Switch context with `project` first,
           # then run fullLinkJS in that project scope.
+          # fullOptJS respects the artifactPath configured in lang/js/build.sbt
+          # and repl/js/build.sbt (dist/lang.js and dist/repl.js respectively).
+          # fullLinkJS uses a different output API and ignores those settings.
           sbt --no-colors \
             "set ThisBuild / version := \"${RIDE_VERSION}\"" \
             "project langJS" \
-            fullLinkJS
+            fullOptJS
           sbt --no-colors \
             "set ThisBuild / version := \"${RIDE_VERSION}\"" \
             "project replJS" \
-            fullLinkJS
+            fullOptJS
 
       # ── npm publish: ride-lang ────────────────────────────────────────────
 
