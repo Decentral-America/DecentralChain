@@ -28,7 +28,10 @@ jobs:
       RUST_BACKTRACE: 1
 
     strategy:
-      fail-fast: true
+      # false: a single platform failure does not cancel the remaining builds.
+      # In a publish pipeline cancelling 6 clean builds because one runner had
+      # a transient issue wastes significant CI time and requires a full restart.
+      fail-fast: false
       matrix:
         include:
           - platform: linux
@@ -40,11 +43,13 @@ jobs:
 
           - platform: linux
             arch: aarch64
-            os: ubuntu-latest
+            # Native ARM64 runner (free for public repos since Jan 2025).
+            # Eliminates cross-compilation via gcc-aarch64-linux-gnu — native
+            # builds are faster, simpler, and produce more reliable binaries.
+            os: ubuntu-24.04-arm
             rust-target: aarch64-unknown-linux-gnu
             artifact: libgroth16_jni.so
             resource-path: linux64/aarch64
-            extra-packages: gcc-aarch64-linux-gnu
 
           - platform: linux
             arch: x86
