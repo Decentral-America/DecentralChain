@@ -136,7 +136,7 @@ lazy val `lang-jvm` = lang.jvm
   .enablePlugins(PublishedModule)
   .settings(
     name           := "RIDE Compiler",
-    normalizedName := "lang",
+    normalizedName := "ride",
     description    := "The RIDE smart contract language compiler",
     // The evaluator tree is excluded from instrumentation (sbt-scoverage 2.4.4 +
     // Scala 3.8.3 miscompiles context-passing closures — see KNOWN_ISSUES KNOWN-3).
@@ -164,6 +164,7 @@ lazy val `lang-testkit` = project
   .dependsOn(`lang-jvm`)
   .enablePlugins(PublishedModule)
   .settings(
+    normalizedName := "ride-testkit",
     libraryDependencies ++=
       Dependencies.test.map(_.withConfigurations(Some("compile"))) ++
         Dependencies.logDeps :+
