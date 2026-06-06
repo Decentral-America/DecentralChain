@@ -157,7 +157,7 @@
         <version>${protobuf-java.version}</version>
       </dependency>
 
-      <!-- Force JNA to 5.18.1 (io.decentralchain:curve25519:0.6.6 pulls 5.13.0 transitively) -->
+      <!-- Force JNA to 5.18.1 (io.decentralchain:curve25519:1.0.0 pulls 5.13.0 transitively) -->
       <dependency>
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
