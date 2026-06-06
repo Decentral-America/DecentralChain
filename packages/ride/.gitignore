@@ -8,3 +8,5 @@ project/project/
 *.jar
 lang/js/dist/
 repl/js/dist/
+# CI-generated version override — must not be committed or the git tree goes dirty
+version.sbt
