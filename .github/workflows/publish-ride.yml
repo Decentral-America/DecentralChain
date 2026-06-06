@@ -83,6 +83,15 @@ jobs:
           MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
         run: |
           set -euo pipefail
+          # Pre-cache the GPG passphrase in the agent so sbt's CommandLineGpgSigner
+          # can sign without a TTY prompt.
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          gpgconf --reload gpg-agent
+          echo "$MAVEN_GPG_PASSPHRASE" | gpg --batch \
+            --passphrase-fd 0 \
+            --pinentry-mode loopback \
+            --default-key "$MAVEN_GPG_KEY_ID" \
+            --sign --armor -o /dev/null /dev/null 2>/dev/null || true
           sbt --no-colors \
             -Dgpg.keyname="${MAVEN_GPG_KEY_ID}" \
             publishSigned
