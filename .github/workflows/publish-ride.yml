@@ -83,15 +83,8 @@ jobs:
           MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
         run: |
           set -euo pipefail
-          # Configure GPG for non-interactive signing in CI (no TTY available)
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          gpgconf --kill gpg-agent || true
           sbt --no-colors \
             -Dgpg.keyname="${MAVEN_GPG_KEY_ID}" \
-            -Dpgp.passphrase="${MAVEN_GPG_PASSPHRASE}" \
             publishSigned
 
       - name: Release staged bundle to Maven Central (sonatypeBundleRelease)
