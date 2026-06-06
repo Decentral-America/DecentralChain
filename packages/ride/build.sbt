@@ -234,7 +234,7 @@ lazy val `repl-js` = repl.js
 
 // ── aggregate root ───────────────────────────────────────────────────────────
 
-lazy val `dcc-ride` = (project in file("."))
+lazy val ride = (project in file("."))
   .aggregate(
     `lang-js`,
     `lang-jvm`,
