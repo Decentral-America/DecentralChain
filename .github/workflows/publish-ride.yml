@@ -136,11 +136,11 @@ jobs:
           # then run fullLinkJS in that project scope.
           sbt --no-colors \
             "set ThisBuild / version := \"${RIDE_VERSION}\"" \
-            "project lang-js" \
+            "project langJS" \
             fullLinkJS
           sbt --no-colors \
             "set ThisBuild / version := \"${RIDE_VERSION}\"" \
-            "project repl-js" \
+            "project replJS" \
             fullLinkJS
 
       # ── npm publish: ride-lang ────────────────────────────────────────────
