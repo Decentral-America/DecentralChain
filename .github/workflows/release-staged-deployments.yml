@@ -36,8 +36,4 @@ jobs:
             fi
           }
 
-          DEPLOY_ID="775548b8-a0cc-4aec-b59d-c1ba1882a2c4"
-          echo "=== Status of crypto-2.0.7 ==="
-          curl -s -H "Authorization: Bearer ${TOKEN}" -H "Accept: application/json" \
-            "https://central.sonatype.com/api/v1/publisher/deployment/${DEPLOY_ID}"
-          echo ""
+          publish "a63819f9-91dd-4bd5-ab1b-202bc0c8b2d4" "transactions-1.0.0"
