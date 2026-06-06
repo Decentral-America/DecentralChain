@@ -22,6 +22,7 @@ on:
 # No GitHub write access needed beyond the implicit read for checkout.
 permissions:
   contents: read
+  id-token: write   # required for npm provenance attestation
 
 concurrency:
   group: publish-ride
