@@ -36,4 +36,4 @@ jobs:
             fi
           }
 
-          publish "a63819f9-91dd-4bd5-ab1b-202bc0c8b2d4" "transactions-1.0.0"
+          publish "a8fcd25a-46b8-4750-a6fb-1a7d93202c94" "java-sdk-2.0.1"
