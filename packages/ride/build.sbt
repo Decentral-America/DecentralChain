@@ -52,6 +52,7 @@ ThisBuild / pomIncludeRepository   := { _ => false }
 ThisBuild / publishMavenStyle      := true
 ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
 ThisBuild / publishTo              := sonatypePublishToBundle.value
+ThisBuild / pgpPassphrase          := sys.env.get("MAVEN_GPG_PASSPHRASE").map(_.toCharArray)
 
 inScope(Global)(
   Seq(
