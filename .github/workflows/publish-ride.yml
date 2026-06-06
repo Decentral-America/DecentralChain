@@ -84,8 +84,6 @@ jobs:
           RIDE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          # Override the git-computed version (sbt-git) with the explicit release version
-          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
           # Pre-cache the GPG passphrase in the agent so sbt's CommandLineGpgSigner
           # can sign without a TTY prompt.
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
@@ -95,8 +93,12 @@ jobs:
             --pinentry-mode loopback \
             --default-key "$MAVEN_GPG_KEY_ID" \
             --sign --armor -o /dev/null /dev/null 2>/dev/null || true
+          # Use inline `set` instead of writing version.sbt — no file written means
+          # the git working tree stays clean and sbt-git won't append -DIRTY to the
+          # deployment name in the Sonatype portal.
           sbt --no-colors \
             -Dgpg.keyname="${MAVEN_GPG_KEY_ID}" \
+            "set ThisBuild / version := \"${RIDE_VERSION}\"" \
             publishSigned
 
       - name: Release staged bundle to Maven Central (sonatypeBundleRelease)
@@ -107,8 +109,9 @@ jobs:
           RIDE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
-          sbt --no-colors sonatypeBundleRelease
+          sbt --no-colors \
+            "set ThisBuild / version := \"${RIDE_VERSION}\"" \
+            sonatypeBundleRelease
 
       # ── Scala.js: build JS bundles ───────────────────────────────────────
       # fullLinkJS outputs:
@@ -121,9 +124,8 @@ jobs:
           RIDE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          printf 'ThisBuild / version := "%s"\n' "$RIDE_VERSION" > version.sbt
-          sbt --no-colors 'lang-js/fullLinkJS'
-          sbt --no-colors 'repl-js/fullLinkJS'
+          sbt --no-colors "set ThisBuild / version := \"${RIDE_VERSION}\"" 'lang-js/fullLinkJS'
+          sbt --no-colors "set ThisBuild / version := \"${RIDE_VERSION}\"" 'repl-js/fullLinkJS'
 
       # ── npm publish: ride-lang ────────────────────────────────────────────
 
