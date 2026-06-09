@@ -6,6 +6,30 @@ settings:
 
 catalogs:
   default:
+    '@arethetypeswrong/cli':
+      specifier: 0.18.3
+      version: 0.18.3
+    '@size-limit/preset-small-lib':
+      specifier: 12.1.0
+      version: 12.1.0
+    '@types/node':
+      specifier: 25.9.1
+      version: 25.9.1
+    '@vitest/coverage-v8':
+      specifier: 4.1.8
+      version: 4.1.8
+    jsdom:
+      specifier: 29.1.1
+      version: 29.1.1
+    publint:
+      specifier: 0.3.21
+      version: 0.3.21
+    size-limit:
+      specifier: 12.1.0
+      version: 12.1.0
+    tsdown:
+      specifier: 0.22.1
+      version: 0.22.1
     vitest:
       specifier: 4.1.8
       version: 4.1.8
@@ -21,7 +45,7 @@ overrides:
   follow-redirects: '>=1.16.0'
   ip-address: '>=10.1.1'
   lodash: '>=4.18.1'
-  path-to-regexp: '>=0.1.13'
+  express>path-to-regexp: ~0.1.13
   picomatch: '>=4.0.4'
   postcss: '>=8.5.15'
   qs: '>=6.15.2'
@@ -42,13 +66,13 @@ importers:
         version: 22.7.5(nx@22.7.5)
       '@nx/playwright':
         specifier: 22.7.5
-        version: 22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)
+        version: 22.7.5(@babel/traverse@7.29.7)(@playwright/test@1.60.0)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)
       '@nx/vitest':
         specifier: 22.7.5
-        version: 22.7.5(@babel/traverse@7.29.7)(@nx/eslint@22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5))(nx@22.7.5)(typescript@6.0.3)(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))(vitest@4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)))
+        version: 22.7.5(@babel/traverse@7.29.7)(@nx/eslint@22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5))(nx@22.7.5)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0))(vitest@4.1.8)
       '@sentry/vite-plugin':
         specifier: 5.3.0
-        version: 5.3.0
+        version: 5.3.0(rollup@4.60.4)
       esbuild:
         specifier: 0.28.0
         version: 0.28.0
@@ -66,10 +90,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.16
-        version: 8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)
+        version: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))
+        version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0))
 
   apps/cubensis-connect:
     dependencies:
@@ -1538,10 +1562,6 @@ packages:
     resolution: {integrity: sha512-brcMGQaVzIeUb+6/bs1Av0f8YuNNjKY2JyvfRCsFuFsdKccEQ5Ges2y74D74NZ1Rz8lKJ9ksJkfqwQFJ/iNEyQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-string-parser@7.27.1':
-    resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/helper-string-parser@7.29.7':
     resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
     engines: {node: '>=6.9.0'}
@@ -2067,10 +2087,6 @@ packages:
 
   '@babel/traverse@7.29.7':
     resolution: {integrity: sha512-EhlfNQtZ+NK22w5BM61ciuiq1m58ed33Wr1Xan//ZRTy6hgjnwyCffRYwzsGXdASJSUJ1guZILsErh1eQcl+zw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/types@7.29.0':
-    resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.29.7':
@@ -7900,8 +7916,11 @@ packages:
     resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
     engines: {node: 18 || 20 || >=22}
 
-  path-to-regexp@8.4.2:
-    resolution: {integrity: sha512-qRcuIdP69NPm4qbACK+aDogI5CBDMi1jKe0ry5rSQJz8JVLsC7jV8XpiJjGRLLol3N+R5ihGYcrPLTno6pAdBA==}
+  path-to-regexp@0.1.13:
+    resolution: {integrity: sha512-A/AGNMFN3c8bOlvV9RreMdrv7jsmF9XIfDeCd87+I8RNg6s78BhJxMu69NEMHBSJFxKidViTEdruRwEk/WIKqA==}
+
+  path-to-regexp@6.3.0:
+    resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
   path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -9082,10 +9101,6 @@ packages:
     resolution: {integrity: sha512-6KQ/+QxK49Z/p3HO6E5ZCZWNnCasyZLa5ExaVYyvPxUwKtbCPMKELJOqh7EqOle0t9cH/7d2TaaTRRa6Nhs4YQ==}
     engines: {node: '>=20.18.1'}
 
-  undici@7.25.0:
-    resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.26.0:
     resolution: {integrity: sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==}
     engines: {node: '>=20.18.1'}
@@ -9785,7 +9800,7 @@ snapshots:
   '@babel/helper-module-imports@7.28.6':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.29.0
+      '@babel/types': 7.29.7
     transitivePeerDependencies:
       - supports-color
 
@@ -9866,8 +9881,6 @@ snapshots:
       '@babel/types': 7.29.7
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/helper-string-parser@7.27.1': {}
 
   '@babel/helper-string-parser@7.29.7': {}
 
@@ -10510,7 +10523,7 @@ snapshots:
   '@babel/traverse@7.29.0':
     dependencies:
       '@babel/code-frame': 7.29.0
-      '@babel/generator': 7.29.1
+      '@babel/generator': 7.29.7
       '@babel/helper-globals': 7.28.0
       '@babel/parser': 7.29.7
       '@babel/template': 7.28.6
@@ -10530,11 +10543,6 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/types@7.29.0':
-    dependencies:
-      '@babel/helper-string-parser': 7.27.1
-      '@babel/helper-validator-identifier': 7.28.5
 
   '@babel/types@7.29.7':
     dependencies:
@@ -11770,7 +11778,7 @@ snapshots:
       '@nx/devkit': 22.7.5(nx@22.7.5)
       '@nx/js': 22.7.5(@babel/traverse@7.29.7)(nx@22.7.5)
       eslint: 10.4.0(jiti@2.7.0)
-      semver: 7.7.4
+      semver: 7.8.1
       tslib: 2.8.1
       typescript: 6.0.3
     optionalDependencies:
@@ -11808,7 +11816,7 @@ snapshots:
       npm-run-path: 4.0.1
       picocolors: 1.1.1
       picomatch: 4.0.4
-      semver: 7.7.4
+      semver: 7.8.1
       source-map-support: 0.5.19
       tinyglobby: 0.2.17
       tslib: 2.8.1
@@ -11850,13 +11858,15 @@ snapshots:
   '@nx/nx-win32-x64-msvc@22.7.5':
     optional: true
 
-  '@nx/playwright@22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)':
+  '@nx/playwright@22.7.5(@babel/traverse@7.29.7)(@playwright/test@1.60.0)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)':
     dependencies:
       '@nx/devkit': 22.7.5(nx@22.7.5)
       '@nx/eslint': 22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)
       '@nx/js': 22.7.5(@babel/traverse@7.29.7)(nx@22.7.5)
       minimatch: 10.2.5
       tslib: 2.8.1
+    optionalDependencies:
+      '@playwright/test': 1.60.0
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@nx/jest'
@@ -11869,7 +11879,7 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/vitest@22.7.5(@babel/traverse@7.29.7)(@nx/eslint@22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5))(nx@22.7.5)(typescript@6.0.3)(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))(vitest@4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)))':
+  '@nx/vitest@22.7.5(@babel/traverse@7.29.7)(@nx/eslint@22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5))(nx@22.7.5)(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0))(vitest@4.1.8)':
     dependencies:
       '@nx/devkit': 22.7.5(nx@22.7.5)
       '@nx/js': 22.7.5(@babel/traverse@7.29.7)(nx@22.7.5)
@@ -11878,8 +11888,8 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@nx/eslint': 22.7.5(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.4.0(jiti@2.7.0))(nx@22.7.5)
-      vite: 8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)
-      vitest: 4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0)
+      vitest: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -11898,7 +11908,7 @@ snapshots:
       enquirer: 2.3.6
       nx: 22.7.5
       picomatch: 4.0.4
-      semver: 7.7.4
+      semver: 7.8.1
       tslib: 2.8.1
       yargs-parser: 21.1.1
     transitivePeerDependencies:
@@ -13159,14 +13169,6 @@ snapshots:
       '@sentry/core': 10.56.0
       react: 19.2.7
 
-  '@sentry/rollup-plugin@5.3.0':
-    dependencies:
-      '@sentry/bundler-plugin-core': 5.3.0
-      magic-string: 0.30.21
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
   '@sentry/rollup-plugin@5.3.0(rollup@4.60.4)':
     dependencies:
       '@sentry/bundler-plugin-core': 5.3.0
@@ -13175,15 +13177,6 @@ snapshots:
       rollup: 4.60.4
     transitivePeerDependencies:
       - encoding
-      - supports-color
-
-  '@sentry/vite-plugin@5.3.0':
-    dependencies:
-      '@sentry/bundler-plugin-core': 5.3.0
-      '@sentry/rollup-plugin': 5.3.0
-    transitivePeerDependencies:
-      - encoding
-      - rollup
       - supports-color
 
   '@sentry/vite-plugin@5.3.0(rollup@4.60.4)':
@@ -13630,14 +13623,6 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0)
-
-  '@vitest/mocker@4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))':
-    dependencies:
-      '@vitest/spy': 4.1.8
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.8':
     dependencies:
@@ -14850,7 +14835,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
 
@@ -14912,7 +14897,7 @@ snapshots:
       methods: 1.1.2
       on-finished: 2.4.1
       parseurl: 1.3.3
-      path-to-regexp: 8.4.2
+      path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
       qs: 6.15.2
       range-parser: 1.2.1
@@ -15492,7 +15477,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.1
-      undici: 7.25.0
+      undici: 7.26.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -16242,7 +16227,10 @@ snapshots:
       lru-cache: 11.5.1
       minipass: 7.1.3
 
-  path-to-regexp@8.4.2: {}
+  path-to-regexp@0.1.13: {}
+
+  path-to-regexp@6.3.0:
+    optional: true
 
   path-type@4.0.0: {}
 
@@ -17256,7 +17244,7 @@ snapshots:
       lilconfig: 3.1.3
       nanospinner: 1.2.2
       picocolors: 1.1.1
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       jiti: 2.7.0
 
@@ -17596,8 +17584,6 @@ snapshots:
   undici@7.24.8:
     optional: true
 
-  undici@7.25.0: {}
-
   undici@7.26.0: {}
 
   unenv@2.0.0-rc.24:
@@ -17740,19 +17726,6 @@ snapshots:
       stylus: 0.64.0
       yaml: 2.9.0
 
-  vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0):
-    dependencies:
-      lightningcss: 1.32.0
-      picomatch: 4.0.4
-      postcss: 8.5.15
-      rolldown: 1.0.3
-      tinyglobby: 0.2.17
-    optionalDependencies:
-      esbuild: 0.28.0
-      fsevents: 2.3.3
-      jiti: 2.7.0
-      yaml: 2.9.0
-
   vitest@4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(stylus@0.64.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.8
@@ -17779,31 +17752,6 @@ snapshots:
       '@types/node': 25.9.1
       '@vitest/coverage-v8': 4.1.8(vitest@4.1.8)
       jsdom: 29.1.1(@noble/hashes@2.2.0)
-    transitivePeerDependencies:
-      - msw
-
-  vitest@4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)):
-    dependencies:
-      '@vitest/expect': 4.1.8
-      '@vitest/mocker': 4.1.8(vite@8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0))
-      '@vitest/pretty-format': 4.1.8
-      '@vitest/runner': 4.1.8
-      '@vitest/snapshot': 4.1.8
-      '@vitest/spy': 4.1.8
-      '@vitest/utils': 4.1.8
-      es-module-lexer: 2.0.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.4
-      std-env: 4.0.0
-      tinybench: 2.9.0
-      tinyexec: 1.2.3
-      tinyglobby: 0.2.17
-      tinyrainbow: 3.1.0
-      vite: 8.0.16(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.9.0)
-      why-is-node-running: 2.3.0
     transitivePeerDependencies:
       - msw
 
@@ -17974,7 +17922,7 @@ snapshots:
       blake3-wasm: 2.1.5
       esbuild: 0.27.3
       miniflare: 4.20260521.0
-      path-to-regexp: 8.4.2
+      path-to-regexp: 6.3.0
       rosie-skills: 0.6.4
       unenv: 2.0.0-rc.24
       workerd: 1.20260521.1
