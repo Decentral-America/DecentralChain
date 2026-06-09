@@ -71,7 +71,7 @@ jobs:
               ;;
             testnet)
               BUILD_MODE="testnet"
-              CF_PROJECT="dcc-exchange-testnet"
+              CF_PROJECT="exchange-testnet"
               ;;
             *)
               echo "::error::Unknown network: $NETWORK"
