@@ -153,6 +153,7 @@ jobs:
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        continue-on-error: true
         with:
           subject-name: ${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -176,11 +177,6 @@ jobs:
   call-deploy:
     name: Deploy (${{ inputs.network || 'mainnet' }})
     needs: [build-and-push]
-    # Only auto-deploy mainnet via tag push; stagenet/testnet require workflow_dispatch.
-    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
-    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    # inputs.network is available at scheduling time — no need to thread through job outputs.
-    if: true
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ inputs.network || 'mainnet' }}

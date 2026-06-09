@@ -141,9 +141,6 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
-    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    if: vars.INFRA_DEPLOY_ENABLED == 'true'
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ needs.resolve.outputs.network }}
