@@ -22,7 +22,7 @@ on:
           - testnet
 
 concurrency:
-  group: deploy-data-service-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  group: ci-deploy-data-service-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
   # Never cancel an in-flight deploy — killing an SSH session mid-restart leaves
   # the service in a broken state. Queue the new run instead.
   cancel-in-progress: false
