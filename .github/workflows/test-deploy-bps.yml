@@ -1,0 +1,16 @@
+name: Test Deploy BPS
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        required: true
+        type: string
+        default: 'testnet'
+jobs:
+  call-deploy:
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@e781bd72fade0a8d52c31114d323120165078f28
+    with:
+      network: ${{ inputs.network }}
+      image: ghcr.io/decentral-america/blockchain-postgres-sync:765a8bbccc02b47e0eff08242a9d84ae5cbb66d6
+      service: blockchain-postgres-sync
+    secrets: inherit
