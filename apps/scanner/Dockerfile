@@ -34,9 +34,6 @@ COPY tools ./tools
 COPY packages ./packages
 COPY apps/scanner ./apps/scanner
 
-# Disable Nx plugin scanning during Docker builds — same fix as data-service Dockerfile.
-ENV NX_ADD_PLUGINS=false
-
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
 # React Router v7 generates +types/ virtual modules into .react-router/types/ (gitignored).
 # Run typegen before the build so Rolldown can resolve ./+types/* imports.
