@@ -51,7 +51,10 @@ overrides:
   follow-redirects: '>=1.16.0'
   ip-address: '>=10.1.1'
   lodash: '>=4.18.1'
-  path-to-regexp: '>=0.1.13'
+  # Scoped to express: blanket >=0.1.13 resolved to 8.x (different API), breaking express v4.
+  # CVE fix: keep 0.1.x for express (where ReDoS is low-risk — routes are dev-defined),
+  # allow react-router to use 8.x naturally.
+  express>path-to-regexp: '~0.1.13'
   picomatch: '>=4.0.4'
   postcss: '>=8.5.15'
   qs: '>=6.15.2'
