@@ -32,6 +32,12 @@ COPY tools ./tools
 COPY packages ./packages
 COPY apps/data-service ./apps/data-service
 
+# Disable Nx plugin scanning (@nx/vitest, @nx/playwright) during Docker builds.
+# These plugins scan ALL workspace apps for test configs; they fail with 22 errors
+# when only apps/data-service is present in the build context. The build target
+# is defined explicitly in project.json and does not need plugin inference.
+ENV NX_ADD_PLUGINS=false
+
 # git init is required because pnpm prepare scripts (lefthook) call git rev-parse
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
 
