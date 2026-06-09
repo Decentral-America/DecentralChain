@@ -23,7 +23,7 @@ on:
 
 concurrency:
   # One deploy per network at a time.
-  group: deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  group: ci-deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
   # Never cancel an in-flight deploy — killing an SSH session mid-restart leaves
   # the service in a broken state. Queue the new run instead.
   cancel-in-progress: false
