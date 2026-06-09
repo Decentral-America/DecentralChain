@@ -30,10 +30,9 @@ concurrency:
 permissions:
   contents: read
   packages: write
-  attestations: write
-  id-token: write
-  artifact-metadata: write
   security-events: write  # required for infra deploy-container.yml Trivy SARIF upload
+  # attestations/id-token/artifact-metadata are scoped to docker job only —
+  # setting them at workflow level blocks uses: reusable-workflow-call job scheduling.
 
 env:
   CARGO_TERM_COLOR: always
