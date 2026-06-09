@@ -30,6 +30,9 @@ concurrency:
 permissions:
   contents: read
   packages: write
+  attestations: write
+  id-token: write
+  artifact-metadata: write
   security-events: write  # required for infra deploy-container.yml Trivy SARIF upload
 
 env:
