@@ -177,6 +177,11 @@ jobs:
   call-deploy:
     name: Deploy (${{ inputs.network || 'mainnet' }})
     needs: [build-and-push]
+    # if: true overrides the implicit success() check so that error annotations
+    # from continue-on-error steps (e.g. attest-build-provenance Sigstore 404s)
+    # don't silently prevent this job from being scheduled. Dependency failure
+    # still causes the job to be skipped via the needs chain.
+    if: true
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ inputs.network || 'mainnet' }}
