@@ -31,10 +31,9 @@ concurrency:
 permissions:
   contents: read
   packages: write        # Required to push to ghcr.io
-  attestations: write    # Required for actions/attest-build-provenance
-  id-token: write        # Required for OIDC-based attestation
-  artifact-metadata: write  # Required for attestation storage record
   security-events: write # Required for infra deploy-container.yml Trivy SARIF upload
+  # attestations/id-token/artifact-metadata are scoped to build-and-push job only —
+  # setting them at workflow level blocks uses: reusable-workflow-call job scheduling.
 
 env:
   REGISTRY: ghcr.io
