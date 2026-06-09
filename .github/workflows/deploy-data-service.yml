@@ -168,7 +168,7 @@ jobs:
     # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
     # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
     if: vars.INFRA_DEPLOY_ENABLED == 'true' && (needs.resolve.outputs.network == 'mainnet' || github.event_name == 'workflow_dispatch')
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@a59bf8faf786c45fdb420373d5b8f07d2437e7a5 # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@1db73d9e771487259c53d95c59ff3ed340941030 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/data-service:${{ github.sha }}
