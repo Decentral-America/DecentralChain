@@ -81,7 +81,7 @@ jobs:
   # ── Build and push Docker image ───────────────────────────────────────────────
   # One image serves all networks — Postgres credentials and matcher config
   # are injected at container start via environment-scoped GitHub Secrets.
-  build-and-push:
+  docker:
     name: Build and push
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -167,7 +167,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, build-and-push]
+    needs: [resolve, docker]
     # Guard removed temporarily for debugging — will restore after confirming call-deploy runs.
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b179cc568a60f33cb82c9df8b5485e8feb5cb515 # main
     with:
