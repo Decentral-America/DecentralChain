@@ -175,7 +175,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, build-and-push]
+    needs: [build-and-push]
     # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
     # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
     # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
