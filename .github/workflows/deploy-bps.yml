@@ -30,6 +30,7 @@ concurrency:
 permissions:
   contents: read
   packages: write
+  security-events: write  # required for infra deploy-container.yml Trivy SARIF upload
 
 env:
   CARGO_TERM_COLOR: always
