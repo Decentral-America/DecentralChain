@@ -158,13 +158,6 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      - name: Write image summary
-        run: |
-          set -euo pipefail
-          echo "### Image pushed" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   # ── Deploy via infra reusable workflow ───────────────────────────────────────
   # Calls Decentral-America/infra/.github/workflows/deploy-container.yml.
