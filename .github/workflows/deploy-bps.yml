@@ -140,7 +140,7 @@ jobs:
     # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
     # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
     if: vars.INFRA_DEPLOY_ENABLED == 'true'
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@4926cf1bdd28d02f0bcc7eb1f2b88912074e36c1 # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@ed7b819926a43be6fa08fb6d03af4a7f449b247f # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}
