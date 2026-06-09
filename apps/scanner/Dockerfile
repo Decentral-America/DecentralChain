@@ -88,5 +88,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:3000/ || exit 1
 
-# react-router-serve reads build/server/index.js and handles SSR
-CMD ["pnpm", "start"]
+# Invoke react-router-serve directly to bypass Corepack (read_only container
+# prevents Corepack from writing its package-manager cache to the home dir).
+CMD ["node_modules/.bin/react-router-serve", "build/server/index.js"]
