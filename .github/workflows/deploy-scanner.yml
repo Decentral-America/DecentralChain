@@ -86,8 +86,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: resolve
-    outputs:
-      network: ${{ needs.resolve.outputs.network }}
     permissions:
       contents: read
       packages: write
@@ -176,15 +174,16 @@ jobs:
   # /opt/dcc/secrets/<network>.env by the infra bootstrap.sh at provision time.
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
-    name: Deploy (${{ needs.build-and-push.outputs.network }})
+    name: Deploy (${{ inputs.network || 'mainnet' }})
     needs: [build-and-push]
-    # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
+    # Only auto-deploy mainnet via tag push; stagenet/testnet require workflow_dispatch.
     # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
     # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    if: vars.INFRA_DEPLOY_ENABLED == 'true' && (needs.build-and-push.outputs.network == 'mainnet' || github.event_name == 'workflow_dispatch')
+    # inputs.network is available at scheduling time — no need to thread through job outputs.
+    if: vars.INFRA_DEPLOY_ENABLED == 'true'
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
-      network: ${{ needs.build-and-push.outputs.network }}
+      network: ${{ inputs.network || 'mainnet' }}
       image:   ghcr.io/decentral-america/scanner:${{ github.sha }}
       service: scanner
     secrets: inherit
