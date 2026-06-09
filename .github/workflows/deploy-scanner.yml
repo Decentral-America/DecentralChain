@@ -176,11 +176,9 @@ jobs:
   call-deploy:
     name: Deploy (${{ inputs.network || 'mainnet' }})
     needs: [build-and-push]
-    # if: true overrides the implicit success() check so that error annotations
-    # from continue-on-error steps (e.g. attest-build-provenance Sigstore 404s)
-    # don't silently prevent this job from being scheduled. Dependency failure
-    # still causes the job to be skipped via the needs chain.
-    if: true
+    # Condition uses github.event_name (always available at scheduling time).
+    # inputs.network is available for workflow_dispatch; tag pushes default to mainnet.
+    if: startsWith(github.ref, 'refs/tags/scanner/') || github.event_name == 'workflow_dispatch'
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ inputs.network || 'mainnet' }}
