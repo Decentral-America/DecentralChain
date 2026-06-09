@@ -47,6 +47,7 @@ jobs:
     name: Resolve parameters
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: build-and-push
     outputs:
       network: ${{ steps.params.outputs.network }}
 
@@ -84,7 +85,6 @@ jobs:
     name: Build and push
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: resolve
     permissions:
       contents: read
       packages: write
@@ -175,8 +175,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, build-and-push]
-    if: vars.INFRA_DEPLOY_ENABLED == 'true'
+    needs: [resolve]
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ needs.resolve.outputs.network }}
