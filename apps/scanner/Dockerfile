@@ -29,6 +29,8 @@ WORKDIR /workspace
 
 # Copy only the workspace files needed to build scanner and its workspace deps.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml nx.json biome.json tsconfig.base.json .node-version ./
+# Required by @nx/vitest plugin — all 22 package vitest.config.ts files import this.
+COPY vitest.base.config.ts ./
 COPY scripts ./scripts
 COPY tools ./tools
 COPY packages ./packages

@@ -27,6 +27,10 @@ RUN corepack enable
 # transitive workspace dependencies and mirrors the scanner Dockerfile pattern.
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY tsconfig.base.json biome.json nx.json .node-version ./
+# vitest.base.config.ts is imported by all 22 package vitest.config.ts files via
+# relative paths (../../../vitest.base.config). Without it the @nx/vitest plugin
+# fails to process package vitest configs during project graph construction.
+COPY vitest.base.config.ts ./
 COPY scripts ./scripts
 COPY tools ./tools
 COPY packages ./packages
