@@ -174,14 +174,12 @@ jobs:
   # /opt/dcc/secrets/<network>.env by the infra bootstrap.sh at provision time.
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
-    name: Deploy (${{ inputs.network || 'mainnet' }})
-    needs: [build-and-push]
-    # Condition uses github.event_name (always available at scheduling time).
-    # inputs.network is available for workflow_dispatch; tag pushes default to mainnet.
-    if: startsWith(github.ref, 'refs/tags/scanner/') || github.event_name == 'workflow_dispatch'
+    name: Deploy (${{ needs.resolve.outputs.network }})
+    needs: [resolve, build-and-push]
+    if: vars.INFRA_DEPLOY_ENABLED == 'true'
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
-      network: ${{ inputs.network || 'mainnet' }}
+      network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/scanner:${{ github.sha }}
       service: scanner
     secrets: inherit
