@@ -14,7 +14,7 @@ describe('verifyAddress edge cases', () => {
   it('returns false for address with wrong chain ID when chainId is provided', () => {
     const a = address(SEED, 'L');
     // The address is valid for chain L, but we verify against T
-    expect(verifyAddress(a, { chainId: 'T' })).toBe(false);
+    expect(verifyAddress(a, { chainId: '!' })).toBe(false);
   });
 
   it('returns true without chainId when address bytes are structurally valid', () => {
