@@ -447,7 +447,7 @@ describe('Adapter', () => {
       const tx =
         '{"type":3,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
         '"name":"NonScriptToken","description":"NonScriptToken","quantity":9223372036854775807,' +
-        '"script":null,"decimals":0,"reissuable":true,"fee":100000000,"timestamp":1631598834062,"chainId":84,' +
+        '"script":null,"decimals":0,"reissuable":true,"fee":100000000,"timestamp":1631598834062,"chainId":33,' +
         '"proofs":["3va7tvQPwHWEZcoh6LUoVVDethHDTPhuwMkZM6nM34MV3L3wnMkPc7yNe91u1ctf8cQEjFiYQUAqq8Y6G3YGrhoB"],' +
         '"id":"2Bp948nuo35W8Mfyn43x966F5yyDco1YP3iPUpJFQUWv"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerIssueTx>;
@@ -462,9 +462,9 @@ describe('Adapter', () => {
     describe('transfer', () => {
       const tx =
         '{"type":4,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
-        '"assetId":null,"recipient":"alias:T:merry","amount":9223372036854775807,"attachment":"","fee":100000,"feeAssetId":null,' +
+        '"assetId":null,"recipient":"alias:!:merry","amount":9223372036854775807,"attachment":"","fee":100000,"feeAssetId":null,' +
         '"timestamp":1631600073629,"proofs":["64aFuZfht5f2jQ3CjeKenE1EQfrkQBpizkUVrVuSjnjbQRyxq6Kn53ps1zYXxUmVU2jzRpUSWHea2C7rus6Bk2q5"],' +
-        '"chainId":84,"id":"FxdVVSaxg39w4wjxhdg9eEEhHJhiMHZHdX7P2LxiNAU7"}';
+        '"chainId":33,"id":"FxdVVSaxg39w4wjxhdg9eEEhHJhiMHZHdX7P2LxiNAU7"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerTransferTx>;
 
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.TRANSFER);
@@ -478,7 +478,7 @@ describe('Adapter', () => {
       const tx =
         '{"type":5,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
         '"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT","quantity":9223372036854775807,"reissuable":true,' +
-        '"chainId":84,"fee":100000000,"timestamp":1631601181966,"proofs":["5gaXGhUCp445rt3AJiW9HUcnFDMrABP2rPx7becf5eLK1XjztiDtGg4FPDps45dCLask3WQokcGUtAg1aYJLDNAR"],' +
+        '"chainId":33,"fee":100000000,"timestamp":1631601181966,"proofs":["5gaXGhUCp445rt3AJiW9HUcnFDMrABP2rPx7becf5eLK1XjztiDtGg4FPDps45dCLask3WQokcGUtAg1aYJLDNAR"],' +
         '"id":"HesBbvik7ZAU3poHKkYgvPNmLkhVdCZ6hwpc2gRALJK1"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerReissueTx>;
 
@@ -492,7 +492,7 @@ describe('Adapter', () => {
     describe('burn', () => {
       const tx =
         '{"type":6,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
-        '"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT","amount":9223372036854775807,"chainId":84,' +
+        '"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT","amount":9223372036854775807,"chainId":33,' +
         '"fee":100000,"timestamp":1631601295621,"proofs":["62frDCYP51Gkv6qV6gtcqfiume8VnnDKE6Em3fRb6pBmK4mYu7gDomp24Nx5wX9CKipmBTzZRsBxvekKud3Aze5y"],' +
         '"id":"GqHCGGrkhmghxjpiqLQsPpzRUoiRXcBFGT2w3zc78rHW","quantity":{"bn":{"s":1,"e":18,"c":[92233,72036854775807]}}}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerBurnTx>;
@@ -507,9 +507,9 @@ describe('Adapter', () => {
     describe('lease', () => {
       const tx =
         '{"type":8,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
-        '"amount":9223372036854775807,"recipient":"alias:T:merry","fee":100000,"timestamp":1631601942821,' +
+        '"amount":9223372036854775807,"recipient":"alias:!:merry","fee":100000,"timestamp":1631601942821,' +
         '"proofs":["21tzJ23wi8JVagA2Pk4EDgPpEZTEXJisheiNxPgnQyX2RUQzzFrpAwdY3TR979U1ZdFedf9Sm4AUJjcGojc78CfG"],' +
-        '"chainId":84,"id":"CDeJFP8zCzS55eBve5wrCt7XaEKm9gPVuKJG2VrtUnU7","leaseAssetId":null}';
+        '"chainId":33,"id":"CDeJFP8zCzS55eBve5wrCt7XaEKm9gPVuKJG2VrtUnU7","leaseAssetId":null}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerLeaseTx>;
 
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.LEASE);
@@ -519,7 +519,7 @@ describe('Adapter', () => {
       const tx =
         '{"type":9,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
         '"leaseId":"6r2u8Bf3WTqJw4HQvPTsWs8Zak5PLwjzjjGU76nXph1u","fee":100000,"timestamp":1631602199008,' +
-        '"chainId":84,"proofs":["5wWwdaKnKyshBwdLRZtmHLgcSEopqNGSn72xjEGEVb1QYho2GuEJFq4yz4pnP8TB2HALnyJGD2Mkt7VoKJ9Rght8"],' +
+        '"chainId":33,"proofs":["5wWwdaKnKyshBwdLRZtmHLgcSEopqNGSn72xjEGEVb1QYho2GuEJFq4yz4pnP8TB2HALnyJGD2Mkt7VoKJ9Rght8"],' +
         '"id":"CRkSDzty2VfnWaYpSq35hs7oYSdpacXAfhjEzSr4dvhM"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerCancelLeaseTx>;
 
@@ -529,7 +529,7 @@ describe('Adapter', () => {
     describe('alias', () => {
       const tx =
         '{"type":10,"version":2,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
-        '"alias":"testy","fee":100000,"timestamp":1631602241360,"chainId":84,' +
+        '"alias":"testy","fee":100000,"timestamp":1631602241360,"chainId":33,' +
         '"proofs":["53PSrkG39n5KjpBp9kTQiP7SXyxYWzPDUQQ7sh66CwvcyhbcjGEyZU1omTT56u4YSUmhcjkdD6yHMhUxUTvKGjC9"],' +
         '"id":"J2nE6nHhZ8N9CKsx6P3K1dRa6ZTKiKYeWxZADPAFfQMP"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerAliasTx>;
@@ -541,9 +541,9 @@ describe('Adapter', () => {
       const tx =
         '{"type":11,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR","assetId":null,' +
         '"transfers":[{"recipient":"alias:T:testy","amount":9223372036854775807},' +
-        '{"recipient":"alias:T:merry","amount":1}],"fee":200000,"timestamp":1631605221662,"attachment":"",' +
+        '{"recipient":"alias:!:merry","amount":1}],"fee":200000,"timestamp":1631605221662,"attachment":"",' +
         '"proofs":["5m8FTY9bExL52fzCuaT1dVL65WtRMtdYHAFyHxQCZjrrHzsQVJ4knSvqA6pP3kGSPthmDto811612anNjut8kg7b"],' +
-        '"chainId":84,"id":"6cHCKWyCW8g559CWWJDAL8iV57TJGoJFfpnRZ5HAkcZD"}';
+        '"chainId":33,"id":"6cHCKWyCW8g559CWWJDAL8iV57TJGoJFfpnRZ5HAkcZD"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerMassTransferTx>;
 
       signedTxShouldBeValid(jsonTx, TRANSACTION_TYPE.MASS_TRANSFER);
@@ -557,7 +557,7 @@ describe('Adapter', () => {
       const tx =
         '{"type":12,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR","fee":100000,' +
         '"timestamp":1631605359010,"proofs":["3TiPqCV1Y1iDsYG3VWJaunxkFy3e1TzV8Z8QuFeY6mMKord7YodZ7ndE6yUDtGjSFKesqqvRySXER6XJ3ScCnGhC"],' +
-        '"chainId":84,"id":"9KCGHukX7RQYDEr2wSZmM5pGhm6Tauumxps2Sz1PXrxn",' +
+        '"chainId":33,"id":"9KCGHukX7RQYDEr2wSZmM5pGhm6Tauumxps2Sz1PXrxn",' +
         '"data":[{"value":9223372036854775807,"key":"longMaxValue","type":"integer"},{"value":-9223372036854775808,' +
         '"key":"longMinValue","type":"integer"}]}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerDataTx>;
@@ -575,7 +575,7 @@ describe('Adapter', () => {
 
     describe('set script', () => {
       const tx =
-        '{"type":13,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR","chainId":84,' +
+        '{"type":13,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR","chainId":33,' +
         '"fee":1800000,"timestamp":1631605992415,"proofs":["GsTxZsfVDyL2y8waKGvGQukFp6Ph2ko2448DG1AYrVmZZQaY4mfitXE6soV5aXKdQnTKL6iBk9ueMXqdNSMRiBf"],' +
         '"id":"BnAYgdjAywznY39Pj1Qtmpx1LjVpmt1vZtjEJACwNNhQ","script":"base64:BQbtKNoM"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerSetScriptTx>;
@@ -587,7 +587,7 @@ describe('Adapter', () => {
       const tx =
         '{"type":14,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
         '"minSponsoredAssetFee":9223372036854775807,"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT",' +
-        '"fee":100000000,"timestamp":1631606336992,"chainId":84,' +
+        '"fee":100000000,"timestamp":1631606336992,"chainId":33,' +
         '"proofs":["g3ArPaNBPL5EdDXsb7r6oooZuhGJn93JsxaSyYkTpUgsnq1Cfmqe8pVV6iP926CBbWgVP1G5Mmaiu6CMfDKAzeM"],' +
         '"id":"Age9ZkrntpB3HyE5cdHh8qyEC5dg7dgCDtrr2J1kUs89"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerSponsorshipTx>;
@@ -602,7 +602,7 @@ describe('Adapter', () => {
     describe('set asset script', () => {
       const tx =
         '{"type":15,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
-        '"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT","chainId":84,"fee":100000000,' +
+        '"assetId":"7sP5abE9nGRwZxkgaEXgkQDZ3ERBcm9PLHixaUE5SYoT","chainId":33,"fee":100000000,' +
         '"timestamp":1631606518866,' +
         '"proofs":["2vJrV2uk4VSssgEVpD6rhpDrC2ctyR7dAyy3757G831MYp6V2T35eYBehLpJ13JvhF4dFrmzBqHEPb8HC8xJcyP2"],' +
         '"id":"DfdAaKyEhGV5pmqsQ4LVSFHwp71Wg4m6wiwAdY1mVdS1","script":"base64:BQbtKNoM"}';
@@ -616,7 +616,7 @@ describe('Adapter', () => {
         '{"type":16,"version":1,"senderPublicKey":"5J8Xa74xPNdtYUAbiTRZiv4DHw1LBsnj5Hu2jfR2EiWR",' +
         '"dApp":"3My2kBJaGfeM2koiZroaYdd3y8rAgfV2EAx","call":{"function":"callWithPaymentsButNoArgs",' +
         '"args":[]},"payment":[{"amount":9223372036854775807,"assetId":null}],"fee":1000000,"feeAssetId":null,' +
-        '"timestamp":1631606933494,"chainId":84,' +
+        '"timestamp":1631606933494,"chainId":33,' +
         '"proofs":["419Sb8KhTJfLYucSgDieQQRWmD2NLmckgWYkS5rN2H3VMs1RHZp5XRtQ9dRqox9MoJi1vxsejFN4uwUVnLVXC8p7"],' +
         '"id":"BTvyYZpGgy23eknbnnqYrJoK6q3hJDQ1A2gt6FrofNa"}';
       const jsonTx = signerTxFactory(tx) as SignerTxToSignedTx<SignerInvokeTx>;

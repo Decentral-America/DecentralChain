@@ -35,7 +35,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 'T',
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -77,7 +77,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 'T',
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -117,7 +117,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -157,7 +157,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -197,7 +197,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -237,7 +237,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -277,7 +277,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -317,7 +317,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -357,7 +357,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -397,7 +397,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -437,7 +437,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -477,7 +477,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -517,7 +517,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
@@ -557,7 +557,7 @@ describe('exchange', () => {
     const txOk = {
       amount: 100,
       buyMatcherFee: 100,
-      chainId: 84,
+      chainId: 33,
       fee: 700000,
       order1: order(order1, seed1),
       order2: order(order2, seed2),
