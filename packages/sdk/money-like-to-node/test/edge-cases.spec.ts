@@ -108,7 +108,7 @@ describe('Error handling', () => {
 describe('Boundary values — large number precision', () => {
   it('preserves very large integer values without loss (21 digits)', () => {
     const largeIssue = {
-      chainId: 87,
+      chainId: 63,
       description: 'large number test',
       fee: new Money(100000000, DCC_ASSET),
       name: 'large',
@@ -129,7 +129,7 @@ describe('Boundary values — large number precision', () => {
   it('preserves 30+ digit quantity values exactly', () => {
     const hugeQuantity = '560164651464654056161651560132';
     const issueTx = {
-      chainId: 87,
+      chainId: 63,
       description: 'huge quantity test',
       fee: new Money(100000000, DCC_ASSET),
       name: 'huge',
@@ -386,7 +386,7 @@ describe('Utility functions', () => {
 describe('node.* named converters', () => {
   it('node.issue converts Money to node format', () => {
     const result = node.issue({
-      chainId: 87,
+      chainId: 63,
       description: 'desc',
       fee: new Money(100, DCC_ASSET),
       name: 'token',
@@ -426,7 +426,7 @@ describe('node.* named converters', () => {
 
   it('node.burn extracts assetId from quantity money-like', () => {
     const result = node.burn({
-      chainId: 87,
+      chainId: 63,
       fee: '1000',
       quantity: { assetId: BTC_ASSET.id, coins: '500' },
       senderPublicKey: 'abc',
@@ -474,7 +474,7 @@ describe('node.* named converters', () => {
 
   it('node.invokeScript handles null call and payment', () => {
     const result = node.invokeScript({
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp-address',
       fee: new Money(100, DCC_ASSET),
       senderPublicKey: 'abc',
@@ -497,7 +497,7 @@ describe('node.* named converters', () => {
         ],
         function: 'stake',
       },
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp-address',
       fee: new Money(100, DCC_ASSET),
       payment: [new Money(200, BTC_ASSET)],
@@ -699,7 +699,7 @@ describe('CRITICAL: convert() invokeScript null call/payment', () => {
   it('returns null call when tx.call is null (not { args: undefined })', () => {
     const invokeTx = {
       call: null,
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp',
       fee: 100,
       feeAssetId: 'DCC',
@@ -724,7 +724,7 @@ describe('CRITICAL: convert() invokeScript null call/payment', () => {
         ],
         function: 'stake',
       },
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp',
       fee: 100,
       feeAssetId: 'DCC',
@@ -750,7 +750,7 @@ describe('CRITICAL: convert() invokeScript null call/payment', () => {
 describe('MEDIUM: issue decimals=0 preserved correctly', () => {
   it('preserves decimals=0 (does not fall through to precision)', () => {
     const result = node.issue({
-      chainId: 87,
+      chainId: 63,
       decimals: 0,
       description: 'no decimals',
       fee: '100',
@@ -769,7 +769,7 @@ describe('MEDIUM: issue decimals=0 preserved correctly', () => {
 
   it('falls through to precision when decimals is undefined', () => {
     const result = node.issue({
-      chainId: 87,
+      chainId: 63,
       description: 'uses precision',
       fee: '100',
       name: 'precise',
@@ -788,7 +788,7 @@ describe('MEDIUM: issue decimals=0 preserved correctly', () => {
 
   it('defaults to 0 when neither decimals nor precision provided', () => {
     const result = node.issue({
-      chainId: 87,
+      chainId: 63,
       description: 'no decimals field',
       fee: '100',
       name: 'default',
@@ -904,7 +904,7 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts issue transaction', () => {
     const tx = {
-      chainId: 87,
+      chainId: 63,
       decimals: 2,
       description: 'desc',
       fee: 100,
@@ -943,7 +943,7 @@ describe('convert() — full transaction type coverage', () => {
   it('converts reissue transaction', () => {
     const tx = {
       assetId: 'BTC',
-      chainId: 87,
+      chainId: 63,
       fee: 100,
       quantity: 2000,
       reissuable: false,
@@ -974,7 +974,7 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts cancel lease transaction', () => {
     const tx = {
-      chainId: 87,
+      chainId: 63,
       fee: 100,
       leaseId: 'lease123',
       senderPublicKey: 'abc',
@@ -1010,7 +1010,7 @@ describe('convert() — full transaction type coverage', () => {
 
   it('converts set script transaction', () => {
     const tx = {
-      chainId: 87,
+      chainId: 63,
       fee: 100,
       script: 'base64:script',
       senderPublicKey: 'abc',
@@ -1054,7 +1054,7 @@ describe('convert() — full transaction type coverage', () => {
   it('converts set asset script transaction', () => {
     const tx = {
       assetId: 'TOKEN',
-      chainId: 87,
+      chainId: 63,
       fee: 100,
       script: 'base64:script',
       senderPublicKey: 'abc',
@@ -1075,7 +1075,7 @@ describe('convert() — full transaction type coverage', () => {
         ],
         function: 'stake',
       },
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp',
       fee: 100,
       feeAssetId: 'DCC',
@@ -1094,7 +1094,7 @@ describe('convert() — full transaction type coverage', () => {
   it('converts invoke script with undefined payment (falsy but not null)', () => {
     const tx = {
       call: null,
-      chainId: 87,
+      chainId: 63,
       dApp: 'dapp',
       fee: 100,
       feeAssetId: 'DCC',
@@ -1204,7 +1204,7 @@ describe('toNode() — additional entity types', () => {
   it('converts reissue via toNode', () => {
     const result = toNode({
       assetId: 'TOKEN',
-      chainId: 87,
+      chainId: 63,
       fee: '100',
       quantity: '5000',
       reissuable: true,
@@ -1234,7 +1234,7 @@ describe('toNode() — additional entity types', () => {
   it('converts setAssetScript via toNode', () => {
     const result = toNode({
       assetId: 'TOKEN',
-      chainId: 87,
+      chainId: 63,
       fee: '100',
       script: 'base64:abc',
       senderPublicKey: 'abc',

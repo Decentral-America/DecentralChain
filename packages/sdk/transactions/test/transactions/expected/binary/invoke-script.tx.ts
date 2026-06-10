@@ -1,9 +1,9 @@
 export const invokeScriptBinaryTx = {
   'InvokeScript TX (type 16 v1)  case 1': {
     Bytes:
-      'EAFUjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwAAAH//////////AAAAAX3tST2r',
+      'EAEhjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwAAAH//////////AAAAAX3tST2r',
     Json: {
-      chainId: 84,
+      chainId: 33,
       dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
       fee: '9223372036854775807',
       feeAssetId: null,
@@ -21,9 +21,9 @@ export const invokeScriptBinaryTx = {
   },
   'InvokeScript TX (type 16 v1)  case 2': {
     Bytes:
-      'EAFUjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwAAAgAJAAAAAAAAAAoAACl//////////wHKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn263//////////AAAAAX3tQ6q4',
+      'EAEhjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwAAAgAJAAAAAAAAAAoAACl//////////wHKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn263//////////AAAAAX3tQ6q4',
     Json: {
-      chainId: 84,
+      chainId: 33,
       dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
       fee: '9223372036854775807',
       feeAssetId: null,
@@ -44,7 +44,7 @@ export const invokeScriptBinaryTx = {
   },
   'InvokeScript TX (type 16 v1)  case 3': {
     Bytes:
-      'EAFUjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwEJAQAAAAx0ZXN0RnVuY3Rpb24AAAAFAAAAAAAAAABmBgEAAAAaAUSrt+cbF9ynG8qp35jiFFS61VDjH3rKYsMCAAAAJjExMTNGUFFnSnduVlhZSjg4UW56NFY0Z3FSODliQXFSYTdxTmlZCwAAAAQAAAAAAAAAAGUHAQAAABoBRKu35xsX3KcbyqnfmOIUVLrVUOMfespiwwIAAAAjM0ZQUWdKd25WWFlKODhRbno0VjRncVI4OWJBcVJhN3FOaVkAAgAJAAAAAAAAAAoAACl//////////wHKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn26wAAAAAAB6EgAAAAAX3tOFjh',
+      'EAEhjY+yjcB1fArFRi26YEYA7BeLB3tUgJK6I9GKMWhjN3QBVMCJgEpQH4BNVdKzU7jR4jDzcS12MCJROwEJAQAAAAx0ZXN0RnVuY3Rpb24AAAAFAAAAAAAAAABmBgEAAAAaAUSrt+cbF9ynG8qp35jiFFS61VDjH3rKYsMCAAAAJjExMTNGUFFnSnduVlhZSjg4UW56NFY0Z3FSODliQXFSYTdxTmlZCwAAAAQAAAAAAAAAAGUHAQAAABoBRKu35xsX3KcbyqnfmOIUVLrVUOMfespiwwIAAAAjM0ZQUWdKd25WWFlKODhRbno0VjRncVI4OWJBcVJhN3FOaVkAAgAJAAAAAAAAAAoAACl//////////wHKGoJTooLvCZh+FdAsm0IVEWbwJp1wIWDGEhleGUn26wAAAAAAB6EgAAAAAX3tOFjh',
     Json: {
       call: {
         args: [
@@ -64,7 +64,7 @@ export const invokeScriptBinaryTx = {
         ],
         function: 'testFunction',
       },
-      chainId: 84,
+      chainId: 33,
       dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
       fee: 500000,
       feeAssetId: null,

@@ -19,8 +19,8 @@ const ORIGINAL_PUBLIC_KEY =
 const ORIGINAL_PRIVATE_KEY =
   process.env.DCC_TEST_CRYPTO_VERIFY_PRIVKEY ?? '3DEnAUNRXsZC9f4KyF5PKLXh3kJQc3PtKTXe1eKtu3BY';
 
-const EXPECTED_ADDR_W =
-  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_W ?? '3PPDwGkGaorhmpmmEmFU1h6oHMhpWw2AYSW';
+const EXPECTED_ADDR_EXCL =
+  process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_EXCL ?? migrated.address(seed, '!');
 
 const EXPECTED_ADDR_Q =
   process.env.DCC_TEST_CRYPTO_VERIFY_ADDR_Q ?? '3Dj7Te97fmXakCNRABBUN46GQFbdswEjr8k';
@@ -31,11 +31,10 @@ test('key generation produces identical keys (chain-ID independent)', () => {
   expect(migrated.privateKey(seed)).toBe(ORIGINAL_PRIVATE_KEY);
 });
 
-test('address with explicit chain ID W matches known-good value', () => {
-  // Hardcoded address for chain W — regression anchor
-  const addrW = migrated.address(seed, 'W');
-  expect(addrW).toBe(EXPECTED_ADDR_W);
-  expect(migrated.verifyAddress(addrW, { chainId: 'W' })).toBe(true);
+test('address with explicit chain ID ! (DCC testnet) matches known-good value', () => {
+  const addrExcl = migrated.address(seed, '!');
+  expect(addrExcl).toBe(EXPECTED_ADDR_EXCL);
+  expect(migrated.verifyAddress(addrExcl, { chainId: '!' })).toBe(true);
 });
 
 test('address with chain ID ? (DCC mainnet) matches known-good value', () => {

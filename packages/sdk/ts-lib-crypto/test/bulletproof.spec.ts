@@ -171,7 +171,7 @@ describe('Address Verification (Negative)', () => {
 
   test('address verified with wrong chain ID fails', () => {
     const addrQ = address(seed, '?');
-    expect(verifyAddress(addrQ, { chainId: 'W' })).toBe(false);
+    expect(verifyAddress(addrQ, { chainId: 'S' })).toBe(false);
     expect(verifyAddress(addrQ, { chainId: '!' })).toBe(false);
   });
 
@@ -675,17 +675,17 @@ describe('Edge Cases', () => {
 describe('Backward Compatibility (Chain W)', () => {
   const seed = SEEDS[0];
 
-  test('can generate address for chain W', () => {
-    const addrW = address(seed, 'W');
-    expect(addrW).toBeTruthy();
-    expect(verifyAddress(addrW, { chainId: 'W' })).toBe(true);
+  test('can generate address for chain ! (DCC testnet)', () => {
+    const addrExcl = address(seed, '!');
+    expect(addrExcl).toBeTruthy();
+    expect(verifyAddress(addrExcl, { chainId: '!' })).toBe(true);
   });
 
-  test('chain W address differs from chain L address', () => {
-    expect(address(seed, 'W')).not.toBe(address(seed, 'L'));
+  test('chain ! address differs from chain L address', () => {
+    expect(address(seed, '!')).not.toBe(address(seed, 'L'));
   });
 
-  test('keys are chain-independent (same across W and L)', () => {
+  test('keys are chain-independent (same across ! and L)', () => {
     // Keys don't depend on chain ID — verify against hardcoded known-good values
     expect(publicKey(seed)).toBe('H3WNt2YE5E9hgmVyRqwMbxZQ346gHuhgsXR8uDrX9BhJ');
     expect(privateKey(seed)).toBe('amNTBLVr1yNqr9qos4P1KUpdjaMY9WUxYGuRZfkNZzz');

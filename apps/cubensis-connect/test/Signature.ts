@@ -482,7 +482,7 @@ describe('Signature', () => {
         expect(status).toBe('RESOLVED');
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          chainId: 84,
+          chainId: 33,
           decimals: ISSUE.data.precision,
           description: ISSUE.data.description,
           fee: 100400000,
@@ -554,7 +554,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             decimals: ISSUE_WITHOUT_SCRIPT.data.precision,
             description: ISSUE_WITHOUT_SCRIPT.data.description,
             fee: 100400000,
@@ -613,7 +613,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             decimals: ISSUE.data.precision,
             description: ISSUE.data.description,
             fee: 100400000,
@@ -672,7 +672,7 @@ describe('Signature', () => {
           amount: TRANSFER.data.amount.amount,
           assetId: TRANSFER.data.amount.assetId,
           attachment: '3ke2ct1rnYr52Y1jQvzNG',
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           feeAssetId: null,
           recipient: TRANSFER.data.recipient,
@@ -793,7 +793,7 @@ describe('Signature', () => {
           const expectedApproveResult = {
             amount: TRANSFER_WITHOUT_ATTACHMENT.data.amount.amount,
             assetId: null,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             feeAssetId: null,
             recipient: 'alias:T:alice',
@@ -849,7 +849,7 @@ describe('Signature', () => {
             amount: TRANSFER.data.amount.amount,
             assetId: TRANSFER.data.amount.assetId,
             attachment: '3ke2ct1rnYr52Y1jQvzNG',
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             feeAssetId: null,
             recipient: TRANSFER.data.recipient,
@@ -901,7 +901,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           assetId: REISSUE.data.assetId,
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           quantity: REISSUE.data.quantity,
           reissuable: REISSUE.data.reissuable,
@@ -951,7 +951,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: REISSUE_WITH_MONEY_LIKE.data.amount.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             quantity: REISSUE_WITH_MONEY_LIKE.data.amount.amount,
             reissuable: REISSUE_WITH_MONEY_LIKE.data.reissuable,
@@ -1002,7 +1002,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: REISSUE.data.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             quantity: REISSUE.data.quantity,
             reissuable: REISSUE.data.reissuable,
@@ -1052,7 +1052,7 @@ describe('Signature', () => {
         const expectedApproveResult = {
           amount: BURN.data.amount,
           assetId: BURN.data.assetId,
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           senderPublicKey,
           type: BURN.type,
@@ -1098,7 +1098,7 @@ describe('Signature', () => {
           const expectedApproveResult = {
             amount: BURN_WITH_QUANTITY.data.quantity,
             assetId: BURN_WITH_QUANTITY.data.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             senderPublicKey,
             type: BURN_WITH_QUANTITY.type,
@@ -1148,7 +1148,7 @@ describe('Signature', () => {
           const expectedApproveResult = {
             amount: BURN.data.amount,
             assetId: BURN.data.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             senderPublicKey,
             type: BURN.type,
@@ -1198,7 +1198,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           amount: LEASE.data.amount,
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           recipient: LEASE.data.recipient,
           senderPublicKey,
@@ -1245,7 +1245,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             amount: LEASE_WITH_ALIAS.data.amount,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             recipient: 'alias:T:bobby',
             senderPublicKey,
@@ -1295,7 +1295,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             amount: LEASE_WITH_MONEY_LIKE.data.amount.amount,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             recipient: LEASE_WITH_MONEY_LIKE.data.recipient,
             senderPublicKey,
@@ -1345,7 +1345,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             amount: LEASE.data.amount,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             recipient: LEASE.data.recipient,
             senderPublicKey,
@@ -1393,7 +1393,7 @@ describe('Signature', () => {
         expect(status).toBe('RESOLVED');
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           leaseId: CANCEL_LEASE.data.leaseId,
           senderPublicKey,
@@ -1441,7 +1441,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             leaseId: CANCEL_LEASE.data.leaseId,
             senderPublicKey,
@@ -1489,7 +1489,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           alias: ALIAS.data.alias,
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           senderPublicKey,
           type: ALIAS.type,
@@ -1557,7 +1557,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             alias: ALIAS.data.alias,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             senderPublicKey,
             type: ALIAS.type,
@@ -1636,7 +1636,7 @@ describe('Signature', () => {
         const expectedApproveResult = {
           assetId: MASS_TRANSFER.data.totalAmount.assetId,
           attachment: '3ke2ct1rnYr52Y1jQvzNG',
-          chainId: 84,
+          chainId: 33,
           fee: 600000,
           senderPublicKey,
           transfers: [
@@ -1697,7 +1697,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: null,
-            chainId: 84,
+            chainId: 33,
             fee: 600000,
             senderPublicKey,
             transfers: [
@@ -1763,7 +1763,7 @@ describe('Signature', () => {
           const expectedApproveResult = {
             assetId: MASS_TRANSFER.data.totalAmount.assetId,
             attachment: '3ke2ct1rnYr52Y1jQvzNG',
-            chainId: 84,
+            chainId: 33,
             fee: 600000,
             senderPublicKey,
             transfers: [
@@ -1851,7 +1851,7 @@ describe('Signature', () => {
         expect(status).toBe('RESOLVED');
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          chainId: 84,
+          chainId: 33,
           data: [
             {
               key: 'stringValue',
@@ -1935,7 +1935,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             data: [
               {
                 key: 'stringValue',
@@ -2001,7 +2001,7 @@ describe('Signature', () => {
         expect(status).toBe('RESOLVED');
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           script: SET_SCRIPT.data.script,
           senderPublicKey,
@@ -2083,7 +2083,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             senderPublicKey,
             type: SET_SCRIPT_WITHOUT_SCRIPT.type,
@@ -2131,7 +2131,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             script: SET_SCRIPT.data.script,
             senderPublicKey,
@@ -2180,7 +2180,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
-          chainId: 84,
+          chainId: 33,
           fee: 500000,
           minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
           senderPublicKey,
@@ -2227,7 +2227,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: SPONSORSHIP_REMOVAL.data.minSponsoredAssetFee.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             minSponsoredAssetFee: null,
             senderPublicKey,
@@ -2275,7 +2275,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: SPONSORSHIP.data.minSponsoredAssetFee.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 500000,
             minSponsoredAssetFee: SPONSORSHIP.data.minSponsoredAssetFee.amount,
             senderPublicKey,
@@ -2324,7 +2324,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           assetId: SET_ASSET_SCRIPT.data.assetId,
-          chainId: 84,
+          chainId: 33,
           fee: 100400000,
           script: SET_ASSET_SCRIPT.data.script,
           senderPublicKey,
@@ -2385,7 +2385,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             assetId: SET_ASSET_SCRIPT.data.assetId,
-            chainId: 84,
+            chainId: 33,
             fee: 100400000,
             script: SET_ASSET_SCRIPT.data.script,
             senderPublicKey,
@@ -2476,7 +2476,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           call: INVOKE_SCRIPT.data.call,
-          chainId: 84,
+          chainId: 33,
           dApp: INVOKE_SCRIPT.data.dApp,
           fee: 500000,
           feeAssetId: null,
@@ -2703,7 +2703,7 @@ describe('Signature', () => {
           expect(status).toBe('RESOLVED');
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
-            chainId: 84,
+            chainId: 33,
             dApp: 'alias:T:chris',
             fee: 500000,
             feeAssetId: null,
@@ -2774,7 +2774,7 @@ describe('Signature', () => {
           const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
           const expectedApproveResult = {
             call: INVOKE_SCRIPT.data.call,
-            chainId: 84,
+            chainId: 33,
             dApp: INVOKE_SCRIPT.data.dApp,
             fee: 500000,
             feeAssetId: null,
@@ -2832,7 +2832,7 @@ describe('Signature', () => {
         const parsedApproveResult = JSONbn.parse(result) as Record<string, any>;
         const expectedApproveResult = {
           assetId: UPDATE_ASSET_INFO.data.assetId,
-          chainId: 84,
+          chainId: 33,
           description: UPDATE_ASSET_INFO.data.description,
           fee: 100000,
           name: UPDATE_ASSET_INFO.data.name,
@@ -3193,7 +3193,7 @@ describe('Signature', () => {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
-              chainId: 84,
+              chainId: 33,
               matcherFee: 4077612,
               matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
               matcherPublicKey: INPUT.data.matcherPublicKey,
@@ -3274,7 +3274,7 @@ describe('Signature', () => {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
-              chainId: 84,
+              chainId: 33,
               matcherFee: 4077612,
               matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
               matcherPublicKey: INPUT.data.matcherPublicKey,
@@ -3354,7 +3354,7 @@ describe('Signature', () => {
                 amountAsset: INPUT.data.amount.assetId,
                 priceAsset: INPUT.data.price.assetId,
               },
-              chainId: 84,
+              chainId: 33,
               matcherFee: 4077612,
               matcherFeeAssetId: 'EMAMLxDnv3xiz8RXg8Btj33jcEw3wLczL3JKYYmuubpc',
               matcherPublicKey: INPUT.data.matcherPublicKey,
@@ -3573,7 +3573,7 @@ describe('Signature', () => {
       const tx5 = parsedApproveResult[5]!;
       const tx6 = parsedApproveResult[6]!;
       const expectedApproveResult0 = {
-        chainId: 84,
+        chainId: 33,
         decimals: ISSUE.data.precision,
         description: ISSUE.data.description,
         fee: 100400000,
@@ -3600,7 +3600,7 @@ describe('Signature', () => {
         amount: TRANSFER.data.amount.amount,
         assetId: TRANSFER.data.amount.assetId,
         attachment: '3ke2ct1rnYr52Y1jQvzNG',
-        chainId: 84,
+        chainId: 33,
         fee: 500000,
         feeAssetId: null,
         recipient: TRANSFER.data.recipient,
@@ -3620,7 +3620,7 @@ describe('Signature', () => {
 
       const expectedApproveResult2 = {
         assetId: REISSUE.data.assetId,
-        chainId: 84,
+        chainId: 33,
         fee: 500000,
         quantity: REISSUE.data.quantity,
         reissuable: REISSUE.data.reissuable,
@@ -3641,7 +3641,7 @@ describe('Signature', () => {
       const expectedApproveResult3 = {
         amount: BURN.data.amount,
         assetId: BURN.data.assetId,
-        chainId: 84,
+        chainId: 33,
         fee: 500000,
         senderPublicKey,
         type: BURN.type,
@@ -3659,7 +3659,7 @@ describe('Signature', () => {
 
       const expectedApproveResult4 = {
         amount: LEASE.data.amount,
-        chainId: 84,
+        chainId: 33,
         fee: 500000,
         recipient: LEASE.data.recipient,
         senderPublicKey,
@@ -3677,7 +3677,7 @@ describe('Signature', () => {
       ).toBe(true);
 
       const expectedApproveResult5 = {
-        chainId: 84,
+        chainId: 33,
         fee: 500000,
         leaseId: CANCEL_LEASE.data.leaseId,
         senderPublicKey,
@@ -3696,7 +3696,7 @@ describe('Signature', () => {
 
       const expectedApproveResult6 = {
         call: INVOKE_SCRIPT.data.call,
-        chainId: 84,
+        chainId: 33,
         dApp: INVOKE_SCRIPT.data.dApp,
         fee: 500000,
         feeAssetId: null,

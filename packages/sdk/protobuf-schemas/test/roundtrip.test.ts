@@ -166,7 +166,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a basic block header', () => {
       const original = create(Block_HeaderSchema, {
         baseTarget: 100n,
-        chainId: 84, // T for testnet
+        chainId: 33, // T for testnet
         generationSignature: new Uint8Array(32).fill(0xcc),
         generator: new Uint8Array(32).fill(0xdd),
         rewardVote: -1n,
@@ -186,7 +186,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should preserve feature_votes array', () => {
       const original = create(Block_HeaderSchema, {
         baseTarget: 50n,
-        chainId: 84,
+        chainId: 33,
         featureVotes: [1, 2, 14, 15],
         generationSignature: new Uint8Array(32),
         generator: new Uint8Array(32),
@@ -203,7 +203,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a full Block with transactions', () => {
       const header = create(Block_HeaderSchema, {
         baseTarget: 100n,
-        chainId: 84,
+        chainId: 33,
         generationSignature: new Uint8Array(32).fill(0xaa),
         generator: new Uint8Array(32).fill(0xbb),
         rewardVote: 600000000n,
@@ -260,7 +260,7 @@ describe('protobuf roundtrip encoding', () => {
           amountAssetId: new Uint8Array([1, 2, 3, 4]),
           priceAssetId: new Uint8Array([5, 6, 7, 8]),
         },
-        chainId: 84,
+        chainId: 33,
         expiration: BigInt(Date.now() + 86400000),
         matcherFee: {
           amount: 300_000n,
@@ -292,7 +292,7 @@ describe('protobuf roundtrip encoding', () => {
           amountAssetId: new Uint8Array(32).fill(0x44),
           priceAssetId: new Uint8Array([]),
         },
-        chainId: 84,
+        chainId: 33,
         expiration: 2000000000n,
         matcherFee: {
           amount: 300_000n,
@@ -338,7 +338,7 @@ describe('protobuf roundtrip encoding', () => {
   describe('Transaction', () => {
     it('should encode and decode a TransferTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'transfer',
           value: {
@@ -374,7 +374,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a CreateAliasTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'createAlias',
           value: { alias: 'my-alias' },
@@ -395,7 +395,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode a DataTransactionData with all entry types', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'dataTransaction',
           value: {
@@ -444,7 +444,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode IssueTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'issue',
           value: {
@@ -476,7 +476,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode MassTransferTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'massTransfer',
           value: {
@@ -523,7 +523,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode GenesisTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'genesis',
           value: {
@@ -550,7 +550,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode PaymentTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'payment',
           value: {
@@ -582,7 +582,7 @@ describe('protobuf roundtrip encoding', () => {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        chainId: 84,
+        chainId: 33,
         expiration: 1000086400n,
         matcherFee: { amount: 300_000n, assetId: new Uint8Array([]) },
         matcherPublicKey: new Uint8Array(32).fill(0x11),
@@ -600,7 +600,7 @@ describe('protobuf roundtrip encoding', () => {
           amountAssetId: new Uint8Array(32).fill(0xaa),
           priceAssetId: new Uint8Array(32).fill(0xbb),
         },
-        chainId: 84,
+        chainId: 33,
         expiration: 1000086401n,
         matcherFee: { amount: 300_000n, assetId: new Uint8Array([]) },
         matcherPublicKey: new Uint8Array(32).fill(0x11),
@@ -613,7 +613,7 @@ describe('protobuf roundtrip encoding', () => {
       });
 
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'exchange',
           value: {
@@ -649,7 +649,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode LeaseTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'lease',
           value: {
@@ -681,7 +681,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode LeaseCancelTransactionData', () => {
       const leaseId = new Uint8Array(32).fill(0xdd);
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'leaseCancel',
           value: { leaseId },
@@ -702,7 +702,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode BurnTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'burn',
           value: {
@@ -727,7 +727,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode ReissueTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'reissue',
           value: {
@@ -754,7 +754,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode SetScriptTransactionData', () => {
       const scriptBytes = new Uint8Array(128).fill(0xab);
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'setScript',
           value: { script: scriptBytes },
@@ -777,7 +777,7 @@ describe('protobuf roundtrip encoding', () => {
       const assetId = new Uint8Array(32).fill(0xab);
       const scriptBytes = new Uint8Array(64).fill(0xcd);
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'setAssetScript',
           value: { assetId, script: scriptBytes },
@@ -799,7 +799,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode SponsorFeeTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'sponsorFee',
           value: {
@@ -824,7 +824,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode InvokeScriptTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'invokeScript',
           value: {
@@ -862,7 +862,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode UpdateAssetInfoTransactionData', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'updateAssetInfo',
           value: {
@@ -891,7 +891,7 @@ describe('protobuf roundtrip encoding', () => {
   describe('SignedTransaction', () => {
     it('should encode and decode a signed transaction with proofs', () => {
       const tx = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'transfer',
           value: {
@@ -924,7 +924,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should encode and decode with multiple proofs (multisig)', () => {
       const tx = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: { case: 'createAlias', value: { alias: 'multisig-test' } },
         fee: { amount: 500_000n, assetId: new Uint8Array([]) },
         senderPublicKey: new Uint8Array(32).fill(0x10),
@@ -951,7 +951,7 @@ describe('protobuf roundtrip encoding', () => {
   describe('InvokeExpressionTransactionData', () => {
     it('should encode and decode an invoke expression transaction', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'invokeExpression',
           value: { expression: new Uint8Array([0x01, 0x02, 0x03, 0x04]) },
@@ -974,7 +974,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should handle empty expression bytes', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'invokeExpression',
           value: { expression: new Uint8Array([]) },
@@ -997,7 +997,7 @@ describe('protobuf roundtrip encoding', () => {
   describe('CommitToGenerationTransactionData', () => {
     it('should encode and decode a commit to generation transaction', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'commitToGeneration',
           value: {
@@ -1028,7 +1028,7 @@ describe('protobuf roundtrip encoding', () => {
 
     it('should handle zero generation_period_start', () => {
       const original = create(TransactionSchema, {
-        chainId: 84,
+        chainId: 33,
         data: {
           case: 'commitToGeneration',
           value: {
@@ -1740,7 +1740,7 @@ describe('financial safety edge cases', () => {
     for (let i = 0; i < 64; i++) proof[i] = 255 - i;
 
     const tx = create(TransactionSchema, {
-      chainId: 87, // W for mainnet
+      chainId: 63, // W for mainnet
       data: {
         case: 'transfer',
         value: {
@@ -1772,7 +1772,7 @@ describe('financial safety edge cases', () => {
 
   it('should handle ExchangeTransactionData with extreme price values', () => {
     const original = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'exchange',
         value: {
@@ -1802,7 +1802,7 @@ describe('financial safety edge cases', () => {
 
   it('should produce deterministic encoding for complex transactions', () => {
     const tx = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'dataTransaction',
         value: {
@@ -1839,7 +1839,7 @@ describe('financial safety edge cases', () => {
     }));
 
     const original = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'massTransfer',
         value: {
@@ -1870,7 +1870,7 @@ describe('financial safety edge cases', () => {
 
   it('should handle DataEntry with empty key (proto3 allows it)', () => {
     const original = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'dataTransaction',
         value: {
@@ -1893,7 +1893,7 @@ describe('financial safety edge cases', () => {
 
   it('should handle DataEntry with delete semantics (no value set)', () => {
     const original = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'dataTransaction',
         value: {
@@ -1920,7 +1920,7 @@ describe('financial safety edge cases', () => {
 
   it('should not silently swallow unknown oneOf fields in Transaction.data', () => {
     const original = create(TransactionSchema, {
-      chainId: 84,
+      chainId: 33,
       data: {
         case: 'transfer',
         value: {
