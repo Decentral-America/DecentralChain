@@ -223,6 +223,7 @@ jobs:
             pages deploy apps/exchange/dist
             --project-name=${{ needs.resolve.outputs.cf_project }}
             --commit-hash=${{ github.sha }}
+            --branch=main
 
       - name: Write deploy summary
         run: |
