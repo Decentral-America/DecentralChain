@@ -13,7 +13,7 @@ Supports node interaction, offline transaction signing, and creating addresses a
 
 ## Requirements
 
-- Java 11 or above
+- Java 11 or above (Java 25 / Eclipse Temurin 25 recommended — matches the production DCC node)
 
 ## Installation
 
