@@ -29,6 +29,7 @@
       "plugin": "./tools/nx-plugins/biome-inferred"
     },
     {
+      "include": ["packages/**/*"],
       "options": {
         "ciTargetName": "test-ci",
         "coverageTargetName": "test-coverage",
@@ -37,6 +38,7 @@
       "plugin": "@nx/vitest"
     },
     {
+      "include": ["e2e/**/*"],
       "options": {
         "ciTargetName": "e2e-ci",
         "targetName": "e2e"
@@ -89,17 +91,35 @@
     "check:exports": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production", { "externalDependencies": ["@arethetypeswrong/cli"] }]
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": ["@arethetypeswrong/cli"]
+        }
+      ]
     },
     "check:publint": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production", { "externalDependencies": ["publint"] }]
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": ["publint"]
+        }
+      ]
     },
     "check:size": {
       "cache": true,
       "dependsOn": ["build"],
-      "inputs": ["production", "^production", { "externalDependencies": ["size-limit"] }]
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": ["size-limit"]
+        }
+      ]
     },
     "nx-release-publish": {
       "dependsOn": ["build"],

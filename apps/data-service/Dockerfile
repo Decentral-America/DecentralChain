@@ -11,7 +11,7 @@
 # then uses `pnpm deploy` to produce a fully self-contained deployment directory.
 # -----------------------------------------------------------------------------
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS builder
+FROM node:24-alpine@sha256:9a2c6269f83d74af45665c0b738b78c7b5f07bf2374c72a4c540065a975b9693 AS builder
 
 # Install system deps required for native build tools (e.g. node-gyp) and git
 # (git is required by pnpm lifecycle scripts during install)
@@ -27,6 +27,10 @@ RUN corepack enable
 # transitive workspace dependencies and mirrors the scanner Dockerfile pattern.
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY tsconfig.base.json biome.json nx.json .node-version ./
+# vitest.base.config.ts is imported by all 22 package vitest.config.ts files via
+# relative paths (../../../vitest.base.config). Without it the @nx/vitest plugin
+# fails to process package vitest configs during project graph construction.
+COPY vitest.base.config.ts ./
 COPY scripts ./scripts
 COPY tools ./tools
 COPY packages ./packages
@@ -50,7 +54,7 @@ RUN pnpm --filter @decentralchain/data-service deploy --legacy --prod /app/stand
 # Minimal runtime image — no build tools, no source, no dev dependencies.
 # -----------------------------------------------------------------------------
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS production
+FROM node:24-alpine@sha256:9a2c6269f83d74af45665c0b738b78c7b5f07bf2374c72a4c540065a975b9693 AS production
 
 # Security: run as non-root
 RUN addgroup -S dcc && adduser -S -G dcc -u 1001 dcc

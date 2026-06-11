@@ -22,71 +22,39 @@ on:
           - testnet
 
 concurrency:
-  group: deploy-data-service-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  group: ci-deploy-data-service-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
   # Never cancel an in-flight deploy — killing an SSH session mid-restart leaves
   # the service in a broken state. Queue the new run instead.
   cancel-in-progress: false
 
 permissions:
   contents: read
-  packages: write  # Required to push to ghcr.io
+  packages: write        # Required to push to ghcr.io
+  security-events: write # Required for infra deploy-container.yml Trivy SARIF upload
+  # attestations/id-token/artifact-metadata are scoped to docker job only —
+  # setting them at workflow level blocks uses: reusable-workflow-call job scheduling.
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/decentral-america/data-service
 
 jobs:
-  # ── Resolve build parameters ──────────────────────────────────────────────────
-  # Data service uses runtime env vars for Postgres and matcher config.
-  # The Docker image is identical for all networks; network is set at container start.
-  resolve:
-    name: Resolve parameters
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      network: ${{ steps.params.outputs.network }}
-
-    steps:
-      - name: Compute network
-        id: params
-        env:
-          INPUT_NETWORK: ${{ inputs.network }}
-        run: |
-          set -euo pipefail
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            NETWORK="${INPUT_NETWORK}"
-          else
-            NETWORK="mainnet"
-          fi
-
-          case "$NETWORK" in
-            mainnet|stagenet|testnet) ;;
-            *)
-              echo "::error::Unknown network: $NETWORK"
-              exit 1
-              ;;
-          esac
-
-          echo "network=$NETWORK" >> "$GITHUB_OUTPUT"
-
-          echo "### Build parameters" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Parameter | Value |"        >> "$GITHUB_STEP_SUMMARY"
-          echo "|-----------|-------|"        >> "$GITHUB_STEP_SUMMARY"
-          echo "| Network   | \`$NETWORK\` |" >> "$GITHUB_STEP_SUMMARY"
-
   # ── Build and push Docker image ───────────────────────────────────────────────
   # One image serves all networks — Postgres credentials and matcher config
   # are injected at container start via environment-scoped GitHub Secrets.
-  build-and-push:
+  # Note: docker job has no needs so it runs first (same pattern as BPS/scanner).
+  # Resolve runs after docker to avoid a diamond dependency that prevents the
+  # call-deploy reusable-workflow-call job from being scheduled by GitHub Actions.
+  docker:
     name: Build and push
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: resolve
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
 
     steps:
       - name: Checkout
@@ -153,24 +121,33 @@ jobs:
           echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
           echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
+  # ── Resolve deploy network ────────────────────────────────────────────────────
+  # Runs after docker (linear chain matches BPS pattern) to avoid the diamond
+  # dependency that prevents reusable-workflow-call jobs from being scheduled.
+  resolve:
+    name: Resolve network
+    runs-on: ubuntu-latest
+    needs: docker
+    outputs:
+      network: ${{ steps.network.outputs.network }}
+    steps:
+      - name: Determine target network
+        id: network
+        env:
+          INPUT_NETWORK: ${{ inputs.network }}
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "network=${INPUT_NETWORK}" >> "$GITHUB_OUTPUT"
+          else
+            echo "network=mainnet" >> "$GITHUB_OUTPUT"
+          fi
+
   # ── Deploy via infra reusable workflow ───────────────────────────────────────
-  # Calls Decentral-America/infra/.github/workflows/deploy-container.yml.
-  # That workflow reads DEPLOY_* secrets from the infra repo's environments
-  # (mainnet/stagenet/testnet) — this repo needs zero environment secrets.
-  # PG credentials and matcher config are in the server's
-  # /opt/dcc/secrets/<network>.env, written by infra bootstrap.sh at provision time.
-  # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, build-and-push]
-    # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
-    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
-    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    if: >-
-      vars.INFRA_DEPLOY_ENABLED == 'true' &&
-      (needs.resolve.outputs.network == 'mainnet' ||
-       github.event_name == 'workflow_dispatch')
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b182972e0c6e638c3990755525154c0e28e44fe9 # main
+    needs: [resolve]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/data-service:${{ github.sha }}
