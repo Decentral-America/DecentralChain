@@ -13,7 +13,7 @@ export function fromDccToEthereumAddress(address: string) {
   return `0x${base16Encode(bytes.slice(2, bytes.length - 4))}`;
 }
 
-export function fromEthereumToDccAddress(address: string, chainId = 87) {
+export function fromEthereumToDccAddress(address: string, chainId = 63) {
   const hex = address.slice(2);
   const bytes = base16Decode(hex);
   const chainBytes = new Uint8Array([0x01, chainId]);

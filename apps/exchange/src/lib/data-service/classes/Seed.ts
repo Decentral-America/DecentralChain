@@ -30,7 +30,7 @@ export class Seed {
    * Constructor - creates Seed from existing phrase
    * Matches Angular: new ds.Seed(phrase, window.DCCApp.network.code)
    * @param phrase - Seed phrase (15 words)
-   * @param chainId - Network byte (default: 87 for DCC mainnet)
+   * @param chainId - Network byte (default: 63 for DCC mainnet (?))
    */
   constructor(phrase: string, chainId?: number) {
     const networkByte = chainId ?? networkCode;
@@ -59,7 +59,7 @@ export class Seed {
    * Restore seed from existing phrase
    * Matches Angular: new ds.Seed(this.seed, window.DCCApp.network.code)
    * @param phrase - Existing seed phrase (15 words)
-   * @param chainId - Network byte (default: 87 for DCC mainnet)
+   * @param chainId - Network byte (default: 63 for DCC mainnet (?))
    * @returns Seed instance restored from phrase
    */
   static fromExistingPhrase(phrase: string, chainId?: number): Seed {

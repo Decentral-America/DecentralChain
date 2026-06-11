@@ -42,8 +42,8 @@ The `migration` binary runs Diesel migrations against the database before the co
 
 | Variable | Description |
 |---|---|
-| `BLOCKCHAIN_UPDATES_URL` | gRPC endpoint of the DCC node, e.g. `http://node:6887` |
-| `CHAIN_ID` | Network byte (`63` = Mainnet, `84` = Testnet) |
+| `BLOCKCHAIN_UPDATES_URL` | gRPC endpoint of the DCC node, e.g. `http://node:6881` |
+| `CHAIN_ID` | Network byte (`63` = Mainnet, `33` = Testnet, `83` = Stagenet) |
 | `STARTING_HEIGHT` | Block height to begin sync from (use `0` for genesis) |
 | `HOST` | PostgreSQL host |
 | `DATABASE` | PostgreSQL database name |
@@ -78,7 +78,7 @@ docker build -t blockchain-postgres-sync .
 
 ```bash
 docker run --rm \
-  -e BLOCKCHAIN_UPDATES_URL=http://node:6887 \
+  -e BLOCKCHAIN_UPDATES_URL=http://node:6881 \
   -e CHAIN_ID=63 \
   -e STARTING_HEIGHT=0 \
   -e HOST=postgres \
@@ -93,7 +93,7 @@ docker run --rm \
 ```yaml
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_DB: blockchain
       POSTGRES_USER: postgres
@@ -112,7 +112,7 @@ services:
   consumer:
     image: blockchain-postgres-sync
     environment:
-      BLOCKCHAIN_UPDATES_URL: http://node:6887
+      BLOCKCHAIN_UPDATES_URL: http://node:6881
       CHAIN_ID: 63
       STARTING_HEIGHT: 0
       HOST: postgres

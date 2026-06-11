@@ -40,7 +40,7 @@ interface ITestData {
 export const TEST_DATA: Array<ITestData> = [
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       description: 'test description',
       fee: new Money(100000000, DCC_ASSET),
       name: 'test',
@@ -54,7 +54,7 @@ export const TEST_DATA: Array<ITestData> = [
       version: 1,
     },
     node: {
-      chainId: 87,
+      chainId: 63,
       decimals: 2,
       description: 'test description',
       fee: '100000000',
@@ -70,7 +70,7 @@ export const TEST_DATA: Array<ITestData> = [
   } as ITestData,
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       description: 'test description',
       fee: new Money(100000000, DCC_ASSET),
       name: 'test',
@@ -84,7 +84,7 @@ export const TEST_DATA: Array<ITestData> = [
       version: 1,
     },
     node: {
-      chainId: 87,
+      chainId: 63,
       decimals: 2,
       description: 'test description',
       fee: '100000000',
@@ -149,7 +149,7 @@ export const TEST_DATA: Array<ITestData> = [
   } as ITestData,
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       quantity: {
         assetId: BTC_ASSET.id,
@@ -163,7 +163,7 @@ export const TEST_DATA: Array<ITestData> = [
     },
     node: {
       assetId: BTC_ASSET.id,
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       quantity: '10000',
       reissuable: true,
@@ -176,7 +176,7 @@ export const TEST_DATA: Array<ITestData> = [
   {
     gui: {
       assetId: BTC_ASSET.id,
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       quantity: '10000',
       reissuable: true,
@@ -187,7 +187,7 @@ export const TEST_DATA: Array<ITestData> = [
     },
     node: {
       assetId: BTC_ASSET.id,
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       quantity: '10000',
       reissuable: true,
@@ -353,7 +353,7 @@ export const TEST_DATA: Array<ITestData> = [
   },
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       leaseId: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -362,7 +362,7 @@ export const TEST_DATA: Array<ITestData> = [
       version: 1,
     },
     node: {
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       leaseId: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -485,7 +485,7 @@ export const TEST_DATA: Array<ITestData> = [
   } as ITestData,
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       script: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -494,7 +494,7 @@ export const TEST_DATA: Array<ITestData> = [
       version: 1,
     },
     node: {
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       script: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -528,7 +528,7 @@ export const TEST_DATA: Array<ITestData> = [
   {
     gui: {
       assetId: BTC_ASSET.id,
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       script: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -538,7 +538,7 @@ export const TEST_DATA: Array<ITestData> = [
     },
     node: {
       assetId: BTC_ASSET.id,
-      chainId: 87,
+      chainId: 63,
       fee: '10000',
       script: '213fdsafsdafdskafsdfds',
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -549,7 +549,7 @@ export const TEST_DATA: Array<ITestData> = [
   },
   {
     gui: {
-      chainId: 87,
+      chainId: 63,
       dApp: 'test',
       fee: new Money(100, DCC_ASSET),
       senderPublicKey: 'EM1XUpKdct1eE2mgmdvr4VA4raXMKvYKumCbnArtcQ9c',
@@ -559,7 +559,7 @@ export const TEST_DATA: Array<ITestData> = [
     },
     node: {
       call: null,
-      chainId: 87,
+      chainId: 63,
       dApp: 'test',
       fee: '100',
       feeAssetId: null,
@@ -576,7 +576,7 @@ export const TEST_DATA: Array<ITestData> = [
         args: [],
         function: 'default',
       },
-      chainId: 87,
+      chainId: 63,
       dApp: 'test',
       fee: new Money(100, DCC_ASSET),
       payment: [new Money(100, DCC_ASSET)],
@@ -590,7 +590,7 @@ export const TEST_DATA: Array<ITestData> = [
         args: [],
         function: 'default',
       },
-      chainId: 87,
+      chainId: 63,
       dApp: 'test',
       fee: '100',
       feeAssetId: null,

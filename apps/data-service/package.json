@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "files": [
+    "dist/"
+  ],
   "description": "DecentralChain data service — REST API for exchange data: candles, pairs, trades",
   "repository": {
     "type": "git",
