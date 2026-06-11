@@ -23,14 +23,17 @@ on:
 
 concurrency:
   # One deploy per network at a time.
-  group: deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  group: ci-deploy-scanner-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
   # Never cancel an in-flight deploy — killing an SSH session mid-restart leaves
   # the service in a broken state. Queue the new run instead.
   cancel-in-progress: false
 
 permissions:
   contents: read
-  packages: write  # Required to push to ghcr.io
+  packages: write        # Required to push to ghcr.io
+  security-events: write # Required for infra deploy-container.yml Trivy SARIF upload
+  # attestations/id-token/artifact-metadata are scoped to build-and-push job only —
+  # setting them at workflow level blocks uses: reusable-workflow-call job scheduling.
 
 env:
   REGISTRY: ghcr.io
@@ -44,6 +47,7 @@ jobs:
     name: Resolve parameters
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: build-and-push
     outputs:
       network: ${{ steps.params.outputs.network }}
 
@@ -81,12 +85,12 @@ jobs:
     name: Build and push
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: resolve
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
 
     steps:
       - name: Checkout
@@ -153,13 +157,6 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      - name: Write image summary
-        run: |
-          set -euo pipefail
-          echo "### Image pushed" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
   # ── Deploy via infra reusable workflow ───────────────────────────────────────
   # Calls Decentral-America/infra/.github/workflows/deploy-container.yml.
@@ -170,15 +167,8 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, build-and-push]
-    # Only auto-deploy mainnet; stagenet and testnet require manual dispatch.
-    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
-    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    if: >-
-      vars.INFRA_DEPLOY_ENABLED == 'true' &&
-      (needs.resolve.outputs.network == 'mainnet' ||
-       github.event_name == 'workflow_dispatch')
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b182972e0c6e638c3990755525154c0e28e44fe9 # main
+    needs: [resolve]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/scanner:${{ github.sha }}

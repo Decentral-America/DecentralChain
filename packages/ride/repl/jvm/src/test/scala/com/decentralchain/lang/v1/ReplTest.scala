@@ -181,7 +181,7 @@ class ReplTest extends AnyPropSpec with Matchers {
 
   property("url slash strip") {
     val url      = "testnet-node.decentralchain.io"
-    val settings = NodeConnectionSettings(url + "///", 'T'.toByte, "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun")
+    val settings = NodeConnectionSettings(url + "///", '!'.toByte, "31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ")
     settings.normalizedUrl shouldBe url
   }
 
@@ -193,8 +193,8 @@ class ReplTest extends AnyPropSpec with Matchers {
   }
 
   property("reconfigure") {
-    val address1 = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
-    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address1)
+    val address1 = "31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ"
+    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", '!'.toByte, address1)
     val repl     = Repl(Some(settings))
 
     await(repl.execute("let a = 1"))
@@ -207,7 +207,7 @@ class ReplTest extends AnyPropSpec with Matchers {
        """.trim.stripMargin
     )
 
-    val address2         = "3PDjjLFDR5aWkKgufika7KSLnGmAe8ueDpC"
+    val address2         = "31cePwWpazTAxrzdQzgkoAYJR73iyWnvw6F"
     val reconfiguredRepl = repl.reconfigure(settings.copy(address = address2))
 
     await(reconfiguredRepl.execute("a")) shouldBe Right("res2: Int = 1")
@@ -228,8 +228,8 @@ class ReplTest extends AnyPropSpec with Matchers {
   }
 
   property("libraries") {
-    val address  = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
-    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address)
+    val address  = "31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ"
+    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", '!'.toByte, address)
     val repl     = Repl(
       Some(settings),
       libraries = List(
@@ -254,8 +254,8 @@ class ReplTest extends AnyPropSpec with Matchers {
   }
 
   property("blockchain interaction using lets from libraries is prohibited") {
-    val address  = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
-    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address)
+    val address  = "31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ"
+    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", '!'.toByte, address)
     val repl     = Repl(
       Some(settings),
       libraries = List("let a = this")
@@ -265,23 +265,23 @@ class ReplTest extends AnyPropSpec with Matchers {
   }
 
   property("addressFromPublicKey function") {
-    val address  = "3MpLKVSnWSY53bSNTECuGvESExzhV9ppcun"
-    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, address)
+    val address  = "31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ"
+    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", '!'.toByte, address)
     val repl     = Repl(Some(settings))
     await(repl.execute("addressFromPublicKey(base58'HnU9jfhpMcQNaG5yQ46eR43RnkWKGxerw2zVrbpnbGof')")) shouldBe Right(
-      "res1: Address = Address(\n\tbytes = base58'3N7rGHurxjXCPDhJLvLxWQ1YKq1tiUDRKUL'\n)"
+      "res1: Address = Address(\n\tbytes = base58'31bcW5NfGXKZhWbBvfwyFfcfCjHkcAiS8UZ'\n)"
     )
     await(
       repl.execute(
         "addressFromPublicKey(base58'1ejb7sZqEyRLXjqukkZLmwP7KCJqbdw74oQQJRnAeir66zFQ56ZC3qP76yBLaW4hZY9NXtZ6LqnUDztZdAmCNqU')"
       )
     ) shouldBe Right(
-      "res2: Address = Address(\n\tbytes = base58'3N8tAA42HCeoea6jqF5k3twBYCms5irDqmN'\n)"
+      "res2: Address = Address(\n\tbytes = base58'31cePwWpazTAxrzdQzgkoAYJR73iyWnvw6F'\n)"
     )
   }
 
   property("transactionHeightById for failed transaction") {
-    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", 'T'.toByte, "")
+    val settings = NodeConnectionSettings("testnet-node.decentralchain.io", '!'.toByte, "")
     val client   = new NodeClient {
       def get[F[_]: Functor, R: Decoder](path: String)(using ResponseWrapper[F]): Future[F[R]] =
         if (path == "/transactions/info/abcd")

@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # ─── Stage 1: build ──────────────────────────────────────────────────────────
-# renovate: image=rust tag=1.95
-FROM rust:1.95@sha256:443dd9a3260cf23c22fc05051dd5661dd7b4028d3d25dbaffab6563b63c3539c AS builder
+# renovate: image=rust tag=1.96
+FROM rust:1.96@sha256:19dfb952582d0e17841fdb8cd70febfb6cb0761c4e0cd84f3cb1f07bb3281a8d AS builder
 WORKDIR /app
 
 # Install build-time system deps (protoc for tonic-prost-build, libpq for diesel)

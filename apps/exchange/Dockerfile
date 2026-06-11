@@ -23,7 +23,7 @@
 
 # ── Stage 1: build ────────────────────────────────────────────────────────────
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS builder
+FROM node:24-alpine@sha256:9a2c6269f83d74af45665c0b738b78c7b5f07bf2374c72a4c540065a975b9693 AS builder
 ARG BUILD_MODE=production
 
 WORKDIR /app

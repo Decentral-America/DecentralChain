@@ -30,6 +30,9 @@ concurrency:
 permissions:
   contents: read
   packages: write
+  security-events: write  # required for infra deploy-container.yml Trivy SARIF upload
+  # attestations/id-token/artifact-metadata are scoped to docker job only —
+  # setting them at workflow level blocks uses: reusable-workflow-call job scheduling.
 
 env:
   CARGO_TERM_COLOR: always
@@ -46,6 +49,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
 
     steps:
       - name: Checkout
@@ -135,11 +139,8 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    needs: [resolve, docker]
-    # Guard: skip gracefully until SSH keys are provisioned in infra repo environments.
-    # Set repository variable INFRA_DEPLOY_ENABLED=true once servers and keys are ready.
-    if: vars.INFRA_DEPLOY_ENABLED == 'true'
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b182972e0c6e638c3990755525154c0e28e44fe9 # main
+    needs: [resolve]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0fc65e2ca5c82abcad32fcbe1125f1b59b40dfbf # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}

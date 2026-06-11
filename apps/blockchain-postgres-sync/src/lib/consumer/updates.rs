@@ -107,17 +107,17 @@ impl UpdatesSourceImpl {
             .to_std()
             .unwrap_or(std::time::Duration::from_secs(5));
 
-        // 60-second idle timeout: if the gRPC server stops sending messages
-        // without closing the stream (hung connection), treat it as a fatal
-        // error so the spawned task exits and the process can be restarted.
-        const STREAM_IDLE_TIMEOUT: StdDuration = StdDuration::from_secs(60);
+        // Idle timeout: if the gRPC server stops sending messages without closing
+        // the stream (hung connection), treat it as fatal so the process restarts.
+        // DCC block time is ~60 s so 180 s gives 3× margin before triggering.
+        const STREAM_IDLE_TIMEOUT: StdDuration = StdDuration::from_secs(180);
 
         loop {
             let msg = time::timeout(STREAM_IDLE_TIMEOUT, stream.message())
                 .await
                 .map_err(|_| {
                     AppError::StreamError(
-                        "gRPC stream idle for 60 s; server may be hung".to_string(),
+                        "gRPC stream idle for 180 s; server may be hung".to_string(),
                     )
                 })?
                 .map_err(|s| AppError::StreamError(format!("Updates stream error: {s}")))?;
