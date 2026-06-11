@@ -166,7 +166,7 @@ describe('protobuf roundtrip encoding', () => {
     it('should encode and decode a basic block header', () => {
       const original = create(Block_HeaderSchema, {
         baseTarget: 100n,
-        chainId: 33, // T for testnet
+        chainId: 33, // '!' = DCC testnet (byte 33)
         generationSignature: new Uint8Array(32).fill(0xcc),
         generator: new Uint8Array(32).fill(0xdd),
         rewardVote: -1n,
@@ -177,7 +177,7 @@ describe('protobuf roundtrip encoding', () => {
       const buffer = toBinary(Block_HeaderSchema, original);
       const decoded = fromBinary(Block_HeaderSchema, buffer);
 
-      expect(decoded.chainId).toBe(84);
+      expect(decoded.chainId).toBe(33);
       expect(decoded.version).toBe(5);
       expect(decoded.baseTarget).toBe(100n);
       expect(decoded.rewardVote).toBe(-1n);
@@ -220,7 +220,7 @@ describe('protobuf roundtrip encoding', () => {
       const buffer = toBinary(BlockSchema, block);
       const decoded = fromBinary(BlockSchema, buffer);
       const decodedHeader = assertDefined(decoded.header);
-      expect(decodedHeader.chainId).toBe(84);
+      expect(decodedHeader.chainId).toBe(33);
       expect(new Uint8Array(decoded.signature)).toEqual(new Uint8Array(64).fill(0xee));
       expect(decoded.transactions).toEqual([]);
     });
@@ -278,7 +278,7 @@ describe('protobuf roundtrip encoding', () => {
       expect(buffer.length).toBeGreaterThan(0);
 
       const decoded = fromBinary(OrderSchema, buffer);
-      expect(decoded.chainId).toBe(84);
+      expect(decoded.chainId).toBe(33);
       expect(decoded.orderSide).toBe(Order_Side.BUY);
       expect(decoded.amount).toBe(100_000_000n);
       expect(decoded.price).toBe(50_000n);
@@ -356,7 +356,7 @@ describe('protobuf roundtrip encoding', () => {
       const buffer = toBinary(TransactionSchema, original);
       const decoded = fromBinary(TransactionSchema, buffer);
 
-      expect(decoded.chainId).toBe(84);
+      expect(decoded.chainId).toBe(33);
       expect(decoded.version).toBe(3);
       const fee = assertDefined(decoded.fee);
       expect(fee.amount).toBe(100_000n);
@@ -916,7 +916,7 @@ describe('protobuf roundtrip encoding', () => {
 
       expect(decoded.transaction.case).toBe('dccTransaction');
       if (decoded.transaction.case === 'dccTransaction') {
-        expect(decoded.transaction.value.chainId).toBe(84);
+        expect(decoded.transaction.value.chainId).toBe(33);
       }
       expect(decoded.proofs).toHaveLength(1);
       expect(decoded.proofs[0]).toHaveLength(64);
@@ -1740,7 +1740,7 @@ describe('financial safety edge cases', () => {
     for (let i = 0; i < 64; i++) proof[i] = 255 - i;
 
     const tx = create(TransactionSchema, {
-      chainId: 63, // W for mainnet
+      chainId: 63, // '?' = DCC mainnet
       data: {
         case: 'transfer',
         value: {
@@ -1765,7 +1765,7 @@ describe('financial safety edge cases', () => {
     expect(decoded.transaction.case).toBe('dccTransaction');
     if (decoded.transaction.case === 'dccTransaction') {
       expect(new Uint8Array(decoded.transaction.value.senderPublicKey)).toEqual(senderPk);
-      expect(decoded.transaction.value.chainId).toBe(87);
+      expect(decoded.transaction.value.chainId).toBe(63);
     }
     expect(new Uint8Array(decoded.proofs[0])).toEqual(proof);
   });

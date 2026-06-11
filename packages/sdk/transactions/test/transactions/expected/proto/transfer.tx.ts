@@ -13,7 +13,7 @@ export const transferTx = {
       proofs: [
         '2F3Q1rGAu1wMRpcBwqPTUv5VTLSpMK3Xnih53WbtNYeYsN4h7qYLA44mu2MazvTo4ojijcC3EyXmg78XjAx81q8Y',
       ],
-      recipient: 'alias:T:_rich-account.with@30_symbols_',
+      recipient: 'alias:!:_rich-account.with@30_symbols_',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236453735,
@@ -35,7 +35,7 @@ export const transferTx = {
       proofs: [
         '34G24GV8kDgPGsiRyu6oP2bA11QjwM2LGiLXqwKvJntEuxjXA9uYF5oVXcZ7R3EpwT5C3rCHJKrXWyvqtNgYEKuU',
       ],
-      recipient: '3N7BsHBsgbYQU7aiDmpdiQ93GsPQBkzffLF',
+      recipient: '31ax74efzPLmnQUboXReTfkA9mfG5UAZGZ6',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236453740,
@@ -58,7 +58,7 @@ export const transferTx = {
       proofs: [
         '35U1rUKgkJpC4GGukcLTogPWv349HeD469XM7zpipB57Y5U6haQBMLSdnfvHZQ32T57FiDUH6idKBWgdAvM6b8xt',
       ],
-      recipient: 'alias:T:_rich-account.with@30_symbols_',
+      recipient: 'alias:!:_rich-account.with@30_symbols_',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236453740,
@@ -81,7 +81,7 @@ export const transferTx = {
       proofs: [
         '3bQfv3Ghgk58wxSwTT6EJCZenyFocStW9QCZ9C8srkK1hvSabWTdK3zgS4PvKu1UDA5BP9GYjHwcxLj3TeMrBzhR',
       ],
-      recipient: 'alias:T:_min',
+      recipient: 'alias:!:_min',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236453741,
