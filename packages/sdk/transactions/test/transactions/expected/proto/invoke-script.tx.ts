@@ -4,7 +4,7 @@ export const invokeScriptTx = {
       'CCESIJL4Cg7m8oV+sUn/3SQWcJnIDvBjXYh3TIjvckIJrSwvGgQQoMIeIPTlkL2mLygCogcbChYKFMCJgEpQH4BNVdKzU7jR4jDzcS12EgEA',
     Json: {
       chainId: 33,
-      dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+      dApp: '31bEN1xehAKo8MkHg5yfLyNritRvaBTDiS9',
       fee: 500000,
       feeAssetId: null,
       id: '2tCkJaF4pwcb4WGypPXoPHqfZnP88eQNyiC5UcrZznHf',
@@ -25,7 +25,7 @@ export const invokeScriptTx = {
     Json: {
       call: { args: [], function: 'default' },
       chainId: 33,
-      dApp: '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+      dApp: '31bEN1xehAKo8MkHg5yfLyNritRvaBTDiS9',
       fee: '9223372036854775807',
       feeAssetId: 'EbvoPG191bVa2HfMGoRAJyeysHQbTDLDMadtSfCmSggJ',
       id: 'EAFs6Mv92VsvFnxgrHnZQ9qbxPsCukdSsmnZ39kBBhgK',
@@ -55,7 +55,7 @@ export const invokeScriptTx = {
             'chainId': 33,
             'senderPublicKey': 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
             'sender': '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
-            'dApp': '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+            'dApp': '31bEN1xehAKo8MkHg5yfLyNritRvaBTDiS9',
             'call': {
                 'function': 'testFunctionV2',
                 'args': [
@@ -84,7 +84,7 @@ export const invokeScriptTx = {
             'chainId': 33,
             'senderPublicKey': 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
             'sender': '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
-            'dApp': '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+            'dApp': '31bEN1xehAKo8MkHg5yfLyNritRvaBTDiS9',
             'call': {
                 'function': 'testFunctionV2',
                 'args': [{'type': 'boolean', 'value': true}, {'type': 'boolean', 'value': false}, {
@@ -123,7 +123,7 @@ export const invokeScriptTx = {
             'chainId': 33,
             'senderPublicKey': 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
             'sender': '3N3kDDPYNbb3vzZRAPkgiR1R7YnLVtSrsiZ',
-            'dApp': '3N7U8EVrPNXRp4rQ6LNebhmjqzA4gPY641Q',
+            'dApp': '31bEN1xehAKo8MkHg5yfLyNritRvaBTDiS9',
             'call': {
                 'function': 'testFunctionV2',
                 'args': [{'type': 'boolean', 'value': true}, {'type': 'boolean', 'value': false}, {
