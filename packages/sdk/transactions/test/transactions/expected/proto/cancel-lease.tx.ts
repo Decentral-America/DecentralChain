@@ -20,9 +20,9 @@ export const cancelLeaseTx = {
   },
   'Cancel Lease TX (type 9 v3) min fee': {
     Bytes:
-      'CFMSII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQoI0GIMz3zt3WLygD6gYiCiCe+fMMzlYhQXls5wGSZq+PaavsNCSexQH8Pe9VkvPcqQ==',
+      'CCESII2Pso3AdXwKxUYtumBGAOwXiwd7VICSuiPRijFoYzd0GgQQoI0GIMz3zt3WLygD6gYiCiCe+fMMzlYhQXls5wGSZq+PaavsNCSexQH8Pe9VkvPcqQ==',
     Json: {
-      chainId: 83,
+      chainId: 33,
       fee: 100000,
       feeAssetId: null,
       id: 'ExpyLASKUEsWYcaAj6aZ6jk2nthfvZX2VPbFKoBX3eC',

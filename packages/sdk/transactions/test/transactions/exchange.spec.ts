@@ -87,7 +87,7 @@ describe('exchange', () => {
     };
 
     const tx = exchange({ ...txOk }, seed1);
-    expect(tx).toMatchObject({ ...txOk, chainId: txOk.chainId.charCodeAt() });
+    expect(tx).toMatchObject({ ...txOk, chainId: txOk.chainId });
   });
 
   it('Should build exchange tx ver2-1-1', () => {

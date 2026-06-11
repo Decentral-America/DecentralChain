@@ -11,7 +11,7 @@ export const leaseTx = {
       proofs: [
         '42zY1Xv149pzfzBEE3k35jGZXcZnJcxX8ciXQK5x5EoVpDxYzESx9QwoA4NteSZ1yiZS8SLdpiiNn8pqydhfcoAf',
       ],
-      recipient: '3MwrGpurVChT8VtveXSfzBBr1VSfSMWTzHC',
+      recipient: '31RcWcNenzVpSnnpEH3gjSnxtPiXL9XdUek',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236452578,
@@ -31,7 +31,7 @@ export const leaseTx = {
       proofs: [
         '2xmfRE666JdWuakVhPcbhAh92t9LXScbniRCcPNhBR5LzESnYBEksNySg7sJCc99qqkYD4z1avsjWq8B9PoKvaKg',
       ],
-      recipient: 'alias:T:_rich-account.with@30_symbols_',
+      recipient: 'alias:!:_rich-account.with@30_symbols_',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236452581,
@@ -51,7 +51,7 @@ export const leaseTx = {
       proofs: [
         '383Vzd66b5n8KkELzACP7DZfuHyCyJrWCpx4ibUNSjh1emAWTfTaTQoCLkag7PxabHFqgsWcm1THGHVna2bWTTEF',
       ],
-      recipient: 'alias:T:_min',
+      recipient: 'alias:!:_min',
       sender: '31XWSzrLgPPRFHTJk9MhTgcXzT4CPhMGh1D',
       senderPublicKey: 'Athtgb7Zm9V6ExyAzAJM1mP57qNAW1A76TmzXdDZDjbt',
       timestamp: 1625236452582,
