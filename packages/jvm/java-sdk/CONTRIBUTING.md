@@ -8,7 +8,7 @@ By participating, you agree to behave professionally. Be respectful of contribut
 
 ## Prerequisites
 
-- **Java 11+** (Java 17 or 21 recommended)
+- **Java 11+** (Java 25 / Eclipse Temurin 25 recommended — matches the production DCC node)
 - **Maven 3.9.2+** — or use the included wrapper: `./mvnw`
 - **Docker** — required to run the full integration test suite
 

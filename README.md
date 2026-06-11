@@ -62,7 +62,7 @@
 | `io.decentralchain:curve25519` | Ed25519/Curve25519 cryptography |
 | `io.decentralchain:transactions` | Transaction wire-format library |
 | `io.decentralchain:blst` | BLS12-381 pairing cryptography |
-| `io.decentralchain:zdcc` | ZK-SNARK (Groth16) |
+| `io.decentralchain:groth16` | ZK-SNARK (Groth16 / fastcrypto-zkp) |
 
 ## Apps
 
