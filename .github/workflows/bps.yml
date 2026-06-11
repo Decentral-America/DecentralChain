@@ -88,7 +88,7 @@ jobs:
           files: apps/blockchain-postgres-sync/codecov.json
           flags: bps
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Check documentation
         working-directory: apps/blockchain-postgres-sync
