@@ -2,6 +2,7 @@ import {
   ArrowUpDown,
   Box,
   Coins,
+  Droplets,
   Languages,
   LayoutDashboard,
   type LucideIcon,
@@ -74,6 +75,9 @@ function LayoutContent() {
   const { language, changeLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
 
+  const config = useRouteLoaderData<typeof rootLoader>('root');
+  const network = config ? getNetworkLabel(config.nodeUrl) : 'mainnet';
+
   const navigationItems: NavigationItem[] = [
     { icon: LayoutDashboard, title: t('dashboard'), url: createPageUrl('Dashboard') },
     { icon: Box, title: t('blocks'), url: createPageUrl('Blocks') },
@@ -82,6 +86,10 @@ function LayoutContent() {
     { icon: Coins, title: t('assets'), url: createPageUrl('Asset') },
     { icon: ArrowUpDown, title: t('dexPairs'), url: createPageUrl('DexPairs') },
     { icon: Network, title: 'Network', url: createPageUrl('Network') },
+    // Faucet is only relevant on non-mainnet networks
+    ...(network !== 'mainnet'
+      ? [{ icon: Droplets, title: t('faucet'), url: createPageUrl('Faucet') }]
+      : []),
   ];
 
   useEffect(() => {

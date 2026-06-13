@@ -32,9 +32,12 @@ export default [
     route('sustainability', 'pages/Sustainability.tsx'),
     route('node', 'pages/Node.tsx'),
     route('home', 'pages/Home.tsx'),
+    route('faucet', 'pages/Faucet.tsx'),
   ]),
 
   // ── Resource routes (no layout wrapper) ──────────────────────────────────
   // DCC-158 — Sitemap XML for search engine crawlers
   route('sitemap.xml', 'routes/sitemap.xml.ts'),
+  // Faucet API — POST /api/faucet (server-side signing + broadcast)
+  route('api/faucet', 'routes/api.faucet.ts'),
 ] satisfies RouteConfig;
