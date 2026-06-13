@@ -5,7 +5,7 @@
 To report a security vulnerability in the RIDE compiler or REPL, please
 follow the DecentralChain security disclosure process:
 
-**Email**: security@decentralchain.io  
+**Email**: info@decentralchain.io  
 **GitHub**: [Security Advisories](https://github.com/Decentral-America/DecentralChain/security/advisories)
 
 Do NOT open public GitHub issues for security vulnerabilities.

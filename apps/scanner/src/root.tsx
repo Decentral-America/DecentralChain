@@ -1,4 +1,4 @@
-import './App.css';
+import './index.css';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import {
@@ -27,8 +27,11 @@ import { type Route } from './+types/root';
 export function loader() {
   return {
     dataServiceUrl: process.env.DCC_DATA_SERVICE_URL ?? 'https://data-service.decentralchain.io/v0',
+    faucetAmountDcc: parseInt(process.env.DCC_FAUCET_AMOUNT ?? '10', 10),
+    faucetEnabled: !!process.env.DCC_FAUCET_SEED,
     matcherUrl: process.env.DCC_MATCHER_URL ?? 'https://mainnet-matcher.decentralchain.io',
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io',
+    recaptchaSiteKey: process.env.DCC_RECAPTCHA_SITE_KEY ?? '',
   };
 }
 

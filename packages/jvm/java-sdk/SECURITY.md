@@ -13,7 +13,7 @@
 
 This library is used in financial applications. Please report responsibly.
 
-Email: **dev@decentralchain.io**
+Email: **info@decentralchain.io**
 
 Include:
 - Description of the vulnerability

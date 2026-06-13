@@ -68,7 +68,13 @@ type Pages = {
   "/home": {
     params: {};
   };
+  "/faucet": {
+    params: {};
+  };
   "/sitemap.xml": {
+    params: {};
+  };
+  "/api/faucet": {
     params: {};
   };
 };
@@ -76,11 +82,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/sitemap.xml";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet" | "/sitemap.xml" | "/api/faucet";
   };
   "Layout.tsx": {
     id: "Layout";
-    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet";
   };
   "pages/Dashboard.tsx": {
     id: "pages/Dashboard";
@@ -157,9 +163,17 @@ type RouteFiles = {
     id: "pages/Home";
     page: "/home";
   };
+  "pages/Faucet.tsx": {
+    id: "pages/Faucet";
+    page: "/faucet";
+  };
   "routes/sitemap.xml.ts": {
     id: "routes/sitemap.xml";
     page: "/sitemap.xml";
+  };
+  "routes/api.faucet.ts": {
+    id: "routes/api.faucet";
+    page: "/api/faucet";
   };
 };
 
@@ -185,5 +199,7 @@ type RouteModules = {
   "pages/Sustainability": typeof import("./src/pages/Sustainability.tsx");
   "pages/Node": typeof import("./src/pages/Node.tsx");
   "pages/Home": typeof import("./src/pages/Home.tsx");
+  "pages/Faucet": typeof import("./src/pages/Faucet.tsx");
   "routes/sitemap.xml": typeof import("./src/routes/sitemap.xml.ts");
+  "routes/api.faucet": typeof import("./src/routes/api.faucet.ts");
 };

@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@decentralchain/node-api": "workspace:*",
+    "@decentralchain/transactions": "workspace:*",
     "@react-router/node": "7.16.0",
     "@react-router/serve": "7.16.0",
     "@sentry/react": "^10.56.0",
