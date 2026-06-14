@@ -61,6 +61,10 @@ RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
 # nginx would only work for a static SPA export (ssr: false), which this is not.
 FROM base AS runtime
 
+# Patch CVE-2026-45447 (OpenSSL heap use-after-free) while node:24-alpine awaits rebuild.
+# Remove once upstream node:24-alpine ships openssl ≥ 3.5.7-r0.
+RUN apk upgrade --no-cache libcrypto3 libssl3
+
 # Security: run as non-root
 RUN addgroup -S scanner && adduser -S -G scanner scanner
 
