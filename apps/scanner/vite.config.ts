@@ -131,10 +131,6 @@ export default defineConfig({
     sentryVitePlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       disable: !process.env.SENTRY_AUTH_TOKEN,
-      errorHandler: (err) => {
-        // Non-fatal: Sentry upload failure should never block a deploy.
-        console.warn('[sentry-vite-plugin] upload skipped:', err.message);
-      },
       org: 'decentral-america',
       project: 'dcc-scanner',
       sourcemaps: {
