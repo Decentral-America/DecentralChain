@@ -122,7 +122,10 @@ export async function action({ request }: { request: Request }): Promise<Respons
   }
 
   // ── Build, sign, and broadcast the transfer ─────────────────────────────────
-  const nodeUrl = process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io';
+  const nodeUrl = process.env.DCC_NODE_URL;
+  if (!nodeUrl) {
+    return Response.json({ error: 'Faucet not configured on this network' }, { status: 503 });
+  }
   const amountDcc = parseInt(process.env.DCC_FAUCET_AMOUNT ?? '10', 10);
   // 1 DCC = 10^8 units (same decimal structure as WAVES)
   const amountUnits = amountDcc * 1e8;
