@@ -64,6 +64,38 @@ export async function action({ request }: { request: Request }): Promise<Respons
     return Response.json({ error: 'Invalid DCC address' }, { status: 400 });
   }
 
+  // Validate the chain byte embedded in the address matches this network.
+  // DCC address bytes: [version=1, chainId, ...payload, ...checksum]
+  // Chain byte for testnet=33('!'), mainnet=63('?'), stagenet=83('S').
+  const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const decodeBase58 = (s: string): number[] => {
+    let n = BigInt(0);
+    for (const c of s) {
+      n = n * BigInt(58) + BigInt(BASE58_ALPHABET.indexOf(c));
+    }
+    const bytes: number[] = [];
+    while (n > 0n) {
+      bytes.unshift(Number(n & 0xffn));
+      n >>= 8n;
+    }
+    while (bytes.length < 26) bytes.unshift(0);
+    return bytes;
+  };
+  const expectedChainId = process.env.DCC_CHAIN_ID ? parseInt(process.env.DCC_CHAIN_ID, 10) : null;
+  if (expectedChainId !== null) {
+    const decoded = decodeBase58(address);
+    const addrChainId = decoded[1] ?? 0; // byte index 1 is the chain ID (array always 26 bytes)
+    if (addrChainId !== expectedChainId) {
+      const networkNames: Record<number, string> = { 33: 'testnet', 63: 'mainnet', 83: 'stagenet' };
+      const expected = networkNames[expectedChainId] ?? `chain ${expectedChainId}`;
+      const provided = networkNames[addrChainId] ?? `chain ${addrChainId}`;
+      return Response.json(
+        { error: `This address is for ${provided}. Please provide a ${expected} address.` },
+        { status: 400 },
+      );
+    }
+  }
+
   // ── reCAPTCHA ───────────────────────────────────────────────────────────────
   const recaptchaSecret = process.env.DCC_RECAPTCHA_SECRET;
   if (recaptchaSecret) {

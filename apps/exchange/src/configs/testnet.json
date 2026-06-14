@@ -8,7 +8,7 @@
   "coinomat": "",
   "explorer": "https://testnet.decentralscan.com",
   "gateway": {},
-  "matcher": "https://matcher.decentralchain.io/matcher",
+  "matcher": "https://testnet-matcher.decentralchain.io/matcher",
   "matcherPriorityList": [{ "id": "DCC", "ticker": "DCC" }],
   "node": "https://testnet-node.decentralchain.io",
   "nodeList": "https://testnet.decentralscan.com/peers",
