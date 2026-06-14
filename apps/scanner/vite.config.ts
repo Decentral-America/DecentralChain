@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { reactRouter } from '@react-router/dev/vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type Plugin } from 'vite';
 
 // Explicit project root — ensures React Router's config loader finds
@@ -123,6 +124,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    tailwindcss(),
     reactRouterTypesResolver(),
     ssrBrowserOnlyStub(),
     ...withoutEsbuildConfig(reactRouter()),
