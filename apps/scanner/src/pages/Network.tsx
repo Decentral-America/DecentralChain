@@ -425,7 +425,12 @@ function PeersTab() {
   const geoByIp = usePeerGeo(uniqueIps);
 
   const resolveNodeName = (peer: Peer): string | null => {
-    const peerNodeName = typeof peer.nodeName === 'string' ? peer.nodeName : null;
+    const peerNodeName =
+      typeof peer.nodeName === 'string'
+        ? peer.nodeName
+        : typeof peer.peerName === 'string'
+          ? peer.peerName
+          : null;
     const registration = nodeRegistrations.find(
       (reg) =>
         reg.status === 'approved' &&
