@@ -7,8 +7,9 @@ export default {
   future: {
     v8_viteEnvironmentApi: true,
   },
-  // Prerender the homepage shell at build time for fast initial HTML.
-  // Real-time data (block height, latest block) loads after hydration via React Query.
-  prerender: ['/'],
+  // Prerender disabled: the root loader injects window.__DCC_CONFIG__ with
+  // runtime env vars (DCC_NODE_URL, etc.). Prerendering runs at CI build time
+  // when those vars are unset, baking mainnet URLs into the static HTML for
+  // all networks. SSR-only ensures the correct network config is injected.
   ssr: true,
 } satisfies Config;
