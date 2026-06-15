@@ -47,9 +47,8 @@ RUN cd apps/scanner && pnpm react-router typegen
 # maps with the correct release. SENTRY_AUTH_TOKEN is mounted as a Docker secret
 # so it never appears in any image layer or build cache.
 ARG SENTRY_RELEASE
-RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
-    SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true) \
-    SENTRY_RELEASE="${SENTRY_RELEASE}" \
+# SENTRY_AUTH_TOKEN intentionally omitted until dcc-scanner project is created in Sentry.
+RUN SENTRY_RELEASE="${SENTRY_RELEASE}" \
     VITE_APP_VERSION="${SENTRY_RELEASE}" \
     pnpm nx run scanner:build --skip-nx-cache
 RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
@@ -61,6 +60,10 @@ RUN pnpm --filter scanner --prod deploy --legacy /prod/scanner \
 # It is served with `react-router-serve`, not nginx.
 # nginx would only work for a static SPA export (ssr: false), which this is not.
 FROM base AS runtime
+
+# Patch CVE-2026-45447 (OpenSSL heap use-after-free) while node:24-alpine awaits rebuild.
+# Remove once upstream node:24-alpine ships openssl ≥ 3.5.7-r0.
+RUN apk upgrade --no-cache libcrypto3 libssl3
 
 # Security: run as non-root
 RUN addgroup -S scanner && adduser -S -G scanner scanner

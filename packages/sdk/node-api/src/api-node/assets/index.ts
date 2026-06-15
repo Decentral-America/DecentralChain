@@ -55,14 +55,14 @@ export function fetchAssetsDetails(
   assetIds: string[],
   options: RequestInit = {},
 ): Promise<(TAssetDetails | TErrorResponse)[]> {
-  const params = assetIds.map((assetId) => `id=${encodeURIComponent(assetId)}`).join('&');
+  if (assetIds.length === 0) return Promise.resolve([]);
 
-  const queryStr = assetIds.length ? `?${params}` : '';
+  const params = assetIds.map((assetId) => `id=${encodeURIComponent(assetId)}`).join('&');
 
   return request<(TAssetDetails | TErrorResponse)[]>({
     base,
     options,
-    url: `/assets/details${queryStr}`,
+    url: `/assets/details?${params}`,
   });
 }
 
