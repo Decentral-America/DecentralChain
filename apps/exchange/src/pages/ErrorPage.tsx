@@ -6,8 +6,33 @@
 import type React from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 
+// Session key prevents infinite reload loops: only one auto-reload per session.
+const CHUNK_RELOAD_KEY = 'exc_chunk_reload';
+
+/**
+ * Detect stale-deployment chunk 404s.
+ * Chrome: "Failed to fetch dynamically imported module: ..."
+ * Safari/WebKit: "Importing a module script failed."
+ */
+function isChunkLoadError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes('dynamically imported module') || msg.includes('module script failed');
+}
+
 export const ErrorPage: React.FC = () => {
   const error = useRouteError();
+
+  // When a lazy chunk 404s (stale HTML after a fresh deployment), silently
+  // reload once. The fresh HTML will reference the correct new chunk hashes.
+  if (isChunkLoadError(error) && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+    window.location.reload();
+    return null;
+  }
+  // Non-chunk error: clear the flag so a future chunk error can trigger again.
+  if (!isChunkLoadError(error)) {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+  }
 
   let title = 'Something went wrong';
   let message = 'An unexpected error occurred. Please try refreshing the page.';

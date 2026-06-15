@@ -84,9 +84,12 @@ export const useTransactionStream = (
     [onNewTransaction, options?.filterTypes, options?.minConfirmations],
   );
 
-  // Subscribe to transaction channel
+  // Subscribe to transaction channel.
+  // maxReconnectAttempts: 0 — the DCC node does not expose a WebSocket API;
+  // one attempt is enough to confirm unavailability. The hook falls back to
+  // HTTP polling automatically when isConnected stays false.
   useWebSocketChannel<TransactionNotification>(
-    { debug: config.enableDebug, url: wsUrl },
+    { debug: config.enableDebug, maxReconnectAttempts: 0, url: wsUrl },
     channel,
     handleTransaction,
     !!address && options?.enabled !== false,
