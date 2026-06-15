@@ -39,8 +39,12 @@ export default defineConfig({
         'src/components/utils/translations.tsx',
         // Trivial singleton config — no testable logic
         'src/lib/query-client.ts',
-        // SSR resource route — integration-only
+        // SSR resource routes — server-side logic, integration-only (like sitemap.xml.ts)
         'src/routes/sitemap.xml.ts',
+        'src/routes/api.faucet.ts',
+        // Display component — renders only; depends on external API (AssetLogoRequest.filter)
+        // and image load events that are not meaningfully testable in jsdom
+        'src/components/shared/AssetLogo.tsx',
         // Test infrastructure
         'src/test/**',
       ],
