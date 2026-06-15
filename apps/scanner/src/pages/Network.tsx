@@ -58,12 +58,14 @@ import {
   fetchBlockHeadersSeq,
   fetchConnectedPeers,
   fetchHeight,
+  fetchLastBlock,
   fetchNodeStatus,
   fetchNodeVersion,
   fetchSuspendedPeers,
   type IAllConnectedResponse,
   type IAllResponse,
   type IBlackPeer,
+  type IBlock,
   type IBlockHeader,
   type INodeStatus,
   type INodeVersion,
@@ -352,10 +354,17 @@ function OverviewTab() {
             {[
               { label: 'Status', value: nodeStatus?.blockGeneratorStatus ?? 'generating' },
               {
-                label: 'State hash',
-                value: nodeStatus?.stateHash ? `${nodeStatus.stateHash.slice(0, 24)}…` : '—',
+                label: 'Block hash',
+                value: recentBlocks?.length
+                  ? `${recentBlocks[recentBlocks.length - 1]?.id?.slice(0, 24)}…`
+                  : nodeStatus?.stateHash
+                    ? `${nodeStatus.stateHash.slice(0, 24)}…`
+                    : '—',
               },
-              { label: 'Peers', value: String(nodeStatus?.peersCount ?? '—') },
+              {
+                label: 'Peers',
+                value: String(connectedPeers?.peers?.length ?? nodeStatus?.peersCount ?? '—'),
+              },
             ].map(({ label, value }) => (
               <div className="flex items-center justify-between" key={label}>
                 <span className="text-sm text-muted-foreground">{label}</span>
@@ -606,6 +615,14 @@ function NodeTab() {
     queryFn: () => fetchNodeVersion(),
     queryKey: ['nodeVersion'],
   });
+  const { data: connectedPeers } = useQuery<IAllConnectedResponse>({
+    queryFn: () => fetchConnectedPeers(),
+    queryKey: ['peers', 'connected'],
+  });
+  const { data: lastBlock } = useQuery<IBlock>({
+    queryFn: () => fetchLastBlock(),
+    queryKey: ['lastBlock'],
+  });
 
   const InfoCard = ({
     title,
@@ -651,12 +668,18 @@ function NodeTab() {
         <InfoCard
           icon={NetworkIcon}
           title="Connected Peers"
-          value={String(status?.peersCount ?? '—')}
+          value={String(connectedPeers?.peers?.length ?? status?.peersCount ?? '—')}
         />
         <InfoCard
           icon={Database}
-          title="State Hash"
-          value={status?.stateHash ? `${status.stateHash.slice(0, 12)}…` : '—'}
+          title="Block Hash"
+          value={
+            lastBlock?.id
+              ? `${lastBlock.id.slice(0, 12)}…`
+              : status?.stateHash
+                ? `${status.stateHash.slice(0, 12)}…`
+                : '—'
+          }
         />
       </div>
 
