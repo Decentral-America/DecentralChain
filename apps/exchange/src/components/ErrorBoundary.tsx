@@ -7,6 +7,13 @@ import {
 } from 'react-error-boundary';
 import { logger } from '@/lib/logger';
 
+const CHUNK_RELOAD_KEY = 'exc_chunk_reload';
+
+function isChunkLoadError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes('dynamically imported module') || msg.includes('module script failed');
+}
+
 export interface ErrorBoundaryProps {
   children: ReactNode;
 }
@@ -98,6 +105,16 @@ const helpTextStyle: React.CSSProperties = {
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const message = getErrorMessage(error);
+
+  // Silently reload once when a lazy chunk 404s after a fresh deployment.
+  if (isChunkLoadError(error) && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+    window.location.reload();
+    return null;
+  }
+  if (!isChunkLoadError(error)) {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+  }
 
   return (
     <div style={errorContainerStyle}>
