@@ -407,10 +407,30 @@ function PeersTab() {
       .catch((err: unknown) => logError(err, { context: 'fetchNodeRegistrations' }));
   }, []);
 
+  // Merge connected peers into /peers/all so every known node appears under "All Peers".
+  // On private testnets the node's gossip peer database stays empty (peers.dat never
+  // populated from directly-configured bootstrap peers), so /peers/all returns [].
+  // Connected peers are always included as the floor.
+  const allPeersMerged = useMemo(() => {
+    const connectedList = extractPeers(connected);
+    const allList = extractPeers(all);
+    const connectedIps = new Set<string>();
+    for (const peer of connectedList) {
+      const ip1 = extractIp(peer.address);
+      const ip2 = extractIp(peer.declaredAddress);
+      if (ip1) connectedIps.add(ip1);
+      if (ip2) connectedIps.add(ip2);
+    }
+    const extraPeers = allList.filter((p) => {
+      const ip = extractIp(p.address);
+      return ip && !connectedIps.has(ip);
+    });
+    return [...connectedList, ...extraPeers];
+  }, [connected, all]);
+
   const uniqueIps = useMemo(() => {
     const allPeersList = [
-      ...extractPeers(connected),
-      ...extractPeers(all),
+      ...allPeersMerged,
       ...extractPeers(suspended),
       ...extractPeers(blacklisted),
     ];
@@ -420,7 +440,7 @@ function PeersTab() {
       if (ip) seen.add(ip);
     }
     return [...seen];
-  }, [connected, all, suspended, blacklisted]);
+  }, [allPeersMerged, suspended, blacklisted]);
 
   const geoByIp = usePeerGeo(uniqueIps);
 
@@ -524,7 +544,13 @@ function PeersTab() {
                       )}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {peer.lastSeen ? fromUnix(Math.floor(Number(peer.lastSeen) / 1000)) : '—'}
+                      {peer.lastSeen ? (
+                        fromUnix(Math.floor(Number(peer.lastSeen) / 1000))
+                      ) : peer.peerName !== undefined ? (
+                        <span className="text-green-500 font-medium">Active</span>
+                      ) : (
+                        '—'
+                      )}
                     </TableCell>
                   </TableRow>
                 );
@@ -550,9 +576,9 @@ function PeersTab() {
           </TabsTrigger>
           <TabsTrigger value="all">
             {t('allPeers')}
-            {all && (
+            {(connected || all) && (
               <Badge className="ml-2" variant="secondary">
-                {extractPeers(all).length}
+                {allPeersMerged.length}
               </Badge>
             )}
           </TabsTrigger>
@@ -584,7 +610,7 @@ function PeersTab() {
         <TabsContent value="all">
           <Card className="border-none shadow-lg">
             <CardContent className="p-0">
-              <PeerTable isLoading={allLoading} peers={all} />
+              <PeerTable isLoading={connectedLoading || allLoading} peers={allPeersMerged} />
             </CardContent>
           </Card>
         </TabsContent>
