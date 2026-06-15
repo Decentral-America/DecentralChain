@@ -65,7 +65,7 @@ export const useDexOrderBook = () => {
 
   // Subscribe to order book channel
   useWebSocketChannel<OrderBookUpdate>(
-    { debug: config.enableDebug, url: wsUrl },
+    { debug: config.enableDebug, maxReconnectAttempts: 0, url: wsUrl },
     channel,
     handleOrderBookUpdate,
     !!selectedPair, // Only subscribe when pair is selected
@@ -115,7 +115,7 @@ export const useDexTrades = () => {
 
   // Subscribe to trades channel
   useWebSocketChannel<TradeUpdate>(
-    { debug: config.enableDebug, url: wsUrl },
+    { debug: config.enableDebug, maxReconnectAttempts: 0, url: wsUrl },
     channel,
     handleTradeUpdate,
     !!selectedPair,
@@ -166,7 +166,7 @@ export const useDexUserOrders = (userAddress?: string) => {
 
   // Subscribe to user orders channel
   useWebSocketChannel(
-    { debug: config.enableDebug, url: wsUrl },
+    { debug: config.enableDebug, maxReconnectAttempts: 0, url: wsUrl },
     channel,
     handleOrderUpdate,
     !!userAddress,
