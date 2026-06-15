@@ -41,6 +41,7 @@ allowBuilds:
   workerd: false
 
 overrides:
+  esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
   tmp: '>=0.2.6'
