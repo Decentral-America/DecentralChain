@@ -1,0 +1,91 @@
+name: WebSocket API CI
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'apps/websocket-api/**'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'apps/websocket-api/**'
+  workflow_dispatch:
+
+concurrency:
+  group: websocket-api-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build-and-test:
+    name: Build, test & lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy, llvm-tools-preview
+
+      - name: Install cargo-nextest, cargo-llvm-cov, cargo-audit, cargo-machete
+        uses: taiki-e/install-action@6887963ccf37a9ddcd8c5fa4baeb3e1e5fd61fa1 # v2.81.2
+        with:
+          tool: cargo-nextest,cargo-llvm-cov,cargo-audit,cargo-machete
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        with:
+          workspaces: apps/websocket-api
+          cache-on-failure: true
+
+      - name: Check formatting
+        working-directory: apps/websocket-api
+        run: cargo fmt --all -- --check
+
+      - name: Build
+        working-directory: apps/websocket-api
+        run: cargo build --all-targets
+
+      - name: Clippy (deny warnings)
+        working-directory: apps/websocket-api
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test with coverage (cargo-nextest + cargo-llvm-cov)
+        id: test
+        working-directory: apps/websocket-api
+        run: |
+          cargo llvm-cov nextest \
+            --all-targets \
+            --codecov \
+            --output-path codecov.json
+
+      - name: Upload coverage to Codecov
+        if: steps.test.outcome == 'success'
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
+        with:
+          files: apps/websocket-api/codecov.json
+          flags: websocket-api
+          token: ${{ secrets.CODECOV_TOKEN }}
+          skip_validation: true
+          fail_ci_if_error: true
+
+      - name: Security audit
+        working-directory: apps/websocket-api
+        run: cargo audit
+
+      - name: Unused dependency check (cargo machete)
+        working-directory: apps/websocket-api
+        run: cargo machete
