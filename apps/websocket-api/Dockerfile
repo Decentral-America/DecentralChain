@@ -34,7 +34,7 @@ WORKDIR /app
 COPY --from=builder /usr/src/service/target/release/service .
 COPY --from=builder /usr/src/service/target/release/healthcheck .
 
-EXPOSE 8080
+EXPOSE 8081
 
 # Use exec form (no shell) so the healthcheck binary runs directly.
 # start-period=30s: allows time for Redis pool initialisation before probes begin.

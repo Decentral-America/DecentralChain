@@ -83,9 +83,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useCallback(
       (topic: string) => {
         logger.debug('[WS] State update for topic:', topic);
-        void queryClient.invalidateQueries({ queryKey: ['balances'] });
-        void queryClient.invalidateQueries({ queryKey: ['assets'] });
-        void queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+        // Scope invalidation to the affected data based on topic key segment.
+        // The topic format is: topic://state/{address}/{key}
+        // Invalidate broadly for multi-topic updates (no key segment) or
+        // use key-based routing for concrete topics to avoid excess refetches.
+        const key = topic.split('/').pop() ?? '';
+        const isMultiTopic = topic.includes('?');
+
+        if (isMultiTopic || key === '' || key.includes('balance') || key.includes('leasing')) {
+          void queryClient.invalidateQueries({ queryKey: ['balances'] });
+          void queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+        }
+        if (isMultiTopic || key === '' || key.includes('asset')) {
+          void queryClient.invalidateQueries({ queryKey: ['assets'] });
+        }
+        // Always refresh transactions — any state change may represent a new tx
         void queryClient.invalidateQueries({ queryKey: ['transactions'] });
       },
       [queryClient],
