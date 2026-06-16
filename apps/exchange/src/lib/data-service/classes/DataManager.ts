@@ -15,6 +15,11 @@ export class DataManager {
   public pollControl: PollControl<TPollHash>;
   private _address: string;
   private _silentMode: boolean = false;
+  // Matcher polling is disabled by default. The orders poll fires at 1000ms but
+  // makes no HTTP request until activateMatcherPolling() is called. This prevents
+  // unauthenticated 400s from the matcher on every login for users who never trade.
+  // Call activateMatcherPolling() when the DEX page mounts.
+  private _matcherPollingActive: boolean = false;
 
   constructor() {
     this.pollControl = new PollControl<TPollHash>(() => this._createPolls());
@@ -23,6 +28,14 @@ export class DataManager {
         this.pollControl.restart('oracleDCC');
       }
     });
+  }
+
+  public activateMatcherPolling(): void {
+    this._matcherPollingActive = true;
+  }
+
+  public deactivateMatcherPolling(): void {
+    this._matcherPollingActive = false;
   }
 
   public setSilentMode(silent: boolean): void {
@@ -43,6 +56,7 @@ export class DataManager {
 
   public dropAddress() {
     this._address = undefined;
+    this._matcherPollingActive = false;
     this.pollControl.destroy();
     this.transactions.dropAddress();
   }
@@ -74,7 +88,10 @@ export class DataManager {
 
   private _getPollOrdersApi(): IPollAPI<IHash<Money>> {
     return {
-      get: () => getReservedBalance(),
+      get: () =>
+        this._matcherPollingActive
+          ? getReservedBalance()
+          : (Promise.resolve(Object.create(null)) as Promise<IHash<Money>>),
       set: () => null,
     };
   }

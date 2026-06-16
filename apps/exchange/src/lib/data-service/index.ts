@@ -127,6 +127,14 @@ class App {
     dataManager.dropAddress();
   }
 
+  public activateMatcherPolling(): void {
+    dataManager.activateMatcherPolling();
+  }
+
+  public deactivateMatcherPolling(): void {
+    dataManager.deactivateMatcherPolling();
+  }
+
   public addMatcherSign(timestamp, signature) {
     const signApi = sign.getSignatureApi();
 
