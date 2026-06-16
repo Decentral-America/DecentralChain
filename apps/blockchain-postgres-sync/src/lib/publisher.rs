@@ -34,11 +34,22 @@ pub struct Publisher {
 impl Publisher {
     /// Connect to Redis and initialise the client.
     ///
+    /// Accepts a Redis URL (`redis://:password@host:port/`) but immediately
+    /// parses it into a typed `Config` so the password string is not retained
+    /// in memory longer than necessary and never appears in formatted output.
+    ///
     /// # Errors
     ///
     /// Returns an error if the URL is invalid or the initial connection fails.
     pub async fn new(url: &str) -> Result<Self, fred::error::Error> {
-        let config = Config::from_url(url)?;
+        // Parse into typed config immediately; the URL string is dropped.
+        let parsed = Config::from_url(url)?;
+        let config = Config {
+            server: parsed.server,
+            username: parsed.username,
+            password: parsed.password,
+            ..Config::default()
+        };
         let client = Builder::from_config(config).build()?;
         client.init().await?;
         tracing::info!("Redis publisher connected");
