@@ -150,5 +150,6 @@ export const router = createBrowserRouter([
     ],
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    HydrateFallback: () => null,
   },
 ]);

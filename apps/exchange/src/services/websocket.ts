@@ -349,7 +349,7 @@ class WebSocketClient {
  *
  * @param config - WebSocket configuration
  */
-export const useWebSocket = (config: WebSocketConfig) => {
+export const useWebSocket = (config: WebSocketConfig, enabled = true) => {
   const clientRef = useRef<WebSocketClient | null>(null);
   const configRef = useRef(config);
   const [state, setState] = useState<WebSocketState>(WebSocketState.DISCONNECTED);
@@ -358,8 +358,10 @@ export const useWebSocket = (config: WebSocketConfig) => {
   // Keep configRef current without triggering re-connects
   configRef.current = config;
 
-  // Initialize client — only re-run when the URL changes
+  // Initialize client — only re-run when the URL changes or enabled flips
   useEffect(() => {
+    if (!enabled) return;
+
     clientRef.current = new WebSocketClient(configRef.current);
     clientRef.current.connect();
 
@@ -372,7 +374,7 @@ export const useWebSocket = (config: WebSocketConfig) => {
       unsubscribe();
       clientRef.current?.disconnect();
     };
-  }, []); // Only reconnect when the URL itself changes
+  }, [enabled]); // Re-run when enabled changes so we connect/disconnect properly
 
   const send = useCallback(<T>(type: MessageType, data: T) => {
     clientRef.current?.send(type, data);
@@ -415,7 +417,7 @@ export const useWebSocketChannel = <T>(
   handler: (data: T) => void,
   enabled = true,
 ) => {
-  const { subscribe, unsubscribe, onMessage, isConnected } = useWebSocket(config);
+  const { subscribe, unsubscribe, onMessage, isConnected } = useWebSocket(config, enabled);
 
   useEffect(() => {
     if (!enabled || !isConnected) return;
