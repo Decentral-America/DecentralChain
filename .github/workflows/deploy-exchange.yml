@@ -254,6 +254,45 @@ jobs:
             --commit-hash=${{ github.sha }}
             --branch=main
 
+      # Verify the production URL returns 200 after deploy.
+      # Cloudflare Pages production alias can drift between deploys; catching
+      # it here means we know immediately rather than from a user report.
+      # Re-PATCH and retry once if the first check fails.
+      - name: Verify production URL
+        if: needs.resolve.outputs.network == 'testnet'
+        env:
+          CF_TOKEN:   ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PROJECT: ${{ needs.resolve.outputs.cf_project }}
+        run: |
+          set -euo pipefail
+          URL="https://testnet.decentral.exchange/"
+          echo "Checking $URL ..."
+
+          STATUS=$(curl -so /dev/null -w "%{http_code}" --max-time 15 "$URL")
+          echo "HTTP $STATUS"
+
+          if [[ "$STATUS" == "200" ]]; then
+            echo "Production URL is healthy."
+            exit 0
+          fi
+
+          echo "::warning::Production URL returned $STATUS — re-pinning production_branch and retrying..."
+          curl -sf -X PATCH \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${CF_PROJECT}" \
+            -H "Authorization: Bearer ${CF_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"production_branch":"main"}' > /dev/null
+
+          sleep 10
+          STATUS2=$(curl -so /dev/null -w "%{http_code}" --max-time 15 "$URL")
+          echo "HTTP $STATUS2 (after re-pin)"
+          if [[ "$STATUS2" != "200" ]]; then
+            echo "::error::Production URL still returning $STATUS2 after re-pin. Manual intervention required."
+            exit 1
+          fi
+          echo "Production URL recovered."
+
       - name: Write deploy summary
         run: |
           set -euo pipefail
