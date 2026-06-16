@@ -10,11 +10,13 @@
  */
 
 import { isValidAddress } from '@decentralchain/signature-adapter';
+import { useQueryClient } from '@tanstack/react-query';
 import * as ds from 'data-service';
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { NetworkConfig } from '@/config';
 import { useIdleTimer } from '@/hooks/useIdleTimer';
 import { useScriptInfoPolling } from '@/hooks/useScriptInfoPolling';
+import { useStateSubscription } from '@/hooks/useStateSubscription';
 import { trackEvent } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
@@ -67,8 +69,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isSignedIn, setIsSignedIn] = useState(false); // MultiAccount signed in state
   const [sessionRestored, setSessionRestored] = useState(false);
 
+  const queryClient = useQueryClient();
+
   // Script info polling hook - polls every 10 seconds when authenticated
   const scriptInfo = useScriptInfoPolling(user?.address, !!user);
+
+  // Real-time balance/state updates via the DCC WebSocket API.
+  // When BPS processes a new block and publishes state changes to Redis,
+  // the ws-api forwards them here, triggering React Query cache invalidation
+  // so the wallet UI reflects balance changes without waiting for the poll cycle.
+  useStateSubscription(
+    user?.address,
+    useCallback(
+      (topic: string) => {
+        logger.debug('[WS] State update for topic:', topic);
+        void queryClient.invalidateQueries({ queryKey: ['balances'] });
+        void queryClient.invalidateQueries({ queryKey: ['assets'] });
+        void queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+        void queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      },
+      [queryClient],
+    ),
+    !!user,
+  );
 
   /**
    * Apply user's theme preference when user changes
