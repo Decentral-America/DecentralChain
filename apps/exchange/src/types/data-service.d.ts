@@ -100,6 +100,8 @@ declare module 'data-service' {
     login(userData: { address: string; publicKey: string }): void;
     logOut(): void;
     addMatcherSign(timestamp: number, signature: string): Promise<void>;
+    activateMatcherPolling(): void;
+    deactivateMatcherPolling(): void;
     getTimeStamp(count: number, timeType: string): number;
     getSignIdForMatcher(timestamp: number): Promise<string>;
   };
