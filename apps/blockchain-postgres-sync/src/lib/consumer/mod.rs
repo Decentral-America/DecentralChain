@@ -1121,3 +1121,179 @@ fn rollback_candles<R: RepoOperations>(repo: &mut R, block_uid: i64) -> Result<(
     repo.rollback_candles(block_uid)?;
     repo.calculate_candles_since_block_uid(block_uid)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::proto::dcc::{
+        Amount, TransferTransactionData,
+        events::transaction_metadata::{TransferMetadata, ExchangeMetadata, MassTransferMetadata},
+        signed_transaction::Transaction as SignedTxVariant,
+        transaction::Data,
+    };
+
+    fn make_tx(data: Data, meta_inner: Option<Metadata>, sender_bytes: Vec<u8>) -> Tx {
+        let inner = crate::proto::dcc::Transaction {
+            data: Some(data),
+            timestamp: 1_700_000_000_000,
+            ..Default::default()
+        };
+        Tx {
+            id: "txid-test".to_owned(),
+            data: crate::proto::dcc::SignedTransaction {
+                transaction: Some(SignedTxVariant::DccTransaction(inner)),
+                ..Default::default()
+            },
+            meta: crate::proto::dcc::events::TransactionMetadata {
+                sender_address: sender_bytes,
+                metadata: meta_inner,
+                ..Default::default()
+            },
+            state_update: Default::default(),
+        }
+    }
+
+    fn decode_channel_addresses(channels: &[String]) -> Vec<String> {
+        channels
+            .iter()
+            .filter(|c| c.contains("type=all"))
+            .map(|c| {
+                c.split("address=")
+                    .nth(1)
+                    .unwrap_or("")
+                    .to_owned()
+            })
+            .collect()
+    }
+
+    #[test]
+    fn transfer_tx_notifies_sender_and_recipient() {
+        let sender_bytes = vec![1u8; 26]; // arbitrary non-empty bytes → base58 address
+        let recipient_bytes = vec![2u8; 26];
+
+        let meta = Metadata::Transfer(TransferMetadata {
+            recipient_address: recipient_bytes.clone(),
+            ..Default::default()
+        });
+
+        let tx = make_tx(
+            Data::Transfer(TransferTransactionData {
+                amount: Some(Amount { amount: 100_000_000, asset_id: vec![] }),
+                ..Default::default()
+            }),
+            Some(meta),
+            sender_bytes.clone(),
+        );
+
+        let event = tx_event_for_tx(&tx, 12345).expect("should produce an event");
+
+        let sender_b58 = bs58::encode(&sender_bytes).into_string();
+        let recipient_b58 = bs58::encode(&recipient_bytes).into_string();
+
+        // Both addresses must appear in type=all channels.
+        let channel_addrs = decode_channel_addresses(&event.channels);
+        assert!(channel_addrs.contains(&sender_b58), "sender missing from channels");
+        assert!(channel_addrs.contains(&recipient_b58), "recipient missing from channels");
+
+        // JSON contains amount and type 4.
+        let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
+        assert_eq!(json["type"], 4);
+        assert_eq!(json["amount"], 100_000_000i64);
+        assert_eq!(json["applicationStatus"], "succeeded");
+    }
+
+    #[test]
+    fn exchange_tx_notifies_both_order_senders() {
+        let sender_bytes = vec![3u8; 26];
+        let buyer_bytes  = vec![4u8; 26];
+        let seller_bytes = vec![5u8; 26];
+
+        let meta = Metadata::Exchange(ExchangeMetadata {
+            order_sender_addresses: vec![buyer_bytes.clone(), seller_bytes.clone()],
+            ..Default::default()
+        });
+
+        let tx = make_tx(
+            Data::Exchange(Default::default()),
+            Some(meta),
+            sender_bytes.clone(),
+        );
+
+        let event = tx_event_for_tx(&tx, 100).expect("should produce an event");
+        let channel_addrs = decode_channel_addresses(&event.channels);
+
+        let buyer_b58  = bs58::encode(&buyer_bytes).into_string();
+        let seller_b58 = bs58::encode(&seller_bytes).into_string();
+        assert!(channel_addrs.contains(&buyer_b58),  "buyer missing from exchange channels");
+        assert!(channel_addrs.contains(&seller_b58), "seller missing from exchange channels");
+
+        let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
+        assert_eq!(json["type"], 7);
+    }
+
+    #[test]
+    fn mass_transfer_notifies_all_recipients() {
+        let sender_bytes = vec![6u8; 26];
+        let r1 = vec![7u8; 26];
+        let r2 = vec![8u8; 26];
+
+        let meta = Metadata::MassTransfer(MassTransferMetadata {
+            recipients_addresses: vec![r1.clone(), r2.clone()],
+            ..Default::default()
+        });
+
+        let tx = make_tx(
+            Data::MassTransfer(Default::default()),
+            Some(meta),
+            sender_bytes,
+        );
+
+        let event = tx_event_for_tx(&tx, 200).expect("should produce an event");
+        let channel_addrs = decode_channel_addresses(&event.channels);
+
+        assert!(channel_addrs.contains(&bs58::encode(&r1).into_string()));
+        assert!(channel_addrs.contains(&bs58::encode(&r2).into_string()));
+
+        let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
+        assert_eq!(json["type"], 11);
+    }
+
+    #[test]
+    fn empty_sender_returns_none() {
+        let tx = make_tx(Data::Transfer(Default::default()), None, vec![]);
+        assert!(tx_event_for_tx(&tx, 1).is_none(), "empty sender must yield None");
+    }
+
+    #[test]
+    fn application_status_defaults_to_succeeded() {
+        let sender_bytes = vec![9u8; 26];
+        let tx = make_tx(Data::Transfer(Default::default()), None, sender_bytes);
+        // Empty sender → None, use lease which has no special status logic
+        let tx2 = make_tx(Data::Lease(Default::default()), None, vec![9u8; 26]);
+        let event = tx_event_for_tx(&tx2, 1).unwrap();
+        let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
+        assert_eq!(json["applicationStatus"], "succeeded");
+    }
+
+    #[test]
+    fn channels_include_both_type_all_and_specific_type() {
+        let sender_bytes = vec![10u8; 26];
+        let tx = make_tx(Data::Lease(Default::default()), None, sender_bytes.clone());
+        let event = tx_event_for_tx(&tx, 1).unwrap();
+        let sender = bs58::encode(&sender_bytes).into_string();
+
+        assert!(event.channels.iter().any(|c| c.contains("type=all") && c.contains(&sender)));
+        assert!(event.channels.iter().any(|c| c.contains("type=lease") && c.contains(&sender)));
+    }
+
+    #[test]
+    fn tx_type_name_coverage() {
+        assert_eq!(tx_type_name(1),  "genesis");
+        assert_eq!(tx_type_name(4),  "transfer");
+        assert_eq!(tx_type_name(7),  "exchange");
+        assert_eq!(tx_type_name(11), "mass_transfer");
+        assert_eq!(tx_type_name(16), "invoke_script");
+        assert_eq!(tx_type_name(18), "ethereum");
+        assert_eq!(tx_type_name(99), "unknown");
+    }
+}
