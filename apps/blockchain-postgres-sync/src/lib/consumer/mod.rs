@@ -485,7 +485,19 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                     let aid = if t.asset_id.is_empty() { None } else { Some(bs58::encode(&t.asset_id).into_string()) };
                     (11i32, ts, recipients, None, aid)
                 }
-                Some(Data::Exchange(_))         => (7i32,  ts, vec![], None, None),
+                Some(Data::Exchange(_)) => {
+                    // Both order submitters (buyer + seller) should receive the notification.
+                    let order_addrs = if let Some(Metadata::Exchange(m)) = &tx.meta.metadata {
+                        m.order_sender_addresses
+                            .iter()
+                            .map(|b| bs58::encode(b).into_string())
+                            .filter(|s| !s.is_empty())
+                            .collect()
+                    } else {
+                        vec![]
+                    };
+                    (7i32, ts, order_addrs, None, None)
+                }
                 Some(Data::Lease(_))            => (8i32,  ts, vec![], None, None),
                 Some(Data::LeaseCancel(_))      => (9i32,  ts, vec![], None, None),
                 Some(Data::Issue(_))            => (3i32,  ts, vec![], None, None),
@@ -528,6 +540,18 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
         })
         .collect();
 
+    // Derive applicationStatus from metadata: InvokeScript / Ethereum invoke with an
+    // error message means the script failed; everything else is "succeeded".
+    let app_status = match &tx.meta.metadata {
+        Some(Metadata::InvokeScript(m)) if m.result.as_ref().is_some_and(|r| r.error_message.is_some()) => "script_execution_failed",
+        Some(Metadata::Ethereum(em)) => {
+            if let Some(crate::proto::dcc::events::transaction_metadata::ethereum_metadata::Action::Invoke(im)) = em.action.as_ref() {
+                if im.result.as_ref().is_some_and(|r| r.error_message.is_some()) { "script_execution_failed" } else { "succeeded" }
+            } else { "succeeded" }
+        }
+        _ => "succeeded",
+    };
+
     // Build JSON matching the DCC node REST API shape the exchange expects.
     let mut json = serde_json::json!({
         "id":        tx.id,
@@ -535,7 +559,7 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
         "sender":    sender,
         "timestamp": timestamp,
         "height":    height,
-        "applicationStatus": "succeeded",
+        "applicationStatus": app_status,
     });
 
     if let Some(first_recipient) = recipients.first() {

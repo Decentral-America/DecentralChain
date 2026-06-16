@@ -8,6 +8,7 @@ import { config } from '@/config';
 import { ConfigProvider } from '@/contexts/ConfigContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ToastProvider } from '@/contexts/ToastContext';
+import { WsApiProvider } from '@/contexts/WsApiContext';
 import { queryClient } from '@/lib/react-query';
 import { router } from '@/routes';
 import { GlobalStyles as GlobalStylesBase } from '@/styles';
@@ -90,9 +91,11 @@ function App() {
           <GlobalStyles />
           <AnnouncementProvider>
             <ToastProvider>
-              <ConfigProvider>
-                <AppContent />
-              </ConfigProvider>
+              <WsApiProvider>
+                <ConfigProvider>
+                  <AppContent />
+                </ConfigProvider>
+              </WsApiProvider>
             </ToastProvider>
           </AnnouncementProvider>
         </ThemeProvider>
