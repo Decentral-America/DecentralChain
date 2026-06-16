@@ -1,12 +1,6 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-
-# HTML entry point — never cache; always fetch fresh so new chunk hashes are picked up
-/
-  Cache-Control: no-cache, no-store, must-revalidate
-
-/*.html
   Cache-Control: no-cache, no-store, must-revalidate
 
 # Hashed assets — cache forever; content hash guarantees freshness
