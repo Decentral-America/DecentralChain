@@ -50,11 +50,18 @@ impl Topic {
         Ok(Self(normalized))
     }
 
-    /// Returns `true` if this is a multi-topic (has a query string).
+    /// Returns `true` if this is a state multi-topic.
     ///
-    /// Multi-topics match many concrete topics via filter patterns.
+    /// State multi-topics (`topic://state?address__in[]=…&key__match_any[]=…`)
+    /// describe a set of concrete state topics via filter query parameters.
+    /// The ws-api resolves them by computing subtopic expansions from Redis.
+    ///
+    /// Other topic types that happen to use query params — e.g.
+    /// `topic://transactions?type=all&address=…` — are **exact-channel**
+    /// subscriptions. BPS publishes to that exact Redis channel and the ws-api
+    /// delivers the raw value to subscribed clients without any subtopic logic.
     pub fn is_multi_topic(&self) -> bool {
-        self.0.contains('?')
+        self.0.starts_with("topic://state?")
     }
 
     /// Returns the data accessor for this topic.
@@ -142,6 +149,15 @@ mod tests {
         let topic = Topic::parse_str(uri).unwrap();
         assert!(topic.is_multi_topic());
         assert!(topic.data().as_state_single().is_none());
+    }
+
+    #[test]
+    fn transaction_topic_is_not_multi_topic() {
+        // Transaction topics use query params as an exact Redis channel name,
+        // not as filter descriptors — they must NOT be treated as multi-topics.
+        let uri = "topic://transactions?type=all&address=3PPNhHYkkEy13gRWDCaruQyhNbX2GrjYSyV";
+        let topic = Topic::parse_str(uri).unwrap();
+        assert!(!topic.is_multi_topic(), "transaction topic must be an exact-channel (single) topic");
     }
 
     #[test]
