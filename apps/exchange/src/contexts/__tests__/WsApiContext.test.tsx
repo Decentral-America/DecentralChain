@@ -23,15 +23,17 @@ vi.mock('@/lib/logger', () => ({
 // ── Mock WebSocket ────────────────────────────────────────────────────────────
 class MockWebSocket {
   static instances: MockWebSocket[] = [];
-  readyState = WebSocket.CONNECTING;
+  readyState: number = WebSocket.CONNECTING;
   sentMessages: string[] = [];
+  url: string;
 
   onopen: (() => void) | null = null;
   onmessage: ((e: { data: string }) => void) | null = null;
   onclose: (() => void) | null = null;
   onerror: (() => void) | null = null;
 
-  constructor(public url: string) {
+  constructor(url: string) {
+    this.url = url;
     MockWebSocket.instances.push(this);
   }
 
