@@ -41,6 +41,7 @@ LABEL org.opencontainers.image.source="https://github.com/Decentral-America/bloc
       org.opencontainers.image.vendor="Decentral America"
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
