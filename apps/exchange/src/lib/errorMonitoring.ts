@@ -136,25 +136,30 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
       // Debug mode
       ...(config.debug != null && { debug: config.debug }),
 
+      // Suppress breadcrumbs (console output) for expected matcher auth failures.
+      // The matcher returns 400/404 on /balance/reserved when the user has no
+      // open orders or the signature is invalid — both handled in code via
+      // matcherAuthFailed flag. These must not appear in the console at all.
+      beforeBreadcrumb(breadcrumb) {
+        const url = (breadcrumb.data?.['url'] as string | undefined) ?? '';
+        if (
+          breadcrumb.category === 'fetch' &&
+          url.includes('matcher') &&
+          url.includes('balance/reserved')
+        ) {
+          return null;
+        }
+        return breadcrumb;
+      },
+
       // Before send hook for filtering/modifying events
       beforeSend(event, _hint) {
         // Filter out localhost errors in production
         if (event.request?.url?.includes('localhost') && config.environment === 'production') {
           return null;
         }
-
-        // Add custom logic here
         return event;
       },
-
-      // Suppress Sentry's automatic HTTP tracing on these endpoints.
-      // Matcher auth failures (400/404 on /matcher/balance/reserved) are
-      // expected, handled in code, and must not generate Sentry events or
-      // console breadcrumbs.
-      denyUrls: [
-        /testnet-matcher\.decentralchain\.io\/matcher\/balance\/reserved/,
-        /matcher\.decentralchain\.io\/matcher\/balance\/reserved/,
-      ],
 
       // Ignore specific errors
       ignoreErrors: [

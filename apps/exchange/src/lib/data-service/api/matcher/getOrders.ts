@@ -66,7 +66,7 @@ const fetch = <T>(url: string): Promise<T> => {
     fetchOptions: {
       headers: {
         Signature: sig.signature,
-        Timestamp: sig.timestamp,
+        Timestamp: String(sig.timestamp),
       },
     },
     url: `${configGet('matcher')}/${url}`,

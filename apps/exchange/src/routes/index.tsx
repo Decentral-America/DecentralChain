@@ -150,6 +150,10 @@ export const router = createBrowserRouter([
     ],
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    // Suppress React Router v7 "No HydrateFallback" warning for CSR apps.
+    // The warning fires when router.state.initialized is false (initial render
+    // before lazy routes resolve). Providing any component — even a no-op —
+    // satisfies the check without showing any visible loading indicator.
     HydrateFallback: () => null,
   },
 ]);
