@@ -42,20 +42,16 @@ export function useStateSubscription(
   const wsUrl = config.wsUrl;
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
-  const pingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const msgCounterRef = useRef(0);
   const mountedRef = useRef(true);
 
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
 
   const cleanup = useCallback(() => {
-    if (pingTimerRef.current) clearInterval(pingTimerRef.current);
     if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
     wsRef.current?.close();
     wsRef.current = null;
-    pingTimerRef.current = null;
     reconnectTimerRef.current = null;
   }, []);
 
@@ -96,13 +92,10 @@ export function useStateSubscription(
         // Subscribe to all state changes for the address using multi-topic syntax
         const topic = `topic://state?address__in[]=${address}&key__match_any[]=*`;
         ws.send(JSON.stringify({ topic, type: 'subscribe' }));
-
-        // Heartbeat — respond to server pings, also send our own
-        pingTimerRef.current = setInterval(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ message_number: msgCounterRef.current++, type: 'pong' }));
-          }
-        }, 25_000);
+        // The server drives the ping/pong cycle — we only respond to server pings
+        // (handled in onmessage). Sending unsolicited pongs breaks the protocol:
+        // the server validates pong.message_number against a previously-issued ping,
+        // rejects mismatches, and closes the connection.
       };
 
       ws.onmessage = (event) => {
@@ -127,10 +120,6 @@ export function useStateSubscription(
       ws.onclose = () => {
         if (!mountedRef.current) return;
         setIsConnected(false);
-        if (pingTimerRef.current) {
-          clearInterval(pingTimerRef.current);
-          pingTimerRef.current = null;
-        }
         // Exponential backoff reconnect, cap at 30s
         reconnectDelay = Math.min(reconnectDelay * 2, 30_000);
         logger.debug('[WS] Closed, reconnecting in', reconnectDelay, 'ms');
