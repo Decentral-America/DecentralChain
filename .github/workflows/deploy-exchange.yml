@@ -166,7 +166,7 @@ jobs:
       # deploys (workflow_dispatch) the same way CI gates PR merges — no broken
       # code can reach any environment, including testnet.
       - name: Test exchange
-        run: pnpm nx run exchange:test
+        run: pnpm --filter ./apps/exchange exec vitest run
 
       # ── Build the exchange ────────────────────────────────────────────────
       # tsc -b validates TypeScript project references; vite build produces
