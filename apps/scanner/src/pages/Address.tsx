@@ -23,7 +23,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useActiveLeases, useAddressAssets, useAddressNFTs } from '@/hooks/useAddress';
+import {
+  useActiveLeases,
+  useAddressAssets,
+  useAddressBalance,
+  useAddressNFTs,
+} from '@/hooks/useAddress';
 import { useAddressTransactions } from '@/hooks/useTransactions';
 import { fetchAssetsBalance, type TAssetsBalance } from '@/lib/api';
 import { type Transaction } from '@/types';
@@ -97,6 +102,7 @@ export default function Address() {
   const [searchAddress, setSearchAddress] = useState(addressFromUrl);
   const [address, setAddress] = useState(addressFromUrl);
 
+  const { data: nativeBalance, isLoading: nativeLoading } = useAddressBalance(address || null);
   const { data: balances, isLoading: balancesLoading } = useAddressAssets(address || null);
   const { data: transactions, isLoading: txLoading } = useAddressTransactions(address || null, 50);
   const { data: nfts, isLoading: nftsLoading } = useAddressNFTs(address || null, 100);
@@ -215,6 +221,39 @@ export default function Address() {
               <code className="text-sm bg-muted px-3 py-2 rounded">{address}</code>
               <CopyButton text={address} label={t('copyAddress')} />
             </div>
+          </div>
+
+          {/* Native DCC Balance Summary */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {(['regular', 'available', 'generating', 'effective'] as const).map((field) => {
+              const labels: Record<string, string> = {
+                available: 'Available',
+                effective: 'Effective',
+                generating: 'Generating',
+                regular: 'Balance',
+              };
+              const raw = nativeBalance?.[field];
+              const value = raw != null ? Number(raw) / 1e8 : null;
+              return (
+                <Card key={field} className="border-none shadow-lg">
+                  <CardContent className="pt-6">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                      {labels[field]}
+                    </p>
+                    {nativeLoading ? (
+                      <Skeleton className="h-7 w-24" />
+                    ) : (
+                      <p className="text-2xl font-bold">
+                        {value != null
+                          ? value.toLocaleString(undefined, { maximumFractionDigits: 8 })
+                          : '—'}
+                        <span className="text-sm font-normal text-muted-foreground ml-1">DCC</span>
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
           <Tabs defaultValue="balances" className="space-y-6">
