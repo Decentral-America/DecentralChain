@@ -246,3 +246,15 @@ describe('useTransactionStream — cap at 50 transactions', () => {
     expect(result.current.transactions).toHaveLength(50);
   });
 });
+
+describe('useTransactionStream — enabled option', () => {
+  it('does not subscribe when enabled is false', () => {
+    renderHook(() => useTransactionStream(undefined, { enabled: false }));
+    expect(mockSubscribe).not.toHaveBeenCalled();
+  });
+
+  it('isListening is false when enabled is false', () => {
+    const { result } = renderHook(() => useTransactionStream(undefined, { enabled: false }));
+    expect(result.current.isListening).toBe(false);
+  });
+});

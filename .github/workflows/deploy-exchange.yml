@@ -161,6 +161,13 @@ jobs:
       - name: Build SDK packages
         run: pnpm --filter './packages/**' run build
 
+      # ── Test the exchange ─────────────────────────────────────────────────
+      # Run the full test suite with coverage before building. This gates manual
+      # deploys (workflow_dispatch) the same way CI gates PR merges — no broken
+      # code can reach any environment, including testnet.
+      - name: Test exchange
+        run: pnpm nx run exchange:test
+
       # ── Build the exchange ────────────────────────────────────────────────
       # tsc -b validates TypeScript project references; vite build produces
       # apps/exchange/dist/ with the network baked in via .env.<mode>.
