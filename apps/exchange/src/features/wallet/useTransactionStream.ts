@@ -1,17 +1,18 @@
 /**
- * Transaction Stream — HTTP polling against the node REST API.
+ * Transaction Stream — real-time via the DCC ws-api.
  *
- * The DCC node exposes `/transactions/address/{addr}/limit/{n}` for history
- * but no WebSocket endpoint for real-time streaming. This module implements
- * efficient polling: the first fetch seeds the "already seen" set so old
- * transactions never trigger callbacks; subsequent polls detect additions.
+ * BPS publishes confirmed transactions to Redis under:
+ *   topic://transactions?type=all&address={addr}
+ *   topic://transactions?type={type_name}&address={addr}
+ *
+ * The ws-api's psubscribe("topic://*") delivers the raw tx JSON to every
+ * client subscribed to that exact channel — the same architecture used by
+ * the Waves Exchange.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { config } from '@/config';
 import { useAuth } from '@/contexts';
-
-const POLL_INTERVAL_MS = 15_000;
-const TX_LIMIT = 20;
+import { useStateSubscription } from '@/hooks/useStateSubscription';
 
 export interface TransactionNotification {
   id: string;
@@ -32,55 +33,6 @@ export interface TransactionStreamOptions {
   minConfirmations?: number;
 }
 
-interface NodeTx {
-  id: string;
-  type: number;
-  sender: string;
-  recipient?: string;
-  amount?: number;
-  assetId?: string | null;
-  timestamp: number;
-  height?: number;
-  applicationStatus?: string;
-}
-
-async function fetchHeight(nodeUrl: string): Promise<number> {
-  const res = await fetch(`${nodeUrl}/blocks/height`);
-  if (!res.ok) return 0;
-  const data = (await res.json()) as { height: number };
-  return data.height ?? 0;
-}
-
-async function fetchTransactions(
-  nodeUrl: string,
-  address: string,
-): Promise<TransactionNotification[]> {
-  const [txRes, height] = await Promise.all([
-    fetch(`${nodeUrl}/transactions/address/${address}/limit/${TX_LIMIT}`),
-    fetchHeight(nodeUrl),
-  ]);
-  if (!txRes.ok) return [];
-  const pages = (await txRes.json()) as NodeTx[][];
-  const txs = pages[0] ?? [];
-  return txs.map((tx): TransactionNotification => {
-    const txHeight = tx.height ?? 0;
-    const confirmations = height > 0 && txHeight > 0 ? height - txHeight : 0;
-    return {
-      id: tx.id,
-      sender: tx.sender,
-      type: tx.type,
-      ...(tx.recipient !== undefined && { recipient: tx.recipient }),
-      ...(tx.amount !== undefined && { amount: tx.amount }),
-      ...(tx.assetId !== undefined && { assetId: tx.assetId }),
-      confirmations,
-      height: txHeight,
-      status:
-        tx.applicationStatus === 'failed' ? 'failed' : confirmations >= 1 ? 'confirmed' : 'pending',
-      timestamp: tx.timestamp,
-    };
-  });
-}
-
 export const useTransactionStream = (
   onNewTransaction?: (tx: TransactionNotification) => void,
   options?: TransactionStreamOptions,
@@ -92,71 +44,66 @@ export const useTransactionStream = (
   const [isListening, setIsListening] = useState(false);
 
   const seenIds = useRef(new Set<string>());
-  const onNewTransactionRef = useRef(onNewTransaction);
-  onNewTransactionRef.current = onNewTransaction;
   const filterTypesRef = useRef(options?.filterTypes);
   filterTypesRef.current = options?.filterTypes;
   const minConfirmationsRef = useRef(options?.minConfirmations);
   minConfirmationsRef.current = options?.minConfirmations;
+  const onNewTransactionRef = useRef(onNewTransaction);
+  onNewTransactionRef.current = onNewTransaction;
 
-  const processNewTransactions = useCallback((fetched: TransactionNotification[]) => {
-    const fresh = fetched.filter((tx) => {
-      if (seenIds.current.has(tx.id)) return false;
-      if (filterTypesRef.current && !filterTypesRef.current.includes(tx.type)) return false;
-      if (minConfirmationsRef.current && tx.confirmations < minConfirmationsRef.current)
-        return false;
-      return true;
-    });
-    if (fresh.length === 0) return;
+  const handleUpdate = useCallback((_topic: string, value: string) => {
+    try {
+      const raw = JSON.parse(value) as Record<string, unknown>;
+      const txId = raw['id'] as string | undefined;
+      if (!txId || seenIds.current.has(txId)) return;
 
-    for (const tx of fresh) seenIds.current.add(tx.id);
-    setLastTransaction(fresh[0] ?? null);
-    for (const tx of fresh) onNewTransactionRef.current?.(tx);
-    setTransactions((prev) => [...fresh, ...prev].slice(0, 50));
+      const txType = raw['type'] as number;
+      const appStatus = raw['applicationStatus'] as string | undefined;
+
+      const rawRecipient = raw['recipient'];
+      const rawAmount = raw['amount'];
+      const rawAssetId = raw['assetId'];
+      const rawHeight = raw['height'];
+
+      const tx: TransactionNotification = {
+        id: txId,
+        sender: raw['sender'] as string,
+        type: txType,
+        ...(typeof rawRecipient === 'string' && { recipient: rawRecipient }),
+        ...(typeof rawAmount === 'number' && { amount: rawAmount }),
+        ...(rawAssetId !== undefined && { assetId: rawAssetId as string | null }),
+        timestamp: raw['timestamp'] as number,
+        ...(typeof rawHeight === 'number' && { height: rawHeight }),
+        confirmations: 1,
+        status: appStatus === 'failed' ? 'failed' : 'confirmed',
+      };
+
+      if (filterTypesRef.current && !filterTypesRef.current.includes(tx.type)) return;
+      if (minConfirmationsRef.current && tx.confirmations < minConfirmationsRef.current) return;
+
+      seenIds.current.add(txId);
+      setLastTransaction(tx);
+      onNewTransactionRef.current?.(tx);
+      setTransactions((prev) => [tx, ...prev].slice(0, 50));
+    } catch {
+      // malformed value — ignore
+    }
   }, []);
 
+  const topic = address ? `topic://transactions?type=all&address=${address}` : undefined;
+
+  const { isConnected } = useStateSubscription(
+    address,
+    handleUpdate,
+    !!config.wsUrl && !!address && options?.enabled !== false,
+    topic,
+  );
+
   useEffect(() => {
-    if (!address || options?.enabled === false) {
-      setIsListening(false);
-      return;
-    }
+    setIsListening(isConnected && !!address && options?.enabled !== false);
+  }, [isConnected, address, options?.enabled]);
 
-    setIsListening(true);
-    let cancelled = false;
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const nodeUrl = config.nodeUrl;
-
-    const poll = async () => {
-      if (cancelled) return;
-      try {
-        const txs = await fetchTransactions(nodeUrl, address);
-        if (!cancelled) processNewTransactions(txs);
-      } catch {
-        // silent — network hiccup, will retry next interval
-      }
-      if (!cancelled) timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
-    };
-
-    // Seed seen IDs from the initial fetch so existing transactions never fire callbacks.
-    fetchTransactions(nodeUrl, address)
-      .then((txs) => {
-        if (cancelled) return;
-        for (const tx of txs) seenIds.current.add(tx.id);
-        setTransactions(txs);
-        timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
-      })
-      .catch(() => {
-        if (!cancelled) timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
-      });
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-      setIsListening(false);
-    };
-  }, [address, options?.enabled, processNewTransactions]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: address is a trigger, not a consumed value
+  // biome-ignore lint/correctness/useExhaustiveDependencies: address is a trigger
   useEffect(() => {
     seenIds.current.clear();
     setTransactions([]);

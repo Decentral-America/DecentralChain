@@ -27,17 +27,18 @@ interface WsMessage {
 }
 
 /**
- * Subscribe to all state changes for a blockchain address via the DCC ws-api.
- * Uses a multi-topic wildcard: topic://state?address__in[]={address}&key__match_any[]=*
+ * Subscribe to a ws-api topic for a blockchain address.
  *
- * @param address   - The blockchain address to watch
- * @param onUpdate  - Called whenever any state key for that address changes
+ * @param address   - The blockchain address (used as default topic address param)
+ * @param onUpdate  - Called on every update with (topic, value)
  * @param enabled   - Set to false to pause the subscription
+ * @param topic     - Override the topic URI. Defaults to the state wildcard for `address`.
  */
 export function useStateSubscription(
   address: string | null | undefined,
   onUpdate: StateUpdateHandler,
   enabled = true,
+  topic?: string,
 ): { isConnected: boolean } {
   const wsUrl = config.wsUrl;
   const [isConnected, setIsConnected] = useState(false);
@@ -63,13 +64,15 @@ export function useStateSubscription(
     };
   }, [cleanup]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: wsUrl comes from config (build-time constant), not a reactive value
+  // biome-ignore lint/correctness/useExhaustiveDependencies: wsUrl and topic come from config/stable args
   useEffect(() => {
     if (!wsUrl || !address || !enabled) {
       cleanup();
       setIsConnected(false);
       return;
     }
+
+    const subscriptionTopic = topic ?? `topic://state?address__in[]=${address}&key__match_any[]=*`;
 
     let reconnectDelay = 1000;
 
@@ -85,17 +88,10 @@ export function useStateSubscription(
           ws.close();
           return;
         }
-        logger.debug('[WS] Connected');
+        logger.debug('[WS] Connected, subscribing to', subscriptionTopic);
         setIsConnected(true);
         reconnectDelay = 1000;
-
-        // Subscribe to all state changes for the address using multi-topic syntax
-        const topic = `topic://state?address__in[]=${address}&key__match_any[]=*`;
-        ws.send(JSON.stringify({ topic, type: 'subscribe' }));
-        // The server drives the ping/pong cycle — we only respond to server pings
-        // (handled in onmessage). Sending unsolicited pongs breaks the protocol:
-        // the server validates pong.message_number against a previously-issued ping,
-        // rejects mismatches, and closes the connection.
+        ws.send(JSON.stringify({ topic: subscriptionTopic, type: 'subscribe' }));
       };
 
       ws.onmessage = (event) => {
@@ -120,7 +116,6 @@ export function useStateSubscription(
       ws.onclose = () => {
         if (!mountedRef.current) return;
         setIsConnected(false);
-        // Exponential backoff reconnect, cap at 30s
         reconnectDelay = Math.min(reconnectDelay * 2, 30_000);
         logger.debug('[WS] Closed, reconnecting in', reconnectDelay, 'ms');
         reconnectTimerRef.current = setTimeout(connect, reconnectDelay);
@@ -137,7 +132,7 @@ export function useStateSubscription(
       cleanup();
       setIsConnected(false);
     };
-  }, [wsUrl, address, enabled, cleanup]);
+  }, [wsUrl, address, enabled, cleanup, topic]);
 
   return { isConnected };
 }
