@@ -221,6 +221,25 @@ jobs:
         if: steps.cf-check.outputs.configured == 'true'
         run: pnpm add -w wrangler@4.99.0
 
+      # Ensure the CF Pages project's production_branch is 'main' before deploying.
+      # When this drifts (e.g. after Cloudflare UI edits or project recreation),
+      # wrangler --branch=main creates a preview rather than updating the production
+      # alias, leaving testnet.decentral.exchange serving a stale deployment.
+      - name: Pin production branch to main
+        if: steps.cf-check.outputs.configured == 'true'
+        env:
+          CF_TOKEN:   ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PROJECT: ${{ needs.resolve.outputs.cf_project }}
+        run: |
+          set -euo pipefail
+          RESP=$(curl -sf -X PATCH \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${CF_PROJECT}" \
+            -H "Authorization: Bearer ${CF_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"production_branch":"main"}')
+          echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print('production_branch:', d['result'].get('production_branch','unknown'))"
+
       - name: Deploy to Cloudflare Pages
         if: steps.cf-check.outputs.configured == 'true'
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
