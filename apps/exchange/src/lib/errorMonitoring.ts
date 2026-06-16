@@ -147,6 +147,15 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
         return event;
       },
 
+      // Suppress Sentry's automatic HTTP tracing on these endpoints.
+      // Matcher auth failures (400/404 on /matcher/balance/reserved) are
+      // expected, handled in code, and must not generate Sentry events or
+      // console breadcrumbs.
+      denyUrls: [
+        /testnet-matcher\.decentralchain\.io\/matcher\/balance\/reserved/,
+        /matcher\.decentralchain\.io\/matcher\/balance\/reserved/,
+      ],
+
       // Ignore specific errors
       ignoreErrors: [
         // Browser extensions
