@@ -7,8 +7,9 @@ use crate::proto::dcc::{
     data_entry::Value,
     events::{StateUpdate, TransactionMetadata, transaction_metadata::Metadata},
     signed_transaction::Transaction,
+    transaction::Data,
 };
-use crate::publisher::{DataEntryEvent, value_to_json};
+use crate::publisher::{DataEntryEvent, TxEvent, value_to_json};
 use anyhow::{Error, Result};
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
@@ -197,9 +198,9 @@ where
 
         start = Instant::now();
 
-        let events = repo
+        let (de_events, tx_events) = repo
             .transaction(move |ops| {
-                let events = handle_updates(
+                let result = handle_updates(
                     updates_with_height,
                     ops,
                     chain_id,
@@ -214,14 +215,15 @@ where
                     last_height,
                 );
 
-                Ok(events)
+                Ok(result)
             })
             .await?;
 
         // Publish after the transaction commits — Redis failures are fire-and-forget.
         if let Some(ref pub_) = publisher {
-            tracing::debug!(count = events.len(), "publishing data-entry events to Redis");
-            pub_.publish_batch(&events).await;
+            tracing::debug!(de = de_events.len(), tx = tx_events.len(), "publishing events to Redis");
+            pub_.publish_batch(&de_events).await;
+            pub_.publish_tx_batch(&tx_events).await;
         }
     }
 }
@@ -232,7 +234,7 @@ fn handle_updates<R: RepoOperations>(
     chain_id: u8,
     assets_only: bool,
     asset_storage_address: Option<&str>,
-) -> Result<Vec<DataEntryEvent>> {
+) -> Result<(Vec<DataEntryEvent>, Vec<TxEvent>)> {
     let mut items: Vec<UpdatesItem> = updates_with_height
         .updates
         .into_iter()
@@ -273,28 +275,32 @@ fn handle_updates<R: RepoOperations>(
 
     items
         .iter_mut()
-        .try_fold(Vec::new(), |mut all_events, update_item| {
-            let batch = match update_item {
-                UpdatesItem::Blocks(ba) => {
-                    squash_microblocks(repo, assets_only)?;
-                    handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)?
-                }
-                UpdatesItem::Microblock(mba) => handle_appends(
-                    repo,
-                    chain_id,
-                    std::slice::from_ref(mba),
-                    assets_only,
-                    asset_storage_address,
-                )?,
-                UpdatesItem::Rollback(sig) => {
-                    let block = repo.get_block_uid_height(sig)?;
-                    rollback(repo, &[block], assets_only)?;
-                    vec![] // rollbacks publish nothing; next block restores correct state
-                }
-            };
-            all_events.extend(batch);
-            Ok(all_events)
-        })
+        .try_fold(
+            (Vec::<DataEntryEvent>::new(), Vec::<TxEvent>::new()),
+            |mut acc, update_item| {
+                let (de_batch, tx_batch) = match update_item {
+                    UpdatesItem::Blocks(ba) => {
+                        squash_microblocks(repo, assets_only)?;
+                        handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)?
+                    }
+                    UpdatesItem::Microblock(mba) => handle_appends(
+                        repo,
+                        chain_id,
+                        std::slice::from_ref(mba),
+                        assets_only,
+                        asset_storage_address,
+                    )?,
+                    UpdatesItem::Rollback(sig) => {
+                        let block = repo.get_block_uid_height(sig)?;
+                        rollback(repo, &[block], assets_only)?;
+                        (vec![], vec![]) // rollbacks publish nothing
+                    }
+                };
+                acc.0.extend(de_batch);
+                acc.1.extend(tx_batch);
+                Ok(acc)
+            },
+        )
 }
 
 fn handle_appends<R>(
@@ -303,7 +309,7 @@ fn handle_appends<R>(
     appends: &[BlockMicroblockAppend],
     assets_only: bool,
     asset_storage_address: Option<&str>,
-) -> Result<Vec<DataEntryEvent>>
+) -> Result<(Vec<DataEntryEvent>, Vec<TxEvent>)>
 where
     R: RepoOperations,
 {
@@ -420,7 +426,156 @@ where
         })
         .collect();
 
-    Ok(data_entry_events)
+    // Collect transaction events for `topic://transactions?type=…&address=…`.
+    // Published after commit alongside data-entry events.
+    let tx_events: Vec<TxEvent> = if assets_only {
+        vec![]
+    } else {
+        appends
+            .iter()
+            .flat_map(|append| {
+                append.txs.iter().filter_map(|tx| {
+                    tx_event_for_tx(tx, append.height)
+                })
+            })
+            .collect()
+    };
+
+    Ok((data_entry_events, tx_events))
+}
+
+/// Build a [`TxEvent`] from a single blockchain transaction.
+///
+/// Returns `None` if the sender address is empty (genesis/system txs).
+fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
+    let sender = bs58::encode(&tx.meta.sender_address).into_string();
+    if sender.is_empty() {
+        return None;
+    }
+
+    // Determine transaction type number and recipient address(es).
+    let (tx_type, timestamp, recipients, amount, asset_id) = match &tx.data.transaction {
+        Some(Transaction::DccTransaction(inner)) => {
+            let ts = inner.timestamp;
+            match &inner.data {
+                Some(Data::Transfer(t)) => {
+                    let recipient = if let Some(Metadata::Transfer(m)) = &tx.meta.metadata {
+                        let addr = bs58::encode(&m.recipient_address).into_string();
+                        if addr.is_empty() { vec![] } else { vec![addr] }
+                    } else {
+                        vec![]
+                    };
+                    let (amt, aid) = t.amount.as_ref().map_or((None, None), |a| {
+                        let aid = if a.asset_id.is_empty() { None } else { Some(bs58::encode(&a.asset_id).into_string()) };
+                        (Some(a.amount), aid)
+                    });
+                    (4i32, ts, recipient, amt, aid)
+                }
+                Some(Data::MassTransfer(t)) => {
+                    // Recipient addresses are the resolved base58 addrs from metadata.
+                    let recipients = if let Some(Metadata::MassTransfer(m)) = &tx.meta.metadata {
+                        m.recipients_addresses
+                            .iter()
+                            .map(|b| bs58::encode(b).into_string())
+                            .filter(|s| !s.is_empty())
+                            .collect()
+                    } else {
+                        vec![]
+                    };
+                    let aid = if t.asset_id.is_empty() { None } else { Some(bs58::encode(&t.asset_id).into_string()) };
+                    (11i32, ts, recipients, None, aid)
+                }
+                Some(Data::Exchange(_))         => (7i32,  ts, vec![], None, None),
+                Some(Data::Lease(_))            => (8i32,  ts, vec![], None, None),
+                Some(Data::LeaseCancel(_))      => (9i32,  ts, vec![], None, None),
+                Some(Data::Issue(_))            => (3i32,  ts, vec![], None, None),
+                Some(Data::Reissue(_))          => (5i32,  ts, vec![], None, None),
+                Some(Data::Burn(_))             => (6i32,  ts, vec![], None, None),
+                Some(Data::CreateAlias(_))      => (10i32, ts, vec![], None, None),
+                Some(Data::DataTransaction(_))  => (12i32, ts, vec![], None, None),
+                Some(Data::SetScript(_))        => (13i32, ts, vec![], None, None),
+                Some(Data::SponsorFee(_))       => (14i32, ts, vec![], None, None),
+                Some(Data::SetAssetScript(_))   => (15i32, ts, vec![], None, None),
+                Some(Data::InvokeScript(_))     => (16i32, ts, vec![], None, None),
+                Some(Data::UpdateAssetInfo(_))  => (17i32, ts, vec![], None, None),
+                Some(Data::InvokeExpression(_)) => (16i32, ts, vec![], None, None),
+                Some(Data::CommitToGeneration(_)) => (1i32, ts, vec![], None, None),
+                Some(Data::Genesis(_))          => (1i32,  ts, vec![], None, None),
+                Some(Data::Payment(_))          => (2i32,  ts, vec![], None, None),
+                None => return None,
+            }
+        }
+        Some(Transaction::EthereumTransaction(_)) => (18i32, 0, vec![], None, None),
+        None => return None,
+    };
+
+    let type_name = tx_type_name(tx_type);
+
+    // Channels: `type=all` and `type=<specific>` for each involved address.
+    let all_addresses: Vec<String> = std::iter::once(sender.clone())
+        .chain(recipients.iter().cloned())
+        .collect::<std::collections::HashSet<_>>()
+        .into_iter()
+        .collect();
+
+    let channels: Vec<String> = all_addresses
+        .iter()
+        .flat_map(|addr| {
+            [
+                format!("topic://transactions?type=all&address={addr}"),
+                format!("topic://transactions?type={type_name}&address={addr}"),
+            ]
+        })
+        .collect();
+
+    // Build JSON matching the DCC node REST API shape the exchange expects.
+    let mut json = serde_json::json!({
+        "id":        tx.id,
+        "type":      tx_type,
+        "sender":    sender,
+        "timestamp": timestamp,
+        "height":    height,
+        "applicationStatus": "succeeded",
+    });
+
+    if let Some(first_recipient) = recipients.first() {
+        json["recipient"] = serde_json::Value::String(first_recipient.clone());
+    }
+    if let Some(a) = amount {
+        json["amount"] = serde_json::Value::Number(a.into());
+    }
+    if let Some(aid) = asset_id {
+        json["assetId"] = serde_json::Value::String(aid);
+    }
+
+    Some(TxEvent {
+        channels,
+        value: json.to_string(),
+    })
+}
+
+fn tx_type_name(tx_type: i32) -> &'static str {
+    match tx_type {
+        1  => "genesis",
+        2  => "payment",
+        3  => "issue",
+        4  => "transfer",
+        5  => "reissue",
+        6  => "burn",
+        7  => "exchange",
+        8  => "lease",
+        9  => "lease_cancel",
+        10 => "create_alias",
+        11 => "mass_transfer",
+        12 => "data",
+        13 => "set_script",
+        14 => "sponsorship",
+        15 => "set_asset_script",
+        16 => "invoke_script",
+        17 => "update_asset_info",
+        18 => "ethereum",
+        _  => "unknown",
+    }
 }
 
 #[allow(clippy::significant_drop_tightening)]

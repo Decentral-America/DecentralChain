@@ -1,13 +1,17 @@
 //! Redis pub/sub publisher — fired after each committed `PostgreSQL` transaction.
 //!
-//! For every data-entry change processed by the consumer, the publisher:
-//!   1. `SET topic://state/{address}/{key} {value}` — so new subscribers
-//!      get the current value immediately on first read.
-//!   2. `PUBLISH topic://state/{address}/{key} {value}` — so active subscribers
-//!      receive the update in real time.
+//! After each Postgres commit the publisher sends two event classes to Redis:
 //!
-//! Both operations are fire-and-forget: a Redis failure is logged at `WARN`
-//! level and does not affect `PostgreSQL` writes or process liveness.
+//! **State events** (`topic://state/{address}/{key}`):
+//!   1. `SET`   — caches the current value so late subscribers get it on first read.
+//!   2. `PUBLISH` — fans the update to active WebSocket subscribers in real time.
+//!
+//! **Transaction events** (`topic://transactions?type=all&address={addr}`):
+//!   - `PUBLISH` only — no prior state to cache; subscribers receive the raw tx JSON.
+//!   - Matches the channel scheme used by wavesplatform/wx-websocket-api, so the
+//!     ws-api's `psubscribe("topic://*")` picks these up with no code changes.
+//!
+//! All Redis operations are fire-and-forget: failures are logged at WARN and skipped.
 
 use crate::proto::dcc::data_entry::Value;
 use base64::{Engine, engine::general_purpose::STANDARD as BASE64};
@@ -20,6 +24,18 @@ pub struct DataEntryEvent {
     /// Redis channel and key: `topic://state/{base58_address}/{key}`
     pub channel: String,
     /// JSON representation of the value (see [`value_to_json`]).
+    pub value: String,
+}
+
+/// A single confirmed transaction to broadcast on Redis.
+///
+/// One `TxEvent` may publish to multiple channels — one per involved address
+/// × topic type (e.g. `type=all` and `type=transfer`).
+#[derive(Debug)]
+pub struct TxEvent {
+    /// `topic://transactions?type=…&address=…` channels to publish on.
+    pub channels: Vec<String>,
+    /// JSON payload — format matches the DCC node REST API response.
     pub value: String,
 }
 
@@ -81,6 +97,24 @@ impl Publisher {
                 .await
             {
                 tracing::warn!(channel = %event.channel, error = %e, "Redis PUBLISH failed; continuing");
+            }
+        }
+    }
+
+    /// Broadcast confirmed transactions to all subscribed WebSocket clients.
+    ///
+    /// Publishes to every channel in each `TxEvent`. No `SET` — transactions
+    /// are point-in-time events, not queryable state.
+    pub async fn publish_tx_batch(&self, events: &[TxEvent]) {
+        for event in events {
+            for channel in &event.channels {
+                if let Err(e) = self
+                    .client
+                    .publish::<i64, _, _>(channel, &event.value)
+                    .await
+                {
+                    tracing::warn!(channel = %channel, error = %e, "Redis tx PUBLISH failed; continuing");
+                }
             }
         }
     }
