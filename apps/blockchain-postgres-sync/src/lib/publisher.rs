@@ -142,3 +142,93 @@ pub fn value_to_json(value: Option<&Value>) -> String {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── value_to_json — happy-path and edge cases ─────────────────────────────
+
+    #[test]
+    fn value_to_json_none_is_null() {
+        assert_eq!(value_to_json(None), "null");
+    }
+
+    #[test]
+    fn value_to_json_integer_positive() {
+        assert_eq!(value_to_json(Some(&Value::IntValue(42))), "42");
+    }
+
+    #[test]
+    fn value_to_json_integer_negative() {
+        assert_eq!(value_to_json(Some(&Value::IntValue(-1))), "-1");
+    }
+
+    #[test]
+    fn value_to_json_integer_zero() {
+        assert_eq!(value_to_json(Some(&Value::IntValue(0))), "0");
+    }
+
+    #[test]
+    fn value_to_json_integer_max() {
+        assert_eq!(
+            value_to_json(Some(&Value::IntValue(i64::MAX))),
+            i64::MAX.to_string()
+        );
+    }
+
+    #[test]
+    fn value_to_json_bool_true() {
+        assert_eq!(value_to_json(Some(&Value::BoolValue(true))), "true");
+    }
+
+    #[test]
+    fn value_to_json_bool_false() {
+        assert_eq!(value_to_json(Some(&Value::BoolValue(false))), "false");
+    }
+
+    #[test]
+    fn value_to_json_string_plain() {
+        assert_eq!(
+            value_to_json(Some(&Value::StringValue("hello".to_owned()))),
+            r#""hello""#
+        );
+    }
+
+    #[test]
+    fn value_to_json_string_with_special_chars() {
+        // serde_json escapes quotes and backslashes — verify round-trip fidelity.
+        let raw = r#"say "hi" \ bye"#;
+        let json = value_to_json(Some(&Value::StringValue(raw.to_owned())));
+        let parsed: String = serde_json::from_str(&json).expect("valid JSON string");
+        assert_eq!(parsed, raw, "round-trip: JSON → parse must restore original");
+    }
+
+    #[test]
+    fn value_to_json_string_empty() {
+        assert_eq!(
+            value_to_json(Some(&Value::StringValue(String::new()))),
+            r#""""#
+        );
+    }
+
+    #[test]
+    fn value_to_json_binary_is_base64_prefixed() {
+        let bytes = vec![0u8, 1, 2, 255];
+        let result = value_to_json(Some(&Value::BinaryValue(bytes.clone())));
+        // Must be a JSON string starting with base64:
+        assert!(result.starts_with(r#""base64:"#), "must start with base64: prefix");
+        assert!(result.ends_with('"'), "must be quoted");
+
+        // Round-trip: strip prefix and quotes, decode base64, compare bytes.
+        let inner = &result[r#""base64:"#.len()..result.len() - 1];
+        let decoded = BASE64.decode(inner).expect("valid base64");
+        assert_eq!(decoded, bytes, "round-trip: base64 decode must restore original bytes");
+    }
+
+    #[test]
+    fn value_to_json_binary_empty() {
+        let result = value_to_json(Some(&Value::BinaryValue(vec![])));
+        assert_eq!(result, r#""base64:""#);
+    }
+}
