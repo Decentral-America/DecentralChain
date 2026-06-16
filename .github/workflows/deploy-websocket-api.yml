@@ -233,6 +233,10 @@ jobs:
               "$SERVICE"; then
 
               echo "::error::Health check failed for $SERVICE on $NETWORK."
+              echo "=== docker logs ${SERVICE}-${NETWORK} ==="
+              docker logs "${SERVICE}-${NETWORK}" 2>&1 | tail -40 || true
+              echo "=== docker inspect state ==="
+              docker inspect "${SERVICE}-${NETWORK}" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); s=d[0]['State']; print('Status:', s['Status']); print('ExitCode:', s['ExitCode']); print('Error:', s['Error']); print('OOMKilled:', s['OOMKilled'])" 2>/dev/null || true
 
               if [[ -n "$PREV_IMAGE" ]]; then
                 echo "Rolling back to $PREV_IMAGE"

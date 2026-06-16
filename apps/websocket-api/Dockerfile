@@ -24,10 +24,11 @@ COPY . .
 RUN cargo build --release --bin service --bin healthcheck
 
 # ── Runtime image ─────────────────────────────────────────────────────────────
-# distroless/base-debian12 includes glibc, libssl3, and CA certificates.
-# It ships no shell, no package manager, and no setuid binaries.
-# The :nonroot tag runs as uid 65532 — no useradd step required.
-FROM gcr.io/distroless/base-debian12:nonroot
+# distroless/cc-debian12 adds libgcc-s1 and libstdc++6 on top of base.
+# The Rust binary links against libgcc_s.so.1 even with panic=abort (via
+# async/await machinery in tokio). cc is the correct variant for Rust binaries.
+# :nonroot runs as uid 65532 — no useradd step required.
+FROM gcr.io/distroless/cc-debian12:nonroot
 
 WORKDIR /app
 COPY --from=builder /usr/src/service/target/release/service .
