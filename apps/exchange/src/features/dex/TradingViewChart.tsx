@@ -157,10 +157,13 @@ export const TradingViewChart: React.FC = () => {
         // Create symbol from pair
         const symbol = `${selectedPair.amountAsset}/${selectedPair.priceAsset}`;
 
-        // Create TradingView widget
+        // Create TradingView widget.
+        // Pass the DOM element directly — more reliable than string ID lookup,
+        // and avoids "There is no such element" when the ID selector fails.
+        // The container must be in the DOM and have real dimensions at this point.
         chartRef.current = new TradingView.widget({
           autosize: true,
-          container: elementIdRef.current, // Changed from container_id (deprecated)
+          container: containerRef.current,
           datafeed: candlesService,
           disabled_features: [
             'header_screenshot',
@@ -227,49 +230,65 @@ export const TradingViewChart: React.FC = () => {
 
   return (
     <ChartContainer>
+      {/* Chart container is ALWAYS in the DOM with real dimensions so TradingView
+          can measure it during initialization. Loading and error states overlay it. */}
+      <Box
+        id={elementIdRef.current}
+        ref={containerRef}
+        sx={{ height: '100%', position: 'absolute', width: '100%' }}
+      />
+
+      {/* Overlay: loading spinner */}
       {loadingState === 'loading' && (
         <Box
           sx={{
             alignItems: 'center',
+            background: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
+            height: '100%',
+            justifyContent: 'center',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            zIndex: 1,
           }}
         >
           <CircularProgress size={40} />
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Loading chart...
           </Typography>
         </Box>
       )}
+
+      {/* Overlay: error */}
       {loadingState === 'error' && (
-        <Alert severity="error" sx={{ maxWidth: 400, width: '100%' }}>
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            sx={{
-              fontWeight: 600,
-            }}
-          >
-            Chart Load Failed
-          </Typography>
-          <Typography variant="body2">{errorMessage || 'Unable to load trading chart'}</Typography>
-        </Alert>
+        <Box
+          sx={{
+            alignItems: 'center',
+            background: '#ffffff',
+            display: 'flex',
+            height: '100%',
+            justifyContent: 'center',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            zIndex: 1,
+          }}
+        >
+          <Alert severity="error" sx={{ maxWidth: 400, width: '100%' }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+              Chart Load Failed
+            </Typography>
+            <Typography variant="body2">
+              {errorMessage || 'Unable to load trading chart'}
+            </Typography>
+          </Alert>
+        </Box>
       )}
-      <Box
-        id={elementIdRef.current}
-        ref={containerRef}
-        sx={{
-          display: loadingState === 'success' ? 'block' : 'none',
-          height: '100%',
-          width: '100%',
-        }}
-      />
     </ChartContainer>
   );
 };
