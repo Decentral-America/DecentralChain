@@ -129,15 +129,24 @@ export function getReservedBalance(): Promise<IHash<Money>> {
 
   return fetch<IReservedBalanceApi>(`/balance/reserved/${sig.publicKey}`)
     .then(prepareReservedBalance)
-    .catch((_error) => {
-      // Mark matcher auth as failed to prevent repeated requests
-      matcherAuthFailed = true;
+    .catch((error: unknown) => {
+      // A 404 means the address has no reserved balance — valid and expected
+      // when the user has no open orders. Do NOT set matcherAuthFailed; the
+      // balance will appear once the user places an order.
+      const isNotFound =
+        (typeof error === 'object' &&
+          error !== null &&
+          ('status' in error
+            ? (error as { status?: unknown }).status === 404 ||
+              (error as { status?: unknown }).status === 'NotFound'
+            : false)) ||
+        (typeof error === 'string' && error.includes('404'));
 
-      // Silently handle matcher errors - these are expected when:
-      // - User has no DEX orders
-      // - Matcher signature is invalid/expired
-      // - User hasn't authenticated with matcher
-      // Return empty object to prevent poll failures
+      if (!isNotFound) {
+        // Real auth / signature failure — stop retrying until next sign-in.
+        matcherAuthFailed = true;
+      }
+
       return Object.create(null);
     });
 }
