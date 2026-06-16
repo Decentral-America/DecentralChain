@@ -8,6 +8,7 @@ pub mod db;
 pub mod error;
 pub mod models;
 pub mod proto;
+pub mod publisher;
 pub mod schema;
 mod tuple_len;
 pub mod utils;
