@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use app_lib::{config, consumer, db};
+use app_lib::{config, consumer, db, publisher};
 use axum::{Router, routing::get};
 use std::net::SocketAddr;
 use tokio::select;
@@ -31,6 +31,21 @@ async fn main() -> Result<()> {
 
     let pg_repo = consumer::repo::pg::new(conn.clone());
 
+    // Optional Redis publisher — enabled when REDIS_URL is set in the environment.
+    // Absent REDIS_URL → BPS-only mode; no Redis connection is attempted.
+    let redis_publisher = match &config.consumer.redis_url {
+        Some(url) => {
+            let pub_ = publisher::Publisher::new(url)
+                .await
+                .context("Redis publisher connection failed")?;
+            Some(pub_)
+        }
+        None => {
+            tracing::info!("REDIS_URL not set — Redis publishing disabled");
+            None
+        }
+    };
+
     // Health / readiness HTTP server
     let metrics_port = config.consumer.metrics_port;
     let health_conn = conn.clone();
@@ -61,7 +76,7 @@ async fn main() -> Result<()> {
             .context("health server failed")
     });
 
-    let consumer = consumer::start(updates_src, pg_repo, config.consumer);
+    let consumer = consumer::start(updates_src, pg_repo, config.consumer, redis_publisher);
 
     select! {
         result = consumer => {

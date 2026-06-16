@@ -45,6 +45,10 @@ struct ConfigFlat {
     rollback_step: u32,
     #[serde(default = "default_metrics_port")]
     metrics_port: u16,
+    /// Optional Redis URL for pub/sub publishing.
+    /// Format: `redis://:password@host:port/`
+    /// When absent, Redis publishing is disabled and BPS-only mode is used.
+    redis_url: Option<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -59,6 +63,8 @@ pub struct Config {
     pub start_rollback_depth: NonZeroU32,
     pub rollback_step: NonZeroU32,
     pub metrics_port: u16,
+    /// Redis URL for pub/sub publishing. `None` disables publishing.
+    pub redis_url: Option<String>,
 }
 
 /// # Errors
@@ -91,6 +97,7 @@ pub fn load() -> Result<Config, Error> {
         rollback_step: NonZeroU32::new(config_flat.rollback_step)
             .ok_or_else(|| nonzero_err("rollback_step"))?,
         metrics_port: config_flat.metrics_port,
+        redis_url: config_flat.redis_url,
     })
 }
 
@@ -112,6 +119,7 @@ mod tests {
             start_rollback_depth: NonZeroU32::new(1).unwrap(),
             rollback_step: NonZeroU32::new(500).unwrap(),
             metrics_port: 9090,
+            redis_url: None,
         }
     }
 

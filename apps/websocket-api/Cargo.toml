@@ -1,0 +1,73 @@
+[package]
+name = "websocket-api"
+version = "2.0.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Real-time WebSocket pub/sub API for the DecentralChain exchange"
+license = "Apache-2.0"
+repository = "https://github.com/Decentral-America/websocket-api"
+homepage = "https://decentral-chain.com"
+keywords = ["blockchain", "websocket", "decentralchain", "pubsub", "redis"]
+categories = ["network-programming", "cryptography::cryptocurrencies"]
+
+[[bin]]
+name = "service"
+path = "src/main.rs"
+
+[[bin]]
+name = "healthcheck"
+path = "src/healthcheck.rs"
+
+[dependencies]
+# Error handling
+thiserror = "2.0"
+
+# Async runtime
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "sync", "signal", "time"] }
+
+# HTTP + WebSocket server
+axum = { version = "0.8", features = ["ws"] }
+tower-http = { version = "0.6", features = ["trace", "request-id", "util"] }
+
+# Redis — fred is the production-grade async Redis client: native async pub/sub,
+# built-in pooling, automatic reconnection, no spawn_blocking workarounds.
+fred = { version = "10", features = ["subscriber-client", "i-keys", "i-pubsub"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Configuration
+envy = "0.4"
+
+# Metrics
+prometheus = "0.13"
+
+# Observability
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Async utilities
+futures = "0.3"
+
+# Hashing — ahash is faster than DefaultHasher and has stable, explicit guarantees
+ahash = "0.8"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+unwrap_used = "warn"
+cast_possible_truncation = "warn"
+cast_sign_loss = "warn"
+cast_possible_wrap = "warn"
+uninlined_format_args = "warn"
+cloned_instead_of_copied = "warn"
+redundant_clone = "warn"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
+opt-level = 3

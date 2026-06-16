@@ -8,6 +8,7 @@ use crate::proto::dcc::{
     events::{StateUpdate, TransactionMetadata, transaction_metadata::Metadata},
     signed_transaction::Transaction,
 };
+use crate::publisher::{DataEntryEvent, value_to_json};
 use anyhow::{Error, Result};
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
@@ -108,7 +109,12 @@ pub trait UpdatesSource {
 /// # Panics
 ///
 /// Panics if `height.height` is negative (violates the blockchain protocol invariant).
-pub async fn start<T, R>(updates_src: T, repo: R, config: Config) -> Result<()>
+pub async fn start<T, R>(
+    updates_src: T,
+    repo: R,
+    config: Config,
+    publisher: Option<crate::publisher::Publisher>,
+) -> Result<()>
 where
     T: UpdatesSource + Send + 'static,
     R: repo::Repo + Clone + Send + 'static,
@@ -191,25 +197,32 @@ where
 
         start = Instant::now();
 
-        repo.transaction(move |ops| {
-            handle_updates(
-                updates_with_height,
-                ops,
-                chain_id,
-                assets_only,
-                asset_storage_address,
-            )?;
+        let events = repo
+            .transaction(move |ops| {
+                let events = handle_updates(
+                    updates_with_height,
+                    ops,
+                    chain_id,
+                    assets_only,
+                    asset_storage_address,
+                )?;
 
-            info!(
-                "{} updates were saved to database in {:?}. Last height is {}.",
-                updates_count,
-                start.elapsed(),
-                last_height,
-            );
+                info!(
+                    "{} updates were saved to database in {:?}. Last height is {}.",
+                    updates_count,
+                    start.elapsed(),
+                    last_height,
+                );
 
-            Ok(())
-        })
-        .await?;
+                Ok(events)
+            })
+            .await?;
+
+        // Publish after the transaction commits — Redis failures are fire-and-forget.
+        if let Some(ref pub_) = publisher {
+            tracing::debug!(count = events.len(), "publishing data-entry events to Redis");
+            pub_.publish_batch(&events).await;
+        }
     }
 }
 
@@ -219,64 +232,69 @@ fn handle_updates<R: RepoOperations>(
     chain_id: u8,
     assets_only: bool,
     asset_storage_address: Option<&str>,
-) -> Result<()> {
-    updates_with_height
+) -> Result<Vec<DataEntryEvent>> {
+    let mut items: Vec<UpdatesItem> = updates_with_height
         .updates
         .into_iter()
-        .fold(&mut Vec::<UpdatesItem>::new(), |acc, cur| match cur {
-            BlockchainUpdate::Block(b) => {
-                info!("Handle block {}, height = {}", b.id, b.height);
-                let len = acc.len();
-                if len > 0 {
-                    match acc
-                        .last_mut()
-                        .expect("len > 0 but last_mut is None — invariant violated")
-                    {
-                        UpdatesItem::Blocks(v) => {
-                            v.push(b);
-                            acc
+        .fold(Vec::new(), |mut acc, cur| {
+            match cur {
+                BlockchainUpdate::Block(b) => {
+                    info!("Handle block {}, height = {}", b.id, b.height);
+                    let len = acc.len();
+                    if len > 0 {
+                        match acc
+                            .last_mut()
+                            .expect("len > 0 but last_mut is None — invariant violated")
+                        {
+                            UpdatesItem::Blocks(v) => {
+                                v.push(b);
+                            }
+                            UpdatesItem::Microblock(_) | UpdatesItem::Rollback(_) => {
+                                acc.push(UpdatesItem::Blocks(vec![b]));
+                            }
                         }
-                        UpdatesItem::Microblock(_) | UpdatesItem::Rollback(_) => {
-                            acc.push(UpdatesItem::Blocks(vec![b]));
-                            acc
-                        }
+                    } else {
+                        acc.push(UpdatesItem::Blocks(vec![b]));
                     }
-                } else {
-                    acc.push(UpdatesItem::Blocks(vec![b]));
+                    acc
+                }
+                BlockchainUpdate::Microblock(mba) => {
+                    info!("Handle microblock {}, height = {}", mba.id, mba.height);
+                    acc.push(UpdatesItem::Microblock(mba));
+                    acc
+                }
+                BlockchainUpdate::Rollback(sig) => {
+                    info!("Handle rollback to {}", sig);
+                    acc.push(UpdatesItem::Rollback(sig));
                     acc
                 }
             }
-            BlockchainUpdate::Microblock(mba) => {
-                info!("Handle microblock {}, height = {}", mba.id, mba.height);
-                acc.push(UpdatesItem::Microblock(mba));
-                acc
-            }
-            BlockchainUpdate::Rollback(sig) => {
-                info!("Handle rollback to {}", sig);
-                acc.push(UpdatesItem::Rollback(sig));
-                acc
-            }
-        })
-        .iter_mut()
-        .try_fold((), |(), update_item| match update_item {
-            UpdatesItem::Blocks(ba) => {
-                squash_microblocks(repo, assets_only)?;
-                handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)
-            }
-            UpdatesItem::Microblock(mba) => handle_appends(
-                repo,
-                chain_id,
-                std::slice::from_ref(mba),
-                assets_only,
-                asset_storage_address,
-            ),
-            UpdatesItem::Rollback(sig) => {
-                let block = repo.get_block_uid_height(sig)?;
-                rollback(repo, &[block], assets_only)
-            }
-        })?;
+        });
 
-    Ok(())
+    items
+        .iter_mut()
+        .try_fold(Vec::new(), |mut all_events, update_item| {
+            let batch = match update_item {
+                UpdatesItem::Blocks(ba) => {
+                    squash_microblocks(repo, assets_only)?;
+                    handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)?
+                }
+                UpdatesItem::Microblock(mba) => handle_appends(
+                    repo,
+                    chain_id,
+                    std::slice::from_ref(mba),
+                    assets_only,
+                    asset_storage_address,
+                )?,
+                UpdatesItem::Rollback(sig) => {
+                    let block = repo.get_block_uid_height(sig)?;
+                    rollback(repo, &[block], assets_only)?;
+                    vec![] // rollbacks publish nothing; next block restores correct state
+                }
+            };
+            all_events.extend(batch);
+            Ok(all_events)
+        })
 }
 
 fn handle_appends<R>(
@@ -285,7 +303,7 @@ fn handle_appends<R>(
     appends: &[BlockMicroblockAppend],
     assets_only: bool,
     asset_storage_address: Option<&str>,
-) -> Result<()>
+) -> Result<Vec<DataEntryEvent>>
 where
     R: RepoOperations,
 {
@@ -382,7 +400,27 @@ where
         );
     }
 
-    Ok(())
+    // Collect all data-entry changes across every transaction in every append.
+    // These are returned to the caller and published to Redis after the PG
+    // transaction commits — ensuring Redis only reflects committed state.
+    let data_entry_events: Vec<DataEntryEvent> = appends
+        .iter()
+        .filter(|_| !assets_only)
+        .flat_map(|append| {
+            append.txs.iter().flat_map(|tx| {
+                tx.state_update.data_entries.iter().filter_map(|update| {
+                    update.data_entry.as_ref().map(|de| {
+                        let address = bs58::encode(&update.address).into_string();
+                        let channel = format!("topic://state/{address}/{}", de.key);
+                        let value = value_to_json(de.value.as_ref());
+                        DataEntryEvent { channel, value }
+                    })
+                })
+            })
+        })
+        .collect();
+
+    Ok(data_entry_events)
 }
 
 #[allow(clippy::significant_drop_tightening)]
