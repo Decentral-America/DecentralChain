@@ -119,10 +119,9 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@b3e42d4241174725be3678bed4360669ac2645c7 # main
     with:
-      network:      ${{ needs.resolve.outputs.network }}
-      image:        ghcr.io/decentral-america/websocket-api:${{ github.sha }}
-      service:      websocket-api
-      wait_timeout: 60
+      network: ${{ needs.resolve.outputs.network }}
+      image:   ghcr.io/decentral-america/websocket-api:${{ github.sha }}
+      service: websocket-api
     secrets: inherit
