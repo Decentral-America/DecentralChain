@@ -31,7 +31,7 @@ import {
   type IBlockHeader,
   type TAssetDetails,
 } from '@/lib/api';
-import { logError, logWarn } from '@/lib/error-logger';
+import { logError } from '@/lib/error-logger';
 import { type TokenAssetStat } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -363,7 +363,7 @@ function AssetActivityWidget() {
 
         // Only proceed if we got at least some data
         if (successfulBlocks === 0 || Object.keys(assetStats).length === 0) {
-          logWarn('Failed to fetch any asset activity data or no transactions found');
+          // No asset transactions in recent blocks — normal on a new network with no token activity.
           if (!cancelledRef.current) setLoading(false);
           return;
         }
