@@ -112,6 +112,11 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
     ...options,
   };
 
+  // Don't initialize if explicitly disabled via env var
+  if (import.meta.env.VITE_SENTRY_ENABLED === 'false') {
+    return;
+  }
+
   // Don't initialize in development unless explicitly enabled
   if (import.meta.env.DEV && !config.enableInDev) {
     logger.debug('[Error Monitoring] Disabled in development mode');
@@ -120,7 +125,7 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
 
   // Don't initialize without DSN
   if (!config.dsn) {
-    logger.warn('[Error Monitoring] No DSN provided, error monitoring disabled');
+    logger.debug('[Error Monitoring] No DSN provided, error monitoring disabled');
     return;
   }
 
