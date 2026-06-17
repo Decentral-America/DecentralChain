@@ -227,7 +227,7 @@ interface RawTxData {
   fee: { getTokens: () => { toNumber: () => number } };
   timestamp: number;
   assetId?: string;
-  status: string;
+  isUTX: boolean;
 }
 
 // Maps numeric transaction type → display type. Source: TRANSACTION_TYPE_NUMBER constants.
@@ -274,7 +274,7 @@ function mapBlockchainTransaction(tx: unknown, userAddress: string): Transaction
     id: d.id,
     recipient: d.recipient ?? '',
     sender: d.sender,
-    status: d.status === 'confirmed' ? 'confirmed' : 'pending',
+    status: d.isUTX ? 'pending' : 'confirmed',
     timestamp: d.timestamp,
     type: txType,
   };
