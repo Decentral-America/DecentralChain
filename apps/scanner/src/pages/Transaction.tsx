@@ -28,6 +28,7 @@ import {
   fetchUnconfirmedTransactionInfo,
   fetchUnconfirmedTransactions,
 } from '@/lib/api';
+import { txTypeName } from '@/lib/transactionTypes';
 import { type Transaction as TransactionType } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -437,7 +438,7 @@ export default function Transaction() {
                             </div>
                           </td>
                           <td className="p-4">
-                            <Badge variant="outline">{tx.type}</Badge>
+                            <Badge variant="outline">{txTypeName(tx.type)}</Badge>
                           </td>
                           <td className="p-4 font-mono text-xs text-muted-foreground">
                             {tx.sender ? truncate(tx.sender, 12) : '—'}
