@@ -384,10 +384,15 @@ export const TradingPairSelector: React.FC = () => {
   }, [isLoadingAssets, selectedPair, setSelectedPair]);
 
   /**
-   * Set default pair on mount if none selected
+   * Set default pair on mount, and clear any stale pair with empty asset IDs
+   * that was stored from a previous session with a different network config.
    */
   useEffect(() => {
-    if (!selectedPair && DEFAULT_PAIR) {
+    const hasEmptyIds = selectedPair && (!selectedPair.amountAsset || !selectedPair.priceAsset);
+    if (hasEmptyIds) {
+      // Pair has empty IDs — it was a placeholder from a prior config. Clear it.
+      setSelectedPair(DEFAULT_PAIR);
+    } else if (!selectedPair && DEFAULT_PAIR) {
       setSelectedPair(DEFAULT_PAIR);
     }
   }, [selectedPair, setSelectedPair]);
