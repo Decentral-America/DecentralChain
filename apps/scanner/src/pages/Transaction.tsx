@@ -76,7 +76,7 @@ export function meta({ data }: { data?: LoaderData }) {
   if (!data?.tx) return [{ title: 'Transaction — DecentralScan' }];
   const shortId = data.tx.id.slice(0, 12);
   const title = `Tx ${shortId}… — DecentralScan`;
-  const description = `Transaction ${data.tx.id} (type ${data.tx.type}) on DecentralChain at block height ${(data.tx as TransactionType & { height?: number }).height ?? 'mempool'}.`;
+  const description = `Transaction ${data.tx.id} (${txTypeName(data.tx.type)}) on DecentralChain at block height ${(data.tx as TransactionType & { height?: number }).height ?? 'mempool'}.`;
   return [
     { title },
     { content: description, name: 'description' },
