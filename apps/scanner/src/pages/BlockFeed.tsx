@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Activity, ChevronDown, ChevronUp, Pause, Play } from 'lucide-react';
 import { type ReactElement, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
+import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -11,7 +12,7 @@ import { logError, logWarn } from '@/lib/error-logger';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext'; // Added import
 import CopyButton from '../components/shared/CopyButton';
-import { fromUnix, timeAgo, truncate } from '../components/utils/formatters';
+import { fromUnix, truncate } from '../components/utils/formatters';
 import { useBlockHeight, useLatestBlock } from '../hooks/useBlockPolling';
 
 const MAX_BLOCKS_PER_REQUEST = 100; // API limit for block headers request
@@ -173,7 +174,7 @@ export default function BlockFeed() {
                             {fromUnix(block.timestamp)}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {timeAgo(block.timestamp)}
+                            <ClientTimeAgo timestamp={block.timestamp} />
                           </p>
                         </div>
                       </div>

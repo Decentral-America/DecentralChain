@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, Clock, RefreshCw, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,7 +22,7 @@ import { fetchUnconfirmedTransactions } from '@/lib/api';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
-import { formatAmount, timeAgo, truncate } from '../components/utils/formatters';
+import { formatAmount, truncate } from '../components/utils/formatters';
 
 export default function UnconfirmedTransactions() {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ export default function UnconfirmedTransactions() {
                       </TableCell>
                       <TableCell className="text-right">{formatAmount(tx.fee)} DCC</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {timeAgo(tx.timestamp)}
+                        <ClientTimeAgo timestamp={tx.timestamp} />
                       </TableCell>
                     </TableRow>
                   ))
