@@ -123,6 +123,9 @@ export const TradingViewChart: React.FC = () => {
       DEFAULT_RESOLUTION,
       { firstDataRequest: true, from, to },
       (bars) => {
+        // Guard: component may have unmounted while getBars was in flight.
+        // Calling setData on a disposed chart throws "Object is disposed".
+        if (!chartRef.current) return;
         try {
           const candles = bars
             .filter((b) => b.open != null && b.close != null)
