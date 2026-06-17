@@ -47,10 +47,10 @@ import {
   Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import * as ds from 'data-service';
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { landingTheme } from '@/theme/landingTheme';
@@ -123,6 +123,7 @@ export const CreateToken = () => {
 
   // Get user and balance data
   const { user } = useAuth();
+  const { signIssue } = useTransactionSigning();
   const { balances } = useBalanceWatcher({
     enabled: !!user?.address,
   });
@@ -178,26 +179,36 @@ export const CreateToken = () => {
     try {
       const quantity = Math.floor(parseFloat(count) * 10 ** precision);
 
-      const tx: Record<string, unknown> = {
+      const issueParams: {
+        name: string;
+        description: string;
+        quantity: number;
+        decimals: number;
+        reissuable: boolean;
+        fee: number;
+        script?: string;
+      } = {
         decimals: precision,
         description,
         fee: totalFeeInWavelets,
         name,
         quantity,
         reissuable,
-        senderPublicKey: user.publicKey,
-        timestamp: Date.now(),
-        type: 3, // Issue transaction
-        version: 2,
       };
 
       if (hasAssetScript && script.trim()) {
-        tx['script'] = `base64:${btoa(script.trim())}`;
+        issueParams.script = `base64:${btoa(script.trim())}`;
       }
 
-      const result = await ds.broadcast(tx);
-      const assetId = (result as Record<string, unknown>)?.['id'] as string | undefined;
+      // signIssue uses the wallet seed to create a properly signed Issue tx
+      const signedTx = await signIssue(issueParams);
 
+      const broadcastResult = await transactionService.broadcast(signedTx);
+      if (broadcastResult.status === 'error') {
+        throw new Error(broadcastResult.error ?? 'Failed to broadcast transaction');
+      }
+
+      const assetId = (broadcastResult as Record<string, unknown>)?.['id'] as string | undefined;
       setIssuedAssetId(assetId ?? null);
       setSubmitSuccess(true);
       logger.info('[CreateToken] Token issued:', assetId);
