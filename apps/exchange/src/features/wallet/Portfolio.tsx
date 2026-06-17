@@ -751,7 +751,7 @@ export const Portfolio = () => {
           assetId={sendModal.assetId}
           assetName={sendModal.assetName}
           assetDecimals={sendModal.assetDecimals}
-          availableBalance={formatAmount(sendModal.availableBalance, sendModal.assetDecimals)}
+          availableBalance={sendModal.availableBalance.toString()}
         />
       )}
       <ReceiveAssetModalModern
