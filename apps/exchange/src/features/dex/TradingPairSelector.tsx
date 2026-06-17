@@ -110,16 +110,10 @@ const getDefaultPair = (): TradingPair => {
     (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
   );
 
-  // Fall back to first pair if DCC/CRC not found
-  return (
-    dccCrcPair ||
-    AVAILABLE_PAIRS[0] || {
-      amountAsset: '',
-      amountAssetName: 'DCC',
-      priceAsset: '',
-      priceAssetName: 'CRC',
-    }
-  );
+  // Fall back to first available pair, or null if no pairs are configured.
+  // Returning null lets the UI show "No pairs available" rather than
+  // a broken pair with empty asset IDs that causes API errors.
+  return dccCrcPair ?? AVAILABLE_PAIRS[0] ?? null;
 };
 
 const DEFAULT_PAIR = getDefaultPair();

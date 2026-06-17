@@ -93,9 +93,16 @@ export const TradingViewChart: React.FC = () => {
     });
 
     const symbolInfo = buildSymbolInfo();
-    if (!symbolInfo) {
+    const amountId = selectedPair?.amountAsset ?? '';
+    const priceId = selectedPair?.priceAsset ?? '';
+
+    if (!symbolInfo || !amountId || !priceId) {
       setLoadingState('error');
-      setErrorMessage('No trading pair selected.');
+      setErrorMessage(
+        !amountId || !priceId
+          ? 'No trading pairs configured for this network.'
+          : 'No trading pair selected.',
+      );
       return () => {
         chartRef.current = null;
         chart.remove();
