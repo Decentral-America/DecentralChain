@@ -50,7 +50,13 @@ export const TradingViewChart: React.FC = () => {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !selectedPair) return;
+    if (!container) return;
+
+    if (!selectedPair) {
+      setLoadingState('error');
+      setErrorMessage('No trading pairs configured for this network.');
+      return;
+    }
 
     setLoadingState('loading');
     setErrorMessage('');
