@@ -59,7 +59,7 @@ export function ErrorBoundary() {
 
 export function meta({ data }: { data?: LoaderData }) {
   if (!data?.block) return [{ title: 'Block — DecentralScan' }];
-  const height = data.block.height?.toLocaleString() ?? 'N/A';
+  const height = data.block.height?.toLocaleString('en-US') ?? 'N/A';
   const generator = data.block.generator ?? '';
   const txCount = data.block.transactionCount ?? 0;
   const title = `Block #${height} — DecentralScan`;
@@ -126,7 +126,7 @@ export default function BlockDetail() {
           <h1 className="text-4xl font-bold text-foreground">Block Details</h1>
           {block && (
             <p className="text-muted-foreground mt-1">
-              Height: {block.height?.toLocaleString() || 'N/A'}
+              Height: {block.height?.toLocaleString('en-US') || 'N/A'}
             </p>
           )}
         </div>
@@ -161,13 +161,15 @@ export default function BlockDetail() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Block Height</p>
-                  <p className="text-2xl font-bold">{block.height?.toLocaleString() || 'N/A'}</p>
+                  <p className="text-2xl font-bold">
+                    {block.height?.toLocaleString('en-US') || 'N/A'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Timestamp</p>
                   <p className="font-semibold">{fromUnix(block.timestamp)}</p>
                   <p className="text-sm text-muted-foreground">
-                    {block.timestamp ? new Date(block.timestamp).toLocaleString() : 'N/A'}
+                    {block.timestamp ? new Date(block.timestamp).toLocaleString('en-US') : 'N/A'}
                   </p>
                 </div>
                 <div className="md:col-span-2">
@@ -191,7 +193,9 @@ export default function BlockDetail() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Block Size</p>
-                  <p className="font-semibold">{(block.blocksize || 0).toLocaleString()} bytes</p>
+                  <p className="font-semibold">
+                    {(block.blocksize || 0).toLocaleString('en-US')} bytes
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Reward</p>

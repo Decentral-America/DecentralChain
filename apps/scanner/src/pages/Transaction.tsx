@@ -265,7 +265,7 @@ export default function Transaction() {
                           <p className="text-sm text-muted-foreground mb-2">{t('timestamp')}</p>
                           <p className="font-semibold">{fromUnix(displayTx.timestamp)}</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(displayTx.timestamp).toLocaleString()}
+                            {fromUnix(displayTx.timestamp)}
                           </p>
                         </div>
                         <div>
@@ -279,7 +279,7 @@ export default function Transaction() {
                               to={createPageUrl('BlockDetail', `?height=${displayTx.height}`)}
                               className="text-link hover:text-link-hover font-semibold"
                             >
-                              {displayTx.height.toLocaleString()}
+                              {displayTx.height.toLocaleString('en-US')}
                             </Link>
                           </div>
                         )}

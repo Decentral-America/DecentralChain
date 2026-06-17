@@ -62,7 +62,7 @@ export default function Node() {
         <InfoCard title={t('nodeVersion')} value={version?.version || 'N/A'} icon={Server} />
         <InfoCard
           title={t('stateHeight')}
-          value={status?.stateHeight?.toLocaleString() || 'N/A'}
+          value={status?.stateHeight?.toLocaleString('en-US') || 'N/A'}
           icon={Activity}
         />
         <InfoCard
@@ -103,27 +103,29 @@ export default function Node() {
               <div>
                 <p className="text-sm text-muted-foreground mb-2">{t('blockchainHeight')}</p>
                 <p className="font-semibold text-lg">
-                  {status?.blockchainHeight?.toLocaleString() || 'N/A'}
+                  {status?.blockchainHeight?.toLocaleString('en-US') || 'N/A'}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground mb-2">{t('stateHeight')}</p>
                 <p className="font-semibold text-lg">
-                  {status?.stateHeight?.toLocaleString() || 'N/A'}
+                  {status?.stateHeight?.toLocaleString('en-US') || 'N/A'}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground mb-2">{t('updatedTimestamp')}</p>
                 <p className="font-semibold">
                   {status?.updatedTimestamp
-                    ? new Date(status.updatedTimestamp).toLocaleString()
+                    ? new Date(status.updatedTimestamp).toLocaleString('en-US')
                     : 'N/A'}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground mb-2">{t('updatedDate')}</p>
                 <p className="font-semibold">
-                  {status?.updatedDate ? new Date(status.updatedDate).toLocaleString() : 'N/A'}
+                  {status?.updatedDate
+                    ? new Date(status.updatedDate).toLocaleString('en-US')
+                    : 'N/A'}
                 </p>
               </div>
             </div>

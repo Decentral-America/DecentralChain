@@ -396,7 +396,7 @@ export default function DistributionTool() {
                 <p className="text-sm text-muted-foreground">
                   {t('pagesFetched')
                     .replace('{pages}', String(fetchProgress.pages))
-                    .replace('{holders}', fetchProgress.holders.toLocaleString())}
+                    .replace('{holders}', fetchProgress.holders.toLocaleString('en-US'))}
                   {fetchProgress.hasMore && ` • ${t('morePagesLoading')}`}
                 </p>
               </div>
@@ -484,7 +484,7 @@ export default function DistributionTool() {
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold">
-                  {processedData.stats.holderCount.toLocaleString()}
+                  {processedData.stats.holderCount.toLocaleString('en-US')}
                 </p>
                 <p className="text-sm text-muted-foreground">{t('uniqueAddresses')}</p>
               </CardContent>
@@ -536,7 +536,7 @@ export default function DistributionTool() {
                   {t('holderList')}{' '}
                   {t('totalInParens').replace(
                     '{total}',
-                    processedData.stats.holderCount.toLocaleString(),
+                    processedData.stats.holderCount.toLocaleString('en-US'),
                   )}
                 </CardTitle>
                 <div className="flex gap-2 w-full md:w-auto">

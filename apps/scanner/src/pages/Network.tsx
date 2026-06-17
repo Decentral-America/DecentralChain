@@ -224,7 +224,7 @@ function OverviewTab() {
           icon={Activity}
           loading={blocksLoading}
           title={t('currentHeight')}
-          value={currentHeight.toLocaleString()}
+          value={currentHeight.toLocaleString('en-US')}
         />
         <StatCard
           color="bg-green-500/10"

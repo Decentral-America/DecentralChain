@@ -84,7 +84,7 @@ export function meta({ data }: { data?: LoaderData }) {
   const title = `${assetName} — DecentralScan`;
   const supply =
     typeof data.asset.quantity === 'string' || typeof data.asset.quantity === 'number'
-      ? `Supply: ${Number(data.asset.quantity).toLocaleString()}.`
+      ? `Supply: ${Number(data.asset.quantity).toLocaleString('en-US')}.`
       : '';
   const description = `Asset ${data.asset.assetId} on DecentralChain. ${supply} View holders, distribution, and transaction history.`;
   return [

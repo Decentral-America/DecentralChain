@@ -318,7 +318,7 @@ export default function Address() {
                               )}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {balance.balance?.toLocaleString()} {t('units')}
+                              {balance.balance?.toLocaleString('en-US')} {t('units')}
                             </p>
                           </div>
                         </Link>

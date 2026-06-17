@@ -101,7 +101,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard
           title={t('currentHeight')}
-          value={heightLoading ? '...' : currentHeight.toLocaleString()}
+          value={heightLoading ? '...' : currentHeight.toLocaleString('en-US')}
           icon={Activity}
           gradient="bg-primary"
         />
@@ -143,7 +143,7 @@ export default function Dashboard() {
                   to={createPageUrl('BlockDetail', `?height=${lastBlock.height}`)}
                   className="text-link hover:text-link-hover font-semibold"
                 >
-                  {lastBlock.height.toLocaleString()}
+                  {lastBlock.height.toLocaleString('en-US')}
                 </Link>
               </div>
               <div>
@@ -229,7 +229,7 @@ export default function Dashboard() {
                               to={createPageUrl('BlockDetail', `?height=${block.height}`)}
                               className="text-link hover:text-link-hover"
                             >
-                              {block.height.toLocaleString()}
+                              {block.height.toLocaleString('en-US')}
                             </Link>
                           </TableCell>
                           <TableCell>
