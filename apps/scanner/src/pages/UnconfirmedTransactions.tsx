@@ -170,7 +170,7 @@ export default function UnconfirmedTransactions() {
                       <TableCell className="text-right font-medium">
                         {tx.amount ? `${formatAmount(tx.amount)} DCC` : '-'}
                       </TableCell>
-                      <TableCell className="text-right">{formatAmount(tx.fee)}. DCC</TableCell>
+                      <TableCell className="text-right">{formatAmount(tx.fee)} DCC</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {timeAgo(tx.timestamp)}
                       </TableCell>
