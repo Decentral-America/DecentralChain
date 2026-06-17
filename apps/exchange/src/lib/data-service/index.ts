@@ -152,15 +152,21 @@ class App {
   }
 
   public getSignIdForMatcher(timestamp): Promise<string> {
-    return sign
-      .getSignatureApi()
-      .makeSignable({
-        data: {
-          timestamp,
-        },
-        type: SIGN_TYPE.MATCHER_ORDERS,
-      })
-      .getId();
+    const signApi = sign.getSignatureApi();
+    if (!signApi) return Promise.reject(new Error('No signature API available'));
+
+    // The matcher verifies: ed25519_verify(sig, publicKeyBytes ++ timestampBytes8, publicKey)
+    // Two bugs in the original:
+    //   1. getId() returns a blake2b hash — matcher needs an ed25519 signature → getSignature()
+    //   2. senderPublicKey was missing from data → bytes were computed over undefined bytes
+    return signApi.getPublicKey().then((senderPublicKey) =>
+      signApi
+        .makeSignable({
+          data: { senderPublicKey, timestamp },
+          type: SIGN_TYPE.MATCHER_ORDERS,
+        })
+        .getSignature(),
+    );
   }
 
   private _initializeDataManager(address: string): void {
