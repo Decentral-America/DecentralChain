@@ -256,7 +256,7 @@ export default function Transaction() {
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">{t('type')}</p>
                           <Badge variant="secondary" className="text-base">
-                            {displayTx.type}
+                            {txTypeName(displayTx.type)}
                           </Badge>
                         </div>
                         <div>
