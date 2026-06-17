@@ -5,8 +5,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import * as ds from 'data-service';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { Select } from '@/components/atoms/Select';
@@ -326,6 +327,17 @@ export const Transactions = () => {
   // Get unique assets for filter
   const uniqueAssets = Array.from(new Set(transactions?.map((tx) => tx.assetId) || []));
 
+  // Resolve asset names for non-DCC assets
+  const nonDccAssetIds = uniqueAssets.filter((id) => id !== 'DCC');
+  const { data: assetDetails } = useMultipleAssetDetails(nonDccAssetIds);
+  const assetNameMap = useMemo(() => {
+    const map: Record<string, string> = { DCC: 'DCC' };
+    assetDetails?.forEach((d) => {
+      if (d?.assetId && d?.name) map[d.assetId] = d.name;
+    });
+    return map;
+  }, [assetDetails]);
+
   // CSV Export Handler
   const handleExport = useCallback(async () => {
     if (!user?.address || isExporting) return;
@@ -507,7 +519,7 @@ export const Transactions = () => {
             options={[
               { label: 'All Assets', value: 'all' },
               ...uniqueAssets.map((asset) => ({
-                label: asset,
+                label: assetNameMap[asset] ?? asset,
                 value: asset,
               })),
             ]}
@@ -549,7 +561,7 @@ export const Transactions = () => {
                         {formatAmount(Math.abs(tx.amount))}
                       </Amount>
                     </td>
-                    <td>{tx.asset}</td>
+                    <td>{assetNameMap[tx.assetId] ?? tx.assetId}</td>
                     <td>{formatAmount(tx.fee)}</td>
                     <td>{new Date(tx.timestamp).toLocaleString()}</td>
                     <td>
