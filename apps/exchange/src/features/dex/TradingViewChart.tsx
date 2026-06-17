@@ -207,7 +207,19 @@ export const TradingViewChart: React.FC = () => {
         logger.error('[TradingView] Failed to initialize:', error);
         if (isMounted) {
           setLoadingState('error');
-          setErrorMessage(error instanceof Error ? error.message : 'Failed to load chart');
+          // TradingView throws internal errors (e.g. "There is no such element")
+          // that are meaningless to users. Show a clean message instead.
+          const raw = error instanceof Error ? error.message : String(error);
+          const isInternalTVError =
+            raw.includes('no such element') ||
+            raw.includes('charting_library') ||
+            raw.includes('Cannot read') ||
+            raw.length === 0;
+          setErrorMessage(
+            isInternalTVError
+              ? 'Chart library not available. Please ensure the TradingView charting library is installed.'
+              : raw,
+          );
         }
       }
     };
