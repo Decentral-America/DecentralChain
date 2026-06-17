@@ -37,4 +37,7 @@ export default [
   // ── Resource routes (no layout wrapper) ──────────────────────────────────
   // DCC-158 — Sitemap XML for search engine crawlers
   route('sitemap.xml', 'routes/sitemap.xml.ts'),
+  // Server-side geo proxy — proxies /api/geo/:ip/json to ipinfo.io to avoid
+  // CORS issues and centralise rate-limit budget with 24h in-memory cache.
+  route('api/geo/:ip/json', 'routes/api.geo.ip.ts'),
 ] satisfies RouteConfig;
