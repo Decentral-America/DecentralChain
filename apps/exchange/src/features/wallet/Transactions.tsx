@@ -179,7 +179,28 @@ const StatusCell = styled.span`
 
 export interface Transaction {
   id: string;
-  type: 'transfer' | 'receive' | 'send' | 'exchange' | 'swap' | 'lease' | 'cancel_lease';
+  type:
+    | 'transfer'
+    | 'receive'
+    | 'send'
+    | 'exchange'
+    | 'swap'
+    | 'lease'
+    | 'cancel_lease'
+    | 'issue'
+    | 'reissue'
+    | 'burn'
+    | 'data'
+    | 'set_script'
+    | 'set_asset_script'
+    | 'mass_transfer'
+    | 'create_alias'
+    | 'invoke_script'
+    | 'update_asset_info'
+    | 'sponsorship'
+    | 'genesis'
+    | 'payment'
+    | 'unknown';
   typeName?: string;
   amount: number;
   asset: string;
@@ -207,17 +228,34 @@ interface RawTxData {
   status: string;
 }
 
+// Maps data-service typeName strings to display type values.
+// Source: /Ecosystem/docs/README.md — Transaction Types table.
 const TX_TYPE_MAP: Record<string, Transaction['type']> = {
+  burn: 'burn',
   cancelLeasing: 'cancel_lease',
+  createAlias: 'create_alias',
+  data: 'data',
   exchange: 'exchange',
+  genesis: 'genesis',
+  invokeScript: 'invoke_script',
+  issue: 'issue',
   lease: 'lease',
+  leaseCancel: 'cancel_lease',
+  massTransfer: 'mass_transfer',
+  payment: 'payment',
+  reissue: 'reissue',
+  setAssetScript: 'set_asset_script',
+  setScript: 'set_script',
+  sponsorFee: 'sponsorship',
+  transfer: 'transfer', // handled below → send/receive
+  updateAssetInfo: 'update_asset_info',
 };
 
 function mapBlockchainTransaction(tx: unknown, userAddress: string): Transaction {
   const d = tx as RawTxData;
   let amount = d.amount?.getTokens?.().toNumber() ?? d.totalAmount?.getTokens?.().toNumber() ?? 0;
   const isIncoming = d.recipient === userAddress;
-  let txType: Transaction['type'] = TX_TYPE_MAP[d.typeName] ?? 'transfer';
+  let txType: Transaction['type'] = TX_TYPE_MAP[d.typeName] ?? 'unknown';
 
   if (d.typeName === 'transfer') {
     txType = isIncoming ? 'receive' : 'send';
@@ -499,7 +537,10 @@ export const Transactions = () => {
                   <tr key={tx.id}>
                     <td>
                       <TransactionType $type={tx.type}>
-                        {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                        {tx.type
+                          .split('_')
+                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                          .join(' ')}
                       </TransactionType>
                     </td>
                     <td>
