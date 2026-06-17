@@ -25,6 +25,7 @@ import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useBroadcast } from '@/hooks/useBroadcast';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
+import { formatAmount } from '@/utils/formatters';
 
 interface CreateAliasModalProps {
   open: boolean;
@@ -240,7 +241,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
                 <Typography variant="body2">
                   Insufficient balance. You need at least 0.001 DCC to create an alias.
                   <br />
-                  Current balance: <strong>{dccBalance.toFixed(8)} DCC</strong>
+                  Current balance: <strong>{formatAmount(dccBalance)} DCC</strong>
                 </Typography>
               </Alert>
             )}

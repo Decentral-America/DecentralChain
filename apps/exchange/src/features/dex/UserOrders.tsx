@@ -13,6 +13,7 @@ import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import { useDexStore } from '@/stores/dexStore';
+import { formatAmount } from '@/utils/formatters';
 
 /**
  * Container
@@ -366,12 +367,12 @@ export const UserOrders: React.FC = () => {
 
               <div>
                 <OrderLabel>Price</OrderLabel>
-                <OrderValue>{parseFloat(order.price).toFixed(8)}</OrderValue>
+                <OrderValue>{formatAmount(parseFloat(order.price))}</OrderValue>
               </div>
 
               <div>
                 <OrderLabel>Amount</OrderLabel>
-                <OrderValue>{parseFloat(order.amount).toFixed(8)}</OrderValue>
+                <OrderValue>{formatAmount(parseFloat(order.amount))}</OrderValue>
               </div>
 
               <div>

@@ -43,7 +43,7 @@ import { type MouseEvent, useMemo, useState } from 'react';
 import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { formatDcc, shortenAddress, toTimestamp } from '@/utils/formatters';
+import { formatAmount, formatDcc, shortenAddress, toTimestamp } from '@/utils/formatters';
 import {
   broadcastTransaction,
   createCancelLeaseTransaction,
@@ -339,7 +339,7 @@ export const Leasing = () => {
     // Use available balance (excludes already leased amount)
     if (numeric + LEASE_FEE_DCC > availableInDcc) {
       setAmountError(
-        `Insufficient balance (including fee). Available: ${availableInDcc.toFixed(8)} DCC`,
+        `Insufficient balance (including fee). Available: ${formatAmount(availableInDcc)} DCC`,
       );
       return false;
     }

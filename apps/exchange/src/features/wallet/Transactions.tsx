@@ -14,6 +14,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Stack } from '@/components/atoms/Stack';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { formatAmount } from '@/utils/formatters';
 
 const TransactionsContainer = styled.div`
   width: 100%;
@@ -545,11 +546,11 @@ export const Transactions = () => {
                     <td>
                       <Amount $positive={tx.amount >= 0}>
                         {tx.amount >= 0 ? '+' : ''}
-                        {tx.amount.toFixed(8)}
+                        {formatAmount(Math.abs(tx.amount))}
                       </Amount>
                     </td>
                     <td>{tx.asset}</td>
-                    <td>{tx.fee.toFixed(8)}</td>
+                    <td>{formatAmount(tx.fee)}</td>
                     <td>{new Date(tx.timestamp).toLocaleString()}</td>
                     <td>
                       <StatusCell>{tx.status}</StatusCell>

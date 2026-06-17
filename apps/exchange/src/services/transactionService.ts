@@ -5,6 +5,7 @@
 import { broadcast } from 'data-service';
 import { nodeClient } from '@/api/client';
 import { logger } from '@/lib/logger';
+import { formatAmount } from '@/utils/formatters';
 
 /**
  * Transaction Type Enum
@@ -172,7 +173,7 @@ export const transactionService = {
   formatTransaction: (tx: Transaction): string => {
     const type = transactionService.getTypeName(tx.type);
     const date = new Date(tx.timestamp).toLocaleString();
-    const fee = (tx.fee / 100000000).toFixed(8);
+    const fee = formatAmount(tx.fee / 100000000);
 
     return `${type} | ${date} | Fee: ${fee} DCC`;
   },

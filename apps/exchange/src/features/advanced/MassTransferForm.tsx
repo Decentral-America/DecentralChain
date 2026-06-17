@@ -20,6 +20,7 @@ import {
 } from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { formatAmount } from '@/utils/formatters';
 
 /**
  * Styled Components
@@ -384,11 +385,11 @@ export const MassTransferForm: React.FC = () => {
             </SummaryRow>
             <SummaryRow>
               <SummaryLabel>Total Amount:</SummaryLabel>
-              <SummaryValue>{totalAmount.toFixed(8)} DCC</SummaryValue>
+              <SummaryValue>{formatAmount(totalAmount)} DCC</SummaryValue>
             </SummaryRow>
             <SummaryRow>
               <SummaryLabel>Estimated Fee:</SummaryLabel>
-              <SummaryValue>{estimatedFee.toFixed(4)} DCC</SummaryValue>
+              <SummaryValue>{formatAmount(estimatedFee, 4)} DCC</SummaryValue>
             </SummaryRow>
           </SummaryBox>
 
