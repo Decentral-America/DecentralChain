@@ -184,16 +184,19 @@ export const Leasing = () => {
   });
 
   // Extract balance values from balance watcher
-  // 'regular' is the total spendable balance (not leased out)
-  // 'generating' is the amount currently leased out
-  // 'available' is regular balance minus any pending transactions
-  const regularBalance = balances?.regular ?? 0; // Spendable balance
-  const leasedBalance = balances?.generating ?? 0; // Currently leased out
-  const availableBalance = balances?.available ?? regularBalance; // Available for transactions
+  // DCC node balance fields:
+  //   regular   = total wallet balance (regular + leaseIn - leaseOut would be generating)
+  //   available = regular - leaseOut  (what can be spent / leased further)
+  //   generating= regular + leaseIn - leaseOut  (NOT leased-out amount — do not use for that)
+  //   leaseOut  = amount delegated OUT to nodes  ← correct "currently leased" figure
+  //   leaseIn   = amount leased IN by others     (rare for end-user wallets)
+  const regularBalance = balances?.regular ?? 0;
+  const leasedBalance = balances?.leaseOut ?? 0; // Amount this wallet leased out to nodes
+  const availableBalance = balances?.available ?? regularBalance;
 
-  const balanceInDcc = regularBalance / DCC_DECIMALS; // Spendable in DCC
-  const leasedInDcc = leasedBalance / DCC_DECIMALS; // Leased out in DCC
-  const availableInDcc = availableBalance / DCC_DECIMALS; // Available for new leases
+  const balanceInDcc = regularBalance / DCC_DECIMALS;
+  const leasedInDcc = leasedBalance / DCC_DECIMALS;
+  const availableInDcc = availableBalance / DCC_DECIMALS;
 
   const allLeasingTxs = useMemo(() => {
     if (!recentTxs) return [];
@@ -632,7 +635,7 @@ export const Leasing = () => {
                         fontWeight: 600,
                       }}
                     >
-                      {formatDcc(balanceInDcc + leasedInDcc, 4)} DCC
+                      {formatDcc(balanceInDcc, 4)} DCC
                     </Typography>
                     <Typography
                       variant="caption"
