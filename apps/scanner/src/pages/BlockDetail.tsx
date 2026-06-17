@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowLeft, Box } from 'lucide-react';
 import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { ClientNumber } from '@/components/ClientNumber';
 import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -126,7 +127,7 @@ export default function BlockDetail() {
           <h1 className="text-4xl font-bold text-foreground">Block Details</h1>
           {block && (
             <p className="text-muted-foreground mt-1">
-              Height: {block.height?.toLocaleString('en-US') || 'N/A'}
+              Height: <ClientNumber value={block.height} fallback="N/A" />
             </p>
           )}
         </div>
@@ -162,14 +163,14 @@ export default function BlockDetail() {
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Block Height</p>
                   <p className="text-2xl font-bold">
-                    {block.height?.toLocaleString('en-US') || 'N/A'}
+                    <ClientNumber value={block.height} fallback="N/A" />
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Timestamp</p>
                   <p className="font-semibold">{fromUnix(block.timestamp)}</p>
                   <p className="text-sm text-muted-foreground">
-                    {block.timestamp ? new Date(block.timestamp).toLocaleString('en-US') : 'N/A'}
+                    {block.timestamp ? fromUnix(block.timestamp) : 'N/A'}
                   </p>
                 </div>
                 <div className="md:col-span-2">
@@ -194,7 +195,7 @@ export default function BlockDetail() {
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Block Size</p>
                   <p className="font-semibold">
-                    {(block.blocksize || 0).toLocaleString('en-US')} bytes
+                    <ClientNumber value={block.blocksize ?? 0} /> bytes
                   </p>
                 </div>
                 <div>

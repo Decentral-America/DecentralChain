@@ -75,8 +75,7 @@ export default function Blocks() {
             <CardTitle>{t('blockExplorer')}</CardTitle>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
-                {t('showingBlocks')} {fromHeight.toLocaleString('en-US')} -{' '}
-                {toHeight.toLocaleString('en-US')}
+                {t('showingBlocks')} {fromHeight.toLocaleString()} - {toHeight.toLocaleString()}
               </span>
             </div>
           </div>
@@ -133,7 +132,7 @@ export default function Blocks() {
                               to={createPageUrl('BlockDetail', `?height=${block.height}`)}
                               className="text-link hover:text-link-hover"
                             >
-                              {block.height.toLocaleString('en-US')}
+                              {block.height.toLocaleString()}
                             </Link>
                           </TableCell>
                           <TableCell>
@@ -189,9 +188,9 @@ export default function Blocks() {
               {t('pageOf')
                 .replace(
                   '{current}',
-                  (Math.floor((fromHeight - 1) / pageSize) + 1).toLocaleString('en-US'),
+                  (Math.floor((fromHeight - 1) / pageSize) + 1).toLocaleString(),
                 )
-                .replace('{total}', Math.ceil(currentHeight / pageSize).toLocaleString('en-US'))}
+                .replace('{total}', Math.ceil(currentHeight / pageSize).toLocaleString())}
             </span>
 
             <div className="flex gap-2">

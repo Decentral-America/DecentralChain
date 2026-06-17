@@ -218,7 +218,7 @@ export default function DexPairs() {
               <div>
                 <p className="text-sm text-muted-foreground mb-1">{t('totalTrades24h')}</p>
                 <p className="text-2xl font-bold">
-                  {loading ? '...' : totalTrades.toLocaleString('en-US')}
+                  {loading ? '...' : totalTrades.toLocaleString()}
                 </p>
               </div>
               <div className="p-3 bg-purple-600/10 rounded-xl">
@@ -386,7 +386,7 @@ export default function DexPairs() {
                       <TableCell className="font-mono text-sm">{pair.low.toFixed(8)}</TableCell>
                       <TableCell className="font-semibold">{pair.volume.toFixed(2)}</TableCell>
                       <TableCell className="text-muted-foreground">
-                        {pair.txsCount.toLocaleString('en-US')}
+                        {pair.txsCount.toLocaleString()}
                       </TableCell>
                     </TableRow>
                   ))}
