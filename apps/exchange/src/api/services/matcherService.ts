@@ -317,8 +317,7 @@ export const useUserOrders = (
     queryKey: ['orders', publicKey, amountAsset, priceAsset, matcherSign?.timestamp],
     refetchInterval: options?.refetchInterval ?? 10000,
     refetchOnWindowFocus: false,
-    retry: 2,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: 0, // matcher auth fails fast — never retry, prevents 400 loop
     staleTime: 5000,
   });
 };
