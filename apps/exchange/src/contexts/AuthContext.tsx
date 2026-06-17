@@ -549,8 +549,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // 6.5. Sync network configuration
         await syncNetworkConfig(users[userHash].settings);
 
-        // 7. Check and refresh matcher signature if needed
-        let matcherSign = users[userHash].matcherSign;
+        // 7. Always regenerate matcher signature on session restore.
+        // Cached signatures may have been generated with the old broken
+        // getId() (blake2b hash) instead of getSignature() (ed25519).
+        // The cost is negligible and avoids stale/broken auth across deploys.
+        let matcherSign = null as (typeof users)[typeof userHash]['matcherSign'];
         if (shouldRefreshMatcherSign(matcherSign)) {
           logger.debug('[Auth] Refreshing expired matcher signature on login');
           matcherSign = await generateMatcherSign();
