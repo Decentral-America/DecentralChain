@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
 import { fetchBlockById, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
+import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
@@ -250,7 +251,9 @@ export default function BlockDetail() {
                         >
                           {truncate(tx.id, 16)}
                         </Link>
-                        <p className="text-sm text-muted-foreground mt-1">Type: {tx.type}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Type: {txTypeName(tx.type)}
+                        </p>
                       </div>
                       <Badge variant="secondary">Fee: {tx.fee || 0}</Badge>
                     </div>

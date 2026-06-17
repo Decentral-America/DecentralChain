@@ -31,6 +31,7 @@ import {
 } from '@/hooks/useAddress';
 import { useAddressTransactions } from '@/hooks/useTransactions';
 import { fetchAssetsBalance, type TAssetsBalance } from '@/lib/api';
+import { txTypeName } from '@/lib/transactionTypes';
 import { type Transaction } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -433,7 +434,7 @@ export default function Address() {
                               </Link>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="secondary">{tx.type}</Badge>
+                              <Badge variant="secondary">{txTypeName(tx.type)}</Badge>
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
                               {fromUnix(tx.timestamp)}

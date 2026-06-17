@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchBlockAt, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
 import { logError, logWarn } from '@/lib/error-logger';
+import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext'; // Added import
 import CopyButton from '../components/shared/CopyButton';
@@ -284,7 +285,7 @@ function TransactionList({ blockHeight }: { blockHeight: number }): ReactElement
             <div className="flex-1 min-w-0">
               <code className="text-xs font-mono truncate block">{truncate(tx.id, 20)}</code>
               <p className="text-xs text-muted-foreground mt-1">
-                {t('type')}: {tx.type}
+                {t('type')}: {txTypeName(tx.type)}
               </p>
             </div>
             {tx.fee && (

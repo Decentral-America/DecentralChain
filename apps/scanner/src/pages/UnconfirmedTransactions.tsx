@@ -19,6 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { fetchUnconfirmedTransactions } from '@/lib/api';
+import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
@@ -140,7 +141,7 @@ export default function UnconfirmedTransactions() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{tx.type}</Badge>
+                        <Badge variant="secondary">{txTypeName(tx.type)}</Badge>
                       </TableCell>
                       <TableCell>
                         {tx.sender ? (
