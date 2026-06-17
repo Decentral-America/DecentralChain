@@ -698,17 +698,15 @@ export const Portfolio = () => {
                           >
                             Send
                           </Button>
-                          {asset.isBaseAsset && (
-                            <Button
-                              size="medium"
-                              variant="text"
-                              startIcon={<CallReceivedOutlined />}
-                              onClick={() => setReceiveOpen(true)}
-                              sx={{ fontWeight: 600 }}
-                            >
-                              Receive
-                            </Button>
-                          )}
+                          <Button
+                            size="medium"
+                            variant="text"
+                            startIcon={<CallReceivedOutlined />}
+                            onClick={() => setReceiveOpen(true)}
+                            sx={{ fontWeight: 600 }}
+                          >
+                            Receive
+                          </Button>
                         </Stack>
                       </Grid>
                     </Grid>
