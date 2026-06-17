@@ -86,7 +86,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           />
         )}
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <QueryClientProvider client={queryClientInstance}>

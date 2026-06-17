@@ -269,7 +269,9 @@ export default function Transaction() {
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">{t('fee')}</p>
-                          <p className="font-semibold">{formatAmount(Number(displayTx.fee))} DC</p>
+                          <p className="font-semibold">
+                            {formatAmount(Number(displayTx.fee))}. DCC
+                          </p>
                         </div>
                         {displayTx.height && (
                           <div>
@@ -319,7 +321,7 @@ export default function Transaction() {
                           <div>
                             <p className="text-sm text-muted-foreground mb-2">{t('amount')}</p>
                             <p className="text-2xl font-bold">
-                              {formatAmount(displayTx.amount)} DC
+                              {formatAmount(displayTx.amount)} DCC
                             </p>
                           </div>
                         )}
@@ -441,7 +443,7 @@ export default function Transaction() {
                             {tx.sender ? truncate(tx.sender, 12) : '—'}
                           </td>
                           <td className="p-4">
-                            {tx.fee ? `${formatAmount(Number(tx.fee))} DC` : '—'}
+                            {tx.fee ? `${formatAmount(Number(tx.fee))} DCC` : '—'}
                           </td>
                           <td className="p-4 text-muted-foreground">
                             {tx.timestamp ? timeAgo(tx.timestamp) : '—'}

@@ -439,7 +439,7 @@ export default function Address() {
                               {fromUnix(tx.timestamp)}
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              {formatAmount(tx.fee)} DC
+                              {formatAmount(tx.fee)} DCC
                             </TableCell>
                           </TableRow>
                         ))}
@@ -536,7 +536,7 @@ export default function Address() {
                               </Link>
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              {formatAmount(lease.amount)} DC
+                              {formatAmount(lease.amount)} DCC
                             </TableCell>
                             <TableCell>
                               <Badge variant="secondary" className="bg-success/10 text-success">
