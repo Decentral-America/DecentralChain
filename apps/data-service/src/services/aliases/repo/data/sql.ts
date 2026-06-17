@@ -33,7 +33,7 @@ const selectFilteredAliases = (filtered: Knex.QueryBuilder) =>
     counted_aliases: pg({ t: 'txs_10' })
       .select('t.alias')
       .min({ address: 't.sender' }) // first sender
-      .count({ duplicates: 't.sender' }) // count senders grouped by alias
+      .column(pg.raw('COUNT("t"."sender")::bigint AS "duplicates"')) // cast to bigint for BigNumber schema
       .column({ rn: pg.raw('row_number() over (order by min(t.uid))') }) // rn for pagination
       .whereIn('t.uid', filtered)
       .groupBy('t.alias'),
