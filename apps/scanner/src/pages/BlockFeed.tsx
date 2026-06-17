@@ -167,7 +167,9 @@ export default function BlockFeed() {
                       <div className="flex items-center gap-4">
                         <div className="bg-primary text-primary-foreground rounded-lg px-4 py-2">
                           <p className="text-xs font-medium">{t('height')}</p>
-                          <p className="text-2xl font-bold">{block.height.toLocaleString()}</p>
+                          <p className="text-2xl font-bold">
+                            {block.height.toLocaleString('en-US')}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">
