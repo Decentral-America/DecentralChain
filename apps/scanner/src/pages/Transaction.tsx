@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { ClientNumber } from '@/components/ClientNumber';
 import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -279,7 +280,7 @@ export default function Transaction() {
                               to={createPageUrl('BlockDetail', `?height=${displayTx.height}`)}
                               className="text-link hover:text-link-hover font-semibold"
                             >
-                              {displayTx.height.toLocaleString('en-US')}
+                              <ClientNumber value={displayTx.height} />
                             </Link>
                           </div>
                         )}

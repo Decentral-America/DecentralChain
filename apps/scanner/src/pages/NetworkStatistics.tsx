@@ -236,7 +236,7 @@ export default function NetworkStatistics() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-2">{t('currentHeight')}</p>
-              <p className="font-semibold text-lg">{currentHeight.toLocaleString('en-US')}</p>
+              <p className="font-semibold text-lg">{currentHeight.toLocaleString()}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-2">{t('blockGeneratorStatus')}</p>
@@ -380,9 +380,7 @@ export default function NetworkStatistics() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
               <p className="text-sm text-muted-foreground mb-2">{t('totalTransactions')}</p>
-              <p className="text-2xl font-bold">
-                {analytics?.totalTxs.toLocaleString('en-US') || '...'}
-              </p>
+              <p className="text-2xl font-bold">{analytics?.totalTxs.toLocaleString() || '...'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-2">{t('blocksAnalyzed')}</p>
@@ -398,7 +396,7 @@ export default function NetworkStatistics() {
               <p className="text-sm text-muted-foreground mb-2">{t('maxBlockSize')}</p>
               <p className="text-2xl font-bold">
                 {analytics?.maxBlockSize
-                  ? `${analytics.maxBlockSize.toLocaleString('en-US')} ${t('bytes')}`
+                  ? `${analytics.maxBlockSize.toLocaleString()} ${t('bytes')}`
                   : '...'}
               </p>
             </div>
