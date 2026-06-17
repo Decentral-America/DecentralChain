@@ -49,6 +49,13 @@ export const TradingViewChart: React.FC = () => {
   }, [selectedPair]);
 
   useEffect(() => {
+    // Per-effect mounted flag — guards against the race condition where a
+    // new effect run creates a new chart while the old getBars callback is
+    // still in flight. chartRef.current would point to the NEW chart, so
+    // checking it alone isn't sufficient; the old candleSeries would still
+    // be disposed. This flag is tied to THIS effect run's lifetime.
+    let effectMounted = true;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -123,9 +130,10 @@ export const TradingViewChart: React.FC = () => {
       DEFAULT_RESOLUTION,
       { firstDataRequest: true, from, to },
       (bars) => {
-        // Guard: component may have unmounted while getBars was in flight.
-        // Calling setData on a disposed chart throws "Object is disposed".
-        if (!chartRef.current) return;
+        // Guard against both unmount and pair-change races.
+        // chartRef.current could point to a NEW chart while this OLD
+        // candleSeries is already disposed — effectMounted covers that.
+        if (!effectMounted) return;
         try {
           const candles = bars
             .filter((b) => b.open != null && b.close != null)
@@ -164,14 +172,12 @@ export const TradingViewChart: React.FC = () => {
     );
 
     return () => {
+      effectMounted = false;
       chartRef.current = null;
-      // lightweight-charts may have a pending requestAnimationFrame when
-      // chart.remove() is called. If so, the RAF fires on the disposed
-      // chart and throws "Object is disposed". Catch it silently.
       try {
         chart.remove();
       } catch {
-        // already disposed — ignore
+        // RAF may fire after remove — ignore
       }
     };
   }, [selectedPair, buildSymbolInfo]);
