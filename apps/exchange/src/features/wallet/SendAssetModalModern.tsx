@@ -534,7 +534,11 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                 mt: 0.5,
               }}
             >
-              Available: {parseFloat(availableBalance).toFixed(assetDecimals)} {assetName}
+              Available:{' '}
+              {Number(availableBalance).toLocaleString('en-US', {
+                maximumFractionDigits: assetDecimals,
+              })}{' '}
+              {assetName}
             </Typography>
           </Box>
 
