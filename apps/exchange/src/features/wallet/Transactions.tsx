@@ -200,6 +200,7 @@ export interface Transaction {
     | 'sponsorship'
     | 'genesis'
     | 'payment'
+    | 'ethereum_tx'
     | 'unknown';
   typeName?: string;
   amount: number;
@@ -246,6 +247,7 @@ const TX_TYPE_MAP: Record<number, Transaction['type']> = {
   15: 'set_asset_script',
   16: 'invoke_script',
   17: 'update_asset_info',
+  18: 'ethereum_tx',
 };
 
 function mapBlockchainTransaction(tx: unknown, userAddress: string): Transaction {
