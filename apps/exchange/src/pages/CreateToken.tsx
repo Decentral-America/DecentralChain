@@ -47,9 +47,11 @@ import {
   Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import * as ds from 'data-service';
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { landingTheme } from '@/theme/landingTheme';
 
@@ -114,6 +116,10 @@ export const CreateToken = () => {
   const [script, setScript] = useState('');
   const [agreeConditions, setAgreeConditions] = useState(false);
   const [nameWarning, setNameWarning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [issuedAssetId, setIssuedAssetId] = useState<string | null>(null);
 
   // Get user and balance data
   const { user } = useAuth();
@@ -163,10 +169,48 @@ export const CreateToken = () => {
     setActiveStep((prev) => prev - 1);
   };
 
-  const handleSubmit = () => {
-    // Token creation requires the new node implementation — not yet available.
-    // This handler is intentionally a no-op until the issue transaction endpoint
-    // is wired to the on-chain IssueTransaction flow.
+  const handleSubmit = async () => {
+    if (!user || !agreeConditions || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const quantity = Math.floor(parseFloat(count) * 10 ** precision);
+
+      const tx: Record<string, unknown> = {
+        decimals: precision,
+        description,
+        fee: totalFeeInWavelets,
+        name,
+        quantity,
+        reissuable,
+        senderPublicKey: user.publicKey,
+        timestamp: Date.now(),
+        type: 3, // Issue transaction
+        version: 2,
+      };
+
+      if (hasAssetScript && script.trim()) {
+        tx['script'] = `base64:${btoa(script.trim())}`;
+      }
+
+      const result = await ds.broadcast(tx);
+      const assetId = (result as Record<string, unknown>)?.['id'] as string | undefined;
+
+      setIssuedAssetId(assetId ?? null);
+      setSubmitSuccess(true);
+      logger.info('[CreateToken] Token issued:', assetId);
+    } catch (err) {
+      logger.error('[CreateToken] Issue transaction failed:', err);
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : 'Token creation failed. Check your balance and try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -1299,32 +1343,39 @@ export const CreateToken = () => {
                     Next
                   </Button>
                 ) : (
-                  <Tooltip title="Token creation requires node integration — coming soon">
-                    <span>
-                      <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={<AddCircleOutlined />}
-                        onClick={handleSubmit}
-                        disabled={true}
-                        sx={{
-                          '&:disabled': {
-                            background: '#E5E7EB',
-                            color: '#9CA3AF',
-                          },
-                          '&:hover': {
-                            background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
-                          },
-                          background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
-                          minWidth: 160,
-                        }}
-                      >
-                        Create Token
-                      </Button>
-                    </span>
-                  </Tooltip>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<AddCircleOutlined />}
+                    onClick={handleSubmit}
+                    disabled={!agreeConditions || isSubmitting || submitSuccess}
+                    sx={{
+                      '&:disabled': { background: '#E5E7EB', color: '#9CA3AF' },
+                      '&:hover': {
+                        background: 'linear-gradient(180deg, #4a35c0 0%, #32219f 100%)',
+                      },
+                      background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+                      minWidth: 160,
+                    }}
+                  >
+                    {isSubmitting ? 'Creating...' : submitSuccess ? 'Created!' : 'Create Token'}
+                  </Button>
                 )}
               </Stack>
+
+              {submitError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {submitError}
+                </Alert>
+              )}
+              {submitSuccess && issuedAssetId && (
+                <Alert severity="success" sx={{ mt: 2 }}>
+                  Token created! Asset ID:{' '}
+                  <strong style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                    {issuedAssetId}
+                  </strong>
+                </Alert>
+              )}
             </Grid>
           </Grid>
         </Container>
