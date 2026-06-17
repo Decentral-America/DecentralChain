@@ -165,7 +165,14 @@ export const TradingViewChart: React.FC = () => {
 
     return () => {
       chartRef.current = null;
-      chart.remove();
+      // lightweight-charts may have a pending requestAnimationFrame when
+      // chart.remove() is called. If so, the RAF fires on the disposed
+      // chart and throws "Object is disposed". Catch it silently.
+      try {
+        chart.remove();
+      } catch {
+        // already disposed — ignore
+      }
     };
   }, [selectedPair, buildSymbolInfo]);
 

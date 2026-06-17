@@ -142,12 +142,13 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
       // matcherAuthFailed flag. These must not appear in the console at all.
       beforeBreadcrumb(breadcrumb) {
         const url = (breadcrumb.data?.['url'] as string | undefined) ?? '';
-        if (
-          breadcrumb.category === 'fetch' &&
-          url.includes('matcher') &&
-          url.includes('balance/reserved')
-        ) {
-          return null;
+        if (breadcrumb.category === 'fetch' && url.includes('matcher')) {
+          // Suppress expected 400s from matcher auth endpoints.
+          // These fire once on DEX load, are handled by matcherAuthFailed flag,
+          // and must not generate Sentry noise.
+          if (url.includes('balance/reserved') || url.includes('/publicKey/')) {
+            return null;
+          }
         }
         return breadcrumb;
       },
