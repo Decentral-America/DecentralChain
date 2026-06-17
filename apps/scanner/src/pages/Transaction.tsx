@@ -269,9 +269,7 @@ export default function Transaction() {
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">{t('fee')}</p>
-                          <p className="font-semibold">
-                            {formatAmount(Number(displayTx.fee))}. DCC
-                          </p>
+                          <p className="font-semibold">{formatAmount(Number(displayTx.fee))} DCC</p>
                         </div>
                         {displayTx.height && (
                           <div>

@@ -195,7 +195,7 @@ export default function BlockDetail() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Reward</p>
-                  <p className="font-semibold">{block.reward || 0}. DCC</p>
+                  <p className="font-semibold">{block.reward || 0} DCC</p>
                 </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-muted-foreground mb-2">Generator</p>

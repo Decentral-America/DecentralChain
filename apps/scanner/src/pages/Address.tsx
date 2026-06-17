@@ -245,7 +245,7 @@ export default function Address() {
                     ) : (
                       <p className="text-2xl font-bold">
                         {value != null
-                          ? value.toLocaleString(undefined, { maximumFractionDigits: 8 })
+                          ? value.toLocaleString('en-US', { maximumFractionDigits: 8 })
                           : '—'}
                         <span className="text-sm font-normal text-muted-foreground ml-1">DCC</span>
                       </p>
