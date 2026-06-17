@@ -14,7 +14,9 @@ export function formatAmount(
 ): string {
   if (!amount && amount !== 0) return '0';
   const value = Number(amount) / 10 ** decimals;
-  return value.toLocaleString(undefined, {
+  // Use a fixed locale so server and client produce identical output,
+  // preventing React hydration error #418 (text content mismatch).
+  return value.toLocaleString('en-US', {
     maximumFractionDigits: decimals,
     minimumFractionDigits: 0,
   });
