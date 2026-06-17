@@ -217,7 +217,6 @@ const ITEMS_PER_PAGE = 10;
 interface RawTxData {
   id: string;
   type: number;
-  typeName: string;
   sender: string;
   recipient?: string;
   amount?: { getTokens: () => { toNumber: () => number } };
@@ -228,39 +227,37 @@ interface RawTxData {
   status: string;
 }
 
-// Maps data-service typeName strings to display type values.
-// Source: /Ecosystem/docs/README.md — Transaction Types table.
-const TX_TYPE_MAP: Record<string, Transaction['type']> = {
-  burn: 'burn',
-  cancelLeasing: 'cancel_lease',
-  createAlias: 'create_alias',
-  data: 'data',
-  exchange: 'exchange',
-  genesis: 'genesis',
-  invokeScript: 'invoke_script',
-  issue: 'issue',
-  lease: 'lease',
-  leaseCancel: 'cancel_lease',
-  massTransfer: 'mass_transfer',
-  payment: 'payment',
-  reissue: 'reissue',
-  setAssetScript: 'set_asset_script',
-  setScript: 'set_script',
-  sponsorFee: 'sponsorship',
-  transfer: 'transfer', // handled below → send/receive
-  updateAssetInfo: 'update_asset_info',
+// Maps numeric transaction type → display type. Source: TRANSACTION_TYPE_NUMBER constants.
+const TX_TYPE_MAP: Record<number, Transaction['type']> = {
+  1: 'genesis',
+  2: 'transfer', // SEND_OLD → handled below as send/receive
+  3: 'issue',
+  4: 'transfer', // handled below → send/receive
+  5: 'reissue',
+  6: 'burn',
+  7: 'exchange',
+  8: 'lease',
+  9: 'cancel_lease',
+  10: 'create_alias',
+  11: 'mass_transfer',
+  12: 'data',
+  13: 'set_script',
+  14: 'sponsorship',
+  15: 'set_asset_script',
+  16: 'invoke_script',
+  17: 'update_asset_info',
 };
 
 function mapBlockchainTransaction(tx: unknown, userAddress: string): Transaction {
   const d = tx as RawTxData;
   let amount = d.amount?.getTokens?.().toNumber() ?? d.totalAmount?.getTokens?.().toNumber() ?? 0;
   const isIncoming = d.recipient === userAddress;
-  let txType: Transaction['type'] = TX_TYPE_MAP[d.typeName] ?? 'unknown';
+  let txType: Transaction['type'] = TX_TYPE_MAP[d.type] ?? 'unknown';
 
-  if (d.typeName === 'transfer') {
+  if (d.type === 4 || d.type === 2) {
     txType = isIncoming ? 'receive' : 'send';
     amount = isIncoming ? Math.abs(amount) : -Math.abs(amount);
-  } else if (d.typeName === 'lease') {
+  } else if (d.type === 8) {
     amount = -Math.abs(amount);
   }
 
