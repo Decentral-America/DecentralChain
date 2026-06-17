@@ -11,6 +11,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { formatAmount } from '@/utils/formatters';
 
 interface BurnAssetModalProps {
   isOpen: boolean;
@@ -115,7 +116,7 @@ export function BurnAssetModal({
             </MaxButton>
           </InputContainer>
           <BalanceInfo>
-            Available: {maxAmount.toFixed(decimals)} {assetName ?? assetId}
+            Available: {formatAmount(maxAmount, decimals)} {assetName ?? assetId}
           </BalanceInfo>
         </FormSection>
 
@@ -139,7 +140,7 @@ export function BurnAssetModal({
             <InfoRow>
               <InfoLabel>Amount to Burn:</InfoLabel>
               <InfoValue $highlight>
-                {parseFloat(amount).toFixed(decimals)} {assetName ?? assetId}
+                {formatAmount(parseFloat(amount), decimals)} {assetName ?? assetId}
               </InfoValue>
             </InfoRow>
           )}

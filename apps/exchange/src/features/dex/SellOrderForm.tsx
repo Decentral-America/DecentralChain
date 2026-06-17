@@ -19,6 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { type SignedOrderResult, useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { useDexStore } from '@/stores/dexStore';
+import { formatAmount } from '@/utils/formatters';
 
 /**
  * Form container
@@ -293,7 +294,7 @@ export const SellOrderForm: React.FC = () => {
 
     if (amountNum > availableBalance) {
       setError(
-        `Insufficient balance. Available: ${availableBalance.toFixed(8)} ${amountAssetName}`,
+        `Insufficient balance. Available: ${formatAmount(availableBalance)} ${amountAssetName}`,
       );
       return false;
     }
@@ -453,7 +454,7 @@ export const SellOrderForm: React.FC = () => {
           <BalanceLabel>Available</BalanceLabel>
           <BalanceValue>
             <BalanceAmount>
-              {availableBalance.toFixed(8)} {amountAssetName}
+              {formatAmount(availableBalance)} {amountAssetName}
             </BalanceAmount>
           </BalanceValue>
         </BalanceRow>
@@ -522,7 +523,7 @@ export const SellOrderForm: React.FC = () => {
         <InfoRow>
           <InfoLabel>Total (Receive)</InfoLabel>
           <InfoValue>
-            {total.toFixed(8)} {priceAssetName}
+            {formatAmount(total)} {priceAssetName}
           </InfoValue>
         </InfoRow>
 

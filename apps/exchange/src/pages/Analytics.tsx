@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { formatAmount } from '@/utils/formatters';
 
 export const Analytics = () => {
   const { user } = useAuth();
@@ -75,7 +76,7 @@ export const Analytics = () => {
       icon: <AccountBalanceWallet />,
       label: 'Total Portfolio Value',
       trend: 'neutral' as const,
-      value: isLoadingBalance ? <Skeleton width={100} /> : `${portfolioValue.toFixed(8)} DCC`,
+      value: isLoadingBalance ? <Skeleton width={100} /> : `${formatAmount(portfolioValue)} DCC`,
     },
     {
       change: 'Generating Balance',
@@ -85,7 +86,7 @@ export const Analytics = () => {
       value: isLoadingBalance ? (
         <Skeleton width={100} />
       ) : (
-        `${((balances?.generating || 0) / 100000000).toFixed(8)} DCC`
+        `${formatAmount((balances?.generating || 0) / 100000000)} DCC`
       ),
     },
     {

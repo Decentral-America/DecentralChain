@@ -54,6 +54,7 @@ import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { landingTheme } from '@/theme/landingTheme';
+import { formatAmount } from '@/utils/formatters';
 
 const steps = [
   {
@@ -1168,7 +1169,7 @@ export const CreateToken = () => {
                                   fontWeight: 700,
                                 }}
                               >
-                                {issueFeeInDCC.toFixed(8)} DCC
+                                {formatAmount(issueFeeInDCC)} DCC
                               </Typography>
                             </Stack>
 
@@ -1205,7 +1206,7 @@ export const CreateToken = () => {
                                     fontWeight: 700,
                                   }}
                                 >
-                                  +{scriptFeeInDCC.toFixed(8)} DCC
+                                  +{formatAmount(scriptFeeInDCC)} DCC
                                 </Typography>
                               </Stack>
                             )}
@@ -1235,7 +1236,7 @@ export const CreateToken = () => {
                                   fontWeight: 700,
                                 }}
                               >
-                                {totalFeeInDCC.toFixed(8)} DCC
+                                {formatAmount(totalFeeInDCC)} DCC
                               </Typography>
                             </Stack>
 
@@ -1264,7 +1265,7 @@ export const CreateToken = () => {
                                     fontWeight: 600,
                                   }}
                                 >
-                                  {userBalanceInDCC.toFixed(8)} DCC
+                                  {formatAmount(userBalanceInDCC)} DCC
                                 </Typography>
                               </Stack>
                             )}
@@ -1289,9 +1290,9 @@ export const CreateToken = () => {
                             Insufficient Balance
                           </Typography>
                           <Typography variant="caption">
-                            You need at least {totalFeeInDCC.toFixed(8)} DCC to create this token.
-                            Your current balance is {userBalanceInDCC.toFixed(8)} DCC. Please add
-                            funds to your wallet to continue.
+                            You need at least {formatAmount(totalFeeInDCC)} DCC to create this
+                            token. Your current balance is {formatAmount(userBalanceInDCC)} DCC.
+                            Please add funds to your wallet to continue.
                           </Typography>
                         </Alert>
                       )}
