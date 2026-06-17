@@ -390,7 +390,7 @@ export const TradingPairSelector: React.FC = () => {
   useEffect(() => {
     const hasEmptyIds = selectedPair && (!selectedPair.amountAsset || !selectedPair.priceAsset);
     if (hasEmptyIds) {
-      // Pair has empty IDs — it was a placeholder from a prior config. Clear it.
+      // Pair has empty IDs — placeholder from a prior config. Replace or clear.
       setSelectedPair(DEFAULT_PAIR);
     } else if (!selectedPair && DEFAULT_PAIR) {
       setSelectedPair(DEFAULT_PAIR);
