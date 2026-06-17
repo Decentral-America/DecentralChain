@@ -1,6 +1,7 @@
 import { Activity, Box, Clock, type LucideIcon, RefreshCw, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -17,7 +18,7 @@ import {
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
-import { formatAmount, fromUnix, timeAgo, truncate } from '../components/utils/formatters';
+import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 import { useBlockHeight, useLatestBlock } from '../hooks/useBlockPolling';
 import { useBlockHeaders } from '../hooks/useBlocks';
 import { useNodeVersion } from '../hooks/useNode';
@@ -112,7 +113,7 @@ export default function Dashboard() {
         />
         <StatCard
           title={t('lastBlock')}
-          value={blockLoading ? '...' : timeAgo(lastBlock?.timestamp)}
+          value={blockLoading ? '...' : fromUnix(lastBlock?.timestamp)}
           icon={Clock}
           gradient="bg-orange-600"
         />
@@ -238,7 +239,7 @@ export default function Dashboard() {
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {timeAgo(block.timestamp)}
+                            <ClientTimeAgo timestamp={block.timestamp} />
                           </TableCell>
                           <TableCell>
                             <Link

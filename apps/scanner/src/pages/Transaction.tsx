@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -30,7 +31,7 @@ import { type Transaction as TransactionType } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
-import { formatAmount, fromUnix, timeAgo, truncate } from '../components/utils/formatters';
+import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 
 interface LoaderData {
   tx: TransactionType | null;
@@ -444,7 +445,7 @@ export default function Transaction() {
                             {tx.fee ? `${formatAmount(Number(tx.fee))} DCC` : '—'}
                           </td>
                           <td className="p-4 text-muted-foreground">
-                            {tx.timestamp ? timeAgo(tx.timestamp) : '—'}
+                            <ClientTimeAgo timestamp={tx.timestamp ?? null} />
                           </td>
                         </tr>
                       ))
