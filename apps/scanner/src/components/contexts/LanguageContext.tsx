@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { logWarn } from '@/lib/error-logger';
 import { type Language, type LanguageContextValue } from '@/types';
 import { translations } from '../utils/translations';
@@ -10,19 +10,21 @@ export const LanguageProvider = ({
 }: {
   children: React.ReactNode;
 }): React.ReactElement => {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Safe localStorage access - only on client side
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('language');
-        return stored === 'es' ? 'es' : 'en';
-      } catch (error) {
-        logWarn('localStorage not available', { error });
-        return 'en';
-      }
+  // Always start with 'en' on the server. Reading localStorage in the
+  // useState initializer causes React #418: the server renders English but
+  // the client hydrates in Spanish (or vice versa), mismatching every
+  // translated string. The useEffect below syncs to the stored preference
+  // after hydration — same pattern as ClientTimeAgo / ClientNumber.
+  const [language, setLanguage] = useState<Language>('en');
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('language');
+      if (stored === 'es') setLanguage('es');
+    } catch (error) {
+      logWarn('localStorage not available', { error });
     }
-    return 'en';
-  });
+  }, []);
 
   const changeLanguage = (lang: Language): void => {
     setLanguage(lang);
