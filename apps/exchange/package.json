@@ -27,6 +27,7 @@
     "date-fns": "^4.4.0",
     "i18next": "^26.3.0",
     "i18next-http-backend": "^4.0.0",
+    "lightweight-charts": "5.2.0",
     "qrcode.react": "^4.2.0",
     "ramda": "^0.32.0",
     "react": "^19.2.7",
