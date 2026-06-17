@@ -100,13 +100,21 @@ export function getOrders(options?: IGetOrdersOptions): Promise<Array<IOrder>> {
 }
 
 export function getOrdersByPair(pair: AssetPair): Promise<Array<IOrder>> {
+  if (matcherAuthFailed) {
+    return Promise.resolve([]);
+  }
   const sig = signatureData;
   if (!sig) {
-    throw new Error('Get orders without signature! Call method "addSignature"!');
+    return Promise.resolve([]);
   }
   return fetch<Array<api.IOrder>>(
     `orderbook/${pair.amountAsset.id}/${pair.priceAsset.id}/publicKey/${sig.publicKey}`,
-  ).then(parse);
+  )
+    .then(parse)
+    .catch(() => {
+      matcherAuthFailed = true;
+      return [];
+    });
 }
 
 export function getReservedBalance(): Promise<IHash<Money>> {
