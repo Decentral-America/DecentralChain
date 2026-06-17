@@ -208,10 +208,9 @@ export const CreateToken = () => {
         throw new Error(broadcastResult.error ?? 'Failed to broadcast transaction');
       }
 
-      const assetId = (broadcastResult as Record<string, unknown>)?.['id'] as string | undefined;
-      setIssuedAssetId(assetId ?? null);
+      setIssuedAssetId(broadcastResult.id ?? null);
       setSubmitSuccess(true);
-      logger.info('[CreateToken] Token issued:', assetId);
+      logger.info('[CreateToken] Token issued:', broadcastResult.id);
     } catch (err) {
       logger.error('[CreateToken] Issue transaction failed:', err);
       setSubmitError(
