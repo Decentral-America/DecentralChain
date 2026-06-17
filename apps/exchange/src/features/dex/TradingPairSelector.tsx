@@ -104,7 +104,7 @@ const AVAILABLE_PAIRS: TradingPair[] = loadTradingPairs();
  * Default trading pair
  * Uses the first pair from config, or can be configured via environment
  */
-const getDefaultPair = (): TradingPair => {
+const getDefaultPair = (): TradingPair | null => {
   // Try to find DCC/CRC pair as preferred default
   const dccCrcPair = AVAILABLE_PAIRS.find(
     (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
@@ -387,7 +387,7 @@ export const TradingPairSelector: React.FC = () => {
    * Set default pair on mount if none selected
    */
   useEffect(() => {
-    if (!selectedPair) {
+    if (!selectedPair && DEFAULT_PAIR) {
       setSelectedPair(DEFAULT_PAIR);
     }
   }, [selectedPair, setSelectedPair]);
