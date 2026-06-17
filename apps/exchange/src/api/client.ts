@@ -128,7 +128,15 @@ class FetchClient {
       status: res.status,
     };
 
-    if (res.status !== 404) {
+    // Suppress logging for expected matcher auth failures (400 on /publicKey/
+    // or /balance/reserved) — these are handled by matcherAuthFailed flag and
+    // must not generate console noise.
+    const isExpectedMatcherAuth =
+      res.status === 400 &&
+      url.includes('matcher') &&
+      (url.includes('/publicKey/') || url.includes('balance/reserved'));
+
+    if (res.status !== 404 && !isExpectedMatcherAuth) {
       logger.error('[API Error]', {
         details: apiError.details,
         message: apiError.message,
