@@ -57,7 +57,7 @@ export interface MarketData {
 interface DexState {
   // Trading pair selection
   selectedPair: TradingPair | null;
-  setSelectedPair: (pair: TradingPair) => void;
+  setSelectedPair: (pair: TradingPair | null) => void;
 
   // Order book
   orderBook: OrderBook;
