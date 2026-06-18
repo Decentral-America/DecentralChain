@@ -42,6 +42,11 @@ export default defineConfig({
         // SSR resource routes — server-side logic, integration-only (like sitemap.xml.ts)
         'src/routes/sitemap.xml.ts',
         'src/routes/api.faucet.ts',
+        // Server-side geo proxy — makes external HTTP calls to ipinfo.io and uses process.env;
+        // not meaningfully testable in jsdom without a full fetch mock rig (covered by E2E)
+        'src/routes/api.geo.ip.ts',
+        // Trivial re-export wrapper — no business logic; delegates entirely to next-themes
+        'src/components/ThemeProvider.tsx',
         // Display component — renders only; depends on external API (AssetLogoRequest.filter)
         // and image load events that are not meaningfully testable in jsdom
         'src/components/shared/AssetLogo.tsx',
