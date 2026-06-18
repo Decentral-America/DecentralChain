@@ -1,7 +1,7 @@
 import { index, layout, type RouteConfig, route } from '@react-router/dev/routes';
 
 /**
- * Route config — 7 top-level nav destinations.
+ * Route config — 8 top-level nav destinations.
  *
  * Deep-link aliases (BlockFeed, NetworkStatistics, NetworkMap, Peers, Node,
  * UnconfirmedTransactions, DistributionTool, TransactionMap, Sustainability)
@@ -10,7 +10,7 @@ import { index, layout, type RouteConfig, route } from '@react-router/dev/routes
  */
 export default [
   layout('Layout.tsx', [
-    // ── Primary nav (7 items) ────────────────────────────────────────────
+    // ── Primary nav (8 items) ────────────────────────────────────────────
     index('pages/Dashboard.tsx'),
     route('dashboard', 'pages/Dashboard.tsx', { id: 'dashboard-alias' }),
     route('blocks', 'pages/Blocks.tsx'),
@@ -20,6 +20,7 @@ export default [
     route('asset', 'pages/Asset.tsx'),
     route('dexpairs', 'pages/DexPairs.tsx'),
     route('network', 'pages/Network.tsx'),
+    route('stress', 'pages/Stress/Stress.tsx'),
 
     // ── Deep-link aliases (off-nav, routes still active) ─────────────────
     route('blockfeed', 'pages/BlockFeed.tsx'),
