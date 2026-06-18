@@ -35,7 +35,7 @@ export default function PricingFinder() {
             <Box
               sx={{
                 '&::before': {
-                  bgcolor: 'rgba(255, 255, 255, 0.7)',
+                  bgcolor: 'rgba(255, 255, 255, 0.25)',
                   borderRadius: 6,
                   bottom: 0,
                   content: '""',

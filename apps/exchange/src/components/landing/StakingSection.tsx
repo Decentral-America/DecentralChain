@@ -10,7 +10,7 @@ export default function StakingSection() {
         <Box
           sx={{
             '&::before': {
-              bgcolor: 'rgba(255, 255, 255, 0.85)',
+              bgcolor: 'rgba(255, 255, 255, 0.30)',
               borderRadius: 4,
               bottom: 0,
               content: '""',
