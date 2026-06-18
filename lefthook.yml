@@ -12,6 +12,13 @@ pre-commit:
       skip:
         - merge
         - rebase
+    cargo-fmt:
+      glob: 'apps/blockchain-postgres-sync/**/*.rs'
+      run: cargo fmt --manifest-path apps/blockchain-postgres-sync/Cargo.toml --all
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
     # DCC-252: Scala format gate — runs only when packages/ride Scala/sbt files are staged.
     # Full quality gate (scalafix + compile + coverage) runs via `sbt bulletproof` in CI.
     ride-fmt:
