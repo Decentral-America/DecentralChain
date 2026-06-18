@@ -1272,9 +1272,11 @@ mod tests {
         let sender_bytes = vec![6u8; 26];
         let r1 = vec![7u8; 26];
         let r2 = vec![8u8; 26];
+        let r1_b58 = bs58::encode(&r1).into_string();
+        let r2_b58 = bs58::encode(&r2).into_string();
 
         let meta = Metadata::MassTransfer(MassTransferMetadata {
-            recipients_addresses: vec![r1.clone(), r2.clone()],
+            recipients_addresses: vec![r1, r2],
         });
 
         let tx = make_tx(
@@ -1286,8 +1288,8 @@ mod tests {
         let event = tx_event_for_tx(&tx, 200).expect("should produce an event");
         let channel_addrs = decode_channel_addresses(&event.channels);
 
-        assert!(channel_addrs.contains(&bs58::encode(&r1).into_string()));
-        assert!(channel_addrs.contains(&bs58::encode(&r2).into_string()));
+        assert!(channel_addrs.contains(&r1_b58));
+        assert!(channel_addrs.contains(&r2_b58));
 
         let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
         assert_eq!(json["type"], 11);
@@ -1304,9 +1306,6 @@ mod tests {
 
     #[test]
     fn application_status_defaults_to_succeeded() {
-        let sender_bytes = vec![9u8; 26];
-        let _tx = make_tx(Data::Transfer(Default::default()), None, sender_bytes);
-        // Empty sender → None, use lease which has no special status logic
         let tx2 = make_tx(Data::Lease(Default::default()), None, vec![9u8; 26]);
         let event = tx_event_for_tx(&tx2, 1).unwrap();
         let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
