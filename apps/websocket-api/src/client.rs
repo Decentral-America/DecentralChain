@@ -1,7 +1,7 @@
 use crate::error::Error;
 use crate::messages::OutcomeMessage;
 use crate::metrics::{
-    MESSAGES, TOPICS, TOPICS_MAP_CAPACITY, TOPICS_MAP_SIZE, TOPIC_SUBSCRIBED, TOPIC_UNSUBSCRIBED,
+    MESSAGES, TOPIC_SUBSCRIBED, TOPIC_UNSUBSCRIBED, TOPICS, TOPICS_MAP_CAPACITY, TOPICS_MAP_SIZE,
 };
 use crate::topic::Topic;
 use axum::extract::ws::Message;
@@ -148,11 +148,7 @@ impl Client {
         self.subscriptions.contains_key(topic)
     }
 
-    pub fn add_direct_subscription(
-        &mut self,
-        topic: Topic,
-        key: ClientSubscriptionKey,
-    ) {
+    pub fn add_direct_subscription(&mut self, topic: Topic, key: ClientSubscriptionKey) {
         tracing::debug!(
             client_id = self.client_id,
             topic = %topic,
@@ -177,8 +173,12 @@ impl Client {
             "indirect subscription added"
         );
         let data = self.subscriptions.entry(topic).or_default();
-        data.indirect_subscription_sources
-            .insert(parent, IndirectSubscriptionData { subscription_key: key });
+        data.indirect_subscription_sources.insert(
+            parent,
+            IndirectSubscriptionData {
+                subscription_key: key,
+            },
+        );
         data.is_indirect = true;
     }
 
@@ -221,7 +221,7 @@ impl Client {
     }
 
     pub fn pings_len(&self) -> usize {
-        self.sender.pending_pings.len()  // BTreeSet::len is O(1)
+        self.sender.pending_pings.len() // BTreeSet::len is O(1)
     }
 
     pub fn send_ping(&mut self) -> Result<(), Error> {
@@ -340,7 +340,9 @@ impl ClientSender {
     fn send_ping(&mut self) -> Result<(), Error> {
         self.pending_pings.insert(self.message_counter);
         let number = self.message_counter;
-        self.send(OutcomeMessage::Ping { message_number: number })
+        self.send(OutcomeMessage::Ping {
+            message_number: number,
+        })
     }
 
     fn send_subscribed(&mut self, key: ClientSubscriptionKey, value: String) -> Result<(), Error> {
@@ -433,7 +435,12 @@ pub struct MultitopicUpdate {
 }
 
 impl ClientIdsByTopics {
-    pub fn add_subscription(&mut self, topic: Topic, client_id: ClientId, key: ClientSubscriptionKey) {
+    pub fn add_subscription(
+        &mut self,
+        topic: Topic,
+        client_id: ClientId,
+        key: ClientSubscriptionKey,
+    ) {
         let mut new_entry = false;
         let info = self.0.entry(topic).or_insert_with(|| {
             TOPIC_SUBSCRIBED.inc();
@@ -480,8 +487,15 @@ impl ClientIdsByTopics {
             KeyInfo::new()
         });
 
-        let added = subtopics.difference(&info.subtopics).cloned().collect::<Vec<_>>();
-        let removed = info.subtopics.difference(&subtopics).cloned().collect::<Vec<_>>();
+        let added = subtopics
+            .difference(&info.subtopics)
+            .cloned()
+            .collect::<Vec<_>>();
+        let removed = info
+            .subtopics
+            .difference(&subtopics)
+            .cloned()
+            .collect::<Vec<_>>();
 
         if info.subtopics != subtopics {
             info.subtopics = subtopics;
@@ -586,10 +600,14 @@ impl ClientIdsByTopics {
         self.0
             .get(topic)
             .map(|info| {
-                let direct = info.clients.iter().map(|(&id, key)| {
-                    (id, Subscribed::DirectlyWithKey(key.clone()))
-                });
-                let indirect = info.indirect_clients.keys().map(|&id| (id, Subscribed::Indirectly));
+                let direct = info
+                    .clients
+                    .iter()
+                    .map(|(&id, key)| (id, Subscribed::DirectlyWithKey(key.clone())));
+                let indirect = info
+                    .indirect_clients
+                    .keys()
+                    .map(|&id| (id, Subscribed::Indirectly));
                 direct.chain(indirect).collect()
             })
             .unwrap_or_default()
@@ -617,32 +635,81 @@ mod tests {
 
     #[test]
     fn leasing_balance_diff_both_changed() {
-        let lb1 = LeasingBalance { address: "addr".into(), balance_in: 7, balance_out: 2 };
-        let lb2 = LeasingBalance { address: "addr".into(), balance_in: 5, balance_out: 8 };
-        assert_eq!(r#"{"address":"addr","in":5,"out":8}"#, leasing_balance_diff(&lb1, &lb2));
-        assert_eq!(r#"{"address":"addr","in":7,"out":2}"#, leasing_balance_diff(&lb2, &lb1));
+        let lb1 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 7,
+            balance_out: 2,
+        };
+        let lb2 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 5,
+            balance_out: 8,
+        };
+        assert_eq!(
+            r#"{"address":"addr","in":5,"out":8}"#,
+            leasing_balance_diff(&lb1, &lb2)
+        );
+        assert_eq!(
+            r#"{"address":"addr","in":7,"out":2}"#,
+            leasing_balance_diff(&lb2, &lb1)
+        );
     }
 
     #[test]
     fn leasing_balance_diff_only_out() {
-        let lb1 = LeasingBalance { address: "addr".into(), balance_in: 7, balance_out: 2 };
-        let lb2 = LeasingBalance { address: "addr".into(), balance_in: 7, balance_out: 8 };
-        assert_eq!(r#"{"address":"addr","out":8}"#, leasing_balance_diff(&lb1, &lb2));
-        assert_eq!(r#"{"address":"addr","out":2}"#, leasing_balance_diff(&lb2, &lb1));
+        let lb1 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 7,
+            balance_out: 2,
+        };
+        let lb2 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 7,
+            balance_out: 8,
+        };
+        assert_eq!(
+            r#"{"address":"addr","out":8}"#,
+            leasing_balance_diff(&lb1, &lb2)
+        );
+        assert_eq!(
+            r#"{"address":"addr","out":2}"#,
+            leasing_balance_diff(&lb2, &lb1)
+        );
     }
 
     #[test]
     fn leasing_balance_diff_only_in() {
-        let lb1 = LeasingBalance { address: "addr".into(), balance_in: 7, balance_out: 2 };
-        let lb2 = LeasingBalance { address: "addr".into(), balance_in: 5, balance_out: 2 };
-        assert_eq!(r#"{"address":"addr","in":5}"#, leasing_balance_diff(&lb1, &lb2));
-        assert_eq!(r#"{"address":"addr","in":7}"#, leasing_balance_diff(&lb2, &lb1));
+        let lb1 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 7,
+            balance_out: 2,
+        };
+        let lb2 = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 5,
+            balance_out: 2,
+        };
+        assert_eq!(
+            r#"{"address":"addr","in":5}"#,
+            leasing_balance_diff(&lb1, &lb2)
+        );
+        assert_eq!(
+            r#"{"address":"addr","in":7}"#,
+            leasing_balance_diff(&lb2, &lb1)
+        );
     }
 
     #[test]
     fn leasing_balance_diff_no_change() {
-        let lb = LeasingBalance { address: "addr".into(), balance_in: 7, balance_out: 2 };
-        assert_eq!(r#"{"address":"addr","in":7,"out":2}"#, leasing_balance_diff(&lb, &lb));
+        let lb = LeasingBalance {
+            address: "addr".into(),
+            balance_in: 7,
+            balance_out: 2,
+        };
+        assert_eq!(
+            r#"{"address":"addr","in":7,"out":2}"#,
+            leasing_balance_diff(&lb, &lb)
+        );
     }
 
     #[test]

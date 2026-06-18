@@ -47,7 +47,9 @@ async fn run() -> Result<(), Error> {
     // select so a fatal Redis failure surfaces immediately rather than silently disappearing.
     let mut pool_connect_handle = pool.init().await?;
 
-    let clients = Arc::new(shard::Sharded::<client::Clients>::new(app_config.shard_count));
+    let clients = Arc::new(shard::Sharded::<client::Clients>::new(
+        app_config.shard_count,
+    ));
     let topics = Arc::new(client::Topics::default());
 
     let repo = Arc::new(RepoImpl::new(

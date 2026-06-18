@@ -1,26 +1,38 @@
-use prometheus::{exponential_buckets, Counter, Histogram, HistogramOpts, IntGauge, Registry};
+use prometheus::{Counter, Histogram, HistogramOpts, IntGauge, Registry, exponential_buckets};
 use std::sync::{LazyLock, Once};
 
 pub static REGISTRY: LazyLock<Registry> = LazyLock::new(Registry::new);
 
 pub static CLIENTS: LazyLock<IntGauge> = LazyLock::new(|| {
-    IntGauge::new("websocket_clients_active", "Number of currently connected WebSocket clients")
-        .expect("create websocket_clients_active")
+    IntGauge::new(
+        "websocket_clients_active",
+        "Number of currently connected WebSocket clients",
+    )
+    .expect("create websocket_clients_active")
 });
 
 pub static CLIENT_CONNECT: LazyLock<Counter> = LazyLock::new(|| {
-    Counter::new("websocket_connections_total", "Total WebSocket connections accepted")
-        .expect("create websocket_connections_total")
+    Counter::new(
+        "websocket_connections_total",
+        "Total WebSocket connections accepted",
+    )
+    .expect("create websocket_connections_total")
 });
 
 pub static CLIENT_DISCONNECT: LazyLock<Counter> = LazyLock::new(|| {
-    Counter::new("websocket_disconnections_total", "Total WebSocket connections closed")
-        .expect("create websocket_disconnections_total")
+    Counter::new(
+        "websocket_disconnections_total",
+        "Total WebSocket connections closed",
+    )
+    .expect("create websocket_disconnections_total")
 });
 
 pub static TOPICS: LazyLock<IntGauge> = LazyLock::new(|| {
-    IntGauge::new("websocket_topics_active", "Number of topics with at least one subscriber")
-        .expect("create websocket_topics_active")
+    IntGauge::new(
+        "websocket_topics_active",
+        "Number of topics with at least one subscriber",
+    )
+    .expect("create websocket_topics_active")
 });
 
 pub static TOPIC_SUBSCRIBED: LazyLock<Counter> = LazyLock::new(|| {
@@ -40,8 +52,11 @@ pub static TOPIC_UNSUBSCRIBED: LazyLock<Counter> = LazyLock::new(|| {
 });
 
 pub static MESSAGES: LazyLock<Counter> = LazyLock::new(|| {
-    Counter::new("websocket_messages_sent_total", "Total update messages sent to clients")
-        .expect("create websocket_messages_sent_total")
+    Counter::new(
+        "websocket_messages_sent_total",
+        "Total update messages sent to clients",
+    )
+    .expect("create websocket_messages_sent_total")
 });
 
 pub static SUBSCRIBED_MESSAGE_LATENCIES: LazyLock<Histogram> = LazyLock::new(|| {
@@ -68,8 +83,11 @@ pub static REDIS_QUEUE_DEPTH: LazyLock<IntGauge> = LazyLock::new(|| {
 });
 
 pub static TOPICS_MAP_SIZE: LazyLock<IntGauge> = LazyLock::new(|| {
-    IntGauge::new("websocket_topics_map_size", "Entry count of the global topics map")
-        .expect("create websocket_topics_map_size")
+    IntGauge::new(
+        "websocket_topics_map_size",
+        "Entry count of the global topics map",
+    )
+    .expect("create websocket_topics_map_size")
 });
 
 pub static TOPICS_MAP_CAPACITY: LazyLock<IntGauge> = LazyLock::new(|| {

@@ -93,7 +93,9 @@ pub mod app {
 
     pub fn load() -> Result<Config, Error> {
         let flat = envy::from_env::<FlatConfig>()?;
-        Ok(Config { shard_count: flat.shard_count })
+        Ok(Config {
+            shard_count: flat.shard_count,
+        })
     }
 }
 

@@ -9,7 +9,7 @@ use crate::client::{Client, ClientId, Clients, MultitopicUpdate, Subscribed, Top
 use crate::error::Error;
 use crate::messages::IncomeMessage;
 use crate::metrics::{
-    CLIENTS, CLIENT_CONNECT, CLIENT_DISCONNECT, REDIS_QUEUE_DEPTH, SUBSCRIBED_MESSAGE_LATENCIES,
+    CLIENT_CONNECT, CLIENT_DISCONNECT, CLIENTS, REDIS_QUEUE_DEPTH, SUBSCRIBED_MESSAGE_LATENCIES,
 };
 use crate::repo::Repo;
 use crate::shard::Sharded;
@@ -247,31 +247,40 @@ async fn handle_income_message<R: Repo>(
             // Phase 2: async I/O — no locks held.
             let latency_timer = SUBSCRIBED_MESSAGE_LATENCIES.start_timer();
 
-            tracing::debug!(client_id, key = client_key.as_str(), "handling subscription");
+            tracing::debug!(
+                client_id,
+                key = client_key.as_str(),
+                "handling subscription"
+            );
 
             let value = repo.get_by_key(&canonical_key).await?;
-            tracing::debug!(topic = canonical_key, has_value = value.is_some(), "current value in Redis");
+            tracing::debug!(
+                topic = canonical_key,
+                has_value = value.is_some(),
+                "current value in Redis"
+            );
 
             // Pre-compute subtopics while holding no locks.
-            let subtopics_computed: Option<(HashSet<Topic>, String, bool)> =
-                if let Some(ref val) = value {
-                    if topic.is_multi_topic() {
-                        let subtopic_list = parse_subtopic_list::<Vec<_>>(val)?;
-                        tracing::debug!(
-                            topic = canonical_key,
-                            count = subtopic_list.len(),
-                            "subtopics resolved"
-                        );
-                        let subtopic_set = subtopic_list.iter().cloned().collect::<HashSet<_>>();
-                        let mut sv = fetch_subtopic_values(repo.clone(), subtopic_list, vec![]).await?;
-                        sv.filter_raw_null();
-                        Some((subtopic_set, sv.as_json_string(), true))
-                    } else {
-                        Some((HashSet::new(), val.clone(), false))
-                    }
+            let subtopics_computed: Option<(HashSet<Topic>, String, bool)> = if let Some(ref val) =
+                value
+            {
+                if topic.is_multi_topic() {
+                    let subtopic_list = parse_subtopic_list::<Vec<_>>(val)?;
+                    tracing::debug!(
+                        topic = canonical_key,
+                        count = subtopic_list.len(),
+                        "subtopics resolved"
+                    );
+                    let subtopic_set = subtopic_list.iter().cloned().collect::<HashSet<_>>();
+                    let mut sv = fetch_subtopic_values(repo.clone(), subtopic_list, vec![]).await?;
+                    sv.filter_raw_null();
+                    Some((subtopic_set, sv.as_json_string(), true))
                 } else {
-                    None
-                };
+                    Some((HashSet::new(), val.clone(), false))
+                }
+            } else {
+                None
+            };
 
             // Phase 3: apply state. Acquire topics THEN client (consistent lock ordering).
             {
@@ -309,9 +318,14 @@ async fn handle_income_message<R: Repo>(
                                 added_subtopics: subtopics.iter().cloned().collect(),
                                 removed_subtopics: vec![],
                             };
-                            let _ = topics_lock.update_multitopic_info(topic.clone(), subtopics.clone());
+                            let _ = topics_lock
+                                .update_multitopic_info(topic.clone(), subtopics.clone());
                             for sub in subtopics.iter().cloned() {
-                                lock.add_indirect_subscription(sub, topic.clone(), client_key.clone());
+                                lock.add_indirect_subscription(
+                                    sub,
+                                    topic.clone(),
+                                    client_key.clone(),
+                                );
                             }
                             topics_lock.update_indirect_subscriptions(topic, update, &client_id);
                         }
@@ -361,7 +375,10 @@ async fn send_error(
 ) -> Result<(), Error> {
     let mut details = std::collections::HashMap::new();
     details.insert("reason".to_owned(), reason.into());
-    client.lock().await.send_error(code, message.into(), Some(details))?;
+    client
+        .lock()
+        .await
+        .send_error(code, message.into(), Some(details))?;
     Ok(())
 }
 
@@ -424,8 +441,15 @@ pub async fn updates_handler<R: Repo>(
     #[derive(Clone)]
     enum Update {
         Ignore,
-        Single { topic: Topic, value: String },
-        Multi { topic: Topic, value: String, multitopic_update: MultitopicUpdate },
+        Single {
+            topic: Topic,
+            value: String,
+        },
+        Multi {
+            topic: Topic,
+            value: String,
+            multitopic_update: MultitopicUpdate,
+        },
     }
 
     while let Some((topic, value)) = updates_receiver.recv().await {
@@ -532,7 +556,11 @@ pub async fn updates_handler<R: Repo>(
 
             let send_result = match &update {
                 Update::Single { topic, value } => lock.send_update(topic, value.clone()),
-                Update::Multi { topic, value, multitopic_update } => {
+                Update::Multi {
+                    topic,
+                    value,
+                    multitopic_update,
+                } => {
                     for subtopic in multitopic_update.added_subtopics.iter().cloned() {
                         let parent_key = match subscribed {
                             Subscribed::DirectlyWithKey(k) => k.clone(),
@@ -585,21 +613,16 @@ where
     let values = repo.get_by_keys(keys).await?;
     debug_assert_eq!(keys_len, values.len());
 
-    let updated = values
-        .into_iter()
-        .filter_map(|v| v.map(TopicValue::Raw));
+    let updated = values.into_iter().filter_map(|v| v.map(TopicValue::Raw));
 
     let removed = removed_topics
         .into_iter()
         .map(|topic| -> Result<TopicValue, Error> {
-            let StateSingle { address, key } = topic
-                .data()
-                .as_state_single()
-                .ok_or_else(|| Error::InvalidTopicInRedis(
-                    crate::topic::TopicParseError::from(
-                        "removed subtopic is not a concrete state topic".to_owned()
-                    )
-                ))?;
+            let StateSingle { address, key } = topic.data().as_state_single().ok_or_else(|| {
+                Error::InvalidTopicInRedis(crate::topic::TopicParseError::from(
+                    "removed subtopic is not a concrete state topic".to_owned(),
+                ))
+            })?;
             Ok(TopicValue::DataEntry(DataEntry::deleted(address, key)))
         })
         .collect::<Result<Vec<_>, _>>()?;
@@ -630,7 +653,11 @@ mod values {
 
     impl DataEntry {
         pub fn deleted(address: String, key: String) -> Self {
-            Self { address, key, value: String::new() }
+            Self {
+                address,
+                key,
+                value: String::new(),
+            }
         }
 
         fn as_json_string(&self) -> String {
@@ -648,7 +675,8 @@ mod values {
         }
 
         pub fn filter_raw_null(&mut self) {
-            self.0.retain(|e| !matches!(e, TopicValue::Raw(s) if s == "null"));
+            self.0
+                .retain(|e| !matches!(e, TopicValue::Raw(s) if s == "null"));
         }
     }
 

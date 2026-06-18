@@ -68,7 +68,10 @@ pub fn start<R: Repo + 'static>(
     topics: Arc<Topics>,
     options: ServerOptions,
     shutdown_signal: tokio::sync::mpsc::Sender<()>,
-) -> (oneshot::Sender<()>, impl std::future::Future<Output = Result<(), Error>>) {
+) -> (
+    oneshot::Sender<()>,
+    impl std::future::Future<Output = Result<(), Error>>,
+) {
     let handle_opts = Arc::new(websocket::HandleConnectionOptions {
         ping_interval: options.client_ping_interval,
         ping_failures_threshold: options.client_ping_failures_threshold,
@@ -165,9 +168,7 @@ async fn handle_upgraded<R: Repo + 'static>(
     }
 }
 
-async fn health_handler<R: Repo + 'static>(
-    State(state): State<AppState<R>>,
-) -> StatusCode {
+async fn health_handler<R: Repo + 'static>(State(state): State<AppState<R>>) -> StatusCode {
     match tokio::time::timeout(Duration::from_secs(2), state.repo.ping()).await {
         Ok(Ok(())) => StatusCode::OK,
         Ok(Err(e)) => {
@@ -208,7 +209,10 @@ async fn metrics_handler() -> impl IntoResponse {
     }
 
     (
-        [(axum::http::header::CONTENT_TYPE, "text/plain; version=0.0.4")],
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; version=0.0.4",
+        )],
         output,
     )
         .into_response()

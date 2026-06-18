@@ -37,9 +37,9 @@ impl Topic {
     /// Returns [`TopicParseError`] if the string does not start with `topic://`
     /// or has no type component.
     pub fn parse_str(s: &str) -> Result<Self, TopicParseError> {
-        let rest = s.strip_prefix("topic://").ok_or_else(|| {
-            TopicParseError(format!("must start with 'topic://': {s}"))
-        })?;
+        let rest = s
+            .strip_prefix("topic://")
+            .ok_or_else(|| TopicParseError(format!("must start with 'topic://': {s}")))?;
 
         if rest.is_empty() || rest.starts_with('/') || rest.starts_with('?') {
             return Err(TopicParseError(format!("missing type component: {s}")));
@@ -157,12 +157,16 @@ mod tests {
         // not as filter descriptors — they must NOT be treated as multi-topics.
         let uri = "topic://transactions?type=all&address=3PPNhHYkkEy13gRWDCaruQyhNbX2GrjYSyV";
         let topic = Topic::parse_str(uri).unwrap();
-        assert!(!topic.is_multi_topic(), "transaction topic must be an exact-channel (single) topic");
+        assert!(
+            !topic.is_multi_topic(),
+            "transaction topic must be an exact-channel (single) topic"
+        );
     }
 
     #[test]
     fn parse_concrete_with_percent_encoded_path() {
-        let uri = "topic://state/3PPNhHYkkEy13gRWDCaruQyhNbX2GrjYSyV/%25s%25s%25s__staked__addr__key";
+        let uri =
+            "topic://state/3PPNhHYkkEy13gRWDCaruQyhNbX2GrjYSyV/%25s%25s%25s__staked__addr__key";
         let topic = Topic::parse_str(uri).unwrap();
         assert!(!topic.is_multi_topic());
         let d = topic.data().as_state_single().unwrap();
