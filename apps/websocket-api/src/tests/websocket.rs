@@ -33,7 +33,9 @@ struct MockRepo {
 
 impl Default for MockRepo {
     fn default() -> Self {
-        Self { id: AtomicUsize::new(1) }
+        Self {
+            id: AtomicUsize::new(1),
+        }
     }
 }
 
@@ -128,9 +130,7 @@ fn ws_router() -> (Router, mpsc::Receiver<()>) {
 
 fn make_server() -> (TestServer, mpsc::Receiver<()>) {
     let (router, rx) = ws_router();
-    let server = TestServer::builder()
-        .http_transport()
-        .build(router);
+    let server = TestServer::builder().http_transport().build(router);
     (server, rx)
 }
 
@@ -154,7 +154,8 @@ async fn receive_non_ping(ws: &mut axum_test::TestWebSocket) -> WsMessage {
                     "type": "pong",
                     "message_number": v["message_number"]
                 });
-                ws.send_message(WsMessage::Text(pong.to_string().into())).await;
+                ws.send_message(WsMessage::Text(pong.to_string().into()))
+                    .await;
                 continue;
             }
         }
@@ -183,7 +184,8 @@ async fn client_can_subscribe_to_topic() {
         "type": "subscribe",
         "topic": "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/test_key"
     });
-    ws.send_message(WsMessage::Text(sub_msg.to_string().into())).await;
+    ws.send_message(WsMessage::Text(sub_msg.to_string().into()))
+        .await;
 
     let reply = receive_non_ping(&mut ws).await;
     let v: Value = serde_json::from_str(extract_text(&reply)).expect("valid json");
@@ -214,7 +216,10 @@ async fn subscribing_to_same_topic_twice_sends_error() {
     ws.send_message(payload).await;
     let second = receive_non_ping(&mut ws).await;
     let v2: Value = serde_json::from_str(extract_text(&second)).unwrap();
-    assert_eq!(v2["type"], "error", "duplicate subscribe must return error, got: {v2}");
+    assert_eq!(
+        v2["type"], "error",
+        "duplicate subscribe must return error, got: {v2}"
+    );
 }
 
 /// Unsubscribing from a subscribed topic must produce an Unsubscribed reply.
@@ -226,18 +231,27 @@ async fn unsubscribing_sends_unsubscribed_message() {
     let topic_uri = "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/unsub_key";
 
     ws.send_message(WsMessage::Text(
-        json!({ "type": "subscribe", "topic": topic_uri }).to_string().into(),
-    )).await;
+        json!({ "type": "subscribe", "topic": topic_uri })
+            .to_string()
+            .into(),
+    ))
+    .await;
     let subscribed = receive_non_ping(&mut ws).await;
     let v: Value = serde_json::from_str(extract_text(&subscribed)).unwrap();
     assert_eq!(v["type"], "subscribed");
 
     ws.send_message(WsMessage::Text(
-        json!({ "type": "unsubscribe", "topic": topic_uri }).to_string().into(),
-    )).await;
+        json!({ "type": "unsubscribe", "topic": topic_uri })
+            .to_string()
+            .into(),
+    ))
+    .await;
     let unsubscribed = receive_non_ping(&mut ws).await;
     let v2: Value = serde_json::from_str(extract_text(&unsubscribed)).unwrap();
-    assert_eq!(v2["type"], "unsubscribed", "expected unsubscribed, got: {v2}");
+    assert_eq!(
+        v2["type"], "unsubscribed",
+        "expected unsubscribed, got: {v2}"
+    );
     assert_eq!(v2["topic"], topic_uri);
 }
 
@@ -249,7 +263,8 @@ async fn invalid_json_closes_connection() {
     let (server, _rx) = make_server();
     let mut ws = server.get_websocket("/ws").await.into_websocket().await;
 
-    ws.send_message(WsMessage::Text("this is not json".to_owned().into())).await;
+    ws.send_message(WsMessage::Text("this is not json".to_owned().into()))
+        .await;
 
     // The server should close the connection after a syntax error.
     let msg = ws.receive_message().await;
@@ -279,11 +294,15 @@ async fn unknown_message_type_returns_error_code_1() {
         json!({ "type": "unknown_type_xyz", "data": "anything" })
             .to_string()
             .into(),
-    )).await;
+    ))
+    .await;
 
     let msg = receive_non_ping(&mut ws).await;
     let v: Value = serde_json::from_str(extract_text(&msg)).expect("valid json response");
-    assert_eq!(v["type"], "error", "unknown message type must produce error, got: {v}");
+    assert_eq!(
+        v["type"], "error",
+        "unknown message type must produce error, got: {v}"
+    );
     assert_eq!(v["code"], 1u16, "error code must be 1 (invalid message)");
 }
 
@@ -297,11 +316,15 @@ async fn invalid_topic_uri_returns_error() {
         json!({ "type": "subscribe", "topic": "not-a-valid-topic-uri" })
             .to_string()
             .into(),
-    )).await;
+    ))
+    .await;
 
     let msg = receive_non_ping(&mut ws).await;
     let v: Value = serde_json::from_str(extract_text(&msg)).expect("valid json response");
-    assert_eq!(v["type"], "error", "invalid topic must produce error, got: {v}");
+    assert_eq!(
+        v["type"], "error",
+        "invalid topic must produce error, got: {v}"
+    );
     assert_eq!(v["code"], 3u16);
 }
 
@@ -314,21 +337,33 @@ async fn unsubscribe_then_resubscribe_succeeds() {
     let topic_uri = "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/clean_key";
 
     ws.send_message(WsMessage::Text(
-        json!({ "type": "subscribe", "topic": topic_uri }).to_string().into(),
-    )).await;
+        json!({ "type": "subscribe", "topic": topic_uri })
+            .to_string()
+            .into(),
+    ))
+    .await;
     let _sub = receive_non_ping(&mut ws).await; // consume subscribed
 
     ws.send_message(WsMessage::Text(
-        json!({ "type": "unsubscribe", "topic": topic_uri }).to_string().into(),
-    )).await;
+        json!({ "type": "unsubscribe", "topic": topic_uri })
+            .to_string()
+            .into(),
+    ))
+    .await;
     let unsub = receive_non_ping(&mut ws).await;
     let v: Value = serde_json::from_str(extract_text(&unsub)).unwrap();
     assert_eq!(v["type"], "unsubscribed");
 
     ws.send_message(WsMessage::Text(
-        json!({ "type": "subscribe", "topic": topic_uri }).to_string().into(),
-    )).await;
+        json!({ "type": "subscribe", "topic": topic_uri })
+            .to_string()
+            .into(),
+    ))
+    .await;
     let re_sub = receive_non_ping(&mut ws).await;
     let v2: Value = serde_json::from_str(extract_text(&re_sub)).unwrap();
-    assert_eq!(v2["type"], "subscribed", "re-subscribe after unsub must succeed, got: {v2}");
+    assert_eq!(
+        v2["type"], "subscribed",
+        "re-subscribe after unsub must succeed, got: {v2}"
+    );
 }

@@ -51,7 +51,10 @@ fn income_invalid_json_returns_error() {
 fn income_unknown_type_returns_error() {
     let json = r#"{"type":"magic","foo":"bar"}"#;
     let result = serde_json::from_str::<IncomeMessage>(json);
-    assert!(result.is_err(), "unknown message type should fail to deserialize");
+    assert!(
+        result.is_err(),
+        "unknown message type should fail to deserialize"
+    );
 }
 
 // ── OutcomeMessage ─────────────────────────────────────────────────────────────
@@ -138,7 +141,8 @@ fn outcome_error_without_details_serializes_null() {
 
 #[test]
 fn income_subscribe_preserves_multi_topic_uri() {
-    let json = r#"{"type":"subscribe","topic":"topic://state?address__in[]=3MAddr&key__match_any[]=*"}"#;
+    let json =
+        r#"{"type":"subscribe","topic":"topic://state?address__in[]=3MAddr&key__match_any[]=*"}"#;
     let msg: IncomeMessage = serde_json::from_str(json).expect("deserialize multi-topic subscribe");
     match msg {
         IncomeMessage::Subscribe { topic } => {
