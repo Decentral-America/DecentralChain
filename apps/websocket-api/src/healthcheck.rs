@@ -22,10 +22,16 @@ fn main() {
         process::exit(1);
     };
 
-    if stream.set_write_timeout(Some(Duration::from_secs(2))).is_err() {
+    if stream
+        .set_write_timeout(Some(Duration::from_secs(2)))
+        .is_err()
+    {
         process::exit(1);
     }
-    if stream.set_read_timeout(Some(Duration::from_secs(4))).is_err() {
+    if stream
+        .set_read_timeout(Some(Duration::from_secs(4)))
+        .is_err()
+    {
         process::exit(1);
     }
 

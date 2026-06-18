@@ -16,10 +16,7 @@ use tokio::sync::mpsc::Sender;
 /// The `ConnectHandle` returned by `init()` drives the background connection task.
 /// We monitor it in the main select so any fatal connection failure propagates up
 /// rather than silently disappearing.
-pub async fn run(
-    config: Config,
-    updates_sender: Sender<(Topic, String)>,
-) -> Result<(), Error> {
+pub async fn run(config: Config, updates_sender: Sender<(Topic, String)>) -> Result<(), Error> {
     tracing::info!("updater started");
 
     let subscriber = Builder::from_config(config)

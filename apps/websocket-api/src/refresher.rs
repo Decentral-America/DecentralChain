@@ -18,7 +18,11 @@ pub struct KeysRefresher<R: Repo> {
 
 impl<R: Repo> KeysRefresher<R> {
     pub fn new(repo: Arc<R>, key_ttl: Duration, topics: Arc<Topics>) -> Self {
-        Self { key_ttl, repo, topics }
+        Self {
+            key_ttl,
+            repo,
+            topics,
+        }
     }
 
     pub async fn run(&self) -> Result<(), Error> {

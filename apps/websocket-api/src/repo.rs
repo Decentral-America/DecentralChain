@@ -3,8 +3,8 @@ use crate::error::Error;
 use crate::topic::Topic;
 use fred::prelude::*;
 use std::collections::HashMap;
-use tokio::task::JoinSet;
 use std::time::{Duration, Instant};
+use tokio::task::JoinSet;
 
 use self::counter::VersionCounter;
 
@@ -25,8 +25,16 @@ pub struct RepoConfig {
 pub fn build_config(cfg: &RepoConfig) -> Result<Config, Error> {
     Ok(Config {
         server: ServerConfig::new_centralized(cfg.host.as_str(), cfg.port),
-        username: if cfg.username.is_empty() { None } else { Some(cfg.username.clone()) },
-        password: if cfg.password.is_empty() { None } else { Some(cfg.password.clone()) },
+        username: if cfg.username.is_empty() {
+            None
+        } else {
+            Some(cfg.username.clone())
+        },
+        password: if cfg.password.is_empty() {
+            None
+        } else {
+            Some(cfg.password.clone())
+        },
         ..Config::default()
     })
 }
@@ -38,9 +46,7 @@ pub trait Repo: Send + Sync {
         &self,
     ) -> impl std::future::Future<Output = Result<ClientId, Error>> + Send;
 
-    fn ping(
-        &self,
-    ) -> impl std::future::Future<Output = Result<(), Error>> + Send;
+    fn ping(&self) -> impl std::future::Future<Output = Result<(), Error>> + Send;
 
     fn subscribe<S: Into<String> + Send + Sync>(
         &self,
@@ -98,9 +104,8 @@ impl Repo for RepoImpl {
                  NEXT_CONNECTION_ID may have been reset or manipulated"
             )));
         }
-        usize::try_from(id).map_err(|_| {
-            Error::ConfigValidation(format!("client ID {id} overflows usize"))
-        })
+        usize::try_from(id)
+            .map_err(|_| Error::ConfigValidation(format!("client ID {id} overflows usize")))
     }
 
     async fn ping(&self) -> Result<(), Error> {
@@ -168,7 +173,11 @@ impl Repo for RepoImpl {
                     // comparisons are never stale by more than one network round-trip.
                     result.insert(topic, Instant::now());
                 }
-                tracing::debug!(batch = batch_num, count = result.len(), "TTL batch complete");
+                tracing::debug!(
+                    batch = batch_num,
+                    count = result.len(),
+                    "TTL batch complete"
+                );
                 Ok(result)
             });
 
