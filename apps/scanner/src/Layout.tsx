@@ -3,6 +3,7 @@ import {
   Box,
   Coins,
   Droplets,
+  Gauge,
   Languages,
   LayoutDashboard,
   type LucideIcon,
@@ -85,6 +86,7 @@ function LayoutContent() {
     { icon: Coins, title: t('assets'), url: createPageUrl('Asset') },
     { icon: ArrowUpDown, title: t('dexPairs'), url: createPageUrl('DexPairs') },
     { icon: Network, title: 'Network', url: createPageUrl('Network') },
+    { icon: Gauge, title: 'Stress', url: createPageUrl('Stress') },
     ...(isTestnet ? [{ icon: Droplets, title: 'Faucet', url: '/faucet' }] : []),
   ];
 
