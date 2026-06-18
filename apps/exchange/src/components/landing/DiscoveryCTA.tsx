@@ -12,7 +12,7 @@ export default function DiscoveryCTA() {
             <Box
               sx={{
                 '&::before': {
-                  bgcolor: 'rgba(255, 255, 255, 0.75)',
+                  bgcolor: 'rgba(255, 255, 255, 0.25)',
                   borderRadius: 3,
                   bottom: 0,
                   content: '""',
