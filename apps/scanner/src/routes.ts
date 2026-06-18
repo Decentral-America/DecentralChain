@@ -32,6 +32,7 @@ export default [
     route('sustainability', 'pages/Sustainability.tsx'),
     route('node', 'pages/Node.tsx'),
     route('home', 'pages/Home.tsx'),
+    route('faucet', 'pages/Faucet.tsx'),
   ]),
 
   // ── Resource routes (no layout wrapper) ──────────────────────────────────
