@@ -34,7 +34,8 @@ export function loader() {
 
 export const links: Route.LinksFunction = () => [
   { href: '/manifest.json', rel: 'manifest' },
-  { href: '/favicon.svg', rel: 'icon', type: 'image/svg+xml' },
+  { href: '/favicon.png', rel: 'icon', type: 'image/png' },
+  { href: '/favicon.svg', rel: 'alternate icon', type: 'image/svg+xml' },
 ];
 
 /** DCC-158 — Global OG image cards + base meta tags. */
