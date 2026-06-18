@@ -120,16 +120,16 @@ function LayoutContent() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow overflow-hidden">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow overflow-hidden flex-shrink-0">
                 <img
                   src="/favicon.svg"
-                  alt="DecentralScan Logo"
+                  alt="DecentralChain logo"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground">{t('appName')}</h1>
-                <p className="text-xs text-muted-foreground">{t('appSubtitle')}</p>
+              <div className="hidden sm:flex flex-col gap-0.5">
+                <img src="/decentralexchange.svg" alt="Decentral Exchange" className="h-5 w-auto" />
+                <p className="text-xs text-muted-foreground leading-none">{t('appSubtitle')}</p>
               </div>
               <NetworkBadge />
             </Link>
@@ -255,11 +255,13 @@ function LayoutContent() {
       <footer className="border-t bg-background mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Box className="w-4 h-4" />
-              <span>
-                {t('appName')} {t('appSubtitle')}
-              </span>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <img src="/favicon.svg" alt="DecentralChain" className="w-5 h-5 rounded" />
+              <img
+                src="/decentralexchange.svg"
+                alt="Decentral Exchange"
+                className="h-4 w-auto opacity-70"
+              />
             </div>
             <p className="text-sm text-muted-foreground">Powered by DecentralChain Public API</p>
           </div>
