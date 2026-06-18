@@ -2,6 +2,7 @@ import {
   ArrowUpDown,
   Box,
   Coins,
+  Droplets,
   Languages,
   LayoutDashboard,
   type LucideIcon,
@@ -84,7 +85,7 @@ function LayoutContent() {
     { icon: Coins, title: t('assets'), url: createPageUrl('Asset') },
     { icon: ArrowUpDown, title: t('dexPairs'), url: createPageUrl('DexPairs') },
     { icon: Network, title: 'Network', url: createPageUrl('Network') },
-    ...(isTestnet ? [{ icon: Coins, title: 'Faucet', url: '/faucet' }] : []),
+    ...(isTestnet ? [{ icon: Droplets, title: 'Faucet', url: '/faucet' }] : []),
   ];
 
   useEffect(() => {
