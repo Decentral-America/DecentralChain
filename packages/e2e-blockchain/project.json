@@ -1,0 +1,24 @@
+{
+  "targets": {
+    "test": {
+      "command": "vitest run",
+      "metadata": {
+        "description": "Run E2E blockchain tests (requires DCC private node)",
+        "technologies": ["vitest"]
+      },
+      "options": {
+        "cwd": "packages/e2e-blockchain"
+      }
+    },
+    "test:coverage": {
+      "command": "vitest run --coverage",
+      "metadata": {
+        "description": "Run E2E blockchain tests with coverage",
+        "technologies": ["vitest"]
+      },
+      "options": {
+        "cwd": "packages/e2e-blockchain"
+      }
+    }
+  }
+}

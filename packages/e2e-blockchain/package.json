@@ -1,0 +1,33 @@
+{
+  "name": "@decentralchain/e2e-blockchain",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Enterprise-grade end-to-end tests for all DecentralChain transaction types.",
+  "author": "Josue Rojas",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@decentralchain/node-api": "workspace:*",
+    "@decentralchain/transactions": "workspace:*",
+    "@decentralchain/ts-lib-crypto": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "dotenv": "^16.5.0",
+    "vitest": "catalog:"
+  },
+  "nx": {
+    "tags": [
+      "scope:e2e",
+      "layer:e2e"
+    ]
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

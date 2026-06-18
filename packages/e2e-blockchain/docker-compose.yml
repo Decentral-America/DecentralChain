@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  dcc-private-node:
+    image: ghcr.io/decentral-america/node-scala-private:latest
+    container_name: dcc-private-node
+    ports:
+      - '6869:6869'
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -sf http://localhost:6869/blocks/height | grep -q height || exit 1',
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
