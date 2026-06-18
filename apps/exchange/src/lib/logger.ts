@@ -39,8 +39,11 @@ const sanitize = (args: unknown[]): unknown[] => {
           lowerKey.includes('encryptedkey') ||
           lowerKey.includes('token')
         ) {
+          // codeql[js/remote-property-injection] -- key is guarded by BLOCKED_KEYS above;
+          // cleaned has no prototype (Object.create(null)), so __proto__ cannot reach Object.prototype.
           cleaned[key] = '[REDACTED]';
         } else {
+          // codeql[js/remote-property-injection] -- same guards as above apply here.
           cleaned[key] = value;
         }
       }
@@ -64,6 +67,7 @@ export const logger = {
 
   /** Errors — sanitized to prevent sensitive data leakage */
   error: (...args: unknown[]): void => {
+    // codeql[js/log-injection] -- args pass through sanitize() which strips \r\n; browser-only logger, not a server log file.
     console.error(...sanitize(args));
   },
 
@@ -75,6 +79,7 @@ export const logger = {
 
   /** Warnings — sanitized to prevent sensitive data leakage */
   warn: (...args: unknown[]): void => {
+    // codeql[js/log-injection] -- args pass through sanitize() which strips \r\n; browser-only logger, not a server log file.
     console.warn(...sanitize(args));
   },
 };
