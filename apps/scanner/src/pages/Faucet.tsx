@@ -1,4 +1,4 @@
-import { Coins, ExternalLink, Send } from 'lucide-react';
+import { Droplets, ExternalLink, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import CopyButton from '@/components/shared/CopyButton';
@@ -76,7 +76,7 @@ export default function Faucet() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="p-2.5 rounded-xl bg-yellow-500/20">
-          <Coins className="w-6 h-6 text-yellow-500" />
+          <Droplets className="w-6 h-6 text-yellow-500" />
         </div>
         <div>
           <h1 className="text-2xl font-bold">DCC Testnet Faucet</h1>
