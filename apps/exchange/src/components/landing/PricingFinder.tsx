@@ -7,8 +7,8 @@ export default function PricingFinder() {
   return (
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 12, xs: 10 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Typography
               variant="overline"
               sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: 0.12 }}
@@ -31,7 +31,7 @@ export default function PricingFinder() {
               Start Swapping
             </Button>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Box
               sx={{
                 '&::before': {

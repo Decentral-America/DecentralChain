@@ -26,9 +26,9 @@ export default function HeroSection() {
       <Box sx={heroGradientStyles} />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} alignItems="center">
+        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
           {/* Left Column - Text Content */}
-          <Grid item xs={12} md={6}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Typography
               variant="h1"
               sx={{
@@ -120,7 +120,7 @@ export default function HeroSection() {
           </Grid>
 
           {/* Right Column - Mockup Visuals */}
-          <Grid item xs={12} md={6}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Box
               sx={{
                 display: { sm: 'block', xs: 'none' },
