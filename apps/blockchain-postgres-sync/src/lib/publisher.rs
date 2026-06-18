@@ -201,7 +201,10 @@ mod tests {
         let raw = r#"say "hi" \ bye"#;
         let json = value_to_json(Some(&Value::StringValue(raw.to_owned())));
         let parsed: String = serde_json::from_str(&json).expect("valid JSON string");
-        assert_eq!(parsed, raw, "round-trip: JSON → parse must restore original");
+        assert_eq!(
+            parsed, raw,
+            "round-trip: JSON → parse must restore original"
+        );
     }
 
     #[test]
@@ -217,13 +220,19 @@ mod tests {
         let bytes = vec![0u8, 1, 2, 255];
         let result = value_to_json(Some(&Value::BinaryValue(bytes.clone())));
         // Must be a JSON string starting with base64:
-        assert!(result.starts_with(r#""base64:"#), "must start with base64: prefix");
+        assert!(
+            result.starts_with(r#""base64:"#),
+            "must start with base64: prefix"
+        );
         assert!(result.ends_with('"'), "must be quoted");
 
         // Round-trip: strip prefix and quotes, decode base64, compare bytes.
         let inner = &result[r#""base64:"#.len()..result.len() - 1];
         let decoded = BASE64.decode(inner).expect("valid base64");
-        assert_eq!(decoded, bytes, "round-trip: base64 decode must restore original bytes");
+        assert_eq!(
+            decoded, bytes,
+            "round-trip: base64 decode must restore original bytes"
+        );
     }
 
     #[test]

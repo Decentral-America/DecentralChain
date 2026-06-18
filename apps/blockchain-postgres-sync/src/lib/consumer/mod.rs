@@ -221,7 +221,11 @@ where
 
         // Publish after the transaction commits — Redis failures are fire-and-forget.
         if let Some(ref pub_) = publisher {
-            tracing::debug!(de = de_events.len(), tx = tx_events.len(), "publishing events to Redis");
+            tracing::debug!(
+                de = de_events.len(),
+                tx = tx_events.len(),
+                "publishing events to Redis"
+            );
             pub_.publish_batch(&de_events).await;
             pub_.publish_tx_batch(&tx_events).await;
         }
@@ -235,11 +239,11 @@ fn handle_updates<R: RepoOperations>(
     assets_only: bool,
     asset_storage_address: Option<&str>,
 ) -> Result<(Vec<DataEntryEvent>, Vec<TxEvent>)> {
-    let mut items: Vec<UpdatesItem> = updates_with_height
-        .updates
-        .into_iter()
-        .fold(Vec::new(), |mut acc, cur| {
-            match cur {
+    let mut items: Vec<UpdatesItem> =
+        updates_with_height
+            .updates
+            .into_iter()
+            .fold(Vec::new(), |mut acc, cur| match cur {
                 BlockchainUpdate::Block(b) => {
                     info!("Handle block {}, height = {}", b.id, b.height);
                     let len = acc.len();
@@ -270,37 +274,34 @@ fn handle_updates<R: RepoOperations>(
                     acc.push(UpdatesItem::Rollback(sig));
                     acc
                 }
-            }
-        });
+            });
 
-    items
-        .iter_mut()
-        .try_fold(
-            (Vec::<DataEntryEvent>::new(), Vec::<TxEvent>::new()),
-            |mut acc, update_item| {
-                let (de_batch, tx_batch) = match update_item {
-                    UpdatesItem::Blocks(ba) => {
-                        squash_microblocks(repo, assets_only)?;
-                        handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)?
-                    }
-                    UpdatesItem::Microblock(mba) => handle_appends(
-                        repo,
-                        chain_id,
-                        std::slice::from_ref(mba),
-                        assets_only,
-                        asset_storage_address,
-                    )?,
-                    UpdatesItem::Rollback(sig) => {
-                        let block = repo.get_block_uid_height(sig)?;
-                        rollback(repo, &[block], assets_only)?;
-                        (vec![], vec![]) // rollbacks publish nothing
-                    }
-                };
-                acc.0.extend(de_batch);
-                acc.1.extend(tx_batch);
-                Ok(acc)
-            },
-        )
+    items.iter_mut().try_fold(
+        (Vec::<DataEntryEvent>::new(), Vec::<TxEvent>::new()),
+        |mut acc, update_item| {
+            let (de_batch, tx_batch) = match update_item {
+                UpdatesItem::Blocks(ba) => {
+                    squash_microblocks(repo, assets_only)?;
+                    handle_appends(repo, chain_id, ba, assets_only, asset_storage_address)?
+                }
+                UpdatesItem::Microblock(mba) => handle_appends(
+                    repo,
+                    chain_id,
+                    std::slice::from_ref(mba),
+                    assets_only,
+                    asset_storage_address,
+                )?,
+                UpdatesItem::Rollback(sig) => {
+                    let block = repo.get_block_uid_height(sig)?;
+                    rollback(repo, &[block], assets_only)?;
+                    (vec![], vec![]) // rollbacks publish nothing
+                }
+            };
+            acc.0.extend(de_batch);
+            acc.1.extend(tx_batch);
+            Ok(acc)
+        },
+    )
 }
 
 fn handle_appends<R>(
@@ -434,9 +435,10 @@ where
         appends
             .iter()
             .flat_map(|append| {
-                append.txs.iter().filter_map(|tx| {
-                    tx_event_for_tx(tx, append.height)
-                })
+                append
+                    .txs
+                    .iter()
+                    .filter_map(|tx| tx_event_for_tx(tx, append.height))
             })
             .collect()
     };
@@ -466,7 +468,11 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                         vec![]
                     };
                     let (amt, aid) = t.amount.as_ref().map_or((None, None), |a| {
-                        let aid = if a.asset_id.is_empty() { None } else { Some(bs58::encode(&a.asset_id).into_string()) };
+                        let aid = if a.asset_id.is_empty() {
+                            None
+                        } else {
+                            Some(bs58::encode(&a.asset_id).into_string())
+                        };
                         (Some(a.amount), aid)
                     });
                     (4i32, ts, recipient, amt, aid)
@@ -482,7 +488,11 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                     } else {
                         vec![]
                     };
-                    let aid = if t.asset_id.is_empty() { None } else { Some(bs58::encode(&t.asset_id).into_string()) };
+                    let aid = if t.asset_id.is_empty() {
+                        None
+                    } else {
+                        Some(bs58::encode(&t.asset_id).into_string())
+                    };
                     (11i32, ts, recipients, None, aid)
                 }
                 Some(Data::Exchange(_)) => {
@@ -498,22 +508,22 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                     };
                     (7i32, ts, order_addrs, None, None)
                 }
-                Some(Data::Lease(_))            => (8i32,  ts, vec![], None, None),
-                Some(Data::LeaseCancel(_))      => (9i32,  ts, vec![], None, None),
-                Some(Data::Issue(_))            => (3i32,  ts, vec![], None, None),
-                Some(Data::Reissue(_))          => (5i32,  ts, vec![], None, None),
-                Some(Data::Burn(_))             => (6i32,  ts, vec![], None, None),
-                Some(Data::CreateAlias(_))      => (10i32, ts, vec![], None, None),
-                Some(Data::DataTransaction(_))  => (12i32, ts, vec![], None, None),
-                Some(Data::SetScript(_))        => (13i32, ts, vec![], None, None),
-                Some(Data::SponsorFee(_))       => (14i32, ts, vec![], None, None),
-                Some(Data::SetAssetScript(_))   => (15i32, ts, vec![], None, None),
-                Some(Data::InvokeScript(_))     => (16i32, ts, vec![], None, None),
-                Some(Data::UpdateAssetInfo(_))  => (17i32, ts, vec![], None, None),
+                Some(Data::Lease(_)) => (8i32, ts, vec![], None, None),
+                Some(Data::LeaseCancel(_)) => (9i32, ts, vec![], None, None),
+                Some(Data::Issue(_)) => (3i32, ts, vec![], None, None),
+                Some(Data::Reissue(_)) => (5i32, ts, vec![], None, None),
+                Some(Data::Burn(_)) => (6i32, ts, vec![], None, None),
+                Some(Data::CreateAlias(_)) => (10i32, ts, vec![], None, None),
+                Some(Data::DataTransaction(_)) => (12i32, ts, vec![], None, None),
+                Some(Data::SetScript(_)) => (13i32, ts, vec![], None, None),
+                Some(Data::SponsorFee(_)) => (14i32, ts, vec![], None, None),
+                Some(Data::SetAssetScript(_)) => (15i32, ts, vec![], None, None),
+                Some(Data::InvokeScript(_)) => (16i32, ts, vec![], None, None),
+                Some(Data::UpdateAssetInfo(_)) => (17i32, ts, vec![], None, None),
                 Some(Data::InvokeExpression(_)) => (16i32, ts, vec![], None, None),
                 Some(Data::CommitToGeneration(_)) => (1i32, ts, vec![], None, None),
-                Some(Data::Genesis(_))          => (1i32,  ts, vec![], None, None),
-                Some(Data::Payment(_))          => (2i32,  ts, vec![], None, None),
+                Some(Data::Genesis(_)) => (1i32, ts, vec![], None, None),
+                Some(Data::Payment(_)) => (2i32, ts, vec![], None, None),
                 None => return None,
             }
         }
@@ -543,11 +553,30 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
     // Derive applicationStatus from metadata: InvokeScript / Ethereum invoke with an
     // error message means the script failed; everything else is "succeeded".
     let app_status = match &tx.meta.metadata {
-        Some(Metadata::InvokeScript(m)) if m.result.as_ref().is_some_and(|r| r.error_message.is_some()) => "script_execution_failed",
+        Some(Metadata::InvokeScript(m))
+            if m.result.as_ref().is_some_and(|r| r.error_message.is_some()) =>
+        {
+            "script_execution_failed"
+        }
         Some(Metadata::Ethereum(em)) => {
-            if let Some(crate::proto::dcc::events::transaction_metadata::ethereum_metadata::Action::Invoke(im)) = em.action.as_ref() {
-                if im.result.as_ref().is_some_and(|r| r.error_message.is_some()) { "script_execution_failed" } else { "succeeded" }
-            } else { "succeeded" }
+            if let Some(
+                crate::proto::dcc::events::transaction_metadata::ethereum_metadata::Action::Invoke(
+                    im,
+                ),
+            ) = em.action.as_ref()
+            {
+                if im
+                    .result
+                    .as_ref()
+                    .is_some_and(|r| r.error_message.is_some())
+                {
+                    "script_execution_failed"
+                } else {
+                    "succeeded"
+                }
+            } else {
+                "succeeded"
+            }
         }
         _ => "succeeded",
     };
@@ -580,15 +609,15 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
 
 fn tx_type_name(tx_type: i32) -> &'static str {
     match tx_type {
-        1  => "genesis",
-        2  => "payment",
-        3  => "issue",
-        4  => "transfer",
-        5  => "reissue",
-        6  => "burn",
-        7  => "exchange",
-        8  => "lease",
-        9  => "lease_cancel",
+        1 => "genesis",
+        2 => "payment",
+        3 => "issue",
+        4 => "transfer",
+        5 => "reissue",
+        6 => "burn",
+        7 => "exchange",
+        8 => "lease",
+        9 => "lease_cancel",
         10 => "create_alias",
         11 => "mass_transfer",
         12 => "data",
@@ -598,7 +627,7 @@ fn tx_type_name(tx_type: i32) -> &'static str {
         16 => "invoke_script",
         17 => "update_asset_info",
         18 => "ethereum",
-        _  => "unknown",
+        _ => "unknown",
     }
 }
 
@@ -1127,7 +1156,7 @@ mod tests {
     use super::*;
     use crate::proto::dcc::{
         Amount, TransferTransactionData,
-        events::transaction_metadata::{TransferMetadata, ExchangeMetadata, MassTransferMetadata},
+        events::transaction_metadata::{ExchangeMetadata, MassTransferMetadata, TransferMetadata},
         signed_transaction::Transaction as SignedTxVariant,
         transaction::Data,
     };
@@ -1157,12 +1186,7 @@ mod tests {
         channels
             .iter()
             .filter(|c| c.contains("type=all"))
-            .map(|c| {
-                c.split("address=")
-                    .nth(1)
-                    .unwrap_or("")
-                    .to_owned()
-            })
+            .map(|c| c.split("address=").nth(1).unwrap_or("").to_owned())
             .collect()
     }
 
@@ -1178,7 +1202,10 @@ mod tests {
 
         let tx = make_tx(
             Data::Transfer(TransferTransactionData {
-                amount: Some(Amount { amount: 100_000_000, asset_id: vec![] }),
+                amount: Some(Amount {
+                    amount: 100_000_000,
+                    asset_id: vec![],
+                }),
                 ..Default::default()
             }),
             Some(meta),
@@ -1192,8 +1219,14 @@ mod tests {
 
         // Both addresses must appear in type=all channels.
         let channel_addrs = decode_channel_addresses(&event.channels);
-        assert!(channel_addrs.contains(&sender_b58), "sender missing from channels");
-        assert!(channel_addrs.contains(&recipient_b58), "recipient missing from channels");
+        assert!(
+            channel_addrs.contains(&sender_b58),
+            "sender missing from channels"
+        );
+        assert!(
+            channel_addrs.contains(&recipient_b58),
+            "recipient missing from channels"
+        );
 
         // JSON contains amount and type 4.
         let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
@@ -1205,7 +1238,7 @@ mod tests {
     #[test]
     fn exchange_tx_notifies_both_order_senders() {
         let sender_bytes = vec![3u8; 26];
-        let buyer_bytes  = vec![4u8; 26];
+        let buyer_bytes = vec![4u8; 26];
         let seller_bytes = vec![5u8; 26];
 
         let meta = Metadata::Exchange(ExchangeMetadata {
@@ -1222,10 +1255,16 @@ mod tests {
         let event = tx_event_for_tx(&tx, 100).expect("should produce an event");
         let channel_addrs = decode_channel_addresses(&event.channels);
 
-        let buyer_b58  = bs58::encode(&buyer_bytes).into_string();
+        let buyer_b58 = bs58::encode(&buyer_bytes).into_string();
         let seller_b58 = bs58::encode(&seller_bytes).into_string();
-        assert!(channel_addrs.contains(&buyer_b58),  "buyer missing from exchange channels");
-        assert!(channel_addrs.contains(&seller_b58), "seller missing from exchange channels");
+        assert!(
+            channel_addrs.contains(&buyer_b58),
+            "buyer missing from exchange channels"
+        );
+        assert!(
+            channel_addrs.contains(&seller_b58),
+            "seller missing from exchange channels"
+        );
 
         let json: serde_json::Value = serde_json::from_str(&event.value).unwrap();
         assert_eq!(json["type"], 7);
@@ -1261,7 +1300,10 @@ mod tests {
     #[test]
     fn empty_sender_returns_none() {
         let tx = make_tx(Data::Transfer(Default::default()), None, vec![]);
-        assert!(tx_event_for_tx(&tx, 1).is_none(), "empty sender must yield None");
+        assert!(
+            tx_event_for_tx(&tx, 1).is_none(),
+            "empty sender must yield None"
+        );
     }
 
     #[test]
@@ -1282,15 +1324,25 @@ mod tests {
         let event = tx_event_for_tx(&tx, 1).unwrap();
         let sender = bs58::encode(&sender_bytes).into_string();
 
-        assert!(event.channels.iter().any(|c| c.contains("type=all") && c.contains(&sender)));
-        assert!(event.channels.iter().any(|c| c.contains("type=lease") && c.contains(&sender)));
+        assert!(
+            event
+                .channels
+                .iter()
+                .any(|c| c.contains("type=all") && c.contains(&sender))
+        );
+        assert!(
+            event
+                .channels
+                .iter()
+                .any(|c| c.contains("type=lease") && c.contains(&sender))
+        );
     }
 
     #[test]
     fn tx_type_name_coverage() {
-        assert_eq!(tx_type_name(1),  "genesis");
-        assert_eq!(tx_type_name(4),  "transfer");
-        assert_eq!(tx_type_name(7),  "exchange");
+        assert_eq!(tx_type_name(1), "genesis");
+        assert_eq!(tx_type_name(4), "transfer");
+        assert_eq!(tx_type_name(7), "exchange");
         assert_eq!(tx_type_name(11), "mass_transfer");
         assert_eq!(tx_type_name(16), "invoke_script");
         assert_eq!(tx_type_name(18), "ethereum");
