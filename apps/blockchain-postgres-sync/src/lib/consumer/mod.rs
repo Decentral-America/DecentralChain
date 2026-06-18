@@ -1152,6 +1152,7 @@ fn rollback_candles<R: RepoOperations>(repo: &mut R, block_uid: i64) -> Result<(
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
     use crate::proto::dcc::{
