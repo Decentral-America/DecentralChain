@@ -4,7 +4,7 @@ export default function StakingSection() {
   return (
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 10, xs: 8 } }}>
       <Container maxWidth="lg">
-        <Typography variant="h3" textAlign="center" sx={{ fontWeight: 700, mb: 6 }}>
+        <Typography variant="h3" sx={{ fontWeight: 700, mb: 6, textAlign: 'center' }}>
           Professional trading tools at your fingertips
         </Typography>
         <Box
