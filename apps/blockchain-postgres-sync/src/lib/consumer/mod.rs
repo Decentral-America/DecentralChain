@@ -518,9 +518,13 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                 Some(Data::SetScript(_)) => (13i32, ts, vec![], None, None),
                 Some(Data::SponsorFee(_)) => (14i32, ts, vec![], None, None),
                 Some(Data::SetAssetScript(_)) => (15i32, ts, vec![], None, None),
-                Some(Data::InvokeScript(_)) | Some(Data::InvokeExpression(_)) => (16i32, ts, vec![], None, None),
+                Some(Data::InvokeScript(_)) | Some(Data::InvokeExpression(_)) => {
+                    (16i32, ts, vec![], None, None)
+                }
                 Some(Data::UpdateAssetInfo(_)) => (17i32, ts, vec![], None, None),
-                Some(Data::CommitToGeneration(_)) | Some(Data::Genesis(_)) => (1i32, ts, vec![], None, None),
+                Some(Data::CommitToGeneration(_)) | Some(Data::Genesis(_)) => {
+                    (1i32, ts, vec![], None, None)
+                }
                 Some(Data::Payment(_)) => (2i32, ts, vec![], None, None),
                 None => return None,
             }
@@ -1243,11 +1247,7 @@ mod tests {
             ..Default::default()
         });
 
-        let tx = make_tx(
-            Data::Exchange(Default::default()),
-            Some(meta),
-            sender_bytes,
-        );
+        let tx = make_tx(Data::Exchange(Default::default()), Some(meta), sender_bytes);
 
         let event = tx_event_for_tx(&tx, 100).expect("should produce an event");
         let channel_addrs = decode_channel_addresses(&event.channels);
