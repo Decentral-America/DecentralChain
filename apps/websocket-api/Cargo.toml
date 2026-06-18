@@ -41,7 +41,7 @@ serde_json = "1.0"
 envy = "0.4"
 
 # Metrics
-prometheus = "0.13"
+prometheus = "0.14"
 
 # Observability
 tracing = "0.1"
