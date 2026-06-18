@@ -26,8 +26,7 @@ export default function StakingSection() {
               right: 0,
               top: 0,
             },
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=1200)',
+            backgroundImage: 'linear-gradient(160deg, #0f0a2e 0%, #392CB7 50%, #1a3a6e 100%)',
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             bgcolor: 'rgba(79, 70, 229, 0.05)',

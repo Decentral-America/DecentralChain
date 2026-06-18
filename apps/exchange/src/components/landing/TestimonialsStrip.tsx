@@ -2,20 +2,20 @@ import { Avatar, Box, Container, Grid, Stack, Typography } from '@mui/material';
 
 const testimonials = [
   {
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    initials: 'SJ',
     name: 'Sarah Johnson',
     quote:
       'The best decentralized exchange for managing my crypto portfolio with ease and security.',
     role: 'Crypto Trader',
   },
   {
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    initials: 'MC',
     name: 'Michael Chen',
     quote: 'Fast swaps, reliable trading, and incredibly user-friendly. Highly recommended!',
     role: 'DeFi Enthusiast',
   },
   {
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+    initials: 'ED',
     name: 'Emma Davis',
     quote:
       'DecentralExchange has transformed how we handle crypto payments and treasury management.',
@@ -47,14 +47,15 @@ export default function TestimonialsStrip() {
                 }}
               >
                 <Avatar
-                  src={testimonial.avatar}
                   sx={{
                     bgcolor: 'primary.main',
+                    fontSize: 16,
+                    fontWeight: 700,
                     height: 48,
                     width: 48,
                   }}
                 >
-                  {testimonial.name[0]}
+                  {testimonial.initials}
                 </Avatar>
                 <Box>
                   <Typography
