@@ -10,50 +10,45 @@
 
 const isDev = import.meta.env.DEV;
 
-/**
- * Sanitize a value for logging — strips any field that could be sensitive.
- * In production, sensitive fields are redacted but non-sensitive data passes through.
- * Info/debug logs are suppressed entirely in production (via isDev guard).
- */
-// Keys that must never be assigned to an output object — prevents prototype pollution
-// (CWE-1321 / CodeQL remote-property-injection).
-const BLOCKED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+const SENSITIVE_KEY_PATTERNS = [
+  'seed',
+  'privatekey',
+  'password',
+  'mnemonic',
+  'secret',
+  'proof',
+  'encryptedkey',
+  'token',
+];
 
-const sanitize = (args: unknown[]): unknown[] => {
-  return args.map((arg) => {
+/**
+ * Sanitize a value for logging — redacts sensitive object fields and strips
+ * CR/LF from strings (CWE-117 log injection prevention).
+ *
+ * Object fields are rebuilt via Object.fromEntries which uses
+ * [[CreateDataProperty]] internally — not [[Set]] — so __proto__ is treated
+ * as a plain data key and cannot modify the prototype chain (CWE-1321).
+ */
+const sanitize = (args: unknown[]): unknown[] =>
+  args.map((arg) => {
     if (typeof arg === 'object' && arg !== null) {
       const obj = arg as Record<string, unknown>;
-      // Object.create(null) produces a bare object with no prototype chain, so
-      // even if a blocked key slips through it cannot reach Object.prototype.
-      const cleaned = Object.create(null) as Record<string, unknown>;
-      for (const [key, value] of Object.entries(obj)) {
-        if (BLOCKED_KEYS.has(key)) continue;
-        const lowerKey = key.toLowerCase();
-        if (
-          lowerKey.includes('seed') ||
-          lowerKey.includes('privatekey') ||
-          lowerKey.includes('password') ||
-          lowerKey.includes('mnemonic') ||
-          lowerKey.includes('secret') ||
-          lowerKey.includes('proof') ||
-          lowerKey.includes('encryptedkey') ||
-          lowerKey.includes('token')
-        ) {
-          cleaned[key] = '[REDACTED]'; // codeql[js/remote-property-injection] -- BLOCKED_KEYS guard above; Object.create(null) removes prototype chain
-        } else {
-          cleaned[key] = value; // codeql[js/remote-property-injection] -- same guards apply; no prototype chain on cleaned
-        }
-      }
-      return cleaned;
+      return Object.fromEntries(
+        Object.entries(obj)
+          .filter(([key]) => key !== '__proto__' && key !== 'constructor' && key !== 'prototype')
+          .map(([key, value]) => {
+            const lowerKey = key.toLowerCase();
+            const isSensitive = SENSITIVE_KEY_PATTERNS.some((p) => lowerKey.includes(p));
+            return [key, isSensitive ? '[REDACTED]' : value];
+          }),
+      );
     }
     if (typeof arg === 'string') {
-      // Strip CR/LF to prevent log injection (CWE-117 / CodeQL log-injection).
       const stripped = arg.replace(/[\r\n]/g, ' ');
       return stripped.length > 200 ? `${stripped.slice(0, 200)}...[truncated]` : stripped;
     }
     return arg;
   });
-};
 
 export const logger = {
   /** Debug logging — development only */
@@ -64,7 +59,7 @@ export const logger = {
 
   /** Errors — sanitized to prevent sensitive data leakage */
   error: (...args: unknown[]): void => {
-    console.error(...sanitize(args)); // codeql[js/log-injection] -- sanitize() strips \r\n; browser console, not a server log
+    console.error(...sanitize(args));
   },
 
   /** Info logging — development only */
@@ -75,6 +70,6 @@ export const logger = {
 
   /** Warnings — sanitized to prevent sensitive data leakage */
   warn: (...args: unknown[]): void => {
-    console.warn(...sanitize(args)); // codeql[js/log-injection] -- sanitize() strips \r\n; browser console, not a server log
+    console.warn(...sanitize(args));
   },
 };
