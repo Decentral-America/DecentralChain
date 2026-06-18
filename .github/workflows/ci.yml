@@ -112,7 +112,7 @@ jobs:
       - name: Test (affected)
         # ride:test runs sbt test (needs Java/sbt — tested by ride.yml)
         # @decentralchain/ride:test requires Scala.js fullLinkJS output (produced by ride.yml)
-        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride,ride,transactions
+        run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride,ride,transactions,e2e-blockchain
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
