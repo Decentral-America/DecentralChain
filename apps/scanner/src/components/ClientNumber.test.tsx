@@ -2,8 +2,8 @@
  * Tests for ClientNumber component.
  *
  * Covers: null/undefined fallback rendering, SSR-stable en-US initial render,
- * client-side locale re-render after hydration (useEffect), and className
- * forwarding.
+ * client-side locale re-render after hydration (useEffect), className
+ * forwarding, and Intl.NumberFormatOptions passthrough.
  */
 import { act, render, screen } from '@testing-library/react';
 import { createElement } from 'react';
@@ -12,39 +12,39 @@ import { describe, expect, it } from 'vitest';
 import { ClientNumber } from './ClientNumber';
 
 describe('ClientNumber', () => {
-  it('renders the fallback when value is null', () => {
+  it('renders the default fallback "—" when value is null', () => {
     render(createElement(ClientNumber, { value: null }));
-    expect(screen.getByText('—')).toBeDefined();
+    expect(screen.getByText('—')).toBeInTheDocument();
   });
 
-  it('renders the fallback when value is undefined', () => {
+  it('renders the default fallback "—" when value is undefined', () => {
     render(createElement(ClientNumber, { value: undefined }));
-    expect(screen.getByText('—')).toBeDefined();
+    expect(screen.getByText('—')).toBeInTheDocument();
   });
 
   it('renders a custom fallback string', () => {
     render(createElement(ClientNumber, { fallback: 'N/A', value: null }));
-    expect(screen.getByText('N/A')).toBeDefined();
+    expect(screen.getByText('N/A')).toBeInTheDocument();
+    expect(screen.queryByText('—')).not.toBeInTheDocument();
   });
 
-  it('renders the number in en-US format before hydration (initial render)', () => {
+  it('renders the number in en-US format on the initial (SSR-safe) render', () => {
     render(createElement(ClientNumber, { value: 1_234_567 }));
-    // Before useEffect fires, the component uses en-US locale deterministically
-    expect(screen.getByText('1,234,567')).toBeDefined();
+    // Before useEffect fires, the component uses 'en-US' locale so SSR HTML
+    // is deterministic and matches the first client render (avoids hydration #418).
+    expect(screen.getByText('1,234,567')).toBeInTheDocument();
   });
 
-  it('still displays a number after useEffect fires (simulated hydration)', async () => {
+  it('continues to display the number after useEffect fires (simulated hydration)', async () => {
     render(createElement(ClientNumber, { value: 42 }));
-    // Allow the useEffect to run
     await act(async () => {});
-    // jsdom uses 'en-US' as its locale, so the output remains the same
-    expect(screen.getByText('42')).toBeDefined();
+    // jsdom resolves the system locale as 'en-US', so the formatted output is identical
+    expect(screen.getByText('42')).toBeInTheDocument();
   });
 
   it('forwards the className prop to the wrapping span', () => {
     const { container } = render(createElement(ClientNumber, { className: 'text-bold', value: 5 }));
-    const span = container.querySelector('span');
-    expect(span?.className).toBe('text-bold');
+    expect(container.querySelector('span')).toHaveClass('text-bold');
   });
 
   it('forwards Intl.NumberFormatOptions to the formatter', async () => {
@@ -55,7 +55,7 @@ describe('ClientNumber', () => {
       }),
     );
     await act(async () => {});
-    // jsdom formats this as "$1,000.00" in en-US
-    expect(screen.getByText(/1[,.]?000/)).toBeDefined();
+    // Node/jsdom en-US currency format for 1000 USD is "$1,000.00"
+    expect(screen.getByText('$1,000.00')).toBeInTheDocument();
   });
 });
