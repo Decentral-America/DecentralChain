@@ -8,7 +8,7 @@ export default function DiscoveryCTA() {
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 10, xs: 8 } }}>
       <Container maxWidth="lg">
         <Grid container spacing={6} sx={{ alignItems: 'center' }}>
-          <Grid size={{ md: 6, xs: 12 }} order={{ md: 1, xs: 2 }}>
+          <Grid size={{ md: 6, xs: 12 }} sx={{ order: { md: 1, xs: 2 } }}>
             <Box
               sx={{
                 '&::before': {
@@ -32,7 +32,7 @@ export default function DiscoveryCTA() {
               }}
             />
           </Grid>
-          <Grid size={{ md: 6, xs: 12 }} order={{ md: 2, xs: 1 }}>
+          <Grid size={{ md: 6, xs: 12 }} sx={{ order: { md: 2, xs: 1 } }}>
             <Typography variant="h2" sx={{ fontWeight: 700, mb: 3 }}>
               Your gateway to decentralized finance
             </Typography>
