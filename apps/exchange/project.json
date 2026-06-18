@@ -1,0 +1,15 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/npm/nx@22.7.5/schemas/project-schema.json",
+  "name": "exchange",
+  "projectType": "application",
+  "sourceRoot": "apps/exchange/src",
+  "tags": ["scope:app", "layer:5"],
+  "targets": {
+    "test:e2e": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/exchange/playwright.config.ts"
+      }
+    }
+  }
+}

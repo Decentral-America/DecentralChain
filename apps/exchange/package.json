@@ -44,6 +44,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@sentry/vite-plugin": "^5.3.0",
     "@tanstack/react-query-devtools": "^5.100.14",
     "@testing-library/dom": "^10.4.1",
@@ -68,7 +69,15 @@
     "tags": [
       "scope:app",
       "layer:5"
-    ]
+    ],
+    "targets": {
+      "test:e2e": {
+        "executor": "@nx/playwright:playwright",
+        "options": {
+          "config": "apps/exchange/playwright.config.ts"
+        }
+      }
+    }
   },
   "private": true,
   "repository": {
@@ -87,6 +96,7 @@
     "merge-locales": "node scripts/mergeLocales.js",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "typecheck": "tsc -b --noEmit"
   },
   "type": "module",
