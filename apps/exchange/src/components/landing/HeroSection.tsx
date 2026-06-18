@@ -24,10 +24,11 @@ export default function HeroSection() {
     >
       {/* Hero Gradient Background */}
       <Box sx={heroGradientStyles} />
+
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
-          {/* Text Content */}
-          <Grid size={{ md: 6, xs: 12 }}>
+        <Grid container spacing={6} alignItems="center">
+          {/* Left Column - Text Content */}
+          <Grid item xs={12} md={6}>
             <Typography
               variant="h1"
               sx={{
@@ -118,22 +119,69 @@ export default function HeroSection() {
             </Box>
           </Grid>
 
-          {/* Right Column — Hero Image */}
-          <Grid size={{ md: 6, xs: 12 }} sx={{ display: { sm: 'block', xs: 'none' } }}>
+          {/* Right Column - Mockup Visuals */}
+          <Grid item xs={12} md={6}>
             <Box
-              component="img"
-              src="/images/landing-hero-phone.jpg"
-              alt="DecentralChain trading app"
               sx={{
-                borderRadius: 4,
-                boxShadow: '0 30px 80px rgba(0,0,0,.35)',
-                display: 'block',
-                height: { md: 420, sm: 340 },
-                ml: 'auto',
-                objectFit: 'cover',
-                width: '100%',
+                display: { sm: 'block', xs: 'none' },
+                height: { md: 520, sm: 420, xs: 360 },
+                position: 'relative',
               }}
-            />
+            >
+              {/* Dashboard Mockup (background) */}
+              <Box
+                sx={{
+                  backdropFilter: 'blur(12px)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: 3,
+                  boxShadow: '0 30px 80px rgba(0,0,0,.25)',
+                  height: { md: 360, xs: 280 },
+                  maxWidth: 520,
+                  p: 2,
+                  position: 'absolute',
+                  right: { md: 0, xs: -20 },
+                  top: { md: 20, xs: 40 },
+                  width: { md: '100%', xs: '90%' },
+                }}
+              >
+                <Box
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 2,
+                    height: '100%',
+                    width: '100%',
+                  }}
+                />
+              </Box>
+
+              {/* Phone Mockup (foreground) */}
+              <Box
+                sx={{
+                  backdropFilter: 'blur(12px)',
+                  bgcolor: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: 4,
+                  boxShadow: '0 20px 60px rgba(0,0,0,.30)',
+                  height: { md: 400, xs: 280 },
+                  left: { md: 40, xs: 10 },
+                  p: 1.5,
+                  position: 'absolute',
+                  top: { md: -20, xs: -10 },
+                  width: { md: 200, xs: 140 },
+                }}
+              >
+                <Box
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: 3,
+                    height: '100%',
+                    width: '100%',
+                  }}
+                />
+              </Box>
+            </Box>
           </Grid>
         </Grid>
       </Container>
