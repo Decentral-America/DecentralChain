@@ -15,12 +15,19 @@ const isDev = import.meta.env.DEV;
  * In production, sensitive fields are redacted but non-sensitive data passes through.
  * Info/debug logs are suppressed entirely in production (via isDev guard).
  */
+// Keys that must never be assigned to an output object — prevents prototype pollution
+// (CWE-1321 / CodeQL remote-property-injection).
+const BLOCKED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 const sanitize = (args: unknown[]): unknown[] => {
   return args.map((arg) => {
     if (typeof arg === 'object' && arg !== null) {
       const obj = arg as Record<string, unknown>;
-      const cleaned: Record<string, unknown> = {};
+      // Object.create(null) produces a bare object with no prototype chain, so
+      // even if a blocked key slips through it cannot reach Object.prototype.
+      const cleaned = Object.create(null) as Record<string, unknown>;
       for (const [key, value] of Object.entries(obj)) {
+        if (BLOCKED_KEYS.has(key)) continue;
         const lowerKey = key.toLowerCase();
         if (
           lowerKey.includes('seed') ||
@@ -39,8 +46,10 @@ const sanitize = (args: unknown[]): unknown[] => {
       }
       return cleaned;
     }
-    if (typeof arg === 'string' && arg.length > 200) {
-      return `${arg.slice(0, 200)}...[truncated]`;
+    if (typeof arg === 'string') {
+      // Strip CR/LF to prevent log injection (CWE-117 / CodeQL log-injection).
+      const stripped = arg.replace(/[\r\n]/g, ' ');
+      return stripped.length > 200 ? `${stripped.slice(0, 200)}...[truncated]` : stripped;
     }
     return arg;
   });
