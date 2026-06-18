@@ -130,7 +130,7 @@ function LayoutContent() {
               <div className="hidden sm:block">
                 <span className="text-lg font-bold tracking-tight">
                   Decentral
-                  <span className="text-[#392CB7]">.Scan</span>
+                  <span className="text-[#392CB7]">Scan</span>
                 </span>
               </div>
               <NetworkBadge />
@@ -260,7 +260,7 @@ function LayoutContent() {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <img src="/favicon.png?v=2" alt="DecentralChain" className="w-5 h-5 rounded" />
               <span className="font-semibold">
-                Decentral<span className="text-[#392CB7]">.Scan</span>
+                Decentral<span className="text-[#392CB7]">Scan</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground">Powered by DecentralChain Public API</p>
