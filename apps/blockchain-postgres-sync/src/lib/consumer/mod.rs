@@ -518,11 +518,9 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                 Some(Data::SetScript(_)) => (13i32, ts, vec![], None, None),
                 Some(Data::SponsorFee(_)) => (14i32, ts, vec![], None, None),
                 Some(Data::SetAssetScript(_)) => (15i32, ts, vec![], None, None),
-                Some(Data::InvokeScript(_)) => (16i32, ts, vec![], None, None),
+                Some(Data::InvokeScript(_)) | Some(Data::InvokeExpression(_)) => (16i32, ts, vec![], None, None),
                 Some(Data::UpdateAssetInfo(_)) => (17i32, ts, vec![], None, None),
-                Some(Data::InvokeExpression(_)) => (16i32, ts, vec![], None, None),
-                Some(Data::CommitToGeneration(_)) => (1i32, ts, vec![], None, None),
-                Some(Data::Genesis(_)) => (1i32, ts, vec![], None, None),
+                Some(Data::CommitToGeneration(_)) | Some(Data::Genesis(_)) => (1i32, ts, vec![], None, None),
                 Some(Data::Payment(_)) => (2i32, ts, vec![], None, None),
                 None => return None,
             }
@@ -607,7 +605,7 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
     })
 }
 
-fn tx_type_name(tx_type: i32) -> &'static str {
+const fn tx_type_name(tx_type: i32) -> &'static str {
     match tx_type {
         1 => "genesis",
         2 => "payment",
@@ -1177,7 +1175,6 @@ mod tests {
             meta: crate::proto::dcc::events::TransactionMetadata {
                 sender_address: sender_bytes,
                 metadata: meta_inner,
-                ..Default::default()
             },
             state_update: Default::default(),
         }
@@ -1198,7 +1195,6 @@ mod tests {
 
         let meta = Metadata::Transfer(TransferMetadata {
             recipient_address: recipient_bytes.clone(),
-            ..Default::default()
         });
 
         let tx = make_tx(
@@ -1250,7 +1246,7 @@ mod tests {
         let tx = make_tx(
             Data::Exchange(Default::default()),
             Some(meta),
-            sender_bytes.clone(),
+            sender_bytes,
         );
 
         let event = tx_event_for_tx(&tx, 100).expect("should produce an event");
@@ -1279,7 +1275,6 @@ mod tests {
 
         let meta = Metadata::MassTransfer(MassTransferMetadata {
             recipients_addresses: vec![r1.clone(), r2.clone()],
-            ..Default::default()
         });
 
         let tx = make_tx(
@@ -1310,7 +1305,7 @@ mod tests {
     #[test]
     fn application_status_defaults_to_succeeded() {
         let sender_bytes = vec![9u8; 26];
-        let tx = make_tx(Data::Transfer(Default::default()), None, sender_bytes);
+        let _tx = make_tx(Data::Transfer(Default::default()), None, sender_bytes);
         // Empty sender → None, use lease which has no special status logic
         let tx2 = make_tx(Data::Lease(Default::default()), None, vec![9u8; 26]);
         let event = tx_event_for_tx(&tx2, 1).unwrap();
