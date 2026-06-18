@@ -4,6 +4,7 @@ packages:
   - 'packages/ride/repl/js'
   - 'packages/ride/ts'
   - 'packages/jvm/*'
+  - 'packages/e2e-blockchain'
   - 'apps/*'
   - 'e2e'
 
