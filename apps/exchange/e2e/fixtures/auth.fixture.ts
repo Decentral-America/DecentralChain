@@ -6,6 +6,9 @@ export type AuthFixtures = {
 };
 
 export const test = base.extend<AuthFixtures>({
+  hasFundedAccount: async (_fixtures, use) => {
+    await use(!!process.env.TEST_SEED);
+  },
   newAccountSeed: async ({ page }, use) => {
     await page.goto('/');
     await page.evaluate(() => {
@@ -16,11 +19,9 @@ export const test = base.extend<AuthFixtures>({
         // CSP may block storage access — safe to ignore
       }
     });
-    const seed = process.env.TEST_SEED ?? 'test seed phrase for ui structure validation only do not use';
+    const seed =
+      process.env.TEST_SEED ?? 'test seed phrase for ui structure validation only do not use';
     await use(seed);
-  },
-  hasFundedAccount: async ({}, use) => {
-    await use(!!process.env.TEST_SEED);
   },
 });
 

@@ -1,5 +1,4 @@
-import type { Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 /**
  * Page Object Model for the wallet section (/desktop/wallet/*).
@@ -31,7 +30,9 @@ export class WalletPage {
 
   async expectTransactionsVisible(): Promise<void> {
     const transactionsArea = this.page
-      .locator('table, [class*="transaction"], [data-testid*="transaction"], text=/no transactions/i')
+      .locator(
+        'table, [class*="transaction"], [data-testid*="transaction"], text=/no transactions/i',
+      )
       .first();
     await expect(transactionsArea).toBeVisible({ timeout: 15_000 });
   }

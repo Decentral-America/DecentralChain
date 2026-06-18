@@ -47,7 +47,9 @@ test.describe('Transactions tab', () => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('transactions');
     const content = page
-      .locator('table, [class*="transaction"], [data-testid*="transaction"], text=/no transactions/i, text=/empty/i, main')
+      .locator(
+        'table, [class*="transaction"], [data-testid*="transaction"], text=/no transactions/i, text=/empty/i, main',
+      )
       .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
@@ -61,7 +63,9 @@ test.describe('Leasing tab', () => {
   test('leasing page renders leasing options or empty state', async ({ page }) => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('leasing');
-    const content = page.locator('[class*="leas"], [data-testid*="leas"], text=/leas/i, main, h1, h2').first();
+    const content = page
+      .locator('[class*="leas"], [data-testid*="leas"], text=/leas/i, main, h1, h2')
+      .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
 });
@@ -74,7 +78,9 @@ test.describe('Aliases tab', () => {
   test('aliases page renders alias section or empty state', async ({ page }) => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('aliases');
-    const content = page.locator('[class*="alias"], [data-testid*="alias"], text=/alias/i, main, h1, h2').first();
+    const content = page
+      .locator('[class*="alias"], [data-testid*="alias"], text=/alias/i, main, h1, h2')
+      .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
 });
@@ -87,7 +93,9 @@ test.describe('Account Manager tab', () => {
   test('account-manager page renders account list or empty state', async ({ page }) => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('account-manager');
-    const content = page.locator('[class*="account"], [data-testid*="account"], text=/account/i, main, h1, h2').first();
+    const content = page
+      .locator('[class*="account"], [data-testid*="account"], text=/account/i, main, h1, h2')
+      .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
 });

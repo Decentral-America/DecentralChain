@@ -1,5 +1,4 @@
-import type { Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 /**
  * Page Object Model for the DEX trading interface (/desktop/dex).
@@ -25,7 +24,9 @@ export class DexPage {
 
   async expectOrderBookVisible(): Promise<void> {
     const orderBook = this.page
-      .locator('[class*="order-book"], [class*="orderbook"], [data-testid*="order"], [class*="pair"]')
+      .locator(
+        '[class*="order-book"], [class*="orderbook"], [data-testid*="order"], [class*="pair"]',
+      )
       .first()
       .or(this.page.locator('table, [role="table"]').first());
     await expect(orderBook).toBeVisible({ timeout: 15_000 });

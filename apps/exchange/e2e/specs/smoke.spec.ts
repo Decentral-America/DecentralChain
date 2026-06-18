@@ -6,10 +6,7 @@
  */
 import { expect, test } from '@playwright/test';
 
-async function expectPageLoads(
-  page: import('@playwright/test').Page,
-  path: string,
-): Promise<void> {
+async function expectPageLoads(page: import('@playwright/test').Page, path: string): Promise<void> {
   const response = await page.goto(path);
   expect(response?.status(), `${path} should not return a server error`).toBeLessThan(500);
   await expect(page.locator('body')).not.toBeEmpty();

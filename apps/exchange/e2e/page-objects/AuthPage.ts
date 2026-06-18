@@ -1,5 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 /**
  * Page Object Model for all authentication flows.
@@ -19,7 +18,9 @@ export class AuthPage {
     this.nextBtn = page.getByRole('button', { name: /next|continue|proceed/i }).first();
     this.importBtn = page.getByRole('button', { name: /import|restore|confirm/i }).first();
     this.seedInput = page
-      .locator('textarea, input[placeholder*="seed"], input[placeholder*="phrase"], input[placeholder*="word"]')
+      .locator(
+        'textarea, input[placeholder*="seed"], input[placeholder*="phrase"], input[placeholder*="word"]',
+      )
       .first();
   }
 

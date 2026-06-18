@@ -23,7 +23,9 @@ test.describe('Landing page', () => {
     const cta = page
       .getByRole('link', { name: /get started|create account|start|open|launch/i })
       .first()
-      .or(page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first());
+      .or(
+        page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first(),
+      );
     await expect(cta).toBeVisible({ timeout: 10_000 });
   });
 
@@ -33,13 +35,19 @@ test.describe('Landing page', () => {
     const cta = page
       .getByRole('link', { name: /get started|create account|start|open|launch/i })
       .first()
-      .or(page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first());
+      .or(
+        page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first(),
+      );
     await Promise.all([
       page.waitForURL(/\/(create-account|signup|welcome|sign)/i, { timeout: 15_000 }),
       cta.click(),
     ]).catch(() => {});
     const onAuthPage = page.url().match(/\/(create-account|signup|welcome|sign)/i) !== null;
-    const formRendered = await page.locator('input, form').first().isVisible().catch(() => false);
+    const formRendered = await page
+      .locator('input, form')
+      .first()
+      .isVisible()
+      .catch(() => false);
     expect(onAuthPage || formRendered, 'CTA should lead to auth flow').toBe(true);
   });
 
