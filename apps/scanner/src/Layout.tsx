@@ -122,7 +122,7 @@ function LayoutContent() {
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow overflow-hidden flex-shrink-0">
                 <img
-                  src="/favicon.png"
+                  src="/favicon.png?v=2"
                   alt="DecentralChain logo"
                   className="w-full h-full object-cover"
                 />
@@ -258,7 +258,7 @@ function LayoutContent() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <img src="/favicon.png" alt="DecentralChain" className="w-5 h-5 rounded" />
+              <img src="/favicon.png?v=2" alt="DecentralChain" className="w-5 h-5 rounded" />
               <span className="font-semibold">
                 Decentral<span className="text-[#392CB7]">.Scan</span>
               </span>
