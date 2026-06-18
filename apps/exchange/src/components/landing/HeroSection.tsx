@@ -25,22 +25,9 @@ export default function HeroSection() {
       {/* Hero Gradient Background */}
       <Box sx={heroGradientStyles} />
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid
-          container
-          spacing={6}
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
           {/* Text Content */}
-          <Grid
-            size={{
-              md: 8,
-              xs: 12,
-            }}
-            sx={{ textAlign: { md: 'center', xs: 'left' } }}
-          >
+          <Grid size={{ md: 6, xs: 12 }}>
             <Typography
               variant="h1"
               sx={{
@@ -70,11 +57,7 @@ export default function HeroSection() {
             </Typography>
 
             {/* CTA Buttons */}
-            <Stack
-              direction={{ sm: 'row', xs: 'column' }}
-              spacing={2}
-              sx={{ justifyContent: { md: 'center', xs: 'flex-start' }, mt: 4 }}
-            >
+            <Stack direction={{ sm: 'row', xs: 'column' }} spacing={2} sx={{ mt: 4 }}>
               <Button
                 variant="contained"
                 size="large"
@@ -133,6 +116,24 @@ export default function HeroSection() {
                 Already have a wallet? Sign in →
               </Button>
             </Box>
+          </Grid>
+
+          {/* Right Column — Hero Image */}
+          <Grid size={{ md: 6, xs: 12 }} sx={{ display: { sm: 'block', xs: 'none' } }}>
+            <Box
+              component="img"
+              src="/images/landing-hero-phone.jpg"
+              alt="DecentralChain trading app"
+              sx={{
+                borderRadius: 4,
+                boxShadow: '0 30px 80px rgba(0,0,0,.35)',
+                display: 'block',
+                height: { md: 420, sm: 340 },
+                ml: 'auto',
+                objectFit: 'cover',
+                width: '100%',
+              }}
+            />
           </Grid>
         </Grid>
       </Container>
