@@ -35,8 +35,7 @@ export default function DiscoveryCTA() {
                   right: 0,
                   top: 0,
                 },
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400)',
+                backgroundImage: 'linear-gradient(135deg, #392CB7 0%, #6C63FF 50%, #A78BFA 100%)',
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 bgcolor: 'rgba(79, 70, 229, 0.05)',

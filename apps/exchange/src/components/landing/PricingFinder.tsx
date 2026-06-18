@@ -66,8 +66,7 @@ export default function PricingFinder() {
                   right: 0,
                   top: 0,
                 },
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400)',
+                backgroundImage: 'linear-gradient(135deg, #1a1040 0%, #392CB7 60%, #6C63FF 100%)',
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 bgcolor: 'rgba(79, 70, 229, 0.05)',
