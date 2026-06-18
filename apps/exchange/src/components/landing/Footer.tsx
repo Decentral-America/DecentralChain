@@ -42,16 +42,20 @@ export default function Footer() {
               xs: 12,
             }}
           >
-            <Box
-              component="img"
-              src="/assets/decentralexchange.svg"
-              alt="Decentral Exchange"
-              sx={{
-                height: 32,
-                mb: 2,
-                width: 'auto',
-              }}
-            />
+            <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, mb: 2 }}>
+              <Box
+                component="img"
+                src="/favicon.png?v=3"
+                alt="DecentralChain"
+                sx={{ borderRadius: '50%', height: 32, width: 32 }}
+              />
+              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}>
+                Decentral
+                <Box component="span" sx={{ color: 'primary.main' }}>
+                  .Exchange
+                </Box>
+              </Typography>
+            </Box>
             <Typography
               variant="body2"
               sx={{

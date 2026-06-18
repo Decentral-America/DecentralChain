@@ -13,7 +13,13 @@ export default function Header() {
     threshold: 50,
   });
 
-  const navLinks = ['Explore', 'Institute', 'Business', 'Resources', 'Company'];
+  const navLinks = [
+    { href: 'https://decentralchain.io/explore', label: 'Explore' },
+    { href: 'https://decentralchain.io/institute', label: 'Institute' },
+    { href: 'https://decentralchain.io/business', label: 'Business' },
+    { href: 'https://decentralchain.io/resources', label: 'Resources' },
+    { href: 'https://decentralchain.io/company', label: 'Company' },
+  ];
 
   return (
     <AppBar
@@ -49,18 +55,21 @@ export default function Header() {
           >
             {navLinks.map((link) => (
               <Button
-                key={link}
+                key={link.label}
                 color="inherit"
+                component="a"
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 sx={{
-                  '&:hover': {
-                    opacity: 1,
-                  },
+                  '&:hover': { opacity: 1 },
                   fontSize: 15,
                   fontWeight: 500,
                   opacity: trigger ? 1 : 0.95,
+                  textDecoration: 'none',
                 }}
               >
-                {link}
+                {link.label}
               </Button>
             ))}
           </Stack>
