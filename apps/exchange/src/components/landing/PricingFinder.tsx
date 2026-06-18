@@ -7,8 +7,8 @@ export default function PricingFinder() {
   return (
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 12, xs: 10 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
-          <Grid size={{ md: 6, xs: 12 }}>
+        <Grid container spacing={6} alignItems="center">
+          <Grid item xs={12} md={6}>
             <Typography
               variant="overline"
               sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: 0.12 }}
@@ -18,7 +18,7 @@ export default function PricingFinder() {
             <Typography variant="h2" sx={{ fontWeight: 700, mb: 3, mt: 2 }}>
               Best rates, zero hassle
             </Typography>
-            <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
               Our smart routing algorithm automatically finds the best prices across multiple
               liquidity pools to get you the optimal rate for every swap.
             </Typography>
@@ -31,21 +31,30 @@ export default function PricingFinder() {
               Start Swapping
             </Button>
           </Grid>
-          <Grid size={{ md: 6, xs: 12 }}>
+          <Grid item xs={12} md={6}>
             <Box
-              component="img"
-              src="/images/landing-swap.jpg"
-              alt="Token swap interface"
               sx={{
+                '&::before': {
+                  bgcolor: 'rgba(255, 255, 255, 0.7)',
+                  borderRadius: 6,
+                  bottom: 0,
+                  content: '""',
+                  left: 0,
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                },
+                backgroundImage: 'url(/images/landing-swap.jpg)',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                bgcolor: 'rgba(79, 70, 229, 0.05)',
                 border: '1px solid #E9EEF5',
                 borderRadius: 6,
                 boxShadow: 4,
-                display: 'block',
                 height: 420,
                 maxWidth: 340,
                 mx: 'auto',
-                objectFit: 'cover',
-                width: '100%',
+                position: 'relative',
               }}
             />
           </Grid>
