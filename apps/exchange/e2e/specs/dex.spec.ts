@@ -58,7 +58,9 @@ test.describe('OrderBook page', () => {
   test('orderbook page renders content or redirect', async ({ page }) => {
     await page.goto('/desktop/orderbook');
     await page.waitForLoadState('domcontentloaded');
-    const content = page.locator('header, nav, main, [class*="order"], [class*="book"], h1, h2').first();
+    const content = page
+      .locator('header, nav, main, [class*="order"], [class*="book"], h1, h2')
+      .first();
     await expect(content).toBeVisible({ timeout: 10_000 });
   });
 });

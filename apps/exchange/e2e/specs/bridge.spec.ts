@@ -22,7 +22,8 @@ test.describe('Bridge page', () => {
     await page.goto('/desktop/bridge');
     await page.waitForLoadState('domcontentloaded');
     const depositWithdraw = page
-      .getByRole('tab', { name: /deposit|withdraw/i }).first()
+      .getByRole('tab', { name: /deposit|withdraw/i })
+      .first()
       .or(page.getByRole('button', { name: /deposit|withdraw/i }).first())
       .or(page.locator('text=/deposit|withdraw/i').first());
     await expect(depositWithdraw).toBeVisible({ timeout: 15_000 });

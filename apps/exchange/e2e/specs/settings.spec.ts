@@ -32,7 +32,8 @@ test.describe('Settings sections — authenticated', () => {
     const settings = new SettingsPage(page);
     await settings.goto();
     const general = page
-      .getByRole('tab', { name: /general/i }).first()
+      .getByRole('tab', { name: /general/i })
+      .first()
       .or(page.getByRole('button', { name: /general/i }).first())
       .or(page.locator('text=/general/i').first());
     await expect(general).toBeVisible({ timeout: 10_000 });
@@ -43,7 +44,8 @@ test.describe('Settings sections — authenticated', () => {
     const settings = new SettingsPage(page);
     await settings.goto();
     const security = page
-      .getByRole('tab', { name: /security/i }).first()
+      .getByRole('tab', { name: /security/i })
+      .first()
       .or(page.getByRole('button', { name: /security/i }).first())
       .or(page.locator('text=/security/i').first());
     await expect(security).toBeVisible({ timeout: 10_000 });
@@ -54,7 +56,8 @@ test.describe('Settings sections — authenticated', () => {
     const settings = new SettingsPage(page);
     await settings.goto();
     const network = page
-      .getByRole('tab', { name: /network/i }).first()
+      .getByRole('tab', { name: /network/i })
+      .first()
       .or(page.getByRole('button', { name: /network/i }).first())
       .or(page.locator('text=/network/i').first());
     await expect(network).toBeVisible({ timeout: 10_000 });
@@ -65,7 +68,8 @@ test.describe('Settings sections — authenticated', () => {
     const settings = new SettingsPage(page);
     await settings.goto();
     const language = page
-      .getByRole('tab', { name: /language/i }).first()
+      .getByRole('tab', { name: /language/i })
+      .first()
       .or(page.getByRole('button', { name: /language/i }).first())
       .or(page.locator('text=/language/i').first());
     await expect(language).toBeVisible({ timeout: 10_000 });

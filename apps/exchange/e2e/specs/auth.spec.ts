@@ -93,7 +93,9 @@ test.describe('Restore Backup page', () => {
     await page.goto('/restore-backup');
     await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('body')).not.toBeEmpty();
-    await expect(page.locator('input[type="file"], textarea, input[type="text"]').first()).toBeVisible({ timeout: 10_000 });
+    await expect(
+      page.locator('input[type="file"], textarea, input[type="text"]').first(),
+    ).toBeVisible({ timeout: 10_000 });
   });
 });
 
