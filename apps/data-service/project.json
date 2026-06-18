@@ -50,6 +50,15 @@
         "cwd": "{projectRoot}"
       }
     },
+    "test-http": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": ["default", "^production"],
+      "options": {
+        "command": "pnpm run test:http",
+        "cwd": "{projectRoot}"
+      }
+    },
     "typecheck": {
       "cache": true,
       "dependsOn": ["^build"],
