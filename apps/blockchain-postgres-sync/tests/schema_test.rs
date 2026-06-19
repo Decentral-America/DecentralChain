@@ -57,7 +57,7 @@ fn table_exists(conn: &mut PgConnection, table_name: &str) -> bool {
     .load(conn)
     .unwrap();
 
-    rows.first().map_or(false, |r| r.cnt > 0)
+    rows.first().is_some_and(|r| r.cnt > 0)
 }
 
 // ─── Helper: check column exists ─────────────────────────────────────────────
@@ -81,7 +81,7 @@ fn column_exists(conn: &mut PgConnection, table_name: &str, column_name: &str) -
     .load(conn)
     .unwrap();
 
-    rows.first().map_or(false, |r| r.cnt > 0)
+    rows.first().is_some_and(|r| r.cnt > 0)
 }
 
 // ─── Helper: check index exists ──────────────────────────────────────────────
@@ -102,7 +102,7 @@ fn index_exists(conn: &mut PgConnection, index_name: &str) -> bool {
     .load(conn)
     .unwrap();
 
-    rows.first().map_or(false, |r| r.cnt > 0)
+    rows.first().is_some_and(|r| r.cnt > 0)
 }
 
 // ─── Test: core tables exist ─────────────────────────────────────────────────
