@@ -1,3 +1,4 @@
+#![allow(clippy::unwrap_used)]
 //! PostgreSQL integration tests.
 //!
 //! Each test function spins up a throwaway PostgreSQL Docker container via

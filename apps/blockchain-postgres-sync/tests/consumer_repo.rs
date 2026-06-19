@@ -1,3 +1,4 @@
+#![allow(clippy::unwrap_used)]
 //! Integration tests for consumer repo operations against a real PostgreSQL instance.
 //!
 //! These tests exercise the database operations defined in
