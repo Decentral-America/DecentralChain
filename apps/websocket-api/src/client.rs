@@ -407,6 +407,12 @@ pub struct KeyInfo {
     last_refresh_time: Instant,
 }
 
+impl Default for KeyInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl KeyInfo {
     pub fn new() -> Self {
         Self {

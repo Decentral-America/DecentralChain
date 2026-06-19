@@ -69,7 +69,7 @@ impl Repo for ErrRepo {
 fn health_router<R: Repo + 'static>(repo: R) -> Router {
     let repo = Arc::new(repo);
     let health = {
-        let r = repo.clone();
+        let r = Arc::clone(&repo);
         move || {
             let r = r.clone();
             async move {
