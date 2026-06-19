@@ -1,0 +1,6 @@
+# Dependency updates are managed by Renovate, not Dependabot.
+# This file exists solely to prevent GitHub from auto-generating
+# a Dependabot Updates workflow in Actions.
+# See: https://docs.github.com/en/code-security/dependabot
+version: 2
+updates: []
