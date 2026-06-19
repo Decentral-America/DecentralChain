@@ -1,11 +1,11 @@
-//! PostgreSQL integration tests.
+//! `PostgreSQL` integration tests.
 //!
-//! Each test function spins up a throwaway PostgreSQL Docker container via
+//! Each test function spins up a throwaway `PostgreSQL` Docker container via
 //! `testcontainers`, runs the full diesel migration suite against it, exercises
 //! one concern, then lets the container be dropped automatically.
 //!
 //! Run with:
-//!   cargo test --test db_integration -- --test-threads=1
+//!   cargo test --test `db_integration` -- --test-threads=1
 //!
 //! Docker must be running on the host for these tests to pass.
 
