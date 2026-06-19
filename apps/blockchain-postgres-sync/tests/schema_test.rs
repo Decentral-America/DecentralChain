@@ -4,7 +4,7 @@
 //! columns, and indexes so that application queries will succeed at runtime.
 //!
 //! Run with:
-//!   cargo test --test schema_test -- --test-threads=1
+//!   cargo test --test `schema_test` -- --test-threads=1
 
 #![allow(clippy::unwrap_used)]
 
