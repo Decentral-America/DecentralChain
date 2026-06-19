@@ -189,81 +189,95 @@ jobs:
           repository: Decentral-America/infra
           persist-credentials: false
 
+      - name: Set up SSH credentials
+        env:
+          DEPLOY_HOST: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
+          DEPLOY_KEY:  ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_SSH_KEY || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_SSH_KEY || secrets.MAINNET_DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
       - name: Upload websocket-api.yml to server
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
-        with:
-          host:     ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
-          username: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
-          key:      ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_SSH_KEY || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_SSH_KEY || secrets.MAINNET_DEPLOY_SSH_KEY }}
-          source:           compose/websocket-api.yml
-          target:           /opt/dcc/compose/
-          strip_components: 1
+        env:
+          DEPLOY_HOST: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/deploy_key \
+            compose/websocket-api.yml \
+            "$DEPLOY_USER@$DEPLOY_HOST:/opt/dcc/compose/"
 
       - name: Pull image, deploy, and auto-rollback on failure
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
+          DEPLOY_HOST:   ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
+          DEPLOY_USER:   ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
           INPUT_IMAGE:   ghcr.io/decentral-america/websocket-api:${{ github.sha }}
           INPUT_NETWORK: ${{ needs.resolve.outputs.network }}
-        with:
-          host:     ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
-          username: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
-          key:      ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_SSH_KEY || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_SSH_KEY || secrets.MAINNET_DEPLOY_SSH_KEY }}
-          envs:     GHCR_TOKEN,INPUT_IMAGE,INPUT_NETWORK
-          script: |
-            set -euo pipefail
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \
+            "$DEPLOY_USER@$DEPLOY_HOST" bash -s << REMOTE
+          set -euo pipefail
+          GHCR_TOKEN="${GHCR_TOKEN}"
+          INPUT_IMAGE="${INPUT_IMAGE}"
+          INPUT_NETWORK="${INPUT_NETWORK}"
 
-            export IMAGE_TAG="$INPUT_IMAGE"
-            export NETWORK="$INPUT_NETWORK"
-            SERVICE="websocket-api"
-            COMPOSE_DIR="/opt/dcc/compose"
+          export IMAGE_TAG="\$INPUT_IMAGE"
+          export NETWORK="\$INPUT_NETWORK"
+          SERVICE="websocket-api"
+          COMPOSE_DIR="/opt/dcc/compose"
 
-            echo "Authenticating with GHCR..."
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin
+          echo "Authenticating with GHCR..."
+          echo "\$GHCR_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin
 
-            PREV_IMAGE=$(docker inspect --format '{{.Config.Image}}' "${SERVICE}-${NETWORK}" 2>/dev/null || echo "")
-            echo "Previous image: ${PREV_IMAGE:-<none — first deploy>}"
+          PREV_IMAGE=\$(docker inspect --format '{{.Config.Image}}' "\${SERVICE}-\${NETWORK}" 2>/dev/null || echo "")
+          echo "Previous image: \${PREV_IMAGE:-<none — first deploy>}"
 
-            EXISTING_PROJECT=$(docker inspect \
-              --format '{{index .Config.Labels "com.docker.compose.project"}}' \
-              "${SERVICE}-${NETWORK}" 2>/dev/null || true)
-            EXPECTED_PROJECT="${SERVICE}-${NETWORK}"
-            if [[ -n "$EXISTING_PROJECT" && "$EXISTING_PROJECT" != "$EXPECTED_PROJECT" ]]; then
-              docker rm -f "${SERVICE}-${NETWORK}"
+          EXISTING_PROJECT=\$(docker inspect \
+            --format '{{index .Config.Labels "com.docker.compose.project"}}' \
+            "\${SERVICE}-\${NETWORK}" 2>/dev/null || true)
+          EXPECTED_PROJECT="\${SERVICE}-\${NETWORK}"
+          if [[ -n "\$EXISTING_PROJECT" && "\$EXISTING_PROJECT" != "\$EXPECTED_PROJECT" ]]; then
+            docker rm -f "\${SERVICE}-\${NETWORK}"
+          fi
+
+          echo "Pulling \$IMAGE_TAG"
+          docker pull "\$IMAGE_TAG"
+
+          echo "Deploying \$SERVICE on \$NETWORK..."
+          cd "\$COMPOSE_DIR"
+
+          if ! docker compose \
+            --project-name "\${SERVICE}-\${NETWORK}" \
+            --file "\${SERVICE}.yml" up \
+            --detach \
+            --wait \
+            --wait-timeout 120 \
+            "\$SERVICE"; then
+
+            echo "::error::Health check failed for \$SERVICE on \$NETWORK."
+            echo "=== docker logs \${SERVICE}-\${NETWORK} ==="
+            docker logs "\${SERVICE}-\${NETWORK}" 2>&1 | tail -40 || true
+            echo "=== docker inspect state ==="
+            docker inspect "\${SERVICE}-\${NETWORK}" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); s=d[0]['State']; print('Status:', s['Status']); print('ExitCode:', s['ExitCode']); print('Error:', s['Error']); print('OOMKilled:', s['OOMKilled'])" 2>/dev/null || true
+
+            if [[ -n "\$PREV_IMAGE" ]]; then
+              echo "Rolling back to \$PREV_IMAGE"
+              export IMAGE_TAG="\$PREV_IMAGE"
+              docker compose \
+                --project-name "\${SERVICE}-\${NETWORK}" \
+                --file "\${SERVICE}.yml" up \
+                --detach --wait --wait-timeout 120 "\$SERVICE" \
+                && echo "Rollback successful." \
+                || echo "::error::Rollback also failed — manual intervention required."
             fi
+            exit 1
+          fi
 
-            echo "Pulling $IMAGE_TAG"
-            docker pull "$IMAGE_TAG"
-
-            echo "Deploying $SERVICE on $NETWORK..."
-            cd "$COMPOSE_DIR"
-
-            if ! docker compose \
-              --project-name "${SERVICE}-${NETWORK}" \
-              --file "${SERVICE}.yml" up \
-              --detach \
-              --wait \
-              --wait-timeout 120 \
-              "$SERVICE"; then
-
-              echo "::error::Health check failed for $SERVICE on $NETWORK."
-              echo "=== docker logs ${SERVICE}-${NETWORK} ==="
-              docker logs "${SERVICE}-${NETWORK}" 2>&1 | tail -40 || true
-              echo "=== docker inspect state ==="
-              docker inspect "${SERVICE}-${NETWORK}" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); s=d[0]['State']; print('Status:', s['Status']); print('ExitCode:', s['ExitCode']); print('Error:', s['Error']); print('OOMKilled:', s['OOMKilled'])" 2>/dev/null || true
-
-              if [[ -n "$PREV_IMAGE" ]]; then
-                echo "Rolling back to $PREV_IMAGE"
-                export IMAGE_TAG="$PREV_IMAGE"
-                docker compose \
-                  --project-name "${SERVICE}-${NETWORK}" \
-                  --file "${SERVICE}.yml" up \
-                  --detach --wait --wait-timeout 120 "$SERVICE" \
-                  && echo "Rollback successful." \
-                  || echo "::error::Rollback also failed — manual intervention required."
-              fi
-              exit 1
-            fi
-
-            docker image prune -f
-            echo "Deploy complete: $IMAGE_TAG → $NETWORK"
+          docker image prune -f
+          echo "Deploy complete: \$IMAGE_TAG → \$NETWORK"
+          REMOTE
