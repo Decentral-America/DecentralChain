@@ -1,4 +1,4 @@
-//! Integration tests for consumer repo operations against a real PostgreSQL instance.
+//! Integration tests for consumer repo operations against a real `PostgreSQL` instance.
 //!
 //! These tests exercise the database operations defined in
 //! `src/lib/consumer/repo/pg.rs` — insert, rollback, idempotency — using a
@@ -6,7 +6,7 @@
 //! or modified.
 //!
 //! Run with:
-//!   cargo test --test consumer_repo -- --test-threads=1
+//!   cargo test --test `consumer_repo` -- --test-threads=1
 
 #![allow(clippy::unwrap_used)]
 
