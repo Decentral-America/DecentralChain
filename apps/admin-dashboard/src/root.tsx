@@ -20,7 +20,7 @@ function runtimeConfig() {
   return {
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',
     scannerUrl:
-      process.env.NODE_DASHBOARD_SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
+      process.env.ADMIN_DASHBOARD_SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
   };
 }
 

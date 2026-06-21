@@ -6,12 +6,12 @@ const SESSION_DURATION_SECONDS = 8 * 3600;
 const DEFAULT_JWT_SECRET = 'dev-secret-change-me';
 
 export function isUsingDefaultSecret(): boolean {
-  const s = process.env.NODE_DASHBOARD_JWT_SECRET;
+  const s = process.env.ADMIN_DASHBOARD_JWT_SECRET;
   return !s || s === DEFAULT_JWT_SECRET;
 }
 
 export function getSecret(): Uint8Array {
-  return new TextEncoder().encode(process.env.NODE_DASHBOARD_JWT_SECRET ?? DEFAULT_JWT_SECRET);
+  return new TextEncoder().encode(process.env.ADMIN_DASHBOARD_JWT_SECRET ?? DEFAULT_JWT_SECRET);
 }
 
 export async function signToken(username: string): Promise<string> {
