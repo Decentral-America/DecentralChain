@@ -3,16 +3,17 @@ import { createReadableStreamFromReadable } from '@react-router/node';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { type AppLoadContext, type EntryContext, ServerRouter } from 'react-router';
+import { isUsingDefaultSecret } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
 // Startup checks — run once when the server process starts.
-if (!process.env.CF_TEAM_DOMAIN) {
-  logger.warn('CF_TEAM_DOMAIN is not set — Cloudflare Access verification will fail in production');
-}
-if (!process.env.CF_ACCESS_AUD) {
+if (isUsingDefaultSecret()) {
   logger.warn(
-    'CF_ACCESS_AUD is not set — Cloudflare Access JWT audience validation disabled in production',
+    'ADMIN_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
   );
+}
+if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+  logger.warn('GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET not set — GitHub OAuth will not work');
 }
 
 const ABORT_DELAY = 5_000;

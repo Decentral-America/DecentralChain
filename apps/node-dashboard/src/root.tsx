@@ -5,37 +5,46 @@ import {
   Links,
   Meta,
   Outlet,
+  redirect,
   Scripts,
   ScrollRestoration,
 } from 'react-router';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { getAuthenticatedUser } from '@/lib/access';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { queryClientInstance } from '@/lib/query-client';
 import { type Route } from './+types/root';
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const user = await getAuthenticatedUser(request);
-  if (!user) {
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
-  const cfTeamDomain = process.env.CF_TEAM_DOMAIN ?? '';
-  const logoutUrl = cfTeamDomain
-    ? `https://${cfTeamDomain}/cdn-cgi/access/logout?returnTo=${encodeURIComponent(`${url.protocol}//${url.host}`)}`
-    : '/';
-
-  logger.debug({ path: url.pathname, user }, 'request');
-
+function runtimeConfig() {
   return {
-    cfTeamDomain,
-    logoutUrl,
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',
     scannerUrl: process.env.SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
-    user,
   };
+}
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const config = runtimeConfig();
+
+  // Public routes — no auth required
+  if (
+    url.pathname === '/login' ||
+    url.pathname === '/healthz' ||
+    url.pathname.startsWith('/api/auth/')
+  ) {
+    return { ...config, user: null };
+  }
+
+  const token = getTokenFromRequest(request);
+  if (!token) throw redirect('/login');
+
+  const payload = await verifyToken(token);
+  if (!payload) throw redirect('/login');
+
+  logger.debug({ path: url.pathname, user: payload.username }, 'request');
+
+  return { ...config, user: payload.username };
 }
 
 export const links: Route.LinksFunction = () => [{ href: '/favicon.ico', rel: 'icon' }];
@@ -72,17 +81,6 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  if (isRouteErrorResponse(error) && error.status === 401) {
-    return (
-      <main className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-        <h1 className="text-4xl font-bold mb-4">Access Denied</h1>
-        <p className="text-muted-foreground">
-          This dashboard is protected by Cloudflare Access. Authenticate through your organization.
-        </p>
-      </main>
-    );
-  }
-
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;

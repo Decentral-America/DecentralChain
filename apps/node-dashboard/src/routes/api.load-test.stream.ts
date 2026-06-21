@@ -1,7 +1,14 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
-import { getAuthenticatedUser } from '@/lib/access';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+
+async function getUser(request: Request): Promise<string | null> {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
+  const payload = await verifyToken(token);
+  return payload?.username ?? null;
+}
 
 // Single-process assumption: react-router-serve runs one Node.js process.
 // If you add cluster workers, move this state to Redis or a named pipe.
@@ -63,7 +70,7 @@ function validateStartParams(
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await getAuthenticatedUser(request);
+  const user = await getUser(request);
   if (!user) {
     return new Response('Unauthorized', { status: 401 });
   }
@@ -130,7 +137,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const user = await getAuthenticatedUser(request);
+  const user = await getUser(request);
   if (!user) {
     return new Response('Unauthorized', { status: 401 });
   }

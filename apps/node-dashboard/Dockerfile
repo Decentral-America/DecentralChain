@@ -52,17 +52,20 @@ RUN chown -R nodedash:nodedash /app
 USER nodedash
 
 ENV NODE_ENV=production \
-    PORT=3000 \
+    PORT=3001 \
+    APP_URL="https://admin.decentralchain.io" \
     DCC_NODE_URL=https://testnet-node.decentralchain.io \
     SCANNER_URL=https://testnet-scanner.decentralchain.io \
-    CF_TEAM_DOMAIN="" \
-    CF_ACCESS_AUD="" \
+    GITHUB_CLIENT_ID="" \
+    GITHUB_CLIENT_SECRET="" \
+    GITHUB_ORG="Decentral-America" \
+    ADMIN_JWT_SECRET="" \
     DCC_LOAD_TESTER_PATH="/opt/dcc/load-tester" \
     LOG_LEVEL="info"
 
-EXPOSE 3000
+EXPOSE 3001
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-  CMD wget -qO- http://localhost:3000/healthz || exit 1
+  CMD wget -qO- http://localhost:3001/healthz || exit 1
 
 CMD ["node_modules/.bin/react-router-serve", "build/server/index.js"]

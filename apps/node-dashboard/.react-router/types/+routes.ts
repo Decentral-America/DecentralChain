@@ -20,6 +20,18 @@ type Pages = {
   "/robots.txt": {
     params: {};
   };
+  "/login": {
+    params: {};
+  };
+  "/api/auth/github": {
+    params: {};
+  };
+  "/api/auth/github/callback": {
+    params: {};
+  };
+  "/api/auth/logout": {
+    params: {};
+  };
   "/load-test": {
     params: {};
   };
@@ -34,7 +46,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/healthz" | "/robots.txt" | "/load-test" | "/treasury" | "/api/load-test/stream";
+    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/load-test" | "/treasury" | "/api/load-test/stream";
   };
   "routes/healthz.ts": {
     id: "routes/healthz";
@@ -43,6 +55,22 @@ type RouteFiles = {
   "routes/robots.txt.ts": {
     id: "routes/robots.txt";
     page: "/robots.txt";
+  };
+  "pages/Login.tsx": {
+    id: "pages/Login";
+    page: "/login";
+  };
+  "routes/api.auth.github.ts": {
+    id: "routes/api.auth.github";
+    page: "/api/auth/github";
+  };
+  "routes/api.auth.github.callback.ts": {
+    id: "routes/api.auth.github.callback";
+    page: "/api/auth/github/callback";
+  };
+  "routes/api.auth.logout.ts": {
+    id: "routes/api.auth.logout";
+    page: "/api/auth/logout";
   };
   "Layout.tsx": {
     id: "Layout";
@@ -70,6 +98,10 @@ type RouteModules = {
   "root": typeof import("./src/root.tsx");
   "routes/healthz": typeof import("./src/routes/healthz.ts");
   "routes/robots.txt": typeof import("./src/routes/robots.txt.ts");
+  "pages/Login": typeof import("./src/pages/Login.tsx");
+  "routes/api.auth.github": typeof import("./src/routes/api.auth.github.ts");
+  "routes/api.auth.github.callback": typeof import("./src/routes/api.auth.github.callback.ts");
+  "routes/api.auth.logout": typeof import("./src/routes/api.auth.logout.ts");
   "Layout": typeof import("./src/Layout.tsx");
   "pages/Nodes": typeof import("./src/pages/Nodes.tsx");
   "pages/LoadTest": typeof import("./src/pages/LoadTest.tsx");
