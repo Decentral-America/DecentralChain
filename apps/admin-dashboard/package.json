@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/Decentral-America/DecentralChain/tree/main/apps/node-dashboard",
   "license": "MIT",
-  "name": "node-dashboard",
+  "name": "admin-dashboard",
   "nx": {
     "targets": {
       "build": {

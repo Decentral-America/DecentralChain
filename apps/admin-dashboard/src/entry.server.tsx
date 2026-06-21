@@ -9,15 +9,15 @@ import { logger } from '@/lib/logger';
 // Startup checks — run once when the server process starts.
 if (isUsingDefaultSecret()) {
   logger.warn(
-    'NODE_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
+    'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
   );
 }
 if (
-  !process.env.NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_ID ||
-  !process.env.NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET
+  !process.env.ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_ID ||
+  !process.env.ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET
 ) {
   logger.warn(
-    'NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_ID or NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET not set — GitHub OAuth will not work',
+    'ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_ID or ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET not set — GitHub OAuth will not work',
   );
 }
 

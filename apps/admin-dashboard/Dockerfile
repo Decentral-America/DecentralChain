@@ -42,24 +42,24 @@ FROM base AS runtime
 
 RUN apk upgrade --no-cache libcrypto3 libssl3
 
-RUN addgroup -S nodedash && adduser -S -G nodedash nodedash
+RUN addgroup -S admindash && adduser -S -G admindash admindash
 
 WORKDIR /app
 
 COPY --from=build /prod/node-dashboard ./
 
-RUN chown -R nodedash:nodedash /app
-USER nodedash
+RUN chown -R admindash:admindash /app
+USER admindash
 
 ENV NODE_ENV=production \
     PORT=3001 \
-    NODE_DASHBOARD_URL="https://admin.decentralchain.io" \
+    ADMIN_DASHBOARD_URL="https://testnet-admin.decentralchain.io" \
     DCC_NODE_URL=https://testnet-node.decentralchain.io \
-    NODE_DASHBOARD_SCANNER_URL=https://testnet-scanner.decentralchain.io \
-    NODE_DASHBOARD_NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_ID="" \
-    NODE_DASHBOARD_NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET="" \
-    NODE_DASHBOARD_GITHUB_ORG="Decentral-America" \
-    NODE_DASHBOARD_JWT_SECRET="" \
+    ADMIN_DASHBOARD_SCANNER_URL=https://testnet-scanner.decentralchain.io \
+    ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_ID="" \
+    ADMIN_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET="" \
+    ADMIN_DASHBOARD_GITHUB_ORG="Decentral-America" \
+    ADMIN_DASHBOARD_JWT_SECRET="" \
     DCC_LOAD_TESTER_PATH="/opt/dcc/load-tester" \
     LOG_LEVEL="info"
 

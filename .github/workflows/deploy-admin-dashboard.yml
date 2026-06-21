@@ -1,9 +1,9 @@
-name: Deploy Node Dashboard
+name: Deploy Admin Dashboard
 
 on:
   push:
     tags:
-      - 'node-dashboard/v*.*.*'
+      - 'admin-dashboard/v*.*.*'
 
   workflow_dispatch:
     inputs:
@@ -17,7 +17,7 @@ on:
           - mainnet
 
 concurrency:
-  group: ci-deploy-node-dashboard-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'testnet' }}
+  group: ci-deploy-admin-dashboard-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'testnet' }}
   cancel-in-progress: false
 
 permissions:
@@ -27,7 +27,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/decentral-america/node-dashboard
+  IMAGE_NAME: ghcr.io/decentral-america/admin-dashboard
 
 jobs:
   resolve:
@@ -106,7 +106,7 @@ jobs:
             type=raw,value=${{ github.sha }}
             type=semver,pattern={{version}},value=${{ github.ref_name }}
           labels: |
-            org.opencontainers.image.title=DCC Node Dashboard
+            org.opencontainers.image.title=DCC Admin Dashboard
             org.opencontainers.image.description=Private admin dashboard for DecentralChain node operators
             org.opencontainers.image.vendor=Decentral-America
 
@@ -115,7 +115,7 @@ jobs:
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
-          file: apps/node-dashboard/Dockerfile
+          file: apps/admin-dashboard/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -137,6 +137,6 @@ jobs:
     uses: Decentral-America/infra/.github/workflows/deploy-container.yml@f5581a86637954d07b19b6ed993cc245f2bb5e73 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
-      image:   ghcr.io/decentral-america/node-dashboard:${{ github.sha }}
-      service: node-dashboard
+      image:   ghcr.io/decentral-america/admin-dashboard:${{ github.sha }}
+      service: admin-dashboard
     secrets: inherit
