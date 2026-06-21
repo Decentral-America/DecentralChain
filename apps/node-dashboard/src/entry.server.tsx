@@ -12,8 +12,10 @@ if (isUsingDefaultSecret()) {
     'ADMIN_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
   );
 }
-if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
-  logger.warn('GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET not set — GitHub OAuth will not work');
+if (!process.env.GITHUB_OAUTH_CLIENT_ID || !process.env.GITHUB_OAUTH_CLIENT_SECRET) {
+  logger.warn(
+    'GITHUB_OAUTH_CLIENT_ID or GITHUB_OAUTH_CLIENT_SECRET not set — GitHub OAuth will not work',
+  );
 }
 
 const ABORT_DELAY = 5_000;

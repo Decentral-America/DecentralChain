@@ -17,8 +17,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // Exchange code for access token
   const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
     body: JSON.stringify({
-      client_id: process.env.GITHUB_CLIENT_ID,
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
+      client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
+      client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
       code,
       redirect_uri: `${appUrl}/api/auth/github/callback`,
     }),
