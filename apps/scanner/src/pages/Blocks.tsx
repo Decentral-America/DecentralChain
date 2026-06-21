@@ -148,7 +148,7 @@ export default function Blocks() {
                             <Link
                               to={createPageUrl('Address', `?addr=${block.generator}`)}
                               className="text-link hover:text-link-hover text-sm font-mono"
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e: React.MouseEvent) => e.stopPropagation()}
                             >
                               {truncate(block.generator, 12)}
                             </Link>

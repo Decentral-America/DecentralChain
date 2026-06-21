@@ -1,0 +1,142 @@
+name: Deploy Node Dashboard
+
+on:
+  push:
+    tags:
+      - 'node-dashboard/v*.*.*'
+
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy'
+        required: true
+        default: 'testnet'
+        type: choice
+        options:
+          - testnet
+          - mainnet
+
+concurrency:
+  group: ci-deploy-node-dashboard-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'testnet' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/decentral-america/node-dashboard
+
+jobs:
+  resolve:
+    name: Resolve parameters
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: build-and-push
+    outputs:
+      network: ${{ steps.params.outputs.network }}
+
+    steps:
+      - name: Compute network
+        id: params
+        env:
+          INPUT_NETWORK: ${{ inputs.network }}
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            NETWORK="${INPUT_NETWORK}"
+          else
+            NETWORK="testnet"
+          fi
+
+          case "$NETWORK" in
+            mainnet|testnet) ;;
+            *)
+              echo "::error::Unknown network: $NETWORK"
+              exit 1
+              ;;
+          esac
+
+          echo "network=$NETWORK" >> "$GITHUB_OUTPUT"
+
+          echo "### Build parameters" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Parameter | Value |"        >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----------|-------|"        >> "$GITHUB_STEP_SUMMARY"
+          echo "| Network   | \`$NETWORK\` |" >> "$GITHUB_STEP_SUMMARY"
+
+  build-and-push:
+    name: Build and push
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+      artifact-metadata: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=semver,pattern={{version}},value=${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.title=DCC Node Dashboard
+            org.opencontainers.image.description=Private admin dashboard for DecentralChain node operators
+            org.opencontainers.image.vendor=Decentral-America
+
+      - name: Build and push image
+        id: push
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: .
+          file: apps/node-dashboard/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to:   type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-name: ${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+  call-deploy:
+    name: Deploy (${{ needs.resolve.outputs.network }})
+    needs: [resolve]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@f5581a86637954d07b19b6ed993cc245f2bb5e73 # main
+    with:
+      network: ${{ needs.resolve.outputs.network }}
+      image:   ghcr.io/decentral-america/node-dashboard:${{ github.sha }}
+      service: node-dashboard
+    secrets: inherit

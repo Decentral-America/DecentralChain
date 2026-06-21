@@ -1,0 +1,56 @@
+[package]
+name        = "dcc-load-tester"
+version     = "0.1.0"
+edition     = "2021"
+description = "Mainnet-grade load and stress tester for DecentralChain nodes"
+authors     = ["Josue Rojas <josue.rojas@sdbullion.com>"]
+rust-version = "1.88"
+
+[[bin]]
+name = "load-tester"
+path = "src/main.rs"
+
+[dependencies]
+# ── Async runtime ─────────────────────────────────────────────────────────────
+tokio = { version = "1", features = ["full"] }
+
+# ── HTTP client (rustls — no OpenSSL dependency) ──────────────────────────────
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+
+# ── Cryptography ──────────────────────────────────────────────────────────────
+# Same library as packages/sdk/crypto — Curve25519 axolotl variant (XEdDSA)
+ed25519-axolotl = "1.7"
+# Primitives for seed hash and address derivation
+blake2          = "0.10"
+sha3            = "0.10"   # Keccak256
+sha2            = "0.10"   # SHA-256
+digest          = "0.10"   # digest traits
+# Base58 encoding (addresses, signatures)
+bs58            = { version = "0.5", features = ["check"] }
+
+# ── Serialization ─────────────────────────────────────────────────────────────
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+clap = { version = "4", features = ["derive", "env"] }
+
+# ── Metrics (HdrHistogram — industry standard for p99.9 latency) ─────────────
+hdrhistogram = "7"
+
+# ── Observability ─────────────────────────────────────────────────────────────
+tracing            = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# ── Protobuf (DCC Transaction serialization for v3 signing bytes) ─────────────
+prost  = "0.13"
+
+# ── Error handling ────────────────────────────────────────────────────────────
+anyhow = "1"
+
+[profile.release]
+opt-level     = 3
+lto           = "fat"
+codegen-units = 1
+panic         = "abort"
+strip         = "debuginfo"   # smaller binary, keep symbols for backtraces
