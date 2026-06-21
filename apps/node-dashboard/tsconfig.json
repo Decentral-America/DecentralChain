@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "erasableSyntaxOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+
+    /* Emit */
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
+    "noUnusedLocals": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "~/*": ["./.react-router/types/*"]
+    },
+    "resolveJsonModule": true,
+    "rootDirs": [".", ".react-router/types"],
+    "skipLibCheck": true,
+
+    /* Strictness */
+    "strict": true,
+    "target": "ESNext",
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "verbatimModuleSyntax": true
+  },
+  "exclude": ["node_modules", "dist", "coverage", "test-results"],
+  "include": [
+    "src",
+    ".react-router/types",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "react-router.config.ts"
+  ]
+}

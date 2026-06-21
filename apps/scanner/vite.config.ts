@@ -26,7 +26,7 @@ function reactRouterTypesResolver(): Plugin {
     resolveId(id, importer) {
       if (!importer || !id.includes('+types')) return;
       const importerDir = dirname(importer);
-      const relFromSrc = importerDir.replace(resolve(projectRoot, 'src'), '');
+      const relFromSrc = importerDir.replace(resolve(projectRoot, 'src'), '').replace(/^\//, '');
       const typesPath = resolve(projectRoot, '.react-router/types/src', relFromSrc, `${id}.ts`);
       if (existsSync(typesPath)) return typesPath;
     },

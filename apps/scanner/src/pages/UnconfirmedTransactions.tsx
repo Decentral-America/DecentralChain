@@ -133,7 +133,7 @@ export default function UnconfirmedTransactions() {
                           <Link
                             to={createPageUrl('Transaction', `?id=${tx.id}`)}
                             className="text-link hover:text-link-hover font-mono text-sm"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
                           >
                             {truncate(tx.id, 10)}
                           </Link>
@@ -148,7 +148,7 @@ export default function UnconfirmedTransactions() {
                           <Link
                             to={createPageUrl('Address', `?addr=${tx.sender}`)}
                             className="text-link hover:text-link-hover font-mono text-sm"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
                           >
                             {truncate(tx.sender, 8)}
                           </Link>
@@ -161,7 +161,7 @@ export default function UnconfirmedTransactions() {
                           <Link
                             to={createPageUrl('Address', `?addr=${tx.recipient}`)}
                             className="text-link hover:text-link-hover font-mono text-sm"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
                           >
                             {truncate(tx.recipient, 8)}
                           </Link>

@@ -21,6 +21,7 @@ export default [
     route('dexpairs', 'pages/DexPairs.tsx'),
     route('network', 'pages/Network.tsx'),
     route('stress', 'pages/Stress/Stress.tsx'),
+    route('generator', 'pages/Generator.tsx'),
 
     // ── Deep-link aliases (off-nav, routes still active) ─────────────────
     route('blockfeed', 'pages/BlockFeed.tsx'),

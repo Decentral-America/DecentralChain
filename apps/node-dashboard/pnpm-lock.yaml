@@ -1,0 +1,83 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  ../..: {}
+
+  ../../../dcc-report: {}
+
+  ../../../node-scala/lang/js: {}
+
+  ../../../node-scala/repl/js: {}
+
+  ../../e2e: {}
+
+  ../../packages/e2e-blockchain: {}
+
+  ../../packages/ride/lang/js: {}
+
+  ../../packages/ride/repl/js: {}
+
+  ../../packages/ride/ts: {}
+
+  ../../packages/sdk/assets-pairs-order: {}
+
+  ../../packages/sdk/bignumber: {}
+
+  ../../packages/sdk/browser-bus: {}
+
+  ../../packages/sdk/crypto: {}
+
+  ../../packages/sdk/cubensis-connect-provider: {}
+
+  ../../packages/sdk/cubensis-connect-types: {}
+
+  ../../packages/sdk/data-entities: {}
+
+  ../../packages/sdk/data-service-client: {}
+
+  ../../packages/sdk/ledger: {}
+
+  ../../packages/sdk/marshall: {}
+
+  ../../packages/sdk/money-like-to-node: {}
+
+  ../../packages/sdk/node-api: {}
+
+  ../../packages/sdk/node-api-grpc: {}
+
+  ../../packages/sdk/oracle-data: {}
+
+  ../../packages/sdk/parse-json-bignumber: {}
+
+  ../../packages/sdk/protobuf-schemas: {}
+
+  ../../packages/sdk/signature-adapter: {}
+
+  ../../packages/sdk/signer: {}
+
+  ../../packages/sdk/transactions: {}
+
+  ../../packages/sdk/ts-lib-crypto: {}
+
+  ../../packages/sdk/types: {}
+
+  ../../tools/generators/sdk-package: {}
+
+  ../../tools/nx-plugins/biome-inferred: {}
+
+  ../cubensis-connect: {}
+
+  ../data-service: {}
+
+  ../data-service/package: {}
+
+  ../exchange: {}
+
+  ../scanner: {}

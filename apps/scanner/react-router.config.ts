@@ -5,6 +5,10 @@ export default {
   // Use Vite 8's Environment API (stabilised in react-router v7.10.0).
   // This is the forward-compatible integration path for Vite 8 / Rolldown.
   future: {
+    v8_middleware: true,
+    v8_passThroughRequests: true,
+    v8_splitRouteModules: true,
+    v8_trailingSlashAwareDataRequests: true,
     v8_viteEnvironmentApi: true,
   },
   // Prerender disabled: the root loader injects window.__DCC_CONFIG__ with
