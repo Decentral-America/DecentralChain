@@ -140,11 +140,17 @@
       }
     },
     {
-      "includes": ["**/test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
+      "includes": ["**/test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
       "linter": {
         "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off"
+          },
           "security": {
             "noSecrets": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
           },
           "suspicious": {
             "noExplicitAny": "off"
