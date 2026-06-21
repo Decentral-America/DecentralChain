@@ -19,7 +19,8 @@ import { type Route } from './+types/root';
 function runtimeConfig() {
   return {
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',
-    scannerUrl: process.env.SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
+    scannerUrl:
+      process.env.NODE_DASHBOARD_SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
   };
 }
 

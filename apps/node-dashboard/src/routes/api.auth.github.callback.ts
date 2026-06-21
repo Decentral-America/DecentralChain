@@ -12,13 +12,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect('/login?error=oauth_denied');
   }
 
-  const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+  const appUrl = process.env.NODE_DASHBOARD_URL ?? 'http://localhost:5173';
 
   // Exchange code for access token
   const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
     body: JSON.stringify({
-      client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
-      client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
+      client_id: process.env.NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_ID,
+      client_secret: process.env.NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET,
       code,
       redirect_uri: `${appUrl}/api/auth/github/callback`,
     }),
@@ -57,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   // Verify org membership
-  const org = process.env.GITHUB_ORG ?? 'Decentral-America';
+  const org = process.env.NODE_DASHBOARD_GITHUB_ORG ?? 'Decentral-America';
   const memberRes = await fetch(`https://api.github.com/orgs/${org}/members/${user.login}`, {
     headers: {
       Accept: 'application/vnd.github+json',

@@ -53,13 +53,13 @@ USER nodedash
 
 ENV NODE_ENV=production \
     PORT=3001 \
-    APP_URL="https://admin.decentralchain.io" \
+    NODE_DASHBOARD_URL="https://admin.decentralchain.io" \
     DCC_NODE_URL=https://testnet-node.decentralchain.io \
-    SCANNER_URL=https://testnet-scanner.decentralchain.io \
-    GITHUB_OAUTH_CLIENT_ID="" \
-    GITHUB_OAUTH_CLIENT_SECRET="" \
-    GITHUB_ORG="Decentral-America" \
-    ADMIN_JWT_SECRET="" \
+    NODE_DASHBOARD_SCANNER_URL=https://testnet-scanner.decentralchain.io \
+    NODE_DASHBOARD_NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_ID="" \
+    NODE_DASHBOARD_NODE_DASHBOARD_GITHUB_OAUTH_CLIENT_SECRET="" \
+    NODE_DASHBOARD_GITHUB_ORG="Decentral-America" \
+    NODE_DASHBOARD_JWT_SECRET="" \
     DCC_LOAD_TESTER_PATH="/opt/dcc/load-tester" \
     LOG_LEVEL="info"
 
