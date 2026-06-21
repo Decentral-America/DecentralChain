@@ -1,6 +1,6 @@
 import { Activity, LogOut, Menu, Server, Wallet, X } from 'lucide-react';
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigation, useRouteLoaderData } from 'react-router';
+import { Form, NavLink, Outlet, useNavigation, useRouteLoaderData } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -21,9 +21,7 @@ export default function Layout() {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
 
-  const root = useRouteLoaderData('root') as { user: string | null; logoutUrl: string } | undefined;
-
-  const logoutHref = root?.logoutUrl ?? '/';
+  const root = useRouteLoaderData('root') as { user: string | null } | undefined;
 
   const sidebar = (
     <nav className="flex flex-col h-full">
@@ -62,12 +60,12 @@ export default function Layout() {
             {root.user}
           </p>
         )}
-        <Button variant="ghost" size="sm" className="w-full justify-start gap-2" asChild>
-          <a href={logoutHref}>
+        <Form method="post" action="/api/auth/logout">
+          <Button type="submit" variant="ghost" size="sm" className="w-full justify-start gap-2">
             <LogOut className="h-4 w-4" />
             Sign out
-          </a>
-        </Button>
+          </Button>
+        </Form>
       </div>
     </nav>
   );
