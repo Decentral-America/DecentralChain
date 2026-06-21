@@ -33,9 +33,8 @@ async function dsLagBlocks(nodeApiBase: string): Promise<number> {
       items?: Array<{ data?: { height?: number }; height?: number }>;
     };
     const items = dsBody.items ?? [];
-    if (!items.length) return chainHeight; // DS has no data at all
-
-    const firstItem = items.at(0)!;
+    const firstItem = items[0];
+    if (!firstItem) return chainHeight; // DS has no data at all
     const dsHeight = firstItem.data?.height ?? firstItem.height ?? 0;
     return chainHeight - dsHeight;
   } catch {
