@@ -35,7 +35,7 @@ catalogs:
       version: 4.1.8
 
 overrides:
-  undici: ^6.27.0
+  undici: '>=6.27.0'
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
@@ -175,7 +175,7 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       undici:
-        specifier: ^6.27.0
+        specifier: '>=6.27.0'
         version: 6.27.0
     devDependencies:
       '@evilmartians/lefthook':
