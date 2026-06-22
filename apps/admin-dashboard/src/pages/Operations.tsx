@@ -53,7 +53,10 @@ async function fetchNpmPackages(): Promise<NpmPackage[]> {
     packages.map((pkg) =>
       fetch(`https://registry.npmjs.org/${encodeURIComponent(pkg)}/latest`, {
         signal: AbortSignal.timeout(10_000),
-      }).then((r) => r.json() as Promise<{ name: string; version: string; description?: string }>),
+      }).then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json() as Promise<{ name: string; version: string; description?: string }>;
+      }),
     ),
   );
 
@@ -291,7 +294,7 @@ export default function Operations() {
                 title="Grafana monitoring"
                 src={`${grafanaUrl}/d/testnet?orgId=1&refresh=30s&kiosk`}
                 className="w-full h-full border-0"
-                sandbox="allow-same-origin allow-scripts allow-popups"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
               />
             </div>
           ) : (

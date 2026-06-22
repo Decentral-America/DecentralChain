@@ -39,7 +39,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   try {
     wallets = readWalletCsv(csvPath);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to read wallet CSV';
+    const isEnoent =
+      err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT';
+    const message = isEnoent
+      ? `Wallet CSV not found at "${csvPath}". Upload the file to that path on the server, or set the DCC_WALLET_CSV_PATH environment variable to its location.`
+      : err instanceof Error
+        ? err.message
+        : 'Failed to read wallet CSV';
     logger.error({ csvPath, err }, 'Treasury scan: failed to read CSV');
     const enc = new TextEncoder();
     const errStream = new ReadableStream({

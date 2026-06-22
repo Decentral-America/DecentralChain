@@ -170,6 +170,32 @@ export default function E2ERunner() {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">E2E Test Runner</h1>
 
+      {/* Explainer */}
+      <Card>
+        <CardContent className="p-4 text-sm text-muted-foreground space-y-2">
+          <p>
+            The E2E runner executes the blockchain integration test suite against the live testnet
+            node. Tests are real transactions broadcast to the network — they verify that the node
+            accepts, processes, and confirms each transaction type end-to-end.
+          </p>
+          <p>
+            <strong className="text-foreground">Smoke suite</strong> (~30 s) — 3 spec files covering
+            transfers, invoke-script, and node API health. Use this for a quick sanity check after a
+            deployment.
+          </p>
+          <p>
+            <strong className="text-foreground">Full suite</strong> (~8 min) — all 162 tests across
+            every transaction type. Use this before cutting a release or after infrastructure
+            changes.
+          </p>
+          <p className="text-xs">
+            Output streams live. The <span className="font-mono">Results</span> tab shows a
+            structured pass/fail tree; <span className="font-mono">Raw Log</span> shows the full
+            Vitest output. The run is killed server-side when you click Stop.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Config */}
       <Card>
         <CardHeader>
