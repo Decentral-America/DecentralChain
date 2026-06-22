@@ -20,6 +20,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # Release workflow runs without NX Cloud access — disable cloud features
+      # so nx tasks run locally instead of failing on unauthorized workspace.
+      NX_NO_CLOUD: true
 
     steps:
       - name: Guard — enforce main branch
