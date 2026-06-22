@@ -125,8 +125,8 @@ impl UpdatesSourceImpl {
         // sending messages AND stops responding to HTTP/2 PING frames (truly hung).
         // With keepalive enabled, PINGs fire every 30 s so this only triggers if
         // both the stream AND the PING mechanism fail simultaneously.
-        // Configurable via STREAM_IDLE_TIMEOUT_SECS (default 600 = 10 min).
-        let idle_secs = std::env::var("STREAM_IDLE_TIMEOUT_SECS")
+        // Configurable via BPS_STREAM_IDLE_TIMEOUT_SECS (default 600 = 10 min).
+        let idle_secs = std::env::var("BPS_STREAM_IDLE_TIMEOUT_SECS")
             .ok()
             .and_then(|v| v.parse::<u64>().ok())
             .unwrap_or(600);

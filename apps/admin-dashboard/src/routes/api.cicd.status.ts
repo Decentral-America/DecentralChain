@@ -129,11 +129,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
   if (!user) return new Response('Unauthorized', { status: 401 });
 
-  const token = process.env.GITHUB_ADMIN_PAT;
+  const token = process.env.ADMIN_DASHBOARD_GITHUB_PAT;
   if (!token) {
     return Response.json(
       {
-        error: 'GITHUB_ADMIN_PAT is not configured. Add it to infra/secrets/testnet.env via SOPS.',
+        error:
+          'ADMIN_DASHBOARD_GITHUB_PAT is not configured. Add it to infra/secrets/testnet.env via SOPS.',
       },
       { status: 503 },
     );

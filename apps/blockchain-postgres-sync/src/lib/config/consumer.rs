@@ -77,7 +77,7 @@ pub struct Config {
 /// `start_rollback_depth`/`rollback_step` are zero (which violates their
 /// env-default invariant).
 pub fn load() -> Result<Config, Error> {
-    let config_flat = envy::from_env::<ConfigFlat>()?;
+    let config_flat = envy::prefixed("BPS_").from_env::<ConfigFlat>()?;
     let nonzero_err =
         |msg| Error::LoadConfigFailed(envy::Error::Custom(format!("{msg} must be > 0")));
 
