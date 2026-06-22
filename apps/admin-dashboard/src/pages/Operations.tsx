@@ -42,10 +42,7 @@ async function fetchNpmPackages(): Promise<NpmPackage[]> {
   const packages = [
     '@decentralchain/transactions',
     '@decentralchain/ts-lib-crypto',
-    '@decentralchain/types',
     '@decentralchain/marshall',
-    '@decentralchain/node-api',
-    '@decentralchain/data-service-client',
     '@decentralchain/signer',
   ];
 
