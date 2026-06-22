@@ -49,6 +49,9 @@
         "noUnusedImports": "error",
         "noUnusedVariables": "error"
       },
+      "nursery": {
+        "noInlineStyles": "off"
+      },
       "recommended": true,
       "security": {
         "noDangerouslySetInnerHtml": "error",

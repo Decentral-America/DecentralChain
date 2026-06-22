@@ -166,8 +166,6 @@ jobs:
       # deploys (workflow_dispatch) the same way CI gates PR merges — no broken
       # code can reach any environment, including testnet.
       - name: Test exchange
-        env:
-          NX_NO_CLOUD: 'true'
         run: pnpm nx run exchange:test
 
       # ── Build the exchange ────────────────────────────────────────────────

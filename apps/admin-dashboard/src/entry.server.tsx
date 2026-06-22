@@ -4,9 +4,12 @@ import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { type AppLoadContext, type EntryContext, ServerRouter } from 'react-router';
 import { isUsingDefaultSecret } from '@/lib/auth';
+import { migrateSchema } from '@/lib/db';
 import { logger } from '@/lib/logger';
 
-// Startup checks — run once when the server process starts.
+// Startup checks and migrations — run once when the server process starts.
+void migrateSchema();
+
 if (isUsingDefaultSecret()) {
   logger.warn(
     'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
