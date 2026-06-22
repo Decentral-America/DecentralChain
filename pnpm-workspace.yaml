@@ -42,6 +42,8 @@ allowBuilds:
   workerd: false
 
 overrides:
+  # undici@<6.27.0 has DoS vulnerability (CVE-2026-12151, HIGH)
+  undici: '6.27.0'
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
