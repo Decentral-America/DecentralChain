@@ -66,4 +66,17 @@ export default defineConfig({
       },
     },
   },
+  // Server-only workspace packages that use Node.js APIs or WASM — must not be
+  // bundled into the SSR bundle. Rolldown resolves them as runtime requires instead.
+  ssr: {
+    external: [
+      '@decentralchain/transactions',
+      '@decentralchain/ts-lib-crypto',
+      '@decentralchain/node-api',
+      '@decentralchain/types',
+      '@decentralchain/marshall',
+      '@decentralchain/crypto',
+      'postgres',
+    ],
+  },
 });
