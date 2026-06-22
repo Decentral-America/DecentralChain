@@ -80,6 +80,9 @@ type Pages = {
   "/api/ci-cd/status": {
     params: {};
   };
+  "/api/sentry/issues": {
+    params: {};
+  };
   "/api/services/health": {
     params: {};
   };
@@ -91,7 +94,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/services/health" | "/api/backups/status";
+    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/sentry/issues" | "/api/services/health" | "/api/backups/status";
   };
   "routes/healthz.ts": {
     id: "routes/healthz";
@@ -189,6 +192,10 @@ type RouteFiles = {
     id: "routes/api.cicd.status";
     page: "/api/ci-cd/status";
   };
+  "routes/api.sentry.issues.ts": {
+    id: "routes/api.sentry.issues";
+    page: "/api/sentry/issues";
+  };
   "routes/api.services.health.ts": {
     id: "routes/api.services.health";
     page: "/api/services/health";
@@ -225,6 +232,7 @@ type RouteModules = {
   "routes/api.treasury.stream": typeof import("./src/routes/api.treasury.stream.ts");
   "routes/api.e2e.stream": typeof import("./src/routes/api.e2e.stream.ts");
   "routes/api.cicd.status": typeof import("./src/routes/api.cicd.status.ts");
+  "routes/api.sentry.issues": typeof import("./src/routes/api.sentry.issues.ts");
   "routes/api.services.health": typeof import("./src/routes/api.services.health.ts");
   "routes/api.backups.status": typeof import("./src/routes/api.backups.status.ts");
 };

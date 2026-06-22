@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { type BackupStatus } from '@/routes/api.backups.status';
+import { type SentryIssue } from '@/routes/api.sentry.issues';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -28,15 +29,6 @@ interface MavenArtifact {
   artifact: string;
   latestVersion: string;
   timestamp: number;
-}
-
-interface SentryIssue {
-  id: string;
-  title: string;
-  project: string;
-  count: number;
-  firstSeen: string;
-  lastSeen: string;
 }
 
 interface CodecovRepo {
@@ -92,31 +84,15 @@ async function fetchMavenArtifacts(): Promise<MavenArtifact[]> {
   }));
 }
 
-async function fetchSentryIssues(authToken: string): Promise<SentryIssue[]> {
-  const res = await fetch(
-    'https://sentry.io/api/0/organizations/decentral-america/issues/?limit=10&query=is:unresolved',
-    {
-      headers: { Authorization: `Bearer ${authToken}` },
-      signal: AbortSignal.timeout(10_000),
-    },
-  );
-  if (!res.ok) throw new Error(`Sentry API HTTP ${res.status}`);
-  const data = (await res.json()) as Array<{
-    id: string;
-    title: string;
-    project: { slug: string };
-    count: string;
-    firstSeen: string;
-    lastSeen: string;
-  }>;
-  return data.map((issue) => ({
-    count: Number(issue.count),
-    firstSeen: issue.firstSeen,
-    id: issue.id,
-    lastSeen: issue.lastSeen,
-    project: issue.project.slug,
-    title: issue.title,
-  }));
+async function fetchSentryIssues(): Promise<SentryIssue[]> {
+  // Calls the server-side proxy route — SENTRY_AUTH_TOKEN never touches the browser.
+  const res = await fetch('/api/sentry/issues', { signal: AbortSignal.timeout(15_000) });
+  if (!res.ok) {
+    const data = (await res.json()) as { error?: string };
+    throw new Error(data.error ?? `HTTP ${res.status}`);
+  }
+  const data = (await res.json()) as { issues: SentryIssue[] };
+  return data.issues;
 }
 
 async function fetchCodecovRepos(): Promise<CodecovRepo[]> {
@@ -145,9 +121,7 @@ async function fetchCodecovRepos(): Promise<CodecovRepo[]> {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Operations() {
-  const root = useRouteLoaderData('root') as
-    | { grafanaUrl?: string; sentryAuthToken?: string }
-    | undefined;
+  const root = useRouteLoaderData('root') as { grafanaUrl?: string } | undefined;
   const grafanaUrl = root?.grafanaUrl ?? '';
 
   const [npmPackages, setNpmPackages] = useState<NpmPackage[] | null>(null);
@@ -194,21 +168,16 @@ export default function Operations() {
   }, []);
 
   const loadSentry = useCallback(async () => {
-    const token = root?.sentryAuthToken;
-    if (!token) {
-      setSentryError('SENTRY_AUTH_TOKEN not configured');
-      return;
-    }
     setSentryLoading(true);
     setSentryError(null);
     try {
-      setSentryIssues(await fetchSentryIssues(token));
+      setSentryIssues(await fetchSentryIssues());
     } catch (err) {
       setSentryError(err instanceof Error ? err.message : String(err));
     } finally {
       setSentryLoading(false);
     }
-  }, [root?.sentryAuthToken]);
+  }, []);
 
   const loadCodecov = useCallback(async () => {
     setCodecovLoading(true);
