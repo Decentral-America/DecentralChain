@@ -42,8 +42,10 @@ allowBuilds:
   workerd: false
 
 overrides:
-  # undici@<6.27.0 has DoS vulnerability (CVE-2026-12151, HIGH)
-  undici: "^6.27.0"
+  # undici@<6.27.0 has DoS vulnerability (CVE-2026-12151, HIGH).
+  # Use >=6.27.0 (not ^6.27.0) so jsdom@29 can resolve its undici@^7 dep to v7.x
+  # which is also patched — the CVE only affects v6 < 6.27.0.
+  undici: ">=6.27.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
