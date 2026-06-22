@@ -70,12 +70,14 @@ export default defineConfig({
   // bundled into the SSR bundle. Rolldown resolves them as runtime requires instead.
   ssr: {
     external: [
+      '@decentralchain/bignumber',
+      '@decentralchain/crypto',
+      '@decentralchain/marshall',
+      '@decentralchain/node-api',
+      '@decentralchain/protobuf-schemas',
       '@decentralchain/transactions',
       '@decentralchain/ts-lib-crypto',
-      '@decentralchain/node-api',
       '@decentralchain/types',
-      '@decentralchain/marshall',
-      '@decentralchain/crypto',
       'postgres',
     ],
   },
