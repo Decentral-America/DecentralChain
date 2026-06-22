@@ -43,9 +43,23 @@ pub async fn new(blockchain_updates_url: &str) -> Result<UpdatesSourceImpl> {
     Ok(UpdatesSourceImpl {
         grpc_client: {
             const MAX_MSG_SIZE: usize = 8 * 1024 * 1024; // 8 MB instead of the default 4 MB
-            BlockchainUpdatesApiClient::connect(blockchain_updates_url.to_owned())
-                .await?
-                .max_decoding_message_size(MAX_MSG_SIZE)
+
+            // HTTP/2 keepalive: send PING frames every 30 s so the connection
+            // stays alive during chain quiet periods (e.g. quorum lost, no blocks).
+            // Without this the stream silently dies after ~180 s of no messages,
+            // causing BPS to crash and restart unnecessarily.
+            let channel =
+                tonic::transport::Endpoint::from_shared(blockchain_updates_url.to_owned())?
+                    .http2_keep_alive_interval(StdDuration::from_secs(30))
+                    .keep_alive_timeout(StdDuration::from_secs(10))
+                    // Send pings even when there are no active RPCs (idle connection).
+                    // Required because the BlockchainUpdates subscription is long-lived
+                    // and may have no message traffic during chain quiet periods.
+                    .keep_alive_while_idle(true)
+                    .connect()
+                    .await?;
+
+            BlockchainUpdatesApiClient::new(channel).max_decoding_message_size(MAX_MSG_SIZE)
         },
     })
 }
@@ -107,18 +121,24 @@ impl UpdatesSourceImpl {
             .to_std()
             .unwrap_or(std::time::Duration::from_secs(5));
 
-        // Idle timeout: if the gRPC server stops sending messages without closing
-        // the stream (hung connection), treat it as fatal so the process restarts.
-        // DCC block time is ~60 s so 180 s gives 3× margin before triggering.
-        const STREAM_IDLE_TIMEOUT: StdDuration = StdDuration::from_secs(180);
+        // Idle timeout: last-resort safety net in case the gRPC server stops
+        // sending messages AND stops responding to HTTP/2 PING frames (truly hung).
+        // With keepalive enabled, PINGs fire every 30 s so this only triggers if
+        // both the stream AND the PING mechanism fail simultaneously.
+        // Configurable via STREAM_IDLE_TIMEOUT_SECS (default 600 = 10 min).
+        let idle_secs = std::env::var("STREAM_IDLE_TIMEOUT_SECS")
+            .ok()
+            .and_then(|v| v.parse::<u64>().ok())
+            .unwrap_or(600);
+        let stream_idle_timeout = StdDuration::from_secs(idle_secs);
 
         loop {
-            let msg = time::timeout(STREAM_IDLE_TIMEOUT, stream.message())
+            let msg = time::timeout(stream_idle_timeout, stream.message())
                 .await
                 .map_err(|_| {
-                    AppError::StreamError(
-                        "gRPC stream idle for 180 s; server may be hung".to_string(),
-                    )
+                    AppError::StreamError(format!(
+                        "gRPC stream idle for {idle_secs} s; server may be hung"
+                    ))
                 })?
                 .map_err(|s| AppError::StreamError(format!("Updates stream error: {s}")))?;
 
