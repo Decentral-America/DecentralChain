@@ -32,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   try {
     const res = await fetch(
-      'https://sentry.io/api/0/organizations/decentral-america/issues/?limit=10&query=is:unresolved',
+      'https://sentry.io/api/0/organizations/decentralchain-p1/issues/?limit=10&query=is:unresolved',
       {
         headers: { Authorization: `Bearer ${authToken}` },
         signal: AbortSignal.timeout(10_000),
