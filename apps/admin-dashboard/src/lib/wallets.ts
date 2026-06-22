@@ -23,17 +23,21 @@ export function readWalletCsv(csvPath: string): WalletEntry[] {
 
   if (lines.length === 0) throw new Error('Wallet CSV is empty');
 
-  // Detect header by checking if first field looks like an address (starts with '3')
+  // Detect header: actual CSV has 'seed' as first column (a hex string, not a DCC address).
+  // DCC addresses start with '3'. Hex seeds are 64-char lowercase hex. Both differ from 'seed'.
   const firstField = lines[0]?.split(',')[0]?.trim() ?? '';
-  const hasHeader = !firstField.startsWith('3');
+  const hasHeader = firstField === 'seed' || firstField === 'address' || firstField === 'publicKey';
   const dataLines = hasHeader ? lines.slice(1) : lines;
 
+  // Actual column order in real_wallets_2000_details.csv:
+  //   seed,address,publicKey,privateKey
+  // (confirmed from file header — do not reorder)
   return dataLines.map((line, i) => {
     const parts = line.split(',').map((p) => p.trim().replace(/^"|"$/g, ''));
-    // CSV columns: address, seed, public_key (order from real_wallets_2000_details.csv)
-    if (parts.length < 3) throw new Error(`Malformed CSV row ${i + 2}: expected 3 columns`);
-    const address = parts[0] ?? '';
-    const seed = parts[1] ?? '';
+    if (parts.length < 3)
+      throw new Error(`Malformed CSV row ${i + 2}: expected at least 3 columns`);
+    const seed = parts[0] ?? '';
+    const address = parts[1] ?? '';
     const publicKey = parts[2] ?? '';
     return { address, publicKey, seed };
   });
