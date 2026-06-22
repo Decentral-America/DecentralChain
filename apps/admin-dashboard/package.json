@@ -19,7 +19,8 @@
     "react-dom": "^19.2.7",
     "react-router": "^7.16.0",
     "recharts": "^3.8.1",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "undici": "6.27.0"
   },
   "description": "Private admin dashboard for DecentralChain node operators and super admins",
   "devDependencies": {
