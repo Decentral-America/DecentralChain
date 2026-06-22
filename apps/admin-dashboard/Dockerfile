@@ -28,14 +28,14 @@ COPY vitest.base.config.ts ./
 COPY scripts ./scripts
 COPY tools ./tools
 COPY packages ./packages
-COPY apps/node-dashboard ./apps/node-dashboard
+COPY apps/admin-dashboard ./apps/admin-dashboard
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
-RUN cd apps/node-dashboard && pnpm react-router typegen
+RUN cd apps/admin-dashboard && pnpm react-router typegen
 
-RUN pnpm nx run node-dashboard:build --skip-nx-cache
-RUN pnpm --filter node-dashboard --prod deploy --legacy /prod/node-dashboard \
-    && cp -R apps/node-dashboard/build /prod/node-dashboard/build
+RUN pnpm nx run admin-dashboard:build --skip-nx-cache
+RUN pnpm --filter admin-dashboard --prod deploy --legacy /prod/admin-dashboard \
+    && cp -R apps/admin-dashboard/build /prod/admin-dashboard/build
 
 # ── Stage 2: Runtime ─────────────────────────────────────────────────────────
 FROM base AS runtime
@@ -46,7 +46,7 @@ RUN addgroup -S admindash && adduser -S -G admindash admindash
 
 WORKDIR /app
 
-COPY --from=build /prod/node-dashboard ./
+COPY --from=build /prod/admin-dashboard ./
 
 RUN chown -R admindash:admindash /app
 USER admindash

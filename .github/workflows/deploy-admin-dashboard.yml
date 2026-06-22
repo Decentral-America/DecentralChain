@@ -104,7 +104,7 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=${{ github.sha }}
-            type=semver,pattern={{version}},value=${{ github.ref_name }}
+            type=raw,value=${{ github.ref_name }},enable=${{ startsWith(github.ref, 'refs/tags/') }}
           labels: |
             org.opencontainers.image.title=DCC Admin Dashboard
             org.opencontainers.image.description=Private admin dashboard for DecentralChain node operators
