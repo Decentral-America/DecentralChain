@@ -1,0 +1,9 @@
+# React Router build output — never commit bundled artifacts
+/build/
+
+# Local test coverage
+/coverage/
+
+# Local dev secrets — never commit
+.env.local
+.env.*.local
