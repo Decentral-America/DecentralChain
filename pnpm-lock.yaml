@@ -102,12 +102,27 @@ importers:
 
   apps/admin-dashboard:
     dependencies:
+      '@decentralchain/bignumber':
+        specifier: workspace:*
+        version: link:../../packages/sdk/bignumber
+      '@decentralchain/marshall':
+        specifier: workspace:*
+        version: link:../../packages/sdk/marshall
+      '@decentralchain/node-api':
+        specifier: workspace:*
+        version: link:../../packages/sdk/node-api
+      '@decentralchain/protobuf-schemas':
+        specifier: workspace:*
+        version: link:../../packages/sdk/protobuf-schemas
       '@decentralchain/transactions':
         specifier: workspace:*
         version: link:../../packages/sdk/transactions
       '@decentralchain/ts-lib-crypto':
         specifier: workspace:*
         version: link:../../packages/sdk/ts-lib-crypto
+      '@decentralchain/types':
+        specifier: workspace:*
+        version: link:../../packages/sdk/types
       '@react-router/node':
         specifier: 7.16.0
         version: 7.16.0(react-router@7.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(typescript@6.0.3)

@@ -4,8 +4,13 @@
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
   "dependencies": {
+    "@decentralchain/bignumber": "workspace:*",
+    "@decentralchain/marshall": "workspace:*",
+    "@decentralchain/node-api": "workspace:*",
+    "@decentralchain/protobuf-schemas": "workspace:*",
     "@decentralchain/transactions": "workspace:*",
     "@decentralchain/ts-lib-crypto": "workspace:*",
+    "@decentralchain/types": "workspace:*",
     "@react-router/node": "7.16.0",
     "@react-router/serve": "7.16.0",
     "@tanstack/react-query": "^5.100.14",
