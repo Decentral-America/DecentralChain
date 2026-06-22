@@ -19,6 +19,8 @@
       "!packages/sdk/transactions/docs",
       "!.nx",
       "!**/.react-router",
+      "!**/build/client",
+      "!**/build/server",
       "!packages/jvm/*/src/test/resources",
       "!packages/ride/lang/doc.template.html"
     ]
