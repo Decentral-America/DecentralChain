@@ -32,13 +32,58 @@ type Pages = {
   "/api/auth/logout": {
     params: {};
   };
+  "/chain-health": {
+    params: {};
+  };
+  "/generator-performance": {
+    params: {};
+  };
+  "/service-health": {
+    params: {};
+  };
   "/load-test": {
+    params: {};
+  };
+  "/stress-history": {
+    params: {};
+  };
+  "/e2e": {
     params: {};
   };
   "/treasury": {
     params: {};
   };
+  "/ci-cd": {
+    params: {};
+  };
+  "/operations": {
+    params: {};
+  };
   "/api/load-test/stream": {
+    params: {};
+  };
+  "/api/load-test/history": {
+    params: {};
+  };
+  "/api/treasury/fund": {
+    params: {};
+  };
+  "/api/treasury/scan": {
+    params: {};
+  };
+  "/api/treasury/stream": {
+    params: {};
+  };
+  "/api/e2e/stream": {
+    params: {};
+  };
+  "/api/ci-cd/status": {
+    params: {};
+  };
+  "/api/services/health": {
+    params: {};
+  };
+  "/api/backups/status": {
     params: {};
   };
 };
@@ -46,7 +91,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/load-test" | "/treasury" | "/api/load-test/stream";
+    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/services/health" | "/api/backups/status";
   };
   "routes/healthz.ts": {
     id: "routes/healthz";
@@ -74,23 +119,83 @@ type RouteFiles = {
   };
   "Layout.tsx": {
     id: "Layout";
-    page: "/" | "/load-test" | "/treasury";
+    page: "/" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations";
   };
   "pages/Nodes.tsx": {
     id: "pages/Nodes";
     page: "/";
   };
+  "pages/ChainHealth.tsx": {
+    id: "pages/ChainHealth";
+    page: "/chain-health";
+  };
+  "pages/GeneratorPerformance.tsx": {
+    id: "pages/GeneratorPerformance";
+    page: "/generator-performance";
+  };
+  "pages/ServiceHealth.tsx": {
+    id: "pages/ServiceHealth";
+    page: "/service-health";
+  };
   "pages/LoadTest.tsx": {
     id: "pages/LoadTest";
     page: "/load-test";
+  };
+  "pages/StressHistory.tsx": {
+    id: "pages/StressHistory";
+    page: "/stress-history";
+  };
+  "pages/E2ERunner.tsx": {
+    id: "pages/E2ERunner";
+    page: "/e2e";
   };
   "pages/Treasury.tsx": {
     id: "pages/Treasury";
     page: "/treasury";
   };
+  "pages/CiCd.tsx": {
+    id: "pages/CiCd";
+    page: "/ci-cd";
+  };
+  "pages/Operations.tsx": {
+    id: "pages/Operations";
+    page: "/operations";
+  };
   "routes/api.load-test.stream.ts": {
     id: "routes/api.load-test.stream";
     page: "/api/load-test/stream";
+  };
+  "routes/api.load-test.history.ts": {
+    id: "routes/api.load-test.history";
+    page: "/api/load-test/history";
+  };
+  "routes/api.treasury.fund.ts": {
+    id: "routes/api.treasury.fund";
+    page: "/api/treasury/fund";
+  };
+  "routes/api.treasury.scan.ts": {
+    id: "routes/api.treasury.scan";
+    page: "/api/treasury/scan";
+  };
+  "routes/api.treasury.stream.ts": {
+    id: "routes/api.treasury.stream";
+    page: "/api/treasury/stream";
+  };
+  "routes/api.e2e.stream.ts": {
+    id: "routes/api.e2e.stream";
+    page: "/api/e2e/stream";
+  };
+  "routes/api.cicd.status.ts": {
+    id: "routes/api.cicd.status";
+    page: "/api/ci-cd/status";
+  };
+  "routes/api.services.health.ts": {
+    id: "routes/api.services.health";
+    page: "/api/services/health";
+  };
+  "routes/api.backups.status.ts": {
+    id: "routes/api.backups.status";
+    page: "/api/backups/status";
   };
 };
 
@@ -104,7 +209,22 @@ type RouteModules = {
   "routes/api.auth.logout": typeof import("./src/routes/api.auth.logout.ts");
   "Layout": typeof import("./src/Layout.tsx");
   "pages/Nodes": typeof import("./src/pages/Nodes.tsx");
+  "pages/ChainHealth": typeof import("./src/pages/ChainHealth.tsx");
+  "pages/GeneratorPerformance": typeof import("./src/pages/GeneratorPerformance.tsx");
+  "pages/ServiceHealth": typeof import("./src/pages/ServiceHealth.tsx");
   "pages/LoadTest": typeof import("./src/pages/LoadTest.tsx");
+  "pages/StressHistory": typeof import("./src/pages/StressHistory.tsx");
+  "pages/E2ERunner": typeof import("./src/pages/E2ERunner.tsx");
   "pages/Treasury": typeof import("./src/pages/Treasury.tsx");
+  "pages/CiCd": typeof import("./src/pages/CiCd.tsx");
+  "pages/Operations": typeof import("./src/pages/Operations.tsx");
   "routes/api.load-test.stream": typeof import("./src/routes/api.load-test.stream.ts");
+  "routes/api.load-test.history": typeof import("./src/routes/api.load-test.history.ts");
+  "routes/api.treasury.fund": typeof import("./src/routes/api.treasury.fund.ts");
+  "routes/api.treasury.scan": typeof import("./src/routes/api.treasury.scan.ts");
+  "routes/api.treasury.stream": typeof import("./src/routes/api.treasury.stream.ts");
+  "routes/api.e2e.stream": typeof import("./src/routes/api.e2e.stream.ts");
+  "routes/api.cicd.status": typeof import("./src/routes/api.cicd.status.ts");
+  "routes/api.services.health": typeof import("./src/routes/api.services.health.ts");
+  "routes/api.backups.status": typeof import("./src/routes/api.backups.status.ts");
 };

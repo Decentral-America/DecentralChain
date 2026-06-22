@@ -18,9 +18,13 @@ import { type Route } from './+types/root';
 
 function runtimeConfig() {
   return {
+    grafanaUrl: process.env.GRAFANA_URL ?? '',
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',
     scannerUrl:
       process.env.ADMIN_DASHBOARD_SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
+    // Sentry auth token is only exposed to authenticated sessions (root loader runs after auth check).
+    // Never exposed to the /login or /healthz routes.
+    sentryAuthToken: process.env.SENTRY_AUTH_TOKEN ?? '',
   };
 }
 
@@ -51,7 +55,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export const links: Route.LinksFunction = () => [{ href: '/favicon.ico', rel: 'icon' }];
 
 export function meta(): Route.MetaDescriptors {
-  return [{ title: 'DCC Node Dashboard' }];
+  return [{ title: 'DCC Admin Dashboard' }];
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

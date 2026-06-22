@@ -25,8 +25,9 @@ permissions:
   packages: read
 
 env:
-  # Toggle from GitHub Settings > Variables > NX_NO_CLOUD (set to empty to re-enable).
-  NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD || 'true' }}
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Set repo variable NX_NO_CLOUD=true to force-disable NX Cloud (e.g. during quota incidents).
+  NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD }}
 
 jobs:
   integration:

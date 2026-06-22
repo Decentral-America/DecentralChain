@@ -10,7 +10,10 @@ import {
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface MetricPoint {
   t: number;
@@ -28,6 +31,8 @@ interface FinalSummary {
   duration: number;
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function LoadTest() {
   const [targetNode, setTargetNode] = useState('');
   const [workers, setWorkers] = useState('200');
@@ -36,6 +41,12 @@ export default function LoadTest() {
   const [seedPhrase, setSeedPhrase] = useState('');
   const [chainId, setChainId] = useState('!');
   const [senderCount, setSenderCount] = useState('1');
+
+  // Treasury integration
+  const [autoFund, setAutoFund] = useState(false);
+  const [autoSweep, setAutoSweep] = useState(false);
+  const [fundWalletCount, setFundWalletCount] = useState('100');
+  const [fundAmountDcc, setFundAmountDcc] = useState('10');
 
   const [runId, setRunId] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<MetricPoint[]>([]);
@@ -51,12 +62,62 @@ export default function LoadTest() {
     };
   }, []);
 
+  // ── Auto-fund ──────────────────────────────────────────────────────────────
+
+  async function fundWallets(): Promise<boolean> {
+    const res = await fetch('/api/treasury/fund', {
+      body: JSON.stringify({
+        amountDcc: Number(fundAmountDcc),
+        chainId,
+        count: Number(fundWalletCount),
+        intent: 'fund',
+        nodeUrl: targetNode,
+        senderSeed: seedPhrase,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Auto-fund failed: ${text || `HTTP ${res.status}`}`);
+    }
+    return true;
+  }
+
+  // ── Auto-sweep ─────────────────────────────────────────────────────────────
+  // Passes senderSeed to the server so it can derive the address securely server-side.
+  // The seed never appears in a URL query param or response body.
+  async function triggerAutoSweep(): Promise<void> {
+    const res = await fetch('/api/treasury/stream', {
+      body: JSON.stringify({
+        chainId,
+        intent: 'start',
+        nodeUrl: targetNode,
+        senderSeed: seedPhrase,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Auto-sweep failed: ${text || `HTTP ${res.status}`}`);
+    }
+    // Fire-and-forget — sweep runs server-side; progress visible in Treasury > Sweep tab.
+  }
+
+  // ── Start ──────────────────────────────────────────────────────────────────
+
   async function handleStart() {
     setError(null);
     setMetrics([]);
     setFinalSummary(null);
 
     try {
+      // Auto-fund: distribute DCC to N test wallets before the run
+      if (autoFund) {
+        await fundWallets();
+      }
+
       const res = await fetch('/api/load-test/stream', {
         body: JSON.stringify({
           chainId,
@@ -102,6 +163,14 @@ export default function LoadTest() {
         }
         setRunning(false);
         es.close();
+
+        // Auto-sweep: kick off wallet recovery when run finishes.
+        // Server derives the sender address from senderSeed — seed never leaves over the wire in a GET/URL.
+        if (autoSweep && seedPhrase && targetNode) {
+          triggerAutoSweep().catch((sweepErr) => {
+            console.error('[load-test] Auto-sweep failed:', sweepErr);
+          });
+        }
       });
 
       es.onerror = () => {
@@ -123,6 +192,8 @@ export default function LoadTest() {
     });
     setRunning(false);
   }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="p-6 space-y-6">
@@ -223,6 +294,60 @@ export default function LoadTest() {
               disabled={running}
             />
           </div>
+
+          {/* Treasury integration */}
+          <div className="sm:col-span-2 lg:col-span-3 border-t border-border pt-4 mt-2 space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Treasury
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Checkbox
+                label="Auto-fund wallets before test"
+                checked={autoFund}
+                onChange={(e) => setAutoFund(e.target.checked)}
+                disabled={running}
+              />
+              <Checkbox
+                label="Auto-sweep wallets after test"
+                checked={autoSweep}
+                onChange={(e) => setAutoSweep(e.target.checked)}
+                disabled={running}
+              />
+            </div>
+
+            {autoFund && (
+              <div className="grid grid-cols-2 gap-4 max-w-sm">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="lt-fund-count" className="text-sm font-medium">
+                    Wallets to fund
+                  </label>
+                  <Input
+                    id="lt-fund-count"
+                    type="number"
+                    value={fundWalletCount}
+                    onChange={(e) => setFundWalletCount(e.target.value)}
+                    min="1"
+                    max="2000"
+                    disabled={running}
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="lt-fund-amount" className="text-sm font-medium">
+                    DCC per wallet
+                  </label>
+                  <Input
+                    id="lt-fund-amount"
+                    type="number"
+                    value={fundAmountDcc}
+                    onChange={(e) => setFundAmountDcc(e.target.value)}
+                    min="1"
+                    disabled={running}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-3">
             {!running ? (
               <Button onClick={handleStart} disabled={!targetNode || !seedPhrase}>

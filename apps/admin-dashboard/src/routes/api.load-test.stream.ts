@@ -1,6 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { getSql } from '@/lib/db';
 import { logger } from '@/lib/logger';
 
 async function getUser(request: Request): Promise<string | null> {
@@ -13,6 +14,13 @@ async function getUser(request: Request): Promise<string | null> {
 // Single-process assumption: react-router-serve runs one Node.js process.
 // If you add cluster workers, move this state to Redis or a named pipe.
 const runs = new Map<string, ChildProcess>();
+
+interface RunMeta {
+  startedAt: Date;
+  user: string;
+  params: StartParams;
+}
+const runMeta = new Map<string, RunMeta>();
 
 interface StartParams {
   targetNode: string;
@@ -104,8 +112,51 @@ export async function loader({ request }: LoaderFunctionArgs) {
       const onData = (chunk: Buffer) => {
         for (const line of chunk.toString().split('\n')) {
           const trimmed = line.trim();
-          if (trimmed) {
-            controller.enqueue(enc.encode(`data: ${trimmed}\n\n`));
+          if (!trimmed) continue;
+          controller.enqueue(enc.encode(`data: ${trimmed}\n\n`));
+
+          // Persist final result to DB so history survives without client cooperation.
+          try {
+            const parsed = JSON.parse(trimmed) as Record<string, unknown>;
+            if (parsed.event === 'final') {
+              const meta = runMeta.get(runId);
+              if (meta) {
+                const { params } = meta;
+                const sql = getSql();
+                sql`
+                  INSERT INTO load_test_runs (
+                    id, started_at, completed_at, run_by,
+                    target_node, workers, target_tps, duration_s, chain_id, sender_count,
+                    avg_tps, total_sent, total_confirmed, total_errors,
+                    p50_ms, p95_ms, p99_ms
+                  ) VALUES (
+                    ${runId},
+                    ${meta.startedAt},
+                    ${new Date()},
+                    ${meta.user},
+                    ${params.targetNode},
+                    ${params.workers},
+                    ${params.targetTps},
+                    ${params.duration},
+                    ${params.chainId},
+                    ${params.senderCount},
+                    ${Number(parsed.avg_tps ?? 0)},
+                    ${Number(parsed.total_sent ?? 0)},
+                    ${Number(parsed.total_confirmed ?? 0)},
+                    ${Number(parsed.errors ?? 0)},
+                    ${parsed.p50_ms != null ? Number(parsed.p50_ms) : null},
+                    ${parsed.p95_ms != null ? Number(parsed.p95_ms) : null},
+                    ${parsed.p99_ms != null ? Number(parsed.p99_ms) : null}
+                  )
+                  ON CONFLICT (id) DO NOTHING
+                `.catch((err: unknown) => {
+                  logger.error({ err, runId }, 'Failed to persist load test run to DB');
+                });
+                runMeta.delete(runId);
+              }
+            }
+          } catch {
+            /* not JSON or not a final event — ignore */
           }
         }
       };
@@ -185,6 +236,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
 
     runs.set(runId, child);
+    runMeta.set(runId, { params: validation.params, startedAt: new Date(), user });
     logger.info(
       { duration, runId, senderCount, targetNode, targetTps, user, workers },
       'Load test started',
@@ -201,6 +253,7 @@ export async function action({ request }: ActionFunctionArgs) {
     if (child) {
       child.kill('SIGTERM');
       runs.delete(runId);
+      runMeta.delete(runId);
       logger.info({ runId, user }, 'Load test stopped by user');
     }
     return Response.json({ ok: true });

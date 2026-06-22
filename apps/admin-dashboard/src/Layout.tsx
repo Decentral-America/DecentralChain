@@ -1,20 +1,75 @@
-import { Activity, LogOut, Menu, Server, Wallet, X } from 'lucide-react';
+import {
+  Activity,
+  BarChart2,
+  ClipboardList,
+  GitBranch,
+  Heart,
+  HeartPulse,
+  LogOut,
+  Menu,
+  Server,
+  Settings2,
+  TestTube2,
+  Wallet,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 import { Form, NavLink, Outlet, useNavigation, useRouteLoaderData } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+// ── Nav structure ─────────────────────────────────────────────────────────────
+
 interface NavItem {
   label: string;
   to: string;
   icon: React.ReactNode;
+  end?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { icon: <Server className="h-4 w-4" />, label: 'Nodes', to: '/' },
-  { icon: <Activity className="h-4 w-4" />, label: 'Load Test', to: '/load-test' },
-  { icon: <Wallet className="h-4 w-4" />, label: 'Treasury', to: '/treasury' },
+interface NavGroup {
+  section: string;
+  items: NavItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    items: [
+      { end: true, icon: <Server className="h-4 w-4" />, label: 'Nodes', to: '/' },
+      { icon: <Heart className="h-4 w-4" />, label: 'Chain Health', to: '/chain-health' },
+      {
+        icon: <BarChart2 className="h-4 w-4" />,
+        label: 'Generator Perf.',
+        to: '/generator-performance',
+      },
+      { icon: <HeartPulse className="h-4 w-4" />, label: 'Service Health', to: '/service-health' },
+    ],
+    section: 'Infrastructure',
+  },
+  {
+    items: [
+      { icon: <GitBranch className="h-4 w-4" />, label: 'CI/CD Status', to: '/ci-cd' },
+      { icon: <Activity className="h-4 w-4" />, label: 'Load Test', to: '/load-test' },
+      {
+        icon: <ClipboardList className="h-4 w-4" />,
+        label: 'Stress History',
+        to: '/stress-history',
+      },
+      { icon: <TestTube2 className="h-4 w-4" />, label: 'E2E Runner', to: '/e2e' },
+    ],
+    section: 'Testing & Deploys',
+  },
+  {
+    items: [{ icon: <Wallet className="h-4 w-4" />, label: 'Treasury', to: '/treasury' }],
+    section: 'Treasury',
+  },
+  {
+    items: [{ icon: <Settings2 className="h-4 w-4" />, label: 'Operations', to: '/operations' }],
+    section: 'Operations',
+  },
 ];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,32 +82,41 @@ export default function Layout() {
     <nav className="flex flex-col h-full">
       <div className="px-4 py-5 border-b border-border">
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          DCC Node Dashboard
+          DCC Admin Dashboard
         </p>
       </div>
 
-      <ul className="flex-1 px-2 py-4 space-y-1">
-        {NAV_ITEMS.map((item) => (
-          <li key={item.to}>
-            <NavLink
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }: { isActive: boolean }) =>
-                cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
-                )
-              }
-              onClick={() => setSidebarOpen(false)}
-            >
-              {item.icon}
-              {item.label}
-            </NavLink>
-          </li>
+      <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4">
+        {NAV_GROUPS.map((group) => (
+          <div key={group.section}>
+            <p className="px-3 mb-1 text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest">
+              {group.section}
+            </p>
+            <ul className="space-y-0.5">
+              {group.items.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    end={item.end}
+                    className={({ isActive }: { isActive: boolean }) =>
+                      cn(
+                        'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-accent text-accent-foreground'
+                          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
+                      )
+                    }
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <div className="p-4 border-t border-border space-y-2">
         {root?.user && (
@@ -100,7 +164,7 @@ export default function Layout() {
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <span className="font-semibold text-sm">DCC Node Dashboard</span>
+          <span className="font-semibold text-sm">DCC Admin Dashboard</span>
         </header>
 
         <main
