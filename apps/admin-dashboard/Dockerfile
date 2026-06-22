@@ -63,10 +63,10 @@ ENV NODE_ENV=production \
     DCC_LOAD_TESTER_PATH="/opt/dcc/load-tester" \
     DCC_WALLET_CSV_PATH="/opt/dcc/test-wallets.csv" \
     E2E_SUITE_PATH="/opt/dcc/DecentralChain" \
-    ADMIN_PG_DATABASE="admin_testnet" \
+    ADMIN_DASHBOARD_PG_DATABASE="admin_testnet" \
     LOG_LEVEL="info"
     # Secret vars below are injected at runtime via env_file — never baked into the image:
-    # GITHUB_ADMIN_PAT          — fine-grained PAT: Actions:Read, Contents:Read on Decentral-America/*
+    # ADMIN_DASHBOARD_GITHUB_PAT          — fine-grained PAT: Actions:Read, Contents:Read on Decentral-America/*
     # BACKUP_OBJ_ACCESS_KEY     — Cloudflare R2 access key for backup bucket
     # BACKUP_OBJ_SECRET_KEY     — Cloudflare R2 secret key
     # BACKUP_OBJ_BUCKET         — R2 bucket name (e.g. dcc-backups-testnet)
