@@ -43,9 +43,9 @@ allowBuilds:
 
 overrides:
   # undici@<6.27.0 has DoS vulnerability (CVE-2026-12151, HIGH).
-  # Use >=6.27.0 (not ^6.27.0) so jsdom@29 can resolve its undici@^7 dep to v7.x
-  # which is also patched — the CVE only affects v6 < 6.27.0.
-  undici: ">=6.27.0"
+  # Force v7 — jsdom@29 requires undici@^7 and v7.x is patched for CVE-2026-12151.
+  # admin-dashboard's direct undici@6.27.0 dep is redundant with this override in place.
+  undici: "^7.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
