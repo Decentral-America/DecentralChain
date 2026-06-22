@@ -15,7 +15,7 @@ function buildConnectionString(): string {
   const port = process.env.PGPORT ?? '5432';
   const user = process.env.PGUSER ?? 'dcc';
   const password = process.env.PGPASSWORD ?? '';
-  const database = process.env.ADMIN_PG_DATABASE ?? 'dcc_admin';
+  const database = process.env.ADMIN_PG_DATABASE ?? 'admin_testnet';
   return `postgres://${user}:${encodeURIComponent(password)}@${host}:${port}/${database}`;
 }
 
