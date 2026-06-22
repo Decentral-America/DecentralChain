@@ -40,6 +40,11 @@
     "test": "nx run-many -t test --exclude=data-service",
     "typecheck": "nx run-many -t typecheck --exclude=exchange,scanner,data-service"
   },
+  "pnpm": {
+    "overrides": {
+      "undici": "6.27.0"
+    }
+  },
   "type": "module",
   "version": "0.0.0"
 }
