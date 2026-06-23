@@ -3,7 +3,7 @@
  * Defines routes for wallet dashboard, portfolio, transactions, leasing, aliases,
  * and account management
  */
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router';
 
 /**
  * Wallet routes structure:

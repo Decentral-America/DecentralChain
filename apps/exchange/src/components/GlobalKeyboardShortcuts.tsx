@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '@/contexts';
 import { useHotkey, useKeyboardShortcuts } from '@/hooks';
 import { logger } from '@/lib/logger';

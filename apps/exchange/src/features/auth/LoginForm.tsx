@@ -5,7 +5,7 @@
  * Matches Angular's signInForm.js exactly
  */
 import { type FormEvent, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Card, CardBody } from '@/components/atoms/Card';

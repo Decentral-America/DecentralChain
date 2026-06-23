@@ -18,7 +18,7 @@
  * initializeDataService() is called at module level so it runs synchronously
  * the first time this chunk is imported — before any provider mounts.
  */
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { GlobalKeyboardShortcuts } from '@/components/GlobalKeyboardShortcuts';
 import { initializeDataService } from '@/config/dataServiceConfig';
 import { AuthProvider } from '@/contexts/AuthContext';

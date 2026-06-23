@@ -3,7 +3,7 @@
  * Imports existing wallet via seed phrase
  */
 import { type FormEvent, useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Card, CardBody } from '@/components/atoms/Card';

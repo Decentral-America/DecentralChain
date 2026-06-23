@@ -1,5 +1,5 @@
 import { AppBar, Box, Button, Container, Stack, Toolbar, useScrollTrigger } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
 
 /**

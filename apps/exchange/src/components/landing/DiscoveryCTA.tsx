@@ -1,5 +1,5 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export default function DiscoveryCTA() {
   const navigate = useNavigate();

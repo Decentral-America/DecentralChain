@@ -5,7 +5,7 @@
  */
 
 import { Box, CircularProgress } from '@mui/material';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '@/contexts';
 
 interface ProtectedRouteProps {

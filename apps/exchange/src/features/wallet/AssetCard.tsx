@@ -2,7 +2,7 @@
  * AssetCard Component
  * Individual asset card showing icon, name, balance, and USD value
  */
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 

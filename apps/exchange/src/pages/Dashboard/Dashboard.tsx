@@ -35,7 +35,7 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 import { formatDistanceToNow } from 'date-fns';
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { AssetNameDisplay } from '@/components/common/AssetNameDisplay';

@@ -35,7 +35,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router';
 
 // MUI's `component` prop requires a ComponentType that accepts the host element's
 // own props. NavLink's `to` prop sits outside MUI's type knowledge, so we declare

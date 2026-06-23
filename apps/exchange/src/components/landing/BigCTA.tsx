@@ -1,6 +1,6 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Box, Button, Container, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { ctaGradientStyles } from '../../theme/landingTheme';
 
 export default function BigCTA() {
