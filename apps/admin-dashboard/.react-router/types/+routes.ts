@@ -89,12 +89,15 @@ type Pages = {
   "/api/backups/status": {
     params: {};
   };
+  "/api/maven/artifacts": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/sentry/issues" | "/api/services/health" | "/api/backups/status";
+    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/sentry/issues" | "/api/services/health" | "/api/backups/status" | "/api/maven/artifacts";
   };
   "routes/healthz.ts": {
     id: "routes/healthz";
@@ -204,6 +207,10 @@ type RouteFiles = {
     id: "routes/api.backups.status";
     page: "/api/backups/status";
   };
+  "routes/api.maven.artifacts.ts": {
+    id: "routes/api.maven.artifacts";
+    page: "/api/maven/artifacts";
+  };
 };
 
 type RouteModules = {
@@ -235,4 +242,5 @@ type RouteModules = {
   "routes/api.sentry.issues": typeof import("./src/routes/api.sentry.issues.ts");
   "routes/api.services.health": typeof import("./src/routes/api.services.health.ts");
   "routes/api.backups.status": typeof import("./src/routes/api.backups.status.ts");
+  "routes/api.maven.artifacts": typeof import("./src/routes/api.maven.artifacts.ts");
 };
