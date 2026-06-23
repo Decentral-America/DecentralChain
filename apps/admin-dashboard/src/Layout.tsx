@@ -64,8 +64,8 @@ const NAV_GROUPS: NavGroup[] = [
     section: 'Treasury',
   },
   {
-    items: [{ icon: <Settings2 className="h-4 w-4" />, label: 'Operations', to: '/operations' }],
-    section: 'Operations',
+    items: [{ icon: <Settings2 className="h-4 w-4" />, label: 'Integrations', to: '/operations' }],
+    section: 'Integrations',
   },
 ];
 
