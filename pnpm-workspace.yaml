@@ -12,12 +12,12 @@ catalog:
   '@arethetypeswrong/cli': 0.18.3
   '@size-limit/preset-small-lib': 12.1.0
   '@types/node': 25.9.1
-  '@vitest/coverage-v8': 4.1.8
+  '@vitest/coverage-v8': 4.1.9
   jsdom: 29.1.1
   publint: 0.3.21
   size-limit: 12.1.0
-  tsdown: 0.22.1
-  vitest: 4.1.8
+  tsdown: 0.22.3
+  vitest: 4.1.9
 
 # pnpm v11: non-auth .npmrc settings are ignored; declare them here instead.
 engineStrict: true
@@ -42,10 +42,9 @@ allowBuilds:
   workerd: false
 
 overrides:
-  # undici@<6.27.0 has DoS vulnerability (CVE-2026-12151, HIGH).
-  # Force v7 — jsdom@29 requires undici@^7 and v7.x is patched for CVE-2026-12151.
-  # admin-dashboard's direct undici@6.27.0 dep is redundant with this override in place.
-  undici: "^7.0.0"
+  # Force undici@^8 — v8.5.0 patches all prior CVEs including CVE-2026-12151.
+  # admin-dashboard removed its direct undici dep (Node 24 native fetch covers all usage).
+  undici: "^8.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
@@ -96,10 +95,6 @@ minimumReleaseAgeExclude:
   - '@sentry/react@10.56.0'
   - cytoscape@3.34.0
 
-# @visx 3.12.0 (latest stable) declares react peerDep as "^16||^17||^18".
-# The packages work correctly with React 19 — the peerDeps declaration just
-# hasn't been updated upstream. Allow React 19 explicitly.
+# @visx v4 declares peerDep "^18 || ^19" — no workaround needed.
 peerDependencyRules:
-  allowedVersions:
-    '@visx/group>react': '19'
-    '@visx/shape>react': '19'
+  allowedVersions: {}
