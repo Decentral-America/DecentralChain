@@ -42,9 +42,10 @@ allowBuilds:
   workerd: false
 
 overrides:
-  # Force undici@^8 — v8.5.0 patches all prior CVEs including CVE-2026-12151.
+  # jsdom@29 requires undici@^7 internal paths (wrap-handler.js, etc.) which were
+  # removed in undici v8. Stay on ^7.x until jsdom@30+ ships with undici v8 support.
   # admin-dashboard removed its direct undici dep (Node 24 native fetch covers all usage).
-  undici: "^8.0.0"
+  undici: "^7.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   axios: '>=1.16.0'
