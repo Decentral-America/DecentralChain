@@ -91,11 +91,11 @@ jobs:
       - name: Biome lint
         run: pnpm nx run-many -t biome-lint --projects='packages/sdk/*,packages/ride/ts'
 
-      - name: Typecheck
-        run: pnpm nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts'
-
       - name: Build
         run: pnpm nx run-many -t build --projects='packages/sdk/*,packages/ride/ts'
+
+      - name: Typecheck
+        run: pnpm nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts'
 
       - name: Test
         run: pnpm nx run-many -t test --projects='packages/sdk/*,packages/ride/ts'
