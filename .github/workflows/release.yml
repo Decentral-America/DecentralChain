@@ -89,25 +89,25 @@ jobs:
         run: pnpm exec biome format .
 
       - name: Biome lint
-        run: pnpm nx run-many -t biome-lint --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t biome-lint --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Build
-        run: pnpm nx run-many -t build --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t build --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Typecheck
-        run: pnpm nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t typecheck --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Test
-        run: pnpm nx run-many -t test --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t test --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Verify package exports
-        run: pnpm nx run-many -t check:exports --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t check:exports --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Verify package publishing
-        run: pnpm nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts' --exclude=types
+        run: pnpm nx run-many -t check:publint --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js' --exclude=types
 
       - name: Verify bundle size
-        run: pnpm nx run-many -t check:size --projects='packages/sdk/*,packages/ride/ts'
+        run: pnpm nx run-many -t check:size --projects='packages/sdk/*,packages/ride/ts,packages/ride/lang/js,packages/ride/repl/js'
 
       - name: Version
         run: pnpm nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
