@@ -1,4 +1,12 @@
-import { AlertCircle, Archive, ExternalLink, RefreshCw } from 'lucide-react';
+import {
+  AlertCircle,
+  Archive,
+  CheckCircle2,
+  Circle,
+  ExternalLink,
+  RefreshCw,
+  XCircle,
+} from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouteLoaderData } from 'react-router';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { type BackupStatus } from '@/routes/api.backups.status';
+import { type WorkflowRun } from '@/routes/api.cicd.status';
 import { type SentryIssue } from '@/routes/api.sentry.issues';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -55,6 +64,22 @@ async function fetchNpmPackages(): Promise<NpmPackage[]> {
       version: o.package.version,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+async function fetchCiRuns(): Promise<WorkflowRun[]> {
+  const res = await fetch('/api/ci-cd/status', { signal: AbortSignal.timeout(15_000) });
+  if (!res.ok) {
+    const data = (await res.json()) as { error?: string };
+    throw new Error(data.error ?? `HTTP ${res.status}`);
+  }
+  const data = (await res.json()) as {
+    repos: Array<{ repo: string; runs: WorkflowRun[]; fetchError?: string }>;
+  };
+  // Show the 8 most recent runs across all repos, sorted by date desc
+  return data.repos
+    .flatMap((r) => r.runs)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 8);
 }
 
 async function fetchMavenArtifacts(): Promise<MavenArtifact[]> {
@@ -127,6 +152,10 @@ export default function Operations() {
   const [backupStatus, setBackupStatus] = useState<BackupStatus | null>(null);
   const [backupLoading, setBackupLoading] = useState(false);
 
+  const [ciRuns, setCiRuns] = useState<WorkflowRun[] | null>(null);
+  const [ciLoading, setCiLoading] = useState(false);
+  const [ciError, setCiError] = useState<string | null>(null);
+
   const loadNpm = useCallback(async () => {
     setNpmLoading(true);
     setNpmError(null);
@@ -175,6 +204,18 @@ export default function Operations() {
     }
   }, []);
 
+  const loadCi = useCallback(async () => {
+    setCiLoading(true);
+    setCiError(null);
+    try {
+      setCiRuns(await fetchCiRuns());
+    } catch (err) {
+      setCiError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setCiLoading(false);
+    }
+  }, []);
+
   const loadBackups = useCallback(async () => {
     setBackupLoading(true);
     try {
@@ -194,12 +235,116 @@ export default function Operations() {
     void loadSentry();
     void loadCodecov();
     void loadBackups();
-  }, [loadNpm, loadMaven, loadSentry, loadCodecov, loadBackups]);
+    void loadCi();
+  }, [loadNpm, loadMaven, loadSentry, loadCodecov, loadBackups, loadCi]);
 
-  // nxCloudId from nx.json — workspace identifier on cloud.nx.app
+  const NX_CLOUD_WORKSPACE_ID = '6a07a03e8a73063a9eda9bf3';
+
+  const ciRunIcon = (run: WorkflowRun) => {
+    if (run.status === 'in_progress' || run.status === 'queued')
+      return <Circle className="h-3.5 w-3.5 text-yellow-500 animate-pulse shrink-0" />;
+    if (run.conclusion === 'success')
+      return <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />;
+    if (run.conclusion === 'failure')
+      return <XCircle className="h-3.5 w-3.5 text-destructive shrink-0" />;
+    return <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />;
+  };
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Operations</h1>
+
+      {/* CI / NX Cloud */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center justify-between">
+            <span>CI Runs</span>
+            <div className="flex items-center gap-3">
+              <a
+                href={`https://cloud.nx.app/orgs/workspace-${NX_CLOUD_WORKSPACE_ID}/workspaces/${NX_CLOUD_WORKSPACE_ID}/overview`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
+              >
+                NX Cloud cache <ExternalLink className="h-3 w-3" />
+              </a>
+              <Button variant="ghost" size="icon" onClick={loadCi} disabled={ciLoading}>
+                <RefreshCw className={`h-4 w-4 ${ciLoading ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-5" />
+                  <TableHead>Workflow</TableHead>
+                  <TableHead className="hidden sm:table-cell">Repo</TableHead>
+                  <TableHead className="hidden sm:table-cell">Branch</TableHead>
+                  <TableHead className="text-right">Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ciLoading || ciRuns === null ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: skeleton rows
+                    <TableRow key={i}>
+                      <TableCell colSpan={5}>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : ciError ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-4">
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        {ciError}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : ciRuns.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="text-center text-muted-foreground text-sm py-4"
+                    >
+                      No recent runs.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  ciRuns.map((run) => (
+                    <TableRow key={run.id}>
+                      <TableCell className="pl-4">{ciRunIcon(run)}</TableCell>
+                      <TableCell>
+                        <a
+                          href={run.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm hover:underline text-primary"
+                        >
+                          {run.name}
+                        </a>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs text-muted-foreground font-mono">
+                        {run.repo.split('/')[1]}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs text-muted-foreground font-mono">
+                        {run.branch}
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground font-mono">
+                        {run.durationMs > 0 ? `${Math.round(run.durationMs / 1000)}s` : '—'}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Grafana */}
       <Card>
