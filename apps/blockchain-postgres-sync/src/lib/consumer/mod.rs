@@ -673,9 +673,16 @@ fn handle_txs<R: RepoOperations>(
 
         for tx in &bm.txs {
             let tx_uid = ugen.next_uid();
-            let result_tx = ConvertedTx::try_from((
+            let result_tx = match ConvertedTx::try_from((
                 &tx.data, &tx.id, bm.height, &tx.meta, tx_uid, block_uid, chain_id,
-            ))?;
+            )) {
+                Ok(tx) => tx,
+                Err(AppError::InconsistentDataError(msg)) => {
+                    tracing::warn!("Skipping transaction: {} due to missing data", msg);
+                    continue;
+                }
+                Err(e) => return Err(e.into()),
+            };
             match result_tx {
                 ConvertedTx::Genesis(t) => txs_1.push(t),
                 ConvertedTx::Payment(t) => txs_2.push(t),

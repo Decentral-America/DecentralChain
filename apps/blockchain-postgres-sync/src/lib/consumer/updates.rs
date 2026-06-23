@@ -23,7 +23,7 @@ use std::time::{Duration as StdDuration, Instant};
 use tokio::sync::mpsc::{Receiver, Sender, channel};
 use tokio::time;
 use tonic;
-use tracing::{debug, error};
+use tracing::{debug, error, warn};
 
 use super::{
     BlockMicroblockAppend, BlockchainUpdate, BlockchainUpdatesWithLastHeight, Tx, UpdatesSource,
@@ -235,37 +235,30 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                     Some((txs, ..)) => txs
                         .into_iter()
                         .enumerate()
-                        .map(|(idx, tx)| {
-                            let id = transaction_ids
-                                .get(idx)
-                                .ok_or_else(|| {
-                                    AppError::InvalidMessage(format!(
-                                        "transaction_ids missing index {idx}"
-                                    ))
-                                })?
-                                .clone();
-                            Ok(Tx {
-                                id: bs58::encode(id).into_string(),
-                                data: tx,
-                                meta: transactions_metadata
-                                    .get(idx)
-                                    .ok_or_else(|| {
-                                        AppError::InvalidMessage(format!(
-                                            "transactions_metadata missing index {idx}"
-                                        ))
-                                    })?
-                                    .clone(),
-                                state_update: transaction_state_updates
-                                    .get(idx)
-                                    .ok_or_else(|| {
-                                        AppError::InvalidMessage(format!(
-                                            "transaction_state_updates missing index {idx}"
-                                        ))
-                                    })?
-                                    .clone(),
-                            })
+                        .filter_map(|(idx, tx)| {
+                            let id = transaction_ids.get(idx)?;
+                            let meta = transactions_metadata.get(idx);
+                            let state_updates = transaction_state_updates.get(idx);
+
+                            match (meta, state_updates) {
+                                (Some(meta), Some(state_updates)) => {
+                                    Some(Tx {
+                                        id: bs58::encode(id).into_string(),
+                                        data: tx,
+                                        meta: meta.clone(),
+                                        state_update: state_updates.clone(),
+                                    })
+                                }
+                                _ => {
+                                    warn!(
+                                        "Skipping transaction id {} due to missing metadata or state update",
+                                        bs58::encode(id).into_string()
+                                    );
+                                    None
+                                }
+                            }
                         })
-                        .collect::<Result<Vec<_>, AppError>>()?,
+                        .collect(),
                     None => vec![],
                 };
 
