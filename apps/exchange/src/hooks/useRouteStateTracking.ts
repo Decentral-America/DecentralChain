@@ -6,7 +6,7 @@
  * Matches Angular: User.applyState() lines 601-604
  */
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 

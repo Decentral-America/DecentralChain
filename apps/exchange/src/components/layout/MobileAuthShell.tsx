@@ -8,7 +8,7 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import type React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface MobileAuthShellProps {
   /** The form component to render */

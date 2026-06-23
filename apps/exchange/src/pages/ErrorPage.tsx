@@ -4,7 +4,7 @@
  * Prevents a white screen of death from propagating to the entire app.
  */
 import type React from 'react';
-import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import { isRouteErrorResponse, useRouteError } from 'react-router';
 
 // Session key prevents infinite reload loops: only one auto-reload per session.
 const CHUNK_RELOAD_KEY = 'exc_chunk_reload';

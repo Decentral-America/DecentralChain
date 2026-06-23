@@ -12,7 +12,7 @@
  * index.html provides an HTML/CSS loading shell so the user sees a spinner
  * before React mounts and the LandingPage chunk loads.
  */
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { dexRoutes } from './dexRoutes';

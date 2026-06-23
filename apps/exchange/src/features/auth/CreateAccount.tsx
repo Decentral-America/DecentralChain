@@ -6,7 +6,7 @@
 // Import Seed from data-service (matches Angular: ds.Seed)
 import { Seed } from 'data-service/classes/Seed';
 import { type FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Card, CardBody } from '@/components/atoms/Card';

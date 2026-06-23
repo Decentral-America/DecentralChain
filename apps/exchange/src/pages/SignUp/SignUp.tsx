@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
 import { CreateAccount } from '@/features/auth/CreateAccount';
 import { landingTheme } from '@/theme/landingTheme';

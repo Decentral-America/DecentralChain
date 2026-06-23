@@ -2,7 +2,7 @@
  * DEX Module Routes
  * Defines routes for decentralized exchange trading interface
  */
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router';
 
 /**
  * DEX routes structure:

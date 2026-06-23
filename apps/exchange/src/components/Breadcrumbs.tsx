@@ -2,7 +2,7 @@
  * Breadcrumbs Component
  * Shows current route path and allows navigation back to parent routes
  */
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import styled from 'styled-components';
 
 const BreadcrumbNav = styled.nav`

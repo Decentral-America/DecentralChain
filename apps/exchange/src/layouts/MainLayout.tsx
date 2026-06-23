@@ -44,7 +44,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { TransactionNotificationsMonitor } from '@/components/notifications/TransactionNotificationsMonitor';
 import { useAuth } from '@/contexts/AuthContext';

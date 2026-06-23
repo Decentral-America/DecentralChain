@@ -1,6 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, useEffect } from 'react';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router/dom';
 import './App.css';
 import { AnnouncementProvider } from '@/components/a11y';
 import { ErrorBoundary } from '@/components/ErrorBoundary';

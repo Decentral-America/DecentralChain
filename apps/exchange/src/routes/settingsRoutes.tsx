@@ -2,7 +2,7 @@
  * Settings Module Routes
  * Defines routes for application settings and preferences
  */
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router';
 
 /**
  * Settings routes structure:
