@@ -82,5 +82,5 @@
   "sideEffects": false,
   "type": "module",
   "types": "./dist/index.d.mts",
-  "version": "4.2.1"
+  "version": "5.0.0"
 }
