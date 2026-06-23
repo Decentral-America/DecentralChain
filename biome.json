@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -63,6 +63,8 @@
             "maxAllowedComplexity": 15
           }
         },
+        "noRedundantDefaultExport": "error",
+        "noUselessReturn": "warn",
         "noUselessUndefined": "warn"
       },
       "correctness": {
@@ -75,14 +77,11 @@
         "noFloatingPromises": "error",
         "noInlineStyles": "warn",
         "noMisusedPromises": "error",
-        "noNestedPromises": "error",
-        "noRedundantDefaultExport": "error",
         "noUntrustedLicenses": "warn",
-        "noUselessReturn": "warn",
         "useImportsFirst": "error",
         "useNullishCoalescing": "warn"
       },
-      "recommended": true,
+      "preset": "recommended",
       "security": {
         "noSecrets": "error"
       },
@@ -107,6 +106,7 @@
         "noDeprecatedImports": "warn",
         "noDuplicateDependencies": "warn",
         "noImportCycles": "error",
+        "noNestedPromises": "error",
         "noUnusedExpressions": "error"
       }
     }
