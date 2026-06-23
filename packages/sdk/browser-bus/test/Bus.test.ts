@@ -1,7 +1,7 @@
-import { Signal } from 'ts-utils';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { Bus, config, console, EventType, type TMessageContent } from '../src/index.js';
 import { MockAdapter } from './mock/MockAdapter.js';
+import { Signal } from './mock/Signal.js';
 
 describe('Bus', () => {
   let adapter: MockAdapter;

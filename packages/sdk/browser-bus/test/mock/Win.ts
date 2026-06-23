@@ -1,5 +1,5 @@
-import { Signal } from 'ts-utils';
 import { type IWindow } from '../../src/protocols/WindowProtocol.js';
+import { Signal } from './Signal.js';
 
 class Win {
   public onPostMessageRun: Signal<any> = new Signal();

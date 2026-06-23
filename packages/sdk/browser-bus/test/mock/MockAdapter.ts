@@ -1,6 +1,6 @@
-import { Signal } from 'ts-utils';
 import { Adapter } from '../../src/adapters/Adapter.js';
 import { type IOneArgFunction, type TMessageContent } from '../../src/bus/Bus.js';
+import { Signal } from './Signal.js';
 
 export class MockAdapter extends Adapter {
   public onSend: Signal<TMessageContent> = new Signal();
