@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.0",
     "vitest": "catalog:"
   },
   "nx": {
