@@ -110,10 +110,10 @@ jobs:
         run: pnpm nx run-many -t check:size --projects='packages/sdk/*'
 
       - name: Version
-        run: pnpm nx release version --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+        run: pnpm nx release version ${{ inputs.dry-run && '--dry-run' || '' }}
 
       - name: Changelog
-        run: pnpm nx release changelog --skip-publish ${{ inputs.dry-run && '--dry-run' || '' }}
+        run: pnpm nx release changelog ${{ inputs.dry-run && '--dry-run' || '' }}
 
       - name: Publish
         if: ${{ !inputs.dry-run }}
