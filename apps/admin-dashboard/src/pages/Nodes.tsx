@@ -420,11 +420,11 @@ export default function Nodes() {
                           {g.sharePercent.toFixed(1)}%
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right font-mono text-sm">
-                        {fmt(g.rewardTotal)} DCC
+                      <TableCell className="text-right font-mono text-sm text-muted-foreground">
+                        {g.rewardTotal > 0 ? `${fmt(g.rewardTotal)} DCC` : '—'}
                       </TableCell>
                       <TableCell className="text-right font-mono text-sm text-muted-foreground">
-                        {fmt(g.feeTotal)} DCC
+                        {g.feeTotal > 0 ? `${fmt(g.feeTotal)} DCC` : '—'}
                       </TableCell>
                       <TableCell className="text-right font-mono text-sm">
                         {fmt(g.generatingBalance)} DCC
@@ -435,6 +435,12 @@ export default function Nodes() {
               </TableBody>
             </Table>
           </div>
+          {data.generators.length === 1 && (
+            <p className="text-xs text-muted-foreground px-4 py-2 border-t border-border">
+              Only 1 active generator — other nodes need a positive generating balance to forge
+              blocks.
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>
