@@ -6,7 +6,7 @@
   "files": [
     "dist/"
   ],
-  "description": "DecentralChain data service \u2014 REST API for exchange data: candles, pairs, trades",
+  "description": "DecentralChain data service — REST API for exchange data: candles, pairs, trades",
   "repository": {
     "type": "git",
     "url": "https://github.com/Decentral-America/DecentralChain"
@@ -43,8 +43,8 @@
     "@decentralchain/data-entities": "workspace:*",
     "@decentralchain/parse-json-bignumber": "workspace:*",
     "@hono/node-server": "^2.0.5",
-    "effect": "^3.21.2",
-    "hono": "^4.12.25",
+    "effect": "^3.21.4",
+    "hono": "^4.12.26",
     "knex": "^3.2.10",
     "lru-cache": "^11.5.1",
     "pino": "^10.3.1",
