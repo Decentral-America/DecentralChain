@@ -51,7 +51,10 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { ...config, user: payload.username };
 }
 
-export const links: Route.LinksFunction = () => [{ href: '/favicon.ico', rel: 'icon' }];
+export const links: Route.LinksFunction = () => [
+  { href: '/favicon.svg', rel: 'icon', type: 'image/svg+xml' },
+  { href: '/favicon.ico', rel: 'icon', type: 'image/x-icon' },
+];
 
 export function meta(): Route.MetaDescriptors {
   return [{ title: 'DCC Admin Dashboard' }];

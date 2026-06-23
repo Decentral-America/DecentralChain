@@ -39,30 +39,22 @@ interface CodecovRepo {
 // ── API helpers ───────────────────────────────────────────────────────────────
 
 async function fetchNpmPackages(): Promise<NpmPackage[]> {
-  const packages = [
-    '@decentralchain/transactions',
-    '@decentralchain/ts-lib-crypto',
-    '@decentralchain/marshall',
-    '@decentralchain/signer',
-  ];
-
-  const results = await Promise.allSettled(
-    packages.map((pkg) =>
-      fetch(`https://registry.npmjs.org/${encodeURIComponent(pkg)}/latest`, {
-        signal: AbortSignal.timeout(10_000),
-      }).then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json() as Promise<{ name: string; version: string; description?: string }>;
-      }),
-    ),
-  );
-
-  return results.map((r, i) => {
-    if (r.status === 'fulfilled') {
-      return { description: r.value.description, name: r.value.name, version: r.value.version };
-    }
-    return { name: packages[i] ?? `package-${i}`, version: 'error' };
+  // Search npm for all @decentralchain/* packages dynamically — no hardcoded list
+  const res = await fetch('https://registry.npmjs.org/-/v1/search?text=@decentralchain&size=50', {
+    signal: AbortSignal.timeout(10_000),
   });
+  if (!res.ok) throw new Error(`npm search HTTP ${res.status}`);
+  const data = (await res.json()) as {
+    objects: Array<{ package: { name: string; version: string; description?: string } }>;
+  };
+  return data.objects
+    .filter((o) => o.package.name.startsWith('@decentralchain/'))
+    .map((o) => ({
+      description: o.package.description,
+      name: o.package.name,
+      version: o.package.version,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function fetchMavenArtifacts(): Promise<MavenArtifact[]> {
@@ -88,7 +80,7 @@ async function fetchSentryIssues(): Promise<SentryIssue[]> {
 }
 
 async function fetchCodecovRepos(): Promise<CodecovRepo[]> {
-  const repos = ['DecentralChain'];
+  const repos = ['DecentralChain', 'node-scala', 'matcher', 'infra'];
   const results = await Promise.allSettled(
     repos.map((repo) =>
       fetch(`https://codecov.io/api/v2/github/Decentral-America/repos/${repo}/`, {
@@ -205,59 +197,9 @@ export default function Operations() {
   }, [loadNpm, loadMaven, loadSentry, loadCodecov, loadBackups]);
 
   // nxCloudId from nx.json — workspace identifier on cloud.nx.app
-  const NX_CLOUD_WORKSPACE_ID = '6a07a03e8a73063a9eda9bf3';
-
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Operations</h1>
-
-      {/* NX Cloud */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center justify-between">
-            <span>NX Cloud — Remote Cache &amp; CI Analytics</span>
-            <a
-              href={`https://cloud.nx.app/orgs/workspace-${NX_CLOUD_WORKSPACE_ID}/workspaces/${NX_CLOUD_WORKSPACE_ID}/overview`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs text-primary hover:underline"
-            >
-              Open NX Cloud <ExternalLink className="h-3 w-3" />
-            </a>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-            <a
-              href={`https://cloud.nx.app/orgs/workspace-${NX_CLOUD_WORKSPACE_ID}/workspaces/${NX_CLOUD_WORKSPACE_ID}/runs`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md border border-border p-4 hover:bg-accent/30 transition-colors"
-            >
-              <p className="text-xs text-muted-foreground mb-1">CI Runs</p>
-              <p className="font-medium">View run history →</p>
-            </a>
-            <a
-              href={`https://cloud.nx.app/orgs/workspace-${NX_CLOUD_WORKSPACE_ID}/workspaces/${NX_CLOUD_WORKSPACE_ID}/cache`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md border border-border p-4 hover:bg-accent/30 transition-colors"
-            >
-              <p className="text-xs text-muted-foreground mb-1">Remote Cache</p>
-              <p className="font-medium">Cache analytics →</p>
-            </a>
-            <a
-              href={`https://cloud.nx.app/orgs/workspace-${NX_CLOUD_WORKSPACE_ID}/workspaces/${NX_CLOUD_WORKSPACE_ID}/tasks`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md border border-border p-4 hover:bg-accent/30 transition-colors"
-            >
-              <p className="text-xs text-muted-foreground mb-1">Task Timings</p>
-              <p className="font-medium">Performance insights →</p>
-            </a>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Grafana */}
       <Card>
