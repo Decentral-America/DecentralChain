@@ -1,28 +1,64 @@
-# 6.0.0 (2026-06-23)
+# Changelog
 
-### 🚀 Features
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
-- groth16 v2 verifier, blst 0.3.16 rebuild, 2.0 modernization sprint ([23b26ee7d](https://github.com/Decentral-America/DecentralChain/commit/23b26ee7d))
-- **DCC-248:** rename packages/ts to packages/sdk ([7cafab4ae](https://github.com/Decentral-America/DecentralChain/commit/7cafab4ae))
+## [5.0.1] - 2025-07-26
 
-### 🩹 Fixes
+### Security
 
-- testnet 2.0 launch hardening — wrangler, BPS, postgres, docs ([#48](https://github.com/Decentral-America/DecentralChain/pull/48))
-- **integration:** correct expected error code for script rejection (308) ([fdb32c305](https://github.com/Decentral-America/DecentralChain/commit/fdb32c305))
-- **integration:** add additionalFee for scripted asset burn test ([041014a97](https://github.com/Decentral-America/DecentralChain/commit/041014a97))
-- **transactions:** parse DCC_TEST_CHAIN_ID as char or number ([fdc55d6f1](https://github.com/Decentral-America/DecentralChain/commit/fdc55d6f1))
-- **transactions:** fix integration test failures ([a36fba10f](https://github.com/Decentral-America/DecentralChain/commit/a36fba10f))
-- **ci:** resolve all pre-existing CI failures ([5afbccb73](https://github.com/Decentral-America/DecentralChain/commit/5afbccb73))
-- update all packages/ts → packages/sdk path references ([c75eb492d](https://github.com/Decentral-America/DecentralChain/commit/c75eb492d))
-- **DCC-245:** eliminate useLiteralKeys suppressions in transactions ([970fcd1e8](https://github.com/Decentral-America/DecentralChain/commit/970fcd1e8))
+- Added `npm audit --audit-level=high` step to CI pipeline.
+- Added runtime warnings in `seedUtils` for weak passwords (<8 chars) and low encryption rounds (<1000).
+- Preserved original error causes via `{ cause }` in `seedUtils/decryptSeedPhrase` and `generic/chainIdFromRecipient`.
+- Documented `wavesTransaction` protobuf wire-format field in `proto-serialize.ts`.
 
-### 🧱 Updated Dependencies
+### Changed
 
-- Updated @decentralchain/protobuf-schemas to 3.1.0
-- Updated @decentralchain/ts-lib-crypto to 3.0.0
-- Updated @decentralchain/marshall to 2.0.0
-- Updated @decentralchain/types to 3.0.0
+- Raised code coverage thresholds from 50% to 70% (statements, branches, functions, lines).
+- Tightened ESLint: `@typescript-eslint/no-unused-vars` → `error`, added `no-console` rule, added `varsIgnorePattern: '^_'`.
+- Removed stale `preserve-caught-error: 'off'` ESLint override.
+- Updated CI matrix from Node 22/24 to Node 24/26.
 
-### ❤️ Thank You
+### Removed
 
-- Josue Rojas
+- 44 unused imports across 8 test files (exchange, data, invoke-script, transfer, burn, lease, alias, mass-transfer).
+- CJS `require('fs')` from `exchange.spec.ts`.
+- Unused `buffer` devDependency.
+- 14 unused named exports from test helpers (`exampleTxs.ts`, `minimalParams.ts`).
+
+### Added
+
+- Comprehensive `seedUtils` test suite (16 new tests): Seed class construction, encryption/decryption round-trip, `strengthenPassword`, `generateNewSeed`, error cases.
+- Coverage improved: seedUtils 2.77% → 88.88%, overall 79% → 82.7%.
+
+## [5.0.0] - 2026-03-01
+
+### Changed
+
+- **BREAKING**: Migrated to pure ESM (`"type": "module"`) with CJS compatibility via tsup.
+- **BREAKING**: Minimum Node.js version is now 22.
+- Replaced Jest with Vitest.
+- Replaced webpack + tsc with tsup.
+- Upgraded TypeScript from 3.9 to 5.9.
+- Upgraded all dependencies to latest versions.
+- Rebranded from `@waves` to `@decentralchain`.
+- Chain ID updated from 87 (W) to 76 (L) for DCC mainnet.
+- Node URLs updated to `nodes.decentralchain.io`.
+- Native asset references changed from WAVES to DCC.
+
+### Added
+
+- ESLint flat config with Prettier integration.
+- Husky + lint-staged pre-commit hooks.
+- GitHub Actions CI pipeline (Node 22, 24).
+- Dependabot for automated dependency updates.
+- Code coverage with threshold enforcement.
+- CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md.
+- publint + attw package validation.
+- size-limit bundle size enforcement.
+
+### Removed
+
+- Legacy build tooling (webpack, tslint).
+- Azure Pipelines CI.
+- All Waves branding and references.
