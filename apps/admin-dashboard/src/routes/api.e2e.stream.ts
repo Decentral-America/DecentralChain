@@ -10,14 +10,47 @@ async function getUser(request: Request): Promise<string | null> {
   return payload?.username ?? null;
 }
 
-export type E2ESuite = 'smoke' | 'full';
+export type E2ESuite = 'smoke' | 'full' | 'custom';
 
 // Smoke suite: fast subset of specs that cover the three main categories.
-const SMOKE_SPECS = [
+export const SMOKE_SPECS = [
   'src/transactions/transfer.spec.ts',
   'src/transactions/invoke-script.spec.ts',
   'src/network/node-api.spec.ts',
 ];
+
+// All available spec files grouped by category.
+export const ALL_SPECS = {
+  e2e: ['src/e2e/defi-flow.spec.ts', 'src/e2e/token-launch.spec.ts'],
+  network: [
+    'src/network/data-service.spec.ts',
+    'src/network/node-api.spec.ts',
+    'src/network/peers.spec.ts',
+  ],
+  performance: ['src/performance/throughput.spec.ts'],
+  transactions: [
+    'src/transactions/account-scripts.spec.ts',
+    'src/transactions/advanced-types.spec.ts',
+    'src/transactions/alias.spec.ts',
+    'src/transactions/asset-lifecycle.spec.ts',
+    'src/transactions/burn-reissue.spec.ts',
+    'src/transactions/dapp.spec.ts',
+    'src/transactions/data.spec.ts',
+    'src/transactions/ethereum.spec.ts',
+    'src/transactions/exchange.spec.ts',
+    'src/transactions/invoke-script.spec.ts',
+    'src/transactions/issue-edge.spec.ts',
+    'src/transactions/issue.spec.ts',
+    'src/transactions/leasing.spec.ts',
+    'src/transactions/mass-transfer.spec.ts',
+    'src/transactions/pipeline.spec.ts',
+    'src/transactions/set-script.spec.ts',
+    'src/transactions/smart-assets.spec.ts',
+    'src/transactions/sponsorship.spec.ts',
+    'src/transactions/transfer.spec.ts',
+    'src/transactions/update-asset-info.spec.ts',
+  ],
+} as const;
 
 // Single-process assumption — same pattern as the load-tester.
 const runs = new Map<string, ChildProcess>();
@@ -113,10 +146,14 @@ export async function action({ request }: ActionFunctionArgs) {
   const intent = body.intent;
 
   if (intent === 'start') {
-    const suite: E2ESuite = body.suite === 'smoke' ? 'smoke' : 'full';
     const runId = crypto.randomUUID();
-
     const suitePath = process.env.E2E_SUITE_PATH ?? '/opt/dcc/DecentralChain';
+
+    // Accept explicit spec list or fall back to suite presets
+    const customSpecs = Array.isArray(body.specs) ? (body.specs as string[]) : null;
+    const suite: E2ESuite =
+      body.suite === 'smoke' ? 'smoke' : body.suite === 'custom' ? 'custom' : 'full';
+    const specsToRun = customSpecs ?? (suite === 'smoke' ? SMOKE_SPECS : []);
 
     const args = [
       '--filter',
@@ -125,7 +162,7 @@ export async function action({ request }: ActionFunctionArgs) {
       'vitest',
       'run',
       '--reporter=verbose',
-      ...(suite === 'smoke' ? SMOKE_SPECS : []),
+      ...specsToRun,
     ];
 
     const child = spawn('pnpm', args, {

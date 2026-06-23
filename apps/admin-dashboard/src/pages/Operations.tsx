@@ -80,7 +80,7 @@ async function fetchSentryIssues(): Promise<SentryIssue[]> {
 }
 
 async function fetchCodecovRepos(): Promise<CodecovRepo[]> {
-  const repos = ['DecentralChain', 'node-scala', 'matcher', 'infra'];
+  const repos = ['DecentralChain', 'node-scala'];
   const results = await Promise.allSettled(
     repos.map((repo) =>
       fetch(`https://codecov.io/api/v2/github/Decentral-America/repos/${repo}/`, {

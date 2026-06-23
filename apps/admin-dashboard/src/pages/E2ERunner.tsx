@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { type E2ESuite } from '@/routes/api.e2e.stream';
+import { ALL_SPECS, SMOKE_SPECS } from '@/routes/api.e2e.stream';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -83,8 +83,10 @@ function parseVitestLines(lines: LogLine[]): ParsedFile[] {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
+const ALL_SPECS_FLAT = Object.values(ALL_SPECS).flat();
+
 export default function E2ERunner() {
-  const [suite, setSuite] = useState<E2ESuite>('smoke');
+  const [selected, setSelected] = useState<Set<string>>(new Set(SMOKE_SPECS));
   const [run, setRun] = useState<RunState>({ phase: 'idle' });
   const [logs, setLogs] = useState<LogLine[]>([]);
   const esRef = useRef<EventSource | null>(null);
@@ -106,8 +108,9 @@ export default function E2ERunner() {
     setRun({ phase: 'running', runId: '' });
 
     try {
+      const specsToRun = [...selected];
       const res = await fetch('/api/e2e/stream', {
-        body: JSON.stringify({ intent: 'start', suite }),
+        body: JSON.stringify({ intent: 'start', specs: specsToRun, suite: 'custom' }),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       });
@@ -170,65 +173,120 @@ export default function E2ERunner() {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">E2E Test Runner</h1>
 
-      {/* Explainer */}
-      <Card>
-        <CardContent className="p-4 text-sm text-muted-foreground space-y-2">
-          <p>
-            The E2E runner executes the blockchain integration test suite against the live testnet
-            node. Tests are real transactions broadcast to the network — they verify that the node
-            accepts, processes, and confirms each transaction type end-to-end.
-          </p>
-          <p>
-            <strong className="text-foreground">Smoke suite</strong> (~30 s) — 3 spec files covering
-            transfers, invoke-script, and node API health. Use this for a quick sanity check after a
-            deployment.
-          </p>
-          <p>
-            <strong className="text-foreground">Full suite</strong> (~8 min) — all 162 tests across
-            every transaction type. Use this before cutting a release or after infrastructure
-            changes.
-          </p>
-          <p className="text-xs">
-            Output streams live. The <span className="font-mono">Results</span> tab shows a
-            structured pass/fail tree; <span className="font-mono">Raw Log</span> shows the full
-            Vitest output. The run is killed server-side when you click Stop.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Config */}
+      {/* Spec selector */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Configuration</CardTitle>
+          <CardTitle className="text-base flex items-center justify-between">
+            <span>
+              Test Specs — {selected.size} / {ALL_SPECS_FLAT.length} selected
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelected(new Set(SMOKE_SPECS))}
+                disabled={isRunning}
+                className="text-xs text-muted-foreground hover:text-primary disabled:opacity-50"
+              >
+                Smoke
+              </button>
+              <span className="text-muted-foreground">·</span>
+              <button
+                type="button"
+                onClick={() => setSelected(new Set(ALL_SPECS_FLAT))}
+                disabled={isRunning}
+                className="text-xs text-muted-foreground hover:text-primary disabled:opacity-50"
+              >
+                All
+              </button>
+              <span className="text-muted-foreground">·</span>
+              <button
+                type="button"
+                onClick={() => setSelected(new Set())}
+                disabled={isRunning}
+                className="text-xs text-muted-foreground hover:text-primary disabled:opacity-50"
+              >
+                None
+              </button>
+            </div>
+          </CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center gap-4 flex-wrap">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="e2e-suite" className="text-sm font-medium">
-              Suite
-            </label>
-            <select
-              id="e2e-suite"
-              value={suite}
-              onChange={(e) => setSuite(e.target.value as E2ESuite)}
-              disabled={isRunning}
-              className="flex h-9 w-48 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
-            >
-              <option value="smoke">Smoke (~30s, 3 specs)</option>
-              <option value="full">Full suite (~8min, 162 tests)</option>
-            </select>
-          </div>
+        <CardContent className="space-y-4">
+          {(Object.entries(ALL_SPECS) as [string, readonly string[]][]).map(([category, specs]) => (
+            <div key={category}>
+              <div className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  id={`cat-${category}`}
+                  className="h-3.5 w-3.5 rounded accent-primary"
+                  checked={specs.every((s) => selected.has(s))}
+                  ref={(el) => {
+                    if (el)
+                      el.indeterminate =
+                        specs.some((s) => selected.has(s)) && !specs.every((s) => selected.has(s));
+                  }}
+                  onChange={(e) => {
+                    const next = new Set(selected);
+                    if (e.target.checked) for (const s of specs) next.add(s);
+                    else for (const s of specs) next.delete(s);
+                    setSelected(next);
+                  }}
+                  disabled={isRunning}
+                />
+                <label
+                  htmlFor={`cat-${category}`}
+                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer"
+                >
+                  {category} ({specs.length})
+                </label>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 pl-5">
+                {specs.map((spec) => {
+                  const name = spec.replace(/^src\/[^/]+\//, '').replace('.spec.ts', '');
+                  const isSmoke = SMOKE_SPECS.includes(spec);
+                  return (
+                    <label
+                      key={spec}
+                      className="flex items-center gap-2 text-xs cursor-pointer group"
+                    >
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 rounded accent-primary shrink-0"
+                        checked={selected.has(spec)}
+                        onChange={(e) => {
+                          const next = new Set(selected);
+                          if (e.target.checked) next.add(spec);
+                          else next.delete(spec);
+                          setSelected(next);
+                        }}
+                        disabled={isRunning}
+                      />
+                      <span className="text-foreground group-hover:text-primary transition-colors font-mono">
+                        {name}
+                      </span>
+                      {isSmoke && (
+                        <span className="text-[10px] text-yellow-500 shrink-0">smoke</span>
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-center gap-3 pt-2 border-t border-border">
             {!isRunning ? (
-              <Button onClick={handleStart} className="gap-2">
+              <Button onClick={handleStart} disabled={selected.size === 0} className="gap-2">
                 <Play className="h-4 w-4" />
-                Run {suite === 'smoke' ? 'Smoke' : 'Full'} Suite
+                Run {selected.size} spec{selected.size !== 1 ? 's' : ''}
               </Button>
             ) : (
               <Button variant="destructive" onClick={handleStop} className="gap-2">
                 <Square className="h-4 w-4" />
                 Stop
               </Button>
+            )}
+            {selected.size === 0 && (
+              <span className="text-xs text-muted-foreground">Select at least one spec</span>
             )}
           </div>
 
