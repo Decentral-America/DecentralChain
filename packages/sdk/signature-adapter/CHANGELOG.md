@@ -1,3 +1,27 @@
+# 8.0.0 (2026-06-23)
+
+### 🚀 Features
+
+- groth16 v2 verifier, blst 0.3.16 rebuild, 2.0 modernization sprint ([23b26ee7d](https://github.com/Decentral-America/DecentralChain/commit/23b26ee7d))
+- **DCC-248:** rename packages/ts to packages/sdk ([7cafab4ae](https://github.com/Decentral-America/DecentralChain/commit/7cafab4ae))
+
+### 🩹 Fixes
+
+- update all packages/ts → packages/sdk path references ([c75eb492d](https://github.com/Decentral-America/DecentralChain/commit/c75eb492d))
+
+### 🧱 Updated Dependencies
+
+- Updated @decentralchain/money-like-to-node to 2.0.0
+- Updated @decentralchain/data-entities to 4.0.0
+- Updated @decentralchain/transactions to 6.0.0
+- Updated @decentralchain/bignumber to 2.0.0
+- Updated @decentralchain/ledger to 6.0.0
+- Updated @decentralchain/types to 3.0.0
+
+### ❤️ Thank You
+
+- Josue Rojas
+
 # Changelog
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)

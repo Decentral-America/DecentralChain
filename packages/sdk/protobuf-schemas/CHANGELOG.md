@@ -1,3 +1,13 @@
+## 3.1.0 (2026-06-23)
+
+### 🩹 Fixes
+
+- testnet 2.0 launch hardening — wrangler, BPS, postgres, docs ([#48](https://github.com/Decentral-America/DecentralChain/pull/48))
+
+### ❤️ Thank You
+
+- Josue Rojas
+
 # Changelog
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)

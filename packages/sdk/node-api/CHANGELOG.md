@@ -1,3 +1,24 @@
+# 3.0.0 (2026-06-23)
+
+### 🚀 Features
+
+- groth16 v2 verifier, blst 0.3.16 rebuild, 2.0 modernization sprint ([23b26ee7d](https://github.com/Decentral-America/DecentralChain/commit/23b26ee7d))
+
+### 🩹 Fixes
+
+- testnet fixes — SDK empty-array bug, prerender, faucet, matcher URL ([#49](https://github.com/Decentral-America/DecentralChain/pull/49))
+
+### 🧱 Updated Dependencies
+
+- Updated @decentralchain/ts-lib-crypto to 3.0.0
+- Updated @decentralchain/transactions to 6.0.0
+- Updated @decentralchain/bignumber to 2.0.0
+- Updated @decentralchain/types to 3.0.0
+
+### ❤️ Thank You
+
+- Josue Rojas
+
 # Changelog
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)

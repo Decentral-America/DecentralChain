@@ -1,3 +1,18 @@
+# 6.0.0 (2026-06-23)
+
+### 🚀 Features
+
+- groth16 v2 verifier, blst 0.3.16 rebuild, 2.0 modernization sprint ([23b26ee7d](https://github.com/Decentral-America/DecentralChain/commit/23b26ee7d))
+- **DCC-248:** rename packages/ts to packages/sdk ([7cafab4ae](https://github.com/Decentral-America/DecentralChain/commit/7cafab4ae))
+
+### 🩹 Fixes
+
+- update all packages/ts → packages/sdk path references ([c75eb492d](https://github.com/Decentral-America/DecentralChain/commit/c75eb492d))
+
+### ❤️ Thank You
+
+- Josue Rojas
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
