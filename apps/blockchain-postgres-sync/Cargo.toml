@@ -155,8 +155,8 @@ proptest = "1.11.0"
 # Tokio test runtime
 tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "test-util"] }
 # Integration-test helpers: spin up a real PostgreSQL container for each test
-testcontainers = "0.23"
-testcontainers-modules = { version = "0.11", features = ["postgres"] }
+testcontainers = "0.27"
+testcontainers-modules = { version = "0.15", features = ["postgres"] }
 
 # prost and tonic-prost are used in code generated via include!() in proto.rs
 # and are therefore invisible to cargo-machete's static analysis.
