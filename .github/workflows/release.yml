@@ -109,15 +109,8 @@ jobs:
       - name: Verify bundle size
         run: pnpm nx run-many -t check:size --projects='packages/sdk/*'
 
-      - name: Version
-        run: pnpm nx release version --first-release ${{ inputs.dry-run && '--dry-run' || '' }}
-
-      - name: Changelog
-        run: pnpm nx release changelog --first-release ${{ inputs.dry-run && '--dry-run' || '' }}
-
-      - name: Publish
-        if: ${{ !inputs.dry-run }}
-        run: pnpm nx release publish
+      - name: Release (version + changelog + publish)
+        run: pnpm nx release --first-release ${{ inputs.dry-run && '--dry-run' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
