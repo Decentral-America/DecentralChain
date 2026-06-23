@@ -66,22 +66,14 @@ async function fetchNpmPackages(): Promise<NpmPackage[]> {
 }
 
 async function fetchMavenArtifacts(): Promise<MavenArtifact[]> {
-  const res = await fetch(
-    'https://search.maven.org/solrsearch/select?q=g:io.github.decentral-america&rows=20&wt=json',
-    { signal: AbortSignal.timeout(10_000) },
-  );
-  if (!res.ok) throw new Error(`Maven search HTTP ${res.status}`);
-  const data = (await res.json()) as {
-    response: {
-      docs: Array<{ g: string; a: string; latestVersion: string; timestamp: number }>;
-    };
-  };
-  return data.response.docs.map((d) => ({
-    artifact: d.a,
-    group: d.g,
-    latestVersion: d.latestVersion,
-    timestamp: d.timestamp,
-  }));
+  // Proxied server-side — Maven Central does not set CORS headers
+  const res = await fetch('/api/maven/artifacts', { signal: AbortSignal.timeout(15_000) });
+  if (!res.ok) {
+    const data = (await res.json()) as { error?: string };
+    throw new Error(data.error ?? `HTTP ${res.status}`);
+  }
+  const data = (await res.json()) as { artifacts: MavenArtifact[] };
+  return data.artifacts;
 }
 
 async function fetchSentryIssues(): Promise<SentryIssue[]> {
