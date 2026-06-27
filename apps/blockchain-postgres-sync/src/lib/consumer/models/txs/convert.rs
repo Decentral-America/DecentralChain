@@ -28,6 +28,9 @@ use serde_json::json;
 const WRONG_META_VAR: &str = "wrong meta variant";
 
 pub enum Tx {
+    // CommitToGeneration (type 19) is a validator governance TX. No subtype table exists yet;
+    // we skip subtype-level storage but allow the consumer to continue processing.
+    CommitToGenerationSkip,
     Genesis(Tx1),
     Payment(Tx2),
     Issue(Tx3),
@@ -771,9 +774,9 @@ impl
                 ))
             }
             Data::CommitToGeneration(_t) => {
-                return Err(Error::InconsistentDataError(
-                    "CommitToGeneration tx type is not yet supported".into(),
-                ))
+                // Type 19 — validator governance TX. Skipped at subtype level; the main
+                // txs table entry (type=1 placeholder) is handled by the caller.
+                Self::CommitToGenerationSkip
             }
         })
     }

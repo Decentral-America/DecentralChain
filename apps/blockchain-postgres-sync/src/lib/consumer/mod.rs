@@ -684,6 +684,7 @@ fn handle_txs<R: RepoOperations>(
                 Err(e) => return Err(e.into()),
             };
             match result_tx {
+                ConvertedTx::CommitToGenerationSkip => {} // type 19 — no subtype table yet
                 ConvertedTx::Genesis(t) => txs_1.push(t),
                 ConvertedTx::Payment(t) => txs_2.push(t),
                 ConvertedTx::Issue(t) => txs_3.push(t),
