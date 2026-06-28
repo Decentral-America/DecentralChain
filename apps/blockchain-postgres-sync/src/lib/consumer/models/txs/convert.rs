@@ -788,7 +788,7 @@ impl
                     sender_public_key: (!sender_public_key.is_empty()).then_some(sender_public_key).unwrap_or_default(),
                     status,
                     endorser_public_key: endorser_pk,
-                    generation_period_start: t.generation_period_start,
+                    generation_period_start: i32::try_from(t.generation_period_start).unwrap_or(i32::MAX),
                 })
             }
         })
