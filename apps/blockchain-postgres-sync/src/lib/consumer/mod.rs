@@ -522,9 +522,8 @@ fn tx_event_for_tx(tx: &Tx, height: i32) -> Option<TxEvent> {
                     (16i32, ts, vec![], None, None)
                 }
                 Some(Data::UpdateAssetInfo(_)) => (17i32, ts, vec![], None, None),
-                Some(Data::CommitToGeneration(_)) | Some(Data::Genesis(_)) => {
-                    (1i32, ts, vec![], None, None)
-                }
+                Some(Data::CommitToGeneration(_)) => (19i32, ts, vec![], None, None),
+                Some(Data::Genesis(_)) => (1i32, ts, vec![], None, None),
                 Some(Data::Payment(_)) => (2i32, ts, vec![], None, None),
                 None => return None,
             }
@@ -629,6 +628,7 @@ const fn tx_type_name(tx_type: i32) -> &'static str {
         16 => "invoke_script",
         17 => "update_asset_info",
         18 => "ethereum",
+        19 => "commit_to_generation",
         _ => "unknown",
     }
 }
@@ -657,6 +657,7 @@ fn handle_txs<R: RepoOperations>(
     let mut txs_16 = vec![];
     let mut txs_17 = vec![];
     let mut txs_18 = vec![];
+    let mut txs_19 = vec![];
 
     let txs_count = block_uid_data
         .iter()
@@ -684,7 +685,7 @@ fn handle_txs<R: RepoOperations>(
                 Err(e) => return Err(e.into()),
             };
             match result_tx {
-                ConvertedTx::CommitToGenerationSkip => {} // type 19 — no subtype table yet
+                ConvertedTx::CommitToGeneration(t) => txs_19.push(t),
                 ConvertedTx::Genesis(t) => txs_1.push(t),
                 ConvertedTx::Payment(t) => txs_2.push(t),
                 ConvertedTx::Issue(t) => txs_3.push(t),
@@ -743,6 +744,7 @@ fn handle_txs<R: RepoOperations>(
     insert_txs(txs_16, |txs| repo.insert_txs_16(txs))?;
     insert_txs(txs_17, |txs| repo.insert_txs_17(txs))?;
     insert_txs(txs_18, |txs| repo.insert_txs_18(txs))?;
+    insert_txs(txs_19, |txs| repo.insert_txs_19(txs))?;
 
     info!("{} transactions handled", txs_count);
 

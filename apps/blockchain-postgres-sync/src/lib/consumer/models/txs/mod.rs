@@ -3,7 +3,7 @@ pub mod convert;
 use crate::schema::{
     txs_1, txs_2, txs_3, txs_4, txs_5, txs_6, txs_7, txs_8, txs_9, txs_10, txs_11,
     txs_11_transfers, txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args,
-    txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment,
+    txs_16_payment, txs_17, txs_18, txs_18_args, txs_18_payment, txs_19,
 };
 use chrono::NaiveDateTime;
 use diesel::Insertable;
@@ -569,4 +569,25 @@ pub struct Tx18Combined {
     pub tx: Tx18,
     pub args: Vec<Tx18Args>,
     pub payments: Vec<Tx18Payment>,
+}
+
+/// CommitToGeneration transaction (type 19) — validator BLS key commitment per period
+#[derive(Clone, Debug, Insertable)]
+#[diesel(table_name = txs_19)]
+pub struct Tx19 {
+    pub uid: TxUid,
+    pub height: TxHeight,
+    pub tx_type: TxType,
+    pub id: TxId,
+    pub time_stamp: TxTimeStamp,
+    pub signature: TxSignature,
+    pub fee: TxFee,
+    pub proofs: TxProofs,
+    pub tx_version: TxVersion,
+    pub block_uid: TxBlockUid,
+    pub sender: TxSender,
+    pub sender_public_key: TxSenderPubKey,
+    pub status: TxStatus,
+    pub endorser_public_key: String,
+    pub generation_period_start: i32,
 }

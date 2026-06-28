@@ -1,7 +1,7 @@
 use super::{
     Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, Tx10, Tx11, Tx11Combined, Tx11Transfers,
     Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15, Tx16, Tx16Args, Tx16Combined, Tx16Payment,
-    Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment, TxBlockUid, TxHeight, TxId, TxUid,
+    Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment, Tx19, TxBlockUid, TxHeight, TxId, TxUid,
 };
 use crate::chain::{Address, ChainId, DCC_ID, PublicKeyHash, extract_asset_id};
 use crate::error::Error;
@@ -28,9 +28,7 @@ use serde_json::json;
 const WRONG_META_VAR: &str = "wrong meta variant";
 
 pub enum Tx {
-    // CommitToGeneration (type 19) is a validator governance TX. No subtype table exists yet;
-    // we skip subtype-level storage but allow the consumer to continue processing.
-    CommitToGenerationSkip,
+    CommitToGeneration(Tx19),
     Genesis(Tx1),
     Payment(Tx2),
     Issue(Tx3),
@@ -773,10 +771,25 @@ impl
                     "InvokeExpression tx type is not yet supported".into(),
                 ))
             }
-            Data::CommitToGeneration(_t) => {
-                // Type 19 — validator governance TX. Skipped at subtype level; the main
-                // txs table entry (type=1 placeholder) is handled by the caller.
-                Self::CommitToGenerationSkip
+            Data::CommitToGeneration(t) => {
+                let endorser_pk = bs58::encode(&t.endorser_public_key).into_string();
+                Self::CommitToGeneration(Tx19 {
+                    uid,
+                    height,
+                    tx_type: 19,
+                    id,
+                    time_stamp,
+                    signature,
+                    fee,
+                    proofs,
+                    tx_version,
+                    block_uid,
+                    sender: (!sender.is_empty()).then_some(sender).unwrap_or_default(),
+                    sender_public_key: (!sender_public_key.is_empty()).then_some(sender_public_key).unwrap_or_default(),
+                    status,
+                    endorser_public_key: endorser_pk,
+                    generation_period_start: t.generation_period_start,
+                })
             }
         })
     }

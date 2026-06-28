@@ -13,7 +13,7 @@ use super::models::{
     dcc_data::DccData,
     txs::{
         Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9Partial, Tx10, Tx11Combined, Tx12Combined, Tx13,
-        Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined,
+        Tx14, Tx15, Tx16Combined, Tx17, Tx18Combined, Tx19,
     },
 };
 
@@ -137,6 +137,8 @@ pub trait RepoOperations {
     fn insert_txs_17(&mut self, txs: Vec<Tx17>) -> Result<()>;
 
     fn insert_txs_18(&mut self, txs: Vec<Tx18Combined>) -> Result<()>;
+
+    fn insert_txs_19(&mut self, txs: Vec<Tx19>) -> Result<()>;
 
     //
     // CANDLES

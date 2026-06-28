@@ -10,7 +10,7 @@ use crate::consumer::models::{
     txs::{
         Tx1, Tx2, Tx3, Tx4, Tx5, Tx6, Tx7, Tx8, Tx9, Tx9Partial, Tx10, Tx11, Tx11Combined,
         Tx11Transfers, Tx12, Tx12Combined, Tx12Data, Tx13, Tx14, Tx15, Tx16, Tx16Args,
-        Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment,
+        Tx16Combined, Tx16Payment, Tx17, Tx18, Tx18Args, Tx18Combined, Tx18Payment, Tx19,
     },
 };
 use crate::db::PgAsyncPool;
@@ -19,7 +19,7 @@ use crate::schema::{
     asset_origins, asset_tickers, asset_updates, blocks_microblocks, candles, dcc_data, txs, txs_1,
     txs_2, txs_3, txs_4, txs_5, txs_6, txs_7, txs_8, txs_9, txs_10, txs_11, txs_11_transfers,
     txs_12, txs_12_data, txs_13, txs_14, txs_15, txs_16, txs_16_args, txs_16_payment, txs_17,
-    txs_18, txs_18_args, txs_18_payment,
+    txs_18, txs_18_args, txs_18_payment, txs_19,
 };
 use crate::tuple_len::TupleLen;
 use anyhow::{Error, Result, bail};
@@ -649,6 +649,17 @@ impl RepoOperations for PgRepoOperations<'_> {
                 .execute(self.conn)
         })
         .map_err(build_err_fn("Cannot insert Ethereum InvokeScript payments"))
+    }
+
+    fn insert_txs_19(&mut self, txs: Vec<Tx19>) -> Result<()> {
+        chunked(txs_19::table, &txs, |chunk| {
+            diesel::insert_into(txs_19::table)
+                .values(chunk)
+                .execute(self.conn)
+        })
+        .map_err(build_err_fn(
+            "Cannot insert CommitToGeneration transactions",
+        ))
     }
 
     //

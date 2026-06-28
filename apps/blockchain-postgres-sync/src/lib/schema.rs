@@ -440,6 +440,28 @@ diesel::table! {
 diesel::table! {
     use diesel::sql_types::*;
 
+    txs_19 (uid) {
+        uid -> Int8,
+        tx_type -> Int2,
+        sender -> Varchar,
+        sender_public_key -> Varchar,
+        time_stamp -> Timestamptz,
+        height -> Int4,
+        id -> Varchar,
+        signature -> Nullable<Varchar>,
+        proofs -> Nullable<Array<Nullable<Text>>>,
+        tx_version -> Nullable<Int2>,
+        fee -> Int8,
+        status -> Varchar,
+        block_uid -> Int8,
+        endorser_public_key -> Varchar,
+        generation_period_start -> Int4,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+
     txs_2 (uid) {
         uid -> Int8,
         tx_type -> Int2,
@@ -672,6 +694,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     txs_18,
     txs_18_args,
     txs_18_payment,
+    txs_19,
     txs_2,
     txs_3,
     txs_4,
