@@ -571,7 +571,7 @@ pub struct Tx18Combined {
     pub payments: Vec<Tx18Payment>,
 }
 
-/// CommitToGeneration transaction (type 19) — validator BLS key commitment per period
+/// `CommitToGeneration` transaction (type 19) — validator BLS key commitment per period
 #[derive(Clone, Debug, Insertable)]
 #[diesel(table_name = txs_19)]
 pub struct Tx19 {
