@@ -33,6 +33,10 @@ message Block {
         bytes state_hash = 11;
         ChallengedHeader challenged_header = 12;
         FinalizationVoting finalization_voting = 13;
+        // Committed validator set hash at period boundaries (height % generationPeriodLength == 0).
+        // Blake2b-256 of the sorted (address, blsPublicKey) pairs for the next generation period.
+        // Empty between period boundaries. Required for mainnet upgrade safety (Step B).
+        bytes committed_generators_hash = 14;
     }
 
     Header header = 1;
