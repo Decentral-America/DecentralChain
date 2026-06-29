@@ -33,6 +33,9 @@ message Block {
         bytes state_hash = 11;
         ChallengedHeader challenged_header = 12;
         FinalizationVoting finalization_voting = 13;
+        // Blake2b-256 of sorted (address ++ blsPublicKey) pairs committed for the next generation period.
+        // Non-empty only at period boundary blocks (height % generationPeriodLength == 0).
+        bytes committed_generators_hash = 14;
     }
 
     Header header = 1;
