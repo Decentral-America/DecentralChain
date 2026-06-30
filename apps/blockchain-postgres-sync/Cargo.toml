@@ -24,7 +24,7 @@ path = "src/bin/migration.rs"
 
 [dependencies]
 # Error handling
-anyhow = "1.0.102"
+anyhow = "1.0.103"
 thiserror = "2.0.18"
 
 # Async runtime
