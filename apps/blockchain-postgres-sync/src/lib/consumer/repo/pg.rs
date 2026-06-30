@@ -148,19 +148,52 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>> {
-        // ON CONFLICT (id) DO UPDATE is a no-op upsert: when the BlockchainUpdates gRPC
-        // stream replays historical blocks and transitions to live mode, the boundary block
-        // at the extension's initialization height is delivered twice. The no-op update
-        // (SET id = blocks_microblocks.id) makes this idempotent while still returning
-        // the correct uid for every row via RETURNING.
+        if blocks.is_empty() {
+            return Ok(vec![]);
+        }
+
+        // The BlockchainUpdates gRPC stream can deliver the same block ID multiple times
+        // within a single batch (e.g. when transitioning from historical replay to live mode,
+        // or during chain re-org replays). PostgreSQL's ON CONFLICT DO UPDATE raises
+        // "cannot affect row a second time" when the VALUES list has duplicate conflict keys,
+        // so we deduplicate before the INSERT and use a bulk SELECT to map UIDs back.
+        let mut seen = std::collections::HashSet::new();
+        let unique_blocks: Vec<&BlockMicroblock> = blocks
+            .iter()
+            .filter(|b| seen.insert(b.id.clone()))
+            .collect();
+
+        // Upsert unique blocks — no-op on conflict (block already in DB from prior batch)
         diesel::insert_into(blocks_microblocks::table)
-            .values(blocks)
+            .values(unique_blocks.as_slice())
             .on_conflict(blocks_microblocks::id)
             .do_update()
             .set(blocks_microblocks::id.eq(blocks_microblocks::id))
-            .returning(blocks_microblocks::uid)
-            .get_results(self.conn)
-            .map_err(build_err_fn("Cannot insert blocks/microblocks"))
+            .execute(self.conn)
+            .map_err(build_err_fn("Cannot insert blocks/microblocks"))?;
+
+        // Bulk-fetch UIDs so we can return them in the original `blocks` order
+        // (including duplicate entries that were skipped by the upsert).
+        let ids: Vec<&String> = blocks.iter().map(|b| &b.id).collect();
+        let uid_map: HashMap<String, i64> = blocks_microblocks::table
+            .select((blocks_microblocks::id, blocks_microblocks::uid))
+            .filter(blocks_microblocks::id.eq_any(&ids))
+            .get_results::<(String, i64)>(self.conn)
+            .map_err(build_err_fn(
+                "Cannot get uid for inserted blocks/microblocks",
+            ))?
+            .into_iter()
+            .collect();
+
+        blocks
+            .iter()
+            .map(|b| {
+                uid_map
+                    .get(&b.id)
+                    .copied()
+                    .ok_or_else(|| anyhow::anyhow!("uid missing for block id {}", b.id))
+            })
+            .collect()
     }
 
     fn change_block_id(&mut self, block_uid: i64, new_block_id: &str) -> Result<()> {
