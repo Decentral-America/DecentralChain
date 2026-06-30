@@ -158,14 +158,15 @@ impl RepoOperations for PgRepoOperations<'_> {
         // "cannot affect row a second time" when the VALUES list has duplicate conflict keys,
         // so we deduplicate before the INSERT and use a bulk SELECT to map UIDs back.
         let mut seen = std::collections::HashSet::new();
-        let unique_blocks: Vec<&BlockMicroblock> = blocks
+        let unique_blocks: Vec<BlockMicroblock> = blocks
             .iter()
             .filter(|b| seen.insert(b.id.clone()))
+            .cloned()
             .collect();
 
         // Upsert unique blocks — no-op on conflict (block already in DB from prior batch)
         diesel::insert_into(blocks_microblocks::table)
-            .values(unique_blocks.as_slice())
+            .values(&unique_blocks)
             .on_conflict(blocks_microblocks::id)
             .do_update()
             .set(blocks_microblocks::id.eq(blocks_microblocks::id))
