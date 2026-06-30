@@ -4,6 +4,8 @@ A high-performance blockchain-to-PostgreSQL sync daemon for the **DecentralChain
 
 Subscribes to a node's gRPC Blockchain Updates API, processes block and microblock events in real time, and persists structured data (assets, transactions, candles) into PostgreSQL for use by data services, explorers, and analytics.
 
+**Current testnet image:** `fbece975a` — type-19 (CommitToGeneration) enabled, gRPC dedup+upsert fix applied, Loader.scala re-seek bug fixed. Deployed and healthy.
+
 [![CI](https://github.com/Decentral-America/blockchain-postgres-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/blockchain-postgres-sync/actions/workflows/ci.yml)
 
 ---
@@ -20,10 +22,14 @@ DCC Node (gRPC)
   consumer loop  ──────► PostgreSQL (diesel + deadpool)
       │
       ▼
- axum health server  (GET /health)
+ axum health server  (GET /health, GET /readiness)
 ```
 
 The `migration` binary runs Diesel migrations against the database before the consumer starts.
+
+The health server exposes two endpoints:
+- `GET /health` — returns `200 OK` when the process is running
+- `GET /readiness` — validates the database connection pool; returns `200 OK` only when the pool is healthy
 
 ---
 
@@ -33,6 +39,33 @@ The `migration` binary runs Diesel migrations against the database before the co
 |---|---|
 | `consumer` | Main daemon — subscribes to gRPC updates and writes to PostgreSQL |
 | `migration` | One-shot: applies pending Diesel database migrations |
+
+---
+
+## Supported Transaction Types
+
+All standard Waves-protocol transaction types (1–18) plus the DCC-original:
+
+| Type | Name | Table | Notes |
+|------|------|-------|-------|
+| 1–18 | Standard Waves-protocol types | `txs_1` – `txs_18` | Full coverage |
+| **19** | **CommitToGeneration** | **`txs_19`** | DCC-original — T2 HotStuff generator commitment; migration `20260628000000` |
+
+---
+
+## Production Fixes (2026-06-28)
+
+### gRPC duplicate-block delivery (dedup + upsert)
+
+The gRPC `BlockchainUpdates` stream can deliver the same block more than once under reconnect scenarios. Without protection this causes a unique-constraint violation and crashes the consumer.
+
+**Fix:** `insert_blocks_or_microblocks` in `pg.rs` uses an `INSERT … ON CONFLICT DO UPDATE` (upsert) pattern combined with an in-process dedup set. Duplicate deliveries are silently absorbed.
+
+### Loader.scala gRPC re-seek bug
+
+The node-side `Loader.scala` tracks the height of the last block sent to gRPC subscribers using a RocksDB key. A bug caused it to re-read a stale height after rollbacks, re-seeking into already-delivered ranges and triggering the duplicate delivery above.
+
+**Fix:** `Loader.scala` now tracks the actual RocksDB key height to prevent re-seek into gaps. Deployed in node image `v1.6.3-be2dcfc0`.
 
 ---
 
@@ -83,6 +116,17 @@ docker run --rm \
   -e STARTING_HEIGHT=0 \
   -e HOST=postgres \
   -e DATABASE=blockchain \
+  -e USER=postgres \
+  -e PASSWORD=secret \
+  blockchain-postgres-sync
+
+# Testnet (chain ID `!` = byte 33):
+docker run --rm \
+  -e BLOCKCHAIN_UPDATES_URL=http://node:6881 \
+  -e CHAIN_ID=33 \
+  -e STARTING_HEIGHT=0 \
+  -e HOST=postgres \
+  -e DATABASE=bps_testnet \
   -e USER=postgres \
   -e PASSWORD=secret \
   blockchain-postgres-sync

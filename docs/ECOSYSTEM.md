@@ -103,9 +103,9 @@ flowchart LR
         end
     end
 
-    subgraph INFRA["🌐  Infrastructure Services  ⚠ not yet deployed"]
+    subgraph INFRA["🌐  Infrastructure Services"]
         direction TB
-        NODE_SVC["⛓️ DCC Node\nnode-go · Go 1.26+\nREST :6869 · gRPC :6870"]
+        NODE_SVC["⛓️ DCC Node\nnode-scala · Scala 3 (Akka)\nREST :6869 · gRPC :6870 · gRPC BlockchainUpdates :6881"]
         MATCHER_SVC["⚖️ DEX Matcher\ndecentralchain-dex v2.3.2.9\n:6886"]
         DATA_SVC["📈 Data Service\nNode.js · Koa · v0.30.0\n:3000"]
     end
@@ -113,7 +113,7 @@ flowchart LR
     subgraph DATALAYER["💾  Data Layer"]
         direction TB
         P2P[/"🌐 P2P Network\nGlobal validators"/]
-        BPS["blockchain-postgres-sync\npolls node · inserts history"]
+        BPS["blockchain-postgres-sync\ngRPC BlockchainUpdates stream · inserts history\ntype-19 (CommitToGeneration) enabled"]
         PG[("PostgreSQL 11\nblockchain history")]
     end
 
@@ -199,7 +199,7 @@ flowchart LR
 
     %% ── Data pipeline ─────────────────────────────────────────────────────
     P2P      --> NODE_SVC
-    BPS      -->|"polls REST"| NODE_SVC
+    BPS      -->|"gRPC BlockchainUpdates :6881"| NODE_SVC
     BPS      -->|"INSERT"| PG
     DATA_SVC -->|"SQL"| PG
 
@@ -237,7 +237,7 @@ C4Context
     }
 
     Enterprise_Boundary(infra, "DecentralChain Infrastructure") {
-        System(node, "DCC Node", "Blockchain protocol node — node-scala (Scala 3.8.3, production)")
+        System(node, "DCC Node", "Blockchain protocol node — node-scala v1.6.3, T2 HotStuff active")
         System(matcher, "DEX Matcher", "Order matching engine — decentralchain-dex v2.3.2.9")
         System(datasvc, "Data Service", "Historical blockchain data API — Node.js / Koa v0.30.0")
     }
@@ -288,14 +288,14 @@ flowchart TD
         DS_CLIENT(["data-service-client<br/>Typed HTTP client for the Data Service"])
     end
 
-    subgraph SERVICES["🌐  Infrastructure Services  ⚠ not yet deployed"]
-        NODE_SVC["⛓️ DCC Node<br/>node-go · Go 1.26+<br/>mainnet-node.decentralchain.io<br/>REST :6869 · gRPC :6870"]
+    subgraph SERVICES["🌐  Infrastructure Services"]
+        NODE_SVC["⛓️ DCC Node<br/>node-scala · Scala 3<br/>mainnet-node.decentralchain.io<br/>REST :6869 · gRPC :6881"]
         MATCHER_SVC["⚖️ DEX Matcher<br/>decentralchain-dex v2.3.2.9<br/>mainnet-matcher.decentralchain.io<br/>REST :6886"]
         DATA_SVC["📈 Data Service<br/>Node.js · Koa · v0.30.0<br/>data-service.decentralchain.io<br/>REST :3000"]
     end
 
     subgraph DATALAYER["💾  Data Layer"]
-        BPS["blockchain-postgres-sync<br/>Polls node REST · inserts history into PG"]
+        BPS["blockchain-postgres-sync<br/>gRPC BlockchainUpdates stream · inserts history into PG<br/>type-19 (CommitToGeneration) enabled · image fbece975a"]
         PG[("PostgreSQL 11<br/>Blockchain history")]
     end
 
@@ -317,7 +317,7 @@ flowchart TD
 
     %% Infrastructure internal connections
     NODE_SVC -->|"gRPC · BlockchainUpdates stream"| MATCHER_SVC
-    BPS -->|"polls REST API"| NODE_SVC
+    BPS -->|"gRPC BlockchainUpdates :6881"| NODE_SVC
     BPS -->|"INSERT raw history"| PG
     DATA_SVC -->|"SQL queries"| PG
 
@@ -572,7 +572,7 @@ flowchart LR
 
     P2P[/"🌐 DCC P2P Network<br/>Global validators"/]
     NODE["⛓️ DCC Node<br/>node-go<br/>REST :6869"]
-    BPS["blockchain-postgres-sync<br/>npm run download 1 N<br/>npm run updateComposite"]
+    BPS["blockchain-postgres-sync<br/>gRPC BlockchainUpdates stream<br/>type-19 (CommitToGeneration) enabled"]
     PG[("PostgreSQL 11<br/>Raw txs · Candles<br/>Pairs · Assets")]
     DS["data-service<br/>API server :3000<br/>+ candles daemon<br/>+ pairs daemon"]
     EX["💱 Exchange<br/>data-service-client"]
@@ -580,7 +580,7 @@ flowchart LR
     CC["🔐 Cubensis Connect<br/>raw fetch"]
 
     P2P --> NODE
-    NODE -->|"REST API block events"| BPS
+    NODE -->|"gRPC BlockchainUpdates :6881"| BPS
     BPS -->|"INSERT raw tx history"| PG
     PG -->|"SQL read + aggregate"| DS
     DS -->|"GET /v0/candles"| EX
@@ -609,7 +609,7 @@ flowchart TD
 
     S1["① DCC Node<br/>Ratify launch node (current target: node-go), then deploy across mainnet + testnet + stagenet<br/>Verify: GET /blocks/height returns 200 OK"]
     S2["② PostgreSQL 11<br/>Internal-only database — no public endpoint<br/>Required by blockchain-postgres-sync and data-service"]
-    S3["③ blockchain-postgres-sync<br/>Seed: npm run download 1 height<br/>Live: npm run updateComposite  (daemon)"]
+    S3["③ blockchain-postgres-sync<br/>Run migration binary, then start consumer<br/>Subscribes via gRPC BlockchainUpdates stream"]
     S4["④ data-service<br/>Start API server + candles daemon + pairs daemon<br/>Verify: GET /v0/pairs returns 200 OK"]
     S5["⑤ DEX Matcher<br/>Install DEX + grpc-server extensions on the node<br/>Deploy decentralchain-dex v2.3.2.9<br/>Verify: GET /matcher returns Base58 public key"]
     S6["⑥ DNS + TLS<br/>Route all *.decentralchain.io subdomains<br/>Run all Gate 5 checks in STATUS.md"]
@@ -708,4 +708,4 @@ Browser wallet extension. Key management, signing UI, swap UI, Ledger hardware w
 
 ---
 
-*Last updated: 2026-03-31 — derived from package.json dependency audits, Legacy codebase analysis, and backend repo research across `Decentral-America/matcher`, `Decentral-America/data-service`, `Decentral-America/blockchain-postgres-sync`, and `Decentral-America/DCCDataFeed`.*
+*Last updated: 2026-06-30 — updated to reflect testnet state: node-scala v1.6.3 (production node), T2 HotStuff active, BPS image fbece975a with type-19 (CommitToGeneration) support and gRPC dedup+upsert fix deployed.*
