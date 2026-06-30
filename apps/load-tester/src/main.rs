@@ -44,6 +44,25 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let args = Args::parse();
+
+    // ── List senders mode: print derived addresses and exit ───────────────────
+    if args.list_senders {
+        println!("Sender accounts derived from seed (fund these before high-TPS runs):");
+        println!("{:<5} {}", "Nonce", "Address");
+        println!("{}", "-".repeat(60));
+        for nonce in 0..args.sender_count {
+            // Re-derive using same algorithm as tx::presign_batch
+            let seed_hash = tx::derive_seed_hash(&args.seed, nonce as u32);
+            use ed25519_axolotl::crypto::keys::KeyPair;
+            let kp = KeyPair::new(Some(seed_hash.iter().map(|&b| b as u32).collect()));
+            let pub_key: Vec<u8> = kp.pubk.iter().map(|&x| x as u8).collect();
+            let chain_byte = args.chain_id.bytes().next().unwrap_or(b'!');
+            let addr = crypto::build_address(&pub_key, chain_byte);
+            println!("{:<5} {}", nonce, addr);
+        }
+        return Ok(());
+    }
+
     info!(
         node = %args.node,
         workers = args.workers,

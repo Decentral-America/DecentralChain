@@ -53,6 +53,11 @@ pub struct Args {
     ///         {"event":"final",...} at the end of the run.
     #[arg(long, default_value_t = false)]
     pub json: bool,
+
+    /// Print sender addresses and exit without running any load test.
+    /// Useful for funding secondary sender accounts before a high-TPS run.
+    #[arg(long, default_value_t = false)]
+    pub list_senders: bool,
 }
 
 impl Args {

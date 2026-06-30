@@ -90,6 +90,25 @@ pub struct SignedTx {
 ///
 /// The returned Vec interleaves senders round-robin so the worker pool
 /// distributes TXs evenly across all senders automatically.
+/// Derive the 32-byte seed hash for a given nonce: sha256(keccak256(blake2b256(nonce_be + seed_utf8))).
+/// Exposed so main.rs can derive addresses for the --list-senders flag.
+pub fn derive_seed_hash(seed: &str, nonce: u32) -> [u8; 32] {
+    use sha2::{Digest, Sha256};
+    use sha3::Keccak256;
+    use blake2::Blake2b;
+    use digest::consts::U32;
+    type Blake2b256 = Blake2b<U32>;
+    let nonce_bytes = nonce.to_be_bytes();
+    let mut h = Blake2b256::new();
+    h.update(nonce_bytes);
+    h.update(seed.as_bytes());
+    let blake = h.finalize();
+    let mut k = Keccak256::new();
+    k.update(blake);
+    let keccak = k.finalize();
+    Sha256::digest(keccak).into()
+}
+
 pub fn presign_batch(
     seed:         &str,
     chain_id:     &str,
