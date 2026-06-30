@@ -148,8 +148,16 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>> {
+        // ON CONFLICT (id) DO UPDATE is a no-op upsert: when the BlockchainUpdates gRPC
+        // stream replays historical blocks and transitions to live mode, the boundary block
+        // at the extension's initialization height is delivered twice. The no-op update
+        // (SET id = blocks_microblocks.id) makes this idempotent while still returning
+        // the correct uid for every row via RETURNING.
         diesel::insert_into(blocks_microblocks::table)
             .values(blocks)
+            .on_conflict(blocks_microblocks::id)
+            .do_update()
+            .set(blocks_microblocks::id.eq(blocks_microblocks::id))
             .returning(blocks_microblocks::uid)
             .get_results(self.conn)
             .map_err(build_err_fn("Cannot insert blocks/microblocks"))
