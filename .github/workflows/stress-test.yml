@@ -1,0 +1,100 @@
+name: Stress Test — DCC Testnet
+
+# Builds the load-tester Rust binary from source and runs a sustained TPS test
+# against testnet. Reports p50/p99/p99.9 latency and error rate.
+#
+# Conservative defaults: 100 TPS / 120s. Increase for capacity testing.
+# Uses gen-0 seed with 3 derived sender accounts to avoid UTX pool saturation.
+on:
+  workflow_dispatch:
+    inputs:
+      target_tps:
+        description: 'Target sustained TPS (1-2000)'
+        required: false
+        default: '100'
+        type: string
+      duration:
+        description: 'Duration in seconds (1-600)'
+        required: false
+        default: '120'
+        type: string
+      workers:
+        description: 'Concurrent tokio workers'
+        required: false
+        default: '50'
+        type: string
+      sender_count:
+        description: 'Sender accounts derived from seed (higher = more UTX budget)'
+        required: false
+        default: '3'
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  stress-test:
+    name: Load test (${{ inputs.target_tps || '100' }} TPS / ${{ inputs.duration || '120' }}s)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          toolchain: '1.96'
+
+      - name: Cache Rust build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            apps/load-tester/target
+          key: load-tester-${{ runner.os }}-${{ hashFiles('apps/load-tester/Cargo.lock', 'apps/load-tester/Cargo.toml') }}
+          restore-keys: load-tester-${{ runner.os }}-
+
+      - name: Build load-tester
+        working-directory: apps/load-tester
+        run: cargo build --release --quiet
+
+      - name: Run stress test
+        env:
+          DCC_PRIVATE_KEY: ${{ secrets.GEN_0_SEED_PHRASE }}
+        working-directory: apps/load-tester
+        run: |
+          set -euo pipefail
+          echo "## DCC Testnet Stress Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Param | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Node | testnet-node.decentralchain.io |" >> $GITHUB_STEP_SUMMARY
+          echo "| TPS | ${{ inputs.target_tps || '100' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Duration | ${{ inputs.duration || '120' }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Workers | ${{ inputs.workers || '50' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Senders | ${{ inputs.sender_count || '3' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          ./target/release/load-tester \
+            --node https://testnet-node.decentralchain.io \
+            --chain-id "!" \
+            --workers "${{ inputs.workers || '50' }}" \
+            --target-tps "${{ inputs.target_tps || '100' }}" \
+            --duration "${{ inputs.duration || '120' }}" \
+            --sender-count "${{ inputs.sender_count || '3' }}" \
+            2>&1 | tee /tmp/load-test-output.txt
+
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-results-${{ github.run_id }}
+          path: /tmp/load-test-output.txt
+          retention-days: 30
