@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS txs_19 (
     tx_version              SMALLINT,
     fee                     BIGINT        NOT NULL,
     status                  VARCHAR       NOT NULL,
-    block_uid               BIGINT        NOT NULL REFERENCES blocks_microblocks(uid),
+    block_uid               BIGINT        NOT NULL REFERENCES blocks_microblocks(uid) ON DELETE CASCADE,
     endorser_public_key     VARCHAR       NOT NULL,
     generation_period_start INTEGER       NOT NULL,
     PRIMARY KEY (uid)
