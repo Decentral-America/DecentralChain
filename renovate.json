@@ -183,7 +183,6 @@
     "description": "Security vulnerability fixes — automerge immediately after CI passes",
     "enabled": true,
     "labels": ["security", "dependencies"],
-    "prCreation": "immediate",
-    "prPriority": 10
+    "prCreation": "immediate"
   }
 }
