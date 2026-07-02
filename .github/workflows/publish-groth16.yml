@@ -137,6 +137,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build-native
+    environment: maven-central-release
     defaults:
       run:
         working-directory: packages/jvm/groth16

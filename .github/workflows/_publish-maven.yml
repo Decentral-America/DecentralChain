@@ -45,6 +45,7 @@ jobs:
     name: Audit · Sign · Upload · Attest · Await approval
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: maven-central-release
     permissions:
       contents: read
       id-token: write        # required for SLSA build provenance attestation
