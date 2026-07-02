@@ -70,8 +70,9 @@
     <dcc-crypto.version>2.0.7</dcc-crypto.version>
     <!-- protobuf-schemas 1.6.2 — DCC local build (io.decentralchain namespace) -->
     <protobuf-schemas.version>1.6.2</protobuf-schemas.version>
-    <!-- jackson-databind 2.21.3 — latest (Apr 28, 2026); upgraded from 2.16.1 -->
-    <jackson-databind.version>2.21.3</jackson-databind.version>
+    <!-- jackson-databind 2.22.0 — fixes CVE-2026-54512/54513/54514/54516/54517/54518.
+         CVE-2026-54515 (medium) needs 2.21.5/2.22.1/3.1.4, none released yet. -->
+    <jackson-databind.version>2.22.0</jackson-databind.version>
     <!-- web3j:crypto 5.0.2 — latest (Jan 21, 2026); MAJOR upgrade from 4.9.8.
          TransactionEncoder.encode(RawTransaction,SignatureData) is now PUBLIC
          in 5.0.x — reflection hack in EthereumTransaction.java removed. -->
@@ -122,10 +123,15 @@
          the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
          via curve25519. -->
     <jna.version>5.18.1</jna.version>
-    <!-- netty 4.2.14.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
+    <!-- netty 4.2.15.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
          4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
-         CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line. -->
-    <netty.version>4.2.14.Final</netty.version>
+         CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line.
+         Bumped from 4.2.14.Final: that version still carried CVE-2026-44249
+         (IPv6 subnet rule bypass), CVE-2026-45416 (DoS via eager TLS buffer
+         allocation), CVE-2026-50010 (hostname verification bypass),
+         CVE-2026-45674/47691 (DNS resolver CNAME/bailiwick validation) —
+         all fixed in 4.2.15.Final. -->
+    <netty.version>4.2.15.Final</netty.version>
     <!-- vertx-core 4.5.27 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
          CVE-2025-11965, CVE-2025-11966: fixed in 4.5.22+
          CVE-2026-6860 (SNI DoS, CVSS 7.5): fixed in 4.5.26+ -->

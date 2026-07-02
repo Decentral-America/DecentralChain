@@ -23,6 +23,3 @@ jobs:
       package-path: packages/sdk/protobuf-schemas
       artifact-name: protobuf-schemas
       version: ${{ inputs.version }}
-      # protobuf-schemas' pom.xml has no `audit` Maven profile (unlike the other
-      # JVM packages) — skip until that gap is closed (see audit follow-up).
-      run-audit-profile: false

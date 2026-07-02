@@ -76,6 +76,11 @@ jobs:
             echo "::error::Cannot pull node-scala base image from GHCR. Make package public at https://github.com/orgs/Decentral-America/packages"
             exit 1
           fi
+          # Resolve :latest to the digest we just pulled and run that digest, not
+          # the mutable tag — the tag could be repointed between pull and run, and
+          # pinning to what was actually pulled removes that window entirely.
+          IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/decentral-america/node-scala:latest)
+          echo "Running pinned digest: ${IMAGE_DIGEST}"
           docker run -d \
             --name dcc-test-node \
             --network host \
@@ -84,7 +89,7 @@ jobs:
             -e DCC_WALLET_SEED="${DCC_WALLET_SEED}" \
             -e DCC_WALLET_PASSWORD="${DCC_WALLET_PASSWORD}" \
             -e DCC_REST_API_BIND="0.0.0.0" \
-            ghcr.io/decentral-america/node-scala:latest
+            "${IMAGE_DIGEST}"
 
       - name: Wait for node to be ready
         run: |
