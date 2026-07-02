@@ -30,7 +30,6 @@ export function useStateSubscription(
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: onUpdate intentionally excluded — ref handles latest value
   useEffect(() => {
     if (!enabled || !address) return;
 

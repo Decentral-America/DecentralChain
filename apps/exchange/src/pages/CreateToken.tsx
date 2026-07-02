@@ -1381,10 +1381,7 @@ export const CreateToken = () => {
               )}
               {submitSuccess && issuedAssetId && (
                 <Alert severity="success" sx={{ mt: 2 }}>
-                  Token created! Asset ID:{' '}
-                  <strong style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                    {issuedAssetId}
-                  </strong>
+                  Token created! Asset ID: <strong>{issuedAssetId}</strong>
                 </Alert>
               )}
             </Grid>
