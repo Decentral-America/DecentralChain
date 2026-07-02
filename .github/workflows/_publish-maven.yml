@@ -1,0 +1,142 @@
+name: (reusable) Publish Maven package to Central Portal
+
+# Shared publish pipeline for single-module Maven/JVM packages in this monorepo.
+# Callers keep their own workflow_dispatch UI (package-specific version example/
+# default) and just forward inputs here via `uses:` + `with:`. Do not call this
+# directly — trigger the per-package publish-<name>.yml workflow instead.
+#
+# Packages with a fundamentally different shape stay out of this template:
+#   - groth16   → multi-platform Rust native-lib build matrix before publish
+#   - ride      → sbt (not Maven) + combined JVM/npm release
+
+on:
+  workflow_call:
+    inputs:
+      package-path:
+        description: 'Path to the Maven package (working-directory), e.g. packages/jvm/blst'
+        required: true
+        type: string
+      artifact-name:
+        description: 'Prefix for the uploaded staging artifact, e.g. blst'
+        required: true
+        type: string
+      version:
+        description: 'Release version to set via versions:set'
+        required: true
+        type: string
+      run-audit-profile:
+        description: 'Run the `-P audit` gate (OWASP dependency-check + SpotBugs + PMD) before deploy'
+        required: false
+        type: boolean
+        default: true
+      install-prereqs:
+        description: 'Newline-separated sibling package paths to `mvnw install` first (intra-monorepo deps not yet on Central)'
+        required: false
+        type: string
+        default: ''
+
+# Least-privilege token permissions (OWASP CI/CD A09), narrowed further at
+# job level for the two steps that need attestations/OIDC.
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Audit · Sign · Upload · Attest · Await approval
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write        # required for SLSA build provenance attestation
+      attestations: write    # required to publish the attestation to this repo
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.package-path }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 25 (Temurin) + Maven Central credentials
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+
+      - name: Install prerequisite packages
+        if: ${{ inputs.install-prereqs != '' }}
+        env:
+          MVN_OPTS: --batch-mode --no-transfer-progress -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true
+          PREREQS: ${{ inputs.install-prereqs }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r path; do
+            [ -z "$path" ] && continue
+            (cd "$GITHUB_WORKSPACE/$path" && ./mvnw $MVN_OPTS install)
+          done <<< "$PREREQS"
+
+      - name: Set release version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          ./mvnw --batch-mode versions:set \
+            -DnewVersion="${RELEASE_VERSION}" \
+            -DgenerateBackupPoms=false
+
+      - name: Full audit gate before release
+        if: ${{ inputs.run-audit-profile }}
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -n "$NVD_API_KEY" ]; then
+            ./mvnw --batch-mode verify -P audit -DnvdApiKey="$NVD_API_KEY"
+          else
+            ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true
+          fi
+
+      - name: Build + verify
+        if: ${{ !inputs.run-audit-profile }}
+        run: ./mvnw --batch-mode --no-transfer-progress verify -Dgpg.skip=true
+
+      - name: GPG-sign and deploy to Central Portal
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
+        run: |
+          set -euo pipefail
+          ./mvnw --batch-mode deploy -P release -DskipTests \
+            -Dgpg.keyname="${MAVEN_GPG_KEY_ID}"
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: ${{ inputs.package-path }}/target
+          format: spdx-json
+          artifact-name: ${{ inputs.artifact-name }}-${{ inputs.version }}.spdx.json
+          upload-artifact: true
+          upload-release-assets: false
+
+      - name: Attest build provenance for published JARs
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-path: ${{ inputs.package-path }}/target/*.jar
+
+      - name: Upload staging artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: ${{ inputs.artifact-name }}-${{ inputs.version }}
+          path: ${{ inputs.package-path }}/target/*.jar
+          retention-days: 30
