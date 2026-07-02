@@ -159,7 +159,7 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@0f08db39377ef27d2b1ffbee2f4b9a7a8472e7a6 # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@934f62e02b501487ccf4b189cd650e7a78bb18b7 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/blockchain-postgres-sync:${{ github.sha }}

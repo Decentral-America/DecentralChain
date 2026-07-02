@@ -12,8 +12,15 @@
 
 # ── CI/CD workflows ───────────────────────────────────────────────────────────
 # Workflow changes can exfiltrate secrets or silently disable security gates.
-.github/                            @jourlez
-.github/workflows/                  @jourlez
+# Owned jointly with the team already required to approve Maven Central/npm
+# publishes — review authority for release-critical paths shouldn't rest on
+# one person.
+.github/                            @jourlez @Decentral-America/release-approvers
+.github/workflows/                  @jourlez @Decentral-America/release-approvers
+
+# ── Release version files ─────────────────────────────────────────────────────
+# pom.xml version bumps directly gate what gets published to Maven Central.
+**/pom.xml                          @jourlez @Decentral-America/release-approvers
 
 # ── Workspace-wide tooling ────────────────────────────────────────────────────
 # Changes here affect every package in the monorepo.

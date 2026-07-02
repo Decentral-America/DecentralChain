@@ -134,7 +134,7 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@f5581a86637954d07b19b6ed993cc245f2bb5e73 # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@934f62e02b501487ccf4b189cd650e7a78bb18b7 # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/admin-dashboard:${{ github.sha }}
