@@ -267,7 +267,7 @@ async fn invalid_json_closes_connection() {
         .await;
 
     // The server should close the connection after a syntax error.
-    let msg = ws.receive_message().await;
+    let msg = receive_non_ping(&mut ws).await;
     // Accept either a Close frame or a text error, but not panic.
     // The protocol behavior (close on syntax error) is the key assertion here.
     match msg {
