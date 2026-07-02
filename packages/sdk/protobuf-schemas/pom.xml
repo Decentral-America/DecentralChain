@@ -8,6 +8,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <grpc.version>1.81.0</grpc.version>
         <protoc.version>4.35.0</protoc.version>
+        <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+        <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
+        <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
+        <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     </properties>
 
     <groupId>io.decentralchain</groupId>
@@ -207,6 +211,101 @@
     </dependencies>
 
     <profiles>
+        <!-- 'audit' profile: OWASP dependency-check + SpotBugs/FindSecBugs + PMD -->
+        <!-- Activate with: ./mvnw verify -P audit                                -->
+        <profile>
+            <id>audit</id>
+            <build>
+                <plugins>
+
+                    <!-- OWASP dependency-check: CVE vulnerability scan against NVD -->
+                    <!-- Pass API key to avoid NVD rate limits:                    -->
+                    <!--   -DnvdApiKey=$NVD_API_KEY   (free key: nvd.nist.gov)    -->
+                    <!-- Skip entirely with -Ddependency-check.skip=true for local -->
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${dependency-check-maven.version}</version>
+                        <configuration>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <formats>
+                                <format>HTML</format>
+                                <format>JSON</format>
+                            </formats>
+                            <skipTestScope>true</skipTestScope>
+                            <!-- nvdApiKey is passed via -DnvdApiKey=... on the command line;
+                                 falls back to unauthenticated (rate-limited) if not set    -->
+                            <nvdApiKey>${nvdApiKey}</nvdApiKey>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals><goal>check</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 -->
+                    <plugin>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <version>${spotbugs-maven-plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.h3xstream.findsecbugs</groupId>
+                                <artifactId>findsecbugs-plugin</artifactId>
+                                <version>${findsecbugs-plugin.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <effort>Max</effort>
+                            <threshold>High</threshold>
+                            <includeTests>false</includeTests>
+                            <failOnError>true</failOnError>
+                            <xmlOutput>true</xmlOutput>
+                            <htmlOutput>true</htmlOutput>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>spotbugs-security-check</id>
+                                <phase>verify</phase>
+                                <goals><goal>check</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- PMD 3.28.0 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                        <version>${maven-pmd-plugin.version}</version>
+                        <configuration>
+                            <rulesets>
+                                <ruleset>config/pmd-ruleset.xml</ruleset>
+                            </rulesets>
+                            <targetJdk>25</targetJdk>
+                            <includeTests>false</includeTests>
+                            <failOnViolation>true</failOnViolation>
+                            <printFailingErrors>true</printFailingErrors>
+                            <!-- protoc/grpc-generated sources don't follow hand-written style
+                                 rules (no @Override, protobuf's own octal escape sequences,
+                                 etc.) — only lint what's actually hand-written. -->
+                            <excludeRoots>
+                                <excludeRoot>${project.build.directory}/generated-sources/protobuf</excludeRoot>
+                            </excludeRoots>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pmd-security-check</id>
+                                <phase>verify</phase>
+                                <goals><goal>check</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
         <!-- 'release' profile: GPG-sign + publish to Maven Central Portal -->
         <!-- Activate with: ./mvnw deploy -P release                        -->
         <profile>
