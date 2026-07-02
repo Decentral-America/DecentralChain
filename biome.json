@@ -65,7 +65,8 @@
         },
         "noRedundantDefaultExport": "error",
         "noUselessReturn": "warn",
-        "noUselessUndefined": "warn"
+        "noUselessUndefined": "warn",
+        "useLiteralKeys": "off"
       },
       "correctness": {
         "noUnusedFunctionParameters": "error",

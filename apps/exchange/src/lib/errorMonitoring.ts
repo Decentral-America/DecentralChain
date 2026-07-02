@@ -146,7 +146,7 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
       // open orders or the signature is invalid — both handled in code via
       // matcherAuthFailed flag. These must not appear in the console at all.
       beforeBreadcrumb(breadcrumb) {
-        const url = (breadcrumb.data?.url as string | undefined) ?? '';
+        const url = (breadcrumb.data?.['url'] as string | undefined) ?? '';
         if (breadcrumb.category === 'fetch' && url.includes('matcher')) {
           // Suppress expected 400s from matcher auth endpoints.
           // These fire once on DEX load, are handled by matcherAuthFailed flag,
