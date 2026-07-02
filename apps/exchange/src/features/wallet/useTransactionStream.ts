@@ -54,25 +54,25 @@ export const useTransactionStream = (
   const handleUpdate = useCallback((_topic: string, value: string) => {
     try {
       const raw = JSON.parse(value) as Record<string, unknown>;
-      const txId = raw['id'] as string | undefined;
+      const txId = raw.id as string | undefined;
       if (!txId || seenIds.current.has(txId)) return;
 
-      const txType = raw['type'] as number;
-      const appStatus = raw['applicationStatus'] as string | undefined;
+      const txType = raw.type as number;
+      const appStatus = raw.applicationStatus as string | undefined;
 
-      const rawRecipient = raw['recipient'];
-      const rawAmount = raw['amount'];
-      const rawAssetId = raw['assetId'];
-      const rawHeight = raw['height'];
+      const rawRecipient = raw.recipient;
+      const rawAmount = raw.amount;
+      const rawAssetId = raw.assetId;
+      const rawHeight = raw.height;
 
       const tx: TransactionNotification = {
         id: txId,
-        sender: raw['sender'] as string,
+        sender: raw.sender as string,
         type: txType,
         ...(typeof rawRecipient === 'string' && { recipient: rawRecipient }),
         ...(typeof rawAmount === 'number' && { amount: rawAmount }),
         ...(rawAssetId !== undefined && { assetId: rawAssetId as string | null }),
-        timestamp: raw['timestamp'] as number,
+        timestamp: raw.timestamp as number,
         ...(typeof rawHeight === 'number' && { height: rawHeight }),
         confirmations: 1,
         status: appStatus === 'failed' ? 'failed' : 'confirmed',

@@ -21,7 +21,8 @@ import type { LedgerSignRequest } from './ledger/types';
 import { initSentry } from './sentry/init';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { RootWrapper } from './ui/components/RootWrapper';
-import Background, { type BackgroundUiApi } from './ui/services/Background';
+import type { BackgroundUiApi } from './ui/services/Background';
+import Background from './ui/services/Background';
 
 initSentry({
   shouldIgnoreError: async (message) => {

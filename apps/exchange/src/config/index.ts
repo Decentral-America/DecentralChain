@@ -70,7 +70,7 @@ const getConfig = (): Config => {
     // Application URLs - from mainnet.json via NetworkConfig
     supportUrl: NetworkConfig.support,
     termsUrl: NetworkConfig.termsAndConditions,
-    wsUrl: import.meta.env['VITE_WS_URL'] as string | undefined,
+    wsUrl: import.meta.env.VITE_WS_URL as string | undefined,
   };
 };
 
