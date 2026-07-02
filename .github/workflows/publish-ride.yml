@@ -36,6 +36,10 @@ jobs:
     name: Sign · Publish · Release (JVM + npm)
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Gates the whole job (JVM + npm) behind a human approval. Maven Central
+    # side is additionally soft-gated by Central Portal's autoPublish:false;
+    # npm has no other gate, hence this environment.
+    environment: npm-release
 
     steps:
       - name: Checkout
