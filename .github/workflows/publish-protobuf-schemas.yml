@@ -15,60 +15,14 @@ concurrency:
   group: publish-protobuf-schemas
   cancel-in-progress: false
 
-defaults:
-  run:
-    working-directory: packages/sdk/protobuf-schemas
-
 jobs:
   publish:
-    name: Sign · Upload · Await approval
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-        with:
-          persist-credentials: false
-
-      - name: Set up Java 25 (Temurin) + Maven Central credentials
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654  # v5.2.0
-        with:
-          distribution: temurin
-          java-version: '25'
-          cache: maven
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-          server-id: central
-          server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_PASSWORD
-
-      - name: Set release version
-        env:
-          RELEASE_VERSION: ${{ inputs.version }}
-        run: |
-          set -euo pipefail
-          ./mvnw --batch-mode versions:set \
-            -DnewVersion="${RELEASE_VERSION}" \
-            -DgenerateBackupPoms=false
-
-      - name: Build + verify
-        run: ./mvnw --batch-mode --no-transfer-progress verify -Dgpg.skip=true
-
-      - name: GPG-sign and deploy to Central Portal
-        env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-          MAVEN_GPG_KEY_ID: ${{ secrets.MAVEN_GPG_KEY_ID }}
-        run: |
-          set -euo pipefail
-          ./mvnw --batch-mode deploy -P release -DskipTests \
-            -Dgpg.keyname="${MAVEN_GPG_KEY_ID}"
-
-      - name: Upload staging artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: protobuf-schemas-${{ inputs.version }}
-          path: packages/sdk/protobuf-schemas/target/*.jar
-          retention-days: 30
+    uses: ./.github/workflows/_publish-maven.yml
+    secrets: inherit
+    with:
+      package-path: packages/sdk/protobuf-schemas
+      artifact-name: protobuf-schemas
+      version: ${{ inputs.version }}
+      # protobuf-schemas' pom.xml has no `audit` Maven profile (unlike the other
+      # JVM packages) — skip until that gap is closed (see audit follow-up).
+      run-audit-profile: false
