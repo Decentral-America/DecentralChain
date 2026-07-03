@@ -78,8 +78,6 @@
 |----------|-------------|
 | [docs/UPSTREAM.md](docs/UPSTREAM.md) | Waves provenance, ecosystem mapping, gap analysis, migration history |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Monorepo architecture, dependency tiers, toolchain, design decisions |
-| Workspace root `STATUS.md` | Canonical mega document: project dashboard, release gates, audit log, package health |
-| [docs/SECURITY-AUDIT.md](docs/SECURITY-AUDIT.md) | Security audit playbook for financial blockchain infrastructure |
 | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Coding standards, quality gates, file templates, naming conventions |
 
 ## Development
