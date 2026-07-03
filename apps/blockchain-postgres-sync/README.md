@@ -6,7 +6,7 @@ Subscribes to a node's gRPC Blockchain Updates API, processes block and microblo
 
 **Current testnet image:** `fbece975a` — type-19 (CommitToGeneration) enabled, gRPC dedup+upsert fix applied, Loader.scala re-seek bug fixed. Deployed and healthy.
 
-[![CI](https://github.com/Decentral-America/blockchain-postgres-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/blockchain-postgres-sync/actions/workflows/ci.yml)
+[![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/bps.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/bps.yml)
 
 ---
 
@@ -49,7 +49,7 @@ All standard Waves-protocol transaction types (1–18) plus the DCC-original:
 | Type | Name | Table | Notes |
 |------|------|-------|-------|
 | 1–18 | Standard Waves-protocol types | `txs_1` – `txs_18` | Full coverage |
-| **19** | **CommitToGeneration** | **`txs_19`** | DCC-original — T2 HotStuff generator commitment; migration `20260628000000` |
+| **19** | **CommitToGeneration** | **`txs_19`** | DCC-original — T2 HotStuff generator commitment; migration `2026-06-28-000000_add_txs_19_commit_to_generation` |
 
 ---
 
@@ -71,31 +71,36 @@ The node-side `Loader.scala` tracks the height of the last block sent to gRPC su
 
 ## Environment Variables
 
+All variables are read via [`envy`](https://docs.rs/envy) with an explicit prefix per config
+struct — `POSTGRES__` (double underscore) for database config, `BPS_` for consumer config.
+Bare names like `HOST` or `CHAIN_ID` are **not** recognized at runtime.
+
 ### Required
 
 | Variable | Description |
 |---|---|
-| `BLOCKCHAIN_UPDATES_URL` | gRPC endpoint of the DCC node, e.g. `http://node:6881` |
-| `CHAIN_ID` | Network byte (`63` = Mainnet, `33` = Testnet, `83` = Stagenet) |
-| `STARTING_HEIGHT` | Block height to begin sync from (use `0` for genesis) |
-| `HOST` | PostgreSQL host |
-| `DATABASE` | PostgreSQL database name |
-| `USER` | PostgreSQL username |
-| `PASSWORD` | PostgreSQL password |
+| `BPS_BLOCKCHAIN_UPDATES_URL` | gRPC endpoint of the DCC node, e.g. `http://node:6881` |
+| `BPS_CHAIN_ID` | Network byte (`63` = Mainnet, `33` = Testnet, `83` = Stagenet) |
+| `BPS_STARTING_HEIGHT` | Block height to begin sync from (use `0` for genesis) |
+| `POSTGRES__HOST` | PostgreSQL host |
+| `POSTGRES__DATABASE` | PostgreSQL database name |
+| `POSTGRES__USER` | PostgreSQL username |
+| `POSTGRES__PASSWORD` | PostgreSQL password |
 
 ### Optional
 
 | Variable | Default | Description |
 |---|---|---|
-| `PORT` | `5432` | PostgreSQL port |
-| `POOLSIZE` | `1` | PostgreSQL connection pool size |
-| `ASSETS_ONLY` | `false` | When `true`, skip transaction indexing |
-| `ASSET_STORAGE_ADDRESS` | — | Address of the asset storage contract (for oracle data) |
-| `UPDATES_PER_REQUEST` | `256` | gRPC batch size |
-| `MAX_WAIT_TIME_IN_MSECS` | `5000` | Max wait for a gRPC response before retry |
-| `START_ROLLBACK_DEPTH` | `1` | How many blocks back to roll back on start |
-| `ROLLBACK_STEP` | `500` | Blocks per rollback step |
-| `METRICS_PORT` | `9090` | Port for the health/readiness HTTP endpoint |
+| `POSTGRES__PORT` | `5432` | PostgreSQL port |
+| `POSTGRES__POOLSIZE` | `1` | PostgreSQL connection pool size |
+| `BPS_ASSETS_ONLY` | `false` | When `true`, skip transaction indexing |
+| `BPS_ASSET_STORAGE_ADDRESS` | — | Address of the asset storage contract (for oracle data) |
+| `BPS_UPDATES_PER_REQUEST` | `256` | gRPC batch size |
+| `BPS_MAX_WAIT_TIME_IN_MSECS` | `5000` | Max wait for a gRPC response before retry |
+| `BPS_START_ROLLBACK_DEPTH` | `1` | How many blocks back to roll back on start |
+| `BPS_ROLLBACK_STEP` | `500` | Blocks per rollback step |
+| `BPS_METRICS_PORT` | `9090` | Port for the health/readiness HTTP endpoint |
+| `BPS_REDIS_URL` | — | Optional Redis URL (`redis://:password@host:port/`) for pub/sub publishing; omit to disable |
 
 ---
 
@@ -111,24 +116,24 @@ docker build -t blockchain-postgres-sync .
 
 ```bash
 docker run --rm \
-  -e BLOCKCHAIN_UPDATES_URL=http://node:6881 \
-  -e CHAIN_ID=63 \
-  -e STARTING_HEIGHT=0 \
-  -e HOST=postgres \
-  -e DATABASE=blockchain \
-  -e USER=postgres \
-  -e PASSWORD=secret \
+  -e BPS_BLOCKCHAIN_UPDATES_URL=http://node:6881 \
+  -e BPS_CHAIN_ID=63 \
+  -e BPS_STARTING_HEIGHT=0 \
+  -e POSTGRES__HOST=postgres \
+  -e POSTGRES__DATABASE=blockchain \
+  -e POSTGRES__USER=postgres \
+  -e POSTGRES__PASSWORD=secret \
   blockchain-postgres-sync
 
 # Testnet (chain ID `!` = byte 33):
 docker run --rm \
-  -e BLOCKCHAIN_UPDATES_URL=http://node:6881 \
-  -e CHAIN_ID=33 \
-  -e STARTING_HEIGHT=0 \
-  -e HOST=postgres \
-  -e DATABASE=bps_testnet \
-  -e USER=postgres \
-  -e PASSWORD=secret \
+  -e BPS_BLOCKCHAIN_UPDATES_URL=http://node:6881 \
+  -e BPS_CHAIN_ID=33 \
+  -e BPS_STARTING_HEIGHT=0 \
+  -e POSTGRES__HOST=postgres \
+  -e POSTGRES__DATABASE=bps_testnet \
+  -e POSTGRES__USER=postgres \
+  -e POSTGRES__PASSWORD=secret \
   blockchain-postgres-sync
 ```
 
@@ -147,22 +152,22 @@ services:
     image: blockchain-postgres-sync
     command: migration
     environment:
-      HOST: postgres
-      DATABASE: blockchain
-      USER: postgres
-      PASSWORD: secret
+      POSTGRES__HOST: postgres
+      POSTGRES__DATABASE: blockchain
+      POSTGRES__USER: postgres
+      POSTGRES__PASSWORD: secret
     depends_on: [postgres]
 
   consumer:
     image: blockchain-postgres-sync
     environment:
-      BLOCKCHAIN_UPDATES_URL: http://node:6881
-      CHAIN_ID: 63
-      STARTING_HEIGHT: 0
-      HOST: postgres
-      DATABASE: blockchain
-      USER: postgres
-      PASSWORD: secret
+      BPS_BLOCKCHAIN_UPDATES_URL: http://node:6881
+      BPS_CHAIN_ID: 63
+      BPS_STARTING_HEIGHT: 0
+      POSTGRES__HOST: postgres
+      POSTGRES__DATABASE: blockchain
+      POSTGRES__USER: postgres
+      POSTGRES__PASSWORD: secret
     depends_on: [migration]
 ```
 
@@ -203,27 +208,30 @@ cargo clippy --all-targets -- -D warnings
 cargo fmt --all -- --check
 ```
 
-### Security audit
+### Dependency policy check
 
 ```bash
-cargo audit
+cargo deny check
 ```
 
 ---
 
 ## CI
 
-GitHub Actions runs on every push and pull request to `main`:
+`bps.yml` runs on every push and pull request touching this app:
 
-1. `cargo fmt` — formatting check
-2. `cargo build` — compilation
-3. `cargo clippy -- -D warnings` — zero warnings policy
-4. `cargo test` — full test suite
-5. `cargo audit --deny warnings` — blocks on any known vulnerability
-6. Docker image build (smoke test, main branch only)
+1. `cargo fmt --all -- --check` — formatting check
+2. `cargo build --all-targets` — compilation
+3. `cargo clippy --all-targets -- -D warnings` — zero warnings policy
+4. `cargo llvm-cov nextest` — full test suite with coverage, uploaded to Codecov
+5. `cargo doc --no-deps --all-features` (with `RUSTDOCFLAGS="-D warnings"`) — doc build check
+6. `cargo deny check` — dependency policy / license / advisory check
+7. `cargo machete` — unused dependency check
+
+Docker image build and deploy live in the separate `deploy-bps.yml` workflow, not in CI.
 
 ---
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](../../LICENSE).
