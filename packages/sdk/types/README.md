@@ -163,7 +163,7 @@ npm run validate           # full quality gate (audit, build, publint, attw, siz
 
 ## Security
 
-See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
+See [SECURITY.md](../../SECURITY.md) for vulnerability reporting.
 
 This package has **zero production dependencies** and executes no runtime code beyond
 compile-time constant definitions. Attack surface is limited to supply-chain integrity,

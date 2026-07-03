@@ -171,11 +171,11 @@ All of the following must pass before merge:
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 ## Security
 
-To report a vulnerability, see [SECURITY.md](./SECURITY.md).
+To report a vulnerability, see [SECURITY.md](../../SECURITY.md).
 
 ## License
 

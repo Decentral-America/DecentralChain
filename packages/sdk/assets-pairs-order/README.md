@@ -287,13 +287,13 @@ assets-pairs-order/
 
 We welcome contributions from the community! Whether it's a bug fix, new feature, documentation improvement, or test enhancement — every contribution helps strengthen the DecentralChain ecosystem.
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines, branch naming conventions, and the pull request process.
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed guidelines, branch naming conventions, and the pull request process.
 
 ## Security
 
 Security is a top priority for the DecentralChain SDK. If you discover a vulnerability, please follow responsible disclosure practices.
 
-To report a vulnerability, see [SECURITY.md](./SECURITY.md).
+To report a vulnerability, see [SECURITY.md](../../SECURITY.md).
 
 ## License
 

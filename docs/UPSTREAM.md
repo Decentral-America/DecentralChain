@@ -37,7 +37,7 @@ DecentralChain (DCC) is an independent blockchain that forked the Waves protocol
 
 **Not all of the Waves ecosystem has been migrated.** Of 134 upstream repositories, DCC forked or adopted **35+ repositories** across four dimensions:
 
-- **25 TypeScript SDK packages** (24 fully committed + 1 WIP: `node-api-grpc`) — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
+- **25 TypeScript SDK packages**, all fully committed — every library needed to build, sign, serialize, and broadcast transactions on a Waves-protocol chain, modernized and published to npm as `@decentralchain/*`
 - **`data-service` REST API application** (DCC-221, DCC-233) — Koa.js API at `api.decentralchain.io`
 - **5 standalone/monorepo infrastructure repos**: node-scala (`Ecosystem/`), node-go (`Ecosystem/`), matcher (`Ecosystem/`), docs (`Ecosystem/`), blockchain-postgres-sync (Rust block ingestion — imported into monorepo as `apps/blockchain-postgres-sync` via `nx import` 2026-05-20)
 - **8 JVM + RIDE Maven packages** — 6 JVM libraries (`packages/jvm/`) and the RIDE lang+repl sbt build (`packages/ride/`), all published to Maven Central as `io.decentralchain:*`
@@ -172,7 +172,7 @@ Every `@decentralchain/*` package with its upstream Waves equivalent, sync statu
 | 23 | swap-client | swap-client | Keeper-Wallet | DEX Integration | — | — | ⚫ Fully deleted — no files on disk, no git history, no `feat/swap` branch |
 | 24 | crypto | waves-crypto | Keeper-Wallet | Foundation | 🔗 | 1.0.2 |
 | 25 | data-service | data-service | wavesplatform | Application | 🔗 | — |
-| 26 | node-api-grpc | node-api-grpc-js | wavesplatform | API Client | — | 1.0.0 | 🔄 WIP — built from scratch with `@connectrpc/connect`; `packages/sdk/node-api-grpc/` not yet committed to `dev` |
+| 26 | node-api-grpc | node-api-grpc-js | wavesplatform | API Client | — | 1.0.0 | ✅ Committed — built from scratch with `@connectrpc/connect` |
 
 **🔗 Grafted** = full upstream Waves git history preserved via `git filter-repo` or subtree merge.
 
@@ -356,7 +356,7 @@ Ranked by strategic value to DCC:
 | 🟢 **Tier 1** | `surfboard` (10★) | CLI for Ride development — "Hardhat for Ride" | Medium |
 | 🟡 **Tier 2** | `dcc-ide` (22★) | Browser IDE for Ride — good for hackathons | High |
 | 🟡 **Tier 2** | `ride-examples` (31★) | Example Ride contracts — documentation value | Very Low |
-| � **In Progress** | `node-api-grpc-js` (0★) | DCC built `@decentralchain/node-api-grpc v1.0.0` from scratch using `@connectrpc/connect` (HTTP/2) in `packages/sdk/node-api-grpc/`. WIP — untracked on `dev` branch, not yet committed. Upstream: `wavesplatform/node-api-grpc-js` at `2a6202f` (v0.0.4, Nov 2024). | Low |
+| ✅ **Done** | `node-api-grpc-js` (0★) | DCC built `@decentralchain/node-api-grpc v1.0.0` from scratch using `@connectrpc/connect` (HTTP/2) in `packages/sdk/node-api-grpc/`. Committed and published. Upstream: `wavesplatform/node-api-grpc-js` at `2a6202f` (v0.0.4, Nov 2024). | — |
 | ⚪ **Tier 3** | `waves-python` (10★) | Python SDK — fork when Python devs request | On demand |
 
 ### What's Not Worth Forking
@@ -398,7 +398,7 @@ Ranked by strategic value to DCC:
 ### In Progress
 
 - [ ] Promote npm packages from `next` → `latest` dist-tag
-- [ ] Commit `packages/sdk/node-api-grpc/` — `@decentralchain/node-api-grpc v1.0.0` gRPC client built on `@connectrpc/connect`; WIP on `dev`, currently untracked
+- [x] Commit `packages/sdk/node-api-grpc/` — `@decentralchain/node-api-grpc v1.0.0` gRPC client built on `@connectrpc/connect`
 
 ### Next
 
