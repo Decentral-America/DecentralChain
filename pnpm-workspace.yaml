@@ -9,7 +9,7 @@ packages:
   - 'e2e'
 
 catalog:
-  '@arethetypeswrong/cli': 0.18.3
+  '@arethetypeswrong/cli': 0.18.4
   '@size-limit/preset-small-lib': 12.1.0
   '@types/node': 25.9.1
   '@vitest/coverage-v8': 4.1.9
@@ -95,7 +95,12 @@ minimumReleaseAgeExclude:
   - '@sentry/core@10.56.0'
   - '@sentry/react@10.56.0'
   - cytoscape@3.34.0
+  - '@mui/core-downloads-tracker@9.2.0'
+  - '@mui/icons-material@9.2.0'
+  - '@mui/material@9.2.0'
+  - '@mui/private-theming@9.2.0'
+  - '@mui/system@9.2.0'
+  - '@mui/utils@9.2.0'
 
 # @visx v4 declares peerDep "^18 || ^19" — no workaround needed.
-peerDependencyRules:
-  allowedVersions: {}
+peerDependencyRules: {}
