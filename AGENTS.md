@@ -6,23 +6,23 @@ This is the **DecentralChain SDK monorepo** — a multi-language workspace publi
 
 ## Architecture
 
-- **Nx projects**: 20 TypeScript SDK packages (`packages/sdk/`) + 4 apps (`apps/`) + RIDE sbt build (`packages/ride/`) + 7 JVM libraries (`packages/jvm/`)
+- **Nx projects**: 21 TypeScript SDK packages (`packages/sdk/`) + 8 apps (`apps/`) + RIDE sbt build (`packages/ride/`) + 6 JVM libraries (`packages/jvm/`)
 - **Inclusion rule**: publishable packages → monorepo (any language); runtime programs (`node-scala`, `node-go`) → `Ecosystem/` siblings
 - **5 dependency layers** (0–4) enforced by `scripts/check-boundaries.mjs` — packages may only depend on same or lower layers
 - **Layer 0 (Primitives)**: types, bignumber, crypto, ts-lib-crypto, parse-json-bignumber, browser-bus, assets-pairs-order, cubensis-connect-types, ledger, marshall, oracle-data, protobuf-schemas
 - **Layer 1 (Domain)**: data-entities, money-like-to-node, ride
-- **Layer 2 (Services)**: transactions, node-api, data-service-client
+- **Layer 2 (Services)**: transactions, node-api, node-api-grpc, data-service-client
 - **Layer 3 (Integration)**: signer
 - **Layer 4 (Adapter)**: signature-adapter, cubensis-connect-provider
-- **Apps**: exchange (DEX), scanner (explorer), cubensis-connect (wallet extension)
+- **Apps**: exchange (DEX), scanner (explorer), cubensis-connect (wallet extension), admin-dashboard, blockchain-postgres-sync, data-service, load-tester, websocket-api
 
 ## Tech Stack
 
-- **Nx 22.7.x** — task orchestration, caching, affected detection, independent versioning
-- **pnpm 11.1.x** — `workspace:*` protocol, corepack-managed
+- **Nx 23.0.x** — task orchestration, caching, affected detection, independent versioning
+- **pnpm 11.5.x** — `workspace:*` protocol, corepack-managed
 - **TypeScript 6.0.3** — maximum strictness, ESNext target+lib, bundler moduleResolution, verbatimModuleSyntax
-- **Biome 2.4.x** — linting + formatting (replaces ESLint/Prettier). Root config + per-package `"extends": "//"`.
-- **tsdown 0.21.x** — build tool for 19/20 TypeScript SDK packages (ESM-only `.mjs` + `.d.mts`). crypto uses tsc + wasm-pack.
+- **Biome 2.5.x** — linting + formatting (replaces ESLint/Prettier). Root config + per-package `"extends": "//"`.
+- **tsdown 0.21.x** — build tool for 20/21 TypeScript SDK packages (ESM-only `.mjs` + `.d.mts`). crypto uses tsc + wasm-pack.
 - **Vite 8.x** — app bundler (exchange, scanner, cubensis-connect). Rolldown built-in.
 - **Vitest 4.x** — testing with v8 coverage
 - **Node.js >= 24** required
