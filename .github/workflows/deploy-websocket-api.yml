@@ -114,6 +114,7 @@ jobs:
   resolve:
     name: Resolve network
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: docker
     outputs:
       network: ${{ steps.network.outputs.network }}
@@ -136,6 +137,7 @@ jobs:
   scan:
     name: Trivy scan websocket-api
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: docker
     permissions:
       contents: read

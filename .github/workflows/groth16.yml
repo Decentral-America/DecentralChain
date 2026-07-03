@@ -43,11 +43,13 @@ jobs:
 
           - platform: linux
             arch: aarch64
-            os: ubuntu-latest
+            # Native ARM64 runner (free for public repos since Jan 2025) —
+            # matches publish-groth16.yml; avoids cross-compiling via
+            # gcc-aarch64-linux-gnu with a different toolchain than what ships.
+            os: ubuntu-24.04-arm
             rust-target: aarch64-unknown-linux-gnu
             artifact: libgroth16_jni.so
             resource-path: linux64/aarch64
-            extra-packages: gcc-aarch64-linux-gnu
 
           - platform: linux
             arch: x86
@@ -183,6 +185,7 @@ jobs:
   build:
     name: Java 25 · Compile · Test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build-native
     defaults:
       run:

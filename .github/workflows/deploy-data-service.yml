@@ -127,6 +127,7 @@ jobs:
   resolve:
     name: Resolve network
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: docker
     outputs:
       network: ${{ steps.network.outputs.network }}
