@@ -1,0 +1,5 @@
+# CVE-2026-54515 (jackson-databind, MEDIUM): fixed only in 2.18.9, 2.21.5, 2.22.1, 3.1.4.
+# packages/jvm/transactions and packages/jvm/java-sdk pin jackson-databind 2.22.0 — the
+# next patch on that line (2.22.1) is not yet published to Maven Central. Tracked inline
+# in both pom.xml files for a follow-up bump once 2.22.1 (or later) ships.
+CVE-2026-54515
