@@ -1,175 +1,102 @@
-# DecentralChain Wallet - React Edition
+# DecentralChain Exchange - React Edition
 
-[![CI/CD](https://github.com/decentralchain/wallet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/decentralchain/wallet/actions)
-[![Docker](https://img.shields.io/docker/v/decentralchain/wallet?label=docker)](https://github.com/decentralchain/wallet/pkgs/container/wallet)
+[![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/ci.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Modern, secure cryptocurrency wallet for DecentralChain blockchain, built with React + TypeScript + Vite.
-
-## 📚 Documentation Canonical Sources
-
-- **Project status and priorities:** `SINGLE_SOURCE_OF_TRUTH.md`
-- **Documentation policy:** `docs/DOCUMENTATION_GOVERNANCE.md`
-- **Enterprise governance docs:** `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `CHANGELOG.md`
-
-Root migration/status/plan/report sprawl has been consolidated into `SINGLE_SOURCE_OF_TRUTH.md`.
+Modern, secure cryptocurrency wallet and DEX for the DecentralChain blockchain, built with React + TypeScript + Vite.
 
 ## ✨ Features
 
-## React Compiler
-
 ### Core Wallet Features
-
-- 🔐 **Secure Key Management** - AES-GCM encrypted storage with PBKDF2 key derivationThe React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
+- 🔐 **Secure Key Management** - AES-GCM encrypted storage with PBKDF2 key derivation
 - 🌍 **Multi-language Support** - 17 languages including English, Chinese, Japanese, Russian, German, French, Spanish
-
-- 🎨 **Light/Dark Theme** - Beautiful UI with responsive design## Expanding the Biome configuration
-
+- 🎨 **Light/Dark Theme** - Beautiful UI with responsive design
 - 📊 **Real-time Balance Tracking** - Live updates of assets and balances
+- 🔄 **Transaction History** - Complete transaction history with filtering
 
-- 🔄 **Transaction History** - Complete transaction history with filteringIf you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-
-
-### Asset Management```js
-
-- 💰 **Issue Assets** - Create custom tokens on DecentralChainexport default defineConfig([
-
-- ♻️ **Reissue Assets** - Increase supply of existing assets  globalIgnores(['dist']),
-
-- 🔥 **Burn Assets** - Permanently remove tokens from circulation  {
-
-- 🎯 **Sponsor Assets** - Enable gasless transactions for your token    files: ['**/*.{ts,tsx}'],
-
-- 📜 **Set Asset Script** - Add smart contract logic to assets    extends: [
-
-      // Other configs...
+### Asset Management
+- 💰 **Issue Assets** - Create custom tokens on DecentralChain
+- ♻️ **Reissue Assets** - Increase supply of existing assets
+- 🔥 **Burn Assets** - Permanently remove tokens from circulation
+- 🎯 **Sponsor Assets** - Enable gasless transactions for your token
+- 📜 **Set Asset Script** - Add smart contract logic to assets
 
 ### Trading & DEX
+- 📈 **DEX Trading** - Built-in decentralized exchange integration
+- 📖 **Real-time Orderbook** - Live order matching and execution
+- 💱 **Market/Limit Orders** - Flexible order types
+- 🔁 **Trade History** - Track your trading activity
 
-- 📈 **DEX Trading** - Built-in decentralized exchange integration      // Remove tsbiome.configs.recommended and replace with this
-
-- 📖 **Real-time Orderbook** - Live order matching and execution      tsbiome.configs.recommendedTypeChecked,
-
-- 💱 **Market/Limit Orders** - Flexible order types      // Alternatively, use this for stricter rules
-
-- 🔁 **Trade History** - Track your trading activity      tsbiome.configs.strictTypeChecked,
-
-      // Optionally, add this for stylistic rules
-
-### Advanced Features      tsbiome.configs.stylisticTypeChecked,
-
+### Advanced Features
 - 🏦 **Leasing** - Stake DCC tokens and earn rewards
+- 🎭 **Aliases** - Human-readable addresses
+- 📝 **Data Transactions** - Store data on blockchain
+- ⚙️ **Set Script** - Smart contract account management
+- 🔗 **Mass Transfer** - Send to multiple recipients at once
 
-- 🎭 **Aliases** - Human-readable addresses      // Other configs...
+## 🚀 Tech Stack
 
-- 📝 **Data Transactions** - Store data on blockchain    ],
-
-- ⚙️ **Set Script** - Smart contract account management    languageOptions: {
-
-- 🔗 **Mass Transfer** - Send to multiple recipients at once      parserOptions: {
-
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-
-## 🚀 Tech Stack        tsconfigRootDir: import.meta.dirname,
-
-      },
-
-### Core      // other options...
-
-- **React 19.1.1** - Latest React with concurrent features    },
-
-- **TypeScript 6.0.3** - Type-safe development  },
-
-- **Vite 7.1.10** - Lightning-fast build tool (3-10s builds)])
-
-```
+### Core
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Type-safe development
+- **Vite** - Lightning-fast build tool
 
 ### State Management
-
-- **Zustand** - Lightweight state managementYou can also install [biome-react-x](https://github.com/Rel1cx/biome-react/tree/main/packages/plugins/biome-react-x) and [biome-react-dom](https://github.com/Rel1cx/biome-react/tree/main/packages/plugins/biome-react-dom) for React-specific lint rules:
-
+- **Zustand** - Lightweight state management
 - **React Query** - Server state management and caching
 
-```js
-
-### UI/UX// biome.config.js
-
-- **Styled Components** - CSS-in-JS stylingimport reactX from 'biome-react-x'
-
-- **React Router v6** - Client-side routing with lazy loadingimport reactDom from 'biome-react-dom'
-
+### UI/UX
+- **MUI** - Component library
+- **styled-components** - CSS-in-JS styling
+- **React Router** - Client-side routing with lazy loading
 - **i18next** - Internationalization (17 languages)
 
-export default defineConfig([
+### Performance
+- **Code Splitting** - Route-based lazy loading
+- **Virtual Scrolling** - Optimized list rendering
+- **Image Lazy Loading** - Progressive image loading with blur-up
+- **Memoization Utilities** - React performance optimization
 
-### Performance  globalIgnores(['dist']),
+### Security
+- **Web Crypto API** - Native browser encryption (AES-GCM, PBKDF2)
+- **CSP Headers** - Content Security Policy for XSS prevention
+- **Input Sanitization** - Specialized sanitizers for user input
+- **HTTPS Enforcement** - Production-only HTTPS redirect
 
-- **Code Splitting** - Route-based lazy loading  {
+### DevOps
+- **Docker** - Multi-stage containerized deployment
+- **GitHub Actions** - CI/CD with multiple deployment strategies
+- **Environment Separation** - Staging (stagenet) and Production (mainnet)
 
-- **Virtual Scrolling** - Optimized list rendering (zero dependencies)    files: ['**/*.{ts,tsx}'],
+## 📋 Prerequisites
 
-- **Image Lazy Loading** - Progressive image loading with blur-up    extends: [
-
-- **Memoization Utilities** - React performance optimization      // Other configs...
-
-      // Enable lint rules for React
-
-### Security      reactX.configs['recommended-typescript'],
-
-- **Web Crypto API** - Native browser encryption (AES-GCM, PBKDF2)      // Enable lint rules for React DOM
-
-- **CSP Headers** - Content Security Policy for XSS prevention      reactDom.configs.recommended,
-
-- **Input Sanitization** - 11 specialized sanitizers (zero dependencies)    ],
-
-- **HTTPS Enforcement** - Production-only HTTPS redirect    languageOptions: {
-
-      parserOptions: {
-
-### DevOps        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-
-- **Docker** - Multi-stage containerized deployment (~40-50 MB)        tsconfigRootDir: import.meta.dirname,
-
-- **GitHub Actions** - CI/CD with multiple deployment strategies      },
-
-- **Environment Separation** - Staging (stagenet) and Production (mainnet)      // other options...
-
-    },
-
-## 📋 Prerequisites  },
-
-])
-
-- Node.js 18.x or higher```
-
-- npm 9.x or higher
+- Node.js (see root `.node-version`)
+- pnpm (see root `package.json`'s `packageManager` field)
 
 ## 🏃 Quick Start
 
 ### Development
 
 ```bash
-# Clone the repository
-git clone https://github.com/decentralchain/wallet.git
-cd wallet/dcc-react
+# Clone the monorepo
+git clone https://github.com/Decentral-America/DecentralChain.git
+cd DecentralChain
 
-# Install dependencies
-npm install --legacy-peer-deps
+# Install dependencies (from repo root)
+pnpm install
 
-# Start development server (http://localhost:3000)
-npm run dev
+# Start development server
+pnpm nx dev exchange
 ```
 
 ### Production Build
 
 ```bash
 # Build for production
-NODE_ENV=production npm run build
+pnpm nx build exchange
 
 # Preview production build
-npm run preview
+pnpm nx preview exchange
 ```
 
 ### Docker Deployment
@@ -188,7 +115,7 @@ docker inspect --format='{{.State.Health.Status}}' dcc-exchange
 ## 📁 Project Structure
 
 ```
-dcc-react/
+apps/exchange/
 ├── src/
 │   ├── components/        # Reusable React components
 │   │   ├── ErrorBoundary.tsx
@@ -322,7 +249,7 @@ DecentralChain Node
 ### Build Security
 - **No Sensitive Data**: Seeds/keys never committed to git
 - **Secret Management**: GitHub Secrets for CI/CD
-- **Security Audits**: Automated npm audit on every PR
+- **Security Audits**: Automated Trivy vulnerability scanning on every PR
 - **Dependency Monitoring**: Weekly automated checks
 
 ## 🚢 Deployment
@@ -361,15 +288,9 @@ vercel --prod
 ```
 
 **4. Netlify (Drag & Drop)**
-- Build: `npm run build`
+- Build: `pnpm nx build exchange`
 - Publish directory: `dist`
 - Drag `dist` folder to Netlify dashboard
-
-### Environment URLs
-
-- **Production**: https://wallet.decentralchain.io
-- **Staging**: https://staging.dcc-exchange.example.com
-- **Docker**: `http://localhost:8080`
 
 ## 📊 Performance
 
@@ -389,24 +310,21 @@ vercel --prod
 
 ```bash
 # Run tests
-npm test
+pnpm nx test exchange
 
-# Run tests with coverage
-npm run test:coverage
-
-# Run E2E tests (if configured)
-npm run test:e2e
+# Run E2E tests
+pnpm nx test:e2e exchange
 ```
 
 ## 🔧 Development
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Production build
-- `npm run preview` - Preview production build
-- `npm run lint` - Run Biome lint
-- `npm run type-check` - TypeScript type checking
+- `pnpm nx dev exchange` - Start development server
+- `pnpm nx build exchange` - Production build
+- `pnpm nx preview exchange` - Preview production build
+- `pnpm nx lint exchange` - Run Biome lint
+- `pnpm nx typecheck exchange` - TypeScript type checking
 
 ### Code Style
 
@@ -434,7 +352,7 @@ git push origin feature/my-feature
 
 **Build fails with peer dependency errors**
 ```bash
-npm install --legacy-peer-deps
+pnpm install
 ```
 
 **Port 3000 already in use**
@@ -486,7 +404,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: https://docs.decentralchain.io
 - **Discord**: https://discord.gg/decentralchain
 - **Twitter**: https://twitter.com/decentralchain
-- **GitHub Issues**: https://github.com/decentralchain/wallet/issues
+- **GitHub Issues**: https://github.com/Decentral-America/DecentralChain/issues
 
 ## 🗺️ Roadmap
 
