@@ -59,7 +59,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function meta({ data }: { data?: LoaderData }) {
+export function meta({ loaderData: data }: { loaderData?: LoaderData }) {
   if (!data?.block) return [{ title: 'Block — DecentralScan' }];
   const height = data.block.height?.toLocaleString('en-US') ?? 'N/A';
   const generator = data.block.generator ?? '';

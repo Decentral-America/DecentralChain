@@ -75,7 +75,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function meta({ data }: { data?: LoaderData }) {
+export function meta({ loaderData: data }: { loaderData?: LoaderData }) {
   if (!data?.address) return [{ title: 'Address — DecentralScan' }];
   const short = `${data.address.slice(0, 8)}…`;
   const title = `${short} — DecentralScan`;

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { LedgerServiceStatus, ledgerService } from '#ledger/service';
 import { newAccountSelect } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';

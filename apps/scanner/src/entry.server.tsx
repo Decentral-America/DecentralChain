@@ -2,7 +2,7 @@ import { PassThrough } from 'node:stream';
 import { createReadableStreamFromReadable } from '@react-router/node';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
-import { type AppLoadContext, type EntryContext, ServerRouter } from 'react-router';
+import { type EntryContext, type RouterContextProvider, ServerRouter } from 'react-router';
 import { logError } from '@/lib/error-logger';
 
 const ABORT_DELAY = 5_000;
@@ -12,7 +12,7 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  _loadContext: AppLoadContext,
+  _loadContext: RouterContextProvider,
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     let shellRendered = false;

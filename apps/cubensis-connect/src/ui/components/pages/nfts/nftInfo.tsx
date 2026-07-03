@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { NftCover } from '#nfts/nftCard';
 import { createNft } from '#nfts/nfts';
 import { usePopupSelector } from '#popup/store/react';

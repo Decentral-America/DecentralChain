@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
+import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router';
 import { deleteNotifications } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';
 import { ExportButton, ResetButton } from '#ui/components/ui';

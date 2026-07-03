@@ -125,7 +125,7 @@ export function ErrorBoundary() {
 
 // ── Meta ──────────────────────────────────────────────────────────────────────
 
-export function meta({ data: loaderData }: { data?: LoaderData }) {
+export function meta({ loaderData }: { loaderData?: LoaderData }) {
   if (!loaderData?.address) return [{ title: 'Generator — DecentralScan' }];
   const short = `${loaderData.address.slice(0, 8)}…`;
   return [

@@ -72,7 +72,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function meta({ data }: { data?: LoaderData }) {
+export function meta({ loaderData: data }: { loaderData?: LoaderData }) {
   if (!data?.tx) return [{ title: 'Transaction — DecentralScan' }];
   const shortId = data.tx.id.slice(0, 12);
   const title = `Tx ${shortId}… — DecentralScan`;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { usePopupSelector } from '#popup/store/react';
 import type { PreferencesAccount } from '#preferences/types';
 

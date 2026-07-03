@@ -2,7 +2,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import background from '#ui/services/Background';
 
 import { NETWORK_CONFIG } from '../../../constants';

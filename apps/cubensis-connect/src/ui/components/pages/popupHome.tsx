@@ -2,7 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import type { AssetDetail } from '#assets/types';
 import { refreshBalances } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';

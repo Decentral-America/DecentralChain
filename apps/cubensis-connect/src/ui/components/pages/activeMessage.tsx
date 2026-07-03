@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';
 import { MessageHeader } from '#messages/_common/header';
 import { MessageStatus } from '#messages/types';

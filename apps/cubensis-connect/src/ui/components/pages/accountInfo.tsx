@@ -1,7 +1,7 @@
 import { Asset, Money } from '@decentralchain/data-entities';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { notificationChangeName } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';
 

@@ -78,7 +78,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function meta({ data }: { data?: LoaderData }) {
+export function meta({ loaderData: data }: { loaderData?: LoaderData }) {
   if (!data?.asset) return [{ title: 'Asset — DecentralScan' }];
   const assetName = data.asset.name ?? data.asset.assetId.slice(0, 8);
   const title = `${assetName} — DecentralScan`;

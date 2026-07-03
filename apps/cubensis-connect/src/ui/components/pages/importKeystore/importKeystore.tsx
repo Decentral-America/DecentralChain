@@ -1,7 +1,7 @@
 import { base64Decode, decryptSeed, utf8Decode, utf8Encode } from '@decentralchain/crypto';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';
 import type { KeystoreProfiles } from '#keystore/types';
 import { batchAddAccounts } from '#popup/store/actions';

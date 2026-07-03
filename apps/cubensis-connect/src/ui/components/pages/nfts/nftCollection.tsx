@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import type { AssetDetail } from '#assets/types';
 import { NftList } from '#nfts/nftList';
 import { createNft } from '#nfts/nfts';

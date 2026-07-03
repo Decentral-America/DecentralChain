@@ -38,6 +38,12 @@ type Pages = {
   "/network": {
     params: {};
   };
+  "/stress": {
+    params: {};
+  };
+  "/generator": {
+    params: {};
+  };
   "/blockfeed": {
     params: {};
   };
@@ -68,19 +74,30 @@ type Pages = {
   "/home": {
     params: {};
   };
+  "/faucet": {
+    params: {};
+  };
   "/sitemap.xml": {
     params: {};
+  };
+  "/api/faucet": {
+    params: {};
+  };
+  "/api/geo/:ip/json": {
+    params: {
+      "ip": string;
+    };
   };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/sitemap.xml";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/stress" | "/generator" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet" | "/sitemap.xml" | "/api/faucet" | "/api/geo/:ip/json";
   };
   "Layout.tsx": {
     id: "Layout";
-    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/stress" | "/generator" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet";
   };
   "pages/Dashboard.tsx": {
     id: "pages/Dashboard";
@@ -116,6 +133,14 @@ type RouteFiles = {
   "pages/Network.tsx": {
     id: "pages/Network";
     page: "/network";
+  };
+  "pages/Stress/Stress.tsx": {
+    id: "pages/Stress/Stress";
+    page: "/stress";
+  };
+  "pages/Generator.tsx": {
+    id: "pages/Generator";
+    page: "/generator";
   };
   "pages/BlockFeed.tsx": {
     id: "pages/BlockFeed";
@@ -157,9 +182,21 @@ type RouteFiles = {
     id: "pages/Home";
     page: "/home";
   };
+  "pages/Faucet.tsx": {
+    id: "pages/Faucet";
+    page: "/faucet";
+  };
   "routes/sitemap.xml.ts": {
     id: "routes/sitemap.xml";
     page: "/sitemap.xml";
+  };
+  "routes/api.faucet.ts": {
+    id: "routes/api.faucet";
+    page: "/api/faucet";
+  };
+  "routes/api.geo.ip.ts": {
+    id: "routes/api.geo.ip";
+    page: "/api/geo/:ip/json";
   };
 };
 
@@ -175,6 +212,8 @@ type RouteModules = {
   "pages/Asset": typeof import("./src/pages/Asset.tsx");
   "pages/DexPairs": typeof import("./src/pages/DexPairs.tsx");
   "pages/Network": typeof import("./src/pages/Network.tsx");
+  "pages/Stress/Stress": typeof import("./src/pages/Stress/Stress.tsx");
+  "pages/Generator": typeof import("./src/pages/Generator.tsx");
   "pages/BlockFeed": typeof import("./src/pages/BlockFeed.tsx");
   "pages/UnconfirmedTransactions": typeof import("./src/pages/UnconfirmedTransactions.tsx");
   "pages/DistributionTool": typeof import("./src/pages/DistributionTool.tsx");
@@ -185,5 +224,8 @@ type RouteModules = {
   "pages/Sustainability": typeof import("./src/pages/Sustainability.tsx");
   "pages/Node": typeof import("./src/pages/Node.tsx");
   "pages/Home": typeof import("./src/pages/Home.tsx");
+  "pages/Faucet": typeof import("./src/pages/Faucet.tsx");
   "routes/sitemap.xml": typeof import("./src/routes/sitemap.xml.ts");
+  "routes/api.faucet": typeof import("./src/routes/api.faucet.ts");
+  "routes/api.geo.ip": typeof import("./src/routes/api.geo.ip.ts");
 };

@@ -9,7 +9,7 @@ import {
 import clsx from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';
 import { isAddressString, isBase58 } from '#messages/utils';
 import { newAccountSelect, selectAccount } from '#popup/store/actions';

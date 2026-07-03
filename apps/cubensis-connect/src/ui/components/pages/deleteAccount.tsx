@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { deleteAccount } from '../../../popup/store/actions';
 import { Button } from '../ui';
 import * as styles from './deleteAccount.module.css';

@@ -2,7 +2,7 @@ import { BigNumber } from '@decentralchain/bignumber';
 import { Asset, Money } from '@decentralchain/data-entities';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { isAddressString, isAlias } from '#messages/utils';
 import { createNft } from '#nfts/nfts';
 import { refreshBalances } from '#popup/store/actions';

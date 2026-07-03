@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';
 import { deleteNotifications, setShowNotification } from '#popup/store/actions';
 import { usePopupSelector } from '#popup/store/react';

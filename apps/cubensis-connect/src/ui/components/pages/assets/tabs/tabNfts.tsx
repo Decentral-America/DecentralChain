@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { NftList } from '#nfts/nftList';
 import { createNft } from '#nfts/nfts';
 import type { Nft } from '#nfts/types';

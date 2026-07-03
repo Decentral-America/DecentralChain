@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { deleteAllAccounts } from '#popup/store/actions';
 import { Button, ErrorMessage, Input } from '#ui/components/ui';
 
