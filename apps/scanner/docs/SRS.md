@@ -1,3 +1,15 @@
+> **⚠️ STALE — describes a pre-SSR/pre-consolidation architecture.** This document
+> (dated 2026-03-18) describes DecentralScan as a client-side SPA "deployed as a
+> static bundle served by Nginx" with 17 capitalized routes across 15 top-level
+> tabs. The app has since moved to SSR via `react-router-serve` (see
+> `apps/scanner/README.md` and the app's `Dockerfile`, which explicitly notes
+> "served with react-router-serve, not nginx") and consolidated navigation down
+> to 8 top-level destinations with lowercase paths (see `src/routes.ts`), adding
+> pages this document doesn't mention at all (`/stress`, `/generator`,
+> `/faucet`). Treat the architecture/route sections below as historical design
+> intent, not current behavior, until this document gets a full rewrite against
+> `src/routes.ts` and the current SSR setup.
+
 # Software Requirements Specification
 
 ## DecentralScan — Blockchain Explorer for DecentralChain (DCC)
