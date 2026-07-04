@@ -31,8 +31,8 @@ RUN touch src/lib/lib.rs src/bin/consumer.rs src/bin/migration.rs && \
     cargo build --release
 
 # ─── Stage 2: runtime ────────────────────────────────────────────────────────
-# renovate: image=debian tag=12-slim
-FROM debian:12-slim@sha256:b29f74a267526ae6ea104eed6c46133b0ca70ce812525df8cd5817698f0a624a AS runtime
+# renovate: image=debian tag=13-slim
+FROM debian:13-slim@sha256:28de0877c2189802884ccd20f15ee41c203573bd87bb6b883f5f46362d24c5c2 AS runtime
 WORKDIR /app
 
 LABEL org.opencontainers.image.source="https://github.com/Decentral-America/blockchain-postgres-sync" \

@@ -2,7 +2,8 @@
 # cargo-chef computes a "recipe" from Cargo.toml / Cargo.lock that captures
 # the exact dependency graph. The recipe is stable across application code
 # changes, so the cook layer is only invalidated when dependencies change.
-FROM rust:1.88-slim AS chef
+# renovate: image=rust tag=1.96-slim
+FROM rust:1.96-slim@sha256:31ee7fc65186be7e0e0ccb3f2ca305f14e4739e7642a1ae65753aa5d7b874523 AS chef
 RUN cargo install cargo-chef --locked
 WORKDIR /usr/src/service
 
@@ -28,7 +29,8 @@ RUN cargo build --release --bin service --bin healthcheck
 # The Rust binary links against libgcc_s.so.1 even with panic=abort (via
 # async/await machinery in tokio). cc is the correct variant for Rust binaries.
 # :nonroot runs as uid 65532 — no useradd step required.
-FROM gcr.io/distroless/cc-debian12:nonroot
+# renovate: image=gcr.io/distroless/cc-debian12 tag=nonroot
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:b0ae8e989418b458e0f25489bc3be523718938a2b70864cc0f6a00af1ddbd985
 
 WORKDIR /app
 COPY --from=builder /usr/src/service/target/release/service .
