@@ -142,7 +142,7 @@ docker run --rm \
 ```yaml
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: blockchain
       POSTGRES_USER: postgres
