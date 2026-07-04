@@ -55,9 +55,6 @@ overrides:
   form-data: '>=4.0.6'
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
-  # vite@7.3.3 is vulnerable (GHSA-fx2h-pf6j-xcff, GHSA-v6wh-96g9-6wx3); scoped to
-  # vite-node to avoid conflicting with our direct dep at vite@8.x
-  'vite-node>vite': '7.3.5'
   basic-ftp: '>=5.3.1'
   brace-expansion: '>=5.0.6'
   defu: '>=6.1.5'
