@@ -13,6 +13,16 @@ name = "groth16_jni"
 path = "src/bn256/bin/show_test_vectors.rs"
 name="show_test_vectors"
 
+# Audited 2026-07-04: bellman/pairing/num/base64/jni/rand are all far behind
+# upstream latest (e.g. bellman 0.1.0 vs 0.14.0 — a 13-minor-version gap
+# spanning zkcrypto's full curve-abstraction rewrite; base64 0.11.0 vs 0.22.1
+# changed its entire Engine-based API; jni 0.14.0 vs 0.22.4 changed JNIEnv
+# lifetime handling). This is zk-SNARK proving/verification glue code —
+# bumping bellman requires re-deriving/re-validating proving/verification
+# key compatibility, not just fixing compile errors. Deliberately not bumped
+# without dedicated crypto-domain review; same reasoning as DEX-488
+# (matcher/dex AddressActor) — no changes to live financial/crypto code
+# without full domain understanding.
 [dependencies]
 bellman = { version = "0.1.0" }
 groth16_primitives = { path = "../groth16_primitives"}
