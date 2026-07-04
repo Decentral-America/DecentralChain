@@ -23,6 +23,10 @@ catalog:
 engineStrict: true
 saveExact: true
 
+# Fail installs if a dependency uses "catalog:" but isn't declared above,
+# instead of silently falling back to whatever version pnpm would otherwise pick.
+catalogMode: strict
+
 allowBuilds:
   '@bufbuild/buf': false
   '@connectrpc/connect': false
