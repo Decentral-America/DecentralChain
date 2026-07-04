@@ -1,5 +1,5 @@
 {
-  "$schema": "https://cdn.jsdelivr.net/npm/nx@22.7.5/schemas/nx-schema.json",
+  "$schema": "https://cdn.jsdelivr.net/npm/nx@23.0.1/schemas/nx-schema.json",
   "analytics": false,
   "defaultBase": "main",
   "generators": {
