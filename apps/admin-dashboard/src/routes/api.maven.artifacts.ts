@@ -22,7 +22,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   try {
     const res = await fetch(
-      'https://search.maven.org/solrsearch/select?q=g:io.github.decentral-america&rows=20&wt=json',
+      'https://search.maven.org/solrsearch/select?q=g:io.decentralchain&rows=20&wt=json',
       { signal: AbortSignal.timeout(10_000) },
     );
 

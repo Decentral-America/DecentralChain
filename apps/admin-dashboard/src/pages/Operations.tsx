@@ -1,4 +1,4 @@
-import { AlertCircle, Archive, ExternalLink, RefreshCw } from 'lucide-react';
+import { AlertCircle, ExternalLink, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouteLoaderData } from 'react-router';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { type BackupStatus } from '@/routes/api.backups.status';
 import { type SentryIssue } from '@/routes/api.sentry.issues';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -124,9 +123,6 @@ export default function Operations() {
   const [codecovLoading, setCodecovLoading] = useState(false);
   const [codecovError, setCodecovError] = useState<string | null>(null);
 
-  const [backupStatus, setBackupStatus] = useState<BackupStatus | null>(null);
-  const [backupLoading, setBackupLoading] = useState(false);
-
   const loadNpm = useCallback(async () => {
     setNpmLoading(true);
     setNpmError(null);
@@ -175,26 +171,12 @@ export default function Operations() {
     }
   }, []);
 
-  const loadBackups = useCallback(async () => {
-    setBackupLoading(true);
-    try {
-      const res = await fetch('/api/backups/status');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setBackupStatus((await res.json()) as BackupStatus);
-    } catch {
-      // Errors are surfaced through backupStatus.fetchError
-    } finally {
-      setBackupLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     void loadNpm();
     void loadMaven();
     void loadSentry();
     void loadCodecov();
-    void loadBackups();
-  }, [loadNpm, loadMaven, loadSentry, loadCodecov, loadBackups]);
+  }, [loadNpm, loadMaven, loadSentry, loadCodecov]);
 
   const NX_CLOUD_WORKSPACE_ID = '6a07a03e8a73063a9eda9bf3';
 
@@ -283,65 +265,6 @@ export default function Operations() {
               embed the dashboard.
             </p>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Backups */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Archive className="h-4 w-4" />
-              <span>R2 Backups</span>
-            </div>
-            <Button variant="ghost" size="icon" onClick={loadBackups} disabled={backupLoading}>
-              <RefreshCw className={`h-4 w-4 ${backupLoading ? 'animate-spin' : ''}`} />
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {backupLoading && !backupStatus ? (
-            <Skeleton className="h-16 w-full" />
-          ) : backupStatus?.fetchError ? (
-            <div className="flex items-start gap-2 text-muted-foreground text-sm">
-              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0 text-yellow-500" />
-              <div>
-                <p>Backups not configured or unreachable.</p>
-                <p className="text-xs mt-1 font-mono">{backupStatus.fetchError}</p>
-              </div>
-            </div>
-          ) : backupStatus ? (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-              <div>
-                <p className="text-xs text-muted-foreground">Bucket</p>
-                <p className="font-mono text-sm font-medium">{backupStatus.bucket}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Last Backup</p>
-                <p className="font-medium">
-                  {backupStatus.lastBackup
-                    ? new Date(backupStatus.lastBackup.lastModified).toLocaleString()
-                    : '—'}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Latest File</p>
-                <p
-                  className="font-mono text-xs truncate"
-                  title={backupStatus.lastBackup?.key ?? ''}
-                >
-                  {backupStatus.lastBackup?.key.split('/').pop() ?? '—'}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Total / Size</p>
-                <p className="font-mono text-sm">
-                  {backupStatus.totalFiles} files / {(backupStatus.totalSizeBytes / 1e9).toFixed(2)}{' '}
-                  GB
-                </p>
-              </div>
-            </div>
-          ) : null}
         </CardContent>
       </Card>
 

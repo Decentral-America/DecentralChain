@@ -86,9 +86,6 @@ type Pages = {
   "/api/services/health": {
     params: {};
   };
-  "/api/backups/status": {
-    params: {};
-  };
   "/api/maven/artifacts": {
     params: {};
   };
@@ -97,7 +94,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/sentry/issues" | "/api/services/health" | "/api/backups/status" | "/api/maven/artifacts";
+    page: "/" | "/healthz" | "/robots.txt" | "/login" | "/api/auth/github" | "/api/auth/github/callback" | "/api/auth/logout" | "/chain-health" | "/generator-performance" | "/service-health" | "/load-test" | "/stress-history" | "/e2e" | "/treasury" | "/ci-cd" | "/operations" | "/api/load-test/stream" | "/api/load-test/history" | "/api/treasury/fund" | "/api/treasury/scan" | "/api/treasury/stream" | "/api/e2e/stream" | "/api/ci-cd/status" | "/api/sentry/issues" | "/api/services/health" | "/api/maven/artifacts";
   };
   "routes/healthz.ts": {
     id: "routes/healthz";
@@ -203,10 +200,6 @@ type RouteFiles = {
     id: "routes/api.services.health";
     page: "/api/services/health";
   };
-  "routes/api.backups.status.ts": {
-    id: "routes/api.backups.status";
-    page: "/api/backups/status";
-  };
   "routes/api.maven.artifacts.ts": {
     id: "routes/api.maven.artifacts";
     page: "/api/maven/artifacts";
@@ -241,6 +234,5 @@ type RouteModules = {
   "routes/api.cicd.status": typeof import("./src/routes/api.cicd.status.ts");
   "routes/api.sentry.issues": typeof import("./src/routes/api.sentry.issues.ts");
   "routes/api.services.health": typeof import("./src/routes/api.services.health.ts");
-  "routes/api.backups.status": typeof import("./src/routes/api.backups.status.ts");
   "routes/api.maven.artifacts": typeof import("./src/routes/api.maven.artifacts.ts");
 };

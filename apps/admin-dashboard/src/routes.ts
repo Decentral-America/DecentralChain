@@ -28,6 +28,5 @@ export default [
   route('api/ci-cd/status', 'routes/api.cicd.status.ts'),
   route('api/sentry/issues', 'routes/api.sentry.issues.ts'),
   route('api/services/health', 'routes/api.services.health.ts'),
-  route('api/backups/status', 'routes/api.backups.status.ts'),
   route('api/maven/artifacts', 'routes/api.maven.artifacts.ts'),
 ] satisfies RouteConfig;
