@@ -4,6 +4,11 @@ FROM node:24-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+# The base image's bundled npm ships sigstore@4.1.0 (CVE-2026-48815, HIGH).
+# npm itself isn't used at runtime (pnpm + react-router-serve), but Trivy scans
+# the whole final image, and this stage is FROM'd by the runtime stage below —
+# upgrade npm to pull in a patched sigstore rather than chase a new base digest.
+RUN npm install -g npm@latest
 
 FROM base AS build
 RUN apk add --no-cache git curl build-base
@@ -67,10 +72,6 @@ ENV NODE_ENV=production \
     LOG_LEVEL="info"
     # Secret vars below are injected at runtime via env_file — never baked into the image:
     # ADMIN_DASHBOARD_GITHUB_PAT          — fine-grained PAT: Actions:Read, Contents:Read on Decentral-America/*
-    # BACKUP_OBJ_ACCESS_KEY     — Cloudflare R2 access key for backup bucket
-    # BACKUP_OBJ_SECRET_KEY     — Cloudflare R2 secret key
-    # BACKUP_OBJ_BUCKET         — R2 bucket name (e.g. dcc-backups-testnet)
-    # BACKUP_OBJ_ENDPOINT       — R2 S3-compatible endpoint URL
     # GRAFANA_URL               — Grafana dashboard base URL
     # SENTRY_AUTH_TOKEN         — Sentry org auth token (read-only)
 
