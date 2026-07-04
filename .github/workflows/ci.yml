@@ -16,7 +16,12 @@ permissions:
   contents: read
 
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Nx Cloud's own CI security guidance: PRs (untrusted, can come from forks)
+  # get a read-only token so a malicious/compromised PR can't poison the
+  # shared remote cache; only push events to main/dev get the read-write token.
+  # Falls back to the read-write token if NX_CLOUD_ACCESS_TOKEN_READONLY hasn't
+  # been provisioned yet in Nx Cloud's dashboard — remove the fallback once it has.
+  NX_CLOUD_ACCESS_TOKEN: ${{ github.event_name == 'pull_request' && (secrets.NX_CLOUD_ACCESS_TOKEN_READONLY || secrets.NX_CLOUD_ACCESS_TOKEN) || secrets.NX_CLOUD_ACCESS_TOKEN }}
   # Set repo variable NX_NO_CLOUD=true to force-disable NX Cloud (e.g. during quota incidents).
   # Leave unset (default) to run with NX Cloud remote caching enabled.
   NX_NO_CLOUD: ${{ vars.NX_NO_CLOUD }}

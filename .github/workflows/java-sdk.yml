@@ -129,12 +129,18 @@ jobs:
 
       - name: Run audit profile
         working-directory: packages/jvm/java-sdk
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
           set -euo pipefail
-          ./mvnw --batch-mode --no-transfer-progress verify -P audit \
-            -Ddependency-check.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
-        # OWASP NVD dependency-check requires an API key and is slow.
-        # Run it separately with the NVD_API_KEY secret when needed.
+          if [ -n "$NVD_API_KEY" ]; then
+            ./mvnw --batch-mode --no-transfer-progress verify -P audit \
+              -DnvdApiKey="$NVD_API_KEY" -Dmaven.javadoc.skip=true -Dgpg.skip=true
+          else
+            echo "::warning::NVD_API_KEY not set — OWASP dependency-check skipped, only SpotBugs+PMD ran"
+            ./mvnw --batch-mode --no-transfer-progress verify -P audit \
+              -Ddependency-check.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
+          fi
 
       - name: Upload SpotBugs report
         if: always()
