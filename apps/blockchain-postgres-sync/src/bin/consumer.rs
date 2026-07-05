@@ -1,7 +1,9 @@
 use anyhow::{Context, Result};
 use app_lib::{config, consumer, db, publisher};
-use axum::{Router, routing::get};
+use axum::{Router, extract::State, routing::get};
 use std::net::SocketAddr;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicU32, Ordering};
 use tokio::select;
 use tracing::{error, info};
 use tracing_subscriber::{EnvFilter, fmt};
@@ -46,11 +48,14 @@ async fn main() -> Result<()> {
         }
     };
 
-    // Health / readiness HTTP server
+    // Health / readiness / metrics HTTP server
     let metrics_port = config.consumer.metrics_port;
     let health_conn = conn.clone();
-    let health_server = tokio::spawn(async move {
-        let app = Router::new()
+    let last_synced_height = Arc::new(AtomicU32::new(0));
+    let health_server = tokio::spawn({
+        let last_synced_height = last_synced_height.clone();
+        async move {
+            let app = Router::new()
             .route("/health", get(|| async { "OK" }))
             .route(
                 "/readiness",
@@ -64,19 +69,44 @@ async fn main() -> Result<()> {
                         )
                     }
                 }),
-            );
+            )
+            .route(
+                "/metrics",
+                get(|State(height): State<Arc<AtomicU32>>| async move {
+                    let height = height.load(Ordering::Relaxed);
+                    (
+                        [("content-type", "text/plain; version=0.0.4")],
+                        format!(
+                            "# HELP bps_up Whether the BPS consumer process is running.\n\
+                             # TYPE bps_up gauge\n\
+                             bps_up 1\n\
+                             # HELP bps_last_synced_height Last blockchain height committed to Postgres.\n\
+                             # TYPE bps_last_synced_height gauge\n\
+                             bps_last_synced_height {height}\n"
+                        ),
+                    )
+                }),
+            )
+            .with_state(last_synced_height);
 
-        let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
-        let listener = tokio::net::TcpListener::bind(addr)
-            .await
-            .context("health listener bind failed")?;
-        info!(%addr, "health server listening");
-        axum::serve(listener, app)
-            .await
-            .context("health server failed")
+            let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
+            let listener = tokio::net::TcpListener::bind(addr)
+                .await
+                .context("health listener bind failed")?;
+            info!(%addr, "health server listening");
+            axum::serve(listener, app)
+                .await
+                .context("health server failed")
+        }
     });
 
-    let consumer = consumer::start(updates_src, pg_repo, config.consumer, redis_publisher);
+    let consumer = consumer::start(
+        updates_src,
+        pg_repo,
+        config.consumer,
+        redis_publisher,
+        last_synced_height,
+    );
 
     select! {
         result = consumer => {

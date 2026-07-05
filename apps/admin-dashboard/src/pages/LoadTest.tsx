@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { DEFAULT_TARGET_NODE, TARGET_NODES } from '@/lib/target-nodes';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -34,7 +36,7 @@ interface FinalSummary {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function LoadTest() {
-  const [targetNode, setTargetNode] = useState('');
+  const [targetNode, setTargetNode] = useState(DEFAULT_TARGET_NODE);
   const [workers, setWorkers] = useState('200');
   const [targetTps, setTargetTps] = useState('500');
   const [duration, setDuration] = useState('300');
@@ -208,13 +210,18 @@ export default function LoadTest() {
             <label htmlFor="lt-node" className="text-sm font-medium">
               Target Node URL
             </label>
-            <Input
+            <Select
               id="lt-node"
               value={targetNode}
               onChange={(e) => setTargetNode(e.target.value)}
-              placeholder="https://testnet-node.decentralchain.io"
               disabled={running}
-            />
+            >
+              {TARGET_NODES.map((n) => (
+                <option key={n.url} value={n.url}>
+                  {n.label}
+                </option>
+              ))}
+            </Select>
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="lt-workers" className="text-sm font-medium">

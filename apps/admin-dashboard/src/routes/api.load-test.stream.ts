@@ -3,6 +3,7 @@ import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { getSql } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { isAllowedTargetNode } from '@/lib/target-nodes';
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -37,8 +38,8 @@ function validateStartParams(
 ): { ok: true; params: StartParams } | { ok: false; error: string } {
   const { targetNode, workers, targetTps, duration, seedPhrase, chainId, senderCount } = body;
 
-  if (typeof targetNode !== 'string' || !/^https?:\/\/.+/.test(targetNode)) {
-    return { error: 'targetNode must be a valid HTTP(S) URL', ok: false };
+  if (typeof targetNode !== 'string' || !isAllowedTargetNode(targetNode)) {
+    return { error: 'targetNode must be one of the allowlisted testnet nodes', ok: false };
   }
   const workersNum = Number(workers);
   if (!Number.isInteger(workersNum) || workersNum < 1 || workersNum > 2000) {

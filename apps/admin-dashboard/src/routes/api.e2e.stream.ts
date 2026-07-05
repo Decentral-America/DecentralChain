@@ -1,4 +1,5 @@
 import { type ChildProcess, spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
@@ -149,6 +150,18 @@ export async function action({ request }: ActionFunctionArgs) {
     const runId = crypto.randomUUID();
     const suitePath = process.env.E2E_SUITE_PATH ?? '/opt/dcc/DecentralChain';
 
+    if (!existsSync(suitePath)) {
+      // Deliberately unset in production (compose/admin-dashboard.yml sets
+      // E2E_SUITE_PATH=/dev/null/disabled — the image ships only itself, not
+      // the full monorepo). Any other missing path is a real misconfiguration.
+      const message =
+        suitePath === '/dev/null/disabled'
+          ? 'E2E test suite is disabled in this environment.'
+          : `E2E suite not found at "${suitePath}". Mount the DecentralChain checkout at that path, or set E2E_SUITE_PATH to its location.`;
+      logger.error({ suitePath, user }, 'E2E run: suite path missing');
+      return new Response(message, { status: 503 });
+    }
+
     // Accept explicit spec list or fall back to suite presets
     const customSpecs = Array.isArray(body.specs) ? (body.specs as string[]) : null;
     const suite: E2ESuite =
@@ -169,6 +182,16 @@ export async function action({ request }: ActionFunctionArgs) {
       cwd: suitePath,
       env: { ...process.env },
       stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    // Without this, a spawn-time failure (bad cwd, command not found) emits an
+    // 'error' event with no listener attached yet — Node treats that as an
+    // unhandled exception and crashes the process. The loader() SSE stream
+    // attaches its own listener once the client connects, but that can be
+    // seconds after spawn(); this one exists purely to survive the gap.
+    child.once('error', (err) => {
+      logger.error({ err, runId, suitePath }, 'E2E process failed to start');
+      runs.delete(runId);
     });
 
     runs.set(runId, child);

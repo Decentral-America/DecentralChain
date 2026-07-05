@@ -15,7 +15,8 @@ use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 use itertools::Itertools;
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
 use tracing::{debug, info, warn};
@@ -115,6 +116,7 @@ pub async fn start<T, R>(
     repo: R,
     config: Config,
     publisher: Option<crate::publisher::Publisher>,
+    last_synced_height: Arc<AtomicU32>,
 ) -> Result<()>
 where
     T: UpdatesSource + Send + 'static,
@@ -218,6 +220,10 @@ where
                 Ok(result)
             })
             .await?;
+
+        // Only advances after the transaction above commits, so the metric never
+        // reports a height whose data isn't actually queryable yet.
+        last_synced_height.store(last_height, Ordering::Relaxed);
 
         // Publish after the transaction commits — Redis failures are fire-and-forget.
         if let Some(ref pub_) = publisher {
