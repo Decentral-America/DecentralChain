@@ -32,3 +32,31 @@ export const API_KEY = process.env.DCC_TEST_API_KEY ?? process.env.DCC_API_KEY ?
 
 /** Node wallet address (for /transactions/sign — node signs with its own key) */
 export const NODE_ADDRESS = process.env.DCC_TEST_NODE_ADDRESS ?? process.env.DCC_NODE_ADDRESS ?? '';
+
+/**
+ * Caddy's rate limiter (infra/.github/workflows/update-caddy.yml) throttles
+ * /transactions/broadcast to 50/min per IP. Running ~20+ spec files
+ * concurrently, each funding its own test accounts via one broadcast apiece,
+ * legitimately exceeds that on its own. DCC_TEST_E2E_BYPASS_KEY (set only in
+ * admin-e2e.yml from the E2E_RATE_LIMIT_BYPASS_KEY secret) lets our own CI
+ * traffic skip rate limiting via a secret header Caddy checks for an exact
+ * match -- anyone without the real secret value still gets fully rate
+ * limited. Scoped to *.decentralchain.io only, and monkey-patches global
+ * fetch here (the test suite's own setup file) rather than any published SDK
+ * package, so this has zero effect on real dApp developers using those SDKs.
+ */
+const E2E_BYPASS_KEY = process.env.DCC_TEST_E2E_BYPASS_KEY;
+if (E2E_BYPASS_KEY) {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (/^https?:\/\/([a-z0-9-]+\.)?decentralchain\.io\//i.test(url)) {
+      const headers = new Headers(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined),
+      );
+      headers.set('X-E2E-Bypass', E2E_BYPASS_KEY);
+      return originalFetch(input, { ...init, headers });
+    }
+    return originalFetch(input, init);
+  }) as typeof fetch;
+}
