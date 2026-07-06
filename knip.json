@@ -19,6 +19,15 @@
   "ignoreDependencies": [
     "undici-types",
     "@bufbuild/protoc-gen-es",
+    // admin-dashboard: server-only workspace packages referenced as raw strings in
+    // vite.config.ts `ssr.external` (not via import statements, so knip can't see them)
+    "@decentralchain/bignumber",
+    "@decentralchain/marshall",
+    "@decentralchain/protobuf-schemas",
+    "@decentralchain/types",
+    // data-service: referenced as a string transport target in winston.ts pino config
+    // (`target: 'pino-pretty'`), not via a static import
+    "pino-pretty",
     // cubensis-connect: browser polyfills referenced via vite.config.ts aliases/plugins
     "buffer",
     "events",
@@ -119,6 +128,7 @@
         "src/services/index.ts", // services barrel (aggregates above)
         "src/services/storage/**", // encrypted remote-storage service
         "src/services/websocket/**", // WebSocket client for price/order feeds
+        "src/services/websocket.ts", // WebSocket hook implementation consumed only by useDexWebSocket/useMarketData (both build-ahead, see below)
         "src/features/dex/useDexWebSocket.ts", // DEX WS hook (depends on websocket/)
         "src/features/dex/useMarketData.ts", // DEX market-data hook (depends on api/)
 
