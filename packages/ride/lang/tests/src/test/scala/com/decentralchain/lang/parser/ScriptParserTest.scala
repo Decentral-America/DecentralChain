@@ -894,6 +894,15 @@ class ScriptParserTest extends PropSpec with ScriptGenParser {
     )
   }
 
+  property("object pattern with a reserved keyword as a field name fails to parse cleanly, does not crash") {
+    // Regression test: Parser.scala's object-pattern rule used to extract the field
+    // name via `PART.toOption(kp._1).get`, which threw NoSuchElementException when
+    // `anyVarName()` returned PART.INVALID (i.e. the field name is a keyword like
+    // "if"). This must now surface as an ordinary parse failure, not a raw exception.
+    noException should be thrownBy parseE("match tx { case Foo(if = 1) => 1 }", version = V8)
+    parseE("match tx { case Foo(if = 1) => 1 }", version = V8) shouldBe a[Left[?, ?]]
+  }
+
   ignore("pattern matching with invalid case - expression in variable definition") {
     parse("match tx { case 1 + 1 => 1 } ") shouldBe MATCH(
       AnyPos,

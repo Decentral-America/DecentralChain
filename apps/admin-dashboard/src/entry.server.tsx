@@ -11,6 +11,12 @@ import { logger } from '@/lib/logger';
 void migrateSchema();
 
 if (isUsingDefaultSecret()) {
+  if (process.env.NODE_ENV === 'production') {
+    logger.error(
+      'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default dev value — refusing to start in production. Set a strong random secret via the ADMIN_DASHBOARD_JWT_SECRET environment variable.',
+    );
+    process.exit(1);
+  }
   logger.warn(
     'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
   );

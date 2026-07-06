@@ -29,29 +29,51 @@ package object utils {
 
   val environment: Environment[Id] = buildEnvironment(ByteStr.empty)
 
+  // This is a dummy/placeholder Environment used only by InvariableContext to evaluate
+  // vals that are statically known to be "pure" (i.e. environment-independent, see
+  // v1.evaluator.ctx.InvariableContext). None of the methods below should ever be invoked in
+  // normal operation: if one is, it means a value marked `isPure` actually reads from the
+  // environment, which is an invariant violation elsewhere in the context-building logic.
+  private def unreachableEnvironmentCall(methodName: String): Nothing =
+    throw new IllegalStateException(
+      s"Unreachable: Environment.$methodName invoked on the dummy/pure-only environment " +
+        s"(com.decentralchain.lang.utils.environment). This placeholder is only supposed to be used " +
+        s"to evaluate vals marked as environment-independent ('isPure') in InvariableContext; " +
+        s"reaching this means a value was incorrectly marked pure while actually depending on the environment."
+    )
+
   def buildEnvironment(txIdParam: ByteStr): Environment[Id] = new Environment[Id] {
-    override def height: Long                                                                  = 0
-    override def chainId: Byte                                                                 = 1: Byte
-    override def inputEntity: Environment.InputEntity                                          = null
-    override val txId: ByteStr                                                                 = txIdParam
-    override def transactionById(id: Array[Byte]): Option[Tx]                                  = ???
-    override def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer]                 = ???
-    override def transactionHeightById(id: Array[Byte]): Option[Long]                          = ???
-    override def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo]                       = ???
-    override def lastBlockOpt(): Option[BlockInfo]                                             = ???
-    override def blockInfoByHeight(height: Int): Option[BlockInfo]                             = ???
+    override def height: Long                                 = 0
+    override def chainId: Byte                                = 1: Byte
+    override def inputEntity: Environment.InputEntity         = null
+    override val txId: ByteStr                                = txIdParam
+    override def transactionById(id: Array[Byte]): Option[Tx] = unreachableEnvironmentCall("transactionById")
+    override def transferTransactionById(id: Array[Byte]): Option[Tx.Transfer] =
+      unreachableEnvironmentCall("transferTransactionById")
+    override def transactionHeightById(id: Array[Byte]): Option[Long] =
+      unreachableEnvironmentCall("transactionHeightById")
+    override def assetInfoById(id: Array[Byte]): Option[ScriptAssetInfo] = unreachableEnvironmentCall("assetInfoById")
+    override def lastBlockOpt(): Option[BlockInfo]                       = unreachableEnvironmentCall("lastBlockOpt")
+    override def blockInfoByHeight(height: Int): Option[BlockInfo] = unreachableEnvironmentCall("blockInfoByHeight")
     override def data(addressOrAlias: Recipient, key: String, dataType: DataType): Option[Any] = None
-    override def hasData(addressOrAlias: Recipient): Boolean                                   = ???
-    override def accountBalanceOf(addressOrAlias: Recipient, assetId: Option[Array[Byte]]): Either[String, Long] = ???
-    override def accountDccBalanceOf(addressOrAlias: Recipient): Either[String, Environment.BalanceDetails]      = ???
-    override def resolveAlias(name: String): Either[String, Recipient.Address]                                   = ???
+    override def hasData(addressOrAlias: Recipient): Boolean = unreachableEnvironmentCall("hasData")
+    override def accountBalanceOf(addressOrAlias: Recipient, assetId: Option[Array[Byte]]): Either[String, Long] =
+      unreachableEnvironmentCall("accountBalanceOf")
+    override def accountDccBalanceOf(addressOrAlias: Recipient): Either[String, Environment.BalanceDetails] =
+      unreachableEnvironmentCall("accountDccBalanceOf")
+    override def resolveAlias(name: String): Either[String, Recipient.Address] = unreachableEnvironmentCall(
+      "resolveAlias"
+    )
     override def tthis: Environment.Tthis                                          = Recipient.Address(ByteStr.empty)
     override def multiPaymentAllowed: Boolean                                      = true
-    override def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer] = ???
-    override def addressFromString(address: String): Either[String, Recipient.Address] = ???
-    override def addressFromPublicKey(publicKey: ByteStr): Either[String, Address]     = ???
-    override def accountScript(addressOrAlias: Recipient): Option[Script]              = ???
-    override def calculateDelay(gt: ByteStr, b: Long): Long                            = ???
+    override def transferTransactionFromProto(b: Array[Byte]): Option[Tx.Transfer] =
+      unreachableEnvironmentCall("transferTransactionFromProto")
+    override def addressFromString(address: String): Either[String, Recipient.Address] =
+      unreachableEnvironmentCall("addressFromString")
+    override def addressFromPublicKey(publicKey: ByteStr): Either[String, Address] =
+      unreachableEnvironmentCall("addressFromPublicKey")
+    override def accountScript(addressOrAlias: Recipient): Option[Script] = unreachableEnvironmentCall("accountScript")
+    override def calculateDelay(gt: ByteStr, b: Long): Long               = unreachableEnvironmentCall("calculateDelay")
     override def callScript(
         dApp: Address,
         func: String,
@@ -59,7 +81,7 @@ package object utils {
         payments: Seq[(Option[Array[Byte]], Long)],
         availableComplexity: Int,
         reentrant: Boolean
-    ): Coeval[(Either[ValidationError, (EVALUATED, Log[Id])], Int)] = ???
+    ): Coeval[(Either[ValidationError, (EVALUATED, Log[Id])], Int)] = unreachableEnvironmentCall("callScript")
   }
 
   val lazyContexts: Map[(DirectiveSet, Boolean, Boolean, Boolean), Coeval[CTX[Environment]]] =

@@ -353,7 +353,7 @@ class ExpressionCompiler(val version: StdLibVersion) {
         if (errorList.isEmpty) {
           CompilationStepResultDec(
             ctx,
-            LET(letNameWithErr._1.get, compiledLet.expr),
+            LET(getValidated(letNameWithErr._1, errorList, "compileLet: LET name"), compiledLet.expr),
             letType,
             parseNodeDecl,
             compiledLet.errors
@@ -402,7 +402,11 @@ class ExpressionCompiler(val version: StdLibVersion) {
         if (errorList.isEmpty) {
           CompilationStepResultDec(
             ctx,
-            FUNC(funcNameWithErr._1.get, argTypesWithErr._1.get.map(_._1), compiledFuncBody.expr),
+            FUNC(
+              getValidated(funcNameWithErr._1, errorList, "compileFunc: FUNC name"),
+              getValidated(argTypesWithErr._1, errorList, "compileFunc: FUNC arg types").map(_._1),
+              compiledFuncBody.expr
+            ),
             compiledFuncBody.t,
             parseNodeDecl,
             compiledFuncBody.errors
@@ -532,7 +536,7 @@ class ExpressionCompiler(val version: StdLibVersion) {
 
       result =
         if (errorList.isEmpty) {
-          val (ctx, expr, t) = getterWithErr._1.get
+          val (ctx, expr, t) = getValidated(getterWithErr._1, errorList, "compileGetter: getter result")
           CompilationStepResultExpr(ctx, expr, t, parseNodeExpr.copy(resultType = Some(t)), compiledRef.errors)
         } else {
           CompilationStepResultExpr(ctx, FAILED_EXPR(), NOTHING, parseNodeExpr, errorList ++ compiledRef.errors)
@@ -579,7 +583,7 @@ class ExpressionCompiler(val version: StdLibVersion) {
 
       result =
         if (errorList.isEmpty) {
-          val (expr, t) = funcCallWithErr._1.get
+          val (expr, t) = getValidated(funcCallWithErr._1, errorList, "compileFunctionCall: resolved call")
           CompilationStepResultExpr(ctx, expr, t, parseNodeExpr, argErrorList)
         } else {
           CompilationStepResultExpr(ctx, FAILED_EXPR(), NOTHING, parseNodeExpr, errorList ++ argErrorList)
@@ -617,8 +621,8 @@ class ExpressionCompiler(val version: StdLibVersion) {
         if (errorList.isEmpty) {
           CompilationStepResultExpr(
             ctx,
-            REF(keyWithErr._1.get),
-            typeWithErr._1.get,
+            REF(getValidated(keyWithErr._1, errorList, "compileRef: resolved key")),
+            getValidated(typeWithErr._1, errorList, "compileRef: resolved type"),
             Expressions.REF(p, keyPart, typeWithErr._1, saveExprContext.toOption(ctx))
           )
         } else {
@@ -800,7 +804,10 @@ class ExpressionCompiler(val version: StdLibVersion) {
                     )
                   Right(makeIfCase(typeIf, blockWithNewVar, further))
                 case Nil =>
-                  ???
+                  throw new IllegalStateException(
+                    "Unreachable: matched TypedVar against UNION(types, _) with an empty type name list. " +
+                      "UNION(Nil, _) is matched by a preceding case, so 'types' here is guaranteed non-empty."
+                  )
               }
             } yield cases
           case (_: TypedVar, t) =>
@@ -971,7 +978,12 @@ class ExpressionCompiler(val version: StdLibVersion) {
             case Expressions.Single(PART.VALID(pos, Type.ListTypeName), Some(PART.VALID(_, Expressions.AnyType(_)))) =>
               val t = PART.VALID(pos, "List[Any]")
               List(t)
-            case _ => ???
+            case other =>
+              throw new IllegalStateException(
+                s"Unreachable: resolveTypesFromCompositePattern encountered union member $other. " +
+                  s"Only plain named types (Single(_, None)) and 'List[Any]' (Single(ListTypeName, Some(AnyType))) " +
+                  s"are permitted as union pattern members by the parser/prior validation."
+              )
           }
           .reduceRight[Seq[PART[String]]] { (ct, rt) =>
             rt ++ ct
@@ -988,8 +1000,13 @@ class ExpressionCompiler(val version: StdLibVersion) {
         List(t)
       case (_, TypedVar(_, Expressions.Single(t, None))) =>
         List(t)
-      case (_, TypedVar(_, Expressions.Single(_, _))) => ???
-      case (_, pat @ ConstsPat(consts, _))            =>
+      case (_, TypedVar(_, Expressions.Single(t, typeArg))) =>
+        throw new IllegalStateException(
+          s"Unreachable: resolveTypesFromCompositePattern encountered TypedVar with a parameterized Single " +
+            s"type ($t, $typeArg) that isn't the 'List[Any]' case handled above. Type parameters are only " +
+            s"permitted on List types by the parser/prior validation."
+        )
+      case (_, pat @ ConstsPat(consts, _)) =>
         val pos = pat.position
         consts
           .map { c =>
@@ -1093,6 +1110,44 @@ object ExpressionCompiler {
     final def toOption[A](a: => A): Option[A] = if (b) Some(a) else None
   }
 
+  /** Unwraps an `Option` that is expected to be `Some` whenever a paired list of compilation errors is empty — the
+    * idiom used throughout the compiler where a value and its potential errors are threaded together and the value is
+    * only consumed once the caller has confirmed there were no errors.
+    *
+    * This is not a behavior change from a raw `.get`: today's call sites already guarantee the invariant holds by
+    * construction. What this adds is a diagnosable failure mode — if a future change ever breaks the "Option is Some
+    * iff errors is empty" invariant, this fails loudly with a message naming the violated contract and the call site,
+    * instead of a bare, context-free `NoSuchElementException`.
+    *
+    * @param context
+    *   short, human-readable description of the call site / invariant, included in the failure message to make
+    *   regressions diagnosable
+    */
+  def getValidated[T](opt: Option[T], errors: Iterable[CompilationError], context: String): T = {
+    require(
+      errors.isEmpty,
+      s"RIDE compiler invariant violated ($context): paired error list is non-empty ($errors) " +
+        s"but the corresponding value was requested as if compilation had succeeded"
+    )
+    opt.getOrElse(
+      throw new IllegalStateException(
+        s"RIDE compiler invariant violated ($context): paired error list is empty, " +
+          s"but the expected compiled value is None"
+      )
+    )
+  }
+
+  /** Variant of [[getValidated]] for the simpler idiom where the same `Option` is checked for emptiness immediately
+    * before being unwrapped (no separate paired error list). Converts a bare `.get` into a diagnosable failure if the
+    * "checked non-empty, then unwrapped" invariant is ever broken by a future change.
+    */
+  def getValidated[T](opt: Option[T], context: String): T =
+    opt.getOrElse(
+      throw new IllegalStateException(
+        s"RIDE compiler invariant violated ($context): expected Some(_) at this point, but got None"
+      )
+    )
+
   def compileWithParseResult(
       input: String,
       offset: LibrariesOffset,
@@ -1117,8 +1172,8 @@ object ExpressionCompiler {
                  else
                    List(
                      Generic(
-                       removedCharPosOpt.get.start,
-                       removedCharPosOpt.get.end,
+                       getValidated(removedCharPosOpt, "compileWithParseResult: removed-char recovery position").start,
+                       getValidated(removedCharPosOpt, "compileWithParseResult: removed-char recovery position").end,
                        "Parsing failed. Some chars was removed as result of recovery process."
                      )
                    ))

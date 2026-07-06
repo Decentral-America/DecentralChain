@@ -76,7 +76,7 @@ services:
 
   # ── Blockchain Postgres Sync (BPS) ──────────────────────────────────────────
   dcc-bps:
-    image: ghcr.io/decentral-america/blockchain-postgres-sync:latest
+    image: ghcr.io/decentral-america/blockchain-postgres-sync:latest@sha256:78e1f1920bcf007cab5c80a7b46913de61bfb11e84f414c1b67f87c559c9db71
     container_name: dcc-test-bps
     depends_on:
       dcc-node:

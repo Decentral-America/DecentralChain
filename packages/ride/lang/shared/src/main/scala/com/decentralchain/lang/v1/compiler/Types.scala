@@ -119,7 +119,12 @@ object Types {
             case NOTHING         => List.empty
             case UNION(inner, _) => inner
             case s: REAL         => List(s)
-            case ANY             => ???
+            case ANY             =>
+              throw new IllegalStateException(
+                "Unreachable: UNION.create's inner flatMap encountered ANY, but the enclosing 'if (l.contains(ANY))' " +
+                  "guard above already returns ANY early whenever any element of l is ANY, so this branch's input " +
+                  "list can never contain ANY."
+              )
           }.toList
             .distinct,
           n

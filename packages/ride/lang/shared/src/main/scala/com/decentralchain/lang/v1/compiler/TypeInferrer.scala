@@ -98,7 +98,13 @@ object TypeInferrer {
                 case LIST(t: REAL) => Right(UNION(t :: l, None))
                 case _             => Left(err)
               }
-            case _ => ???
+            case other =>
+              throw new IllegalStateException(
+                s"Unreachable: matchTypes fold over a PARAMETERIZEDLIST/UNION accumulated a non-UNION " +
+                  s"intermediate result ($other). The accumulator starts as UNION(List(), None) and every " +
+                  s"branch of this fold either short-circuits with Left or re-wraps in UNION, so it should " +
+                  s"never become anything else."
+              )
           }
         }.flatMap { t =>
           matchTypes(t, innerTypeParam, knownTypes, argTypeStr, matchingTypeStr)
@@ -121,7 +127,13 @@ object TypeInferrer {
           parameterized
             .foldLeft(error) { case (result, nextParameter) =>
               val nonMatchedArgTypes = argType match {
-                case NOTHING            => ???
+                case NOTHING =>
+                  throw new IllegalStateException(
+                    "Unreachable: matchTypes reached the parameterized-union branch with argType = NOTHING. " +
+                      "NOTHING has an empty typeList, so the preceding guard " +
+                      "'concretes >= UNION.create(argType.typeList)' is always true for it and the enclosing " +
+                      "'else' branch should never be entered."
+                  )
                 case UNION(argTypes, _) => UNION(argTypes.filterNot(concretes.typeList.contains))
                 case ANY                => ANY
                 case s: SINGLE          => s
