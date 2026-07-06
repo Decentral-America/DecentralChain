@@ -313,7 +313,7 @@ class Parser(stdLibVersion: StdLibVersion)(implicit offset: LibrariesOffset) {
     def pattern(implicit c: fastparse.P[Any]): P[Pattern] =
       (varDefP ~ comment ~ typesDefP).map { case (v, t) => TypedVar(v, t) } |
         (Index ~ "(" ~ pattern.rep(min = 2, sep = ",") ~/ ")" ~ Index).map(p => TuplePat(p._2, Pos(p._1, p._3))) |
-        (Index ~ anyVarName() ~ "(" ~ (anyVarName() ~ "=" ~ pattern).rep(min = objPatMin, sep = ",") ~ ")" ~ Index)
+        (Index ~ anyVarName() ~ "(" ~ (NoCut(anyVarName()).filter(_.isInstanceOf[VALID[?]]) ~ "=" ~ pattern).rep(min = objPatMin, sep = ",") ~ ")" ~ Index)
           .map(p => ObjPat(p._3.map(kp => (PART.toOption(kp._1).get, kp._2)).toMap, Single(p._2, None), Pos(p._1, p._4))) |
         (Index ~ baseExpr.rep(min = 1, sep = "|") ~ Index).map(p => ConstsPat(p._2, Pos(p._1, p._3)))
 

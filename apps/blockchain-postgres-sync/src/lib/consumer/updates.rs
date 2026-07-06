@@ -153,8 +153,13 @@ impl UpdatesSourceImpl {
                 ));
             };
 
-            last_height =
-                u32::try_from(update.height).expect("blockchain height is always non-negative");
+            last_height = u32::try_from(update.height).map_err(|e| {
+                error!(
+                    "received invalid (negative) block height {}: {}",
+                    update.height, e
+                );
+                AppError::StreamError(format!("invalid block height {}: {e}", update.height))
+            })?;
             match BlockchainUpdate::try_from(update) {
                 Ok(upd) => {
                     let current_batch_size = result.len() + 1;

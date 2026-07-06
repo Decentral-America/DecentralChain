@@ -81,7 +81,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <script
             // biome-ignore lint/security/noDangerouslySetInnerHtml: controlled server data, not user input
             dangerouslySetInnerHTML={{
-              __html: `window.__DCC_CONFIG__=${JSON.stringify(config)};`,
+              // Escape "<" so a future value containing "</script>" can't break out of this
+              // script tag context (e.g. via "</script><script>...").
+              __html: `window.__DCC_CONFIG__=${JSON.stringify(config).replace(/</g, '\\u003c')};`,
             }}
           />
         )}

@@ -63,6 +63,60 @@ parser, compiler, estimator, and repl logic only.
 **Tracking**: sbt-scoverage issue tracker — upgrade to a future version of
 sbt-scoverage that fixes Scala 3 closure instrumentation.
 
+### 3a. Re-investigated 2026-07-05 — no scoverage upgrade available; JaCoCo spiked and rejected
+
+**sbt-scoverage upgrade path: not available.** `2.4.4` is the *latest* published
+release of `sbt-scoverage` as of this investigation (confirmed against both the
+GitHub releases API and the Maven Central artifact listing for
+`org.scoverage:sbt-scoverage_2.12_1.0` — `2.4.4` is the newest version on both).
+The underlying `scalac-scoverage-plugin` has since published `2.5.0`–`2.5.2`, but
+their changelogs contain no mention of a Scala 3 closure/boxing fix (bumped
+scala-xml, added Scala 2.12.21 support, added "incremental coverage support" —
+nothing related to KNOWN-3), and `sbt-scoverage` itself has not picked up a build
+against them. There is currently nothing newer to bump to. Re-check this
+periodically by re-running the Maven Central listing check below; do not assume
+this is permanent.
+
+```
+curl -s https://repo1.maven.org/maven2/org/scoverage/sbt-scoverage_2.12_1.0/ \
+  | grep -oE 'href="[0-9][^"]*/"' | sed 's/href="//;s/\/"//' | sort -V | tail -5
+```
+
+**JaCoCo spike: attempted, reverted.** `sbt-jacoco` (`com.github.sbt % sbt-jacoco`,
+latest `3.6.0`) is actively maintained (releases as recently as this month) and,
+because it instruments compiled `.class` bytecode rather than doing AST/compiler-
+plugin instrumentation, it does not go anywhere near the Scala-3-compiler-integrated
+instrumentation path that causes KNOWN-3. A spike was run: added the plugin,
+enabled `JacocoItPlugin` on `lang-jvm`, scoped it to the evaluator package via
+`jacocoIncludes := Seq("com.decentralchain.lang.v1.evaluator.*")`, and ran
+`sbt lang/jacoco`. It instrumented successfully (911 classes, no BoxedUnit/
+ClassCastException), but reported **0 % coverage across the board**. Root cause:
+`sbt-jacoco`'s `jacoco` task instruments and runs `Test/test` *within the project
+it's scoped to*. The evaluator's actual exercising tests live in `lang-tests`
+(depending on `lang-testkit` → `lang-jvm`), not in `lang-jvm` itself — `lang-jvm`
+has no evaluator-exercising tests of its own, so nothing meaningful ran against the
+instrumented classes. Getting a real number out of JaCoCo here would require either:
+- pointing `lang-tests`'s test JVM at a JaCoCo javaagent targeting `lang-jvm`'s
+  instrumented classes and merging/reporting cross-project (undocumented for this
+  plugin, would need custom wiring), or
+- moving/duplicating the relevant evaluator tests into `lang-jvm` itself (would
+  fragment the existing `lang-tests` test organization for no other benefit).
+
+Both are a materially larger lift than "add a plugin and flip a setting," and
+their risk (fragile cross-project javaagent wiring, or restructuring test layout)
+is disproportionate to the payoff (a coverage *percentage*, when evaluator
+*correctness* is already fully covered by the un-instrumented `sbt test` run).
+The spike was fully reverted (`git diff` against `project/plugins.sbt` and
+`build.sbt` is clean) — no plugin bump or setting change was kept.
+
+**Recommendation**: leave KNOWN-3 open as-is (evaluator excluded from scoverage
+instrumentation, correctness verified by uninstrumented `sbt test`). If a team
+member wants to pursue JaCoCo further, the actual remaining work is the
+cross-project instrumentation wiring described above — budget roughly half a day
+for a spike of that specific mechanism (javaagent + report merge) before deciding
+whether it's worth adopting permanently, since it's unproven and undocumented for
+this multi-project-with-shared-test-project shape.
+
 ## 4. `com.wavesplatform.*` imports — RESOLVED (2026-05-19)
 
 The DCC-252 AC "zero `com.wavesplatform.lang` in .scala files" is satisfied:

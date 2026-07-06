@@ -3,7 +3,7 @@ package com.decentralchain.lang.v1.evaluator.ctx.impl.dcc
 import cats.syntax.either.*
 import cats.syntax.functor.*
 import cats.{Eval, Monad}
-import com.decentralchain.lang.ExecutionError
+import com.decentralchain.lang.{CommonError, ExecutionError}
 import com.decentralchain.lang.directives.values.StdLibVersion
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.*
@@ -110,8 +110,10 @@ object Vals {
                 case aid: Environment.AssetId => aid.id
               }
             )
-            .map(v => buildAssetInfo(v.get, version): EVALUATED)
-            .map(_.asRight[ExecutionError])
+            .map {
+              case Some(info) => (buildAssetInfo(info, version): EVALUATED).asRight[ExecutionError]
+              case None       => CommonError("Asset info is unavailable in this evaluation context").asLeft[EVALUATED]
+            }
         }
     }
 
@@ -121,8 +123,10 @@ object Vals {
         Eval.later {
           env
             .lastBlockOpt()
-            .map(v => Bindings.buildBlockInfo(v.get, version): EVALUATED)
-            .map(_.asRight[ExecutionError])
+            .map {
+              case Some(info) => (Bindings.buildBlockInfo(info, version): EVALUATED).asRight[ExecutionError]
+              case None => CommonError("Last block info is unavailable in this evaluation context").asLeft[EVALUATED]
+            }
         }
     }
 

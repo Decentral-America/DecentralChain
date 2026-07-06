@@ -10,7 +10,12 @@
 
 #![allow(clippy::unwrap_used)]
 
-use diesel::{Connection, RunQueryDsl, pg::PgConnection, sql_query};
+use diesel::{
+    Connection, RunQueryDsl,
+    pg::PgConnection,
+    sql_query,
+    sql_types::{Integer, Nullable, VarChar},
+};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use testcontainers::{ContainerAsync, ImageExt, runners::AsyncRunner};
 use testcontainers_modules::postgres::Postgres;
@@ -55,16 +60,14 @@ fn insert_block(conn: &mut PgConnection, id: &str, height: i32, time_stamp: Opti
         uid: i64,
     }
 
-    let ts_expr = match time_stamp {
-        Some(ts) => format!("'{ts}'::timestamptz"),
-        None => "NULL".to_string(),
-    };
-
-    let rows: Vec<Uid> = sql_query(format!(
+    let rows: Vec<Uid> = sql_query(
         "INSERT INTO blocks_microblocks (id, height, time_stamp) \
-         VALUES ('{id}', {height}, {ts_expr}) \
-         RETURNING uid"
-    ))
+         VALUES ($1, $2, $3::timestamptz) \
+         RETURNING uid",
+    )
+    .bind::<VarChar, _>(id)
+    .bind::<Integer, _>(height)
+    .bind::<Nullable<VarChar>, _>(time_stamp)
     .load(conn)
     .unwrap();
 

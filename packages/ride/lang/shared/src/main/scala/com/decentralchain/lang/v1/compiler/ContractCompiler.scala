@@ -19,6 +19,7 @@ import com.decentralchain.lang.v1.compiler.CompilationError.{
 }
 import com.decentralchain.lang.v1.compiler.CompilerContext.VariableInfo
 import com.decentralchain.lang.v1.compiler.ContractCompiler.*
+import com.decentralchain.lang.v1.compiler.ExpressionCompiler.getValidated
 import com.decentralchain.lang.v1.compiler.ScriptResultSource.FreeCall
 import com.decentralchain.lang.v1.compiler.Terms.EXPR
 import com.decentralchain.lang.v1.compiler.Types.{BOOLEAN, BYTESTR, LONG, STRING}
@@ -106,7 +107,13 @@ class ContractCompiler(version: StdLibVersion) extends ExpressionCompiler(versio
       parseNodeExpr = af.copy(f = compiledBody._1.parseNodeExpr.asInstanceOf[Expressions.FUNC])
       resultAnnFunc =
         if (annotatedFuncWithErr._2.isEmpty && !compiledBody._1.dec.isItFailed) {
-          Some(annotatedFuncWithErr._1.get)
+          Some(
+            getValidated(
+              annotatedFuncWithErr._1,
+              annotatedFuncWithErr._2,
+              "compileAnnotatedFunc: annotated function result"
+            )
+          )
         } else {
           None
         }
@@ -160,7 +167,7 @@ class ContractCompiler(version: StdLibVersion) extends ExpressionCompiler(versio
               Iterable[CompilationError]
           )
         ](af => local(compileAnnotatedFunc(af, saveExprContext, allowIllFormedStrings, source)))
-      annotatedFuncs   = compiledAnnFuncsWithErr.filter(_._1.nonEmpty).map(_._1.get)
+      annotatedFuncs   = compiledAnnFuncsWithErr.flatMap(_._1)
       parsedNodeAFuncs = compiledAnnFuncsWithErr.map(_._3)
 
       duplicatedFuncNames = annotatedFuncs
@@ -196,8 +203,10 @@ class ContractCompiler(version: StdLibVersion) extends ExpressionCompiler(versio
         .handleError()
 
       callableFuncsWithParams = compiledAnnFuncsWithErr.filter(_._1.exists(_.isInstanceOf[CallableFunction]))
-      callableFuncs           = callableFuncsWithParams.map(_._1.get.asInstanceOf[CallableFunction])
-      callableFuncsTypeInfo   = callableFuncsWithParams.map { case (_, typedParams, _, _) =>
+      callableFuncs           = callableFuncsWithParams.map(t =>
+        getValidated(t._1, "compileContract: callable function narrowing").asInstanceOf[CallableFunction]
+      )
+      callableFuncsTypeInfo = callableFuncsWithParams.map { case (_, typedParams, _, _) =>
         typedParams.map(_._2)
       }
 
@@ -244,7 +253,12 @@ class ContractCompiler(version: StdLibVersion) extends ExpressionCompiler(versio
       result =
         if (errorList.isEmpty && !compiledAnnFuncsWithErr.exists(_._1.isEmpty)) {
 
-          var resultDApp = DApp(metaWithErr._1.get, decs, callableFuncs, verifierFuncOptWithErr._1.get)
+          var resultDApp = DApp(
+            getValidated(metaWithErr._1, errorList, "compileContract: DApp meta"),
+            decs,
+            callableFuncs,
+            getValidated(verifierFuncOptWithErr._1, errorList, "compileContract: verifier function")
+          )
 
           if (removeUnusedCode) resultDApp = ContractScriptCompactor.removeUnusedCode(resultDApp)
           if (needCompaction) {
@@ -430,7 +444,7 @@ object ContractCompiler {
           .flatMap(res =>
             Either.cond(
               res._3.isEmpty,
-              res._1.get,
+              getValidated(res._1, res._3, "ContractCompiler.apply: successful compilation result"),
               s"Compilation failed: [${res._3.map(e => Show[CompilationError].show(e)).mkString("; ")}]"
             )
           )
@@ -489,8 +503,14 @@ object ContractCompiler {
                      else
                        List(
                          Generic(
-                           removedCharPosOpt.get.start,
-                           removedCharPosOpt.get.end,
+                           getValidated(
+                             removedCharPosOpt,
+                             "compileWithParseResult: removed-char recovery position"
+                           ).start,
+                           getValidated(
+                             removedCharPosOpt,
+                             "compileWithParseResult: removed-char recovery position"
+                           ).end,
                            "Parsing failed. Some chars was removed as result of recovery process."
                          )
                        ))

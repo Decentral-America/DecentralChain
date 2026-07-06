@@ -71,7 +71,11 @@ class EvaluatorV1[F[_]: Monad, C[_[_]]](implicit ev: Monad[EvalF[F]], ev2: Monad
     evalExpr(cond).flatMap {
       case TRUE  => evalExprWithCtx(ifTrue)
       case FALSE => evalExprWithCtx(ifFalse)
-      case _     => ???
+      case other =>
+        throw new IllegalStateException(
+          s"Unreachable: IF condition evaluated to non-Boolean value $other. " +
+            s"The type checker guarantees IF conditions have type Boolean before evaluation reaches this point."
+        )
     }
 
   private def evalGetter(expr: EXPR, field: String): EvalM[F, C, (EvaluationContext[C, F], EVALUATED)] =
