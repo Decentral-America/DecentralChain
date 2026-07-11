@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: read
+  id-token: write        # reusable _publish-maven.yml requests these (SBOM + SLSA build-provenance);
+  attestations: write    # a caller must grant >= the reusable job's permissions, else GitHub startup-fails
 
 concurrency:
   group: publish-protobuf-schemas
