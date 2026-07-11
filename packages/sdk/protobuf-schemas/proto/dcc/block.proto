@@ -73,3 +73,46 @@ message FinalizationVoting {
     bytes aggregated_endorsement_signature = 3; // BLS
     repeated EndorseBlock conflict_endorsements = 4;
 }
+
+// --- T2 HotStuff BFT fast-finality (see CONSENSUS.md) ---
+// Wire messages for the pipelined 3-phase HotStuff engine over the committed-generator committee.
+// GATED behind dcc.hotstuff.enabled (default off); testnet-first. The exact field semantics
+// (what is signed, phase transitions) are subject to consensus-design review, and the wire format
+// may evolve until mainnet enablement (which is gated on external audit + testnet soak).
+enum HotStuffPhase {
+    HOTSTUFF_PHASE_UNSPECIFIED = 0;
+    HOTSTUFF_PHASE_PREPARE = 1;
+    HOTSTUFF_PHASE_PRE_COMMIT = 2;
+    HOTSTUFF_PHASE_COMMIT = 3;
+}
+
+// A single committed generator's vote for a block in a given view and phase.
+// Signature is a BLS signature over the canonical encoding of (view, phase, block_id, block_height).
+message HotStuffVote {
+    uint32 view = 1;              // monotonic round/view number
+    HotStuffPhase phase = 2;
+    bytes block_id = 3;           // block being voted on
+    uint32 block_height = 4;
+    int32 voter_index = 5;        // index in the committed generator set for the period
+    bytes signature = 6;          // BLS
+}
+
+// Aggregated proof that >= 2/3 of committed stake voted for (view, phase, block_id).
+// aggregated_signature is the BLS aggregate of the individual HotStuffVote signatures from signer_indexes.
+message QuorumCertificate {
+    uint32 view = 1;
+    HotStuffPhase phase = 2;
+    bytes block_id = 3;
+    uint32 block_height = 4;
+    repeated int32 signer_indexes = 5;   // committed generators whose votes are aggregated
+    bytes aggregated_signature = 6;      // BLS aggregate
+}
+
+// A leader's HotStuff proposal: extend `block_id` at `view`, justified by `justify` (the highQC the
+// leader is extending). The `justify` linkage is what lets replicas verify the prepare→pre-commit→
+// commit chain (the 3-chain commit rule) — without it the safety rule has no justification to check.
+message HotStuffProposal {
+    uint32 view = 1;
+    bytes block_id = 2;
+    QuorumCertificate justify = 3;
+}

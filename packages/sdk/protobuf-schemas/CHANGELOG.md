@@ -1,3 +1,9 @@
+## JVM 1.6.4 (unreleased)
+
+### 🚀 Features
+
+- Add T2 HotStuff wire messages to `dcc/block.proto`: `HotStuffPhase`, `HotStuffVote`, `QuorumCertificate`, `HotStuffProposal` (feature `feature/hotstuff-t2`, gated behind `dcc.hotstuff.enabled`, testnet-first). `HotStuffProposal` carries the justify-QC linkage the 3-chain commit rule requires. Wire format may evolve until mainnet enablement.
+
 ## 3.1.0 (2026-06-23)
 
 ### 🩹 Fixes
