@@ -340,7 +340,12 @@
                         <configuration>
                             <publishingServerId>central</publishingServerId>
                             <deploymentName>${project.artifactId}-${project.version}</deploymentName>
-                            <autoPublish>false</autoPublish>
+                            <autoPublish>true</autoPublish>
+                            <!-- Return after upload; the Central Portal validates + auto-publishes async.
+                                 Without a bounded wait the plugin polled for a deployment state that never
+                                 arrived and hung until the 30-minute job timeout (the prior publish failures,
+                                 10x "empty comment" poll warnings). -->
+                            <waitUntil>uploaded</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
