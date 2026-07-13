@@ -19,7 +19,7 @@ export const NETWORK_CONFIG: Record<
   }
 > = {
   [NetworkName.Testnet]: {
-    matcherBaseUrl: 'https://matcher.decentralchain.io/',
+    matcherBaseUrl: 'https://testnet-matcher.decentralchain.io/',
     name: NetworkName.Testnet,
     networkCode: '!',
     nodeBaseUrl: 'https://testnet-node.decentralchain.io/',
