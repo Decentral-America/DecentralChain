@@ -3,7 +3,6 @@ package com.decentralchain.lang.v1.evaluator.ctx.impl.dcc
 import cats.syntax.either.*
 import cats.syntax.functor.*
 import cats.{Eval, Monad}
-import com.decentralchain.lang.{CommonError, ExecutionError}
 import com.decentralchain.lang.directives.values.StdLibVersion
 import com.decentralchain.lang.v1.compiler.Terms.*
 import com.decentralchain.lang.v1.compiler.Types.*
@@ -25,6 +24,7 @@ import com.decentralchain.lang.v1.traits.domain.Tx.{
   SponsorFeePseudoTx
 }
 import com.decentralchain.lang.v1.traits.domain.{Ord, OrdType, PseudoTx, Recipient, Tx}
+import com.decentralchain.lang.{CommonError, ExecutionError}
 
 object Vals {
   def tx(
