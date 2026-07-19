@@ -143,7 +143,11 @@ jobs:
     name: Quality Gate (sbt bulletproof)
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    # Also run on pull_request: this job asserts real correctness (scalafmt,
+    # scalafixAll, unused/undeclared deps, tests) — gating it to main/dev only
+    # meant violations were invisible during review and only surfaced after
+    # merge (see the scalafixAll import-order fix that had to follow up).
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event_name == 'pull_request'
     timeout-minutes: 60
 
     steps:
