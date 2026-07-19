@@ -57,6 +57,8 @@ overrides:
   tmp: '>=0.2.7'
   # form-data@<4.0.6 has CRLF injection (GHSA-hmw2-7cc7-3qxx)
   form-data: '>=4.0.6'
+  # morgan@<=1.10.1 has log forging via unneutralized control chars in :remote-user (GHSA-4vj7-5mj6-jm8m)
+  morgan: '>=1.11.0'
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
   basic-ftp: '>=5.3.1'
