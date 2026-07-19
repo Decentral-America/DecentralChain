@@ -392,6 +392,23 @@
                      which are released yet — track for a follow-up bump. -->
                 <version>2.22.0</version>
             </dependency>
+            <!-- vertx-core transitive via org.web3j:crypto -> tuweni-bytes -> vertx-core.
+                 4.5.11 is vulnerable to CVE-2026-1002 (fixed 4.5.24/5.0.7) and
+                 CVE-2026-6860 (fixed 4.5.27/5.0.12). Pinned to latest 4.x patch —
+                 5.x is a major bump web3j/tuweni haven't adopted yet. -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>4.5.30</version>
+            </dependency>
+            <!-- logback-core transitive via logback-classic. Pinned explicitly (not
+                 just via logback-classic's own version) so static analysis tools
+                 that don't resolve transitive POMs still see the patched version. -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.5.38</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -420,11 +437,13 @@
             <version>1.6.2</version>
         </dependency>
 
-        <!-- logging (runtime / test only) -->
+        <!-- logging (runtime / test only)
+             1.5.32 pulls in logback-core vulnerable to CVE-2026-10532 (fixed 1.5.34)
+             and CVE-2026-9828 (fixed 1.5.33) — bumped to latest 1.5.x patch. -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.32</version>
+            <version>1.5.38</version>
             <scope>test</scope>
         </dependency>
 
