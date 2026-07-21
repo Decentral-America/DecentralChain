@@ -68,6 +68,27 @@ export async function migrateSchema(): Promise<void> {
       CREATE INDEX IF NOT EXISTS load_test_runs_started_at_idx
         ON load_test_runs (started_at DESC)
     `;
+    // E2E runs now execute as a dispatched GitHub Actions workflow (see
+    // api.e2e.stream.ts) rather than a local subprocess — this table is the
+    // audit trail, mirroring load_test_runs above.
+    await sql`
+      CREATE TABLE IF NOT EXISTS e2e_runs (
+        id            UUID        PRIMARY KEY,
+        started_at    TIMESTAMPTZ NOT NULL,
+        completed_at  TIMESTAMPTZ NOT NULL,
+        run_by        TEXT        NOT NULL,
+        suite         TEXT        NOT NULL,
+        conclusion    TEXT,
+        total_tests   INTEGER,
+        passed_tests  INTEGER,
+        failed_tests  INTEGER,
+        gh_run_url    TEXT
+      )
+    `;
+    await sql`
+      CREATE INDEX IF NOT EXISTS e2e_runs_started_at_idx
+        ON e2e_runs (started_at DESC)
+    `;
     logger.info('DB schema migration complete');
   } catch (err) {
     logger.error({ err }, 'DB schema migration failed — load test history will be unavailable');
