@@ -298,8 +298,13 @@ describe('Exchange (type 7, matcher)', () => {
   it('crossing buy + sell orders produce an on-chain Exchange TX that settles both sides', async () => {
     if (skip || !assetId) return;
 
-    const PRICE = 1_000_000; // price per token in DCC wavelets
-    const AMOUNT = 50_000; // = seller's exact token balance; SpendAmount = 50_000 × 1_000_000 / 10^8 = 500 > 0
+    // Price must be high enough that trade proceeds exceed the matcher's own
+    // fixed order fee (300,000 wavelets, confirmed live) -- otherwise the
+    // seller's fee outweighs what they receive and nets negative DCC, which
+    // isn't a settlement bug, just an uneconomic trade. Proceeds here:
+    // 50_000 × 100_000_000_000 / 10^8 = 50,000,000 wavelets, ~166x the fee.
+    const PRICE = 100_000_000_000;
+    const AMOUNT = 50_000; // = seller's exact token balance
 
     const [buyerAssetBefore, sellerAssetBefore, buyerDccBefore, sellerDccBefore] =
       await Promise.all([
