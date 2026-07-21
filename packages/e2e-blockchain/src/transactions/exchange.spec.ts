@@ -122,8 +122,13 @@ describe('Exchange (type 7, matcher)', () => {
     buyer = randomTestAccount(CHAIN_ID);
     seller = randomTestAccount(CHAIN_ID);
 
+    // Buyer pays the default issue fee (1 DCC) + a transfer fee (0.001 DCC)
+    // out of this before any order is ever placed, leaving well under 0.1 DCC
+    // of the original 110,000,000 -- nowhere near enough margin once the
+    // final crossing test's trade cost is a meaningful (non-uneconomic)
+    // amount. Fund generously so that isn't a limiting factor.
     await Promise.all([
-      fundAccount(buyer.address, 110_000_000, MASTER_SEED, API_BASE, CHAIN_ID),
+      fundAccount(buyer.address, 300_000_000, MASTER_SEED, API_BASE, CHAIN_ID),
       fundAccount(seller.address, 50_000_000, MASTER_SEED, API_BASE, CHAIN_ID),
     ]);
 
