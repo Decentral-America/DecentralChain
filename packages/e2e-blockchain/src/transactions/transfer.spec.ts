@@ -281,4 +281,43 @@ describe('Transfer (type 4)', () => {
 
     await expect(broadcast(tx, API_BASE)).rejects.toThrow();
   });
+
+  it('transfer exceeding sender balance is rejected', async () => {
+    // A freshly created, unfunded account cannot possibly cover this amount plus fee.
+    const sender = randomTestAccount(CHAIN_ID);
+    const recipient = randomTestAccount(CHAIN_ID);
+
+    const tx = transfer(
+      {
+        amount: 100_000_000_000_000,
+        chainId: CHAIN_ID,
+        recipient: recipient.address,
+      },
+      sender.seed,
+    );
+
+    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
+  });
+
+  it('transfer with a tampered signature is rejected', async () => {
+    const recipient = randomTestAccount(CHAIN_ID);
+
+    const tx = transfer(
+      {
+        amount: 100_000,
+        chainId: CHAIN_ID,
+        recipient: recipient.address,
+      },
+      MASTER_SEED,
+    );
+
+    // Flip the proof's leading character so it stays syntactically valid base58 but no
+    // longer verifies against the sender's public key — the node must reject this at
+    // broadcast, not silently accept a transaction with an invalid proof.
+    const original = tx.proofs[0] ?? '';
+    const replacementChar = original.startsWith('1') ? '2' : '1';
+    tx.proofs[0] = replacementChar + original.slice(1);
+
+    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
+  });
 });

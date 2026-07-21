@@ -261,13 +261,53 @@ describe('Exchange (type 7, matcher)', () => {
     expect(orderIds).toHaveLength(2);
   });
 
-  // ── crossing orders produce an Exchange TX on-chain ───────────────────────
+  // ── auth: only the order owner may cancel it ─────────────────────────────
 
-  it('crossing buy + sell orders produce an on-chain Exchange TX', async () => {
+  it("a non-owner cannot cancel another account's order", async () => {
+    if (skip || !assetId) return;
+
+    const ownerOrder = order(
+      {
+        amount: 10_000,
+        amountAsset: assetId,
+        chainId: CHAIN_ID,
+        matcherPublicKey: matcherPubKey,
+        orderType: 'buy',
+        price: 1_000_000,
+        priceAsset: null,
+      },
+      buyer.seed,
+    );
+    const placed = await placeOrder(ownerOrder);
+    expect(placed.message.id).toBeTruthy();
+    const orderId = placed.message.id;
+
+    try {
+      // Cancel request signed by SELLER, targeting BUYER's order — must be rejected.
+      const forgedCancel = cancelOrder({ orderId }, seller.seed);
+      await expect(cancelMatcherOrder(assetId, null, forgedCancel)).rejects.toThrow();
+    } finally {
+      // Clean up with the real owner so this order doesn't linger for later tests.
+      const realCancel = cancelOrder({ orderId }, buyer.seed);
+      await cancelMatcherOrder(assetId, null, realCancel);
+    }
+  });
+
+  // ── crossing orders produce an Exchange TX on-chain AND settle correctly ──
+
+  it('crossing buy + sell orders produce an on-chain Exchange TX that settles both sides', async () => {
     if (skip || !assetId) return;
 
     const PRICE = 1_000_000; // price per token in DCC wavelets
     const AMOUNT = 50_000; // = seller's exact token balance; SpendAmount = 50_000 × 1_000_000 / 10^8 = 500 > 0
+
+    const [buyerAssetBefore, sellerAssetBefore, buyerDccBefore, sellerDccBefore] =
+      await Promise.all([
+        assetBalance(buyer.address, assetId),
+        assetBalance(seller.address, assetId),
+        dccBalance(buyer.address),
+        dccBalance(seller.address),
+      ]);
 
     // Seller places sell order first
     const sellOrd = order(
@@ -301,11 +341,41 @@ describe('Exchange (type 7, matcher)', () => {
     const buyPlaced = await placeOrder(buyOrd);
     expect(buyPlaced.message.id).toBeTruthy();
 
-    // Wait for matcher to fill the orders and produce an Exchange TX
-    const filled = await waitForFill(assetId, null, buyPlaced.message.id, 60_000);
-    // Soft assertion: if the matcher is slow it may not fill within 60s
-    if (!filled) {
-      console.warn('Crossing orders not filled within 60s — matcher may be slow');
-    }
+    // The DEX's core guarantee is that a matched trade actually settles — a status poll
+    // that soft-warns on timeout does not prove that. Hard-fail if it never fills.
+    const filled = await waitForFill(assetId, null, buyPlaced.message.id, 90_000);
+    expect(filled).toBe(true);
+
+    const [buyerAssetAfter, sellerAssetAfter, buyerDccAfter, sellerDccAfter] = await Promise.all([
+      assetBalance(buyer.address, assetId),
+      assetBalance(seller.address, assetId),
+      dccBalance(buyer.address),
+      dccBalance(seller.address),
+    ]);
+
+    // Buyer gained the traded asset amount; seller lost it.
+    expect(buyerAssetAfter - buyerAssetBefore).toBe(AMOUNT);
+    expect(sellerAssetBefore - sellerAssetAfter).toBe(AMOUNT);
+
+    // Buyer's DCC decreased (paid price*amount + fees); seller's DCC increased
+    // (received proceeds, net of matcher fee) — exact fee math isn't asserted here since
+    // it depends on live fee schedule, but the DIRECTION of each side's balance movement
+    // is the actual thing this test exists to prove was previously unverified.
+    expect(buyerDccAfter).toBeLessThan(buyerDccBefore);
+    expect(sellerDccAfter).toBeGreaterThan(sellerDccBefore);
   });
 });
+
+async function assetBalance(addr: string, assetId: string): Promise<number> {
+  const res = await fetch(`${API_BASE}assets/balance/${addr}/${assetId}`);
+  if (!res.ok) throw new Error(`assets/balance: HTTP ${res.status}`);
+  const { balance } = (await res.json()) as { balance: number };
+  return balance;
+}
+
+async function dccBalance(addr: string): Promise<number> {
+  const res = await fetch(`${API_BASE}addresses/balance/${addr}`);
+  if (!res.ok) throw new Error(`addresses/balance: HTTP ${res.status}`);
+  const { balance } = (await res.json()) as { balance: number };
+  return balance;
+}

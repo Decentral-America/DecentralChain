@@ -50,8 +50,10 @@ export const ALL_SPECS = {
   e2e: ['src/e2e/defi-flow.spec.ts', 'src/e2e/token-launch.spec.ts'],
   network: [
     'src/network/data-service.spec.ts',
+    'src/network/finality.spec.ts',
     'src/network/node-api.spec.ts',
     'src/network/peers.spec.ts',
+    'src/network/rest-coverage.spec.ts',
   ],
   performance: ['src/performance/throughput.spec.ts'],
   transactions: [
