@@ -346,6 +346,12 @@ describe('Exchange (type 7, matcher)', () => {
     const filled = await waitForFill(assetId, null, buyPlaced.message.id, 90_000);
     expect(filled).toBe(true);
 
+    // The matcher marks an order Filled the instant it matches in-memory, well
+    // before the resulting Exchange TX actually confirms on-chain (observed
+    // ~7s of broadcast/retry lag live) — poll the seller's real on-chain
+    // balance rather than reading it immediately after the fill status flips.
+    await waitForAssetBalanceChange(seller.address, assetId, sellerAssetBefore, 60_000);
+
     const [buyerAssetAfter, sellerAssetAfter, buyerDccAfter, sellerDccAfter] = await Promise.all([
       assetBalance(buyer.address, assetId),
       assetBalance(seller.address, assetId),
@@ -378,4 +384,18 @@ async function dccBalance(addr: string): Promise<number> {
   if (!res.ok) throw new Error(`addresses/balance: HTTP ${res.status}`);
   const { balance } = (await res.json()) as { balance: number };
   return balance;
+}
+
+/** Polls an address's on-chain asset balance until it differs from `before` or times out. */
+async function waitForAssetBalanceChange(
+  addr: string,
+  assetId: string,
+  before: number,
+  timeoutMs: number,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if ((await assetBalance(addr, assetId)) !== before) return;
+    await new Promise((r) => setTimeout(r, 3_000));
+  }
 }
