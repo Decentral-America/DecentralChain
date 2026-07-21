@@ -310,3 +310,75 @@ describe('InvokeScript (type 16)', () => {
     }
   }, TIMEOUT);
 });
+
+// ── RIDE compilation-error rejection ──────────────────────────────────────────
+// compileScript's error path is implemented (helpers/compile.ts) but was never
+// exercised by any spec — every script compiled anywhere in this suite was valid.
+
+describe('RIDE compilation rejects invalid source', () => {
+  vi.setConfig({ testTimeout: TIMEOUT });
+
+  it('a syntactically invalid dApp is rejected by /utils/script/compileCode', async () => {
+    const brokenSource = `
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE DAPP #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+@Callable(i)
+func broken() = {
+  this is not valid RIDE syntax at all +++ )))
+}
+`.trim();
+
+    await expect(compileScript(brokenSource, API_BASE)).rejects.toThrow();
+  });
+});
+
+// ── RIDE script-complexity ceiling ────────────────────────────────────────────
+// MaxCallableComplexityByVersion(V5) = 10000 (node-scala lang/.../ContractLimits.scala);
+// sigVerify costs 200 complexity at STDLIB_VERSION 5 (CryptoContext.scala). 60 chained
+// calls = 12000, comfortably over the ceiling — deployment must be rejected.
+
+describe('RIDE script-complexity limit', () => {
+  vi.setConfig({ testTimeout: TIMEOUT });
+
+  it('a callable function exceeding the complexity ceiling is rejected at deploy', async () => {
+    const CALL_COUNT = 60; // 60 * 200 = 12,000 > MaxCallableComplexityByVersion(V5) = 10,000
+    const checks = Array.from(
+      { length: CALL_COUNT },
+      (_, i) => `let c${i} = sigVerify(base58'', base58'', base58'')`,
+    ).join('\n  ');
+    const combined = Array.from({ length: CALL_COUNT }, (_, i) => `c${i}`).join(' && ');
+
+    const tooExpensive = `
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE DAPP #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+@Callable(i)
+func tooExpensive() = {
+  ${checks}
+  if (${combined}) then [] else []
+}
+`.trim();
+
+    // The node may reject this either at compile time (complexity checked during
+    // compileCode) or only at setScript/deploy time (complexity checked per-callable
+    // against the chain's committed script) — both are legitimate enforcement points,
+    // so accept rejection at either stage as long as it IS rejected somewhere.
+    let compiledB64: string | null = null;
+    try {
+      compiledB64 = await compileScript(tooExpensive, API_BASE);
+    } catch {
+      return; // rejected at compile time — ceiling enforced, test passes
+    }
+
+    const deployer = randomTestAccount(CHAIN_ID);
+    await fundAccount(deployer.address, FUND, MASTER_SEED, API_BASE, CHAIN_ID);
+    const deployTx = setScript(
+      { chainId: CHAIN_ID, fee: 1_000_000, script: compiledB64 },
+      deployer.seed,
+    );
+    await expect(broadcast(deployTx, API_BASE)).rejects.toThrow();
+  });
+});

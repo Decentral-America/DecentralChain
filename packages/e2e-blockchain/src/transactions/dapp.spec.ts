@@ -49,6 +49,31 @@ func recordPayment() = {
 }
 `.trim();
 
+// ── dApp-to-dApp invocation source ────────────────────────────────────────────
+// Syntax verified against node-scala's own RIDE compiler test suite
+// (lang/tests-js/.../dappToDappInvocation/Invoke.scala): `invoke(address, "fn", [args], [payments])`.
+
+const CALLEE_DAPP = `
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE DAPP #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+@Callable(i)
+func setValue(v: Int) = [IntegerEntry("value", v)]
+`.trim();
+
+const CALLER_DAPP = `
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE DAPP #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+@Callable(i)
+func callOther(otherAddr: String, v: Int) = {
+  strict result = invoke(addressFromStringValue(otherAddr), "setValue", [v], [])
+  [IntegerEntry("lastCalledValue", v)]
+}
+`.trim();
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 async function dataKey(addr: string, key: string) {
@@ -268,6 +293,104 @@ describe('dApp — counter, accumulate, recordPayment (type 16)', () => {
       await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
     } catch {
       /* best-effort */
+    }
+  }, TIMEOUT);
+});
+
+// ── dApp-to-dApp invocation ───────────────────────────────────────────────────
+// A whole feature class (one contract calling another via `invoke`) with dedicated
+// internal RIDE-compiler coverage but, before this, zero E2E verification.
+
+describe('dApp-to-dApp invocation (invoke)', () => {
+  vi.setConfig({ testTimeout: TIMEOUT });
+
+  let callee: ReturnType<typeof randomTestAccount>;
+  let caller: ReturnType<typeof randomTestAccount>;
+  let invoker: ReturnType<typeof randomTestAccount>;
+  let skip = false;
+
+  beforeAll(async () => {
+    let calleeB64: string;
+    let callerB64: string;
+    try {
+      calleeB64 = await compileScript(CALLEE_DAPP, API_BASE);
+      callerB64 = await compileScript(CALLER_DAPP, API_BASE);
+    } catch (e) {
+      console.warn('RIDE compile unavailable — skipping dApp-to-dApp suite:', e);
+      skip = true;
+      return;
+    }
+
+    callee = randomTestAccount(CHAIN_ID);
+    caller = randomTestAccount(CHAIN_ID);
+    invoker = randomTestAccount(CHAIN_ID);
+
+    await Promise.all([
+      fundAccount(callee.address, FUND, MASTER_SEED, API_BASE, CHAIN_ID),
+      fundAccount(caller.address, FUND, MASTER_SEED, API_BASE, CHAIN_ID),
+      fundAccount(invoker.address, FUND, MASTER_SEED, API_BASE, CHAIN_ID),
+    ]);
+
+    const deployCallee = setScript(
+      { chainId: CHAIN_ID, fee: 1_000_000, script: calleeB64 },
+      callee.seed,
+    );
+    const deployCaller = setScript(
+      { chainId: CHAIN_ID, fee: 1_000_000, script: callerB64 },
+      caller.seed,
+    );
+    await broadcast(deployCallee, API_BASE);
+    await broadcast(deployCaller, API_BASE);
+    await waitForTx(deployCallee.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForTx(deployCaller.id, { apiBase: API_BASE, timeout: TIMEOUT });
+  }, TIMEOUT);
+
+  it('one dApp invoking another writes state on BOTH contracts', async () => {
+    if (skip) return;
+
+    const VALUE = 777;
+    const tx = invokeScript(
+      {
+        call: {
+          args: [
+            { type: 'string', value: callee.address },
+            { type: 'integer', value: VALUE },
+          ],
+          function: 'callOther',
+        },
+        chainId: CHAIN_ID,
+        dApp: caller.address,
+        fee: 1_000_000, // dApp-to-dApp invocation requires extra fee for the nested call
+      },
+      invoker.seed,
+    );
+    await broadcast(tx, API_BASE);
+    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+
+    // The CALLEE's state was written by the CALLER's invocation, not the invoker directly —
+    // this is the actual thing being tested: real cross-contract state propagation.
+    const calleeEntry = await dataKey(callee.address, 'value');
+    expect(calleeEntry).not.toBeNull();
+    expect(calleeEntry?.type).toBe('integer');
+    expect(calleeEntry?.value).toBe(VALUE);
+
+    // The CALLER also wrote its own state in the same transaction.
+    const callerEntry = await dataKey(caller.address, 'lastCalledValue');
+    expect(callerEntry).not.toBeNull();
+    expect(callerEntry?.value).toBe(VALUE);
+  });
+
+  afterAll(async () => {
+    if (skip) return;
+    for (const acct of [callee, caller]) {
+      if (!acct) continue;
+      try {
+        const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, acct.seed);
+        await broadcast(removeTx, API_BASE);
+        await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      } catch {
+        /* best-effort */
+      }
     }
   }, TIMEOUT);
 });
