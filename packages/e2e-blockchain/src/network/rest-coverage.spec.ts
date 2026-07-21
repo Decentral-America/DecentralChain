@@ -126,9 +126,11 @@ describe('REST endpoint coverage', () => {
     }, TIMEOUT);
 
     it('GET /assets/{id}/distribution returns holder distribution', async () => {
-      const res = await fetch(
-        `${API_BASE}assets/${assetId}/distribution/${await currentHeight()}/limit/10`,
-      );
+      // The node deliberately rejects querying distribution AT the live tip height
+      // (HTTP 400, error 199: "...can lead to inconsistent result") — query one
+      // block behind the tip instead, which is always safely in the past.
+      const height = (await currentHeight()) - 1;
+      const res = await fetch(`${API_BASE}assets/${assetId}/distribution/${height}/limit/10`);
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { items?: Record<string, number>; hasNext?: boolean };
       expect(body).toBeTruthy();

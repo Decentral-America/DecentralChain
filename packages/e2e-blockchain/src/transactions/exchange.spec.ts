@@ -81,7 +81,7 @@ async function waitForFill(
 ): Promise<boolean> {
   const amt = amountAsset ?? 'DCC';
   const price = priceAsset ?? 'DCC';
-  const url = `${MATCHER_URL}/matcher/orderbook/${amt}/${price}/publicKey/${orderId}`;
+  const url = `${MATCHER_URL}/matcher/orderbook/${amt}/${price}/${orderId}`;
   const deadline = Date.now() + timeoutMs;
 
   while (Date.now() < deadline) {
