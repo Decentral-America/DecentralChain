@@ -1,8 +1,35 @@
-import { type ChildProcess, spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { getSql } from '@/lib/db';
+import {
+  cancelRun,
+  type DispatchTarget,
+  dispatchWorkflow,
+  downloadArtifactFile,
+  pollRunStatus,
+  type RunConclusion,
+  type RunStatus,
+  resolveDispatchedRun,
+} from '@/lib/github-actions-runner';
 import { logger } from '@/lib/logger';
+
+// ── Why this doesn't spawn anything locally ─────────────────────────────────
+//
+// E2E execution happens in an isolated GitHub Actions runner (infra's
+// admin-e2e.yml), not in this container — this route is a thin control plane:
+// dispatch the workflow, poll its status, fetch the structured results once
+// it finishes. The funded test seed and rate-limit bypass key live only as
+// GitHub Actions secrets and never pass through this process. See
+// api.load-test.stream.ts for the parallel design (dispatched load-tester).
+
+const TARGET: DispatchTarget = {
+  owner: 'Decentral-America',
+  ref: 'main',
+  repo: 'infra',
+  workflowFile: 'admin-e2e.yml',
+};
+
+const POLL_INTERVAL_MS = 4_000;
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -13,14 +40,12 @@ async function getUser(request: Request): Promise<string | null> {
 
 export type E2ESuite = 'smoke' | 'full' | 'custom';
 
-// Smoke suite: fast subset of specs that cover the three main categories.
 export const SMOKE_SPECS = [
   'src/transactions/transfer.spec.ts',
   'src/transactions/invoke-script.spec.ts',
   'src/network/node-api.spec.ts',
 ];
 
-// All available spec files grouped by category.
 export const ALL_SPECS = {
   e2e: ['src/e2e/defi-flow.spec.ts', 'src/e2e/token-launch.spec.ts'],
   network: [
@@ -53,8 +78,61 @@ export const ALL_SPECS = {
   ],
 } as const;
 
-// Single-process assumption — same pattern as the load-tester.
-const runs = new Map<string, ChildProcess>();
+interface VitestJsonAssertionResult {
+  title: string;
+  fullName: string;
+  status: 'passed' | 'failed' | 'skipped' | 'pending';
+  duration?: number;
+  failureMessages?: string[];
+}
+interface VitestJsonTestResult {
+  name: string;
+  status: 'passed' | 'failed';
+  assertionResults: VitestJsonAssertionResult[];
+}
+interface VitestJsonReport {
+  numTotalTests: number;
+  numPassedTests: number;
+  numFailedTests: number;
+  testResults: VitestJsonTestResult[];
+}
+
+interface RunEntry {
+  ghRunId: number | null;
+  status: RunStatus | 'resolving';
+  conclusion: RunConclusion;
+  etag: string | null;
+  htmlUrl: string | null;
+  user: string;
+  suite: E2ESuite;
+  startedAt: Date;
+}
+
+// Single-process assumption — same as every other stream route in this app.
+const runs = new Map<string, RunEntry>();
+
+async function persistCompletedRun(
+  runId: string,
+  entry: RunEntry,
+  report: VitestJsonReport | null,
+) {
+  try {
+    const sql = getSql();
+    await sql`
+      INSERT INTO e2e_runs (
+        id, started_at, completed_at, run_by, suite, conclusion,
+        total_tests, passed_tests, failed_tests, gh_run_url
+      ) VALUES (
+        ${runId}, ${entry.startedAt}, ${new Date()}, ${entry.user}, ${entry.suite},
+        ${entry.conclusion}, ${report?.numTotalTests ?? null}, ${report?.numPassedTests ?? null},
+        ${report?.numFailedTests ?? null}, ${entry.htmlUrl}
+      )
+      ON CONFLICT (id) DO NOTHING
+    `;
+  } catch (err) {
+    logger.error({ err, runId }, 'Failed to persist e2e run to DB');
+  }
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
@@ -63,69 +141,101 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const runId = new URL(request.url).searchParams.get('runId');
   if (!runId) return new Response('Missing runId', { status: 400 });
 
-  const child = runs.get(runId);
-  if (!child) return new Response('Run not found or already completed', { status: 404 });
+  const entry = runs.get(runId);
+  if (!entry) return new Response('Run not found or already completed', { status: 404 });
 
   const stream = new ReadableStream({
     start(controller) {
       const enc = new TextEncoder();
-      let cleaned = false;
+      let closed = false;
+      let timer: ReturnType<typeof setTimeout> | null = null;
 
-      const cleanup = () => {
-        if (cleaned) return;
-        cleaned = true;
-        child.stdout?.off('data', onData);
-        child.stderr?.off('data', onStderr);
+      const send = (event: string, data: unknown) => {
+        if (closed) return;
+        controller.enqueue(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+      };
+
+      const finish = () => {
+        if (closed) return;
+        closed = true;
+        if (timer) clearTimeout(timer);
         try {
           controller.close();
         } catch {
           /* already closed */
         }
-        runs.delete(runId);
-        logger.info({ runId, user }, 'E2E stream closed');
       };
 
-      const onData = (chunk: Buffer) => {
-        for (const line of chunk.toString().split('\n')) {
-          const t = line.trimEnd();
-          if (t) {
-            // Encode as plain SSE text lines — the client renders them verbatim.
-            controller.enqueue(enc.encode(`data: ${JSON.stringify({ line: t })}\n\n`));
+      const tick = async () => {
+        if (closed) return;
+        try {
+          if (entry.ghRunId === null) {
+            const resolved = await resolveDispatchedRun(TARGET, runId);
+            entry.ghRunId = resolved.runId;
+            entry.status = resolved.status;
+            entry.conclusion = resolved.conclusion;
+            entry.etag = resolved.etag;
+            entry.htmlUrl = resolved.htmlUrl;
+            send('status', {
+              conclusion: entry.conclusion,
+              htmlUrl: entry.htmlUrl,
+              status: entry.status,
+            });
+          } else {
+            const polled = await pollRunStatus(TARGET, entry.ghRunId, entry.etag);
+            if (polled !== 'unchanged') {
+              entry.status = polled.status;
+              entry.conclusion = polled.conclusion;
+              entry.etag = polled.etag;
+              send('status', {
+                conclusion: entry.conclusion,
+                htmlUrl: entry.htmlUrl,
+                status: entry.status,
+              });
+            }
           }
-        }
-      };
 
-      const onStderr = (chunk: Buffer) => {
-        for (const line of chunk.toString().split('\n')) {
-          const t = line.trimEnd();
-          if (t) {
-            controller.enqueue(
-              enc.encode(`data: ${JSON.stringify({ line: t, stderr: true })}\n\n`),
-            );
+          if (entry.status === 'completed' && entry.ghRunId !== null) {
+            let report: VitestJsonReport | null = null;
+            try {
+              const bytes = await downloadArtifactFile(
+                TARGET,
+                entry.ghRunId,
+                `e2e-results-${runId}`,
+                'e2e-results.json',
+              );
+              if (bytes) report = JSON.parse(new TextDecoder().decode(bytes)) as VitestJsonReport;
+            } catch (err) {
+              logger.error({ err, runId }, 'Failed to fetch/parse e2e results artifact');
+            }
+
+            send('result', { report });
+            await persistCompletedRun(runId, entry, report);
+            send('exit', { conclusion: entry.conclusion });
+            runs.delete(runId);
+            finish();
+            return;
           }
+        } catch (err) {
+          logger.error({ err, runId }, 'E2E status poll failed');
+          send('exit', {
+            conclusion: 'failure',
+            error: err instanceof Error ? err.message : String(err),
+          });
+          runs.delete(runId);
+          finish();
+          return;
         }
+
+        timer = setTimeout(() => void tick(), POLL_INTERVAL_MS);
       };
 
-      child.stdout?.on('data', onData);
-      child.stderr?.on('data', onStderr);
-      child.once('close', (code) => {
-        controller.enqueue(enc.encode(`data: ${JSON.stringify({ code, event: 'exit' })}\n\n`));
-        cleanup();
-      });
-      child.once('error', (err) => {
-        logger.error({ err, runId }, 'E2E process error');
-        controller.enqueue(
-          enc.encode(
-            `data: ${JSON.stringify({ code: -1, error: err.message, event: 'exit' })}\n\n`,
-          ),
-        );
-        cleanup();
-      });
+      void tick();
 
-      request.signal.addEventListener('abort', () => {
-        child.kill('SIGTERM');
-        cleanup();
-      });
+      // The dashboard tab closing does NOT cancel the underlying CI run — it
+      // keeps running regardless (that's the point of moving execution off
+      // this box). It only stops relaying updates to this particular client.
+      request.signal.addEventListener('abort', finish);
     },
   });
 
@@ -139,6 +249,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
+function hasActiveRun(): boolean {
+  for (const entry of runs.values()) {
+    if (entry.status !== 'completed') return true;
+  }
+  return false;
+}
+
 export async function action({ request }: ActionFunctionArgs) {
   const user = await getUser(request);
   if (!user) return new Response('Unauthorized', { status: 401 });
@@ -147,56 +264,47 @@ export async function action({ request }: ActionFunctionArgs) {
   const intent = body.intent;
 
   if (intent === 'start') {
-    const runId = crypto.randomUUID();
-    const suitePath = process.env.E2E_SUITE_PATH ?? '/opt/dcc/DecentralChain';
-
-    if (!existsSync(suitePath)) {
-      // Deliberately unset in production (compose/admin-dashboard.yml sets
-      // E2E_SUITE_PATH=/dev/null/disabled — the image ships only itself, not
-      // the full monorepo). Any other missing path is a real misconfiguration.
-      const message =
-        suitePath === '/dev/null/disabled'
-          ? 'E2E test suite is disabled in this environment.'
-          : `E2E suite not found at "${suitePath}". Mount the DecentralChain checkout at that path, or set E2E_SUITE_PATH to its location.`;
-      logger.error({ suitePath, user }, 'E2E run: suite path missing');
-      return new Response(message, { status: 503 });
+    if (hasActiveRun()) {
+      return Response.json(
+        { error: 'An E2E run is already in progress. Wait for it to finish, or stop it first.' },
+        { status: 409 },
+      );
     }
 
-    // Accept explicit spec list or fall back to suite presets
     const customSpecs = Array.isArray(body.specs) ? (body.specs as string[]) : null;
     const suite: E2ESuite =
       body.suite === 'smoke' ? 'smoke' : body.suite === 'custom' ? 'custom' : 'full';
     const specsToRun = customSpecs ?? (suite === 'smoke' ? SMOKE_SPECS : []);
 
-    const args = [
-      '--filter',
-      '@decentralchain/e2e-blockchain',
-      'exec',
-      'vitest',
-      'run',
-      '--reporter=verbose',
-      ...specsToRun,
-    ];
-
-    const child = spawn('pnpm', args, {
-      cwd: suitePath,
-      env: { ...process.env },
-      stdio: ['ignore', 'pipe', 'pipe'],
+    const runId = crypto.randomUUID();
+    // Reserve the slot synchronously before any await, so a rapid double-click
+    // can't race past the hasActiveRun() check above.
+    runs.set(runId, {
+      conclusion: null,
+      etag: null,
+      ghRunId: null,
+      htmlUrl: null,
+      startedAt: new Date(),
+      status: 'resolving',
+      suite,
+      user,
     });
 
-    // Without this, a spawn-time failure (bad cwd, command not found) emits an
-    // 'error' event with no listener attached yet — Node treats that as an
-    // unhandled exception and crashes the process. The loader() SSE stream
-    // attaches its own listener once the client connects, but that can be
-    // seconds after spawn(); this one exists purely to survive the gap.
-    child.once('error', (err) => {
-      logger.error({ err, runId, suitePath }, 'E2E process failed to start');
+    try {
+      await dispatchWorkflow(TARGET, runId, {
+        specs: specsToRun.join(' '),
+        suite,
+      });
+    } catch (err) {
       runs.delete(runId);
-    });
+      logger.error({ err, runId }, 'Failed to dispatch E2E workflow');
+      return Response.json(
+        { error: err instanceof Error ? err.message : 'Failed to dispatch E2E workflow' },
+        { status: 502 },
+      );
+    }
 
-    runs.set(runId, child);
-    logger.info({ runId, suite, suitePath, user }, 'E2E run started');
-
+    logger.info({ runId, suite, user }, 'E2E run dispatched');
     return Response.json({ runId });
   }
 
@@ -205,12 +313,12 @@ export async function action({ request }: ActionFunctionArgs) {
     if (typeof runId !== 'string') {
       return Response.json({ error: 'runId must be a string' }, { status: 400 });
     }
-    const child = runs.get(runId);
-    if (child) {
-      child.kill('SIGTERM');
-      runs.delete(runId);
-      logger.info({ runId, user }, 'E2E run stopped by user');
+    const entry = runs.get(runId);
+    if (entry?.ghRunId !== null && entry?.ghRunId !== undefined) {
+      await cancelRun(TARGET, entry.ghRunId);
     }
+    runs.delete(runId);
+    logger.info({ runId, user }, 'E2E run cancelled by user');
     return Response.json({ ok: true });
   }
 
