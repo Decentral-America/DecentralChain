@@ -380,6 +380,54 @@ describe('Exchange (type 7, matcher)', () => {
     expect(buyerDccAfter).toBeLessThan(buyerDccBefore);
     expect(sellerDccAfter).toBeGreaterThan(sellerDccBefore);
   });
+
+  // ── an order expiring too soon is rejected ────────────────────────────────
+
+  it('an order expiring below the matcher minimum lifetime is rejected', async () => {
+    if (skip || !assetId) return;
+
+    // OrderValidator.MinExpiration = 60,000ms (matcher/dex/.../OrderValidator.scala) —
+    // an order expiring 1s from now is well under that floor.
+    const tooSoonOrder = order(
+      {
+        amount: 10_000,
+        amountAsset: assetId,
+        chainId: CHAIN_ID,
+        expiration: Date.now() + 1_000,
+        matcherPublicKey: matcherPubKey,
+        orderType: 'buy',
+        price: 1_000_000,
+        priceAsset: null,
+      },
+      buyer.seed,
+    );
+
+    await expect(placeOrder(tooSoonOrder)).rejects.toThrow();
+  });
+
+  // ── public matcher endpoints beyond order placement/status ────────────────
+
+  describe('matcher settings/status endpoints', () => {
+    it('GET /matcher/settings/rates is reachable', async () => {
+      if (skip) return;
+      const res = await fetch(`${MATCHER_URL}/matcher/settings/rates`);
+      expect(res.ok).toBe(true);
+      const body = await res.json();
+      expect(body).toBeTruthy();
+    });
+
+    it('GET /matcher/orderbook/{pair}/status is reachable', async () => {
+      if (skip || !assetId) return;
+      const res = await fetch(`${MATCHER_URL}/matcher/orderbook/${assetId}/DCC/status`);
+      expect([200, 404]).toContain(res.status);
+    });
+
+    it('GET /matcher/orderbook/{pair}/info is reachable', async () => {
+      if (skip || !assetId) return;
+      const res = await fetch(`${MATCHER_URL}/matcher/orderbook/${assetId}/DCC/info`);
+      expect([200, 404]).toContain(res.status);
+    });
+  });
 });
 
 async function assetBalance(addr: string, assetId: string): Promise<number> {

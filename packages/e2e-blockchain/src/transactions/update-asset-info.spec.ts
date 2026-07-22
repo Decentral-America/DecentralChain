@@ -163,4 +163,28 @@ describe('UpdateAssetInfo (type 17)', () => {
     );
     await expect(broadcast(tx, API_BASE)).rejects.toThrow();
   });
+
+  // ── cooldown rejection — always runs, no catch-and-skip ──────────────────
+  //
+  // The three tests above only assert a successful update, and silently skip
+  // the assertion entirely if the cooldown (currently ~46 days on testnet) is
+  // still active — which on a live chain is true almost all the time, so in
+  // practice they rarely assert anything. This test instead deterministically
+  // TRIGGERS the cooldown (issue a fresh asset, update it immediately) and
+  // hard-asserts the rejection, so the cooldown enforcement itself is
+  // actually verified rather than assumed.
+
+  it('updating an asset before the cooldown period elapses is rejected', async () => {
+    const assetId = await issueToken(
+      issuer.seed,
+      uniqueName('CLD'),
+      'Fresh asset, immediate update',
+    );
+
+    const tx = updateAssetInfo(
+      { assetId, chainId: CHAIN_ID, description: 'Too soon', name: uniqueName('TOO') },
+      issuer.seed,
+    );
+    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
+  });
 });
