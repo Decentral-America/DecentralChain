@@ -37,6 +37,7 @@ export type {
   ICommitToGenerationParams,
   IDataParams,
   IDeleteDataEntry,
+  IInvokeExpressionParams,
   IInvokeScriptParams,
   IIssueParams,
   ILeaseParams,
@@ -63,6 +64,7 @@ export { cancelLease } from './transactions/cancel-lease';
 export { commitToGeneration } from './transactions/commit-to-generation';
 export { data } from './transactions/data';
 export { exchange } from './transactions/exchange';
+export { invokeExpression } from './transactions/invoke-expression';
 export { invokeScript } from './transactions/invoke-script';
 export { issue } from './transactions/issue';
 export { lease } from './transactions/lease';

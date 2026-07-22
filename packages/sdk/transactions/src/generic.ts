@@ -24,8 +24,7 @@ export function addProof(tx: WithProofs, proof: string, index?: number) {
   }
   if (!Number.isInteger(index) || index < 0 || index >= 8)
     throw new Error(`Proof index must be an integer between 0 and 7, got: ${index}`);
-  if (tx.proofs != null && !!tx.proofs[index])
-    throw new Error(`Proof at index ${index} already exists.`);
+  if (tx.proofs?.[index]) throw new Error(`Proof at index ${index} already exists.`);
   for (let i = tx.proofs.length; i < index; i++) tx.proofs.push('');
   tx.proofs[index] = proof;
   return tx;

@@ -9,6 +9,7 @@ export const TYPES: typeof TRANSACTION_TYPE = Object.freeze({
   ETHEREUM: 18 as const,
   EXCHANGE: 7 as const,
   GENESIS: 1 as const,
+  INVOKE_EXPRESSION: 20 as const,
   INVOKE_SCRIPT: 16 as const,
   ISSUE: 3 as const,
   LEASE: 8 as const,

@@ -7,6 +7,7 @@ import {
   type DataTransactionEntry,
   type ExchangeTransaction,
   type ExchangeTransactionOrder,
+  type InvokeExpressionTransaction,
   type InvokeScriptCall,
   type InvokeScriptCallArgument,
   type InvokeScriptPayment,
@@ -69,6 +70,7 @@ interface TConvertMap<TO, T extends SignableTransaction<unknown>> {
   >;
   [TYPES.UPDATE_ASSET_INFO]: TReplaceParam<T, 'fee', TO>;
   [TYPES.COMMIT_TO_GENERATION]: TReplaceParam<T, 'fee', TO>;
+  [TYPES.INVOKE_EXPRESSION]: TReplaceParam<T, 'fee', TO>;
 }
 
 type TReplaceParam<T, KEYS, NEW_VALUE> = {
@@ -227,6 +229,11 @@ const commitToGeneration = <FROM, TO, TX extends CommitToGenerationTransaction<F
   factory: IFactory<FROM, TO>,
 ) => defaultConvert(tx, factory);
 
+const invokeExpression = <FROM, TO, TX extends InvokeExpressionTransaction<FROM>>(
+  tx: TX,
+  factory: IFactory<FROM, TO>,
+) => defaultConvert(tx, factory);
+
 // The implementation signature's return type is a wide union. TypeScript cannot
 // verify that TReplaceParam over a narrowed union variant (e.g. CancelLeaseV1)
 // is assignable to the parent SignableTransaction<TO> union, because of Phantom
@@ -276,6 +283,8 @@ function convertImpl<FROM, TO>(
       return updateAssetInfo(tx, factory);
     case TYPES.COMMIT_TO_GENERATION:
       return commitToGeneration(tx, factory);
+    case TYPES.INVOKE_EXPRESSION:
+      return invokeExpression(tx, factory);
     default:
       throw new Error('Unknown transaction type!');
   }

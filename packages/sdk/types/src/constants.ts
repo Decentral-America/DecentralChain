@@ -18,6 +18,7 @@ export const INVOKE_SCRIPT_TYPE = 16 as const;
 export const UPDATE_ASSET_INFO_TYPE = 17 as const;
 export const ETHEREUM = 18 as const;
 export const COMMIT_TO_GENERATION_TYPE = 19 as const;
+export const INVOKE_EXPRESSION_TYPE = 20 as const;
 
 // ── Data Field Type IDs ─────────────────────────────────────────────────────
 export const INTEGER_DATA_TYPE = 'integer' as const;
@@ -35,6 +36,7 @@ export const TRANSACTION_TYPE = {
   ETHEREUM: ETHEREUM,
   EXCHANGE: EXCHANGE_TYPE,
   GENESIS: GENESIS_TYPE,
+  INVOKE_EXPRESSION: INVOKE_EXPRESSION_TYPE,
   INVOKE_SCRIPT: INVOKE_SCRIPT_TYPE,
   ISSUE: ISSUE_TYPE,
   LEASE: LEASE_TYPE,
