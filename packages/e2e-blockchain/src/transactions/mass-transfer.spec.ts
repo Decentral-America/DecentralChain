@@ -211,16 +211,19 @@ describe('MassTransfer (type 11)', () => {
     // MassTransferTransaction.MaxTransferCount = 100 (node-scala's
     // MassTransferTransaction.scala) — 101 must be rejected, complementing the
     // existing "100 confirms" test which only proves the max itself works.
+    // The SDK validates this client-side and throws during construction
+    // (before broadcast is ever called), so both must be inside the wrapper.
     const tooMany = Array.from({ length: 101 }, () => randomTestAccount(CHAIN_ID));
 
-    const tx = massTransfer(
-      {
-        chainId: CHAIN_ID,
-        transfers: tooMany.map((r) => ({ amount: 100_000, recipient: r.address })),
-      },
-      MASTER_SEED,
-    );
-
-    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
+    await expect(async () => {
+      const tx = massTransfer(
+        {
+          chainId: CHAIN_ID,
+          transfers: tooMany.map((r) => ({ amount: 100_000, recipient: r.address })),
+        },
+        MASTER_SEED,
+      );
+      await broadcast(tx, API_BASE);
+    }).rejects.toThrow();
   });
 });
