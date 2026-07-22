@@ -1,6 +1,6 @@
 import { broadcast, cancelLease, lease, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
-import { randomTestAccount } from '../helpers/accounts';
+import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
@@ -114,5 +114,21 @@ describe('Lease/CancelLease (types 8/9)', () => {
     );
 
     await expect(broadcast(cancelTx, API_BASE)).rejects.toThrow();
+  });
+
+  it('leasing more than available balance is rejected', async () => {
+    const poorAccount = randomTestAccount(CHAIN_ID);
+    await fundAccount(poorAccount.address, 10_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const tx = lease(
+      {
+        amount: 1_000_000_000_000, // far more than the 0.1 DCC funded
+        chainId: CHAIN_ID,
+        recipient: LEASE_RECIPIENT.address,
+      },
+      poorAccount.seed,
+    );
+
+    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
   });
 });

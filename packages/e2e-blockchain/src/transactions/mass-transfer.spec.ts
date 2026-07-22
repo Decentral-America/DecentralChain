@@ -206,4 +206,21 @@ describe('MassTransfer (type 11)', () => {
       expect(data.balance).toBe(10);
     }
   });
+
+  it('mass transfer exceeding the 100-recipient protocol max is rejected', async () => {
+    // MassTransferTransaction.MaxTransferCount = 100 (node-scala's
+    // MassTransferTransaction.scala) — 101 must be rejected, complementing the
+    // existing "100 confirms" test which only proves the max itself works.
+    const tooMany = Array.from({ length: 101 }, () => randomTestAccount(CHAIN_ID));
+
+    const tx = massTransfer(
+      {
+        chainId: CHAIN_ID,
+        transfers: tooMany.map((r) => ({ amount: 100_000, recipient: r.address })),
+      },
+      MASTER_SEED,
+    );
+
+    await expect(broadcast(tx, API_BASE)).rejects.toThrow();
+  });
 });

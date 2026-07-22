@@ -140,4 +140,21 @@ describe('Data transaction (type 12)', () => {
       await broadcast(emptyKeyTx, API_BASE);
     }).rejects.toThrow();
   });
+
+  it('a value exceeding the per-entry size limit is rejected', async () => {
+    // DataEntry.MaxValueSize = Short.MaxValue (32,767 bytes) in node-scala's
+    // state/DataEntry.scala — one byte over that must be rejected.
+    const oversizedValue = 'x'.repeat(32_768);
+
+    await expect(async () => {
+      const tx = data(
+        {
+          chainId: CHAIN_ID,
+          data: [{ key: `${PREFIX}_oversized`, type: 'string', value: oversizedValue }],
+        },
+        MASTER_SEED,
+      );
+      await broadcast(tx, API_BASE);
+    }).rejects.toThrow();
+  });
 });

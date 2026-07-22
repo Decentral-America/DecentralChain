@@ -54,6 +54,7 @@ export const ALL_SPECS = {
     'src/network/node-api.spec.ts',
     'src/network/peers.spec.ts',
     'src/network/rest-coverage.spec.ts',
+    'src/network/rest-coverage-2.spec.ts',
   ],
   performance: ['src/performance/throughput.spec.ts'],
   transactions: [
@@ -72,6 +73,8 @@ export const ALL_SPECS = {
     'src/transactions/leasing.spec.ts',
     'src/transactions/mass-transfer.spec.ts',
     'src/transactions/pipeline.spec.ts',
+    'src/transactions/ride-collections-stdlib.spec.ts',
+    'src/transactions/ride-crypto-stdlib.spec.ts',
     'src/transactions/set-script.spec.ts',
     'src/transactions/smart-assets.spec.ts',
     'src/transactions/sponsorship.spec.ts',

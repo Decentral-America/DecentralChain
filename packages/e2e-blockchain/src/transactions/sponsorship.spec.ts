@@ -232,4 +232,70 @@ describe('Sponsorship (type 14)', () => {
     const details = (await res.json()) as { minSponsoredAssetFee: number };
     expect(details.minSponsoredAssetFee).toBe(250);
   });
+
+  it('sponsored transfer is rejected when the sponsor has run out of DCC', async () => {
+    // A sponsor pays the REAL network fee in DCC on the user's behalf, receiving
+    // the sponsored-asset fee in return. If the sponsor's own DCC balance can't
+    // cover it, the sponsored fee payment must be rejected even though the user
+    // holds plenty of the sponsored asset. Fund the sponsor with EXACTLY enough
+    // for issue (1 DCC) + enable-sponsorship (0.001 DCC) + one transfer (0.001
+    // DCC), leaving 0 DCC by the time the sponsored transfer is attempted.
+    const sponsor = randomTestAccount(CHAIN_ID);
+    await fundAccount(sponsor.address, 100_200_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const issueTx = issue(
+      {
+        chainId: CHAIN_ID,
+        decimals: 2,
+        description: 'Insufficient-sponsor-balance E2E test asset',
+        name: `SPNI${Date.now().toString(36).slice(-4).toUpperCase()}`,
+        quantity: 100_000,
+        reissuable: false,
+      },
+      sponsor.seed,
+    );
+    await broadcast(issueTx, API_BASE);
+    await waitForTx(issueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const localAssetId = issueTx.id;
+
+    const sponsorTx = setSponsor(
+      { assetId: localAssetId, chainId: CHAIN_ID, minSponsoredAssetFee: 1000 },
+      sponsor.seed,
+    );
+    await broadcast(sponsorTx, API_BASE);
+    await waitForTx(sponsorTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+
+    const user = randomTestAccount(CHAIN_ID);
+    const assetTransferTx = transfer(
+      { amount: 10_000, assetId: localAssetId, chainId: CHAIN_ID, recipient: user.address },
+      sponsor.seed,
+    );
+    await broadcast(assetTransferTx, API_BASE);
+    await waitForTx(assetTransferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+
+    // Sponsor should now have ~0 DCC — confirm before asserting the real behavior.
+    const sponsorDcc = await fetch(`${API_BASE}addresses/balance/${sponsor.address}`);
+    const { balance: sponsorBalance } = (await sponsorDcc.json()) as { balance: number };
+    expect(sponsorBalance).toBeLessThan(100_000);
+
+    const dest = randomTestAccount(CHAIN_ID);
+    const userTransferTx = transfer(
+      {
+        amount: 100,
+        assetId: localAssetId,
+        chainId: CHAIN_ID,
+        fee: 1000,
+        feeAssetId: localAssetId,
+        recipient: dest.address,
+      },
+      user.seed,
+    );
+
+    const broadcastRes = await fetch(`${API_BASE}transactions/broadcast`, {
+      body: JSON.stringify(userTransferTx),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    });
+    expect(broadcastRes.ok).toBe(false);
+  });
 });

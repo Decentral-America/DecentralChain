@@ -127,4 +127,40 @@ describe('Issue edge cases (type 3)', () => {
     const bal = await assetBalance(tx.id);
     expect(bal).toBe(1);
   });
+
+  it('decimals exceeding the 8-decimal maximum is rejected', async () => {
+    // IssueTransaction.MaxAssetDecimals = 8 (node-scala's IssueTransaction.scala) —
+    // 9 must be rejected.
+    await expect(async () => {
+      const tx = issue(
+        {
+          chainId: CHAIN_ID,
+          decimals: 9,
+          description: 'Invalid decimals token',
+          name: 'BadDecimals',
+          quantity: 1_000,
+          reissuable: false,
+        },
+        MASTER_SEED,
+      );
+      await broadcast(tx, API_BASE);
+    }).rejects.toThrow();
+  });
+
+  it('zero quantity is rejected', async () => {
+    await expect(async () => {
+      const tx = issue(
+        {
+          chainId: CHAIN_ID,
+          decimals: 0,
+          description: 'Zero quantity token',
+          name: 'ZeroQty',
+          quantity: 0,
+          reissuable: false,
+        },
+        MASTER_SEED,
+      );
+      await broadcast(tx, API_BASE);
+    }).rejects.toThrow();
+  });
 });
