@@ -67,7 +67,10 @@ describe('UpdateAssetInfo (type 17)', () => {
 
   beforeAll(async () => {
     issuer = randomTestAccount(CHAIN_ID);
-    await fundAccount(issuer.address, FUND * 4, MASTER_SEED, API_BASE, CHAIN_ID);
+    // 5 tests each call issueToken (1 DCC issue fee apiece) -- fund with margin
+    // rather than an exact multiple so a 6th test can be added later without
+    // silently reintroducing this same shortfall.
+    await fundAccount(issuer.address, FUND * 6, MASTER_SEED, API_BASE, CHAIN_ID);
   }, TIMEOUT);
 
   // ── update name ───────────────────────────────────────────────────────────
