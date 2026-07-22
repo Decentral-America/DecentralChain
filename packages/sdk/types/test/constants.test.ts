@@ -23,6 +23,7 @@ import {
   GENESIS_TYPE,
   type GenesisTransaction,
   INTEGER_DATA_TYPE,
+  INVOKE_EXPRESSION_TYPE,
   INVOKE_SCRIPT_TYPE,
   type InvokeScriptCall,
   type InvokeScriptPayment,
@@ -56,7 +57,7 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe('Transaction Type Constants', () => {
-  it('should have correct numeric values for all 19 transaction types', () => {
+  it('should have correct numeric values for all 20 transaction types', () => {
     expect(GENESIS_TYPE).toBe(1);
     expect(PAYMENT_TYPE).toBe(2);
     expect(ISSUE_TYPE).toBe(3);
@@ -76,9 +77,10 @@ describe('Transaction Type Constants', () => {
     expect(UPDATE_ASSET_INFO_TYPE).toBe(17);
     expect(ETHEREUM).toBe(18);
     expect(COMMIT_TO_GENERATION_TYPE).toBe(19);
+    expect(INVOKE_EXPRESSION_TYPE).toBe(20);
   });
 
-  it('should have sequential type IDs with no gaps (1–19)', () => {
+  it('should have sequential type IDs with no gaps (1–20)', () => {
     const allTypes = [
       GENESIS_TYPE,
       PAYMENT_TYPE,
@@ -99,6 +101,7 @@ describe('Transaction Type Constants', () => {
       UPDATE_ASSET_INFO_TYPE,
       ETHEREUM,
       COMMIT_TO_GENERATION_TYPE,
+      INVOKE_EXPRESSION_TYPE,
     ];
 
     for (let i = 0; i < allTypes.length; i++) {
@@ -118,8 +121,8 @@ describe('Transaction Type Constants', () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe('TRANSACTION_TYPE lookup object', () => {
-  it('should contain exactly 19 entries', () => {
-    expect(Object.keys(TRANSACTION_TYPE)).toHaveLength(19);
+  it('should contain exactly 20 entries', () => {
+    expect(Object.keys(TRANSACTION_TYPE)).toHaveLength(20);
   });
 
   it('should map every name to the correct individual constant', () => {
@@ -141,6 +144,8 @@ describe('TRANSACTION_TYPE lookup object', () => {
     expect(TRANSACTION_TYPE.INVOKE_SCRIPT).toBe(INVOKE_SCRIPT_TYPE);
     expect(TRANSACTION_TYPE.UPDATE_ASSET_INFO).toBe(UPDATE_ASSET_INFO_TYPE);
     expect(TRANSACTION_TYPE.ETHEREUM).toBe(ETHEREUM);
+    expect(TRANSACTION_TYPE.COMMIT_TO_GENERATION).toBe(COMMIT_TO_GENERATION_TYPE);
+    expect(TRANSACTION_TYPE.INVOKE_EXPRESSION).toBe(INVOKE_EXPRESSION_TYPE);
   });
 
   it('should be frozen / immutable at the value level', () => {
@@ -191,9 +196,9 @@ describe('DATA_FIELD_TYPE lookup object', () => {
 describe('Type-level correctness', () => {
   it('TransactionType should accept all transaction type IDs', () => {
     const validTypes: Array<TransactionType> = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ];
-    expect(validTypes).toHaveLength(18);
+    expect(validTypes).toHaveLength(20);
   });
 
   it('DataFieldType should accept all data field strings', () => {
@@ -463,6 +468,7 @@ describe('TransactionMap completeness', () => {
       'UPDATE_ASSET_INFO',
       'ETHEREUM',
       'COMMIT_TO_GENERATION',
+      'INVOKE_EXPRESSION',
     ];
     expect(Object.keys(TRANSACTION_TYPE).sort()).toEqual(expectedKeys.sort());
   });

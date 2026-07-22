@@ -48,7 +48,8 @@ export type Transaction<LONG = Long> =
   | InvokeScriptTransaction<LONG>
   | UpdateAssetInfoTransaction<LONG>
   | EthereumTransaction<LONG>
-  | CommitToGenerationTransaction<LONG>;
+  | CommitToGenerationTransaction<LONG>
+  | InvokeExpressionTransaction<LONG>;
 
 // ── Signable Transaction Union ──────────────────────────────────────────────
 // User-signable transactions only — excludes system-generated types:
@@ -81,6 +82,7 @@ export type TransactionMap<LONG = Long> = {
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransaction<LONG>;
   [TRANSACTION_TYPE.ETHEREUM]: EthereumTransaction<LONG>;
   [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: CommitToGenerationTransaction<LONG>;
+  [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransaction<LONG>;
 };
 
 // ── Transaction Versions Map ────────────────────────────────────────────────
@@ -104,6 +106,7 @@ export type TransactionVersionsMap<LONG = Long> = {
   [TRANSACTION_TYPE.UPDATE_ASSET_INFO]: UpdateAssetInfoTransactionMap<LONG>;
   [TRANSACTION_TYPE.ETHEREUM]: EthereumTransactionMap<LONG>;
   [TRANSACTION_TYPE.COMMIT_TO_GENERATION]: CommitToGenerationTransactionMap<LONG>;
+  [TRANSACTION_TYPE.INVOKE_EXPRESSION]: InvokeExpressionTransactionMap<LONG>;
 };
 
 // ── Transaction Field Types ─────────────────────────────────────────────────
@@ -225,6 +228,12 @@ export type CommitToGenerationTransactionFields = {
   generationPeriodStart: number;
   endorserPublicKey: string;
   commitmentSignature: string;
+};
+
+export type InvokeExpressionTransactionFields = {
+  /** Compiled RIDE expression (CONTENT_TYPE EXPRESSION), base64-encoded */
+  expression: string;
+  feeAssetId: string | null;
 };
 
 // ── Versioned Transaction Types ─────────────────────────────────────────────
@@ -510,6 +519,15 @@ export type CommitToGenerationTransactionMap<LONG = Long> = {
   1: CommitToGenerationTransactionV1<LONG>;
 };
 
+// InvokeExpressionTransaction
+export type InvokeExpressionTransactionV1<LONG> = WithVersion<
+  InvokeExpressionTransactionFields & BaseTransaction<LONG, 20>,
+  1
+>;
+export type InvokeExpressionTransactionMap<LONG = Long> = {
+  1: InvokeExpressionTransactionV1<LONG>;
+};
+
 // ── Final Transaction Types ─────────────────────────────────────────────────
 export type GenesisTransaction<LONG = Long> = GenesisTransactionV1<LONG>;
 
@@ -748,6 +766,15 @@ export type CommitToGenerationTransactionFromNode<LONG = Long> = SignedTransacti
   WithApiMixin & {
     feeAssetId: null;
   };
+
+export type InvokeExpressionTransaction<LONG = Long> = InvokeExpressionTransactionV1<LONG>;
+
+export type InvokeExpressionTransactionFromNode<LONG = Long> = SignedTransaction<
+  InvokeExpressionTransaction<LONG>
+> &
+  WithId &
+  WithApplicationStatus &
+  WithApiMixin;
 
 // ── Exchange Transaction Order By Tx ────────────────────────────────────────
 export type ExchangeTransactionOrderByTx<TX extends ExchangeTransaction> = TX extends {

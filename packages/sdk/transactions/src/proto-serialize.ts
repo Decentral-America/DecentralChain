@@ -41,6 +41,7 @@ import {
   type ExchangeTransaction,
   type ExchangeTransactionOrder,
   type GenesisTransaction,
+  type InvokeExpressionTransaction,
   type InvokeScriptTransaction,
   type IssueTransaction,
   type LeaseTransaction,
@@ -146,6 +147,7 @@ interface ProtoTxFields {
   generationPeriodStart?: unknown;
   endorserPublicKey?: unknown;
   commitmentSignature?: unknown;
+  expression?: unknown;
   [key: string]: unknown;
 }
 
@@ -336,6 +338,11 @@ export function protoTxDataToTx(t: Transaction): TTransaction {
           : base58Encode(d.commitmentSignature);
       break;
     }
+    case 'invokeExpression': {
+      const d = t.data.value;
+      res.expression = base64Prefix(base64Encode(d.expression));
+      break;
+    }
     default:
       throw new Error(`Unsupported tx type ${t.data.case}`);
   }
@@ -384,8 +391,8 @@ const getCommonFields = ({
       transfers?: Array<{ recipient?: string }>;
       [key: string]: unknown;
     };
-    const recipient = (r.recipient ||
-      r.dApp ||
+    const recipient = (r.recipient ??
+      r.dApp ??
       (r.transfers as Array<{ recipient?: string }> | undefined)?.[0]?.recipient) as
       | string
       | undefined;
@@ -510,6 +517,10 @@ const getCommitToGenerationData = (t: CommitToGenerationTransaction) => ({
   generationPeriodStart: t.generationPeriodStart,
 });
 
+const getInvokeExpressionData = (t: InvokeExpressionTransaction) => ({
+  expression: scriptToProto(t.expression) ?? new Uint8Array(),
+});
+
 const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): unknown => {
   let txData: unknown;
 
@@ -561,6 +572,9 @@ const getTxData = (t: Exclude<TTransaction, GenesisTransaction>): unknown => {
       break;
     case TRANSACTION_TYPE.COMMIT_TO_GENERATION:
       txData = getCommitToGenerationData(t);
+      break;
+    case TRANSACTION_TYPE.INVOKE_EXPRESSION:
+      txData = getInvokeExpressionData(t);
       break;
   }
 
@@ -756,6 +770,7 @@ const nameByType = {
   16: 'invokeScript' as const,
   17: 'updateAssetInfo' as const,
   19: 'commitToGeneration' as const,
+  20: 'invokeExpression' as const,
 };
 const typeByName = {
   burn: 6 as const,
@@ -764,6 +779,7 @@ const typeByName = {
   dataTransaction: 12 as const,
   exchange: 7 as const,
   genesis: 1 as const,
+  invokeExpression: 20 as const,
   invokeScript: 16 as const,
   issue: 3 as const,
   lease: 8 as const,

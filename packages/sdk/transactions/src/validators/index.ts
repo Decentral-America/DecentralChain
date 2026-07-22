@@ -8,6 +8,7 @@ import { customDataValidator as customData } from './custom-data';
 import { dataValidator as data, dataFieldValidator } from './data';
 import { authValidator as dccAuth } from './dccAuth';
 import { exchangeValidator as exchange } from './exchange';
+import { invokeExpressionValidator as invokeExpression } from './invoke-expression';
 import { invokeValidator as invokeScript } from './invoke-script';
 import { issueValidator as issue } from './issue';
 import { leaseValidator as lease } from './lease';
@@ -34,6 +35,7 @@ export const validate = {
   dataFieldValidator,
   dccAuth,
   exchange,
+  invokeExpression,
   invokeScript,
   issue,
   lease,

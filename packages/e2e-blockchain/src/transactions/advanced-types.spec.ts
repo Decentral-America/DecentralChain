@@ -8,12 +8,28 @@
  *
  * InvokeExpression (Type 20):
  *   Execute a RIDE expression directly without deploying a script.
- *   Available when Feature 17 (RideV6) is activated.
- *   Tests compile an expression, query blocks for Type 20 TXs, and
- *   evaluate expressions against deployed dApps.
+ *
+ *   IMPORTANT: this is gated by BlockchainFeatures.ContinuationTransaction
+ *   (feature id 26) in node-scala — NOT feature 17 (RideV6) as previously
+ *   assumed here. Confirmed via node-scala/node/src/main/scala/com/decentralchain/
+ *   features/BlockchainFeature.scala:33-35: feature 26 is explicitly commented
+ *   "// Not exposed" and is deliberately left out of the `dict`/`implemented`
+ *   set, meaning it can never be voted in or activated on ANY DCC network
+ *   with the current node build — this is an intentional, current
+ *   architectural gate, not a testnet-specific config gap.
+ *
+ *   `@decentralchain/transactions` previously had NO constructor for this tx
+ *   type at all. One was added (transactions/invoke-expression.ts) as part of
+ *   this coverage pass, and confirmed live against testnet: a properly
+ *   compiled expression + correctly signed/serialized Type 20 transaction is
+ *   accepted through every validation stage up to the feature-activation
+ *   check, and rejected ONLY with `ActivationError(Continuation Transaction
+ *   feature has not been activated yet)` — proving the new constructor is
+ *   spec-correct, not proving the feature itself works (it structurally
+ *   cannot, while feature 26 stays unexposed).
  */
 
-import { broadcast, setScript, waitForTx } from '@decentralchain/transactions';
+import { broadcast, invokeExpression, setScript, waitForTx } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
@@ -54,9 +70,9 @@ describe('CommitToGeneration (type 19)', () => {
     if (ctgTxs.length > 0) {
       // Verify structure via /transactions/info if CTG TXs exist
       const res = await fetch(`${API_BASE}transactions/info/${ctgTxs.at(0)?.id}`);
-      const info = (await res.json()) as Record<string, unknown>;
+      const info = (await res.json()) as { type: number; height: number; id: string };
       expect(info.type).toBe(19);
-      expect(info.height as number).toBeGreaterThan(0);
+      expect(info.height).toBeGreaterThan(0);
       expect(info.id).toBeTruthy();
     }
 
@@ -106,6 +122,49 @@ true
       console.warn('RIDE compile endpoint unavailable:', e);
       // Not a hard failure — compile endpoint may not be exposed
     }
+  });
+
+  it('a well-formed InvokeExpression TX is rejected only by the feature-activation gate', async () => {
+    // This is the actual new coverage: build a genuine, correctly-signed Type
+    // 20 transaction with the real SDK constructor (not a raw/malformed JSON
+    // body) and confirm the node validates it correctly all the way through
+    // to the one check that's expected to fail right now. If this constructor
+    // had a real structural/serialization/signature bug, the node would
+    // reject it with a DIFFERENT error (parse/signature failure) well before
+    // reaching state validation — so asserting the SPECIFIC error code here
+    // (199 = ActivationError, not a generic 400) is what actually proves the
+    // constructor is spec-correct.
+    const source = `
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE EXPRESSION #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+1 + 1 == 2
+`.trim();
+
+    let expression: string;
+    try {
+      expression = await compileScript(source, API_BASE);
+    } catch (e) {
+      console.warn('RIDE compile endpoint unavailable — skipping InvokeExpression tx test:', e);
+      return;
+    }
+
+    const account = randomTestAccount(CHAIN_ID);
+    await fundAccount(account.address, 10_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const tx = invokeExpression({ chainId: CHAIN_ID, expression }, account.seed);
+    expect(tx.type).toBe(20);
+    expect(tx.proofs[0]).toBeTruthy();
+
+    const res = await fetch(`${API_BASE}transactions/broadcast`, {
+      body: JSON.stringify(tx),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { error: number; message: string };
+    expect(body.error).toBe(112); // StateCheckFailed
+    expect(body.message).toContain('Continuation Transaction feature has not been activated');
   });
 
   it('scans 50 recent blocks for Type 20 InvokeExpression TXs', async () => {

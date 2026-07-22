@@ -79,7 +79,8 @@ export type TTxParams<LONG = string | number> =
   | ISponsorshipParams<LONG>
   | ITransferParams<LONG>
   | IUpdateAssetInfoParams<LONG>
-  | ICommitToGenerationParams<LONG>;
+  | ICommitToGenerationParams<LONG>
+  | IInvokeExpressionParams<LONG>;
 
 /**
  * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
@@ -351,6 +352,18 @@ export interface ICommitToGenerationParams<LONG = string | number> extends IBasi
   generationPeriodStart: number;
   endorserPublicKey?: string;
   commitmentSignature?: string;
+}
+
+/**
+ * @typeparam LONG Generic type representing LONG type. Default to string | number. Since javascript number more than 2 ** 53 -1 cannot be precisely represented, generic type is used
+ */
+export interface IInvokeExpressionParams<LONG = string | number> extends IBasicParams<LONG> {
+  /**
+   * Compiled RIDE expression (CONTENT_TYPE EXPRESSION), base64-encoded — as
+   * returned by /utils/script/compileCode
+   */
+  expression: string;
+  feeAssetId?: string | null;
 }
 
 export type TTransaction = Exclude<
