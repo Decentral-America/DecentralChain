@@ -1,0 +1,5 @@
+# No current suppressions — all known HIGH/CRITICAL findings are fixed at the
+# dependency-version level (see packages/jvm/*/pom.xml, node-scala Dependencies.scala).
+# Add entries here only with an inline comment explaining why the real fix isn't
+# available yet, and remove them the moment a fix is published (see git history
+# for prior examples of stale unignore-when-fixed entries).
