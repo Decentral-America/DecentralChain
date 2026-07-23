@@ -52,7 +52,11 @@ overrides:
   undici: "^7.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
-  axios: '>=1.16.0'
+  # axios <1.18.0: NO_PROXY 0.0.0.0 bypass, prototype-pollution auth/request-construction
+  # gadgets, Node adapter proxy-after-interceptor-clone (GHSA advisories, several HIGH/MEDIUM).
+  axios: '>=1.18.0'
+  # sharp <0.35.0 inherits several libvips CVEs (CVE-2026-33327/33328/35590/35591).
+  sharp: '>=0.35.0'
   # tmp@0.2.6 is vulnerable (GHSA-7c78-jf6q-g5cm); 0.2.7 patches it
   tmp: '>=0.2.7'
   # form-data@<4.0.6 has CRLF injection (GHSA-hmw2-7cc7-3qxx)
@@ -62,9 +66,12 @@ overrides:
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
   basic-ftp: '>=5.3.1'
-  brace-expansion: '>=5.0.6'
+  # brace-expansion <5.0.7: DoS via exponential-time expansion of consecutive
+  # non-expanding {} groups.
+  brace-expansion: '>=5.0.7'
   defu: '>=6.1.5'
-  fast-xml-parser: '>=5.7.0'
+  # fast-xml-parser <5.10.1: repeated DOCTYPE declarations reset entity expansion limits.
+  fast-xml-parser: '>=5.10.1'
   follow-redirects: '>=1.16.0'
   ip-address: '>=10.1.1'
   lodash: '>=4.18.1'
