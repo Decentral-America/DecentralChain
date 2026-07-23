@@ -2,8 +2,8 @@
 // @generated from file dcc/block.proto (package dcc, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { SignedTransaction } from "./transaction_pb.js";
 import { file_dcc_transaction } from "./transaction_pb.js";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dcc/block.proto.
  */
 export const file_dcc_block: GenFile = /*@__PURE__*/
-  fileDesc("Cg9kY2MvYmxvY2sucHJvdG8SA2RjYyL2BQoFQmxvY2sSIQoGaGVhZGVyGAEgASgLMhEuZGNjLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLAoMdHJhbnNhY3Rpb25zGAMgAygLMhYuZGNjLlNpZ25lZFRyYW5zYWN0aW9uGogFCgZIZWFkZXISEAoIY2hhaW5faWQYASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEhMKC2Jhc2VfdGFyZ2V0GAMgASgDEhwKFGdlbmVyYXRpb25fc2lnbmF0dXJlGAQgASgMEhUKDWZlYXR1cmVfdm90ZXMYBSADKA0SEQoJdGltZXN0YW1wGAYgASgDEg8KB3ZlcnNpb24YByABKAUSEQoJZ2VuZXJhdG9yGAggASgMEhMKC3Jld2FyZF92b3RlGAkgASgDEhkKEXRyYW5zYWN0aW9uc19yb290GAogASgMEhIKCnN0YXRlX2hhc2gYCyABKAwSPQoRY2hhbGxlbmdlZF9oZWFkZXIYDCABKAsyIi5kY2MuQmxvY2suSGVhZGVyLkNoYWxsZW5nZWRIZWFkZXISNAoTZmluYWxpemF0aW9uX3ZvdGluZxgNIAEoCzIXLmRjYy5GaW5hbGl6YXRpb25Wb3RpbmcSIQoZY29tbWl0dGVkX2dlbmVyYXRvcnNfaGFzaBgOIAEoDBr7AQoQQ2hhbGxlbmdlZEhlYWRlchITCgtiYXNlX3RhcmdldBgBIAEoAxIcChRnZW5lcmF0aW9uX3NpZ25hdHVyZRgCIAEoDBIVCg1mZWF0dXJlX3ZvdGVzGAMgAygNEhEKCXRpbWVzdGFtcBgEIAEoAxIRCglnZW5lcmF0b3IYBSABKAwSEwoLcmV3YXJkX3ZvdGUYBiABKAMSEgoKc3RhdGVfaGFzaBgHIAEoDBIYChBoZWFkZXJfc2lnbmF0dXJlGAggASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYCSABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nIuQBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEiwKDHRyYW5zYWN0aW9ucxgFIAMoCzIWLmRjYy5TaWduZWRUcmFuc2FjdGlvbhISCgpzdGF0ZV9oYXNoGAYgASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYByABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nImMKEFNpZ25lZE1pY3JvQmxvY2sSJAoLbWljcm9fYmxvY2sYASABKAsyDy5kY2MuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwiqgEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMAoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhEuZGNjLkVuZG9yc2VCbG9ja0J5CiBpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5ibG9ja1pEZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zY2hlbWFzL3BrZy9ncnBjL2dlbmVyYXRlZC9kY2OqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z", [file_dcc_transaction]);
+  fileDesc("Cg9kY2MvYmxvY2sucHJvdG8SA2RjYyL2BQoFQmxvY2sSIQoGaGVhZGVyGAEgASgLMhEuZGNjLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLAoMdHJhbnNhY3Rpb25zGAMgAygLMhYuZGNjLlNpZ25lZFRyYW5zYWN0aW9uGogFCgZIZWFkZXISEAoIY2hhaW5faWQYASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEhMKC2Jhc2VfdGFyZ2V0GAMgASgDEhwKFGdlbmVyYXRpb25fc2lnbmF0dXJlGAQgASgMEhUKDWZlYXR1cmVfdm90ZXMYBSADKA0SEQoJdGltZXN0YW1wGAYgASgDEg8KB3ZlcnNpb24YByABKAUSEQoJZ2VuZXJhdG9yGAggASgMEhMKC3Jld2FyZF92b3RlGAkgASgDEhkKEXRyYW5zYWN0aW9uc19yb290GAogASgMEhIKCnN0YXRlX2hhc2gYCyABKAwSPQoRY2hhbGxlbmdlZF9oZWFkZXIYDCABKAsyIi5kY2MuQmxvY2suSGVhZGVyLkNoYWxsZW5nZWRIZWFkZXISNAoTZmluYWxpemF0aW9uX3ZvdGluZxgNIAEoCzIXLmRjYy5GaW5hbGl6YXRpb25Wb3RpbmcSIQoZY29tbWl0dGVkX2dlbmVyYXRvcnNfaGFzaBgOIAEoDBr7AQoQQ2hhbGxlbmdlZEhlYWRlchITCgtiYXNlX3RhcmdldBgBIAEoAxIcChRnZW5lcmF0aW9uX3NpZ25hdHVyZRgCIAEoDBIVCg1mZWF0dXJlX3ZvdGVzGAMgAygNEhEKCXRpbWVzdGFtcBgEIAEoAxIRCglnZW5lcmF0b3IYBSABKAwSEwoLcmV3YXJkX3ZvdGUYBiABKAMSEgoKc3RhdGVfaGFzaBgHIAEoDBIYChBoZWFkZXJfc2lnbmF0dXJlGAggASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYCSABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nIuQBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEiwKDHRyYW5zYWN0aW9ucxgFIAMoCzIWLmRjYy5TaWduZWRUcmFuc2FjdGlvbhISCgpzdGF0ZV9oYXNoGAYgASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYByABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nImMKEFNpZ25lZE1pY3JvQmxvY2sSJAoLbWljcm9fYmxvY2sYASABKAsyDy5kY2MuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwiqgEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMAoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhEuZGNjLkVuZG9yc2VCbG9jayKPAQoMSG90U3R1ZmZWb3RlEgwKBHZpZXcYASABKA0SIQoFcGhhc2UYAiABKA4yEi5kY2MuSG90U3R1ZmZQaGFzZRIQCghibG9ja19pZBgDIAEoDBIUCgxibG9ja19oZWlnaHQYBCABKA0SEwoLdm90ZXJfaW5kZXgYBSABKAUSEQoJc2lnbmF0dXJlGAYgASgMIqIBChFRdW9ydW1DZXJ0aWZpY2F0ZRIMCgR2aWV3GAEgASgNEiEKBXBoYXNlGAIgASgOMhIuZGNjLkhvdFN0dWZmUGhhc2USEAoIYmxvY2tfaWQYAyABKAwSFAoMYmxvY2tfaGVpZ2h0GAQgASgNEhYKDnNpZ25lcl9pbmRleGVzGAUgAygFEhwKFGFnZ3JlZ2F0ZWRfc2lnbmF0dXJlGAYgASgMIlsKEEhvdFN0dWZmUHJvcG9zYWwSDAoEdmlldxgBIAEoDRIQCghibG9ja19pZBgCIAEoDBInCgdqdXN0aWZ5GAMgASgLMhYuZGNjLlF1b3J1bUNlcnRpZmljYXRlKoUBCg1Ib3RTdHVmZlBoYXNlEh4KGkhPVFNUVUZGX1BIQVNFX1VOU1BFQ0lGSUVEEAASGgoWSE9UU1RVRkZfUEhBU0VfUFJFUEFSRRABEh0KGUhPVFNUVUZGX1BIQVNFX1BSRV9DT01NSVQQAhIZChVIT1RTVFVGRl9QSEFTRV9DT01NSVQQA0J5CiBpby5kZWNlbnRyYWxjaGFpbi5wcm90b2J1Zi5ibG9ja1pEZ2l0aHViLmNvbS9EZWNlbnRyYWwtQW1lcmljYS9wcm90b2J1Zi1zY2hlbWFzL3BrZy9ncnBjL2dlbmVyYXRlZC9kY2OqAg5EZWNlbnRyYWxDaGFpbmIGcHJvdG8z", [file_dcc_transaction]);
 
 /**
  * @generated from message dcc.Block
@@ -329,4 +329,174 @@ export type FinalizationVoting = Message<"dcc.FinalizationVoting"> & {
  */
 export const FinalizationVotingSchema: GenMessage<FinalizationVoting> = /*@__PURE__*/
   messageDesc(file_dcc_block, 4);
+
+/**
+ * A single committed generator's vote for a block in a given view and phase.
+ * Signature is a BLS signature over the canonical encoding of (view, phase, block_id, block_height).
+ *
+ * @generated from message dcc.HotStuffVote
+ */
+export type HotStuffVote = Message<"dcc.HotStuffVote"> & {
+  /**
+   * monotonic round/view number
+   *
+   * @generated from field: uint32 view = 1;
+   */
+  view: number;
+
+  /**
+   * @generated from field: dcc.HotStuffPhase phase = 2;
+   */
+  phase: HotStuffPhase;
+
+  /**
+   * block being voted on
+   *
+   * @generated from field: bytes block_id = 3;
+   */
+  blockId: Uint8Array;
+
+  /**
+   * @generated from field: uint32 block_height = 4;
+   */
+  blockHeight: number;
+
+  /**
+   * index in the committed generator set for the period
+   *
+   * @generated from field: int32 voter_index = 5;
+   */
+  voterIndex: number;
+
+  /**
+   * BLS
+   *
+   * @generated from field: bytes signature = 6;
+   */
+  signature: Uint8Array;
+};
+
+/**
+ * Describes the message dcc.HotStuffVote.
+ * Use `create(HotStuffVoteSchema)` to create a new message.
+ */
+export const HotStuffVoteSchema: GenMessage<HotStuffVote> = /*@__PURE__*/
+  messageDesc(file_dcc_block, 5);
+
+/**
+ * Aggregated proof that >= 2/3 of committed stake voted for (view, phase, block_id).
+ * aggregated_signature is the BLS aggregate of the individual HotStuffVote signatures from signer_indexes.
+ *
+ * @generated from message dcc.QuorumCertificate
+ */
+export type QuorumCertificate = Message<"dcc.QuorumCertificate"> & {
+  /**
+   * @generated from field: uint32 view = 1;
+   */
+  view: number;
+
+  /**
+   * @generated from field: dcc.HotStuffPhase phase = 2;
+   */
+  phase: HotStuffPhase;
+
+  /**
+   * @generated from field: bytes block_id = 3;
+   */
+  blockId: Uint8Array;
+
+  /**
+   * @generated from field: uint32 block_height = 4;
+   */
+  blockHeight: number;
+
+  /**
+   * committed generators whose votes are aggregated
+   *
+   * @generated from field: repeated int32 signer_indexes = 5;
+   */
+  signerIndexes: number[];
+
+  /**
+   * BLS aggregate
+   *
+   * @generated from field: bytes aggregated_signature = 6;
+   */
+  aggregatedSignature: Uint8Array;
+};
+
+/**
+ * Describes the message dcc.QuorumCertificate.
+ * Use `create(QuorumCertificateSchema)` to create a new message.
+ */
+export const QuorumCertificateSchema: GenMessage<QuorumCertificate> = /*@__PURE__*/
+  messageDesc(file_dcc_block, 6);
+
+/**
+ * A leader's HotStuff proposal: extend `block_id` at `view`, justified by `justify` (the highQC the
+ * leader is extending). The `justify` linkage is what lets replicas verify the prepare→pre-commit→
+ * commit chain (the 3-chain commit rule) — without it the safety rule has no justification to check.
+ *
+ * @generated from message dcc.HotStuffProposal
+ */
+export type HotStuffProposal = Message<"dcc.HotStuffProposal"> & {
+  /**
+   * @generated from field: uint32 view = 1;
+   */
+  view: number;
+
+  /**
+   * @generated from field: bytes block_id = 2;
+   */
+  blockId: Uint8Array;
+
+  /**
+   * @generated from field: dcc.QuorumCertificate justify = 3;
+   */
+  justify?: QuorumCertificate | undefined;
+};
+
+/**
+ * Describes the message dcc.HotStuffProposal.
+ * Use `create(HotStuffProposalSchema)` to create a new message.
+ */
+export const HotStuffProposalSchema: GenMessage<HotStuffProposal> = /*@__PURE__*/
+  messageDesc(file_dcc_block, 7);
+
+/**
+ * --- T2 HotStuff BFT fast-finality (see CONSENSUS.md) ---
+ * Wire messages for the pipelined 3-phase HotStuff engine over the committed-generator committee.
+ * GATED behind dcc.hotstuff.enabled (default off); testnet-first. The exact field semantics
+ * (what is signed, phase transitions) are subject to consensus-design review, and the wire format
+ * may evolve until mainnet enablement (which is gated on external audit + testnet soak).
+ *
+ * @generated from enum dcc.HotStuffPhase
+ */
+export enum HotStuffPhase {
+  /**
+   * @generated from enum value: HOTSTUFF_PHASE_UNSPECIFIED = 0;
+   */
+  HOTSTUFF_PHASE_UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: HOTSTUFF_PHASE_PREPARE = 1;
+   */
+  HOTSTUFF_PHASE_PREPARE = 1,
+
+  /**
+   * @generated from enum value: HOTSTUFF_PHASE_PRE_COMMIT = 2;
+   */
+  HOTSTUFF_PHASE_PRE_COMMIT = 2,
+
+  /**
+   * @generated from enum value: HOTSTUFF_PHASE_COMMIT = 3;
+   */
+  HOTSTUFF_PHASE_COMMIT = 3,
+}
+
+/**
+ * Describes the enum dcc.HotStuffPhase.
+ */
+export const HotStuffPhaseSchema: GenEnum<HotStuffPhase> = /*@__PURE__*/
+  enumDesc(file_dcc_block, 0);
 
