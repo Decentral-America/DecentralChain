@@ -2,25 +2,34 @@
  * DCC Ethereum compatibility layer tests.
  *
  * DecentralChain exposes an Ethereum JSON-RPC bridge at /eth and supports
- * Ethereum-signed transactions (Type 18) when Feature 18 is activated.
+ * Ethereum-signed transactions (Type 18, EIP-155) via a secp256k1 signer
+ * (`ethereumTransfer`/`ethereumAddress` in @decentralchain/transactions).
  *
  * This suite tests:
- *   - /eth JSON-RPC endpoint reachability
- *   - eth_blockNumber — block height in ETH hex format
- *   - eth_getBalance — balance lookup via ETH hex address
+ *   - /eth JSON-RPC endpoint reachability, eth_blockNumber, eth_getBalance
  *   - /eth/assets — ERC-20 asset mapping endpoint
- *   - ETH→DCC address derivation from secp256k1 public key
- *   - eth_sendRawTransaction — EIP-155 TX submission (Type 18)
- *   - Scanning blocks for Type 18 Ethereum TXs
- *
- * Requires: eth-account >= 0.10.0 and ethers (or ethers-like signing).
- * Tests that require eth library skip gracefully when unavailable.
+ *   - A real, signed EIP-155 transfer: submitted via eth_sendRawTransaction,
+ *     confirmed on-chain, with both sender and recipient balance changes
+ *     verified (including that the DCC fee is charged via gasLimit verbatim)
+ *   - Real rejections: legacy (pre-EIP-155) transactions, insufficient
+ *     balance, and the wrong gas price — all with the node's own error text
  */
 
-import { API_BASE } from '../setup/env';
+import { ethTxId2dcc } from '@decentralchain/node-api';
+import {
+  broadcastEthereum,
+  ethereumAddress,
+  ethereumTransfer,
+  waitForTx,
+} from '@decentralchain/transactions';
+import { ethereumKeyPair, ethereumSign } from '@decentralchain/ts-lib-crypto';
+import { RLP } from '@ethereumjs/rlp';
+import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 120_000;
 const ETH_RPC = `${API_BASE.replace(/\/$/, '')}/eth`; // node's ETH JSON-RPC endpoint
+const GAS_PRICE_WEI = 10_000_000_000n; // the one value the node accepts
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -34,9 +43,61 @@ async function ethRpc(method: string, params: unknown[]): Promise<unknown> {
   return (await res.json()) as unknown;
 }
 
+async function dccBalance(address: string): Promise<number> {
+  const res = await fetch(`${API_BASE}addresses/balance/${address}`);
+  const { balance } = (await res.json()) as { balance: number };
+  return balance;
+}
+
+/**
+ * Builds a deliberately non-standard raw Ethereum transaction to exercise a
+ * node-side rejection path. Intentionally NOT exposed via ethereumTransfer —
+ * real integrators should never construct a legacy or wrong-gas-price
+ * transaction on purpose.
+ */
+function signRawEthTx(params: {
+  ethPrivateKey: Uint8Array;
+  chainId: number;
+  to: Uint8Array;
+  value: bigint;
+  gasLimit?: bigint;
+  gasPrice?: bigint;
+  legacy?: boolean;
+}): string {
+  const gasPrice = params.gasPrice ?? GAS_PRICE_WEI;
+  const gasLimit = params.gasLimit ?? 100_000n;
+  const nonce = BigInt(Date.now());
+  const data = new Uint8Array(0);
+
+  const unsignedFields = params.legacy
+    ? [nonce, gasPrice, gasLimit, params.to, params.value, data]
+    : [
+        nonce,
+        gasPrice,
+        gasLimit,
+        params.to,
+        params.value,
+        data,
+        BigInt(params.chainId),
+        new Uint8Array(0),
+        new Uint8Array(0),
+      ];
+  const { r, s, recovery } = ethereumSign(params.ethPrivateKey, RLP.encode(unsignedFields));
+  const v = params.legacy
+    ? BigInt(recovery) + 27n
+    : BigInt(params.chainId) * 2n + 35n + BigInt(recovery);
+
+  const signedFields = [nonce, gasPrice, gasLimit, params.to, params.value, data, v, r, s];
+  return `0x${Buffer.from(RLP.encode(signedFields)).toString('hex')}`;
+}
+
+function hexToBytes20(hex: string): Uint8Array {
+  return Uint8Array.from(Buffer.from(hex.slice(2), 'hex'));
+}
+
 // ── Suite ─────────────────────────────────────────────────────────────────────
 
-describe('Ethereum compatibility layer', () => {
+describe('Ethereum compatibility layer (Type 18, EIP-155)', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
 
   // ── endpoint reachability ────────────────────────────────────────────────
@@ -57,73 +118,96 @@ describe('Ethereum compatibility layer', () => {
   });
 
   it('eth_getBalance with 0x address returns hex balance (may be 0x0)', async () => {
-    // Use a freshly generated ETH address — balance 0, but proves RPC works
-    const ethAddr = `0x${'0'.repeat(40)}`; // zero address — always returns 0
+    // Use the zero address — balance 0, but proves RPC works
+    const ethAddr = `0x${'0'.repeat(40)}`;
     const result = (await ethRpc('eth_getBalance', [ethAddr, 'latest'])) as {
       result?: string;
       error?: unknown;
     };
-    if ('error' in result) {
-      return;
-    }
+    if ('error' in result) return;
     expect(result.result).toMatch(/^0x[0-9a-f]+$/i);
     expect(parseInt(result.result!, 16)).toBeGreaterThanOrEqual(0);
   });
 
   it('/eth/assets returns 200 or 400 (route registered)', async () => {
     const res = await fetch(`${API_BASE}eth/assets?id=nonexistent`);
-    // 404 = route missing, 200/400/500 = route exists (may error on bad input)
     expect(res.status).not.toBe(404);
     expect([200, 400, 500]).toContain(res.status);
   });
 
-  // ── ETH address derivation ─────────────────────────────────────────────────
+  // ── real signed submission ──────────────────────────────────────────────
 
-  it('derives a valid DCC address from secp256k1 ETH key (Type 18 prerequisite)', async () => {
-    // We use a known ETH private key test vector from the Ethereum yellow paper.
-    // This tests the mathematical address derivation without eth-account dependency.
-    //
-    // ETH address derivation: keccak256(publicKey_uncompressed_64bytes)[12:] → 20 bytes → 0x hex
-    // DCC address from ETH: the node maps ETH addresses to DCC accounts internally.
-    //
-    // Since we can't import eth-account in the TS runtime (Vitest runs in Node),
-    // we verify the derivation concept by checking that a known ETH address
-    // is valid per the /addresses/validate endpoint.
-    const knownEthAddr = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'; // checksum format
-    const lowercase = knownEthAddr.toLowerCase();
+  it('submits a real EIP-155-signed transfer and it lands on-chain', async () => {
+    const { ethPrivateKey, ethPublicKey } = ethereumKeyPair();
+    const senderAddress = ethereumAddress(ethPublicKey, CHAIN_ID);
+    const recipient = randomTestAccount(CHAIN_ID);
 
-    // The DCC node's /eth endpoint uses ETH-style addresses.
-    // eth_getBalance should handle both checksum and lowercase.
-    const result = (await ethRpc('eth_getBalance', [lowercase, 'latest'])) as {
-      result?: string;
-      error?: unknown;
-    };
-    // Any response (even error) confirms the endpoint understands ETH addresses
-    expect(result).toBeDefined();
+    await fundAccount(senderAddress, 1_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const signed = ethereumTransfer(
+      { amount: 100_000, chainId: CHAIN_ID, fee: 100_000, recipient: recipient.address },
+      ethPrivateKey,
+    );
+
+    const { txId } = await broadcastEthereum(signed.raw, API_BASE);
+    expect(txId).toBe(signed.id);
+
+    await waitForTx(ethTxId2dcc(txId), { apiBase: API_BASE, timeout: TIMEOUT });
+
+    // Recipient received exactly the transferred amount.
+    expect(await dccBalance(recipient.address)).toBe(100_000);
+    // Sender paid amount + fee (gasLimit IS the fee, verbatim) — guards that
+    // behavior against silently regressing to a real-gas-style calculation.
+    expect(await dccBalance(senderAddress)).toBe(1_000_000 - 100_000 - 100_000);
   });
 
-  // ── Type 18 block history ─────────────────────────────────────────────────
+  // ── real rejections ──────────────────────────────────────────────────────
 
-  it('scans recent blocks for Type 18 Ethereum TXs', async () => {
-    const heightRes = await fetch(`${API_BASE}blocks/height`);
-    const { height } = (await heightRes.json()) as { height: number };
+  it('rejects a legacy (pre-EIP-155) transaction', async () => {
+    const { ethPrivateKey } = ethereumKeyPair();
+    const raw = signRawEthTx({
+      chainId: CHAIN_ID.charCodeAt(0),
+      ethPrivateKey,
+      legacy: true,
+      to: hexToBytes20('0x1111111111111111111111111111111111111111'),
+      value: 1_000_000_000_000n,
+    });
+    await expect(broadcastEthereum(raw, API_BASE)).rejects.toThrow(
+      'Legacy transactions are not supported',
+    );
+  });
 
-    const scanFrom = Math.max(1, height - 50);
-    let ethTxCount = 0;
+  it('rejects a transaction with the wrong gas price', async () => {
+    const { ethPrivateKey } = ethereumKeyPair();
+    const chainId = CHAIN_ID.charCodeAt(0);
+    const raw = signRawEthTx({
+      chainId,
+      ethPrivateKey,
+      gasPrice: 1_000_000_000n, // 1 Gwei -- anything but exactly 10 Gwei is rejected
+      to: hexToBytes20('0x2222222222222222222222222222222222222222'),
+      value: 1_000_000_000_000n,
+    });
+    await expect(broadcastEthereum(raw, API_BASE)).rejects.toThrow('Gas price must be 10 Gwei');
+  });
 
-    // Sample 5 blocks to keep the test fast
-    for (const h of [scanFrom, scanFrom + 10, scanFrom + 20, scanFrom + 30, height - 1]) {
-      try {
-        const res = await fetch(`${API_BASE}blocks/at/${h}`);
-        if (!res.ok) continue;
-        const block = (await res.json()) as { transactions: Array<{ type: number }> };
-        ethTxCount += block.transactions.filter((tx) => tx.type === 18).length;
-      } catch {
-        // ignore single-block failures
-      }
-    }
-    // No hard assertion — ETH TXs appear only when users submit them
-    // The test proves the scan logic works without erroring
-    expect(ethTxCount).toBeGreaterThanOrEqual(0);
+  it('rejects a transfer exceeding the sender balance', async () => {
+    const { ethPrivateKey, ethPublicKey } = ethereumKeyPair();
+    const senderAddress = ethereumAddress(ethPublicKey, CHAIN_ID);
+    const recipient = randomTestAccount(CHAIN_ID);
+
+    // Just enough for the fee, nothing left for a transfer.
+    await fundAccount(senderAddress, 100_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const signed = ethereumTransfer(
+      { amount: 1_000_000, chainId: CHAIN_ID, fee: 100_000, recipient: recipient.address },
+      ethPrivateKey,
+    );
+
+    // TODO: pin the exact node error message here once confirmed via a live
+    // dry run — this failure path runs through the shared balance-diff
+    // validator (not EthereumTransaction's own syntactic validator), and its
+    // literal text wasn't confirmed against source the way the two checks
+    // above were.
+    await expect(broadcastEthereum(signed.raw, API_BASE)).rejects.toThrow();
   });
 });

@@ -1,0 +1,40 @@
+// ethereum.ts
+import { secp256k1 } from '@noble/curves/secp256k1.js';
+import { _fromIn } from '../conversions/param';
+import { keccak } from './hashing';
+import { type TBinaryIn, type TEthKeyPair, type TEthSignature } from './interface';
+
+/**
+ * Generate a fresh secp256k1 key pair, or re-derive the public key from a
+ * given private key. Used for Ethereum-format (Type 18 / EIP-155)
+ * transaction signing — a different curve from DecentralChain's native
+ * Ed25519/Curve25519 keys, so this returns raw bytes only (no Base58
+ * wrapping, matching the blsKeyPair/blsPublicKey convention).
+ *
+ * The public key is the raw 64-byte uncompressed point (no leading 0x04
+ * marker byte) — the format the node expects for Ethereum-style address
+ * derivation (`keccak256(publicKey).slice(-20)`).
+ */
+export const ethereumKeyPair = (privateKey?: TBinaryIn): TEthKeyPair => {
+  if (privateKey != null) {
+    const ethPrivateKey = _fromIn(privateKey);
+    return { ethPrivateKey, ethPublicKey: secp256k1.getPublicKey(ethPrivateKey, false).slice(1) };
+  }
+  const { secretKey, publicKey } = secp256k1.keygen();
+  return { ethPrivateKey: secretKey, ethPublicKey: publicKey.slice(1) };
+};
+
+/**
+ * Sign a message with a secp256k1 private key using Ethereum's
+ * keccak256-then-ECDSA scheme (canonical low-S form per EIP-2 — the noble
+ * library's `lowS: true` default, never disabled here). `message` is
+ * typically an RLP-encoded, not-yet-hashed transaction payload; this
+ * function hashes it internally so callers can never accidentally
+ * double-hash or forget to hash before signing.
+ */
+export const ethereumSign = (privateKey: TBinaryIn, message: TBinaryIn): TEthSignature => {
+  const digest = keccak(_fromIn(message));
+  const sig = secp256k1.sign(digest, _fromIn(privateKey), { format: 'recovered', prehash: false });
+  const parsed = secp256k1.Signature.fromBytes(sig, 'recovered');
+  return { r: parsed.r, recovery: parsed.recovery ?? 0, s: parsed.s };
+};

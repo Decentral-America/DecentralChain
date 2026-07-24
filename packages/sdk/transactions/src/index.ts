@@ -20,8 +20,8 @@ export {
   verifyDccAuthData,
 } from './general';
 export { makeTx, makeTxBytes } from './make-tx';
-export type { INodeRequestOptions } from './nodeInteraction';
-export { broadcast, waitForTx } from './nodeInteraction';
+export type { IEthBroadcastResult, INodeRequestOptions } from './nodeInteraction';
+export { broadcast, broadcastEthereum, waitForTx } from './nodeInteraction';
 export { auth } from './requests/auth';
 export { cancelOrder } from './requests/cancel-order';
 export { customData, serializeCustomData } from './requests/custom-data';
@@ -63,6 +63,11 @@ export { burn } from './transactions/burn';
 export { cancelLease } from './transactions/cancel-lease';
 export { commitToGeneration } from './transactions/commit-to-generation';
 export { data } from './transactions/data';
+export type {
+  IEthereumSignedTransaction,
+  IEthereumTransferParams,
+} from './transactions/ethereum';
+export { ethereumAddress, ethereumAddressHex, ethereumTransfer } from './transactions/ethereum';
 export { exchange } from './transactions/exchange';
 export { invokeExpression } from './transactions/invoke-expression';
 export { invokeScript } from './transactions/invoke-script';

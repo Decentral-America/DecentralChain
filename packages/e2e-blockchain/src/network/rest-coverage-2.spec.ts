@@ -16,7 +16,7 @@
  *   - GET /alias/by-alias/{name}
  *   - GET /leasing/info/{leaseId}
  *   - GET /peers/blacklisted, /peers/suspended
- *   - GET /blocks/height/{blockId}, /blocks/finalized/at/{height}
+ *   - GET /blocks/height/{blockId}, /blocks/finalized/at/{height}, /blocks/headers/finalized
  */
 
 import { alias, broadcast, lease, transfer, waitForTx } from '@decentralchain/transactions';
@@ -193,6 +193,14 @@ describe('REST endpoint coverage, round 2', () => {
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { height: number };
       expect(body.height).toBeGreaterThan(0);
+    });
+
+    it('GET /blocks/headers/finalized returns the finalized block header', async () => {
+      const res = await fetch(`${API_BASE}blocks/headers/finalized`);
+      expect(res.ok).toBe(true);
+      const body = (await res.json()) as { height: number; id: string };
+      expect(body.height).toBeGreaterThan(0);
+      expect(typeof body.id).toBe('string');
     });
   });
 });
