@@ -16,12 +16,16 @@ import { type TBinaryIn, type TEthKeyPair, type TEthSignature } from './interfac
  * derivation (`keccak256(publicKey).slice(-20)`).
  */
 export const ethereumKeyPair = (privateKey?: TBinaryIn): TEthKeyPair => {
-  if (privateKey != null) {
-    const ethPrivateKey = _fromIn(privateKey);
-    return { ethPrivateKey, ethPublicKey: secp256k1.getPublicKey(ethPrivateKey, false).slice(1) };
-  }
-  const { secretKey, publicKey } = secp256k1.keygen();
-  return { ethPrivateKey: secretKey, ethPublicKey: publicKey.slice(1) };
+  // keygen()'s own `publicKey` field is always COMPRESSED (33 bytes: a
+  // marker byte + the X coordinate only) — there is no option to request
+  // the uncompressed form directly. Using it as-is here would silently
+  // produce a 32-byte X-coordinate-only value instead of the real 64-byte
+  // uncompressed key, corrupting every address derived from it. Always
+  // derive the public key explicitly via getPublicKey(secretKey, false),
+  // the same call the given-privateKey branch below uses, so both paths
+  // are provably consistent rather than relying on keygen()'s own field.
+  const ethPrivateKey = privateKey != null ? _fromIn(privateKey) : secp256k1.keygen().secretKey;
+  return { ethPrivateKey, ethPublicKey: secp256k1.getPublicKey(ethPrivateKey, false).slice(1) };
 };
 
 /**
