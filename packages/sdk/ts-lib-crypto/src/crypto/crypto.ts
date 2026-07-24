@@ -18,6 +18,7 @@ import {
 import { blsKeyPair, blsPublicKey, blsSign, blsVerify } from './bls';
 import { concat, split } from './concat-split';
 import { aesDecrypt, aesEncrypt, messageDecrypt, messageEncrypt, sharedKey } from './encryption';
+import { ethereumKeyPair, ethereumSign } from './ethereum';
 import { blake2b, keccak, sha256 } from './hashing';
 import {
   type IDCCCrypto,
@@ -128,6 +129,8 @@ export const crypto = <TOut extends TOutput = TDefaultOut, S extends TSeed | und
     buildAddress,
     bytesToString,
     concat,
+    ethereumKeyPair,
+    ethereumSign,
     keccak,
     merkleVerify,
     messageDecrypt,

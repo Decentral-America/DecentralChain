@@ -382,3 +382,46 @@ export function broadcast<T extends SignedTransaction<Transaction<string | numbe
 ): Promise<T & WithApiMixin> {
   return tx_route.broadcast(nodeUrl, tx, requestOptions ?? {});
 }
+
+export interface IEthBroadcastResult {
+  /** 0x-prefixed transaction id. */
+  txId: string;
+}
+
+/**
+ * Submit a signed Ethereum-format (Type 18) raw transaction via the node's
+ * `/eth` JSON-RPC bridge (`eth_sendRawTransaction`) — a different endpoint
+ * and envelope shape than `broadcast()`'s `/transactions/broadcast`.
+ *
+ * The node's JSON-RPC responses are always HTTP 200 with `{id, jsonrpc,
+ * result}`; on error `result` is `{error, message}` (an object) instead of
+ * a string — there is no top-level `error` field. This function throws
+ * with the node's real message on rejection.
+ *
+ * @param rawTxHex - 0x-prefixed signed RLP hex, e.g. `ethereumTransfer(...).raw`
+ * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
+ */
+export async function broadcastEthereum(
+  rawTxHex: string,
+  nodeUrl: string,
+  requestOptions?: RequestInit,
+): Promise<IEthBroadcastResult> {
+  const url = `${nodeUrl.replace(/\/$/, '')}/eth`;
+  const res = await fetch(url, {
+    ...requestOptions,
+    body: JSON.stringify({
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'eth_sendRawTransaction',
+      params: [rawTxHex],
+    }),
+    headers: { 'Content-Type': 'application/json', ...requestOptions?.headers },
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error(`eth_sendRawTransaction HTTP ${res.status}`);
+  const body = (await res.json()) as { result: string | { error: number; message: string } };
+  if (typeof body.result !== 'string') {
+    throw new Error(`eth_sendRawTransaction rejected: ${body.result.message}`);
+  }
+  return { txId: body.result };
+}

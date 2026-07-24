@@ -13,7 +13,8 @@
   "dependencies": {
     "@decentralchain/node-api": "workspace:*",
     "@decentralchain/transactions": "workspace:*",
-    "@decentralchain/ts-lib-crypto": "workspace:*"
+    "@decentralchain/ts-lib-crypto": "workspace:*",
+    "@ethereumjs/rlp": "^10.1.2"
   },
   "devDependencies": {
     "@types/node": "catalog:",

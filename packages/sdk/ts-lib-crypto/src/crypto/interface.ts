@@ -117,6 +117,19 @@ export interface TBLSKeyPair {
   blsPublic: TBytes;
 }
 
+/** secp256k1 key pair for Ethereum-format (Type 18) transaction signing. */
+export interface TEthKeyPair {
+  ethPrivateKey: TBytes;
+  ethPublicKey: TBytes;
+}
+
+/** Raw secp256k1 ECDSA signature components, prior to EIP-155 `v` encoding. */
+export interface TEthSignature {
+  r: bigint;
+  s: bigint;
+  recovery: number;
+}
+
 /**
  * DecentralChain Crypto is a collection of essential cryptography and hashing
  * algorithms used by DecentralChain, protocol entities and binary structures.
@@ -214,4 +227,8 @@ export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
   blsPublicKey: (privateKey: TBinaryIn) => TBytes;
   blsSign: (privateKey: TBinaryIn, message: TBinaryIn) => TBytes;
   blsVerify: (publicKey: TBinaryIn, message: TBinaryIn, signature: TBinaryIn) => boolean;
+
+  //Ethereum (secp256k1, Type 18 transactions)
+  ethereumKeyPair: (privateKey?: TBinaryIn) => TEthKeyPair;
+  ethereumSign: (privateKey: TBinaryIn, message: TBinaryIn) => TEthSignature;
 }

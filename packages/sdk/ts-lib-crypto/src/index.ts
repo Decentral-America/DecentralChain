@@ -44,4 +44,6 @@ export const {
   blsPublicKey,
   blsSign,
   blsVerify,
+  ethereumKeyPair,
+  ethereumSign,
 } = crypto({ output: 'Base58' });
