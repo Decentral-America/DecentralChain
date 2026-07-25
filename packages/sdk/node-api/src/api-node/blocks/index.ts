@@ -142,16 +142,18 @@ export function fetchBlockById(
 }
 
 /**
- * GET /blocks/first
  * Get genesis block
+ *
+ * @deprecated `GET /blocks/first` was removed by node-scala's
+ * `NODE-2496 Remove deprecated API routes (#3876)` (commit `c82177af69`) — the route was
+ * literally implemented as `at(1, includeTransactions = true)`, i.e. exactly
+ * `GET /blocks/at/{height}` with `height = 1` (the genesis block is always at height 1). This
+ * now proxies to the real, current {@link fetchBlockAt}. Prefer calling
+ * `fetchBlockAt(base, 1)` directly — it is the same request without the indirection.
  * @param base
  */
 export function fetchFirst(base: string, options: RequestInit = {}): Promise<IBlock> {
-  return request({
-    base,
-    options,
-    url: `/blocks/first`,
-  });
+  return fetchBlockAt(base, 1, options);
 }
 
 /**

@@ -7,6 +7,11 @@ import { CHAIN_ID, NODE_URL, STATE } from '../_state';
 
 const api = create(NODE_URL);
 
+// NOTE: fetchStateChangesByTxId/fetchStateChangesByAddress are deprecated wrappers that now
+// proxy to the real GET /transactions/info/{id} and GET /transactions/address/{address}/limit/{limit}
+// routes (the old /debug/stateChanges/* routes were removed by node-scala's
+// "NODE-2496 Remove deprecated API routes (#3876)", commit c82177af69). See
+// test/api-node-deprecated.spec.ts for URL-level unit coverage of the delegation itself.
 describe('State changes by transaction Id', () => {
   it('gets state changes', async () => {
     const itx = invokeScript(
@@ -32,7 +37,11 @@ describe('State changes by transaction Id', () => {
     await expect(f).rejects.toMatchObject({ data: { error: 311 } });
   });
 
-  it('throws on not invoke script tx', async () => {
+  // Behavior changed with the underlying route migration: the removed /debug/stateChanges/info
+  // route rejected non-invoke transactions with error 312 ("transaction type not supported").
+  // Its replacement, GET /transactions/info/{id}, has no such restriction — it returns any
+  // transaction type, simply without a `stateChanges` field when the tx isn't an invoke script.
+  it('resolves (without stateChanges) for a non-invoke-script tx', async () => {
     const ttx = transfer(
       {
         amount: 1000,
@@ -42,8 +51,8 @@ describe('State changes by transaction Id', () => {
     );
     await broadcast(ttx, NODE_URL);
     await waitForTx(ttx.id, { apiBase: NODE_URL });
-    const f = api.debug.fetchStateChangesByTxId(ttx.id);
-    await expect(f).rejects.toMatchObject({ data: { error: 312 } });
+    const tx = await api.debug.fetchStateChangesByTxId(ttx.id);
+    expect(tx.stateChanges).toBeUndefined();
   });
 
   it('state schanges in stage', async () => {

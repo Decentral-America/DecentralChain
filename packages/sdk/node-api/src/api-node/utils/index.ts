@@ -147,21 +147,28 @@ export function fetchHashFast(base: string, body: string): Promise<IHashSecure> 
 }
 
 /**
- * POST /utils/script/meta
  * Account's script meta
+ *
+ * @deprecated `POST /utils/script/meta` was removed by node-scala's
+ * `NODE-2203: Remove /utils/script/meta (#3311)` (commit `9b85f1dacd`), with no route left that
+ * accepts an arbitrary base64 script body. The same underlying extraction
+ * (`Global.dAppFuncTypes`) is still used server-side, but only via
+ * `GET /addresses/scriptInfo/{address}/meta` (see `fetchScriptInfoMeta` in `api-node/addresses`),
+ * which requires the script to already be deployed on-chain at an address — it cannot evaluate
+ * an ad-hoc/undeployed compiled script the way this endpoint did. There is no drop-in
+ * replacement with this function's signature, so it now throws instead of making a request that
+ * would 404. Use `fetchScriptInfoMeta(base, address)` if the script is deployed.
  */
-export function fetchScriptMeta(base: string, body: string): Promise<IScriptMeta> {
-  return request({
-    base,
-    options: {
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    },
-    url: '/utils/script/meta',
-  });
+export function fetchScriptMeta(_base: string, _body: string): Promise<IScriptMeta> {
+  return Promise.reject(
+    new Error(
+      `fetchScriptMeta: removed server-side in node-scala commit 9b85f1dacd ` +
+        `("NODE-2203: Remove /utils/script/meta (#3311)"), no drop-in replacement — ` +
+        `POST /utils/script/meta no longer exists on any real node. Use ` +
+        `fetchScriptInfoMeta(base, address) from api-node/addresses instead if the script is ` +
+        `already deployed on-chain.`,
+    ),
+  );
 }
 
 /**
