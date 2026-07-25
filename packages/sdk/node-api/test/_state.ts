@@ -13,6 +13,15 @@ export const NODE_URL = process.env.DCC_NODE_URL ?? 'https://nodes.decentralchai
 export const CHAIN_ID = process.env.DCC_CHAIN_ID ?? 'D';
 export const NETWORK_BYTE = CHAIN_ID.charCodeAt(0);
 
+/**
+ * `generationPeriodLength` for the network under test — deployment-specific,
+ * not queryable from the node (see `fetchFinalityInfo` JSDoc). node-scala
+ * defaults: mainnet 10_000, testnet 3000, other networks 1000, the base
+ * class default 1001 (`BlockchainSettings.scala:85,152,172,190`). Override
+ * to match whichever network `DCC_NODE_URL` points at.
+ */
+export const GENERATION_PERIOD_LENGTH = Number(process.env.DCC_GENERATION_PERIOD_LENGTH ?? 1000);
+
 export const MASTER_ACCOUNT = {
   ADDRESS: process.env.DCC_MASTER_ADDRESS ?? '',
   SEED: process.env.DCC_MASTER_SEED ?? '',
