@@ -19,6 +19,14 @@ export const MASTER_SEED =
 /** Node REST base URL with trailing slash — used by nodeInteraction helpers */
 export const API_BASE = NODE_URL.endsWith('/') ? NODE_URL : `${NODE_URL}/`;
 
+/**
+ * Deployment-specific generation-period length (see node-scala
+ * `BlockchainSettings.scala`: mainnet 10_000, this project's testnet 3000).
+ * Not yet queryable from every node in the fleet, so it's caller-supplied —
+ * see `fetchFinalityInfo`'s JSDoc in `@decentralchain/node-api`.
+ */
+export const GENERATION_PERIOD_LENGTH = Number(process.env.DCC_GENERATION_PERIOD_LENGTH ?? 3000);
+
 /** Testnet data-service base URL */
 export const DS_URL =
   process.env.DCC_TEST_DS_URL ?? 'https://testnet-data-service.decentralchain.io';

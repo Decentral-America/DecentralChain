@@ -8,16 +8,19 @@
  * Covers:
  *   - /transactions/status, /transactions/merkleProof — batch status polling + light-client proof
  *   - /blocks/heightByTimestamp, /blocks/headers/last — explorer/wallet-critical lookups
- *   - /blockchain/rewards, /blockchain/finality — 0% covered before this spec
+ *   - /blockchain/rewards — 0% covered before this spec
+ *   - fetchFinalityInfo (composed from /blocks/height, /blocks/height/finalized,
+ *     /generators/at/{height}, /activation/status — no /blockchain/finality route exists)
  *   - /assets/{id}/distribution, /assets/nft/{addr}/limit/{n} — holder/NFT queries
  *   - /utils/script/estimate, /utils/time — dApp tooling + clock sync
  */
 
+import { create } from '@decentralchain/node-api';
 import { broadcast, issue, transfer, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
-import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
+import { API_BASE, CHAIN_ID, GENERATION_PERIOD_LENGTH, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
 const TIMEOUT = 120_000;
@@ -95,11 +98,19 @@ describe('REST endpoint coverage', () => {
       expect(body).toBeTruthy();
     });
 
-    it('GET /blockchain/finality is reachable', async () => {
-      const res = await fetch(`${API_BASE}blockchain/finality`);
-      // Some deployments intentionally 404 this route at the edge (see infra Caddy config) —
-      // 200 or 404 both confirm the route isn't crashing; a 5xx would not.
-      expect([200, 404]).toContain(res.status);
+    it('finality info composes cleanly from real endpoints', async () => {
+      // There is no GET /blockchain/finality route in node-scala (confirmed: no
+      // FinalityApiRoute/BlockchainApiRoute class exists). fetchFinalityInfo composes
+      // the same information from /blocks/height, /blocks/height/finalized,
+      // /generators/at/{height}, and /activation/status instead — this exercises
+      // that composition end-to-end against a live node.
+      const info = await create(API_BASE).finality.fetchFinalityInfo(GENERATION_PERIOD_LENGTH);
+      expect(info.height).toBeGreaterThan(0);
+      expect(info.finalizedHeight).toBeGreaterThanOrEqual(0);
+      expect(Array.isArray(info.currentGenerators)).toBe(true);
+      // Always null today — see IFinalityInfo.nextGenerators JSDoc for why
+      // (node-scala's GeneratorsApiRoute rejects any height beyond the current tip).
+      expect(info.nextGenerators).toBeNull();
     });
   });
 
