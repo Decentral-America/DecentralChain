@@ -11,7 +11,7 @@ import { load as loadYaml } from 'js-yaml';
 const REPO_ROOT = path.resolve(import.meta.dirname, '..');
 const OPENAPI_PATH = path.join(
   REPO_ROOT,
-  '../node-scala/node/src/main/resources/swagger-ui/openapi.yaml',
+  '_node-scala/node/src/main/resources/swagger-ui/openapi.yaml',
 );
 const NODE_API_SRC = path.join(REPO_ROOT, 'packages/sdk/node-api/src/api-node');
 

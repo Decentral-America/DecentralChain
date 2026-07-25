@@ -101,16 +101,19 @@ jobs:
         run: node scripts/check-boundaries.mjs
 
       # ── node-api path-existence check (Tier 5 contract conformance) ────────────────
-      # check-node-api-paths.mjs reads node-scala's OpenAPI spec from ../node-scala (a sibling
-      # of this checkout) — check it out into that location. No ref is pinned: this matches
-      # this repo's own existing cross-repo node-scala checkout convention (see
-      # java-sdk.yml's "Checkout node-scala (lang dependency)" step), which also tracks
-      # node-scala's default branch rather than a pinned tag/SHA.
+      # check-node-api-paths.mjs reads node-scala's OpenAPI spec from _node-scala (a
+      # workspace-relative subdirectory of this checkout) — check it out into that location.
+      # actions/checkout rejects any resolved path outside GITHUB_WORKSPACE (e.g. `../node-scala`
+      # throws "Repository path '...' is not under '...'" at runtime), so this follows the repo's
+      # own existing cross-repo node-scala checkout convention instead (see java-sdk.yml's
+      # "Checkout node-scala (lang dependency)" step, which uses the same `_node-scala` name).
+      # No ref is pinned: this also matches that existing convention, which tracks node-scala's
+      # default branch rather than a pinned tag/SHA.
       - name: Checkout node-scala (OpenAPI spec dependency)
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: Decentral-America/node-scala
-          path: ../node-scala
+          path: _node-scala
           persist-credentials: false
 
       - name: Check node-api path conformance against node's OpenAPI spec
