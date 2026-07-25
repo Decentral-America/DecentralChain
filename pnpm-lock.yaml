@@ -18,6 +18,9 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: 4.1.9
       version: 4.1.9
+    js-yaml:
+      specifier: 5.2.2
+      version: 5.2.2
     jsdom:
       specifier: 29.1.1
       version: 29.1.1
@@ -79,6 +82,9 @@ importers:
       esbuild:
         specifier: '>=0.28.1'
         version: 0.28.1
+      js-yaml:
+        specifier: 'catalog:'
+        version: 5.2.2
       knip:
         specifier: 6.24.0
         version: 6.24.0
@@ -6978,6 +6984,10 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+
+  js-yaml@5.2.2:
+    resolution: {integrity: sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==}
+    hasBin: true
 
   jsdom@29.1.1:
     resolution: {integrity: sha512-ECi4Fi2f7BdJtUKTflYRTiaMxIB0O6zfR1fX0GXpUrf6flp8QIYn1UT20YQqdSOfk2dfkCwS8LAFoJDEppNK5Q==}
@@ -14759,6 +14769,10 @@ snapshots:
   js-tokens@10.0.0: {}
 
   js-tokens@4.0.0: {}
+
+  js-yaml@5.2.2:
+    dependencies:
+      argparse: 2.0.1
 
   jsdom@29.1.1(@noble/hashes@2.2.0):
     dependencies:

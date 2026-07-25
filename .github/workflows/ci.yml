@@ -100,6 +100,22 @@ jobs:
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
 
+      # ── node-api path-existence check (Tier 5 contract conformance) ────────────────
+      # check-node-api-paths.mjs reads node-scala's OpenAPI spec from ../node-scala (a sibling
+      # of this checkout) — check it out into that location. No ref is pinned: this matches
+      # this repo's own existing cross-repo node-scala checkout convention (see
+      # java-sdk.yml's "Checkout node-scala (lang dependency)" step), which also tracks
+      # node-scala's default branch rather than a pinned tag/SHA.
+      - name: Checkout node-scala (OpenAPI spec dependency)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Decentral-America/node-scala
+          path: ../node-scala
+          persist-credentials: false
+
+      - name: Check node-api path conformance against node's OpenAPI spec
+        run: node scripts/check-node-api-paths.mjs
+
       - name: Biome lint (affected)
         run: pnpm nx affected -t biome-lint
 

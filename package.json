@@ -7,6 +7,7 @@
     "@nx/playwright": "23.0.1",
     "@nx/vitest": "23.0.1",
     "esbuild": "0.28.1",
+    "js-yaml": "catalog:",
     "knip": "6.24.0",
     "lefthook": "2.1.9",
     "nx": "23.0.1",

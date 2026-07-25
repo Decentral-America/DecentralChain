@@ -213,7 +213,8 @@
         ".agents/skills/monitor-ci/scripts/**",
         ".github/skills/monitor-ci/scripts/**",
         ".opencode/skills/monitor-ci/scripts/**",
-        "scripts/check-boundaries.mjs"
+        "scripts/check-boundaries.mjs",
+        "scripts/check-node-api-paths.mjs"
       ],
       "linter": {
         "rules": {
@@ -231,7 +232,8 @@
         ".github/skills/monitor-ci/scripts/ci-poll-decide.mjs",
         ".agents/skills/monitor-ci/scripts/ci-poll-decide.mjs",
         ".opencode/skills/monitor-ci/scripts/ci-poll-decide.mjs",
-        "apps/cubensis-connect/src/accounts/updateState.ts"
+        "apps/cubensis-connect/src/accounts/updateState.ts",
+        "scripts/check-node-api-paths.mjs"
       ],
       "linter": {
         "rules": {
