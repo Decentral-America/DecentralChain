@@ -24,8 +24,73 @@ import {
   type UpdateAssetInfoTransaction,
   type WithApiMixin,
 } from '@decentralchain/types';
-import { type IWithStateChanges, type TPayment, type TStateChanges } from '../../api-node/debug';
 import { type IWithApplicationStatus, type TLong } from '../../interface';
+
+// NOTE: these three types used to be imported from `../../api-node/debug` (they originally
+// modeled the response of the now-removed `/debug/stateChanges/*` routes). They live here
+// instead — and `api-node/debug` re-exports them for backward compatibility — because
+// `api-node/debug`'s deprecated `fetchStateChangesByTxId`/`fetchStateChangesByAddress` now
+// proxy to `fetchInfo`/`fetchTransactions` from `api-node/transactions`, which itself depends on
+// this file; keeping the definitions in `api-node/debug` would create an import cycle.
+export interface TPayment {
+  assetId: string | null;
+  amount: TLong;
+}
+
+export interface TStateChanges {
+  data: DataTransactionEntry[];
+  transfers: {
+    address: string;
+    amount: TLong;
+    asset: string | null;
+  }[];
+  issues: {
+    assetId: string;
+    name: string;
+    description: string;
+    quantity: TLong;
+    decimals: AssetDecimals;
+    isReissuable: boolean;
+    compiledScript: null | string;
+    nonce: TLong;
+  }[];
+  reissues: {
+    assetId: string;
+    isReissuable: boolean;
+    quantity: TLong;
+  }[];
+  burns: {
+    assetId: string;
+    quantity: TLong;
+  }[];
+  sponsorFees: {
+    assetId: string;
+    minSponsoredAssetFee: TLong;
+  }[];
+  leases: {
+    leaseId: string;
+    recipient: string;
+    amount: TLong;
+  }[];
+  leaseCancels: { leaseId: string }[];
+  invokes: {
+    dApp: string;
+    call: {
+      function: string;
+      args: { type: string; value: string }[];
+    };
+    payment: TPayment[];
+    stateChanges: TStateChanges;
+  }[];
+  error?: {
+    code: number;
+    text: string;
+  };
+}
+
+export interface IWithStateChanges {
+  stateChanges: TStateChanges;
+}
 
 interface TStateUpdate {
   data: (DataTransactionEntry & { address: string })[];

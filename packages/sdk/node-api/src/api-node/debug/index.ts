@@ -1,13 +1,20 @@
-import {
-  type AssetDecimals,
-  type DataTransactionEntry,
-  type Transaction,
-  type WithId,
-} from '@decentralchain/types';
+import { type Transaction, type WithId } from '@decentralchain/types';
 import { type TLong } from '../../interface';
-import query from '../../tools/query';
 import request from '../../tools/request';
+// TPayment/TStateChanges/IWithStateChanges now live in tools/transactions/transactions.ts (see
+// the NOTE there) to avoid an import cycle: this module calls into `../transactions`, which
+// depends on that file. Re-exported here for backward compatibility — they used to be defined
+// in this module.
+import {
+  type IWithStateChanges,
+  type TPayment,
+  type TStateChanges,
+} from '../../tools/transactions/transactions';
 import { pathSegment } from '../../tools/utils';
+import { fetchHeightById } from '../blocks';
+import { fetchInfo, fetchTransactions } from '../transactions';
+
+export type { IWithStateChanges, TPayment, TStateChanges };
 
 /**
  * DecentralChain balance history
@@ -31,68 +38,16 @@ interface IBalanceHistory {
   balance: TLong;
 }
 
-export interface TPayment {
-  assetId: string | null;
-  amount: TLong;
-}
-
-export interface TStateChanges {
-  data: DataTransactionEntry[];
-  transfers: {
-    address: string;
-    amount: TLong;
-    asset: string | null;
-  }[];
-  issues: {
-    assetId: string;
-    name: string;
-    description: string;
-    quantity: TLong;
-    decimals: AssetDecimals;
-    isReissuable: boolean;
-    compiledScript: null | string;
-    nonce: TLong;
-  }[];
-  reissues: {
-    assetId: string;
-    isReissuable: boolean;
-    quantity: TLong;
-  }[];
-  burns: {
-    assetId: string;
-    quantity: TLong;
-  }[];
-  sponsorFees: {
-    assetId: string;
-    minSponsoredAssetFee: TLong;
-  }[];
-  leases: {
-    leaseId: string;
-    recipient: string;
-    amount: TLong;
-  }[];
-  leaseCancels: { leaseId: string }[];
-  invokes: {
-    dApp: string;
-    call: {
-      function: string;
-      args: { type: string; value: string }[];
-    };
-    payment: TPayment[];
-    stateChanges: TStateChanges;
-  }[];
-  error?: {
-    code: number;
-    text: string;
-  };
-}
-
-export interface IWithStateChanges {
-  stateChanges: TStateChanges;
-}
-
 /**
  * Get list of transactions with state changes where specified address has been involved
+ *
+ * @deprecated `GET /debug/stateChanges/address/{address}/limit/{limit}` was removed by
+ * node-scala's `NODE-2496 Remove deprecated API routes (#3876)` (commit `c82177af69`). The
+ * state-changes data was folded into the regular transactions-by-address response instead
+ * (node-scala's `NODE-2265: Insert stateChanges in transactions routes responses (#3313)`), so
+ * this now proxies to the real, current `GET /transactions/address/{address}/limit/{limit}`
+ * route via {@link fetchTransactions}. Prefer calling {@link fetchTransactions} directly —
+ * it is the same request without the indirection.
  * @param base
  * @param address
  * @param limit
@@ -105,15 +60,19 @@ export function fetchStateChangesByAddress(
   after?: string,
   options: RequestInit = {},
 ): Promise<(Transaction<TLong> & WithId & IWithStateChanges)[]> {
-  return request({
-    base,
-    options,
-    url: `/debug/stateChanges/address/${pathSegment(address)}/limit/${pathSegment(limit)}${query({ after })}`,
-  });
+  return fetchTransactions(base, address, limit, after, undefined, options) as unknown as Promise<
+    (Transaction<TLong> & WithId & IWithStateChanges)[]
+  >;
 }
 
 /**
  * Get invokeScript transaction state changes
+ *
+ * @deprecated `GET /debug/stateChanges/info/{txId}` was removed by node-scala's
+ * `NODE-2496 Remove deprecated API routes (#3876)` (commit `c82177af69`) — it had already been
+ * redirecting (301) to `/transactions/info/{id}` before that commit deleted it outright. This
+ * now proxies to the real, current `GET /transactions/info/{id}` route via {@link fetchInfo}.
+ * Prefer calling {@link fetchInfo} directly — it is the same request without the indirection.
  * @param base
  * @param txId
  */
@@ -122,11 +81,9 @@ export function fetchStateChangesByTxId(
   txId: string,
   options: RequestInit = {},
 ): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
-  return request({
-    base,
-    options,
-    url: `/debug/stateChanges/info/${pathSegment(txId)}`,
-  });
+  return fetchInfo(base, txId, options) as unknown as Promise<
+    Transaction<TLong> & WithId & IWithStateChanges
+  >;
 }
 
 /**
@@ -224,21 +181,26 @@ export function fetchMinerInfo(base: string, apiKey: string): Promise<IMinerInfo
 }
 
 /**
- * GET /debug/portfolios/{address}
- * Portfolio for address. Requires node API key.
+ * @deprecated `GET /debug/portfolios/{address}` was removed by node-scala's
+ * `NODE-2496 Remove deprecated API routes (#3876)` (commit `c82177af69`) with no replacement —
+ * the current `DebugApiRoute.scala` no longer exposes a per-address asset-portfolio breakdown
+ * under any route. `GET /addresses/balance/details/{address}` (see `fetchBalanceDetails`) covers
+ * DCC balance/lease/generating figures but does not return the `assets` map this endpoint used
+ * to return. This function no longer works against any real node and now throws instead of
+ * making a request that would 404.
  */
 export function fetchPortfolios(
-  base: string,
+  _base: string,
   address: string,
-  apiKey: string,
+  _apiKey: string,
 ): Promise<IPortfolio<TLong>> {
-  return request({
-    base,
-    options: {
-      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-    },
-    url: `/debug/portfolios/${pathSegment(address)}`,
-  });
+  return Promise.reject(
+    new Error(
+      `fetchPortfolios: removed server-side in node-scala commit c82177af69 ` +
+        `("NODE-2496 Remove deprecated API routes (#3876)"), no replacement — ` +
+        `GET /debug/portfolios/${address} no longer exists on any real node.`,
+    ),
+  );
 }
 
 /**
@@ -281,18 +243,21 @@ export function debugRollback(
 }
 
 /**
- * DELETE /debug/rollback-to/{id}
  * Rollback state to the block with a given ID. Requires node API key.
+ *
+ * @deprecated `DELETE /debug/rollback-to/{id}` was removed by node-scala's
+ * `NODE-2496 Remove deprecated API routes (#3876)` (commit `c82177af69`) in favor of the
+ * pre-existing `POST /debug/rollback` route, which takes a **height** (not a block ID) in its
+ * request body — see `RollbackParams(rollbackTo: Int, returnTransactionsToUtx: Boolean)` in
+ * node-scala's current `RollbackParams.scala`. To preserve this function's by-ID contract
+ * without breaking callers, it now resolves the ID to a height via the real
+ * `GET /blocks/height/{id}` route and forwards to {@link debugRollback}. If you already have a
+ * height, call {@link debugRollback} directly instead — it is the same request without the
+ * extra lookup round-trip.
  */
-export function debugRollbackTo(base: string, id: string, apiKey: string): Promise<unknown> {
-  return request({
-    base,
-    options: {
-      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-      method: 'DELETE',
-    },
-    url: `/debug/rollback-to/${pathSegment(id)}`,
-  });
+export async function debugRollbackTo(base: string, id: string, apiKey: string): Promise<unknown> {
+  const { height } = await fetchHeightById(base, id);
+  return debugRollback(base, height, false, apiKey);
 }
 
 /**
