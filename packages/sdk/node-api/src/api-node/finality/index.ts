@@ -9,6 +9,7 @@ import {
 import request from '../../tools/request';
 import { fetchFeatureActivationHeight } from '../activation';
 import { fetchHeight, type IBlockHeader } from '../blocks';
+import { fetchNodeStatus } from '../node';
 
 // NOTE: deliberately NOT re-exported from this module. `create()` (see
 // `src/create.ts`) wraps every export of an `api-node/*` module assuming it's
@@ -128,46 +129,41 @@ const DETERMINISTIC_FINALITY_FEATURE_ID = 25;
  * derives the rest client-side:
  *  - `height` ← `GET /blocks/height` ({@link fetchHeight})
  *  - `finalizedHeight` ← `GET /blocks/height/finalized` ({@link fetchFinalizedHeight})
+ *  - `generationPeriodLength` ← `GET /node/status` ({@link fetchNodeStatus}) —
+ *    node-scala exposes this deployment-specific constant there as of
+ *    `NodeApiRoute.scala:43` (mainnet: 10_000, this network's testnet: 3000,
+ *    see `BlockchainSettings.scala:85,152,172,190`).
  *  - `currentGenerators` ← `GET /generators/at/{height}` at the current height
  *    ({@link fetchCommittedGeneratorsAt})
  *  - `currentGenerationPeriod` / `nextGenerationPeriod` ← computed locally via
  *    {@link generationPeriodFrom} / {@link generationPeriodNext}, using the
  *    Deterministic Finality activation height from `GET /activation/status`
- *    ({@link fetchFeatureActivationHeight}) and the `generationPeriodLength`
- *    parameter below. Omitted (`undefined`) if the feature isn't activated yet.
+ *    ({@link fetchFeatureActivationHeight}) and the fetched
+ *    `generationPeriodLength`. Omitted (`undefined`) if the feature isn't
+ *    activated yet.
  *
- * Two known gaps, both blocked on separate node-scala server-side work:
- *
- * 1. `generationPeriodLength` is a deployment-specific constant (mainnet:
- *    10_000, this network's testnet: 3000, see node-scala
- *    `BlockchainSettings.scala:85,152,172,190`) and is **not yet queryable**
- *    from any node-scala endpoint. Until a node-scala change exposes it (e.g.
- *    on `/activation/status` or a new settings route — tracked separately),
- *    callers must supply it themselves (e.g. from their own network config).
- *    This function does NOT guess a default — passing the wrong value would
- *    silently produce wrong period boundaries, which is worse than requiring
- *    the caller to be explicit.
- * 2. `nextGenerators` is always `null`: see the JSDoc on
- *    {@link IFinalityInfo.nextGenerators}.
+ * One remaining known gap, blocked on separate node-scala server-side work:
+ * `nextGenerators` is always `null` — see the JSDoc on
+ * {@link IFinalityInfo.nextGenerators}.
  *
  * @param base
- * @param generationPeriodLength Deployment-specific; see gap (1) above. Must be a positive integer.
  * @param options
  */
 export async function fetchFinalityInfo(
   base: string,
-  generationPeriodLength: number,
   options: RequestInit = {},
 ): Promise<IFinalityInfo> {
-  // Fail fast on a bad value, independent of whether the feature turns out to
-  // be activated (and thus whether a period would actually be computed).
-  assertValidGenerationPeriodLength(generationPeriodLength);
+  const [{ height }, { height: finalizedHeight }, activationHeight, { generationPeriodLength }] =
+    await Promise.all([
+      fetchHeight(base),
+      fetchFinalizedHeight(base, options),
+      fetchFeatureActivationHeight(base, DETERMINISTIC_FINALITY_FEATURE_ID, options),
+      fetchNodeStatus(base, options),
+    ]);
 
-  const [{ height }, { height: finalizedHeight }, activationHeight] = await Promise.all([
-    fetchHeight(base),
-    fetchFinalizedHeight(base, options),
-    fetchFeatureActivationHeight(base, DETERMINISTIC_FINALITY_FEATURE_ID, options),
-  ]);
+  // Fail fast on a bad server-supplied value rather than silently computing
+  // wrong period boundaries.
+  assertValidGenerationPeriodLength(generationPeriodLength);
 
   const currentGenerators = await fetchCommittedGeneratorsAt(base, height, options);
 

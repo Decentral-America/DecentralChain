@@ -49,8 +49,15 @@ describe('fetchFinalityInfo – composes /blockchain/finality from real endpoint
     finalizedHeight: number;
     activationHeight?: number;
     generators?: unknown[];
+    generationPeriodLength?: number;
   }) {
-    const { height, finalizedHeight, activationHeight, generators = [] } = opts;
+    const {
+      height,
+      finalizedHeight,
+      activationHeight,
+      generators = [],
+      generationPeriodLength = 1000,
+    } = opts;
 
     mockFetch.mockImplementation(async (input: RequestInfo | URL) => {
       const url = typeof input === 'string' ? input : input.toString();
@@ -58,6 +65,14 @@ describe('fetchFinalityInfo – composes /blockchain/finality from real endpoint
       if (url.endsWith('/blocks/height')) return jsonResponse({ height });
       if (url.endsWith('/blocks/height/finalized'))
         return jsonResponse({ height: finalizedHeight });
+      if (url.endsWith('/node/status'))
+        return jsonResponse({
+          blockchainHeight: height,
+          generationPeriodLength,
+          stateHeight: height,
+          updatedDate: new Date(0).toISOString(),
+          updatedTimestamp: 0,
+        });
       if (url.endsWith('/activation/status')) {
         return jsonResponse({
           features:
@@ -92,7 +107,7 @@ describe('fetchFinalityInfo – composes /blockchain/finality from real endpoint
       height: 1100,
     });
 
-    const info = await fetchFinalityInfo(BASE, 1000);
+    const info = await fetchFinalityInfo(BASE);
 
     expect(info.height).toBe(1100);
     expect(info.finalizedHeight).toBe(1090);
@@ -107,16 +122,22 @@ describe('fetchFinalityInfo – composes /blockchain/finality from real endpoint
     expect(calledUrls).toContain('/blocks/height');
     expect(calledUrls).toContain('/blocks/height/finalized');
     expect(calledUrls).toContain('/activation/status');
+    expect(calledUrls).toContain('/node/status');
     expect(calledUrls).toContain('/generators/at/1100');
     expect(calledUrls).not.toContain('/blockchain/finality');
   });
 
-  it('computes currentGenerationPeriod/nextGenerationPeriod from the ported algorithm', async () => {
+  it('computes currentGenerationPeriod/nextGenerationPeriod from the ported algorithm, using generationPeriodLength fetched from /node/status', async () => {
     // activation=100, length=1000: zero period is [100, 1100]; height=1100 is
     // its last block, so current = [100, 1100], next = [1101, 2100].
-    stubResponses({ activationHeight: 100, finalizedHeight: 1100, height: 1100 });
+    stubResponses({
+      activationHeight: 100,
+      finalizedHeight: 1100,
+      generationPeriodLength: 1000,
+      height: 1100,
+    });
 
-    const info = await fetchFinalityInfo(BASE, 1000);
+    const info = await fetchFinalityInfo(BASE);
 
     expect(info.currentGenerationPeriod).toEqual({ end: 1100, start: 100 });
     expect(info.nextGenerationPeriod).toEqual({ end: 2100, start: 1101 });
@@ -125,30 +146,30 @@ describe('fetchFinalityInfo – composes /blockchain/finality from real endpoint
   it('omits generation periods when Deterministic Finality is not activated', async () => {
     stubResponses({ activationHeight: undefined, finalizedHeight: 50, height: 60 });
 
-    const info = await fetchFinalityInfo(BASE, 1000);
+    const info = await fetchFinalityInfo(BASE);
 
     expect(info.currentGenerationPeriod).toBeUndefined();
     expect(info.nextGenerationPeriod).toBeUndefined();
   });
 
-  it('gap #2: nextGenerators is always null, never an empty array', async () => {
+  it('gap: nextGenerators is always null, never an empty array', async () => {
     stubResponses({ activationHeight: 100, finalizedHeight: 1100, height: 1100 });
 
-    const info = await fetchFinalityInfo(BASE, 1000);
+    const info = await fetchFinalityInfo(BASE);
 
     expect(info.nextGenerators).toBeNull();
     // Distinct from `[]` — this is the point of the honesty requirement.
     expect(info.nextGenerators).not.toEqual([]);
   });
 
-  it('gap #1: generationPeriodLength is a required parameter, not silently defaulted', async () => {
-    stubResponses({ activationHeight: 100, finalizedHeight: 1100, height: 1100 });
+  it('generationPeriodLength is fetched from /node/status, not caller-supplied; an invalid server value still throws', async () => {
+    stubResponses({
+      activationHeight: 100,
+      finalizedHeight: 1100,
+      generationPeriodLength: 0,
+      height: 1100,
+    });
 
-    // `generationPeriodLength` is a required positional parameter at the type
-    // level (verified separately by the compiler — there is no runtime way to
-    // "omit" a required parameter in JS). At runtime, an explicitly-invalid
-    // length throws rather than silently computing wrong period boundaries.
-    await expect(fetchFinalityInfo(BASE, 0)).rejects.toThrow(/positive integer/);
-    await expect(fetchFinalityInfo(BASE, -1)).rejects.toThrow(/positive integer/);
+    await expect(fetchFinalityInfo(BASE)).rejects.toThrow(/positive integer/);
   });
 });

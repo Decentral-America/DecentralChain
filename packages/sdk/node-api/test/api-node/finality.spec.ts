@@ -7,7 +7,7 @@ import {
   fetchFinalizedHeight,
   fetchFinalizedHeightAt,
 } from '../../src/api-node/finality';
-import { GENERATION_PERIOD_LENGTH, NODE_URL } from '../_state';
+import { NODE_URL } from '../_state';
 
 /**
  * Live-node integration tests, same pattern as sibling `test/api-node/*.spec.ts`
@@ -69,7 +69,7 @@ it('fetchCommittedGeneratorIndex', async () => {
 });
 
 it('fetchFinalityInfo composes height, finalizedHeight and currentGenerators for real', async () => {
-  const info = await fetchFinalityInfo(NODE_URL, GENERATION_PERIOD_LENGTH);
+  const info = await fetchFinalityInfo(NODE_URL);
 
   expect(typeof info.height).toBe('number');
   expect(typeof info.finalizedHeight).toBe('number');

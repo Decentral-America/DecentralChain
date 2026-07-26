@@ -20,7 +20,7 @@ import { broadcast, issue, transfer, waitForTx } from '@decentralchain/transacti
 import { address } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
-import { API_BASE, CHAIN_ID, GENERATION_PERIOD_LENGTH, MASTER_SEED } from '../setup/env';
+import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
 const TIMEOUT = 120_000;
@@ -102,9 +102,10 @@ describe('REST endpoint coverage', () => {
       // There is no GET /blockchain/finality route in node-scala (confirmed: no
       // FinalityApiRoute/BlockchainApiRoute class exists). fetchFinalityInfo composes
       // the same information from /blocks/height, /blocks/height/finalized,
-      // /generators/at/{height}, and /activation/status instead — this exercises
-      // that composition end-to-end against a live node.
-      const info = await create(API_BASE).finality.fetchFinalityInfo(GENERATION_PERIOD_LENGTH);
+      // /generators/at/{height}, /activation/status, and /node/status (for
+      // generationPeriodLength) instead — this exercises that composition
+      // end-to-end against a live node.
+      const info = await create(API_BASE).finality.fetchFinalityInfo();
       expect(info.height).toBeGreaterThan(0);
       expect(info.finalizedHeight).toBeGreaterThanOrEqual(0);
       expect(Array.isArray(info.currentGenerators)).toBe(true);
