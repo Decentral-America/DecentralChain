@@ -81,9 +81,14 @@ overrides:
   # allow react-router to use 8.x naturally.
   express>path-to-regexp: '~0.1.13'
   picomatch: '>=4.0.4'
-  postcss: '>=8.5.15'
+  # postcss <=8.5.17: path traversal in previous sourceMappingURL auto-loading leaks
+  # arbitrary .map file contents (GHSA advisory); 8.5.18 patches it.
+  postcss: '>=8.5.18'
   qs: '>=6.15.2'
   typescript: '6.0.3'
+  # valibot <=1.4.1: record() issue paths can make flatten() throw for inherited
+  # Object property names (GHSA advisory); 1.4.2 patches it.
+  valibot: '>=1.4.2'
   ws: '>=8.20.1'
   yaml: '>=2.8.3'
   yauzl: '^3.2.1'
