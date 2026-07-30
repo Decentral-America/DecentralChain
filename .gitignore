@@ -2,6 +2,13 @@
 .secrets
 .artifacts/
 
+# Cross-repo checkout created only in CI (ci.yml "Checkout node-scala" step, for the
+# OpenAPI-spec path-conformance check). It is a sibling repo's tree, not DecentralChain
+# source, so it must never be tracked, linted, or format-checked -- biome honors this via
+# useIgnoreFile, which is what stopped `biome format .` from failing on node-scala's own
+# unformatted JSON (lang/doc/*.json etc.) after the CI checkout landed it under the root.
+_node-scala/
+
 # Dependencies
 node_modules/
 
