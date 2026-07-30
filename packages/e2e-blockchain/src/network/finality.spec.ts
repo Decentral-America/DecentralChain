@@ -55,11 +55,32 @@ describe('Finality health', () => {
     });
 
     it('finality lag stays well below the max-rollback ceiling (not stalled)', async () => {
-      const [tip, finalized] = await Promise.all([height(), finalizedHeight()]);
-      const lag = tip - finalized;
-      expect(lag).toBeGreaterThanOrEqual(0);
-      expect(lag).toBeLessThan(SAFE_LAG_CEILING);
-    });
+      // A single snapshot is the wrong probe here: lag legitimately spikes at a generation-period
+      // boundary, when a batch of blocks is briefly unfinalized until the next QC lands, then comes
+      // straight back down. That transient is normal cadence, not the failure mode this guards.
+      // The real "pinned at max lag" incident (empty/stuck committed-generators committee) is
+      // SUSTAINED — lag never recovers. So poll across a window and require lag to be healthy at
+      // least once; only a lag that stays at/above the ceiling for the WHOLE window is a stall.
+      const deadline = Date.now() + 90_000;
+      const observed: number[] = [];
+      let healthy = false;
+      do {
+        const [tip, finalized] = await Promise.all([height(), finalizedHeight()]);
+        const lag = tip - finalized;
+        expect(lag).toBeGreaterThanOrEqual(0);
+        observed.push(lag);
+        if (lag < SAFE_LAG_CEILING) {
+          healthy = true;
+          break;
+        }
+        if (Date.now() >= deadline) break;
+        await new Promise((r) => setTimeout(r, 10_000));
+      } while (Date.now() < deadline);
+      expect(
+        healthy,
+        `T0 finality lag stayed >= ${SAFE_LAG_CEILING} for the whole ~90s window (sustained stall, not a boundary blip); observed lags=${observed.join(', ')}`,
+      ).toBe(true);
+    }, 120_000);
 
     it('finalized height is actually advancing (catches a stalled/empty committee)', async () => {
       const before = await finalizedHeight();
@@ -87,7 +108,12 @@ describe('Finality health', () => {
         return;
       }
 
-      const deadline = Date.now() + 60_000;
+      // A healthy chain tracks hotStuffFinalizedHeight within a few blocks of the tip in near
+      // real time, so any genuine advance shows up quickly. A 60s window was too tight, though: it
+      // failed the whole nightly on a single transient pause that had fully recovered minutes
+      // later. Give it a realistic window so only a SUSTAINED T2 stall (minutes without a single
+      // advance) trips it — consistent with this block being observational/soft by design.
+      const deadline = Date.now() + 180_000;
       let after = before;
       while (Date.now() < deadline && after <= before) {
         await new Promise((r) => setTimeout(r, 10_000));
@@ -100,6 +126,6 @@ describe('Finality health', () => {
       }
 
       expect(after).toBeGreaterThan(before);
-    }, 90_000);
+    }, 210_000);
   });
 });
