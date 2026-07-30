@@ -83,19 +83,43 @@ describe('Finality health', () => {
     }, 120_000);
 
     it('finalized height is actually advancing (catches a stalled/empty committee)', async () => {
+      // T0 DeterministicFinality finalizes per generation period in BATCHES, not per block like
+      // T2 HotStuff: `finalized` legitimately stays flat for a whole period (tens of minutes at
+      // generationPeriodLength=100) and then jumps ~a period at once, so `lag` oscillates 0..~period
+      // instead of staying small. A fixed short "must advance within 2 min" window therefore fails
+      // on a perfectly healthy chain that happens to be sampled mid-period — observed directly:
+      // finalized sat at 93161 for >2 min, then jumped +126 to 93287. The genuine failure this
+      // guards (empty/stuck committee) manifests differently: finalized never advances AND lag
+      // climbs toward the max-rollback ceiling, or the chain tip itself stops. So: poll a bounded
+      // window; pass on any real advance; if finalized stays flat, pass only while this is normal
+      // mid-period progress (lag still healthy AND the tip keeps moving), and fail if lag reaches
+      // the ceiling (real finality stall) or the tip is frozen (chain not producing at all).
       const before = await finalizedHeight();
+      const tipBefore = await height();
 
-      // Poll for up to 2 minutes — a full generation period boundary can take a while,
-      // but a healthy chain must show real progress well within that window.
-      const deadline = Date.now() + 120_000;
+      const deadline = Date.now() + 240_000;
       let after = before;
-      while (Date.now() < deadline && after <= before) {
+      let tip = tipBefore;
+      let lag = tip - after;
+      while (Date.now() < deadline && after <= before && lag < SAFE_LAG_CEILING) {
         await new Promise((r) => setTimeout(r, 10_000));
         after = await finalizedHeight();
+        tip = await height();
+        lag = tip - after;
       }
 
-      expect(after).toBeGreaterThan(before);
-    }, 150_000);
+      if (after > before) return; // finalized advanced — unambiguously healthy
+
+      // Flat for the whole window: acceptable ONLY if it's normal between-period behavior.
+      expect(
+        lag,
+        `T0 finalized flat at ${after} for ~4 min AND lag ${lag} reached the ceiling ${SAFE_LAG_CEILING} — genuine finality stall, not a between-period gap`,
+      ).toBeLessThan(SAFE_LAG_CEILING);
+      expect(
+        tip,
+        `T0 finalized flat at ${after} AND the chain tip is frozen at ${tip} — the chain is not producing blocks`,
+      ).toBeGreaterThan(tipBefore);
+    }, 270_000);
   });
 
   describe('T2 — HotStuff (observational, config-gated — soft checks only)', () => {
