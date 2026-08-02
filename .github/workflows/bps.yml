@@ -2,7 +2,9 @@ name: BPS CI
 
 on:
   push:
-    branches: [main, dev]
+    # dev is a pure fast-forward mirror of main (never diverges) -- push here too fired this
+    # workflow twice per merge for the identical commit sha, with no cancellation between them.
+    branches: [main]
     paths:
       - 'apps/blockchain-postgres-sync/**'
   pull_request:
