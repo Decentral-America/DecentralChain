@@ -14,7 +14,9 @@
     ".github/skills/monitor-ci/scripts/**",
     ".opencode/skills/monitor-ci/scripts/**",
     // NX generators: invoked by NX CLI, not imported
-    "tools/generators/**"
+    "tools/generators/**",
+    // standalone CLI script (shebang, manually invoked against a live node) -- not imported by any module
+    "scripts/integration-test.mjs"
   ],
   "ignoreDependencies": [
     "undici-types",
@@ -75,6 +77,24 @@
       // This entry is required so knip can trace the vitest/config and vite/esbuild imports.
       "entry": ["vitest.base.config.ts"]
     },
+    "apps/admin-dashboard": {
+      // React Router v7 app (framework mode). entry.client/server + root.tsx bootstrap the app;
+      // routes.ts declares every page/API route module, which is the real entry set (routes lazy-load).
+      "entry": [
+        "src/entry.client.tsx",
+        "src/entry.server.tsx",
+        "src/root.tsx",
+        "src/routes.ts",
+        "vitest.config.ts"
+      ],
+      "ignore": [
+        // Build output: react-router's typegen writes route-typed helpers here on every `build`/`dev`
+        // run. Not source, not imported by app code — pure generated artifacts knip otherwise flags
+        // as 94 "unused files".
+        ".react-router/**"
+      ],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
     "apps/cubensis-connect": {
       "entry": [
         "src/popup.tsx",
@@ -95,7 +115,10 @@
         "src/daemons/pairs/index.ts",
         "src/daemons/presets/daemon.ts",
         "tsdown.config.ts",
-        "vitest.config.ts"
+        "vitest.config.ts",
+        // vitest runs these directly (never imported by other source files), so they're real
+        // entries, not dead code -- without this knip flags every __test__/*.test.ts as unused.
+        "src/**/*.test.ts"
       ],
       "project": ["src/**/*.ts"]
     },
@@ -253,6 +276,12 @@
     "apps/scanner": {
       "entry": ["src/pages/**/*.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
+    },
+    "packages/e2e-blockchain": {
+      // Vitest-only test package: no library entry point, just *.test.ts suites run directly
+      // against a live node/matcher (docker-compose.yml spins up the target stack).
+      "entry": ["vitest.config.ts", "src/**/*.test.ts"],
+      "project": ["src/**/*.ts"]
     },
     "packages/ride/lang/js": {
       "entry": ["dist/lang.js"],
