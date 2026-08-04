@@ -87,7 +87,8 @@ enum HotStuffPhase {
 }
 
 // A single committed generator's vote for a block in a given view and phase.
-// Signature is a BLS signature over the canonical encoding of (view, phase, block_id, block_height).
+// Signature is a BLS signature over the canonical encoding of
+// (view, phase, block_id, block_height, committee_epoch).
 message HotStuffVote {
     uint32 view = 1;              // monotonic round/view number
     HotStuffPhase phase = 2;
@@ -95,9 +96,19 @@ message HotStuffVote {
     uint32 block_height = 4;
     int32 voter_index = 5;        // index in the committed generator set for the period
     bytes signature = 6;          // BLS
+    // Generation-period index (see GenerationPeriod.from in node-scala) of the committee this vote
+    // was cast under. Added in schema 1.6.5 to close the cross-committee-epoch fork hazard (T10):
+    // it is folded into the signed bytes so a vote/QC can never be verified against a committee for
+    // a DIFFERENT epoch than the one it was actually signed under, even at an identical
+    // (view, block_height). Field added with proto3 default-0 semantics for backward compatibility —
+    // see that commit's message for the full compat analysis. 0 is not a valid real epoch pre-
+    // DeterministicFinality activation, so old senders (who never set this field) and new receivers
+    // agree on treating an absent/zero value as "pre-activation, no epoch binding applies".
+    uint32 committee_epoch = 7;
 }
 
-// Aggregated proof that >= 2/3 of committed stake voted for (view, phase, block_id).
+// Aggregated proof that >= 2/3 of committed stake voted for (view, phase, block_id) under a single
+// committee epoch.
 // aggregated_signature is the BLS aggregate of the individual HotStuffVote signatures from signer_indexes.
 message QuorumCertificate {
     uint32 view = 1;
@@ -106,6 +117,8 @@ message QuorumCertificate {
     uint32 block_height = 4;
     repeated int32 signer_indexes = 5;   // committed generators whose votes are aggregated
     bytes aggregated_signature = 6;      // BLS aggregate
+    // See HotStuffVote.committee_epoch above — identical semantics/compat story.
+    uint32 committee_epoch = 7;
 }
 
 // A leader's HotStuff proposal: extend `block_id` at `view`, justified by `justify` (the highQC the

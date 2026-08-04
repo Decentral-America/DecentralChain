@@ -1,3 +1,9 @@
+## JVM 1.6.5 (unreleased)
+
+### 🚀 Features
+
+- Add `committee_epoch` (field 7, `uint32`, proto3 default 0) to `HotStuffVote` and `QuorumCertificate` in `dcc/block.proto`, closing threat T10 (cross-committee-epoch fork — two disjoint committees each forming a valid QC for a different block at the same (view, height)). Backward compatible: proto3 additive field, old senders omit it (decodes as 0), old receivers ignore it — no break for peers still on 1.6.4. See node-scala's `HotStuffQuorum`/`HotStuffCrossEpochForkSpecification` for the consuming side.
+
 ## JVM 1.6.4 (unreleased)
 
 ### 🚀 Features
