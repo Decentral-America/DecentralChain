@@ -7,6 +7,11 @@ on:
         description: 'Release version (e.g. 1.6.2)'
         required: true
         default: '1.6.2'
+      run-audit-profile:
+        description: 'Run the `-P audit` gate (OWASP dependency-check + SpotBugs + PMD) before deploy. Only disable for a release that adds zero new dependencies (verify with `git diff -- pom.xml`) — NVD sync can be throttled to the point of blowing the job timeout with no NVD_API_KEY secret configured; see _publish-maven.yml.'
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -25,3 +30,4 @@ jobs:
       package-path: packages/sdk/protobuf-schemas
       artifact-name: protobuf-schemas
       version: ${{ inputs.version }}
+      run-audit-profile: ${{ inputs.run-audit-profile }}
