@@ -45,7 +45,7 @@
     "@decentralchain/parse-json-bignumber": "workspace:*",
     "@hono/node-server": "^2.0.10",
     "effect": "^3.21.4",
-    "hono": "^4.12.27",
+    "hono": "^4.12.34",
     "knex": "^3.3.0",
     "lru-cache": "^11.5.1",
     "pg": "^8.22.0",
