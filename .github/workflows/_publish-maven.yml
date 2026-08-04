@@ -44,7 +44,11 @@ jobs:
   publish:
     name: Audit · Sign · Upload · Attest · Await approval
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # A cold (first-ever) OWASP NVD sync downloads ~373k CVE records at NVD's
+    # throttled rate (~2k records/min observed), i.e. ~190min alone before any
+    # build/sign/deploy work. 90min was not enough headroom for that one-time
+    # cold sync; subsequent weekly-incremental runs finish in a few minutes.
+    timeout-minutes: 240
     environment: maven-central-release
     permissions:
       contents: read
@@ -128,11 +132,15 @@ jobs:
             ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true
           fi
 
-      # Save unconditionally (even on audit failure) so a partially-synced NVD
-      # DB from a throttled run still speeds up the next attempt; actions/cache
-      # skips the save if this exact key was already restored as an exact hit.
+      # Save unconditionally (even on audit failure OR the job timing out
+      # mid-sync) so a partially-synced NVD DB from a throttled/cancelled run
+      # still speeds up the next attempt; actions/cache skips the save if this
+      # exact key was already restored as an exact hit. Note: `!cancelled()`
+      # would skip this on a timeout-triggered cancellation too (a timeout
+      # counts as "cancelled" for this expression), which is exactly the
+      # scenario this step exists to help with, so we use always() instead.
       - name: Save cached OWASP dependency-check NVD data
-        if: ${{ inputs.run-audit-profile && !cancelled() }}
+        if: ${{ inputs.run-audit-profile && always() }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
