@@ -191,7 +191,7 @@ export default function LoadTest() {
         });
         es.close();
 
-        if (autoSweep && seedPhrase && targetNode) {
+        if (autoSweep && targetNode) {
           triggerAutoSweep().catch((sweepErr) => {
             console.error('[load-test] Auto-sweep failed:', sweepErr);
           });
@@ -347,19 +347,21 @@ export default function LoadTest() {
             {(autoFund || autoSweep) && (
               <div className="flex flex-col gap-1.5 max-w-md">
                 <label htmlFor="lt-seed" className="text-sm font-medium">
-                  Treasury Seed Phrase
+                  Treasury Seed Phrase (optional)
                 </label>
                 <Input
                   id="lt-seed"
                   type="password"
                   value={seedPhrase}
                   onChange={(e) => setSeedPhrase(e.target.value)}
-                  placeholder="wallet seed phrase (for auto-fund/sweep only)"
+                  placeholder="leave blank to use the server's configured treasury wallet"
                   disabled={isBusy}
                 />
                 <p className="text-xs text-muted-foreground">
                   Only used to fund/sweep test wallets — the stress test itself signs with its own
-                  GitHub Actions secret, never this field.
+                  GitHub Actions secret, never this field. Leave blank to use the treasury wallet
+                  configured on the server (TREASURY_SEED); paste a different seed here to override
+                  it for this run only.
                 </p>
               </div>
             )}
