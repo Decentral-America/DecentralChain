@@ -79,6 +79,7 @@
 | [docs/UPSTREAM.md](docs/UPSTREAM.md) | Waves provenance, ecosystem mapping, gap analysis, migration history |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Monorepo architecture, dependency tiers, toolchain, design decisions |
 | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Coding standards, quality gates, file templates, naming conventions |
+| [docs/LOCAL-DEV.md](docs/LOCAL-DEV.md) | Run the full ecosystem locally — private node, Postgres, BPS, exchange, scanner |
 
 ## Development
 
