@@ -68,6 +68,19 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (intent !== 'fund') return new Response('Unknown intent', { status: 400 });
 
+  // Fall back to the server-configured treasury wallet when the caller leaves
+  // the seed field blank, so auto-fund works without pasting a seed into the
+  // browser every run. An explicitly supplied seed still overrides it.
+  if (typeof body.senderSeed !== 'string' || body.senderSeed.trim() === '') {
+    if (!process.env.TREASURY_SEED) {
+      return Response.json(
+        { error: 'No senderSeed provided and TREASURY_SEED is not configured on the server' },
+        { status: 400 },
+      );
+    }
+    body.senderSeed = process.env.TREASURY_SEED;
+  }
+
   const validation = validateFundParams(body);
   if (!validation.ok) {
     return Response.json({ error: validation.error }, { status: 400 });

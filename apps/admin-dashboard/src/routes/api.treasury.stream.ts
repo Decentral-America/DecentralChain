@@ -229,10 +229,18 @@ export async function action({ request }: ActionFunctionArgs) {
     // Accepting the seed keeps it off the client entirely when auto-sweep triggers.
     let senderAddress = typeof body.senderAddress === 'string' ? body.senderAddress : '';
     if (!senderAddress) {
-      const senderSeed = typeof body.senderSeed === 'string' ? body.senderSeed.trim() : '';
+      // Falls back to the server-configured treasury wallet when the caller
+      // leaves both fields blank (see api.treasury.fund.ts for the same pattern).
+      const senderSeed =
+        (typeof body.senderSeed === 'string' ? body.senderSeed.trim() : '') ||
+        process.env.TREASURY_SEED ||
+        '';
       if (!senderSeed) {
         return Response.json(
-          { error: 'Either senderAddress or senderSeed is required' },
+          {
+            error:
+              'Either senderAddress or senderSeed is required, and TREASURY_SEED is not configured on the server',
+          },
           { status: 400 },
         );
       }

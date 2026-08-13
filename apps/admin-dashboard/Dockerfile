@@ -82,6 +82,9 @@ ENV NODE_ENV=production \
     # ADMIN_DASHBOARD_GITHUB_PAT          — fine-grained PAT: Actions:Read, Contents:Read on Decentral-America/*
     # GRAFANA_URL               — Grafana dashboard base URL
     # SENTRY_AUTH_TOKEN         — Sentry org auth token (read-only)
+    # TREASURY_SEED             — dedicated treasury wallet seed for the Load Test page's
+    #                             auto-fund/auto-sweep; used only when the UI's own seed
+    #                             field is left blank (see api.treasury.fund.ts / .stream.ts)
 
 EXPOSE 3001
 
