@@ -66,6 +66,12 @@ function buildServices(): ServiceDef[] {
       url: 'https://testnet.decentralscan.com',
     },
     {
+      category: 'newark',
+      name: 'Exchange',
+      upCodes: [200, 304],
+      url: 'https://testnet.decentral.exchange',
+    },
+    {
       anyResponseIsUp: true,
       category: 'newark',
       name: 'WebSocket API',
