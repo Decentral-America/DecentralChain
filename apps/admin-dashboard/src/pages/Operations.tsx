@@ -457,7 +457,7 @@ export default function Operations() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center justify-between">
-            <span>Maven Central — io.github.decentral-america</span>
+            <span>Maven Central — io.decentralchain</span>
             <Button variant="ghost" size="icon" onClick={loadMaven} disabled={mavenLoading}>
               <RefreshCw className={`h-4 w-4 ${mavenLoading ? 'animate-spin' : ''}`} />
             </Button>
