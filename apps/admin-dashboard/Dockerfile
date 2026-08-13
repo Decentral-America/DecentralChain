@@ -47,6 +47,14 @@ FROM base AS runtime
 
 RUN apk upgrade --no-cache libcrypto3 libssl3
 
+# npm is only needed in the build stage (it's inherited from `base`, which patches
+# its bundled sigstore CVE) -- runtime uses pnpm's deployed node_modules directly
+# via react-router-serve and never invokes npm. Remove it here rather than track
+# CVEs in npm's own vendored deps (e.g. brace-expansion, ip-address), which pnpm
+# overrides in pnpm-workspace.yaml can't reach since they aren't part of our
+# dependency graph.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 RUN addgroup -S admindash && adduser -S -G admindash admindash
 
 WORKDIR /app
