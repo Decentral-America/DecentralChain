@@ -21,8 +21,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!user) return new Response('Unauthorized', { status: 401 });
 
   try {
+    // search.maven.org's legacy Solr index doesn't have this namespace synced
+    // (confirmed live: numFound=0 there vs numFound=14 on repo1.maven.org's
+    // actual file repo) -- a known gap between Sonatype Central Portal
+    // publishing and the legacy search.maven.org mirror. central.sonatype.com
+    // hosts its own up-to-date solrsearch mirror with the identical API shape.
     const res = await fetch(
-      'https://search.maven.org/solrsearch/select?q=g:io.decentralchain&rows=20&wt=json',
+      'https://central.sonatype.com/solrsearch/select?q=g:io.decentralchain&rows=20&wt=json',
       { signal: AbortSignal.timeout(10_000) },
     );
 
