@@ -50,7 +50,10 @@ overrides:
   # jsdom@29 requires undici@^7 internal paths (wrap-handler.js, etc.) which were
   # removed in undici v8. Stay on ^7.x until jsdom@30+ ships with undici v8 support.
   # admin-dashboard removed its direct undici dep (Node 24 native fetch covers all usage).
-  undici: "^7.0.0"
+  # >=7.29.0: 5 GHSA advisories (CRLF injection via blob body type, cross-user
+  # cache-control disclosure, cookie attribute injection, response desync via
+  # retry interceptor, cache-directive parse crash) all fixed in 7.29.0.
+  undici: ">=7.29.0 <8.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   # axios <1.18.0: NO_PROXY 0.0.0.0 bypass, prototype-pollution auth/request-construction
