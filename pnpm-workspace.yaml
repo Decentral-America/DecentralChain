@@ -67,14 +67,18 @@ overrides:
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
   basic-ftp: '>=5.3.1'
-  # brace-expansion <5.0.7: DoS via exponential-time expansion of consecutive
-  # non-expanding {} groups.
-  brace-expansion: '>=5.0.7'
+  # brace-expansion <5.0.8: two DoS advisories -- CVE-2026-14257 (exponential-time
+  # expansion of consecutive non-expanding {} groups, fixed 5.0.7) and
+  # CVE-2026-69152 (unbounded intermediate arrays bypassing that same fix,
+  # fixed 5.0.8). The 5.0.7 floor below was only the first of the two.
+  brace-expansion: '>=5.0.8'
   defu: '>=6.1.5'
   # fast-xml-parser <5.10.1: repeated DOCTYPE declarations reset entity expansion limits.
   fast-xml-parser: '>=5.10.1'
   follow-redirects: '>=1.16.0'
-  ip-address: '>=10.1.1'
+  # ip-address <10.3.1: inconsistent IP address parsing enables SSRF (CVE-2026-69192).
+  # The 10.1.1 floor below predates this fix.
+  ip-address: '>=10.3.1'
   lodash: '>=4.18.1'
   # Scoped to express: blanket >=0.1.13 resolved to 8.x (different API), breaking express v4.
   # CVE fix: keep 0.1.x for express (where ReDoS is low-risk — routes are dev-defined),
