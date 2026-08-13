@@ -1,0 +1,64 @@
+name: Maven Central Deployment Status
+
+# One-off diagnostic/promote tool for Sonatype Central Portal deployments.
+# The Central Portal has no "list all deployments" API — only per-deployment
+# status/publish by ID — so this takes explicit IDs (found in the "Uploaded
+# bundle successfully ... deploymentId: <uuid>" line of a package's publish
+# workflow log) rather than discovering them itself.
+#
+# Use this when Maven Central search shows no artifacts for a package that a
+# publish-*.yml workflow reported as "success": success there only means the
+# bundle uploaded to the Portal, not that it published to Central. Packages
+# with autoPublish=false in their pom.xml (see central-publishing-maven-plugin
+# config) always need an explicit `action: publish` run here after upload.
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment-id:
+        description: 'Central Portal deploymentId (uuid) to check or publish'
+        required: true
+      action:
+        description: 'check (status only) or publish (promote to Central)'
+        required: true
+        default: 'check'
+        type: choice
+        options:
+          - check
+          - publish
+
+permissions:
+  contents: read
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    environment: maven-central-release
+    steps:
+      - name: Check / publish deployment
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          DEPLOYMENT_ID: ${{ inputs.deployment-id }}
+          ACTION: ${{ inputs.action }}
+        run: |
+          set -euo pipefail
+          AUTH=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_PASSWORD" | base64 -w0)
+
+          echo "### Status before" >> "$GITHUB_STEP_SUMMARY"
+          STATUS_BEFORE=$(curl -sf -X POST \
+            "https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID}" \
+            -H "Authorization: Bearer ${AUTH}")
+          echo "$STATUS_BEFORE" | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$ACTION" == "publish" ]]; then
+            echo "### Publishing" >> "$GITHUB_STEP_SUMMARY"
+            curl -sf -X POST \
+              "https://central.sonatype.com/api/v1/publisher/deployment/${DEPLOYMENT_ID}" \
+              -H "Authorization: Bearer ${AUTH}"
+            sleep 5
+            echo "### Status after publish call" >> "$GITHUB_STEP_SUMMARY"
+            curl -sf -X POST \
+              "https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID}" \
+              -H "Authorization: Bearer ${AUTH}" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
