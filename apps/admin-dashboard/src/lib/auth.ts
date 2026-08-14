@@ -4,6 +4,8 @@ const SESSION_COOKIE = 'admin_token';
 const SESSION_DURATION = '8h';
 const SESSION_DURATION_SECONDS = 8 * 3600;
 const DEFAULT_JWT_SECRET = 'dev-secret-change-me';
+const OAUTH_STATE_COOKIE = 'oauth_state';
+const OAUTH_STATE_DURATION_SECONDS = 5 * 60;
 
 export function isUsingDefaultSecret(): boolean {
   const s = process.env.ADMIN_DASHBOARD_JWT_SECRET;
@@ -24,11 +26,30 @@ export async function signToken(username: string): Promise<string> {
 
 export async function verifyToken(token: string): Promise<{ username: string } | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: ['HS256'] });
     return { username: payload.username as string };
   } catch {
     return null;
   }
+}
+
+export function generateOAuthState(): string {
+  return crypto.randomUUID();
+}
+
+export function makeStateCookie(state: string): string {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  return `${OAUTH_STATE_COOKIE}=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${OAUTH_STATE_DURATION_SECONDS}${secure}`;
+}
+
+export function getStateFromRequest(request: Request): string | null {
+  const cookie = request.headers.get('cookie') ?? '';
+  const match = cookie.match(new RegExp(`(?:^|;\\s*)${OAUTH_STATE_COOKIE}=([^;]+)`));
+  return match?.[1] ?? null;
+}
+
+export function clearStateCookie(): string {
+  return `${OAUTH_STATE_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`;
 }
 
 export function getTokenFromRequest(request: Request): string | null {

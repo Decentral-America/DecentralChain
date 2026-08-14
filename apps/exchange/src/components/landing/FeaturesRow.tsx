@@ -26,6 +26,7 @@ export default function FeaturesRow() {
     <Box component="section" sx={{ bgcolor: 'background.default', py: { md: 4, xs: 4 } }}>
       <Container maxWidth="lg">
         <Typography
+          component="h2"
           variant="h3"
           sx={{
             fontWeight: 700,
@@ -57,6 +58,7 @@ export default function FeaturesRow() {
                   <Stack spacing={2}>
                     <Box sx={{ color: 'primary.main' }}>{feature.icon}</Box>
                     <Typography
+                      component="h3"
                       variant="h6"
                       sx={{
                         fontWeight: 700,

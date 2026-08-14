@@ -52,7 +52,9 @@ export const fetchAssetDetails = async (
   }
 
   try {
-    const response = await fetch(`${config.nodeUrl}/assets/details/${assetId}`);
+    const response = await fetch(`${config.nodeUrl}/assets/details/${assetId}`, {
+      signal: AbortSignal.timeout(10_000),
+    });
 
     if (!response.ok) {
       if (response.status === 404) {

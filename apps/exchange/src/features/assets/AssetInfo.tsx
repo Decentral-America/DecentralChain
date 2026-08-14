@@ -4,6 +4,7 @@
  * Shows all asset details including name, description, supply, and properties
  */
 import type React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useAssetDetails } from '@/api/services/assetsService';
 import { Card } from '@/components/atoms/Card';
@@ -139,8 +140,8 @@ const formatNumber = (num: number): string => {
 /**
  * Format timestamp to readable date
  */
-const formatTimestamp = (timestamp: number): string => {
-  return new Date(timestamp).toLocaleDateString(undefined, {
+const formatTimestamp = (timestamp: number, locale?: string): string => {
+  return new Date(timestamp).toLocaleDateString(locale, {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
@@ -181,6 +182,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
   compact = false,
 }) => {
   const { data: asset, isLoading, error } = useAssetDetails(assetId);
+  const { i18n } = useTranslation();
 
   if (isLoading) {
     return (
@@ -259,7 +261,7 @@ export const AssetInfo: React.FC<AssetInfoProps> = ({
           <InfoItem>
             <InfoLabel>Issue Date</InfoLabel>
             <InfoValue style={{ fontSize: '14px' }}>
-              {formatTimestamp(asset.issueTimestamp)}
+              {formatTimestamp(asset.issueTimestamp, i18n.language)}
             </InfoValue>
           </InfoItem>
         )}

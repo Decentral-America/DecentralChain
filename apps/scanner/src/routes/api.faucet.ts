@@ -13,15 +13,34 @@
  */
 
 import { broadcast, transfer } from '@decentralchain/transactions';
+import Redis from 'ioredis';
 
-// ── In-memory rate limiter ────────────────────────────────────────────────────
-// Keyed by address → last successful request timestamp (ms).
-// Single-process: one Node.js SSR server per container, so this is safe.
+// ── Rate limiter ──────────────────────────────────────────────────────────────
+// Backed by Redis (shared, survives redeploys/restarts) when REDIS_URL is
+// configured; falls back to an in-process Map otherwise so the faucet still
+// works if Redis isn't wired up on this network. The in-memory fallback has
+// the same limitation flagged in the audit: it resets on redeploy, letting an
+// address re-claim immediately after a deploy. The Redis path fixes that.
 const lastRequest = new Map<string, number>();
+const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
 
-function isRateLimited(address: string, windowMs: number): boolean {
+async function isRateLimited(address: string, windowMs: number): Promise<boolean> {
+  if (redis) {
+    const key = `faucet:last-request:${address}`;
+    const last = await redis.get(key);
+    return last !== null && Date.now() - Number(last) < windowMs;
+  }
   const last = lastRequest.get(address);
   return last !== undefined && Date.now() - last < windowMs;
+}
+
+async function recordRequest(address: string, windowMs: number): Promise<void> {
+  if (redis) {
+    const key = `faucet:last-request:${address}`;
+    await redis.set(key, Date.now(), 'PX', windowMs);
+    return;
+  }
+  lastRequest.set(address, Date.now());
 }
 
 // ── reCAPTCHA v3 verification ─────────────────────────────────────────────────
@@ -114,7 +133,7 @@ export async function action({ request }: { request: Request }): Promise<Respons
   // ── Rate limit ──────────────────────────────────────────────────────────────
   const rateLimitHours = parseInt(process.env.DCC_FAUCET_RATE_HOURS ?? '24', 10);
   const rateLimitMs = rateLimitHours * 3600 * 1000;
-  if (isRateLimited(address, rateLimitMs)) {
+  if (await isRateLimited(address, rateLimitMs)) {
     return Response.json(
       { error: `This address already received DCC. Try again in ${rateLimitHours} hours.` },
       { status: 429 },
@@ -143,7 +162,7 @@ export async function action({ request }: { request: Request }): Promise<Respons
 
     await broadcast(tx, nodeUrl);
 
-    lastRequest.set(address, Date.now());
+    await recordRequest(address, rateLimitMs);
 
     return Response.json({
       amount: amountDcc,

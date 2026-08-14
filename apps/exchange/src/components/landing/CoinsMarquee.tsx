@@ -325,6 +325,7 @@ export default function CoinsMarquee() {
                         </Box>
                         <Box>
                           <Typography
+                            component="span"
                             variant="subtitle2"
                             sx={{
                               fontWeight: 700,
@@ -438,6 +439,7 @@ export default function CoinsMarquee() {
                         </Box>
                         <Box>
                           <Typography
+                            component="span"
                             variant="subtitle2"
                             sx={{
                               fontWeight: 700,

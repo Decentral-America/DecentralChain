@@ -40,6 +40,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { type AdminTradingPair } from '@/hooks/useAdminTradingPairs';
 import { logger } from '@/lib/logger';
 
@@ -65,6 +66,7 @@ interface PairFormData {
 const STORAGE_KEY = 'dex_trading_pairs';
 
 export const DexPairAdmin = () => {
+  const { t } = useTranslation();
   const [pairs, setPairs] = useState<TradingPair[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPair, setEditingPair] = useState<TradingPair | null>(null);
@@ -351,7 +353,7 @@ export const DexPairAdmin = () => {
                 <TableCell align="center">Decimals</TableCell>
                 <TableCell align="center">Status</TableCell>
                 <TableCell align="center">Featured</TableCell>
-                <TableCell align="center">Sort Order</TableCell>
+                <TableCell align="center">{t('app.dex.sortOrder')}</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -603,7 +605,7 @@ export const DexPairAdmin = () => {
               </Typography>
               <Stack spacing={2}>
                 <TextField
-                  label="Sort Order"
+                  label={t('app.dex.sortOrder')}
                   type="number"
                   fullWidth
                   value={formData.sortOrder}

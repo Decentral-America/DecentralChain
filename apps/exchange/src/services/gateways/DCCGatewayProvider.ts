@@ -34,6 +34,7 @@ export class DCCGatewayProvider implements IGatewayService {
           'Content-Type': 'application/json',
         },
         method: 'GET',
+        signal: AbortSignal.timeout(10_000),
       });
 
       if (!response.ok) {

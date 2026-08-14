@@ -3,6 +3,7 @@ import { address } from '@decentralchain/ts-lib-crypto';
 import { type ActionFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { createIdempotencyCache, createRateLimiter } from '@/lib/rateLimiter';
 import { readWalletCsv } from '@/lib/wallets';
 
 async function getUser(request: Request): Promise<string | null> {
@@ -15,6 +16,32 @@ async function getUser(request: Request): Promise<string | null> {
 const MAX_RECIPIENTS_PER_TX = 100;
 const BASE_MASS_TRANSFER_FEE = 100_000;
 const WAVELETS_PER_DCC = 100_000_000;
+
+// One fund attempt per user per 30s — this route can broadcast up to 2000 MassTransfer
+// recipients per call; nothing should be hitting it faster than that.
+const checkRateLimit = createRateLimiter({ max: 1, windowMs: 30_000 });
+const idempotencyCache = createIdempotencyCache<{ errors: string[]; txIds: string[] }>();
+
+function isAllowedNodeUrl(nodeUrl: string): boolean {
+  const allowlist = (process.env.ADMIN_DASHBOARD_ALLOWED_NODE_URLS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (allowlist.length === 0) {
+    if (process.env.NODE_ENV === 'production') return false;
+    logger.warn(
+      'ADMIN_DASHBOARD_ALLOWED_NODE_URLS is not set — allowing any nodeUrl in non-production only',
+    );
+    return true;
+  }
+  try {
+    const origin = new URL(nodeUrl).origin;
+    return allowlist.includes(origin);
+  } catch {
+    return false;
+  }
+}
 
 interface FundParams {
   senderSeed: string;
@@ -63,10 +90,27 @@ export async function action({ request }: ActionFunctionArgs) {
   const user = await getUser(request);
   if (!user) return new Response('Unauthorized', { status: 401 });
 
+  const rateLimitResult = checkRateLimit(user);
+  if (!rateLimitResult.ok) {
+    return Response.json(
+      { error: 'Too many fund attempts — wait before retrying' },
+      { headers: { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }, status: 429 },
+    );
+  }
+
   const body = (await request.json()) as Record<string, unknown>;
   const intent = body.intent;
 
   if (intent !== 'fund') return new Response('Unknown intent', { status: 400 });
+
+  const idempotencyKey = typeof body.idempotencyKey === 'string' ? body.idempotencyKey : null;
+  if (idempotencyKey) {
+    const cached = idempotencyCache.get(idempotencyKey);
+    if (cached) {
+      logger.info({ idempotencyKey, user }, 'Treasury fund: returning cached idempotent response');
+      return Response.json(cached);
+    }
+  }
 
   // Fall back to the server-configured treasury wallet when the caller leaves
   // the seed field blank, so auto-fund works without pasting a seed into the
@@ -87,6 +131,14 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { senderSeed, nodeUrl, chainId, count, amountDcc } = validation.params;
+
+  if (!isAllowedNodeUrl(nodeUrl)) {
+    logger.warn({ nodeUrl, user }, 'Treasury fund: rejected nodeUrl not in allowlist');
+    return Response.json(
+      { error: 'nodeUrl is not in ADMIN_DASHBOARD_ALLOWED_NODE_URLS' },
+      { status: 400 },
+    );
+  }
   const csvPath = process.env.DCC_WALLET_CSV_PATH ?? '/opt/dcc/test-wallets.csv';
 
   let wallets: ReturnType<typeof readWalletCsv>;
@@ -170,5 +222,7 @@ export async function action({ request }: ActionFunctionArgs) {
     'Treasury fund: complete',
   );
 
-  return Response.json({ errors: allErrors, txIds });
+  const result = { errors: allErrors, txIds };
+  if (idempotencyKey) idempotencyCache.set(idempotencyKey, result);
+  return Response.json(result);
 }

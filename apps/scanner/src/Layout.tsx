@@ -161,6 +161,7 @@ function LayoutContent() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
                     <Languages className="w-5 h-5" />
+                    <span className="sr-only">Change language</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

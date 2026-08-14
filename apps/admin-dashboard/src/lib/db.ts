@@ -27,6 +27,9 @@ export function getSql(): ReturnType<typeof postgres> {
     _sql = postgres(buildConnectionString(), {
       connect_timeout: 10,
       idle_timeout: 30,
+      // 5 connections: this is a low-traffic internal admin tool (one operator at a
+      // time, typically), not a public-facing service — sized well above the realistic
+      // concurrent-request count for this app, not a copy-pasted default.
       max: 5,
       onnotice: () => {
         /* suppress notices */

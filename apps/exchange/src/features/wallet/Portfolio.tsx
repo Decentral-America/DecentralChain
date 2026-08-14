@@ -21,6 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { dccletsToCoins } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
 import { useAuth } from '@/contexts/AuthContext';
@@ -46,8 +47,12 @@ interface SendModalState {
   availableBalance: number;
 }
 
-const formatAmount = (value: number, maximumFractionDigits = 8): string => {
-  return new Intl.NumberFormat('en-US', {
+const formatAmount = (
+  value: number,
+  maximumFractionDigits = 8,
+  locale: string = 'en-US',
+): string => {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
     minimumFractionDigits: 0,
   }).format(value);
@@ -60,6 +65,7 @@ const shortenId = (id: string): string => {
 
 export const Portfolio = () => {
   const { user } = useAuth();
+  const { i18n } = useTranslation();
   const [search, setSearch] = useState('');
   const [sendModal, setSendModal] = useState<SendModalState | null>(null);
   const [receiveOpen, setReceiveOpen] = useState(false);
@@ -266,7 +272,7 @@ export const Portfolio = () => {
                         mb: 0.5,
                       }}
                     >
-                      {formatAmount(baseBalance)}
+                      {formatAmount(baseBalance, 8, i18n.language)}
                     </Typography>
                     <Chip
                       label={DCC_SYMBOL}
@@ -354,7 +360,7 @@ export const Portfolio = () => {
                         mb: 0.5,
                       }}
                     >
-                      {formatAmount(effectiveBalance)}
+                      {formatAmount(effectiveBalance, 8, i18n.language)}
                     </Typography>
                     <Chip
                       label={DCC_SYMBOL}
@@ -440,7 +446,7 @@ export const Portfolio = () => {
                         mb: 0.5,
                       }}
                     >
-                      {formatAmount(leased)}
+                      {formatAmount(leased, 8, i18n.language)}
                     </Typography>
                     <Chip
                       label={DCC_SYMBOL}
@@ -667,7 +673,7 @@ export const Portfolio = () => {
                               fontWeight: 700,
                             }}
                           >
-                            {formatAmount(asset.amount, Math.min(asset.decimals, 8))}
+                            {formatAmount(asset.amount, Math.min(asset.decimals, 8), i18n.language)}
                           </Typography>
                         </Box>
                       </Grid>

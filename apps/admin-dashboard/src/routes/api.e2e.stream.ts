@@ -12,6 +12,7 @@ import {
   resolveDispatchedRun,
 } from '@/lib/github-actions-runner';
 import { logger } from '@/lib/logger';
+import { createRateLimiter } from '@/lib/rateLimiter';
 
 // ── Why this doesn't spawn anything locally ─────────────────────────────────
 //
@@ -30,6 +31,10 @@ const TARGET: DispatchTarget = {
 };
 
 const POLL_INTERVAL_MS = 4_000;
+
+// hasActiveRun() below already prevents overlapping runs; this is defense-in-depth
+// against rapid stop/restart cycling.
+const checkStartRateLimit = createRateLimiter({ max: 3, windowMs: 60_000 });
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -269,6 +274,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const intent = body.intent;
 
   if (intent === 'start') {
+    const rateLimitResult = checkStartRateLimit(user);
+    if (!rateLimitResult.ok) {
+      return Response.json(
+        { error: 'Too many E2E start attempts — wait before retrying' },
+        { headers: { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }, status: 429 },
+      );
+    }
     if (hasActiveRun()) {
       return Response.json(
         { error: 'An E2E run is already in progress. Wait for it to finish, or stop it first.' },

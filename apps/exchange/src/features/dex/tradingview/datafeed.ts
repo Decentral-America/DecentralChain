@@ -80,7 +80,7 @@ const fetchCandles = async (
       timeStart: from.toString(),
     });
 
-    const response = await fetch(`${url}?${params}`);
+    const response = await fetch(`${url}?${params}`, { signal: AbortSignal.timeout(10_000) });
     if (!response.ok) throw new Error('Failed to fetch candles');
 
     const data = await response.json();

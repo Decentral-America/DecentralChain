@@ -75,9 +75,6 @@
       "layer:5"
     ]
   },
-  "overrides": {
-    "@types/react": "^19.0.0"
-  },
   "private": true,
   "repository": {
     "directory": "apps/cubensis-connect",

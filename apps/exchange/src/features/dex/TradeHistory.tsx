@@ -4,6 +4,7 @@
  * Shows price, amount, time, and trade direction (buy/sell)
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useTradeHistory } from '@/api/services/matcherService';
 import { Spinner } from '@/components/atoms/Spinner';
@@ -176,6 +177,7 @@ interface Trade {
  */
 export const TradeHistory: React.FC = () => {
   const { selectedPair } = useDexStore();
+  const { i18n } = useTranslation();
 
   /**
    * Fetch recent trades for selected pair using real API
@@ -217,7 +219,11 @@ export const TradeHistory: React.FC = () => {
    */
   const formatTime = (timestamp: number): string => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return date.toLocaleTimeString(i18n.language, {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
   };
 
   if (!selectedPair) {

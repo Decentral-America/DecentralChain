@@ -132,7 +132,7 @@ export const isValidationError = (error: unknown): boolean => {
 export const getValidationErrors = (error: unknown): Record<string, string[]> | null => {
   if (error instanceof HttpError) {
     const response = error.data as ApiErrorResponse | undefined;
-    return response?.errors || null;
+    return response?.errors ?? null;
   }
   return null;
 };

@@ -2,6 +2,7 @@
  * AssetCard Component
  * Individual asset card showing icon, name, balance, and USD value
  */
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
@@ -96,8 +97,8 @@ interface AssetCardProps {
 /**
  * Format balance with appropriate decimals
  */
-const formatBalance = (balance: number, decimals: number = 8): string => {
-  return new Intl.NumberFormat('en-US', {
+const formatBalance = (balance: number, decimals: number = 8, locale: string = 'en-US'): string => {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits: decimals,
     minimumFractionDigits: 0,
   }).format(balance);
@@ -106,8 +107,8 @@ const formatBalance = (balance: number, decimals: number = 8): string => {
 /**
  * Format USD value
  */
-const formatUSD = (value: number): string => {
-  return new Intl.NumberFormat('en-US', {
+const formatUSD = (value: number, locale: string = 'en-US'): string => {
+  return new Intl.NumberFormat(locale, {
     currency: 'USD',
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
@@ -125,6 +126,7 @@ const formatChange = (change: number): string => {
 
 export const AssetCard = ({ asset }: AssetCardProps) => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const handleClick = () => {
     void navigate(`/desktop/wallet/assets/${asset.id}`);
@@ -151,12 +153,14 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
       <AssetInfo>
         <AssetName>{asset.name}</AssetName>
         <AssetBalance>
-          {formatBalance(asset.balance, asset.decimals)} {asset.symbol}
+          {formatBalance(asset.balance, asset.decimals, i18n.language)} {asset.symbol}
         </AssetBalance>
       </AssetInfo>
 
       <div>
-        <AssetValue>{asset.usdValue != null ? formatUSD(asset.usdValue) : '—'}</AssetValue>
+        <AssetValue>
+          {asset.usdValue != null ? formatUSD(asset.usdValue, i18n.language) : '—'}
+        </AssetValue>
         {asset.change24h !== undefined && (
           <AssetValueChange $positive={asset.change24h >= 0}>
             {formatChange(asset.change24h)}

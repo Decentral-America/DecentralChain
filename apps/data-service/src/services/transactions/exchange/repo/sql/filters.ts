@@ -8,8 +8,8 @@ const pg = _knex({ client: 'pg' });
 const byOrderSender = curryN(2, (orderSender, q) =>
   pg.union(
     [
-      q.clone().whereRaw(`t.order1->>'sender' = '${orderSender}'`),
-      q.clone().whereRaw(`t.order2->>'sender' = '${orderSender}'`),
+      q.clone().whereRaw(`t.order1->>'sender' = ?`, [orderSender]),
+      q.clone().whereRaw(`t.order2->>'sender' = ?`, [orderSender]),
     ],
     true,
   ),
@@ -20,7 +20,7 @@ const byOrderSenders = curryN(2, (senders, q) =>
 );
 
 const byOrder = curryN(2, (orderId, q) =>
-  q.clone().whereRaw(`array[t.order1->>'id', t.order2->>'id'] @> array['${orderId}']`).limit(1),
+  q.clone().whereRaw(`array[t.order1->>'id', t.order2->>'id'] @> array[?]`, [orderId]).limit(1),
 );
 
 const byAsset = (assetType: string) =>

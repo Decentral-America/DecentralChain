@@ -49,7 +49,11 @@ export default function Footer() {
                 alt="DecentralChain"
                 sx={{ borderRadius: '50%', height: 32, width: 32 }}
               />
-              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}>
+              <Typography
+                component="p"
+                variant="h6"
+                sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}
+              >
                 Decentral
                 <Box component="span" sx={{ color: 'primary.main' }}>
                   .Exchange
@@ -79,6 +83,7 @@ export default function Footer() {
               }}
             >
               <Typography
+                component="p"
                 variant="subtitle2"
                 sx={{
                   fontWeight: 700,

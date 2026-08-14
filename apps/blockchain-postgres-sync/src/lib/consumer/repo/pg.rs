@@ -822,7 +822,7 @@ impl RepoOperations for PgRepoOperations<'_> {
                     txs_count = excluded.txs_count,
                     volume = excluded.volume,
                     weighted_average_price = excluded.weighted_average_price;
-        \";
+        ";
 
         for interval in CANDLE_INTERVALS {
             let [interval_start, interval_end] = interval;

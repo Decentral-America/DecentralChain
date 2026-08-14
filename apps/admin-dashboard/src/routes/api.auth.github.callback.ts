@@ -1,15 +1,26 @@
 import { type LoaderFunctionArgs, redirect } from 'react-router';
-import { makeSessionCookie, signToken } from '@/lib/auth';
+import { clearStateCookie, getStateFromRequest, makeSessionCookie, signToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');
+  const returnedState = url.searchParams.get('state');
+  const expectedState = getStateFromRequest(request);
+
+  if (!returnedState || !expectedState || returnedState !== expectedState) {
+    logger.warn('GitHub OAuth callback: state mismatch or missing — possible CSRF attempt');
+    return redirect('/login?error=oauth_state_mismatch', {
+      headers: { 'Set-Cookie': clearStateCookie() },
+    });
+  }
 
   if (error || !code) {
     logger.warn({ error }, 'GitHub OAuth denied or missing code');
-    return redirect('/login?error=oauth_denied');
+    return redirect('/login?error=oauth_denied', {
+      headers: { 'Set-Cookie': clearStateCookie() },
+    });
   }
 
   const appUrl = process.env.ADMIN_DASHBOARD_URL ?? 'http://localhost:5173';
@@ -78,7 +89,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   logger.info({ username: user.login }, 'Admin login successful');
 
   const token = await signToken(user.login);
-  return redirect('/', {
-    headers: { 'Set-Cookie': makeSessionCookie(token) },
-  });
+  const headers = new Headers();
+  headers.append('Set-Cookie', makeSessionCookie(token));
+  headers.append('Set-Cookie', clearStateCookie());
+  return redirect('/', { headers });
 }

@@ -315,7 +315,9 @@ class CandlesService {
       const matcherUrl = fullConfig.matcher || 'https://mainnet-matcher.decentralchain.io/matcher';
 
       // Fetch matcher public key from the matcher endpoint
-      const matcherPublicKeyResponse = await fetch(`${matcherUrl}/`);
+      const matcherPublicKeyResponse = await fetch(`${matcherUrl}/`, {
+        signal: AbortSignal.timeout(10_000),
+      });
       const matcherPublicKey = await matcherPublicKeyResponse.json();
 
       // Convert matcher public key to address
@@ -334,7 +336,7 @@ class CandlesService {
       // Wait for all batches and flatten results
       const responses = await Promise.all(promises);
       const rawCandles = responses.flatMap(
-        (response) => (response as { data?: unknown[] })?.data || [],
+        (response) => (response as { data?: unknown[] })?.data ?? [],
       );
 
       logger.debug('[Candles] Raw candles count:', rawCandles.length);

@@ -22,6 +22,7 @@ import { styled } from '@mui/material/styles';
 import * as ds from 'data-service';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/atoms/Button';
 import { NetworkConfig } from '@/config';
@@ -160,6 +161,7 @@ interface User {
 }
 
 export const SaveSeedPage: React.FC = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const { getActiveState } = useAuth();
@@ -393,7 +395,7 @@ export const SaveSeedPage: React.FC = () => {
 
               {showPasswordError && (
                 <Alert severity="error" sx={{ mb: 3 }}>
-                  <AlertTitle>Authentication Failed</AlertTitle>
+                  <AlertTitle>{t('app.saveSeed.authenticationFailed')}</AlertTitle>
                   {networkError
                     ? 'Network error occurred. Please check your connection and try again.'
                     : 'Incorrect password. Please try again.'}
@@ -533,7 +535,7 @@ export const SaveSeedPage: React.FC = () => {
               )}
 
               <Alert severity="warning" sx={{ mb: 3 }}>
-                <AlertTitle>Security Warning</AlertTitle>
+                <AlertTitle>{t('app.saveSeed.securityWarning')}</AlertTitle>
                 Never share your seed phrase with anyone. Anyone with access to your seed phrase can
                 access and steal your funds. Make sure you&apos;re in a private location before
                 revealing your seed phrase.

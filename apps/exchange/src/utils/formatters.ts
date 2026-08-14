@@ -32,8 +32,12 @@ export const stringifyJSON = (
  * @param decimals - Number of decimal places (default: 8)
  * @returns Formatted string with thousands separators
  */
-export const formatDcc = (value: number, decimals: number = 8): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatDcc = (
+  value: number,
+  decimals: number = 8,
+  locale: string = 'en-US',
+): string => {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits: decimals,
     minimumFractionDigits: 0,
   }).format(value);
@@ -45,8 +49,12 @@ export const formatDcc = (value: number, decimals: number = 8): string => {
  * @param maximumFractionDigits - Maximum number of decimal places (default: 8)
  * @returns Formatted string with thousands separators
  */
-export const formatAmount = (value: number, maximumFractionDigits: number = 8): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatAmount = (
+  value: number,
+  maximumFractionDigits: number = 8,
+  locale: string = 'en-US',
+): string => {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
     minimumFractionDigits: 0,
   }).format(value);

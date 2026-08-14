@@ -13,10 +13,12 @@ export default function Login() {
   const error = searchParams.get('error');
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <main className="min-h-screen bg-background flex items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center pb-2">
-          <CardTitle className="text-xl">DCC Node Dashboard</CardTitle>
+          <CardTitle className="text-xl">
+            <h1>DCC Node Dashboard</h1>
+          </CardTitle>
           <p className="text-sm text-muted-foreground">Sign in to continue</p>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
@@ -36,6 +38,6 @@ export default function Login() {
           </a>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }

@@ -292,6 +292,7 @@ export const broadcastTransaction = async (
         'Content-Type': 'application/json;charset=UTF-8',
       },
       method: 'POST',
+      signal: AbortSignal.timeout(30_000),
     });
 
     if (!response.ok) {

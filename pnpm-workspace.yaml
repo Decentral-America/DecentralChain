@@ -13,6 +13,7 @@ catalog:
   '@size-limit/preset-small-lib': 12.1.0
   '@types/node': 26.1.0
   '@vitest/coverage-v8': 4.1.9
+  ioredis: 6.0.0
   js-yaml: 5.2.2
   jsdom: 29.1.1
   publint: 0.3.21
@@ -56,6 +57,10 @@ overrides:
   undici: ">=7.29.0 <8.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
+  # GHSA-2v37-7h3g-55p8: custom generators can loop indefinitely when size is zero.
+  nanoid: '>=3.3.18'
+  # GHSA-xhg8-fm23-9pgj: unvalidated symlink path traversal on archive extraction.
+  extract-zip: '>=2.0.1'
   # axios <1.18.0: NO_PROXY 0.0.0.0 bypass, prototype-pollution auth/request-construction
   # gadgets, Node adapter proxy-after-interceptor-clone (GHSA advisories, several HIGH/MEDIUM).
   axios: '>=1.18.0'
@@ -124,6 +129,3 @@ minimumReleaseAgeExclude:
   - '@mui/private-theming@9.2.0'
   - '@mui/system@9.2.0'
   - '@mui/utils@9.2.0'
-
-# @visx v4 declares peerDep "^18 || ^19" — no workaround needed.
-peerDependencyRules: {}

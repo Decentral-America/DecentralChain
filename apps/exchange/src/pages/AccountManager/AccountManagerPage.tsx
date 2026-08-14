@@ -5,6 +5,7 @@
  * Matches Angular's account management functionality
  */
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
@@ -185,6 +186,7 @@ function getAccountInitials(account: { name?: string; address: string }): string
  * AccountManagerPage Component
  */
 export const AccountManagerPage = () => {
+  const { t } = useTranslation();
   const { user, accounts, switchAccount, logout, getActiveState } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -240,7 +242,7 @@ export const AccountManagerPage = () => {
   return (
     <PageContainer>
       <Header>
-        <Title>Manage Accounts</Title>
+        <Title>{t('app.accountManager.manageAccounts')}</Title>
         <Subtitle>
           {accounts.length} {accounts.length === 1 ? 'wallet' : 'wallets'} in your vault
         </Subtitle>
@@ -248,7 +250,7 @@ export const AccountManagerPage = () => {
 
       {/* Current Account Section */}
       <Section>
-        <SectionTitle>Current Account</SectionTitle>
+        <SectionTitle>{t('app.accountManager.currentAccount')}</SectionTitle>
         {user && (
           <AccountCard isActive>
             <AccountAvatar>{getAccountInitials(user)}</AccountAvatar>
@@ -264,7 +266,7 @@ export const AccountManagerPage = () => {
       {/* Other Accounts Section */}
       {otherAccounts.length > 0 && (
         <Section>
-          <SectionTitle>Switch Account</SectionTitle>
+          <SectionTitle>{t('app.accountManager.switchAccount')}</SectionTitle>
           {otherAccounts.map((account) => (
             <AccountCard
               key={account.hash}

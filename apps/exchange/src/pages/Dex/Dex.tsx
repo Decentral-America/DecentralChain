@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { styled, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOrderBook } from '@/api/services/matcherService';
 import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
 import { OrderBook } from '@/features/dex/OrderBook';
@@ -112,6 +113,7 @@ const PriceDisplay = styled(Typography, {
 }));
 
 export const Dex = () => {
+  const { t, i18n } = useTranslation();
   const [orderFormTab, setOrderFormTab] = useState(0); // 0 = Limit, 1 = Market
   const [tradesTab, setTradesTab] = useState(0); // 0 = Market Trades, 1 = My Trades
   const [bottomTab, setBottomTab] = useState(0); // 0 = Open Orders, 1 = Order History
@@ -170,7 +172,7 @@ export const Dex = () => {
 
   // Format current price for display
   const formattedPrice = marketData.currentPrice
-    ? marketData.currentPrice.toLocaleString('en-US', {
+    ? marketData.currentPrice.toLocaleString(i18n.language, {
         maximumFractionDigits: 8,
         minimumFractionDigits: 2,
       })
@@ -459,11 +461,15 @@ export const Dex = () => {
                     }}
                   >
                     <Tab label="Open Orders (0)" />
-                    <Tab label="Order History" />
+                    <Tab label={t('app.dex.orderHistory')} />
                   </Tabs>
                 </PanelHeader>
                 <PanelContent sx={{ maxHeight: 300 }}>
-                  {bottomTab === 0 ? <UserOrders /> : <Typography>Order History</Typography>}
+                  {bottomTab === 0 ? (
+                    <UserOrders />
+                  ) : (
+                    <Typography>{t('app.dex.orderHistory')}</Typography>
+                  )}
                 </PanelContent>
               </TradingPanel>
             </Box>

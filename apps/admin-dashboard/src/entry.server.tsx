@@ -61,6 +61,12 @@ export default function handleRequest(
             'camera=(), microphone=(), geolocation=(), interest-cohort=()',
           );
           responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+          // 'unsafe-inline' on style-src is a pragmatic starting point (component libraries commonly
+          // set inline style attributes) — tighten with nonces/hashes later if that surface matters.
+          responseHeaders.set(
+            'Content-Security-Policy',
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+          );
           resolve(
             new Response(stream, {
               headers: responseHeaders,

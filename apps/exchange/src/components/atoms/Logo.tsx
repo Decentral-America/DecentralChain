@@ -22,6 +22,7 @@ export default function Logo({ sx }: LogoProps) {
         }}
       />
       <Typography
+        component="span"
         variant="h6"
         sx={{
           fontSize: { md: 24, xs: 20 },

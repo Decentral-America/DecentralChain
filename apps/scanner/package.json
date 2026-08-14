@@ -14,6 +14,7 @@
     "clsx": "^2.1.1",
     "cytoscape": "3.34.0",
     "cytoscape-fcose": "2.2.0",
+    "ioredis": "catalog:",
     "isbot": "^5.1.44",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.23.0",
