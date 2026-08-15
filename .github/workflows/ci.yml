@@ -243,7 +243,11 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────────────
 
       - name: Build workspace packages
-        run: pnpm nx run @decentralchain/node-api:build
+        # e2e's webServer starts exchange via a raw `pnpm --filter exchange dev`,
+        # bypassing Nx's dependency graph — so every package exchange imports at
+        # runtime must be pre-built here, not just node-api. List derived from
+        # `pnpm nx graph` on the exchange project (its real deps, not a guess).
+        run: pnpm nx run-many -t build --projects=@decentralchain/assets-pairs-order,@decentralchain/bignumber,@decentralchain/browser-bus,@decentralchain/data-entities,@decentralchain/data-service-client,@decentralchain/node-api,@decentralchain/oracle-data,@decentralchain/signature-adapter,@decentralchain/transactions,@decentralchain/ts-lib-crypto
 
       - name: Install Playwright browsers
         run: |
