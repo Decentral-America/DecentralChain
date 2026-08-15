@@ -466,6 +466,9 @@
       "selectFileBtn": "Выберите файл"
     },
     "backupFileDescription": "Импорт аккаунтов из Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Импорт аккаунтов из Cubensis Connect",
+    "cubensisConnectForm": "Установить",
     "decentralchainClient": "DCC Client",
     "decentralchainClientDescription": "Import account from a DCC Client",
     "decentralchainLiteClient": "DecentralChain Lite Client",
@@ -477,9 +480,6 @@
     },
     "importAccount": "Импорт аккаунтов",
     "importAccountInfo": "Выберите, откуда импортировать аккаунты",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Импорт аккаунтов из Cubensis Connect",
-    "keeperForm": "Установить",
     "LedgerClient": "Ledger",
     "ledgerDescription": "Импорт аккаунтов с устройства Ledger",
     "or": "ИЛИ",
@@ -961,7 +961,7 @@
     "confirmTransaction": {
       "back": "Назад",
       "confirm": "Отправить",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Пожалуйста, попробуйте еще раз. Если ошибка повторится, обратитесь в  [Поддержку](https://decentralchain.io/soporte/)",
         "header": "Вы не подтвердили запрос Cubensis Connect"
       },
@@ -1038,7 +1038,7 @@
         "ok": "Продолжить"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "Отменить",
           "errorDescription": "Пожалуйста, попробуйте еще раз. Если ошибка повторится, обратитесь в  [Поддержку](https://decentralchain.io/soporte/)",
           "errorDescriptionSwitchUser": "Этот аккаунт не совпадает с выбранным аккаунтом в Cubensis Connect. Пожалуйста, активируйте подходящий аккаунт в Cubensis Connect и попробуйте снова.",
@@ -1279,6 +1279,31 @@
     "confirmTransaction": {
       "signLedger": "Ожидается подтверждение на устройстве Ledger..."
     },
+    "cubensisConnectForm": {
+      "address": "Адрес аккаунта",
+      "addressSaved": "Адрес сохранен",
+      "back": "Вернуться назад",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Для продолжения работы с Cubensis Connect вам необходимо ввести ранее созданный пароль, или создать новый.",
+        "hasLockedCubensisConnectHeader": "Введите пароль от Cubensis Connect",
+        "hasNoUsersDescription": "Войдите в существующий, или создайте новый.",
+        "hasNoUsersHeader": "У вас нет активного аккаунта",
+        "install": "Установить",
+        "networkDescription": "Выбранный аккаунт находится в другой сети. Измените сеть, затем повторите попытку.",
+        "networkHeader": "Смените сеть",
+        "notInstalledDescription": "После установки создайте аккаунт, авторизуйтесь и обновите страницу чтобы продолжить.",
+        "notInstalledHeader": "У вас не установлен Cubensis Connect?",
+        "refresh": "Повторить"
+      },
+      "heading": "Импортировать аккаунт из Cubensis Connect",
+      "loading": "Импортировать аккаунт из Cubensis Connect",
+      "login": "Продолжить",
+      "name": "Название аккаунта",
+      "nameExists": "Имя занято",
+      "or": "ИЛИ",
+      "retry": "Try again",
+      "saveUserData": "Сохранить аккаунт на этом устройстве"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "Коммиссия: заполните поле для рассчета",
@@ -1327,7 +1352,7 @@
         "fee": "Комиссия {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Повторить"
         }
       }
@@ -1336,31 +1361,6 @@
       "errors": {
         "gtGatewayMin": "Вы не можете переводить сумму меньше {{min}} {{assetName}}"
       }
-    },
-    "keeperForm": {
-      "address": "Адрес аккаунта",
-      "addressSaved": "Адрес сохранен",
-      "back": "Вернуться назад",
-      "error": {
-        "hasLockedKeeperDescription": "Для продолжения работы с Cubensis Connect вам необходимо ввести ранее созданный пароль, или создать новый.",
-        "hasLockedKeeperHeader": "Введите пароль от Cubensis Connect",
-        "hasNoUsersDescription": "Войдите в существующий, или создайте новый.",
-        "hasNoUsersHeader": "У вас нет активного аккаунта",
-        "install": "Установить",
-        "networkDescription": "Выбранный аккаунт находится в другой сети. Измените сеть, затем повторите попытку.",
-        "networkHeader": "Смените сеть",
-        "notInstalledDescription": "После установки создайте аккаунт, авторизуйтесь и обновите страницу чтобы продолжить.",
-        "notInstalledHeader": "У вас не установлен Cubensis Connect?",
-        "refresh": "Повторить"
-      },
-      "heading": "Импортировать аккаунт из Cubensis Connect",
-      "loading": "Импортировать аккаунт из Cubensis Connect",
-      "login": "Продолжить",
-      "name": "Название аккаунта",
-      "nameExists": "Имя занято",
-      "or": "ИЛИ",
-      "retry": "Try again",
-      "saveUserData": "Сохранить аккаунт на этом устройстве"
     },
     "LedgerClient_utils": "Ledger",
     "LedgerClientDescription": "Импорт аккаунтов из Cubensis Connect",
@@ -1797,7 +1797,7 @@
         "warning": "Вы не сохранили ваш СИД",
         "warningPlural": "Вы не сохранили ваши СИДЫ"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Удалить аккаунт из Cubensis Connect",
         "text": "Вы всего лишь удаляете сохраненный путь к аккаунту. Аккаунт не будет удален с Cubensis Connect."
       },
@@ -2004,11 +2004,11 @@
           "showCodeLink": "Показать QR-код",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Экспорт для учетных записей, импортированных из Cubensis Connect, доступен в настройках Cubensis Connect",
+              "decentralchainCubensisConnect": "Экспорт для учетных записей, импортированных из Cubensis Connect, доступен в настройках Cubensis Connect",
               "ledger": "Экспорт недоступен для учетных записей, хранящихся на устройстве Ledger"
             },
             "header": {
-              "decentralchainKeeper": "Экспорт недоступен",
+              "decentralchainCubensisConnect": "Экспорт недоступен",
               "ledger": "Экспорт недоступен"
             },
             "ok": "Я понял"
@@ -2044,7 +2044,7 @@
         "confirm": "Подтвердите",
         "confirmRequest": "Подтверждение запроса",
         "confirmRequest_utils": "Подтверждение запроса",
-        "confirmRequestKeeper": "Ожидаем подтверждения через Cubensis Connect...",
+        "confirmRequestCubensisConnect": "Ожидаем подтверждения через Cubensis Connect...",
         "confirmRequestLedger": {
           "cancel": "Отмена",
           "errorDescription": "Пожалуйста, попробуйте еще раз. Если ошибка повторится, обратитесь к  [этой статье](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2055,9 +2055,9 @@
         "confirmRequestMatcher_utils": "Подпишите запрос к Матчеру. Если вы не подпишите запрос, то не сможете торговать на децентрализованной бирже с Ledger аккаунта.",
         "confirmRequestToMatcher": "Подпишите запрос к Матчеру. Если вы не подпишите запрос, то не сможете торговать на децентрализованной бирже.",
         "connecting": "Подключение...",
-        "connectingKeeper": "Подключение к Cubensis Connect...",
+        "connectingCubensisConnect": "Подключение к Cubensis Connect...",
         "connectionError": "Не удается подключиться к устройству Ledger",
-        "connectionErrorKeeper": "Нет доступа к аккаунту",
+        "connectionErrorCubensisConnect": "Нет доступа к аккаунту",
         "connectionText": "Время ожидания соединения истекло. Пожалуйста, попробуйте еще раз.",
         "connectLedger": "Подключите устройство Ledger",
         "enterPin": "Введите ваш PIN код",
@@ -2073,14 +2073,14 @@
         "requestId": "Хэш запроса",
         "retry": "Повторить попытку",
         "sell": "Sell",
-        "signByKeeper": "Ожидаем подтверждения через Cubensis Connect...",
+        "signByCubensisConnect": "Ожидаем подтверждения через Cubensis Connect...",
         "signByLedger": "Ожидается подтверждение на устройстве Ledger...",
         "signError": "Запрос не подтвержден.",
-        "signErrorKeeper": "Вы не подтвердили запрос Cubensis Connect",
+        "signErrorCubensisConnect": "Вы не подтвердили запрос Cubensis Connect",
         "signErrorText": "Вы не подтвердили запрос на устройстве Ledger",
-        "signErrorTextImportKeeper": "Войдите в Cubensis Connect с адресом {{address}}, а затем обновите страницу, чтобы продолжить.",
-        "signErrorTextKeeper": "Пожалуйста, попробуйте еще раз. Если ошибка повториться, напишите в [Поддержку](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "Этот аккаунт не совпадает с выбранным аккаунтом в Cubensis Connect. Пожалуйста, активируйте подходящий аккаунт в Cubensis Connect и попробуйте снова.",
+        "signErrorTextCubensisConnect": "Пожалуйста, попробуйте еще раз. Если ошибка повториться, напишите в [Поддержку](https://decentralchain.io/soporte/)",
+        "signErrorTextCubensisConnectWrongUser": "Этот аккаунт не совпадает с выбранным аккаунтом в Cubensis Connect. Пожалуйста, активируйте подходящий аккаунт в Cubensis Connect и попробуйте снова.",
+        "signErrorTextImportCubensisConnect": "Войдите в Cubensis Connect с адресом {{address}}, а затем обновите страницу, чтобы продолжить.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2635,13 +2635,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Создать аккаунт",
       "createToken": "Создать токен",
+      "cubensisConnectAccount": "Cubensis Connect аккаунт",
       "currentAccountName": "Имя вашего аккаунта",
       "dashboard": "Обзор",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC за любой ордер",
       "decentralchainWallet": "DecentralExchange",
@@ -2663,7 +2664,6 @@
       "high": "24Ч. ВЫС.",
       "inputErrorNameExists": "Имя занято",
       "instantAccessWalletDex": "Быстрый доступ к кошельку и бирже",
-      "keeperAccount": "Keeper аккаунт",
       "lastPrice": "ПОСЛ. ЦЕНА",
       "leasing": "Лизинг",
       "ledgerAccount": "Ledger аккаунт",

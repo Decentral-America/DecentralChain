@@ -21,10 +21,14 @@ test.describe('Landing page', () => {
     const landing = new LandingPage(page);
     await landing.goto();
     const cta = page
-      .getByRole('link', { name: /get started|create account|start|open|launch/i })
+      .getByRole('link', { name: /get started|create account|create.{0,3}wallet|start trading/i })
       .first()
       .or(
-        page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first(),
+        page
+          .getByRole('button', {
+            name: /get started|create account|create.{0,3}wallet|start trading/i,
+          })
+          .first(),
       );
     await expect(cta).toBeVisible({ timeout: 10_000 });
   });
@@ -33,10 +37,14 @@ test.describe('Landing page', () => {
     const landing = new LandingPage(page);
     await landing.goto();
     const cta = page
-      .getByRole('link', { name: /get started|create account|start|open|launch/i })
+      .getByRole('link', { name: /get started|create account|create.{0,3}wallet|start trading/i })
       .first()
       .or(
-        page.getByRole('button', { name: /get started|create account|start|open|launch/i }).first(),
+        page
+          .getByRole('button', {
+            name: /get started|create account|create.{0,3}wallet|start trading/i,
+          })
+          .first(),
       );
     await Promise.all([
       page.waitForURL(/\/(create-account|signup|welcome|sign)/i, { timeout: 15_000 }),

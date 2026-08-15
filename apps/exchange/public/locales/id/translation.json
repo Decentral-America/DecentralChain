@@ -134,7 +134,7 @@
         "withBlockchain": "Mulai dengan Blockchain"
       },
       "import": "Impor akun",
-      "importDescription": "melalui frase SEED, Ledger atau Keeper",
+      "importDescription": "melalui frase SEED, Ledger atau Cubensis Connect",
       "protect": "Lindungi akun Anda dengan kata sandi atau",
       "protectYourAccount": "Lindungi Akun Anda",
       "restore": "memulihkan akun",
@@ -466,6 +466,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect Client",
+    "cubensisConnectDescription": "Mengimpor akun dari DCC Cubensis Connect",
+    "cubensisConnectForm": "Pasang",
     "decentralchainClient": "Klien DecentralChain",
     "decentralchainClientDescription": "Mengimpor akun dari klien DecentralChain",
     "decentralchainLiteClient": "DecentralChain Lite Client",
@@ -477,9 +480,6 @@
     },
     "importAccount": "Impor Akun",
     "importAccountInfo": "Pilih tempat untuk mengimpor akun",
-    "KeeperClient": "Keeper Client",
-    "keeperDescription": "Mengimpor akun dari DCC Keeper",
-    "keeperForm": "Pasang",
     "LedgerClient": "Perangkat Ledger",
     "ledgerDescription": "Impor akun dari Perangkat Ledger Anda",
     "or": "Atau",
@@ -960,7 +960,7 @@
     "confirmTransaction": {
       "back": "Kembali",
       "confirm": "Konfirmasi",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Silakan coba lagi. Jika kesalahan berlanjut, kirimkan tiket ke [dukungan](https://decentralchain.io/soporte)",
         "header": "Anda tidak mengonfirmasi permintaan menggunakan Cubensis Connect"
       },
@@ -1037,7 +1037,7 @@
         "ok": "Lanjutkan"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "Batalkan",
           "errorDescription": "Silakan coba lagi. Jika kesalahan berlanjut, kirimkan tiket ke [dukungan](https://decentralchain.io/soporte)",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1278,6 +1278,31 @@
     "confirmTransaction": {
       "signLedger": "Menunggu konfirmasi pada Perangkat Ledger..."
     },
+    "cubensisConnectForm": {
+      "address": "Alamat akun",
+      "addressSaved": "Alamat disimpan",
+      "back": "Kembali",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Untuk terus bekerja dengan Cubensis Connect, Anda harus memasukkan kata sandi yang dibuat sebelumnya, atau membuat yang baru.",
+        "hasLockedCubensisConnectHeader": "Masukkan kata sandi dari Cubensis Connect",
+        "hasNoUsersDescription": "Masuk, lalu segarkan halaman untuk melanjutkan.",
+        "hasNoUsersHeader": "Masuk ke Cubensis Connect",
+        "install": "Pasang",
+        "networkDescription": "Masuk ke Cubensis Connect dengan alamat, lalu segarkan laman untuk melanjutkan.",
+        "networkHeader": "Tidak dapat mengimpor akun",
+        "notInstalledDescription": "Setelah menginstal, buat akun, masuk, lalu segarkan halaman untuk melanjutkan.",
+        "notInstalledHeader": "Tidak punya Cubensis Connect?",
+        "refresh": "Segarkan"
+      },
+      "heading": "Impor akun dari Cubensis Connect",
+      "loading": "Impor akun dari Cubensis Connect",
+      "login": "Lanjut",
+      "name": "Nama akun",
+      "nameExists": "Nama telah diambil",
+      "or": "atau",
+      "retry": "Coba lagi",
+      "saveUserData": "Biarkan saya tetap masuk di komputer ini"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "Biaya transaksi: penuhi bidang isian untuk perhitungan",
@@ -1326,7 +1351,7 @@
         "fee": "Biaya {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Mencoba kembali"
         }
       }
@@ -1335,31 +1360,6 @@
       "errors": {
         "gtGatewayMin": "Kamu tidak dapat transfer nilai kurang dari {{min}} {{assetName}}"
       }
-    },
-    "keeperForm": {
-      "address": "Alamat akun",
-      "addressSaved": "Alamat disimpan",
-      "back": "Kembali",
-      "error": {
-        "hasLockedKeeperDescription": "Untuk terus bekerja dengan Cubensis Connect, Anda harus memasukkan kata sandi yang dibuat sebelumnya, atau membuat yang baru.",
-        "hasLockedKeeperHeader": "Masukkan kata sandi dari Cubensis Connect",
-        "hasNoUsersDescription": "Masuk, lalu segarkan halaman untuk melanjutkan.",
-        "hasNoUsersHeader": "Masuk ke Cubensis Connect",
-        "install": "Pasang",
-        "networkDescription": "Masuk ke Cubensis Connect dengan alamat, lalu segarkan laman untuk melanjutkan.",
-        "networkHeader": "Tidak dapat mengimpor akun",
-        "notInstalledDescription": "Setelah menginstal, buat akun, masuk, lalu segarkan halaman untuk melanjutkan.",
-        "notInstalledHeader": "Tidak punya Cubensis Connect?",
-        "refresh": "Segarkan"
-      },
-      "heading": "Impor akun dari Cubensis Connect",
-      "loading": "Impor akun dari Cubensis Connect",
-      "login": "Lanjut",
-      "name": "Nama akun",
-      "nameExists": "Nama telah diambil",
-      "or": "atau",
-      "retry": "Coba lagi",
-      "saveUserData": "Biarkan saya tetap masuk di komputer ini"
     },
     "LedgerClient_utils": "Perangkat Ledger",
     "LedgerClientDescription": "Impor akun dari Cubensis Connect",
@@ -1796,7 +1796,7 @@
         "warning": "Anda tidak menyimpan SEED Anda",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Hapus akun Cubensis Connect",
         "text": "Ini hanya akan menghapus jalur yang disimpan ke akun ini. Ini tidak akan menghapus akun dari Cubensis Connect."
       },
@@ -2003,11 +2003,11 @@
           "showCodeLink": "Tampilkan Kode Pasangan",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Ekspor untuk akun yang diimpor dari Cubensis Connect tersedia di Cubensis Connect Settings",
+              "decentralchainCubensisConnect": "Ekspor untuk akun yang diimpor dari Cubensis Connect tersedia di Cubensis Connect Settings",
               "ledger": "Ekspor tidak tersedia untuk akun yang disimpan di Perangkat Ledger"
             },
             "header": {
-              "decentralchainKeeper": "Ekspor tidak tersedia",
+              "decentralchainCubensisConnect": "Ekspor tidak tersedia",
               "ledger": "Ekspor tidak tersedia"
             },
             "ok": "saya mengerti"
@@ -2043,7 +2043,7 @@
         "confirm": "Konfirmasi",
         "confirmRequest": "Konfirmasi permintaan",
         "confirmRequest_utils": "Konfirmasi permintaan",
-        "confirmRequestKeeper": "Menunggu konfirmasi dari Cubensis Connect...",
+        "confirmRequestCubensisConnect": "Menunggu konfirmasi dari Cubensis Connect...",
         "confirmRequestLedger": {
           "cancel": "Batalkan",
           "errorDescription": "Silakan coba lagi. Jika kesalahan berlanjut, silakan merujuk ke [artikel ini](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2054,9 +2054,9 @@
         "confirmRequestMatcher_utils": "Tandatangani permintaan ke matcher. Jika Anda tidak menandatanganinya, Anda tidak dapat berdagang di DEX dari akun Ledger.",
         "confirmRequestToMatcher": "Tanda tangani permintaan ke Pencocokan. Jika Anda tidak menandatanganinya, Anda tidak dapat berdagang di DEX.",
         "connecting": "Menghubungkan ...",
-        "connectingKeeper": "Menghubungkan ke Cubensis Connect ...",
+        "connectingCubensisConnect": "Menghubungkan ke Cubensis Connect ...",
         "connectionError": "Tidak Dapat Menghubungkan Perangkat Ledger",
-        "connectionErrorKeeper": "Tidak dapat mengimpor akun",
+        "connectionErrorCubensisConnect": "Tidak dapat mengimpor akun",
         "connectionText": "Sambungan mungkin sudah habis waktunya. Silakan coba lagi.",
         "connectLedger": "Hubungkan Perangkat Ledger Anda",
         "enterPin": "Masukkan kode PIN Anda",
@@ -2072,14 +2072,14 @@
         "requestId": "Minta hash",
         "retry": "Mencoba kembali",
         "sell": "Sell",
-        "signByKeeper": "Menunggu konfirmasi tentang Cubensis Connect...",
+        "signByCubensisConnect": "Menunggu konfirmasi tentang Cubensis Connect...",
         "signByLedger": "Menunggu konfirmasi tentang Ledger...",
         "signError": "Permintaan belum dikonfirmasi.",
-        "signErrorKeeper": "Anda tidak mengonfirmasi permintaan menggunakan Cubensis Connect",
+        "signErrorCubensisConnect": "Anda tidak mengonfirmasi permintaan menggunakan Cubensis Connect",
         "signErrorText": "Anda tidak mengonfirmasi permintaan pada Perangkat Ledger Anda",
-        "signErrorTextImportKeeper": "Masuk ke Cubensis Connect dengan alamat {{address}}, lalu segarkan laman untuk melanjutkan.",
-        "signErrorTextKeeper": "Silakan coba lagi. Jika kesalahan berlanjut, silakan buat tiket ke [Dukungan](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "Silakan coba lagi. Jika kesalahan berlanjut, silakan buat tiket ke [Dukungan](https://decentralchain.io/soporte/)",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "Masuk ke Cubensis Connect dengan alamat {{address}}, lalu segarkan laman untuk melanjutkan.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2634,13 +2634,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Buat token",
+      "cubensisConnectAccount": "Akun Cubensis Connect",
       "currentAccountName": "Nama akun saat ini",
       "dashboard": "Dasbor",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "Web DecentralExchange",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0,003 DecentralChain per pesanan diisi",
       "decentralchainWallet": "Dompet DecentralChain",
@@ -2662,7 +2663,6 @@
       "high": "24 TINGGI",
       "inputErrorNameExists": "Nama telah diambil. Coba yang lain",
       "instantAccessWalletDex": "Akses instan ke dompet Anda dan DEX",
-      "keeperAccount": "Akun Keeper",
       "lastPrice": "HARGA TERAKHIR",
       "leasing": "Sewa",
       "ledgerAccount": "Akun Ledger",

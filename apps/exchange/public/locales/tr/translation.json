@@ -147,7 +147,7 @@
         "withBlockchain": "Get Started with Blockchain"
       },
       "import": "Hesapları içeri aktar",
-      "importDescription": "Anahtar kelimelerle, Ledger veya Keeper ile",
+      "importDescription": "Anahtar kelimelerle, Ledger veya Cubensis Connect ile",
       "protect": "Hesabınızı bir şifre ile koruyun veya",
       "protectYourAccount": "Hesabınızı koruyun",
       "restore": "Yedekten geri yükleyin",
@@ -479,6 +479,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Hesabı Cubensis Connect'dan içeri aktar",
+    "cubensisConnectForm": "Yükle",
     "decentralchainClient": "DecentralChain Uygulaması",
     "decentralchainClientDescription": "DecentralChain Uygulamasından hesabı içe aktar",
     "decentralchainLiteClient": "DecentralChain Lite Client",
@@ -490,9 +493,6 @@
     },
     "importAccount": "Hesapları içeri aktar",
     "importAccountInfo": "Hesapların nereden aktarılacağını seçiniz",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Hesabı Cubensis Connect'dan içeri aktar",
-    "keeperForm": "Yükle",
     "LedgerClient": "Ledger cihazı",
     "ledgerDescription": "Hesapları Ledger Nano S'den içeri aktar",
     "or": "Veya",
@@ -973,7 +973,7 @@
     "confirmTransaction": {
       "back": "Geri dön",
       "confirm": "Onayla",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Lütfen tekrar deneyin. Eğer hata devam ederse lütfen [destek] ile iletişime geçin. (https://decentralchain.io/soporte)",
         "header": "Talebi Cubensis Connect'dan onaylamadınız"
       },
@@ -1050,7 +1050,7 @@
         "ok": "Devam"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "İptal",
           "errorDescription": "Lütfen tekrar deneyin. Eğer hata devam ederse lütfen [destek] ile iletişime geçin. (https://decentralchain.io/soporte)",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1291,6 +1291,31 @@
     "confirmTransaction": {
       "signLedger": "Ledger Nano S'den onay bekleniyor..."
     },
+    "cubensisConnectForm": {
+      "address": "Hesap adresi",
+      "addressSaved": "Adres kaydedildi",
+      "back": "Geri dön",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Cubensis Connect ile devam edebilmek için önceden oluşturmuş olduğunuz parolayı girmeniz veya yeni bir parola oluşturmanız gerekmektedir.",
+        "hasLockedCubensisConnectHeader": "Cubensis Connect'dan parolayı girin",
+        "hasNoUsersDescription": "Mevcut hesabınıza giriş yapın veya yeni bir hesap oluşturun ve tekrar deneyin.",
+        "hasNoUsersHeader": "Aktif bir hesabınız bulunmamaktadır.",
+        "install": "Yükle",
+        "networkDescription": "Seçmiş olduğunuz hesap hatalı ağda bulunmaktadır. Ağı değiştirin ve tekrar deneyin",
+        "networkHeader": "Ağı değiştir",
+        "notInstalledDescription": "Yükledikten sonra bir hesap oluşturun, giriş yapın ve devam etmek için sayfayı yenileyin.",
+        "notInstalledHeader": "Cubensis Connect'ınız yok mu?",
+        "refresh": "Tekrar dene"
+      },
+      "heading": "Hesabı Cubensis Connect'dan içeri aktar",
+      "loading": "Hesabı Cubensis Connect'dan içeri aktar",
+      "login": "Devam",
+      "name": "Hesap adı",
+      "nameExists": "Bu isim alınmış",
+      "or": "VEYA",
+      "retry": "Tekrar deneyin",
+      "saveUserData": "Bu bilgisayardan çıkış yapma"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "İşlem komisyonu: hesaplama için boşluğu doldurun",
@@ -1339,7 +1364,7 @@
         "fee": "Komisyon {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Tekrar deneyin"
         }
       }
@@ -1348,31 +1373,6 @@
       "errors": {
         "gtGatewayMin": "{{assetName}} kripto parasını {{min}} miktardan daha az transfer edemezsiniz."
       }
-    },
-    "keeperForm": {
-      "address": "Hesap adresi",
-      "addressSaved": "Adres kaydedildi",
-      "back": "Geri dön",
-      "error": {
-        "hasLockedKeeperDescription": "Cubensis Connect ile devam edebilmek için önceden oluşturmuş olduğunuz parolayı girmeniz veya yeni bir parola oluşturmanız gerekmektedir.",
-        "hasLockedKeeperHeader": "Cubensis Connect'dan parolayı girin",
-        "hasNoUsersDescription": "Mevcut hesabınıza giriş yapın veya yeni bir hesap oluşturun ve tekrar deneyin.",
-        "hasNoUsersHeader": "Aktif bir hesabınız bulunmamaktadır.",
-        "install": "Yükle",
-        "networkDescription": "Seçmiş olduğunuz hesap hatalı ağda bulunmaktadır. Ağı değiştirin ve tekrar deneyin",
-        "networkHeader": "Ağı değiştir",
-        "notInstalledDescription": "Yükledikten sonra bir hesap oluşturun, giriş yapın ve devam etmek için sayfayı yenileyin.",
-        "notInstalledHeader": "Cubensis Connect'ınız yok mu?",
-        "refresh": "Tekrar dene"
-      },
-      "heading": "Hesabı Cubensis Connect'dan içeri aktar",
-      "loading": "Hesabı Cubensis Connect'dan içeri aktar",
-      "login": "Devam",
-      "name": "Hesap adı",
-      "nameExists": "Bu isim alınmış",
-      "or": "VEYA",
-      "retry": "Tekrar deneyin",
-      "saveUserData": "Bu bilgisayardan çıkış yapma"
     },
     "LedgerClient_utils": "Ledger cihazı",
     "LedgerClientDescription": "Hesabı Cubensis Connect'dan içeri aktar",
@@ -1809,7 +1809,7 @@
         "warning": "Anahtar kelimelerinizi kaydetmediniz!",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Cubensis Connect Hesabımı kaldır",
         "text": "Bu işlem sadece hesabınıza erişim yollarını siler, Cubensis Connect içerisinden hesabınızı silmez."
       },
@@ -2016,11 +2016,11 @@
           "showCodeLink": "Eşleşme kodunu göster",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Cubensis Connect'dan içe aktarılmış hesapların dışa aktarılması Cubensis Connect ayarlarından yapılabilir.",
+              "decentralchainCubensisConnect": "Cubensis Connect'dan içe aktarılmış hesapların dışa aktarılması Cubensis Connect ayarlarından yapılabilir.",
               "ledger": "Ledger Nano S'deki hesapları dışa aktarmak mümkün değildir."
             },
             "header": {
-              "decentralchainKeeper": "Dışa aktarma devre dışı",
+              "decentralchainCubensisConnect": "Dışa aktarma devre dışı",
               "ledger": "Dışa aktarma devre dışı"
             },
             "ok": "Anladım"
@@ -2056,7 +2056,7 @@
         "confirm": "Onayla",
         "confirmRequest": "Talebi onayla",
         "confirmRequest_utils": "talebi onayla",
-        "confirmRequestKeeper": "Cubensis Connect'dan onay bekleniyor..",
+        "confirmRequestCubensisConnect": "Cubensis Connect'dan onay bekleniyor..",
         "confirmRequestLedger": {
           "cancel": "İptal",
           "errorDescription": "Lütfen daha sonra tekrar deneyin. Eğer hata devam ederse [bu makale](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)'yi inceleyebilirsiniz.",
@@ -2067,9 +2067,9 @@
         "confirmRequestMatcher_utils": "Giriş yapın. Eğer Ledger hesabınızdan giriş yapmazsanız merkezsiz borsada takas işlemleri yapamazsınız.",
         "confirmRequestToMatcher": "Eşleştirici onayını verin. Eğer onay vermezseniz borsada takas yapamazsınız.",
         "connecting": "Bağlanıyor...",
-        "connectingKeeper": "Cubensis Connect'a bağlanıyor...",
+        "connectingCubensisConnect": "Cubensis Connect'a bağlanıyor...",
         "connectionError": "Ledger'a bağlanılamadı..",
-        "connectionErrorKeeper": "Hesaba erişim sağlanamadı...",
+        "connectionErrorCubensisConnect": "Hesaba erişim sağlanamadı...",
         "connectionText": "Bağlantı zaman aşımına uğradı. Lütfen tekrar deneyin..",
         "connectLedger": "Ledger Nano S'inizi bağlayın",
         "enterPin": "PIN kodunuzu girin",
@@ -2085,14 +2085,14 @@
         "requestId": "Talep Hash'ı",
         "retry": "Tekrar dene",
         "sell": "Sell",
-        "signByKeeper": "Cubensis Connect'dan doğrulama bekleniyor",
+        "signByCubensisConnect": "Cubensis Connect'dan doğrulama bekleniyor",
         "signByLedger": "Ledger onay bekleniyor...",
         "signError": "Talep doğrulanmadı",
-        "signErrorKeeper": "Talebi Cubensis Connect'ı kullanarak doğrulamadın",
+        "signErrorCubensisConnect": "Talebi Cubensis Connect'ı kullanarak doğrulamadın",
         "signErrorText": "Talebi Ledger Nano S'i kullanarak doğrulamadın",
-        "signErrorTextImportKeeper": "Cubensis Connect'a  {{address}} adresinizle giriş yapın, ve devam etmek için sayfayı yenileyin.",
-        "signErrorTextKeeper": "Lütfen tekrar deneyin. Eğer hatalar devam ederse [destek](https://decentralchain.io/soporte/) ile iletişime geçin",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "Lütfen tekrar deneyin. Eğer hatalar devam ederse [destek](https://decentralchain.io/soporte/) ile iletişime geçin",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "Cubensis Connect'a  {{address}} adresinizle giriş yapın, ve devam etmek için sayfayı yenileyin.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2647,13 +2647,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Kripto para oluştur",
+      "cubensisConnectAccount": "Cubensis Connect hesabı",
       "currentAccountName": "Şu anki hesap adı",
       "dashboard": "Panel",
       "dccExplorer": "DCC Gezgini",
       "decentralchainBlockchain": "DCC Blok Zinciri",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DCC DEX Web",
       "decentralchainIde": "DCC IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DCC Labs",
       "decentralchainOrderFilled": "Doldurulan her bir emir için 0.003 DCC",
       "decentralchainWallet": "DCC Cüzdanı",
@@ -2675,7 +2676,6 @@
       "high": "24 Saatlik en yüksek",
       "inputErrorNameExists": "Bu isim alınmış. Başka bir isim deneyin",
       "instantAccessWalletDex": "Cüzdanınıza ve DEX'e anında erişim",
-      "keeperAccount": "Keeper hesabı",
       "lastPrice": "SON FİYAT",
       "leasing": "Kiralama",
       "ledgerAccount": "Ledger hesabı",

@@ -466,6 +466,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Import account from the Cubensis Connect",
+    "cubensisConnectForm": "Install",
     "decentralchainClient": "DCC Client",
     "decentralchainClientDescription": "Import account from a DCC Client",
     "decentralchainLiteClient": "DecentralChain Lite Client",
@@ -477,9 +480,6 @@
     },
     "importAccount": "Import accounts",
     "importAccountInfo": "Select where to import accounts from",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Import account from the Cubensis Connect",
-    "keeperForm": "Install",
     "LedgerClient": "Ledger Device",
     "ledgerDescription": "Import accounts from your Ledger Device",
     "or": "OR",
@@ -960,7 +960,7 @@
     "confirmTransaction": {
       "back": "Go Back",
       "confirm": "Send",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
         "header": "You did not confirm the request using Cubensis Connect"
       },
@@ -1037,7 +1037,7 @@
         "ok": "Continue"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "Cancel",
           "errorDescription": "Please try again. If the error persists, please submit a ticket to [support](https://decentralchain.io/soporte)",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1278,6 +1278,31 @@
     "confirmTransaction": {
       "signLedger": "Waiting for confirmation on Ledger Device…"
     },
+    "cubensisConnectForm": {
+      "address": "Account address",
+      "addressSaved": "Address saved",
+      "back": "Go back",
+      "error": {
+        "hasLockedCubensisConnectDescription": "To continue working with Cubensis Connect, you must enter a previously-created password, or create a new one.",
+        "hasLockedCubensisConnectHeader": "Enter password from Cubensis Connect",
+        "hasNoUsersDescription": "Log in to an existing account, or create a new one, then try again.",
+        "hasNoUsersHeader": "You do not have an active account",
+        "install": "Install",
+        "networkDescription": "The account you selected is on the wrong network. Change network, then try again.",
+        "networkHeader": "Change network",
+        "notInstalledDescription": "After installing, create an account, sign in, and then refresh the page to continue.",
+        "notInstalledHeader": "Don't have Cubensis Connect?",
+        "refresh": "Retry"
+      },
+      "heading": "Import account from the Cubensis Connect",
+      "loading": "Import account from the Cubensis Connect",
+      "login": "Continue",
+      "name": "Account name",
+      "nameExists": "That name is taken",
+      "or": "OR",
+      "retry": "Try again",
+      "saveUserData": "Keep me signed in on this computer"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "Transaction fee: complete field for calculation",
@@ -1326,7 +1351,7 @@
         "fee": "Fee {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Retry"
         }
       }
@@ -1335,31 +1360,6 @@
       "errors": {
         "gtGatewayMin": "You can't transfer an amount less than {{min}} {{assetName}}"
       }
-    },
-    "keeperForm": {
-      "address": "Account address",
-      "addressSaved": "Address saved",
-      "back": "Go back",
-      "error": {
-        "hasLockedKeeperDescription": "To continue working with Cubensis Connect, you must enter a previously-created password, or create a new one.",
-        "hasLockedKeeperHeader": "Enter password from Cubensis Connect",
-        "hasNoUsersDescription": "Log in to an existing account, or create a new one, then try again.",
-        "hasNoUsersHeader": "You do not have an active account",
-        "install": "Install",
-        "networkDescription": "The account you selected is on the wrong network. Change network, then try again.",
-        "networkHeader": "Change network",
-        "notInstalledDescription": "After installing, create an account, sign in, and then refresh the page to continue.",
-        "notInstalledHeader": "Don't have Cubensis Connect?",
-        "refresh": "Retry"
-      },
-      "heading": "Import account from the Cubensis Connect",
-      "loading": "Import account from the Cubensis Connect",
-      "login": "Continue",
-      "name": "Account name",
-      "nameExists": "That name is taken",
-      "or": "OR",
-      "retry": "Try again",
-      "saveUserData": "Keep me signed in on this computer"
     },
     "LedgerClient_utils": "Ledger Device",
     "LedgerClientDescription": "Import account from the Cubensis Connect",
@@ -1796,7 +1796,7 @@
         "warning": "You did not save your SEED",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Remove Cubensis Connect account",
         "text": "This will only delete the saved path to this account. It will not delete the account from Cubensis Connect."
       },
@@ -2003,11 +2003,11 @@
           "showCodeLink": "Show Pairing Code",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Export for accounts imported from Cubensis Connect is available in Cubensis Connect Settings",
+              "decentralchainCubensisConnect": "Export for accounts imported from Cubensis Connect is available in Cubensis Connect Settings",
               "ledger": "Export is not available for accounts stored on Ledger Device"
             },
             "header": {
-              "decentralchainKeeper": "Export unavailable",
+              "decentralchainCubensisConnect": "Export unavailable",
               "ledger": "Export unavailable"
             },
             "ok": "I understand"
@@ -2043,7 +2043,7 @@
         "confirm": "Confirm",
         "confirmRequest": "Confirm request",
         "confirmRequest_utils": "Confirm request",
-        "confirmRequestKeeper": "Waiting for confirmation from Cubensis Connect...",
+        "confirmRequestCubensisConnect": "Waiting for confirmation from Cubensis Connect...",
         "confirmRequestLedger": {
           "cancel": "Cancel",
           "errorDescription": "Please try again. If the error persists, please refer to [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2054,9 +2054,9 @@
         "confirmRequestMatcher_utils": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account.",
         "confirmRequestToMatcher": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX.",
         "connecting": "Connecting...",
-        "connectingKeeper": "Connecting to Cubensis Connect...",
+        "connectingCubensisConnect": "Connecting to Cubensis Connect...",
         "connectionError": "Unable to Connect Ledger Device",
-        "connectionErrorKeeper": "Unable to access account",
+        "connectionErrorCubensisConnect": "Unable to access account",
         "connectionText": "The connection may have timed out. Please try again.",
         "connectLedger": "Connect your Ledger Device",
         "enterPin": "Enter your PIN code",
@@ -2072,14 +2072,14 @@
         "requestId": "Request hash",
         "retry": "Retry",
         "sell": "Sell",
-        "signByKeeper": "Waiting for confirmation from Cubensis Connect...",
+        "signByCubensisConnect": "Waiting for confirmation from Cubensis Connect...",
         "signByLedger": "Waiting for confirmation on Ledger Device…",
         "signError": "The request has not been confirmed.",
-        "signErrorKeeper": "You did not confirm the request using Cubensis Connect",
+        "signErrorCubensisConnect": "You did not confirm the request using Cubensis Connect",
         "signErrorText": "You did not confirm the request on your Ledger Device",
-        "signErrorTextImportKeeper": "Sign in to Cubensis Connect with address {{address}}, and then refresh page to continue.",
-        "signErrorTextKeeper": "Please try again. If the error persists, please create a ticket to [Support](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "Please try again. If the error persists, please create a ticket to [Support](https://decentralchain.io/soporte/)",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "Sign in to Cubensis Connect with address {{address}}, and then refresh page to continue.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2634,13 +2634,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Create token",
+      "cubensisConnectAccount": "Cubensis Connect account",
       "currentAccountName": "Current account name",
       "dashboard": "Dashboard",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC per order filled",
       "decentralchainWallet": "DecentralExchange",
@@ -2662,7 +2663,6 @@
       "high": "24 HIGH",
       "inputErrorNameExists": "That name is taken. Try another",
       "instantAccessWalletDex": "Instant access to your wallet and DEX",
-      "keeperAccount": "Keeper account",
       "lastPrice": "LAST PRICE",
       "leasing": "Leasing",
       "ledgerAccount": "Ledger account",

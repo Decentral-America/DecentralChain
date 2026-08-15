@@ -90,7 +90,7 @@ async function decryptString(encrypted: string, password: string, rounds: number
 }
 
 interface UserData {
-  userType: 'seed' | 'privateKey' | 'ledger';
+  userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   networkByte: number;
   seed?: string;
   id?: string;
@@ -102,7 +102,7 @@ interface UserData {
 }
 
 interface EncryptedUser {
-  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+  userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   networkByte: number;
   seed?: string | undefined;
   id?: string | undefined;
@@ -117,7 +117,7 @@ interface EncryptedUser {
  * User object returned by toList() - merges encrypted user data with metadata
  */
 export interface MultiAccountUser {
-  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+  userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   networkByte: number;
   id: string | undefined;
   seed: string | undefined;
@@ -236,10 +236,11 @@ class MultiAccountService {
     // Build public key from seed, private key, or use provided publicKey (Ledger)
     let publicKey: string;
 
-    if (userData.userType === 'ledger') {
-      // Ledger: publicKey must be provided from device
+    if (userData.userType === 'ledger' || userData.userType === 'cubensisConnect') {
+      // Ledger / Cubensis Connect: both are external signers — the private key
+      // never enters this app, so publicKey must come from the device/extension.
       if (!userData.publicKey) {
-        throw new Error('Ledger accounts must provide publicKey from device');
+        throw new Error(`${userData.userType} accounts must provide publicKey externally`);
       }
       publicKey = userData.publicKey;
     } else if (userData.seed) {
@@ -262,9 +263,15 @@ class MultiAccountService {
       ledgerId: userData.ledgerId,
       ledgerPath: userData.ledgerPath,
       networkByte: userData.networkByte,
-      privateKey: userData.userType !== 'ledger' ? userData.privateKey : undefined,
+      privateKey:
+        userData.userType !== 'ledger' && userData.userType !== 'cubensisConnect'
+          ? userData.privateKey
+          : undefined,
       publicKey,
-      seed: userData.userType !== 'ledger' ? userData.seed : undefined,
+      seed:
+        userData.userType !== 'ledger' && userData.userType !== 'cubensisConnect'
+          ? userData.seed
+          : undefined,
       userType: userData.userType,
     };
 

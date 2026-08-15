@@ -5,8 +5,8 @@
  */
 
 import { useQueries } from '@tanstack/react-query';
+import { ChevronDown as FiChevronDown, Search as FiSearch } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import styled from 'styled-components';
 import { NetworkConfig } from '@/config';
 import { fetchAssetDetails } from '@/services/assetService';

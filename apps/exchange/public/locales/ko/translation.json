@@ -147,7 +147,7 @@
         "withBlockchain": "Get Started with Blockchain"
       },
       "import": "계정 불러오기",
-      "importDescription": "SEED 구절, Ledger 또는 Keeper를 통해",
+      "importDescription": "SEED 구절, Ledger 또는 Cubensis Connect를 통해",
       "protect": "비밀번호로 귀하의 계정을 보호하거나",
       "protectYourAccount": "계정 비밀번호 설정",
       "restore": "계정을 복원하세요.",
@@ -479,6 +479,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Cubensis Connect에서 계정 불러오기",
+    "cubensisConnectForm": "설치",
     "decentralchainClient": "DecentralChain 클라이언트",
     "decentralchainClientDescription": "DecentralChain 클라이언트에서 계정 불러오기",
     "decentralchainLiteClient": "DecentralChain Lite 클라이언트",
@@ -490,9 +493,6 @@
     },
     "importAccount": "계정 불러오기",
     "importAccountInfo": "계정을 불러올 어플리케이션 선택",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Cubensis Connect에서 계정 불러오기",
-    "keeperForm": "설치",
     "LedgerClient": "Ledger 디바이스",
     "ledgerDescription": "Ledger 디바이스에서 계정 불러오기",
     "or": "또는",
@@ -973,7 +973,7 @@
     "confirmTransaction": {
       "back": "뒤로가기",
       "confirm": "전송",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "다시 시도하세요. 오류가 지속되면 [서포트](https://decentralchain.io/soporte)에 티켓을 제출하세요.",
         "header": "Cubensis Connect 사용 요청을 승인하지 않았습니다"
       },
@@ -1050,7 +1050,7 @@
         "ok": "계속"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "취소",
           "errorDescription": "다시 시도하세요. 오류가 지속되면 [서포트](https://decentralchain.io/soporte)에 티켓을 제출하세요.",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1291,6 +1291,31 @@
     "confirmTransaction": {
       "signLedger": "Ledger 디바이스의 승인을 기다리는 중입니다…"
     },
+    "cubensisConnectForm": {
+      "address": "계정 주소",
+      "addressSaved": "Address saved",
+      "back": "뒤로가기",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Cubensis Connect로 작업을 계속하려면 귀하의 비밀번호를 입력하거나 새로 생성하세요.",
+        "hasLockedCubensisConnectHeader": "Cubensis Connect에서 비밀번호를 입력하세요",
+        "hasNoUsersDescription": "기존 계정으로 로그인하거나 신규 계정을 만든 후 다시 시도하세요.",
+        "hasNoUsersHeader": "활성화된 계정이 없습니다",
+        "install": "설치",
+        "networkDescription": "선택한 계정은 잘못된 네트워크에 있습니다. 네트워크를 변경한 후 다시 시도하세요.",
+        "networkHeader": "네트워크 변경",
+        "notInstalledDescription": "설치 후 계정을 생성하고 로그인 한 뒤 해당 페이지를 새로 고침 하세요",
+        "notInstalledHeader": "Cubensis Connect가 없나요?",
+        "refresh": "재시도"
+      },
+      "heading": "Cubensis Connect로 계정 불러오기",
+      "loading": "Cubensis Connect에서 계정 불러오기",
+      "login": "계속",
+      "name": "계정 이름",
+      "nameExists": "That name is taken",
+      "or": "또는",
+      "retry": "다시 시도하세요",
+      "saveUserData": "이 컴퓨터에서 로그인 계속 유지"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "트랜잭션 수수료: 계산을 위해 해당 항목을 입력하세요",
@@ -1339,7 +1364,7 @@
         "fee": "수수료 {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "재시도"
         }
       }
@@ -1348,31 +1373,6 @@
       "errors": {
         "gtGatewayMin": "최소 {{min}} {{assetName}} 이상 전송해야 합니다"
       }
-    },
-    "keeperForm": {
-      "address": "계정 주소",
-      "addressSaved": "Address saved",
-      "back": "뒤로가기",
-      "error": {
-        "hasLockedKeeperDescription": "Cubensis Connect로 작업을 계속하려면 귀하의 비밀번호를 입력하거나 새로 생성하세요.",
-        "hasLockedKeeperHeader": "Cubensis Connect에서 비밀번호를 입력하세요",
-        "hasNoUsersDescription": "기존 계정으로 로그인하거나 신규 계정을 만든 후 다시 시도하세요.",
-        "hasNoUsersHeader": "활성화된 계정이 없습니다",
-        "install": "설치",
-        "networkDescription": "선택한 계정은 잘못된 네트워크에 있습니다. 네트워크를 변경한 후 다시 시도하세요.",
-        "networkHeader": "네트워크 변경",
-        "notInstalledDescription": "설치 후 계정을 생성하고 로그인 한 뒤 해당 페이지를 새로 고침 하세요",
-        "notInstalledHeader": "Cubensis Connect가 없나요?",
-        "refresh": "재시도"
-      },
-      "heading": "Cubensis Connect로 계정 불러오기",
-      "loading": "Cubensis Connect에서 계정 불러오기",
-      "login": "계속",
-      "name": "계정 이름",
-      "nameExists": "That name is taken",
-      "or": "또는",
-      "retry": "다시 시도하세요",
-      "saveUserData": "이 컴퓨터에서 로그인 계속 유지"
     },
     "LedgerClient_utils": "Ledger 디바이스",
     "LedgerClientDescription": "Cubensis Connect로 계정 불러오기",
@@ -1809,7 +1809,7 @@
         "warning": "귀하는 백업 구절을 저장하지 않았습니다",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Cubensis Connect 계정 삭제",
         "text": "본 작업은 이 계정에 저장된 경로만 삭제됩니다. Cubensis Connect에서 계정을 삭제하지 않습니다."
       },
@@ -2016,11 +2016,11 @@
           "showCodeLink": "페어링 코드 보기",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Cubensis Connect에서 불러온 계정의 추출은 Cubensis Connect에서 사용할 수 있습니다",
+              "decentralchainCubensisConnect": "Cubensis Connect에서 불러온 계정의 추출은 Cubensis Connect에서 사용할 수 있습니다",
               "ledger": "Ledger 디바이스에 보관된 계정은 추출할 수 없습니다"
             },
             "header": {
-              "decentralchainKeeper": "추출 불가",
+              "decentralchainCubensisConnect": "추출 불가",
               "ledger": "추출 불가"
             },
             "ok": "이해했습니다"
@@ -2056,7 +2056,7 @@
         "confirm": "승인",
         "confirmRequest": "요청 승인",
         "confirmRequest_utils": "요청 승인",
-        "confirmRequestKeeper": "Cubensis Connect에서 승인을 기다리는 중...",
+        "confirmRequestCubensisConnect": "Cubensis Connect에서 승인을 기다리는 중...",
         "confirmRequestLedger": {
           "cancel": "취소",
           "errorDescription": "다시 시도하세요. 오류가 지속되면 [이 글](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)을 참조하세요.",
@@ -2067,9 +2067,9 @@
         "confirmRequestMatcher_utils": "Matcher 요청에 서명하세요. 서명되지 않은 Ledger 계정은 DEX에서 거래 할 수 없습니다.",
         "confirmRequestToMatcher": "Matcher 요청에 서명하십시오. 서명되지 않은 계정은 DEX에서 거래 할 수 없습니다.",
         "connecting": "연결중…",
-        "connectingKeeper": "Cubensis Connect에 연결중...",
+        "connectingCubensisConnect": "Cubensis Connect에 연결중...",
         "connectionError": "Ledger 디바이스에 연결할 수 없습니다",
-        "connectionErrorKeeper": "계정에 액세스할 수 없습니다",
+        "connectionErrorCubensisConnect": "계정에 액세스할 수 없습니다",
         "connectionText": "연결 시간이 초과되었습니다. 다시 시도하세요.",
         "connectLedger": "Ledger 디바이스를 연결하세요",
         "enterPin": "PIN 코드를 입력하세요",
@@ -2085,14 +2085,14 @@
         "requestId": "Hash 요청",
         "retry": "다시 시도하세요",
         "sell": "Sell",
-        "signByKeeper": "Cubensis Connect의 승인을 기다리는 중입니다…",
+        "signByCubensisConnect": "Cubensis Connect의 승인을 기다리는 중입니다…",
         "signByLedger": "Ledger의 승인을 기다리는 중 입니다…",
         "signError": "요청이 승인되지 않았습니다.",
-        "signErrorKeeper": "Cubensis Connect 사용 요청을 승인하지 않았습니다.",
+        "signErrorCubensisConnect": "Cubensis Connect 사용 요청을 승인하지 않았습니다.",
         "signErrorText": "귀하의 Ledger 디바이스에서 요청을 승인하지 않았습니다.",
-        "signErrorTextImportKeeper": "주소 {{address}}로 Cubensis Connect에 로그인 하고 계속하기 위해 페이지를 새로고침 하세요.",
-        "signErrorTextKeeper": "다시 시도하세요. 오류가 지속된다면 [서포트](https://decentralchain.io/soporte/)에 문의하세요.",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "다시 시도하세요. 오류가 지속된다면 [서포트](https://decentralchain.io/soporte/)에 문의하세요.",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "주소 {{address}}로 Cubensis Connect에 로그인 하고 계속하기 위해 페이지를 새로고침 하세요.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2647,13 +2647,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "토큰 생성",
+      "cubensisConnectAccount": "Cubensis Connect 계정",
       "currentAccountName": "Current account name",
       "dashboard": "대시보드",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain 블록체인",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "체결된 주문 당 0.003 DCC",
       "decentralchainWallet": "DecentralChain 지갑",
@@ -2675,7 +2676,6 @@
       "high": "24 최고가",
       "inputErrorNameExists": "That name is taken. Try another",
       "instantAccessWalletDex": "지갑과 DEX의 신속한 액세스",
-      "keeperAccount": "Keeper 계정",
       "lastPrice": "체결가",
       "leasing": "Leasing",
       "ledgerAccount": "Ledger 계정",

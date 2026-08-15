@@ -54,20 +54,28 @@ export const Analytics = () => {
     }).length;
   }, [transactions]);
 
-  // Calculate performance (simplified - comparing last tx timestamp vs first)
-  const performanceChange = useMemo(() => {
-    if (!transactions || transactions.length === 0) return '+0.0%';
+  // Real 30-day windows: transactions in the last 30 days vs the 30 days before
+  // that, both cut by actual timestamp — not by array position, which does not
+  // correspond to a time window at all when txs arrive in bursts.
+  const activityChange = useMemo(() => {
+    if (!transactions) return null;
     const flatTxs = transactions.flat();
-    if (flatTxs.length < 2) return '+0.0%';
+    if (flatTxs.length === 0) return null;
 
-    // Simple metric: more transactions = more activity = positive indicator
-    const recentTxs = flatTxs.slice(0, Math.min(30, flatTxs.length));
-    const olderTxs = flatTxs.slice(Math.min(30, flatTxs.length));
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const recentCutoff = now - 30 * DAY_MS;
+    const priorCutoff = now - 60 * DAY_MS;
 
-    if (olderTxs.length === 0) return '+100.0%';
+    const recentCount = flatTxs.filter((tx) => (tx.timestamp || 0) >= recentCutoff).length;
+    const priorCount = flatTxs.filter(
+      (tx) => (tx.timestamp || 0) >= priorCutoff && (tx.timestamp || 0) < recentCutoff,
+    ).length;
 
-    const change = ((recentTxs.length - olderTxs.length) / olderTxs.length) * 100;
-    return change >= 0 ? `+${change.toFixed(1)}%` : `${change.toFixed(1)}%`;
+    if (priorCount === 0) return null;
+
+    const change = ((recentCount - priorCount) / priorCount) * 100;
+    return { recentCount, text: change >= 0 ? `+${change.toFixed(1)}%` : `${change.toFixed(1)}%` };
   }, [transactions]);
 
   const stats = [
@@ -79,10 +87,14 @@ export const Analytics = () => {
       value: isLoadingBalance ? <Skeleton width={100} /> : `${formatAmount(portfolioValue)} DCC`,
     },
     {
-      change: 'Generating Balance',
+      // Renamed from "Total Profit/Loss": no price oracle or historical-balance
+      // data exists anywhere in this stack (see BalanceChart.tsx), so P&L is
+      // not a computable figure — showing generatingBalance under a P&L label
+      // was a real number wearing the wrong name. This is what it actually is.
+      change: 'Eligible to earn block rewards',
       icon: <TrendingUp />,
-      label: 'Total Profit/Loss',
-      trend: 'up' as const,
+      label: 'Generating Balance',
+      trend: 'neutral' as const,
       value: isLoadingBalance ? (
         <Skeleton width={100} />
       ) : (
@@ -97,11 +109,15 @@ export const Analytics = () => {
       value: isLoadingTransactions ? <Skeleton width={80} /> : transactionCount.toLocaleString(),
     },
     {
-      change: 'Transaction Growth',
+      change: activityChange ? 'vs. previous 30 days' : 'Not enough history yet',
       icon: <Timeline />,
       label: '30-Day Activity',
-      trend: performanceChange.startsWith('+') ? ('up' as const) : ('down' as const),
-      value: isLoadingTransactions ? <Skeleton width={80} /> : performanceChange,
+      trend: activityChange
+        ? activityChange.text.startsWith('+')
+          ? ('up' as const)
+          : ('down' as const)
+        : ('neutral' as const),
+      value: isLoadingTransactions ? <Skeleton width={80} /> : (activityChange?.text ?? '—'),
     },
   ];
 

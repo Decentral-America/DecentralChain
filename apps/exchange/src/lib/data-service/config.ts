@@ -26,7 +26,13 @@ export function get<K extends keyof IConfigParams>(key: K): IConfigParams[K] {
 export function set<K extends keyof IConfigParams>(key: K, value: IConfigParams[K]): void {
   config[key] = value;
   if (key === 'node') {
-    fetch(`${value}/utils/time`)
+    // testnet-node.decentralchain.io has no CORS headers on any endpoint (an
+    // infra-side gap, not fixable from this app) — the dev server proxies this
+    // one direct-to-node call through same-origin so it doesn't log a CORS
+    // error locally. Production still fetches node directly and silently
+    // no-ops on failure via the .catch below, same as before.
+    const timeUrl = import.meta.env.DEV ? `/node-proxy/utils/time` : `${String(value)}/utils/time`;
+    fetch(timeUrl)
       .then((r) => r.json() as Promise<{ NTP: number }>)
       .then(({ NTP }) => {
         const now = Date.now();

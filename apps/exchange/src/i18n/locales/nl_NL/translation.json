@@ -466,6 +466,9 @@
       "selectFileBtn": "Kies bestand"
     },
     "backupFileDescription": "Account importeren uit Keystore-bestand",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Importeer account vanuit Cubensis Connect",
+    "cubensisConnectForm": "Installeer",
     "decentralchainClient": "DCC Client",
     "decentralchainClientDescription": "Account importeren van DCC Client",
     "decentralchainLiteClient": "DecentralChain Lite Client",
@@ -477,9 +480,6 @@
     },
     "importAccount": "Accounts importeren",
     "importAccountInfo": "Selecteer waar u accounts van wilt importeren",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Importeer account vanuit Cubensis Connect",
-    "keeperForm": "Installeer",
     "LedgerClient": "Ledger Device",
     "ledgerDescription": "Accounts importeren van uw Ledger",
     "or": "OF",
@@ -960,7 +960,7 @@
     "confirmTransaction": {
       "back": "Ga Terug",
       "confirm": "Verstuur",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Probeer alstublieft opnieuw. Indien de error aanhoudt maak dan een ticket aan bij [support](https://decentralchain.io/soporte)",
         "header": "U heeft het verzoek niet via Cubensis Connect bevestigd"
       },
@@ -1037,7 +1037,7 @@
         "ok": "Ga door"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "Annuleer",
           "errorDescription": "Probeer het opnieuw. Als het probleem aanhoudt maak alstublieft een ticket aan bij [support](https://decentralchain.io/soporte)",
           "errorDescriptionSwitchUser": "Dit account komt niet overeen met het geselecteerde account in uw Cubensis Connect. Activeer een ander account in Cubensis Connect en probeer het opnieuw.",
@@ -1278,6 +1278,31 @@
     "confirmTransaction": {
       "signLedger": "Wachten op bevestiging van Ledger…"
     },
+    "cubensisConnectForm": {
+      "address": "Account adres",
+      "addressSaved": "Adres opgeslagen",
+      "back": "Ga terug",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Om verder te kunnen werken met Cubensis Connect dient u het vooraf ingegeven wachtwoord in te voeren of een nieuwe aan te maken.",
+        "hasLockedCubensisConnectHeader": "Voer wachtwoord in van Cubensis Connect",
+        "hasNoUsersDescription": "Log in een bestaand account, of creëer een nieuw account, en probeer opnieuw.",
+        "hasNoUsersHeader": "U heeft geen actief account",
+        "install": "Installeer",
+        "networkDescription": "Het account dat u heeft geselecteerd is op het verkeerde netwerk. Wijzig het netwerk en probeer het opnieuw.",
+        "networkHeader": "Wijzig netwerk",
+        "notInstalledDescription": "Na installatie, creëer een account, log in en ververs de pagina om door te gaan.",
+        "notInstalledHeader": "Heeft u Cubensis Connect niet?",
+        "refresh": "Probeer opnieuw"
+      },
+      "heading": "Importeer account van Cubensis Connect",
+      "loading": "Importeer account van Cubensis Connect",
+      "login": "Ga door",
+      "name": "Accountnaam",
+      "nameExists": "Die naam is in gebruik",
+      "or": "OF",
+      "retry": "Probeer opnieuw",
+      "saveUserData": "Blijf ingelogd op deze computer"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "Transactiekosten: vul alles in om te berekenen",
@@ -1326,7 +1351,7 @@
         "fee": "Transactiekosten {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Probeer opnieuw"
         }
       }
@@ -1335,31 +1360,6 @@
       "errors": {
         "gtGatewayMin": "U kunt geen bedrag minder dan {{min}} {{assetName}} versturen"
       }
-    },
-    "keeperForm": {
-      "address": "Account adres",
-      "addressSaved": "Adres opgeslagen",
-      "back": "Ga terug",
-      "error": {
-        "hasLockedKeeperDescription": "Om verder te kunnen werken met Cubensis Connect dient u het vooraf ingegeven wachtwoord in te voeren of een nieuwe aan te maken.",
-        "hasLockedKeeperHeader": "Voer wachtwoord in van Cubensis Connect",
-        "hasNoUsersDescription": "Log in een bestaand account, of creëer een nieuw account, en probeer opnieuw.",
-        "hasNoUsersHeader": "U heeft geen actief account",
-        "install": "Installeer",
-        "networkDescription": "Het account dat u heeft geselecteerd is op het verkeerde netwerk. Wijzig het netwerk en probeer het opnieuw.",
-        "networkHeader": "Wijzig netwerk",
-        "notInstalledDescription": "Na installatie, creëer een account, log in en ververs de pagina om door te gaan.",
-        "notInstalledHeader": "Heeft u Cubensis Connect niet?",
-        "refresh": "Probeer opnieuw"
-      },
-      "heading": "Importeer account van Cubensis Connect",
-      "loading": "Importeer account van Cubensis Connect",
-      "login": "Ga door",
-      "name": "Accountnaam",
-      "nameExists": "Die naam is in gebruik",
-      "or": "OF",
-      "retry": "Probeer opnieuw",
-      "saveUserData": "Blijf ingelogd op deze computer"
     },
     "LedgerClient_utils": "Ledger Device",
     "LedgerClientDescription": "Importeer account van Cubensis Connect",
@@ -1796,7 +1796,7 @@
         "warning": "U heeft uw SEED niet opgeslagen",
         "warningPlural": "U heeft uw SEED niet opgeslagen"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Verwijder Cubensis Connect account",
         "text": "Dit delete alleen het opgeslagen pad naar uw account. Het zal niet worden verwijderd van Cubensis Connect."
       },
@@ -2003,11 +2003,11 @@
           "showCodeLink": "Toon Pairing Code",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Exporteren vanuit Cubensis Connect geïmporteerde accounts is beschikbaar in de instellingen van Cubensis Connect",
+              "decentralchainCubensisConnect": "Exporteren vanuit Cubensis Connect geïmporteerde accounts is beschikbaar in de instellingen van Cubensis Connect",
               "ledger": "Exporteren is niet beschikbaar voor accounts op een Ledger"
             },
             "header": {
-              "decentralchainKeeper": "Exporteren niet beschikbaar",
+              "decentralchainCubensisConnect": "Exporteren niet beschikbaar",
               "ledger": "Exporteren niet beschikbaar"
             },
             "ok": "Ik begrijp het"
@@ -2043,7 +2043,7 @@
         "confirm": "Bevestig",
         "confirmRequest": "Verzoek bevestigen",
         "confirmRequest_utils": "Verzoek bevestigen",
-        "confirmRequestKeeper": "Wachten op bevestiging van Cubensis Connect...",
+        "confirmRequestCubensisConnect": "Wachten op bevestiging van Cubensis Connect...",
         "confirmRequestLedger": {
           "cancel": "Annuleer",
           "errorDescription": "Probeer het opnieuw. Als het probleem aanhoudt lees dan [this article](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2054,9 +2054,9 @@
         "confirmRequestMatcher_utils": "Onderteken een verzoek naar de Matcher. Als u dit niet ondertekent, kunt u niet handelen op DEX vanaf een Ledger-account.",
         "confirmRequestToMatcher": "Onderteken het verzoek aan de Matcher. Als u het niet ondertekent, kunt u niet handelen op DEX.",
         "connecting": "Verbinding maken...",
-        "connectingKeeper": "Verbinden met Cubensis Connect...",
+        "connectingCubensisConnect": "Verbinden met Cubensis Connect...",
         "connectionError": "Kan Ledger niet verbinden",
-        "connectionErrorKeeper": "Kon niet bij account",
+        "connectionErrorCubensisConnect": "Kon niet bij account",
         "connectionText": "Er is een time-out opgetreden in de verbinding. Probeer het opnieuw.",
         "connectLedger": "Verbind uw Ledger",
         "enterPin": "Voer uw pincode in",
@@ -2072,14 +2072,14 @@
         "requestId": "Verzoek hash",
         "retry": "Opnieuw proberen",
         "sell": "Verkoop",
-        "signByKeeper": "Wacht op bevestiging op Cubensis Connect...",
+        "signByCubensisConnect": "Wacht op bevestiging op Cubensis Connect...",
         "signByLedger": "Wacht op bevestiging op Ledger…",
         "signError": "Het verzoek is niet bevestigd.",
-        "signErrorKeeper": "U heeft het verzoek van Cubensis Connect niet bevestigd",
+        "signErrorCubensisConnect": "U heeft het verzoek van Cubensis Connect niet bevestigd",
         "signErrorText": "U hebt het verzoek op uw Ledger niet bevestigd",
-        "signErrorTextImportKeeper": "Login met Cubensis Connect met {{address}} adres, en ververs dan de pagina om door te gaan.",
-        "signErrorTextKeeper": "Probeer alstublieft opnieuw. Als deze error aanhoudt maak dan een ticket op [Support](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "Dit account komt niet overeen met het geselecteerde account in uw Cubensis Connect. Activeer een ander account in Cubensis Connect en probeer het opnieuw.",
+        "signErrorTextCubensisConnect": "Probeer alstublieft opnieuw. Als deze error aanhoudt maak dan een ticket op [Support](https://decentralchain.io/soporte/)",
+        "signErrorTextCubensisConnectWrongUser": "Dit account komt niet overeen met het geselecteerde account in uw Cubensis Connect. Activeer een ander account in Cubensis Connect en probeer het opnieuw.",
+        "signErrorTextImportCubensisConnect": "Login met Cubensis Connect met {{address}} adres, en ververs dan de pagina om door te gaan.",
         "timestamp": "Tijdstempel",
         "txId": "TXID"
       },
@@ -2634,13 +2634,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Account maken",
       "createToken": "Token maken",
+      "cubensisConnectAccount": "Cubensis Connect account",
       "currentAccountName": "Huidige accountnaam",
       "dashboard": "Dashboard",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC per gevulde order",
       "decentralchainWallet": "DecentralExchange",
@@ -2662,7 +2663,6 @@
       "high": "24 HOOG",
       "inputErrorNameExists": "Die naam is in gebruik. Probeer een ander",
       "instantAccessWalletDex": "Directe toegang tot uw wallet en DEX",
-      "keeperAccount": "Keeper account",
       "lastPrice": "LAATSTE PRIJS",
       "leasing": "Leasen",
       "ledgerAccount": "Ledger account",

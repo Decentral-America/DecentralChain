@@ -23,7 +23,7 @@ import {
 // Select config at build time from VITE_NETWORK (statically replaced by Vite).
 // Testnet and stagenet have a subset of mainnet fields — cast gateway to the
 // typed map shape since those networks use a placeholder string URL at build time.
-const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'mainnet';
+const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'testnet';
 
 const rawJson =
   VITE_NETWORK === 'testnet'

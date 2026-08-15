@@ -1,11 +1,12 @@
 /**
  * Dashboard Page
  * Overview page with portfolio summary, recent activity, and quick actions
- * Matches landing page styling with modern cards and gradients
+ * Flat cards, hairline dividers, and tabular figures throughout.
  */
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import BadgeIcon from '@mui/icons-material/Badge';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import PersonIcon from '@mui/icons-material/Person';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import SendIcon from '@mui/icons-material/Send';
@@ -38,12 +39,15 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
+import { StatCard } from '@/components/atoms/StatCard';
 import { AssetNameDisplay } from '@/components/common/AssetNameDisplay';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
 import { useAliases } from '@/hooks/useAliases';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
+import { radii } from '@/styles/tokens';
 import { landingTheme } from '@/theme/landingTheme';
 import { formatAmount } from '@/utils/formatters';
 
@@ -253,35 +257,30 @@ export const Dashboard = () => {
     {
       action: () => navigate('/desktop/wallet/portfolio'),
       description: 'Transfer assets',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       icon: <SendIcon sx={{ fontSize: 32 }} />,
       title: 'Send',
     },
     {
       action: () => navigate('/desktop/dex'),
       description: 'Exchange tokens',
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       icon: <SwapHorizIcon sx={{ fontSize: 32 }} />,
       title: 'Swap',
     },
     {
       action: () => setCreateAliasOpen(true),
       description: `${aliases.length} ${aliases.length === 1 ? 'alias' : 'aliases'}`,
-      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       icon: <BadgeIcon sx={{ fontSize: 32 }} />,
       title: 'Create Alias',
     },
     {
       action: () => navigate('/desktop/create-token'),
       description: 'Issue new asset',
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       icon: <TokenIcon sx={{ fontSize: 32 }} />,
       title: 'Create Token',
     },
     {
       action: () => navigate('/desktop/analytics'),
       description: 'View insights',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
       icon: <ShowChartIcon sx={{ fontSize: 32 }} />,
       title: 'Analytics',
     },
@@ -289,777 +288,501 @@ export const Dashboard = () => {
 
   return (
     <ThemeProvider theme={landingTheme}>
-      <Box sx={{ px: { md: 4, sm: 3, xs: 2 }, py: 3 }}>
-        {/* Welcome Header */}
-        <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              color: 'text.primary',
-              fontWeight: 700,
-              mb: 1,
-            }}
-          >
-            Welcome back, {user?.name || 'Trader'}! 👋
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
-            Here&apos;s an overview of your portfolio and recent activity
-          </Typography>
-        </Box>
-
+      <PageFrame
+        fit
+        title={`Welcome back, ${user?.name || 'Trader'}`}
+        subtitle="Here's an overview of your portfolio and recent activity"
+      >
         {/* Portfolio Summary Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={pageRhythm} sx={{ flexShrink: 0, mb: pageRhythm }}>
           {/* Total Balance Card */}
-          <Grid
-            size={{
-              md: 4,
-              xs: 12,
-            }}
-          >
-            <Card
-              sx={{
-                background: 'white',
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                height: '100%',
-                overflow: 'hidden',
-                position: 'relative',
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Stack
-                  direction="row"
+          <Grid size={{ md: 4, xs: 12 }}>
+            <StatCard
+              icon={<AccountBalanceWalletIcon />}
+              label="Total portfolio value"
+              value={isLoading ? '—' : formatAmount(portfolioValueInDCC, 8)}
+              caption={displayCurrency}
+              adornment={
+                <Select
+                  value={displayCurrency}
+                  onChange={(e) => setDisplayCurrency(e.target.value)}
+                  size="small"
+                  aria-label="Display currency"
                   sx={{
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+                    fontSize: '0.75rem',
                   }}
                 >
-                  <Box sx={{ flex: 1 }}>
-                    <Stack
-                      direction="row"
-                      sx={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.secondary',
-                          fontWeight: 500,
-                        }}
-                      >
-                        Total Portfolio Value
-                      </Typography>
-                      <Select
-                        value={displayCurrency}
-                        onChange={(e) => setDisplayCurrency(e.target.value)}
-                        size="small"
-                        sx={{
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'divider',
-                          },
-                          fontSize: '0.75rem',
-                        }}
-                      >
-                        {availableCurrencies.map((currency) => (
-                          <MenuItem key={currency.id} value={currency.id}>
-                            {currency.id}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </Stack>
-                    <Typography
-                      variant="h3"
-                      sx={{
-                        color: 'text.primary',
-                        fontWeight: 700,
-                      }}
-                    >
-                      {isLoading ? '...' : formatAmount(portfolioValueInDCC, 8)}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'text.secondary',
-                        mt: 0.5,
-                      }}
-                    >
-                      {displayCurrency}
-                    </Typography>
-                  </Box>
-                  <AccountBalanceWalletIcon
-                    sx={{ color: 'primary.main', fontSize: 40, opacity: 0.2 }}
-                  />
-                </Stack>
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{
-                    alignItems: 'center',
-                    mt: 2,
-                  }}
-                >
-                  <Chip
-                    icon={<TrendingUpIcon />}
-                    label={`${totalAssets} ${totalAssets === 1 ? 'asset' : 'assets'}`}
-                    size="small"
-                    sx={{
-                      bgcolor: '#ECFDF5',
-                      color: 'primary.main',
-                      fontWeight: 600,
-                    }}
-                  />
-                </Stack>
-              </CardContent>
-            </Card>
+                  {availableCurrencies.map((currency) => (
+                    <MenuItem key={currency.id} value={currency.id}>
+                      {currency.id}
+                    </MenuItem>
+                  ))}
+                </Select>
+              }
+              action={
+                <Chip
+                  icon={<TrendingUpIcon />}
+                  label={`${totalAssets} ${totalAssets === 1 ? 'asset' : 'assets'}`}
+                  size="small"
+                  sx={{ bgcolor: 'action.selected', color: 'primary.main' }}
+                />
+              }
+            />
           </Grid>
 
-          {/* Assets Count Card */}
-          <Grid
-            size={{
-              md: 4,
-              sm: 6,
-              xs: 12,
-            }}
-          >
-            <Card
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                height: '100%',
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 500,
-                    mb: 2,
-                  }}
-                >
-                  Total Assets
-                </Typography>
-                <Typography
-                  variant="h3"
-                  color="primary"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
-                  {totalAssets}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    mt: 1,
-                  }}
-                >
-                  Different tokens in your wallet
-                </Typography>
+          <Grid size={{ md: 4, sm: 6, xs: 12 }}>
+            <StatCard
+              icon={<Inventory2OutlinedIcon />}
+              tone="positive"
+              label="Total assets"
+              value={totalAssets}
+              caption="Different tokens in your wallet"
+              action={
                 <Button
                   variant="text"
                   size="small"
                   onClick={() => navigate('/desktop/wallet/portfolio')}
-                  sx={{ color: 'primary.main', fontWeight: 600, mt: 2, px: 0 }}
+                  sx={{ color: 'primary.main', px: 0 }}
                 >
-                  View Portfolio →
+                  View portfolio →
                 </Button>
-              </CardContent>
-            </Card>
+              }
+            />
           </Grid>
 
-          {/* Recent Transactions Card */}
-          <Grid
-            size={{
-              md: 4,
-              sm: 6,
-              xs: 12,
-            }}
-          >
-            <Card
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                height: '100%',
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 500,
-                    mb: 2,
-                  }}
-                >
-                  Recent Transactions
-                </Typography>
-                <Typography
-                  variant="h3"
-                  color="primary"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
-                  {recentActivity.length}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    mt: 1,
-                  }}
-                >
-                  In the last 24 hours
-                </Typography>
+          <Grid size={{ md: 4, sm: 6, xs: 12 }}>
+            <StatCard
+              icon={<ReceiptLongIcon />}
+              tone="notice"
+              label="Recent transactions"
+              value={recentActivity.length}
+              caption="In the last 24 hours"
+              action={
                 <Button
                   variant="text"
                   size="small"
                   onClick={() => navigate('/desktop/wallet/transactions')}
-                  sx={{ color: 'primary.main', fontWeight: 600, mt: 2, px: 0 }}
+                  sx={{ color: 'primary.main', px: 0 }}
                 >
-                  View All →
+                  View all →
                 </Button>
-              </CardContent>
-            </Card>
+              }
+            />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
-          {/* Left Column - Quick Actions & Top Assets */}
-          <Grid
-            size={{
-              lg: 8,
-              xs: 12,
+        {/*
+          One grid, not two stacks.
+          The two columns used to be independent: each card followed whatever
+          was above it in its own column, so from the second row down nothing
+          lined up — a 239px card beside a 183px one put the next pair 57px out
+          of step. Placing all four in a single grid makes each row resolve to
+          one height, which is the whole difference between a dashboard and
+          four cards that happen to be near each other.
+        */}
+        <Box
+          sx={{
+            display: 'grid',
+            flex: 1,
+            gap: pageRhythm,
+            gridTemplateColumns: { lg: 'minmax(0, 2fr) minmax(0, 1fr)', xs: 'minmax(0, 1fr)' },
+            // The lists in the second row take the room that is left and scroll
+            // inside their cards, so the dashboard is one screen.
+            gridTemplateRows: { lg: 'auto minmax(0, 1fr)' },
+            minHeight: 0,
+          }}
+        >
+          {/* Quick Actions */}
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              gridColumn: { lg: 1 },
+              gridRow: { lg: 1 },
             }}
           >
-            {/* Quick Actions */}
-            <Card
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                mb: 3,
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'text.primary',
-                    fontWeight: 700,
-                    mb: 3,
-                  }}
-                >
-                  Quick Actions
-                </Typography>
-                <Grid container spacing={2}>
-                  {quickActions.map((action) => (
-                    <Grid
-                      key={action.title}
-                      size={{
-                        sm: 3,
-                        xs: 6,
-                      }}
-                    >
-                      <Card
-                        sx={{
-                          '&:hover': {
-                            borderColor: 'primary.main',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                            transform: 'translateY(-2px)',
-                          },
-                          background: 'white',
-                          border: '1px solid',
-                          borderColor: 'divider',
-                          borderRadius: '10px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                        }}
-                        onClick={action.action}
-                      >
-                        <CardContent sx={{ py: 3, textAlign: 'center' }}>
-                          <Box sx={{ color: 'primary.main', mb: 1 }}>{action.icon}</Box>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: 'text.primary',
-                              fontWeight: 600,
-                            }}
-                          >
-                            {action.title}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: 'text.secondary',
-                            }}
-                          >
-                            {action.description}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              </CardContent>
-            </Card>
-
-            {/* All Assets with Filters */}
-            <Card
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Stack
-                  direction="row"
-                  sx={{
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    mb: 2,
-                  }}
-                >
-                  <Typography
-                    variant="h6"
+            <CardContent>
+              <Typography variant="h6" sx={{ color: 'text.primary', mb: 3 }}>
+                Quick Actions
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gap: 2,
+                  /*
+                   * Column count follows the width available rather than a
+                   * fixed twelve-column split, so five tiles fill the row
+                   * instead of leaving one stranded underneath. 128px is the
+                   * widest minimum that still fits five across the 754px this
+                   * column gets at 1512, measured rather than guessed; below
+                   * that width it falls to four and wraps, which is correct.
+                   */
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(128px, 100%), 1fr))',
+                }}
+              >
+                {quickActions.map((action) => (
+                  <Card
+                    key={action.title}
                     sx={{
-                      color: 'text.primary',
-                      fontWeight: 700,
+                      '&:hover': {
+                        bgcolor: 'action.hover',
+                        borderColor: 'primary.main',
+                      },
+                      cursor: 'pointer',
+                      height: '100%',
+                      transition: 'background-color 150ms ease, border-color 150ms ease',
                     }}
+                    onClick={action.action}
                   >
-                    My Assets
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => navigate('/desktop/wallet/portfolio')}
-                    sx={{
-                      borderRadius: '8px',
-                      fontWeight: 600,
-                    }}
-                  >
-                    View Portfolio
-                  </Button>
-                </Stack>
-
-                {/* Filter Tabs */}
-                <Tabs
-                  value={tokenFilter}
-                  onChange={(_, newValue) => setTokenFilter(newValue)}
-                  sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
-                >
-                  <Tab label={`All (${allAssets.length})`} value="all" sx={{ fontWeight: 600 }} />
-                  <Tab
-                    label="Verified"
-                    value="verified"
-                    icon={<VerifiedIcon sx={{ fontSize: 16 }} />}
-                    iconPosition="start"
-                    sx={{ fontWeight: 600 }}
-                  />
-                  <Tab
-                    label="My Tokens"
-                    value="my"
-                    icon={<PersonIcon sx={{ fontSize: 16 }} />}
-                    iconPosition="start"
-                    sx={{ fontWeight: 600 }}
-                  />
-                </Tabs>
-
-                <Stack spacing={2}>
-                  {filteredAssets.map((asset) => {
-                    const amount = asset.amount / 10 ** asset.decimals;
-                    return (
+                    <CardContent sx={{ '&:last-child': { pb: 2.5 }, p: 2.5 }}>
+                      {/* The same tinted plate the summary figures carry. */}
                       <Box
-                        key={asset.assetId}
+                        aria-hidden="true"
                         sx={{
-                          '&:hover': {
-                            bgcolor: 'action.hover',
-                            transform: 'translateX(4px)',
-                          },
+                          '& svg': { fontSize: 18 },
                           alignItems: 'center',
-                          bgcolor: 'background.default',
-                          borderRadius: 2,
+                          bgcolor: 'action.selected',
+                          borderRadius: radii.md,
+                          color: 'primary.main',
                           display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          transition: 'all 0.2s',
+                          height: 34,
+                          justifyContent: 'center',
+                          mb: 1.5,
+                          width: 34,
                         }}
                       >
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{
-                            alignItems: 'center',
-                            flex: 1,
-                          }}
-                        >
-                          <Avatar
-                            sx={{
-                              bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
-                              color: 'white',
-                              height: 40,
-                              width: 40,
-                            }}
-                          >
-                            {asset.name.charAt(0)}
-                          </Avatar>
-                          <Box sx={{ flex: 1 }}>
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                fontWeight: 700,
-                              }}
-                            >
-                              {asset.name}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: 'text.secondary',
-                              }}
-                            >
-                              {asset.isBaseAsset
-                                ? 'Native Token'
-                                : `${asset.assetId.substring(0, 8)}...`}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                fontWeight: 700,
-                              }}
-                            >
-                              {formatAmount(amount, 8)}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: 'text.secondary',
-                              }}
-                            >
-                              {asset.isBaseAsset ? 'DCC' : asset.name}
-                            </Typography>
-                          </Box>
-                          <Tooltip title={`Send ${asset.name}`}>
-                            <IconButton
-                              size="small"
-                              color="primary"
-                              onClick={() => handleSendAsset(asset)}
-                              sx={{
-                                '&:hover': {
-                                  bgcolor: 'primary.dark',
-                                },
-                                bgcolor: 'primary.main',
-                                color: 'white',
-                              }}
-                            >
-                              <SendIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
+                        {action.icon}
                       </Box>
-                    );
-                  })}
-                  {allAssets.length === 0 && (
-                    <Box sx={{ py: 4, textAlign: 'center' }}>
-                      <Typography
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        No assets found
+                      <Typography sx={{ color: 'text.primary', fontSize: 15 }}>
+                        {action.title}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate('/desktop/wallet/portfolio')}
-                      >
-                        View Portfolio
-                      </Button>
-                    </Box>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
+                      <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 0.25 }}>
+                        {action.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
 
-          {/* Right Column - Recent Activity */}
-          <Grid
-            size={{
-              lg: 4,
-              xs: 12,
+          {/* All Assets with Filters */}
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              gridColumn: { lg: 1 },
+              gridRow: { lg: 2 },
             }}
           >
-            <Card
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: '12px',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'text.primary',
-                    fontWeight: 700,
-                    mb: 3,
-                  }}
-                >
-                  Recent Activity
+            <CardContent>
+              <Stack
+                direction="row"
+                sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}
+              >
+                <Typography variant="h6" color="text.primary">
+                  My Assets
                 </Typography>
-                <Stack spacing={2}>
-                  {recentActivity.map((activity) => (
-                    <Box
-                      key={activity.txId}
-                      sx={{
-                        bgcolor: '#F9FAFB',
-                        borderColor: activity.type === 'Received' ? 'success.main' : 'primary.main',
-                        borderLeft: '3px solid',
-                        borderRadius: '10px',
-                        p: 2,
-                      }}
-                    >
-                      <Stack
-                        direction="row"
-                        sx={{
-                          alignItems: 'flex-start',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Box>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: 'text.primary',
-                              fontWeight: 600,
-                            }}
-                          >
-                            {activity.type}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: 'text.secondary',
-                              mt: 0.5,
-                            }}
-                          >
-                            {activity.amount}{' '}
-                            {activity.type === 'Received' || activity.type === 'Sent' ? (
-                              <AssetNameDisplay assetId={activity.assetId} />
-                            ) : null}
-                          </Typography>
-                        </Box>
-                        <Stack
-                          direction="row"
-                          spacing={0.5}
-                          sx={{
-                            alignItems: 'center',
-                          }}
-                        >
-                          {activity.type === 'Received' ? (
-                            <TrendingUpIcon color="success" fontSize="small" />
-                          ) : (
-                            <TrendingDownIcon color="error" fontSize="small" />
-                          )}
-                        </Stack>
-                      </Stack>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                          display: 'block',
-                          mt: 1,
-                        }}
-                      >
-                        {activity.time}
-                      </Typography>
-                      <Chip
-                        label={activity.status}
-                        size="small"
-                        color="success"
-                        sx={{ fontSize: 10, height: 20, mt: 1 }}
-                      />
-                    </Box>
-                  ))}
-                </Stack>
-
                 <Button
                   variant="outlined"
-                  fullWidth
-                  sx={{ mt: 3 }}
-                  onClick={() => navigate('/desktop/wallet/transactions')}
-                  startIcon={<ReceiptLongIcon />}
+                  size="small"
+                  onClick={() => navigate('/desktop/wallet/portfolio')}
+                  sx={{
+                    borderRadius: '4px',
+                  }}
                 >
-                  View All Transactions
+                  View Portfolio
                 </Button>
-              </CardContent>
-            </Card>
+              </Stack>
 
-            {/* Portfolio Breakdown Card */}
-            <Card sx={{ mt: 3 }}>
-              <CardContent>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 700,
-                    mb: 3,
-                  }}
-                >
-                  Portfolio Breakdown
-                </Typography>
+              {/* Filter Tabs */}
+              <Tabs
+                value={tokenFilter}
+                onChange={(_, newValue) => setTokenFilter(newValue)}
+                sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+              >
+                <Tab label={`All (${allAssets.length})`} value="all" />
+                <Tab
+                  label="Verified"
+                  value="verified"
+                  icon={<VerifiedIcon sx={{ fontSize: 16 }} />}
+                  iconPosition="start"
+                />
+                <Tab
+                  label="My Tokens"
+                  value="my"
+                  icon={<PersonIcon sx={{ fontSize: 16 }} />}
+                  iconPosition="start"
+                />
+              </Tabs>
 
-                {/* Total Portfolio Value */}
-                <Box
-                  sx={{
-                    bgcolor: 'primary.main',
-                    borderRadius: 2,
-                    color: 'white',
-                    mb: 2,
-                    p: 2,
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    sx={{
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Total Value
-                    </Typography>
-                    <Typography
-                      variant="h6"
+              <Stack spacing={2}>
+                {filteredAssets.map((asset) => {
+                  const amount = asset.amount / 10 ** asset.decimals;
+                  return (
+                    <Box
+                      key={asset.assetId}
                       sx={{
-                        fontWeight: 700,
+                        '&:hover': {
+                          bgcolor: 'action.hover',
+                          transform: 'translateX(4px)',
+                        },
+                        alignItems: 'center',
+                        bgcolor: 'background.default',
+                        borderRadius: 2,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        p: 2,
+                        transition: 'all 0.2s',
                       }}
                     >
-                      {formatAmount(portfolioValueInDCC, 8)} {displayCurrency}
-                    </Typography>
-                  </Stack>
-                </Box>
-
-                {/* Individual Assets Breakdown */}
-                <Stack spacing={1.5}>
-                  {allAssets.map((asset) => {
-                    const amount = asset.amount / 10 ** asset.decimals;
-                    return (
-                      <Box
-                        key={asset.assetId}
-                        sx={{
-                          alignItems: 'center',
-                          bgcolor: 'background.default',
-                          borderRadius: 1.5,
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 1.5,
-                        }}
-                      >
-                        <Stack
-                          direction="row"
-                          spacing={1.5}
+                      <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flex: 1 }}>
+                        <Avatar
                           sx={{
-                            alignItems: 'center',
+                            bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
+                            color: 'white',
+                            height: 40,
+                            width: 40,
                           }}
                         >
-                          <Avatar
-                            sx={{
-                              bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
-                              fontSize: '0.875rem',
-                              height: 32,
-                              width: 32,
-                            }}
-                          >
-                            {asset.name.charAt(0)}
-                          </Avatar>
-                          <Box>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight: 600,
-                              }}
-                            >
-                              {asset.name}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: 'text.secondary',
-                              }}
-                            >
-                              {asset.isBaseAsset
-                                ? 'Native Token'
-                                : `${asset.assetId.substring(0, 6)}...`}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                        <Box sx={{ textAlign: 'right' }}>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 700,
-                            }}
-                          >
-                            {formatAmount(amount, 8)}
+                          {asset.name.charAt(0)}
+                        </Avatar>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="subtitle2">{asset.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {asset.isBaseAsset
+                              ? 'Native Token'
+                              : `${asset.assetId.substring(0, 8)}...`}
                           </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: 'text.secondary',
-                            }}
-                          >
+                        </Box>
+                      </Stack>
+                      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                        <Box sx={{ textAlign: 'right' }}>
+                          <Typography variant="subtitle2">{formatAmount(amount, 8)}</Typography>
+                          <Typography variant="caption" color="text.secondary">
                             {asset.isBaseAsset ? 'DCC' : asset.name}
                           </Typography>
                         </Box>
+                        <Tooltip title={`Send ${asset.name}`}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleSendAsset(asset)}
+                            sx={{
+                              '&:hover': {
+                                bgcolor: 'primary.dark',
+                              },
+                              bgcolor: 'primary.main',
+                              color: 'white',
+                            }}
+                          >
+                            <SendIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    </Box>
+                  );
+                })}
+                {allAssets.length === 0 && (
+                  <Box sx={{ py: 4, textAlign: 'center' }}>
+                    <Typography color="text.secondary">No assets found</Typography>
+                    <Button
+                      variant="contained"
+                      sx={{ mt: 2 }}
+                      onClick={() => navigate('/desktop/wallet/portfolio')}
+                    >
+                      View Portfolio
+                    </Button>
+                  </Box>
+                )}
+              </Stack>
+            </CardContent>
+          </Card>
+          {/* Recent Activity */}
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              gridColumn: { lg: 2 },
+              gridRow: { lg: 1 },
+            }}
+          >
+            {/*
+              The row is as tall as the widest card in it, so the trailing
+              action is pushed to the bottom rather than leaving the remainder
+              as dead space under a short list.
+            */}
+            <CardContent sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
+              <Typography variant="h6" sx={{ color: 'text.primary', mb: 3 }}>
+                Recent Activity
+              </Typography>
+              <Stack spacing={2} sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+                {recentActivity.length === 0 ? (
+                  <Typography color="text.secondary" sx={{ fontSize: 14 }}>
+                    Nothing yet. Transfers, orders and leases will appear here as they confirm.
+                  </Typography>
+                ) : null}
+                {recentActivity.map((activity) => (
+                  <Box
+                    key={activity.txId}
+                    sx={{
+                      bgcolor: 'action.hover',
+                      borderColor: activity.type === 'Received' ? 'success.main' : 'primary.main',
+                      borderLeft: '3px solid',
+                      borderRadius: '4px',
+                      p: 2,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}
+                    >
+                      <Box>
+                        <Typography variant="subtitle2" color="text.primary">
+                          {activity.type}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {activity.amount}{' '}
+                          {activity.type === 'Received' || activity.type === 'Sent' ? (
+                            <AssetNameDisplay assetId={activity.assetId} />
+                          ) : null}
+                        </Typography>
                       </Box>
-                    );
-                  })}
-                </Stack>
+                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                        {activity.type === 'Received' ? (
+                          <TrendingUpIcon color="success" fontSize="small" />
+                        ) : (
+                          <TrendingDownIcon color="error" fontSize="small" />
+                        )}
+                      </Stack>
+                    </Stack>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block', mt: 1 }}
+                    >
+                      {activity.time}
+                    </Typography>
+                    <Chip
+                      label={activity.status}
+                      size="small"
+                      color="success"
+                      sx={{ fontSize: 10, height: 20, mt: 1 }}
+                    />
+                  </Box>
+                ))}
+              </Stack>
 
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  sx={{ mt: 3 }}
-                  onClick={() => navigate('/desktop/wallet/portfolio')}
-                  startIcon={<AccountBalanceWalletIcon />}
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{ mt: 3 }}
+                onClick={() => navigate('/desktop/wallet/transactions')}
+                startIcon={<ReceiptLongIcon />}
+              >
+                View All Transactions
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Portfolio Breakdown Card */}
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              gridColumn: { lg: 2 },
+              gridRow: { lg: 2 },
+            }}
+          >
+            <CardContent sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
+              <Typography variant="h6" sx={{ mb: 3 }}>
+                Portfolio Breakdown
+              </Typography>
+
+              {/* Total Portfolio Value */}
+              <Box
+                sx={{
+                  bgcolor: 'primary.main',
+                  borderRadius: 2,
+                  color: 'white',
+                  mb: 2,
+                  p: 2,
+                }}
+              >
+                <Stack
+                  direction="row"
+                  sx={{ alignItems: 'center', justifyContent: 'space-between' }}
                 >
-                  View Full Portfolio
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    Total Value
+                  </Typography>
+                  <Typography variant="h6">
+                    {formatAmount(portfolioValueInDCC, 8)} {displayCurrency}
+                  </Typography>
+                </Stack>
+              </Box>
+
+              {/* Individual Assets Breakdown */}
+              <Stack spacing={1.5} sx={{ flex: 1 }}>
+                {allAssets.map((asset) => {
+                  const amount = asset.amount / 10 ** asset.decimals;
+                  return (
+                    <Box
+                      key={asset.assetId}
+                      sx={{
+                        alignItems: 'center',
+                        bgcolor: 'background.default',
+                        borderRadius: 1.5,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        p: 1.5,
+                      }}
+                    >
+                      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                        <Avatar
+                          sx={{
+                            bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
+                            fontSize: '0.875rem',
+                            height: 32,
+                            width: 32,
+                          }}
+                        >
+                          {asset.name.charAt(0)}
+                        </Avatar>
+                        <Box>
+                          <Typography variant="body2">{asset.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {asset.isBaseAsset
+                              ? 'Native Token'
+                              : `${asset.assetId.substring(0, 6)}...`}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography variant="body2">{formatAmount(amount, 8)}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {asset.isBaseAsset ? 'DCC' : asset.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </Stack>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{ mt: 3 }}
+                onClick={() => navigate('/desktop/wallet/portfolio')}
+                startIcon={<AccountBalanceWalletIcon />}
+              >
+                View Full Portfolio
+              </Button>
+            </CardContent>
+          </Card>
+        </Box>
+      </PageFrame>
       <CreateAliasModal
         open={createAliasOpen}
         onClose={() => setCreateAliasOpen(false)}

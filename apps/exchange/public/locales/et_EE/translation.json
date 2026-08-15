@@ -479,6 +479,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Impordi konto Cubensis Connect'ist",
+    "cubensisConnectForm": "Installige",
     "decentralchainClient": "DCC Client",
     "decentralchainClientDescription": "Import account from a DCC Client",
     "decentralchainLiteClient": "DecentralChain Lite klient",
@@ -490,9 +493,6 @@
     },
     "importAccount": "Importige kontosid",
     "importAccountInfo": "Valige, kust kontosid importida",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Impordi konto Cubensis Connect'ist",
-    "keeperForm": "Installige",
     "LedgerClient": "Ledger Device",
     "ledgerDescription": "Importige kontosid Teie Ledger Nano S'st",
     "or": "VÕI",
@@ -973,7 +973,7 @@
     "confirmTransaction": {
       "back": "Mine Tagasi",
       "confirm": "Saada",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "Palun proovige uuesti. Kui viga püsib, saatke palun pilet [kasutajatoele](https://decentralchain.io/soporte)",
         "header": "Te ei kinnitanud päringut Cubensis Connectiga"
       },
@@ -1050,7 +1050,7 @@
         "ok": "Jätka"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "Tühista",
           "errorDescription": "Palun proovige uuesti. Kui viga püsib, saatke palun pilet [kasutajatoele](https://decentralchain.io/soporte)",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1291,6 +1291,31 @@
     "confirmTransaction": {
       "signLedger": "Ootan kinnitust Ledger Nano S's…"
     },
+    "cubensisConnectForm": {
+      "address": "Konto aadress",
+      "addressSaved": "Address saved",
+      "back": "Mine tagasi",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Cubensis Connectiga töötamise jätkamiseks peate sisestama eelnevalt loodud salasõna või looma uue.",
+        "hasLockedCubensisConnectHeader": "Sisestage salasõna Cubensis Connectis",
+        "hasNoUsersDescription": "Logige olemasolevasse kontosse või looge uus, seejärel proovige uuesti.",
+        "hasNoUsersHeader": "Teil pole aktiivset kontot",
+        "install": "Installige",
+        "networkDescription": "Valitud konto on vales võrgus. Muutke võrku ja proovige uuesti.",
+        "networkHeader": "Võrgu muutmine",
+        "notInstalledDescription": "Pärast installimist looge konto, logige sisse ja värskendage leht jätkamiseks.",
+        "notInstalledHeader": "Teil pole Cubensis Connectit?",
+        "refresh": "Uuesti proovima"
+      },
+      "heading": "Impordi konto Cubensis Connectist",
+      "loading": "Import account from the Cubensis Connect",
+      "login": "Jätka",
+      "name": "Kontonimi",
+      "nameExists": "That name is taken",
+      "or": "VÕI",
+      "retry": "Try again",
+      "saveUserData": "Hoia mind selles arvutis sisse logituna"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "Tehingutasu: täida väli arvutamiseks",
@@ -1339,7 +1364,7 @@
         "fee": "Tasu {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "Retry"
         }
       }
@@ -1348,31 +1373,6 @@
       "errors": {
         "gtGatewayMin": "Te ei saa üle kanda summa, mis on väiksem kui {{min}} {{assetName}}"
       }
-    },
-    "keeperForm": {
-      "address": "Konto aadress",
-      "addressSaved": "Address saved",
-      "back": "Mine tagasi",
-      "error": {
-        "hasLockedKeeperDescription": "Cubensis Connectiga töötamise jätkamiseks peate sisestama eelnevalt loodud salasõna või looma uue.",
-        "hasLockedKeeperHeader": "Sisestage salasõna Cubensis Connectis",
-        "hasNoUsersDescription": "Logige olemasolevasse kontosse või looge uus, seejärel proovige uuesti.",
-        "hasNoUsersHeader": "Teil pole aktiivset kontot",
-        "install": "Installige",
-        "networkDescription": "Valitud konto on vales võrgus. Muutke võrku ja proovige uuesti.",
-        "networkHeader": "Võrgu muutmine",
-        "notInstalledDescription": "Pärast installimist looge konto, logige sisse ja värskendage leht jätkamiseks.",
-        "notInstalledHeader": "Teil pole Cubensis Connectit?",
-        "refresh": "Uuesti proovima"
-      },
-      "heading": "Impordi konto Cubensis Connectist",
-      "loading": "Import account from the Cubensis Connect",
-      "login": "Jätka",
-      "name": "Kontonimi",
-      "nameExists": "That name is taken",
-      "or": "VÕI",
-      "retry": "Try again",
-      "saveUserData": "Hoia mind selles arvutis sisse logituna"
     },
     "LedgerClient_utils": "Ledger Device",
     "LedgerClientDescription": "Impordi konto Cubensis Connectist",
@@ -1809,7 +1809,7 @@
         "warning": "Te pole salvestanud oma salafraasi",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Eemalda Cubensis Connect konto",
         "text": "See kustutab ainult selle konto salvestatud tee. See ei kustuta kontot Cubensis Connectist."
       },
@@ -2016,11 +2016,11 @@
           "showCodeLink": "Näita ühildamiskoodi",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Cubensis Connectist imporditud kontode eksportimine on saadaval Cubensis Connect seadetes",
+              "decentralchainCubensisConnect": "Cubensis Connectist imporditud kontode eksportimine on saadaval Cubensis Connect seadetes",
               "ledger": "Eksport ei ole Ledger Nano S-s talletatud kontode jaoks saadaval"
             },
             "header": {
-              "decentralchainKeeper": "Eksport pole saadaval",
+              "decentralchainCubensisConnect": "Eksport pole saadaval",
               "ledger": "Eksport pole saadaval"
             },
             "ok": "Ma saan aru"
@@ -2056,7 +2056,7 @@
         "confirm": "Kinnita",
         "confirmRequest": "Kinnita päring",
         "confirmRequest_utils": "Confirm request",
-        "confirmRequestKeeper": "Cubensis Connectilt kinnituse ootel ...",
+        "confirmRequestCubensisConnect": "Cubensis Connectilt kinnituse ootel ...",
         "confirmRequestLedger": {
           "cancel": "Tühista",
           "errorDescription": "Palun proovige uuesti. Kui viga püsib, vaadake palun [käesolev artikkel](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)",
@@ -2067,9 +2067,9 @@
         "confirmRequestMatcher_utils": "Sign a request to the Matcher. If you do not sign it, you cannot trade on DEX from a Ledger account.",
         "confirmRequestToMatcher": "Kinnitage päring Matcher'ile. Kui te seda ei kinnita, ei saa Te DEX-il kaubelda.",
         "connecting": "Ühendamine ...",
-        "connectingKeeper": "Ühendamine Cubensis Connect'iga...",
+        "connectingCubensisConnect": "Ühendamine Cubensis Connect'iga...",
         "connectionError": "Ledger'iga ei ole võimalik ühendust saada",
-        "connectionErrorKeeper": "Kontole ei ole võimalik pääseda",
+        "connectionErrorCubensisConnect": "Kontole ei ole võimalik pääseda",
         "connectionText": "Ühendus võib olla aegunud. Palun proovi uuesti.",
         "connectLedger": "Ühendage oma Ledger Nano S",
         "enterPin": "Sisestage oma PIN-kood",
@@ -2085,14 +2085,14 @@
         "requestId": "Päringu hash",
         "retry": "Proovi uuesti",
         "sell": "Sell",
-        "signByKeeper": "Cubensis Connectilt kinnituse ootel ...",
+        "signByCubensisConnect": "Cubensis Connectilt kinnituse ootel ...",
         "signByLedger": "Waiting for confirmation on Ledger Device…",
         "signError": "Päring ei olnud kinnitatud",
-        "signErrorKeeper": "Te ei kinnitanud päringut Cubensis Connectiga",
+        "signErrorCubensisConnect": "Te ei kinnitanud päringut Cubensis Connectiga",
         "signErrorText": "Te ei kinnitanud päringut teie Ledger Nano S-s",
-        "signErrorTextImportKeeper": "Logige sisse Cubensis Connectisse aadressiga {{address}} ja seejärel värskendage leht jätkamiseks.",
-        "signErrorTextKeeper": "Palun proovi uuesti. Kui viga püsib, looge pilet [kasutajatoele](https://decentralchain.io/soporte/)",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "Palun proovi uuesti. Kui viga püsib, looge pilet [kasutajatoele](https://decentralchain.io/soporte/)",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "Logige sisse Cubensis Connectisse aadressiga {{address}} ja seejärel värskendage leht jätkamiseks.",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2647,13 +2647,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Create token",
+      "cubensisConnectAccount": "Cubensis Connect konto",
       "currentAccountName": "Current account name",
       "dashboard": "Dashboard",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC per order filled",
       "decentralchainWallet": "DecentralExchange",
@@ -2675,7 +2676,6 @@
       "high": "24 HIGH",
       "inputErrorNameExists": "That name is taken. Try another",
       "instantAccessWalletDex": "Instant access to your wallet and DEX",
-      "keeperAccount": "Keeper konto",
       "lastPrice": "LAST PRICE",
       "leasing": "Leasing",
       "ledgerAccount": "Ledger'i konto",

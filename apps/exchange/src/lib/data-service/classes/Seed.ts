@@ -1,4 +1,4 @@
-import { Adapter } from '@decentralchain/signature-adapter';
+import { CubensisConnectAdapter } from '@decentralchain/signature-adapter';
 import {
   address as buildAddress,
   keyPair as buildKeyPair,
@@ -12,7 +12,24 @@ import {
 // network changes.
 const networkCode = 63;
 
-Adapter.initOptions({ networkCode });
+// CubensisConnectAdapter.initOptions calls Adapter.initOptions internally too,
+// so this single call covers both the base networkCode init every adapter
+// needs and the Cubensis Connect wiring — no separate Adapter.initOptions call.
+//
+// The Cubensis Connect browser extension injects `window.CubensisConnect`
+// directly (see apps/cubensis-connect/src/inpage.ts) — a complete, ready-to-use
+// object matching every method CubensisConnectAdapter needs. Passing a getter
+// rather than a value means the adapter re-reads the global lazily, at the
+// moment a caller checks isAvailable()/getUserList() — so this works whether
+// the extension has already loaded by the time this module runs, or injects
+// its script slightly later.
+CubensisConnectAdapter.initOptions({
+  extension:
+    typeof window === 'undefined'
+      ? undefined
+      : () => (window as unknown as { CubensisConnect?: unknown }).CubensisConnect,
+  networkCode,
+});
 
 /**
  * Seed class wrapper that matches Angular implementation

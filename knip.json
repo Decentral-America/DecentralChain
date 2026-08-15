@@ -185,7 +185,6 @@
         "src/components/atoms/Avatar.tsx",
         "src/components/atoms/Box.tsx",
         "src/components/atoms/Divider.tsx",
-        "src/components/atoms/GlassCard.tsx",
         "src/components/atoms/Grid.tsx",
         "src/components/atoms/index.ts",
         "src/components/atoms/Radio.tsx",
@@ -195,9 +194,7 @@
         "src/components/display/**",
         "src/components/forms/**",
         "src/components/index.ts",
-        "src/components/landing/TestimonialsStrip.tsx",
         "src/components/layout/Header.tsx", // alternative header (MainLayout has its own built-in)
-        "src/components/layout/Sidebar.tsx", // alternative sidebar (MainLayout has its own built-in)
         "src/components/layout/index.ts",
         "src/components/modals/AlertModal.tsx",
         "src/components/modals/index.ts",
@@ -238,7 +235,6 @@
         // GlobalStyles.ts and themes.ts are already connected via styles/index.ts → App.tsx.
         // These sub-modules are not yet re-exported and are awaiting component adoption.
         "src/styles/mixins.ts",
-        "src/styles/modernTheme.ts",
         "src/styles/responsive.ts",
         "src/styles/tokens.ts",
 

@@ -26,7 +26,7 @@ const networkConfigs = {
  */
 export const ConfigProvider = ({ children }: { children: ReactNode }) => {
   const [currentNetwork, setCurrentNetwork] = useState<NetworkType>(
-    (config.network as NetworkType) || 'mainnet',
+    (config.network as NetworkType) || 'testnet',
   );
 
   const networkConfig = networkConfigs[currentNetwork];

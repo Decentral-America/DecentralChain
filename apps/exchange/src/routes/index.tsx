@@ -7,17 +7,31 @@
  *   - All other routes → wrapped in AuthBoundaryLayout (lazy), which mounts
  *                        LedgerProvider + AuthProvider + SettingsProvider only when
  *                        the user navigates away from the landing page.
- *   - '/desktop/*'     → ProtectedRoute (lazy) + MainLayout (lazy)
+ *   - '/desktop/*'     → ProtectedRoute (lazy) + ResponsiveAppLayout (lazy),
+ *                        which renders MobileLayout or MainLayout by viewport
  *
  * index.html provides an HTML/CSS loading shell so the user sees a spinner
  * before React mounts and the LandingPage chunk loads.
  */
 import { createBrowserRouter, Navigate } from 'react-router';
+import { MobilePageShell } from '@/components/mobile/MobilePageShell';
+import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { dexRoutes } from './dexRoutes';
+import { lazyPage } from './lazyPage';
 import { settingsRoutes } from './settingsRoutes';
 import { walletRoutes } from './walletRoutes';
+
+// Peripheral desktop screens — deferred via `lazyPage`, reused as-is on
+// mobile inside `MobilePageShell` for the chrome (header, gutters, rhythm).
+const Bridge = lazyPage(() => import('@/pages/Bridge'), 'Bridge');
+const Markets = lazyPage(() => import('@/pages/Markets'), 'Markets');
+const OrderBook = lazyPage(() => import('@/pages/OrderBook'), 'OrderBook');
+const Analytics = lazyPage(() => import('@/pages/Analytics'), 'Analytics');
+const Messages = lazyPage(() => import('@/pages/Messages'), 'Messages');
+const CreateToken = lazyPage(() => import('@/pages/CreateToken'), 'CreateToken');
+const Swap = lazyPage(() => import('@/pages/Swap'), 'Swap');
 
 /**
  * Application router. See JSDoc above for full code-splitting strategy.
@@ -58,6 +72,10 @@ export const router = createBrowserRouter([
             path: '/sign-in',
           },
           {
+            lazy: () => import('@/pages/ImportPage').then((m) => ({ Component: m.ImportPage })),
+            path: '/import',
+          },
+          {
             lazy: () =>
               import('@/pages/ImportAccountPage').then((m) => ({
                 Component: m.ImportAccountPage,
@@ -80,10 +98,18 @@ export const router = createBrowserRouter([
             path: '/import/ledger',
           },
           {
+            lazy: () =>
+              import('@/pages/CubensisConnectImportPage').then((m) => ({
+                Component: m.CubensisConnectImportPage,
+              })),
+            path: '/import/cubensis-connect',
+          },
+          {
             children: [
               {
-                // MainLayout is lazy — defers ~25 MUI icon imports + the full sidebar
-                // from the initial bundle. Only loaded when user reaches /desktop/*.
+                // ResponsiveAppLayout is lazy — defers MainLayout's ~25 MUI icon
+                // imports and MobileLayout's shell, loading only once the
+                // user reaches /desktop/* and only the one the viewport needs.
                 children: [
                   {
                     element: <Navigate to="/desktop/wallet" replace />,
@@ -93,35 +119,119 @@ export const router = createBrowserRouter([
                   dexRoutes,
                   settingsRoutes,
                   {
-                    lazy: () => import('@/pages/Bridge').then((m) => ({ Component: m.Bridge })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell title="Bridge" subtitle="Move assets across chains.">
+                            <Bridge />
+                          </MobilePageShell>
+                        }
+                        desktop={<Bridge />}
+                      />
+                    ),
                     path: 'bridge',
                   },
                   {
-                    lazy: () => import('@/pages/Markets').then((m) => ({ Component: m.Markets })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Markets"
+                            subtitle="Price overview across markets."
+                          >
+                            <Markets />
+                          </MobilePageShell>
+                        }
+                        desktop={<Markets />}
+                      />
+                    ),
                     path: 'markets',
                   },
                   {
-                    lazy: () =>
-                      import('@/pages/OrderBook').then((m) => ({ Component: m.OrderBook })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Order book"
+                            subtitle="Live order book and market depth."
+                          >
+                            <OrderBook />
+                          </MobilePageShell>
+                        }
+                        desktop={<OrderBook />}
+                      />
+                    ),
                     path: 'orderbook',
                   },
                   {
-                    lazy: () =>
-                      import('@/pages/Analytics').then((m) => ({ Component: m.Analytics })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Analytics"
+                            subtitle="Activity and performance over time."
+                          >
+                            <Analytics />
+                          </MobilePageShell>
+                        }
+                        desktop={<Analytics />}
+                      />
+                    ),
                     path: 'analytics',
                   },
                   {
-                    lazy: () => import('@/pages/Messages').then((m) => ({ Component: m.Messages })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Messages"
+                            subtitle="Notifications and alerts from the network."
+                          >
+                            <Messages />
+                          </MobilePageShell>
+                        }
+                        desktop={<Messages />}
+                      />
+                    ),
                     path: 'messages',
                   },
                   {
-                    lazy: () =>
-                      import('@/pages/CreateToken').then((m) => ({ Component: m.CreateToken })),
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Create token"
+                            subtitle="Issue a new asset on DecentralChain."
+                          >
+                            <CreateToken />
+                          </MobilePageShell>
+                        }
+                        desktop={<CreateToken />}
+                      />
+                    ),
                     path: 'create-token',
+                  },
+                  {
+                    element: (
+                      <ResponsiveScreen
+                        mobile={
+                          <MobilePageShell
+                            title="Swap"
+                            subtitle="Exchange one asset for another at the best available rate."
+                          >
+                            <Swap />
+                          </MobilePageShell>
+                        }
+                        desktop={<Swap />}
+                      />
+                    ),
+                    path: 'swap',
                   },
                 ],
                 lazy: () =>
-                  import('@/layouts/MainLayout').then((m) => ({ Component: m.MainLayout })),
+                  import('@/layouts/ResponsiveLayout').then((m) => ({
+                    Component: m.ResponsiveAppLayout,
+                  })),
               },
             ],
             // ProtectedRoute is lazy: it imports useAuth → AuthContext → data-service.
@@ -137,6 +247,66 @@ export const router = createBrowserRouter([
               import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
             path: '/dccadmin',
           },
+          /*
+           * Development-only preview of the mobile shell, ported from the
+           * standalone exchange app. The mobile screens live behind
+           * authentication, which needs a real encrypted session, so this
+           * route makes them reachable while building and reviewing them.
+           */
+          ...(import.meta.env.DEV
+            ? [
+                {
+                  children: [
+                    {
+                      index: true,
+                      lazy: () =>
+                        import('@/pages/mobile/MobileHome').then((m) => ({
+                          Component: m.MobileHome,
+                        })),
+                    },
+                    {
+                      lazy: () =>
+                        import('@/pages/mobile/MobileHome').then((m) => ({
+                          Component: m.MobileHome,
+                        })),
+                      path: 'home',
+                    },
+                    {
+                      lazy: () =>
+                        import('@/pages/mobile/MobilePortfolio').then((m) => ({
+                          Component: m.MobilePortfolio,
+                        })),
+                      path: 'portfolio',
+                    },
+                    {
+                      lazy: () =>
+                        import('@/pages/mobile/MobileMarkets').then((m) => ({
+                          Component: m.MobileMarkets,
+                        })),
+                      path: 'markets',
+                    },
+                    {
+                      lazy: () =>
+                        import('@/pages/mobile/MobileAccount').then((m) => ({
+                          Component: m.MobileAccount,
+                        })),
+                      path: 'account',
+                    },
+                  ],
+                  lazy: () =>
+                    import('@/layouts/MobileLayout').then((m) => ({ Component: m.MobileLayout })),
+                  path: '/mobile-preview',
+                },
+                // Onboarding is pre-authentication, so it renders without the shell.
+                {
+                  lazy: () =>
+                    import('@/pages/mobile/MobileWelcome').then((m) => ({
+                      Component: m.MobileWelcome,
+                    })),
+                  path: '/mobile-preview-welcome',
+                },
+              ]
+            : []),
         ],
         lazy: () =>
           import('@/layouts/AuthBoundaryLayout').then((m) => ({

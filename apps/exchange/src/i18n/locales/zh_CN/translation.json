@@ -479,6 +479,9 @@
       "selectFileBtn": "选择文件"
     },
     "backupFileDescription": "从密钥库文件导入帐户",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "从Cubensis Connect的导入帐户",
+    "cubensisConnectForm": "安装",
     "decentralchainClient": "DecentralChain客户端",
     "decentralchainClientDescription": "从DecentralChain客户端导入帐户",
     "decentralchainLiteClient": "DecentralChain Lite客户端",
@@ -490,9 +493,6 @@
     },
     "importAccount": "导入帐户",
     "importAccountInfo": "选择从哪里导入帐户",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "从Cubensis Connect的导入帐户",
-    "keeperForm": "安装",
     "LedgerClient": "Ledger设备",
     "ledgerDescription": "从您的分类帐设备导入帐户",
     "or": "或",
@@ -973,7 +973,7 @@
     "confirmTransaction": {
       "back": "返回",
       "confirm": "确认",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
         "header": "您没有使用Cubensis Connect确认请求"
       },
@@ -1050,7 +1050,7 @@
         "ok": "继续"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "取消",
           "errorDescription": "请再试一次。如果错误仍然存在，请向[support]（https://decentralchain.io/soporte）提交一张票",
           "errorDescriptionSwitchUser": "此帐户与Cubensis Connect中的所选帐户不匹配。请在Cubensis Connect中激活另一个帐户，然后重试。",
@@ -1291,6 +1291,31 @@
     "confirmTransaction": {
       "signLedger": "在Ledger设备上等待确认..."
     },
+    "cubensisConnectForm": {
+      "address": "帐户地址",
+      "addressSaved": "地址已保存",
+      "back": "回去",
+      "error": {
+        "hasLockedCubensisConnectDescription": "要继续使用Cubensis Connect，您必须输入以前创建的密码，或创建一个新密码。",
+        "hasLockedCubensisConnectHeader": "输入Cubensis Connect的密码",
+        "hasNoUsersDescription": "登录现有帐户，或创建一个新帐户，然后重试。",
+        "hasNoUsersHeader": "您没有有效帐户",
+        "install": "安装",
+        "networkDescription": "您选择的帐户位于错误的网络上。更改网络，然后再试一次。",
+        "networkHeader": "更改网络",
+        "notInstalledDescription": "安装后，创建一个帐户，登录，然后刷新页面以继续。",
+        "notInstalledHeader": "没有Cubensis Connect？",
+        "refresh": "重试"
+      },
+      "heading": "从Cubensis Connect导入帐户",
+      "loading": "来自Cubensis Connect的导入帐户",
+      "login": "继续",
+      "name": "用户名",
+      "nameExists": "这个名字被采用了",
+      "or": "或",
+      "retry": "再试一次",
+      "saveUserData": "让我在这台电脑上登录"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "交易费用：完整的计算领域",
@@ -1339,7 +1364,7 @@
         "fee": "费用 {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "重试"
         }
       }
@@ -1348,31 +1373,6 @@
       "errors": {
         "gtGatewayMin": "您无法发送少于 {{min}} {{assetName}} 的金额"
       }
-    },
-    "keeperForm": {
-      "address": "帐户地址",
-      "addressSaved": "地址已保存",
-      "back": "回去",
-      "error": {
-        "hasLockedKeeperDescription": "要继续使用Cubensis Connect，您必须输入以前创建的密码，或创建一个新密码。",
-        "hasLockedKeeperHeader": "输入Cubensis Connect的密码",
-        "hasNoUsersDescription": "登录现有帐户，或创建一个新帐户，然后重试。",
-        "hasNoUsersHeader": "您没有有效帐户",
-        "install": "安装",
-        "networkDescription": "您选择的帐户位于错误的网络上。更改网络，然后再试一次。",
-        "networkHeader": "更改网络",
-        "notInstalledDescription": "安装后，创建一个帐户，登录，然后刷新页面以继续。",
-        "notInstalledHeader": "没有Cubensis Connect？",
-        "refresh": "重试"
-      },
-      "heading": "从Cubensis Connect导入帐户",
-      "loading": "来自Cubensis Connect的导入帐户",
-      "login": "继续",
-      "name": "用户名",
-      "nameExists": "这个名字被采用了",
-      "or": "或",
-      "retry": "再试一次",
-      "saveUserData": "让我在这台电脑上登录"
     },
     "LedgerClient_utils": "Ledger设备",
     "LedgerClientDescription": "从Cubensis Connect导入帐户",
@@ -1809,7 +1809,7 @@
         "warning": "您没有保存您的SEED助记词",
         "warningPlural": "您没有保存种子短语"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "删除Cubensis Connect帐户",
         "text": "这只会删除此帐户的已保存路径。它不会从Cubensis Connect中删除该帐户。"
       },
@@ -2016,11 +2016,11 @@
           "showCodeLink": "显示配对码",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Cubensis Connect设置中提供了从Cubensis Connect导入的帐户的导出",
+              "decentralchainCubensisConnect": "Cubensis Connect设置中提供了从Cubensis Connect导入的帐户的导出",
               "ledger": "导出不适用于存储在Ledger设备上的帐户"
             },
             "header": {
-              "decentralchainKeeper": "导出不可用",
+              "decentralchainCubensisConnect": "导出不可用",
               "ledger": "导出不可用"
             },
             "ok": "我明白"
@@ -2056,7 +2056,7 @@
         "confirm": "确认",
         "confirmRequest": "确认请求",
         "confirmRequest_utils": "确认请求",
-        "confirmRequestKeeper": "等待来自Cubensis Connect的确认......",
+        "confirmRequestCubensisConnect": "等待来自Cubensis Connect的确认......",
         "confirmRequestLedger": {
           "cancel": "取消",
           "errorDescription": "请再试一次。如果错误仍然存在，请参阅[本文]（https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues）",
@@ -2067,9 +2067,9 @@
         "confirmRequestMatcher_utils": "向匹配器签署请求。如果您不签署，则无法从Ledger帐户在去中心化交易所上进行交易。",
         "confirmRequestToMatcher": "向匹配器签署请求。如果您不签署请求，则无法在去中心化交易所上进行交易",
         "connecting": "连接中...",
-        "connectingKeeper": "连接到Cubensis Connect中 ...",
+        "connectingCubensisConnect": "连接到Cubensis Connect中 ...",
         "connectionError": "无法连接分类帐设备",
-        "connectionErrorKeeper": "无法访问帐户",
+        "connectionErrorCubensisConnect": "无法访问帐户",
         "connectionText": "您的访问已经中断。请重新登入。",
         "connectLedger": "连接您的分类帐设备",
         "enterPin": "输入您的PIN码",
@@ -2085,14 +2085,14 @@
         "requestId": "请求Hash",
         "retry": "重试",
         "sell": "卖出",
-        "signByKeeper": "上等待确认",
+        "signByCubensisConnect": "上等待确认",
         "signByLedger": "Ledger上等待确认",
         "signError": "请求尚未确认。",
-        "signErrorKeeper": "您没有使用Cubensis Connect确认请求",
+        "signErrorCubensisConnect": "您没有使用Cubensis Connect确认请求",
         "signErrorText": "您未在Ledger设备上确认该请求",
-        "signErrorTextImportKeeper": "使用地址{{address}}登录Cubensis Connect，然后刷新页面以继续。",
-        "signErrorTextKeeper": "请再试一次。如果错误仍然存在，请创建[帮助]的票证（https://decentralchain.io/soporte/）",
-        "signErrorTextKeeperWrongUser": "此帐户与Cubensis Connect中的所选帐户不匹配。请在Cubensis Connect中激活另一个帐户，然后重试。",
+        "signErrorTextCubensisConnect": "请再试一次。如果错误仍然存在，请创建[帮助]的票证（https://decentralchain.io/soporte/）",
+        "signErrorTextCubensisConnectWrongUser": "此帐户与Cubensis Connect中的所选帐户不匹配。请在Cubensis Connect中激活另一个帐户，然后重试。",
+        "signErrorTextImportCubensisConnect": "使用地址{{address}}登录Cubensis Connect，然后刷新页面以继续。",
         "timestamp": "时间戳",
         "txId": "TXID"
       },
@@ -2647,13 +2647,14 @@
       "copyrightVordex": "©2019 VORDEX",
       "createAccount": "创建帐号",
       "createToken": "创建令牌",
+      "cubensisConnectAccount": "Cubensis Connect账号",
       "currentAccountName": "当前帐户名称",
       "dashboard": "仪表板",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "波浪幣区块链",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "每个订单填写0.003波浪幣",
       "decentralchainWallet": "波浪幣钱包",
@@ -2675,7 +2676,6 @@
       "high": "24 HIGH",
       "inputErrorNameExists": "这个名字被采用了。尝试另一个",
       "instantAccessWalletDex": "即时访问您的钱包和DEX",
-      "keeperAccount": "Keeper账号",
       "lastPrice": "最新价格",
       "leasing": "租赁",
       "ledgerAccount": "Ledger 帐户",

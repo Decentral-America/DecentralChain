@@ -940,6 +940,82 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   /**
+   * Add an account imported from the Cubensis Connect browser extension.
+   * Mirrors addLedgerAccount: the extension is the external signer, so no
+   * seed/privateKey is ever stored — only the address and publicKey it reports.
+   *
+   * @param cubensisConnectData - Address and publicKey reported by the extension
+   * @param name - Account name
+   * @param networkByte - DecentralChain network byte (from ConfigContext)
+   * @returns Created user
+   */
+  const addCubensisConnectAccount = useCallback(
+    async (
+      cubensisConnectData: { address: string; publicKey: string },
+      name: string,
+      networkByte: number,
+    ) => {
+      if (!isSignedIn) {
+        throw new Error('Must be signed in to add Cubensis Connect account');
+      }
+
+      try {
+        if (!isValidAddress(cubensisConnectData.address, networkByte)) {
+          throw new Error('Invalid Cubensis Connect address');
+        }
+
+        const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS) || '{}');
+        const allUsers = toUsers(multiAccount.toList(users));
+        const existingUser = allUsers.find((u) => u.address === cubensisConnectData.address);
+
+        if (existingUser) {
+          throw new Error(`Account with address ${cubensisConnectData.address} already exists`);
+        }
+
+        // KEY: No seed/privateKey - the extension holds the private key
+        const { multiAccountData, multiAccountHash, userHash } = await multiAccount.addUser({
+          networkByte,
+          publicKey: cubensisConnectData.publicKey,
+          userType: 'cubensisConnect',
+        });
+
+        localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_DATA, multiAccountData);
+        localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH, multiAccountHash);
+
+        users[userHash] = {
+          lastLogin: Date.now(),
+          matcherSign: null,
+          name,
+          settings: { hasBackup: true }, // Extension holds the key = backed up there
+        };
+        localStorage.setItem(STORAGE_KEYS.MULTI_ACCOUNT_USERS, JSON.stringify(users));
+
+        const updatedUsers = toUsers(multiAccount.toList(users));
+        setAccounts(updatedUsers);
+
+        trackEvent('User', 'Import Cubensis Connect Success');
+
+        const createdUser = updatedUsers.find((u) => u.hash === userHash);
+        if (!createdUser) {
+          throw new Error('Failed to create Cubensis Connect account');
+        }
+
+        logger.debug('[Auth] Cubensis Connect account added:', {
+          address: createdUser.address,
+          name: createdUser.name,
+          userType: createdUser.userType,
+        });
+
+        return createdUser;
+      } catch (error) {
+        logger.error('Add Cubensis Connect account failed:', error);
+        throw error;
+      }
+    },
+    [isSignedIn],
+  );
+
+  /**
    * Auto-logout timer based on user inactivity
    * Matches Angular: User._logoutTimer() lines 891-897
    */
@@ -1216,6 +1292,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const value: AuthContextType = {
     accounts,
     addAccount,
+    addCubensisConnectAccount,
     addLedgerAccount, // NEW: Add Ledger account
     create, // New method for account creation
     getActiveState,

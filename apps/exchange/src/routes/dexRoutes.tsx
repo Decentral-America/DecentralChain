@@ -3,6 +3,9 @@
  * Defines routes for decentralized exchange trading interface
  */
 import { type RouteObject } from 'react-router';
+import { MobilePageShell } from '@/components/mobile/MobilePageShell';
+import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
+import { lazyPage } from './lazyPage';
 
 /**
  * DEX routes structure:
@@ -13,28 +16,36 @@ import { type RouteObject } from 'react-router';
  * Trading pairs are specified as amountAsset/priceAsset URL parameters
  * Example: /desktop/dex/pair/DCC/USDT
  *
- * Uses React Router v7 `lazy` for code splitting — Dex page + TradingView deps
- * are excluded from the main bundle and loaded on first navigation to /desktop/dex.
+ * Dex carries the charting stack — deferred via `lazyPage`, so it loads only
+ * once someone actually trades.
  */
+const Dex = lazyPage(() => import('@/pages/Dex'), 'Dex');
+
 export const dexRoutes: RouteObject = {
   children: [
     // Child routes will be activated when DEX feature components are created (Phase 5):
     // {
     //   index: true,
-    //   lazy: async () => { const { TradingView } = await import('@/features/dex/TradingView'); return { Component: TradingView }; },
+    //   element: <TradingView />,
     // },
     // {
     //   path: 'pair/:amountAsset/:priceAsset',
-    //   lazy: async () => { const { TradingView } = await import('@/features/dex/TradingView'); return { Component: TradingView }; },
+    //   element: <TradingView />,
     // },
     // {
     //   path: 'history',
-    //   lazy: async () => { const { OrderHistory } = await import('@/features/dex/OrderHistory'); return { Component: OrderHistory }; },
+    //   element: <OrderHistory />,
     // },
   ],
-  lazy: async () => {
-    const { Dex } = await import('@/pages/Dex');
-    return { Component: Dex };
-  },
+  element: (
+    <ResponsiveScreen
+      mobile={
+        <MobilePageShell title="Trade" subtitle="Place orders against the live order book.">
+          <Dex />
+        </MobilePageShell>
+      }
+      desktop={<Dex />}
+    />
+  ),
   path: 'dex',
 };

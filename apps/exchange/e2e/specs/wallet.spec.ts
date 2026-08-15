@@ -47,9 +47,8 @@ test.describe('Transactions tab', () => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('transactions');
     const content = page
-      .locator(
-        'table, [class*="transaction"], [data-testid*="transaction"], text=/no transactions/i, text=/empty/i, main',
-      )
+      .locator('table, [class*="transaction"], [data-testid*="transaction"], main')
+      .or(page.getByText(/no transactions|empty/i))
       .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
@@ -64,7 +63,8 @@ test.describe('Leasing tab', () => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('leasing');
     const content = page
-      .locator('[class*="leas"], [data-testid*="leas"], text=/leas/i, main, h1, h2')
+      .locator('[class*="leas"], [data-testid*="leas"], main, h1, h2')
+      .or(page.getByText(/leas/i))
       .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
@@ -79,7 +79,8 @@ test.describe('Aliases tab', () => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('aliases');
     const content = page
-      .locator('[class*="alias"], [data-testid*="alias"], text=/alias/i, main, h1, h2')
+      .locator('[class*="alias"], [data-testid*="alias"], main, h1, h2')
+      .or(page.getByText(/alias/i))
       .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });
@@ -94,7 +95,8 @@ test.describe('Account Manager tab', () => {
     const wallet = new WalletPage(page);
     await wallet.gotoTab('account-manager');
     const content = page
-      .locator('[class*="account"], [data-testid*="account"], text=/account/i, main, h1, h2')
+      .locator('[class*="account"], [data-testid*="account"], main, h1, h2')
+      .or(page.getByText(/account/i))
       .first();
     await expect(content).toBeVisible({ timeout: 15_000 });
   });

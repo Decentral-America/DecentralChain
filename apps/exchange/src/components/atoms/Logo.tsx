@@ -1,14 +1,34 @@
 import { Box, Typography } from '@mui/material';
 import { type SxProps, type Theme } from '@mui/material/styles';
+import { palette } from '@/styles/tokens';
 
 interface LogoProps {
   sx?: SxProps<Theme>;
+  /** The surface behind the logo is dark — use the white-ink brand mark. */
+  onDark?: boolean;
+  /**
+   * Renders the brand monogram only (ported from the standalone exchange
+   * app's mobile shell, which has no room for the wordmark). Uses the
+   * `/brand/mark-on-*` artwork rather than the favicon.
+   */
+  compact?: boolean;
 }
 
 /**
  * DCC Brand Logo
  */
-export default function Logo({ sx }: LogoProps) {
+export default function Logo({ sx, onDark = false, compact = false }: LogoProps) {
+  if (compact) {
+    return (
+      <Box
+        component="img"
+        src={onDark ? '/brand/mark-on-dark.png' : '/brand/mark-on-light.png'}
+        alt="DecentralChain"
+        sx={{ display: 'block', height: 32, width: 32, ...sx }}
+      />
+    );
+  }
+
   return (
     <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, ...sx }}>
       <Box
@@ -31,7 +51,14 @@ export default function Logo({ sx }: LogoProps) {
         }}
       >
         Decentral
-        <Box component="span" sx={{ color: 'primary.main' }}>
+        <Box
+          component="span"
+          sx={{
+            // primary.main (#3d26be) fails 3:1 large-text contrast against the
+            // dark canvas — indigoHover clears it at ~6.3:1.
+            color: onDark ? palette.indigoHover : 'primary.main',
+          }}
+        >
           .Exchange
         </Box>
       </Typography>

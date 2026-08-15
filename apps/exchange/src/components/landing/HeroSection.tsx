@@ -1,189 +1,218 @@
-import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { heroGradientStyles } from '@/theme/landingTheme';
+import AuroraField from '@/components/landing/AuroraField';
+import BandTexture from '@/components/landing/BandTexture';
+import Reveal from '@/components/landing/Reveal';
+import { hasStoredAccount } from '@/lib/accountStorage';
+import { brandCanvas, brandInk, heroGradientStyles, onCanvas } from '@/theme/landingTheme';
 
 /**
- * Hero section with gradient background and floating mockups
+ * Hero section.
+ *
+ * A centred statement on the indigo band the app opens every screen with. The
+ * headline is set large and light, and resolves from a violet tint into white
+ * down its lines, so the type carries the brand rather than needing decoration
+ * around it.
+ *
+ * The row beneath is the trust signal: the services this wallet actually reads
+ * from, on glass cards over the band's brightest point.
  */
+
+/**
+ * Where this wallet's chain and market data come from. Named rather than
+ * invented — these are the services the application calls.
+ */
+const TRUST = [
+  { key: 'decentralchain', tone: brandInk.lift },
+  { key: 'dataService', tone: brandInk.violet },
+  { key: 'matcher', tone: brandInk.deep },
+  { key: 'ledger', tone: brandInk.night },
+] as const;
+
 export default function HeroSection() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  // Read once on mount: storage cannot change while this page is open.
+  const hasAccount = useMemo(() => hasStoredAccount(), []);
 
   return (
     <Box
       component="section"
       sx={{
-        alignItems: 'center',
-        color: '#fff',
-        display: 'flex',
-        minHeight: { md: '90vh', xs: '85vh' },
+        color: onCanvas.primary,
         overflow: 'hidden',
-        pb: { md: 11, xs: 10 },
+        pb: { md: 12, xs: 9 },
         position: 'relative',
-        pt: { md: 18, xs: 14 },
+        // Clears the fixed header, which floats over this band.
+        pt: { md: 20, xs: 15 },
+        textAlign: 'center',
       }}
     >
-      {/* Hero Gradient Background */}
       <Box sx={heroGradientStyles} />
+      <AuroraField crown drifting intensity={0.85} />
+      <BandTexture width={{ md: '42%', xs: '80%' }} opacity={0.35} />
 
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} sx={{ alignItems: 'center' }}>
-          {/* Left Column - Text Content */}
-          <Grid size={{ md: 6, xs: 12 }}>
-            <Typography
-              variant="h1"
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+        <Reveal>
+          <Typography
+            variant="overline"
+            component="p"
+            sx={{ color: onCanvas.muted, letterSpacing: '1.6px', mb: 3, mx: 'auto' }}
+          >
+            {t('app.landing.hero.eyebrow')}
+          </Typography>
+        </Reveal>
+
+        <Reveal index={1}>
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              /*
+               * The headline resolves from a violet tint into white down its
+               * lines. Clipping a background to glyphs needs a transparent
+               * fill, so `color` below is the fallback for anything that cannot.
+               */
+              backgroundClip: 'text',
+              backgroundImage: 'linear-gradient(180deg, rgba(196, 170, 255, 0.92) 0%, #ffffff 62%)',
+              color: onCanvas.primary,
+              fontSize: 'clamp(40px, 7.4vw, 92px)',
+              // The display voice is heavy on the marketing surface — the
+              // whisper-weight scale belongs to the application ledger.
+              fontWeight: 700,
+              letterSpacing: '-0.03em',
+              lineHeight: 0.98,
+              maxWidth: 980,
+              mx: 'auto',
+              textTransform: 'uppercase',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            {t('app.landing.hero.headline')}
+          </Typography>
+        </Reveal>
+
+        <Reveal index={2}>
+          <Typography
+            sx={{
+              color: onCanvas.secondary,
+              fontSize: { md: 20, xs: 16 },
+              fontWeight: 300,
+              lineHeight: 1.55,
+              maxWidth: 620,
+              mt: 4,
+              mx: 'auto',
+            }}
+          >
+            {t('app.landing.hero.subhead')}
+          </Typography>
+        </Reveal>
+
+        <Reveal index={3}>
+          <Stack
+            direction={{ sm: 'row', xs: 'column' }}
+            spacing={1.5}
+            sx={{ alignItems: 'center', justifyContent: 'center', mt: 6 }}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => navigate(hasAccount ? '/sign-in' : '/create-account')}
               sx={{
-                fontSize: { md: 56, sm: 48, xs: 40 },
-                fontWeight: 700,
-                letterSpacing: '-0.5px',
-                lineHeight: 1.12,
-                mb: 3,
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.9)' },
+                bgcolor: 'common.white',
+                /*
+                 * A pill, where the application uses square ledger buttons.
+                 * This is the one control on the page whose job is to invite
+                 * rather than to be operated.
+                 */
+                borderRadius: 999,
+                color: brandInk.deep,
+                px: 4.5,
+                py: 1.5,
               }}
             >
-              DecentralChain Wallet
-              <br />& DEX Platform
-            </Typography>
+              {hasAccount ? t('app.landing.hero.ctaOpen') : t('app.landing.hero.ctaCreate')}
+            </Button>
 
-            <Typography
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate(hasAccount ? '/create-account' : '/sign-in')}
               sx={{
-                fontSize: { md: 18, xs: 16 },
-                lineHeight: 1.6,
-                maxWidth: 420,
-                mt: 3,
-                opacity: 0.95,
-              }}
-            >
-              Secure non-custodial wallet with integrated DEX trading, staking, leasing, and
-              hardware wallet support. Trade on DecentralChain blockchain with complete control of
-              your assets.
-            </Typography>
-
-            {/* CTA Buttons */}
-            <Stack direction={{ sm: 'row', xs: 'column' }} spacing={2} sx={{ mt: 4 }}>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => navigate('/create-account')}
-                sx={{
-                  '&:hover': {
-                    bgcolor: 'primary.dark',
-                  },
-                  bgcolor: 'primary.main',
-                  borderRadius: 999,
-                  fontSize: 16,
-                  fontWeight: 500,
-                  px: 3,
-                  py: 1.5,
-                }}
-              >
-                Start Trading Now
-              </Button>
-
-              {/* Create Wallet Button */}
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => navigate('/create-account')}
-                sx={{
-                  '&:hover': {
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                    borderColor: '#fff',
-                  },
-                  borderColor: 'rgba(255, 255, 255, 0.4)',
-                  borderRadius: 999,
-                  color: '#fff',
-                  fontSize: 16,
-                  fontWeight: 500,
-                  px: 3,
-                  py: 1.5,
-                }}
-              >
-                Create Wallet
-              </Button>
-            </Stack>
-
-            {/* Login Link */}
-            <Box sx={{ mt: 3 }}>
-              <Button
-                color="inherit"
-                onClick={() => navigate('/sign-in')}
-                sx={{
-                  '&:hover': {
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                    opacity: 1,
-                  },
-                  opacity: 0.85,
-                }}
-              >
-                Already have a wallet? Sign in →
-              </Button>
-            </Box>
-          </Grid>
-
-          {/* Right Column - Mockup Visuals */}
-          <Grid size={{ md: 6, xs: 12 }}>
-            <Box
-              sx={{
-                display: { sm: 'block', xs: 'none' },
-                height: { md: 520, sm: 420, xs: 360 },
-                position: 'relative',
-              }}
-            >
-              {/* Dashboard Mockup (background) */}
-              <Box
-                sx={{
-                  backdropFilter: 'blur(12px)',
-                  bgcolor: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: 3,
-                  boxShadow: '0 30px 80px rgba(0,0,0,.25)',
-                  height: { md: 360, xs: 280 },
-                  maxWidth: 520,
-                  p: 2,
-                  position: 'absolute',
-                  right: { md: 0, xs: -20 },
-                  top: { md: 20, xs: 40 },
-                  width: { md: '100%', xs: '90%' },
-                }}
-              >
-                <Box
-                  sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: 2,
-                    height: '100%',
-                    width: '100%',
-                  }}
-                />
-              </Box>
-
-              {/* Phone Mockup (foreground) */}
-              <Box
-                sx={{
-                  backdropFilter: 'blur(12px)',
+                '&:hover': {
                   bgcolor: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 4,
-                  boxShadow: '0 20px 60px rgba(0,0,0,.30)',
-                  height: { md: 400, xs: 280 },
-                  left: { md: 40, xs: 10 },
-                  p: 1.5,
-                  position: 'absolute',
-                  top: { md: -20, xs: -10 },
-                  width: { md: 200, xs: 140 },
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                },
+                borderColor: 'rgba(255, 255, 255, 0.32)',
+                borderRadius: 999,
+                color: onCanvas.primary,
+                px: 4.5,
+                py: 1.5,
+              }}
+            >
+              {hasAccount ? t('app.landing.hero.ctaAddWallet') : t('app.landing.hero.ctaHaveOne')}
+            </Button>
+          </Stack>
+        </Reveal>
+
+        {/* Trust row */}
+        <Reveal index={4} sx={{ mt: { md: 10, xs: 8 } }}>
+          <Typography
+            sx={{
+              color: onCanvas.muted,
+              fontSize: 13,
+              letterSpacing: '0.4px',
+              mb: 2,
+              textAlign: 'left',
+            }}
+          >
+            {t('app.landing.hero.connectedTo')}
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 1.5,
+              // Column count follows the space available, not a breakpoint.
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(210px, 100%), 1fr))',
+            }}
+          >
+            {TRUST.map((item) => (
+              <Box
+                key={item.key}
+                sx={{
+                  alignItems: 'center',
+                  backdropFilter: 'blur(8px)',
+                  bgcolor: brandCanvas.glass,
+                  border: brandCanvas.hairline,
+                  borderRadius: '16px',
+                  display: 'flex',
+                  gap: 1.5,
+                  px: 2.5,
+                  py: 2,
                 }}
               >
                 <Box
+                  aria-hidden="true"
                   sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: 3,
-                    height: '100%',
-                    width: '100%',
+                    bgcolor: item.tone,
+                    borderRadius: '50%',
+                    flexShrink: 0,
+                    height: 28,
+                    width: 28,
                   }}
                 />
+                <Typography sx={{ color: onCanvas.primary, fontSize: 15, fontWeight: 400 }}>
+                  {t(`app.landing.hero.trust.${item.key}`)}
+                </Typography>
               </Box>
-            </Box>
-          </Grid>
-        </Grid>
+            ))}
+          </Box>
+        </Reveal>
       </Container>
     </Box>
   );

@@ -25,6 +25,12 @@ test.describe('Create Account flow', () => {
     if (await confirmInput.isVisible().catch(() => false)) {
       await auth.confirmPassword('TestPassword123!');
     }
+    // The submit button also requires the seed-phrase-backup acknowledgement
+    // checkbox — password alone leaves it disabled.
+    const backupCheckbox = page.getByRole('checkbox').first();
+    if (await backupCheckbox.isVisible().catch(() => false)) {
+      await backupCheckbox.check();
+    }
     const nextBtn = page.getByRole('button', { name: /next|continue|proceed|create/i }).first();
     await expect(nextBtn).toBeEnabled({ timeout: 5_000 });
   });
@@ -91,11 +97,18 @@ test.describe('Save Seed page', () => {
 test.describe('Restore Backup page', () => {
   test('/restore-backup page renders a file upload or input', async ({ page }) => {
     await page.goto('/restore-backup');
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page.locator('body')).not.toBeEmpty();
-    await expect(
-      page.locator('input[type="file"], textarea, input[type="text"]').first(),
-    ).toBeVisible({ timeout: 10_000 });
+    // The route is a lazy-loaded chunk behind Suspense — domcontentloaded fires
+    // before it mounts, so wait for real page content rather than the shell.
+    await expect(page.getByText(/restore from backup/i)).toBeVisible({ timeout: 10_000 });
+    // The native file input is visually hidden by design — a styled <label>
+    // triggers it — so check it's present in the DOM rather than visible.
+    const fileInput = page.locator('input[type="file"]').first();
+    const textInput = page.locator('textarea, input[type="text"]').first();
+    const hasFileInput = await fileInput.count();
+    const hasVisibleTextInput = await textInput.isVisible().catch(() => false);
+    expect(hasFileInput > 0 || hasVisibleTextInput, 'expected a file input or text input').toBe(
+      true,
+    );
   });
 });
 

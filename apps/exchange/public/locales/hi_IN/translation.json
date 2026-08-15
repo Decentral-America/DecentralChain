@@ -466,6 +466,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "वेव्स कीपर",
+    "cubensisConnectDescription": "वेव्स कीपर से आयात खाता",
+    "cubensisConnectForm": "इंस्टॉल करें",
     "decentralchainClient": "DCC Client",
     "decentralchainClientDescription": "Import account from a DCC Client",
     "decentralchainLiteClient": "वेव्स लाइट क्लाइंट",
@@ -477,9 +480,6 @@
     },
     "importAccount": "इम्पोर्ट खाते",
     "importAccountInfo": "यह चुनें कि खातों को कहां से आयात किया जाए",
-    "KeeperClient": "वेव्स कीपर",
-    "keeperDescription": "वेव्स कीपर से आयात खाता",
-    "keeperForm": "इंस्टॉल करें",
     "LedgerClient": "Ledger Device",
     "ledgerDescription": "अपने लेडजर नैनो एस से खाते आयात करें",
     "or": "या",
@@ -960,7 +960,7 @@
     "confirmTransaction": {
       "back": "वापस जाएं",
       "confirm": "पुष्टि करें",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
         "header": "आपने वेव्स कीपर के उपयोग के अनुरोध की पुष्टि नहीं की"
       },
@@ -1037,7 +1037,7 @@
         "ok": "जारी रहना"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "रद्द करना",
           "errorDescription": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte) पर एक टिकट जमा करें",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1278,6 +1278,31 @@
     "confirmTransaction": {
       "signLedger": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…"
     },
+    "cubensisConnectForm": {
+      "address": "खाता पता",
+      "addressSaved": "Address saved",
+      "back": "वापस जाओ",
+      "error": {
+        "hasLockedCubensisConnectDescription": "वेव्स कीपर के साथ काम करना जारी रखने के लिए, आपको पहले से निर्मित पासवर्ड दर्ज करना होगा, या एक नया बनाना होगा।",
+        "hasLockedCubensisConnectHeader": "वेव्स कीपर से पासवर्ड दर्ज करें",
+        "hasNoUsersDescription": "किसी मौजूदा खाते में प्रवेश करें, या एक नया बनाएं, फिर पुन: प्रयास करें।",
+        "hasNoUsersHeader": "आपका कोई एक्टिव खाता नहीं है",
+        "install": "इंस्टॉल करें",
+        "networkDescription": "आपके द्वारा चयनित खाता गलत नेटवर्क पर है। नेटवर्क बदलें, फिर प्रयास करें।",
+        "networkHeader": "नेटवर्क बदलें",
+        "notInstalledDescription": "इंस्टॉल करने के बाद, एक खाता बनाएं, साइन इन करें और फिर जारी रखने के लिए पृष्ठ को रीफ्रेश करें।",
+        "notInstalledHeader": "वेव्स कीपर नहीं है?",
+        "refresh": "पुन: प्रयास करें"
+      },
+      "heading": "वेव्स कीपर से खाता आयात करे",
+      "loading": "Import account from the Cubensis Connect",
+      "login": "जारी रहना",
+      "name": "खाते का नाम",
+      "nameExists": "That name is taken",
+      "or": "या",
+      "retry": "Try again",
+      "saveUserData": "मुझे इसी कंप्यूटर पर साइन - इन रखें"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "लेनदेन शुल्क: गणना के लिए क्षेत्र पूरा करे",
@@ -1326,7 +1351,7 @@
         "fee": "शुल्क {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "पुन: प्रयास करें"
         }
       }
@@ -1335,31 +1360,6 @@
       "errors": {
         "gtGatewayMin": "आप {{min}} {{assetName}} से कम राशि ट्रान्सफर नहीं कर सकते"
       }
-    },
-    "keeperForm": {
-      "address": "खाता पता",
-      "addressSaved": "Address saved",
-      "back": "वापस जाओ",
-      "error": {
-        "hasLockedKeeperDescription": "वेव्स कीपर के साथ काम करना जारी रखने के लिए, आपको पहले से निर्मित पासवर्ड दर्ज करना होगा, या एक नया बनाना होगा।",
-        "hasLockedKeeperHeader": "वेव्स कीपर से पासवर्ड दर्ज करें",
-        "hasNoUsersDescription": "किसी मौजूदा खाते में प्रवेश करें, या एक नया बनाएं, फिर पुन: प्रयास करें।",
-        "hasNoUsersHeader": "आपका कोई एक्टिव खाता नहीं है",
-        "install": "इंस्टॉल करें",
-        "networkDescription": "आपके द्वारा चयनित खाता गलत नेटवर्क पर है। नेटवर्क बदलें, फिर प्रयास करें।",
-        "networkHeader": "नेटवर्क बदलें",
-        "notInstalledDescription": "इंस्टॉल करने के बाद, एक खाता बनाएं, साइन इन करें और फिर जारी रखने के लिए पृष्ठ को रीफ्रेश करें।",
-        "notInstalledHeader": "वेव्स कीपर नहीं है?",
-        "refresh": "पुन: प्रयास करें"
-      },
-      "heading": "वेव्स कीपर से खाता आयात करे",
-      "loading": "Import account from the Cubensis Connect",
-      "login": "जारी रहना",
-      "name": "खाते का नाम",
-      "nameExists": "That name is taken",
-      "or": "या",
-      "retry": "Try again",
-      "saveUserData": "मुझे इसी कंप्यूटर पर साइन - इन रखें"
     },
     "LedgerClient_utils": "Ledger Device",
     "LedgerClientDescription": "वेव्स कीपर से खाता इम्पोर्ट करे",
@@ -1796,7 +1796,7 @@
         "warning": "आपने अपना SEED नहीं सहेजा",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "वेव्स कीपर खाते निकालें",
         "text": "यह इस खाते में सहेजे गए पथ को हटा देगा। यह वेव्स कीपर से खाता नहीं हटाएगा।"
       },
@@ -2003,11 +2003,11 @@
           "showCodeLink": "पेयरिंग कोड दिखाएं",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "वेव्स कीपर से आयातित खातों के लिए निर्यात वेव्स कीपर सेटिंग्स में उपलब्ध है",
+              "decentralchainCubensisConnect": "वेव्स कीपर से आयातित खातों के लिए निर्यात वेव्स कीपर सेटिंग्स में उपलब्ध है",
               "ledger": "लेडजर नैनो एस पर संग्रहीत खातों के लिए निर्यात उपलब्ध नहीं है"
             },
             "header": {
-              "decentralchainKeeper": "निर्यात अनुपलब्ध है",
+              "decentralchainCubensisConnect": "निर्यात अनुपलब्ध है",
               "ledger": "निर्यात अनुपलब्ध है"
             },
             "ok": "मै समझता हुँ"
@@ -2043,7 +2043,7 @@
         "confirm": "की पुष्टि करें",
         "confirmRequest": "निवेदन स्वीकारें",
         "confirmRequest_utils": "निवेदन स्वीकारें",
-        "confirmRequestKeeper": "लहरें कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
+        "confirmRequestCubensisConnect": "लहरें कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
         "confirmRequestLedger": {
           "cancel": "रद्द करना",
           "errorDescription": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [इस लेख](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues) को देखें",
@@ -2054,9 +2054,9 @@
         "confirmRequestMatcher_utils": "माचर पर निवेदन साइन करें। यदि आप इस पर साइन नहीं करते हैं, तो आप लेडजर खाते से डेक्स पर व्यापार नहीं कर सकते।",
         "confirmRequestToMatcher": "माचर पर निवेदन साइन करें। यदि आप इस पर साइन नहीं करते हैं, तो आप डेक्स पर व्यापार नहीं कर सकते।",
         "connecting": "कनेक्टिंग ...",
-        "connectingKeeper": "वेव्स कीपर से कनेक्टिंग ...",
+        "connectingCubensisConnect": "वेव्स कीपर से कनेक्टिंग ...",
         "connectionError": "लेडजर कनेक्ट करने में असमर्थ",
-        "connectionErrorKeeper": "खाते तक पहुंचने में असमर्थ",
+        "connectionErrorCubensisConnect": "खाते तक पहुंचने में असमर्थ",
         "connectionText": "कनेक्शन का समय समाप्त हो सकता है। कृपया पुन: प्रयास करें।",
         "connectLedger": "अपने लेडजर नैनो एस कनेक्ट करें",
         "enterPin": "अपना पिन कोड डालें",
@@ -2072,14 +2072,14 @@
         "requestId": "अनुरोध हैश",
         "retry": "पुन: प्रयास करें",
         "sell": "Sell",
-        "signByKeeper": "वेव्स कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
+        "signByCubensisConnect": "वेव्स कीपर से पुष्टि के लिए प्रतीक्षा कर रहा है ...",
         "signByLedger": "लेडजर नैनो एस पर पुष्टि की प्रतीक्षा में…",
         "signError": "अनुरोध की पुष्टि नहीं की गई है।",
-        "signErrorKeeper": "आपने वेव्स कीपर के उपयोग से अनुरोध की पुष्टि नहीं की",
+        "signErrorCubensisConnect": "आपने वेव्स कीपर के उपयोग से अनुरोध की पुष्टि नहीं की",
         "signErrorText": "आपने अपने लेजर नैनो एस पर अनुरोध की पुष्टि नहीं की",
-        "signErrorTextImportKeeper": "{{address}}, पते के साथ वेव्स कीपर के लिए साइन इन करें, और फिर जारी रखने के लिए पृष्ठ ताज़ा करें।",
-        "signErrorTextKeeper": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte/) का टिकट बनाएं",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "कृपया पुन: प्रयास करें। यदि एरर बनी रहती है, तो कृपया [सहायता](https://decentralchain.io/soporte/) का टिकट बनाएं",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "{{address}}, पते के साथ वेव्स कीपर के लिए साइन इन करें, और फिर जारी रखने के लिए पृष्ठ ताज़ा करें।",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2634,13 +2634,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "Create token",
+      "cubensisConnectAccount": "कीपर खाता",
       "currentAccountName": "Current account name",
       "dashboard": "Dashboard",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain Blockchain",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange Web",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "0.003 DCC per order filled",
       "decentralchainWallet": "DecentralExchange",
@@ -2662,7 +2663,6 @@
       "high": "24 HIGH",
       "inputErrorNameExists": "That name is taken. Try another",
       "instantAccessWalletDex": "Instant access to your wallet and DEX",
-      "keeperAccount": "कीपर खाता",
       "lastPrice": "LAST PRICE",
       "leasing": "Leasing",
       "ledgerAccount": "लेडजर खाता",

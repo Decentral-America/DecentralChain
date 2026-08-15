@@ -4,74 +4,115 @@
  * and account management
  */
 import { type RouteObject } from 'react-router';
+import { MobilePageShell } from '@/components/mobile/MobilePageShell';
+import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
+import { Dashboard } from '@/pages/Dashboard';
+import { MobileHome } from '@/pages/mobile/MobileHome';
+import { Wallet } from '@/pages/Wallet';
+import { lazyPage } from './lazyPage';
+
+// The concrete file, not the barrel — the barrel re-exports every wallet
+// feature and would put all of them inside the portfolio chunk.
+const Portfolio = lazyPage(() => import('@/features/wallet/Portfolio'), 'Portfolio');
+const LeasingModern = lazyPage(() => import('@/features/wallet/LeasingModern'), 'LeasingModern');
+const TransactionsModern = lazyPage(
+  () => import('@/features/wallet/TransactionsModern'),
+  'TransactionsModern',
+);
+const AliasManagement = lazyPage(() => import('@/pages/AliasManagement'), 'AliasManagement');
+const AccountManagerPage = lazyPage(() => import('@/pages/AccountManager'), 'AccountManagerPage');
+const MobilePortfolio = lazyPage(() => import('@/pages/mobile/MobilePortfolio'), 'MobilePortfolio');
 
 /**
  * Wallet routes structure:
  * - /desktop/wallet : Main wallet dashboard overview
  *   - /desktop/wallet/portfolio : Portfolio overview with asset balances
  *   - /desktop/wallet/transactions : Transaction history and details
- *   - /desktop/wallet/assets/:assetId : Individual asset details
  *   - /desktop/wallet/leasing : Leasing management (stake/lease DCC)
  *   - /desktop/wallet/aliases : Alias management (create and view aliases)
- *   - /desktop/wallet/account-manager : Multi-account management (add, switch, remove accounts)
+ *   - /desktop/wallet/account-manager : Multi-account management
  *
- * Uses React Router v7 `lazy` for code splitting — all wallet page components
- * are excluded from the main bundle and loaded on first navigation to that route.
+ * Each screen renders through `ResponsiveScreen`: the dashboard and portfolio
+ * get their own purpose-built mobile screens, everything else reuses its
+ * desktop component wrapped in `MobilePageShell` for the mobile chrome.
  */
 export const walletRoutes: RouteObject = {
   children: [
-    // Dashboard overview at /desktop/wallet
+    // Dashboard overview at /desktop/wallet — static, so signing in never
+    // lands on a spinner.
     {
+      element: <ResponsiveScreen mobile={<MobileHome />} desktop={<Dashboard />} />,
       index: true,
-      lazy: async () => {
-        const { Dashboard } = await import('@/pages/Dashboard');
-        return { Component: Dashboard };
-      },
     },
     {
-      lazy: async () => {
-        const { Portfolio } = await import('@/features/wallet');
-        return { Component: Portfolio };
-      },
+      element: <ResponsiveScreen mobile={<MobilePortfolio />} desktop={<Portfolio />} />,
       path: 'portfolio',
     },
     {
-      lazy: async () => {
-        const { TransactionsModern } = await import('@/features/wallet/TransactionsModern');
-        return { Component: TransactionsModern };
-      },
+      element: (
+        <ResponsiveScreen
+          mobile={
+            <MobilePageShell
+              title="Transactions"
+              subtitle="Every transfer, order and lease on this account."
+            >
+              <TransactionsModern />
+            </MobilePageShell>
+          }
+          desktop={<TransactionsModern />}
+        />
+      ),
       path: 'transactions',
     },
     {
-      lazy: async () => {
-        const { LeasingModern } = await import('@/features/wallet/LeasingModern');
-        return { Component: LeasingModern };
-      },
+      element: (
+        <ResponsiveScreen
+          mobile={
+            <MobilePageShell
+              title="Leasing"
+              subtitle="Delegate DCC to a node and earn network rewards."
+            >
+              <LeasingModern />
+            </MobilePageShell>
+          }
+          desktop={<LeasingModern />}
+        />
+      ),
       path: 'leasing',
     },
     {
-      lazy: async () => {
-        const { AliasManagement } = await import('@/pages/AliasManagement');
-        return { Component: AliasManagement };
-      },
+      element: (
+        <ResponsiveScreen
+          mobile={
+            <MobilePageShell
+              title="Aliases"
+              subtitle="Human-readable names that point at your address."
+            >
+              <AliasManagement />
+            </MobilePageShell>
+          }
+          desktop={<AliasManagement />}
+        />
+      ),
       path: 'aliases',
     },
     {
-      lazy: async () => {
-        const { AccountManagerPage } = await import('@/pages/AccountManager');
-        return { Component: AccountManagerPage };
-      },
+      element: (
+        <ResponsiveScreen
+          mobile={
+            <MobilePageShell
+              title="Account manager"
+              subtitle="Add, switch or remove accounts on this device."
+            >
+              <AccountManagerPage />
+            </MobilePageShell>
+          }
+          desktop={<AccountManagerPage />}
+        />
+      ),
       path: 'account-manager',
     },
-    // Future child routes:
-    // {
-    //   path: 'assets/:assetId',
-    //   lazy: async () => { const { AssetDetails } = await import('@/pages/AssetDetails'); return { Component: AssetDetails }; },
-    // },
   ],
-  lazy: async () => {
-    const { Wallet } = await import('@/pages/Wallet');
-    return { Component: Wallet };
-  },
+  element: <Wallet />,
   path: 'wallet',
 };

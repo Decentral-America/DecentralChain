@@ -147,7 +147,7 @@
         "withBlockchain": "Get Started with Blockchain"
       },
       "import": "アカウントをインポート",
-      "importDescription": "シードフレーズ、またはLedger、Keeperから",
+      "importDescription": "シードフレーズ、またはLedger、Cubensis Connectから",
       "protect": "アカウントを新しいパスワードで保護。または",
       "protectYourAccount": "あなたのアカウントを保護する",
       "restore": "アカウントを復元",
@@ -479,6 +479,9 @@
       "selectFileBtn": "Choose file"
     },
     "backupFileDescription": "Import account from Keystore File",
+    "CubensisConnectClient": "Cubensis Connect",
+    "cubensisConnectDescription": "Cubensis Connectからアカウントをインポート",
+    "cubensisConnectForm": "インストール",
     "decentralchainClient": "DecentralChain クライアント",
     "decentralchainClientDescription": "DecentralChain クライアントからアカウントをインポート",
     "decentralchainLiteClient": "DecentralChain Lite クライアント",
@@ -490,9 +493,6 @@
     },
     "importAccount": "アカウントをインポート",
     "importAccountInfo": "アカウントのインポート元を選択する",
-    "KeeperClient": "Cubensis Connect",
-    "keeperDescription": "Cubensis Connectからアカウントをインポート",
-    "keeperForm": "インストール",
     "LedgerClient": "Ledgerデバイス",
     "ledgerDescription": "Ledger デバイスからアカウントをインポート",
     "or": "または",
@@ -973,7 +973,7 @@
     "confirmTransaction": {
       "back": "戻る",
       "confirm": "送信",
-      "decentralchainKeeperUnconfirmed": {
+      "decentralchainCubensisConnectUnconfirmed": {
         "description": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
         "header": "あなたはCubensis Connect上でリクエストを承認しませんでした"
       },
@@ -1050,7 +1050,7 @@
         "ok": "次へ"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "cancel": "キャンセル",
           "errorDescription": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
           "errorDescriptionSwitchUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
@@ -1291,6 +1291,31 @@
     "confirmTransaction": {
       "signLedger": "Ledgerデバイスからの承認を待っています"
     },
+    "cubensisConnectForm": {
+      "address": "アカウントアドレス",
+      "addressSaved": "保存されたアドレス",
+      "back": "戻る",
+      "error": {
+        "hasLockedCubensisConnectDescription": "Cubensis Connectの利用を続けるには、過去に作成したパスワードを入力するか、新しいパスワードを作成してください。",
+        "hasLockedCubensisConnectHeader": "Cubensis Connectからパスワードを入力してください",
+        "hasNoUsersDescription": "作成済みのアカウントにログインするか、新しいアカウントを作成し、再度お試しください。",
+        "hasNoUsersHeader": "あなたは有効なアカウントを持っていません",
+        "install": "インストール",
+        "networkDescription": "あなたが選択したアカウントは間違ったネットワークに接続しています。ネットワークを変更して再度お試しください。",
+        "networkHeader": "ネットワークを変更",
+        "notInstalledDescription": "インストール後、アカウントを作成し、サインイン後にページを再読み込みして続けてください",
+        "notInstalledHeader": "Cubensis Connectを持っていないですか？",
+        "refresh": "リトライ"
+      },
+      "heading": "Cubensis Connectからアカウントをインポート",
+      "loading": "Cubensis Connectからアカウントをインポート",
+      "login": "次へ",
+      "name": "アカウント名",
+      "nameExists": "その名前はすでに使用されています",
+      "or": "または",
+      "retry": "再度お試し下さい",
+      "saveUserData": "ログイン状態を保持"
+    },
     "directives": {
       "anyTransaction": {
         "calculatingFee": "トランザクション手数料 : 計算の為に項目を埋めてください",
@@ -1339,7 +1364,7 @@
         "fee": "手数料 {{fee, money-currency}}"
       },
       "sign": {
-        "confirmRequestKeeper": {
+        "confirmRequestCubensisConnect": {
           "sign_utils": "リトライ"
         }
       }
@@ -1348,31 +1373,6 @@
       "errors": {
         "gtGatewayMin": "{{min}} {{assetName}} 以下の数量を送信することはできません"
       }
-    },
-    "keeperForm": {
-      "address": "アカウントアドレス",
-      "addressSaved": "保存されたアドレス",
-      "back": "戻る",
-      "error": {
-        "hasLockedKeeperDescription": "Cubensis Connectの利用を続けるには、過去に作成したパスワードを入力するか、新しいパスワードを作成してください。",
-        "hasLockedKeeperHeader": "Cubensis Connectからパスワードを入力してください",
-        "hasNoUsersDescription": "作成済みのアカウントにログインするか、新しいアカウントを作成し、再度お試しください。",
-        "hasNoUsersHeader": "あなたは有効なアカウントを持っていません",
-        "install": "インストール",
-        "networkDescription": "あなたが選択したアカウントは間違ったネットワークに接続しています。ネットワークを変更して再度お試しください。",
-        "networkHeader": "ネットワークを変更",
-        "notInstalledDescription": "インストール後、アカウントを作成し、サインイン後にページを再読み込みして続けてください",
-        "notInstalledHeader": "Cubensis Connectを持っていないですか？",
-        "refresh": "リトライ"
-      },
-      "heading": "Cubensis Connectからアカウントをインポート",
-      "loading": "Cubensis Connectからアカウントをインポート",
-      "login": "次へ",
-      "name": "アカウント名",
-      "nameExists": "その名前はすでに使用されています",
-      "or": "または",
-      "retry": "再度お試し下さい",
-      "saveUserData": "ログイン状態を保持"
     },
     "LedgerClient_utils": "Ledgerデバイス",
     "LedgerClientDescription": "Cubensis Connectからアカウントをインポート",
@@ -1809,7 +1809,7 @@
         "warning": "あなたはまだシードを保存していません",
         "warningPlural": "You did not save your Seed phrases"
       },
-      "removeKeeperAccount": {
+      "removeCubensisConnectAccount": {
         "heading": "Cubensis Connectアカウントを除去",
         "text": "これは保存済みのアカウントへの経路を除去するのみで、Cubensis Connectからアカウントを削除するわけではありません。"
       },
@@ -2016,11 +2016,11 @@
           "showCodeLink": "ペアリングコードを表示",
           "unavailable": {
             "description": {
-              "decentralchainKeeper": "Cubensis ConnectからインポートされたアカウントのエクスポートはCubensis Connectの設定から利用可能です",
+              "decentralchainCubensisConnect": "Cubensis ConnectからインポートされたアカウントのエクスポートはCubensis Connectの設定から利用可能です",
               "ledger": "Ledgerデバイスに保存されているアカウントはエクスポートに対応していません"
             },
             "header": {
-              "decentralchainKeeper": "エクスポートできません",
+              "decentralchainCubensisConnect": "エクスポートできません",
               "ledger": "エクスポートできません"
             },
             "ok": "理解しました"
@@ -2056,7 +2056,7 @@
         "confirm": "承認",
         "confirmRequest": "リクエストを承認",
         "confirmRequest_utils": "リクエストを承認",
-        "confirmRequestKeeper": "Cubensis Connectからの承認を待っています",
+        "confirmRequestCubensisConnect": "Cubensis Connectからの承認を待っています",
         "confirmRequestLedger": {
           "cancel": "キャンセル",
           "errorDescription": "再度お試し下さい。問題が継続する場合、 [こちらの記事](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues)をご参照下さい。",
@@ -2067,9 +2067,9 @@
         "confirmRequestMatcher_utils": "Matcherのリクエストに署名してください。署名をしない場合、LedgerからDEXでトレードすることはできません。",
         "confirmRequestToMatcher": "Matcherのリクエストに署名してください。署名をしない場合、からDEXでトレードすることはできません。",
         "connecting": "接続しています...",
-        "connectingKeeper": "Cubensis Connectに接続しています...",
+        "connectingCubensisConnect": "Cubensis Connectに接続しています...",
         "connectionError": "Ledgerに接続することができません",
-        "connectionErrorKeeper": "アカウントにアクセスすることができません",
+        "connectionErrorCubensisConnect": "アカウントにアクセスすることができません",
         "connectionText": "接続がタイムアウトしました。再度お試しください。",
         "connectLedger": "あなたのLedger デバイスに接続",
         "enterPin": "PINコードを入力してください",
@@ -2085,14 +2085,14 @@
         "requestId": "ハッシュをリクエスト",
         "retry": "リトライ",
         "sell": "Sell",
-        "signByKeeper": "Cubensis Connectからの承認を待っています",
+        "signByCubensisConnect": "Cubensis Connectからの承認を待っています",
         "signByLedger": "Ledgerデバイスからの承認を待っています",
         "signError": "リクエストは未承認です。",
-        "signErrorKeeper": "あなたはCubensis Connect上でリクエストを承認しませんでした",
+        "signErrorCubensisConnect": "あなたはCubensis Connect上でリクエストを承認しませんでした",
         "signErrorText": "あなたはLedgerデバイスでリクエストを承認しませんでした",
-        "signErrorTextImportKeeper": "Cubensis Connectに、アドレス : {{address}}でサインインし、\r\nページを再読込みして続ける。",
-        "signErrorTextKeeper": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
-        "signErrorTextKeeperWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextCubensisConnect": "再度お試し下さい。問題が継続する場合、 [サポート](https://decentralchain.io/soporte)で、サポートチケットを発行して下さい。",
+        "signErrorTextCubensisConnectWrongUser": "This account does not match the selected account in your Cubensis Connect. Please activate another account in Cubensis Connect and try again.",
+        "signErrorTextImportCubensisConnect": "Cubensis Connectに、アドレス : {{address}}でサインインし、\r\nページを再読込みして続ける。",
         "timestamp": "Timestamp",
         "txId": "TXID"
       },
@@ -2647,13 +2647,14 @@
       "copyrightVordex": "© 2019 VORDEX",
       "createAccount": "Create account",
       "createToken": "トークンを作成",
+      "cubensisConnectAccount": "Cubensis Connect アカウント",
       "currentAccountName": "現在のアカウント名",
       "dashboard": "ダッシュボード",
       "dccExplorer": "DecentralScan",
       "decentralchainBlockchain": "DecentralChain ブロックチェーン",
+      "decentralchainCubensisConnect": "Cubensis Connect",
       "decentralchainDexWeb": "DecentralExchange ウェブ",
       "decentralchainIde": "DecentralChain IDE",
-      "decentralchainKeeper": "Cubensis Connect",
       "decentralchainLabs": "DecentralChain Labs",
       "decentralchainOrderFilled": "約定毎に0.003 DCC",
       "decentralchainWallet": "DecentralChain ウォレット",
@@ -2675,7 +2676,6 @@
       "high": "24 HIGH",
       "inputErrorNameExists": "その名前はすでに使用されています。別の名前をお試しください",
       "instantAccessWalletDex": "あなたのウォレットとDEXへの即時アクセス",
-      "keeperAccount": "Keeper アカウント",
       "lastPrice": "最終価格",
       "leasing": "リース",
       "ledgerAccount": "Ledger アカウント",

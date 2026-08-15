@@ -17,7 +17,7 @@ interface Account {
   name?: string | undefined;
   address: string;
   lastLogin?: number | undefined;
-  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper' | undefined; // Account type
+  userType?: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect' | undefined; // Account type
   settings?: Record<string, unknown> | undefined;
 }
 

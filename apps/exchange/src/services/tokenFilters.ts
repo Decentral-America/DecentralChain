@@ -75,7 +75,7 @@ const STAGENET_TOKEN_NAMES: readonly TokenInfo[] = [
 ];
 
 // Select data set at build time from VITE_NETWORK (statically replaced by Vite).
-const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'mainnet';
+const VITE_NETWORK = import.meta.env.VITE_NETWORK ?? 'testnet';
 const INITIAL_SCAM_LIST =
   VITE_NETWORK === 'testnet'
     ? TESTNET_SCAM_LIST

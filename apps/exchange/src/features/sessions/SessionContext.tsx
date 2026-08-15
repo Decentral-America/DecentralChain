@@ -18,7 +18,7 @@ import {
 interface SessionContextValue extends SessionState {
   createSession: (user: {
     address: string;
-    userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+    userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   }) => Promise<Session>;
   switchSession: (sessionId: string) => Promise<void>;
   lockSession: () => void;
@@ -214,7 +214,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const createSession = useCallback(
     async (user: {
       address: string;
-      userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+      userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
     }): Promise<Session> => {
       const newSession: Session = {
         address: user.address,

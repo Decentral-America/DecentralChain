@@ -276,7 +276,7 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
             <Alert severity="info">Please confirm the transaction on your Ledger device</Alert>
           )}
 
-          {user?.userType === 'keeper' && isCreating && (
+          {user?.userType === 'cubensisConnect' && isCreating && (
             <Alert severity="info">Please confirm the transaction in Cubensis Connect</Alert>
           )}
         </Stack>

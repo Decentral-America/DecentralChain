@@ -22,7 +22,7 @@ export interface User {
   address: string;
   name?: string;
   publicKey: string;
-  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+  userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   networkByte?: number;
   id?: string; // Optional user ID
   seed?: string; // Decrypted seed (only in memory after auth)
@@ -96,5 +96,10 @@ export interface AuthContextType {
     name: string,
     networkByte: number,
   ) => Promise<User>; // Import Ledger hardware wallet
+  addCubensisConnectAccount: (
+    cubensisConnectData: { address: string; publicKey: string },
+    name: string,
+    networkByte: number,
+  ) => Promise<User>; // Import Cubensis Connect browser extension
   removeAccount: (userHash: string) => Promise<void>; // Remove account
 }

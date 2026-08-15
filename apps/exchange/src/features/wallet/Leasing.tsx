@@ -194,9 +194,9 @@ export const Leasing = () => {
   const leasedBalance = balances?.leaseOut ?? 0; // Amount this wallet leased out to nodes
   const availableBalance = balances?.available ?? regularBalance;
 
-  const balanceInDcc = regularBalance / DCC_DECIMALS;
-  const leasedInDcc = leasedBalance / DCC_DECIMALS;
-  const availableInDcc = availableBalance / DCC_DECIMALS;
+  const balanceInDcc = regularBalance / DCC_DECIMALS; // Spendable in DCC
+  const leasedInDcc = leasedBalance / DCC_DECIMALS; // Leased out in DCC
+  const availableInDcc = availableBalance / DCC_DECIMALS; // Available for new leases
 
   const allLeasingTxs = useMemo(() => {
     if (!recentTxs) return [];
@@ -417,75 +417,25 @@ export const Leasing = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: { md: 6, xs: 4 } }}>
-      <Stack spacing={4}>
-        <Stack
-          direction={{ md: 'row', xs: 'column' }}
-          spacing={2}
-          sx={{
-            alignItems: { md: 'center', xs: 'flex-start' },
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
-            <Typography
-              variant="h4"
-              gutterBottom
-              sx={{
-                fontWeight: 600,
-              }}
-            >
-              Leasing
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-              }}
-            >
-              Delegate your DCC to trusted nodes, monitor active leases, and cancel them any time.
-            </Typography>
-          </div>
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{
-              alignItems: 'center',
-            }}
-          >
-            <Tooltip title="Refresh leasing data">
-              <span>
-                <IconButton color="primary" onClick={handleRefresh} disabled={isRefreshing}>
-                  {isRefreshing ? <CircularProgress size={22} /> : <RefreshOutlined />}
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Stack>
-        </Stack>
-
+    <Container disableGutters maxWidth={false} sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
+      <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
         {errorMessage && (
           <Alert severity="error" variant="outlined">
             {errorMessage}
           </Alert>
         )}
 
-        <Grid container spacing={2.5}>
+        <Grid container spacing={3} sx={{ flexShrink: 0 }}>
           <Grid
             size={{
               md: 3,
               sm: 6,
-              xs: 12,
+              xs: 6,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    alignItems: 'center',
-                  }}
-                >
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -501,28 +451,13 @@ export const Leasing = () => {
                     <ShieldOutlined />
                   </Box>
                   <div>
-                    <Typography
-                      variant="overline"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="overline" color="text.secondary">
                       Available Balance
                     </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
                       {formatDcc(availableInDcc, 4)} DCC
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="caption" color="text.secondary">
                       Ready for leasing
                     </Typography>
                   </div>
@@ -534,18 +469,12 @@ export const Leasing = () => {
             size={{
               md: 3,
               sm: 6,
-              xs: 12,
+              xs: 6,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    alignItems: 'center',
-                  }}
-                >
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -561,28 +490,13 @@ export const Leasing = () => {
                     <TrendingUpOutlined />
                   </Box>
                   <div>
-                    <Typography
-                      variant="overline"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="overline" color="text.secondary">
                       Currently Leased
                     </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
                       {formatDcc(leasedInDcc, 4)} DCC
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="caption" color="text.secondary">
                       Actively earning
                     </Typography>
                   </div>
@@ -594,18 +508,12 @@ export const Leasing = () => {
             size={{
               md: 3,
               sm: 6,
-              xs: 12,
+              xs: 6,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    alignItems: 'center',
-                  }}
-                >
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Box
                     sx={{
                       alignItems: 'center',
@@ -621,28 +529,13 @@ export const Leasing = () => {
                     <ShieldOutlined />
                   </Box>
                   <div>
-                    <Typography
-                      variant="overline"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="overline" color="text.secondary">
                       Total Balance
                     </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
                       {formatDcc(balanceInDcc, 4)} DCC
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="caption" color="text.secondary">
                       Available + Leased
                     </Typography>
                   </div>
@@ -654,24 +547,18 @@ export const Leasing = () => {
             size={{
               md: 3,
               sm: 6,
-              xs: 12,
+              xs: 6,
             }}
           >
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    alignItems: 'center',
-                  }}
-                >
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Box
                     sx={{
                       alignItems: 'center',
-                      bgcolor: 'warning.main',
+                      bgcolor: 'action.selected',
                       borderRadius: 2,
-                      color: 'warning.contrastText',
+                      color: 'primary.main',
                       display: 'flex',
                       height: 44,
                       justifyContent: 'center',
@@ -681,20 +568,10 @@ export const Leasing = () => {
                     <HistoryOutlined />
                   </Box>
                   <div>
-                    <Typography
-                      variant="overline"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
+                    <Typography variant="overline" color="text.secondary">
                       Leasing Records
                     </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
                       {allCount}
                     </Typography>
                   </div>
@@ -704,191 +581,187 @@ export const Leasing = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2.5}>
-          <Grid
-            size={{
-              md: 5,
-              xs: 12,
+        {/*
+          A CSS grid, not MUI's: a wrapping flex row gives its items no definite
+          height, so `height: 100%` inside them resolved against their own
+          content — which is how the donut came to paint over the card below it.
+        */}
+        <Box
+          sx={{
+            display: 'grid',
+            flex: '1 1 auto',
+            gap: 3,
+            gridTemplateColumns: { md: 'minmax(0, 5fr) minmax(0, 7fr)', xs: 'minmax(0, 1fr)' },
+            minHeight: 360,
+          }}
+        >
+          <Card
+            variant="outlined"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              overflow: 'hidden',
             }}
           >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardHeader
-                title="Distribution"
-                subheader="Breakdown of available and leased balances"
-              />
-              <Divider />
-              <CardContent>
-                <Box sx={{ height: { md: 360, xs: 320 } }}>
-                  <LeasingChart available={regularBalance} leasedOut={leasedBalance} leasedIn={0} />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+            <CardHeader
+              sx={{ flexShrink: 0 }}
+              title="Distribution"
+              subheader="Breakdown of available and leased balances"
+            />
+            <Divider sx={{ flexShrink: 0 }} />
+            <CardContent sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
+              {/*
+                  On a phone the donut is read at a glance, not studied, so it
+                  scales with the viewport instead of holding a fixed 320px —
+                  which cost most of a screen on its own.
+                */}
+              {/* The donut takes the room the card has rather than a fixed
+                    size that either overflowed the card or left it half empty. */}
+              <Box sx={{ flex: 1, minHeight: { md: 150, xs: 'clamp(170px, 48vw, 230px)' } }}>
+                <LeasingChart available={regularBalance} leasedOut={leasedBalance} leasedIn={0} />
+              </Box>
+            </CardContent>
+          </Card>
 
-          <Grid
-            size={{
-              md: 7,
-              xs: 12,
+          <Card
+            variant="outlined"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+              overflow: 'hidden',
             }}
           >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardHeader
-                title="Start Leasing"
-                subheader="Delegate DCC to a node and earn proportional rewards"
-              />
-              <Divider />
-              <CardContent>
-                <Stack spacing={2.5}>
-                  <TextField
-                    label="Node Address"
-                    placeholder="3P..."
-                    value={recipient}
-                    onChange={(event) => {
-                      setRecipient(event.target.value);
-                      if (recipientError) {
-                        validateRecipient(event.target.value);
-                      }
-                    }}
-                    onBlur={() => validateRecipient(recipient)}
-                    error={Boolean(recipientError)}
-                    helperText={recipientError ?? 'Enter the recipient node address'}
-                    fullWidth
-                    disabled={leaseMutation.isPending || initialLoading}
-                  />
+            <CardHeader
+              sx={{ flexShrink: 0 }}
+              title="Start Leasing"
+              subheader="Delegate DCC to a node and earn proportional rewards"
+            />
+            <Divider sx={{ flexShrink: 0 }} />
+            <CardContent sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+              <Stack spacing={2.5}>
+                <TextField
+                  label="Node Address"
+                  placeholder="3P..."
+                  value={recipient}
+                  onChange={(event) => {
+                    setRecipient(event.target.value);
+                    if (recipientError) {
+                      validateRecipient(event.target.value);
+                    }
+                  }}
+                  onBlur={() => validateRecipient(recipient)}
+                  error={Boolean(recipientError)}
+                  helperText={recipientError ?? ' '}
+                  fullWidth
+                  disabled={leaseMutation.isPending || initialLoading}
+                />
 
-                  <Stack spacing={1}>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <TextField
-                        label="Amount (DCC)"
-                        type="number"
-                        placeholder="0.00000000"
-                        value={amount}
-                        onChange={(event) => {
-                          setAmount(event.target.value);
-                          if (amountError) {
-                            validateAmount(event.target.value);
-                          }
-                        }}
-                        onBlur={() => validateAmount(amount)}
-                        error={Boolean(amountError)}
-                        helperText={amountError ?? 'Specify the amount you want to lease'}
-                        fullWidth
-                        disabled={leaseMutation.isPending || initialLoading}
-                        slotProps={{
-                          htmlInput: { min: 0, step: 0.00000001 },
-                        }}
-                      />
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleMaxAmount}
-                        disabled={leaseMutation.isPending || initialLoading}
-                      >
-                        MAX
-                      </Button>
-                    </Stack>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
-                      Available: {formatDcc(balanceInDcc, 8)} DCC · Network fee {LEASE_FEE_DCC} DCC
-                    </Typography>
-                  </Stack>
-
+                <Stack spacing={1}>
                   <Stack
                     direction="row"
                     spacing={1}
-                    sx={{
-                      alignItems: 'center',
-                    }}
+                    sx={{ alignItems: 'center', justifyContent: 'space-between' }}
                   >
-                    <Chip
-                      label="Fixed fee 0.001 DCC"
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
+                    <TextField
+                      label="Amount (DCC)"
+                      type="number"
+                      placeholder="0.00000000"
+                      value={amount}
+                      onChange={(event) => {
+                        setAmount(event.target.value);
+                        if (amountError) {
+                          validateAmount(event.target.value);
+                        }
                       }}
+                      onBlur={() => validateAmount(amount)}
+                      error={Boolean(amountError)}
+                      helperText={amountError ?? ' '}
+                      fullWidth
+                      disabled={leaseMutation.isPending || initialLoading}
+                      slotProps={{ htmlInput: { min: 0, step: 0.00000001 } }}
+                    />
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={handleMaxAmount}
+                      disabled={leaseMutation.isPending || initialLoading}
                     >
-                      Funds remain in your control and can be unlocked anytime.
-                    </Typography>
+                      MAX
+                    </Button>
                   </Stack>
-
-                  <Button
-                    variant="contained"
-                    startIcon={
-                      leaseMutation.isPending ? (
-                        <CircularProgress size={18} color="inherit" />
-                      ) : (
-                        <PlayArrowRounded />
-                      )
-                    }
-                    onClick={handleLease}
-                    disabled={leaseMutation.isPending || !recipient || !amount}
-                    sx={{ alignSelf: 'flex-start', minWidth: 180 }}
-                  >
-                    {leaseMutation.isPending ? 'Leasing…' : 'Start Lease'}
-                  </Button>
+                  <Typography variant="caption" color="text.secondary">
+                    Available: {formatDcc(balanceInDcc, 8)} DCC · Fixed network fee {LEASE_FEE_DCC}{' '}
+                    DCC · Funds stay in your control and can be unlocked anytime.
+                  </Typography>
                 </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
 
-        <Card variant="outlined">
+                <Button
+                  variant="contained"
+                  startIcon={
+                    leaseMutation.isPending ? (
+                      <CircularProgress size={18} color="inherit" />
+                    ) : (
+                      <PlayArrowRounded />
+                    )
+                  }
+                  onClick={handleLease}
+                  disabled={leaseMutation.isPending || !recipient || !amount}
+                  sx={{ alignSelf: 'flex-start', minWidth: 180 }}
+                >
+                  {leaseMutation.isPending ? 'Leasing…' : 'Start Lease'}
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Card
+          variant="outlined"
+          sx={{
+            display: 'flex',
+            flex: '1 1 0',
+            flexDirection: 'column',
+            minHeight: 160,
+            overflow: 'hidden',
+          }}
+        >
           <CardHeader
+            sx={{ flexShrink: 0 }}
             title="Leasing History"
             subheader="Track your active, canceled, and historical leases"
             action={
-              <ToggleButtonGroup
-                size="small"
-                value={filter}
-                exclusive
-                onChange={handleFilterChange}
-              >
-                <ToggleButton value="all">All ({allCount})</ToggleButton>
-                <ToggleButton value="active">Active ({activeCount})</ToggleButton>
-                <ToggleButton value="canceled">Canceled ({canceledCount})</ToggleButton>
-              </ToggleButtonGroup>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <ToggleButtonGroup
+                  size="small"
+                  value={filter}
+                  exclusive
+                  onChange={handleFilterChange}
+                >
+                  <ToggleButton value="all">All ({allCount})</ToggleButton>
+                  <ToggleButton value="active">Active ({activeCount})</ToggleButton>
+                  <ToggleButton value="canceled">Canceled ({canceledCount})</ToggleButton>
+                </ToggleButtonGroup>
+                <Tooltip title="Refresh leasing data">
+                  <span>
+                    <IconButton color="primary" onClick={handleRefresh} disabled={isRefreshing}>
+                      {isRefreshing ? <CircularProgress size={22} /> : <RefreshOutlined />}
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Stack>
             }
           />
-          <Divider />
-          <CardContent>
+          <Divider sx={{ flexShrink: 0 }} />
+          <CardContent sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
             {isHistoryLoading && !recentTxs ? (
-              <Stack
-                sx={{
-                  alignItems: 'center',
-                  py: 6,
-                }}
-              >
+              <Stack sx={{ alignItems: 'center', py: 6 }}>
                 <CircularProgress />
               </Stack>
             ) : tableRows.length === 0 ? (
-              <Box
-                sx={{
-                  py: 6,
-                  textAlign: 'center',
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
+              <Box sx={{ py: 6, textAlign: 'center' }}>
+                <Typography variant="body2" color="text.secondary">
                   No leasing activity yet. Start a lease to see it appear here.
                 </Typography>
               </Box>
@@ -917,44 +790,24 @@ export const Leasing = () => {
                     return (
                       <TableRow hover key={lease.id}>
                         <TableCell>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 600,
-                            }}
-                          >
+                          <Typography variant="body2" sx={{ fontWeight: 400 }}>
                             {lease.type.replace('-', ' ')}
                           </Typography>
                         </TableCell>
                         <TableCell>
                           <Tooltip title={lease.recipient || 'Unknown'}>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: 'text.secondary',
-                              }}
-                            >
+                            <Typography variant="body2" color="text.secondary">
                               {shortenAddress(lease.recipient)}
                             </Typography>
                           </Tooltip>
                         </TableCell>
                         <TableCell align="right">
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 600,
-                            }}
-                          >
+                          <Typography variant="body2" sx={{ fontWeight: 400 }}>
                             {formatDcc(lease.amount / DCC_DECIMALS, 4)} DCC
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: 'text.secondary',
-                            }}
-                          >
+                          <Typography variant="body2" color="text.secondary">
                             {new Date(lease.timestamp).toLocaleString(undefined, {
                               day: 'numeric',
                               hour: '2-digit',
@@ -990,12 +843,7 @@ export const Leasing = () => {
                               Cancel
                             </Button>
                           ) : (
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: 'text.secondary',
-                              }}
-                            >
+                            <Typography variant="body2" color="text.secondary">
                               —
                             </Typography>
                           )}
@@ -1009,6 +857,7 @@ export const Leasing = () => {
           </CardContent>
         </Card>
       </Stack>
+
       <ConfirmDialog
         open={!!cancelLeaseId}
         onClose={() => setCancelLeaseId(null)}

@@ -46,8 +46,8 @@ export default defineConfig({
   timeout: 30_000,
 
   use: {
-    /* All requests go through the dev server */
-    baseURL: 'http://localhost:5173',
+    /* All requests go through the dev server — port fixed in vite.config.ts */
+    baseURL: 'http://localhost:3333',
 
     headless: true,
 
@@ -64,7 +64,7 @@ export default defineConfig({
   /* Spin up the Vite dev server automatically */
   webServer: {
     command: 'pnpm dev',
-    port: 5173,
+    port: 3333,
     /* In CI always start fresh; locally reuse a running server */
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

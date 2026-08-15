@@ -28,36 +28,31 @@ import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 // Import DEX components
 import { TradingViewChart } from '@/features/dex/TradingViewChart';
 import { UserOrders } from '@/features/dex/UserOrders';
+import { PageFrame } from '@/layouts/PageFrame';
 import { useDexStore } from '@/stores/dexStore';
+import { radii } from '@/styles/tokens';
 import { landingTheme } from '@/theme/landingTheme';
-
-/**
- * Main container with clean light theme like Swap page
- */
-const DEXContainer = styled(Box)(({ theme }) => ({
-  background: 'transparent',
-  minHeight: '100vh',
-  padding: theme.spacing(4),
-  [theme.breakpoints.down('md')]: {
-    padding: theme.spacing(2),
-  },
-}));
 
 /**
  * Clean white card panel like Swap page
  */
+/*
+ * The terminal surface: flat, hairline border, and the same corner every other
+ * card in the application carries. It sat on the old 4px radius long after the
+ * rest of the system moved, which made Trade the one screen whose panels
+ * visibly did not belong to the product around them.
+ */
 const TradingPanel = styled(Paper)(({ theme }) => ({
-  '&:hover': {
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-  },
-  background: '#FFFFFF',
-  borderRadius: theme.spacing(2),
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  background: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: radii.cards,
+  boxShadow: 'none',
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
+  // minWidth:0 lets a dense panel shrink rather than widen the grid.
+  minWidth: 0,
   overflow: 'hidden',
-  transition: 'all 0.2s ease',
 }));
 
 /**
@@ -83,7 +78,7 @@ const PanelContent = styled(Box)(({ theme }) => ({
       background: theme.palette.grey[400],
     },
     background: theme.palette.grey[300],
-    borderRadius: '3px',
+    borderRadius: '2px',
   },
   '&::-webkit-scrollbar-track': {
     background: 'transparent',
@@ -107,9 +102,11 @@ const PriceDisplay = styled(Typography, {
         ? theme.palette.error.main
         : theme.palette.text.primary,
   display: 'flex',
-  fontSize: '2rem',
-  fontWeight: 700,
+  fontSize: 'clamp(24px, 3vw, 32px)',
+  fontVariantNumeric: 'tabular-nums',
+  fontWeight: 300,
   gap: theme.spacing(1),
+  letterSpacing: '-0.64px',
 }));
 
 export const Dex = () => {
@@ -180,18 +177,12 @@ export const Dex = () => {
 
   return (
     <ThemeProvider theme={landingTheme}>
-      <DEXContainer>
+      <PageFrame fit title="Trade" subtitle="Place orders against the live order book.">
         {/* Top Compact Bar - Pair Info & Stats */}
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ flexShrink: 0, mb: 2 }}>
           <TradingPanel elevation={0} sx={{ overflow: 'visible' }}>
             <Box sx={{ p: 2 }}>
-              <Grid
-                container
-                spacing={2}
-                sx={{
-                  alignItems: 'center',
-                }}
-              >
+              <Grid container spacing={2} sx={{ alignItems: 'center' }}>
                 {/* Pair Selector */}
                 <Grid
                   sx={{ overflow: 'visible', zIndex: 1000 }}
@@ -207,17 +198,11 @@ export const Dex = () => {
                 <Grid
                   size={{
                     md: 2,
-                    xs: 6,
+                    xs: 4,
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Typography variant="caption" color="primary.main">
                       Last Price
                     </Typography>
                     <PriceDisplay
@@ -238,25 +223,16 @@ export const Dex = () => {
                 <Grid
                   size={{
                     md: 1.5,
-                    xs: 6,
+                    xs: 4,
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Typography variant="caption" color="primary.main">
                       24h Change
                     </Typography>
                     <Typography
                       variant="h6"
                       color={priceChange >= 0 ? 'success.main' : 'error.main'}
-                      sx={{
-                        fontWeight: 700,
-                      }}
                     >
                       {priceChange >= 0 ? '+' : ''}
                       {priceChange.toFixed(2)}%
@@ -273,21 +249,10 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Typography variant="caption" color="primary.main">
                       24h High
                     </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="body1">
                       {marketData.high24h > 0
                         ? marketData.high24h.toLocaleString('en-US', {
                             maximumFractionDigits: 8,
@@ -307,21 +272,10 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Typography variant="caption" color="primary.main">
                       24h Low
                     </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="body1">
                       {marketData.low24h > 0
                         ? marketData.low24h.toLocaleString('en-US', {
                             maximumFractionDigits: 8,
@@ -341,21 +295,10 @@ export const Dex = () => {
                   }}
                 >
                   <Box>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Typography variant="caption" color="primary.main">
                       24h Volume
                     </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="body1">
                       {marketData.volume24h > 0
                         ? marketData.volume24h.toLocaleString('en-US', {
                             maximumFractionDigits: 2,
@@ -370,253 +313,258 @@ export const Dex = () => {
           </TradingPanel>
         </Box>
 
-        {/* Main Trading Area - 2 Column Layout */}
-        <Grid container spacing={2}>
-          {/* LEFT - Chart takes 70% width for prominence */}
-          <Grid
-            size={{
-              lg: 8.5,
-              xs: 12,
+        {/*
+          The terminal fills whatever the market bar leaves.
+          Panels used to carry fixed minimums — 550px of chart, 400px of order
+          book, 560px of order form — which added up to a screen and a half and
+          made the trading view scroll like a document. They are proportions of
+          the available height now, each panel scrolling inside itself, which is
+          how a terminal is meant to behave.
+        */}
+        <Box
+          sx={{
+            display: 'grid',
+            flex: 1,
+            gap: 2,
+            /*
+             * A CSS grid, not a wrapping flex row. MUI's Grid wraps, and a
+             * wrapping flex line takes the height of its tallest item — so the
+             * columns grew to their content and the terminal scrolled however
+             * tightly the panels inside were constrained.
+             */
+            gridTemplateColumns: { md: 'minmax(0, 1fr) 360px', xs: 'minmax(0, 1fr)' },
+            minHeight: 0,
+          }}
+        >
+          {/* LEFT - Chart takes the width, for prominence */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              height: '100%',
+              minHeight: 0,
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-              {/* Large Chart Section */}
-              <TradingPanel
-                elevation={0}
-                sx={{ flex: 1, minHeight: { md: 550, sm: 400, xs: 300 } }}
-              >
-                <PanelHeader>
-                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
-                    <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                      }}
-                    >
-                      Price Chart
-                    </Typography>
-                  </Box>
-                  <IconButton
-                    size="small"
-                    sx={{
-                      '&:hover': { bgcolor: 'primary.light', color: 'white' },
-                      color: 'primary.main',
-                    }}
-                  >
-                    <Fullscreen />
-                  </IconButton>
-                </PanelHeader>
-                <PanelContent>
-                  <TradingViewChart />
-                </PanelContent>
-              </TradingPanel>
-
-              {/* Order Book - Now in main area */}
-              <TradingPanel elevation={0} sx={{ minHeight: { md: 400, xs: 250 } }}>
-                <PanelHeader>
-                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
-                    <Receipt sx={{ color: 'primary.main', fontSize: 24 }} />
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                      }}
-                    >
-                      Order Book
-                    </Typography>
-                  </Box>
-                </PanelHeader>
-                <PanelContent sx={{ maxHeight: 400 }}>
-                  <OrderBook />
-                </PanelContent>
-              </TradingPanel>
-
-              {/* User Orders at Bottom */}
-              <TradingPanel elevation={0}>
-                <PanelHeader
+            {/* Large Chart Section */}
+            <TradingPanel
+              elevation={0}
+              sx={{ flex: 2.2, minHeight: { md: 200, xs: 'clamp(190px, 30dvh, 280px)' } }}
+            >
+              <PanelHeader>
+                <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
+                  <ShowChart sx={{ color: 'primary.main', fontSize: 28 }} />
+                  <Typography variant="h6">Price Chart</Typography>
+                </Box>
+                <IconButton
+                  size="small"
                   sx={{
-                    background:
-                      'linear-gradient(90deg, rgba(61, 38, 190, 0.03) 0%, rgba(89, 64, 212, 0.03) 100%)',
+                    '&:hover': { bgcolor: 'primary.light', color: 'white' },
+                    color: 'primary.main',
                   }}
                 >
-                  <Tabs
-                    value={bottomTab}
-                    onChange={(_, v) => setBottomTab(v)}
-                    sx={{
-                      '& .Mui-selected': {
-                        color: 'primary.main',
-                      },
-                      '& .MuiTab-root': {
-                        color: 'text.secondary',
-                        fontWeight: 600,
-                        minHeight: 40,
-                      },
-                      '& .MuiTabs-indicator': {
-                        backgroundColor: 'primary.main',
-                        borderRadius: '3px 3px 0 0',
-                        height: 3,
-                      },
+                  <Fullscreen />
+                </IconButton>
+              </PanelHeader>
+              <PanelContent>
+                <TradingViewChart />
+              </PanelContent>
+            </TradingPanel>
+
+            {/* Order Book - Now in main area */}
+            <TradingPanel
+              elevation={0}
+              sx={{ flex: 1.4, minHeight: { md: 150, xs: 'clamp(170px, 26dvh, 250px)' } }}
+            >
+              <PanelHeader>
+                <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
+                  <Receipt sx={{ color: 'primary.main', fontSize: 24 }} />
+                  <Typography variant="h6">Order Book</Typography>
+                </Box>
+              </PanelHeader>
+              <PanelContent>
+                <OrderBook />
+              </PanelContent>
+            </TradingPanel>
+
+            {/* User Orders at Bottom */}
+            <TradingPanel elevation={0} sx={{ flex: 1, minHeight: { md: 130, xs: 200 } }}>
+              <PanelHeader
+                sx={{
+                  background: 'transparent',
+                }}
+              >
+                <Tabs
+                  value={bottomTab}
+                  onChange={(_, v) => setBottomTab(v)}
+                  sx={{
+                    '& .Mui-selected': {
+                      color: 'primary.main',
+                    },
+                    '& .MuiTab-root': {
+                      color: 'text.secondary',
                       minHeight: 40,
-                    }}
-                  >
-                    <Tab label="Open Orders (0)" />
-                    <Tab label={t('app.dex.orderHistory')} />
-                  </Tabs>
-                </PanelHeader>
-                <PanelContent sx={{ maxHeight: 300 }}>
-                  {bottomTab === 0 ? (
-                    <UserOrders />
-                  ) : (
-                    <Typography>{t('app.dex.orderHistory')}</Typography>
-                  )}
-                </PanelContent>
-              </TradingPanel>
-            </Box>
-          </Grid>
+                    },
+                    '& .MuiTabs-indicator': {
+                      backgroundColor: 'primary.main',
+                      borderRadius: '4px 4px 0 0',
+                      height: 3,
+                    },
+                    minHeight: 40,
+                  }}
+                >
+                  <Tab label="Open Orders (0)" />
+                  <Tab label={t('app.dex.orderHistory')} />
+                </Tabs>
+              </PanelHeader>
+              <PanelContent>
+                {bottomTab === 0 ? (
+                  <UserOrders />
+                ) : (
+                  <Typography>{t('app.dex.orderHistory')}</Typography>
+                )}
+              </PanelContent>
+            </TradingPanel>
+          </Box>
 
           {/* RIGHT - Buy/Sell & Trades Sidebar */}
-          <Grid
-            size={{
-              lg: 3.5,
-              xs: 12,
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              height: '100%',
+              minHeight: 0,
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {/* Buy/Sell Card with Toggle */}
-              <TradingPanel elevation={0} sx={{ minHeight: { md: 560, xs: 'auto' } }}>
-                <PanelHeader
+            {/* Buy/Sell Card with Toggle */}
+            <TradingPanel elevation={0} sx={{ flex: 2.4, minHeight: { md: 300, xs: 'auto' } }}>
+              <PanelHeader
+                sx={{
+                  alignItems: 'stretch',
+                  background: 'transparent',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                {/* Order Type Tabs */}
+                <Tabs
+                  value={orderFormTab}
+                  onChange={(_, v) => setOrderFormTab(v)}
                   sx={{
-                    alignItems: 'stretch',
-                    background:
-                      'linear-gradient(90deg, rgba(61, 38, 190, 0.05) 0%, rgba(89, 64, 212, 0.05) 100%)',
-                    flexDirection: 'column',
-                    gap: 2,
+                    '& .Mui-selected': {
+                      color: 'primary.main',
+                    },
+                    '& .MuiTab-root': {
+                      color: 'text.secondary',
+                      fontSize: '0.875rem',
+                      minHeight: 40,
+                    },
+                    '& .MuiTabs-indicator': {
+                      backgroundColor: 'primary.main',
+                      borderRadius: '4px 4px 0 0',
+                      height: 3,
+                    },
+                    minHeight: 40,
                   }}
                 >
-                  {/* Order Type Tabs */}
-                  <Tabs
-                    value={orderFormTab}
-                    onChange={(_, v) => setOrderFormTab(v)}
-                    sx={{
-                      '& .Mui-selected': {
-                        color: 'primary.main',
-                      },
-                      '& .MuiTab-root': {
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        minHeight: 40,
-                      },
-                      '& .MuiTabs-indicator': {
-                        backgroundColor: 'primary.main',
-                        borderRadius: '3px 3px 0 0',
-                        height: 3,
-                      },
-                      minHeight: 40,
-                    }}
-                  >
-                    <Tab label="Limit" />
-                    <Tab label="Market" />
-                  </Tabs>
+                  <Tab label="Limit" />
+                  <Tab label="Market" />
+                </Tabs>
 
-                  {/* Buy/Sell Toggle */}
-                  <ToggleButtonGroup
-                    value={buySellMode}
-                    exclusive
-                    onChange={(_, newMode) => {
-                      if (newMode !== null) setBuySellMode(newMode);
-                    }}
-                    fullWidth
-                    sx={{
-                      '& .MuiToggleButton-root': {
-                        '&.Mui-selected': {
-                          color: 'white',
-                        },
-                        border: 'none',
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        py: 1.5,
-                      },
-                    }}
-                  >
-                    <ToggleButton
-                      value="buy"
-                      sx={{
-                        '&.Mui-selected': {
-                          '&:hover': {
-                            bgcolor: 'success.dark',
-                          },
-                          bgcolor: 'success.main',
-                        },
-                        color: 'success.main',
-                      }}
-                    >
-                      Buy
-                    </ToggleButton>
-                    <ToggleButton
-                      value="sell"
-                      sx={{
-                        '&.Mui-selected': {
-                          '&:hover': {
-                            bgcolor: 'error.dark',
-                          },
-                          bgcolor: 'error.main',
-                        },
-                        color: 'error.main',
-                      }}
-                    >
-                      Sell
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </PanelHeader>
-                <PanelContent sx={{ minHeight: { md: 500, xs: 'auto' } }}>
-                  {buySellMode === 'buy' ? <BuyOrderForm /> : <SellOrderForm />}
-                </PanelContent>
-              </TradingPanel>
-
-              {/* Market Trades */}
-              <TradingPanel elevation={0}>
-                <PanelHeader
+                {/* Buy/Sell Toggle */}
+                <ToggleButtonGroup
+                  value={buySellMode}
+                  exclusive
+                  onChange={(_, newMode) => {
+                    if (newMode !== null) setBuySellMode(newMode);
+                  }}
+                  fullWidth
                   sx={{
-                    background:
-                      'linear-gradient(90deg, rgba(61, 38, 190, 0.03) 0%, rgba(89, 64, 212, 0.03) 100%)',
+                    '& .MuiToggleButton-root': {
+                      '&.Mui-selected': {
+                        color: 'white',
+                      },
+                      border: 'none',
+                      fontSize: '1rem',
+                      py: 1.5,
+                    },
                   }}
                 >
-                  <Tabs
-                    value={tradesTab}
-                    onChange={(_, v) => setTradesTab(v)}
+                  <ToggleButton
+                    value="buy"
                     sx={{
-                      '& .Mui-selected': {
-                        color: 'primary.main',
+                      '&.Mui-selected': {
+                        '&:hover': {
+                          bgcolor: 'success.dark',
+                        },
+                        bgcolor: 'success.main',
                       },
-                      '& .MuiTab-root': {
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        minHeight: 40,
-                        padding: '8px 12px',
-                      },
-                      '& .MuiTabs-indicator': {
-                        backgroundColor: 'primary.main',
-                        borderRadius: '3px 3px 0 0',
-                        height: 3,
-                      },
-                      minHeight: 40,
+                      color: 'success.main',
                     }}
                   >
-                    <Tab label="Market Trades" />
-                    <Tab label="My Trades" />
-                  </Tabs>
-                </PanelHeader>
-                <PanelContent sx={{ maxHeight: 450 }}>
-                  <TradeHistory />
-                </PanelContent>
-              </TradingPanel>
-            </Box>
-          </Grid>
-        </Grid>
-      </DEXContainer>
+                    Buy
+                  </ToggleButton>
+                  <ToggleButton
+                    value="sell"
+                    sx={{
+                      '&.Mui-selected': {
+                        '&:hover': {
+                          bgcolor: 'error.dark',
+                        },
+                        bgcolor: 'error.main',
+                      },
+                      color: 'error.main',
+                    }}
+                  >
+                    Sell
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </PanelHeader>
+              <PanelContent>
+                {buySellMode === 'buy' ? <BuyOrderForm /> : <SellOrderForm />}
+              </PanelContent>
+            </TradingPanel>
+
+            {/* Market Trades */}
+            <TradingPanel elevation={0} sx={{ flex: 1, minHeight: { md: 150, xs: 200 } }}>
+              <PanelHeader
+                sx={{
+                  background: 'transparent',
+                }}
+              >
+                <Tabs
+                  value={tradesTab}
+                  onChange={(_, v) => setTradesTab(v)}
+                  sx={{
+                    '& .Mui-selected': {
+                      color: 'primary.main',
+                    },
+                    '& .MuiTab-root': {
+                      color: 'text.secondary',
+                      fontSize: '0.875rem',
+                      minHeight: 40,
+                      padding: '8px 12px',
+                    },
+                    '& .MuiTabs-indicator': {
+                      backgroundColor: 'primary.main',
+                      borderRadius: '4px 4px 0 0',
+                      height: 3,
+                    },
+                    minHeight: 40,
+                  }}
+                >
+                  <Tab label="Market Trades" />
+                  <Tab label="My Trades" />
+                </Tabs>
+              </PanelHeader>
+              <PanelContent>
+                <TradeHistory />
+              </PanelContent>
+            </TradingPanel>
+          </Box>
+        </Box>
+      </PageFrame>
     </ThemeProvider>
   );
 };

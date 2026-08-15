@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
 
-const { NODE_ENV, VITE_API_URL } = process.env;
+const { NODE_ENV, VITE_API_URL, VITE_NODE_URL } = process.env;
 
 /**
  * Injects VITE_APP_VERSION into i18n preload hints in index.html at build time.
@@ -151,7 +151,7 @@ export default defineConfig({
         "worker-src 'self' blob:",
         "style-src 'self' 'unsafe-inline' https://s3.tradingview.com https://*.tradingview.com",
         "img-src 'self' data: https:",
-        "connect-src 'self' http://localhost:* https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://testnet-data-service.decentralchain.io https://stagenet-data-service.decentralchain.io https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io ws://localhost:* wss://localhost:*",
+        "connect-src 'self' http://localhost:* https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://testnet-data-service.decentralchain.io https://stagenet-data-service.decentralchain.io https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io wss://mainnet-ws.decentralchain.io wss://testnet-ws.decentralchain.io wss://stagenet-ws.decentralchain.io ws://localhost:* wss://localhost:*",
         "font-src 'self' data:",
         "object-src 'none'",
         "base-uri 'self'",
@@ -170,6 +170,17 @@ export default defineConfig({
       '/matcher': {
         changeOrigin: true,
         target: 'https://mainnet-matcher.decentralchain.io',
+      },
+      // testnet-node.decentralchain.io sends no Access-Control-Allow-Origin on
+      // any endpoint (confirmed via curl — infra-side gap, not fixable here).
+      // Most node reads go through data-service instead, which does set CORS
+      // headers; this proxy exists only for the one direct-to-node call (NTP
+      // clock-drift check in data-service/config.ts) so dev doesn't show a
+      // CORS console error for it.
+      '/node-proxy': {
+        changeOrigin: true,
+        rewrite: (reqPath) => reqPath.replace(/^\/node-proxy/, ''),
+        target: VITE_NODE_URL || 'https://mainnet-node.decentralchain.io',
       },
       '/trading-view': {
         changeOrigin: true,

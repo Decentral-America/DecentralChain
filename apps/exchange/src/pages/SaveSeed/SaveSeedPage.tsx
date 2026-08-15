@@ -156,7 +156,7 @@ interface User {
   address: string;
   name?: string;
   publicKey?: string;
-  userType?: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+  userType?: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   encryptedSeed?: string;
 }
 

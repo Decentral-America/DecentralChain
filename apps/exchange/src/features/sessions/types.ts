@@ -7,7 +7,7 @@ export interface Session {
   id: string;
   userId: string;
   address: string;
-  userType: 'seed' | 'privateKey' | 'ledger' | 'keeper';
+  userType: 'seed' | 'privateKey' | 'ledger' | 'cubensisConnect';
   createdAt: number;
   lastActivity: number;
   isLocked: boolean;

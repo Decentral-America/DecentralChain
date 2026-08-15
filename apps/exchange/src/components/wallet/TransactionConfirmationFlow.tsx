@@ -23,6 +23,7 @@ import type React from 'react';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
+import { Icon } from '@/components/atoms/Icon';
 import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
@@ -405,7 +406,7 @@ const ReviewSection = styled.div`
   gap: 16px;
   padding: 16px;
   background-color: ${({ theme }) => theme.colors.background};
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
@@ -418,13 +419,13 @@ const ReviewRow = styled.div`
 
 const Label = styled.span`
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.disabled};
 `;
 
 const Value = styled.span`
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.text};
   word-break: break-all;
   text-align: right;
@@ -454,13 +455,13 @@ const ErrorMessage = styled.p`
   margin: 0;
   padding: 12px;
   background-color: ${({ theme }) => theme.colors.error}20;
-  border-radius: 8px;
+  border-radius: 4px;
 `;
 
 const SuccessIcon = styled.div`
   width: 64px;
   height: 64px;
-  border-radius: 50%;
+  border-radius: 4px;
   background-color: ${({ theme }) => theme.colors.success}20;
   display: flex;
   align-items: center;
@@ -496,8 +497,8 @@ const TxIdHint = styled.p`
 const ErrorIcon = styled.div`
   align-items: center;
   background-color: rgba(239, 68, 68, 0.2);
-  border-radius: 50%;
-  color: #ef4444;
+  border-radius: 4px;
+  color: #b3261e;
   display: flex;
   font-size: 32px;
   height: 64px;
@@ -706,7 +707,9 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
         return (
           <>
             <StatusContainer>
-              <SuccessIcon>✓</SuccessIcon>
+              <SuccessIcon>
+                <Icon name="check" size={28} />
+              </SuccessIcon>
               <StatusMessage>Transaction Successful!</StatusMessage>
               <StatusHint>Your transaction has been confirmed on the blockchain</StatusHint>
               {transactionId && <TxIdHint>ID: {transactionId}</TxIdHint>}
@@ -723,7 +726,9 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
         return (
           <>
             <StatusContainer>
-              <ErrorIcon>✕</ErrorIcon>
+              <ErrorIcon>
+                <Icon name="close" size={16} />
+              </ErrorIcon>
               <StatusMessage>Transaction Failed</StatusMessage>
               <ErrorMessage>{error}</ErrorMessage>
             </StatusContainer>

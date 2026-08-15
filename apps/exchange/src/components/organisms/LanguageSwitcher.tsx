@@ -2,10 +2,11 @@
  * LanguageSwitcher Component
  * Dropdown component for switching between 17 supported languages
  */
+
+import { ChevronDown, Globe } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiChevronDown, FiGlobe } from 'react-icons/fi';
 import styled from 'styled-components';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
 
@@ -53,7 +54,7 @@ const SelectedLanguage = styled.button<{ $isOpen: boolean }>`
 /**
  * Globe icon
  */
-const GlobeIcon = styled(FiGlobe as React.ComponentType<Record<string, unknown>>)`
+const GlobeIcon = styled(Globe as React.ComponentType<Record<string, unknown>>)`
   font-size: ${(p) => p.theme.fontSizes.md};
   color: ${(p) => p.theme.colors.primary};
 `;
@@ -61,7 +62,7 @@ const GlobeIcon = styled(FiGlobe as React.ComponentType<Record<string, unknown>>
 /**
  * Chevron icon
  */
-const ChevronIcon = styled(FiChevronDown as React.ComponentType<Record<string, unknown>>)`
+const ChevronIcon = styled(ChevronDown as React.ComponentType<Record<string, unknown>>)`
   font-size: ${(p) => p.theme.fontSizes.md};
   color: ${(p) => p.theme.colors.text};
   opacity: 0.6;

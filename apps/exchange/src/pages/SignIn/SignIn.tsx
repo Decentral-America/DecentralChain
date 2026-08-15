@@ -1,28 +1,23 @@
 /**
  * SignIn Page
- * Full-screen mobile-app experience on mobile, 2-column layout on desktop.
+ * Full-screen mobile-app experience on mobile, dark-canvas 2-column layout on desktop.
  */
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SecurityIcon from '@mui/icons-material/Security';
 import SpeedIcon from '@mui/icons-material/Speed';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
-import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
+import Logo from '@/components/atoms/Logo';
+import { AuthScene } from '@/components/auth/AuthScene';
+import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
+import { MobileButton } from '@/components/mobile/primitives';
 import { LoginForm } from '@/features/auth/LoginForm';
-import { landingTheme } from '@/theme/landingTheme';
+import { palette } from '@/styles/tokens';
+import { landingTheme, onCanvas } from '@/theme/landingTheme';
 
 const SignInInner: React.FC = () => {
   const navigate = useNavigate();
@@ -32,219 +27,143 @@ const SignInInner: React.FC = () => {
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
     return (
-      <MobileAuthShell
-        actionLabel="Create Wallet"
-        actionRoute="/create-account"
-        secondaryActionLabel="Import"
-        secondaryActionRoute="/import-account"
+      <MobileAuthScreen
+        hideBack
+        title="Welcome back"
+        subtitle="Unlock your wallet to continue trading."
+        footer={
+          <Box sx={{ display: 'grid', gap: 1.25 }}>
+            <MobileButton variant="outline" onClick={() => navigate('/create-account')}>
+              Create a new wallet
+            </MobileButton>
+            <MobileButton variant="outline" onClick={() => navigate('/import-account')}>
+              Import an existing wallet
+            </MobileButton>
+          </Box>
+        }
       >
         <LoginForm />
-      </MobileAuthShell>
+      </MobileAuthScreen>
     );
   }
 
-  /* ─── DESKTOP: 2-column layout ─── */
+  /* ─── DESKTOP: the night canvas the landing page arrives from ─── */
   return (
-    <Box
-      sx={{
-        alignItems: 'center',
-        bgcolor: 'background.default',
-        display: 'flex',
-        minHeight: '100vh',
-      }}
-    >
-      <Container maxWidth="xl" sx={{ py: 8 }}>
-        <Grid
-          container
-          spacing={6}
-          sx={{
-            alignItems: 'center',
-          }}
-        >
-          {/* Left Column - Branding & Features */}
-          <Grid
-            size={{
-              md: 5,
+    <AuthScene>
+      <Grid container spacing={{ md: 8, xs: 5 }} sx={{ alignItems: 'center' }}>
+        {/* Left column — the statement */}
+        <Grid size={{ md: 6, xs: 12 }}>
+          <Box sx={{ mb: 4 }}>
+            <Logo onDark sx={{ height: 32 }} />
+          </Box>
+
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              letterSpacing: '-0.03em',
+              lineHeight: 1.0,
+              maxWidth: 520,
+              textTransform: 'uppercase',
             }}
           >
-            <Box sx={{ pr: 4 }}>
-              <Box sx={{ mb: 3 }}>
-                <Box
-                  component="img"
-                  src="/assets/decentralexchange.svg"
-                  alt="Decentral Exchange"
-                  sx={{ height: 40, width: 'auto' }}
-                />
-              </Box>
+            Welcome back
+          </Typography>
 
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: '2.5rem',
-                  fontWeight: 800,
-                  lineHeight: 1.2,
-                  mb: 2,
-                }}
-              >
-                Welcome back to the future of trading
-              </Typography>
+          <Typography
+            sx={{
+              color: onCanvas.secondary,
+              fontSize: { md: 22, xs: 18 },
+              fontWeight: 300,
+              letterSpacing: '-0.22px',
+              lineHeight: 1.4,
+              maxWidth: 460,
+              mt: 3,
+            }}
+          >
+            Sign in to access your account and continue trading securely.
+          </Typography>
 
-              <Typography
-                variant="body1"
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: 18,
-                  mb: 4,
-                }}
-              >
-                Sign in to access your decentralized exchange account and continue trading securely.
-              </Typography>
-
-              <Stack direction="column" spacing={2} sx={{ mb: 4 }}>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  startIcon={<AccountBalanceWalletIcon />}
-                  onClick={() => navigate('/create-account')}
-                  sx={{
-                    '&:hover': { bgcolor: 'primary.main', borderWidth: 2, color: 'white' },
-                    borderColor: 'primary.main',
-                    borderWidth: 2,
-                    color: 'primary.main',
-                    fontWeight: 600,
-                  }}
-                >
-                  Still don&apos;t have a wallet? Create Account
-                </Button>
-
-                <Button
-                  variant="text"
-                  size="large"
-                  onClick={() => navigate('/import-account')}
-                  sx={{
-                    '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' },
-                    color: 'text.primary',
-                    fontWeight: 600,
-                  }}
-                >
-                  Import Existing Wallet →
-                </Button>
-              </Stack>
-
-              <Stack spacing={2.5}>
-                {[
-                  {
-                    color: 'primary.main',
-                    desc: 'Your keys, your crypto. Non-custodial wallet protection.',
-                    icon: <SecurityIcon sx={{ fontSize: 20 }} />,
-                    title: 'Bank-grade Security',
-                  },
-                  {
-                    color: 'secondary.main',
-                    desc: 'Execute trades in seconds with our optimized infrastructure.',
-                    icon: <SpeedIcon sx={{ fontSize: 20 }} />,
-                    title: 'Lightning Fast',
-                  },
-                  {
-                    color: 'primary.main',
-                    desc: 'Professional charts, real-time analytics, and smart routing.',
-                    icon: <TrendingUpIcon sx={{ fontSize: 20 }} />,
-                    title: 'Advanced Trading Tools',
-                  },
-                ].map((f) => (
-                  <Stack
-                    key={f.title}
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                      alignItems: 'flex-start',
-                    }}
+          {/* Line-art icons in the accent color; no filled circles */}
+          <Stack spacing={3} sx={{ mt: 6 }}>
+            {[
+              {
+                desc: 'Your keys, your crypto. Non-custodial by design.',
+                icon: <SecurityIcon sx={{ fontSize: 20 }} />,
+                title: 'Bank-grade security',
+              },
+              {
+                desc: 'Execute trades in seconds on optimized infrastructure.',
+                icon: <SpeedIcon sx={{ fontSize: 20 }} />,
+                title: 'Lightning fast',
+              },
+              {
+                desc: 'Professional charts, real-time analytics, smart routing.',
+                icon: <TrendingUpIcon sx={{ fontSize: 20 }} />,
+                title: 'Advanced trading tools',
+              },
+            ].map((f) => (
+              <Stack key={f.title} direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                <Box sx={{ color: palette.indigoHover, flexShrink: 0, lineHeight: 0, mt: '2px' }}>
+                  {f.icon}
+                </Box>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography
+                    sx={{ color: onCanvas.primary, fontSize: 16, letterSpacing: '-0.16px' }}
                   >
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        bgcolor: f.color,
-                        borderRadius: '50%',
-                        color: 'white',
-                        display: 'flex',
-                        flexShrink: 0,
-                        height: 40,
-                        justifyContent: 'center',
-                        width: 40,
-                      }}
-                    >
-                      {f.icon}
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                        }}
-                      >
-                        {f.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        {f.desc}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                ))}
+                    {f.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: onCanvas.secondary }}>
+                    {f.desc}
+                  </Typography>
+                </Box>
               </Stack>
-            </Box>
-          </Grid>
+            ))}
+          </Stack>
+        </Grid>
 
-          {/* Right Column - Login Form */}
-          <Grid
-            size={{
-              md: 7,
-            }}
-          >
-            <Box
+        {/* Right column — the form, on a flat bordered card */}
+        <Grid size={{ md: 6, xs: 12 }}>
+          {/* The form supplies its own card surface — no nested border here */}
+          <Box sx={{ width: '100%' }}>
+            <LoginForm />
+          </Box>
+
+          <Stack spacing={1} sx={{ mt: 3 }}>
+            {/*
+                New here? Creating a wallet is the offer, styled to hold its
+                own against the form above it — the outline reads on the night
+                ground where the theme's default would vanish.
+              */}
+            <Button
+              variant="outlined"
+              startIcon={<AccountBalanceWalletIcon />}
+              onClick={() => navigate('/create-account')}
+              fullWidth
               sx={{
-                alignItems: 'center',
-                background: `
-                  radial-gradient(1200px 600px at 20% -10%, #FF7A59 0%, rgba(255,122,89,0) 60%),
-                  radial-gradient(900px 500px at 70% 0%, #5B8CFF 0%, rgba(91,140,255,0) 60%),
-                  radial-gradient(800px 400px at 40% 30%, #9D4EDD 0%, rgba(157,78,221,0) 60%),
-                  linear-gradient(180deg, #0A0E1A 0%, #111827 100%)
-                `,
-                borderRadius: 3,
-                display: 'flex',
-                filter: 'saturate(1.05)',
-                justifyContent: 'center',
-                minHeight: '600px',
-                overflow: 'hidden',
-                padding: 5,
-                position: 'relative',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.08)',
+                  borderColor: 'common.white',
+                },
+                borderColor: 'rgba(255, 255, 255, 0.4)',
+                color: 'common.white',
+                py: 1.25,
               }}
             >
-              <Box
-                sx={{
-                  backdropFilter: 'blur(10px)',
-                  bgcolor: 'rgba(255, 255, 255, 0.95)',
-                  borderRadius: 2.5,
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  p: 4,
-                  position: 'relative',
-                  width: '100%',
-                  zIndex: 1,
-                }}
-              >
-                <Box sx={{ width: '100%' }}>
-                  <LoginForm />
-                </Box>
-              </Box>
-            </Box>
-          </Grid>
+              Create a new wallet
+            </Button>
+            <Button
+              onClick={() => navigate('/import-account')}
+              fullWidth
+              sx={{ '&:hover': { color: 'common.white' }, color: onCanvas.secondary }}
+            >
+              Import existing wallet ›
+            </Button>
+          </Stack>
         </Grid>
-      </Container>
-    </Box>
+      </Grid>
+    </AuthScene>
   );
 };
 

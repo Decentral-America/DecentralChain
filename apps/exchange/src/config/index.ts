@@ -57,7 +57,7 @@ const getConfig = (): Config => {
     matcherUrl: import.meta.env.VITE_MATCHER_URL || NetworkConfig.matcher,
 
     // Network configuration - defaults from NetworkConfig (mainnet.json)
-    network: import.meta.env.VITE_NETWORK || 'mainnet',
+    network: import.meta.env.VITE_NETWORK || 'testnet',
     networkByte: NetworkConfig.networkByte,
     nodeUrl: import.meta.env.VITE_NODE_URL || NetworkConfig.node,
     originUrl: NetworkConfig.origin,

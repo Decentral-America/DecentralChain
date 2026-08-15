@@ -69,7 +69,10 @@ export const getAliasesByAddress = async (address: string): Promise<string[]> =>
     const aliases = await ds.api.aliases.getAliasesByAddress(address);
     return aliases || [];
   } catch (error: unknown) {
-    logger.error('Error fetching aliases:', error);
+    // A brand-new address with zero aliases is the expected case, not a
+    // failure — the API errors instead of returning an empty list. Logged at
+    // debug rather than error so a normal wallet doesn't read as broken.
+    logger.debug('No aliases found for address (or lookup failed):', error);
     return [];
   }
 };

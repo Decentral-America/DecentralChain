@@ -1,39 +1,50 @@
 import { Box, Container, Divider, Grid, Link, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import Logo from '@/components/atoms/Logo';
+import { onCanvas } from '@/theme/landingTheme';
 
 const footerLinks = {
-  Resources: [
-    { href: 'https://docs.decentralchain.io', label: 'Documentation' },
-    { href: 'https://decentralchain.io', label: 'DecentralChain' },
-    { href: 'https://decentralscan.com', label: 'Block Explorer' },
+  resources: [
+    { href: 'https://docs.decentralchain.io', key: 'documentation' },
+    { href: 'https://decentralchain.io', key: 'decentralchain' },
+    { href: 'https://decentralscan.com', key: 'blockExplorer' },
   ],
-  Support: [
-    { href: 'https://docs.decentralchain.io', label: 'Help Center' },
-    { href: 'https://github.com/Decentral-America/DecentralChain/issues', label: 'Report Issue' },
+  support: [
+    { href: 'https://docs.decentralchain.io', key: 'helpCenter' },
+    { href: 'https://github.com/Decentral-America/DecentralChain/issues', key: 'reportIssue' },
   ],
-  Trading: [
-    { href: '/dex', label: 'DEX Trading' },
-    { href: '/leasing', label: 'Staking' },
-    { href: '/wallet', label: 'Portfolio' },
+  trading: [
+    { href: '/dex', key: 'dexTrading' },
+    { href: '/leasing', key: 'staking' },
+    { href: '/wallet', key: 'portfolio' },
   ],
-  Wallet: [
-    { href: '/create-account', label: 'Create Wallet' },
-    { href: '/import', label: 'Import Account' },
-    { href: '/import/ledger', label: 'Ledger Support' },
+  wallet: [
+    { href: '/create-account', key: 'createWallet' },
+    { href: '/import', key: 'importAccount' },
+    { href: '/import/ledger', key: 'ledgerSupport' },
   ],
-};
+} as const;
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <Box
       component="footer"
       sx={{
-        bgcolor: 'background.default',
-        borderTop: '1px solid #E6EAF2',
-        pb: { md: 6, xs: 5 },
+        /*
+         * White at 82% on the night canvas clears the 4.5:1 floor for the
+         * footer's 14px links with room to spare — measured, as ever, not
+         * assumed.
+         */
+        '& .MuiTypography-root[class*="body2"], & a': { color: onCanvas.secondary },
+        borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+        color: onCanvas.primary,
+        overflow: 'hidden',
+        pb: { md: 4, xs: 3 },
         pt: { md: 9, xs: 7 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Grid container spacing={4}>
           {/* Brand */}
           <Grid
@@ -42,40 +53,23 @@ export default function Footer() {
               xs: 12,
             }}
           >
-            <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, mb: 2 }}>
-              <Box
-                component="img"
-                src="/favicon.png?v=3"
-                alt="DecentralChain"
-                sx={{ borderRadius: '50%', height: 32, width: 32 }}
-              />
-              <Typography
-                component="p"
-                variant="h6"
-                sx={{ fontWeight: 700, letterSpacing: '-0.5px' }}
-              >
-                Decentral
-                <Box component="span" sx={{ color: 'primary.main' }}>
-                  .Exchange
-                </Box>
-              </Typography>
+            {/*
+              The text mark, not the SVG: the image is drawn in ink and
+              disappears on the night canvas, while the atom inherits white
+              and keeps its lavender accent.
+            */}
+            <Box sx={{ mb: 2 }}>
+              <Logo onDark sx={{ height: 32 }} />
             </Box>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-                maxWidth: 300,
-              }}
-            >
-              Non-custodial wallet and DEX platform for DecentralChain blockchain. Trade, stake, and
-              manage your DCC tokens securely.
+            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
+              {t('app.landing.footer.tagline')}
             </Typography>
           </Grid>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([title, links]) => (
+          {Object.entries(footerLinks).map(([category, links]) => (
             <Grid
-              key={title}
+              key={category}
               size={{
                 md: 2,
                 sm: 3,
@@ -83,29 +77,24 @@ export default function Footer() {
               }}
             >
               <Typography
-                component="p"
+                component="h3"
                 variant="subtitle2"
-                sx={{
-                  fontWeight: 700,
-                  mb: 2,
-                }}
+                sx={{ color: onCanvas.primary, mb: 2 }}
               >
-                {title}
+                {t(`app.landing.footer.categories.${category}`)}
               </Typography>
               <Stack spacing={1}>
                 {links.map((link) => (
                   <Link
-                    key={link.label}
+                    key={link.key}
                     href={link.href}
                     underline="hover"
+                    color="text.secondary"
+                    sx={{ fontSize: 14 }}
                     target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    sx={{
-                      color: 'text.secondary',
-                      fontSize: 14,
-                    }}
                   >
-                    {link.label}
+                    {t(`app.landing.footer.links.${link.key}`)}
                   </Link>
                 ))}
               </Stack>
@@ -113,23 +102,15 @@ export default function Footer() {
           ))}
         </Grid>
 
-        <Divider sx={{ my: 4 }} />
+        <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)', my: 4 }} />
 
         <Stack
           direction={{ sm: 'row', xs: 'column' }}
           spacing={2}
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
+          sx={{ alignItems: 'center', justifyContent: 'space-between' }}
         >
-          <Typography
-            variant="caption"
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
-            © {new Date().getFullYear()} Decentral Exchange. Built on DecentralChain.
+          <Typography variant="caption" sx={{ color: onCanvas.muted }}>
+            {t('app.landing.footer.copyright')}
           </Typography>
           <Stack direction="row" spacing={3}>
             <Link
@@ -137,39 +118,55 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              sx={{
-                color: 'text.secondary',
-                fontSize: 12,
-              }}
+              color="text.secondary"
+              sx={{ fontSize: 12 }}
             >
-              Privacy
+              {t('app.landing.footer.links.privacy')}
             </Link>
             <Link
               href="https://decentralchain.io/terms-and-conditions"
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              sx={{
-                color: 'text.secondary',
-                fontSize: 12,
-              }}
+              color="text.secondary"
+              sx={{ fontSize: 12 }}
             >
-              Terms
+              {t('app.landing.footer.links.terms')}
             </Link>
             <Link
               href="https://docs.decentralchain.io"
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-              sx={{
-                color: 'text.secondary',
-                fontSize: 12,
-              }}
+              color="text.secondary"
+              sx={{ fontSize: 12 }}
             >
-              Docs
+              {t('app.landing.footer.links.docs')}
             </Link>
           </Stack>
         </Stack>
+
+        {/*
+          The giant wordmark: the page signs off with the brand set larger
+          than anything above it, cropped by the fold like a signature.
+        */}
+        <Typography
+          aria-hidden="true"
+          sx={{
+            color: 'rgba(255, 255, 255, 0.08)',
+            fontSize: 'clamp(64px, 13vw, 210px)',
+            fontWeight: 700,
+            letterSpacing: '-0.04em',
+            lineHeight: 0.8,
+            mb: '-0.12em',
+            mt: { md: 6, xs: 4 },
+            textAlign: 'center',
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Decentral.Exchange
+        </Typography>
       </Container>
     </Box>
   );

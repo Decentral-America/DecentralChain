@@ -1,137 +1,196 @@
 /**
  * Icon Component System
- * Wrapper for react-icons with consistent styling
- * Compatible with Material-UI
  *
- * IMPORTANT: Only import the specific icons used in `CommonIcons`. Do NOT use
- * wildcard `* as MdIcons` — that bundles all 3,000+ icons and adds 3.3 MB to the
- * lazy chunks that include this component.
+ * Built on Lucide: geometric line-art with a configurable stroke, which is what
+ * the design system specifies — 1.5px strokes in the accent colour or
+ * currentColor, never filled glyphs and never emoji.
+ *
+ * Icons are imported by name rather than with a namespace import. The previous
+ * implementation pulled in three complete icon sets (`import * as MdIcons`
+ * etc.), which defeats tree-shaking and ships thousands of unused paths.
  */
 
-import { styled } from '@mui/material/styles';
-import type React from 'react';
-// Named imports only — tree-shakeable (one file per icon ~200 B each)
 import {
-  MdAccountBalanceWallet,
-  MdAdd,
-  MdArrowBack,
-  MdArrowForward,
-  MdCheck,
-  MdClose,
-  MdDelete,
-  MdEdit,
-  MdError,
-  MdHome,
-  MdInfo,
-  MdMenu,
-  MdPerson,
-  MdRemove,
-  MdSave,
-  MdSearch,
-  MdSend,
-  MdSettings,
-  MdWarning,
-} from 'react-icons/md';
+  AlertTriangle,
+  ArrowDown,
+  ArrowDownToLine,
+  ArrowLeft,
+  ArrowRight,
+  ArrowRightLeft,
+  ArrowUp,
+  ArrowUpRight,
+  Ban,
+  Bell,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Clipboard,
+  Copy,
+  CreditCard,
+  Download,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Flame,
+  Globe,
+  Info,
+  Key,
+  KeyRound,
+  Landmark,
+  LineChart,
+  Loader2,
+  Lock,
+  LogIn,
+  LogOut,
+  type LucideIcon,
+  Menu,
+  Moon,
+  Pencil,
+  Plus,
+  QrCode,
+  RefreshCw,
+  Save,
+  ScrollText,
+  Search,
+  Send,
+  Settings,
+  Shield,
+  Sparkles,
+  Sun,
+  Trash2,
+  TrendingUp,
+  Unlock,
+  Upload,
+  User,
+  Wallet,
+  X,
+} from 'lucide-react';
+import React from 'react';
 import { logger } from '@/lib/logger';
 
-// Static map of all icons referenced by CommonIcons. Add new entries here
-// when extending CommonIcons — never use a wildcard import.
-const ICON_MAP = {
-  MdAccountBalanceWallet,
-  MdAdd,
-  MdArrowBack,
-  MdArrowForward,
-  MdCheck,
-  MdClose,
-  MdDelete,
-  MdEdit,
-  MdError,
-  MdHome,
-  MdInfo,
-  MdMenu,
-  MdPerson,
-  MdRemove,
-  MdSave,
-  MdSearch,
-  MdSend,
-  MdSettings,
-  MdWarning,
-} as const;
+/**
+ * The curated icon set. Keeping the surface small is deliberate: it keeps the
+ * visual language uniform and makes the bundle cost explicit.
+ */
+export const ICONS = {
+  add: Plus,
+  alert: AlertTriangle,
+  arrowBack: ArrowLeft,
+  arrowForward: ArrowRight,
+  arrowUpRight: ArrowUpRight,
+  bank: Landmark,
+  bell: Bell,
+  burn: Flame,
+  card: CreditCard,
+  chart: LineChart,
+  check: Check,
+  chevronDown: ChevronDown,
+  chevronRight: ChevronRight,
+  clipboard: Clipboard,
+  close: X,
+  copy: Copy,
+  delete: Trash2,
+  deny: Ban,
+  download: Download,
+  edit: Pencil,
+  error: AlertTriangle,
+  externalLink: ExternalLink,
+  eye: Eye,
+  eyeOff: EyeOff,
+  globe: Globe,
+  import: ArrowDownToLine,
+  info: Info,
+  key: Key,
+  lock: Lock,
+  login: LogIn,
+  logout: LogOut,
+  menu: Menu,
+  moon: Moon,
+  privateKey: KeyRound,
+  qr: QrCode,
+  refresh: RefreshCw,
+  save: Save,
+  search: Search,
+  seed: ScrollText,
+  send: Send,
+  settings: Settings,
+  shield: Shield,
+  sparkle: Sparkles,
+  spinner: Loader2,
+  success: Check,
+  sun: Sun,
+  swap: ArrowRightLeft,
+  trendDown: ArrowDown,
+  trending: TrendingUp,
+  trendUp: ArrowUp,
+  unlock: Unlock,
+  upload: Upload,
+  user: User,
+  wallet: Wallet,
+  warning: AlertTriangle,
+} satisfies Record<string, LucideIcon>;
 
-type IconName = keyof typeof ICON_MAP;
+export type IconName = keyof typeof ICONS;
 
-export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface IconProps extends Omit<React.SVGProps<SVGSVGElement>, 'name' | 'ref'> {
   name: IconName;
+  /** Rendered size in pixels. Defaults to 20 — the system's inline icon size. */
   size?: number | string;
+  /** Overrides `currentColor`. Prefer inheriting from the parent. */
   color?: string;
-  /** @deprecated library selection is no longer needed — all icons are MD. */
-  library?: 'md' | 'fa' | 'fi';
+  /** Stroke weight. 1.5 is the system default; do not thicken it casually. */
+  strokeWidth?: number;
 }
 
-const IconWrapper = styled('span', {
-  shouldForwardProp: (prop) => !['size', 'color'].includes(prop as string),
-})<{ size: string; color?: string | undefined }>(({ size, color }) => ({
-  '& svg': {
-    height: '1em',
-    width: '1em',
+export const Icon = React.forwardRef<SVGSVGElement, IconProps>(
+  ({ name, size = 20, color, strokeWidth = 1.5, ...props }, ref) => {
+    const LucideComponent = ICONS[name];
+
+    if (!LucideComponent) {
+      logger.warn(`Icon "${name}" is not in the curated icon set`);
+      return null;
+    }
+
+    return (
+      <LucideComponent
+        ref={ref}
+        size={size}
+        color={color ?? 'currentColor'}
+        strokeWidth={strokeWidth}
+        aria-hidden={props['aria-label'] ? undefined : true}
+        focusable="false"
+        {...props}
+      />
+    );
   },
-  alignItems: 'center',
-  color: color || 'currentColor',
-  display: 'inline-flex',
-  flexShrink: 0,
-  fontSize: size,
-  justifyContent: 'center',
-  lineHeight: 1,
-}));
+);
 
-export function Icon({
-  ref,
-  name,
-  size = 24,
-  color,
-  library: _library,
-  ...props
-}: IconProps & { ref?: React.Ref<HTMLSpanElement> }) {
-  const IconComponent = ICON_MAP[name] as React.ComponentType | undefined;
+Icon.displayName = 'Icon';
 
-  if (!IconComponent) {
-    logger.warn(`Icon "${name}" not found`);
-    return null;
-  }
-
-  const sizeValue = typeof size === 'number' ? `${size}px` : size;
-
-  return (
-    <IconWrapper ref={ref} size={sizeValue} color={color} {...props}>
-      <IconComponent />
-    </IconWrapper>
-  );
-}
-
-// Common icon name exports for convenience
+/**
+ * Legacy name map.
+ *
+ * Existing call sites use `CommonIcons.Info` and similar; these now resolve to
+ * the Lucide set so no consumer needs to change to get the new rendering.
+ */
 export const CommonIcons = {
-  // Wallet
-  AccountBalanceWallet: 'MdAccountBalanceWallet' as IconName,
-  // Actions
-  Add: 'MdAdd' as IconName,
-  ArrowBack: 'MdArrowBack' as IconName,
-  ArrowForward: 'MdArrowForward' as IconName,
-  // Status
-  Check: 'MdCheck' as IconName,
-  Close: 'MdClose' as IconName,
-  Delete: 'MdDelete' as IconName,
-  Edit: 'MdEdit' as IconName,
-  Error: 'MdError' as IconName,
-  // Navigation
-  Home: 'MdHome' as IconName,
-  Info: 'MdInfo' as IconName,
-  Menu: 'MdMenu' as IconName,
-  // User
-  Person: 'MdPerson' as IconName,
-  Remove: 'MdRemove' as IconName,
-  Save: 'MdSave' as IconName,
-  Search: 'MdSearch' as IconName,
-  Send: 'MdSend' as IconName,
-  Settings: 'MdSettings' as IconName,
-  Warning: 'MdWarning' as IconName,
-} as const;
+  AccountBalanceWallet: 'wallet',
+  Add: 'add',
+  ArrowBack: 'arrowBack',
+  ArrowForward: 'arrowForward',
+  Check: 'check',
+  Close: 'close',
+  Delete: 'delete',
+  Edit: 'edit',
+  Error: 'error',
+  Home: 'wallet',
+  Info: 'info',
+  Menu: 'menu',
+  Person: 'user',
+  Remove: 'close',
+  Save: 'save',
+  Search: 'search',
+  Send: 'send',
+  Settings: 'settings',
+  Warning: 'warning',
+} satisfies Record<string, IconName>;
