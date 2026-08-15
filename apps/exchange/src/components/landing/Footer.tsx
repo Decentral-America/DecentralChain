@@ -149,11 +149,15 @@ export default function Footer() {
         {/*
           The giant wordmark: the page signs off with the brand set larger
           than anything above it, cropped by the fold like a signature.
+          0.36 opacity is the floor for 3:1 contrast against the canvas at this
+          weight/size (WCAG large-text threshold) — aria-hidden exempts it from
+          the accessibility tree, but axe still (correctly) checks contrast for
+          sighted low-vision users, so it can't go as faint as pure decoration.
         */}
         <Typography
           aria-hidden="true"
           sx={{
-            color: 'rgba(255, 255, 255, 0.08)',
+            color: 'rgba(255, 255, 255, 0.36)',
             fontSize: 'clamp(64px, 13vw, 210px)',
             fontWeight: 700,
             letterSpacing: '-0.04em',
