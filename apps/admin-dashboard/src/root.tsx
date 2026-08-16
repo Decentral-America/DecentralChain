@@ -15,7 +15,7 @@ import { logger } from '@/lib/logger';
 import { queryClientInstance } from '@/lib/query-client';
 import { type Route } from './+types/root';
 
-function runtimeConfig() {
+export function runtimeConfig() {
   return {
     grafanaUrl: process.env.GRAFANA_URL ?? '',
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',

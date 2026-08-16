@@ -7,6 +7,7 @@ import { type EntryContext, type RouterContextProvider, ServerRouter } from 'rea
 import { isUsingDefaultSecret } from '@/lib/auth';
 import { migrateSchema } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { runtimeConfig } from './root';
 
 // Startup checks and migrations — run once when the server process starts.
 void migrateSchema();
@@ -32,6 +33,16 @@ if (
 }
 
 const ABORT_DELAY = 5_000;
+
+/** Extracts just the origin (scheme + host) for a CSP source value; '' if unset/invalid. */
+function safeOrigin(url: string): string {
+  if (!url) return '';
+  try {
+    return new URL(url).origin;
+  } catch {
+    return '';
+  }
+}
 
 export default function handleRequest(
   request: Request,
@@ -69,11 +80,41 @@ export default function handleRequest(
             'camera=(), microphone=(), geolocation=(), interest-cohort=()',
           );
           responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+
+          // Several pages fetch external services directly from the browser rather
+          // than through a server-side proxy: ChainHealth/GeneratorPerformance hit
+          // the configured node URL, Operations hits npm's registry + Codecov's API,
+          // and Operations also embeds Grafana in an iframe. connect-src/frame-src
+          // must list these or the requests are silently blocked — derived from the
+          // same runtimeConfig() the app itself uses, so it stays correct across
+          // networks (testnet/mainnet) instead of hardcoding one environment's hosts.
+          const { nodeUrl, grafanaUrl } = runtimeConfig();
+          const connectSrc = [
+            "'self'",
+            safeOrigin(nodeUrl),
+            'https://registry.npmjs.org',
+            'https://codecov.io',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const frameSrc = safeOrigin(grafanaUrl);
+
           // 'unsafe-inline' on style-src is a pragmatic starting point (component libraries commonly
           // set inline style attributes) — tighten with nonces/hashes later if that surface matters.
           responseHeaders.set(
             'Content-Security-Policy',
-            `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`,
+            [
+              "default-src 'self'",
+              `script-src 'self' 'nonce-${nonce}'`,
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data:",
+              "font-src 'self' data:",
+              `connect-src ${connectSrc}`,
+              frameSrc ? `frame-src ${frameSrc}` : "frame-src 'none'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
           );
           resolve(
             new Response(stream, {
