@@ -64,6 +64,13 @@ WORKDIR /app
 # Copy only the standalone deployment from the builder
 COPY --from=builder --chown=dcc:dcc /app/standalone .
 
+# node:24-alpine ships npm's own bundled node_modules (tar, brace-expansion,
+# sigstore, ip-address, etc.) as part of the base image. This service never
+# invokes npm at runtime (started via `node dist/index.mjs`), so those vendored
+# packages are pure unused surface — remove them rather than wait on upstream
+# alpine/npm patches for CVEs in code that never executes here.
+RUN rm -rf /usr/local/lib/node_modules/npm
+
 USER dcc
 
 # Health check — GET /health returns {"status":"ok"} with HTTP 200.

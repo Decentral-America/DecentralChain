@@ -73,6 +73,13 @@ WORKDIR /app
 # Only copy the deployed scanner app and its production dependencies.
 COPY --from=build /prod/scanner ./
 
+# node:24-alpine ships npm's own bundled node_modules (tar, brace-expansion,
+# sigstore, ip-address, etc.) as part of the base image. This service never
+# invokes npm at runtime (served via react-router-serve), so those vendored
+# packages are pure unused surface — remove them rather than wait on upstream
+# alpine/npm patches for CVEs in code that never executes here.
+RUN rm -rf /usr/local/lib/node_modules/npm
+
 # Ensure non-root owns the files
 RUN chown -R scanner:scanner /app
 USER scanner
