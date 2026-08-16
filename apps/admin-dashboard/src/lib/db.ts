@@ -92,6 +92,32 @@ export async function migrateSchema(): Promise<void> {
       CREATE INDEX IF NOT EXISTS e2e_runs_started_at_idx
         ON e2e_runs (started_at DESC)
     `;
+    // Treasury auto-fund/auto-sweep wallets — generated fresh server-side per fund
+    // call (see api.treasury.fund.ts), never read from an external file. Sweeping
+    // only ever touches wallets this table generated, so it's self-tracking: no
+    // static CSV to upload to a server, no drift between what was funded and what
+    // gets swept back.
+    await sql`
+      CREATE TABLE IF NOT EXISTS treasury_wallets (
+        id            UUID        PRIMARY KEY,
+        fund_batch_id UUID        NOT NULL,
+        seed          TEXT        NOT NULL,
+        address       TEXT        NOT NULL,
+        public_key    TEXT        NOT NULL,
+        created_by    TEXT        NOT NULL,
+        created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+        funded_amount_wavelets BIGINT NOT NULL,
+        funded_tx_id  TEXT,
+        swept_at      TIMESTAMPTZ,
+        swept_tx_id   TEXT,
+        swept_amount_wavelets BIGINT
+      )
+    `;
+    await sql`
+      CREATE INDEX IF NOT EXISTS treasury_wallets_unswept_idx
+        ON treasury_wallets (swept_at)
+        WHERE swept_at IS NULL
+    `;
     logger.info('DB schema migration complete');
   } catch (err) {
     logger.error({ err }, 'DB schema migration failed — load test history will be unavailable');

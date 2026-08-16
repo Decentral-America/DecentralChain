@@ -4,7 +4,7 @@ import { type ActionFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { createIdempotencyCache, createRateLimiter } from '@/lib/rateLimiter';
-import { readWalletCsv } from '@/lib/wallets';
+import { generateWallets, insertFundedWallets } from '@/lib/treasuryWallets';
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -139,18 +139,12 @@ export async function action({ request }: ActionFunctionArgs) {
       { status: 400 },
     );
   }
-  const csvPath = process.env.DCC_WALLET_CSV_PATH ?? '/opt/dcc/test-wallets.csv';
-
-  let wallets: ReturnType<typeof readWalletCsv>;
-  try {
-    wallets = readWalletCsv(csvPath);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to read wallet CSV';
-    logger.error({ csvPath, err }, 'Treasury fund: failed to read CSV');
-    return Response.json({ error: message }, { status: 500 });
-  }
-
-  const targets = wallets.slice(0, count);
+  // Wallets generated fresh here, not read from an external file — a fund call
+  // is now fully self-contained and self-tracking. Persisted to the DB (below)
+  // right after each batch actually broadcasts, so a crash mid-fund never
+  // leaves generated wallets neither tracked nor recoverable.
+  const fundBatchId = crypto.randomUUID();
+  const targets = generateWallets(count, chainId);
   const amountWavelets = Math.floor(amountDcc * WAVELETS_PER_DCC);
 
   // Batch into groups of MAX_RECIPIENTS_PER_TX (MassTransfer limit)
@@ -161,7 +155,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const senderAddr = address(senderSeed, chainId);
   logger.info(
-    { batchCount: batches.length, chainId, count, nodeUrl, sender: senderAddr, user },
+    { batchCount: batches.length, chainId, count, fundBatchId, nodeUrl, sender: senderAddr, user },
     'Treasury fund: starting',
   );
 
@@ -182,6 +176,9 @@ export async function action({ request }: ActionFunctionArgs) {
       );
       await broadcast(tx, nodeUrl);
       txIds.push(tx.id);
+      // Only wallets that actually broadcast get tracked — a failed batch's
+      // wallets were never funded, so there's nothing for a sweep to find later.
+      await insertFundedWallets(batch, fundBatchId, amountWavelets, tx.id, user);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'broadcast failed';
       broadcastErrors.push(message);
@@ -216,13 +213,14 @@ export async function action({ request }: ActionFunctionArgs) {
     {
       broadcastErrors: broadcastErrors.length,
       confirmErrors: confirmErrors.length,
+      fundBatchId,
       txCount: txIds.length,
       user,
     },
     'Treasury fund: complete',
   );
 
-  const result = { errors: allErrors, txIds };
+  const result = { errors: allErrors, fundBatchId, txIds };
   if (idempotencyKey) idempotencyCache.set(idempotencyKey, result);
   return Response.json(result);
 }

@@ -4,14 +4,13 @@ import { address } from '@decentralchain/ts-lib-crypto';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { getUnsweptWallets, markSwept } from '@/lib/treasuryWallets';
 import {
   isFunded,
-  readWalletCsv,
   scanBalances,
   sweepAmount,
   TRANSFER_FEE,
   type WalletBalance,
-  type WalletEntry,
 } from '@/lib/wallets';
 
 async function getUser(request: Request): Promise<string | null> {
@@ -62,19 +61,21 @@ async function runSweep(
   senderAddress: string,
   user: string,
 ): Promise<void> {
-  const csvPath = process.env.DCC_WALLET_CSV_PATH ?? '/opt/dcc/test-wallets.csv';
-
-  let wallets: WalletEntry[];
+  // Only ever sweeps wallets this app itself generated and funded (see
+  // api.treasury.fund.ts) — no external file, so there's nothing to go stale or
+  // need re-uploading to a server, and a sweep can never touch an address it
+  // didn't fund in the first place.
+  let wallets: Awaited<ReturnType<typeof getUnsweptWallets>>;
   try {
-    wallets = readWalletCsv(csvPath);
+    wallets = await getUnsweptWallets();
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to read wallet CSV';
-    logger.error({ err, sweepId, user }, 'Sweep: failed to read wallet CSV');
+    const message = err instanceof Error ? err.message : 'Failed to load unswept treasury wallets';
+    logger.error({ err, sweepId, user }, 'Sweep: failed to load unswept wallets');
     emitter.emit('error', { event: 'error', message } satisfies SweepErrorEvent);
     return;
   }
 
-  logger.info({ csvPath, sweepId, user, wallets: wallets.length }, 'Sweep: scanning balances');
+  logger.info({ sweepId, user, wallets: wallets.length }, 'Sweep: scanning balances');
 
   let balances: WalletBalance[];
   try {
@@ -117,6 +118,10 @@ async function runSweep(
 
       await broadcast(tx, nodeUrl);
       recovered_wavelets += amount;
+      // Marked immediately after a successful broadcast, not batched at the end —
+      // if the process dies partway through a large sweep, wallets already swept
+      // stay marked and won't be swept (and double-charged the transfer fee) again.
+      await markSwept(wallet.address, tx.id, amount);
     } catch (err) {
       errors++;
       logger.warn({ address: wallet.address, err, sweepId }, 'Sweep: tx failed');
