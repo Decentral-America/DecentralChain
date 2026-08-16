@@ -449,15 +449,18 @@ gh workflow run update-caddy.yml --repo Decentral-America/infra --field network=
 > `swept_at IS NULL` — wallets this app itself generated and funded, nothing external. No file to
 > upload, no drift between what was funded and what gets swept back.
 >
-> Original design, superseded:
+> The `Wallets` scan tab (`api.treasury.scan.ts`) initially kept reading a separate external CSV via
+> `DCC_WALLET_CSV_PATH` for ad-hoc scanning — since removed too (2026-08-16), same day: it now calls
+> `lib/treasuryWallets.ts`'s `getAllWallets()` and shows every wallet this app has ever generated
+> (funded and already-swept alike), not an arbitrary external list. No CSV, no manual upload,
+> anywhere in Treasury at all now.
+>
+> Original design, fully superseded:
 > `Ecosystem/dcc-mass-transfer/real_wallets_2000_details.csv` — 2000 pre-generated wallets with
-> seeds, format `address,seed,public_key`, stored on Newark at `/opt/dcc/test-wallets.csv`. The
-> `Wallets` scan tab (`api.treasury.scan.ts`) still reads an arbitrary CSV via `DCC_WALLET_CSV_PATH`
-> for ad-hoc balance scanning of any address list — that's a genuinely separate, still-valid use
-> case, not part of the fund/sweep redesign.
+> seeds, format `address,seed,public_key`, stored on Newark at `/opt/dcc/test-wallets.csv`.
 
 ### Wallet balance scanning
-- For each address in CSV: `GET /addresses/balance/details/{address}` on the DCC node
+- For each address in `treasury_wallets`: `GET /addresses/balance/details/{address}` on the DCC node
 - Show `generating` balance (what matters for LPoS) and `available` (spendable)
 - Dust threshold: ignore wallets with < 1000 wavelets (0.00001 DCC)
 - Scan 2000 wallets in parallel using `Promise.allSettled` with batching (50 at a time to avoid node rate limits)
@@ -717,7 +720,7 @@ logger.error({ err, runId }, 'Process error')
 
 | Issue | Priority | How to fix |
 |---|---|---|
-| ~~Wallet CSV not on Newark~~ | RESOLVED (2026-08-16) | Fund/sweep no longer depend on a CSV at all — see §10. The `Wallets` scan tab still reads `DCC_WALLET_CSV_PATH` for ad-hoc scans of an arbitrary address list, which is a separate, optional feature. |
+| ~~Wallet CSV not on Newark~~ | RESOLVED (2026-08-16) | Fund/sweep/scan no longer depend on a CSV at all — see §10. Nothing in Treasury needs a file uploaded to the server anymore. |
 | ~~`GHCR_TOKEN` missing `delete:packages` scope~~ | — | **RESOLVED, confirmed 2026-08-02.** Verified behaviorally (GitHub's API never exposes stored-secret scopes directly): the scheduled `ghcr-cleanup.yml` run (30733948843) actually deleted 20 real images from the `node-scala` package with zero 403/permission errors — a delete only succeeds with `delete:packages`, so the PAT is correctly scoped. |
 | `SENTRY_AUTH_TOKEN` not in SOPS | MEDIUM | Get token from Sentry → Settings → Auth Tokens. Add `SENTRY_AUTH_TOKEN=<value>` to `infra/secrets/testnet.env` via SOPS then push. The server-side proxy route (`/api/sentry/issues`) is already wired — will activate once the env var is present. |
 | `GRAFANA_URL` not set | LOW | Add `GRAFANA_URL=https://grafana.decentralchain.io` to SOPS |

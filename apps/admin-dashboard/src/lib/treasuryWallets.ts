@@ -51,7 +51,7 @@ export async function insertFundedWallets(
   `;
 }
 
-interface UnsweptRow {
+interface WalletRow {
   id: string;
   address: string;
   seed: string;
@@ -61,8 +61,21 @@ interface UnsweptRow {
 /** Every treasury-generated wallet that hasn't been swept back yet — the sweep target list. */
 export async function getUnsweptWallets(): Promise<WalletEntry[]> {
   const sql = getSql();
-  const rows = await sql<UnsweptRow[]>`
+  const rows = await sql<WalletRow[]>`
     SELECT id, address, seed, public_key FROM treasury_wallets WHERE swept_at IS NULL
+  `;
+  return rows.map((r) => ({ address: r.address, publicKey: r.public_key, seed: r.seed }));
+}
+
+/**
+ * Every wallet this app has ever generated, newest first — the scan target
+ * list. Unlike getUnsweptWallets, this includes already-swept wallets too, so
+ * the Wallets tab shows the full history rather than just what's pending.
+ */
+export async function getAllWallets(): Promise<WalletEntry[]> {
+  const sql = getSql();
+  const rows = await sql<WalletRow[]>`
+    SELECT id, address, seed, public_key FROM treasury_wallets ORDER BY created_at DESC
   `;
   return rows.map((r) => ({ address: r.address, publicKey: r.public_key, seed: r.seed }));
 }

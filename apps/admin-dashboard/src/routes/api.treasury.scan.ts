@@ -2,7 +2,7 @@ import { type LoaderFunctionArgs } from 'react-router';
 import { fetchBalanceDetails } from '@/lib/api';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
-import { readWalletCsv, type WalletEntry } from '@/lib/wallets';
+import { getAllWallets } from '@/lib/treasuryWallets';
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -15,12 +15,13 @@ const SCAN_BATCH_SIZE = 50;
 const DUST_THRESHOLD_WAVELETS = 1_000;
 
 // ── Streaming loader ──────────────────────────────────────────────────────────
-// Scans 2000 wallets in batches of 50 and streams progress as SSE events so the
-// client can render results incrementally rather than waiting for all 40+ batches.
+// Scans every wallet this app has ever generated (treasury_wallets — see
+// lib/treasuryWallets.ts) in batches, streaming progress as SSE events so the
+// client can render results incrementally rather than waiting for every batch.
 //
 // Event types:
 //   data: { type: 'progress', processed: N, total: N }
-//   data: { type: 'wallet', address, available, generating, funded }
+//   data: { type: 'batch', wallets: [...] }
 //   data: { type: 'done', processed: N, funded: N, totalAvailable: N }
 //   data: { type: 'error', message }
 
@@ -33,20 +34,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     process.env.DCC_NODE_URL ??
     'https://testnet-node.decentralchain.io';
 
-  const csvPath = process.env.DCC_WALLET_CSV_PATH ?? '/opt/dcc/test-wallets.csv';
-
-  let wallets: WalletEntry[];
+  let wallets: Awaited<ReturnType<typeof getAllWallets>>;
   try {
-    wallets = readWalletCsv(csvPath);
+    wallets = await getAllWallets();
   } catch (err) {
-    const isEnoent =
-      err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT';
-    const message = isEnoent
-      ? `Wallet CSV not found at "${csvPath}". Upload the file to that path on the server, or set the DCC_WALLET_CSV_PATH environment variable to its location.`
-      : err instanceof Error
-        ? err.message
-        : 'Failed to read wallet CSV';
-    logger.error({ csvPath, err }, 'Treasury scan: failed to read CSV');
+    const message = err instanceof Error ? err.message : 'Failed to load treasury wallets';
+    logger.error({ err }, 'Treasury scan: failed to load wallets');
     const enc = new TextEncoder();
     const errStream = new ReadableStream({
       start(controller) {
