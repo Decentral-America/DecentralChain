@@ -9,7 +9,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router';
-import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
@@ -62,20 +61,18 @@ export function meta(): Route.MetaDescriptors {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <QueryClientProvider client={queryClientInstance}>
-            {children}
-            <Toaster />
-          </QueryClientProvider>
-        </ThemeProvider>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <QueryClientProvider client={queryClientInstance}>
+          {children}
+          <Toaster />
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

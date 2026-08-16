@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { PassThrough } from 'node:stream';
 import { createReadableStreamFromReadable } from '@react-router/node';
 import { isbot } from 'isbot';
@@ -43,9 +44,16 @@ export default function handleRequest(
     let shellRendered = false;
     const userAgent = request.headers.get('user-agent');
     const readyEvent = isbot(userAgent ?? '') ? 'onAllReady' : 'onShellReady';
+    // React Router's own hydration bootstrap (theme init, scroll restoration,
+    // the __reactRouterContext stream, the entry.client module import) renders
+    // as inline <script> tags — required framework output, not app code. A
+    // strict `script-src 'self'` with no nonce/unsafe-inline blocks React
+    // Router's own scripts along with everything else, breaking hydration on
+    // every page. The nonce here and in the CSP header below must match.
+    const nonce = randomBytes(16).toString('base64');
 
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={routerContext} url={request.url} />,
+      <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
       {
         [readyEvent]() {
           shellRendered = true;
@@ -65,7 +73,7 @@ export default function handleRequest(
           // set inline style attributes) — tighten with nonces/hashes later if that surface matters.
           responseHeaders.set(
             'Content-Security-Policy',
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+            `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`,
           );
           resolve(
             new Response(stream, {
