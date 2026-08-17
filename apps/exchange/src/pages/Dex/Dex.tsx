@@ -129,14 +129,13 @@ export const Dex = () => {
   const marketData = useDexStore(selectMarketData);
 
   // Fetch real order book data with polling
+  // Cadence is owned by useOrderBook so every caller polls the book the same
+  // way; overriding it here is what let this page drift to 5s.
   const { data: orderBookData } = useOrderBook(
     selectedPair?.amountAsset || '',
     selectedPair?.priceAsset || '',
     50,
-    {
-      enabled: !!selectedPair,
-      refetchInterval: 5000, // Poll every 5 seconds like Angular (1000ms)
-    },
+    { enabled: !!selectedPair },
   );
 
   // Update store when order book data changes

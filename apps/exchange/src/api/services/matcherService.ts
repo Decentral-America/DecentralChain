@@ -263,11 +263,20 @@ export const useOrderBook = (
       };
     },
     queryKey: ['orderbook', amountAsset, priceAsset, depth],
-    refetchInterval: options?.refetchInterval ?? 5000, // 5 seconds for real-time updates
-    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce load
+    // The matcher exposes no WebSocket feed (/ws/v0 is 404 on 2.3.2.9), so the
+    // book is polled. 2s rather than 5s: the Angular app this replaced polled at
+    // 1s, and a five-second-old book on a trading screen reads as broken. React
+    // Query pauses intervals for hidden tabs, so this costs nothing while the
+    // user is on another tab — but it is ~2.5x the matcher request volume of the
+    // previous setting for tabs that are open and looking at the DEX.
+    refetchInterval: options?.refetchInterval ?? 2000,
+    // Refetch when the user returns to the tab. Polling is suspended while
+    // hidden, so without this the first thing they see is whatever the book
+    // looked like when they left.
+    refetchOnWindowFocus: true,
     retry: 2, // Retry failed requests up to 2 times
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 3000, // 3 seconds
+    staleTime: 1000,
   });
 };
 
