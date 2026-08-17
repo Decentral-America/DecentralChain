@@ -56,3 +56,55 @@ if (!window.crypto?.subtle) {
     },
   });
 }
+
+// Node 25 exposes a built-in Web Storage `localStorage` global. Started without
+// a valid `--localstorage-file` path it is present but inert — `clear`,
+// `getItem` and `setItem` are all undefined. In vitest's jsdom environment
+// `window === globalThis`, so that inert global occupies the slot jsdom would
+// otherwise fill and every suite touching storage fails with
+// "localStorage.clear is not a function".
+//
+// The repo pins Node 24 via .node-version, where no such global exists, so CI
+// never sees this — but a developer on a newer Node hits 30 failures with no
+// obvious cause. Installing a minimal in-memory Storage keeps the suite correct
+// and deterministic on either version.
+class MemoryStorage implements Storage {
+  #entries = new Map<string, string>();
+
+  get length(): number {
+    return this.#entries.size;
+  }
+
+  clear(): void {
+    this.#entries.clear();
+  }
+
+  getItem(key: string): string | null {
+    return this.#entries.get(String(key)) ?? null;
+  }
+
+  key(index: number): string | null {
+    return [...this.#entries.keys()][index] ?? null;
+  }
+
+  removeItem(key: string): void {
+    this.#entries.delete(String(key));
+  }
+
+  setItem(key: string, value: string): void {
+    this.#entries.set(String(key), String(value));
+  }
+}
+
+for (const name of ['localStorage', 'sessionStorage'] as const) {
+  if (
+    typeof (globalThis as Record<string, unknown> & { [k: string]: Storage })[name]?.clear !==
+    'function'
+  ) {
+    Object.defineProperty(globalThis, name, {
+      configurable: true,
+      value: new MemoryStorage(),
+      writable: true,
+    });
+  }
+}
