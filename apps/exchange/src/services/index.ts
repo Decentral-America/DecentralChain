@@ -4,4 +4,3 @@ export * from './auth';
 // Export multiAccount service
 export { multiAccount } from './multiAccount';
 export * from './storage';
-export * from './websocket';

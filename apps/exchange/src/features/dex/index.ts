@@ -10,7 +10,3 @@ export { TradeHistory } from './TradeHistory';
 export { TradingPairSelector } from './TradingPairSelector';
 export { TradingViewChart } from './TradingViewChart';
 export { UserOrders } from './UserOrders';
-
-// WebSocket hooks
-export * from './useDexWebSocket';
-export * from './useMarketData';
