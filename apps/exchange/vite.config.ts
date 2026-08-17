@@ -1,6 +1,7 @@
 import path from 'node:path';
+import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
 
@@ -121,6 +122,14 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    // React Compiler auto-memoizes components and hook results at build time.
+    // This app has 263 useCallback and 78 useMemo calls but no React.memo, so
+    // almost none of that hand-memoization prevented a child re-render — the
+    // compiler is what makes those stable identities actually pay off.
+    // Requires React >= 19 (this app is on 19.2), so no react-compiler-runtime
+    // shim is needed. plugin-react v6 transforms with oxc, so the compiler runs
+    // as a separate Babel pass rather than through a `babel` option.
+    babel({ presets: [reactCompilerPreset()] }),
     i18nPreloadVersionPlugin,
     // sentryVitePlugin must be last — source maps must be finalized before upload.
     // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
