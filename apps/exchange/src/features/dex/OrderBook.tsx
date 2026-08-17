@@ -8,7 +8,12 @@ import type React from 'react';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Spinner } from '@/components/atoms/Spinner';
-import { useDexStore } from '@/stores/dexStore';
+import {
+  selectIsOrderBookLoading,
+  selectMarketData,
+  selectOrderBook,
+  useDexStore,
+} from '@/stores/dexStore';
 
 /**
  * Order book wrapper - matches Angular's dex-order-book__wrapper
@@ -178,7 +183,7 @@ const Spread = styled.span`
 /**
  * Order row
  */
-const OrderRow = styled.div<{ $type: 'buy' | 'sell'; $depth: number }>`
+const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -191,14 +196,21 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell'; $depth: number }>`
     background: ${(p) => p.theme.colors.primary}10;
   }
 
-  /* Depth visualization background */
+  /* Depth visualization background.
+     Width comes from the --depth custom property set inline per row rather
+     than from a styled-components prop interpolation. Depth is a continuously
+     varying float, and styled-components emits a brand new CSS class for every
+     distinct interpolated value — so interpolating the depth prop here injected
+     ~160 new rules into the stylesheet on every order-book update and grew it
+     without bound for the life of the session. A custom property changes one
+     inline value and reuses a single static class. */
   &::before {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: ${(p) => p.$depth}%;
+    width: var(--depth, 0%);
     background: ${(p) =>
       p.$type === 'buy' ? `${p.theme.colors.success}15` : `${p.theme.colors.error}15`};
     z-index: 0;
@@ -243,97 +255,118 @@ const LoadingState = styled.div`
 `;
 
 /**
+ * Shared number formatter, built once at module scope.
+ *
+ * `Number.prototype.toLocaleString` constructs an `Intl.NumberFormat` on every
+ * call. The order book renders up to 160 rows of 3 formatted cells, so the
+ * previous per-render helpers built ~480 formatters on every update — one of
+ * the most expensive operations available in JS. `Intl.NumberFormat` instances
+ * are immutable and safe to share.
+ */
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 8,
+  minimumFractionDigits: 0,
+});
+
+/**
+ * Format a number with short mode - matches Angular's getNiceNumberTemplate.
+ *
+ * @param value - The number to format
+ * @param shortModeThreshold - Show K/M notation if >= this value (true = 10000)
+ */
+const formatWithShortMode = (
+  value: string | number,
+  shortModeThreshold: number | boolean,
+): string => {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (Number.isNaN(num)) return '0';
+
+  const threshold = typeof shortModeThreshold === 'number' ? shortModeThreshold : 10000;
+  const useShortMode =
+    typeof shortModeThreshold === 'boolean' ? shortModeThreshold : num >= threshold;
+
+  // Short mode for large numbers
+  if (useShortMode && num >= threshold) {
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1)}M`;
+    } else if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}K`;
+    }
+  }
+
+  return priceFormatter.format(num);
+};
+
+/** Format amount - Angular uses shortMode = true (threshold 10000) */
+const formatAmount = (amount: string): string => formatWithShortMode(amount, true);
+
+/** Format price - Angular uses shortMode = 100000 (only for very large prices) */
+const formatPrice = (price: string): string => formatWithShortMode(price, 100000);
+
+/** Calculate and format total - Angular uses shortMode = true (threshold 10000) */
+const calculateTotal = (price: string, amount: string): string => {
+  const priceNum = parseFloat(price);
+  const amountNum = parseFloat(amount);
+  if (Number.isNaN(priceNum) || Number.isNaN(amountNum)) return '0';
+  return formatWithShortMode(priceNum * amountNum, true);
+};
+
+/** Maximum order-book rows drawn per side. */
+const MAX_ROWS = 80;
+
+/**
+ * Take at most `MAX_ROWS` levels and attach a depth percentage to each.
+ *
+ * `direction: 'desc'` walks the array backwards (used for asks, which arrive
+ * sorted ascending but are drawn highest-price-first above the spread).
+ * Depth is normalised against the largest amount in the *whole* book, not just
+ * the visible slice, so the bars keep the same meaning as before.
+ */
+function takeWithDepth<T extends { amount: string }>(
+  levels: T[],
+  direction: 'asc' | 'desc',
+): Array<T & { depth: number }> {
+  if (!levels.length) return [];
+
+  let maxAmount = 0;
+  for (const level of levels) {
+    const parsed = parseFloat(level.amount);
+    if (parsed > maxAmount) maxAmount = parsed;
+  }
+  // Guard against an all-zero book, which would make every depth NaN.
+  const divisor = maxAmount || 1;
+
+  const rows: Array<T & { depth: number }> = [];
+  const count = Math.min(levels.length, MAX_ROWS);
+  for (let i = 0; i < count; i++) {
+    const level = levels[direction === 'desc' ? levels.length - 1 - i : i];
+    if (!level) continue;
+    rows.push({ ...level, depth: (parseFloat(level.amount) / divisor) * 100 });
+  }
+  return rows;
+}
+
+/**
  * OrderBook Component
  */
 export const OrderBook: React.FC = () => {
-  const { orderBook, isOrderBookLoading, marketData } = useDexStore();
+  const orderBook = useDexStore(selectOrderBook);
+  const isOrderBookLoading = useDexStore(selectIsOrderBookLoading);
+  const marketData = useDexStore(selectMarketData);
 
   /**
-   * Calculate cumulative depth for visualization
+   * Asks with depth, highest price first, capped at the rows we actually draw.
+   *
+   * Previously this mapped every level, copied the array, reversed the copy and
+   * then took 80 rows — four passes over the full book to render at most 80.
+   * Walking backwards produces the same order in one pass and allocates only
+   * the rows that get rendered. `Math.max(...arr)` was also replaced with a
+   * loop: spreading a large book into an argument list can overflow the stack.
    */
-  const asksWithDepth = useMemo(() => {
-    if (!orderBook.asks.length) return [];
+  const visibleAsks = useMemo(() => takeWithDepth(orderBook.asks, 'desc'), [orderBook.asks]);
 
-    const maxAmount = Math.max(...orderBook.asks.map((a) => parseFloat(a.amount)));
-
-    return orderBook.asks.map((ask) => ({
-      ...ask,
-      depth: (parseFloat(ask.amount) / maxAmount) * 100,
-    }));
-  }, [orderBook.asks]);
-
-  /**
-   * Calculate cumulative depth for bids
-   */
-  const bidsWithDepth = useMemo(() => {
-    if (!orderBook.bids.length) return [];
-
-    const maxAmount = Math.max(...orderBook.bids.map((b) => parseFloat(b.amount)));
-
-    return orderBook.bids.map((bid) => ({
-      ...bid,
-      depth: (parseFloat(bid.amount) / maxAmount) * 100,
-    }));
-  }, [orderBook.bids]);
-
-  /**
-   * Format number with short mode - matches Angular's getNiceNumberTemplate
-   * @param value - The number to format
-   * @param precision - Number of decimal places
-   * @param shortModeThreshold - Show K/M notation if >= this value (true = 10000)
-   */
-  const formatWithShortMode = (
-    value: string | number,
-    precision: number,
-    shortModeThreshold: number | boolean,
-  ): string => {
-    const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (Number.isNaN(num)) return '0';
-
-    const threshold = typeof shortModeThreshold === 'number' ? shortModeThreshold : 10000;
-    const useShortMode =
-      typeof shortModeThreshold === 'boolean' ? shortModeThreshold : num >= threshold;
-
-    // Short mode for large numbers
-    if (useShortMode && num >= threshold) {
-      if (num >= 1000000) {
-        return `${(num / 1000000).toFixed(1)}M`;
-      } else if (num >= 1000) {
-        return `${(num / 1000).toFixed(1)}K`;
-      }
-    }
-
-    // Regular formatting with proper precision
-    return num.toLocaleString('en-US', {
-      maximumFractionDigits: precision,
-      minimumFractionDigits: 0,
-    });
-  };
-
-  /**
-   * Format amount - Angular uses shortMode = true (threshold 10000)
-   */
-  const formatAmount = (amount: string): string => {
-    return formatWithShortMode(amount, 8, true);
-  };
-
-  /**
-   * Format price - Angular uses shortMode = 100000 (only for very large prices)
-   */
-  const formatPrice = (price: string): string => {
-    return formatWithShortMode(price, 8, 100000);
-  };
-
-  /**
-   * Calculate and format total - Angular uses shortMode = true (threshold 10000)
-   */
-  const calculateTotal = (price: string, amount: string): string => {
-    const priceNum = parseFloat(price);
-    const amountNum = parseFloat(amount);
-    if (Number.isNaN(priceNum) || Number.isNaN(amountNum)) return '0';
-    const total = priceNum * amountNum;
-    return formatWithShortMode(total, 8, true);
-  };
+  /** Bids with depth, highest price first (already sorted descending). */
+  const visibleBids = useMemo(() => takeWithDepth(orderBook.bids, 'asc'), [orderBook.bids]);
 
   if (isOrderBookLoading) {
     return (
@@ -378,20 +411,19 @@ export const OrderBook: React.FC = () => {
               {/* Asks Section (Sell Orders) - SCROLLABLE at top */}
               <AsksSection>
                 {hasAsks &&
-                  [...asksWithDepth]
-                    .reverse()
-                    .slice(0, 80)
-                    .map((ask, index) => (
-                      <OrderRow key={`ask-${ask.id || index}`} $type="sell" $depth={ask.depth}>
-                        <OrderCell $align="left">{formatAmount(ask.amount)}</OrderCell>
-                        <OrderCell $type="sell" $align="right">
-                          {formatPrice(ask.price)}
-                        </OrderCell>
-                        <OrderCell $align="right">
-                          {calculateTotal(ask.price, ask.amount)}
-                        </OrderCell>
-                      </OrderRow>
-                    ))}
+                  visibleAsks.map((ask, index) => (
+                    <OrderRow
+                      key={`ask-${ask.id || index}`}
+                      $type="sell"
+                      style={{ '--depth': `${ask.depth}%` } as React.CSSProperties}
+                    >
+                      <OrderCell $align="left">{formatAmount(ask.amount)}</OrderCell>
+                      <OrderCell $type="sell" $align="right">
+                        {formatPrice(ask.price)}
+                      </OrderCell>
+                      <OrderCell $align="right">{calculateTotal(ask.price, ask.amount)}</OrderCell>
+                    </OrderRow>
+                  ))}
               </AsksSection>
 
               {/* Price Info - FIXED in middle (not scrollable) */}
@@ -407,8 +439,12 @@ export const OrderBook: React.FC = () => {
               {/* Bids Section (Buy Orders) - SCROLLABLE at bottom */}
               <BidsSection>
                 {hasBids &&
-                  bidsWithDepth.slice(0, 80).map((bid, index) => (
-                    <OrderRow key={`bid-${bid.id || index}`} $type="buy" $depth={bid.depth}>
+                  visibleBids.map((bid, index) => (
+                    <OrderRow
+                      key={`bid-${bid.id || index}`}
+                      $type="buy"
+                      style={{ '--depth': `${bid.depth}%` } as React.CSSProperties}
+                    >
                       <OrderCell $align="left">{formatAmount(bid.amount)}</OrderCell>
                       <OrderCell $type="buy" $align="right">
                         {formatPrice(bid.price)}
