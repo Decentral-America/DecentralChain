@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-query';
 import * as ds from 'data-service';
 import { getExchangeTxList } from '@/lib/data-service/api/transactions/transactions';
-import { matcherClient } from '../client';
+import { apiClient, matcherClient } from '../client';
 
 /**
  * Raw exchange transaction shape returned by the data-service exchange tx list endpoint.
@@ -576,4 +576,108 @@ export const isOrderActive = (order: Order): boolean => {
  */
 export const formatTradingPair = (amountAsset: string, priceAsset: string): string => {
   return `${amountAsset}/${priceAsset}`;
+};
+
+/**
+ * 24h market statistics for a trading pair.
+ *
+ * `hasTrades` distinguishes "no trading activity" from "all values are zero",
+ * which matters here: no market on this chain has traded in the last 24h, so
+ * the empty case is the common one and the UI must not render it as real data.
+ */
+export interface MarketStats24h {
+  high24h: number;
+  low24h: number;
+  volume24h: number;
+  lastPrice: number;
+  priceChange24h: number;
+  priceChangePercent24h: number;
+  hasTrades: boolean;
+}
+
+/** A single candle as data-service returns it — every value is null when no trades occurred. */
+interface DataServiceCandle {
+  data: {
+    time: string;
+    open: string | number | null;
+    close: string | number | null;
+    high: string | number | null;
+    low: string | number | null;
+    volume: string | number | null;
+    txsCount: number;
+  } | null;
+}
+
+const EMPTY_STATS: MarketStats24h = {
+  hasTrades: false,
+  high24h: 0,
+  lastPrice: 0,
+  low24h: 0,
+  priceChange24h: 0,
+  priceChangePercent24h: 0,
+  volume24h: 0,
+};
+
+/**
+ * Fetch 24h stats for a pair, derived from hourly candles.
+ *
+ * The matcher has no ticker endpoint — its swagger exposes 36 paths and none of
+ * them carry 24h aggregates — so these are computed from data-service candles,
+ * the same source the price chart already uses. data-service rejects any request
+ * spanning more than 1440 candles, which 24 hourly candles is comfortably under.
+ *
+ * Before this existed nothing ever wrote high24h/low24h/volume24h or
+ * priceChangePercent24h, so the DEX header rendered a permanent "0.00%" next to
+ * a green up-arrow regardless of the market.
+ */
+export const useMarketStats24h = (
+  amountAsset: string,
+  priceAsset: string,
+  options?: { enabled?: boolean; refetchInterval?: number },
+): UseQueryResult<MarketStats24h, Error> => {
+  return useQuery({
+    enabled: options?.enabled !== false && !!amountAsset && !!priceAsset,
+    queryFn: async (): Promise<MarketStats24h> => {
+      const now = Date.now();
+      const response = await apiClient.get<{ data?: DataServiceCandle[] }>(
+        `/v0/candles/${amountAsset}/${priceAsset}`,
+        { params: { interval: '1h', timeEnd: String(now), timeStart: String(now - 86_400_000) } },
+      );
+
+      const traded = (response.data?.data ?? [])
+        .map((entry) => entry.data)
+        .filter((candle): candle is NonNullable<DataServiceCandle['data']> => {
+          // txsCount is the authoritative "did anything trade in this hour" flag;
+          // an untraded hour still returns a candle, with every price field null.
+          return !!candle && candle.txsCount > 0 && candle.open !== null && candle.close !== null;
+        });
+
+      if (traded.length === 0) return EMPTY_STATS;
+
+      const num = (value: string | number | null): number => Number(value ?? 0);
+      const first = traded[0];
+      const last = traded[traded.length - 1];
+      if (!first || !last) return EMPTY_STATS;
+
+      const open = num(first.open);
+      const close = num(last.close);
+      const change = close - open;
+
+      return {
+        hasTrades: true,
+        high24h: Math.max(...traded.map((candle) => num(candle.high))),
+        lastPrice: close,
+        low24h: Math.min(...traded.map((candle) => num(candle.low))),
+        priceChange24h: change,
+        // Guard open === 0: a zero-priced opening candle would make this Infinity.
+        priceChangePercent24h: open > 0 ? (change / open) * 100 : 0,
+        volume24h: traded.reduce((sum, candle) => sum + num(candle.volume), 0),
+      };
+    },
+    queryKey: ['marketStats24h', amountAsset, priceAsset],
+    // 24h aggregates move far more slowly than the book; a minute is plenty.
+    refetchInterval: options?.refetchInterval ?? 60_000,
+    retry: 1,
+    staleTime: 30_000,
+  });
 };

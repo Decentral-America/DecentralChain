@@ -12,6 +12,7 @@ import {
   selectIsOrderBookLoading,
   selectMarketData,
   selectOrderBook,
+  selectSelectedPair,
   useDexStore,
 } from '@/stores/dexStore';
 
@@ -353,6 +354,15 @@ export const OrderBook: React.FC = () => {
   const orderBook = useDexStore(selectOrderBook);
   const isOrderBookLoading = useDexStore(selectIsOrderBookLoading);
   const marketData = useDexStore(selectMarketData);
+  const selectedPair = useDexStore(selectSelectedPair);
+
+  // Column headers were hardcoded to "Amount (DCC)" / "Price (G9T)" / "Sum (G9T)".
+  // The pair is user-selectable across 28 markets, so on any pair other than
+  // DCC/CRC the table labelled every column with the wrong asset — the one thing
+  // an order book must never do. Falls back to the raw asset id, matching how
+  // TradingPairSelector renders a pair whose name has not resolved yet.
+  const amountLabel = selectedPair?.amountAssetName || selectedPair?.amountAsset || '—';
+  const priceLabel = selectedPair?.priceAssetName || selectedPair?.priceAsset || '—';
 
   /**
    * Asks with depth, highest price first, capped at the rows we actually draw.
@@ -398,9 +408,9 @@ export const OrderBook: React.FC = () => {
         {/* Table Header - OUTSIDE scroll box */}
         <TableHead>
           <HeaderRow>
-            <HeaderCell $align="left">Amount (DCC)</HeaderCell>
-            <HeaderCell $align="right">Price (G9T)</HeaderCell>
-            <HeaderCell $align="right">Sum (G9T)</HeaderCell>
+            <HeaderCell $align="left">Amount ({amountLabel})</HeaderCell>
+            <HeaderCell $align="right">Price ({priceLabel})</HeaderCell>
+            <HeaderCell $align="right">Sum ({priceLabel})</HeaderCell>
           </HeaderRow>
         </TableHead>
 

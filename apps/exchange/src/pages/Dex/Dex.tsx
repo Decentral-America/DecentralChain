@@ -19,7 +19,7 @@ import {
 import { styled, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOrderBook } from '@/api/services/matcherService';
+import { useMarketStats24h, useOrderBook } from '@/api/services/matcherService';
 import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
 import { OrderBook } from '@/features/dex/OrderBook';
 import { SellOrderForm } from '@/features/dex/SellOrderForm';
@@ -99,7 +99,7 @@ const PanelContent = styled(Box)(({ theme }) => ({
  */
 const PriceDisplay = styled(Typography, {
   shouldForwardProp: (prop) => prop !== 'trend',
-})<{ trend?: 'up' | 'down' }>(({ theme, trend }) => ({
+})<{ trend?: 'up' | 'down' | 'flat' }>(({ theme, trend }) => ({
   alignItems: 'center',
   color:
     trend === 'up'
@@ -159,21 +159,49 @@ export const Dex = () => {
         })),
       };
       updateOrderBook(transformedOrderBook);
-
-      // Calculate market data from order book
-      if (orderBookData.bids.length > 0 || orderBookData.asks.length > 0) {
-        const lastPrice = orderBookData.bids[0]?.price || orderBookData.asks[0]?.price || 0;
-        updateMarketData({
-          currentPrice: lastPrice,
-          lastPrice: lastPrice,
-        });
-      }
     }
-  }, [orderBookData, updateOrderBook, updateMarketData]);
+  }, [orderBookData, updateOrderBook]);
 
-  // Calculate price trend
-  const priceChange = marketData.priceChangePercent24h || 0;
-  const priceTrend = priceChange >= 0 ? 'up' : 'down';
+  // Real 24h aggregates, derived from data-service candles.
+  const { data: stats24h } = useMarketStats24h(
+    selectedPair?.amountAsset || '',
+    selectedPair?.priceAsset || '',
+    { enabled: !!selectedPair },
+  );
+
+  // Push the traded numbers into the store.
+  //
+  // "Last Price" used to be the best *bid* off the order book, which is not a
+  // traded price at all — on a book with a wide spread it can sit far from
+  // anything that ever changed hands. It now comes from the close of the most
+  // recent traded candle, and falls back to the mid-market price only when the
+  // pair has not traded in 24h, so the header still shows something meaningful
+  // rather than jumping to zero.
+  useEffect(() => {
+    if (!stats24h) return;
+
+    const bestBid = orderBookData?.bids[0]?.price ?? 0;
+    const bestAsk = orderBookData?.asks[0]?.price ?? 0;
+    const mid = bestBid > 0 && bestAsk > 0 ? (bestBid + bestAsk) / 2 : bestBid || bestAsk || 0;
+
+    updateMarketData({
+      currentPrice: stats24h.hasTrades ? stats24h.lastPrice : mid,
+      high24h: stats24h.high24h,
+      lastPrice: stats24h.lastPrice,
+      low24h: stats24h.low24h,
+      priceChange24h: stats24h.priceChange24h,
+      priceChangePercent24h: stats24h.priceChangePercent24h,
+      volume24h: stats24h.volume24h,
+    });
+  }, [stats24h, orderBookData, updateMarketData]);
+
+  // Calculate price trend.
+  //
+  // `>= 0` previously meant an untraded pair — every pair on this chain right
+  // now — rendered a green up-arrow next to a hard 0.00%, which reads as "flat
+  // but healthy" rather than "no trades". `null` suppresses the arrow entirely.
+  const priceChange = stats24h?.hasTrades ? stats24h.priceChangePercent24h : null;
+  const priceTrend = priceChange === null ? 'flat' : priceChange >= 0 ? 'up' : 'down';
 
   // Format current price for display
   const formattedPrice = marketData.currentPrice
@@ -218,11 +246,8 @@ export const Dex = () => {
                       sx={{ fontSize: { sm: '1.5rem', xs: '1.2rem' } }}
                     >
                       {formattedPrice}
-                      {priceTrend === 'up' ? (
-                        <TrendingUp sx={{ fontSize: '1.5rem' }} />
-                      ) : (
-                        <TrendingDown sx={{ fontSize: '1.5rem' }} />
-                      )}
+                      {priceTrend === 'up' && <TrendingUp sx={{ fontSize: '1.5rem' }} />}
+                      {priceTrend === 'down' && <TrendingDown sx={{ fontSize: '1.5rem' }} />}
                     </PriceDisplay>
                   </Box>
                 </Grid>
@@ -240,10 +265,17 @@ export const Dex = () => {
                     </Typography>
                     <Typography
                       variant="h6"
-                      color={priceChange >= 0 ? 'success.main' : 'error.main'}
+                      color={
+                        priceChange === null
+                          ? 'text.secondary'
+                          : priceChange >= 0
+                            ? 'success.main'
+                            : 'error.main'
+                      }
                     >
-                      {priceChange >= 0 ? '+' : ''}
-                      {priceChange.toFixed(2)}%
+                      {priceChange === null
+                        ? '—'
+                        : `${priceChange >= 0 ? '+' : ''}${priceChange.toFixed(2)}%`}
                     </Typography>
                   </Box>
                 </Grid>
