@@ -10,7 +10,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { NetworkConfig } from '@/config';
 import { fetchAssetDetails } from '@/services/assetService';
-import { type TradingPair, useDexStore } from '@/stores/dexStore';
+import {
+  selectSelectedPair,
+  selectSetSelectedPair,
+  type TradingPair,
+  useDexStore,
+} from '@/stores/dexStore';
 
 /**
  * Cache for asset names to avoid repeated API calls
@@ -339,7 +344,8 @@ const NoResults = styled.div`
  * Trading Pair Selector Component
  */
 export const TradingPairSelector: React.FC = () => {
-  const { selectedPair, setSelectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
+  const setSelectedPair = useDexStore(selectSetSelectedPair);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [pairs, setPairs] = useState<TradingPair[]>(AVAILABLE_PAIRS);

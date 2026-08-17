@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { type OrderBook, type Trade } from '@/api/services/matcherService';
 import { config } from '@/config';
 import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
 
 /**
  * Order Book Update Message
@@ -38,7 +38,7 @@ interface TradeUpdate {
  * Subscribe to real-time order book updates for selected trading pair
  */
 export const useDexOrderBook = () => {
-  const { selectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
   const [orderBook, setOrderBook] = useState<OrderBook | null>(null);
   const [lastUpdate, setLastUpdate] = useState<number>(0);
   const [isLive, setIsLive] = useState(false);
@@ -90,7 +90,7 @@ export const useDexOrderBook = () => {
  * Subscribe to real-time trade updates for selected trading pair
  */
 export const useDexTrades = () => {
-  const { selectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [lastUpdate, setLastUpdate] = useState<number>(0);
 

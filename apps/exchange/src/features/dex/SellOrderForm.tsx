@@ -18,7 +18,12 @@ import { Input } from '@/components/atoms/Input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { type SignedOrderResult, useTransactionSigning } from '@/hooks/useTransactionSigning';
-import { useDexStore } from '@/stores/dexStore';
+import {
+  selectAddUserOrder,
+  selectMarketData,
+  selectSelectedPair,
+  useDexStore,
+} from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
 
 /**
@@ -202,7 +207,9 @@ const ErrorMessage = styled.div`
  */
 export const SellOrderForm: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const { selectedPair, marketData, addUserOrder } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
+  const marketData = useDexStore(selectMarketData);
+  const addUserOrder = useDexStore(selectAddUserOrder);
 
   const [price, setPrice] = useState<string>('');
   const [amount, setAmount] = useState<string>('');

@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { config } from '@/config';
 import { createWebSocketUrl, useWebSocketChannel } from '@/services/websocket';
-import { useDexStore } from '@/stores/dexStore';
+import { selectSelectedPair, selectUpdateMarketData, useDexStore } from '@/stores/dexStore';
 
 /**
  * Market Update Message
@@ -62,7 +62,8 @@ export interface AllMarketsUpdate {
  * ```
  */
 export const useMarketData = () => {
-  const { selectedPair, updateMarketData } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
+  const updateMarketData = useDexStore(selectUpdateMarketData);
   const [marketData, setMarketData] = useState<MarketUpdate | null>(null);
   const [lastUpdate, setLastUpdate] = useState<number>(0);
   const [isLive, setIsLive] = useState(false);

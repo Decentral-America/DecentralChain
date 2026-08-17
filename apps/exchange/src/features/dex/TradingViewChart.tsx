@@ -17,7 +17,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { logger } from '@/lib/logger';
 import { candlesService } from '@/services/candlesService';
-import { useDexStore } from '@/stores/dexStore';
+import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -33,7 +33,7 @@ export const TradingViewChart: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
 
-  const { selectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
   const [loadingState, setLoadingState] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
 

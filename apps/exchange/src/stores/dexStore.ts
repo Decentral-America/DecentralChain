@@ -98,7 +98,14 @@ const initialMarketData: MarketData = {
 };
 
 /**
- * Zustand DEX store with devtools middleware for debugging
+ * Zustand DEX store with devtools middleware, explicitly scoped to development.
+ *
+ * `enabled` is stated rather than left to the default. Zustand only infers it
+ * from `import.meta.env.MODE !== 'production'`, which is not the same signal as
+ * Vite's `DEV` flag — staging and test builds run in non-production modes and
+ * would otherwise connect to the Redux DevTools bridge and serialize an action
+ * name on every `set`, including each order-book poll. When disabled the
+ * middleware returns the bare initializer, so the wrapper costs nothing.
  */
 export const useDexStore = create<DexState>()(
   devtools(
@@ -181,16 +188,32 @@ export const useDexStore = create<DexState>()(
         ),
       userOrders: [],
     }),
-    { name: 'DEX Store' },
+    { enabled: import.meta.env.DEV, name: 'DEX Store' },
   ),
 );
 
 /**
- * Selectors for efficient state access
+ * Selectors for efficient state access.
+ *
+ * These must be passed to `useDexStore(...)` rather than destructuring the
+ * whole store (`const { selectedPair } = useDexStore()`). Destructuring
+ * subscribes the component to *every* state change, so a single order-book
+ * poll re-rendered the chart, both order forms, the pair selector, the trade
+ * history and the open-orders table — none of which read the order book.
+ *
+ * Action selectors are included because actions are stable references: reading
+ * them through a selector never triggers a re-render, whereas destructuring
+ * them off the store does.
  */
 export const selectSelectedPair = (state: DexState) => state.selectedPair;
 export const selectOrderBook = (state: DexState) => state.orderBook;
 export const selectUserOrders = (state: DexState) => state.userOrders;
 export const selectMarketData = (state: DexState) => state.marketData;
+export const selectIsOrderBookLoading = (state: DexState) => state.isOrderBookLoading;
 export const selectIsLoading = (state: DexState) =>
   state.isOrderBookLoading || state.isMarketDataLoading;
+
+export const selectSetSelectedPair = (state: DexState) => state.setSelectedPair;
+export const selectUpdateOrderBook = (state: DexState) => state.updateOrderBook;
+export const selectUpdateMarketData = (state: DexState) => state.updateMarketData;
+export const selectAddUserOrder = (state: DexState) => state.addUserOrder;

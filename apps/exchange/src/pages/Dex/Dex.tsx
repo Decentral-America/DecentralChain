@@ -29,7 +29,13 @@ import { TradingPairSelector } from '@/features/dex/TradingPairSelector';
 import { TradingViewChart } from '@/features/dex/TradingViewChart';
 import { UserOrders } from '@/features/dex/UserOrders';
 import { PageFrame } from '@/layouts/PageFrame';
-import { useDexStore } from '@/stores/dexStore';
+import {
+  selectMarketData,
+  selectSelectedPair,
+  selectUpdateMarketData,
+  selectUpdateOrderBook,
+  useDexStore,
+} from '@/stores/dexStore';
 import { radii } from '@/styles/tokens';
 import { landingTheme } from '@/theme/landingTheme';
 
@@ -117,7 +123,10 @@ export const Dex = () => {
   const [buySellMode, setBuySellMode] = useState<'buy' | 'sell'>('buy'); // Buy/Sell toggle
 
   // Get selected pair from DEX store
-  const { selectedPair, updateOrderBook, updateMarketData, marketData } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
+  const updateOrderBook = useDexStore(selectUpdateOrderBook);
+  const updateMarketData = useDexStore(selectUpdateMarketData);
+  const marketData = useDexStore(selectMarketData);
 
   // Fetch real order book data with polling
   const { data: orderBookData } = useOrderBook(

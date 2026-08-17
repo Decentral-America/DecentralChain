@@ -12,7 +12,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
-import { useDexStore } from '@/stores/dexStore';
+import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
 
 /**
@@ -216,7 +216,7 @@ const statusColors: Record<string, 'primary' | 'success' | 'error' | 'warning'> 
  */
 export const UserOrders: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const { selectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
 
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);

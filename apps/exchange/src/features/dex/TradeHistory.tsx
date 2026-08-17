@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useTradeHistory } from '@/api/services/matcherService';
 import { Spinner } from '@/components/atoms/Spinner';
-import { useDexStore } from '@/stores/dexStore';
+import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
 
 /**
  * Trade history container
@@ -176,7 +176,7 @@ interface Trade {
  * TradeHistory Component
  */
 export const TradeHistory: React.FC = () => {
-  const { selectedPair } = useDexStore();
+  const selectedPair = useDexStore(selectSelectedPair);
   const { i18n } = useTranslation();
 
   /**
