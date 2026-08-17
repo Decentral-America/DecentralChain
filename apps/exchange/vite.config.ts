@@ -47,13 +47,26 @@ export default defineConfig({
             // query-core is ~250 kB minified; splitting it enables independent caching.
             { name: 'tanstack-query', priority: 65, test: /node_modules\/@tanstack\// },
             { name: 'ui', priority: 60, test: /node_modules\/styled-components/ },
-            // @mui/icons-material is intentionally EXCLUDED from this group.
-            // Including it would bundle all 3,000+ icons into a shared chunk and defeat
-            // Rolldown's tree-shaking. Let it be naturally included/tree-shaken per lazy chunk.
+            // Only the emotion runtime and MUI's styling engine are grouped. Every
+            // MUI component that renders needs these, so they are genuinely shared
+            // and belong in one cacheable chunk.
+            //
+            // @mui/material itself is deliberately NOT grouped, for the same reason
+            // @mui/icons-material never was. Grouping it collapsed all 39 MUI
+            // components used anywhere in the app into a single 396 kB chunk that
+            // the entry graph pulled onto the critical path — so a landing-page
+            // visitor downloaded Dialog, Drawer, Select, Slider, Accordion and the
+            // rest to render a marketing page that uses ten components. Letting
+            // Rolldown place them naturally means each route pays only for what it
+            // renders, and the shared ones still get hoisted into shared chunks.
+            //
+            // Costs ~1.6% more total JS across the whole app (those bytes are lazy
+            // and cached) to take 80 kB gzip off first paint (which every visitor
+            // pays). Chunk count goes 110 -> 162, which is fine over HTTP/2.
             {
-              name: 'mui-core',
+              name: 'emotion',
               priority: 50,
-              test: /node_modules\/(@mui\/(material|system|lab|base|styled-engine)|@emotion)\//,
+              test: /node_modules\/(@emotion|@mui\/(styled-engine|system))\//,
             },
             // Sentry must be in its own chunk, not co-located with feature routes (e.g. Leasing).
             // Without this, Vite may defer Sentry until a lazy route loads, delaying error capture.
