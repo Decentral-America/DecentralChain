@@ -5,11 +5,19 @@
  */
 import { type RouteObject } from 'react-router';
 import { MobilePageShell } from '@/components/mobile/MobilePageShell';
-import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
-import { Dashboard } from '@/pages/Dashboard';
-import { MobileHome } from '@/pages/mobile/MobileHome';
-import { Wallet } from '@/pages/Wallet';
+import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { lazyPage } from './lazyPage';
+
+// The wallet shell and both landing screens are deferred like every other
+// screen here. They were previously static so that signing in never showed a
+// spinner, but `walletRoutes` is reached through `routes/index.tsx`, which the
+// entry chunk imports — so "static" meant Dashboard (809 lines) and Wallet were
+// bundled into the entry and downloaded by every landing-page visitor who never
+// signs in. They now load alongside ProtectedRoute and ResponsiveAppLayout,
+// which are themselves lazy, so the sign-in path fetches them in parallel.
+const Wallet = lazyPage(() => import('@/pages/Wallet'), 'Wallet');
+const Dashboard = lazyPage(() => import('@/pages/Dashboard'), 'Dashboard');
+const MobileHome = lazyPage(() => import('@/pages/mobile/MobileHome'), 'MobileHome');
 
 // The concrete file, not the barrel — the barrel re-exports every wallet
 // feature and would put all of them inside the portfolio chunk.
@@ -38,8 +46,7 @@ const MobilePortfolio = lazyPage(() => import('@/pages/mobile/MobilePortfolio'),
  */
 export const walletRoutes: RouteObject = {
   children: [
-    // Dashboard overview at /desktop/wallet — static, so signing in never
-    // lands on a spinner.
+    // Dashboard overview at /desktop/wallet.
     {
       element: <ResponsiveScreen mobile={<MobileHome />} desktop={<Dashboard />} />,
       index: true,

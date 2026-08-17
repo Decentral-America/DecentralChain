@@ -15,7 +15,7 @@
  */
 import { createBrowserRouter, Navigate } from 'react-router';
 import { MobilePageShell } from '@/components/mobile/MobilePageShell';
-import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
+import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { dexRoutes } from './dexRoutes';

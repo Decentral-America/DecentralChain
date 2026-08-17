@@ -3,7 +3,7 @@
  * Defines routes for application settings and preferences
  */
 import { type RouteObject } from 'react-router';
-import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
+import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { lazyPage } from './lazyPage';
 
 /**

@@ -4,7 +4,7 @@
  */
 import { type RouteObject } from 'react-router';
 import { MobilePageShell } from '@/components/mobile/MobilePageShell';
-import { ResponsiveScreen } from '@/layouts/ResponsiveLayout';
+import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { lazyPage } from './lazyPage';
 
 /**

@@ -1,5 +1,4 @@
 import { useMediaQuery, useTheme } from '@mui/material';
-import { type ReactElement } from 'react';
 import { MainLayout } from './MainLayout';
 import { MobileLayout } from './MobileLayout';
 
@@ -19,21 +18,4 @@ export function ResponsiveAppLayout() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
 
   return isMobile ? <MobileLayout /> : <MainLayout />;
-}
-
-/**
- * Renders a mobile-specific screen below the tablet breakpoint, falling back to
- * the existing desktop screen above it.
- */
-export function ResponsiveScreen({
-  mobile,
-  desktop,
-}: {
-  mobile: ReactElement;
-  desktop: ReactElement;
-}) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
-
-  return isMobile ? mobile : desktop;
 }
