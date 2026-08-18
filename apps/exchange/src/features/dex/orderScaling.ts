@@ -96,3 +96,38 @@ export function coinsToTokens(coins: number | string, decimals: number): number 
   if (!value) return 0;
   return value.dividedBy(new BigNumber(10).pow(decimals)).toNumber();
 }
+
+/** Result of preparing an order's integer values: either both coins, or why not. */
+export type OrderCoins =
+  | { ok: true; amountCoins: string; priceCoins: string }
+  | { ok: false; error: string };
+
+/**
+ * Validate and scale an order's amount and price in one step.
+ *
+ * Shared by the buy and sell forms so the two cannot drift apart on the one
+ * calculation that decides how large a signed order is.
+ *
+ * @param amount - Amount as typed by the user.
+ * @param price - Price as typed by the user.
+ * @param decimals - Resolved decimals for the pair, and whether they are known.
+ */
+export function buildOrderCoins(
+  amount: string,
+  price: string,
+  decimals: { amountDecimals: number; priceDecimals: number; isReady: boolean },
+): OrderCoins {
+  // Never sign against guessed decimals: a wrong exponent produces a real
+  // order for the wrong size.
+  if (!decimals.isReady) {
+    return { error: 'Loading asset precision — try again in a moment.', ok: false };
+  }
+
+  const amountCoins = toAmountCoins(amount, decimals.amountDecimals);
+  const priceCoins = toPriceCoins(price, decimals.amountDecimals, decimals.priceDecimals);
+  if (amountCoins === null || priceCoins === null) {
+    return { error: 'Enter a valid amount and price.', ok: false };
+  }
+
+  return { amountCoins, ok: true, priceCoins };
+}

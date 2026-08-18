@@ -25,7 +25,7 @@ import {
   useDexStore,
 } from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
-import { coinsToTokens, toAmountCoins, toPriceCoins } from './orderScaling';
+import { buildOrderCoins, coinsToTokens } from './orderScaling';
 import { usePairDecimals } from './usePairDecimals';
 
 /**
@@ -211,7 +211,7 @@ export const BuyOrderForm: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
   const selectedPair = useDexStore(selectSelectedPair);
   const pairDecimals = usePairDecimals(selectedPair);
-  const { amountDecimals, priceDecimals } = pairDecimals;
+  const { priceDecimals } = pairDecimals;
   const marketData = useDexStore(selectMarketData);
   const addUserOrder = useDexStore(selectAddUserOrder);
 
@@ -349,20 +349,12 @@ export const BuyOrderForm: React.FC = () => {
 
       // Sign the order using the user's seed — produces a valid signed order with proofs
       // signOrder returns Promise<SignedOrderResult> — no cast needed
-      // Never sign against guessed decimals: a wrong exponent here produces a
-      // real order for the wrong size. usePairDecimals reports isReady only
-      // once both assets' decimals are known.
-      if (!pairDecimals.isReady) {
-        setError('Loading asset precision — try again in a moment.');
+      const coins = buildOrderCoins(amount, price, pairDecimals);
+      if (!coins.ok) {
+        setError(coins.error);
         return;
       }
-
-      const amountCoins = toAmountCoins(amount, amountDecimals);
-      const priceCoins = toPriceCoins(price, amountDecimals, priceDecimals);
-      if (amountCoins === null || priceCoins === null) {
-        setError('Enter a valid amount and price.');
-        return;
-      }
+      const { amountCoins, priceCoins } = coins;
 
       const signedOrder: SignedOrderResult = await signOrder({
         amount: amountCoins,
