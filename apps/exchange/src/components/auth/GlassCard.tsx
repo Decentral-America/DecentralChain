@@ -17,7 +17,14 @@ export function GlassCard({ children, sx }: { children: ReactNode; sx?: SxProps<
   return (
     <Box
       sx={{
-        '@supports (backdrop-filter: blur(1px))': {
+        /*
+         * The condition has to accept the prefixed form too. Emotion's stylis
+         * prefixer rewrites *declarations* but passes an @supports condition
+         * through verbatim, so this query was tested literally — and older iOS
+         * Safari, which implements only -webkit-backdrop-filter, failed it and
+         * got the opaque fallback despite being perfectly able to blur.
+         */
+        '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
           backdropFilter: 'blur(20px) saturate(140%)',
           bgcolor: 'rgba(255, 255, 255, 0.04)',
         },

@@ -121,7 +121,9 @@ const Overlay = styled.div<{ $zIndex: number; $animationDuration: number }>`
   padding: ${(p) => p.theme.spacing.lg};
   overflow-y: auto;
 
-  /* Backdrop blur effect */
+  /* Backdrop blur effect — prefixed form first for older iOS Safari, which
+     only understands -webkit-backdrop-filter. */
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 `;
 
