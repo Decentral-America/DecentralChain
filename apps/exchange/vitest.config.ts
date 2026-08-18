@@ -7,7 +7,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
-      'data-service': path.resolve(import.meta.dirname, './src/types/data-service'),
+      // Matches vite.config.ts: resolves to the real runtime implementation so
+      // it can be mocked with `vi.mock('data-service/...')`. (Previously aliased
+      // to `./src/types/data-service`, the *type-only* ambient-declaration file
+      // used by tsconfig's `paths` — never a real resolvable directory, so any
+      // test importing from `data-service` — mocked or not — failed to resolve.)
+      'data-service': path.resolve(import.meta.dirname, './src/lib/data-service'),
     },
   },
   test: {
