@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-18
 **App:** `apps/exchange`
-**Status:** Approved, ready for implementation planning
+**Status:** Implemented, then amended 2026-08-18 — see Amendment at the end
 
 ## Problem
 
@@ -211,3 +211,57 @@ The existing 418 tests must stay green. Verification runs on Node 24.18.0 (`.nod
   Flagged as dead; deletion is a separate decision.
 - **Success screen.** An animated confirmation after creation was considered and dropped —
   the flow ends by entering the wallet, which is its own confirmation.
+
+
+---
+
+## Amendment — 2026-08-18, after implementation
+
+The owner changed two decisions after the four-step wizard shipped. The sections
+above describe what was originally built; this amendment describes what the code
+does now. Where the two disagree, this section governs.
+
+### Verification step removed — the flow is three steps
+
+**Intro → Phrase → Secure.** Requiring users to re-enter words from their phrase
+was judged too much friction for the benefit.
+
+`VerifyStep.tsx` and `verification.ts` are deleted, along with their tests. The
+challenge-generation design in the sections above no longer describes any code;
+it is preserved as the record of a decision that was made and then reversed, and
+is recoverable from git if verification is ever wanted back.
+
+**Consequence for `hasBackup`.** It was earned by passing verification; it is now
+backed only by the user having revealed the phrase and clicked "I've saved it".
+That is weaker, and it partially reopens the "I'll write it down later" failure
+this design originally set out to close. It is mitigated by a guard in
+`useCreateWallet.goTo()`, which refuses to advance to the password step while the
+phrase has not been revealed — so the flag rests on an enforced condition rather
+than on a disabled button alone.
+
+### Step 1 is an intro, and Ledger is behind a flag
+
+Ledger is not supported yet, so every entry point to it is hidden by default
+behind `VITE_LEDGER_ENABLED`, exposed as `config.ledgerEnabled` and following the
+repo's existing `VITE_SENTRY_ENABLED === 'true'` convention. The flag is set to
+`false` in all six `.env.*` files.
+
+With the flag off, step 1 is a short intro — what a recovery phrase is, that the
+keys stay on the device, that nobody can reset them. With the flag on, the Ledger
+tile appears there as an additional choice. Visibility is **flag AND WebHID**, which
+is why the component's `isLedgerSupported` was renamed `isLedgerAvailable`.
+
+The flag is applied app-wide, not only in the wizard: `LoginForm`,
+`ImportAccount`, `AccountSelectScreen` and the landing `Footer` all hide their
+Ledger entry points when it is off. The `/import/ledger` route itself stays
+registered so the flow remains reachable by direct URL for development.
+
+### Also superseded above
+
+- The **motion** sections still name MUI `Slide`/`Fade`/`Grow`. Those were removed
+  during implementation: they apply inline styles that a class-based
+  `@media (prefers-reduced-motion: reduce)` block cannot reach. Motion is
+  hand-rolled CSS keyframes in `sx`, covered by a reduced-motion block.
+- **"Submit disabled"** for a weak password was not implemented; `SecureStep`
+  keeps submit enabled and validates on click.
+- **"The tile locks green"** on a correct verification answer is moot.

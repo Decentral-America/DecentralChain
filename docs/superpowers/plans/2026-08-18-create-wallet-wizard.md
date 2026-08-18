@@ -2,7 +2,14 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the overflowing single-card Create New Wallet screen with a four-step wizard on a dark glass surface, adding real seed verification in place of a checkbox.
+**Goal:** Replace the overflowing single-card Create New Wallet screen with a multi-step wizard on a dark glass surface.
+
+> **Superseded in part, 2026-08-18.** This plan was executed as written (Tasks 1-7,
+> all reviewed), and the feature was then amended: the verification step was removed
+> and Ledger was put behind `VITE_LEDGER_ENABLED`. The flow is now three steps —
+> Intro → Phrase → Secure. Task 1 (`verification.ts`) and Task 5's `VerifyStep` were
+> subsequently deleted. See the Amendment section of the design spec for what the
+> code does now. This document is retained as the execution record.
 
 **Architecture:** Two new presentational primitives (`GlassCard`, `StepRail`) live in `components/auth/`. The wizard lives in `features/auth/create-wallet/`: a container owning step index, a `useCreateWallet` hook owning all Seed/auth/validation logic, a pure `verification.ts` challenge generator, and four presentational step components. Steps receive data and callbacks as props and contain no business logic.
 
