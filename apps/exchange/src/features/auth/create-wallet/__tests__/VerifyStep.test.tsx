@@ -49,4 +49,14 @@ describe('VerifyStep', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'worth' }));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
+
+  it('does not call onComplete again if the final tile is clicked again', async () => {
+    const onComplete = vi.fn();
+    render(<VerifyStep challenges={CHALLENGES} onComplete={onComplete} />);
+    await userEvent.click(screen.getByRole('button', { name: 'melody' }));
+    const finalTile = await screen.findByRole('button', { name: 'worth' });
+    await userEvent.click(finalTile);
+    await userEvent.click(finalTile);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
 });
