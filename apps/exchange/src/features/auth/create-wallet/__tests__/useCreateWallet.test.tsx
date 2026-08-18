@@ -11,13 +11,21 @@ import { useCreateWallet, validatePassword } from '../useCreateWallet';
 
 const create = vi.fn();
 const navigate = vi.fn();
+const setSeedTransfer = vi.fn();
+
+// Mutable so individual tests can flip to the "already authenticated, adding
+// an additional account" state without redefining the whole mock.
+const authState: { isAuthenticated: boolean; user: { id: string } | null } = {
+  isAuthenticated: false,
+  user: null,
+};
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
     create,
     getActiveState: () => '/desktop/wallet',
-    isAuthenticated: false,
-    user: null,
+    isAuthenticated: authState.isAuthenticated,
+    user: authState.user,
   }),
 }));
 vi.mock('react-router', () => ({ useNavigate: () => navigate }));
@@ -27,6 +35,7 @@ vi.mock('@/hooks/useClipboard', () => ({
 vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
 }));
+vi.mock('@/lib/secureTransfer', () => ({ setSeedTransfer }));
 vi.mock('data-service/classes/Seed', () => ({
   Seed: { create: vi.fn(() => ({ phrase: 'a b c d e f g h i j k l m n o' })) },
 }));
@@ -61,8 +70,11 @@ describe('validatePassword', () => {
 
 describe('useCreateWallet', () => {
   beforeEach(() => {
+    authState.isAuthenticated = false;
+    authState.user = null;
     create.mockReset();
     navigate.mockReset();
+    setSeedTransfer.mockReset();
   });
 
   it('exposes the generated phrase as words', () => {
@@ -131,5 +143,65 @@ describe('useCreateWallet', () => {
     expect(ok).toBe(false);
     expect(result.current.error).toBe('vault locked');
     expect(result.current.words).toHaveLength(15);
+  });
+
+  it('hands the seed to secureTransfer instead of calling create, when already authenticated', async () => {
+    authState.isAuthenticated = true;
+    authState.user = { id: 'existing-user' };
+    const { result } = renderHook(() => useCreateWallet());
+
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.submit('Abcdefghijk1!', 'Abcdefghijk1!');
+    });
+
+    expect(ok).toBe(true);
+    expect(setSeedTransfer).toHaveBeenCalledWith('a b c d e f g h i j k l m n o');
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it('never puts the seed phrase into router state for the additional-account navigation', async () => {
+    authState.isAuthenticated = true;
+    authState.user = { id: 'existing-user' };
+    const { result } = renderHook(() => useCreateWallet());
+
+    await act(async () => {
+      await result.current.submit('Abcdefghijk1!', 'Abcdefghijk1!');
+    });
+
+    // The seed must reach the next screen only via setSeedTransfer (asserted
+    // above), never via router state — router state persists in browser
+    // history, which would leak the recovery phrase.
+    const importCall = navigate.mock.calls.find(([path]) => path === '/auth/import');
+    expect(importCall).toBeDefined();
+    const [, options] = importCall as [string, { state: Record<string, unknown> }];
+
+    expect(options.state).toEqual({
+      hasBackup: true,
+      hasSeedTransfer: true,
+      name: 'My Account',
+    });
+
+    const phrase = 'a b c d e f g h i j k l m n o';
+    for (const value of Object.values(options.state)) {
+      expect(String(value)).not.toContain(phrase);
+    }
+  });
+
+  it('produces a fresh phrase when regenerateSeed is called', async () => {
+    const { Seed } = await import('data-service/classes/Seed');
+    const { result } = renderHook(() => useCreateWallet());
+    const first = result.current.words.join(' ');
+
+    vi.mocked(Seed.create).mockReturnValueOnce({
+      phrase: 'p q r s t u v w x y z aa bb cc dd',
+    } as unknown as ReturnType<typeof Seed.create>);
+
+    act(() => {
+      result.current.regenerateSeed();
+    });
+
+    expect(result.current.words.join(' ')).not.toBe(first);
+    expect(result.current.words.join(' ')).toBe('p q r s t u v w x y z aa bb cc dd');
   });
 });
