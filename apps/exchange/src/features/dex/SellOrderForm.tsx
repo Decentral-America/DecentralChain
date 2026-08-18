@@ -25,6 +25,8 @@ import {
   useDexStore,
 } from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
+import { coinsToTokens, toAmountCoins, toPriceCoins } from './orderScaling';
+import { usePairDecimals } from './usePairDecimals';
 
 /**
  * Form container
@@ -208,6 +210,8 @@ const ErrorMessage = styled.div`
 export const SellOrderForm: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
   const selectedPair = useDexStore(selectSelectedPair);
+  const pairDecimals = usePairDecimals(selectedPair);
+  const { amountDecimals, priceDecimals } = pairDecimals;
   const marketData = useDexStore(selectMarketData);
   const addUserOrder = useDexStore(selectAddUserOrder);
 
@@ -238,15 +242,14 @@ export const SellOrderForm: React.FC = () => {
   );
 
   // Determine available balance based on asset type
+  // Balances arrive in the asset's smallest unit, so they scale by that
+  // asset's decimals — not a fixed 10^8. Selling spends the amount asset.
   const availableBalance = useMemo(() => {
-    if (isDccAmountAsset) {
-      // DCC balance is in dcclets, convert to DCC
-      return (dccBalances?.available ?? 0) / 100000000;
-    } else {
-      // Custom token balance is already in minimal units
-      return (assetBalanceData?.balance ?? 0) / 100000000;
-    }
-  }, [isDccAmountAsset, dccBalances?.available, assetBalanceData?.balance]);
+    const coins = isDccAmountAsset
+      ? (dccBalances?.available ?? 0)
+      : (assetBalanceData?.balance ?? 0);
+    return coinsToTokens(coins, amountDecimals);
+  }, [isDccAmountAsset, dccBalances?.available, assetBalanceData?.balance, amountDecimals]);
 
   // Get display names from pair
   const priceAssetName = selectedPair?.priceAssetName || 'DCC';
@@ -341,14 +344,29 @@ export const SellOrderForm: React.FC = () => {
 
       // Sign the order using the user's seed — produces a valid signed order with proofs
       // signOrder returns Promise<SignedOrderResult> — no cast needed
+      // Never sign against guessed decimals: a wrong exponent here produces a
+      // real order for the wrong size. usePairDecimals reports isReady only
+      // once both assets' decimals are known.
+      if (!pairDecimals.isReady) {
+        setError('Loading asset precision — try again in a moment.');
+        return;
+      }
+
+      const amountCoins = toAmountCoins(amount, amountDecimals);
+      const priceCoins = toPriceCoins(price, amountDecimals, priceDecimals);
+      if (amountCoins === null || priceCoins === null) {
+        setError('Enter a valid amount and price.');
+        return;
+      }
+
       const signedOrder: SignedOrderResult = await signOrder({
-        amount: Math.round(parseFloat(amount) * 100000000),
+        amount: amountCoins,
         amountAsset: selectedPair?.amountAsset || null,
         expiration: ts + 29 * 24 * 60 * 60 * 1000,
         matcherFee,
         matcherPublicKey: matcherSettings.matcherPublicKey,
         orderType: 'sell',
-        price: Math.round(parseFloat(price) * 100000000),
+        price: priceCoins,
         priceAsset: selectedPair?.priceAsset || null,
         timestamp: ts,
         version: 3,
