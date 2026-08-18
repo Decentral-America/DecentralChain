@@ -1,6 +1,13 @@
 /**
  * SignUp Page
  * Full-screen mobile-app experience on mobile, dark-canvas 2-column layout on desktop.
+ *
+ * The two layouts are rooted at different component types, so React unmounts
+ * one tree and mounts the other whenever the viewport crosses `md` — rotating
+ * a tablet is enough. `useCreateWallet` is therefore called here, above the
+ * branch, and the wizard is handed its state: held inside the wizard, the seed
+ * and the step index would be destroyed by that flip, handing a user who had
+ * already written down their phrase a *different* wallet without saying so.
  */
 
 import LoginIcon from '@mui/icons-material/Login';
@@ -15,7 +22,7 @@ import Logo from '@/components/atoms/Logo';
 import { AuthScene } from '@/components/auth/AuthScene';
 import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
 import { MobileButton } from '@/components/mobile/primitives';
-import { CreateWalletWizard } from '@/features/auth/create-wallet';
+import { CreateWalletWizard, useCreateWallet } from '@/features/auth/create-wallet';
 import { palette } from '@/styles/tokens';
 import { landingTheme, onCanvas } from '@/theme/landingTheme';
 
@@ -23,6 +30,8 @@ const SignUpInner: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  // Above the branch on purpose — see the file header.
+  const wallet = useCreateWallet();
 
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
@@ -36,7 +45,7 @@ const SignUpInner: React.FC = () => {
           </MobileButton>
         }
       >
-        <CreateWalletWizard />
+        <CreateWalletWizard wallet={wallet} />
       </MobileAuthScreen>
     );
   }
@@ -120,7 +129,7 @@ const SignUpInner: React.FC = () => {
         <Grid size={{ md: 6, xs: 12 }}>
           {/* The wizard supplies its own glass card surface — no nested border here */}
           <Box sx={{ width: '100%' }}>
-            <CreateWalletWizard />
+            <CreateWalletWizard wallet={wallet} />
           </Box>
 
           <Box sx={{ mt: 3 }}>

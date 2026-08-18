@@ -3,9 +3,13 @@
  *
  * The strength meter reflects the rules the hook enforces, so a user is never
  * shown a full bar for a password that will then be rejected.
+ *
+ * The fields are controlled by `useCreateWallet` rather than by local state:
+ * the wizard remounts this step on every navigation, so a user who stepped
+ * back to re-read their phrase after a failed attempt would otherwise return
+ * to two empty boxes.
  */
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
 import { palette } from '@/styles/tokens';
 import { onCanvas } from '@/theme/landingTheme';
 
@@ -31,16 +35,22 @@ const FIELD_SX = {
 } as const;
 
 export function SecureStep({
+  confirm,
   error,
   isSubmitting,
+  onConfirmChange,
+  onPasswordChange,
   onSubmit,
+  password,
 }: {
+  confirm: string;
   error: string;
   isSubmitting: boolean;
-  onSubmit: (password: string, confirm: string) => void;
+  onConfirmChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
+  password: string;
 }) {
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const strength = passwordStrength(password);
 
   return (
@@ -48,7 +58,7 @@ export function SecureStep({
       component="form"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(password, confirm);
+        onSubmit();
       }}
     >
       <Typography variant="h5" sx={{ color: onCanvas.primary, fontWeight: 700, mb: 0.5 }}>
@@ -63,7 +73,7 @@ export function SecureStep({
           autoComplete="new-password"
           fullWidth
           label="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => onPasswordChange(e.target.value)}
           sx={FIELD_SX}
           type="password"
           value={password}
@@ -89,7 +99,7 @@ export function SecureStep({
           autoComplete="new-password"
           fullWidth
           label="Confirm password"
-          onChange={(e) => setConfirm(e.target.value)}
+          onChange={(e) => onConfirmChange(e.target.value)}
           sx={FIELD_SX}
           type="password"
           value={confirm}

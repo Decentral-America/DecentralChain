@@ -5,22 +5,28 @@
  * renders a placeholder (plus the blurred grid, belt and braces) until
  * revealed, so a screen reader, view-source, DevTools, or Ctrl+F cannot pick
  * the phrase up early. Revealing is one-way: once shown it stays shown,
- * because re-hiding would only obstruct someone mid-transcription. Copy works
- * either way, so a password manager user never has to put the phrase on
- * screen at all.
+ * because re-hiding would only obstruct someone mid-transcription. Copy is
+ * available before the reveal, so a password-manager user can capture the
+ * phrase in one action — but it is not a way around the reveal: "I've saved
+ * it" stays disabled until the phrase has been shown, so every user sees the
+ * words at least once.
+ *
+ * Fully controlled: `isRevealed` and `onReveal` are required and there is no
+ * local mirror of them. Revealing has to outlive this component — the wizard
+ * remounts it on every navigation away and back — and an optional prop would
+ * let a caller render the step unwired and silently lose that guarantee.
  */
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import ShieldIcon from '@mui/icons-material/Shield';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
 import { palette } from '@/styles/tokens';
 import { onCanvas } from '@/theme/landingTheme';
 
 export function RecoveryPhraseStep({
   isCopied,
-  isRevealed = false,
+  isRevealed,
   onContinue,
   onCopy,
   onReveal,
@@ -30,29 +36,22 @@ export function RecoveryPhraseStep({
 }: {
   isCopied: boolean;
   /**
-   * Whether the phrase has already been revealed on a prior mount of this
-   * component. The wizard remounts this step every time the user navigates
-   * away and back (e.g. Back to reconsider Ledger, then forward again), and
-   * revealing is one-way — re-hiding would only obstruct someone
-   * mid-transcription — so that fact has to survive the remount even though
-   * this component's own `revealed` state cannot.
+   * Whether the phrase has been revealed. Owned by the caller, because the
+   * wizard remounts this step every time the user navigates away and back
+   * (e.g. Back to reconsider Ledger, then forward again) and revealing is
+   * one-way — re-hiding would only obstruct someone mid-transcription — so
+   * that fact has to survive a remount this component cannot.
    */
-  isRevealed?: boolean;
+  isRevealed: boolean;
   onContinue: () => void;
   onCopy: () => void;
-  /** Fired once, the first time the phrase is revealed, so a caller that
-   * outlives this component's remounts can remember it via `isRevealed`. */
-  onReveal?: () => void;
+  /** Fired when the user asks to see the phrase; the caller flips `isRevealed`. */
+  onReveal: () => void;
   onRetry: () => void;
   seedError: string;
   words: string[];
 }) {
-  const [revealed, setRevealed] = useState(isRevealed);
-
-  const reveal = () => {
-    setRevealed(true);
-    onReveal?.();
-  };
+  const revealed = isRevealed;
 
   // Generation failed: there is no phrase to show, so offer a retry rather
   // than an empty grid the user cannot act on.
@@ -162,7 +161,7 @@ export function RecoveryPhraseStep({
 
         {!revealed && (
           <Button
-            onClick={reveal}
+            onClick={onReveal}
             startIcon={<VisibilityIcon />}
             sx={{
               color: onCanvas.primary,

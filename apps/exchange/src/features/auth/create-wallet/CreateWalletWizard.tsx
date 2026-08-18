@@ -5,6 +5,13 @@
  * and a checkbox past the bottom of the viewport. Each step fits a 600px
  * viewport; the container owns only which step is showing.
  *
+ * Presentational: every piece of durable state — the seed, the step index, the
+ * password fields — is owned by `useCreateWallet` and handed in. SignUp renders
+ * this component from two branches rooted at different component types, so
+ * crossing the `md` breakpoint remounts it; state held here would be destroyed
+ * by a device rotation mid-flow, handing the user a phrase for a wallet that
+ * never gets created.
+ *
  * Step transitions are a hand-rolled CSS keyframe rather than MUI's
  * `<Slide>`/`<Fade>`. Those components apply `opacity`/`transform`/
  * `transition` as inline styles, a channel a class-based
@@ -15,7 +22,7 @@
  */
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button } from '@mui/material';
-import { type TouchEvent, useRef, useState } from 'react';
+import { type TouchEvent, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { GlassCard } from '@/components/auth/GlassCard';
 import { StepRail } from '@/components/auth/StepRail';
@@ -24,32 +31,16 @@ import { ChooseMethodStep } from './steps/ChooseMethodStep';
 import { RecoveryPhraseStep } from './steps/RecoveryPhraseStep';
 import { SecureStep } from './steps/SecureStep';
 import { VerifyStep } from './steps/VerifyStep';
-import { useCreateWallet } from './useCreateWallet';
+import { type CreateWalletApi } from './useCreateWallet';
 
 const STEP_LABELS = ['Method', 'Phrase', 'Verify', 'Secure'];
 
 /** Horizontal swipe distance, in px, that counts as an intentional back gesture. */
 const SWIPE_THRESHOLD = 64;
 
-export function CreateWalletWizard() {
-  const wallet = useCreateWallet();
+export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  // Direction only affects which way the next transition slides in from, so a
-  // ref avoids a render purely to record it.
-  const goingBack = useRef(false);
-
-  const goTo = (next: number) => {
-    goingBack.current = next < step;
-    setStep(next);
-  };
-
-  // Back is available from every step after the first. Without it a user on
-  // the verify step who needs to re-read their phrase would be stuck.
-  const canGoBack = step > 0;
-  const goBack = () => {
-    if (canGoBack) goTo(step - 1);
-  };
+  const { canGoBack, goBack, goTo, step } = wallet;
 
   // Swipe right to go back, on touch only. Mirrors the button rather than
   // replacing it, so the affordance stays visible either way.
@@ -93,9 +84,13 @@ export function CreateWalletWizard() {
     }
     return (
       <SecureStep
+        confirm={wallet.confirm}
         error={wallet.error}
         isSubmitting={wallet.isSubmitting}
-        onSubmit={(password, confirm) => void wallet.submit(password, confirm)}
+        onConfirmChange={wallet.setConfirm}
+        onPasswordChange={wallet.setPassword}
+        onSubmit={() => void wallet.submit()}
+        password={wallet.password}
       />
     );
   };
@@ -106,6 +101,10 @@ export function CreateWalletWizard() {
 
       {canGoBack && (
         <Button
+          // Leaving the password step while create() is in flight would unmount
+          // the only component that renders `error`, so a later rejection would
+          // fail silently.
+          disabled={wallet.isSubmitting}
           onClick={goBack}
           size="small"
           startIcon={<ArrowBackIcon />}
@@ -134,7 +133,7 @@ export function CreateWalletWizard() {
             },
             '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
             animation: `${
-              goingBack.current ? 'create-wallet-step-in-back' : 'create-wallet-step-in-forward'
+              wallet.isGoingBack ? 'create-wallet-step-in-back' : 'create-wallet-step-in-forward'
             } 220ms ease both`,
           }}
         >
