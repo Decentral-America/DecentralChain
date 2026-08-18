@@ -109,6 +109,23 @@ export default defineConfig({
     // 'hidden' maps are not referenced from bundled JS (not served to users),
     // but can be uploaded to Sentry during CI for production stack traces.
     sourcemap: NODE_ENV === 'production' ? 'hidden' : true,
+    /*
+     * Kept in lockstep with the `browserslist` field in package.json.
+     *
+     * These are the same versions Vite 8's `baseline-widely-available` default
+     * resolves to, so pinning them changes no output today — it pins the
+     * support contract. Without this the floor is whatever the installed Vite
+     * happens to consider baseline, and a Vite upgrade would move the set of
+     * browsers this app is transpiled for without anyone deciding to.
+     *
+     * Nothing below this line is transpiled away, which is the point: the app
+     * was optimised hard for first-load size and a lower target would reinstate
+     * downlevelling and helper code it does not need. Note that Safari 16.4-17
+     * are inside this window and implement only -webkit-backdrop-filter, which
+     * is why the prefixed form and the widened @supports test still earn their
+     * place.
+     */
+    target: ['chrome111', 'edge111', 'firefox114', 'safari16.4', 'ios16.4'],
   },
   define: {
     // Sentry tree-shaking flags (docs: https://docs.sentry.io/platforms/javascript/guides/react/configuration/tree-shaking/)

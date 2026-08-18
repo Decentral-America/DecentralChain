@@ -2,6 +2,16 @@
   "bugs": {
     "url": "https://github.com/Decentral-America/DecentralChain/issues"
   },
+  "browserslist": [
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 114",
+    "safari >= 16.4",
+    "ios_saf >= 16.4",
+    "and_chr >= 111",
+    "samsung >= 22",
+    "not dead"
+  ],
   "dependencies": {
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/bignumber": "workspace:*",
