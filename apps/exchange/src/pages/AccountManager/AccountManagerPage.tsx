@@ -194,9 +194,12 @@ export const AccountManagerPage = () => {
   // Check if multiAccount vault is unlocked
   useEffect(() => {
     if (!multiAccount.isSignedIn) {
-      // Vault locked, need password
+      // Vault locked, need password. The sign-in screen is registered at
+      // '/signin' (and its '/sign-in' alias); '/auth/login' is not a route, so
+      // this used to fall through to the router's catch-all and drop the user
+      // on the marketing landing page instead of the password prompt.
       logger.debug('[AccountManager] Vault locked, redirecting to login');
-      void navigate('/auth/login');
+      void navigate('/signin');
     }
   }, [navigate]);
 
@@ -233,9 +236,12 @@ export const AccountManagerPage = () => {
       return;
     }
 
-    // Logout locks the vault
+    // Logout locks the vault. The confirm above promises the user they "will
+    // need your password to access any account", so the sign-in screen — where
+    // that password is entered — is the destination, not the landing page.
+    // Same unregistered-route bug as the locked-vault redirect above.
     await logout();
-    void navigate('/auth/login');
+    void navigate('/signin');
   };
 
   // Filter out current account from other accounts list
