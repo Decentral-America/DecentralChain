@@ -265,3 +265,32 @@ registered so the flow remains reachable by direct URL for development.
 - **"Submit disabled"** for a weak password was not implemented; `SecureStep`
   keeps submit enabled and validates on click.
 - **"The tile locks green"** on a correct verification answer is moot.
+
+### Phase 2 is withdrawn, not deferred — 2026-08-18
+
+The Scope section above promised a follow-up converting `LoginForm`,
+`AccountSelectScreen`, `ImportAccount` and `SeedBackup` to `GlassCard`. That was
+attempted and **abandoned because the premise was false**: those screens do not
+sit on the dark night canvas.
+
+- `ImportAccountPage.tsx:228` wraps `ImportAccount` in an explicit
+  `rgba(255, 255, 255, 0.95)` card.
+- `MobileAuthShell.tsx:53` is `#FFFFFF`.
+- `SaveSeedPage.tsx:56` is a pale-blue gradient under a light-defaulting theme.
+- `LoginForm` / `AccountSelectScreen` are on the dark canvas **on desktop only** —
+  on mobile they sit on `#F4F5F7` (`MobileAuthScreen.tsx:103`).
+
+Giving any of them a dark translucent surface would have put dark text on a light
+background, or the reverse. The original scoping checked which components imported
+the light `Card` atom; it did not check what those components actually render on.
+
+Unifying these screens is still worth doing, but it is a re-theming project across
+the pre-app surfaces, not a component swap — and it should start from what each
+page renders on, not from what it imports.
+
+**Blocking prerequisite found along the way:** `SurfaceContext`'s `chromeless` flag
+is dead. `MobileAuthScreen.tsx:117` renders `<SurfaceProvider chromeless>`, but the
+`Card` atom never consumes it and nothing in the repo reads `chromeless` at all
+(`useSurface` is read only for `compact`, in `PageFrame` and `CreateToken`). So the
+mobile shell only believes it suppresses nested card chrome. Any future unification
+of these screens has to resolve that first, because it changes a shared atom.
