@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover is what makes env(safe-area-inset-*) resolve to real
+         values on notched iOS devices; without it every inset reads 0 and the
+         notch/home-indicator padding across the mobile shell is inert.
+         No user-scalable/maximum-scale: pinch-zoom stays available. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Decentral Exchange — the native DEX on DecentralChain blockchain. Trade DCC pairs with zero counterparty risk." />
     <meta name="theme-color" content="#1e1e2d" />
     <!-- Favicon — blue D on white background -->

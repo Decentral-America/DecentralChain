@@ -121,7 +121,14 @@ export function MobileAuthScreen({
             sx={{
               '& button': { minHeight: 48 },
               bgcolor: 'transparent',
-              bottom: 0,
+              /*
+               * Sticky insets are measured from the scrollport edge, and the
+               * scrollport now reaches the physical bottom of the screen
+               * (viewport-fit=cover). `bottom: 0` would pin the submit button
+               * under the home indicator while the sheet is scrolled; the
+               * container's own pb only clears it once scrolled fully down.
+               */
+              bottom: 'env(safe-area-inset-bottom)',
               position: 'sticky',
               pt: 2,
             }}
