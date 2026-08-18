@@ -32,6 +32,8 @@ export interface Config {
   originUrl: string;
 
   // Feature flags
+  /** Offers the Ledger hardware-wallet path. Off until Ledger support ships. */
+  ledgerEnabled: boolean;
   sentryEnabled: boolean;
   sentryDsn?: string | undefined;
 }
@@ -54,6 +56,7 @@ const getConfig = (): Config => {
     isDevelopment: import.meta.env.DEV,
     isProduction: import.meta.env.PROD,
     isStaging: env === 'staging',
+    ledgerEnabled: import.meta.env.VITE_LEDGER_ENABLED === 'true',
     matcherUrl: import.meta.env.VITE_MATCHER_URL || NetworkConfig.matcher,
 
     // Network configuration - defaults from NetworkConfig (mainnet.json)
