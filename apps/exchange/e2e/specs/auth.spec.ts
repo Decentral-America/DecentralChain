@@ -2,37 +2,86 @@
  * Exchange — auth flow spec.
  */
 import { expect, test } from '@playwright/test';
-import { AuthPage } from '../page-objects/AuthPage';
+import { AuthPage, PHRASE_LENGTH, WIZARD_STEPS } from '../page-objects/AuthPage';
 
+/**
+ * /create-account is a four-step wizard: choose a method, read the recovery
+ * phrase, prove you read it, then set a password. The first two steps contain
+ * no form fields at all, so these tests drive the wizard rather than looking
+ * for inputs on arrival.
+ */
 test.describe('Create Account flow', () => {
-  test('create-account page renders a form', async ({ page }) => {
+  test('create-account lands on the method step, not a form', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
-    await auth.expectVisible();
+
+    await expect(auth.recoveryPhraseTile).toBeVisible();
+    expect(await auth.currentStep()).toBe(1);
+    // Nothing to type on step 1 — a password box here would mean the wizard
+    // had been bypassed.
+    await expect(page.locator('input[type="password"]')).toHaveCount(0);
   });
 
-  test('password field is visible on create-account', async ({ page }) => {
+  test('the recovery phrase is hidden until the user reveals it', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
-    await expect(page.locator('input[type="password"]').first()).toBeVisible({ timeout: 10_000 });
+    await auth.chooseRecoveryPhrase();
+
+    // The real words are kept out of the DOM, not merely blurred, so this is a
+    // claim about the markup and not about the pixels.
+    await expect(auth.seedGrid).toHaveAttribute('data-revealed', 'false');
+    const covered = await auth.seedGrid.innerText();
+    expect(covered).not.toMatch(/[a-z]{3,}/);
+
+    const words = await auth.revealPhrase();
+    expect(words).toHaveLength(PHRASE_LENGTH);
+    for (const word of words) expect(word).toMatch(/^[a-z]+$/i);
   });
 
-  test('filling password enables the Next button', async ({ page }) => {
+  test('continue is blocked until the phrase has been revealed', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
+    await auth.chooseRecoveryPhrase();
+
+    await expect(auth.savedItBtn).toBeDisabled();
+    await auth.revealPhrase();
+    await expect(auth.savedItBtn).toBeEnabled();
+  });
+
+  test('answering the challenges reaches the password step', async ({ page }) => {
+    const auth = new AuthPage(page);
+    await auth.gotoCreateAccount();
+
+    await auth.reachPasswordStep();
+
+    expect(await auth.currentStep()).toBe(WIZARD_STEPS.length);
+    await expect(auth.passwordInput).toBeVisible();
+    await expect(auth.confirmPasswordInput).toBeVisible();
+  });
+
+  test('the password step accepts a password and offers submission', async ({ page }) => {
+    const auth = new AuthPage(page);
+    await auth.gotoCreateAccount();
+    await auth.reachPasswordStep();
+
     await auth.fillPassword('TestPassword123!');
-    const confirmInput = page.locator('input[type="password"]').nth(1);
-    if (await confirmInput.isVisible().catch(() => false)) {
-      await auth.confirmPassword('TestPassword123!');
-    }
-    // The submit button also requires the seed-phrase-backup acknowledgement
-    // checkbox — password alone leaves it disabled.
-    const backupCheckbox = page.getByRole('checkbox').first();
-    if (await backupCheckbox.isVisible().catch(() => false)) {
-      await backupCheckbox.check();
-    }
-    const nextBtn = page.getByRole('button', { name: /next|continue|proceed|create/i }).first();
-    await expect(nextBtn).toBeEnabled({ timeout: 5_000 });
+    await auth.confirmPassword('TestPassword123!');
+
+    await expect(auth.passwordInput).toHaveValue('TestPassword123!');
+    await expect(auth.createWalletBtn).toBeEnabled({ timeout: 5_000 });
+  });
+
+  test('stepping back from the password step keeps what was typed', async ({ page }) => {
+    const auth = new AuthPage(page);
+    await auth.gotoCreateAccount();
+    const words = await auth.reachPasswordStep();
+    await auth.fillPassword('TestPassword123!');
+
+    await page.getByRole('button', { name: /^back$/i }).click();
+    await expect(auth.verifyQuestion).toBeVisible();
+    await auth.answerVerification(words);
+
+    await expect(auth.passwordInput).toHaveValue('TestPassword123!');
   });
 });
 

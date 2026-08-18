@@ -54,7 +54,14 @@ export function VerifyStep({
         Question {index + 1} of {challenges.length}
       </Typography>
 
-      <Typography sx={{ color: onCanvas.primary, mb: 2 }}>
+      {/* The position is exposed as data rather than only as prose so an
+          end-to-end test can answer the challenge without parsing a sentence
+          that copy edits are free to change. */}
+      <Typography
+        data-position={challenge.position}
+        data-testid="verify-question"
+        sx={{ color: onCanvas.primary, mb: 2 }}
+      >
         Which word is <strong>word #{challenge.position}</strong>?
       </Typography>
 
@@ -62,6 +69,7 @@ export function VerifyStep({
         {challenge.choices.map((choice, i) => (
           <Box
             component="button"
+            data-testid="verify-choice"
             key={`${challenge.position}-${choice}`}
             type="button"
             onClick={() => answer(choice)}
