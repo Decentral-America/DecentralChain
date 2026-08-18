@@ -161,9 +161,7 @@
         "src/features/advanced/**", // advanced tx forms: alias, mass-transfer, set-script, data-tx
         "src/features/assets/**", // token management: issue, burn, reissue, asset-info
         "src/features/auth/AccountSelectScreen.tsx", // account-selection screen shown after password entry
-        "src/features/auth/AccountSwitcher.tsx", // quick account-switch widget (header/sidebar)
         "src/features/auth/index.ts", // features/auth barrel (re-export only)
-        "src/features/auth/PasswordProtection.tsx", // encrypt-seed-with-password step in onboarding
         "src/features/dex/index.ts", // features/dex barrel (re-export only)
         "src/features/sessions/**", // session context: auto-lock, cross-tab sync
         "src/features/settings/index.ts", // features/settings barrel (re-export only)
@@ -227,7 +225,6 @@
         "src/contexts/EventContext.tsx", // event-bus context (provider not yet mounted)
         "src/lib/errorHandler.ts", // global unhandled-error util
         "src/lib/index.ts", // lib barrel (aggregates forms + react-query + sanitize)
-        "src/lib/memoUtils.ts", // memoization helpers
         "src/lib/secureStorage.ts", // encrypted localStorage wrapper
         "src/stores/**", // Zustand stores (DEX order book, etc.)
 

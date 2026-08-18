@@ -135,7 +135,6 @@ apps/exchange/
 │   ├── lib/               # Utility libraries
 │   │   ├── api.ts         # API client with retry logic
 │   │   ├── errorHandler.ts # Centralized error handling
-│   │   ├── memoUtils.ts    # Performance optimization
 │   │   ├── sanitize.ts     # Input sanitization
 │   │   └── secureStorage.ts # Encrypted storage
 │   ├── routes/            # Application routing
