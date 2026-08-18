@@ -13,14 +13,13 @@ import { type CreateWalletApi, STEP, useCreateWallet, validatePassword } from '.
 
 const create = vi.fn();
 const navigate = vi.fn();
-const setSeedTransfer = vi.fn();
 
 // Mutable behind a getter: the hook reads config.ledgerEnabled on every render,
 // so a per-test flip is enough and no module reset is needed.
 const ledgerFlag = vi.hoisted(() => ({ enabled: false }));
 
-// Mutable so individual tests can flip to the "already authenticated, adding
-// an additional account" state without redefining the whole mock.
+// Mutable so a test can put the hook in the "already authenticated" state and
+// assert the redirect that keeps the wizard out of an authenticated session.
 const authState: { isAuthenticated: boolean; user: { id: string } | null } = {
   isAuthenticated: false,
   user: null,
@@ -48,7 +47,6 @@ vi.mock('@/hooks/useClipboard', () => ({
 vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
 }));
-vi.mock('@/lib/secureTransfer', () => ({ setSeedTransfer }));
 vi.mock('data-service/classes/Seed', () => ({
   Seed: { create: vi.fn(() => ({ phrase: 'a b c d e f g h i j k l m n o' })) },
 }));
@@ -119,7 +117,6 @@ describe('useCreateWallet', () => {
     authState.user = null;
     create.mockReset();
     navigate.mockReset();
-    setSeedTransfer.mockReset();
     ledgerFlag.enabled = false;
     setWebHid(false);
   });
@@ -180,42 +177,18 @@ describe('useCreateWallet', () => {
     expect(rendered.result.current.words).toHaveLength(15);
   });
 
-  it('hands the seed to secureTransfer instead of calling create, when already authenticated', async () => {
+  it('redirects an already-authenticated user away instead of running the wizard', () => {
+    // This redirect is why `submit()` has a single path. It used to fork into
+    // an "additional account" branch on exactly this state, which the redirect
+    // made unreachable; the branch is gone, and this is the guarantee that it
+    // stays unreachable if anyone reaches for it again. Adding a second account
+    // goes through Account Manager → Import instead.
     authState.isAuthenticated = true;
     authState.user = { id: 'existing-user' };
-    const rendered = renderHook(() => useCreateWallet());
 
-    const ok = await submitWith(rendered, 'Abcdefghijk1!');
+    renderHook(() => useCreateWallet());
 
-    expect(ok).toBe(true);
-    expect(setSeedTransfer).toHaveBeenCalledWith('a b c d e f g h i j k l m n o');
-    expect(create).not.toHaveBeenCalled();
-  });
-
-  it('never puts the seed phrase into router state for the additional-account navigation', async () => {
-    authState.isAuthenticated = true;
-    authState.user = { id: 'existing-user' };
-    const rendered = renderHook(() => useCreateWallet());
-
-    await submitWith(rendered, 'Abcdefghijk1!');
-
-    // The seed must reach the next screen only via setSeedTransfer (asserted
-    // above), never via router state — router state persists in browser
-    // history, which would leak the recovery phrase.
-    const importCall = navigate.mock.calls.find(([path]) => path === '/import-account');
-    expect(importCall).toBeDefined();
-    const [, options] = importCall as [string, { state: Record<string, unknown> }];
-
-    expect(options.state).toEqual({
-      hasBackup: true,
-      hasSeedTransfer: true,
-      name: 'My Account',
-    });
-
-    const phrase = 'a b c d e f g h i j k l m n o';
-    for (const value of Object.values(options.state)) {
-      expect(String(value)).not.toContain(phrase);
-    }
+    expect(navigate).toHaveBeenCalledWith('/desktop/wallet', { replace: true });
   });
 
   it('produces a fresh phrase when regenerateSeed is called', async () => {

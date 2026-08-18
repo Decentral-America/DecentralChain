@@ -211,29 +211,19 @@ export function useCreateWallet(): CreateWalletApi {
     setIsSubmitting(true);
     setIsCreating(true);
     try {
-      if (isAuthenticated && user) {
-        // Additional account: the vault must be unlocked first. The seed is
-        // handed over in memory, never through router state, which would
-        // persist it in browser history.
-        const { setSeedTransfer } = await import('@/lib/secureTransfer');
-        setSeedTransfer(seed.phrase);
-        setIsCreating(false);
-        setIsSubmitting(false);
-        // '/import-account' is where the import screen is registered.
-        // '/auth/import' is not a route, so this used to fall through to the
-        // router's catch-all and redirect to the landing page.
-        //
-        // NOTE: the receiving screen does not yet read `hasSeedTransfer`, so
-        // the transfer set above currently goes unconsumed and auto-expires
-        // after 30s, leaving the user to type the phrase by hand. That is a
-        // strictly better outcome than the landing-page redirect, but the
-        // handoff is only half-built — see the Wave A report.
-        void navigate('/import-account', {
-          state: { hasBackup: true, hasSeedTransfer: true, name: 'My Account' },
-        });
-        return true;
-      }
-
+      // One path only. This used to fork on `isAuthenticated && user` into an
+      // "additional account" branch that handed the seed to secureTransfer and
+      // sent the user to the import screen. That branch is gone: the navigation
+      // effect above redirects an authenticated user away on mount, so it was
+      // unreachable, and it could not have worked if reached — `addAccount()`
+      // takes no hasBackup argument and hardcodes `false`, the import screen
+      // would have had to paint the received phrase into a visible textarea
+      // (defeating the point of an in-memory transfer), and it discarded the
+      // password the user had just set in favour of the master password.
+      //
+      // Adding a second account is served by Account Manager → Import, which
+      // never went through here.
+      //
       // hasBackup: true — claimed by the user pressing "I've saved it", which
       // `goTo` only lets them reach once the phrase has been revealed.
       await create(seed.phrase, password, 'My Account', true);
@@ -249,7 +239,7 @@ export function useCreateWallet(): CreateWalletApi {
       setIsCreating(false);
       return false;
     }
-  }, [confirm, create, isAuthenticated, navigate, password, seed, user]);
+  }, [confirm, create, password, seed]);
 
   return {
     canGoBack,
