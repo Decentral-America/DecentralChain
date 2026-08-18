@@ -1,10 +1,13 @@
 /**
  * Step 2 — the recovery phrase.
  *
- * The grid is blurred until the user asks for it. Revealing is one-way: once
- * shown it stays shown, because re-hiding would only obstruct someone
- * mid-transcription. Copy works either way, so a password manager user never
- * has to put the phrase on screen at all.
+ * The real words never enter the DOM until the user asks for them: each slot
+ * renders a placeholder (plus the blurred grid, belt and braces) until
+ * revealed, so a screen reader, view-source, DevTools, or Ctrl+F cannot pick
+ * the phrase up early. Revealing is one-way: once shown it stays shown,
+ * because re-hiding would only obstruct someone mid-transcription. Copy works
+ * either way, so a password manager user never has to put the phrase on
+ * screen at all.
  */
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
@@ -130,7 +133,9 @@ export function RecoveryPhraseStep({
                 {index + 1}
               </Typography>
               <Typography sx={{ color: onCanvas.primary, fontFamily: 'monospace', fontSize: 14 }}>
-                {word}
+                {/* The real word is kept out of the DOM entirely until revealed — the blur
+                    above is only a visual belt-and-braces, not the guarantee. */}
+                {revealed ? word : '••••••'}
               </Typography>
             </Stack>
           ))}

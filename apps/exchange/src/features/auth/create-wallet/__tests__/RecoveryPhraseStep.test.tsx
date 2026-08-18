@@ -1,8 +1,9 @@
 /**
  * RecoveryPhraseStep — unit tests
  *
- * The phrase must not be readable until the user asks for it: a screenshare or
- * a passer-by should not capture it before the user has decided they are ready.
+ * The real words must be absent from the DOM until the user asks for them: a
+ * screen reader, view-source, DevTools, or Ctrl+F must not be able to pick up
+ * the phrase before the user has decided they are ready to see it.
  */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -41,8 +42,18 @@ describe('RecoveryPhraseStep', () => {
     expect(screen.getByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
   });
 
-  it('renders every word with its position', () => {
+  it('keeps the real words out of the DOM until revealed', async () => {
     setup();
+    expect(screen.queryByText('melody')).not.toBeInTheDocument();
+    expect(screen.queryByText('iron')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /reveal/i }));
+    expect(screen.getByText('melody')).toBeInTheDocument();
+    expect(screen.getByText('iron')).toBeInTheDocument();
+  });
+
+  it('renders every word with its position once revealed', async () => {
+    setup();
+    await userEvent.click(screen.getByRole('button', { name: /reveal/i }));
     expect(screen.getByText('melody')).toBeInTheDocument();
     expect(screen.getByText('iron')).toBeInTheDocument();
     expect(screen.getAllByTestId('seed-word')).toHaveLength(15);
