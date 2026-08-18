@@ -163,7 +163,7 @@ const ImportInner: React.FC = () => {
         alignItems: 'center',
         bgcolor: 'background.default',
         display: 'flex',
-        minHeight: '100vh',
+        minHeight: '100svh',
       }}
     >
       <Container maxWidth="md" sx={{ py: 8 }}>

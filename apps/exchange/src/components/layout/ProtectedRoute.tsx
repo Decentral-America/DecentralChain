@@ -30,7 +30,7 @@ export const ProtectedRoute = ({ redirectTo = '/', children }: ProtectedRoutePro
           alignItems: 'center',
           display: 'flex',
           justifyContent: 'center',
-          minHeight: '100vh',
+          minHeight: '100svh',
         }}
       >
         <CircularProgress />

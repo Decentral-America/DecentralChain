@@ -193,7 +193,7 @@ export const Bridge: React.FC = () => {
         <Box
           sx={{
             bgcolor: 'background.default',
-            minHeight: '100vh',
+            minHeight: '100svh',
             py: 4,
           }}
         >
@@ -241,7 +241,7 @@ export const Bridge: React.FC = () => {
       <Box
         sx={{
           bgcolor: 'background.default',
-          minHeight: '100vh',
+          minHeight: '100svh',
           py: 4,
         }}
       >

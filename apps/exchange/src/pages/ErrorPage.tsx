@@ -59,7 +59,7 @@ export const ErrorPage: React.FC = () => {
         flexDirection: 'column',
         gap: '16px',
         justifyContent: 'center',
-        minHeight: '100vh',
+        minHeight: '100svh',
         padding: '24px',
         textAlign: 'center',
       }}

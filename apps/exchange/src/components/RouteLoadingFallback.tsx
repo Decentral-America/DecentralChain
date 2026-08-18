@@ -14,7 +14,9 @@ const LoadingContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* vh first as the fallback; svh is the stable small viewport on iOS. */
   min-height: 100vh;
+  min-height: 100svh;
   background: ${({ theme }) => theme.colors.background};
 `;
 

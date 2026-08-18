@@ -57,7 +57,7 @@ const PageContainer = styled(Box)(({ theme }) => ({
   backgroundSize: '200% 200%',
   display: 'flex',
   justifyContent: 'center',
-  minHeight: '100vh',
+  minHeight: '100svh',
   overflow: 'hidden',
   padding: theme.spacing(3),
   position: 'relative',

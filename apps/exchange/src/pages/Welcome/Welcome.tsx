@@ -47,7 +47,7 @@ const WelcomeContainer = styled(Box)(({ theme }) => ({
       : 'linear-gradient(-45deg, #f5f7fa, #e8f0fe, #f0f4f8, #e3f2fd)',
   backgroundSize: '400% 400%',
   display: 'flex',
-  minHeight: '100vh',
+  minHeight: '100svh',
   overflow: 'hidden',
   position: 'relative',
 

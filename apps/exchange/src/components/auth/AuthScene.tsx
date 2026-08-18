@@ -31,7 +31,7 @@ export function AuthScene({
         bgcolor: brandInk.night,
         color: onCanvas.primary,
         display: 'flex',
-        minHeight: '100vh',
+        minHeight: '100svh',
         overflow: 'hidden',
         position: 'relative',
       }}

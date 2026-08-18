@@ -25,7 +25,7 @@ const errorContainerStyle: React.CSSProperties = {
   color: '#ffffff',
   display: 'flex',
   justifyContent: 'center',
-  minHeight: '100vh',
+  minHeight: '100svh',
   padding: '2rem',
 };
 

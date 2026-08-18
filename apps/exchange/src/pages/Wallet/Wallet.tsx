@@ -11,7 +11,7 @@ import { landingTheme } from '@/theme/landingTheme';
 
 const WalletContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
-  minHeight: '100vh',
+  minHeight: '100svh',
   padding: theme.spacing(3),
 
   [theme.breakpoints.down('sm')]: {

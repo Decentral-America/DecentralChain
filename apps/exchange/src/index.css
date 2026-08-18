@@ -26,7 +26,13 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
+  /* 100vh is iOS Safari's *large* viewport — it ignores the address bar, so a
+     full-height page is cut off below the fold. svh is the small viewport and,
+     unlike dvh, does not reflow while the toolbar animates. The vh line is the
+     fallback for browsers without svh. */
   min-height: 100vh;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: deliberate progressive-enhancement fallback — the vh line above is what pre-svh browsers use */
+  min-height: 100svh;
   width: 100%;
   height: 100%;
 }

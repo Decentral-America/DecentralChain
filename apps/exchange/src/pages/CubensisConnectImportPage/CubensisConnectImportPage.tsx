@@ -179,7 +179,7 @@ export const CubensisConnectImportPage: React.FC = () => {
 
   return (
     <Fade in={isVisible} timeout={600}>
-      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 6 }}>
+      <Box sx={{ bgcolor: 'background.default', minHeight: '100svh', py: 6 }}>
         <Container maxWidth="sm">
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, textAlign: 'center' }}>
             Cubensis Connect

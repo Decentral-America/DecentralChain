@@ -20,7 +20,7 @@ export const ImportLedger: React.FC = () => {
           alignItems: 'center',
           bgcolor: 'background.default',
           display: 'flex',
-          minHeight: '100vh',
+          minHeight: '100svh',
         }}
       >
         <Container maxWidth="xl" sx={{ py: 8 }}>
