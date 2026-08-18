@@ -30,6 +30,7 @@ export function StepRail({ steps, current }: { steps: string[]; current: number 
     >
       <Box sx={{ bgcolor: 'rgba(255,255,255,0.10)', borderRadius: 999, height: 3, mb: 1.5 }}>
         <Box
+          data-testid="step-rail-fill"
           sx={{
             '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
             bgcolor: palette.indigoHover,

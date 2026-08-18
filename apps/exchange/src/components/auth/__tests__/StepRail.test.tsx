@@ -41,4 +41,29 @@ describe('StepRail', () => {
     render(<StepRail steps={STEPS} current={3} />);
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '4');
   });
+
+  it('single step does not divide by zero', () => {
+    render(<StepRail steps={['Only']} current={0} />);
+    expect(screen.getByText('Only')).toBeInTheDocument();
+    const rail = screen.getByRole('progressbar');
+    expect(rail).toHaveAttribute('aria-valuemin', '1');
+    expect(rail).toHaveAttribute('aria-valuemax', '1');
+    expect(rail).toHaveAttribute('aria-valuenow', '1');
+    const fill = screen.getByTestId('step-rail-fill');
+    expect(fill).toHaveStyle({ width: '100%' });
+  });
+
+  it('fill width tracks progress', () => {
+    const { rerender } = render(<StepRail steps={STEPS} current={0} />);
+    let fill = screen.getByTestId('step-rail-fill');
+    expect(fill).toHaveStyle({ width: '0%' });
+
+    rerender(<StepRail steps={STEPS} current={2} />);
+    fill = screen.getByTestId('step-rail-fill');
+    expect(fill).toHaveStyle({ width: '66.66666666666666%' });
+
+    rerender(<StepRail steps={STEPS} current={3} />);
+    fill = screen.getByTestId('step-rail-fill');
+    expect(fill).toHaveStyle({ width: '100%' });
+  });
 });
