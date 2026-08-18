@@ -38,7 +38,6 @@ const FilterBar = styled.div`
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`

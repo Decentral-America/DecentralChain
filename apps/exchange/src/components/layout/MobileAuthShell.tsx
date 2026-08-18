@@ -151,7 +151,6 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
           overscrollBehavior: 'contain',
           px: 2,
           py: 2,
-          WebkitOverflowScrolling: 'touch',
         }}
       >
         {children}
