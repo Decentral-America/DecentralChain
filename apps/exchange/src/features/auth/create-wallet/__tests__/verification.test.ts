@@ -98,6 +98,43 @@ describe('buildChallenges', () => {
     }
   });
 
+  it('never offers the answer word twice when the phrase repeats it', () => {
+    // A repeated word supplying itself as a decoy would put two correct-looking
+    // tiles on screen; picking the "wrong" one is scored as a failure the user
+    // cannot understand, on the one step standing between them and a wallet.
+    const dupes = ['same', 'same', 'same', 'same', 'other', 'third', 'fourth', 'fifth', 'sixth'];
+    for (let run = 0; run < 100; run++) {
+      for (const c of buildChallenges(dupes)) {
+        expect(c.choices.filter((choice) => choice === c.answer)).toHaveLength(1);
+        expect(c.choices).toHaveLength(CHOICES_PER_CHALLENGE);
+      }
+    }
+  });
+
+  it('still builds a usable challenge when dedupe leaves fewer decoys than slots', () => {
+    // Two distinct words means at most one decoy, so a challenge is short of
+    // its four tiles — it must still be answerable rather than lose the answer.
+    const thin = ['same', 'same', 'same', 'other'];
+    for (let run = 0; run < 50; run++) {
+      const challenges = buildChallenges(thin);
+      expect(challenges.length).toBeGreaterThan(0);
+      for (const c of challenges) {
+        expect(c.choices).toContain(c.answer);
+        expect(new Set(c.choices).size).toBe(c.choices.length);
+        expect(c.choices.length).toBeLessThanOrEqual(CHOICES_PER_CHALLENGE);
+        expect(thin[c.position - 1]).toBe(c.answer);
+      }
+    }
+  });
+
+  it('survives a phrase made entirely of one repeated word', () => {
+    const same = ['same', 'same', 'same', 'same', 'same'];
+    for (const c of buildChallenges(same)) {
+      expect(c.choices).toEqual(['same']);
+      expect(c.answer).toBe('same');
+    }
+  });
+
   it('returns fewer challenges than requested when the phrase is short', () => {
     expect(buildChallenges(['a', 'b'], 3)).toHaveLength(2);
   });
