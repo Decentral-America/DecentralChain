@@ -22,7 +22,7 @@
  */
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button } from '@mui/material';
-import { type TouchEvent, useRef } from 'react';
+import { type TouchEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { GlassCard } from '@/components/auth/GlassCard';
 import { StepRail } from '@/components/auth/StepRail';
@@ -33,6 +33,32 @@ import { SecureStep } from './steps/SecureStep';
 import { type CreateWalletApi, STEP } from './useCreateWallet';
 
 const STEP_LABELS = ['Start', 'Phrase', 'Secure'];
+
+/**
+ * Spoken step titles, in step order. Separate from `STEP_LABELS` — the rail's
+ * labels are abbreviated to fit three columns ("Phrase"), which is too terse to
+ * be useful read aloud on its own. These mirror each step's own `<h5>`, so a
+ * screen-reader user hears the same title a sighted user reads; keep them in
+ * sync when a step heading changes.
+ */
+const STEP_TITLES = ['Before you start', 'Your recovery phrase', 'Secure your wallet'];
+
+/**
+ * Screen-reader-only styling, matching `visuallyHidden` in `@/styles/mixins`.
+ * Inlined rather than imported because that mixin is a styled-components `css`
+ * block and this component styles via MUI's `sx`.
+ */
+const SR_ONLY = {
+  borderWidth: 0,
+  clip: 'rect(0, 0, 0, 0)',
+  height: '1px',
+  margin: '-1px',
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  whiteSpace: 'nowrap',
+  width: '1px',
+} as const;
 
 /** Horizontal swipe distance, in px, that counts as an intentional back gesture. */
 const SWIPE_THRESHOLD = 64;
@@ -53,6 +79,27 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
     touchStartX.current = null;
     if (start !== null && end !== undefined && end - start > SWIPE_THRESHOLD) goBack();
   };
+
+  // Focus follows the step. Without this the virtual cursor stays wherever the
+  // user pressed Continue — a button that the step swap has just unmounted — so
+  // the next thing read is unrelated to the view now on screen.
+  const stepAreaRef = useRef<HTMLDivElement>(null);
+  const focusedStep = useRef(step);
+  useEffect(() => {
+    // Only on an actual change. This also covers the first render, and the
+    // remount SignUp causes when the viewport crosses `md`: in both the ref
+    // already holds the step on screen, and grabbing focus there would skip the
+    // user past the page heading and the progress rail without them acting.
+    if (focusedStep.current === step) return;
+    focusedStep.current = step;
+
+    const heading = stepAreaRef.current?.querySelector<HTMLElement>('h1, h2, h3, h4, h5, h6');
+    if (!heading) return;
+    // Headings are not focusable on their own; -1 makes this one programmatically
+    // focusable without inserting it into the tab order.
+    heading.tabIndex = -1;
+    heading.focus();
+  }, [step]);
 
   const renderStep = () => {
     if (step === STEP.INTRO) {
@@ -112,10 +159,20 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
         </Button>
       )}
 
+      {/*
+        Polite so the announcement queues behind whatever the user is currently
+        hearing rather than cutting it off. Atomic so the whole sentence is
+        re-read on change, not just the digit that differs.
+      */}
+      <Box aria-atomic="true" aria-live="polite" data-testid="wizard-announcer" sx={SR_ONLY}>
+        {`Step ${step + 1} of ${STEP_LABELS.length}: ${STEP_TITLES[step]}`}
+      </Box>
+
       <Box
         data-testid="wizard-step-area"
         onTouchEnd={onTouchEnd}
         onTouchStart={onTouchStart}
+        ref={stepAreaRef}
         sx={{ minHeight: 320, overflow: 'hidden', position: 'relative' }}
       >
         <Box

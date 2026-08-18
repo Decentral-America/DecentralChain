@@ -69,7 +69,7 @@ const goToPasswordStep = async () => {
   await userEvent.click(screen.getByRole('button', { name: /continue/i }));
   await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
   await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-  await screen.findByText(/secure your wallet/i);
+  await screen.findByRole('heading', { name: /secure your wallet/i });
 };
 
 describe('CreateWalletWizard', () => {
@@ -86,13 +86,52 @@ describe('CreateWalletWizard', () => {
 
   it('starts on the intro step', () => {
     render(<Wizard />);
-    expect(screen.getByText(/before you start/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /before you start/i })).toBeInTheDocument();
+  });
+
+  it('announces the new step to assistive technology on every change', async () => {
+    render(<Wizard />);
+    const announcer = screen.getByTestId('wizard-announcer');
+
+    // Polite, so the announcement queues rather than interrupting; atomic, so
+    // the whole sentence is re-read instead of only the digit that changed.
+    expect(announcer).toHaveAttribute('aria-live', 'polite');
+    expect(announcer).toHaveAttribute('aria-atomic', 'true');
+    expect(announcer).toHaveTextContent('Step 1 of 3: Before you start');
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
+    await waitFor(() => expect(announcer).toHaveTextContent('Step 2 of 3: Your recovery phrase'));
+
+    await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
+    await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
+    await waitFor(() => expect(announcer).toHaveTextContent('Step 3 of 3: Secure your wallet'));
+
+    // Backwards too — the announcement tracks the step, not the direction.
+    await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
+    await waitFor(() => expect(announcer).toHaveTextContent('Step 2 of 3: Your recovery phrase'));
+  });
+
+  it('moves focus to the new step heading, but does not steal focus on mount', async () => {
+    render(<Wizard />);
+
+    // On mount the user has not acted yet; taking focus here would drag them
+    // past the progress rail before they had read anything.
+    expect(document.activeElement).toBe(document.body);
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    const heading = await screen.findByRole('heading', { name: /your recovery phrase/i });
+    await waitFor(() => expect(heading).toHaveFocus());
+    // Programmatically focusable only — it must not join the tab order.
+    expect(heading).toHaveAttribute('tabindex', '-1');
   });
 
   it('reaches the phrase step from the intro', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    expect(await screen.findByText(/your recovery phrase/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /your recovery phrase/i }),
+    ).toBeInTheDocument();
   });
 
   it('reaches the password step after revealing and confirming the phrase', async () => {
@@ -100,13 +139,13 @@ describe('CreateWalletWizard', () => {
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
     await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-    expect(await screen.findByText(/secure your wallet/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /secure your wallet/i })).toBeInTheDocument();
   });
 
   it('does not reach the password step until the phrase has been revealed', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
 
     // The reveal is the whole of the evidence behind hasBackup: true, so the
     // way forward stays shut until the words have been on screen.
@@ -116,17 +155,17 @@ describe('CreateWalletWizard', () => {
     // control, so it could not tell a real guard from a merely greyed-out one.
     fireEvent.click(savedIt);
 
-    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
-    expect(screen.queryByText(/secure your wallet/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /your recovery phrase/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /secure your wallet/i })).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });
 
   it('goes back to the previous step', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    expect(await screen.findByText(/before you start/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /before you start/i })).toBeInTheDocument();
   });
 
   it('offers no back control on the first step', () => {
@@ -159,7 +198,7 @@ describe('CreateWalletWizard', () => {
     expect(screen.getByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/before you start/i);
+    await screen.findByRole('heading', { name: /before you start/i });
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
 
     expect(await screen.findByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
@@ -169,37 +208,37 @@ describe('CreateWalletWizard', () => {
   it('swiping right past the threshold goes back a step', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
 
     const area = screen.getByTestId('wizard-step-area');
     fireEvent.touchStart(area, { touches: [{ clientX: 20 }] });
     fireEvent.touchEnd(area, { changedTouches: [{ clientX: 100 }] });
 
-    expect(await screen.findByText(/before you start/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /before you start/i })).toBeInTheDocument();
   });
 
   it('swiping right below the threshold does not go back', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
 
     const area = screen.getByTestId('wizard-step-area');
     fireEvent.touchStart(area, { touches: [{ clientX: 20 }] });
     fireEvent.touchEnd(area, { changedTouches: [{ clientX: 50 }] });
 
-    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /your recovery phrase/i })).toBeInTheDocument();
   });
 
   it('swiping left does not go back', async () => {
     render(<Wizard />);
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
 
     const area = screen.getByTestId('wizard-step-area');
     fireEvent.touchStart(area, { touches: [{ clientX: 100 }] });
     fireEvent.touchEnd(area, { changedTouches: [{ clientX: 20 }] });
 
-    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /your recovery phrase/i })).toBeInTheDocument();
   });
 
   it('keeps the entered password when the user steps back and returns', async () => {
@@ -208,7 +247,7 @@ describe('CreateWalletWizard', () => {
     await userEvent.type(screen.getByLabelText('Password'), VALID_PASSWORD);
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
     await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
 
     expect(await screen.findByLabelText('Password')).toHaveValue(VALID_PASSWORD);
@@ -224,9 +263,9 @@ describe('CreateWalletWizard', () => {
     expect(await screen.findByText('vault locked')).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
     await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-    await screen.findByText(/secure your wallet/i);
+    await screen.findByRole('heading', { name: /secure your wallet/i });
 
     // The error belonged to an attempt the user has since navigated away from;
     // showing it above untouched fields describes a failure that did not happen.

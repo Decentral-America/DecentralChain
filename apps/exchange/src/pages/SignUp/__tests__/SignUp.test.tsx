@@ -119,15 +119,15 @@ describe('SignUp across the md breakpoint', () => {
     render(<SignUp />);
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
-    await screen.findByText(/your recovery phrase/i);
+    await screen.findByRole('heading', { name: /your recovery phrase/i });
 
     flipToNarrow();
 
     // The flip really happened: the desktop chrome is gone.
     expect(screen.queryByText(/start trading today/i)).not.toBeInTheDocument();
     // ...but the wizard is still on the phrase step, not back at step 0.
-    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
-    expect(screen.queryByText(/before you start/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /your recovery phrase/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /before you start/i })).not.toBeInTheDocument();
   });
 
   it('keeps the phrase revealed when the viewport crosses md', async () => {
