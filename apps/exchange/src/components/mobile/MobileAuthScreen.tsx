@@ -116,7 +116,19 @@ export function MobileAuthScreen({
         <Box sx={{ flex: 1 }}>
           <SurfaceProvider chromeless>{children}</SurfaceProvider>
         </Box>
-        {footer && <Box sx={{ mt: 3 }}>{footer}</Box>}
+        {footer && (
+          <Box
+            sx={{
+              '& button': { minHeight: 48 },
+              bgcolor: 'transparent',
+              bottom: 0,
+              position: 'sticky',
+              pt: 2,
+            }}
+          >
+            {footer}
+          </Box>
+        )}
       </Box>
     </Box>
   );

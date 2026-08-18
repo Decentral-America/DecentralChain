@@ -9,9 +9,10 @@ import { brandInk, onCanvas } from '@/theme/landingTheme';
  *
  * Night canvas, the drifting mesh, the contour texture — the same stage the
  * landing page set, so arriving at sign-in, sign-up, import or recovery never
- * feels like leaving the product. Screens put their content in the middle;
- * light cards float on the dark field as the brightest thing in view, which
- * is right, because the card is always the screen's one job.
+ * feels like leaving the product. Screens put their content in the middle.
+ * Content sits on a translucent glass surface (see GlassCard) rather than a
+ * light card. The card is still the screen's one job, but it now reads as part
+ * of the same surface as the landing page instead of a panel pasted onto it.
  *
  * One component rather than a recipe, so the next auth screen cannot drift.
  */

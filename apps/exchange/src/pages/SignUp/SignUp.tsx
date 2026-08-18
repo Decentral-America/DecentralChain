@@ -15,7 +15,7 @@ import Logo from '@/components/atoms/Logo';
 import { AuthScene } from '@/components/auth/AuthScene';
 import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
 import { MobileButton } from '@/components/mobile/primitives';
-import { CreateAccount } from '@/features/auth/CreateAccount';
+import { CreateWalletWizard } from '@/features/auth/create-wallet';
 import { palette } from '@/styles/tokens';
 import { landingTheme, onCanvas } from '@/theme/landingTheme';
 
@@ -36,7 +36,7 @@ const SignUpInner: React.FC = () => {
           </MobileButton>
         }
       >
-        <CreateAccount />
+        <CreateWalletWizard />
       </MobileAuthScreen>
     );
   }
@@ -116,11 +116,11 @@ const SignUpInner: React.FC = () => {
           </Stack>
         </Grid>
 
-        {/* Right column — the form, on a flat bordered card */}
+        {/* Right column — the wizard */}
         <Grid size={{ md: 6, xs: 12 }}>
-          {/* The form supplies its own card surface — no nested border here */}
+          {/* The wizard supplies its own glass card surface — no nested border here */}
           <Box sx={{ width: '100%' }}>
-            <CreateAccount />
+            <CreateWalletWizard />
           </Box>
 
           <Box sx={{ mt: 3 }}>
