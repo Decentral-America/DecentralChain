@@ -218,8 +218,10 @@ export const AccountManagerPage = () => {
   };
 
   const handleAddAccount = () => {
-    // Navigate to import account flow
-    void navigate('/auth/import');
+    // Navigate to import account flow. The screen is registered at
+    // '/import-account'; '/auth/import' is not a route, so the router's
+    // catch-all silently redirected the user to the landing page instead.
+    void navigate('/import-account');
   };
 
   const handleLogoutAll = async () => {

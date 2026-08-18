@@ -202,7 +202,7 @@ describe('useCreateWallet', () => {
     // The seed must reach the next screen only via setSeedTransfer (asserted
     // above), never via router state — router state persists in browser
     // history, which would leak the recovery phrase.
-    const importCall = navigate.mock.calls.find(([path]) => path === '/auth/import');
+    const importCall = navigate.mock.calls.find(([path]) => path === '/import-account');
     expect(importCall).toBeDefined();
     const [, options] = importCall as [string, { state: Record<string, unknown> }];
 

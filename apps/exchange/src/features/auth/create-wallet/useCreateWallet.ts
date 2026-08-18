@@ -219,7 +219,16 @@ export function useCreateWallet(): CreateWalletApi {
         setSeedTransfer(seed.phrase);
         setIsCreating(false);
         setIsSubmitting(false);
-        void navigate('/auth/import', {
+        // '/import-account' is where the import screen is registered.
+        // '/auth/import' is not a route, so this used to fall through to the
+        // router's catch-all and redirect to the landing page.
+        //
+        // NOTE: the receiving screen does not yet read `hasSeedTransfer`, so
+        // the transfer set above currently goes unconsumed and auto-expires
+        // after 30s, leaving the user to type the phrase by hand. That is a
+        // strictly better outcome than the landing-page redirect, but the
+        // handoff is only half-built — see the Wave A report.
+        void navigate('/import-account', {
           state: { hasBackup: true, hasSeedTransfer: true, name: 'My Account' },
         });
         return true;
