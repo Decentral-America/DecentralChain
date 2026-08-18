@@ -7,6 +7,7 @@ import type React from 'react';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 import { useTheme } from '@/contexts/ThemeContext';
+import { noTapHighlight } from '@/styles/mixins';
 
 /**
  * Styled Components
@@ -58,6 +59,9 @@ const ThemeOption = styled.button<{ isActive: boolean }>`
   &:active {
     transform: translateY(0);
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 const ActiveBadge = styled.div`

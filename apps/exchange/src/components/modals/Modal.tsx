@@ -120,6 +120,8 @@ const Overlay = styled.div<{ $zIndex: number; $animationDuration: number }>`
   animation: ${fadeIn} ${(p) => p.$animationDuration}ms ease-out;
   padding: ${(p) => p.theme.spacing.lg};
   overflow-y: auto;
+  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+  overscroll-behavior: contain;
 
   /* Backdrop blur effect — prefixed form first for older iOS Safari, which
      only understands -webkit-backdrop-filter. */
@@ -164,6 +166,7 @@ const ModalContent = styled.div<{
     p.size === 'fullscreen' &&
     `
     overflow-y: auto;
+    overscroll-behavior: contain;
   `}
 `;
 
@@ -210,6 +213,8 @@ const ModalBody = styled.div`
   padding: ${(p) => p.theme.spacing.lg};
   flex: 1;
   overflow-y: auto;
+  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+  overscroll-behavior: contain;
 `;
 
 export const Modal: React.FC<ModalProps> = ({

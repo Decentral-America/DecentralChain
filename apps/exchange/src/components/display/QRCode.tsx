@@ -1,6 +1,7 @@
 import { QRCodeCanvas as QRCodeCanvasBase, QRCodeSVG as QRCodeSVGBase } from 'qrcode.react';
 import React from 'react';
 import styled from 'styled-components';
+import { noTapHighlight } from '@/styles/mixins';
 
 // qrcode.react exports ForwardRefExoticComponents; MUI's `component` prop expects
 // ComponentType. Both are callable with the same props — a single cast (no unknown
@@ -71,6 +72,9 @@ const DownloadButton = styled.button`
   &:active {
     transform: translateY(1px);
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 // Interfaces

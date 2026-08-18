@@ -108,6 +108,8 @@ export function MobileAuthScreen({
           flexDirection: 'column',
           minHeight: 0,
           overflowY: 'auto',
+          // The sheet scrolls on its own; it must not drag the page with it.
+          overscrollBehavior: 'contain',
           pb: 'calc(env(safe-area-inset-bottom) + 24px)',
           pt: 3,
           px: `${mobileLayout.gutter}px`,

@@ -3,6 +3,7 @@ import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { logger } from '@/lib/logger';
+import { noTapHighlight } from '@/styles/mixins';
 
 /**
  * BalanceInput Component
@@ -95,6 +96,9 @@ const MaxButton = styled.button<{ variant?: 'primary' | 'secondary'; size?: 'sm'
   &:active {
     transform: translateY(0);
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 
   &:disabled {
     opacity: 0.5;

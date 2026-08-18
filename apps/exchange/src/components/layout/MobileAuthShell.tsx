@@ -147,6 +147,8 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
         sx={{
           flex: 1,
           overflowY: 'auto',
+          // Scrolling the form must not chain to the page behind the shell.
+          overscrollBehavior: 'contain',
           px: 2,
           py: 2,
           WebkitOverflowScrolling: 'touch',

@@ -136,7 +136,8 @@ export function MobileMenuDrawer({ open, onClose }: { open: boolean; onClose: ()
         <Divider sx={{ borderColor: mobileSurface.border }} />
 
         {/* Destinations */}
-        <Box sx={{ flex: 1, overflowY: 'auto', px: 1.5, py: 1 }}>
+        {/* Scrolling the destination list must not chain to the page behind the drawer. */}
+        <Box sx={{ flex: 1, overflowY: 'auto', overscrollBehavior: 'contain', px: 1.5, py: 1 }}>
           {GROUPS.map((group) => (
             <Box key={group.title} sx={{ mb: 1.5 }}>
               <Typography

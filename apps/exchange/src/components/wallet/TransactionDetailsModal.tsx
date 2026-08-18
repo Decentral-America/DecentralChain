@@ -32,6 +32,8 @@ const DetailsContainer = styled.div`
   gap: 24px;
   max-height: 600px;
   overflow-y: auto;
+  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+  overscroll-behavior: contain;
 `;
 
 const Section = styled.div`
@@ -111,6 +113,8 @@ const ProofsList = styled.div`
   gap: 4px;
   max-height: 150px;
   overflow-y: auto;
+  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+  overscroll-behavior: contain;
 `;
 
 const ProofItem = styled.div`

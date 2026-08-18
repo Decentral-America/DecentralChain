@@ -26,6 +26,8 @@ const UserList = styled.div`
   margin: 20px 0;
   max-height: 300px;
   overflow-y: auto;
+  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+  overscroll-behavior: contain;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
 `;

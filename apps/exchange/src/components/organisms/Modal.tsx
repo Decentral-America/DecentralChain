@@ -79,6 +79,8 @@ const CloseButton = styled(IconButton)(({ theme }) => ({
 const ModalBody = styled(Box)(({ theme }) => ({
   flex: 1,
   overflowY: 'auto',
+  // Keeps a scroll gesture inside the dialog rather than chaining to the page.
+  overscrollBehavior: 'contain',
   padding: theme.spacing(2.5),
 }));
 

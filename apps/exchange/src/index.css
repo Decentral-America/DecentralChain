@@ -42,6 +42,35 @@ h1 {
   line-height: 1.1;
 }
 
+/*
+  Removes the ~300ms tap delay mobile browsers hold in reserve for double-tap
+  zoom. `manipulation` opts the element out of double-tap-to-zoom only —
+  panning and pinch-zoom still work, so nothing is traded away for the speed.
+  This matters precisely because the viewport deliberately stays zoomable: a
+  page that allows zoom is exactly the case where the delay still applies.
+
+  Declared once here rather than per component. It is a document-wide input
+  policy, not a themed style, and index.css is a static stylesheet — it is in
+  effect from first paint and also covers UI rendered outside the app's
+  runtime <GlobalStyles />, such as the pre-mount shell and the ErrorBoundary
+  fallback.
+*/
+a[href],
+button,
+label,
+select,
+summary,
+[role="button"],
+[role="switch"],
+[role="tab"],
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="reset"],
+input[type="submit"] {
+  touch-action: manipulation;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

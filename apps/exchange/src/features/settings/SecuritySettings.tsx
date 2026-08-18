@@ -24,6 +24,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { logger } from '@/lib/logger';
+import { noTapHighlight } from '@/styles/mixins';
 import { ChangePasswordModal, DeleteAccountModal, ExportAccountModal, ScriptModal } from './modals';
 
 // ==================== Styled Components ====================
@@ -109,6 +110,9 @@ const Button = styled.button`
   &:active {
     background-color: #bbdefb;
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 const LinkButton = styled.button`
@@ -162,6 +166,9 @@ const ScriptButton = styled(Button)`
   &:active {
     background-color: #3d8b40;
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 // ==================== Component ====================

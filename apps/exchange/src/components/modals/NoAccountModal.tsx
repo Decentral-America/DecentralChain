@@ -7,6 +7,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { noTapHighlight } from '@/styles/mixins';
 import { Modal } from './Modal';
 
 interface NoAccountModalProps {
@@ -95,6 +96,9 @@ const OptionCard = styled.button`
   &:active {
     transform: translateY(0);
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 const OptionIcon = styled.span`

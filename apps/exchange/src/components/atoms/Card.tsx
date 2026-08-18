@@ -62,6 +62,9 @@ const StyledCard = styled(MuiCard, {
         transform: 'translateY(-2px)',
       },
       cursor: 'pointer',
+      // The :active state above is the press feedback, so the grey tap flash
+      // mobile WebKit paints over the tile is redundant.
+      WebkitTapHighlightColor: 'transparent',
     }),
   }),
 );

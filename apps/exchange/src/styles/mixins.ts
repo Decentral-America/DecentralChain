@@ -183,6 +183,21 @@ export const noTouchZoom = css`
 `;
 
 /**
+ * Suppresses the grey flash mobile WebKit/Blink paints over a tapped control.
+ *
+ * Only for controls that already show their own press state — every use site
+ * pairs this with an `:active` rule. On a control with no press feedback of its
+ * own the flash is the only confirmation a tap registered, and removing it
+ * makes the control feel broken.
+ *
+ * MUI's ButtonBase already sets this itself, so anything built on it (Button,
+ * IconButton, the mobile primitives) needs nothing here.
+ */
+export const noTapHighlight = css`
+  -webkit-tap-highlight-color: transparent;
+`;
+
+/**
  * Focus ring styles (accessibility)
  */
 export const focusRing = css`

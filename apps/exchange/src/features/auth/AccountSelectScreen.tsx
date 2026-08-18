@@ -11,6 +11,7 @@ import { Card } from '@/components/atoms/Card';
 import { Stack } from '@/components/atoms/Stack';
 import { config } from '@/config';
 import { logger } from '@/lib/logger';
+import { noTapHighlight } from '@/styles/mixins';
 
 // Account type - matches User from AuthContext
 interface Account {
@@ -102,6 +103,9 @@ const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>)
   &:active {
     transform: ${(p) => (p.$disabled ? 'none' : 'translateY(0)')};
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 const AccountCardInner = styled.div`

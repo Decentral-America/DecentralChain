@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAnnouncement } from '@/components/a11y';
+import { noTapHighlight } from '@/styles/mixins';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -150,6 +151,9 @@ const CloseButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
+
+  /* Own press state above, so the grey tap flash is redundant. */
+  ${noTapHighlight}
 `;
 
 const getToastIcon = (type: ToastType): string => {
