@@ -83,6 +83,55 @@ interface LegendValues extends Bar {
 /** How often the visible timeframe is re-fetched so the newest bar stays current. */
 const LIVE_REFRESH_MS = 15_000;
 
+/** Coarsest timeframe (in minutes) on which a 24h line is still meaningful. */
+const MAX_MINUTES_FOR_DAY_LINES = 240;
+
+/**
+ * Draw the last-price line, plus 24h high/low lines when the timeframe supports it.
+ *
+ * The day range is derived from the bars already on screen rather than a second
+ * request. It is skipped above the 4h timeframe, where a "24h" line falls
+ * inside a single bar and tells the reader nothing.
+ */
+function drawReferenceLines(
+  series: PriceSeries,
+  bars: readonly Bar[],
+  colors: { upColor: string; downColor: string; rangeColor: string; resolutionMinutes: number },
+): void {
+  const latest = bars[bars.length - 1];
+  if (!latest) return;
+
+  series.createPriceLine({
+    axisLabelVisible: true,
+    color: latest.close >= latest.open ? colors.upColor : colors.downColor,
+    lineStyle: LineStyle.Dashed,
+    lineWidth: 1,
+    price: latest.close,
+    title: 'Last',
+  });
+
+  if (colors.resolutionMinutes > MAX_MINUTES_FOR_DAY_LINES) return;
+
+  const dayStart = Math.floor(Date.now() / 1000) - 86_400;
+  const dayBars = bars.filter((b) => b.time >= dayStart);
+  if (dayBars.length < 2) return;
+
+  const lines: ReadonlyArray<readonly [string, number]> = [
+    ['24h high', Math.max(...dayBars.map((b) => b.high))],
+    ['24h low', Math.min(...dayBars.map((b) => b.low))],
+  ];
+  for (const [title, price] of lines) {
+    series.createPriceLine({
+      axisLabelVisible: false,
+      color: colors.rangeColor,
+      lineStyle: LineStyle.Dotted,
+      lineWidth: 1,
+      price,
+      title,
+    });
+  }
+}
+
 export const TradingViewChart: React.FC = () => {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -337,15 +386,11 @@ export const TradingViewChart: React.FC = () => {
 
           const latest = bars[bars.length - 1];
           if (latest) {
-            // A dashed line at the last traded price, so the current level is
-            // readable without hovering.
-            priceSeries.createPriceLine({
-              axisLabelVisible: true,
-              color: latest.close >= latest.open ? upColor : downColor,
-              lineStyle: LineStyle.Dashed,
-              lineWidth: 1,
-              price: latest.close,
-              title: 'Last',
+            drawReferenceLines(priceSeries, bars, {
+              downColor,
+              rangeColor: theme.palette.text.secondary,
+              resolutionMinutes,
+              upColor,
             });
             setLegend({
               ...latest,
