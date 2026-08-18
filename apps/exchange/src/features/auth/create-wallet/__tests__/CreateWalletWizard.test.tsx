@@ -4,7 +4,7 @@
  * Walks the whole flow to prove the step guards hold: in particular that the
  * password step is unreachable without passing verification.
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CreateWalletWizard } from '../CreateWalletWizard';
@@ -76,5 +76,55 @@ describe('CreateWalletWizard', () => {
   it('renders the step rail with four steps', () => {
     render(<CreateWalletWizard />);
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '4');
+  });
+
+  it('keeps the phrase revealed after going back and returning to the phrase step', async () => {
+    render(<CreateWalletWizard />);
+    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
+    expect(screen.getByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
+
+    await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
+    await screen.findByText(/how do you want to hold your keys/i);
+    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+
+    expect(await screen.findByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
+    expect(screen.queryByRole('button', { name: /reveal/i })).not.toBeInTheDocument();
+  });
+
+  it('swiping right past the threshold goes back a step', async () => {
+    render(<CreateWalletWizard />);
+    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await screen.findByText(/your recovery phrase/i);
+
+    const area = screen.getByTestId('wizard-step-area');
+    fireEvent.touchStart(area, { touches: [{ clientX: 20 }] });
+    fireEvent.touchEnd(area, { changedTouches: [{ clientX: 100 }] });
+
+    expect(await screen.findByText(/how do you want to hold your keys/i)).toBeInTheDocument();
+  });
+
+  it('swiping right below the threshold does not go back', async () => {
+    render(<CreateWalletWizard />);
+    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await screen.findByText(/your recovery phrase/i);
+
+    const area = screen.getByTestId('wizard-step-area');
+    fireEvent.touchStart(area, { touches: [{ clientX: 20 }] });
+    fireEvent.touchEnd(area, { changedTouches: [{ clientX: 50 }] });
+
+    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
+  });
+
+  it('swiping left does not go back', async () => {
+    render(<CreateWalletWizard />);
+    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await screen.findByText(/your recovery phrase/i);
+
+    const area = screen.getByTestId('wizard-step-area');
+    fireEvent.touchStart(area, { touches: [{ clientX: 100 }] });
+    fireEvent.touchEnd(area, { changedTouches: [{ clientX: 20 }] });
+
+    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
   });
 });

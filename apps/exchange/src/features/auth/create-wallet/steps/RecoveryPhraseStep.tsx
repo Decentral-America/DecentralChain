@@ -20,20 +20,39 @@ import { onCanvas } from '@/theme/landingTheme';
 
 export function RecoveryPhraseStep({
   isCopied,
+  isRevealed = false,
   onContinue,
   onCopy,
+  onReveal,
   onRetry,
   seedError,
   words,
 }: {
   isCopied: boolean;
+  /**
+   * Whether the phrase has already been revealed on a prior mount of this
+   * component. The wizard remounts this step every time the user navigates
+   * away and back (e.g. Back to reconsider Ledger, then forward again), and
+   * revealing is one-way — re-hiding would only obstruct someone
+   * mid-transcription — so that fact has to survive the remount even though
+   * this component's own `revealed` state cannot.
+   */
+  isRevealed?: boolean;
   onContinue: () => void;
   onCopy: () => void;
+  /** Fired once, the first time the phrase is revealed, so a caller that
+   * outlives this component's remounts can remember it via `isRevealed`. */
+  onReveal?: () => void;
   onRetry: () => void;
   seedError: string;
   words: string[];
 }) {
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(isRevealed);
+
+  const reveal = () => {
+    setRevealed(true);
+    onReveal?.();
+  };
 
   // Generation failed: there is no phrase to show, so offer a retry rather
   // than an empty grid the user cannot act on.
@@ -143,7 +162,7 @@ export function RecoveryPhraseStep({
 
         {!revealed && (
           <Button
-            onClick={() => setRevealed(true)}
+            onClick={reveal}
             startIcon={<VisibilityIcon />}
             sx={{
               color: onCanvas.primary,

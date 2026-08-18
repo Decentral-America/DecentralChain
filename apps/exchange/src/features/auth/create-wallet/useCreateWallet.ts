@@ -24,7 +24,16 @@ export interface CreateWalletApi {
   error: string;
   /** Set when Seed.create() threw; the phrase step shows this with a retry. */
   seedError: string;
+  /**
+   * Whether the phrase has ever been revealed this session. Lives here,
+   * rather than as local state on the phrase step, because the wizard
+   * remounts that step on every navigation away and back — revealing is
+   * one-way, so the fact of having revealed must outlive those remounts.
+   */
+  isRevealed: boolean;
   regenerateSeed: () => void;
+  /** Marks the phrase as revealed. Idempotent; safe to call more than once. */
+  reveal: () => void;
   copyPhrase: () => Promise<void>;
   submit: (password: string, confirm: string) => Promise<boolean>;
 }
@@ -81,6 +90,7 @@ export function useCreateWallet(): CreateWalletApi {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
 
   const { create, user, isAuthenticated, getActiveState } = useAuth();
   const { isCopied, copyToClipboard } = useClipboard();
@@ -89,6 +99,7 @@ export function useCreateWallet(): CreateWalletApi {
   const words = useMemo(() => (seed ? seed.phrase.split(' ') : []), [seed]);
   const challenges = useMemo(() => buildChallenges(words), [words]);
   const regenerateSeed = useCallback(() => setSeedState(generateSeedState()), []);
+  const reveal = useCallback(() => setIsRevealed(true), []);
 
   // WebHID, so Chrome and Edge only.
   const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator;
@@ -160,8 +171,10 @@ export function useCreateWallet(): CreateWalletApi {
     error,
     isCopied,
     isLedgerSupported,
+    isRevealed,
     isSubmitting,
     regenerateSeed,
+    reveal,
     seedError: seedState.seedError,
     submit,
     words,

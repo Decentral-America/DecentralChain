@@ -78,8 +78,10 @@ export function CreateWalletWizard() {
       return (
         <RecoveryPhraseStep
           isCopied={wallet.isCopied}
+          isRevealed={wallet.isRevealed}
           onContinue={() => goTo(2)}
           onCopy={() => void wallet.copyPhrase()}
+          onReveal={wallet.reveal}
           onRetry={wallet.regenerateSeed}
           seedError={wallet.seedError}
           words={wallet.words}
@@ -114,6 +116,7 @@ export function CreateWalletWizard() {
       )}
 
       <Box
+        data-testid="wizard-step-area"
         onTouchEnd={onTouchEnd}
         onTouchStart={onTouchStart}
         sx={{ minHeight: 320, overflow: 'hidden', position: 'relative' }}
