@@ -10,6 +10,7 @@ import { Card, CardBody } from '@/components/atoms/Card';
 import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
 import { Stack } from '@/components/atoms/Stack';
+import { config } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
@@ -174,8 +175,10 @@ export const ImportAccount = () => {
   const navigate = useNavigate();
   const navigationTarget = useRef<string>('/desktop/wallet');
 
-  // Check if Ledger is supported (modern browser with WebHID)
-  const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator; // WebHID (Chrome/Edge)
+  // The flag gates the unfinished integration; WebHID (Chrome and Edge only)
+  // gates the browsers that could not drive the device anyway.
+  const isLedgerAvailable =
+    config.ledgerEnabled && typeof navigator !== 'undefined' && 'hid' in navigator;
 
   // Check if this is the first account on mount
   useEffect(() => {
@@ -262,7 +265,7 @@ export const ImportAccount = () => {
             >
               {error && <ErrorMessage>{error}</ErrorMessage>}
 
-              {isLedgerSupported && (
+              {isLedgerAvailable && (
                 <InfoBox>
                   <InfoIcon>
                     <Icon name={CommonIcons.Info} size={20} color="white" />

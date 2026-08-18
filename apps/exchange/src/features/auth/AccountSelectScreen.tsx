@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { Stack } from '@/components/atoms/Stack';
+import { config } from '@/config';
 import { logger } from '@/lib/logger';
 
 // Account type - matches User from AuthContext
@@ -287,7 +288,12 @@ export const AccountSelectScreen: React.FC<AccountSelectScreenProps> = ({
                   {account.address.substring(0, 10)}...
                   {account.address.substring(account.address.length - 8)}
                 </AccountAddress>
-                {account.userType === 'ledger' && <LedgerBadge>🔐 Ledger</LedgerBadge>}
+                {/* The badge names how an existing account signs; it is not an
+                    entry point to add one, but it still names Ledger, so it
+                    stays behind the flag like every other Ledger mention. */}
+                {config.ledgerEnabled && account.userType === 'ledger' && (
+                  <LedgerBadge>🔐 Ledger</LedgerBadge>
+                )}
                 {account.lastLogin && (
                   <LastLogin>Last login: {formatLastLogin(account.lastLogin)}</LastLogin>
                 )}

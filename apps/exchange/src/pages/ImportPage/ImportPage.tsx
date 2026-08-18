@@ -25,6 +25,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
+import { config } from '@/config';
 import { landingTheme } from '@/theme/landingTheme';
 
 interface ImportMethod {
@@ -122,9 +123,15 @@ const ImportInner: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  // Ledger support is not finished yet: drop its tile rather than link to a
+  // flow that isn't ready, while leaving the route reachable directly.
+  const importMethods = config.ledgerEnabled
+    ? IMPORT_METHODS
+    : IMPORT_METHODS.filter((method) => method.id !== 'ledger');
+
   const content = (
     <Grid container spacing={3}>
-      {IMPORT_METHODS.map((method) => (
+      {importMethods.map((method) => (
         <Grid key={method.id} size={{ sm: 6, xs: 12 }}>
           <MethodCard method={method} onSelect={() => navigate(method.route)} />
         </Grid>

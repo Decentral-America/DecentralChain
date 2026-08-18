@@ -1,6 +1,7 @@
 import { Box, Container, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/atoms/Logo';
+import { config } from '@/config';
 import { onCanvas } from '@/theme/landingTheme';
 
 const footerLinks = {
@@ -84,19 +85,23 @@ export default function Footer() {
                 {t(`app.landing.footer.categories.${category}`)}
               </Typography>
               <Stack spacing={1}>
-                {links.map((link) => (
-                  <Link
-                    key={link.key}
-                    href={link.href}
-                    underline="hover"
-                    color="text.secondary"
-                    sx={{ fontSize: 14 }}
-                    target={link.href.startsWith('http') ? '_blank' : undefined}
-                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  >
-                    {t(`app.landing.footer.links.${link.key}`)}
-                  </Link>
-                ))}
+                {/* Ledger support isn't finished yet — drop that one link
+                    rather than send visitors to an unready flow. */}
+                {links
+                  .filter((link) => config.ledgerEnabled || link.key !== 'ledgerSupport')
+                  .map((link) => (
+                    <Link
+                      key={link.key}
+                      href={link.href}
+                      underline="hover"
+                      color="text.secondary"
+                      sx={{ fontSize: 14 }}
+                      target={link.href.startsWith('http') ? '_blank' : undefined}
+                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    >
+                      {t(`app.landing.footer.links.${link.key}`)}
+                    </Link>
+                  ))}
               </Stack>
             </Grid>
           ))}

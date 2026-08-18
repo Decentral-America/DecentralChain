@@ -12,6 +12,7 @@ import { Card, CardBody } from '@/components/atoms/Card';
 import { Input } from '@/components/atoms/Input';
 import { Stack } from '@/components/atoms/Stack';
 import { NoAccountModal } from '@/components/modals/NoAccountModal';
+import { config } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
@@ -121,8 +122,10 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const navigationTarget = useRef<string>('/desktop/wallet');
 
-  // Check if Ledger is supported (modern browser with WebHID)
-  const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator; // WebHID (Chrome/Edge)
+  // The flag gates the unfinished integration; WebHID (Chrome and Edge only)
+  // gates the browsers that could not drive the device anyway.
+  const isLedgerAvailable =
+    config.ledgerEnabled && typeof navigator !== 'undefined' && 'hid' in navigator;
 
   // Effect-based navigation: only navigate after user state has propagated
   useEffect(() => {
@@ -266,7 +269,7 @@ export const LoginForm = () => {
                 {isLoading ? 'Logging in...' : 'Login'}
               </Button>
 
-              {isLedgerSupported && (
+              {isLedgerAvailable && (
                 <>
                   <Divider>
                     <span>or</span>
