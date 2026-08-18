@@ -165,6 +165,24 @@ export const visuallyHidden = css`
 `;
 
 /**
+ * Stops iOS Safari zooming the page when a form control takes focus.
+ *
+ * Safari zooms the viewport whenever the focused input's computed font-size is
+ * under 16px, and it does not zoom back out — the user is left on a page they
+ * have to pinch to recover. Gating on `pointer: coarse` means touch devices get
+ * the 16px floor while a mouse-driven browser keeps the smaller size the design
+ * asks for.
+ *
+ * Apply to text-entry controls only. Checkboxes and radios never trigger the
+ * zoom, so they do not need it.
+ */
+export const noTouchZoom = css`
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
+`;
+
+/**
  * Focus ring styles (accessibility)
  */
 export const focusRing = css`

@@ -13,6 +13,7 @@ import { Stack } from '@/components/atoms/Stack';
 import { config } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { noTouchZoom } from '@/styles/mixins';
 
 function validateSecret(mode: string, privateKey: string, seedPhrase: string): string {
   if (mode === 'privatekey') {
@@ -94,6 +95,9 @@ const StyledTextarea = styled.textarea`
   color: ${(p) => p.theme.colors.text};
   background: ${(p) => p.theme.colors.background};
   resize: vertical;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
   transition: ${(p) => p.theme.transitions.fast};
   word-break: break-all;
   box-sizing: border-box;

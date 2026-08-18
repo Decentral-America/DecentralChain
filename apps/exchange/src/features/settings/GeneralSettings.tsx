@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '@/contexts/SettingsContext';
 import { logger } from '@/lib/logger';
+import { noTouchZoom } from '@/styles/mixins';
 
 // ========== Styled Components ==========
 
@@ -79,6 +80,9 @@ const Select = styled.select`
   font-size: ${(p) => p.theme.fontSizes.sm};
   cursor: pointer;
   min-width: 150px;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
 
   &:hover {
     border-color: ${(p) => p.theme.colors.primary};

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { NetworkConfig as networkConfig } from '@/config/networkConfig';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
+import { noTouchZoom } from '@/styles/mixins';
 
 const NetworkSection = styled.div`
   display: flex;
@@ -38,6 +39,9 @@ const Input = styled.input<{ error?: boolean }>`
   padding: 8px 12px;
   font-size: 13px;
   border: 1px solid ${(props) => (props.error ? '#f44336' : '#e0e0e0')};
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
   border-radius: 4px;
   background: white;
   color: #212121;

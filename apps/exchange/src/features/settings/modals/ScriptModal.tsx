@@ -12,6 +12,7 @@ import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
+import { noTouchZoom } from '@/styles/mixins';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -47,6 +48,9 @@ const TextArea = styled.textarea`
   border-radius: 4px;
   font-size: 13px;
   font-family: 'Roboto Mono', monospace;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
   resize: vertical;
   box-sizing: border-box;
 

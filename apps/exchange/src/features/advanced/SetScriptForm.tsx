@@ -19,6 +19,7 @@ import {
 } from '@/components/wallet/TransactionConfirmationFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { noTouchZoom } from '@/styles/mixins';
 
 /**
  * Styled Components
@@ -56,6 +57,9 @@ const ScriptTextarea = styled.textarea<{ hasError?: boolean }>`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 13px;
   line-height: 1.6;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
   color: ${({ theme }) => theme.colors.text};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid

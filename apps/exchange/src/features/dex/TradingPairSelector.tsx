@@ -16,6 +16,7 @@ import {
   type TradingPair,
   useDexStore,
 } from '@/stores/dexStore';
+import { noTouchZoom } from '@/styles/mixins';
 
 /**
  * Cache for asset names to avoid repeated API calls
@@ -279,6 +280,9 @@ const SearchInput = styled.input`
   font-size: ${(p) => p.theme.fontSizes.sm};
   color: ${(p) => p.theme.colors.text};
   transition: border-color 0.2s;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
 
   &:focus {
     outline: none;

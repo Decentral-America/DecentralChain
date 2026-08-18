@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
 import { multiAccount } from '@/services/multiAccount';
+import { noTouchZoom } from '@/styles/mixins';
 
 const ModalBody = styled.div`
   padding: 24px;
@@ -40,6 +41,9 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
   box-sizing: border-box;
 
   &:focus {

@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { noTouchZoom } from '@/styles/mixins';
 
 export interface SelectOption {
   value: string;
@@ -92,6 +93,9 @@ const StyledSelect = styled.select<{
 
   /* Size styles */
   ${(p) => sizeStyles[p.$selectSize || 'medium']}
+
+  /* iOS Safari zooms the page on focus below 16px; touch only. */
+  ${noTouchZoom}
 
   /* Focus state */
   &:focus {
