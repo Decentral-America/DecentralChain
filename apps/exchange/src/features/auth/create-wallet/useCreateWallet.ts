@@ -4,8 +4,9 @@
  * Everything that touches Seed, AuthContext or the router lives here so the
  * step components stay presentational and this can be tested without rendering
  * a wizard. Behaviour is carried over from the screen this replaces, with one
- * change: `hasBackup` is now earned by passing verification rather than by
- * ticking a checkbox.
+ * change: `hasBackup` is claimed by the user pressing "I've saved it" after the
+ * phrase has actually been shown to them. That reveal is the only evidence
+ * behind the flag, so `goTo` refuses to pass the phrase step without it.
  *
  * This hook owns the *whole* wizard, step index and password fields included,
  * not just the seed. SignUp renders the wizard from two branches rooted at
@@ -20,15 +21,26 @@
 import { Seed } from 'data-service/classes/Seed';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { config } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { logger } from '@/lib/logger';
-import { buildChallenges, type VerifyChallenge } from './verification';
+
+/**
+ * Zero-based step indices. Exported so the wizard's navigation and this hook's
+ * guard read from one list rather than each hard-coding numbers that then drift
+ * apart when a step is added or dropped.
+ */
+export const STEP = { INTRO: 0, PHRASE: 1, SECURE: 2 } as const;
 
 export interface CreateWalletApi {
   words: string[];
-  challenges: VerifyChallenge[];
-  isLedgerSupported: boolean;
+  /**
+   * Whether to offer the Ledger path: the feature flag *and* WebHID support.
+   * Both, because the flag alone would advertise a device this browser cannot
+   * talk to, and WebHID alone would ship an unfinished integration.
+   */
+  isLedgerAvailable: boolean;
   isCopied: boolean;
   isSubmitting: boolean;
   error: string;
@@ -68,31 +80,23 @@ interface SeedState {
   seed: Seed | null;
   seedError: string;
   words: string[];
-  challenges: VerifyChallenge[];
 }
 
 /**
- * Generate a fresh seed phrase and the challenges that verify it.
+ * Generate a fresh seed phrase.
  *
  * A module-level function (rather than inline in the hook) so the initial
  * generation — via useState's lazy initializer — and an explicit retry via
  * regenerateSeed can share it without a hook dependency ever needing to
  * "reference" a retry counter just to justify re-running it.
- *
- * The challenges are built here, in the same state the seed lives in, rather
- * than derived with useMemo. useMemo is a cache with no semantic guarantee:
- * React is free to drop it, and a dropped entry mid-verification would reshuffle
- * the questions under a user who is halfway through answering them.
  */
 function generateSeedState(): SeedState {
   try {
     const seed = Seed.create();
-    const words = seed.phrase.split(' ');
-    return { challenges: buildChallenges(words), seed, seedError: '', words };
+    return { seed, seedError: '', words: seed.phrase.split(' ') };
   } catch (err) {
     logger.error('[CreateWallet] seed generation failed:', err);
     return {
-      challenges: [],
       seed: null,
       seedError: 'Could not generate a recovery phrase. Try again.',
       words: [],
@@ -149,6 +153,13 @@ export function useCreateWallet(): CreateWalletApi {
 
   const goTo = useCallback(
     (next: number) => {
+      // The only gate left in the flow. `hasBackup: true` was earned by passing
+      // verification; with that step gone it rests entirely on the phrase having
+      // been shown, so the password step is unreachable until it has been.
+      // RecoveryPhraseStep also disables its own Continue, but this is the
+      // guarantee — no caller can navigate around it.
+      if (next >= STEP.SECURE && !isRevealed) return;
+
       setIsGoingBack(next < step);
       setStep(next);
       // The step components are remounted on every navigation, so an error
@@ -156,18 +167,20 @@ export function useCreateWallet(): CreateWalletApi {
       // fields the user has not touched yet.
       setError('');
     },
-    [step],
+    [isRevealed, step],
   );
 
   // Back is available from every step after the first. Without it a user on
-  // the verify step who needs to re-read their phrase would be stuck.
+  // the password step who needs to re-read their phrase would be stuck.
   const canGoBack = step > 0;
   const goBack = useCallback(() => {
     if (step > 0) goTo(step - 1);
   }, [goTo, step]);
 
-  // WebHID, so Chrome and Edge only.
-  const isLedgerSupported = typeof navigator !== 'undefined' && 'hid' in navigator;
+  // The flag gates the unfinished integration; WebHID (Chrome and Edge only)
+  // gates the browsers that could not drive the device anyway.
+  const isLedgerAvailable =
+    config.ledgerEnabled && typeof navigator !== 'undefined' && 'hid' in navigator;
 
   // Navigation is deferred until creation has settled, so ProtectedRoute sees
   // isAuthenticated before the route changes.
@@ -212,6 +225,8 @@ export function useCreateWallet(): CreateWalletApi {
         return true;
       }
 
+      // hasBackup: true — claimed by the user pressing "I've saved it", which
+      // `goTo` only lets them reach once the phrase has been revealed.
       await create(seed.phrase, password, 'My Account', true);
       // Let React flush the auth state before the navigation effect runs.
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -229,7 +244,6 @@ export function useCreateWallet(): CreateWalletApi {
 
   return {
     canGoBack,
-    challenges: seedState.challenges,
     confirm,
     copyPhrase,
     error,
@@ -237,7 +251,7 @@ export function useCreateWallet(): CreateWalletApi {
     goTo,
     isCopied,
     isGoingBack,
-    isLedgerSupported,
+    isLedgerAvailable,
     isRevealed,
     isSubmitting,
     password,

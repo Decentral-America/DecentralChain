@@ -2,22 +2,31 @@
  * CreateWalletWizard — integration tests
  *
  * Walks the whole flow to prove the step guards hold: in particular that the
- * password step is unreachable without passing verification, and that stepping
- * back neither empties the password fields nor leaves a dead error on screen.
+ * password step is unreachable until the phrase has been revealed — the only
+ * evidence behind `hasBackup: true` now that verification is gone — and that
+ * stepping back neither empties the password fields nor leaves a dead error on
+ * screen.
  */
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CreateWalletWizard } from '../CreateWalletWizard';
 import { useCreateWallet } from '../useCreateWallet';
 
 const PHRASE =
   'melody rate simple stable safe truck worth fresh attract sweet cook lobster zoo kid iron';
-const WORDS = PHRASE.split(' ');
 const VALID_PASSWORD = 'Abcdefghijk1!';
 
 const { authCreate } = vi.hoisted(() => ({ authCreate: vi.fn() }));
+const ledgerFlag = vi.hoisted(() => ({ enabled: false }));
 
+vi.mock('@/config', () => ({
+  config: {
+    get ledgerEnabled() {
+      return ledgerFlag.enabled;
+    },
+  },
+}));
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
     create: authCreate,
@@ -46,22 +55,20 @@ function Wizard() {
   return <CreateWalletWizard wallet={useCreateWallet()} />;
 }
 
-/** Answer every verification challenge correctly, reading positions off screen. */
-const answerAllChallenges = async () => {
-  for (let asked = 0; asked < 3; asked++) {
-    const prompt = await screen.findByText(/which word is/i);
-    const position = Number(/#(\d+)/.exec(prompt.textContent ?? '')?.[1]);
-    const word = WORDS[position - 1] as string;
-    await userEvent.click(screen.getByRole('button', { name: word }));
+/** Add or remove WebHID the way a Chrome/Safari split would. */
+const setWebHid = (present: boolean) => {
+  if (present) {
+    Object.defineProperty(navigator, 'hid', { configurable: true, value: {} });
+  } else {
+    Reflect.deleteProperty(navigator, 'hid');
   }
 };
 
-/** Method → phrase → reveal → verify → password. */
+/** Intro → phrase → reveal → password. */
 const goToPasswordStep = async () => {
-  await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+  await userEvent.click(screen.getByRole('button', { name: /continue/i }));
   await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
   await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-  await answerAllChallenges();
   await screen.findByText(/secure your wallet/i);
 };
 
@@ -69,42 +76,57 @@ describe('CreateWalletWizard', () => {
   beforeEach(() => {
     authCreate.mockReset();
     authCreate.mockResolvedValue(undefined);
+    ledgerFlag.enabled = false;
+    setWebHid(false);
   });
 
-  it('starts on the method step', () => {
-    render(<Wizard />);
-    expect(screen.getByText(/how do you want to hold your keys/i)).toBeInTheDocument();
+  afterEach(() => {
+    setWebHid(false);
   });
 
-  it('reaches the phrase step after choosing recovery phrase', async () => {
+  it('starts on the intro step', () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    expect(screen.getByText(/before you start/i)).toBeInTheDocument();
+  });
+
+  it('reaches the phrase step from the intro', async () => {
+    render(<Wizard />);
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     expect(await screen.findByText(/your recovery phrase/i)).toBeInTheDocument();
   });
 
-  it('reaches verification only after revealing and confirming the phrase', async () => {
+  it('reaches the password step after revealing and confirming the phrase', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
     await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-    expect(await screen.findByText(/confirm your phrase/i)).toBeInTheDocument();
+    expect(await screen.findByText(/secure your wallet/i)).toBeInTheDocument();
   });
 
-  it('does not show the password step before verification passes', async () => {
+  it('does not reach the password step until the phrase has been revealed', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
-    await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
-    await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
-    await screen.findByText(/confirm your phrase/i);
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
+    await screen.findByText(/your recovery phrase/i);
+
+    // The reveal is the whole of the evidence behind hasBackup: true, so the
+    // way forward stays shut until the words have been on screen.
+    const savedIt = screen.getByRole('button', { name: /saved it/i });
+    expect(savedIt).toBeDisabled();
+    // fireEvent rather than userEvent: userEvent refuses to touch a disabled
+    // control, so it could not tell a real guard from a merely greyed-out one.
+    fireEvent.click(savedIt);
+
+    expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
     expect(screen.queryByText(/secure your wallet/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });
 
   it('goes back to the previous step', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByText(/your recovery phrase/i);
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    expect(await screen.findByText(/how do you want to hold your keys/i)).toBeInTheDocument();
+    expect(await screen.findByText(/before you start/i)).toBeInTheDocument();
   });
 
   it('offers no back control on the first step', () => {
@@ -112,20 +134,33 @@ describe('CreateWalletWizard', () => {
     expect(screen.queryByRole('button', { name: /^back$/i })).not.toBeInTheDocument();
   });
 
-  it('renders the step rail with four steps', () => {
+  it('renders the step rail with three steps', () => {
     render(<Wizard />);
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '4');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '3');
+  });
+
+  it('hides the Ledger tile on the intro step while the flag is off', () => {
+    setWebHid(true);
+    render(<Wizard />);
+    expect(screen.queryByRole('button', { name: /ledger/i })).not.toBeInTheDocument();
+  });
+
+  it('shows the Ledger tile on the intro step when the flag is on and WebHID is available', () => {
+    ledgerFlag.enabled = true;
+    setWebHid(true);
+    render(<Wizard />);
+    expect(screen.getByRole('button', { name: /ledger hardware wallet/i })).toBeInTheDocument();
   });
 
   it('keeps the phrase revealed after going back and returning to the phrase step', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
     expect(screen.getByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/how do you want to hold your keys/i);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await screen.findByText(/before you start/i);
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
 
     expect(await screen.findByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
     expect(screen.queryByRole('button', { name: /reveal/i })).not.toBeInTheDocument();
@@ -133,19 +168,19 @@ describe('CreateWalletWizard', () => {
 
   it('swiping right past the threshold goes back a step', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByText(/your recovery phrase/i);
 
     const area = screen.getByTestId('wizard-step-area');
     fireEvent.touchStart(area, { touches: [{ clientX: 20 }] });
     fireEvent.touchEnd(area, { changedTouches: [{ clientX: 100 }] });
 
-    expect(await screen.findByText(/how do you want to hold your keys/i)).toBeInTheDocument();
+    expect(await screen.findByText(/before you start/i)).toBeInTheDocument();
   });
 
   it('swiping right below the threshold does not go back', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByText(/your recovery phrase/i);
 
     const area = screen.getByTestId('wizard-step-area');
@@ -157,7 +192,7 @@ describe('CreateWalletWizard', () => {
 
   it('swiping left does not go back', async () => {
     render(<Wizard />);
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByText(/your recovery phrase/i);
 
     const area = screen.getByTestId('wizard-step-area');
@@ -173,8 +208,8 @@ describe('CreateWalletWizard', () => {
     await userEvent.type(screen.getByLabelText('Password'), VALID_PASSWORD);
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/confirm your phrase/i);
-    await answerAllChallenges();
+    await screen.findByText(/your recovery phrase/i);
+    await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
 
     expect(await screen.findByLabelText('Password')).toHaveValue(VALID_PASSWORD);
   });
@@ -189,8 +224,8 @@ describe('CreateWalletWizard', () => {
     expect(await screen.findByText('vault locked')).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: /^back$/i }));
-    await screen.findByText(/confirm your phrase/i);
-    await answerAllChallenges();
+    await screen.findByText(/your recovery phrase/i);
+    await userEvent.click(screen.getByRole('button', { name: /saved it/i }));
     await screen.findByText(/secure your wallet/i);
 
     // The error belonged to an attempt the user has since navigated away from;

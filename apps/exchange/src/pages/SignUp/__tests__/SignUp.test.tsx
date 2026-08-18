@@ -24,6 +24,7 @@ const PHRASE_B =
 
 const { seedCreate } = vi.hoisted(() => ({ seedCreate: vi.fn() }));
 
+vi.mock('@/config', () => ({ config: { ledgerEnabled: false } }));
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
     create: vi.fn().mockResolvedValue(undefined),
@@ -101,7 +102,7 @@ describe('SignUp across the md breakpoint', () => {
   it('keeps the same seed phrase when the viewport crosses md', async () => {
     render(<SignUp />);
 
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
     expect(screen.getByText('melody')).toBeInTheDocument();
 
@@ -117,7 +118,7 @@ describe('SignUp across the md breakpoint', () => {
   it('keeps the step index when the viewport crosses md', async () => {
     render(<SignUp />);
 
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByText(/your recovery phrase/i);
 
     flipToNarrow();
@@ -126,13 +127,13 @@ describe('SignUp across the md breakpoint', () => {
     expect(screen.queryByText(/start trading today/i)).not.toBeInTheDocument();
     // ...but the wizard is still on the phrase step, not back at step 0.
     expect(screen.getByText(/your recovery phrase/i)).toBeInTheDocument();
-    expect(screen.queryByText(/how do you want to hold your keys/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/before you start/i)).not.toBeInTheDocument();
   });
 
   it('keeps the phrase revealed when the viewport crosses md', async () => {
     render(<SignUp />);
 
-    await userEvent.click(screen.getByRole('button', { name: /recovery phrase/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
     expect(screen.getByTestId('seed-grid')).toHaveAttribute('data-revealed', 'true');
 

@@ -1,5 +1,5 @@
 /**
- * Step 4 — the password that encrypts the wallet on this device.
+ * Step 3 — the password that encrypts the wallet on this device.
  *
  * The strength meter reflects the rules the hook enforces, so a user is never
  * shown a full bar for a password that will then be rejected.

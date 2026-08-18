@@ -38,9 +38,9 @@ export function RecoveryPhraseStep({
   /**
    * Whether the phrase has been revealed. Owned by the caller, because the
    * wizard remounts this step every time the user navigates away and back
-   * (e.g. Back to reconsider Ledger, then forward again) and revealing is
-   * one-way — re-hiding would only obstruct someone mid-transcription — so
-   * that fact has to survive a remount this component cannot.
+   * (e.g. Back to the intro, then forward again) and revealing is one-way —
+   * re-hiding would only obstruct someone mid-transcription — so that fact has
+   * to survive a remount this component cannot.
    */
   isRevealed: boolean;
   onContinue: () => void;

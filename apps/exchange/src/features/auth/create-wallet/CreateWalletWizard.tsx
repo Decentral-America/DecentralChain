@@ -1,5 +1,5 @@
 /**
- * Four-step wallet creation.
+ * Three-step wallet creation.
  *
  * Replaces a single card that stacked a phrase, two password fields, a warning
  * and a checkbox past the bottom of the viewport. Each step fits a 600px
@@ -18,7 +18,7 @@
  * `@media (prefers-reduced-motion: reduce)` rule cannot reach — they only
  * self-disable via `theme.motion.reducedMotion`, which `landingTheme.ts`
  * never sets. A plain `sx` animation is reachable by that same media query,
- * matching the pattern already used by `RecoveryPhraseStep` and `VerifyStep`.
+ * matching the pattern already used by `RecoveryPhraseStep` and `IntroStep`.
  */
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button } from '@mui/material';
@@ -27,13 +27,12 @@ import { useNavigate } from 'react-router';
 import { GlassCard } from '@/components/auth/GlassCard';
 import { StepRail } from '@/components/auth/StepRail';
 import { onCanvas } from '@/theme/landingTheme';
-import { ChooseMethodStep } from './steps/ChooseMethodStep';
+import { IntroStep } from './steps/IntroStep';
 import { RecoveryPhraseStep } from './steps/RecoveryPhraseStep';
 import { SecureStep } from './steps/SecureStep';
-import { VerifyStep } from './steps/VerifyStep';
-import { type CreateWalletApi } from './useCreateWallet';
+import { type CreateWalletApi, STEP } from './useCreateWallet';
 
-const STEP_LABELS = ['Method', 'Phrase', 'Verify', 'Secure'];
+const STEP_LABELS = ['Start', 'Phrase', 'Secure'];
 
 /** Horizontal swipe distance, in px, that counts as an intentional back gesture. */
 const SWIPE_THRESHOLD = 64;
@@ -56,21 +55,23 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
   };
 
   const renderStep = () => {
-    if (step === 0) {
+    if (step === STEP.INTRO) {
       return (
-        <ChooseMethodStep
-          isLedgerSupported={wallet.isLedgerSupported}
+        <IntroStep
+          onContinue={() => goTo(STEP.PHRASE)}
           onLedger={() => void navigate('/import/ledger')}
-          onSeed={() => goTo(1)}
+          showLedger={wallet.isLedgerAvailable}
         />
       );
     }
-    if (step === 1) {
+    if (step === STEP.PHRASE) {
       return (
         <RecoveryPhraseStep
           isCopied={wallet.isCopied}
           isRevealed={wallet.isRevealed}
-          onContinue={() => goTo(2)}
+          // Refused by `goTo` until the phrase has been revealed; the step's own
+          // Continue is disabled until then too.
+          onContinue={() => goTo(STEP.SECURE)}
           onCopy={() => void wallet.copyPhrase()}
           onReveal={wallet.reveal}
           onRetry={wallet.regenerateSeed}
@@ -78,9 +79,6 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
           words={wallet.words}
         />
       );
-    }
-    if (step === 2) {
-      return <VerifyStep challenges={wallet.challenges} onComplete={() => goTo(3)} />;
     }
     return (
       <SecureStep

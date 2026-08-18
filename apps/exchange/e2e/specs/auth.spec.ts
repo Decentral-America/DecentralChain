@@ -5,27 +5,36 @@ import { expect, test } from '@playwright/test';
 import { AuthPage, PHRASE_LENGTH, WIZARD_STEPS } from '../page-objects/AuthPage';
 
 /**
- * /create-account is a four-step wizard: choose a method, read the recovery
- * phrase, prove you read it, then set a password. The first two steps contain
- * no form fields at all, so these tests drive the wizard rather than looking
- * for inputs on arrival.
+ * /create-account is a three-step wizard: read the intro, reveal and save the
+ * recovery phrase, then set a password. The first two steps contain no form
+ * fields at all, so these tests drive the wizard rather than looking for inputs
+ * on arrival.
  */
 test.describe('Create Account flow', () => {
-  test('create-account lands on the method step, not a form', async ({ page }) => {
+  test('create-account lands on the intro step, not a form', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
 
-    await expect(auth.recoveryPhraseTile).toBeVisible();
+    await expect(auth.introContinueBtn).toBeVisible();
     expect(await auth.currentStep()).toBe(1);
     // Nothing to type on step 1 — a password box here would mean the wizard
     // had been bypassed.
     await expect(page.locator('input[type="password"]')).toHaveCount(0);
   });
 
+  test('the Ledger option stays hidden while the feature flag is off', async ({ page }) => {
+    const auth = new AuthPage(page);
+    await auth.gotoCreateAccount();
+
+    // VITE_LEDGER_ENABLED is false in every checked-in env file, so the intro
+    // must not advertise a path this build cannot finish.
+    await expect(auth.ledgerTile).toHaveCount(0);
+  });
+
   test('the recovery phrase is hidden until the user reveals it', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
-    await auth.chooseRecoveryPhrase();
+    await auth.continueFromIntro();
 
     // The real words are kept out of the DOM, not merely blurred, so this is a
     // claim about the markup and not about the pixels.
@@ -38,17 +47,21 @@ test.describe('Create Account flow', () => {
     for (const word of words) expect(word).toMatch(/^[a-z]+$/i);
   });
 
-  test('continue is blocked until the phrase has been revealed', async ({ page }) => {
+  test('the password step is unreachable until the phrase has been revealed', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
-    await auth.chooseRecoveryPhrase();
+    await auth.continueFromIntro();
 
+    // The reveal is the only evidence behind the wallet's `hasBackup` flag, so
+    // the way forward stays shut until the words have been on screen.
     await expect(auth.savedItBtn).toBeDisabled();
+    await expect(page.locator('input[type="password"]')).toHaveCount(0);
+
     await auth.revealPhrase();
     await expect(auth.savedItBtn).toBeEnabled();
   });
 
-  test('answering the challenges reaches the password step', async ({ page }) => {
+  test('confirming the revealed phrase reaches the password step', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
 
@@ -74,12 +87,14 @@ test.describe('Create Account flow', () => {
   test('stepping back from the password step keeps what was typed', async ({ page }) => {
     const auth = new AuthPage(page);
     await auth.gotoCreateAccount();
-    const words = await auth.reachPasswordStep();
+    await auth.reachPasswordStep();
     await auth.fillPassword('TestPassword123!');
 
     await page.getByRole('button', { name: /^back$/i }).click();
-    await expect(auth.verifyQuestion).toBeVisible();
-    await auth.answerVerification(words);
+    await expect(auth.seedGrid).toBeVisible();
+    // Still revealed from before, so the way forward is still open.
+    await expect(auth.seedGrid).toHaveAttribute('data-revealed', 'true');
+    await auth.confirmPhraseSaved();
 
     await expect(auth.passwordInput).toHaveValue('TestPassword123!');
   });

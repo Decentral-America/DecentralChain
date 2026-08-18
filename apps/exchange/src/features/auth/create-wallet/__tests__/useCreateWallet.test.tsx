@@ -2,16 +2,22 @@
  * useCreateWallet — unit tests
  *
  * Covers password validation (the rules are unchanged from the screen this
- * replaces) and that a failed submit surfaces an error without losing the
- * generated phrase.
+ * replaces), that a failed submit surfaces an error without losing the
+ * generated phrase, and the two gates the hook owns: the password step is
+ * unreachable until the phrase has been revealed, and Ledger is offered only
+ * when the feature flag and WebHID agree.
  */
 import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type CreateWalletApi, useCreateWallet, validatePassword } from '../useCreateWallet';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { type CreateWalletApi, STEP, useCreateWallet, validatePassword } from '../useCreateWallet';
 
 const create = vi.fn();
 const navigate = vi.fn();
 const setSeedTransfer = vi.fn();
+
+// Mutable behind a getter: the hook reads config.ledgerEnabled on every render,
+// so a per-test flip is enough and no module reset is needed.
+const ledgerFlag = vi.hoisted(() => ({ enabled: false }));
 
 // Mutable so individual tests can flip to the "already authenticated, adding
 // an additional account" state without redefining the whole mock.
@@ -20,6 +26,13 @@ const authState: { isAuthenticated: boolean; user: { id: string } | null } = {
   user: null,
 };
 
+vi.mock('@/config', () => ({
+  config: {
+    get ledgerEnabled() {
+      return ledgerFlag.enabled;
+    },
+  },
+}));
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
     create,
@@ -91,6 +104,15 @@ const submitWith = async (
   return ok;
 };
 
+/** Add or remove WebHID the way a Chrome/Safari split would. */
+const setWebHid = (present: boolean) => {
+  if (present) {
+    Object.defineProperty(navigator, 'hid', { configurable: true, value: {} });
+  } else {
+    Reflect.deleteProperty(navigator, 'hid');
+  }
+};
+
 describe('useCreateWallet', () => {
   beforeEach(() => {
     authState.isAuthenticated = false;
@@ -98,20 +120,18 @@ describe('useCreateWallet', () => {
     create.mockReset();
     navigate.mockReset();
     setSeedTransfer.mockReset();
+    ledgerFlag.enabled = false;
+    setWebHid(false);
+  });
+
+  afterEach(() => {
+    setWebHid(false);
   });
 
   it('exposes the generated phrase as words', () => {
     const { result } = renderHook(() => useCreateWallet());
     expect(result.current.words).toHaveLength(15);
     expect(result.current.words[0]).toBe('a');
-  });
-
-  it('builds verification challenges from the phrase', () => {
-    const { result } = renderHook(() => useCreateWallet());
-    expect(result.current.challenges).toHaveLength(3);
-    for (const c of result.current.challenges) {
-      expect(result.current.words).toContain(c.answer);
-    }
   });
 
   it('keeps the same phrase across re-renders', () => {
@@ -226,7 +246,6 @@ describe('useCreateWallet', () => {
     const { result } = renderHook(() => useCreateWallet());
     expect(result.current.seedError).toMatch(/could not generate/i);
     expect(result.current.words).toEqual([]);
-    expect(result.current.challenges).toEqual([]);
 
     act(() => {
       result.current.regenerateSeed();
@@ -234,27 +253,6 @@ describe('useCreateWallet', () => {
 
     expect(result.current.seedError).toBe('');
     expect(result.current.words).toHaveLength(15);
-    expect(result.current.challenges).toHaveLength(3);
-  });
-
-  it('rebuilds the challenges for the new phrase after regenerateSeed', async () => {
-    const { Seed } = await import('data-service/classes/Seed');
-    const { result } = renderHook(() => useCreateWallet());
-
-    vi.mocked(Seed.create).mockReturnValueOnce({
-      phrase: 'p q r s t u v w x y z aa bb cc dd',
-    } as unknown as ReturnType<typeof Seed.create>);
-
-    act(() => {
-      result.current.regenerateSeed();
-    });
-
-    // Challenges answerable only against the *old* phrase would lock the user
-    // out of a wizard they can no longer complete.
-    for (const c of result.current.challenges) {
-      expect(result.current.words).toContain(c.answer);
-      expect(result.current.words[c.position - 1]).toBe(c.answer);
-    }
   });
 
   it('clears isRevealed when regenerateSeed is called', () => {
@@ -272,32 +270,51 @@ describe('useCreateWallet', () => {
     expect(result.current.isRevealed).toBe(false);
   });
 
-  it('keeps the same challenges across re-renders', () => {
-    const { result, rerender } = renderHook(() => useCreateWallet());
-    const first = result.current.challenges;
-    rerender();
-    // Reshuffled questions mid-verification would move the goalposts under a
-    // user who is halfway through answering them.
-    expect(result.current.challenges).toBe(first);
-  });
-
   it('tracks the step index and reports whether back is available', () => {
     const { result } = renderHook(() => useCreateWallet());
-    expect(result.current.step).toBe(0);
+    expect(result.current.step).toBe(STEP.INTRO);
     expect(result.current.canGoBack).toBe(false);
 
     act(() => {
-      result.current.goTo(2);
+      // The password step is gated on the reveal, so this is what a user who
+      // has read their phrase can do.
+      result.current.reveal();
     });
-    expect(result.current.step).toBe(2);
+    act(() => {
+      result.current.goTo(STEP.SECURE);
+    });
+    expect(result.current.step).toBe(STEP.SECURE);
     expect(result.current.canGoBack).toBe(true);
     expect(result.current.isGoingBack).toBe(false);
 
     act(() => {
       result.current.goBack();
     });
-    expect(result.current.step).toBe(1);
+    expect(result.current.step).toBe(STEP.PHRASE);
     expect(result.current.isGoingBack).toBe(true);
+  });
+
+  it('refuses to reach the password step before the phrase has been revealed', () => {
+    const { result } = renderHook(() => useCreateWallet());
+    act(() => {
+      result.current.goTo(STEP.PHRASE);
+    });
+
+    act(() => {
+      result.current.goTo(STEP.SECURE);
+    });
+
+    // hasBackup: true rests on nothing but this reveal now that verification is
+    // gone, so a user who never saw the words must not reach the password step.
+    expect(result.current.step).toBe(STEP.PHRASE);
+
+    act(() => {
+      result.current.reveal();
+    });
+    act(() => {
+      result.current.goTo(STEP.SECURE);
+    });
+    expect(result.current.step).toBe(STEP.SECURE);
   });
 
   it('does not step back past the first step', () => {
@@ -315,11 +332,33 @@ describe('useCreateWallet', () => {
     expect(rendered.result.current.error).toBe('vault locked');
 
     act(() => {
-      rendered.result.current.goTo(2);
+      rendered.result.current.goTo(STEP.PHRASE);
     });
 
     expect(rendered.result.current.error).toBe('');
     expect(rendered.result.current.password).toBe('Abcdefghijk1!');
     expect(rendered.result.current.confirm).toBe('Abcdefghijk1!');
+  });
+
+  it('hides Ledger while the feature flag is off, even in a WebHID browser', () => {
+    ledgerFlag.enabled = false;
+    setWebHid(true);
+    const { result } = renderHook(() => useCreateWallet());
+    expect(result.current.isLedgerAvailable).toBe(false);
+  });
+
+  it('hides Ledger in a browser without WebHID, even with the flag on', () => {
+    ledgerFlag.enabled = true;
+    setWebHid(false);
+    const { result } = renderHook(() => useCreateWallet());
+    // Offering it here would dead-end on click: there is no transport.
+    expect(result.current.isLedgerAvailable).toBe(false);
+  });
+
+  it('offers Ledger only when the flag is on and WebHID is available', () => {
+    ledgerFlag.enabled = true;
+    setWebHid(true);
+    const { result } = renderHook(() => useCreateWallet());
+    expect(result.current.isLedgerAvailable).toBe(true);
   });
 });
