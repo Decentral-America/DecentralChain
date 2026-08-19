@@ -1,244 +1,31 @@
-import { createTheme } from '@mui/material/styles';
 import { layout as layoutTokens, palette, typeScale } from '@/styles/tokens';
 
 /**
- * Landing page theme following the design spec
- * Global theme & tokens with Inter font, custom color palette, and spacing
+ * Brand tokens for the landing/marketing surfaces.
+ *
+ * This file used to open with a second full MUI theme — `export const
+ * landingTheme = createTheme({...})`, 227 lines, hardcoded `mode: 'light'` —
+ * which twelve pages wrapped themselves in and which is the reason the app
+ * shipped a light/dark toggle that did nothing. Those twelve wrappers were
+ * removed earlier in this project, leaving the theme object with **zero
+ * importers**; it was not deleted then, and Rollup does not drop it (a
+ * `createTheme(...)` call at module scope is not provably side-effect free),
+ * so every one of its unique palette values was still being shipped in
+ * `dist/assets/index-*.js`. The spec called for `landingTheme.ts` to be
+ * merged into the single theme; deleting the dead object is the last half of
+ * that, and it is verified against the built bundle rather than against the
+ * import graph.
+ *
+ * What remains is what is actually used: the brand-token exports below, which
+ * `GlassCard`, `MainLayout`, `MobileAuthScreen` and the landing components'
+ * dark branches read. They are plain constants, not a theme.
  */
-export const landingTheme = createTheme({
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '10px',
-          fontWeight: 500,
-          textTransform: 'none',
-        },
-        sizeLarge: {
-          fontSize: '16px',
-          padding: '12px 24px',
-        },
-      },
-      variants: [
-        {
-          props: { color: 'primary', variant: 'contained' },
-          style: {
-            '&:hover': {
-              boxShadow: '0 6px 16px rgba(79, 70, 229, 0.35)',
-            },
-            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)',
-          },
-        },
-      ],
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          border: '1px solid #E6EAF2',
-          borderRadius: '14px',
-          boxShadow: '0 10px 30px rgba(20, 32, 80, 0.08)',
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: '999px',
-          fontWeight: 500,
-        },
-      },
-    },
-    MuiContainer: {
-      styleOverrides: {
-        root: {
-          '@media (max-width:900px)': {
-            paddingLeft: '16px',
-            paddingRight: '16px',
-          },
-          paddingLeft: '24px',
-          paddingRight: '24px',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '10px',
-          },
-        },
-      },
-    },
-  },
-  palette: {
-    background: {
-      default: '#F9FAFB', // gray-50
-      paper: '#FFFFFF',
-    },
-    divider: '#EEF2F7',
-    error: {
-      main: '#EF4444',
-    },
-    grey: {
-      50: '#F9FAFB',
-      100: '#F2F4F7',
-      200: '#E5E7EB',
-      300: '#D0D5DD',
-      400: '#98A2B3',
-      500: '#667085',
-      600: '#475467',
-      700: '#344054',
-      800: '#1F2937',
-      900: '#111827',
-    },
-    mode: 'light',
-    primary: {
-      contrastText: '#FFFFFF',
-      dark: '#2d1c8f',
-      light: '#5940d4',
-      main: '#3d26be', // Deep purple/indigo
-    },
-    secondary: {
-      contrastText: '#FFFFFF',
-      dark: '#0891B2',
-      light: '#22D3EE',
-      main: '#06B6D4', // Cyan for contrast
-    },
-    success: {
-      main: '#10B981', // Emerald for success states
-    },
-    text: {
-      primary: '#111827', // gray-900
-      secondary: '#667085', // gray-500
-    },
-    warning: {
-      main: '#F59E0B', // amber-500 (accent)
-    },
-  },
-  shadows: [
-    'none',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 4px 8px rgba(20, 32, 80, 0.06)',
-    '0 8px 16px rgba(20, 32, 80, 0.08)',
-    '0 10px 30px rgba(20, 32, 80, 0.08)', // Card shadow
-    '0 12px 40px rgba(20, 32, 80, 0.10)',
-    '0 16px 50px rgba(20, 32, 80, 0.12)',
-    '0 20px 60px rgba(15, 25, 55, 0.15)', // Floating mockups
-    '0 24px 70px rgba(15, 25, 55, 0.18)',
-    '0 30px 80px rgba(15, 25, 55, 0.20)',
-    '0 35px 90px rgba(15, 25, 55, 0.22)',
-    '0 40px 100px rgba(15, 25, 55, 0.24)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-    '0 2px 4px rgba(20, 32, 80, 0.04)',
-  ],
-  shape: {
-    borderRadius: 14, // Default card radius
-  },
-  spacing: 8, // 8px base
-  typography: {
-    body1: {
-      fontSize: '16px',
-      fontWeight: 400,
-      lineHeight: '26px',
-    },
-    body2: {
-      fontSize: '14px',
-      fontWeight: 400,
-      lineHeight: '22px',
-    },
-    caption: {
-      fontSize: '12px',
-      fontWeight: 400,
-      lineHeight: '18px',
-    },
-    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    h1: {
-      '@media (max-width:900px)': {
-        fontSize: '40px',
-        lineHeight: 1.2,
-      },
-      '@media (max-width:1200px)': {
-        fontSize: '48px',
-      },
-      fontSize: '56px',
-      fontWeight: 700,
-      letterSpacing: '-0.5px',
-      lineHeight: 1.1,
-    },
-    h2: {
-      '@media (max-width:900px)': {
-        fontSize: '28px',
-        lineHeight: '36px',
-      },
-      '@media (max-width:1200px)': {
-        fontSize: '32px',
-        lineHeight: '40px',
-      },
-      fontSize: '36px',
-      fontWeight: 700,
-      letterSpacing: '-0.3px',
-      lineHeight: '44px',
-    },
-    h3: {
-      '@media (max-width:900px)': {
-        fontSize: '20px',
-        lineHeight: '28px',
-      },
-      '@media (max-width:1200px)': {
-        fontSize: '22px',
-        lineHeight: '30px',
-      },
-      fontSize: '24px',
-      fontWeight: 600,
-      lineHeight: '32px',
-    },
-    h4: {
-      fontSize: '20px',
-      fontWeight: 500,
-      lineHeight: '28px',
-    },
-    h5: {
-      fontSize: '18px',
-      fontWeight: 500,
-      lineHeight: '26px',
-    },
-    h6: {
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '24px',
-    },
-    overline: {
-      fontSize: '12px',
-      fontWeight: 700,
-      letterSpacing: '0.12em',
-      lineHeight: '18px',
-      textTransform: 'uppercase' as const,
-    },
-    subtitle1: {
-      fontSize: 16,
-      fontWeight: 600,
-      lineHeight: '24px',
-    },
-  },
-});
 
 /**
- * Brand tokens below — ported from the standalone exchange app's dark-landing
- * design (the "night canvas" treatment), which replaces the orange/blue
- * gradient set the two exports above used to hold. Both call sites
- * (HeroSection, BigCTA) moved to this set at the same time, so there is no
- * lingering reference to the old gradients.
+ * Ported from the standalone exchange app's dark-landing design (the "night
+ * canvas" treatment), which replaced an orange/blue gradient set that used to
+ * live above this comment. Both call sites (HeroSection, BigCTA) moved across
+ * at the same time, so there is no lingering reference to the old gradients.
  */
 
 /** The band's stops, dark to light. */
