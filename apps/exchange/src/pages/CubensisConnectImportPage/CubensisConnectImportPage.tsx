@@ -308,11 +308,7 @@ export const CubensisConnectImportPage: React.FC = () => {
                     onClick={requestPermission}
                     disabled={loading}
                   >
-                    {loading ? (
-                      <CircularProgress size={22} sx={{ color: 'primary.contrastText' }} />
-                    ) : (
-                      'Connect'
-                    )}
+                    {loading ? <CircularProgress size={22} color="inherit" /> : 'Connect'}
                   </Button>
                   <Button variant="outlined" onClick={() => navigate('/import')} disabled={loading}>
                     Cancel
@@ -389,11 +385,7 @@ export const CubensisConnectImportPage: React.FC = () => {
                     onClick={handleImport}
                     disabled={loading || !!nameError || !name}
                   >
-                    {loading ? (
-                      <CircularProgress size={22} sx={{ color: 'primary.contrastText' }} />
-                    ) : (
-                      'Import Account'
-                    )}
+                    {loading ? <CircularProgress size={22} color="inherit" /> : 'Import Account'}
                   </Button>
                   <Button
                     variant="outlined"
