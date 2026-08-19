@@ -21,10 +21,14 @@ function paletteFor(mode: ThemeMode) {
     error: { main: t.intent.danger },
     info: { main: t.intent.info },
     primary: { main: t.accent.primary },
-    // `text.secondary` — same token the styled-components theme's
-    // `colors.secondary` reads. MUI's stock secondary (magenta) was the
-    // exact drift Finding 3 flagged; this keeps both consumers on one value.
-    secondary: { main: t.text.secondary },
+    // `accent.muted` — same token the styled-components theme's
+    // `colors.secondary` reads. It's a *background* role (verified to keep
+    // `text.primary` legible on top, in both modes); `contrastText` is set
+    // explicitly rather than left to MUI's own threshold-3 heuristic, since
+    // we can verify it against our own tokens at AA (4.5). MUI's stock
+    // secondary (magenta) was the drift Finding 3 flagged; this keeps both
+    // consumers on one value. See task-2-report.md, Fix round 2.
+    secondary: { contrastText: t.text.primary, main: t.accent.muted },
     success: { main: t.intent.success },
     text: { primary: t.text.primary, secondary: t.text.secondary },
     warning: { main: t.intent.warning },

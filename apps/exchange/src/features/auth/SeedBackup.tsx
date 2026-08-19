@@ -37,7 +37,7 @@ const Title = styled.h2`
 const Description = styled.p`
   margin: 0 0 ${(p) => p.theme.spacing.md};
   font-size: ${(p) => p.theme.fontSizes.sm};
-  color: ${(p) => p.theme.colors.secondary};
+  color: ${(p) => p.theme.colors.textMuted};
   line-height: 1.5;
 
   @media (min-width: 481px) {
@@ -136,7 +136,7 @@ const SeedWord = styled.div`
 
 const WordNumber = styled.span`
   font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.secondary};
+  color: ${(p) => p.theme.colors.textMuted};
   min-width: 24px;
 `;
 

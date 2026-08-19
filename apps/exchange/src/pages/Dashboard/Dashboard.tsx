@@ -541,7 +541,12 @@ export const Dashboard = () => {
                         <Avatar
                           sx={{
                             bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
-                            color: 'white',
+                            // `secondary.main` (accent.muted) is light in light
+                            // mode; a hardcoded 'white' is unreadable there
+                            // (~1.2:1). See task-2-report.md, Fix round 2.
+                            color: asset.isBaseAsset
+                              ? 'primary.contrastText'
+                              : 'secondary.contrastText',
                             height: 40,
                             width: 40,
                           }}
@@ -743,6 +748,13 @@ export const Dashboard = () => {
                         <Avatar
                           sx={{
                             bgcolor: asset.isBaseAsset ? 'primary.main' : 'secondary.main',
+                            // Without an explicit `color`, MUI's Avatar default
+                            // ink is `background.default`, which is unreadable
+                            // on `secondary.main` in both modes (~1.1-1.9:1).
+                            // See task-2-report.md, Fix round 2.
+                            color: asset.isBaseAsset
+                              ? 'primary.contrastText'
+                              : 'secondary.contrastText',
                             fontSize: '0.875rem',
                             height: 32,
                             width: 32,

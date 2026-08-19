@@ -8,6 +8,11 @@ declare module 'styled-components' {
       secondary: string;
       background: string;
       text: string;
+      // A foreground-legible sibling to `text`, for de-emphasised text (e.g. a
+      // subtitle) — distinct from `secondary`, which is a *background* colour
+      // calibrated to keep `text` legible on top of it. Two different jobs;
+      // see task-2-report.md, Fix round 2.
+      textMuted: string;
       border: string;
       error: string;
       success: string;

@@ -31,14 +31,29 @@ const StyledBadge = styled(MuiChip, {
       success: theme.palette.success.main,
       warning: theme.palette.warning.main,
     };
+    // A hardcoded 'white' ink reads fine on the vivid intent colours but is
+    // unreadable on `secondary.main` (accent.muted, light in light mode:
+    // ~1.2:1). Each palette entry's `contrastText` is either explicitly
+    // token-verified (secondary) or MUI-computed against its own `main`, so
+    // it's correct per variant rather than a single guess. See
+    // task-2-report.md, Fix round 2.
+    const contrastMap = {
+      error: theme.palette.error.contrastText,
+      info: theme.palette.info.contrastText,
+      primary: theme.palette.primary.contrastText,
+      secondary: theme.palette.secondary.contrastText,
+      success: theme.palette.success.contrastText,
+      warning: theme.palette.warning.contrastText,
+    };
 
     const color = colorMap[badgeVariant || 'primary'];
+    const contrastColor = contrastMap[badgeVariant || 'primary'];
 
     return {
       backgroundColor: outline ? 'transparent' : color,
       border: outline ? `1px solid ${color}` : 'none',
       borderRadius: Number(theme.shape.borderRadius) * 4,
-      color: outline ? color : 'white',
+      color: outline ? color : contrastColor,
       fontSize:
         badgeSize === 'small'
           ? theme.typography.caption.fontSize

@@ -41,30 +41,68 @@ describe('styled-components themes', () => {
 });
 
 describe('foreground legibility (regression guard)', () => {
-  // `colors.secondary` / `palette.secondary.main` are read as a *text* colour
-  // in several places — most importantly the word numbers on the seed-phrase
-  // backup screen. Task 2 round 1 shipped this pointed at `accent.muted`,
-  // which is illegible as foreground text (see task-2-report.md, Fix round
-  // 1: ~1.1-1.9:1). This guard pins the fix so it cannot silently regress.
+  // `colors.secondary` is read as a *background* in ~10 consumers (see the
+  // "background legibility" guard below) — it cannot also be foreground-
+  // legible text, proven in task-2-report.md Fix round 1. Fix round 2 split
+  // the two roles: `colors.textMuted` is the dedicated foreground token, read
+  // by the four real foreground consumers (SeedBackup's `Description` and
+  // `WordNumber`, ChartPlate's `Subtitle`, Transactions' `lease` label). MUI
+  // has no equivalent split to make — its consumers of the muted-text role
+  // already read `text.secondary` directly (e.g. `color="text.secondary"`),
+  // which Task 1's WCAG suite already pins.
   const SURFACES = ['base', 'raised', 'hover'] as const;
 
   for (const mode of ['light', 'dark'] as const) {
     const t = tokens(mode);
     const theme = mode === 'light' ? lightTheme : darkTheme;
-    const mui = createAppTheme(mode);
 
     for (const surface of SURFACES) {
-      it(`${mode}: styled-components colors.secondary on surface.${surface} clears 4.5:1`, () => {
-        expect(contrastRatio(theme.colors.secondary, t.surface[surface])).toBeGreaterThanOrEqual(
+      it(`${mode}: styled-components colors.textMuted on surface.${surface} clears 4.5:1`, () => {
+        expect(contrastRatio(theme.colors.textMuted, t.surface[surface])).toBeGreaterThanOrEqual(
           4.5,
         );
       });
-
-      it(`${mode}: MUI palette.secondary.main on surface.${surface} clears 4.5:1`, () => {
-        const secondaryMain = mui.palette.secondary.main;
-        expect(contrastRatio(secondaryMain, t.surface[surface])).toBeGreaterThanOrEqual(4.5);
-      });
     }
+  }
+});
+
+describe('background legibility (regression guard)', () => {
+  // `colors.secondary` / `palette.secondary.main` are read as a *background*
+  // in ~10 consumers (InfoRow, OrderRow, CodeBadge, ...), several of which
+  // render `colors.text` / `text.primary` directly on top. Fix round 1
+  // pointed `colors.secondary` at a foreground-legible token and silently
+  // broke this pairing (4.68 -> 2.06 in light mode; see task-2-report.md,
+  // Fix round 2). This guard pins the restored pairing so it cannot regress
+  // again in either direction.
+  for (const mode of ['light', 'dark'] as const) {
+    const t = tokens(mode);
+    const theme = mode === 'light' ? lightTheme : darkTheme;
+    const mui = createAppTheme(mode);
+
+    it(`${mode}: colors.text on colors.secondary (styled-components) clears 4.5:1`, () => {
+      expect(contrastRatio(theme.colors.text, theme.colors.secondary)).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: palette.text.primary on palette.secondary.main (MUI) clears 4.5:1`, () => {
+      expect(
+        contrastRatio(mui.palette.text.primary, mui.palette.secondary.main),
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: styled-components and MUI agree on colors.secondary / secondary.main`, () => {
+      // One source, two consumers, once more — this is the pairing that
+      // regressed silently in round 1 because nothing pinned it.
+      expect(theme.colors.secondary).toBe(t.accent.muted);
+      expect(mui.palette.secondary.main).toBe(t.accent.muted);
+    });
+
+    it(`${mode}: colors.secondary is a 6-digit hex (consumers append alpha suffixes)`, () => {
+      // Transactions.tsx (\`\${secondary}20\`), UserOrders.tsx (\`cc\`),
+      // TradeHistory.tsx (\`30\`), and LanguageSwitcher.tsx (\`dd\`) all
+      // concatenate a 2-digit alpha directly onto this value. An 8- or
+      // 4-digit token here would silently produce an invalid colour string.
+      expect(theme.colors.secondary).toMatch(/^#[0-9a-f]{6}$/i);
+    });
   }
 });
 

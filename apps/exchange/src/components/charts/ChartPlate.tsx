@@ -43,7 +43,7 @@ const Title = styled.h3`
 const Subtitle = styled.p`
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.textMuted};
 `;
 
 /**

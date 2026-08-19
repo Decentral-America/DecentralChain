@@ -24,9 +24,14 @@ export const lightTheme: DefaultTheme = {
     hover: lightTokens.surface.hover,
     info: lightTokens.intent.info,
     primary: lightTokens.accent.primary,
-    secondary: lightTokens.text.secondary,
+    // Background role: calibrated so `colors.text` stays legible on top of it
+    // (the ~10 `background:` consumers). See task-2-report.md, Fix round 2.
+    secondary: lightTokens.accent.muted,
     success: lightTokens.intent.success,
     text: lightTokens.text.primary,
+    // Foreground role: the sibling `colors.secondary` can't also be — see
+    // the doc comment on `DefaultTheme.colors.textMuted` in styled.d.ts.
+    textMuted: lightTokens.text.secondary,
     warning: lightTokens.intent.warning,
   },
   fontSizes: {
@@ -98,9 +103,10 @@ export const darkTheme: DefaultTheme = {
     hover: darkTokens.surface.hover,
     info: darkTokens.intent.info,
     primary: darkTokens.accent.primary,
-    secondary: darkTokens.text.secondary,
+    secondary: darkTokens.accent.muted,
     success: darkTokens.intent.success,
     text: darkTokens.text.primary,
+    textMuted: darkTokens.text.secondary,
     warning: darkTokens.intent.warning,
   },
   fontSizes: {

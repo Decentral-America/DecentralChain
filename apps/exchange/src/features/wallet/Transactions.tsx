@@ -114,7 +114,7 @@ const TransactionType = styled.span<{ $type: string }>`
       case 'swap':
         return p.theme.colors.info;
       case 'lease':
-        return p.theme.colors.secondary;
+        return p.theme.colors.textMuted;
       default:
         return p.theme.colors.disabled;
     }
