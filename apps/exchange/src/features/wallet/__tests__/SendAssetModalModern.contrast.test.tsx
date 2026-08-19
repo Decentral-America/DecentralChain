@@ -27,7 +27,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio, type ThemeMode } from '@/theme/tokens/semantic';
+import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { SendAssetModalModern } from '../SendAssetModalModern';
 
 vi.mock('@/contexts/AuthContext', () => ({
@@ -159,5 +159,55 @@ describe('SendAssetModalModern — success-view badge icon', () => {
     for (const bg of backgroundHexStops(badge)) {
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(3);
     }
+  });
+});
+
+/**
+ * The transaction-ID well in the success view (final-review item 2).
+ *
+ * Identical mechanism to `ReceiveAssetModalModern`'s address well:
+ * `bgcolor: 'grey.50'` passes the raw-colour lint because it reads as a theme
+ * token, but MUI's grey ramp has no mode dimension (`grey.50` is `#fafafa` in
+ * both modes), so it is a fixed light fill. The `Typography` inside sets no
+ * `color`, inheriting the paper's mode-aware `text.primary` — 1.04:1 in dark.
+ * The transaction ID is the one piece of information this view exists to hand
+ * back to the user, and it is invisible.
+ */
+describe.each([
+  'light',
+  'dark',
+] as const)('SendAssetModalModern — transaction-ID well (%s mode)', (mode) => {
+  it('the txId ink clears AA against the surface it is actually painted on', async () => {
+    const user = userEvent.setup();
+    render(
+      <ThemeProvider theme={createAppTheme(mode)}>
+        <QueryClientProvider client={new QueryClient()}>
+          <Box>
+            <SendAssetModalModern
+              isOpen
+              onClose={vi.fn()}
+              assetId="DCC"
+              assetName="DCC"
+              availableBalance="1000"
+            />
+          </Box>
+        </QueryClientProvider>
+      </ThemeProvider>,
+    );
+    await user.type(
+      screen.getByLabelText(/Recipient Address or Alias/i),
+      '3PaBcDeFgHiJkLmNoPqRsTuVwXyZ012345',
+    );
+    await user.type(screen.getByLabelText(/^Amount$/i), '10');
+    await user.click(screen.getByRole('button', { name: /^send$/i }));
+    await screen.findByText('Transaction Sent');
+
+    const txId = screen.getByText('fake-tx-id');
+    const well = txId.closest('.MuiCard-root') as HTMLElement;
+    expect(well).not.toBeNull();
+    const ink = computedColor(txId);
+    const fill = toHex(getComputedStyle(well).backgroundColor);
+    expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+    expect(fill).toBe(tokens(mode).surface.sunken);
   });
 });

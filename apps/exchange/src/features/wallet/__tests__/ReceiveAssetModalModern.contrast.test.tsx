@@ -16,7 +16,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio } from '@/theme/tokens/semantic';
+import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 import { ReceiveAssetModalModern } from '../ReceiveAssetModalModern';
 
 vi.mock('@/contexts/AuthContext', () => ({
@@ -50,5 +50,53 @@ describe('ReceiveAssetModalModern — badge icon', () => {
     for (const bg of backgroundHexStops(badge)) {
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
     }
+  });
+});
+
+/**
+ * The wallet address well (final-review item 1).
+ *
+ * `bgcolor: 'grey.50'` *looks* like a theme token, so the raw-colour lint
+ * passes it and Task 8's review explicitly classified `grey.NNN` dot-paths as
+ * false positives to exclude. But MUI's grey palette is **mode-invariant** —
+ * `grey.50` is `#fafafa` in light *and* dark — so it behaves exactly like a
+ * hardcoded hex. The address `Typography` inside declares no `color` at all,
+ * so it inherits the Dialog paper's mode-aware `text.primary`: `#14122b` on
+ * `#fafafa` in light (17.48:1, fine) but `#f5f4ff` on `#fafafa` in dark —
+ * 1.04:1. The user's own wallet address, the one thing this modal exists to
+ * show, is invisible.
+ *
+ * This is the same defect class as a hex literal, which is why the assertion
+ * below measures behaviour (ink vs the fill actually painted) rather than
+ * syntax.
+ */
+describe.each([
+  'light',
+  'dark',
+] as const)('ReceiveAssetModalModern — address well (%s mode)', (mode) => {
+  it('the address ink clears AA against the surface it is actually painted on', () => {
+    render(
+      <ThemeProvider theme={createAppTheme(mode)}>
+        <ReceiveAssetModalModern isOpen onClose={vi.fn()} assetName="DCC" />
+      </ThemeProvider>,
+    );
+    const address = screen.getByText('3P123');
+    const well = address.closest('.MuiCard-root') as HTMLElement;
+    expect(well).not.toBeNull();
+    const ink = toHex(getComputedStyle(address).color);
+    const fill = toHex(getComputedStyle(well).backgroundColor);
+    expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('the well and its border move with the mode instead of pinning a fixed grey', () => {
+    render(
+      <ThemeProvider theme={createAppTheme(mode)}>
+        <ReceiveAssetModalModern isOpen onClose={vi.fn()} assetName="DCC" />
+      </ThemeProvider>,
+    );
+    const well = screen.getByText('3P123').closest('.MuiCard-root') as HTMLElement;
+    const style = getComputedStyle(well);
+    expect(toHex(style.backgroundColor)).toBe(tokens(mode).surface.sunken);
+    expect(toHex(style.borderTopColor)).toBe(tokens(mode).border.subtle);
   });
 });

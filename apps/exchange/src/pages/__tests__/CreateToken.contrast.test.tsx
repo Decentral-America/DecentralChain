@@ -26,6 +26,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { SurfaceProvider } from '@/components/atoms/SurfaceContext';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -253,5 +254,62 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
     const ink = computedColor(button);
     const bg = computedBackground(button);
     expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+/**
+ * The pinned mobile step bar (final-review item 3).
+ *
+ * On a phone the stepper pins under the band and, when it does, gains its own
+ * surface so it stays legible over the content scrolling beneath it. That
+ * surface was `mobileSurface.card` — `palette.pureWhite`, `#ffffff`, and
+ * `styles/mobileTokens.ts` has no mode dimension at all, so it is a fixed
+ * light fill by construction. The `StepLabel` inside takes MUI's mode-aware
+ * `text.primary`/`text.secondary`, so in dark mode the ink flips to `#f5f4ff`
+ * on `#ffffff`: 1.09:1. The one piece of the form that exists to survive
+ * being glanced at is exactly the piece that disappears.
+ *
+ * The surface arrives with the pinning, so the *pinned* state is the one
+ * under test: `SurfaceProvider compact` puts the bar in its sticky branch,
+ * and the `stuck` scroll probe resolves true on mount in jsdom (the bar's
+ * `getBoundingClientRect().top` and its resolved `top` are both 0), which is
+ * asserted below rather than assumed — a transparent bar would mean this
+ * test measured nothing.
+ */
+describe.each([
+  'light',
+  'dark',
+] as const)('CreateToken — pinned mobile step bar (%s mode)', (mode) => {
+  it('the pinned bar paints a mode-aware surface, and its labels clear AA on it', () => {
+    render(
+      <ThemeProvider theme={createAppTheme(mode)}>
+        <CssBaseline />
+        <SurfaceProvider compact>
+          <CreateToken />
+        </SurfaceProvider>
+      </ThemeProvider>,
+    );
+
+    const label = screen.getByText('Basic Info');
+    const bar = label.closest('.MuiStepper-root')?.parentElement as HTMLElement;
+    expect(bar).not.toBeNull();
+
+    const fill = computedBackground(bar);
+    // The bar is genuinely in its pinned state — otherwise the fill is
+    // `transparent` and the contrast assertion below proves nothing.
+    expect(getComputedStyle(bar).position).toBe('sticky');
+    expect(fill).not.toBe('rgba(0, 0, 0, 0)');
+
+    // Both the active label and a not-yet-reached one: MUI gives them
+    // `text.primary` and `text.secondary` respectively, and the fill has to
+    // carry both. Asserted before the token identity below, so a run
+    // against the broken source reports the ratio that actually breaks the
+    // screen rather than a colour mismatch.
+    for (const text of ['Basic Info', 'Review']) {
+      const ink = computedColor(screen.getByText(text));
+      expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+    }
+
+    expect(fill).toBe(tokens(mode).surface.raised);
   });
 });

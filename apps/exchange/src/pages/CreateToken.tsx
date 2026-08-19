@@ -55,7 +55,7 @@ import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
-import { mobileLayout, mobileSurface } from '@/styles/mobileTokens';
+import { mobileLayout } from '@/styles/mobileTokens';
 import { palette as brandPalette, radii } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 import { formatAmount } from '@/utils/formatters';
@@ -276,11 +276,22 @@ export const CreateToken = () => {
                  * the canvas. Pinned, they are chrome laid over content
                  * passing underneath, and need their own surface to stay
                  * legible — so the surface arrives with the pinning.
+                 *
+                 * That surface must be *mode-aware*, because the `StepLabel`
+                 * ink on it is. This pinned `mobileSurface.card`
+                 * (`palette.pureWhite`) and `mobileSurface.border`;
+                 * `styles/mobileTokens.ts` has no mode dimension by design,
+                 * so both were fixed light fills under MUI's mode-aware
+                 * `text.primary`/`text.secondary` — 1.09:1 in dark, i.e. the
+                 * one element pinned specifically so it survives a glance was
+                 * the one that vanished. `surface.raised`/`border.subtle` are
+                 * the same roles with the mode dimension the mobile set
+                 * lacks.
                  */
-                bgcolor: stuck ? mobileSurface.card : 'transparent',
+                bgcolor: stuck ? t.surface.raised : 'transparent',
                 // Transparent rather than absent, so gaining the rule costs
                 // no height and shifts nothing below it.
-                borderBottom: `1px solid ${stuck ? mobileSurface.border : 'transparent'}`,
+                borderBottom: `1px solid ${stuck ? t.border.subtle : 'transparent'}`,
                 mb: 2,
                 // Break out of the shell's gutter to reach both edges.
                 mx: `-${mobileLayout.gutter}px`,

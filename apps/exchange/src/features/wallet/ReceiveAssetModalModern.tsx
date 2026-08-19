@@ -21,7 +21,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { darken } from '@mui/material/styles';
+import { darken, useTheme } from '@mui/material/styles';
 import type React from 'react';
 import { QRCodeSVG } from '@/components/display/QRCode';
 import { useAuth } from '@/contexts/AuthContext';
@@ -45,6 +45,7 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
 }) => {
   const { user } = useAuth();
   const { isCopied, copyToClipboard } = useClipboard();
+  const t = tokens(useTheme().palette.mode);
 
   /**
    * Handle copy address
@@ -147,11 +148,22 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           </Box>
 
           {/* Address */}
+          {/*
+            A well, so `surface.sunken` — and it has to be a *mode-aware*
+            well. This was `bgcolor: 'grey.50'` / `borderColor: 'grey.200'`,
+            which reads like a theme token but is not one: MUI's grey ramp
+            carries no mode dimension (`grey.50` is `#fafafa` in both), so it
+            behaved as a fixed light fill. The address `Typography` inside
+            declares no `color`, inheriting the paper's mode-aware
+            `text.primary` — 17.48:1 in light, 1.04:1 in dark. The user's own
+            address, invisible. A mode-invariant token under mode-aware ink is
+            the same defect as a hex literal.
+          */}
           <Card
             sx={{
-              bgcolor: 'grey.50',
+              bgcolor: t.surface.sunken,
               border: '1px solid',
-              borderColor: 'grey.200',
+              borderColor: t.border.subtle,
               p: 2,
               width: '100%',
             }}

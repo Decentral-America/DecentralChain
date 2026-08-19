@@ -19,6 +19,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type React from 'react';
@@ -51,6 +52,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
 }) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const t = tokens(useTheme().palette.mode);
 
   // Form state
   const [recipient, setRecipient] = useState('');
@@ -373,7 +375,18 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               >
                 Transaction ID
               </Typography>
-              <Card sx={{ bgcolor: 'grey.50', p: 2 }}>
+              {/*
+                A well, so `surface.sunken` — mode-aware, because the ink on
+                it is. This was `bgcolor: 'grey.50'`: it reads like a theme
+                token and the raw-colour lint accepts it, but MUI's grey ramp
+                has no mode dimension (`grey.50` is `#fafafa` in both), so it
+                behaved as a fixed light fill. The txId `Typography` sets no
+                `color`, inheriting the paper's mode-aware `text.primary` —
+                1.04:1 in dark. The transaction ID is the whole point of this
+                view, and it was invisible. Same defect class as a hex
+                literal; see `ReceiveAssetModalModern`'s address well.
+              */}
+              <Card sx={{ bgcolor: t.surface.sunken, p: 2 }}>
                 <Typography
                   variant="body2"
                   sx={{
