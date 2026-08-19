@@ -21,12 +21,10 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
 import { config } from '@/config';
-import { landingTheme } from '@/theme/landingTheme';
 
 interface ImportMethod {
   id: string;
@@ -147,7 +145,16 @@ const ImportInner: React.FC = () => {
             <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
               Choose your import method
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {/*
+              `text.secondary` follows the app's light/dark toggle;
+              `MobileAuthShell`'s canvas never does — it's a fixed white
+              sheet. In dark mode `text.secondary` resolves to a
+              near-white lavender, invisible on that same white sheet.
+              Dimming the shell's own pinned ink via opacity (the same
+              idiom `MobileAuthScreen`'s subtitle uses) keeps this
+              correct in both modes instead. See task-5-report.md.
+            */}
+            <Typography variant="body2" sx={{ opacity: 0.7 }}>
               How do you want to get in?
             </Typography>
           </Box>
@@ -181,8 +188,4 @@ const ImportInner: React.FC = () => {
   );
 };
 
-export const ImportPage: React.FC = () => (
-  <ThemeProvider theme={landingTheme}>
-    <ImportInner />
-  </ThemeProvider>
-);
+export const ImportPage: React.FC = () => <ImportInner />;

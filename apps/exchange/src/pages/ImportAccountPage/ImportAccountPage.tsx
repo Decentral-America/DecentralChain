@@ -18,17 +18,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
 import { ImportAccount } from '@/features/auth/ImportAccount';
-import { landingTheme } from '@/theme/landingTheme';
 
 const ImportAccountInner: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isDark = theme.palette.mode === 'dark';
 
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
@@ -232,9 +231,23 @@ const ImportAccountInner: React.FC = () => {
               }}
             >
               <Box
+                data-testid="import-account-panel"
                 sx={{
                   backdropFilter: 'blur(10px)',
-                  bgcolor: 'rgba(255, 255, 255, 0.95)',
+                  /*
+                   * Was a fixed `rgba(255, 255, 255, 0.95)` regardless of
+                   * mode. `ImportAccount`'s own `Card` sits inside this panel
+                   * and already follows the real app theme (`background.paper`
+                   * → `surface.raised`), so a fixed-white panel around a dark
+                   * card in dark mode fractured into a white frame around a
+                   * dark box — not the single cohesive glass panel this was
+                   * designed as. Matched to `tokens('dark').surface.raised`
+                   * (`#141029`) at the same 0.95 alpha the light panel uses,
+                   * so the two surfaces stay visually one thing in both
+                   * modes. See task-5-report.md, "ImportAccountPage decorative
+                   * panel".
+                   */
+                  bgcolor: isDark ? 'rgba(20, 16, 41, 0.95)' : 'rgba(255, 255, 255, 0.95)',
                   borderRadius: 2.5,
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
                   p: 4,
@@ -253,8 +266,4 @@ const ImportAccountInner: React.FC = () => {
   );
 };
 
-export const ImportAccountPage: React.FC = () => (
-  <ThemeProvider theme={landingTheme}>
-    <ImportAccountInner />
-  </ThemeProvider>
-);
+export const ImportAccountPage: React.FC = () => <ImportAccountInner />;

@@ -15,7 +15,6 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { Box, Button, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
@@ -23,8 +22,6 @@ import { AuthScene } from '@/components/auth/AuthScene';
 import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
 import { MobileButton } from '@/components/mobile/primitives';
 import { CreateWalletWizard, useCreateWallet } from '@/features/auth/create-wallet';
-import { palette } from '@/styles/tokens';
-import { landingTheme } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 const SignUpInner: React.FC = () => {
@@ -116,7 +113,7 @@ const SignUpInner: React.FC = () => {
               <Stack key={f.title} direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                 <Box
                   sx={{
-                    color: isDark ? palette.indigoHover : t.accent.primary,
+                    color: t.accent.primary,
                     flexShrink: 0,
                     lineHeight: 0,
                     mt: '2px',
@@ -179,8 +176,4 @@ const SignUpInner: React.FC = () => {
   );
 };
 
-export const SignUp: React.FC = () => (
-  <ThemeProvider theme={landingTheme}>
-    <SignUpInner />
-  </ThemeProvider>
-);
+export const SignUp: React.FC = () => <SignUpInner />;

@@ -7,282 +7,278 @@ import SecurityIcon from '@mui/icons-material/Security';
 import UsbIcon from '@mui/icons-material/Usb';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { Box, Container, Grid, Stack, Typography } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { ImportLedger as ImportLedgerForm } from '@/features/auth/ImportLedger';
-import { landingTheme } from '@/theme/landingTheme';
 
 export const ImportLedger: React.FC = () => {
   return (
-    <ThemeProvider theme={landingTheme}>
-      <Box
-        sx={{
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          display: 'flex',
-          minHeight: '100svh',
-        }}
-      >
-        <Container maxWidth="xl" sx={{ py: 8 }}>
+    <Box
+      sx={{
+        alignItems: 'center',
+        bgcolor: 'background.default',
+        display: 'flex',
+        minHeight: '100svh',
+      }}
+    >
+      <Container maxWidth="xl" sx={{ py: 8 }}>
+        <Grid
+          container
+          spacing={6}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
+          {/* Left Column - Branding & Features */}
           <Grid
-            container
-            spacing={6}
-            sx={{
-              alignItems: 'center',
+            size={{
+              md: 5,
+              xs: 12,
             }}
           >
-            {/* Left Column - Branding & Features */}
-            <Grid
-              size={{
-                md: 5,
-                xs: 12,
-              }}
-            >
-              <Box sx={{ pr: { md: 4 } }}>
-                {/* Logo/Title */}
-                <Box sx={{ mb: 3 }}>
+            <Box sx={{ pr: { md: 4 } }}>
+              {/* Logo/Title */}
+              <Box sx={{ mb: 3 }}>
+                <Box
+                  component="img"
+                  src="/assets/decentralexchange.svg"
+                  alt="Decentral Exchange"
+                  sx={{
+                    height: 40,
+                    width: 'auto',
+                  }}
+                />
+              </Box>
+
+              {/* Headline */}
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: { md: '2.5rem', xs: '2rem' },
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  mb: 2,
+                }}
+              >
+                Maximum security with Ledger
+              </Typography>
+
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: 18,
+                  mb: 4,
+                }}
+              >
+                Import your wallet using a Ledger hardware device for bank-grade security. Your
+                private keys never leave the device.
+              </Typography>
+
+              {/* Feature highlights */}
+              <Stack spacing={2.5}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'flex-start',
+                  }}
+                >
                   <Box
-                    component="img"
-                    src="/assets/decentralexchange.svg"
-                    alt="Decentral Exchange"
                     sx={{
+                      alignItems: 'center',
+                      bgcolor: 'primary.main',
+                      borderRadius: '50%',
+                      color: 'primary.contrastText',
+                      display: 'flex',
+                      flexShrink: 0,
                       height: 40,
-                      width: 'auto',
-                    }}
-                  />
-                </Box>
-
-                {/* Headline */}
-                <Typography
-                  variant="h2"
-                  sx={{
-                    fontSize: { md: '2.5rem', xs: '2rem' },
-                    fontWeight: 800,
-                    lineHeight: 1.2,
-                    mb: 2,
-                  }}
-                >
-                  Maximum security with Ledger
-                </Typography>
-
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: 'text.secondary',
-                    fontSize: 18,
-                    mb: 4,
-                  }}
-                >
-                  Import your wallet using a Ledger hardware device for bank-grade security. Your
-                  private keys never leave the device.
-                </Typography>
-
-                {/* Feature highlights */}
-                <Stack spacing={2.5}>
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                      alignItems: 'flex-start',
+                      justifyContent: 'center',
+                      width: 40,
                     }}
                   >
-                    <Box
+                    <SecurityIcon sx={{ fontSize: 20 }} />
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
                       sx={{
-                        alignItems: 'center',
-                        bgcolor: 'primary.main',
-                        borderRadius: '50%',
-                        color: 'primary.contrastText',
-                        display: 'flex',
-                        flexShrink: 0,
-                        height: 40,
-                        justifyContent: 'center',
-                        width: 40,
+                        fontWeight: 700,
                       }}
                     >
-                      <SecurityIcon sx={{ fontSize: 20 }} />
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                        }}
-                      >
-                        Hardware Security
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        Private keys stored in secure element chip, never exposed to the internet or
-                        your computer.
-                      </Typography>
-                    </Box>
-                  </Stack>
-
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <Box
+                      Hardware Security
+                    </Typography>
+                    <Typography
+                      variant="body2"
                       sx={{
-                        alignItems: 'center',
-                        bgcolor: 'secondary.main',
-                        borderRadius: '50%',
-                        // `secondary.main` (accent.muted) is light in light
-                        // mode; a hardcoded 'white' measured ~1.2:1 there.
-                        // See task-2-report.md, Fix round 3.
-                        color: 'secondary.contrastText',
-                        display: 'flex',
-                        flexShrink: 0,
-                        height: 40,
-                        justifyContent: 'center',
-                        width: 40,
+                        color: 'text.secondary',
                       }}
                     >
-                      <UsbIcon sx={{ fontSize: 20 }} />
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                        }}
-                      >
-                        Easy Connection
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        Simply connect your Ledger device via USB and follow the on-screen
-                        instructions.
-                      </Typography>
-                    </Box>
-                  </Stack>
-
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        bgcolor: 'primary.main',
-                        borderRadius: '50%',
-                        color: 'primary.contrastText',
-                        display: 'flex',
-                        flexShrink: 0,
-                        height: 40,
-                        justifyContent: 'center',
-                        width: 40,
-                      }}
-                    >
-                      <VerifiedUserIcon sx={{ fontSize: 20 }} />
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                        }}
-                      >
-                        Transaction Approval
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        Review and approve every transaction directly on your Ledger device for
-                        complete control.
-                      </Typography>
-                    </Box>
-                  </Stack>
+                      Private keys stored in secure element chip, never exposed to the internet or
+                      your computer.
+                    </Typography>
+                  </Box>
                 </Stack>
 
-                {/* Device requirements */}
-                <Box
+                <Stack
+                  direction="row"
+                  spacing={2}
                   sx={{
-                    bgcolor: 'background.paper',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    borderRadius: 2,
-                    mt: 4,
-                    p: 2,
+                    alignItems: 'flex-start',
                   }}
                 >
-                  <Typography
-                    variant="subtitle2"
+                  <Box
                     sx={{
-                      fontWeight: 700,
-                      mb: 1,
+                      alignItems: 'center',
+                      bgcolor: 'secondary.main',
+                      borderRadius: '50%',
+                      // `secondary.main` (accent.muted) is light in light
+                      // mode; a hardcoded 'white' measured ~1.2:1 there.
+                      // See task-2-report.md, Fix round 3.
+                      color: 'secondary.contrastText',
+                      display: 'flex',
+                      flexShrink: 0,
+                      height: 40,
+                      justifyContent: 'center',
+                      width: 40,
                     }}
                   >
-                    Before you start:
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                      mb: 0.5,
-                    }}
-                  >
-                    • Connect your Ledger device via USB
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                      mb: 0.5,
-                    }}
-                  >
-                    • Unlock it with your PIN
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    • Open the DecentralChain app on your device
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
+                    <UsbIcon sx={{ fontSize: 20 }} />
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
+                      Easy Connection
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
+                      Simply connect your Ledger device via USB and follow the on-screen
+                      instructions.
+                    </Typography>
+                  </Box>
+                </Stack>
 
-            {/* Right Column - Import Form */}
-            <Grid
-              size={{
-                md: 7,
-                xs: 12,
-              }}
-            >
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      bgcolor: 'primary.main',
+                      borderRadius: '50%',
+                      color: 'primary.contrastText',
+                      display: 'flex',
+                      flexShrink: 0,
+                      height: 40,
+                      justifyContent: 'center',
+                      width: 40,
+                    }}
+                  >
+                    <VerifiedUserIcon sx={{ fontSize: 20 }} />
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 700,
+                      }}
+                    >
+                      Transaction Approval
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
+                      Review and approve every transaction directly on your Ledger device for
+                      complete control.
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Stack>
+
+              {/* Device requirements */}
               <Box
                 sx={{
                   bgcolor: 'background.paper',
-                  borderRadius: 3,
-                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
-                  p: 4,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  mt: 4,
+                  p: 2,
                 }}
               >
-                <ImportLedgerForm />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 1,
+                  }}
+                >
+                  Before you start:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mb: 0.5,
+                  }}
+                >
+                  • Connect your Ledger device via USB
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mb: 0.5,
+                  }}
+                >
+                  • Unlock it with your PIN
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
+                  • Open the DecentralChain app on your device
+                </Typography>
               </Box>
-            </Grid>
+            </Box>
           </Grid>
-        </Container>
-      </Box>
-    </ThemeProvider>
+
+          {/* Right Column - Import Form */}
+          <Grid
+            size={{
+              md: 7,
+              xs: 12,
+            }}
+          >
+            <Box
+              sx={{
+                bgcolor: 'background.paper',
+                borderRadius: 3,
+                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+                p: 4,
+              }}
+            >
+              <ImportLedgerForm />
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };

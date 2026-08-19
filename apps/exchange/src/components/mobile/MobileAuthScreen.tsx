@@ -1,6 +1,8 @@
 import { Box, ButtonBase, Typography } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { Icon } from '@/components/atoms/Icon';
 import Logo from '@/components/atoms/Logo';
 import { SurfaceProvider } from '@/components/atoms/SurfaceContext';
@@ -11,6 +13,32 @@ import {
   mobileSurface,
   mobileText,
 } from '@/styles/mobileTokens';
+import { lightTheme } from '@/styles/themes';
+import { createAppTheme } from '@/theme/mui-theme';
+
+/**
+ * Pins everything this screen hosts to the light theme — this module's own
+ * scope, not per-render, since it never changes.
+ *
+ * The sheet below (`mobileSurface.canvas`) is a fixed light literal, like
+ * the rest of the mobile chrome — deliberately, per `styles/mobileTokens`'
+ * own doc comment. `LoginForm`'s `Card` and `CreateWalletWizard`'s
+ * `GlassCard` are shared with desktop, though, where they correctly read the
+ * ambient `ThemeContext`. Once the app is actually in dark mode (task 5),
+ * that ambient theme reaches here too unless pinned: `GlassCard`'s dark
+ * construction is translucent glass tuned to sit on the dark aurora canvas,
+ * and its `tokens('dark').text.secondary` ink renders close to invisible on
+ * this sheet, which never stopped being light.
+ *
+ * Two theme systems, both pinned: `GlassCard`'s surface and most inline
+ * `sx` colour reads are MUI; `LoginForm`'s own text (`Title`, `Description`,
+ * …) is styled-components, driven by a *separate* `ThemeContext`-supplied
+ * provider that the MUI one alone does not reach. Pinning only the MUI side
+ * fixes the card but leaves that text reading the outer dark
+ * styled-components theme — the same defect from the other system. See
+ * task-5-report.md.
+ */
+const LIGHT_MUI_THEME = createAppTheme('light');
 
 /**
  * Mobile authentication screen.
@@ -115,29 +143,34 @@ export function MobileAuthScreen({
           px: `${mobileLayout.gutter}px`,
         }}
       >
-        <Box sx={{ flex: 1 }}>
-          <SurfaceProvider chromeless>{children}</SurfaceProvider>
-        </Box>
-        {footer && (
-          <Box
-            sx={{
-              '& button': { minHeight: 48 },
-              bgcolor: 'transparent',
-              /*
-               * Sticky insets are measured from the scrollport edge, and the
-               * scrollport now reaches the physical bottom of the screen
-               * (viewport-fit=cover). `bottom: 0` would pin the submit button
-               * under the home indicator while the sheet is scrolled; the
-               * container's own pb only clears it once scrolled fully down.
-               */
-              bottom: 'env(safe-area-inset-bottom)',
-              position: 'sticky',
-              pt: 2,
-            }}
-          >
-            {footer}
-          </Box>
-        )}
+        <ThemeProvider theme={LIGHT_MUI_THEME}>
+          <StyledThemeProvider theme={lightTheme}>
+            <Box sx={{ flex: 1 }}>
+              <SurfaceProvider chromeless>{children}</SurfaceProvider>
+            </Box>
+            {footer && (
+              <Box
+                sx={{
+                  '& button': { minHeight: 48 },
+                  bgcolor: 'transparent',
+                  /*
+                   * Sticky insets are measured from the scrollport edge, and the
+                   * scrollport now reaches the physical bottom of the screen
+                   * (viewport-fit=cover). `bottom: 0` would pin the submit
+                   * button under the home indicator while the sheet is
+                   * scrolled; the container's own pb only clears it once
+                   * scrolled fully down.
+                   */
+                  bottom: 'env(safe-area-inset-bottom)',
+                  position: 'sticky',
+                  pt: 2,
+                }}
+              >
+                {footer}
+              </Box>
+            )}
+          </StyledThemeProvider>
+        </ThemeProvider>
       </Box>
     </Box>
   );

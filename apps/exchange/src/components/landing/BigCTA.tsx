@@ -2,7 +2,7 @@ import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import BandTexture from '@/components/landing/BandTexture';
-import { brandSurface, ctaGradientStyles } from '@/theme/landingTheme';
+import { brandInk, brandSurface, ctaGradientStyles } from '@/theme/landingTheme';
 
 /**
  * Closing conversion panel.
@@ -73,7 +73,11 @@ export default function BigCTA() {
               sx={{
                 '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.88)' },
                 bgcolor: 'common.white',
-                color: 'primary.main',
+                // Pinned rather than `primary.main` — this band is always the
+                // fixed indigo brand field, never a light surface. See the
+                // identical fix and full rationale in Header.tsx and
+                // task-5-report.md.
+                color: brandInk.deep,
               }}
             >
               {t('app.landing.bigCta.ctaCreate')}

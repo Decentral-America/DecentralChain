@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
+import { brandInk } from '@/theme/landingTheme';
 
 /**
  * Landing page header.
@@ -102,7 +103,18 @@ export default function Header() {
                 sx={{
                   '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.88)' },
                   bgcolor: 'common.white',
-                  color: 'primary.main',
+                  /*
+                   * Pinned rather than `primary.main`: this bar always sits on
+                   * the fixed night canvas (transparent over Hero, or its own
+                   * dark fill once scrolled — never a light surface), so its
+                   * ink must not follow the app's light/dark toggle either.
+                   * `primary.main` in dark mode is `accent.primary`
+                   * (`#8b7dff`), tuned as text on a near-black surface, not as
+                   * ink on this white pill — measured 3.24:1 there, below the
+                   * 4.5:1 AA floor. `brandInk.deep` is what HeroSection's own
+                   * identical CTA already uses. See task-5-report.md.
+                   */
+                  color: brandInk.deep,
                 }}
               >
                 {t('app.landing.header.signUp')}

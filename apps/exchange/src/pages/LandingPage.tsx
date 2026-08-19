@@ -1,5 +1,4 @@
 import { Box, GlobalStyles } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import BigCTA from '@/components/landing/BigCTA';
 import FaqSection from '@/components/landing/FaqSection';
 import FeatureBento from '@/components/landing/FeatureBento';
@@ -9,7 +8,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import IconBullets from '@/components/landing/IconBullets';
 import MarqueeBand from '@/components/landing/MarqueeBand';
 import SecurityStatement from '@/components/landing/SecurityStatement';
-import { brandInk, landingTheme } from '@/theme/landingTheme';
+import { brandInk } from '@/theme/landingTheme';
 
 /**
  * Marketing page.
@@ -71,14 +70,24 @@ const revealKeyframes = (
 
 export default function LandingPage() {
   return (
-    <ThemeProvider theme={landingTheme}>
+    <>
       {revealKeyframes}
       {/*
         The deep-indigo canvas. The page is never on a neutral ground — every
         section sits on the night stop of the brand band, and the sections'
         own surfaces rise from it.
+
+        Pinned to `brandInk.night` rather than `tokens(mode).surface.base`:
+        this whole render tree (Header, HeroSection, FeatureBento,
+        SecurityStatement, IconBullets, FaqSection, MarqueeBand, BigCTA,
+        Footer) is art-directed for this fixed dark canvas — most of it
+        paints `onCanvas`/`brandCanvas` ink directly on whatever sits behind
+        it, with no per-mode counterpart. Following the app's light/dark
+        toggle here would turn that ink invisible the moment the canvas went
+        light; the marketing page keeps one fixed brand identity instead
+        (see task-5-report.md, "LandingPage canvas").
       */}
-      <Box sx={{ bgcolor: brandInk.night, color: 'common.white' }}>
+      <Box data-testid="landing-canvas" sx={{ bgcolor: brandInk.night, color: 'common.white' }}>
         <Header />
         <Box component="main">
           <HeroSection />
@@ -91,6 +100,6 @@ export default function LandingPage() {
         </Box>
         <Footer />
       </Box>
-    </ThemeProvider>
+    </>
   );
 }

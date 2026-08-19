@@ -12,10 +12,25 @@
  * that was never created. These tests pin the seed and the step index across
  * the flip.
  */
+import { ThemeProvider } from '@mui/material/styles';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createAppTheme } from '@/theme/mui-theme';
 import { SignUp } from '../SignUp';
+
+// `SignUp` no longer wraps itself in `<ThemeProvider theme={landingTheme}>`
+// (task 5) — it inherits `ThemeContext`. Outside the app, that means the
+// test must supply a real MUI theme rather than relying on MUI's own
+// internal default (this test doesn't assert colours, so behaviour is
+// unaffected either way, but every other render of this page in the suite
+// wraps explicitly — see SignUp.canvasContrast.test.tsx).
+const renderSignUp = () =>
+  render(<SignUp />, {
+    wrapper: ({ children }) => (
+      <ThemeProvider theme={createAppTheme('light')}>{children}</ThemeProvider>
+    ),
+  });
 
 const PHRASE_A =
   'melody rate simple stable safe truck worth fresh attract sweet cook lobster zoo kid iron';
@@ -100,7 +115,7 @@ describe('SignUp across the md breakpoint', () => {
   });
 
   it('keeps the same seed phrase when the viewport crosses md', async () => {
-    render(<SignUp />);
+    renderSignUp();
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));
@@ -116,7 +131,7 @@ describe('SignUp across the md breakpoint', () => {
   });
 
   it('keeps the step index when the viewport crosses md', async () => {
-    render(<SignUp />);
+    renderSignUp();
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await screen.findByRole('heading', { name: /your recovery phrase/i });
@@ -131,7 +146,7 @@ describe('SignUp across the md breakpoint', () => {
   });
 
   it('keeps the phrase revealed when the viewport crosses md', async () => {
-    render(<SignUp />);
+    renderSignUp();
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(await screen.findByRole('button', { name: /reveal/i }));

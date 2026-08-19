@@ -8,7 +8,6 @@ import SecurityIcon from '@mui/icons-material/Security';
 import SpeedIcon from '@mui/icons-material/Speed';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Button, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
@@ -16,8 +15,6 @@ import { AuthScene } from '@/components/auth/AuthScene';
 import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
 import { MobileButton } from '@/components/mobile/primitives';
 import { LoginForm } from '@/features/auth/LoginForm';
-import { palette } from '@/styles/tokens';
-import { landingTheme } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 const SignInInner: React.FC = () => {
@@ -114,7 +111,7 @@ const SignInInner: React.FC = () => {
               <Stack key={f.title} direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                 <Box
                   sx={{
-                    color: isDark ? palette.indigoHover : t.accent.primary,
+                    color: t.accent.primary,
                     flexShrink: 0,
                     lineHeight: 0,
                     mt: '2px',
@@ -188,8 +185,4 @@ const SignInInner: React.FC = () => {
   );
 };
 
-export const SignIn: React.FC = () => (
-  <ThemeProvider theme={landingTheme}>
-    <SignInInner />
-  </ThemeProvider>
-);
+export const SignIn: React.FC = () => <SignInInner />;
