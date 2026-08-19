@@ -1,4 +1,4 @@
-import { Box, GlobalStyles } from '@mui/material';
+import { Box, GlobalStyles, useTheme } from '@mui/material';
 import BigCTA from '@/components/landing/BigCTA';
 import FaqSection from '@/components/landing/FaqSection';
 import FeatureBento from '@/components/landing/FeatureBento';
@@ -8,7 +8,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import IconBullets from '@/components/landing/IconBullets';
 import MarqueeBand from '@/components/landing/MarqueeBand';
 import SecurityStatement from '@/components/landing/SecurityStatement';
-import { brandInk } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Marketing page.
@@ -69,25 +69,26 @@ const revealKeyframes = (
 );
 
 export default function LandingPage() {
+  const mode = useTheme().palette.mode;
+  const t = tokens(mode);
   return (
     <>
       {revealKeyframes}
       {/*
-        The deep-indigo canvas. The page is never on a neutral ground — every
-        section sits on the night stop of the brand band, and the sections'
-        own surfaces rise from it.
+        The page canvas — every section sits on it, and the sections' own
+        surfaces rise from it.
 
-        Pinned to `brandInk.night` rather than `tokens(mode).surface.base`:
-        this whole render tree (Header, HeroSection, FeatureBento,
-        SecurityStatement, IconBullets, FaqSection, MarqueeBand, BigCTA,
-        Footer) is art-directed for this fixed dark canvas — most of it
-        paints `onCanvas`/`brandCanvas` ink directly on whatever sits behind
-        it, with no per-mode counterpart. Following the app's light/dark
-        toggle here would turn that ink invisible the moment the canvas went
-        light; the marketing page keeps one fixed brand identity instead
-        (see task-5-report.md, "LandingPage canvas").
+        Task 11 moved this from a fixed `brandInk.night` fill to
+        `tokens(mode).surface.base`: the render tree beneath it (Header,
+        HeroSection, FeatureBento, SecurityStatement, IconBullets,
+        FaqSection, BigCTA, Footer) now reads its ink from `tokens(mode)`
+        too, so the page follows the app's light/dark toggle like every
+        other page. Two sections keep a fixed dark treatment of their own by
+        design — the hero band and the closing CTA panel — because they are
+        art-directed brand moments; see HeroSection.tsx and BigCTA.tsx for
+        how they gate that against `mode` (task-11-report.md).
       */}
-      <Box data-testid="landing-canvas" sx={{ bgcolor: brandInk.night, color: 'common.white' }}>
+      <Box data-testid="landing-canvas" sx={{ bgcolor: t.surface.base, color: t.text.primary }}>
         <Header />
         <Box component="main">
           <HeroSection />

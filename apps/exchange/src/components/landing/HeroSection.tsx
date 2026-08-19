@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography, useTheme } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -7,6 +7,7 @@ import BandTexture from '@/components/landing/BandTexture';
 import Reveal from '@/components/landing/Reveal';
 import { hasStoredAccount } from '@/lib/accountStorage';
 import { brandCanvas, brandInk, heroGradientStyles, onCanvas } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Hero section.
@@ -18,6 +19,17 @@ import { brandCanvas, brandInk, heroGradientStyles, onCanvas } from '@/theme/lan
  *
  * The row beneath is the trust signal: the services this wallet actually reads
  * from, on glass cards over the band's brightest point.
+ *
+ * Dark mode keeps that fixed indigo band (`heroGradientStyles`), the aurora
+ * and the contour texture, art-directed for a dark field with no honest
+ * light counterpart (see AuroraField.tsx). Their ink (`onCanvas.*`) stays
+ * fixed too, verified directly against the gradient's own stops in
+ * HeroSection.contrast.test.tsx — a `tokens(mode)`-driven ink paired with
+ * that fixed gradient would break the moment the *app* theme changed
+ * independently of the gradient (task 11's "known failure mode"). Light mode
+ * drops the band, the aurora and the texture entirely and paints with
+ * `tokens('light')` against the page canvas beneath it, the same canvas
+ * `LandingPage` itself now uses.
  */
 
 /**
@@ -36,12 +48,15 @@ export default function HeroSection() {
   const navigate = useNavigate();
   // Read once on mount: storage cannot change while this page is open.
   const hasAccount = useMemo(() => hasStoredAccount(), []);
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
 
   return (
     <Box
       component="section"
       sx={{
-        color: onCanvas.primary,
+        color: isDark ? onCanvas.primary : tk.text.primary,
         overflow: 'hidden',
         pb: { md: 12, xs: 9 },
         position: 'relative',
@@ -50,16 +65,25 @@ export default function HeroSection() {
         textAlign: 'center',
       }}
     >
-      <Box sx={heroGradientStyles} />
-      <AuroraField crown drifting intensity={0.85} />
-      <BandTexture width={{ md: '42%', xs: '80%' }} opacity={0.35} />
+      {isDark && (
+        <>
+          <Box sx={heroGradientStyles} />
+          <AuroraField crown drifting intensity={0.85} />
+          <BandTexture width={{ md: '42%', xs: '80%' }} opacity={0.35} />
+        </>
+      )}
 
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
           <Typography
             variant="overline"
             component="p"
-            sx={{ color: onCanvas.muted, letterSpacing: '1.6px', mb: 3, mx: 'auto' }}
+            sx={{
+              color: isDark ? onCanvas.muted : tk.text.tertiary,
+              letterSpacing: '1.6px',
+              mb: 3,
+              mx: 'auto',
+            }}
           >
             {t('app.landing.hero.eyebrow')}
           </Typography>
@@ -71,13 +95,23 @@ export default function HeroSection() {
             component="h1"
             sx={{
               /*
-               * The headline resolves from a violet tint into white down its
-               * lines. Clipping a background to glyphs needs a transparent
-               * fill, so `color` below is the fallback for anything that cannot.
+               * Dark mode: the headline resolves from a violet tint into
+               * white down its lines. Clipping a background to glyphs needs
+               * a transparent fill, so `color` is the fallback for anything
+               * that cannot. Light mode skips the clip entirely — a
+               * violet-to-white fade reads as invisible against a near-white
+               * canvas — and paints a flat `text.primary` instead.
                */
-              backgroundClip: 'text',
-              backgroundImage: 'linear-gradient(180deg, rgba(196, 170, 255, 0.92) 0%, #ffffff 62%)',
-              color: onCanvas.primary,
+              ...(isDark
+                ? {
+                    backgroundClip: 'text',
+                    backgroundImage:
+                      'linear-gradient(180deg, rgba(196, 170, 255, 0.92) 0%, #ffffff 62%)',
+                    color: onCanvas.primary,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }
+                : { color: tk.text.primary }),
               fontSize: 'clamp(40px, 7.4vw, 92px)',
               // The display voice is heavy on the marketing surface — the
               // whisper-weight scale belongs to the application ledger.
@@ -87,8 +121,6 @@ export default function HeroSection() {
               maxWidth: 980,
               mx: 'auto',
               textTransform: 'uppercase',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
             }}
           >
             {t('app.landing.hero.headline')}
@@ -98,7 +130,7 @@ export default function HeroSection() {
         <Reveal index={2}>
           <Typography
             sx={{
-              color: onCanvas.secondary,
+              color: isDark ? onCanvas.secondary : tk.text.secondary,
               fontSize: { md: 20, xs: 16 },
               fontWeight: 300,
               lineHeight: 1.55,
@@ -127,7 +159,9 @@ export default function HeroSection() {
                 /*
                  * A pill, where the application uses square ledger buttons.
                  * This is the one control on the page whose job is to invite
-                 * rather than to be operated.
+                 * rather than to be operated. Fixed white bg + `brandInk.deep`
+                 * ink in both app themes — the same self-contained pairing as
+                 * Header's/BigCTA's identical pill (see those files).
                  */
                 borderRadius: 999,
                 color: brandInk.deep,
@@ -144,12 +178,12 @@ export default function HeroSection() {
               onClick={() => navigate(hasAccount ? '/create-account' : '/sign-in')}
               sx={{
                 '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.08)',
-                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : tk.surface.hover,
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.6)' : tk.accent.primary,
                 },
-                borderColor: 'rgba(255, 255, 255, 0.32)',
+                borderColor: isDark ? 'rgba(255, 255, 255, 0.32)' : tk.border.strong,
                 borderRadius: 999,
-                color: onCanvas.primary,
+                color: isDark ? onCanvas.primary : tk.text.primary,
                 px: 4.5,
                 py: 1.5,
               }}
@@ -163,7 +197,7 @@ export default function HeroSection() {
         <Reveal index={4} sx={{ mt: { md: 10, xs: 8 } }}>
           <Typography
             sx={{
-              color: onCanvas.muted,
+              color: isDark ? onCanvas.muted : tk.text.tertiary,
               fontSize: 13,
               letterSpacing: '0.4px',
               mb: 2,
@@ -186,9 +220,13 @@ export default function HeroSection() {
                 key={item.key}
                 sx={{
                   alignItems: 'center',
-                  backdropFilter: 'blur(8px)',
-                  bgcolor: brandCanvas.glass,
-                  border: brandCanvas.hairline,
+                  // Dark mode: translucent glass over the aurora field it
+                  // sits on. Light mode: a real card — there is no aurora
+                  // bloom to catch, so the glass effect has nothing to read
+                  // against — one step up like every other card here.
+                  backdropFilter: isDark ? 'blur(8px)' : 'none',
+                  bgcolor: isDark ? brandCanvas.glass : tk.surface.raised,
+                  border: isDark ? brandCanvas.hairline : `1px solid ${tk.border.subtle}`,
                   borderRadius: '16px',
                   display: 'flex',
                   gap: 1.5,
@@ -206,7 +244,13 @@ export default function HeroSection() {
                     width: 28,
                   }}
                 />
-                <Typography sx={{ color: onCanvas.primary, fontSize: 15, fontWeight: 400 }}>
+                <Typography
+                  sx={{
+                    color: isDark ? onCanvas.primary : tk.text.primary,
+                    fontSize: 15,
+                    fontWeight: 400,
+                  }}
+                >
                   {t(`app.landing.hero.trust.${item.key}`)}
                 </Typography>
               </Box>

@@ -23,9 +23,8 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { brandInk } from '@/theme/landingTheme';
 import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio } from '@/theme/tokens/semantic';
+import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 import Header from '../Header';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -72,21 +71,24 @@ describe.each(['light', 'dark'] as const)('Header — "Sign up" pill ink (%s mod
  * means a phone visitor cannot open the menu.
  *
  * Fix: `color="inherit"`, so the button picks up the ink the AppBar already
- * declares (`color: 'common.white'`) instead of duplicating that literal
- * here. `LandingPage`'s canvas is pinned dark in both modes until Task 11
- * converts the landing render tree to follow the toggle — at that point the
- * one edit point is the AppBar's own `color`, and this button follows it
- * automatically rather than needing a second, independent fix.
+ * declares instead of duplicating that literal here.
+ *
+ * Task 11 made the landing render tree follow the toggle, including the
+ * `AppBar`'s own `color` (`common.white` when the bar is over the dark hero
+ * band or scrolled-dark; `tokens(mode).text.primary` once the canvas itself
+ * is light) — this test follows that one edit point automatically rather
+ * than needing a second, independent fix.
  */
 describe.each(['light', 'dark'] as const)('Header — hamburger icon ink (%s mode)', (mode) => {
   it('clears AA against the bar it sits on, in both modes', () => {
     renderIn(mode);
     const button = screen.getByRole('button', { name: 'app.landing.header.openMenu' });
     const ink = rgbToHex(getComputedStyle(button).color);
-    // `brandInk.night` is the pinned canvas colour this bar always sits on
-    // today (see LandingPage.tsx / task-5-report.md) — the same value the
-    // "Sign up" pill test above verifies its own background against
-    // directly, rather than trusting a literal.
-    expect(contrastRatio(ink, brandInk.night)).toBeGreaterThanOrEqual(4.5);
+    // The unscrolled AppBar is transparent, so it shows whatever canvas sits
+    // behind it — `tokens(mode).surface.base`, the same value LandingPage's
+    // own canvas now uses (LandingPage.test.tsx). Verified directly rather
+    // than trusting a literal.
+    const canvas = tokens(mode).surface.base;
+    expect(contrastRatio(ink, canvas)).toBeGreaterThanOrEqual(4.5);
   });
 });

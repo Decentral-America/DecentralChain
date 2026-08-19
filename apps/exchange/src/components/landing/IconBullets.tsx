@@ -4,12 +4,12 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import ShieldIcon from '@mui/icons-material/ShieldOutlined';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
-import { palette } from '@/styles/tokens';
-import { brandCanvas, brandSurface, onCanvas } from '@/theme/landingTheme';
+import { brandSurface } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The specification sheet.
@@ -31,15 +31,18 @@ const SPECS = [
 
 export default function IconBullets() {
   const { t } = useTranslation();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
   return (
     <Box component="section" sx={{ py: 'clamp(64px, 9vw, 128px)' }}>
       <Container maxWidth="xl">
         <Reveal>
-          <SectionLabel onDark>{t('app.landing.iconBullets.label')}</SectionLabel>
+          <SectionLabel onDark={isDark}>{t('app.landing.iconBullets.label')}</SectionLabel>
           <Typography
             component="h2"
             sx={{
-              color: onCanvas.primary,
+              color: tk.text.primary,
               fontSize: 'clamp(28px, 4vw, 44px)',
               fontWeight: 700,
               letterSpacing: '-0.03em',
@@ -63,10 +66,12 @@ export default function IconBullets() {
             <Reveal key={spec.index} index={order}>
               <Box
                 sx={{
-                  '&:hover': { borderColor: 'rgba(255, 255, 255, 0.28)' },
+                  '&:hover': {
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.28)' : tk.border.strong,
+                  },
                   alignItems: 'flex-start',
-                  bgcolor: brandCanvas.raised,
-                  border: brandSurface.borderOnDark,
+                  bgcolor: tk.surface.raised,
+                  border: isDark ? brandSurface.borderOnDark : `1px solid ${tk.border.subtle}`,
                   borderRadius: brandSurface.radius,
                   display: 'flex',
                   gap: 2,
@@ -81,9 +86,9 @@ export default function IconBullets() {
                   sx={{
                     '& svg': { fontSize: 20 },
                     alignItems: 'center',
-                    border: '1px solid rgba(255, 255, 255, 0.16)',
+                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.16)' : tk.border.subtle}`,
                     borderRadius: '12px',
-                    color: palette.indigoHover,
+                    color: tk.accent.primary,
                     display: 'flex',
                     flexShrink: 0,
                     height: 44,
@@ -98,7 +103,7 @@ export default function IconBullets() {
                   <Box
                     component="span"
                     sx={{
-                      color: onCanvas.muted,
+                      color: tk.text.tertiary,
                       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                       fontSize: 11,
                       letterSpacing: '0.12em',
@@ -107,12 +112,12 @@ export default function IconBullets() {
                     {spec.index}
                   </Box>
                   <Typography
-                    sx={{ color: onCanvas.primary, fontSize: 16, letterSpacing: '-0.16px' }}
+                    sx={{ color: tk.text.primary, fontSize: 16, letterSpacing: '-0.16px' }}
                   >
                     {t(`app.landing.iconBullets.specs.${spec.index}.title`)}
                   </Typography>
                   <Typography
-                    sx={{ color: onCanvas.secondary, fontSize: 14, lineHeight: 1.5, mt: 0.5 }}
+                    sx={{ color: tk.text.secondary, fontSize: 14, lineHeight: 1.5, mt: 0.5 }}
                   >
                     {t(`app.landing.iconBullets.specs.${spec.index}.desc`)}
                   </Typography>

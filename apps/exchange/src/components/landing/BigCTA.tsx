@@ -1,33 +1,48 @@
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { alpha, Box, Button, Container, Stack, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import BandTexture from '@/components/landing/BandTexture';
 import { brandInk, brandSurface, ctaGradientStyles } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Closing conversion panel.
  *
  * The one sanctioned large indigo field in the system — a deliberate contrast
  * panel. Content stays left-aligned; the white CTA is the only bright element.
+ *
+ * Dark mode keeps the fixed `ctaGradientStyles` band (`brandGradient.band`)
+ * this panel was art-directed for — its ink stays fixed too (`'common.white'`
+ * / `brandInk.deep`), verified directly against the gradient's own stops
+ * (see BigCTA.contrast.test.tsx), because a `tokens(mode)`-driven ink paired
+ * with that fixed gradient would break the moment the *app* theme changed
+ * independently of the gradient. Light mode drops the gradient for a solid
+ * `tokens('light').accent.primary` fill — still "the one sanctioned indigo
+ * field", just a flat tone rather than a band — with matching
+ * `accent.onPrimary` ink, and `BandTexture` (dark-only by design) does not
+ * render.
  */
 export default function BigCTA() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
 
   return (
     <Box component="section" sx={{ py: { md: 12, xs: 8 } }}>
       <Container maxWidth="xl">
         <Box
           sx={{
-            ...ctaGradientStyles,
+            ...(isDark ? ctaGradientStyles : { background: tk.accent.primary }),
             borderRadius: brandSurface.panel,
-            color: 'common.white',
+            color: isDark ? 'common.white' : tk.accent.onPrimary,
             overflow: 'hidden',
             p: { md: 8, xs: 4 },
             position: 'relative',
           }}
         >
-          <BandTexture width={{ md: '45%', xs: '70%' }} opacity={0.4} />
+          {isDark && <BandTexture width={{ md: '45%', xs: '70%' }} opacity={0.4} />}
           <Typography
             variant="h2"
             component="h2"
@@ -73,8 +88,10 @@ export default function BigCTA() {
               sx={{
                 '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.88)' },
                 bgcolor: 'common.white',
-                // Pinned rather than `primary.main` — this band is always the
-                // fixed indigo brand field, never a light surface. See the
+                // Pinned rather than `primary.main` — this pill's own fill is
+                // a fixed white in both app themes (the panel behind it is
+                // dark-ish either way: the gradient in dark mode, a solid
+                // deep violet in light), so its ink stays fixed too. See the
                 // identical fix and full rationale in Header.tsx and
                 // task-5-report.md.
                 color: brandInk.deep,
@@ -88,9 +105,20 @@ export default function BigCTA() {
               size="large"
               onClick={() => navigate('/sign-in')}
               sx={{
-                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.08)', borderColor: 'common.white' },
-                borderColor: 'rgba(255, 255, 255, 0.45)',
-                color: 'common.white',
+                '&:hover': {
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : alpha(tk.accent.onPrimary, 0.08),
+                  borderColor: isDark ? 'common.white' : tk.accent.onPrimary,
+                },
+                // Both branches read on their own panel fill: `common.white`
+                // is verified against the fixed gradient's stops in dark
+                // mode; `tk.accent.onPrimary` is the token tied to the
+                // `tk.accent.primary` fill light mode actually paints (both
+                // happen to be white today, but the light branch follows the
+                // fill's own token rather than a coincidence).
+                borderColor: isDark
+                  ? 'rgba(255, 255, 255, 0.45)'
+                  : alpha(tk.accent.onPrimary, 0.45),
+                color: isDark ? 'common.white' : tk.accent.onPrimary,
               }}
             >
               {t('app.landing.bigCta.ctaSignIn')}

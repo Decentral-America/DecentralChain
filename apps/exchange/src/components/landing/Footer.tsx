@@ -1,8 +1,18 @@
-import { Box, Container, Divider, Grid, Link, Stack, Typography } from '@mui/material';
+import {
+  alpha,
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Link,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/atoms/Logo';
 import { config } from '@/config';
-import { onCanvas } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 const footerLinks = {
   resources: [
@@ -28,18 +38,28 @@ const footerLinks = {
 
 export default function Footer() {
   const { t } = useTranslation();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
   return (
     <Box
       component="footer"
       sx={{
         /*
-         * White at 82% on the night canvas clears the 4.5:1 floor for the
-         * footer's 14px links with room to spare — measured, as ever, not
-         * assumed.
+         * No forced ink on `.MuiTypography-root[class*="body2"]`/`a` here:
+         * every body2/link element below already carries
+         * `color="text.secondary"`, which now resolves through the real app
+         * theme (`tokens(mode).text.secondary`) — the same value this footer
+         * sits on top of, since it paints directly on the page canvas with no
+         * surface of its own. A blunt class-selector override used to
+         * outrank that prop with a fixed `onCanvas.secondary`
+         * (white-at-82%), which cleared AA on the old pinned night canvas
+         * but went invisible the moment the canvas itself went light — the
+         * exact "mode-aware ink overridden by a fixed value" failure mode
+         * task 11 exists to remove.
          */
-        '& .MuiTypography-root[class*="body2"], & a': { color: onCanvas.secondary },
-        borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-        color: onCanvas.primary,
+        borderTop: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : tk.border.subtle}`,
+        color: tk.text.primary,
         overflow: 'hidden',
         pb: { md: 4, xs: 3 },
         pt: { md: 9, xs: 7 },
@@ -54,13 +74,9 @@ export default function Footer() {
               xs: 12,
             }}
           >
-            {/*
-              The text mark, not the SVG: the image is drawn in ink and
-              disappears on the night canvas, while the atom inherits white
-              and keeps its lavender accent.
-            */}
+            {/* Follows the same canvas the footer's own `color` above reads. */}
             <Box sx={{ mb: 2 }}>
-              <Logo onDark sx={{ height: 32 }} />
+              <Logo onDark={isDark} sx={{ height: 32 }} />
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
               {t('app.landing.footer.tagline')}
@@ -77,11 +93,7 @@ export default function Footer() {
                 xs: 6,
               }}
             >
-              <Typography
-                component="h3"
-                variant="subtitle2"
-                sx={{ color: onCanvas.primary, mb: 2 }}
-              >
+              <Typography component="h3" variant="subtitle2" sx={{ color: tk.text.primary, mb: 2 }}>
                 {t(`app.landing.footer.categories.${category}`)}
               </Typography>
               <Stack spacing={1}>
@@ -107,14 +119,16 @@ export default function Footer() {
           ))}
         </Grid>
 
-        <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)', my: 4 }} />
+        <Divider
+          sx={{ borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : tk.border.subtle, my: 4 }}
+        />
 
         <Stack
           direction={{ sm: 'row', xs: 'column' }}
           spacing={2}
           sx={{ alignItems: 'center', justifyContent: 'space-between' }}
         >
-          <Typography variant="caption" sx={{ color: onCanvas.muted }}>
+          <Typography variant="caption" sx={{ color: tk.text.tertiary }}>
             {t('app.landing.footer.copyright')}
           </Typography>
           <Stack direction="row" spacing={3}>
@@ -154,15 +168,19 @@ export default function Footer() {
         {/*
           The giant wordmark: the page signs off with the brand set larger
           than anything above it, cropped by the fold like a signature.
-          0.36 opacity is the floor for 3:1 contrast against the canvas at this
+          Opacity is the floor for 3:1 contrast against the canvas at this
           weight/size (WCAG large-text threshold) — aria-hidden exempts it from
           the accessibility tree, but axe still (correctly) checks contrast for
           sighted low-vision users, so it can't go as faint as pure decoration.
+          Dark mode's 0.36-opacity white composites to ~3.2:1 on the night
+          canvas; light mode needs a heavier 0.5-opacity dark ink to clear the
+          same floor on the near-white canvas — the same alpha cannot serve
+          both (computed: 0.36 on `tokens('light').surface.base` is ~1.0:1).
         */}
         <Typography
           aria-hidden="true"
           sx={{
-            color: 'rgba(255, 255, 255, 0.36)',
+            color: isDark ? 'rgba(255, 255, 255, 0.36)' : alpha(tk.text.primary, 0.5),
             fontSize: 'clamp(64px, 13vw, 210px)',
             fontWeight: 700,
             letterSpacing: '-0.04em',

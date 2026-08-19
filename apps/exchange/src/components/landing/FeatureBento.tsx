@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlueprintFrame, SectionLabel } from '@/components/landing/Blueprint';
@@ -11,8 +11,8 @@ import {
   StackDiagram,
 } from '@/components/landing/diagrams';
 import Reveal from '@/components/landing/Reveal';
-import { palette } from '@/styles/tokens';
-import { brandCanvas, brandSurface, onCanvas } from '@/theme/landingTheme';
+import { brandSurface } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * What this wallet is, told as a set of drawings.
@@ -45,6 +45,9 @@ const FEATURES: Feature[] = [
 
 function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
   const { t } = useTranslation();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
   return (
     <Reveal
       index={order}
@@ -55,9 +58,9 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
     >
       <Box
         sx={{
-          '&:hover': { borderColor: 'rgba(255, 255, 255, 0.28)' },
-          bgcolor: brandCanvas.raised,
-          border: brandSurface.borderOnDark,
+          '&:hover': { borderColor: isDark ? 'rgba(255, 255, 255, 0.28)' : tk.border.strong },
+          bgcolor: tk.surface.raised,
+          border: isDark ? brandSurface.borderOnDark : `1px solid ${tk.border.subtle}`,
           // Feature panels bow out far past the app's card radius — the soft,
           // toy-like geometry of the marketing surface.
           borderRadius: brandSurface.panel,
@@ -71,7 +74,7 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
         <Box
           component="span"
           sx={{
-            color: onCanvas.muted,
+            color: tk.text.tertiary,
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
             fontSize: 12,
             letterSpacing: '0.12em',
@@ -83,7 +86,7 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
         <Typography
           component="h3"
           sx={{
-            color: onCanvas.primary,
+            color: tk.text.primary,
             fontSize: { md: 26, xs: 22 },
             fontWeight: 300,
             letterSpacing: '-0.02em',
@@ -97,7 +100,7 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
         {/* The drawing sits between the claim and its explanation. */}
         <Box sx={{ maxWidth: 260, mx: 'auto', my: 3, width: '100%' }}>{feature.diagram}</Box>
 
-        <Typography sx={{ color: onCanvas.secondary, fontSize: 15, lineHeight: 1.6, mt: 'auto' }}>
+        <Typography sx={{ color: tk.text.secondary, fontSize: 15, lineHeight: 1.6, mt: 'auto' }}>
           {t(`app.landing.featureBento.features.${feature.index}.body`)}
         </Typography>
       </Box>
@@ -107,16 +110,19 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
 
 export default function FeatureBento() {
   const { t } = useTranslation();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
   return (
     <Box component="section" sx={{ py: 'clamp(64px, 9vw, 128px)' }}>
       <Container maxWidth="xl">
-        <BlueprintFrame onDark sx={{ px: { md: 4, xs: 2 }, py: { md: 6, xs: 4 } }}>
+        <BlueprintFrame onDark={isDark} sx={{ px: { md: 4, xs: 2 }, py: { md: 6, xs: 4 } }}>
           <Reveal>
-            <SectionLabel onDark>{t('app.landing.featureBento.label')}</SectionLabel>
+            <SectionLabel onDark={isDark}>{t('app.landing.featureBento.label')}</SectionLabel>
             <Typography
               component="h2"
               sx={{
-                color: onCanvas.primary,
+                color: tk.text.primary,
                 fontSize: 'clamp(34px, 5.6vw, 68px)',
                 fontWeight: 700,
                 letterSpacing: '-0.03em',
@@ -126,7 +132,7 @@ export default function FeatureBento() {
               }}
             >
               {t('app.landing.featureBento.headingLine1')}
-              <Box component="span" sx={{ color: palette.indigoHover, display: 'block' }}>
+              <Box component="span" sx={{ color: tk.accent.primary, display: 'block' }}>
                 {t('app.landing.featureBento.headingLine2')}
               </Box>
             </Typography>

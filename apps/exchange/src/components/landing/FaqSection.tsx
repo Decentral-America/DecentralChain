@@ -6,13 +6,14 @@ import {
   Box,
   Container,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
-import { palette } from '@/styles/tokens';
-import { brandCanvas, brandSurface, onCanvas } from '@/theme/landingTheme';
+import { brandSurface } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The questions someone actually has before trusting a wallet with a key.
@@ -35,6 +36,9 @@ const QUESTION_IDS = [
 export default function FaqSection() {
   const { t } = useTranslation();
   const [open, setOpen] = useState<string | false>(QUESTION_IDS[0]);
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
 
   return (
     <Box component="section" sx={{ py: 'clamp(64px, 9vw, 128px)' }}>
@@ -47,11 +51,11 @@ export default function FaqSection() {
           }}
         >
           <Reveal>
-            <SectionLabel onDark>{t('app.landing.faq.label')}</SectionLabel>
+            <SectionLabel onDark={isDark}>{t('app.landing.faq.label')}</SectionLabel>
             <Typography
               component="h2"
               sx={{
-                color: onCanvas.primary,
+                color: tk.text.primary,
                 fontSize: 'clamp(30px, 4.4vw, 52px)',
                 fontWeight: 700,
                 letterSpacing: '-0.03em',
@@ -60,7 +64,7 @@ export default function FaqSection() {
             >
               {t('app.landing.faq.heading')}
             </Typography>
-            <Typography sx={{ color: onCanvas.secondary, fontSize: 16, lineHeight: 1.6, mt: 3 }}>
+            <Typography sx={{ color: tk.text.secondary, fontSize: 16, lineHeight: 1.6, mt: 3 }}>
               {t('app.landing.faq.sub')}
             </Typography>
           </Reveal>
@@ -78,10 +82,14 @@ export default function FaqSection() {
                   square={false}
                   sx={{
                     '&::before': { display: 'none' },
-                    bgcolor: expanded ? 'rgba(255, 255, 255, 0.06)' : brandCanvas.raised,
-                    border: brandSurface.borderOnDark,
+                    bgcolor: expanded
+                      ? isDark
+                        ? 'rgba(255, 255, 255, 0.06)'
+                        : tk.surface.hover
+                      : tk.surface.raised,
+                    border: isDark ? brandSurface.borderOnDark : `1px solid ${tk.border.subtle}`,
                     borderRadius: `${brandSurface.radius} !important`,
-                    color: onCanvas.primary,
+                    color: tk.text.primary,
                     mb: 1.5,
                     transition: 'background-color 200ms ease',
                   }}
@@ -89,19 +97,19 @@ export default function FaqSection() {
                   <AccordionSummary
                     expandIcon={
                       expanded ? (
-                        <Remove sx={{ color: palette.indigoHover, fontSize: 20 }} />
+                        <Remove sx={{ color: tk.accent.primary, fontSize: 20 }} />
                       ) : (
-                        <Add sx={{ color: onCanvas.muted, fontSize: 20 }} />
+                        <Add sx={{ color: tk.text.tertiary, fontSize: 20 }} />
                       )
                     }
                     sx={{ px: 3, py: 1.5 }}
                   >
-                    <Typography sx={{ color: onCanvas.primary, fontSize: 16, pr: 2 }}>
+                    <Typography sx={{ color: tk.text.primary, fontSize: 16, pr: 2 }}>
                       {t(`app.landing.faq.questions.${id}.q`)}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails sx={{ pb: 3, pt: 0, px: 3 }}>
-                    <Typography sx={{ color: onCanvas.secondary, fontSize: 15, lineHeight: 1.65 }}>
+                    <Typography sx={{ color: tk.text.secondary, fontSize: 15, lineHeight: 1.65 }}>
                       {t(`app.landing.faq.questions.${id}.a`)}
                     </Typography>
                   </AccordionDetails>

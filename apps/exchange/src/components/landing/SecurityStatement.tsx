@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { BlueprintFrame, SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
-import { palette } from '@/styles/tokens';
-import { onCanvas } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The security statement.
@@ -21,6 +20,9 @@ const POINT_IDS = ['01', '02', '03'] as const;
 
 export default function SecurityStatement() {
   const { t } = useTranslation();
+  const mode = useTheme().palette.mode;
+  const tk = tokens(mode);
+  const isDark = mode === 'dark';
   return (
     <Box
       component="section"
@@ -33,13 +35,13 @@ export default function SecurityStatement() {
       }}
     >
       <Container maxWidth="xl">
-        <BlueprintFrame onDark sx={{ px: { md: 4, xs: 2 }, py: { md: 6, xs: 4 } }}>
+        <BlueprintFrame onDark={isDark} sx={{ px: { md: 4, xs: 2 }, py: { md: 6, xs: 4 } }}>
           <Reveal>
-            <SectionLabel onDark>{t('app.landing.securityStatement.label')}</SectionLabel>
+            <SectionLabel onDark={isDark}>{t('app.landing.securityStatement.label')}</SectionLabel>
             <Typography
               component="h2"
               sx={{
-                color: onCanvas.primary,
+                color: tk.text.primary,
                 /*
                  * Sized against the viewport rather than a breakpoint ladder, so
                  * it fills the measure at every width instead of stepping. It is
@@ -53,7 +55,7 @@ export default function SecurityStatement() {
               }}
             >
               {t('app.landing.securityStatement.headingLine1')}
-              <Box component="span" sx={{ color: palette.indigoHover, display: 'block' }}>
+              <Box component="span" sx={{ color: tk.accent.primary, display: 'block' }}>
                 {t('app.landing.securityStatement.headingLine2')}
               </Box>
             </Typography>
@@ -70,11 +72,16 @@ export default function SecurityStatement() {
             {POINT_IDS.map((id, index) => (
               <Reveal key={id} index={index}>
                 {/* The annotation voice of the feature sheets, carried through. */}
-                <Box sx={{ borderTop: '1px solid rgba(255, 255, 255, 0.18)', pt: 3 }}>
+                <Box
+                  sx={{
+                    borderTop: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.18)' : tk.border.subtle}`,
+                    pt: 3,
+                  }}
+                >
                   <Box
                     component="span"
                     sx={{
-                      color: onCanvas.muted,
+                      color: tk.text.tertiary,
                       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                       fontSize: 12,
                       letterSpacing: '0.12em',
@@ -84,7 +91,7 @@ export default function SecurityStatement() {
                   </Box>
                   <Typography
                     sx={{
-                      color: onCanvas.primary,
+                      color: tk.text.primary,
                       fontSize: 20,
                       fontWeight: 400,
                       letterSpacing: '-0.01em',
@@ -94,7 +101,7 @@ export default function SecurityStatement() {
                   >
                     {t(`app.landing.securityStatement.points.${id}.title`)}
                   </Typography>
-                  <Typography sx={{ color: onCanvas.secondary, fontSize: 16, lineHeight: 1.6 }}>
+                  <Typography sx={{ color: tk.text.secondary, fontSize: 16, lineHeight: 1.6 }}>
                     {t(`app.landing.securityStatement.points.${id}.body`)}
                   </Typography>
                 </Box>

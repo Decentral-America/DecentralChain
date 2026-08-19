@@ -1,21 +1,19 @@
 /**
- * LandingPage — canvas stays the fixed brand identity in both app themes
+ * LandingPage — canvas follows the app-wide theme toggle (task 11)
  *
  * `LandingPage` used to render exclusively inside its own
  * `<ThemeProvider theme={landingTheme}>` (hardcoded `mode: 'light'`).
- * Removing that wrapper (task 5) means the page now inherits whatever theme
- * `ThemeContext` provides — but its own canvas is deliberately pinned to
- * `brandInk.night` rather than `tokens(mode).surface.base`: the render tree
- * beneath it (Header, HeroSection, FeatureBento, SecurityStatement,
- * IconBullets, FaqSection, MarqueeBand, BigCTA, Footer) paints `onCanvas`/
- * `brandCanvas` ink directly on whatever sits behind it, with no per-mode
- * counterpart, and none of those files are in this task's scope. See
- * task-5-report.md for the full rationale.
+ * Removing that wrapper (task 5) left the canvas deliberately pinned to
+ * `brandInk.night` rather than `tokens(mode).surface.base`, because the render
+ * tree beneath it (Header, HeroSection, FeatureBento, SecurityStatement,
+ * IconBullets, FaqSection, MarqueeBand, BigCTA, Footer) painted `onCanvas`/
+ * `brandCanvas` ink directly on whatever sat behind it, with no per-mode
+ * counterpart — see task-5-report.md.
  *
- * This test pins that the canvas does *not* move with the app-wide toggle —
- * a future accidental `tokens(mode).surface.base` swap would turn most of
- * this page's text invisible in light mode and is caught here, not just by
- * eye. The CTA-ink regression that removing the wrapper *did* introduce
+ * Task 11 converts that render tree, so the canvas now follows `tokens(mode)
+ * .surface.base` like every other page. This test asserts the *new*
+ * contract — a future regression back to a hardcoded `brandInk.night` fill
+ * is caught here, not just by eye. The CTA-ink regression from task 5
  * (`Header`/`BigCTA`'s "primary.main"-on-white pill) has its own dedicated
  * tests: Header.contrast.test.tsx, BigCTA.contrast.test.tsx.
  */
@@ -23,6 +21,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { createAppTheme } from '@/theme/mui-theme';
+import { tokens } from '@/theme/tokens/semantic';
 import LandingPage from '../LandingPage';
 
 vi.mock('react-i18next', () => ({
@@ -51,10 +50,10 @@ const renderIn = (mode: 'light' | 'dark') =>
   );
 
 describe.each(['light', 'dark'] as const)('LandingPage canvas (%s mode)', (mode) => {
-  it('stays pinned to the fixed brandInk.night canvas regardless of the app theme', () => {
+  it('follows tokens(mode).surface.base rather than a fixed brand colour', () => {
     renderIn(mode);
     const canvas = screen.getByTestId('landing-canvas');
-    expect(rgbToHex(getComputedStyle(canvas).backgroundColor)).toBe('#0b0724');
+    expect(rgbToHex(getComputedStyle(canvas).backgroundColor)).toBe(tokens(mode).surface.base);
   });
 
   it('renders the marketing tree without crashing', () => {
