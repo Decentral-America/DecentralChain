@@ -730,6 +730,7 @@ export const CreateToken = () => {
                           <Avatar
                             sx={{
                               bgcolor: 'primary.main',
+                              color: 'primary.contrastText',
                               fontSize: 28,
                               fontWeight: 300,
                               height: 64,

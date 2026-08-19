@@ -97,7 +97,7 @@ function MethodCard({ method, onSelect }: { method: ImportMethod; onSelect: () =
           alignItems: 'center',
           bgcolor: 'primary.main',
           borderRadius: '50%',
-          color: 'white',
+          color: 'primary.contrastText',
           display: 'flex',
           height: 64,
           justifyContent: 'center',

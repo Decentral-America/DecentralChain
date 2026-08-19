@@ -23,7 +23,14 @@ export interface SemanticTokens {
    * (white: 6.04 light / 3.24 dark; black: 3.47 light / 6.48 dark). It does not
    * need to: a mode's ink only ever meets that mode's accent.
    */
-  accent: { primary: string; muted: string; onPrimary: string };
+  /**
+   * `primaryHover` is the pressed/hover shade of `accent.primary`. It exists as
+   * a token because MUI otherwise derives `primary.dark` by darkening `main`
+   * blindly: in dark mode that walks the surface *away* from `onPrimary`'s
+   * near-black ink (3.05:1 on the auto-derived shade). Defined here, the hover
+   * shade stays inside the band where the ink still clears AA.
+   */
+  accent: { primary: string; muted: string; onPrimary: string; primaryHover: string };
   intent: { success: string; danger: string; warning: string; info: string };
 }
 
@@ -31,7 +38,12 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
   dark: {
     // Dark `accent.primary` is a *light* violet, so its ink is near-black:
     // 5.63:1, where white would be 3.24:1.
-    accent: { muted: '#3d2f8f', onPrimary: '#14122b', primary: '#8b7dff' },
+    accent: {
+      muted: '#3d2f8f',
+      onPrimary: '#14122b',
+      primary: '#8b7dff',
+      primaryHover: '#7d70eb',
+    },
     border: { strong: '#3a3358', subtle: '#241d42' },
     intent: { danger: '#ff6b6b', info: '#6aa8ff', success: '#3ddc97', warning: '#ffb84d' },
     surface: {
@@ -45,7 +57,12 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
   },
   light: {
     // Light `accent.primary` is a deep violet, so its ink is white: 6.04:1.
-    accent: { muted: '#e8e6ff', onPrimary: '#ffffff', primary: '#5b4bdb' },
+    accent: {
+      muted: '#e8e6ff',
+      onPrimary: '#ffffff',
+      primary: '#5b4bdb',
+      primaryHover: '#4a3bb8',
+    },
     border: { strong: '#c7c3e0', subtle: '#e9e7f2' },
     intent: { danger: '#c62828', info: '#1565c0', success: '#1b7a4b', warning: '#a15c00' },
     surface: {

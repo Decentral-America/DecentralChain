@@ -54,7 +54,7 @@ const InfoBox = styled.div`
   gap: ${(p) => p.theme.spacing.md};
   padding: ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.primary};
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   border-radius: ${(p) => p.theme.radii.md};
   margin-bottom: ${(p) => p.theme.spacing.lg};
   align-items: flex-start;
@@ -138,7 +138,7 @@ const ModeTab = styled.button<{ $active: boolean }>`
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
   border: none;
   background: ${(p) => (p.$active ? p.theme.colors.primary : 'transparent')};
-  color: ${(p) => (p.$active ? 'white' : p.theme.colors.text)};
+  color: ${(p) => (p.$active ? p.theme.colors.onPrimary : p.theme.colors.text)};
   font-size: ${(p) => p.theme.fontSizes.sm};
   font-weight: ${(p) => p.theme.fontWeights.semibold};
   cursor: pointer;
@@ -149,8 +149,10 @@ const ModeTab = styled.button<{ $active: boolean }>`
   }
 `;
 
-const WhiteLink = styled.a`
-  color: white;
+// Sits inside `InfoBox`, whose background is `colors.primary` — so it takes
+// the same ink as its container rather than a hardcoded white.
+const OnPrimaryLink = styled.a`
+  color: ${(p) => p.theme.colors.onPrimary};
   font-weight: 600;
   text-decoration: underline;
 `;
@@ -272,11 +274,13 @@ export const ImportAccount = () => {
               {isLedgerAvailable && (
                 <InfoBox>
                   <InfoIcon>
-                    <Icon name={CommonIcons.Info} size={20} color="white" />
+                    {/* Inherits InfoBox's `onPrimary` ink — `Icon` defaults to
+                        `currentColor`, so it follows the container. */}
+                    <Icon name={CommonIcons.Info} size={20} />
                   </InfoIcon>
                   <div>
                     Using a Ledger hardware wallet?{' '}
-                    <WhiteLink
+                    <OnPrimaryLink
                       href="/import/ledger"
                       onClick={(e) => {
                         e.preventDefault();
@@ -284,7 +288,7 @@ export const ImportAccount = () => {
                       }}
                     >
                       Import from Ledger
-                    </WhiteLink>
+                    </OnPrimaryLink>
                   </div>
                 </InfoBox>
               )}

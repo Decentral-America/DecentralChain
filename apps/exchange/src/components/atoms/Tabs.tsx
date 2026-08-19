@@ -42,7 +42,10 @@ const StyledTab = styled(MuiTab, {
 })<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
   '&.Mui-selected': {
     backgroundColor: tabVariant === 'pills' ? theme.palette.primary.main : 'transparent',
-    color: tabVariant === 'pills' ? 'white' : theme.palette.primary.main,
+    // A selected pill is filled with `primary.main`, so its label takes
+    // `primary.contrastText`; the other variants are transparent and keep
+    // the accent as ink.
+    color: tabVariant === 'pills' ? theme.palette.primary.contrastText : theme.palette.primary.main,
     fontWeight: 600,
   },
   borderRadius:

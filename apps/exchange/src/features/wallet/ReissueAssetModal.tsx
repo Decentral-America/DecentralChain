@@ -379,7 +379,7 @@ const CancelButton = styled(Button)`
 
 const ReissueButton = styled(Button)`
   background: ${(props) => props.theme.colors.primary};
-  color: white;
+  color: ${(props) => props.theme.colors.onPrimary};
 
   &:hover:not(:disabled) {
     opacity: 0.9;

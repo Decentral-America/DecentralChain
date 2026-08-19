@@ -178,6 +178,38 @@ describe('ink on token-driven backgrounds (regression guard)', () => {
       expect(contrastRatio(t.accent.onPrimary, t.accent.primary)).toBeGreaterThanOrEqual(4.5);
     });
 
+    it(`${mode}: primary.contrastText clears 4.5:1 on primary.dark (contained-button hover)`, () => {
+      // MUI's `variant="contained"` fills its hover state with `primary.dark`,
+      // so the ink has to clear the body-text floor there too — this is the
+      // pairing every primary CTA lands on under the cursor. Left to MUI's own
+      // darkening it measured 3.05:1 in dark mode; `accent.primaryHover` pins
+      // it. See task-2-report.md, Fix round 5.
+      expect(mui.palette.primary.dark).toBe(tokens(mode).accent.primaryHover);
+      expect(
+        contrastRatio(mui.palette.primary.contrastText, mui.palette.primary.dark),
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: primary.dark stays a visible step away from primary.main`, () => {
+      // The fix above must not flatten the hover state into invisibility —
+      // the same floor the surface.hover guard below uses.
+      expect(contrastRatio(mui.palette.primary.dark, mui.palette.primary.main)).toBeGreaterThan(
+        1.1,
+      );
+    });
+
+    it(`${mode}: styled-components colors.onPrimary is the same ink as MUI's contrastText`, () => {
+      // One ink, two consumers. ~15 styled-components call sites hardcoded
+      // 'white' here before Fix round 5; this pins that both systems now read
+      // the same token so they cannot drift apart again.
+      const theme = mode === 'light' ? lightTheme : darkTheme;
+      expect(theme.colors.onPrimary).toBe(tokens(mode).accent.onPrimary);
+      expect(theme.colors.onPrimary).toBe(mui.palette.primary.contrastText);
+      expect(contrastRatio(theme.colors.onPrimary, theme.colors.primary)).toBeGreaterThanOrEqual(
+        4.5,
+      );
+    });
+
     it(`${mode}: success.contrastText on success.main clears 4.5:1 (Dex.tsx's Buy toggle)`, () => {
       expect(
         contrastOfTranslucentInk(mui.palette.success.contrastText, mui.palette.success.main),

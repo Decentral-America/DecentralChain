@@ -110,7 +110,7 @@ const ActiveBadge = styled.div`
   display: inline-block;
   padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
   background: ${(p) => p.theme.colors.primary};
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   border-radius: ${(p) => p.theme.radii.sm};
   font-size: ${(p) => p.theme.fontSizes.xs};
   font-weight: ${(p) => p.theme.fontWeights.semibold};

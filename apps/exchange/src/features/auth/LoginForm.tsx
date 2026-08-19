@@ -87,7 +87,7 @@ const LedgerButton = styled(Button as React.ComponentType<Record<string, unknown
 
   &:hover:not(:disabled) {
     background: ${(p) => p.theme.colors.primary};
-    color: white;
+    color: ${(p) => p.theme.colors.onPrimary};
   }
 `;
 

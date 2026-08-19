@@ -25,7 +25,17 @@ function paletteFor(mode: ThemeMode) {
     // dark (5.63:1). Both clear AA's 4.5:1 body-text floor — the earlier
     // single '#ffffff' could not, because it had to serve both accents at
     // once (3.24:1 in dark). See task-2-report.md, Fix round 4.
-    primary: { contrastText: t.accent.onPrimary, main: t.accent.primary },
+    // `dark` is pinned rather than left to MUI's automatic darkening: MUI
+    // derives it from `main` alone, with no knowledge of the ink, and it is
+    // what `variant="contained"` uses for its hover fill. In dark mode the
+    // auto-derived shade (#6157b2) drops `onPrimary` to 3.05:1 — below the
+    // body-text floor on every primary CTA's hover state. `accent.primaryHover`
+    // keeps it at 4.68:1 while staying a visible step from `main` (1.20:1).
+    primary: {
+      contrastText: t.accent.onPrimary,
+      dark: t.accent.primaryHover,
+      main: t.accent.primary,
+    },
     // `accent.muted` — same token the styled-components theme's
     // `colors.secondary` reads. It's a *background* role (verified to keep
     // `text.primary` legible on top, in both modes); `contrastText` is set

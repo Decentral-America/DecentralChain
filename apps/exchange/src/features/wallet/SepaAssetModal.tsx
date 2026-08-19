@@ -139,7 +139,7 @@ const StepNumber = styled.div`
   height: 28px;
   flex-shrink: 0;
   background: ${(p) => p.theme.colors.primary};
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   border-radius: 50%;
   font-weight: ${(p) => p.theme.fontWeights.bold};
   font-size: ${(p) => p.theme.fontSizes.sm};

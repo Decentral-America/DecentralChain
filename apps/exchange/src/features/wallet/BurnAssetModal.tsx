@@ -234,7 +234,7 @@ const Input = styled.input`
 const MaxButton = styled.button`
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.primary};
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   border: none;
   border-radius: ${(p) => p.theme.radii.md};
   font-weight: ${(p) => p.theme.fontWeights.semibold};

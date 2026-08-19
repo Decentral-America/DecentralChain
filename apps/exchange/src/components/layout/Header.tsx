@@ -130,7 +130,14 @@ export const Header = () => {
           {user && (
             <>
               <UserButton onClick={handleMenuOpen}>
-                <Avatar sx={{ bgcolor: 'primary.main', height: 32, width: 32 }}>
+                <Avatar
+                  sx={{
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    height: 32,
+                    width: 32,
+                  }}
+                >
                   <PersonIcon sx={{ fontSize: 18 }} />
                 </Avatar>
                 <Stack spacing={0}>

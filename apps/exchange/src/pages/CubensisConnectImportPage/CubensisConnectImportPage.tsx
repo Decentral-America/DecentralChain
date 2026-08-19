@@ -231,7 +231,7 @@ export const CubensisConnectImportPage: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: 'primary.main',
                         borderRadius: '50%',
-                        color: 'white',
+                        color: 'primary.contrastText',
                         display: 'flex',
                         height: 80,
                         justifyContent: 'center',
@@ -308,7 +308,11 @@ export const CubensisConnectImportPage: React.FC = () => {
                     onClick={requestPermission}
                     disabled={loading}
                   >
-                    {loading ? <CircularProgress size={22} sx={{ color: 'white' }} /> : 'Connect'}
+                    {loading ? (
+                      <CircularProgress size={22} sx={{ color: 'primary.contrastText' }} />
+                    ) : (
+                      'Connect'
+                    )}
                   </Button>
                   <Button variant="outlined" onClick={() => navigate('/import')} disabled={loading}>
                     Cancel
@@ -334,7 +338,7 @@ export const CubensisConnectImportPage: React.FC = () => {
                           alignItems: 'center',
                           bgcolor: 'primary.main',
                           borderRadius: 1,
-                          color: 'white',
+                          color: 'primary.contrastText',
                           display: 'flex',
                           height: 48,
                           justifyContent: 'center',
@@ -386,7 +390,7 @@ export const CubensisConnectImportPage: React.FC = () => {
                     disabled={loading || !!nameError || !name}
                   >
                     {loading ? (
-                      <CircularProgress size={22} sx={{ color: 'white' }} />
+                      <CircularProgress size={22} sx={{ color: 'primary.contrastText' }} />
                     ) : (
                       'Import Account'
                     )}

@@ -399,7 +399,7 @@ export const Dex = () => {
                 <IconButton
                   size="small"
                   sx={{
-                    '&:hover': { bgcolor: 'primary.light', color: 'white' },
+                    '&:hover': { bgcolor: 'primary.light', color: 'primary.contrastText' },
                     color: 'primary.main',
                   }}
                 >

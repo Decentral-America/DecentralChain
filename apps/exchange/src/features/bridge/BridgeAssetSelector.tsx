@@ -114,6 +114,10 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
                   src={asset.icon}
                   sx={{
                     bgcolor: 'primary.main',
+                    // Explicit: MUI's Avatar otherwise inks its fallback letter
+                    // with `background.default`, which is not a contrast-checked
+                    // pairing with `primary.main`.
+                    color: 'primary.contrastText',
                     height: 48,
                     mr: 2,
                     width: 48,

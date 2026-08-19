@@ -579,7 +579,7 @@ export const Dashboard = () => {
                                 bgcolor: 'primary.dark',
                               },
                               bgcolor: 'primary.main',
-                              color: 'white',
+                              color: 'primary.contrastText',
                             }}
                           >
                             <SendIcon fontSize="small" />

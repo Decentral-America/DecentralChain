@@ -308,7 +308,7 @@ const NavButton = styled.button`
 
   &:hover:not(:disabled) {
     background: ${(p) => p.theme.colors.primary};
-    color: white;
+    color: ${(p) => p.theme.colors.onPrimary};
   }
 
   &:disabled {

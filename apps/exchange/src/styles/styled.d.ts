@@ -5,6 +5,13 @@ declare module 'styled-components' {
   export interface DefaultTheme {
     colors: {
       primary: string;
+      // The ink that goes on `primary` — the styled-components counterpart of
+      // MUI's `palette.primary.contrastText`, reading the same
+      // `accent.onPrimary` token so the two consumers cannot drift. Per mode:
+      // white on the light-mode accent, near-black on the dark-mode one, which
+      // is why a hardcoded 'white' was wrong here (3.24:1 in dark).
+      // See task-2-report.md, Fix rounds 4-5.
+      onPrimary: string;
       secondary: string;
       background: string;
       text: string;

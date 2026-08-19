@@ -78,7 +78,7 @@ const MaxButton = styled.button<{ variant?: 'primary' | 'secondary'; size?: 'sm'
   font-size: ${({ size }) => (size === 'sm' ? '14px' : '16px')};
   font-weight: 600;
   color: ${({ theme, variant }) =>
-    variant === 'primary' ? theme.colors.background : theme.colors.primary};
+    variant === 'primary' ? theme.colors.onPrimary : theme.colors.primary};
   background-color: ${({ theme, variant }) =>
     variant === 'primary' ? theme.colors.primary : 'transparent'};
   border: 2px solid ${({ theme }) => theme.colors.primary};

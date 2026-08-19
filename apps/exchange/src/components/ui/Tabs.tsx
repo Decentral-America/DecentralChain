@@ -90,12 +90,13 @@ const Tab = styled.button<{
     outline-offset: 2px;
   }
 
-  // Pills variant white text on active
-  ${({ $variant, $active }) =>
+  // Pills variant: the active pill is filled with colors.primary, so its label
+  // takes the matching colors.onPrimary ink rather than a hardcoded white.
+  ${({ theme, $variant, $active }) =>
     $variant === 'pills' &&
     $active &&
     `
-    color: white;
+    color: ${theme.colors.onPrimary};
   `}
 `;
 

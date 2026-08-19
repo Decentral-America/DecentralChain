@@ -70,7 +70,7 @@ const ActiveBadge = styled.div`
   right: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.onPrimary};
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;

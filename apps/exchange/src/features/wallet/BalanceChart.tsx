@@ -80,7 +80,7 @@ const TimeframeButtons = styled.div`
 const TimeButton = styled.button<{ $active: boolean }>`
   padding: 6px 12px;
   background: ${(props) => (props.$active ? props.theme.colors.primary : 'transparent')};
-  color: ${(props) => (props.$active ? 'white' : props.theme.colors.text)};
+  color: ${(props) => (props.$active ? props.theme.colors.onPrimary : props.theme.colors.text)};
   border: 1px solid
     ${(props) => (props.$active ? props.theme.colors.primary : props.theme.colors.border)};
   border-radius: 4px;
