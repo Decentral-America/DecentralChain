@@ -2,11 +2,12 @@
  * Order Book Page
  * Shows live order book and market depth
  */
-import { Chip, Paper, Stack, Typography } from '@mui/material';
+import { Chip, Paper, Stack, Typography, useTheme } from '@mui/material';
 import { PageFrame } from '@/layouts/PageFrame';
-import { status } from '@/styles/tokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 export const OrderBook = () => {
+  const t = tokens(useTheme().palette.mode);
   const buyOrders = [
     { amount: '150.5', price: '135.20', total: '20,347.60' },
     { amount: '220.3', price: '135.18', total: '29,776.05' },
@@ -83,7 +84,23 @@ export const OrderBook = () => {
                 key={order.price}
                 direction="row"
                 sx={{
-                  '&:hover': { bgcolor: status.dangerSurface },
+                  /*
+                   * `status.dangerSurface`/`successSurface` are entries in a
+                   * flat table with no mode dimension, so tinting the hover
+                   * with them put a fixed near-white fill under this row's
+                   * mode-aware ink: 1.0131:1 in dark on the sell side,
+                   * 1.0001:1 on the buy side — pointing at a row erased it.
+                   * The side is already stated by the price cell's own
+                   * `error.main`/`success.main`; the hover only needs to say
+                   * "this row".
+                   *
+                   * `surface.sunken` rather than `action.hover`: the row is a
+                   * well inside a raised `Paper`, and `surface.hover` is a
+                   * heavy enough step in light mode that `intent.success`
+                   * lands at 4.29:1 on it. On `sunken` both intents clear —
+                   * 4.60/4.84 light, 11.36/7.23 dark.
+                   */
+                  '&:hover': { bgcolor: t.surface.sunken },
                   borderRadius: 1,
                   justifyContent: 'space-between',
                   p: 1,
@@ -165,7 +182,8 @@ export const OrderBook = () => {
                 key={order.price}
                 direction="row"
                 sx={{
-                  '&:hover': { bgcolor: status.successSurface },
+                  // Mode-aware, for the reason given on the sell side above.
+                  '&:hover': { bgcolor: t.surface.sunken },
                   borderRadius: 1,
                   justifyContent: 'space-between',
                   p: 1,

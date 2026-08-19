@@ -37,7 +37,7 @@ import { useRouteStateTracking } from '@/hooks/useRouteStateTracking';
 import { AppLauncher } from '@/layouts/shell/AppLauncher';
 import { AppTopBar, NetworkTag, RoundAction } from '@/layouts/shell/AppTopBar';
 import { logger } from '@/lib/logger';
-import { palette, radii } from '@/styles/tokens';
+import { radii } from '@/styles/tokens';
 import { brandInk } from '@/theme/landingTheme';
 
 /**
@@ -146,7 +146,15 @@ export const MainLayout = () => {
       <Box
         sx={{
           bgcolor: 'background.paper',
-          border: `1px solid ${palette.frost}`,
+          /*
+           * The shell's fill was already a mode-aware token while this
+           * hairline was still `palette.frost` (`#e5edf5`, no mode dimension)
+           * — a half-conversion. In dark mode that drew a near-white ring
+           * around a near-black shell, 16.60:1 against the ground it sits on.
+           * `divider` is `border.subtle`, and moves with the fill it edges.
+           */
+          border: '1px solid',
+          borderColor: 'divider',
           borderRadius: radii.shell,
           display: 'flex',
           flexDirection: 'column',

@@ -1,10 +1,11 @@
 import { Apps } from '@mui/icons-material';
-import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
+import { Box, ButtonBase, Tooltip, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import Logo from '@/components/atoms/Logo';
 import { isCurrent, TOP_TABS } from '@/layouts/shell/navigation';
-import { palette, radii } from '@/styles/tokens';
+import { radii } from '@/styles/tokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The application's top bar.
@@ -14,20 +15,37 @@ import { palette, radii } from '@/styles/tokens';
  * document header — the navigation is the middle of the chrome, not an
  * afterthought pushed against the logo.
  *
- * The tabs sit in a tinted track with the current one raised on a white pill.
- * That reads as a physical selection rather than an underline, and it survives
+ * The tabs sit in a tinted track with the current one raised on a pill. That
+ * reads as a physical selection rather than an underline, and it survives
  * being glanced at.
+ *
+ * ## Why the surfaces here are tokens, not `palette.*`
+ *
+ * `styles/tokens.ts`' `palette` is a flat constant table with **no mode
+ * dimension** — `shellCanvas`, `frost` and `periwinkleWash` are single hex
+ * values that never move. Used as a *fill* under this file's mode-aware ink
+ * (`text.secondary`, `text.primary`, `primary.main`) they behave exactly like
+ * hex literals, and in dark mode the pairing collapsed: the track measured
+ * 1.75:1 for a resting tab label, 1.05:1 on hover, and `NetworkTag` 2.71:1.
+ * That is the whole primary navigation, on all fifteen authenticated routes.
+ *
+ * The track/pill relationship is what carries the selection, so it is
+ * expressed as a *relationship between surface roles* — a `sunken` track with
+ * a `raised` pill on it — which holds its shape in either mode instead of
+ * depending on one mode's literals.
  */
 
 export function TabRail({ onOpenLauncher }: { onOpenLauncher: () => void }) {
   const { pathname } = useLocation();
+  const t = tokens(useTheme().palette.mode);
 
   return (
     <Box
       component="nav"
       aria-label="Primary"
       sx={{
-        bgcolor: palette.shellCanvas,
+        // The track is a well the pill sits in: `surface.sunken`, per mode.
+        bgcolor: t.surface.sunken,
         borderRadius: radii.tags,
         display: { md: 'flex', xs: 'none' },
         gap: 0.5,
@@ -45,8 +63,12 @@ export function TabRail({ onOpenLauncher }: { onOpenLauncher: () => void }) {
             sx={{
               '&:hover': { color: 'text.primary' },
               // The raised pill is the selection; everything else is the track.
+              // The pill's *fill* is what identifies it (18.24:1 light /
+              // 16.96:1 dark against its own label); the hairline only softens
+              // its edge, so it is `border.subtle` rather than a value chosen
+              // to carry the selection on its own.
               bgcolor: active ? 'background.paper' : 'transparent',
-              border: active ? `1px solid ${palette.frost}` : '1px solid transparent',
+              border: active ? `1px solid ${t.border.subtle}` : '1px solid transparent',
               borderRadius: radii.tags,
               color: active ? 'text.primary' : 'text.secondary',
               fontSize: 14,
@@ -109,6 +131,7 @@ export function RoundAction({
   /** The account control, which carries the brand rather than an outline. */
   filled?: boolean;
 }) {
+  const t = tokens(useTheme().palette.mode);
   return (
     <Tooltip title={label}>
       <ButtonBase
@@ -118,7 +141,7 @@ export function RoundAction({
           '& svg': { fontSize: 19 },
           '&:hover': { bgcolor: filled ? 'primary.dark' : 'action.hover' },
           bgcolor: filled ? 'primary.main' : 'transparent',
-          border: filled ? 'none' : `1px solid ${palette.frost}`,
+          border: filled ? 'none' : `1px solid ${t.border.subtle}`,
           borderRadius: '50%',
           color: filled ? 'primary.contrastText' : 'text.secondary',
           flexShrink: 0,
@@ -181,12 +204,21 @@ export function AppTopBar({
   );
 }
 
-/** Small tinted label for the connected network. */
+/**
+ * Small tinted label for the connected network.
+ *
+ * The plate was `palette.periwinkleWash` (`#e8e9ff`, no mode dimension) under
+ * mode-aware `primary.main` — 2.71:1 in dark. `action.selected` is the tinted
+ * plate role the rest of the app already pairs with `primary.main` ink and
+ * which `mui-theme.ts` documents as verified in both modes (4.85:1 light /
+ * 5.05:1 dark); `accent.muted`, the other candidate, is the pairing that
+ * comment records as having *failed* here (3.23:1 dark).
+ */
 export function NetworkTag({ network }: { network: string }) {
   return (
     <Typography
       sx={{
-        bgcolor: palette.periwinkleWash,
+        bgcolor: 'action.selected',
         borderRadius: radii.tags,
         color: 'primary.main',
         display: { lg: 'block', xs: 'none' },
