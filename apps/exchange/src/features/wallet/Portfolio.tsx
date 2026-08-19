@@ -251,7 +251,7 @@ export const Portfolio = () => {
                       size="small"
                       sx={{
                         bgcolor: 'primary.main',
-                        color: 'white',
+                        color: 'primary.contrastText',
                       }}
                     />
                   </Box>
@@ -312,7 +312,7 @@ export const Portfolio = () => {
                       size="small"
                       sx={{
                         bgcolor: 'primary.main',
-                        color: 'white',
+                        color: 'primary.contrastText',
                       }}
                     />
                   </Box>

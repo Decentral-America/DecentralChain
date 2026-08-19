@@ -138,7 +138,7 @@ function contrastOfTranslucentInk(rgbaCss: string, bgHex: string): number {
   return contrastRatio(apparentHex, bgHex);
 }
 
-describe('white ink on token-driven backgrounds (regression guard)', () => {
+describe('ink on token-driven backgrounds (regression guard)', () => {
   // Several consumers hardcode `color: 'white'` on a `bgcolor` read from the
   // palette (icon tiles, badges, toggle buttons) instead of reading
   // `<variant>.contrastText`. Fine while the background is reliably dark in
@@ -156,18 +156,26 @@ describe('white ink on token-driven backgrounds (regression guard)', () => {
       ).toBeGreaterThanOrEqual(4.5);
     });
 
-    it(`${mode}: primary.contrastText is fixed at '#ffffff' (pre-existing accent.primary gap, not this task's to fix)`, () => {
-      // No token clears 4.5:1 against accent.primary in both modes at once
-      // (proven in mui-theme.ts's comment: white 6.04/3.24, black 3.47/6.48,
-      // text.primary 3.02/2.98 — every candidate fails one mode). '#ffffff'
-      // is what every call site already hardcoded, so this is a mechanism
-      // change, not a value change. It still clears the 3:1 icon/large-text
-      // floor in both modes — the body-text 4.5:1 floor is a known,
-      // disclosed dark-mode gap (see task-2-report.md, Fix round 3).
-      expect(mui.palette.primary.contrastText).toBe('#ffffff');
+    it(`${mode}: primary.contrastText comes from accent.onPrimary and clears 4.5:1`, () => {
+      // Round 3 hardcoded '#ffffff' here on the grounds that no single value
+      // clears 4.5:1 against accent.primary in both modes. True, and beside
+      // the point: `paletteFor` is per-mode, so the ink is per-mode too.
+      // `accent.onPrimary` is white in light (6.04:1) and near-black in dark
+      // (5.63:1). The old single value measured 3.24:1 in dark — an icon
+      // passes at 3:1, but Avatar's initials, Portfolio's DCC chips,
+      // Dashboard's portfolio-value panel and ImportAccountPage's hover label
+      // are body text and need 4.5. See task-2-report.md, Fix round 4.
+      expect(mui.palette.primary.contrastText).toBe(tokens(mode).accent.onPrimary);
       expect(
         contrastRatio(mui.palette.primary.contrastText, mui.palette.primary.main),
-      ).toBeGreaterThanOrEqual(3);
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: the accent.onPrimary token itself clears 4.5:1 on accent.primary`, () => {
+      // Pinned at the token level as well as the palette level: the pairing
+      // must survive an edit to semantic.ts, not just to mui-theme.ts.
+      const t = tokens(mode);
+      expect(contrastRatio(t.accent.onPrimary, t.accent.primary)).toBeGreaterThanOrEqual(4.5);
     });
 
     it(`${mode}: success.contrastText on success.main clears 4.5:1 (Dex.tsx's Buy toggle)`, () => {
@@ -182,6 +190,13 @@ describe('white ink on token-driven backgrounds (regression guard)', () => {
       ).toBeGreaterThanOrEqual(4.5);
     });
   }
+
+  it('gives accent.primary a genuinely different ink in each mode', () => {
+    // The whole point of the round-4 fix: one shared value cannot clear AA
+    // against a light-mode accent and a dark-mode one. Collapsing these back
+    // to a single literal is exactly the regression to catch.
+    expect(tokens('light').accent.onPrimary).not.toBe(tokens('dark').accent.onPrimary);
+  });
 });
 
 describe('hover perceptibility (regression guard)', () => {

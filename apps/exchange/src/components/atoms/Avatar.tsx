@@ -41,7 +41,10 @@ const StyledAvatar = styled(MuiAvatar, {
   return {
     backgroundColor: theme.palette.primary.main,
     borderRadius: shape === 'square' ? theme.shape.borderRadius : '50%',
-    color: 'white',
+    // Initials are body-sized at every size but `xl` (10-24px), so they need
+    // the 4.5:1 floor, not the 3:1 icon one — hardcoded white only reached
+    // 3.24:1 on the dark-mode accent.
+    color: theme.palette.primary.contrastText,
     fontSize,
     fontWeight: theme.typography.fontWeightMedium,
     height: avatarSize,

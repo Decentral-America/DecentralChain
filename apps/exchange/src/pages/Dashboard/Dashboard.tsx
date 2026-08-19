@@ -710,7 +710,7 @@ export const Dashboard = () => {
                 sx={{
                   bgcolor: 'primary.main',
                   borderRadius: 2,
-                  color: 'white',
+                  color: 'primary.contrastText',
                   mb: 2,
                   p: 2,
                 }}

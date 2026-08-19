@@ -104,7 +104,11 @@ const ImportAccountInner: React.FC = () => {
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={() => navigate('/create-account')}
                   sx={{
-                    '&:hover': { bgcolor: 'primary.main', borderWidth: 2, color: 'white' },
+                    '&:hover': {
+                      bgcolor: 'primary.main',
+                      borderWidth: 2,
+                      color: 'primary.contrastText',
+                    },
                     borderColor: 'primary.main',
                     borderWidth: 2,
                     color: 'primary.main',
