@@ -24,7 +24,8 @@ import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
 import { MobileButton } from '@/components/mobile/primitives';
 import { CreateWalletWizard, useCreateWallet } from '@/features/auth/create-wallet';
 import { palette } from '@/styles/tokens';
-import { landingTheme, onCanvas } from '@/theme/landingTheme';
+import { landingTheme } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 const SignUpInner: React.FC = () => {
   const navigate = useNavigate();
@@ -32,6 +33,12 @@ const SignUpInner: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   // Above the branch on purpose — see the file header.
   const wallet = useCreateWallet();
+  // `AuthScene` picks its canvas per mode; this page's own ink has to follow
+  // the same mode rather than assume the dark night canvas that used to be
+  // the only option. See task-4-report.md, Fix round 1.
+  const mode = theme.palette.mode;
+  const t = tokens(mode);
+  const isDark = mode === 'dark';
 
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
@@ -57,7 +64,7 @@ const SignUpInner: React.FC = () => {
         {/* Left column — the statement */}
         <Grid size={{ md: 6, xs: 12 }}>
           <Box sx={{ mb: 4 }}>
-            <Logo onDark sx={{ height: 32 }} />
+            <Logo onDark={isDark} sx={{ height: 32 }} />
           </Box>
 
           <Typography
@@ -76,7 +83,7 @@ const SignUpInner: React.FC = () => {
 
           <Typography
             sx={{
-              color: onCanvas.secondary,
+              color: t.text.secondary,
               fontSize: { md: 22, xs: 18 },
               fontWeight: 300,
               letterSpacing: '-0.22px',
@@ -107,16 +114,23 @@ const SignUpInner: React.FC = () => {
               },
             ].map((f) => (
               <Stack key={f.title} direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                <Box sx={{ color: palette.indigoHover, flexShrink: 0, lineHeight: 0, mt: '2px' }}>
+                <Box
+                  sx={{
+                    color: isDark ? palette.indigoHover : t.accent.primary,
+                    flexShrink: 0,
+                    lineHeight: 0,
+                    mt: '2px',
+                  }}
+                >
                   {f.icon}
                 </Box>
                 <Box sx={{ minWidth: 0 }}>
                   <Typography
-                    sx={{ color: onCanvas.primary, fontSize: 16, letterSpacing: '-0.16px' }}
+                    sx={{ color: t.text.primary, fontSize: 16, letterSpacing: '-0.16px' }}
                   >
                     {f.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: onCanvas.secondary }}>
+                  <Typography variant="body2" sx={{ color: t.text.secondary }}>
                     {f.desc}
                   </Typography>
                 </Box>
@@ -133,6 +147,14 @@ const SignUpInner: React.FC = () => {
           </Box>
 
           <Box sx={{ mt: 3 }}>
+            {/*
+                Ink is explicit per mode rather than left to MUI's own
+                outlined-button default: dark needs white to read on the
+                night ground, and pinning light to `text.primary`/
+                `border.strong` keeps this button's contrast verified against
+                our own tokens instead of MUI's, which could drift
+                independently of them.
+              */}
             <Button
               variant="outlined"
               startIcon={<LoginIcon />}
@@ -140,11 +162,11 @@ const SignUpInner: React.FC = () => {
               fullWidth
               sx={{
                 '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.08)',
-                  borderColor: 'common.white',
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : t.surface.hover,
+                  borderColor: isDark ? 'common.white' : t.text.primary,
                 },
-                borderColor: 'rgba(255, 255, 255, 0.4)',
-                color: 'common.white',
+                borderColor: isDark ? 'rgba(255, 255, 255, 0.4)' : t.border.strong,
+                color: isDark ? 'common.white' : t.text.primary,
                 py: 1.25,
               }}
             >
