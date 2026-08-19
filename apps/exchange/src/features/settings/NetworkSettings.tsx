@@ -44,7 +44,7 @@ const Input = styled.input<{ error?: boolean }>`
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
   border-radius: 4px;
-  background: white;
+  background: ${(props) => props.theme.colors.background};
   color: ${(props) => props.theme.colors.text};
   font-family: 'Courier New', monospace;
 
@@ -90,7 +90,7 @@ const Button = styled.button`
   padding: 10px 24px;
   font-size: 13px;
   color: ${(props) => props.theme.colors.primary};
-  background: white;
+  background: ${(props) => props.theme.colors.background};
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: 4px;
   cursor: pointer;

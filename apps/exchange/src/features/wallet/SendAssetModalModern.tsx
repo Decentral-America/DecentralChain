@@ -427,7 +427,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                 width: 40,
               }}
             >
-              <SendIcon sx={{ color: 'white', fontSize: 20 }} />
+              <SendIcon sx={{ color: tokens('light').accent.onPrimary, fontSize: 20 }} />
             </Box>
             <Typography
               variant="h6"

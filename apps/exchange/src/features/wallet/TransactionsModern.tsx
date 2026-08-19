@@ -35,7 +35,9 @@ export const TransactionsModern = () => {
                   width: 56,
                 }}
               >
-                <AccountBalanceWalletOutlined sx={{ color: 'white', fontSize: 32 }} />
+                <AccountBalanceWalletOutlined
+                  sx={{ color: tokens('light').accent.onPrimary, fontSize: 32 }}
+                />
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography

@@ -124,7 +124,7 @@ const AccountIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   font-size: ${(p) => p.theme.fontSizes.xl};
   font-weight: ${(p) => p.theme.fontWeights.bold};
   flex-shrink: 0;
@@ -162,7 +162,7 @@ const LedgerBadge = styled.div`
   gap: 4px;
   padding: 4px 8px;
   background: ${(p) => p.theme.colors.info};
-  color: white;
+  color: ${(p) => p.theme.colors.onInfo};
   border-radius: ${(p) => p.theme.radii.sm};
   font-size: ${(p) => p.theme.fontSizes.xs};
   font-weight: ${(p) => p.theme.fontWeights.semibold};

@@ -96,7 +96,7 @@ const Button = styled.button`
   padding: 6px 16px;
   font-size: 12px;
   color: ${(props) => props.theme.colors.primary};
-  background: white;
+  background: ${(props) => props.theme.colors.background};
   border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: 4px;
   cursor: pointer;
@@ -125,18 +125,14 @@ const LinkButton = styled.button`
   text-decoration: none;
   transition: color 0.2s;
 
+  /* The underline is the hover affordance; colour is unchanged by design. */
   &:hover {
-    color: ${(props) => props.theme.colors.primary};
     text-decoration: underline;
   }
 `;
 
 const DangerLink = styled(LinkButton)`
   color: ${(props) => props.theme.colors.error};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.error};
-  }
 `;
 
 const CopyLink = styled.button`
@@ -156,15 +152,20 @@ const CopyLink = styled.button`
 
 const ScriptButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.success};
-  color: white;
+  color: ${(props) => props.theme.colors.onSuccess};
   border: none;
 
+  /*
+   * No darker "success" shade exists in the token set, so hover/active dip
+   * opacity instead of restating the same fill colour - same pattern
+   * DeleteAccountModal's DangerButton uses for the identical reason.
+   */
   &:hover {
-    background-color: ${(props) => props.theme.colors.success};
+    opacity: 0.9;
   }
 
   &:active {
-    background-color: ${(props) => props.theme.colors.success};
+    opacity: 0.8;
   }
 
   /* Own press state above, so the grey tap flash is redundant. */

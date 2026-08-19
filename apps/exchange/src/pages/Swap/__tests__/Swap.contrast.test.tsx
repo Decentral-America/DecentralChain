@@ -27,27 +27,10 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { Swap } from '../Swap';
-
-/**
- * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
- * match, so an ink specified with alpha would be measured against its own
- * r/g/b as if fully opaque — overstating its contrast once alpha actually
- * composites onto the background. Every current call site here passes an
- * opaque colour, so this is exact today; it is a structural limitation of
- * this idiom (duplicated across 15+ contrast test files) rather than a bug
- * in any one test. See task-8-report.md, Finding 5.
- */
-function rgbToHex(rgb: string): string {
-  const channels = rgb.match(/\d+(\.\d+)?/g);
-  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
-  return `#${channels
-    .slice(0, 3)
-    .map((c) => Number(c).toString(16).padStart(2, '0'))
-    .join('')}`;
-}
 
 function nearestBackground(el: HTMLElement): string {
   let node: HTMLElement | null = el;
@@ -105,12 +88,17 @@ describe.each(['light', 'dark'] as const)('Swap — page chrome (%s mode)', (mod
     }
   });
 
-  it('the asset-mark avatar initials clear AA against their own fixed brand fill', () => {
+  it('the asset-mark avatar initials clear AA against their own fill', () => {
     renderIn(mode);
     const dcc = screen.getByText('D');
     const usdt = screen.getByText('U');
+    // DCC is this app's own asset, so its mark is `accent.primary` — mode-
+    // aware, like every other DCC-branded surface (fix round 1: it used to
+    // be a second, fixed, hand-typed near-duplicate of that token). USDT's
+    // mark is a fixed per-asset tint (`swapMarkColor.usdt`, not a token),
+    // same in both modes.
     for (const [glyph, markColor] of [
-      [dcc, '#8A63D2'],
+      [dcc, tokens(mode).accent.primary],
       [usdt, '#F7931A'],
     ] as const) {
       const ink = rgbToHex(getComputedStyle(glyph).color);

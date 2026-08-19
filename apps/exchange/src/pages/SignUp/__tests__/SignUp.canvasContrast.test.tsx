@@ -20,6 +20,7 @@ import { render, screen } from '@testing-library/react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
 import { darkTheme, lightTheme } from '@/styles/themes';
+import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { SignUp } from '../SignUp';
@@ -45,23 +46,6 @@ vi.mock('@/lib/logger', () => ({
 vi.mock('data-service/classes/Seed', () => ({ Seed: { create: seedCreate } }));
 
 /** `getComputedStyle` reports `rgb(r, g, b)`; `contrastRatio` takes hex only. */
-/**
- * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
- * match, so an ink specified with alpha would be measured against its own
- * r/g/b as if fully opaque — overstating its contrast once alpha actually
- * composites onto the background. Every current call site here passes an
- * opaque colour, so this is exact today; it is a structural limitation of
- * this idiom (duplicated across 15+ contrast test files) rather than a bug
- * in any one test. See task-8-report.md, Finding 5.
- */
-function rgbToHex(rgb: string): string {
-  const channels = rgb.match(/\d+(\.\d+)?/g);
-  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
-  return `#${channels
-    .slice(0, 3)
-    .map((c) => Number(c).toString(16).padStart(2, '0'))
-    .join('')}`;
-}
 
 /**
  * The canvas stops `AuthScene` actually paints for a mode: the light wash

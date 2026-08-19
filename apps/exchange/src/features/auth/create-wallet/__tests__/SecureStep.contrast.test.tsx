@@ -19,28 +19,12 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 import { SecureStep } from '../steps/SecureStep';
 
 /** `getComputedStyle` reports `rgb(r, g, b)`; `contrastRatio` takes hex only. */
-/**
- * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
- * match, so an ink specified with alpha would be measured against its own
- * r/g/b as if fully opaque — overstating its contrast once alpha actually
- * composites onto the background. Every current call site here passes an
- * opaque colour, so this is exact today; it is a structural limitation of
- * this idiom (duplicated across 15+ contrast test files) rather than a bug
- * in any one test. See task-8-report.md, Finding 5.
- */
-function rgbToHex(rgb: string): string {
-  const channels = rgb.match(/\d+(\.\d+)?/g);
-  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
-  return `#${channels
-    .slice(0, 3)
-    .map((c) => Number(c).toString(16).padStart(2, '0'))
-    .join('')}`;
-}
 
 /**
  * Asserts directly on `contrastRatio(...)`, not on a boolean wrapper —

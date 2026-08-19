@@ -146,7 +146,7 @@ const SummaryRow = styled.div`
 `;
 
 const FieldError = styled.div`
-  color: red;
+  color: ${({ theme }) => theme.colors.error};
   font-size: 14px;
 `;
 

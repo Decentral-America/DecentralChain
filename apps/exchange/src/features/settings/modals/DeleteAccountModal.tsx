@@ -78,8 +78,15 @@ const ButtonGroup = styled.div`
 const DangerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
   background-color: ${(props) => props.theme.colors.error} !important;
 
+  /*
+   * No darker "error" shade exists in the token set (unlike
+   * accent.primaryHover for the primary fill), so hover/active dips
+   * opacity instead of restating the same fill colour - the same
+   * no-second-token affordance BurnButton/MaxButton already use
+   * elsewhere for this exact reason.
+   */
   &:hover:not(:disabled) {
-    background-color: ${(props) => props.theme.colors.error} !important;
+    opacity: 0.9;
   }
 
   &:disabled {

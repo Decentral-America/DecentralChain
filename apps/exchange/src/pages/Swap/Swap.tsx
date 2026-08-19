@@ -204,12 +204,7 @@ export const Swap: React.FC = () => {
               </Stack>
             </Stack>
 
-            <TokenField
-              label="From"
-              symbol="DCC"
-              markColor={swapMarkColor.dcc}
-              balance="0.00 DCC"
-            />
+            <TokenField label="From" symbol="DCC" markColor={t.accent.primary} balance="0.00 DCC" />
 
             {/* Overlaps both fields, so the pair reads as one control. */}
             <Box

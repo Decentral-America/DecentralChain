@@ -64,14 +64,14 @@ export interface CircleChartProps {
   strokeWidth?: number;
 
   /**
-   * Color of the background circle
-   * @default '#e0e0e0'
+   * Color of the background circle.
+   * @default theme.colors.border
    */
   backgroundColor?: string;
 
   /**
-   * Color of the progress circle
-   * @default '#1f77b4'
+   * Color of the progress circle.
+   * @default theme.colors.primary
    */
   progressColor?: string;
 

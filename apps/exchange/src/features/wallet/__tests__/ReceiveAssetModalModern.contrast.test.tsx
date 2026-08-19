@@ -1,23 +1,20 @@
 /**
- * ReceiveAssetModalModern — badge icon ink vs its fixed gradient (fix round 1)
+ * ReceiveAssetModalModern — badge icon ink vs its fixed fill
  *
- * Found via the extended sweep item 4 asked for, not named by the reviewer:
- * the same `#06B6D4`/`#10B981` pair as `SendAssetModalModern`'s success-view
- * badge (reachable through `Portfolio.tsx`, one of `Wallet.tsx`'s five
- * sibling routes). `white` missed the 3:1 icon floor against both stops
- * (2.54/2.43), mode-independent — the identical one-word repoint applies.
- *
- * The modal's "Copy Address" `Button` has the *same* defect class as the
- * Critical finding (`variant="contained"` on a fixed gradient), but is
- * deliberately left alone per this round's dispatch: pre-existing, and
- * dark mode's `primary.contrastText` measurably improves it over light's
- * already-broken `white` (light: 2.54/2.43 fail; dark: ~7.5/~7.2 pass) — not
- * a regression this task caused, since `Portfolio.tsx` was never wrapped in
- * `landingTheme` to begin with.
+ * Task 8 replaced the badge's old cyan-to-emerald two-stop gradient
+ * (`#06B6D4`→`#10B981`) with a solid `tokens('light').intent.success` fill —
+ * a fixed badge, mode-independent by design, matching `SendAssetModalModern`'s
+ * sibling success badge. Fix round 1 caught a semantic error in the repoint
+ * that shipped alongside it: the icon's ink was pinned to
+ * `tokens('light').text.primary` (3.42:1), the "fixed badge → dark ink"
+ * pattern used for badges with *light* fixed fills elsewhere in this file —
+ * wrong here, because this fill is a solid intent colour with its own
+ * purpose-built ink, `intent.onSuccess` (5.34:1).
  */
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio } from '@/theme/tokens/semantic';
 import { ReceiveAssetModalModern } from '../ReceiveAssetModalModern';
@@ -25,24 +22,6 @@ import { ReceiveAssetModalModern } from '../ReceiveAssetModalModern';
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: { address: '3P123', name: 'Trader' } }),
 }));
-
-/**
- * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
- * match, so an ink specified with alpha would be measured against its own
- * r/g/b as if fully opaque — overstating its contrast once alpha actually
- * composites onto the background. Every current call site here passes an
- * opaque colour, so this is exact today; it is a structural limitation of
- * this idiom (duplicated across 15+ contrast test files) rather than a bug
- * in any one test. See task-8-report.md, Finding 5.
- */
-function rgbToHex(rgb: string): string {
-  const channels = rgb.match(/\d+(\.\d+)?/g);
-  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
-  return `#${channels
-    .slice(0, 3)
-    .map((c) => Number(c).toString(16).padStart(2, '0'))
-    .join('')}`;
-}
 
 function toHex(value: string): string {
   return value.startsWith('#') ? value.toLowerCase() : rgbToHex(value);
@@ -59,7 +38,7 @@ function backgroundHexStops(el: HTMLElement): string[] {
 }
 
 describe('ReceiveAssetModalModern — badge icon', () => {
-  it('clears the 3:1 icon floor against every stop of its fixed gradient', () => {
+  it('clears the 4.5:1 body-text floor against its own fixed intent.success fill', () => {
     render(
       <ThemeProvider theme={createAppTheme('light')}>
         <ReceiveAssetModalModern isOpen onClose={vi.fn()} assetName="DCC" />
@@ -69,7 +48,7 @@ describe('ReceiveAssetModalModern — badge icon', () => {
     const badge = icon.parentElement as HTMLElement;
     const ink = toHex(getComputedStyle(icon).color);
     for (const bg of backgroundHexStops(badge)) {
-      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(3);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
     }
   });
 });

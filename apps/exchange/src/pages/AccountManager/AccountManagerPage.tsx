@@ -79,7 +79,7 @@ const AccountAvatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: ${(p) => p.theme.colors.onPrimary};
   font-size: ${(p) => p.theme.fontSizes.xl};
   font-weight: ${(p) => p.theme.fontWeights.bold};
   flex-shrink: 0;

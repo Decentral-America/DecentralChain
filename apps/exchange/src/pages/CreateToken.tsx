@@ -316,7 +316,7 @@ export const CreateToken = () => {
           <Card
             sx={{
               background: brandPalette.indigoInk,
-              color: 'white',
+              color: brandPalette.pureWhite,
               height: '100%',
               position: 'sticky',
               top: 80,
@@ -772,8 +772,8 @@ export const CreateToken = () => {
                           <IconButton
                             size="small"
                             sx={{
-                              '&:hover': { bgcolor: 'white' },
-                              bgcolor: 'white',
+                              '&:hover': { bgcolor: brandPalette.pureWhite },
+                              bgcolor: brandPalette.pureWhite,
                               bottom: -4,
                               boxShadow: 2,
                               // This badge is deliberately fixed white in
@@ -814,7 +814,7 @@ export const CreateToken = () => {
                           size="small"
                           sx={{
                             bgcolor: brandPalette.indigoInk,
-                            color: 'white',
+                            color: brandPalette.pureWhite,
                             fontWeight: 400,
                           }}
                         />

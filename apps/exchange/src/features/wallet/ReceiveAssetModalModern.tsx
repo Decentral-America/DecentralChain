@@ -26,6 +26,7 @@ import type React from 'react';
 import { QRCodeSVG } from '@/components/display/QRCode';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
+import { palette } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 
 export interface ReceiveAssetModalModernProps {
@@ -86,14 +87,14 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
                 Fixed badge — now a solid `tokens('light').intent.success`
                 fill (same role `SendAssetModalModern`'s success-view badge
                 uses) instead of the old cyan-to-emerald two-stop gradient,
-                so no raw hex remains here. `white` missed the 3:1 icon
-                floor against the original gradient's stops (2.54/2.43),
-                mode-independent; found via the extended sweep (fix round 1,
-                task-6-report.md), not named in the original list, but the
-                same one-word repoint (`tokens('light').text.primary`)
-                still applies to the icon ink.
+                so no raw hex remains here. The fill is a solid intent
+                colour, not the fixed-white/near-black badges elsewhere in
+                this file, so its ink is `intent.onSuccess` (5.34:1) — the
+                token built for exactly this fill — not `text.primary`
+                (3.42:1), which was the semantic error task-8's Fix round 1
+                caught here.
               */}
-              <ReceiveIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
+              <ReceiveIcon sx={{ color: tokens('light').intent.onSuccess, fontSize: 20 }} />
             </Box>
             <Typography
               variant="h6"
@@ -131,7 +132,11 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
           {/* QR Code */}
           <Box
             sx={{
-              bgcolor: 'white',
+              // Fixed white regardless of mode — a QR code needs a light
+              // ground behind its dark modules to stay scannable; a
+              // dark-mode surface here would put dark modules on a dark
+              // background. Same reasoning as `QRCode.tsx`'s own defaults.
+              bgcolor: palette.pureWhite,
               borderRadius: 3,
               boxShadow: 3,
               display: 'inline-block',

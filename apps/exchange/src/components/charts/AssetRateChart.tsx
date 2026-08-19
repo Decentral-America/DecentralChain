@@ -62,7 +62,7 @@ const AxisLabel = styled.text`
  * Data point for tooltip
  */
 const DataPoint = styled.circle`
-  fill: white;
+  fill: ${(props) => props.theme.colors.background};
   stroke: ${(props) => props.color || props.theme.colors.primary};
   stroke-width: 2;
   cursor: pointer;
@@ -81,7 +81,7 @@ const Tooltip = styled.div<{ $x: number; $y: number; $visible: boolean }>`
   left: ${(props) => props.$x}px;
   top: ${(props) => props.$y}px;
   background: ${alpha(palette.midnightInk, 0.8)};
-  color: white;
+  color: ${palette.pureWhite};
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 12px;
@@ -136,14 +136,14 @@ export interface AssetRateChartProps {
   data: DataPoint[];
 
   /**
-   * Chart line color
-   * @default '#1f77b4'
+   * Chart line color.
+   * @default theme.colors.primary
    */
   lineColor?: string;
 
   /**
-   * Chart area fill color (under the line)
-   * @default 'rgba(31, 119, 180, 0.1)'
+   * Chart area fill color (under the line).
+   * @default alpha(theme.colors.primary, 0.1)
    */
   areaColor?: string;
 

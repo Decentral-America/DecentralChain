@@ -24,24 +24,6 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 vi.mock('@/config', () => ({ config: { ledgerEnabled: false } }));
 
 /**
- * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
- * match, so an ink specified with alpha would be measured against its own
- * r/g/b as if fully opaque — overstating its contrast once alpha actually
- * composites onto the background. Every current call site here passes an
- * opaque colour, so this is exact today; it is a structural limitation of
- * this idiom (duplicated across 15+ contrast test files) rather than a bug
- * in any one test. See task-8-report.md, Finding 5.
- */
-function rgbToHex(rgb: string): string {
-  const channels = rgb.match(/\d+(\.\d+)?/g);
-  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
-  return `#${channels
-    .slice(0, 3)
-    .map((c) => Number(c).toString(16).padStart(2, '0'))
-    .join('')}`;
-}
-
-/**
  * `contrastRatio`'s own `rgbToHex` drops the alpha channel — an ink
  * specified with alpha (the wordmark is `rgba(..., 0.36 | 0.5)`) would
  * measure as fully opaque and read optimistically. Composite it over the
@@ -69,6 +51,7 @@ function compositeOverCanvas(rgbaColor: string, canvasHex: string): string {
  * too, but ink here depends on the real app theme, so this file needs it.
  */
 import { ThemeProvider } from '@mui/material/styles';
+import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 
 const renderIn = (mode: ThemeMode) =>

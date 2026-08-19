@@ -118,7 +118,7 @@ These are active UI paths that reach `// TODO: Implement` dead ends:
 | **Restore** | `pages/RestoreFromBackupPage.tsx:277` | Restore logic not implemented |
 | **Bridge** | `pages/Bridge/Bridge.tsx:106` | Balance integration pending |
 | **Balance History** | `features/wallet/BalanceChart.tsx:41,142,174` | Historical balance API not integrated |
-| **Asset Loading** | `features/wallet/AssetList.tsx:59` | Awaiting backend endpoint |
+| **Asset Loading** | ~~`features/wallet/AssetList.tsx:59`~~ (deleted as dead code, task-8: never imported outside the wallet feature folder) | Awaiting backend endpoint |
 | **DEX Realtime** | `features/dex/tradingview/datafeed.ts:195` | WebSocket datafeed not implemented |
 | **Matcher Auth** | `api/services/matcherService.ts:222,290` | Matcher signature auth not implemented |
 | **App Version** | `features/settings/InfoSettings.tsx:72` | Hardcoded "1.0.0" |
@@ -189,7 +189,7 @@ const Bridge = lazy(() => import('@/pages/Bridge'));
 | Stub | File | Blocked by |
 |------|------|------------|
 | Balance chart | `features/wallet/BalanceChart.tsx` | Historical balance API (backend) |
-| Asset list | `features/wallet/AssetList.tsx:59` | Asset data endpoint (backend) |
+| Asset list | ~~`features/wallet/AssetList.tsx:59`~~ (deleted as dead code, task-8) | Asset data endpoint (backend) |
 | DEX WebSocket | `features/dex/tradingview/datafeed.ts:195` | WebSocket datafeed (infra) |
 | Bridge | `pages/Bridge/Bridge.tsx:106` | Bridge service integration (infra) |
 | Matcher auth | `api/services/matcherService.ts:222,290` | Matcher signing protocol (backend) |
