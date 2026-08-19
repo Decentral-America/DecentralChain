@@ -13,7 +13,7 @@
 export type ThemeMode = 'light' | 'dark';
 
 export interface SemanticTokens {
-  surface: { base: string; raised: string; sunken: string; overlay: string };
+  surface: { base: string; hover: string; overlay: string; raised: string; sunken: string };
   border: { subtle: string; strong: string };
   text: { primary: string; secondary: string; tertiary: string };
   accent: { primary: string; muted: string };
@@ -25,14 +25,26 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
     accent: { muted: '#3d2f8f', primary: '#8b7dff' },
     border: { strong: '#3a3358', subtle: '#241d42' },
     intent: { danger: '#ff6b6b', info: '#6aa8ff', success: '#3ddc97', warning: '#ffb84d' },
-    surface: { base: '#0b0724', overlay: '#151033', raised: '#141029', sunken: '#080519' },
+    surface: {
+      base: '#0b0724',
+      hover: '#201b3b',
+      overlay: '#151033',
+      raised: '#141029',
+      sunken: '#080519',
+    },
     text: { primary: '#f5f4ff', secondary: '#b8b3d9', tertiary: '#8a85ab' },
   },
   light: {
     accent: { muted: '#e8e6ff', primary: '#5b4bdb' },
     border: { strong: '#c7c3e0', subtle: '#e9e7f2' },
     intent: { danger: '#c62828', info: '#1565c0', success: '#1b7a4b', warning: '#a15c00' },
-    surface: { base: '#f7f7fb', overlay: '#ffffff', raised: '#ffffff', sunken: '#eeedf5' },
+    surface: {
+      base: '#f7f7fb',
+      hover: '#e6e5f2',
+      overlay: '#ffffff',
+      raised: '#ffffff',
+      sunken: '#eeedf5',
+    },
     text: { primary: '#14122b', secondary: '#4a4668', tertiary: '#6b6788' },
   },
 };

@@ -10,11 +10,21 @@ export type { ThemeMode };
 function paletteFor(mode: ThemeMode) {
   const t = tokens(mode);
   return {
+    // Same nudge the styled-components theme uses for `colors.hover` — one
+    // token, both consumers. `selected` reuses it too: verified against the
+    // `primary.main`-coloured ink every `action.selected` consumer layers on
+    // top (icon tiles, chips, avatar initials), it clears AA in both modes
+    // where `accent.muted` did not (see task-2-report.md, Fix round 1).
+    action: { hover: t.surface.hover, selected: t.surface.hover },
     background: { default: t.surface.base, paper: t.surface.raised },
     divider: t.border.subtle,
     error: { main: t.intent.danger },
     info: { main: t.intent.info },
     primary: { main: t.accent.primary },
+    // `text.secondary` — same token the styled-components theme's
+    // `colors.secondary` reads. MUI's stock secondary (magenta) was the
+    // exact drift Finding 3 flagged; this keeps both consumers on one value.
+    secondary: { main: t.text.secondary },
     success: { main: t.intent.success },
     text: { primary: t.text.primary, secondary: t.text.secondary },
     warning: { main: t.intent.warning },
