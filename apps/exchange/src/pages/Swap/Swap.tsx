@@ -25,13 +25,28 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import type React from 'react';
 import { ComingSoon } from '@/components/feedback/ComingSoon';
 import { PageFrame } from '@/layouts/PageFrame';
-import { palette, radii } from '@/styles/tokens';
-import { landingTheme } from '@/theme/landingTheme';
+import { radii } from '@/styles/tokens';
+import { contrastRatio, tokens } from '@/theme/tokens/semantic';
+
+/**
+ * The ink for a brand-mark avatar, picked from the mark's own luminance.
+ *
+ * `theme.palette.getContrastText` was tried first and fell short: it picked
+ * white for `#8A63D2`, measuring 4.38:1 — under MUI's own coarser threshold
+ * heuristic, not WCAG's. This compares both candidates against the actual
+ * WCAG ratio instead, so the pick is correct for whatever brand colour a
+ * caller passes rather than only the two in use today.
+ */
+function inkForMark(markColor: string): string {
+  const white = contrastRatio('#ffffff', markColor);
+  const black = contrastRatio('#000000', markColor);
+  return white >= black ? '#ffffff' : '#000000';
+}
 
 /** One side of the trade: the asset picker, the amount, and what it is worth. */
 function TokenField({
@@ -46,6 +61,9 @@ function TokenField({
   markColor: string;
   balance: string;
 }) {
+  const { palette } = useTheme();
+  const t = tokens(palette.mode);
+
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 0.75 }}>
@@ -54,7 +72,13 @@ function TokenField({
       <Paper
         elevation={0}
         sx={{
-          bgcolor: palette.mist,
+          // Was the fixed light literal `palette.mist` — under the old
+          // `landingTheme` wrapper the `text.secondary`/default ink this
+          // panel holds was always the same fixed light value, so the pair
+          // never broke. Once a page stops forcing that wrapper, dark mode's
+          // ink lands on this still-fixed-light panel: measured ~1.9:1 (see
+          // task-6-report.md). `surface.sunken` tracks the same mode.
+          bgcolor: t.surface.sunken,
           border: '1px solid',
           borderColor: 'divider',
           borderRadius: radii.cards,
@@ -68,7 +92,21 @@ function TokenField({
             sx={{ borderColor: 'divider', justifyContent: 'space-between', minWidth: 132 }}
           >
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Avatar sx={{ bgcolor: markColor, height: 22, width: 22 }}>{symbol.charAt(0)}</Avatar>
+              <Avatar
+                sx={{
+                  bgcolor: markColor,
+                  // MUI's own Avatar default ink (`background.default`) was
+                  // never designed to pair with an arbitrary brand-mark
+                  // fill — measured as low as 2.15:1 against this exact
+                  // orange mark, in light mode, mode-independently (see
+                  // task-6-report.md).
+                  color: inkForMark(markColor),
+                  height: 22,
+                  width: 22,
+                }}
+              >
+                {symbol.charAt(0)}
+              </Avatar>
               <Typography sx={{ fontWeight: 400 }}>{symbol}</Typography>
             </Stack>
           </Button>
@@ -114,97 +152,104 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 export const Swap: React.FC = () => {
+  const { palette } = useTheme();
+  const t = tokens(palette.mode);
+
   return (
-    <ThemeProvider theme={landingTheme}>
-      <PageFrame
-        fit
-        title="Swap"
-        subtitle="Exchange one asset for another at the best available rate."
-      >
-        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3, minHeight: 0 }}>
-          <ComingSoon
-            title="Swapping is not live yet"
-            description="The form below is a preview of the routing interface and cannot be submitted. Orders can be placed against the live order book on Trade in the meantime."
+    <PageFrame
+      fit
+      title="Swap"
+      subtitle="Exchange one asset for another at the best available rate."
+    >
+      <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3, minHeight: 0 }}>
+        <ComingSoon
+          title="Swapping is not live yet"
+          description="The form below is a preview of the routing interface and cannot be submitted. Orders can be placed against the live order book on Trade in the meantime."
+        >
+          <Paper
+            elevation={0}
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: radii.cards,
+              // A form is a column of controls; past ~560px the fields grow
+              // wider than they are useful and the card stops reading as one.
+              maxWidth: 560,
+              mx: 'auto',
+              p: 3,
+            }}
           >
+            <Stack
+              direction="row"
+              sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 300 }}>
+                Swap tokens
+              </Typography>
+              <Stack direction="row" spacing={1}>
+                <IconButton size="small" aria-label="Swap history">
+                  <History />
+                </IconButton>
+                <IconButton size="small" aria-label="Swap settings">
+                  <Settings />
+                </IconButton>
+              </Stack>
+            </Stack>
+
+            <TokenField label="From" symbol="DCC" markColor="#8A63D2" balance="0.00 DCC" />
+
+            {/* Overlaps both fields, so the pair reads as one control. */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                my: -1.25,
+                position: 'relative',
+                zIndex: 1,
+              }}
+            >
+              <IconButton
+                aria-label="Reverse direction"
+                sx={{
+                  bgcolor: 'background.paper',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <SwapVert />
+              </IconButton>
+            </Box>
+
+            <TokenField label="To" symbol="USDT" markColor="#F7931A" balance="0.00 USDT" />
+
             <Paper
               elevation={0}
               sx={{
-                border: '1px solid',
-                borderColor: 'divider',
+                // Was the fixed light literal `palette.periwinkleWash`;
+                // same "fixed panel, mode-relative ink" mismatch as the
+                // `TokenField` panel above once the wrapper stops forcing
+                // light. `accent.muted` is the semantic surface this exact
+                // hue already maps to (`#e8e6ff` in light — visually the
+                // same wash) and it tracks dark mode correctly.
+                bgcolor: t.accent.muted,
                 borderRadius: radii.cards,
-                // A form is a column of controls; past ~560px the fields grow
-                // wider than they are useful and the card stops reading as one.
-                maxWidth: 560,
-                mx: 'auto',
-                p: 3,
+                mt: 2,
+                p: 2,
               }}
             >
-              <Stack
-                direction="row"
-                sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}
-              >
-                <Typography variant="h6" sx={{ fontWeight: 300 }}>
-                  Swap tokens
-                </Typography>
-                <Stack direction="row" spacing={1}>
-                  <IconButton size="small" aria-label="Swap history">
-                    <History />
-                  </IconButton>
-                  <IconButton size="small" aria-label="Swap settings">
-                    <Settings />
-                  </IconButton>
-                </Stack>
+              <Stack spacing={0.75}>
+                <DetailRow label="Exchange rate" value="1 DCC = 0.00 USDT" />
+                <DetailRow label="Price impact" value="< 0.01%" />
+                <DetailRow label="Network fee" value="~0.005 DCC" />
               </Stack>
-
-              <TokenField label="From" symbol="DCC" markColor="#8A63D2" balance="0.00 DCC" />
-
-              {/* Overlaps both fields, so the pair reads as one control. */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  my: -1.25,
-                  position: 'relative',
-                  zIndex: 1,
-                }}
-              >
-                <IconButton
-                  aria-label="Reverse direction"
-                  sx={{
-                    bgcolor: 'background.paper',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                >
-                  <SwapVert />
-                </IconButton>
-              </Box>
-
-              <TokenField label="To" symbol="USDT" markColor="#F7931A" balance="0.00 USDT" />
-
-              <Paper
-                elevation={0}
-                sx={{
-                  bgcolor: palette.periwinkleWash,
-                  borderRadius: radii.cards,
-                  mt: 2,
-                  p: 2,
-                }}
-              >
-                <Stack spacing={0.75}>
-                  <DetailRow label="Exchange rate" value="1 DCC = 0.00 USDT" />
-                  <DetailRow label="Price impact" value="< 0.01%" />
-                  <DetailRow label="Network fee" value="~0.005 DCC" />
-                </Stack>
-              </Paper>
-
-              <Button variant="contained" size="large" fullWidth disabled sx={{ mt: 2, py: 1.5 }}>
-                Swap unavailable
-              </Button>
             </Paper>
-          </ComingSoon>
-        </Box>
-      </PageFrame>
-    </ThemeProvider>
+
+            <Button variant="contained" size="large" fullWidth disabled sx={{ mt: 2, py: 1.5 }}>
+              Swap unavailable
+            </Button>
+          </Paper>
+        </ComingSoon>
+      </Box>
+    </PageFrame>
   );
 };

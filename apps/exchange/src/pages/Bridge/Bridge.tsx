@@ -20,7 +20,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import bnbIcon from 'cryptocurrency-icons/svg/color/bnb.svg';
 // Crypto logos
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
@@ -33,7 +32,6 @@ import { DepositAsset } from '@/features/bridge/DepositAsset';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
-import { landingTheme } from '@/theme/landingTheme';
 
 interface SelectedAsset {
   assetId: string;
@@ -189,55 +187,6 @@ export const Bridge: React.FC = () => {
   // Show login prompt if not authenticated
   if (!user) {
     return (
-      <ThemeProvider theme={landingTheme}>
-        <Box
-          sx={{
-            bgcolor: 'background.default',
-            minHeight: '100svh',
-            py: 4,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Paper
-              elevation={3}
-              sx={{
-                borderRadius: 2,
-                p: 4,
-                textAlign: 'center',
-              }}
-            >
-              <Login sx={{ color: 'primary.main', fontSize: 64, mb: 2 }} />
-              <Typography
-                variant="h5"
-                gutterBottom
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Authentication Required
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: 'text.secondary',
-                  mb: 3,
-                }}
-              >
-                Please log in to access the cross-chain bridge. You need an active wallet to
-                transfer assets between DecentralChain and external blockchains.
-              </Typography>
-              <Button variant="contained" size="large" href="/wallet">
-                Go to Wallet
-              </Button>
-            </Paper>
-          </Container>
-        </Box>
-      </ThemeProvider>
-    );
-  }
-
-  return (
-    <ThemeProvider theme={landingTheme}>
       <Box
         sx={{
           bgcolor: 'background.default',
@@ -245,208 +194,253 @@ export const Bridge: React.FC = () => {
           py: 4,
         }}
       >
-        <Container maxWidth="xl">
-          {/* Header */}
-          <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Container maxWidth="sm">
+          <Paper
+            elevation={3}
+            sx={{
+              borderRadius: 2,
+              p: 4,
+              textAlign: 'center',
+            }}
+          >
+            <Login sx={{ color: 'primary.main', fontSize: 64, mb: 2 }} />
             <Typography
-              variant="h3"
+              variant="h5"
               gutterBottom
               sx={{
-                fontWeight: 800,
+                fontWeight: 600,
               }}
             >
-              Cross-Chain Bridge
+              Authentication Required
             </Typography>
             <Typography
               variant="body1"
               sx={{
                 color: 'text.secondary',
-                maxWidth: 600,
-                mx: 'auto',
+                mb: 3,
               }}
             >
-              Transfer assets between DecentralChain and external blockchains securely through our
-              gateway infrastructure
+              Please log in to access the cross-chain bridge. You need an active wallet to transfer
+              assets between DecentralChain and external blockchains.
             </Typography>
-          </Box>
-
-          {/* Network Selector */}
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                mb: 2,
-                textAlign: 'center',
-              }}
-            >
-              Select Network
-            </Typography>
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                justifyContent: 'center',
-              }}
-            >
-              {SUPPORTED_NETWORKS.map((network) => (
-                <Grid
-                  key={network.id}
-                  size={{
-                    md: 3,
-                    sm: 4,
-                    xs: 6,
-                  }}
-                >
-                  <Card
-                    onClick={() => network.available && setSelectedNetwork(network.id)}
-                    sx={{
-                      '&:hover': network.available
-                        ? {
-                            boxShadow: 4,
-                            transform: 'translateY(-4px)',
-                          }
-                        : {},
-                      border: 2,
-                      borderColor: selectedNetwork === network.id ? network.color : 'transparent',
-                      cursor: network.available ? 'pointer' : 'not-allowed',
-                      opacity: network.available ? 1 : 0.6,
-                      position: 'relative',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    <CardContent sx={{ py: 2, textAlign: 'center' }}>
-                      <Box
-                        component="img"
-                        src={network.icon}
-                        alt={`${network.name} logo`}
-                        sx={{
-                          display: 'block',
-                          height: 48,
-                          mb: 1,
-                          mx: 'auto',
-                          width: 48,
-                        }}
-                      />
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontWeight: 600,
-                        }}
-                      >
-                        {network.name}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                        }}
-                      >
-                        {network.ticker}
-                      </Typography>
-                      {selectedNetwork === network.id && network.available && (
-                        <CheckCircle
-                          sx={{
-                            color: network.color,
-                            fontSize: 24,
-                            position: 'absolute',
-                            right: 8,
-                            top: 8,
-                          }}
-                        />
-                      )}
-                      {network.comingSoon && (
-                        <Chip label="Coming Soon" size="small" sx={{ mt: 1 }} variant="outlined" />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-
-          {/* Mode Toggle */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-            <ToggleButtonGroup
-              value={mode}
-              exclusive
-              onChange={handleModeChange}
-              aria-label="Bridge mode"
-              sx={{
-                '& .MuiToggleButton-root': {
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  px: 4,
-                  py: 1.5,
-                  textTransform: 'none',
-                },
-              }}
-            >
-              <ToggleButton value="deposit" aria-label="Deposit mode">
-                Deposit to DecentralChain
-              </ToggleButton>
-              <ToggleButton value="withdraw" aria-label="Withdraw mode">
-                Withdraw to External
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-
-          {/* Info Alert */}
-          <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
-            {mode === 'deposit' ? (
-              <>
-                <strong>Deposit Mode:</strong> Send{' '}
-                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the
-                gateway address. You&apos;ll receive wrapped tokens on DecentralChain after network
-                confirmations.
-              </>
-            ) : (
-              <>
-                <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
-                gateway. You&apos;ll receive native{' '}
-                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
-                processing.
-              </>
-            )}
-          </Alert>
-
-          {/* Asset Selector Grid */}
-          <BridgeAssetSelector
-            balances={balances}
-            onDeposit={handleDeposit}
-            onWithdraw={handleWithdraw}
-          />
-
-          {/* Deposit Modal */}
-          {selectedAsset && (
-            <DepositAsset
-              asset={{
-                id: selectedAsset.assetId,
-                name: selectedAsset.name,
-                ticker: selectedAsset.ticker,
-              }}
-              open={depositOpen}
-              onClose={handleDepositClose}
-            />
-          )}
-
-          {/* Withdraw Modal */}
-          {selectedAsset && (
-            <WithdrawAsset
-              asset={{
-                decimals: selectedAsset.decimals,
-                id: selectedAsset.assetId,
-                name: selectedAsset.name,
-                ticker: selectedAsset.ticker,
-              }}
-              balance={selectedAsset.balance}
-              open={withdrawOpen}
-              onClose={handleWithdrawClose}
-              onWithdraw={handleWithdrawSubmit}
-            />
-          )}
+            <Button variant="contained" size="large" href="/wallet">
+              Go to Wallet
+            </Button>
+          </Paper>
         </Container>
       </Box>
-    </ThemeProvider>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        bgcolor: 'background.default',
+        minHeight: '100svh',
+        py: 4,
+      }}
+    >
+      <Container maxWidth="xl">
+        {/* Header */}
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <Typography
+            variant="h3"
+            gutterBottom
+            sx={{
+              fontWeight: 800,
+            }}
+          >
+            Cross-Chain Bridge
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'text.secondary',
+              maxWidth: 600,
+              mx: 'auto',
+            }}
+          >
+            Transfer assets between DecentralChain and external blockchains securely through our
+            gateway infrastructure
+          </Typography>
+        </Box>
+
+        {/* Network Selector */}
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              textAlign: 'center',
+            }}
+          >
+            Select Network
+          </Typography>
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              justifyContent: 'center',
+            }}
+          >
+            {SUPPORTED_NETWORKS.map((network) => (
+              <Grid
+                key={network.id}
+                size={{
+                  md: 3,
+                  sm: 4,
+                  xs: 6,
+                }}
+              >
+                <Card
+                  onClick={() => network.available && setSelectedNetwork(network.id)}
+                  sx={{
+                    '&:hover': network.available
+                      ? {
+                          boxShadow: 4,
+                          transform: 'translateY(-4px)',
+                        }
+                      : {},
+                    border: 2,
+                    borderColor: selectedNetwork === network.id ? network.color : 'transparent',
+                    cursor: network.available ? 'pointer' : 'not-allowed',
+                    opacity: network.available ? 1 : 0.6,
+                    position: 'relative',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <CardContent sx={{ py: 2, textAlign: 'center' }}>
+                    <Box
+                      component="img"
+                      src={network.icon}
+                      alt={`${network.name} logo`}
+                      sx={{
+                        display: 'block',
+                        height: 48,
+                        mb: 1,
+                        mx: 'auto',
+                        width: 48,
+                      }}
+                    />
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      {network.name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                      }}
+                    >
+                      {network.ticker}
+                    </Typography>
+                    {selectedNetwork === network.id && network.available && (
+                      <CheckCircle
+                        sx={{
+                          color: network.color,
+                          fontSize: 24,
+                          position: 'absolute',
+                          right: 8,
+                          top: 8,
+                        }}
+                      />
+                    )}
+                    {network.comingSoon && (
+                      <Chip label="Coming Soon" size="small" sx={{ mt: 1 }} variant="outlined" />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Mode Toggle */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+          <ToggleButtonGroup
+            value={mode}
+            exclusive
+            onChange={handleModeChange}
+            aria-label="Bridge mode"
+            sx={{
+              '& .MuiToggleButton-root': {
+                fontSize: '1rem',
+                fontWeight: 500,
+                px: 4,
+                py: 1.5,
+                textTransform: 'none',
+              },
+            }}
+          >
+            <ToggleButton value="deposit" aria-label="Deposit mode">
+              Deposit to DecentralChain
+            </ToggleButton>
+            <ToggleButton value="withdraw" aria-label="Withdraw mode">
+              Withdraw to External
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+
+        {/* Info Alert */}
+        <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
+          {mode === 'deposit' ? (
+            <>
+              <strong>Deposit Mode:</strong> Send{' '}
+              {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the gateway
+              address. You&apos;ll receive wrapped tokens on DecentralChain after network
+              confirmations.
+            </>
+          ) : (
+            <>
+              <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
+              gateway. You&apos;ll receive native{' '}
+              {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
+              processing.
+            </>
+          )}
+        </Alert>
+
+        {/* Asset Selector Grid */}
+        <BridgeAssetSelector
+          balances={balances}
+          onDeposit={handleDeposit}
+          onWithdraw={handleWithdraw}
+        />
+
+        {/* Deposit Modal */}
+        {selectedAsset && (
+          <DepositAsset
+            asset={{
+              id: selectedAsset.assetId,
+              name: selectedAsset.name,
+              ticker: selectedAsset.ticker,
+            }}
+            open={depositOpen}
+            onClose={handleDepositClose}
+          />
+        )}
+
+        {/* Withdraw Modal */}
+        {selectedAsset && (
+          <WithdrawAsset
+            asset={{
+              decimals: selectedAsset.decimals,
+              id: selectedAsset.assetId,
+              name: selectedAsset.name,
+              ticker: selectedAsset.ticker,
+            }}
+            balance={selectedAsset.balance}
+            open={withdrawOpen}
+            onClose={handleWithdrawClose}
+            onWithdraw={handleWithdrawSubmit}
+          />
+        )}
+      </Container>
+    </Box>
   );
 };

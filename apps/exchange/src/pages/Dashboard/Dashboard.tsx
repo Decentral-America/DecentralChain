@@ -33,7 +33,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import { formatDistanceToNow } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -48,7 +47,6 @@ import { useAliases } from '@/hooks/useAliases';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
 import { radii } from '@/styles/tokens';
-import { landingTheme } from '@/theme/landingTheme';
 import { formatAmount } from '@/utils/formatters';
 
 interface DashboardTx {
@@ -287,7 +285,7 @@ export const Dashboard = () => {
   ];
 
   return (
-    <ThemeProvider theme={landingTheme}>
+    <>
       <PageFrame
         fit
         title={`Welcome back, ${user?.name || 'Trader'}`}
@@ -816,6 +814,6 @@ export const Dashboard = () => {
           availableBalance={selectedAsset.availableBalance}
         />
       )}
-    </ThemeProvider>
+    </>
   );
 };

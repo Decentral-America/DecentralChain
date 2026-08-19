@@ -4,10 +4,9 @@
  */
 
 import { Box, Fade } from '@mui/material';
-import { styled, ThemeProvider } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router';
-import { landingTheme } from '@/theme/landingTheme';
 
 const WalletContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -27,14 +26,12 @@ export const Wallet = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={landingTheme}>
-      <WalletContainer>
-        <Fade in={isVisible} timeout={800}>
-          <Box>
-            <Outlet />
-          </Box>
-        </Fade>
-      </WalletContainer>
-    </ThemeProvider>
+    <WalletContainer>
+      <Fade in={isVisible} timeout={800}>
+        <Box>
+          <Outlet />
+        </Box>
+      </Fade>
+    </WalletContainer>
   );
 };

@@ -1,7 +1,8 @@
 import { ScheduleOutlined } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
-import { radii, status } from '@/styles/tokens';
+import { radii } from '@/styles/tokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The gate for a screen that is not live yet.
@@ -31,13 +32,28 @@ export function ComingSoon({
   /** The preview of the unfinished surface. Rendered inert beneath the notice. */
   children?: ReactNode;
 }) {
+  const { palette } = useTheme();
+  const t = tokens(palette.mode);
+
   return (
     <>
       <Box
         role="status"
         sx={{
           alignItems: 'flex-start',
-          bgcolor: status.warningSurface,
+          /*
+           * `status.warningSurface` was a fixed light literal (`#fdf6e9`).
+           * The title/description below read the real ambient `text.primary`/
+           * `text.secondary` ink, which this box never controlled — under the
+           * old `landingTheme` wrapper that ink was always the same fixed
+           * light value the panel was designed for, so the mismatch never
+           * surfaced. Once a page stops forcing that wrapper, dark mode's
+           * near-white ink lands on this still-fixed-light panel: measured
+           * 1.01:1 (title) / 1.86:1 (description) — see task-6-report.md.
+           * `surface.sunken` keeps the "recessed panel" read in both modes
+           * while actually pairing with the ink that sits on it.
+           */
+          bgcolor: t.surface.sunken,
           borderRadius: radii.cards,
           display: 'flex',
           gap: 2,
@@ -46,7 +62,7 @@ export function ComingSoon({
       >
         <ScheduleOutlined
           aria-hidden="true"
-          sx={{ color: status.warning, fontSize: 22, mt: 0.2 }}
+          sx={{ color: t.intent.warning, fontSize: 22, mt: 0.2 }}
         />
         <Box sx={{ minWidth: 0 }}>
           <Typography sx={{ color: 'text.primary', fontSize: 16 }}>{title}</Typography>
