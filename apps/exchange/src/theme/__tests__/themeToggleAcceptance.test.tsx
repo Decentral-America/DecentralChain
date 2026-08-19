@@ -205,6 +205,49 @@ function nearestBackground(el: HTMLElement): string {
   );
 }
 
+/**
+ * What `el`'s **own** emotion rule declares for `property` — not what it
+ * inherited.
+ *
+ * `getComputedStyle(el).color` is the wrong instrument for an ink assertion:
+ * `color` is an inherited property, and `<CssBaseline/>` sets
+ * `body { color: text.primary }`, which differs per mode all by itself. So a
+ * page that painted *nothing* still reported the right ink in each mode. The
+ * `SignIn` and `SignUp` cases below did exactly that — verified by replacing
+ * both pages with `<div data-testid="auth-canvas">nothing</div>` and watching
+ * the file stay at `Tests 13 passed (13)`.
+ *
+ * A declaration cannot be inherited. Emotion emits one rule per element, keyed
+ * on the `css-<hash>` class it puts on that element, so reading the value out
+ * of that rule proves the page's own style object set it. Matching the hash
+ * class exactly (`.css-xxxx`, never a substring of a compound selector) is the
+ * same discipline `Leasing.contrast.test.tsx` arrived at: emotion never removes
+ * an injected `<style>` tag, so by the second render in a file the sheet holds
+ * both modes' rules, and anything looser than the content-derived hash can
+ * silently match the previous render's.
+ *
+ * Throwing when there is no hash class is the guard that makes this bite: an
+ * element the page did not style has no emotion class at all.
+ */
+function declared(el: HTMLElement, property: string): string {
+  const hashClass = Array.from(el.classList).find((c) => c.startsWith('css-'));
+  if (!hashClass) {
+    throw new Error(
+      `<${el.tagName.toLowerCase()} class="${el.className}"> carries no emotion class, so it ` +
+        `declares no style of its own — reading its ${property} would report an inherited ` +
+        'value (CssBaseline paints the body), not something the page painted.',
+    );
+  }
+  for (const sheet of Array.from(document.styleSheets)) {
+    for (const rule of Array.from(sheet.cssRules) as CSSStyleRule[]) {
+      if (rule.selectorText !== `.${hashClass}`) continue;
+      const value = rule.style.getPropertyValue(property);
+      if (value) return value.trim();
+    }
+  }
+  throw new Error(`.${hashClass} declares no ${property} of its own`);
+}
+
 /** Renders `node` under the real MUI theme for `mode`, optionally also the
  * styled-components theme (only the auth pages read both systems). */
 function renderPage(node: ReactElement, mode: ThemeMode, withStyled = false): RenderResult {
@@ -281,28 +324,55 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
     expect(dark).toBe(tokens('dark').surface.base);
   });
 
-  it('SignIn: the AuthScene canvas ink differs, and matches text.primary in each mode', () => {
+  /*
+   * `AuthScene`'s canvas is a gradient in light mode and a flat fill in dark,
+   * so `nearestBackground` cannot guard these two the way it guards the four
+   * below it — `getComputedStyle(...).backgroundColor` on a gradient is
+   * `rgba(0, 0, 0, 0)` and the walk would leave the page. `declared()` is the
+   * equivalent guarantee by a different route: it reads the canvas' own
+   * emitted rule, so both halves of what the page paints — the fill and the
+   * ink it pins on top of it — are asserted as *declarations*, which an
+   * unstyled element cannot have. The previous version measured
+   * `getComputedStyle(...).color`, an inherited property, and passed against
+   * `<body>`'s `CssBaseline` ink for a page that rendered nothing.
+   */
+  it('SignIn: the AuthScene canvas declares its own fill and ink, and both differ per mode', () => {
+    const canvas = () => screen.getByTestId('auth-canvas');
     const { unmount } = renderPage(<SignIn />, 'light', true);
-    const light = rgbToHex(getComputedStyle(screen.getByTestId('auth-canvas')).color);
+    const lightInk = rgbToHex(declared(canvas(), 'color'));
+    const lightFill = declared(canvas(), 'background');
     unmount();
     renderPage(<SignIn />, 'dark', true);
-    const dark = rgbToHex(getComputedStyle(screen.getByTestId('auth-canvas')).color);
+    const darkInk = rgbToHex(declared(canvas(), 'color'));
+    const darkFill = declared(canvas(), 'background');
 
-    expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').text.primary);
-    expect(dark).toBe(tokens('dark').text.primary);
+    expect(darkInk).not.toBe(lightInk);
+    expect(lightInk).toBe(tokens('light').text.primary);
+    expect(darkInk).toBe(tokens('dark').text.primary);
+
+    // Light is the two-stop wash, dark the flat night ground — see AuthScene.
+    expect(darkFill).not.toBe(lightFill);
+    expect(lightFill).toContain('linear-gradient');
+    expect(rgbToHex(darkFill)).toBe(tokens('dark').surface.base);
   });
 
-  it('SignUp: the AuthScene canvas ink differs, and matches text.primary in each mode', () => {
+  it('SignUp: the AuthScene canvas declares its own fill and ink, and both differ per mode', () => {
+    const canvas = () => screen.getByTestId('auth-canvas');
     const { unmount } = renderPage(<SignUp />, 'light', true);
-    const light = rgbToHex(getComputedStyle(screen.getByTestId('auth-canvas')).color);
+    const lightInk = rgbToHex(declared(canvas(), 'color'));
+    const lightFill = declared(canvas(), 'background');
     unmount();
     renderPage(<SignUp />, 'dark', true);
-    const dark = rgbToHex(getComputedStyle(screen.getByTestId('auth-canvas')).color);
+    const darkInk = rgbToHex(declared(canvas(), 'color'));
+    const darkFill = declared(canvas(), 'background');
 
-    expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').text.primary);
-    expect(dark).toBe(tokens('dark').text.primary);
+    expect(darkInk).not.toBe(lightInk);
+    expect(lightInk).toBe(tokens('light').text.primary);
+    expect(darkInk).toBe(tokens('dark').text.primary);
+
+    expect(darkFill).not.toBe(lightFill);
+    expect(lightFill).toContain('linear-gradient');
+    expect(rgbToHex(darkFill)).toBe(tokens('dark').surface.base);
   });
 
   it('ImportPage: the page-heading background differs, and matches background.default in each mode', () => {
