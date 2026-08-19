@@ -1,8 +1,9 @@
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { SurfaceProvider } from '@/components/atoms/SurfaceContext';
 import { MobileAppBar } from '@/components/mobile/MobileAppBar';
-import { mobileFluid, mobileLayout, mobileSurface } from '@/styles/mobileTokens';
+import { mobileFluid, mobileLayout } from '@/styles/mobileTokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The shared mobile screen skeleton.
@@ -31,8 +32,11 @@ export function MobilePageShell({
   summary?: ReactNode;
   children: ReactNode;
 }) {
+  const { palette } = useTheme();
+  const t = tokens(palette.mode);
+
   return (
-    <Box sx={{ bgcolor: mobileSurface.canvas, minHeight: '100%' }}>
+    <Box sx={{ bgcolor: t.surface.base, minHeight: '100%' }}>
       <MobileAppBar title={title} {...(subtitle ? { subtitle } : {})} />
 
       {summary && <Box sx={{ pt: 2, px: `${mobileLayout.gutter}px` }}>{summary}</Box>}
