@@ -972,6 +972,14 @@ export const CreateToken = () => {
                       // neutral panel `accent.primary` is actually
                       // designed to sit on (5.7-6.2:1 both modes).
                       bgcolor: t.surface.sunken,
+                      // The border also moves off its fixed brand-indigo
+                      // literal (`#533afd`) to the same neutral hairline
+                      // every other panel in this file uses — not a
+                      // contrast fix (a border is non-text), but the
+                      // brand outline is intentionally given up here for
+                      // one consistent neutral frame (fix round 1, flagged
+                      // in task-6-report.md after the original report
+                      // named only the bgcolor change).
                       border: `1px solid ${t.border.subtle}`,
                       borderRadius: 2,
                       p: 3,

@@ -69,14 +69,28 @@ function resolveVar(style: CSSStyleDeclaration, value: string): string {
   throw new Error(`Could not resolve ${match[1]}`);
 }
 
+/**
+ * `resolveVar` only unwraps the `var()` indirection — its result can still
+ * be an `rgb(...)` string (e.g. a literal `sx` override that never goes
+ * through a custom property at all). `contrastRatio` is hex-only and
+ * returns `NaN` for `rgb()`/`rgba()` input with no error (fix round 1: this
+ * gap let a real `NaN` failure get reported as if it were the number
+ * `2.946089016228706` — the number itself was right, computed by hand, but
+ * it was never actually observed from a run until this fix). Always finish
+ * by normalising to hex.
+ */
+function toHex(value: string): string {
+  return value.startsWith('#') ? value.toLowerCase() : rgbToHex(value);
+}
+
 function computedColor(el: HTMLElement): string {
   const style = getComputedStyle(el);
-  return resolveVar(style, style.color);
+  return toHex(resolveVar(style, style.color));
 }
 
 function computedBackground(el: HTMLElement): string {
   const style = getComputedStyle(el);
-  return resolveVar(style, style.backgroundColor);
+  return toHex(resolveVar(style, style.backgroundColor));
 }
 
 function nearestBackground(el: HTMLElement): string {

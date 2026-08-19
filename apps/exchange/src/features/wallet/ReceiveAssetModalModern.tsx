@@ -25,6 +25,7 @@ import type React from 'react';
 import { QRCodeSVG } from '@/components/display/QRCode';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
+import { tokens } from '@/theme/tokens/semantic';
 
 export interface ReceiveAssetModalModernProps {
   isOpen: boolean;
@@ -80,7 +81,15 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
                 width: 40,
               }}
             >
-              <ReceiveIcon sx={{ color: 'white', fontSize: 20 }} />
+              {/*
+                Fixed badge, fixed gradient — the same `#06B6D4`/`#10B981`
+                pair as `SendAssetModalModern`'s success-view badge. `white`
+                missed the 3:1 icon floor against both stops (2.54/2.43),
+                mode-independent; found via the extended sweep (fix round 1,
+                task-6-report.md), not named in the original list, but the
+                same one-word repoint applies.
+              */}
+              <ReceiveIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
             </Box>
             <Typography
               variant="h6"

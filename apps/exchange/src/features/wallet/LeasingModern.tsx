@@ -5,6 +5,7 @@
 
 import { TrendingUpOutlined } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
+import { tokens } from '@/theme/tokens/semantic';
 import { Leasing as LegacyLeasing } from './Leasing';
 
 export const LeasingModern = () => {
@@ -34,7 +35,16 @@ export const LeasingModern = () => {
                   width: 56,
                 }}
               >
-                <TrendingUpOutlined sx={{ color: 'white', fontSize: 32 }} />
+                {/*
+                  Fixed badge, fixed gradient — `white` missed even the 3:1
+                  icon floor against both stops (2.15/2.26), mode-independent
+                  since neither the icon nor the gradient ever read the
+                  theme. Both stops clear comfortably with the app's own
+                  fixed dark ink instead (8.49/8.06 — fix round 1,
+                  task-6-report.md), the same "fixed panel, fixed ink" pin
+                  used for CreateToken's customize button.
+                */}
+                <TrendingUpOutlined sx={{ color: tokens('light').text.primary, fontSize: 32 }} />
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography

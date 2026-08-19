@@ -26,6 +26,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getAddressByAlias, validateAliasFormat } from '@/api/services/aliasService';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { tokens } from '@/theme/tokens/semantic';
 import { broadcastTransaction, createTransferTransaction } from '@/utils/transactions';
 
 export interface SendAssetModalModernProps {
@@ -328,7 +329,17 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                   width: 40,
                 }}
               >
-                <SendIcon sx={{ color: 'white', fontSize: 20 }} />
+                {/*
+                  Fixed badge, fixed gradient — `white` missed the 3:1 icon
+                  floor against both stops (2.43/2.54), mode-independent.
+                  Unlike the form-view badge below (`#4F46E5→#06B6D4`, the
+                  same stops as the old Send button fill — genuinely needs a
+                  new gradient stop, since neither black nor white clears
+                  both), this pair clears comfortably with the app's own
+                  fixed dark ink, `tokens('light').text.primary` (7.51/7.19
+                  — fix round 1, task-6-report.md).
+                */}
+                <SendIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
               </Box>
               <Typography
                 variant="h6"
@@ -605,17 +616,24 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
         <Button onClick={handleClose} disabled={sendMutation.isPending}>
           Cancel
         </Button>
+        {/*
+          No fixed gradient fill any more (task-6-report.md, fix round 1).
+          `primary.contrastText` is mode-aware; the gradient it used to sit
+          on was not, so once dark mode could actually reach this button the
+          ink and fill stopped agreeing — measured 2.90:1 against the
+          gradient's indigo stop (2.43:1 against the cyan stop even in light
+          mode). Neither white nor black clears both stops (checked: white
+          6.29/2.43, black 3.34/8.65), so — unlike the two decorative badges
+          fixed in the same round — this one can't be rescued with a pinned
+          ink; the identical fix as CreateToken's Next/Create buttons
+          applies: drop the custom fill and let `variant="contained"` derive
+          a verified-accessible solid fill+ink pair from the theme.
+        */}
         <Button
           variant="contained"
           onClick={handleSend}
           disabled={!recipient || !amount || sendMutation.isPending}
           startIcon={<SendIcon />}
-          sx={{
-            '&:hover': {
-              background: 'linear-gradient(135deg, #4338CA 0%, #0891B2 100%)',
-            },
-            background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
-          }}
         >
           {sendMutation.isPending ? 'Sending...' : 'Send'}
         </Button>
