@@ -1,45 +1,12 @@
-import { Box, ButtonBase, Typography } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import { Box, ButtonBase, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { Icon } from '@/components/atoms/Icon';
 import Logo from '@/components/atoms/Logo';
 import { SurfaceProvider } from '@/components/atoms/SurfaceContext';
-import {
-  mobileGradient,
-  mobileLayout,
-  mobileRadius,
-  mobileSurface,
-  mobileText,
-} from '@/styles/mobileTokens';
-import { lightTheme } from '@/styles/themes';
+import { mobileGradient, mobileLayout, mobileRadius, mobileText } from '@/styles/mobileTokens';
 import { brandCanvas } from '@/theme/landingTheme';
-import { createAppTheme } from '@/theme/mui-theme';
-
-/**
- * Pins everything this screen hosts to the light theme — this module's own
- * scope, not per-render, since it never changes.
- *
- * The sheet below (`mobileSurface.canvas`) is a fixed light literal, like
- * the rest of the mobile chrome — deliberately, per `styles/mobileTokens`'
- * own doc comment. `LoginForm`'s `Card` and `CreateWalletWizard`'s
- * `GlassCard` are shared with desktop, though, where they correctly read the
- * ambient `ThemeContext`. Once the app is actually in dark mode (task 5),
- * that ambient theme reaches here too unless pinned: `GlassCard`'s dark
- * construction is translucent glass tuned to sit on the dark aurora canvas,
- * and its `tokens('dark').text.secondary` ink renders close to invisible on
- * this sheet, which never stopped being light.
- *
- * Two theme systems, both pinned: `GlassCard`'s surface and most inline
- * `sx` colour reads are MUI; `LoginForm`'s own text (`Title`, `Description`,
- * …) is styled-components, driven by a *separate* `ThemeContext`-supplied
- * provider that the MUI one alone does not reach. Pinning only the MUI side
- * fixes the card but leaves that text reading the outer dark
- * styled-components theme — the same defect from the other system. See
- * task-5-report.md.
- */
-const LIGHT_MUI_THEME = createAppTheme('light');
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Mobile authentication screen.
@@ -50,6 +17,25 @@ const LIGHT_MUI_THEME = createAppTheme('light');
  *
  * The sheet fills the remaining height and scrolls internally, which keeps the
  * submit button reachable when the on-screen keyboard is open.
+ *
+ * ## Two surfaces, two rules
+ *
+ * The **band** is a fixed dark gradient in *both* modes. It is the product's
+ * chrome identity — the same band the mobile app wears — and its ink is
+ * pinned white to match it. Fixed fill under fixed ink is the correct
+ * pairing, and it is what lets the band stay branded without breaking.
+ *
+ * The **sheet** is a page surface, so it follows the toggle. It used to be
+ * `mobileSurface.canvas`, a fixed light literal (`styles/mobileTokens` has no
+ * mode dimension at all), and this module answered that by pinning everything
+ * it hosts to a light MUI theme *and* a light styled-components theme. That
+ * was backwards: `SignIn` and `SignUp` render through here on mobile, and
+ * both are named in the spec's acceptance test, so the pin re-broke the
+ * toggle on two of the twelve pages in order to protect one fixed fill. The
+ * fill moved instead. `LoginForm`'s `Card`, `CreateWalletWizard`'s
+ * `GlassCard` and the styled-components text inside them are all already
+ * mode-aware and now simply work — `GlassCard`'s translucent dark glass gets
+ * the dark ground it was designed for rather than an effectively-white one.
  */
 
 interface MobileAuthScreenProps {
@@ -72,6 +58,7 @@ export function MobileAuthScreen({
   onBack,
 }: MobileAuthScreenProps) {
   const navigate = useNavigate();
+  const t = tokens(useTheme().palette.mode);
 
   return (
     <Box
@@ -128,8 +115,10 @@ export function MobileAuthScreen({
 
       {/* Form sheet — takes the remaining height and scrolls on its own */}
       <Box
+        data-testid="mobile-auth-sheet"
         sx={{
-          bgcolor: mobileSurface.canvas,
+          // The page ground, per mode — see the "two surfaces" note above.
+          bgcolor: t.surface.base,
           borderTopLeftRadius: mobileRadius.sheet,
           borderTopRightRadius: mobileRadius.sheet,
           display: 'flex',
@@ -144,34 +133,30 @@ export function MobileAuthScreen({
           px: `${mobileLayout.gutter}px`,
         }}
       >
-        <ThemeProvider theme={LIGHT_MUI_THEME}>
-          <StyledThemeProvider theme={lightTheme}>
-            <Box sx={{ flex: 1 }}>
-              <SurfaceProvider chromeless>{children}</SurfaceProvider>
-            </Box>
-            {footer && (
-              <Box
-                sx={{
-                  '& button': { minHeight: 48 },
-                  bgcolor: 'transparent',
-                  /*
-                   * Sticky insets are measured from the scrollport edge, and the
-                   * scrollport now reaches the physical bottom of the screen
-                   * (viewport-fit=cover). `bottom: 0` would pin the submit
-                   * button under the home indicator while the sheet is
-                   * scrolled; the container's own pb only clears it once
-                   * scrolled fully down.
-                   */
-                  bottom: 'env(safe-area-inset-bottom)',
-                  position: 'sticky',
-                  pt: 2,
-                }}
-              >
-                {footer}
-              </Box>
-            )}
-          </StyledThemeProvider>
-        </ThemeProvider>
+        <Box sx={{ flex: 1 }}>
+          <SurfaceProvider chromeless>{children}</SurfaceProvider>
+        </Box>
+        {footer && (
+          <Box
+            sx={{
+              '& button': { minHeight: 48 },
+              bgcolor: 'transparent',
+              /*
+               * Sticky insets are measured from the scrollport edge, and the
+               * scrollport now reaches the physical bottom of the screen
+               * (viewport-fit=cover). `bottom: 0` would pin the submit
+               * button under the home indicator while the sheet is
+               * scrolled; the container's own pb only clears it once
+               * scrolled fully down.
+               */
+              bottom: 'env(safe-area-inset-bottom)',
+              position: 'sticky',
+              pt: 2,
+            }}
+          >
+            {footer}
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { Box, type BoxProps, ButtonBase, Typography } from '@mui/material';
+import { Box, type BoxProps, ButtonBase, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { Icon, type IconName } from '@/components/atoms/Icon';
 import {
@@ -12,6 +12,7 @@ import {
   mobileText,
   mobileType,
 } from '@/styles/mobileTokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Mobile UI primitives.
@@ -458,7 +459,27 @@ interface MobileButtonProps {
   type?: 'button' | 'submit';
 }
 
-/** Pill action. The accent variant is the mobile primary call to action. */
+/**
+ * Pill action. The accent variant is the mobile primary call to action.
+ *
+ * `accent` and `dark` carry their own opaque fills, so their ink is pinned to
+ * match — a fixed fill under fixed ink, which is correct and mode-independent.
+ *
+ * `outline` is different: its fill is *transparent*, so its ink is read
+ * against whatever surface it happens to land on. Pinning that ink to the
+ * fixed-light `mobileText.primary` only worked while every surface beneath it
+ * was fixed light too. Its one shipping caller is `MobileAuthScreen`'s footer
+ * (`SignIn` and `SignUp` on a phone), whose sheet now follows the app's
+ * light/dark toggle — so this variant has to follow it as well, or the "create
+ * a new wallet" / "import an existing wallet" actions turn near-black on a
+ * near-black sheet. `text.primary`/`border.strong` are the same two roles with
+ * the mode dimension `styles/mobileTokens` deliberately does not have.
+ *
+ * The remaining callers (`MobileWelcome`, `MobileReceiveSheet`) are behind
+ * `import.meta.env.DEV` — the dev-only mobile-shell preview — and sit on the
+ * fixed-light mobile canvas that the wider mobile-shell mode-blindness
+ * follow-up still owns.
+ */
 export function MobileButton({
   children,
   onClick,
@@ -467,10 +488,11 @@ export function MobileButton({
   disabled = false,
   type = 'button',
 }: MobileButtonProps) {
+  const t = tokens(useTheme().palette.mode);
   const palette = {
     accent: { bg: mobileAccent.base, border: 'transparent', color: mobileText.onAccent },
     dark: { bg: mobileText.primary, border: 'transparent', color: mobileText.onAccent },
-    outline: { bg: 'transparent', border: mobileSurface.border, color: mobileText.primary },
+    outline: { bg: 'transparent', border: t.border.strong, color: t.text.primary },
   }[variant];
 
   return (
