@@ -2,7 +2,8 @@
  * Order Book Page
  * Shows live order book and market depth
  */
-import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Chip, Paper, Stack, Typography } from '@mui/material';
+import { PageFrame } from '@/layouts/PageFrame';
 import { status } from '@/styles/tokens';
 
 export const OrderBook = () => {
@@ -23,20 +24,11 @@ export const OrderBook = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Stack
-        direction="row"
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Order Book
-        </Typography>
-        <Chip label="DCC/USDT" color="primary" />
-      </Stack>
+    <PageFrame
+      title="Order Book"
+      subtitle="Live order book and market depth."
+      actions={<Chip label="DCC/USDT" color="primary" />}
+    >
       <Stack direction="row" spacing={2}>
         {/* Sell Orders */}
         <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, flex: 1, p: 2 }}>
@@ -202,6 +194,6 @@ export const OrderBook = () => {
           </Stack>
         </Paper>
       </Stack>
-    </Box>
+    </PageFrame>
   );
 };

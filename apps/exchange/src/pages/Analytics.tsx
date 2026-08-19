@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { PageFrame } from '@/layouts/PageFrame';
 import { formatAmount } from '@/utils/formatters';
 
 export const Analytics = () => {
@@ -124,17 +125,14 @@ export const Analytics = () => {
 
   if (!user) {
     return (
-      <Box sx={{ p: 3 }}>
+      <PageFrame title="Analytics" subtitle="Activity and performance over time.">
         <Alert severity="info">Please connect your wallet to view analytics</Alert>
-      </Box>
+      </PageFrame>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
-        Analytics
-      </Typography>
+    <PageFrame title="Analytics" subtitle="Activity and performance over time.">
       <Grid container spacing={3}>
         {stats.map((stat) => (
           <Grid
@@ -256,6 +254,6 @@ export const Analytics = () => {
           </Typography>
         )}
       </Paper>
-    </Box>
+    </PageFrame>
   );
 };

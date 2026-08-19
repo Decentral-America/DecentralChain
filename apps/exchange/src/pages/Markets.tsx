@@ -4,7 +4,8 @@
  */
 
 import { TrendingDown, TrendingUp } from '@mui/icons-material';
-import { alpha, Box, Grid, Paper, Stack, Typography, useTheme } from '@mui/material';
+import { alpha, Grid, Paper, Stack, Typography, useTheme } from '@mui/material';
+import { PageFrame } from '@/layouts/PageFrame';
 
 export const Markets = () => {
   const { palette } = useTheme();
@@ -16,10 +17,7 @@ export const Markets = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
-        Markets
-      </Typography>
+    <PageFrame title="Markets" subtitle="Price overview across markets.">
       <Grid container spacing={3}>
         {marketData.map((market) => (
           <Grid
@@ -97,6 +95,6 @@ export const Markets = () => {
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </PageFrame>
   );
 };

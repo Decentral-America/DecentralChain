@@ -4,7 +4,8 @@
  */
 
 import { Mail, MailOutlined } from '@mui/icons-material';
-import { Avatar, Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Chip, Paper, Stack, Typography } from '@mui/material';
+import { PageFrame } from '@/layouts/PageFrame';
 
 export const Messages = () => {
   const messages = [
@@ -35,20 +36,11 @@ export const Messages = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Stack
-        direction="row"
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Messages
-        </Typography>
-        <Chip label="20 Unread" color="error" size="small" />
-      </Stack>
+    <PageFrame
+      title="Messages"
+      subtitle="Notifications and alerts from the network."
+      actions={<Chip label="20 Unread" color="error" size="small" />}
+    >
       <Stack spacing={2}>
         {messages.map((message) => (
           <Paper
@@ -125,6 +117,6 @@ export const Messages = () => {
           </Paper>
         ))}
       </Stack>
-    </Box>
+    </PageFrame>
   );
 };

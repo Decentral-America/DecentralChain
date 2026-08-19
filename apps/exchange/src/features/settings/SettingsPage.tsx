@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 import { type Tab, Tabs } from '@/components/atoms/Tabs';
+import { PageFrame } from '@/layouts/PageFrame';
 import { BackupSettings } from './BackupSettings';
 import { GeneralSettings } from './GeneralSettings';
 import { InfoSettings } from './InfoSettings';
@@ -22,25 +23,6 @@ import { ThemeSettings } from './ThemeSettings';
 const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.xl};
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const PageTitle = styled.h1`
-  margin: 0 0 ${({ theme }) => theme.spacing.sm};
-  font-size: 32px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const PageDescription = styled.p`
-  margin: 0;
-  font-size: 16px;
-  color: ${({ theme }) => theme.colors.disabled};
-  line-height: 1.6;
 `;
 
 const TabContent = styled(Card as React.ComponentType<Record<string, unknown>>)`
@@ -131,15 +113,13 @@ export const SettingsPage: React.FC = () => {
   );
 
   return (
-    <PageContainer>
-      <PageHeader>
-        <PageTitle>Settings</PageTitle>
-        <PageDescription>
-          Manage your application settings, network configuration, and preferences
-        </PageDescription>
-      </PageHeader>
-
-      <Tabs tabs={settingsTabs} defaultActiveTab="general" variant="underline" />
-    </PageContainer>
+    <PageFrame
+      title="Settings"
+      subtitle="Manage your application settings, network configuration, and preferences"
+    >
+      <PageContainer>
+        <Tabs tabs={settingsTabs} defaultActiveTab="general" variant="underline" />
+      </PageContainer>
+    </PageFrame>
   );
 };

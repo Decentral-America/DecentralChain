@@ -3,75 +3,19 @@
  * Matches Portfolio styling with landing page theme
  */
 
-import { AccountBalanceWalletOutlined } from '@mui/icons-material';
-import { Box, Container, Stack, Typography } from '@mui/material';
-import { tokens } from '@/theme/tokens/semantic';
+import { Box } from '@mui/material';
+import { PageFrame } from '@/layouts/PageFrame';
 import { Transactions as LegacyTransactions } from './Transactions';
 
 export const TransactionsModern = () => {
   return (
-    <Box sx={{ py: { md: 6, xs: 4 } }}>
-      <Container maxWidth="xl">
-        <Stack spacing={5}>
-          {/* Hero Section */}
-          <Box>
-            <Stack
-              direction="row"
-              spacing={2}
-              sx={{
-                alignItems: 'center',
-                mb: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  alignItems: 'center',
-                  background: tokens('light').accent.primary,
-                  borderRadius: 2.5,
-                  boxShadow: `0 8px 24px ${tokens('light').accent.primary}4D`,
-                  display: 'flex',
-                  height: 56,
-                  justifyContent: 'center',
-                  width: 56,
-                }}
-              >
-                <AccountBalanceWalletOutlined
-                  sx={{ color: tokens('light').accent.onPrimary, fontSize: 32 }}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    background: tokens('light').accent.primary,
-                    fontSize: { md: '2.5rem', xs: '2rem' },
-                    fontWeight: 800,
-                    mb: 0.5,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Transaction History
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: 'text.secondary',
-                    fontSize: 18,
-                  }}
-                >
-                  View and export your complete transaction history
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-
-          {/* Legacy Transactions Component */}
-          <Box>
-            <LegacyTransactions />
-          </Box>
-        </Stack>
-      </Container>
-    </Box>
+    <PageFrame
+      title="Transaction History"
+      subtitle="View and export your complete transaction history"
+    >
+      <Box>
+        <LegacyTransactions />
+      </Box>
+    </PageFrame>
   );
 };

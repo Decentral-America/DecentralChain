@@ -10,31 +10,13 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 
 const PageContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  padding: ${(p) => p.theme.spacing.xl};
-`;
-
-const Header = styled.div`
-  margin-bottom: ${(p) => p.theme.spacing.xl};
-`;
-
-const Title = styled.h1`
-  font-size: ${(p) => p.theme.fontSizes.xxl};
-  font-weight: ${(p) => p.theme.fontWeights.bold};
-  margin: 0 0 ${(p) => p.theme.spacing.sm} 0;
-  color: ${(p) => p.theme.colors.text};
-`;
-
-const Subtitle = styled.p`
-  font-size: ${(p) => p.theme.fontSizes.md};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.7;
-  margin: 0;
 `;
 
 const Section = styled.div`
@@ -248,73 +230,71 @@ export const AccountManagerPage = () => {
   const otherAccounts = accounts.filter((acc) => acc.hash !== user?.hash);
 
   return (
-    <PageContainer>
-      <Header>
-        <Title>{t('app.accountManager.manageAccounts')}</Title>
-        <Subtitle>
-          {accounts.length} {accounts.length === 1 ? 'wallet' : 'wallets'} in your vault
-        </Subtitle>
-      </Header>
-
-      {/* Current Account Section */}
-      <Section>
-        <SectionTitle>{t('app.accountManager.currentAccount')}</SectionTitle>
-        {user && (
-          <AccountCard isActive>
-            <AccountAvatar>{getAccountInitials(user)}</AccountAvatar>
-            <AccountInfo>
-              <AccountName>{user.name || 'Account'}</AccountName>
-              <AccountAddress>{user.address}</AccountAddress>
-              <ActiveBadge>Active</ActiveBadge>
-            </AccountInfo>
-          </AccountCard>
-        )}
-      </Section>
-
-      {/* Other Accounts Section */}
-      {otherAccounts.length > 0 && (
+    <PageFrame
+      title={t('app.accountManager.manageAccounts')}
+      subtitle={`${accounts.length} ${accounts.length === 1 ? 'wallet' : 'wallets'} in your vault`}
+    >
+      <PageContainer>
+        {/* Current Account Section */}
         <Section>
-          <SectionTitle>{t('app.accountManager.switchAccount')}</SectionTitle>
-          {otherAccounts.map((account) => (
-            <AccountCard
-              key={account.hash}
-              onClick={() => handleSwitchAccount(account.hash)}
-              clickable
-              style={{ opacity: isLoading ? 0.6 : 1 }}
-            >
-              <AccountAvatar>{getAccountInitials(account)}</AccountAvatar>
+          <SectionTitle>{t('app.accountManager.currentAccount')}</SectionTitle>
+          {user && (
+            <AccountCard isActive>
+              <AccountAvatar>{getAccountInitials(user)}</AccountAvatar>
               <AccountInfo>
-                <AccountName>{account.name || 'Account'}</AccountName>
-                <AccountAddress>
-                  {account.address.length > 30
-                    ? `${account.address.substring(0, 12)}...${account.address.substring(account.address.length - 8)}`
-                    : account.address}
-                </AccountAddress>
-                {account.lastLogin && (
-                  <LastLogin>Last used {formatLastLogin(account.lastLogin)}</LastLogin>
-                )}
+                <AccountName>{user.name || 'Account'}</AccountName>
+                <AccountAddress>{user.address}</AccountAddress>
+                <ActiveBadge>Active</ActiveBadge>
               </AccountInfo>
-              <SwitchIcon>→</SwitchIcon>
             </AccountCard>
-          ))}
+          )}
         </Section>
-      )}
 
-      {otherAccounts.length === 0 && (
-        <Section>
-          <EmptyState>No other accounts in your vault</EmptyState>
-        </Section>
-      )}
+        {/* Other Accounts Section */}
+        {otherAccounts.length > 0 && (
+          <Section>
+            <SectionTitle>{t('app.accountManager.switchAccount')}</SectionTitle>
+            {otherAccounts.map((account) => (
+              <AccountCard
+                key={account.hash}
+                onClick={() => handleSwitchAccount(account.hash)}
+                clickable
+                style={{ opacity: isLoading ? 0.6 : 1 }}
+              >
+                <AccountAvatar>{getAccountInitials(account)}</AccountAvatar>
+                <AccountInfo>
+                  <AccountName>{account.name || 'Account'}</AccountName>
+                  <AccountAddress>
+                    {account.address.length > 30
+                      ? `${account.address.substring(0, 12)}...${account.address.substring(account.address.length - 8)}`
+                      : account.address}
+                  </AccountAddress>
+                  {account.lastLogin && (
+                    <LastLogin>Last used {formatLastLogin(account.lastLogin)}</LastLogin>
+                  )}
+                </AccountInfo>
+                <SwitchIcon>→</SwitchIcon>
+              </AccountCard>
+            ))}
+          </Section>
+        )}
 
-      {/* Actions Section */}
-      <ActionsSection>
-        <Button onClick={handleAddAccount} variant="secondary" fullWidth>
-          + Add Account
-        </Button>
-        <Button onClick={handleLogoutAll} variant="secondary" fullWidth>
-          Logout All Accounts
-        </Button>
-      </ActionsSection>
-    </PageContainer>
+        {otherAccounts.length === 0 && (
+          <Section>
+            <EmptyState>No other accounts in your vault</EmptyState>
+          </Section>
+        )}
+
+        {/* Actions Section */}
+        <ActionsSection>
+          <Button onClick={handleAddAccount} variant="secondary" fullWidth>
+            + Add Account
+          </Button>
+          <Button onClick={handleLogoutAll} variant="secondary" fullWidth>
+            Logout All Accounts
+          </Button>
+        </ActionsSection>
+      </PageContainer>
+    </PageFrame>
   );
 };

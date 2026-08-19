@@ -23,6 +23,7 @@ import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAliases } from '@/hooks/useAliases';
+import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
 
 export const AliasManagement = () => {
@@ -59,45 +60,21 @@ export const AliasManagement = () => {
   };
 
   return (
-    <Box sx={{ py: 4 }}>
+    <PageFrame
+      title="Alias Management"
+      subtitle="Create and manage aliases for your address"
+      actions={
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setCreateModalOpen(true)}
+        >
+          Create Alias
+        </Button>
+      }
+    >
       <Container maxWidth="md">
         <Stack spacing={4}>
-          {/* Header */}
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box>
-              <Typography
-                variant="h4"
-                gutterBottom
-                sx={{
-                  fontWeight: 700,
-                }}
-              >
-                Alias Management
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: 'text.secondary',
-                }}
-              >
-                Create and manage aliases for your address
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => setCreateModalOpen(true)}
-            >
-              Create Alias
-            </Button>
-          </Stack>
-
           {/* Address Info */}
           <Card>
             <CardContent>
@@ -304,6 +281,6 @@ export const AliasManagement = () => {
           onSuccess={handleAliasCreated}
         />
       </Container>
-    </Box>
+    </PageFrame>
   );
 };

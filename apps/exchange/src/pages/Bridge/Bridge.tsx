@@ -32,6 +32,7 @@ import { DepositAsset } from '@/features/bridge/DepositAsset';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
+import { PageFrame } from '@/layouts/PageFrame';
 import { networkBrandColor } from '@/styles/brandMarks';
 
 interface SelectedAsset {
@@ -234,38 +235,11 @@ export const Bridge: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        bgcolor: 'background.default',
-        minHeight: '100svh',
-        py: 4,
-      }}
+    <PageFrame
+      title="Cross-Chain Bridge"
+      subtitle="Transfer assets between DecentralChain and external blockchains securely through our gateway infrastructure."
     >
       <Container maxWidth="xl">
-        {/* Header */}
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{
-              fontWeight: 800,
-            }}
-          >
-            Cross-Chain Bridge
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'text.secondary',
-              maxWidth: 600,
-              mx: 'auto',
-            }}
-          >
-            Transfer assets between DecentralChain and external blockchains securely through our
-            gateway infrastructure
-          </Typography>
-        </Box>
-
         {/* Network Selector */}
         <Box sx={{ mb: 4 }}>
           <Typography
@@ -442,6 +416,6 @@ export const Bridge: React.FC = () => {
           />
         )}
       </Container>
-    </Box>
+    </PageFrame>
   );
 };
