@@ -39,7 +39,7 @@ const Description = styled.p`
 const ErrorMessage = styled.div`
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.error};
-  color: white;
+  color: ${(p) => p.theme.colors.onError};
   border-radius: ${(p) => p.theme.radii.sm};
   font-size: ${(p) => p.theme.fontSizes.sm};
   margin-bottom: ${(p) => p.theme.spacing.md};

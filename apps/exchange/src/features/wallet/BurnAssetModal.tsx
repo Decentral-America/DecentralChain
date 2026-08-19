@@ -188,7 +188,7 @@ const WarningIcon = styled.div`
 `;
 
 const WarningText = styled.div`
-  color: ${(p) => p.theme.colors.text};
+  color: ${(p) => p.theme.colors.onWarning};
   font-size: ${(p) => p.theme.fontSizes.sm};
   line-height: 1.5;
 `;
@@ -333,7 +333,7 @@ const BurnButton = styled.button`
   flex: 1;
   padding: ${(p) => p.theme.spacing.md};
   background: ${(p) => p.theme.colors.error};
-  color: white;
+  color: ${(p) => p.theme.colors.onError};
   border: none;
   border-radius: ${(p) => p.theme.radii.md};
   font-weight: ${(p) => p.theme.fontWeights.semibold};

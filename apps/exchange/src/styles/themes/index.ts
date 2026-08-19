@@ -23,8 +23,14 @@ export const lightTheme: DefaultTheme = {
     error: lightTokens.intent.danger,
     hover: lightTokens.surface.hover,
     info: lightTokens.intent.info,
+    // The ink that goes on the matching intent fill — same token MUI's
+    // `<intent>.contrastText` reads. See task-10-report.md.
+    onError: lightTokens.intent.onDanger,
+    onInfo: lightTokens.intent.onInfo,
     // Same token MUI's `primary.contrastText` reads — one ink, two consumers.
     onPrimary: lightTokens.accent.onPrimary,
+    onSuccess: lightTokens.intent.onSuccess,
+    onWarning: lightTokens.intent.onWarning,
     primary: lightTokens.accent.primary,
     // Background role: calibrated so `colors.text` stays legible on top of it
     // (the ~10 `background:` consumers). See task-2-report.md, Fix round 2.
@@ -104,7 +110,11 @@ export const darkTheme: DefaultTheme = {
     error: darkTokens.intent.danger,
     hover: darkTokens.surface.hover,
     info: darkTokens.intent.info,
+    onError: darkTokens.intent.onDanger,
+    onInfo: darkTokens.intent.onInfo,
     onPrimary: darkTokens.accent.onPrimary,
+    onSuccess: darkTokens.intent.onSuccess,
+    onWarning: darkTokens.intent.onWarning,
     primary: darkTokens.accent.primary,
     secondary: darkTokens.accent.muted,
     success: darkTokens.intent.success,

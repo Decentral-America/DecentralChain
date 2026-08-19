@@ -231,6 +231,35 @@ describe('ink on token-driven backgrounds (regression guard)', () => {
   });
 });
 
+describe('intent on-colors', () => {
+  const INTENTS = ['success', 'danger', 'warning', 'info'] as const;
+  const INK: Record<(typeof INTENTS)[number], 'onSuccess' | 'onDanger' | 'onWarning' | 'onInfo'> = {
+    danger: 'onDanger',
+    info: 'onInfo',
+    success: 'onSuccess',
+    warning: 'onWarning',
+  };
+
+  it.each(['light', 'dark'] as const)('every intent ink clears AA in %s mode', (mode) => {
+    const t = tokens(mode);
+    for (const intent of INTENTS) {
+      expect(contrastRatio(t.intent[INK[intent]], t.intent[intent])).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it.each([
+    'light',
+    'dark',
+  ] as const)('MUI contrastText reads the same token in %s mode', (mode) => {
+    const t = tokens(mode);
+    const { palette } = createAppTheme(mode);
+    expect(palette.error.contrastText).toBe(t.intent.onDanger);
+    expect(palette.success.contrastText).toBe(t.intent.onSuccess);
+    expect(palette.warning.contrastText).toBe(t.intent.onWarning);
+    expect(palette.info.contrastText).toBe(t.intent.onInfo);
+  });
+});
+
 describe('hover perceptibility (regression guard)', () => {
   // `colors.hover` / `action.hover` must read as a visibly different surface
   // from the resting background — Task 2 round 1 shipped `surface.raised`,

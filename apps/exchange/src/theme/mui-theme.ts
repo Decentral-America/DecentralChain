@@ -18,8 +18,14 @@ function paletteFor(mode: ThemeMode) {
     action: { hover: t.surface.hover, selected: t.surface.hover },
     background: { default: t.surface.base, paper: t.surface.raised },
     divider: t.border.subtle,
-    error: { main: t.intent.danger },
-    info: { main: t.intent.info },
+    // `contrastText` is the ink that goes *on* the intent fill — the same
+    // per-mode role as `accent.onPrimary` (task-2-report.md, Fix round 4).
+    // Every intent fill is a light tint in dark mode and a deep shade in
+    // light mode, so a hardcoded 'white' clears AA in light but drops to as
+    // low as 2.78:1 in dark. `t.intent.on*` inverts per mode instead;
+    // measured in task-10-brief.md's table, all eight clear 4.5:1.
+    error: { contrastText: t.intent.onDanger, main: t.intent.danger },
+    info: { contrastText: t.intent.onInfo, main: t.intent.info },
     // `paletteFor` is already per-mode, so the ink on `accent.primary` is too:
     // `accent.onPrimary` is white in light mode (6.04:1) and near-black in
     // dark (5.63:1). Both clear AA's 4.5:1 body-text floor — the earlier
@@ -44,9 +50,9 @@ function paletteFor(mode: ThemeMode) {
     // secondary (magenta) was the drift Finding 3 flagged; this keeps both
     // consumers on one value. See task-2-report.md, Fix round 2.
     secondary: { contrastText: t.text.primary, main: t.accent.muted },
-    success: { main: t.intent.success },
+    success: { contrastText: t.intent.onSuccess, main: t.intent.success },
     text: { primary: t.text.primary, secondary: t.text.secondary },
-    warning: { main: t.intent.warning },
+    warning: { contrastText: t.intent.onWarning, main: t.intent.warning },
   };
 }
 

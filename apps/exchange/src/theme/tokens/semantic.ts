@@ -31,7 +31,23 @@ export interface SemanticTokens {
    * shade stays inside the band where the ink still clears AA.
    */
   accent: { primary: string; muted: string; onPrimary: string; primaryHover: string };
-  intent: { success: string; danger: string; warning: string; info: string };
+  /**
+   * `on*` is the ink that goes *on* the matching intent fill — the same
+   * per-mode role as `accent.onPrimary`. Every intent fill is a light tint in
+   * dark mode and a deep shade in light mode, so the ink inverts between them:
+   * white on light-mode fills, near-black on dark-mode fills. Ratios are in
+   * the plan's Task 10 table; all eight clear 4.5:1.
+   */
+  intent: {
+    success: string;
+    danger: string;
+    warning: string;
+    info: string;
+    onSuccess: string;
+    onDanger: string;
+    onWarning: string;
+    onInfo: string;
+  };
 }
 
 export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
@@ -45,7 +61,16 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
       primaryHover: '#7d70eb',
     },
     border: { strong: '#3a3358', subtle: '#241d42' },
-    intent: { danger: '#ff6b6b', info: '#6aa8ff', success: '#3ddc97', warning: '#ffb84d' },
+    intent: {
+      danger: '#ff6b6b',
+      info: '#6aa8ff',
+      onDanger: '#14122b',
+      onInfo: '#14122b',
+      onSuccess: '#14122b',
+      onWarning: '#14122b',
+      success: '#3ddc97',
+      warning: '#ffb84d',
+    },
     surface: {
       base: '#0b0724',
       hover: '#201b3b',
@@ -64,7 +89,16 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
       primaryHover: '#4a3bb8',
     },
     border: { strong: '#c7c3e0', subtle: '#e9e7f2' },
-    intent: { danger: '#c62828', info: '#1565c0', success: '#1b7a4b', warning: '#a15c00' },
+    intent: {
+      danger: '#c62828',
+      info: '#1565c0',
+      onDanger: '#ffffff',
+      onInfo: '#ffffff',
+      onSuccess: '#ffffff',
+      onWarning: '#ffffff',
+      success: '#1b7a4b',
+      warning: '#a15c00',
+    },
     surface: {
       base: '#f7f7fb',
       hover: '#e6e5f2',

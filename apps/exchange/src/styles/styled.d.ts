@@ -27,6 +27,15 @@ declare module 'styled-components' {
       info?: string;
       disabled?: string;
       hover?: string;
+      // The ink that goes on the matching intent fill — the styled-components
+      // counterpart of MUI's `palette.<intent>.contrastText`, reading the
+      // same `intent.on*` token so the two consumers cannot drift. Per mode:
+      // white on light-mode fills, near-black on dark-mode fills. See
+      // task-10-report.md.
+      onError: string;
+      onSuccess: string;
+      onWarning: string;
+      onInfo: string;
     };
     fonts: {
       main: string;

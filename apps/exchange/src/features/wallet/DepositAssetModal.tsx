@@ -179,7 +179,7 @@ const WarningIcon = styled.div`
 `;
 
 const WarningText = styled.div`
-  color: ${(p) => p.theme.colors.text};
+  color: ${(p) => p.theme.colors.onWarning};
   font-size: ${(p) => p.theme.fontSizes.sm};
   line-height: 1.5;
 `;
